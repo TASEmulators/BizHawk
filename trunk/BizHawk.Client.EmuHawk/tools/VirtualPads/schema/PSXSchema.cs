@@ -12,8 +12,17 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			var psx = ((Octoshock)Global.Emulator);
-			yield return DualShockController(1);
-			yield return DualShockController(2);
+			var settings = (Octoshock.SyncSettings)psx.GetSyncSettings();
+
+			// TODO: support other types
+			for (int i = 0; i < settings.Controllers.Length; i++)
+			{
+				if (settings.Controllers[i].IsConnected)
+				{
+					yield return DualShockController(i + 1);
+				}
+			}
+
 			yield return ConsoleButtons(psx);
 		}
 
