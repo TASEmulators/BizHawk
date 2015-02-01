@@ -895,12 +895,16 @@ namespace BizHawk.Client.EmuHawk
 
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using(var img = bb.ToSysdrawingBitmap())
+				using (var img = bb.ToSysdrawingBitmap())
 					img.Save(fi.FullName, ImageFormat.Png);
 			}
-
+			/*
+			using (var fs = new FileStream(path + "_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
+				QuickBmpFile.Save(Global.Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
+			*/
 			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
 		}
+		//static Random r = new Random();
 
 		public void FrameBufferResized()
 		{
