@@ -24,6 +24,9 @@ class InputDevice_Gamepad : public InputDevice
 
  private:
 
+//non-serialized state
+ IO_Gamepad* io;
+
  bool dtr;
 
  uint8 buttons[2];
@@ -72,10 +75,10 @@ void InputDevice_Gamepad::Power(void)
 
 void InputDevice_Gamepad::UpdateInput(const void *data)
 {
- uint8 *d8 = (uint8 *)data;
+	io = (IO_Gamepad*)data;
 
- buttons[0] = d8[0];
- buttons[1] = d8[1];
+ buttons[0] = io->buttons[0];
+ buttons[1] = io->buttons[1];
 }
 
 
@@ -164,16 +167,17 @@ bool InputDevice_Gamepad::Clock(bool TxD, int32 &dsr_pulse_delay)
 
 	 transmit_buffer[1] = 0xFF ^ buttons[0];
 	 transmit_buffer[2] = 0xFF ^ buttons[1];
-         transmit_pos = 0;
-         transmit_count = 3;
+	 transmit_pos = 0;
+	 transmit_count = 3;
+		io->active = true;
 	}
 	else
 	{
-	 command_phase = -1;
-	 transmit_buffer[1] = 0;
-	 transmit_buffer[2] = 0;
-         transmit_pos = 0;
-         transmit_count = 0;
+		command_phase = -1;
+		transmit_buffer[1] = 0;
+		transmit_buffer[2] = 0;
+		transmit_pos = 0;
+		transmit_count = 0;
 	}
 	break;
 

@@ -29,6 +29,8 @@
 #include "emuware/EW_state.h"
 
 #include "input/dualshock.h"
+#include "input/dualanalog.h"
+#include "input/gamepad.h"
 
 //#include <mednafen/PSFLoader.h>
 
@@ -1120,6 +1122,22 @@ struct {
 				return ret;
 				break;
 			}
+		case ePeripheralType_DualAnalog:
+			{
+				IO_DualAnalog* io_dualanalog = (IO_DualAnalog*)buf;
+				if(io_dualanalog->active) ret = SHOCK_TRUE;
+				if(clear) io_dualanalog->active = 0;
+				return ret;
+				break;
+			}
+		case ePeripheralType_Pad:
+			{
+				IO_Gamepad* io_gamepad = (IO_Gamepad*)buf;
+				if(io_gamepad->active) ret = SHOCK_TRUE;
+				if(clear) io_gamepad->active = 0;
+				return ret;
+				break;
+			}
 
 		case ePeripheralType_None:
 			return SHOCK_NOCANDO;
@@ -1150,6 +1168,24 @@ struct {
 				io_dualshock->right_y = right_y;
 				io_dualshock->left_x = left_x;
 				io_dualshock->left_y = left_y;
+				return SHOCK_OK;
+			}
+		case ePeripheralType_Pad:
+			{
+				IO_Gamepad* io_gamepad = (IO_Gamepad*)buf;
+				io_gamepad->buttons[0] = (buttons>>0)&0xFF;
+				io_gamepad->buttons[1] = (buttons>>8)&0xFF;
+				return SHOCK_OK;
+			}
+		case ePeripheralType_DualAnalog:
+			{
+				IO_DualAnalog* io_dualanalog = (IO_DualAnalog*)buf;
+				io_dualanalog->buttons[0] = (buttons>>0)&0xFF;
+				io_dualanalog->buttons[1] = (buttons>>8)&0xFF;
+				io_dualanalog->right_x = right_x;
+				io_dualanalog->right_y = right_y;
+				io_dualanalog->left_x = left_x;
+				io_dualanalog->left_y = left_y;
 				return SHOCK_OK;
 			}
 		

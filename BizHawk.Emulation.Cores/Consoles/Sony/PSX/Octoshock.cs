@@ -35,47 +35,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string SystemId { get { return "PSX"; } }
 
-		public static readonly ControllerDefinition PSXControllerDefinition = new ControllerDefinition
-		{
-			Name = "DualShock Controller",
-			BoolButtons =
-			{					
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Square", "P1 Triangle", "P1 Circle", "P1 Cross", "P1 L1", 
-				"P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
-				"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
-				"Open", "Close", "Reset", 
-			},
-			FloatControls =
-			{
-				"P1 LStick X", "P1 LStick Y", "P1 RStick X", "P1 RStick Y",
-				"P2 LStick X", "P2 LStick Y", "P2 RStick X", "P2 RStick Y",
-				"Disc Select",
-			},
-			FloatRanges = 
-			{
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {-1f,-1f,-1f}, //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
-			},
-		};
-
 		private void SetControllerButtons()
 		{
-			// adelikat: ARG, stupid Disc Select hack gets set from something assuming controllers, so I'm disabling this here
-			_SyncSettings.Controllers[0].IsConnected = true;
-			_SyncSettings.Controllers[1].IsConnected = true;
-			return;
+			ControllerDefinition = new ControllerDefinition();
+			ControllerDefinition.Name = "DualShock Controller"; //this is a poopy name.
 
 			ControllerDefinition.BoolButtons.Clear();
 			ControllerDefinition.FloatControls.Clear();
-
 			
 			for (int i = 0; i < _SyncSettings.Controllers.Length; i++)
 			{
@@ -356,8 +322,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				frameBuffer = new int[BufferWidth * BufferHeight];
 			}
 
-			SetControllerButtons();
-
 			if (discInterfaces.Count != 0)
 			{
 				//start with first disc inserted and tray closed. it's a sensible default.
@@ -377,16 +341,24 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_CloseTray(psx);
 			}
 
-			//connect two dualshocks, thats all we're doing right now
+			//setup the controller based on sync settings
+			SetControllerButtons();
+
+			var lookup = new Dictionary<ControllerSetting.ControllerType,OctoshockDll.ePeripheralType> {
+				{ ControllerSetting.ControllerType.Gamepad, OctoshockDll.ePeripheralType.Pad },
+				{ ControllerSetting.ControllerType.DualAnalog, OctoshockDll.ePeripheralType.DualAnalog },
+				{ ControllerSetting.ControllerType.DualShock, OctoshockDll.ePeripheralType.DualShock },
+			};
 
 			if (_SyncSettings.Controllers[0].IsConnected)
 			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[0].Type]);
+				
 			}
 
 			if (_SyncSettings.Controllers[1].IsConnected)
 			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, OctoshockDll.ePeripheralType.DualShock);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[1].Type]);
 			}
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
@@ -677,7 +649,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return PSXControllerDefinition; } }
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
 
 		public int Frame { get; private set; }
