@@ -155,5 +155,5 @@ char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
 #ifdef _MSC_VER
 #define EW_PACKED( ... ) __pragma( pack(push, 1) ) __VA_ARGS__  __pragma( pack(pop) )
 #else
-#define EW_PACKED( ... ) __Declaration__ __VA_ARGS__ ((__packed__))
+#define EW_PACKED( ... )  __VA_ARGS__ __attribute__((__packed__))
 #endif
