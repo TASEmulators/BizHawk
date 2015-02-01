@@ -948,7 +948,16 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public bool IsConnected { get; set; }
 			public ControllerType Type { get; set; }
 
-			public enum ControllerType { Gamepad, DualAnalog, DualShock }
+			public enum ControllerType
+			{
+				Gamepad,
+
+				[Description("Dual Analog")]
+				DualAnalog,
+
+				[Description("Dual Shock")]
+				DualShock
+			}
 		}
 
 		public class Settings
