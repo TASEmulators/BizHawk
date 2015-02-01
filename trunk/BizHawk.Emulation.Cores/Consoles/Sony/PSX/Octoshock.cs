@@ -14,6 +14,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -925,7 +926,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			public SyncSettings Clone()
 			{
-				return (SyncSettings)MemberwiseClone();
+				var ret = (SyncSettings)MemberwiseClone();
+				ret.Controllers = Controllers.Select(x => x.Clone()).ToArray();
+
+				return ret;
 			}
 
 			public ControllerSetting[] Controllers = 
@@ -945,6 +949,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public class ControllerSetting
 		{
+			public ControllerSetting Clone()
+			{
+				return (ControllerSetting)this.MemberwiseClone();
+			}
+
 			public bool IsConnected { get; set; }
 			public ControllerType Type { get; set; }
 
@@ -1042,8 +1051,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
+			var ret = !DeepEquality.DeepEquals(_SyncSettings, o);
 			_SyncSettings = o;
-			return false;
+			return ret;
 		}
 
 		#endregion
