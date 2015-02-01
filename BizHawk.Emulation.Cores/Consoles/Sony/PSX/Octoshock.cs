@@ -944,14 +944,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			public ControllerSetting[] Controllers = 
 			{
-				new ControllerSetting { IsConnected = true },
-				new ControllerSetting { IsConnected = false }
+				new ControllerSetting
+				{
+					IsConnected = true,
+					Type = ControllerSetting.ControllerType.DualShock
+				},
+				new ControllerSetting
+				{
+					IsConnected = false,
+					Type = ControllerSetting.ControllerType.DualShock
+				}
 			};
 		}
 
 		public class ControllerSetting
 		{
 			public bool IsConnected { get; set; }
+			public ControllerType Type { get; set; }
+
+			public enum ControllerType { Gamepad, DualAnalog, DualShock }
 		}
 
 		public class Settings
