@@ -9,6 +9,7 @@ Multi-instance capable.
 Multi-threading, if applicable, is handled internally.  The frontend will call FrameAdvance()
   on a single thread and callbacks will be marshalled back to that thread.
 Settings and preferences, where applicable, can be specified by the frontend.
+Flat C-style exportable API
 
 Bad Core:
 
@@ -20,3 +21,4 @@ Optical disk access through cruddy cuebin system that can't be replaced easily.
 Single instance.
 Sloppy multithreading, or main program loop that can't be easily factored out.
 Settings and preferences go to untrappable file IO or central registry.
+Convoluted object oriented APIs or no organized API at all
