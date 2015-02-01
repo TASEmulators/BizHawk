@@ -266,6 +266,7 @@
 			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
 			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.PSXControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXDiscControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -380,7 +381,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PSXControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2394,6 +2394,15 @@
 			this.PSXSubMenu.Name = "PSXSubMenu";
 			this.PSXSubMenu.Size = new System.Drawing.Size(39, 19);
 			this.PSXSubMenu.Text = "PSX";
+			this.PSXSubMenu.DropDownOpened += new System.EventHandler(this.PSXSubMenu_DropDownOpened);
+			// 
+			// PSXControllerSettingsMenuItem
+			// 
+			this.PSXControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.PSXControllerSettingsMenuItem.Name = "PSXControllerSettingsMenuItem";
+			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXControllerSettingsMenuItem.Text = "Controller Settings";
+			this.PSXControllerSettingsMenuItem.Click += new System.EventHandler(this.PSXControllerSettingsMenuItem_Click);
 			// 
 			// PSXOptionsMenuItem
 			// 
@@ -3352,14 +3361,6 @@
 			this.ShowMenuContextMenuItem.Size = new System.Drawing.Size(216, 22);
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
-			// 
-			// PSXControllerSettingsMenuItem
-			// 
-			this.PSXControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
-			this.PSXControllerSettingsMenuItem.Name = "PSXControllerSettingsMenuItem";
-			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.PSXControllerSettingsMenuItem.Text = "Controller Settings";
-			this.PSXControllerSettingsMenuItem.Click += new System.EventHandler(this.PSXControllerSettingsMenuItem_Click);
 			// 
 			// MainForm
 			// 

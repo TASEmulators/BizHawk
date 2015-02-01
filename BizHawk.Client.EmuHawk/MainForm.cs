@@ -3727,11 +3727,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void barcodeReaderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<BarcodeEntry>();
-		}
-
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
@@ -3740,11 +3735,6 @@ namespace BizHawk.Client.EmuHawk
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
-		}
-
-		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			new PSXControllerConfig().ShowDialog();
 		}
 	}
 }

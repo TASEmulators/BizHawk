@@ -1277,6 +1277,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void barcodeReaderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BarcodeEntry>();
+		}
 
 		#endregion
 
@@ -1636,6 +1640,20 @@ namespace BizHawk.Client.EmuHawk
 		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBAGPUView>();
+		}
+
+		#endregion
+
+		#region PSX
+
+		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			PSXControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+		}
+
+		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXControllerConfig().ShowDialog();
 		}
 
 		#endregion
