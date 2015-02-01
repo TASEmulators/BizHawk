@@ -125,6 +125,7 @@ namespace BizHawk.Client.Common
 						new Binding { DisplayName = "Full Screen", Bindings = "Alt+Return", TabGroup = "General", DefaultBinding = "Alt+Return" },
 						new Binding { DisplayName = "Open ROM", Bindings = "Ctrl+O", TabGroup = "General", DefaultBinding = "Ctrl+O" },
 						new Binding { DisplayName = "Close ROM", Bindings = "Ctrl+W", TabGroup = "General", DefaultBinding = "Ctrl+W" },
+						new Binding { DisplayName = "Load Last ROM", Bindings = "", TabGroup = "General", DefaultBinding = "" },
 						new Binding { DisplayName = "Display FPS", Bindings = "", TabGroup = "General", DefaultBinding = "" },
 						new Binding { DisplayName = "Frame Counter", Bindings = "", TabGroup = "General", DefaultBinding = "" },
 						new Binding { DisplayName = "Lag Counter", Bindings = "", TabGroup = "General", DefaultBinding = "" },
