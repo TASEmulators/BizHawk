@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Version", "Version\Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Client.Common", "BizHawk.Client.Common\BizHawk.Client.Common.csproj", "{24A0AA3C-B25F-4197-B23D-476D6462DBA0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0CE8B337-08E3-4602-BF10-C4D4C75D2F13} = {0CE8B337-08E3-4602-BF10-C4D4C75D2F13}
@@ -51,8 +53,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL.GdiPlus", "Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj", "{337CA23E-65E7-44E1-9411-97EE08BB8116}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizHawk.Bizware.BizwareGL.SlimDX", "Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj", "{E6B436B1-A3CD-4C9A-8F76-5D7154726884}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Version", "Version\Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
