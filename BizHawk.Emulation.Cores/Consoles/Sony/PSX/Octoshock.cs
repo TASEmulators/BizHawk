@@ -66,21 +66,26 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						"P" + (i + 1) + " R2",
 						"P" + (i + 1) + " L3",
 						"P" + (i + 1) + " R3",
-						"P" + (i + 1) + " MODE",
+						
 					});
 
-					ControllerDefinition.FloatControls.AddRange(new[]
+					if (_SyncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad)
 					{
-						"P" + (i + 1) + " LStick X",
-						"P" + (i + 1) + " LStick Y",
-						"P" + (i + 1) + " RStick X",
-						"P" + (i + 1) + " RStick Y"
-					});
+						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " MODE");
 
-					ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-					ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						ControllerDefinition.FloatControls.AddRange(new[]
+						{
+							"P" + (i + 1) + " LStick X",
+							"P" + (i + 1) + " LStick Y",
+							"P" + (i + 1) + " RStick X",
+							"P" + (i + 1) + " RStick Y"
+						});
+
+						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+					}
 				}
 			}
 
