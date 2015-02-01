@@ -136,9 +136,22 @@ namespace BizHawk.Client.EmuHawk
 
 			public BufferPoolItem Obtain(int length)
 			{
-				BufferPoolItem item = _availableItems.Where(n => n.MaxLength >= length).OrderBy(n => n.MaxLength).FirstOrDefault() ?? new BufferPoolItem(length);
-				_availableItems.Remove(item);
+				BufferPoolItem item = GetAvailableItem(length) ?? new BufferPoolItem(length);
 				_obtainedItems.Enqueue(item);
+				return item;
+			}
+
+			private BufferPoolItem GetAvailableItem(int length)
+			{
+				int foundIndex = -1;
+				for (int i = 0; i < _availableItems.Count; i++)
+				{
+					if (_availableItems[i].MaxLength >= length && (foundIndex == -1 || _availableItems[i].MaxLength < _availableItems[foundIndex].MaxLength))
+						foundIndex = i;
+				}
+				if (foundIndex == -1) return null;
+				BufferPoolItem item = _availableItems[foundIndex];
+				_availableItems.RemoveAt(foundIndex);
 				return item;
 			}
 
