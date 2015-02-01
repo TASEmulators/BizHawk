@@ -126,6 +126,8 @@ namespace BizHawk.Client.EmuHawk
 			_semiSync.RecalculateMagic(Global.CoreComm.VsyncRate);
 		}
 
+		public bool LogUnderruns { get; set; }
+
 		private bool InitializeBufferWithSilence
 		{
 			get { return true; }
@@ -152,9 +154,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool LogUnderruns { get; set; }
-
-		public void OnUnderrun()
+		internal void OnUnderrun()
 		{
 			if (!IsStarted) return;
 
