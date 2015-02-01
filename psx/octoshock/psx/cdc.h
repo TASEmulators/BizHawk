@@ -26,7 +26,9 @@ class PS_CDC
 
  template<bool isReader>void SyncState(EW::NewState *ns);
 
- void SetDisc(bool tray_open, ShockDiscRef *disc, const char disc_id[4]);
+ void OpenTray();
+ void SetDisc(ShockDiscRef *disc, const char disc_id[4], bool poke);
+ void CloseTray(bool poke);
 
  void Power(void);
  void ResetTS(void);
@@ -47,6 +49,10 @@ class PS_CDC
  private:
  CDIF *Cur_CDIF;
  ShockDiscRef* Cur_disc;
+
+ ShockDiscRef* Open_disc; //the disc that's in the tray, while the tray is open. pending, kind of. used because Cur_disc != NULL is used as a tray-closed marker in the CDC code
+ uint8 Open_DiscID[4]; //same thing
+
  bool DiscChanged;
  int32 DiscStartupDelay;
 
