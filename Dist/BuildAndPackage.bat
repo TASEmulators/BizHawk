@@ -9,8 +9,6 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 IF NOT EXIST %MSBUILDDIR%nul goto MISSINGMSBUILD
 IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
 
-fart "..\Version\VersionInfo.cs" "DeveloperBuild = true" "DeveloperBuild = false"
-
 call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
 
 rmdir /s /q temp
@@ -44,7 +42,6 @@ upx -d *.exe
 cd ..
 
 rmdir /s /q temp
-fart "..\Version\VersionInfo.cs" "DeveloperBuild = false" "DeveloperBuild = true"
 goto END
 
 :MISSINGMSBUILD
