@@ -1,3 +1,9 @@
+if "%1"=="" (
+	SET NAME=BizHawk.zip
+) else (
+	SET NAME=%1
+)
+
 svn --version > NUL
 @if errorlevel 1 goto MISSINGSVN
 
@@ -12,7 +18,7 @@ IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
 call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
 
 rmdir /s /q temp
-del /s BizHawk.zip
+del /s %NAME%
 cd ..\output
 
 rem slimdx has a way of not making it into the output directory, so this is a good time to make sure
@@ -24,11 +30,11 @@ rem explicitly list the OK ones here as individual copies. until then....
 
 copy *.dll dll
 
-..\dist\zip.exe -X -r ..\Dist\BizHawk.zip EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
+..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
 
 cd ..\Dist
-.\unzip.exe BizHawk.zip -d temp
-del BizHawk.zip
+.\unzip.exe %NAME% -d temp
+del %NAME%
 
 rmdir /s /q temp\lua
 svn export ..\output\lua temp\Lua
@@ -38,7 +44,7 @@ cd temp
 upx -d dll\*.dll
 upx -d dll\*.exe
 upx -d *.exe
-..\zip.exe -X -9 -r ..\BizHawk.zip . -i \*
+..\zip.exe -X -9 -r ..\%NAME% . -i \*
 cd ..
 
 rmdir /s /q temp
@@ -50,3 +56,4 @@ goto END
 :MISSINGSVN
 @echo missing svn.exe. can't make distro without that.
 :END
+exit
