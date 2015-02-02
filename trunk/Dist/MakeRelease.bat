@@ -1,6 +1,8 @@
 svn --version > NUL
 @if errorlevel 1 goto MISSINGSVN
 
+call msbuild.exe  ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
+
 rmdir /s /q temp
 del /s BizHawk.zip
 cd ..\output
