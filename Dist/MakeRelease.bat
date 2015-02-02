@@ -1,6 +1,8 @@
 svn --version > NUL
 @if errorlevel 1 goto MISSINGSVN
 
+fart "..\Version\VersionInfo.cs" "DeveloperBuild = true" "DeveloperBuild = false"
+
 call msbuild.exe  ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
 
 rmdir /s /q temp
@@ -34,6 +36,7 @@ upx -d *.exe
 cd ..
 
 rmdir /s /q temp
+fart "..\Version\VersionInfo.cs" "DeveloperBuild = false" "DeveloperBuild = true"
 goto END
 
 :MISSINGSVN
