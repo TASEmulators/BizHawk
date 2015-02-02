@@ -1,9 +1,17 @@
 svn --version > NUL
 @if errorlevel 1 goto MISSINGSVN
 
+reg query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0" /v MSBuildToolsPath > nul 2>&1
+if ERRORLEVEL 1 goto MISSINGMSBUILD
+
+for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0" /v MSBuildToolsPath') do SET MSBUILDDIR=%%B
+
+IF NOT EXIST %MSBUILDDIR%nul goto MISSINGMSBUILD
+IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
+
 fart "..\Version\VersionInfo.cs" "DeveloperBuild = true" "DeveloperBuild = false"
 
-call msbuild.exe  ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
+call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
 
 rmdir /s /q temp
 del /s BizHawk.zip
@@ -39,6 +47,9 @@ rmdir /s /q temp
 fart "..\Version\VersionInfo.cs" "DeveloperBuild = false" "DeveloperBuild = true"
 goto END
 
+:MISSINGMSBUILD
+@echo Missing msbuild.exe. can't make distro without that.
+goto END
 :MISSINGSVN
 @echo missing svn.exe. can't make distro without that.
 :END
