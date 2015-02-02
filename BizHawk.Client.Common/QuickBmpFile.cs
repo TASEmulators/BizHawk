@@ -180,7 +180,6 @@ namespace BizHawk.Client.Common
 			}
 
 			s.Write(dst, 0, dst.Length);
-			s.Close();
 		}
 	}
 }
