@@ -58,8 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 						"P" + (i + 1) + " A",
 						"P" + (i + 1) + " C Up",
 						"P" + (i + 1) + " C Down",
-						"P" + (i + 1) + " C Right",
 						"P" + (i + 1) + " C Left",
+						"P" + (i + 1) + " C Right",
 						"P" + (i + 1) + " L",
 						"P" + (i + 1) + " R", 
 					});
