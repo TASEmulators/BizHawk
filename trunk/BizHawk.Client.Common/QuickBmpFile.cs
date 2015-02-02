@@ -24,6 +24,14 @@ namespace BizHawk.Client.Common
 			{
 				bfSize = (uint)Marshal.SizeOf(this);
 			}
+
+			public static BITMAPFILEHEADER FromStream(Stream s)
+			{
+				var ret = GetObject<BITMAPFILEHEADER>(s);
+				if (ret.bfSize != Marshal.SizeOf(typeof(BITMAPFILEHEADER)))
+					throw new InvalidOperationException();
+				return ret;
+			}
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -44,6 +52,14 @@ namespace BizHawk.Client.Common
 			public BITMAPINFOHEADER()
 			{
 				biSize = (uint)Marshal.SizeOf(this);
+			}
+
+			public static BITMAPINFOHEADER FromStream(Stream s)
+			{
+				var ret = GetObject<BITMAPINFOHEADER>(s);
+				if (ret.biSize != Marshal.SizeOf(typeof(BITMAPINFOHEADER)))
+					throw new InvalidOperationException();
+				return ret;
 			}
 		}
 
@@ -66,6 +82,57 @@ namespace BizHawk.Client.Common
 				Marshal.StructureToPtr(o, (IntPtr)p, false);
 			}
 			return ret;
+		}
+
+		private unsafe static T GetObject<T>(Stream s)
+		{
+			byte[] tmp = new byte[Marshal.SizeOf(typeof(T))];
+			s.Read(tmp, 0, tmp.Length);
+			fixed (byte* p = tmp)
+			{
+				return (T)Marshal.PtrToStructure((IntPtr)p, typeof(T));
+			}
+		}
+
+		public unsafe static bool Load(IVideoProvider v, Stream s)
+		{
+			var bf = BITMAPFILEHEADER.FromStream(s);
+			var bi = BITMAPINFOHEADER.FromStream(s);
+			if (bf.bfType != 0x4d42
+				|| bf.bfOffBits != bf.bfSize + bi.biSize
+				|| bi.biPlanes != 1
+				|| bi.biBitCount != 32
+				|| bi.biCompression != BitmapCompressionMode.BI_RGB)
+				return false;
+			int in_w = bi.biWidth;
+			int in_h = bi.biHeight;
+
+			byte[] src = new byte[in_w * in_h * 4];
+			s.Read(src, 0, src.Length);
+			int[] dst = v.GetVideoBuffer();
+
+			fixed (byte *srcp = src)
+			fixed (int* dstp = dst)
+			{
+				int w = v.BufferWidth;
+				int h = v.BufferHeight;
+
+				int* sp = (int*)srcp;
+				int* dp = dstp;
+
+				// vflip along the way
+				for (int j = h - 1; j >= 0; j--)
+				{
+					sp = (int*)srcp + in_w * (j * in_h / h);
+					for (int i = 0; i < w; i++)
+					{
+						dp[i] = sp[i * in_w / w];
+					}
+					dp += w;
+				}
+			}
+
+			return true;
 		}
 
 		public unsafe static void Save(IVideoProvider v, Stream s, int w, int h)

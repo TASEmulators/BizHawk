@@ -59,22 +59,31 @@ namespace BizHawk.Client.Common
 
 		public static void PopulateFramebuffer(BinaryReader br)
 		{
-			var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
 			try
 			{
-				for (int i = 0; i < buff.Length; i++)
-				{
-					int j = br.ReadInt32();
-					buff[i] = j;
-				}
+				QuickBmpFile.Load(Global.Emulator.VideoProvider(), br.BaseStream);
 			}
-			catch (EndOfStreamException) { }
+			catch
+			{
+				var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+				try
+				{
+					for (int i = 0; i < buff.Length; i++)
+					{
+						int j = br.ReadInt32();
+						buff[i] = j;
+					}
+				}
+				catch (EndOfStreamException) { }
+			}
 		}
 
-		public static void DumpFramebuffer(BinaryWriter bw)
+		public static void DumpFramebuffer(Stream s)
 		{
-			bw.Write(Global.Emulator.VideoProvider().GetVideoBuffer());
+			//bw.Write(Global.Emulator.VideoProvider().GetVideoBuffer());
+			QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, r.Next(50, 500), r.Next(50, 500));
 		}
+		static Random r = new Random();
 
 		public static bool LoadStateFile(string path, string name)
 		{
