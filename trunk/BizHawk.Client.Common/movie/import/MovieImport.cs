@@ -69,11 +69,17 @@ namespace BizHawk.Client.Common
 		// Attempt to import another type of movie file into a movie object.
 		public static Bk2Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
-			BkmMovie m = new BkmMovie();
 			errorMsg = string.Empty;
 			warningMsg = string.Empty;
-
 			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
+
+			if (ext == ".PJM")
+			{
+				return PJMImport.Import(path, out errorMsg, out warningMsg);
+			}
+
+			BkmMovie m = new BkmMovie();
+
 			try
 			{
 				switch (ext)
