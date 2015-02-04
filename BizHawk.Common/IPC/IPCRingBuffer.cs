@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Threading;
 
 
 namespace BizHawk.Common
 {
 	/// <summary>
 	/// a ring buffer suitable for IPC. It uses a spinlock to control access, so overhead can be kept to a minimum. 
-	/// you'll probably need to use this in pairs, so it will occupy two threads and degrade entirely if there is less than one processor.
+	/// you'll probably need to use this in pairs, so it will occupy two threads.
 	/// </summary>
 	public unsafe class IPCRingBuffer : IDisposable
 	{
@@ -80,6 +81,7 @@ namespace BizHawk.Common
 				if (Available > amt)
 					return;
 				//this is a greedy spinlock.
+				Thread.Yield();
 			}
 		}
 
@@ -119,6 +121,7 @@ namespace BizHawk.Common
 				if (available > 0)
 					return available;
 				//this is a greedy spinlock.
+				Thread.Yield();
 			}
 		}
 
