@@ -180,6 +180,8 @@
     </Compile>
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
+    <Compile Include="movie\import\Fm2Import.cs" />
+    <Compile Include="movie\import\IMovieImport.cs" />
     <Compile Include="movie\import\MovieImport.cs" />
     <Compile Include="movie\import\PJMImport.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
