@@ -101,6 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.ControllerInputCoalescer = new ControllerInputCoalescer();
 			Global.FirmwareManager = new FirmwareManager();
+			Global.FirmwareManager.OnFirmwareRequestSatisfied += (o, e) => ActiveFirmwares[e.FirmwareId] = e.Hash;
 			Global.MovieSession = new MovieSession
 			{
 				Movie = MovieService.DefaultInstance,
@@ -564,6 +565,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 		public bool UpdateFrame = false;
+
+		public Dictionary<string, string> ActiveFirmwares = new Dictionary<string, string>();
 
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
@@ -3308,6 +3311,7 @@ namespace BizHawk.Client.EmuHawk
 					Deterministic = deterministic,
 					MessageCallback = GlobalWin.OSD.AddMessage
 				};
+			ActiveFirmwares.Clear();
 
 			loader.OnLoadError += ShowLoadError;
 			loader.OnLoadSettings += CoreSettings;
@@ -3420,6 +3424,15 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
 				{
 					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
+
+				if (ActiveFirmwares.Count > 0)
+				{
+					Console.WriteLine("Active Firmwares:");
+					foreach (var kvp in ActiveFirmwares)
+					{
+						Console.WriteLine("  {0} : {1}", kvp.Key, kvp.Value);
+					}
 				}
 				return true;
 			}

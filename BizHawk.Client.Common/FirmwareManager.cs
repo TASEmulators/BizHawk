@@ -30,6 +30,18 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> _resolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
 
+		public class FirmwareEventArgs
+		{
+			public string Hash { get; set; }
+			public long Size { get; set; }
+			public string SystemId { get; set; }
+			public string FirmwareId { get; set; }
+		}
+
+		public delegate void FirmwareEventHandler(object sender, FirmwareEventArgs e);
+
+		public event FirmwareEventHandler OnFirmwareRequestSatisfied;
+
 		public ResolutionInfo Resolve(string sysId, string firmwareId)
 		{
 			return Resolve(FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
@@ -63,6 +75,17 @@ namespace BizHawk.Client.Common
 		{
 			var resolved = Resolve(sysId, firmwareId);
 			if (resolved == null) return null;
+			if (OnFirmwareRequestSatisfied != null)
+			{
+				OnFirmwareRequestSatisfied(this,
+					new FirmwareEventArgs
+					{
+						SystemId = sysId,
+						FirmwareId = firmwareId,
+						Hash = resolved.Hash,
+						Size = resolved.Size
+					});
+			}
 			return resolved.FilePath;
 		}
 
