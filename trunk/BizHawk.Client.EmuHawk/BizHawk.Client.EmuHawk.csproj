@@ -1840,6 +1840,7 @@
     <None Include="config\ControllerImages\Lynx.png" />
     <Content Include="config\ControllerImages\N64.png" />
     <None Include="config\ControllerImages\psx_dualshock.png" />
+    <None Include="config\ControllerImages\PSX-Original-Controller.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
     <None Include="images\gba-icon.png" />

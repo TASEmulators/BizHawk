@@ -1032,6 +1032,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PSX_Original_Controller {
+            get {
+                object obj = ResourceManager.GetObject("PSX_Original_Controller", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap QuickNes {
             get {
                 object obj = ResourceManager.GetObject("QuickNes", resourceCulture);
