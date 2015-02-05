@@ -6,8 +6,8 @@
 local pbase = 0xBA8
 local px = 0xBAD
 local py = 0xBB0
-local cx = 0x7E00B4
-local cy = 0x7E00B6
+local cx = 0x00B4
+local cy = 0x00B6
 
 ---------------
 ----TOGGLES----
