@@ -74,13 +74,13 @@ namespace BizHawk.Client.Common
 			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
 
 			// TODO: reflect off the assembly and find an IMovieImporter with the appropriate ImportExtension metadata
-			if (ext == ".FM2")
-			{
-				var result = new Fm2Import().Import(path);
-				errorMsg = result.Errors.First();
-				warningMsg = result.Errors.First();
-				return result.Movie;
-			}
+			//if (ext == ".FM2")
+			//{
+			//	var result = new Fm2Import().Import(path);
+			//	errorMsg = result.Errors.First();
+			//	warningMsg = result.Errors.First();
+			//	return result.Movie;
+			//}
 
 			if (ext == ".PJM")
 			{
