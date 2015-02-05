@@ -1,22 +1,22 @@
 --Author Pasky13
 
 -- Player
-local pbase = 0xFF1CD4
+local pbase = 0x1CD4
 local px = pbase + 0x19
 local py = pbase + 0x1D
 
-local camx = 0xFF1BC5
-local camy = 0xFF1BC9
+local camx = 0x1BC5
+local camy = 0x1BC9
 
 --Player projectiles
 
-local projbase = 0xFF1D34
+local projbase = 0x1D34
 
 --Enemies
-local ebase = 0xFF21B4
+local ebase = 0x21B4
 
 --Bosses
-local bbase = 0xFF35F4
+local bbase = 0x35F4
 
 --Text scaler
 local xs 
