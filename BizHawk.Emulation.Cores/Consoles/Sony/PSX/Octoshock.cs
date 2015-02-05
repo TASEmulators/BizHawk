@@ -64,13 +64,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						"P" + (i + 1) + " R1",
 						"P" + (i + 1) + " L2",
 						"P" + (i + 1) + " R2",
-						"P" + (i + 1) + " L3",
-						"P" + (i + 1) + " R3",
-						
 					});
 
 					if (_SyncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad)
 					{
+						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " L3");
+						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " R3");
 						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " MODE");
 
 						ControllerDefinition.FloatControls.AddRange(new[]
