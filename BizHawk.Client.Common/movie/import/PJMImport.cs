@@ -6,13 +6,12 @@ using System.Text;
 
 namespace BizHawk.Client.Common
 {
-	public static class PJMImport
+	[ImportExtension(".pjm")]
+	public class PJMImport : MovieImporter
 	{
-		public static Bk2Movie Import(string path, out string errorMsg, out string warningMsg)
+		protected override void RunImport()
 		{
-			errorMsg = string.Empty;
-			warningMsg = string.Empty;
-			return new Bk2Movie();
+			// TODO
 		}
 	}
 }
