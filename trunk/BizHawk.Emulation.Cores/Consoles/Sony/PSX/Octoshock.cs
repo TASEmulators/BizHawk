@@ -39,7 +39,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private void SetControllerButtons()
 		{
 			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = "DualShock Controller"; //this is a poopy name.
+			ControllerDefinition.Name = _SyncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad) 
+				? "PSX Gamepad Controller"
+				: "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
 
 			ControllerDefinition.BoolButtons.Clear();
 			ControllerDefinition.FloatControls.Clear();
