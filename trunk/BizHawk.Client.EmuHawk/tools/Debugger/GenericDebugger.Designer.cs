@@ -37,6 +37,8 @@
 			this.StepIntoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StepOverMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StepOutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
 			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
@@ -54,12 +56,13 @@
 			this.SeekToBtn = new System.Windows.Forms.Button();
 			this.SeekToBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.CancelSeekBtn = new System.Windows.Forms.Button();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.RefreshMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DisassemblerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.AddBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
 			this.DisassemblerBox.SuspendLayout();
+			this.DisassemblerContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -129,6 +132,19 @@
 			this.StepOutMenuItem.Size = new System.Drawing.Size(177, 22);
 			this.StepOutMenuItem.Text = "Step Ou&t";
 			this.StepOutMenuItem.Click += new System.EventHandler(this.StepOutMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+			// 
+			// RefreshMenuItem
+			// 
+			this.RefreshMenuItem.Name = "RefreshMenuItem";
+			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.RefreshMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.RefreshMenuItem.Text = "Refresh";
+			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
 			// 
 			// RegistersGroupBox
 			// 
@@ -225,6 +241,7 @@
 			this.DisassemblerView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Address,
             this.Instruction});
+			this.DisassemblerView.ContextMenuStrip = this.DisassemblerContextMenu;
 			this.DisassemblerView.FullRowSelect = true;
 			this.DisassemblerView.GridLines = true;
 			this.DisassemblerView.ItemCount = 0;
@@ -319,18 +336,20 @@
 			this.CancelSeekBtn.UseVisualStyleBackColor = true;
 			this.CancelSeekBtn.Click += new System.EventHandler(this.CancelSeekBtn_Click);
 			// 
-			// toolStripSeparator1
+			// DisassemblerContextMenu
 			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+			this.DisassemblerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddBreakpointContextMenuItem});
+			this.DisassemblerContextMenu.Name = "DisassemblerContextMenu";
+			this.DisassemblerContextMenu.Size = new System.Drawing.Size(157, 26);
+			this.DisassemblerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.DisassemblerContextMenu_Opening);
 			// 
-			// RefreshMenuItem
+			// AddBreakpointContextMenuItem
 			// 
-			this.RefreshMenuItem.Name = "RefreshMenuItem";
-			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.RefreshMenuItem.Size = new System.Drawing.Size(177, 22);
-			this.RefreshMenuItem.Text = "Refresh";
-			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
+			this.AddBreakpointContextMenuItem.Name = "AddBreakpointContextMenuItem";
+			this.AddBreakpointContextMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.AddBreakpointContextMenuItem.Text = "Add Breakpoint";
+			this.AddBreakpointContextMenuItem.Click += new System.EventHandler(this.AddBreakpointContextMenuItem_Click);
 			// 
 			// GenericDebugger
 			// 
@@ -360,6 +379,7 @@
 			this.BreakpointsGroupBox.ResumeLayout(false);
 			this.DisassemblerBox.ResumeLayout(false);
 			this.DisassemblerBox.PerformLayout();
+			this.DisassemblerContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -393,5 +413,7 @@
 		private System.Windows.Forms.Button ToPCBtn;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem RefreshMenuItem;
+		private System.Windows.Forms.ContextMenuStrip DisassemblerContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem AddBreakpointContextMenuItem;
 	}
 }

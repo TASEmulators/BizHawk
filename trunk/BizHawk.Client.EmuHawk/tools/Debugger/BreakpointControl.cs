@@ -142,6 +142,15 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			UpdateStatsLabel();
 		}
 
+		public void AddBreakpoint(uint address, MemoryCallbackType type)
+		{
+			Breakpoints.Add(Core, address, type);
+
+			BreakpointView.ItemCount = Breakpoints.Count;
+			UpdateBreakpointRemoveButton();
+			UpdateStatsLabel();
+		}
+
 		private void AddBreakpointButton_Click(object sender, EventArgs e)
 		{
 			var b = new AddBreakpointDialog

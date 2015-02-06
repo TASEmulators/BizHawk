@@ -194,5 +194,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FullUpdate();
 		}
+
+		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
+		{
+			AddBreakpointContextMenuItem.Enabled = DisassemblerView.SelectedIndices.Count > 0;
+		}
+
+		private void AddBreakpointContextMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = DisassemblerView.SelectedIndices;
+
+			if (indices.Count > 0)
+			{
+				var line = DisassemblyLines[indices[0]];
+				BreakPointControl1.AddBreakpoint(line.Address, Emulation.Common.MemoryCallbackType.Execute);
+			}
+		}
 	}
 }
