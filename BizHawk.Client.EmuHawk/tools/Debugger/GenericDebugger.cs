@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SeekToBox.Enabled = SeekToBtn.Enabled = CanUseMemoryCallbacks && RegisterPanel.CanGetCpuRegisters;
 
-			if (RegisterPanel.CanGetCpuRegisters)
+			if (RegisterPanel.CanGetCpuRegisters && CanDisassemble)
 			{
 				var pc = PCRegister;
 				SeekToBox.Nullable = false;
