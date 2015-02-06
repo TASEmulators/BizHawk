@@ -56,6 +56,9 @@ namespace BizHawk.Emulation.DiscSystem
 			// not fully tested yet
 			if (DetectMegaCD()) return DiscType.MegaCD;
 
+			// not fully tested yet
+			if (DetectPSX()) return DiscType.SonyPSX;
+
 			//we dont know how to detect TurboCD.
 			//an emulator frontend will likely just guess TurboCD if the disc is UnknownFormat
 
@@ -65,8 +68,9 @@ namespace BizHawk.Emulation.DiscSystem
 			if (isIso)
 			{
 				var appId = System.Text.Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
-				if (appId == "PLAYSTATION")
-					return DiscType.SonyPSX;
+				//NOTE: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
+				//if (appId == "PLAYSTATION")
+				//  return DiscType.SonyPSX;
 				if(appId == "PSP GAME")
 					return DiscType.SonyPSP;
 						
@@ -92,10 +96,19 @@ namespace BizHawk.Emulation.DiscSystem
 			return StringAt("SEGADISCSYSTEM", 0) || StringAt("SEGADISCSYSTEM", 16);
 		}
 
-		private bool StringAt(string s, int n)
+		bool DetectPSX()
+		{
+			if (!StringAt("          Licensed  by          ",0, 4)) return false;
+			return (StringAt("Sony Computer Entertainment Euro", 32, 4)
+				|| StringAt("Sony Computer Entertainment Inc.", 32, 4)
+				|| StringAt("Sony Computer Entertainment Amer", 32, 4)
+				);
+		}
+
+		private bool StringAt(string s, int n, int lba = 0)
 		{
 			byte[] data = new byte[2048];
-			ReadLBA_2048(0, data, 0);
+			ReadLBA_2048(lba, data, 0);
 			byte[] cmp = System.Text.Encoding.ASCII.GetBytes(s);
 			byte[] cmp2 = new byte[cmp.Length];
 			Buffer.BlockCopy(data, n, cmp2, 0, cmp.Length);
