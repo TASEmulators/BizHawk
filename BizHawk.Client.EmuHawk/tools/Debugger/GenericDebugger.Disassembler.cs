@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisassemblerView.BlazingFast = true;
 				DisassemblerView.ItemCount = 0;
-				currentDisassemblerAddress = PC;
+				currentDisassemblerAddress = (uint)PCRegister.Value;
 				Disassemble();
 				DisassemblerView.Refresh();
 				DisassemblerView.BlazingFast = false;
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (DisassemblyLines.Any() && index < DisassemblyLines.Count)
 			{
-				if (DisassemblyLines[index].Address == PC)
+				if (DisassemblyLines[index].Address == (uint)PCRegister.Value)
 				{
 					color = Color.LightCyan;
 				}
