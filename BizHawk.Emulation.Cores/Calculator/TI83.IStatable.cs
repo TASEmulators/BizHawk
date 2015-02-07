@@ -58,21 +58,21 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("TI83");
-			cpu.SyncState(ser);
-			ser.Sync("RAM", ref ram, false);
-			ser.Sync("romPageLow3Bits", ref romPageLow3Bits);
-			ser.Sync("romPageHighBit", ref romPageHighBit);
-			ser.Sync("disp_mode", ref disp_mode);
-			ser.Sync("disp_move", ref disp_move);
-			ser.Sync("disp_x", ref disp_x);
-			ser.Sync("disp_y", ref disp_y);
-			ser.Sync("m_CursorMoved", ref m_CursorMoved);
-			ser.Sync("maskOn", ref maskOn);
-			ser.Sync("onPressed", ref onPressed);
-			ser.Sync("keyboardMask", ref keyboardMask);
-			ser.Sync("m_LinkOutput", ref m_LinkOutput);
-			ser.Sync("VRAM", ref vram, false);
-			ser.Sync("Frame", ref frame);
+			Cpu.SyncState(ser);
+			ser.Sync("RAM", ref _ram, false);
+			ser.Sync("romPageLow3Bits", ref _romPageLow3Bits);
+			ser.Sync("romPageHighBit", ref _romPageHighBit);
+			ser.Sync("disp_mode", ref _displayMode);
+			ser.Sync("disp_move", ref _displayMove);
+			ser.Sync("disp_x", ref _displayX);
+			ser.Sync("disp_y", ref _displayY);
+			ser.Sync("m_CursorMoved", ref _cursorMoved);
+			ser.Sync("maskOn", ref _maskOn);
+			ser.Sync("onPressed", ref _onPressed);
+			ser.Sync("keyboardMask", ref _keyboardMask);
+			ser.Sync("m_LinkOutput", ref LinkOutput);
+			ser.Sync("VRAM", ref _vram, false);
+			ser.Sync("Frame", ref _frame);
 			ser.Sync("LagCount", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
 			ser.EndSection();
