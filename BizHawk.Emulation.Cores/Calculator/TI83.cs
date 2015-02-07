@@ -78,7 +78,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			HardReset();
 			SetupMemoryDomains();
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(new MyVideoProvider(this));
 			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
@@ -394,46 +393,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		public CoreComm CoreComm { get; private set; }
 
-		protected byte[] vram = new byte[0x300];
-		private class MyVideoProvider : IVideoProvider
-		{
-			private readonly TI83 emu;
-			public MyVideoProvider(TI83 emu)
-			{
-				this.emu = emu;
-			}
-
-			public int[] GetVideoBuffer()
-			{
-				//unflatten bit buffer
-				int[] pixels = new int[96 * 64];
-				int i = 0;
-				for (int y = 0; y < 64; y++)
-					for (int x = 0; x < 96; x++)
-					{
-						int offset = y * 96 + x;
-						int bufbyte = offset >> 3;
-						int bufbit = offset & 7;
-						int bit = ((emu.vram[bufbyte] >> (7 - bufbit)) & 1);
-						if (bit == 0)
-						{
-							unchecked { pixels[i++] = (int)emu.Settings.BGColor; }
-						}
-						else
-						{
-							pixels[i++] = (int)emu.Settings.ForeColor;
-						}
-
-					}
-				return pixels;
-			}
-
-			public int VirtualWidth { get { return 96; } }
-			public int VirtualHeight { get { return 64; } }
-			public int BufferWidth { get { return 96; } }
-			public int BufferHeight { get { return 64; } }
-			public int BackgroundColor { get { return 0; } }
-		}
+		private byte[] vram = new byte[0x300];
 
 		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
