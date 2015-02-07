@@ -1552,6 +1552,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
     <None Include="images\Square.png" />
@@ -1855,6 +1856,7 @@
     <None Include="images\alt_about_image.png" />
     <None Include="images\connect_16x16.png" />
     <None Include="images\add.png" />
+    <None Include="images\HawkInLove.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
