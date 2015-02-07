@@ -168,10 +168,10 @@ DD5D64DD140CB7AA28404FA35ABDCABA33C29260	G	Diddy Kong Racing (Europe) (En,Fr,De)
 0CB115D8716DBBC2922FDA38E533B9FE63BB9670	G	Diddy Kong Racing (USA) (En,Fr)	N64		Glide_enable_hacks_for_game=3;Glide64mk2_enable_hacks_for_game=5
 E31A7567D408C890065029BA537F830765B17D94	G	Donald Duck - Goin' Quackers (USA) (En,Fr,De,Es,It)	N64		Glide_detect_cpu_write=true;Glide_filtering=0;Glide64mk2_detect_cpu_write=true
 C42FAFB06BE6EB7DE08370D07F19571B7661074B	G	Donald Duck - Quack Attack (Europe) (En,Fr,De,Es,It)	N64		RiceFastTextureCRC=1;Glide_detect_cpu_write=true;Glide_filtering=0;Glide64mk2_detect_cpu_write=true
-F96AF883845308106600D84E0618C1A066DC6676	G	Donkey Kong 64 (Europe) (En,Fr,De,Es)	N64		Glide_lodmode=1;Glide_depth_bias=64;Glide_filtering=0;Glide_fb_clear=true;Glide64mk2_lodmode=1;expansionpak=1
-F0AD2B2BBF04D574ED7AFBB1BB6A4F0511DCD87D	G	Donkey Kong 64 (Japan)	N64		Glide_lodmode=1;Glide_depth_bias=64;Glide_filtering=0;Glide_fb_clear=true;Glide64mk2_lodmode=1;expansionpak=1
-B4717E602F07CA9BE0D4822813C658CD8B99F993	G	Donkey Kong 64 (USA) (Demo) (Kiosk)	N64		Glide_filtering=0;Glide_fb_clear=true;expansionpak=1
-CF806FF2603640A748FCA5026DED28802F1F4A50	G	Donkey Kong 64 (USA)	N64		RiceEmulateClear=true;Glide_lodmode=1;Glide_depth_bias=64;Glide_filtering=0;Glide_fb_clear=true;Glide64mk2_lodmode=1;expansionpak=1
+F96AF883845308106600D84E0618C1A066DC6676	G	Donkey Kong 64 (Europe) (En,Fr,De,Es)	N64		Glide_lodmode=1;Glide_depth_bias=64;Glide_filtering=0;Glide_fb_clear=true;Glide64mk2_lodmode=1;expansionpak=1;SaveType=EEPROM_16K
+F0AD2B2BBF04D574ED7AFBB1BB6A4F0511DCD87D	G	Donkey Kong 64 (Japan)	N64		Glide_lodmode=1;Glide_depth_bias=64;Glide_filtering=0;Glide_fb_clear=true;Glide64mk2_lodmode=1;expansionpak=1;SaveType=EEPROM_16K
+B4717E602F07CA9BE0D4822813C658CD8B99F993	G	Donkey Kong 64 (USA) (Demo) (Kiosk)	N64		Glide_filtering=0;Glide_fb_clear=true;expansionpak=1;SaveType=EEPROM_16K
+CF806FF2603640A748FCA5026DED28802F1F4A50	G	Donkey Kong 64 (USA)	N64		RiceEmulateClear=true;Glide_lodmode=1;Glide_depth_bias=64;Glide_filtering=0;Glide_fb_clear=true;Glide64mk2_lodmode=1;expansionpak=1;SaveType=EEPROM_16K
 B63060F69BB4E1547DA1D762E740D19393977055	G	Doom 64 (Europe)	N64		Glide_fillcolor_fix=true;Glide_filtering=0
 6B0D65E62626A92AA59EE4BFF3F02715F6247692	G	Doom 64 (Japan)	N64		Glide_fillcolor_fix=true;Glide_filtering=0
 6FB0CE9C75BBE54B6E1EDE337652B0221E5F2AAD	G	Doom 64 (USA) (Rev A)	N64		Glide_fillcolor_fix=true;Glide_filtering=0
