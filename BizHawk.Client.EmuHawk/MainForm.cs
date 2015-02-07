@@ -3326,16 +3326,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 			{
-				if (loader.LoadedEmulator is TI83 && Global.Config.TI83autoloadKeyPad)
-				{
-					GlobalWin.Tools.Load<TI83KeyPad>();
-				}
-
 				Global.Emulator = loader.LoadedEmulator;
 				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
 				CoreFileProvider.SyncCoreCommInputSignals();
 				InputManager.SyncControls();
+
+				if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+				{
+					GlobalWin.Tools.Load<TI83KeyPad>();
+				}
 
 				if (loader.LoadedEmulator is NES)
 				{
