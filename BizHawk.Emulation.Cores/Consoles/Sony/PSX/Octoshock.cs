@@ -360,12 +360,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (_SyncSettings.Controllers[0].IsConnected)
 			{
 				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[0].Type]);
-				
 			}
 
 			if (_SyncSettings.Controllers[1].IsConnected)
 			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[1].Type]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, lookup[_SyncSettings.Controllers[1].Type]);
 			}
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
