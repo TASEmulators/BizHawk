@@ -2270,7 +2270,7 @@
 			// 
 			this.LoadTIFileMenuItem.Name = "LoadTIFileMenuItem";
 			this.LoadTIFileMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.LoadTIFileMenuItem.Text = "Load TI File...";
+			this.LoadTIFileMenuItem.Text = "Load TI-83 File...";
 			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.LoadTIFileMenuItem_Click);
 			// 
 			// toolStripSeparator13
