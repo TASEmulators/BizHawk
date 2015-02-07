@@ -92,6 +92,9 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Calculator\TI83.IEmulator.cs">
+        <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83.IInputPollable.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
@@ -108,7 +111,9 @@
     <Compile Include="Calculator\TI83.IStatable.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
-    <Compile Include="Calculator\TI83.IVideoProvider.cs" />
+    <Compile Include="Calculator\TI83.IVideoProvider.cs">
+        <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">

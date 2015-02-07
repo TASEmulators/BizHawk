@@ -2292,7 +2292,7 @@
 			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
 			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.paletteToolStripMenuItem.Text = "Palette...";
-			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
+			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.TI83PaletteMenuItem_Click);
 			// 
 			// AtariSubMenu
 			// 
