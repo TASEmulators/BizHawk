@@ -102,6 +102,7 @@ namespace BizHawk.Emulation.DiscSystem
 			return (StringAt("Sony Computer Entertainment Euro", 32, 4)
 				|| StringAt("Sony Computer Entertainment Inc.", 32, 4)
 				|| StringAt("Sony Computer Entertainment Amer", 32, 4)
+				|| StringAt("Sony Computer Entertainment of A", 32, 4)
 				);
 		}
 
