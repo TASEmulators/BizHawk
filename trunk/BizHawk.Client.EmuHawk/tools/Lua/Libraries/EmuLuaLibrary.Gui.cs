@@ -288,6 +288,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
+
 		[LuaMethodAttributes(
 			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
@@ -297,7 +299,17 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				var img = Image.FromFile(path);
+				Image img;
+				if (ImageCache.ContainsKey(path))
+				{
+					img = ImageCache[path];
+				}
+				else
+				{
+					img = Image.FromFile(path);
+					ImageCache.Add(path, img);
+				}
+
 				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
 			}
 		}
