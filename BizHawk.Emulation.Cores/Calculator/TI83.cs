@@ -39,15 +39,17 @@ namespace BizHawk.Emulation.Cores.Calculators
 			Cpu.NMICallback = NMICallback;
 			Cpu.MemoryCallbacks = MemoryCallbacks;
 
-			this.Rom = rom;
+			Rom = rom;
 			LinkPort = new TI83LinkPort(this);
 
-			//different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
-			//if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
-			//else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
+			// different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
+			// if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
+			// else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
 
 			if (game["initPC"])
+			{
 				startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);
+			}
 
 			HardReset();
 			SetupMemoryDomains();
@@ -55,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 		}
 
 		// hardware
+		private const ushort RamSizeMask = 0x7FFF;
+
 		private readonly Z80A Cpu = new Z80A();
 		private readonly byte[] Rom;
 
@@ -72,6 +76,12 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private bool _cursorMoved;
 		private int _frame;
 
+		// configuration
+		private ushort startPC;
+
+		// Link Cable
+		public TI83LinkPort LinkPort { get; set; }
+
 		internal bool LinkActive;
 		internal int LinkOutput, LinkInput;
 
@@ -80,34 +90,59 @@ namespace BizHawk.Emulation.Cores.Calculators
 			get { return (LinkOutput | LinkInput) ^ 3; }
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		private static readonly ControllerDefinition TI83Controller =
+			new ControllerDefinition
+			{
+				Name = "TI83 Controller",
+				BoolButtons = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","DOT",
+					"ON","ENTER",
+					"DOWN","LEFT","UP","RIGHT",
+					"PLUS","MINUS","MULTIPLY","DIVIDE",
+					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
+					"COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
+					"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
+					"GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
+				}
+			};
 
-		//-------
-
-		public byte ReadMemory(ushort addr)
+		private byte ReadMemory(ushort addr)
 		{
 			byte ret;
 			int romPage = _romPageLow3Bits | (_romPageHighBit << 3);
 			//Console.WriteLine("read memory: {0:X4}", addr);
 			if (addr < 0x4000)
+			{
 				ret = Rom[addr]; //ROM zero-page
+			}
 			else if (addr < 0x8000)
+			{
 				ret = Rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
-			else ret = _ram[addr - 0x8000];
+			}
+			else
+			{
+				ret = _ram[addr - 0x8000];
+			}
 
 			return ret;
 		}
 
-		public void WriteMemory(ushort addr, byte value)
+		private void WriteMemory(ushort addr, byte value)
 		{
 			if (addr < 0x4000)
+			{
 				return; //ROM zero-page
+			}
 			else if (addr < 0x8000)
+			{
 				return; //other rom page
-			else _ram[addr - 0x8000] = value;
+			}
+			else
+			{
+				_ram[addr - 0x8000] = value;
+			}
 		}
 
-		public void WriteHardware(ushort addr, byte value)
+		private void WriteHardware(ushort addr, byte value)
 		{
 			switch (addr)
 			{
@@ -146,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public byte ReadHardware(ushort addr)
+		private byte ReadHardware(ushort addr)
 		{
 			switch (addr)
 			{
@@ -292,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				ret = (byte)(((_vram[offset] << 8) | _vram[offset + 1]) >> shift);
 			}
 
-			doDispMove();
+			DoDispMove();
 			return ret;
 		}
 
@@ -326,10 +361,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 				}
 			}
 
-			doDispMove();
+			DoDispMove();
 		}
 
-		private void doDispMove()
+		private void DoDispMove()
 		{
 			switch (_displayMove)
 			{
@@ -390,60 +425,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			Cpu.NonMaskableInterrupt = false;
 		}
 
-		public CoreComm CoreComm { get; private set; }
-
-		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
-
-		public static readonly ControllerDefinition TI83Controller =
-			new ControllerDefinition
-			{
-				Name = "TI83 Controller",
-				BoolButtons = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","DOT",
-					"ON","ENTER",
-					"DOWN","LEFT","UP","RIGHT",
-					"PLUS","MINUS","MULTIPLY","DIVIDE",
-					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
-					"COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
-					"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
-					"GRAPH", "TRACE", "ZOOM", "WINDOW", "Y", "2ND", "MODE", "DEL"
-				}
-			};
-
-		public ControllerDefinition ControllerDefinition { get { return TI83Controller; } }
-
-		public IController Controller { get; set; }
-
-		// configuration
-		private ushort startPC;
-
-		public void FrameAdvance(bool render, bool rendersound)
-		{
-			_lagged = true;
-			//I eyeballed this speed
-			for (int i = 0; i < 5; i++)
-			{
-				_onPressed = Controller.IsPressed("ON");
-				//and this was derived from other emus
-				Cpu.ExecuteCycles(10000);
-				Cpu.Interrupt = true;
-			}
-
-			Frame++;
-			if (_lagged)
-			{
-				_lagCount++;
-				_isLag = true;
-			}
-			else
-			{
-				_isLag = false;
-			}
-		}
-
-		public void HardReset()
+		private void HardReset()
 		{
 			Cpu.Reset();
 			_ram = new byte[0x8000];
@@ -464,25 +446,5 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_displayMove = 0;
 			_displayX = _displayY = 0;
 		}
-
-		public int Frame { get { return _frame; } set { _frame = value; } }
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-			_lagCount = 0;
-			_isLag = false;
-		}
-
-		public bool DeterministicEmulation { get { return true; } }
-
-		public string SystemId { get { return "TI83"; } }
-		public string BoardName { get { return null; } }
-
-		private const ushort RamSizeMask = 0x7FFF;
-
-		public void Dispose() { }
-
-		public TI83LinkPort LinkPort { get; set; }
 	}
 }

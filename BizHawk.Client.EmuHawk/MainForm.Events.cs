@@ -1528,13 +1528,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var OFD = new OpenFileDialog();
+			var ofd = new OpenFileDialog();
 
-			if (OFD.ShowDialog() == DialogResult.OK)
+			if (ofd.ShowDialog() == DialogResult.OK)
 			{
 				try
 				{
-					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
 				}
 				catch (IOException ex)
 				{
@@ -1542,13 +1542,13 @@ namespace BizHawk.Client.EmuHawk
 
 					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
-						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 					}
 				}
 			}
 		}
 
-		private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
 			if (new TI83PaletteConfig().ShowDialog() == DialogResult.OK)
 			{
