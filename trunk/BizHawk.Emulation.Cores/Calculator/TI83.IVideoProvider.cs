@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 					int offset = y * 96 + x;
 					int bufbyte = offset >> 3;
 					int bufbit = offset & 7;
-					int bit = ((vram[bufbyte] >> (7 - bufbit)) & 1);
+					int bit = ((_vram[bufbyte] >> (7 - bufbit)) & 1);
 					if (bit == 0)
 					{
 						unchecked { pixels[i++] = (int)Settings.BGColor; }

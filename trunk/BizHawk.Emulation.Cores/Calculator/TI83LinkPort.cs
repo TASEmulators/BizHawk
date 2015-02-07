@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				StepsLeft = 5;
 			}
 
-			if (CurrentStatus == Status.PrepareSend && Parent.m_LinkState != 3)
+			if (CurrentStatus == Status.PrepareSend && Parent.LinkState != 3)
 			{
 				CurrentStatus = Status.Send;
 				BitsLeft = 8;
@@ -64,26 +64,26 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{
 					case 5:
 						//Receive step 1: Lower the other device's line.
-						Parent.m_LinkInput = ((CurrentByte & 1) == 1) ? 2 : 1;
+						Parent.LinkInput = ((CurrentByte & 1) == 1) ? 2 : 1;
 						CurrentByte >>= 1;
 						StepsLeft--;
 						break;
 
 					case 4:
 						//Receive step 2: Wait for the calc to lower the other line.
-						if ((Parent.m_LinkState & 3) == 0)
+						if ((Parent.LinkState & 3) == 0)
 							StepsLeft--;
 						break;
 
 					case 3:
 						//Receive step 3: Raise the other device's line back up.
-						Parent.m_LinkInput = 0;
+						Parent.LinkInput = 0;
 						StepsLeft--;
 						break;
 
 					case 2:
 						//Receive step 4: Wait for the calc to raise its line back up.
-						if ((Parent.m_LinkState & 3) == 3)
+						if ((Parent.LinkState & 3) == 3)
 							StepsLeft--;
 						break;
 
@@ -114,9 +114,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{
 					case 5:
 						//Send step 1: Calc lowers a line.
-						if (Parent.m_LinkState != 3)
+						if (Parent.LinkState != 3)
 						{
-							int Bit = Parent.m_LinkState & 1;
+							int Bit = Parent.LinkState & 1;
 							int Shift = 8 - BitsLeft;
 							CurrentByte |= (byte)(Bit << Shift);
 							StepsLeft--;
@@ -125,19 +125,19 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 					case 4:
 						//send step 2: Lower our line.
-						Parent.m_LinkInput = Parent.m_LinkOutput ^ 3;
+						Parent.LinkInput = Parent.LinkOutput ^ 3;
 						StepsLeft--;
 						break;
 
 					case 3:
 						//Send step 3: wait for the calc to raise its line.
-						if ((Parent.m_LinkOutput & 3) == 0)
+						if ((Parent.LinkOutput & 3) == 0)
 							StepsLeft--;
 						break;
 
 					case 2:
 						//Send step 4: raise the other devices lines.
-						Parent.m_LinkInput = 0;
+						Parent.LinkInput = 0;
 						StepsLeft--;
 						break;
 
