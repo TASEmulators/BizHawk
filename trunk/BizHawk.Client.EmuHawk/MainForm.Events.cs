@@ -1528,7 +1528,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*",
+				RestoreDirectory = true
+			};
 
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
