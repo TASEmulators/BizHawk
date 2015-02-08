@@ -45,8 +45,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SetWindowText();
 
-			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
-
 			// Hide Status bar icons and general statusbar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
 			PlayRecordStatusButton.Visible = false;
