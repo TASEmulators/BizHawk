@@ -924,8 +924,16 @@ namespace BizHawk.Client.EmuHawk
 				if (prompt.PromptText.IsHex())
 				{
 					var addr = int.Parse(prompt.PromptText, NumberStyles.HexNumber);
-					WatchListView.SelectItem(addr, true);
-					WatchListView.ensureVisible();
+
+					for (int index = 0; index < _searches.Count; index++)
+					{
+						if (addr == _searches[index].Address)
+						{
+							WatchListView.SelectItem(index, true);
+							WatchListView.ensureVisible();
+							break;
+						}
+					}
 				}
 			}
 		}
