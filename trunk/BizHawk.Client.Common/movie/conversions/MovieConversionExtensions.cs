@@ -226,7 +226,12 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			{
 				foreach (var firmware in Global.FirmwareManager.RecentlyServed)
 				{
-					movie.HeaderEntries.Add(firmware.SystemId + " Firmware " + firmware.FirmwareId, firmware.Hash);
+					var key = firmware.SystemId + " Firmware " + firmware.FirmwareId;
+
+					if (!movie.HeaderEntries.ContainsKey(key))
+					{
+						movie.HeaderEntries.Add(key, firmware.Hash);
+					}
 				}
 				
 			}
