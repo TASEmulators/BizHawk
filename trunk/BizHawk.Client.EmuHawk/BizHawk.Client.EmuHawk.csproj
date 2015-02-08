@@ -1525,6 +1525,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="images\FindHS.png" />
   </ItemGroup>
   <ItemGroup>
