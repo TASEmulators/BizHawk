@@ -296,5 +296,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FullUpdate();
 		}
+
+		public void AddBreakpoint(uint address, MemoryCallbackType type)
+		{
+			this.BreakPointControl1.AddBreakpoint(address, type);
+		}
 	}
 }

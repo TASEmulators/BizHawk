@@ -33,6 +33,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator _emu { get; set; }
 
+		[OptionalService]
+		private IDebuggable _debuggable { get; set; }
+
 		[ConfigPersist]
 		public RamWatchSettings Settings { get; set; }
 
@@ -1041,12 +1044,20 @@ namespace BizHawk.Client.EmuHawk
 				DuplicateContextMenuItem.Visible =
 				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
-				Separator6.Visible =
+				Separator4.Visible =
+				ReadBreakpointContextMenuItem.Visible = 
+				WriteBreakpointContextMenuItem.Visible =
+				Separator6.Visible = 
 				InsertSeperatorContextMenuItem.Visible =
 				MoveUpContextMenuItem.Visible =
 				MoveDownContextMenuItem.Visible =
-				Separator6.Visible = 
 				indexes.Count > 0;
+
+			ReadBreakpointContextMenuItem.Enabled =
+				WriteBreakpointContextMenuItem.Enabled =
+					SelectedWatches.Any() &&
+					_debuggable != null &&
+					_debuggable.MemoryCallbacksAvailable();
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
@@ -1090,6 +1101,36 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
+				}
+			}
+		}
+
+		private void ReadBreakpointContextMenuItem_Click(object sender, EventArgs e)
+		{
+			var selected = SelectedWatches.ToList();
+
+			if (selected.Any())
+			{
+				var debugger = GlobalWin.Tools.Load<GenericDebugger>();
+
+				foreach (var watch in selected)
+				{
+					debugger.AddBreakpoint((uint)watch.Address.Value, MemoryCallbackType.Read);
+				}
+			}
+		}
+		
+		private void WriteBreakpointContextMenuItem_Click(object sender, EventArgs e)
+		{
+			var selected = SelectedWatches.ToList();
+
+			if (selected.Any())
+			{
+				var debugger = GlobalWin.Tools.Load<GenericDebugger>();
+
+				foreach (var watch in selected)
+				{
+					debugger.AddBreakpoint((uint)watch.Address.Value, MemoryCallbackType.Write);
 				}
 			}
 		}
