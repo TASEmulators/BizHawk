@@ -274,6 +274,7 @@ namespace BizHawk.Client.Common
 								case DiscType.SonyPSP:
 									game.System = "PSP";
 									break;
+								default: 
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
@@ -283,9 +284,6 @@ namespace BizHawk.Client.Common
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-								default: // PCECD was bizhawk's first CD core,
-									// and during that time, all CDs were blindly sent to it
-									// so this prevents regressions
 									game.System = "PCECD";
 									break;
 							}
