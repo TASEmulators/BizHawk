@@ -1133,28 +1133,29 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.Enter)
 			{
 				string consoleBeforeCall = OutputBox.Text;
+
 				// TODO: Maybe make these try-catches more general
 				if (InputBox.Text != "")
 				{
 					try
 					{
-						LuaImp.ExecuteString(InputBox.Text);
-
-						// TODO: This isn't exactly optimal
-						if (OutputBox.Text == consoleBeforeCall)
-							ConsoleLog("Command successfully executed");
+						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
 					}
-					catch (LuaScriptException ex)
+					catch
 					{
 						try
 						{
-							LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
+							LuaImp.ExecuteString(InputBox.Text);
+
+							if (OutputBox.Text == consoleBeforeCall)
+								ConsoleLog("Command successfully executed");
 						}
-						catch
+						catch (LuaScriptException ex)
 						{
 							ConsoleLog(ex.ToString());
 						}
 					}
+
 					_consoleCommandHistory.Insert(0, InputBox.Text);
 					_consoleCommandHistoryIndex = -1;
 					InputBox.Clear();
