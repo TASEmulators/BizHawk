@@ -231,12 +231,11 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
-					blob.AppendLine(_instructions[index]
+					if (blob.Length != 0) blob.AppendLine();
+					blob.Append(_instructions[index]
 						.Replace("\r", string.Empty)
 						.Replace("\n", string.Empty) );
 				}
-
-				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
 				Clipboard.SetDataObject(blob.ToString());
 			}
 		}

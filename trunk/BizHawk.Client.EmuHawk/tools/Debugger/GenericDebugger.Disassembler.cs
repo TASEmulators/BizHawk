@@ -182,13 +182,11 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
+					if (blob.Length != 0) blob.AppendLine();
 					blob.Append(DisassemblyLines[index].Address)
 						.Append(" ")
-						.Append(DisassemblyLines[index].Mnemonic)
-						.AppendLine();
+						.Append(DisassemblyLines[index].Mnemonic);
 				}
-
-				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
 				Clipboard.SetDataObject(blob.ToString());
 			}
 		}
