@@ -159,7 +159,10 @@ namespace BizHawk.Client.EmuHawk
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
 		{
 			SetDisassemblerItemCount();
-			Disassemble();
+			if (CanDisassemble)
+			{
+				Disassemble();
+			}
 		}
 
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
