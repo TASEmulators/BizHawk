@@ -400,6 +400,18 @@ namespace BizHawk.Client.Common
 							case null:
 								// The user picked nothing in the Core picker
 								break;
+							case "83P":
+								var ti83Bios = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmware("TI83", "Rom", true);
+								var ti83BiosPath = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmwarePath("TI83", "Rom", true);
+								using (var ti83AsHawkFile = new HawkFile())
+								{
+									ti83AsHawkFile.Open(ti83BiosPath);
+									var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
+									var ti83 = new TI83(nextComm, ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
+									ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
+									nextEmulator = ti83;
+								}
+								break;
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
