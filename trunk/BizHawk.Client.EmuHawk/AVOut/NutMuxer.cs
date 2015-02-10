@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		static void WriteVarU(int v, Stream stream)
 		{
 			if (v < 0)
-				throw new ArgumentOutOfRangeException("unsigned must be non-negative");
+				throw new ArgumentOutOfRangeException("v", "unsigned must be non-negative");
 			WriteVarU((ulong)v, stream);
 		}
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		static void WriteVarU(long v, Stream stream)
 		{
 			if (v < 0)
-				throw new ArgumentOutOfRangeException("unsigned must be non-negative");
+				throw new ArgumentOutOfRangeException("v", "unsigned must be non-negative");
 			WriteVarU((ulong)v, stream);
 		}
 
