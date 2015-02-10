@@ -520,7 +520,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_setscanlinecallback(GambatteState, scanlinecb, line);
 			}
 			else
-				throw new ArgumentOutOfRangeException("line must be in [0, 153]");
+			{
+				throw new ArgumentOutOfRangeException("line", "line must be in [0, 153]");
+			}
 		}
 
 		LibGambatte.ScanlineCallback scanlinecb;

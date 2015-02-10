@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (scanline < 0 || scanline > 227)
 			{
-				throw new ArgumentOutOfRangeException("Scanline must be in [0, 227]!");
+				throw new ArgumentOutOfRangeException("scanline", "Scanline must be in [0, 227]!");
 			}
 
 			if (callback == null)
