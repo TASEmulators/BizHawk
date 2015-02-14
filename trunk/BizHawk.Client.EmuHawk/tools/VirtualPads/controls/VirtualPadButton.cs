@@ -184,5 +184,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 			GlobalWin.MainForm.Activate();
 		}
+
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			if (keyData == Keys.Tab ||
+				keyData == (Keys.Shift | Keys.Tab) ||
+				keyData == Keys.Space)
+			{
+				return true;
+			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
 	}
 }
