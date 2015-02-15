@@ -93,11 +93,7 @@
   <ItemGroup>
     <None Include="..\psx\cpu_bigswitch.inc" />
     <None Include="..\psx\cpu_computedgoto.inc" />
-    <None Include="..\psx\gpu_command_table.inc" />
     <None Include="..\psx\gpu_common.inc" />
-    <None Include="..\psx\gpu_line.inc" />
-    <None Include="..\psx\gpu_polygon.inc" />
-    <None Include="..\psx\gpu_sprite.inc" />
     <None Include="..\psx\spu_fir_table.inc" />
     <None Include="..\psx\spu_reverb.inc" />
   </ItemGroup>

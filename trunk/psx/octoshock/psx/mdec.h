@@ -6,7 +6,7 @@ namespace MDFN_IEN_PSX
 
 void MDEC_DMAWrite(uint32 V);
 
-uint32 MDEC_DMARead(int32* offs);
+uint32 MDEC_DMARead(uint32* offs);
 
 void MDEC_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V);
 uint32 MDEC_Read(const pscpu_timestamp_t timestamp, uint32 A);

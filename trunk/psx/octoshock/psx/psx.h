@@ -89,6 +89,8 @@ namespace MDFN_IEN_PSX
  #define PSX_EVENT_MAXTS       		0x20000000
  void PSX_SetEventNT(const int type, const pscpu_timestamp_t next_timestamp);
 
+ void PSX_SetDMACycleSteal(unsigned stealage);
+
  void PSX_GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider);
 
  uint32 PSX_GetRandU32(uint32 mina, uint32 maxa);
@@ -237,8 +239,18 @@ public:
 		return mcbReadTOC(mOpaque, read_target, tracks);
 	}
 
+	//formerly ReadRawSector
+	//Reads 2352 + 96
 	s32 ReadLBA2448(s32 lba, void* dst2448);
-	s32 ReadLBA2048(s32 lba, void* dst2048);
+
+	//formerly ReadRawSectorPWOnly
+	//Reads 96 bytes (of raw subchannel PW data) into pwbuf.
+	//Probably the same format as what's at the end of ReadLBA2448
+	//TODO - reorder args
+	bool ReadLBA_PW(uint8* pwbuf96, int32 lba, bool hint_fullread);
+
+	//only used by disc analysis stuff which should be refactored anyway. should eventually be removed
+	s32 ReadLBA2048(s32 lba, void* dst2048); 
 
 private:
 	s32 InternalReadLBA2448(s32 lba, void* dst2448, bool needSubcode);

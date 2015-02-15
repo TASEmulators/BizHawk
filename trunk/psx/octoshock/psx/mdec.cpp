@@ -26,7 +26,7 @@
 
   if(InFIFO.CanWrite())
   {
-   InFIFO.WriteUnit(V);
+   InFIFO.Write(V);
 
    if(InCommand)
    {
@@ -57,9 +57,10 @@
 
 #include "psx.h"
 #include "mdec.h"
+#include "FastFIFO.h"
+#include "math_ops.h"
 
 #include "masmem.h"
-#include "cdrom/SimpleFIFO.h"
 
 #if defined(__SSE2__)
 #include <xmmintrin.h>
@@ -79,8 +80,8 @@ namespace MDFN_IEN_PSX
 
 static int32 ClockCounter;
 static unsigned MDRPhase;
-static SimpleFIFO<uint32> InFIFO(0x20);
-static SimpleFIFO<uint32> OutFIFO(0x20);
+static FastFIFO<uint32, 0x20> InFIFO;
+static FastFIFO<uint32, 0x20> OutFIFO;
 
 static int8 block_y[8][8];
 static int8 block_cb[8][8];	// [y >> 1][x >> 1]
@@ -444,9 +445,9 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
     int tmp;
 
     if(q != 0)
-     tmp = ((ci * q) << 4) + (ci ? ((ci < 0) ? 8 : -8) : 0);
+     tmp = (int32)((uint32)(ci * q) << 4) + (ci ? ((ci < 0) ? 8 : -8) : 0);
     else
-     tmp = (ci * 2) << 4;
+     tmp = (uint32)(ci * 2) << 4;
 
     // Not sure if it should be 0x3FFF or 0x3FF0 or maybe 0x3FF8?
     Coeff[ZigZag[0]] = std::min<int>(0x3FFF, std::max<int>(-0x4000, tmp));
@@ -477,9 +478,9 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
      int tmp;
 
      if(q != 0)
-      tmp = (((ci * q) >> 3) << 4) + (ci ? ((ci < 0) ? 8 : -8) : 0);
+      tmp = (int32)((uint32)((ci * q) >> 3) << 4) + (ci ? ((ci < 0) ? 8 : -8) : 0);
      else
-      tmp = (ci * 2) << 4;
+      tmp = (uint32)(ci * 2) << 4;
 
      // Not sure if it should be 0x3FFF or 0x3FF0 or maybe 0x3FF8?
      Coeff[ZigZag[CoeffIndex]] = std::min<int>(0x3FFF, std::max<int>(-0x4000, tmp));
@@ -505,9 +506,11 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
    }   
 
    //
-   // Approximate, actual timing seems to be a bit complex.
+   // Timing in the actual PS1 MDEC is complex due to (apparent) pipelining, but the average when decoding a large number of blocks is
+   // about 512.  We'll go with a lower value here to be conservative due to timing granularity and other timing deficiencies in Mednafen.  BUT, don't
+   // go lower than 460, or Parasite Eve 2's 3D models will stutter like crazy during FMV-background sequences.
    //
-   *eat_cycles += 341;
+   *eat_cycles += 474;
 
    if(DecodeWB >= 2)
    {
@@ -529,8 +532,8 @@ static INLINE void WriteImageData(uint16 V, int32* eat_cycles)
 //
 #define MDEC_WAIT_COND(n)  { case __COUNTER__: if(!(n)) { MDRPhase = __COUNTER__ - MDRPhaseBias - 1; return; } }
 
-#define MDEC_WRITE_FIFO(n) { MDEC_WAIT_COND(OutFIFO.CanWrite()); OutFIFO.WriteUnit(n);  }
-#define MDEC_READ_FIFO(n)  { MDEC_WAIT_COND(InFIFO.CanRead()); n = InFIFO.ReadUnit(); }
+#define MDEC_WRITE_FIFO(n) { MDEC_WAIT_COND(OutFIFO.CanWrite()); OutFIFO.Write(n);  }
+#define MDEC_READ_FIFO(n)  { MDEC_WAIT_COND(InFIFO.CanRead()); n = InFIFO.Read(); }
 #define MDEC_EAT_CLOCKS(n) { ClockCounter -= (n); MDEC_WAIT_COND(ClockCounter > 0); }
 
 void MDEC_Run(int32 clocks)
@@ -671,20 +674,21 @@ void MDEC_Run(int32 clocks)
 }
 #endif
 
+
 void MDEC_DMAWrite(uint32 V)
 {
  if(InFIFO.CanWrite())
  {
-  InFIFO.WriteUnit(V);
+  InFIFO.Write(V);
   MDEC_Run(0);
  }
  else
  {
-  PSX_DBG(PSX_DBG_WARNING, "Input FIFO DMA write overflow?!\n");
+  PSX_DBG(PSX_DBG_WARNING, "[MDEC] DMA write when input FIFO is full!!\n");
  }
 }
 
-uint32 MDEC_DMARead(int32* offs)
+uint32 MDEC_DMARead(uint32* offs)
 {
  uint32 V = 0;
 
@@ -692,7 +696,7 @@ uint32 MDEC_DMARead(int32* offs)
 
  if(MDFN_LIKELY(OutFIFO.CanRead()))
  {
-  V = OutFIFO.ReadUnit();
+  V = OutFIFO.Read();
 
   *offs = (RAMOffsetY & 0x7) * RAMOffsetWWS;
 
@@ -707,11 +711,12 @@ uint32 MDEC_DMARead(int32* offs)
    RAMOffsetCounter = RAMOffsetWWS;
    RAMOffsetY++;
   }
+
+  MDEC_Run(0);
  }
  else
  {
-  PSX_DBG(PSX_DBG_WARNING, "[MDEC] BONUS GNOMES\n");
-  V = rand();
+  PSX_DBG(PSX_DBG_WARNING, "[MDEC] DMA read when output FIFO is empty!\n");
  }
 
  return(V);
@@ -759,7 +764,7 @@ void MDEC_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V)
  {
   if(InFIFO.CanWrite())
   {
-   InFIFO.WriteUnit(V);
+   InFIFO.Write(V);
 
    if(!InCommand)
    {
@@ -799,7 +804,7 @@ uint32 MDEC_Read(const pscpu_timestamp_t timestamp, uint32 A)
  else
  {
   if(OutFIFO.CanRead())
-   ret = OutFIFO.ReadUnit();
+   ret = OutFIFO.Read();
  }
 
  //PSX_WARNING("[MDEC] Read: 0x%08x 0x%08x -- %d %d", A, ret, InputBuffer.CanRead(), InCounter);

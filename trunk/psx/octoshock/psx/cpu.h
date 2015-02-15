@@ -59,7 +59,7 @@ class PS_CPU
  enum { FAST_MAP_SHIFT = 16 };
  enum { FAST_MAP_PSIZE = 1 << FAST_MAP_SHIFT };
 
- void SetFastMap(void *region_mem, uint32_t region_address, uint32_t region_size);
+ void SetFastMap(void *region_mem, uint32 region_address, uint32 region_size);
 
  INLINE void SetEventNT(const pscpu_timestamp_t next_event_ts_arg)
  {
@@ -73,46 +73,42 @@ class PS_CPU
  // which ranges 0-5, inclusive
  void AssertIRQ(unsigned which, bool asserted);
 
-
  void SetHalt(bool status);
 
  // TODO eventually: factor BIU address decoding directly in the CPU core somehow without hurting speed.
- void SetBIU(uint32_t val);
- uint32_t GetBIU(void);
+ void SetBIU(uint32 val);
+ uint32 GetBIU(void);
 
  private:
 
- struct
- {
-  uint32_t GPR[32];
-  uint32_t GPR_dummy;	// Used in load delay simulation(indexing past the end of GPR)
- };
- uint32_t LO;
- uint32_t HI;
+ uint32 GPR[32 + 1];	// GPR[32] Used as dummy in load delay simulation(indexing past the end of real GPR)
+
+ uint32 LO;
+ uint32 HI;
 
 
- uint32_t BACKED_PC;
- uint32_t BACKED_new_PC;
- uint32_t BACKED_new_PC_mask;
+ uint32 BACKED_PC;
+ uint32 BACKED_new_PC;
+ uint32 BACKED_new_PC_mask;
 
- uint32_t IPCache;
+ uint32 IPCache;
  void RecalcIPCache(void);
  bool Halted;
 
- uint32_t BACKED_LDWhich;
- uint32_t BACKED_LDValue;
- uint32_t LDAbsorb;
+ uint32 BACKED_LDWhich;
+ uint32 BACKED_LDValue;
+ uint32 LDAbsorb;
 
  pscpu_timestamp_t next_event_ts;
  pscpu_timestamp_t gte_ts_done;
  pscpu_timestamp_t muldiv_ts_done;
 
- uint32_t BIU;
+ uint32 BIU;
 
  struct __ICache
  {
-  uint32_t TV;
-  uint32_t Data;
+  uint32 TV;
+  uint32 Data;
  };
 
  union
@@ -140,33 +136,33 @@ class PS_CPU
  {
   union
   {
-   uint32_t Regs[32];
+   uint32 Regs[32];
    struct
    {
-    uint32_t Unused00;
-    uint32_t Unused01;
-    uint32_t Unused02;
-    uint32_t BPC;		// RW
-    uint32_t Unused04;
-    uint32_t BDA;		// RW
-    uint32_t TAR;
-    uint32_t DCIC;	// RW
-    uint32_t Unused08;	
-    uint32_t BDAM;	// R/W
-    uint32_t Unused0A;
-    uint32_t BPCM;	// R/W
-    uint32_t SR;		// R/W
-    uint32_t CAUSE;	// R/W(partial)
-    uint32_t EPC;		// R
-    uint32_t PRID;	// R
-    uint32_t ERREG;	// ?(may not exist, test)
+    uint32 Unused00;
+    uint32 Unused01;
+    uint32 Unused02;
+    uint32 BPC;		// RW
+    uint32 Unused04;
+    uint32 BDA;		// RW
+    uint32 TAR;
+    uint32 DCIC;	// RW
+    uint32 Unused08;	
+    uint32 BDAM;	// R/W
+    uint32 Unused0A;
+    uint32 BPCM;	// R/W
+    uint32 SR;		// R/W
+    uint32 CAUSE;	// R/W(partial)
+    uint32 EPC;		// R
+    uint32 PRID;	// R
+    uint32 ERREG;	// ?(may not exist, test)
    };
   };
  } CP0;
 
 #if 1
- //uint32_t WrAbsorb;
- //uint8_t WrAbsorbShift;
+ //uint32 WrAbsorb;
+ //uint8 WrAbsorbShift;
 
  // On read:
  //WrAbsorb = 0;
@@ -180,25 +176,21 @@ class PS_CPU
  //WrAbsorbShift += 8;
 #endif
 
- struct
- {
-  uint8_t ReadAbsorb[0x20];
-  uint8_t ReadAbsorbDummy;
- };
- uint8_t ReadAbsorbWhich;
- uint8_t ReadFudge;
+ uint8 ReadAbsorb[0x20 + 1];
+ uint8 ReadAbsorbWhich;
+ uint8 ReadFudge;
 
- //uint32_t WriteAbsorb;
- //uint8_t WriteAbsorbCount;
- //uint8_t WriteAbsorbMonkey;
+ //uint32 WriteAbsorb;
+ //uint8 WriteAbsorbCount;
+ //uint8 WriteAbsorbMonkey;
  uint8 MULT_Tab24[24];
 
  MultiAccessSizeMem<1024, false> ScratchRAM;
 
  //PS_GTE GTE;
 
- uint8_t *FastMap[1 << (32 - FAST_MAP_SHIFT)];
- uint8_t DummyPage[FAST_MAP_PSIZE];
+ uint8 *FastMap[1 << (32 - FAST_MAP_SHIFT)];
+ uint8 DummyPage[FAST_MAP_PSIZE];
 
  enum
  {
@@ -217,21 +209,21 @@ class PS_CPU
   EXCEPTION_OV = 12	// Arithmetic overflow
  };
 
- uint32_t Exception(uint32_t code, uint32_t PC, const uint32_t NPM) MDFN_WARN_UNUSED_RESULT;
+ uint32 Exception(uint32 code, uint32 PC, const uint32 NPM) MDFN_WARN_UNUSED_RESULT;
 
  template<bool DebugMode, bool BIOSPrintMode, bool ILHMode> pscpu_timestamp_t RunReal(pscpu_timestamp_t timestamp_in) NO_INLINE;
 
- template<typename T> T PeekMemory(uint32_t address) MDFN_COLD;
- template<typename T> T ReadMemory(pscpu_timestamp_t &timestamp, uint32_t address, bool DS24 = false, bool LWC_timing = false);
- template<typename T> void WriteMemory(pscpu_timestamp_t &timestamp, uint32_t address, uint32_t value, bool DS24 = false);
+ template<typename T> T PeekMemory(uint32 address) MDFN_COLD;
+ template<typename T> T ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool DS24 = false, bool LWC_timing = false);
+ template<typename T> void WriteMemory(pscpu_timestamp_t &timestamp, uint32 address, uint32 value, bool DS24 = false);
 
 
  //
  // Mednafen debugger stuff follows:
  //
  public:
- void SetCPUHook(void (*cpuh)(const pscpu_timestamp_t timestamp, uint32_t pc), void (*addbt)(uint32_t from, uint32_t to, bool exception));
- void CheckBreakpoints(void (*callback)(bool write, uint32_t address, unsigned int len), uint32_t instr);
+ void SetCPUHook(void (*cpuh)(const pscpu_timestamp_t timestamp, uint32 pc), void (*addbt)(uint32 from, uint32 to, bool exception));
+ void CheckBreakpoints(void (*callback)(bool write, uint32 address, unsigned int len), uint32 instr);
  void* debug_GetScratchRAMPtr() { return ScratchRAM.data8; }
  void* debug_GetGPRPtr() { return GPR; }
 
@@ -248,15 +240,15 @@ class PS_CPU
   GSREG_EPC,
  };
 
- uint32_t GetRegister(unsigned int which, char *special, const uint32_t special_len);
- void SetRegister(unsigned int which, uint32_t value);
- bool PeekCheckICache(uint32_t PC, uint32_t *iw);
- uint8_t PeekMem8(uint32_t A);
- uint16_t PeekMem16(uint32_t A);
- uint32_t PeekMem32(uint32_t A);
+ uint32 GetRegister(unsigned int which, char *special, const uint32 special_len);
+ void SetRegister(unsigned int which, uint32 value);
+ bool PeekCheckICache(uint32 PC, uint32 *iw);
+ uint8 PeekMem8(uint32 A);
+ uint16 PeekMem16(uint32 A);
+ uint32 PeekMem32(uint32 A);
  private:
- void (*CPUHook)(const pscpu_timestamp_t timestamp, uint32_t pc);
- void (*ADDBT)(uint32_t from, uint32_t to, bool exception);
+ void (*CPUHook)(const pscpu_timestamp_t timestamp, uint32 pc);
+ void (*ADDBT)(uint32 from, uint32 to, bool exception);
 };
 
 }

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "cdrom/SimpleFIFO.h"
+#include "FastFIFO.h"
 #include "git.h"
 
 struct ShockRenderOptions;
@@ -72,7 +72,7 @@ class PS_GPU
   if(InCmd & (INCMD_FBREAD | INCMD_FBWRITE))
    return(false);
 
-  if(BlitterFIFO.CanRead() >= Commands[BlitterFIFO.ReadUnit(true) >> 24].fifo_fb_len)
+  if(BlitterFIFO.CanRead() >= Commands[BlitterFIFO.Peek() >> 24].fifo_fb_len)
    return(false);
 
   return(true);
@@ -155,17 +155,20 @@ class PS_GPU
 
  int32 OffsX;
  int32 OffsY;
-
+ 
  bool dtd;
  bool dfe;
 
  uint32 MaskSetOR;
  uint32 MaskEvalAND;
 
+ bool TexDisable;
+ bool TexDisableAllowChange;
+
  uint8 tww, twh, twx, twy;
  
- int32 TexPageX;
- int32 TexPageY;
+ uint32 TexPageX;
+ uint32 TexPageY;
 
  uint32 SpriteFlip;
 
@@ -230,9 +233,9 @@ class PS_GPU
  static const CTEntry Commands_60_7F[0x20];
  static const CTEntry Commands_80_FF[0x80];
 
- SimpleFIFO<uint32> BlitterFIFO;
-
+ FastFIFO<uint32, 0x20> BlitterFIFO; // 0x10 on actual PS1 GPU, 0x20 here(see comment at top of gpu.h)
  uint32 DataReadBuffer;
+ uint32 DataReadBufferEx;
 
  bool IRQPending;
  //

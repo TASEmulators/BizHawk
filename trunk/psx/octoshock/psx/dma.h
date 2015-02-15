@@ -4,8 +4,6 @@
 namespace MDFN_IEN_PSX
 {
 
-bool DMA_GPUWriteActive(void);
-
 pscpu_timestamp_t DMA_Update(const pscpu_timestamp_t timestamp);
 void DMA_Write(const pscpu_timestamp_t timestamp, uint32 A, uint32 V);
 uint32 DMA_Read(const pscpu_timestamp_t timestamp, uint32 A);

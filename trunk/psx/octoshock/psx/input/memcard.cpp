@@ -17,6 +17,7 @@
 
 // I could find no other commands than 'R', 'W', and 'S' (not sure what 'S' is for, however)
 
+#include <assert.h>
 #include "../psx.h"
 #include "../frontio.h"
 #include "memcard.h"
@@ -309,9 +310,9 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
   }
 
 
-  switch(command_phase)
+
+  if(command_phase == 0)
   {
-   case 0:
           if(receive_buffer != 0x81)
             command_phase = -1;
           else
@@ -321,9 +322,9 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
            transmit_count = 1;
            command_phase++;
           }
-          break;
-
-   case 1:
+  }
+  else if(command_phase == 1)
+  {
         command = receive_buffer;
 	//printf("[MCR] Command received: %c\n", command);
 	if(command == 'R' || command == 'W')
@@ -343,41 +344,41 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 transmit_buffer = 0;
 	 transmit_count = 0;
 	}
-        break;
-
-   case 2:
+  }
+  else if(command_phase == 2)
+  {
 	transmit_buffer = 0x5D;
 	transmit_count = 1;
 	command_phase++;
-	break;
-
-   case 3:
+  }
+  else if(command_phase == 3)
+  {
 	transmit_buffer = 0x00;
 	transmit_count = 1;
 	if(command == 'R')
 	 command_phase = 1000;
 	else if(command == 'W')
 	 command_phase = 2000;
-	break;
-
+  }
   //
   // Read
   //
-  case 1000:
+  else if(command_phase == 1000)
+  {
 	addr = receive_buffer << 8;
 	transmit_buffer = receive_buffer;
 	transmit_count = 1;
 	command_phase++;
-	break;
-
-  case 1001:
+  }
+  else if(command_phase == 1001)
+  {
 	addr |= receive_buffer & 0xFF;
 	transmit_buffer = '\\';
 	transmit_count = 1;
 	command_phase++;
-	break;
-
-  case 1002:
+  }
+  else if(command_phase == 1002)
+  {
 	//printf("[MCR]   READ ADDR=0x%04x\n", addr);
 	if(addr >= (sizeof(card_data) >> 7))
 	 addr = 0xFFFF;
@@ -392,17 +393,16 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
 	//dsr_pulse_delay = 32000;
 	//goto SkipDPD;
 	//
-
-	break;
-
-  case 1003:
+  }
+  else if(command_phase == 1003)
+  {
 	transmit_buffer = addr >> 8;
 	calced_xor ^= transmit_buffer;
 	transmit_count = 1;
 	command_phase++;
-	break;
-
-  case 1004:
+  }
+  else if(command_phase == 1004)
+  {
 	transmit_buffer = addr & 0xFF;
 	calced_xor ^= transmit_buffer;
 
@@ -416,75 +416,73 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 transmit_count = 1;
 	 command_phase = 1024;
 	}
-	break;
-
+  }
   // Transmit actual 128 bytes data
-  //case (1024 + 0) ... (1024 + 128 - 1):
-	BIGCASE128(1024)
+  else if(command_phase >= (1024 + 0) && command_phase <= (1024 + 128 - 1))
+  {
 	transmit_buffer = card_data[(addr << 7) + (command_phase - 1024)];
 	calced_xor ^= transmit_buffer;
 	transmit_count = 1;
 	command_phase++;
-	break;
-
+  }
   // XOR
-  case (1024 + 128):
+  else if(command_phase == (1024 + 128))
+  {
 	transmit_buffer = calced_xor;
 	transmit_count = 1;
 	command_phase++;
-	break;
-
+  }
   // End flag
-  case (1024 + 129):
+  else if(command_phase == (1024 + 129))
+  {
 	transmit_buffer = 'G';
 	transmit_count = 1;
 	command_phase = -1;
-	break;
-
+  }
   //
   // Write
   //
-  case 2000:
+  else if(command_phase == 2000)
+  {
 	calced_xor = receive_buffer;
         addr = receive_buffer << 8;
         transmit_buffer = receive_buffer;
         transmit_count = 1;
         command_phase++;
-	break;
-
-  case 2001:
+  }
+  else if(command_phase == 2001)
+  {
 	calced_xor ^= receive_buffer;
         addr |= receive_buffer & 0xFF;
 	//printf("[MCR]   WRITE ADDR=0x%04x\n", addr);
         transmit_buffer = receive_buffer;
         transmit_count = 1;
         command_phase = 2048;
-        break;
-
-  //case (2048 + 0) ... (2048 + 128 - 1):
-	BIGCASE128(2048)
+  }
+  else if(command_phase >= (2048 + 0) && command_phase <= (2048 + 128 - 1))
+  {
 	calced_xor ^= receive_buffer;
 	rw_buffer[command_phase - 2048] = receive_buffer;
 
         transmit_buffer = receive_buffer;
         transmit_count = 1;
         command_phase++;
-        break;
-
-  case (2048 + 128):	// XOR
+  }
+  else if(command_phase == (2048 + 128))	// XOR
+  {
 	write_xor = receive_buffer;
 	transmit_buffer = '\\';
 	transmit_count = 1;
 	command_phase++;
-	break;
-
-  case (2048 + 129):
+  }
+  else if(command_phase == (2048 + 129))
+  {
 	transmit_buffer = ']';
 	transmit_count = 1;
 	command_phase++;
-	break;
-
-  case (2048 + 130):	// End flag
+  }
+  else if(command_phase == (2048 + 130))	// End flag
+  {
 	//MDFN_DispMessage("%02x %02x", calced_xor, write_xor);
 	//printf("[MCR] Write End.  Actual_XOR=0x%02x, CW_XOR=0x%02x\n", calced_xor, write_xor);
 
@@ -509,8 +507,6 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
 
 	transmit_count = 1;
 	command_phase = -1;
-	break;
-
   }
 
   //if(command_phase != -1 || transmit_count)

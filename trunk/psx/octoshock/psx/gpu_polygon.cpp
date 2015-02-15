@@ -19,6 +19,7 @@
 
 #include "psx.h"
 #include "gpu.h"
+#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
 {
@@ -406,7 +407,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
   tp->x_step[right_facing] = bound_coord_us;
   tp->x_coord[!right_facing] = base_coord + ((vertices[vo].y - vertices[0].y) * base_step);
   tp->x_step[!right_facing] = base_step;
-  tp->dec_mode = !!vo;
+  tp->dec_mode = vo;
  }
 
  {
@@ -418,7 +419,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
   tp->x_step[right_facing] = bound_coord_ls;
   tp->x_coord[!right_facing] = base_coord + ((vertices[1 ^ vp].y - vertices[0].y) * base_step); //base_coord + ((vertices[1].y - vertices[0].y) * base_step);
   tp->x_step[!right_facing] = base_step;
-  tp->dec_mode = !!vp;
+  tp->dec_mode = vp;
  }
 
  for(unsigned i = 0; i < 2; i++) //2; i++)
