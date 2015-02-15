@@ -229,19 +229,7 @@
     <None Include="..\psx\spu_reverb.inc">
       <Filter>psx</Filter>
     </None>
-    <None Include="..\psx\gpu_command_table.inc">
-      <Filter>psx</Filter>
-    </None>
     <None Include="..\psx\gpu_common.inc">
-      <Filter>psx</Filter>
-    </None>
-    <None Include="..\psx\gpu_line.inc">
-      <Filter>psx</Filter>
-    </None>
-    <None Include="..\psx\gpu_polygon.inc">
-      <Filter>psx</Filter>
-    </None>
-    <None Include="..\psx\gpu_sprite.inc">
       <Filter>psx</Filter>
     </None>
     <None Include="..\psx\cpu_computedgoto.inc">

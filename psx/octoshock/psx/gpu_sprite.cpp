@@ -17,6 +17,7 @@
 
 #include "psx.h"
 #include "gpu.h"
+#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
 {

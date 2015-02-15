@@ -39,9 +39,12 @@ class InputDevice_Multitap final : public InputDevice
 
  bool full_mode;
  bool mc_mode;
+ bool prev_fm_success;
 
  uint8 fm_dp;	// Device-present.
  uint8 fm_buffer[4][8];
+
+ uint8 sb[4][8];
 
  bool fm_deferred_error_temp;
  bool fm_deferred_error;

@@ -31,25 +31,29 @@
 [!!] psx/psx : LoadEXE/PSF1 changes (TODO - need these)
 [OK] psx/spu* : register renames and misc bugfixes
 0.9.37-UNSTABLE -> 0.9.37.1
-[NO] psx/cpu : fix some savestate problem with ReadAbsorbDummy, seems alarming
+[NO] psx/cpu : fix some savestate problem with ReadAbsorbDummy, seems alarming but maybe was just backwards compatibility
 [OK] psx/spu : clamp some sound output presumably messed up by prior reverb changes
 0.9.37.1 -> 0.9.38-UNSTABLE [not integrated yet]
 (major CDIF changes)
 (simplefifo refactored)
 [!!] psx/cdutility : substantial revisions to disc sector synthesis with respect to leadout, "UDAPP", and "TSRE" (thread-safe re-entrant) which I dont understand. Need to study for DiscSystem.
+[OK] required math_ops changes
+[OK] SimpleFifo changed to PSX-only FastFIFO (TOD)
 [OK] psx/cdc : set SoftReset Mode to 0x20
 [OK] psx/cdc : Edits to MakeStatus and BeginResults and ReadResult
 [OK] psx/cdc : in HandlePlayRead, handling of leadout sector synth moved to CDIF
 [OK] psx/cdc : in Update, Mode handling and reading of subcode changed
+[OK] psx/cdc : in Update, reading of subcode changed. This isn't very important, it just saved reading the 2352 sector bytes when it wasn't needed.
 [OK] psx/cdc : error handling in Command_Setloc
 [OK] psx/cdc : PreSeekHack edits
 [OK] psx/cdc : Command_GetTD improvements
 [OK] psx/cdc : Command_SeekL timing changes
-[OK] psx/cpu : helpful changes to case ranges and jump table
+[OK] psx/cpu : helpful changes to case ranges and jump table. double check for savestate changes.
 [OK] psx/dma : easy bugfixes
 [??] psx/gpu : display timing changes ?? study more
 [OK] psx/gpu : BlitterFifo changes, related to FBWrite/Read
 [OK] psx/gpu : a bunch of bugfixes
+[OK] psx/gpu : video standard mismatch warning suppressed during DisplayOff
 [OK] psx/gpu : be aware of savestate changes
 [OK] psx/gpu_line : easy bugfixes
 [OK] psx/gte : division bugfixes
