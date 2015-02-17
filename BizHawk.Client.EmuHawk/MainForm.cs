@@ -2206,7 +2206,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.HasSavestates();
 		}
 
-		private BitmapBuffer CaptureOSD()
+		public BitmapBuffer CaptureOSD()
 		{
 			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), true);
 			bb.Normalize(true);
