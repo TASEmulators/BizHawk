@@ -67,7 +67,8 @@ namespace BizHawk.Client.Common
 		{
 			try
 			{
-				QuickBmpFile.Load(Global.Emulator.VideoProvider(), br.BaseStream);
+				using (new SimpleTime("Load Framebuffer"))
+					QuickBmpFile.Load(Global.Emulator.VideoProvider(), br.BaseStream);
 			}
 			catch
 			{

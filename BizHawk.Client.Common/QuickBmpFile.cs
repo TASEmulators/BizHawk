@@ -94,6 +94,55 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		unsafe struct BMP
+		{
+			public int* Data;
+			public int Width;
+			public int Height;
+		}
+
+		static void Blit(BMP src, BMP dst)
+		{
+			if (src.Width == dst.Width && src.Height == dst.Height)
+				Blit_Same(src, dst);
+			else
+				Blit_Any(src, dst);
+		}
+
+		unsafe static void Blit_Same(BMP src, BMP dst)
+		{
+			int* sp = src.Data + src.Width * (src.Height - 1);
+			int* dp = dst.Data;
+			for (int j = 0; j < src.Height; j++)
+			{
+				for (int i = 0; i < src.Width; i++)
+					dp[i] = sp[i];
+				sp -= src.Width;
+				dp += src.Width;
+			}
+		}
+
+		unsafe static void Blit_Any(BMP src, BMP dst)
+		{
+			int w = dst.Width;
+			int h = dst.Height;
+			int in_w = src.Width;
+			int in_h = src.Height;
+			int* sp = src.Data;
+			int* dp = dst.Data;
+
+			// vflip along the way
+			for (int j = h - 1; j >= 0; j--)
+			{
+				sp = src.Data + in_w * (j * in_h / h);
+				for (int i = 0; i < w; i++)
+				{
+					dp[i] = sp[i * in_w / w];
+				}
+				dp += w;
+			}
+		}
+
 		public unsafe static bool Load(IVideoProvider v, Stream s)
 		{
 			var bf = BITMAPFILEHEADER.FromStream(s);
@@ -114,22 +163,19 @@ namespace BizHawk.Client.Common
 			fixed (byte *srcp = src)
 			fixed (int* dstp = dst)
 			{
-				int w = v.BufferWidth;
-				int h = v.BufferHeight;
-
-				int* sp = (int*)srcp;
-				int* dp = dstp;
-
-				// vflip along the way
-				for (int j = h - 1; j >= 0; j--)
+				using (new BizHawk.Common.SimpleTime("Blit"))
+				Blit(new BMP
 				{
-					sp = (int*)srcp + in_w * (j * in_h / h);
-					for (int i = 0; i < w; i++)
-					{
-						dp[i] = sp[i * in_w / w];
-					}
-					dp += w;
-				}
+					Data = (int*)srcp,
+					Width = in_w,
+					Height = in_h
+				},
+				new BMP
+				{
+					Data = dstp,
+					Width = v.BufferWidth,
+					Height = v.BufferHeight,
+				});
 			}
 
 			return true;
@@ -161,22 +207,19 @@ namespace BizHawk.Client.Common
 			fixed (int* srcp = src)
 			fixed (byte* dstp = dst)
 			{
-				int in_w = v.BufferWidth;
-				int in_h = v.BufferHeight;
-
-				int* sp = srcp;
-				int* dp = (int*)dstp;
-
-				// vflip along the way
-				for (int j = h - 1; j >= 0; j--)
+				using (new BizHawk.Common.SimpleTime("Blit"))
+				Blit(new BMP
 				{
-					sp = srcp + in_w * (j * in_h / h);
-					for (int i = 0; i < w; i++)
-					{
-						dp[i] = sp[i * in_w / w];
-					}
-					dp += w;
-				}
+					Data = srcp,
+					Width = v.BufferWidth,
+					Height = v.BufferHeight
+				},
+				new BMP
+				{
+					Data = (int*)dstp,
+					Width = w,
+					Height = h,
+				});
 			}
 
 			s.Write(dst, 0, dst.Length);
