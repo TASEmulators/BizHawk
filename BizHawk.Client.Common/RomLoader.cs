@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
+using BizHawk.Emulation.Cores.Computers.AppleII;
 
 namespace BizHawk.Client.Common
 {
@@ -471,6 +472,10 @@ namespace BizHawk.Client.Common
 							case "C64":
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
 								nextEmulator = c64;
+								break;
+							case "AppleII":
+								var appleII = new AppleII(nextComm, game, rom.RomData, rom.Extension);
+								nextEmulator = appleII;
 								break;
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];

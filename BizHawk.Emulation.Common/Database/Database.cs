@@ -339,6 +339,10 @@ namespace BizHawk.Emulation.Common
 				case ".83P":
 					game.System = "83P";
 					break;
+
+				case ".DSK":
+					game.System = "AppleII";
+					break;
 			}
 
 			game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
