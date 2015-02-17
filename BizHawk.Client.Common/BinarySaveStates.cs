@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			WriteNames = new Dictionary<BinaryStateLump, string>();
 			AddLumpName(BinaryStateLump.Versiontag, "BizState 1.0");
 			AddLumpName(BinaryStateLump.Corestate, "Core");
-			AddLumpName(BinaryStateLump.Framebuffer, "Framebuffer");
+			AddLumpName(BinaryStateLump.Framebuffer, "Framebuffer.bmp");
 			AddLumpName(BinaryStateLump.Input, "Input Log.txt");
 			AddLumpName(BinaryStateLump.CorestateText, "CoreText.txt");
 			AddLumpName(BinaryStateLump.Movieheader, "Header.txt");
