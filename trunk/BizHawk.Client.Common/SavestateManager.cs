@@ -34,14 +34,20 @@ namespace BizHawk.Client.Common
 
 				if (Global.Config.SaveScreenshotWithStates)
 				{
-					var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+					var vp = Global.Emulator.VideoProvider();
+					var buff = vp.GetVideoBuffer();
 
-					// If user wants large screenshots, or screenshot is small enough
-					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
+					int out_w = vp.BufferWidth;
+					int out_h = vp.BufferHeight;
+
+					// if buffer is too big, scale down screenshot
+					if (!Global.Config.SaveLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
 					{
-						using (new SimpleTime("Save Framebuffer"))
-							bs.PutLump(BinaryStateLump.Framebuffer, DumpFramebuffer);
+						out_w /= 2;
+						out_h /= 2;
 					}
+					using (new SimpleTime("Save Framebuffer"))
+						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
 				}
 
 				if (Global.MovieSession.Movie.IsActive)
@@ -77,13 +83,6 @@ namespace BizHawk.Client.Common
 				catch (EndOfStreamException) { }
 			}
 		}
-
-		public static void DumpFramebuffer(Stream s)
-		{
-			//bw.Write(Global.Emulator.VideoProvider().GetVideoBuffer());
-			QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, r.Next(50, 500), r.Next(50, 500));
-		}
-		static Random r = new Random();
 
 		public static bool LoadStateFile(string path, string name)
 		{
