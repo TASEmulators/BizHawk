@@ -96,7 +96,8 @@ namespace Jellyfish.Virtu
             _video = Machine.Video;
             _noSlotClock = Machine.NoSlotClock;
 
-            StorageService.LoadResource("Roms/AppleIIe.rom", stream =>
+					//TODO lol!!
+            StorageService.LoadResource("c:\\apple\\AppleIIe.rom", stream =>
             {
                 stream.SkipBlock(0x0100);
                 stream.ReadBlock(_romInternalRegionC1CF);

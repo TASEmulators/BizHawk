@@ -40,7 +40,7 @@ namespace Jellyfish.Virtu
 
             BootDiskII = Slots.OfType<DiskIIController>().Last();
 
-            Thread = new Thread(Run) { Name = "Machine" };
+            //Thread = new Thread(Run) { Name = "Machine" };
         }
 
         public void Dispose()
@@ -59,48 +59,48 @@ namespace Jellyfish.Virtu
             }
         }
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
-        public void Start()
-        {
-            _debugService = Services.GetService<DebugService>();
-            _storageService = Services.GetService<StorageService>();
+				//[SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
+				//public void Start()
+				//{
+				//    _debugService = Services.GetService<DebugService>();
+				//    _storageService = Services.GetService<StorageService>();
 
-            _debugService.WriteMessage("Starting machine");
-            State = MachineState.Starting;
-            Thread.Start();
-        }
+				//    _debugService.WriteMessage("Starting machine");
+				//    State = MachineState.Starting;
+				//    Thread.Start();
+				//}
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
-        public void Pause()
-        {
-            _debugService.WriteMessage("Pausing machine");
-            State = MachineState.Pausing;
-            _pauseEvent.WaitOne();
-            State = MachineState.Paused;
-            _debugService.WriteMessage("Paused machine");
-        }
+				//[SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
+				//public void Pause()
+				//{
+				//    _debugService.WriteMessage("Pausing machine");
+				//    State = MachineState.Pausing;
+				//    _pauseEvent.WaitOne();
+				//    State = MachineState.Paused;
+				//    _debugService.WriteMessage("Paused machine");
+				//}
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
-        public void Unpause()
-        {
-            _debugService.WriteMessage("Running machine");
-            State = MachineState.Running;
-            _unpauseEvent.Set();
-        }
+				//[SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
+				//public void Unpause()
+				//{
+				//    _debugService.WriteMessage("Running machine");
+				//    State = MachineState.Running;
+				//    _unpauseEvent.Set();
+				//}
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
-        public void Stop()
-        {
-            _debugService.WriteMessage("Stopping machine");
-            State = MachineState.Stopping;
-            _unpauseEvent.Set();
-            if (Thread.IsAlive)
-            {
-                Thread.Join();
-            }
-            State = MachineState.Stopped;
-            _debugService.WriteMessage("Stopped machine");
-        }
+				//[SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
+				//public void Stop()
+				//{
+				//    _debugService.WriteMessage("Stopping machine");
+				//    State = MachineState.Stopping;
+				//    _unpauseEvent.Set();
+				//    if (Thread.IsAlive)
+				//    {
+				//        Thread.Join();
+				//    }
+				//    State = MachineState.Stopped;
+				//    _debugService.WriteMessage("Stopped machine");
+				//}
 
         private void Initialize()
         {
@@ -201,40 +201,64 @@ namespace Jellyfish.Virtu
             }
         }
 
-        [SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
-        private void Run() // machine thread
-        {
-            Initialize();
-            Reset();
-            LoadState();
+				//[SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "Jellyfish.Virtu.Services.DebugService.WriteMessage(System.String)")]
+				//private void Run() // machine thread
+				//{
+				//    Initialize();
+				//    Reset();
+				//    LoadState();
 
-            _debugService.WriteMessage("Running machine");
-            State = MachineState.Running;
-            do
-            {
-                do
-                {
-                    Events.HandleEvents(Cpu.Execute());
-                }
-                while (State == MachineState.Running);
+				//    _debugService.WriteMessage("Running machine");
+				//    State = MachineState.Running;
+				//    do
+				//    {
+				//        do
+				//        {
+				//            Events.HandleEvents(Cpu.Execute());
+				//        }
+				//        while (State == MachineState.Running);
 
-                if (State == MachineState.Pausing)
-                {
-                    _pauseEvent.Set();
-                    _unpauseEvent.WaitOne();
-                }
-            }
-            while (State != MachineState.Stopping);
+				//        if (State == MachineState.Pausing)
+				//        {
+				//            _pauseEvent.Set();
+				//            _unpauseEvent.WaitOne();
+				//        }
+				//    }
+				//    while (State != MachineState.Stopping);
 
-            SaveState();
-            Uninitialize();
-        }
+				//    SaveState();
+				//    Uninitialize();
+				//}
+
+				public void BizInitialize()
+				{
+					_debugService = Services.GetService<DebugService>();
+					_storageService = Services.GetService<StorageService>();
+
+					Initialize();
+					Reset();
+				}
+
+				public void BizFrameAdvance()
+				{
+					//frame begins at vsync.. beginning of vblank
+					while (Video.IsVBlank)
+						Events.HandleEvents(Cpu.Execute());
+					//now, while not vblank, we're in a frame
+					while (!Video.IsVBlank)
+						Events.HandleEvents(Cpu.Execute());
+				}
+
+				public void BizShutdown()
+				{
+					Uninitialize();
+				}
 
         public const string Version = "0.9.4.0";
 
         public MachineEvents Events { get; private set; }
         public MachineServices Services { get; private set; }
-        public MachineState State { get { return _state; } private set { _state = value; } }
+        //public MachineState State { get { return _state; } private set { _state = value; } }
 
         public Cpu Cpu { get; private set; }
         public Memory Memory { get; private set; }
@@ -265,7 +289,7 @@ namespace Jellyfish.Virtu
 
         private DebugService _debugService;
         private StorageService _storageService;
-        private volatile MachineState _state;
+        //private volatile MachineState _state;
 
         private AutoResetEvent _pauseEvent = new AutoResetEvent(false);
         private AutoResetEvent _unpauseEvent = new AutoResetEvent(false);

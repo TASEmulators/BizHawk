@@ -36,7 +36,7 @@ namespace Jellyfish.Virtu.Services
         [SecuritySafeCritical]
 #endif
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public static bool LoadFile(string fileName, Action<Stream> reader)
+        public static bool LoadFile(Stream stream, Action<Stream> reader)
         {
             if (reader == null)
             {
@@ -45,8 +45,7 @@ namespace Jellyfish.Virtu.Services
 
             try
             {
-                DebugService.Default.WriteMessage("Loading file '{0}'", fileName);
-                using (var stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                DebugService.Default.WriteMessage("Loading file '{0}'", "STREAM");
                 {
                     reader(stream);
                 }
@@ -103,10 +102,12 @@ namespace Jellyfish.Virtu.Services
             try
             {
                 DebugService.Default.WriteMessage("Loading resource '{0}'", resourceName);
-                using (var stream = GetResourceStream(resourceName))
-                {
-                    reader(stream);
-                }
+								using (var stream = File.OpenRead(resourceName))
+									reader(stream);
+								//using (var stream = GetResourceStream(resourceName))
+								//{
+								//    reader(stream);
+								//}
             }
             catch (Exception ex)
             {

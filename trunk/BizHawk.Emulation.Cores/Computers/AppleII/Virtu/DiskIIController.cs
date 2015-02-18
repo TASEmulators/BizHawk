@@ -22,7 +22,8 @@ namespace Jellyfish.Virtu
 
         public override void Initialize()
         {
-            StorageService.LoadResource("Roms/DiskII.rom", stream => stream.ReadBlock(_romRegionC1C7));
+					//TODO lol!!
+            StorageService.LoadResource("c:\\apple\\DiskII.rom", stream => stream.ReadBlock(_romRegionC1C7));
         }
 
         public override void Reset()

@@ -18,14 +18,16 @@
                 if (!_resetKeyDown)
                 {
                     _resetKeyDown = true; // entering reset; pause until key released
-                    Machine.Pause();
-                    Machine.Reset();
+									//TODO ADELIKAT : HANDLE RESET DIFFERENTLY
+										//Machine.Pause();
+										//Machine.Reset();
                 }
             }
             else if (_resetKeyDown)
             {
                 _resetKeyDown = false; // leaving reset
-                Machine.Unpause();
+							//TODO ADELIKAT : HANDLE RESET DIFFERENTLY
+                //Machine.Unpause();
             }
         }
 
