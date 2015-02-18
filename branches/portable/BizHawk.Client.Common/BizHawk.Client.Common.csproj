@@ -126,16 +126,16 @@
     <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
     <Compile Include="movie\bk2\Bk2Movie.cs" />
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
-        <DependentUpon>Bk2Movie.cs</DependentUpon>
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
-        <DependentUpon>Bk2Movie.cs</DependentUpon>
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bk2\Bk2Movie.IO.cs">
-        <DependentUpon>Bk2Movie.cs</DependentUpon>
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs">
-        <DependentUpon>Bk2Movie.cs</DependentUpon>
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
     <Compile Include="movie\bkm\BkmHeader.cs" />
@@ -143,23 +143,26 @@
     <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
     <Compile Include="movie\bkm\BkmMovie.cs" />
     <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs">
-        <DependentUpon>BkmMovie.cs</DependentUpon>
+      <DependentUpon>BkmMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bkm\BkmMovie.InputLog.cs">
-        <DependentUpon>BkmMovie.cs</DependentUpon>
+      <DependentUpon>BkmMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bkm\BkmMovie.IO.cs">
-        <DependentUpon>BkmMovie.cs</DependentUpon>
+      <DependentUpon>BkmMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\bkm\BkmMovie.ModeApi.cs">
-        <DependentUpon>BkmMovie.cs</DependentUpon>
+      <DependentUpon>BkmMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
+    <Compile Include="movie\import\Fm2Import.cs" />
+    <Compile Include="movie\import\IMovieImport.cs" />
+    <Compile Include="movie\import\MovieImport.cs" />
+    <Compile Include="movie\import\PJMImport.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
-    <Compile Include="movie\MovieImport.cs" />
     <Compile Include="movie\MovieService.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
@@ -168,10 +171,10 @@
     <Compile Include="movie\SubtitleList.cs" />
     <Compile Include="movie\tasproj\TasLagLog.cs" />
     <Compile Include="movie\tasproj\TasMovie.Editing.cs">
-        <DependentUpon>TasMovie.cs</DependentUpon>
+      <DependentUpon>TasMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\tasproj\TasMovie.IO.cs">
-        <DependentUpon>TasMovie.cs</DependentUpon>
+      <DependentUpon>TasMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="movie\tasproj\TasMovie.cs" />
     <Compile Include="movie\tasproj\TasMovieMarker.cs" />
@@ -181,6 +184,7 @@
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuickBmpFile.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="rewind\Rewinder.cs" />
     <Compile Include="rewind\RewindThreader.cs" />

@@ -17,6 +17,7 @@
 
 #include "psx.h"
 #include "gpu.h"
+#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
 {
@@ -24,8 +25,8 @@ namespace MDFN_IEN_PSX
 
 struct line_fxp_coord
 {
- int64 x, y;
- int32 r, g, b;
+ uint64 x, y;
+ uint32 r, g, b;
 };
 
 struct line_fxp_step
@@ -40,8 +41,8 @@ enum { Line_RGB_FractBits = 12 };
 template<bool goraud>
 static INLINE void LinePointToFXPCoord(const line_point &point, const line_fxp_step &step, line_fxp_coord &coord)
 {
- coord.x = ((int64)point.x << Line_XY_FractBits) | (1LL << (Line_XY_FractBits - 1));
- coord.y = ((int64)point.y << Line_XY_FractBits) | (1LL << (Line_XY_FractBits - 1));
+ coord.x = ((uint64)point.x << Line_XY_FractBits) | (1ULL << (Line_XY_FractBits - 1));
+ coord.y = ((uint64)point.y << Line_XY_FractBits) | (1ULL << (Line_XY_FractBits - 1));
 
  coord.x -= 1024;
 
@@ -56,10 +57,9 @@ static INLINE void LinePointToFXPCoord(const line_point &point, const line_fxp_s
  }
 }
 
-template<typename T, unsigned bits>
-static INLINE T LineDivide(T delta, int32 dk)
+static INLINE int64 LineDivide(int64 delta, int32 dk)
 {
- delta <<= bits;
+ delta = (uint64)delta << Line_XY_FractBits;
 
  if(delta < 0)
   delta -= dk - 1;
@@ -86,28 +86,28 @@ static INLINE void LinePointsToFXPStep(const line_point &point0, const line_poin
   return;
  }
 
- step.dx_dk = LineDivide<int64, Line_XY_FractBits>(point1.x - point0.x, dk);
- step.dy_dk = LineDivide<int64, Line_XY_FractBits>(point1.y - point0.y, dk);
+ step.dx_dk = LineDivide(point1.x - point0.x, dk);
+ step.dy_dk = LineDivide(point1.y - point0.y, dk);
 
  if(goraud)
  {
-  step.dr_dk = ((point1.r - point0.r) << Line_RGB_FractBits) / dk;
-  step.dg_dk = ((point1.g - point0.g) << Line_RGB_FractBits) / dk;
-  step.db_dk = ((point1.b - point0.b) << Line_RGB_FractBits) / dk;
+  step.dr_dk = (int32)((uint32)(point1.r - point0.r) << Line_RGB_FractBits) / dk;
+  step.dg_dk = (int32)((uint32)(point1.g - point0.g) << Line_RGB_FractBits) / dk;
+  step.db_dk = (int32)((uint32)(point1.b - point0.b) << Line_RGB_FractBits) / dk;
  }
 }
 
 template<bool goraud>
-static INLINE void AddLineStep(line_fxp_coord &point, const line_fxp_step &step, int32 count = 1)
+static INLINE void AddLineStep(line_fxp_coord &point, const line_fxp_step &step)
 {
- point.x += step.dx_dk * count;
- point.y += step.dy_dk * count;
+ point.x += step.dx_dk;
+ point.y += step.dy_dk;
  
  if(goraud)
  {
-  point.r += step.dr_dk * count;
-  point.g += step.dg_dk * count;
-  point.b += step.db_dk * count;
+  point.r += step.dr_dk;
+  point.g += step.dg_dk;
+  point.b += step.db_dk;
  }
 }
 
@@ -125,19 +125,12 @@ void PS_GPU::DrawLine(line_point *points)
  k = (i_dx > i_dy) ? i_dx : i_dy;
 
  if(i_dx >= 1024)
- {
-  PSX_DBG(PSX_DBG_WARNING, "[GPU] Line too long: i_dx=%d\n", i_dx);
   return;
- }
 
  if(i_dy >= 512)
- {
-  PSX_DBG(PSX_DBG_WARNING, "[GPU] Line too long: i_dy=%d\n", i_dy);
   return;
- }
 
- // May not be correct(do tests for the case of k == i_dy on real thing.
- if(points[0].x > points[1].x)
+ if(points[0].x >= points[1].x && k)
  {
   line_point tmp = points[1];
 
@@ -145,7 +138,7 @@ void PS_GPU::DrawLine(line_point *points)
   points[0] = tmp;  
  }
 
- DrawTimeAvail -= k * ((BlendMode >= 0) ? 2 : 1);
+ DrawTimeAvail -= k * 2;
 
  //
  //
@@ -181,7 +174,7 @@ void PS_GPU::DrawLine(line_point *points)
     b = points[0].b;
    }
 
-   if(goraud && dtd)
+   if(dtd)
    {
     pix |= DitherLUT[y & 3][x & 3][r] << 0;
     pix |= DitherLUT[y & 3][x & 3][g] << 5;

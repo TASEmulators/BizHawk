@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			var domains = new List<MemoryDomain>
 			{
-				MemoryDomain.FromByteArray("Main RAM", MemoryDomain.Endian.Little, ram)
+				MemoryDomain.FromByteArray("Main RAM", MemoryDomain.Endian.Little, _ram)
 			};
 
 			var systemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
@@ -19,13 +19,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{
 					if (addr < 0 || addr >= 65536)
 						throw new ArgumentOutOfRangeException();
-					return cpu.ReadMemory((ushort)addr);
+					return Cpu.ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 65536)
 						throw new ArgumentOutOfRangeException();
-					cpu.WriteMemory((ushort)addr, value);
+					Cpu.WriteMemory((ushort)addr, value);
 				});
 
 			domains.Add(systemBusDomain);

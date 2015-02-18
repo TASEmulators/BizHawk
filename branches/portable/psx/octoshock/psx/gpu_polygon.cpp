@@ -19,6 +19,7 @@
 
 #include "psx.h"
 #include "gpu.h"
+#include "math_ops.h"
 
 namespace MDFN_IEN_PSX
 {
@@ -143,43 +144,43 @@ INLINE void PS_GPU::DrawSpan(int y, const int32 x_start, const int32 x_bound, i_
   if(LineSkipTest(y))
    return;
 
-  if(textured)
+  int32 x_ig_adjust = x_start;
+  int32 w = x_bound - x_start;
+  int32 x = sign_x_to_s32(11, x_start);
+
+  if(x < ClipX0)
   {
-   ig.u += (x_start * idl.du_dx) + (y * idl.du_dy);
-   ig.v += (x_start * idl.dv_dx) + (y * idl.dv_dy);
+   int32 delta = ClipX0 - x;
+   x_ig_adjust += delta;
+   x += delta;
+   w -= delta;
   }
 
-  if(goraud)
+  if((x + w) > (ClipX1 + 1))
+   w = ClipX1 + 1 - x;
+
+  if(w <= 0)
+   return;
+
+  //printf("%d %d %d %d\n", x, w, ClipX0, ClipX1);
+
+  AddIDeltas_DX<goraud, textured>(ig, idl, x_ig_adjust);
+  AddIDeltas_DY<goraud, textured>(ig, idl, y);
+
+  if(goraud || textured)
+   DrawTimeAvail -= w * 2;
+  else if((BlendMode >= 0) || MaskEval_TA)
+   DrawTimeAvail -= w + ((w + 1) >> 1);
+  else
+   DrawTimeAvail -= w;
+
+  do
   {
-   ig.r += (x_start * idl.dr_dx) + (y * idl.dr_dy);
-   ig.g += (x_start * idl.dg_dx) + (y * idl.dg_dy);
-   ig.b += (x_start * idl.db_dx) + (y * idl.db_dy);
-  }
+   const uint32 r = ig.r >> (COORD_FBS + COORD_POST_PADDING);
+   const uint32 g = ig.g >> (COORD_FBS + COORD_POST_PADDING);
+   const uint32 b = ig.b >> (COORD_FBS + COORD_POST_PADDING);
 
-  for(int32 xi = x_start; MDFN_LIKELY(xi < x_bound); xi++, AddIDeltas_DX<goraud, textured>(ig, idl))
-  {
-   uint32 r, g, b;
-   int32 x = sign_x_to_s32(11, xi);
-
-   if(goraud || textured)
-    DrawTimeAvail -= 2;
-   else
-    DrawTimeAvail--;
-
-   if(x > ClipX1)
-    break;
-
-   if(x < ClipX0)
-    continue;
-
-   if(!(goraud || textured) && ((BlendMode >= 0) || MaskEval_TA))
-   {
-    DrawTimeAvail -= (x & 1);
-   }
-
-   r = ig.r >> (COORD_FBS + COORD_POST_PADDING);
-   g = ig.g >> (COORD_FBS + COORD_POST_PADDING);
-   b = ig.b >> (COORD_FBS + COORD_POST_PADDING);
+   //assert(x >= ClipX0 && x <= ClipX1);
 
    if(textured)
    {
@@ -222,7 +223,10 @@ INLINE void PS_GPU::DrawSpan(int y, const int32 x_start, const int32 x_bound, i_
     
     PlotPixel<BlendMode, MaskEval_TA, false>(x, y, pix);
    }
-  }
+
+   x++;
+   AddIDeltas_DX<goraud, textured>(ig, idl);
+  } while(MDFN_LIKELY(--w > 0));
 }
 
 template<bool goraud, bool textured, int BlendMode, bool TexMult, uint32 TexMode_TA, bool MaskEval_TA>
@@ -244,6 +248,8 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
    else
     cvtemp = (1 << 1);
   }
+  else if(vertices[2].x < vertices[0].x)
+   cvtemp = (1 << 2);
   else
    cvtemp = (1 << 0);
 
@@ -406,7 +412,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
   tp->x_step[right_facing] = bound_coord_us;
   tp->x_coord[!right_facing] = base_coord + ((vertices[vo].y - vertices[0].y) * base_step);
   tp->x_step[!right_facing] = base_step;
-  tp->dec_mode = !!vo;
+  tp->dec_mode = vo;
  }
 
  {
@@ -418,7 +424,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
   tp->x_step[right_facing] = bound_coord_ls;
   tp->x_coord[!right_facing] = base_coord + ((vertices[1 ^ vp].y - vertices[0].y) * base_step); //base_coord + ((vertices[1].y - vertices[0].y) * base_step);
   tp->x_step[!right_facing] = base_step;
-  tp->dec_mode = !!vp;
+  tp->dec_mode = vp;
  }
 
  for(unsigned i = 0; i < 2; i++) //2; i++)
@@ -453,7 +459,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
      continue;
     }
 
-    DrawSpan<goraud, textured, BlendMode, TexMult, TexMode_TA, MaskEval_TA>(y, GetPolyXFP_Int(lc), GetPolyXFP_Int(rc), ig, idl);
+    DrawSpan<goraud, textured, BlendMode, TexMult, TexMode_TA, MaskEval_TA>(yi, GetPolyXFP_Int(lc), GetPolyXFP_Int(rc), ig, idl);
    }
   }
   else
@@ -471,7 +477,7 @@ INLINE void PS_GPU::DrawTriangle(tri_vertex *vertices)
      goto skipit;
     }
 
-    DrawSpan<goraud, textured, BlendMode, TexMult, TexMode_TA, MaskEval_TA>(y, GetPolyXFP_Int(lc), GetPolyXFP_Int(rc), ig, idl);
+    DrawSpan<goraud, textured, BlendMode, TexMult, TexMode_TA, MaskEval_TA>(yi, GetPolyXFP_Int(lc), GetPolyXFP_Int(rc), ig, idl);
     //
     //
     //

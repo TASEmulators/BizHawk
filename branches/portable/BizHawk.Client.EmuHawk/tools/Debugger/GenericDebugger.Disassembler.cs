@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisassemblerView.BlazingFast = true;
 				DisassemblerView.ItemCount = 0;
-				currentDisassemblerAddress = PC;
+				currentDisassemblerAddress = (uint)PCRegister.Value;
 				Disassemble();
 				DisassemblerView.Refresh();
 				DisassemblerView.BlazingFast = false;
@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (DisassemblyLines.Any() && index < DisassemblyLines.Count)
 			{
-				if (DisassemblyLines[index].Address == PC)
+				if (DisassemblyLines[index].Address == (uint)PCRegister.Value)
 				{
 					color = Color.LightCyan;
 				}
@@ -159,7 +159,10 @@ namespace BizHawk.Client.EmuHawk
 		private void DisassemblerView_SizeChanged(object sender, EventArgs e)
 		{
 			SetDisassemblerItemCount();
-			Disassemble();
+			if (CanDisassemble)
+			{
+				Disassemble();
+			}
 		}
 
 		private void DisassemblerView_KeyDown(object sender, KeyEventArgs e)
@@ -179,13 +182,11 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
+					if (blob.Length != 0) blob.AppendLine();
 					blob.Append(DisassemblyLines[index].Address)
 						.Append(" ")
-						.Append(DisassemblyLines[index].Mnemonic)
-						.AppendLine();
+						.Append(DisassemblyLines[index].Mnemonic);
 				}
-
-				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
 				Clipboard.SetDataObject(blob.ToString());
 			}
 		}
@@ -193,6 +194,22 @@ namespace BizHawk.Client.EmuHawk
 		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)
 		{
 			FullUpdate();
+		}
+
+		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
+		{
+			AddBreakpointContextMenuItem.Enabled = DisassemblerView.SelectedIndices.Count > 0;
+		}
+
+		private void AddBreakpointContextMenuItem_Click(object sender, EventArgs e)
+		{
+			var indices = DisassemblerView.SelectedIndices;
+
+			if (indices.Count > 0)
+			{
+				var line = DisassemblyLines[indices[0]];
+				BreakPointControl1.AddBreakpoint(line.Address, Emulation.Common.MemoryCallbackType.Execute);
+			}
 		}
 	}
 }

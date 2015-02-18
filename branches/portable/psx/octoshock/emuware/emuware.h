@@ -45,41 +45,6 @@ typedef __uint8_t uint8;
 #define final
 #define noexcept
 
-#ifdef _MSC_VER
-#include <intrin.h>
-//http://stackoverflow.com/questions/355967/how-to-use-msvc-intrinsics-to-get-the-equivalent-of-this-gcc-code
-//if needed
-//uint32_t __inline ctz( uint32_t value )
-//{
-//    DWORD trailing_zero = 0;
-//
-//    if ( _BitScanForward( &trailing_zero, value ) )
-//    {
-//        return trailing_zero;
-//    }
-//    else
-//    {
-//        // This is undefined, I better choose 32 than 0
-//        return 32;
-//    }
-//}
-
-uint32 __inline __builtin_clz( uint32_t value )
-{
-    unsigned long leading_zero = 0;
-
-    if ( _BitScanReverse( &leading_zero, value ) )
-    {
-       return 31 - leading_zero;
-    }
-    else
-    {
-         // Same remarks as above
-         return 32;
-    }
-}
-#endif
-
 //#if MDFN_GCC_VERSION >= MDFN_MAKE_GCCV(4,7,0)
 // #define MDFN_ASSUME_ALIGNED(p, align) __builtin_assume_aligned((p), (align))
 //#else
@@ -155,5 +120,5 @@ char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
 #ifdef _MSC_VER
 #define EW_PACKED( ... ) __pragma( pack(push, 1) ) __VA_ARGS__  __pragma( pack(pop) )
 #else
-#define EW_PACKED( ... ) __Declaration__ __VA_ARGS__ ((__packed__))
+#define EW_PACKED( ... )  __VA_ARGS__ __attribute__((__packed__))
 #endif

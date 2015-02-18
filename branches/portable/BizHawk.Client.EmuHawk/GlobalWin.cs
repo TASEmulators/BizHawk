@@ -10,9 +10,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static MainForm MainForm;
 		public static ToolManager Tools;
-#if WINDOWS
-		public static DirectSound DSound;
-#endif
 		public static IGL GL;
 		public static Bizware.BizwareGL.Drivers.OpenTK.IGL_TK IGL_GL;
 		public static GLManager.ContextRef CR_GL;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -43,8 +44,6 @@ namespace BizHawk.Client.EmuHawk
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			SetWindowText();
-
-			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
 			// Hide Status bar icons and general statusbar prep
 			MainStatusBar.Padding = new Padding(MainStatusBar.Padding.Left, MainStatusBar.Padding.Top, MainStatusBar.Padding.Left, MainStatusBar.Padding.Bottom); // Workaround to remove extra padding on right
@@ -286,11 +285,17 @@ namespace BizHawk.Client.EmuHawk
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
-#if WINDOWS
-			GlobalWin.Sound = new Sound(Handle, GlobalWin.DSound);
-#else
-			GlobalWin.Sound = new Sound();
-#endif
+			try { GlobalWin.Sound = new Sound(Handle); }
+			catch
+			{
+				string message = "Couldn't initialize sound device! Try changing the output method in Sound config.";
+				if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
+					message = "Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 44.1khz instead of 48khz in mmsys.cpl.";
+				MessageBox.Show(message, "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.Dummy;
+				GlobalWin.Sound = new Sound(Handle);
+			}
 			GlobalWin.Sound.StartSound();
 			InputManager.RewireInputChain();
 			GlobalWin.Tools = new ToolManager();
@@ -908,12 +913,16 @@ namespace BizHawk.Client.EmuHawk
 
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using(var img = bb.ToSysdrawingBitmap())
+				using (var img = bb.ToSysdrawingBitmap())
 					img.Save(fi.FullName, ImageFormat.Png);
 			}
-
+			/*
+			using (var fs = new FileStream(path + "_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
+				QuickBmpFile.Save(Global.Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
+			*/
 			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
 		}
+		//static Random r = new Random();
 
 		public void FrameBufferResized()
 		{
@@ -1261,11 +1270,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool _exit;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
-		private DateTime _frameAdvanceTimestamp = DateTime.MinValue;
+		private long _frameAdvanceTimestamp;
+		private long _frameRewindTimestamp;
 		private int _runloopFps;
 		private int _runloopLastFps;
 		private bool _runloopFrameadvance;
-		private DateTime _runloopSecond;
+		private long _runloopSecond;
 		private bool _runloopLastFf;
 		private bool _inResizeLoop;
 
@@ -1522,20 +1532,11 @@ namespace BizHawk.Client.EmuHawk
 				// note that the avi dumper has already rewired the emulator itself in this case.
 				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
 			}
-			else if (Global.Config.SoundThrottle || Global.Config.UseNewOutputBuffer)
+			else
 			{
-				// for sound throttle and new output buffer, use sync mode
 				Global.Emulator.EndAsyncSound();
 				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
 			}
-			else
-			{
-				// for vsync\clock throttle modes through old output buffer, use async
-				GlobalWin.Sound.SetAsyncInputPin(
-					!Global.Emulator.StartAsyncSound()
-						? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
-						: Global.Emulator.SoundProvider);
-				}
 				}
 
 		private void HandlePlatformMenus()
@@ -2224,7 +2225,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Emulator.HasSavestates();
 		}
 
-		private BitmapBuffer CaptureOSD()
+		public BitmapBuffer CaptureOSD()
 		{
 			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), true);
 			bb.Normalize(true);
@@ -2714,11 +2715,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var runFrame = false;
 			_runloopFrameadvance = false;
-			var now = DateTime.Now;
+			var currentTimestamp = Stopwatch.GetTimestamp();
 			var suppressCaptureRewind = false;
 
-			double frameAdvanceTimestampDelta = (now - _frameAdvanceTimestamp).TotalMilliseconds;
-			bool frameProgressTimeElapsed = Global.Config.FrameProgressDelayMs < frameAdvanceTimestampDelta;
+			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
+			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Global.Config.FrameProgressDelayMs;
 
 			if (Global.Config.SkipLagFrame && IsLagFrame && frameProgressTimeElapsed && Global.Emulator.Frame > 0)
 			{
@@ -2728,12 +2729,12 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
 			{
 				// handle the initial trigger of a frame advance
-				if (_frameAdvanceTimestamp == DateTime.MinValue)
+				if (_frameAdvanceTimestamp == 0)
 				{
 					PauseEmulator();
 					runFrame = true;
 					_runloopFrameadvance = true;
-					_frameAdvanceTimestamp = now;
+					_frameAdvanceTimestamp = currentTimestamp;
 				}
 				else
 				{
@@ -2755,7 +2756,7 @@ namespace BizHawk.Client.EmuHawk
 					PauseEmulator();
 				}
 
-				_frameAdvanceTimestamp = DateTime.MinValue;
+				_frameAdvanceTimestamp = 0;
 			}
 
 			if (!EmulatorPaused)
@@ -2763,7 +2764,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame);
+			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame, currentTimestamp);
 
 			if (UpdateFrame)
 			{
@@ -2803,10 +2804,10 @@ namespace BizHawk.Client.EmuHawk
 
 				_runloopFps++;
 
-				if ((DateTime.Now - _runloopSecond).TotalSeconds > 1)
+				if ((double)(currentTimestamp - _runloopSecond) / Stopwatch.Frequency >= 1.0)
 				{
 					_runloopLastFps = _runloopFps;
-					_runloopSecond = DateTime.Now;
+					_runloopSecond = currentTimestamp;
 					_runloopFps = 0;
 					updateFpsString = true;
 				}
@@ -2905,15 +2906,9 @@ namespace BizHawk.Client.EmuHawk
 				UpdateFrame = false;
 			}
 
-			if (genSound && !coreskipaudio)
-			{
-				GlobalWin.Sound.UpdateSound();
+			bool outputSilence = !genSound || coreskipaudio;
+			GlobalWin.Sound.UpdateSound(outputSilence);
 			}
-			else
-			{
-				GlobalWin.Sound.UpdateSilence();
-			}
-		}
 
 		#endregion
 
@@ -3330,6 +3325,7 @@ namespace BizHawk.Client.EmuHawk
 					Deterministic = deterministic,
 					MessageCallback = GlobalWin.OSD.AddMessage
 				};
+			Global.FirmwareManager.RecentlyServed.Clear();
 
 			loader.OnLoadError += ShowLoadError;
 			loader.OnLoadSettings += CoreSettings;
@@ -3347,16 +3343,16 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result)
 							{
-				if (loader.LoadedEmulator is TI83 && Global.Config.TI83autoloadKeyPad)
-						{
-					GlobalWin.Tools.Load<TI83KeyPad>();
-				}
-
 				Global.Emulator = loader.LoadedEmulator;
 				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
 				CoreFileProvider.SyncCoreCommInputSignals();
 				InputManager.SyncControls();
+
+				if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+				{
+					GlobalWin.Tools.Load<TI83KeyPad>();
+				}
 
 				if (loader.LoadedEmulator is NES)
 				{
@@ -3444,6 +3440,15 @@ namespace BizHawk.Client.EmuHawk
 				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
 				{
 					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
+
+				if (Global.FirmwareManager.RecentlyServed.Count > 0)
+				{
+					Console.WriteLine("Active Firmwares:");
+					foreach (var f in Global.FirmwareManager.RecentlyServed)
+					{
+						Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
+					}
 				}
 				return true;
 			}
@@ -3690,7 +3695,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool Rewind(ref bool runFrame)
+		private bool Rewind(ref bool runFrame, long currentTimestamp)
 		{
 			if (IsSlave && master.WantsToControlRewind)
 			{
@@ -3705,10 +3710,33 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
 			{
-				Global.Rewinder.Rewind(1);
+				if (EmulatorPaused)
+				{
+					if (_frameRewindTimestamp == 0)
+					{
+						isRewinding = true;
+						_frameRewindTimestamp = currentTimestamp;
+					}
+					else
+					{
+						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
+						isRewinding = timestampDeltaMs >= Global.Config.FrameProgressDelayMs;
+					}
+				}
+				else
+				{
+					isRewinding = true;
+				}
 
+				if (isRewinding)
+				{
+				Global.Rewinder.Rewind(1);
 				runFrame = Global.Rewinder.Count != 0;
-				isRewinding = true;
+			}
+			}
+			else
+			{
+				_frameRewindTimestamp = 0;
 			}
 
 			return isRewinding;
@@ -3730,11 +3758,6 @@ namespace BizHawk.Client.EmuHawk
 				//Reconnect
 
 			}
-		}
-
-		private void barcodeReaderToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<BarcodeEntry>();
 		}
 
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)

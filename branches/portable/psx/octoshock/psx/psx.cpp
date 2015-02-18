@@ -29,6 +29,8 @@
 #include "emuware/EW_state.h"
 
 #include "input/dualshock.h"
+#include "input/dualanalog.h"
+#include "input/gamepad.h"
 
 //#include <mednafen/PSFLoader.h>
 
@@ -45,8 +47,8 @@ namespace MDFN_IEN_PSX
 {
 
 
-static unsigned psx_dbg_level = 0;
 #if PSX_DBGPRINT_ENABLE
+static unsigned psx_dbg_level = 0;
 
 void PSX_DBG_BIOS_PUTC(uint8 c) noexcept
 {
@@ -79,8 +81,9 @@ void PSX_DBG(unsigned level, const char *format, ...) noexcept
   va_end(ap);
  }
 }
+#else
+static unsigned const psx_dbg_level = 0;
 #endif
-
 
 struct MDFN_PseudoRNG	// Based off(but not the same as) public-domain "JKISS" PRNG.
 {
@@ -210,6 +213,15 @@ static struct
  };
 } SysControl;
 
+static unsigned DMACycleSteal = 0;	// Doesn't need to be saved in save states, since it's recalculated in the ForceEventUpdates() call chain.
+
+void PSX_SetDMACycleSteal(unsigned stealage)
+{
+ if(stealage > 200)	// Due to 8-bit limitations in the CPU core.
+  stealage = 200;
+
+ DMACycleSteal = stealage;
+}
 
 //
 // Event stuff
@@ -335,42 +347,11 @@ void ForceEventUpdates(const pscpu_timestamp_t timestamp)
 bool PSX_EventHandler(const pscpu_timestamp_t timestamp)
 {
  event_list_entry *e = events[PSX_EVENT__SYNFIRST].next;
-#if PSX_EVENT_SYSTEM_CHECKS
- pscpu_timestamp_t prev_event_time = 0;
-#endif
-#if 0
- {
-   printf("EventHandler - timestamp=%8d\n", timestamp);
-   event_list_entry *moo = &events[PSX_EVENT__SYNFIRST];
-   while(moo)
-   {
-    printf("%u: %8d\n", moo->which, moo->event_time);
-    moo = moo->next;
-   }
- }
-#endif
-
-#if PSX_EVENT_SYSTEM_CHECKS
- assert(Running == 0 || timestamp >= e->event_time);	// If Running == 0, our EventHandler 
-#endif
 
  while(timestamp >= e->event_time)	// If Running = 0, PSX_EventHandler() may be called even if there isn't an event per-se, so while() instead of do { ... } while
  {
   event_list_entry *prev = e->prev;
   pscpu_timestamp_t nt;
-
-#if PSX_EVENT_SYSTEM_CHECKS
- // Sanity test to make sure events are being evaluated in temporal order.
-  if(e->event_time < prev_event_time)
-   abort();
-  prev_event_time = e->event_time;
-#endif
-
-  //printf("Event: %u %8d\n", e->which, e->event_time);
-#if PSX_EVENT_SYSTEM_CHECKS
-  if((timestamp - e->event_time) > 50)
-   printf("Late: %u %d --- %8d\n", e->which, timestamp - e->event_time, timestamp);
-#endif
 
   switch(e->which)
   {
@@ -406,26 +387,6 @@ bool PSX_EventHandler(const pscpu_timestamp_t timestamp)
   e = prev->next;
  }
 
-#if PSX_EVENT_SYSTEM_CHECKS
- for(int i = PSX_EVENT__SYNFIRST + 1; i < PSX_EVENT__SYNLAST; i++)
- {
-  if(timestamp >= events[i].event_time)
-  {
-   printf("BUG: %u\n", i);
-
-   event_list_entry *moo = &events[PSX_EVENT__SYNFIRST];
-
-   while(moo)
-   {
-    printf("%u: %8d\n", moo->which, moo->event_time);
-    moo = moo->next;
-   }
-
-   abort();
-  }
- }
-#endif
-
  return(Running);
 }
 
@@ -441,14 +402,6 @@ void PSX_RequestMLExit(void)
 // End event stuff
 //
 
-void DMA_CheckReadDebug(uint32 A);
-
-static unsigned sucksuck = 0;
-void PSX_SetDMASuckSuck(unsigned suckage)
-{
- sucksuck = suckage;
-}
-
 
 // Remember to update MemPeek<>() when we change address decoding in MemRW()
 template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu_timestamp_t &timestamp, uint32 A, uint32 &V)
@@ -461,13 +414,9 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
  #endif
 
  if(!IsWrite)
-  timestamp += sucksuck;
-
- //if(A == 0xa0 && IsWrite)
- // DBG_Break();
+  timestamp += DMACycleSteal;
 
  if(A < 0x00800000)
- //if(A <= 0x1FFFFF)
  {
   if(IsWrite)
   {
@@ -478,8 +427,6 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
    timestamp += 3;
   }
 
-  //DMA_CheckReadDebug(A);
-  //assert(A <= 0x1FFFFF);
   if(Access24)
   {
    if(IsWrite)
@@ -795,7 +742,6 @@ void  PSX_MemWrite16(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 
 void  PSX_MemWrite24(pscpu_timestamp_t timestamp, uint32 A, uint32 V)
 {
- //assert(0);
  MemRW<uint32, true, true>(timestamp, A, V);
 }
 
@@ -1120,6 +1066,22 @@ struct {
 				return ret;
 				break;
 			}
+		case ePeripheralType_DualAnalog:
+			{
+				IO_DualAnalog* io_dualanalog = (IO_DualAnalog*)buf;
+				if(io_dualanalog->active) ret = SHOCK_TRUE;
+				if(clear) io_dualanalog->active = 0;
+				return ret;
+				break;
+			}
+		case ePeripheralType_Pad:
+			{
+				IO_Gamepad* io_gamepad = (IO_Gamepad*)buf;
+				if(io_gamepad->active) ret = SHOCK_TRUE;
+				if(clear) io_gamepad->active = 0;
+				return ret;
+				break;
+			}
 
 		case ePeripheralType_None:
 			return SHOCK_NOCANDO;
@@ -1150,6 +1112,24 @@ struct {
 				io_dualshock->right_y = right_y;
 				io_dualshock->left_x = left_x;
 				io_dualshock->left_y = left_y;
+				return SHOCK_OK;
+			}
+		case ePeripheralType_Pad:
+			{
+				IO_Gamepad* io_gamepad = (IO_Gamepad*)buf;
+				io_gamepad->buttons[0] = (buttons>>0)&0xFF;
+				io_gamepad->buttons[1] = (buttons>>8)&0xFF;
+				return SHOCK_OK;
+			}
+		case ePeripheralType_DualAnalog:
+			{
+				IO_DualAnalog* io_dualanalog = (IO_DualAnalog*)buf;
+				io_dualanalog->buttons[0] = (buttons>>0)&0xFF;
+				io_dualanalog->buttons[1] = (buttons>>8)&0xFF;
+				io_dualanalog->right_x = right_x;
+				io_dualanalog->right_y = right_y;
+				io_dualanalog->left_x = left_x;
+				io_dualanalog->left_y = left_y;
 				return SHOCK_OK;
 			}
 		
@@ -1285,8 +1265,7 @@ EW_EXPORT s32 shock_Create(void** psx, s32 region, void* firmware512k)
 	s_ShockState.power = false;
 	s_ShockState.eject = false;
 
-	//set tray closed with no disc
-	CDC->SetDisc(false,NULL,"");
+	//do we need to do anything particualr with the CDC disc/tray state? survey says... no.
 
 	return SHOCK_OK;
 }
@@ -1896,15 +1875,41 @@ EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
 		if(ret != SHOCK_OK) return ret;
 	}
 
+	s_CurrDiscInfo = info;
+	s_CurrDisc = disc;
+
+	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id, false);
+
+	return SHOCK_OK;
+}
+
+EW_EXPORT s32 shock_PokeDisc(void* psx, ShockDiscRef* disc)
+{
+	//TODO HACKS! DONT COPY/PASTE SO MUCH! REFACTOR DISC ID STUFF!
+
+	//let's talk about why this function is needed. well, let's paste an old comment on the subject:
 	//heres a comment from some old savestating code. something to keep in mind (maybe or maybe not a surprise depending on your point of view)
 	//"Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future."
 	//I'm not really sure I like how SetDisc works, so I'm glad this was brought to our attention
 
+		//TODO - non-psx disc is legal here. should pass null ID to CDC setdisc
+	
+	//analyze disc so we dont have to annoyingly manage it from client
+
+	//TODO - so junky
+	ShockDiscInfo info;
+	strcpy(info.id,"\0\0\0\0");
+	info.region = REGION_NONE;
+	if(disc != NULL)
+	{
+		s32 ret = shock_AnalyzeDisc(disc,&info);
+		if(ret != SHOCK_OK) return ret;
+	}
+
 	s_CurrDiscInfo = info;
 	s_CurrDisc = disc;
 
-	//set the disc to the CDC, but since its necessarily open to insert, this is false
-	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id,true);
 
 	return SHOCK_OK;
 }
@@ -1913,7 +1918,7 @@ EW_EXPORT s32 shock_OpenTray(void* psx)
 {
 	if(s_ShockState.eject) return SHOCK_NOCANDO;
 	s_ShockState.eject = true;
-	CDC->SetDisc(true,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->OpenTray();
 	return SHOCK_OK;
 }
 
@@ -1921,7 +1926,7 @@ EW_EXPORT s32 shock_CloseTray(void* psx)
 {
 	if(!s_ShockState.eject) return SHOCK_NOCANDO;
 	s_ShockState.eject = false;
-	CDC->SetDisc(false,s_CurrDisc,s_CurrDiscInfo.id);
+	CDC->CloseTray(false);
 	return SHOCK_OK;
 }
 
@@ -2106,7 +2111,6 @@ static s32 AnalyzeDiscEx(ShockDiscRef* disc, ShockDiscInfo* info)
 	uint8 buf[2048];
 	uint8 fbuf[2048 + 1];
 	unsigned ipos, opos;
-	int i;
 
 	//clear it out in case of error
 	info->region = REGION_NONE;
@@ -2295,6 +2299,18 @@ EW_EXPORT s32 shock_AnalyzeDisc(ShockDiscRef* disc, ShockDiscInfo* info)
 Breakout:
 
 	return SHOCK_OK;
+}
+
+bool ShockDiscRef::ReadLBA_PW(uint8* pwbuf96, int32 lba, bool hint_fullread)
+{
+	//TODO - whats that hint mean
+	//TODO - should return false if out of range totally
+	//reference:  static const int32 LBA_Read_Minimum = -150;
+ //reference:  static const int32 LBA_Read_Maximum = 449849;	// 100 * 75 * 60 - 150 - 1
+	u8 tmp[2448];
+	ReadLBA2448(lba,tmp);
+	memcpy(pwbuf96,tmp+2352,96);
+	return true;
 }
 
 s32 ShockDiscRef::ReadLBA2448(s32 lba, void* dst2448)

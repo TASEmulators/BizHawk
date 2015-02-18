@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		public static bool DisableSecondaryThrottling;
 
 		/// <summary>
-		/// How far the sound output buffer can go below full before drastic corrective measures are taken.
+		/// The maximum number of millseconds the sound output buffer can go below full before causing a noticable sound interruption.
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 
@@ -145,6 +145,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Lynx;
 					case "PSX":
 						return SystemInfo.PSX;
+					case "AppleII":
+						return SystemInfo.AppleII;
 				}
 			}
 		}

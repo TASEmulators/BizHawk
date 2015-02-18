@@ -19,7 +19,27 @@ namespace BizHawk.Client.EmuHawk
 		VideoWriterChooserForm()
 		{
 			InitializeComponent();
+
+			CaptureWidth = Global.Emulator.CoreComm.NominalWidth;
+			CaptureHeight = Global.Emulator.CoreComm.NominalHeight;
+
+			if (Global.Config.AVI_CaptureOSD)
+			{
+				using (var bb = GlobalWin.MainForm.CaptureOSD())
+				{
+					CaptureWidth = bb.Width;
+					CaptureHeight = bb.Height;
+				}
+			}
+
+			lblSize.Text = string.Format("Size:\r\n{0}x{1}", CaptureWidth, CaptureHeight);
+
+			if (CaptureWidth % 4 != 0 || CaptureHeight % 4 != 0)
+				lblResolutionWarning.Visible = true;
+			else lblResolutionWarning.Visible = false;
 		}
+
+		int CaptureWidth, CaptureHeight;
 
 		/// <summary>
 		/// chose an IVideoWriter
@@ -100,8 +120,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonAuto_Click(object sender, EventArgs e)
 		{
-			numericTextBoxW.Text = Global.Emulator.CoreComm.NominalWidth.ToString();
-			numericTextBoxH.Text = Global.Emulator.CoreComm.NominalHeight.ToString();
+			numericTextBoxW.Text = CaptureWidth.ToString();
+			numericTextBoxH.Text = CaptureHeight.ToString();
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)

@@ -34,14 +34,20 @@ namespace BizHawk.Client.Common
 
 				if (Global.Config.SaveScreenshotWithStates)
 				{
-					var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+					var vp = Global.Emulator.VideoProvider();
+					var buff = vp.GetVideoBuffer();
 
-					// If user wants large screenshots, or screenshot is small enough
-					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
+					int out_w = vp.BufferWidth;
+					int out_h = vp.BufferHeight;
+
+					// if buffer is too big, scale down screenshot
+					if (!Global.Config.SaveLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
 					{
-						using (new SimpleTime("Save Framebuffer"))
-							bs.PutLump(BinaryStateLump.Framebuffer, DumpFramebuffer);
+						out_w /= 2;
+						out_h /= 2;
 					}
+					using (new SimpleTime("Save Framebuffer"))
+						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
 				}
 
 				if (Global.MovieSession.Movie.IsActive)
@@ -59,21 +65,24 @@ namespace BizHawk.Client.Common
 
 		public static void PopulateFramebuffer(BinaryReader br)
 		{
-			var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
 			try
 			{
-				for (int i = 0; i < buff.Length; i++)
-				{
-					int j = br.ReadInt32();
-					buff[i] = j;
-				}
+				using (new SimpleTime("Load Framebuffer"))
+					QuickBmpFile.Load(Global.Emulator.VideoProvider(), br.BaseStream);
 			}
-			catch (EndOfStreamException) { }
-		}
-
-		public static void DumpFramebuffer(BinaryWriter bw)
-		{
-			bw.Write(Global.Emulator.VideoProvider().GetVideoBuffer());
+			catch
+			{
+				var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+				try
+				{
+					for (int i = 0; i < buff.Length; i++)
+					{
+						int j = br.ReadInt32();
+						buff[i] = j;
+					}
+				}
+				catch (EndOfStreamException) { }
+			}
 		}
 
 		public static bool LoadStateFile(string path, string name)

@@ -14,6 +14,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -35,36 +36,73 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string SystemId { get { return "PSX"; } }
 
-		public static readonly ControllerDefinition PSXControllerDefinition = new ControllerDefinition
+		private void SetControllerButtons()
 		{
-			Name = "DualShock Controller",
-			BoolButtons =
-			{					
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 Square", "P1 Triangle", "P1 Circle", "P1 Cross", "P1 L1", 
-				"P1 R1",  "P1 L2", "P1 R2", "P1 L3", "P1 R3", "P1 MODE",  
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 Square", "P2 Triangle", "P2 Circle", "P2 Cross", "P2 L1", 
-				"P2 R1",  "P2 L2", "P2 R2", "P2 L3", "P2 R3", "P2 MODE",
-				"Open", "Close", "Reset", 
-			},
-			FloatControls =
+			ControllerDefinition = new ControllerDefinition();
+			ControllerDefinition.Name = _SyncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad) 
+				? "PSX Gamepad Controller"
+				: "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
+
+			ControllerDefinition.BoolButtons.Clear();
+			ControllerDefinition.FloatControls.Clear();
+			
+			for (int i = 0; i < _SyncSettings.Controllers.Length; i++)
 			{
-				"P1 LStick X", "P1 LStick Y", "P1 RStick X", "P1 RStick Y",
-				"P2 LStick X", "P2 LStick Y", "P2 RStick X", "P2 RStick Y",
-				"Disc Select",
-			},
-			FloatRanges = 
+				if (_SyncSettings.Controllers[i].IsConnected)
+				{
+					ControllerDefinition.BoolButtons.AddRange(new[]
+					{
+						"P" + (i + 1) + " Up",
+						"P" + (i + 1) + " Down",
+						"P" + (i + 1) + " Left",
+						"P" + (i + 1) + " Right",
+						"P" + (i + 1) + " Select",
+						"P" + (i + 1) + " Start",
+						"P" + (i + 1) + " Square",
+						"P" + (i + 1) + " Triangle",
+						"P" + (i + 1) + " Circle",
+						"P" + (i + 1) + " Cross",
+						"P" + (i + 1) + " L1", 
+						"P" + (i + 1) + " R1",
+						"P" + (i + 1) + " L2",
+						"P" + (i + 1) + " R2",
+					});
+
+					if (_SyncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad)
+					{
+						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " L3");
+						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " R3");
+						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " MODE");
+
+						ControllerDefinition.FloatControls.AddRange(new[]
+						{
+							"P" + (i + 1) + " LStick X",
+							"P" + (i + 1) + " LStick Y",
+							"P" + (i + 1) + " RStick X",
+							"P" + (i + 1) + " RStick Y"
+						});
+
+						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+					}
+				}
+			}
+
+			ControllerDefinition.BoolButtons.AddRange(new[]
 			{
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {0.0f, 128.0f, 255.0f},
-				new[] {255.0f, 128.0f, 0.0f},
-				new[] {-1f,-1f,-1f}, //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
-			},
-		};
+				"Open",
+				"Close",
+				"Reset"
+			});
+
+			ControllerDefinition.FloatControls.Add("Disc Select");
+
+			ControllerDefinition.FloatRanges.Add(
+				new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+			);
+		}
 
 		public string BoardName { get { return null; } }
 
@@ -310,9 +348,24 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_CloseTray(psx);
 			}
 
-			//connect two dualshocks, thats all we're doing right now
-			OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.DualShock);
-			OctoshockDll.shock_Peripheral_Connect(psx, 0x02, OctoshockDll.ePeripheralType.DualShock);
+			//setup the controller based on sync settings
+			SetControllerButtons();
+
+			var lookup = new Dictionary<ControllerSetting.ControllerType,OctoshockDll.ePeripheralType> {
+				{ ControllerSetting.ControllerType.Gamepad, OctoshockDll.ePeripheralType.Pad },
+				{ ControllerSetting.ControllerType.DualAnalog, OctoshockDll.ePeripheralType.DualAnalog },
+				{ ControllerSetting.ControllerType.DualShock, OctoshockDll.ePeripheralType.DualShock },
+			};
+
+			if (_SyncSettings.Controllers[0].IsConnected)
+			{
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[0].Type]);
+			}
+
+			if (_SyncSettings.Controllers[1].IsConnected)
+			{
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, lookup[_SyncSettings.Controllers[1].Type]);
+			}
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
@@ -353,58 +406,64 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			uint buttons = 0;
 
-			//dualshock style
-			if (Controller["P1 Select"]) buttons |= 1;
-			if (Controller["P1 L3"]) buttons |= 2;
-			if (Controller["P1 R3"]) buttons |= 4;
-			if (Controller["P1 Start"]) buttons |= 8;
-			if (Controller["P1 Up"]) buttons |= 16;
-			if (Controller["P1 Right"]) buttons |= 32;
-			if (Controller["P1 Down"]) buttons |= 64;
-			if (Controller["P1 Left"]) buttons |= 128;
-			if (Controller["P1 L2"]) buttons |= 256;
-			if (Controller["P1 R2"]) buttons |= 512;
-			if (Controller["P1 L1"]) buttons |= 1024;
-			if (Controller["P1 R1"]) buttons |= 2048;
-			if (Controller["P1 Triangle"]) buttons |= 4096;
-			if (Controller["P1 Circle"]) buttons |= 8192;
-			if (Controller["P1 Cross"]) buttons |= 16384;
-			if (Controller["P1 Square"]) buttons |= 32768;
-			if (Controller["P1 MODE"]) buttons |= 65536;
+			if (_SyncSettings.Controllers[0].IsConnected)
+			{
+				//dualshock style
+				if (Controller["P1 Select"]) buttons |= 1;
+				if (Controller["P1 L3"]) buttons |= 2;
+				if (Controller["P1 R3"]) buttons |= 4;
+				if (Controller["P1 Start"]) buttons |= 8;
+				if (Controller["P1 Up"]) buttons |= 16;
+				if (Controller["P1 Right"]) buttons |= 32;
+				if (Controller["P1 Down"]) buttons |= 64;
+				if (Controller["P1 Left"]) buttons |= 128;
+				if (Controller["P1 L2"]) buttons |= 256;
+				if (Controller["P1 R2"]) buttons |= 512;
+				if (Controller["P1 L1"]) buttons |= 1024;
+				if (Controller["P1 R1"]) buttons |= 2048;
+				if (Controller["P1 Triangle"]) buttons |= 4096;
+				if (Controller["P1 Circle"]) buttons |= 8192;
+				if (Controller["P1 Cross"]) buttons |= 16384;
+				if (Controller["P1 Square"]) buttons |= 32768;
+				if (Controller["P1 MODE"]) buttons |= 65536;
 
-			byte left_x = (byte)Controller.GetFloat("P1 LStick X");
-			byte left_y = (byte)Controller.GetFloat("P1 LStick Y");
-			byte right_x = (byte)Controller.GetFloat("P1 RStick X");
-			byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
+				byte left_x = (byte)Controller.GetFloat("P1 LStick X");
+				byte left_y = (byte)Controller.GetFloat("P1 LStick Y");
+				byte right_x = (byte)Controller.GetFloat("P1 RStick X");
+				byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
 
-			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
+				OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
+			}
 
-			//dualshock style
-			buttons = 0;
-			if (Controller["P2 Select"]) buttons |= 1;
-			if (Controller["P2 L3"]) buttons |= 2;
-			if (Controller["P2 R3"]) buttons |= 4;
-			if (Controller["P2 Start"]) buttons |= 8;
-			if (Controller["P2 Up"]) buttons |= 16;
-			if (Controller["P2 Right"]) buttons |= 32;
-			if (Controller["P2 Down"]) buttons |= 64;
-			if (Controller["P2 Left"]) buttons |= 128;
-			if (Controller["P2 L2"]) buttons |= 256;
-			if (Controller["P2 R2"]) buttons |= 512;
-			if (Controller["P2 L1"]) buttons |= 1024;
-			if (Controller["P2 R1"]) buttons |= 2048;
-			if (Controller["P2 Triangle"]) buttons |= 4096;
-			if (Controller["P2 Circle"]) buttons |= 8192;
-			if (Controller["P2 Cross"]) buttons |= 16384;
-			if (Controller["P2 Square"]) buttons |= 32768;
-			if (Controller["P2 MODE"]) buttons |= 65536;
+			if (_SyncSettings.Controllers[1].IsConnected)
+			{
+				//dualshock style
+				buttons = 0;
+				if (Controller["P2 Select"]) buttons |= 1;
+				if (Controller["P2 L3"]) buttons |= 2;
+				if (Controller["P2 R3"]) buttons |= 4;
+				if (Controller["P2 Start"]) buttons |= 8;
+				if (Controller["P2 Up"]) buttons |= 16;
+				if (Controller["P2 Right"]) buttons |= 32;
+				if (Controller["P2 Down"]) buttons |= 64;
+				if (Controller["P2 Left"]) buttons |= 128;
+				if (Controller["P2 L2"]) buttons |= 256;
+				if (Controller["P2 R2"]) buttons |= 512;
+				if (Controller["P2 L1"]) buttons |= 1024;
+				if (Controller["P2 R1"]) buttons |= 2048;
+				if (Controller["P2 Triangle"]) buttons |= 4096;
+				if (Controller["P2 Circle"]) buttons |= 8192;
+				if (Controller["P2 Cross"]) buttons |= 16384;
+				if (Controller["P2 Square"]) buttons |= 32768;
+				if (Controller["P2 MODE"]) buttons |= 65536;
 
-			left_x = (byte)Controller.GetFloat("P2 LStick X");
-			left_y = (byte)Controller.GetFloat("P2 LStick Y");
-			right_x = (byte)Controller.GetFloat("P2 RStick X");
-			right_y = (byte)Controller.GetFloat("P2 RStick Y");
+				byte left_x = (byte)Controller.GetFloat("P2 LStick X");
+				byte left_y = (byte)Controller.GetFloat("P2 LStick Y");
+				byte right_x = (byte)Controller.GetFloat("P2 RStick X");
+				byte right_y = (byte)Controller.GetFloat("P2 RStick Y");
 
-			OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x02, buttons, left_x, left_y, right_x, right_y);
+				OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x02, buttons, left_x, left_y, right_x, right_y);
+			}
 		}
 
 		/// <summary>
@@ -443,6 +502,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return new System.Drawing.Size(VirtualWidth, VirtualHeight);
 		}
 
+		void PokeDisc()
+		{
+			if (CurrentDiscIndexMounted == 0)
+			{
+				currentDiscInterface = null;
+				OctoshockDll.shock_PokeDisc(psx, IntPtr.Zero);
+			}
+			else
+			{
+				currentDiscInterface = discInterfaces[CurrentDiscIndexMounted - 1];
+				OctoshockDll.shock_PokeDisc(psx, currentDiscInterface.OctoshockHandle);
+			}
+		}
+
 		void FrameAdvance_PrepDiscState()
 		{
 			//reminder: if this is the beginning of time, we can begin with the disc ejected or inserted.
@@ -463,8 +536,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				)
 			{
 				//dont replace default disc with the leave-default placeholder!
-				if (requestedDisc == -1) { }
-				else CurrentDiscIndexMounted = requestedDisc;
+				if (requestedDisc == -1)
+				{
+
+				}
+				else
+				{
+					CurrentDiscIndexMounted = requestedDisc;
+				}
+
 				if (CurrentDiscIndexMounted == 0)
 				{
 					currentDiscInterface = null;
@@ -575,7 +655,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return PSXControllerDefinition; } }
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
 
 		public int Frame { get; private set; }
@@ -746,6 +826,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Frame = s.ExtraData.Frame;
 			CurrentTrayOpen = s.ExtraData.CurrentDiscEjected;
 			CurrentDiscIndexMounted = s.ExtraData.CurrentDiscIndexMounted;
+			PokeDisc();
 		}
 
 		byte[] savebuff;
@@ -811,8 +892,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				Frame = reader.ReadInt32();
 				CurrentTrayOpen = reader.ReadBoolean();
 				CurrentDiscIndexMounted = reader.ReadInt32();
-
-				//TODO - need a method to sneak the required disc, without having to do a proper eject sequence
+				PokeDisc();
 			}
 		}
 
@@ -851,7 +931,46 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			public SyncSettings Clone()
 			{
-				return (SyncSettings)MemberwiseClone();
+				var ret = (SyncSettings)MemberwiseClone();
+				ret.Controllers = Controllers.Select(x => x.Clone()).ToArray();
+
+				return ret;
+			}
+
+			public ControllerSetting[] Controllers = 
+			{
+				new ControllerSetting
+				{
+					IsConnected = true,
+					Type = ControllerSetting.ControllerType.DualShock
+				},
+				new ControllerSetting
+				{
+					IsConnected = false,
+					Type = ControllerSetting.ControllerType.DualShock
+				}
+			};
+		}
+
+		public class ControllerSetting
+		{
+			public ControllerSetting Clone()
+			{
+				return (ControllerSetting)this.MemberwiseClone();
+			}
+
+			public bool IsConnected { get; set; }
+			public ControllerType Type { get; set; }
+
+			public enum ControllerType
+			{
+				Gamepad,
+
+				[Description("Dual Analog")]
+				DualAnalog,
+
+				[Description("Dual Shock")]
+				DualShock
 			}
 		}
 
@@ -937,8 +1056,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
+			var ret = !DeepEquality.DeepEquals(_SyncSettings, o);
 			_SyncSettings = o;
-			return false;
+			return ret;
 		}
 
 		#endregion

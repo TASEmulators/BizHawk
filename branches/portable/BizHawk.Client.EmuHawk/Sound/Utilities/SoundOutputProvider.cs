@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -76,7 +76,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void OnUnderrun()
+		// To let us know about buffer underruns, rewinding, fast-forwarding, etc.
+		public void OnVolatility()
 		{
 			_extraCountHistory.Clear();
 			_outputCountHistory.Clear();

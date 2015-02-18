@@ -846,6 +846,7 @@ while(sample_clocks > 0)
    accum[lr] += ((reverb[lr] * ReverbVol[lr]) >> 15);
    clamp(&accum[lr], -32768, 32767);
    output[lr] = (accum[lr] * GlobalSweep[lr].ReadVolume()) >> 15;
+   clamp(&output[lr], -32768, 32767);
   }
 
   if(IntermediateBufferPos < 4096)	// Overflow might occur in some debugger use cases.
@@ -1304,6 +1305,10 @@ uint32 PS_SPU::GetRegister(unsigned int which, char *special, const uint32 speci
 	break;
   }
  }
+ else if(which >= GSREG_FB_SRC_A && which <= GSREG_IN_COEF_R)
+ {
+	ret = ReverbRegs[which - GSREG_FB_SRC_A];
+ }
  else switch(which)
  {
   case GSREG_SPUCONTROL:
@@ -1377,43 +1382,6 @@ uint32 PS_SPU::GetRegister(unsigned int which, char *special, const uint32 speci
   case GSREG_BLOCKEND:
 	ret = BlockEnd;
 	break;
-
-
-  //case GSREG_FB_SRC_A ... GSREG_IN_COEF_R:
-	case GSREG_FB_SRC_A:
-  case GSREG_FB_SRC_B:
-  case GSREG_IIR_ALPHA:
-  case GSREG_ACC_COEF_A:
-  case GSREG_ACC_COEF_B:
-  case GSREG_ACC_COEF_C:
-  case GSREG_ACC_COEF_D:
-  case GSREG_IIR_COEF:
-  case GSREG_FB_ALPHA:
-  case GSREG_FB_X:
-  case GSREG_IIR_DEST_A0:
-  case GSREG_IIR_DEST_A1:
-  case GSREG_ACC_SRC_A0:
-  case GSREG_ACC_SRC_A1:
-  case GSREG_ACC_SRC_B0:
-  case GSREG_ACC_SRC_B1:
-  case GSREG_IIR_SRC_A0:
-  case GSREG_IIR_SRC_A1:
-  case GSREG_IIR_DEST_B0:
-  case GSREG_IIR_DEST_B1:
-  case GSREG_ACC_SRC_C0:
-  case GSREG_ACC_SRC_C1:
-  case GSREG_ACC_SRC_D0:
-  case GSREG_ACC_SRC_D1:
-  case GSREG_IIR_SRC_B1:
-  case GSREG_IIR_SRC_B0:
-  case GSREG_MIX_DEST_A0:
-  case GSREG_MIX_DEST_A1:
-  case GSREG_MIX_DEST_B0:
-  case GSREG_MIX_DEST_B1:
-  case GSREG_IN_COEF_L:
-  case GSREG_IN_COEF_R:
-	ret = ReverbRegs[which - GSREG_FB_SRC_A];
-	break;
  }
 
  return(ret);
@@ -1421,8 +1389,11 @@ uint32 PS_SPU::GetRegister(unsigned int which, char *special, const uint32 speci
 
 void PS_SPU::SetRegister(unsigned int which, uint32 value)
 {
-
- switch(which)
+ if(which >= GSREG_FB_SRC_A && which <= GSREG_IN_COEF_R)
+ {
+	ReverbRegs[which - GSREG_FB_SRC_A] = value;
+ }
+ else switch(which)
  {
   case GSREG_SPUCONTROL:
 	SPUControl = value;
@@ -1499,44 +1470,6 @@ void PS_SPU::SetRegister(unsigned int which, uint32 value)
   case GSREG_BLOCKEND:
         BlockEnd = value & 0xFFFFFF;
         break;
-
-
- //case GSREG_FB_SRC_A ... GSREG_IN_COEF_R:
-	case GSREG_FB_SRC_A:
-  case GSREG_FB_SRC_B:
-  case GSREG_IIR_ALPHA:
-  case GSREG_ACC_COEF_A:
-  case GSREG_ACC_COEF_B:
-  case GSREG_ACC_COEF_C:
-  case GSREG_ACC_COEF_D:
-  case GSREG_IIR_COEF:
-  case GSREG_FB_ALPHA:
-  case GSREG_FB_X:
-  case GSREG_IIR_DEST_A0:
-  case GSREG_IIR_DEST_A1:
-  case GSREG_ACC_SRC_A0:
-  case GSREG_ACC_SRC_A1:
-  case GSREG_ACC_SRC_B0:
-  case GSREG_ACC_SRC_B1:
-  case GSREG_IIR_SRC_A0:
-  case GSREG_IIR_SRC_A1:
-  case GSREG_IIR_DEST_B0:
-  case GSREG_IIR_DEST_B1:
-  case GSREG_ACC_SRC_C0:
-  case GSREG_ACC_SRC_C1:
-  case GSREG_ACC_SRC_D0:
-  case GSREG_ACC_SRC_D1:
-  case GSREG_IIR_SRC_B1:
-  case GSREG_IIR_SRC_B0:
-  case GSREG_MIX_DEST_A0:
-  case GSREG_MIX_DEST_A1:
-  case GSREG_MIX_DEST_B0:
-  case GSREG_MIX_DEST_B1:
-  case GSREG_IN_COEF_L:
-  case GSREG_IN_COEF_R:
-		ReverbRegs[which - GSREG_FB_SRC_A] = value;
-		break;
-
  }
 }
 

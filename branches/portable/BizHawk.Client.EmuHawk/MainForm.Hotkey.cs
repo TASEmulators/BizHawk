@@ -47,6 +47,9 @@ namespace BizHawk.Client.EmuHawk
 				case "Close ROM":
 					CloseRom();
 					break;
+				case "Load Last ROM":
+					LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
+					break;
 				case "Display FPS":
 					ToggleFPS();
 					break;

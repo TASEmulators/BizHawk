@@ -20,10 +20,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }
 
-		private uint PC
+
+		private RegisterValue PCRegister
 		{
-			// TODO: is this okay for N64?
-			get { return (uint)Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].Value; }
+			get { return Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName]; }
 		}
 
 		#region Implementation checking
@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 
 				try
 				{
-					var pc = PC;
+					var pc = (uint)PCRegister.Value;
 					return true;
 				}
 				catch (NotImplementedException)

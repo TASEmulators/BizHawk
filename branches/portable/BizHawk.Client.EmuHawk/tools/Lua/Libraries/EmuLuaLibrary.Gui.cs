@@ -52,8 +52,15 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawNew(string name)
 		{
-			DrawFinish();
-			_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+			try
+			{
+				DrawFinish();
+				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+			}
+			catch (InvalidOperationException ex)
+			{
+				Log(ex.ToString());
+			}
 		}
 
 		public void DrawFinish()
@@ -61,6 +68,11 @@ namespace BizHawk.Client.EmuHawk
 			if(_luaSurface != null)
 				GlobalWin.DisplayManager.UnlockLuaSurface(_luaSurface);
 			_luaSurface = null;
+		}
+
+		public bool HasLuaSurface
+		{
+			get { return _luaSurface != null; }
 		}
 
 		#endregion
@@ -276,6 +288,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
+
 		[LuaMethodAttributes(
 			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
@@ -285,7 +299,17 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				var img = Image.FromFile(path);
+				Image img;
+				if (ImageCache.ContainsKey(path))
+				{
+					img = ImageCache[path];
+				}
+				else
+				{
+					img = Image.FromFile(path);
+					ImageCache.Add(path, img);
+				}
+
 				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
 			}
 		}

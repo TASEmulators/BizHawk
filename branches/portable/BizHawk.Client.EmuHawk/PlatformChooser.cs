@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ExtensionLabel.Text = RomGame.Extension.ToLower();
-
+			HashBox.Text = RomGame.GameInfo.Hash;
 			int count = 0;
 			int spacing = 25;
 			foreach (var platform in GlobalWin.MainForm.SupportedPlatforms)

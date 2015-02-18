@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			if (bits != 16)
-				throw new ArgumentOutOfRangeException("sampling depth must be 16 bits!");
+				throw new ArgumentOutOfRangeException("bits", "Sampling depth must be 16 bits!");
 			this.sampleRate = sampleRate;
 			this.channels = channels;
 		}

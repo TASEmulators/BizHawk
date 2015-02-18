@@ -17,6 +17,8 @@ namespace BizHawk.Client.Common
 			public string Hash { get; set; }
 		}
 
+		public List<FirmwareEventArgs> RecentlyServed { get; private set; }
+
 		public class ResolutionInfo
 		{
 			public bool UserSpecified { get; set; }
@@ -29,6 +31,20 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo> _resolutionDictionary = new Dictionary<FirmwareDatabase.FirmwareRecord, ResolutionInfo>();
+
+		public class FirmwareEventArgs
+		{
+			public string Hash { get; set; }
+			public long Size { get; set; }
+			public string SystemId { get; set; }
+			public string FirmwareId { get; set; }
+		}
+
+		public FirmwareManager()
+		{
+			RecentlyServed = new List<FirmwareEventArgs>();
+		}
+
 
 		public ResolutionInfo Resolve(string sysId, string firmwareId)
 		{
@@ -63,6 +79,13 @@ namespace BizHawk.Client.Common
 		{
 			var resolved = Resolve(sysId, firmwareId);
 			if (resolved == null) return null;
+			RecentlyServed.Add(new FirmwareEventArgs
+					{
+						SystemId = sysId,
+						FirmwareId = firmwareId,
+						Hash = resolved.Hash,
+						Size = resolved.Size
+					});
 			return resolved.FilePath;
 		}
 

@@ -15,18 +15,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private List<LibraryFunction> FunctionList = new List<LibraryFunction>();
 
-		private List<LibraryFunction> FilteredList
-		{
-			get
-			{
-				if (!string.IsNullOrWhiteSpace(FilterBox.Text))
-				{
-					return FunctionList
-						.Where(f => (f.Library + "." + f.Name).Contains(FilterBox.Text))
-						.ToList();
-				}
+		private List<LibraryFunction> _filteredList = new List<LibraryFunction>();
 
-				return FunctionList;
+		private void GenerateFilteredList()
+		{
+			if (!string.IsNullOrWhiteSpace(FilterBox.Text))
+			{
+				_filteredList = FunctionList
+					.Where(f => (f.Library + "." + f.Name).Contains(FilterBox.Text))
+					.ToList();
+			}
+			else
+			{
+				_filteredList = FunctionList.ToList();
 			}
 		}
 
@@ -59,25 +60,25 @@ namespace BizHawk.Client.EmuHawk
 			text = string.Empty;
 
 			try
-			{ 
-				if (FilteredList.Any() && index < FilteredList.Count)
+			{
+				if (_filteredList.Any() && index < _filteredList.Count)
 				{
 					switch (column)
 					{
 						case 0:
-							text = FilteredList[index].ReturnType;
+							text = _filteredList[index].ReturnType;
 							break;
 						case 1:
-							text = FilteredList[index].Library;
+							text = _filteredList[index].Library;
 							break;
 						case 2:
-							text = FilteredList[index].Name;
+							text = _filteredList[index].Name;
 							break;
 						case 3:
-							text = FilteredList[index].ParameterList;
+							text = _filteredList[index].ParameterList;
 							break;
 						case 4:
-							text = FilteredList[index].Description;
+							text = _filteredList[index].Description;
 							break;
 					}
 				}
@@ -202,7 +203,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateList()
 		{
-			FunctionView.ItemCount = FilteredList.Count;
+			GenerateFilteredList();
+			FunctionView.ItemCount = _filteredList.Count;
 		}
 
 		private void FilterBox_KeyUp(object sender, KeyEventArgs e)

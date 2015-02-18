@@ -11,8 +11,8 @@
 local pbase = 0x9D8
 local px = pbase +0x5
 local py = pbase +0x8
-local cx = 0x7E1E5D
-local cy = 0x7E1E60
+local cx = 0x1E5D
+local cy = 0x1E60
 local xm
 local ym
 

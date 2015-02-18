@@ -95,6 +95,9 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Calculator\TI83.IEmulator.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83.IInputPollable.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
@@ -111,7 +114,47 @@
     <Compile Include="Calculator\TI83.IStatable.cs">
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
+    <Compile Include="Calculator\TI83.IVideoProvider.cs">
+      <DependentUpon>TI83.cs</DependentUpon>
+    </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
+    <Compile Include="Computers\AppleII\AppleII.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Cassette.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Cpu.cs" />
+    <Compile Include="Computers\AppleII\Virtu\CpuData.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Disk525.cs" />
+    <Compile Include="Computers\AppleII\Virtu\DiskDsk.cs" />
+    <Compile Include="Computers\AppleII\Virtu\DiskIIController.cs" />
+    <Compile Include="Computers\AppleII\Virtu\DiskIIDrive.cs" />
+    <Compile Include="Computers\AppleII\Virtu\DiskNib.cs" />
+    <Compile Include="Computers\AppleII\Virtu\GamePort.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Keyboard.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\DisposableBase.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\IEnumerableExtensions.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\MarshalHelpers.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\MathHelpers.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\StreamExtensions.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\StringBuilderExtensions.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Library\Strings.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Machine.cs" />
+    <Compile Include="Computers\AppleII\Virtu\MachineComponent.cs" />
+    <Compile Include="Computers\AppleII\Virtu\MachineEvents.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Memory.cs" />
+    <Compile Include="Computers\AppleII\Virtu\MemoryData.cs" />
+    <Compile Include="Computers\AppleII\Virtu\NoSlotClock.cs" />
+    <Compile Include="Computers\AppleII\Virtu\PeripheralCard.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\AudioService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\DebugService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\GamePortService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\IsolatedStorageService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\KeyboardService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\MachineService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\MachineServices.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\StorageService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Services\VideoService.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Speaker.cs" />
+    <Compile Include="Computers\AppleII\Virtu\Video.cs" />
+    <Compile Include="Computers\AppleII\Virtu\VideoData.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">
       <DependentUpon>C64.cs</DependentUpon>

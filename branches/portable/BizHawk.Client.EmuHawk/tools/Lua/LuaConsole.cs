@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			InitializeComponent();
-			LuaImp = new EmuLuaLibrary(this);
+			
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -54,8 +54,6 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
-
-			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -105,6 +103,51 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			if (LuaImp != null && LuaImp.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
+			{
+				LuaImp.GuiLibrary.DrawFinish();
+			}
+			
+			var runningScripts = _luaList.Where(f => f.Enabled).ToList();
+
+			foreach (var file in runningScripts)
+			{
+				LuaImp.CallExitEvent(file.Thread);
+
+				var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == file.Thread).ToList();
+
+				foreach (var function in functions)
+					LuaImp.RegisteredFunctions.Remove(function);
+
+				UpdateRegisteredFunctionsDialog();
+
+				file.Stop();
+			}
+
+			LuaImp = new EmuLuaLibrary(this);
+			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
+
+			foreach (var file in runningScripts)
+			{
+				try
+				{
+					file.Thread = LuaImp.SpawnCoroutine(file.Path);
+					file.Enabled = true;
+				}
+				catch (Exception ex)
+				{
+					if (ex is LuaScriptException)
+					{
+						file.Enabled = false;
+						ConsoleLog(ex.Message);
+					}
+					else
+					{
+						MessageBox.Show(ex.ToString());
+					}
+				}
+			}
+
 			UpdateDialog();
 		}
 
@@ -338,7 +381,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadLuaSession(string path)
 		{
-			return _luaList.LoadLuaSession(path);
+			var result = _luaList.LoadLuaSession(path);
+
+			RunLuaScripts();
+			UpdateDialog();
+			_luaList.Changes = false;
+
+			return result;
 		}
 
 		/// <summary>
@@ -498,7 +547,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
-			if (_luaList.Changes)
+			if (_luaList.Changes && !string.IsNullOrEmpty(_luaList.Filename))
 			{
 				GlobalWin.Sound.StopSound();
 				var result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
@@ -1082,28 +1131,29 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.Enter)
 			{
 				string consoleBeforeCall = OutputBox.Text;
+
 				// TODO: Maybe make these try-catches more general
 				if (InputBox.Text != "")
 				{
 					try
 					{
-						LuaImp.ExecuteString(InputBox.Text);
-
-						// TODO: This isn't exactly optimal
-						if (OutputBox.Text == consoleBeforeCall)
-							ConsoleLog("Command successfully executed");
+						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
 					}
-					catch (LuaScriptException ex)
+					catch
 					{
 						try
 						{
-							LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
+							LuaImp.ExecuteString(InputBox.Text);
+
+							if (OutputBox.Text == consoleBeforeCall)
+								ConsoleLog("Command successfully executed");
 						}
-						catch
+						catch (LuaScriptException ex)
 						{
 							ConsoleLog(ex.ToString());
 						}
 					}
+
 					_consoleCommandHistory.Insert(0, InputBox.Text);
 					_consoleCommandHistoryIndex = -1;
 					InputBox.Clear();

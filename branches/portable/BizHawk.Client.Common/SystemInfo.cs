@@ -307,5 +307,16 @@ namespace BizHawk.Client.Common
 				};
 			}
 		}
+		public static SystemInfo AppleII
+		{
+			get
+			{
+				return new SystemInfo
+				{
+					DisplayName = "Apple II",
+					ByteSize = 1,
+				};
+			}
+		}
 	}
 }

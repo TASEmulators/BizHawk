@@ -312,15 +312,7 @@ namespace BizHawk.Emulation.Common
 				 && fr.systemId == sysId
 				 select fr);
 
-			try
-			{
-				return found.First();
-			}
-			catch (InvalidOperationException)
-			{
-				// list is empty;
-				return null;
-			}
+			return found.FirstOrDefault();
 		}
 
 	} //static class FirmwareDatabase

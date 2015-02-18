@@ -1300,14 +1300,17 @@ namespace BizHawk.Client.EmuHawk
 			_findStr = GetFindValues();
 			if (!_hexFind.IsHandleCreated || _hexFind.IsDisposed)
 			{
-				_hexFind = new HexFind();
-				_hexFind.SetLocation(PointToScreen(AddressesLabel.Location));
-				_hexFind.SetInitialValue(_findStr);
+				_hexFind = new HexFind
+				{
+					InitialLocation = PointToScreen(AddressesLabel.Location),
+					InitialValue = _findStr
+				};
+
 				_hexFind.Show();
 			}
 			else
 			{
-				_hexFind.SetInitialValue(_findStr);
+				_hexFind.InitialValue = _findStr;
 				_hexFind.Focus();
 			}
 		}

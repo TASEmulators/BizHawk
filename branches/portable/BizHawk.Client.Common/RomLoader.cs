@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
+using BizHawk.Emulation.Cores.Computers.AppleII;
 
 namespace BizHawk.Client.Common
 {
@@ -274,6 +275,7 @@ namespace BizHawk.Client.Common
 								case DiscType.SonyPSP:
 									game.System = "PSP";
 									break;
+								default: 
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
@@ -283,9 +285,6 @@ namespace BizHawk.Client.Common
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-								default: // PCECD was bizhawk's first CD core,
-									// and during that time, all CDs were blindly sent to it
-									// so this prevents regressions
 									game.System = "PCECD";
 									break;
 							}
@@ -402,6 +401,18 @@ namespace BizHawk.Client.Common
 							case null:
 								// The user picked nothing in the Core picker
 								break;
+							case "83P":
+								var ti83Bios = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmware("TI83", "Rom", true);
+								var ti83BiosPath = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmwarePath("TI83", "Rom", true);
+								using (var ti83AsHawkFile = new HawkFile())
+								{
+									ti83AsHawkFile.Open(ti83BiosPath);
+									var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
+									var ti83 = new TI83(nextComm, ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
+									ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
+									nextEmulator = ti83;
+								}
+								break;
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
@@ -461,6 +472,10 @@ namespace BizHawk.Client.Common
 							case "C64":
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
 								nextEmulator = c64;
+								break;
+							case "AppleII":
+								var appleII = new AppleII(nextComm, game, rom.RomData, rom.Extension);
+								nextEmulator = appleII;
 								break;
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];

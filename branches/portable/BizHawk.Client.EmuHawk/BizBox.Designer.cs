@@ -141,9 +141,9 @@
 			this.label6.AutoSize = true;
 			this.label6.Location = new System.Drawing.Point(198, 119);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(217, 13);
+			this.label6.Size = new System.Drawing.Size(220, 13);
 			this.label6.TabIndex = 9;
-			this.label6.Text = "DarkKobold, Micro500, TaoTao, Rolanmen1";
+			this.label6.Text = "DarkKobold, Micro500, TaoTao, Rolanmen1,";
 			// 
 			// label7
 			// 
@@ -159,9 +159,9 @@
 			this.label27.AutoSize = true;
 			this.label27.Location = new System.Drawing.Point(198, 147);
 			this.label27.Name = "label27";
-			this.label27.Size = new System.Drawing.Size(149, 13);
+			this.label27.Size = new System.Drawing.Size(201, 13);
 			this.label27.TabIndex = 12;
-			this.label27.Text = "SaxxonPike, MasterofPuppets";
+			this.label27.Text = "SaxxonPike, MasterofPuppets, Scepheo,";
 			// 
 			// label37
 			// 

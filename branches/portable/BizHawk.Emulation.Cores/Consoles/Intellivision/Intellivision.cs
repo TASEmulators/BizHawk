@@ -31,9 +31,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			Stic.SetSst(Cpu.GetBusAk());
 		}
 
-		public void LoadExecutiveRom(string path)
+		public void LoadExecutiveRom(byte[] erom)
 		{
-			var erom = File.ReadAllBytes(path);
 			if (erom.Length != 8192)
 			{
 				throw new ApplicationException("EROM file is wrong size - expected 8192 bytes");
@@ -46,13 +45,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public void LoadGraphicsRom(string path)
+		public void LoadGraphicsRom(byte[] grom)
 		{
-			GraphicsRom = File.ReadAllBytes(path);
-			if (GraphicsRom.Length != 2048)
+			if (grom.Length != 2048)
 			{
 				throw new ApplicationException("GROM file is wrong size - expected 2048 bytes");
 			}
+			GraphicsRom = grom;
 		}
 
 		[CoreConstructor("INTV")]
@@ -89,8 +88,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			Cpu.LogData();
 
-			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "EROM", true, "Executive ROM is required."));
-			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmwarePath("INTV", "GROM", true, "Graphics ROM is required."));
+			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
+			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }

@@ -713,14 +713,21 @@ TESTEROO:
 		{
 			foreach (var kvp in LuaSurfaceSets)
 			{
-				var surf = PeekLockedLuaSurface(kvp.Key);
-				DisplaySurface surfLocked = null;
-				if (surf == null)
-					surf = surfLocked = LockLuaSurface(kvp.Key);
-				surf.Clear();
-				if(surfLocked != null)
-					UnlockLuaSurface(surfLocked);
-				LuaSurfaceSets[kvp.Key].SetPending(null);
+				try
+				{
+					var surf = PeekLockedLuaSurface(kvp.Key);
+					DisplaySurface surfLocked = null;
+					if (surf == null)
+						surf = surfLocked = LockLuaSurface(kvp.Key);
+					surf.Clear();
+					if (surfLocked != null)
+						UnlockLuaSurface(surfLocked);
+					LuaSurfaceSets[kvp.Key].SetPending(null);
+				}
+				catch (InvalidOperationException)
+				{
+
+				}
 			}
 		}
 

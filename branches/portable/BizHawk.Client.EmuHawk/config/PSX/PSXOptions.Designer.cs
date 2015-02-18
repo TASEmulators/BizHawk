@@ -108,8 +108,8 @@
 			this.lblTweakedMednafen.Size = new System.Drawing.Size(213, 79);
 			this.lblTweakedMednafen.TabIndex = 28;
 			this.lblTweakedMednafen.Text = "Displays all content at as multiple of 400x300.\r\n • Correct aspect ratio\r\n • Gene" +
-					"rally enjoyable game presentation\r\n • Detail loss at 1x in fewer cases\r\n • Requi" +
-					"res certain display configuration:\r\n";
+    "rally enjoyable game presentation\r\n • Detail loss at 1x in fewer cases\r\n • Requi" +
+    "res certain display configuration:\r\n";
 			// 
 			// rbTweakedMednafenMode
 			// 
@@ -129,7 +129,7 @@
 			this.label3.Size = new System.Drawing.Size(213, 63);
 			this.label3.TabIndex = 26;
 			this.label3.Text = "Displays all content unmodified\r\n • Window size will constantly change\r\n • Aspect" +
-					" ratio is usually wrong\r\n • Ideal for segmented AV dumping";
+    " ratio is usually wrong\r\n • Ideal for segmented AV dumping";
 			// 
 			// rbDebugMode
 			// 
@@ -179,8 +179,8 @@
 			this.lblPixelPro.Size = new System.Drawing.Size(252, 78);
 			this.lblPixelPro.TabIndex = 21;
 			this.lblPixelPro.Text = "Converts content with nearest neighbor to \r\nfit gracefully in a 800x480 window.\r\n" +
-					" • Content is pixel perfect\r\n • Aspect ratio is usually wrong\r\n • Game may seen " +
-					"to have scale varying by mode\r\n\r\n\r\n";
+    " • Content is pixel perfect\r\n • Aspect ratio is usually wrong\r\n • Game may seen " +
+    "to have scale varying by mode\r\n\r\n\r\n";
 			// 
 			// rbPixelPro
 			// 
@@ -203,8 +203,8 @@
 			// 
 			// groupBox2
 			// 
-			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-									| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.lblPAL);
 			this.groupBox2.Controls.Add(this.PAL_LastLineNumeric);
 			this.groupBox2.Controls.Add(this.PAL_FirstLineNumeric);
@@ -343,8 +343,10 @@
 			// 
 			// PSXOptions
 			// 
+			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(713, 275);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.label7);

@@ -103,13 +103,21 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			var success = _watchList.All(watch => watch.Poke(ValueBox.Text));
+
 			if (ParentTool != null)
 			{
 				ParentTool.UpdateValues();
 			}
 
-			OutputLabel.Text = success ? "Value successfully written." 
-				: "An error occured when writing Value.";
+			if (success)
+			{
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			else
+			{
+				OutputLabel.Text = "An error occured when writing Value.";
+			}
 		}
 	}
 }

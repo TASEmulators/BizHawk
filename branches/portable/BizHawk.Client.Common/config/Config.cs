@@ -111,6 +111,8 @@ namespace BizHawk.Client.Common
 
 		public enum EDispMethod { OpenGL, GdiPlus, SlimDX9 };
 
+		public enum ESoundOutputMethod { DirectSound, XAudio2, Dummy };
+
 		public enum EDispManagerAR { None, System, Custom };
 
 		public enum SaveStateTypeE { Default, Binary, Text };
@@ -224,13 +226,13 @@ namespace BizHawk.Client.Common
 		public int DispCustomUserARHeight = 1;
 
 		// Sound options
+		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.DirectSound;
 		public bool SoundEnabled = true;
 		public bool MuteFrameAdvance = true;
 		public int SoundVolume = 100; // Range 0-100
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
 		public int SoundBufferSizeMs = 100;
-		public bool UseNewOutputBuffer = false;
 
 		// Log Window
 		public bool LogWindowSaveWindowPosition = true;

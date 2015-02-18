@@ -10,8 +10,8 @@
 ---Green = Projectile vulnerability for enemies
 ---White = Arthurs magic and weapons
 
-local left_edge = 0x7E15DD
-local top_edge = 0x7E15E1
+local left_edge = 0x15DD
+local top_edge = 0x15E1
 local xm 
 local ym
 
@@ -162,7 +162,7 @@ local function draw_weapons()
 	end
 	
 	-- If we have the gold armor and not the magic bracelet, check for magic hitboxes
-	if mainmemory.read_u8(0x7E14BA) == 0x04 and mainmemory.read_u8(weapon) ~= 0x0E then 
+	if mainmemory.read_u8(0x14BA) == 0x04 and mainmemory.read_u8(weapon) ~= 0x0E then 
 		
 		ostart = 0x0707
 		

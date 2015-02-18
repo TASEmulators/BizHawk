@@ -266,6 +266,7 @@
 			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
 			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.PSXControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXDiscControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -298,6 +299,7 @@
 			this.DGBsettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GenesisSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.vDPViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -379,7 +381,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GenesisGameGenieECDC = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2269,7 +2270,7 @@
 			// 
 			this.LoadTIFileMenuItem.Name = "LoadTIFileMenuItem";
 			this.LoadTIFileMenuItem.Size = new System.Drawing.Size(165, 22);
-			this.LoadTIFileMenuItem.Text = "Load TI File...";
+			this.LoadTIFileMenuItem.Text = "Load TI-83 File...";
 			this.LoadTIFileMenuItem.Click += new System.EventHandler(this.LoadTIFileMenuItem_Click);
 			// 
 			// toolStripSeparator13
@@ -2291,7 +2292,7 @@
 			this.paletteToolStripMenuItem.Name = "paletteToolStripMenuItem";
 			this.paletteToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.paletteToolStripMenuItem.Text = "Palette...";
-			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.paletteToolStripMenuItem_Click);
+			this.paletteToolStripMenuItem.Click += new System.EventHandler(this.TI83PaletteMenuItem_Click);
 			// 
 			// AtariSubMenu
 			// 
@@ -2387,23 +2388,33 @@
 			// PSXSubMenu
 			// 
 			this.PSXSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.PSXControllerSettingsMenuItem,
             this.PSXOptionsMenuItem,
             this.PSXDiscControlsMenuItem});
 			this.PSXSubMenu.Name = "PSXSubMenu";
 			this.PSXSubMenu.Size = new System.Drawing.Size(39, 19);
 			this.PSXSubMenu.Text = "PSX";
+			this.PSXSubMenu.DropDownOpened += new System.EventHandler(this.PSXSubMenu_DropDownOpened);
+			// 
+			// PSXControllerSettingsMenuItem
+			// 
+			this.PSXControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.PSXControllerSettingsMenuItem.Name = "PSXControllerSettingsMenuItem";
+			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXControllerSettingsMenuItem.Text = "Controller Settings";
+			this.PSXControllerSettingsMenuItem.Click += new System.EventHandler(this.PSXControllerSettingsMenuItem_Click);
 			// 
 			// PSXOptionsMenuItem
 			// 
 			this.PSXOptionsMenuItem.Name = "PSXOptionsMenuItem";
-			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.PSXOptionsMenuItem.Text = "&Options";
 			this.PSXOptionsMenuItem.Click += new System.EventHandler(this.PSXOptionsMenuItem_Click);
 			// 
 			// PSXDiscControlsMenuItem
 			// 
 			this.PSXDiscControlsMenuItem.Name = "PSXDiscControlsMenuItem";
-			this.PSXDiscControlsMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.PSXDiscControlsMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.PSXDiscControlsMenuItem.Text = "&Disc Controls";
 			this.PSXDiscControlsMenuItem.Click += new System.EventHandler(this.PSXDiscControlsMenuItem_Click);
 			// 
@@ -2646,6 +2657,13 @@
 			this.vDPViewerToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.vDPViewerToolStripMenuItem.Text = "&VDP Viewer";
 			this.vDPViewerToolStripMenuItem.Click += new System.EventHandler(this.GenVdpViewerMenuItem_Click);
+			// 
+			// GenesisGameGenieECDC
+			// 
+			this.GenesisGameGenieECDC.Name = "GenesisGameGenieECDC";
+			this.GenesisGameGenieECDC.Size = new System.Drawing.Size(233, 22);
+			this.GenesisGameGenieECDC.Text = "&Game Genie Encoder/Decoder";
+			this.GenesisGameGenieECDC.Click += new System.EventHandler(this.GenesisGameGenieECDC_Click);
 			// 
 			// toolStripSeparator26
 			// 
@@ -3344,13 +3362,6 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// GenesisGameGenieECDC
-			// 
-			this.GenesisGameGenieECDC.Name = "GenesisGameGenieECDC";
-			this.GenesisGameGenieECDC.Size = new System.Drawing.Size(233, 22);
-			this.GenesisGameGenieECDC.Text = "&Game Genie Encoder/Decoder";
-			this.GenesisGameGenieECDC.Click += new System.EventHandler(this.GenesisGameGenieECDC_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3741,6 +3752,7 @@
 		private System.Windows.Forms.ToolStripMenuItem PSXDiscControlsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GenesisGameGenieECDC;
 		private System.Windows.Forms.ToolStripStatusLabel UpdateNotification;
+		private System.Windows.Forms.ToolStripMenuItem PSXControllerSettingsMenuItem;
 	}
 }
 

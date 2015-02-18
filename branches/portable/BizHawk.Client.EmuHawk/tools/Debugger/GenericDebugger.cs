@@ -13,7 +13,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[ToolAttributes(released: false)]
+	[ToolAttributes(released: true)]
 	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
 	{
 		public GenericDebugger()
@@ -112,9 +112,9 @@ namespace BizHawk.Client.EmuHawk
 
 			SeekToBox.Enabled = SeekToBtn.Enabled = CanUseMemoryCallbacks && RegisterPanel.CanGetCpuRegisters;
 
-			if (RegisterPanel.CanGetCpuRegisters)
+			if (RegisterPanel.CanGetCpuRegisters && CanDisassemble)
 			{
-				var pc = Debuggable.GetCpuFlagsAndRegisters()["PC"];
+				var pc = PCRegister;
 				SeekToBox.Nullable = false;
 				SeekToBox.SetHexProperties((long)Math.Pow(2, pc.BitSize));
 				SeekToBox.SetFromRawInt(0);
@@ -295,6 +295,11 @@ namespace BizHawk.Client.EmuHawk
 		private void RefreshMenuItem_Click(object sender, EventArgs e)
 		{
 			FullUpdate();
+		}
+
+		public void AddBreakpoint(uint address, MemoryCallbackType type)
+		{
+			this.BreakPointControl1.AddBreakpoint(address, type);
 		}
 	}
 }

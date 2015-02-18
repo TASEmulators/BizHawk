@@ -12,8 +12,23 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas()
 		{
 			var psx = ((Octoshock)Global.Emulator);
-			yield return DualShockController(1);
-			yield return DualShockController(2);
+			var settings = (Octoshock.SyncSettings)psx.GetSyncSettings();
+
+			for (int i = 0; i < settings.Controllers.Length; i++)
+			{
+				if (settings.Controllers[i].IsConnected)
+				{
+					if (settings.Controllers[i].Type == Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						yield return GamePadController(i + 1);
+					}
+					else
+					{
+						yield return DualShockController(i + 1);
+					}
+				}
+			}
+
 			yield return ConsoleButtons(psx);
 		}
 
@@ -165,6 +180,126 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 		}
+
+		public static PadSchema GamePadController(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(240, 115),
+				DisplayName = "Gamepad Player" + controller,
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Up",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueUp,
+						Location = new Point(37, 55),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Down",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueDown,
+						Location = new Point(37, 76),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Left",
+						DisplayName = "",
+						Icon = Properties.Resources.Back,
+						Location = new Point(16, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Right",
+						DisplayName = "",
+						Icon = Properties.Resources.Forward,
+						Location = new Point(58, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " L1",
+						DisplayName = "L1",
+						Location = new Point(8, 37),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " R1",
+						DisplayName = "R1",
+						Location = new Point(196, 37),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " L2",
+						DisplayName = "L2",
+						Location = new Point(8, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " R2",
+						DisplayName = "R2",
+						Location = new Point(196, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Square",
+						DisplayName = "",
+						Icon = Properties.Resources.Square,
+						Location = new Point(153, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Triangle",
+						DisplayName = "",
+						Icon = Properties.Resources.Triangle,
+						Location = new Point(174, 55),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Circle",
+						DisplayName = "",
+						Icon = Properties.Resources.Circle,
+						Location = new Point(195, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Cross",
+						DisplayName = "",
+						Icon = Properties.Resources.Cross,
+						Location = new Point(174, 76),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "S",
+						Location = new Point(112, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Select",
+						DisplayName = "s",
+						Location = new Point(90, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+				}
+			};
+		}
+
 		private static PadSchema ConsoleButtons(Octoshock psx)
 		{
 			return new PadSchema

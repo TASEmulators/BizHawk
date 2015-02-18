@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -20,47 +22,70 @@ namespace BizHawk.Client.EmuHawk
 
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
-			UseNewOutputBuffer.Checked = Global.Config.UseNewOutputBuffer;
+			rbOutputMethodDirectSound.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
+			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
 			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
 			SoundVolBar.Value = Global.Config.SoundVolume;
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
-
-			listBoxSoundDevices.Items.Add("<default>");
-			listBoxSoundDevices.SelectedIndex = 0;
-			#if WINDOWS
-			var dd = SoundEnumeration.DeviceNames();
-			foreach (var d in dd)
-			{
-				listBoxSoundDevices.Items.Add(d);
-				if (d == Global.Config.SoundDevice)
-				{
-					listBoxSoundDevices.SelectedItem = d;
-				}
-			}
-			#endif
 
 			_programmaticallyChangingValue = false;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
+			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
+			{
+				MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			var oldOutputMethod = Global.Config.SoundOutputMethod;
 			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
-			Global.Config.UseNewOutputBuffer = UseNewOutputBuffer.Checked;
+			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
+			if (rbOutputMethodXAudio2.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
 			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.StopSound();
+			if (Global.Config.SoundOutputMethod != oldOutputMethod)
+			{
+				GlobalWin.Sound.Dispose();
+				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
+			}
 			GlobalWin.Sound.StartSound();
 			GlobalWin.OSD.AddMessage("Sound settings saved");
-			Close();
+			DialogResult = DialogResult.OK;
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("Sound config aborted");
 			Close();
+		}
+
+		private void PopulateDeviceList()
+		{
+			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
+			if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
+			if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
+			listBoxSoundDevices.Items.Clear();
+			listBoxSoundDevices.Items.Add("<default>");
+			listBoxSoundDevices.SelectedIndex = 0;
+			foreach (var name in deviceNames)
+			{
+				listBoxSoundDevices.Items.Add(name);
+				if (name == Global.Config.SoundDevice)
+				{
+					listBoxSoundDevices.SelectedItem = name;
+				}
+			}
+		}
+
+		private void OutputMethodRadioButtons_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!((RadioButton)sender).Checked) return;
+			PopulateDeviceList();
 		}
 
 		private void trackBar1_Scroll(object sender, EventArgs e)

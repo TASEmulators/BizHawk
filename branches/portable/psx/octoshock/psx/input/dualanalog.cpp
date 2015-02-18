@@ -24,6 +24,9 @@ class InputDevice_DualAnalog : public InputDevice
 
  private:
 
+//non-serialized state
+ IO_DualAnalog* io;
+
  bool joystick_mode;
  bool dtr;
 
@@ -74,10 +77,10 @@ void InputDevice_DualAnalog::Power(void)
 
 void InputDevice_DualAnalog::UpdateInput(const void *data)
 {
- uint8 *d8 = (uint8 *)data;
+	io = (IO_DualAnalog*)data;
 
- buttons[0] = d8[0];
- buttons[1] = d8[1];
+ buttons[0] = io->buttons[0];
+ buttons[1] = io->buttons[1];
 
   //OCTOSHOCK EDIT - so we can set values directly
  //for(int stick = 0; stick < 2; stick++)
@@ -94,10 +97,10 @@ void InputDevice_DualAnalog::UpdateInput(const void *data)
  // }
  //}
 
-	axes[0][0] = d8[3];
-	axes[0][1] = d8[4];
-	axes[1][0] = d8[5];
-	axes[1][1] = d8[6];
+	axes[0][0] = io->right_x;
+	axes[0][1] = io->right_y;
+	axes[1][0] = io->left_x;
+	axes[1][1] = io->left_y;
 
  //printf("%d %d %d %d\n", axes[0][0], axes[0][1], axes[1][0], axes[1][1]);
 }
@@ -190,16 +193,17 @@ bool InputDevice_DualAnalog::Clock(bool TxD, int32 &dsr_pulse_delay)
 	 transmit_buffer[4] = axes[0][1];
 	 transmit_buffer[5] = axes[1][0];
 	 transmit_buffer[6] = axes[1][1];
-         transmit_pos = 0;
-         transmit_count = 7;
+	 transmit_pos = 0;
+	 transmit_count = 7;
+	 io->active = true;
 	}
 	else
 	{
 	 command_phase = -1;
 	 transmit_buffer[1] = 0;
 	 transmit_buffer[2] = 0;
-         transmit_pos = 0;
-         transmit_count = 0;
+	 transmit_pos = 0;
+	 transmit_count = 0;
 	}
 	break;
    case 2:

@@ -18,6 +18,8 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -32,8 +34,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-    <DefineConstants Condition=" '$(OS)' == 'Windows_NT' ">WINDOWS</DefineConstants>
     <ReleaseVersion>1.0.4</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -411,6 +411,12 @@
     <Compile Include="config\ProfileConfig.Designer.cs">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PSX\PSXControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
+      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PSX\PSXOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -609,7 +615,11 @@
     <Compile Include="RomStatusPicker.Designer.cs">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="SoundOutputProvider.cs" />
+    <Compile Include="Sound\Output\DirectSoundSoundOutput.cs" />
+    <Compile Include="Sound\Output\DummySoundOutput.cs" />
+    <Compile Include="Sound\Output\XAudio2SoundOutput.cs" />
+    <Compile Include="Sound\Sound.cs" />
+    <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
     <Compile Include="tools\BatchRun.cs">
@@ -1177,6 +1187,9 @@
     <EmbeddedResource Include="config\ProfileConfig.resx">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
+      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXOptions.resx">
       <DependentUpon>PSXOptions.cs</DependentUpon>
     </EmbeddedResource>
@@ -1405,7 +1418,6 @@
       <DependentUpon>InputPrompt.cs</DependentUpon>
     </Compile>
     <Compile Include="ScreenSaver.cs" />
-    <Compile Include="Sound.cs" />
     <Compile Include="tools\ToolBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1536,6 +1548,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
     <None Include="images\Square.png" />
@@ -1824,6 +1837,7 @@
     <None Include="config\ControllerImages\Lynx.png" />
     <Content Include="config\ControllerImages\N64.png" />
     <None Include="config\ControllerImages\psx_dualshock.png" />
+    <None Include="config\ControllerImages\PSX-Original-Controller.png" />
     <Content Include="config\ControllerImages\SaturnController.jpg" />
     <None Include="images\addWatch.ico" />
     <None Include="images\gba-icon.png" />
@@ -1838,6 +1852,7 @@
     <None Include="images\alt_about_image.png" />
     <None Include="images\connect_16x16.png" />
     <None Include="images\add.png" />
+    <None Include="images\HawkInLove.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

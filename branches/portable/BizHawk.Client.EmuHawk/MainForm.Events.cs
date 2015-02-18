@@ -1275,6 +1275,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void barcodeReaderToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BarcodeEntry>();
+		}
 
 		#endregion
 
@@ -1522,13 +1526,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var OFD = HawkDialogFactory.CreateOpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*";
+			ofd.RestoreDirectory = true;
 
-			if (OFD.ShowDialog() == DialogResult.OK)
+			if (ofd.ShowDialog() == DialogResult.OK)
 			{
 				try
 				{
-					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), true);
+					(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
 				}
 				catch (IOException ex)
 				{
@@ -1536,13 +1543,13 @@ namespace BizHawk.Client.EmuHawk
 
 					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
-						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(OFD.FileName), false);
+						(Global.Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 					}
 				}
 			}
 		}
 
-		private void paletteToolStripMenuItem_Click(object sender, EventArgs e)
+		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
 			if (new TI83PaletteConfig().ShowDialog() == DialogResult.OK)
 			{
@@ -1634,6 +1641,20 @@ namespace BizHawk.Client.EmuHawk
 		private void GbaGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBAGPUView>();
+		}
+
+		#endregion
+
+		#region PSX
+
+		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			PSXControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+		}
+
+		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXControllerConfig().ShowDialog();
 		}
 
 		#endregion

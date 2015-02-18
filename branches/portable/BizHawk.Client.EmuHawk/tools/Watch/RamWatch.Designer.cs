@@ -113,6 +113,9 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ReadBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Separator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.WriteBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -148,12 +151,15 @@
             this.FreezeContextMenuItem,
             this.UnfreezeAllContextMenuItem,
             this.ViewInHexEditorContextMenuItem,
+            this.Separator4,
+            this.ReadBreakpointContextMenuItem,
+            this.WriteBreakpointContextMenuItem,
             this.Separator6,
             this.InsertSeperatorContextMenuItem,
             this.MoveUpContextMenuItem,
             this.MoveDownContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 230);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 280);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
 			// 
 			// EditContextMenuItem
@@ -894,6 +900,25 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
+			// ReadBreakpointContextMenuItem
+			// 
+			this.ReadBreakpointContextMenuItem.Name = "ReadBreakpointContextMenuItem";
+			this.ReadBreakpointContextMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.ReadBreakpointContextMenuItem.Text = "Set Read Breakpoint";
+			this.ReadBreakpointContextMenuItem.Click += new System.EventHandler(this.ReadBreakpointContextMenuItem_Click);
+			// 
+			// Separator4
+			// 
+			this.Separator4.Name = "Separator4";
+			this.Separator4.Size = new System.Drawing.Size(200, 6);
+			// 
+			// WriteBreakpointContextMenuItem
+			// 
+			this.WriteBreakpointContextMenuItem.Name = "WriteBreakpointContextMenuItem";
+			this.WriteBreakpointContextMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.WriteBreakpointContextMenuItem.Text = "Set Write Breakpoint";
+			this.WriteBreakpointContextMenuItem.Click += new System.EventHandler(this.WriteBreakpointContextMenuItem_Click);
+			// 
 			// RamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1012,5 +1037,8 @@
 		private System.Windows.Forms.ToolStripMenuItem PauseMenuItem;
 		private System.Windows.Forms.ToolStripButton pauseToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripSeparator Separator4;
+		private System.Windows.Forms.ToolStripMenuItem ReadBreakpointContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem WriteBreakpointContextMenuItem;
 	}
 }
