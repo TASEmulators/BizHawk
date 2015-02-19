@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BufferPool : IDisposable
 		{
-			private List<BufferPoolItem> _availableItems = new List<BufferPoolItem>();
+			private Stack<BufferPoolItem> _availableItems = new Stack<BufferPoolItem>();
 			private Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
 
 			public void Dispose()
@@ -153,15 +153,13 @@ namespace BizHawk.Client.EmuHawk
 			private BufferPoolItem GetAvailableItem()
 			{
 				if (_availableItems.Count == 0) return null;
-				BufferPoolItem item = _availableItems[0];
-				_availableItems.RemoveAt(0);
-				return item;
+				return _availableItems.Pop();
 			}
 
 			public BufferPoolItem ReleaseOne()
 			{
 				BufferPoolItem item = _obtainedItems.Dequeue();
-				_availableItems.Add(item);
+				_availableItems.Push(item);
 				return item;
 			}
 
