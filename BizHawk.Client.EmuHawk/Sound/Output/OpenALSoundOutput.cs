@@ -16,8 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		private AudioContext _context;
 		private int _sourceID;
 		private BufferPool _bufferPool;
-		private long _runningSamplesPlayed;
 		private long _runningSamplesQueued;
+		private long _runningSamplesPlayed;
 
 		public OpenALSoundOutput(Sound sound)
 		{
@@ -58,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_bufferPool = new BufferPool();
 			_runningSamplesQueued = 0;
+			_runningSamplesPlayed = 0;
 		}
 
 		public void StopSound()
