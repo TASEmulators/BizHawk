@@ -145,16 +145,10 @@ namespace BizHawk.Client.EmuHawk
 
 			public BufferPoolItem Obtain(int length)
 			{
-				BufferPoolItem item = GetAvailableItem() ?? new BufferPoolItem();
+				BufferPoolItem item = _availableItems.Count != 0 ? _availableItems.Pop() : new BufferPoolItem();
 				item.Length = length;
 				_obtainedItems.Enqueue(item);
 				return item;
-			}
-
-			private BufferPoolItem GetAvailableItem()
-			{
-				if (_availableItems.Count == 0) return null;
-				return _availableItems.Pop();
 			}
 
 			public BufferPoolItem ReleaseOne()
