@@ -35,11 +35,6 @@ namespace BizHawk.Client.EmuHawk
 			_disposed = true;
 		}
 
-		public static IEnumerable<string> GetDeviceNames()
-		{
-			return Enumerable.Empty<string>();
-		}
-
 		private int BufferSizeSamples { get; set; }
 
 		public int MaxSamplesDeficit { get; private set; }

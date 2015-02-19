@@ -226,7 +226,11 @@ namespace BizHawk.Client.Common
 		public int DispCustomUserARHeight = 1;
 
 		// Sound options
+#if WINDOWS
 		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.DirectSound;
+#else
+		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.OpenAL;
+#endif
 		public bool SoundEnabled = true;
 		public bool MuteFrameAdvance = true;
 		public int SoundVolume = 100; // Range 0-100

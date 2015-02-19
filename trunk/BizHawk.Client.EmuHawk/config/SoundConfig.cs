@@ -22,8 +22,13 @@ namespace BizHawk.Client.EmuHawk
 
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
+#if !WINDOWS
+			rbOutputMethodDirectSound.Enabled = false;
+			rbOutputMethodXAudio2.Enabled = false;
+#endif
 			rbOutputMethodDirectSound.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
 			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
+			rbOutputMethodOpenAL.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
 			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
 			SoundVolBar.Value = Global.Config.SoundVolume;
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
@@ -44,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
 			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
 			if (rbOutputMethodXAudio2.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
+			if (rbOutputMethodOpenAL.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
 			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
