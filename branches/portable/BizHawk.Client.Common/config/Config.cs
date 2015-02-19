@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 
 		public enum EDispMethod { OpenGL, GdiPlus, SlimDX9 };
 
-		public enum ESoundOutputMethod { DirectSound, XAudio2, Dummy };
+		public enum ESoundOutputMethod { DirectSound, XAudio2, OpenAL, Dummy };
 
 		public enum EDispManagerAR { None, System, Custom };
 

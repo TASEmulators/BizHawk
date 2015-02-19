@@ -56,4 +56,3 @@ goto END
 :MISSINGSVN
 @echo missing svn.exe. can't make distro without that.
 :END
-exit

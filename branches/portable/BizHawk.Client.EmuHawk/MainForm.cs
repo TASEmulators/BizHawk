@@ -285,6 +285,9 @@ namespace BizHawk.Client.EmuHawk
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+#if !WINDOWS
+			Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
+#endif
 			try { GlobalWin.Sound = new Sound(Handle); }
 			catch
 			{
