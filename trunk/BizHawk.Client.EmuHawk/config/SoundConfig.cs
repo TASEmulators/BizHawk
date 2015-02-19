@@ -45,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			var oldOutputMethod = Global.Config.SoundOutputMethod;
+			var oldDevice = Global.Config.SoundDevice;
 			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
 			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
@@ -54,7 +55,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SoundVolume = SoundVolBar.Value;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.StopSound();
-			if (Global.Config.SoundOutputMethod != oldOutputMethod)
+			if (Global.Config.SoundOutputMethod != oldOutputMethod ||
+				Global.Config.SoundDevice != oldDevice)
 			{
 				GlobalWin.Sound.Dispose();
 				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
@@ -77,6 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
 			if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
 #endif
+			if (rbOutputMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
 			listBoxSoundDevices.Items.Clear();
 			listBoxSoundDevices.Items.Add("<default>");
 			listBoxSoundDevices.SelectedIndex = 0;
