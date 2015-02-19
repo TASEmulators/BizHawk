@@ -16,8 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private AudioContext _context;
 		private int _sourceID;
 		private BufferPool _bufferPool;
-		private long _runningSamplesQueued;
-		private long _runningSamplesPlayed;
+		private int _currentSamplesQueued;
 
 		public OpenALSoundOutput(Sound sound)
 		{
@@ -59,8 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			_sourceID = AL.GenSource();
 
 			_bufferPool = new BufferPool();
-			_runningSamplesQueued = 0;
-			_runningSamplesPlayed = 0;
+			_currentSamplesQueued = 0;
 		}
 
 		public void StopSound()
@@ -77,14 +75,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CalculateSamplesNeeded()
 		{
-			bool isInitializing = _runningSamplesQueued == 0;
-			bool detectedUnderrun = !isInitializing && GetSource(ALGetSourcei.BuffersProcessed) == GetSource(ALGetSourcei.BuffersQueued);
+			int currentSamplesPlayed = GetSource(ALGetSourcei.SampleOffset);
+			ALSourceState sourceState = AL.GetSourceState(_sourceID);
+			bool isInitializing = sourceState == ALSourceState.Initial;
+			bool detectedUnderrun = sourceState == ALSourceState.Stopped;
 			if (detectedUnderrun)
 			{
 				_sound.OnUnderrun();
+				// SampleOffset should reset to 0 when stopped; update the queued sample count to match
+				UnqueueProcessedBuffers();
+				currentSamplesPlayed = 0;
 			}
-			UnqueueProcessedBuffers();
-			long samplesAwaitingPlayback = _runningSamplesQueued - (_runningSamplesPlayed + GetSource(ALGetSourcei.SampleOffset));
+			int samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
 			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
@@ -101,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			var buffer = _bufferPool.Obtain(byteCount);
 			AL.BufferData(buffer.BufferID, ALFormat.Stereo16, samples, byteCount, Sound.SampleRate);
 			AL.SourceQueueBuffer(_sourceID, buffer.BufferID);
-			_runningSamplesQueued += sampleCount;
+			_currentSamplesQueued += sampleCount;
 			if (AL.GetSourceState(_sourceID) != ALSourceState.Playing)
 			{
 				AL.SourcePlay(_sourceID);
@@ -111,12 +113,11 @@ namespace BizHawk.Client.EmuHawk
 		private void UnqueueProcessedBuffers()
 		{
 			int releaseCount = GetSource(ALGetSourcei.BuffersProcessed);
-			while (releaseCount > 0)
+			for (int i = 0; i < releaseCount; i++)
 			{
 				AL.SourceUnqueueBuffer(_sourceID);
 				var releasedBuffer = _bufferPool.ReleaseOne();
-				_runningSamplesPlayed += releasedBuffer.Length / Sound.BlockAlign;
-				releaseCount--;
+				_currentSamplesQueued -= releasedBuffer.Length / Sound.BlockAlign;
 			}
 		}
 
