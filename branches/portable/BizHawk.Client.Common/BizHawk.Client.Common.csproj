@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
