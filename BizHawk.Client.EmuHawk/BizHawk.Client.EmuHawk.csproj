@@ -625,6 +625,7 @@
     </Compile>
     <Compile Include="Sound\Output\DirectSoundSoundOutput.cs" />
     <Compile Include="Sound\Output\DummySoundOutput.cs" />
+    <Compile Include="Sound\Output\OpenALSoundOutput.cs" />
     <Compile Include="Sound\Output\XAudio2SoundOutput.cs" />
     <Compile Include="Sound\Sound.cs" />
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
