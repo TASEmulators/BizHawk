@@ -92,6 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			_sourceVoice.Dispose();
 			_sourceVoice = null;
 
+			_bufferPool.Dispose();
 			_bufferPool = null;
 
 			BufferSizeSamples = 0;
@@ -129,10 +130,20 @@ namespace BizHawk.Client.EmuHawk
 			_runningSamplesQueued += sampleCount;
 		}
 
-		private class BufferPool
+		private class BufferPool : IDisposable
 		{
 			private List<BufferPoolItem> _availableItems = new List<BufferPoolItem>();
 			private Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
+
+			public void Dispose()
+			{
+				foreach (BufferPoolItem item in _availableItems.Concat(_obtainedItems))
+				{
+					item.DataStream.Dispose();
+				}
+				_availableItems.Clear();
+				_obtainedItems.Clear();
+			}
 
 			public BufferPoolItem Obtain(int length)
 			{

@@ -67,8 +67,10 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulateDeviceList()
 		{
 			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
+#if WINDOWS
 			if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
 			if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
+#endif
 			listBoxSoundDevices.Items.Clear();
 			listBoxSoundDevices.Items.Add("<default>");
 			listBoxSoundDevices.SelectedIndex = 0;
