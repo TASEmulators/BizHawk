@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
