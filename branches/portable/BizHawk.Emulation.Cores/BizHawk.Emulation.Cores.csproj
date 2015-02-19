@@ -638,6 +638,7 @@
     <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
+    <Compile Include="Consoles\Nintendo\NES\FDS\FDSInspector.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\RamAdapter.cs" />
     <Compile Include="Consoles\Nintendo\NES\INESPPUViewable.cs" />
     <Compile Include="Consoles\Nintendo\NES\NES.BoardSystem.cs" />

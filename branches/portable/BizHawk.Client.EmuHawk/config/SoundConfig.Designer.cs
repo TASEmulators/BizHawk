@@ -43,6 +43,7 @@
 			this.grpOutputMethod = new System.Windows.Forms.GroupBox();
 			this.rbOutputMethodXAudio2 = new System.Windows.Forms.RadioButton();
 			this.rbOutputMethodDirectSound = new System.Windows.Forms.RadioButton();
+			this.rbOutputMethodOpenAL = new System.Windows.Forms.RadioButton();
 			this.SoundVolGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SoundVolNumeric)).BeginInit();
@@ -190,11 +191,12 @@
 			// 
 			// grpOutputMethod
 			// 
+			this.grpOutputMethod.Controls.Add(this.rbOutputMethodOpenAL);
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodXAudio2);
 			this.grpOutputMethod.Controls.Add(this.rbOutputMethodDirectSound);
 			this.grpOutputMethod.Location = new System.Drawing.Point(292, 12);
 			this.grpOutputMethod.Name = "grpOutputMethod";
-			this.grpOutputMethod.Size = new System.Drawing.Size(100, 68);
+			this.grpOutputMethod.Size = new System.Drawing.Size(100, 90);
 			this.grpOutputMethod.TabIndex = 5;
 			this.grpOutputMethod.TabStop = false;
 			this.grpOutputMethod.Text = "Output Method";
@@ -222,6 +224,18 @@
 			this.rbOutputMethodDirectSound.Text = "DirectSound";
 			this.rbOutputMethodDirectSound.UseVisualStyleBackColor = true;
 			this.rbOutputMethodDirectSound.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
+			// 
+			// rbOutputMethodOpenAL
+			// 
+			this.rbOutputMethodOpenAL.AutoSize = true;
+			this.rbOutputMethodOpenAL.Location = new System.Drawing.Point(6, 65);
+			this.rbOutputMethodOpenAL.Name = "rbOutputMethodOpenAL";
+			this.rbOutputMethodOpenAL.Size = new System.Drawing.Size(64, 17);
+			this.rbOutputMethodOpenAL.TabIndex = 2;
+			this.rbOutputMethodOpenAL.TabStop = true;
+			this.rbOutputMethodOpenAL.Text = "OpenAL";
+			this.rbOutputMethodOpenAL.UseVisualStyleBackColor = true;
+			this.rbOutputMethodOpenAL.CheckedChanged += new System.EventHandler(this.OutputMethodRadioButtons_CheckedChanged);
 			// 
 			// SoundConfig
 			// 
@@ -276,5 +290,6 @@
 		private System.Windows.Forms.GroupBox grpOutputMethod;
 		private System.Windows.Forms.RadioButton rbOutputMethodXAudio2;
 		private System.Windows.Forms.RadioButton rbOutputMethodDirectSound;
+		private System.Windows.Forms.RadioButton rbOutputMethodOpenAL;
 	}
 }
