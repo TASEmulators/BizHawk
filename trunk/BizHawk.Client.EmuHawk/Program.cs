@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #if WINDOWS
-using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
 #endif
 
