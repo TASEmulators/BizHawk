@@ -1,6 +1,5 @@
 ﻿using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
-using SlimDX.DirectSound;
 
 namespace BizHawk.Client.EmuHawk
 {
