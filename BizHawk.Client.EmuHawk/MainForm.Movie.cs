@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
+			LoadRom(CurrentlyOpenRom);
 
 			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
 			{

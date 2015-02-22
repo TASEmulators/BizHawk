@@ -1846,7 +1846,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
 			{
-				GlobalWin.MainForm.FlagNeedsReboot();
+				FlagNeedsReboot();
 				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
 			}
 			else
