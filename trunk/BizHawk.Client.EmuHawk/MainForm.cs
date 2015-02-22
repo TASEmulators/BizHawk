@@ -2976,7 +2976,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var token = aw.AcquireVideoCodecToken(GlobalWin.MainForm);
+					var token = aw.AcquireVideoCodecToken(this);
 					if (token == null)
 					{
 						GlobalWin.OSD.AddMessage("A/V capture canceled.");
