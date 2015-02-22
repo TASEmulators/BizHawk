@@ -26,7 +26,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 
-		public static Controller NullControls;
 		public static AutofireController AutofireNullControls;
 
 		//the movie will be spliced inbetween these if it is present
