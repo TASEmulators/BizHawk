@@ -270,9 +270,10 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
+
+			var comm = CreateCoreComm();
+			CoreFileProvider.SyncCoreCommInputSignals(comm);
+			Global.Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -3287,9 +3288,8 @@ namespace BizHawk.Client.EmuHawk
 			if (result)
 			{
 				Global.Emulator = loader.LoadedEmulator;
-				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 				InputManager.SyncControls();
 
 				if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
@@ -3495,9 +3495,9 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.CheatList.SaveOnClose();
 			Global.Emulator.Dispose();
-			Global.CoreComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			var coreComm = CreateCoreComm();
+			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
+			Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = Global.NullControls;
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
@@ -3514,9 +3514,9 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = CreateCoreComm();
-				CoreFileProvider.SyncCoreCommInputSignals();
-				Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
+				var coreComm = CreateCoreComm();
+				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
+				Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
