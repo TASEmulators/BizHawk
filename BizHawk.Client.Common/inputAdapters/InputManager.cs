@@ -40,12 +40,12 @@ namespace BizHawk.Client.Common
 			var def = Global.Emulator.ControllerDefinition;
 
 			Global.ActiveController = BindToDefinition(def, Global.Config.AllTrollers, Global.Config.AllTrollersAnalog);
-			Global.AutoFireController = BindToDefinitionAF(def, Global.Config.AllTrollersAutoFire);
+			Global.AutoFireController = BindToDefinitionAF(def, Global.Emulator, Global.Config.AllTrollersAutoFire);
 
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
-			Global.ActiveController.ForceType(new ControllerDefinition(Global.Emulator.ControllerDefinition));
-			Global.ClickyVirtualPadController.Type = new ControllerDefinition(Global.Emulator.ControllerDefinition);
+			Global.ActiveController.ForceType(new ControllerDefinition(def));
+			Global.ClickyVirtualPadController.Type = new ControllerDefinition(def);
 			RewireInputChain();
 		}
 
@@ -81,9 +81,9 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
-		private static AutofireController BindToDefinitionAF(ControllerDefinition def, IDictionary<string, Dictionary<string, string>> allbinds)
+		private static AutofireController BindToDefinitionAF(ControllerDefinition def, IEmulator emulator, IDictionary<string, Dictionary<string, string>> allbinds)
 		{
-			var ret = new AutofireController(def);
+			var ret = new AutofireController(def, emulator);
 			Dictionary<string, string> binds;
 			if (allbinds.TryGetValue(def.Name, out binds))
 			{
