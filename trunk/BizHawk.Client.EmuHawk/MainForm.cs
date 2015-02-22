@@ -210,10 +210,10 @@ namespace BizHawk.Client.EmuHawk
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			//TODO GL - a lot of disorganized wiring-up here
-			GlobalWin.PresentationPanel = new PresentationPanel();
-			GlobalWin.DisplayManager = new DisplayManager(GlobalWin.PresentationPanel);
-			Controls.Add(GlobalWin.PresentationPanel);
-			Controls.SetChildIndex(GlobalWin.PresentationPanel, 0);
+			PresentationPanel = new PresentationPanel();
+			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
+			Controls.Add(PresentationPanel);
+			Controls.SetChildIndex(PresentationPanel, 0);
 
 			//TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -257,9 +257,9 @@ namespace BizHawk.Client.EmuHawk
 				_inResizeLoop = false;
 				SetWindowText();
 
-				if (GlobalWin.PresentationPanel != null)
+				if (PresentationPanel != null)
 				{
-					GlobalWin.PresentationPanel.Resized = true;
+					PresentationPanel.Resized = true;
 				}
 
 				if (GlobalWin.Sound != null)
@@ -416,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 			SynchChrome();
 
 			//TODO POOP
-			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
+			PresentationPanel.Control.Paint += (o, e) =>
 			{
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
@@ -913,8 +913,8 @@ namespace BizHawk.Client.EmuHawk
 				int zoom = Global.Config.TargetZoomFactor;
 				var area = Screen.FromControl(this).WorkingArea;
 
-				int borderWidth = Size.Width - GlobalWin.PresentationPanel.Control.Size.Width;
-				int borderHeight = Size.Height - GlobalWin.PresentationPanel.Control.Size.Height;
+				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;
+				int borderHeight = Size.Height - PresentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
 				Size lastComputedSize = new Size(1, 1);
@@ -932,7 +932,7 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size((lastComputedSize.Width) + borderWidth, ((lastComputedSize.Height) + borderHeight));
 				PerformLayout();
-				GlobalWin.PresentationPanel.Resized = true;
+				PresentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (area.Contains(Bounds) == false)
@@ -1018,7 +1018,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Maximized; //be sure to do this after setting the chrome, otherwise it wont work fully
 				ResumeLayout();
 
-				GlobalWin.PresentationPanel.Resized = true;
+				PresentationPanel.Resized = true;
 			}
 			else
 			{
@@ -1285,6 +1285,8 @@ namespace BizHawk.Client.EmuHawk
 		// input state which has been destined for client hotkey consumption are colesced here
 		private readonly InputCoalescer HotkeyCoalescer = new InputCoalescer();
 
+		public PresentationPanel PresentationPanel { get; set; }
+
 		#endregion
 
 		#region Private methods
@@ -1307,7 +1309,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_inResizeLoop)
 			{
-				var size = GlobalWin.PresentationPanel.NativeSize;
+				var size = PresentationPanel.NativeSize;
 				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
 			}
 

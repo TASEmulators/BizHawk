@@ -12,7 +12,6 @@ namespace BizHawk.Client.EmuHawk
 		public static Bizware.BizwareGL.Drivers.OpenTK.IGL_TK IGL_GL;
 		public static GLManager.ContextRef CR_GL;
 		public static Sound Sound;
-		public static PresentationPanel PresentationPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager;
 		public static GLManager GLManager;

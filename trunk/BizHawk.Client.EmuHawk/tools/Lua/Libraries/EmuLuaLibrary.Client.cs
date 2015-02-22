@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static int ScreenHeight()
 		{
-			return GlobalWin.PresentationPanel.NativeSize.Height;
+			return GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
 		}
 
 		[LuaMethodAttributes(
@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static int ScreenWidth()
 		{
-			return GlobalWin.PresentationPanel.NativeSize.Width;
+			return GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
 		}
 
 		[LuaMethodAttributes(
