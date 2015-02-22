@@ -681,22 +681,22 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			int size;
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.MainRAM);
-			mmd.Add(MemoryDomain.FromIntPtr("MainRAM", size, MemoryDomain.Endian.Little, ptr, true));
+			mmd.Add(MemoryDomain.FromIntPtr("MainRAM", size, MemoryDomain.Endian.Little, ptr, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.GPURAM);
-			mmd.Add(MemoryDomain.FromIntPtr("GPURAM", size, MemoryDomain.Endian.Little, ptr, true));
+			mmd.Add(MemoryDomain.FromIntPtr("GPURAM", size, MemoryDomain.Endian.Little, ptr, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.SPURAM);
-			mmd.Add(MemoryDomain.FromIntPtr("SPURAM", size, MemoryDomain.Endian.Little, ptr, true));
+			mmd.Add(MemoryDomain.FromIntPtr("SPURAM", size, MemoryDomain.Endian.Little, ptr, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.BiosROM);
-			mmd.Add(MemoryDomain.FromIntPtr("BiosROM", size, MemoryDomain.Endian.Little, ptr, true));
+			mmd.Add(MemoryDomain.FromIntPtr("BiosROM", size, MemoryDomain.Endian.Little, ptr, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.PIOMem);
-			mmd.Add(MemoryDomain.FromIntPtr("PIOMem", size, MemoryDomain.Endian.Little, ptr, true));
+			mmd.Add(MemoryDomain.FromIntPtr("PIOMem", size, MemoryDomain.Endian.Little, ptr, true, 4));
 
 			OctoshockDll.shock_GetMemData(psx, out ptr, out size, OctoshockDll.eMemType.DCache);
-			mmd.Add(MemoryDomain.FromIntPtr("DCache", size, MemoryDomain.Endian.Little, ptr, true));
+			mmd.Add(MemoryDomain.FromIntPtr("DCache", size, MemoryDomain.Endian.Little, ptr, true, 4));
 
 			MemoryDomains = new MemoryDomainList(mmd);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);

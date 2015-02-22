@@ -16,13 +16,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var s = new LibVBANext.MemoryAreas();
 			var l = MemoryDomain.Endian.Little;
 			LibVBANext.GetMemoryAreas(Core, s);
-			mm.Add(MemoryDomain.FromIntPtr("IWRAM", 32 * 1024, l, s.iwram));
-			mm.Add(MemoryDomain.FromIntPtr("EWRAM", 256 * 1024, l, s.ewram));
-			mm.Add(MemoryDomain.FromIntPtr("BIOS", 16 * 1024, l, s.bios, false));
-			mm.Add(MemoryDomain.FromIntPtr("PALRAM", 1024, l, s.palram, false));
-			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram));
-			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam));
-			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom));
+			mm.Add(MemoryDomain.FromIntPtr("IWRAM", 32 * 1024, l, s.iwram, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("EWRAM", 256 * 1024, l, s.ewram, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("BIOS", 16 * 1024, l, s.bios, false, 4));
+			mm.Add(MemoryDomain.FromIntPtr("PALRAM", 1024, l, s.palram, false, 4));
+			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom, true, 4));
 
 			mm.Add(new MemoryDomain("System Bus", 0x10000000, l,
 				delegate(long addr)
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					if (addr < 0 || addr >= 0x10000000)
 						throw new ArgumentOutOfRangeException();
 					LibVBANext.SystemBusWrite(Core, (int)addr, val);
-				}));
+				}, 4));
 			// special combined ram memory domain
 			{
 				var ew = mm[1];
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 							iw.PokeByte(addr & 32767, val);
 						else
 							ew.PokeByte(addr, val);
-					});
+					}, 4);
 				mm.Add(cr);
 			}
 

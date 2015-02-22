@@ -612,11 +612,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
 							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
-						}));
+						},
+						byteSize: 2));
 				}
+				
 				else
 				{
-					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
+					var byteSize = name.Contains("Z80") ? 1 : 2;
+					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
 				}
 			}
 			MemoryDomains = new MemoryDomainList(mm);
