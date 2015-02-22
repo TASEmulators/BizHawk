@@ -1605,7 +1605,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.ClientControls = controls;
 			Global.NullControls = new Controller(NullEmulator.NullController);
-			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
+			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Global.Emulator);
 
 		}
 
