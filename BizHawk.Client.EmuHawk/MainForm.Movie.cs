@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				Global.MovieSession.QueueNewMovie(movie, record);
+				Global.MovieSession.QueueNewMovie(movie, record, Global.Emulator);
 			}
 			catch (MoviePlatformMismatchException ex)
 			{

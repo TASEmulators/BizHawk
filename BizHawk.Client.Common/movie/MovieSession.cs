@@ -440,18 +440,18 @@ namespace BizHawk.Client.Common
 		public bool? PreviousNES_InQuickNES = null;
 		public bool? PreviousSNES_InSnes9x = null;
 
-		public void QueueNewMovie(IMovie movie, bool record)
+		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
 			{
 				movie.Load();
-				if (movie.SystemID != Global.Emulator.SystemId)
+				if (movie.SystemID != emulator.SystemId)
 				{
 					throw new MoviePlatformMismatchException(
 						string.Format(
 						"Movie system Id ({0}) does not match the currently loaded platform ({1}), unable to load",
 						movie.SystemID,
-						Global.Emulator.SystemId));
+						emulator.SystemId));
 				}
 			}
 
@@ -465,7 +465,7 @@ namespace BizHawk.Client.Common
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
 			InputManager.RewireInputChain();
 
-			if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
+			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 			{
 				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
 				var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
@@ -482,7 +482,7 @@ namespace BizHawk.Client.Common
 					Global.Config.NES_InQuickNES = false;
 				}
 			}
-			else if (!record && Global.Emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
+			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
 			{
 				var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
 				var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;
