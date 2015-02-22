@@ -16,6 +16,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
 	{
+		public ToolManager(Form owner)
+		{
+			_owner = owner;
+		}
+
+		private readonly Form _owner;
+
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
 		// Also a UsesRam, and similar method
@@ -61,6 +68,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var newTool = CreateInstance(toolType);
+
+			if (newTool is Form)
+			{
+				(newTool as Form).Owner = GlobalWin.MainForm;
+			}
 
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
 
