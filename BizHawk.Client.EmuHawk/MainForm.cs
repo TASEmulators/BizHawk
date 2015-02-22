@@ -289,7 +289,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			GlobalWin.Sound.StartSound();
 			InputManager.RewireInputChain();
-			GlobalWin.Tools = new ToolManager();
+			GlobalWin.Tools = new ToolManager(this);
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
