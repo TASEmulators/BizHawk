@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
-		private static void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
+		private void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
 			var form = (Form)tool;
 			ToolStripItemCollection dest = null;
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.FloatingWindow = val;
 				(o as ToolStripMenuItem).Checked = val;
-				form.Owner = val ? null : GlobalWin.MainForm;
+				form.Owner = val ? null : _owner;
 			};
 			dest[idx + 3].Click += (o, e) =>
 			{
