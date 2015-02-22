@@ -126,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			_asyncSoundProvider = source;
 			_semiSync.BaseSoundProvider = source;
-			_semiSync.RecalculateMagic(Global.CoreComm.VsyncRate);
+			_semiSync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
 		}
 
 		public bool LogUnderruns { get; set; }

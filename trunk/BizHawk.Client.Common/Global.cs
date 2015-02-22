@@ -8,7 +8,6 @@ namespace BizHawk.Client.Common
 	public static class Global
 	{
 		public static IEmulator Emulator;
-		public static CoreComm CoreComm;
 		public static Config Config;
 		public static GameInfo Game;
 		public static CheatCollection CheatList;
