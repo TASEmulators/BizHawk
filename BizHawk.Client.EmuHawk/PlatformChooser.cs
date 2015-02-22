@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -27,7 +28,10 @@ namespace BizHawk.Client.EmuHawk
 		public PlatformChooser()
 		{
 			InitializeComponent();
+			AvailableSystems = new SystemLookup().AllSystems.ToList();
 		}
+
+		private readonly List<SystemLookup.SystemInfo> AvailableSystems;
 
 		private void PlatformChooser_Load(object sender, EventArgs e)
 		{
@@ -44,11 +48,11 @@ namespace BizHawk.Client.EmuHawk
 			HashBox.Text = RomGame.GameInfo.Hash;
 			int count = 0;
 			int spacing = 25;
-			foreach (var platform in GlobalWin.MainForm.SupportedPlatforms)
+			foreach (var platform in AvailableSystems)
 			{
 				var radio = new RadioButton
 				{
-					Text = platform.Value,
+					Text = platform.FullName,
 					Location = UIHelper.Scale(new Point(15, 15 + (count * spacing))),
 					Size = UIHelper.Scale(new Size(200, 23))
 				};
@@ -71,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
 			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : string.Empty;
-			PlatformChoice = GlobalWin.MainForm.SupportedPlatforms.FirstOrDefault(x => x.Value == selectedValue).Key;
+			PlatformChoice = AvailableSystems.FirstOrDefault(x => x.FullName == selectedValue).SystemId;
 
 			if (AlwaysCheckbox.Checked)
 			{

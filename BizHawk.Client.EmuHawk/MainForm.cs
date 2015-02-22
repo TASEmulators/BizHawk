@@ -601,51 +601,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// TODO: SystemInfo should be able to do this
-		// Because we don't have enough places where we list SystemID's
-		public Dictionary<string, string> SupportedPlatforms
-		{
-			get
-			{
-				var released = new Dictionary<string, string>
-				{
-					{ "A26", "Atari 2600" },
-					{ "A78", "Atari 7800" },
-					{ "Lynx", "Atari Lynx" },
-
-					{ "NES", "Nintendo Entertainment System/Famicom" },
-					{ "SNES", "Super Nintendo" },
-					{ "N64", "Nintendo 64" },
-
-					{ "GB", "Game Boy" },
-					{ "GBC", "Game Boy Color" },
-					{ "GBA", "Gameboy Advance" },
-
-					{ "PSX", "Playstation" },
-
-					{ "SMS", "Sega Master System" },
-					{ "GG", "Sega Game Gear" },
-					{ "SG", "SG-1000" },
-					{ "GEN", "Sega Genesis/Megadrive" },
-					{ "SAT", "Sega Saturn" },
-
-					{ "PCE", "PC Engine/TurboGrafx 16" },
-
-					{ "Coleco", "Colecovision" },
-					{ "TI83", "TI-83 Calculator" },
-
-					{ "WSWAN", "WonderSwan" },
-				};
-
-				if (VersionInfo.DeveloperBuild)
-				{
-					released.Add("C64", "Commodore 64");
-				}
-
-				return released;
-			}
-		}
-
 		#endregion
 
 		#region Public Methods
