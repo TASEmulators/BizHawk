@@ -187,6 +187,7 @@
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
+    <Compile Include="movie\interfaces\IMovieSession.cs" />
     <Compile Include="movie\MovieService.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
