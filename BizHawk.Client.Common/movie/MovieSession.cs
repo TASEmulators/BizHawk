@@ -456,9 +456,9 @@ namespace BizHawk.Client.Common
 			}
 
 			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive && !string.IsNullOrEmpty(Global.MovieSession.Movie.Filename))
+			if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
 			{
-				Global.MovieSession.Movie.Save();
+				Movie.Save();
 			}
 
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
