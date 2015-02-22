@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			{
 				int l = nmd.length;
 				IntPtr d = nmd.data;
-				ret.Add(MemoryDomain.FromIntPtr(nmd.name, nmd.length, MemoryDomain.Endian.Little, nmd.data));
+				ret.Add(MemoryDomain.FromIntPtr(nmd.name, nmd.length, MemoryDomain.Endian.Little, nmd.data, true, 4));
 			}
 
 			// main memory is in position 2
