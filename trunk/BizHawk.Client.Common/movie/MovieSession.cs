@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 {
 	public enum MovieEndAction { Stop, Pause, Record, Finish }
 
-	public class MovieSession
+	public class MovieSession : IMovieSession
 	{
 		public MovieSession()
 		{
@@ -437,8 +437,8 @@ namespace BizHawk.Client.Common
 
 		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
 		// A more elegant approach would be appreciated
-		public bool? PreviousNES_InQuickNES = null;
-		public bool? PreviousSNES_InSnes9x = null;
+		public bool? PreviousNES_InQuickNES { get; set; }
+		public bool? PreviousSNES_InSnes9x { get; set; }
 
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{

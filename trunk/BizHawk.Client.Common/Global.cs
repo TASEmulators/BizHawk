@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 		public static FirmwareManager FirmwareManager;
 		public static Rewinder Rewinder;
 
-		public static MovieSession MovieSession = new MovieSession();
+		public static IMovieSession MovieSession = new MovieSession();
 
 		/// <summary>
 		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
