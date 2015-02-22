@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 			var comm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
 			Global.Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
-			Global.ActiveController = Global.NullControls;
+			Global.ActiveController = new Controller(NullEmulator.NullController);
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 			try { GlobalWin.Sound = new Sound(Handle); }
@@ -1605,7 +1605,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Global.ClientControls = controls;
-			Global.NullControls = new Controller(NullEmulator.NullController);
 			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Global.Emulator);
 
 		}
@@ -3498,7 +3497,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
-			Global.ActiveController = Global.NullControls;
+			Global.ActiveController = new Controller(NullEmulator.NullController);
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
