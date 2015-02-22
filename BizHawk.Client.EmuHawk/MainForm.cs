@@ -433,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 				ProcessInput();
-				Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+				Global.ClientControls.LatchFromPhysical(HotkeyCoalescer);
 
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
@@ -773,7 +773,7 @@ namespace BizHawk.Client.EmuHawk
 						// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							GlobalWin.HotkeyCoalescer.Receive(ie);
+							HotkeyCoalescer.Receive(ie);
 						}
 
 						break;
@@ -790,7 +790,7 @@ namespace BizHawk.Client.EmuHawk
 							// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 							if (!handled)
 							{
-								GlobalWin.HotkeyCoalescer.Receive(ie);
+								HotkeyCoalescer.Receive(ie);
 							}
 						}
 						break;
@@ -804,7 +804,7 @@ namespace BizHawk.Client.EmuHawk
 						// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							GlobalWin.HotkeyCoalescer.Receive(ie);
+							HotkeyCoalescer.Receive(ie);
 							conInput.Receive(ie);
 						}
 
@@ -1279,6 +1279,11 @@ namespace BizHawk.Client.EmuHawk
 		// Resources
 		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 		Bitmap LinkCableOn, LinkCableOff;
+
+		// input state which has been destined for game controller inputs are coalesced here
+		// public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
+		// input state which has been destined for client hotkey consumption are colesced here
+		private readonly InputCoalescer HotkeyCoalescer = new InputCoalescer();
 
 		#endregion
 
