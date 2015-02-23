@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.SelectedProfile == Config.ClientProfile.Casual)
 			{
 				DisplayProfileSettingBoxes(false);
-				Global.Config.SaveLargeScreenshotWithStates = false;
+				Global.Config.NoLowResLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = false;
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (Global.Config.SelectedProfile == Config.ClientProfile.Longplay)
 			{
 				DisplayProfileSettingBoxes(false);
-				Global.Config.SaveLargeScreenshotWithStates = false;
+				Global.Config.NoLowResLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = false;
 				Global.Config.AllowUD_LR = false;
 				Global.Config.BackupSavestates = false;
@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayProfileSettingBoxes(false);
 
 				// General
-				Global.Config.SaveLargeScreenshotWithStates = true;
+				Global.Config.NoLowResLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = true;
 				Global.Config.AllowUD_LR = true;
 				Global.Config.BackupSavestates = true;
@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 				DisplayProfileSettingBoxes(false);
 
 				// General
-				Global.Config.SaveLargeScreenshotWithStates = true;
+				Global.Config.NoLowResLargeScreenshotWithStates = false;
 				Global.Config.SaveScreenshotWithStates = true;
 				Global.Config.AllowUD_LR = true;
 				Global.Config.BackupSavestates = false;
