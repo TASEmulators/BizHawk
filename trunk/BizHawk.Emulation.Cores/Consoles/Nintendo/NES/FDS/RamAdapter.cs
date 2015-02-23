@@ -489,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							Read();
 						else
 							Write();
-						if (diskpos == disksize)
+						if (diskpos >= disksize)
 						{
 							// Console.WriteLine("FDS: End of Disk");
 							state = RamAdapterState.RESET;
@@ -645,7 +645,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void MoveDummy()
 		{
-			diskpos++;
+			// It seems that the real disk doesn't keep on running at normal speed to the end while restting
+			// Whoever told me that was mistaken...
+			diskpos += 5000;
 		}
 
 
