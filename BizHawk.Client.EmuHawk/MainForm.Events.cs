@@ -1391,6 +1391,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SMSOverclockMenuItem.Visible =
 				SMSVDPViewerToolStripMenuItem.Visible =
+				toolStripSeparator24.Visible =
 				Global.Game.System != "SG";
 		}
 
