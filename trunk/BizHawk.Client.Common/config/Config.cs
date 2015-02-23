@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 		public bool BackupSaveram = true;
 		public bool SaveScreenshotWithStates = true;
 		public int BigScreenshotSize = 128 * 1024;
-		public bool SaveLargeScreenshotWithStates = false;
+		public bool NoLowResLargeScreenshotWithStates = false;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
 		public bool AutofireLagFrames = true;

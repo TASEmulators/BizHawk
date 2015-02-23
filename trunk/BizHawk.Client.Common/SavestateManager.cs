@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 					int out_h = vp.BufferHeight;
 
 					// if buffer is too big, scale down screenshot
-					if (!Global.Config.SaveLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
+					if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
 					{
 						out_w /= 2;
 						out_h /= 2;
