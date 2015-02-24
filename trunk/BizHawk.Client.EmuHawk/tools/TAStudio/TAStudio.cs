@@ -107,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
+			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
@@ -474,24 +475,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.SetBool(buttonName, value);
 			}
 		}
-
-		// SuuperW: 'toggle' float state
-		private void ToggleFloatState(int frame, string buttonName)
-		{
-			if (frame < CurrentTasMovie.InputLogLength)
-			{
-				float curState = CurrentTasMovie.GetFloatValue(frame, buttonName);
-				if (curState == 0f)
-					CurrentTasMovie.SetFloatState(frame, buttonName, 127.0f);
-				else
-					CurrentTasMovie.SetFloatState(frame, buttonName, 0f);
-			}
-			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-			{
-				// Global.ClickyVirtualPadController.Toggle(buttonName);
-			}
-		}
-
 
 		private void SetColumnsFromCurrentStickies()
 		{
