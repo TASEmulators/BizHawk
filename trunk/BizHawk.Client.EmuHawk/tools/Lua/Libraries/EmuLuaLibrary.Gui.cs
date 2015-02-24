@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 					var bg = background ?? DefaultBackground;
 					if (bg.HasValue)
 					{
-						g.FillRectangle(GetBrush(bg.Value), x, y, x2, y2);
+						g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, x2 - 1, y2 - 1);
 					}
 				}
 				catch (Exception)
@@ -266,14 +266,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? DefaultForeground), x, y, width, height);
-
 					var bg = background ?? DefaultBackground;
 					if (bg.HasValue)
 					{
 						var brush = GetBrush(bg.Value);
 						g.FillEllipse(brush, x, y, width, height);
 					}
+
+					g.DrawEllipse(GetPen(line ?? DefaultForeground), x, y, width, height);
 				}
 				catch (Exception)
 				{
@@ -369,13 +369,15 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				g.DrawPie(GetPen(line ?? DefaultForeground), x, y, width, height, startangle, sweepangle);
 				var bg = background ?? DefaultBackground;
 				if (bg.HasValue)
 				{
 					var brush = GetBrush(bg.Value);
 					g.FillPie(brush, x, y, width, height, startangle, sweepangle);
 				}
+
+				g.DrawPie(GetPen(line ?? DefaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
+				
 			}
 		}
 
@@ -445,7 +447,7 @@ namespace BizHawk.Client.EmuHawk
 				var bg = background ?? DefaultBackground;
 				if (bg.HasValue)
 				{
-					g.FillRectangle(GetBrush(bg.Value), x, y, width, height);
+					g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, width - 1, height - 1);
 				}
 			}
 		}
