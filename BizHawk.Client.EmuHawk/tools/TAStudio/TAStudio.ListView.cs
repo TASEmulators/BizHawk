@@ -17,6 +17,10 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 		private bool _supressContextMenu;
+		// SuuperW: For editing analog input
+		private string _floatEditColumn = string.Empty;
+		private int _floatEditRow = -1;
+		private string _floatTypedValue;
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will clal GoToFrameIfNecessary() with this value
@@ -35,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
 
 		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
+		public static Color AnalogEdit_Col = Color.FromArgb(0x909070); // SuuperW: When editing an analog value, it will be a gray color.
 
 		#region Query callbacks
 
@@ -80,6 +85,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+
+
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame == index)
@@ -103,6 +110,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				// SuuperW: Analog editing is indicated by a color change.
+				if (index == _floatEditRow && columnName == _floatEditColumn)
+				{
+					color = AnalogEdit_Col;
+					return;
+				}
 				if (Emulator.Frame == index)
 				{
 					color = CurrentFrame_InputLog;
@@ -216,75 +229,65 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasView.CurrentCell != null && TasView.CurrentCell.RowIndex.HasValue && TasView.CurrentCell.Column != null)
+			// SuuperW: Moved these.
+			if (TasView.CurrentCell == null || !TasView.CurrentCell.RowIndex.HasValue || TasView.CurrentCell.Column == null)
+				return;
+
+			var frame = TasView.CurrentCell.RowIndex.Value;
+			var buttonName = TasView.CurrentCell.Column.Name;
+
+			// SuuperW: Exit float editing mode
+			if (_floatEditColumn != buttonName || _floatEditRow != frame)
 			{
-				if (e.Button == MouseButtons.Left)
+				_floatEditRow = -1;
+				TasView.Refresh();
+			}
+
+			if (e.Button == MouseButtons.Left)
+			{
+				if (TasView.CurrentCell.Column.Name == MarkerColumnName)
 				{
-					if (TasView.CurrentCell.Column.Name == MarkerColumnName)
+					_startMarkerDrag = true;
+					GoToFrame(TasView.CurrentCell.RowIndex.Value);
+				}
+				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
+				{
+					_startFrameDrag = true;
+				}
+				else // User changed input
+				{
+					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
-						_startMarkerDrag = true;
-						GoToFrame(TasView.CurrentCell.RowIndex.Value);
-					}
-					else if (TasView.CurrentCell.Column.Name == FrameColumnName)
-					{
-						_startFrameDrag = true;
-					}
-					else // User changed input
-					{
-						var frame = TasView.CurrentCell.RowIndex.Value;
-						var buttonName = TasView.CurrentCell.Column.Name;
+						ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						RefreshDialog();
 
-						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+						_startBoolDrawColumn = buttonName;
+
+						if (frame < CurrentTasMovie.InputLogLength)
 						{
-							ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
-							_triggerAutoRestore = true;
-							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
-							RefreshDialog();
-
-							_startBoolDrawColumn = buttonName;
-
-							if (frame < CurrentTasMovie.InputLogLength)
-							{
-								_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
-							}
-							else
-							{
-								Global.ClickyVirtualPadController.IsPressed(buttonName);
-							}
-
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
 						else
 						{
-							_startFloatDrawColumn = buttonName;
+							_boolPaintState = Global.ClickyVirtualPadController.IsPressed(buttonName);
+						}
 
-							float _floatPaintState = 0; // SuuperW: This variable isn't used, and hides another.
-							if (frame < CurrentTasMovie.InputLogLength)
-							{
-								_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
-							}
-							else
-							{
-								_floatPaintState = Global.ClickyVirtualPadController.GetFloat(buttonName);
-							}
+					}
+					else
+					{
+						_startFloatDrawColumn = buttonName;
+
+						if (frame < CurrentTasMovie.InputLogLength)
+						{
+							_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+						}
+						else
+						{
+							_floatPaintState = Global.ClickyVirtualPadController.GetFloat(buttonName);
 						}
 					}
-					//else if (e.Button == System.Windows.Forms.MouseButtons.Right)
-					//{ // SuuperW: This will be a simple way to 'toggle' float values.
-					//	if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
-					//	{
-					//		ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
-					//		_triggerAutoRestore = true;
-					//		_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
-					//		RefreshDialog();
-					//	}
-					//	else
-					//	{
-					//		ToggleFloatState(frame, buttonName);
-					//		_triggerAutoRestore = true;
-					//		_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
-					//		RefreshDialog();
-					//	}
-					//}
 				}
 			}
 		}
@@ -327,24 +330,51 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (TasView.CurrentCell.RowIndex.HasValue &&
-				TasView.CurrentCell.Column.Name == FrameColumnName &&
-				e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.Left)
 			{
-				if (Settings.EmptyMarkers)
+				var buttonName = TasView.CurrentCell.Column.Name;
+
+				if (TasView.CurrentCell.RowIndex.HasValue &&
+					buttonName == FrameColumnName)
 				{
-					CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
-					RefreshDialog();
+					if (Settings.EmptyMarkers)
+					{
+						CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
+						RefreshDialog();
+					}
+					else
+					{
+						CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
+					}
 				}
-				else
-				{
-					CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
+				else if (Global.MovieSession.MovieControllerAdapter.Type.FloatControls.Contains(buttonName))
+				{ // SuuperW: Edit float input
+					int frame = TasView.CurrentCell.RowIndex.Value;
+					if (_floatEditColumn == buttonName && _floatEditRow == frame)
+					{
+						_floatEditRow = -1;
+						RefreshDialog();
+					}
+					else
+					{
+						_floatEditColumn = buttonName;
+						_floatEditRow = frame;
+						_floatTypedValue = "";
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = frame;
+						RefreshDialog();
+					}
 				}
 			}
 		}
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
+			// SuuperW: Will this allow TasView to see KeyDown?
+			TasView.Select();
+			// Temporary test code
+			TasView.Refresh();
+
 			// TODO: think about nullability
 			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet?
 			// Most of these are stupid but I got annoyed at null crashes
@@ -407,8 +437,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (i < CurrentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
-							// Temp SuuperW
-							_floatPaintState = 0.5f;
 							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							_triggerAutoRestore = true;
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
@@ -447,8 +475,82 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.HorizontalOrientation ^= true;
 			}
-		}
 
+			// SuuperW: Float Editing
+			if (_floatEditRow != -1)
+			{
+				float value = CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn);
+				Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
+					[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed elsewhere, but I'll put a quick fix here anyway.
+				float rMax = range.Max;
+				float rMin = range.Min;
+				if (rMax > rMin)
+				{
+					rMax = range.Min;
+					rMin = range.Max;
+				}
+				if (e.KeyCode == Keys.Right) // No arrow key presses are being detected. Why?
+					value = range.Max;
+				else if (e.KeyCode == Keys.Left)
+					value = range.Min;
+				else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
+				{
+					_floatTypedValue += e.KeyCode - Keys.D0;
+					value = Convert.ToSingle(_floatTypedValue);
+				}
+				else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+				{
+					_floatTypedValue += e.KeyCode - Keys.NumPad0;
+					value = Convert.ToSingle(_floatTypedValue);
+				}
+				else if (e.KeyCode == Keys.OemPeriod && !_floatTypedValue.Contains('.'))
+				{
+					if (_floatTypedValue == "")
+						_floatTypedValue = "0";
+					_floatTypedValue += ".";
+				}
+				else if (e.KeyCode == Keys.OemMinus && _floatTypedValue == "")
+					_floatTypedValue = "-";
+				else if (e.KeyCode == Keys.Back)
+				{
+					if (_floatTypedValue == "") // Very first key press is backspace?
+						_floatTypedValue = value.ToString();
+					_floatTypedValue = _floatTypedValue.Substring(0, _floatTypedValue.Length - 1);
+					if (_floatTypedValue == "" || _floatTypedValue == "-")
+						value = 0f;
+					else
+						value = Convert.ToSingle(_floatTypedValue);
+				}
+				else if (e.KeyCode == Keys.Escape)
+				{
+					_floatEditRow = -1;
+				}
+				else
+				{
+					// This needs some way to know what the increment is. (Does the emulator allow, say, 25.8?)
+					float changeBy = 0;
+					if (e.KeyCode == Keys.Up)
+						changeBy = 1; // This is where I'd put increment
+					else if (e.KeyCode == Keys.Down)
+						changeBy = -1;
+					if (e.Shift)
+						changeBy *= 10;
+					value += changeBy;
+				}
+
+				if (_floatEditRow != -1 && value != CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn))
+				{
+					if (value > rMax)
+						value = rMax;
+					else if (value < rMin)
+						value = rMin;
+					CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+				}
+			}
+
+			TasView.Refresh();
+		}
 		#endregion
 	}
 }
