@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?define ProductVersion = "1.9.1"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-    <Product Id="56D52B0F-C469-4EE4-A61F-366D9E82757B" Name="BizHawk" Language="1033" Version="1.5.0.0" Manufacturer="WixEdit" UpgradeCode="7E81CB7B-CD7E-441A-B038-D0B3708778AD">
+    <Product Id="56D52B0F-C469-4EE4-A61F-366D9E82757B" Name="BizHawk" Language="1033" Version="$(var.ProductVersion)" Manufacturer="WixEdit" UpgradeCode="7E81CB7B-CD7E-441A-B038-D0B3708778AD">
         <Package Description="This installs the BizHawk emulator" Comments="BizHawk Multi System Emulator" InstallerVersion="200" Compressed="yes" />
         <Media Id="1" Cabinet="simple.cab" EmbedCab="yes" />
+      <Icon Id="ProductIcon" SourceFile="..\BizHawk.Client.EmuHawk\images\corphawk.ico" />
+      <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
+      <Property Id="ARPHELPLINK" Value="http://tasvIdeos.org/forum/viewforum.php?f=64" />
+      <Property Id="ARPURLINFOABOUT" Value="http://tasvIdeos.org/BizHawk.html" />
+      <Upgrade Id="$(var.ProductUpgradeCode)">
+        <UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
+        <UpgradeVersion Minimum="1.0.0" Maximum="1.8.4" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
+      </Upgrade>
       <!-- I broke the installer up into features below, although the UI window to select features is not something
       included in the windows defined in the UI section. If we included that window, the user would be able to choose
       if they want to install DiscoHawk, Gameboy Palettes, or the Bundled LUA scripts during the install process.
@@ -98,6 +107,8 @@
             <ComponentRef Id="FCEU_13_DEFAULT_NITSUJA.PAL" />
             <ComponentRef Id="FCEU_15_NITSUJA_NEW.PAL" />
             <ComponentRef Id="FCEUX.PAL" />
+            <ComponentRef Id="QUICKNES.PAL" />
+            <ComponentRef Id="SONY_CXA2025AS_US.PAL" />
             <ComponentRef Id="FIRMWARE" />
             <ComponentRef Id="StartMenuShortcuts" />
         </Feature>
@@ -259,7 +270,25 @@
           <ComponentRef Id="ZapperTarget.lua" />
           <ComponentRef Id="MovieClock.lua" />
           <ComponentRef Id="Ys_III.lua" />
+          <ComponentRef Id="CONSOLE.LUA" />
+          <ComponentRef Id="GAMEINFO.LUA" />
+          <ComponentRef Id="JOYPAD_ROUNDTRIP.LUA" />
+          <ComponentRef Id="JOYPAD_SET.LUA" />
+          <ComponentRef Id="JOYPAD_WITHCONTROLLERNUMBERS.LUA" />
+          <ComponentRef Id="UNITTESTS.LUA" />
         </Feature>
+      <Feature Id="Shaders" Title="BizHawk Shaders" Level="1">
+      <ComponentRef Id="BICUBIC_FAST.CG" />
+      <ComponentRef Id="BICUBIC_FAST.GLSL" />
+      <ComponentRef Id="BICUBIC_FAST.CGP" />
+      <ComponentRef Id="BICUBIC_FAST.GLSL_1" />
+      <ComponentRef Id="BIZSCANLINES.CGP" />
+      <ComponentRef Id="BIZSCANLINES.GLSL" />
+      <ComponentRef Id="HQ2X.CG" />
+      <ComponentRef Id="HQ2X.CGP" />
+      <ComponentRef Id="HQ2X.GLSL" />
+      <ComponentRef Id="TEST.CGP" />
+      </Feature>
         <Property Id="WIXUI_INSTALLDIR" Value="BIZHAWK" />
         <UI Id="WixUI_InstallDir">
           <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />

@@ -702,7 +702,7 @@
               <Component Id="ZapperTarget.lua" DiskId="1" Guid="69FCCC6A-DB2F-480C-A722-3A247377E1DD">
                 <File Id="ZapperTarget.lua" Name="ZapperTarget.lua" Source="..\output\Lua\NES\ZapperTarget.lua" />
               </Component>
-                         </Directory>
+            </Directory>
             <Directory Id="PCE" Name="PCE">
               <Component Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" DiskId="1" Guid="A54AAF18-5734-46E7-B8A4-26390883E3D4">
                 <File Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" Name="Castlevania_Rondo_of_Blood.lua" Source="..\output\Lua\PCE\Castlevania_Rondo_of_Blood.lua" />
@@ -746,7 +746,26 @@
                 <File Id="Ys_III.lua" Name="Y's III.lua" Source="..\output\Lua\SNES\Y's III.lua" />
               </Component>
             </Directory>
-            
+            <Directory Id="UNITTESTS" Name="UnitTests">
+              <Component Id="CONSOLE.LUA" DiskId="1" Guid="4C0B1652-5710-46DC-9025-8421BD3CD3D5">
+                <File Id="CONSOLE.LUA" Name="Console.lua" Source="D:\Emu\BizHawk\Lua\UnitTests\Console.lua" />
+              </Component>
+              <Component Id="GAMEINFO.LUA" DiskId="1" Guid="69247451-4FCA-4B31-83E0-455819242321">
+                <File Id="GAMEINFO.LUA" Name="GameInfo.lua" Source="D:\Emu\BizHawk\Lua\UnitTests\GameInfo.lua" />
+              </Component>
+              <Component Id="JOYPAD_ROUNDTRIP.LUA" DiskId="1" Guid="EEC8F9F9-E561-42C9-B195-0BD1EEA2948B">
+                <File Id="JOYPAD_ROUNDTRIP.LUA" Name="Joypad_RoundTrip.lua" Source="D:\Emu\BizHawk\Lua\UnitTests\Joypad_RoundTrip.lua" />
+              </Component>
+              <Component Id="JOYPAD_SET.LUA" DiskId="1" Guid="7EA546EF-5606-40AE-A75F-B3E20DEB1467">
+                <File Id="JOYPAD_SET.LUA" Name="Joypad_Set.lua" Source="D:\Emu\BizHawk\Lua\UnitTests\Joypad_Set.lua" />
+              </Component>
+              <Component Id="JOYPAD_WITHCONTROLLERNUMBERS.LUA" DiskId="1" Guid="62BF21A4-F926-44F7-A9DE-56E850F4B68D">
+                <File Id="JOYPAD_WITHCONTROLLERNUMBERS.LUA" Name="Joypad_WithControllerNumbers.lua" Source="D:\Emu\BizHawk\Lua\UnitTests\Joypad_WithControllerNumbers.lua" />
+              </Component>
+              <Component Id="UNITTESTS.LUA" DiskId="1" Guid="A4EA268C-CF87-4AFE-96BA-B3C6066E7E8D">
+                <File Id="UNITTESTS.LUA" Name="UnitTests.lua" Source="D:\Emu\BizHawk\Lua\UnitTests\UnitTests.lua" />
+              </Component>
+            </Directory>
           </Directory>
           <Directory Id="NES_1" Name="NES">
             <Directory Id="PALETTES_1" Name="Palettes">
@@ -770,6 +789,48 @@
               </Component>
               <Component Id="FCEUX.PAL" DiskId="1" Guid="5CA26666-7C21-4EE8-92D6-20F24B4DBA57">
                 <File Id="FCEUX.PAL" Name="FCEUX.pal" Source="..\output\NES\Palettes\FCEUX.pal" />
+              </Component>
+              <Component Id="QUICKNES.PAL" DiskId="1" Guid="E61D68D1-5CB7-4420-B668-BEA0E2C0C99A">
+                <File Id="QUICKNES.PAL" Name="QuickNes.pal" Source="D:\Emu\BizHawk\NES\Palettes\QuickNes.pal" />
+              </Component>
+              <Component Id="SONY_CXA2025AS_US.PAL" DiskId="1" Guid="6680C14E-C136-483C-9BCE-ED13BD015846">
+                <File Id="SONY_CXA2025AS_US.PAL" Name="SONY_CXA2025AS_US.pal" Source="D:\Emu\BizHawk\NES\Palettes\SONY_CXA2025AS_US.pal" />
+              </Component>
+            </Directory>
+          </Directory>
+          <Directory Id="SHADERS" Name="Shaders">
+            <Directory Id="BICUBIC" Name="bicubic">
+              <Component Id="BICUBIC_FAST.CG" DiskId="1" Guid="868285C8-0B4C-4D7A-973C-29B5ADF425FC">
+                <File Id="BICUBIC_FAST.CG" Name="bicubic-fast.cg" Source="D:\Emu\BizHawk\Shaders\bicubic\bicubic-fast.cg" />
+              </Component>
+              <Component Id="BICUBIC_FAST.GLSL" DiskId="1" Guid="034D4878-65E2-446D-9AFD-B47ED92C6E97">
+                <File Id="BICUBIC_FAST.GLSL" Name="bicubic-fast.glsl" Source="D:\Emu\BizHawk\Shaders\bicubic\bicubic-fast.glsl" />
+              </Component>
+            </Directory>
+            <Directory Id="BIZHAWK_S" Name="BizHawk">
+              <Component Id="BICUBIC_FAST.CGP" DiskId="1" Guid="D5421E05-09E4-4D85-B0C1-470B15EF2177">
+                <File Id="BICUBIC_FAST.CGP" Name="bicubic-fast.cgp" Source="D:\Emu\BizHawk\Shaders\BizHawk\bicubic-fast.cgp" />
+              </Component>
+              <Component Id="BICUBIC_FAST.GLSL_1" DiskId="1" Guid="5A96B721-544E-43A1-95E1-437BF3B0A63E">
+                <File Id="BICUBIC_FAST.GLSL_1" Name="bicubic-fast.glsl" Source="D:\Emu\BizHawk\Shaders\BizHawk\bicubic-fast.glsl" />
+              </Component>
+              <Component Id="BIZSCANLINES.CGP" DiskId="1" Guid="AA5EE9DD-6CBF-4FC1-9FB2-73304AB59D92">
+                <File Id="BIZSCANLINES.CGP" Name="BizScanlines.cgp" Source="D:\Emu\BizHawk\Shaders\BizHawk\BizScanlines.cgp" />
+              </Component>
+              <Component Id="BIZSCANLINES.GLSL" DiskId="1" Guid="866030D4-01AE-4CAE-8FBD-88F2E579F7D2">
+                <File Id="BIZSCANLINES.GLSL" Name="BizScanlines.glsl" Source="D:\Emu\BizHawk\Shaders\BizHawk\BizScanlines.glsl" />
+              </Component>
+              <Component Id="HQ2X.CG" DiskId="1" Guid="397A0A2A-D97A-43EA-AC20-D378593F081D">
+                <File Id="HQ2X.CG" Name="hq2x.cg" Source="D:\Emu\BizHawk\Shaders\BizHawk\hq2x.cg" />
+              </Component>
+              <Component Id="HQ2X.CGP" DiskId="1" Guid="F556A2C5-112C-4FBE-AB32-03F0CCEE3E47">
+                <File Id="HQ2X.CGP" Name="hq2x.cgp" Source="D:\Emu\BizHawk\Shaders\BizHawk\hq2x.cgp" />
+              </Component>
+              <Component Id="HQ2X.GLSL" DiskId="1" Guid="946E7195-788B-4342-AFED-ECC707CFB162">
+                <File Id="HQ2X.GLSL" Name="hq2x.glsl" Source="D:\Emu\BizHawk\Shaders\BizHawk\hq2x.glsl" />
+              </Component>
+              <Component Id="TEST.CGP" DiskId="1" Guid="AB64D914-61EE-44D1-8C7D-AD6C4CA508AD">
+                <File Id="TEST.CGP" Name="test.cgp" Source="D:\Emu\BizHawk\Shaders\BizHawk\test.cgp" />
               </Component>
             </Directory>
           </Directory>
