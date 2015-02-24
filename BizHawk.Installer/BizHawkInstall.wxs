@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?define ProductVersion = "1.9.1"?>
+<?define ProductVersion = "1.9.2"?>
+<?define ProductUpgradeCode = "7F9AD1EE-27D4-48A6-9D28-E959C1C8AD00"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-    <Product Id="56D52B0F-C469-4EE4-A61F-366D9E82757B" Name="BizHawk" Language="1033" Version="$(var.ProductVersion)" Manufacturer="WixEdit" UpgradeCode="7E81CB7B-CD7E-441A-B038-D0B3708778AD">
+    <Product Id="*" Name="BizHawk" Language="1033" Version="$(var.ProductVersion)" Manufacturer="BizHawk" UpgradeCode="$(var.ProductUpgradeCode)">
         <Package Description="This installs the BizHawk emulator" Comments="BizHawk Multi System Emulator" InstallerVersion="200" Compressed="yes" />
         <Media Id="1" Cabinet="simple.cab" EmbedCab="yes" />
       <Icon Id="ProductIcon" SourceFile="..\BizHawk.Client.EmuHawk\images\corphawk.ico" />
       <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
       <Property Id="ARPHELPLINK" Value="http://tasvIdeos.org/forum/viewforum.php?f=64" />
       <Property Id="ARPURLINFOABOUT" Value="http://tasvIdeos.org/BizHawk.html" />
-      <Upgrade Id="$(var.ProductUpgradeCode)">
-        <UpgradeVersion Minimum="$(var.ProductVersion)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED" />
-        <UpgradeVersion Minimum="1.0.0" Maximum="1.8.4" IncludeMinimum="yes" IncludeMaximum="yes" Property="OLDERVERSIONBEINGUPGRADED" />
-      </Upgrade>
+      <Property Id="ARPNOREPAIR" Value="1" />
+      <Property Id="ARPNOMODIFY" Value="0" />
+      <MajorUpgrade
+        Schedule="afterInstallInitialize"
+        DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+
       <!-- I broke the installer up into features below, although the UI window to select features is not something
       included in the windows defined in the UI section. If we included that window, the user would be able to choose
       if they want to install DiscoHawk, Gameboy Palettes, or the Bundled LUA scripts during the install process.
@@ -277,7 +280,7 @@
           <ComponentRef Id="JOYPAD_WITHCONTROLLERNUMBERS.LUA" />
           <ComponentRef Id="UNITTESTS.LUA" />
         </Feature>
-      <Feature Id="Shaders" Title="BizHawk Shaders" Level="1">
+        <Feature Id="Shaders" Title="BizHawk Shaders" Level="1">
       <ComponentRef Id="BICUBIC_FAST.CG" />
       <ComponentRef Id="BICUBIC_FAST.GLSL" />
       <ComponentRef Id="BICUBIC_FAST.CGP" />
@@ -341,8 +344,6 @@
           <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
           <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
           <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
-
-          <Property Id="ARPNOMODIFY" Value="1" />
         </UI>
         <UIRef Id="WixUI_Common" />
         <!-- The dotnet45 variable is defined in the project build tab. The 2012 project is uses .NET 4.5 -->
@@ -353,10 +354,10 @@
           <PropertyRef Id="NETFRAMEWORK40FULL" />
           <Condition Message="This application requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40FULL</Condition>
         <?endif?>
-        <!-- <Property Id="VC2010SP1RUNTIME">
+        <Property Id="VC2010SP1RUNTIME">
             <RegistrySearch Id="VC2010sp1RuntimeCheck" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" Name="InstallDate" Type="raw" />
-          </Property>-->
-        <!-- <Condition Message="This application requires Visual C++ 2010 SP1 runtime">Installed OR VC2010SP1RUNTIME</Condition> -->
+          </Property>
+        <Condition Message="This application requires Visual C++ 2010 SP1 runtime">Installed OR VC2010SP1RUNTIME</Condition>
         <Property Id="DIRECTX90C">
             <RegistrySearch Id="DirectX90Ccheck" Root="HKLM" Key="Software\Microsoft\DirectX" Name="Version" Type="raw" />
         </Property>
