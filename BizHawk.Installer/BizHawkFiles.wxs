@@ -190,11 +190,14 @@
               <File Id="ZLIB1.DLL" Name="zlib1.dll" Source="..\output\dll\zlib1.dll" />
             </Component>
           </Directory>
-          <Directory Id="FIRMWARE" Name="Firmware">
-<!--            <Component Id="BIOS_INFO.TXT" DiskId="1" Guid="B2E3AEE5-1AC7-4899-BA89-D62775F0B8A9">
-              <File Id="BIOS_INFO.TXT" Name="BIOS_Info.txt" Source="..\output\Firmware\BIOS_Info.txt" />
-            </Component>-->
+          <Directory Id="FIRMWARE" Name="FIRMWARE">
+            <Component Id="FIRMWARE" Guid="F0459324-4884-4A01-AA04-84B92D222428"
+              SharedDllRefCount="no" KeyPath="no" NeverOverwrite="no" Permanent="no" Transitive="no"
+              Win64="no" Location="either">
+              <CreateFolder/>
+            </Component>
           </Directory>
+
           <Directory Id="GAMEBOY" Name="Gameboy">
             <Directory Id="PALETTES" Name="Palettes">
               <Component Id="ALLEY_WAY.PAL" DiskId="1" Guid="F0459324-42D2-4138-8B0B-28D90C5A96FC">
@@ -637,6 +640,9 @@
             <Component Id="BUTTONCOUNT.LUA" DiskId="1" Guid="BA36D323-6A56-4B77-B12D-647802532C88">
               <File Id="BUTTONCOUNT.LUA" Name="ButtonCount.lua" Source="..\output\Lua\ButtonCount.lua" />
             </Component>
+            <Component Id="MovieClock.lua" DiskId="1" Guid="BA36D323-6A56-4B77-B12D-647802532C80">
+              <File Id="MovieClock.lua" Name="MovieClock.lua" Source="..\output\Lua\MovieClock.lua" />
+            </Component>
             <Directory Id="GENESIS" Name="Genesis">
               <Component Id="CASTLEVANIA_BLOODLINES.LUA" DiskId="1" Guid="179AFA68-0D1C-41A1-9A1A-42935EF23DB3">
                 <File Id="CASTLEVANIA_BLOODLINES.LUA" Name="Castlevania Bloodlines.lua" Source="..\output\Lua\Genesis\Castlevania Bloodlines.lua" />
@@ -693,7 +699,10 @@
               <Component Id="VICE_PROJECT_DOOM.LUA" DiskId="1" Guid="69FCCC6A-DB2F-480C-A722-3A247377E1D2">
                 <File Id="VICE_PROJECT_DOOM.LUA" Name="Vice Project Doom.lua" Source="..\output\Lua\NES\Vice Project Doom.lua" />
               </Component>
-            </Directory>
+              <Component Id="ZapperTarget.lua" DiskId="1" Guid="69FCCC6A-DB2F-480C-A722-3A247377E1DD">
+                <File Id="ZapperTarget.lua" Name="ZapperTarget.lua" Source="..\output\Lua\NES\ZapperTarget.lua" />
+              </Component>
+                         </Directory>
             <Directory Id="PCE" Name="PCE">
               <Component Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" DiskId="1" Guid="A54AAF18-5734-46E7-B8A4-26390883E3D4">
                 <File Id="CASTLEVANIA_RONDO_OF_BLOOD.LUA" Name="Castlevania_Rondo_of_Blood.lua" Source="..\output\Lua\PCE\Castlevania_Rondo_of_Blood.lua" />
@@ -733,7 +742,11 @@
               <Component Id="SUPER_METROID.LUA" DiskId="1" Guid="4C227AE1-395A-4E98-B987-70C1DEEE2659">
                 <File Id="SUPER_METROID.LUA" Name="Super Metroid.lua" Source="..\output\Lua\SNES\Super Metroid.lua" />
               </Component>
+              <Component Id="Ys_III.lua" DiskId="1" Guid="4C227AE1-395A-4E98-B987-70C1DEEE265A">
+                <File Id="Ys_III.lua" Name="Y's III.lua" Source="..\output\Lua\SNES\Y's III.lua" />
+              </Component>
             </Directory>
+            
           </Directory>
           <Directory Id="NES_1" Name="NES">
             <Directory Id="PALETTES_1" Name="Palettes">
