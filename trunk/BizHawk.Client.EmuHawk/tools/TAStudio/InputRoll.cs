@@ -99,13 +99,13 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			Gdi.Dispose();
-			
+
 			this.NormalFont.Dispose();
 			GDIRenderer.DestroyHFont(RotatedFont);
 
 			base.Dispose(disposing);
 		}
-        
+
 		#region Properties
 
 		/// <summary>
@@ -133,16 +133,18 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets whether the control is horizontal or vertical
 		/// </summary>
 		[Category("Behavior")]
-		public bool HorizontalOrientation {
-			get{
+		public bool HorizontalOrientation
+		{
+			get
+			{
 				return _horizontalOrientation;
 			}
 			set
 			{
-				if (_horizontalOrientation != value) 
-				{ 
-					_horizontalOrientation = value; 
-					OrientationChanged(); 
+				if (_horizontalOrientation != value)
+				{
+					_horizontalOrientation = value;
+					OrientationChanged();
 				}
 			}
 		}
@@ -436,7 +438,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
-		public int DrawHeight{ get; private set; }
+		public int DrawHeight { get; private set; }
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
@@ -450,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				return _maxCharactersInHorizontal;
-			} 
+			}
 			set
 			{
 				_maxCharactersInHorizontal = value;
@@ -581,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 					return (width - ColumnWidth) / CellWidth;
 				}
 
-				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : (CellHeight -1));
+				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : (CellHeight - 1));
 
 				return (height / CellHeight) - 1; // adelikat: -1 to compensate for what this math should be doing anyway, TODO: figure out why it doesn't work without it?
 			}
@@ -621,7 +623,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string RotateHotkeyStr
 		{
-			get { return "Ctrl+Shift+F";  }
+			get { return "Ctrl+Shift+F"; }
 		}
 
 		#endregion
@@ -686,9 +688,9 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				int start = 0;
-				
+
 				Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
-				
+
 				foreach (var column in columns)
 				{
 					var point = new Point(CellWidthPadding, start + CellHeightPadding);
@@ -1042,7 +1044,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoSelectionBG(PaintEventArgs e)
 		{
-			foreach(var cell in SelectedItems)
+			// SuuperW: This allows user to see other colors in selected frames.
+			Color Highlight_Color = new Color();
+			foreach (var cell in SelectedItems)
 			{
 				var relativeCell = new Cell
 				{
@@ -1050,7 +1054,11 @@ namespace BizHawk.Client.EmuHawk
 					Column = cell.Column,
 					CurrentText = cell.CurrentText
 				};
-				DrawCellBG(SystemColors.Highlight, relativeCell);
+				QueryItemBkColor(cell.RowIndex.Value, cell.Column, ref Highlight_Color);
+				Highlight_Color = Color.FromArgb((Highlight_Color.R + SystemColors.Highlight.R) / 2
+					, (Highlight_Color.G + SystemColors.Highlight.G) / 2
+					, (Highlight_Color.B + SystemColors.Highlight.B) / 2);
+				DrawCellBG(Highlight_Color, relativeCell);
 			}
 		}
 
@@ -1516,7 +1524,7 @@ namespace BizHawk.Client.EmuHawk
 			LastCell = CurrentCell;
 			CurrentCell = newCell;
 
-			if (PointedCellChanged != null && 
+			if (PointedCellChanged != null &&
 				(LastCell.Column != CurrentCell.Column || LastCell.RowIndex != CurrentCell.RowIndex))
 			{
 				PointedCellChanged(this, new CellEventArgs(LastCell, CurrentCell));
@@ -1637,20 +1645,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateDrawSize()
 		{
-			if (NeedsVScrollbar) 
+			if (NeedsVScrollbar)
 			{
-				DrawWidth = Width - VBar.Width; 
+				DrawWidth = Width - VBar.Width;
 			}
 			else
 			{
 				DrawWidth = Width;
 			}
-			if (NeedsHScrollbar) { 
+			if (NeedsHScrollbar)
+			{
 				DrawHeight = Height - HBar.Height;
 			}
 			else
 			{
-				DrawHeight = Height; 
+				DrawHeight = Height;
 			}
 		}
 
@@ -1810,12 +1819,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// A boolean that indicates if the InputRoll is too large vertically and requires a vertical scrollbar.
 		/// </summary>
-		private bool NeedsVScrollbar{ get; set; }
+		private bool NeedsVScrollbar { get; set; }
 
 		/// <summary>
 		/// A boolean that indicates if the InputRoll is too large horizontally and requires a horizontal scrollbar.
 		/// </summary>
-		private bool NeedsHScrollbar{ get; set; }
+		private bool NeedsHScrollbar { get; set; }
 
 		/// <summary>
 		/// Updates the width of the supplied column.
@@ -1834,8 +1843,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <returns>A nullable Int representing total width.</returns>
 		private int? TotalColWidth
-		{ 
-			get{
+		{
+			get
+			{
 				if (_columns.VisibleColumns.Any())
 				{
 					return _columns.VisibleColumns.Last().Right;
@@ -1873,7 +1883,7 @@ namespace BizHawk.Client.EmuHawk
 				return (index * CellWidth) + ColumnWidth;
 			}
 
-			return (index * CellHeight) + ColumnHeight; 
+			return (index * CellHeight) + ColumnHeight;
 		}
 
 		/// <summary>
@@ -1917,7 +1927,7 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateCellSize()
 		{
 			CellHeight = _charSize.Height + (CellHeightPadding * 2);
-			CellWidth  = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+			CellWidth = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
 		}
 
 		#endregion
@@ -1933,7 +1943,7 @@ namespace BizHawk.Client.EmuHawk
 					return this.SingleOrDefault(column => column.Name == name);
 				}
 			}
-			
+
 			public IEnumerable<RollColumn> VisibleColumns
 			{
 				get
@@ -1983,7 +1993,7 @@ namespace BizHawk.Client.EmuHawk
 
 			public new void AddRange(IEnumerable<RollColumn> collection)
 			{
-				foreach(var column in collection)
+				foreach (var column in collection)
 				{
 					if (this.Any(c => c.Name == column.Name))
 					{
