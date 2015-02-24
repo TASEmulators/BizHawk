@@ -21,6 +21,10 @@ namespace BizHawk.Client.EmuHawk
 		private string _floatEditColumn = string.Empty;
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
+		// SuuperW: Hiding lag frames (Mainly intended for 30fps play.)
+		private bool _hideLagFrames = true; // This toggles if lag frames are hidden. For the number, see InputRoll.cs: _lagFramesToHide
+		// Frames that were lag frames, but are now past the greenzone are shown make editing awkward.
+		// (Showing such frames might be desireable in certain situations, such as when trying to eliminate a lone lag frame.)
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will clal GoToFrameIfNecessary() with this value
@@ -170,6 +174,12 @@ namespace BizHawk.Client.EmuHawk
 				text = string.Empty;
 				MessageBox.Show("oops\n" + ex);
 			}
+		}
+
+		// SuuperW: Used in InputRoll.cs to hide lag frames.
+		private bool TasView_QueryFrameLag(int index)
+		{
+			return _hideLagFrames && CurrentTasMovie[index].Lagged.HasValue && CurrentTasMovie[index].Lagged.Value;
 		}
 
 		#endregion

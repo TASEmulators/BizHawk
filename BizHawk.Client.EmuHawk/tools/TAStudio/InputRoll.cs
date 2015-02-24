@@ -36,6 +36,9 @@ namespace BizHawk.Client.EmuHawk
 		private int? _currentX;
 		private int? _currentY;
 
+		public int _lagFramesToHide = 1;
+		private int[] lagFrames = new int[50]; // Large enough value that it shouldn't ever need resizing.
+
 		private IntPtr RotatedFont;
 		private Font NormalFont;
 
@@ -254,6 +257,12 @@ namespace BizHawk.Client.EmuHawk
 		public event QueryItemIconHandler QueryItemIcon;
 
 		/// <summary>
+		/// SuuperW: Fire the QueryFrameLag event which checks if a given frame is a lag frame
+		/// </summary>
+		[Category("Virtual")]
+		public event QueryFrameLagHandler QueryFrameLag;
+
+		/// <summary>
 		/// Fires when the mouse moves from one cell to another (including column header cells)
 		/// </summary>
 		[Category("Mouse")]
@@ -301,6 +310,11 @@ namespace BizHawk.Client.EmuHawk
 		/// Retrive the image for a given cell
 		/// </summary>
 		public delegate void QueryItemIconHandler(int index, RollColumn column, ref Bitmap icon);
+
+		/// <summary>
+		/// SuuperW: Check if a given frame is a lag frame
+		/// </summary>
+		public delegate bool QueryFrameLagHandler(int index);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
@@ -553,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return FirstVisibleRow + VisibleRows;
+				return FirstVisibleRow + VisibleRows + CountLagFramesDisplay(VisibleRows);
 			}
 
 			set
@@ -640,6 +654,9 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.SetBrush(Color.White);
 				Gdi.SetSolidPen(Color.White);
 				Gdi.FillRectangle(0, 0, Width, Height);
+
+				// Lag frame calculations
+				SetLagFramesArray();
 
 				if (_columns.VisibleColumns.Any())
 				{
@@ -748,8 +765,9 @@ namespace BizHawk.Client.EmuHawk
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
 					Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
-					for (int i = 0; i < range; i++)
+					for (int i = 0, f = 0; f < range; i++, f++)
 					{
+						f += lagFrames[i];
 						for (int j = 0; j < columns.Count; j++)
 						{
 							Bitmap image = null;
@@ -761,7 +779,7 @@ namespace BizHawk.Client.EmuHawk
 								x = RowsToPixels(i) + CellWidthPadding;
 								y = (j * CellHeight) + (CellHeightPadding * 2);
 
-								QueryItemIcon(i + startRow, columns[j], ref image);
+								QueryItemIcon(f + startRow, columns[j], ref image);
 							}
 
 							if (image != null)
@@ -771,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 							else
 							{
 								string text;
-								QueryItemText(i + startRow, columns[j], out text);
+								QueryItemText(f + startRow, columns[j], out text);
 
 								// Center Text
 								x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
@@ -806,8 +824,9 @@ namespace BizHawk.Client.EmuHawk
 
 					Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 					int xPadding = CellWidthPadding + 1 - HBar.Value;
-					for (int i = 0; i < range; i++) // Vertical
+					for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 					{
+						f += lagFrames[i];
 						for (int j = 0; j < columns.Count; j++) // Horizontal
 						{
 							var col = columns[j];
@@ -822,7 +841,7 @@ namespace BizHawk.Client.EmuHawk
 							Bitmap image = null;
 							if (QueryItemIcon != null)
 							{
-								QueryItemIcon(i + startRow, columns[j], ref image);
+								QueryItemIcon(f + startRow, columns[j], ref image);
 							}
 
 							if (image != null)
@@ -831,10 +850,10 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								QueryItemText(i + startRow, columns[j], out text);
+								QueryItemText(f + startRow, columns[j], out text);
 
 								bool rePrep = false;
-								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i + startRow }))
+								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = f + startRow }))
 								{
 									Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
 									rePrep = true;
@@ -1054,6 +1073,8 @@ namespace BizHawk.Client.EmuHawk
 					Column = cell.Column,
 					CurrentText = cell.CurrentText
 				};
+				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
+
 				QueryItemBkColor(cell.RowIndex.Value, cell.Column, ref Highlight_Color);
 				Highlight_Color = Color.FromArgb((Highlight_Color.R + SystemColors.Highlight.R) / 2
 					, (Highlight_Color.G + SystemColors.Highlight.G) / 2
@@ -1115,12 +1136,13 @@ namespace BizHawk.Client.EmuHawk
 				int startIndex = FirstVisibleRow;
 				int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
 
-				for (int i = 0; i < range; i++)
+				for (int i = 0, f = 0; f < range; i++, f++)
 				{
+					f += lagFrames[i];
 					for (int j = 0; j < columns.Count; j++) // TODO: Don't query all columns
 					{
 						var color = Color.White;
-						QueryItemBkColor(i + startIndex, columns[j], ref color);
+						QueryItemBkColor(f + startIndex, columns[j], ref color);
 
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
@@ -1139,12 +1161,13 @@ namespace BizHawk.Client.EmuHawk
 				int startRow = FirstVisibleRow;
 				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-				for (int i = 0; i < range; i++) // Vertical
+				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
+					f += lagFrames[i];
 					for (int j = 0; j < columns.Count; j++) // Horizontal
 					{
 						var color = Color.White;
-						QueryItemBkColor(i + startRow, columns[j], ref color);
+						QueryItemBkColor(f + startRow, columns[j], ref color);
 						if (color != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
 							var cell = new Cell
@@ -1169,6 +1192,11 @@ namespace BizHawk.Client.EmuHawk
 			_currentY = e.Y;
 
 			var newCell = CalculatePointedCell(e.X, e.Y);
+			// SuuperW: Hide lag frames
+			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
+			{
+				newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+			}
 			newCell.RowIndex += FirstVisibleRow;
 			if (!newCell.Equals(CurrentCell))
 			{
@@ -1400,11 +1428,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					IncrementScrollBar(HBar, e.Delta < 0);
+					do
+					{
+						IncrementScrollBar(HBar, e.Delta < 0);
+						SetLagFramesFirst();
+					} while (lagFrames[0] != 0 && HBar.Value != 0 && HBar.Value != HBar.Maximum);
 				}
 				else
 				{
-					IncrementScrollBar(VBar, e.Delta < 0);
+					do
+					{
+						IncrementScrollBar(VBar, e.Delta < 0);
+						SetLagFramesFirst();
+					} while (lagFrames[0] != 0 && VBar.Value != 0 && VBar.Value != VBar.Maximum);
 				}
 
 				Refresh();
@@ -1928,6 +1964,90 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CellHeight = _charSize.Height + (CellHeightPadding * 2);
 			CellWidth = (_charSize.Width * MaxCharactersInHorizontal) + (CellWidthPadding * 4); // Double the padding for horizontal because it looks better
+		}
+
+		// SuuperW: Count lag frames between FirstDisplayed and given display position
+		private int CountLagFramesDisplay(int relativeIndex)
+		{
+			if (QueryFrameLag != null)
+			{
+				int count = 0;
+				for (int i = 0; i <= relativeIndex; i++)
+					count += lagFrames[i];
+
+				return count;
+			}
+			return 0;
+		}
+		// Count lag frames between FirstDisplayed and given frame index (plus FirstDisplayed)
+		private int CountLagFramesAbsolute(int index)
+		{
+			if (QueryFrameLag != null)
+			{
+				int count = 0;
+				for (int i = 0; i + count <= index; i++)
+					count += lagFrames[i];
+
+				return count;
+			}
+			return 0;
+		}
+
+		private void SetLagFramesArray()
+		{
+			if (QueryFrameLag != null)
+			{
+				bool showNext = false;
+				// First one needs to check BACKWARDS for lag frame count.
+				SetLagFramesFirst();
+				int f = lagFrames[0];
+				if (QueryFrameLag(FirstVisibleRow + f))
+					showNext = true;
+				for (int i = 1; i <= VisibleRows; i++)
+				{
+					lagFrames[i] = 0;
+					if (!showNext)
+					{
+						for (; lagFrames[i] < _lagFramesToHide; lagFrames[i]++)
+						{
+							if (!QueryFrameLag(FirstVisibleRow + i + f))
+								break;
+							f++;
+						}
+					}
+					else
+					{
+						if (!QueryFrameLag(FirstVisibleRow + i + f))
+							showNext = false;
+					}
+					if (lagFrames[i] == _lagFramesToHide && QueryFrameLag(FirstVisibleRow + i + f))
+					{
+						showNext = true;
+					}
+				}
+			}
+		}
+		private void SetLagFramesFirst()
+		{
+			if (QueryFrameLag != null)
+			{
+				// Count how many lag frames are above displayed area.
+				int count = 0;
+				do
+				{
+					count++;
+				} while (QueryFrameLag(FirstVisibleRow - count) && count <= _lagFramesToHide);
+				count--;
+				// Count forward
+				int fCount = -1;
+				do
+				{
+					fCount++;
+				} while (QueryFrameLag(FirstVisibleRow + fCount) && count + fCount < _lagFramesToHide);
+				lagFrames[0] = fCount;
+			}
+			else
+				lagFrames[0] = 0;
 		}
 
 		#endregion
