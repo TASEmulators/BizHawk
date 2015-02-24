@@ -95,10 +95,11 @@ namespace BizHawk.Client.EmuHawk
 			this.DefaultStateSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RotateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.hideLagFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.allToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.HideLagFramesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.HideLagFrames0 = new System.Windows.Forms.ToolStripMenuItem();
+			this.HideLagFrames1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.HideLagFrames2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.HideLagFrames3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,7 +138,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -649,7 +649,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RotateMenuItem,
-            this.hideLagFramesToolStripMenuItem});
+            this.HideLagFramesSubMenu});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
@@ -662,41 +662,52 @@ namespace BizHawk.Client.EmuHawk
 			this.RotateMenuItem.Text = "Rotate";
 			this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
 			// 
-			// hideLagFramesToolStripMenuItem
+			// HideLagFramesSubMenu
 			// 
-			this.hideLagFramesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.allToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.toolStripMenuItem3,
-            this.toolStripMenuItem4});
-			this.hideLagFramesToolStripMenuItem.Name = "hideLagFramesToolStripMenuItem";
-			this.hideLagFramesToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-			this.hideLagFramesToolStripMenuItem.Text = "Hide Lag Frames";
+			this.HideLagFramesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.HideLagFrames0,
+            this.HideLagFrames1,
+            this.HideLagFrames2,
+            this.HideLagFrames3});
+			this.HideLagFramesSubMenu.Name = "HideLagFramesSubMenu";
+			this.HideLagFramesSubMenu.Size = new System.Drawing.Size(162, 22);
+			this.HideLagFramesSubMenu.Text = "Hide Lag Frames";
+			this.HideLagFramesSubMenu.DropDownOpened += new System.EventHandler(this.HideLagFramesSubMenu_DropDownOpened);
 			// 
-			// allToolStripMenuItem
+			// HideLagFrames0
 			// 
-			this.allToolStripMenuItem.CheckOnClick = true;
-			this.allToolStripMenuItem.Name = "allToolStripMenuItem";
-			this.allToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.allToolStripMenuItem.Tag = "";
-			this.allToolStripMenuItem.Text = "All";
+			this.HideLagFrames0.Checked = true;
+			this.HideLagFrames0.CheckOnClick = true;
+			this.HideLagFrames0.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.HideLagFrames0.Name = "HideLagFrames0";
+			this.HideLagFrames0.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames0.Tag = "";
+			this.HideLagFrames0.Text = "Don\'t Hide";
+			this.HideLagFrames0.Click += new System.EventHandler(this.HideLagFrames0_Click);
 			// 
-			// toolStripMenuItem2
+			// HideLagFrames1
 			// 
-			this.toolStripMenuItem2.Checked = true;
-			this.toolStripMenuItem2.CheckOnClick = true;
-			this.toolStripMenuItem2.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
-			this.toolStripMenuItem2.Tag = "";
-			this.toolStripMenuItem2.Text = "0";
+			this.HideLagFrames1.CheckOnClick = true;
+			this.HideLagFrames1.Name = "HideLagFrames1";
+			this.HideLagFrames1.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames1.Text = "1 (30 fps)";
+			this.HideLagFrames1.Click += new System.EventHandler(this.HideLagFrames1_Click);
 			// 
-			// toolStripMenuItem3
+			// HideLagFrames2
 			// 
-			this.toolStripMenuItem3.CheckOnClick = true;
-			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
-			this.toolStripMenuItem3.Text = "1";
+			this.HideLagFrames2.Name = "HideLagFrames2";
+			this.HideLagFrames2.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames2.Text = "2 (20 fps)";
+			this.HideLagFrames2.Click += new System.EventHandler(this.HideLagFrames2_Click);
+			// 
+			// HideLagFrames3
+			// 
+			this.HideLagFrames3.CheckOnClick = true;
+			this.HideLagFrames3.Name = "HideLagFrames3";
+			this.HideLagFrames3.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames3.Tag = "";
+			this.HideLagFrames3.Text = "3 (15fps)";
+			this.HideLagFrames3.Click += new System.EventHandler(this.HideLagFrames3_Click);
 			// 
 			// ColumnsSubMenu
 			// 
@@ -751,7 +762,8 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HorizontalOrientation = false;
-			this.TasView.LastVisibleRow = 27;
+			this.TasView.LagFramesToHide = 0;
+			this.TasView.LastVisibleRow = 24;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
@@ -1022,12 +1034,6 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
 			// 
-			// toolStripMenuItem4
-			// 
-			this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-			this.toolStripMenuItem4.Size = new System.Drawing.Size(152, 22);
-			this.toolStripMenuItem4.Text = "2";
-			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1165,10 +1171,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem RotateMenuItem;
         private System.Windows.Forms.ToolStripProgressBar SavingProgressBar;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
-		private System.Windows.Forms.ToolStripMenuItem hideLagFramesToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem allToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+		private System.Windows.Forms.ToolStripMenuItem HideLagFramesSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem HideLagFrames3;
+		private System.Windows.Forms.ToolStripMenuItem HideLagFrames0;
+		private System.Windows.Forms.ToolStripMenuItem HideLagFrames1;
+		private System.Windows.Forms.ToolStripMenuItem HideLagFrames2;
 	}
 }

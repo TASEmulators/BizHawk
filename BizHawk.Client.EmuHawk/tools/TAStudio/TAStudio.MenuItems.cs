@@ -622,10 +622,38 @@ namespace BizHawk.Client.EmuHawk
 			RotateMenuItem.ShortcutKeyDisplayString = TasView.RotateHotkeyStr;
 		}
 
+		private void HideLagFramesSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			HideLagFrames0.Checked = TasView.LagFramesToHide == 0;
+			HideLagFrames1.Checked = TasView.LagFramesToHide == 1;
+			HideLagFrames2.Checked = TasView.LagFramesToHide == 2;
+			HideLagFrames3.Checked = TasView.LagFramesToHide == 3;
+		}
+
 		private void RotateMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.HorizontalOrientation ^= true;
 			CurrentTasMovie.FlagChanges();
+		}
+
+		private void HideLagFrames0_Click(object sender, EventArgs e)
+		{
+			TasView.LagFramesToHide = 0;
+		}
+
+		private void HideLagFrames1_Click(object sender, EventArgs e)
+		{
+			TasView.LagFramesToHide = 1;
+		}
+
+		private void HideLagFrames2_Click(object sender, EventArgs e)
+		{
+			TasView.LagFramesToHide = 2;
+		}
+
+		private void HideLagFrames3_Click(object sender, EventArgs e)
+		{
+			TasView.LagFramesToHide = 3;
 		}
 
 		#endregion
