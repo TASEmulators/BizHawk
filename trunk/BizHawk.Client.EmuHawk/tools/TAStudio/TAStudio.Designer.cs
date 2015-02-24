@@ -781,6 +781,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
 			this.TasView.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
+			this.TasView.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TasView_PreviewKeyDown);
 			// 
 			// TasStatusStrip
 			// 
@@ -1050,7 +1051,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MinimumSize = new System.Drawing.Size(437, 148);
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "TAStudio - Beta Release (use at your own risk)";
+			this.Text = "a";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
@@ -1176,5 +1177,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames0;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames1;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames2;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 	}
 }
