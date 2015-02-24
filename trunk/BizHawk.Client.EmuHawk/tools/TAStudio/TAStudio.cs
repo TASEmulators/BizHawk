@@ -320,8 +320,19 @@ namespace BizHawk.Client.EmuHawk
 			AddColumn(MarkerColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			foreach (var kvp in GenerateColumnNames())
+			var columnNames = GenerateColumnNames();
+			foreach (var kvp in columnNames)
 			{
+				// N64 hack for now, for fake analog
+				if (Emulator.SystemId == "N64")
+				{
+					if (kvp.Key.Contains("A Up") || kvp.Key.Contains("A Down") ||
+					kvp.Key.Contains("A Left") || kvp.Key.Contains("A Right"))
+					{
+						continue;
+					}
+				}
+
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
 		}
