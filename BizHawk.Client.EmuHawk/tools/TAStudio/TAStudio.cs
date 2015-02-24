@@ -475,6 +475,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		//// SuuperW: 'toggle' float state
+		//private void ToggleFloatState(int frame, string buttonName)
+		//{
+		//	if (frame < CurrentTasMovie.InputLogLength)
+		//	{
+		//		float curState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+		//		if (curState == 0f)
+		//			CurrentTasMovie.SetFloatState(frame, buttonName, 1.0f);
+		//		else
+		//			CurrentTasMovie.SetFloatState(frame, buttonName, 0f);
+		//	}
+		//	else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
+		//	{
+		//		// Global.ClickyVirtualPadController.Toggle(buttonName);
+		//	}
+		//}
+
+
 		private void SetColumnsFromCurrentStickies()
 		{
 			foreach (var column in TasView.VisibleColumns)

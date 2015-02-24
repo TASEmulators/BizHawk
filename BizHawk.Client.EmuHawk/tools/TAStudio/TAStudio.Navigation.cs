@@ -25,7 +25,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GoToFrame(int frame)
+        // SuuperW: I changed this to public so that it could be used by MarkerControl.cs
+		public void GoToFrame(int frame)
 		{
 			// If past greenzone, emulate and capture states
 			// If past greenzone AND movie, record input and capture states
@@ -155,6 +156,6 @@ namespace BizHawk.Client.EmuHawk
 		public void GoToMarker(TasMovieMarker marker)
 		{
 			GoToFrame(marker.Frame);
-		}
-	}
+        }
+    }
 }
