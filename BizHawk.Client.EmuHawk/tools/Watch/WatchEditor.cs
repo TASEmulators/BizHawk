@@ -46,7 +46,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+					switch (MemoryDomains.First().ByteSize)
+					{
+						default:
+						case 1:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+							break;
+						case 2:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
+							break;
+						case 4:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
+							break;
+					}
 					break;
 				case Mode.Duplicate:
 				case Mode.Edit:

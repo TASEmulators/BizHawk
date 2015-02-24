@@ -444,6 +444,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
+			DataSize = _domain.ByteSize;
 			SetDataSize(DataSize);
 
 			if (RecentTables.AutoLoad)
