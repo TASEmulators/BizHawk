@@ -21,115 +21,172 @@
             </File>
           </Component>
           <Directory Id="DLL" Name="dll">
-            <Component Id="_7Z.DLL" DiskId="1" Guid="B14804D6-B2A0-46F8-8823-E6E0FA9AF481">
+            <Component Id="_7Z.DLL" DiskId="1" Guid="712A55BD-0B03-4B12-A4BD-67BFDC72CB9D">
               <File Id="_7Z.DLL" Name="7z.dll" Source="..\output\dll\7z.dll" />
             </Component>
-<!--            <Component Id="AT3PLUSDECODER.DLL" DiskId="1" Guid="D2D32E8D-E1CB-4796-A7ED-E74303A92E31">
-              <File Id="AT3PLUSDECODER.DLL" Name="at3plusdecoder.dll" Source="..\output\dll\at3plusdecoder.dll" />
-            </Component>-->
-            <Component Id="BIZHAWK.EMULATION.COMMON.DLL" DiskId="1" Guid="5226EA11-7AC9-44CA-B2D4-2FCF9637C62E">
-              <File Id="BIZHAWK.EMULATION.COMMON.DLL" Name="BizHawk.Emulation.Common.dll" Source="..\output\dll\BizHawk.Emulation.Common.dll" />
+            <Component Id="BIZHAWK.BIZWARE.BIZWAREGL.DLL" DiskId="1" Guid="6D4E589E-4EAE-40E5-B9D5-8EF1C684A095">
+              <File Id="BIZHAWK.BIZWARE.BIZWAREGL.DLL" Name="BizHawk.Bizware.BizwareGL.dll" Source="..\output\dll\BizHawk.Bizware.BizwareGL.dll" />
             </Component>
-            <Component Id="BIZHAWK.CLIENT.COMMON.DLL" DiskId="1" Guid="318E74B7-9E7F-44B8-A541-FDB289859D89">
+            <Component Id="BIZHAWK.BIZWARE.BIZWAREGL.GDIPLUS.DLL" DiskId="1" Guid="40C877B2-6CF8-474B-80D9-17D084EF30EA">
+              <File Id="BIZHAWK.BIZWARE.BIZWAREGL.GDIPLUS.DLL" Name="BizHawk.Bizware.BizwareGL.GdiPlus.dll" Source="..\output\dll\BizHawk.Bizware.BizwareGL.GdiPlus.dll" />
+            </Component>
+            <Component Id="BIZHAWK.BIZWARE.BIZWAREGL.OPENTK.DLL" DiskId="1" Guid="AC8CD963-8ABF-4B11-887D-865670CB2FBD">
+              <File Id="BIZHAWK.BIZWARE.BIZWAREGL.OPENTK.DLL" Name="BizHawk.Bizware.BizwareGL.OpenTK.dll" Source="..\output\dll\BizHawk.Bizware.BizwareGL.OpenTK.dll" />
+            </Component>
+            <Component Id="BIZHAWK.BIZWARE.BIZWAREGL.SLIMDX.DLL" DiskId="1" Guid="069E673B-B584-425B-BF4C-6F807E7513FF">
+              <File Id="BIZHAWK.BIZWARE.BIZWAREGL.SLIMDX.DLL" Name="BizHawk.Bizware.BizwareGL.SlimDX.dll" Source="..\output\dll\BizHawk.Bizware.BizwareGL.SlimDX.dll" />
+            </Component>
+            <Component Id="BIZHAWK.CLIENT.COMMON.DLL" DiskId="1" Guid="93CFA520-8F21-4609-98F6-DE4EDBAEA636">
               <File Id="BIZHAWK.CLIENT.COMMON.DLL" Name="BizHawk.Client.Common.dll" Source="..\output\dll\BizHawk.Client.Common.dll" />
             </Component>
-            <Component Id="BIZHAWK.COMMON.DLL" DiskId="1" Guid="4C40953E-8A1A-42A9-B337-795A72A6B0EE">
+            <Component Id="BIZHAWK.COMMON.DLL" DiskId="1" Guid="AF4C6515-DE4D-4C80-BCB6-AD4DBBB193E1">
               <File Id="BIZHAWK.COMMON.DLL" Name="BizHawk.Common.dll" Source="..\output\dll\BizHawk.Common.dll" />
             </Component>
-            <Component Id="BLIP_BUF.DLL" DiskId="1" Guid="E6822154-601C-4819-9CBA-8F2F8CA2415A">
+            <Component Id="BIZHAWK.EMULATION.COMMON.DLL" DiskId="1" Guid="2A50AC4D-D091-476C-BB9A-59669E2B167B">
+              <File Id="BIZHAWK.EMULATION.COMMON.DLL" Name="BizHawk.Emulation.Common.dll" Source="..\output\dll\BizHawk.Emulation.Common.dll" />
+            </Component>
+            <Component Id="BIZHAWK.EMULATION.CORES.DLL" DiskId="1" Guid="8347B709-2F47-4243-863F-B705B94242C4">
+              <File Id="BIZHAWK.EMULATION.CORES.DLL" Name="BizHawk.Emulation.Cores.dll" Source="..\output\dll\BizHawk.Emulation.Cores.dll" />
+            </Component>
+            <Component Id="BIZHAWK.EMULATION.DISCSYSTEM.DLL" DiskId="1" Guid="A0844638-F7F6-4BE8-B8E8-DB78480E6344">
+              <File Id="BIZHAWK.EMULATION.DISCSYSTEM.DLL" Name="BizHawk.Emulation.DiscSystem.dll" Source="..\output\dll\BizHawk.Emulation.DiscSystem.dll" />
+            </Component>
+            <Component Id="BIZLYNX.DLL" DiskId="1" Guid="01F77815-33FA-4920-BF40-1B128666BAD5">
+              <File Id="BIZLYNX.DLL" Name="bizlynx.dll" Source="..\output\dll\bizlynx.dll" />
+            </Component>
+            <Component Id="BIZSWAN.DLL" DiskId="1" Guid="493EE45A-83FE-41D5-A89E-130ED4E98A18">
+              <File Id="BIZSWAN.DLL" Name="bizswan.dll" Source="..\output\dll\bizswan.dll" />
+            </Component>
+            <Component Id="BLIP_BUF.DLL" DiskId="1" Guid="611E207C-BCC1-460D-AF8D-F7C3DED58786">
               <File Id="BLIP_BUF.DLL" Name="blip_buf.dll" Source="..\output\dll\blip_buf.dll" />
             </Component>
-            <Component Id="EMU7800.DLL" DiskId="1" Guid="00E1E0D3-D428-4497-BBAD-B308C53B9919">
+            <Component Id="CSHARP_SQLITE.DLL" DiskId="1" Guid="D560CEA5-A815-4193-A303-3644EA055D60">
+              <File Id="CSHARP_SQLITE.DLL" Name="CSharp-SQLite.dll" Source="..\output\dll\CSharp-SQLite.dll" />
+            </Component>
+            <Component Id="D3D8.DLL" DiskId="1" Guid="7A00676A-C29E-4314-8F5B-61F5CA523248">
+              <File Id="D3D8.DLL" Name="d3d8.dll" Source="..\output\dll\d3d8.dll" />
+            </Component>
+            <Component Id="EMU7800.DLL" DiskId="1" Guid="812823F6-5CB7-4B2E-A6F2-2583F6332AA3">
               <File Id="EMU7800.DLL" Name="EMU7800.dll" Source="..\output\dll\EMU7800.dll" />
             </Component>
-            <Component Id="FFMPEG.EXE" DiskId="1" Guid="28CD4982-BB71-45A6-863D-64F29CA57BB3">
+            <Component Id="FFMPEG.EXE" DiskId="1" Guid="75864EED-3332-4976-90FE-BE92C5FE1F4A">
               <File Id="FFMPEG.EXE" Name="ffmpeg.exe" Source="..\output\dll\ffmpeg.exe" />
             </Component>
-            <Component Id="FFMPEG_README.TXT" DiskId="1" Guid="6261D0CF-D8BC-43F6-9015-471B2C67B4B7">
+            <Component Id="FFMPEG_README.TXT" DiskId="1" Guid="0871D611-30D6-4420-ABEE-3941DEEE0F21">
               <File Id="FFMPEG_README.TXT" Name="ffmpeg_readme.txt" Source="..\output\dll\ffmpeg_readme.txt" />
             </Component>
-            <Component Id="FREETYPE6.DLL" DiskId="1" Guid="65CFC533-4752-4652-AB32-15EDFCA78F60">
+            <Component Id="FREETYPE6.DLL" DiskId="1" Guid="AB14AA85-1A7D-44E5-BDC8-7B05278B6168">
               <File Id="FREETYPE6.DLL" Name="freetype6.dll" Source="..\output\dll\freetype6.dll" />
             </Component>
-            <Component Id="ICSHARPCODE.SHARPZIPLIB.DLL" DiskId="1" Guid="2163AE2C-171D-43C7-93AC-843C581E84BC">
+            <Component Id="GONGSHELL.DLL" DiskId="1" Guid="E542F1E4-007F-43D1-A36E-9EF5D9A9F011">
+              <File Id="GONGSHELL.DLL" Name="GongShell.dll" Source="..\output\dll\GongShell.dll" />
+            </Component>
+            <Component Id="ICSHARPCODE.SHARPZIPLIB.DLL" DiskId="1" Guid="A4133C5E-1387-4796-9908-4E56A38E9E06">
               <File Id="ICSHARPCODE.SHARPZIPLIB.DLL" Name="ICSharpCode.SharpZipLib.dll" Source="..\output\dll\ICSharpCode.SharpZipLib.dll" />
             </Component>
-            <Component Id="LIBCO_MSVC_WIN32.DLL" DiskId="1" Guid="F578C866-5879-44AD-A277-B9F3CF98B5F1">
+            <Component Id="IONIC.ZIP.DLL" DiskId="1" Guid="E9B03E7A-7E0F-4E08-BD92-104EEA0E8AEF">
+              <File Id="IONIC.ZIP.DLL" Name="Ionic.Zip.dll" Source="..\output\dll\Ionic.Zip.dll" />
+            </Component>
+            <Component Id="JABO_DIRECT3D8_PATCHED.DLL" DiskId="1" Guid="8CB6F266-CFCB-4A65-A461-15ED249349E8">
+              <File Id="JABO_DIRECT3D8_PATCHED.DLL" Name="Jabo_Direct3D8_patched.dll" Source="..\output\dll\Jabo_Direct3D8_patched.dll" />
+            </Component>
+            <Component Id="LIBBIZSNES.DLL" DiskId="1" Guid="C2A62A53-B58A-4D96-B7B9-211ADDEA0339">
+              <File Id="LIBBIZSNES.DLL" Name="libbizsnes.dll" Source="..\output\dll\libbizsnes.dll" />
+            </Component>
+            <Component Id="LIBCO_MSVC_WIN32.DLL" DiskId="1" Guid="0880635E-A18D-4EDD-9905-4DF402BF0351">
               <File Id="LIBCO_MSVC_WIN32.DLL" Name="libco_msvc_win32.dll" Source="..\output\dll\libco_msvc_win32.dll" />
             </Component>
-            <Component Id="LIBGAMBATTE.DLL" DiskId="1" Guid="5C1F9145-429A-4D10-AD7F-00F950FF6A4E">
+            <Component Id="LIBDARM.DLL" DiskId="1" Guid="19185D7D-6285-40BC-966A-9A525CBF3620">
+              <File Id="LIBDARM.DLL" Name="libdarm.dll" Source="..\output\dll\libdarm.dll" />
+            </Component>
+            <Component Id="LIBGAMBATTE.DLL" DiskId="1" Guid="200FFB39-D37B-4417-ABDE-BEB0BFD72DDA">
               <File Id="LIBGAMBATTE.DLL" Name="libgambatte.dll" Source="..\output\dll\libgambatte.dll" />
             </Component>
-<!--            <Component Id="LIBMEDNAHAWK.DLL" DiskId="1" Guid="A66B6545-D9C0-4E6D-861A-99E9B18D7230">
-              <File Id="LIBMEDNAHAWK.DLL" Name="libmednahawk.dll" Source="..\output\dll\libmednahawk.dll" />
-            </Component>-->
-            <Component Id="LIBMETEOR.DLL" DiskId="1" Guid="1429BA8A-0DA5-4D26-B0A9-767847025630">
+            <Component Id="LIBGENPLUSGX.DLL" DiskId="1" Guid="31507399-17B7-4202-9AED-9A0F2B8B7261">
+              <File Id="LIBGENPLUSGX.DLL" Name="libgenplusgx.dll" Source="..\output\dll\libgenplusgx.dll" />
+            </Component>
+            <Component Id="LIBMETEOR.DLL" DiskId="1" Guid="88C8CF94-CDEC-45D9-8608-2F38A5E4C992">
               <File Id="LIBMETEOR.DLL" Name="libmeteor.dll" Source="..\output\dll\libmeteor.dll" />
             </Component>
-            <Component Id="LIBPNG12.DLL" DiskId="1" Guid="1F27DDDE-96FF-4791-9E66-700EA90191C0">
+            <Component Id="LIBPNG12.DLL" DiskId="1" Guid="112256C7-8E78-4F99-8DC3-1E979A4CF2AD">
               <File Id="LIBPNG12.DLL" Name="libpng12.dll" Source="..\output\dll\libpng12.dll" />
             </Component>
-            <Component Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" DiskId="1" Guid="43A50063-7CD3-4368-A424-19A1E819ED03">
+            <Component Id="LIBQUICKNES.DLL" DiskId="1" Guid="25146F90-EDF5-40A1-B859-E741B1A64E17">
+              <File Id="LIBQUICKNES.DLL" Name="libquicknes.dll" Source="..\output\dll\libquicknes.dll" />
+            </Component>
+            <Component Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" DiskId="1" Guid="85CAC9B7-0ED2-4D7F-B6D8-D4D6D0990C23">
               <File Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" Name="libsneshawk-32-compatibility.exe" Source="..\output\dll\libsneshawk-32-compatibility.exe" />
             </Component>
-            <Component Id="LIBSNESHAWK_32_PERFORMANCE.EXE" DiskId="1" Guid="346D15B7-EBFE-40F0-BFBE-422124457A9F">
+            <Component Id="LIBSNESHAWK_32_PERFORMANCE.EXE" DiskId="1" Guid="C929F4F9-91A4-47DD-8A2B-86EF7D7D4931">
               <File Id="LIBSNESHAWK_32_PERFORMANCE.EXE" Name="libsneshawk-32-performance.exe" Source="..\output\dll\libsneshawk-32-performance.exe" />
             </Component>
-<!--            <Component Id="LIBSNESHAWK_64_COMPATIBILITY.EXE" DiskId="1" Guid="E5BBA2FA-CE80-41A2-85F1-B98C8E03BC86">
-              <File Id="LIBSNESHAWK_64_COMPATIBILITY.EXE" Name="libsneshawk-64-compatibility.exe" Source="..\output\dll\libsneshawk-64-compatibility.exe" />
-            </Component>
-            <Component Id="LIBSNESHAWK_64_PERFORMANCE.EXE" DiskId="1" Guid="452C5433-CC41-4F77-9511-AB7D6A374CDC">
-              <File Id="LIBSNESHAWK_64_PERFORMANCE.EXE" Name="libsneshawk-64-performance.exe" Source="..\output\dll\libsneshawk-64-performance.exe" />
-            </Component>-->
-            <Component Id="LIBSPEEXDSP.DLL" DiskId="1" Guid="412F9861-912B-4DF7-843D-8CE8F90E2152">
+            <Component Id="LIBSPEEXDSP.DLL" DiskId="1" Guid="19FBFAE2-1F58-4376-93EC-6DD1DD33B82E">
               <File Id="LIBSPEEXDSP.DLL" Name="libspeexdsp.dll" Source="..\output\dll\libspeexdsp.dll" />
             </Component>
-            <Component Id="LIBYABAUSE.DLL" DiskId="1" Guid="E8619162-E3A3-4F6E-8FD8-2037EDA3DC2F">
+            <Component Id="LIBVBANEXT.DLL" DiskId="1" Guid="8545268F-CE25-4893-90BA-118A2E9630E5">
+              <File Id="LIBVBANEXT.DLL" Name="libvbanext.dll" Source="..\output\dll\libvbanext.dll" />
+            </Component>
+            <Component Id="LIBYABAUSE.DLL" DiskId="1" Guid="C31EABB8-9847-4335-A5AD-9196E55E5068">
               <File Id="LIBYABAUSE.DLL" Name="libyabause.dll" Source="..\output\dll\libyabause.dll" />
             </Component>
-            <Component Id="LUA51.DLL" DiskId="1" Guid="6A502A8C-478A-4E14-99D3-499115CA8637">
+            <Component Id="LUA51.DLL" DiskId="1" Guid="78CC256F-1A8F-4FD7-979A-9FB47D36E58E">
               <File Id="LUA51.DLL" Name="lua51.dll" Source="..\output\dll\lua51.dll" />
             </Component>
-            <Component Id="LUAINTERFACE.DLL" DiskId="1" Guid="3CE27C98-A859-47CA-90DB-B40490347950">
+            <Component Id="LUAINTERFACE.DLL" DiskId="1" Guid="FA6ADD52-A36D-4070-A59D-CA555A6BFD1E">
               <File Id="LUAINTERFACE.DLL" Name="LuaInterface.dll" Source="..\output\dll\LuaInterface.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS_AUDIO_BKM.DLL" DiskId="1" Guid="FF4F7D80-8119-421C-A619-00B0BFAA241C">
+            <Component Id="MUPEN64PLUS_AUDIO_BKM.DLL" DiskId="1" Guid="6F73174B-C1C8-4832-9B03-C8963B3E64AD">
               <File Id="MUPEN64PLUS_AUDIO_BKM.DLL" Name="mupen64plus-audio-bkm.dll" Source="..\output\dll\mupen64plus-audio-bkm.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS_INPUT_BKM.DLL" DiskId="1" Guid="5E0D7676-7947-43BA-9DEC-CBB965209A6D">
+            <Component Id="MUPEN64PLUS_INPUT_BKM.DLL" DiskId="1" Guid="29AAF62D-C90B-43AF-A1E2-1A21BDB023F2">
               <File Id="MUPEN64PLUS_INPUT_BKM.DLL" Name="mupen64plus-input-bkm.dll" Source="..\output\dll\mupen64plus-input-bkm.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS_RSP_HLE.DLL" DiskId="1" Guid="C7974037-C58E-4689-BA35-C651AA82E573">
+            <Component Id="MUPEN64PLUS_RSP_HLE.DLL" DiskId="1" Guid="1A48875C-484D-4CAF-BAC4-C83012BFEF90">
               <File Id="MUPEN64PLUS_RSP_HLE.DLL" Name="mupen64plus-rsp-hle.dll" Source="..\output\dll\mupen64plus-rsp-hle.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS_VIDEO_GLIDE64.DLL" DiskId="1" Guid="76DBC67D-5509-4A48-93C2-AB8B81832882">
+            <Component Id="MUPEN64PLUS_RSP_Z64_HLEVIDEO.DLL" DiskId="1" Guid="3D0CCE03-3B9A-49CA-8D83-F05206F6EC79">
+              <File Id="MUPEN64PLUS_RSP_Z64_HLEVIDEO.DLL" Name="mupen64plus-rsp-z64-hlevideo.dll" Source="..\output\dll\mupen64plus-rsp-z64-hlevideo.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_VIDEO_GLIDE64.DLL" DiskId="1" Guid="5CBAC105-DB6C-4A0D-A6D5-B22C66F534F9">
               <File Id="MUPEN64PLUS_VIDEO_GLIDE64.DLL" Name="mupen64plus-video-glide64.dll" Source="..\output\dll\mupen64plus-video-glide64.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS_VIDEO_GLIDE64MK2.DLL" DiskId="1" Guid="77618617-D158-477E-8020-DEBCB63679E0">
+            <Component Id="MUPEN64PLUS_VIDEO_GLIDE64MK2.DLL" DiskId="1" Guid="4740A755-A082-48D5-883B-7DF62FAD335E">
               <File Id="MUPEN64PLUS_VIDEO_GLIDE64MK2.DLL" Name="mupen64plus-video-glide64mk2.dll" Source="..\output\dll\mupen64plus-video-glide64mk2.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS_VIDEO_RICE.DLL" DiskId="1" Guid="CFC6DDCD-C56E-491C-A32A-22665C6BB6FA">
+            <Component Id="MUPEN64PLUS_VIDEO_JABO.DLL" DiskId="1" Guid="2D50CACB-D07E-4F33-B003-1772807ECDEB">
+              <File Id="MUPEN64PLUS_VIDEO_JABO.DLL" Name="mupen64plus-video-jabo.dll" Source="..\output\dll\mupen64plus-video-jabo.dll" />
+            </Component>
+            <Component Id="MUPEN64PLUS_VIDEO_RICE.DLL" DiskId="1" Guid="0870DECF-6A71-49D0-BD14-74419203ABAD">
               <File Id="MUPEN64PLUS_VIDEO_RICE.DLL" Name="mupen64plus-video-rice.dll" Source="..\output\dll\mupen64plus-video-rice.dll" />
             </Component>
-            <Component Id="MUPEN64PLUS.DLL" DiskId="1" Guid="27E777D0-5D88-4ABC-90A9-D0DB83CF1825">
+            <Component Id="MUPEN64PLUS.DLL" DiskId="1" Guid="FFC978B6-7B65-4FCD-918B-0DEAA6A7570F">
               <File Id="MUPEN64PLUS.DLL" Name="mupen64plus.dll" Source="..\output\dll\mupen64plus.dll" />
             </Component>
-            <Component Id="MUSASHIDLL.DLL" DiskId="1" Guid="37A0F027-8F5A-4952-A3E0-289C52B4E122">
+            <Component Id="MUSASHIDLL.DLL" DiskId="1" Guid="B32A5FB8-7FF7-4ADC-97CC-8874612742C5">
               <File Id="MUSASHIDLL.DLL" Name="MusashiDLL.dll" Source="..\output\dll\MusashiDLL.dll" />
             </Component>
-            <Component Id="NEWTONSOFT.JSON.DLL" DiskId="1" Guid="D3E5041E-3E64-4D60-9835-818A09C23312">
+            <Component Id="NEWTONSOFT.JSON.DLL" DiskId="1" Guid="7658A853-B5DE-466D-BB51-FA9D5172121B">
               <File Id="NEWTONSOFT.JSON.DLL" Name="Newtonsoft.Json.dll" Source="..\output\dll\Newtonsoft.Json.dll" />
             </Component>
-<!--            <Component Id="PPSSPPBIZHAWK.DLL" DiskId="1" Guid="46033756-E1C3-4AE1-BDEB-76AACFFA001A">
-              <File Id="PPSSPPBIZHAWK.DLL" Name="PPSSPPBizhawk.dll" Source="..\output\dll\PPSSPPBizhawk.dll" />
-            </Component>-->
-            <Component Id="SDL.DLL" DiskId="1" Guid="CC26DDB3-9DE0-46BD-8022-9EC267E99402">
+            <Component Id="OCTOSHOCK.DLL" DiskId="1" Guid="250D53F6-B1BA-46FF-9D11-E6917F40347D">
+              <File Id="OCTOSHOCK.DLL" Name="octoshock.dll" Source="..\output\dll\octoshock.dll" />
+            </Component>
+            <Component Id="OPENAL32.DLL" DiskId="1" Guid="530AF757-29EB-4C1A-8F05-F1001FD4DBD3">
+              <File Id="OPENAL32.DLL" Name="openal32.dll" Source="..\output\dll\openal32.dll" />
+            </Component>
+            <Component Id="OPENTK.DLL" DiskId="1" Guid="236CA900-5DF9-4C41-A1A9-1CB18B699E93">
+              <File Id="OPENTK.DLL" Name="OpenTK.dll" Source="..\output\dll\OpenTK.dll" />
+            </Component>
+            <Component Id="OPENTK.GLCONTROL.DLL" DiskId="1" Guid="B73B317C-5070-4B71-AEAD-7B49D802835F">
+              <File Id="OPENTK.GLCONTROL.DLL" Name="OpenTK.GLControl.dll" Source="..\output\dll\OpenTK.GLControl.dll" />
+            </Component>
+            <Component Id="SDL.DLL" DiskId="1" Guid="A4D8F2D8-4950-474F-AA9C-179D6B0C823B">
               <File Id="SDL.DLL" Name="SDL.dll" Source="..\output\dll\SDL.dll" />
             </Component>
-            <Component Id="SLIMDX.DLL" DiskId="1" Guid="1A28A66F-AECB-4664-9180-98E085A5BD39">
-              <File Id="SLIMDX.DLL" Name="SlimDX.dll" Source="..\output\SlimDX.dll" />
+            <Component Id="SLIMDX.DLL" DiskId="1" Guid="8A213883-653D-4E07-8CF1-1332DE085F18">
+              <File Id="SLIMDX.DLL" Name="SlimDX.dll" Source="..\output\dll\SlimDX.dll" />
             </Component>
-            <Component Id="ZLIB1.DLL" DiskId="1" Guid="26887919-C192-458D-8DD0-17CEE28D5D1E">
+            <Component Id="ZLIB1.DLL" DiskId="1" Guid="F48F3036-5612-49A7-AD3B-B27CF67D00AC">
               <File Id="ZLIB1.DLL" Name="zlib1.dll" Source="..\output\dll\zlib1.dll" />
             </Component>
           </Directory>
@@ -503,6 +560,9 @@
             <Component Id="EMU7800.CSV" DiskId="1" Guid="12F97BC8-6696-4F39-9E35-9A4DD8F58E99">
               <File Id="EMU7800.CSV" Name="EMU7800.csv" Source="..\output\gamedb\EMU7800.csv" />
             </Component>
+            <Component Id="GAME.DB" DiskId="1" Guid="CB1C1E8C-9ED9-45C0-8EC5-0D39DF7191F9">
+              <File Id="GAME.DB" Name="game.db" Source="..\output\gamedb\game.db" />
+            </Component>
             <Component Id="GAMEDB.TXT" DiskId="1" Guid="C2893DE0-1302-4354-B68A-8A50E3F0365D">
               <File Id="GAMEDB.TXT" Name="gamedb.txt" Source="..\output\gamedb\gamedb.txt" />
             </Component>
@@ -515,8 +575,14 @@
             <Component Id="GAMEDB_GB.TXT" DiskId="1" Guid="EFBF4FA3-737D-45F2-89EB-970B5F548981">
               <File Id="GAMEDB_GB.TXT" Name="gamedb_gb.txt" Source="..\output\gamedb\gamedb_gb.txt" />
             </Component>
+            <Component Id="GAMEDB_GBA.TXT" DiskId="1" Guid="AB2E0F7E-64BB-4018-9F69-802AC5D1208D">
+              <File Id="GAMEDB_GBA.TXT" Name="gamedb_gba.txt" Source="..\output\gamedb\gamedb_gba.txt" />
+            </Component>
             <Component Id="GAMEDB_GBC.TXT" DiskId="1" Guid="2D6BCA82-C86E-46E9-A79F-3CAE70E11B6E">
               <File Id="GAMEDB_GBC.TXT" Name="gamedb_gbc.txt" Source="..\output\gamedb\gamedb_gbc.txt" />
+            </Component>
+            <Component Id="GAMEDB_LYNX.TXT" DiskId="1" Guid="7847F895-77B7-4F10-90EF-806CD4898F10">
+              <File Id="GAMEDB_LYNX.TXT" Name="gamedb_lynx.txt" Source="..\output\gamedb\gamedb_lynx.txt" />
             </Component>
             <Component Id="GAMEDB_N64.TXT" DiskId="1" Guid="D7D5FA49-D66C-49CA-9402-1101888D8034">
               <File Id="GAMEDB_N64.TXT" Name="gamedb_n64.txt" Source="..\output\gamedb\gamedb_n64.txt" />
@@ -530,14 +596,29 @@
             <Component Id="GAMEDB_PCE_HUCARDS.TXT" DiskId="1" Guid="A78AB715-D1F1-4F6D-92CC-C4EB444AEB7F">
               <File Id="GAMEDB_PCE_HUCARDS.TXT" Name="gamedb_pce_hucards.txt" Source="..\output\gamedb\gamedb_pce_hucards.txt" />
             </Component>
-<!--            <Component Id="GAMEDB_SEGA_8BIT.TXT" DiskId="1" Guid="13FF33F6-E0C8-4428-8ACE-2A286CA7E4C7">
-              <File Id="GAMEDB_SEGA_8BIT.TXT" Name="gamedb_sega_8bit.txt" Source="..\output\gamedb\gamedb_sega_8bit.txt" />
-            </Component>-->
+            <Component Id="GAMEDB_SEGA_GG.TXT" DiskId="1" Guid="9627D8C4-178A-4249-8627-C886AEBE2A68">
+              <File Id="GAMEDB_SEGA_GG.TXT" Name="gamedb_sega_gg.txt" Source="..\output\gamedb\gamedb_sega_gg.txt" />
+            </Component>
             <Component Id="GAMEDB_SEGA_MD.TXT" DiskId="1" Guid="81786BE5-DA18-4543-8557-14265BF84123">
               <File Id="GAMEDB_SEGA_MD.TXT" Name="gamedb_sega_md.txt" Source="..\output\gamedb\gamedb_sega_md.txt" />
             </Component>
+            <Component Id="GAMEDB_SEGA_SG1000.TXT" DiskId="1" Guid="10323566-23E4-4C8B-A0ED-070D95FA082D">
+              <File Id="GAMEDB_SEGA_SG1000.TXT" Name="gamedb_sega_sg1000.txt" Source="..\output\gamedb\gamedb_sega_sg1000.txt" />
+            </Component>
+            <Component Id="GAMEDB_SEGA_SMS.TXT" DiskId="1" Guid="923889F9-F4DD-4CA3-92F3-1DD5167178E3">
+              <File Id="GAMEDB_SEGA_SMS.TXT" Name="gamedb_sega_sms.txt" Source="..\output\gamedb\gamedb_sega_sms.txt" />
+            </Component>
             <Component Id="GAMEDB_SNES.TXT" DiskId="1" Guid="01701DBF-EA2E-4010-B31E-92B222A6BD0C">
               <File Id="GAMEDB_SNES.TXT" Name="gamedb_snes.txt" Source="..\output\gamedb\gamedb_snes.txt" />
+            </Component>
+            <Component Id="GAMEDB_USER.TXT" DiskId="1" Guid="F76F79EA-2563-4FD3-BD74-044DDCCF3993">
+              <File Id="GAMEDB_USER.TXT" Name="gamedb_user.txt" Source="..\output\gamedb\gamedb_user.txt" />
+            </Component>
+            <Component Id="GAMEDB_WS.TXT" DiskId="1" Guid="EB9DDC9A-F83B-4CA9-B5CD-19C65995D974">
+              <File Id="GAMEDB_WS.TXT" Name="gamedb_ws.txt" Source="..\output\gamedb\gamedb_ws.txt" />
+            </Component>
+            <Component Id="GAMEDB_WSC.TXT" DiskId="1" Guid="BF24D1B5-729C-4261-A61B-2C50D23EECA8">
+              <File Id="GAMEDB_WSC.TXT" Name="gamedb_wsc.txt" Source="..\output\gamedb\gamedb_wsc.txt" />
             </Component>
             <Component Id="GAMEDB_VS.TXT" DiskId="1" Guid="3C390A96-FBC2-43F8-A7E6-D38A64601D45">
               <File Id="GAMEDB_VS.TXT" Name="gamedb_vs.txt" Source="..\output\gamedb\gamedb_vs.txt" />
