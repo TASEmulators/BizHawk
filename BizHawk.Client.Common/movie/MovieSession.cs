@@ -135,6 +135,12 @@ namespace BizHawk.Client.Common
 		public void LatchInputFromLog()
 		{
 			var input = Movie.GetInputState(Global.Emulator.Frame);
+
+			if (Movie is TasMovie) // Hack city, GetInputState can't run this code because all sorts of places call it, we only want to do this during this playback loop
+			{
+				(Movie as TasMovie).GreenzoneCurrentFrame();
+			}
+
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
 			{

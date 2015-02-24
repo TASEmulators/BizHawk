@@ -307,6 +307,16 @@ namespace BizHawk.Client.Common
 			return base.GetInputState(frame);
 		}
 
+		public void GreenzoneCurrentFrame()
+		{
+			LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+
+			if (!StateManager.HasState(Global.Emulator.Frame))
+			{
+				StateManager.Capture();
+			}
+		}
+
 		public void ClearLagLog()
 		{
 			LagLog.Clear();
