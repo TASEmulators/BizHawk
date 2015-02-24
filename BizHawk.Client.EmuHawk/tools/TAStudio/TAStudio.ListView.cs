@@ -497,15 +497,15 @@ namespace BizHawk.Client.EmuHawk
 				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed elsewhere, but I'll put a quick fix here anyway.
 				float rMax = range.Max;
 				float rMin = range.Min;
-				if (rMax > rMin)
+				if (rMax < rMin)
 				{
 					rMax = range.Min;
 					rMin = range.Max;
 				}
-				if (e.KeyCode == Keys.Right) // No arrow key presses are being detected. Why?
-					value = range.Max;
+				if (e.KeyCode == Keys.Right)
+					value = rMax;
 				else if (e.KeyCode == Keys.Left)
-					value = range.Min;
+					value = rMin;
 				else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
 				{
 					_floatTypedValue += e.KeyCode - Keys.D0;
@@ -517,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 					value = Convert.ToSingle(_floatTypedValue);
 				}
 				else if (e.KeyCode == Keys.OemPeriod && !_floatTypedValue.Contains('.'))
-				{
+				{ // These aren't displayed in TasView, it rounds display. They ARE getting picked up properly, though.
 					if (_floatTypedValue == "")
 						_floatTypedValue = "0";
 					_floatTypedValue += ".";
@@ -549,6 +549,8 @@ namespace BizHawk.Client.EmuHawk
 					if (e.Shift)
 						changeBy *= 10;
 					value += changeBy;
+					if (changeBy != 0)
+						_floatTypedValue = value.ToString();
 				}
 
 				if (_floatEditRow != -1 && value != CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn))
@@ -562,6 +564,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TasView.Refresh();
+		}
+
+		/// <summary>
+		/// This allows arrow keys to be detected by KeyDown.
+		/// </summary>
+		private void TasView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			e.IsInputKey = true;
 		}
 		#endregion
 	}
