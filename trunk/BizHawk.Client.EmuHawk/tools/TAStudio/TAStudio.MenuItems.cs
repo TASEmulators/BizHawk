@@ -674,7 +674,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var menuItem = new ToolStripMenuItem
 				{
-					Text = column.Text,
+					Text = column.Text + " (" + column.Name + ")",
 					Checked = column.Visible
 				};
 
