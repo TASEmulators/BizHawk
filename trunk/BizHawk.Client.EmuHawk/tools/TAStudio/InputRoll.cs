@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 
 			base.Dispose(disposing);
 		}
-
+        
 		#region Properties
 
 		/// <summary>

@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					color = (record.HasState ? color = Color.FromArgb(0xEEEEEE) : Color.White);
 				}
-				
+
 				return;
 			}
 
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
 					RefreshDialog();
-					
+
 				}
 				else if (columnName != MarkerColumnName) // TODO: what about float?
 				{
@@ -251,13 +251,13 @@ namespace BizHawk.Client.EmuHawk
 							{
 								Global.ClickyVirtualPadController.IsPressed(buttonName);
 							}
-							
+
 						}
 						else
 						{
 							_startFloatDrawColumn = buttonName;
 
-							float _floatPaintState = 0;
+							float _floatPaintState = 0; // SuuperW: This variable isn't used, and hides another.
 							if (frame < CurrentTasMovie.InputLogLength)
 							{
 								_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
@@ -268,6 +268,23 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 					}
+					//else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+					//{ // SuuperW: This will be a simple way to 'toggle' float values.
+					//	if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+					//	{
+					//		ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
+					//		_triggerAutoRestore = true;
+					//		_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+					//		RefreshDialog();
+					//	}
+					//	else
+					//	{
+					//		ToggleFloatState(frame, buttonName);
+					//		_triggerAutoRestore = true;
+					//		_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+					//		RefreshDialog();
+					//	}
+					//}
 				}
 			}
 		}
@@ -372,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal; i < endVal; i++)
+					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
 						SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
 						_triggerAutoRestore = true;
@@ -386,10 +403,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal; i < endVal; i++)
+					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
 						if (i < CurrentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
+							// Temp SuuperW
+							_floatPaintState = 0.5f;
 							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							_triggerAutoRestore = true;
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
