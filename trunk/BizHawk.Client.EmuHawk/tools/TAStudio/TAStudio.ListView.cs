@@ -91,8 +91,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-
-
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame == index)
@@ -108,6 +106,12 @@ namespace BizHawk.Client.EmuHawk
 					color = record.Lagged.Value ?
 						LagZone_FrameCol :
 						GreenZone_FrameCol;
+				}
+				else if (record.WasLagged.HasValue)
+				{
+					color = record.WasLagged.Value ?
+						LagZone_Invalidated_FrameCol :
+						GreenZone_Invalidated_FrameCol;
 				}
 				else
 				{
@@ -133,6 +137,12 @@ namespace BizHawk.Client.EmuHawk
 						color = record.Lagged.Value ?
 							LagZone_InputLog :
 							GreenZone_InputLog;
+					}
+					else if (record.WasLagged.HasValue)
+					{
+						color = record.WasLagged.Value ?
+							LagZone_Invalidated_InputLog :
+							GreenZone_Invalidated_FrameCol;
 					}
 					else
 					{
