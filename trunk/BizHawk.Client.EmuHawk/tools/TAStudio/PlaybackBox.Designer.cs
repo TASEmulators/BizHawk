@@ -33,10 +33,10 @@
 			this.TurboSeekCheckbox = new System.Windows.Forms.CheckBox();
 			this.FollowCursorCheckbox = new System.Windows.Forms.CheckBox();
 			this.NextMarkerButton = new System.Windows.Forms.Button();
-			this.FrameAdvanceButton = new System.Windows.Forms.Button();
 			this.PauseButton = new System.Windows.Forms.Button();
-			this.RewindButton = new System.Windows.Forms.Button();
 			this.PreviousMarkerButton = new System.Windows.Forms.Button();
+			this.FrameAdvanceButton = new BizHawk.Client.EmuHawk.RepeatButton();
+			this.RewindButton = new BizHawk.Client.EmuHawk.RepeatButton();
 			this.PlaybackGroupBox.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -103,16 +103,6 @@
 			this.NextMarkerButton.UseVisualStyleBackColor = true;
 			this.NextMarkerButton.Click += new System.EventHandler(this.NextMarkerButton_Click);
 			// 
-			// FrameAdvanceButton
-			// 
-			this.FrameAdvanceButton.Location = new System.Drawing.Point(117, 19);
-			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
-			this.FrameAdvanceButton.Size = new System.Drawing.Size(38, 23);
-			this.FrameAdvanceButton.TabIndex = 3;
-			this.FrameAdvanceButton.Text = ">";
-			this.FrameAdvanceButton.UseVisualStyleBackColor = true;
-			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
-			// 
 			// PauseButton
 			// 
 			this.PauseButton.Location = new System.Drawing.Point(80, 19);
@@ -123,16 +113,6 @@
 			this.PauseButton.UseVisualStyleBackColor = true;
 			this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
 			// 
-			// RewindButton
-			// 
-			this.RewindButton.Location = new System.Drawing.Point(43, 19);
-			this.RewindButton.Name = "RewindButton";
-			this.RewindButton.Size = new System.Drawing.Size(38, 23);
-			this.RewindButton.TabIndex = 1;
-			this.RewindButton.Text = "<";
-			this.RewindButton.UseVisualStyleBackColor = true;
-			this.RewindButton.Click += new System.EventHandler(this.RewindButton_Click);
-			// 
 			// PreviousMarkerButton
 			// 
 			this.PreviousMarkerButton.Location = new System.Drawing.Point(6, 19);
@@ -142,6 +122,30 @@
 			this.PreviousMarkerButton.Text = "<<";
 			this.PreviousMarkerButton.UseVisualStyleBackColor = true;
 			this.PreviousMarkerButton.Click += new System.EventHandler(this.PreviousMarkerButton_Click);
+			// 
+			// FrameAdvanceButton
+			// 
+			this.FrameAdvanceButton.InitialDelay = 500;
+			this.FrameAdvanceButton.Location = new System.Drawing.Point(117, 19);
+			this.FrameAdvanceButton.Name = "FrameAdvanceButton";
+			this.FrameAdvanceButton.RepeatDelay = 50;
+			this.FrameAdvanceButton.Size = new System.Drawing.Size(38, 23);
+			this.FrameAdvanceButton.TabIndex = 3;
+			this.FrameAdvanceButton.Text = ">";
+			this.FrameAdvanceButton.UseVisualStyleBackColor = true;
+			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
+			// 
+			// RewindButton
+			// 
+			this.RewindButton.InitialDelay = 1000;
+			this.RewindButton.Location = new System.Drawing.Point(43, 19);
+			this.RewindButton.Name = "RewindButton";
+			this.RewindButton.RepeatDelay = 100;
+			this.RewindButton.Size = new System.Drawing.Size(38, 23);
+			this.RewindButton.TabIndex = 1;
+			this.RewindButton.Text = "<";
+			this.RewindButton.UseVisualStyleBackColor = true;
+			this.RewindButton.Click += new System.EventHandler(this.RewindButton_Click);
 			// 
 			// PlaybackBox
 			// 
@@ -159,9 +163,9 @@
 
 		private System.Windows.Forms.GroupBox PlaybackGroupBox;
 		private System.Windows.Forms.Button NextMarkerButton;
-		private System.Windows.Forms.Button FrameAdvanceButton;
+		private RepeatButton FrameAdvanceButton;
 		private System.Windows.Forms.Button PauseButton;
-		private System.Windows.Forms.Button RewindButton;
+		private RepeatButton RewindButton;
 		private System.Windows.Forms.Button PreviousMarkerButton;
 		private System.Windows.Forms.CheckBox AutoRestoreCheckbox;
 		private System.Windows.Forms.CheckBox TurboSeekCheckbox;
