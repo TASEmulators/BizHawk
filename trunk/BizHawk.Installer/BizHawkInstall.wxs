@@ -98,6 +98,7 @@
             <ComponentRef Id="FCEU_13_DEFAULT_NITSUJA.PAL" />
             <ComponentRef Id="FCEU_15_NITSUJA_NEW.PAL" />
             <ComponentRef Id="FCEUX.PAL" />
+            <ComponentRef Id="FIRMWARE" />
             <ComponentRef Id="StartMenuShortcuts" />
         </Feature>
         <Feature Id="DiscoHawk" Title="DiscoHawk Disc Image Tool" Level="1">
@@ -255,6 +256,9 @@
           <ComponentRef Id="SUPER_GHOULS_N_GHOST.LUA" />
           <ComponentRef Id="SUPER_MARIO_WORLD.LUA" />
           <ComponentRef Id="SUPER_METROID.LUA" />
+          <ComponentRef Id="ZapperTarget.lua" />
+          <ComponentRef Id="MovieClock.lua" />
+          <ComponentRef Id="Ys_III.lua" />
         </Feature>
         <Property Id="WIXUI_INSTALLDIR" Value="BIZHAWK" />
         <UI Id="WixUI_InstallDir">
