@@ -680,7 +680,7 @@ namespace BizHawk.Client.EmuHawk
 			this.HideLagFrames0.CheckOnClick = true;
 			this.HideLagFrames0.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.HideLagFrames0.Name = "HideLagFrames0";
-			this.HideLagFrames0.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames0.Size = new System.Drawing.Size(131, 22);
 			this.HideLagFrames0.Tag = "";
 			this.HideLagFrames0.Text = "Don\'t Hide";
 			this.HideLagFrames0.Click += new System.EventHandler(this.HideLagFrames0_Click);
@@ -689,14 +689,14 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.HideLagFrames1.CheckOnClick = true;
 			this.HideLagFrames1.Name = "HideLagFrames1";
-			this.HideLagFrames1.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames1.Size = new System.Drawing.Size(131, 22);
 			this.HideLagFrames1.Text = "1 (30 fps)";
 			this.HideLagFrames1.Click += new System.EventHandler(this.HideLagFrames1_Click);
 			// 
 			// HideLagFrames2
 			// 
 			this.HideLagFrames2.Name = "HideLagFrames2";
-			this.HideLagFrames2.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames2.Size = new System.Drawing.Size(131, 22);
 			this.HideLagFrames2.Text = "2 (20 fps)";
 			this.HideLagFrames2.Click += new System.EventHandler(this.HideLagFrames2_Click);
 			// 
@@ -704,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.HideLagFrames3.CheckOnClick = true;
 			this.HideLagFrames3.Name = "HideLagFrames3";
-			this.HideLagFrames3.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames3.Size = new System.Drawing.Size(131, 22);
 			this.HideLagFrames3.Tag = "";
 			this.HideLagFrames3.Text = "3 (15fps)";
 			this.HideLagFrames3.Click += new System.EventHandler(this.HideLagFrames3_Click);
@@ -763,7 +763,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.FullRowSelect = true;
 			this.TasView.HorizontalOrientation = false;
 			this.TasView.LagFramesToHide = 0;
-			this.TasView.LastVisibleRow = 24;
+			this.TasView.LastVisibleRow = 28;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
@@ -780,6 +780,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDoubleClick);
 			this.TasView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseDown);
 			this.TasView.MouseEnter += new System.EventHandler(this.TasView_MouseEnter);
+			this.TasView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseMove);
 			this.TasView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TasView_MouseUp);
 			this.TasView.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.TasView_PreviewKeyDown);
 			// 

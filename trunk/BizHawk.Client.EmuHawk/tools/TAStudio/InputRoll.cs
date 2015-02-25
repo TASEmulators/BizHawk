@@ -527,22 +527,14 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public int FirstVisibleRow
 		{
-			get
+			get // SuuperW: This was checking if the scroll bars were needed, which is useless because their Value is 0 if they aren't needed.
 			{
 				if (HorizontalOrientation)
 				{
-					if (NeedsHScrollbar)
-					{
-						return HBar.Value / CellWidth;
-					}
+					return HBar.Value / CellWidth;
 				}
 
-				if (NeedsVScrollbar)
-				{
-					return VBar.Value / CellHeight;
-				}
-
-				return 0;
+				return VBar.Value / CellHeight;
 			}
 
 			set
@@ -578,6 +570,10 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				FirstVisibleRow = Math.Max(value - VisibleRows, 0);
+				if (LastVisibleRow != value)
+				{
+					FirstVisibleRow -= (LastVisibleRow - value);
+				}
 			}
 		}
 
@@ -597,14 +593,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					var width = DrawWidth - (NeedsVScrollbar ? VBar.Width : 0);
-
-					return (width - ColumnWidth) / CellWidth;
+					return (DrawWidth - ColumnWidth) / CellWidth;
 				}
 
-				var height = DrawHeight - (NeedsHScrollbar ? HBar.Height : (CellHeight - 1));
-
-				return (height / CellHeight) - 1; // adelikat: -1 to compensate for what this math should be doing anyway, TODO: figure out why it doesn't work without it?
+				return (DrawHeight - ColumnHeight) / CellHeight;
 			}
 		}
 
@@ -1196,7 +1188,24 @@ namespace BizHawk.Client.EmuHawk
 			_currentX = e.X;
 			_currentY = e.Y;
 
-			var newCell = CalculatePointedCell(e.X, e.Y);
+			if (IsPaintDown)
+			{
+				if (HorizontalOrientation)
+				{
+					if (e.X <= ColumnWidth)
+						_currentX = ColumnWidth + 2; // 2 because ColumnWidth/Height isn't correct
+					else if (e.X > Width)
+						_currentX = Width;
+				}
+				else
+				{
+					if (e.Y <= ColumnHeight)
+						_currentY = ColumnHeight + 2;
+					else if (e.Y > Height)
+						_currentX = Height;
+				}
+			}
+			var newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 			// SuuperW: Hide lag frames
 			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 			{
@@ -1974,7 +1983,7 @@ namespace BizHawk.Client.EmuHawk
 		// SuuperW: Count lag frames between FirstDisplayed and given display position
 		private int CountLagFramesDisplay(int relativeIndex)
 		{
-			if (QueryFrameLag != null)
+			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				int count = 0;
 				for (int i = 0; i <= relativeIndex; i++)
@@ -1987,7 +1996,7 @@ namespace BizHawk.Client.EmuHawk
 		// Count lag frames between FirstDisplayed and given frame index (plus FirstDisplayed)
 		private int CountLagFramesAbsolute(int index)
 		{
-			if (QueryFrameLag != null)
+			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				int count = 0;
 				for (int i = 0; i + count <= index; i++)
@@ -2000,7 +2009,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetLagFramesArray()
 		{
-			if (QueryFrameLag != null)
+			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				bool showNext = false;
 				// First one needs to check BACKWARDS for lag frame count.
@@ -2031,10 +2040,13 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+			else
+				for (int i = 0; i < VisibleRows; i++)
+					lagFrames[i] = 0;
 		}
 		private void SetLagFramesFirst()
 		{
-			if (QueryFrameLag != null)
+			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				// Count how many lag frames are above displayed area.
 				int count = 0;

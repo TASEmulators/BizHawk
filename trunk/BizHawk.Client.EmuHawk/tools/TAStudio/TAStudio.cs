@@ -727,5 +727,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MarkerControl.RemoveMarker();
 		}
+
 	}
 }
