@@ -736,14 +736,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Load<RamWatch>();
 
-			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			if (IsAvailable<RamWatch>()) // Just because we attempted to load it, doesn't mean it was, the current core may not have the correct dependencies
 			{
-				RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
-			}
+				if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+				{
+					RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
+				}
 
-			if (!loadDialog)
-			{
-				Get<RamWatch>().Close();
+				if (!loadDialog)
+				{
+					Get<RamWatch>().Close();
+				}
 			}
 		}
 
