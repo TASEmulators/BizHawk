@@ -21,15 +21,10 @@ namespace BizHawk.Client.EmuHawk
 		private string _floatEditColumn = string.Empty;
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
-
-		
-		private bool HideLagFrames
-		{
-			get { return TasView.LagFramesToHide > 0; }
-		}
+		private int _floatEditYPos = -1;
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will clal GoToFrameIfNecessary() with this value
+		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will call GoToFrameIfNecessary() with this value
 
 		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -191,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 		// SuuperW: Used in InputRoll.cs to hide lag frames.
 		private bool TasView_QueryFrameLag(int index)
 		{
-			return HideLagFrames && CurrentTasMovie[index].Lagged.HasValue && CurrentTasMovie[index].Lagged.Value;
+			return CurrentTasMovie[index].Lagged.HasValue && CurrentTasMovie[index].Lagged.Value;
 		}
 
 		#endregion
@@ -258,15 +253,25 @@ namespace BizHawk.Client.EmuHawk
 			var frame = TasView.CurrentCell.RowIndex.Value;
 			var buttonName = TasView.CurrentCell.Column.Name;
 
-			// SuuperW: Exit float editing mode
-			if (_floatEditColumn != buttonName || _floatEditRow != frame)
-			{
-				_floatEditRow = -1;
-				TasView.Refresh();
-			}
 
 			if (e.Button == MouseButtons.Left)
 			{
+				// SuuperW: Exit float editing mode, or re-enter mouse editing
+				if (_floatEditRow != -1)
+				{
+					if (_floatEditColumn != buttonName || _floatEditRow != frame)
+					{
+						_floatEditRow = -1;
+						TasView.Refresh();
+					}
+					else
+					{
+						_floatEditYPos = e.Y;
+						_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+						return;
+					}
+				}
+
 				if (TasView.CurrentCell.Column.Name == MarkerColumnName)
 				{
 					_startMarkerDrag = true;
@@ -299,15 +304,37 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_startFloatDrawColumn = buttonName;
+						if (e.Clicks != 2)
+						{
+							_startFloatDrawColumn = buttonName;
 
-						if (frame < CurrentTasMovie.InputLogLength)
-						{
-							_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+							if (frame < CurrentTasMovie.InputLogLength)
+							{
+								_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+							}
+							else
+							{
+								_floatPaintState = Global.ClickyVirtualPadController.GetFloat(buttonName);
+							}
 						}
-						else
+						else // Double-click enters float editing mode
 						{
-							_floatPaintState = Global.ClickyVirtualPadController.GetFloat(buttonName);
+							if (_floatEditColumn == buttonName && _floatEditRow == frame)
+							{
+								_floatEditRow = -1;
+								RefreshDialog();
+							}
+							else
+							{
+								_floatEditColumn = buttonName;
+								_floatEditRow = frame;
+								_floatTypedValue = "";
+								_floatEditYPos = e.Y;
+								_floatPaintState = CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn);
+								_triggerAutoRestore = true;
+								_triggerAutoRestoreFromFrame = frame;
+								RefreshDialog();
+							}
 						}
 					}
 				}
@@ -326,7 +353,14 @@ namespace BizHawk.Client.EmuHawk
 				_startFrameDrag = false;
 				_startBoolDrawColumn = string.Empty;
 				_startFloatDrawColumn = string.Empty;
+				// Exit float editing if value was changed with cursor
+				if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn))
+				{
+					_floatEditRow = -1;
+					RefreshDialog();
+				}
 				_floatPaintState = 0;
+				_floatEditYPos = -1;
 			}
 
 			_supressContextMenu = false;
@@ -369,34 +403,11 @@ namespace BizHawk.Client.EmuHawk
 						CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
 					}
 				}
-				else if (Global.MovieSession.MovieControllerAdapter.Type.FloatControls.Contains(buttonName))
-				{ // SuuperW: Edit float input
-					int frame = TasView.CurrentCell.RowIndex.Value;
-					if (_floatEditColumn == buttonName && _floatEditRow == frame)
-					{
-						_floatEditRow = -1;
-						RefreshDialog();
-					}
-					else
-					{
-						_floatEditColumn = buttonName;
-						_floatEditRow = frame;
-						_floatTypedValue = "";
-						_triggerAutoRestore = true;
-						_triggerAutoRestoreFromFrame = frame;
-						RefreshDialog();
-					}
-				}
 			}
 		}
 
 		private void TasView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
-			// SuuperW: Will this allow TasView to see KeyDown?
-			TasView.Select();
-			// Temporary test code
-			TasView.Refresh();
-
 			// TODO: think about nullability
 			// For now return if a null because this happens OnEnter which doesn't have any of the below behaviors yet?
 			// Most of these are stupid but I got annoyed at null crashes
@@ -468,6 +479,34 @@ namespace BizHawk.Client.EmuHawk
 					TasView.Refresh();
 				}
 			}
+		}
+
+		private void TasView_MouseMove(object sender, MouseEventArgs e)
+		{
+			// For float editing
+			int increment = (e.Y - _floatEditYPos) / 3;
+			if (_floatEditYPos == -1)
+				return;
+
+			float value = _floatPaintState + increment;
+			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
+				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed elsewhere, but I'll put a quick fix here anyway.
+			float rMax = range.Max;
+			float rMin = range.Min;
+			if (rMax < rMin)
+			{
+				rMax = range.Min;
+				rMin = range.Max;
+			}
+			if (value > rMax)
+				value = rMax;
+			else if (value < rMin)
+				value = rMin;
+
+			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+
+			RefreshDialog();
 		}
 
 		private void TasView_SelectedIndexChanged(object sender, EventArgs e)
@@ -546,6 +585,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.KeyCode == Keys.Escape)
 				{
+					if (_floatEditYPos != -1) // Cancel change from dragging cursor
+					{
+						_floatEditYPos = -1;
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatPaintState);
+					}
 					_floatEditRow = -1;
 				}
 				else
