@@ -560,6 +560,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private int LastFullyVisibleRow
+		{
+			get
+			{
+				int HalfRow = 0;
+				if ((DrawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+					HalfRow = 1;
+				return FirstVisibleRow + VisibleRows - HalfRow + CountLagFramesDisplay(VisibleRows);
+			}
+		}
 		public int LastVisibleRow
 		{
 			get
@@ -569,17 +579,34 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				FirstVisibleRow = Math.Max(value - VisibleRows, 0);
-				if (LastVisibleRow != value)
+				int HalfRow = 0;
+				if ((DrawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
+					HalfRow = 1;
+				if (LagFramesToHide == 0)
 				{
-					FirstVisibleRow -= (LastVisibleRow - value);
+					FirstVisibleRow = Math.Max(value - (VisibleRows - HalfRow), 0);
+				}
+				else
+				{
+					int Last = LastVisibleRow - HalfRow;
+
+					if (Math.Abs(Last - value) > VisibleRows) // Big jump
+						FirstVisibleRow = Math.Max(value - (ExpectedDisplayRange() - HalfRow), 0);
+					else // Small jump
+						FirstVisibleRow -= (Last - value);
+
+					// SuuperW: This can cause an infinite loop, don't have time to debug it right now.
+					//// Now a second re-check, with lagFrames[] updated.
+					//SetLagFramesArray();
+					//if (Math.Abs(LastFullyVisibleRow - value) > LagFramesToHide)
+					//	LastVisibleRow = value;
 				}
 			}
 		}
 
 		public bool IsVisible(int index)
 		{
-			return (index >= FirstVisibleRow) && (index <= LastVisibleRow);
+			return (index >= FirstVisibleRow) && (index <= LastFullyVisibleRow);
 		}
 
 		/// <summary>
@@ -596,7 +623,7 @@ namespace BizHawk.Client.EmuHawk
 					return (DrawWidth - ColumnWidth) / CellWidth;
 				}
 
-				return (DrawHeight - ColumnHeight) / CellHeight;
+				return (DrawHeight - ColumnHeight - 3) / CellHeight; // Minus three makes it work
 			}
 		}
 
@@ -1064,11 +1091,13 @@ namespace BizHawk.Client.EmuHawk
 			Color Highlight_Color = new Color();
 			foreach (var cell in SelectedItems)
 			{
+				if (cell.RowIndex > LastVisibleRow || cell.RowIndex < FirstVisibleRow)
+					continue;
+
 				var relativeCell = new Cell
 				{
 					RowIndex = cell.RowIndex - FirstVisibleRow,
 					Column = cell.Column,
-					CurrentText = cell.CurrentText
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 
@@ -1993,13 +2022,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return 0;
 		}
-		// Count lag frames between FirstDisplayed and given frame index (plus FirstDisplayed)
-		private int CountLagFramesAbsolute(int index)
+		// Count lag frames between FirstDisplayed and given relative frame index
+		private int CountLagFramesAbsolute(int relativeIndex)
 		{
 			if (QueryFrameLag != null && LagFramesToHide != 0)
 			{
 				int count = 0;
-				for (int i = 0; i + count <= index; i++)
+				for (int i = 0; i + count <= relativeIndex; i++)
 					count += lagFrames[i];
 
 				return count;
@@ -2065,6 +2094,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 				lagFrames[0] = 0;
+		}
+
+		// Number of displayed + hidden frames, if fps is as expected
+		private int ExpectedDisplayRange()
+		{
+			return (VisibleRows + 1) * LagFramesToHide;
 		}
 
 		#endregion
