@@ -30,13 +30,13 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			RefreshDialog();
-
 			if (TasPlaybackBox.FollowCursor) // TODO: we already refreshed in RefreshDialog now we will do it again, make this more efficient
 			{
 				SetVisibleIndex();
 			}
-		}
+
+			RefreshDialog();
+	}
 
 		public void FastUpdate()
 		{
