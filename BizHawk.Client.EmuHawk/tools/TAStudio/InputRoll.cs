@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Hiding lag frames (Mainly intended for 30fps play.)
 		public int LagFramesToHide { get; set; }
-		private int[] lagFrames = new int[50]; // Large enough value that it shouldn't ever need resizing.
+		private int[] lagFrames = new int[100]; // Large enough value that it shouldn't ever need resizing.
 
 		private IntPtr RotatedFont;
 		private Font NormalFont;
@@ -218,23 +218,6 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public RollColumns AllColumns { get { return _columns; } }
 
-		public void SelectAll()
-		{
-			var oldFullRowVal = FullRowSelect;
-			FullRowSelect = true;
-			for (int i = 0; i < RowCount; i++)
-			{
-				SelectRow(i, true);
-			}
-
-			FullRowSelect = oldFullRowVal;
-		}
-
-		public void DeselectAll()
-		{
-			SelectedItems.Clear();
-		}
-
 		#endregion
 
 		#region Event Handlers
@@ -383,6 +366,22 @@ namespace BizHawk.Client.EmuHawk
 					SelectedItems.RemoveAll(items.Contains);
 				}
 			}
+		}
+
+		public void SelectAll()
+		{
+			var oldFullRowVal = FullRowSelect;
+			FullRowSelect = true;
+			for (int i = 0; i < RowCount; i++)
+			{
+				SelectRow(i, true);
+			}
+
+			FullRowSelect = oldFullRowVal;
+		}
+		public void DeselectAll()
+		{
+			SelectedItems.Clear();
 		}
 
 		[Browsable(false)]
@@ -567,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 				int HalfRow = 0;
 				if ((DrawHeight - ColumnHeight - 3) % CellHeight < CellHeight / 2)
 					HalfRow = 1;
-				return FirstVisibleRow + VisibleRows - HalfRow + CountLagFramesDisplay(VisibleRows);
+				return FirstVisibleRow + VisibleRows - HalfRow + CountLagFramesDisplay(VisibleRows - HalfRow);
 			}
 		}
 		public int LastVisibleRow
@@ -588,18 +587,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					int Last = LastVisibleRow - HalfRow;
-
-					if (Math.Abs(Last - value) > VisibleRows) // Big jump
+					if (Math.Abs(LastFullyVisibleRow - value) > VisibleRows) // Big jump
 						FirstVisibleRow = Math.Max(value - (ExpectedDisplayRange() - HalfRow), 0);
-					else // Small jump
-						FirstVisibleRow -= (Last - value);
 
-					// SuuperW: This can cause an infinite loop, don't have time to debug it right now.
-					//// Now a second re-check, with lagFrames[] updated.
-					//SetLagFramesArray();
-					//if (Math.Abs(LastFullyVisibleRow - value) > LagFramesToHide)
-					//	LastVisibleRow = value;
+					// Small jump, more accurate
+					int lastVisible;
+					do
+					{
+						SetLagFramesArray();
+						lastVisible = LastFullyVisibleRow;
+						if ((lastVisible - value) / (LagFramesToHide + 1) != 0)
+							FirstVisibleRow = Math.Max(FirstVisibleRow - ((lastVisible - value) / (LagFramesToHide + 1)), 0);
+						else
+							FirstVisibleRow -= Math.Sign(lastVisible - value);
+					} while ((lastVisible - value < 0 || lastVisible - value > lagFrames[VisibleRows]) && FirstVisibleRow != 0);
+
+					System.Diagnostics.Debug.Print("Jumped to: " + value + " (" + LastFullyVisibleRow + ")");
 				}
 			}
 		}

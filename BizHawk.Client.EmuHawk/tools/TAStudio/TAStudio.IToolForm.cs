@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
-	}
+		}
 
 		public void FastUpdate()
 		{
@@ -130,7 +130,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!TasView.IsVisible(indexThatMustBeVisible.Value))
 			{
-				TasView.LastVisibleRow = indexThatMustBeVisible.Value;
+				if (TasView.FirstVisibleRow > indexThatMustBeVisible.Value)
+					TasView.FirstVisibleRow = indexThatMustBeVisible.Value;
+				else
+					TasView.LastVisibleRow = indexThatMustBeVisible.Value;
 			}
 		}
 	}
