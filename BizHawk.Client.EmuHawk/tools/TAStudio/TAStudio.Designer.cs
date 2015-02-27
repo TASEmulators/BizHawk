@@ -680,34 +680,36 @@ namespace BizHawk.Client.EmuHawk
 			this.HideLagFrames0.CheckOnClick = true;
 			this.HideLagFrames0.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.HideLagFrames0.Name = "HideLagFrames0";
-			this.HideLagFrames0.Size = new System.Drawing.Size(131, 22);
-			this.HideLagFrames0.Tag = "";
+			this.HideLagFrames0.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames0.Tag = 0;
 			this.HideLagFrames0.Text = "Don\'t Hide";
-			this.HideLagFrames0.Click += new System.EventHandler(this.HideLagFrames0_Click);
+			this.HideLagFrames0.Click += new System.EventHandler(this.HideLagFramesX_Click);
 			// 
 			// HideLagFrames1
 			// 
 			this.HideLagFrames1.CheckOnClick = true;
 			this.HideLagFrames1.Name = "HideLagFrames1";
-			this.HideLagFrames1.Size = new System.Drawing.Size(131, 22);
+			this.HideLagFrames1.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames1.Tag = 1;
 			this.HideLagFrames1.Text = "1 (30 fps)";
-			this.HideLagFrames1.Click += new System.EventHandler(this.HideLagFrames1_Click);
+			this.HideLagFrames1.Click += new System.EventHandler(this.HideLagFramesX_Click);
 			// 
 			// HideLagFrames2
 			// 
 			this.HideLagFrames2.Name = "HideLagFrames2";
-			this.HideLagFrames2.Size = new System.Drawing.Size(131, 22);
+			this.HideLagFrames2.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames2.Tag = 2;
 			this.HideLagFrames2.Text = "2 (20 fps)";
-			this.HideLagFrames2.Click += new System.EventHandler(this.HideLagFrames2_Click);
+			this.HideLagFrames2.Click += new System.EventHandler(this.HideLagFramesX_Click);
 			// 
 			// HideLagFrames3
 			// 
 			this.HideLagFrames3.CheckOnClick = true;
 			this.HideLagFrames3.Name = "HideLagFrames3";
-			this.HideLagFrames3.Size = new System.Drawing.Size(131, 22);
-			this.HideLagFrames3.Tag = "";
+			this.HideLagFrames3.Size = new System.Drawing.Size(152, 22);
+			this.HideLagFrames3.Tag = 3;
 			this.HideLagFrames3.Text = "3 (15fps)";
-			this.HideLagFrames3.Click += new System.EventHandler(this.HideLagFrames3_Click);
+			this.HideLagFrames3.Click += new System.EventHandler(this.HideLagFramesX_Click);
 			// 
 			// ColumnsSubMenu
 			// 
@@ -1171,8 +1173,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator StartFromNowSeparator;
 		private System.Windows.Forms.ToolStripMenuItem StartNewProjectFromNowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem RotateMenuItem;
-        private System.Windows.Forms.ToolStripProgressBar SavingProgressBar;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+		private System.Windows.Forms.ToolStripProgressBar SavingProgressBar;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFramesSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames3;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames0;

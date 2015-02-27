@@ -383,6 +383,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SelectedItems.Clear();
 		}
+		public void TruncateSelection(int index)
+		{
+			SelectedItems.RemoveAll(cell => cell.RowIndex > index);
+		}
 
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
@@ -588,18 +592,21 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					if (Math.Abs(LastFullyVisibleRow - value) > VisibleRows) // Big jump
+					{
 						FirstVisibleRow = Math.Max(value - (ExpectedDisplayRange() - HalfRow), 0);
+						SetLagFramesArray();
+					}
 
 					// Small jump, more accurate
-					int lastVisible;
+					int lastVisible = LastFullyVisibleRow;
 					do
 					{
-						SetLagFramesArray();
-						lastVisible = LastFullyVisibleRow;
 						if ((lastVisible - value) / (LagFramesToHide + 1) != 0)
 							FirstVisibleRow = Math.Max(FirstVisibleRow - ((lastVisible - value) / (LagFramesToHide + 1)), 0);
 						else
 							FirstVisibleRow -= Math.Sign(lastVisible - value);
+						SetLagFramesArray();
+						lastVisible = LastFullyVisibleRow;
 					} while ((lastVisible - value < 0 || lastVisible - value > lagFrames[VisibleRows]) && FirstVisibleRow != 0);
 
 					System.Diagnostics.Debug.Print("Jumped to: " + value + " (" + LastFullyVisibleRow + ")");
