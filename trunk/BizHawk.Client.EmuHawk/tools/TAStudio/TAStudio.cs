@@ -487,6 +487,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private float GetFloatValue(int frame, string buttonName)
+		{
+			if (frame < CurrentTasMovie.InputLogLength)
+				return CurrentTasMovie.GetFloatValue(frame, buttonName);
+			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
+				return Global.StickyXORAdapter.GetFloat(buttonName);
+			return 0; // ? Should I do it differently so it will error instead?
+		}
+		private void SetFloatValue(int frame, string buttonName, float value)
+		{
+			if (frame < CurrentTasMovie.InputLogLength)
+				CurrentTasMovie.SetFloatState(frame, buttonName, value);
+			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
+				Global.StickyXORAdapter.SetFloat(buttonName, value);
+		}
+
 		private void SetColumnsFromCurrentStickies()
 		{
 			foreach (var column in TasView.VisibleColumns)

@@ -170,9 +170,16 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (Emulator.Frame == CurrentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
 					{
-						text = CurrentTasMovie.CreateDisplayValueForButton(
-							Global.ClickyVirtualPadController,
-							columnName);
+						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(columnName))
+						{
+							text = CurrentTasMovie.CreateDisplayValueForButton(
+								Global.ClickyVirtualPadController, columnName);
+						}
+						else
+						{
+							text = CurrentTasMovie.CreateDisplayValueForButton(
+								Global.StickyXORAdapter, columnName);
+						}
 					}
 				}
 			}
@@ -267,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_floatEditYPos = e.Y;
-						_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+						_floatPaintState = GetFloatValue(frame, buttonName);
 						return;
 					}
 				}
@@ -304,37 +311,33 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
+						if (frame < CurrentTasMovie.InputLogLength)
+						{
+							_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+						}
+						else
+						{
+							_floatPaintState = Global.StickyXORAdapter.GetFloat(buttonName);
+						}
+
 						if (e.Clicks != 2)
 						{
 							_startFloatDrawColumn = buttonName;
-
-							if (frame < CurrentTasMovie.InputLogLength)
-							{
-								_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
-							}
-							else
-							{
-								_floatPaintState = Global.ClickyVirtualPadController.GetFloat(buttonName);
-							}
 						}
 						else // Double-click enters float editing mode
 						{
 							if (_floatEditColumn == buttonName && _floatEditRow == frame)
-							{
 								_floatEditRow = -1;
-								RefreshDialog();
-							}
 							else
 							{
 								_floatEditColumn = buttonName;
 								_floatEditRow = frame;
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
-								_floatPaintState = CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn);
 								_triggerAutoRestore = true;
 								_triggerAutoRestoreFromFrame = frame;
-								RefreshDialog();
 							}
+							RefreshDialog();
 						}
 					}
 				}
@@ -354,7 +357,7 @@ namespace BizHawk.Client.EmuHawk
 				_startBoolDrawColumn = string.Empty;
 				_startFloatDrawColumn = string.Empty;
 				// Exit float editing if value was changed with cursor
-				if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn))
+				if (_floatEditRow != -1 && _floatPaintState != GetFloatValue(_floatEditRow, _floatEditColumn))
 				{
 					_floatEditRow = -1;
 					RefreshDialog();
@@ -470,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (i < CurrentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
 						{
-							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+							SetFloatValue(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							_triggerAutoRestore = true;
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						}
@@ -484,14 +487,14 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
 		{
 			// For float editing
-			int increment = (e.Y - _floatEditYPos) / 3;
+			int increment = (_floatEditYPos - e.Y) / 3;
 			if (_floatEditYPos == -1)
 				return;
 
 			float value = _floatPaintState + increment;
 			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
 				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
-			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed elsewhere, but I'll put a quick fix here anyway.
+			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs, but I'll put a quick fix here anyway.
 			float rMax = range.Max;
 			float rMin = range.Min;
 			if (rMax < rMin)
@@ -504,7 +507,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (value < rMin)
 				value = rMin;
 
-			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+			SetFloatValue(_floatEditRow, _floatEditColumn, value);
 
 			RefreshDialog();
 		}
@@ -540,10 +543,10 @@ namespace BizHawk.Client.EmuHawk
 			// SuuperW: Float Editing
 			if (_floatEditRow != -1)
 			{
-				float value = CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn);
+				float value = GetFloatValue(_floatEditRow, _floatEditColumn);
 				Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
 					[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
-				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed elsewhere, but I'll put a quick fix here anyway.
+				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
 				float rMax = range.Max;
 				float rMin = range.Min;
 				if (rMax < rMin)
@@ -588,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_floatEditYPos != -1) // Cancel change from dragging cursor
 					{
 						_floatEditYPos = -1;
-						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatPaintState);
+						SetFloatValue(_floatEditRow, _floatEditColumn, _floatPaintState);
 					}
 					_floatEditRow = -1;
 				}
@@ -607,13 +610,13 @@ namespace BizHawk.Client.EmuHawk
 						_floatTypedValue = value.ToString();
 				}
 
-				if (_floatEditRow != -1 && value != CurrentTasMovie.GetFloatValue(_floatEditRow, _floatEditColumn))
+				if (_floatEditRow != -1 && value != GetFloatValue(_floatEditRow, _floatEditColumn))
 				{
 					if (value > rMax)
 						value = rMax;
 					else if (value < rMin)
 						value = rMin;
-					CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+					SetFloatValue(_floatEditRow, _floatEditColumn, value);
 				}
 			}
 
