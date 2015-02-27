@@ -486,6 +486,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsToRollback = !(rollbackFrame > Emulator.Frame);
 
 				CurrentTasMovie.Truncate(rollbackFrame);
+				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
 
 				if (needsToRollback)
 				{
@@ -636,24 +637,14 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.FlagChanges();
 		}
 
-		private void HideLagFrames0_Click(object sender, EventArgs e)
+		private void HideLagFramesX_Click(object sender, EventArgs e)
 		{
-			TasView.LagFramesToHide = 0;
-		}
-
-		private void HideLagFrames1_Click(object sender, EventArgs e)
-		{
-			TasView.LagFramesToHide = 1;
-		}
-
-		private void HideLagFrames2_Click(object sender, EventArgs e)
-		{
-			TasView.LagFramesToHide = 2;
-		}
-
-		private void HideLagFrames3_Click(object sender, EventArgs e)
-		{
-			TasView.LagFramesToHide = 3;
+			TasView.LagFramesToHide = (int)(sender as ToolStripMenuItem).Tag;
+			if (TasPlaybackBox.FollowCursor)
+			{
+				SetVisibleIndex();
+			}
+			RefreshDialog();
 		}
 
 		#endregion
