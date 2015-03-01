@@ -393,7 +393,6 @@
 			this.Name = "Mainform";
 			this.Text = "MultiHawk";
 			this.Load += new System.EventHandler(this.Mainform_Load);
-			this.ResizeEnd += new System.EventHandler(this.Mainform_ResizeEnd);
 			this.MainformMenu.ResumeLayout(false);
 			this.MainformMenu.PerformLayout();
 			this.WorkspacePanel.ResumeLayout(false);

@@ -48,8 +48,7 @@ namespace BizHawk.Client.MultiHawk
 				MovieControllerAdapter = MovieService.DefaultInstance.LogGeneratorInstance().MovieControllerAdapter,
 				MessageCallback = AddMessage,
 
-				// TODO
-				//AskYesNoCallback = StateErrorAskUser,
+				AskYesNoCallback = StateErrorAskUser,
 				PauseCallback = PauseEmulator,
 				ModeChangedCallback = SetMainformMovieInfo
 			};
@@ -98,6 +97,18 @@ namespace BizHawk.Client.MultiHawk
 			{
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
+		}
+
+		private static bool StateErrorAskUser(string title, string message)
+		{
+			var result = MessageBox.Show(
+				message,
+				title,
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question
+			);
+
+			return result == DialogResult.Yes;
 		}
 
 		private void Mainform_Load(object sender, EventArgs e)
@@ -301,7 +312,7 @@ namespace BizHawk.Client.MultiHawk
 					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(),
 					GLManager = new GLManager(),
 					Game = loader.Game,
-					CurrentRomPath = path
+					CurrentRomPath = loader.CanonicalFullPath
 				};
 
 				nextComm.RequestGLContext = () => ew.GLManager.CreateGLContext();
@@ -318,7 +329,7 @@ namespace BizHawk.Client.MultiHawk
 				WorkspacePanel.Controls.Add(ew);
 				ew.Show();
 
-				Global.Config.RecentRoms.Add(path);
+				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
 
 				if (EmulatorWindows.Count == 1)
 				{
@@ -346,7 +357,6 @@ namespace BizHawk.Client.MultiHawk
 					return true;
 				}
 
-				// TODO
 				// modals that need to capture input for binding purposes get input, of course
 				if (ActiveForm is HotkeyConfig
 					|| ActiveForm is ControllerConfig
@@ -356,12 +366,6 @@ namespace BizHawk.Client.MultiHawk
 				{
 					return true;
 				}
-
-				//// if no form is active on this process, then the background input setting applies
-				//if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
-				//{
-				//	return true;
-				//}
 
 				return false;
 			}
@@ -1403,15 +1407,6 @@ namespace BizHawk.Client.MultiHawk
 				ew.FrameBufferResized();
 				ew.Render();
 			}
-		}
-
-		private void Mainform_ResizeEnd(object sender, EventArgs e)
-		{
-			//if (Global.Config.SaveWindowPosition)
-			//{
-			//	Global.Config.MainWidth = this.Width;
-			//	Global.Config.MainHeight = this.Height;
-			//}
 		}
 	}
 }
