@@ -30,9 +30,18 @@
 		{
 			this.MainformMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewSessionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.OpenSessionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveSessionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveSessionAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RecentSessionSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.OpenRomMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentRomSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.RebootCoresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,8 +61,6 @@
 			this.FameStatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusBarMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
-			this.RebootCoresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.WorkspacePanel.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
@@ -75,6 +82,12 @@
 			// FileSubMenu
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewSessionMenuItem,
+            this.OpenSessionMenuItem,
+            this.SaveSessionMenuItem,
+            this.SaveSessionAsMenuItem,
+            this.RecentSessionSubMenu,
+            this.toolStripSeparator7,
             this.OpenRomMenuItem,
             this.RecentRomSubMenu,
             this.toolStripSeparator5,
@@ -86,11 +99,58 @@
 			this.FileSubMenu.Text = "&File";
 			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
+			// NewSessionMenuItem
+			// 
+			this.NewSessionMenuItem.Name = "NewSessionMenuItem";
+			this.NewSessionMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.NewSessionMenuItem.Text = "&New Session";
+			this.NewSessionMenuItem.Click += new System.EventHandler(this.NewSessionMenuItem_Click);
+			// 
+			// OpenSessionMenuItem
+			// 
+			this.OpenSessionMenuItem.Name = "OpenSessionMenuItem";
+			this.OpenSessionMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.OpenSessionMenuItem.Text = "&Open Session";
+			this.OpenSessionMenuItem.Click += new System.EventHandler(this.OpenSessionMenuItem_Click);
+			// 
+			// SaveSessionMenuItem
+			// 
+			this.SaveSessionMenuItem.Name = "SaveSessionMenuItem";
+			this.SaveSessionMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.SaveSessionMenuItem.Text = "&Save Session";
+			this.SaveSessionMenuItem.Click += new System.EventHandler(this.SaveSessionMenuItem_Click);
+			// 
+			// SaveSessionAsMenuItem
+			// 
+			this.SaveSessionAsMenuItem.Name = "SaveSessionAsMenuItem";
+			this.SaveSessionAsMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.SaveSessionAsMenuItem.Text = "Save Session &As...";
+			this.SaveSessionAsMenuItem.Click += new System.EventHandler(this.SaveSessionAsMenuItem_Click);
+			// 
+			// RecentSessionSubMenu
+			// 
+			this.RecentSessionSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator6});
+			this.RecentSessionSubMenu.Name = "RecentSessionSubMenu";
+			this.RecentSessionSubMenu.Size = new System.Drawing.Size(165, 22);
+			this.RecentSessionSubMenu.Text = "Recent Session";
+			this.RecentSessionSubMenu.DropDownOpened += new System.EventHandler(this.RecentSessionSubMenu_DropDownOpened);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(57, 6);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(162, 6);
+			// 
 			// OpenRomMenuItem
 			// 
 			this.OpenRomMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.OpenFile;
 			this.OpenRomMenuItem.Name = "OpenRomMenuItem";
-			this.OpenRomMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.OpenRomMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.OpenRomMenuItem.Text = "Open ROM";
 			this.OpenRomMenuItem.Click += new System.EventHandler(this.OpenRomMenuItem_Click);
 			// 
@@ -100,24 +160,37 @@
             this.toolStripSeparator1});
 			this.RecentRomSubMenu.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.Recent;
 			this.RecentRomSubMenu.Name = "RecentRomSubMenu";
-			this.RecentRomSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.RecentRomSubMenu.Size = new System.Drawing.Size(165, 22);
 			this.RecentRomSubMenu.Text = "Recent";
+			this.RecentRomSubMenu.DropDownOpened += new System.EventHandler(this.RecentRomSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
 			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(162, 6);
+			// 
+			// RebootCoresMenuItem
+			// 
+			this.RebootCoresMenuItem.Name = "RebootCoresMenuItem";
+			this.RebootCoresMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.RebootCoresMenuItem.Text = "Reboot Cores";
+			this.RebootCoresMenuItem.Click += new System.EventHandler(this.RebootCoresMenuItem_Click);
+			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(162, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -263,18 +336,6 @@
 			this.PlayRecordStatusButton.Size = new System.Drawing.Size(29, 20);
 			this.PlayRecordStatusButton.Text = "No movie is active";
 			// 
-			// RebootCoresMenuItem
-			// 
-			this.RebootCoresMenuItem.Name = "RebootCoresMenuItem";
-			this.RebootCoresMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.RebootCoresMenuItem.Text = "Reboot Cores";
-			this.RebootCoresMenuItem.Click += new System.EventHandler(this.RebootCoresMenuItem_Click);
-			// 
-			// toolStripSeparator5
-			// 
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
-			// 
 			// Mainform
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -325,6 +386,13 @@
 		private System.Windows.Forms.ToolStripMenuItem saveConfigToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem RebootCoresMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem OpenSessionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveSessionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RecentSessionSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem NewSessionMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveSessionAsMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 	}
 }
 

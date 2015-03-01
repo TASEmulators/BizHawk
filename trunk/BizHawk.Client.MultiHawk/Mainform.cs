@@ -100,13 +100,13 @@ namespace BizHawk.Client.MultiHawk
 		{
 			SetMainformMovieInfo();
 
-			if (Global.Config.RecentRoms.AutoLoad)
+			if (Global.Config.RecentRomSessions.AutoLoad)
 			{
-				LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
+				LoadRomSessionFromRecent(Global.Config.RecentRomSessions.MostRecent);
 			}
 		}
 
-		public List<EmulatorWindow> EmulatorWindows = new List<EmulatorWindow>();
+		public EmulatorWindowList EmulatorWindows = new EmulatorWindowList();
 
 		private bool _exit;
 
@@ -1005,15 +1005,14 @@ namespace BizHawk.Client.MultiHawk
 		{
 			if (EmulatorWindows.Any())
 			{
-				FameStatusBarLabel.Text = EmulatorWindows.First().Emulator.Frame.ToString();
+				FameStatusBarLabel.Text = EmulatorWindows.Master.Emulator.Frame.ToString();
 			}
 		}
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecentRomSubMenu.DropDownItems.Clear();
-			RecentRomSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true));
+			SaveSessionMenuItem.Enabled = !string.IsNullOrWhiteSpace(EmulatorWindows.SessionName);
+			SaveSessionAsMenuItem.Enabled = EmulatorWindows.Any();
 		}
 
 		private void LoadRomFromRecent(string rom)
@@ -1206,6 +1205,150 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			AddMessage("Rebooted all cores");
+		}
+
+		private void SaveSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!string.IsNullOrWhiteSpace(EmulatorWindows.SessionName))
+			{
+				File.WriteAllText(EmulatorWindows.SessionName, EmulatorWindows.SessionJson);
+				AddMessage("Session saved.");
+			}
+		}
+
+		private void SaveSessionAsMenuItem_Click(object sender, EventArgs e)
+		{
+			if (EmulatorWindows.Any())
+			{
+				var file = GetSaveFileFromUser();
+				if (file != null)
+				{
+					EmulatorWindows.SessionName = file.FullName;
+					Global.Config.RecentRomSessions.Add(file.FullName);
+					SaveSessionMenuItem_Click(sender, e);
+				}
+			}
+		}
+
+		private FileInfo GetSaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog();
+			if (!string.IsNullOrWhiteSpace(EmulatorWindows.SessionName))
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(EmulatorWindows.SessionName);
+				sfd.InitialDirectory = Path.GetDirectoryName(EmulatorWindows.SessionName);
+			}
+			else if (EmulatorWindows.Master != null)
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(EmulatorWindows.Master.Game);
+				sfd.InitialDirectory = PathManager.GetRomsPath("Global");
+			}
+			else
+			{
+				sfd.FileName = "NULL";
+				sfd.InitialDirectory = PathManager.GetRomsPath("Global");
+			}
+
+			sfd.Filter = "Rom Session Files (*.romses)|*.romses|All Files|*.*";
+			sfd.RestoreDirectory = true;
+			var result = sfd.ShowDialog();
+			if (result != DialogResult.OK)
+			{
+				return null;
+			}
+
+			return new FileInfo(sfd.FileName);
+		}
+
+		private void OpenSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = GetFileFromUser("Rom Session Files (*.romses)|*.romses|All Files|*.*");
+			if (file != null)
+			{
+				NewSessionMenuItem_Click(null, null);
+				var json = File.ReadAllText(file.FullName);
+				EmulatorWindows.SessionName = file.FullName;
+				LoadRomSession(EmulatorWindowList.FromJson(json));
+				Global.Config.RecentRomSessions.Add(file.FullName);
+			}
+		}
+
+		private static FileInfo GetFileFromUser(string filter)
+		{
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath("Global"),
+				Filter = filter,
+				RestoreDirectory = true
+			};
+
+			if (!Directory.Exists(ofd.InitialDirectory))
+			{
+				Directory.CreateDirectory(ofd.InitialDirectory);
+			}
+
+			var result = ofd.ShowDialog();
+			return result == DialogResult.OK ? new FileInfo(ofd.FileName) : null;
+		}
+
+		private void CloseAllWindows()
+		{
+			foreach (var ew in EmulatorWindows.ToList())
+			{
+				ew.Close();
+			}
+
+			EmulatorWindows.Clear();
+		}
+
+		private void NewSessionMenuItem_Click(object sender, EventArgs e)
+		{
+			foreach (var ew in EmulatorWindows.ToList())
+			{
+				ew.Close();
+			}
+
+			EmulatorWindows.Clear();
+		}
+
+		private void LoadRomSession(IEnumerable<EmulatorWindowList.RomSessionEntry> entries)
+		{
+			foreach (var entry in entries)
+			{
+				LoadRom(entry.RomName);
+				EmulatorWindows.Last().Location = new Point(entry.Wndx, entry.Wndy);
+			}
+		}
+
+		private void LoadRomSessionFromRecent(string path)
+		{
+			var file = new FileInfo(path);
+			if (file.Exists)
+			{
+				NewSessionMenuItem_Click(null, null);
+				var json = File.ReadAllText(file.FullName);
+				EmulatorWindows.SessionName = file.FullName;
+				LoadRomSession(EmulatorWindowList.FromJson(json));
+				Global.Config.RecentRomSessions.Add(file.FullName);
+			}
+			else
+			{
+				Global.Config.RecentRomSessions.HandleLoadError(path);
+			}
+		}
+
+		private void RecentSessionSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSessionSubMenu.DropDownItems.Clear();
+			RecentSessionSubMenu.DropDownItems.AddRange(
+				Global.Config.RecentRomSessions.RecentMenu(LoadRomSessionFromRecent, autoload: true));
+		}
+
+		private void RecentRomSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentRomSubMenu.DropDownItems.Clear();
+			RecentRomSubMenu.DropDownItems.AddRange(
+				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, autoload: false));
 		}
 	}
 }

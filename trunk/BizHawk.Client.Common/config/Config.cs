@@ -61,6 +61,7 @@ namespace BizHawk.Client.Common
 		public int DispFinalFilter = 0;
 		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
+		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;

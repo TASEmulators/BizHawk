@@ -175,6 +175,7 @@
     <Compile Include="PresentationPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EmulatorWindowList.cs" />
     <Compile Include="ScreenSaver.cs" />
     <Compile Include="Extensions\ToolExtensions.cs" />
     <Compile Include="Throttle.cs" />
