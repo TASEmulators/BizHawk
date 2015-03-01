@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 			Message = split[1];
 		}
 
-		public virtual int Frame { get; set; }
+		public virtual int Frame { get; private set; }
 
 		public virtual string Message { get; set; }
 
@@ -159,6 +159,13 @@ namespace BizHawk.Client.Common
 				OnListChanged(NotifyCollectionChangedAction.Remove);
 			}
 			return removeCount;
+		}
+
+		public void Move(int fromFrame, int toFrame)
+		{
+			TasMovieMarker m = Get(fromFrame);
+			Insert(0, new TasMovieMarker(toFrame, m.Message));
+			Remove(m);
 		}
 
 		/// <summary>
