@@ -142,7 +142,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 			else // text mode
 			{
-				if (true /*Global.MovieSession.HandleMovieLoadState(path) */) // TODO
+				if (Global.MovieSession.HandleMovieLoadState(path))
 				{
 					using (var reader = new StreamReader(path))
 					{
