@@ -305,7 +305,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 		}
 
-		private void FrameBufferResized()
+		public void FrameBufferResized()
 		{
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
