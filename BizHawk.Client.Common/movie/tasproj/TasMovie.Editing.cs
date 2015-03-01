@@ -78,9 +78,10 @@ namespace BizHawk.Client.Common
 		{
 			if (frames.Any())
 			{
-				ChangeLog.AddGeneralUndo(frames.Min(), frames.Max());
+				var invalidateAfter = frames.Min();
 
-				var invalidateAfter = frames.Min(x => x);
+				ChangeLog.AddGeneralUndo(invalidateAfter, InputLogLength - 1);
+
 				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
 				{
 					_log.RemoveAt(frame);
@@ -92,10 +93,22 @@ namespace BizHawk.Client.Common
 				ChangeLog.SetGeneralRedo();
 			}
 		}
+		public void RemoveFrames(int removeStart, int removeUpTo)
+		{
+			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
+
+			for (int i = removeUpTo - 1; i >= removeStart; i--)
+				_log.RemoveAt(i);
+
+			Changes = true;
+			InvalidateAfter(removeStart);
+
+			ChangeLog.SetGeneralRedo();
+		}
 
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame + inputLog.Count() - 1);
+			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputLog.Count() - 1);
 
 			_log.InsertRange(frame, inputLog);
 			Changes = true;
@@ -106,7 +119,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1);
+			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputStates.Count() - 1);
 
 			var lg = LogGeneratorInstance();
 
@@ -143,7 +156,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerInstance());

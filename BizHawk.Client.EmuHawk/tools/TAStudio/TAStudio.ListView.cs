@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
+		private bool _frameDragState;
 		private bool _supressContextMenu;
 		// SuuperW: For editing analog input
 		private string _floatEditColumn = string.Empty;
@@ -287,6 +288,7 @@ namespace BizHawk.Client.EmuHawk
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
 					_startFrameDrag = true;
+					_frameDragState = TasView.SelectedRows.Contains(frame);
 				}
 				else // User changed input
 				{
@@ -297,6 +299,7 @@ namespace BizHawk.Client.EmuHawk
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						RefreshDialog();
 
+						CurrentTasMovie.ChangeLog.BeginNewBatch();
 						_startBoolDrawColumn = buttonName;
 
 						if (frame < CurrentTasMovie.InputLogLength)
@@ -322,6 +325,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (e.Clicks != 2)
 						{
+							CurrentTasMovie.ChangeLog.BeginNewBatch();
 							_startFloatDrawColumn = buttonName;
 						}
 						else // Double-click enters float editing mode
@@ -354,6 +358,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_startMarkerDrag = false;
 				_startFrameDrag = false;
+				if (_startBoolDrawColumn != string.Empty || _startFloatDrawColumn != string.Empty)
+					CurrentTasMovie.ChangeLog.EndBatch();
 				_startBoolDrawColumn = string.Empty;
 				_startFloatDrawColumn = string.Empty;
 				// Exit float editing if value was changed with cursor
@@ -443,9 +449,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal; i < endVal; i++)
+					for (var i = startVal; i <= endVal; i++)
 					{
-						TasView.SelectRow(i, true);
+						TasView.SelectRow(i, _frameDragState);
 					}
 
 					TasView.Refresh();
@@ -471,7 +477,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
-						if (i < CurrentTasMovie.InputLogLength) // TODO: how do we really want to handle the user setting the float state of the pending frame?
+						if (i < CurrentTasMovie.InputLogLength)
 						{
 							SetFloatValue(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							_triggerAutoRestore = true;
@@ -494,7 +500,8 @@ namespace BizHawk.Client.EmuHawk
 			float value = _floatPaintState + increment;
 			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
 				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
-			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs, but I'll put a quick fix here anyway.
+			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
+			// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
 			float rMax = range.Max;
 			float rMin = range.Min;
 			if (rMax < rMin)
@@ -538,16 +545,6 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
 			{
 				TasView.HorizontalOrientation ^= true;
-			}
-			else if (e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Z) // Ctrl + Z
-			{
-				if (CurrentTasMovie.ChangeLog.Undo() < Emulator.Frame)
-					GoToFrame(CurrentTasMovie.ChangeLog.PreviousUndoFrame);
-			}
-			else if (e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Y) // Ctrl + Y
-			{
-				if (CurrentTasMovie.ChangeLog.Redo() < Emulator.Frame)
-					GoToFrame(CurrentTasMovie.ChangeLog.PreviousRedoFrame);
 			}
 
 			// SuuperW: Float Editing
@@ -638,7 +635,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void TasView_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
-			e.IsInputKey = true;
+			if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+				e.IsInputKey = true;
 		}
 		#endregion
 	}

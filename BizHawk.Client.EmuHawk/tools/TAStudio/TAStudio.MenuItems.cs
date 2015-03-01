@@ -135,6 +135,29 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Edit
 
+		private void UndoMenuItem_Click(object sender, EventArgs e)
+		{
+			if (CurrentTasMovie.ChangeLog.Undo() < Emulator.Frame)
+				GoToFrame(CurrentTasMovie.ChangeLog.PreviousUndoFrame);
+			else
+				RefreshDialog();
+
+			// Currently I don't have a way to easily detect when CanUndo changes, so this button should be enabled always.
+			//UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
+			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
+		}
+
+		private void RedoMenuItem_Click(object sender, EventArgs e)
+		{
+			if (CurrentTasMovie.ChangeLog.Redo() < Emulator.Frame)
+				GoToFrame(CurrentTasMovie.ChangeLog.PreviousRedoFrame);
+			else
+				RefreshDialog();
+
+			//UndoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanUndo;
+			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
+		}
+
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =
@@ -361,10 +384,14 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
+				var needsToRollback = TasView.FirstSelectedIndex <= Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
+				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
+				{ // Cannot delete non-existant frames
+					RefreshDialog();
+					return;
+				}
 
-				_tasClipboard.Clear();
 				CurrentTasMovie.RemoveFrames(TasView.SelectedRows.ToArray());
 				SetSplicer();
 
@@ -393,8 +420,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var framesToInsert = TasView.SelectedRows.ToList();
-				var insertionFrame = TasView.LastSelectedIndex.Value + 1;
-				var needsToRollback = !(insertionFrame > Emulator.Frame);
+				var insertionFrame = Math.Min(TasView.LastSelectedIndex.Value + 1, CurrentTasMovie.InputLogLength);
+				var needsToRollback = insertionFrame <= Emulator.Frame;
 
 				var inputLog = framesToInsert
 					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
@@ -509,7 +536,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrentTasMovie.Markers.RemoveAll(m => TasView.SelectedRows.Contains(m.Frame));
+			IEnumerable<TasMovieMarker> markers = CurrentTasMovie.Markers.Where(m => TasView.SelectedRows.Contains(m.Frame));
+			foreach (TasMovieMarker m in markers)
+			{
+				RemoveMarker(m);
+			}
 			RefreshDialog();
 		}
 
