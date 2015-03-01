@@ -607,9 +607,7 @@ namespace BizHawk.Client.EmuHawk
 							FirstVisibleRow -= Math.Sign(lastVisible - value);
 						SetLagFramesArray();
 						lastVisible = LastFullyVisibleRow;
-					} while ((lastVisible - value < 0 || lastVisible - value > lagFrames[VisibleRows]) && FirstVisibleRow != 0);
-
-					System.Diagnostics.Debug.Print("Jumped to: " + value + " (" + LastFullyVisibleRow + ")");
+					} while ((lastVisible - value < 0 || lastVisible - value > lagFrames[VisibleRows - HalfRow]) && FirstVisibleRow != 0);
 				}
 			}
 		}

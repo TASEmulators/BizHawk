@@ -1180,6 +1180,5 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames0;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames1;
 		private System.Windows.Forms.ToolStripMenuItem HideLagFrames2;
-		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 	}
 }

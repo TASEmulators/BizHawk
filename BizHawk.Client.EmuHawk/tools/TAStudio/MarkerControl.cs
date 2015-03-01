@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				color = TAStudio.Marker_FrameCol;
 			}
-			else if (index < Tastudio.CurrentTasMovie.InputLogLength)
+			else if (index < Tastudio.CurrentTasMovie.Markers.Count)
 			{
 				var marker = Tastudio.CurrentTasMovie.Markers[index];
 				var record = Tastudio.CurrentTasMovie[marker.Frame];
@@ -77,7 +77,8 @@ namespace BizHawk.Client.EmuHawk
 					color = Color.White;
 				}
 			}
-
+			else
+				color = Color.White;
 		}
 
 		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
@@ -120,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
-			SelectedMarkers.ForEach(i => Tastudio.CurrentTasMovie.Markers.Remove(i));
+			SelectedMarkers.ForEach(i => Tastudio.RemoveMarker(i));
 			MarkerInputRoll.DeselectAll();
 			Tastudio.RefreshDialog();
 			MarkerView_SelectedIndexChanged(sender, e);
