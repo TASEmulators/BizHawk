@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B95649F5-A0AE-41EB-B62B-578A2AFF5E18}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BizHawk.Client.MultiHawk</RootNamespace>
+    <AssemblyName>BizHawk.Client.MultiHawk</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\output\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\References\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\References\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ArchiveChooser.Designer.cs">
+      <DependentUpon>ArchiveChooser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig.Designer.cs">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindControl.Designer.cs">
+      <DependentUpon>AnalogBindControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ControllerConfig\AnalogBindPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
+      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\HotkeyConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\HotkeyConfig.Designer.cs">
+      <DependentUpon>HotkeyConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\InputCompositeWidget.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="config\InputCompositeWidget.Designer.cs">
+      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\InputWidget.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="config\movie\EditCommentsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\movie\EditCommentsForm.Designer.cs">
+      <DependentUpon>EditCommentsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\movie\EditSubtitlesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\movie\EditSubtitlesForm.Designer.cs">
+      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\movie\MovieDetails.cs" />
+    <Compile Include="config\movie\PlayMovie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\movie\PlayMovie.Designer.cs">
+      <DependentUpon>PlayMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\movie\RecordMovie.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\movie\RecordMovie.Designer.cs">
+      <DependentUpon>RecordMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\movie\SubtitleMaker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\movie\SubtitleMaker.Designer.cs">
+      <DependentUpon>SubtitleMaker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\MenuButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\ToolStripEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\Win32.cs" />
+    <Compile Include="DisplayManager\DisplayManager.cs" />
+    <Compile Include="DisplayManager\DisplaySurface.cs" />
+    <Compile Include="DisplayManager\FilterManager.cs" />
+    <Compile Include="DisplayManager\Filters\BaseFilter.cs" />
+    <Compile Include="DisplayManager\Filters\Gui.cs" />
+    <Compile Include="DisplayManager\Filters\Retro.cs" />
+    <Compile Include="DisplayManager\Filters\Utils.cs" />
+    <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
+    <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
+    <Compile Include="DisplayManager\TextureFrugalizer.cs" />
+    <Compile Include="EmulatorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EmulatorWindow.Designer.cs">
+      <DependentUpon>EmulatorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\CoreExtensions.cs" />
+    <Compile Include="GlobalWin.cs" />
+    <Compile Include="InputManager.cs" />
+    <Compile Include="Input\GamePad.cs" />
+    <Compile Include="Input\GamePad360.cs" />
+    <Compile Include="Input\Input.cs" />
+    <Compile Include="Input\Keyboard.cs" />
+    <Compile Include="Mainform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mainform.Designer.cs">
+      <DependentUpon>Mainform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PresentationPanel.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScreenSaver.cs" />
+    <Compile Include="Extensions\ToolExtensions.cs" />
+    <Compile Include="Throttle.cs" />
+    <Compile Include="WatchValueBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <EmbeddedResource Include="ArchiveChooser.resx">
+      <DependentUpon>ArchiveChooser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig.resx">
+      <DependentUpon>ControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig\AnalogBindControl.resx">
+      <DependentUpon>AnalogBindControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
+      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\HotkeyConfig.resx">
+      <DependentUpon>HotkeyConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\InputCompositeWidget.resx">
+      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\movie\EditCommentsForm.resx">
+      <DependentUpon>EditCommentsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\movie\EditSubtitlesForm.resx">
+      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\movie\PlayMovie.resx">
+      <DependentUpon>PlayMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\movie\RecordMovie.resx">
+      <DependentUpon>RecordMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\movie\SubtitleMaker.resx">
+      <DependentUpon>SubtitleMaker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmulatorWindow.resx">
+      <DependentUpon>EmulatorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mainform.resx">
+      <DependentUpon>Mainform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Resources\courier16px.bmfc" />
+    <None Include="Resources\courier16px.fnt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
+      <Project>{24a0aa3c-b25f-4197-b23d-476d6462dba0}</Project>
+      <Name>BizHawk.Client.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
+      <Project>{866f8d13-0678-4ff9-80a4-a3993fd4d8a3}</Project>
+      <Name>BizHawk.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
+      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
+      <Name>BizHawk.Emulation.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
+      <Project>{197d4314-8a9f-49ba-977d-54acefaeb6ba}</Project>
+      <Name>BizHawk.Emulation.Cores</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
+      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
+      <Name>BizHawk.Emulation.DiscSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj">
+      <Project>{337ca23e-65e7-44e1-9411-97ee08bb8116}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.GdiPlus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
+      <Project>{5160cfb1-5389-47c1-b7f6-8a0dc97641ee}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.OpenTK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.SlimDX\BizHawk.Bizware.BizwareGL.SlimDX.csproj">
+      <Project>{e6b436b1-a3cd-4c9a-8f76-5d7154726884}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.SlimDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL\BizHawk.Bizware.BizwareGL.csproj">
+      <Project>{9f84a0b2-861e-4ef4-b89b-5e2a3f38a465}</Project>
+      <Name>BizHawk.Bizware.BizwareGL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\courier16px_0.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\GreenCheck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\OpenFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\ReadOnly.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\reboot.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Recent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\RecordHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\SaveAllHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\SaveAs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Scan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\ExclamationRed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Blank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\CutHS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\GameController.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\HotKeys.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Help.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Save.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
