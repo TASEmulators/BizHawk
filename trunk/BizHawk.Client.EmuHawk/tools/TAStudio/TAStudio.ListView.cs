@@ -539,6 +539,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.HorizontalOrientation ^= true;
 			}
+			else if (e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Z) // Ctrl + Z
+			{
+				if (CurrentTasMovie.ChangeLog.Undo() < Emulator.Frame)
+					GoToFrame(CurrentTasMovie.ChangeLog.PreviousUndoFrame);
+			}
+			else if (e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Y) // Ctrl + Y
+			{
+				if (CurrentTasMovie.ChangeLog.Redo() < Emulator.Frame)
+					GoToFrame(CurrentTasMovie.ChangeLog.PreviousRedoFrame);
+			}
 
 			// SuuperW: Float Editing
 			if (_floatEditRow != -1)
@@ -620,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			TasView.Refresh();
+			RefreshDialog();
 		}
 
 		/// <summary>

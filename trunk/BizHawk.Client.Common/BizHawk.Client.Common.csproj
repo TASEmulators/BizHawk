@@ -152,6 +152,7 @@
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
+    <Compile Include="movie\tasproj\TasMovie.History.cs" />
     <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>

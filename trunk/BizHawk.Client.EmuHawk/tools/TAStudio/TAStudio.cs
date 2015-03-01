@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				CurrentTasMovie.Markers.Add(markerFrame, i.PromptText);
+				AddMarker(markerFrame, i.PromptText);
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -449,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				marker.Message = i.PromptText;
+				EditMarker(marker, i.PromptText);
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -744,5 +744,22 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.RemoveMarker();
 		}
 
+		public void AddMarker(int markerFrame, string message)
+		{
+			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
+			CurrentTasMovie.Markers.Add(marker);
+			CurrentTasMovie.ChangeLog.AddMarkerChange(marker);
+		}
+		public void RemoveMarker(TasMovieMarker marker)
+		{
+			CurrentTasMovie.Markers.Remove(marker);
+			CurrentTasMovie.ChangeLog.AddMarkerChange(null, marker.Frame, marker.Message);
+		}
+		public void EditMarker(TasMovieMarker marker, string message)
+		{
+			string old = marker.Message;
+			marker.Message = message;
+			CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
+		}
 	}
 }

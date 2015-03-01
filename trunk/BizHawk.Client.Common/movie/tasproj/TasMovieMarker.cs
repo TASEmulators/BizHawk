@@ -12,11 +12,9 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasMovieMarker
 	{
-		private int _frame;
-
 		public TasMovieMarker(int frame, string message = "")
 		{
-			_frame = frame;
+			Frame = frame;
 			Message = message;
 		}
 
@@ -26,14 +24,11 @@ namespace BizHawk.Client.Common
 		public TasMovieMarker(string line)
 		{
 			var split = line.Split('\t');
-			_frame = int.Parse(split[0]);
+			Frame = int.Parse(split[0]);
 			Message = split[1];
 		}
 
-		public virtual int Frame 
-		{
-			get { return _frame; }
-		}
+		public virtual int Frame { get; set; }
 
 		public virtual string Message { get; set; }
 
