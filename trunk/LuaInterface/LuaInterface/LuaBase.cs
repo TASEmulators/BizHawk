@@ -15,7 +15,8 @@ namespace LuaInterface
 
         ~LuaBase()
         {
-            Dispose(false);
+            //Dispose(false);
+					Dispose(true); //zero 28-feb-2014 - fix memory leak?
         }
 
         public void Dispose()
