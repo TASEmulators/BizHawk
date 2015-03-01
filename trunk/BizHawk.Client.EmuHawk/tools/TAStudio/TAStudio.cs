@@ -744,6 +744,7 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.RemoveMarker();
 		}
 
+		// TODO: Move AddMarkerChange calls to TasMovieMarker.cs
 		public void AddMarker(int markerFrame, string message)
 		{
 			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
@@ -761,5 +762,6 @@ namespace BizHawk.Client.EmuHawk
 			marker.Message = message;
 			CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
 		}
+
 	}
 }

@@ -97,9 +97,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.SwitchToPlay();
 
 					// no reason to loadstate when we can emulate a frame instead
-					var shouldLoadstate = frame - Emulator.Frame != 1;
-
-					if (CurrentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
+					if (frame - Emulator.Frame != 1)
 					{
 						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State);
 					}

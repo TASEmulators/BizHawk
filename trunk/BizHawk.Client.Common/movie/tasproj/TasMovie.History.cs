@@ -59,6 +59,7 @@ namespace BizHawk.Client.Common
 		}
 		/// <summary>
 		/// Ends the current undo batch. Future changes will be one undo each.
+		/// If not already recording a batch, does (essentially) nothing.
 		/// </summary>
 		public void EndBatch()
 		{
@@ -110,11 +111,17 @@ namespace BizHawk.Client.Common
 			return PreviousUndoFrame;
 		}
 
+		public bool CanUndo	{ get { return UndoIndex > -1; } }
+		public bool CanRedo	{ get { return UndoIndex < History.Count - 1; } }
+
 		public int PreviousUndoFrame
 		{
 			get
 			{
 				if (UndoIndex == History.Count - 1)
+					return Movie.InputLogLength;
+
+				if (History[UndoIndex + 1].Count == 0)
 					return Movie.InputLogLength;
 
 				return History[UndoIndex + 1].Max(a => a.FirstFrame);
@@ -125,6 +132,9 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (UndoIndex == -1)
+					return Movie.InputLogLength;
+
+				if (History[UndoIndex].Count == 0)
 					return Movie.InputLogLength;
 
 				return History[UndoIndex].Max(a => a.FirstFrame);
@@ -246,7 +256,7 @@ namespace BizHawk.Client.Common
 				movie.SetFrame(FirstFrame + i, oldLog[i]);
 
 			if (undoLength != length)
-				movie.Truncate(FirstFrame + undoLength);
+				movie.RemoveFrames(FirstFrame + undoLength, movie.InputLogLength);
 
 			movie.ChangeLog.AutoRecord = wasRecording;
 		}
@@ -262,7 +272,7 @@ namespace BizHawk.Client.Common
 				movie.SetFrame(FirstFrame + i, newLog[i]);
 
 			if (redoLength != length)
-				movie.Truncate(FirstFrame + redoLength);
+				movie.RemoveFrames(FirstFrame + redoLength, movie.InputLogLength);
 
 			movie.ChangeLog.AutoRecord = wasRecording;
 		}
