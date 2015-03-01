@@ -36,8 +36,7 @@ namespace BizHawk.Client.MultiHawk
 			_throttle = new Throttle();
 			_inputManager = new InputManager(this);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
-			Global.Config.TargetZoomFactor = 1; // TODO: hardcode to 1 for now but eventually let user configure this
-			Global.Config.DispFixAspectRatio = false;
+			Global.Config.DispFixAspectRatio = false; // TODO: don't hardcode this
 			Global.Config.ResolveDefaults();
 			GlobalWin.MainForm = this;
 
@@ -94,6 +93,11 @@ namespace BizHawk.Client.MultiHawk
 
 				SaveConfig();
 			};
+
+			if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
+			{
+				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+			}
 		}
 
 		private void Mainform_Load(object sender, EventArgs e)
@@ -103,6 +107,12 @@ namespace BizHawk.Client.MultiHawk
 			if (Global.Config.RecentRomSessions.AutoLoad)
 			{
 				LoadRomSessionFromRecent(Global.Config.RecentRomSessions.MostRecent);
+			}
+
+			if (Global.Config.SaveWindowPosition && Global.Config.MainWidth > 0 && Global.Config.MainHeight > 0)
+			{
+				this.Size = new Size(Global.Config.MainWidth, Global.Config.MainHeight);
+				
 			}
 		}
 
@@ -135,6 +145,9 @@ namespace BizHawk.Client.MultiHawk
 				Global.Config.MainWndx = -1;
 				Global.Config.MainWndy = -1;
 			}
+
+			Global.Config.MainWidth = this.Width;
+			Global.Config.MainHeight = this.Height;
 
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
@@ -1349,6 +1362,56 @@ namespace BizHawk.Client.MultiHawk
 			RecentRomSubMenu.DropDownItems.Clear();
 			RecentRomSubMenu.DropDownItems.AddRange(
 				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, autoload: false));
+		}
+
+		private void ViewSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			_1xMenuItem.Checked = Global.Config.TargetZoomFactor == 1;
+			_2xMenuItem.Checked = Global.Config.TargetZoomFactor == 2;
+			_3xMenuItem.Checked = Global.Config.TargetZoomFactor == 3;
+			_4xMenuItem.Checked = Global.Config.TargetZoomFactor == 4;
+		}
+
+		private void _1xMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TargetZoomFactor = 1;
+			ReRenderAllWindows();
+		}
+
+		private void _2xMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TargetZoomFactor = 2;
+			ReRenderAllWindows();
+		}
+
+		private void _3xMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TargetZoomFactor = 3;
+			ReRenderAllWindows();
+		}
+
+		private void _4xMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.TargetZoomFactor = 4;
+			ReRenderAllWindows();
+		}
+
+		private void ReRenderAllWindows()
+		{
+			foreach (var ew in EmulatorWindows)
+			{
+				ew.FrameBufferResized();
+				ew.Render();
+			}
+		}
+
+		private void Mainform_ResizeEnd(object sender, EventArgs e)
+		{
+			//if (Global.Config.SaveWindowPosition)
+			//{
+			//	Global.Config.MainWidth = this.Width;
+			//	Global.Config.MainHeight = this.Height;
+			//}
 		}
 	}
 }

@@ -68,6 +68,8 @@ namespace BizHawk.Client.Common
 		public bool StartFullscreen = false;
 		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
+		public int MainWidth = -1;
+		public int MainHeight = -1;
 		public bool RunInBackground = true;
 		public bool AcceptBackgroundInput = false;
 		public bool SingleInstanceMode = false;

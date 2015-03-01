@@ -61,6 +61,11 @@
 			this.FameStatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusBarMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
+			this.ViewSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this._1xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._2xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._3xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._4xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.WorkspacePanel.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
@@ -71,11 +76,12 @@
 			this.MainformMenu.ClickThrough = true;
 			this.MainformMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
+            this.ViewSubMenu,
             this.MovieSubMenu,
             this.configToolStripMenuItem});
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(486, 24);
+			this.MainformMenu.Size = new System.Drawing.Size(655, 24);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			// 
@@ -139,7 +145,7 @@
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator7
 			// 
@@ -167,7 +173,7 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator5
 			// 
@@ -293,7 +299,7 @@
 			this.WorkspacePanel.Controls.Add(this.MainStatusBar);
 			this.WorkspacePanel.Location = new System.Drawing.Point(0, 25);
 			this.WorkspacePanel.Name = "WorkspacePanel";
-			this.WorkspacePanel.Size = new System.Drawing.Size(486, 405);
+			this.WorkspacePanel.Size = new System.Drawing.Size(655, 405);
 			this.WorkspacePanel.TabIndex = 1;
 			// 
 			// MainStatusBar
@@ -305,7 +311,7 @@
             this.PlayRecordStatusButton});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 379);
 			this.MainStatusBar.Name = "MainStatusBar";
-			this.MainStatusBar.Size = new System.Drawing.Size(482, 22);
+			this.MainStatusBar.Size = new System.Drawing.Size(651, 22);
 			this.MainStatusBar.TabIndex = 0;
 			this.MainStatusBar.Text = "statusStrip1";
 			// 
@@ -336,17 +342,58 @@
 			this.PlayRecordStatusButton.Size = new System.Drawing.Size(29, 20);
 			this.PlayRecordStatusButton.Text = "No movie is active";
 			// 
+			// ViewSubMenu
+			// 
+			this.ViewSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._1xMenuItem,
+            this._2xMenuItem,
+            this._3xMenuItem,
+            this._4xMenuItem});
+			this.ViewSubMenu.Name = "ViewSubMenu";
+			this.ViewSubMenu.Size = new System.Drawing.Size(44, 20);
+			this.ViewSubMenu.Text = "&View";
+			this.ViewSubMenu.DropDownOpened += new System.EventHandler(this.ViewSubMenu_DropDownOpened);
+			// 
+			// _1xMenuItem
+			// 
+			this._1xMenuItem.Name = "_1xMenuItem";
+			this._1xMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._1xMenuItem.Text = "&1x";
+			this._1xMenuItem.Click += new System.EventHandler(this._1xMenuItem_Click);
+			// 
+			// _2xMenuItem
+			// 
+			this._2xMenuItem.Name = "_2xMenuItem";
+			this._2xMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._2xMenuItem.Text = "&2x";
+			this._2xMenuItem.Click += new System.EventHandler(this._2xMenuItem_Click);
+			// 
+			// _3xMenuItem
+			// 
+			this._3xMenuItem.Name = "_3xMenuItem";
+			this._3xMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._3xMenuItem.Text = "&3x";
+			this._3xMenuItem.Click += new System.EventHandler(this._3xMenuItem_Click);
+			// 
+			// _4xMenuItem
+			// 
+			this._4xMenuItem.Name = "_4xMenuItem";
+			this._4xMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._4xMenuItem.Text = "&4x";
+			this._4xMenuItem.Click += new System.EventHandler(this._4xMenuItem_Click);
+			// 
 			// Mainform
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(486, 431);
+			this.ClientSize = new System.Drawing.Size(655, 431);
 			this.Controls.Add(this.WorkspacePanel);
 			this.Controls.Add(this.MainformMenu);
 			this.MainMenuStrip = this.MainformMenu;
 			this.Name = "Mainform";
 			this.Text = "MultiHawk";
 			this.Load += new System.EventHandler(this.Mainform_Load);
+			this.ResizeEnd += new System.EventHandler(this.Mainform_ResizeEnd);
 			this.MainformMenu.ResumeLayout(false);
 			this.MainformMenu.PerformLayout();
 			this.WorkspacePanel.ResumeLayout(false);
@@ -393,6 +440,11 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveSessionAsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripMenuItem ViewSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem _1xMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem _2xMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem _3xMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem _4xMenuItem;
 	}
 }
 
