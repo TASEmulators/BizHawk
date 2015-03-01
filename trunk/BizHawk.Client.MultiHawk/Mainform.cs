@@ -246,6 +246,16 @@ namespace BizHawk.Client.MultiHawk
 			}
 		}
 
+		private string StripArchivePath(string path)
+		{
+			if (path.Contains("|"))
+			{
+				return path.Split('|').Last();
+			}
+
+			return path;
+		}
+
 		private bool LoadRom(string path)
 		{
 			bool deterministic = true;
@@ -272,7 +282,7 @@ namespace BizHawk.Client.MultiHawk
 				var ew = new EmulatorWindow(this)
 				{
 					TopLevel = false,
-					Text = Path.GetFileNameWithoutExtension(path),
+					Text = Path.GetFileNameWithoutExtension(StripArchivePath(path)),
 					Emulator = loader.LoadedEmulator,
 
 					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(),
@@ -555,7 +565,7 @@ namespace BizHawk.Client.MultiHawk
 		}
 
 		public void ProgramRunLoop()
-		{
+		{			
 			CheckMessages();
 
 			for (; ; )
@@ -588,12 +598,15 @@ namespace BizHawk.Client.MultiHawk
 				// autohold/autofire must not be affected by the following inputs
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
-				StepRunLoop_Core();
-				StepRunLoop_Throttle();
-
-				foreach (var window in EmulatorWindows)
+				if (EmulatorWindows.Any())
 				{
-					window.Render();
+					StepRunLoop_Core();
+					StepRunLoop_Throttle();
+
+					foreach (var window in EmulatorWindows)
+					{
+						window.Render();
+					}
 				}
 
 				CheckMessages();
