@@ -933,7 +933,6 @@ namespace BizHawk.Client.MultiHawk
 			var runFrame = false;
 			_runloopFrameadvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
-			var suppressCaptureRewind = false;
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Global.Config.FrameProgressDelayMs;
 
@@ -1052,17 +1051,20 @@ namespace BizHawk.Client.MultiHawk
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			new RecordMovie().ShowDialog();
+			UpdateMainText();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			new PlayMovie().ShowDialog();
+			UpdateMainText();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.MovieSession.StopMovie(true);
 			SetMainformMovieInfo();
+			UpdateMainText();
 			//UpdateStatusSlots(); // TODO
 		}
 
@@ -1243,6 +1245,7 @@ namespace BizHawk.Client.MultiHawk
 					EmulatorWindows.SessionName = file.FullName;
 					Global.Config.RecentRomSessions.Add(file.FullName);
 					SaveSessionMenuItem_Click(sender, e);
+					UpdateMainText();
 				}
 			}
 		}
@@ -1287,7 +1290,25 @@ namespace BizHawk.Client.MultiHawk
 				EmulatorWindows.SessionName = file.FullName;
 				LoadRomSession(EmulatorWindowList.FromJson(json));
 				Global.Config.RecentRomSessions.Add(file.FullName);
+				UpdateMainText();
 			}
+		}
+
+		private void UpdateMainText()
+		{
+			string text = "MultiHawk";
+
+			if (!string.IsNullOrWhiteSpace(EmulatorWindows.SessionName))
+			{
+				text += " - " + Path.GetFileNameWithoutExtension(EmulatorWindows.SessionName);
+			}
+
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				text += " - " + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+			}
+
+			Text = text;
 		}
 
 		private static FileInfo GetFileFromUser(string filter)
@@ -1326,6 +1347,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			EmulatorWindows.Clear();
+			UpdateMainText();
 		}
 
 		private void LoadRomSession(IEnumerable<EmulatorWindowList.RomSessionEntry> entries)
@@ -1334,6 +1356,7 @@ namespace BizHawk.Client.MultiHawk
 			{
 				LoadRom(entry.RomName);
 				EmulatorWindows.Last().Location = new Point(entry.Wndx, entry.Wndy);
+				UpdateMainText();
 			}
 		}
 
@@ -1347,6 +1370,7 @@ namespace BizHawk.Client.MultiHawk
 				EmulatorWindows.SessionName = file.FullName;
 				LoadRomSession(EmulatorWindowList.FromJson(json));
 				Global.Config.RecentRomSessions.Add(file.FullName);
+				UpdateMainText();
 			}
 			else
 			{

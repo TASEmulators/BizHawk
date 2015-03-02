@@ -164,7 +164,7 @@ namespace BizHawk.Client.MultiHawk
 							var args = str.Split(' ');
 							if (args[0] == "Framebuffer")
 							{
-								Global.Emulator.VideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
+								Emulator.VideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
 					}
@@ -278,7 +278,7 @@ namespace BizHawk.Client.MultiHawk
 						out_h /= 2;
 					}
 					using (new SimpleTime("Save Framebuffer"))
-						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
+						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Emulator.VideoProvider(), s, out_w, out_h));
 				}
 
 				if (IAmMaster)
@@ -289,7 +289,7 @@ namespace BizHawk.Client.MultiHawk
 							delegate(TextWriter tw)
 							{
 								// this never should have been a core's responsibility
-								tw.WriteLine("Frame {0}", Global.Emulator.Frame);
+								tw.WriteLine("Frame {0}", Emulator.Frame);
 								Global.MovieSession.HandleMovieSaveState(tw);
 							});
 					}
@@ -398,7 +398,7 @@ namespace BizHawk.Client.MultiHawk
 				}
 
 				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-				var saveram = Global.Emulator.AsSaveRam().CloneSaveRam();
+				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 
 				writer.Write(saveram, 0, saveram.Length);
 				writer.Close();
