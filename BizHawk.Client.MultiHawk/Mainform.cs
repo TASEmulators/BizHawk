@@ -917,7 +917,7 @@ namespace BizHawk.Client.MultiHawk
 			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
-			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
+			_throttle.SetCoreFps(EmulatorWindows.Master.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
 			_throttle.signal_unthrottle = _unthrottled || turbo;
 			_throttle.signal_overrideSecondaryThrottle = fastForward && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
@@ -1139,7 +1139,7 @@ namespace BizHawk.Client.MultiHawk
 
 			RebootCoresMenuItem_Click(null, null);
 
-			Global.Emulator = EmulatorWindows.First().Emulator;
+			Global.Emulator = EmulatorWindows.Master.Emulator;
 
 			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
 			{
@@ -1155,27 +1155,21 @@ namespace BizHawk.Client.MultiHawk
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
-			if (Global.Emulator.HasSavestates() && movie.StartsFromSavestate)
+			if (EmulatorWindows.Master.Emulator.HasSavestates() && movie.StartsFromSavestate)
 			{
 				if (movie.TextSavestate != null)
 				{
-					Global.Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
+					EmulatorWindows.Master.Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
+					EmulatorWindows.Master.Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
-				if (movie.SavestateFramebuffer != null)
+
+				foreach (var ew in EmulatorWindows)
 				{
-					var b1 = movie.SavestateFramebuffer;
-					var b2 = Global.Emulator.VideoProvider().GetVideoBuffer();
-					int len = Math.Min(b1.Length, b2.Length);
-					for (int i = 0; i < len; i++)
-					{
-						b2[i] = b1[i];
-					}
+					ew.Emulator.ResetCounters();
 				}
-				Global.Emulator.ResetCounters();
 			}
 
 			Global.MovieSession.RunQueuedMovie(record);
@@ -1196,7 +1190,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void controllerConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var controller = new ControllerConfig(Global.Emulator.ControllerDefinition);
+			var controller = new ControllerConfig(EmulatorWindows.Master.Emulator.ControllerDefinition);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
@@ -1213,7 +1207,7 @@ namespace BizHawk.Client.MultiHawk
 			{
 				if (EmulatorWindows.Any())
 				{
-					Global.Emulator = EmulatorWindows.First().Emulator;
+					Global.Emulator = EmulatorWindows.Master.Emulator;
 				}
 				else
 				{
