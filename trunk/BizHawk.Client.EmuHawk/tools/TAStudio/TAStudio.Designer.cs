@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutopauseAtEndOfMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MetaSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.HeaderMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GreenzoneSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StateHistorySettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CommentsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SubtitlesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator21 = new System.Windows.Forms.ToolStripSeparator();
@@ -602,7 +602,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.HeaderMenuItem,
-            this.GreenzoneSettingsMenuItem,
+            this.StateHistorySettingsMenuItem,
             this.CommentsMenuItem,
             this.SubtitlesMenuItem,
             this.toolStripSeparator21,
@@ -618,12 +618,12 @@ namespace BizHawk.Client.EmuHawk
 			this.HeaderMenuItem.Text = "&Header...";
 			this.HeaderMenuItem.Click += new System.EventHandler(this.HeaderMenuItem_Click);
 			// 
-			// GreenzoneSettingsMenuItem
+			// StateHistorySettingsMenuItem
 			// 
-			this.GreenzoneSettingsMenuItem.Name = "GreenzoneSettingsMenuItem";
-			this.GreenzoneSettingsMenuItem.Size = new System.Drawing.Size(236, 22);
-			this.GreenzoneSettingsMenuItem.Text = "&Savestate History Settings...";
-			this.GreenzoneSettingsMenuItem.Click += new System.EventHandler(this.GreenzoneSettingsMenuItem_Click);
+			this.StateHistorySettingsMenuItem.Name = "StateHistorySettingsMenuItem";
+			this.StateHistorySettingsMenuItem.Size = new System.Drawing.Size(236, 22);
+			this.StateHistorySettingsMenuItem.Text = "&Savestate History Settings...";
+			this.StateHistorySettingsMenuItem.Click += new System.EventHandler(this.StateHistorySettingsMenuItem_Click);
 			// 
 			// CommentsMenuItem
 			// 
@@ -1187,7 +1187,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem HeaderMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CommentsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SubtitlesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem GreenzoneSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem StateHistorySettingsMenuItem;
 		private MarkerControl MarkerControl;
 		private System.Windows.Forms.ContextMenuStrip RightClickMenu;
 		private System.Windows.Forms.ToolStripMenuItem SetMarkersContextMenuItem;

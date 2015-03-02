@@ -21,7 +21,8 @@ namespace BizHawk.Client.Common
 				EnableZip64 = Zip64Option.Never,
 				CompressionLevel = (Ionic.Zlib.CompressionLevel)level
 			};
-		}
+			z.CompressionMethod = CompressionMethod.Deflate;
+	}
 
 		public void WriteItem(string name, Action<Stream> callback)
 		{

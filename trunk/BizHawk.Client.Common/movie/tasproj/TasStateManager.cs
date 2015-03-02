@@ -207,7 +207,7 @@ namespace BizHawk.Client.Common
 			Used = 0;
 		}
 
-		public void ClearGreenzone()
+		public void ClearStateHistory()
 		{
 			if (States.Any())
 			{

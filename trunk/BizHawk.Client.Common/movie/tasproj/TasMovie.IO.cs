@@ -54,9 +54,10 @@ namespace BizHawk.Client.Common
 				ReportProgress(PROGRESS_STEP);
 
 				// TasProj extras
+				// Greenzone actually means StateHistory. Changing these two names would break previous save files, though.
 				bs.PutLump(BinaryStateLump.GreenzoneSettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
 				ReportProgress(PROGRESS_STEP);
-				if (StateManager.Settings.SaveGreenzone)
+				if (StateManager.Settings.SaveStateHistory)
 				{
 					bs.PutLump(BinaryStateLump.Greenzone, (BinaryWriter bw) => StateManager.Save(bw));
 				}
@@ -197,12 +198,13 @@ namespace BizHawk.Client.Common
 					});
 				}
 
+				// Greenzone actually means StateHistory. Changing these two names would break previous save files, though.
 				bl.GetLump(BinaryStateLump.GreenzoneSettings, false, delegate(TextReader tr)
 				{
 					StateManager.Settings.PopulateFromString(tr.ReadToEnd());
 				});
 
-				if (StateManager.Settings.SaveGreenzone)
+				if (StateManager.Settings.SaveStateHistory)
 				{
 					bl.GetLump(BinaryStateLump.Greenzone, false, delegate(BinaryReader br, long length)
 					{
