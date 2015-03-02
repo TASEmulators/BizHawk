@@ -322,9 +322,24 @@ namespace BizHawk.Client.MultiHawk
 				ew.CoreComm = nextComm;
 				ew.Init();
 
-				EmulatorWindows.Add(ew);
+				if (EmulatorWindows.Any())
+				{
+					// Attempt to open the window is a smart location
+					var last = EmulatorWindows.Last();
 
-				_inputManager.SyncControls();
+					int x = last.Location.X + last.Width + 5;
+					int y = last.Location.Y;
+					if (x + (last.Width / 2) > Width) // If it will go too far off screen
+					{
+						y += last.Height + 5;
+						x = EmulatorWindows.First().Location.X;
+					}
+
+					ew.Location = new Point(x, y);
+				}
+				
+
+				EmulatorWindows.Add(ew);
 
 				WorkspacePanel.Controls.Add(ew);
 				ew.Show();
@@ -335,6 +350,8 @@ namespace BizHawk.Client.MultiHawk
 				{
 					Global.Emulator = ew.Emulator;
 				}
+
+				_inputManager.SyncControls();
 
 				return true;
 			}
