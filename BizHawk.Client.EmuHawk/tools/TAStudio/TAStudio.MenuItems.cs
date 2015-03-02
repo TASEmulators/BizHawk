@@ -611,9 +611,9 @@ namespace BizHawk.Client.EmuHawk
 			UpdateChangesIndicator();
 		}
 
-		private void GreenzoneSettingsMenuItem_Click(object sender, EventArgs e)
+		private void StateHistorySettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new GreenzoneSettingsForm(CurrentTasMovie.TasStateManager.Settings)
+			new StateHistorySettingsForm(CurrentTasMovie.TasStateManager.Settings)
 			{
 				Owner = GlobalWin.MainForm,
 				Location = this.ChildPointToScreen(TasView),

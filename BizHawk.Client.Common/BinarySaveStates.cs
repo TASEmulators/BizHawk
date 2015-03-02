@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 
 		// TasMovie
 		LagLog,
-		Greenzone,
+		Greenzone,	// Greenzone actually means StateHistory. Changing these two names would break previous save files, though.
 		GreenzoneSettings,
 		Markers,
 		ClientSettings,

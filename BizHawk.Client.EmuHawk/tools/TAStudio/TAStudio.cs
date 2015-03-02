@@ -70,6 +70,32 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;
 
+			InitializeSaveWorker();
+
+			WantsToControlStopMovie = true;
+			TasPlaybackBox.Tastudio = this;
+			MarkerControl.Tastudio = this;
+			MarkerControl.Emulator = this.Emulator;
+			TasView.QueryItemText += TasView_QueryItemText;
+			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView.QueryItemIcon += TasView_QueryItemIcon;
+			TasView.QueryFrameLag += TasView_QueryFrameLag;
+			TasView.InputPaintingMode = Settings.DrawInput;
+			TasView.PointedCellChanged += TasView_PointedCellChanged;
+			TasView.MultiSelect = true;
+			TasView.MaxCharactersInHorizontal = 1;
+			WantsToControlRestartMovie = true;
+
+		}
+
+		private void InitializeSaveWorker()
+		{
+			if (_saveBackgroundWorker != null)
+			{
+				_saveBackgroundWorker.Dispose();
+				_saveBackgroundWorker = null; // Idk if this line is even useful.
+			}
+
 			_saveBackgroundWorker = new BackgroundWorker();
 			_saveBackgroundWorker.WorkerReportsProgress = true;
 			_saveBackgroundWorker.DoWork += (s, e) =>
@@ -89,31 +115,11 @@ namespace BizHawk.Client.EmuHawk
 				this.Invoke(() => this.MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.");
 				this.Invoke(() => this.SavingProgressBar.Visible = false);
 
-				// SUPER HACKY, and i'm not even sure it's necessary
-				Timer t = new Timer();
-				t.Tick += (a, b) =>
-				{
-					this.Invoke(() => this.MessageStatusLabel.Text = "TAStudio engaged.");
-					t.Stop();
-				};
-				t.Interval = 5000;
-				t.Start();
+				InitializeSaveWorker(); // Required, or it will error when trying to report progress again.
 			};
 
-			WantsToControlStopMovie = true;
-			TasPlaybackBox.Tastudio = this;
-			MarkerControl.Tastudio = this;
-			MarkerControl.Emulator = this.Emulator;
-			TasView.QueryItemText += TasView_QueryItemText;
-			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
-			TasView.QueryItemIcon += TasView_QueryItemIcon;
-			TasView.QueryFrameLag += TasView_QueryFrameLag;
-			TasView.InputPaintingMode = Settings.DrawInput;
-			TasView.PointedCellChanged += TasView_PointedCellChanged;
-			TasView.MultiSelect = true;
-			TasView.MaxCharactersInHorizontal = 1;
-			WantsToControlRestartMovie = true;
-
+			if (CurrentTasMovie != null) // Again required. TasMovie has a separate reference.
+				CurrentTasMovie.NewBGWorker(_saveBackgroundWorker);
 		}
 
 		private void TastudioToStopMovie()
