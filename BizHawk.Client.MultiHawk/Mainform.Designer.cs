@@ -44,6 +44,11 @@
 			this.RebootCoresMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ViewSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this._1xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._2xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._3xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._4xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecordMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PlayMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -61,11 +66,6 @@
 			this.FameStatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.StatusBarMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
-			this.ViewSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this._1xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this._2xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this._3xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this._4xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.WorkspacePanel.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
@@ -145,7 +145,7 @@
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator7
 			// 
@@ -173,7 +173,7 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator5
 			// 
@@ -199,6 +199,46 @@
 			this.ExitMenuItem.Size = new System.Drawing.Size(165, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
+			// 
+			// ViewSubMenu
+			// 
+			this.ViewSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._1xMenuItem,
+            this._2xMenuItem,
+            this._3xMenuItem,
+            this._4xMenuItem});
+			this.ViewSubMenu.Name = "ViewSubMenu";
+			this.ViewSubMenu.Size = new System.Drawing.Size(44, 20);
+			this.ViewSubMenu.Text = "&View";
+			this.ViewSubMenu.DropDownOpened += new System.EventHandler(this.ViewSubMenu_DropDownOpened);
+			// 
+			// _1xMenuItem
+			// 
+			this._1xMenuItem.Name = "_1xMenuItem";
+			this._1xMenuItem.Size = new System.Drawing.Size(85, 22);
+			this._1xMenuItem.Text = "&1x";
+			this._1xMenuItem.Click += new System.EventHandler(this._1xMenuItem_Click);
+			// 
+			// _2xMenuItem
+			// 
+			this._2xMenuItem.Name = "_2xMenuItem";
+			this._2xMenuItem.Size = new System.Drawing.Size(85, 22);
+			this._2xMenuItem.Text = "&2x";
+			this._2xMenuItem.Click += new System.EventHandler(this._2xMenuItem_Click);
+			// 
+			// _3xMenuItem
+			// 
+			this._3xMenuItem.Name = "_3xMenuItem";
+			this._3xMenuItem.Size = new System.Drawing.Size(85, 22);
+			this._3xMenuItem.Text = "&3x";
+			this._3xMenuItem.Click += new System.EventHandler(this._3xMenuItem_Click);
+			// 
+			// _4xMenuItem
+			// 
+			this._4xMenuItem.Name = "_4xMenuItem";
+			this._4xMenuItem.Size = new System.Drawing.Size(85, 22);
+			this._4xMenuItem.Text = "&4x";
+			this._4xMenuItem.Click += new System.EventHandler(this._4xMenuItem_Click);
 			// 
 			// MovieSubMenu
 			// 
@@ -307,8 +347,8 @@
 			this.MainStatusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.FameStatusBarLabel,
-            this.StatusBarMessageLabel,
-            this.PlayRecordStatusButton});
+            this.PlayRecordStatusButton,
+            this.StatusBarMessageLabel});
 			this.MainStatusBar.Location = new System.Drawing.Point(0, 379);
 			this.MainStatusBar.Name = "MainStatusBar";
 			this.MainStatusBar.Size = new System.Drawing.Size(651, 22);
@@ -341,46 +381,6 @@
 			this.PlayRecordStatusButton.Name = "PlayRecordStatusButton";
 			this.PlayRecordStatusButton.Size = new System.Drawing.Size(29, 20);
 			this.PlayRecordStatusButton.Text = "No movie is active";
-			// 
-			// ViewSubMenu
-			// 
-			this.ViewSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this._1xMenuItem,
-            this._2xMenuItem,
-            this._3xMenuItem,
-            this._4xMenuItem});
-			this.ViewSubMenu.Name = "ViewSubMenu";
-			this.ViewSubMenu.Size = new System.Drawing.Size(44, 20);
-			this.ViewSubMenu.Text = "&View";
-			this.ViewSubMenu.DropDownOpened += new System.EventHandler(this.ViewSubMenu_DropDownOpened);
-			// 
-			// _1xMenuItem
-			// 
-			this._1xMenuItem.Name = "_1xMenuItem";
-			this._1xMenuItem.Size = new System.Drawing.Size(152, 22);
-			this._1xMenuItem.Text = "&1x";
-			this._1xMenuItem.Click += new System.EventHandler(this._1xMenuItem_Click);
-			// 
-			// _2xMenuItem
-			// 
-			this._2xMenuItem.Name = "_2xMenuItem";
-			this._2xMenuItem.Size = new System.Drawing.Size(152, 22);
-			this._2xMenuItem.Text = "&2x";
-			this._2xMenuItem.Click += new System.EventHandler(this._2xMenuItem_Click);
-			// 
-			// _3xMenuItem
-			// 
-			this._3xMenuItem.Name = "_3xMenuItem";
-			this._3xMenuItem.Size = new System.Drawing.Size(152, 22);
-			this._3xMenuItem.Text = "&3x";
-			this._3xMenuItem.Click += new System.EventHandler(this._3xMenuItem_Click);
-			// 
-			// _4xMenuItem
-			// 
-			this._4xMenuItem.Name = "_4xMenuItem";
-			this._4xMenuItem.Size = new System.Drawing.Size(152, 22);
-			this._4xMenuItem.Text = "&4x";
-			this._4xMenuItem.Click += new System.EventHandler(this._4xMenuItem_Click);
 			// 
 			// Mainform
 			// 
