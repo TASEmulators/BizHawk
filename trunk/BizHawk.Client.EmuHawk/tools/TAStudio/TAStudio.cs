@@ -295,9 +295,8 @@ namespace BizHawk.Client.EmuHawk
 			RefreshTasView();
 
 			if (MarkerControl != null)
-			{
 				MarkerControl.UpdateValues();
-			}
+			
 		}
 
 		private void RefreshTasView()
@@ -474,28 +473,14 @@ namespace BizHawk.Client.EmuHawk
 		// Sets either the pending frame or the tas input log
 		private void ToggleBoolState(int frame, string buttonName)
 		{
-			if (frame < CurrentTasMovie.InputLogLength)
-			{
-				CurrentTasMovie.ToggleBoolState(frame, buttonName);
-			}
-			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.Toggle(buttonName);
-			}
+			CurrentTasMovie.ToggleBoolState(frame, buttonName);
 		}
 
 		// TODO: move me
 		// Sets either the pending frame or the tas input log
 		private void SetBoolState(int frame, string buttonName, bool value)
 		{
-			if (frame < CurrentTasMovie.InputLogLength)
-			{
-				CurrentTasMovie.SetBoolState(frame, buttonName, value);
-			}
-			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.SetBool(buttonName, value);
-			}
+			CurrentTasMovie.SetBoolState(frame, buttonName, value);
 		}
 
 		private float GetFloatValue(int frame, string buttonName)
@@ -508,10 +493,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void SetFloatValue(int frame, string buttonName, float value)
 		{
-			if (frame < CurrentTasMovie.InputLogLength)
-				CurrentTasMovie.SetFloatState(frame, buttonName, value);
-			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-				Global.StickyXORAdapter.SetFloat(buttonName, value);
+			CurrentTasMovie.SetFloatState(frame, buttonName, value);
 		}
 
 		private void SetColumnsFromCurrentStickies()

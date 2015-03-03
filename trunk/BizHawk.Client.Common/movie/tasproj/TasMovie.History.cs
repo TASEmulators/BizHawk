@@ -10,7 +10,24 @@ namespace BizHawk.Client.Common
 	public class TasMovieChangeLog
 	{
 		List<List<IMovieAction>> History;
+		public List<string> Names;
 		int UndoIndex = -1;
+		int _maxSteps = 100;
+		public int MaxSteps
+		{
+			get { return _maxSteps; }
+			set
+			{
+				_maxSteps = value;
+				if (History.Count > value)
+				{
+					if (History.Count <= value)
+						ClearLog();
+					else
+						ClearLog(History.Count - value);
+				}
+			}
+		}
 
 		private bool RecordingBatch = false;
 		/// <summary>
@@ -23,6 +40,7 @@ namespace BizHawk.Client.Common
 		public TasMovieChangeLog(TasMovie movie)
 		{
 			History = new List<List<IMovieAction>>();
+			Names = new List<string>();
 			Movie = movie;
 		}
 
@@ -32,6 +50,7 @@ namespace BizHawk.Client.Common
 				upTo = History.Count;
 
 			History.RemoveRange(0, upTo);
+			Names.RemoveRange(0, upTo);
 			UndoIndex -= upTo;
 			if (UndoIndex < -1)
 				UndoIndex = -1;
@@ -42,6 +61,7 @@ namespace BizHawk.Client.Common
 		private void TruncateLog(int from)
 		{
 			History.RemoveRange(from, History.Count - from);
+			Names.RemoveRange(from, Names.Count - from);
 
 			if (UndoIndex < History.Count - 1)
 				UndoIndex = History.Count - 1;
@@ -75,7 +95,7 @@ namespace BizHawk.Client.Common
 
 			if (ret)
 			{
-				AddMovieAction();
+				ret = AddMovieAction();
 			}
 			RecordingBatch = true;
 
@@ -183,10 +203,22 @@ namespace BizHawk.Client.Common
 			if (!RecordingBatch)
 			{
 				History.Add(new List<IMovieAction>(1));
-				UndoIndex += 1;
+				Names.Add("");
+
+				if (History.Count < MaxSteps)
+					UndoIndex += 1;
+				else
+				{
+					History.RemoveAt(0);
+					Names.RemoveAt(0);
+				}
 			}
 
 			return true;
+		}
+		public void SetName(string name)
+		{
+			Names[Names.Count - 1] = name;
 		}
 
 		// TODO: These probably aren't the best way to handle undo/redo.

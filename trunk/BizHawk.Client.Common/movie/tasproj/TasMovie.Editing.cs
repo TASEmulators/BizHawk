@@ -210,6 +210,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
+
 			if (BindMarkersToInput)
 			{
 				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
@@ -226,7 +227,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)
 				ChangeLog.EndBatch();
-		}
+}
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
@@ -270,9 +271,7 @@ namespace BizHawk.Client.Common
 			lg.SetSource(Global.MovieSession.MovieControllerInstance());
 
 			for (int i = 0; i < count; i++)
-			{
 				_log.Insert(frame, lg.EmptyEntry);
-			}
 
 			if (BindMarkersToInput)
 			{
@@ -294,132 +293,128 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)
 				ChangeLog.EndBatch();
+
+			if (Global.Emulator.Frame < _log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
+				this.SwitchToPlay();
 		}
 
 		public void ToggleBoolState(int frame, string buttonName)
 		{
-			if (frame < _log.Count)
-			{
-				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-				adapter[buttonName] = !adapter.IsPressed(buttonName);
+			if (frame >= _log.Count) // Insert blank frames up to this point
+				InsertEmptyFrame(_log.Count, frame - _log.Count + 1);
 
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
-				_log[frame] = lg.GenerateLogEntry();
-				Changes = true;
-				InvalidateAfter(frame);
+			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			adapter[buttonName] = !adapter.IsPressed(buttonName);
 
-				ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName]);
-			}
+			var lg = LogGeneratorInstance();
+			lg.SetSource(adapter);
+			_log[frame] = lg.GenerateLogEntry();
+			Changes = true;
+			InvalidateAfter(frame);
+
+			ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName]);
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
 		{
-			if (frame < _log.Count)
+			if (frame >= _log.Count) // Insert blank frames up to this point
+				InsertEmptyFrame(_log.Count, frame - _log.Count + 1);
+
+			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			var old = adapter[buttonName];
+			adapter[buttonName] = val;
+
+			var lg = LogGeneratorInstance();
+			lg.SetSource(adapter);
+			_log[frame] = lg.GenerateLogEntry();
+
+			if (old != val)
 			{
-				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-				var old = adapter[buttonName];
-				adapter[buttonName] = val;
-
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
-				_log[frame] = lg.GenerateLogEntry();
-
-				if (old != val)
-				{
-					InvalidateAfter(frame);
-					Changes = true;
-					ChangeLog.AddBoolToggle(frame, buttonName, old);
-				}
+				InvalidateAfter(frame);
+				Changes = true;
+				ChangeLog.AddBoolToggle(frame, buttonName, old);
 			}
 		}
 		public void SetBoolStates(int frame, int count, string buttonName, bool val)
 		{
-			if (frame < _log.Count)
+			if (frame + count >= _log.Count) // Insert blank frames up to this point
+				InsertEmptyFrame(_log.Count, frame + count - _log.Count + 1);
+
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+
+			int changed = -1;
+			for (int i = 0; i < count; i++)
 			{
-				if (frame + count >= _log.Count)
-					count = _log.Count - frame - 1;
+				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
+				bool old = adapter[buttonName];
+				adapter[buttonName] = val;
 
-				ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+				var lg = LogGeneratorInstance();
+				lg.SetSource(adapter);
+				_log[frame + i] = lg.GenerateLogEntry();
 
-				int changed = -1;
-				for (int i = 0; i < count; i++)
-				{
-					var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
-					bool old = adapter[buttonName];
-					adapter[buttonName] = val;
-
-					var lg = LogGeneratorInstance();
-					lg.SetSource(adapter);
-					_log[frame + i] = lg.GenerateLogEntry();
-
-					if (changed == -1 && old != val)
-						changed = frame + i;
-				}
-
-				if (changed != -1)
-				{
-					InvalidateAfter(changed);
-					Changes = true;
-				}
-
-				ChangeLog.SetGeneralRedo();
+				if (changed == -1 && old != val)
+					changed = frame + i;
 			}
+
+			if (changed != -1)
+			{
+				InvalidateAfter(changed);
+				Changes = true;
+			}
+
+			ChangeLog.SetGeneralRedo();
 		}
 
 		public void SetFloatState(int frame, string buttonName, float val)
 		{
-			if (frame < _log.Count)
+			if (frame >= _log.Count) // Insert blank frames up to this point
+				InsertEmptyFrame(_log.Count, frame - _log.Count + 1);
+
+			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
+			var old = adapter.GetFloat(buttonName);
+			adapter.SetFloat(buttonName, val);
+
+			var lg = LogGeneratorInstance();
+			lg.SetSource(adapter);
+			_log[frame] = lg.GenerateLogEntry();
+
+			if (old != val)
 			{
-				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-				var old = adapter.GetFloat(buttonName);
-				adapter.SetFloat(buttonName, val);
-
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
-				_log[frame] = lg.GenerateLogEntry();
-
-				if (old != val)
-				{
-					InvalidateAfter(frame);
-					Changes = true;
-					ChangeLog.AddFloatChange(frame, buttonName, old, val);
-				}
+				InvalidateAfter(frame);
+				Changes = true;
+				ChangeLog.AddFloatChange(frame, buttonName, old, val);
 			}
 		}
 		public void SetFloatStates(int frame, int count, string buttonName, float val)
 		{
-			if (frame < _log.Count)
+			if (frame + count >= _log.Count) // Insert blank frames up to this point
+				InsertEmptyFrame(_log.Count, frame + count - _log.Count + 1);
+
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+
+			int changed = -1;
+			for (int i = 0; i < count; i++)
 			{
-				if (frame + count >= _log.Count)
-					count = _log.Count - frame - 1;
+				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
+				float old = adapter.GetFloat(buttonName);
+				adapter.SetFloat(buttonName, val);
 
-				ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+				var lg = LogGeneratorInstance();
+				lg.SetSource(adapter);
+				_log[frame + i] = lg.GenerateLogEntry();
 
-				int changed = -1;
-				for (int i = 0; i < count; i++)
-				{
-					var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
-					float old = adapter.GetFloat(buttonName);
-					adapter.SetFloat(buttonName, val);
-
-					var lg = LogGeneratorInstance();
-					lg.SetSource(adapter);
-					_log[frame + i] = lg.GenerateLogEntry();
-
-					if (changed == -1 && old != val)
-						changed = frame + i;
-				}
-
-				if (changed != -1)
-				{
-					InvalidateAfter(changed);
-					Changes = true;
-				}
-
-				ChangeLog.SetGeneralRedo();
+				if (changed == -1 && old != val)
+					changed = frame + i;
 			}
-		}
 
+			if (changed != -1)
+			{
+				InvalidateAfter(changed);
+				Changes = true;
+			}
+
+			ChangeLog.SetGeneralRedo();
+		}
 	}
 }
