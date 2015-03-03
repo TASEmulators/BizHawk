@@ -271,6 +271,7 @@ namespace BizHawk.Client.Common
 			LagLog.Clear();
 			StateManager.Clear();
 			Markers.Clear();
+			ChangeLog.ClearLog();
 		}
 
 		private static string InputLogToString(List<string> log)

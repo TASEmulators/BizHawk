@@ -13,7 +13,11 @@ namespace BizHawk.Client.Common
 		int UndoIndex = -1;
 
 		private bool RecordingBatch = false;
-		public bool AutoRecord = true;
+		/// <summary>
+		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
+		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of 
+		/// </summary>
+		public bool IsRecording = true;
 
 		public TasMovie Movie;
 		public TasMovieChangeLog(TasMovie movie)
@@ -37,12 +41,16 @@ namespace BizHawk.Client.Common
 		}
 		private void TruncateLog(int from)
 		{
-			UndoIndex -= History.Count - from;
-			if (UndoIndex < -1)
-				UndoIndex = -1;
-
 			History.RemoveRange(from, History.Count - from);
-			RecordingBatch = false;
+
+			if (UndoIndex < History.Count - 1)
+				UndoIndex = History.Count - 1;
+
+			if (RecordingBatch)
+			{
+				RecordingBatch = false;
+				BeginNewBatch();
+			}
 		}
 
 		/// <summary>
@@ -53,6 +61,9 @@ namespace BizHawk.Client.Common
 		/// <returns>Returns true if a new batch was started; otherwise false.</returns>
 		public bool BeginNewBatch(bool keepOldBatch = false)
 		{
+			if (!IsRecording)
+				return false;
+
 			bool ret = true;
 			if (RecordingBatch)
 			{
@@ -62,22 +73,30 @@ namespace BizHawk.Client.Common
 					EndBatch();
 			}
 
+			if (ret)
+			{
+				AddMovieAction();
+			}
 			RecordingBatch = true;
-			History.Add(new List<IMovieAction>());
-			UndoIndex++;
 
 			return ret;
 		}
 		/// <summary>
 		/// Ends the current undo batch. Future changes will be one undo each.
-		/// If not already recording a batch, does (essentially) nothing.
+		/// If not already recording a batch, does nothing.
 		/// </summary>
 		public void EndBatch()
 		{
+			if (!IsRecording || !RecordingBatch)
+				return;
+
 			RecordingBatch = false;
 			List<IMovieAction> last = History.Last();
 			if (last.Count == 0) // Remove batch if it's empty.
+			{
 				History.RemoveAt(History.Count - 1);
+				UndoIndex--;
+			}
 			else
 				last.Capacity = last.Count;
 		}
@@ -125,8 +144,8 @@ namespace BizHawk.Client.Common
 			return PreviousUndoFrame;
 		}
 
-		public bool CanUndo	{ get { return UndoIndex > -1; } }
-		public bool CanRedo	{ get { return UndoIndex < History.Count - 1; } }
+		public bool CanUndo { get { return UndoIndex > -1; } }
+		public bool CanRedo { get { return UndoIndex < History.Count - 1; } }
 
 		public int PreviousUndoFrame
 		{
@@ -158,9 +177,6 @@ namespace BizHawk.Client.Common
 		#region "Change History"
 		private bool AddMovieAction()
 		{
-			if (!AutoRecord)
-				return false;
-
 			if (UndoIndex + 1 != History.Count)
 				TruncateLog(UndoIndex + 1);
 
@@ -175,44 +191,44 @@ namespace BizHawk.Client.Common
 
 		// TODO: These probably aren't the best way to handle undo/redo.
 		private int lastGeneral;
-		public void AddGeneralUndo(int first, int last)
+		public void AddGeneralUndo(int first, int last, bool force = false)
 		{
-			if (AutoRecord)
+			if (IsRecording || force)
 			{
 				AddMovieAction();
 				History.Last().Add(new MovieAction(first, last, Movie));
 				lastGeneral = History.Last().Count - 1;
 			}
 		}
-		public void SetGeneralRedo()
+		public void SetGeneralRedo(bool force = false)
 		{
-			if (AutoRecord)
+			if (IsRecording || force)
 			{
 				(History.Last()[lastGeneral] as MovieAction).SetRedoLog(Movie);
 			}
 		}
 
-		public void AddBoolToggle(int frame, string button, bool oldState)
+		public void AddBoolToggle(int frame, string button, bool oldState, bool force = false)
 		{
-			if (AutoRecord)
+			if (IsRecording || force)
 			{
 				AddMovieAction();
 				History.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
 			}
 		}
 
-		public void AddFloatChange(int frame, string button, float oldState, float newState)
+		public void AddFloatChange(int frame, string button, float oldState, float newState, bool force = false)
 		{
-			if (AutoRecord)
+			if (IsRecording || force)
 			{
 				AddMovieAction();
 				History.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
 			}
 		}
 
-		public void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string old_message = "")
+		public void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string old_message = "", bool force = false)
 		{
-			if (AutoRecord)
+			if (IsRecording || force)
 			{
 				AddMovieAction();
 				History.Last().Add(new MovieActionMarker(newMarker, oldPosition, old_message));
@@ -265,9 +281,9 @@ namespace BizHawk.Client.Common
 
 		public void Undo(TasMovie movie)
 		{
-			bool wasRecording = movie.ChangeLog.AutoRecord;
+			bool wasRecording = movie.ChangeLog.IsRecording;
 			bool wasBinding = movie.BindMarkersToInput;
-			movie.ChangeLog.AutoRecord = false;
+			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = bindMarkers;
 
 			if (redoLength != length)
@@ -279,14 +295,14 @@ namespace BizHawk.Client.Common
 			if (undoLength != length)
 				movie.RemoveFrames(FirstFrame + undoLength, movie.InputLogLength);
 
-			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = bindMarkers;
 		}
 		public void Redo(TasMovie movie)
 		{
-			bool wasRecording = movie.ChangeLog.AutoRecord;
+			bool wasRecording = movie.ChangeLog.IsRecording;
 			bool wasBinding = movie.BindMarkersToInput;
-			movie.ChangeLog.AutoRecord = false;
+			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = bindMarkers;
 
 			if (undoLength != length)
@@ -298,7 +314,7 @@ namespace BizHawk.Client.Common
 			if (redoLength != length)
 				movie.RemoveFrames(FirstFrame + redoLength, movie.InputLogLength);
 
-			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = bindMarkers;
 		}
 	}
@@ -382,27 +398,27 @@ namespace BizHawk.Client.Common
 
 		public void Undo(TasMovie movie)
 		{
-			bool wasRecording = movie.ChangeLog.AutoRecord;
-			movie.ChangeLog.AutoRecord = false;
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
 
 			if (isFloat)
 				movie.SetFloatState(FirstFrame, buttonName, oldState);
 			else
 				movie.SetBoolState(FirstFrame, buttonName, oldState == 1);
 
-			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 		public void Redo(TasMovie movie)
 		{
-			bool wasRecording = movie.ChangeLog.AutoRecord;
-			movie.ChangeLog.AutoRecord = false;
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
 
 			if (isFloat)
 				movie.SetFloatState(FirstFrame, buttonName, newState);
 			else
 				movie.SetBoolState(FirstFrame, buttonName, newState == 1);
 
-			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 	}
 
@@ -441,27 +457,27 @@ namespace BizHawk.Client.Common
 
 		public void Undo(TasMovie movie)
 		{
-			bool wasRecording = movie.ChangeLog.AutoRecord;
-			movie.ChangeLog.AutoRecord = false;
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
 
 			//if (isFloat)
 			//	movie.SetFloatStates(FirstFrame, LastFrame - FirstFrame + 1, buttonName, oldState);
 			//else
 			//	movie.SetBoolState(FirstFrame, buttonName, oldState == 1);
 
-			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 		public void Redo(TasMovie movie)
 		{
-			bool wasRecording = movie.ChangeLog.AutoRecord;
-			movie.ChangeLog.AutoRecord = false;
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			movie.ChangeLog.IsRecording = false;
 
 			if (isFloat)
 				movie.SetFloatStates(FirstFrame, LastFrame - FirstFrame + 1, buttonName, newState);
 			else
 				movie.SetBoolStates(FirstFrame, LastFrame - FirstFrame + 1, buttonName, newState == 1);
 
-			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.ChangeLog.IsRecording = wasRecording;
 		}
 	}
 	#endregion

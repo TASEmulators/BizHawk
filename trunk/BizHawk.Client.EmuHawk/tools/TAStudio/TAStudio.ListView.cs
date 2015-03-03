@@ -23,6 +23,20 @@ namespace BizHawk.Client.EmuHawk
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
 		private int _floatEditYPos = -1;
+		// Right-click dragging
+		private string[] _rightClickInput = null;
+		private string[] _rightClickOverInput = null;
+		private int _rightClickFrame = -1;
+		private int _rightClickLastFrame = -1;
+		private bool _rightClickShift, _rightClickControl;
+		private bool _leftButtonHeld = false;
+		private bool mouseButtonHeld
+		{
+			get
+			{ // Need a left click
+				return _rightClickFrame != -1 || _leftButtonHeld;
+			}
+		}
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will call GoToFrameIfNecessary() with this value
@@ -248,6 +262,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDown(object sender, MouseEventArgs e)
 		{
+			// Clicking with left while right is held or vice versa does weird stuff
+			if (mouseButtonHeld)
+				return;
+
 			if (e.Button == MouseButtons.Middle)
 			{
 				TogglePause();
@@ -264,6 +282,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
+				_leftButtonHeld = true;
 				// SuuperW: Exit float editing mode, or re-enter mouse editing
 				if (_floatEditRow != -1)
 				{
@@ -294,12 +313,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
+						CurrentTasMovie.ChangeLog.BeginNewBatch();
+
 						ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 						_triggerAutoRestore = true;
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						RefreshDialog();
 
-						CurrentTasMovie.ChangeLog.BeginNewBatch();
 						_startBoolDrawColumn = buttonName;
 
 						if (frame < CurrentTasMovie.InputLogLength)
@@ -346,6 +366,32 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				if (TasView.CurrentCell.Column.Name == FrameColumnName)
+				{
+					_rightClickControl = (Control.ModifierKeys | Keys.Control) == Control.ModifierKeys;
+					_rightClickShift = (Control.ModifierKeys | Keys.Shift) == Control.ModifierKeys;
+					if (TasView.SelectedRows.Contains(frame))
+					{
+						_rightClickInput = new string[TasView.SelectedRows.Count()];
+						_rightClickFrame = TasView.FirstSelectedIndex.Value;
+						CurrentTasMovie.GetLogEntries().CopyTo(_rightClickFrame, _rightClickInput, 0, TasView.SelectedRows.Count());
+						if (_rightClickControl && _rightClickShift)
+							_rightClickFrame += _rightClickInput.Length;
+					}
+					else
+					{
+						_rightClickInput = new string[1];
+						_rightClickInput[0] = CurrentTasMovie.GetLogEntries()[frame];
+						_rightClickFrame = frame;
+					}
+					_rightClickLastFrame = -1;
+					_supressContextMenu = true;
+					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
+					CurrentTasMovie.ChangeLog.BeginNewBatch();
+				}
+			}
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
@@ -358,8 +404,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_startMarkerDrag = false;
 				_startFrameDrag = false;
-				if (_startBoolDrawColumn != string.Empty || _startFloatDrawColumn != string.Empty)
-					CurrentTasMovie.ChangeLog.EndBatch();
 				_startBoolDrawColumn = string.Empty;
 				_startFloatDrawColumn = string.Empty;
 				// Exit float editing if value was changed with cursor
@@ -370,6 +414,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 				_floatPaintState = 0;
 				_floatEditYPos = -1;
+				_leftButtonHeld = false;
+
+				CurrentTasMovie.ChangeLog.EndBatch();
+			}
+			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+			{
+				if (_rightClickFrame != -1)
+				{
+					_rightClickInput = null;
+					_rightClickFrame = -1;
+					CurrentTasMovie.ChangeLog.EndBatch();
+				}
 			}
 
 			_supressContextMenu = false;
@@ -427,6 +483,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			int startVal, endVal;
+			int frame = e.NewCell.RowIndex.Value;
 			if (e.OldCell.RowIndex.Value < e.NewCell.RowIndex.Value)
 			{
 				startVal = e.OldCell.RowIndex.Value;
@@ -456,6 +513,82 @@ namespace BizHawk.Client.EmuHawk
 
 					RefreshTasView();
 				}
+			}
+			else if (_rightClickFrame != -1)
+			{
+				if (frame > CurrentTasMovie.InputLogLength - _rightClickInput.Length)
+					frame = CurrentTasMovie.InputLogLength - _rightClickInput.Length;
+				if (_rightClickShift)
+				{
+					if (_rightClickControl) // Insert
+					{
+						// If going backwards, delete!
+						bool shouldInsert = true;
+						if (startVal < _rightClickFrame)
+						{ // Cloning to a previous frame makes no sense.
+							startVal = _rightClickFrame - 1;
+						}
+						if (startVal < _rightClickLastFrame)
+							shouldInsert = false;
+
+						if (shouldInsert)
+						{
+							for (int i = startVal + 1; i <= endVal; i++)
+								CurrentTasMovie.InsertInput(i, _rightClickInput[(i - _rightClickFrame) % _rightClickInput.Length]);
+						}
+						else
+						{
+							CurrentTasMovie.RemoveFrames(startVal + 1, endVal + 1);
+						}
+
+						_rightClickLastFrame = frame;
+					}
+					else // Overwrite
+					{
+						for (int i = startVal; i <= endVal; i++)
+							CurrentTasMovie.SetFrame(i, _rightClickInput[(_rightClickFrame - i) % _rightClickInput.Length]);
+					}
+				}
+				else
+				{
+					if (_rightClickControl)
+					{
+						for (int i = 0; i < _rightClickInput.Length; i++) // Re-set initial range, just to verify it's still there.
+							CurrentTasMovie.SetFrame(_rightClickFrame + i, _rightClickInput[i]);
+
+						if (_rightClickOverInput != null) // Restore overwritten input from previous movement
+						{
+							for (int i = 0; i < _rightClickOverInput.Length; i++)
+								CurrentTasMovie.SetFrame(_rightClickLastFrame + i, _rightClickOverInput[i]);
+						}
+						else
+							_rightClickOverInput = new string[_rightClickInput.Length];
+
+						_rightClickLastFrame = frame; // Set new restore log
+						CurrentTasMovie.GetLogEntries().CopyTo(frame, _rightClickOverInput, 0, _rightClickOverInput.Length);
+
+						for (int i = 0; i < _rightClickInput.Length; i++) // Place copied input
+							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
+					}
+					else
+					{
+						int shiftBy = _rightClickFrame - frame;
+						string[] shiftInput = new string[Math.Abs(shiftBy)];
+						int shiftFrom = frame;
+						if (shiftBy < 0)
+							shiftFrom = _rightClickFrame + _rightClickInput.Length;
+
+						CurrentTasMovie.GetLogEntries().CopyTo(shiftFrom, shiftInput, 0, shiftInput.Length);
+						int shiftTo = shiftFrom + (_rightClickInput.Length * Math.Sign(shiftBy));
+						for (int i = 0; i < shiftInput.Length; i++)
+							CurrentTasMovie.SetFrame(shiftTo + i, shiftInput[i]);
+
+						for (int i = 0; i < _rightClickInput.Length; i++)
+							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
+						_rightClickFrame = frame;
+					}
+				}
+				RefreshTasView();
 			}
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{

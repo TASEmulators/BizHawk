@@ -77,6 +77,35 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 		}
 
+		public void RemoveFrame(int frame)
+		{
+			bool endBatch = ChangeLog.BeginNewBatch(true);
+			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
+
+			_log.RemoveAt(frame);
+			if (BindMarkersToInput)
+			{
+				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
+				if (firstIndex != -1)
+				{
+					for (int i = firstIndex; i < Markers.Count; i++)
+					{
+						TasMovieMarker m = Markers.ElementAt(i);
+						if (m.Frame == frame)
+							Markers.Remove(m);
+						else
+							Markers.Move(m.Frame, m.Frame - 1);
+					}
+				}
+			}
+
+			Changes = true;
+			InvalidateAfter(frame);
+
+			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
+		}
 		public void RemoveFrames(int[] frames)
 		{
 			if (frames.Any())
@@ -112,7 +141,6 @@ namespace BizHawk.Client.Common
 				ChangeLog.SetGeneralRedo();
 				if (endBatch)
 					ChangeLog.EndBatch();
-
 			}
 		}
 		public void RemoveFrames(int removeStart, int removeUpTo)
@@ -147,6 +175,32 @@ namespace BizHawk.Client.Common
 				ChangeLog.EndBatch();
 		}
 
+		public void InsertInput(int frame, string inputState)
+		{
+			bool endBatch = ChangeLog.BeginNewBatch(true);
+			ChangeLog.AddGeneralUndo(frame, InputLogLength);
+
+			_log.Insert(frame, inputState);
+			Changes = true;
+			InvalidateAfter(frame);
+
+			if (BindMarkersToInput)
+			{
+				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
+				if (firstIndex != -1)
+				{
+					for (int i = firstIndex; i < Markers.Count; i++)
+					{
+						TasMovieMarker m = Markers.ElementAt(i);
+						Markers.Move(m.Frame, m.Frame + 1);
+					}
+				}
+			}
+
+			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
+		}
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch(true);
@@ -173,7 +227,6 @@ namespace BizHawk.Client.Common
 			if (endBatch)
 				ChangeLog.EndBatch();
 		}
-
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
