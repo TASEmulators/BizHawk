@@ -143,11 +143,15 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.historyBox1 = new BizHawk.Client.EmuHawk.HistoryBox();
+			this.btnShowUndoHistory = new System.Windows.Forms.Button();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -505,10 +509,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SetMaxUndoLevelsMenuItem
 			// 
-			this.SetMaxUndoLevelsMenuItem.Enabled = false;
 			this.SetMaxUndoLevelsMenuItem.Name = "SetMaxUndoLevelsMenuItem";
 			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
+			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -850,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl.Emulator = null;
 			this.MarkerControl.Location = new System.Drawing.Point(2, 16);
 			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(198, 343);
+			this.MarkerControl.Size = new System.Drawing.Size(198, 258);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
 			// 
@@ -1083,10 +1087,39 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.Controls.Add(this.MarkerControl);
 			this.groupBox1.Location = new System.Drawing.Point(302, 129);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(201, 365);
+			this.groupBox1.Size = new System.Drawing.Size(201, 280);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.historyBox1);
+			this.groupBox2.Controls.Add(this.btnShowUndoHistory);
+			this.groupBox2.Location = new System.Drawing.Point(302, 409);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(200, 85);
+			this.groupBox2.TabIndex = 8;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Undo History";
+			// 
+			// historyBox1
+			// 
+			this.historyBox1.Location = new System.Drawing.Point(5, 19);
+			this.historyBox1.Name = "historyBox1";
+			this.historyBox1.Size = new System.Drawing.Size(192, 63);
+			this.historyBox1.TabIndex = 1;
+			this.historyBox1.Tastudio = null;
+			// 
+			// btnShowUndoHistory
+			// 
+			this.btnShowUndoHistory.Location = new System.Drawing.Point(174, -1);
+			this.btnShowUndoHistory.Name = "btnShowUndoHistory";
+			this.btnShowUndoHistory.Size = new System.Drawing.Size(20, 21);
+			this.btnShowUndoHistory.TabIndex = 0;
+			this.btnShowUndoHistory.Text = "v";
+			this.btnShowUndoHistory.UseVisualStyleBackColor = true;
 			// 
 			// TAStudio
 			// 
@@ -1094,6 +1127,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 519);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
@@ -1117,6 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerContextMenu.ResumeLayout(false);
 			this.RightClickMenu.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1235,5 +1270,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator separateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteInsertToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Button btnShowUndoHistory;
+		private HistoryBox historyBox1;
 	}
 }

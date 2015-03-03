@@ -54,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 
 			NormalFont = new Font("Courier New", 8);  // Only support fixed width
 
+			// PrepDrawString doesn't actually set the font, so this is rather useless.
+			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
 			RotatedFont = GDIRenderer.CreateRotatedHFont(Font, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);

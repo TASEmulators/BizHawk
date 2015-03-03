@@ -575,6 +575,25 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Config
 
+		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Number of Undo Levels to keep",
+				InitialValue = CurrentTasMovie.ChangeLog.MaxSteps.ToString()
+			})
+			{
+				DialogResult result = prompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					int val = int.Parse(prompt.PromptText);
+					if (val > 0)
+						CurrentTasMovie.ChangeLog.MaxSteps = val;
+				}
+			}
+		}
+
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
