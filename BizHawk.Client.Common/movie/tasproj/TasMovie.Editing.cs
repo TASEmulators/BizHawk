@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 
 		public override void Truncate(int frame)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch(true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
 
 			if (frame < _log.Count - 1)
@@ -43,12 +44,14 @@ namespace BizHawk.Client.Common
 			Markers.TruncateAt(frame);
 
 			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
 		}
 
 		public override void PokeFrame(int frame, IController source)
 		{
 			ChangeLog.AddGeneralUndo(frame, frame);
-			
+
 			base.PokeFrame(frame, source);
 			InvalidateAfter(frame);
 
@@ -80,47 +83,100 @@ namespace BizHawk.Client.Common
 			{
 				var invalidateAfter = frames.Min();
 
+				bool endBatch = ChangeLog.BeginNewBatch(true);
 				ChangeLog.AddGeneralUndo(invalidateAfter, InputLogLength - 1);
 
 				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
 				{
 					_log.RemoveAt(frame);
+					if (BindMarkersToInput) // TODO: This is slow, is there a better way to do it?
+					{
+						int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
+						if (firstIndex != -1)
+						{
+							for (int i = firstIndex; i < Markers.Count; i++)
+							{
+								TasMovieMarker m = Markers.ElementAt(i);
+								if (m.Frame == frame)
+									Markers.Remove(m);
+								else
+									Markers.Move(m.Frame, m.Frame - 1);
+							}
+						}
+					}
 				}
 
 				Changes = true;
 				InvalidateAfter(invalidateAfter);
 
 				ChangeLog.SetGeneralRedo();
+				if (endBatch)
+					ChangeLog.EndBatch();
+
 			}
 		}
 		public void RemoveFrames(int removeStart, int removeUpTo)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch(true);
 			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
 
 			for (int i = removeUpTo - 1; i >= removeStart; i--)
 				_log.RemoveAt(i);
 
+			if (BindMarkersToInput)
+			{
+				int firstIndex = Markers.FindIndex(m => m.Frame >= removeStart);
+				if (firstIndex != -1)
+				{
+					for (int i = firstIndex; i < Markers.Count; i++)
+					{
+						TasMovieMarker m = Markers.ElementAt(i);
+						if (m.Frame < removeUpTo)
+							Markers.Remove(m);
+						else
+							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart));
+					}
+				}
+			}
+
 			Changes = true;
 			InvalidateAfter(removeStart);
 
 			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
 		}
 
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch(true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputLog.Count() - 1);
 
 			_log.InsertRange(frame, inputLog);
 			Changes = true;
 			InvalidateAfter(frame);
 
+			if (BindMarkersToInput)
+			{
+				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
+				if (firstIndex != -1)
+				{
+					for (int i = firstIndex; i < Markers.Count; i++)
+					{
+						TasMovieMarker m = Markers.ElementAt(i);
+						Markers.Move(m.Frame, m.Frame + inputLog.Count());
+					}
+				}
+			}
+
 			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
 		}
 
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
-			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputStates.Count() - 1);
-
+			// ChangeLog is done in the InsertInput call.
 			var lg = LogGeneratorInstance();
 
 			var inputLog = new List<string>();
@@ -131,9 +187,7 @@ namespace BizHawk.Client.Common
 				inputLog.Add(lg.GenerateLogEntry());
 			}
 
-			InsertInput(frame, inputLog);
-
-			ChangeLog.SetGeneralRedo();
+			InsertInput(frame, inputLog); // Sets the ChangeLog
 		}
 
 		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
@@ -156,6 +210,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
+			bool endBatch = ChangeLog.BeginNewBatch(true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
 
 			var lg = LogGeneratorInstance();
@@ -166,10 +221,26 @@ namespace BizHawk.Client.Common
 				_log.Insert(frame, lg.EmptyEntry);
 			}
 
+			if (BindMarkersToInput)
+			{
+				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
+				if (firstIndex != -1)
+				{
+					for (int i = firstIndex; i < Markers.Count; i++)
+					{
+						TasMovieMarker m = Markers.ElementAt(i);
+						Markers.Move(m.Frame, m.Frame + count);
+					}
+				}
+			}
+
+
 			Changes = true;
 			InvalidateAfter(frame - 1);
 
 			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
 		}
 
 		public void ToggleBoolState(int frame, string buttonName)
@@ -186,7 +257,7 @@ namespace BizHawk.Client.Common
 				InvalidateAfter(frame);
 
 				ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName]);
-	}
+			}
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)

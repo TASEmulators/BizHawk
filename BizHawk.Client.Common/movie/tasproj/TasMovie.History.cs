@@ -49,13 +49,24 @@ namespace BizHawk.Client.Common
 		/// All changes made between calling Begin and End will be one Undo.
 		/// If already recording in a batch, calls EndBatch.
 		/// </summary>
-		public void BeginNewBatch()
+		/// <param name="keepOldBatch">If set and a batch is in progress, a new batch will not be created.</param>
+		/// <returns>Returns true if a new batch was started; otherwise false.</returns>
+		public bool BeginNewBatch(bool keepOldBatch = false)
 		{
+			bool ret = true;
 			if (RecordingBatch)
-				EndBatch();
+			{
+				if (keepOldBatch)
+					ret = false;
+				else
+					EndBatch();
+			}
 
 			RecordingBatch = true;
 			History.Add(new List<IMovieAction>());
+			UndoIndex++;
+
+			return ret;
 		}
 		/// <summary>
 		/// Ends the current undo batch. Future changes will be one undo each.
@@ -65,7 +76,10 @@ namespace BizHawk.Client.Common
 		{
 			RecordingBatch = false;
 			List<IMovieAction> last = History.Last();
-			last.Capacity = last.Count;
+			if (last.Count == 0) // Remove batch if it's empty.
+				History.RemoveAt(History.Count - 1);
+			else
+				last.Capacity = last.Count;
 		}
 
 		/// <summary>
@@ -160,19 +174,21 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: These probably aren't the best way to handle undo/redo.
+		private int lastGeneral;
 		public void AddGeneralUndo(int first, int last)
 		{
 			if (AutoRecord)
 			{
 				AddMovieAction();
 				History.Last().Add(new MovieAction(first, last, Movie));
+				lastGeneral = History.Last().Count - 1;
 			}
 		}
 		public void SetGeneralRedo()
 		{
 			if (AutoRecord)
 			{
-				(History.Last().Last() as MovieAction).SetRedoLog(Movie);
+				(History.Last()[lastGeneral] as MovieAction).SetRedoLog(Movie);
 			}
 		}
 
@@ -225,6 +241,7 @@ namespace BizHawk.Client.Common
 		{ get { return LastFrame - FirstFrame + 1; } }
 		private List<string> oldLog;
 		private List<string> newLog;
+		private bool bindMarkers;
 
 		public MovieAction(int firstFrame, int lastFrame, TasMovie movie)
 		{
@@ -235,6 +252,8 @@ namespace BizHawk.Client.Common
 			undoLength = Math.Min(lastFrame + 1, movie.InputLogLength) - firstFrame;
 			for (int i = 0; i < undoLength; i++)
 				oldLog.Add(movie.GetLogEntries()[FirstFrame + i]);
+
+			bindMarkers = movie.BindMarkersToInput;
 		}
 		public void SetRedoLog(TasMovie movie)
 		{
@@ -247,7 +266,9 @@ namespace BizHawk.Client.Common
 		public void Undo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.AutoRecord;
+			bool wasBinding = movie.BindMarkersToInput;
 			movie.ChangeLog.AutoRecord = false;
+			movie.BindMarkersToInput = bindMarkers;
 
 			if (redoLength != length)
 				movie.InsertEmptyFrame(movie.InputLogLength, length - redoLength);
@@ -259,11 +280,14 @@ namespace BizHawk.Client.Common
 				movie.RemoveFrames(FirstFrame + undoLength, movie.InputLogLength);
 
 			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.BindMarkersToInput = bindMarkers;
 		}
 		public void Redo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.AutoRecord;
+			bool wasBinding = movie.BindMarkersToInput;
 			movie.ChangeLog.AutoRecord = false;
+			movie.BindMarkersToInput = bindMarkers;
 
 			if (undoLength != length)
 				movie.InsertEmptyFrame(movie.InputLogLength, length - undoLength);
@@ -275,6 +299,7 @@ namespace BizHawk.Client.Common
 				movie.RemoveFrames(FirstFrame + redoLength, movie.InputLogLength);
 
 			movie.ChangeLog.AutoRecord = wasRecording;
+			movie.BindMarkersToInput = bindMarkers;
 		}
 	}
 

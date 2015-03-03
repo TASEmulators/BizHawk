@@ -555,10 +555,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BindMarkersToInputMenuItem
 			// 
-			this.BindMarkersToInputMenuItem.Enabled = false;
+			this.BindMarkersToInputMenuItem.Checked = true;
+			this.BindMarkersToInputMenuItem.CheckOnClick = true;
+			this.BindMarkersToInputMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.BindMarkersToInputMenuItem.Name = "BindMarkersToInputMenuItem";
 			this.BindMarkersToInputMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.BindMarkersToInputMenuItem.Text = "Bind Markers to Input";
+			this.BindMarkersToInputMenuItem.Click += new System.EventHandler(this.BindMarkersToInputMenuItem_Click);
 			// 
 			// EmptyNewMarkerNotesMenuItem
 			// 
@@ -771,7 +774,6 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.FullRowSelect = true;
 			this.TasView.HorizontalOrientation = false;
 			this.TasView.LagFramesToHide = 0;
-			this.TasView.LastVisibleRow = 28;
 			this.TasView.Location = new System.Drawing.Point(8, 27);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;

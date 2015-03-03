@@ -45,6 +45,8 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+
+			BindMarkersToInput = true;
 		}
 
 		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
@@ -63,9 +65,12 @@ namespace BizHawk.Client.Common
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+			
+			BindMarkersToInput = true;
 		}
 
 		public TasMovieMarkerList Markers { get; set; }
+		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
 
 		public override string PreferredExtension
