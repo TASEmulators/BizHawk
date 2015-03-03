@@ -79,8 +79,8 @@ namespace BizHawk.Client.Common
 
 				for (int i = LagLog.Count - 1; i > frame; i--) // Reverse order because removing from a sorted list re-indexes the items after the removed item
 				{
-					RemovedFrames.Add(i, LagLog[i]);
-					LagLog.RemoveAt(i);
+					RemovedFrames.Add(LagLog.Keys[i], LagLog.Values[i]); // use .Keys[i] instead of [i] here because indizes might not be consistent with keys
+					LagLog.Remove(LagLog.Keys[i]);
 				}
 			}
 			else if (frame == 0)
