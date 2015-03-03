@@ -882,7 +882,7 @@ namespace BizHawk.Client.MultiHawk
 		public bool TurboFastForward = false;
 		public bool EmulatorPaused = true;
 		private readonly Throttle _throttle;
-		private bool _unthrottled;
+		//private bool _unthrottled; // TODO
 		private bool _runloopFrameadvance;
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
@@ -914,12 +914,12 @@ namespace BizHawk.Client.MultiHawk
 
 			int speedPercent = fastForward ? Global.Config.SpeedPercentAlternate : Global.Config.SpeedPercent;
 
-			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward;
+			Global.DisableSecondaryThrottling = /*_unthrottled || TODO */ turbo || fastForward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
 			_throttle.SetCoreFps(EmulatorWindows.Master.Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
-			_throttle.signal_unthrottle = _unthrottled || turbo;
+			_throttle.signal_unthrottle = /*_unthrottled || TODO */ turbo;
 			_throttle.signal_overrideSecondaryThrottle = fastForward && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
 			_throttle.SetSpeedPercent(speedPercent);
 		}
