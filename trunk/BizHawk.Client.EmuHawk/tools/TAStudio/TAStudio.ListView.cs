@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.StickyXORAdapter.SetSticky(e.Column.Name, e.Column.Emphasis);
 
-			TasView.Refresh();
+			RefreshTasView();
 		}
 
 		private void TasView_ColumnReordered(object sender, InputRoll.ColumnReorderedEventArgs e)
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_floatEditColumn != buttonName || _floatEditRow != frame)
 					{
 						_floatEditRow = -1;
-						TasView.Refresh();
+						RefreshTasView();
 					}
 					else
 					{
@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 						TasView.SelectRow(i, _frameDragState);
 					}
 
-					TasView.Refresh();
+					RefreshTasView();
 				}
 			}
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
@@ -468,7 +468,7 @@ namespace BizHawk.Client.EmuHawk
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
 
-					TasView.Refresh();
+					RefreshTasView();
 				}
 			}
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
@@ -485,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					TasView.Refresh();
+					RefreshTasView();
 				}
 			}
 		}

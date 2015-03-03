@@ -185,9 +185,14 @@ namespace BizHawk.Client.Common
 			return CreateDisplayValueForButton(adapter, buttonName);
 		}
 
-		public void FlushInputCache()
+		public void FlushInputCache(int FrameToLeave = 0)
 		{
-			InputStateCache.Clear();
+			if (InputStateCache.Count <= FrameToLeave)
+				return;
+			do
+			{
+				InputStateCache.Remove(InputStateCache.Keys.First());
+			} while (InputStateCache.Count > FrameToLeave);
 		}
 
 		public string CreateDisplayValueForButton(IController adapter, string buttonName)

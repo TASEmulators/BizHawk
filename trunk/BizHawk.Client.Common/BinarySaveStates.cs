@@ -23,8 +23,8 @@ namespace BizHawk.Client.Common
 
 		// TasMovie
 		LagLog,
-		Greenzone,	// Greenzone actually means StateHistory. Changing these two names would break previous save files, though.
-		GreenzoneSettings,
+		StateHistory,
+		StateHistorySettings,
 		Markers,
 		ClientSettings,
 		VerificationLog
@@ -58,8 +58,8 @@ namespace BizHawk.Client.Common
 
 			// TasMovie
 			AddLumpName(BinaryStateLump.LagLog, "LagLog");
-			AddLumpName(BinaryStateLump.Greenzone, "GreenZone");
-			AddLumpName(BinaryStateLump.GreenzoneSettings, "GreenZoneSettings.txt");
+			AddLumpName(BinaryStateLump.StateHistory, "GreenZone");
+			AddLumpName(BinaryStateLump.StateHistorySettings, "GreenZoneSettings.txt");
 			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
 			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
 			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");

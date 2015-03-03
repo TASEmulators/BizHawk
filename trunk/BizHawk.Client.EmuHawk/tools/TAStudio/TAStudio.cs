@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GetClientSettingsOnLoad(string settingsJson)
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
-			TasView.Refresh();
+			RefreshTasView();
 		}
 
 		private void SetTextProperty()
@@ -292,18 +292,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
-			CurrentTasMovie.FlushInputCache();
-			CurrentTasMovie.UseInputCache = true;
-			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-			TasView.Refresh();
-
-			CurrentTasMovie.FlushInputCache();
-			CurrentTasMovie.UseInputCache = false;
+			RefreshTasView();
 
 			if (MarkerControl != null)
 			{
 				MarkerControl.UpdateValues();
 			}
+		}
+
+		private void RefreshTasView()
+		{
+			CurrentTasMovie.UseInputCache = true;
+			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
+			TasView.Refresh();
+
+			CurrentTasMovie.FlushInputCache(TasView.VisibleRows);
+			CurrentTasMovie.UseInputCache = false;
+
 		}
 
 		private void DoAutoRestore()
