@@ -603,6 +603,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
+
+			/* adelikat: Hack to remove Undo History for now, it shouldn't be on the main window anyway, make it a modeless dialog */
+			groupBox2.Visible = false;
+			groupBox1.Size = new System.Drawing.Size(groupBox1.Width, groupBox1.Height + 85);
 		}
 
 		private bool InitializeOnLoad()
