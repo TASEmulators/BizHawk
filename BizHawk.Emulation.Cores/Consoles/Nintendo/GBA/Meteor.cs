@@ -12,7 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		"Meteor",
 		"blastrock",
 		isPorted: true,
-		isReleased: false
+		isReleased: false,
+		singleInstance: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
