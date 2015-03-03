@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
 
-			CurrentTasMovie.FlushInputCache(TasView.VisibleRows);
+			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
 		}
