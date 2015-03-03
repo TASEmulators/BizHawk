@@ -760,19 +760,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
 			CurrentTasMovie.Markers.Add(marker);
-			CurrentTasMovie.ChangeLog.AddMarkerChange(marker);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker);
 		}
 		public void RemoveMarker(TasMovieMarker marker)
 		{
 			CurrentTasMovie.Markers.Remove(marker);
-			CurrentTasMovie.ChangeLog.AddMarkerChange(null, marker.Frame, marker.Message);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(null, marker.Frame, marker.Message);
 		}
 		public void EditMarker(TasMovieMarker marker, string message)
 		{
 			string old = marker.Message;
 			marker.Message = message;
-			CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
 		}
-
 	}
 }

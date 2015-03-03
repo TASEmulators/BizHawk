@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_tasClipboard.Any())
 			{
-				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
 
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_tasClipboard.Any())
 			{
-				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
 
@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = !(TasView.FirstSelectedIndex.Value > Emulator.Frame);
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
 				_tasClipboard.Clear();
@@ -384,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = TasView.FirstSelectedIndex <= Emulator.Frame;
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
 				{ // Cannot delete non-existant frames
@@ -421,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var framesToInsert = TasView.SelectedRows.ToList();
 				var insertionFrame = Math.Min(TasView.LastSelectedIndex.Value + 1, CurrentTasMovie.InputLogLength);
-				var needsToRollback = insertionFrame <= Emulator.Frame;
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				var inputLog = framesToInsert
 					.Select(frame => CurrentTasMovie.GetInputLogEntry(frame))
@@ -452,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			var needsToRollback = insertionFrame <= Emulator.Frame;
+			var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 			CurrentTasMovie.InsertEmptyFrame(insertionFrame);
 
@@ -478,7 +478,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			var needsToRollback = insertionFrame <= Emulator.Frame;
+			var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 			var framesPrompt = new FramesPrompt();
 			var result = framesPrompt.ShowDialog();
@@ -510,7 +510,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.SelectedRows.Any())
 			{
 				var rollbackFrame = TasView.LastSelectedIndex.Value;
-				var needsToRollback = !(rollbackFrame > Emulator.Frame);
+				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 				CurrentTasMovie.Truncate(rollbackFrame);
 				MarkerControl.MarkerInputRoll.TruncateSelection(CurrentTasMovie.Markers.Count - 1);
@@ -585,6 +585,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.InputPaintingMode = Settings.DrawInput ^= true;
+		}
+
+		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)
+		{
+			CurrentTasMovie.BindMarkersToInput = BindMarkersToInputMenuItem.Checked;
 		}
 
 		private void EmptyNewMarkerNotesMenuItem_Click(object sender, EventArgs e)
