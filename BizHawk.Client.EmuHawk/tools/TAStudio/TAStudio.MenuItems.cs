@@ -185,13 +185,13 @@ namespace BizHawk.Client.EmuHawk
 		private void DeselectMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.DeselectAll();
-			TasView.Refresh();
+			RefreshTasView();
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.SelectAll();
-			TasView.Refresh();
+			RefreshTasView();
 		}
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
@@ -705,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 					dummyColumnObject.Visible ^= true;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
-					TasView.Refresh();
+					RefreshTasView();
 				};
 
 				ColumnsSubMenu.DropDownItems.Add(menuItem);
@@ -722,7 +722,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.AllColumns.Clear();
 				SetUpColumns();
-				TasView.Refresh();
+				RefreshTasView();
 				CurrentTasMovie.FlagChanges();
 			};
 
@@ -760,7 +760,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.MainForm.PauseOnFrame = null;
-			TasView.Refresh();
+			RefreshTasView();
 		}
 
 		private void StartNewProjectFromNowMenuItem_Click(object sender, EventArgs e)
