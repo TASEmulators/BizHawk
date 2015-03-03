@@ -21,7 +21,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "9.12",
-		portedUrl: "http://yabause.org"
+		portedUrl: "http://yabause.org",
+		singleInstance: true
 		)]
 	public partial class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
 		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
