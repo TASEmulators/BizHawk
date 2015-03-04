@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 	{
 		List<List<IMovieAction>> History;
 		public List<string> Names;
-		int UndoIndex = -1;
+		public int UndoIndex = -1;
 		int _maxSteps = 100;
 		public int MaxSteps
 		{
@@ -28,6 +28,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
+
+		private int _totalSteps = 0;
 
 		private bool RecordingBatch = false;
 		/// <summary>
@@ -79,7 +81,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="keepOldBatch">If set and a batch is in progress, a new batch will not be created.</param>
 		/// <returns>Returns true if a new batch was started; otherwise false.</returns>
-		public bool BeginNewBatch(bool keepOldBatch = false)
+		public bool BeginNewBatch(string name = "", bool keepOldBatch = false)
 		{
 			if (!IsRecording)
 				return false;
@@ -95,7 +97,7 @@ namespace BizHawk.Client.Common
 
 			if (ret)
 			{
-				ret = AddMovieAction();
+				ret = AddMovieAction(name);
 			}
 			RecordingBatch = true;
 
@@ -115,6 +117,7 @@ namespace BizHawk.Client.Common
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
 				History.RemoveAt(History.Count - 1);
+				Names.RemoveAt(Names.Count - 1);
 				UndoIndex--;
 			}
 			else
@@ -195,26 +198,33 @@ namespace BizHawk.Client.Common
 		}
 
 		#region "Change History"
-		private bool AddMovieAction()
+		private bool AddMovieAction(string name)
 		{
 			if (UndoIndex + 1 != History.Count)
 				TruncateLog(UndoIndex + 1);
 
+			if (name == "")
+				name = "Undo step " + _totalSteps;
+
+			bool ret = false;
 			if (!RecordingBatch)
 			{
+				ret = true;
 				History.Add(new List<IMovieAction>(1));
-				Names.Add("");
+				Names.Add(name);
+				_totalSteps += 1;
 
-				if (History.Count < MaxSteps)
+				if (History.Count <= MaxSteps)
 					UndoIndex += 1;
 				else
 				{
 					History.RemoveAt(0);
 					Names.RemoveAt(0);
+					ret = false;
 				}
 			}
 
-			return true;
+			return ret;
 		}
 		public void SetName(string name)
 		{
@@ -223,11 +233,11 @@ namespace BizHawk.Client.Common
 
 		// TODO: These probably aren't the best way to handle undo/redo.
 		private int lastGeneral;
-		public void AddGeneralUndo(int first, int last, bool force = false)
+		public void AddGeneralUndo(int first, int last, string name = "", bool force = false)
 		{
 			if (IsRecording || force)
 			{
-				AddMovieAction();
+				AddMovieAction(name);
 				History.Last().Add(new MovieAction(first, last, Movie));
 				lastGeneral = History.Last().Count - 1;
 			}
@@ -240,29 +250,29 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void AddBoolToggle(int frame, string button, bool oldState, bool force = false)
+		public void AddBoolToggle(int frame, string button, bool oldState, string name = "", bool force = false)
 		{
 			if (IsRecording || force)
 			{
-				AddMovieAction();
+				AddMovieAction(name);
 				History.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
 			}
 		}
 
-		public void AddFloatChange(int frame, string button, float oldState, float newState, bool force = false)
+		public void AddFloatChange(int frame, string button, float oldState, float newState, string name = "", bool force = false)
 		{
 			if (IsRecording || force)
 			{
-				AddMovieAction();
+				AddMovieAction(name);
 				History.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
 			}
 		}
 
-		public void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string old_message = "", bool force = false)
+		public void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string old_message = "", string name = "", bool force = false)
 		{
 			if (IsRecording || force)
 			{
-				AddMovieAction();
+				AddMovieAction(name);
 				History.Last().Add(new MovieActionMarker(newMarker, oldPosition, old_message));
 			}
 		}
@@ -423,7 +433,7 @@ namespace BizHawk.Client.Common
 		{
 			oldState = oldS;
 			newState = newS;
-			FirstFrame = 0;
+			FirstFrame = frame;
 			buttonName = button;
 			isFloat = true;
 		}
