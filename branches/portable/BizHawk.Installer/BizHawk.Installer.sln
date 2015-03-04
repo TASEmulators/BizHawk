@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "BizHawk.Installer", "BizHawk.Installer.wixproj", "{A1A56BC8-8199-4C8D-B5C9-76401D3A0A70}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Bootstrap", "Bootstrap.wixproj", "{7A25308C-44B8-4897-9150-DF2C77F85094}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1A56BC8-8199-4C8D-B5C9-76401D3A0A70}.Debug|x86.ActiveCfg = Debug|x86
+		{A1A56BC8-8199-4C8D-B5C9-76401D3A0A70}.Debug|x86.Build.0 = Debug|x86
+		{A1A56BC8-8199-4C8D-B5C9-76401D3A0A70}.Release|x86.ActiveCfg = Release|x86
+		{A1A56BC8-8199-4C8D-B5C9-76401D3A0A70}.Release|x86.Build.0 = Release|x86
+		{7A25308C-44B8-4897-9150-DF2C77F85094}.Debug|x86.ActiveCfg = Debug|x86
+		{7A25308C-44B8-4897-9150-DF2C77F85094}.Debug|x86.Build.0 = Debug|x86
+		{7A25308C-44B8-4897-9150-DF2C77F85094}.Release|x86.ActiveCfg = Release|x86
+		{7A25308C-44B8-4897-9150-DF2C77F85094}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

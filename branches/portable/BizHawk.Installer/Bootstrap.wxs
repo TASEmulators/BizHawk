@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+	<Bundle Name="BizHawk" Version="1.0.0.0" UpgradeCode="e8866abc-5096-47a1-9dda-97dde23a58b3">
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
+    <Chain>
+      <PackageGroupRef Id="NetFx40Web"/>
+      <MsiPackage Id="BizHawk" SourceFile="$(var.BizHawk.Installer.TargetPath)"/>
+    </Chain>
+	</Bundle>
+</Wix>

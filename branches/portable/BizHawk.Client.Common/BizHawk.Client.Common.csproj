@@ -58,9 +58,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="LuaInterface">
-      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="SharpCompress">
       <HintPath>..\SharpCompress.dll</HintPath>
     </Reference>
@@ -128,6 +125,7 @@
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
+    <Compile Include="movie\tasproj\TasMovie.History.cs" />
     <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
@@ -163,6 +161,7 @@
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
+    <Compile Include="movie\interfaces\IMovieSession.cs" />
     <Compile Include="movie\MovieService.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />

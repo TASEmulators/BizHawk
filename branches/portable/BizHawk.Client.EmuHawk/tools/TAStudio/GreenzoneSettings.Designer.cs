@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GreenzoneSettingsForm
+	public partial class StateHistorySettingsForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -35,10 +35,10 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GreenzoneSettingsForm));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StateHistorySettingsForm));
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.OkBtn = new System.Windows.Forms.Button();
-			this.SaveGreenzoneCheckbox = new System.Windows.Forms.CheckBox();
+			this.SaveStateHistoryCheckbox = new System.Windows.Forms.CheckBox();
 			this.CapacityNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -74,13 +74,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SaveGreenzoneCheckbox
 			// 
-			this.SaveGreenzoneCheckbox.AutoSize = true;
-			this.SaveGreenzoneCheckbox.Location = new System.Drawing.Point(13, 20);
-			this.SaveGreenzoneCheckbox.Name = "SaveGreenzoneCheckbox";
-			this.SaveGreenzoneCheckbox.Size = new System.Drawing.Size(234, 17);
-			this.SaveGreenzoneCheckbox.TabIndex = 2;
-			this.SaveGreenzoneCheckbox.Text = "Save savestate history information in proj file";
-			this.SaveGreenzoneCheckbox.UseVisualStyleBackColor = true;
+			this.SaveStateHistoryCheckbox.AutoSize = true;
+			this.SaveStateHistoryCheckbox.Location = new System.Drawing.Point(13, 20);
+			this.SaveStateHistoryCheckbox.Name = "SaveGreenzoneCheckbox";
+			this.SaveStateHistoryCheckbox.Size = new System.Drawing.Size(234, 17);
+			this.SaveStateHistoryCheckbox.TabIndex = 2;
+			this.SaveStateHistoryCheckbox.Text = "Save savestate history information in proj file";
+			this.SaveStateHistoryCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// CapacityNumeric
 			// 
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.CapacityNumeric);
-			this.Controls.Add(this.SaveGreenzoneCheckbox);
+			this.Controls.Add(this.SaveStateHistoryCheckbox);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Name = "GreenzoneSettingsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Savestate History Settings";
-			this.Load += new System.EventHandler(this.GreenzoneSettings_Load);
+			this.Load += new System.EventHandler(this.StateHistorySettings_Load);
 			((System.ComponentModel.ISupportInitialize)(this.CapacityNumeric)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -190,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Button CancelBtn;
 		private Button OkBtn;
-		private CheckBox SaveGreenzoneCheckbox;
+		private CheckBox SaveStateHistoryCheckbox;
 		private NumericUpDown CapacityNumeric;
 		private Label label1;
 		private Label label2;

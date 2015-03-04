@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 			BackupSavestatesCheckbox.Checked = Global.Config.BackupSavestates;
 			ScreenshotInStatesCheckbox.Checked = Global.Config.SaveScreenshotWithStates;
-			SaveLargeScreenshotsCheckbox.Checked = Global.Config.SaveLargeScreenshotWithStates;
+			LowResLargeScreenshotsCheckbox.Checked = !Global.Config.NoLowResLargeScreenshotWithStates;
 			BigScreenshotNumeric.Value = Global.Config.BigScreenshotSize / 1024;
 
 			ScreenshotInStatesCheckbox_CheckedChanged(null, null);
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotInStatesCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			SaveLargeScreenshotsCheckbox.Enabled =
+			LowResLargeScreenshotsCheckbox.Enabled =
 				BigScreenshotNumeric.Enabled =
 				KbLabel.Enabled =
 				ScreenshotInStatesCheckbox.Checked;
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			if (rbStatesText.Checked) Global.Config.SaveStateType = Config.SaveStateTypeE.Text;
 			Global.Config.BackupSavestates = BackupSavestatesCheckbox.Checked;
 			Global.Config.SaveScreenshotWithStates = ScreenshotInStatesCheckbox.Checked;
-			Global.Config.SaveLargeScreenshotWithStates = SaveLargeScreenshotsCheckbox.Checked;
+			Global.Config.NoLowResLargeScreenshotWithStates = !LowResLargeScreenshotsCheckbox.Checked;
 			Global.Config.BigScreenshotSize = (int)BigScreenshotNumeric.Value * 1024;
 
 			GlobalWin.OSD.AddMessage("Rewind and State settings saved");
@@ -386,6 +386,5 @@ namespace BizHawk.Client.EmuHawk
 			nudCompression.Value = Config.DefaultSaveStateCompressionLevelNormal;
 
 		}
-
 	}
 }

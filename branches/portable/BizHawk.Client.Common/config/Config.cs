@@ -61,12 +61,15 @@ namespace BizHawk.Client.Common
 		public int DispFinalFilter = 0;
 		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
+		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
 		public bool PauseWhenMenuActivated = true;
 		public bool SaveWindowPosition = true;
 		public bool StartPaused = false;
 		public bool StartFullscreen = false;
 		public int MainWndx = -1; // Negative numbers will be ignored
 		public int MainWndy = -1;
+		public int MainWidth = -1;
+		public int MainHeight = -1;
 		public bool RunInBackground = true;
 		public bool AcceptBackgroundInput = false;
 		public bool SingleInstanceMode = false;
@@ -80,7 +83,7 @@ namespace BizHawk.Client.Common
 		public bool BackupSaveram = true;
 		public bool SaveScreenshotWithStates = true;
 		public int BigScreenshotSize = 128 * 1024;
-		public bool SaveLargeScreenshotWithStates = false;
+		public bool NoLowResLargeScreenshotWithStates = false;
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
 		public bool AutofireLagFrames = true;

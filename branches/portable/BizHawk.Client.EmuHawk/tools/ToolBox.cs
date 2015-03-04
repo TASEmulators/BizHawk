@@ -28,8 +28,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ToolBox_Load(object sender, EventArgs e)
 		{
 			Location = new Point(
-				GlobalWin.MainForm.Location.X + GlobalWin.MainForm.Size.Width,
-				GlobalWin.MainForm.Location.Y
+				Owner.Location.X + Owner.Size.Width,
+				Owner.Location.Y
 			);
 		}
 

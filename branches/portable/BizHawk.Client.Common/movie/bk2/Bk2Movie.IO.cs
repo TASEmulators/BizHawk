@@ -60,7 +60,10 @@ namespace BizHawk.Client.Common
 
 							if (pair.Length > 1)
 							{
-								Header.Add(pair[0], pair[1]);
+								if (!Header.ContainsKey(pair[0]))
+								{
+									Header.Add(pair[0], pair[1]);
+								}
 							}
 						}
 					}

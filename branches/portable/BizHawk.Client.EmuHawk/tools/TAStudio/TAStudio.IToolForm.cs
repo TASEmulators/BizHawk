@@ -30,12 +30,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			RefreshDialog();
-
-			if (TasPlaybackBox.FollowCursor) // TODO: we already refreshed in RefreshDialog now we will do it again, make this more efficient
+			if (TasPlaybackBox.FollowCursor)
 			{
 				SetVisibleIndex();
 			}
+
+			RefreshDialog();
 		}
 
 		public void FastUpdate()
@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 					TasView.AllColumns.Clear();
 					NewDefaultProject();
 					SetUpColumns();
-					TasView.Refresh();
+					RefreshTasView();
 				}
 				else
 				{
@@ -125,12 +125,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				indexThatMustBeVisible = CurrentTasMovie.IsRecording
 					? CurrentTasMovie.InputLogLength
-					: Emulator.Frame + 1;
+					: Emulator.Frame;
 			}
 
 			if (!TasView.IsVisible(indexThatMustBeVisible.Value))
 			{
-				TasView.LastVisibleRow = indexThatMustBeVisible.Value;
+				if (TasView.FirstVisibleRow > indexThatMustBeVisible.Value)
+					TasView.FirstVisibleRow = indexThatMustBeVisible.Value;
+				else
+					TasView.LastVisibleRow = indexThatMustBeVisible.Value;
 			}
 		}
 	}

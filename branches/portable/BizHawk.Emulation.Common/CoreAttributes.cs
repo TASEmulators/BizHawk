@@ -11,7 +11,8 @@ namespace BizHawk.Emulation.Common
 			bool isPorted = false,
 			bool isReleased = false,
 			string portedVersion = "",
-			string portedUrl = "")
+			string portedUrl = "",
+			bool singleInstance = false)
 		{
 			CoreName = name;
 			Author = author;
@@ -19,6 +20,7 @@ namespace BizHawk.Emulation.Common
 			Released = isReleased;
 			PortedVersion = portedVersion;
 			PortedUrl = portedUrl;
+			SingleInstance = singleInstance;
 		}
 
 		public string CoreName { get; private set; }
@@ -27,5 +29,6 @@ namespace BizHawk.Emulation.Common
 		public bool Released { get; private set; }
 		public string PortedVersion { get; private set; }
 		public string PortedUrl { get; private set; }
+		public bool SingleInstance { get; private set; }
 	}
 }

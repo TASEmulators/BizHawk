@@ -91,9 +91,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="LuaInterface">
-      <HintPath>..\output\dll\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="OpenTK">
       <HintPath>..\References\OpenTK.dll</HintPath>
@@ -486,6 +483,9 @@
     </Compile>
     <Compile Include="CustomControls\QuickProgressPopup.Designer.cs">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\RepeatButton.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\TransparentTrackbar.cs">
       <SubType>Component</SubType>

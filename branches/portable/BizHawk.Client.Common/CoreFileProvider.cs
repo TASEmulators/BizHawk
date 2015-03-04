@@ -108,13 +108,8 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		// this should go away now
-		public static void SyncCoreCommInputSignals(CoreComm target = null)
+		public static void SyncCoreCommInputSignals(CoreComm target)
 		{
-			if (target == null)
-			{
-				target = Global.CoreComm;
-			}
-
 			var cfp = new CoreFileProvider(target.ShowMessage);
 			target.CoreFileProvider = cfp;
 			cfp.FirmwareManager = Global.FirmwareManager;

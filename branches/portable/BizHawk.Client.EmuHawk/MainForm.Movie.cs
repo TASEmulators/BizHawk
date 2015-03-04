@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				Global.MovieSession.QueueNewMovie(movie, record);
+				Global.MovieSession.QueueNewMovie(movie, record, Global.Emulator);
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
+			LoadRom(CurrentlyOpenRom);
 
 			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
 			{

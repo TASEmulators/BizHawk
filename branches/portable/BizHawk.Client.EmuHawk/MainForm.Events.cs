@@ -943,7 +943,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
-					GlobalWin.PresentationPanel.Resized = true;
+					PresentationPanel.Resized = true;
 				}
 			}
 
@@ -961,7 +961,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.VSyncThrottle = false;
 				if (old)
 				{
-					GlobalWin.PresentationPanel.Resized = true;
+					PresentationPanel.Resized = true;
 				}
 			}
 		}
@@ -969,7 +969,7 @@ namespace BizHawk.Client.EmuHawk
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.VSyncThrottle ^= true;
-			GlobalWin.PresentationPanel.Resized = true;
+			PresentationPanel.Resized = true;
 			if (Global.Config.VSyncThrottle)
 			{
 				Global.Config.ClockThrottle = false;
@@ -989,7 +989,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.VSync ^= true;
 			if (!Global.Config.VSyncThrottle) // when vsync throttle is on, vsync is forced to on, so no change to make here
 			{
-				GlobalWin.PresentationPanel.Resized = true;
+				PresentationPanel.Resized = true;
 			}
 		}
 
@@ -1389,6 +1389,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SMSOverclockMenuItem.Visible =
 				SMSVDPViewerToolStripMenuItem.Visible =
+				toolStripSeparator24.Visible =
 				Global.Game.System != "SG";
 		}
 
@@ -1842,7 +1843,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (new N64ControllersSetup().ShowDialog() == DialogResult.OK)
 			{
-				GlobalWin.MainForm.FlagNeedsReboot();
+				FlagNeedsReboot();
 				GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
 			}
 			else
@@ -2327,8 +2328,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Resize(object sender, EventArgs e)
 		{
-			if(GlobalWin.PresentationPanel != null)
-				GlobalWin.PresentationPanel.Resized = true;
+			PresentationPanel.Resized = true;
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e)

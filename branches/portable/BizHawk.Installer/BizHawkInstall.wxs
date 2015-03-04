@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<?define ProductVersion = "1.9.2"?>
+<?define ProductUpgradeCode = "7F9AD1EE-27D4-48A6-9D28-E959C1C8AD00"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-    <Product Id="56D52B0F-C469-4EE4-A61F-366D9E82757B" Name="BizHawk" Language="1033" Version="1.5.0.0" Manufacturer="WixEdit" UpgradeCode="7E81CB7B-CD7E-441A-B038-D0B3708778AD">
+    <Product Id="*" Name="BizHawk" Language="1033" Version="$(var.ProductVersion)" Manufacturer="BizHawk" UpgradeCode="$(var.ProductUpgradeCode)">
         <Package Description="This installs the BizHawk emulator" Comments="BizHawk Multi System Emulator" InstallerVersion="200" Compressed="yes" />
         <Media Id="1" Cabinet="simple.cab" EmbedCab="yes" />
+      <Icon Id="ProductIcon" SourceFile="..\BizHawk.Client.EmuHawk\images\corphawk.ico" />
+      <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
+      <Property Id="ARPHELPLINK" Value="http://tasvIdeos.org/forum/viewforum.php?f=64" />
+      <Property Id="ARPURLINFOABOUT" Value="http://tasvIdeos.org/BizHawk.html" />
+      <Property Id="ARPNOREPAIR" Value="1" />
+      <Property Id="ARPNOMODIFY" Value="0" />
+      <MajorUpgrade
+        Schedule="afterInstallInitialize"
+        DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+
       <!-- I broke the installer up into features below, although the UI window to select features is not something
       included in the windows defined in the UI section. If we included that window, the user would be able to choose
       if they want to install DiscoHawk, Gameboy Palettes, or the Bundled LUA scripts during the install process.
@@ -11,10 +23,32 @@
             <ComponentRef Id="EMUHAWK.EXE" />
             <ComponentRef Id="DEFCTRL.JSON" />
             <ComponentRef Id="_7Z.DLL" />
-            <ComponentRef Id="AT3PLUSDECODER.DLL" />
-            <ComponentRef Id="BIZHAWK.EMULATION.DLL" />
+            <ComponentRef Id="BIZHAWK.EMULATION.COMMON.DLL" />
             <ComponentRef Id="BIZHAWK.CLIENT.COMMON.DLL" />
-			<ComponentRef Id="BIZHAWK.COMMON.DLL" />
+          <ComponentRef Id="BIZHAWK.BIZWARE.BIZWAREGL.DLL" />
+          <ComponentRef Id="BIZHAWK.BIZWARE.BIZWAREGL.GDIPLUS.DLL" />
+          <ComponentRef Id="BIZHAWK.BIZWARE.BIZWAREGL.OPENTK.DLL" />
+          <ComponentRef Id="BIZHAWK.BIZWARE.BIZWAREGL.SLIMDX.DLL" />
+          <ComponentRef Id="BIZHAWK.EMULATION.CORES.DLL" />
+          <ComponentRef Id="BIZHAWK.EMULATION.DISCSYSTEM.DLL" />
+          <ComponentRef Id="BIZLYNX.DLL" />
+          <ComponentRef Id="BIZSWAN.DLL" />
+          <ComponentRef Id="CSHARP_SQLITE.DLL" />
+          <ComponentRef Id="D3D8.DLL" />
+          <ComponentRef Id="GONGSHELL.DLL" />
+          <ComponentRef Id="IONIC.ZIP.DLL" />
+          <ComponentRef Id="JABO_DIRECT3D8_PATCHED.DLL" />
+          <ComponentRef Id="LIBBIZSNES.DLL" />
+          <ComponentRef Id="LIBDARM.DLL" />
+          <ComponentRef Id="LIBGENPLUSGX.DLL" />
+          <ComponentRef Id="LIBQUICKNES.DLL" />
+          <ComponentRef Id="LIBVBANEXT.DLL" />
+          <ComponentRef Id="MUPEN64PLUS_RSP_Z64_HLEVIDEO.DLL" />
+          <ComponentRef Id="MUPEN64PLUS_VIDEO_JABO.DLL" />
+          <ComponentRef Id="OPENAL32.DLL" />
+          <ComponentRef Id="OPENTK.DLL" />
+          <ComponentRef Id="OPENTK.GLCONTROL.DLL" />
+            <ComponentRef Id="BIZHAWK.COMMON.DLL" />
             <ComponentRef Id="BLIP_BUF.DLL" />
             <ComponentRef Id="EMU7800.DLL" />
             <ComponentRef Id="FFMPEG.EXE" />
@@ -23,13 +57,10 @@
             <ComponentRef Id="ICSHARPCODE.SHARPZIPLIB.DLL" />
             <ComponentRef Id="LIBCO_MSVC_WIN32.DLL" />
             <ComponentRef Id="LIBGAMBATTE.DLL" />
-            <ComponentRef Id="LIBMEDNAHAWK.DLL" />
             <ComponentRef Id="LIBMETEOR.DLL" />
             <ComponentRef Id="LIBPNG12.DLL" />
             <ComponentRef Id="LIBSNESHAWK_32_COMPATIBILITY.EXE" />
             <ComponentRef Id="LIBSNESHAWK_32_PERFORMANCE.EXE" />
-            <ComponentRef Id="LIBSNESHAWK_64_COMPATIBILITY.EXE" />
-            <ComponentRef Id="LIBSNESHAWK_64_PERFORMANCE.EXE" />
             <ComponentRef Id="LIBSPEEXDSP.DLL" />
             <ComponentRef Id="LIBYABAUSE.DLL" />
             <ComponentRef Id="LUA51.DLL" />
@@ -43,25 +74,32 @@
             <ComponentRef Id="MUPEN64PLUS.DLL" />
             <ComponentRef Id="MUSASHIDLL.DLL" />
             <ComponentRef Id="NEWTONSOFT.JSON.DLL" />
-            <ComponentRef Id="PPSSPPBIZHAWK.DLL" />
+            <ComponentRef Id="OCTOSHOCK.DLL"/>
             <ComponentRef Id="SDL.DLL" />
             <ComponentRef Id="SLIMDX.DLL" />
             <ComponentRef Id="ZLIB1.DLL" />
-            <ComponentRef Id="BIOS_INFO.TXT" />
+            <ComponentRef Id="GAME.DB" />
             <ComponentRef Id="EMU7800.CSV" />
             <ComponentRef Id="GAMEDB.TXT" />
             <ComponentRef Id="GAMEDB_A2600.TXT" />
             <ComponentRef Id="GAMEDB_COLECO.TXT" />
             <ComponentRef Id="GAMEDB_GB.TXT" />
             <ComponentRef Id="GAMEDB_GBC.TXT" />
+            <ComponentRef Id="GAMEDB_GBA.TXT" />
+            <ComponentRef Id="GAMEDB_LYNX.TXT" />
             <ComponentRef Id="GAMEDB_N64.TXT" />
             <ComponentRef Id="GAMEDB_NESHOMEBREW.TXT" />
             <ComponentRef Id="GAMEDB_PCE_CD.TXT" />
             <ComponentRef Id="GAMEDB_PCE_HUCARDS.TXT" />
-            <ComponentRef Id="GAMEDB_SEGA_8BIT.TXT" />
+            <ComponentRef Id="GAMEDB_SEGA_GG.TXT" />
             <ComponentRef Id="GAMEDB_SEGA_MD.TXT" />
+            <ComponentRef Id="GAMEDB_SEGA_SMS.TXT" />
+            <ComponentRef Id="GAMEDB_SEGA_SG1000.TXT" />
             <ComponentRef Id="GAMEDB_SNES.TXT" />
             <ComponentRef Id="GAMEDB_VS.TXT" />
+            <ComponentRef Id="GAMEDB_WS.TXT" />
+            <ComponentRef Id="GAMEDB_WSC.TXT" />
+            <ComponentRef Id="GAMEDB_USER.TXT" />
             <ComponentRef Id="NESCARTS.7Z" />
             <ComponentRef Id="UPDATE_GAMEDB.BAT" />
             <ComponentRef Id="WGET.EXE" />
@@ -72,6 +110,9 @@
             <ComponentRef Id="FCEU_13_DEFAULT_NITSUJA.PAL" />
             <ComponentRef Id="FCEU_15_NITSUJA_NEW.PAL" />
             <ComponentRef Id="FCEUX.PAL" />
+            <ComponentRef Id="QUICKNES.PAL" />
+            <ComponentRef Id="SONY_CXA2025AS_US.PAL" />
+            <ComponentRef Id="FIRMWARE" />
             <ComponentRef Id="StartMenuShortcuts" />
         </Feature>
         <Feature Id="DiscoHawk" Title="DiscoHawk Disc Image Tool" Level="1">
@@ -229,7 +270,28 @@
           <ComponentRef Id="SUPER_GHOULS_N_GHOST.LUA" />
           <ComponentRef Id="SUPER_MARIO_WORLD.LUA" />
           <ComponentRef Id="SUPER_METROID.LUA" />
+          <ComponentRef Id="ZapperTarget.lua" />
+          <ComponentRef Id="MovieClock.lua" />
+          <ComponentRef Id="Ys_III.lua" />
+          <ComponentRef Id="CONSOLE.LUA" />
+          <ComponentRef Id="GAMEINFO.LUA" />
+          <ComponentRef Id="JOYPAD_ROUNDTRIP.LUA" />
+          <ComponentRef Id="JOYPAD_SET.LUA" />
+          <ComponentRef Id="JOYPAD_WITHCONTROLLERNUMBERS.LUA" />
+          <ComponentRef Id="UNITTESTS.LUA" />
         </Feature>
+        <Feature Id="Shaders" Title="BizHawk Shaders" Level="1">
+      <ComponentRef Id="BICUBIC_FAST.CG" />
+      <ComponentRef Id="BICUBIC_FAST.GLSL" />
+      <ComponentRef Id="BICUBIC_FAST.CGP" />
+      <ComponentRef Id="BICUBIC_FAST.GLSL_1" />
+      <ComponentRef Id="BIZSCANLINES.CGP" />
+      <ComponentRef Id="BIZSCANLINES.GLSL" />
+      <ComponentRef Id="HQ2X.CG" />
+      <ComponentRef Id="HQ2X.CGP" />
+      <ComponentRef Id="HQ2X.GLSL" />
+      <ComponentRef Id="TEST.CGP" />
+      </Feature>
         <Property Id="WIXUI_INSTALLDIR" Value="BIZHAWK" />
         <UI Id="WixUI_InstallDir">
           <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
@@ -282,8 +344,6 @@
           <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
           <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
           <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
-
-          <Property Id="ARPNOMODIFY" Value="1" />
         </UI>
         <UIRef Id="WixUI_Common" />
         <!-- The dotnet45 variable is defined in the project build tab. The 2012 project is uses .NET 4.5 -->
@@ -294,10 +354,10 @@
           <PropertyRef Id="NETFRAMEWORK40FULL" />
           <Condition Message="This application requires .NET Framework 4.0.">Installed OR NETFRAMEWORK40FULL</Condition>
         <?endif?>
-        <!-- <Property Id="VC2010SP1RUNTIME">
+        <Property Id="VC2010SP1RUNTIME">
             <RegistrySearch Id="VC2010sp1RuntimeCheck" Root="HKLM" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}" Name="InstallDate" Type="raw" />
-          </Property>-->
-        <!-- <Condition Message="This application requires Visual C++ 2010 SP1 runtime">Installed OR VC2010SP1RUNTIME</Condition> -->
+          </Property>
+        <Condition Message="This application requires Visual C++ 2010 SP1 runtime">Installed OR VC2010SP1RUNTIME</Condition>
         <Property Id="DIRECTX90C">
             <RegistrySearch Id="DirectX90Ccheck" Root="HKLM" Key="Software\Microsoft\DirectX" Name="Version" Type="raw" />
         </Property>

@@ -1140,9 +1140,18 @@ pscpu_timestamp_t PS_CDC::Update(const pscpu_timestamp_t timestamp)
     else if(DriveStatus == DS_SEEKING)
     {
      CurSector = SeekTarget;
-     Cur_disc->ReadLBA_PW(pwbuf,CurSector,false);
-     DecodeSubQ(pwbuf);
 
+		 //
+		 // CurSector + x for "Tomb Raider"'s sake, as it relies on behavior that we can't emulate very well without a more accurate CD drive
+		 // emulation model.
+		 //
+		 for(int x = -1; x >= -16; x--)
+		 {
+			 //printf("%d\n", CurSector + x);
+			 Cur_disc->ReadLBA_PW(pwbuf, CurSector + x, false);
+			 if(DecodeSubQ(pwbuf))
+				 break;
+		 }
      DriveStatus = StatusAfterSeek;
 
      if(DriveStatus != DS_PAUSED && DriveStatus != DS_STANDBY)

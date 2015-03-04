@@ -22,7 +22,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "r874",
-		portedUrl: "https://code.google.com/p/genplus-gx/"
+		portedUrl: "https://code.google.com/p/genplus-gx/",
+		singleInstance: true
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable,
 		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
@@ -612,11 +613,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
 							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
-						}));
+						},
+						byteSize: 2));
 				}
+				
 				else
 				{
-					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
+					var byteSize = name.Contains("Z80") ? 1 : 2;
+					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
 				}
 			}
 			MemoryDomains = new MemoryDomainList(mm);

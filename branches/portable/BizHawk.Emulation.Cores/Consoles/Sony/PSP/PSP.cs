@@ -12,7 +12,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		"PPSSPP",
 		"hrydgard",
 		isPorted: true,
-		isReleased: false
+		isReleased: false,
+		singleInstance: true
 		)]
 	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
 	{

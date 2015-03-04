@@ -16,13 +16,13 @@ namespace BizHawk.Client.EmuHawk
 		private AudioContext _context;
 		private int _sourceID;
 		private BufferPool _bufferPool;
-		private long _runningSamplesQueued;
-		private long _runningSamplesPlayed;
+		private int _currentSamplesQueued;
 
 		public OpenALSoundOutput(Sound sound)
 		{
 			_sound = sound;
-			_context = new AudioContext();
+			string deviceName = GetDeviceNames().FirstOrDefault(n => n == Global.Config.SoundDevice);
+			_context = new AudioContext(deviceName, Sound.SampleRate);
 		}
 
 		public void Dispose()
@@ -33,6 +33,12 @@ namespace BizHawk.Client.EmuHawk
 			_context = null;
 
 			_disposed = true;
+		}
+
+		public static IEnumerable<string> GetDeviceNames()
+		{
+			if (!Alc.IsExtensionPresent(IntPtr.Zero, "ALC_ENUMERATION_EXT")) return Enumerable.Empty<string>();
+			return Alc.GetString(IntPtr.Zero, AlcGetStringList.AllDevicesSpecifier);
 		}
 
 		private int BufferSizeSamples { get; set; }
@@ -52,8 +58,7 @@ namespace BizHawk.Client.EmuHawk
 			_sourceID = AL.GenSource();
 
 			_bufferPool = new BufferPool();
-			_runningSamplesQueued = 0;
-			_runningSamplesPlayed = 0;
+			_currentSamplesQueued = 0;
 		}
 
 		public void StopSound()
@@ -70,14 +75,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CalculateSamplesNeeded()
 		{
-			bool isInitializing = _runningSamplesQueued == 0;
-			bool detectedUnderrun = !isInitializing && GetSource(ALGetSourcei.BuffersProcessed) == GetSource(ALGetSourcei.BuffersQueued);
+			int currentSamplesPlayed = GetSource(ALGetSourcei.SampleOffset);
+			ALSourceState sourceState = AL.GetSourceState(_sourceID);
+			bool isInitializing = sourceState == ALSourceState.Initial;
+			bool detectedUnderrun = sourceState == ALSourceState.Stopped;
 			if (detectedUnderrun)
 			{
 				_sound.OnUnderrun();
+				// SampleOffset should reset to 0 when stopped; update the queued sample count to match
+				UnqueueProcessedBuffers();
+				currentSamplesPlayed = 0;
 			}
-			UnqueueProcessedBuffers();
-			long samplesAwaitingPlayback = _runningSamplesQueued - (_runningSamplesPlayed + GetSource(ALGetSourcei.SampleOffset));
+			int samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
 			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
@@ -94,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			var buffer = _bufferPool.Obtain(byteCount);
 			AL.BufferData(buffer.BufferID, ALFormat.Stereo16, samples, byteCount, Sound.SampleRate);
 			AL.SourceQueueBuffer(_sourceID, buffer.BufferID);
-			_runningSamplesQueued += sampleCount;
+			_currentSamplesQueued += sampleCount;
 			if (AL.GetSourceState(_sourceID) != ALSourceState.Playing)
 			{
 				AL.SourcePlay(_sourceID);
@@ -104,12 +113,11 @@ namespace BizHawk.Client.EmuHawk
 		private void UnqueueProcessedBuffers()
 		{
 			int releaseCount = GetSource(ALGetSourcei.BuffersProcessed);
-			while (releaseCount > 0)
+			for (int i = 0; i < releaseCount; i++)
 			{
 				AL.SourceUnqueueBuffer(_sourceID);
 				var releasedBuffer = _bufferPool.ReleaseOne();
-				_runningSamplesPlayed += releasedBuffer.Length / Sound.BlockAlign;
-				releaseCount--;
+				_currentSamplesQueued -= releasedBuffer.Length / Sound.BlockAlign;
 			}
 		}
 
@@ -122,7 +130,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BufferPool : IDisposable
 		{
-			private List<BufferPoolItem> _availableItems = new List<BufferPoolItem>();
+			private Stack<BufferPoolItem> _availableItems = new Stack<BufferPoolItem>();
 			private Queue<BufferPoolItem> _obtainedItems = new Queue<BufferPoolItem>();
 
 			public void Dispose()
@@ -137,24 +145,16 @@ namespace BizHawk.Client.EmuHawk
 
 			public BufferPoolItem Obtain(int length)
 			{
-				BufferPoolItem item = GetAvailableItem() ?? new BufferPoolItem();
+				BufferPoolItem item = _availableItems.Count != 0 ? _availableItems.Pop() : new BufferPoolItem();
 				item.Length = length;
 				_obtainedItems.Enqueue(item);
-				return item;
-			}
-
-			private BufferPoolItem GetAvailableItem()
-			{
-				if (_availableItems.Count == 0) return null;
-				BufferPoolItem item = _availableItems[0];
-				_availableItems.RemoveAt(0);
 				return item;
 			}
 
 			public BufferPoolItem ReleaseOne()
 			{
 				BufferPoolItem item = _obtainedItems.Dequeue();
-				_availableItems.Add(item);
+				_availableItems.Push(item);
 				return item;
 			}
 

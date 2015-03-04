@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 {
 	public enum MovieEndAction { Stop, Pause, Record, Finish }
 
-	public class MovieSession
+	public class MovieSession : IMovieSession
 	{
 		public MovieSession()
 		{
@@ -135,6 +135,12 @@ namespace BizHawk.Client.Common
 		public void LatchInputFromLog()
 		{
 			var input = Movie.GetInputState(Global.Emulator.Frame);
+
+			if (Movie is TasMovie) // Hack city, GetInputState can't run this code because all sorts of places call it, we only want to do this during this playback loop
+			{
+				(Movie as TasMovie).GreenzoneCurrentFrame();
+			}
+
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
 			{
@@ -437,35 +443,35 @@ namespace BizHawk.Client.Common
 
 		// The behavior here is to only temporarily override these settings when playing a movie and then restore the user's preferred settings
 		// A more elegant approach would be appreciated
-		public bool? PreviousNES_InQuickNES = null;
-		public bool? PreviousSNES_InSnes9x = null;
+		public bool? PreviousNES_InQuickNES { get; set; }
+		public bool? PreviousSNES_InSnes9x { get; set; }
 
-		public void QueueNewMovie(IMovie movie, bool record)
+		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
 			{
 				movie.Load();
-				if (movie.SystemID != Global.Emulator.SystemId)
+				if (movie.SystemID != emulator.SystemId)
 				{
 					throw new MoviePlatformMismatchException(
 						string.Format(
 						"Movie system Id ({0}) does not match the currently loaded platform ({1}), unable to load",
 						movie.SystemID,
-						Global.Emulator.SystemId));
+						emulator.SystemId));
 				}
 			}
 
 			//If a movie is already loaded, save it before starting a new movie
-			if (Global.MovieSession.Movie.IsActive && !string.IsNullOrEmpty(Global.MovieSession.Movie.Filename))
+			if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
 			{
-				Global.MovieSession.Movie.Save();
+				Movie.Save();
 			}
 
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
 			InputManager.RewireInputChain();
 
-			if (!record && Global.Emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
+			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 			{
 				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
 				var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
@@ -482,7 +488,7 @@ namespace BizHawk.Client.Common
 					Global.Config.NES_InQuickNES = false;
 				}
 			}
-			else if (!record && Global.Emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
+			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
 			{
 				var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
 				var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;

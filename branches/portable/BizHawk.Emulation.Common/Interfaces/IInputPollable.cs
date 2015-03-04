@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public interface IInputPollable : IEmulatorService, IEmulator
+	public interface IInputPollable : IEmulatorService
 	{
 		/// <summary>
 		/// The lag count.

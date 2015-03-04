@@ -444,6 +444,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
+			DataSize = _domain.ByteSize;
 			SetDataSize(DataSize);
 
 			if (RecentTables.AutoLoad)
@@ -1198,15 +1199,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.FileName = Path.GetFileNameWithoutExtension(Global.Config.RecentRoms.MostRecent) + ".tbl";
-			ofd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
-			ofd.Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*";
-			ofd.RestoreDirectory = false;
+			string romName;
+			string intialDirectory;
+			if (Global.Config.RecentRoms.MostRecent.Contains('|'))
+			{
+				romName = Global.Config.RecentRoms.MostRecent.Split('|').Last();
+				intialDirectory = Global.Config.RecentRoms.MostRecent.Split('|').First();
+			}
+			else
+			{
+				romName = Global.Config.RecentRoms.MostRecent;
+				intialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(romName, null));
+			}
 
-			GlobalWin.Sound.StopSound();
-			var result = ofd.ShowDialog();
-			GlobalWin.Sound.StartSound();
+			var ofd = new OpenFileDialog
+			{
+				FileName = Path.GetFileNameWithoutExtension(romName) + ".tbl",
+				InitialDirectory = intialDirectory,
+				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
+				RestoreDirectory = false
+			};
+
+			var result = ofd.ShowHawkDialog();
 
 			if (result == DialogResult.OK)
 			{

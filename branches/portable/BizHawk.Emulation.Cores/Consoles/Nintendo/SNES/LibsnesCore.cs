@@ -1039,13 +1039,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						blockptr[a.Value] = val;
-				});			
+				}, byteSize: 2);
 			_memoryDomains.Add(md);
 		}
 
 
 		// ----- Client Debugging API stuff -----
-		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian)
+		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian, int byteSize = 1)
 		{
 			int size = api.QUERY_get_memory_size(id);
 			int mask = size - 1;
@@ -1067,17 +1067,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				if (size != 544) throw new InvalidOperationException("oam size isnt 544 bytes.. wtf?");
 				md = new MemoryDomain(name, size, endian,
 				   (addr) => (addr < 544) ? blockptr[addr] : (byte)0x00,
-					 (addr, value) => { if (addr < 544) blockptr[addr] = value; }
-					 );
+					 (addr, value) => { if (addr < 544) blockptr[addr] = value; },
+					 byteSize);
 			}
 			else if(pow2)
 				md = new MemoryDomain(name, size, endian,
 						(addr) => blockptr[addr & mask],
-						(addr, value) => blockptr[addr & mask] = value);
+						(addr, value) => blockptr[addr & mask] = value, byteSize);
 			else
 				md = new MemoryDomain(name, size, endian,
 						(addr) => blockptr[addr % size],
-						(addr, value) => blockptr[addr % size] = value);
+						(addr, value) => blockptr[addr % size] = value, byteSize);
 
 			_memoryDomains.Add(md);
 
@@ -1120,18 +1120,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, MemoryDomain.Endian.Little);
 
 
-				MakeMemoryDomain("CARTROM", LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, MemoryDomain.Endian.Little);
+				MakeMemoryDomain("CARTROM", LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, MemoryDomain.Endian.Little, byteSize: 2);
 
 				if (!DeterministicEmulation)
 				{
 					_memoryDomains.Add(new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 						(addr) => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
-						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
+						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val), byteSize: 2));
 				}
 				else
 				{

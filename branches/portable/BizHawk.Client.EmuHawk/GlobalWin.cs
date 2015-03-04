@@ -1,8 +1,6 @@
 ﻿using BizHawk.Client.Common;
 using BizHawk.Bizware.BizwareGL;
-#if WINDOWS
-using SlimDX.DirectSound;
-#endif
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -14,14 +12,8 @@ namespace BizHawk.Client.EmuHawk
 		public static Bizware.BizwareGL.Drivers.OpenTK.IGL_TK IGL_GL;
 		public static GLManager.ContextRef CR_GL;
 		public static Sound Sound;
-		public static PresentationPanel PresentationPanel;
 		public static OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager;
 		public static GLManager GLManager;
-
-		//input state which has been destined for game controller inputs are coalesced here
-		//public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
-		//input state which has been destined for client hotkey consumption are colesced here
-		public static InputCoalescer HotkeyCoalescer = new InputCoalescer();
 	}
 }

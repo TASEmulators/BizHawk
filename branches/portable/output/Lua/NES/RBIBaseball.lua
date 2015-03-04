@@ -58,12 +58,12 @@ local topinningAddr = 0x0115
 --Outs display is wrong
 --Music on/off toggle
 
-console.output("RBI Baseball script");
-console.output("Written by adelikat");
-console.output("Description: Shows stats and information on screen and can even change a batter or pitcher's hand");
-console.output("\nHotkeys: ");
-console.output("Toggle Hand of player 2: \nH/J");
-console.output("Toggle Hand of player 1: \nK/L");
+console.writeline("RBI Baseball script");
+console.writeline("Written by adelikat");
+console.writeline("Description: Shows stats and information on screen and can even change a batter or pitcher's hand");
+console.writeline("\nHotkeys: ");
+console.writeline("Toggle Hand of player 2: \nH/J");
+console.writeline("Toggle Hand of player 1: \nK/L");
 
 function P1BoostHitter()
 	mainmemory.write_u16_le(0x062B, mainmemory.read_u16_le(0x062B) + 128);

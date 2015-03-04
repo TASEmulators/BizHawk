@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
-        private BackgroundWorker _saveBackgroundWorker;
+		private BackgroundWorker _saveBackgroundWorker;
 
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private Dictionary<string, string> GenerateColumnNames()
@@ -67,38 +67,10 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Settings = new TAStudioSettings();
 
-            // TODO: show this at all times or hide it when saving is done?
-            this.SavingProgressBar.Visible = false;
-            
-            _saveBackgroundWorker = new BackgroundWorker();
-            _saveBackgroundWorker.WorkerReportsProgress = true;
-            _saveBackgroundWorker.DoWork += (s, e) =>
-            {
-                this.Invoke(() => this.MessageStatusLabel.Text = "Saving " + Path.GetFileName(CurrentTasMovie.Filename) + "...");
-                this.Invoke(() => this.SavingProgressBar.Visible = true);
-                CurrentTasMovie.Save();
-            };
+			// TODO: show this at all times or hide it when saving is done?
+			this.SavingProgressBar.Visible = false;
 
-            _saveBackgroundWorker.ProgressChanged += (s, e) =>
-            {
-                SavingProgressBar.Value = e.ProgressPercentage;
-            };
-
-            _saveBackgroundWorker.RunWorkerCompleted += (s, e) =>
-            {
-                this.Invoke(() => this.MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.");
-                this.Invoke(() => this.SavingProgressBar.Visible = false);
-
-                // SUPER HACKY, and i'm not even sure it's necessary
-                Timer t = new Timer();
-                t.Tick += (a, b) =>
-                {
-                    this.Invoke(() => this.MessageStatusLabel.Text = "TAStudio engaged.");
-                    t.Stop();
-                };
-                t.Interval = 5000;
-                t.Start();
-            };
+			InitializeSaveWorker();
 
 			WantsToControlStopMovie = true;
 			TasPlaybackBox.Tastudio = this;
@@ -107,12 +79,47 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
+			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
 			WantsToControlRestartMovie = true;
-            
+
+		}
+
+		private void InitializeSaveWorker()
+		{
+			if (_saveBackgroundWorker != null)
+			{
+				_saveBackgroundWorker.Dispose();
+				_saveBackgroundWorker = null; // Idk if this line is even useful.
+			}
+
+			_saveBackgroundWorker = new BackgroundWorker();
+			_saveBackgroundWorker.WorkerReportsProgress = true;
+			_saveBackgroundWorker.DoWork += (s, e) =>
+			{
+				this.Invoke(() => this.MessageStatusLabel.Text = "Saving " + Path.GetFileName(CurrentTasMovie.Filename) + "...");
+				this.Invoke(() => this.SavingProgressBar.Visible = true);
+				CurrentTasMovie.Save();
+			};
+
+			_saveBackgroundWorker.ProgressChanged += (s, e) =>
+			{
+				SavingProgressBar.Value = e.ProgressPercentage;
+			};
+
+			_saveBackgroundWorker.RunWorkerCompleted += (s, e) =>
+			{
+				this.Invoke(() => this.MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.");
+				this.Invoke(() => this.SavingProgressBar.Visible = false);
+
+				InitializeSaveWorker(); // Required, or it will error when trying to report progress again.
+			};
+
+			if (CurrentTasMovie != null) // Again required. TasMovie has a separate reference.
+				CurrentTasMovie.NewBGWorker(_saveBackgroundWorker);
 		}
 
 		private void TastudioToStopMovie()
@@ -219,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 		private void GetClientSettingsOnLoad(string settingsJson)
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
-			TasView.Refresh();
+			RefreshTasView();
 		}
 
 		private void SetTextProperty()
@@ -285,7 +292,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog()
 		{
-			CurrentTasMovie.FlushInputCache();
+			RefreshTasView();
+
+			if (MarkerControl != null)
+				MarkerControl.UpdateValues();
+			
+		}
+
+		private void RefreshTasView()
+		{
 			CurrentTasMovie.UseInputCache = true;
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 			TasView.Refresh();
@@ -293,10 +308,6 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
-			if (MarkerControl != null)
-			{
-				MarkerControl.UpdateValues();
-			}
 		}
 
 		private void DoAutoRestore()
@@ -319,8 +330,19 @@ namespace BizHawk.Client.EmuHawk
 			AddColumn(MarkerColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
-			foreach (var kvp in GenerateColumnNames())
+			var columnNames = GenerateColumnNames();
+			foreach (var kvp in columnNames)
 			{
+				// N64 hack for now, for fake analog
+				if (Emulator.SystemId == "N64")
+				{
+					if (kvp.Key.Contains("A Up") || kvp.Key.Contains("A Down") ||
+					kvp.Key.Contains("A Left") || kvp.Key.Contains("A Right"))
+					{
+						continue;
+					}
+				}
+
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
 		}
@@ -397,7 +419,7 @@ namespace BizHawk.Client.EmuHawk
 				message += list.Count() + " none, Clipboard: ";
 			}
 
-			message += _tasClipboard.Any() ? _tasClipboard.Count + " rows 0 col": "empty";
+			message += _tasClipboard.Any() ? _tasClipboard.Count + " rows 0 col" : "empty";
 
 			SplicerStatusLabel.Text = message;
 		}
@@ -417,7 +439,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				CurrentTasMovie.Markers.Add(markerFrame, i.PromptText);
+				AddMarker(markerFrame, i.PromptText);
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -437,7 +459,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				marker.Message = i.PromptText;
+				EditMarker(marker, i.PromptText);
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -451,28 +473,27 @@ namespace BizHawk.Client.EmuHawk
 		// Sets either the pending frame or the tas input log
 		private void ToggleBoolState(int frame, string buttonName)
 		{
-			if (frame < CurrentTasMovie.InputLogLength)
-			{
-				CurrentTasMovie.ToggleBoolState(frame, buttonName);
-			}
-			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.Toggle(buttonName);
-			}
+			CurrentTasMovie.ToggleBoolState(frame, buttonName);
 		}
 
 		// TODO: move me
 		// Sets either the pending frame or the tas input log
 		private void SetBoolState(int frame, string buttonName, bool value)
 		{
+			CurrentTasMovie.SetBoolState(frame, buttonName, value);
+		}
+
+		private float GetFloatValue(int frame, string buttonName)
+		{
 			if (frame < CurrentTasMovie.InputLogLength)
-			{
-				CurrentTasMovie.SetBoolState(frame, buttonName, value);
-			}
+				return CurrentTasMovie.GetFloatValue(frame, buttonName);
 			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-			{
-				Global.ClickyVirtualPadController.SetBool(buttonName, value);
-			}
+				return Global.StickyXORAdapter.GetFloat(buttonName);
+			return 0; // ? Should I do it differently so it will error instead?
+		}
+		private void SetFloatValue(int frame, string buttonName, float value)
+		{
+			CurrentTasMovie.SetFloatState(frame, buttonName, value);
 		}
 
 		private void SetColumnsFromCurrentStickies()
@@ -521,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_triggerAutoRestore = false;
 				_triggerAutoRestoreFromFrame = null;
-				
+
 			}
 		}
 
@@ -559,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			if(!InitializeOnLoad())
+			if (!InitializeOnLoad())
 			{
 				Close();
 				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -582,6 +603,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
+
+			/* adelikat: Hack to remove Undo History for now, it shouldn't be on the main window anyway, make it a modeless dialog */
+			groupBox2.Visible = false;
+			groupBox1.Size = new System.Drawing.Size(groupBox1.Width, groupBox1.Height + 85);
 		}
 
 		private bool InitializeOnLoad()
@@ -688,7 +713,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return true;
 			}
-			
+
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
@@ -714,6 +739,25 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkerContextMenuItem_Click(object sender, EventArgs e)
 		{
 			MarkerControl.RemoveMarker();
+		}
+
+		// TODO: Move AddMarkerChange calls to TasMovieMarker.cs
+		public void AddMarker(int markerFrame, string message)
+		{
+			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
+			CurrentTasMovie.Markers.Add(marker);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker);
+		}
+		public void RemoveMarker(TasMovieMarker marker)
+		{
+			CurrentTasMovie.Markers.Remove(marker);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(null, marker.Frame, marker.Message);
+		}
+		public void EditMarker(TasMovieMarker marker, string message)
+		{
+			string old = marker.Message;
+			marker.Message = message;
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
 		}
 	}
 }

@@ -1177,8 +1177,7 @@ namespace BizHawk.Client.Common
 			public Settings(IMemoryDomains memoryDomains)
 			{
 				BigEndian = memoryDomains.MainMemory.EndianType == MemoryDomain.Endian.Big;
-				// TODO: Fetch this default from the IMemoryDomains object when that's implemented.
-				Size = (Watch.WatchSize)Global.SystemInfo.ByteSize;
+				Size = (Watch.WatchSize)memoryDomains.MainMemory.ByteSize;
 				Type = Watch.DisplayType.Unsigned;
 				Mode = memoryDomains.MainMemory.Size > (1024 * 1024) ?
 					SearchMode.Fast :

@@ -219,10 +219,10 @@ namespace BizHawk.Client.EmuHawk
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			//TODO GL - a lot of disorganized wiring-up here
-			GlobalWin.PresentationPanel = new PresentationPanel();
-			GlobalWin.DisplayManager = new DisplayManager(GlobalWin.PresentationPanel);
-			Controls.Add(GlobalWin.PresentationPanel);
-			Controls.SetChildIndex(GlobalWin.PresentationPanel, 0);
+			PresentationPanel = new PresentationPanel();
+			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
+			Controls.Add(PresentationPanel);
+			Controls.SetChildIndex(PresentationPanel, 0);
 
 			//TODO GL - move these event handlers somewhere less obnoxious line in the On* overrides
 			Load += (o, e) =>
@@ -266,9 +266,9 @@ namespace BizHawk.Client.EmuHawk
 				_inResizeLoop = false;
 				SetWindowText();
 
-				if (GlobalWin.PresentationPanel != null)
+				if (PresentationPanel != null)
 				{
-					GlobalWin.PresentationPanel.Resized = true;
+					PresentationPanel.Resized = true;
 				}
 
 				if (GlobalWin.Sound != null)
@@ -279,10 +279,11 @@ namespace BizHawk.Client.EmuHawk
 
 			Input.Initialize();
 			InitControls();
-			Global.CoreComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
-			Global.ActiveController = Global.NullControls;
+
+			var comm = CreateCoreComm();
+			CoreFileProvider.SyncCoreCommInputSignals(comm);
+			Global.Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
+			Global.ActiveController = new Controller(NullEmulator.NullController);
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 			try { GlobalWin.Sound = new Sound(Handle); }
@@ -298,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			GlobalWin.Sound.StartSound();
 			InputManager.RewireInputChain();
-			GlobalWin.Tools = new ToolManager();
+			GlobalWin.Tools = new ToolManager(this);
 			RewireSound();
 
 			// Workaround for windows, location is -32000 when minimized, if they close it during this time, that's what gets saved
@@ -425,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 			SynchChrome();
 
 			//TODO POOP
-			GlobalWin.PresentationPanel.Control.Paint += (o, e) =>
+			PresentationPanel.Control.Paint += (o, e) =>
 			{
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
@@ -460,7 +461,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 			ProcessInput();
-			Global.ClientControls.LatchFromPhysical(GlobalWin.HotkeyCoalescer);
+				Global.ClientControls.LatchFromPhysical(HotkeyCoalescer);
 
 			Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
@@ -621,51 +622,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// TODO: SystemInfo should be able to do this
-		// Because we don't have enough places where we list SystemID's
-		public Dictionary<string, string> SupportedPlatforms
-		{
-			get
-			{
-				var released = new Dictionary<string, string>
-				{
-					{ "A26", "Atari 2600" },
-					{ "A78", "Atari 7800" },
-					{ "Lynx", "Atari Lynx" },
-
-					{ "NES", "Nintendo Entertainment System/Famicom" },
-					{ "SNES", "Super Nintendo" },
-					{ "N64", "Nintendo 64" },
-
-					{ "GB", "Game Boy" },
-					{ "GBC", "Game Boy Color" },
-					{ "GBA", "Gameboy Advance" },
-
-					{ "PSX", "Playstation" },
-
-					{ "SMS", "Sega Master System" },
-					{ "GG", "Sega Game Gear" },
-					{ "SG", "SG-1000" },
-					{ "GEN", "Sega Genesis/Megadrive" },
-					{ "SAT", "Sega Saturn" },
-
-					{ "PCE", "PC Engine/TurboGrafx 16" },
-
-					{ "Coleco", "Colecovision" },
-					{ "TI83", "TI-83 Calculator" },
-
-					{ "WSWAN", "WonderSwan" },
-				};
-
-				if (VersionInfo.DeveloperBuild)
-				{
-					released.Add("C64", "Commodore 64");
-				}
-
-				return released;
-			}
-		}
-
 		#endregion
 
 		#region Public Methods
@@ -793,7 +749,7 @@ namespace BizHawk.Client.EmuHawk
 						// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							GlobalWin.HotkeyCoalescer.Receive(ie);
+							HotkeyCoalescer.Receive(ie);
 						}
 
 						break;
@@ -810,7 +766,7 @@ namespace BizHawk.Client.EmuHawk
 							// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 							if (!handled)
 							{
-								GlobalWin.HotkeyCoalescer.Receive(ie);
+								HotkeyCoalescer.Receive(ie);
 							}
 						}
 						break;
@@ -824,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 						// hotkeys which arent handled as actions get coalesced as pollable virtual client buttons
 						if (!handled)
 						{
-							GlobalWin.HotkeyCoalescer.Receive(ie);
+							HotkeyCoalescer.Receive(ie);
 							conInput.Receive(ie);
 						}
 
@@ -933,8 +889,8 @@ namespace BizHawk.Client.EmuHawk
 				int zoom = Global.Config.TargetZoomFactor;
 				var area = Screen.FromControl(this).WorkingArea;
 
-				int borderWidth = Size.Width - GlobalWin.PresentationPanel.Control.Size.Width;
-				int borderHeight = Size.Height - GlobalWin.PresentationPanel.Control.Size.Height;
+				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;
+				int borderHeight = Size.Height - PresentationPanel.Control.Size.Height;
 
 				// start at target zoom and work way down until we find acceptable zoom
 				Size lastComputedSize = new Size(1, 1);
@@ -952,7 +908,7 @@ namespace BizHawk.Client.EmuHawk
 				// Change size
 				Size = new Size((lastComputedSize.Width) + borderWidth, ((lastComputedSize.Height) + borderHeight));
 				PerformLayout();
-				GlobalWin.PresentationPanel.Resized = true;
+				PresentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
 				if (area.Contains(Bounds) == false)
@@ -1038,7 +994,7 @@ namespace BizHawk.Client.EmuHawk
 				WindowState = FormWindowState.Maximized; //be sure to do this after setting the chrome, otherwise it wont work fully
 				ResumeLayout();
 
-				GlobalWin.PresentationPanel.Resized = true;
+				PresentationPanel.Resized = true;
 			}
 			else
 			{
@@ -1300,6 +1256,13 @@ namespace BizHawk.Client.EmuHawk
 		Bitmap StatusBarDiskLightOnImage, StatusBarDiskLightOffImage;
 		Bitmap LinkCableOn, LinkCableOff;
 
+		// input state which has been destined for game controller inputs are coalesced here
+		// public static ControllerInputCoalescer ControllerInputCoalescer = new ControllerInputCoalescer();
+		// input state which has been destined for client hotkey consumption are colesced here
+		private readonly InputCoalescer HotkeyCoalescer = new InputCoalescer();
+
+		public PresentationPanel PresentationPanel { get; set; }
+
 		#endregion
 
 		#region Private methods
@@ -1322,7 +1285,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_inResizeLoop)
 			{
-				var size = GlobalWin.PresentationPanel.NativeSize;
+				var size = PresentationPanel.NativeSize;
 				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
 			}
 
@@ -1662,8 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Global.ClientControls = controls;
-			Global.NullControls = new Controller(NullEmulator.NullController);
-			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController);
+			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Global.Emulator);
 
 		}
 
@@ -2995,7 +2957,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var token = aw.AcquireVideoCodecToken(GlobalWin.MainForm);
+					var token = aw.AcquireVideoCodecToken(this);
 					if (token == null)
 					{
 						GlobalWin.OSD.AddMessage("A/V capture canceled.");
@@ -3344,9 +3306,8 @@ namespace BizHawk.Client.EmuHawk
 			if (result)
 							{
 				Global.Emulator = loader.LoadedEmulator;
-				Global.CoreComm = nextComm;
 				Global.Game = loader.Game;
-				CoreFileProvider.SyncCoreCommInputSignals();
+				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 				InputManager.SyncControls();
 
 				if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
@@ -3554,10 +3515,10 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.CheatList.SaveOnClose();
 			Global.Emulator.Dispose();
-			Global.CoreComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals();
-			Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
-			Global.ActiveController = Global.NullControls;
+			var coreComm = CreateCoreComm();
+			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
+			Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			Global.ActiveController = new Controller(NullEmulator.NullController);
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
@@ -3573,9 +3534,9 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.AskSave())
 			{
 				CloseGame(clearSram);
-				Global.CoreComm = CreateCoreComm();
-				CoreFileProvider.SyncCoreCommInputSignals();
-				Global.Emulator = new NullEmulator(Global.CoreComm, Global.Config.GetCoreSettings<NullEmulator>());
+				var coreComm = CreateCoreComm();
+				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
+				Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();

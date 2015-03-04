@@ -62,6 +62,9 @@
 			this.MediumStateSizeLabel = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label19 = new System.Windows.Forms.Label();
+			this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label18 = new System.Windows.Forms.Label();
 			this.label17 = new System.Windows.Forms.Label();
 			this.RewindIsThreadedCheckbox = new System.Windows.Forms.CheckBox();
 			this.label4 = new System.Windows.Forms.Label();
@@ -90,7 +93,7 @@
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.KbLabel = new System.Windows.Forms.Label();
 			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
-			this.SaveLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
+			this.LowResLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
 			this.ScreenshotInStatesCheckbox = new System.Windows.Forms.CheckBox();
@@ -98,9 +101,7 @@
 			this.label16 = new System.Windows.Forms.Label();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
-			this.label18 = new System.Windows.Forms.Label();
-			this.RewindSpeedNumeric = new System.Windows.Forms.NumericUpDown();
-			this.label19 = new System.Windows.Forms.Label();
+			this.label20 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -111,6 +112,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.MediumStateUpDown)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).BeginInit();
 			this.groupBox3.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).BeginInit();
 			this.groupBox4.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -118,7 +120,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.nudCompression)).BeginInit();
 			this.groupBox7.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -534,6 +535,46 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Rewind Options";
 			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(128, 21);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(12, 13);
+			this.label19.TabIndex = 2;
+			this.label19.Text = "x";
+			// 
+			// RewindSpeedNumeric
+			// 
+			this.RewindSpeedNumeric.Location = new System.Drawing.Point(90, 19);
+			this.RewindSpeedNumeric.Maximum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+			this.RewindSpeedNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.RewindSpeedNumeric.Name = "RewindSpeedNumeric";
+			this.RewindSpeedNumeric.Size = new System.Drawing.Size(36, 20);
+			this.RewindSpeedNumeric.TabIndex = 1;
+			this.RewindSpeedNumeric.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// label18
+			// 
+			this.label18.AutoSize = true;
+			this.label18.Location = new System.Drawing.Point(6, 21);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(78, 13);
+			this.label18.TabIndex = 0;
+			this.label18.Text = "Rewind speed:";
+			// 
 			// label17
 			// 
 			this.label17.AutoSize = true;
@@ -807,9 +848,10 @@
 			// 
 			// groupBox7
 			// 
+			this.groupBox7.Controls.Add(this.label20);
 			this.groupBox7.Controls.Add(this.KbLabel);
 			this.groupBox7.Controls.Add(this.BigScreenshotNumeric);
-			this.groupBox7.Controls.Add(this.SaveLargeScreenshotsCheckbox);
+			this.groupBox7.Controls.Add(this.LowResLargeScreenshotsCheckbox);
 			this.groupBox7.Controls.Add(this.label13);
 			this.groupBox7.Controls.Add(this.label14);
 			this.groupBox7.Controls.Add(this.ScreenshotInStatesCheckbox);
@@ -831,7 +873,7 @@
 			// KbLabel
 			// 
 			this.KbLabel.AutoSize = true;
-			this.KbLabel.Location = new System.Drawing.Point(254, 223);
+			this.KbLabel.Location = new System.Drawing.Point(276, 271);
 			this.KbLabel.Name = "KbLabel";
 			this.KbLabel.Size = new System.Drawing.Size(21, 13);
 			this.KbLabel.TabIndex = 33;
@@ -839,7 +881,7 @@
 			// 
 			// BigScreenshotNumeric
 			// 
-			this.BigScreenshotNumeric.Location = new System.Drawing.Point(194, 219);
+			this.BigScreenshotNumeric.Location = new System.Drawing.Point(212, 267);
 			this.BigScreenshotNumeric.Maximum = new decimal(new int[] {
             8192,
             0,
@@ -859,20 +901,20 @@
             0,
             0});
 			// 
-			// SaveLargeScreenshotsCheckbox
+			// LowResLargeScreenshotsCheckbox
 			// 
-			this.SaveLargeScreenshotsCheckbox.AutoSize = true;
-			this.SaveLargeScreenshotsCheckbox.Location = new System.Drawing.Point(45, 220);
-			this.SaveLargeScreenshotsCheckbox.Name = "SaveLargeScreenshotsCheckbox";
-			this.SaveLargeScreenshotsCheckbox.Size = new System.Drawing.Size(146, 17);
-			this.SaveLargeScreenshotsCheckbox.TabIndex = 31;
-			this.SaveLargeScreenshotsCheckbox.Text = "And large screenshots >=";
-			this.SaveLargeScreenshotsCheckbox.UseVisualStyleBackColor = true;
+			this.LowResLargeScreenshotsCheckbox.AutoSize = true;
+			this.LowResLargeScreenshotsCheckbox.Location = new System.Drawing.Point(21, 269);
+			this.LowResLargeScreenshotsCheckbox.Name = "LowResLargeScreenshotsCheckbox";
+			this.LowResLargeScreenshotsCheckbox.Size = new System.Drawing.Size(195, 17);
+			this.LowResLargeScreenshotsCheckbox.TabIndex = 31;
+			this.LowResLargeScreenshotsCheckbox.Text = "Low Res Screenshots on buffers >=";
+			this.LowResLargeScreenshotsCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(42, 254);
+			this.label13.Location = new System.Drawing.Point(21, 235);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(186, 13);
 			this.label13.TabIndex = 30;
@@ -881,7 +923,7 @@
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(42, 239);
+			this.label14.Location = new System.Drawing.Point(19, 221);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(290, 13);
 			this.label14.TabIndex = 29;
@@ -935,45 +977,14 @@
 			this.label12.TabIndex = 24;
 			this.label12.Text = "Compression Level";
 			// 
-			// label18
+			// label20
 			// 
-			this.label18.AutoSize = true;
-			this.label18.Location = new System.Drawing.Point(6, 21);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(78, 13);
-			this.label18.TabIndex = 0;
-			this.label18.Text = "Rewind speed:";
-			// 
-			// RewindSpeedNumeric
-			// 
-			this.RewindSpeedNumeric.Location = new System.Drawing.Point(90, 19);
-			this.RewindSpeedNumeric.Maximum = new decimal(new int[] {
-            4,
-            0,
-            0,
-            0});
-			this.RewindSpeedNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.RewindSpeedNumeric.Name = "RewindSpeedNumeric";
-			this.RewindSpeedNumeric.Size = new System.Drawing.Size(36, 20);
-			this.RewindSpeedNumeric.TabIndex = 1;
-			this.RewindSpeedNumeric.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
-			// label19
-			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(128, 21);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(12, 13);
-			this.label19.TabIndex = 2;
-			this.label19.Text = "x";
+			this.label20.AutoSize = true;
+			this.label20.Location = new System.Drawing.Point(21, 291);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(315, 13);
+			this.label20.TabIndex = 34;
+			this.label20.Text = "Use a low resolution screenshot for better save/load performance";
 			// 
 			// RewindConfig
 			// 
@@ -1010,6 +1021,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.LargeStateTrackbar)).EndInit();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
@@ -1020,7 +1032,6 @@
 			this.groupBox7.ResumeLayout(false);
 			this.groupBox7.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.BigScreenshotNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RewindSpeedNumeric)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -1088,7 +1099,7 @@
 				private System.Windows.Forms.Label label17;
 				private System.Windows.Forms.Label KbLabel;
 				private System.Windows.Forms.NumericUpDown BigScreenshotNumeric;
-				private System.Windows.Forms.CheckBox SaveLargeScreenshotsCheckbox;
+				private System.Windows.Forms.CheckBox LowResLargeScreenshotsCheckbox;
 				private System.Windows.Forms.Label label13;
 				private System.Windows.Forms.Label label14;
 				private System.Windows.Forms.CheckBox ScreenshotInStatesCheckbox;
@@ -1098,5 +1109,6 @@
 				private System.Windows.Forms.Label label19;
 				private System.Windows.Forms.NumericUpDown RewindSpeedNumeric;
 				private System.Windows.Forms.Label label18;
+				private System.Windows.Forms.Label label20;
 	}
 }

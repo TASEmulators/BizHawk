@@ -25,7 +25,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void GoToFrame(int frame)
+		// SuuperW: I changed this to public so that it could be used by MarkerControl.cs
+		public void GoToFrame(int frame)
 		{
 			// If past greenzone, emulate and capture states
 			// If past greenzone AND movie, record input and capture states
@@ -96,9 +97,7 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.SwitchToPlay();
 
 					// no reason to loadstate when we can emulate a frame instead
-					var shouldLoadstate = frame - Emulator.Frame != 1;
-
-					if (CurrentTasMovie.TasStateManager.LastEmulatedFrame > 0 && shouldLoadstate)
+					if (frame - Emulator.Frame != 1)
 					{
 						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State);
 					}

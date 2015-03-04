@@ -16,6 +16,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
 	{
+		public ToolManager(Form owner)
+		{
+			_owner = owner;
+		}
+
+		private readonly Form _owner;
+
 		// TODO: merge ToolHelper code where logical
 		// For instance, add an IToolForm property called UsesCheats, so that a UpdateCheatRelatedTools() method can update all tools of this type
 		// Also a UsesRam, and similar method
@@ -61,6 +68,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var newTool = CreateInstance(toolType);
+
+			if (newTool is Form)
+			{
+				(newTool as Form).Owner = GlobalWin.MainForm;
+			}
 
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
 
@@ -133,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			form.Owner = settings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
-		private static void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
+		private void AttachSettingHooks(IToolFormAutoConfig tool, ToolDialogSettings settings)
 		{
 			var form = (Form)tool;
 			ToolStripItemCollection dest = null;
@@ -211,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 				bool val = !(o as ToolStripMenuItem).Checked;
 				settings.FloatingWindow = val;
 				(o as ToolStripMenuItem).Checked = val;
-				form.Owner = val ? null : GlobalWin.MainForm;
+				form.Owner = val ? null : _owner;
 			};
 			dest[idx + 3].Click += (o, e) =>
 			{
@@ -724,14 +736,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Load<RamWatch>();
 
-			if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+			if (IsAvailable<RamWatch>()) // Just because we attempted to load it, doesn't mean it was, the current core may not have the correct dependencies
 			{
-				RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
-			}
+				if (Global.Config.RecentWatches.AutoLoad && !Global.Config.RecentWatches.Empty)
+				{
+					RamWatch.LoadFileFromRecent(Global.Config.RecentWatches.MostRecent);
+				}
 
-			if (!loadDialog)
-			{
-				Get<RamWatch>().Close();
+				if (!loadDialog)
+				{
+					Get<RamWatch>().Close();
+				}
 			}
 		}
 

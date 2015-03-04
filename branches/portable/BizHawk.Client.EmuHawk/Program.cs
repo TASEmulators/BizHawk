@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #if WINDOWS
-using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
 #endif
 
@@ -85,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-REDO_DISPMETHOD:
+		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
 #if WINDOWS
@@ -115,8 +114,8 @@ REDO_DISPMETHOD:
 			SetDllDirectory(dllDir);
 #endif
 
-			try
-			{
+			if (System.Diagnostics.Debugger.IsAttached)
+			{ // Let the debugger handle errors
 #if WINDOWS
 				if (Global.Config.SingleInstanceMode)
 				{
@@ -130,64 +129,100 @@ REDO_DISPMETHOD:
 					}
 				}
 				else
-				{
 #endif
+				{
 					using (var mf = new MainForm(args))
 					{
 						var title = mf.Text;
 						mf.Show();
 						mf.Text = title;
+
+						mf.ProgramRunLoop();
+					}
+				}
+			}
+			else
+			{ // Display error message windows
+				try
+				{
+#if WINDOWS
+					if (Global.Config.SingleInstanceMode)
+					{
 						try
 						{
-							mf.ProgramRunLoop();
+							new SingleInstanceController(args).Run(args);
 						}
-						catch (Exception e)
+						catch (ObjectDisposedException)
 						{
-#if WINDOWS
-							if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
-							{
-								var result = MessageBox.Show(
-									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
-									"Fatal error: " + e.GetType().Name,
-									MessageBoxButtons.YesNo,
-									MessageBoxIcon.Exclamation
-									);
-								if (result == DialogResult.Yes)
-								{
-									Global.MovieSession.Movie.Save();
-								}
-							}
-#endif
-							throw;
+							/*Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error*/
 						}
 					}
-#if WINDOWS
-				}
+					else
 #endif
-			}
-			catch (Exception e)
-			{
-				string message = e.ToString();
-				if (e.InnerException != null)
-				{
-					message += "\n\nInner Exception:\n\n" + e.InnerException;
-				}
+					{
+						using (var mf = new MainForm(args))
+						{
+							var title = mf.Text;
+							mf.Show();
+							mf.Text = title;
 
-				message += "\n\nStackTrace:\n" + e.StackTrace;
-				MessageBox.Show(message);
-			}
+							if (System.Diagnostics.Debugger.IsAttached)
+							{
+								mf.ProgramRunLoop();
+							}
+							else
+							{
+								try
+								{
+									mf.ProgramRunLoop();
+								}
+								catch (Exception e)
+								{
 #if WINDOWS
-			finally
-			{
-				if (GlobalWin.Sound != null)
-				{
-					GlobalWin.Sound.Dispose();
-					GlobalWin.Sound = null;
-				}
-				GlobalWin.GL.Dispose();
-				GamePad.CloseAll();
-			}
+									if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
+									{
+										var result = MessageBox.Show(
+											"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
+											"Fatal error: " + e.GetType().Name,
+											MessageBoxButtons.YesNo,
+											MessageBoxIcon.Exclamation
+											);
+										if (result == DialogResult.Yes)
+										{
+											Global.MovieSession.Movie.Save();
+										}
+									}
 #endif
+									throw;
+								}
+							}
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					string message = e.ToString();
+					if (e.InnerException != null)
+					{
+						message += "\n\nInner Exception:\n\n" + e.InnerException;
+					}
+
+					message += "\n\nStackTrace:\n" + e.StackTrace;
+					MessageBox.Show(message);
+				}
+#if WINDOWS
+				finally
+				{
+					if (GlobalWin.Sound != null)
+					{
+						GlobalWin.Sound.Dispose();
+						GlobalWin.Sound = null;
+					}
+					GlobalWin.GL.Dispose();
+					GamePad.CloseAll();
+				}
+#endif
+			}
 		}
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
@@ -281,7 +316,7 @@ REDO_DISPMETHOD:
 				MainForm.Show();
 				MainForm.Text = title;
 				(MainForm as MainForm).ProgramRunLoop();
-			} 
+			}
 		}
 
 

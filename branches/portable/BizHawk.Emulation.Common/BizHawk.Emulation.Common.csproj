@@ -111,6 +111,7 @@
     <Compile Include="Sound\VRC6Alt.cs" />
     <Compile Include="Sound\YM2413.cs" />
     <Compile Include="Sound\YM2612.cs" />
+    <Compile Include="SystemLookup.cs" />
     <Compile Include="TextState.cs" />
   </ItemGroup>
   <ItemGroup>
