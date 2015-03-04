@@ -22,9 +22,59 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedVersion: "0.7.0",
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
-	public class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains,
-		IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public partial class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IInputPollable,
+		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
+		static QuickNES()
+		{
+			LibQuickNES.qn_setup_mappers();
+		}
+
+		[CoreConstructor("NES")]
+		public QuickNES(CoreComm comm, byte[] file, object Settings, object SyncSettings)
+		{
+			using (FP.Save())
+			{
+				ServiceProvider = new BasicServiceProvider(this);
+				CoreComm = comm;
+
+				Context = LibQuickNES.qn_new();
+				if (Context == IntPtr.Zero)
+					throw new InvalidOperationException("qn_new() returned NULL");
+				try
+				{
+					LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, file, file.Length));
+
+					InitSaveRamBuff();
+					InitSaveStateBuff();
+					InitAudio();
+					InitMemoryDomains();
+
+					int mapper = 0;
+					string mappername = Marshal.PtrToStringAnsi(LibQuickNES.qn_get_mapper(Context, ref mapper));
+					Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
+					BoardName = mappername;
+					CoreComm.VsyncNum = 39375000;
+					CoreComm.VsyncDen = 655171;
+					PutSettings((QuickNESSettings)Settings ?? new QuickNESSettings());
+
+					_syncSettings = (QuickNESSyncSettings)SyncSettings ?? new QuickNESSyncSettings();
+					_syncSettingsNext = _syncSettings.Clone();
+
+					SetControllerDefinition();
+					ComputeBootGod();
+				}
+				catch
+				{
+					Dispose();
+					throw;
+				}
+			}
+		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		#region FPU precision
 
 		private class FPCtrl : IDisposable
@@ -56,52 +106,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#endregion
 
-		static QuickNES()
-		{
-			LibQuickNES.qn_setup_mappers();
-		}
-
-		[CoreConstructor("NES")]
-		public QuickNES(CoreComm comm, byte[] file, object Settings, object SyncSettings)
-		{
-			using (FP.Save())
-			{
-				CoreComm = comm;
-
-				Context = LibQuickNES.qn_new();
-				if (Context == IntPtr.Zero)
-					throw new InvalidOperationException("qn_new() returned NULL");
-				try
-				{
-					LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, file, file.Length));
-
-					InitSaveRamBuff();
-					InitSaveStateBuff();
-					InitAudio();
-					InitMemoryDomains();
-
-					int mapper = 0;
-					string mappername = Marshal.PtrToStringAnsi(LibQuickNES.qn_get_mapper(Context, ref mapper));
-					Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
-					BoardName = mappername;
-					CoreComm.VsyncNum = 39375000;
-					CoreComm.VsyncDen = 655171;
-					PutSettings((QuickNESSettings)Settings ?? new QuickNESSettings());
-
-					_SyncSettings = (QuickNESSyncSettings)SyncSettings ?? new QuickNESSyncSettings();
-					_SyncSettings_next = _SyncSettings.Clone();
-
-					SetControllerDefinition();
-					ComputeBootGod();
-				}
-				catch
-				{
-					Dispose();
-					throw;
-				}
-			}
-		}
-
 		#region Controller
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
@@ -112,9 +116,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			var def = new ControllerDefinition();
 			def.Name = "NES Controller";
 			def.BoolButtons.AddRange(new[] { "Reset", "Power" }); // console buttons
-			if (_SyncSettings.LeftPortConnected || _SyncSettings.RightPortConnected)
+			if (_syncSettings.LeftPortConnected || _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP1.Select(p => p.Name));
-			if (_SyncSettings.LeftPortConnected && _SyncSettings.RightPortConnected)
+			if (_syncSettings.LeftPortConnected && _syncSettings.RightPortConnected)
 				def.BoolButtons.AddRange(PadP2.Select(p => p.Name));
 			ControllerDefinition = def;
 		}
@@ -161,12 +165,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void SetPads(out int j1, out int j2)
 		{
-			if (_SyncSettings.LeftPortConnected)
+			if (_syncSettings.LeftPortConnected)
 				j1 = GetPad(PadP1) | unchecked((int)0xffffff00);
 			else
 				j1 = 0;
-			if (_SyncSettings.RightPortConnected)
-				j2 = GetPad(_SyncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
+			if (_syncSettings.RightPortConnected)
+				j2 = GetPad(_syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
 			else
 				j2 = 0;
 		}
@@ -175,6 +179,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			CheckDisposed();
 			using (FP.Save())
 			{
 				if (Controller["Power"])
@@ -195,63 +200,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					Blit();
 				if (rendersound)
 					DrainAudio();
+
+				if (CB1 != null) CB1();
+				if (CB2 != null) CB2();
 			}
 		}
-
-		#region state
 
 		IntPtr Context;
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
-
-		#endregion
 
 		public string SystemId { get { return "NES"; } }
 		public bool DeterministicEmulation { get { return true; } }
 		public string BoardName { get; private set; }
-
-		#region saveram
-
-		byte[] SaveRamBuff;
-
-		void InitSaveRamBuff()
-		{
-			int size = 0;
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_size(Context, ref size));
-			SaveRamBuff = new byte[size];
-		}
-
-		public byte[] CloneSaveRam()
-		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_save(Context, SaveRamBuff, SaveRamBuff.Length));
-			return (byte[])SaveRamBuff.Clone();
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_load(Context, data, data.Length));
-		}
-
-		public void ClearSaveRam()
-		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_clear(Context));
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return LibQuickNES.qn_has_battery_ram(Context);
-			}
-			set
-			{
-				throw new Exception();
-			}
-		}
-
-		#endregion
 
 		public void ResetCounters()
 		{
@@ -260,145 +221,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LagCount = 0;
 		}
 
-		#region savestates
-
-		byte[] SaveStateBuff;
-		byte[] SaveStateBuff2;
-
-		void InitSaveStateBuff()
-		{
-			int size = 0;
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_size(Context, ref size));
-			SaveStateBuff = new byte[size];
-			SaveStateBuff2 = new byte[size + 13];
-		}
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new System.IO.BinaryReader(new System.IO.MemoryStream(state)));
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_save(Context, SaveStateBuff, SaveStateBuff.Length));
-			writer.Write(SaveStateBuff.Length);
-			writer.Write(SaveStateBuff);
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-			int len = reader.ReadInt32();
-			if (len != SaveStateBuff.Length)
-				throw new InvalidOperationException("Unexpected savestate buffer length!");
-			reader.Read(SaveStateBuff, 0, SaveStateBuff.Length);
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_load(Context, SaveStateBuff, SaveStateBuff.Length));
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var ms = new System.IO.MemoryStream(SaveStateBuff2, true);
-			var bw = new System.IO.BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != SaveStateBuff2.Length)
-				throw new InvalidOperationException("Unexpected savestate length!");
-			bw.Close();
-			return SaveStateBuff2;
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
 		public CoreComm CoreComm
 		{
 			get;
 			private set;
 		}
-
-		#region debugging
-
-		unsafe void InitMemoryDomains()
-		{
-			List<MemoryDomain> mm = new List<MemoryDomain>();
-			for (int i = 0; ; i++)
-			{
-				IntPtr data = IntPtr.Zero;
-				int size = 0;
-				bool writable = false;
-				IntPtr name = IntPtr.Zero;
-
-				if (!LibQuickNES.qn_get_memory_area(Context, i, ref data, ref size, ref writable, ref name))
-					break;
-
-				if (data != IntPtr.Zero && size > 0 && name != IntPtr.Zero)
-				{
-					mm.Add(MemoryDomain.FromIntPtr(Marshal.PtrToStringAnsi(name), size, MemoryDomain.Endian.Little, data, writable));
-				}
-			}
-			// add system bus
-			mm.Add(new MemoryDomain
-			(
-				"System Bus",
-				0x10000,
-				MemoryDomain.Endian.Unknown,
-				delegate(int addr)
-				{
-					if (addr < 0 || addr >= 0x10000)
-						throw new ArgumentOutOfRangeException();
-					return LibQuickNES.qn_peek_prgbus(Context, addr);
-				},
-				delegate(int addr, byte val)
-				{
-					if (addr < 0 || addr >= 0x10000)
-						throw new ArgumentOutOfRangeException();
-					LibQuickNES.qn_poke_prgbus(Context, addr, val);
-				}
-			));
-			MemoryDomains = new MemoryDomainList(mm, 0);
-		}
-
-		public MemoryDomainList MemoryDomains { get; private set; }
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			int[] regs = new int[6];
-			var ret = new Dictionary<string, int>();
-			LibQuickNES.qn_get_cpuregs(Context, regs);
-			ret["A"] = regs[0];
-			ret["X"] = regs[1];
-			ret["Y"] = regs[2];
-			ret["SP"] = regs[3];
-			ret["PC"] = regs[4];
-			ret["P"] = regs[5];
-			return ret;
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		#endregion
 
 		#region bootgod
 
@@ -409,8 +236,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			// inefficient, sloppy, etc etc
 			Emulation.Cores.Nintendo.NES.NES.BootGodDB.Initialize();
-			var chrrom = MemoryDomains["CHR VROM"];
-			var prgrom = MemoryDomains["PRG ROM"];
+			var chrrom = _memoryDomains["CHR VROM"];
+			var prgrom = _memoryDomains["PRG ROM"];
 
 			var ms = new System.IO.MemoryStream();
 			for (int i = 0; i < prgrom.Size; i++)
@@ -450,158 +277,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		#endregion
 
-		#region settings
-
-		public class QuickNESSettings
-		{
-			[DefaultValue(8)]
-			[Description("Set the number of sprites visible per line.  0 hides all sprites, 8 behaves like a normal NES, and 64 is maximum.")]
-			[DisplayName("Visible Sprites")]
-			public int NumSprites
-			{
-				get { return _NumSprites; }
-				set { _NumSprites = Math.Min(64, Math.Max(0, value)); }
-			}
-			[JsonIgnore]
-			private int _NumSprites;
-
-			[DefaultValue(false)]
-			[Description("Clip the left and right 8 pixels of the display, which sometimes contain nametable garbage.")]
-			[DisplayName("Clip Left and Right")]
-			public bool ClipLeftAndRight { get; set; }
-
-			[DefaultValue(false)]
-			[Description("Clip the top and bottom 8 pixels of the display, which sometimes contain nametable garbage.")]
-			[DisplayName("Clip Top and Bottom")]
-			public bool ClipTopAndBottom { get; set; }
-
-			[Browsable(false)]
-			public byte[] Palette
-			{
-				get { return _Palette; }
-				set
-				{
-					if (value == null)
-						throw new ArgumentNullException();
-					else if (value.Length == 64 * 8 * 3)
-						_Palette = value;
-					else
-						throw new ArgumentOutOfRangeException();
-				}
-			}
-			[JsonIgnore]
-			private byte[] _Palette;
-
-			public QuickNESSettings Clone()
-			{
-				var ret = (QuickNESSettings)MemberwiseClone();
-				ret._Palette = (byte[])_Palette.Clone();
-				return ret;
-			}
-			public QuickNESSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-				SetDefaultColors();
-			}
-
-			public void SetNesHawkPalette(int[,] pal)
-			{
-				if (pal.GetLength(0) != 64 || pal.GetLength(1) != 3)
-					throw new ArgumentOutOfRangeException();
-				for (int c = 0; c < 512; c++)
-				{
-					int a = c & 63;
-					byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
-					byte[] outp = new byte[3];
-					Nes_NTSC_Colors.Emphasis(inp, outp, c);
-					_Palette[c * 3] = outp[0];
-					_Palette[c * 3 + 1] = outp[1];
-					_Palette[c * 3 + 2] = outp[2];
-				}
-			}
-
-			static byte[] GetDefaultColors()
-			{
-				IntPtr src = LibQuickNES.qn_get_default_colors();
-				byte[] ret = new byte[1536];
-				Marshal.Copy(src, ret, 0, 1536);
-				return ret;
-			}
-
-			public void SetDefaultColors()
-			{
-				_Palette = GetDefaultColors();
-			}
-		}
-
-		public class QuickNESSyncSettings
-		{
-			[DefaultValue(true)]
-			[DisplayName("Left Port Connected")]
-			[Description("Specifies whether or not the Left (Player 1) Controller is connected")]
-			public bool LeftPortConnected { get; set; }
-
-			[DefaultValue(false)]
-			[DisplayName("Right Port Connected")]
-			[Description("Specifies whether or not the Right (Player 2) Controller is connected")]
-			public bool RightPortConnected { get; set; }
-
-			public QuickNESSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-
-			public QuickNESSyncSettings Clone()
-			{
-				return (QuickNESSyncSettings)MemberwiseClone();
-			}
-
-			public static bool NeedsReboot(QuickNESSyncSettings x, QuickNESSyncSettings y)
-			{
-				// the core can handle dynamic plugging and unplugging, but that changes
-				// the controllerdefinition, and we're not ready for that
-				return !DeepEquality.DeepEquals(x, y);
-			}
-		}
-
-		QuickNESSettings _Settings;
-		/// <summary>
-		/// the syncsettings that this run of emulation is using (was passed to ctor)
-		/// </summary>
-		QuickNESSyncSettings _SyncSettings;
-		/// <summary>
-		/// the syncsettings that were requested but won't be used yet
-		/// </summary>
-		QuickNESSyncSettings _SyncSettings_next;
-
-		public QuickNESSettings GetSettings()
-		{
-			return _Settings.Clone();
-		}
-
-		public QuickNESSyncSettings GetSyncSettings()
-		{
-			return _SyncSettings_next.Clone();
-		}
-
-		public bool PutSettings(QuickNESSettings o)
-		{
-			_Settings = o;
-			LibQuickNES.qn_set_sprite_limit(Context, _Settings.NumSprites);
-			RecalculateCrops();
-			CalculatePalette();
-			return false;
-		}
-
-		public bool PutSyncSettings(QuickNESSyncSettings o)
-		{
-			bool ret = QuickNESSyncSettings.NeedsReboot(_SyncSettings, o);
-			_SyncSettings_next = o;
-			return ret;
-		}
-
-		#endregion
-
 		public void Dispose()
 		{
 			if (Context != IntPtr.Zero)
@@ -611,50 +286,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			}
 		}
 
-		#region VideoProvider
-
-		int[] VideoOutput = new int[256 * 240];
-		int[] VideoPalette = new int[512];
-
-		int cropleft = 0;
-		int cropright = 0;
-		int croptop = 0;
-		int cropbottom = 0;
-
-		void RecalculateCrops()
+		void CheckDisposed()
 		{
-			cropright = cropleft = _Settings.ClipLeftAndRight ? 8 : 0;
-			cropbottom = croptop = _Settings.ClipTopAndBottom ? 8 : 0;
-			BufferWidth = 256 - cropleft - cropright;
-			BufferHeight = 240 - croptop - cropbottom;
+			if (Context == IntPtr.Zero)
+				throw new ObjectDisposedException(GetType().Name);
 		}
-
-		void CalculatePalette()
-		{
-			for (int i = 0; i < 512; i++)
-			{
-				VideoPalette[i] =
-					_Settings.Palette[i * 3] << 16 |
-					_Settings.Palette[i * 3 + 1] << 8 |
-					_Settings.Palette[i * 3 + 2] |
-					unchecked((int)0xff000000);
-			}
-		}
-
-		void Blit()
-		{
-			LibQuickNES.qn_blit(Context, VideoOutput, VideoPalette, cropleft, croptop, cropright, cropbottom);
-		}
-
-		public IVideoProvider VideoProvider { get { return this; } }
-		public int[] GetVideoBuffer() { return VideoOutput; }
-		public int VirtualWidth { get { return (int)(BufferWidth * 1.146); } }
-		public int VirtualHeight { get { return BufferHeight; } }
-		public int BufferWidth { get; private set; }
-		public int BufferHeight { get; private set; }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		#endregion
 
 		#region SoundProvider
 

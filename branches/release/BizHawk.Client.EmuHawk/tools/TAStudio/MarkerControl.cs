@@ -8,12 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class MarkerControl : UserControl
 	{
 		public TAStudio Tastudio { get; set; }
+		public IEmulator Emulator { get; set; }
 
 		public MarkerControl()
 		{
@@ -41,20 +43,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerControl_Load(object sender, EventArgs e)
 		{
-			
+
 		}
 
 		public InputRoll MarkerInputRoll { get { return MarkerView; } }
 
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var prev = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);
+			var prev = Tastudio.CurrentTasMovie.Markers.PreviousOrCurrent(Global.Emulator.Frame);//Temp fix
 
 			if (prev != null && index == Tastudio.CurrentTasMovie.Markers.IndexOf(prev))
 			{
 				color = TAStudio.Marker_FrameCol;
 			}
-			else if (index < Tastudio.CurrentTasMovie.InputLogLength)
+			else if (index < Tastudio.CurrentTasMovie.Markers.Count)
 			{
 				var marker = Tastudio.CurrentTasMovie.Markers[index];
 				var record = Tastudio.CurrentTasMovie[marker.Frame];
@@ -75,7 +77,8 @@ namespace BizHawk.Client.EmuHawk
 					color = Color.White;
 				}
 			}
-			
+			else
+				color = Color.White;
 		}
 
 		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
@@ -118,7 +121,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
-			SelectedMarkers.ForEach(i => Tastudio.CurrentTasMovie.Markers.Remove(i));
+			SelectedMarkers.ForEach(i => Tastudio.RemoveMarker(i));
+			MarkerInputRoll.DeselectAll();
 			Tastudio.RefreshDialog();
 			MarkerView_SelectedIndexChanged(sender, e);
 		}
@@ -138,13 +142,15 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.GoToMarker(SelectedMarkers.First());
 		}
 
+		// SuuperW: Marker renaming can be done with a right-click.
+		// A much more useful feature would be to easily jump to it.
 		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			if (MarkerView.CurrentCell != null && MarkerView.CurrentCell.RowIndex.HasValue &&
 				MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
 			{
 				var marker = Tastudio.CurrentTasMovie.Markers[MarkerView.CurrentCell.RowIndex.Value];
-				Tastudio.CallEditMarkerPopUp(marker);
+				Tastudio.GoToFrame(marker.Frame);
 			}
 		}
 

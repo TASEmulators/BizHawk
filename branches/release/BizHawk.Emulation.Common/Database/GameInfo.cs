@@ -6,19 +6,6 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common
 {
-	public enum RomStatus
-	{
-		GoodDump,
-		BadDump,
-		Homebrew,
-		TranslatedRom,
-		Hack,
-		Unknown,
-		BIOS,
-		Overdump,
-		NotInDatabase
-	}
-
 	public class GameInfo
 	{
 		public bool IsRomStatusBad()

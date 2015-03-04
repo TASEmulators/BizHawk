@@ -48,8 +48,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 		};
 
-		public N64Input(mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
+		private readonly IInputPollable _emuCore;
+
+		public N64Input(IInputPollable emuCore, mupen64plusApi core, CoreComm comm, N64SyncSettings.N64ControllerSettings[] controllerSettings)
 		{
+			_emuCore = emuCore;
 			api = new mupen64plusInputApi(core);
 			CoreComm = comm;
 
@@ -81,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		/// <param name="i">Id of controller to update and shove</param>
 		public int GetControllerInput(int i)
 		{
-			CoreComm.InputCallback.Call();
+			_emuCore.InputCallbacks.Call();
 			ThisFrameInputPolled = true;
 
 			// Analog stick right = +X

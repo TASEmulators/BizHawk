@@ -23,14 +23,15 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Dispose()
 		{
-			Owner.FreeTexture(Id);
+			Owner.FreeTexture(this);
 			Id = Owner.GetEmptyHandle();
 		}
 
-		public Texture2d(IGL owner, IntPtr id, int width, int height)
+		public Texture2d(IGL owner, IntPtr id, object opaque, int width, int height)
 		{
 			Owner = owner;
 			Id = id;
+			Opaque = opaque;
 			Width = width;
 			Height = height;
 		}
@@ -70,6 +71,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public IGL Owner { get; private set; }
 		public IntPtr Id { get; private set; }
+		public object Opaque { get; private set; }
 		
 		//note.. this was a lame idea. convenient, but weird. lets just change this back to ints.
 		public float Width { get; private set; }
@@ -77,6 +79,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public int IntWidth { get { return (int)Width; } }
 		public int IntHeight { get { return (int)Height; } }
+		public Rectangle Rectangle { get { return new Rectangle(0, 0, IntWidth, IntHeight); } }
 		public Size Size { get { return new Size(IntWidth, IntHeight); } }
 
 		/// <summary>

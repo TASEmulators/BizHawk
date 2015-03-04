@@ -24,6 +24,7 @@ using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
+using BizHawk.Emulation.Cores.Computers.AppleII;
 
 namespace BizHawk.Client.Common
 {
@@ -124,11 +125,17 @@ namespace BizHawk.Client.Common
 
 		public Func<RomGame, string> ChoosePlatform { get; set; }
 
+		// in case we get sent back through the picker more than once, use the same choice the second time
+		int? previouschoice;
 		private int? HandleArchive(HawkFile file)
 		{
+			if (previouschoice.HasValue)
+				return previouschoice;
+
 			if (ChooseArchive != null)
 			{
-				return ChooseArchive(file);
+				previouschoice = ChooseArchive(file);
+				return previouschoice;
 			}
 
 			return null;
@@ -154,6 +161,8 @@ namespace BizHawk.Client.Common
 
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
+			bool cancel = false;
+
 			if (path == null)
 			{
 				return false;
@@ -182,7 +191,7 @@ namespace BizHawk.Client.Common
 				// if we have an archive and need to bind something, then pop the dialog
 				if (file.IsArchive && !file.IsBound)
 				{
-					var result = HandleArchive(file);
+					int? result = HandleArchive(file);
 					if (result.HasValue)
 					{
 						file.BindArchiveMember(result.Value);
@@ -203,9 +212,54 @@ namespace BizHawk.Client.Common
 				try
 				{
 					var ext = file.Extension.ToLower();
-					if (ext == ".iso" || ext == ".cue")
+					if (ext == ".m3u")
 					{
-						var disc = ext == ".iso" ? Disc.FromIsoPath(path) : Disc.FromCuePath(path, new CueBinPrefs());
+						//HACK ZONE - currently only psx supports m3u
+						M3U_File m3u;
+						using(var sr = new StreamReader(path))
+							m3u = M3U_File.Read(sr);
+						if(m3u.Entries.Count == 0)
+							throw new InvalidOperationException("Can't load an empty M3U");
+						//load discs for all the m3u
+						m3u.Rebase(Path.GetDirectoryName(path));
+						List<Disc> discs = new List<Disc>();
+						List<string> discNames = new List<string>();
+						foreach (var e in m3u.Entries)
+						{
+							Disc disc = null;
+							string discPath = e.Path;
+							string discExt = Path.GetExtension(discPath).ToLower();
+							if (discExt == ".iso")
+								disc = Disc.FromIsoPath(discPath);
+							if (discExt == ".cue")
+								disc = Disc.FromCuePath(discPath, new CueBinPrefs());
+							if (discExt == ".ccd")
+								disc = Disc.FromCCDPath(discPath);
+							if(disc == null)
+								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+							discNames.Add(Path.GetFileNameWithoutExtension(discPath));
+							discs.Add(disc);
+						}
+						nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
+						game.System = "PSX";
+					}
+					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
+					{
+						if (file.IsArchive)
+						{
+							throw new InvalidOperationException("Can't load CD files from archives!");
+						}
+
+						Disc disc = null;
+						if(ext == ".iso")
+							disc = Disc.FromIsoPath(path);
+						if(ext == ".cue")
+							disc = Disc.FromCuePath(path, new CueBinPrefs());
+						if (ext == ".ccd")
+							disc = Disc.FromCCDPath(path);
+
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)
@@ -221,6 +275,7 @@ namespace BizHawk.Client.Common
 								case DiscType.SonyPSP:
 									game.System = "PSP";
 									break;
+								default: 
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
@@ -230,9 +285,6 @@ namespace BizHawk.Client.Common
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-								default: // PCECD was bizhawk's first CD core,
-									// and during that time, all CDs were blindly sent to it
-									// so this prevents regressions
 									game.System = "PCECD";
 									break;
 							}
@@ -252,8 +304,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm);
-								(nextEmulator as Octoshock).LoadCuePath(file.CanonicalFullPath);
+								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), new List<string>(new[]{Path.GetFileNameWithoutExtension(path)}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "PCE":
@@ -300,6 +351,12 @@ namespace BizHawk.Client.Common
 					{
 						rom = new RomGame(file);
 
+						//hacky for now
+						if (file.Extension.ToLower() == ".exe")
+						{
+							rom.GameInfo.System = "PSX";
+						}
+
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
 							// Has the user picked a preference for this extension?
@@ -309,7 +366,15 @@ namespace BizHawk.Client.Common
 							}
 							else if (ChoosePlatform != null)
 							{
-								rom.GameInfo.System = ChoosePlatform(rom);
+								var result = ChoosePlatform(rom);
+								if (!string.IsNullOrEmpty(result))
+								{
+									rom.GameInfo.System = ChoosePlatform(rom);
+								}
+								else
+								{
+									cancel = true;
+								}
 							}
 						}
 
@@ -335,6 +400,18 @@ namespace BizHawk.Client.Common
 
 							case null:
 								// The user picked nothing in the Core picker
+								break;
+							case "83P":
+								var ti83Bios = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmware("TI83", "Rom", true);
+								var ti83BiosPath = ((CoreFileProvider)nextComm.CoreFileProvider).GetFirmwarePath("TI83", "Rom", true);
+								using (var ti83AsHawkFile = new HawkFile())
+								{
+									ti83AsHawkFile.Open(ti83BiosPath);
+									var ti83BiosAsRom = new RomGame(ti83AsHawkFile);
+									var ti83 = new TI83(nextComm, ti83BiosAsRom.GameInfo, ti83Bios, GetCoreSettings<TI83>());
+									ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
+									nextEmulator = ti83;
+								}
 								break;
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
@@ -396,9 +473,17 @@ namespace BizHawk.Client.Common
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
 								nextEmulator = c64;
 								break;
+							case "AppleII":
+								var appleII = new AppleII(nextComm, game, rom.RomData, rom.Extension);
+								nextEmulator = appleII;
+								break;
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];
 								core = CoreInventory.Instance["GBA", "VBA-Next"];
+								break;
+							case "PSX":
+								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "DEBUG":
 								if (VersionInfo.DeveloperBuild)
@@ -418,7 +503,10 @@ namespace BizHawk.Client.Common
 
 					if (nextEmulator == null)
 					{
-						DoLoadErrorCallback("No core could load the rom.", null);
+						if (!cancel)
+						{
+							DoLoadErrorCallback("No core could load the rom.", null);
+						}
 						return false;
 					}
 				}

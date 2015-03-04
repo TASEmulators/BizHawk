@@ -4,13 +4,16 @@ using System.IO;
 
 namespace BizHawk.Emulation.Common
 {
-	public interface IEmulator : IDisposable
+	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>
-		/// Video provider to the client
+		/// Retrieves an IEmulatorService from the core, 
+		/// if the core does not have the type specified, it will return null
 		/// </summary>
-		IVideoProvider VideoProvider { get; }
-		
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		IEmulatorServiceProvider ServiceProvider { get; }
+
 		/// <summary>
 		/// Sound provider for async operation.  this is optional, and is only required after StartAsyncSound() is called and returns true
 		/// </summary>
@@ -48,17 +51,6 @@ namespace BizHawk.Emulation.Common
 		int Frame { get; }
 
 		/// <summary>
-		/// The lag count.
-		/// </summary>
-		int LagCount { get; set; }
-
-		/// <summary>
-		/// If the current frame is a lag frame.
-		/// All cores should define it the same, a lag frame is a frame in which input was not polled.
-		/// </summary>
-		bool IsLagFrame { get; }
-
-		/// <summary>
 		/// The unique Id of the given core, for instance "NES"
 		/// </summary>
 		string SystemId { get; }
@@ -79,48 +71,9 @@ namespace BizHawk.Emulation.Common
 		string BoardName { get; }
 
 		/// <summary>
-		/// return a copy of the saveram.  editing it won't do you any good unless you later call StoreSaveRam()
-		/// </summary>
-		byte[] CloneSaveRam();
-
-		/// <summary>
-		/// store new saveram to the emu core.  the data should be the same size as the return from ReadSaveRam()
-		/// </summary>
-		void StoreSaveRam(byte[] data);
-
-		/// <summary>
-		/// reset saveram to a standard initial state.  this probably shouldn't be used; instantiate a new core to clear persistent things.
-		/// </summary>
-		void ClearSaveRam();
-
-		/// <summary>
-		/// Whether or not Save ram has been modified since the last save
-		/// </summary>
-		bool SaveRamModified { get; set; }
-
-		/// <summary>
 		/// Resets the Frame and Lag counters, and any other similar counters a core might implement
 		/// </summary>
 		void ResetCounters();
-
-		/// <summary>
-		/// Savestate handling methods
-		/// </summary>
-		/// <param name="writer"></param>
-		void SaveStateText(TextWriter writer);
-		void LoadStateText(TextReader reader);
-		void SaveStateBinary(BinaryWriter writer);
-		void LoadStateBinary(BinaryReader reader);
-		/// <summary>
-		/// save state binary to a byte buffer
-		/// </summary>
-		/// <returns>you may NOT modify this.  if you call SaveStateBinary() again with the same core, the old data MAY be overwritten.</returns>
-		byte[] SaveStateBinary();
-
-		/// <summary>
-		/// true if the core would rather give a binary savestate than a text one.  both must function regardless
-		/// </summary>
-		bool BinarySaveStatesPreferred { get; }
 
 		/// <summary>
 		/// the corecomm module in use by this core.
@@ -128,21 +81,12 @@ namespace BizHawk.Emulation.Common
 		CoreComm CoreComm { get; }
 	}
 
-	public interface IDebuggable : IEmulator
+	public static class VideoProviderGlue
 	{
-		/// <summary>
-		/// Returns a list of Cpu registers and their current state
-		/// </summary>
-		/// <returns></returns>
-		Dictionary<string, int> GetCpuFlagsAndRegisters();
-
-		/// <summary>
-		/// Sets a given Cpu register to the given value
-		/// </summary>
-		/// <param name="register"></param>
-		/// <param name="value"></param>
-		void SetCpuRegister(string register, int value);
+		// todo: this will go away
+		public static IVideoProvider VideoProvider(this IEmulator emu)
+		{
+			return emu.ServiceProvider.GetService<IVideoProvider>();
+		}
 	}
-
-	public enum DisplayType { NTSC, PAL, DENDY }
 }

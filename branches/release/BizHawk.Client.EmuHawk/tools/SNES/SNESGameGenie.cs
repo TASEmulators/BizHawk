@@ -5,13 +5,20 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class SNESGameGenie : Form, IToolForm
+	public partial class SNESGameGenie : Form, IToolFormAutoConfig
 	{
+		[RequiredService]
+		public LibsnesCore Emulator { get; set; }
+
+		[RequiredService]
+		private IMemoryDomains MemoryDomains { get; set; }
+
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -40,22 +47,11 @@ namespace BizHawk.Client.EmuHawk
 		public SNESGameGenie()
 		{
 			InitializeComponent();
-			TopMost = Global.Config.SnesGGSettings.TopMost;
-			Closing += (o, e) =>
-			{
-				Global.Config.SnesGGSettings.Wndx = Location.X;
-				Global.Config.SnesGGSettings.Wndy = Location.Y;
-			};
 		}
 
 		private void SNESGameGenie_Load(object sender, EventArgs e)
 		{
 			addcheatbt.Enabled = false;
-
-			if (Global.Config.SnesGGSettings.UseWindowPosition)
-			{
-				Location = Global.Config.SnesGGSettings.WindowPosition;
-			}
 		}
 
 		#region Public API
@@ -64,18 +60,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
-			if (!(Global.Emulator is LibsnesCore))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is LibsnesCore))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		public void FastUpdate()
@@ -180,59 +170,7 @@ namespace BizHawk.Client.EmuHawk
 			return code;
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.SnesGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		#region Events
-
-		#region Menu
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.SNESGGAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.SnesGGSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.SnesGGSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.SnesGGSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SNESGGAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SnesGGSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SnesGGSettings.TopMost ^= true;
-			TopMost = Global.Config.SnesGGSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.SnesGGSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		#endregion
-
-		#region Dialog and Controls
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
+		#region Dialog and Control Events
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
@@ -244,50 +182,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat_Click(object sender, EventArgs e)
 		{
-			if (Global.Emulator is LibsnesCore)
+			string name;
+			var address = 0;
+			var value = 0;
+
+			if (!string.IsNullOrWhiteSpace(CheatNameBox.Text))
 			{
-				string name;
-				var address = 0;
-				var value = 0;
-
-				if (!string.IsNullOrWhiteSpace(CheatNameBox.Text))
-				{
-					name = CheatNameBox.Text;
-				}
-				else
-				{
-					_processing = true;
-					GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
-					name = GGCodeMaskBox.Text;
-					GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
-					_processing = false;
-				}
-
-				if (!string.IsNullOrWhiteSpace(AddressBox.Text))
-				{
-					address = int.Parse(AddressBox.Text, NumberStyles.HexNumber)
-						+ 0x8000;
-				}
-
-				if (!string.IsNullOrWhiteSpace(ValueBox.Text))
-				{
-					value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
-				}
-
-				var watch = Watch.GenerateWatch(
-					(Global.Emulator as IMemoryDomains).MemoryDomains["BUS"],
-					address,
-					Watch.WatchSize.Byte,
-					Watch.DisplayType.Hex,
-					name,
-					bigEndian: false
-				);
-
-				Global.CheatList.Add(new Cheat(
-					watch,
-					value
-				));
+				name = CheatNameBox.Text;
 			}
+			else
+			{
+				_processing = true;
+				GGCodeMaskBox.TextMaskFormat = MaskFormat.IncludeLiterals;
+				name = GGCodeMaskBox.Text;
+				GGCodeMaskBox.TextMaskFormat = MaskFormat.ExcludePromptAndLiterals;
+				_processing = false;
+			}
+
+			if (!string.IsNullOrWhiteSpace(AddressBox.Text))
+			{
+				address = int.Parse(AddressBox.Text, NumberStyles.HexNumber)
+					+ 0x8000;
+			}
+
+			if (!string.IsNullOrWhiteSpace(ValueBox.Text))
+			{
+				value = byte.Parse(ValueBox.Text, NumberStyles.HexNumber);
+			}
+
+			var watch = Watch.GenerateWatch(
+				MemoryDomains["BUS"],
+				address,
+				Watch.WatchSize.Byte,
+				Watch.DisplayType.Hex,
+				name,
+				bigEndian: false
+			);
+
+			Global.CheatList.Add(new Cheat(
+				watch,
+				value
+			));
 		}
 
 		private void AddressBox_TextChanged(object sender, EventArgs e)
@@ -421,8 +356,6 @@ namespace BizHawk.Client.EmuHawk
 				GGCodeMaskBox.Text += code;
 			}
 		}
-
-		#endregion
 
 		#endregion
 	}

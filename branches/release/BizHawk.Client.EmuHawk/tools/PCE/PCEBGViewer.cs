@@ -1,53 +1,46 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PceBgViewer : Form, IToolForm
+	public partial class PceBgViewer : Form, IToolFormAutoConfig
 	{
-		private PCEngine _pce;
+		[RequiredService]
+		private PCEngine _pce { get; set; }
+
+		[ConfigPersist]
+		private int RefreshRateConfig
+		{
+			get
+			{
+				return RefreshRate.Value;
+			}
+			set
+			{
+				RefreshRate.Value = Math.Max(Math.Min(value, RefreshRate.Maximum), RefreshRate.Minimum);
+			}
+		}
+
 		private int _vdcType;
 
 		public PceBgViewer()
 		{
 			InitializeComponent();
-			TopMost = Global.Config.PceBgViewerSettings.TopMost;
 			Activated += (o, e) => Generate();
-			Closing += (o, e) =>
-				{
-					Global.Config.PceBgViewerSettings.Wndx = Location.X;
-					Global.Config.PceBgViewerSettings.Wndy = Location.Y;
-					Global.Config.PCEBGViewerRefreshRate = RefreshRate.Value;
-				};
 		}
 
 		private void PceBgViewer_Load(object sender, EventArgs e)
 		{
-			_pce = Global.Emulator as PCEngine;
-
-			if (Global.Config.PceBgViewerSettings.UseWindowPosition)
-			{
-				Location = Global.Config.PceBgViewerSettings.WindowPosition;
-			}
-
-			if (Global.Config.PCEBGViewerRefreshRate >= RefreshRate.Minimum && Global.Config.PCEBGViewerRefreshRate <= RefreshRate.Maximum)
-			{
-				RefreshRate.Value = Global.Config.PCEBGViewerRefreshRate;
-			}
-			else
-			{
-				RefreshRate.Value = RefreshRate.Maximum;
-			}
 		}
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.PceBgViewerSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Public API
@@ -57,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public unsafe void Generate()
 		{
-			if (Global.Emulator.Frame % RefreshRate.Value != 0)
+			if (_pce.Frame % RefreshRate.Value != 0)
 			{
 				return;
 			}
@@ -103,26 +96,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is PCEngine)
-			{
-				_pce = Global.Emulator as PCEngine;
-			}
-			else
-			{
-				Close();
-			}
+			// Nothing to do
 		}
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is PCEngine)
-			{
-				Generate();
-			}
-			else
-			{
-				Close();
-			}
+			Generate();
 		}
 
 		public void FastUpdate()
@@ -157,36 +136,6 @@ namespace BizHawk.Client.EmuHawk
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.PceBgViewerSettings.SaveWindowPosition;
-			AutoloadMenuItem.Checked = Global.Config.PCEBGViewerAutoload;
-			AlwaysOnTopMenuItem.Checked = Global.Config.PceBgViewerSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.PceBgViewerSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PCEBGViewerAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceBgViewerSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceBgViewerSettings.TopMost ^= true;
-			TopMost = Global.Config.PceBgViewerSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.PceBgViewerSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
 		}
 
 		#endregion

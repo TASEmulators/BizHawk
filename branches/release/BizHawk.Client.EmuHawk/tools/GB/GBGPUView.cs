@@ -7,11 +7,16 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBGPUView : Form, IToolForm
+	public partial class GBGPUView : Form, IToolFormAutoConfig
 	{
+		[RequiredService]
+		public Gameboy Gb { get; private set; }
+
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
 		// I'm not quite sure what's the best thing to do...
@@ -27,8 +32,6 @@ namespace BizHawk.Client.EmuHawk
 		// g' = 8.25g
 	    // b' = 8.25b
 
-		private Gameboy _gb;
-
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
 		private IntPtr _vram;
 		private IntPtr _bgpal;
@@ -42,12 +45,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color _spriteback;
 		
-		Color spriteback
+		[ConfigPersist]
+		public Color Spriteback
 		{
 			get { return _spriteback; }
 			set
 			{
-				_spriteback = value;
+				_spriteback = Color.FromArgb(255, value); // force fully opaque
 				panelSpriteBackColor.BackColor = _spriteback;
 				labelSpriteBackColor.Text = string.Format("({0},{1},{2})", _spriteback.R, _spriteback.G, _spriteback.B);
 			}
@@ -77,50 +81,36 @@ namespace BizHawk.Client.EmuHawk
 
 			_messagetimer.Interval = 5000;
 			_messagetimer.Tick += messagetimer_Tick;
-
-			checkBoxAutoLoad.Checked = Global.Config.AutoLoadGBGPUView;
-			checkBoxSavePos.Checked = Global.Config.GBGPUViewSaveWindowPosition;
-
-			// TODO: from config
-			spriteback = Color.FromArgb(255, Global.Config.GBGPUSpriteBack);
+			Spriteback = Color.Lime; // will be overrided from config after construct
 		}
 
 		public void Restart()
 		{
-			if (Global.Emulator is Gameboy)
-			{
-				_gb = Global.Emulator as Gameboy;
-				_cgb = _gb.IsCGBMode();
-				_lcdc = 0;
-				if (!_gb.GetGPUMemoryAreas(out _vram, out _bgpal, out _sppal, out _oam))
-				{
-					_gb = null;
-					if (Visible)
-						Close();
-				}
-				tilespal = _bgpal;
+			_cgb = Gb.IsCGBMode();
+			_lcdc = 0;
 
-				if (_cgb)
-					label4.Enabled = true;
-				else
-					label4.Enabled = false;
-				bmpViewBG.Clear();
-				bmpViewWin.Clear();
-				bmpViewTiles1.Clear();
-				bmpViewTiles2.Clear();
-				bmpViewBGPal.Clear();
-				bmpViewSPPal.Clear();
-				bmpViewOAM.Clear();
-				bmpViewDetails.Clear();
-				bmpViewMemory.Clear();
-				cbscanline_emu = -4; // force refresh
-			}
-			else
+			// TODO: can this be a required Emulator Service, and let the tool manage the logic of closing?
+			if (!Gb.GetGPUMemoryAreas(out _vram, out _bgpal, out _sppal, out _oam))
 			{
-				_gb = null;
 				if (Visible)
 					Close();
 			}
+			tilespal = _bgpal;
+
+			if (_cgb)
+				label4.Enabled = true;
+			else
+				label4.Enabled = false;
+			bmpViewBG.Clear();
+			bmpViewWin.Clear();
+			bmpViewTiles1.Clear();
+			bmpViewTiles2.Clear();
+			bmpViewBGPal.Clear();
+			bmpViewSPPal.Clear();
+			bmpViewOAM.Clear();
+			bmpViewDetails.Clear();
+			bmpViewMemory.Clear();
+			cbscanline_emu = -4; // force refresh
 		}
 
 
@@ -379,7 +369,7 @@ namespace BizHawk.Client.EmuHawk
 				p = (int*)_sppal;
 				for (int i = 0; i < 32; i++)
 					p[i] |= unchecked((int)0xff000000);
-				int c = spriteback.ToArgb();
+				int c = Spriteback.ToArgb();
 				for (int i = 0; i < 32; i += 4)
 					p[i] = c;
 			}
@@ -481,23 +471,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUView_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_gb != null)
+			if (Gb != null)
 			{
-				_gb.SetScanlineCallback(null, 0);
-				_gb = null;
+				Gb.SetScanlineCallback(null, 0);
 			}
-			Global.Config.GBGPUSpriteBack = spriteback;
 		}
 
 		private void GBGPUView_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.GBGPUViewSaveWindowPosition)
-			{
-				Point p = new Point(Global.Config.GBGPUViewWndx, Global.Config.GBGPUViewWndy);
-				if (p.X >= 0 && p.Y >= 0)
-					Location = p;
-			}
-			Restart();
 		}
 
 		#region refresh
@@ -533,8 +514,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonRefresh_Click(object sender, EventArgs e)
 		{
-			if (cbscanline == -2 && _gb != null)
-				_gb.SetScanlineCallback(ScanlineCallback, -2);
+			if (cbscanline == -2 && Gb != null)
+				Gb.SetScanlineCallback(ScanlineCallback, -2);
 		}
 
 		private void hScrollBarScanline_ValueChanged(object sender, EventArgs e)
@@ -561,14 +542,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return;
 			}
-			else if (_gb != null)
+			else if (Gb != null)
 			{
 				if (!Visible)
 				{
 					if (cbscanline_emu != -2)
 					{
 						cbscanline_emu = -2;
-						_gb.SetScanlineCallback(null, 0);
+						Gb.SetScanlineCallback(null, 0);
 					}
 				}
 				else
@@ -577,9 +558,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						cbscanline_emu = cbscanline;
 						if (cbscanline == -2)
-							_gb.SetScanlineCallback(null, 0);
+							Gb.SetScanlineCallback(null, 0);
 						else
-							_gb.SetScanlineCallback(ScanlineCallback, cbscanline);
+							Gb.SetScanlineCallback(ScanlineCallback, cbscanline);
 					}
 				}
 			}
@@ -946,18 +927,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBGPUView_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			Global.Config.GBGPUViewWndx = Location.X;
-			Global.Config.GBGPUViewWndy = Location.Y;
-		}
-
-		private void checkBoxAutoLoad_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadGBGPUView = (sender as CheckBox).Checked;
-		}
-
-		private void checkBoxSavePos_CheckedChanged(object sender, EventArgs e)
-		{
-			Global.Config.GBGPUViewSaveWindowPosition = (sender as CheckBox).Checked;
 		}
 
 		private void buttonChangeColor_Click(object sender, EventArgs e)
@@ -967,13 +936,12 @@ namespace BizHawk.Client.EmuHawk
 				dlg.AllowFullOpen = true;
 				dlg.AnyColor = true;
 				dlg.FullOpen = true;
-				dlg.Color = spriteback;
+				dlg.Color = Spriteback;
 
 				var result = dlg.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
-					// force full opaque
-					spriteback = Color.FromArgb(255, dlg.Color);
+					Spriteback = dlg.Color;
 				}
 			}
 		}

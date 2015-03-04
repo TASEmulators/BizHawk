@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</ProjectGuid>
@@ -13,22 +13,22 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
+    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -60,7 +60,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\VersionInfo.cs">
+    <Compile Include="..\Version\svnrev.cs">
+      <Link>svnrev.cs</Link>
+    </Compile>
+    <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
@@ -146,25 +149,46 @@
     <Compile Include="movie\bk2\Bk2FloatConstants.cs" />
     <Compile Include="movie\bk2\Bk2MnemonicConstants.cs" />
     <Compile Include="movie\bk2\Bk2Movie.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.IO.cs" />
-    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\tasproj\TasMovie.History.cs" />
+    <Compile Include="movie\bk2\Bk2Movie.InputLog.cs">
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bk2\Bk2Movie.IO.cs">
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bk2\Bk2Movie.ModeApi.cs">
+      <DependentUpon>Bk2Movie.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\bkm\BkmControllerAdapter.cs" />
     <Compile Include="movie\bkm\BkmHeader.cs" />
     <Compile Include="movie\bkm\BkmLogEntryGenerator.cs" />
     <Compile Include="movie\bkm\BkmMnemonicConstants.cs" />
     <Compile Include="movie\bkm\BkmMovie.cs" />
-    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs" />
-    <Compile Include="movie\bkm\BkmMovie.InputLog.cs" />
-    <Compile Include="movie\bkm\BkmMovie.IO.cs" />
-    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs" />
+    <Compile Include="movie\bkm\BkmMovie.HeaderApi.cs">
+      <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bkm\BkmMovie.InputLog.cs">
+      <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bkm\BkmMovie.IO.cs">
+      <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\bkm\BkmMovie.ModeApi.cs">
+      <DependentUpon>BkmMovie.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\conversions\MovieConversionExtensions.cs" />
     <Compile Include="movie\HeaderKeys.cs" />
+    <Compile Include="movie\import\Fm2Import.cs" />
+    <Compile Include="movie\import\IMovieImport.cs" />
+    <Compile Include="movie\import\MovieImport.cs" />
+    <Compile Include="movie\import\PJMImport.cs" />
     <Compile Include="movie\interfaces\ILogEntryGenerator.cs" />
     <Compile Include="movie\interfaces\IMovie.cs" />
     <Compile Include="movie\interfaces\IMovieController.cs" />
-    <Compile Include="movie\MovieImport.cs" />
+    <Compile Include="movie\interfaces\IMovieSession.cs" />
     <Compile Include="movie\MovieService.cs" />
     <Compile Include="movie\MovieSession.cs" />
     <Compile Include="movie\MultitrackRecording.cs" />
@@ -172,8 +196,12 @@
     <Compile Include="movie\Subtitle.cs" />
     <Compile Include="movie\SubtitleList.cs" />
     <Compile Include="movie\tasproj\TasLagLog.cs" />
-    <Compile Include="movie\tasproj\TasMovie.Editing.cs" />
-    <Compile Include="movie\tasproj\TasMovie.IO.cs" />
+    <Compile Include="movie\tasproj\TasMovie.Editing.cs">
+      <DependentUpon>TasMovie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="movie\tasproj\TasMovie.IO.cs">
+      <DependentUpon>TasMovie.cs</DependentUpon>
+    </Compile>
     <Compile Include="movie\tasproj\TasMovie.cs" />
     <Compile Include="movie\tasproj\TasMovieMarker.cs" />
     <Compile Include="movie\tasproj\TasStateManager.cs" />
@@ -182,7 +210,7 @@
     <Compile Include="NESGameGenieEncoderDecoder.cs" />
     <Compile Include="PathManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\svnrev.cs" />
+    <Compile Include="QuickBmpFile.cs" />
     <Compile Include="RecentFiles.cs" />
     <Compile Include="rewind\Rewinder.cs" />
     <Compile Include="rewind\RewindThreader.cs" />
@@ -200,6 +228,7 @@
     <Compile Include="tools\RamSearchEngine.cs" />
     <Compile Include="tools\Watch.cs" />
     <Compile Include="tools\WatchList.cs" />
+    <Compile Include="UIHelper.cs" />
     <Compile Include="XmlGame.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -228,10 +257,10 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

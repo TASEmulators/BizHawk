@@ -43,14 +43,9 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
 			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			}
 			else
 			{
-				sfd.FileName = "NULL";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			}
 
@@ -94,14 +89,9 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
 				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
 			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
-			}
 			else
 			{
-				sfd.FileName = "NULL";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
 			}
 
@@ -143,10 +133,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-			else if (!(Global.Emulator is NullEmulator))
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			}
 
 			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
@@ -224,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<int> addresses, Watch.WatchSize size)
+		public static void ViewInHexEditor(MemoryDomain domain, IEnumerable<long> addresses, Watch.WatchSize size)
 		{
 			GlobalWin.Tools.Load<HexEditor>();
 			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain, size);

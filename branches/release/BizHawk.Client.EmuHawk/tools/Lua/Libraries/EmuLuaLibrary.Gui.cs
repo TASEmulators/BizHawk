@@ -3,18 +3,26 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 
-using BizHawk.Client.Common;
 using LuaInterface;
+
+using BizHawk.Emulation.Common;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public sealed class GuiLuaLibrary : LuaLibraryBase
 	{
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }
 
 		public GuiLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
+
+		private Color DefaultForeground = Color.White;
+		private Color? DefaultBackground = null;
 
 		public override string Name { get { return "gui"; } }
 
@@ -47,8 +55,15 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawNew(string name)
 		{
-			DrawFinish();
-			_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+			try
+			{
+				DrawFinish();
+				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+			}
+			catch (InvalidOperationException ex)
+			{
+				Log(ex.ToString());
+			}
 		}
 
 		public void DrawFinish()
@@ -56,6 +71,11 @@ namespace BizHawk.Client.EmuHawk
 			if(_luaSurface != null)
 				GlobalWin.DisplayManager.UnlockLuaSurface(_luaSurface);
 			_luaSurface = null;
+		}
+
+		public bool HasLuaSurface
+		{
+			get { return _luaSurface != null; }
 		}
 
 		#endregion
@@ -139,6 +159,24 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"defaultForeground",
+			"Sets the default foreground color to use when using drawing methods, white by default"
+		)]
+		public void SetDefaultForegroundColor(Color color)
+		{
+			DefaultForeground = color;
+		}
+
+		[LuaMethodAttributes(
+			"defaultBackground",
+			"Sets the default background color to use when using drawing methods, transparent by default"
+		)]
+		public void SetDefaultBackgroundColor(Color color)
+		{
+			DefaultBackground = color;
+		}
+
+		[LuaMethodAttributes(
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color"
 		)]
@@ -201,10 +239,12 @@ namespace BizHawk.Client.EmuHawk
 						y -= y2;
 					}
 
-					g.DrawRectangle(GetPen(line ?? Color.White), x, y, x2, y2);
-					if (background.HasValue)
+					g.DrawRectangle(GetPen(line ?? DefaultForeground), x, y, x2, y2);
+
+					var bg = background ?? DefaultBackground;
+					if (bg.HasValue)
 					{
-						g.FillRectangle(GetBrush(background.Value), x, y, x2, y2);
+						g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, x2 - 1, y2 - 1);
 					}
 				}
 				catch (Exception)
@@ -219,19 +259,21 @@ namespace BizHawk.Client.EmuHawk
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color"
 		)]
-		public void DrawEllipse(int x, int y, int width, int height, Color? line, Color? background = null)
+		public void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawEllipse(GetPen(line ?? Color.White), x, y, width, height);
-					if (background.HasValue)
+					var bg = background ?? DefaultBackground;
+					if (bg.HasValue)
 					{
-						var brush = GetBrush(background.Value);
+						var brush = GetBrush(bg.Value);
 						g.FillEllipse(brush, x, y, width, height);
 					}
+
+					g.DrawEllipse(GetPen(line ?? DefaultForeground), x, y, width, height);
 				}
 				catch (Exception)
 				{
@@ -271,6 +313,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
+
 		[LuaMethodAttributes(
 			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
@@ -280,7 +324,17 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				var img = Image.FromFile(path);
+				Image img;
+				if (ImageCache.ContainsKey(path))
+				{
+					img = ImageCache[path];
+				}
+				else
+				{
+					img = Image.FromFile(path);
+					ImageCache.Add(path, img);
+				}
+
 				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
 			}
 		}
@@ -294,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				g.DrawLine(GetPen(color ?? Color.White), x1, y1, x2, y2);
+				g.DrawLine(GetPen(color ?? DefaultForeground), x1, y1, x2, y2);
 			}
 		}
 
@@ -309,18 +363,21 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startangle,
 			int sweepangle,
-			Color line,
+			Color? line = null,
 			Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
-				g.DrawPie(GetPen(line), x, y, width, height, startangle, sweepangle);
-				if (background.HasValue)
+				var bg = background ?? DefaultBackground;
+				if (bg.HasValue)
 				{
-					var brush = GetBrush(background.Value);
+					var brush = GetBrush(bg.Value);
 					g.FillPie(brush, x, y, width, height, startangle, sweepangle);
 				}
+
+				g.DrawPie(GetPen(line ?? DefaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
+				
 			}
 		}
 
@@ -335,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? Color.White), x, y, x + 0.1F, y);
+					g.DrawLine(GetPen(color ?? DefaultForeground), x, y, x + 0.1F, y);
 				}
 				catch (Exception)
 				{
@@ -348,7 +405,7 @@ namespace BizHawk.Client.EmuHawk
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. Line is the color of the polygon. Background is the optional fill color"
 		)]
-		public void DrawPolygon(LuaTable points, Color line, Color? background = null)
+		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 
@@ -364,10 +421,11 @@ namespace BizHawk.Client.EmuHawk
 						i++;
 					}
 
-					g.DrawPolygon(GetPen(line), pointsArr);
-					if (background.HasValue)
+					g.DrawPolygon(GetPen(line ?? DefaultForeground), pointsArr);
+					var bg = background ?? DefaultBackground;
+					if (bg.HasValue)
 					{
-						g.FillPolygon(GetBrush(background.Value), pointsArr);
+						g.FillPolygon(GetBrush(bg.Value), pointsArr);
 					}
 				}
 				catch (Exception)
@@ -385,10 +443,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var g = GetGraphics())
 			{
-				g.DrawRectangle(GetPen(line ?? Color.White), x, y, width, height);
-				if (background.HasValue)
+				g.DrawRectangle(GetPen(line ?? DefaultForeground), x, y, width, height);
+				var bg = background ?? DefaultBackground;
+				if (bg.HasValue)
 				{
-					g.FillRectangle(GetBrush(background.Value), x, y, width, height);
+					g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, width - 1, height - 1);
 				}
 			}
 		}
@@ -458,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-					g.DrawString(message, font, GetBrush(color ?? Color.White), x, y);
+					g.DrawString(message, font, GetBrush(color ?? DefaultForeground), x, y);
 				}
 				catch (Exception)
 				{

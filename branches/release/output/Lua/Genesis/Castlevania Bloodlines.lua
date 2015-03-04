@@ -17,12 +17,12 @@ local draw_eh = true -- Set to false to turn off enemie hitboxes
 local infhp = true --Set to false to turn off infinite HP for the player
 
 
-local playerbase = 0xFFB300
+local playerbase = 0xB300
 local face = 0x2C
-local php = 0xFF9C11
-local weapon = 0xFFB480
-local spear = 0xFF9CA7
-local enemybase = 0xFFB380
+local php = 0x9C11
+local weapon = 0xB480
+local spear = 0x9CA7
+local enemybase = 0xB380
 
 local xcord = 0x18
 local ycord = 0x1C
@@ -66,7 +66,7 @@ end
 
 local function player_projectiles()
 
-	local start = 0xFFC900
+	local start = 0xC900
 	local base 
 	local x 
 	local y

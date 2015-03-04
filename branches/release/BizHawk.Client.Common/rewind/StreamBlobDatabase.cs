@@ -10,14 +10,14 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class StreamBlobDatabase : IDisposable
 	{
-		private Func<byte[], long, bool, byte[]> _mBufferManage;
+		private StreamBlobDatabaseBufferManager _mBufferManage;
 		private byte[] _mAllocatedBuffer;
 		private Stream _mStream;
 		private LinkedList<ListItem> _mBookmarks = new LinkedList<ListItem>();
 		private LinkedListNode<ListItem> _mHead, _mTail;
 		private long _mCapacity, _mSize;
 
-		public StreamBlobDatabase(bool onDisk, long capacity, Func<byte[], long, bool, byte[]> mBufferManage)
+		public StreamBlobDatabase(bool onDisk, long capacity, StreamBlobDatabaseBufferManager mBufferManage)
 		{
 			_mBufferManage = mBufferManage;
 			_mCapacity = capacity;
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_mAllocatedBuffer = _mBufferManage(null, capacity, true);
+				_mAllocatedBuffer = _mBufferManage(null, ref capacity, true);
 				_mStream = new MemoryStream(_mAllocatedBuffer);
 			}
 		}
@@ -63,7 +63,9 @@ namespace BizHawk.Client.Common
 			_mStream = null;
 			if (_mAllocatedBuffer != null)
 			{
-				_mBufferManage(_mAllocatedBuffer, 0, false);
+				long capacity = 0;
+				_mBufferManage(_mAllocatedBuffer, ref capacity, false);
+				_mAllocatedBuffer = null;
 			}
 		}
 
@@ -264,7 +266,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private static byte[] test_BufferManage(byte[] inbuf, long size, bool allocate)
+		private static byte[] test_BufferManage(byte[] inbuf, ref long size, bool allocate)
 		{
 			if (allocate)
 			{
@@ -305,4 +307,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 	}
+
+	public delegate byte[] StreamBlobDatabaseBufferManager(byte[] existingBuffer, ref long capacity, bool allocate);
 }

@@ -43,11 +43,6 @@
 			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.MaxLinesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.BrowseBox = new System.Windows.Forms.Button();
 			this.FileBox = new System.Windows.Forms.TextBox();
@@ -55,8 +50,6 @@
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -91,11 +84,13 @@
 			this.TraceView.ItemCount = 0;
 			this.TraceView.Location = new System.Drawing.Point(8, 18);
 			this.TraceView.Name = "TraceView";
+			this.TraceView.SelectAllInProgress = false;
 			this.TraceView.selectedItem = -1;
 			this.TraceView.Size = new System.Drawing.Size(603, 414);
 			this.TraceView.TabIndex = 4;
 			this.TraceView.TabStop = false;
 			this.TraceView.UseCompatibleStateImageBehavior = false;
+			this.TraceView.UseCustomBackground = true;
 			this.TraceView.View = System.Windows.Forms.View.Details;
 			// 
 			// Script
@@ -129,27 +124,27 @@
             this.toolStripSeparator1,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SaveLogMenuItem
 			// 
 			this.SaveLogMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveLogMenuItem.Name = "SaveLogMenuItem";
-			this.SaveLogMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.SaveLogMenuItem.Size = new System.Drawing.Size(132, 22);
 			this.SaveLogMenuItem.Text = "&Save Log";
 			this.SaveLogMenuItem.Click += new System.EventHandler(this.SaveLogMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(129, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(132, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -159,7 +154,7 @@
             this.CopyMenuItem,
             this.SelectAllMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
-			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
+			this.EditSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.EditSubMenu.Text = "Edit";
 			// 
 			// CopyMenuItem
@@ -167,7 +162,7 @@
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeyDisplayString = "";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.CopyMenuItem.Text = "&Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -176,65 +171,24 @@
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
 			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.SelectAllMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.SelectAllMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MaxLinesMenuItem,
-            this.toolStripSeparator2,
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator3,
-            this.RestoreDefaultSettingsMenuItem});
+            this.MaxLinesMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+			this.OptionsSubMenu.Size = new System.Drawing.Size(58, 20);
+			this.OptionsSubMenu.Text = "&Settings";
 			// 
 			// MaxLinesMenuItem
 			// 
 			this.MaxLinesMenuItem.Name = "MaxLinesMenuItem";
-			this.MaxLinesMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.MaxLinesMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.MaxLinesMenuItem.Text = "&Set Max Lines...";
 			this.MaxLinesMenuItem.Click += new System.EventHandler(this.MaxLinesMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.AutoloadMenuItem.Text = "&Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.SaveWindowPositionMenuItem.Text = "&Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.AlwaysOnTopMenuItem.Text = "&Always on Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.FloatingWindowMenuItem.Text = "&Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// groupBox2
 			// 
@@ -323,18 +277,6 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
-			// toolStripSeparator3
-			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(196, 6);
-			// 
-			// RestoreDefaultSettingsMenuItem
-			// 
-			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
-			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(199, 22);
-			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
-			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
-			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,12 +316,9 @@
 		private System.Windows.Forms.CheckBox LoggingEnabled;
 		private System.Windows.Forms.Button ClearButton;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
 		private VirtualListView TraceView;
 		public System.Windows.Forms.ColumnHeader Script;
 		private System.Windows.Forms.ToolStripMenuItem MaxLinesMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
 		private System.Windows.Forms.RadioButton ToFileRadio;
 		private System.Windows.Forms.RadioButton ToWindowRadio;
 		private System.Windows.Forms.TextBox FileBox;
@@ -387,9 +326,5 @@
 		private System.Windows.Forms.ToolStripMenuItem EditSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
 	}
 }

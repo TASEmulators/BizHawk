@@ -11,18 +11,20 @@ using LuaInterface;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class LuaConsole : Form, IToolForm
+	public partial class LuaConsole : Form, IToolFormAutoConfig
 	{
 		private readonly LuaFileList _luaList;
-		private int _defaultWidth;
-		private int _defaultHeight;
 		private bool _sortReverse;
 		private string _lastColumnSorted;
+
+		private List<string> _consoleCommandHistory = new List<string>();
+		private int _consoleCommandHistoryIndex = -1;
 
 		public LuaConsole()
 		{
@@ -35,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			InitializeComponent();
-			LuaImp = new EmuLuaLibrary(this);
+			
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -52,8 +54,6 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
-
-			TopMost = Global.Config.LuaSettings.TopMost;
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -68,11 +68,6 @@ namespace BizHawk.Client.EmuHawk
 		private IEnumerable<LuaFile> SelectedFiles
 		{
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.LuaSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		public void UpdateValues()
@@ -97,7 +92,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
-			LoadConfigSettings();
 			if (Global.Config.RecentLuaSession.AutoLoad)
 			{
 				if (!Global.Config.RecentLuaSession.Empty)
@@ -109,6 +103,51 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			if (LuaImp != null && LuaImp.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
+			{
+				LuaImp.GuiLibrary.DrawFinish();
+			}
+			
+			var runningScripts = _luaList.Where(f => f.Enabled).ToList();
+
+			foreach (var file in runningScripts)
+			{
+				LuaImp.CallExitEvent(file.Thread);
+
+				var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == file.Thread).ToList();
+
+				foreach (var function in functions)
+					LuaImp.RegisteredFunctions.Remove(function);
+
+				UpdateRegisteredFunctionsDialog();
+
+				file.Stop();
+			}
+
+			LuaImp = new EmuLuaLibrary(this);
+			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
+
+			foreach (var file in runningScripts)
+			{
+				try
+				{
+					file.Thread = LuaImp.SpawnCoroutine(file.Path);
+					file.Enabled = true;
+				}
+				catch (Exception ex)
+				{
+					if (ex is LuaScriptException)
+					{
+						file.Enabled = false;
+						ConsoleLog(ex.Message);
+					}
+					else
+					{
+						MessageBox.Show(ex.ToString());
+					}
+				}
+			}
+
 			UpdateDialog();
 		}
 
@@ -119,9 +158,11 @@ namespace BizHawk.Client.EmuHawk
 			if (LuaAlreadyInSession(processedPath) == false)
 			{
 				var luaFile = new LuaFile(string.Empty, processedPath);
+
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
 				Global.Config.RecentLua.Add(processedPath);
+
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
 				{
@@ -132,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
-						if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+						if (e.GetType() == typeof(LuaInterface.LuaScriptException))
 						{
 							luaFile.Enabled = false;
 							ConsoleLog(e.Message);
@@ -184,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
-						if (e.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+						if (e is LuaScriptException)
 						{
 							file.Enabled = false;
 							ConsoleLog(e.Message);
@@ -254,29 +295,10 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
+		// TODO: Rename me
 		private void SaveConfigSettings()
 		{
 			LuaImp.Close();
-			Global.Config.LuaSettings.Wndx = Location.X;
-			Global.Config.LuaSettings.Wndy = Location.Y;
-			Global.Config.LuaSettings.Width = Right - Left;
-			Global.Config.LuaSettings.Height = Bottom - Top;
-		}
-
-		private void LoadConfigSettings()
-		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Global.Config.LuaSettings.UseWindowPosition)
-			{
-				Location = Global.Config.LuaSettings.WindowPosition;
-			}
-
-			if (Global.Config.LuaSettings.UseWindowSize)
-			{
-				Size = Global.Config.LuaSettings.WindowSize;
-			}
 		}
 
 		private static FileInfo GetFileFromUser(string filter)
@@ -361,7 +383,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LoadLuaSession(string path)
 		{
-			return _luaList.LoadLuaSession(path);
+			var result = _luaList.LoadLuaSession(path);
+
+			RunLuaScripts();
+			UpdateDialog();
+			_luaList.Changes = false;
+
+			return result;
 		}
 
 		/// <summary>
@@ -408,7 +436,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 						}
 					}
-					catch (Exception ex)
+					catch (Exception ex) // TODO: it would be better to only catch LuaScriptException and LuaException and rethrow the generic ones
 					{
 						if (ex is LuaScriptException || ex is LuaException)
 						{
@@ -464,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 				sfd.FileName = Path.GetFileNameWithoutExtension(_luaList.Filename);
 				sfd.InitialDirectory = Path.GetDirectoryName(_luaList.Filename);
 			}
-			else if (!(Global.Emulator is NullEmulator))
+			else if (Global.Game != null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 				sfd.InitialDirectory = PathManager.GetLuaPath();
@@ -521,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
-			if (_luaList.Changes)
+			if (_luaList.Changes && !string.IsNullOrEmpty(_luaList.Filename))
 			{
 				GlobalWin.Sound.StopSound();
 				var result = MessageBox.Show("Save changes to session?", "Lua Console", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
@@ -539,13 +567,13 @@ namespace BizHawk.Client.EmuHawk
 
 					return true;
 				}
-				
+
 				if (result == DialogResult.No)
 				{
 					_luaList.Changes = false;
 					return true;
 				}
-				
+
 				if (result == DialogResult.Cancel)
 				{
 					return false;
@@ -576,7 +604,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentSessionsSubMenu.DropDownItems.Clear();
 			RecentSessionsSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent));
+				Global.Config.RecentLuaSession.RecentMenu(LoadSessionFromRecent, true));
 		}
 
 		private void RecentScriptsSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -663,14 +691,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var sfd = new SaveFileDialog
 			{
-				InitialDirectory = !string.IsNullOrWhiteSpace(_luaList.Filename) ? 
+				InitialDirectory = !string.IsNullOrWhiteSpace(_luaList.Filename) ?
 					Path.GetDirectoryName(_luaList.Filename) :
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LuaPathFragment, null),
 				DefaultExt = ".lua",
 				FileName = !string.IsNullOrWhiteSpace(_luaList.Filename) ?
 					Path.GetFileNameWithoutExtension(_luaList.Filename) :
 					Path.GetFileNameWithoutExtension(Global.Game.Name),
-					OverwritePrompt = true,
+				OverwritePrompt = true,
 				Filter = "Lua Scripts (*.lua)|*.lua|All Files (*.*)|*.*"
 			};
 
@@ -710,7 +738,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception ex)
 					{
-						if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:")
+						if (ex is LuaScriptException)
 						{
 							item.Enabled = false;
 							ConsoleLog(ex.Message);
@@ -912,53 +940,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveWindowPositionMenuItem.Checked = Global.Config.LuaSettings.SaveWindowPosition;
-			AutoloadConsoleMenuItem.Checked = Global.Config.AutoLoadLuaConsole;
-			AutoloadSessionMenuItem.Checked = Global.Config.RecentLuaSession.AutoLoad;
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
-			AlwaysOnTopMenuItem.Checked = Global.Config.LuaSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.LuaSettings.FloatingWindow;
-		}
-
-		private void AutoloadConsoleMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadLuaConsole ^= true;
-		}
-
-		private void AutoloadSessionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.RecentLuaSession.AutoLoad ^= true;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisableLuaScriptsOnLoad ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaSettings.TopMost ^= true;
-			TopMost = Global.Config.LuaSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.LuaSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-
-			Global.Config.LuaSettings.SaveWindowPosition = true;
-			Global.Config.LuaSettings.TopMost = TopMost = false;
-			Global.Config.LuaSettings.FloatingWindow = false;
 		}
 
 		#endregion
@@ -1003,13 +990,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Dialog, Listview, OutputBox
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
+		#region Dialog, Listview, OutputBox, InputBox
 
 		private void LuaConsole_DragDrop(object sender, DragEventArgs e)
 		{
@@ -1035,7 +1016,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				if (ex.ToString().Substring(0, 32) == "LuaInterface.LuaScriptException:" || ex.ToString().Substring(0, 26) == "LuaInterface.LuaException:")
+				if (ex is LuaScriptException || ex is LuaException)
 				{
 					ConsoleLog(ex.Message);
 				}
@@ -1147,6 +1128,77 @@ namespace BizHawk.Client.EmuHawk
 			ToggleScriptMenuItem_Click(sender, e);
 		}
 
+		private void InputBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Enter)
+			{
+				string consoleBeforeCall = OutputBox.Text;
+
+				// TODO: Maybe make these try-catches more general
+				if (InputBox.Text != "")
+				{
+					try
+					{
+						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
+					}
+					catch
+					{
+						try
+						{
+							LuaImp.ExecuteString(InputBox.Text);
+
+							if (OutputBox.Text == consoleBeforeCall)
+								ConsoleLog("Command successfully executed");
+						}
+						catch (LuaScriptException ex)
+						{
+							ConsoleLog(ex.ToString());
+						}
+					}
+
+					_consoleCommandHistory.Insert(0, InputBox.Text);
+					_consoleCommandHistoryIndex = -1;
+					InputBox.Clear();
+				}
+			}
+			else if (e.KeyCode == Keys.Up)
+			{
+				if (_consoleCommandHistoryIndex < _consoleCommandHistory.Count - 1)
+				{
+					_consoleCommandHistoryIndex++;
+					InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
+					InputBox.Select(InputBox.Text.Length, 0);
+				}
+				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.Down)
+			{
+				if (_consoleCommandHistoryIndex == 0)
+				{
+					_consoleCommandHistoryIndex--;
+					InputBox.Text = "";
+				}
+				else if (_consoleCommandHistoryIndex > 0)
+				{
+					_consoleCommandHistoryIndex--;
+					InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
+					InputBox.Select(InputBox.Text.Length, 0);
+				}
+				e.Handled = true;
+			}
+			else if (e.KeyCode == Keys.Tab)
+			{
+				this.ProcessTabKey(false);
+				e.Handled = true;
+			}
+		}
+
+		protected override bool ProcessTabKey(bool forward)
+		{
+			// TODO: Make me less dirty (please)
+			return false;
+		}
+
 		#endregion
 
 		private void EraseToolbarItem_Click(object sender, EventArgs e)
@@ -1154,7 +1206,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.ClearLuaSurfaces();
 		}
 
-	
 		#endregion
 	}
 }

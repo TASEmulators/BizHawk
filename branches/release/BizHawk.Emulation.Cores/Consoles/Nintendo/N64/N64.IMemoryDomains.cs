@@ -7,11 +7,11 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	public partial class N64 : IMemoryDomains
+	public partial class N64
 	{
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		private void MakeMemoryDomain(string name, mupen64plusApi.N64_MEMORY id, MemoryDomain.Endian endian, bool swizzled = false)
 		{
@@ -25,53 +25,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			IntPtr memPtr = api.get_memory_ptr(id);
 
-			Func<int, byte> peekByte;
-			Action<int, byte> pokeByte;
+			Func<long, byte> peekByte;
+			Action<long, byte> pokeByte;
 
 			if (swizzled)
 			{
-				peekByte = delegate(int addr)
+				peekByte = delegate(long addr)
 				{
 					if (addr < 0 || addr >= size)
 					{
 						throw new ArgumentOutOfRangeException();
 					}
 
-					return Marshal.ReadByte(memPtr, (addr ^ 3));
+					return Marshal.ReadByte(memPtr, (int)(addr ^ 3));
 				};
-				pokeByte = delegate(int addr, byte val)
+				pokeByte = delegate(long addr, byte val)
 				{
 					if (addr < 0 || addr >= size)
 					{
 						throw new ArgumentOutOfRangeException();
 					}
 
-					Marshal.WriteByte(memPtr, (addr ^ 3), val);
+					Marshal.WriteByte(memPtr, (int)(addr ^ 3), val);
 				};
 			}
 			else
 			{
-				peekByte = delegate(int addr)
+				peekByte = delegate(long addr)
 				{
 					if (addr < 0 || addr >= size)
 					{
 						throw new ArgumentOutOfRangeException();
 					}
 
-					return Marshal.ReadByte(memPtr, (addr));
+					return Marshal.ReadByte(memPtr, (int)(addr));
 				};
-				pokeByte = delegate(int addr, byte val)
+				pokeByte = delegate(long addr, byte val)
 				{
 					if (addr < 0 || addr >= size)
 					{
 						throw new ArgumentOutOfRangeException();
 					}
 
-					Marshal.WriteByte(memPtr, (addr), val);
+					Marshal.WriteByte(memPtr, (int)(addr), val);
 				};
 			}
 
-			var md = new MemoryDomain(name, size, endian, peekByte, pokeByte);
+			var md = new MemoryDomain(name, size, endian, peekByte, pokeByte, 4);
 
 			_memoryDomains.Add(md);
 		}
@@ -116,28 +116,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 
-			Func<int, byte> peekByte;
-			Action<int, byte> pokeByte;
+			Func<long, byte> peekByte;
+			Action<long, byte> pokeByte;
 
-			peekByte = delegate(int addr)
-				{
-					return api.m64p_read_memory_8((uint)addr);
-				};
-				pokeByte = delegate(int addr, byte val)
-				{
-					api.m64p_write_memory_8((uint)addr, val);
-				};
+			peekByte = delegate(long addr)
+			{
+				return api.m64p_read_memory_8((uint)addr);
+			};
+
+			pokeByte = delegate(long addr, byte val)
+			{
+				api.m64p_write_memory_8((uint)addr, val);
+			};
 
 			_memoryDomains.Add(new MemoryDomain
 				(
-					name: "Sytem Bus",
-					size: 0, //special case for full 32bit memorydomain
+					name: "System Bus",
+					size: uint.MaxValue,
 					endian: MemoryDomain.Endian.Big,
 					peekByte: peekByte,
 					pokeByte: pokeByte
 				));
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 	}
 }

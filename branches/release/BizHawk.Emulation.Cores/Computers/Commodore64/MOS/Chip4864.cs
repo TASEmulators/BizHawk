@@ -30,6 +30,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				ram[i] = ((i & 0x40) != 0) ? (byte)0xFF : (byte)0x00;
 		}
 
+		public byte Peek(long addr)
+		{
+			return ram[addr];
+		}
+
+		public void Poke(long addr, byte val)
+		{
+			ram[addr] = val;
+		}
+
 		public byte Peek(int addr)
 		{
 			return ram[addr];

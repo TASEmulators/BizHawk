@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -45,6 +45,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (!Global.Emulator.HasSavestates())
+				{
+					return false;
+				}
+
 				Update();
 				return _slots.Any(slot => slot);
 			}
@@ -52,7 +57,7 @@ namespace BizHawk.Client.Common
 
 		public bool HasSlot(int slot)
 		{
-			if (Global.Emulator is NullEmulator)
+			if (!Global.Emulator.HasSavestates())
 			{
 				return false;
 			}

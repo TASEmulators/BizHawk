@@ -23,8 +23,8 @@ namespace BizHawk.Client.Common
 
 		// TasMovie
 		LagLog,
-		Greenzone,
-		GreenzoneSettings,
+		StateHistory,
+		StateHistorySettings,
 		Markers,
 		ClientSettings,
 		VerificationLog
@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			WriteNames = new Dictionary<BinaryStateLump, string>();
 			AddLumpName(BinaryStateLump.Versiontag, "BizState 1.0");
 			AddLumpName(BinaryStateLump.Corestate, "Core");
-			AddLumpName(BinaryStateLump.Framebuffer, "Framebuffer");
+			AddLumpName(BinaryStateLump.Framebuffer, "Framebuffer.bmp");
 			AddLumpName(BinaryStateLump.Input, "Input Log.txt");
 			AddLumpName(BinaryStateLump.CorestateText, "CoreText.txt");
 			AddLumpName(BinaryStateLump.Movieheader, "Header.txt");
@@ -58,8 +58,8 @@ namespace BizHawk.Client.Common
 
 			// TasMovie
 			AddLumpName(BinaryStateLump.LagLog, "LagLog");
-			AddLumpName(BinaryStateLump.Greenzone, "GreenZone");
-			AddLumpName(BinaryStateLump.GreenzoneSettings, "GreenZoneSettings.txt");
+			AddLumpName(BinaryStateLump.StateHistory, "GreenZone");
+			AddLumpName(BinaryStateLump.StateHistorySettings, "GreenZoneSettings.txt");
 			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
 			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
 			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");

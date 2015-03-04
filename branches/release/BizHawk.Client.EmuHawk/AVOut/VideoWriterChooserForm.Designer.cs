@@ -41,18 +41,22 @@
 			this.buttonAuto = new System.Windows.Forms.Button();
 			this.panelSizeSelect = new System.Windows.Forms.Panel();
 			this.checkBoxPad = new System.Windows.Forms.CheckBox();
+			this.checkBoxASync = new System.Windows.Forms.CheckBox();
+			this.lblSize = new System.Windows.Forms.Label();
 			this.numericTextBoxW = new BizHawk.Client.EmuHawk.NumericTextBox();
 			this.numericTextBoxH = new BizHawk.Client.EmuHawk.NumericTextBox();
-			this.checkBoxASync = new System.Windows.Forms.CheckBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.lblResolutionWarning = new System.Windows.Forms.Label();
 			this.tableLayoutPanel4.SuspendLayout();
 			this.panelSizeSelect.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// checkBoxResize
 			// 
 			this.checkBoxResize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.checkBoxResize.AutoSize = true;
-			this.checkBoxResize.Location = new System.Drawing.Point(347, 12);
+			this.checkBoxResize.Location = new System.Drawing.Point(347, 35);
 			this.checkBoxResize.Name = "checkBoxResize";
 			this.checkBoxResize.Size = new System.Drawing.Size(88, 17);
 			this.checkBoxResize.TabIndex = 9;
@@ -145,24 +149,24 @@
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(3, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(30, 13);
+			this.label4.Size = new System.Drawing.Size(42, 13);
 			this.label4.TabIndex = 13;
-			this.label4.Text = "Size:";
+			this.label4.Text = "Resize:";
 			// 
 			// buttonAuto
 			// 
-			this.buttonAuto.Location = new System.Drawing.Point(0, 42);
+			this.buttonAuto.Location = new System.Drawing.Point(89, 42);
 			this.buttonAuto.Name = "buttonAuto";
-			this.buttonAuto.Size = new System.Drawing.Size(162, 23);
+			this.buttonAuto.Size = new System.Drawing.Size(70, 34);
 			this.buttonAuto.TabIndex = 14;
-			this.buttonAuto.Text = "Autodetect Size";
+			this.buttonAuto.Text = "/\\ Set As Resize";
 			this.buttonAuto.UseVisualStyleBackColor = true;
 			this.buttonAuto.Click += new System.EventHandler(this.buttonAuto_Click);
 			// 
 			// panelSizeSelect
 			// 
 			this.panelSizeSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.panelSizeSelect.Controls.Add(this.checkBoxPad);
+			this.panelSizeSelect.Controls.Add(this.lblSize);
 			this.panelSizeSelect.Controls.Add(this.label4);
 			this.panelSizeSelect.Controls.Add(this.buttonAuto);
 			this.panelSizeSelect.Controls.Add(this.numericTextBoxW);
@@ -170,18 +174,37 @@
 			this.panelSizeSelect.Controls.Add(this.label3);
 			this.panelSizeSelect.Location = new System.Drawing.Point(347, 58);
 			this.panelSizeSelect.Name = "panelSizeSelect";
-			this.panelSizeSelect.Size = new System.Drawing.Size(162, 105);
+			this.panelSizeSelect.Size = new System.Drawing.Size(162, 84);
 			this.panelSizeSelect.TabIndex = 15;
 			// 
 			// checkBoxPad
 			// 
 			this.checkBoxPad.AutoSize = true;
-			this.checkBoxPad.Location = new System.Drawing.Point(0, 71);
+			this.checkBoxPad.Location = new System.Drawing.Point(444, 35);
 			this.checkBoxPad.Name = "checkBoxPad";
 			this.checkBoxPad.Size = new System.Drawing.Size(45, 17);
 			this.checkBoxPad.TabIndex = 15;
 			this.checkBoxPad.Text = "Pad";
 			this.checkBoxPad.UseVisualStyleBackColor = true;
+			// 
+			// checkBoxASync
+			// 
+			this.checkBoxASync.AutoSize = true;
+			this.checkBoxASync.Location = new System.Drawing.Point(347, 12);
+			this.checkBoxASync.Name = "checkBoxASync";
+			this.checkBoxASync.Size = new System.Drawing.Size(95, 17);
+			this.checkBoxASync.TabIndex = 16;
+			this.checkBoxASync.Text = "Alternate Sync";
+			this.checkBoxASync.UseVisualStyleBackColor = true;
+			// 
+			// lblSize
+			// 
+			this.lblSize.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.lblSize.Location = new System.Drawing.Point(3, 42);
+			this.lblSize.Name = "lblSize";
+			this.lblSize.Size = new System.Drawing.Size(80, 34);
+			this.lblSize.TabIndex = 16;
+			this.lblSize.Text = "Size:\r\nTestxTest";
 			// 
 			// numericTextBoxW
 			// 
@@ -203,15 +226,24 @@
 			this.numericTextBoxH.Size = new System.Drawing.Size(70, 20);
 			this.numericTextBoxH.TabIndex = 11;
 			// 
-			// checkBoxASync
+			// panel1
 			// 
-			this.checkBoxASync.AutoSize = true;
-			this.checkBoxASync.Location = new System.Drawing.Point(347, 35);
-			this.checkBoxASync.Name = "checkBoxASync";
-			this.checkBoxASync.Size = new System.Drawing.Size(95, 17);
-			this.checkBoxASync.TabIndex = 16;
-			this.checkBoxASync.Text = "Alternate Sync";
-			this.checkBoxASync.UseVisualStyleBackColor = true;
+			this.panel1.Controls.Add(this.lblResolutionWarning);
+			this.panel1.Location = new System.Drawing.Point(347, 148);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(162, 93);
+			this.panel1.TabIndex = 17;
+			// 
+			// lblResolutionWarning
+			// 
+			this.lblResolutionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblResolutionWarning.Location = new System.Drawing.Point(4, 4);
+			this.lblResolutionWarning.Name = "lblResolutionWarning";
+			this.lblResolutionWarning.Size = new System.Drawing.Size(155, 98);
+			this.lblResolutionWarning.TabIndex = 0;
+			this.lblResolutionWarning.Text = "Resolution is not a multiple of 4! Odd or non-x4 resolutions breaks many codecs. " +
+    "Check your output carefully and adjust the window size or codec settings if need" +
+    "ed.";
 			// 
 			// VideoWriterChooserForm
 			// 
@@ -220,6 +252,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(521, 440);
+			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.checkBoxPad);
 			this.Controls.Add(this.checkBoxASync);
 			this.Controls.Add(this.panelSizeSelect);
 			this.Controls.Add(this.tableLayoutPanel4);
@@ -235,6 +269,7 @@
 			this.tableLayoutPanel4.PerformLayout();
 			this.panelSizeSelect.ResumeLayout(false);
 			this.panelSizeSelect.PerformLayout();
+			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -257,5 +292,8 @@
 		private System.Windows.Forms.Panel panelSizeSelect;
 		private System.Windows.Forms.CheckBox checkBoxPad;
 		private System.Windows.Forms.CheckBox checkBoxASync;
+		private System.Windows.Forms.Label lblSize;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Label lblResolutionWarning;
 	}
 }

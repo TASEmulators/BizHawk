@@ -110,23 +110,23 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tab in Tabs)
 			{
-				var _y = 14;
-				var _x = 6;
+				var _y = UIHelper.ScaleY(14);
+				var _x = UIHelper.ScaleX(6);
 
 				var tb = new TabPage {Name = tab, Text = tab};
 
 				var bindings = Global.Config.HotkeyBindings.Where(x => x.TabGroup == tab).OrderBy(x => x.Ordinal).ThenBy(x => x.DisplayName).ToList();
 
-				const int iwOffsetX = 110;
-				const int iwOffsetY = -4;
-				const int iwWidth = 120;
+				int iwOffsetX = UIHelper.ScaleX(110);
+				int iwOffsetY = UIHelper.ScaleY(-4);
+				int iwWidth = UIHelper.ScaleX(120);
 				foreach (var b in bindings)
 				{
 					var l = new Label
 						{
 						Text = b.DisplayName,
 						Location = new Point(_x, _y),
-						Width = iwOffsetX - 2,
+						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15)),
 					};
 
 					var w = new InputCompositeWidget
@@ -145,11 +145,11 @@ namespace BizHawk.Client.EmuHawk
 					tb.Controls.Add(l);
 					tb.Controls.Add(w);
 
-					_y += 24;
-					if (_y > HotkeyTabControl.Height - 35)
+					_y += UIHelper.ScaleY(24);
+					if (_y > HotkeyTabControl.Height - UIHelper.ScaleY(35))
 					{
-						_x += iwOffsetX + iwWidth + 10;
-						_y = 14;
+						_x += iwOffsetX + iwWidth + UIHelper.ScaleX(10);
+						_y = UIHelper.ScaleY(14);
 					}
 				}
 

@@ -629,6 +629,25 @@
       "P2 A": "",
       "Power": ""
     },
+    "DualShock Controller": {
+      "P1 Up": "X1 DpadUp,UpArrow",
+      "P1 Down": "X1 DpadDown,DownArrow",
+      "P1 Left": "X1 DpadLeft,LeftArrow",
+      "P1 Right": "X1 DpadRight,RightArrow",
+      "P1 Select": "X1 Back,Space",
+      "P1 Start": "X1 Start,Return",
+      "P1 Square": "X1 X,A",
+      "P1 Triangle": "X1 Y,S",
+      "P1 Circle": "X1 B,X",
+      "P1 Cross": "X1 A,Z",
+      "P1 L1": "X1 LeftShoulder,Q",
+      "P1 R1": "X1 RightShoulder,W",
+      "P1 L2": "X1 LeftTrigger,E",
+      "P1 R2": "X1 RightTrigger,R",
+      "P1 L3": "X1 LeftThumb,T",
+      "P1 R3": "X1 RightThumb,Y",
+      "P1 MODE": "D"
+    },
     "Lynx Controller": {
       "Up": "UpArrow",
       "Down": "DownArrow",
@@ -942,6 +961,28 @@
       }
     },
     "WonderSwan Controller": {},
-    "Lynx Controller": {}
+    "Lynx Controller": {},
+    "DualShock Controller": {
+      "P1 LStick X": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 LStick Y": {
+        "Value": "X1 LeftThumbY",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 RStick X": {
+        "Value": "X1 RightThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 RStick Y": {
+        "Value": "X1 RightThumbY",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    }
   }
 }

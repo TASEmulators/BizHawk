@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -20,33 +21,21 @@ namespace BizHawk.Client.EmuHawk
 		public bool signal_frameAdvance;
 		public bool signal_unthrottle;
 		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
+		public bool signal_overrideSecondaryThrottle;
 
 		public int cfg_frameskiprate
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
-				{
-					return 20;
-				}
-				else
-				{
-					return Global.Config.FrameSkip;
-				}
+				return Global.Config.FrameSkip;
 			}
 		}
+
 		public bool cfg_frameLimit
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
-				{
-					return false;
-				}
-				else
-				{
-					return Global.Config.ClockThrottle;
-				}
+				return Global.Config.ClockThrottle;
 			}
 		}
 
@@ -54,14 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (Global.ClientControls["MaxTurbo"])
-				{
-					return false;
-				}
-				else
-				{
-					return Global.Config.AutoMinimizeSkipping;
-				}
+				return Global.Config.AutoMinimizeSkipping;
 			}
 		}
 
@@ -107,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 				if (framestoskip < 1)
 					framestoskip += ffSkipRate;
 			}
-			else if ((signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit) && allowSleep)
+			else if ((signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit || signal_overrideSecondaryThrottle) && allowSleep)
 			{
 				SpeedThrottle(signal_paused);
 			}
@@ -145,36 +127,18 @@ namespace BizHawk.Client.EmuHawk
 
 		static ulong GetCurTime()
 		{
-#if WINDOWS
 			if (tmethod == 1)
-			{
-				ulong tmp;
-				QueryPerformanceCounter(out tmp);
-				return tmp;
-			}
+				return (ulong)Stopwatch.GetTimestamp();
 			else
-			{
-#endif
 				return (ulong)Environment.TickCount;
-#if WINDOWS
-			}
-#endif
 		}
 
-
 #if WINDOWS
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool QueryPerformanceCounter(out ulong lpPerformanceCount);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool QueryPerformanceFrequency(out ulong frequency);
-
 		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
 		static extern uint timeBeginPeriod(uint uMilliseconds);
-
-		static readonly int tmethod;
 #endif
 
+		static readonly int tmethod;
 		static readonly ulong afsfreq;
 		static readonly ulong tfreq;
 
@@ -182,16 +146,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 #if WINDOWS
 			timeBeginPeriod(1);
-			tmethod = 0;
-			if (QueryPerformanceFrequency(out afsfreq))
-				tmethod = 1;
-			else
-				afsfreq = 1000;
-			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
-#else
-			afsfreq = 1000;
 #endif
-			tfreq = afsfreq << 16;
+			if (Stopwatch.IsHighResolution)
+			{
+				afsfreq = (ulong)Stopwatch.Frequency;
+				tmethod = 1;
+			}
+			else
+			{
+				afsfreq = 1000;
+				tmethod = 0;
+			}
+			Console.WriteLine("throttle method: {0}; resolution: {1}", tmethod, afsfreq);
+			tfreq = afsfreq * 65536;
 		}
 
 		public void SetCoreFps(double desired_fps)
@@ -338,40 +305,57 @@ namespace BizHawk.Client.EmuHawk
 			return rv;
 		}
 
-
 		void SpeedThrottle(bool paused)
 		{
 			AutoFrameSkip_BeforeThrottle();
 
-		waiter:
-			if (signal_unthrottle)
-				return;
+			ulong timePerFrame = tfreq / desiredfps;
 
-			ulong ttime = GetCurTime();
-
-			if ((ttime - ltime) < (tfreq / desiredfps))
+			while (true)
 			{
-				ulong sleepy = (tfreq / desiredfps) - (ttime - ltime);
-				sleepy *= 1000;
-				if (tfreq >= 65536)
-					sleepy /= afsfreq;
-				else
-					sleepy = 0;
-				if (sleepy >= 10 || paused)
+				if (signal_unthrottle)
+					return;
+
+				ulong ttime = GetCurTime();
+				ulong elapsedTime = ttime - ltime;
+
+				if (elapsedTime >= timePerFrame)
 				{
-					Thread.Sleep((int)(sleepy / 2));
-					// reduce it further beacuse Sleep usually sleeps for more than the amount we tell it to
+					int maxMissedFrames = (int)Math.Ceiling((Global.SoundMaxBufferDeficitMs / 1000.0) / ((double)timePerFrame / afsfreq));
+					if (maxMissedFrames < 3)
+						maxMissedFrames = 3;
+
+					if (elapsedTime > timePerFrame * (ulong)(1 + maxMissedFrames))
+						ltime = ttime;
+					else
+						ltime += timePerFrame;
+
+					return;
 				}
-				else if (sleepy > 0) // spin for <1 millisecond waits
+
+				int sleepTime = (int)((timePerFrame - elapsedTime) * 1000 / afsfreq);
+				if (sleepTime >= 2 || paused)
+				{
+#if WINDOWS
+					// Assuming a timer period of 1 ms (i.e. timeBeginPeriod(1)): The actual sleep time
+					// on Windows XP is generally within a half millisecond either way of the requested
+					// time. The actual sleep time on Windows 8 is generally between the requested time
+					// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
+					// sleeping longer than desired.
+					sleepTime -= 1;
+#else
+					// The actual sleep time on OS X with Mono is generally between the request time
+					// and up to 25% over. So we'll scale the sleep time back to account for that.
+					sleepTime = sleepTime * 4 / 5;
+#endif
+
+					Thread.Sleep(Math.Max(sleepTime, 1));
+				}
+				else if (sleepTime > 0) // spin for <1 millisecond waits
 				{
 					Thread.Yield(); // limit to other threads on the same CPU core for other short waits
 				}
-				goto waiter;
 			}
-			if ((ttime - ltime) >= (tfreq * 4 / desiredfps))
-				ltime = ttime;
-			else
-				ltime += tfreq / desiredfps;
 		}
 	}
 }

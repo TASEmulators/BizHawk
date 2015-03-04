@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		isPorted: false,
 		isReleased: false
 		)]
-	public sealed partial class Genesis : IEmulator, IMemoryDomains, IDebuggable
+	public sealed partial class Genesis : IEmulator, ISaveRam, IStatable, IInputPollable
 	{
 		private int _lagcount = 0;
 		private bool lagged = true;
@@ -44,6 +44,9 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		private bool Z80Runnable { get { return (Z80Reset == false && M68000HasZ80Bus == false); } }
 
 		private SoundMixer SoundMixer;
+
+		[FeatureNotImplemented]
+		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
 
 		public void ResetCounters()
 		{
@@ -85,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public Genesis(CoreComm comm, GameInfo game, byte[] rom)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			MainCPU = new MC68000();
 			SoundCPU = new Z80A();
@@ -92,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			PSG = new SN76489() { MaxVolume = 4681 };
 			VDP = new GenVDP();
 			VDP.DmaReadFrom68000 = ReadWord;
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			SoundMixer = new SoundMixer(YM2612, PSG);
 
 			MainCPU.ReadByte = ReadByte;
@@ -143,6 +148,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 			InitializeCartHardware(game);
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		void InitializeCartHardware(GameInfo game)
 		{
@@ -248,9 +255,9 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 #endif
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A-0", MainCPU.A[0].s32 },
 				{ "A-1", MainCPU.A[1].s32 },
@@ -272,17 +279,12 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 				{ "SR", MainCPU.SR },
 
-				{ "Flag X", MainCPU.X ? 1 : 0 },
-				{ "Flag N", MainCPU.N ? 1 : 0 },
-				{ "Flag Z", MainCPU.Z ? 1 : 0 },
-				{ "Flag V", MainCPU.V ? 1 : 0 },
-				{ "Flag C", MainCPU.C ? 1 : 0 }
+				{ "Flag X", MainCPU.X },
+				{ "Flag N", MainCPU.N },
+				{ "Flag Z", MainCPU.Z },
+				{ "Flag V", MainCPU.V },
+				{ "Flag C", MainCPU.C }
 			};
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
 		}
 
 		int vdpcallback(int level) // Musashi handler
@@ -297,11 +299,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		}
 
 		public CoreComm CoreComm { get; private set; }
-
-		public IVideoProvider VideoProvider
-		{
-			get { return VDP; }
-		}
 
 		public ISoundProvider SoundProvider
 		{
@@ -477,7 +474,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 				(addr, value) => RomData[addr & (RomData.Length - 1)] = value);
 
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Big,
-				addr => (byte)ReadByte(addr),
+				addr => (byte)ReadByte((int)addr),
 				(addr, value) => Write8((uint)addr, (uint)value));
 
 			domains.Add(MainMemoryDomain);
@@ -486,9 +483,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			domains.Add(RomDomain);
 			domains.Add(SystemBusDomain);
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
-
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
 
 		public void Dispose() { }
 	}

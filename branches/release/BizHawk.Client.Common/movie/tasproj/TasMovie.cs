@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using System.ComponentModel;
-using System.Globalization;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -21,27 +22,55 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
-		public TasMovie(string path, bool startsFromSavestate = false) : base(path)
+		private BackgroundWorker _progressReportWorker = null;
+		public void NewBGWorker(BackgroundWorker newWorker)
 		{
-			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
-			StateManager = new TasStateManager(this);
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
-			Markers = new TasMovieMarkerList(this);
-			Markers.CollectionChanged += Markers_CollectionChanged;
-			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+			_progressReportWorker = newWorker;
 		}
 
-		public TasMovie(bool startsFromSavestate = false)
-			: base()
+		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
+			: base(path)
 		{
+			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
+			_progressReportWorker = progressReportWorker;
+			if (!Global.Emulator.HasSavestates())
+			{
+				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
+			}
+
+			ChangeLog = new TasMovieChangeLog(this);
+
 			StateManager = new TasStateManager(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+
+			BindMarkersToInput = true;
+		}
+
+		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
+			: base()
+		{
+			_progressReportWorker = progressReportWorker;
+			if (!Global.Emulator.HasSavestates())
+			{
+				throw new InvalidOperationException("Cannot create a TasMovie against a core that does not implement IStatable");
+			}
+
+			ChangeLog = new TasMovieChangeLog(this);
+
+			StateManager = new TasStateManager(this);
+			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
+			Markers = new TasMovieMarkerList(this);
+			Markers.CollectionChanged += Markers_CollectionChanged;
+			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
+			
+			BindMarkersToInput = true;
 		}
 
 		public TasMovieMarkerList Markers { get; set; }
+		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
 
 		public override string PreferredExtension
@@ -64,12 +93,13 @@ namespace BizHawk.Client.Common
 				{
 					State = StateManager[index],
 					LogEntry = GetInputLogEntry(index),
-					Lagged = LagLog[index + 1]
+					Lagged = LagLog[index + 1],
+					WasLagged = LagLog.History(index + 1)
 				};
 			}
 		}
 
-		#region Events and Handlers 
+		#region Events and Handlers
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -118,6 +148,7 @@ namespace BizHawk.Client.Common
 		{
 			ClearTasprojExtras();
 			Markers.Add(0, StartsFromSavestate ? "Savestate" : "Power on");
+			ChangeLog = new TasMovieChangeLog(this);
 
 			base.StartNewRecording();
 		}
@@ -181,61 +212,6 @@ namespace BizHawk.Client.Common
 			return "!";
 		}
 
-		public void ToggleBoolState(int frame, string buttonName)
-		{
-			if (frame < _log.Count)
-			{
-				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-				adapter[buttonName] = !adapter.IsPressed(buttonName);
-
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
-				_log[frame] = lg.GenerateLogEntry();
-				Changes = true;
-				InvalidateAfter(frame);
-			}
-		}
-
-		public void SetBoolState(int frame, string buttonName, bool val)
-		{
-			if (frame < _log.Count)
-			{
-				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-				var old = adapter[buttonName];
-				adapter[buttonName] = val;
-
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
-				_log[frame] = lg.GenerateLogEntry();
-
-				if (old != val)
-				{
-					InvalidateAfter(frame);
-					Changes = true;
-				}
-			}
-		}
-
-		public void SetFloatState(int frame, string buttonName, float val)
-		{
-			if (frame < _log.Count)
-			{
-				var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-				var old = adapter.GetFloat(buttonName);
-				adapter.SetFloat(buttonName, val);
-
-				var lg = LogGeneratorInstance();
-				lg.SetSource(adapter);
-				_log[frame] = lg.GenerateLogEntry();
-
-				if (old != val)
-				{
-					InvalidateAfter(frame);
-					Changes = true;
-				}
-			}
-		}
-
 		public bool BoolIsPressed(int frame, string buttonName)
 		{
 			return ((Bk2ControllerAdapter)GetInputState(frame))
@@ -281,24 +257,24 @@ namespace BizHawk.Client.Common
 		{
 			if (StateManager.Any())
 			{
-				StateManager.ClearGreenzone();
+				StateManager.ClearStateHistory();
 				Changes = true;
 			}
 		}
 
 		public override IController GetInputState(int frame)
 		{
-			if (frame == Global.Emulator.Frame) // Take this opportunity to capture lag and state info if we do not have it
-			{
-				LagLog[Global.Emulator.Frame] = Global.Emulator.IsLagFrame;
-
-				if (!StateManager.HasState(frame))
-				{
-					StateManager.Capture();
-				}
-			}
-
 			return base.GetInputState(frame);
+		}
+
+		public void GreenzoneCurrentFrame()
+		{
+			LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+
+			if (!StateManager.HasState(Global.Emulator.Frame))
+			{
+				StateManager.Capture();
+			}
 		}
 
 		public void ClearLagLog()
@@ -317,7 +293,7 @@ namespace BizHawk.Client.Common
 		public void CopyLog(IEnumerable<string> log)
 		{
 			_log.Clear();
-			foreach(var entry in log)
+			foreach (var entry in log)
 			{
 				_log.Add(entry);
 			}
@@ -453,7 +429,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.StartsWith("|"))
 					{
-						SetFrameAt(i, line);
+						SetFrame(i, line);
 						i++;
 					}
 				}

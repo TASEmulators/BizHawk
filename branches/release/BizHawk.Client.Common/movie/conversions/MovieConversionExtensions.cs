@@ -222,6 +222,20 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
+			if (Global.FirmwareManager.RecentlyServed.Any())
+			{
+				foreach (var firmware in Global.FirmwareManager.RecentlyServed)
+				{
+					var key = firmware.SystemId + "_Firmware_" + firmware.FirmwareId;
+
+					if (!movie.HeaderEntries.ContainsKey(key))
+					{
+						movie.HeaderEntries.Add(key, firmware.Hash);
+					}
+				}
+				
+			}
+
 			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");

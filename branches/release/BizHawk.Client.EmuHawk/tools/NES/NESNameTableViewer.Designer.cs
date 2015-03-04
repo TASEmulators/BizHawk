@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESNameTableViewer));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.NameTableView = new BizHawk.Client.EmuHawk.NameTableViewer();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -41,11 +42,6 @@
 			this.ScreenshotToClipboardMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.txtScanline = new System.Windows.Forms.TextBox();
 			this.rbNametableNW = new System.Windows.Forms.RadioButton();
 			this.rbNametableNE = new System.Windows.Forms.RadioButton();
@@ -136,8 +132,7 @@
 			// 
 			this.menuStrip1.ClickThrough = true;
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileSubMenu,
-            this.OptionsSubMenu});
+            this.FileSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Size = new System.Drawing.Size(679, 24);
@@ -182,46 +177,6 @@
 			this.ExitMenuItem.Size = new System.Drawing.Size(243, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AutoloadMenuItem.Text = "Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.SaveWindowPositionMenuItem.Text = "Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(191, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
 			// 
 			// txtScanline
 			// 
@@ -476,12 +431,12 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.menuStrip1);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(687, 588);
 			this.Name = "NESNameTableViewer";
-			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Nametable Viewer";
+			this.Text = "Nametable Viewer";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
 			this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);
@@ -508,9 +463,6 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private NameTableViewer NameTableView;
 		private MenuStripEx menuStrip1;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
 		private System.Windows.Forms.TextBox txtScanline;
 		private System.Windows.Forms.RadioButton rbNametableNW;
 		private System.Windows.Forms.RadioButton rbNametableNE;
@@ -544,7 +496,5 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveImageClipboardMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotToClipboardMenuItem;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 	}
 }

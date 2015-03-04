@@ -4,17 +4,31 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
+
+
+	/// <summary>
+	/// The TOC contains information directly describing the structure of the disc, as well as some more logically structured information derived from that.
+	/// Additionally, this class contains methods to synchronize between them. 
+	/// This is a bit weird.. Perhaps the different views of the data should be seaprated.
+	/// 
+	/// One final caveat - I think the TOC should be independent for independent sessions.. the concept of multi-sessioning is so thoroughly ill-supported here, it will require radical renovation ever to support.
+	/// 
+	/// Sessions -> Tracks : These are the highest-level data structures of the disc. We should probably rename this to something like DiscStructure, and save DiscTOC for the actual TOC.
+	/// TOCPoint : These are the basic logical unit of data stored in the TOC. They're basically bookmarks for tracks.
+	/// TOCEntry : These are the basic unit of data in the rawest view of the TOC. They're stored in the lead-in Q subchannel, and there are multiple redundant copies, and they store several different types of information.
+	/// </summary>
 	public class DiscTOC
 	{
 		/// <summary>
-		/// Sessions contained in the disc. Right now support for anything other than 1 session is totally not working
+		/// Right now support for anything other than 1 session is totally not working
 		/// </summary>
 		public List<Session> Sessions = new List<Session>();
 
 		/// <summary>
-		/// this is an unfinished concept of "TOC Points" which is sometimes more convenient way for organizing the disc contents
+		/// List of Points described by the TOC
 		/// </summary>
 		public List<TOCPoint> Points = new List<TOCPoint>();
+
 
 		/// <summary>
 		/// Todo - comment about what this actually means
@@ -66,11 +80,10 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-
 		/// <summary>
-		/// Generates the Points list from the current TOC
+		/// Generates the Points list from the current logical TOC
 		/// </summary>
-		public void GeneratePoints()
+		public void SynthesizeTOCPointsFromSessions()
 		{
 			int num = 0;
 			Points.Clear();

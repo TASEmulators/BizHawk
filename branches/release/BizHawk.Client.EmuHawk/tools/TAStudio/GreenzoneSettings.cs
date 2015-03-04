@@ -7,25 +7,29 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GreenzoneSettingsForm : Form
+	public partial class StateHistorySettingsForm : Form
 	{
+		public IStatable Statable { get; set; }
+
 		private readonly TasStateManagerSettings Settings;
 		private decimal _stateSizeMb;
-		public GreenzoneSettingsForm(TasStateManagerSettings settings)
+		public StateHistorySettingsForm(TasStateManagerSettings settings)
 		{
 			Settings = settings;
 			InitializeComponent();
 		}
 
-		private void GreenzoneSettings_Load(object sender, EventArgs e)
+		private void StateHistorySettings_Load(object sender, EventArgs e)
 		{
-			_stateSizeMb = Global.Emulator.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
+			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
-			SaveGreenzoneCheckbox.Checked = Settings.SaveGreenzone;
+			SaveStateHistoryCheckbox.Checked = Settings.SaveStateHistory;
 			CapacityNumeric.Value = Settings.Capacitymb == 0 ? 1 : Settings.Capacitymb < CapacityNumeric.Maximum ?
 				Settings.Capacitymb :
 				CapacityNumeric.Maximum;
@@ -41,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			Settings.SaveGreenzone = SaveGreenzoneCheckbox.Checked;
+			Settings.SaveStateHistory = SaveStateHistoryCheckbox.Checked;
 			Settings.Capacitymb = (int)CapacityNumeric.Value;
 			DialogResult = DialogResult.OK;
 			Close();

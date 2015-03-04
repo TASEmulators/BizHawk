@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 		public override string Name { get { return "bit"; } }
 
 		[LuaMethodAttributes(
-			"band", 
+			"band",
 			"Bitwise AND of 'val' against 'amt'"
 		)]
 		public static uint Band(uint val, uint amt)
@@ -88,16 +88,16 @@ namespace BizHawk.Client.Common
 			return (uint)(val >> amt);
 		}
 
-        [LuaMethodAttributes(
-            "arshift",
-            "Arithmetic shift right of 'val' by 'amt' bits"
-        )]
-        public static int Arshift(int val, int amt)
-        {
-            return (int)(val >> amt);
-        }
+		[LuaMethodAttributes(
+			"arshift",
+			"Arithmetic shift right of 'val' by 'amt' bits"
+		)]
+		public static int Arshift(int val, int amt)
+		{
+			return (int)(val >> amt);
+		}
 
-        [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"check",
 			"Returns result of bit 'pos' being set in 'num'"
 		)]
@@ -130,7 +130,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static ushort Byteswap16(ushort val)
 		{
-			 return (ushort)((val & 0xFFU) << 8 | (val & 0xFF00U) >> 8);
+			return (ushort)((val & 0xFFU) << 8 | (val & 0xFF00U) >> 8);
 		}
 
 		[LuaMethodAttributes(

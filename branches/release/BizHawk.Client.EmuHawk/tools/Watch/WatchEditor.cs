@@ -14,7 +14,8 @@ namespace BizHawk.Client.EmuHawk
 		public enum Mode { New, Duplicate, Edit };
 		
 		private readonly List<Watch> _watchList = new List<Watch>();
-		private readonly IMemoryDomains Core;
+
+		public IMemoryDomains MemoryDomains { get; set; }
 
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
@@ -28,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public WatchEditor()
 		{
-			Core = (IMemoryDomains)Global.Emulator;
 			_changedDisplayType = false;
 			InitializeComponent();
 		}
@@ -46,7 +46,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+					switch (MemoryDomains.First().ByteSize)
+					{
+						default:
+						case 1:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
+							break;
+						case 2:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
+							break;
+						case 4:
+							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
+							break;
+					}
 					break;
 				case Mode.Duplicate:
 				case Mode.Edit:
@@ -84,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.SetFromRawInt(_watchList[0].Address ?? 0);
+						AddressBox.SetFromLong(_watchList[0].Address ?? 0);
 					}
 
 					SetBigEndianCheckBox();
@@ -103,10 +115,10 @@ namespace BizHawk.Client.EmuHawk
 			_mode = mode;
 
 			DomainDropDown.Items.Clear();
-			DomainDropDown.Items.AddRange(Core.MemoryDomains
+			DomainDropDown.Items.AddRange(MemoryDomains
 				.Select(d => d.ToString())
 				.ToArray());
-			DomainDropDown.SelectedItem = Core.MemoryDomains.MainMemory.ToString();
+			DomainDropDown.SelectedItem = MemoryDomains.MainMemory.ToString();
 
 			SetTitle();
 		}
@@ -132,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_loading)
 			{
-				var domain = Core.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+				var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
 				if (domain != null)
 				{
 					AddressBox.SetHexProperties(domain.Size);
@@ -191,8 +203,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var domain = Core.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
-						 Core.MemoryDomains.MainMemory;
+			var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
+						 MemoryDomains.MainMemory;
 			BigEndianCheckBox.Checked = domain.EndianType == MemoryDomain.Endian.Big;
 		}
 
@@ -212,8 +224,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					var domain = Core.MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
-					var address = AddressBox.ToRawInt() ?? 0;
+					var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString());
+					var address = AddressBox.ToLong() ?? 0;
 					var notes = NotesBox.Text;
 					var type = Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString());
 					var bigendian = BigEndianCheckBox.Checked;

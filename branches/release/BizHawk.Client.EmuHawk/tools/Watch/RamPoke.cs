@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public IToolForm ParentTool { get; set; }
+
 		public void SetWatch(IEnumerable<Watch> watches)
 		{
 			_watchList = watches.ToList();
@@ -59,7 +61,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			AddressBox.SetHexProperties(_watchList[0].Domain.Size);
-			AddressBox.Text = _watchList.Select(a => a.AddressString).Distinct().Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			if (_watchList.Count < 10) // Hack in case an asburd amount of addresses is picked, this can get slow and create a too long string
+			{
+				AddressBox.Text = _watchList
+					.Select(a => a.AddressString)
+					.Distinct()
+					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			}
+			else
+			{
+				AddressBox.Text = _watchList
+					.Take(10)
+					.Select(a => a.AddressString)
+					.Distinct()
+					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
+			}
+
 			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : string.Empty;
 			ValueBox.Text = _watchList[0].ValueString.Replace(" ", string.Empty);
 			DomainLabel.Text = _watchList[0].Domain.Name;
@@ -86,8 +103,21 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			var success = _watchList.All(watch => watch.Poke(ValueBox.Text));
-			OutputLabel.Text = success ? "Value successfully written." 
-				: "An error occured when writing Value.";
+
+			if (ParentTool != null)
+			{
+				ParentTool.UpdateValues();
+			}
+
+			if (success)
+			{
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			else
+			{
+				OutputLabel.Text = "An error occured when writing Value.";
+			}
 		}
 	}
 }

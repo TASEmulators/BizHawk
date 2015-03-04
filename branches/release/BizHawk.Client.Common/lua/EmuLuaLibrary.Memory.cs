@@ -10,25 +10,25 @@ namespace BizHawk.Client.Common
 	[Description("These functions behavior identically to the mainmemory functions but the user can set the memory domain to read and write from. The default domain is main memory. Use getcurrentmemorydomain(), and setcurrentmemorydomain() to control which domain is used. Each core has its own set of valid memory domains. Use getmemorydomainlist() to get a list of memory domains for the current core loaded.")]
 	public sealed class MemoryLuaLibrary : LuaMemoryBase
 	{
-		private int _currentMemoryDomain; // Main memory by default probably (index 0 is currently always main memory but may never be)
+		//private int _currentMemoryDomain; // Main memory by default probably (index 0 is currently always main memory but may never be)
+
+		private MemoryDomain _currentMemoryDomain;
 
 		public MemoryLuaLibrary(Lua lua)
 			: base(lua)
 		{
-			if (Global.Emulator.HasMemoryDomains())
+			if (MemoryDomainCore != null)
 			{
-				var domains = (Global.Emulator as IMemoryDomains).MemoryDomains;
-				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
+				_currentMemoryDomain = MemoryDomainCore.MainMemory;
 			}
 		}
 
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback)
 		{
-			if (Global.Emulator.HasMemoryDomains())
+			if (MemoryDomainCore != null)
 			{
-				var domains = (Global.Emulator as IMemoryDomains).MemoryDomains;
-				_currentMemoryDomain = domains.IndexOf(domains.MainMemory);
+				_currentMemoryDomain = MemoryDomainCore.MainMemory;
 			}
 		}
 
@@ -38,13 +38,18 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.Emulator.HasMemoryDomains())
+				if (MemoryDomainCore != null)
 				{
-					return (Global.Emulator as IMemoryDomains).MemoryDomains[_currentMemoryDomain];
+					if (_currentMemoryDomain == null)
+					{
+						_currentMemoryDomain = MemoryDomainCore.MainMemory;
+					}
+
+					return _currentMemoryDomain;
 				}
 				else
 				{
-					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					var error = string.Format("Error: {0} does not implement memory domains", Emulator.Attributes().CoreName);
 					Log(error);
 					throw new NotImplementedException(error);
 				}
@@ -60,9 +65,12 @@ namespace BizHawk.Client.Common
 		public LuaTable GetMemoryDomainList()
 		{
 			var table = Lua.NewTable();
-			for (int i = 0; i < DomainList.Count; i++)
+
+			int i = 0;
+			foreach (var domain in DomainList)
 			{
-				table[i] = DomainList[i].Name;
+				table[i] = domain.Name;
+				i++;
 			}
 
 			return table;
@@ -81,9 +89,9 @@ namespace BizHawk.Client.Common
 			"getcurrentmemorydomainsize",
 			"Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory"
 		)]
-		public int GetCurrentMemoryDomainSize()
+		public uint GetCurrentMemoryDomainSize()
 		{
-			return Domain.Size;
+			return (uint)Domain.Size;
 		}
 
 		[LuaMethodAttributes(
@@ -92,13 +100,23 @@ namespace BizHawk.Client.Common
 		)]
 		public bool UseMemoryDomain(string domain)
 		{
-			for (var i = 0; i < DomainList.Count; i++)
+			try
 			{
-				if (DomainList[i].Name == domain)
+				if (DomainList[domain] != null)
 				{
-					_currentMemoryDomain = i;
+					_currentMemoryDomain = DomainList[domain];
 					return true;
 				}
+				else
+				{
+					Log(string.Format("Unable to find domain: {0}", domain));
+					return false;
+				}
+
+			}
+			catch // Just in case
+			{
+				Log(string.Format("Unable to find domain: {0}", domain));
 			}
 
 			return false;

@@ -1,0 +1,24 @@
+Good Core:
+
+Completely separated from UI.
+Minimal MSVCisms or GCCisms in code.
+No OS-specific code.
+All file IO access can be abstracted away to streams or byte arrays.
+Optical disk access, if applicable, through GetToc() and GetSector() type primitives.
+Multi-instance capable.
+Multi-threading, if applicable, is handled internally.  The frontend will call FrameAdvance()
+  on a single thread and callbacks will be marshalled back to that thread.
+Settings and preferences, where applicable, can be specified by the frontend.
+Flat C-style exportable API
+
+Bad Core:
+
+Core intertwined with UI and movie recording systems.
+Compiles only with oddball/crappilers.
+OS-specific system calls everywhere.
+Direct file IO that can't be trapped or rerouted easily.
+Optical disk access through cruddy cuebin system that can't be replaced easily.
+Single instance.
+Sloppy multithreading, or main program loop that can't be easily factored out.
+Settings and preferences go to untrappable file IO or central registry.
+Convoluted object oriented APIs or no organized API at all

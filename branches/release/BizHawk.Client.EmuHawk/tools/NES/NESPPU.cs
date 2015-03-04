@@ -6,46 +6,54 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NesPPU : Form, IToolForm
+	public partial class NesPPU : Form, IToolFormAutoConfig
 	{
 		// TODO:
 		// If 8/16 sprite mode, mouse over should put 32x64 version of prite
 		// Speedups
 		// Smarter refreshing?  only refresh when things of changed, perhaps peek at the ppu to when the pattern table has changed, or sprites have moved
 		// Maybe 48 individual bitmaps for sprites is faster than the overhead of redrawing all that transparent space
-		private readonly byte[] _ppuBus = Enumerable.Repeat((byte)0, 0x2000).ToArray();
-		private readonly byte[] _ppuBusprev = Enumerable.Repeat((byte)0, 0x2000).ToArray();
-		private readonly byte[] _palRam = Enumerable.Repeat((byte)0, 0x20).ToArray();
-		private readonly byte[] _palRamPrev = Enumerable.Repeat((byte)0, 0x20).ToArray();
-		private readonly NES.PPU.DebugCallback _callback = new NES.PPU.DebugCallback();
+		private readonly byte[] _ppuBusprev = new byte[0x3000];
+		private readonly byte[] _palRamPrev = new byte[0x20];
+
+		int scanline;
 
 		private Bitmap _zoomBoxDefaultImage = new Bitmap(64, 64);
-		private NES _nes;
 		private bool _forceChange;
+
+		[RequiredService]
+		private INESPPUViewable _ppu { get; set; }
+		[RequiredService]
+		private IEmulator _emu { get; set; }
+
+		[ConfigPersist]
+		private int RefreshRateConfig
+		{
+			get { return RefreshRate.Value; }
+			set { RefreshRate.Value = value; }
+		}
+
+		private bool _chrromview = false;
+		[ConfigPersist]
+		private bool ChrRomView
+		{
+			get { return _chrromview; }
+			set { _chrromview = value; CalculateFormSize(); }
+		}
 
 		public NesPPU()
 		{
 			InitializeComponent();
-			Closing += (o, e) =>
-				{
-					Global.Config.NesPPUSettings.Wndx = Location.X;
-					Global.Config.NesPPUSettings.Wndy = Location.Y;
-					Global.Config.NESPPURefreshRate = RefreshRate.Value;
-				};
-			TopMost = Global.Config.NesPPUSettings.TopMost;
-			_callback.Callback = () => Generate();
 			CalculateFormSize();
 		}
 
 		private void NesPPU_Load(object sender, EventArgs e)
 		{
-			LoadConfigSettings();
-			_nes = Global.Emulator as NES;
 			ClearDetails();
-			RefreshRate.Value = Global.Config.NESPPURefreshRate;
 			Generate(true);
 			CHRROMViewReload();
 		}
@@ -57,14 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes.ppu.PPUViewCallback = _callback;
-			}
-			else
-			{
-				Close();
-			}
+			_ppu.InstallCallback2(() => Generate(), scanline);
 		}
 
 		public void FastUpdate()
@@ -74,55 +75,43 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (Global.Emulator is NES)
-			{
-				_nes = Global.Emulator as NES;
-				Generate(true);
-				CHRROMViewReload();
-			}
-			else
-			{
-				Close();
-			}
+			Generate(true);
+			CHRROMViewReload();
 		}
 
 		#endregion
 
-		private void LoadConfigSettings()
+		private byte GetBit(byte[] PPUBus, int address, int bit)
 		{
-			if (Global.Config.NesPPUSettings.UseWindowPosition)
-			{
-				Location = Global.Config.NesPPUSettings.WindowPosition;
-			}
+			return (byte)((PPUBus[address] >> (7 - bit)) & 1);
 		}
 
-		private byte GetBit(int address, int bit)
+		private bool CheckChange(byte[] PALRAM, byte[] PPUBus)
 		{
-			return (byte)((_ppuBus[address] >> (7 - bit)) & 1);
-		}
-		
-		private bool CheckChange()
-		{
-			var changed = false;
-			for (var i = 0; i < 0x20; i++)
+			bool changed = false;
+			for (int i = 0; i < 0x20; i++)
 			{
-				_palRamPrev[i] = _palRam[i];
-				_palRam[i] = _nes.ppu.PALRAM[i];
-				if (_palRam[i] != _palRamPrev[i])
+				if (_palRamPrev[i] != PALRAM[i])
 				{
 					changed = true;
+					break;
 				}
 			}
 
-			for (var i = 0; i < 0x2000; i++)
+			if (!changed)
 			{
-				_ppuBusprev[i] = _ppuBus[i];
-				_ppuBus[i] = _nes.ppu.ppubus_peek(i);
-				if (_ppuBus[i] != _ppuBusprev[i])
+				for (int i = 0; i < 0x2000; i++)
 				{
-					changed = true;
+					if (_ppuBusprev[i] != PPUBus[i])
+					{
+						changed = true;
+						break;
+					}
 				}
 			}
+
+			Buffer.BlockCopy(PALRAM, 0, _palRamPrev, 0, 0x20);
+			Buffer.BlockCopy(PPUBus, 0, _ppuBusprev, 0, 0x3000);
 
 			if (_forceChange)
 			{
@@ -132,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			return changed;
 		}
 
-		private unsafe void DrawPatternView(PatternViewer dest, byte[] src)
+		private unsafe void DrawPatternView(PatternViewer dest, byte[] src, int[] FinalPalette, byte[] PALRAM)
 		{
 			int b0;
 			int b1;
@@ -144,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 				ImageLockMode.WriteOnly,
 				PixelFormat.Format32bppArgb);
 
-			var framebuf = (int*)bmpdata.Scan0.ToPointer();
+			int* framebuf = (int*)bmpdata.Scan0;
 			for (int z = 0; z < 2; z++)
 			{
 				int pal;
@@ -163,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 								b1 = (byte)((src[address + 8] >> (7 - x)) & 1);
 
 								value = (byte)(b0 + (b1 << 1));
-								cvalue = _nes.LookupColor(_nes.ppu.PALRAM[value + (pal << 2)]);
+								cvalue = FinalPalette[PALRAM[value + (pal << 2)]];
 								int adr = (x + (j << 3)) + (y + (i << 3)) * (bmpdata.Stride >> 2);
 								framebuf[adr + (z << 7)] = cvalue;
 							}
@@ -183,105 +172,110 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (Global.Emulator.Frame % RefreshRate.Value == 0 || now)
+			if (_emu.Frame % RefreshRate.Value != 0 && !now)
+				return;
+
+			byte[] PALRAM = _ppu.GetPalRam();
+			int[] FinalPalette = _ppu.GetPalette();
+			byte[] OAM = _ppu.GetOam();
+			byte[] PPUBus = _ppu.GetPPUBus();
+
+			int b0;
+			int b1;
+			byte value;
+			int cvalue;
+
+			if (CheckChange(PALRAM, PPUBus))
 			{
-				int b0;
-				int b1;
-				byte value;
-				int cvalue;
+				_forceChange = false;
 
-				if (CheckChange())
+				// Pattern Viewer
+				for (var i = 0; i < 16; i++)
 				{
-					_forceChange = false;
-
-					// Pattern Viewer
-					for (var i = 0; i < 16; i++)
-					{
-						PaletteView.BgPalettesPrev[i].Value = PaletteView.BgPalettes[i].Value;
-						PaletteView.SpritePalettesPrev[i].Value = PaletteView.SpritePalettes[i].Value;
-						PaletteView.BgPalettes[i].Value = _nes.LookupColor(_nes.ppu.PALRAM[PaletteView.BgPalettes[i].Address]);
-						PaletteView.SpritePalettes[i].Value = _nes.LookupColor(_nes.ppu.PALRAM[PaletteView.SpritePalettes[i].Address]);
-					}
-
-					if (PaletteView.HasChanged())
-					{
-						PaletteView.Refresh();
-					}
-
-					DrawPatternView(PatternView, _ppuBus);
+					PaletteView.BgPalettesPrev[i].Value = PaletteView.BgPalettes[i].Value;
+					PaletteView.SpritePalettesPrev[i].Value = PaletteView.SpritePalettes[i].Value;
+					PaletteView.BgPalettes[i].Value = FinalPalette[PALRAM[PaletteView.BgPalettes[i].Address]];
+					PaletteView.SpritePalettes[i].Value = FinalPalette[PALRAM[PaletteView.SpritePalettes[i].Address]];
 				}
 
-				var bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-				var framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
-
-				int pt_add = _nes.ppu.reg_2000.obj_pattern_hi ? 0x1000 : 0;
-				bool is8x16 = _nes.ppu.reg_2000.obj_size_16;
-
-
-				// Sprite Viewer
-				for (int n = 0; n < 4; n++)
+				if (PaletteView.HasChanged())
 				{
-					for (int r = 0; r < 16; r++)
+					PaletteView.Refresh();
+				}
+
+				DrawPatternView(PatternView, PPUBus, FinalPalette, PALRAM);
+			}
+
+			var bmpdata2 = SpriteView.sprites.LockBits(new Rectangle(new Point(0, 0), SpriteView.sprites.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var framebuf2 = (int*)bmpdata2.Scan0.ToPointer();
+
+			int pt_add = _ppu.SPBaseHigh ? 0x1000 : 0;
+			bool is8x16 = _ppu.SPTall;
+
+
+			// Sprite Viewer
+			for (int n = 0; n < 4; n++)
+			{
+				for (int r = 0; r < 16; r++)
+				{
+					int BaseAddr = (r << 2) + (n << 6);
+					int TileNum = OAM[BaseAddr + 1];
+					int patternAddr;
+
+					if (is8x16)
 					{
-						int BaseAddr = (r << 2) +  (n << 6);
-						int TileNum = _nes.ppu.OAM[BaseAddr + 1];
-						int patternAddr;
+						patternAddr = (TileNum >> 1) * 0x20;
+						patternAddr += 0x1000 * (TileNum & 1);
+					}
+					else
+					{
+						patternAddr = TileNum * 0x10;
+						patternAddr += pt_add;
+					}
+
+					int Attributes = OAM[BaseAddr + 2];
+					int Palette = Attributes & 0x03;
+
+					for (int x = 0; x < 8; x++)
+					{
+						for (int y = 0; y < 8; y++)
+						{
+							int address = patternAddr + y;
+							b0 = (byte)((PPUBus[address] >> (7 - x)) & 1);
+							b1 = (byte)((PPUBus[address + 8] >> (7 - x)) & 1);
+							value = (byte)(b0 + (b1 << 1));
+							cvalue = FinalPalette[PALRAM[16 + value + (Palette << 2)]];
+
+							int adr = (x + (r * 16)) + (y + (n * 24)) * (bmpdata2.Stride >> 2);
+							framebuf2[adr] = cvalue;
+						}
 
 						if (is8x16)
 						{
-							patternAddr = (TileNum >> 1) * 0x20;
-							patternAddr += 0x1000 * (TileNum & 1);
-						}
-						else
-						{
-							patternAddr = TileNum * 0x10;
-							patternAddr += pt_add;
-						}
-
-						int Attributes = _nes.ppu.OAM[BaseAddr + 2];
-						int Palette = Attributes & 0x03;
-
-						for (int x = 0; x < 8; x++)
-						{
+							patternAddr += 0x10;
 							for (int y = 0; y < 8; y++)
 							{
 								int address = patternAddr + y;
-								b0 = (byte)((_ppuBus[address] >> (7 - x)) & 1);
-								b1 = (byte)((_ppuBus[address + 8] >> (7 - x)) & 1);
+								b0 = (byte)((PPUBus[address] >> (7 - x)) & 1);
+								b1 = (byte)((PPUBus[address + 8] >> (7 - x)) & 1);
 								value = (byte)(b0 + (b1 << 1));
-								cvalue = _nes.LookupColor(_nes.ppu.PALRAM[16 + value + (Palette << 2)]);
+								cvalue = FinalPalette[PALRAM[16 + value + (Palette << 2)]];
 
-								int adr = (x + (r * 16)) + (y + (n * 24)) * (bmpdata2.Stride >> 2);
+								int adr = (x + (r << 4)) + ((y + 8) + (n * 24)) * (bmpdata2.Stride >> 2);
 								framebuf2[adr] = cvalue;
 							}
 
-							if (is8x16)
-							{
-								patternAddr += 0x10;
-								for (int y = 0; y < 8; y++)
-								{
-									int address = patternAddr + y;
-									b0 = (byte)((_ppuBus[address] >> (7 - x)) & 1);
-									b1 = (byte)((_ppuBus[address + 8] >> (7 - x)) & 1);
-									value = (byte)(b0 + (b1 << 1));
-									cvalue = _nes.LookupColor(_nes.ppu.PALRAM[16 + value + (Palette << 2)]);
-
-									int adr = (x + (r << 4)) + ((y+8) + (n * 24)) * (bmpdata2.Stride >> 2);
-									framebuf2[adr] = cvalue;
-								}
-
-								patternAddr -= 0x10;
-							}
+							patternAddr -= 0x10;
 						}
 					}
 				}
-
-				SpriteView.sprites.UnlockBits(bmpdata2);
-				SpriteView.Refresh();
-
-				HandleSpriteViewMouseMove(SpriteView.PointToClient(MousePosition));
-				HandlePaletteViewMouseMove(PaletteView.PointToClient(MousePosition));
 			}
+
+			SpriteView.sprites.UnlockBits(bmpdata2);
+			SpriteView.Refresh();
+
+			HandleSpriteViewMouseMove(SpriteView.PointToClient(MousePosition));
+			HandlePaletteViewMouseMove(PaletteView.PointToClient(MousePosition));
 		}
 
 		private void ClearDetails()
@@ -330,7 +324,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshFloatingWindowControl()
 		{
-			Owner = Global.Config.NesPPUSettings.FloatingWindow ? null : GlobalWin.MainForm;
 		}
 
 		#region Events
@@ -478,33 +471,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SettingsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			AutoLoadMenuItem.Checked = Global.Config.AutoLoadNESPPU;
-			SaveWindowPositionMenuItem.Checked = Global.Config.NesPPUSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.NesPPUSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.NesPPUSettings.FloatingWindow;
-			cHRROMTileViewerToolStripMenuItem.Checked = Global.Config.NESPPUChrRomView;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.AutoLoadNESPPU ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesPPUSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesPPUSettings.TopMost ^= true;
-			TopMost = Global.Config.NesPPUSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesPPUSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			cHRROMTileViewerToolStripMenuItem.Checked = ChrRomView;
 		}
 
 		#endregion
@@ -620,17 +587,20 @@ namespace BizHawk.Client.EmuHawk
 			if (e.X >= SpriteView.ClientRectangle.Right) return;
 			if (e.Y >= SpriteView.ClientRectangle.Bottom) return;
 
-			bool is8x16 = _nes.ppu.reg_2000.obj_size_16;
+			byte[] OAM = _ppu.GetOam();
+			byte[] PPUBus = _ppu.GetPPUBus(); // caching is quicker, but not really correct in this case
+
+			bool is8x16 = _ppu.SPTall;
 			var spriteNumber = ((e.Y / 24) * 16) + (e.X / 16);
-			int x = _nes.ppu.OAM[(spriteNumber * 4) + 3];
-			int y = _nes.ppu.OAM[spriteNumber * 4];
-			var color = _nes.ppu.OAM[(spriteNumber * 4) + 2] & 0x03;
-			var attributes = _nes.ppu.OAM[(spriteNumber * 4) + 2];
+			int x = OAM[(spriteNumber * 4) + 3];
+			int y = OAM[spriteNumber * 4];
+			var color = OAM[(spriteNumber * 4) + 2] & 0x03;
+			var attributes = OAM[(spriteNumber * 4) + 2];
 
 			var flags = "Flags: ";
-			int h = GetBit(attributes, 6);
-			int v = GetBit(attributes, 7);
-			int priority = GetBit(attributes, 5);
+			int h = GetBit(PPUBus, attributes, 6);
+			int v = GetBit(PPUBus, attributes, 7);
+			int priority = GetBit(PPUBus, attributes, 5);
 			if (h > 0)
 			{
 				flags += "H ";
@@ -650,7 +620,7 @@ namespace BizHawk.Client.EmuHawk
 				flags += "Front";
 			}
 
-			int tile = _nes.ppu.OAM[spriteNumber * 4 + 1];
+			int tile = OAM[spriteNumber * 4 + 1];
 			if (is8x16)
 			{
 				if ((tile & 1) != 0)
@@ -713,15 +683,17 @@ namespace BizHawk.Client.EmuHawk
 			var bmp = new Bitmap(64, 64);
 			var g = Graphics.FromImage(bmp);
 
+			byte[] PALRAM = _ppu.GetPalRam();
+
 			if (baseAddr == 0x3F00)
 			{
-				val = _nes.ppu.PALRAM[PaletteView.BgPalettes[column].Address];
+				val = PALRAM[PaletteView.BgPalettes[column].Address];
 				ValueLabel.Text = "ID: BG" + (column / 4);
 				g.FillRectangle(new SolidBrush(PaletteView.BgPalettes[column].Color), 0, 0, 64, 64);
 			}
 			else
 			{
-				val = _nes.ppu.PALRAM[PaletteView.SpritePalettes[column].Address];
+				val = PALRAM[PaletteView.SpritePalettes[column].Address];
 				ValueLabel.Text = "ID: SPR" + (column / 4);
 				g.FillRectangle(new SolidBrush(PaletteView.SpritePalettes[column].Color), 0, 0, 64, 64);
 			}
@@ -795,16 +767,16 @@ namespace BizHawk.Client.EmuHawk
 			tile += (e.Y / 8) * 16;
 			var usage = "Usage: ";
 
-			if ((_nes.ppu.reg_2000.Value & 0x10) << 4 == ((address >> 4) & 0x100))
+			if (_ppu.BGBaseHigh == address >= 0x1000) // bghigh
 			{
 				usage = "BG";
 			}
-			else if (((_nes.ppu.reg_2000.Value & 0x08) << 5) == ((address >> 4) & 0x100))
+			else if (_ppu.SPBaseHigh == address >= 0x1000) // sphigh
 			{
 				usage = "SPR";
 			}
 
-			if ((_nes.ppu.reg_2000.Value & 0x20) > 0)
+			if (_ppu.SPTall) // spbig
 			{
 				usage += " (SPR16)";
 			}
@@ -819,18 +791,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScanlineTextbox_TextChanged(object sender, EventArgs e)
 		{
-			int temp;
-			if (int.TryParse(txtScanline.Text, out temp))
+			if (int.TryParse(txtScanline.Text, out scanline))
 			{
-				_callback.Scanline = temp;
+				_ppu.InstallCallback2(() => Generate(), scanline);
 			}
 		}
 
 		private void NesPPU_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			if (_nes != null && _nes.ppu.PPUViewCallback == _callback)
+			if (_ppu != null)
 			{
-				_nes.ppu.PPUViewCallback = null;
+				_ppu.RemoveCallback2();
 			}
 		}
 
@@ -841,18 +812,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void cHRROMTileViewerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.NESPPUChrRomView ^= true;
-			CalculateFormSize();
+			ChrRomView ^= true;
 		}
 
 		private void CalculateFormSize()
 		{
-			Width = Global.Config.NESPPUChrRomView ? 861 : 580;
+			Width = ChrRomView ? 861 : 580;
 		}
 
 		private void CHRROMViewReload()
 		{
-			CHRROM = _nes.MemoryDomains["CHR VROM"];
+			CHRROM = _ppu.GetCHRROM();
 			if (CHRROM == null)
 			{
 				numericUpDownCHRROMBank.Enabled = false;
@@ -876,7 +846,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int i = 0; i < 8192; i++)
 					chrromcache[i] = CHRROM.PeekByte(offs + i);
 
-				DrawPatternView(CHRROMView, chrromcache);
+				DrawPatternView(CHRROMView, chrromcache, _ppu.GetPalette(), _ppu.GetPalRam());
 			}
 		}
 

@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 namespace BizHawk.Client.Common
 {
 	/// <summary>
@@ -13,13 +16,22 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasStateManager
 	{
+		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
+		private IStatable Core
+		{
+			get
+			{
+				return Global.Emulator.AsStatable();
+			}
+		}
+
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 
 		private readonly TasMovie _movie;
 		private int _expectedStateSize = 0;
 
 		private int _minFrequency = VersionInfo.DeveloperBuild ? 2 : 1;
-		private const int _maxFrequency = 16; 
+		private const int _maxFrequency = 16;
 		private int StateFrequency
 		{
 			get
@@ -39,23 +51,23 @@ namespace BizHawk.Client.Common
 				return freq;
 			}
 		}
+		private int _lastCapture = 0;
 
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
+
 			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
 			var cap = Settings.Cap;
 
 			int limit = 0;
-			if (Global.Emulator != null)
-			{
-				_expectedStateSize = Global.Emulator.SaveStateBinary().Length;
 
-				if (_expectedStateSize > 0)
-				{
-					limit = cap / _expectedStateSize;
-				}
+			_expectedStateSize = Core.SaveStateBinary().Length;
+
+			if (_expectedStateSize > 0)
+			{
+				limit = cap / _expectedStateSize;
 			}
 
 			States = new SortedList<int, byte[]>(limit);
@@ -74,15 +86,15 @@ namespace BizHawk.Client.Common
 			{
 				if (frame == 0 && _movie.StartsFromSavestate)
 				{
-					return new KeyValuePair<int,byte[]>(0, _movie.BinarySavestate);
+					return new KeyValuePair<int, byte[]>(0, _movie.BinarySavestate);
 				}
 
 				if (States.ContainsKey(frame))
 				{
-					return new KeyValuePair<int,byte[]>(frame, States[frame]);
+					return new KeyValuePair<int, byte[]>(frame, States[frame]);
 				}
 
-				return new KeyValuePair<int,byte[]>(-1, new byte[0]);
+				return new KeyValuePair<int, byte[]>(-1, new byte[0]);
 			}
 		}
 
@@ -107,7 +119,8 @@ namespace BizHawk.Client.Common
 		{
 			bool shouldCapture = false;
 
-			if (_movie.StartsFromSavestate && Global.Emulator.Frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
+			int frame = Global.Emulator.Frame;
+			if (_movie.StartsFromSavestate && frame == 0) // Never capture frame 0 on savestate anchored movies since we have it anyway
 			{
 				shouldCapture = false;
 			}
@@ -115,23 +128,22 @@ namespace BizHawk.Client.Common
 			{
 				shouldCapture = force;
 			}
-			else if (Global.Emulator.Frame == 0) // For now, long term, TasMovie should have a .StartState property, and a tasproj file for the start state in non-savestate anchored movies
+			else if (frame == 0) // For now, long term, TasMovie should have a .StartState property, and a tasproj file for the start state in non-savestate anchored movies
 			{
 				shouldCapture = true;
 			}
-			else if (_movie.Markers.IsMarker(Global.Emulator.Frame))
+			else if (_movie.Markers.IsMarker(frame))
 			{
 				shouldCapture = true; // Markers shoudl always get priority
 			}
 			else
 			{
-				shouldCapture = Global.Emulator.Frame % StateFrequency == 0;
+				shouldCapture = frame - _lastCapture >= StateFrequency;
 			}
 
 			if (shouldCapture)
 			{
-				var frame = Global.Emulator.Frame;
-				var state = (byte[])Global.Emulator.SaveStateBinary().Clone();
+				var state = (byte[])Core.SaveStateBinary().Clone();
 
 				if (States.ContainsKey(frame))
 				{
@@ -139,18 +151,55 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					if (Used + state.Length >= Settings.Cap)
-					{
-						var first = _movie.StartsFromSavestate ? 0 : 1;
-
-						Used -= States.ElementAt(first).Value.Length;
-						States.RemoveAt(first);
-					}
-
 					States.Add(frame, state);
 					Used += state.Length;
+
+					MaybeRemoveState();
+				}
+
+				_lastCapture = frame;
+			}
+		}
+
+		private void MaybeRemoveState()
+		{
+			int shouldRemove = -1;
+			if (Used >= Settings.Cap)
+				shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
+			if (shouldRemove != -1) // Which one to remove?
+			{
+				for (int i = shouldRemove; i < States.Count - 1; i++)
+				{
+					if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
+					{
+						shouldRemove = i;
+						break;
+					}
 				}
 			}
+
+			if (shouldRemove != -1)
+			{
+				Used -= States.ElementAt(shouldRemove).Value.Length;
+				States.RemoveAt(shouldRemove);
+			}
+		}
+		private bool AllLag(int from, int upTo)
+		{
+			if (upTo >= Global.Emulator.Frame)
+			{
+				upTo = Global.Emulator.Frame - 1;
+				if (!Global.Emulator.AsInputPollable().IsLagFrame)
+					return false;
+			}
+
+			for (int i = from; i < upTo; i++)
+			{
+				if (!_movie[i].Lagged.Value)
+					return false;
+			}
+
+			return true;
 		}
 
 		public bool HasState(int frame)
@@ -159,7 +208,7 @@ namespace BizHawk.Client.Common
 			{
 				return true;
 			}
-			
+
 			return States.ContainsKey(frame);
 		}
 
@@ -183,6 +232,14 @@ namespace BizHawk.Client.Common
 					Used -= state.Value.Length;
 					States.Remove(state.Key);
 				}
+
+				if (!States.ContainsKey(_lastCapture))
+				{
+					if (States.Count == 0)
+						_lastCapture = -1;
+					else
+						_lastCapture = States.Last().Key;
+				}
 			}
 		}
 
@@ -194,9 +251,10 @@ namespace BizHawk.Client.Common
 		{
 			States.Clear();
 			Used = 0;
+			_lastCapture = -1;
 		}
 
-		public void ClearGreenzone()
+		public void ClearStateHistory()
 		{
 			if (States.Any())
 			{
@@ -207,10 +265,12 @@ namespace BizHawk.Client.Common
 				{
 					States.Add(0, power.Value);
 					Used = power.Value.Length;
+					_lastCapture = 0;
 				}
 				else
 				{
 					Used = 0;
+					_lastCapture = -1;
 				}
 			}
 		}
@@ -290,14 +350,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var kk = States.Keys;
-				int index = kk.Count;
-				if (index == 0)
+				if (States.Count == 0)
 				{
 					return 0;
 				}
 
-				return kk[index - 1];
+				return States.Last().Key;
 			}
 		}
 

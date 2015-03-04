@@ -10,13 +10,13 @@ namespace BizHawk.Client.Common
 	{
 		public TasStateManagerSettings()
 		{
-			SaveGreenzone = true;
+			SaveStateHistory = true;
 			Capacitymb = 512;
 		}
 
 		public TasStateManagerSettings(TasStateManagerSettings settings)
 		{
-			SaveGreenzone = settings.SaveGreenzone;
+			SaveStateHistory = settings.SaveStateHistory;
 			Capacitymb = settings.Capacitymb;
 		}
 
@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		[DisplayName("Save History")]
 		[Description("Whether or not to use savestate history")]
-		public bool SaveGreenzone { get; set; }
+		public bool SaveStateHistory { get; set; }
 
 		/// <summary>
 		/// The total amount of memory to devote to greenzone in megabytes
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine(SaveGreenzone.ToString());
+			sb.AppendLine(SaveStateHistory.ToString());
 			sb.AppendLine(Capacitymb.ToString());
 
 			return sb.ToString();
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrWhiteSpace(settings))
 			{
 				var lines = settings.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-				SaveGreenzone = bool.Parse(lines[0]);
+				SaveStateHistory = bool.Parse(lines[0]);
 				Capacitymb = int.Parse(lines[1]);
 			}
 		}

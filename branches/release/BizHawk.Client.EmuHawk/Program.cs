@@ -5,11 +5,8 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 #if WINDOWS
-using SlimDX.DirectSound;
 using Microsoft.VisualBasic.ApplicationServices;
 #endif
-
-#pragma warning disable 618
 
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -52,8 +49,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!VersionInfo.DeveloperBuild)
 			{
 				var thisversion = typeof(Program).Assembly.GetName().Version;
-				var utilversion = Assembly.LoadWithPartialName("Bizhawk.Client.Common").GetName().Version;
-				var emulversion = Assembly.LoadWithPartialName("Bizhawk.Emulation.Cores").GetName().Version;
+				var utilversion = Assembly.Load(new AssemblyName("Bizhawk.Client.Common")).GetName().Version;
+				var emulversion = Assembly.Load(new AssemblyName("Bizhawk.Emulation.Cores")).GetName().Version;
 
 				if (thisversion != utilversion || thisversion != emulversion)
 				{
@@ -69,19 +66,41 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.ResolveDefaults();
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
-#if WINDOWS
-			try { GlobalWin.DSound = SoundEnumeration.Create(); }
-			catch
+			//super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
+			for (int i = 0; i < args.Length; i++)
 			{
-				MessageBox.Show("Couldn't initialize DirectSound! Things may go poorly for you. Try changing your sound driver to 41khz instead of 48khz in mmsys.cpl.", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				var arg = args[i].ToLower();
+				if (arg.StartsWith("--gdi"))
+				{
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+				}
 			}
-#endif
 
-			//create IGL context.
-			//at some point in the future, we may need to select from several drivers
-			GlobalWin.GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			//create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
+			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+
+			//setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			GlobalWin.GLManager = new GLManager();
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
+
+			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
+		REDO_DISPMETHOD:
+			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
+				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
+				GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+			else
+			{
+				GlobalWin.GL = GlobalWin.IGL_GL;
+				//check the opengl version and dont even try to boot this crap up if its too old
+				int version = GlobalWin.IGL_GL.Version;
+				if (version < 200)
+				{
+					//fallback
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					goto REDO_DISPMETHOD;
+				}
+			}
 
 			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 			//The relevant initialization happened just before in "create IGL context".
@@ -91,8 +110,8 @@ namespace BizHawk.Client.EmuHawk
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
 
-			try
-			{
+			if (System.Diagnostics.Debugger.IsAttached)
+			{ // Let the debugger handle errors
 #if WINDOWS
 				if (Global.Config.SingleInstanceMode)
 				{
@@ -106,61 +125,100 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				else
-				{
 #endif
+				{
 					using (var mf = new MainForm(args))
 					{
 						var title = mf.Text;
 						mf.Show();
 						mf.Text = title;
+
+						mf.ProgramRunLoop();
+					}
+				}
+			}
+			else
+			{ // Display error message windows
+				try
+				{
+#if WINDOWS
+					if (Global.Config.SingleInstanceMode)
+					{
 						try
 						{
-							mf.ProgramRunLoop();
+							new SingleInstanceController(args).Run(args);
 						}
-						catch (Exception e)
+						catch (ObjectDisposedException)
 						{
-#if WINDOWS
-							if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
-							{
-								var result = MessageBox.Show(
-									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
-									"Fatal error: " + e.GetType().Name,
-									MessageBoxButtons.YesNo,
-									MessageBoxIcon.Exclamation
-									);
-								if (result == DialogResult.Yes)
-								{
-									Global.MovieSession.Movie.Save();
-								}
-							}
-#endif
-							throw;
+							/*Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error*/
 						}
 					}
-#if WINDOWS
-				}
+					else
 #endif
-			}
-			catch (Exception e)
-			{
-				string message = e.ToString();
-				if (e.InnerException != null)
-				{
-					message += "\n\nInner Exception:\n\n" + e.InnerException;
-				}
+					{
+						using (var mf = new MainForm(args))
+						{
+							var title = mf.Text;
+							mf.Show();
+							mf.Text = title;
 
-				message += "\n\nStackTrace:\n" + e.StackTrace;
-				MessageBox.Show(message);
-			}
+							if (System.Diagnostics.Debugger.IsAttached)
+							{
+								mf.ProgramRunLoop();
+							}
+							else
+							{
+								try
+								{
+									mf.ProgramRunLoop();
+								}
+								catch (Exception e)
+								{
 #if WINDOWS
-			finally
-			{
-				if (GlobalWin.DSound != null && GlobalWin.DSound.Disposed == false)
-					GlobalWin.DSound.Dispose();
-				GlobalWin.GL.Dispose();
-				GamePad.CloseAll();
-			}
+									if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
+									{
+										var result = MessageBox.Show(
+											"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
+											"Fatal error: " + e.GetType().Name,
+											MessageBoxButtons.YesNo,
+											MessageBoxIcon.Exclamation
+											);
+										if (result == DialogResult.Yes)
+										{
+											Global.MovieSession.Movie.Save();
+										}
+									}
 #endif
+									throw;
+								}
+							}
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					string message = e.ToString();
+					if (e.InnerException != null)
+					{
+						message += "\n\nInner Exception:\n\n" + e.InnerException;
+					}
+
+					message += "\n\nStackTrace:\n" + e.StackTrace;
+					MessageBox.Show(message);
+				}
+#if WINDOWS
+				finally
+				{
+					if (GlobalWin.Sound != null)
+					{
+						GlobalWin.Sound.Dispose();
+						GlobalWin.Sound = null;
+					}
+					GlobalWin.GL.Dispose();
+					GamePad.CloseAll();
+				}
+#endif
+			}
 		}
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
@@ -243,7 +301,8 @@ namespace BizHawk.Client.EmuHawk
 
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 			{
-				(MainForm as MainForm).LoadRom(e.CommandLine[0]);
+				if (e.CommandLine.Count >= 1)
+					(MainForm as MainForm).LoadRom(e.CommandLine[0]);
 			}
 
 			protected override void OnCreateMainForm()
@@ -253,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 				MainForm.Show();
 				MainForm.Text = title;
 				(MainForm as MainForm).ProgramRunLoop();
-			} 
+			}
 		}
 
 

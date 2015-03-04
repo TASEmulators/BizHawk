@@ -215,6 +215,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr qn_get_mapper(IntPtr e, ref int number);
 
+
+
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte qn_get_reg2000(IntPtr e);
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr qn_get_palmem(IntPtr e);
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr qn_get_oammem(IntPtr e);
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte qn_peek_ppu(IntPtr e, int addr);
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void qn_peek_ppubus(IntPtr e, byte[] dest);
+
 		/// <summary>
 		/// handle "string error" as returned by some quicknes functions
 		/// </summary>

@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk.config
 			InitializeComponent();
 
 			rbNone.Checked = Global.Config.TargetDisplayFilter == 0;
-			rbHq2x.Checked  = Global.Config.TargetDisplayFilter == 1;
+			rbHq2x.Checked = Global.Config.TargetDisplayFilter == 1;
 			rbScanlines.Checked = Global.Config.TargetDisplayFilter == 2;
 			rbUser.Checked = Global.Config.TargetDisplayFilter == 3;
 
@@ -31,11 +31,32 @@ namespace BizHawk.Client.EmuHawk.config
 			rbFinalFilterBilinear.Checked = Global.Config.DispFinalFilter == 1;
 			rbFinalFilterBicubic.Checked = Global.Config.DispFinalFilter == 2;
 
-			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity; 
+			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			checkFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
-			checkSnowyNullEmulator.Checked = Global.Config.DispSnowyNullEmulator;
+
+			rbOpenGL.Checked = Global.Config.DispMethod == Config.EDispMethod.OpenGL;
+			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
+			rbD3D9.Checked = Global.Config.DispMethod == Config.EDispMethod.SlimDX9;
+
+			cbStatusBarWindowed.Checked = Global.Config.DispChrome_StatusBarWindowed;
+			cbCaptionWindowed.Checked = Global.Config.DispChrome_CaptionWindowed;
+			cbMenuWindowed.Checked = Global.Config.DispChrome_MenuWindowed;
+			cbStatusBarFullscreen.Checked = Global.Config.DispChrome_StatusBarFullscreen;
+			cbMenuFullscreen.Checked = Global.Config.DispChrome_MenuFullscreen;
+			trackbarFrameSizeWindowed.Value = Global.Config.DispChrome_FrameWindowed;
+			SyncTrackbar();
+
+			// null emulator config hack
+			{
+				NullEmulator.NullEmulatorSettings s;
+				if (Global.Emulator is NullEmulator)
+					s = (Global.Emulator as dynamic).GetSettings();
+				else
+					s = (NullEmulator.NullEmulatorSettings)Global.Config.GetCoreSettings<NullEmulator>();
+				checkSnowyNullEmulator.Checked = s.SnowyDisplay;
+			}
 
 			if (Global.Config.DispManagerAR == Config.EDispManagerAR.None)
 				rbUseRaw.Checked = true;
@@ -52,7 +73,7 @@ namespace BizHawk.Client.EmuHawk.config
 
 		private void btnOk_Click(object sender, EventArgs e)
 		{
-			if(rbNone.Checked)
+			if (rbNone.Checked)
 				Global.Config.TargetDisplayFilter = 0;
 			if (rbHq2x.Checked)
 				Global.Config.TargetDisplayFilter = 1;
@@ -61,18 +82,38 @@ namespace BizHawk.Client.EmuHawk.config
 			if (rbUser.Checked)
 				Global.Config.TargetDisplayFilter = 3;
 
-			if(rbFinalFilterNone.Checked) 
+			if (rbFinalFilterNone.Checked)
 				Global.Config.DispFinalFilter = 0;
-			if(rbFinalFilterBilinear.Checked) 
+			if (rbFinalFilterBilinear.Checked)
 				Global.Config.DispFinalFilter = 1;
-			if(rbFinalFilterBicubic.Checked) 
+			if (rbFinalFilterBicubic.Checked)
 				Global.Config.DispFinalFilter = 2;
 
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispFullscreenHacks = checkFullscreenHacks.Checked;
-			Global.Config.DispSnowyNullEmulator = checkSnowyNullEmulator.Checked;
+
+			Global.Config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
+			Global.Config.DispChrome_CaptionWindowed = cbCaptionWindowed.Checked;
+			Global.Config.DispChrome_MenuWindowed = cbMenuWindowed.Checked;
+			Global.Config.DispChrome_StatusBarFullscreen = cbStatusBarFullscreen.Checked;
+			Global.Config.DispChrome_MenuFullscreen = cbMenuFullscreen.Checked;
+			Global.Config.DispChrome_FrameWindowed = trackbarFrameSizeWindowed.Value;
+
+			// HACK:: null emulator's settings don't persist to config normally
+			{
+				NullEmulator.NullEmulatorSettings s;
+				if (Global.Emulator is NullEmulator)
+					s = (Global.Emulator as dynamic).GetSettings();
+				else
+					s = (NullEmulator.NullEmulatorSettings)Global.Config.GetCoreSettings<NullEmulator>();
+				s.SnowyDisplay = checkSnowyNullEmulator.Checked;
+
+				Global.Config.PutCoreSettings<NullEmulator>(s);
+				if (Global.Emulator is NullEmulator)
+					(Global.Emulator as dynamic).PutSettings(s);
+			}
 
 			if (rbUseRaw.Checked)
 				Global.Config.DispManagerAR = Config.EDispManagerAR.None;
@@ -83,6 +124,13 @@ namespace BizHawk.Client.EmuHawk.config
 
 			int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
 			int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
+
+			if(rbOpenGL.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.OpenGL;
+			if(rbGDIPlus.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+			if(rbD3D9.Checked)
+				Global.Config.DispMethod = Config.EDispMethod.SlimDX9;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
@@ -141,6 +189,21 @@ namespace BizHawk.Client.EmuHawk.config
 			float percentage = (float) scanlines / 255 * 100;
 			if (percentage > 100) percentage = 100;
 			lblScanlines.Text = String.Format("{0:F2}", percentage) + "%";
+		}
+
+		private void trackbarFrameSizeWindowed_ValueChanged(object sender, EventArgs e)
+		{
+			SyncTrackbar();
+		}
+
+		void SyncTrackbar()
+		{
+			if (trackbarFrameSizeWindowed.Value == 0)
+				lblFrameTypeWindowed.Text = "None";
+			if (trackbarFrameSizeWindowed.Value == 1)
+				lblFrameTypeWindowed.Text = "Thin";
+			if (trackbarFrameSizeWindowed.Value == 2)
+				lblFrameTypeWindowed.Text = "Thick";
 		}
 
 	}

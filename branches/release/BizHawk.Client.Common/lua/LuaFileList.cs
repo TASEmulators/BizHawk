@@ -96,7 +96,14 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							Add(new LuaFile(line.Substring(2, line.Length - 2))
+							var scriptPath = line.Substring(2, line.Length - 2);
+							if (!Path.IsPathRooted(scriptPath))
+							{
+								var directory = Path.GetDirectoryName(path);
+								scriptPath = Path.Combine(directory, scriptPath);
+							}
+
+							Add(new LuaFile(scriptPath)
 							{
 								Enabled = !Global.Config.DisableLuaScriptsOnLoad &&
 								line.Substring(0, 1) == "1",
@@ -138,7 +145,7 @@ namespace BizHawk.Client.Common
 					sb
 						.Append(file.Enabled ? "1" : "0")
 						.Append(' ')
-						.Append(PathManager.TryMakeRelative(file.Path))
+						.Append(PathManager.MakeRelativeTo(PathManager.MakeAbsolutePath(file.Path, ""), Path.GetDirectoryName(path)))
 						.AppendLine();
 				}
 

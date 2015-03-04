@@ -24,6 +24,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef DEBUGGER
 void __cdecl DebuggerAppendMsg(const char * Message, ...) {}
 
+#ifdef WANT_LOG_UCODE
+#include <varargs.h>
+#include <stdio.h>
+void __cdecl LOG_UCODE(const char* szFormat, ...)
+{
+    {
+        char Msg[400];
+        va_list va;
+        va_start(va, szFormat);
+        vsprintf( Msg, szFormat, va );
+        va_end(va);
+        printf("%s\n", Msg);
+    }
+}
+#endif
+
 #else
 
 void DumpMatrix2(const Matrix &mtx, const char* prompt);

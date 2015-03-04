@@ -57,10 +57,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			return val;
 		}
 
+		public bool AtStart { get { return opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End; } }
+
 		public string TraceState()
 		{
 			// only disassemble when we're at the beginning of an opcode
-			return State(opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End);
+			return State(AtStart);
 		}
 
 		public const ushort NMIVector = 0xFFFA;

@@ -6,12 +6,15 @@ using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using System.Collections.Generic;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GBAGPUView : Form, IToolForm
+	public partial class GBAGPUView : Form, IToolFormAutoConfig
 	{
-		IGBAGPUViewable gba;
+		[RequiredService]
+		IGBAGPUViewable gba { get; set; }
 
 		// emulator memory areas
 		private IntPtr vram;
@@ -680,23 +683,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			gba = Global.Emulator as IGBAGPUViewable;
-			if (gba != null)
-			{
-				var mem = gba.GetMemoryAreas();
-				vram = mem.vram;
-				palram = mem.palram;
-				oam = mem.oam;
-				mmio = mem.mmio;
+			var mem = gba.GetMemoryAreas();
+			vram = mem.vram;
+			palram = mem.palram;
+			oam = mem.oam;
+			mmio = mem.mmio;
 
-				_cbscanlineEmu = 500; // force an update
-				UpdateValues();
-			}
-			else
-			{
-				if (Visible)
-					Close();
-			}
+			_cbscanlineEmu = 500; // force an update
+			UpdateValues();
 		}
 
 		/// <summary>belongs in ToolsBefore</summary>
@@ -704,19 +698,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsHandleCreated || IsDisposed)
 				return;
-			if (gba != null)
+
+			if (_cbscanlineEmu != _cbscanline)
 			{
-				if (_cbscanlineEmu != _cbscanline)
+				_cbscanlineEmu = _cbscanline;
+				if (!_cbscanline.HasValue) // manual, deactivate callback
 				{
-					_cbscanlineEmu = _cbscanline;
-					if (!_cbscanline.HasValue) // manual, deactivate callback
-					{
-						gba.SetScanlineCallback(null, 0);
-					}
-					else
-					{
-						gba.SetScanlineCallback(DrawEverything, _cbscanline.Value);
-					}
+					gba.SetScanlineCallback(null, 0);
+				}
+				else
+				{
+					gba.SetScanlineCallback(DrawEverything, _cbscanline.Value);
 				}
 			}
 		}
@@ -728,7 +720,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBAGPUView_Load(object sender, EventArgs e)
 		{
-			Restart();
 		}
 
 		void ShowSelectedWidget()
@@ -806,7 +797,6 @@ namespace BizHawk.Client.EmuHawk
 			if (gba != null)
 			{
 				gba.SetScanlineCallback(null, 0);
-				gba = null;
 			}
 		}
 

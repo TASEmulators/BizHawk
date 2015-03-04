@@ -34,7 +34,7 @@ namespace BizHawk.Common
 		/// </summary>
 		/// <param name="t"></param>
 		/// <returns></returns>
-		private static IEnumerable<FieldInfo> GetAllFields(Type t)
+		public static IEnumerable<FieldInfo> GetAllFields(Type t)
 		{
 			while (t != null)
 			{

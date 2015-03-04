@@ -359,6 +359,16 @@ namespace BizHawk.Client.Common
 			return absolutePath;
 		}
 
+		public static string MakeRelativeTo(string absolutePath, string basePath)
+		{
+			if (IsSubfolder(basePath, absolutePath))
+			{
+				return absolutePath.Replace(basePath, ".");
+			}
+
+			return absolutePath;
+		}
+
 		//http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
 		public static bool IsSubfolder(string parentPath, string childPath)
 		{

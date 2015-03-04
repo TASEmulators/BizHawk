@@ -172,23 +172,24 @@ namespace BizHawk.Client.Common
 				foreach (var name in controls.Keys)
 				{
 					var theValueStr = controls[name].ToString();
+					float? theValue = null;
 
 					if (!String.IsNullOrWhiteSpace(theValueStr))
 					{
-						try
-						{
-							var theValue = float.Parse(theValueStr);
-							if (controller == null)
-							{
-								Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
-							}
-							else
-							{
-								Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
-							}
-						}
-						catch { }
+						float f;
+						if (float.TryParse(theValueStr, out f))
+							theValue = f;
 					}
+
+					if (controller == null)
+					{
+						Global.StickyXORAdapter.SetFloat(name.ToString(), theValue);
+					}
+					else
+					{
+						Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
+					}
+
 				}
 			}
 			catch { /*Eat it*/ }

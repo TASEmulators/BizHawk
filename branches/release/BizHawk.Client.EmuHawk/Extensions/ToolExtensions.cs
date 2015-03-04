@@ -162,6 +162,27 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				items.Add(auto);
 			}
 
+			var settingsitem = new ToolStripMenuItem { Text = "&Recent Settings..." };
+			settingsitem.Click += (o, ev) =>
+			{
+				using (var prompt = new InputPrompt
+				{
+					TextInputType = InputPrompt.InputType.Unsigned,
+					Message = "Number of recent files to track",
+					InitialValue = recent.MAX_RECENT_FILES.ToString()
+				})
+				{
+					var result = prompt.ShowDialog();
+					if (result == DialogResult.OK)
+					{
+						int val = int.Parse(prompt.PromptText);
+						if (val > 0)
+							recent.MAX_RECENT_FILES = val;
+					}
+				}
+			};
+			items.Add(settingsitem);
+
 			return items.ToArray();
 		}
 
@@ -197,7 +218,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			Global.CheatList.RemoveRange(watches.Where(watch => !watch.IsSeparator));
 		}
 
-		public static IEnumerable<ToolStripItem> MenuItems(this MemoryDomainList domains, Action<string> setCallback, string selected = "", int? maxSize = null)
+		public static IEnumerable<ToolStripItem> MenuItems(this IMemoryDomains domains, Action<string> setCallback, string selected = "", int? maxSize = null)
 		{
 			foreach (var domain in domains)
 			{
@@ -205,7 +226,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 				var item = new ToolStripMenuItem
 				{
 					Text = name,
-					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value) && !(maxSize.HasValue && domain.Size == 0), // 0 denotes a full 32bit size, which is definiately greater than max size!
+					Enabled = !(maxSize.HasValue && domain.Size > maxSize.Value),
 					Checked = name == selected
 				};
 				item.Click += (o, ev) => setCallback(name);

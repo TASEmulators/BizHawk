@@ -3,9 +3,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	public partial class Atari2600 : IMemoryDomains
+	public partial class Atari2600
 	{
-		public MemoryDomainList MemoryDomains { get; private set; }
+		internal IMemoryDomains MemoryDomains;
 
 		private void SetupMemoryDomains()
 		{
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => M6532.WriteMemory((ushort)addr, value)),
 				new MemoryDomain(
 					"System Bus",
-					8192,
+					65536,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.PeekMemory((ushort) addr),
 					(addr, value) => _mapper.PokeMemory((ushort) addr, value)) 
@@ -53,11 +53,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					"Cart Ram",
 					_mapper.CartRam.Len,
 					MemoryDomain.Endian.Little,
-					addr => _mapper.CartRam[addr],
-					(addr, value) => _mapper.CartRam[addr] = value));
+					addr => _mapper.CartRam[(int)addr],
+					(addr, value) => _mapper.CartRam[(int)addr] = value));
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 	}
 }

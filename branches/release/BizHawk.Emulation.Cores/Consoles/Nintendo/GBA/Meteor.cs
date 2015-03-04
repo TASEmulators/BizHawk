@@ -12,45 +12,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		"Meteor",
 		"blastrock",
 		isPorted: true,
-		isReleased: false
+		isReleased: false,
+		singleInstance: true
 		)]
-	public class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, IMemoryDomains, IDebuggable
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public partial class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
 	{
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			var ret = new Dictionary<string, int>();
-			int[] data = new int[LibMeteor.regnames.Length];
-			LibMeteor.libmeteor_getregs(data);
-			for (int i = 0; i < data.Length; i++)
-				ret.Add(LibMeteor.regnames[i], data[i]);
-			return ret;
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public static readonly ControllerDefinition GBAController =
-		new ControllerDefinition
-		{
-			Name = "GBA Controller",
-			BoolButtons =
-			{					
-				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
-			}
-		};
-		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
-		public IController Controller { get; set; }
-
 		[CoreConstructor("GBA")]
 		public GBA(CoreComm comm, byte[] file)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			Tracer = new TraceBuffer
+			{
+				Header = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---"
+			};
+
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
 			CoreComm = comm;
+
 			comm.VsyncNum = 262144;
 			comm.VsyncDen = 4389;
-			comm.CpuTraceAvailable = true;
-			comm.TraceHeader = "   -Addr--- -Opcode- -Instruction------------------- -R0----- -R1----- -R2----- -R3----- -R4----- -R5----- -R6----- -R7----- -R8----- -R9----- -R10---- -R11---- -R12---- -R13(SP) -R14(LR) -R15(PC) -CPSR--- -SPSR---";
 			comm.NominalWidth = 240;
 			comm.NominalHeight = 160;
 
@@ -68,6 +50,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			SetUpMemoryDomains();
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			var ret = new Dictionary<string, RegisterValue>();
+			int[] data = new int[LibMeteor.regnames.Length];
+			LibMeteor.libmeteor_getregs(data);
+			for (int i = 0; i < data.Length; i++)
+				ret.Add(LibMeteor.regnames[i], data[i]);
+			return ret;
+		}
+
+		public static readonly ControllerDefinition GBAController =
+		new ControllerDefinition
+		{
+			Name = "GBA Controller",
+			BoolButtons =
+			{					
+				"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "L", "R", "Power"
+			}
+		};
+		public ControllerDefinition ControllerDefinition { get { return GBAController; } }
+		public IController Controller { get; set; }
+
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -76,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibMeteor.libmeteor_hardreset();
 			// due to the design of the tracing api, we have to poll whether it's active each frame
-			LibMeteor.libmeteor_settracecallback(CoreComm.Tracer.Enabled ? tracecallback : null);
+			LibMeteor.libmeteor_settracecallback(Tracer.Enabled ? tracecallback : null);
 			if (!coredead)
 				LibMeteor.libmeteor_frameadvance();
 			if (IsLagFrame)
@@ -86,6 +92,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
+		private ITraceable Tracer { get; set; }
+
 		public string SystemId { get { return "GBA"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
@@ -99,210 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = false;
 		}
 
-		#region saveram
-
-		public byte[] CloneSaveRam()
-		{
-			throw new Exception("This needs to be fixed to match the VBANext Core!");
-#if false
-			if (disposed)
-				throw new ObjectDisposedException(this.GetType().ToString());
-			if (!LibMeteor.libmeteor_hassaveram())
-				return null;
-			IntPtr data = IntPtr.Zero;
-			uint size = 0;
-			if (!LibMeteor.libmeteor_savesaveram(ref data, ref size))
-				throw new Exception("libmeteor_savesaveram() returned false!");
-			byte[] ret = new byte[size];
-			Marshal.Copy(data, ret, 0, (int)size);
-			LibMeteor.libmeteor_savesaveram_destroy(data);
-			return ret;
-#endif
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			throw new Exception("This needs to be fixed to match the VBANext Core!");
-#if false
-			if (disposed)
-				throw new ObjectDisposedException(this.GetType().ToString());
-			if (!LibMeteor.libmeteor_loadsaveram(data, (uint)data.Length))
-				throw new Exception("libmeteor_loadsaveram() returned false!");
-#endif
-		}
-
-		public void ClearSaveRam()
-		{
-			if (disposed)
-				throw new ObjectDisposedException(this.GetType().ToString());
-			LibMeteor.libmeteor_clearsaveram();
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				if (disposed)
-					throw new ObjectDisposedException(this.GetType().ToString());
-				return LibMeteor.libmeteor_hassaveram();
-			}
-			set
-			{ }
-		}
-
-		#endregion
-
-		#region savestates
-
-		byte[] SaveCoreBinary()
-		{
-			IntPtr ndata = IntPtr.Zero;
-			uint nsize = 0;
-			if (!LibMeteor.libmeteor_savestate(ref ndata, ref nsize))
-				throw new Exception("libmeteor_savestate() failed!");
-			if (ndata == IntPtr.Zero || nsize == 0)
-				throw new Exception("libmeteor_savestate() returned bad!");
-
-			byte[] ret = new byte[nsize];
-			Marshal.Copy(ndata, ret, 0, (int)nsize);
-			LibMeteor.libmeteor_savestate_destroy(ndata);
-			return ret;
-		}
-
-		void LoadCoreBinary(byte[] data)
-		{
-			if (!LibMeteor.libmeteor_loadstate(data, (uint)data.Length))
-				throw new Exception("libmeteor_loadstate() failed!");
-		}
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHex(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHex(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-			byte[] data = SaveCoreBinary();
-			writer.Write(data.Length);
-			writer.Write(data);
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-			int length = reader.ReadInt32();
-			byte[] data = reader.ReadBytes(length);
-			LoadCoreBinary(data);
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
 		public CoreComm CoreComm { get; private set; }
-		
-		#region memorydomains
-
-		List<MemoryDomain> _MemoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
-
-		void AddMemoryDomain(LibMeteor.MemoryArea which, int size, string name)
-		{
-			IntPtr data = LibMeteor.libmeteor_getmemoryarea(which);
-			if (data == IntPtr.Zero)
-				throw new Exception("libmeteor_getmemoryarea() returned NULL??");
-
-			MemoryDomain md = MemoryDomain.FromIntPtr(name, size, MemoryDomain.Endian.Little, data);
-			_MemoryDomains.Add(md);
-		}
-
-		void SetUpMemoryDomains()
-		{
-			_MemoryDomains.Clear();
-			// this must be first to coincide with "main memory"
-			// note that ewram could also be considered main memory depending on which hairs you split
-			AddMemoryDomain(LibMeteor.MemoryArea.iwram, 32 * 1024, "IWRAM");
-			AddMemoryDomain(LibMeteor.MemoryArea.ewram, 256 * 1024, "EWRAM");
-			AddMemoryDomain(LibMeteor.MemoryArea.bios, 16 * 1024, "BIOS");
-			AddMemoryDomain(LibMeteor.MemoryArea.palram, 1024, "PALRAM");
-			AddMemoryDomain(LibMeteor.MemoryArea.vram, 96 * 1024, "VRAM");
-			AddMemoryDomain(LibMeteor.MemoryArea.oam, 1024, "OAM");
-			// even if the rom is less than 32MB, the whole is still valid in meteor
-			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
-			// special domain for system bus
-			{
-				MemoryDomain sb = new MemoryDomain("BUS", 1 << 28, MemoryDomain.Endian.Little,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= 0x10000000)
-							throw new IndexOutOfRangeException();
-						return LibMeteor.libmeteor_peekbus((uint)addr);
-					},
-					delegate(int addr, byte val)
-					{
-						if (addr < 0 || addr >= 0x10000000)
-							throw new IndexOutOfRangeException();
-						LibMeteor.libmeteor_writebus((uint)addr, val);
-					});
-				_MemoryDomains.Add(sb);
-			}
-			// special combined ram memory domain
-			{
-				var ew = _MemoryDomains[1];
-				var iw = _MemoryDomains[0];
-				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
-					delegate(int addr)
-					{
-						if (addr < 0 || addr >= (256 + 32) * 1024)
-							throw new IndexOutOfRangeException();
-						if (addr >= 256 * 1024)
-							return iw.PeekByte(addr & 32767);
-						else
-							return ew.PeekByte(addr);
-					},
-					delegate(int addr, byte val)
-					{
-						if (addr < 0 || addr >= (256 + 32) * 1024)
-							throw new IndexOutOfRangeException();
-						if (addr >= 256 * 1024)
-							iw.PokeByte(addr & 32767, val);
-						else
-							ew.PokeByte(addr, val);
-					});
-				_MemoryDomains.Add(cr);
-			}
-
-			MemoryDomains = new MemoryDomainList(_MemoryDomains);
-		}
-
-		#endregion
 
 		/// <summary>like libsnes, the library is single-instance</summary>
 		static GBA attachedcore;
@@ -317,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		LibMeteor.Buttons GetInput()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			// libmeteor bitflips everything itself, so 0 == off, 1 == on
 			IsLagFrame = false;
 			LibMeteor.Buttons ret = 0;
@@ -415,49 +226,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		void Trace(string msg)
 		{
-			CoreComm.Tracer.Put(msg);
+			Tracer.Put(msg);
 		}
 
-		GBAGPUMemoryAreas IGBAGPUViewable.GetMemoryAreas()
-		{
-			IntPtr _vram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.vram);
-			IntPtr _palram = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.palram);
-			IntPtr _oam = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.oam);
-			IntPtr _mmio = LibMeteor.libmeteor_getmemoryarea(LibMeteor.MemoryArea.io);
-
-			if (_vram == IntPtr.Zero || _palram == IntPtr.Zero || _oam == IntPtr.Zero || _mmio == IntPtr.Zero)
-				throw new Exception("libmeteor_getmemoryarea() failed!");
-
-			return new GBAGPUMemoryAreas
-			{
-				vram = _vram,
-				palram = _palram,
-				oam = _oam,
-				mmio = _mmio
-			};
-		}
-
-		void IGBAGPUViewable.SetScanlineCallback(Action callback, int scanline)
-		{
-			if (scanline < 0 || scanline > 227)
-			{
-				throw new ArgumentOutOfRangeException("Scanline must be in [0, 227]!");
-			}
-			if (callback == null)
-			{
-				scanlinecb = null;
-				LibMeteor.libmeteor_setscanlinecallback(null, 0);
-			}
-			else
-			{
-				scanlinecb = new LibMeteor.ScanlineCallback(callback);
-				LibMeteor.libmeteor_setscanlinecallback(scanlinecb, scanline);
-			}
-		}
-
-		LibMeteor.ScanlineCallback scanlinecb = null;
-
-		void Init()
+		private void Init()
 		{
 			if (attachedcore != null)
 				attachedcore.Dispose();
@@ -482,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			attachedcore = this;
 		}
 
-		bool disposed = false;
+		private bool disposed = false;
 		public void Dispose()
 		{
 			if (!disposed)
@@ -498,25 +270,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				LibMeteor.libmeteor_setmessagecallback(messagecallback);
 				LibMeteor.libmeteor_setkeycallback(inputcallback);
 				LibMeteor.libmeteor_settracecallback(tracecallback);
-				_MemoryDomains.Clear();
+				_domainList.Clear();
 			}
 		}
-
-		#region IVideoProvider
-
-		public IVideoProvider VideoProvider { get { return this; } }
-
-		int[] videobuffer;
-		GCHandle videohandle;
-
-		public int[] GetVideoBuffer() { return videobuffer; }
-		public int VirtualWidth { get { return 240; } }
-		public int VirtualHeight { get { return 160; } }
-		public int BufferWidth { get { return 240; } }
-		public int BufferHeight { get { return 160; } }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		#endregion
 
 		#region ISoundProvider
 

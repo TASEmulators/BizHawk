@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 using LuaInterface;
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -10,6 +11,11 @@ namespace BizHawk.Client.EmuHawk
 	[Description("A library for manipulating the EmuHawk client UI")]
 	public sealed class EmuHawkLuaLibrary : LuaLibraryBase
 	{
+		[RequiredService]
+		public IEmulator Emulator { get; set; }
+		[RequiredService]
+		public IVideoProvider VideoProvider { get; set; }
+
 		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
 			{
 				{ 0, "None" },
@@ -51,9 +57,9 @@ namespace BizHawk.Client.EmuHawk
 			"bufferheight",
 			"Gets the current height in pixels of the emulator's drawing area"
 		)]
-		public static int BufferHeight()
+		public int BufferHeight()
 		{
-			var height = Global.Emulator.VideoProvider.BufferHeight;
+			var height = VideoProvider.BufferHeight;
 			var point = new System.Drawing.Point(0, height);
 
 			return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
@@ -63,9 +69,9 @@ namespace BizHawk.Client.EmuHawk
 			"bufferwidth",
 			"Gets the current width in pixels of the emulator's drawing area"
 		)]
-		public static int BufferWidth()
+		public int BufferWidth()
 		{
-			var width = Global.Emulator.VideoProvider.BufferWidth;
+			var width = VideoProvider.BufferWidth;
 			var point = new System.Drawing.Point(width, 0);
 
 			return GlobalWin.DisplayManager.TransformPoint(point).X - BorderWidth();
@@ -211,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void OpenTraceLogger()
 		{
-			GlobalWin.Tools.LoadTraceLogger();
+			GlobalWin.Tools.Load<TraceLogger>();
 		}
 
 		[LuaMethodAttributes(
@@ -256,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static int ScreenHeight()
 		{
-			return GlobalWin.PresentationPanel.NativeSize.Height;
+			return GlobalWin.MainForm.PresentationPanel.NativeSize.Height;
 		}
 
 		[LuaMethodAttributes(
@@ -308,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static int ScreenWidth()
 		{
-			return GlobalWin.PresentationPanel.NativeSize.Width;
+			return GlobalWin.MainForm.PresentationPanel.NativeSize.Width;
 		}
 
 		[LuaMethodAttributes(

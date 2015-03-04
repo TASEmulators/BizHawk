@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	public class HexTextBox : TextBox, INumberBox
 	{
 		private string _addressFormatStr = string.Empty;
-		private int? _maxSize;
+		private long? _maxSize;
 		private bool _nullable = true;
 
 		public HexTextBox()
@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
 
-		public void SetHexProperties(int domainSize)
+		public void SetHexProperties(long domainSize)
 		{
 			_maxSize = domainSize - 1;
 			MaxLength = _maxSize.Value.NumHexDigits();
@@ -37,14 +37,14 @@ namespace BizHawk.Client.EmuHawk
 			ResetText();
 		}
 
-		private uint GetMax()
+		public long GetMax()
 		{
 			if (_maxSize.HasValue)
 			{
-				return (uint)_maxSize.Value;
+				return _maxSize.Value;
 			}
 
-            return (uint)(((long)1 << (4 * MaxLength)) - 1);
+			return ((long)1 << (4 * MaxLength)) - 1;
 		}
 
 		public override void ResetText()
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 					var val = (uint)ToRawInt();
 					if (val == 0)
 					{
-						val = GetMax();
+						val = (uint)GetMax(); // int to long todo
 					}
 					else
 					{
@@ -136,6 +136,26 @@ namespace BizHawk.Client.EmuHawk
 		public void SetFromRawInt(int? val)
 		{
 			Text = val.HasValue ? string.Format(_addressFormatStr, val) : string.Empty;
+		}
+
+		public void SetFromLong(long val)
+		{
+			Text = string.Format(_addressFormatStr, val);
+		}
+
+		public long? ToLong()
+		{
+			if (string.IsNullOrWhiteSpace(Text))
+			{
+				if (Nullable)
+				{
+					return null;
+				}
+
+				return 0;
+			}
+
+			return long.Parse(Text, NumberStyles.HexNumber);
 		}
 	}
 

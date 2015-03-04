@@ -4,12 +4,19 @@ using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESGameGenie : Form, IToolForm
+	public partial class NESGameGenie : Form, IToolFormAutoConfig
 	{
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
+		[RequiredService]
+		private IMemoryDomains MemoryDomains { get; set; }
+
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 		{
 			{ 'A', 0 },  // 0000
@@ -42,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool UpdateBefore { get { return false; } }
 		public void Restart()
 		{
-			if (Global.Emulator.SystemId != "NES")
+			if (Emulator.SystemId != "NES")
 			{
 				Close();
 			}
@@ -50,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (Global.Emulator.SystemId != "NES")
+			if (Emulator.SystemId != "NES")
 			{
 				Close();
 			}
@@ -64,12 +71,6 @@ namespace BizHawk.Client.EmuHawk
 		public NESGameGenie()
 		{
 			InitializeComponent();
-			Closing += (o, e) =>
-				{
-					Global.Config.NesGGSettings.Wndx = Location.X;
-					Global.Config.NesGGSettings.Wndy = Location.Y;
-				};
-			TopMost = Global.Config.NesGGSettings.TopMost;
 			AddressBox.SetHexProperties(0x10000);
 			ValueBox.SetHexProperties(0x100);
 			CompareBox.SetHexProperties(0x100);
@@ -78,11 +79,6 @@ namespace BizHawk.Client.EmuHawk
 		private void NESGameGenie_Load(object sender, EventArgs e)
 		{
 			AddCheat.Enabled = false;
-
-			if (Global.Config.NesGGSettings.UseWindowPosition)
-			{
-				Location = Global.Config.NesGGSettings.WindowPosition;
-			}
 		}
 
 		public void DecodeGameGenieCode(string code)
@@ -151,53 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			GameGenieCode.Text = new NESGameGenieEncoder(_address.Value, _value.Value, _compare).Encode();
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.NesGGSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#region Events
-
-		#region File Menu
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.NESGGAutoload;
-			SaveWindowPositionMenuItem.Checked = Global.Config.NesGGSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.NesGGSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.NesGGSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NESGGAutoload ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesGGSettings.SaveWindowPosition ^= true;
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesGGSettings.TopMost ^= true;
-			TopMost = Global.Config.NesGGSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NesGGSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		#endregion
-		
-		#region Control Events
 
 		private void GameGenieCode_KeyPress(object sender, KeyPressEventArgs e)
 		{
@@ -231,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text))
 			{
 				var watch = Watch.GenerateWatch(
-					(Global.Emulator as IMemoryDomains).MemoryDomains["System Bus"],
+					MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
 					Watch.WatchSize.Byte,
 					Watch.DisplayType.Hex,
@@ -359,14 +309,6 @@ namespace BizHawk.Client.EmuHawk
 
 			TryEnableAddCheat();
 		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
-
-		#endregion
 
 		#endregion
 	}

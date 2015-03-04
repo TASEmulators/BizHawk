@@ -133,6 +133,8 @@ namespace BizHawk.Emulation.Cores
 
 		public LibRetroEmulator(CoreComm nextComm, string modulename)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+
 			retro_environment_cb = new LibRetro.retro_environment_t(retro_environment);
 			retro_video_refresh_cb = new LibRetro.retro_video_refresh_t(retro_video_refresh);
 			retro_audio_sample_cb = new LibRetro.retro_audio_sample_t(retro_audio_sample);
@@ -167,6 +169,8 @@ namespace BizHawk.Emulation.Cores
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		public bool Load(byte[] data)
 		{
@@ -271,23 +275,12 @@ namespace BizHawk.Emulation.Cores
 			Marshal.Copy(data, 0, dst, size);
 		}
 
-		public void ClearSaveRam()
-		{
-			// this is sort of wrong, because we should be clearing saveram to whatever the default state is
-			// which may or may not be 0-fill
-			int size = (int)retro.retro_get_memory_size(LibRetro.RETRO_MEMORY.SAVE_RAM);
-			IntPtr dst = retro.retro_get_memory_data(LibRetro.RETRO_MEMORY.SAVE_RAM);
-			if (dst == IntPtr.Zero)
-				throw new Exception("retro_get_memory_data(RETRO_MEMORY_SAVE_RAM) returned NULL");
-
-			byte* p = (byte*)dst;
-			for (int i = 0; i < size; i++)
-				p[i] = 0;
-		}
-
 		public bool SaveRamModified
 		{
+			[FeatureNotImplemented]
 			get { return true; }
+
+			[FeatureNotImplemented]
 			set { throw new NotImplementedException(); }
 		}
 
@@ -305,11 +298,13 @@ namespace BizHawk.Emulation.Cores
 		private byte[] savebuff;
 		private byte[] savebuff2;
 
+		[FeatureNotImplemented]
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
 			throw new NotImplementedException();
 		}
 
+		[FeatureNotImplemented]
 		public void LoadStateText(System.IO.TextReader reader)
 		{
 			throw new NotImplementedException();
@@ -436,8 +431,6 @@ namespace BizHawk.Emulation.Cores
 		#endregion
 
 		#region IVideoProvider
-
-		public IVideoProvider VideoProvider { get { return this; } }
 
 		float dar;
 		int[] vidbuff;

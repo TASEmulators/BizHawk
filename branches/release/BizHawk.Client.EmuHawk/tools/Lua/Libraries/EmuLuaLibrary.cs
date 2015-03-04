@@ -6,6 +6,8 @@ using BizHawk.Client.Common;
 using LuaInterface;
 using System.Reflection;
 using System.Collections.Generic;
+using BizHawk.Emulation.Common;
+using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -49,19 +51,13 @@ namespace BizHawk.Client.EmuHawk
 			Docs.Clear();
 			_caller = passed.Get();
 
-
-			var tt = typeof(TastudioLuaLibrary);
-			var mm = typeof(MainMemoryLuaLibrary);
-
-			var tatt = tt.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
-			var matt = mm.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
-
 			// Register lua libraries
 			var libs = Assembly
 				.Load("BizHawk.Client.Common")
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
+				.Where(t => ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
 				.ToList();
 
 			libs.AddRange(
@@ -70,6 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
+				.Where(t => ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
 			);
 
 			foreach (var lib in libs)
@@ -86,6 +83,7 @@ namespace BizHawk.Client.EmuHawk
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
+					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, instance);
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -145,10 +143,16 @@ namespace BizHawk.Client.EmuHawk
 		public Lua SpawnCoroutine(string file)
 		{
 			var lua = _lua.NewThread();
-			var main = lua.LoadFile(PathManager.MakeAbsolutePath(file,null));
+            var main = lua.LoadString(File.ReadAllText(file), "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
+
+        public void ExecuteString(string command)
+        {
+            _currThread = _lua.NewThread();
+            _currThread.DoString(command);
+        }
 
 		public ResumeResult ResumeScript(Lua script)
 		{

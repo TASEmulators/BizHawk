@@ -12,11 +12,9 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class TasMovieMarker
 	{
-		private int _frame;
-
 		public TasMovieMarker(int frame, string message = "")
 		{
-			_frame = frame;
+			Frame = frame;
 			Message = message;
 		}
 
@@ -26,14 +24,11 @@ namespace BizHawk.Client.Common
 		public TasMovieMarker(string line)
 		{
 			var split = line.Split('\t');
-			_frame = int.Parse(split[0]);
+			Frame = int.Parse(split[0]);
 			Message = split[1];
 		}
 
-		public virtual int Frame 
-		{
-			get { return _frame; }
-		}
+		public virtual int Frame { get; private set; }
 
 		public virtual string Message { get; set; }
 
@@ -112,12 +107,14 @@ namespace BizHawk.Client.Common
 			{
 				if (existingItem.Message != item.Message)
 				{
+					_movie.ChangeLog.AddMarkerChange(item, item.Frame, existingItem.Message);
 					existingItem.Message = item.Message;
 					OnListChanged(NotifyCollectionChangedAction.Replace);
 				}
 			}
 			else
 			{
+				_movie.ChangeLog.AddMarkerChange(item);
 				base.Add(item);
 				this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 				OnListChanged(NotifyCollectionChangedAction.Add);
@@ -131,13 +128,18 @@ namespace BizHawk.Client.Common
 
 		public new void AddRange(IEnumerable<TasMovieMarker> collection)
 		{
-			foreach(TasMovieMarker m in collection){
+			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			foreach (TasMovieMarker m in collection)
+			{
 				Add(m);
 			}
+			if (endBatch)
+				_movie.ChangeLog.EndBatch();
 		}
 
 		public new void Insert(int index, TasMovieMarker item)
 		{
+			_movie.ChangeLog.AddMarkerChange(item);
 			base.Insert(index, item);
 			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			OnListChanged(NotifyCollectionChangedAction.Add);
@@ -145,6 +147,12 @@ namespace BizHawk.Client.Common
 
 		public new void InsertRange(int index, IEnumerable<TasMovieMarker> collection)
 		{
+			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			foreach (TasMovieMarker m in collection)
+				_movie.ChangeLog.AddMarkerChange(m);
+			if (endBatch)
+				_movie.ChangeLog.EndBatch();
+
 			base.InsertRange(index, collection);
 			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			OnListChanged(NotifyCollectionChangedAction.Add);
@@ -152,18 +160,36 @@ namespace BizHawk.Client.Common
 
 		public new void Remove(TasMovieMarker item)
 		{
+			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 			base.Remove(item);
 			OnListChanged(NotifyCollectionChangedAction.Remove);
 		}
 
 		public new int RemoveAll(Predicate<TasMovieMarker> match)
 		{
+			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			foreach (TasMovieMarker m in this)
+			{
+				if (match.Invoke(m))
+					_movie.ChangeLog.AddMarkerChange(null, m.Frame, m.Message);
+			}
+			if (endBatch)
+				_movie.ChangeLog.EndBatch();
+
 			int removeCount = base.RemoveAll(match);
 			if (removeCount > 0)
 			{
 				OnListChanged(NotifyCollectionChangedAction.Remove);
 			}
 			return removeCount;
+		}
+
+		public void Move(int fromFrame, int toFrame)
+		{
+			TasMovieMarker m = Get(fromFrame);
+			_movie.ChangeLog.AddMarkerChange(m, m.Frame);
+			Insert(0, new TasMovieMarker(toFrame, m.Message));
+			Remove(m);
 		}
 
 		/// <summary>
@@ -174,13 +200,18 @@ namespace BizHawk.Client.Common
 		public int TruncateAt(int startFrame)
 		{
 			int deletedCount = 0;
+			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
 			for (int i = Count - 1; i > -1; i--)
 			{
-				if(this[i].Frame >= startFrame){
+				if (this[i].Frame >= startFrame)
+				{
+					_movie.ChangeLog.AddMarkerChange(null, this[i].Frame, this[i].Message);
 					RemoveAt(i);
 					deletedCount++;
 				}
 			}
+			if (endBatch)
+				_movie.ChangeLog.EndBatch();
 			if (deletedCount > 0)
 			{
 				OnListChanged(NotifyCollectionChangedAction.Remove);

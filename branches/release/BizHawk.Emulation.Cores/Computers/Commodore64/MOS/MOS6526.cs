@@ -372,14 +372,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
+		public byte Peek(long addr)
+		{
+			return ReadRegister((int)addr & 0xF);
+		}
+
+		public void Poke(long addr, byte val)
+		{
+			WriteRegister((int)(addr & 0xF), val);
+		}
+
 		public byte Peek(int addr)
 		{
-			return ReadRegister(addr & 0xF);
+			return ReadRegister((int)addr & 0xF);
 		}
 
 		public void Poke(int addr, byte val)
 		{
-			WriteRegister((addr & 0xF), val);
+			WriteRegister((int)(addr & 0xF), val);
 		}
 
 		public byte Read(int addr)

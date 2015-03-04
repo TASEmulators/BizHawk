@@ -45,10 +45,10 @@
 			this.loadDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label38 = new System.Windows.Forms.Label();
+			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -64,7 +64,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(3, 3);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(562, 493);
+			this.tabControl1.Size = new System.Drawing.Size(562, 521);
 			this.tabControl1.TabIndex = 1;
 			// 
 			// NormalControlsTab
@@ -72,7 +72,7 @@
 			this.NormalControlsTab.Location = new System.Drawing.Point(4, 22);
 			this.NormalControlsTab.Name = "NormalControlsTab";
 			this.NormalControlsTab.Padding = new System.Windows.Forms.Padding(3);
-			this.NormalControlsTab.Size = new System.Drawing.Size(554, 467);
+			this.NormalControlsTab.Size = new System.Drawing.Size(554, 495);
 			this.NormalControlsTab.TabIndex = 0;
 			this.NormalControlsTab.Text = "Normal Controls";
 			this.NormalControlsTab.UseVisualStyleBackColor = true;
@@ -82,7 +82,7 @@
 			this.AutofireControlsTab.Location = new System.Drawing.Point(4, 22);
 			this.AutofireControlsTab.Name = "AutofireControlsTab";
 			this.AutofireControlsTab.Padding = new System.Windows.Forms.Padding(3);
-			this.AutofireControlsTab.Size = new System.Drawing.Size(554, 467);
+			this.AutofireControlsTab.Size = new System.Drawing.Size(554, 478);
 			this.AutofireControlsTab.TabIndex = 1;
 			this.AutofireControlsTab.Text = "Autofire Controls";
 			this.AutofireControlsTab.UseVisualStyleBackColor = true;
@@ -91,7 +91,7 @@
 			// 
 			this.AnalogControlsTab.Location = new System.Drawing.Point(4, 22);
 			this.AnalogControlsTab.Name = "AnalogControlsTab";
-			this.AnalogControlsTab.Size = new System.Drawing.Size(554, 467);
+			this.AnalogControlsTab.Size = new System.Drawing.Size(554, 478);
 			this.AnalogControlsTab.TabIndex = 2;
 			this.AnalogControlsTab.Text = "Analog Controls";
 			this.AnalogControlsTab.UseVisualStyleBackColor = true;
@@ -100,7 +100,7 @@
 			// 
 			this.checkBoxAutoTab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxAutoTab.AutoSize = true;
-			this.checkBoxAutoTab.Location = new System.Drawing.Point(394, 520);
+			this.checkBoxAutoTab.Location = new System.Drawing.Point(394, 548);
 			this.checkBoxAutoTab.Name = "checkBoxAutoTab";
 			this.checkBoxAutoTab.Size = new System.Drawing.Size(70, 17);
 			this.checkBoxAutoTab.TabIndex = 3;
@@ -112,7 +112,7 @@
 			// 
 			this.checkBoxUDLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxUDLR.AutoSize = true;
-			this.checkBoxUDLR.Location = new System.Drawing.Point(470, 520);
+			this.checkBoxUDLR.Location = new System.Drawing.Point(470, 548);
 			this.checkBoxUDLR.Name = "checkBoxUDLR";
 			this.checkBoxUDLR.Size = new System.Drawing.Size(101, 17);
 			this.checkBoxUDLR.TabIndex = 4;
@@ -122,7 +122,7 @@
 			// buttonOK
 			// 
 			this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOK.Location = new System.Drawing.Point(764, 514);
+			this.buttonOK.Location = new System.Drawing.Point(764, 542);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
 			this.buttonOK.TabIndex = 5;
@@ -134,7 +134,7 @@
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.buttonCancel.Location = new System.Drawing.Point(845, 514);
+			this.buttonCancel.Location = new System.Drawing.Point(845, 542);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
 			this.buttonCancel.TabIndex = 6;
@@ -156,7 +156,7 @@
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(908, 499);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(908, 527);
 			this.tableLayoutPanel1.TabIndex = 7;
 			// 
 			// pictureBox1
@@ -166,7 +166,7 @@
 			this.pictureBox1.Location = new System.Drawing.Point(571, 23);
 			this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 23, 3, 3);
 			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(334, 473);
+			this.pictureBox1.Size = new System.Drawing.Size(334, 501);
 			this.pictureBox1.TabIndex = 2;
 			this.pictureBox1.TabStop = false;
 			// 
@@ -177,44 +177,34 @@
             this.loadDefaultsToolStripMenuItem,
             this.clearToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(142, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(147, 70);
 			// 
 			// testToolStripMenuItem
 			// 
 			this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-			this.testToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.testToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.testToolStripMenuItem.Text = "Save Defaults";
 			this.testToolStripMenuItem.Click += new System.EventHandler(this.ButtonSaveDefaults_Click);
 			// 
 			// loadDefaultsToolStripMenuItem
 			// 
 			this.loadDefaultsToolStripMenuItem.Name = "loadDefaultsToolStripMenuItem";
-			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.loadDefaultsToolStripMenuItem.Text = "Load Defaults";
 			this.loadDefaultsToolStripMenuItem.Click += new System.EventHandler(this.ButtonLoadDefaults_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearBtn_Click);
-			// 
-			// btnMisc
-			// 
-			this.btnMisc.Location = new System.Drawing.Point(683, 514);
-			this.btnMisc.Menu = this.contextMenuStrip1;
-			this.btnMisc.Name = "btnMisc";
-			this.btnMisc.Size = new System.Drawing.Size(75, 23);
-			this.btnMisc.TabIndex = 11;
-			this.btnMisc.Text = "Misc...";
-			this.btnMisc.UseVisualStyleBackColor = true;
 			// 
 			// label3
 			// 
 			this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(11, 522);
+			this.label3.Location = new System.Drawing.Point(11, 550);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(30, 13);
 			this.label3.TabIndex = 112;
@@ -224,7 +214,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(206, 522);
+			this.label2.Location = new System.Drawing.Point(206, 550);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(168, 13);
 			this.label2.TabIndex = 111;
@@ -234,11 +224,22 @@
 			// 
 			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(47, 522);
+			this.label38.Location = new System.Drawing.Point(47, 550);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(153, 13);
 			this.label38.TabIndex = 110;
 			this.label38.Text = "* Escape clears a key mapping";
+			// 
+			// btnMisc
+			// 
+			this.btnMisc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnMisc.Location = new System.Drawing.Point(683, 542);
+			this.btnMisc.Menu = this.contextMenuStrip1;
+			this.btnMisc.Name = "btnMisc";
+			this.btnMisc.Size = new System.Drawing.Size(75, 23);
+			this.btnMisc.TabIndex = 11;
+			this.btnMisc.Text = "Misc...";
+			this.btnMisc.UseVisualStyleBackColor = true;
 			// 
 			// ControllerConfig
 			// 
@@ -246,7 +247,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
-			this.ClientSize = new System.Drawing.Size(932, 544);
+			this.ClientSize = new System.Drawing.Size(932, 572);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label38);

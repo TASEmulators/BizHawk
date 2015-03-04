@@ -95,12 +95,14 @@ namespace BizHawk.Client.EmuHawk
 
 			var tabPages = new List<TabPage>(systems.Count);
 
-			const int _x = 6;
-			const int textboxWidth = 70;
-			const int padding = 5;
-			const int buttonWidth = 26;
-			const int widgetOffset = 85;
-			const int rowHeight = 30;
+			int _x = UIHelper.ScaleX(6);
+			int textboxWidth = UIHelper.ScaleX(70);
+			int padding = UIHelper.ScaleX(5);
+			int buttonWidth = UIHelper.ScaleX(26);
+			int buttonHeight = UIHelper.ScaleY(23);
+			int buttonOffsetY = -1; // To align the top with the textbox I guess? Always 1 pixel regardless of scaling.
+			int widgetOffset = UIHelper.ScaleX(85);
+			int rowHeight = UIHelper.ScaleY(30);
 
 			foreach (var systemDisplayName in systems)
 			{
@@ -109,10 +111,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Text = systemDisplayName,
 					Name = systemId,
+					Width = UIHelper.ScaleX(200) // Initial Left/Width of child controls are based on this size.
 				};
 				var paths = pathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
 
-				var _y = 14;
+				var _y = UIHelper.ScaleY(14);
 				foreach (var path in paths)
 				{
 					var box = new TextBox
@@ -122,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 						Width = textboxWidth,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-						MinimumSize = new Size(26, 23),
+						MinimumSize = new Size(UIHelper.ScaleX(26), UIHelper.ScaleY(23)),
 						AutoCompleteMode = AutoCompleteMode.SuggestAppend,
 						AutoCompleteCustomSource = AutoCompleteOptions,
 						AutoCompleteSource = AutoCompleteSource.CustomSource,
@@ -132,8 +135,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = string.Empty,
 						Image = Properties.Resources.OpenFile,
-						Location = new Point(widgetOffset, _y - 1),
-						Width = buttonWidth,
+						Location = new Point(widgetOffset, _y + buttonOffsetY),
+						Size = new Size(buttonWidth, buttonHeight),
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};
@@ -146,18 +149,18 @@ namespace BizHawk.Client.EmuHawk
 						BrowseFolder(tempBox, tempPath, tempSystem);
 					};
 
-					int infoPadding = 0;
+					int infoPadding = UIHelper.ScaleX(0);
 					if (t.Name.Contains("Global") && path.Type == "Firmware")
 					{
-						infoPadding = 26;
+						infoPadding = UIHelper.ScaleX(26);
 
 						var firmwareButton = new Button
 						{
 							Name = "Global",
 							Text = String.Empty,
 							Image = Properties.Resources.Help,
-							Location = new Point(115, _y - 1),
-							Width = 26,
+							Location = new Point(UIHelper.ScaleX(115), _y + buttonOffsetY),
+							Size = new Size(buttonWidth, buttonHeight),
 							Anchor = AnchorStyles.Top | AnchorStyles.Right
 						};
 
@@ -179,8 +182,8 @@ namespace BizHawk.Client.EmuHawk
 					var label = new Label
 						{
 						Text = path.Type,
-						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, _y + 4),
-						Width = 100,
+						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, _y + UIHelper.ScaleY(4)),
+						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
 					};

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	public interface IGBAGPUViewable
+	public interface IGBAGPUViewable : IEmulatorService
 	{
 		GBAGPUMemoryAreas GetMemoryAreas();
 		/// <summary>
@@ -18,6 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 	public class GBAGPUMemoryAreas
 	{
+		// the pointers are assumed to stay valid as long as the IEmulator is valid, maybe
+		// this will need some change for a managed core (lifecycle management, etc)
+
 		public IntPtr vram;
 		public IntPtr oam;
 		public IntPtr mmio;
