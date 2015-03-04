@@ -1107,7 +1107,6 @@ namespace BizHawk.Client.EmuHawk
 			RamSearchMenuItem.Enabled = GlobalWin.Tools.IsAvailable<RamSearch>();
 			RamWatchMenuItem.Enabled = GlobalWin.Tools.IsAvailable<RamWatch>();
 
-			DebuggerMenuItem.Visible = VersionInfo.DeveloperBuild;
 			DebuggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GenericDebugger>();
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
