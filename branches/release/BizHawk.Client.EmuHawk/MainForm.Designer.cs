@@ -1816,7 +1816,7 @@
 			this.DebuggerMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.DebuggerMenuItem.Text = "&Debugger";
 			this.DebuggerMenuItem.Click += new System.EventHandler(this.DebuggerMenuItem_Click);
-			// 
+			// DebuggerMenuItem.
 			// TAStudioMenuItem
 			// 
 			this.TAStudioMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
