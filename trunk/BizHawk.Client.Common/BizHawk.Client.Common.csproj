@@ -116,6 +116,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Global.cs" />
+    <Compile Include="inputAdapters\AutoPattern.cs" />
     <Compile Include="inputAdapters\BitwiseAdapters.cs" />
     <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
     <Compile Include="inputAdapters\InputAdapters.cs" />
