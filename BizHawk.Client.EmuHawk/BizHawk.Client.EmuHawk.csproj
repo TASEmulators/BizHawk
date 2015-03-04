@@ -924,12 +924,6 @@
     <Compile Include="tools\TAStudio\HeaderEditor.Designer.cs">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\HistoryBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="tools\TAStudio\HistoryBox.Designer.cs">
-      <DependentUpon>HistoryBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\TAStudio\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -972,6 +966,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudioClipboard.cs" />
+    <Compile Include="tools\TAStudio\UndoHistoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\UndoHistoryForm.Designer.cs">
+      <DependentUpon>UndoHistoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TI83\TI83KeyPad.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1378,9 +1378,6 @@
     <EmbeddedResource Include="tools\TAStudio\HeaderEditor.resx">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\TAStudio\HistoryBox.resx">
-      <DependentUpon>HistoryBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
       <DependentUpon>MarkerControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1389,6 +1386,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\UndoHistoryForm.resx">
+      <DependentUpon>UndoHistoryForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TI83\TI83KeyPad.resx">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
