@@ -17,9 +17,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isPorted: true,
 		isReleased: true
 		)]
-	public class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider,
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public partial class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable, ISaveRam, IStatable,
 		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
 	{
+		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? new GambatteLinkSettings();
+			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
+
+			CoreComm = comm;
+			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L, deterministic);
+			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, _Settings.R, _SyncSettings.R, deterministic);
+
+			// connect link cable
+			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
+			LibGambatte.gambatte_linkstatus(R.GambatteState, 259);
+
+			L.Controller = LCont;
+			R.Controller = RCont;
+			L.ConnectInputCallbackSystem(_inputCallbacks);
+			R.ConnectInputCallbackSystem(_inputCallbacks);
+			L.ConnectMemoryCallbackSystem(_memorycallbacks);
+			R.ConnectMemoryCallbackSystem(_memorycallbacks);
+
+			comm.VsyncNum = L.CoreComm.VsyncNum;
+			comm.VsyncDen = L.CoreComm.VsyncDen;
+			comm.RomStatusAnnotation = null;
+			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
+			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;
+			comm.NominalHeight = L.CoreComm.NominalHeight;
+			comm.UsesLinkCable = true;
+			comm.LinkConnected = true;
+
+			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
+
+			blip_left = new BlipBuffer(1024);
+			blip_right = new BlipBuffer(1024);
+			blip_left.SetRates(2097152 * 2, 44100);
+			blip_right.SetRates(2097152 * 2, 44100);
+
+			SetMemoryDomains();
+		}
+
 		bool disposed = false;
 
 		Gameboy L;
@@ -42,48 +85,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			return right ? R.IsCGBMode() : L.IsCGBMode();
 		}
 
-		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
-		{
-			GambatteLinkSettings _Settings = (GambatteLinkSettings)Settings ?? new GambatteLinkSettings();
-			GambatteLinkSyncSettings _SyncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, _Settings.L, _SyncSettings.L, deterministic);
-			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, _Settings.R, _SyncSettings.R, deterministic);
-
-			// connect link cable
-			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
-			LibGambatte.gambatte_linkstatus(R.GambatteState, 259);
-
-			L.Controller = LCont;
-			R.Controller = RCont;
-
-			comm.VsyncNum = L.CoreComm.VsyncNum;
-			comm.VsyncDen = L.CoreComm.VsyncDen;
-			comm.RomStatusAnnotation = null;
-			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
-			comm.CpuTraceAvailable = false; // TODO
-			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;
-			comm.NominalHeight = L.CoreComm.NominalHeight;
-			comm.UsesLinkCable = true;
-			comm.LinkConnected = true;
-
-			Frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-
-			blip_left = new BlipBuffer(1024);
-			blip_right = new BlipBuffer(1024);
-			blip_left.SetRates(2097152 * 2, 44100);
-			blip_right.SetRates(2097152 * 2, 44100);
-
-			SetMemoryDomains();
-
-			L.CoreComm.InputCallback = CoreComm.InputCallback;
-			R.CoreComm.InputCallback = CoreComm.InputCallback;
-		}
-
-		public IVideoProvider VideoProvider { get { return this; } }
 		public ISoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
@@ -219,8 +222,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		
 		public string SystemId { get { return "DGB"; } }
 		public bool DeterministicEmulation { get { return L.DeterministicEmulation && R.DeterministicEmulation; } }
 
@@ -251,205 +253,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				disposed = true;
 			}
 		}
-
-		#region saveram
-
-		public byte[] CloneSaveRam()
-		{
-			byte[] lb = L.CloneSaveRam();
-			byte[] rb = R.CloneSaveRam();
-			byte[] ret = new byte[lb.Length + rb.Length];
-			Buffer.BlockCopy(lb, 0, ret, 0, lb.Length);
-			Buffer.BlockCopy(rb, 0, ret, lb.Length, rb.Length);
-			return ret;
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			byte[] lb = new byte[L.CloneSaveRam().Length];
-			byte[] rb = new byte[R.CloneSaveRam().Length];
-			Buffer.BlockCopy(data, 0, lb, 0, lb.Length);
-			Buffer.BlockCopy(data, lb.Length, rb, 0, rb.Length);
-			L.StoreSaveRam(lb);
-			R.StoreSaveRam(rb);
-		}
-
-		public void ClearSaveRam()
-		{
-			L.ClearSaveRam();
-			R.ClearSaveRam();
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return L.SaveRamModified || R.SaveRamModified;
-			}
-			set
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		#endregion
-
-		#region savestates
-
-		JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
-
-		private class DGBSerialized
-		{
-			public TextState<Gameboy.TextStateData> L;
-			public TextState<Gameboy.TextStateData> R;
-			// other data
-			public bool IsLagFrame;
-			public int LagCount;
-			public int Frame;
-			public int overflowL;
-			public int overflowR;
-			public int LatchL;
-			public int LatchR;
-			public bool cableconnected;
-			public bool cablediscosignal;
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var s = new DGBSerialized
-			{
-				L = L.SaveState(),
-				R = R.SaveState(),
-				IsLagFrame = IsLagFrame,
-				LagCount = LagCount,
-				Frame = Frame,
-				overflowL = overflowL,
-				overflowR = overflowR,
-				LatchL = LatchL,
-				LatchR = LatchR,
-				cableconnected = cableconnected,
-				cablediscosignal = cablediscosignal
-			};
-			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			// is this needed anymore??
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var s = (DGBSerialized)ser.Deserialize(reader, typeof(DGBSerialized));
-			L.LoadState(s.L);
-			R.LoadState(s.R);
-			IsLagFrame = s.IsLagFrame;
-			LagCount = s.LagCount;
-			Frame = s.Frame;
-			overflowL = s.overflowL;
-			overflowR = s.overflowR;
-			LatchL = s.LatchL;
-			LatchR = s.LatchR;
-			cableconnected = s.cableconnected;
-			cablediscosignal = s.cablediscosignal;
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			L.SaveStateBinary(writer);
-			R.SaveStateBinary(writer);
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-			writer.Write(overflowL);
-			writer.Write(overflowR);
-			writer.Write(LatchL);
-			writer.Write(LatchR);
-			writer.Write(cableconnected);
-			writer.Write(cablediscosignal);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			L.LoadStateBinary(reader);
-			R.LoadStateBinary(reader);
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-			overflowL = reader.ReadInt32();
-			overflowR = reader.ReadInt32();
-			LatchL = reader.ReadInt32();
-			LatchR = reader.ReadInt32();
-			cableconnected = reader.ReadBoolean();
-			cablediscosignal = reader.ReadBoolean();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
-		#region debugging
-
-		public MemoryDomainList MemoryDomains { get; private set; }
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
-		{
-			var left = L.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Left " + reg.Key, reg.Value));
-
-			var right = R.GetCpuFlagsAndRegisters()
-				.Select(reg => new KeyValuePair<string, int>("Right " + reg.Key, reg.Value));
-
-			return left.Union(right).ToList().ToDictionary(pair => pair.Key, pair => pair.Value);
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			if (register.StartsWith("Left "))
-			{
-				L.SetCpuRegister(register.Replace("Left ", ""), value);
-			}
-			else if (register.StartsWith("Right "))
-			{
-				R.SetCpuRegister(register.Replace("Right ", ""), value);
-			}
-		}
-
-		void SetMemoryDomains()
-		{
-			var mm = new List<MemoryDomain>();
-
-			foreach (var md in L.MemoryDomains)
-				mm.Add(new MemoryDomain("L " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
-			foreach (var md in R.MemoryDomains)
-				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
-
-			MemoryDomains = new MemoryDomainList(mm);
-		}
-
-		#endregion
-
-		#region VideoProvider
-
-		int[] VideoBuffer = new int[160 * 2 * 144];
-		public int[] GetVideoBuffer() { return VideoBuffer; }
-		public int VirtualWidth { get { return 320; } }
-		public int VirtualHeight { get { return 144; } }
-		public int BufferWidth { get { return 320; } }
-		public int BufferHeight { get { return 144; } }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		#endregion
 
 		#region SoundProvider
 
@@ -534,81 +337,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		#endregion
-
-		#region settings
-
-		public GambatteLinkSettings GetSettings()
-		{
-			return new GambatteLinkSettings
-			(
-				L.GetSettings(),
-				R.GetSettings()
-			);
-		}
-		public GambatteLinkSyncSettings GetSyncSettings()
-		{
-			return new GambatteLinkSyncSettings
-			(
-				L.GetSyncSettings(),
-				R.GetSyncSettings()
-			);
-		}
-		public bool PutSettings(GambatteLinkSettings o)
-		{
-			return L.PutSettings(o.L) || R.PutSettings(o.R);
-		}
-		public bool PutSyncSettings(GambatteLinkSyncSettings o)
-		{
-			return L.PutSyncSettings(o.L) || R.PutSyncSettings(o.R);
-		}
-
-		public class GambatteLinkSettings
-		{
-			public Gameboy.GambatteSettings L;
-			public Gameboy.GambatteSettings R;
-
-			public GambatteLinkSettings()
-			{
-				L = new Gameboy.GambatteSettings();
-				R = new Gameboy.GambatteSettings();
-			}
-
-			public GambatteLinkSettings(Gameboy.GambatteSettings L, Gameboy.GambatteSettings R)
-			{
-				this.L = L;
-				this.R = R;
-			}
-
-			public GambatteLinkSettings Clone()
-			{
-				return new GambatteLinkSettings(L.Clone(), R.Clone());
-			}
-		}
-
-		public class GambatteLinkSyncSettings
-		{
-			public Gameboy.GambatteSyncSettings L;
-			public Gameboy.GambatteSyncSettings R;
-
-			public GambatteLinkSyncSettings()
-			{
-				L = new Gameboy.GambatteSyncSettings();
-				R = new Gameboy.GambatteSyncSettings();
-			}
-
-			public GambatteLinkSyncSettings(Gameboy.GambatteSyncSettings L, Gameboy.GambatteSyncSettings R)
-			{
-				this.L = L;
-				this.R = R;
-			}
-
-			public GambatteLinkSyncSettings Clone()
-			{
-				return new GambatteLinkSyncSettings(L.Clone(), R.Clone());
-			}
-		}
-
-		#endregion
-
 	}
 }

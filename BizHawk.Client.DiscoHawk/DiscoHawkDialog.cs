@@ -76,11 +76,11 @@ namespace BizHawk.Client.DiscoHawk
 			Disc disc = discRecord.Disc;
 			boundDiscRecord = discRecord;
 
-			DiscTOC toc = disc.ReadTOC();
+			DiscStructure toc = disc.ReadStructure();
 			boundDisc = disc;
 			lblSessions.Text = toc.Sessions.Count.ToString();
 			lblTracks.Text = toc.Sessions.Sum((ses) => ses.Tracks.Count).ToString();
-			lblSectors.Text = string.Format("{0} ({1})", toc.length_aba, toc.FriendlyLength.Value);
+			lblSectors.Text = string.Format("{0} ({1})", toc.LengthInSectors, toc.FriendlyLength.Value);
 			lblSize.Text = string.Format("{0:0.00} MB", toc.BinarySize / 1024.0 / 1024.0);
 			btnExportCue.Enabled = true;
 			UpdateCue();

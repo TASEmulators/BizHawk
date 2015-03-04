@@ -11,10 +11,13 @@
 //please note that however much youre tempted to, timings can't be put in a table here because they depend on how the instruction executes at runtime
 
 using System;
+using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Cores.Components.Z80 
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores.Components.Z80
 {
-	public class Disassembler
+	public class Disassembler : IDisassemblable
 	{
 		readonly static sbyte[,] opcodeSizes = new sbyte[7, 256];
 
@@ -27,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 				int pc = 0;
 				byte[] opcode = { (byte)i, 0, 0, 0 };
 				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[0,i] = (sbyte)pc;
+				opcodeSizes[0, i] = (sbyte)pc;
 			}
 
 			opcodeSizes[0, 0xCB] = -1;
@@ -109,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 				format = format.Replace("n", string.Format("{0:X2}h", B));
 			}
 
-			if(format.IndexOf("+d") != -1) format = format.Replace("+d","d");
+			if (format.IndexOf("+d") != -1) format = format.Replace("+d", "d");
 
 			if (format.IndexOf("d") != -1)
 			{
@@ -489,7 +492,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 					break;
 				case 0xDD:
 					A = read();
-					switch(A)
+					switch (A)
 					{
 						case 0xCB: format = mnemonicsDDCB[A]; break;
 						case 0xED: format = mnemonicsED[A]; break;
@@ -516,7 +519,35 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 		public string Disassemble(Func<byte> read)
 		{
-			return Result(DisassembleInternal(read),read);
+			return Result(DisassembleInternal(read), read);
 		}
+
+		#region IDisassemblable
+
+		public string Cpu
+		{
+			get { return "Z80"; }
+			set { }
+		}
+
+		public string PCRegisterName
+		{
+			get { return "PC"; }
+		}
+
+		public IEnumerable<string> AvailableCpus
+		{
+			get { yield return "Z80"; }
+		}
+
+		public string Disassemble(MemoryDomain m, uint addr, out int length)
+		{
+			int loc = (int)addr;
+			string ret = Disassemble(() => m.PeekByte(loc++));
+			length = loc - (int)addr;
+			return ret;
+		}
+
+		#endregion
 	}
 }

@@ -18,9 +18,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			Owner = owner as IGL_TK;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("VertexCoord", 0, 4, VertexAttribPointerType.Float, false, 40, 0); //VertexCoord
-			VertexLayout.DefineVertexAttribute("ColorShit", 1, 4, VertexAttribPointerType.Float, false, 40, 16); //COLOR
-			VertexLayout.DefineVertexAttribute("TexCoord", 2, 2, VertexAttribPointerType.Float, false, 40, 32); //TexCoord (is this vec2 or vec4? the glsl converted from cg had vec4 but the cg had vec2...)
+			VertexLayout.DefineVertexAttribute("VertexCoord", 0, 4, VertexAttribPointerType.Float, AttributeUsage.Unspecified, false, 40, 0); //VertexCoord
+			VertexLayout.DefineVertexAttribute("ColorShit", 1, 4, VertexAttribPointerType.Float, AttributeUsage.Unspecified, false, 40, 16); //COLOR
+			VertexLayout.DefineVertexAttribute("TexCoord", 2, 2, VertexAttribPointerType.Float, AttributeUsage.Unspecified, false, 40, 32); //TexCoord (is this vec2 or vec4? the glsl converted from cg had vec4 but the cg had vec2...)
 			VertexLayout.Close();
 
 			string vsSource = "#define VERTEX\r\n" + source;
@@ -82,7 +82,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //junk
 			pData[i++] = 1; pData[i++] = v1; //texcoord
 
-			Owner.SetBlendState(Owner.BlendNone);
+			Owner.SetBlendState(Owner.BlendNoneCopy);
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 		}

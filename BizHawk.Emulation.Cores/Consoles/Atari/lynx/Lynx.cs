@@ -12,13 +12,15 @@ using Newtonsoft.Json;
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
-	public class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, IMemoryDomains
+	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
+	public partial class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr Core;
 
 		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
@@ -121,6 +123,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
@@ -135,8 +139,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
 
 		public string SystemId { get { return "Lynx"; } }
 
@@ -191,157 +193,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		#endregion
 
-		#region savestates
-
-		JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
-		byte[] savebuff;
-		byte[] savebuff2;
-
-		class TextStateData
-		{
-			public int Frame;
-			public int LagCount;
-			public bool IsLagFrame;
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var s = new TextState<TextStateData>();
-			s.Prepare();
-			var ff = s.GetFunctionPointersSave();
-			LibLynx.TxtStateSave(Core, ref ff);
-			s.ExtraData.IsLagFrame = IsLagFrame;
-			s.ExtraData.LagCount = LagCount;
-			s.ExtraData.Frame = Frame;
-
-			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
-
-			//Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
-			s.Prepare();
-			var ff = s.GetFunctionPointersLoad();
-			LibLynx.TxtStateLoad(Core, ref ff);
-			IsLagFrame = s.ExtraData.IsLagFrame;
-			LagCount = s.ExtraData.LagCount;
-			Frame = s.ExtraData.Frame;
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			if (!LibLynx.BinStateSave(Core, savebuff, savebuff.Length))
-				throw new InvalidOperationException("Core's BinStateSave() returned false!");
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
-
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			int length = reader.ReadInt32();
-			if (length != savebuff.Length)
-				throw new InvalidOperationException("Save buffer size mismatch!");
-			reader.Read(savebuff, 0, length);
-			if (!LibLynx.BinStateLoad(Core, savebuff, savebuff.Length))
-				throw new InvalidOperationException("Core's BinStateLoad() returned false!");
-
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var ms = new MemoryStream(savebuff2, true);
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			if (ms.Position != savebuff2.Length)
-				throw new InvalidOperationException();
-			ms.Close();
-			return savebuff2;
-		}
-
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
-
-		#endregion
-
-		#region saveram
-
-		public byte[] CloneSaveRam()
-		{
-			int size;
-			IntPtr data;
-			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
-				return null;
-			byte[] ret = new byte[size];
-			Marshal.Copy(data, ret, 0, size);
-			return ret;
-		}
-
-		public void StoreSaveRam(byte[] srcdata)
-		{
-			int size;
-			IntPtr data;
-			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
-				throw new InvalidOperationException();
-			if (size != srcdata.Length)
-				throw new ArgumentOutOfRangeException();
-			Marshal.Copy(srcdata, 0, data, size);
-		}
-
-		public void ClearSaveRam()
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				int unused;
-				IntPtr unused2;
-				return LibLynx.GetSaveRamPtr(Core, out unused, out unused2);
-			}
-			set
-			{
-				throw new InvalidOperationException();
-			}
-		}
-
-		#endregion
-
-		#region VideoProvider
-
-		const int WIDTH = 160;
-		const int HEIGHT = 102;
-
-		int[] videobuff = new int[WIDTH * HEIGHT];
-
-		public IVideoProvider VideoProvider { get { return this; } }
-		public int[] GetVideoBuffer() { return videobuff; }
-		public int VirtualWidth { get { return BufferWidth; } }
-		public int VirtualHeight { get { return BufferHeight; } }
-		public int BufferWidth { get; private set; }
-		public int BufferHeight { get; private set; }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		#endregion
-
 		#region SoundProvider
 
 		short[] soundbuff = new short[2048];
@@ -361,34 +212,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public void DiscardSamples()
 		{
 		}
-
-		#endregion
-
-		#region MemoryDomains
-
-		private void SetupMemoryDomains()
-		{
-			var mms = new List<MemoryDomain>();
-			mms.Add(MemoryDomain.FromIntPtr("RAM", 65536, MemoryDomain.Endian.Little, LibLynx.GetRamPointer(Core), true));
-
-			IntPtr p;
-			int s;
-			if (LibLynx.GetSaveRamPtr(Core, out s, out p))
-				mms.Add(MemoryDomain.FromIntPtr("Save RAM", s, MemoryDomain.Endian.Little, p, true));
-
-			IntPtr p0, p1;
-			int s0, s1;
-			LibLynx.GetReadOnlyCartPtrs(Core, out s0, out p0, out s1, out p1);
-			if (s0 > 0 && p0 != IntPtr.Zero)
-				mms.Add(MemoryDomain.FromIntPtr("Cart A", s0, MemoryDomain.Endian.Little, p0, false));
-			if (s1 > 0 && p1 != IntPtr.Zero)
-				mms.Add(MemoryDomain.FromIntPtr("Cart B", s1, MemoryDomain.Endian.Little, p1, false));
-
-			MemoryDomains = new MemoryDomainList(mms, 0);
-		}
-
-
-		public MemoryDomainList MemoryDomains { get; private set; }
 
 		#endregion
 	}

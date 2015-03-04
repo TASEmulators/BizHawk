@@ -4,6 +4,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
@@ -22,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				Global.MovieSession.QueueNewMovie(movie, record);
+				Global.MovieSession.QueueNewMovie(movie, record, Global.Emulator);
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
@@ -30,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			LoadRom(GlobalWin.MainForm.CurrentlyOpenRom);
+			LoadRom(CurrentlyOpenRom);
 
 			if (Global.MovieSession.PreviousNES_InQuickNES.HasValue)
 			{
@@ -46,20 +47,20 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
-			if (movie.StartsFromSavestate)
+			if (Global.Emulator.HasSavestates() && movie.StartsFromSavestate)
 			{
 				if (movie.TextSavestate != null)
 				{
-					Global.Emulator.LoadStateText(new StringReader(movie.TextSavestate));
+					Global.Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					Global.Emulator.LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
+					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
 				if (movie.SavestateFramebuffer != null)
 				{
 					var b1 = movie.SavestateFramebuffer;
-					var b2 = Global.Emulator.VideoProvider.GetVideoBuffer();
+					var b2 = Global.Emulator.VideoProvider().GetVideoBuffer();
 					int len = Math.Min(b1.Length, b2.Length);
 					for (int i = 0; i < len; i++)
 					{

@@ -38,6 +38,7 @@
 			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lvFirmwaresContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.tsmiSetCustomization = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +57,6 @@
 			this.linkBasePath = new System.Windows.Forms.LinkLabel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
@@ -88,6 +88,7 @@
 			this.lvFirmwares.GridLines = true;
 			this.lvFirmwares.Location = new System.Drawing.Point(0, 25);
 			this.lvFirmwares.Name = "lvFirmwares";
+			this.lvFirmwares.ShowItemToolTips = true;
 			this.lvFirmwares.Size = new System.Drawing.Size(824, 424);
 			this.lvFirmwares.SmallImageList = this.imageList1;
 			this.lvFirmwares.TabIndex = 24;
@@ -126,6 +127,10 @@
 			// 
 			this.columnHeader3.Text = "Location";
 			this.columnHeader3.Width = 252;
+			// 
+			// columnHeader8
+			// 
+			this.columnHeader8.Text = "Size";
 			// 
 			// columnHeader7
 			// 
@@ -291,10 +296,6 @@
 			this.label1.Size = new System.Drawing.Size(119, 13);
 			this.label1.TabIndex = 25;
 			this.label1.Text = "Firmwares Search Path:";
-			// 
-			// columnHeader8
-			// 
-			this.columnHeader8.Text = "Size";
 			// 
 			// FirmwaresConfig
 			// 

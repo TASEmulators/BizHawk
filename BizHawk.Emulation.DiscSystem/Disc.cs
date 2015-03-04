@@ -66,411 +66,39 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public partial class Disc : IDisposable
 	{
-		public interface ISector
-		{
-			/// <summary>
-			/// reads the entire sector, raw
-			/// </summary>
-			int Read_2352(byte[] buffer, int offset);
-
-			/// <summary>
-			/// reads 2048 bytes of userdata.. precisely what this means isnt always 100% certain (for instance mode2 form 0 has 2336 bytes of userdata instead of 2048)..
-			/// ..but its certain enough for this to be useful
-			/// </summary>
-			int Read_2048(byte[] buffer, int offset);
-		}
+		/// <summary>
+		/// Free-form optional memos about the disc
+		/// </summary>
+		public Dictionary<string, object> Memos = new Dictionary<string, object>();
 
 		/// <summary>
-		/// Presently, an IBlob doesn't need to work multithreadedly. It's quite an onerous demand.
-		/// This should probably be managed by the Disc class somehow, or by the user making another Disc.
+		/// The raw TOC entries found in the lead-in track.
 		/// </summary>
-		public interface IBlob : IDisposable
-		{
-			/// <summary>
-			/// what a weird parameter order. normally the dest buffer would be first. weird.
-			/// </summary>
-			/// <param name="byte_pos">location in the blob to read from</param>
-			/// <param name="buffer">destination buffer for read data</param>
-			/// <param name="offset">offset into destination buffer</param>
-			/// <param name="count">amount to read</param>
-			int Read(long byte_pos, byte[] buffer, int offset, int count);
-		}
-
-		public sealed class Blob_ZeroPadAdapter : IBlob
-		{
-			public Blob_ZeroPadAdapter(IBlob baseBlob, long padFrom, long padLen)
-			{
-				this.baseBlob = baseBlob;
-				this.padFrom = padFrom;
-				this.padLen = padLen;
-			}
-
-			public int Read(long byte_pos, byte[] buffer, int offset, int count)
-			{
-				throw new NotImplementedException("Blob_ZeroPadAdapter hasnt been tested yet! please report this!");
-
-				//something about this seems unnecessarily complex, but... i dunno.
-				/*
-				//figure out how much remains until the zero-padding begins
-				long remain = byte_pos - padFrom;
-				int todo;
-				if (remain < count)
-					todo = (int)remain;
-				else todo = count;
-
-				//read up until the zero-padding
-				int totalRead = 0;
-				int readed = baseBlob.Read(byte_pos, buffer, offset, todo);
-				totalRead += readed;
-				offset += todo;
-
-				//if we didnt read enough, we certainly shouldnt try to read any more
-				if (readed < todo)
-					return readed;
-
-				//if that was all we needed, then we're done
-				count -= todo;
-				if (count == 0)
-					return totalRead;
-
-				//if we need more, it must come from zero-padding
-				remain = padLen;
-				if (remain < count)
-					todo = (int)remain;
-				else todo = count;
-
-				Array.Clear(buffer, offset, todo);
-				totalRead += todo;
-
-				return totalRead;
-				*/
-			}
-
-			public void Dispose()
-			{
-				baseBlob.Dispose();
-			}
-
-			private readonly IBlob baseBlob;
-			private long padFrom;
-			private long padLen;
-		}
-
-		private class Blob_RawFile : IBlob
-		{
-			public string PhysicalPath { 
-				get
-				{
-					return physicalPath;
-				}
-				set
-				{
-					physicalPath = value;
-					length = new FileInfo(physicalPath).Length;
-				}
-			}
-			string physicalPath;
-			long length;
-
-			public long Offset = 0;
-
-			BufferedStream fs;
-			public void Dispose()
-			{
-				if (fs != null)
-				{
-					fs.Dispose();
-					fs = null;
-				}
-			}
-			public int Read(long byte_pos, byte[] buffer, int offset, int count)
-			{
-				//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
-				//this enhances performance considerably
-				const int buffersize = 2352 * 75 * 2;
-				if (fs == null)
-					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
-				long target = byte_pos + Offset;
-				if(fs.Position != target)
-					fs.Position = target;
-				return fs.Read(buffer, offset, count);
-			}
-			public long Length
-			{
-				get
-				{
-					return length;
-				}
-			}
-		}
+		public List<RawTOCEntry> RawTOCEntries = new List<RawTOCEntry>();
 
 		/// <summary>
-		/// this ISector is dumb and only knows how to drag chunks off a source blob
+		/// The DiscTOCRaw corresponding to the RawTOCEntries
 		/// </summary>
-		class Sector_RawBlob : ISector
-		{
-			public IBlob Blob;
-			public long Offset;
-			public int Read_2352(byte[] buffer, int offset)
-			{
-				return Blob.Read(Offset, buffer, offset, 2352);
-			}
-			public int Read_2048(byte[] buffer, int offset)
-			{
-				return Blob.Read(Offset, buffer, offset, 2048);
-			}
-		}
+		public DiscTOCRaw TOCRaw;
 
 		/// <summary>
-		/// this ISector always returns zeroes
+		/// The DiscStructure corresponding the the TOCRaw
 		/// </summary>
-		class Sector_Zero : ISector
-		{
-			public int Read_2352(byte[] buffer, int offset)
-			{
-				Array.Clear(buffer, 0, 2352);
-				return 2352;
-			}
-			public int Read_2048(byte[] buffer, int offset)
-			{
-				Array.Clear(buffer, 0, 2048);
-				return 2048;
-			}
-		}
-
-
-		// ------ replaced by Blob_ZeroPadAdapter
-		///// <summary>
-		///// this ISector adapts another ISector by always returning zeroes 
-		///// TODO I dont like the way this works. I think blobs should get adapted instead to zero-pad to a certain length.
-		///// </summary>
-		//class Sector_ZeroPad : ISector
-		//{
-		//  public ISector BaseSector;
-		//  public int BaseLength;
-		//  public int Read(byte[] buffer, int offset)
-		//  {
-		//    return _Read(buffer, offset, 2352);
-		//  }
-		//  public int Read_2048(byte[] buffer, int offset)
-		//  {
-		//    return _Read(buffer, offset, 2352);
-		//  }
-		//  int _Read(byte[] buffer, int offset, int amount)
-		//  {
-		//    int read = BaseSector.Read(buffer, offset);
-		//    if(read < BaseLength) return read;
-		//    for (int i = BaseLength; i < amount; i++)
-		//      buffer[offset + i] = 0;
-		//    return amount;
-		//  }
-		//}
-
-		abstract class Sector_Mode1_or_Mode2_2352 : ISector
-		{
-			public ISector BaseSector;
-			public abstract int Read_2352(byte[] buffer, int offset);
-			public abstract int Read_2048(byte[] buffer, int offset);
-		}
+		public DiscStructure Structure;
 
 		/// <summary>
-		/// This ISector is a raw MODE1 sector
+		/// The blobs mounted by this disc for supplying binary content
 		/// </summary>
-		class Sector_Mode1_2352 : Sector_Mode1_or_Mode2_2352
-		{
-			public override int Read_2352(byte[] buffer, int offset)
-			{
-				return BaseSector.Read_2352(buffer, offset);
-			}
-			public override int Read_2048(byte[] buffer, int offset)
-			{
-				//to get 2048 bytes out of this sector type, start 16 bytes in
-				int ret = BaseSector.Read_2352(TempSector, 0);
-				Buffer.BlockCopy(TempSector, 16, buffer, offset, 2048);
-				System.Diagnostics.Debug.Assert(buffer != TempSector);
-				return 2048;
-			}
-
-			[ThreadStatic]
-			static byte[] TempSector = new byte[2352];
-		}
-
-		/// <summary>
-		/// this ISector is a raw MODE2 sector. could be form 0,1,2... who can say? supposedly:
-		/// To tell the different Mode 2s apart you have to examine bytes 16-23 of the sector (the first 8 bytes of Mode Data). 
-		/// If bytes 16-19 are not the same as 20-23, then it is Mode 2. If they are equal and bit 5 is on (0x20), then it is Mode 2 Form 2. Otherwise it is Mode 2 Form 1.
-		/// ...but we're not using this information in any way
-		/// </summary>
-		class Sector_Mode2_2352 : Sector_Mode1_or_Mode2_2352
-		{
-			public override int Read_2352(byte[] buffer, int offset)
-			{
-				return BaseSector.Read_2352(buffer, offset);
-			}
-
-			public override int Read_2048(byte[] buffer, int offset)
-			{
-				//to get 2048 bytes out of this sector type, start 24 bytes in
-				int ret = BaseSector.Read_2352(TempSector, 0);
-				Buffer.BlockCopy(TempSector, 24, buffer, offset, 2048);
-				System.Diagnostics.Debug.Assert(buffer != TempSector);
-				return 2048;
-			}
-
-			[ThreadStatic]
-			static byte[] TempSector = new byte[2352];
-		}
-
-		private static byte BCD_Byte(byte val)
-		{
-			byte ret = (byte)(val % 10);
-			ret += (byte)(16 * (val / 10));
-			return ret;
-		}
-
-		//a blob that also has an ECM cache associated with it. maybe one day.
-		class ECMCacheBlob
-		{
-			public ECMCacheBlob(IBlob blob)
-			{
-				BaseBlob = blob;
-			}
-			public IBlob BaseBlob;
-		}
-
-		/// <summary>
-		/// this ISector is a MODE1 sector that is generating itself from an underlying MODE1/2048 userdata piece
-		/// </summary>
-		class Sector_Mode1_2048 : ISector
-		{
-			public Sector_Mode1_2048(int ABA)
-			{
-				byte aba_min = (byte)(ABA / 60 / 75);
-				byte aba_sec = (byte)((ABA / 75) % 60);
-				byte aba_frac = (byte)(ABA % 75);
-				bcd_aba_min = BCD_Byte(aba_min);
-				bcd_aba_sec = BCD_Byte(aba_sec);
-				bcd_aba_frac = BCD_Byte(aba_frac);
-			}
-			byte bcd_aba_min, bcd_aba_sec, bcd_aba_frac;
-
-			public ECMCacheBlob Blob;
-			public long Offset;
-			byte[] extra_data;
-			bool has_extra_data;
-
-			public int Read_2048(byte[] buffer, int offset)
-			{
-				//this is easy. we only have 2048 bytes, and 2048 bytes were requested
-				return Blob.BaseBlob.Read(Offset, buffer, offset, 2048);
-			}
-
-			public int Read_2352(byte[] buffer, int offset)
-			{
-				//user data
-				int read = Blob.BaseBlob.Read(Offset, buffer, offset + 16, 2048);
-
-				//if we read the 2048 physical bytes OK, then return the complete sector
-				if (read == 2048 && has_extra_data)
-				{
-					Buffer.BlockCopy(extra_data, 0, buffer, offset, 16);
-					Buffer.BlockCopy(extra_data, 16, buffer, offset + 2064, 4 + 8 + 172 + 104);
-					return 2352;
-				}
-
-				//sync
-				buffer[offset + 0] = 0x00; buffer[offset + 1] = 0xFF; buffer[offset + 2] = 0xFF; buffer[offset + 3] = 0xFF;
-				buffer[offset + 4] = 0xFF; buffer[offset + 5] = 0xFF; buffer[offset + 6] = 0xFF; buffer[offset + 7] = 0xFF;
-				buffer[offset + 8] = 0xFF; buffer[offset + 9] = 0xFF; buffer[offset + 10] = 0xFF; buffer[offset + 11] = 0x00;
-				//sector address
-				buffer[offset + 12] = bcd_aba_min;
-				buffer[offset + 13] = bcd_aba_sec;
-				buffer[offset + 14] = bcd_aba_frac;
-				//mode 1
-				buffer[offset + 15] = 1;
-
-				//calculate EDC and poke into the sector
-				uint edc = ECM.EDC_Calc(buffer, offset, 2064);
-				ECM.PokeUint(buffer, 2064, edc);
-				
-				//intermediate
-				for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
-				//ECC
-				ECM.ECC_Populate(buffer, offset, buffer, offset, false);
-
-				//VALIDATION - check our homemade algorithms against code derived from ECM
-				////EDC
-				//GPL_ECM.edc_validateblock(buffer, 2064, buffer, offset + 2064);
-				////ECC
-				//GPL_ECM.ecc_validate(buffer, offset, false);
-				
-				//if we read the 2048 physical bytes OK, then return the complete sector
-				if (read == 2048)
-				{
-					extra_data = new byte[16 + 4 + 8 + 172 + 104];
-					Buffer.BlockCopy(buffer, 0, extra_data, 0, 16);
-					Buffer.BlockCopy(buffer, 2064, extra_data, 16, 4 + 8 + 172 + 104);
-					has_extra_data = true;
-					return 2352;
-				}
-				//otherwise, return a smaller value to indicate an error
-				else return read;
-			}
-		}
-
-		//this is a physical 2352 byte sector.
-		public class SectorEntry
-		{
-			public SectorEntry(ISector sec) { Sector = sec; }
-			public ISector Sector;
-
-			//todo - add some PARAMETER fields to this, so that the ISector can use them (so that each ISector doesnt have to be constructed also)
-			//also then, maybe this could be a struct
-
-			//q-subchannel stuff. can be returned directly, or built into the entire subcode sector if you want
-
-			/// <summary>
-			/// ADR and CONTROL
-			/// </summary>
-			public byte q_status;
-			
-			/// <summary>
-			/// BCD indications of the current track number and index
-			/// </summary>
-			public BCD2 q_tno, q_index;
-
-			/// <summary>
-			/// track-relative timestamp
-			/// </summary>
-			public BCD2 q_min, q_sec, q_frame;
-			/// <summary>
-			/// absolute timestamp
-			/// </summary>
-			public BCD2 q_amin, q_asec, q_aframe;
-
-			public void Read_SubchannelQ(byte[] buffer, int offset)
-			{
-				buffer[offset + 0] = q_status;
-				buffer[offset + 1] = q_tno.BCDValue;
-				buffer[offset + 2] = q_index.BCDValue;
-				buffer[offset + 3] = q_min.BCDValue;
-				buffer[offset + 4] = q_sec.BCDValue;
-				buffer[offset + 5] = q_frame.BCDValue;
-				buffer[offset + 6] = 0;
-				buffer[offset + 7] = q_amin.BCDValue;
-				buffer[offset + 8] = q_asec.BCDValue;
-				buffer[offset + 9] = q_aframe.BCDValue;
-
-				ushort crc16 = CRC16_CCITT.Calculate(buffer, 0, 10);
-				//CRC is stored inverted and big endian
-				buffer[offset + 10] = (byte)(~(crc16 >> 8));
-				buffer[offset + 11] = (byte)(~(crc16));
-			}
-		}
-
 		public List<IBlob> Blobs = new List<IBlob>();
+
+		/// <summary>
+		/// The sectors on the disc
+		/// </summary>
 		public List<SectorEntry> Sectors = new List<SectorEntry>();
-		public DiscTOC TOC = new DiscTOC();
+
+		public Disc()
+		{
+		}
 
 		public void Dispose()
 		{
@@ -494,46 +122,12 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			CueFileResolver["xarp.barp.marp.farp"] = isoPath;
 			cue.LoadFromString(isoCueWrapper);
 			FromCueInternal(cue, cueDir, new CueBinPrefs());
-
-			//var session = new DiscTOC.Session();
-			//session.num = 1;
-			//TOC.Sessions.Add(session);
-			//var track = new DiscTOC.Track();
-			//track.num = 1;
-			//session.Tracks.Add(track);
-			//var index = new DiscTOC.Index();
-			//index.num = 0;
-			//track.Indexes.Add(index);
-			//index = new DiscTOC.Index();
-			//index.num = 1;
-			//track.Indexes.Add(index);
-
-			//var fiIso = new FileInfo(isoPath);
-			//Blob_RawFile blob = new Blob_RawFile();
-			//blob.PhysicalPath = fiIso.FullName;
-			//Blobs.Add(blob);
-			//int num_aba = (int)(fiIso.Length / 2048);
-			//track.length_aba = num_aba;
-			//if (fiIso.Length % 2048 != 0)
-			//  throw new InvalidOperationException("invalid iso file (size not multiple of 2048)");
-			////TODO - handle this with Final Fantasy 9 cd1.iso
-
-			//var ecmCacheBlob = new ECMCacheBlob(blob);
-			//for (int i = 0; i < num_aba; i++)
-			//{
-			//  Sector_Mode1_2048 sector = new Sector_Mode1_2048(i+150);
-			//  sector.Blob = ecmCacheBlob;
-			//  sector.Offset = i * 2048;
-			//  Sectors.Add(new SectorEntry(sector));
-			//}
-
-			//TOC.AnalyzeLengthsFromIndexLengths();
 		}
 
 		
 		public CueBin DumpCueBin(string baseName, CueBinPrefs prefs)
 		{
-			if (TOC.Sessions.Count > 1)
+			if (Structure.Sessions.Count > 1)
 				throw new NotSupportedException("can't dump cue+bin with more than 1 session yet");
 
 			CueBin ret = new CueBin();
@@ -543,14 +137,14 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			if (!prefs.OneBlobPerTrack)
 			{
 				//this is the preferred mode of dumping things. we will always write full sectors.
-				string cue = TOC.GenerateCUE_OneBin(prefs);
+				string cue = new CUE_Format().GenerateCUE_OneBin(Structure,prefs);
 				var bfd = new CueBin.BinFileDescriptor {name = baseName + ".bin"};
 				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
 				ret.bins.Add(bfd);
 				bfd.SectorSize = 2352;
 
 				//skip the mandatory track 1 pregap! cue+bin files do not contain it
-				for (int i = 150; i < TOC.length_aba; i++)
+				for (int i = 150; i < Structure.LengthInSectors; i++)
 				{
 					bfd.abas.Add(i);
 					bfd.aba_zeros.Add(false);
@@ -558,15 +152,15 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			}
 			else
 			{
-				//we build our own cue here (unlike above) because we need to build the cue and the output dat aat the same time
+				//we build our own cue here (unlike above) because we need to build the cue and the output data at the same time
 				StringBuilder sbCue = new StringBuilder();
 				
-				for (int i = 0; i < TOC.Sessions[0].Tracks.Count; i++)
+				for (int i = 0; i < Structure.Sessions[0].Tracks.Count; i++)
 				{
-					var track = TOC.Sessions[0].Tracks[i];
+					var track = Structure.Sessions[0].Tracks[i];
 					var bfd = new CueBin.BinFileDescriptor
 						{
-							name = baseName + string.Format(" (Track {0:D2}).bin", track.num),
+							name = baseName + string.Format(" (Track {0:D2}).bin", track.Number),
 							SectorSize = Cue.BINSectorSizeForTrackType(track.TrackType)
 						};
 					ret.bins.Add(bfd);
@@ -575,7 +169,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 					//skip the mandatory track 1 pregap! cue+bin files do not contain it
 					if (i == 0) aba = 150;
 
-					for (; aba < track.length_aba; aba++)
+					for (; aba < track.LengthInSectors; aba++)
 					{
 						int thisaba = track.Indexes[0].aba + aba;
 						bfd.abas.Add(thisaba);
@@ -583,11 +177,11 @@ FILE ""xarp.barp.marp.farp"" BINARY
 					}
 					sbCue.AppendFormat("FILE \"{0}\" BINARY\n", bfd.name);
 
-					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.num, Cue.TrackTypeStringForTrackType(track.TrackType));
+					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.Number, Cue.TrackTypeStringForTrackType(track.TrackType));
 					foreach (var index in track.Indexes)
 					{
 						int x = index.aba - track.Indexes[0].aba;
-						if (index.num == 0 && index.aba == track.Indexes[1].aba)
+						if (index.Number == 0 && index.aba == track.Indexes[1].aba)
 						{
 						    //dont emit index 0 when it is the same as index 1, it is illegal for some reason
 						}
@@ -599,7 +193,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 						{
 							//track 1 included the lead-in at the beginning of it. sneak past that.
 							//if (i == 0) x -= 150;
-							sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.num, new Timestamp(x).Value);
+							sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.Number, new Timestamp(x).Value);
 						}
 					}
 				}
@@ -610,30 +204,31 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			return ret;
 		}
 
-		/// <summary>
-		/// NOT USED RIGHT NOW. AMBIGUOUS, ANYWAY.
-		/// "bin" is an ill-defined concept. 
-		/// </summary>
-		[Obsolete]
-		void DumpBin_2352(string binPath)
-		{
-			byte[] temp = new byte[2352];
-			//a cue's bin probably doesn't contain the first 150 sectors, so skip it
-			using (FileStream fs = new FileStream(binPath, FileMode.Create, FileAccess.Write, FileShare.None))
-				for (int i = 150; i < Sectors.Count; i++)
-				{
-					ReadLBA_2352(i, temp, 0);
-					fs.Write(temp, 0, 2352);
-				}
-		}
 
 		public static Disc FromCuePath(string cuePath, CueBinPrefs prefs)
 		{
 			var ret = new Disc();
 			ret.FromCuePathInternal(cuePath, prefs);
-			ret.TOC.GeneratePoints();
-			ret.PopulateQSubchannel();
+
+			ret.Structure.Synthesize_TOCPointsFromSessions();
+			ret.Synthesize_SubcodeFromStructure();
+			ret.Synthesize_TOCRawFromStructure();
+
+			//try loading SBI. make sure its done after the subcode is synthesized!
+			string sbiPath = Path.ChangeExtension(cuePath, "sbi");
+			if (File.Exists(sbiPath) && SBI_Format.QuickCheckISSBI(sbiPath))
+			{
+				var sbi = new SBI_Format().LoadSBIPath(sbiPath);
+				ret.ApplySBI(sbi);
+			}
+
 			return ret;
+		}
+
+		public static Disc FromCCDPath(string ccdPath)
+		{
+			CCD_Format ccdLoader = new CCD_Format();
+			return ccdLoader.LoadCCDToDisc(ccdPath);
 		}
 
 		/// <summary>
@@ -643,55 +238,130 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		{
 			var ret = new Disc();
 			ret.FromIsoPathInternal(isoPath);
-			ret.TOC.GeneratePoints();
-			ret.PopulateQSubchannel();
+			ret.Structure.Synthesize_TOCPointsFromSessions();
+			ret.Synthesize_SubcodeFromStructure();
 			return ret;
 		}
 
 		/// <summary>
-		/// creates subchannel Q data track for this disc
+		/// Synthesizes a crudely estimated TOCRaw from the disc structure.
 		/// </summary>
-		void PopulateQSubchannel()
+		public void Synthesize_TOCRawFromStructure()
+		{
+			TOCRaw = new DiscTOCRaw();
+			TOCRaw.FirstRecordedTrackNumber = 1;
+			TOCRaw.LastRecordedTrackNumber = Structure.Sessions[0].Tracks.Count;
+			int lastEnd = 0;
+			for (int i = 0; i < Structure.Sessions[0].Tracks.Count; i++)
+			{
+				var track = Structure.Sessions[0].Tracks[i];
+				TOCRaw.TOCItems[i + 1].Control = track.Control;
+				TOCRaw.TOCItems[i + 1].Exists = true;
+				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Start_ABA - 150); //AUGH. see comment in Start_ABA
+				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA);  //ZOUNDS!
+				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA + 150); //WHATEVER, I DONT KNOW. MAKES IT MATCH THE CCD, BUT THERES MORE PROBLEMS
+				TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA); //WHAT?? WE NEED THIS AFTER ALL! ZOUNDS MEANS, THERE WAS JUST SOME OTHER BUG
+				lastEnd = track.LengthInSectors + track.Indexes[1].LBA;
+			}
+
+			TOCRaw.LeadoutTimestamp = new Timestamp(lastEnd);
+		}
+
+		/// <summary>
+		/// applies an SBI file to the disc
+		/// </summary>
+		public void ApplySBI(SBI_Format.SBIFile sbi)
+		{
+			//save this, it's small, and we'll want it for disc processing a/b checks
+			Memos["sbi"] = sbi;
+
+			int n = sbi.ABAs.Count;
+			byte[] subcode = new byte[96];
+			int b=0;
+			for (int i = 0; i < n; i++)
+			{
+				int aba = sbi.ABAs[i];
+				var oldSubcode = this.Sectors[aba].SubcodeSector;
+				oldSubcode.ReadSubcodeDeinterleaved(subcode, 0);
+				for (int j = 0; j < 12; j++)
+				{
+					short patch = sbi.subq[b++];
+					if (patch == -1) continue;
+					else subcode[12 + j] = (byte)patch;
+				}
+				var bss = new BufferedSubcodeSector();
+				Sectors[aba].SubcodeSector = BufferedSubcodeSector.CloneFromBytesDeinterleaved(subcode);
+			}
+		}
+
+		/// <summary>
+		/// Creates the subcode (really, just subchannel Q) for this disc from its current TOC.
+		/// Depends on the TOCPoints existing in the structure
+		/// TODO - do we need a fully 0xFF P-subchannel for PSX?
+		/// </summary>
+		void Synthesize_SubcodeFromStructure()
 		{
 			int aba = 0;
 			int dpIndex = 0;
 
+			//TODO - from mednafen (on PC-FX chip chan kick)
+			//If we're more than 2 seconds(150 sectors) from the real "start" of the track/INDEX 01, and the track is a data track,
+			//and the preceding track is an audio track, encode it as audio(by taking the SubQ control field from the preceding 
+
+			//NOTE: discs may have subcode which is nonsense or possibly not recoverable from a sensible disc structure.
+			//but this function does what it says.
+
+			//SO: heres the main idea of how this works.
+			//we have the Structure.Points (whose name we dont like) which is a list of sectors where the tno/index changes.
+			//So for each sector, we see if we've advanced to the next point.
+			//TODO - check if this is synthesized correctly when producing a structure from a TOCRaw
 			while (aba < Sectors.Count)
 			{
-				if (dpIndex < TOC.Points.Count - 1)
+				if (dpIndex < Structure.Points.Count - 1)
 				{
-					if (aba >= TOC.Points[dpIndex + 1].ABA)
+					while (aba >= Structure.Points[dpIndex + 1].ABA)
 					{
 						dpIndex++;
 					}
 				}
-				var dp = TOC.Points[dpIndex];
+				var dp = Structure.Points[dpIndex];
+
 
 				var se = Sectors[aba];
 
-				int control = 0;
-				//choose a control byte depending on whether this is an audio or data track
-				if(dp.Track.TrackType == ETrackType.Audio)
-					control = (int)Q_Control.StereoNoPreEmph;
-				else control = (int)Q_Control.DataUninterrupted;
+				EControlQ control = dp.Control;
+				bool pause = true;
+				if (dp.Num != 0) //TODO - shouldnt this be IndexNum?
+					pause = false;
+				if ((dp.Control & EControlQ.DataUninterrupted)!=0)
+					pause = false;
 
-				//we always use ADR=1 (mode-1 q block)
-				//this could be more sophisticated but it is almost useless for emulation (only useful for catalog/ISRC numbers)
-				int adr = 1;
-				se.q_status = (byte)(adr | (control << 4));
-				se.q_tno = BCD2.FromDecimal(dp.TrackNum);
-				se.q_index = BCD2.FromDecimal(dp.IndexNum);
+				int adr = dp.ADR;
+
+				SubchannelQ sq = new SubchannelQ();
+				sq.q_status = SubchannelQ.ComputeStatus(adr, control);
+				sq.q_tno = BCD2.FromDecimal(dp.TrackNum).BCDValue;
+				sq.q_index = BCD2.FromDecimal(dp.IndexNum).BCDValue;
 
 				int track_relative_aba = aba - dp.Track.Indexes[1].aba;
 				track_relative_aba = Math.Abs(track_relative_aba);
 				Timestamp track_relative_timestamp = new Timestamp(track_relative_aba);
-				se.q_min = BCD2.FromDecimal(track_relative_timestamp.MIN);
-				se.q_sec = BCD2.FromDecimal(track_relative_timestamp.SEC);
-				se.q_frame = BCD2.FromDecimal(track_relative_timestamp.FRAC);
+				sq.min = BCD2.FromDecimal(track_relative_timestamp.MIN);
+				sq.sec = BCD2.FromDecimal(track_relative_timestamp.SEC);
+				sq.frame = BCD2.FromDecimal(track_relative_timestamp.FRAC);
+				sq.zero = 0;
 				Timestamp absolute_timestamp = new Timestamp(aba);
-				se.q_amin = BCD2.FromDecimal(absolute_timestamp.MIN);
-				se.q_asec = BCD2.FromDecimal(absolute_timestamp.SEC);
-				se.q_aframe = BCD2.FromDecimal(absolute_timestamp.FRAC);
+				sq.ap_min = BCD2.FromDecimal(absolute_timestamp.MIN);
+				sq.ap_sec = BCD2.FromDecimal(absolute_timestamp.SEC);
+				sq.ap_frame = BCD2.FromDecimal(absolute_timestamp.FRAC);
+
+				var bss = new BufferedSubcodeSector();
+				bss.Synthesize_SubchannelQ(ref sq, true);
+
+				//TEST: need this for psx?
+				if(pause) bss.Synthesize_SubchannelP(true);
+
+				se.SubcodeSector = bss;
 
 				aba++;
 			}
@@ -702,19 +372,6 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			int ones;
 			int tens = Math.DivRem(n,10,out ones);
 			return (byte)((tens<<4)|ones);
-		}
-
-		private enum Q_Control
-		{
-			StereoNoPreEmph = 0,
-			StereoPreEmph = 1,
-			MonoNoPreemph = 8,
-			MonoPreEmph = 9,
-			DataUninterrupted = 4,
-			DataIncremental = 5,
-			
-			CopyProhibitedMask = 0,
-			CopyPermittedMask = 2,
 		}
 	}
 
@@ -746,8 +403,14 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			return new BCD2 {DecimalValue = d};
 		}
 
+		public static int BCDToInt(byte n)
+		{
+			var bcd = new BCD2();
+			bcd.BCDValue = n;
+			return bcd.DecimalValue;
+		}
 
-		static byte IntToBCD(int n)
+		public static byte IntToBCD(int n)
 		{
 			int ones;
 			int tens = Math.DivRem(n, 10, out ones);
@@ -755,52 +418,95 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		}
 	}
 
-	public class Timestamp
+	public struct Timestamp
 	{
-		/// <summary>
-		/// creates timestamp of 00:00:00
-		/// </summary>
-		public Timestamp()
-		{
-			Value = "00:00:00";
-		}
-
 		/// <summary>
 		/// creates a timestamp from a string in the form mm:ss:ff
 		/// </summary>
 		public Timestamp(string value)
 		{
-			Value = value;
+			//TODO - could be performance-improved
 			MIN = int.Parse(value.Substring(0, 2));
 			SEC = int.Parse(value.Substring(3, 2));
 			FRAC = int.Parse(value.Substring(6, 2));
-			ABA = MIN * 60 * 75 + SEC * 75 + FRAC;
+			Sector = MIN * 60 * 75 + SEC * 75 + FRAC;
+			_value = null;
 		}
-		public readonly string Value;
-		public readonly int MIN, SEC, FRAC, ABA;
+		public readonly int MIN, SEC, FRAC, Sector;
+
+		public string Value
+		{ 
+			get
+			{
+				if (_value != null) return _value;
+				return _value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
+			}
+		}
+
+		string _value;
 
 		/// <summary>
-		/// creates timestamp from supplied ABA
+		/// creates timestamp from supplies MSF
 		/// </summary>
-		public Timestamp(int ABA)
+		public Timestamp(int m, int s, int f)
 		{
-			this.ABA = ABA;
-			MIN = ABA / (60 * 75);
-			SEC = (ABA / 75) % 60;
-			FRAC = ABA % 75;
-			Value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
+			MIN = m;
+			SEC = s;
+			FRAC = f;
+			Sector = MIN * 60 * 75 + SEC * 75 + FRAC;
+			_value = null;
+		}
+
+		/// <summary>
+		/// creates timestamp from supplied SectorNumber
+		/// </summary>
+		public Timestamp(int SectorNumber)
+		{
+			this.Sector = SectorNumber;
+			MIN = SectorNumber / (60 * 75);
+			SEC = (SectorNumber / 75) % 60;
+			FRAC = SectorNumber % 75;
+			_value = null;
 		}
 	}
 
+	/// <summary>
+	/// The type of a Track, not strictly (for now) adhering to the realistic values, but also including information for ourselves about what source the data came from. 
+	/// We should make that not the case.
+	/// TODO - let CUE have its own "track type" enum, since cue tracktypes arent strictly corresponding to "real" track types, whatever those are.
+	/// </summary>
 	public enum ETrackType
 	{
+		/// <summary>
+		/// The track type isn't always known.. it can take this value til its populated
+		/// </summary>
+		Unknown,
+
+		/// <summary>
+		/// CD-ROM (yellowbook) specification - it is a Mode1 track, and we have all 2352 bytes for the sector
+		/// </summary>
 		Mode1_2352,
+
+		/// <summary>
+		/// CD-ROM (yellowbook) specification - it is a Mode1 track, but originally we only had 2048 bytes for the sector. 
+		/// This means, for various purposes, we need to synthesize additional data
+		/// </summary>
 		Mode1_2048,
+
+		/// <summary>
+		/// CD-ROM (yellowbook) specification - it is a Mode2 track.
+		/// </summary>
 		Mode2_2352,
+
+		/// <summary>
+		/// CD-DA (redbook) specification.. nominally. In fact, it's just 2352 raw PCM bytes per sector, and that concept isnt directly spelled out in redbook.
+		/// </summary>
 		Audio
 	}
 
-
+	/// <summary>
+	/// TODO - this is garbage. It's half input related, and half output related. This needs to be split up.
+	/// </summary>
 	public class CueBinPrefs
 	{
 		/// <summary>
@@ -935,7 +641,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 
 		public void Dump(string directory, CueBinPrefs prefs, ProgressReport progress)
 		{
-			byte[] subQ_temp = new byte[12];
+			byte[] subcodeTemp = new byte[96];
 			progress.TaskCount = 2;
 
 			progress.Message = "Generating Cue";
@@ -993,8 +699,8 @@ FILE ""xarp.barp.marp.farp"" BINARY
 							//write subQ if necessary
 							if (fsSubQ != null)
 							{
-								disc.Sectors[aba].Read_SubchannelQ(subQ_temp, 0);
-								fsSubQ.Write(subQ_temp, 0, 12);
+								disc.Sectors[aba].SubcodeSector.ReadSubcodeDeinterleaved(subcodeTemp, 0);
+								fsSubQ.Write(subcodeTemp, 12, 12);
 							}
 						}
 					}

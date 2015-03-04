@@ -1,0 +1,70 @@
+0.9.36.2 (approx) -> 0.9.36.5
+[NO] cdrom/CDAccess_Image : added support for SBI files (SBI will be handled in external disc system)
+[OK] psx/CDC : removed stub for Command_Sync (WHY?)
+[OK] psx/psx : fixed bug (SPU-related: clarified read order by turning into two statements)
+[NO] psx/psx : StateAction bugfix
+0.9.36.5 -> 0.9.37-UNSTABLE
+(General improvements and state fixups)
+(bios hash check at loadstate time added)
+(disc CDIF media changing infrastructure heavily revised)
+[OK] psx/cdc : DMForceStop refactoring
+[OK] psx/cpu : MULT_Tab24 changes
+[OK] psx/cpu : AssertIRQ refinement
+[OK] psx/cpu : BIOSPrintMode revisions
+[OK] psx/cpu : Odd PC address handling
+[OK] psx/cpu : Some int signedness tweaks, maybe to fix warnings or even bugs
+[NO] psx/debugp : SPU register names changed (not using debug.cpp)
+[OK] psx/dma : Cleanup and bugfixes, notably in RecalcIRQOut
+[NO] psx/frontio : port configuration and organization changes; NV reading api changes
+[OK] psx/frontio : FrontIO::Write and Read fixes
+[OK] psx/frontio : FrontIO::Reset powering_up handling (independent of reset?)
+[OK] psx/frontio : GPULineHook fixes maybe related to org changes
+[OK] psx/GPU* : A lot of work and refactoring
+[OK] psx/GTE : division refactors and improvement
+[OK] psx/input/* : fio-related refactors (organization and Power-up logic) ( TODO - some of the powerup-related logic seems not to have made it?)
+[OK] psx/input/dualshock : AM toggle changes
+[OK] psx/irq : reorg
+[NO] psx/psx : loader edits, firmware region list, disc ID stuff (TODO - update later when disc ID reintegrated into core as perk) (CalcRegion_By_SA, ConstrainRegion_By_SA, etc.)
+[OK] psx/psx : fio-related powerup stuff
+[NO] psx/psx : fio-related configuration stuff 
+[??] psx/psx : SCEE/SCEA/SCEI SCEx stuff changed (???)
+[!!] psx/psx : LoadEXE/PSF1 changes (TODO - need these)
+[OK] psx/spu* : register renames and misc bugfixes
+0.9.37-UNSTABLE -> 0.9.37.1
+[NO] psx/cpu : fix some savestate problem with ReadAbsorbDummy, seems alarming but maybe was just backwards compatibility
+[OK] psx/spu : clamp some sound output presumably messed up by prior reverb changes
+0.9.37.1 -> 0.9.38-UNSTABLE
+(major CDIF changes)
+(simplefifo refactored)
+[!!] psx/cdutility : substantial revisions to disc sector synthesis with respect to leadout, "UDAPP", and "TSRE" (thread-safe re-entrant) which I dont understand. Need to study for DiscSystem.
+[OK] required math_ops changes
+[OK] SimpleFifo changed to PSX-only FastFIFO
+[OK] psx/cdc : set SoftReset Mode to 0x20
+[OK] psx/cdc : Edits to MakeStatus and BeginResults and ReadResult
+[OK] psx/cdc : in HandlePlayRead, handling of leadout sector synth moved to CDIF
+[OK] psx/cdc : in Update, Mode handling and reading of subcode changed
+[OK] psx/cdc : in Update, reading of subcode changed. This isn't very important, it just saved reading the 2352 sector bytes when it wasn't needed.
+[OK] psx/cdc : error handling in Command_Setloc
+[OK] psx/cdc : PreSeekHack edits
+[OK] psx/cdc : Command_GetTD improvements
+[OK] psx/cdc : Command_SeekL timing changes
+[OK] psx/cpu : helpful changes to case ranges and jump table. double check for savestate changes.
+[OK] psx/dma : easy bugfixes
+[??] psx/gpu : display timing changes ?? study more
+[OK] psx/gpu : BlitterFifo changes, related to FBWrite/Read
+[OK] psx/gpu : a bunch of bugfixes
+[OK] psx/gpu : video standard mismatch warning suppressed during DisplayOff
+[OK] psx/gpu : be aware of savestate changes
+[OK] psx/gpu_line : easy bugfixes
+[OK] psx/gte : division bugfixes
+[OK] psx/memcard : refactors and maybe bugfixes easy to port
+[OK] psx/multitap : general revisions, easy to port, note savestate changes
+[OK] psx/mdec : easy fifo and timing related changes
+[OK] psx/spu : reverb reg fixes or reorg
+[OK] psx/psx : DMACycleSteal stuff
+[NO] psx/psx : CalcRegion_By_SYSTEMCNF and TestMagicCD updated
+[NO] psx/psx : DiscSanityChecks added (add feature later maybe)
+0.9.38-UNSTABLE -> 0.9.38.1
+[NO] psx/psx : DiscSanityChecks fix (OK if we used this feature)
+0.9.38.1 -> 0.9.38.2
+[OK] psx/gpu_polygon : Fixes to poly rasterizing

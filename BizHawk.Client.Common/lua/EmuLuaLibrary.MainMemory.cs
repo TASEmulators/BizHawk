@@ -22,13 +22,13 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Global.Emulator.HasMemoryDomains())
+				if (MemoryDomainCore != null)
 				{
-					return (Global.Emulator as IMemoryDomains).MemoryDomains.MainMemory;
+					return MemoryDomainCore.MainMemory;
 				}
 				else
 				{
-					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					var error = string.Format("Error: {0} does not implement memory domains", Emulator.Attributes().CoreName);
 					Log(error);
 					throw new NotImplementedException(error);
 				}
@@ -50,9 +50,9 @@ namespace BizHawk.Client.Common
 			"getcurrentmemorydomainsize",
 			"Returns the number of bytes of the domain defined as main memory"
 		)]
-		public int GetSize()
+		public uint GetSize()
 		{
-			return Domain.Size;
+			return (uint)Domain.Size;
 		}
 
 		#endregion

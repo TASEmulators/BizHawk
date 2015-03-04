@@ -144,6 +144,24 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		/// <summary>
+		/// find an exact core type.  slow lookup.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public Core FindByType(Type type)
+		{
+			foreach (List<Core> cc in systems.Values)
+			{
+				foreach (Core c in cc)
+				{
+					if (c.Type == type)
+						return c;
+				}
+			}
+			throw new InvalidOperationException("No such core!");
+		}
+
+		/// <summary>
 		/// create a core inventory, collecting all IEmulators from some assembilies
 		/// </summary>
 		/// <param name="assys"></param>

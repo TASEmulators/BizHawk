@@ -230,6 +230,18 @@ EXPORT int qn_get_memory_area(Nes_Emu *e, int which, const void **data, int *siz
 		*writable = 0;
 		*name = "CHR VROM";
 		return 1;
+	case 6:
+		*data = e->pal_mem();
+		*size = 32;
+		*writable = 1;
+		*name = "PALRAM";
+		return 1;
+	case 7:
+		*data = e->oam_mem();
+		*size = 256;
+		*writable = 1;
+		*name = "OAM";
+		return 1;
 	}
 }
 
@@ -275,4 +287,30 @@ EXPORT const char *qn_get_mapper(Nes_Emu *e, int *number)
 	case 9: return "mmc2";
 	case 10: return "mmc4";
 	}
+}
+
+EXPORT byte qn_get_reg2000(Nes_Emu *e)
+{
+	return e->get_ppu2000();
+}
+
+EXPORT byte *qn_get_palmem(Nes_Emu *e)
+{
+	return e->pal_mem();
+}
+
+EXPORT byte *qn_get_oammem(Nes_Emu *e)
+{
+	return e->oam_mem();
+}
+
+EXPORT byte qn_peek_ppu(Nes_Emu *e, int addr)
+{
+	return e->peek_ppu(addr);
+}
+
+EXPORT void qn_peek_ppubus(Nes_Emu *e, byte *dest)
+{
+	for (int i = 0; i < 0x3000; i++)
+		dest[i] = e->peek_ppu(i);
 }

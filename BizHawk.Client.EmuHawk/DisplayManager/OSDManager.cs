@@ -4,6 +4,8 @@ using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.InputAdapterExtensions;
 using BizHawk.Bizware.BizwareGL;
@@ -157,65 +159,62 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DrawMessages(IBlitter g)
 		{
-			if (!Global.ClientControls["MaxTurbo"])
+			messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
+			int line = 1;
+			if (Global.Config.StackOSDMessages)
 			{
-				messages.RemoveAll(m => DateTime.Now > m.ExpireAt);
-				int line = 1;
-				if (Global.Config.StackOSDMessages)
+				for (int i = messages.Count - 1; i >= 0; i--, line++)
 				{
-					for (int i = messages.Count - 1; i >= 0; i--, line++)
+					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
+					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
+					if (Global.Config.DispMessageanchor < 2)
 					{
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
-						if (Global.Config.DispMessageanchor < 2)
-						{
-							y += ((line - 1) * 18);
-						}
-						else
-						{
-							y -= ((line - 1) * 18);
-						}
-
-						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+						y += ((line - 1) * 18);
 					}
+					else
+					{
+						y -= ((line - 1) * 18);
+					}
+
+					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
-				else
+			}
+			else
+			{
+				if (messages.Any())
 				{
-					if (messages.Any())
+					int i = messages.Count - 1;
+
+					float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
+					float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
+					if (Global.Config.DispMessageanchor < 2)
 					{
-						int i = messages.Count - 1;
-
-						float x = GetX(g, Global.Config.DispMessagex, Global.Config.DispMessageanchor, messages[i].Message);
-						float y = GetY(g, Global.Config.DispMessagey, Global.Config.DispMessageanchor, messages[i].Message);
-						if (Global.Config.DispMessageanchor < 2)
-						{
-							y += ((line - 1) * 18);
-						}
-						else
-						{
-							y -= ((line - 1) * 18);
-						}
-
-						g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
-						g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
+						y += ((line - 1) * 18);
 					}
+					else
+					{
+						y -= ((line - 1) * 18);
+					}
+
+					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
+			}
 
-				foreach (var text in GUITextList)
+			foreach (var text in GUITextList)
+			{
+				try
 				{
-					try
-					{
-						float posx = GetX(g, text.X, text.Anchor, text.Message);
-						float posy = GetY(g, text.Y, text.Anchor, text.Message);
+					float posx = GetX(g, text.X, text.Anchor, text.Message);
+					float posy = GetY(g, text.Y, text.Anchor, text.Message);
 
-						g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
-						g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
-					}
-					catch (Exception)
-					{
-						return;
-					}
+					g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
+					g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
+				}
+				catch (Exception)
+				{
+					return;
 				}
 			}
 		}
@@ -317,7 +316,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void DrawScreenInfo(IBlitter g)
 		{
-			if (Global.Config.DisplayFrameCounter)
+			if (Global.Config.DisplayFrameCounter && !Global.Game.IsNullInstance)
 			{
 				string message = MakeFrameCounter();
 				float x = GetX(g, Global.Config.DispFrameCx, Global.Config.DispFrameanchor, message);
@@ -325,13 +324,13 @@ namespace BizHawk.Client.EmuHawk
 
 				DrawOsdMessage(g, message, Color.FromArgb(Global.Config.MessagesColor), x, y);
 
-				if (Global.Emulator.IsLagFrame)
+				if (GlobalWin.MainForm.IsLagFrame)
 				{
 					DrawOsdMessage(g, Global.Emulator.Frame.ToString(), FixedAlertMessageColor, x, y);
 				}
 			}
 
-			if (Global.Config.DisplayInput)
+			if (Global.Config.DisplayInput && !Global.Game.IsNullInstance)
 			{
 				if (Global.MovieSession.Movie.IsPlaying && !Global.MovieSession.Movie.IsFinished)
 				{
@@ -386,9 +385,9 @@ namespace BizHawk.Client.EmuHawk
 				DrawOsdMessage(g, FPS, FixedMessagesColor, x, y);
 			}
 
-			if (Global.Config.DisplayLagCounter)
+			if (Global.Config.DisplayLagCounter && Global.Emulator.CanPollInput())
 			{
-				var counter = Global.Emulator.LagCount.ToString();
+				var counter = Global.Emulator.AsInputPollable().LagCount.ToString();
 				var x = GetX(g, Global.Config.DispLagx, Global.Config.DispLaganchor, counter);
 				var y = GetY(g, Global.Config.DispLagy, Global.Config.DispLaganchor, counter);
 

@@ -169,6 +169,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					pictureBox1.Image = Properties.Resources.alt_about_image;
 				}
+
+			if (DateTime.Now.Month == 2)
+			{
+				if (DateTime.Now.Day >= 7 && DateTime.Now.Day <= 14)
+				{
+					pictureBox1.Image = Properties.Resources.HawkInLove;
+					pictureBox1.Location = new Point(pictureBox1.Location.X - 40, pictureBox1.Location.Y);
+					pictureBox1.Width = pictureBox1.Width + 80;
+				}
+			}
 		}
 
 		private void Close_Click(object sender, EventArgs e)

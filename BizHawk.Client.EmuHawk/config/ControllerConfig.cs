@@ -42,6 +42,9 @@ namespace BizHawk.Client.EmuHawk
 
 			ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
 			ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
+			ControllerImages.Add("PSX Gamepad Controller", Properties.Resources.PSX_Original_Controller);
+			ControllerImages.Add("PSX DualShock Controller", Properties.Resources.psx_dualshock);
+			
 		}
 
 		protected override void OnActivated(EventArgs e)
@@ -69,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Control CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
 		{
-			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill };
+			var cp = new ControllerConfigPanel { Dock = DockStyle.Fill, AutoScroll = true };
 			cp.Tooltip = toolTip1;
 			cp.LoadSettings(settings, checkBoxAutoTab.Checked, buttons, size.Width, size.Height);
 			return cp;
@@ -77,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static Control CreateAnalogPanel(Dictionary<string, Config.AnalogBind> settings, List<string> buttons, Size size)
 		{
-			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill };
+			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
 		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
@@ -135,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			if (buckets[0].Count == controllerButtons.Count)
 			{
 				// everything went into bucket 0, so make no tabs at all
-				dest.Controls.Add(createpanel(settings, null, dest.Size));
+				dest.Controls.Add(createpanel(settings, controllerButtons.ToList(), dest.Size));
 			}
 			else
 			{

@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Common
 
 		private static void LoadDatabase_Escape(string line, string path)
 		{
-			if (!line.ToUpper().StartsWith("#INCLUDE"))
+			if (!line.ToUpperInvariant().StartsWith("#INCLUDE"))
 			{
 				return;
 			}
@@ -334,6 +334,14 @@ namespace BizHawk.Emulation.Common
 
 				case ".LNX":
 					game.System = "Lynx";
+					break;
+
+				case ".83P":
+					game.System = "83P";
+					break;
+
+				case ".DSK":
+					game.System = "AppleII";
 					break;
 			}
 

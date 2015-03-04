@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -7,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SoundConfig : Form
 	{
+		private bool _programmaticallyChangingValue;
+
 		public SoundConfig()
 		{
 			InitializeComponent();
@@ -14,48 +18,85 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SoundConfig_Load(object sender, EventArgs e)
 		{
+			_programmaticallyChangingValue = true;
+
 			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
 			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
-			ThrottlecheckBox.Checked = Global.Config.SoundThrottle;
+#if !WINDOWS
+			rbOutputMethodDirectSound.Enabled = false;
+			rbOutputMethodXAudio2.Enabled = false;
+#endif
+			rbOutputMethodDirectSound.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound;
+			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
+			rbOutputMethodOpenAL.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
+			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
 			SoundVolBar.Value = Global.Config.SoundVolume;
 			SoundVolNumeric.Value = Global.Config.SoundVolume;
 			UpdateSoundDialog();
 
-			// vestigal
-			ThrottlecheckBox.Visible = false;
-
-
-			var dd = SoundEnumeration.DeviceNames();
-			listBoxSoundDevices.Items.Add("<default>");
-			listBoxSoundDevices.SelectedIndex = 0;
-			foreach (var d in dd)
-			{
-				listBoxSoundDevices.Items.Add(d);
-				if (d == Global.Config.SoundDevice)
-				{
-					listBoxSoundDevices.SelectedItem = d;
-				}
-			}
+			_programmaticallyChangingValue = false;
 		}
 
 		private void OK_Click(object sender, EventArgs e)
 		{
+			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
+			{
+				MessageBox.Show("Buffer size must be at least 60 milliseconds for DirectSound.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			var oldOutputMethod = Global.Config.SoundOutputMethod;
+			var oldDevice = Global.Config.SoundDevice;
 			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
 			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
+			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
+			if (rbOutputMethodXAudio2.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
+			if (rbOutputMethodOpenAL.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
+			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
 			Global.Config.SoundVolume = SoundVolBar.Value;
-			Global.Config.SoundThrottle = ThrottlecheckBox.Checked;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
-			GlobalWin.Sound.ChangeVolume(Global.Config.SoundVolume);
-			GlobalWin.Sound.UpdateSoundSettings();
+			GlobalWin.Sound.StopSound();
+			if (Global.Config.SoundOutputMethod != oldOutputMethod ||
+				Global.Config.SoundDevice != oldDevice)
+			{
+				GlobalWin.Sound.Dispose();
+				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
+			}
 			GlobalWin.Sound.StartSound();
 			GlobalWin.OSD.AddMessage("Sound settings saved");
-			Close();
+			DialogResult = DialogResult.OK;
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			GlobalWin.OSD.AddMessage("Sound config aborted");
 			Close();
+		}
+
+		private void PopulateDeviceList()
+		{
+			IEnumerable<string> deviceNames = Enumerable.Empty<string>();
+#if WINDOWS
+			if (rbOutputMethodDirectSound.Checked) deviceNames = DirectSoundSoundOutput.GetDeviceNames();
+			if (rbOutputMethodXAudio2.Checked) deviceNames = XAudio2SoundOutput.GetDeviceNames();
+#endif
+			if (rbOutputMethodOpenAL.Checked) deviceNames = OpenALSoundOutput.GetDeviceNames();
+			listBoxSoundDevices.Items.Clear();
+			listBoxSoundDevices.Items.Add("<default>");
+			listBoxSoundDevices.SelectedIndex = 0;
+			foreach (var name in deviceNames)
+			{
+				listBoxSoundDevices.Items.Add(name);
+				if (name == Global.Config.SoundDevice)
+				{
+					listBoxSoundDevices.SelectedItem = name;
+				}
+			}
+		}
+
+		private void OutputMethodRadioButtons_CheckedChanged(object sender, EventArgs e)
+		{
+			if (!((RadioButton)sender).Checked) return;
+			PopulateDeviceList();
 		}
 
 		private void trackBar1_Scroll(object sender, EventArgs e)
@@ -66,30 +107,20 @@ namespace BizHawk.Client.EmuHawk
 		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			SoundVolBar.Value = (int)SoundVolNumeric.Value;
-			//This is changed through the user or the Above Scroll Bar
-			//Is it Zero?  Mute
-			if (SoundVolBar.Value == 0)
-			{
-				SoundOnCheckBox.Checked = false;
-			}
-			// Not Zero.  Unmute
-			else
-			{
-				SoundOnCheckBox.Checked = true;
-			}
+
+			// If the user is changing the volume, automatically turn on/off sound accordingly
+			if (!_programmaticallyChangingValue)
+				SoundOnCheckBox.Checked = SoundVolBar.Value != 0;
 		}
 
 		private void SoundOnCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			UpdateSoundDialog();
 		}
+
 		private void UpdateSoundDialog()
 		{
-			//Ocean Prince commented this out
-			//SoundVolGroup.Enabled =
-			MuteFrameAdvance.Enabled =
-			ThrottlecheckBox.Enabled =
-				SoundOnCheckBox.Checked;
+			MuteFrameAdvance.Enabled = SoundOnCheckBox.Checked;
 		}
 	}
 }

@@ -7,13 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.Client.EmuHawk.tools.TAStudio
+//using BizHawk.Client.Common;
+//using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class HistoryBox : UserControl
 	{
+		public TAStudio Tastudio { get; set; }
+		
 		public HistoryBox()
 		{
 			InitializeComponent();
+		}
+
+		public void UpdateValues()
+		{
+			
 		}
 	}
 }

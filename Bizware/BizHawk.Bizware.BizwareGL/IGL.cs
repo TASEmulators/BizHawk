@@ -31,11 +31,6 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetClearColor(Color color);
 
 		/// <summary>
-		/// generates a texture handle
-		/// </summary>
-		IntPtr GenTexture();
-
-		/// <summary>
 		/// returns an empty handle
 		/// </summary>
 		IntPtr GetEmptyHandle();
@@ -121,9 +116,9 @@ namespace BizHawk.Bizware.BizwareGL
 		void FreeShader(IntPtr shader);
 
 		/// <summary>
-		/// frees the provided texture handle
+		/// frees the provided texture
 		/// </summary>
-		void FreeTexture(IntPtr texHandle);
+		void FreeTexture(Texture2d tex);
 
 		/// <summary>
 		/// resolves the texture into a new BitmapBuffer
@@ -160,7 +155,13 @@ namespace BizHawk.Bizware.BizwareGL
 		/// retrieves a blend state for opaque rendering
 		/// Alpha values are copied from the source fragment.
 		/// </summary>
-		IBlendState BlendNone { get; }
+		IBlendState BlendNoneCopy { get; }
+
+		/// <summary>
+		/// retrieves a blend state for opaque rendering
+		/// Alpha values are written as opaque
+		/// </summary>
+		IBlendState BlendNoneOpaque { get; }
 
 		/// <summary>
 		/// retrieves a blend state for normal (non-premultiplied) alpha blending.
@@ -268,5 +269,10 @@ namespace BizHawk.Bizware.BizwareGL
 		void BindRenderTarget(RenderTarget rt);
 
 		IGraphicsControl Internal_CreateGraphicsControl();
+
+		/// <summary>
+		/// returns a string representing the API employed by this context
+		/// </summary>
+		string API { get; }
 	}
 }

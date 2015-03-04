@@ -8,21 +8,24 @@ namespace BizHawk.Client.Common
 	public static class Global
 	{
 		public static IEmulator Emulator;
-		public static CoreComm CoreComm;
 		public static Config Config;
 		public static GameInfo Game;
 		public static CheatCollection CheatList;
 		public static FirmwareManager FirmwareManager;
 		public static Rewinder Rewinder;
 
-		public static MovieSession MovieSession = new MovieSession();
+		public static IMovieSession MovieSession = new MovieSession();
 
 		/// <summary>
-		/// whether throttling is force-disabled by use of fast forward
+		/// Used to disable secondary throttling (e.g. vsync, audio) for unthrottled modes or when the primary (clock) throttle is taking over (e.g. during fast forward/rewind).
 		/// </summary>
-		public static bool ForceNoThrottle;
+		public static bool DisableSecondaryThrottling;
 
-		public static Controller NullControls;
+		/// <summary>
+		/// The maximum number of millseconds the sound output buffer can go below full before causing a noticable sound interruption.
+		/// </summary>
+		public static int SoundMaxBufferDeficitMs;
+
 		public static AutofireController AutofireNullControls;
 
 		//the movie will be spliced inbetween these if it is present
@@ -43,8 +46,6 @@ namespace BizHawk.Client.Common
 
 		//the "output" port for the controller chain.
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
-
-		public static DiscHopper DiscHopper = new DiscHopper();
 
 		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
 
@@ -138,6 +139,10 @@ namespace BizHawk.Client.Common
 						return SystemInfo.WonderSwan;
 					case "Lynx":
 						return SystemInfo.Lynx;
+					case "PSX":
+						return SystemInfo.PSX;
+					case "AppleII":
+						return SystemInfo.AppleII;
 				}
 			}
 		}

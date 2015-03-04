@@ -9,18 +9,18 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Common;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class BarcodeEntry : Form, IToolForm
 	{
-		private DatachBarcode reader;
+		[RequiredService]
+		private DatachBarcode reader { get; set; }
 
 		public BarcodeEntry()
 		{
 			InitializeComponent();
-
-			Restart();
 		}
 
 		#region IToolForm
@@ -33,28 +33,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public static bool HasReader()
-		{
-			return GetReader() != null;
-		}
-
-		private static DatachBarcode GetReader()
-		{
-			var nes = Global.Emulator as NES;
-			if (nes == null)
-				return null;
-			var board = nes.GetBoard() as BANDAI_FCG_1;
-			if (board == null)
-				return null;
-			var reader = board.reader; // will be null for non-datach FCG-1 games
-			return reader;
-		}
-
 		public void Restart()
 		{
-			reader = GetReader();
-			if (reader == null)
-				Close();
 			textBox1_TextChanged(null, null);
 		}
 

@@ -29,11 +29,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedVersion: "v87",
 		portedUrl: "http://byuu.org/"
 		)]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, IMemoryDomains,
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			MemoryCallbacks = new MemoryCallbackSystem();
+			Tracer = new TraceBuffer();
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new BizHawk.Emulation.Cores.Components.W65816.W65816_DisassemblerService());
+
 			_game = game;
 			CoreComm = comm;
 			byte[] sgbRomData = null;
@@ -145,8 +153,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
 
-			CoreComm.CpuTraceAvailable = true;
-
 			api.CMD_power();
 
 			SetupMemoryDomains(romData, sgbRomData);
@@ -164,6 +170,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private GameInfo _game;
 
@@ -199,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.Dispose();
 		}
 
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CpuRegs regs;
 			api.QUERY_peek_cpu_regs(out regs);
@@ -213,34 +221,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool fz = (regs.p & 0x02)!=0;
 			bool fc = (regs.p & 0x01)!=0;
 			
-			return new Dictionary<string, int>
+			return new Dictionary<string, RegisterValue>
 			{
-				{ "PC", (int)regs.pc },
-				{ "A", (int)regs.a },
-				{ "X", (int)regs.x },
-				{ "Y", (int)regs.y },
-				{ "Z", (int)regs.z },
-				{ "S", (int)regs.s },
-				{ "D", (int)regs.d },
-				{ "Vector", (int)regs.vector },
-				{ "P", (int)regs.p },
-				{ "AA", (int)regs.aa },
-				{ "RD", (int)regs.rd },
-				{ "SP", (int)regs.sp },
-				{ "DP", (int)regs.dp },
-				{ "DB", (int)regs.db },
-				{ "MDR", (int)regs.mdr },
-				{ "Flag N", fn?1:0 },
-				{ "Flag V", fv?1:0 },
-				{ "Flag M", fm?1:0 },
-				{ "Flag X", fx?1:0 },
-				{ "Flag D", fd?1:0 },
-				{ "Flag I", fi?1:0 },
-				{ "Flag Z", fz?1:0 },
-				{ "Flag C", fc?1:0 },
+				{ "PC", regs.pc },
+				{ "A", regs.a },
+				{ "X", regs.x },
+				{ "Y", regs.y },
+				{ "Z", regs.z },
+				{ "S", regs.s },
+				{ "D", regs.d },
+				{ "Vector", regs.vector },
+				{ "P", regs.p },
+				{ "AA", regs.aa },
+				{ "RD", regs.rd },
+				{ "SP", regs.sp },
+				{ "DP", regs.dp },
+				{ "DB", regs.db },
+				{ "MDR", regs.mdr },
+				{ "Flag N", fn },
+				{ "Flag V", fv },
+				{ "Flag M", fm },
+				{ "Flag X", fx },
+				{ "Flag D", fd },
+				{ "Flag I", fi },
+				{ "Flag Z", fz },
+				{ "Flag C", fc },
 			};
 		}
 
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		// TODO: optimize managed to unmanaged using the ActiveChanged event
+		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+
+		public ITraceable Tracer { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
+		public bool CanStep(StepType type) { return false; }
+
+		[FeatureNotImplemented]
+		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
@@ -339,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_trace(string msg)
 		{
-			CoreComm.Tracer.Put(msg);
+			Tracer.Put(msg);
 		}
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
@@ -374,7 +396,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void ReadHook(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallRead(addr);
+			MemoryCallbacks.CallReads(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -382,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		void ExecHook(uint addr)
 		{
-			CoreComm.MemoryCallbackSystem.CallExecute(addr);
+			MemoryCallbacks.CallExecutes(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -390,7 +412,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		void WriteHook(uint addr, byte val)
 		{
-			CoreComm.MemoryCallbackSystem.CallWrite(addr);
+			MemoryCallbacks.CallWrites(addr);
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
@@ -439,7 +461,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// as this is implemented right now, only P1 and P2 normal controllers work
 
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -587,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				savestatebuff = ms.ToArray();
 			}
 
-			if (!nocallbacks && CoreComm.Tracer.Enabled)
+			if (!nocallbacks && Tracer.Enabled)
 				api.QUERY_set_trace_callback(tracecb);
 			else
 				api.QUERY_set_trace_callback(null);
@@ -638,7 +660,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void RefreshMemoryCallbacks(bool suppress)
 		{
-			var mcs = CoreComm.MemoryCallbackSystem;
+			var mcs = MemoryCallbacks;
 			api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
 			api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
@@ -665,8 +687,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		int[] vidBuffer = new int[256 * 224];
 		int vidWidth = 256, vidHeight = 224;
-
-		public IVideoProvider VideoProvider { get { return this; } }
 
 		public ControllerDefinition ControllerDefinition { get { return SNESController; } }
 		IController controller;
@@ -711,7 +731,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool SaveRamModified
 		{
-			set { }
 			get
 			{
 				return api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0;
@@ -742,12 +761,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (size != data.Length) throw new InvalidOperationException("Somehow, we got a mismatch between saveram size and what bsnes says the saveram size is");
 			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			Marshal.Copy(data, 0, (IntPtr)buf, size);
-		}
-
-		public void ClearSaveRam()
-		{
-			byte[] cleardata = new byte[(int)api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM)];
-			StoreSaveRam(cleardata);
 		}
 
 		public void ResetCounters()
@@ -1012,10 +1025,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockptr = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
 
-			var md = new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
+			var md = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
-					var a = FakeBusMap(addr);
+					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						return blockptr[a.Value];
 					else
@@ -1023,16 +1036,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				},
 				(addr, val) =>
 				{
-					var a = FakeBusMap(addr);
+					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						blockptr[a.Value] = val;
-				});			
+				}, byteSize: 2);
 			_memoryDomains.Add(md);
 		}
 
 
 		// ----- Client Debugging API stuff -----
-		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian)
+		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian, int byteSize = 1)
 		{
 			int size = api.QUERY_get_memory_size(id);
 			int mask = size - 1;
@@ -1054,17 +1067,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				if (size != 544) throw new InvalidOperationException("oam size isnt 544 bytes.. wtf?");
 				md = new MemoryDomain(name, size, endian,
 				   (addr) => (addr < 544) ? blockptr[addr] : (byte)0x00,
-					 (addr, value) => { if (addr < 544) blockptr[addr] = value; }
-					 );
+					 (addr, value) => { if (addr < 544) blockptr[addr] = value; },
+					 byteSize);
 			}
 			else if(pow2)
 				md = new MemoryDomain(name, size, endian,
 						(addr) => blockptr[addr & mask],
-						(addr, value) => blockptr[addr & mask] = value);
+						(addr, value) => blockptr[addr & mask] = value, byteSize);
 			else
 				md = new MemoryDomain(name, size, endian,
 						(addr) => blockptr[addr % size],
-						(addr, value) => blockptr[addr % size] = value);
+						(addr, value) => blockptr[addr % size] = value, byteSize);
 
 			_memoryDomains.Add(md);
 
@@ -1107,18 +1120,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, MemoryDomain.Endian.Little);
 
 
-				MakeMemoryDomain("CARTROM", LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, MemoryDomain.Endian.Little);
-				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, MemoryDomain.Endian.Little);
+				MakeMemoryDomain("CARTROM", LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("CARTRAM", LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("VRAM", LibsnesApi.SNES_MEMORY.VRAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("OAM", LibsnesApi.SNES_MEMORY.OAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("CGRAM", LibsnesApi.SNES_MEMORY.CGRAM, MemoryDomain.Endian.Little, byteSize: 2);
+				MakeMemoryDomain("APURAM", LibsnesApi.SNES_MEMORY.APURAM, MemoryDomain.Endian.Little, byteSize: 2);
 
 				if (!DeterministicEmulation)
 				{
-					_memoryDomains.Add(new MemoryDomain("BUS", 0x1000000, MemoryDomain.Endian.Little,
+					_memoryDomains.Add(new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 						(addr) => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
-						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val)));
+						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val), byteSize: 2));
 				}
 				else
 				{
@@ -1128,11 +1141,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
 		private MemoryDomain MainMemory;
 		private List<MemoryDomain> _memoryDomains = new List<MemoryDomain>();
-		public MemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		#region audio stuff
 

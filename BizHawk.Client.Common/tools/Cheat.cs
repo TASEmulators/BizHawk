@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 			get { return !IsSeparator && _enabled; }
 		}
 
-		public int? Address
+		public long? Address
 		{
 			get { return _watch.Address; }
 		}
@@ -237,7 +237,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Contains(int addr)
+		public bool Contains(long addr)
 		{
 			switch (_watch.Size)
 			{
@@ -254,7 +254,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public byte? GetByteVal(int addr)
+		public byte? GetByteVal(long addr)
 		{
 			if (!Contains(addr))
 			{
@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common
 
 		public override int GetHashCode()
 		{
-			return this.Domain.GetHashCode() + this.Address ?? 0;
+			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
 		}
 
 		public static bool operator ==(Cheat a, Cheat b)

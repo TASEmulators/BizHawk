@@ -10,6 +10,12 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public abstract class LuaMemoryBase : LuaLibraryBase
 	{
+		[RequiredService]
+		protected IEmulator Emulator { get; set; }
+
+		[OptionalService]
+		protected IMemoryDomains MemoryDomainCore { get; set; }
+
 		public LuaMemoryBase(Lua lua)
 			: base(lua) { }
 
@@ -18,17 +24,17 @@ namespace BizHawk.Client.Common
 
 		protected abstract MemoryDomain Domain { get; }
 
-		protected MemoryDomainList DomainList
+		protected IMemoryDomains DomainList
 		{
 			get
 			{
-				if (Global.Emulator.HasMemoryDomains())
+				if (MemoryDomainCore != null)
 				{
-					return (Global.Emulator as IMemoryDomains).MemoryDomains;
+					return MemoryDomainCore;
 				}
 				else
 				{
-					var error = string.Format("Error: {0} does not implement memory domains", Global.Emulator.Attributes().CoreName);
+					var error = string.Format("Error: {0} does not implement memory domains", Emulator.Attributes().CoreName);
 					Log(error);
 					throw new NotImplementedException(error);
 				}
@@ -49,14 +55,21 @@ namespace BizHawk.Client.Common
 
 		protected void WriteUnsignedByte(int addr, uint v)
 		{
-			if (addr < Domain.Size)
+			if (Domain.CanPoke())
 			{
-				Domain.PokeByte(addr, (byte)v);
+				if (addr < Domain.Size)
+				{
+					Domain.PokeByte(addr, (byte)v);
+				}
+				else
+				{
+					Log("Warning: attempted write to " + addr +
+					" outside the memory size of " + Domain.Size);
+				}
 			}
 			else
 			{
-				Log("Warning: attempted write to " + addr +
-				" outside the memory size of " + Domain.Size);
+				Log(string.Format("Error: the domain {0} is not writable", Domain.Name));
 			}
 		}
 
@@ -164,18 +177,25 @@ namespace BizHawk.Client.Common
 
 		protected void WriteByteRange(LuaTable memoryblock)
 		{
-			foreach (var address in memoryblock.Keys)
+			if (Domain.CanPoke())
 			{
-				var addr = LuaInt(address);
-				if (addr < Domain.Size)
+				foreach (var address in memoryblock.Keys)
 				{
-					Domain.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
+					var addr = LuaInt(address);
+					if (addr < Domain.Size)
+					{
+						Domain.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
+					}
+					else
+					{
+						Log("Warning: Attempted write " + addr + " outside memory domain size of " +
+							Domain.Size + " in writebyterange()");
+					}
 				}
-				else
-				{
-					Log("Warning: Attempted write " + addr + " outside memory domain size of " +
-						Domain.Size + " in writebyterange()");
-				}
+			}
+			else
+			{
+				Log(string.Format("Error: the domain {0} is not writable", Domain.Name));
 			}
 		}
 
@@ -198,17 +218,24 @@ namespace BizHawk.Client.Common
 
 		protected void WriteFloat(int addr, double value, bool bigendian)
 		{
-			if (addr < Domain.Size)
+			if (Domain.CanPoke())
 			{
-				var dv = (float)value;
-				var bytes = BitConverter.GetBytes(dv);
-				var v = BitConverter.ToUInt32(bytes, 0);
-				Domain.PokeDWord(addr, v, bigendian);
+				if (addr < Domain.Size)
+				{
+					var dv = (float)value;
+					var bytes = BitConverter.GetBytes(dv);
+					var v = BitConverter.ToUInt32(bytes, 0);
+					Domain.PokeDWord(addr, v, bigendian);
+				}
+				else
+				{
+					Log("Warning: Attempted write " + addr +
+						" outside memory size of " + Domain.Size);
+				}
 			}
 			else
 			{
-				Log("Warning: Attempted write " + addr + 
-					" outside memory size of " + Domain.Size);
+				Log(string.Format("Error: the domain {0} is not writable", Domain.Name));
 			}
 		}
 

@@ -1,4 +1,8 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public interface IToolForm
 	{
@@ -28,7 +32,6 @@
 		/// <returns></returns>
 		bool AskSaveChanges();
 
-
 		/// <summary>
 		/// Indicates whether the tool should be updated before a frame loop or after.
 		/// In general, tools that draw graphics from the core should update before the loop,
@@ -41,5 +44,18 @@
 		void Show();
 		void Close();
 		bool IsDisposed { get; }
+		bool IsHandleCreated { get; }
+	}
+
+	/// <summary>
+	/// toolform that takes automatic common configuration infrastructure
+	/// </summary>
+	public interface IToolFormAutoConfig : IToolForm
+	{
+	}
+
+	[AttributeUsage(AttributeTargets.Property)]
+	public class ConfigPersistAttribute : Attribute
+	{
 	}
 }

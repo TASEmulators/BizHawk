@@ -30,20 +30,6 @@ namespace BizHawk.Client.Common
 
 		public void StartNewRecording()
 		{
-			// adelikat: ClearSaveRam shouldn't be here at all most likely, especially considering this is an implementation detail
-			// If Starting a new recording requires clearing sram it shoudl be done at a higher layer and not rely on all IMovies doing this
-			// Haven't removed it yet because I coudln't guarantee that power-on movies coudl live without it
-			// And the immediate fire is that Savestate movies are breaking
-
-			/*
-			 * natt: in light of more recent changes, the front end is no longer errantly loading saveram for new movies.  so, as best as i
-			 * can tell through snaking through the debugger, this is no longer needed.
-			 *
-			if (!StartsFromSavestate)
-			{
-				Global.Emulator.ClearSaveRam();
-			}
-			*/
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && _makeBackup && _log.Any())
 			{
@@ -56,13 +42,6 @@ namespace BizHawk.Client.Common
 
 		public void StartNewPlayback()
 		{
-			// See StartNewRecording for details as to why this code is gone
-			/*
-			if (!StartsFromSavestate)
-			{
-				Global.Emulator.ClearSaveRam();
-			}*/
-
 			_mode = Moviemode.Play;
 		}
 

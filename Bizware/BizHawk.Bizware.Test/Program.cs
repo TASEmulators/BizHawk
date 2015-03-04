@@ -98,6 +98,7 @@ namespace BizHawk.Bizware.Test
 					int frame = (int)((DateTime.Now - start).TotalSeconds) % testArts.Count;
 
 					gr.Begin(c.ClientSize.Width, c.ClientSize.Height);
+					gr.SetBlendState(igl.BlendNormal);
 
 					gr.SetModulateColor(Color.Green);
 					gr.RectFill(250, 0, 16, 16);

@@ -6,20 +6,25 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
+
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TraceLogger : Form, IToolForm
+	public partial class TraceLogger : Form, IToolFormAutoConfig
 	{
-		// Refresh rate slider
-		// Make faster, such as not saving to disk until the logging is stopped, dont' add to Instructions list every frame, etc
+		[RequiredService]
+		private ITraceable Tracer { get; set; }
+
+		[ConfigPersist]
+		private int MaxLines { get; set; }
+
 		private readonly List<string> _instructions = new List<string>();
 		
 		private FileInfo _logFile;
-		private int _defaultWidth;
-		private int _defaultHeight;
 
 		public TraceLogger()
 		{
@@ -28,8 +33,9 @@ namespace BizHawk.Client.EmuHawk
 			TraceView.QueryItemText += TraceView_QueryItemText;
 			TraceView.VirtualMode = true;
 
-			TopMost = Global.Config.TraceLoggerSettings.TopMost;
 			Closing += (o, e) => SaveConfigSettings();
+
+			MaxLines = 10000;
 		}
 
 		public bool UpdateBefore
@@ -44,11 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			Global.CoreComm.Tracer.Enabled = false;
-			Global.Config.TraceLoggerSettings.Wndx = Location.X;
-			Global.Config.TraceLoggerSettings.Wndy = Location.Y;
-			Global.Config.TraceLoggerSettings.Width = Size.Width;
-			Global.Config.TraceLoggerSettings.Height = Size.Height;
+			Tracer.Enabled = false;
 		}
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
@@ -58,24 +60,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TraceLogger_Load(object sender, EventArgs e)
 		{
-			_defaultWidth = Size.Width;
-			_defaultHeight = Size.Height;
-
-			if (Global.Config.TraceLoggerSettings.UseWindowPosition)
-			{
-				Location = Global.Config.TraceLoggerSettings.WindowPosition;
-			}
-
-			if (Global.Config.TraceLoggerSettings.UseWindowSize)
-			{
-				Size = Global.Config.TraceLoggerSettings.WindowSize;
-			}
-
 			ClearList();
 			LoggingEnabled.Checked = true;
-			Global.CoreComm.Tracer.Enabled = true;
+			Tracer.Enabled = true;
 			SetTracerBoxTitle();
-			Restart();
 		}
 
 		public void UpdateValues()
@@ -93,32 +81,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			// TODO: think more about this logic
-			if (!ToWindowRadio.Checked)
-			{
-				LogToFile();
-			}
+			// never skip instructions when tracelogging!
+			UpdateValues();
 		}
 
 
 		public void Restart()
 		{
-			if (!IsHandleCreated || IsDisposed)
-			{
-				return;
-			}
-			else
-			{
-				if (Global.Emulator.CoreComm.CpuTraceAvailable)
-				{
-					ClearList();
-					TraceView.Columns[0].Text = Global.Emulator.CoreComm.TraceHeader;
-				}
-				else
-				{
-					Close();
-				}
-			}
+			ClearList();
+			TraceView.Columns[0].Text = Tracer.Header;
 		}
 
 		private void ClearList()
@@ -132,21 +103,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var sw = new StreamWriter(_logFile.FullName, true))
 			{
-				sw.Write(Global.CoreComm.Tracer.TakeContents());
+				sw.Write(Tracer.TakeContents());
 			}
 		}
 
 		private void LogToWindow()
 		{
-			var instructions = Global.CoreComm.Tracer.TakeContents().Split('\n');
+			var instructions = Tracer.TakeContents().Split('\n');
 			if (!string.IsNullOrWhiteSpace(instructions[0]))
 			{
 				_instructions.AddRange(instructions);
 			}
 
-			if (_instructions.Count >= Global.Config.TraceLoggerMaxLines)
+			if (_instructions.Count >= MaxLines)
 			{
-				_instructions.RemoveRange(0, _instructions.Count - Global.Config.TraceLoggerMaxLines);
+				_instructions.RemoveRange(0, _instructions.Count - MaxLines);
 			}
 
 			TraceView.ItemCount = _instructions.Count;
@@ -154,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTracerBoxTitle()
 		{
-			if (Global.CoreComm.Tracer.Enabled)
+			if (Tracer.Enabled)
 			{
 				if (ToFileRadio.Checked)
 				{
@@ -232,11 +203,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.TraceLoggerSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#region Events
 
 		#region Menu Items
@@ -265,12 +231,11 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
-					blob.AppendLine(_instructions[index]
+					if (blob.Length != 0) blob.AppendLine();
+					blob.Append(_instructions[index]
 						.Replace("\r", string.Empty)
 						.Replace("\n", string.Empty) );
 				}
-
-				blob.Remove(blob.Length - 2, 2); // Lazy way to not have a line break at the end
 				Clipboard.SetDataObject(blob.ToString());
 			}
 		}
@@ -290,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 				StartLocation = this.ChildPointToScreen(TraceView),
 				TextInputType = InputPrompt.InputType.Unsigned,
 				Message = "Max lines to display in the window",
-				InitialValue = Global.Config.TraceLoggerMaxLines.ToString()
+				InitialValue = MaxLines.ToString()
 			};
 
 			var result = prompt.ShowHawkDialog();
@@ -299,50 +264,9 @@ namespace BizHawk.Client.EmuHawk
 				var max = int.Parse(prompt.PromptText);
 				if (max > 0)
 				{
-					Global.Config.TraceLoggerMaxLines = max;
+					MaxLines = max;
 				}
 			}
-		}
-
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.TraceLoggerAutoLoad;
-			SaveWindowPositionMenuItem.Checked = Global.Config.TraceLoggerSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.TraceLoggerSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.TraceLoggerSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TraceLoggerAutoLoad ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TraceLoggerSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TraceLoggerSettings.TopMost ^= true;
-			TopMost = Global.Config.TraceLoggerSettings.TopMost;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.TraceLoggerSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RestoreDefaultSettingsMenuItem_Click(object sender, EventArgs e)
-		{
-			Size = new Size(_defaultWidth, _defaultHeight);
-
-			Global.Config.TraceLoggerSettings.SaveWindowPosition = true;
-			Global.Config.TraceLoggerSettings.TopMost = false;
-			Global.Config.TraceLoggerSettings.FloatingWindow = false;
-
-			RefreshFloatingWindowControl();
 		}
 
 		#endregion
@@ -351,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			Global.CoreComm.Tracer.Enabled = LoggingEnabled.Checked;
+			Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 		}
 
@@ -401,12 +325,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			SetTracerBoxTitle();
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 
 		#endregion

@@ -110,6 +110,8 @@ namespace BizHawk.Client.Common
 				{
 					_log.RemoveRange(frame, _log.Count - frame);
 					Changes = true;
+
+					
 				}
 			}
 		}

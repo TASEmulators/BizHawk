@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class TI83KeyPad : Form, IToolForm
 	{
+		[RequiredService]
+		public TI83 Emu { get; private set; }
+
 		public TI83KeyPad()
 		{
 			InitializeComponent();
@@ -39,10 +43,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (!(Global.Emulator is TI83))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		public void FastUpdate()
@@ -52,10 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			if (!(Global.Emulator is TI83))
-			{
-				Close();
-			}
+			// Do nothing
 		}
 
 		#endregion

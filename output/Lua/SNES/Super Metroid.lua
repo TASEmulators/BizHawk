@@ -13,8 +13,8 @@ local ys
 local function Samus()
 	local x = mainmemory.read_u16_le(px) - mainmemory.read_u16_le(camx)
 	local y = mainmemory.read_u16_le(py) - mainmemory.read_u16_le(camy)
-	local xrad = mainmemory.read_u8(0x7E0AFE)
-	local yrad = mainmemory.read_u8(0x7E0B00)
+	local xrad = mainmemory.read_u8(0x0AFE)
+	local yrad = mainmemory.read_u8(0x0B00)
 	
 	gui.drawBox(x + (xrad * -1), y + (yrad * -1), x+xrad,y+yrad,0xFF0000FF,0x350000FF)
 	

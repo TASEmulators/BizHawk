@@ -1,10 +1,18 @@
 ﻿using System.Windows.Forms;
 using BizHawk.Client.Common;
+using System.Collections.Generic;
+using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio : IToolForm
 	{
+		[RequiredService]
+		public IEmulator Emulator { get; private set; }
+		[RequiredService]
+		public IStatable StatableEmulator { get; private set; }
+
 		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
 
@@ -22,12 +30,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			RefreshDialog();
-
-			if (TasPlaybackBox.FollowCursor) // TODO: we already refreshed in RefreshDialog now we will do it again, make this more efficient
+			if (TasPlaybackBox.FollowCursor)
 			{
 				SetVisibleIndex();
 			}
+
+			RefreshDialog();
 		}
 
 		public void FastUpdate()
@@ -65,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 					TasView.AllColumns.Clear();
 					NewDefaultProject();
 					SetUpColumns();
-					TasView.Refresh();
+					RefreshTasView();
 				}
 				else
 				{
@@ -94,6 +102,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
+					_exiting = true; // Asking to save changes should only ever be called when closing something
 					SaveTasMenuItem_Click(null, null);
 				}
 				else if (result == DialogResult.No)
@@ -116,12 +125,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				indexThatMustBeVisible = CurrentTasMovie.IsRecording
 					? CurrentTasMovie.InputLogLength
-					: Global.Emulator.Frame + 1;
+					: Emulator.Frame;
 			}
 
 			if (!TasView.IsVisible(indexThatMustBeVisible.Value))
 			{
-				TasView.LastVisibleRow = indexThatMustBeVisible.Value;
+				if (TasView.FirstVisibleRow > indexThatMustBeVisible.Value)
+					TasView.FirstVisibleRow = indexThatMustBeVisible.Value;
+				else
+					TasView.LastVisibleRow = indexThatMustBeVisible.Value;
 			}
 		}
 	}

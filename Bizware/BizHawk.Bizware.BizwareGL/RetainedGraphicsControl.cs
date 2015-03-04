@@ -73,7 +73,7 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			if (rt == null) return;
 			GuiRenderer.Begin(Width, Height, true);
-			GuiRenderer.SetBlendState(GL.BlendNone);
+			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
 			GuiRenderer.Draw(rt.Texture2d);
 			GuiRenderer.End();
 			base.SwapBuffers();

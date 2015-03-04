@@ -6,14 +6,10 @@ namespace BizHawk.Client.Common
 {
 	public class RewindThreader : IDisposable
 	{
-		// adelikat: tweak this to test performance with threading or not with threading
-		// natt: IEmulator.SaveStateBinary() returns a byte[] but you're not allowed to modify it,
-		// and if the method is called again, the data from a previous call could be invalidated.
-		// GPGX and N64 make use of this property.  if you set IsThreaded = true, you'll need to Clone() in many cases,
-		// which will kill N64 for sure...
 		public static bool IsThreaded = false;
 
 		private readonly ConcurrentQueue<Job> _jobs = new ConcurrentQueue<Job>();
+		private readonly ConcurrentStack<byte[]> _stateBufferPool = new ConcurrentStack<byte[]>();
 		private readonly EventWaitHandle _ewh;
 		private readonly EventWaitHandle _ewh2;
 		private readonly Thread _thread;
@@ -75,10 +71,22 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			byte[] savestateCopy = null;
+			while (_stateBufferPool.TryPop(out savestateCopy) && savestateCopy.Length != coreSavestate.Length)
+			{
+				savestateCopy = null;
+			}
+			if (savestateCopy == null)
+			{
+				savestateCopy = new byte[coreSavestate.Length];
+			}
+
+			Buffer.BlockCopy(coreSavestate, 0, savestateCopy, 0, coreSavestate.Length);
+
 			var job = new Job
 			{
 				Type = JobType.Capture,
-				CoreState = coreSavestate
+				CoreState = savestateCopy
 			};
 			DoSafeEnqueue(job);
 		}
@@ -101,6 +109,7 @@ namespace BizHawk.Client.Common
 						if (job.Type == JobType.Capture)
 						{
 							_rewinder.RunCapture(job.CoreState);
+							_stateBufferPool.Push(job.CoreState);
 						}
 
 						if (job.Type == JobType.Rewind)

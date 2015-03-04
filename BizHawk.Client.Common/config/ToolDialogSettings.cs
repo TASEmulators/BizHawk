@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -12,6 +14,18 @@ namespace BizHawk.Client.Common
 		{
 			SaveWindowPosition = true;
 			FloatingWindow = true;
+		}
+
+		public void RestoreDefaults()
+		{
+			_wndx = null;
+			_wndy = null;
+			SaveWindowPosition = true;
+			FloatingWindow = true;
+			TopMost = false;
+			AutoLoad = false;
+			Width = null;
+			Height = null;
 		}
 
 		[JsonIgnore]
@@ -48,6 +62,7 @@ namespace BizHawk.Client.Common
 		public bool SaveWindowPosition { get; set; }
 		public bool TopMost { get; set; }
 		public bool FloatingWindow { get; set; }
+		public bool AutoLoad { get; set; }
 
 		[JsonIgnore]
 		public bool UseWindowPosition
@@ -84,6 +99,25 @@ namespace BizHawk.Client.Common
 			{
 				return new Size(Width ?? 0, Height ?? 0);
 			}
+		}
+
+		public class ColumnList : List<Column>
+		{
+			public Column this[string name]
+			{
+				get
+				{
+					return this.FirstOrDefault(c => c.Name == name);
+				}
+			}
+		}
+
+		public class Column
+		{
+			public string Name { get; set; }
+			public int Width { get; set; }
+			public bool Visible { get; set; }
+			public int Index { get; set; }
 		}
 	}
 }

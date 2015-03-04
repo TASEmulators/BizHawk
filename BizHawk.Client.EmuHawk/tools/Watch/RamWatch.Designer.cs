@@ -44,11 +44,6 @@
 			this.InsertSeperatorContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MoveUpContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MoveDownContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.ShowPreviousValueContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowChangeCountsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDiffContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDomainContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new StatusStripEx();
 			this.ErrorIconButton = new System.Windows.Forms.ToolStripButton();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -62,15 +57,15 @@
 			this.cutToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.clearChangeCountsToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.duplicateWatchToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.pokeToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.freezeToolStripButton = new System.Windows.Forms.ToolStripButton();
+			this.PokeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
+			this.FreezeAddressToolBarItem = new System.Windows.Forms.ToolStripButton();
 			this.seperatorToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.moveUpToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.moveDownToolStripButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.pauseToolStripButton = new System.Windows.Forms.ToolStripButton();
-			this.menuStrip1 = new MenuStripEx();
+			this.RamWatchMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -110,12 +105,6 @@
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreWindowSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowAddressMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDomainMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.WatchListView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.AddressColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ValueColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -124,10 +113,13 @@
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ReadBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Separator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.WriteBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
+			this.RamWatchMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// WatchCountLabel
@@ -159,17 +151,15 @@
             this.FreezeContextMenuItem,
             this.UnfreezeAllContextMenuItem,
             this.ViewInHexEditorContextMenuItem,
+            this.Separator4,
+            this.ReadBreakpointContextMenuItem,
+            this.WriteBreakpointContextMenuItem,
             this.Separator6,
             this.InsertSeperatorContextMenuItem,
             this.MoveUpContextMenuItem,
-            this.MoveDownContextMenuItem,
-            this.toolStripSeparator4,
-            this.ShowPreviousValueContextMenuItem,
-            this.ShowChangeCountsContextMenuItem,
-            this.ShowDiffContextMenuItem,
-            this.ShowDomainContextMenuItem});
+            this.MoveDownContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 324);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(204, 280);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
 			// 
 			// EditContextMenuItem
@@ -264,39 +254,6 @@
 			this.MoveDownContextMenuItem.Text = "Move &Down";
 			this.MoveDownContextMenuItem.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(200, 6);
-			// 
-			// ShowPreviousValueContextMenuItem
-			// 
-			this.ShowPreviousValueContextMenuItem.Name = "ShowPreviousValueContextMenuItem";
-			this.ShowPreviousValueContextMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.ShowPreviousValueContextMenuItem.Text = "Show Previous Value";
-			this.ShowPreviousValueContextMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
-			// 
-			// ShowChangeCountsContextMenuItem
-			// 
-			this.ShowChangeCountsContextMenuItem.Name = "ShowChangeCountsContextMenuItem";
-			this.ShowChangeCountsContextMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.ShowChangeCountsContextMenuItem.Text = "Show Change Counts";
-			this.ShowChangeCountsContextMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
-			// 
-			// ShowDiffContextMenuItem
-			// 
-			this.ShowDiffContextMenuItem.Name = "ShowDiffContextMenuItem";
-			this.ShowDiffContextMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.ShowDiffContextMenuItem.Text = "Show Difference";
-			this.ShowDiffContextMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
-			// 
-			// ShowDomainContextMenuItem
-			// 
-			this.ShowDomainContextMenuItem.Name = "ShowDomainContextMenuItem";
-			this.ShowDomainContextMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.ShowDomainContextMenuItem.Text = "Show Domain";
-			this.ShowDomainContextMenuItem.Click += new System.EventHandler(this.ShowDomainMenuItem_Click);
-			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.ClickThrough = true;
@@ -339,8 +296,8 @@
             this.cutToolStripButton,
             this.clearChangeCountsToolStripButton,
             this.duplicateWatchToolStripButton,
-            this.pokeToolStripButton,
-            this.freezeToolStripButton,
+            this.PokeAddressToolBarItem,
+            this.FreezeAddressToolBarItem,
             this.seperatorToolStripButton,
             this.toolStripSeparator6,
             this.moveUpToolStripButton,
@@ -442,26 +399,26 @@
 			this.duplicateWatchToolStripButton.Text = "Duplicate Watch";
 			this.duplicateWatchToolStripButton.Click += new System.EventHandler(this.DuplicateWatchMenuItem_Click);
 			// 
-			// pokeToolStripButton
+			// PokeAddressToolBarItem
 			// 
-			this.pokeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.pokeToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
-			this.pokeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.pokeToolStripButton.Name = "pokeToolStripButton";
-			this.pokeToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.pokeToolStripButton.Text = "toolStripButton2";
-			this.pokeToolStripButton.ToolTipText = "Poke address";
-			this.pokeToolStripButton.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
+			this.PokeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.PokeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
+			this.PokeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.PokeAddressToolBarItem.Name = "PokeAddressToolBarItem";
+			this.PokeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.PokeAddressToolBarItem.Text = "toolStripButton2";
+			this.PokeAddressToolBarItem.ToolTipText = "Poke address";
+			this.PokeAddressToolBarItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
-			// freezeToolStripButton
+			// FreezeAddressToolBarItem
 			// 
-			this.freezeToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.freezeToolStripButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
-			this.freezeToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.freezeToolStripButton.Name = "freezeToolStripButton";
-			this.freezeToolStripButton.Size = new System.Drawing.Size(23, 22);
-			this.freezeToolStripButton.Text = "Freeze Address";
-			this.freezeToolStripButton.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+			this.FreezeAddressToolBarItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.FreezeAddressToolBarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
+			this.FreezeAddressToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.FreezeAddressToolBarItem.Name = "FreezeAddressToolBarItem";
+			this.FreezeAddressToolBarItem.Size = new System.Drawing.Size(23, 22);
+			this.FreezeAddressToolBarItem.Text = "Freeze Address";
+			this.FreezeAddressToolBarItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// seperatorToolStripButton
 			// 
@@ -514,19 +471,18 @@
 			this.pauseToolStripButton.Text = "Pause";
 			this.pauseToolStripButton.Click += new System.EventHandler(this.PauseMenuItem_Click);
 			// 
-			// menuStrip1
+			// RamWatchMenu
 			// 
-			this.menuStrip1.ClickThrough = true;
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.RamWatchMenu.ClickThrough = true;
+			this.RamWatchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.WatchesSubMenu,
-            this.OptionsSubMenu,
-            this.ColumnsSubMenu});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(364, 24);
-			this.menuStrip1.TabIndex = 3;
-			this.menuStrip1.Text = "menuStrip1";
+            this.OptionsSubMenu});
+			this.RamWatchMenu.Location = new System.Drawing.Point(0, 0);
+			this.RamWatchMenu.Name = "RamWatchMenu";
+			this.RamWatchMenu.Size = new System.Drawing.Size(364, 24);
+			this.RamWatchMenu.TabIndex = 3;
+			this.RamWatchMenu.Text = "menuStrip1";
 			// 
 			// FileSubMenu
 			// 
@@ -859,57 +815,7 @@
 			this.RestoreWindowSizeMenuItem.Name = "RestoreWindowSizeMenuItem";
 			this.RestoreWindowSizeMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.RestoreWindowSizeMenuItem.Text = "Restore Default Settings";
-			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreWindowSizeMenuItem_Click);
-			// 
-			// ColumnsSubMenu
-			// 
-			this.ColumnsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowAddressMenuItem,
-            this.ShowPreviousMenuItem,
-            this.ShowChangesMenuItem,
-            this.ShowDiffMenuItem,
-            this.ShowDomainMenuItem});
-			this.ColumnsSubMenu.Name = "ColumnsSubMenu";
-			this.ColumnsSubMenu.Size = new System.Drawing.Size(67, 20);
-			this.ColumnsSubMenu.Text = "&Columns";
-			this.ColumnsSubMenu.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
-			// 
-			// ShowAddressMenuItem
-			// 
-			this.ShowAddressMenuItem.Name = "ShowAddressMenuItem";
-			this.ShowAddressMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowAddressMenuItem.Text = "Address";
-			this.ShowAddressMenuItem.Click += new System.EventHandler(this.ShowAddressMenuItem_Click);
-			// 
-			// ShowPreviousMenuItem
-			// 
-			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
-			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowPreviousMenuItem.Text = "Previous Value";
-			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
-			// 
-			// ShowChangesMenuItem
-			// 
-			this.ShowChangesMenuItem.Checked = true;
-			this.ShowChangesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
-			this.ShowChangesMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowChangesMenuItem.Text = "Change Counts";
-			this.ShowChangesMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
-			// 
-			// ShowDiffMenuItem
-			// 
-			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
-			this.ShowDiffMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowDiffMenuItem.Text = "Difference";
-			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
-			// 
-			// ShowDomainMenuItem
-			// 
-			this.ShowDomainMenuItem.Name = "ShowDomainMenuItem";
-			this.ShowDomainMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowDomainMenuItem.Text = "Domain";
-			this.ShowDomainMenuItem.Click += new System.EventHandler(this.ShowDomainMenuItem_Click);
+			this.RestoreWindowSizeMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
 			// 
 			// WatchListView
 			// 
@@ -943,6 +849,7 @@
 			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
+			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
 			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
@@ -993,6 +900,25 @@
 			this.NotesColumn.Text = "Notes";
 			this.NotesColumn.Width = 128;
 			// 
+			// ReadBreakpointContextMenuItem
+			// 
+			this.ReadBreakpointContextMenuItem.Name = "ReadBreakpointContextMenuItem";
+			this.ReadBreakpointContextMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.ReadBreakpointContextMenuItem.Text = "Set Read Breakpoint";
+			this.ReadBreakpointContextMenuItem.Click += new System.EventHandler(this.ReadBreakpointContextMenuItem_Click);
+			// 
+			// Separator4
+			// 
+			this.Separator4.Name = "Separator4";
+			this.Separator4.Size = new System.Drawing.Size(200, 6);
+			// 
+			// WriteBreakpointContextMenuItem
+			// 
+			this.WriteBreakpointContextMenuItem.Name = "WriteBreakpointContextMenuItem";
+			this.WriteBreakpointContextMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.WriteBreakpointContextMenuItem.Text = "Set Write Breakpoint";
+			this.WriteBreakpointContextMenuItem.Click += new System.EventHandler(this.WriteBreakpointContextMenuItem_Click);
+			// 
 			// RamWatch
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1002,24 +928,25 @@
 			this.Controls.Add(this.MemDomainLabel);
 			this.Controls.Add(this.WatchCountLabel);
 			this.Controls.Add(this.toolStrip1);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.RamWatchMenu);
 			this.Controls.Add(this.WatchListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "RamWatch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Ram Watch";
+			this.Text = " Ram Watch";
 			this.Activated += new System.EventHandler(this.NewRamWatch_Activated);
 			this.Load += new System.EventHandler(this.NewRamWatch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
 			this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.ListViewContextMenu.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.RamWatchMenu.ResumeLayout(false);
+			this.RamWatchMenu.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1035,7 +962,7 @@
 		private System.Windows.Forms.ColumnHeader DiffColumn;
 		private System.Windows.Forms.ColumnHeader DomainColumn;
 		private System.Windows.Forms.ColumnHeader NotesColumn;
-		private MenuStripEx menuStrip1;
+		private MenuStripEx RamWatchMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewListMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
@@ -1061,11 +988,6 @@
 		private System.Windows.Forms.ToolStripMenuItem MoveUpMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MoveDownMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ColumnsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem ShowPreviousMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowChangesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDiffMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDomainMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem DefinePreviousValueSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PreviousFrameMenuItem;
@@ -1084,8 +1006,8 @@
 		private System.Windows.Forms.ToolStripButton cutToolStripButton;
 		private System.Windows.Forms.ToolStripButton clearChangeCountsToolStripButton;
 		private System.Windows.Forms.ToolStripButton duplicateWatchToolStripButton;
-		private System.Windows.Forms.ToolStripButton pokeToolStripButton;
-		private System.Windows.Forms.ToolStripButton freezeToolStripButton;
+		private System.Windows.Forms.ToolStripButton PokeAddressToolBarItem;
+		private System.Windows.Forms.ToolStripButton FreezeAddressToolBarItem;
 		private System.Windows.Forms.ToolStripButton seperatorToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripButton moveUpToolStripButton;
@@ -1106,20 +1028,17 @@
 		private System.Windows.Forms.ToolStripMenuItem InsertSeperatorContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MoveUpContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MoveDownContextMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem ShowChangeCountsContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowPreviousValueContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDiffContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDomainContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private StatusStripEx statusStrip1;
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
-		private System.Windows.Forms.ToolStripMenuItem ShowAddressMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem PauseMenuItem;
 		private System.Windows.Forms.ToolStripButton pauseToolStripButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripSeparator Separator4;
+		private System.Windows.Forms.ToolStripMenuItem ReadBreakpointContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem WriteBreakpointContextMenuItem;
 	}
 }

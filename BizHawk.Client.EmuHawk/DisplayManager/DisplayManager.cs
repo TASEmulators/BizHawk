@@ -13,6 +13,7 @@ using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Bizware.BizwareGL;
 
 using OpenTK;
+using BizHawk.Bizware.BizwareGL.Drivers.GdiPlus;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -43,7 +44,12 @@ namespace BizHawk.Client.EmuHawk
 			//it's sort of important for these to be initialized to something nonzero
 			currEmuWidth = currEmuHeight = 1;
 
-			Renderer = new GuiRenderer(GL);
+			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
+				Renderer = new GuiRenderer(GL);
+			else if (GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+				Renderer = new GuiRenderer(GL);
+			else
+				Renderer = new GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GL);
 
 			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 
@@ -57,18 +63,21 @@ namespace BizHawk.Client.EmuHawk
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(),"Shaders/BizHawk/hq2x.cgp"));
-			if(fiHq2x.Exists)
-				using(var stream = fiHq2x.OpenRead())
-					ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-			var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
-			if (fiScanlines.Exists)
-				using (var stream = fiScanlines.OpenRead())
-					ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-			var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
-			if (fiBicubic.Exists)
-				using (var stream = fiBicubic.OpenRead())
-					ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
+			{
+				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
+				if (fiHq2x.Exists)
+					using (var stream = fiHq2x.OpenRead())
+						ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+				if (fiScanlines.Exists)
+					using (var stream = fiScanlines.OpenRead())
+						ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
+				if (fiBicubic.Exists)
+					using (var stream = fiBicubic.OpenRead())
+						ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+			}
 
 			LuaSurfaceSets["emu"] = new SwappableDisplaySurfaceSet();
 			LuaSurfaceSets["native"] = new SwappableDisplaySurfaceSet();
@@ -98,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		//rendering resources:
 		public IGL GL;
 		StringRenderer TheOneFont;
-		GuiRenderer Renderer;
+		IGuiRenderer Renderer;
 
 		//layer resources
 		PresentationPanel presentationPanel; //well, its the final layer's target, at least
@@ -180,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DispFinalFilter == 1) finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
 			if (Global.Config.DispFinalFilter == 2) finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
 			//if bicubic is selected and unavailable, dont use it
-			if (!ShaderChain_bicubic.Available && fPresent.FilterOption == Filters.FinalPresentation.eFilterOption.Bicubic)
+			if (ShaderChain_bicubic != null && !ShaderChain_bicubic.Available && fPresent.FilterOption == Filters.FinalPresentation.eFilterOption.Bicubic)
 			{
 				finalFilter = Filters.FinalPresentation.eFilterOption.None;
 			}
@@ -351,7 +360,10 @@ namespace BizHawk.Client.EmuHawk
 						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
 						Vector2 AR = Vector2.Divide(VS, BS);
 						float target_par = (AR.X / AR.Y);
-						Vector2 PS = new Vector2(1, 1); //this would malfunction for AR <= 0.5 or AR >= 2.0
+
+						//this would malfunction for AR <= 0.5 or AR >= 2.0
+						//EDIT - in fact, we have AR like that coming from PSX, sometimes, so maybe we should solve this better
+						Vector2 PS = new Vector2(1, 1); 
 
 						//here's how we define zooming, in this case:
 						//make sure each step is an increment of zoom for at least one of the dimensions (or maybe both of them)
@@ -390,7 +402,9 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 							//is it possible to get here without selecting one? doubtful.
-							PS = trials[bestIndex];
+							//EDIT: YES IT IS. it happened with an 0,0 buffer size. of course, that was a mistake, but we shouldnt crash
+							if(bestIndex != -1) //so, what now? well, this will result in 0,0 getting picked, so thats probably all we can do
+								PS = trials[bestIndex];
 						}
 
 						chain_outsize = new Size((int)(bufferWidth * PS.X), (int)(bufferHeight * PS.Y));
@@ -425,7 +439,6 @@ namespace BizHawk.Client.EmuHawk
 
 			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
 
-			Console.WriteLine("Selecting size " + size.ToString());
 			return size;
 		}
 
@@ -471,30 +484,45 @@ TESTEROO:
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
-
+			//TODO - need to do some work here for GDI+ to repair gl texture ID importing
 			BitmapBuffer bb = null;
 			Texture2d videoTexture = null;
 			if (!simulate)
 			{
-				if (isGlTextureId)
-				{
-					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
-				}
-				else
+				//special codepath for GDI+
+				//TODO - make for gdi+ only. maybe other codepath for d3d
+				if (!(GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK))
 				{
 					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+					bb.DiscardAlpha();
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = VideoTextureFrugalizer.Get(bb);
 					GL.SetTextureWrapMode(videoTexture, true);
 				}
-
-				//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
-				if (!isGlTextureId)
+				else
 				{
-					videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
-					goto TESTEROO;
+					if (isGlTextureId)
+					{
+						videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+					}
+					else
+					{
+						//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
+						bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+
+						//now, acquire the data sent from the videoProvider into a texture
+						videoTexture = VideoTextureFrugalizer.Get(bb);
+						GL.SetTextureWrapMode(videoTexture, true);
+					}
+
+					//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
+					if (!isGlTextureId)
+					{
+						videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
+						goto TESTEROO;
+					}
 				}
 			}
 
@@ -605,11 +633,16 @@ TESTEROO:
 				//maybe the user wants vsync, but not vsync throttle.
 				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
 				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
-				if (Global.ForceNoThrottle)
+				if (Global.DisableSecondaryThrottling)
 					vsync = false;
 
 				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
 				{
+					if (LastVsyncSetting == null && vsync)
+					{
+						// Workaround for vsync not taking effect at startup (Intel graphics related?)
+						presentationPanel.GraphicsControl.SetVsync(false);
+					}
 					presentationPanel.GraphicsControl.SetVsync(vsync);
 					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
 					LastVsyncSetting = vsync;
@@ -678,14 +711,21 @@ TESTEROO:
 		{
 			foreach (var kvp in LuaSurfaceSets)
 			{
-				var surf = PeekLockedLuaSurface(kvp.Key);
-				DisplaySurface surfLocked = null;
-				if (surf == null)
-					surf = surfLocked = LockLuaSurface(kvp.Key);
-				surf.Clear();
-				if(surfLocked != null)
-					UnlockLuaSurface(surfLocked);
-				LuaSurfaceSets[kvp.Key].SetPending(null);
+				try
+				{
+					var surf = PeekLockedLuaSurface(kvp.Key);
+					DisplaySurface surfLocked = null;
+					if (surf == null)
+						surf = surfLocked = LockLuaSurface(kvp.Key);
+					surf.Clear();
+					if (surfLocked != null)
+						UnlockLuaSurface(surfLocked);
+					LuaSurfaceSets[kvp.Key].SetPending(null);
+				}
+				catch (InvalidOperationException)
+				{
+
+				}
 			}
 		}
 

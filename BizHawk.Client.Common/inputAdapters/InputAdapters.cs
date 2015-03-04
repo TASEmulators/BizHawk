@@ -5,7 +5,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -387,7 +387,8 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
-		
+		public WorkingDictionary<string, int> lagStarts = new WorkingDictionary<string, int>(); // TODO: need a data structure not misc dictionaries
+
 		private readonly HashSet<string> _stickySet = new HashSet<string>();
 
 		public IController Source { get; set; }
@@ -400,8 +401,8 @@ namespace BizHawk.Client.Common
 
 		public AutoFireStickyXorAdapter()
 		{
-			// On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
-			// Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			//On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+			//Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
 			On = 1;
 			Off = 1;
 		}
@@ -419,7 +420,13 @@ namespace BizHawk.Client.Common
 
 				if (_stickySet.Contains(button))
 				{
-					var a = (Global.Emulator.Frame - buttonStarts[button]) % (On + Off);
+					var lagcount = 0;
+					if (Global.Emulator.CanPollInput() && Global.Config.AutofireLagFrames)
+					{
+						lagcount = Global.Emulator.AsInputPollable().LagCount;
+					}
+
+					var a = ((Global.Emulator.Frame - lagcount) - (buttonStarts[button] - lagStarts[button])) % (On + Off);
 					if (a < On)
 					{
 						return source ^= true;
@@ -452,11 +459,23 @@ namespace BizHawk.Client.Common
 		{
 			if (isSticky)
 			{
-				this._stickySet.Add(button);
+				_stickySet.Add(button);
+				buttonStarts.Add(button, Global.Emulator.Frame);
+
+				if (Global.Emulator.CanPollInput())
+				{
+					lagStarts.Add(button, Global.Emulator.AsInputPollable().LagCount);
+				}
+				else
+				{
+					lagStarts.Add(button, 0);
+				}
 			}
 			else
 			{
-				this._stickySet.Remove(button);
+				_stickySet.Remove(button);
+				buttonStarts.Remove(button);
+				lagStarts.Remove(button);
 			}
 		}
 
@@ -475,7 +494,9 @@ namespace BizHawk.Client.Common
 
 		public void ClearStickies()
 		{
-			this._stickySet.Clear();
+			_stickySet.Clear();
+			buttonStarts.Clear();
+			lagStarts.Clear();
 		}
 
 		public void MassToggleStickyState(List<string> buttons)

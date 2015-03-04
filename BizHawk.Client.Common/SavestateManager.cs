@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
-using BizHawk.Common;
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -11,34 +13,41 @@ namespace BizHawk.Client.Common
 	{
 		public static void SaveStateFile(string filename, string name)
 		{
+			var core = Global.Emulator.AsStatable();
 			// the old method of text savestate save is now gone.
 			// a text savestate is just like a binary savestate, but with a different core lump
 			using (var bs = new BinaryStateSaver(filename))
 			{
 				if (Global.Config.SaveStateType == Config.SaveStateTypeE.Text ||
-					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !Global.Emulator.BinarySaveStatesPreferred))
+					(Global.Config.SaveStateType == Config.SaveStateTypeE.Default && !core.BinarySaveStatesPreferred))
 				{
 					// text savestate format
 					using (new SimpleTime("Save Core"))
-						bs.PutLump(BinaryStateLump.CorestateText, (tw) => Global.Emulator.SaveStateText(tw));
+						bs.PutLump(BinaryStateLump.CorestateText, (tw) => core.SaveStateText(tw));
 				}
 				else
 				{
 					// binary core lump format
 					using (new SimpleTime("Save Core"))
-						bs.PutLump(BinaryStateLump.Corestate, bw => Global.Emulator.SaveStateBinary(bw));
+						bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
 				}
 
 				if (Global.Config.SaveScreenshotWithStates)
 				{
-					var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
+					var vp = Global.Emulator.VideoProvider();
+					var buff = vp.GetVideoBuffer();
 
-					// If user wants large screenshots, or screenshot is small enough
-					if (Global.Config.SaveLargeScreenshotWithStates || buff.Length < Global.Config.BigScreenshotSize)
+					int out_w = vp.BufferWidth;
+					int out_h = vp.BufferHeight;
+
+					// if buffer is too big, scale down screenshot
+					if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
 					{
-						using (new SimpleTime("Save Framebuffer"))
-							bs.PutLump(BinaryStateLump.Framebuffer, DumpFramebuffer);
+						out_w /= 2;
+						out_h /= 2;
 					}
+					using (new SimpleTime("Save Framebuffer"))
+						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
 				}
 
 				if (Global.MovieSession.Movie.IsActive)
@@ -56,25 +65,30 @@ namespace BizHawk.Client.Common
 
 		public static void PopulateFramebuffer(BinaryReader br)
 		{
-			var buff = Global.Emulator.VideoProvider.GetVideoBuffer();
 			try
 			{
-				for (int i = 0; i < buff.Length; i++)
-				{
-					int j = br.ReadInt32();
-					buff[i] = j;
-				}
+				using (new SimpleTime("Load Framebuffer"))
+					QuickBmpFile.Load(Global.Emulator.VideoProvider(), br.BaseStream);
 			}
-			catch (EndOfStreamException) { }
-		}
-
-		public static void DumpFramebuffer(BinaryWriter bw)
-		{
-			bw.Write(Global.Emulator.VideoProvider.GetVideoBuffer());
+			catch
+			{
+				var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+				try
+				{
+					for (int i = 0; i < buff.Length; i++)
+					{
+						int j = br.ReadInt32();
+						buff[i] = j;
+					}
+				}
+				catch (EndOfStreamException) { }
+			}
 		}
 
 		public static bool LoadStateFile(string path, string name)
 		{
+			var core = Global.Emulator.AsStatable();
+
 			// try to detect binary first
 			var bl = BinaryStateLoader.LoadAndDetect(path);
 			if (bl != null)
@@ -99,7 +113,7 @@ namespace BizHawk.Client.Common
 					}
 
 					using (new SimpleTime("Load Core"))
-						bl.GetCoreState(br => Global.Emulator.LoadStateBinary(br), tr => Global.Emulator.LoadStateText(tr));
+						bl.GetCoreState(br => core.LoadStateBinary(br), tr => core.LoadStateText(tr));
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
 				}
@@ -120,7 +134,7 @@ namespace BizHawk.Client.Common
 				{
 					using (var reader = new StreamReader(path))
 					{
-						Global.Emulator.LoadStateText(reader);
+						core.LoadStateText(reader);
 
 						while (true)
 						{
@@ -138,7 +152,7 @@ namespace BizHawk.Client.Common
 							var args = str.Split(' ');
 							if (args[0] == "Framebuffer")
 							{
-								Global.Emulator.VideoProvider.GetVideoBuffer().ReadFromHex(args[1]);
+								Global.Emulator.VideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
 					}

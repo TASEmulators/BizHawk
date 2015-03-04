@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -13,6 +14,13 @@ namespace BizHawk.Common.ReflectionExtensions
 	/// </summary>
 	public static class ReflectionExtensions
 	{
+		public static IEnumerable<PropertyInfo> GetPropertiesWithAttrib(this Type type, Type attributeType)
+		{
+			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
+				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
+		}
+
+
 		/// <summary>
 		/// Gets the description attribute from an object
 		/// </summary>
@@ -206,5 +214,16 @@ namespace BizHawk.Common.ReflectionExtensions
 			return (IntPtr)dyn.Invoke(null, new object[] { new object() });
 		}
 
+		public static bool ThrowsError(this MethodInfo info)
+		{
+			var il = info.GetMethodBody().GetILAsByteArray();
+			return (il[il.Length - 1] == 0x7A);
+		}
+
+		public static bool IsEmpty(this MethodInfo info)
+		{
+			var il = info.GetMethodBody().GetILAsByteArray();
+			return (il.Length == 1 && il[0] == 0x2A);
+		}
 	}
 }

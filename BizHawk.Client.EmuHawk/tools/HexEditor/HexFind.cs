@@ -8,30 +8,29 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class HexFind : Form
 	{
-		private Point _location;
-
 		public HexFind()
 		{
 			InitializeComponent();
 			ChangeCasing();
 		}
 
-		public void SetInitialValue(string value)
-		{
-			FindBox.Text = value;
-		}
+		public Point InitialLocation { get; set; }
 
-		public void SetLocation(Point p)
+		public string InitialValue
 		{
-			_location = p;
+			get { return FindBox.Text; }
+			set { FindBox.Text = value ?? string.Empty; }
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)
 		{
-			if (_location.X > 0 && _location.Y > 0)
+			if (InitialLocation.X > 0 && InitialLocation.Y > 0)
 			{
-				Location = _location;
+				Location = InitialLocation;
 			}
+
+			FindBox.Focus();
+			FindBox.Select();
 		}
 
 		private string GetFindBoxChars()
@@ -75,20 +74,17 @@ namespace BizHawk.Client.EmuHawk
 			var size = FindBox.Size;
 
 			Controls.Remove(FindBox);
-			if (HexRadio.Checked)
-			{
-				FindBox = new HexTextBox { CharacterCasing = CharacterCasing.Upper };
-				(FindBox as HexTextBox).Nullable = true;
-			}
-			else
-			{
-				FindBox = new TextBox { CharacterCasing = CharacterCasing.Normal };
-			}
 
-			FindBox.Text = text;
-			FindBox.Size = size;
+			FindBox = new HexTextBox
+			{
+				CharacterCasing = CharacterCasing.Upper,
+				Nullable = HexRadio.Checked,
+				Text = text,
+				Size = size,
+				Location = location
+			};
+
 			Controls.Add(FindBox);
-			FindBox.Location = location;
 		}
 
 		private void HexRadio_CheckedChanged(object sender, EventArgs e)
@@ -106,6 +102,15 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyData == Keys.Enter)
 			{
 				GlobalWin.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
+			}
+		}
+
+		private void HexFind_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Escape)
+			{
+				e.Handled = true;
+				Close();
 			}
 		}
 	}

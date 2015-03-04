@@ -54,6 +54,16 @@ Nes_Ppu_Impl::~Nes_Ppu_Impl()
 	delete impl;
 }
 
+int Nes_Ppu_Impl::peekaddr(int addr)
+{
+	if (addr < 0x2000)
+		return chr_data[map_chr_addr_peek(addr)];
+	else
+		return get_nametable(addr)[addr & 0x3ff];
+}
+
+
+
 void Nes_Ppu_Impl::all_tiles_modified()
 {
 	any_tiles_modified = true;

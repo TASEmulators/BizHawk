@@ -4,12 +4,13 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class CheatEdit : UserControl
 	{
-		public IMemoryDomains Core { get; set; }
+		public IMemoryDomains MemoryDomains { get; set; }
 
 		public CheatEdit()
 		{
@@ -31,20 +32,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
-			if (Global.Emulator != null) // the designer needs this check
+			if (MemoryDomains != null) // the designer needs this check
 			{
 				DomainDropDown.Items.Clear();
-				DomainDropDown.Items.AddRange(Core.MemoryDomains
+				DomainDropDown.Items.AddRange(MemoryDomains
+					.Where(d => d.CanPoke())
 					.Select(d => d.ToString())
 					.ToArray());
 
-				if (Core.MemoryDomains.HasSystemBus)
+				if (MemoryDomains.HasSystemBus)
 				{
-					DomainDropDown.SelectedItem = Core.MemoryDomains.SystemBus.ToString();
+					DomainDropDown.SelectedItem = MemoryDomains.SystemBus.ToString();
 				}
 				else
 				{
-					DomainDropDown.SelectedItem = Core.MemoryDomains.MainMemory.ToString();
+					DomainDropDown.SelectedItem = MemoryDomains.MainMemory.ToString();
 				}
 			}
 
@@ -76,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == Watch.DisplayType.Hex ? HexInd : String.Empty;
+				_cheat.Type == Watch.DisplayType.Hex ? HexInd : string.Empty;
 
 			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
 
@@ -95,11 +97,11 @@ namespace BizHawk.Client.EmuHawk
 			SetSizeSelected(Watch.WatchSize.Byte);
 			PopulateTypeDropdown();
 
-			NameBox.Text = String.Empty;
+			NameBox.Text = string.Empty;
 
-			if (Global.Emulator != null)
+			if (MemoryDomains != null)
 			{
-				AddressBox.SetHexProperties(Core.MemoryDomains.MainMemory.Size);
+				AddressBox.SetHexProperties(MemoryDomains.SystemBus.Size);
 			}
 
 			ValueBox.ByteSize = 
@@ -210,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_loading)
 			{
-				var domain = Core.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				AddressBox.SetHexProperties(domain.Size);
 			}
 		}
@@ -286,13 +288,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				var domain = Core.MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				var address = AddressBox.ToRawInt().Value;
 				//var address = AddressBox.ToRawInt() ?? 0;
 				if (address < domain.Size)
 				{
 					var watch = Watch.GenerateWatch(
-						Core.MemoryDomains[DomainDropDown.SelectedItem.ToString()],
+						MemoryDomains[DomainDropDown.SelectedItem.ToString()],
 						AddressBox.ToRawInt().Value,
 						GetCurrentSize(),
 						Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),

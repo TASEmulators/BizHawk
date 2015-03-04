@@ -63,21 +63,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMaxXY()
 		{
-			XNumeric.Maximum = Global.Emulator.VideoProvider.BufferWidth - 12;
-			YNumeric.Maximum = Global.Emulator.VideoProvider.BufferHeight - 12;
-			PositionPanel.Size = new Size(Global.Emulator.VideoProvider.BufferWidth + 2, Global.Emulator.VideoProvider.BufferHeight + 2);
+			var video = BizHawk.Emulation.Common.VideoProviderGlue.VideoProvider(Global.Emulator);
+			XNumeric.Maximum = video.BufferWidth - 12;
+			YNumeric.Maximum = video.BufferHeight - 12;
+			PositionPanel.Size = new Size(video.BufferWidth + 2, video.BufferHeight + 2);
 
-			int width;
-			if (Global.Emulator.VideoProvider.BufferWidth > 128)
-			{
-				width = Global.Emulator.VideoProvider.BufferWidth + 44;
-			}
-			else
-			{
-				width = 128 + 44;
-			}
-
-			PositionGroupBox.Size = new Size(width, Global.Emulator.VideoProvider.BufferHeight + 52);
+			PositionGroupBox.Size = new Size(
+				Math.Max(video.BufferWidth, UIHelper.ScaleX(128)) + UIHelper.ScaleX(44),
+				video.BufferHeight + UIHelper.ScaleY(52));
 		}
 
 		private void SetColorBox()

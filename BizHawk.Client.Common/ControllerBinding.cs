@@ -217,6 +217,16 @@ namespace BizHawk.Client.Common
 
 	public class AutofireController : IController
 	{
+		public AutofireController(ControllerDefinition definition, IEmulator emulator)
+		{
+			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+			_type = definition;
+			_emulator = emulator;
+		}
+
+		private readonly IEmulator _emulator;
+
 		private readonly ControllerDefinition _type;
 		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
 		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
@@ -228,20 +238,13 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
-		public AutofireController(ControllerDefinition definition)
-		{
-			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
-			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
-			_type = definition;
-		}
-
 		public ControllerDefinition Type { get { return _type; } }
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
 			if (_autofire)
 			{
-				var a = (Global.Emulator.Frame - _buttonStarts[button]) % (On + Off);
+				var a = (_emulator.Frame - _buttonStarts[button]) % (On + Off);
 				return a < On && _buttons[button];
 			}
 
@@ -273,7 +276,7 @@ namespace BizHawk.Client.Common
 				{
 					if (_buttons[kvp.Key] == false && controller[bound_button])
 					{
-						_buttonStarts[kvp.Key] = Global.Emulator.Frame;
+						_buttonStarts[kvp.Key] = _emulator.Frame;
 					}
 				}
 			}
@@ -311,7 +314,7 @@ namespace BizHawk.Client.Common
 
 		public void BindMulti(string button, string controlString)
 		{
-			if (!String.IsNullOrEmpty(controlString))
+			if (!string.IsNullOrEmpty(controlString))
 			{
 				var controlbindings = controlString.Split(',');
 				foreach (var control in controlbindings)

@@ -38,12 +38,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return Global.Config.TAStudioAutoRestoreLastPosition;
+				return Tastudio.Settings.AutoRestoreLastPosition;
 			}
 
 			set
 			{
-				AutoRestoreCheckbox.Checked = Global.Config.TAStudioAutoRestoreLastPosition = value;
+				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition = value;
 			}
 		}
 
@@ -53,25 +53,37 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return Global.Config.TAStudioFollowCursor;
+				return Tastudio.Settings.FollowCursor;
 			}
 
 			set
 			{
-				FollowCursorCheckbox.Checked = Global.Config.TAStudioFollowCursor = value;
+				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor = value;
 			}
 		}
 
 		public PlaybackBox()
 		{
 			InitializeComponent();
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+
 			_programmaticallyChangingValue = true;
-			if (Global.Config != null) // A check needed for the designer
+
+			if (Global.Config != null) // For the designer
 			{
 				TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
-				AutoRestoreCheckbox.Checked = Global.Config.TAStudioAutoRestoreLastPosition;
-				FollowCursorCheckbox.Checked = Global.Config.TAStudioFollowCursor;
 			}
+
+			if (Tastudio != null) // For the designer
+			{
+				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
+				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
+			}
+
 			_programmaticallyChangingValue = false;
 		}
 
@@ -112,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_programmaticallyChangingValue)
 			{
-				Global.Config.TAStudioAutoRestoreLastPosition ^= true;
+				Tastudio.Settings.AutoRestoreLastPosition ^= true;
 			}
 		}
 
@@ -120,9 +132,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_programmaticallyChangingValue)
 			{
-				Global.Config.TAStudioFollowCursor ^= true;
+				Tastudio.Settings.FollowCursor ^= true;
 
-				if (Global.Config.TAStudioFollowCursor)
+				if (Tastudio.Settings.FollowCursor)
 				{
 					Tastudio.SetVisibleIndex();
 					Tastudio.RefreshDialog();

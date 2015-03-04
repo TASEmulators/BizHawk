@@ -8,12 +8,9 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var key = button
-					.Replace("P1 ", "")
-					.Replace("P2 ", "")
-					.Replace("P3 ", "")
-					.Replace("P4 ", "")
-					.Replace("Key ", "");
+				var key = button.Replace("Key ", "");
+				if (key.StartsWith("P") && key[1] >= '0' && key[1] <= '9')
+					key = key.Substring(3);
 
 				if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{
@@ -64,6 +61,12 @@ namespace BizHawk.Client.Common
 				{ "L1", 'l' },
 				{ "R1", 'r' },
 
+				{ "L2", 'L' },
+				{ "R2", 'R' },
+
+				{ "L3", '<' },
+				{ "R3", '>' },
+
 				{ "Button", 'B' },
 				{ "B1", '1' },
 				{ "B2", '2' },
@@ -78,6 +81,7 @@ namespace BizHawk.Client.Common
 				{ "Mouse Start", 's' },
 
 				{"Mode", 'M'},
+				{"MODE", 'M'},
 
 				{ "Fire", 'F' },
 				{ "Lightgun Trigger", 'T' },
@@ -96,6 +100,11 @@ namespace BizHawk.Client.Common
 				{ "Y2", '2' },
 				{ "Y3", '3' },
 				{ "Y4", '4' },
+
+				{ "Triangle", 'T' },
+				{ "Circle", 'O' },
+				{ "Cross", 'X' },
+				{ "Square", 'Q' }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>

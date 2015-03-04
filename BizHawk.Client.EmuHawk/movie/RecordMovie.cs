@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using System.Linq;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
@@ -17,6 +19,15 @@ namespace BizHawk.Client.EmuHawk
 		public RecordMovie()
 		{
 			InitializeComponent();
+
+			if (!Global.Emulator.HasSavestates())
+			{
+				StartFromCombo.Items.Remove(
+					StartFromCombo.Items
+						.OfType<object>()
+						.First(i => i.ToString()
+							.ToLower() == "now"));
+			}
 		}
 
 		private string MakePath()
@@ -34,13 +45,14 @@ namespace BizHawk.Client.EmuHawk
 
 					path = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) + path;
 
-					if (path[path.Length - 4] != '.') // If no file extension, add movie extension
+					if (!MovieService.MovieExtensions.Contains(Path.GetExtension(path)))
 					{
-						path += "." +  MovieService.DefaultExtension;
+						// If no valid movie extension, add movie extension
+						path += "." + MovieService.DefaultExtension;
 					}
 				}
 			}
-			
+
 			return path;
 		}
 
@@ -67,19 +79,21 @@ namespace BizHawk.Client.EmuHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() == "Now")
+				if (StartFromCombo.SelectedItem.ToString() == "Now" && Global.Emulator.HasSavestates())
 				{
+					var core = Global.Emulator.AsStatable();
+
 					movieToRecord.StartsFromSavestate = true;
 
-					if (Global.Emulator.BinarySaveStatesPreferred)
+					if (core.BinarySaveStatesPreferred)
 					{
-						movieToRecord.BinarySavestate = (byte[])Global.Emulator.SaveStateBinary().Clone();
+						movieToRecord.BinarySavestate = (byte[])core.SaveStateBinary().Clone();
 					}
 					else
 					{
 						using (var sw = new StringWriter())
 						{
-							Global.Emulator.SaveStateText(sw);
+							core.SaveStateText(sw);
 							movieToRecord.TextSavestate = sw.ToString();
 						}
 					}
@@ -91,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 						if (movieToRecord.SavestateFramebuffer != null)
 						{
 
-							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider.GetVideoBuffer().Clone();
+							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider().GetVideoBuffer().Clone();
 						}
 					}
 				}

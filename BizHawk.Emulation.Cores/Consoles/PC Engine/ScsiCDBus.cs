@@ -147,6 +147,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		PCEngine pce;
 		public Disc disc;
+		SubcodeReader subcodeReader;
+		SubchannelQ subchannelQ;
 		int audioStartLBA;
 		int audioEndLBA;
 
@@ -154,6 +156,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			this.pce = pce;
 			this.disc = disc;
+			subcodeReader = new SubcodeReader(disc);
 		}
 
 		public void Think()
@@ -167,7 +170,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (DataReadInProgress && pce.Cpu.TotalExecutedCycles > DataReadWaitTimer)
 			{
 				if (SectorsLeftToRead > 0)
-					pce.CoreComm.DriveLED = true;
+					pce.DriveLightOn = true;
 
 				if (DataIn.Count == 0)
 				{
@@ -418,7 +421,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x80: // Set start offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					audioStartLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+					audioStartLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
 					break;
 			}
 
@@ -453,10 +456,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x80: // Set end offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					if (trackNo - 1 >= disc.TOC.Sessions[0].Tracks.Count)
+					if (trackNo - 1 >= disc.Structure.Sessions[0].Tracks.Count)
 						audioEndLBA = disc.LBACount;
 					else
-						audioEndLBA = disc.TOC.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+						audioEndLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
 					break;
 			}
 
@@ -493,7 +496,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		void CommandReadSubcodeQ()
 		{
 			bool playing = pce.CDAudio.Mode != CDAudio.CDAudioMode_Stopped;
-			var sectorEntry = disc.ReadLBA_SectorEntry(playing ? pce.CDAudio.CurrentSector : CurrentReadingSector);
+			int sectorNum = playing ? pce.CDAudio.CurrentSector : CurrentReadingSector;
 
 			DataIn.Clear();
 
@@ -504,15 +507,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case CDAudio.CDAudioMode_Stopped: DataIn.Enqueue(3); break;
 			}
 
-			DataIn.Enqueue(sectorEntry.q_status);          // I do not know what status is
-			DataIn.Enqueue(sectorEntry.q_tno.BCDValue);    // track
-			DataIn.Enqueue(sectorEntry.q_index.BCDValue);  // index
-			DataIn.Enqueue(sectorEntry.q_min.BCDValue);    // M(rel)
-			DataIn.Enqueue(sectorEntry.q_sec.BCDValue);    // S(rel)
-			DataIn.Enqueue(sectorEntry.q_frame.BCDValue);  // F(rel)
-			DataIn.Enqueue(sectorEntry.q_amin.BCDValue);   // M(abs)
-			DataIn.Enqueue(sectorEntry.q_asec.BCDValue);   // S(abs)
-			DataIn.Enqueue(sectorEntry.q_aframe.BCDValue); // F(abs)
+			subcodeReader.ReadLBA_SubchannelQ(sectorNum, ref subchannelQ);
+			DataIn.Enqueue(subchannelQ.q_status);          // I do not know what status is
+			DataIn.Enqueue(subchannelQ.q_tno);    // track
+			DataIn.Enqueue(subchannelQ.q_index);  // index
+			DataIn.Enqueue(subchannelQ.min.BCDValue);    // M(rel)
+			DataIn.Enqueue(subchannelQ.sec.BCDValue);    // S(rel)
+			DataIn.Enqueue(subchannelQ.frame.BCDValue);  // F(rel)
+			DataIn.Enqueue(subchannelQ.ap_min.BCDValue);   // M(abs)
+			DataIn.Enqueue(subchannelQ.ap_sec.BCDValue);   // S(abs)
+			DataIn.Enqueue(subchannelQ.ap_frame.BCDValue); // F(abs)
 
 			SetPhase(BusPhase_DataIn);
 		}
@@ -525,7 +529,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					{
 						DataIn.Clear();
 						DataIn.Enqueue(0x01);
-						DataIn.Enqueue(((byte)disc.TOC.Sessions[0].Tracks.Count).BinToBCD());
+						DataIn.Enqueue(((byte)disc.Structure.Sessions[0].Tracks.Count).BinToBCD());
 						SetPhase(BusPhase_DataIn);
 						break;
 					}
@@ -546,7 +550,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case 2: // Return starting position of specified track in MSF format
 					{
 						int track = CommandBuffer[2].BCDtoBin();
-						var tracks = disc.TOC.Sessions[0].Tracks;
+						var tracks = disc.Structure.Sessions[0].Tracks;
 						if (CommandBuffer[2] > 0x99)
 							throw new Exception("invalid track number BCD request... is something I need to handle?");
 						if (track == 0) track = 1;
@@ -556,7 +560,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						int lbaPos;
 
 						if (track > tracks.Count)
-							lbaPos = disc.TOC.Sessions[0].length_aba - 150;
+							lbaPos = disc.Structure.Sessions[0].length_aba - 150;
 						else
 							lbaPos = tracks[track].Indexes[1].aba - 150;
 
@@ -568,7 +572,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						DataIn.Enqueue(s.BinToBCD());
 						DataIn.Enqueue(f.BinToBCD());
 
-						if (track > tracks.Count || disc.TOC.Sessions[0].Tracks[track].TrackType == ETrackType.Audio)
+						if (track > tracks.Count || disc.Structure.Sessions[0].Tracks[track].TrackType == ETrackType.Audio)
 							DataIn.Enqueue(0);
 						else
 							DataIn.Enqueue(4);

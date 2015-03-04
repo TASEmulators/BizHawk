@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			w.Flush();
 		}
 
-		public void Disassemble(Stream s, MemoryDomainList mem)
+		public void Disassemble(Stream s, IMemoryDomains mem)
 		{
 			var w = new StreamWriter(s);
 			w.WriteLine("; Bizhawk CDL Disassembly");

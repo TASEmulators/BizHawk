@@ -27,7 +27,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isPorted: false,
 		isReleased: true
 		)]
-	public sealed partial class SMS : IEmulator, IMemoryDomains,
+	[ServiceNotApplicable(typeof(IDriveLight))]
+	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		// Constants
@@ -56,12 +57,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (SaveRAM != null)
 				Array.Copy(data, SaveRAM, data.Length);
 		}
-		public void ClearSaveRam()
-		{
-			if (SaveRAM != null)
-				SaveRAM = new byte[SaveRAM.Length];
-		}
-		public bool SaveRamModified { get; set; }
+
+		public bool SaveRamModified { get; private set; }
 
 		// Machine resources
 		public Z80A Cpu;
@@ -82,6 +79,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int Frame { get { return frame; } set { frame = value; } }
 		public int LagCount { get { return lagCount; } set { lagCount = value; } }
 		public bool IsLagFrame { get { return isLag; } }
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+
 		byte Port01 = 0xFF;
 		byte Port02 = 0xFF;
 		byte Port3E = 0xAF;
@@ -96,15 +98,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 			CoreComm = comm;
+			MemoryCallbacks = new MemoryCallbackSystem();
 
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";
 			RomData = rom;
-			CoreComm.CpuTraceAvailable = true;
-			
+			Tracer = new TraceBuffer();
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			if (RomData.Length % BankSize != 0)
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			RomBanks = (byte)(RomData.Length / BankSize);
@@ -139,8 +143,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.RegisterSP = 0xDFF0;
 			Cpu.ReadHardware = ReadPort;
 			Cpu.WriteHardware = WritePort;
+			Cpu.MemoryCallbacks = MemoryCallbacks;
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
 			PSG = new SN76489();
 			YM2413 = new YM2413();
 			SoundMixer = new SoundMixer(YM2413, PSG);
@@ -208,7 +214,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				SaveRAM = new byte[0x8000];
 
 			SetupMemoryDomains();
+			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		private ITraceable Tracer { get; set; }
 
 		string DetermineRegion(string gameRegion)
 		{
@@ -318,12 +329,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			lagged = true;
 			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-			Cpu.Debug = CoreComm.Tracer.Enabled;
+			Cpu.Debug = Tracer.Enabled;
 			if (!IsGameGear)
 				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte) 0xFF;
 
 			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-				Cpu.Logger = (s) => CoreComm.Tracer.Put(s);
+				Cpu.Logger = (s) => Tracer.Put(s);
 
 			if (IsGameGear == false)
 				Cpu.NonMaskableInterrupt = Controller["Pause"];
@@ -404,7 +415,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public IVideoProvider VideoProvider { get { return Vdp; } }
 		public CoreComm CoreComm { get; private set; }
 
 		ISoundProvider ActiveSoundProvider;
@@ -476,13 +486,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				domains.Add(ExtRamDomain);
 			}
 			memoryDomains = new MemoryDomainList(domains);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 		}
 
-		public MemoryDomainList MemoryDomains { get { return memoryDomains; } }
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			return new Dictionary<string, int>
+			return new Dictionary<string, RegisterValue>
 			{
 				{ "A", Cpu.RegisterA },
 				{ "AF", Cpu.RegisterAF },
@@ -506,14 +515,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{ "Shadow DE", Cpu.RegisterShadowDE },
 				{ "Shadow HL", Cpu.RegisterShadowHL },
 				{ "SP", Cpu.RegisterSP },
-				{ "Flag C", Cpu.RegisterF.Bit(0) ? 1 : 0 },
-				{ "Flag N", Cpu.RegisterF.Bit(1) ? 1 : 0 },
-				{ "Flag P/V", Cpu.RegisterF.Bit(2) ? 1 : 0 },
-				{ "Flag 3rd", Cpu.RegisterF.Bit(3) ? 1 : 0 },
-				{ "Flag H", Cpu.RegisterF.Bit(4) ? 1 : 0 },
-				{ "Flag 5th", Cpu.RegisterF.Bit(5) ? 1 : 0 },
-				{ "Flag Z", Cpu.RegisterF.Bit(6) ? 1 : 0 },
-				{ "Flag S", Cpu.RegisterF.Bit(7) ? 1 : 0 },
+				{ "Flag C", Cpu.RegisterF.Bit(0) },
+				{ "Flag N", Cpu.RegisterF.Bit(1) },
+				{ "Flag P/V", Cpu.RegisterF.Bit(2) },
+				{ "Flag 3rd", Cpu.RegisterF.Bit(3) },
+				{ "Flag H", Cpu.RegisterF.Bit(4) },
+				{ "Flag 5th", Cpu.RegisterF.Bit(5) },
+				{ "Flag Z", Cpu.RegisterF.Bit(6) },
+				{ "Flag S", Cpu.RegisterF.Bit(7) },
 			};
 		}
 
@@ -591,6 +600,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					break;
 			}
 		}
+
+		public bool CanStep(StepType type) { return false; }
+
+		[FeatureNotImplemented]
+		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		public void Dispose() { }
 

@@ -34,21 +34,16 @@
 			this.PadBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ControllerPanel = new System.Windows.Forms.Panel();
 			this.PadMenu = new MenuStripEx();
-			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SaveWindowPositionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AlwaysOnTopMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.RestoreDefaultSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PadsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StickyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearClearsAnalogInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ControllerBox.SuspendLayout();
 			this.PadBoxContextMenu.SuspendLayout();
 			this.PadMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -59,6 +54,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.ControllerBox.ContextMenuStrip = this.PadBoxContextMenu;
+			this.ControllerBox.Controls.Add(this.ControllerPanel);
 			this.ControllerBox.Location = new System.Drawing.Point(12, 27);
 			this.ControllerBox.Name = "ControllerBox";
 			this.ControllerBox.Size = new System.Drawing.Size(431, 277);
@@ -90,94 +86,34 @@
 			this.StickyContextMenuItem.Text = "Sticky";
 			this.StickyContextMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
+			// ControllerPanel
+			// 
+			this.ControllerPanel.AutoScroll = true;
+			this.ControllerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.ControllerPanel.Location = new System.Drawing.Point(3, 16);
+			this.ControllerPanel.Name = "ControllerPanel";
+			this.ControllerPanel.Size = new System.Drawing.Size(425, 258);
+			this.ControllerPanel.TabIndex = 0;
+			// 
 			// PadMenu
 			// 
 			this.PadMenu.ClickThrough = true;
 			this.PadMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OptionsSubMenu,
-            this.PadsSubMenu});
+            this.PadsSubMenu,
+            this.SettingsSubMenu});
 			this.PadMenu.Location = new System.Drawing.Point(0, 0);
 			this.PadMenu.Name = "PadMenu";
 			this.PadMenu.Size = new System.Drawing.Size(452, 24);
 			this.PadMenu.TabIndex = 7;
 			this.PadMenu.Text = "menuStrip1";
 			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ClearClearsAnalogInputMenuItem,
-            this.toolStripSeparator3,
-            this.AutoloadMenuItem,
-            this.SaveWindowPositionMenuItem,
-            this.AlwaysOnTopMenuItem,
-            this.FloatingWindowMenuItem,
-            this.toolStripSeparator2,
-            this.RestoreDefaultSettingsMenuItem,
-            this.toolStripSeparator1,
-            this.ExitMenuItem});
-			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// AutoloadMenuItem
-			// 
-			this.AutoloadMenuItem.Name = "AutoloadMenuItem";
-			this.AutoloadMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.AutoloadMenuItem.Text = "&Autoload";
-			this.AutoloadMenuItem.Click += new System.EventHandler(this.AutoloadMenuItem_Click);
-			// 
-			// SaveWindowPositionMenuItem
-			// 
-			this.SaveWindowPositionMenuItem.Name = "SaveWindowPositionMenuItem";
-			this.SaveWindowPositionMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.SaveWindowPositionMenuItem.Text = "&Save Window Position";
-			this.SaveWindowPositionMenuItem.Click += new System.EventHandler(this.SaveWindowPositionMenuItem_Click);
-			// 
-			// AlwaysOnTopMenuItem
-			// 
-			this.AlwaysOnTopMenuItem.Name = "AlwaysOnTopMenuItem";
-			this.AlwaysOnTopMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.AlwaysOnTopMenuItem.Text = "Always On Top";
-			this.AlwaysOnTopMenuItem.Click += new System.EventHandler(this.AlwaysOnTopMenuItem_Click);
-			// 
-			// FloatingWindowMenuItem
-			// 
-			this.FloatingWindowMenuItem.Name = "FloatingWindowMenuItem";
-			this.FloatingWindowMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.FloatingWindowMenuItem.Text = "Floating Window";
-			this.FloatingWindowMenuItem.Click += new System.EventHandler(this.FloatingWindowMenuItem_Click);
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
-			// 
-			// RestoreDefaultSettingsMenuItem
-			// 
-			this.RestoreDefaultSettingsMenuItem.Name = "RestoreDefaultSettingsMenuItem";
-			this.RestoreDefaultSettingsMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.RestoreDefaultSettingsMenuItem.Text = "Restore Default Settings";
-			this.RestoreDefaultSettingsMenuItem.Click += new System.EventHandler(this.RestoreDefaultSettingsMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(203, 6);
-			// 
-			// ExitMenuItem
-			// 
-			this.ExitMenuItem.Name = "ExitMenuItem";
-			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
-			// 
 			// PadsSubMenu
 			// 
 			this.PadsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ClearAllMenuItem,
-            this.StickyMenuItem});
+            this.StickyMenuItem,
+            this.toolStripSeparator4,
+            this.ExitMenuItem});
 			this.PadsSubMenu.Name = "PadsSubMenu";
 			this.PadsSubMenu.Size = new System.Drawing.Size(44, 20);
 			this.PadsSubMenu.Text = "&Pads";
@@ -187,27 +123,44 @@
 			// 
 			this.ClearAllMenuItem.Name = "ClearAllMenuItem";
 			this.ClearAllMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.ClearAllMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ClearAllMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.ClearAllMenuItem.Text = "&Clear All";
 			this.ClearAllMenuItem.Click += new System.EventHandler(this.ClearAllMenuItem_Click);
 			// 
 			// StickyMenuItem
 			// 
 			this.StickyMenuItem.Name = "StickyMenuItem";
-			this.StickyMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.StickyMenuItem.Size = new System.Drawing.Size(142, 22);
 			this.StickyMenuItem.Text = "Sticky";
 			this.StickyMenuItem.Click += new System.EventHandler(this.StickyMenuItem_Click);
 			// 
-			// toolStripSeparator3
+			// toolStripSeparator4
 			// 
-			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(203, 6);
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(139, 6);
+			// 
+			// ExitMenuItem
+			// 
+			this.ExitMenuItem.Name = "ExitMenuItem";
+			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.ExitMenuItem.Size = new System.Drawing.Size(142, 22);
+			this.ExitMenuItem.Text = "E&xit";
+			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
+			// 
+			// SettingsSubMenu
+			// 
+			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ClearClearsAnalogInputMenuItem});
+			this.SettingsSubMenu.Name = "SettingsSubMenu";
+			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.SettingsSubMenu.Text = "&Settings";
+			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// ClearClearsAnalogInputMenuItem
 			// 
 			this.ClearClearsAnalogInputMenuItem.Name = "ClearClearsAnalogInputMenuItem";
-			this.ClearClearsAnalogInputMenuItem.Size = new System.Drawing.Size(206, 22);
-			this.ClearClearsAnalogInputMenuItem.Text = "&Clear clears Analog Input";
+			this.ClearClearsAnalogInputMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.ClearClearsAnalogInputMenuItem.Text = "&Clear also clears Analog Input";
 			this.ClearClearsAnalogInputMenuItem.Click += new System.EventHandler(this.ClearClearsAnalogInputMenuItem_Click);
 			// 
 			// VirtualpadTool
@@ -221,6 +174,7 @@
 			this.Name = "VirtualpadTool";
 			this.Text = "Virtual Pads";
 			this.Load += new System.EventHandler(this.VirtualpadTool_Load);
+			this.ControllerBox.ResumeLayout(false);
 			this.PadBoxContextMenu.ResumeLayout(false);
 			this.PadMenu.ResumeLayout(false);
 			this.PadMenu.PerformLayout();
@@ -232,15 +186,7 @@
 		#endregion
 
 		private MenuStripEx PadMenu;
-		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem AutoloadMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SaveWindowPositionMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AlwaysOnTopMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-		private System.Windows.Forms.ToolStripMenuItem RestoreDefaultSettingsMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem PadsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ClearAllMenuItem;
 		private System.Windows.Forms.GroupBox ControllerBox;
@@ -249,6 +195,8 @@
 		private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem StickyContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ClearClearsAnalogInputMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.Panel ControllerPanel;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 	}
 }

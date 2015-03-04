@@ -41,8 +41,8 @@ namespace BizHawk.Client.Common
 			{
 				return string.Empty;
 			}
-			
-			return GenerateLogEntry()
+
+			return le
 				.Replace(".", " ")
 				.Replace("|", "")
 				.Replace("    0,    0,", "            ");

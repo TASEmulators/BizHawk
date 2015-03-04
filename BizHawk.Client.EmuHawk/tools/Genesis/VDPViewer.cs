@@ -9,13 +9,16 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using System.Drawing.Imaging;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class GenVDPViewer : Form, IToolForm
+	public partial class GenVDPViewer : Form, IToolFormAutoConfig
 	{
+		[RequiredService]
+		private GPGX Emu { get; set; }
+
 		private LibGPGX.VDPView View = new LibGPGX.VDPView();
-		private GPGX Emu;
 		int palindex = 0;
 
 		public GenVDPViewer()
@@ -23,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			bmpViewTiles.ChangeBitmapSize(512, 256);
 			bmpViewPal.ChangeBitmapSize(16, 4);
-			Restart();
 		}
 
 		unsafe static void DrawTile(int* dest, int pitch, byte* src, int* pal)
@@ -139,9 +141,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			Emu = Global.Emulator as GPGX;
-			if (Emu == null)
-				Close();
 			UpdateValues();
 		}
 
@@ -215,53 +214,8 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoloadMenuItem.Checked = Global.Config.GenVdpAutoLoad;
-			SaveWindowPositionMenuItem.Checked = Global.Config.GenVdpSettings.SaveWindowPosition;
-			AlwaysOnTopMenuItem.Checked = Global.Config.GenVdpSettings.TopMost;
-			FloatingWindowMenuItem.Checked = Global.Config.GenVdpSettings.FloatingWindow;
-		}
-
-		private void AutoloadMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenVdpAutoLoad ^= true;
-		}
-
-		private void SaveWindowPositionMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenVdpSettings.SaveWindowPosition ^= true;
-		}
-
-		private void AlwaysOnTopMenuItem_Click(object sender, EventArgs e)
-		{
-			TopMost = Global.Config.GenVdpSettings.TopMost ^= true;
-		}
-
-		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GenVdpSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.GenVdpSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
-
 		private void GenVDPViewer_Load(object sender, EventArgs e)
 		{
-			TopMost = Global.Config.GenVdpSettings.TopMost;
-			if (Global.Config.GenVdpSettings.UseWindowPosition)
-			{
-				Location = Global.Config.GenVdpSettings.WindowPosition;
-			}
 		}
 	}
 }

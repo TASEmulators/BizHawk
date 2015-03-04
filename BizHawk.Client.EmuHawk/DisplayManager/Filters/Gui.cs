@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		Size OutputSize, InputSize;
 		public Size TextureSize, VirtualTextureSize;
 		public int BackgroundColor;
-		public GuiRenderer GuiRenderer;
+		public IGuiRenderer GuiRenderer;
 		public IGL GL;
 		bool nop;
 		LetterboxingLogic LL;
@@ -260,8 +260,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
 
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
-			GuiRenderer.SetBlendState(GL.BlendNone);
-			GuiRenderer.Modelview.Push();
+			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
+			
 			if(FilterOption != eFilterOption.None)
 				InputTexture.SetFilterLinear();
 			else

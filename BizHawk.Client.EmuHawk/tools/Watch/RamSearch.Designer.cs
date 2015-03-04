@@ -51,7 +51,7 @@
 			this.ViewInHexEditorContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ContextMenuSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.ClearPreviewContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.menuStrip1 = new MenuStripEx();
+			this.RamSearchMenu = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +81,7 @@
 			this.Previous_LastSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviousFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.Previous_OriginalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Previous_LastChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -99,6 +100,7 @@
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PreviewModeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutoSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoSearchAccountForLagMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExcludeRamWatchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseUndoHistoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,10 +111,6 @@
 			this.FloatingWindowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.RestoreDefaultsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ColumnsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowPreviousMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowDiffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.MessageLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -161,7 +159,7 @@
 			this.DisplayTypeDropdown = new System.Windows.Forms.ComboBox();
 			SearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ListViewContextMenu.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
+			this.RamSearchMenu.SuspendLayout();
 			this.CompareToBox.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.ComparisonBox.SuspendLayout();
@@ -171,7 +169,7 @@
 			// 
 			SearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			SearchMenuItem.Name = "SearchMenuItem";
-			SearchMenuItem.Size = new System.Drawing.Size(215, 22);
+			SearchMenuItem.Size = new System.Drawing.Size(219, 22);
 			SearchMenuItem.Text = "&Search";
 			SearchMenuItem.Click += new System.EventHandler(this.SearchMenuItem_Click);
 			// 
@@ -210,6 +208,7 @@
 			this.WatchListView.Size = new System.Drawing.Size(230, 366);
 			this.WatchListView.TabIndex = 1;
 			this.WatchListView.UseCompatibleStateImageBehavior = false;
+			this.WatchListView.UseCustomBackground = true;
 			this.WatchListView.View = System.Windows.Forms.View.Details;
 			this.WatchListView.VirtualMode = true;
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
@@ -352,20 +351,19 @@
 			this.ClearPreviewContextMenuItem.Text = "&Clear Preview";
 			this.ClearPreviewContextMenuItem.Click += new System.EventHandler(this.ClearPreviewContextMenuItem_Click);
 			// 
-			// menuStrip1
+			// RamSearchMenu
 			// 
-			this.menuStrip1.ClickThrough = true;
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.RamSearchMenu.ClickThrough = true;
+			this.RamSearchMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.searchToolStripMenuItem,
-            this.optionsToolStripMenuItem,
-            this.ColumnsMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(445, 24);
-			this.menuStrip1.TabIndex = 4;
-			this.menuStrip1.Text = "menuStrip1";
+            this.optionsToolStripMenuItem});
+			this.RamSearchMenu.Location = new System.Drawing.Point(0, 0);
+			this.RamSearchMenu.Name = "RamSearchMenu";
+			this.RamSearchMenu.Size = new System.Drawing.Size(445, 24);
+			this.RamSearchMenu.TabIndex = 4;
+			this.RamSearchMenu.Text = "menuStrip1";
 			// 
 			// fileToolStripMenuItem
 			// 
@@ -577,7 +575,8 @@
 			this.DefinePreviousValueSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Previous_LastSearchMenuItem,
             this.PreviousFrameMenuItem,
-            this.Previous_OriginalMenuItem});
+            this.Previous_OriginalMenuItem,
+            this.Previous_LastChangeMenuItem});
 			this.DefinePreviousValueSubMenu.Name = "DefinePreviousValueSubMenu";
 			this.DefinePreviousValueSubMenu.Size = new System.Drawing.Size(188, 22);
 			this.DefinePreviousValueSubMenu.Text = "Define Previous Value";
@@ -603,6 +602,13 @@
 			this.Previous_OriginalMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.Previous_OriginalMenuItem.Text = "&Original";
 			this.Previous_OriginalMenuItem.Click += new System.EventHandler(this.Previous_OriginalMenuItem_Click);
+			// 
+			// Previous_LastChangeMenuItem
+			// 
+			this.Previous_LastChangeMenuItem.Name = "Previous_LastChangeMenuItem";
+			this.Previous_LastChangeMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.Previous_LastChangeMenuItem.Text = "Last &Change";
+			this.Previous_LastChangeMenuItem.Click += new System.EventHandler(this.Previous_LastChangeMenuItem_Click);
 			// 
 			// searchToolStripMenuItem
 			// 
@@ -631,21 +637,21 @@
 			// 
 			this.newSearchToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.restart;
 			this.newSearchToolStripMenuItem.Name = "newSearchToolStripMenuItem";
-			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.newSearchToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.newSearchToolStripMenuItem.Text = "&New Search";
 			this.newSearchToolStripMenuItem.Click += new System.EventHandler(this.NewSearchMenuMenuItem_Click);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(212, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(216, 6);
 			// 
 			// UndoMenuItem
 			// 
 			this.UndoMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.undo;
 			this.UndoMenuItem.Name = "UndoMenuItem";
 			this.UndoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.UndoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.UndoMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.UndoMenuItem.Text = "&Undo";
 			this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
 			// 
@@ -655,7 +661,7 @@
 			this.RedoMenuItem.Name = "RedoMenuItem";
 			this.RedoMenuItem.ShortcutKeyDisplayString = "";
 			this.RedoMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.RedoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.RedoMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.RedoMenuItem.Text = "&Redo";
 			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
 			// 
@@ -663,14 +669,14 @@
 			// 
 			this.CopyValueToPrevMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Previous;
 			this.CopyValueToPrevMenuItem.Name = "CopyValueToPrevMenuItem";
-			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.CopyValueToPrevMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.CopyValueToPrevMenuItem.Text = "Copy Value to Prev";
 			this.CopyValueToPrevMenuItem.Click += new System.EventHandler(this.CopyValueToPrevMenuItem_Click);
 			// 
 			// ClearChangeCountsMenuItem
 			// 
 			this.ClearChangeCountsMenuItem.Name = "ClearChangeCountsMenuItem";
-			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.ClearChangeCountsMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.ClearChangeCountsMenuItem.Text = "&Clear Change Counts";
 			this.ClearChangeCountsMenuItem.Click += new System.EventHandler(this.ClearChangeCountsMenuItem_Click);
 			// 
@@ -679,20 +685,20 @@
 			this.RemoveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMenuItem.Name = "RemoveMenuItem";
 			this.RemoveMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.RemoveMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.RemoveMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.RemoveMenuItem.Text = "&Remove selected";
 			this.RemoveMenuItem.Click += new System.EventHandler(this.RemoveMenuItem_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(212, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(216, 6);
 			// 
 			// GoToAddressMenuItem
 			// 
 			this.GoToAddressMenuItem.Name = "GoToAddressMenuItem";
 			this.GoToAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-			this.GoToAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.GoToAddressMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.GoToAddressMenuItem.Text = "&Go to Address...";
 			this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
 			// 
@@ -700,8 +706,8 @@
 			// 
 			this.AddToRamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
-			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.AddToRamWatchMenuItem.Text = "&Add to Ram Watch";
 			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
@@ -710,7 +716,7 @@
 			this.PokeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
 			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.PokeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.PokeAddressMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.PokeAddressMenuItem.Text = "&Poke Address";
 			this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
@@ -719,19 +725,19 @@
 			this.FreezeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
 			this.FreezeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.FreezeAddressMenuItem.Text = "Freeze Address";
 			this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
-			this.toolStripSeparator13.Size = new System.Drawing.Size(212, 6);
+			this.toolStripSeparator13.Size = new System.Drawing.Size(216, 6);
 			// 
 			// ClearUndoMenuItem
 			// 
 			this.ClearUndoMenuItem.Name = "ClearUndoMenuItem";
-			this.ClearUndoMenuItem.Size = new System.Drawing.Size(215, 22);
+			this.ClearUndoMenuItem.Size = new System.Drawing.Size(219, 22);
 			this.ClearUndoMenuItem.Text = "Clear Undo History";
 			this.ClearUndoMenuItem.Click += new System.EventHandler(this.ClearUndoMenuItem_Click);
 			// 
@@ -740,6 +746,7 @@
 			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.PreviewModeMenuItem,
             this.AutoSearchMenuItem,
+            this.AutoSearchAccountForLagMenuItem,
             this.toolStripSeparator9,
             this.ExcludeRamWatchMenuItem,
             this.UseUndoHistoryMenuItem,
@@ -768,6 +775,13 @@
 			this.AutoSearchMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.AutoSearchMenuItem.Text = "&Auto-Search";
 			this.AutoSearchMenuItem.Click += new System.EventHandler(this.AutoSearchMenuItem_Click);
+			// 
+			// AutoSearchAccountForLagMenuItem
+			// 
+			this.AutoSearchAccountForLagMenuItem.Name = "AutoSearchAccountForLagMenuItem";
+			this.AutoSearchAccountForLagMenuItem.Size = new System.Drawing.Size(240, 22);
+			this.AutoSearchAccountForLagMenuItem.Text = "&Auto-Search Account for Lag";
+			this.AutoSearchAccountForLagMenuItem.Click += new System.EventHandler(this.AutoSearchAccountForLagMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -832,38 +846,6 @@
 			this.RestoreDefaultsMenuItem.Size = new System.Drawing.Size(240, 22);
 			this.RestoreDefaultsMenuItem.Text = "&Restore Default Settings";
 			this.RestoreDefaultsMenuItem.Click += new System.EventHandler(this.RestoreDefaultsMenuItem_Click);
-			// 
-			// ColumnsMenuItem
-			// 
-			this.ColumnsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ShowPreviousMenuItem,
-            this.ShowChangesMenuItem,
-            this.ShowDiffMenuItem});
-			this.ColumnsMenuItem.Name = "ColumnsMenuItem";
-			this.ColumnsMenuItem.Size = new System.Drawing.Size(67, 20);
-			this.ColumnsMenuItem.Text = "&Columns";
-			this.ColumnsMenuItem.DropDownOpened += new System.EventHandler(this.ColumnsMenuItem_DropDownOpened);
-			// 
-			// ShowPreviousMenuItem
-			// 
-			this.ShowPreviousMenuItem.Name = "ShowPreviousMenuItem";
-			this.ShowPreviousMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowPreviousMenuItem.Text = "&Previous Value";
-			this.ShowPreviousMenuItem.Click += new System.EventHandler(this.ShowPreviousMenuItem_Click);
-			// 
-			// ShowChangesMenuItem
-			// 
-			this.ShowChangesMenuItem.Name = "ShowChangesMenuItem";
-			this.ShowChangesMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowChangesMenuItem.Text = "&Change Counts";
-			this.ShowChangesMenuItem.Click += new System.EventHandler(this.ShowChangesMenuItem_Click);
-			// 
-			// ShowDiffMenuItem
-			// 
-			this.ShowDiffMenuItem.Name = "ShowDiffMenuItem";
-			this.ShowDiffMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.ShowDiffMenuItem.Text = "&Difference";
-			this.ShowDiffMenuItem.Click += new System.EventHandler(this.ShowDiffMenuItem_Click);
 			// 
 			// MemDomainLabel
 			// 
@@ -1407,10 +1389,10 @@
 			this.Controls.Add(this.CompareToBox);
 			this.Controls.Add(this.WatchListView);
 			this.Controls.Add(this.TotalSearchLabel);
-			this.Controls.Add(this.menuStrip1);
+			this.Controls.Add(this.RamSearchMenu);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MainMenuStrip = this.menuStrip1;
-			this.MinimumSize = new System.Drawing.Size(291, 400);
+			this.MainMenuStrip = this.RamSearchMenu;
+			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Ram Search";
@@ -1419,8 +1401,8 @@
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragEnter);
 			this.ListViewContextMenu.ResumeLayout(false);
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
+			this.RamSearchMenu.ResumeLayout(false);
+			this.RamSearchMenu.PerformLayout();
 			this.CompareToBox.ResumeLayout(false);
 			this.CompareToBox.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
@@ -1473,7 +1455,7 @@
 		private System.Windows.Forms.ToolStripMenuItem AddToRamWatchContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem PokeContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FreezeContextMenuItem;
-		private MenuStripEx menuStrip1;
+		private MenuStripEx RamSearchMenu;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripMenuItem RedoMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ViewInHexEditorContextMenuItem;
@@ -1547,10 +1529,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 		private System.Windows.Forms.ToolStripButton UndoToolBarButton;
 		private System.Windows.Forms.ToolStripButton RedoToolBarItem;
-		private System.Windows.Forms.ToolStripMenuItem ColumnsMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowPreviousMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowChangesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ShowDiffMenuItem;
 		private System.Windows.Forms.CheckBox AutoSearchCheckBox;
 		private System.Windows.Forms.Button SearchButton;
 		private System.Windows.Forms.ToolStripSeparator RebootToolBarSeparator;
@@ -1562,5 +1540,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GoToAddressMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem FloatingWindowMenuItem;
 		private System.Windows.Forms.ToolStripButton ErrorIconButton;
+		private System.Windows.Forms.ToolStripMenuItem Previous_LastChangeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoSearchAccountForLagMenuItem;
 	}
 }

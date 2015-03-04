@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,7 +17,10 @@ namespace BizHawk.Client.EmuHawk
 		public FileExtensionPreferencesPicker()
 		{
 			InitializeComponent();
+			AvailableSystems = new SystemLookup().AllSystems.ToList();
 		}
+
+		private readonly List<SystemLookup.SystemInfo> AvailableSystems;
 
 		public string FileExtension { get; set; }
 		public string OriginalPreference { get; set; }
@@ -27,8 +31,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PlatformDropdown.SelectedIndex > 0)
 				{
-					return GlobalWin.MainForm.SupportedPlatforms
-						.FirstOrDefault(x => x.Value == PlatformDropdown.SelectedItem.ToString()).Key;
+					return AvailableSystems
+						.FirstOrDefault(x => x.SystemId == PlatformDropdown.SelectedItem.ToString()).FullName;
 				}
 
 				return string.Empty;
@@ -38,9 +42,9 @@ namespace BizHawk.Client.EmuHawk
 		private void PopulatePlatforms()
 		{
 			PlatformDropdown.Items.Add("Ask me on load");
-			foreach (var platform in GlobalWin.MainForm.SupportedPlatforms)
+			foreach (var platform in AvailableSystems)
 			{
-				PlatformDropdown.Items.Add(platform.Value);
+				PlatformDropdown.Items.Add(platform.FullName);
 			}
 		}
 
@@ -52,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var val in dispVals)
 				{
-					yield return GlobalWin.MainForm.SupportedPlatforms.FirstOrDefault(x => x.Value == val).Key ?? string.Empty;
+					yield return AvailableSystems.FirstOrDefault(x => x.FullName == val).SystemId ?? string.Empty;
 				}
 			}
 		}
@@ -64,11 +68,11 @@ namespace BizHawk.Client.EmuHawk
 			var selectedSystemId = Global.Config.PreferredPlatformsForExtensions[FileExtension];
 			if (!string.IsNullOrEmpty(selectedSystemId))
 			{
-				var selectedDispString = GlobalWin.MainForm.SupportedPlatforms[selectedSystemId];
+				var selectedSystem = AvailableSystems.FirstOrDefault(s => s.SystemId == selectedSystemId);
 
 				var selectedItem = PlatformDropdown.Items
 					.OfType<string>()
-					.FirstOrDefault(item => item == selectedDispString);
+					.FirstOrDefault(item => item == (selectedSystem != null ? selectedSystem.FullName : string.Empty));
 
 				if (selectedItem != null)
 				{

@@ -44,6 +44,9 @@ namespace BizHawk.Client.Common
 					{
 						break;
 					}
+						// in BK2, this is part of the input log, and not involved with the core state at all
+						// accordingly, this case (for special neshawk format frame numbers) is irrelevant
+						// probably
 					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
 						var strs = line.Split('x');

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		byte ReadController1()
 		{
-			isLag = false;
+			_isLag = false;
 
 			if (InputPortSelection == InputPortMode.Left)
 			{
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		byte ReadController2()
 		{
-			isLag = false;
+			_isLag = false;
 
 			if (InputPortSelection == InputPortMode.Left)
 			{
@@ -115,11 +115,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		}
 
 		public int Frame { get { return frame; } set { frame = value; } }
-		public int LagCount { get { return lagCount; } set { lagCount = value; } }
-		public bool IsLagFrame { get { return isLag; } }
-		
 		int frame;
-		int lagCount = 0;
-		bool isLag = true;
 	}
 }

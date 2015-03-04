@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -31,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			int* p = (int*)_locs[name];
 			*p = val;
 		}
-		public Dictionary<string, int> GetAllRegisters()
+		public Dictionary<string, RegisterValue> GetAllRegisters()
 		{
-			Dictionary<string, int> ret = new Dictionary<string,int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			foreach (var kvp in _locs)
 			{
 				ret[kvp.Key] = GetRegister(kvp.Key);

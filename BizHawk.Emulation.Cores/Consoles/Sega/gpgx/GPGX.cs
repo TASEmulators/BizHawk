@@ -22,10 +22,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "r874",
-		portedUrl: "https://code.google.com/p/genplus-gx/"
+		portedUrl: "https://code.google.com/p/genplus-gx/",
+		singleInstance: true
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, IMemoryDomains,
-		IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable,
+		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
 	{
 		static GPGX AttachedCore = null;
 
@@ -60,6 +61,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
+			ServiceProvider = new BasicServiceProvider(this);
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
 			// this can influence some things internally
 			string romextension = "GEN";
 
@@ -162,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.gpgx_set_input_callback(InputCallback);
 
 				if (CD != null)
-					CoreComm.UsesDriveLed = true;
+					DriveLightEnabled = true;
 
 				PutSettings((GPGXSettings)Settings ?? new GPGXSettings());
 
@@ -175,6 +178,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw;
 			}
 		}
+
+		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public bool DriveLightEnabled { get; private set;}
+		public bool DriveLightOn { get; private set; }
 
 		/// <summary>
 		/// core callback for file loading
@@ -312,7 +320,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ret.readcallback = cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
 
-			var ses = CD.TOC.Sessions[0];
+			var ses = CD.Structure.Sessions[0];
 			int ntrack = ses.Tracks.Count;
 
 			// bet you a dollar this is all wrong
@@ -321,7 +329,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (i < ntrack)
 				{
 					ret.tracks[i].start = ses.Tracks[i].Indexes[1].aba - 150;
-					ret.tracks[i].end = ses.Tracks[i].length_aba + ret.tracks[i].start;
+					ret.tracks[i].end = ses.Tracks[i].LengthInSectors + ret.tracks[i].start;
 					if (i == ntrack - 1)
 					{
 						ret.end = ret.tracks[i].end;
@@ -375,9 +383,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		// core callback for input
 		void input_callback()
 		{
-			CoreComm.InputCallback.Call();
+			InputCallbacks.Call();
 			IsLagFrame = false;
 		}
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
+
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		private readonly TraceBuffer _tracer = new TraceBuffer();
 
 		#endregion
 
@@ -404,8 +418,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Frame++;
 			drivelight = false;
 
-			RefreshMemCallbacks();
-
 			LibGPGX.gpgx_advance();
 			update_video();
 			update_audio();
@@ -414,7 +426,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LagCount++;
 
 			if (CD != null)
-				CoreComm.DriveLED = drivelight;
+				DriveLightOn = drivelight;
 		}
 
 		public int Frame { get; private set; }
@@ -480,18 +492,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		public void ClearSaveRam()
-		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(typeof(GPGX).ToString());
-			}
-			else
-			{
-				LibGPGX.gpgx_clear_sram();
-			}
-		}
-
 		public bool SaveRamModified
 		{
 			get
@@ -507,10 +507,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LibGPGX.gpgx_get_sram(ref area, ref size);
 					return size > 0 && area != IntPtr.Zero;
 				}
-			}
-			set
-			{
-				throw new Exception();
 			}
 		}
 
@@ -588,7 +584,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region debugging tools
 
-		public MemoryDomainList MemoryDomains { get; private set; }
+		private IMemoryDomains MemoryDomains;
 
 		unsafe void SetMemoryDomains()
 		{
@@ -603,43 +599,61 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				string name = Marshal.PtrToStringAnsi(pname);
 				if (name == "VRAM")
 				{
+					// vram pokes need to go through hook which invalidates cached tiles
 					byte* p = (byte*)area;
 					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-						delegate(int addr)
+						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
 							return p[addr ^ 1];
 						},
-						delegate(int addr, byte val)
+						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							LibGPGX.gpgx_poke_vram(addr ^ 1, val);
-						}));
+							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
+						},
+						byteSize: 2));
 				}
+				
 				else
 				{
-					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area));
+					var byteSize = name.Contains("Z80") ? 1 : 2;
+					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
 				}
 			}
-			MemoryDomains = new MemoryDomainList(mm, 0);
+			MemoryDomains = new MemoryDomainList(mm);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
 
-
-		public Dictionary<string, int> GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
 
 			int n = LibGPGX.gpgx_getregs(regs);
 			if (n > regs.Length)
 				throw new InvalidOperationException("A buffer overrun has occured!");
-			var ret = new Dictionary<string, int>();
+			var ret = new Dictionary<string, RegisterValue>();
 			for (int i = 0; i < n; i++)
-				ret[Marshal.PtrToStringAnsi(regs[i].Name)] = regs[i].Value;
+			{
+				// el hacko
+				string name = Marshal.PtrToStringAnsi(regs[i].Name);
+				byte size = 32;
+				if (name.Contains("68K SR") || name.StartsWith("Z80"))
+					size = 16;
+				ret[Marshal.PtrToStringAnsi(regs[i].Name)] =
+					new RegisterValue { BitSize = size, Value = (ulong)regs[i].Value };
+			}
 			return ret;
 		}
 
+		public bool CanStep(StepType type) { return false; }
+
+		[FeatureNotImplemented]
+		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
@@ -651,23 +665,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LibGPGX.gpgx_flush_vram(); // fully regenerate internal caches as needed
 		}
 
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
+
 		LibGPGX.mem_cb ExecCallback;
 		LibGPGX.mem_cb ReadCallback;
 		LibGPGX.mem_cb WriteCallback;
 
 		void InitMemCallbacks()
 		{
-			ExecCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallExecute(a));
-			ReadCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallRead(a));
-			WriteCallback = new LibGPGX.mem_cb(a => CoreComm.MemoryCallbackSystem.CallWrite(a));
+			ExecCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallExecutes(a));
+			ReadCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallReads(a));
+			WriteCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallWrites(a));
+			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
 		}
 
 		void RefreshMemCallbacks()
 		{
 			LibGPGX.gpgx_set_mem_callback(
-				CoreComm.MemoryCallbackSystem.HasReads ? ReadCallback : null,
-				CoreComm.MemoryCallbackSystem.HasWrites ? WriteCallback : null,
-				CoreComm.MemoryCallbackSystem.HasExecutes ? ExecCallback : null);
+				MemoryCallbacks.HasReads ? ReadCallback : null,
+				MemoryCallbacks.HasWrites ? WriteCallback : null,
+				MemoryCallbacks.HasExecutes ? ExecCallback : null);
 		}
 
 		void KillMemCallbacks()
@@ -686,6 +704,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (SaveRamModified)
 					DisposedSaveRam = CloneSaveRam();
 				KillMemCallbacks();
+				if (CD != null)
+				{
+					CD.Dispose();
+				}
 				AttachedCore = null;
 				disposed = true;
 			}
@@ -728,8 +750,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		#region VideoProvider
 
 		public DisplayType DisplayType { get; private set; }
-
-		public IVideoProvider VideoProvider { get { return this; } }
 
 		int[] vidbuff = new int[0];
 		int vwidth;

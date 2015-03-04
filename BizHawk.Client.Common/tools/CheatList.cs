@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -63,7 +64,7 @@ namespace BizHawk.Client.Common
 			get { return _cheatList[index]; }
 		}
 
-		public Cheat this[MemoryDomain domain, int address]
+		public Cheat this[MemoryDomain domain, long address]
 		{
 			get
 			{
@@ -193,7 +194,7 @@ namespace BizHawk.Client.Common
 			return _cheatList.Any(c => c == cheat);
 		}
 
-		public bool Contains(MemoryDomain domain, int address)
+		public bool Contains(MemoryDomain domain, long address)
 		{
 			return _cheatList.Any(c => c.Domain == domain && c.Address == address);
 		}
@@ -248,7 +249,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public bool IsActive(MemoryDomain domain, int address)
+		public bool IsActive(MemoryDomain domain, long address)
 		{
 			return _cheatList.Any(cheat => 
 					!cheat.IsSeparator &&
@@ -262,7 +263,7 @@ namespace BizHawk.Client.Common
 		/// But if the cheat is multi-byte, this will return just the cheat value for that specific byte
 		/// </summary>
 		/// <returns>Returns null if address is not a part of a cheat, else returns the value of that specific byte only</returns>
-		public byte? GetByteValue(MemoryDomain domain, int addr)
+		public byte? GetByteValue(MemoryDomain domain, long addr)
 		{
 			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
 			if (activeCheat == (Cheat)null)
@@ -280,7 +281,7 @@ namespace BizHawk.Client.Common
 		/// <param name="addr">The starting address for which you will get the number of bytes
 		/// <param name="size">The number of bytes of the cheat to return</param>
 		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>
-		public int? GetCheatValue(MemoryDomain domain, int addr, Watch.WatchSize size)
+		public int? GetCheatValue(MemoryDomain domain, long addr, Watch.WatchSize size)
 		{
 			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
 			if (activeCheat == (Cheat)null)
@@ -456,7 +457,7 @@ namespace BizHawk.Client.Common
 								compare = int.Parse(vals[2], NumberStyles.HexNumber);
 							}
 
-							var domain = (Global.Emulator as IMemoryDomains).MemoryDomains[vals[3]];
+							var domain = Global.Emulator.AsMemoryDomains()[vals[3]];
 							var enabled = vals[4] == "1";
 							var name = vals[5];
 

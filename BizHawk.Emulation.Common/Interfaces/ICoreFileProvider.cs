@@ -1,22 +1,14 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace BizHawk.Emulation.Common
 {
 	public interface ICoreFileProvider
 	{
 		/// <summary>
-		/// Opens a firmware according to the specified firmware ID key
-		/// </summary>
-		Stream OpenFirmware(string sysId, string key);
-
-		/// <summary>
-		/// Returns the path to a firmware according to the specified firmware ID key. Use OpenFirmware instead
-		/// </summary>
-		string PathFirmware(string sysId, string key);
-
-		/// <summary>
 		/// Produces a path to the requested file, expected to be parallel to the running rom. for example: cue+bin files or sfc+pcm (MSU-1 games)
 		/// </summary>
+		[Obsolete]
 		string PathSubfile(string fname);
 
 		/// <summary>
@@ -35,6 +27,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not foun</param>
 		/// <param name="msg">message to show if fail to get</param>
 		/// <returns></returns>
+		[Obsolete]
 		string GetFirmwarePath(string sysID, string firmwareID, bool required, string msg = null);
 
 		/// <summary>
