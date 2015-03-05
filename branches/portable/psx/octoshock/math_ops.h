@@ -1,6 +1,9 @@
 #pragma once
 
+#ifdef _MSC_VER
+//I don't know if this is the correct ifdef to use for this (I could just add one) but 
 #include <intrin.h>
+#endif
 
 //
 // Result is defined for all possible inputs(including 0).
