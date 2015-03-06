@@ -29,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
-		private bool fontSizeSet = false;
 		private int fontWidth;
 		private int fontHeight;
 
@@ -74,8 +73,13 @@ namespace BizHawk.Client.EmuHawk
 			DataSize = 1;
 
 			var font = new Font("Courier New", 8);
-			fontWidth = (int)font.Size;
-			fontHeight = font.Height + 1;
+
+			// Measure the font. There seems to be some extra horizontal padding on the first
+			// character so we'll see how much the width increases on the second character.
+			var fontSize1 = TextRenderer.MeasureText("0", font);
+			var fontSize2 = TextRenderer.MeasureText("00", font);
+			fontWidth = fontSize2.Width - fontSize1.Width;
+			fontHeight = fontSize1.Height;
 
 			InitializeComponent();
 			AddressesLabel.BackColor = Color.Transparent;
@@ -1988,14 +1992,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MemoryViewerBox_Paint(object sender, PaintEventArgs e)
 		{
-			// Update font size, as drawing width seems system-dependent.
-			if (!fontSizeSet)
-			{
-				fontSizeSet = true;
-				var fontSize = e.Graphics.MeasureString("x", AddressesLabel.Font);
-				fontWidth = (int)Math.Round(fontSize.Width / 1.5);
-			}
-
 			var activeCheats = Global.CheatList.Where(x => x.Enabled);
 			foreach (var cheat in activeCheats)
 			{
