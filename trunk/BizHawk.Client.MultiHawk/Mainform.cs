@@ -85,6 +85,8 @@ namespace BizHawk.Client.MultiHawk
 
 			Closing += (o, e) =>
 			{
+				Global.MovieSession.Movie.Stop();
+
 				foreach (var ew in EmulatorWindows.ToList())
 				{
 					ew.ShutDown();
@@ -1081,7 +1083,9 @@ namespace BizHawk.Client.MultiHawk
 				RecordMovieMenuItem.Enabled =
 				EmulatorWindows.Any();
 
-			StopMovieMenuItem.Enabled = Global.MovieSession.Movie.IsActive;
+			StopMovieMenuItem.Enabled =
+				RestartMovieMenuItem.Enabled =
+				Global.MovieSession.Movie.IsActive;
 		}
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
@@ -1487,7 +1491,15 @@ namespace BizHawk.Client.MultiHawk
 
 		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
 		{
-			LoadLastMovieContextMenuItem.Enabled = !Global.Config.RecentMovies.Empty;
+			LoadLastMovieContextMenuItem.Visible = !Global.Config.RecentMovies.Empty;
+			PlayMovieContextMenuItem.Visible =
+				RecordMovieContextMenuItem.Visible =
+				!Global.MovieSession.Movie.IsActive;
+
+			StopMovieContextMenuItem.Visible =
+				RestartMovieContextMenuItem.Visible =
+				Global.MovieSession.Movie.IsActive;
+
 		}
 
 		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1495,6 +1507,15 @@ namespace BizHawk.Client.MultiHawk
 			RecentMovieSubMenu.DropDownItems.Clear();
 			RecentMovieSubMenu.DropDownItems.AddRange(
 				Global.Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, autoload: true));
+		}
+
+		private void RestartMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				StartNewMovie(Global.MovieSession.Movie, false);
+				AddMessage("Replaying movie file in read-only mode");
+			}
 		}
 	}
 }
