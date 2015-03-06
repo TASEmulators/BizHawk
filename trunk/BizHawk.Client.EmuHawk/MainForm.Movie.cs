@@ -14,6 +14,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
+		public void StartNewMovie(string path, bool record)
+		{
+			StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+		}
+
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
 			if (movie.IsActive)

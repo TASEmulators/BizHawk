@@ -1038,7 +1038,21 @@ namespace BizHawk.Client.MultiHawk
 		{
 			if (EmulatorWindows.Any())
 			{
-				FameStatusBarLabel.Text = EmulatorWindows.Master.Emulator.Frame.ToString();
+				string frame = EmulatorWindows.Master.Emulator.Frame.ToString();
+
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					if (Global.MovieSession.Movie.IsFinished)
+					{
+						frame += string.Format(" / {0} (finished)", Global.MovieSession.Movie.FrameCount);
+					}
+					else if (Global.MovieSession.Movie.IsPlaying)
+					{
+						frame += string.Format(" / {0}", Global.MovieSession.Movie.FrameCount);
+					}
+				}
+
+				FameStatusBarLabel.Text = frame;
 			}
 		}
 
@@ -1069,12 +1083,14 @@ namespace BizHawk.Client.MultiHawk
 		{
 			new RecordMovie().ShowDialog();
 			UpdateMainText();
+			UpdateAfterFrameChanged();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			new PlayMovie().ShowDialog();
 			UpdateMainText();
+			UpdateAfterFrameChanged();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -1082,6 +1098,7 @@ namespace BizHawk.Client.MultiHawk
 			Global.MovieSession.StopMovie(true);
 			SetMainformMovieInfo();
 			UpdateMainText();
+			UpdateAfterFrameChanged();
 			//UpdateStatusSlots(); // TODO
 		}
 
