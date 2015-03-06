@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, false);
+					StartNewMovie(Global.MovieSession.Movie, false);
 					GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
 				}
 			}
