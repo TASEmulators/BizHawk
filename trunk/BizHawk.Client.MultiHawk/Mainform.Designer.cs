@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.MainformMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewSessionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,6 +54,8 @@
 			this.RecordMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PlayMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StopMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RecentMovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.ToggleReadonlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.configToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,11 +67,15 @@
 			this.MainStatusBar = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.FameStatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.StatusBarMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
+			this.StatusBarMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.LoadLastMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RecordMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.WorkspacePanel.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// MainformMenu
@@ -173,7 +180,7 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator5
 			// 
@@ -246,6 +253,7 @@
             this.RecordMovieMenuItem,
             this.PlayMovieMenuItem,
             this.StopMovieMenuItem,
+            this.RecentMovieSubMenu,
             this.toolStripSeparator2,
             this.ToggleReadonlyMenuItem});
 			this.MovieSubMenu.Name = "MovieSubMenu";
@@ -276,6 +284,20 @@
 			this.StopMovieMenuItem.Size = new System.Drawing.Size(168, 22);
 			this.StopMovieMenuItem.Text = "&Stop Movie";
 			this.StopMovieMenuItem.Click += new System.EventHandler(this.StopMovieMenuItem_Click);
+			// 
+			// RecentMovieSubMenu
+			// 
+			this.RecentMovieSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator8});
+			this.RecentMovieSubMenu.Name = "RecentMovieSubMenu";
+			this.RecentMovieSubMenu.Size = new System.Drawing.Size(168, 22);
+			this.RecentMovieSubMenu.Text = "Recent";
+			this.RecentMovieSubMenu.DropDownOpened += new System.EventHandler(this.RecentMovieSubMenu_DropDownOpened);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator2
 			// 
@@ -367,12 +389,6 @@
 			this.FameStatusBarLabel.Size = new System.Drawing.Size(13, 17);
 			this.FameStatusBarLabel.Text = "0";
 			// 
-			// StatusBarMessageLabel
-			// 
-			this.StatusBarMessageLabel.Name = "StatusBarMessageLabel";
-			this.StatusBarMessageLabel.Size = new System.Drawing.Size(35, 17);
-			this.StatusBarMessageLabel.Text = "Hello";
-			// 
 			// PlayRecordStatusButton
 			// 
 			this.PlayRecordStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -382,11 +398,43 @@
 			this.PlayRecordStatusButton.Size = new System.Drawing.Size(29, 20);
 			this.PlayRecordStatusButton.Text = "No movie is active";
 			// 
+			// StatusBarMessageLabel
+			// 
+			this.StatusBarMessageLabel.Name = "StatusBarMessageLabel";
+			this.StatusBarMessageLabel.Size = new System.Drawing.Size(35, 17);
+			this.StatusBarMessageLabel.Text = "Hello";
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LoadLastMovieContextMenuItem,
+            this.RecordMovieContextMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(161, 48);
+			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+			// 
+			// LoadLastMovieContextMenuItem
+			// 
+			this.LoadLastMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.Recent;
+			this.LoadLastMovieContextMenuItem.Name = "LoadLastMovieContextMenuItem";
+			this.LoadLastMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.LoadLastMovieContextMenuItem.Text = "Load Last Movie";
+			this.LoadLastMovieContextMenuItem.Click += new System.EventHandler(this.LoadLastMovieMenuItem_Click);
+			// 
+			// RecordMovieContextMenuItem
+			// 
+			this.RecordMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.RecordHS;
+			this.RecordMovieContextMenuItem.Name = "RecordMovieContextMenuItem";
+			this.RecordMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.RecordMovieContextMenuItem.Text = "Record Movie";
+			this.RecordMovieContextMenuItem.Click += new System.EventHandler(this.RecordMovieMenuItem_Click);
+			// 
 			// Mainform
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(655, 431);
+			this.ContextMenuStrip = this.contextMenuStrip1;
 			this.Controls.Add(this.WorkspacePanel);
 			this.Controls.Add(this.MainformMenu);
 			this.MainMenuStrip = this.MainformMenu;
@@ -399,6 +447,7 @@
 			this.WorkspacePanel.PerformLayout();
 			this.MainStatusBar.ResumeLayout(false);
 			this.MainStatusBar.PerformLayout();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -444,6 +493,11 @@
 		private System.Windows.Forms.ToolStripMenuItem _2xMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem _3xMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem _4xMenuItem;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem LoadLastMovieContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RecentMovieSubMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripMenuItem RecordMovieContextMenuItem;
 	}
 }
 

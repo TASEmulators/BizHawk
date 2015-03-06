@@ -118,6 +118,11 @@ namespace BizHawk.Client.MultiHawk
 			if (Global.Config.RecentRomSessions.AutoLoad)
 			{
 				LoadRomSessionFromRecent(Global.Config.RecentRomSessions.MostRecent);
+
+				if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
+				{
+					LoadMoviesFromRecent(Global.Config.RecentMovies.MostRecent);
+				}
 			}
 
 			if (Global.Config.SaveWindowPosition && Global.Config.MainWidth > 0 && Global.Config.MainHeight > 0)
@@ -1115,6 +1120,20 @@ namespace BizHawk.Client.MultiHawk
 			}
 		}
 
+		private void LoadMoviesFromRecent(string path)
+		{
+			if (File.Exists(path))
+			{
+				var movie = MovieService.Get(path);
+				Global.MovieSession.ReadOnly = true;
+				StartNewMovie(movie, false);
+			}
+			else
+			{
+				Global.Config.RecentMovies.HandleLoadError(path);
+			}
+		}
+
 		public void SetMainformMovieInfo()
 		{
 			if (Global.MovieSession.Movie.IsPlaying)
@@ -1459,6 +1478,23 @@ namespace BizHawk.Client.MultiHawk
 				ew.FrameBufferResized();
 				ew.Render();
 			}
+		}
+
+		private void LoadLastMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadMoviesFromRecent(Global.Config.RecentMovies.MostRecent);
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			LoadLastMovieContextMenuItem.Enabled = !Global.Config.RecentMovies.Empty;
+		}
+
+		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentMovieSubMenu.DropDownItems.Clear();
+			RecentMovieSubMenu.DropDownItems.AddRange(
+				Global.Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, autoload: true));
 		}
 	}
 }
