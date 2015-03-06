@@ -32,6 +32,8 @@ namespace BizHawk.Client.MultiHawk
 
 		public Mainform(string[] args)
 		{
+			BizHawk.Client.Common.GLManager.CreateInstance();
+
 			InitializeComponent();
 			_throttle = new Throttle();
 			_inputManager = new InputManager(this);
@@ -317,7 +319,7 @@ namespace BizHawk.Client.MultiHawk
 					Emulator = loader.LoadedEmulator,
 
 					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(),
-					GLManager = new GLManager(),
+					GLManager = BizHawk.Client.Common.GLManager.Instance,
 					Game = loader.Game,
 					CurrentRomPath = loader.CanonicalFullPath
 				};

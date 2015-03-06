@@ -1,16 +1,25 @@
+using System;
 using BizHawk.Bizware.BizwareGL;
 
 
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// This class manages OpenGL contexts, in an effort to minimize context changes.
+	/// This singleton class manages OpenGL contexts, in an effort to minimize context changes.
 	/// </summary>
 	public class GLManager
 	{
-		public GLManager()
+		private GLManager()
 		{
 
+		}
+
+		public static GLManager Instance { get; private set; }
+
+		public static void CreateInstance()
+		{
+			if (Instance != null) throw new InvalidOperationException("Attempt to create more than one GLManager");
+			Instance = new GLManager();
 		}
 
 		public ContextRef CreateGLContext()
@@ -56,7 +65,7 @@ namespace BizHawk.Client.Common
 			if (cr.gc != null)
 			{
 				//TODO - this is checking the current context inside to avoid an extra NOP context change. make this optional or remove it, since we're tracking it here
-				cr.gc.Begin();
+				 cr.gc.Begin();
 			}
 			if (cr.gl != null)
 			{
