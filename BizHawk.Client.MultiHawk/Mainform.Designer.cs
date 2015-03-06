@@ -54,6 +54,7 @@
 			this.RecordMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PlayMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StopMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RestartMovieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentMovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -70,8 +71,11 @@
 			this.PlayRecordStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.StatusBarMessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.LoadLastMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecordMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PlayMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LoadLastMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.StopMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RestartMovieContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.WorkspacePanel.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
@@ -180,7 +184,7 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator5
 			// 
@@ -253,6 +257,7 @@
             this.RecordMovieMenuItem,
             this.PlayMovieMenuItem,
             this.StopMovieMenuItem,
+            this.RestartMovieMenuItem,
             this.RecentMovieSubMenu,
             this.toolStripSeparator2,
             this.ToggleReadonlyMenuItem});
@@ -284,6 +289,14 @@
 			this.StopMovieMenuItem.Size = new System.Drawing.Size(168, 22);
 			this.StopMovieMenuItem.Text = "&Stop Movie";
 			this.StopMovieMenuItem.Click += new System.EventHandler(this.StopMovieMenuItem_Click);
+			// 
+			// RestartMovieMenuItem
+			// 
+			this.RestartMovieMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.restart;
+			this.RestartMovieMenuItem.Name = "RestartMovieMenuItem";
+			this.RestartMovieMenuItem.Size = new System.Drawing.Size(168, 22);
+			this.RestartMovieMenuItem.Text = "Restart Movie";
+			this.RestartMovieMenuItem.Click += new System.EventHandler(this.RestartMovieMenuItem_Click);
 			// 
 			// RecentMovieSubMenu
 			// 
@@ -407,11 +420,30 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.LoadLastMovieContextMenuItem,
-            this.RecordMovieContextMenuItem});
+            this.RecordMovieContextMenuItem,
+            this.PlayMovieContextMenuItem,
+            this.RestartMovieContextMenuItem,
+            this.StopMovieContextMenuItem,
+            this.LoadLastMovieContextMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(161, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(161, 114);
 			this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+			// 
+			// RecordMovieContextMenuItem
+			// 
+			this.RecordMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.RecordHS;
+			this.RecordMovieContextMenuItem.Name = "RecordMovieContextMenuItem";
+			this.RecordMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.RecordMovieContextMenuItem.Text = "Record Movie";
+			this.RecordMovieContextMenuItem.Click += new System.EventHandler(this.RecordMovieMenuItem_Click);
+			// 
+			// PlayMovieContextMenuItem
+			// 
+			this.PlayMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.Play;
+			this.PlayMovieContextMenuItem.Name = "PlayMovieContextMenuItem";
+			this.PlayMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.PlayMovieContextMenuItem.Text = "Play Movie";
+			this.PlayMovieContextMenuItem.Click += new System.EventHandler(this.PlayMovieMenuItem_Click);
 			// 
 			// LoadLastMovieContextMenuItem
 			// 
@@ -421,13 +453,21 @@
 			this.LoadLastMovieContextMenuItem.Text = "Load Last Movie";
 			this.LoadLastMovieContextMenuItem.Click += new System.EventHandler(this.LoadLastMovieMenuItem_Click);
 			// 
-			// RecordMovieContextMenuItem
+			// StopMovieContextMenuItem
 			// 
-			this.RecordMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.RecordHS;
-			this.RecordMovieContextMenuItem.Name = "RecordMovieContextMenuItem";
-			this.RecordMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
-			this.RecordMovieContextMenuItem.Text = "Record Movie";
-			this.RecordMovieContextMenuItem.Click += new System.EventHandler(this.RecordMovieMenuItem_Click);
+			this.StopMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.Stop;
+			this.StopMovieContextMenuItem.Name = "StopMovieContextMenuItem";
+			this.StopMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.StopMovieContextMenuItem.Text = "Stop Movie";
+			this.StopMovieContextMenuItem.Click += new System.EventHandler(this.StopMovieMenuItem_Click);
+			// 
+			// RestartMovieContextMenuItem
+			// 
+			this.RestartMovieContextMenuItem.Image = global::BizHawk.Client.MultiHawk.Properties.Resources.restart;
+			this.RestartMovieContextMenuItem.Name = "RestartMovieContextMenuItem";
+			this.RestartMovieContextMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.RestartMovieContextMenuItem.Text = "Restart Movie";
+			this.RestartMovieContextMenuItem.Click += new System.EventHandler(this.RestartMovieMenuItem_Click);
 			// 
 			// Mainform
 			// 
@@ -498,6 +538,10 @@
 		private System.Windows.Forms.ToolStripMenuItem RecentMovieSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 		private System.Windows.Forms.ToolStripMenuItem RecordMovieContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem StopMovieContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem PlayMovieContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RestartMovieMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RestartMovieContextMenuItem;
 	}
 }
 
