@@ -675,19 +675,33 @@ namespace BizHawk.Client.MultiHawk
 			//}
 		}
 
-		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
+		public void LoadQuickSave(string quickSlotName)
 		{
-			foreach (var window in EmulatorWindows)
+			try
 			{
-				window.LoadQuickSave(quickSlotName);
+				foreach (var window in EmulatorWindows)
+				{
+					window.LoadQuickSave(quickSlotName);
+				}
+			}
+			catch
+			{
+				MessageBox.Show("Could not load " + quickSlotName);
 			}
 		}
 
 		public void SaveQuickSave(string quickSlotName)
 		{
-			foreach (var window in EmulatorWindows)
+			try
 			{
-				window.SaveQuickSave(quickSlotName);
+				foreach (var window in EmulatorWindows)
+				{
+					window.SaveQuickSave(quickSlotName);
+				}
+			}
+			catch
+			{
+				MessageBox.Show("Could not save " + quickSlotName);
 			}
 		}
 
@@ -701,6 +715,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			// TODO
 			SaveSlotSelectedMessage();
+			UpdateAfterFrameChanged();
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -1217,7 +1232,7 @@ namespace BizHawk.Client.MultiHawk
 			Global.MovieSession.RunQueuedMovie(record);
 
 			SetMainformMovieInfo();
-
+			UpdateAfterFrameChanged();
 			return true;
 		}
 
