@@ -810,6 +810,12 @@
     <Compile Include="tools\Lua\SyncTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\Macros\MacroInput.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Macros\MacroInput.Designer.cs">
+      <DependentUpon>MacroInput.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\BarcodeEntry.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1331,6 +1337,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaWinform.resx">
       <DependentUpon>LuaWinform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Macros\MacroInput.resx">
+      <DependentUpon>MacroInput.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
       <DependentUpon>BarcodeEntry.cs</DependentUpon>

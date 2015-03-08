@@ -381,6 +381,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1752,6 +1753,7 @@
             this.TraceLoggerMenuItem,
             this.DebuggerMenuItem,
             this.TAStudioMenuItem,
+            this.MacroToolMenuItem,
             this.VirtualPadMenuItem,
             this.toolStripSeparator11,
             this.CheatsMenuItem,
@@ -3362,6 +3364,13 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
+			// MacroToolMenuItem
+			// 
+			this.MacroToolMenuItem.Name = "MacroToolMenuItem";
+			this.MacroToolMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.MacroToolMenuItem.Text = "&Macro Tool";
+			this.MacroToolMenuItem.Click += new System.EventHandler(this.MacroToolMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3753,6 +3762,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GenesisGameGenieECDC;
 		private System.Windows.Forms.ToolStripStatusLabel UpdateNotification;
 		private System.Windows.Forms.ToolStripMenuItem PSXControllerSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem MacroToolMenuItem;
 	}
 }
 
