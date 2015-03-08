@@ -253,7 +253,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		#region IStatable
 
-		public bool BinarySaveStatesPreferred { get { return false; } }
+		public bool BinarySaveStatesPreferred { get { return true; } }
 
 		[FeatureNotImplemented]
 		public void SaveStateText(TextWriter writer)
