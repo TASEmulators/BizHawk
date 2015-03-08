@@ -45,7 +45,7 @@ namespace Jellyfish.Virtu
             Joystick1DownLeftKey = reader.ReadInt32();
             Joystick1DownKey = reader.ReadInt32();
             Joystick1DownRightKey = reader.ReadInt32();
-            Button0Key = reader.ReadInt32();
+            Button0Key = reader.ReadUInt32();
             Button1Key = reader.ReadInt32();
             Button2Key = reader.ReadInt32();
         }
@@ -105,11 +105,13 @@ namespace Jellyfish.Virtu
         public int Joystick1DownLeftKey { get; set; }
         public int Joystick1DownKey { get; set; }
         public int Joystick1DownRightKey { get; set; }
-        public int Button0Key { get; set; }
+        public ulong Button0Key { get; set; }
         public int Button1Key { get; set; }
         public int Button2Key { get; set; }
 
         public bool IsAnyKeyDown { get { return _keyboardService.IsAnyKeyDown; } }
+        public bool IsShiftKeyDown { get { return _keyboardService.IsShiftKeyDown; } }
+        public bool IsControlKeyDown { get { return _keyboardService.IsControlKeyDown; } }
         public int Latch { get { return _latch; } set { _latch = value; Strobe = true; } }
         public bool Strobe { get; private set; }
 
