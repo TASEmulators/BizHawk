@@ -211,7 +211,7 @@
 			this.Controls.Add(this.UndoButton);
 			this.Controls.Add(this.HistoryView);
 			this.Name = "UndoHistoryForm";
-			this.Text = "UndoHistoryForm";
+			this.Text = "Undo History";
 			this.RightClickMenu.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.MaxStepsNum)).EndInit();
 			this.ResumeLayout(false);

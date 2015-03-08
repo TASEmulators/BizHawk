@@ -927,6 +927,12 @@
     <Compile Include="tools\TAStudio\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="tools\TAStudio\PatternsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\PatternsForm.Designer.cs">
+      <DependentUpon>PatternsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -1380,6 +1386,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\MarkerControl.resx">
       <DependentUpon>MarkerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\PatternsForm.resx">
+      <DependentUpon>PatternsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
       <DependentUpon>PlaybackBox.cs</DependentUpon>

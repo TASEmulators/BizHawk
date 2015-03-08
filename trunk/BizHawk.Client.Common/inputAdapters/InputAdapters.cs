@@ -383,7 +383,7 @@ namespace BizHawk.Client.Common
 		private List<string> _justPressed = new List<string>();
 	}
 
-	/// SuuperW: I'm leaving the old class in case I accidentally screwed something up.
+	/// SuuperW: Old code commented
 	//public class AutoFireStickyXorAdapter : IController, ISticky
 	//{
 	//	public int On { get; set; }
@@ -536,6 +536,8 @@ namespace BizHawk.Client.Common
 	//}
 	public class AutoFireStickyXorAdapter : IController, ISticky
 	{
+		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
+		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
 		private int On;
 		private int Off;
 		public void SetOnOffPatternFromConfig()
@@ -583,7 +585,7 @@ namespace BizHawk.Client.Common
 		public float GetFloat(string name)
 		{
 			if (_floatPatterns.ContainsKey(name))
-				return _floatPatterns[name].GetNextValue();
+				return _floatPatterns[name].PeekNextValue();
 
 			if (Source == null)
 				return 0;
@@ -603,8 +605,11 @@ namespace BizHawk.Client.Common
 				var source = Source[button];
 				bool patternValue = false;
 				if (_boolPatterns.ContainsKey(button))
-					patternValue = _boolPatterns[button].GetNextValue();
+				{ // I can't figure a way to determine right here if it should Peek or Get.
+					patternValue = _boolPatterns[button].PeekNextValue();
+				}
 				source ^= patternValue;
+
 				return source;
 			}
 		}
@@ -660,6 +665,14 @@ namespace BizHawk.Client.Common
 		{
 			_boolPatterns.Clear();
 			_floatPatterns.Clear();
+		}
+
+		public void IncrementLoops(bool lagged)
+		{
+			for (int i = 0; i < _boolPatterns.Count; i++)
+				_boolPatterns.ElementAt(i).Value.GetNextValue(lagged);
+			for (int i = 0; i < _floatPatterns.Count; i++)
+				_floatPatterns.ElementAt(i).Value.GetNextValue(lagged);
 		}
 
 		// SuuperW: What does this even do? I set a breakpoint inside the loop and it wasn't reached.

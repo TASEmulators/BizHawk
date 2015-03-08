@@ -318,6 +318,9 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)
 				ChangeLog.EndBatch();
+
+			if (Global.Emulator.Frame < _log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
+				this.SwitchToPlay();
 		}
 		public void ToggleBoolState(int frame, string buttonName)
 		{
