@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		isPorted: true,
 		isReleased: false
 		)]
-	public partial class AppleII : IEmulator
+	public partial class AppleII : IEmulator, IStatable
 	{
 		[CoreConstructor("AppleII")]
 		public AppleII(CoreComm comm, GameInfo game, byte[] rom, object Settings)
@@ -250,6 +250,56 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		}
 
 		#endregion
-		
+
+		#region IStatable
+
+		public bool BinarySaveStatesPreferred { get { return false; } }
+
+		[FeatureNotImplemented]
+		public void SaveStateText(TextWriter writer)
+		{
+
+		}
+
+		[FeatureNotImplemented]
+		public void LoadStateText(TextReader reader)
+		{
+
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			_machine.SaveState(writer);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			_machine.LoadState(reader);
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			if (_stateBuffer == null)
+			{
+				var stream = new MemoryStream();
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				_stateBuffer = stream.ToArray();
+				writer.Close();
+				return _stateBuffer;
+			}
+			else
+			{
+				var stream = new MemoryStream(_stateBuffer);
+				var writer = new BinaryWriter(stream);
+				SaveStateBinary(writer);
+				writer.Close();
+				return _stateBuffer;
+			}
+		}
+
+		private byte[] _stateBuffer;
+
+		#endregion
 	}
 }

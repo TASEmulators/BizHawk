@@ -204,6 +204,23 @@ namespace Jellyfish.Virtu
             }
         }
 
+		// TODO: don't copy paste
+		public void LoadState(BinaryReader reader)
+		{
+			string signature = reader.ReadString();
+			var version = new Version(reader.ReadString());
+			if ((signature != StateSignature) || (version != new Version(Machine.Version))) // avoid state version mismatch (for now)
+			{
+				throw new InvalidOperationException();
+			}
+			foreach (var component in Components)
+			{
+				_debugService.WriteMessage("Loading machine '{0}'", component.GetType().Name);
+				component.LoadState(reader, version);
+				//_debugService.WriteMessage("Loaded machine '{0}'", component.GetType().Name);
+			}
+		}
+
         private void LoadState(Stream stream)
         {
             using (var reader = new BinaryReader(stream))
@@ -227,6 +244,18 @@ namespace Jellyfish.Virtu
         {
             _storageService.Save(Machine.StateFileName, stream => SaveState(stream));
         }
+
+		public void SaveState(BinaryWriter writer)
+		{
+			writer.Write(StateSignature);
+			writer.Write(Machine.Version);
+			foreach (var component in Components)
+			{
+				_debugService.WriteMessage("Saving machine '{0}'", component.GetType().Name);
+				component.SaveState(writer);
+				//_debugService.WriteMessage("Saved machine '{0}'", component.GetType().Name);
+			}
+		}
 
         private void SaveState(Stream stream)
         {
