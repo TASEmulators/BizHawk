@@ -57,6 +57,12 @@ namespace BizHawk.Client.EmuHawk
 		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 		public static Color AnalogEdit_Col = Color.FromArgb(0x909070); // SuuperW: When editing an analog value, it will be a gray color.
 
+		private Emulation.Common.ControllerDefinition controllerType
+		{ get { return Global.MovieSession.MovieControllerAdapter.Type; } }
+
+		public AutoPatternBool[] BoolPatterns;
+		public AutoPatternFloat[] FloatPatterns;
+
 		#region Query callbacks
 
 		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap)
@@ -245,9 +251,43 @@ namespace BizHawk.Client.EmuHawk
 		{
 			e.Column.Emphasis ^= true;
 
-			Global.StickyXORAdapter.SetSticky(e.Column.Name, e.Column.Emphasis);
+			UpdateAutoFire(e.Column.Name, e.Column.Emphasis);
 
 			RefreshTasView();
+		}
+		private void UpdateAutoFire()
+		{
+			for (int i = 2; i < TasView.AllColumns.Count; i++)
+				UpdateAutoFire(TasView.AllColumns[i].Name, TasView.AllColumns[i].Emphasis);
+		}
+		public void UpdateAutoFire(string button, bool? isOn)
+		{
+			if (!isOn.HasValue) // No value means don't change whether it's on or off.
+				isOn = TasView.AllColumns.Find(c => c.Name == button).Emphasis;
+
+			int index = 0;
+			if (autoHoldToolStripMenuItem.Checked) index = 1;
+			if (autoFireToolStripMenuItem.Checked) index = 2;
+			if (controllerType.BoolButtons.Contains(button))
+			{
+				if (index == 0)
+					index = controllerType.BoolButtons.IndexOf(button);
+				else
+					index += controllerType.BoolButtons.Count - 1;
+				AutoPatternBool p = BoolPatterns[index];
+				Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
+			}
+			else
+			{
+				if (index == 0)
+					index = controllerType.FloatControls.IndexOf(button);
+				else
+					index += controllerType.FloatControls.Count - 1;
+				float? value = null;
+				if (isOn.Value) value = 0f;
+				AutoPatternFloat p = FloatPatterns[index];
+				Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
+			}
 		}
 
 		private void TasView_ColumnReordered(object sender, InputRoll.ColumnReorderedEventArgs e)

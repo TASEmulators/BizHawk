@@ -161,6 +161,7 @@ namespace BizHawk.Client.EmuHawk
 		private void showUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			undoForm = new UndoHistoryForm(this);
+			undoForm.Owner = this;
 			undoForm.Show();
 			undoForm.UpdateValues();
 		}
@@ -626,6 +627,48 @@ namespace BizHawk.Client.EmuHawk
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.AutoPause ^= true;
+		}
+
+		private void autoHoldToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			if (autoHoldToolStripMenuItem.Checked)
+			{
+				autoFireToolStripMenuItem.Checked = false;
+				customPatternToolStripMenuItem.Checked = false;
+
+				if (!keepSetPatternsToolStripMenuItem.Checked)
+					UpdateAutoFire();
+			}
+		}
+		private void autoFireToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			if (autoFireToolStripMenuItem.Checked)
+			{
+				autoHoldToolStripMenuItem.Checked = false;
+				customPatternToolStripMenuItem.Checked = false;
+
+				if (!keepSetPatternsToolStripMenuItem.Checked)
+					UpdateAutoFire();
+			}
+		}
+		private void customPatternToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			if (customPatternToolStripMenuItem.Checked)
+			{
+				autoHoldToolStripMenuItem.Checked = false;
+				autoFireToolStripMenuItem.Checked = false;
+
+				if (!keepSetPatternsToolStripMenuItem.Checked)
+					UpdateAutoFire();
+			}
+		}
+		private void setCustomsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// Exceptions in PatternsForm are not caught by the debugger, I have no idea why.
+			// Exceptions in UndoForm are caught, which makes it weirder.
+			PatternsForm pForm = new PatternsForm(this);
+			pForm.Owner = this;
+			pForm.Show();
 		}
 
 		#endregion

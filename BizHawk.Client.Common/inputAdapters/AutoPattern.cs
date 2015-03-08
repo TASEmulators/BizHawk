@@ -7,48 +7,53 @@ namespace BizHawk.Client.Common
 {
 	public class AutoPatternBool
 	{
-		public bool SkipsLag = true;
-		private bool[] _pattern;
-		private int _index;
+		public readonly bool SkipsLag = true;
+		public readonly bool[] Pattern;
+		public readonly int Loop = 0;
+		private int _index = 0;
 
 		/// <summary>
 		/// Autohold.
 		/// </summary>
 		public AutoPatternBool()
 		{
-			SkipsLag = true;
-			_index = 0;
-			_pattern = new bool[] { true };
+			Pattern = new bool[] { true };
 		}
 		/// <summary>
 		/// Simple on/off pattern.
 		/// </summary>
 		/// <param name="on"></param>
 		/// <param name="off"></param>
-		public AutoPatternBool(int on, int off, bool skip_lag = true, int offset = 0)
+		public AutoPatternBool(int on, int off, bool skip_lag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skip_lag;
 			_index = offset;
-			_pattern = new bool[on + off];
+			Pattern = new bool[on + off];
+			Loop = loop;
 			for (int i = 0; i < on; i++)
-				_pattern[i] = true;
+				Pattern[i] = true;
 		}
-		public AutoPatternBool(bool[] pattern, bool skip_lag = true, int offset = 0)
+		public AutoPatternBool(bool[] pattern, bool skip_lag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skip_lag;
-			_pattern = pattern;
+			Pattern = pattern;
 			_index = offset;
+			Loop = loop;
 		}
 
 		/// <summary>
 		/// Gets the next value and increments index.
 		/// </summary>
 		/// <returns></returns>
-		public bool GetNextValue()
+		public bool GetNextValue(bool isLag = false)
 		{
-			bool ret = _pattern[_index];
-			_index++;
-			_index = _index % _pattern.Length;
+			bool ret = Pattern[_index];
+			if (!isLag || !SkipsLag)
+			{
+				_index++;
+				if (_index == Pattern.Length)
+					_index = Loop;
+			}
 
 			return ret;
 		}
@@ -58,13 +63,17 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <returns></returns>
 		public bool PeekNextValue()
-		{ return _pattern[_index]; }
+		{ return Pattern[_index]; }
+
+		public void Reset()
+		{ _index = 0; }
 	}
 
 	public class AutoPatternFloat
 	{
-		public bool SkipsLag = true;
-		private float[] _pattern;
+		public readonly bool SkipsLag = true;
+		public readonly float[] Pattern;
+		public readonly int Loop = 0;
 		private int _index;
 
 		/// <summary>
@@ -72,39 +81,43 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public AutoPatternFloat()
 		{
-			SkipsLag = true;
-			_pattern = new float[] { 0f };
-			_index = 0;
+			Pattern = new float[] { 0f };
 		}
 		/// <summary>
 		/// Sinple on/off pattern, using the given values as on/off.
 		/// </summary>
-		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skip_lag = true, int offset = 0)
+		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skip_lag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skip_lag;
 			_index = offset;
-			_pattern = new float[on + off];
+			Loop = loop;
+			Pattern = new float[on + off];
 			for (int i = 0; i < on; i++)
-				_pattern[i] = valueOn;
-			for (int i = on; i < _pattern.Length; i++)
-				_pattern[i] = valueOff;
+				Pattern[i] = valueOn;
+			for (int i = on; i < Pattern.Length; i++)
+				Pattern[i] = valueOff;
 		}
-		public AutoPatternFloat(float[] pattern, bool skip_lag = true, int offset = 0)
+		public AutoPatternFloat(float[] pattern, bool skip_lag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skip_lag;
-			_pattern = pattern;
+			Pattern = pattern;
 			_index = offset;
+			Loop = loop;
 		}
 
 		/// <summary>
 		/// Gets the next value and increments index.
 		/// </summary>
 		/// <returns></returns>
-		public float GetNextValue()
+		public float GetNextValue(bool isLag = false)
 		{
-			float ret = _pattern[_index];
-			_index++;
-			_index = _index % _pattern.Length;
+			float ret = Pattern[_index];
+			if (!isLag || !SkipsLag)
+			{
+				_index++;
+				if (_index == Pattern.Length)
+					_index = Loop;
+			}
 
 			return ret;
 		}
@@ -114,6 +127,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <returns></returns>
 		public float PeekNextValue()
-		{ return _pattern[_index]; }
+		{ return Pattern[_index]; }
+
+		public void Reset()
+		{ _index = 0; }
 	}
 }

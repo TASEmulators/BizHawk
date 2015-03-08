@@ -349,6 +349,33 @@ namespace BizHawk.Client.EmuHawk
 
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
+
+			int bStart = 0;
+			int fStart = 0;
+			if (BoolPatterns == null)
+			{
+				BoolPatterns = new AutoPatternBool[controllerType.BoolButtons.Count + 2];
+				FloatPatterns = new AutoPatternFloat[controllerType.FloatControls.Count + 2];
+			}
+			else
+			{
+				bStart = BoolPatterns.Length - 2;
+				fStart = FloatPatterns.Length - 2;
+				Array.Resize(ref BoolPatterns, controllerType.BoolButtons.Count + 2);
+				Array.Resize(ref FloatPatterns, controllerType.FloatControls.Count + 2);
+			}
+
+			for (int i = bStart; i < BoolPatterns.Length - 2; i++)
+				BoolPatterns[i] = new AutoPatternBool(1, 1);
+			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
+			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
+				Global.Config.AutofireOn, Global.Config.AutofireOff);
+
+			for (int i = fStart; i < FloatPatterns.Length - 2; i++)
+				FloatPatterns[i] = new AutoPatternFloat(new float[] { 1f });
+			FloatPatterns[FloatPatterns.Length - 2] = new AutoPatternFloat(new float[] { 1f });
+			FloatPatterns[FloatPatterns.Length - 1] = new AutoPatternFloat(
+				1f, Global.Config.AutofireOn, 0f, Global.Config.AutofireOff);
 		}
 
 		public void AddColumn(string columnName, string columnText, int columnWidth)
@@ -744,7 +771,6 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.RemoveMarker();
 		}
 
-		// TODO: Move AddMarkerChange calls to TasMovieMarker.cs
 		public void AddMarker(int markerFrame, string message)
 		{
 			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
