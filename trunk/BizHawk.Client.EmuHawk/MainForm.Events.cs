@@ -1147,6 +1147,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<TAStudio>();
 		}
 
+		private void MacroToolMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<MacroInputTool>();
+		}
+
 		private void VirtualPadMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<VirtualpadTool>();
