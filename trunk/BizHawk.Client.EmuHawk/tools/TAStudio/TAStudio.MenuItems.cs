@@ -764,6 +764,14 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
 				.Where(x => x.Name != "FrameColumn");
 
+			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Global.Emulator.ControllerDefinition.PlayerCount + 1];
+			playerMenus[0] = ColumnsSubMenu;
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				playerMenus[i] = new ToolStripMenuItem("Player " + i);
+			}
+			int player = 0;
+
 			foreach (var column in columns)
 			{
 				var dummyColumnObject = column;
@@ -771,18 +779,53 @@ namespace BizHawk.Client.EmuHawk
 				var menuItem = new ToolStripMenuItem
 				{
 					Text = column.Text + " (" + column.Name + ")",
-					Checked = column.Visible
+					Checked = column.Visible,
+					CheckOnClick = true
 				};
 
-				menuItem.Click += (o, ev) =>
+				menuItem.CheckedChanged += (o, ev) =>
 				{
-					dummyColumnObject.Visible ^= true;
+					dummyColumnObject.Visible = (o as ToolStripMenuItem).Checked;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
 					RefreshTasView();
 				};
 
-				ColumnsSubMenu.DropDownItems.Add(menuItem);
+				if (column.Name.StartsWith("P" + (player + 1)))
+				{
+					player++;
+					ColumnsSubMenu.DropDownItems.Add(playerMenus[player]);
+				}
+				playerMenus[player].DropDownItems.Add(menuItem);
+			}
+
+			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				ToolStripMenuItem item = new ToolStripMenuItem("Show Player " + i);
+				item.CheckOnClick = true;
+				item.Checked = false;
+				for (int j = 1; j < playerMenus[i].DropDownItems.Count; j++)
+				{
+					if ((playerMenus[i].DropDownItems[j] as ToolStripMenuItem).Checked)
+					{
+						item.Checked = true;
+						break;
+					}
+				}
+
+				var dummyObject = playerMenus[i];
+				item.CheckedChanged += (o, ev) =>
+				{
+					foreach (ToolStripMenuItem subItem in dummyObject.DropDownItems)
+						subItem.Checked = item.Checked;
+
+					CurrentTasMovie.FlagChanges();
+					RefreshTasView();
+
+				};
+
+				ColumnsSubMenu.DropDownItems.Add(item);
 			}
 
 			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());

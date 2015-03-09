@@ -821,7 +821,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(149, 6);
 			// 
 			// HelpSubMenu
 			// 
