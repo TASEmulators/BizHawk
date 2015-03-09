@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	/// Recycles a pair of temporary textures (in case double-buffering helps any) to contain a BitmapBuffer's or DisplaySurface's contents, as long as the dimensions match.
 	/// When the dimensions dont match, a new one will be allocated
 	/// </summary>
-	class TextureFrugalizer : IDisposable
+	public class TextureFrugalizer : IDisposable
 	{
 		public TextureFrugalizer(IGL gl)
 		{

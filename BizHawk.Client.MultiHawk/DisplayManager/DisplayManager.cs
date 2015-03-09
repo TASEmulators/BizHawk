@@ -9,7 +9,7 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using BizHawk.Client.MultiHawk.FilterManager;
+using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Bizware.BizwareGL;
 
 using OpenTK;
@@ -52,7 +52,7 @@ namespace BizHawk.Client.MultiHawk
 			else
 				Renderer = new GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GL);
 
-			VideoTextureFrugalizer = new TextureFrugalizer(GL);
+			VideoTextureFrugalizer = new BizHawk.Client.EmuHawk.TextureFrugalizer(GL);
 
 			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; //hacky hardcoded limit.. need some other way to manage these
 			for (int i = 0; i < 16; i++)
@@ -96,11 +96,11 @@ namespace BizHawk.Client.MultiHawk
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
-		TextureFrugalizer VideoTextureFrugalizer;
-		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
+		BizHawk.Client.EmuHawk.TextureFrugalizer VideoTextureFrugalizer;
+		Dictionary<string, BizHawk.Client.EmuHawk.TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, BizHawk.Client.EmuHawk.TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
 		
-		Filters.RetroShaderChain ShaderChain_user;
+		BizHawk.Client.EmuHawk.Filters.RetroShaderChain ShaderChain_user;
 
 		public void RefreshUserShader()
 		{
@@ -110,7 +110,7 @@ namespace BizHawk.Client.MultiHawk
 			{
 				var fi = new FileInfo(Global.Config.DispUserFilterPath);
 				using (var stream = fi.OpenRead())
-					ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
+					ShaderChain_user = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GL, new BizHawk.Client.EmuHawk.Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
 			}
 		}
 
@@ -118,14 +118,14 @@ namespace BizHawk.Client.MultiHawk
 		{
 			//select user special FX shader chain
 			Dictionary<string, object> selectedChainProperties = new Dictionary<string, object>();
-			Filters.RetroShaderChain selectedChain = null;
+			BizHawk.Client.EmuHawk.Filters.RetroShaderChain selectedChain = null;
 
 			if (Global.Config.TargetDisplayFilter == 3 && ShaderChain_user != null && ShaderChain_user.Available)
 				selectedChain = ShaderChain_user;
 
-			Filters.FinalPresentation fPresent = new Filters.FinalPresentation(chain_outsize);
-			Filters.SourceImage fInput = new Filters.SourceImage(chain_insize);
-			Filters.OSD fOSD = new Filters.OSD();
+			BizHawk.Client.EmuHawk.Filters.FinalPresentation fPresent = new BizHawk.Client.EmuHawk.Filters.FinalPresentation(chain_outsize);
+			BizHawk.Client.EmuHawk.Filters.SourceImage fInput = new BizHawk.Client.EmuHawk.Filters.SourceImage(chain_insize);
+			BizHawk.Client.EmuHawk.Filters.OSD fOSD = new BizHawk.Client.EmuHawk.Filters.OSD();
 			fOSD.RenderCallback = () =>
 			{
 				if (!includeOSD)
@@ -142,11 +142,11 @@ namespace BizHawk.Client.MultiHawk
 			chain.AddFilter(fInput, "input");
 
 			//choose final filter
-			Filters.FinalPresentation.eFilterOption finalFilter = Filters.FinalPresentation.eFilterOption.None;
-			if (Global.Config.DispFinalFilter == 1) finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
-			if (Global.Config.DispFinalFilter == 2) finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
-			
-			finalFilter = Filters.FinalPresentation.eFilterOption.None;
+			BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.None;
+			if (Global.Config.DispFinalFilter == 1) finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.Bilinear;
+			if (Global.Config.DispFinalFilter == 2) finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.Bicubic;
+
+			finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.None;
 			
 			fPresent.FilterOption = finalFilter;
 
@@ -156,12 +156,12 @@ namespace BizHawk.Client.MultiHawk
 			return chain;
 		}
 
-		void AppendRetroShaderChain(FilterProgram program, string name, Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
+		void AppendRetroShaderChain(FilterProgram program, string name, BizHawk.Client.EmuHawk.Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
 		{
 			for (int i = 0; i < retroChain.Passes.Length; i++)
 			{
 				var pass = retroChain.Passes[i];
-				var rsp = new Filters.RetroShaderPass(retroChain, i);
+				var rsp = new BizHawk.Client.EmuHawk.Filters.RetroShaderPass(retroChain, i);
 				string fname = string.Format("{0}[{1}]", name, i);
 				program.AddFilter(rsp, fname);
 				rsp.Parameters = properties;
@@ -420,11 +420,11 @@ TESTEROO:
 			filterProgram.GL = GL;
 
 			//setup the source image filter
-			Filters.SourceImage fInput = filterProgram["input"] as Filters.SourceImage;
+			BizHawk.Client.EmuHawk.Filters.SourceImage fInput = filterProgram["input"] as BizHawk.Client.EmuHawk.Filters.SourceImage;
 			fInput.Texture = videoTexture;
 			
 			//setup the final presentation filter
-			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
+			BizHawk.Client.EmuHawk.Filters.FinalPresentation fPresent = filterProgram["presentation"] as BizHawk.Client.EmuHawk.Filters.FinalPresentation;
 			fPresent.VirtualTextureSize = new Size(vw, vh);
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
