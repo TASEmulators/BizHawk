@@ -72,15 +72,7 @@
       <DependentUpon>RecordMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
-    <Compile Include="DisplayManager\DisplaySurface.cs" />
-    <Compile Include="DisplayManager\FilterManager.cs" />
-    <Compile Include="DisplayManager\Filters\BaseFilter.cs" />
-    <Compile Include="DisplayManager\Filters\Gui.cs" />
-    <Compile Include="DisplayManager\Filters\Retro.cs" />
-    <Compile Include="DisplayManager\Filters\Utils.cs" />
     <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
-    <Compile Include="DisplayManager\SwappableDisplaySurfaceSet.cs" />
-    <Compile Include="DisplayManager\TextureFrugalizer.cs" />
     <Compile Include="EmulatorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
