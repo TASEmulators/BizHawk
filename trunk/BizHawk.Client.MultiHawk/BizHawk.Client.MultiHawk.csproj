@@ -59,72 +59,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="config\ControllerConfig.cs">
+    <Compile Include="movie\PlayMovie.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\ControllerConfig.Designer.cs">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ControllerConfig\AnalogBindControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\AnalogBindControl.Designer.cs">
-      <DependentUpon>AnalogBindControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\ControllerConfig\AnalogBindPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\ControllerConfigPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\ControllerConfig\ControllerConfigPanel.Designer.cs">
-      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\HotkeyConfig.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\HotkeyConfig.Designer.cs">
-      <DependentUpon>HotkeyConfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\InputCompositeWidget.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\InputCompositeWidget.Designer.cs">
-      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\InputWidget.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="config\movie\EditCommentsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\movie\EditCommentsForm.Designer.cs">
-      <DependentUpon>EditCommentsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\movie\EditSubtitlesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\movie\EditSubtitlesForm.Designer.cs">
-      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\movie\MovieDetails.cs" />
-    <Compile Include="config\movie\PlayMovie.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\movie\PlayMovie.Designer.cs">
+    <Compile Include="movie\PlayMovie.Designer.cs">
       <DependentUpon>PlayMovie.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\movie\RecordMovie.cs">
+    <Compile Include="movie\RecordMovie.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\movie\RecordMovie.Designer.cs">
+    <Compile Include="movie\RecordMovie.Designer.cs">
       <DependentUpon>RecordMovie.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\movie\SubtitleMaker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\movie\SubtitleMaker.Designer.cs">
-      <DependentUpon>SubtitleMaker.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
@@ -160,35 +105,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EmulatorWindowList.cs" />
     <Compile Include="Extensions\ToolExtensions.cs" />
-    <EmbeddedResource Include="config\ControllerConfig.resx">
-      <DependentUpon>ControllerConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig\AnalogBindControl.resx">
-      <DependentUpon>AnalogBindControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\ControllerConfig\ControllerConfigPanel.resx">
-      <DependentUpon>ControllerConfigPanel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\HotkeyConfig.resx">
-      <DependentUpon>HotkeyConfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\InputCompositeWidget.resx">
-      <DependentUpon>InputCompositeWidget.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\movie\EditCommentsForm.resx">
-      <DependentUpon>EditCommentsForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\movie\EditSubtitlesForm.resx">
-      <DependentUpon>EditSubtitlesForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\movie\PlayMovie.resx">
+    <EmbeddedResource Include="movie\PlayMovie.resx">
       <DependentUpon>PlayMovie.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\movie\RecordMovie.resx">
+    <EmbeddedResource Include="movie\RecordMovie.resx">
       <DependentUpon>RecordMovie.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\movie\SubtitleMaker.resx">
-      <DependentUpon>SubtitleMaker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EmulatorWindow.resx">
       <DependentUpon>EmulatorWindow.cs</DependentUpon>
