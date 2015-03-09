@@ -384,8 +384,8 @@ namespace BizHawk.Client.MultiHawk
 				}
 
 				// modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyConfig
-					|| ActiveForm is ControllerConfig
+				if (ActiveForm is BizHawk.Client.EmuHawk.HotkeyConfig
+					|| ActiveForm is BizHawk.Client.EmuHawk.ControllerConfig
 					//|| ActiveForm is TAStudio
 					//|| ActiveForm is VirtualpadTool
 				)
@@ -1238,7 +1238,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void hotkeyConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new HotkeyConfig().ShowDialog() == DialogResult.OK)
+			if (new BizHawk.Client.EmuHawk.HotkeyConfig().ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
 				_inputManager.SyncControls();
@@ -1247,7 +1247,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void controllerConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var controller = new ControllerConfig(EmulatorWindows.Master.Emulator.ControllerDefinition);
+			var controller = new BizHawk.Client.EmuHawk.ControllerConfig(EmulatorWindows.Master.Emulator.ControllerDefinition);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();

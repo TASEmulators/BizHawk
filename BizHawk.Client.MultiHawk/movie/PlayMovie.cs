@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Common;
-
+using BizHawk.Client.EmuHawk;
 namespace BizHawk.Client.MultiHawk
 {
 	public partial class PlayMovie : Form
