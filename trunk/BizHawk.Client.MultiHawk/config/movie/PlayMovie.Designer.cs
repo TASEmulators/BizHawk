@@ -48,8 +48,8 @@
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StopOnFrameCheckbox = new System.Windows.Forms.CheckBox();
-			this.StopOnFrameTextBox = new BizHawk.Client.MultiHawk.WatchValueBox();
-			this.MovieView = new BizHawk.Client.MultiHawk.VirtualListView();
+			this.StopOnFrameTextBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.MovieView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -379,7 +379,7 @@
 		private System.Windows.Forms.Button Cancel;
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.Button BrowseMovies;
-		private VirtualListView MovieView;
+		private BizHawk.Client.EmuHawk.VirtualListView MovieView;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
 		private System.Windows.Forms.ColumnHeader columnHeader2;
 		private System.Windows.Forms.ColumnHeader columnHeader3;
@@ -399,7 +399,7 @@
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.CheckBox StopOnFrameCheckbox;
-		private WatchValueBox StopOnFrameTextBox;
+		private BizHawk.Client.EmuHawk.WatchValueBox StopOnFrameTextBox;
 		private System.Windows.Forms.CheckBox LastFrameCheckbox;
 		private System.Windows.Forms.CheckBox TurboCheckbox;
 	}

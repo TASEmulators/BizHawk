@@ -35,7 +35,7 @@ namespace BizHawk.Client.MultiHawk
 			BizHawk.Client.Common.GLManager.CreateInstance();
 
 			InitializeComponent();
-			_throttle = new Throttle();
+			_throttle = new BizHawk.Client.EmuHawk.Throttle();
 			_inputManager = new InputManager(this);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.DispFixAspectRatio = false; // TODO: don't hardcode this
@@ -433,7 +433,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private int? LoadArhiveChooser(HawkFile file)
 		{
-			var ac = new ArchiveChooser(file);
+			var ac = new BizHawk.Client.EmuHawk.ArchiveChooser(file);
 			if (ac.ShowDialog(this) == DialogResult.OK)
 			{
 				return ac.SelectedMemberIndex;
@@ -502,7 +502,7 @@ namespace BizHawk.Client.MultiHawk
 			Application.DoEvents();
 			if (ActiveForm != null)
 			{
-				ScreenSaver.ResetTimerPeriodically();
+				BizHawk.Client.EmuHawk.ScreenSaver.ResetTimerPeriodically();
 			}
 		}
 
@@ -905,7 +905,7 @@ namespace BizHawk.Client.MultiHawk
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
 		public bool EmulatorPaused = true;
-		private readonly Throttle _throttle;
+		private readonly BizHawk.Client.EmuHawk.Throttle _throttle;
 		//private bool _unthrottled; // TODO
 		private bool _runloopFrameadvance;
 		private bool _runloopFrameProgress;
