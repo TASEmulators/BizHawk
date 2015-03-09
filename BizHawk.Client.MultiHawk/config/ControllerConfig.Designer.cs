@@ -48,7 +48,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label38 = new System.Windows.Forms.Label();
-			this.btnMisc = new BizHawk.Client.MultiHawk.MenuButton();
+			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -285,7 +285,7 @@
 		private System.Windows.Forms.TabPage AnalogControlsTab;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private BizHawk.Client.MultiHawk.MenuButton btnMisc;
+		private BizHawk.Client.EmuHawk.MenuButton btnMisc;
 		private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem loadDefaultsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem clearToolStripMenuItem;

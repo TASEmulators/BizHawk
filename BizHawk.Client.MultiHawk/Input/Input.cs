@@ -129,7 +129,7 @@ namespace BizHawk.Client.MultiHawk
 #if WINDOWS
 			KeyInput.Initialize(parent);
 			GamePad.Initialize(parent);
-			GamePad360.Initialize();
+			BizHawk.Client.EmuHawk.GamePad360.Initialize();
 #endif
 			Instance = new Input();
 		}
@@ -321,7 +321,7 @@ namespace BizHawk.Client.MultiHawk
 			{
 				var keyEvents = KeyInput.Update();
 				GamePad.UpdateAll();
-				GamePad360.UpdateAll();
+				BizHawk.Client.EmuHawk.GamePad360.UpdateAll();
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
@@ -337,9 +337,9 @@ namespace BizHawk.Client.MultiHawk
 						//FloatValues.Clear();
 
 						//analyze xinput
-						for (int i = 0; i < GamePad360.Devices.Count; i++)
+						for (int i = 0; i < BizHawk.Client.EmuHawk.GamePad360.Devices.Count; i++)
 						{
-							var pad = GamePad360.Devices[i];
+							var pad = BizHawk.Client.EmuHawk.GamePad360.Devices[i];
 							string xname = "X" + (i + 1) + " ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
