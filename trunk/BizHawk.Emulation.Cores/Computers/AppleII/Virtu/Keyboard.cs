@@ -45,7 +45,7 @@ namespace Jellyfish.Virtu
             Joystick1DownLeftKey = reader.ReadInt32();
             Joystick1DownKey = reader.ReadInt32();
             Joystick1DownRightKey = reader.ReadInt32();
-            Button0Key = reader.ReadUInt32();
+            Button0Key = reader.ReadUInt64();
             Button1Key = reader.ReadInt32();
             Button2Key = reader.ReadInt32();
         }
