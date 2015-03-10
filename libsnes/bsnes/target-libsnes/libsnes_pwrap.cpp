@@ -240,12 +240,12 @@ private:
 		int h = *head;
 		int t = *tail;
 		int size = h - t;
-		if (size < 0) size += bufsize;
-		else if (size >= bufsize)
+		if (size >= bufsize)
 		{
 			//shouldnt be possible for size to be anything but bufsize here
 			size = 0;
 		}
+		else if (size < 0) size += bufsize;
 		return size;
 	}
 

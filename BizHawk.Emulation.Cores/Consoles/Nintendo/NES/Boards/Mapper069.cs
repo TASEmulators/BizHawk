@@ -179,8 +179,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							irq_countdown = value.Bit(7);
 							irq_enabled = value.Bit(0);
 							//if (value != 0) NES.LogLine("irq set to {0},{1} with value {2:x2}", irq_countdown, irq_enabled, value);
-							if (!irq_enabled) irq_asserted = false;
+
+							//always ACK for reg 0xD and no other reg
+							//http://forums.nesdev.com/viewtopic.php?f=2&t=12436&start=15
+							irq_asserted = false;
 							SyncIrq();
+
 							break;
 						case 0xE:
 							irq_counter &= 0xFF00;
