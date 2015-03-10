@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		public int LagFramesToHide { get; set; }
+		public bool HideWasLagFrames { get; set; }
 		private int[] lagFrames = new int[100]; // Large enough value that it shouldn't ever need resizing.
 
 		private IntPtr RotatedFont;
@@ -300,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// SuuperW: Check if a given frame is a lag frame
 		/// </summary>
-		public delegate bool QueryFrameLagHandler(int index);
+		public delegate bool QueryFrameLagHandler(int index, bool hideWasLag);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
 
@@ -501,6 +502,7 @@ namespace BizHawk.Client.EmuHawk
 				_columns = rollSettings.Columns;
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
 				LagFramesToHide = rollSettings.LagFramesToHide;
+				HideWasLagFrames = rollSettings.HideWasLagFrames;
 			}
 		}
 
@@ -513,7 +515,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Columns = _columns,
 					HorizontalOrientation = HorizontalOrientation,
-					LagFramesToHide = LagFramesToHide
+					LagFramesToHide = LagFramesToHide,
+					HideWasLagFrames = HideWasLagFrames
 				};
 			}
 		}
@@ -523,6 +526,7 @@ namespace BizHawk.Client.EmuHawk
 			public RollColumns Columns { get; set; }
 			public bool HorizontalOrientation { get; set; }
 			public int LagFramesToHide { get; set; }
+			public bool HideWasLagFrames { get; set; }
 		}
 
 		/// <summary>
@@ -2100,7 +2104,7 @@ namespace BizHawk.Client.EmuHawk
 				// First one needs to check BACKWARDS for lag frame count.
 				SetLagFramesFirst();
 				int f = lagFrames[0];
-				if (QueryFrameLag(FirstVisibleRow + f))
+				if (QueryFrameLag(FirstVisibleRow + f, HideWasLagFrames))
 					showNext = true;
 				for (int i = 1; i <= VisibleRows; i++)
 				{
@@ -2109,17 +2113,17 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (; lagFrames[i] < LagFramesToHide; lagFrames[i]++)
 						{
-							if (!QueryFrameLag(FirstVisibleRow + i + f))
+							if (!QueryFrameLag(FirstVisibleRow + i + f, HideWasLagFrames))
 								break;
 							f++;
 						}
 					}
 					else
 					{
-						if (!QueryFrameLag(FirstVisibleRow + i + f))
+						if (!QueryFrameLag(FirstVisibleRow + i + f, HideWasLagFrames))
 							showNext = false;
 					}
-					if (lagFrames[i] == LagFramesToHide && QueryFrameLag(FirstVisibleRow + i + f))
+					if (lagFrames[i] == LagFramesToHide && QueryFrameLag(FirstVisibleRow + i + f, HideWasLagFrames))
 					{
 						showNext = true;
 					}
@@ -2138,14 +2142,14 @@ namespace BizHawk.Client.EmuHawk
 				do
 				{
 					count++;
-				} while (QueryFrameLag(FirstVisibleRow - count) && count <= LagFramesToHide);
+				} while (QueryFrameLag(FirstVisibleRow - count, HideWasLagFrames) && count <= LagFramesToHide);
 				count--;
 				// Count forward
 				int fCount = -1;
 				do
 				{
 					fCount++;
-				} while (QueryFrameLag(FirstVisibleRow + fCount) && count + fCount < LagFramesToHide);
+				} while (QueryFrameLag(FirstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
 				lagFrames[0] = fCount;
 			}
 			else

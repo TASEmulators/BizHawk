@@ -473,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				AddMarker(markerFrame, i.PromptText);
+				CurrentTasMovie.Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				EditMarker(marker, i.PromptText);
+				marker.Message = i.PromptText;
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -747,19 +747,26 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.RemoveMarker();
 		}
 
-		public void AddMarker(int markerFrame, string message)
+		private void AutoAdjustInput()
 		{
-			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
-			CurrentTasMovie.Markers.Add(marker);
+			TasMovieRecord lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
+			bool isLag = Emulator.AsInputPollable().IsLagFrame;
+
+			if (lagLog.WasLagged.HasValue)
+			{
+				if (lagLog.WasLagged.Value && !isLag)
+				{ // Deleting this frame requires rewinding a frame.
+					CurrentTasMovie.RemoveFrame(Global.Emulator.Frame - 1);
+					CurrentTasMovie.RemoveLagHistory(Global.Emulator.Frame); // Set frame is not +1. [should change?]
+					GoToFrame(Emulator.Frame - 1);
+				}
+				else if (!lagLog.WasLagged.Value && isLag)
+				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
+					CurrentTasMovie.InsertInput(Global.Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
+					CurrentTasMovie.InsertLagHistory(Global.Emulator.Frame - 1, true);
+				}
+			}
 		}
-		public void RemoveMarker(TasMovieMarker marker)
-		{
-			CurrentTasMovie.Markers.Remove(marker);
-		}
-		public void EditMarker(TasMovieMarker marker, string message)
-		{
-			string old = marker.Message;
-			marker.Message = message;
-		}
+
 	}
 }

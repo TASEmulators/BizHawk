@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 			IEnumerable<TasMovieMarker> markers = CurrentTasMovie.Markers.Where(m => TasView.SelectedRows.Contains(m.Frame));
 			foreach (TasMovieMarker m in markers)
 			{
-				RemoveMarker(m);
+				CurrentTasMovie.Markers.Remove(m);
 			}
 			RefreshDialog();
 		}
@@ -750,6 +750,7 @@ namespace BizHawk.Client.EmuHawk
 			HideLagFrames1.Checked = TasView.LagFramesToHide == 1;
 			HideLagFrames2.Checked = TasView.LagFramesToHide == 2;
 			HideLagFrames3.Checked = TasView.LagFramesToHide == 3;
+			hideWasLagFramesToolStripMenuItem.Checked = TasView.HideWasLagFrames;
 		}
 
 		private void RotateMenuItem_Click(object sender, EventArgs e)
@@ -766,6 +767,11 @@ namespace BizHawk.Client.EmuHawk
 				SetVisibleIndex();
 			}
 			RefreshDialog();
+		}
+
+		private void hideWasLagFramesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.HideWasLagFrames ^= true;
 		}
 
 		#endregion
