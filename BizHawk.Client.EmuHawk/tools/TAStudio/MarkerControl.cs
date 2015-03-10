@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RemoveBtn_Click(object sender, EventArgs e)
 		{
-			SelectedMarkers.ForEach(i => Tastudio.RemoveMarker(i));
+			SelectedMarkers.ForEach(i => Tastudio.CurrentTasMovie.Markers.Remove(i));
 			MarkerInputRoll.DeselectAll();
 			Tastudio.RefreshDialog();
 			MarkerView_SelectedIndexChanged(sender, e);

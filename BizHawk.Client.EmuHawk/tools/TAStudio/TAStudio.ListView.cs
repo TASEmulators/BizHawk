@@ -197,9 +197,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// SuuperW: Used in InputRoll.cs to hide lag frames.
-		private bool TasView_QueryFrameLag(int index)
+		private bool TasView_QueryFrameLag(int index, bool hideWasLag)
 		{
-			return CurrentTasMovie[index].Lagged.HasValue && CurrentTasMovie[index].Lagged.Value;
+			TasMovieRecord lag = CurrentTasMovie[index];
+			return (lag.Lagged.HasValue && lag.Lagged.Value) || (hideWasLag && lag.WasLagged.HasValue && lag.WasLagged.Value);
 		}
 
 		#endregion

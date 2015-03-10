@@ -440,5 +440,16 @@ namespace BizHawk.Client.Common
 
 			ChangeLog.SetGeneralRedo();
 		}
+
+		#region "LagLog"
+		public void RemoveLagHistory(int frame)
+		{
+			LagLog.RemoveHistoryAt(frame);
+		}
+		public void InsertLagHistory(int frame, bool isLag)
+		{
+			LagLog.InsertHistoryAt(frame, isLag);
+		}
+		#endregion
 	}
 }

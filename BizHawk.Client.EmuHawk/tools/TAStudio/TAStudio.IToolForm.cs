@@ -30,6 +30,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (AutoadjustInputMenuItem.Checked)
+				AutoAdjustInput();
+
 			if (TasPlaybackBox.FollowCursor)
 			{
 				SetVisibleIndex();
