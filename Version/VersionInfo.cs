@@ -1,8 +1,8 @@
 static class VersionInfo
 {
-	public const string MAINVERSION = "1.9.2"; // Use numbers only or the new version notification won't work
-	public static readonly string RELEASEDATE = "March 5, 2015";
-	public static readonly bool DeveloperBuild = true;
+	public const string MAINVERSION = "1.9.3"; // Use numbers only or the new version notification won't work
+	public static readonly string RELEASEDATE = "March 11, 2015";
+	public static readonly bool DeveloperBuild = false;
 	public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
 
 	public static string GetEmuVersion()
