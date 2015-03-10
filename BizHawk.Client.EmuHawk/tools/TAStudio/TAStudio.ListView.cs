@@ -385,7 +385,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
-				if (TasView.CurrentCell.Column.Name == FrameColumnName)
+				if (TasView.CurrentCell.Column.Name == FrameColumnName && frame < CurrentTasMovie.InputLogLength)
 				{
 					_rightClickControl = (Control.ModifierKeys | Keys.Control) == Control.ModifierKeys;
 					_rightClickShift = (Control.ModifierKeys | Keys.Shift) == Control.ModifierKeys;
@@ -404,7 +404,6 @@ namespace BizHawk.Client.EmuHawk
 						_rightClickFrame = frame;
 					}
 					_rightClickLastFrame = -1;
-					_supressContextMenu = true;
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
 					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
 				}
@@ -436,7 +435,8 @@ namespace BizHawk.Client.EmuHawk
 				if (_floatEditRow == -1)
 					CurrentTasMovie.ChangeLog.EndBatch();
 			}
-			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+
+			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
 				if (_rightClickFrame != -1)
 				{
@@ -532,8 +532,10 @@ namespace BizHawk.Client.EmuHawk
 					RefreshTasView();
 				}
 			}
+
 			else if (_rightClickFrame != -1)
 			{
+				_supressContextMenu = true;
 				if (frame > CurrentTasMovie.InputLogLength - _rightClickInput.Length)
 					frame = CurrentTasMovie.InputLogLength - _rightClickInput.Length;
 				if (_rightClickShift)
@@ -608,6 +610,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				RefreshTasView();
 			}
+
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
@@ -622,6 +625,7 @@ namespace BizHawk.Client.EmuHawk
 					RefreshTasView();
 				}
 			}
+
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
