@@ -158,13 +158,6 @@ namespace BizHawk.Client.EmuHawk
 			RedoMenuItem.Enabled = CurrentTasMovie.ChangeLog.CanRedo;
 		}
 
-		private void showUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			undoForm = new UndoHistoryForm(this);
-			undoForm.Show();
-			undoForm.UpdateValues();
-		}
-
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =

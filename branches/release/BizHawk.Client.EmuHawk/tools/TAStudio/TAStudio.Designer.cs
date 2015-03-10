@@ -47,7 +47,6 @@ namespace BizHawk.Client.EmuHawk
 			this.EditSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.UndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.showUndoHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectionUndoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectionRedoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -60,13 +59,13 @@ namespace BizHawk.Client.EmuHawk
 			this.PasteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PasteInsertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DeleteFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CloneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InsertFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InsertNumFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ClearGreenzoneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GreenzoneICheckSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -144,11 +143,15 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.historyBox1 = new BizHawk.Client.EmuHawk.HistoryBox();
+			this.btnShowUndoHistory = new System.Windows.Forms.Button();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -263,7 +266,6 @@ namespace BizHawk.Client.EmuHawk
 			this.EditSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.UndoMenuItem,
             this.RedoMenuItem,
-            this.showUndoHistoryToolStripMenuItem,
             this.SelectionUndoMenuItem,
             this.SelectionRedoMenuItem,
             this.toolStripSeparator5,
@@ -276,13 +278,13 @@ namespace BizHawk.Client.EmuHawk
             this.PasteMenuItem,
             this.PasteInsertMenuItem,
             this.CutMenuItem,
+            this.toolStripSeparator8,
             this.ClearMenuItem,
             this.DeleteFramesMenuItem,
             this.CloneMenuItem,
             this.InsertFrameMenuItem,
             this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
-            this.toolStripSeparator8,
             this.TruncateMenuItem,
             this.ClearGreenzoneMenuItem,
             this.GreenzoneICheckSeparator,
@@ -308,13 +310,6 @@ namespace BizHawk.Client.EmuHawk
 			this.RedoMenuItem.Size = new System.Drawing.Size(282, 22);
 			this.RedoMenuItem.Text = "&Redo";
 			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
-			// 
-			// showUndoHistoryToolStripMenuItem
-			// 
-			this.showUndoHistoryToolStripMenuItem.Name = "showUndoHistoryToolStripMenuItem";
-			this.showUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(282, 22);
-			this.showUndoHistoryToolStripMenuItem.Text = "Show Undo History";
-			this.showUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.showUndoHistoryToolStripMenuItem_Click);
 			// 
 			// SelectionUndoMenuItem
 			// 
@@ -408,6 +403,11 @@ namespace BizHawk.Client.EmuHawk
 			this.CutMenuItem.Text = "&Cut";
 			this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
 			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(279, 6);
+			// 
 			// ClearMenuItem
 			// 
 			this.ClearMenuItem.Name = "ClearMenuItem";
@@ -455,11 +455,6 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
 			this.toolStripSeparator6.Size = new System.Drawing.Size(279, 6);
-			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(279, 6);
 			// 
 			// TruncateMenuItem
 			// 
@@ -859,7 +854,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl.Emulator = null;
 			this.MarkerControl.Location = new System.Drawing.Point(2, 16);
 			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(198, 320);
+			this.MarkerControl.Size = new System.Drawing.Size(198, 258);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
 			// 
@@ -1092,10 +1087,39 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.Controls.Add(this.MarkerControl);
 			this.groupBox1.Location = new System.Drawing.Point(302, 129);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(201, 365);
+			this.groupBox1.Size = new System.Drawing.Size(201, 280);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.historyBox1);
+			this.groupBox2.Controls.Add(this.btnShowUndoHistory);
+			this.groupBox2.Location = new System.Drawing.Point(302, 409);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(200, 85);
+			this.groupBox2.TabIndex = 8;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Undo History";
+			// 
+			// historyBox1
+			// 
+			this.historyBox1.Location = new System.Drawing.Point(5, 19);
+			this.historyBox1.Name = "historyBox1";
+			this.historyBox1.Size = new System.Drawing.Size(192, 63);
+			this.historyBox1.TabIndex = 1;
+			this.historyBox1.Tastudio = null;
+			// 
+			// btnShowUndoHistory
+			// 
+			this.btnShowUndoHistory.Location = new System.Drawing.Point(174, -1);
+			this.btnShowUndoHistory.Name = "btnShowUndoHistory";
+			this.btnShowUndoHistory.Size = new System.Drawing.Size(20, 21);
+			this.btnShowUndoHistory.TabIndex = 0;
+			this.btnShowUndoHistory.Text = "v";
+			this.btnShowUndoHistory.UseVisualStyleBackColor = true;
 			// 
 			// TAStudio
 			// 
@@ -1103,6 +1127,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 519);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
@@ -1126,6 +1151,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerContextMenu.ResumeLayout(false);
 			this.RightClickMenu.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1244,6 +1270,8 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator separateToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pasteInsertToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem showUndoHistoryToolStripMenuItem;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Button btnShowUndoHistory;
+		private HistoryBox historyBox1;
 	}
 }
