@@ -64,29 +64,11 @@ namespace BizHawk.Client.Common
 			return _bindings.SelectMany(kvp => kvp.Value).Any(boundButton => boundButton == button);
 		}
 
-		/// <summary>
-		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
-		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
-		/// </summary>
-		public void LatchFromPhysical(IController controller)
+		public void NormalizeFloats(IController controller)
 		{
-			_buttons.Clear();
-			
-			foreach (var kvp in _bindings)
-			{
-				_buttons[kvp.Key] = false;
-				foreach (var bound_button in kvp.Value)
-				{
-					if (controller[bound_button])
-					{
-						_buttons[kvp.Key] = true;
-					}
-				}
-			}
-
 			foreach (var kvp in _floatBinds)
 			{
-				var input = controller.GetFloat(kvp.Value.Value);
+				var input = _floatButtons[kvp.Key];
 				string outkey = kvp.Key;
 				float multiplier = kvp.Value.Mult;
 				float deadzone = kvp.Value.Deadzone;
@@ -112,7 +94,8 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					var output = (input * multiplier + 10000.0f) * (range.Max - range.Min) / 20000.0f + range.Min;
+					//zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
+					var output = (input * multiplier + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f + range.Min;
 
 					float lbound = Math.Min(range.Min, range.Max);
 					float ubound = Math.Max(range.Min, range.Max);
@@ -130,6 +113,40 @@ namespace BizHawk.Client.Common
 					_floatButtons[outkey] = output;
 				}
 			}
+		}
+
+		/// <summary>
+		/// uses the bindings to latch our own logical button state from the source controller's button state (which are assumed to be the physical side of the binding).
+		/// this will clobber any existing data (use OR_* or other functions to layer in additional input sources)
+		/// </summary>
+		public void LatchFromPhysical(IController controller)
+		{
+			_buttons.Clear();
+			
+			foreach (var kvp in _bindings)
+			{
+				_buttons[kvp.Key] = false;
+				foreach (var bound_button in kvp.Value)
+				{
+					if (controller[bound_button])
+					{
+						_buttons[kvp.Key] = true;
+					}
+				}
+			}
+
+			foreach (var kvp in _floatBinds)
+			{
+				var input = controller.GetFloat(kvp.Value.Value);
+				string outkey = kvp.Key;
+				if (_floatRanges.ContainsKey(outkey))
+				{
+					_floatButtons[outkey] = input;
+				}
+			}
+
+			//it's not sure where this should happen, so for backwards compatibility.. do it every time
+			NormalizeFloats(controller);
 		}
 
 		public void ApplyAxisConstraints(string constraintClass)
