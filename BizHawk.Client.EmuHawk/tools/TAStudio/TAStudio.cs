@@ -350,6 +350,7 @@ namespace BizHawk.Client.EmuHawk
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
 
+			// Patterns
 			int bStart = 0;
 			int fStart = 0;
 			if (BoolPatterns == null)
@@ -376,6 +377,8 @@ namespace BizHawk.Client.EmuHawk
 			FloatPatterns[FloatPatterns.Length - 2] = new AutoPatternFloat(new float[] { 1f });
 			FloatPatterns[FloatPatterns.Length - 1] = new AutoPatternFloat(
 				1f, Global.Config.AutofireOn, 0f, Global.Config.AutofireOff);
+
+			SetUpToolStripColumns();
 		}
 
 		public void AddColumn(string columnName, string columnText, int columnWidth)
