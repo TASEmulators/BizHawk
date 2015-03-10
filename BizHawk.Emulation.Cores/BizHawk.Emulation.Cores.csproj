@@ -127,11 +127,8 @@
     <Compile Include="Computers\AppleII\Virtu\GamePort.cs" />
     <Compile Include="Computers\AppleII\Virtu\Keyboard.cs" />
     <Compile Include="Computers\AppleII\Virtu\Library\DisposableBase.cs" />
-    <Compile Include="Computers\AppleII\Virtu\Library\IEnumerableExtensions.cs" />
-    <Compile Include="Computers\AppleII\Virtu\Library\MarshalHelpers.cs" />
     <Compile Include="Computers\AppleII\Virtu\Library\MathHelpers.cs" />
     <Compile Include="Computers\AppleII\Virtu\Library\StreamExtensions.cs" />
-    <Compile Include="Computers\AppleII\Virtu\Library\StringBuilderExtensions.cs" />
     <Compile Include="Computers\AppleII\Virtu\Library\Strings.cs" />
     <Compile Include="Computers\AppleII\Virtu\Machine.cs" />
     <Compile Include="Computers\AppleII\Virtu\MachineComponent.cs" />
