@@ -218,7 +218,7 @@ namespace BizHawk.Client.Common
 				.IsPressed(buttonName);
 		}
 
-		public float GetFloatValue(int frame, string buttonName)
+		public float GetFloatState(int frame, string buttonName)
 		{
 			return ((Bk2ControllerAdapter)GetInputState(frame))
 				.GetFloat(buttonName);
