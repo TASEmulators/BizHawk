@@ -558,25 +558,48 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
-		private void GreenZzoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
+		private void GreenZoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.MainForm.RebootCore();
-			GlobalWin.MainForm.FrameAdvance();
-			var frame = Emulator.Frame;
-
-			if (CurrentTasMovie.TasStateManager.HasState(frame))
+			if (!Emulator.DeterministicEmulation)
 			{
-				var state = (byte[])StatableEmulator.SaveStateBinary().Clone();
-				var greenzone = CurrentTasMovie.TasStateManager[frame];
-
-				if (!state.SequenceEqual(greenzone.Value))
-				{
-					MessageBox.Show("bad data at frame: " + frame);
+				if (MessageBox.Show("The emulator is not deterministic. It will likely fail, even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic", MessageBoxButtons.YesNo)
+					== System.Windows.Forms.DialogResult.No)
 					return;
-				}
 			}
 
+			GoToFrame(0);
+			int lastState = 0;
+			do
+			{
+				GlobalWin.MainForm.FrameAdvance();
+
+				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
+				{
+					byte[] state = (byte[])StatableEmulator.SaveStateBinary().Clone(); // Why is this cloning it?
+					byte[] greenzone = CurrentTasMovie.TasStateManager[Emulator.Frame].Value;
+
+					if (!state.SequenceEqual(greenzone))
+					{
+						List<byte> stateList = state.ToList();
+						List<byte> greenList = greenzone.ToList();
+						int diffAt = FirstDifference(stateList, greenList);
+						stateList.RemoveRange(0, diffAt);
+						greenList.RemoveRange(0, diffAt);
+
+						MessageBox.Show("Bad data between frames " + lastState + " and " + Emulator.Frame);
+						return;
+					}
+
+					lastState = Emulator.Frame;
+				}
+			} while (Global.Emulator.Frame < CurrentTasMovie.InputLogLength - 1);
+
 			MessageBox.Show("Integrity Check passed");
+		}
+		private int FirstDifference(List<byte> b1, List<byte> b2)
+		{
+			int dummyVar = -1;
+			return b1.FindIndex(b => { dummyVar++; return b != b2[dummyVar]; });
 		}
 
 		#endregion
@@ -885,10 +908,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (AskSaveChanges())
 				{
-					var index = TasView.SelectedRows.First();
+					int index = TasView.SelectedRows.First();
 					GoToFrame(index);
 
-					var newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+					TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 						index,
 						(byte[])StatableEmulator.SaveStateBinary().Clone());
 

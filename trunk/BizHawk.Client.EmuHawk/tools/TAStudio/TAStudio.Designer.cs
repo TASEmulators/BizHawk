@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.Keys.I)));
 			this.GreenZoneIntegrityCheckMenuItem.Size = new System.Drawing.Size(282, 22);
 			this.GreenZoneIntegrityCheckMenuItem.Text = "Greenzone Integrity Check";
-			this.GreenZoneIntegrityCheckMenuItem.Click += new System.EventHandler(this.GreenZzoneIntegrityCheckMenuItem_Click);
+			this.GreenZoneIntegrityCheckMenuItem.Click += new System.EventHandler(this.GreenZoneIntegrityCheckMenuItem_Click);
 			// 
 			// ConfigSubMenu
 			// 
