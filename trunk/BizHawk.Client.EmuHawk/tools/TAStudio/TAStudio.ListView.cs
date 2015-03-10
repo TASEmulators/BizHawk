@@ -186,22 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					if (index < CurrentTasMovie.InputLogLength)
-					{
 						text = CurrentTasMovie.DisplayValue(index, columnName);
-					}
-					else if (Emulator.Frame == CurrentTasMovie.InputLogLength) // In this situation we have a "pending" frame for the user to click
-					{
-						if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(columnName))
-						{
-							text = CurrentTasMovie.CreateDisplayValueForButton(
-								Global.ClickyVirtualPadController, columnName);
-						}
-						else
-						{
-							text = CurrentTasMovie.CreateDisplayValueForButton(
-								Global.StickyXORAdapter, columnName);
-						}
-					}
 				}
 			}
 			catch (Exception ex)
@@ -237,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					foreach (var index in TasView.SelectedRows)
 					{
-						ToggleBoolState(index, columnName);
+						CurrentTasMovie.ToggleBoolState(index, columnName);
 						_triggerAutoRestore = true;
 						_triggerAutoRestoreFromFrame = TasView.SelectedRows.Min();
 					}
@@ -334,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_floatEditYPos = e.Y;
-						_floatPaintState = GetFloatValue(frame, buttonName);
+						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
 						return;
 					}
 				}
@@ -355,33 +340,24 @@ namespace BizHawk.Client.EmuHawk
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool");
 
-						ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
+						CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 						_triggerAutoRestore = true;
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						RefreshDialog();
 
 						_startBoolDrawColumn = buttonName;
 
-						if (frame < CurrentTasMovie.InputLogLength)
-						{
-							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
-						}
-						else
-						{
-							_boolPaintState = Global.ClickyVirtualPadController.IsPressed(buttonName);
-						}
-
+						_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
 					}
 					else
 					{
-						if (frame < CurrentTasMovie.InputLogLength)
+						if (frame >= CurrentTasMovie.InputLogLength)
 						{
-							_floatPaintState = CurrentTasMovie.GetFloatValue(frame, buttonName);
+							CurrentTasMovie.SetFloatState(frame, buttonName, 0);
+							RefreshDialog();
 						}
-						else
-						{
-							_floatPaintState = Global.StickyXORAdapter.GetFloat(buttonName);
-						}
+
+						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
 
 						if (e.Clicks != 2)
 						{
@@ -448,7 +424,7 @@ namespace BizHawk.Client.EmuHawk
 				_startBoolDrawColumn = string.Empty;
 				_startFloatDrawColumn = string.Empty;
 				// Exit float editing if value was changed with cursor
-				if (_floatEditRow != -1 && _floatPaintState != GetFloatValue(_floatEditRow, _floatEditColumn))
+				if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
 				{
 					_floatEditRow = -1;
 					RefreshDialog();
@@ -638,7 +614,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
-						SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
+						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
 						_triggerAutoRestore = true;
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
@@ -654,7 +630,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (i < CurrentTasMovie.InputLogLength)
 						{
-							SetFloatValue(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
+							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
 							_triggerAutoRestore = true;
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						}
@@ -689,7 +665,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (value < rMin)
 				value = rMin;
 
-			SetFloatValue(_floatEditRow, _floatEditColumn, value);
+			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
 
 			RefreshDialog();
 		}
@@ -725,7 +701,7 @@ namespace BizHawk.Client.EmuHawk
 			// SuuperW: Float Editing
 			if (_floatEditRow != -1)
 			{
-				float value = GetFloatValue(_floatEditRow, _floatEditColumn);
+				float value = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
 				Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
 					[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
 				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
@@ -741,23 +717,16 @@ namespace BizHawk.Client.EmuHawk
 				else if (e.KeyCode == Keys.Left)
 					value = rMin;
 				else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
-				{
 					_floatTypedValue += e.KeyCode - Keys.D0;
-					value = Convert.ToSingle(_floatTypedValue);
-				}
 				else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
-				{
 					_floatTypedValue += e.KeyCode - Keys.NumPad0;
-					value = Convert.ToSingle(_floatTypedValue);
+				else if (e.KeyCode == Keys.OemMinus)
+				{
+					if (_floatTypedValue.StartsWith("-"))
+						_floatTypedValue = _floatTypedValue.Substring(1);
+					else
+						_floatTypedValue = "-" + _floatTypedValue;
 				}
-				else if (e.KeyCode == Keys.OemPeriod && !_floatTypedValue.Contains('.'))
-				{ // These aren't displayed in TasView, it rounds display. They ARE getting picked up properly, though.
-					if (_floatTypedValue == "")
-						_floatTypedValue = "0";
-					_floatTypedValue += ".";
-				}
-				else if (e.KeyCode == Keys.OemMinus && _floatTypedValue == "")
-					_floatTypedValue = "-";
 				else if (e.KeyCode == Keys.Back)
 				{
 					if (_floatTypedValue == "") // Very first key press is backspace?
@@ -773,17 +742,15 @@ namespace BizHawk.Client.EmuHawk
 					if (_floatEditYPos != -1) // Cancel change from dragging cursor
 					{
 						_floatEditYPos = -1;
-						SetFloatValue(_floatEditRow, _floatEditColumn, _floatPaintState);
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatPaintState);
 					}
 					_floatEditRow = -1;
-					CurrentTasMovie.ChangeLog.EndBatch();
 				}
 				else
 				{
-					// This needs some way to know what the increment is. (Does the emulator allow, say, 25.8?)
 					float changeBy = 0;
 					if (e.KeyCode == Keys.Up)
-						changeBy = 1; // This is where I'd put increment
+						changeBy = 1; // We're assuming for now that ALL float controls should contain integers.
 					else if (e.KeyCode == Keys.Down)
 						changeBy = -1;
 					if (e.Shift)
@@ -793,14 +760,26 @@ namespace BizHawk.Client.EmuHawk
 						_floatTypedValue = value.ToString();
 				}
 
-				if (_floatEditRow != -1 && value != GetFloatValue(_floatEditRow, _floatEditColumn))
+				if (_floatEditRow == -1)
+					CurrentTasMovie.ChangeLog.EndBatch();
+				else
 				{
-					if (value > rMax)
-						value = rMax;
-					else if (value < rMin)
-						value = rMin;
-					SetFloatValue(_floatEditRow, _floatEditColumn, value);
+					if (_floatTypedValue == "")
+					{
+						value = 0f;
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+					}
+					else
+					{
+						value = Convert.ToSingle(_floatTypedValue);
+						if (value > rMax)
+							value = rMax;
+						else if (value < rMin)
+							value = rMin;
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+					}
 				}
+
 			}
 
 			RefreshDialog();
