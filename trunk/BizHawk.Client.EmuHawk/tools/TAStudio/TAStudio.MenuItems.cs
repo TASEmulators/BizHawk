@@ -216,6 +216,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TasView.SelectRow(i, true);
 				}
+
+				RefreshTasView();
 			}
 		}
 
@@ -226,6 +228,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.SelectRow(item.Frame, true);
 			}
+
+			RefreshTasView();
 		}
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
@@ -580,12 +584,6 @@ namespace BizHawk.Client.EmuHawk
 
 					if (!state.SequenceEqual(greenzone))
 					{
-						List<byte> stateList = state.ToList();
-						List<byte> greenList = greenzone.ToList();
-						int diffAt = FirstDifference(stateList, greenList);
-						stateList.RemoveRange(0, diffAt);
-						greenList.RemoveRange(0, diffAt);
-
 						MessageBox.Show("Bad data between frames " + lastState + " and " + Emulator.Frame);
 						return;
 					}
@@ -595,11 +593,6 @@ namespace BizHawk.Client.EmuHawk
 			} while (Global.Emulator.Frame < CurrentTasMovie.InputLogLength - 1);
 
 			MessageBox.Show("Integrity Check passed");
-		}
-		private int FirstDifference(List<byte> b1, List<byte> b2)
-		{
-			int dummyVar = -1;
-			return b1.FindIndex(b => { dummyVar++; return b != b2[dummyVar]; });
 		}
 
 		#endregion

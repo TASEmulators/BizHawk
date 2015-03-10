@@ -9,9 +9,9 @@ namespace BizHawk.Client.Common
 {
 	public class TasLagLog
 	{
+		// TODO: Change this into a regular list.
 		private readonly SortedList<int, bool> LagLog = new SortedList<int, bool>();
 
-		// TODO: eventually we want multiple levels of history
 		private readonly SortedList<int, bool> RemovedFrames = new SortedList<int, bool>();
 
 		public bool? this[int frame]
@@ -58,39 +58,23 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			if (LagLog.Any())
+			for (int i = 0; i < LagLog.Count; i++)
 			{
-				RemovedFrames.Clear();
-				foreach (var lag in LagLog)
-				{
-					RemovedFrames.Add(lag.Key, lag.Value);
-				}
+				RemovedFrames.Remove(LagLog.Keys[i]);
+				RemovedFrames.Add(i, LagLog[i]);
 			}
 
 			LagLog.Clear();
-			
+
 		}
 
 		public void RemoveFrom(int frame)
 		{
-			if (frame > 0 && frame <= LagLog.Count)
+			for (int i = LagLog.Count - 1; i > frame; i--) // Reverse order because removing from a sorted list re-indexes the items after the removed item
 			{
-				RemovedFrames.Clear();
-
-				for (int i = LagLog.Count - 1; i > frame; i--) // Reverse order because removing from a sorted list re-indexes the items after the removed item
-				{
-					RemovedFrames.Add(LagLog.Keys[i], LagLog.Values[i]); // use .Keys[i] instead of [i] here because indizes might not be consistent with keys
-					LagLog.Remove(LagLog.Keys[i]);
-				}
-			}
-			else if (frame == 0)
-			{
-				RemovedFrames.Clear();
-				foreach (var lag in LagLog)
-				{
-					RemovedFrames.Add(lag.Key, lag.Value);
-				}
-				this.Clear();
+				RemovedFrames.Remove(LagLog.Keys[i]);
+				RemovedFrames.Add(LagLog.Keys[i], LagLog.Values[i]); // use .Keys[i] instead of [i] here because indizes might not be consistent with keys
+				LagLog.Remove(LagLog.Keys[i]);
 			}
 
 		}
