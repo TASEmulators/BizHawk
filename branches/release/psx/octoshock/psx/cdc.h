@@ -50,11 +50,12 @@ class PS_CDC
  private:
  CDIF *Cur_CDIF;
  ShockDiscRef* Cur_disc;
+ bool TrayOpen;
 
  ShockDiscRef* Open_disc; //the disc that's in the tray, while the tray is open. pending, kind of. used because Cur_disc != NULL is used as a tray-closed marker in the CDC code
  uint8 Open_DiscID[4]; //same thing
 
- bool DiscChanged;
+ bool Status_TrayOpenBit; //PSX-SPX calls it ShellOpen
  int32 DiscStartupDelay;
 
  CD_Audio_Buffer AudioBuffer;
@@ -238,7 +239,7 @@ class PS_CDC
 
  static CDC_CTEntry Commands[0x20];
 
- int32 Command_Nop(const int arg_count, const uint8 *args);
+ int32 Command_GetStat(const int arg_count, const uint8 *args);
  int32 Command_Setloc(const int arg_count, const uint8 *args);
  int32 Command_Play(const int arg_count, const uint8 *args);
  int32 Command_Forward(const int arg_count, const uint8 *args);

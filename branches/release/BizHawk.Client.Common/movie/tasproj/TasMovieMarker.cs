@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 
 		public new void AddRange(IEnumerable<TasMovieMarker> collection)
 		{
-			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			bool endBatch = _movie.ChangeLog.BeginNewBatch("Add Markers", true);
 			foreach (TasMovieMarker m in collection)
 			{
 				Add(m);
@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 
 		public new void InsertRange(int index, IEnumerable<TasMovieMarker> collection)
 		{
-			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			bool endBatch = _movie.ChangeLog.BeginNewBatch("Add Markers", true);
 			foreach (TasMovieMarker m in collection)
 				_movie.ChangeLog.AddMarkerChange(m);
 			if (endBatch)
@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common
 
 		public new int RemoveAll(Predicate<TasMovieMarker> match)
 		{
-			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			bool endBatch = _movie.ChangeLog.BeginNewBatch("Remove All Markers", true);
 			foreach (TasMovieMarker m in this)
 			{
 				if (match.Invoke(m))
@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 		public int TruncateAt(int startFrame)
 		{
 			int deletedCount = 0;
-			bool endBatch = _movie.ChangeLog.BeginNewBatch(true);
+			bool endBatch = _movie.ChangeLog.BeginNewBatch("Truncate Markers", true);
 			for (int i = Count - 1; i > -1; i--)
 			{
 				if (this[i].Frame >= startFrame)

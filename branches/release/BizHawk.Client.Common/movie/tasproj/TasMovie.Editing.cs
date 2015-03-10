@@ -15,7 +15,8 @@ namespace BizHawk.Client.Common
 
 		public override void RecordFrame(int frame, IController source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame);
+			if (frame != 0)
+				ChangeLog.AddGeneralUndo(frame, frame, "Record Frame: " + frame);
 
 			base.RecordFrame(frame, source);
 
@@ -24,12 +25,13 @@ namespace BizHawk.Client.Common
 
 			StateManager.Capture();
 
-			ChangeLog.SetGeneralRedo();
+			if (frame != 0)
+				ChangeLog.SetGeneralRedo();
 		}
 
 		public override void Truncate(int frame)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch(true);
+			bool endBatch = ChangeLog.BeginNewBatch("Truncate Movie: " + frame, true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
 
 			if (frame < _log.Count - 1)
@@ -50,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		public override void PokeFrame(int frame, IController source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame);
+			ChangeLog.AddGeneralUndo(frame, frame, "Set Frame At: " + frame);
 
 			base.PokeFrame(frame, source);
 			InvalidateAfter(frame);
@@ -59,7 +61,7 @@ namespace BizHawk.Client.Common
 		}
 		public void SetFrame(int frame, string source)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame);
+			ChangeLog.AddGeneralUndo(frame, frame, "Set Frame At: " + frame);
 
 			base.SetFrameAt(frame, source);
 			InvalidateAfter(frame);
@@ -69,7 +71,7 @@ namespace BizHawk.Client.Common
 
 		public override void ClearFrame(int frame)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame);
+			ChangeLog.AddGeneralUndo(frame, frame, "Clear Frame: " + frame);
 
 			base.ClearFrame(frame);
 			InvalidateAfter(frame);
@@ -79,7 +81,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrame(int frame)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch(true);
+			bool endBatch = ChangeLog.BeginNewBatch("Remove Frame: " + frame, true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength - 1);
 
 			_log.RemoveAt(frame);
@@ -112,7 +114,7 @@ namespace BizHawk.Client.Common
 			{
 				var invalidateAfter = frames.Min();
 
-				bool endBatch = ChangeLog.BeginNewBatch(true);
+				bool endBatch = ChangeLog.BeginNewBatch("Remove Multiple Frames", true);
 				ChangeLog.AddGeneralUndo(invalidateAfter, InputLogLength - 1);
 
 				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
@@ -145,7 +147,7 @@ namespace BizHawk.Client.Common
 		}
 		public void RemoveFrames(int removeStart, int removeUpTo)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch(true);
+			bool endBatch = ChangeLog.BeginNewBatch("Remove Frames: " + removeStart + "-" + removeUpTo, true);
 			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
 
 			for (int i = removeUpTo - 1; i >= removeStart; i--)
@@ -177,7 +179,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertInput(int frame, string inputState)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch(true);
+			bool endBatch = ChangeLog.BeginNewBatch("Insert Frame: " + frame, true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength);
 
 			_log.Insert(frame, inputState);
@@ -203,7 +205,7 @@ namespace BizHawk.Client.Common
 		}
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch(true);
+			bool endBatch = ChangeLog.BeginNewBatch("Insert Frame: " + frame, true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + inputLog.Count() - 1);
 
 			_log.InsertRange(frame, inputLog);
@@ -227,7 +229,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)
 				ChangeLog.EndBatch();
-}
+		}
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
@@ -246,7 +248,7 @@ namespace BizHawk.Client.Common
 
 		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1);
+			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, "Copy Over Input: " + frame);
 
 			var lg = LogGeneratorInstance();
 			var states = inputStates.ToList();
@@ -264,7 +266,7 @@ namespace BizHawk.Client.Common
 
 		public void InsertEmptyFrame(int frame, int count = 1)
 		{
-			bool endBatch = ChangeLog.BeginNewBatch(true);
+			bool endBatch = ChangeLog.BeginNewBatch("Insert Empty Frame: " + frame, true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
 
 			var lg = LogGeneratorInstance();
@@ -298,10 +300,29 @@ namespace BizHawk.Client.Common
 				this.SwitchToPlay();
 		}
 
+		private void ExtendMovieForEdit(int numFrames)
+		{
+			bool endBatch = ChangeLog.BeginNewBatch("Auto-Extend Movie", true);
+			int oldLength = InputLogLength;
+			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
+
+			var lg = LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+
+			for (int i = 0; i < numFrames; i++)
+				_log.Add(lg.EmptyEntry);
+
+			Changes = true;
+			InvalidateAfter(oldLength - 1);
+
+			ChangeLog.SetGeneralRedo();
+			if (endBatch)
+				ChangeLog.EndBatch();
+		}
 		public void ToggleBoolState(int frame, string buttonName)
 		{
 			if (frame >= _log.Count) // Insert blank frames up to this point
-				InsertEmptyFrame(_log.Count, frame - _log.Count + 1);
+				ExtendMovieForEdit(frame - _log.Count + 1);
 
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
 			adapter[buttonName] = !adapter.IsPressed(buttonName);
@@ -312,13 +333,13 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName]);
+			ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName], "Toggle " + buttonName + ": " + frame);
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
 		{
 			if (frame >= _log.Count) // Insert blank frames up to this point
-				InsertEmptyFrame(_log.Count, frame - _log.Count + 1);
+				ExtendMovieForEdit(frame - _log.Count + 1);
 
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
 			var old = adapter[buttonName];
@@ -332,15 +353,15 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddBoolToggle(frame, buttonName, old);
+				ChangeLog.AddBoolToggle(frame, buttonName, old, "Set " + buttonName + "(" + (val ? "On" : "Off") + "): " + frame);
 			}
 		}
 		public void SetBoolStates(int frame, int count, string buttonName, bool val)
 		{
 			if (frame + count >= _log.Count) // Insert blank frames up to this point
-				InsertEmptyFrame(_log.Count, frame + count - _log.Count + 1);
+				ExtendMovieForEdit(frame - _log.Count + 1);
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1, "Set " + buttonName + "(" + (val ? "On" : "Off") + "): " + frame + "-" + (frame + count - 1));
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)
@@ -369,7 +390,7 @@ namespace BizHawk.Client.Common
 		public void SetFloatState(int frame, string buttonName, float val)
 		{
 			if (frame >= _log.Count) // Insert blank frames up to this point
-				InsertEmptyFrame(_log.Count, frame - _log.Count + 1);
+				ExtendMovieForEdit(frame - _log.Count + 1);
 
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
 			var old = adapter.GetFloat(buttonName);
@@ -383,15 +404,15 @@ namespace BizHawk.Client.Common
 			{
 				InvalidateAfter(frame);
 				Changes = true;
-				ChangeLog.AddFloatChange(frame, buttonName, old, val);
+				ChangeLog.AddFloatChange(frame, buttonName, old, val, "Set " + buttonName + "(" + val + "): " + frame);
 			}
 		}
 		public void SetFloatStates(int frame, int count, string buttonName, float val)
 		{
 			if (frame + count >= _log.Count) // Insert blank frames up to this point
-				InsertEmptyFrame(_log.Count, frame + count - _log.Count + 1);
+				ExtendMovieForEdit(frame - _log.Count + 1);
 
-			ChangeLog.AddGeneralUndo(frame, frame + count - 1);
+			ChangeLog.AddGeneralUndo(frame, frame + count - 1, "Set " + buttonName + "(" + val + "): " + frame + "-" + (frame + count - 1));
 
 			int changed = -1;
 			for (int i = 0; i < count; i++)
