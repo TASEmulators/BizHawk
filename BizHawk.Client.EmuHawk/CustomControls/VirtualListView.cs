@@ -623,7 +623,7 @@ namespace BizHawk.Client.EmuHawk
 		public static extern int GetScrollPos(IntPtr hWnd, Orientation nBar);
 
 		/// <summary>
-		/// Gets the Vertical Scroll position of the control.
+		/// Gets and Sets the Vertical Scroll position of the control.
 		/// </summary>
 		public int VScrollPos
 		{

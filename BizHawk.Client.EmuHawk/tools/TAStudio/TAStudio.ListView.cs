@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
-						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool");
+						CurrentTasMovie.ChangeLog.BeginNewBatch();
 
 						ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 						_triggerAutoRestore = true;
@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (e.Clicks != 2)
 						{
-							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Float");
+							CurrentTasMovie.ChangeLog.BeginNewBatch();
 							_startFloatDrawColumn = buttonName;
 						}
 						else // Double-click enters float editing mode
@@ -354,7 +354,6 @@ namespace BizHawk.Client.EmuHawk
 								_floatEditRow = -1;
 							else
 							{
-								CurrentTasMovie.ChangeLog.BeginNewBatch("Float Edit: " + frame);
 								_floatEditColumn = buttonName;
 								_floatEditRow = frame;
 								_floatTypedValue = "";
@@ -390,7 +389,7 @@ namespace BizHawk.Client.EmuHawk
 					_rightClickLastFrame = -1;
 					_supressContextMenu = true;
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
-					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
+					CurrentTasMovie.ChangeLog.BeginNewBatch();
 				}
 			}
 		}
@@ -417,8 +416,7 @@ namespace BizHawk.Client.EmuHawk
 				_floatEditYPos = -1;
 				_leftButtonHeld = false;
 
-				if (_floatEditRow == -1)
-					CurrentTasMovie.ChangeLog.EndBatch();
+				CurrentTasMovie.ChangeLog.EndBatch();
 			}
 			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
@@ -736,7 +734,6 @@ namespace BizHawk.Client.EmuHawk
 						SetFloatValue(_floatEditRow, _floatEditColumn, _floatPaintState);
 					}
 					_floatEditRow = -1;
-					CurrentTasMovie.ChangeLog.EndBatch();
 				}
 				else
 				{

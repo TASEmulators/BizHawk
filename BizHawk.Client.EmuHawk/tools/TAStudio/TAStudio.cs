@@ -34,8 +34,6 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
-		private UndoHistoryForm undoForm;
-
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 
 		[ConfigPersist]
@@ -298,9 +296,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MarkerControl != null)
 				MarkerControl.UpdateValues();
-
-			if (undoForm != null)
-				undoForm.UpdateValues();
+			
 		}
 
 		private void RefreshTasView()
@@ -607,6 +603,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
+
+			/* adelikat: Hack to remove Undo History for now, it shouldn't be on the main window anyway, make it a modeless dialog */
+			groupBox2.Visible = false;
+			groupBox1.Size = new System.Drawing.Size(groupBox1.Width, groupBox1.Height + 85);
 		}
 
 		private bool InitializeOnLoad()
@@ -672,9 +672,6 @@ namespace BizHawk.Client.EmuHawk
 				e.Cancel = true;
 				_exiting = false;
 			}
-
-			if (undoForm != null)
-				undoForm.Close();
 		}
 
 		/// <summary>
@@ -749,15 +746,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
 			CurrentTasMovie.Markers.Add(marker);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker);
 		}
 		public void RemoveMarker(TasMovieMarker marker)
 		{
 			CurrentTasMovie.Markers.Remove(marker);
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(null, marker.Frame, marker.Message);
 		}
 		public void EditMarker(TasMovieMarker marker, string message)
 		{
 			string old = marker.Message;
 			marker.Message = message;
+			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
 		}
 	}
 }

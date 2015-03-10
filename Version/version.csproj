@@ -36,7 +36,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" SVN_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
+    <PreBuildEvent>"$(ProjectDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
