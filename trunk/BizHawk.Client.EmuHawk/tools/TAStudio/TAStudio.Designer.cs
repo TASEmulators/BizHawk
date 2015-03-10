@@ -816,7 +816,6 @@ namespace BizHawk.Client.EmuHawk
 			this.ColumnsSubMenu.Name = "ColumnsSubMenu";
 			this.ColumnsSubMenu.Size = new System.Drawing.Size(67, 20);
 			this.ColumnsSubMenu.Text = "&Columns";
-			this.ColumnsSubMenu.DropDownOpened += new System.EventHandler(this.ColumnsSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator19
 			// 

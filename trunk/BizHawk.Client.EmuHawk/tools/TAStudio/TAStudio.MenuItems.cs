@@ -756,7 +756,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Columns
 
-		private void ColumnsSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SetUpToolStripColumns()
 		{
 			ColumnsSubMenu.DropDownItems.Clear();
 
@@ -774,21 +774,23 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var column in columns)
 			{
-				var dummyColumnObject = column;
-
 				var menuItem = new ToolStripMenuItem
 				{
 					Text = column.Text + " (" + column.Name + ")",
 					Checked = column.Visible,
-					CheckOnClick = true
+					CheckOnClick = true,
+					Tag = column
 				};
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					dummyColumnObject.Visible = (o as ToolStripMenuItem).Checked;
+					var sender = o as ToolStripMenuItem;
+					(sender.Tag as InputRoll.RollColumn).Visible = sender.Checked;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
 					RefreshTasView();
+					ColumnsSubMenu.ShowDropDown();
+					(sender.OwnerItem as ToolStripMenuItem).ShowDropDown();
 				};
 
 				if (column.Name.StartsWith("P" + (player + 1)))
@@ -804,21 +806,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ToolStripMenuItem item = new ToolStripMenuItem("Show Player " + i);
 				item.CheckOnClick = true;
-				item.Checked = false;
-				for (int j = 1; j < playerMenus[i].DropDownItems.Count; j++)
-				{
-					if ((playerMenus[i].DropDownItems[j] as ToolStripMenuItem).Checked)
-					{
-						item.Checked = true;
-						break;
-					}
-				}
+				item.Checked = true;
 
-				var dummyObject = playerMenus[i];
+				int dummyInt = i;
+				ToolStripMenuItem dummyObject = playerMenus[i];
 				item.CheckedChanged += (o, ev) =>
 				{
-					foreach (ToolStripMenuItem subItem in dummyObject.DropDownItems)
-						subItem.Checked = item.Checked;
+					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+					{
+						(menuItem.Tag as InputRoll.RollColumn).Visible =
+							(o as ToolStripMenuItem).Checked && menuItem.Checked;
+					}
 
 					CurrentTasMovie.FlagChanges();
 					RefreshTasView();
