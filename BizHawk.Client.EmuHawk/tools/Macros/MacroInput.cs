@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieZone newZone = new MovieZone(CurrentTasMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value));
+			MovieZone newZone = new MovieZone(CurrentTasMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value + 1));
 			newZone.Name = "Zone " + zones.Count;
 			zones.Add(newZone);
 			ZonesList.Items.Add(newZone.Name + " - length: " + newZone.Length);
