@@ -93,22 +93,34 @@ void PS_CDC::DMForceStop(void)
 
 void PS_CDC::OpenTray()
 {
+	//track the tray state
+	TrayOpen = true;
+
 	//effectively a NOP at t=0
 	DMForceStop();
 
 	//zero 31-jan-2015 - psxtech says that what this is used for is actually a 'was open' flag which gets cleared after the status gets polled.
 	//so lets set it here, and rename it later if we're sure.
-	DiscChanged = true;
+	Status_TrayOpenBit = true;
+
+	//since Cur_disc tracks what the CDC sees mounted, it can't see anything now that it's open, so exchange these states
+	Open_disc = Cur_disc;
+	Cur_disc = NULL;
 }
 
 void PS_CDC::CloseTray(bool poke)
 {
+	//track the tray state
+	TrayOpen = false;
+
 	//switch pending (open) disc to current disc
 	Cur_disc = Open_disc;
 	Open_disc = NULL;
+
+	//cache Open_DiscID and clear it out
 	char disc_id[5];
 	strncpy(disc_id,(char*)Open_DiscID,4);
-	Open_DiscID[0] = 0;
+	memset(Open_DiscID,0,sizeof(Open_DiscID));
 
 	//prepare analysis if disc: leave in empty state
 	IsPSXDisc = false;
@@ -119,8 +131,8 @@ void PS_CDC::CloseTray(bool poke)
 	{
 		Cur_disc->ReadTOC((ShockTOC*)&toc,(ShockTOCTrack*)toc.tracks);
 
-		//complete analysis
-		if(disc_id)
+		//complete analysis. if we had a disc ID, then it's a PSX disc; copy it in
+		if(disc_id[0])
 		{
 			strncpy((char *)DiscID, disc_id, 4);
 			IsPSXDisc = true;
@@ -238,7 +250,8 @@ void PS_CDC::SoftReset(void)
  CommandLoc = 0;
  CommandLoc_Dirty = true;
 
- DiscChanged = true;
+ Status_TrayOpenBit = true;
+ TrayOpen = false;
 }
 
 void PS_CDC::Power(void)
@@ -255,7 +268,9 @@ void PS_CDC::Power(void)
 
 SYNCFUNC(PS_CDC)
 {
-	NSS(DiscChanged);
+	NSS(TrayOpen);
+
+	NSS(Status_TrayOpenBit);
   NSS(DiscStartupDelay);
 
   NSS(AudioBuffer);
@@ -434,7 +449,7 @@ uint8 PS_CDC::MakeStatus(bool cmd_error)
   ret |= 0x40;
 
  // TODO: shell open and seek error
- if(!Cur_CDIF || DiscChanged)
+ if(Status_TrayOpenBit)
   ret |= 0x10;
 
  if(DriveStatus != DS_STOPPED)
@@ -442,8 +457,6 @@ uint8 PS_CDC::MakeStatus(bool cmd_error)
 
  if(cmd_error)
   ret |= 0x01;
-
- DiscChanged = false;
 
  return(ret);
 }
@@ -1557,9 +1570,14 @@ bool PS_CDC::CommandCheckDiscPresent(void)
  return(true);
 }
 
-int32 PS_CDC::Command_Nop(const int arg_count, const uint8 *args)
+int32 PS_CDC::Command_GetStat(const int arg_count, const uint8 *args)
 {
  WriteResult(MakeStatus());
+
+ //PSX-SPX: this command ACKs the TrayOpenBit if the shell is no longer open
+ if(!TrayOpen)
+	Status_TrayOpenBit = false;
+
  WriteIRQ(CDCIRQ_ACKNOWLEDGE);
 
  return(0);
@@ -2401,7 +2419,7 @@ int32 PS_CDC::Command_0x1d(const int arg_count, const uint8 *args)
 PS_CDC::CDC_CTEntry PS_CDC::Commands[0x20] =
 {
  { /* 0x00, */ 0, 0, NULL, NULL, NULL },
- { /* 0x01, */ 0, 0, "Nop", &PS_CDC::Command_Nop, NULL },
+ { /* 0x01, */ 0, 0, "GetStat", &PS_CDC::Command_GetStat, NULL },
  { /* 0x02, */ 3, 3, "Setloc", &PS_CDC::Command_Setloc, NULL },
  { /* 0x03, */ 0, 1, "Play", &PS_CDC::Command_Play, NULL },
  { /* 0x04, */ 0, 0, "Forward", &PS_CDC::Command_Forward, NULL },
