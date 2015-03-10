@@ -938,7 +938,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl.Emulator = null;
 			this.MarkerControl.Location = new System.Drawing.Point(2, 16);
 			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(198, 320);
+			this.MarkerControl.Size = new System.Drawing.Size(198, 343);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
 			// 
