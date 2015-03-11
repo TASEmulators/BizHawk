@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrom(int frame)
 		{
-			if (LagLog.Count >= frame)
+			if (LagLog.Count >= frame && frame >= 0)
 				LagLog.RemoveRange(frame, LagLog.Count - frame);
 		}
 

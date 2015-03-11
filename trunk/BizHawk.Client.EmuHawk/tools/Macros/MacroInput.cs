@@ -26,19 +26,6 @@ namespace BizHawk.Client.EmuHawk
 			get { return Global.MovieSession.Movie as TasMovie; }
 		}
 
-		[ConfigPersist]
-		private MacroSettings Settings { get; set; }
-
-		class MacroSettings
-		{
-			public MacroSettings()
-			{
-				RecentMacro = new RecentFiles(8);
-			}
-
-			public RecentFiles RecentMacro { get; set; }
-		}
-
 		private bool _initializing = false;
 		public MacroInputTool()
 		{
@@ -59,8 +46,6 @@ namespace BizHawk.Client.EmuHawk
 
 			ReplaceBox.Enabled = CurrentTasMovie is TasMovie;
 			PlaceNum.Enabled = CurrentTasMovie is TasMovie;
-
-			Settings = new MacroSettings();
 
 			MovieZone main = new MovieZone(CurrentTasMovie, 0, CurrentTasMovie.InputLogLength);
 			main.Name = "Entire Movie";
@@ -206,6 +191,41 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			SaveMacroAs(selectedZone);
+		}
+
+		private void loadMacroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			MovieZone loadZone = LoadMacro();
+			if (loadZone != null)
+			{
+				zones.Add(loadZone);
+				ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
+			}
+		}
+
+		private void RecentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentToolStripMenuItem.DropDownItems.Clear();
+			RecentToolStripMenuItem.DropDownItems.AddRange(
+				Global.Config.RecentMacros.RecentMenu(DummyLoadMacro, true));
+		}
+		private void DummyLoadMacro(string path)
+		{
+			MovieZone loadZone = new MovieZone(path);
+			zones.Add(loadZone);
+			ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
+		}
+
+		private static string SuggestedFolder()
+		{
+			return PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) +
+				"\\Macros";
+		}
+		#endregion
+
+		public static void SaveMacroAs(MovieZone macro)
+		{
 			SaveFileDialog dialog = new SaveFileDialog();
 			dialog.InitialDirectory = SuggestedFolder();
 			dialog.Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*";
@@ -214,11 +234,10 @@ namespace BizHawk.Client.EmuHawk
 			if (result != DialogResult.OK)
 				return;
 
-			selectedZone.Save(dialog.FileName);
-			Settings.RecentMacro.Add(dialog.FileName);
+			macro.Save(dialog.FileName);
+			Global.Config.RecentMacros.Add(dialog.FileName);
 		}
-
-		private void loadMacroToolStripMenuItem_Click(object sender, EventArgs e)
+		public static MovieZone LoadMacro()
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
 			dialog.InitialDirectory = SuggestedFolder();
@@ -226,34 +245,13 @@ namespace BizHawk.Client.EmuHawk
 
 			DialogResult result = dialog.ShowHawkDialog();
 			if (result != DialogResult.OK)
-				return;
+				return null;
 
-			MovieZone loadZone = new MovieZone(dialog.FileName);
-			zones.Add(loadZone);
-			ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
+			MovieZone ret = new MovieZone(dialog.FileName);
+			if (ret != null)
+				Global.Config.RecentMacros.Add(dialog.FileName);
 
-			Settings.RecentMacro.Add(dialog.FileName);
+			return ret;
 		}
-
-		private void RecentToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentToolStripMenuItem.DropDownItems.Clear();
-			RecentToolStripMenuItem.DropDownItems.AddRange(
-				Settings.RecentMacro.RecentMenu(DummyLoadProject, true));
-		}
-		private void DummyLoadProject(string path)
-		{
-			MovieZone loadZone = new MovieZone(path);
-			zones.Add(loadZone);
-			ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
-		}
-
-		private string SuggestedFolder()
-		{
-			return PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) +
-				"\\Macros";
-		}
-		#endregion
-
 	}
 }

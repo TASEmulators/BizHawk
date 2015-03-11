@@ -220,6 +220,19 @@ namespace BizHawk.Client.EmuHawk
 			LoadProject(path);
 		}
 
+		private void DummyLoadMacro(string path)
+		{
+			if (!TasView.SelectedRows.Any())
+				return;
+
+			MovieZone loadZone = new MovieZone(path);
+			if (loadZone != null)
+			{
+				loadZone.Start = TasView.FirstSelectedIndex.Value;
+				loadZone.PlaceZone(CurrentTasMovie);
+			}
+		}
+
 		private string ClientSettingsForSave()
 		{
 			return TasView.UserSettingsSerialized();
