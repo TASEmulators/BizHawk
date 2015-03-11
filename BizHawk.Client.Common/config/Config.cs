@@ -357,6 +357,9 @@ namespace BizHawk.Client.Common
 		// TAStudio
 		public TasStateManagerSettings DefaultTasProjSettings = new TasStateManagerSettings();
 
+		// Macro Tool
+		public RecentFiles RecentMacros = new RecentFiles(8);
+
 		// Movie Settings
 		public RecentFiles RecentMovies = new RecentFiles(8);
 		public string DefaultAuthor = "default user";

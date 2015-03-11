@@ -118,6 +118,34 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void saveSelectionToMacroToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!TasView.SelectedRows.Any())
+				return;
+
+			MovieZone macro = new MovieZone(CurrentTasMovie, TasView.FirstSelectedIndex.Value,
+				TasView.LastSelectedIndex.Value - TasView.FirstSelectedIndex.Value + 1);
+			MacroInputTool.SaveMacroAs(macro);
+		}
+		private void placeMacroAtSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!TasView.SelectedRows.Any())
+				return;
+
+			MovieZone macro = MacroInputTool.LoadMacro();
+			if (macro != null)
+			{
+				macro.Start = TasView.FirstSelectedIndex.Value;
+				macro.PlaceZone(CurrentTasMovie);
+			}
+		}
+
+		private void recentMacrosToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			recentMacrosToolStripMenuItem.DropDownItems.Clear();
+			recentMacrosToolStripMenuItem.DropDownItems.AddRange(Global.Config.RecentMacros.RecentMenu(DummyLoadMacro));
+		}
+
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
 			var bk2 = CurrentTasMovie.ToBk2(true);

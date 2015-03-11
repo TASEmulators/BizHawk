@@ -7,7 +7,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class MacroInputTool 
+	public partial class MacroInputTool
 	{
 		private CheckBox[] _buttonBoxes;
 		private void SetUpButtonBoxes()
@@ -33,31 +33,47 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_buttonBoxes[i].Parent = this;
 				_buttonBoxes[i].AutoSize = true;
+				_buttonBoxes[i].Checked = true;
 				_buttonBoxes[i].CheckedChanged += ButtonBox_CheckedChanged;
 			}
 
 			PositionBoxes();
 		}
 
+		private bool _setting = false;
 		private void ButtonBox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (selectedZone == null)
+			if (selectedZone == null || _setting)
 				return;
 
 			CheckBox s = sender as CheckBox;
-			s.ForeColor = s.Checked ? SystemColors.ControlText : SystemColors.ControlLight;
+			s.ForeColor = s.Checked ? SystemColors.ControlText : SystemColors.ButtonShadow;
+			s.Refresh();
 
 			// Update the selected zone's key
 			var lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			string key = lg.GenerateLogKey();
 			key = key.Replace("LogKey:", "").Replace("#", "");
-			key = key.Substring(0, key.Length - 1);
 
 			for (int i = 0; i < _buttonBoxes.Length; i++)
-				key = key.Replace(_buttonBoxes[i].Text + "|", "");
+			{
+				if (!_buttonBoxes[i].Checked)
+					key = key.Replace(_buttonBoxes[i].Text + "|", "");
+			}
+			key = key.Substring(0, key.Length - 1);
 
 			selectedZone.InputKey = key;
+		}
+		private void SetButtonBoxes()
+		{
+			if (selectedZone == null)
+				return;
+
+			_setting = true;
+			for (int i = 0; i < _buttonBoxes.Length; i++)
+				_buttonBoxes[i].Checked = selectedZone.InputKey.Contains(_buttonBoxes[i].Text);
+			_setting = false;
 		}
 
 		private void PositionBoxes()
