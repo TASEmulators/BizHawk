@@ -1,27 +1,49 @@
-﻿
-using System;
+﻿using System;
+
 using BizHawk.Common;
 
-//NSF ROM and general approaches are taken from FCEUX. however, i've improvised/simplified/broken things so the rom is doing some pointless stuff now.
+//NSF ROM and general approaches are heavily derived from FCEUX. the general ideas:
+//1. Have a hardcoded NSF driver rom loaded to 0x3800
+//2. Have fake registers at $3FFx for the NSF driver to use
+//3. These addresses are chosen because no known NSF could possibly use them for anything.
 
+//NSF:
 //check nsfspec.txt for more on why FDS is weird. lets try not following FCEUX too much there.
 
 //TODO - add a sleep mode to the cpu and patch the rom program to use it?
-//some NSF players know when a song ends.
+//TODO - some NSF players know when a song ends and skip to the next one.. how do they know?
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[NES.INESBoardImplCancel]
 	public sealed class NSFBoard : NES.NESBoardBase
 	{
+		//------------------------------
 		//configuration
+		
 		internal NSFFormat nsf;
-		byte[] InitBankSwitches = new byte[8];
-		byte[] FakePRG = new byte[32768];
+
+		/// <summary>
+		/// Whether the NSF is bankswitched
+		/// </summary>
 		bool BankSwitched;
+
+		/// <summary>
+		/// the bankswitch values to be used before the INIT routine is called
+		/// </summary>
+		byte[] InitBankSwitches = new byte[8];
+
+		/// <summary>
+		/// An image of the entire PRG space where the unmapped files are located
+		/// </summary>
+		byte[] FakePRG = new byte[32768];
 
 		//------------------------------
 		//state
+
+		/// <summary>
+		/// PRG bankswitching
+		/// </summary>
 		IntBuffer prg_banks_4k = new IntBuffer(8);
 
 		/// <summary>
@@ -29,8 +51,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary>
 		bool Patch_Vectors;
 
+		/// <summary>
+		/// Current 1-indexed song number (1 is the first song)
+		/// </summary>
 		int CurrentSong;
-		bool ResetSignal;
+
+		/// <summary>
+		/// Whether the INIT routine needs to be called
+		/// </summary>
+		bool InitPending;
+
+		/// <summary>
+		/// Previous button state for button press handling
+		/// </summary>
 		int ButtonState;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -46,6 +79,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.Dispose();
 		}
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg_banks_4k", ref prg_banks_4k);
+			ser.Sync("Patch_Vectors", ref Patch_Vectors);
+			ser.Sync("CurrentSong", ref CurrentSong);
+			ser.Sync("InitPending", ref InitPending);
+			ser.Sync("ButtonState", ref ButtonState);
+		}
+
 		public void InitNSF(NSFFormat nsf)
 		{
 			this.nsf = nsf;
@@ -56,46 +99,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			NSFROM[0x19] = (byte)(nsf.PlayAddress);
 			NSFROM[0x1A] = (byte)(nsf.PlayAddress >> 8);
 
-			//complicated anlysis straight from FCEUX
-			//apparently, it converts a non-bankswitched configuration into a bankswitched configuration
-			//since the non-bankswitched configuration is seemingly almost pointless. 
-			//I'm not too sure how we would really get a non-bankswitched file, using the code below. 
-			//It would need to be loaded below 0x8000 I think?
+			//analyze bankswitch configuration. fix broken configurations
 			BankSwitched = false;
 			for (int i = 0; i < 8; i++)
 			{
-				InitBankSwitches[i] = nsf.BankswitchInitValues[i];
-				if (InitBankSwitches[i] != 0)
+				int bank = nsf.BankswitchInitValues[i];
+				
+				//discard out of range bankswitches.. for example, Balloon Fight is 3120B but has initial bank settings set to 0,0,0,0,0,1,0
+				if (bank * 4096 > nsf.NSFData.Length - 0x80)
+					bank = 0; 
+
+				InitBankSwitches[i] = (byte)bank;
+				if (bank != 0)
 					BankSwitched = true;
 			}
 
+			//if bit bankswitched, set up the fake PRG with the NSF data at the correct load address
 			if (!BankSwitched)
 			{
-				if ((nsf.LoadAddress & 0x7000) >= 0x7000)
-				{
-					//"Ice Climber, and other F000 base address tunes need this"
-					BankSwitched = true;
-				}
-				else
-				{
-					byte bankCounter = 0;
-					for (int x = (nsf.LoadAddress >> 12) & 0x7; x < 8; x++)
-					{
-						InitBankSwitches[x] = bankCounter;
-						bankCounter++;
-					}
-					BankSwitched = false;
-				}
-			}
-
-			for (int i = 0; i < 8; i++)
-				if (InitBankSwitches[i] != 0)
-					BankSwitched = true;
-
-			if (!BankSwitched)
-			{
-				throw new Exception("Test");
-				//setup FakePRG by copying in
+				//copy to load address
+				int load_start = nsf.LoadAddress - 0x8000;
+				int load_size = nsf.NSFData.Length - 0x80;
+				Buffer.BlockCopy(nsf.NSFData, 0x80, FakePRG, load_start, load_size);
 			}
 
 			ReplayInit();
@@ -104,18 +129,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void ReplayInit()
 		{
-			ResetSignal = true;
+			InitPending = true;
 			Patch_Vectors = true;
 		}
 
 		public override void NESSoftReset()
 		{
 			ReplayInit();
-		}
-
-		public override void SyncState(Serializer ser)
-		{
-			base.SyncState(ser);
 		}
 
 		public override void WriteEXP(int addr, byte value)
@@ -141,20 +161,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-
-		public override void WriteReg2xxx(int addr, byte value)
-		{
-			switch (addr)
-			{
-				case 0x3FF3: Patch_Vectors = true; break;
-				case 0x3FF4: Patch_Vectors = false; break;
-				case 0x3FF5: Patch_Vectors = true; break;
-				default:
-					base.WriteReg2xxx(addr, value);
-					break;
-			}
-		}
-
 		public override byte PeekReg2xxx(int addr)
 		{
 			if (addr < 0x3FF0)
@@ -168,111 +174,124 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return base.ReadReg2xxx(addr);
 			else if (addr >= 0x3FF0)
 			{
-				if (addr == 0x3FF0)
+				switch (addr)
 				{
-					byte ret = 0;
-					if (ResetSignal) ret = 1;
-					ResetSignal = false;
-					return ret;
+					case 0x3FF0:
+						{
+							byte ret = 0;
+							if (InitPending) ret = 1;
+							InitPending = false;
+							return ret;
+						}
+					case 0x3FF1:
+						{
+							//kevtris's reset process seems not to work. dunno what all is going on in there
+
+							//our own innovation, should work OK.. 
+							NES.apu.NESSoftReset();
+
+							//mostly fceux's guidance
+							NES.WriteMemory(0x4015, 0);
+							for (int i = 0; i < 14; i++)
+								NES.WriteMemory((ushort)(0x4000 + i), 0);
+							NES.WriteMemory(0x4015, 0x0F);
+
+							//clearing APU misc stuff, maybe not needed with soft reset above
+							//NES.WriteMemory(0x4017, 0xC0);
+							//NES.WriteMemory(0x4017, 0xC0);
+							//NES.WriteMemory(0x4017, 0x40);
+
+							//important to NSF standard for ram to be cleared, otherwise replayers are confused on account of not initializing memory themselves
+							var ram = NES.ram;
+							var wram = this.WRAM;
+							int wram_size = wram.Length;
+							for (int i = 0; i < 0x800; i++)
+								ram[i] = 0;
+							for (int i = 0; i < wram_size; i++)
+								wram[i] = 0;
+
+							//store specified initial bank state
+							if (BankSwitched)
+								for (int i = 0; i < 8; i++)
+									WriteEXP(0x5FF8 + i - 0x4000, InitBankSwitches[i]);
+
+							return (byte)(CurrentSong - 1);
+						}
+					case 0x3FF2:
+						return 0; //always return NTSC for now
+					case 0x3FF3:
+						Patch_Vectors = false;
+						return 0;
+					case 0x3FF4:
+						Patch_Vectors = true;
+						return 0;
+					default:
+						return base.ReadReg2xxx(addr);
 				}
-				else if (addr == 0x3FF1)
-				{
-					//kevtris's reset process seems not to work. dunno what all is going on in there
-
-					//our own innovation, should work OK.. 
-					NES.apu.NESSoftReset();
-
-					//mostly fceux's guidance
-					NES.WriteMemory(0x4015, 0);
-					for (int i = 0; i < 14; i++)
-						NES.WriteMemory((ushort)(0x4000 + i), 0);
-					NES.WriteMemory(0x4015, 0x0F);
-
-					//clearing APU misc stuff, maybe not needed with soft reset above
-					//NES.WriteMemory(0x4017, 0xC0);
-					//NES.WriteMemory(0x4017, 0xC0);
-					//NES.WriteMemory(0x4017, 0x40);
-
-					//important to NSF standard for ram to be cleared, otherwise replayers are confused on account of not initializing memory themselves
-					var ram = NES.ram;
-					var wram = this.WRAM;
-					int wram_size = wram.Length;
-					for (int i = 0; i < 0x800; i++)
-						ram[i] = 0;
-					for (int i = 0; i < wram_size; i++)
-						wram[i] = 0;
-
-					//store specified initial bank state
-					if (BankSwitched)
-						for (int i = 0; i < 8; i++)
-							WriteEXP(0x5FF8 + i - 0x4000, InitBankSwitches[i]);
-
-					return (byte)(CurrentSong - 1);
-				}
-				else if (addr == 0x3FF3) return 0; //always return NTSC I guess
-				else return base.ReadReg2xxx(addr);
 			}
 			else if (addr - 0x3800 < NSFROM.Length) return NSFROM[addr - 0x3800];
 			else return base.ReadReg2xxx(addr);
 		}
 
-		//; @NMIVector
-		//00:XX00:8D F4 3F  STA $3FF4 = #$00 ; clear NMI_2 (the value of A is unimportant)
-		//00:XX03:A2 FF     LDX #$FF
-		//00:XX05:9A        TXS ; stack pointer is initialized
-		//00:XX06:AD F0 3F  LDA $3FF0 = #$00 ; read a flag that says whether we need to run init
-		//00:XX09:F0 09     BEQ $8014 ; If we dont need init, go to @PastInit
-		//00:XX0B:AD F1 3F  LDA $3FF1 = #$00 ; reading this value causes a reset
-		//00:XX0E:AE F3 3F  LDX $3FF3 = #$00 ; reads the PAL flag
-		//00:XX11:20 00 00  JSR $0000 ; JSR to INIT routine
-		//; @PastInit
-		//00:XX14:A9 00     LDA #$00 
-		//00:XX16:AA        TAX
-		//00:XX17:A8        TAY ; X and Y are cleared
-		//00:XX18:20 00 00  JSR $0000 ; JSR to PLAY routine
-		//00:XX1B:8D F5 3F  STA $3FF5 = #$FF ; set NMI_2 flag
-		//00:XX1E:90 FE     BCC $XX1E ; infinite loop.. when the song is over?
-		//; @ResetVector
-		//00:XX20:8D F3 3F  STA $3FF3 = #$00 ; set NMI_1 flag (the value of A is unimportant); since the rom boots here, this was needed for the initial NMI. but we also get it from having the reset signal set, so..
-		//00:XX23:18        CLC
-		//00:XX24:90 FE     BCC $XX24 ;infinite loop to wait for first NMI
-
 		const ushort NMI_VECTOR = 0x3800;
 		const ushort RESET_VECTOR = 0x3820;
 
-		//for reasons unknown, this is a little extra long
-		byte[] NSFROM = new byte[0x30 + 6]
+		//readable registers
+		//3FF0 - InitPending (cleared on read)
+		//3FF1 - NextSong (also performs reset process - clears APU, RAM, etc)
+		//3FF2 - PAL flag
+		//3FF3 - PatchVectors=false
+		//3FF4 - PatchVectors=true
+
+		byte[] NSFROM = new byte[0x23]
 		{
-			//0x00 - NMI
-			0x8D,0xF4,0x3F, //Stop play routine NMIs.
-			0xA2,0xFF,0x9A, //Initialize the stack pointer. 
-			0xAD,0xF0,0x3F, //See if we need to init. 
-			0xF0,0x09, //If 0, go to play routine playing. 
+			//@NMIVector
+			//Suspend vector patching
+			//3800:LDA $3FF3
+			0xAD,0xF3,0x3F,
+			
+			//Initialize stack pointer
+			//3803:LDX #$FF
+			0xA2,0xFF,
+			//3805:TXS
+			0x9A,
 
-			0xAD,0xF1,0x3F, //Confirm and load A      
-			0xAE,0xF3,0x3F, //Load X with PAL/NTSC byte 
+			//Check (and clear) InitPending flag
+			//3806:LDA $3FF0
+			0xAD,0xF0,0x3F,
+			//3809:BEQ $8014
+			0xF0,0x09,
 
-			//0x11
-			0x20,0x00,0x00, //JSR to init routine (WILL BE PATCHED)
+			//Read the next song (resetting the player) and PAL flag into A and X and then call the INIT routine
+			//380B:LDA $3FF1 
+			0xAD,0xF1,0x3F,
+			//380E:LDX $3FF2
+			0xAE,0xF2,0x3F,
+			//3811:JSR INIT
+			0x20,0x00,0x00, 
 
+			//Fall through to:
+			//@Play - call PLAY routine with X and Y cleared (this is not supposed to be required, but fceux did it)
+			//3814:LDA #$00 
 			0xA9,0x00,
+			//3816:TAX
 			0xAA,
+			//3817:TAY
 			0xA8,
+			//3818:JSR PLAY
+			0x20,0x00,0x00, 
+			
+			//Resume vector patching and infinite loop waiting for next NMI
+			//381B:LDA $3FF4
+			0xAD,0xF4,0x3F,
+			//381E:BCC $XX1E
+			0x90,0xFE, 
 
-			//0x18
-			0x20,0x00,0x00, //JSR to play routine (WILL BE PATCHED)
-			0x8D,0xF5,0x3F, //Start play routine NMIs. 
-			0x90,0xFE, //Loopie time. 
-
-			// 0x20
-			0x8D,0xF3,0x3F, //Init init NMIs 
+			//@ResetVector - just set up an infinite loop waiting for the first NMI
+			//3820:CLC
 			0x18,
-			0x90,0xFE, //Loopie time. 
-
-			//0x26
-			0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-			//0x30
-			0x00,0x00,0x00,0x00,0x00,0x00
+			//3821:BCC $XX24 
+			0x90,0xFE, 
 		};
 
 		public override void AtVsyncNMI()
@@ -350,19 +369,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				int bank_4k = addr >> 12;
-				int ofs = addr & ((1 << 12) - 1);
-				bank_4k = prg_banks_4k[bank_4k];
-				addr = (bank_4k << 12) | ofs;
-
 				if (BankSwitched)
 				{
+					int bank_4k = addr >> 12;
+					int ofs = addr & ((1 << 12) - 1);
+					bank_4k = prg_banks_4k[bank_4k];
+					addr = (bank_4k << 12) | ofs;
+
 					//rom data began at 0x80 of the NSF file
 					addr += 0x80;
 
 					return ROM[addr];
 				}
-				else return NES.DB;
+				else
+				{
+					return FakePRG[addr];
+				}
 			}
 		}
 	}
