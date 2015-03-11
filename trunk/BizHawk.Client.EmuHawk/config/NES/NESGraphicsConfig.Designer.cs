@@ -32,6 +32,7 @@
 			this.Cancel = new System.Windows.Forms.Button();
 			this.AllowMoreSprites = new System.Windows.Forms.CheckBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.pictureBoxPalette = new System.Windows.Forms.PictureBox();
 			this.AutoLoadPalette = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.PalettePath = new System.Windows.Forms.TextBox();
@@ -59,8 +60,9 @@
 			this.DispSprites = new System.Windows.Forms.CheckBox();
 			this.BGColorDialog = new System.Windows.Forms.ColorDialog();
 			this.RestoreDefaultsButton = new System.Windows.Forms.Button();
-			this.pictureBoxPalette = new System.Windows.Forms.PictureBox();
+			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).BeginInit();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).BeginInit();
@@ -68,7 +70,6 @@
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// OK
@@ -107,6 +108,7 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.label7);
 			this.groupBox1.Controls.Add(this.pictureBoxPalette);
 			this.groupBox1.Controls.Add(this.AutoLoadPalette);
 			this.groupBox1.Controls.Add(this.label1);
@@ -118,6 +120,14 @@
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Palette Config";
+			// 
+			// pictureBoxPalette
+			// 
+			this.pictureBoxPalette.Location = new System.Drawing.Point(6, 89);
+			this.pictureBoxPalette.Name = "pictureBoxPalette";
+			this.pictureBoxPalette.Size = new System.Drawing.Size(340, 89);
+			this.pictureBoxPalette.TabIndex = 11;
+			this.pictureBoxPalette.TabStop = false;
 			// 
 			// AutoLoadPalette
 			// 
@@ -427,13 +437,14 @@
 			this.RestoreDefaultsButton.UseVisualStyleBackColor = true;
 			this.RestoreDefaultsButton.Click += new System.EventHandler(this.RestoreDefaultsButton_Click);
 			// 
-			// pictureBoxPalette
+			// label7
 			// 
-			this.pictureBoxPalette.Location = new System.Drawing.Point(6, 89);
-			this.pictureBoxPalette.Name = "pictureBoxPalette";
-			this.pictureBoxPalette.Size = new System.Drawing.Size(340, 89);
-			this.pictureBoxPalette.TabIndex = 11;
-			this.pictureBoxPalette.TabStop = false;
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(142, 67);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(183, 13);
+			this.label7.TabIndex = 61;
+			this.label7.Text = "(The QuickNES palette is the default)";
 			// 
 			// NESGraphicsConfig
 			// 
@@ -459,6 +470,7 @@
 			this.Load += new System.EventHandler(this.NESGraphicsConfig_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).EndInit();
@@ -468,7 +480,6 @@
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBoxPalette)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -507,5 +518,6 @@
 		private System.Windows.Forms.NumericUpDown PAL_FirstLineNumeric;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.PictureBox pictureBoxPalette;
+		private System.Windows.Forms.Label label7;
 	}
 }
