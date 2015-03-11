@@ -111,9 +111,9 @@
 			this.buttonPalReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.buttonPalReset.Location = new System.Drawing.Point(142, 369);
 			this.buttonPalReset.Name = "buttonPalReset";
-			this.buttonPalReset.Size = new System.Drawing.Size(75, 23);
+			this.buttonPalReset.Size = new System.Drawing.Size(151, 23);
 			this.buttonPalReset.TabIndex = 5;
-			this.buttonPalReset.Text = "Reset...";
+			this.buttonPalReset.Text = "Reset to QuickNES Default";
 			this.buttonPalReset.UseVisualStyleBackColor = true;
 			this.buttonPalReset.Click += new System.EventHandler(this.buttonPalReset_Click);
 			// 
