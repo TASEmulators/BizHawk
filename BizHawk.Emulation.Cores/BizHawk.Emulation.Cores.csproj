@@ -602,6 +602,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\NROM.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Nintendo\NES\Boards\NSFBoard.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\PxROM_FxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Sachen8259.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\SachenSimple.cs" />
@@ -664,6 +665,7 @@
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NESControllers.cs" />
+    <Compile Include="Consoles\Nintendo\NES\NSFFormat.cs" />
     <Compile Include="Consoles\Nintendo\NES\Palettes.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\PPU.regs.cs" />
