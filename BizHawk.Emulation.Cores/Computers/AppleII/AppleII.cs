@@ -97,7 +97,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			public override void SetPixel(int x, int y, uint color)
 			{
-				fb[560 * y + x] = (int)color;
+				int i = 560 * y + x;
+				fb[i] = fb[i + 560] = (int)color;
 			}
 			public override void Update()
 			{
