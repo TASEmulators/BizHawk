@@ -829,13 +829,13 @@ namespace BizHawk.Client.EmuHawk
 					Text = column.Text + " (" + column.Name + ")",
 					Checked = column.Visible,
 					CheckOnClick = true,
-					Tag = column
+					Tag = column.Name
 				};
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
 					var sender = o as ToolStripMenuItem;
-					(sender.Tag as InputRoll.RollColumn).Visible = sender.Checked;
+					TasView.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
 					RefreshTasView();

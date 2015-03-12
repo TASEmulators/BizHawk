@@ -46,8 +46,10 @@ namespace BizHawk.Client.Common
 					return; // Nothing to do
 				}
 
-				if (frame == LagLog.Count)
-					LagLog.Add(value.Value);
+				if (frame >= LagLog.Count)
+				{
+					do { LagLog.Add(value.Value); } while (frame >= LagLog.Count);
+				}
 				else
 					LagLog[frame] = value.Value;
 

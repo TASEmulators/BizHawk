@@ -321,6 +321,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_floatEditYPos = e.Y;
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						return;
 					}
 				}
@@ -357,6 +359,9 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetFloatState(frame, buttonName, 0);
 							RefreshDialog();
 						}
+
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
 
@@ -405,6 +410,9 @@ namespace BizHawk.Client.EmuHawk
 						_rightClickFrame = frame;
 					}
 					_rightClickLastFrame = -1;
+
+					_triggerAutoRestore = true;
+					_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
 					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
 				}
@@ -568,6 +576,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (int i = startVal; i <= endVal; i++)
 							CurrentTasMovie.SetFrame(i, _rightClickInput[(_rightClickFrame - i) % _rightClickInput.Length]);
+						if (startVal < _triggerAutoRestoreFromFrame)
+							_triggerAutoRestoreFromFrame = startVal;
 					}
 				}
 				else
@@ -608,6 +618,9 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
 						_rightClickFrame = frame;
 					}
+
+					if (frame < _triggerAutoRestoreFromFrame)
+						_triggerAutoRestoreFromFrame = frame;
 				}
 				RefreshTasView();
 			}
@@ -619,8 +632,8 @@ namespace BizHawk.Client.EmuHawk
 					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
 						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
-						_triggerAutoRestore = true;
-						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
+							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
 
 					RefreshTasView();
@@ -636,8 +649,8 @@ namespace BizHawk.Client.EmuHawk
 						if (i < CurrentTasMovie.InputLogLength)
 						{
 							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
-							_triggerAutoRestore = true;
-							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+							if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
+								_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 						}
 					}
 
