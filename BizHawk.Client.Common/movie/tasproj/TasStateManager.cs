@@ -166,8 +166,9 @@ namespace BizHawk.Client.Common
 			int shouldRemove = -1;
 			if (Used >= Settings.Cap)
 				shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
-			if (shouldRemove != -1) // Which one to remove?
-			{
+			if (shouldRemove != -1)
+			{ // Which one to remove?
+				// No need to have two savestates with only lag frames between them.
 				for (int i = shouldRemove; i < States.Count - 1; i++)
 				{
 					if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
@@ -176,10 +177,16 @@ namespace BizHawk.Client.Common
 						break;
 					}
 				}
-			}
 
-			if (shouldRemove != -1)
-			{
+				// Keep cap/2 (3?) marker saves
+				int maxMarkers = Settings.Cap / 2;
+				shouldRemove--;
+				do
+				{
+					shouldRemove++;
+				} while (_movie.Markers.IsMarker(States.ElementAt(shouldRemove).Key));
+
+				// Remove
 				Used -= States.ElementAt(shouldRemove).Value.Length;
 				States.RemoveAt(shouldRemove);
 			}

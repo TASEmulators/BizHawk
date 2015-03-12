@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetZoneButton_Click(object sender, EventArgs e)
 		{
-			if (StartNum.Value >= CurrentTasMovie.InputLogLength || EndNum.Value > CurrentTasMovie.InputLogLength)
+			if (StartNum.Value >= CurrentTasMovie.InputLogLength || EndNum.Value >= CurrentTasMovie.InputLogLength)
 			{
 				MessageBox.Show("Start and end frames must be inside the movie.");
 				return;
