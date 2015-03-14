@@ -52,6 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			CellWidthPadding = 3;
 			CellHeightPadding = 1;
 			CurrentCell = null;
+			ScrollMethod = "near";
 
 			NormalFont = new Font("Courier New", 8);  // Only support fixed width
 
@@ -212,6 +213,16 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Behavior")]
 		public IEnumerable<RollColumn> VisibleColumns { get { return _columns.VisibleColumns; } }
+
+		/// <summary>
+		/// Gets or sets how the InputRoll scrolls when calling ScrollToIndex.
+		/// </summary>
+		[DefaultValue("near")]
+		[Category("Behavior")]
+		public string ScrollMethod { get; set; }
+
+		[Category("Behavior")]
+		public bool AlwaysScroll { get; set; }
 
 		/// <summary>
 		/// Returns all columns including those that are not visible
@@ -553,7 +564,10 @@ namespace BizHawk.Client.EmuHawk
 					if (NeedsHScrollbar)
 					{
 						_programmaticallyUpdatingScrollBarValues = true;
-						HBar.Value = value * CellWidth;
+						if (value * CellWidth <= HBar.Maximum)
+							HBar.Value = value * CellWidth;
+						else
+							HBar.Value = HBar.Maximum;
 						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
@@ -562,7 +576,10 @@ namespace BizHawk.Client.EmuHawk
 					if (NeedsVScrollbar)
 					{
 						_programmaticallyUpdatingScrollBarValues = true;
-						VBar.Value = value * CellHeight;
+						if (value * CellHeight <= VBar.Maximum)
+							VBar.Value = value * CellHeight;
+						else
+							VBar.Value = VBar.Maximum;
 						_programmaticallyUpdatingScrollBarValues = false;
 					}
 				}
@@ -680,6 +697,49 @@ namespace BizHawk.Client.EmuHawk
 					ret = columnList.FindLastIndex(c => c.Left <= DrawWidth);
 
 				return ret;
+			}
+		}
+
+		public void ScrollToIndex(int index)
+		{
+			if (ScrollMethod == "near" && !IsVisible(index))
+			{
+				if (FirstVisibleRow > index)
+					FirstVisibleRow = index;
+				else
+					LastVisibleRow = index;
+			}
+			if (!IsVisible(index) || AlwaysScroll)
+			{
+				if (ScrollMethod == "top")
+					FirstVisibleRow = index;
+				else if (ScrollMethod == "bottom")
+					LastVisibleRow = index;
+				else if (ScrollMethod == "center")
+				{
+					if (LagFramesToHide == 0)
+						FirstVisibleRow = Math.Max(index - (VisibleRows / 2), 0);
+					else
+					{
+						if (Math.Abs(FirstVisibleRow + CountLagFramesDisplay(VisibleRows / 2) - index) > VisibleRows) // Big jump
+						{
+							FirstVisibleRow = Math.Max(index - (ExpectedDisplayRange() / 2), 0);
+							SetLagFramesArray();
+						}
+
+						// Small jump, more accurate
+						int lastVisible = FirstVisibleRow + CountLagFramesDisplay(VisibleRows / 2);
+						do
+						{
+							if ((lastVisible - index) / (LagFramesToHide + 1) != 0)
+								FirstVisibleRow = Math.Max(FirstVisibleRow - ((lastVisible - index) / (LagFramesToHide + 1)), 0);
+							else
+								FirstVisibleRow -= Math.Sign(lastVisible - index);
+							SetLagFramesArray();
+							lastVisible = FirstVisibleRow + CountLagFramesDisplay(VisibleRows / 2);
+						} while ((lastVisible - index < 0 || lastVisible - index > lagFrames[VisibleRows]) && FirstVisibleRow != 0);
+					}
+				}
 			}
 		}
 
@@ -1546,6 +1606,7 @@ namespace BizHawk.Client.EmuHawk
 					} while (lagFrames[0] != 0 && VBar.Value != 0 && VBar.Value != VBar.Maximum);
 				}
 
+				OnMouseMove(new MouseEventArgs(System.Windows.Forms.MouseButtons.None, 0, _currentX.Value, _currentY.Value, 0));
 				Refresh();
 			}
 		}

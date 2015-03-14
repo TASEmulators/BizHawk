@@ -53,6 +53,9 @@ namespace BizHawk.Client.Common
 		}
 		private int _lastCapture = 0;
 
+		private int maxStates
+		{ get { return Settings.Cap / _expectedStateSize; } }
+
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
@@ -132,13 +135,13 @@ namespace BizHawk.Client.Common
 			{
 				shouldCapture = true;
 			}
-			else if (_movie.Markers.IsMarker(frame))
+			else if (_movie.Markers.IsMarker(frame + 1))
 			{
 				shouldCapture = true; // Markers shoudl always get priority
 			}
 			else
 			{
-				shouldCapture = frame - _lastCapture >= StateFrequency;
+				shouldCapture = frame - States.Keys.Last(k => k < frame) >= StateFrequency;
 			}
 
 			if (shouldCapture)
@@ -151,10 +154,10 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					States.Add(frame, state);
 					Used += state.Length;
+					MaybeRemoveState(); // Remove before adding so this state won't be removed.
 
-					MaybeRemoveState();
+					States.Add(frame, state);
 				}
 
 				_lastCapture = frame;
@@ -166,25 +169,31 @@ namespace BizHawk.Client.Common
 			int shouldRemove = -1;
 			if (Used >= Settings.Cap)
 				shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
-			if (shouldRemove != -1)
-			{ // Which one to remove?
-				// No need to have two savestates with only lag frames between them.
-				for (int i = shouldRemove; i < States.Count - 1; i++)
-				{
-					if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
-					{
-						shouldRemove = i;
-						break;
-					}
-				}
+			if (shouldRemove != -1) // Which one to remove?
+			{
+				int markerSkips = maxStates / 3;
 
-				// Keep cap/2 (3?) marker saves
-				int maxMarkers = Settings.Cap / 2;
 				shouldRemove--;
 				do
 				{
 					shouldRemove++;
-				} while (_movie.Markers.IsMarker(States.ElementAt(shouldRemove).Key));
+
+					// No need to have two savestates with only lag frames between them.
+					for (int i = shouldRemove + 1; i < States.Count - 1; i++)
+					{
+						if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
+						{
+							shouldRemove = i;
+							break;
+						}
+					}
+
+					// Keep marker states
+					markerSkips--;
+					if (markerSkips < 0)
+						shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
+				} while (_movie.Markers.IsMarker(States.ElementAt(shouldRemove).Key + 1) && markerSkips > -1);
+				int element = States.ElementAt(shouldRemove).Key;
 
 				// Remove
 				Used -= States.ElementAt(shouldRemove).Value.Length;

@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor = value;
+				FollowCursorCheckbox.Checked = value;
 			}
 		}
 
@@ -130,10 +130,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FollowCursorCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
+			Tastudio.Settings.FollowCursor ^= true;
+
 			if (!_programmaticallyChangingValue)
 			{
-				Tastudio.Settings.FollowCursor ^= true;
-
 				if (Tastudio.Settings.FollowCursor)
 				{
 					Tastudio.SetVisibleIndex();
