@@ -283,7 +283,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseEnter(object sender, EventArgs e)
 		{
-			TasView.Focus();
+			if (this.ContainsFocus)
+				TasView.Focus();
 		}
 
 		private void TasView_MouseDown(object sender, MouseEventArgs e)

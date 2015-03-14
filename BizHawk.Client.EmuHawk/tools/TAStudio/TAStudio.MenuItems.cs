@@ -801,6 +801,47 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.HideWasLagFrames ^= true;
 		}
+		
+		private void alwaysScrollToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.AlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
+		}
+		
+		private void scrollToViewToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.ScrollMethod = "near";
+		}
+		
+		private void scrollToTopToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.ScrollMethod = "top";
+		}
+
+		private void scrollToBottomToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.ScrollMethod = "bottom";
+		}
+
+		private void scrollToCenterToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			TasView.ScrollMethod = "center";
+		}
+
+		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			scrollToViewToolStripMenuItem.Checked = false;
+			scrollToTopToolStripMenuItem.Checked = false;
+			scrollToBottomToolStripMenuItem.Checked = false;
+			scrollToCenterToolStripMenuItem.Checked = false;
+			if (TasView.ScrollMethod == "near")
+				scrollToViewToolStripMenuItem.Checked = true;
+			else if (TasView.ScrollMethod == "top")
+				scrollToTopToolStripMenuItem.Checked = true;
+			else if (TasView.ScrollMethod == "bottom")
+				scrollToBottomToolStripMenuItem.Checked = true;
+			else
+				scrollToCenterToolStripMenuItem.Checked = true;
+		}
 
 		#endregion
 

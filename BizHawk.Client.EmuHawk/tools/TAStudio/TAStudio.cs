@@ -781,5 +781,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void TAStudio_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.F)
+				TasPlaybackBox.FollowCursor ^= true;
+		}
 	}
 }

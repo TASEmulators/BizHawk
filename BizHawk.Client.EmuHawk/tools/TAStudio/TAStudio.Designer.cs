@@ -43,6 +43,8 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.saveSelectionToMacroToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.placeMacroAtSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.recentMacrosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator20 = new System.Windows.Forms.ToolStripSeparator();
 			this.ToBk2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -115,6 +117,14 @@ namespace BizHawk.Client.EmuHawk
 			this.HideLagFrames3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.hideWasLagFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
+			this.followCursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alwaysScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator24 = new System.Windows.Forms.ToolStripSeparator();
+			this.scrollToViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.scrollToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.scrollToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.scrollToCenterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -158,8 +168,6 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.recentMacrosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -251,7 +259,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator1
 			// 
@@ -271,6 +279,21 @@ namespace BizHawk.Client.EmuHawk
 			this.placeMacroAtSelectionToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.placeMacroAtSelectionToolStripMenuItem.Text = "Place Macro at Selection";
 			this.placeMacroAtSelectionToolStripMenuItem.Click += new System.EventHandler(this.placeMacroAtSelectionToolStripMenuItem_Click);
+			// 
+			// recentMacrosToolStripMenuItem
+			// 
+			this.recentMacrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator22});
+			this.recentMacrosToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
+			this.recentMacrosToolStripMenuItem.Name = "recentMacrosToolStripMenuItem";
+			this.recentMacrosToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.recentMacrosToolStripMenuItem.Text = "Recent Macros";
+			this.recentMacrosToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentMacrosToolStripMenuItem_DropDownOpened);
+			// 
+			// toolStripSeparator22
+			// 
+			this.toolStripSeparator22.Name = "toolStripSeparator22";
+			this.toolStripSeparator22.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator20
 			// 
@@ -777,7 +800,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RotateMenuItem,
-            this.HideLagFramesSubMenu});
+            this.HideLagFramesSubMenu,
+            this.toolStripSeparator23,
+            this.followCursorToolStripMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
@@ -854,6 +879,72 @@ namespace BizHawk.Client.EmuHawk
 			this.hideWasLagFramesToolStripMenuItem.Text = "Hide WasLag Frames";
 			this.hideWasLagFramesToolStripMenuItem.Click += new System.EventHandler(this.hideWasLagFramesToolStripMenuItem_Click);
 			// 
+			// toolStripSeparator23
+			// 
+			this.toolStripSeparator23.Name = "toolStripSeparator23";
+			this.toolStripSeparator23.Size = new System.Drawing.Size(159, 6);
+			// 
+			// followCursorToolStripMenuItem
+			// 
+			this.followCursorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.alwaysScrollToolStripMenuItem,
+            this.toolStripSeparator24,
+            this.scrollToViewToolStripMenuItem,
+            this.scrollToTopToolStripMenuItem,
+            this.scrollToBottomToolStripMenuItem,
+            this.scrollToCenterToolStripMenuItem});
+			this.followCursorToolStripMenuItem.Name = "followCursorToolStripMenuItem";
+			this.followCursorToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.followCursorToolStripMenuItem.Text = "Follow Cursor";
+			this.followCursorToolStripMenuItem.DropDownOpened += new System.EventHandler(this.followCursorToolStripMenuItem_DropDownOpened);
+			// 
+			// alwaysScrollToolStripMenuItem
+			// 
+			this.alwaysScrollToolStripMenuItem.CheckOnClick = true;
+			this.alwaysScrollToolStripMenuItem.Name = "alwaysScrollToolStripMenuItem";
+			this.alwaysScrollToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.alwaysScrollToolStripMenuItem.Text = "Always Scroll";
+			this.alwaysScrollToolStripMenuItem.Click += new System.EventHandler(this.alwaysScrollToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator24
+			// 
+			this.toolStripSeparator24.Name = "toolStripSeparator24";
+			this.toolStripSeparator24.Size = new System.Drawing.Size(157, 6);
+			// 
+			// scrollToViewToolStripMenuItem
+			// 
+			this.scrollToViewToolStripMenuItem.Checked = true;
+			this.scrollToViewToolStripMenuItem.CheckOnClick = true;
+			this.scrollToViewToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.scrollToViewToolStripMenuItem.Name = "scrollToViewToolStripMenuItem";
+			this.scrollToViewToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.scrollToViewToolStripMenuItem.Text = "Scroll to View";
+			this.scrollToViewToolStripMenuItem.Click += new System.EventHandler(this.scrollToViewToolStripMenuItem_Click);
+			// 
+			// scrollToTopToolStripMenuItem
+			// 
+			this.scrollToTopToolStripMenuItem.CheckOnClick = true;
+			this.scrollToTopToolStripMenuItem.Name = "scrollToTopToolStripMenuItem";
+			this.scrollToTopToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.scrollToTopToolStripMenuItem.Text = "Scroll to Top";
+			this.scrollToTopToolStripMenuItem.Click += new System.EventHandler(this.scrollToTopToolStripMenuItem_Click);
+			// 
+			// scrollToBottomToolStripMenuItem
+			// 
+			this.scrollToBottomToolStripMenuItem.CheckOnClick = true;
+			this.scrollToBottomToolStripMenuItem.Name = "scrollToBottomToolStripMenuItem";
+			this.scrollToBottomToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.scrollToBottomToolStripMenuItem.Text = "Scroll to Bottom";
+			this.scrollToBottomToolStripMenuItem.Click += new System.EventHandler(this.scrollToBottomToolStripMenuItem_Click);
+			// 
+			// scrollToCenterToolStripMenuItem
+			// 
+			this.scrollToCenterToolStripMenuItem.CheckOnClick = true;
+			this.scrollToCenterToolStripMenuItem.Name = "scrollToCenterToolStripMenuItem";
+			this.scrollToCenterToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+			this.scrollToCenterToolStripMenuItem.Text = "Scroll to Center";
+			this.scrollToCenterToolStripMenuItem.Click += new System.EventHandler(this.scrollToCenterToolStripMenuItem_Click);
+			// 
 			// ColumnsSubMenu
 			// 
 			this.ColumnsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -900,6 +991,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;
+			this.TasView.AlwaysScroll = false;
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -1222,21 +1314,6 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
 			// 
-			// recentMacrosToolStripMenuItem
-			// 
-			this.recentMacrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparator22});
-			this.recentMacrosToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
-			this.recentMacrosToolStripMenuItem.Name = "recentMacrosToolStripMenuItem";
-			this.recentMacrosToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
-			this.recentMacrosToolStripMenuItem.Text = "Recent Macros";
-			this.recentMacrosToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentMacrosToolStripMenuItem_DropDownOpened);
-			// 
-			// toolStripSeparator22
-			// 
-			this.toolStripSeparator22.Name = "toolStripSeparator22";
-			this.toolStripSeparator22.Size = new System.Drawing.Size(149, 6);
-			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1249,6 +1326,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Controls.Add(this.TASMenu);
 			this.Controls.Add(this.TasView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.KeyPreview = true;
 			this.MainMenuStrip = this.TASMenu;
 			this.MinimumSize = new System.Drawing.Size(437, 148);
 			this.Name = "TAStudio";
@@ -1258,6 +1336,7 @@ namespace BizHawk.Client.EmuHawk
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragEnter);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TAStudio_KeyDown);
 			this.MouseLeave += new System.EventHandler(this.TAStudio_MouseLeave);
 			this.TASMenu.ResumeLayout(false);
 			this.TASMenu.PerformLayout();
@@ -1401,5 +1480,13 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ToBk2MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recentMacrosToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator22;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator23;
+		private System.Windows.Forms.ToolStripMenuItem followCursorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem alwaysScrollToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator24;
+		private System.Windows.Forms.ToolStripMenuItem scrollToViewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem scrollToTopToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem scrollToBottomToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem scrollToCenterToolStripMenuItem;
 	}
 }

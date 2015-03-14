@@ -155,5 +155,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GoToFrame(marker.Frame);
 		}
+
+		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
+		{
+			if (!indexThatMustBeVisible.HasValue)
+			{
+				indexThatMustBeVisible = CurrentTasMovie.IsRecording
+					? CurrentTasMovie.InputLogLength
+					: Emulator.Frame;
+			}
+
+			TasView.ScrollToIndex(indexThatMustBeVisible.Value);
+		}
 	}
 }
