@@ -91,7 +91,8 @@ namespace BizHawk.Client.Common
 			{
 				return new TasMovieRecord
 				{
-					State = StateManager[index],
+					// State = StateManager[index],
+					HasState = StateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = LagLog[index + 1],
 					WasLagged = LagLog.History(index + 1)

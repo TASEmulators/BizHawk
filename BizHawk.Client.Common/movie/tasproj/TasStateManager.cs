@@ -26,9 +26,16 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
+		private string statePath
+		{
+			get
+			{
+				return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+			}
+		}
 
 		private readonly TasMovie _movie;
-		private int _expectedStateSize = 0;
+		private ulong _expectedStateSize = 0;
 
 		private int _minFrequency = VersionInfo.DeveloperBuild ? 2 : 1;
 		private const int _maxFrequency = 16;
@@ -36,7 +43,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var freq = _expectedStateSize / 65536;
+				int freq = (int)(_expectedStateSize / 65536);
 
 				if (freq < _minFrequency)
 				{
@@ -54,7 +61,7 @@ namespace BizHawk.Client.Common
 		private int _lastCapture = 0;
 
 		private int maxStates
-		{ get { return Settings.Cap / _expectedStateSize; } }
+		{ get { return (int)(Settings.Cap / _expectedStateSize); } }
 
 		public TasStateManager(TasMovie movie)
 		{
@@ -62,18 +69,20 @@ namespace BizHawk.Client.Common
 
 			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
-			var cap = Settings.Cap;
-
 			int limit = 0;
 
-			_expectedStateSize = Core.SaveStateBinary().Length;
+			_expectedStateSize = (ulong)Core.SaveStateBinary().Length;
 
 			if (_expectedStateSize > 0)
 			{
-				limit = cap / _expectedStateSize;
+				limit = maxStates;
 			}
 
 			States = new SortedList<int, byte[]>(limit);
+			if (Directory.Exists(statePath))
+				Directory.Delete(statePath, true); // To delete old files that may still exist.
+			Directory.CreateDirectory(statePath);
+			accessed = new List<int>();
 		}
 
 		public TasStateManagerSettings Settings { get; set; }
@@ -94,12 +103,15 @@ namespace BizHawk.Client.Common
 
 				if (States.ContainsKey(frame))
 				{
+					// if (States[frame] == null) // Get from file
+					StateAccessed(frame);
 					return new KeyValuePair<int, byte[]>(frame, States[frame]);
 				}
 
 				return new KeyValuePair<int, byte[]>(-1, new byte[0]);
 			}
 		}
+		private List<int> accessed;
 
 		public byte[] InitialState
 		{
@@ -146,20 +158,7 @@ namespace BizHawk.Client.Common
 
 			if (shouldCapture)
 			{
-				var state = (byte[])Core.SaveStateBinary().Clone();
-
-				if (States.ContainsKey(frame))
-				{
-					States[frame] = state;
-				}
-				else
-				{
-					Used += state.Length;
-					MaybeRemoveState(); // Remove before adding so this state won't be removed.
-
-					States.Add(frame, state);
-				}
-
+				SetState(frame, (byte[])Core.SaveStateBinary().Clone());
 				_lastCapture = frame;
 			}
 		}
@@ -167,38 +166,44 @@ namespace BizHawk.Client.Common
 		private void MaybeRemoveState()
 		{
 			int shouldRemove = -1;
-			if (Used >= Settings.Cap)
-				shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
-			if (shouldRemove != -1) // Which one to remove?
+			if (Used + DiskUsed > Settings.CapTotal)
+				shouldRemove = StateToRemove();
+			if (shouldRemove != -1)
 			{
-				int markerSkips = maxStates / 3;
-
-				shouldRemove--;
-				do
-				{
-					shouldRemove++;
-
-					// No need to have two savestates with only lag frames between them.
-					for (int i = shouldRemove + 1; i < States.Count - 1; i++)
-					{
-						if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
-						{
-							shouldRemove = i;
-							break;
-						}
-					}
-
-					// Keep marker states
-					markerSkips--;
-					if (markerSkips < 0)
-						shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
-				} while (_movie.Markers.IsMarker(States.ElementAt(shouldRemove).Key + 1) && markerSkips > -1);
-				int element = States.ElementAt(shouldRemove).Key;
-
-				// Remove
-				Used -= States.ElementAt(shouldRemove).Value.Length;
-				States.RemoveAt(shouldRemove);
+				RemoveState(States.ElementAt(shouldRemove).Key);
 			}
+
+			if (Used > Settings.Cap)
+			{
+				MoveStateToDisk(accessed.Last());
+			}
+		}
+		private int StateToRemove()
+		{
+			int markerSkips = maxStates / 3;
+
+			int shouldRemove = _movie.StartsFromSavestate ? -1 : 0;
+			do
+			{
+				shouldRemove++;
+
+				// No need to have two savestates with only lag frames between them.
+				for (int i = shouldRemove + 1; i < States.Count - 1; i++)
+				{
+					if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
+					{
+						shouldRemove = i;
+						break;
+					}
+				}
+
+				// Keep marker states
+				markerSkips--;
+				if (markerSkips < 0)
+					shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
+			} while (_movie.Markers.IsMarker(States.ElementAt(shouldRemove).Key + 1) && markerSkips > -1);
+
+			return shouldRemove;
 		}
 		private bool AllLag(int from, int upTo)
 		{
@@ -216,6 +221,75 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
+		}
+
+		private void MoveStateToDisk(int index)
+		{
+			// Save
+			string path = Path.Combine(statePath, index.ToString());
+			File.WriteAllBytes(path, States[index]);
+			DiskUsed += _expectedStateSize;
+
+			// Remove from RAM
+			Used -= (ulong)States[index].Length;
+			States[index] = null;
+		}
+		private void MoveStateToMemory(int index)
+		{
+			// Load
+			string path = Path.Combine(statePath, index.ToString());
+			byte[] loadData = File.ReadAllBytes(path);
+			DiskUsed -= _expectedStateSize;
+
+			// States list
+			Used += (ulong)loadData.Length;
+			States[index] = loadData;
+
+			File.Delete(path);
+		}
+		private void SetState(int frame, byte[] state)
+		{
+			if (States.ContainsKey(frame))
+			{
+				States[frame] = state;
+				MaybeRemoveState(); // Also does moving to disk
+			}
+			else
+			{
+				Used += (ulong)state.Length;
+				MaybeRemoveState(); // Remove before adding so this state won't be removed.
+
+				States.Add(frame, state);
+			}
+			StateAccessed(frame);
+		}
+		private void RemoveState(int index)
+		{
+			if (States[index] == null)
+			{
+				DiskUsed -= _expectedStateSize; // Disk length?
+				string path = Path.Combine(statePath, index.ToString());
+				File.Delete(path);
+			}
+			else
+				Used -= (ulong)States[index].Length;
+			States.RemoveAt(States.IndexOfKey(index));
+
+			accessed.Remove(index);
+		}
+		private void StateAccessed(int index)
+		{
+			bool removed = accessed.Remove(index);
+			accessed.Add(index);
+
+			if (States[index] == null)
+			{
+				MoveStateToDisk(accessed[0]);
+				MoveStateToMemory(index);
+			}
+
+			if (!removed && accessed.Count > (int)(Used / _expectedStateSize))
+				accessed.RemoveAt(0);
 		}
 
 		public bool HasState(int frame)
@@ -245,7 +319,10 @@ namespace BizHawk.Client.Common
 					.ToList();
 				foreach (var state in statesToRemove)
 				{
-					Used -= state.Value.Length;
+					if (state.Value == null)
+						DiskUsed -= _expectedStateSize; // Length??
+					else
+						Used -= (ulong)state.Value.Length;
 					States.Remove(state.Key);
 				}
 
@@ -280,7 +357,7 @@ namespace BizHawk.Client.Common
 				if (power.Value.Length > 0)
 				{
 					States.Add(0, power.Value);
-					Used = power.Value.Length;
+					Used = (ulong)power.Value.Length;
 					_lastCapture = 0;
 				}
 				else
@@ -293,9 +370,28 @@ namespace BizHawk.Client.Common
 
 		public void Save(BinaryWriter bw)
 		{
+			List<int> noSave = new List<int>();
+			if (Used + DiskUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			{
+				ulong saveUsed = Used + DiskUsed;
+				do
+				{
+					int index = StateToRemove();
+					noSave.Add(index);
+					if (States.ElementAt(index).Value == null)
+						saveUsed -= _expectedStateSize;
+					else
+						saveUsed -= (ulong)States.ElementAt(index).Value.Length;
+				} while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024);
+			}
+
 			bw.Write(States.Count);
 			foreach (var kvp in States)
 			{
+				if (noSave.Contains(kvp.Key))
+					continue;
+
+				StateAccessed(kvp.Key);
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value);
@@ -313,8 +409,9 @@ namespace BizHawk.Client.Common
 					int frame = br.ReadInt32();
 					int len = br.ReadInt32();
 					byte[] data = br.ReadBytes(len);
-					States.Add(frame, data);
-					Used += len;
+					SetState(frame, data);
+					//States.Add(frame, data);
+					//Used += len;
 				}
 			}
 		}
@@ -323,12 +420,7 @@ namespace BizHawk.Client.Common
 		{
 			var s = States.LastOrDefault(state => state.Key < frame);
 
-			if (s.Value == null && _movie.StartsFromSavestate)
-			{
-				return new KeyValuePair<int, byte[]>(0, _movie.BinarySavestate);
-			}
-
-			return s;
+			return this[s.Key];
 		}
 
 		// Map:
@@ -338,7 +430,12 @@ namespace BizHawk.Client.Common
 		// 4 bytes - length of savestate
 		// 0 - n savestate
 
-		private int Used
+		private ulong Used
+		{
+			get;
+			set;
+		}
+		private ulong DiskUsed
 		{
 			get;
 			set;
