@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 				_searches.Domain.CanPoke();
 		}
 
-		private int? CompareToValue
+		private long? CompareToValue
 		{
 			get
 			{
@@ -446,7 +446,7 @@ namespace BizHawk.Client.EmuHawk
 				
 				if (SpecificValueRadio.Checked)
 				{
-					return SpecificValueBox.ToRawInt();
+					return (long)SpecificValueBox.ToRawInt() & 0x00000000FFFFFFFF;
 				}
 				
 				if (SpecificAddressRadio.Checked)
