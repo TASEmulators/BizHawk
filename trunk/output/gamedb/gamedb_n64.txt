@@ -206,6 +206,7 @@ E2C8D01FC66C0A575E79CB338678F1FD065226D6	G	Excitebike 64 (Japan)	N64		Glide_filt
 DAAF564815E9EEF3FC163B9546B5880EE256274B	G	Excitebike 64 (USA) (Demo) (Kiosk)	N64		Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
 A847DD011E98204AD198CADEB6C80DDA10D9A40E	G	Excitebike 64 (USA)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
 88214240204ab3c01f31c0a19d74a4eafe53c027	G	Excitebike 64 (USA) (Rev A)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
+C2FAC422AF135409C1B38569B309F9D452C81C35	G	Excitebike 64 (USA)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
 E7120856ECC9A7F29C21F45130ECA0ECA8A7BFEC	G	Extreme-G (Europe) (En,Fr,De,Es,It)	N64		Glide_filtering=0;Glide_fb_smart=true;Glide64mk2_fb_smart=true
 D9D6F7CC456B530FD3233EF2D8D6B9F845CEE043	G	Extreme-G (Japan)	N64
 EB9B273431970A6124319A8FD125F0B2CACD8966	G	Extreme-G (USA)	N64		Glide_filtering=0;Glide_fb_smart=true;Glide64mk2_fb_smart=true
