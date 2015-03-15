@@ -205,8 +205,7 @@ D460DC1EB24EF3E1E27C6B125C8C8D8324A64125	G	ECW Hardcore Revolution (USA)	N64
 E2C8D01FC66C0A575E79CB338678F1FD065226D6	G	Excitebike 64 (Japan)	N64		Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
 DAAF564815E9EEF3FC163B9546B5880EE256274B	G	Excitebike 64 (USA) (Demo) (Kiosk)	N64		Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
 A847DD011E98204AD198CADEB6C80DDA10D9A40E	G	Excitebike 64 (USA)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
-88214240204ab3c01f31c0a19d74a4eafe53c027	G	Excitebike 64 (USA) (Rev A)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
-C2FAC422AF135409C1B38569B309F9D452C81C35	G	Excitebike 64 (USA)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
+C2FAC422AF135409C1B38569B309F9D452C81C35	G	Excitebike 64 (USA) (Rev A)	N64		RiceFastTextureCRC=1;RiceRenderToTextureOption=3;Glide_filtering=0;Glide_fb_smart=true;SaveType=EEPROM_16K;Glide64mk2_fb_smart=true
 E7120856ECC9A7F29C21F45130ECA0ECA8A7BFEC	G	Extreme-G (Europe) (En,Fr,De,Es,It)	N64		Glide_filtering=0;Glide_fb_smart=true;Glide64mk2_fb_smart=true
 D9D6F7CC456B530FD3233EF2D8D6B9F845CEE043	G	Extreme-G (Japan)	N64
 EB9B273431970A6124319A8FD125F0B2CACD8966	G	Extreme-G (USA)	N64		Glide_filtering=0;Glide_fb_smart=true;Glide64mk2_fb_smart=true
@@ -820,7 +819,7 @@ A6DAACBD0E7F77C73208CF494AEFC24703060B17	G	Turok - Legenden des Verlorenen Lande
 0B54615930A55675955EEF8D8A22F1DFC34D2B44	G	Turok - Rage Wars (Europe) (En,Fr,It)	N64
 46B474FAC79A4B21535BB6C78CE3039A2C202359	G	Turok - Rage Wars (Europe)	N64
 9F8CB190831945F6F707AA8C2B20E04FA4276795	G	Turok - Rage Wars (USA)	N64
-c94f093486f2ba2030f077254d0b6ce26372e684	G	Turok - Rage Wars (USA) (Rev A)	N64
+037FB397CEE2669048ED6B762A64698DE4A4D88A  G	Turok - Rage Wars (USA) (Rev A)	N64
 BFC04B6C5C300D39BBABE0B42227AEF45CC41D3F	G	Turok 2 - Seeds of Evil (Europe) (Demo) (Kiosk)	N64
 FB20F8E540C01D321BF805922B05E7A448521E1E	G	Turok 2 - Seeds of Evil (Europe) (En,Fr,Es,It)	N64
 1A0B36D9FD95DB483C846D0D604D2549D6CE4CC3	G	Turok 2 - Seeds of Evil (Europe)	N64
