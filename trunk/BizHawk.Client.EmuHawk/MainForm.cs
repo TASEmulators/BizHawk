@@ -513,6 +513,10 @@ namespace BizHawk.Client.EmuHawk
 				components.Dispose();
 			}
 
+			// Do not keep TAStudio's disk save states. TODO: This might not be a good place to put this.
+			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
+				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
+
 			base.Dispose(disposing);
 		}
 

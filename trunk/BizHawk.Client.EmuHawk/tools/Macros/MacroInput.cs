@@ -219,20 +219,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string SuggestedFolder()
 		{
-			return PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null) +
-				"\\Macros";
+			return PathManager.MakeAbsolutePath(Path.Combine(
+				Global.Config.PathEntries["Global", "Macros"].Path,
+				Global.Game.Name), null);
 		}
 		#endregion
 
 		public static void SaveMacroAs(MovieZone macro)
 		{
 			SaveFileDialog dialog = new SaveFileDialog();
+			bool create = false;
+			if (!Directory.Exists(SuggestedFolder()))
+			{
+				Directory.CreateDirectory(SuggestedFolder());
+				create = true;
+			}
 			dialog.InitialDirectory = SuggestedFolder();
+			// Create directory?
 			dialog.Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*";
 
 			DialogResult result = dialog.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
+				if (create)
+					Directory.Delete(dialog.InitialDirectory);
 				return;
+			}
 
 			macro.Save(dialog.FileName);
 			Global.Config.RecentMacros.Add(dialog.FileName);

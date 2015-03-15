@@ -120,6 +120,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void saveSelectionToMacroToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			if (TasView.LastSelectedIndex == CurrentTasMovie.InputLogLength)
+				TasView.SelectRow(CurrentTasMovie.InputLogLength, false);
+
 			if (!TasView.SelectedRows.Any())
 				return;
 

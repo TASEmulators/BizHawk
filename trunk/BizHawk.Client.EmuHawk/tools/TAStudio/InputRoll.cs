@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		public int LagFramesToHide { get; set; }
 		public bool HideWasLagFrames { get; set; }
-		private int[] lagFrames = new int[100]; // Large enough value that it shouldn't ever need resizing.
+		private byte[] lagFrames = new byte[100]; // Large enough value that it shouldn't ever need resizing.
 
 		private IntPtr RotatedFont;
 		private Font NormalFont;
@@ -1606,7 +1606,8 @@ namespace BizHawk.Client.EmuHawk
 					} while (lagFrames[0] != 0 && VBar.Value != 0 && VBar.Value != VBar.Maximum);
 				}
 
-				OnMouseMove(new MouseEventArgs(System.Windows.Forms.MouseButtons.None, 0, _currentX.Value, _currentY.Value, 0));
+				if (_currentX != null)
+					OnMouseMove(new MouseEventArgs(System.Windows.Forms.MouseButtons.None, 0, _currentX.Value, _currentY.Value, 0));
 				Refresh();
 			}
 		}
@@ -2211,7 +2212,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					fCount++;
 				} while (QueryFrameLag(FirstVisibleRow + fCount, HideWasLagFrames) && count + fCount < LagFramesToHide);
-				lagFrames[0] = fCount;
+				lagFrames[0] = (byte)fCount;
 			}
 			else
 				lagFrames[0] = 0;
