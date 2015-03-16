@@ -412,7 +412,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 					_rightClickLastFrame = -1;
 
-					_triggerAutoRestore = true;
 					_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
 					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
@@ -545,6 +544,7 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (_rightClickFrame != -1)
 			{
+				_triggerAutoRestore = true;
 				_supressContextMenu = true;
 				if (frame > CurrentTasMovie.InputLogLength - _rightClickInput.Length)
 					frame = CurrentTasMovie.InputLogLength - _rightClickInput.Length;
