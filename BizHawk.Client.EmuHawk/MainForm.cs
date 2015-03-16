@@ -2802,6 +2802,8 @@ namespace BizHawk.Client.EmuHawk
 					Global.Emulator.FrameAdvance(render, renderSound);
 				}
 
+				Global.MovieSession.HandleMovieAfterFrameLoop();
+
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 				Global.CheatList.Pulse();
 

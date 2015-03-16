@@ -313,7 +313,6 @@ namespace BizHawk.Client.Common
 				_log.Add(lg.EmptyEntry);
 
 			Changes = true;
-			InvalidateAfter(oldLength - 1);
 
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)

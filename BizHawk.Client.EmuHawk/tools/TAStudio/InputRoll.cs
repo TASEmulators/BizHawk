@@ -694,7 +694,7 @@ namespace BizHawk.Client.EmuHawk
 						ret = columnList.Count - 1;
 				}
 				else
-					ret = columnList.FindLastIndex(c => c.Left <= DrawWidth);
+					ret = columnList.FindLastIndex(c => c.Left <= DrawWidth + HBar.Value);
 
 				return ret;
 			}
@@ -1562,9 +1562,9 @@ namespace BizHawk.Client.EmuHawk
 			if (increment)
 			{
 				newVal = bar.Value + bar.SmallChange;
-				if (newVal > bar.Maximum)
+				if (newVal > bar.Maximum - bar.LargeChange)
 				{
-					newVal = bar.Maximum;
+					newVal = bar.Maximum - bar.LargeChange;
 				}
 			}
 			else
@@ -1789,15 +1789,30 @@ namespace BizHawk.Client.EmuHawk
 			if (HorizontalOrientation)
 			{
 				NeedsVScrollbar = columns.Count > DrawHeight / CellHeight;
-				NeedsHScrollbar = RowCount > (DrawWidth - ColumnWidth) / CellWidth;
+				NeedsHScrollbar = RowCount > 1;
 			}
 			else
 			{
-				NeedsVScrollbar = RowCount > DrawHeight / CellHeight;
+				NeedsVScrollbar = RowCount > 1;
 				NeedsHScrollbar = TotalColWidth.HasValue && TotalColWidth.Value - DrawWidth + 1 > 0;
 			}
 
 			UpdateDrawSize();
+			if (VisibleRows > 0)
+			{
+				if (HorizontalOrientation)
+				{
+					VBar.LargeChange = 10;
+					HBar.Maximum = Math.Max((VisibleRows - 1) * CellHeight, HBar.Maximum);
+					HBar.LargeChange = (VisibleRows - 1) * CellHeight;
+				}
+				else
+				{
+					VBar.Maximum = Math.Max((VisibleRows - 1) * CellHeight, VBar.Maximum); // ScrollBar.Maximum is dumb
+					VBar.LargeChange = (VisibleRows - 1) * CellHeight;
+					HBar.LargeChange = 10;
+				}
+			}
 
 			//Update VBar
 			if (NeedsVScrollbar)
@@ -1808,7 +1823,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					VBar.Maximum = RowsToPixels(RowCount + 1) - DrawHeight + VBar.LargeChange - 1;
+					VBar.Maximum = RowsToPixels(RowCount + 1) - (CellHeight * 3) + VBar.LargeChange - 1;
 				}
 
 				VBar.Location = new Point(Width - VBar.Width, 0);
@@ -1826,7 +1841,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					HBar.Maximum = RowsToPixels(RowCount + 1) - DrawWidth + HBar.LargeChange - 1;
+					HBar.Maximum = RowsToPixels(RowCount + 1) - (CellHeight * 3) + HBar.LargeChange - 1;
 				}
 				else
 				{

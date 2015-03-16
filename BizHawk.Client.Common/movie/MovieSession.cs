@@ -136,11 +136,6 @@ namespace BizHawk.Client.Common
 		{
 			var input = Movie.GetInputState(Global.Emulator.Frame);
 
-			if (Movie is TasMovie) // Hack city, GetInputState can't run this code because all sorts of places call it, we only want to do this during this playback loop
-			{
-				(Movie as TasMovie).GreenzoneCurrentFrame();
-			}
-
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
 			{
@@ -278,7 +273,7 @@ namespace BizHawk.Client.Common
 								Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 							}
 							else
-							{
+							{ // Why, this was already done?
 								LatchInputFromLog();
 							}
 						}
@@ -305,6 +300,12 @@ namespace BizHawk.Client.Common
 			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 			Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+		}
+
+		public void HandleMovieAfterFrameLoop()
+		{
+			if (Movie is TasMovie) // Was being done in LatchInputFromLog
+				(Movie as TasMovie).GreenzoneCurrentFrame();
 		}
 
 		public bool HandleMovieLoadState(string path)

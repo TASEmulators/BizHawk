@@ -21,6 +21,7 @@ namespace BizHawk.Client.Common
 		bool? PreviousSNES_InSnes9x { get; set; }
 
 		void HandleMovieOnFrameLoop();
+		void HandleMovieAfterFrameLoop();
 		void HandleMovieSaveState(TextWriter writer);
 		bool HandleMovieLoadState(string path);
 

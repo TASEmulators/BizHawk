@@ -878,7 +878,7 @@ namespace BizHawk.Client.EmuHawk
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					var sender = o as ToolStripMenuItem;
+					ToolStripMenuItem sender = o as ToolStripMenuItem;
 					TasView.AllColumns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
 					TasView.AllColumns.ColumnsChanged();
 					CurrentTasMovie.FlagChanges();
@@ -906,10 +906,10 @@ namespace BizHawk.Client.EmuHawk
 				ToolStripMenuItem dummyObject = playerMenus[i];
 				item.CheckedChanged += (o, ev) =>
 				{
+					ToolStripMenuItem sender = o as ToolStripMenuItem;
 					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 					{
-						(menuItem.Tag as InputRoll.RollColumn).Visible =
-							(o as ToolStripMenuItem).Checked && menuItem.Checked;
+						TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
 					}
 
 					CurrentTasMovie.FlagChanges();

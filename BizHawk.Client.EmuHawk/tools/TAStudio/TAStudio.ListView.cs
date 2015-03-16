@@ -191,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
+				System.Diagnostics.Debugger.Break();
 				text = string.Empty;
 				MessageBox.Show("oops\n" + ex);
 			}
