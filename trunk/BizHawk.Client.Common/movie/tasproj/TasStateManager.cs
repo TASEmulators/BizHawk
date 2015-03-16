@@ -58,7 +58,6 @@ namespace BizHawk.Client.Common
 				return freq;
 			}
 		}
-		private int _lastCapture = 0;
 
 		private int maxStates
 		{ get { return (int)(Settings.Cap / _expectedStateSize); } }
@@ -159,7 +158,6 @@ namespace BizHawk.Client.Common
 			if (shouldCapture)
 			{
 				SetState(frame, (byte[])Core.SaveStateBinary().Clone());
-				_lastCapture = frame;
 			}
 		}
 
@@ -175,7 +173,9 @@ namespace BizHawk.Client.Common
 
 			if (Used > Settings.Cap)
 			{
-				MoveStateToDisk(accessed.Last());
+				int lastMemState = -1;
+				do { lastMemState++; } while (States[accessed[lastMemState]] == null);
+				MoveStateToDisk(accessed[lastMemState]);
 			}
 		}
 		private int StateToRemove()
@@ -188,7 +188,7 @@ namespace BizHawk.Client.Common
 				shouldRemove++;
 
 				// No need to have two savestates with only lag frames between them.
-				for (int i = shouldRemove + 1; i < States.Count - 1; i++)
+				for (int i = shouldRemove; i < States.Count - 1; i++)
 				{
 					if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
 					{
@@ -284,7 +284,8 @@ namespace BizHawk.Client.Common
 
 			if (States[index] == null)
 			{
-				MoveStateToDisk(accessed[0]);
+				if (States[accessed[0]] != null)
+					MoveStateToDisk(accessed[0]);
 				MoveStateToMemory(index);
 			}
 
@@ -323,15 +324,8 @@ namespace BizHawk.Client.Common
 						DiskUsed -= _expectedStateSize; // Length??
 					else
 						Used -= (ulong)state.Value.Length;
+					accessed.Remove(state.Key);
 					States.Remove(state.Key);
-				}
-
-				if (!States.ContainsKey(_lastCapture))
-				{
-					if (States.Count == 0)
-						_lastCapture = -1;
-					else
-						_lastCapture = States.Last().Key;
 				}
 			}
 		}
@@ -343,27 +337,33 @@ namespace BizHawk.Client.Common
 		public void Clear()
 		{
 			States.Clear();
+			accessed.Clear();
 			Used = 0;
-			_lastCapture = -1;
+			DiskUsed = 0;
 		}
 
 		public void ClearStateHistory()
 		{
 			if (States.Any())
 			{
-				var power = States.FirstOrDefault(s => s.Key == 0);
+				KeyValuePair<int, byte[]> power = States.FirstOrDefault(s => s.Key == 0);
+				if (power.Value == null)
+				{
+					StateAccessed(power.Key);
+					power = States.FirstOrDefault(s => s.Key == 0);
+				}
 				States.Clear();
+				accessed.Clear();
 
 				if (power.Value.Length > 0)
 				{
-					States.Add(0, power.Value);
+					SetState(0, power.Value);
 					Used = (ulong)power.Value.Length;
-					_lastCapture = 0;
 				}
 				else
 				{
 					Used = 0;
-					_lastCapture = -1;
+					DiskUsed = 0;
 				}
 			}
 		}
@@ -376,6 +376,8 @@ namespace BizHawk.Client.Common
 				ulong saveUsed = Used + DiskUsed;
 				do
 				{
+					// TODO: Use a different method to remove states.
+					// e.g. Saving should place higher priority on keeping markers
 					int index = StateToRemove();
 					noSave.Add(index);
 					if (States.ElementAt(index).Value == null)
@@ -385,13 +387,14 @@ namespace BizHawk.Client.Common
 				} while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024);
 			}
 
-			bw.Write(States.Count);
-			foreach (var kvp in States)
+			bw.Write(States.Count - noSave.Count);
+			for (int i = 0; i < States.Count; i++)
 			{
-				if (noSave.Contains(kvp.Key))
+				if (noSave.Contains(States.ElementAt(i).Key))
 					continue;
 
-				StateAccessed(kvp.Key);
+				StateAccessed(States.ElementAt(i).Key);
+				KeyValuePair<int, byte[]> kvp = States.ElementAt(i);
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value);
@@ -401,19 +404,19 @@ namespace BizHawk.Client.Common
 		public void Load(BinaryReader br)
 		{
 			States.Clear();
-			if (br.BaseStream.Length > 0)
+			//if (br.BaseStream.Length > 0)
+			//{ BaseStream.Length does not return the expected value.
+			int nstates = br.ReadInt32();
+			for (int i = 0; i < nstates; i++)
 			{
-				int nstates = br.ReadInt32();
-				for (int i = 0; i < nstates; i++)
-				{
-					int frame = br.ReadInt32();
-					int len = br.ReadInt32();
-					byte[] data = br.ReadBytes(len);
-					SetState(frame, data);
-					//States.Add(frame, data);
-					//Used += len;
-				}
+				int frame = br.ReadInt32();
+				int len = br.ReadInt32();
+				byte[] data = br.ReadBytes(len);
+				SetState(frame, data);
+				//States.Add(frame, data);
+				//Used += len;
 			}
+			//}
 		}
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)

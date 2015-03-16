@@ -46,9 +46,9 @@ namespace BizHawk.Client.Common
 					return; // Nothing to do
 				}
 
-				if (frame >= LagLog.Count)
+				if (frame == LagLog.Count)
 				{
-					do { LagLog.Add(value.Value); } while (frame >= LagLog.Count);
+					LagLog.Add(value.Value);
 				}
 				else
 					LagLog[frame] = value.Value;
@@ -99,8 +99,8 @@ namespace BizHawk.Client.Common
 		{
 			LagLog.Clear();
 			WasLag.Clear();
-			if (br.BaseStream.Length > 0)
-			{
+			//if (br.BaseStream.Length > 0)
+			//{ BaseStream.Length does not return the expected value.
 				int formatVersion = br.ReadByte();
 				if (formatVersion == 0)
 				{
@@ -125,7 +125,7 @@ namespace BizHawk.Client.Common
 					for (int i = length; i < lenWas; i++)
 						WasLag.Add(br.ReadBoolean());
 				}
-			}
+			//}
 		}
 
 		public bool? History(int frame)

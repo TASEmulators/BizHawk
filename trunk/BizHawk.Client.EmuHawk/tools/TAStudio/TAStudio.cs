@@ -161,6 +161,9 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.TakeBackControl();
 			Global.Config.MovieEndAction = _originalEndAction;
 			GlobalWin.MainForm.SetMainformMovieInfo();
+			// Do not keep TAStudio's disk save states.
+			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
+				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
 		}
 
 		private void NewTasMovie()
