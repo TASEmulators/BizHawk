@@ -361,7 +361,6 @@ namespace BizHawk.Client.EmuHawk
 							RefreshDialog();
 						}
 
-						_triggerAutoRestore = true;
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
@@ -721,6 +720,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_floatEditRow != -1)
 			{
 				float value = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
+				float prev = value;
+				string prevTyped = _floatTypedValue;
+
 				Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
 					[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
 				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
@@ -785,8 +787,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_floatTypedValue == "")
 					{
-						value = 0f;
-						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+						if (prevTyped != "")
+						{
+							value = 0f;
+							CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+						}
 					}
 					else
 					{
@@ -796,6 +801,12 @@ namespace BizHawk.Client.EmuHawk
 						else if (value < rMin)
 							value = rMin;
 						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+					}
+					if (value != prev) // Auto-restore
+					{
+						_triggerAutoRestore = true;
+						_triggerAutoRestoreFromFrame = _floatEditRow;
+						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
 

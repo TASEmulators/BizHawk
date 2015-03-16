@@ -565,7 +565,6 @@ namespace BizHawk.Client.EmuHawk
 
 				_triggerAutoRestore = false;
 				_triggerAutoRestoreFromFrame = null;
-
 			}
 		}
 
