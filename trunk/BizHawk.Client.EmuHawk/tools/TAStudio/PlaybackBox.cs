@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PlaybackBox : UserControl
 	{
-		private bool _programmaticallyChangingValue = false;
+		private bool _loading = true;
 
 		public TAStudio Tastudio { get; set; }
 
@@ -71,8 +71,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.OnLoad(e);
 
-			_programmaticallyChangingValue = true;
-
 			if (Global.Config != null) // For the designer
 			{
 				TurboSeekCheckbox.Checked = Global.Config.TurboSeek;
@@ -84,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
 			}
 
-			_programmaticallyChangingValue = false;
+			_loading = false;
 		}
 
 		private void PreviousMarkerButton_Click(object sender, EventArgs e)
@@ -114,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TurboSeekCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_programmaticallyChangingValue)
+			if (!_loading)
 			{
 				Global.Config.TurboSeek ^= true;
 			}
@@ -122,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AutoRestoreCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!_programmaticallyChangingValue)
+			if (!_loading)
 			{
 				Tastudio.Settings.AutoRestoreLastPosition ^= true;
 			}
@@ -130,10 +128,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FollowCursorCheckbox_CheckedChanged(object sender, EventArgs e)
 		{
-			Tastudio.Settings.FollowCursor ^= true;
-
-			if (!_programmaticallyChangingValue)
+			if (!_loading)
 			{
+				Tastudio.Settings.FollowCursor ^= true;
+
 				if (Tastudio.Settings.FollowCursor)
 				{
 					Tastudio.SetVisibleIndex();

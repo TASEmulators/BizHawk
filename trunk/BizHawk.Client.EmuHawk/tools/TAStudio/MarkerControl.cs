@@ -176,5 +176,16 @@ namespace BizHawk.Client.EmuHawk
 				RemoveBtn_Click(null, null);
 			}
 		}
+
+		public int SelectedMarkerFrame()
+		{
+			if (MarkerView.SelectedRows.Any())
+			{
+				var index = MarkerView.SelectedRows.First();
+				var marker = Tastudio.CurrentTasMovie.Markers[index];
+				return marker.Frame;
+			}
+			return -1;
+		}
 	}
 }

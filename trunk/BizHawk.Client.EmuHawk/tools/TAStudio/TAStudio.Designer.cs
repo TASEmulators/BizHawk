@@ -168,6 +168,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.ScrollToMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -1083,31 +1084,32 @@ namespace BizHawk.Client.EmuHawk
 			// MarkerContextMenu
 			// 
 			this.MarkerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ScrollToMarkerToolStripMenuItem,
             this.EditMarkerContextMenuItem,
             this.AddMarkerContextMenuItem,
             this.RemoveMarkerContextMenuItem});
 			this.MarkerContextMenu.Name = "MarkerContextMenu";
-			this.MarkerContextMenu.Size = new System.Drawing.Size(118, 70);
+			this.MarkerContextMenu.Size = new System.Drawing.Size(153, 114);
 			this.MarkerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MarkerContextMenu_Opening);
 			// 
 			// EditMarkerContextMenuItem
 			// 
 			this.EditMarkerContextMenuItem.Name = "EditMarkerContextMenuItem";
-			this.EditMarkerContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.EditMarkerContextMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.EditMarkerContextMenuItem.Text = "Edit";
 			this.EditMarkerContextMenuItem.Click += new System.EventHandler(this.EditMarkerContextMenuItem_Click);
 			// 
 			// AddMarkerContextMenuItem
 			// 
 			this.AddMarkerContextMenuItem.Name = "AddMarkerContextMenuItem";
-			this.AddMarkerContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.AddMarkerContextMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.AddMarkerContextMenuItem.Text = "Add";
 			this.AddMarkerContextMenuItem.Click += new System.EventHandler(this.AddMarkerContextMenuItem_Click);
 			// 
 			// RemoveMarkerContextMenuItem
 			// 
 			this.RemoveMarkerContextMenuItem.Name = "RemoveMarkerContextMenuItem";
-			this.RemoveMarkerContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.RemoveMarkerContextMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.RemoveMarkerContextMenuItem.Text = "Remove";
 			this.RemoveMarkerContextMenuItem.Click += new System.EventHandler(this.RemoveMarkerContextMenuItem_Click);
 			// 
@@ -1314,6 +1316,13 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
 			// 
+			// scrollToToolStripMenuItem
+			// 
+			this.ScrollToMarkerToolStripMenuItem.Name = "scrollToToolStripMenuItem";
+			this.ScrollToMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ScrollToMarkerToolStripMenuItem.Text = "Scroll To";
+			this.ScrollToMarkerToolStripMenuItem.Click += new System.EventHandler(this.ScrollToMarkerToolStripMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1488,5 +1497,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem scrollToTopToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem scrollToBottomToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem scrollToCenterToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
 	}
 }
