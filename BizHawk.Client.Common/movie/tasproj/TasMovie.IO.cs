@@ -209,11 +209,9 @@ namespace BizHawk.Client.Common
 						StateManager.Load(br);
 					});
 				}
-				else
-				{ // Movie should always have a state at frame 0.
-					if (!this.StartsFromSavestate)
-						StateManager.Capture();
-				}
+				// Movie should always have a state at frame 0.
+				if (!this.StartsFromSavestate)
+					StateManager.Capture();
 
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
 				{
