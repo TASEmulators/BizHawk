@@ -152,7 +152,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				shouldCapture = frame - States.Keys.Last(k => k < frame) >= StateFrequency;
+				shouldCapture = frame - States.Keys.LastOrDefault(k => k < frame) >= StateFrequency;
 			}
 
 			if (shouldCapture)
@@ -370,27 +370,12 @@ namespace BizHawk.Client.Common
 
 		public void Save(BinaryWriter bw)
 		{
-			List<int> noSave = new List<int>();
-			if (Used + DiskUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
-			{
-				ulong saveUsed = Used + DiskUsed;
-				do
-				{
-					// TODO: Use a different method to remove states.
-					// e.g. Saving should place higher priority on keeping markers
-					int index = StateToRemove();
-					noSave.Add(index);
-					if (States.ElementAt(index).Value == null)
-						saveUsed -= _expectedStateSize;
-					else
-						saveUsed -= (ulong)States.ElementAt(index).Value.Length;
-				} while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024);
-			}
+			List<int> noSave = ExcludeStates();
 
 			bw.Write(States.Count - noSave.Count);
 			for (int i = 0; i < States.Count; i++)
 			{
-				if (noSave.Contains(States.ElementAt(i).Key))
+				if (noSave.Contains(i))
 					continue;
 
 				StateAccessed(States.ElementAt(i).Key);
@@ -399,6 +384,39 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value);
 			}
+		}
+		private List<int> ExcludeStates()
+		{
+			List<int> ret = new List<int>();
+
+			ulong saveUsed = Used + DiskUsed;
+			int index = -1;
+			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			{
+				do
+				{
+					index++;
+				} while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
+				ret.Add(index);
+				if (States.ElementAt(index).Value == null)
+					saveUsed -= _expectedStateSize;
+				else
+					saveUsed -= (ulong)States.ElementAt(index).Value.Length;
+			}
+
+			// If there are enough markers to still be over the limit, remove marker frames
+			index = -1;
+			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
+			{
+				index++;
+				ret.Add(index);
+				if (States.ElementAt(index).Value == null)
+					saveUsed -= _expectedStateSize;
+				else
+					saveUsed -= (ulong)States.ElementAt(index).Value.Length;
+			}
+
+			return ret;
 		}
 
 		public void Load(BinaryReader br)

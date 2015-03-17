@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
 
 			GreenzoneICheckSeparator.Visible =
-				GreenZoneIntegrityCheckMenuItem.Visible =
+				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
 		}
 
@@ -593,17 +593,18 @@ namespace BizHawk.Client.EmuHawk
 			RefreshDialog();
 		}
 
-		private void GreenZoneIntegrityCheckMenuItem_Click(object sender, EventArgs e)
+		private void StateHistoryIntegrityCheckMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!Emulator.DeterministicEmulation)
 			{
-				if (MessageBox.Show("The emulator is not deterministic. It will likely fail, even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic", MessageBoxButtons.YesNo)
+				if (MessageBox.Show("The emulator is not deterministic. It might fail even if the difference isn't enough to cause a desync.\nContinue with check?", "Not Deterministic", MessageBoxButtons.YesNo)
 					== System.Windows.Forms.DialogResult.No)
 					return;
 			}
 
 			GoToFrame(0);
 			int lastState = 0;
+			int goToFrame = CurrentTasMovie.TasStateManager.LastEmulatedFrame;
 			do
 			{
 				GlobalWin.MainForm.FrameAdvance();
@@ -621,7 +622,7 @@ namespace BizHawk.Client.EmuHawk
 
 					lastState = Emulator.Frame;
 				}
-			} while (Global.Emulator.Frame < CurrentTasMovie.InputLogLength - 1);
+			} while (Global.Emulator.Frame < goToFrame);
 
 			MessageBox.Show("Integrity Check passed");
 		}

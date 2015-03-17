@@ -46,9 +46,18 @@ namespace BizHawk.Client.Common
 					return; // Nothing to do
 				}
 
-				if (frame == LagLog.Count)
+				if (frame >= LagLog.Count)
 				{
 					LagLog.Add(value.Value);
+					if (frame >= LagLog.Count)
+					{
+						System.Diagnostics.Debugger.Break();
+						System.Diagnostics.Debug.Print("Lag Log error. f" + frame);
+						do
+						{
+							LagLog.Add(value.Value);
+						} while (frame >= LagLog.Count);
+					}
 				}
 				else
 					LagLog[frame] = value.Value;
@@ -67,8 +76,8 @@ namespace BizHawk.Client.Common
 
 		public void RemoveFrom(int frame)
 		{
-			if (LagLog.Count >= frame && frame >= 0)
-				LagLog.RemoveRange(frame, LagLog.Count - frame);
+			if (LagLog.Count > frame && frame >= 0)
+				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
 		}
 
 		public void RemoveHistoryAt(int frame)
