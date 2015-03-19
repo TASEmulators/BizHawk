@@ -82,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Emulator = this.Emulator;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.InputPaintingMode = Settings.DrawInput;
@@ -296,6 +297,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.ClearRewindData();
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			GlobalWin.MainForm.SetMainformMovieInfo();
+			Global.MovieSession.ReadOnly = true;
 		}
 
 		#endregion
@@ -522,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 			if (MarkerControl != null)
 				MarkerControl.UpdateValues();
 
-			if (undoForm != null)
+			if (undoForm != null && !undoForm.IsDisposed)
 				undoForm.UpdateValues();
 		}
 
@@ -776,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		#endregion
 
-		private void AutoAdjustInput()
+		private bool AutoAdjustInput()
 		{
 			TasMovieRecord lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
 			bool isLag = Emulator.AsInputPollable().IsLagFrame;
@@ -788,13 +790,17 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.RemoveFrame(Global.Emulator.Frame - 1);
 					CurrentTasMovie.RemoveLagHistory(Global.Emulator.Frame); // Set frame is not +1. [should change?]
 					GoToFrame(Emulator.Frame - 1);
+					return true;
 				}
 				else if (!lagLog.WasLagged.Value && isLag)
 				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
 					CurrentTasMovie.InsertInput(Global.Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
 					CurrentTasMovie.InsertLagHistory(Global.Emulator.Frame - 1, true);
+					return true;
 				}
 			}
+
+			return false;
 		}
 
 		private void TAStudio_KeyDown(object sender, KeyEventArgs e)

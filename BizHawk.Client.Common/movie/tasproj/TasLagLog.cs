@@ -46,6 +46,12 @@ namespace BizHawk.Client.Common
 					return; // Nothing to do
 				}
 
+				if (frame > LagLog.Count)
+				{
+					System.Diagnostics.Debug.Print("Lag Log error. f" + frame + ", log: " + LagLog.Count);
+					return; // Can this break anything?
+				}
+
 				if (frame >= LagLog.Count)
 				{
 					LagLog.Add(value.Value);

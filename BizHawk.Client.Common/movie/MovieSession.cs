@@ -136,6 +136,9 @@ namespace BizHawk.Client.Common
 		{
 			var input = Movie.GetInputState(Global.Emulator.Frame);
 
+			if (Global.Emulator.Frame == 0) // Hacky
+				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
+
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
 			{

@@ -30,15 +30,20 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			bool refreshNeeded = false;
 			if (AutoadjustInputMenuItem.Checked)
-				AutoAdjustInput();
+				refreshNeeded = AutoAdjustInput();
 
 			if (TasPlaybackBox.FollowCursor)
-			{
 				SetVisibleIndex();
-			}
 
-			RefreshDialog();
+			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(Global.Emulator.Frame - 1))
+				refreshNeeded = true;
+
+			if (refreshNeeded)
+				RefreshDialog();
+			else if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1) // Perhaps not the best place to put this.
+				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 		}
 
 		public void FastUpdate()

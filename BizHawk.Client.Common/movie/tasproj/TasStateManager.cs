@@ -79,7 +79,9 @@ namespace BizHawk.Client.Common
 
 			States = new SortedList<int, byte[]>(limit);
 			if (Directory.Exists(statePath))
+			{
 				Directory.Delete(statePath, true); // To delete old files that may still exist.
+			}
 			Directory.CreateDirectory(statePath);
 			accessed = new List<int>();
 		}
