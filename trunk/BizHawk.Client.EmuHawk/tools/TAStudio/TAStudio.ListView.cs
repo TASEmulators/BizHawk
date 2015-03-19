@@ -2,7 +2,9 @@
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -41,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will call GoToFrameIfNecessary() with this value
 
-		public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC);
+		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
@@ -94,77 +96,50 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var columnName = column.Name;
-			var record = CurrentTasMovie[index];
+			string columnName = column.Name;
 
 			if (columnName == MarkerColumnName)
-			{
-				if (VersionInfo.DeveloperBuild) // For debugging purposes, let's visually show the state frames
-				{
-					color = (record.HasState ? color = Color.FromArgb(0xEEEEEE) : Color.White);
-				}
-
+			{ // For debugging purposes, let's visually show the state frames
+				if (VersionInfo.DeveloperBuild && CurrentTasMovie.TasStateManager.HasState(index))
+					color = Color.FromArgb(0xEEEEEE);
+				else
+					color = Color.FromArgb(0xFEFFFF);
 				return;
 			}
 
 			if (columnName == FrameColumnName)
 			{
-				if (Emulator.Frame == index)
-				{
-					color = CurrentFrame_FrameCol;
-				}
-				else if (CurrentTasMovie.Markers.IsMarker(index))
-				{
+				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index))
 					color = Marker_FrameCol;
-				}
-				else if (record.Lagged.HasValue)
-				{
-					color = record.Lagged.Value ?
-						LagZone_FrameCol :
-						GreenZone_FrameCol;
-				}
-				else if (record.WasLagged.HasValue)
-				{
-					color = record.WasLagged.Value ?
-						LagZone_Invalidated_FrameCol :
-						GreenZone_Invalidated_FrameCol;
-				}
-				else
-				{
-					color = Color.White;
-				}
+			}
+			else if (index == _floatEditRow && columnName == _floatEditColumn)
+			{ // SuuperW: Analog editing is indicated by a color change.
+				color = AnalogEdit_Col;
+			}
+		}
+		private void TasView_QueryRowBkColor(int index, ref Color color)
+		{
+			TasMovieRecord record = CurrentTasMovie[index];
+
+			if (Emulator.Frame == index)
+			{
+				color = CurrentFrame_InputLog;
+			}
+			else if (record.Lagged.HasValue)
+			{
+				color = record.Lagged.Value ?
+					LagZone_InputLog :
+					GreenZone_InputLog;
+			}
+			else if (record.WasLagged.HasValue)
+			{
+				color = record.WasLagged.Value ?
+					LagZone_Invalidated_InputLog :
+					GreenZone_Invalidated_FrameCol;
 			}
 			else
 			{
-				// SuuperW: Analog editing is indicated by a color change.
-				if (index == _floatEditRow && columnName == _floatEditColumn)
-				{
-					color = AnalogEdit_Col;
-					return;
-				}
-				if (Emulator.Frame == index)
-				{
-					color = CurrentFrame_InputLog;
-				}
-				else
-				{
-					if (record.Lagged.HasValue)
-					{
-						color = record.Lagged.Value ?
-							LagZone_InputLog :
-							GreenZone_InputLog;
-					}
-					else if (record.WasLagged.HasValue)
-					{
-						color = record.WasLagged.Value ?
-							LagZone_Invalidated_InputLog :
-							GreenZone_Invalidated_FrameCol;
-					}
-					else
-					{
-						color = Color.FromArgb(0xFFFEEE);
-					}
-				}
+				color = Color.FromArgb(0xFFFEEE);
 			}
 		}
 
