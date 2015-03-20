@@ -21,10 +21,13 @@ namespace BizHawk.Client.EmuHawk
 		private IEmulator Emulator { get; set; }
 		// Zones
 		List<MovieZone> zones = new List<MovieZone>();
-		private TasMovie CurrentTasMovie
+		private IMovie CurrentMovie
 		{
-			get { return Global.MovieSession.Movie as TasMovie; }
+			get { return Global.MovieSession.Movie; }
 		}
+
+		// Still need to make sure the user can't load and use macros that 
+		// have options only available for TasMovie
 
 		private bool _initializing = false;
 		public MacroInputTool()
@@ -44,10 +47,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			ReplaceBox.Enabled = CurrentTasMovie is TasMovie;
-			PlaceNum.Enabled = CurrentTasMovie is TasMovie;
+			ReplaceBox.Enabled = CurrentMovie is TasMovie;
+			OverlayBox.Enabled = CurrentMovie is TasMovie;
+			PlaceNum.Enabled = CurrentMovie is TasMovie;
 
-			MovieZone main = new MovieZone(CurrentTasMovie, 0, CurrentTasMovie.InputLogLength);
+			MovieZone main = new MovieZone(CurrentMovie, 0, CurrentMovie.InputLogLength);
 			main.Name = "Entire Movie";
 
 			zones.Add(main);
@@ -67,12 +71,7 @@ namespace BizHawk.Client.EmuHawk
 			zones.Clear();
 			ZonesList.Items.Clear();
 
-			MovieZone main = new MovieZone(CurrentTasMovie, 0, CurrentTasMovie.InputLogLength);
-			main.Name = "Entire Movie";
-
-			zones.Add(main);
-			ZonesList.Items.Add(main.Name + " - length: " + main.Length);
-			ZonesList.Items[0] += " [Zones don't change!]";
+			MacroInputTool_Load(null, null);
 		}
 
 		// These do absolutely nothing.
@@ -101,13 +100,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetZoneButton_Click(object sender, EventArgs e)
 		{
-			if (StartNum.Value >= CurrentTasMovie.InputLogLength || EndNum.Value >= CurrentTasMovie.InputLogLength)
+			if (StartNum.Value >= CurrentMovie.InputLogLength || EndNum.Value >= CurrentMovie.InputLogLength)
 			{
 				MessageBox.Show("Start and end frames must be inside the movie.");
 				return;
 			}
 
-			MovieZone newZone = new MovieZone(CurrentTasMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value + 1));
+			MovieZone newZone = new MovieZone(CurrentMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value + 1));
 			newZone.Name = "Zone " + zones.Count;
 			zones.Add(newZone);
 			ZonesList.Items.Add(newZone.Name + " - length: " + newZone.Length);
@@ -175,11 +174,11 @@ namespace BizHawk.Client.EmuHawk
 			if (selectedZone == null)
 				return;
 
-			if (!(CurrentTasMovie is TasMovie))
+			if (!(CurrentMovie is TasMovie))
 			{
 				selectedZone.Start = Global.Emulator.Frame;
 			}
-			selectedZone.PlaceZone(CurrentTasMovie);
+			selectedZone.PlaceZone(CurrentMovie);
 		}
 
 		#region "Menu Items"
@@ -201,6 +200,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				zones.Add(loadZone);
 				ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
+
+				// Options only for TasMovie
+				if (!(CurrentMovie is TasMovie))
+				{
+					loadZone.Replace = false;
+					loadZone.Overlay = false;
+				}
 			}
 		}
 

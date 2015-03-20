@@ -126,6 +126,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.NewBGWorker(_saveBackgroundWorker);
 		}
 
+		private bool _initialized = false;
 		private void Tastudio_Load(object sender, EventArgs e)
 		{
 			if (!InitializeOnLoad())
@@ -151,6 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshDialog();
+			_initialized = true;
 		}
 
 		private bool InitializeOnLoad()
@@ -665,12 +667,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_triggerAutoRestore)
 			{
+				if (Global.Emulator.Frame < 50)
+					System.Diagnostics.Debugger.Break();
+
+				int? pauseOn = GlobalWin.MainForm.PauseOnFrame;
 				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
 
-				if (GlobalWin.MainForm.PauseOnFrame.HasValue &&
-				_autoRestoreFrame.HasValue &&
-				_autoRestoreFrame < GlobalWin.MainForm.PauseOnFrame) // If we are already seeking to a later frame don't shorten that journey here
-				{
+				if (pauseOn.HasValue &&	_autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
+				{ // If we are already seeking to a later frame don't shorten that journey here
 					_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
 				}
 
@@ -685,6 +689,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
+			if (!_initialized)
+				return;
+
 			_exiting = true;
 			if (AskSaveChanges())
 			{

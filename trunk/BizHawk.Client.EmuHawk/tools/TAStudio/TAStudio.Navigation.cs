@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
-				var restoreFrame = Emulator.Frame;
+				int restoreFrame = Emulator.Frame;
 
 				if (frame <= Emulator.Frame)
 				{

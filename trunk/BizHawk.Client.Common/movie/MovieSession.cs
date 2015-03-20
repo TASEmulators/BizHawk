@@ -226,11 +226,6 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieOnFrameLoop()
 		{
-			if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
-			{
-				HandlePlaybackEnd();
-			}
-
 			if (!Movie.IsActive)
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
@@ -309,6 +304,11 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie is TasMovie) // Was being done in LatchInputFromLog
 				(Movie as TasMovie).GreenzoneCurrentFrame();
+
+			if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
+			{
+				HandlePlaybackEnd();
+			}
 		}
 
 		public bool HandleMovieLoadState(string path)

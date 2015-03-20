@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		public MovieZone()
 		{
 		}
-		public MovieZone(TasMovie movie, int start, int length, string key = "")
+		public MovieZone(IMovie movie, int start, int length, string key = "")
 		{
 			Bk2LogEntryGenerator lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
@@ -103,19 +103,20 @@ namespace BizHawk.Client.EmuHawk
 			controller = newController;
 		}
 
-		public void PlaceZone(TasMovie movie)
+		public void PlaceZone(IMovie movie)
 		{
+			// TODO: This should probably do something with undo history batches/naming.
+
 			if (Start > movie.InputLogLength)
 			{ // Cannot place a frame here. Find a nice way around this.
 				return;
 			}
 
-			// TODO: This should probably do something with undo history batches/naming.
-			if (!Replace)
-				movie.InsertEmptyFrame(Start, Length);
+			if (!Replace && movie is TasMovie)
+			{ // Can't be done with a regular movie.
+				(movie as TasMovie).InsertEmptyFrame(Start, Length);
+			}
 
-			Bk2LogEntryGenerator logGenerator = new Bk2LogEntryGenerator("");
-			logGenerator.SetSource(targetController);
 			if (Overlay)
 			{
 				for (int i = 0; i < Length; i++)
@@ -123,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 					controller.SetControllersAsMnemonic(_log[i]);
 					LatchFromSourceButtons(targetController, controller);
 					ORLatchFromSource(targetController, movie.GetInputState(i + Start));
-					movie.SetFrame(i + Start, logGenerator.GenerateLogEntry());
+					movie.PokeFrame(i + Start, targetController);
 				}
 			}
 			else
@@ -132,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 				{ // Copy over the frame.
 					controller.SetControllersAsMnemonic(_log[i]);
 					LatchFromSourceButtons(targetController, controller);
-					movie.SetFrame(i + Start, logGenerator.GenerateLogEntry());
+					movie.PokeFrame(i + Start, targetController);
 				}
 			}
 
@@ -156,6 +157,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					GlobalWin.Tools.Get<TAStudio>().UpdateValues();
 				}
+			}
+
+			if (movie.InputLogLength >= Global.Emulator.Frame)
+			{
+				movie.SwitchToPlay();
+				Global.Config.MovieEndAction = MovieEndAction.Record;
 			}
 		}
 
