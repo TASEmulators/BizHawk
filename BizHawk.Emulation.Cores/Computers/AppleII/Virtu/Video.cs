@@ -29,7 +29,7 @@ namespace Jellyfish.Virtu
             _memory = Machine.Memory;
             _videoService = Machine.Services.GetService<VideoService>();
 
-#if SILVERLIGHT || WPF
+//#if SILVERLIGHT || WPF
             _colorBlack = 0xFF000000; // BGRA
             _colorDarkBlue = 0xFF000099;
             _colorDarkGreen = 0xFF117722;
@@ -47,25 +47,25 @@ namespace Jellyfish.Virtu
             _colorYellow = 0xFFFFFF11;
             _colorWhite = 0xFFFFFFFF;
             _colorMonochrome = 0xFF00AA00;
-#else
-            _colorBlack = 0xFF000000; // RGBA
-            _colorDarkBlue = 0xFF990000;
-            _colorDarkGreen = 0xFF227711;
-            _colorMediumBlue = 0xFFFF0000;
-            _colorBrown = 0xFF005588;
-            _colorLightGrey = 0xFFAAAA99;
-            _colorGreen = 0xFF11EE00;
-            _colorAquamarine = 0xFFAAFF55;
-            _colorDeepRed = 0xFF1111FF;
-            _colorPurple = 0xFFDD00DD;
-            _colorDarkGrey = 0xFF555544;
-            _colorLightBlue = 0xFFFFAA33;
-            _colorOrange = 0xFF1144FF;
-            _colorPink = 0xFF8899FF;
-            _colorYellow = 0xFF11FFFF;
-            _colorWhite = 0xFFFFFFFF;
-            _colorMonochrome = 0xFF00AA00;
-#endif
+//#else
+//			_colorBlack = 0xFF000000; // RGBA
+//			_colorDarkBlue = 0xFF990000;
+//			_colorDarkGreen = 0xFF227711;
+//			_colorMediumBlue = 0xFFFF0000;
+//			_colorBrown = 0xFF005588;
+//			_colorLightGrey = 0xFFAAAA99;
+//			_colorGreen = 0xFF11EE00;
+//			_colorAquamarine = 0xFFAAFF55;
+//			_colorDeepRed = 0xFF1111FF;
+//			_colorPurple = 0xFFDD00DD;
+//			_colorDarkGrey = 0xFF555544;
+//			_colorLightBlue = 0xFFFFAA33;
+//			_colorOrange = 0xFF1144FF;
+//			_colorPink = 0xFF8899FF;
+//			_colorYellow = 0xFF11FFFF;
+//			_colorWhite = 0xFFFFFFFF;
+//			_colorMonochrome = 0xFF00AA00;
+//#endif
             SetPalette();
 
             IsFullScreen = false;
