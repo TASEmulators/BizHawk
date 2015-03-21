@@ -54,7 +54,7 @@ namespace Jellyfish.Virtu.Services
             }
         }
 
-        static int t = 0;
+        //static int t = 0;
 
         private void UpdateKey(ulong key, bool isActive, ref bool isKeyDown, ref bool wasKeyDown)
         {
