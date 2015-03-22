@@ -988,7 +988,7 @@ namespace BizHawk.Client.EmuHawk
 						(byte[])StatableEmulator.SaveStateBinary().Clone());
 
 					GlobalWin.MainForm.PauseEmulator();
-					LoadProject(newProject.Filename);
+					LoadFile(new FileInfo(newProject.Filename));
 				}
 			}
 		}

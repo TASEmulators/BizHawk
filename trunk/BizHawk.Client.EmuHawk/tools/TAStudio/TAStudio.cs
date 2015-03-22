@@ -181,18 +181,18 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 3: No movie, but user wants to autload their last project
 			else if (Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent))
 			{
-				var result = LoadProject(Settings.RecentTas.MostRecent);
+				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
 				if (!result)
 				{
 					TasView.AllColumns.Clear();
-					NewDefaultProject();
+					StartNewTasMovie();
 				}
 			}
 
 			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
 			else
 			{
-				NewDefaultProject();
+				StartNewTasMovie();
 			}
 
 			EngageTastudio();
@@ -304,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region "Loading, Saving"
+		#region "Loading"
 
 		private void ConvertCurrentMovieToTasproj()
 		{
@@ -315,77 +315,85 @@ namespace BizHawk.Client.EmuHawk
 			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
 		}
 
-		private void NewTasMovie()
+		private bool LoadFile(FileInfo file)
 		{
-			Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
-			SetTasMovieCallbacks();
-			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
-			CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-			CurrentTasMovie.PopulateWithDefaultHeaderValues();
-			CurrentTasMovie.ClearChanges();
-			TasView.RowCount = 1;
+			if (!file.Exists)
+			{
+				Settings.RecentTas.HandleLoadError(file.FullName);
+				return false;
+			}
+
+			CurrentTasMovie.Filename = file.FullName;
+			try
+			{
+				CurrentTasMovie.Load();
+			}
+			catch
+			{
+				MessageBox.Show(
+					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
+					"Tastudio",
+					MessageBoxButtons.OK);
+				return false;
+			}
+			Settings.RecentTas.Add(CurrentTasMovie.Filename);
+
+			if (!HandleMovieLoadStuff())
+				return false;
+
+			RefreshDialog();
+			return true;
 		}
 
 		private void StartNewTasMovie()
 		{
 			if (AskSaveChanges())
 			{
-				NewTasMovie();
-				WantsToControlStopMovie = false;
-				StartNewMovieWrapper(record: true);
-				CurrentTasMovie.ClearChanges();
-				WantsToControlStopMovie = true;
-				SetTextProperty();
+				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
+				CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
+				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+				CurrentTasMovie.PopulateWithDefaultHeaderValues();
+				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
+				HandleMovieLoadStuff();
+
 				RefreshDialog();
 			}
 		}
 
-		public bool LoadProject(string path)
+		private bool HandleMovieLoadStuff(TasMovie movie = null)
 		{
-			if (AskSaveChanges())
-			{
-				var movie = new TasMovie(false, _saveBackgroundWorker)
-				{
-					Filename = path,
-					ClientSettingsForSave = ClientSettingsForSave,
-					GetClientSettingsOnLoad = GetClientSettingsOnLoad
-				};
+			if (movie == null)
+				movie = CurrentTasMovie;
 
-				movie.PropertyChanged += TasMovie_OnPropertyChanged;
-				movie.Load();
+			WantsToControlStopMovie = false;
+			bool result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
+			if (!result)
+				return false;
+			WantsToControlStopMovie = true;
 
-				var file = new FileInfo(path);
-				if (!file.Exists)
-				{
-					Settings.RecentTas.HandleLoadError(path);
-				}
+			CurrentTasMovie.ClearChanges();
 
-				WantsToControlStopMovie = false;
+			SetTasMovieCallbacks();
+			SetTextProperty();
+			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
 
-				var shouldRecord = movie.InputLogLength == 0;
+			return true;
+		}
+		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
+		{
+			_initializing = true;
+			if (movie == null)
+				movie = CurrentTasMovie;
+			bool result = GlobalWin.MainForm.StartNewMovie(movie, record);
+			_initializing = false;
 
-				var result = StartNewMovieWrapper(movie: movie, record: shouldRecord);
-				if (!result)
-				{
-					return false;
-				}
-
-				SetTasMovieCallbacks();
-
-				WantsToControlStopMovie = true;
-				Settings.RecentTas.Add(path);
-				Text = "TAStudio - " + CurrentTasMovie.Name;
-
-				RefreshDialog();
-				return true;
-			}
-
-			return false;
+			return result;
 		}
 
 		private void DummyLoadProject(string path)
 		{
-			LoadProject(path);
+			if (AskSaveChanges())
+				LoadFile(new FileInfo(path));
 		}
 		private void DummyLoadMacro(string path)
 		{
@@ -409,54 +417,6 @@ namespace BizHawk.Client.EmuHawk
 					column.Emphasis = true;
 				}
 			}
-		}
-
-		private void NewDefaultProject()
-		{
-			NewTasMovie();
-			StartNewMovieWrapper(record: true);
-			CurrentTasMovie.TasStateManager.Capture();
-			CurrentTasMovie.SwitchToRecord();
-			CurrentTasMovie.ClearChanges();
-		}
-
-		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
-		{
-			_initializing = true;
-			var result = GlobalWin.MainForm.StartNewMovie(movie != null ? movie : CurrentTasMovie, record);
-			_initializing = false;
-
-			return result;
-		}
-
-		private void LoadFile(FileInfo file)
-		{
-			CurrentTasMovie.Filename = file.FullName;
-			try
-			{
-				CurrentTasMovie.Load();
-			}
-			catch
-			{
-				MessageBox.Show(
-					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
-					"Tastudio",
-					MessageBoxButtons.OK);
-				return;
-			}
-			Settings.RecentTas.Add(CurrentTasMovie.Filename);
-
-			if (CurrentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
-			{
-				CurrentTasMovie.SwitchToPlay();
-			}
-			else
-			{
-				CurrentTasMovie.SwitchToRecord();
-			}
-
-			RefreshDialog();
-			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
 		}
 
 		#endregion
@@ -667,13 +627,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_triggerAutoRestore)
 			{
-				if (Global.Emulator.Frame < 50)
-					System.Diagnostics.Debugger.Break();
-
 				int? pauseOn = GlobalWin.MainForm.PauseOnFrame;
 				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
 
-				if (pauseOn.HasValue &&	_autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
+				if (pauseOn.HasValue && _autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
 				{ // If we are already seeking to a later frame don't shorten that journey here
 					_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
 				}
@@ -727,10 +684,10 @@ namespace BizHawk.Client.EmuHawk
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
 			{
-				var file = new FileInfo(filePaths[0]);
+				FileInfo file = new FileInfo(filePaths[0]);
 				if (file.Exists)
 				{
-					LoadProject(file.FullName);
+					LoadFile(file);
 				}
 			}
 		}

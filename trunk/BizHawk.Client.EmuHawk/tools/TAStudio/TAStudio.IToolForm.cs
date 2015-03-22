@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return false; } }
 
+		private int lastRefresh = 0;
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
@@ -37,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasPlaybackBox.FollowCursor)
 				SetVisibleIndex();
 
-			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(Global.Emulator.Frame - 1))
+			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
 
 			if (refreshNeeded)
@@ -79,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TastudioToStopMovie();
 					TasView.AllColumns.Clear();
-					NewDefaultProject();
+					StartNewTasMovie();
 					SetUpColumns();
 					RefreshTasView();
 				}
