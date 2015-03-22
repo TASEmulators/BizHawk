@@ -65,10 +65,21 @@ namespace BizHawk.Client.EmuHawk
 			Bk2LogEntryGenerator logGenerator = new Bk2LogEntryGenerator("");
 			logGenerator.SetSource(controller);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
-			for (int i = 0; i < length; i++)
+
+			string movieKey = logGenerator.GenerateLogKey().Replace("LogKey:", "").Replace("#", "");
+			movieKey = movieKey.Substring(0, movieKey.Length - 1);
+			if (key == movieKey)
 			{
-				controller.LatchFromSource(movie.GetInputState(i + start));
-				_log[i] = logGenerator.GenerateLogEntry();
+				for (int i = 0; i < length; i++)
+					_log[i] = movie.GetInputLogEntry(i + start);
+			}
+			else
+			{
+				for (int i = 0; i < length; i++)
+				{
+					controller.LatchFromSource(movie.GetInputState(i + start));
+					_log[i] = logGenerator.GenerateLogEntry();
+				}
 			}
 		}
 		private void ReSetLog()

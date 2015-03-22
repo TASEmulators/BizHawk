@@ -160,6 +160,8 @@ namespace BizHawk.Client.Common
 
 		public new void Remove(TasMovieMarker item)
 		{
+			if (item == null) // TODO: Don't do this.
+				return;
 			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 			base.Remove(item);
 			OnListChanged(NotifyCollectionChangedAction.Remove);
@@ -187,6 +189,8 @@ namespace BizHawk.Client.Common
 		public void Move(int fromFrame, int toFrame)
 		{
 			TasMovieMarker m = Get(fromFrame);
+			if (m == null) // TODO: Don't do this.
+				return;
 			_movie.ChangeLog.AddMarkerChange(m, m.Frame);
 			Insert(0, new TasMovieMarker(toFrame, m.Message));
 			Remove(m);

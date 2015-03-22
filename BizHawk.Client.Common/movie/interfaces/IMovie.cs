@@ -111,6 +111,13 @@ namespace BizHawk.Client.Common
 		string GetInputLog();
 
 		/// <summary>
+		/// Gets one frame from the input log.
+		/// </summary>
+		/// <param name="frame">The frame to get.</param>
+		/// <returns></returns>
+		string GetInputLogEntry(int frame);
+
+		/// <summary>
 		/// Compares the input log inside reader with the movie's current input to see if the reader's input belongs to the same timeline,
 		/// in other words, if reader's input is completely contained in the movie's input, then it is considered in the same timeline
 		/// </summary>

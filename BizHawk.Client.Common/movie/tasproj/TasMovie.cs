@@ -225,35 +225,6 @@ namespace BizHawk.Client.Common
 				.GetFloat(buttonName);
 		}
 
-		// TODO: try not to need this, or at least use GetInputState and then a log entry generator
-		public string GetInputLogEntry(int frame)
-		{
-			if (frame < FrameCount && frame >= 0)
-			{
-				int getframe;
-
-				if (LoopOffset.HasValue)
-				{
-					if (frame < _log.Count)
-					{
-						getframe = frame;
-					}
-					else
-					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
-					}
-				}
-				else
-				{
-					getframe = frame;
-				}
-
-				return _log[getframe];
-			}
-
-			return string.Empty;
-		}
-
 		public void ClearGreenzone()
 		{
 			if (StateManager.Any())

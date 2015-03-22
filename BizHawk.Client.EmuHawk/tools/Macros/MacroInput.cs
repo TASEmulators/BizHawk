@@ -38,8 +38,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MacroInputTool_Load(object sender, EventArgs e)
 		{
-			// Movie recording must be active
-			if (!Global.MovieSession.Movie.IsActive)
+			// Movie recording must be active (check TAStudio because opening a project re-loads the ROM,
+			// which resets tools before the movie session becomes active)
+			if (!Global.MovieSession.Movie.IsActive && !GlobalWin.Tools.IsLoaded<TAStudio>())
 			{
 				MessageBox.Show("In order to use this tool you must be recording a movie.");
 				this.Close();
@@ -61,6 +62,15 @@ namespace BizHawk.Client.EmuHawk
 			SetUpButtonBoxes();
 
 			_initializing = false;
+		}
+
+		private void MacroInputTool_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (_initializing)
+				return;
+
+			if (!AskSaveChanges())
+				e.Cancel = true;
 		}
 
 		public void Restart()
@@ -90,6 +100,20 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
+			if (unsavedZones.Count == 0 || IsDisposed)
+				return true;
+			else
+			{
+				DialogResult result = MessageBox.Show("You have unsaved macro(s). Do you wish to save them?", "Save?", MessageBoxButtons.YesNoCancel);
+				if (result == DialogResult.Cancel)
+					return false;
+				else if (result == DialogResult.No)
+					return true;
+			}
+
+			for (int i = 0; i < unsavedZones.Count; i++)
+				SaveMacroAs(zones[unsavedZones[i]]);
+
 			return true;
 		}
 
@@ -98,6 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		List<int> unsavedZones = new List<int>();
 		private void SetZoneButton_Click(object sender, EventArgs e)
 		{
 			if (StartNum.Value >= CurrentMovie.InputLogLength || EndNum.Value >= CurrentMovie.InputLogLength)
@@ -110,6 +135,8 @@ namespace BizHawk.Client.EmuHawk
 			newZone.Name = "Zone " + zones.Count;
 			zones.Add(newZone);
 			ZonesList.Items.Add(newZone.Name + " - length: " + newZone.Length);
+
+			unsavedZones.Add(ZonesList.Items.Count - 1);
 		}
 
 		private MovieZone selectedZone
@@ -190,7 +217,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			SaveMacroAs(selectedZone);
+			if (SaveMacroAs(selectedZone))
+				unsavedZones.Remove(ZonesList.SelectedIndex);
 		}
 
 		private void loadMacroToolStripMenuItem_Click(object sender, EventArgs e)
@@ -231,9 +259,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 		#endregion
 
-		public static void SaveMacroAs(MovieZone macro)
+		public static bool SaveMacroAs(MovieZone macro)
 		{
 			SaveFileDialog dialog = new SaveFileDialog();
+			// Create directory?
 			bool create = false;
 			if (!Directory.Exists(SuggestedFolder()))
 			{
@@ -241,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 				create = true;
 			}
 			dialog.InitialDirectory = SuggestedFolder();
-			// Create directory?
+			dialog.FileName = macro.Name;
 			dialog.Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*";
 
 			DialogResult result = dialog.ShowHawkDialog();
@@ -249,11 +278,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (create)
 					Directory.Delete(dialog.InitialDirectory);
-				return;
+				return false;
 			}
 
 			macro.Save(dialog.FileName);
 			Global.Config.RecentMacros.Add(dialog.FileName);
+
+			return true;
 		}
 		public static MovieZone LoadMacro()
 		{

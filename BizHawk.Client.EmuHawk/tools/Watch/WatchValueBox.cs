@@ -617,6 +617,8 @@ namespace BizHawk.Client.EmuHawk
 				case Watch.DisplayType.Signed:
 					if (Text.IsSigned())
 					{
+						if (Text == "-")
+							return 0;
 						return int.Parse(Text);
 					}
 

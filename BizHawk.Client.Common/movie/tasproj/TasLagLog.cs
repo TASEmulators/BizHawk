@@ -52,26 +52,23 @@ namespace BizHawk.Client.Common
 					return; // Can this break anything?
 				}
 
-				if (frame >= LagLog.Count)
-				{
-					LagLog.Add(value.Value);
-					if (frame >= LagLog.Count)
-					{
-						System.Diagnostics.Debugger.Break();
-						System.Diagnostics.Debug.Print("Lag Log error. f" + frame);
-						do
-						{
-							LagLog.Add(value.Value);
-						} while (frame >= LagLog.Count);
-					}
-				}
+				bool wasValue;
+				if (frame < LagLog.Count)
+					wasValue = LagLog[frame];
+				else if (frame == WasLag.Count)
+					wasValue = value.Value;
 				else
-					LagLog[frame] = value.Value;
+					wasValue = WasLag[frame];
 
 				if (frame == WasLag.Count)
-					WasLag.Add(value.Value);
+					WasLag.Add(wasValue);
 				else
-					WasLag[frame] = value.Value;
+					WasLag[frame] = wasValue;
+
+				if (frame >= LagLog.Count)
+					LagLog.Add(value.Value);
+				else
+					LagLog[frame] = value.Value;
 			}
 		}
 

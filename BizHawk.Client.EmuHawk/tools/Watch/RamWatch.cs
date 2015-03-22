@@ -789,7 +789,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				var poke = new RamPoke
+				RamPoke poke = new RamPoke
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};

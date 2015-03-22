@@ -2393,7 +2393,12 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// Column will be drawn with an emphasized look, if true
 			/// </summary>
-			public bool Emphasis { get; set; }
+			private bool _emphasis;
+			public bool Emphasis
+			{
+				get { return _emphasis; }
+				set { _emphasis = value; }
+			}
 
 			public RollColumn()
 			{

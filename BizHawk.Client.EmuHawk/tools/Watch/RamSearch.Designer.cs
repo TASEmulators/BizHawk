@@ -116,7 +116,7 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.AutoSearchCheckBox = new System.Windows.Forms.CheckBox();
 			this.CompareToBox = new System.Windows.Forms.GroupBox();
-			this.DifferenceBox = new BizHawk.Client.EmuHawk.UnsignedIntegerBox();
+			this.DifferenceBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.DifferenceRadio = new System.Windows.Forms.RadioButton();
 			this.NumberOfChangesBox = new BizHawk.Client.EmuHawk.UnsignedIntegerBox();
 			this.SpecificAddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
@@ -144,7 +144,7 @@
 			this.RebootToolbarButton = new System.Windows.Forms.ToolStripButton();
 			this.ErrorIconButton = new System.Windows.Forms.ToolStripButton();
 			this.ComparisonBox = new System.Windows.Forms.GroupBox();
-			this.DifferentByBox = new BizHawk.Client.EmuHawk.UnsignedIntegerBox();
+			this.DifferentByBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.DifferentByRadio = new System.Windows.Forms.RadioButton();
 			this.NotEqualToRadio = new System.Windows.Forms.RadioButton();
 			this.EqualToRadio = new System.Windows.Forms.RadioButton();
@@ -1506,7 +1506,7 @@
 		private System.Windows.Forms.ToolStripButton NewSearchToolButton;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
 		private System.Windows.Forms.GroupBox ComparisonBox;
-		private UnsignedIntegerBox DifferentByBox;
+		private WatchValueBox DifferentByBox;
 		private System.Windows.Forms.RadioButton DifferentByRadio;
 		private System.Windows.Forms.RadioButton NotEqualToRadio;
 		private System.Windows.Forms.RadioButton EqualToRadio;
@@ -1522,7 +1522,7 @@
 		private System.Windows.Forms.ToolStripButton AddToRamWatchToolBarItem;
 		private System.Windows.Forms.ToolStripButton PokeAddressToolBarItem;
 		private System.Windows.Forms.ToolStripButton FreezeAddressToolBarItem;
-		private UnsignedIntegerBox DifferenceBox;
+		private WatchValueBox DifferenceBox;
 		private System.Windows.Forms.ToolStripMenuItem AutoSearchMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 		private System.Windows.Forms.ColumnHeader DiffColumn;

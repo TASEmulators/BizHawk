@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class WatchEditor : Form
 	{
 		public enum Mode { New, Duplicate, Edit };
-		
+
 		private readonly List<Watch> _watchList = new List<Watch>();
 
 		public IMemoryDomains MemoryDomains { get; set; }
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTitle()
 		{
-			switch(_mode)
+			switch (_mode)
 			{
 				default:
 				case Mode.New:
@@ -154,6 +154,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetDisplayTypes()
 		{
+			string oldType = DisplayTypeDropDown.Text;
 			DisplayTypeDropDown.Items.Clear();
 			switch (SizeDropDown.SelectedIndex)
 			{
@@ -169,7 +170,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
+			if (DisplayTypeDropDown.Items.Contains(oldType))
+				DisplayTypeDropDown.SelectedItem = oldType;
+			else
+				DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
 		}
 
 		private void SetBigEndianCheckBox()
