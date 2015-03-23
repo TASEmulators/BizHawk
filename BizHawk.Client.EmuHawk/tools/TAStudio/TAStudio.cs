@@ -217,6 +217,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
 			RefreshTasView();
+
+			SetUpToolStripColumns();
 		}
 
 		private void SetUpColumns()
@@ -353,6 +355,7 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 				CurrentTasMovie.PopulateWithDefaultHeaderValues();
+				SetTasMovieCallbacks();
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
 				HandleMovieLoadStuff();
 
@@ -371,9 +374,9 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			WantsToControlStopMovie = true;
 
+			CurrentTasMovie.ChangeLog.ClearLog();
 			CurrentTasMovie.ClearChanges();
 
-			SetTasMovieCallbacks();
 			SetTextProperty();
 			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
 
@@ -500,6 +503,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
+			lastRefresh = Global.Emulator.Frame;
 		}
 
 		private void DoAutoRestore()
@@ -508,8 +512,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
-					GlobalWin.MainForm.UnpauseEmulator();
 					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
+					GlobalWin.MainForm.UnpauseEmulator();
 				}
 			}
 
@@ -525,7 +529,8 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
-			GlobalWin.MainForm.PauseOnFrame = frame;
+			if (GlobalWin.MainForm.EmulatorPaused)
+				GlobalWin.MainForm.PauseOnFrame = frame;
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
@@ -751,15 +756,27 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (lagLog.WasLagged.Value && !isLag)
 				{ // Deleting this frame requires rewinding a frame.
+					CurrentTasMovie.ChangeLog.AddInputBind(Global.Emulator.Frame - 1, true, "Bind Input; Delete " + (Global.Emulator.Frame - 1));
+					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
+					CurrentTasMovie.ChangeLog.IsRecording = false;
+
 					CurrentTasMovie.RemoveFrame(Global.Emulator.Frame - 1);
-					CurrentTasMovie.RemoveLagHistory(Global.Emulator.Frame); // Set frame is not +1. [should change?]
+					CurrentTasMovie.RemoveLagHistory(Global.Emulator.Frame); // Removes from WasLag
+
+					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					GoToFrame(Emulator.Frame - 1);
 					return true;
 				}
 				else if (!lagLog.WasLagged.Value && isLag)
 				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
+					CurrentTasMovie.ChangeLog.AddInputBind(Global.Emulator.Frame - 1, false, "Bind Input; Insert " + (Global.Emulator.Frame - 1));
+					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
+					CurrentTasMovie.ChangeLog.IsRecording = false;
+
 					CurrentTasMovie.InsertInput(Global.Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
-					CurrentTasMovie.InsertLagHistory(Global.Emulator.Frame - 1, true);
+					CurrentTasMovie.InsertLagHistory(Global.Emulator.Frame, true);
+
+					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					return true;
 				}
 			}

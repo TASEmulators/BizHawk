@@ -87,6 +87,8 @@ namespace BizHawk.Client.Common
 			_log.RemoveAt(frame);
 			if (BindMarkersToInput)
 			{
+				bool wasRecording = ChangeLog.IsRecording;
+				ChangeLog.IsRecording = false;
 				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
 				if (firstIndex != -1)
 				{
@@ -99,6 +101,7 @@ namespace BizHawk.Client.Common
 							Markers.Move(m.Frame, m.Frame - 1);
 					}
 				}
+				ChangeLog.IsRecording = wasRecording;
 			}
 
 			Changes = true;
@@ -122,6 +125,8 @@ namespace BizHawk.Client.Common
 					_log.RemoveAt(frame);
 					if (BindMarkersToInput) // TODO: This is slow, is there a better way to do it?
 					{
+						bool wasRecording = ChangeLog.IsRecording;
+						ChangeLog.IsRecording = false;
 						int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
 						if (firstIndex != -1)
 						{
@@ -134,6 +139,7 @@ namespace BizHawk.Client.Common
 									Markers.Move(m.Frame, m.Frame - 1);
 							}
 						}
+						ChangeLog.IsRecording = wasRecording;
 					}
 				}
 
@@ -155,6 +161,8 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput)
 			{
+				bool wasRecording = ChangeLog.IsRecording;
+				ChangeLog.IsRecording = false;
 				int firstIndex = Markers.FindIndex(m => m.Frame >= removeStart);
 				if (firstIndex != -1)
 				{
@@ -167,6 +175,7 @@ namespace BizHawk.Client.Common
 							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart));
 					}
 				}
+				ChangeLog.IsRecording = wasRecording;
 			}
 
 			Changes = true;
@@ -188,6 +197,8 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput)
 			{
+				bool wasRecording = ChangeLog.IsRecording;
+				ChangeLog.IsRecording = false;
 				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
 				if (firstIndex != -1)
 				{
@@ -197,6 +208,7 @@ namespace BizHawk.Client.Common
 						Markers.Move(m.Frame, m.Frame + 1);
 					}
 				}
+				ChangeLog.IsRecording = wasRecording;
 			}
 
 			ChangeLog.SetGeneralRedo();
@@ -212,9 +224,10 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-
 			if (BindMarkersToInput)
 			{
+				bool wasRecording = ChangeLog.IsRecording;
+				ChangeLog.IsRecording = false;
 				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
 				if (firstIndex != -1)
 				{
@@ -224,6 +237,7 @@ namespace BizHawk.Client.Common
 						Markers.Move(m.Frame, m.Frame + inputLog.Count());
 					}
 				}
+				ChangeLog.IsRecording = wasRecording;
 			}
 
 			ChangeLog.SetGeneralRedo();
@@ -277,6 +291,8 @@ namespace BizHawk.Client.Common
 
 			if (BindMarkersToInput)
 			{
+				bool wasRecording = ChangeLog.IsRecording;
+				ChangeLog.IsRecording = false;
 				int firstIndex = Markers.FindIndex(m => m.Frame >= frame);
 				if (firstIndex != -1)
 				{
@@ -286,6 +302,7 @@ namespace BizHawk.Client.Common
 						Markers.Move(m.Frame, m.Frame + count);
 					}
 				}
+				ChangeLog.IsRecording = wasRecording;
 			}
 
 
