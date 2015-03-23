@@ -686,6 +686,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
+			if (!AskSaveChanges())
+				return;
+
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
 			{
