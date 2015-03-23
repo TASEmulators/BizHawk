@@ -792,6 +792,5 @@ namespace BizHawk.Client.EmuHawk
 			if (e.KeyCode == Keys.F)
 				TasPlaybackBox.FollowCursor ^= true;
 		}
-
 	}
 }

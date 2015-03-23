@@ -82,6 +82,8 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.onlyOnAutoFireColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CombineConsecutiveRecordingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseInputKeysItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -560,6 +562,8 @@ namespace BizHawk.Client.EmuHawk
             this.AutoadjustInputMenuItem,
             this.toolStripSeparator11,
             this.DrawInputByDraggingMenuItem,
+            this.applyPatternToPaintedInputToolStripMenuItem,
+            this.onlyOnAutoFireColumnsToolStripMenuItem,
             this.CombineConsecutiveRecordingsMenuItem,
             this.UseInputKeysItem,
             this.toolStripSeparator4,
@@ -607,6 +611,24 @@ namespace BizHawk.Client.EmuHawk
 			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(288, 22);
 			this.DrawInputByDraggingMenuItem.Text = "Draw Input by dragging";
 			this.DrawInputByDraggingMenuItem.Click += new System.EventHandler(this.DrawInputByDraggingMenuItem_Click);
+			// 
+			// applyPatternToPaintedInputToolStripMenuItem
+			// 
+			this.applyPatternToPaintedInputToolStripMenuItem.CheckOnClick = true;
+			this.applyPatternToPaintedInputToolStripMenuItem.Name = "applyPatternToPaintedInputToolStripMenuItem";
+			this.applyPatternToPaintedInputToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.applyPatternToPaintedInputToolStripMenuItem.Text = "Apply Pattern to painted input";
+			this.applyPatternToPaintedInputToolStripMenuItem.CheckedChanged += new System.EventHandler(this.applyPatternToPaintedInputToolStripMenuItem_CheckedChanged);
+			// 
+			// onlyOnAutoFireColumnsToolStripMenuItem
+			// 
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Checked = true;
+			this.onlyOnAutoFireColumnsToolStripMenuItem.CheckOnClick = true;
+			this.onlyOnAutoFireColumnsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Enabled = false;
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Name = "onlyOnAutoFireColumnsToolStripMenuItem";
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Text = "Only on Auto-Fire columns";
 			// 
 			// CombineConsecutiveRecordingsMenuItem
 			// 
@@ -1498,5 +1520,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem scrollToBottomToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem scrollToCenterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem applyPatternToPaintedInputToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem onlyOnAutoFireColumnsToolStripMenuItem;
 	}
 }
