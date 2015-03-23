@@ -465,6 +465,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			// TODO: Delete this, this save is utterly useless.
 			//If a movie is already loaded, save it before starting a new movie
 			if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
 			{

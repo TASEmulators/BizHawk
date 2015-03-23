@@ -21,7 +21,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
-			if (movie.IsActive)
+			// SuuperW: Check changes. adelikat: this could break bk2 movies
+			// TODO: Clean up the saving process
+			if (movie.IsActive && (movie.Changes || !(movie is TasMovie)))
 			{
 				movie.Save();
 			}

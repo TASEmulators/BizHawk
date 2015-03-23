@@ -112,35 +112,22 @@ namespace BizHawk.Emulation.Common
 		{
 			get
 			{
-				var list = FloatControls.Union(BoolButtons);
+				List<string> list = new List<string>(FloatControls);
+				list.AddRange(BoolButtons);
 
-				yield return list
-					.Where(x => !x.StartsWith("P1 ") && !x.StartsWith("P2 ") && !x.StartsWith("P3 ") && !x.StartsWith("P4 ")
-						&& !x.StartsWith("P5 ") && !x.StartsWith("P6 ") && !x.StartsWith("P7 ") && !x.StartsWith("P8 "));
+				List<string>[] ret = new List<string>[9];
+				for (int i = 0; i < ret.Length; i++)
+					ret[i] = new List<string>();
 
-				yield return list
-					.Where(x => x.StartsWith("P1 "));
+				for (int i = 0; i < list.Count; i++)
+				{
+					int player = 0;
+					if (list[i].StartsWith("P") && char.IsNumber(list[i][1]))
+						player = int.Parse(list[i][1].ToString());
+					ret[player].Add(list[i]);
+				}
 
-				yield return list
-					.Where(x => x.StartsWith("P2 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P3 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P4 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P5 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P6 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P7 "));
-
-				yield return list
-					.Where(x => x.StartsWith("P8 "));
+				return ret;
 			}
 		}
 
