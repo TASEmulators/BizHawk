@@ -182,6 +182,21 @@ namespace BizHawk.Client.EmuHawk
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
 
+			//if a non-zero padding is required, add a filter to allow for that
+			if (GameExtraPadding.Vertical != 0 || GameExtraPadding.Horizontal != 0)
+			{
+				//TODO - add another filter just for this, its cumebrsome to use final presentation... I think. but maybe theres enough similarities to justify it.
+				Size size = chain_insize;
+				size.Width += GameExtraPadding.Horizontal;
+				size.Height += GameExtraPadding.Vertical;
+				Filters.FinalPresentation fPadding = new Filters.FinalPresentation(size);
+				chain.AddFilter(fPadding, "padding");
+				fPadding.GuiRenderer = Renderer;
+				fPadding.GL = GL;
+				fPadding.Config_PadOnly = true;
+				fPadding.Padding = GameExtraPadding;
+			}
+
 			//add lua layer 'emu'
 			AppendLuaLayer(chain, "emu");
 
@@ -346,13 +361,6 @@ namespace BizHawk.Client.EmuHawk
 				virtualHeight = Global.Config.DispCustomUserARHeight;
 			}
 
-
-			bufferWidth += GameExtraPadding.Left + GameExtraPadding.Right;
-			virtualWidth += GameExtraPadding.Left + GameExtraPadding.Right;
-			bufferHeight += GameExtraPadding.Top + GameExtraPadding.Bottom;
-			virtualHeight += GameExtraPadding.Top + GameExtraPadding.Bottom;
-
-
 			//Console.WriteLine("DISPZOOM " + zoom); //test
 
 			//old stuff
@@ -443,8 +451,6 @@ namespace BizHawk.Client.EmuHawk
 				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
-			//add requested lua layer canvas extension
-
 			var job = new JobInfo
 			{
 				videoProvider = fvp,
@@ -493,18 +499,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			//vw += GameExtraPadding.Left + GameExtraPadding.Right;
-			//vh += GameExtraPadding.Top + GameExtraPadding.Bottom;
-
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			
 TESTEROO:
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
-
-			//bufferWidth += GameExtraPadding.Left + GameExtraPadding.Right;
-			//bufferHeight += GameExtraPadding.Top + GameExtraPadding.Bottom;
-
 			bool isGlTextureId = videoBuffer.Length == 1;
 
 			//TODO - need to do some work here for GDI+ to repair gl texture ID importing
@@ -566,11 +565,13 @@ TESTEROO:
 			
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
-			fPresent.InputPadding = GameExtraPadding;
 			fPresent.VirtualTextureSize = new Size(vw, vh);
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
+			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
+			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+
 			fPresent.GL = GL;
 
 			filterProgram.Compile("default", chain_insize, chain_outsize, !job.offscreen);
