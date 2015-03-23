@@ -120,6 +120,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
+		/// <summary>
+		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
+		/// </summary>
+		public System.Windows.Forms.Padding GameExtraPadding;
+
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
@@ -318,6 +323,8 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>
 		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
+		/// TODO - this needs to be redone with a concept different from zoom factor. 
+		/// basically, each increment of a 'zoomlike' factor should definitely increase the viewable area somehow, even if it isnt strictly by an entire zoom level.
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
@@ -338,6 +345,13 @@ namespace BizHawk.Client.EmuHawk
 				virtualWidth = Global.Config.DispCustomUserARWidth;
 				virtualHeight = Global.Config.DispCustomUserARHeight;
 			}
+
+
+			bufferWidth += GameExtraPadding.Left + GameExtraPadding.Right;
+			virtualWidth += GameExtraPadding.Left + GameExtraPadding.Right;
+			bufferHeight += GameExtraPadding.Top + GameExtraPadding.Bottom;
+			virtualHeight += GameExtraPadding.Top + GameExtraPadding.Bottom;
+
 
 			//Console.WriteLine("DISPZOOM " + zoom); //test
 
@@ -429,6 +443,8 @@ namespace BizHawk.Client.EmuHawk
 				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
+			//add requested lua layer canvas extension
+
 			var job = new JobInfo
 			{
 				videoProvider = fvp,
@@ -477,11 +493,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			//vw += GameExtraPadding.Left + GameExtraPadding.Right;
+			//vh += GameExtraPadding.Top + GameExtraPadding.Bottom;
+
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			
 TESTEROO:
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
+
+			//bufferWidth += GameExtraPadding.Left + GameExtraPadding.Right;
+			//bufferHeight += GameExtraPadding.Top + GameExtraPadding.Bottom;
+
 			bool isGlTextureId = videoBuffer.Length == 1;
 
 			//TODO - need to do some work here for GDI+ to repair gl texture ID importing
@@ -543,6 +566,7 @@ TESTEROO:
 			
 			//setup the final presentation filter
 			Filters.FinalPresentation fPresent = filterProgram["presentation"] as Filters.FinalPresentation;
+			fPresent.InputPadding = GameExtraPadding;
 			fPresent.VirtualTextureSize = new Size(vw, vh);
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
