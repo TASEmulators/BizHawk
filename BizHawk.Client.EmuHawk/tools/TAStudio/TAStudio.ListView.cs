@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _startFloatDrawColumn = string.Empty;
 		private bool _boolPaintState;
 		private float _floatPaintState;
+		private bool _patternPaint = false;
 		private bool _startMarkerDrag;
 		private bool _startFrameDrag;
 		private bool _frameDragState;
@@ -278,8 +279,8 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.CurrentCell == null || !TasView.CurrentCell.RowIndex.HasValue || TasView.CurrentCell.Column == null)
 				return;
 
-			var frame = TasView.CurrentCell.RowIndex.Value;
-			var buttonName = TasView.CurrentCell.Column.Name;
+			int frame = TasView.CurrentCell.RowIndex.Value;
+			string buttonName = TasView.CurrentCell.Column.Name;
 
 
 			if (e.Button == MouseButtons.Left)
@@ -327,6 +328,15 @@ namespace BizHawk.Client.EmuHawk
 						_startBoolDrawColumn = buttonName;
 
 						_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+						if (applyPatternToPaintedInputToolStripMenuItem.Checked &&
+							(!onlyOnAutoFireColumnsToolStripMenuItem.Checked || TasView.CurrentCell.Column.Emphasis))
+						{
+							BoolPatterns[controllerType.BoolButtons.IndexOf(buttonName)].Reset();
+							BoolPatterns[controllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
+							_patternPaint = true;
+						}
+						else
+							_patternPaint = false;
 					}
 					else
 					{
@@ -339,6 +349,17 @@ namespace BizHawk.Client.EmuHawk
 						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
+						if (applyPatternToPaintedInputToolStripMenuItem.Checked &&
+							(!onlyOnAutoFireColumnsToolStripMenuItem.Checked || TasView.CurrentCell.Column.Emphasis))
+						{
+							FloatPatterns[controllerType.FloatControls.IndexOf(buttonName)].Reset();
+							CurrentTasMovie.SetFloatState(frame, buttonName,
+								FloatPatterns[controllerType.FloatControls.IndexOf(buttonName)].GetNextValue());
+							_patternPaint = true;
+						}
+						else
+							_patternPaint = false;
+
 
 						if (e.Clicks != 2)
 						{
@@ -604,9 +625,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
+					for (var i = startVal + 1; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
-						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, _boolPaintState); // Notice it uses new row, old column, you can only paint across a single column
+						bool setVal = _boolPaintState;
+						if (_patternPaint && _boolPaintState)
+						{
+							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
+								setVal = CurrentTasMovie.BoolIsPressed(i - 1, _startBoolDrawColumn);
+							else
+								setVal = BoolPatterns[controllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
+						}
+						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
@@ -619,14 +648,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
+					for (var i = startVal + 1; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
 					{
-						if (i < CurrentTasMovie.InputLogLength)
+						float setVal = _floatPaintState;
+						if (_patternPaint)
 						{
-							CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, _floatPaintState); // Notice it uses new row, old column, you can only paint across a single column
-							if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
-								_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
+								setVal = CurrentTasMovie.GetFloatState(i - 1, _startFloatDrawColumn);
+							else
+								setVal = FloatPatterns[controllerType.FloatControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
 						}
+						CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
+							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
 
 					RefreshTasView();

@@ -662,6 +662,11 @@ namespace BizHawk.Client.EmuHawk
 			TasView.InputPaintingMode = Settings.DrawInput ^= true;
 		}
 
+		private void applyPatternToPaintedInputToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+		{
+			onlyOnAutoFireColumnsToolStripMenuItem.Enabled = applyPatternToPaintedInputToolStripMenuItem.Checked;
+		}
+
 		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)
 		{
 			CurrentTasMovie.BindMarkersToInput = BindMarkersToInputMenuItem.Checked;
