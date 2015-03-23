@@ -276,6 +276,15 @@ namespace BizHawk.Client.Common
 				History.Last().Add(new MovieActionMarker(newMarker, oldPosition, old_message));
 			}
 		}
+
+		public void AddInputBind(int frame, bool isDelete, string name = "", bool force = false)
+		{
+			if (IsRecording || force)
+			{
+				AddMovieAction(name);
+				History.Last().Add(new MovieActionBindInput(Movie, frame, isDelete));
+			}
+		}
 		#endregion
 	}
 
@@ -502,10 +511,16 @@ namespace BizHawk.Client.Common
 			bool wasRecording = movie.ChangeLog.IsRecording;
 			movie.ChangeLog.IsRecording = false;
 
-			//if (isFloat)
-			//	movie.SetFloatStates(FirstFrame, LastFrame - FirstFrame + 1, buttonName, oldState);
-			//else
-			//	movie.SetBoolState(FirstFrame, buttonName, oldState == 1);
+			if (isFloat)
+			{
+				for (int i = 0; i < oldState.Count; i++)
+					movie.SetFloatState(FirstFrame + i, buttonName, oldState[i]);
+			}
+			else
+			{
+				for (int i = 0; i < oldState.Count; i++)
+					movie.SetBoolState(FirstFrame + i, buttonName, oldState[i] == 1);
+			}
 
 			movie.ChangeLog.IsRecording = wasRecording;
 		}
@@ -520,6 +535,68 @@ namespace BizHawk.Client.Common
 				movie.SetBoolStates(FirstFrame, LastFrame - FirstFrame + 1, buttonName, newState == 1);
 
 			movie.ChangeLog.IsRecording = wasRecording;
+		}
+	}
+
+	public class MovieActionBindInput : IMovieAction
+	{
+		public int FirstFrame { get; private set; }
+		public int LastFrame { get; private set; }
+
+		private string log;
+		private bool delete;
+
+		private bool bindMarkers;
+
+		public MovieActionBindInput(TasMovie movie, int frame, bool isDelete)
+		{
+			FirstFrame = LastFrame = frame;
+			log = movie.GetInputLogEntry(frame);
+			delete = isDelete;
+			bindMarkers = movie.BindMarkersToInput;
+		}
+
+		public void Undo(TasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			bool wasBinding = movie.BindMarkersToInput;
+			movie.ChangeLog.IsRecording = false;
+			movie.BindMarkersToInput = bindMarkers;
+
+			if (delete) // Insert
+			{
+				movie.InsertInput(FirstFrame, log);
+				movie.InsertLagHistory(FirstFrame + 1, true);
+			}
+			else // Delete
+			{
+				movie.RemoveFrame(FirstFrame);
+				movie.RemoveLagHistory(FirstFrame + 1);
+			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
+			movie.BindMarkersToInput = bindMarkers;
+		}
+		public void Redo(TasMovie movie)
+		{
+			bool wasRecording = movie.ChangeLog.IsRecording;
+			bool wasBinding = movie.BindMarkersToInput;
+			movie.ChangeLog.IsRecording = false;
+			movie.BindMarkersToInput = bindMarkers;
+
+			if (delete)
+			{
+				movie.RemoveFrame(FirstFrame);
+				movie.RemoveLagHistory(FirstFrame + 1);
+			}
+			else
+			{
+				movie.InsertInput(FirstFrame, log);
+				movie.InsertLagHistory(FirstFrame + 1, true);
+			}
+
+			movie.ChangeLog.IsRecording = wasRecording;
+			movie.BindMarkersToInput = bindMarkers;
 		}
 	}
 	#endregion

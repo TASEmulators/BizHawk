@@ -65,6 +65,8 @@ namespace BizHawk.Client.Common
 				else
 					WasLag[frame] = wasValue;
 
+				if (frame != 0)
+					WasLag[frame - 1] = LagLog[frame - 1];
 				if (frame >= LagLog.Count)
 					LagLog.Add(value.Value);
 				else
@@ -89,7 +91,8 @@ namespace BizHawk.Client.Common
 		}
 		public void InsertHistoryAt(int frame, bool isLag)
 		{ // LagLog was invalidated when the frame was inserted
-			LagLog.Insert(frame, isLag);
+			if (frame <= LagLog.Count)
+				LagLog.Insert(frame, isLag);
 			WasLag.Insert(frame, isLag);
 		}
 
@@ -113,30 +116,30 @@ namespace BizHawk.Client.Common
 			WasLag.Clear();
 			//if (br.BaseStream.Length > 0)
 			//{ BaseStream.Length does not return the expected value.
-				int formatVersion = br.ReadByte();
-				if (formatVersion == 0)
+			int formatVersion = br.ReadByte();
+			if (formatVersion == 0)
+			{
+				int length = (br.ReadByte() << 8) | formatVersion; // The first byte should be a part of length.
+				length = (br.ReadInt16() << 16) | length;
+				for (int i = 0; i < length; i++)
 				{
-					int length = (br.ReadByte() << 8) | formatVersion; // The first byte should be a part of length.
-					length = (br.ReadInt16() << 16) | length;
-					for (int i = 0; i < length; i++)
-					{
-						br.ReadInt32();
-						LagLog.Add(br.ReadBoolean());
-						WasLag.Add(LagLog.Last());
-					}
+					br.ReadInt32();
+					LagLog.Add(br.ReadBoolean());
+					WasLag.Add(LagLog.Last());
 				}
-				else if (formatVersion == 1)
+			}
+			else if (formatVersion == 1)
+			{
+				int length = br.ReadInt32();
+				int lenWas = br.ReadInt32();
+				for (int i = 0; i < length; i++)
 				{
-					int length = br.ReadInt32();
-					int lenWas = br.ReadInt32();
-					for (int i = 0; i < length; i++)
-					{
-						LagLog.Add(br.ReadBoolean());
-						WasLag.Add(br.ReadBoolean());
-					}
-					for (int i = length; i < lenWas; i++)
-						WasLag.Add(br.ReadBoolean());
+					LagLog.Add(br.ReadBoolean());
+					WasLag.Add(br.ReadBoolean());
 				}
+				for (int i = length; i < lenWas; i++)
+					WasLag.Add(br.ReadBoolean());
+			}
 			//}
 		}
 

@@ -867,9 +867,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			int player = 0;
 
-			foreach (var column in columns)
+			foreach (InputRoll.RollColumn column in columns)
 			{
-				var menuItem = new ToolStripMenuItem
+				ToolStripMenuItem menuItem = new ToolStripMenuItem
 				{
 					Text = column.Text + " (" + column.Name + ")",
 					Checked = column.Visible,
@@ -888,13 +888,15 @@ namespace BizHawk.Client.EmuHawk
 					(sender.OwnerItem as ToolStripMenuItem).ShowDropDown();
 				};
 
-				if (column.Name.StartsWith("P" + (player + 1)))
-				{
-					player++;
-					ColumnsSubMenu.DropDownItems.Add(playerMenus[player]);
-				}
+				if (column.Name.StartsWith("P") && char.IsNumber(column.Name, 1))
+					player = int.Parse(column.Name[1].ToString());
+				else
+					player = 0;
 				playerMenus[player].DropDownItems.Add(menuItem);
 			}
+
+			for (int i = 1; i < playerMenus.Length; i++)
+				ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
 
 			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
 			for (int i = 1; i < playerMenus.Length; i++)

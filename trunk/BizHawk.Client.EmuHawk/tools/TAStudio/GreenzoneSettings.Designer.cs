@@ -166,11 +166,6 @@ namespace BizHawk.Client.EmuHawk
             0,
             0,
             0});
-			this.DiskCapacityNumeric.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
 			this.DiskCapacityNumeric.Name = "DiskCapacityNumeric";
 			this.DiskCapacityNumeric.Size = new System.Drawing.Size(55, 20);
 			this.DiskCapacityNumeric.TabIndex = 3;
@@ -204,11 +199,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SaveCapacityNumeric.Location = new System.Drawing.Point(158, 66);
 			this.SaveCapacityNumeric.Maximum = new decimal(new int[] {
             65536,
-            0,
-            0,
-            0});
-			this.SaveCapacityNumeric.Minimum = new decimal(new int[] {
-            1,
             0,
             0,
             0});

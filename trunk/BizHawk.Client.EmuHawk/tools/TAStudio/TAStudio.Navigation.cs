@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame < Emulator.Frame) // We are rewinding
 				{
-					var goToFrame = frame == 0 ? 0 : frame - 1;
+					int goToFrame = frame == 0 ? 0 : frame - 1;
 
 					if (CurrentTasMovie[goToFrame].HasState) // Go back 1 frame and emulate to get the display (we don't store that)
 					{
@@ -47,7 +47,10 @@ namespace BizHawk.Client.EmuHawk
 
 						if (frame > 0) // We can't emulate up to frame 0!
 						{
+							bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 							GlobalWin.MainForm.FrameAdvance();
+							if (!wasPaused)
+								GlobalWin.MainForm.UnpauseEmulator();
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
@@ -63,7 +66,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (frame == Emulator.Frame + 1) // Just emulate a frame we only have 1 to go!
 					{
+						bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 						GlobalWin.MainForm.FrameAdvance();
+						if (!wasPaused)
+							GlobalWin.MainForm.UnpauseEmulator();
 					}
 					else
 					{
@@ -89,7 +95,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
+					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 					GlobalWin.MainForm.FrameAdvance();
+					if (!wasPaused)
+						GlobalWin.MainForm.UnpauseEmulator();
 				}
 				else
 				{
