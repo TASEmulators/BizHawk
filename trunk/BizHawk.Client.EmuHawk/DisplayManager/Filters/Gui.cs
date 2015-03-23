@@ -34,24 +34,18 @@ namespace BizHawk.Client.EmuHawk.Filters
 		/// </summary>
 		public float WidthScale, HeightScale;
 
-		//do maths on the viewport and the native resolution and the user settings to get a display rectangle
-		public LetterboxingLogic(System.Windows.Forms.Padding inputPadding, bool maintainAspect, bool maintainInteger, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight, Size textureSize, Size virtualSize)
-		{
-			//when using inputPadding, the output will already be sized to accept it. the inptu size will be untouched.
-			//heres how we handle it:
-			//1. pretend the input is larger
-			int padw = inputPadding.Left + inputPadding.Right;
-			int padh = inputPadding.Top + inputPadding.Bottom;
+		/// <summary>
+		/// In case you want to do it yourself
+		/// </summary>
+		public LetterboxingLogic() { }
 
+		//do maths on the viewport and the native resolution and the user settings to get a display rectangle
+		public LetterboxingLogic(bool maintainAspect, bool maintainInteger, int targetWidth, int targetHeight, int sourceWidth, int sourceHeight, Size textureSize, Size virtualSize)
+		{
 			int textureWidth = textureSize.Width;
 			int textureHeight = textureSize.Height;
 			int virtualWidth = virtualSize.Width;
 			int virtualHeight = virtualSize.Height;
-
-			textureWidth += padw;
-			textureHeight += padh;
-			virtualWidth += padw;
-			virtualHeight += padh;
 
 			//zero 02-jun-2014 - we passed these in, but ignored them. kind of weird..
 			int oldSourceWidth = sourceWidth;
@@ -139,16 +133,13 @@ namespace BizHawk.Client.EmuHawk.Filters
 					PS = trials[bestIndex];
 				}
 
-				//accomodate padding here to keep pixel precision
-				vw = (int)(PS.X * (textureWidth-padw));
-				vh = (int)(PS.Y * (textureHeight-padh));
+				vw = (int)(PS.X * textureWidth);
+				vh = (int)(PS.Y * textureHeight);
 				widthScale = PS.X;
 				heightScale = PS.Y;
 			}
 			else
 			{
-				widthScale /= (sourceWidth / (float)(sourceWidth - padw));
-				heightScale /= (sourceHeight / (float)(sourceHeight - padh));
 				vw = (int)(widthScale * sourceWidth);
 				vh = (int)(heightScale * sourceHeight);
 			}
@@ -164,13 +155,6 @@ namespace BizHawk.Client.EmuHawk.Filters
 			//HeightScale = heightScale;
 			WidthScale = (float)vw / oldSourceWidth;
 			HeightScale = (float)vh / oldSourceHeight;
-
-			//now add the padding, as best we can.
-			//it's a little hard because: ...
-			//vx += (int)(inputPadding.Left * WidthScale);
-			//vy += (int)(inputPadding.Top * HeightScale);
-			//vx += inputPadding.Left;
-			//vy += inputPadding.Top;
 		}
 
 	}
@@ -199,10 +183,12 @@ namespace BizHawk.Client.EmuHawk.Filters
 		LetterboxingLogic LL;
 		Size ContentSize;
 
+		public bool Config_FixAspectRatio, Config_FixScaleInteger, Config_PadOnly;
+
 		/// <summary>
-		/// How much should padding should be added to the input (for canvas extension)
+		/// only use with Config_PadOnly
 		/// </summary>
-		public System.Windows.Forms.Padding InputPadding;
+		public System.Windows.Forms.Padding Padding;
 
 		public override void Initialize()
 		{
@@ -226,7 +212,17 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (FilterOption != eFilterOption.Bicubic)
 				return size;
 
-			LL = new LetterboxingLogic(InputPadding, Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, size.Width, size.Height, TextureSize, VirtualTextureSize);
+			if (Config_PadOnly)
+			{
+				//TODO - redundant fix
+				LL = new LetterboxingLogic();
+				LL.vx += Padding.Left;
+				LL.vy += Padding.Right;
+				LL.vw = size.Width;
+				LL.vh = size.Height;
+			}
+			else
+				LL = new LetterboxingLogic(Config_FixAspectRatio, Config_FixScaleInteger, OutputSize.Width, OutputSize.Height, size.Width, size.Height, TextureSize, VirtualTextureSize);
 
 			return size;
 		}
@@ -249,7 +245,17 @@ namespace BizHawk.Client.EmuHawk.Filters
 			FindInput().SurfaceDisposition = SurfaceDisposition.Texture;
 			DeclareOutput(new SurfaceState(new SurfaceFormat(OutputSize), SurfaceDisposition.RenderTarget));
 			InputSize = state.SurfaceFormat.Size;
-			LL = new LetterboxingLogic(InputPadding, Global.Config.DispFixAspectRatio, Global.Config.DispFixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
+			if (Config_PadOnly)
+			{
+				//TODO - redundant fix
+				LL = new LetterboxingLogic();
+				LL.vx += Padding.Left;
+				LL.vy += Padding.Right;
+				LL.vw = InputSize.Width;
+				LL.vh = InputSize.Height;
+			}
+			else 
+				LL = new LetterboxingLogic(Config_FixAspectRatio, Config_FixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
 			ContentSize = new Size(LL.vw,LL.vh);
 		}
 
