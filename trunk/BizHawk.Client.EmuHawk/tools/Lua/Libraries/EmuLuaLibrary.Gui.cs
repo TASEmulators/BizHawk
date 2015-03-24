@@ -359,17 +359,9 @@ namespace BizHawk.Client.EmuHawk
 					ImageCache.Add(path, img);
 				}
 
-				var pts = new Point[]
-				{
-					new Point(dest_x, dest_y ),
-					new Point(dest_x + (dest_width ?? img.Width), dest_y),
-					new Point(dest_x + (dest_width ?? source_width), dest_y + (dest_height ?? source_height))
-				};
+				var dest_rect = new Rectangle(dest_x, dest_y, (dest_width ?? source_width), (dest_height ?? source_height));
 
-				var rect = new Rectangle(source_x, source_y, source_width, source_height);
-
-
-				g.DrawImage(img, pts, rect, GraphicsUnit.Pixel);
+				g.DrawImage(img, dest_rect, source_x, source_y, source_width, source_height, GraphicsUnit.Pixel);
 			}
 		}
 
