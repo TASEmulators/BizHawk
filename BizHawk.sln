@@ -138,9 +138,6 @@ Global
 		{E6B436B1-A3CD-4C9A-8F76-5D7154726884} = {0540A9A6-977E-466D-8BD3-1D8590BD5282}
 		{B95649F5-A0AE-41EB-B62B-578A2AFF5E18} = {B51F1139-3D2C-41BE-A762-EF1F9B41EACA}
 	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = BizHawk.Client.EmuHawk\BizHawk.Client.EmuHawk.csproj
 	EndGlobalSection
