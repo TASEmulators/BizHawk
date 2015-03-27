@@ -1,7 +1,9 @@
 ﻿using System.IO;
+using System.Linq;
 using BizHawk.Emulation.Common;
 using Jellyfish.Virtu;
 using Jellyfish.Virtu.Services;
+using System;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
@@ -30,11 +32,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine = new Machine();
 			
 			var vidService = new BizVideoService(_machine);
+			_soundService = new BizAudioService(_machine);
 			var gpService = new Jellyfish.Virtu.Services.GamePortService(_machine);
 			var kbService = new BizKeyboardService(_machine);
 
 			_machine.Services.AddService(typeof(Jellyfish.Virtu.Services.DebugService), new Jellyfish.Virtu.Services.DebugService(_machine));
-			_machine.Services.AddService(typeof(Jellyfish.Virtu.Services.AudioService), new BizAudioService(_machine));
+			_machine.Services.AddService(typeof(Jellyfish.Virtu.Services.AudioService), _soundService);
 			_machine.Services.AddService(typeof(Jellyfish.Virtu.Services.VideoService), vidService);
 			_machine.Services.AddService(typeof(Jellyfish.Virtu.Services.GamePortService), gpService);
 			_machine.Services.AddService(typeof(Jellyfish.Virtu.Services.KeyboardService), kbService);
@@ -55,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private readonly byte[] _disk1;
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;
+		private readonly BizAudioService _soundService;
 
 		private static readonly ControllerDefinition AppleIIController =
 			new ControllerDefinition
@@ -81,12 +85,25 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		private class BizAudioService : AudioService
+		private class BizAudioService : AudioService, ISyncSoundProvider
 		{
 			public BizAudioService(Machine _machine) : base(_machine) { }
 			public override void SetVolume(float volume)
 			{
 				
+			}
+
+			public void GetSamples(out short[] samples, out int nsamp)
+			{
+				samples = Array.ConvertAll(Source, b => (short)b); // TODO: is it really 8 bit?
+
+				nsamp = Source.Length;
+			}
+
+			public void DiscardSamples()
+			{
+				//TODO
+				//Source.DiscardSamples();
 			}
 		}
 
