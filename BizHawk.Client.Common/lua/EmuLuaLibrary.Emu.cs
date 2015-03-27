@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static void DisplayVsync(bool enabled)
 		{
-			Global.Config.VSyncThrottle = enabled;
+			Global.Config.VSync = enabled;
 		}
 
 		[LuaMethodAttributes(
