@@ -50,6 +50,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				DriveLightEnabled = true;
 				(Board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
+				// bit of a hack: we don't have a private gamedb for FDS, but the frontend
+				// expects this to be set.
+				RomStatus = game.Status;
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
