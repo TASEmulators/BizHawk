@@ -159,6 +159,11 @@ namespace BizHawk.Client.EmuHawk
 			EventsLibrary.CurrentThread = script;
 			_currThread = script;
 			var execResult = script.Resume(0);
+
+			_lua.RunScheduledDisposes();
+			//not sure how this is going to work out, so do this too
+			script.RunScheduledDisposes();
+
 			_currThread = null;
 			var result = new ResumeResult();
 			if (execResult == 0)
