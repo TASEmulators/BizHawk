@@ -75,14 +75,27 @@ namespace BizHawk.Client.EmuHawk
 
 			Controls.Remove(FindBox);
 
-			FindBox = new HexTextBox
+			if (HexRadio.Checked)
 			{
-				CharacterCasing = CharacterCasing.Upper,
-				Nullable = HexRadio.Checked,
-				Text = text,
-				Size = size,
-				Location = location
-			};
+
+				FindBox = new HexTextBox
+				{
+					CharacterCasing = CharacterCasing.Upper,
+					Nullable = HexRadio.Checked,
+					Text = text,
+					Size = size,
+					Location = location
+				};
+			}
+			else
+			{
+				FindBox = new TextBox
+				{
+					Text = text,
+					Size = size,
+					Location = location
+				};
+			}
 
 			Controls.Add(FindBox);
 		}
