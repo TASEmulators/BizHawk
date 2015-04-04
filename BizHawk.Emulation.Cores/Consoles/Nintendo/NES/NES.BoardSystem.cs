@@ -35,11 +35,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			void AddressPPU(int addr);
 			byte ReadWRAM(int addr);
 			byte ReadEXP(int addr);
+			byte ReadReg2xxx(int addr);
+			byte PeekReg2xxx(int addr);
 			void WritePRG(int addr, byte value);
 			void WritePPU(int addr, byte value);
 			void WriteWRAM(int addr, byte value);
 			void WriteEXP(int addr, byte value);
+			void WriteReg2xxx(int addr, byte value);
 			void NESSoftReset();
+			void AtVsyncNMI();
 			byte[] SaveRam { get; }
 			byte[] WRAM { get; set; }
 			byte[] VRAM { get; set; }
@@ -83,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public abstract bool Configure(NES.EDetectionOrigin origin);
 			public virtual void ClockPPU() { }
 			public virtual void ClockCPU() { }
+			public virtual void AtVsyncNMI() { }
 
 			public CartInfo Cart { get { return NES.cart; } }
 			public NES NES { get; set; }
@@ -205,6 +210,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public virtual void WriteEXP(int addr, byte value) { }
 			public virtual byte ReadEXP(int addr) { 
 				return NES.DB;
+			}
+
+			public virtual byte ReadReg2xxx(int addr)
+			{
+				return NES.ppu.ReadReg(addr & 7);
+			}
+
+			public virtual byte PeekReg2xxx(int addr)
+			{
+				return NES.ppu.PeekReg(addr & 7);
+			}
+
+			public virtual void WriteReg2xxx(int addr, byte value)
+			{
+				NES.ppu.WriteReg(addr & 7, value);
 			}
 
 			public virtual void WritePPU(int addr, byte value)
@@ -338,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void BoardSystemHardReset()
 		{
 			INESBoard newboard;
-			// fds has a unique activation setup
+			// FDS and NSF have a unique activation setup
 			if (Board is FDS)
 			{
 				var newfds = new FDS();
@@ -346,6 +366,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				newfds.biosrom = oldfds.biosrom;
 				newfds.SetDiskImage(oldfds.GetDiskImage());
 				newboard = newfds;
+			}
+			else if (Board is NSFBoard)
+			{
+				var newnsf = new NSFBoard();
+				var oldnsf = Board as NSFBoard;
+				newnsf.InitNSF(oldnsf.nsf);
+				newboard = newnsf;
 			}
 			else
 			{

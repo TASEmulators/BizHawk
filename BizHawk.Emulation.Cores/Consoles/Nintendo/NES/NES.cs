@@ -50,6 +50,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				DriveLightEnabled = true;
 				(Board as FDS).SetDriveLightCallback((val) => DriveLightOn = val);
+				// bit of a hack: we don't have a private gamedb for FDS, but the frontend
+				// expects this to be set.
+				RomStatus = game.Status;
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
@@ -346,7 +349,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public enum EDetectionOrigin
 		{
-			None, BootGodDB, GameDB, INES, UNIF, FDS
+			None, BootGodDB, GameDB, INES, UNIF, FDS, NSF
 		}
 
 		StringWriter LoadReport;
@@ -405,6 +408,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				hash_sha1 = unif.CartInfo.sha1;
 				hash_sha1_several.Add(hash_sha1);
 				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+			}
+			else if(file.Take(5).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("NESM\x1A")))
+			{
+				origin = EDetectionOrigin.NSF;
+				LoadWriteLine("Loading as NSF");
+				var nsf = new NSFFormat();
+				nsf.WrapByteArray(file);
+				
+				cart = new CartInfo();
+				var nsfboard = new NSFBoard();
+				nsfboard.Create(this);
+				nsfboard.ROM = rom;
+				nsfboard.InitNSF( nsf);
+				nsfboard.InitialRegisterValues = InitialMapperRegisterValues;
+				nsfboard.Configure(origin);
+				nsfboard.WRAM = new byte[cart.wram_size * 1024];
+				Board = nsfboard;
+				Board.PostConfigure();
+
+				Console.WriteLine("Using NTSC display type for NSF for now");
+				_display_type = Common.DisplayType.NTSC;
+
+				HardReset();
+
+				return;
 			}
 			else if (file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("FDS\x1A"))
 				|| file.Take(4).SequenceEqual(System.Text.Encoding.ASCII.GetBytes("\x01*NI")))

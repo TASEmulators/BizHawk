@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
 		public APU apu;
-		byte[] ram;
+		public byte[] ram;
 		NESWatch[] sysbus_watch = new NESWatch[65536];
 		public byte[] CIRAM; //AKA nametables
 		string game_name = string.Empty; //friendly name exposed to user and used as filename base
@@ -505,7 +505,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				ret = ppu.PeekReg(addr & 7);
+				ret = Board.PeekReg2xxx(addr);
 			}
 			else if (addr < 0x4020)
 			{
@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				ret = ppu.ReadReg(addr & 7);
+				ret = Board.ReadReg2xxx(addr);
 			}
 			else if (addr < 0x4020)
 			{
@@ -605,7 +605,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				ppu.WriteReg(addr & 7, value);
+				Board.WriteReg2xxx(addr,value);
 			}
 			else if (addr < 0x4020)
 			{

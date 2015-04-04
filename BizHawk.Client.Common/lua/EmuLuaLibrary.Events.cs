@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 						lf.Call(name);
 					}
 				}
-				catch (SystemException e)
+				catch (Exception e)
 				{
 					Log(
 						"error running function attached by lua function event.onsavestate" +
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 						lf.Call(name);
 					}
 				}
-				catch (SystemException e)
+				catch (Exception e)
 				{
 					Log(
 						"error running function attached by lua function event.onloadstate" +
@@ -101,7 +101,7 @@ namespace BizHawk.Client.Common
 						lf.Call();
 					}
 				}
-				catch (SystemException e)
+				catch (Exception e)
 				{
 					Log(
 						"error running function attached by lua function event.onframestart" +
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 						lf.Call();
 					}
 				}
-				catch (SystemException e)
+				catch (Exception e)
 				{
 					Log(
 						"error running function attached by lua function event.onframeend" +

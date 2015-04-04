@@ -12,6 +12,9 @@
         public virtual void Update() // main thread
         {
             var keyboard = Machine.Keyboard;
+            var buttons = Machine.Buttons;
+
+            keyboard.Button0Key = (ulong)buttons;
 
             if (IsResetKeyDown && !keyboard.DisableResetKey)
             {
@@ -31,9 +34,9 @@
             }
         }
 
-        public bool IsAnyKeyDown { get; protected set; }
-        public bool IsControlKeyDown { get; protected set; }
-        public bool IsShiftKeyDown { get; protected set; }
+        public bool IsAnyKeyDown { get { return Machine.Buttons > 0; }}
+        public bool IsControlKeyDown { get { return Machine.Buttons.HasFlag(Buttons.Ctrl); }}
+        public bool IsShiftKeyDown { get { return Machine.Buttons.HasFlag(Buttons.Shift); }}
 
         public bool IsOpenAppleKeyDown { get; protected set; }
         public bool IsCloseAppleKeyDown { get; protected set; }

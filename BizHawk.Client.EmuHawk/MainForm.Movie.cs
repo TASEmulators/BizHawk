@@ -14,9 +14,16 @@ namespace BizHawk.Client.EmuHawk
 {
 	partial class MainForm
 	{
+		public void StartNewMovie(string path, bool record)
+		{
+			StartNewMovie(MovieService.Get(Global.Config.RecentMovies.MostRecent), false);
+		}
+
 		public bool StartNewMovie(IMovie movie, bool record)
 		{
-			if (movie.IsActive)
+			// SuuperW: Check changes. adelikat: this could break bk2 movies
+			// TODO: Clean up the saving process
+			if (movie.IsActive && (movie.Changes || !(movie is TasMovie)))
 			{
 				movie.Save();
 			}
@@ -115,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					GlobalWin.MainForm.StartNewMovie(Global.MovieSession.Movie, false);
+					StartNewMovie(Global.MovieSession.Movie, false);
 					GlobalWin.OSD.AddMessage("Replaying movie file in read-only mode");
 				}
 			}

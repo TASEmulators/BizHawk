@@ -26,6 +26,16 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
+		public string GetInputLogEntry(int frame)
+		{
+			if (frame < FrameCount && frame >= 0)
+			{
+				return _log[frame];
+			}
+
+			return string.Empty;
+		}
+
 		public bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
 			errorMessage = string.Empty;

@@ -89,7 +89,9 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			ClearList();
-			TraceView.Columns[0].Text = Tracer.Header;
+			LoggingEnabled.Checked = true;
+			Tracer.Enabled = true;
+			SetTracerBoxTitle();
 		}
 
 		private void ClearList()

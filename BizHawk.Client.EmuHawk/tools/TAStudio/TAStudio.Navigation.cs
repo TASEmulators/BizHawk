@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (frame != Emulator.Frame) // Don't go to a frame if you are already on it!
 			{
-				var restoreFrame = Emulator.Frame;
+				int restoreFrame = Emulator.Frame;
 
 				if (frame <= Emulator.Frame)
 				{
@@ -38,16 +38,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame < Emulator.Frame) // We are rewinding
 				{
-					var goToFrame = frame == 0 ? 0 : frame - 1;
+					int goToFrame = frame == 0 ? 0 : frame - 1;
 
 					if (CurrentTasMovie[goToFrame].HasState) // Go back 1 frame and emulate to get the display (we don't store that)
 					{
 						CurrentTasMovie.SwitchToPlay();
-						LoadState(CurrentTasMovie[goToFrame].State);
+						LoadState(CurrentTasMovie.TasStateManager[goToFrame]); // STATE ACCESS
 
 						if (frame > 0) // We can't emulate up to frame 0!
 						{
+							bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 							GlobalWin.MainForm.FrameAdvance();
+							if (!wasPaused)
+								GlobalWin.MainForm.UnpauseEmulator();
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
@@ -63,7 +66,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (frame == Emulator.Frame + 1) // Just emulate a frame we only have 1 to go!
 					{
+						bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 						GlobalWin.MainForm.FrameAdvance();
+						if (!wasPaused)
+							GlobalWin.MainForm.UnpauseEmulator();
 					}
 					else
 					{
@@ -71,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 						if (CurrentTasMovie[goToFrame].HasState) // Can we go directly there?
 						{
 							CurrentTasMovie.SwitchToPlay();
-							LoadState(CurrentTasMovie[goToFrame].State);
+							LoadState(CurrentTasMovie.TasStateManager[goToFrame]); // STATE ACCESS
 							Emulator.FrameAdvance(true);
 							GlobalWin.DisplayManager.NeedsToPaint = true;
 
@@ -89,7 +95,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
+					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 					GlobalWin.MainForm.FrameAdvance();
+					if (!wasPaused)
+						GlobalWin.MainForm.UnpauseEmulator();
 				}
 				else
 				{
@@ -99,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 					// no reason to loadstate when we can emulate a frame instead
 					if (frame - Emulator.Frame != 1)
 					{
-						LoadState(CurrentTasMovie[CurrentTasMovie.TasStateManager.LastEmulatedFrame].State);
+						LoadState(CurrentTasMovie.TasStateManager[CurrentTasMovie.TasStateManager.LastEmulatedFrame]); // STATE ACCESS
 					}
 
 					if (frame != Emulator.Frame) // If we aren't already at our destination, seek
@@ -154,6 +163,18 @@ namespace BizHawk.Client.EmuHawk
 		public void GoToMarker(TasMovieMarker marker)
 		{
 			GoToFrame(marker.Frame);
+		}
+
+		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
+		{
+			if (!indexThatMustBeVisible.HasValue)
+			{
+				indexThatMustBeVisible = CurrentTasMovie.IsRecording
+					? CurrentTasMovie.InputLogLength
+					: Emulator.Frame;
+			}
+
+			TasView.ScrollToIndex(indexThatMustBeVisible.Value);
 		}
 	}
 }

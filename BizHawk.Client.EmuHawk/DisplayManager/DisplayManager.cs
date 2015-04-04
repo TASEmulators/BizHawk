@@ -120,6 +120,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
+		/// <summary>
+		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
+		/// </summary>
+		public System.Windows.Forms.Padding GameExtraPadding;
+
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
@@ -176,6 +181,21 @@ namespace BizHawk.Client.EmuHawk
 
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
+
+			//if a non-zero padding is required, add a filter to allow for that
+			if (GameExtraPadding.Vertical != 0 || GameExtraPadding.Horizontal != 0)
+			{
+				//TODO - add another filter just for this, its cumebrsome to use final presentation... I think. but maybe theres enough similarities to justify it.
+				Size size = chain_insize;
+				size.Width += GameExtraPadding.Horizontal;
+				size.Height += GameExtraPadding.Vertical;
+				Filters.FinalPresentation fPadding = new Filters.FinalPresentation(size);
+				chain.AddFilter(fPadding, "padding");
+				fPadding.GuiRenderer = Renderer;
+				fPadding.GL = GL;
+				fPadding.Config_PadOnly = true;
+				fPadding.Padding = GameExtraPadding;
+			}
 
 			//add lua layer 'emu'
 			AppendLuaLayer(chain, "emu");
@@ -318,6 +338,8 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>
 		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
+		/// TODO - this needs to be redone with a concept different from zoom factor. 
+		/// basically, each increment of a 'zoomlike' factor should definitely increase the viewable area somehow, even if it isnt strictly by an entire zoom level.
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
@@ -547,6 +569,9 @@ TESTEROO:
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
+			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
+			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+
 			fPresent.GL = GL;
 
 			filterProgram.Compile("default", chain_insize, chain_outsize, !job.offscreen);
