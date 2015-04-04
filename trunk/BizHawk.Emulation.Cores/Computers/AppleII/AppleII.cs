@@ -90,20 +90,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			public BizAudioService(Machine _machine) : base(_machine) { }
 			public override void SetVolume(float volume)
 			{
-				
 			}
-
-			public void GetSamples(out short[] samples, out int nsamp)
-			{
-				samples = Array.ConvertAll(Source, b => (short)b); // TODO: is it really 8 bit?
-
-				nsamp = Source.Length;
-			}
-
 			public void DiscardSamples()
 			{
-				//TODO
-				//Source.DiscardSamples();
+				Reset();
 			}
 		}
 
