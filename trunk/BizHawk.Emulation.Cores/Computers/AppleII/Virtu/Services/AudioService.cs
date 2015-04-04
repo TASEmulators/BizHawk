@@ -14,6 +14,7 @@ namespace Jellyfish.Virtu.Services
 
         public void Output(int data) // machine thread
         {
+			data = (int)(data * 0.2);
 			if (pos < buff.Length - 2)
 			{
 				buff[pos++] = (short)data;
