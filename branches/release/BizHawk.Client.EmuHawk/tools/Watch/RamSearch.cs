@@ -425,7 +425,7 @@ namespace BizHawk.Client.EmuHawk
 			DoSearchToolButton.Enabled =
 				CopyValueToPrevToolBarItem.Enabled =
 				_searches.Count > 0;
-			
+
 			UpdateUndoToolBarButtons();
 			OutOfRangeCheck();
 
@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 				_searches.Domain.CanPoke();
 		}
 
-		private int? CompareToValue
+		private long? CompareToValue
 		{
 			get
 			{
@@ -443,22 +443,22 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return null;
 				}
-				
+
 				if (SpecificValueRadio.Checked)
 				{
-					return SpecificValueBox.ToRawInt();
+					return (long)SpecificValueBox.ToRawInt() & 0x00000000FFFFFFFF;
 				}
-				
+
 				if (SpecificAddressRadio.Checked)
 				{
 					return SpecificAddressBox.ToRawInt();
 				}
-				
+
 				if (NumberOfChangesRadio.Checked)
 				{
 					return NumberOfChangesBox.ToRawInt();
 				}
-				
+
 				if (DifferenceRadio.Checked)
 				{
 					return DifferenceBox.ToRawInt();
@@ -484,12 +484,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return RamSearchEngine.ComparisonOperator.NotEqual;
 				}
-				
+
 				if (LessThanRadio.Checked)
 				{
 					return RamSearchEngine.ComparisonOperator.LessThan;
 				}
-				
+
 				if (GreaterThanRadio.Checked)
 				{
 					return RamSearchEngine.ComparisonOperator.GreaterThan;
@@ -499,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return RamSearchEngine.ComparisonOperator.LessThanEqual;
 				}
-				
+
 				if (GreaterThanOrEqualToRadio.Checked)
 				{
 					return RamSearchEngine.ComparisonOperator.GreaterThanEqual;
@@ -522,7 +522,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return RamSearchEngine.Compare.SpecificValue;
 				}
-				
+
 				if (SpecificAddressRadio.Checked)
 				{
 					return RamSearchEngine.Compare.SpecificAddress;
@@ -610,7 +610,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoDomainSizeCheck()
 		{
-			if (_settings.Domain.Size >= MaxDetailedSize 
+			if (_settings.Domain.Size >= MaxDetailedSize
 				&& _settings.Mode == RamSearchEngine.Settings.SearchMode.Detailed)
 			{
 				_settings.Mode = RamSearchEngine.Settings.SearchMode.Fast;
@@ -644,18 +644,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoDisplayTypeClick(Watch.DisplayType type)
 		{
-			if (_settings.Type != type && !string.IsNullOrEmpty(SpecificValueBox.Text))
+			if (_settings.Type != type)
 			{
-				SpecificValueBox.Text = "0";
+				if (!string.IsNullOrEmpty(SpecificValueBox.Text))
+					SpecificValueBox.Text = "0";
+				if (!string.IsNullOrEmpty(DifferenceBox.Text))
+					DifferenceBox.Text = "0";
+				if (!string.IsNullOrEmpty(DifferentByBox.Text))
+					DifferentByBox.Text = "0";
 			}
 
 			SpecificValueBox.Type = _settings.Type = type;
+			DifferenceBox.Type = type;
+			DifferentByBox.Type = type;
 			_searches.SetType(type);
 
 			_dropdownDontfire = true;
 			DisplayTypeDropdown.SelectedItem = Watch.DisplayTypeToString(type);
 			_dropdownDontfire = false;
-			SpecificValueBox.Type = type;
 			WatchListView.Refresh();
 		}
 
@@ -1081,10 +1087,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var item = new ToolStripMenuItem
 					{
-					Name = type + "ToolStripMenuItem",
-					Text = Watch.DisplayTypeToString(type),
-					Checked = _settings.Type == type,
-				};
+						Name = type + "ToolStripMenuItem",
+						Text = Watch.DisplayTypeToString(type),
+						Checked = _settings.Type == type,
+					};
 				var type1 = type;
 				item.Click += (o, ev) => DoDisplayTypeClick(type1);
 
@@ -1539,7 +1545,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SpecificValueBox.Focus();
 			}
-			
+
 			SpecificAddressBox.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
 			DifferenceBox.Enabled = false;
@@ -1657,7 +1663,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DifferentByRadio_Click(object sender, EventArgs e)
 		{
 			DifferentByBox.Enabled = true;
-			
+
 			if (string.IsNullOrWhiteSpace(DifferentByBox.Text))
 			{
 				DifferentByBox.ResetText();

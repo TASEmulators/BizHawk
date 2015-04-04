@@ -116,6 +116,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Global.cs" />
+    <Compile Include="inputAdapters\AutoPattern.cs" />
     <Compile Include="inputAdapters\BitwiseAdapters.cs" />
     <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
     <Compile Include="inputAdapters\InputAdapters.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="lua\EmuLuaLibrary.Emu.cs" />
     <Compile Include="lua\EmuLuaLibrary.Events.cs" />
     <Compile Include="lua\EmuLuaLibrary.GameInfo.cs" />
+    <Compile Include="lua\EmuLuaLibrary.Genesis.cs" />
     <Compile Include="lua\EmuLuaLibrary.Joypad.cs" />
     <Compile Include="lua\EmuLuaLibrary.MainMemory.cs" />
     <Compile Include="lua\EmuLuaLibrary.Memory.cs" />

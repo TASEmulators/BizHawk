@@ -91,7 +91,8 @@ namespace BizHawk.Client.Common
 			{
 				return new TasMovieRecord
 				{
-					State = StateManager[index],
+					// State = StateManager[index],
+					HasState = StateManager.HasState(index),
 					LogEntry = GetInputLogEntry(index),
 					Lagged = LagLog[index + 1],
 					WasLagged = LagLog.History(index + 1)
@@ -218,39 +219,10 @@ namespace BizHawk.Client.Common
 				.IsPressed(buttonName);
 		}
 
-		public float GetFloatValue(int frame, string buttonName)
+		public float GetFloatState(int frame, string buttonName)
 		{
 			return ((Bk2ControllerAdapter)GetInputState(frame))
 				.GetFloat(buttonName);
-		}
-
-		// TODO: try not to need this, or at least use GetInputState and then a log entry generator
-		public string GetInputLogEntry(int frame)
-		{
-			if (frame < FrameCount && frame >= 0)
-			{
-				int getframe;
-
-				if (LoopOffset.HasValue)
-				{
-					if (frame < _log.Count)
-					{
-						getframe = frame;
-					}
-					else
-					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
-					}
-				}
-				else
-				{
-					getframe = frame;
-				}
-
-				return _log[getframe];
-			}
-
-			return string.Empty;
 		}
 
 		public void ClearGreenzone()

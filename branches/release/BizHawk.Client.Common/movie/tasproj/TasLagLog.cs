@@ -9,26 +9,25 @@ namespace BizHawk.Client.Common
 {
 	public class TasLagLog
 	{
-		private readonly SortedList<int, bool> LagLog = new SortedList<int, bool>();
+		// TODO: Change this into a regular list.
+		private readonly List<bool> LagLog = new List<bool>();
 
-		// TODO: eventually we want multiple levels of history
-		private readonly SortedList<int, bool> RemovedFrames = new SortedList<int, bool>();
+		private readonly List<bool> WasLag = new List<bool>();
 
 		public bool? this[int frame]
 		{
 			get
 			{
-				if (LagLog.ContainsKey(frame))
+				if (frame < LagLog.Count)
 				{
-					return LagLog[frame];
+					if (frame < 0)
+						return null;
+					else
+						return LagLog[frame];
 				}
-				else if (frame == Global.Emulator.Frame)
+				else if (frame == Global.Emulator.Frame && frame == LagLog.Count)
 				{
-					if (frame == LagLog.Count)
-					{
-						LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame; // Note: Side effects!
-					}
-
+					// LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame; // Note: Side effects!
 					return Global.Emulator.AsInputPollable().IsLagFrame;
 				}
 
@@ -39,90 +38,119 @@ namespace BizHawk.Client.Common
 			{
 				if (!value.HasValue)
 				{
-					LagLog.Remove(frame);
+					LagLog.RemoveAt(frame);
+					return;
 				}
 				else if (frame < 0)
 				{
 					return; // Nothing to do
 				}
-				else if (LagLog.ContainsKey(frame))
+
+				if (frame > LagLog.Count)
 				{
-					LagLog[frame] = value.Value;
+					System.Diagnostics.Debug.Print("Lag Log error. f" + frame + ", log: " + LagLog.Count);
+					return; // Can this break anything?
 				}
+
+				bool wasValue;
+				if (frame < LagLog.Count)
+					wasValue = LagLog[frame];
+				else if (frame == WasLag.Count)
+					wasValue = value.Value;
 				else
-				{
-					LagLog.Add(frame, value.Value);
-				}
+					wasValue = WasLag[frame];
+
+				if (frame == WasLag.Count)
+					WasLag.Add(wasValue);
+				else
+					WasLag[frame] = wasValue;
+
+				if (frame != 0)
+					WasLag[frame - 1] = LagLog[frame - 1];
+				if (frame >= LagLog.Count)
+					LagLog.Add(value.Value);
+				else
+					LagLog[frame] = value.Value;
 			}
 		}
 
 		public void Clear()
 		{
-			if (LagLog.Any())
-			{
-				RemovedFrames.Clear();
-				foreach (var lag in LagLog)
-				{
-					RemovedFrames.Add(lag.Key, lag.Value);
-				}
-			}
-
 			LagLog.Clear();
-			
 		}
 
 		public void RemoveFrom(int frame)
 		{
-			if (frame > 0 && frame <= LagLog.Count)
-			{
-				RemovedFrames.Clear();
+			if (LagLog.Count > frame && frame >= 0)
+				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
+		}
 
-				for (int i = LagLog.Count - 1; i > frame; i--) // Reverse order because removing from a sorted list re-indexes the items after the removed item
-				{
-					RemovedFrames.Add(LagLog.Keys[i], LagLog.Values[i]); // use .Keys[i] instead of [i] here because indizes might not be consistent with keys
-					LagLog.Remove(LagLog.Keys[i]);
-				}
-			}
-			else if (frame == 0)
-			{
-				RemovedFrames.Clear();
-				foreach (var lag in LagLog)
-				{
-					RemovedFrames.Add(lag.Key, lag.Value);
-				}
-				this.Clear();
-			}
-
+		public void RemoveHistoryAt(int frame)
+		{
+			WasLag.RemoveAt(frame);
+		}
+		public void InsertHistoryAt(int frame, bool isLag)
+		{ // LagLog was invalidated when the frame was inserted
+			if (frame <= LagLog.Count)
+				LagLog.Insert(frame, isLag);
+			WasLag.Insert(frame, isLag);
 		}
 
 		public void Save(BinaryWriter bw)
 		{
+			bw.Write((byte)1); // New saving format.
 			bw.Write(LagLog.Count);
-			foreach (var kvp in LagLog)
+			bw.Write(WasLag.Count);
+			for (int i = 0; i < LagLog.Count; i++)
 			{
-				bw.Write(kvp.Key);
-				bw.Write(kvp.Value);
+				bw.Write(LagLog[i]);
+				bw.Write(WasLag[i]);
 			}
+			for (int i = LagLog.Count; i < WasLag.Count; i++)
+				bw.Write(WasLag[i]);
 		}
 
 		public void Load(BinaryReader br)
 		{
 			LagLog.Clear();
-			if (br.BaseStream.Length > 0)
+			WasLag.Clear();
+			//if (br.BaseStream.Length > 0)
+			//{ BaseStream.Length does not return the expected value.
+			int formatVersion = br.ReadByte();
+			if (formatVersion == 0)
 			{
-				int length = br.ReadInt32();
+				int length = (br.ReadByte() << 8) | formatVersion; // The first byte should be a part of length.
+				length = (br.ReadInt16() << 16) | length;
 				for (int i = 0; i < length; i++)
 				{
-					LagLog.Add(br.ReadInt32(), br.ReadBoolean());
+					br.ReadInt32();
+					LagLog.Add(br.ReadBoolean());
+					WasLag.Add(LagLog.Last());
 				}
 			}
+			else if (formatVersion == 1)
+			{
+				int length = br.ReadInt32();
+				int lenWas = br.ReadInt32();
+				for (int i = 0; i < length; i++)
+				{
+					LagLog.Add(br.ReadBoolean());
+					WasLag.Add(br.ReadBoolean());
+				}
+				for (int i = length; i < lenWas; i++)
+					WasLag.Add(br.ReadBoolean());
+			}
+			//}
 		}
 
 		public bool? History(int frame)
 		{
-			if (RemovedFrames.ContainsKey(frame))
+			if (frame < WasLag.Count)
 			{
-				return RemovedFrames[frame];
+				if (frame < 0)
+					return null;
+
+				return WasLag[frame];
 			}
 
 			return null;

@@ -340,6 +340,32 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"drawImageRegion",
+			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size"
+		)]
+		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
+		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			using (var g = GetGraphics())
+			{
+				Image img;
+				if (ImageCache.ContainsKey(path))
+				{
+					img = ImageCache[path];
+				}
+				else
+				{
+					img = Image.FromFile(path);
+					ImageCache.Add(path, img);
+				}
+
+				var dest_rect = new Rectangle(dest_x, dest_y, (dest_width ?? source_width), (dest_height ?? source_height));
+
+				g.DrawImage(img, dest_rect, source_x, source_y, source_width, source_height, GraphicsUnit.Pixel);
+			}
+		}
+
+		[LuaMethodAttributes(
 			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)"
 		)]

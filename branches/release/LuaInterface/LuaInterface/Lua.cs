@@ -959,6 +959,26 @@ namespace LuaInterface
 
       #endregion
 
+			List<int> scheduledDisposes = new List<int>();
+
+		internal void ScheduleDispose(int reference)
+		{	
+			//TODO - theres a race condition here, see comment elsewhere
+			lock (scheduledDisposes)
+				scheduledDisposes.Add(reference);
+		}
+
+		public void RunScheduledDisposes()
+		{
+			//TODO - theres a race condition here, in case GC happens during this method
+			lock (scheduledDisposes)
+			{
+				foreach (var item in scheduledDisposes)
+					dispose(item);
+				scheduledDisposes.Clear();
+			}
+		}
+
 		internal void dispose(int reference) 
 		{
             if (luaState != IntPtr.Zero) //Fix submitted by Qingrui Li

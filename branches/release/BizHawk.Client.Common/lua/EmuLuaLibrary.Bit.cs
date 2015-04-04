@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 			"rshift",
 			"Logical shift right of 'val' by 'amt' bits"
 		)]
-		public static uint Rshift(int val, int amt)
+		public static uint Rshift(uint val, int amt)
 		{
 			return (uint)(val >> amt);
 		}

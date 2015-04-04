@@ -86,5 +86,7 @@ namespace Jellyfish.Virtu
         private int _totalCycles;
         private long _lastCycles;
         private float _volume;
+
+		public AudioService AudioService { get { return _audioService; } }
     }
 }

@@ -16,7 +16,7 @@ namespace LuaInterface
         ~LuaBase()
         {
             //Dispose(false);
-					Dispose(true); //zero 28-feb-2014 - fix memory leak?
+					Dispose(true); //zero 28-feb-2015 - fix memory leak?
         }
 
         public void Dispose()
@@ -31,8 +31,8 @@ namespace LuaInterface
             {
                 if (disposeManagedResources)
                 {
-                    if (_Reference != 0)
-                        _Interpreter.dispose(_Reference);
+									if (_Reference != 0 && _Interpreter != null) 
+                        _Interpreter.ScheduleDispose(_Reference);
                 }
                 _Interpreter = null;
                 _Disposed = true;

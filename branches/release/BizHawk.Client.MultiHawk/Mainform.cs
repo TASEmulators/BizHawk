@@ -32,8 +32,10 @@ namespace BizHawk.Client.MultiHawk
 
 		public Mainform(string[] args)
 		{
+			BizHawk.Client.Common.GLManager.CreateInstance();
+
 			InitializeComponent();
-			_throttle = new Throttle();
+			_throttle = new BizHawk.Client.EmuHawk.Throttle();
 			_inputManager = new InputManager(this);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.DispFixAspectRatio = false; // TODO: don't hardcode this
@@ -85,6 +87,8 @@ namespace BizHawk.Client.MultiHawk
 
 			Closing += (o, e) =>
 			{
+				Global.MovieSession.Movie.Stop();
+
 				foreach (var ew in EmulatorWindows.ToList())
 				{
 					ew.ShutDown();
@@ -118,6 +122,11 @@ namespace BizHawk.Client.MultiHawk
 			if (Global.Config.RecentRomSessions.AutoLoad)
 			{
 				LoadRomSessionFromRecent(Global.Config.RecentRomSessions.MostRecent);
+
+				if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
+				{
+					LoadMoviesFromRecent(Global.Config.RecentMovies.MostRecent);
+				}
 			}
 
 			if (Global.Config.SaveWindowPosition && Global.Config.MainWidth > 0 && Global.Config.MainHeight > 0)
@@ -310,7 +319,7 @@ namespace BizHawk.Client.MultiHawk
 					Emulator = loader.LoadedEmulator,
 
 					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(),
-					GLManager = new GLManager(),
+					GLManager = BizHawk.Client.Common.GLManager.Instance,
 					Game = loader.Game,
 					CurrentRomPath = loader.CanonicalFullPath
 				};
@@ -375,8 +384,8 @@ namespace BizHawk.Client.MultiHawk
 				}
 
 				// modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyConfig
-					|| ActiveForm is ControllerConfig
+				if (ActiveForm is BizHawk.Client.EmuHawk.HotkeyConfig
+					|| ActiveForm is BizHawk.Client.EmuHawk.ControllerConfig
 					//|| ActiveForm is TAStudio
 					//|| ActiveForm is VirtualpadTool
 				)
@@ -424,7 +433,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private int? LoadArhiveChooser(HawkFile file)
 		{
-			var ac = new ArchiveChooser(file);
+			var ac = new BizHawk.Client.EmuHawk.ArchiveChooser(file);
 			if (ac.ShowDialog(this) == DialogResult.OK)
 			{
 				return ac.SelectedMemberIndex;
@@ -493,7 +502,7 @@ namespace BizHawk.Client.MultiHawk
 			Application.DoEvents();
 			if (ActiveForm != null)
 			{
-				ScreenSaver.ResetTimerPeriodically();
+				BizHawk.Client.EmuHawk.ScreenSaver.ResetTimerPeriodically();
 			}
 		}
 
@@ -666,19 +675,33 @@ namespace BizHawk.Client.MultiHawk
 			//}
 		}
 
-		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
+		public void LoadQuickSave(string quickSlotName)
 		{
-			foreach (var window in EmulatorWindows)
+			try
 			{
-				window.LoadQuickSave(quickSlotName);
+				foreach (var window in EmulatorWindows)
+				{
+					window.LoadQuickSave(quickSlotName);
+				}
+			}
+			catch
+			{
+				MessageBox.Show("Could not load " + quickSlotName);
 			}
 		}
 
 		public void SaveQuickSave(string quickSlotName)
 		{
-			foreach (var window in EmulatorWindows)
+			try
 			{
-				window.SaveQuickSave(quickSlotName);
+				foreach (var window in EmulatorWindows)
+				{
+					window.SaveQuickSave(quickSlotName);
+				}
+			}
+			catch
+			{
+				MessageBox.Show("Could not save " + quickSlotName);
 			}
 		}
 
@@ -692,6 +715,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			// TODO
 			SaveSlotSelectedMessage();
+			UpdateAfterFrameChanged();
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -881,7 +905,7 @@ namespace BizHawk.Client.MultiHawk
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
 		public bool EmulatorPaused = true;
-		private readonly Throttle _throttle;
+		private readonly BizHawk.Client.EmuHawk.Throttle _throttle;
 		//private bool _unthrottled; // TODO
 		private bool _runloopFrameadvance;
 		private bool _runloopFrameProgress;
@@ -1038,7 +1062,21 @@ namespace BizHawk.Client.MultiHawk
 		{
 			if (EmulatorWindows.Any())
 			{
-				FameStatusBarLabel.Text = EmulatorWindows.Master.Emulator.Frame.ToString();
+				string frame = EmulatorWindows.Master.Emulator.Frame.ToString();
+
+				if (Global.MovieSession.Movie.IsActive)
+				{
+					if (Global.MovieSession.Movie.IsFinished)
+					{
+						frame += string.Format(" / {0} (finished)", Global.MovieSession.Movie.FrameCount);
+					}
+					else if (Global.MovieSession.Movie.IsPlaying)
+					{
+						frame += string.Format(" / {0}", Global.MovieSession.Movie.FrameCount);
+					}
+				}
+
+				FameStatusBarLabel.Text = frame;
 			}
 		}
 
@@ -1062,19 +1100,23 @@ namespace BizHawk.Client.MultiHawk
 				RecordMovieMenuItem.Enabled =
 				EmulatorWindows.Any();
 
-			StopMovieMenuItem.Enabled = Global.MovieSession.Movie.IsActive;
+			StopMovieMenuItem.Enabled =
+				RestartMovieMenuItem.Enabled =
+				Global.MovieSession.Movie.IsActive;
 		}
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			new RecordMovie().ShowDialog();
 			UpdateMainText();
+			UpdateAfterFrameChanged();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			new PlayMovie().ShowDialog();
 			UpdateMainText();
+			UpdateAfterFrameChanged();
 		}
 
 		private void StopMovieMenuItem_Click(object sender, EventArgs e)
@@ -1082,6 +1124,7 @@ namespace BizHawk.Client.MultiHawk
 			Global.MovieSession.StopMovie(true);
 			SetMainformMovieInfo();
 			UpdateMainText();
+			UpdateAfterFrameChanged();
 			//UpdateStatusSlots(); // TODO
 		}
 
@@ -1095,6 +1138,20 @@ namespace BizHawk.Client.MultiHawk
 			else
 			{
 				AddMessage("Movie is now read+write");
+			}
+		}
+
+		private void LoadMoviesFromRecent(string path)
+		{
+			if (File.Exists(path))
+			{
+				var movie = MovieService.Get(path);
+				Global.MovieSession.ReadOnly = true;
+				StartNewMovie(movie, false);
+			}
+			else
+			{
+				Global.Config.RecentMovies.HandleLoadError(path);
 			}
 		}
 
@@ -1175,13 +1232,13 @@ namespace BizHawk.Client.MultiHawk
 			Global.MovieSession.RunQueuedMovie(record);
 
 			SetMainformMovieInfo();
-
+			UpdateAfterFrameChanged();
 			return true;
 		}
 
 		private void hotkeyConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new HotkeyConfig().ShowDialog() == DialogResult.OK)
+			if (new BizHawk.Client.EmuHawk.HotkeyConfig().ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
 				_inputManager.SyncControls();
@@ -1190,7 +1247,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void controllerConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var controller = new ControllerConfig(EmulatorWindows.Master.Emulator.ControllerDefinition);
+			var controller = new BizHawk.Client.EmuHawk.ControllerConfig(EmulatorWindows.Master.Emulator.ControllerDefinition);
 			if (controller.ShowDialog() == DialogResult.OK)
 			{
 				InitControls();
@@ -1441,6 +1498,40 @@ namespace BizHawk.Client.MultiHawk
 			{
 				ew.FrameBufferResized();
 				ew.Render();
+			}
+		}
+
+		private void LoadLastMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadMoviesFromRecent(Global.Config.RecentMovies.MostRecent);
+		}
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+		{
+			LoadLastMovieContextMenuItem.Visible = !Global.Config.RecentMovies.Empty;
+			PlayMovieContextMenuItem.Visible =
+				RecordMovieContextMenuItem.Visible =
+				!Global.MovieSession.Movie.IsActive;
+
+			StopMovieContextMenuItem.Visible =
+				RestartMovieContextMenuItem.Visible =
+				Global.MovieSession.Movie.IsActive;
+
+		}
+
+		private void RecentMovieSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentMovieSubMenu.DropDownItems.Clear();
+			RecentMovieSubMenu.DropDownItems.AddRange(
+				Global.Config.RecentMovies.RecentMenu(LoadMoviesFromRecent, autoload: true));
+		}
+
+		private void RestartMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				StartNewMovie(Global.MovieSession.Movie, false);
+				AddMessage("Replaying movie file in read-only mode");
 			}
 		}
 	}

@@ -152,7 +152,7 @@ namespace Jellyfish.Virtu
             _memory = Machine.Memory;
 
             Is65C02 = true;
-            IsThrottled = true;
+            IsThrottled = false;
             Multiplier = 1;
 
             RS = 0xFF;

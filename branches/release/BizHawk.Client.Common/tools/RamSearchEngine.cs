@@ -617,14 +617,14 @@ namespace BizHawk.Client.Common
 					case ComparisonOperator.Equal:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
-							return watchList.Where(x => ToFloat(GetValue(x.Address)) == _compareValue.Value);
+							return watchList.Where(x => ToFloat(GetValue(x.Address)) == ToFloat(_compareValue.Value));
 						}
 
 						return watchList.Where(x => GetValue(x.Address) == _compareValue.Value);
 					case ComparisonOperator.NotEqual:
 						if (_settings.Type == Watch.DisplayType.Float)
 						{
-							return watchList.Where(x => ToFloat(GetValue(x.Address)) != _compareValue.Value);
+							return watchList.Where(x => ToFloat(GetValue(x.Address)) != ToFloat(_compareValue.Value));
 						}
 
 						return watchList.Where(x => GetValue(x.Address) != _compareValue.Value);

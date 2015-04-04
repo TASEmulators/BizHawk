@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores
 		Saturn, MegaCD,
 
 		PCE, SGX, TurboCD,
-		INES, FDS, UNIF,
+		INES, FDS, UNIF, NSF,
 		SFC, N64,
 		GB, GBC, GBA, NDS,
 		COL,
@@ -256,7 +256,8 @@ namespace BizHawk.Emulation.Cores
 		static class SimpleMagics
 		{
 			public static SimpleMagicRecord INES = new SimpleMagicRecord { Offset = 0, Key = "NES" };
-			public static SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" }; 
+			public static SimpleMagicRecord UNIF = new SimpleMagicRecord { Offset = 0, Key = "UNIF" };
+			public static SimpleMagicRecord NSF = new SimpleMagicRecord { Offset = 0, Key = "NESM\x1A" }; 
 
 			public static SimpleMagicRecord FDS_HEADERLESS = new SimpleMagicRecord { Offset = 0, Key = "\x01*NINTENDO-HVC*" };
 			public static SimpleMagicRecord FDS_HEADER = new SimpleMagicRecord { Offset = 0, Key = "FDS\x1A" };

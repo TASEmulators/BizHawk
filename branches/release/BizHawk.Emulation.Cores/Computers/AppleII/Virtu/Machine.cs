@@ -10,6 +10,58 @@ namespace Jellyfish.Virtu
 {
     public enum MachineState { Stopped = 0, Starting, Running, Pausing, Paused, Stopping }
 
+    public enum Buttons : ulong
+    {
+        Up     = 0x0000000000001,
+        Down   = 0x0000000000002,
+        Left   = 0x0000000000004,
+        Right  = 0x0000000000008,
+        Tab    = 0x0000000000010,
+        Enter  = 0x0000000000020,
+        Escape = 0x0000000000040,
+        Back   = 0x0000000000080,
+        Space  = 0x0000000000100,
+        Ctrl   = 0x0000000000200,
+        Shift  = 0x0000000000400,
+        Caps   = 0x0000000000800,
+        Key1   = 0x0000000001000,
+        Key2   = 0x0000000002000,
+        Key3   = 0x0000000004000,
+        Key4   = 0x0000000008000,
+        Key5   = 0x0000000010000,
+        Key6   = 0x0000000020000,
+        Key7   = 0x0000000040000,
+        Key8   = 0x0000000080000,
+        Key9   = 0x0000000100000,
+        Key0   = 0x0000000200000,
+        KeyA   = 0x0000001000000,
+        KeyB   = 0x0000002000000, 
+        KeyC   = 0x0000004000000,
+        KeyD   = 0x0000008000000,
+        KeyE   = 0x0000010000000,
+        KeyF   = 0x0000020000000,
+        KeyG   = 0x0000040000000,
+        KeyH   = 0x0000080000000,
+        KeyI   = 0x0000100000000,
+        KeyJ   = 0x0000200000000,
+        KeyK   = 0x0000400000000,
+        KeyL   = 0x0000800000000,
+        KeyM   = 0x0001000000000,
+        KeyN   = 0x0002000000000,
+        KeyO   = 0x0004000000000,
+        KeyP   = 0x0008000000000,
+        KeyQ   = 0x0010000000000,
+        KeyR   = 0x0020000000000,
+        KeyS   = 0x0040000000000,
+        KeyT   = 0x0080000000000,
+        KeyU   = 0x0100000000000,
+        KeyV   = 0x0200000000000,
+        KeyW   = 0x0400000000000,
+        KeyX   = 0x0800000000000,
+        KeyY   = 0x1000000000000,
+        KeyZ   = 0x2000000000000
+    }
+
     public sealed class Machine : IDisposable
     {
         public Machine()
@@ -152,6 +204,23 @@ namespace Jellyfish.Virtu
             }
         }
 
+		// TODO: don't copy paste
+		public void LoadState(BinaryReader reader)
+		{
+			string signature = reader.ReadString();
+			var version = new Version(reader.ReadString());
+			if ((signature != StateSignature) || (version != new Version(Machine.Version))) // avoid state version mismatch (for now)
+			{
+				throw new InvalidOperationException();
+			}
+			foreach (var component in Components)
+			{
+				_debugService.WriteMessage("Loading machine '{0}'", component.GetType().Name);
+				component.LoadState(reader, version);
+				//_debugService.WriteMessage("Loaded machine '{0}'", component.GetType().Name);
+			}
+		}
+
         private void LoadState(Stream stream)
         {
             using (var reader = new BinaryReader(stream))
@@ -175,6 +244,18 @@ namespace Jellyfish.Virtu
         {
             _storageService.Save(Machine.StateFileName, stream => SaveState(stream));
         }
+
+		public void SaveState(BinaryWriter writer)
+		{
+			writer.Write(StateSignature);
+			writer.Write(Machine.Version);
+			foreach (var component in Components)
+			{
+				_debugService.WriteMessage("Saving machine '{0}'", component.GetType().Name);
+				component.SaveState(writer);
+				//_debugService.WriteMessage("Saved machine '{0}'", component.GetType().Name);
+			}
+		}
 
         private void SaveState(Stream stream)
         {
@@ -207,7 +288,7 @@ namespace Jellyfish.Virtu
 				//    Initialize();
 				//    Reset();
 				//    LoadState();
-
+                //
 				//    _debugService.WriteMessage("Running machine");
 				//    State = MachineState.Running;
 				//    do
@@ -217,7 +298,7 @@ namespace Jellyfish.Virtu
 				//            Events.HandleEvents(Cpu.Execute());
 				//        }
 				//        while (State == MachineState.Running);
-
+                //
 				//        if (State == MachineState.Pausing)
 				//        {
 				//            _pauseEvent.Set();
@@ -225,7 +306,7 @@ namespace Jellyfish.Virtu
 				//        }
 				//    }
 				//    while (State != MachineState.Stopping);
-
+                //
 				//    SaveState();
 				//    Uninitialize();
 				//}
@@ -241,12 +322,15 @@ namespace Jellyfish.Virtu
 
 				public void BizFrameAdvance()
 				{
+                    Services.GetService<KeyboardService>().Update();
+                    Services.GetService<GamePortService>().Update();
 					//frame begins at vsync.. beginning of vblank
 					while (Video.IsVBlank)
 						Events.HandleEvents(Cpu.Execute());
 					//now, while not vblank, we're in a frame
 					while (!Video.IsVBlank)
 						Events.HandleEvents(Cpu.Execute());
+                    
 				}
 
 				public void BizShutdown()
@@ -258,7 +342,7 @@ namespace Jellyfish.Virtu
 
         public MachineEvents Events { get; private set; }
         public MachineServices Services { get; private set; }
-        //public MachineState State { get { return _state; } private set { _state = value; } }
+        public MachineState State { get { return _state; } private set { _state = value; } }
 
         public Cpu Cpu { get; private set; }
         public Memory Memory { get; private set; }
@@ -284,12 +368,14 @@ namespace Jellyfish.Virtu
 
         public Thread Thread { get; private set; }
 
+        public Buttons Buttons;
+
         private const string StateFileName = "State.bin";
         private const string StateSignature = "Virtu";
 
         private DebugService _debugService;
         private StorageService _storageService;
-        //private volatile MachineState _state;
+        private volatile MachineState _state;
 
         private AutoResetEvent _pauseEvent = new AutoResetEvent(false);
         private AutoResetEvent _unpauseEvent = new AutoResetEvent(false);
