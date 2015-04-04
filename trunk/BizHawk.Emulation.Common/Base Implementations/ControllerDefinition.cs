@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Common
 				for (int i = 0; i < list.Count; i++)
 				{
 					int player = 0;
-					if (list[i].StartsWith("P") && char.IsNumber(list[i][1]))
+					if (list[i].Length > 3 && list[i].StartsWith("P") && char.IsNumber(list[i][1]))
 						player = int.Parse(list[i][1].ToString());
 					ret[player].Add(list[i]);
 				}
