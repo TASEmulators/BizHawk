@@ -9,19 +9,19 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		[FeatureNotImplemented]
 		public ISoundProvider SoundProvider
 		{
-			get { return NullSound.SilenceProvider; }
+			get { return null; }
 		}
 
 		[FeatureNotImplemented]
 		public ISyncSoundProvider SyncSoundProvider
 		{
-			get { return new FakeSyncSound(NullSound.SilenceProvider, 735); }
+			get { return _soundService; }
 		}
 
 		[FeatureNotImplemented]
 		public bool StartAsyncSound()
 		{
-			return true;
+			return false;
 		}
 
 		[FeatureNotImplemented]

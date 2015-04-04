@@ -14,53 +14,31 @@ namespace Jellyfish.Virtu.Services
 
         public void Output(int data) // machine thread
         {
-            if (BitConverter.IsLittleEndian)
-            {
-                _buffer[_index + 0] = (byte)(data & 0xFF);
-                _buffer[_index + 1] = (byte)(data >> 8);
-            }
-            else
-            {
-                _buffer[_index + 0] = (byte)(data >> 8);
-                _buffer[_index + 1] = (byte)(data & 0xFF);
-            }
-            _index = (_index + 2) % SampleSize;
-            if (_index == 0)
-            {
-                if (Machine.Cpu.IsThrottled)
-                {
-                    _writeEvent.WaitOne(SampleLatency * 2); // allow timeout; avoids deadlock
-                }
-            }
+			if (pos < buff.Length - 2)
+			{
+				buff[pos++] = (short)data;
+				buff[pos++] = (short)data;
+			}
         }
+
+		private short[] buff = new short[4096];
+		private int pos = 0;
 
         public void Reset()
         {
-            Buffer.BlockCopy(SampleZero, 0, _buffer, 0, SampleSize);
+			pos = 0;
         }
 
         public abstract void SetVolume(float volume);
 
-        protected void Update() // audio thread
-        {
-            _writeEvent.Set();
-        }
 
-        public const int SampleRate = 44100; // hz
-        public const int SampleChannels = 1;
-        public const int SampleBits = 16;
-        public const int SampleLatency = 40; // ms
-        public const int SampleSize = (SampleRate * SampleLatency / 1000) * SampleChannels * (SampleBits / 8);
+		public void GetSamples(out short[] samples, out int nsamp)
+		{
+			samples = buff;
+			nsamp = pos / 2;
+			pos = 0;
 
-        [SuppressMessage("Microsoft.Security", "CA2105:ArrayFieldsShouldNotBeReadOnly")]
-        protected static readonly byte[] SampleZero = new byte[SampleSize];
-
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        protected byte[] Source { get { return _buffer; } }
-
-        private byte[] _buffer = new byte[SampleSize];
-        private int _index;
-
-        private AutoResetEvent _writeEvent = new AutoResetEvent(false);
+			Console.WriteLine(nsamp);
+		}
     }
 }
