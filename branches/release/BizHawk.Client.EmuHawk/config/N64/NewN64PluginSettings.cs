@@ -30,10 +30,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBtn_Click(object sender, EventArgs e)
 		{
-			var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
-			var strArr = video_settings.Split('x');
-			s.VideoSizeX = int.Parse(strArr[0].Trim());
-			s.VideoSizeY = int.Parse(strArr[1].Trim());
+			if (VideoResolutionComboBox.Text != "Custom")
+			{
+				var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
+				var strArr = video_settings.Split('x');
+				s.VideoSizeX = int.Parse(strArr[0].Trim());
+				s.VideoSizeY = int.Parse(strArr[1].Trim());
+			}
+			else
+			{
+				s.VideoSizeX =
+					VideoResolutionXTextBox.Text.IsUnsigned() ?
+					int.Parse(VideoResolutionXTextBox.Text) : 320;
+
+				s.VideoSizeY =
+					VideoResolutionYTextBox.Text.IsUnsigned() ?
+					int.Parse(VideoResolutionYTextBox.Text) : 240;
+			}
 
 			ss.Core = CoreTypeDropdown.SelectedItem
 				.ToString()
@@ -63,6 +76,9 @@ namespace BizHawk.Client.EmuHawk
 			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
 			PluginComboBox.PopulateFromEnum<PluginType>(ss.VideoPlugin);
 
+			VideoResolutionXTextBox.Text = s.VideoSizeX.ToString();
+			VideoResolutionYTextBox.Text = s.VideoSizeY.ToString();
+
 			var video_setting = s.VideoSizeX
 						+ " x "
 						+ s.VideoSizeY;
@@ -71,6 +87,11 @@ namespace BizHawk.Client.EmuHawk
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
+			}
+			else if (PluginComboBox.SelectedIndex != 4)
+			{
+				VideoResolutionComboBox.SelectedIndex = 13;
+				ShowCustomVideoResolutionControls();
 			}
 
 			RicePropertyGrid.SelectedObject = ss.RicePlugin;
@@ -128,5 +149,37 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void VideoResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (VideoResolutionComboBox.Text == "Custom")
+			{
+				ShowCustomVideoResolutionControls();
+			}
+			else
+			{
+				HideCustomVideoResolutionControls();
+				var new_resolution = VideoResolutionComboBox.SelectedItem.ToString();
+				var strArr = new_resolution.Split('x');
+				VideoResolutionXTextBox.Text = strArr[0].Trim();
+				VideoResolutionYTextBox.Text = strArr[1].Trim();
+			}
+		}
+
+		private void ShowCustomVideoResolutionControls()
+		{
+			LabelVideoResolutionX.Visible = true;
+			LabelVideoResolutionY.Visible = true;
+			VideoResolutionXTextBox.Visible = true;
+			VideoResolutionYTextBox.Visible = true;
+		}
+
+		private void HideCustomVideoResolutionControls()
+		{
+			LabelVideoResolutionX.Visible = false;
+			LabelVideoResolutionY.Visible = false;
+			VideoResolutionXTextBox.Visible = false;
+			VideoResolutionYTextBox.Visible = false;
+		}
 	}
 }
