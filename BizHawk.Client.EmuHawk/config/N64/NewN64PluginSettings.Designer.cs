@@ -31,6 +31,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewN64PluginSettings));
 			this.PluginTabs = new System.Windows.Forms.TabControl();
 			this.GlobalTab = new System.Windows.Forms.TabPage();
+			this.VideoResolutionXTextBox = new System.Windows.Forms.TextBox();
+			this.LabelVideoResolutionX = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
 			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
 			this.label48 = new System.Windows.Forms.Label();
@@ -40,15 +42,17 @@
 			this.PluginComboBox = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.RiceTab = new System.Windows.Forms.TabPage();
+			this.RicePropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.Glide64mk2 = new System.Windows.Forms.TabPage();
+			this.Glidemk2PropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.Glide64Tab = new System.Windows.Forms.TabPage();
+			this.GlidePropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.JaboTab = new System.Windows.Forms.TabPage();
+			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.SaveBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.RicePropertyGrid = new System.Windows.Forms.PropertyGrid();
-			this.Glidemk2PropertyGrid = new System.Windows.Forms.PropertyGrid();
-			this.GlidePropertyGrid = new System.Windows.Forms.PropertyGrid();
-			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
+			this.LabelVideoResolutionY = new System.Windows.Forms.Label();
+			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
 			this.PluginTabs.SuspendLayout();
 			this.GlobalTab.SuspendLayout();
 			this.RiceTab.SuspendLayout();
@@ -75,6 +79,10 @@
 			// 
 			// GlobalTab
 			// 
+			this.GlobalTab.Controls.Add(this.VideoResolutionYTextBox);
+			this.GlobalTab.Controls.Add(this.LabelVideoResolutionY);
+			this.GlobalTab.Controls.Add(this.VideoResolutionXTextBox);
+			this.GlobalTab.Controls.Add(this.LabelVideoResolutionX);
 			this.GlobalTab.Controls.Add(this.label49);
 			this.GlobalTab.Controls.Add(this.RspTypeDropdown);
 			this.GlobalTab.Controls.Add(this.label48);
@@ -90,6 +98,26 @@
 			this.GlobalTab.TabIndex = 0;
 			this.GlobalTab.Text = "Global";
 			this.GlobalTab.UseVisualStyleBackColor = true;
+			// 
+			// VideoResolutionXTextBox
+			// 
+			this.VideoResolutionXTextBox.Location = new System.Drawing.Point(402, 91);
+			this.VideoResolutionXTextBox.MaxLength = 5;
+			this.VideoResolutionXTextBox.Name = "VideoResolutionXTextBox";
+			this.VideoResolutionXTextBox.Size = new System.Drawing.Size(35, 20);
+			this.VideoResolutionXTextBox.TabIndex = 28;
+			this.VideoResolutionXTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.VideoResolutionXTextBox.Visible = false;
+			// 
+			// LabelVideoResolutionX
+			// 
+			this.LabelVideoResolutionX.AutoSize = true;
+			this.LabelVideoResolutionX.Location = new System.Drawing.Point(358, 94);
+			this.LabelVideoResolutionX.Name = "LabelVideoResolutionX";
+			this.LabelVideoResolutionX.Size = new System.Drawing.Size(38, 13);
+			this.LabelVideoResolutionX.TabIndex = 27;
+			this.LabelVideoResolutionX.Text = "Width:";
+			this.LabelVideoResolutionX.Visible = false;
 			// 
 			// label49
 			// 
@@ -161,11 +189,13 @@
             "1400 x 1050",
             "1600 x 1200",
             "1920 x 1440",
-            "2048 x 1536"});
+            "2048 x 1536",
+            "Custom"});
 			this.VideoResolutionComboBox.Location = new System.Drawing.Point(216, 91);
 			this.VideoResolutionComboBox.Name = "VideoResolutionComboBox";
 			this.VideoResolutionComboBox.Size = new System.Drawing.Size(136, 21);
 			this.VideoResolutionComboBox.TabIndex = 22;
+			this.VideoResolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.VideoResolutionComboBox_SelectedIndexChanged);
 			// 
 			// PluginComboBox
 			// 
@@ -201,6 +231,16 @@
 			this.RiceTab.Text = "Rice";
 			this.RiceTab.UseVisualStyleBackColor = true;
 			// 
+			// RicePropertyGrid
+			// 
+			this.RicePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.RicePropertyGrid.Location = new System.Drawing.Point(3, 3);
+			this.RicePropertyGrid.Name = "RicePropertyGrid";
+			this.RicePropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.RicePropertyGrid.Size = new System.Drawing.Size(566, 436);
+			this.RicePropertyGrid.TabIndex = 1;
+			this.RicePropertyGrid.ToolbarVisible = false;
+			// 
 			// Glide64mk2
 			// 
 			this.Glide64mk2.Controls.Add(this.Glidemk2PropertyGrid);
@@ -210,6 +250,16 @@
 			this.Glide64mk2.TabIndex = 3;
 			this.Glide64mk2.Text = "Glide64mk2";
 			this.Glide64mk2.UseVisualStyleBackColor = true;
+			// 
+			// Glidemk2PropertyGrid
+			// 
+			this.Glidemk2PropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.Glidemk2PropertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.Glidemk2PropertyGrid.Name = "Glidemk2PropertyGrid";
+			this.Glidemk2PropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.Glidemk2PropertyGrid.Size = new System.Drawing.Size(572, 442);
+			this.Glidemk2PropertyGrid.TabIndex = 2;
+			this.Glidemk2PropertyGrid.ToolbarVisible = false;
 			// 
 			// Glide64Tab
 			// 
@@ -221,6 +271,16 @@
 			this.Glide64Tab.Text = "Glide64";
 			this.Glide64Tab.UseVisualStyleBackColor = true;
 			// 
+			// GlidePropertyGrid
+			// 
+			this.GlidePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.GlidePropertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.GlidePropertyGrid.Name = "GlidePropertyGrid";
+			this.GlidePropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.GlidePropertyGrid.Size = new System.Drawing.Size(572, 442);
+			this.GlidePropertyGrid.TabIndex = 3;
+			this.GlidePropertyGrid.ToolbarVisible = false;
+			// 
 			// JaboTab
 			// 
 			this.JaboTab.Controls.Add(this.JaboPropertyGrid);
@@ -230,6 +290,16 @@
 			this.JaboTab.TabIndex = 4;
 			this.JaboTab.Text = "Jabo";
 			this.JaboTab.UseVisualStyleBackColor = true;
+			// 
+			// JaboPropertyGrid
+			// 
+			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
+			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
+			this.JaboPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+			this.JaboPropertyGrid.Size = new System.Drawing.Size(572, 442);
+			this.JaboPropertyGrid.TabIndex = 3;
+			this.JaboPropertyGrid.ToolbarVisible = false;
 			// 
 			// SaveBtn
 			// 
@@ -254,45 +324,25 @@
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
-			// RicePropertyGrid
+			// LabelVideoResolutionY
 			// 
-			this.RicePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.RicePropertyGrid.Location = new System.Drawing.Point(3, 3);
-			this.RicePropertyGrid.Name = "RicePropertyGrid";
-			this.RicePropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.RicePropertyGrid.Size = new System.Drawing.Size(566, 436);
-			this.RicePropertyGrid.TabIndex = 1;
-			this.RicePropertyGrid.ToolbarVisible = false;
+			this.LabelVideoResolutionY.AutoSize = true;
+			this.LabelVideoResolutionY.Location = new System.Drawing.Point(447, 94);
+			this.LabelVideoResolutionY.Name = "LabelVideoResolutionY";
+			this.LabelVideoResolutionY.Size = new System.Drawing.Size(41, 13);
+			this.LabelVideoResolutionY.TabIndex = 107;
+			this.LabelVideoResolutionY.Text = "Height:";
+			this.LabelVideoResolutionY.Visible = false;
 			// 
-			// Glidemk2PropertyGrid
+			// VideoResolutionYTextBox
 			// 
-			this.Glidemk2PropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.Glidemk2PropertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.Glidemk2PropertyGrid.Name = "Glidemk2PropertyGrid";
-			this.Glidemk2PropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.Glidemk2PropertyGrid.Size = new System.Drawing.Size(572, 442);
-			this.Glidemk2PropertyGrid.TabIndex = 2;
-			this.Glidemk2PropertyGrid.ToolbarVisible = false;
-			// 
-			// GlidePropertyGrid
-			// 
-			this.GlidePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.GlidePropertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.GlidePropertyGrid.Name = "GlidePropertyGrid";
-			this.GlidePropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.GlidePropertyGrid.Size = new System.Drawing.Size(572, 442);
-			this.GlidePropertyGrid.TabIndex = 3;
-			this.GlidePropertyGrid.ToolbarVisible = false;
-			// 
-			// JaboPropertyGrid
-			// 
-			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
-			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
-			this.JaboPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.JaboPropertyGrid.Size = new System.Drawing.Size(572, 442);
-			this.JaboPropertyGrid.TabIndex = 3;
-			this.JaboPropertyGrid.ToolbarVisible = false;
+			this.VideoResolutionYTextBox.Location = new System.Drawing.Point(494, 91);
+			this.VideoResolutionYTextBox.MaxLength = 5;
+			this.VideoResolutionYTextBox.Name = "VideoResolutionYTextBox";
+			this.VideoResolutionYTextBox.Size = new System.Drawing.Size(35, 20);
+			this.VideoResolutionYTextBox.TabIndex = 108;
+			this.VideoResolutionYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.VideoResolutionYTextBox.Visible = false;
 			// 
 			// NewN64PluginSettings
 			// 
@@ -340,5 +390,9 @@
 		private System.Windows.Forms.PropertyGrid Glidemk2PropertyGrid;
 		private System.Windows.Forms.PropertyGrid GlidePropertyGrid;
 		private System.Windows.Forms.PropertyGrid JaboPropertyGrid;
+		private System.Windows.Forms.Label LabelVideoResolutionX;
+		private System.Windows.Forms.TextBox VideoResolutionXTextBox;
+		private System.Windows.Forms.Label LabelVideoResolutionY;
+		private System.Windows.Forms.TextBox VideoResolutionYTextBox;
 	}
 }
