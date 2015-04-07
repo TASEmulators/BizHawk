@@ -37,7 +37,8 @@ namespace MonoMacWrapper
 			BizHawk.Client.EmuHawk.HawkDialogFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-			GlobalWin.GLManager = new GLManager();
+			GLManager.CreateInstance();
+			GlobalWin.GLManager = GLManager.Instance;
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
