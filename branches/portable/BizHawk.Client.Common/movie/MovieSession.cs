@@ -136,10 +136,8 @@ namespace BizHawk.Client.Common
 		{
 			var input = Movie.GetInputState(Global.Emulator.Frame);
 
-			if (Movie is TasMovie) // Hack city, GetInputState can't run this code because all sorts of places call it, we only want to do this during this playback loop
-			{
-				(Movie as TasMovie).GreenzoneCurrentFrame();
-			}
+			if (Global.Emulator.Frame == 0) // Hacky
+				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
 
 			MovieControllerAdapter.LatchFromSource(input);
 			if (MultiTrack.IsActive)
@@ -228,11 +226,6 @@ namespace BizHawk.Client.Common
 
 		public void HandleMovieOnFrameLoop()
 		{
-			if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
-			{
-				HandlePlaybackEnd();
-			}
-
 			if (!Movie.IsActive)
 			{
 				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
@@ -278,7 +271,7 @@ namespace BizHawk.Client.Common
 								Movie.PokeFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
 							}
 							else
-							{
+							{ // Why, this was already done?
 								LatchInputFromLog();
 							}
 						}
@@ -305,6 +298,17 @@ namespace BizHawk.Client.Common
 			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;
 			// this has been wired to Global.MovieOutputHardpoint in RewireInputChain
 			Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+		}
+
+		public void HandleMovieAfterFrameLoop()
+		{
+			if (Movie is TasMovie) // Was being done in LatchInputFromLog
+				(Movie as TasMovie).GreenzoneCurrentFrame();
+
+			if (Movie.IsPlaying && !Movie.IsFinished && Global.Emulator.Frame >= Movie.InputLogLength)
+			{
+				HandlePlaybackEnd();
+			}
 		}
 
 		public bool HandleMovieLoadState(string path)
@@ -461,6 +465,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
+			// TODO: Delete this, this save is utterly useless.
 			//If a movie is already loaded, save it before starting a new movie
 			if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
 			{

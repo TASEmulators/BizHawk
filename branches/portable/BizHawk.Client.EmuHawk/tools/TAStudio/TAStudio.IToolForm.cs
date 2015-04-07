@@ -18,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return false; } }
 
+		private int lastRefresh = 0;
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
@@ -30,12 +31,20 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (TasPlaybackBox.FollowCursor)
-			{
-				SetVisibleIndex();
-			}
+			bool refreshNeeded = false;
+			if (AutoadjustInputMenuItem.Checked)
+				refreshNeeded = AutoAdjustInput();
 
-			RefreshDialog();
+			if (TasPlaybackBox.FollowCursor)
+				SetVisibleIndex();
+
+			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
+				refreshNeeded = true;
+
+			if (refreshNeeded)
+				RefreshDialog();
+			else if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1) // Perhaps not the best place to put this.
+				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 		}
 
 		public void FastUpdate()
@@ -71,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TastudioToStopMovie();
 					TasView.AllColumns.Clear();
-					NewDefaultProject();
+					StartNewTasMovie();
 					SetUpColumns();
 					RefreshTasView();
 				}
@@ -117,24 +126,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
-		}
-
-		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
-		{
-			if (!indexThatMustBeVisible.HasValue)
-			{
-				indexThatMustBeVisible = CurrentTasMovie.IsRecording
-					? CurrentTasMovie.InputLogLength
-					: Emulator.Frame;
-			}
-
-			if (!TasView.IsVisible(indexThatMustBeVisible.Value))
-			{
-				if (TasView.FirstVisibleRow > indexThatMustBeVisible.Value)
-					TasView.FirstVisibleRow = indexThatMustBeVisible.Value;
-				else
-					TasView.LastVisibleRow = indexThatMustBeVisible.Value;
-			}
 		}
 	}
 }

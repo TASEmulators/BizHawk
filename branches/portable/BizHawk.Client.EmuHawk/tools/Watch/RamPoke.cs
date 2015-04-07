@@ -50,9 +50,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watchList.Count > 1)
 			{
-				var hasMixedSizes = _watchList.Select(x => x.Size).Distinct().Count() > 1;
-				var hasMixedTypes = _watchList.Select(x => x.Type).Distinct().Count() > 1;
-				var hasMixedEndian = _watchList.Select(x => x.BigEndian).Distinct().Count() > 1;
+				bool hasMixedSizes = _watchList.Select(x => x.Size).Distinct().Count() > 1;
+				bool hasMixedTypes = _watchList.Select(x => x.Type).Distinct().Count() > 1;
+				bool hasMixedEndian = _watchList.Select(x => x.BigEndian).Distinct().Count() > 1;
 
 				if (hasMixedSizes || hasMixedTypes || hasMixedEndian)
 				{
@@ -77,6 +77,9 @@ namespace BizHawk.Client.EmuHawk
 					.Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
 			}
 
+			ValueBox.ByteSize = _watchList[0].Size;
+			ValueBox.Type = _watchList[0].Type;
+
 			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : string.Empty;
 			ValueBox.Text = _watchList[0].ValueString.Replace(" ", string.Empty);
 			DomainLabel.Text = _watchList[0].Domain.Name;
@@ -84,9 +87,6 @@ namespace BizHawk.Client.EmuHawk
 			DisplayTypeLabel.Text = Watch.DisplayTypeToString(_watchList[0].Type);
 			BigEndianLabel.Text = _watchList[0].BigEndian ? "Big Endian" : "Little Endian";
 			SetTitle();
-
-			ValueBox.ByteSize = _watchList[0].Size;
-			ValueBox.Type = _watchList[0].Type;
 		}
 
 		private void SetTitle()

@@ -48,7 +48,8 @@ namespace Jellyfish.Virtu
             }
 
             string name = reader.ReadString();
-            var data = reader.ReadBytes(reader.ReadInt32());
+			var dataSize = reader.ReadInt32();
+			var data = reader.ReadBytes(dataSize);
             bool isWriteProtected = reader.ReadBoolean();
 
             if (name.EndsWith(".do", StringComparison.OrdinalIgnoreCase) ||

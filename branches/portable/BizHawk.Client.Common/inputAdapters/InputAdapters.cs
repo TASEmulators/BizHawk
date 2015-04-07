@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 	public class ClickyVirtualPadController : IController
 	{
 		public ControllerDefinition Type { get; set; }
-		
+
 		public bool this[string button]
 		{
 			get { return IsPressed(button); }
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 		{
 			return _pressed.Contains(button);
 		}
-		
+
 		/// <summary>
 		/// call this once per frame to do the timekeeping for the hold and release
 		/// </summary>
@@ -168,7 +168,8 @@ namespace BizHawk.Client.Common
 
 		public virtual bool this[string button]
 		{
-			get { return Buttons[button]; } set { Buttons[button] = value; }
+			get { return Buttons[button]; }
+			set { Buttons[button] = value; }
 		}
 
 		public virtual bool IsPressed(string button)
@@ -242,12 +243,12 @@ namespace BizHawk.Client.Common
 	public class StickyXorAdapter : IController, ISticky
 	{
 		protected HashSet<string> stickySet = new HashSet<string>();
-		
+
 		public IController Source { get; set; }
 
 		public ControllerDefinition Type
 		{
-			get { return Source.Type; } 
+			get { return Source.Type; }
 			set { throw new InvalidOperationException(); }
 		}
 
@@ -260,8 +261,8 @@ namespace BizHawk.Client.Common
 
 		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
 		// otherwise, the source is passed thru.
-		private readonly WorkingDictionary<string,float?> _floatSet = new WorkingDictionary<string,float?>();
-		
+		protected readonly WorkingDictionary<string, float?> _floatSet = new WorkingDictionary<string, float?>();
+
 		public void SetFloat(string name, float? value)
 		{
 			if (value.HasValue)
@@ -297,8 +298,8 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool this[string button]
-		{ 
-			get 
+		{
+			get
 			{
 				var source = Source[button];
 				source ^= stickySet.Contains(button);
@@ -382,34 +383,219 @@ namespace BizHawk.Client.Common
 		private List<string> _justPressed = new List<string>();
 	}
 
+	/// SuuperW: Old code commented
+	//public class AutoFireStickyXorAdapter : IController, ISticky
+	//{
+	//	public int On { get; set; }
+	//	public int Off { get; set; }
+	//	public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
+	//	public WorkingDictionary<string, int> lagStarts = new WorkingDictionary<string, int>(); // TODO: need a data structure not misc dictionaries
+
+	//	private readonly HashSet<string> _stickySet = new HashSet<string>();
+
+	//	public IController Source { get; set; }
+
+	//	public void SetOnOffPatternFromConfig()
+	//	{
+	//		On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+	//		Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+	//	}
+
+	//	public AutoFireStickyXorAdapter()
+	//	{
+	//		//On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
+	//		//Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
+	//		On = 1;
+	//		Off = 1;
+	//	}
+
+	//	public bool IsPressed(string button)
+	//	{
+	//		return this[button];
+	//	}
+
+	//	public bool this[string button]
+	//	{
+	//		get
+	//		{
+	//			var source = Source[button];
+
+	//			if (_stickySet.Contains(button))
+	//			{
+	//				var lagcount = 0;
+	//				if (Global.Emulator.CanPollInput() && Global.Config.AutofireLagFrames)
+	//				{
+	//					lagcount = Global.Emulator.AsInputPollable().LagCount;
+	//				}
+
+	//				var a = ((Global.Emulator.Frame - lagcount) - (buttonStarts[button] - lagStarts[button])) % (On + Off);
+	//				if (a < On)
+	//				{
+	//					return source ^= true;
+	//				}
+	//				else
+	//				{
+	//					return source ^= false;
+	//				}
+	//			}
+
+	//			return source;
+	//		}
+
+	//		set
+	//		{
+	//			throw new InvalidOperationException();
+	//		}
+	//	}
+
+	//	public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+	//	public bool Locked { get; set; } // Pretty much a hack, 
+
+	//	// dumb passthrough for floats, because autofire doesn't care about them
+	//	public float GetFloat(string name)
+	//	{
+	//		return Source.GetFloat(name);
+	//	}
+
+	//	public void SetSticky(string button, bool isSticky)
+	//	{
+	//		if (isSticky)
+	//		{
+	//			_stickySet.Add(button);
+	//			buttonStarts.Add(button, Global.Emulator.Frame);
+
+	//			if (Global.Emulator.CanPollInput())
+	//			{
+	//				lagStarts.Add(button, Global.Emulator.AsInputPollable().LagCount);
+	//			}
+	//			else
+	//			{
+	//				lagStarts.Add(button, 0);
+	//			}
+	//		}
+	//		else
+	//		{
+	//			_stickySet.Remove(button);
+	//			buttonStarts.Remove(button);
+	//			lagStarts.Remove(button);
+	//		}
+	//	}
+
+	//	public bool IsSticky(string button)
+	//	{
+	//		return this._stickySet.Contains(button);
+	//	}
+
+	//	public HashSet<string> CurrentStickies
+	//	{
+	//		get
+	//		{
+	//			return this._stickySet;
+	//		}
+	//	}
+
+	//	public void ClearStickies()
+	//	{
+	//		_stickySet.Clear();
+	//		buttonStarts.Clear();
+	//		lagStarts.Clear();
+	//	}
+
+	//	public void MassToggleStickyState(List<string> buttons)
+	//	{
+	//		foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+	//		{
+	//			if (_stickySet.Contains(button))
+	//			{
+	//				_stickySet.Remove(button);
+	//			}
+	//			else
+	//			{
+	//				_stickySet.Add(button);
+	//			}
+	//		}
+
+	//		_justPressed = buttons;
+	//	}
+
+	//	/// <summary>
+	//	/// Determines if a sticky is current mashing the button itself,
+	//	/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
+	//	/// </summary>
+	//	public bool StickyIsInEffect(string button)
+	//	{
+	//		if (Source.IsPressed(button))
+	//		{
+	//			return false;
+	//		}
+
+	//		return (IsPressed(button)); // Shortcut logic since we know the Source isn't pressed, Ispressed can only return true if the autofire sticky is in effect for this frame
+	//	}
+
+	//	private List<string> _justPressed = new List<string>();
+	//}
 	public class AutoFireStickyXorAdapter : IController, ISticky
 	{
-		public int On { get; set; }
-		public int Off { get; set; }
-		public WorkingDictionary<string, int> buttonStarts = new WorkingDictionary<string, int>();
-		public WorkingDictionary<string, int> lagStarts = new WorkingDictionary<string, int>(); // TODO: need a data structure not misc dictionaries
-
-		private readonly HashSet<string> _stickySet = new HashSet<string>();
-
-		public IController Source { get; set; }
-
+		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
+		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
+		private int On;
+		private int Off;
 		public void SetOnOffPatternFromConfig()
 		{
 			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
 			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
 		}
 
+		private WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
+		private WorkingDictionary<string, AutoPatternFloat> _floatPatterns = new WorkingDictionary<string, AutoPatternFloat>();
+
 		public AutoFireStickyXorAdapter()
 		{
-			//On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
-			//Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
-			On = 1;
-			Off = 1;
+			On = 1; Off = 1;
 		}
+
+		public IController Source { get; set; }
+
+		public ControllerDefinition Type
+		{
+			get { return Source.Type; }
+		}
+
+		public bool Locked { get; set; } // Pretty much a hack, 
 
 		public bool IsPressed(string button)
 		{
 			return this[button];
+		}
+
+		public void SetFloat(string name, float? value, AutoPatternFloat pattern = null)
+		{
+			if (value.HasValue)
+			{
+				if (pattern == null)
+					pattern = new AutoPatternFloat(value.Value, On, 0, Off);
+				_floatPatterns[name] = pattern;
+			}
+			else
+			{
+				_floatPatterns.Remove(name);
+			}
+		}
+
+		public float GetFloat(string name)
+		{
+			if (_floatPatterns.ContainsKey(name))
+				return _floatPatterns[name].PeekNextValue();
+
+			if (Source == null)
+				return 0;
+
+			return Source.GetFloat(name);
+		}
+
+		public void ClearStickyFloats()
+		{
+			_floatPatterns.Clear();
 		}
 
 		public bool this[string button]
@@ -417,103 +603,15 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var source = Source[button];
-
-				if (_stickySet.Contains(button))
-				{
-					var lagcount = 0;
-					if (Global.Emulator.CanPollInput() && Global.Config.AutofireLagFrames)
-					{
-						lagcount = Global.Emulator.AsInputPollable().LagCount;
-					}
-
-					var a = ((Global.Emulator.Frame - lagcount) - (buttonStarts[button] - lagStarts[button])) % (On + Off);
-					if (a < On)
-					{
-						return source ^= true;
-					}
-					else
-					{
-						return source ^= false;
-					}
+				bool patternValue = false;
+				if (_boolPatterns.ContainsKey(button))
+				{ // I can't figure a way to determine right here if it should Peek or Get.
+					patternValue = _boolPatterns[button].PeekNextValue();
 				}
+				source ^= patternValue;
 
 				return source;
 			}
-
-			set
-			{
-				throw new InvalidOperationException();
-			}
-		}
-
-		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
-		public bool Locked { get; set; } // Pretty much a hack, 
-
-		// dumb passthrough for floats, because autofire doesn't care about them
-		public float GetFloat(string name)
-		{
-			return Source.GetFloat(name);
-		}
-
-		public void SetSticky(string button, bool isSticky)
-		{
-			if (isSticky)
-			{
-				_stickySet.Add(button);
-				buttonStarts.Add(button, Global.Emulator.Frame);
-
-				if (Global.Emulator.CanPollInput())
-				{
-					lagStarts.Add(button, Global.Emulator.AsInputPollable().LagCount);
-				}
-				else
-				{
-					lagStarts.Add(button, 0);
-				}
-			}
-			else
-			{
-				_stickySet.Remove(button);
-				buttonStarts.Remove(button);
-				lagStarts.Remove(button);
-			}
-		}
-
-		public bool IsSticky(string button)
-		{
-			return this._stickySet.Contains(button);
-		}
-
-		public HashSet<string> CurrentStickies
-		{
-			get
-			{
-				return this._stickySet;
-			}
-		}
-
-		public void ClearStickies()
-		{
-			_stickySet.Clear();
-			buttonStarts.Clear();
-			lagStarts.Clear();
-		}
-
-		public void MassToggleStickyState(List<string> buttons)
-		{
-			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
-			{
-				if (_stickySet.Contains(button))
-				{
-					_stickySet.Remove(button);
-				}
-				else
-				{
-					_stickySet.Add(button);
-				}
-			}
-
-			_justPressed = buttons;
 		}
 
 		/// <summary>
@@ -522,15 +620,82 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public bool StickyIsInEffect(string button)
 		{
-			if (Source.IsPressed(button))
+			if (IsSticky(button))
 			{
-				return false;
+				return !Source.IsPressed(button);
 			}
 
-			return (IsPressed(button)); // Shortcut logic since we know the Source isn't pressed, Ispressed can only return true if the autofire sticky is in effect for this frame
+			return false;
 		}
 
+		public void SetSticky(string button, bool isSticky, AutoPatternBool pattern = null)
+		{
+			if (isSticky)
+			{
+				if (pattern == null)
+					pattern = new AutoPatternBool(On, Off);
+				_boolPatterns[button] = pattern;
+			}
+			else
+			{
+				_boolPatterns.Remove(button);
+			}
+		}
+
+		public void Unset(string button)
+		{
+			_boolPatterns.Remove(button);
+			_floatPatterns.Remove(button);
+		}
+
+		public bool IsSticky(string button)
+		{
+			return _boolPatterns.ContainsKey(button) || _floatPatterns.ContainsKey(button);
+		}
+
+		public HashSet<string> CurrentStickies
+		{
+			get
+			{
+				return new HashSet<string>(_boolPatterns.Keys);
+			}
+		}
+
+		public void ClearStickies()
+		{
+			_boolPatterns.Clear();
+			_floatPatterns.Clear();
+		}
+
+		public void IncrementLoops(bool lagged)
+		{
+			for (int i = 0; i < _boolPatterns.Count; i++)
+				_boolPatterns.ElementAt(i).Value.GetNextValue(lagged);
+			for (int i = 0; i < _floatPatterns.Count; i++)
+				_floatPatterns.ElementAt(i).Value.GetNextValue(lagged);
+		}
+
+		// SuuperW: What does this even do? I set a breakpoint inside the loop and it wasn't reached.
+		private WorkingDictionary<string, AutoPatternBool> _toggledButtons = new WorkingDictionary<string, AutoPatternBool>();
 		private List<string> _justPressed = new List<string>();
+		public void MassToggleStickyState(List<string> buttons)
+		{
+			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
+			{
+				if (_boolPatterns.ContainsKey(button))
+				{
+					_toggledButtons[button] = _boolPatterns[button];
+					SetSticky(button, false);
+				}
+				else
+				{
+					_boolPatterns[button] = _toggledButtons[button];
+					_toggledButtons.Remove(button);
+				}
+			}
+
+			_justPressed = buttons;
+		}
 	}
 
 	/// <summary>
@@ -539,7 +704,7 @@ namespace BizHawk.Client.Common
 	public class CopyControllerAdapter : IController
 	{
 		public IController Source { get; set; }
-		
+
 		private readonly NullController _null = new NullController();
 
 		private IController Curr

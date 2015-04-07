@@ -481,7 +481,7 @@ namespace BizHawk.Client.EmuHawk
 							control
 								.GetType()
 								.GetProperty(property)
-								.SetValue(control, Convert.ChangeType(value, form.GetType().GetProperty(property).PropertyType), null);
+								.SetValue(control, Convert.ChangeType(value, control.GetType().GetProperty(property).PropertyType), null);
 						}
 					}
 				}

@@ -29,24 +29,33 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
-			SaveStateHistoryCheckbox.Checked = Settings.SaveStateHistory;
-			CapacityNumeric.Value = Settings.Capacitymb == 0 ? 1 : Settings.Capacitymb < CapacityNumeric.Maximum ?
-				Settings.Capacitymb :
-				CapacityNumeric.Maximum;
+			if (Environment.Is64BitProcess) // ?
+				MemCapacityNumeric.Maximum = 1024 * 8;
+			else
+				MemCapacityNumeric.Maximum = 1024;
+
+			MemCapacityNumeric.Value = Settings.Capacitymb == 0 ? 1 : Settings.Capacitymb < MemCapacityNumeric.Maximum ?
+				Settings.Capacitymb : MemCapacityNumeric.Maximum;
+			DiskCapacityNumeric.Value = Settings.DiskCapacitymb == 0 ? 1 : Settings.DiskCapacitymb < MemCapacityNumeric.Maximum ?
+				Settings.DiskCapacitymb : MemCapacityNumeric.Maximum;
+			SaveCapacityNumeric.Value = Settings.DiskSaveCapacitymb == 0 ? 1 : Settings.DiskSaveCapacitymb < MemCapacityNumeric.Maximum ?
+				Settings.DiskSaveCapacitymb : MemCapacityNumeric.Maximum;
 
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " mb";
 			CapacityNumeric_ValueChanged(null, null);
+			SaveCapacityNumeric_ValueChanged(null, null);
 		}
 
-		private ulong MaxStatesInCapacity
+		private int MaxStatesInCapacity
 		{
-			get { return (ulong)Math.Floor(CapacityNumeric.Value / _stateSizeMb);  }
+			get { return (int)Math.Floor((MemCapacityNumeric.Value + DiskCapacityNumeric.Value) / _stateSizeMb); }
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			Settings.SaveStateHistory = SaveStateHistoryCheckbox.Checked;
-			Settings.Capacitymb = (int)CapacityNumeric.Value;
+			Settings.Capacitymb = (int)MemCapacityNumeric.Value;
+			Settings.DiskCapacitymb = (int)DiskCapacityNumeric.Value;
+			Settings.DiskSaveCapacitymb = (int)SaveCapacityNumeric.Value;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -59,7 +68,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CapacityNumeric_ValueChanged(object sender, EventArgs e)
 		{
+			// TODO: Setting space for 2.6 (2) states in memory and 2.6 (2) on disk results in 5 total.
+			// Easy to fix the display, but the way TasStateManager works the total used actually is 5.
 			NumStatesLabel.Text = MaxStatesInCapacity.ToString();
+		}
+
+		private void SaveCapacityNumeric_ValueChanged(object sender, EventArgs e)
+		{
+			NumSaveStatesLabel.Text = ((int)Math.Floor(SaveCapacityNumeric.Value / _stateSizeMb)).ToString();
 		}
 	}
 }

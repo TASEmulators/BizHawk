@@ -34,6 +34,8 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
+		private UndoHistoryForm undoForm;
+
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 
 		[ConfigPersist]
@@ -62,6 +64,8 @@ namespace BizHawk.Client.EmuHawk
 			get { return Global.MovieSession.Movie as TasMovie; }
 		}
 
+		#region "Initializing"
+
 		public TAStudio()
 		{
 			InitializeComponent();
@@ -78,6 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			MarkerControl.Emulator = this.Emulator;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
+			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
 			TasView.InputPaintingMode = Settings.DrawInput;
@@ -85,7 +90,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
 			WantsToControlRestartMovie = true;
-
 		}
 
 		private void InitializeSaveWorker()
@@ -122,75 +126,82 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.NewBGWorker(_saveBackgroundWorker);
 		}
 
-		private void TastudioToStopMovie()
+		private bool _initialized = false;
+		private void Tastudio_Load(object sender, EventArgs e)
 		{
-			Global.MovieSession.StopMovie(false);
-			GlobalWin.MainForm.SetMainformMovieInfo();
+			if (!InitializeOnLoad())
+			{
+				Close();
+				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+				return;
+			}
+
+			SetColumnsFromCurrentStickies();
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
+
+				RightClickMenu.Items
+				.OfType<ToolStripMenuItem>()
+				.First(t => t.Name == "RotateMenuItem")
+				.Click += (o, ov) =>
+				{
+					CurrentTasMovie.FlagChanges();
+				};
+			}
+
+			RefreshDialog();
+			_initialized = true;
 		}
 
-		private void ConvertCurrentMovieToTasproj()
+		private bool InitializeOnLoad()
 		{
-			Global.MovieSession.Movie.Save();
-			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
-			Global.MovieSession.Movie.Save();
-			Global.MovieSession.Movie.SwitchToRecord();
-			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
-		}
+			// Start Scenario 1: A regular movie is active
+			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
+			{
+				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result == DialogResult.OK)
+				{
+					ConvertCurrentMovieToTasproj();
+					StartNewMovieWrapper(false);
+				}
+				else
+				{
+					return false;
+				}
+			}
 
-		private void EngageTastudio()
-		{
-			GlobalWin.MainForm.PauseOnFrame = null;
-			GlobalWin.OSD.AddMessage("TAStudio engaged");
-			SetTasMovieCallbacks();
-			SetTextProperty();
-			GlobalWin.MainForm.PauseEmulator();
-			GlobalWin.MainForm.RelinquishControl(this);
-			_originalEndAction = Global.Config.MovieEndAction;
-			GlobalWin.MainForm.ClearRewindData();
-			Global.Config.MovieEndAction = MovieEndAction.Record;
-			GlobalWin.MainForm.SetMainformMovieInfo();
-		}
+			// Start Scenario 2: A tasproj is already active
+			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+			{
+				// Nothing to do
+			}
 
-		private void DisengageTastudio()
-		{
-			GlobalWin.MainForm.PauseOnFrame = null;
-			GlobalWin.OSD.AddMessage("TAStudio disengaged");
-			Global.MovieSession.Movie = MovieService.DefaultInstance;
-			GlobalWin.MainForm.TakeBackControl();
-			Global.Config.MovieEndAction = _originalEndAction;
-			GlobalWin.MainForm.SetMainformMovieInfo();
-		}
+			// Start Scenario 3: No movie, but user wants to autload their last project
+			else if (Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent))
+			{
+				bool result = LoadFile(new FileInfo(Settings.RecentTas.MostRecent));
+				if (!result)
+				{
+					TasView.AllColumns.Clear();
+					StartNewTasMovie();
+				}
+			}
 
-		private void NewTasMovie()
-		{
-			Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
-			SetTasMovieCallbacks();
-			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
-			CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
-			CurrentTasMovie.PopulateWithDefaultHeaderValues();
-			CurrentTasMovie.ClearChanges();
-			TasView.RowCount = 1;
-		}
+			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
+			else
+			{
+				StartNewTasMovie();
+			}
 
-		/// <summary>
-		/// Used when starting a new project
-		/// </summary>
-		private static string DefaultTasProjName()
-		{
-			return Path.Combine(
-				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-				TasMovie.DefaultProjectName + "." + TasMovie.Extension);
-		}
+			EngageTastudio();
 
-		/// <summary>
-		/// Used for things like SaveFile dialogs to suggest a name to the user
-		/// </summary>
-		/// <returns></returns>
-		private static string SuggestedTasProjName()
-		{
-			return Path.Combine(
-				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-				PathManager.FilesystemSafeName(Global.Game) + "." + TasMovie.Extension);
+			if (!TasView.AllColumns.Any()) // If a project with column settings has already been loaded we don't need to do this
+			{
+				SetUpColumns();
+			}
+			return true;
 		}
 
 		private void SetTasMovieCallbacks()
@@ -198,130 +209,16 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
 			CurrentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
-
-		private void StartNewTasMovie()
-		{
-			if (AskSaveChanges())
-			{
-				NewTasMovie();
-				WantsToControlStopMovie = false;
-				StartNewMovieWrapper(record: true);
-				CurrentTasMovie.ClearChanges();
-				WantsToControlStopMovie = true;
-				SetTextProperty();
-				RefreshDialog();
-			}
-		}
-
-		private void DummyLoadProject(string path)
-		{
-			LoadProject(path);
-		}
-
 		private string ClientSettingsForSave()
 		{
 			return TasView.UserSettingsSerialized();
 		}
-
 		private void GetClientSettingsOnLoad(string settingsJson)
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
 			RefreshTasView();
-		}
 
-		private void SetTextProperty()
-		{
-			var text = "TAStudio";
-			if (CurrentTasMovie != null)
-			{
-				text += " - " + CurrentTasMovie.Name + (CurrentTasMovie.Changes ? "*" : "");
-			}
-
-			if (this.InvokeRequired)
-			{
-				this.Invoke(() => Text = text);
-			}
-			else
-			{
-				Text = text;
-			}
-		}
-
-		public bool LoadProject(string path)
-		{
-			if (AskSaveChanges())
-			{
-				var movie = new TasMovie(false, _saveBackgroundWorker)
-				{
-					Filename = path,
-					ClientSettingsForSave = ClientSettingsForSave,
-					GetClientSettingsOnLoad = GetClientSettingsOnLoad
-				};
-
-				movie.PropertyChanged += TasMovie_OnPropertyChanged;
-				movie.Load();
-
-				var file = new FileInfo(path);
-				if (!file.Exists)
-				{
-					Settings.RecentTas.HandleLoadError(path);
-				}
-
-				WantsToControlStopMovie = false;
-
-				var shouldRecord = movie.InputLogLength == 0;
-
-				var result = StartNewMovieWrapper(movie: movie, record: shouldRecord);
-				if (!result)
-				{
-					return false;
-				}
-
-				SetTasMovieCallbacks();
-
-				WantsToControlStopMovie = true;
-				Settings.RecentTas.Add(path);
-				Text = "TAStudio - " + CurrentTasMovie.Name;
-
-				RefreshDialog();
-				return true;
-			}
-
-			return false;
-		}
-
-		public void RefreshDialog()
-		{
-			RefreshTasView();
-
-			if (MarkerControl != null)
-				MarkerControl.UpdateValues();
-			
-		}
-
-		private void RefreshTasView()
-		{
-			CurrentTasMovie.UseInputCache = true;
-			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
-			TasView.Refresh();
-
-			CurrentTasMovie.FlushInputCache();
-			CurrentTasMovie.UseInputCache = false;
-
-		}
-
-		private void DoAutoRestore()
-		{
-			if (Settings.AutoRestoreLastPosition && _autoRestoreFrame.HasValue)
-			{
-				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
-				{
-					GlobalWin.MainForm.UnpauseEmulator();
-					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
-				}
-			}
-
-			_autoRestoreFrame = null;
+			SetUpToolStripColumns();
 		}
 
 		private void SetUpColumns()
@@ -345,6 +242,36 @@ namespace BizHawk.Client.EmuHawk
 
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
+
+			// Patterns
+			int bStart = 0;
+			int fStart = 0;
+			if (BoolPatterns == null)
+			{
+				BoolPatterns = new AutoPatternBool[controllerType.BoolButtons.Count + 2];
+				FloatPatterns = new AutoPatternFloat[controllerType.FloatControls.Count + 2];
+			}
+			else
+			{
+				bStart = BoolPatterns.Length - 2;
+				fStart = FloatPatterns.Length - 2;
+				Array.Resize(ref BoolPatterns, controllerType.BoolButtons.Count + 2);
+				Array.Resize(ref FloatPatterns, controllerType.FloatControls.Count + 2);
+			}
+
+			for (int i = bStart; i < BoolPatterns.Length - 2; i++)
+				BoolPatterns[i] = new AutoPatternBool(1, 1);
+			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
+			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
+				Global.Config.AutofireOn, Global.Config.AutofireOff);
+
+			for (int i = fStart; i < FloatPatterns.Length - 2; i++)
+				FloatPatterns[i] = new AutoPatternFloat(new float[] { 1f });
+			FloatPatterns[FloatPatterns.Length - 2] = new AutoPatternFloat(new float[] { 1f });
+			FloatPatterns[FloatPatterns.Length - 1] = new AutoPatternFloat(
+				1f, Global.Config.AutofireOn, 0f, Global.Config.AutofireOff);
+
+			SetUpToolStripColumns();
 		}
 
 		public void AddColumn(string columnName, string columnText, int columnWidth)
@@ -362,6 +289,237 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void EngageTastudio()
+		{
+			GlobalWin.MainForm.PauseOnFrame = null;
+			GlobalWin.OSD.AddMessage("TAStudio engaged");
+			SetTasMovieCallbacks();
+			SetTextProperty();
+			GlobalWin.MainForm.PauseEmulator();
+			GlobalWin.MainForm.RelinquishControl(this);
+			_originalEndAction = Global.Config.MovieEndAction;
+			GlobalWin.MainForm.ClearRewindData();
+			Global.Config.MovieEndAction = MovieEndAction.Record;
+			GlobalWin.MainForm.SetMainformMovieInfo();
+			Global.MovieSession.ReadOnly = true;
+		}
+
+		#endregion
+
+		#region "Loading"
+
+		private void ConvertCurrentMovieToTasproj()
+		{
+			Global.MovieSession.Movie.Save();
+			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
+			Global.MovieSession.Movie.Save();
+			Global.MovieSession.Movie.SwitchToRecord();
+			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
+		}
+
+		private bool LoadFile(FileInfo file)
+		{
+			if (!file.Exists)
+			{
+				Settings.RecentTas.HandleLoadError(file.FullName);
+				return false;
+			}
+
+			CurrentTasMovie.Filename = file.FullName;
+			try
+			{
+				CurrentTasMovie.Load();
+			}
+			catch
+			{
+				MessageBox.Show(
+					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
+					"Tastudio",
+					MessageBoxButtons.OK);
+				return false;
+			}
+			Settings.RecentTas.Add(CurrentTasMovie.Filename);
+
+			if (!HandleMovieLoadStuff())
+				return false;
+
+			RefreshDialog();
+			return true;
+		}
+
+		private void StartNewTasMovie()
+		{
+			if (AskSaveChanges())
+			{
+				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
+				CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
+				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
+				CurrentTasMovie.PopulateWithDefaultHeaderValues();
+				SetTasMovieCallbacks();
+				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
+				HandleMovieLoadStuff();
+
+				RefreshDialog();
+			}
+		}
+
+		private bool HandleMovieLoadStuff(TasMovie movie = null)
+		{
+			if (movie == null)
+				movie = CurrentTasMovie;
+
+			WantsToControlStopMovie = false;
+			bool result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
+			if (!result)
+				return false;
+			WantsToControlStopMovie = true;
+
+			CurrentTasMovie.ChangeLog.ClearLog();
+			CurrentTasMovie.ClearChanges();
+
+			SetTextProperty();
+			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
+
+			return true;
+		}
+		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
+		{
+			_initializing = true;
+			if (movie == null)
+				movie = CurrentTasMovie;
+			bool result = GlobalWin.MainForm.StartNewMovie(movie, record);
+			_initializing = false;
+
+			return result;
+		}
+
+		private void DummyLoadProject(string path)
+		{
+			if (AskSaveChanges())
+				LoadFile(new FileInfo(path));
+		}
+		private void DummyLoadMacro(string path)
+		{
+			if (!TasView.SelectedRows.Any())
+				return;
+
+			MovieZone loadZone = new MovieZone(path);
+			if (loadZone != null)
+			{
+				loadZone.Start = TasView.FirstSelectedIndex.Value;
+				loadZone.PlaceZone(CurrentTasMovie);
+			}
+		}
+
+		private void SetColumnsFromCurrentStickies()
+		{
+			foreach (var column in TasView.VisibleColumns)
+			{
+				if (Global.StickyXORAdapter.IsSticky(column.Name))
+				{
+					column.Emphasis = true;
+				}
+			}
+		}
+
+		#endregion
+
+		private void TastudioToStopMovie()
+		{
+			Global.MovieSession.StopMovie(false);
+			GlobalWin.MainForm.SetMainformMovieInfo();
+		}
+
+		private void DisengageTastudio()
+		{
+			GlobalWin.MainForm.PauseOnFrame = null;
+			GlobalWin.OSD.AddMessage("TAStudio disengaged");
+			Global.MovieSession.Movie = MovieService.DefaultInstance;
+			GlobalWin.MainForm.TakeBackControl();
+			Global.Config.MovieEndAction = _originalEndAction;
+			GlobalWin.MainForm.SetMainformMovieInfo();
+			// Do not keep TAStudio's disk save states.
+			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
+				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
+		}
+
+		/// <summary>
+		/// Used when starting a new project
+		/// </summary>
+		private static string DefaultTasProjName()
+		{
+			return Path.Combine(
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				TasMovie.DefaultProjectName + "." + TasMovie.Extension);
+		}
+
+		/// <summary>
+		/// Used for things like SaveFile dialogs to suggest a name to the user
+		/// </summary>
+		/// <returns></returns>
+		private static string SuggestedTasProjName()
+		{
+			return Path.Combine(
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				PathManager.FilesystemSafeName(Global.Game) + "." + TasMovie.Extension);
+		}
+
+		private void SetTextProperty()
+		{
+			var text = "TAStudio";
+			if (CurrentTasMovie != null)
+			{
+				text += " - " + CurrentTasMovie.Name + (CurrentTasMovie.Changes ? "*" : "");
+			}
+
+			if (this.InvokeRequired)
+			{
+				this.Invoke(() => Text = text);
+			}
+			else
+			{
+				Text = text;
+			}
+		}
+
+		public void RefreshDialog()
+		{
+			RefreshTasView();
+
+			if (MarkerControl != null)
+				MarkerControl.UpdateValues();
+
+			if (undoForm != null && !undoForm.IsDisposed)
+				undoForm.UpdateValues();
+		}
+
+		private void RefreshTasView()
+		{
+			CurrentTasMovie.UseInputCache = true;
+			if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1)
+				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
+			TasView.Refresh();
+
+			CurrentTasMovie.FlushInputCache();
+			CurrentTasMovie.UseInputCache = false;
+
+			lastRefresh = Global.Emulator.Frame;
+		}
+
+		private void DoAutoRestore()
+		{
+			if (Settings.AutoRestoreLastPosition && _autoRestoreFrame.HasValue)
+			{
+				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
+				{
+					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
+					GlobalWin.MainForm.UnpauseEmulator();
+				}
+			}
+
+			_autoRestoreFrame = null;
+		}
+
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
 			CurrentTasMovie.SwitchToPlay();
@@ -371,7 +529,8 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
-			GlobalWin.MainForm.PauseOnFrame = frame;
+			if (GlobalWin.MainForm.EmulatorPaused)
+				GlobalWin.MainForm.PauseOnFrame = frame;
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
@@ -439,7 +598,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				AddMarker(markerFrame, i.PromptText);
+				CurrentTasMovie.Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -459,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result == DialogResult.OK)
 			{
-				EditMarker(marker, i.PromptText);
+				marker.Message = i.PromptText;
 				MarkerControl.UpdateValues();
 			}
 		}
@@ -469,72 +628,15 @@ namespace BizHawk.Client.EmuHawk
 			// TODO
 		}
 
-		// TODO: move me
-		// Sets either the pending frame or the tas input log
-		private void ToggleBoolState(int frame, string buttonName)
-		{
-			CurrentTasMovie.ToggleBoolState(frame, buttonName);
-		}
-
-		// TODO: move me
-		// Sets either the pending frame or the tas input log
-		private void SetBoolState(int frame, string buttonName, bool value)
-		{
-			CurrentTasMovie.SetBoolState(frame, buttonName, value);
-		}
-
-		private float GetFloatValue(int frame, string buttonName)
-		{
-			if (frame < CurrentTasMovie.InputLogLength)
-				return CurrentTasMovie.GetFloatValue(frame, buttonName);
-			else if (frame == Emulator.Frame && frame == CurrentTasMovie.InputLogLength)
-				return Global.StickyXORAdapter.GetFloat(buttonName);
-			return 0; // ? Should I do it differently so it will error instead?
-		}
-		private void SetFloatValue(int frame, string buttonName, float value)
-		{
-			CurrentTasMovie.SetFloatState(frame, buttonName, value);
-		}
-
-		private void SetColumnsFromCurrentStickies()
-		{
-			foreach (var column in TasView.VisibleColumns)
-			{
-				if (Global.StickyXORAdapter.IsSticky(column.Name))
-				{
-					column.Emphasis = true;
-				}
-			}
-		}
-
-		private void NewDefaultProject()
-		{
-			NewTasMovie();
-			StartNewMovieWrapper(record: true);
-			CurrentTasMovie.TasStateManager.Capture();
-			CurrentTasMovie.SwitchToRecord();
-			CurrentTasMovie.ClearChanges();
-		}
-
-		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
-		{
-			_initializing = true;
-			var result = GlobalWin.MainForm.StartNewMovie(movie != null ? movie : CurrentTasMovie, record);
-			_initializing = false;
-
-			return result;
-		}
-
 		private void DoTriggeredAutoRestoreIfNeeded()
 		{
 			if (_triggerAutoRestore)
 			{
+				int? pauseOn = GlobalWin.MainForm.PauseOnFrame;
 				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
 
-				if (GlobalWin.MainForm.PauseOnFrame.HasValue &&
-				_autoRestoreFrame.HasValue &&
-				_autoRestoreFrame < GlobalWin.MainForm.PauseOnFrame) // If we are already seeking to a later frame don't shorten that journey here
-				{
+				if (pauseOn.HasValue && _autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
+				{ // If we are already seeking to a later frame don't shorten that journey here
 					_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
 				}
 
@@ -542,124 +644,16 @@ namespace BizHawk.Client.EmuHawk
 
 				_triggerAutoRestore = false;
 				_triggerAutoRestoreFromFrame = null;
-
 			}
-		}
-
-		private void LoadFile(FileInfo file)
-		{
-			CurrentTasMovie.Filename = file.FullName;
-			try
-			{
-				CurrentTasMovie.Load();
-			}
-			catch
-			{
-				MessageBox.Show(
-					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
-					"Tastudio",
-					MessageBoxButtons.OK);
-				return;
-			}
-			Settings.RecentTas.Add(CurrentTasMovie.Filename);
-
-			if (CurrentTasMovie.InputLogLength > 0) // TODO: this is probably reoccuring logic, break off into a function
-			{
-				CurrentTasMovie.SwitchToPlay();
-			}
-			else
-			{
-				CurrentTasMovie.SwitchToRecord();
-			}
-
-			RefreshDialog();
-			MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " loaded.";
 		}
 
 		#region Dialog Events
 
-		private void Tastudio_Load(object sender, EventArgs e)
-		{
-			if (!InitializeOnLoad())
-			{
-				Close();
-				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-				return;
-			}
-
-			SetColumnsFromCurrentStickies();
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				RightClickMenu.Items.AddRange(TasView.GenerateContextMenuItems().ToArray());
-
-				RightClickMenu.Items
-				.OfType<ToolStripMenuItem>()
-				.First(t => t.Name == "RotateMenuItem")
-				.Click += (o, ov) =>
-				{
-					CurrentTasMovie.FlagChanges();
-				};
-			}
-
-			RefreshDialog();
-
-			/* adelikat: Hack to remove Undo History for now, it shouldn't be on the main window anyway, make it a modeless dialog */
-			groupBox2.Visible = false;
-			groupBox1.Size = new System.Drawing.Size(groupBox1.Width, groupBox1.Height + 85);
-		}
-
-		private bool InitializeOnLoad()
-		{
-			// Start Scenario 1: A regular movie is active
-			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
-			{
-				var result = MessageBox.Show("In order to use Tastudio, a new project must be created from the current movie\nThe current movie will be saved and closed, and a new project file will be created\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-				if (result == DialogResult.OK)
-				{
-					ConvertCurrentMovieToTasproj();
-					StartNewMovieWrapper(false);
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			// Start Scenario 2: A tasproj is already active
-			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
-			{
-				// Nothing to do
-			}
-
-			// Start Scenario 3: No movie, but user wants to autload their last project
-			else if (Settings.RecentTas.AutoLoad && !string.IsNullOrEmpty(Settings.RecentTas.MostRecent))
-			{
-				var result = LoadProject(Settings.RecentTas.MostRecent);
-				if (!result)
-				{
-					TasView.AllColumns.Clear();
-					NewDefaultProject();
-				}
-			}
-
-			// Start Scenario 4: No movie, default behavior of engaging tastudio with a new default project
-			else
-			{
-				NewDefaultProject();
-			}
-
-			EngageTastudio();
-
-			if (!TasView.AllColumns.Any()) // If a project with column settings has already been loaded we don't need to do this
-			{
-				SetUpColumns();
-			}
-			return true;
-		}
-
 		private void Tastudio_Closing(object sender, FormClosingEventArgs e)
 		{
+			if (!_initialized)
+				return;
+
 			_exiting = true;
 			if (AskSaveChanges())
 			{
@@ -672,6 +666,9 @@ namespace BizHawk.Client.EmuHawk
 				e.Cancel = true;
 				_exiting = false;
 			}
+
+			if (undoForm != null)
+				undoForm.Close();
 		}
 
 		/// <summary>
@@ -689,13 +686,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
+			if (!AskSaveChanges())
+				return;
+
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == "." + TasMovie.Extension)
 			{
-				var file = new FileInfo(filePaths[0]);
+				FileInfo file = new FileInfo(filePaths[0]);
 				if (file.Exists)
 				{
-					LoadProject(file.FullName);
+					LoadFile(file);
 				}
 			}
 		}
@@ -719,11 +719,19 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region "Marker Control right-click menu"
 		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			EditMarkerContextMenuItem.Enabled =
 			RemoveMarkerContextMenuItem.Enabled =
+			ScrollToMarkerToolStripMenuItem.Enabled =
 				MarkerControl.MarkerInputRoll.SelectedRows.Any();
+		}
+
+		private void ScrollToMarkerToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			SetVisibleIndex(MarkerControl.SelectedMarkerFrame());
+			RefreshTasView();
 		}
 
 		private void EditMarkerContextMenuItem_Click(object sender, EventArgs e)
@@ -740,24 +748,49 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MarkerControl.RemoveMarker();
 		}
+		#endregion
 
-		// TODO: Move AddMarkerChange calls to TasMovieMarker.cs
-		public void AddMarker(int markerFrame, string message)
+		private bool AutoAdjustInput()
 		{
-			TasMovieMarker marker = new TasMovieMarker(markerFrame, message);
-			CurrentTasMovie.Markers.Add(marker);
-			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker);
+			TasMovieRecord lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;
+			bool isLag = Emulator.AsInputPollable().IsLagFrame;
+
+			if (lagLog.WasLagged.HasValue)
+			{
+				if (lagLog.WasLagged.Value && !isLag)
+				{ // Deleting this frame requires rewinding a frame.
+					CurrentTasMovie.ChangeLog.AddInputBind(Global.Emulator.Frame - 1, true, "Bind Input; Delete " + (Global.Emulator.Frame - 1));
+					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
+					CurrentTasMovie.ChangeLog.IsRecording = false;
+
+					CurrentTasMovie.RemoveFrame(Global.Emulator.Frame - 1);
+					CurrentTasMovie.RemoveLagHistory(Global.Emulator.Frame); // Removes from WasLag
+
+					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
+					GoToFrame(Emulator.Frame - 1);
+					return true;
+				}
+				else if (!lagLog.WasLagged.Value && isLag)
+				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
+					CurrentTasMovie.ChangeLog.AddInputBind(Global.Emulator.Frame - 1, false, "Bind Input; Insert " + (Global.Emulator.Frame - 1));
+					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
+					CurrentTasMovie.ChangeLog.IsRecording = false;
+
+					CurrentTasMovie.InsertInput(Global.Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
+					CurrentTasMovie.InsertLagHistory(Global.Emulator.Frame, true);
+
+					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
+					return true;
+				}
+			}
+
+			return false;
 		}
-		public void RemoveMarker(TasMovieMarker marker)
+
+		private void TAStudio_KeyDown(object sender, KeyEventArgs e)
 		{
-			CurrentTasMovie.Markers.Remove(marker);
-			//CurrentTasMovie.ChangeLog.AddMarkerChange(null, marker.Frame, marker.Message);
-		}
-		public void EditMarker(TasMovieMarker marker, string message)
-		{
-			string old = marker.Message;
-			marker.Message = message;
-			//CurrentTasMovie.ChangeLog.AddMarkerChange(marker, marker.Frame, old);
+			if (e.KeyCode == Keys.F)
+				TasPlaybackBox.FollowCursor ^= true;
 		}
 	}
 }

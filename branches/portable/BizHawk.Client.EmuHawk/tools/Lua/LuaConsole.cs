@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (AskSaveChanges())
 				{
-					SaveConfigSettings();
+					CloseLua();
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 				}
 				else
@@ -295,10 +295,12 @@ namespace BizHawk.Client.EmuHawk
 			return path;
 		}
 
-		// TODO: Rename me
-		private void SaveConfigSettings()
+		private void CloseLua()
 		{
-			LuaImp.Close();
+			if (LuaImp != null)
+			{
+				LuaImp.Close();
+			}
 		}
 
 		private static FileInfo GetFileFromUser(string filter)

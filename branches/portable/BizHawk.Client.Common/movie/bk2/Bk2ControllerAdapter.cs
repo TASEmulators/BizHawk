@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Type.BoolButtons)
 			{
-				MyBoolButtons[button] = source[button];
+				MyBoolButtons[button] = source.IsPressed(button);
 			}
 
 			foreach (var name in Type.FloatControls)

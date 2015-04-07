@@ -80,7 +80,8 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
 
 			//setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
-			GlobalWin.GLManager = new GLManager();
+			GLManager.CreateInstance();
+			GlobalWin.GLManager = GLManager.Instance;
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen

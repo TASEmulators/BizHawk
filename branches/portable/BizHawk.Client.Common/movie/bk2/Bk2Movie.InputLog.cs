@@ -22,6 +22,34 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
+		public string GetInputLogEntry(int frame)
+		{
+			if (frame < FrameCount && frame >= 0)
+			{
+				int getframe;
+
+				if (LoopOffset.HasValue)
+				{
+					if (frame < _log.Count)
+					{
+						getframe = frame;
+					}
+					else
+					{
+						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
+					}
+				}
+				else
+				{
+					getframe = frame;
+				}
+
+				return _log[getframe];
+			}
+
+			return string.Empty;
+		}
+
 		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
 			errorMessage = string.Empty;

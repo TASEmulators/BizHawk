@@ -160,10 +160,8 @@ namespace BizHawk.Client.Common
 			{
 				for (var i = addr; i <= lastAddr; i++)
 				{
-					var a = string.Format("{0:X2}", i);
 					var v = Domain.PeekByte(i);
-					var vs = string.Format("{0:X2}", (int)v);
-					table[a] = vs;
+					table[i] = v;
 				}
 			}
 			else

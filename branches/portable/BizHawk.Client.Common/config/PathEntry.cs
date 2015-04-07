@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 				// we have the system, but not the type.  don't attempt to add an unknown type
 				return null;
 			}
-			
+
 			// we don't have anything for the system in question.  add a set of stock paths
 			var systempath = PathManager.RemoveInvalidFileSystemChars(system) + "_INTERIM";
 			var systemdisp = system + " (INTERIM)";
@@ -154,6 +154,8 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = ".", Ordinal = 7 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "A/V Dumps", Path = ".", Ordinal = 8 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = ".", Ordinal = 9 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 10 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 11 },
 
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },

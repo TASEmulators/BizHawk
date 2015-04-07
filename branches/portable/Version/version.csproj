@@ -47,12 +47,8 @@
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(ProjectDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
-    <CustomCommands>
-      <CustomCommands>
-        <Command Condition=" '$(OS)' != 'Windows_NT' " type="BeforeBuild" command="${ProjectDir}/subwcrev.sh &quot;$(ProjectDir)&quot;" workingdir="${ProjectDir}" />
-      </CustomCommands>
-    </CustomCommands>
+    <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" SVN_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
+ <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">"mono $(ProjectDir)..\Build\BizHawk.Build.Tool.exe" SVN_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -124,6 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
 			runppu(3);
 			if (nmi_destiny) TriggerNMI();
+			nes.Board.AtVsyncNMI();
 			runppu(postNMIlines * kLineTime - delay);
 
 			//this seems to run just before the dummy scanline begins
