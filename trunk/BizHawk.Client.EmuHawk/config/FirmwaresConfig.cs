@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				{ "SMS", "Sega Master System" },
 				{ "PSX", "Sony PlayStation" },
 				{ "Lynx", "Atari Lynx" },
+				{ "AppleII", "Apple II" }
 			};
 
 		public string TargetSystem = null;
