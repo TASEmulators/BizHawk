@@ -24,8 +24,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			_disk1 = rom;
 
-			_diskIIRom = File.ReadAllBytes("C:\\apple\\DiskII.rom");
-
 			_appleIIRom = comm.CoreFileProvider.GetFirmware(
 				SystemId, "AppleIIe", true, "The Apple IIe BIOS firmware is required");
 			_diskIIRom = comm.CoreFileProvider.GetFirmware(
