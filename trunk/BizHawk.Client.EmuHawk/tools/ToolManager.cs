@@ -319,6 +319,14 @@ namespace BizHawk.Client.EmuHawk
 			return Load<T>(false);
 		}
 
+		public IEnumerable<IToolForm> AvailableTools
+		{
+			get
+			{
+				return _tools.Where(t => !t.IsDisposed);
+			}
+		}
+
 		public void UpdateBefore()
 		{
 			var beforeList = _tools.Where(x => x.UpdateBefore);

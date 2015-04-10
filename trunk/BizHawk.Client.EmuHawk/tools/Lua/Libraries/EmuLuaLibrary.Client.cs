@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 using LuaInterface;
 using BizHawk.Emulation.Common;
@@ -414,6 +415,39 @@ namespace BizHawk.Client.EmuHawk
 		public static int Ypos()
 		{
 			return GlobalWin.MainForm.DesktopLocation.Y;
+		}
+
+		[LuaMethodAttributes(
+			"getopentools",
+			"Returns a list of the tools currently open"
+		)]
+		public LuaTable GetOpenTools()
+		{
+			var t = Lua.NewTable();
+			var tools = GlobalWin.Tools.AvailableTools.ToList();
+			for (int i = 0; i < tools.Count; i++)
+			{
+				t[i] = tools[i].GetType().Name.ToLower();
+			}
+
+			return t;
+		}
+
+		[LuaMethodAttributes(
+			"gettool",
+			"Returns an object that represents a currently open tool of the given name. Use getopentools to get a list of names"
+		)]
+		public LuaTable GetTool(string name)
+		{
+			var selectedTool = GlobalWin.Tools.AvailableTools
+				.FirstOrDefault(tool => tool.GetType().Name.ToLower() == name.ToLower());
+
+			if (selectedTool != null)
+			{
+				return LuaHelper.ToLuaTable(Lua, selectedTool);
+			}
+
+			return null;
 		}
 	}
 }
