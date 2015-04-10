@@ -64,15 +64,13 @@ namespace Jellyfish.Virtu
 
     public sealed class Machine : IDisposable
     {
-        public Machine(byte[] diskIIRom)
+        public Machine(byte[] appleIIe, byte[] diskIIRom)
         {
-            
-
 			Events = new MachineEvents();
             Services = new MachineServices();
 
             Cpu = new Cpu(this);
-            Memory = new Memory(this);
+            Memory = new Memory(this, appleIIe);
             Keyboard = new Keyboard(this);
             GamePort = new GamePort(this);
             Cassette = new Cassette(this);
