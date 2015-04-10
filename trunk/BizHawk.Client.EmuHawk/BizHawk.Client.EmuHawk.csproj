@@ -771,6 +771,12 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Tastudio.cs" />
+    <Compile Include="tools\Lua\LuaCanvas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Lua\LuaCanvas.Designer.cs">
+      <DependentUpon>LuaCanvas.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Lua\LuaCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1329,6 +1335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
+      <DependentUpon>LuaCanvas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
       <DependentUpon>LuaConsole.cs</DependentUpon>
