@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
@@ -12,10 +13,11 @@ namespace Jellyfish.Virtu
 
     public sealed partial class Memory : MachineComponent
     {
-        public Memory(Machine machine) : 
+        public Memory(Machine machine, byte[] appleIIe) : 
             base(machine)
         {
-            WriteRamModeBankRegion = new Action<int, byte>[Video.ModeCount][][];
+			_appleIIe = appleIIe;
+			WriteRamModeBankRegion = new Action<int, byte>[Video.ModeCount][][];
             for (int mode = 0; mode < Video.ModeCount; mode++)
             {
                 WriteRamModeBankRegion[mode] = new Action<int, byte>[BankCount][]
@@ -87,6 +89,8 @@ namespace Jellyfish.Virtu
             _writeRomRegionD0FF = WriteRomRegionD0FF;
         }
 
+		private readonly byte[] _appleIIe;
+
         public override void Initialize()
         {
             _keyboard = Machine.Keyboard;
@@ -96,14 +100,21 @@ namespace Jellyfish.Virtu
             _video = Machine.Video;
             _noSlotClock = Machine.NoSlotClock;
 
-					//TODO lol!!
-            StorageService.LoadResource("c:\\apple\\AppleIIe.rom", stream =>
-            {
-                stream.SkipBlock(0x0100);
-                stream.ReadBlock(_romInternalRegionC1CF);
-                stream.ReadBlock(_romRegionD0DF);
-                stream.ReadBlock(_romRegionE0FF);
-            });
+			// TODO: this is a lazy and more compicated way to do this
+			_romInternalRegionC1CF = _appleIIe
+				.Skip(0x100)
+				.Take(_romInternalRegionC1CF.Length)
+				.ToArray();
+
+			_romRegionD0DF = _appleIIe
+				.Skip(0x100 + _romInternalRegionC1CF.Length)
+				.Take(_romRegionD0DF.Length)
+				.ToArray();
+
+			_romRegionE0FF = _appleIIe
+				.Skip(0x100 + _romInternalRegionC1CF.Length + _romRegionD0DF.Length)
+				.Take(_romRegionE0FF.Length)
+				.ToArray();
 
             if ((ReadRomRegionE0FF(0xFBB3) == 0x06) && (ReadRomRegionE0FF(0xFBBF) == 0xC1))
             {

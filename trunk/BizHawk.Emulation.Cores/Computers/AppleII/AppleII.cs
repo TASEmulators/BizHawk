@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_diskIIRom = comm.CoreFileProvider.GetFirmware(
 				SystemId, "DiskII", true, "The DiskII firmware is required");
 
-			_machine = new Machine(_diskIIRom);
+			_machine = new Machine(_appleIIRom, _diskIIRom);
 			
 			var vidService = new BizVideoService(_machine);
 			_soundService = new BizAudioService(_machine);
