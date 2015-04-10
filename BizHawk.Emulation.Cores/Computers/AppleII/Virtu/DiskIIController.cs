@@ -9,10 +9,11 @@ namespace Jellyfish.Virtu
 {
     public sealed class DiskIIController : PeripheralCard
     {
-        public DiskIIController(Machine machine) : 
+        public DiskIIController(Machine machine, byte[] diskIIRom) : 
             base(machine)
         {
-            Drive1 = new DiskIIDrive(machine);
+			_romRegionC1C7 = diskIIRom;
+			Drive1 = new DiskIIDrive(machine);
             Drive2 = new DiskIIDrive(machine);
 
             Drives = new Collection<DiskIIDrive> { Drive1, Drive2 };
@@ -20,11 +21,7 @@ namespace Jellyfish.Virtu
             BootDrive = Drive1;
         }
 
-        public override void Initialize()
-        {
-					//TODO lol!!
-            StorageService.LoadResource("c:\\apple\\DiskII.rom", stream => stream.ReadBlock(_romRegionC1C7));
-        }
+        public override void Initialize() { }
 
         public override void Reset()
         {

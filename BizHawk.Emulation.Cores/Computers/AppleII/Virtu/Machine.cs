@@ -64,9 +64,11 @@ namespace Jellyfish.Virtu
 
     public sealed class Machine : IDisposable
     {
-        public Machine()
+        public Machine(byte[] diskIIRom)
         {
-            Events = new MachineEvents();
+            
+
+			Events = new MachineEvents();
             Services = new MachineServices();
 
             Cpu = new Cpu(this);
@@ -84,7 +86,7 @@ namespace Jellyfish.Virtu
             Slot3 = emptySlot;
             Slot4 = emptySlot;
             Slot5 = emptySlot;
-            Slot6 = new DiskIIController(this);
+            Slot6 = new DiskIIController(this, diskIIRom);
             Slot7 = emptySlot;
 
             Slots = new Collection<PeripheralCard> { null, Slot1, Slot2, Slot3, Slot4, Slot5, Slot6, Slot7 };
