@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 using Jellyfish.Virtu;
 using Jellyfish.Virtu.Services;
 using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
@@ -15,6 +16,13 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		)]
 	public partial class AppleII : IEmulator, IStatable
 	{
+		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, object settings)
+			: this(comm, gameInfoSet.First(), romSet.First(), settings)
+		{
+			GameInfoSet = gameInfoSet.ToList();
+			RomSet = romSet.ToList();
+		}
+
 		[CoreConstructor("AppleII")]
 		public AppleII(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
@@ -48,14 +56,56 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			//make a writeable memory stream cloned from the rom.
 			//for junk.dsk the .dsk is important because it determines the format from that
 			var ms = new MemoryStream();
-			ms.Write(rom,0,rom.Length);
+			ms.Write(_disk1, 0, _disk1.Length);
 			ms.Position = 0;
 			bool writeProtected = false; //!!!!!!!!!!!!!!!!!!!
 			Jellyfish.Virtu.Services.StorageService.LoadFile(ms, stream => _machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", stream, writeProtected));
 		}
 
+		private readonly List<GameInfo> GameInfoSet;
+		private readonly List<byte[]> RomSet;
+
+		public int CurrentDisk { get; private set; }
+
+		private void IncrementDisk()
+		{
+			CurrentDisk++;
+			if (CurrentDisk >= RomSet.Count)
+			{
+				CurrentDisk = 0;
+			}
+
+			InitDisk();
+		}
+
+		private void DecrementDisk()
+		{
+			CurrentDisk--;
+			if (CurrentDisk < 0)
+			{
+				CurrentDisk = RomSet.Count - 1;
+			}
+
+			InitDisk();
+		}
+
+
+		private void InitDisk()
+		{
+			_disk1 = RomSet[CurrentDisk];
+
+			//make a writeable memory stream cloned from the rom.
+			//for junk.dsk the .dsk is important because it determines the format from that
+			var ms = new MemoryStream();
+			ms.Write(_disk1, 0, _disk1.Length);
+			ms.Position = 0;
+			bool writeProtected = false; //!!!!!!!!!!!!!!!!!!!
+			Jellyfish.Virtu.Services.StorageService.LoadFile(ms, stream => _machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", stream, writeProtected));
+			_machine.BizNewDisk();
+		}
+
 		private readonly Machine _machine;
-		private readonly byte[] _disk1;
+		private byte[] _disk1;
 		private readonly byte[] _appleIIRom;
 		private readonly byte[] _diskIIRom;
 		private readonly BizAudioService _soundService;
@@ -72,7 +122,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
 					"A", "B", "C", "D", "E", "F", "G", "H", "I",
 					"J", "K", "L", "M", "N", "O", "P", "Q", "R",
-					"S", "T", "U", "V", "W", "X", "Y", "Z"
+					"S", "T", "U", "V", "W", "X", "Y", "Z",
+					"Next Disk", "Previous Disk"
 				}
 			};
 
@@ -99,6 +150,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void FrameAdv(bool render, bool rendersound)
 		{
+			if (Controller["Next Disk"])
+			{
+				IncrementDisk();
+			}
+			else if (Controller["Previous Disk"])
+			{
+				DecrementDisk();
+			}
+			
 			_machine.Buttons = GetButtons();
 			_machine.BizFrameAdvance();
 			Frame++;

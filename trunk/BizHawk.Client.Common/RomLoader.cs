@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -336,6 +337,15 @@ namespace BizHawk.Client.Common
 										Deterministic);
 
 									// other stuff todo
+									break;
+								case "AppleII":
+									var assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
+									var roms = xmlGame.Assets.Select(a => a.Value);
+									nextEmulator = new AppleII(
+										nextComm,
+										assets,
+										roms,
+										GetCoreSettings<AppleII>());
 									break;
 								default:
 									return false;

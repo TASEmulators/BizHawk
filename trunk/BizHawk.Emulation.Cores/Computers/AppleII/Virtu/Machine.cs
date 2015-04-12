@@ -320,6 +320,11 @@ namespace Jellyfish.Virtu
 					Reset();
 				}
 
+				public void BizNewDisk()
+				{
+					_storageService = Services.GetService<StorageService>();
+				}
+
 				public void BizFrameAdvance()
 				{
                     Services.GetService<KeyboardService>().Update();
