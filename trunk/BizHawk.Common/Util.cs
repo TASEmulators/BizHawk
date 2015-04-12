@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 
 using BizHawk.Common.BufferExtensions;
+using System.Reflection;
 
 namespace BizHawk.Common
 {
@@ -447,6 +448,34 @@ namespace BizHawk.Common
 			}
 
 			return StaticPart + "-" + myctr;
+		}
+	}
+
+	public static class ReflectionUtil
+	{
+		// http://stackoverflow.com/questions/9273629/avoid-giving-namespace-name-in-type-gettype
+		/// <summary>
+		/// Gets a all Type instances matching the specified class name with just non-namespace qualified class name.
+		/// </summary>
+		/// <param name="className">Name of the class sought.</param>
+		/// <returns>Types that have the class name specified. They may not be in the same namespace.</returns>
+		public static Type[] GetTypeByName(string className)
+		{
+			var returnVal = new List<Type>();
+
+			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				Type[] assemblyTypes = a.GetTypes();
+				for (int j = 0; j < assemblyTypes.Length; j++)
+				{
+					if (assemblyTypes[j].Name.ToLower() == className.ToLower())
+					{
+						returnVal.Add(assemblyTypes[j]);
+					}
+				}
+			}
+
+			return returnVal.ToArray();
 		}
 	}
 }
