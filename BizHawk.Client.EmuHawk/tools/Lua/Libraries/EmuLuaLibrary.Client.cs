@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 
 using LuaInterface;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -418,16 +420,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"getopentools",
+			"getavailabletools",
 			"Returns a list of the tools currently open"
 		)]
-		public LuaTable GetOpenTools()
+		public LuaTable GetAvailableTools()
 		{
 			var t = Lua.NewTable();
 			var tools = GlobalWin.Tools.AvailableTools.ToList();
 			for (int i = 0; i < tools.Count; i++)
 			{
-				t[i] = tools[i].GetType().Name.ToLower();
+				t[i] = tools[i].Name.ToLower();
 			}
 
 			return t;
@@ -435,10 +437,18 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"gettool",
-			"Returns an object that represents a currently open tool of the given name. Use getopentools to get a list of names"
+			"Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names"
 		)]
 		public LuaTable GetTool(string name)
 		{
+			var toolType  = ReflectionUtil.GetTypeByName(name)
+				.FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
+
+			if (toolType != null)
+			{
+				GlobalWin.Tools.Load(toolType);
+			}
+
 			var selectedTool = GlobalWin.Tools.AvailableTools
 				.FirstOrDefault(tool => tool.GetType().Name.ToLower() == name.ToLower());
 
