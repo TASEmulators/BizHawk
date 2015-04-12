@@ -476,11 +476,5 @@ namespace BizHawk.Client.EmuHawk
 
 			return null;
 		}
-
-		public class Testing
-		{
-			public string Name { get; set; }
-			public string Something { get; set; }
-		}
 	}
 }
