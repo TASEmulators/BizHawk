@@ -459,5 +459,28 @@ namespace BizHawk.Client.EmuHawk
 
 			return null;
 		}
+
+		[LuaMethodAttributes(
+			"createinstance",
+			"returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned"
+		)]
+		public LuaTable CreateInstance(string name)
+		{
+			var possibleTypes = ReflectionUtil.GetTypeByName(name);
+
+			if (possibleTypes.Any())
+			{
+				var instance = Activator.CreateInstance(possibleTypes.First());
+				return LuaHelper.ToLuaTable(Lua, instance);
+			}
+
+			return null;
+		}
+
+		public class Testing
+		{
+			public string Name { get; set; }
+			public string Something { get; set; }
+		}
 	}
 }
