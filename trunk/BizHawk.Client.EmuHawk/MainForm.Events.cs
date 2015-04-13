@@ -20,6 +20,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Cores.Computers.AppleII;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1932,6 +1933,46 @@ namespace BizHawk.Client.EmuHawk
 		private void WondersawnSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
+		}
+
+		#endregion
+
+		#region Apple II
+
+
+		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Global.Emulator is AppleII)
+			{
+				AppleDisksSubMenu.Enabled = (Global.Emulator as AppleII).DiskCount > 1;
+			}
+		}
+
+		private void AppleDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AppleDisksSubMenu.DropDownItems.Clear();
+
+			if (Global.Emulator is AppleII)
+			{
+				var appleII = Global.Emulator as AppleII;
+				for (int i = 0; i < appleII.DiskCount; i++)
+				{
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = "Disk" + (i + 1),
+						Text = "Disk" + (i + 1),
+						Checked = appleII.CurrentDisk == i
+					};
+
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						appleII.SetDisk(dummy);
+					};
+
+					AppleDisksSubMenu.DropDownItems.Add(menuItem);
+				}
+			}
 		}
 
 		#endregion

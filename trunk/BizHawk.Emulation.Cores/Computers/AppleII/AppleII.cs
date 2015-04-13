@@ -26,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		[CoreConstructor("AppleII")]
 		public AppleII(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
+			GameInfoSet = new List<GameInfo>();
+
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			CoreComm = comm;
@@ -62,10 +64,17 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			Jellyfish.Virtu.Services.StorageService.LoadFile(ms, stream => _machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", stream, writeProtected));
 		}
 
-		private readonly List<GameInfo> GameInfoSet;
-		private readonly List<byte[]> RomSet;
+		public List<GameInfo> GameInfoSet { get; private set; }
+		private readonly List<byte[]> RomSet = new List<byte[]>();
 
 		public int CurrentDisk { get; private set; }
+		public int DiskCount { get { return RomSet.Count; } }
+
+		public void SetDisk(int discNum)
+		{
+			CurrentDisk = discNum;
+			InitDisk();
+		}
 
 		private void IncrementDisk()
 		{
