@@ -193,6 +193,7 @@
 			this.TraceLoggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TAStudioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VirtualPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -304,6 +305,8 @@
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AppleSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -381,7 +384,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -411,6 +414,7 @@
             this.DGBSubMenu,
             this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
+            this.AppleSubMenu,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -1827,6 +1831,13 @@
 			this.TAStudioMenuItem.Text = "&TAStudio";
 			this.TAStudioMenuItem.Click += new System.EventHandler(this.TAStudioMenuItem_Click);
 			// 
+			// MacroToolMenuItem
+			// 
+			this.MacroToolMenuItem.Name = "MacroToolMenuItem";
+			this.MacroToolMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.MacroToolMenuItem.Text = "&Macro Tool";
+			this.MacroToolMenuItem.Click += new System.EventHandler(this.MacroToolMenuItem_Click);
+			// 
 			// VirtualPadMenuItem
 			// 
 			this.VirtualPadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
@@ -2694,6 +2705,24 @@
 			this.settingsToolStripMenuItem.Text = "&Settings...";
 			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WondersawnSettingsMenuItem_Click);
 			// 
+			// AppleSubMenu
+			// 
+			this.AppleSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AppleDisksSubMenu});
+			this.AppleSubMenu.Name = "AppleSubMenu";
+			this.AppleSubMenu.Size = new System.Drawing.Size(50, 19);
+			this.AppleSubMenu.Text = "Apple";
+			this.AppleSubMenu.DropDownOpened += new System.EventHandler(this.AppleSubMenu_DropDownOpened);
+			// 
+			// AppleDisksSubMenu
+			// 
+			this.AppleDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator31});
+			this.AppleDisksSubMenu.Name = "AppleDisksSubMenu";
+			this.AppleDisksSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.AppleDisksSubMenu.Text = "Disks";
+			this.AppleDisksSubMenu.DropDownOpened += new System.EventHandler(this.AppleDisksSubMenu_DropDownOpened);
+			// 
 			// HelpSubMenu
 			// 
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3364,12 +3393,10 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// MacroToolMenuItem
+			// toolStripSeparator31
 			// 
-			this.MacroToolMenuItem.Name = "MacroToolMenuItem";
-			this.MacroToolMenuItem.Size = new System.Drawing.Size(183, 22);
-			this.MacroToolMenuItem.Text = "&Macro Tool";
-			this.MacroToolMenuItem.Click += new System.EventHandler(this.MacroToolMenuItem_Click);
+			this.toolStripSeparator31.Name = "toolStripSeparator31";
+			this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
 			// 
 			// MainForm
 			// 
@@ -3763,6 +3790,9 @@
 		private System.Windows.Forms.ToolStripStatusLabel UpdateNotification;
 		private System.Windows.Forms.ToolStripMenuItem PSXControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MacroToolMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AppleSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem AppleDisksSubMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
 	}
 }
 
