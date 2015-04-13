@@ -11,7 +11,22 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			var domains = new List<MemoryDomain>();
 
-			//_machine.Memory.Read
+			var mainRamDomain = new MemoryDomain("Main Ram", 0xC000, MemoryDomain.Endian.Little,
+				(addr) =>
+				{
+					if (addr < 0 || addr >= 0xC000)
+						throw new ArgumentOutOfRangeException();
+					return (byte)_machine.Memory.Read((int)addr);
+				},
+				(addr, value) =>
+				{
+					if (addr < 0 || addr >= 0xC000)
+						throw new ArgumentOutOfRangeException();
+					_machine.Memory.Write((int)addr, value);
+				});
+
+			domains.Add(mainRamDomain);
+
 			var systemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
