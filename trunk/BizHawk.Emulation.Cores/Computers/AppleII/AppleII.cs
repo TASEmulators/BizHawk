@@ -62,6 +62,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ms.Position = 0;
 			bool writeProtected = false; //!!!!!!!!!!!!!!!!!!!
 			Jellyfish.Virtu.Services.StorageService.LoadFile(ms, stream => _machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", stream, writeProtected));
+
+			SetupMemoryDomains();
 		}
 
 		public List<GameInfo> GameInfoSet { get; private set; }
