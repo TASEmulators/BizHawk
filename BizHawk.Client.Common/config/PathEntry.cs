@@ -304,6 +304,12 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Lynx", SystemDisplayName = "Lynx", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "Lynx", SystemDisplayName = "Lynx", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "Lynx", SystemDisplayName = "Lynx", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Base", Path = Path.Combine(".", "Lynx"), Ordinal = 0 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 				};
 			}
 		}
