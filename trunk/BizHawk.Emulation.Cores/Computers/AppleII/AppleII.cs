@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			public BizKeyboardService(Machine _machine) : base(_machine) { }
 			public override bool IsKeyDown(int key)
 			{
-                return key > 0;
+				return key > 0;
 			}
 		}
 
