@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IEmulator Emu { get; set; }
 
-		[RequiredService]
+		[OptionalService]
 		public IInputPollable InputPollableCore { get; set; }
 
 		[ConfigPersist]
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (_autoSearch)
 				{
-					if (Settings.AutoSearchTakeLagFramesIntoAccount && InputPollableCore.IsLagFrame)
+					if (InputPollableCore != null && Settings.AutoSearchTakeLagFramesIntoAccount && InputPollableCore.IsLagFrame)
 					{
 						// Do nothing
 					}
