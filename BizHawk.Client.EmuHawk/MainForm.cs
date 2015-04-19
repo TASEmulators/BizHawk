@@ -1850,44 +1850,42 @@ namespace BizHawk.Client.EmuHawk
 			return str;
 		}
 
-		private void OpenRom()
+		public static string RomFilter
 		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
+			get
+			{
+				if (VersionInfo.DeveloperBuild)
+				{
+					return FormatFilter(
+						"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;%ARCH%",
+						"Music Files", "*.psf;*.sid;*.nsf",
+						"Disc Images", "*.cue;*.ccd;*.m3u",
+						"NES", "*.nes;*.fds;*.nsf;%ARCH%",
+						"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+						"Master System", "*.sms;*.gg;*.sg;%ARCH%",
+						"PC Engine", "*.pce;*.sgx;*.cue;*.ccd;%ARCH%",
+						"TI-83", "*.rom;%ARCH%",
+						"Archive Files", "%ARCH%",
+						"Savestate", "*.state",
+						"Atari 2600", "*.a26;*.bin;%ARCH%",
+						"Atari 7800", "*.a78;*.bin;%ARCH%",
+						"Atari Lynx", "*.lnx;%ARCH%",
+						"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
+						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+						"Gameboy Advance", "*.gba;%ARCH%",
+						"Colecovision", "*.col;%ARCH%",
+						"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+						"PSX Executables (experimental)", "*.exe",
+						"PSF Playstation Sound File (not supported)", "*.psf",
+						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
+						"SID Commodore 64 Music File", "*.sid;%ARCH%",
+						"Nintendo 64", "*.z64;*.v64;*.n64",
+						"WonderSwan", "*.ws;*.wsc;%ARCH%",
+						"Apple II", "*.dsk;%ARCH%",
+						"All Files", "*.*");
+				}
 
-			// adelikat: ugly design for this, I know
-			if (VersionInfo.DeveloperBuild)
-			{
-				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;%ARCH%",
-					"Music Files", "*.psf;*.sid;*.nsf",
-					"Disc Images", "*.cue;*.ccd;*.m3u",
-					"NES", "*.nes;*.fds;*.nsf;%ARCH%",
-					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
-					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-					"PC Engine", "*.pce;*.sgx;*.cue;*.ccd;%ARCH%",
-					"TI-83", "*.rom;%ARCH%",
-					"Archive Files", "%ARCH%",
-					"Savestate", "*.state",
-					"Atari 2600", "*.a26;*.bin;%ARCH%",
-					"Atari 7800", "*.a78;*.bin;%ARCH%",
-					"Atari Lynx", "*.lnx;%ARCH%",
-					"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
-					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
-					"Gameboy Advance", "*.gba;%ARCH%",
-					"Colecovision", "*.col;%ARCH%",
-					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
-					"PSX Executables (experimental)", "*.exe",
-					"PSF Playstation Sound File (not supported)", "*.psf",
-					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
-					"SID Commodore 64 Music File", "*.sid;%ARCH%",
-					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"WonderSwan", "*.ws;*.wsc;%ARCH%",
-					"Apple II", "*.dsk;%ARCH%",
-					"All Files", "*.*");
-			}
-			else
-			{
-				ofd.Filter = FormatFilter(
+				return FormatFilter(
 					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.nsf;%ARCH%",
@@ -1908,9 +1906,17 @@ namespace BizHawk.Client.EmuHawk
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"All Files", "*.*");
 			}
+		}
 
-			ofd.RestoreDirectory = false;
-			ofd.FilterIndex = _lastOpenRomFilter;
+		private void OpenRom()
+		{
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Filter = RomFilter,
+				RestoreDirectory = false,
+				FilterIndex = _lastOpenRomFilter
+			};
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)

@@ -826,6 +826,12 @@
       <DependentUpon>MacroInput.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Macros\MovieZone.cs" />
+    <Compile Include="tools\MultiDiskBundler\MultiDiskFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\MultiDiskBundler\MultiDiskFileSelector.Designer.cs">
+      <DependentUpon>MultiDiskFileSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1359,6 +1365,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Macros\MacroInput.resx">
       <DependentUpon>MacroInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskFileSelector.resx">
+      <DependentUpon>MultiDiskFileSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskBundler.resx">
       <DependentUpon>MultiDiskBundler.cs</DependentUpon>

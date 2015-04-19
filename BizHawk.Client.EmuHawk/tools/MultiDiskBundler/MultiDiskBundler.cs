@@ -18,7 +18,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MultiGameCreator_Load(object sender, EventArgs e)
 		{
-
+			AddButton_Click(null, null);
+			AddButton_Click(null, null);
 		}
 
 		#region IToolForm
@@ -74,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
-			groupBox.Controls.Add(new DualGBFileSelector
+			groupBox.Controls.Add(new MultiDiskFileSelector
 			{
 				Location = new Point(5, 8)
 			});
