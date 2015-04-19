@@ -201,6 +201,7 @@
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
 			this.CreateDualGbXmlMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.batchRunnerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MultiDiskBundlerFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -307,6 +308,7 @@
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -384,7 +386,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1764,7 +1765,8 @@
             this.LuaConsoleMenuItem,
             this.toolStripSeparator29,
             this.CreateDualGbXmlMenuItem,
-            this.batchRunnerToolStripMenuItem});
+            this.batchRunnerToolStripMenuItem,
+            this.MultiDiskBundlerFileMenuItem});
 			this.ToolsSubMenu.Name = "ToolsSubMenu";
 			this.ToolsSubMenu.Size = new System.Drawing.Size(48, 19);
 			this.ToolsSubMenu.Text = "&Tools";
@@ -1887,6 +1889,14 @@
 			this.batchRunnerToolStripMenuItem.Text = "Batch Runner";
 			this.batchRunnerToolStripMenuItem.Visible = false;
 			this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.batchRunnerToolStripMenuItem_Click);
+			// 
+			// MultiDiskBundlerFileMenuItem
+			// 
+			this.MultiDiskBundlerFileMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveConfig;
+			this.MultiDiskBundlerFileMenuItem.Name = "MultiDiskBundlerFileMenuItem";
+			this.MultiDiskBundlerFileMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.MultiDiskBundlerFileMenuItem.Text = "Multi-disk Bundler";
+			this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.CreateMultigameFileMenuItem_Click);
 			// 
 			// NESSubMenu
 			// 
@@ -2719,9 +2729,14 @@
 			this.AppleDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator31});
 			this.AppleDisksSubMenu.Name = "AppleDisksSubMenu";
-			this.AppleDisksSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.AppleDisksSubMenu.Size = new System.Drawing.Size(101, 22);
 			this.AppleDisksSubMenu.Text = "Disks";
 			this.AppleDisksSubMenu.DropDownOpened += new System.EventHandler(this.AppleDisksSubMenu_DropDownOpened);
+			// 
+			// toolStripSeparator31
+			// 
+			this.toolStripSeparator31.Name = "toolStripSeparator31";
+			this.toolStripSeparator31.Size = new System.Drawing.Size(57, 6);
 			// 
 			// HelpSubMenu
 			// 
@@ -3393,11 +3408,6 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// toolStripSeparator31
-			// 
-			this.toolStripSeparator31.Name = "toolStripSeparator31";
-			this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3793,6 +3803,7 @@
 		private System.Windows.Forms.ToolStripMenuItem AppleSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem AppleDisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
+		private System.Windows.Forms.ToolStripMenuItem MultiDiskBundlerFileMenuItem;
 	}
 }
 

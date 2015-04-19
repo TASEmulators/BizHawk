@@ -3717,5 +3717,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
+
+		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<MultiDiskBundler>();
+		}
 	}
 }
