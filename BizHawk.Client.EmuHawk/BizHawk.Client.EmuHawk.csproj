@@ -826,6 +826,12 @@
       <DependentUpon>MacroInput.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Macros\MovieZone.cs" />
+    <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.Designer.cs">
+      <DependentUpon>MultiDiskBundler.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\BarcodeEntry.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1353,6 +1359,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Macros\MacroInput.resx">
       <DependentUpon>MacroInput.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskBundler.resx">
+      <DependentUpon>MultiDiskBundler.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
       <DependentUpon>BarcodeEntry.cs</DependentUpon>
