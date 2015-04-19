@@ -255,7 +255,23 @@ namespace BizHawk.Client.Common
 						{ "Option 1", '1' },
 						{ "Option 2", '2' }
 					}
-				}	
+				},
+				{
+					"AppleII",
+					new Dictionary<string, char>
+					{
+						{ "Tab", 't' },
+						{ "Enter", 'e' },
+						{ "Escape", 'x' },
+						{ "Back", 'b' },
+						{ "Space", 's' },
+						{ "Ctrl", 'c' },
+						{ "Shift", '^' },
+						{ "Caps", 'C' },
+						{ "Next Disk", '>' },
+						{ "Previous Disk", '<' }
+					}
+				}
 			};
 	}
 }
