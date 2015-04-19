@@ -536,6 +536,11 @@ namespace BizHawk.Client.Common
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
 					if (ex is UnsupportedGameException)
 					{
+						if (system == "NES")
+						{
+							DoMessageCallback("Unable to use quicknes, using NESHawk instead");
+						}
+						
 						return LoadRom(path, nextComm, forceAccurateCore: true);
 					}
 					else if (ex is MissingFirmwareException)
