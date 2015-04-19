@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 					patchFile.BindFirstOf("IPS");
 					if (patchFile.IsBound)
 					{
-						IPS.Patch(RomData, patchFile.GetStream());
+						RomData = IPS.Patch(RomData, patchFile.GetStream());
 					}
 				}
 			}
