@@ -353,8 +353,25 @@ namespace BizHawk.Client.Common
 						}
 						catch (Exception ex)
 						{
-							DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
-							return false;
+							try
+							{
+								// need to get rid of this hack at some point
+								rom = new RomGame(file);
+								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								byte[] romData = null;
+								byte[] xmlData = rom.FileData;
+
+								game = rom.GameInfo;
+								game.System = "SNES";
+								
+								var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+								nextEmulator = snes;
+							}
+							catch 
+							{
+								DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
+								return false;
+							}
 						}
 					}
 					else // most extensions

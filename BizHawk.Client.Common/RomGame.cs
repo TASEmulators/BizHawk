@@ -51,6 +51,7 @@ namespace BizHawk.Client.Common
 
 			// read the entire file into FileData.
 			FileData = new byte[fileLength];
+			stream.Position = 0;
 			stream.Read(FileData, 0, fileLength);
 
 			// if there was no header offset, RomData is equivalent to FileData 
