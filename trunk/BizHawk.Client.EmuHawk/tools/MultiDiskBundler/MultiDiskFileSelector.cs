@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,12 +18,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public string GetName()
 		{
-			return textBox1.Text;
+			return PathBox.Text;
 		}
 
 		public void SetName(string val)
 		{
-			textBox1.Text = val;
+			PathBox.Text = val;
 		}
 
 		public event EventHandler NameChanged;
@@ -35,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		public MultiDiskFileSelector()
 		{
 			InitializeComponent();
-			textBox1.TextChanged += this.HandleLabelTextChanged;
+			PathBox.TextChanged += this.HandleLabelTextChanged;
 		}
 
 		protected virtual void OnNameChanged(EventArgs e)
@@ -67,9 +68,9 @@ namespace BizHawk.Client.EmuHawk
 				var ff = (string[])e.Data.GetData(DataFormats.FileDrop);
 				if (ff.Length == 1)
 				{
-					textBox1.Text = ff[0];
+					PathBox.Text = ff[0];
 				}
-			}				
+			}
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -81,17 +82,17 @@ namespace BizHawk.Client.EmuHawk
 				RestoreDirectory = true
 			})
 			{
-				var result = ofd.ShowDialog(this);
+				var result = ofd.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
-					textBox1.Text = ofd.FileName;
+					PathBox.Text = ofd.FileName;
 				}
 			}
 		}
 
 		private void UseCurrentRomButton_Click(object sender, EventArgs e)
 		{
-			textBox1.Text = GlobalWin.MainForm.CurrentlyOpenRom;
+			PathBox.Text = GlobalWin.MainForm.CurrentlyOpenRom;
 		}
 
 		private void DualGBFileSelector_Load(object sender, EventArgs e)
@@ -105,6 +106,11 @@ namespace BizHawk.Client.EmuHawk
 				&& !string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom)
 				&& !GlobalWin.MainForm.CurrentlyOpenRom.Contains('|') && // Can't be archive
 				!GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
+		}
+
+		private void PathBox_TextChanged(object sender, EventArgs e)
+		{
+			OnNameChanged(e);
 		}
 	}
 }

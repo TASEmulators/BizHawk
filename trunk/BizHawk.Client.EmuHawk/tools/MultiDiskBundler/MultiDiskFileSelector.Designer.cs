@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.button1 = new System.Windows.Forms.Button();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.PathBox = new System.Windows.Forms.TextBox();
 			this.UseCurrentRomButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
@@ -44,17 +44,18 @@
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
-			// textBox1
+			// PathBox
 			// 
-			this.textBox1.AllowDrop = true;
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.PathBox.AllowDrop = true;
+			this.PathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.Location = new System.Drawing.Point(3, 5);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(285, 20);
-			this.textBox1.TabIndex = 1;
-			this.textBox1.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
-			this.textBox1.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox1_DragEnter);
+			this.PathBox.Location = new System.Drawing.Point(3, 5);
+			this.PathBox.Name = "PathBox";
+			this.PathBox.Size = new System.Drawing.Size(285, 20);
+			this.PathBox.TabIndex = 1;
+			this.PathBox.TextChanged += new System.EventHandler(this.PathBox_TextChanged);
+			this.PathBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBox1_DragDrop);
+			this.PathBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBox1_DragEnter);
 			// 
 			// UseCurrentRomButton
 			// 
@@ -72,7 +73,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.UseCurrentRomButton);
 			this.Controls.Add(this.button1);
-			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.PathBox);
 			this.Name = "MultiDiskFileSelector";
 			this.Size = new System.Drawing.Size(425, 29);
 			this.Load += new System.EventHandler(this.DualGBFileSelector_Load);
@@ -84,7 +85,7 @@
 		#endregion
 
 		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.TextBox PathBox;
 		private System.Windows.Forms.Button UseCurrentRomButton;
 
 	}
