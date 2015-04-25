@@ -21,12 +21,14 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
+			writer.Write(Frame);
 			writer.Write(CurrentDisk);
 			_machine.SaveState(writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
+			Frame = reader.ReadInt32();
 			CurrentDisk = reader.ReadInt32();
 			InitDisk();
 			_machine.LoadState(reader);
