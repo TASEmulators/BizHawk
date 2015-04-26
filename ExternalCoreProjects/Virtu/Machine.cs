@@ -327,7 +327,8 @@ namespace Jellyfish.Virtu
 
 				public void BizFrameAdvance()
 				{
-                    Services.GetService<KeyboardService>().Update();
+					Lagged = true;
+					Services.GetService<KeyboardService>().Update();
                     Services.GetService<GamePortService>().Update();
 					//frame begins at vsync.. beginning of vblank
 					while (Video.IsVBlank)
@@ -384,5 +385,7 @@ namespace Jellyfish.Virtu
 
         private AutoResetEvent _pauseEvent = new AutoResetEvent(false);
         private AutoResetEvent _unpauseEvent = new AutoResetEvent(false);
+
+		public bool Lagged { get; set; }
     }
 }

@@ -286,7 +286,8 @@ namespace Jellyfish.Virtu
         [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         private int ReadIoRegionC0C0(int address)
         {
-            switch (address)
+			Machine.Lagged = false;
+			switch (address)
             {
             case 0xC000: case 0xC001: case 0xC002: case 0xC003: case 0xC004: case 0xC005: case 0xC006: case 0xC007: // [7-15]
             case 0xC008: case 0xC009: case 0xC00A: case 0xC00B: case 0xC00C: case 0xC00D: case 0xC00E: case 0xC00F:

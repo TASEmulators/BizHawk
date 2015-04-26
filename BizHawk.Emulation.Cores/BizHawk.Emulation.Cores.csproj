@@ -122,6 +122,9 @@
     <Compile Include="Computers\AppleII\AppleII.IEmulator.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\AppleII\AppleII.IInputPollable.cs">
+        <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\AppleII\AppleII.IMemoryDomains.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
