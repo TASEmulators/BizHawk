@@ -172,6 +172,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			
 			_machine.Buttons = GetButtons();
 			_machine.BizFrameAdvance();
+			if (IsLagFrame)
+			{
+				LagCount++;
+			}
+
 			Frame++;
 		}
 

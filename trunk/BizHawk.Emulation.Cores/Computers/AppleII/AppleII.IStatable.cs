@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
 			writer.Write(CurrentDisk);
 			_machine.SaveState(writer);
 		}
@@ -29,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
 			CurrentDisk = reader.ReadInt32();
 			InitDisk();
 			_machine.LoadState(reader);
