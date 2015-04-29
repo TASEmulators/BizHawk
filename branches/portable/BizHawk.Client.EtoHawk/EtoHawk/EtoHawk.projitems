@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{CBA0F4C6-3F0C-4C08-B66F-7DF5BFA2A700}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>EtoHawk</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Config\ControllerConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\ControllerConfig.Design.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\ControllerConfigPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\InputCompositeWidget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\InputCompositeWidget.Design.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\InputWidget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DisplayManager\DisplayManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GlobalWin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\Input.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\OTK_Keyboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainForm.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainForm.Design.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainForm.Hotkey.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Output\DirectSoundSoundOutput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Output\DummySoundOutput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Output\OpenALSoundOutput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Output\XAudio2SoundOutput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Sound.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Utilities\SoundOutputProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Throttle.cs" />
+  </ItemGroup>
+</Project>
