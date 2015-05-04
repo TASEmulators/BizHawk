@@ -57,19 +57,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		const int MAWR = 0;  // Memory Address Write Register
 		const int MARR = 1;  // Memory Address Read Register
-		const int VRR = 2;  // VRAM Read Register
-		const int VWR = 2;  // VRAM Write Register
-		const int CR = 5;  // Control Register
-		const int RCR = 6;  // Raster Compare Register
-		const int BXR = 7;  // Background X-scroll Register
-		const int BYR = 8;  // Background Y-scroll Register
-		const int MWR = 9;  // Memory-access Width Register
-		const int HSR = 10; // Horizontal Sync Register
-		const int HDR = 11; // Horizontal Display Register
-		const int VPR = 12; // Vertical synchronous register
-		const int VDW = 13; // Vertical display register
-		const int VCR = 14; // Vertical display END position register;
-		const int DCR = 15; // DMA Control Register
+		const int VRR  = 2;  // VRAM Read Register
+		const int VWR  = 2;  // VRAM Write Register
+		const int CR   = 5;  // Control Register
+		const int RCR  = 6;  // Raster Compare Register
+		const int BXR  = 7;  // Background X-scroll Register
+		const int BYR  = 8;  // Background Y-scroll Register
+		const int MWR  = 9;  // Memory-access Width Register
+		const int HSR  = 10; // Horizontal Sync Register
+		const int HDR  = 11; // Horizontal Display Register
+		const int VPR  = 12; // Vertical synchronous register
+		const int VDW  = 13; // Vertical display register
+		const int VCR  = 14; // Vertical display END position register;
+		const int DCR  = 15; // DMA Control Register
 		const int SOUR = 16; // Source address for DMA
 		const int DESR = 17; // Destination address for DMA
 		const int LENR = 18; // Length of DMA transfer. Writing this will initiate DMA.
@@ -123,23 +123,27 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				if (RegisterLatch == BYR)
 					BackgroundY = Registers[BYR] & 0x1FF;
+
+                RegisterCommit(RegisterLatch, msbComplete: false);
 			}
 			else if (port == MSB)
 			{
 				Registers[RegisterLatch] &= 0x00FF;
 				Registers[RegisterLatch] |= (ushort)(value << 8);
-				CompleteMSBWrite(RegisterLatch);
+				RegisterCommit(RegisterLatch, msbComplete: true);
 			}
 		}
 
-		void CompleteMSBWrite(int register)
+		void RegisterCommit(int register, bool msbComplete)
 		{
 			switch (register)
 			{
 				case MARR: // Memory Address Read Register
+                    if (!msbComplete) break;
 					ReadBuffer = VRAM[Registers[MARR] & 0x7FFF];
 					break;
 				case VWR: // VRAM Write Register
+                    if (!msbComplete) break;
 					if (Registers[MAWR] < VramSize) // Several games attempt to write past the end of VRAM
 					{
 						VRAM[Registers[MAWR]] = Registers[VWR];
@@ -172,9 +176,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						FrameBuffer = new int[FramePitch * FrameHeight];
 					break;
 				case LENR: // Initiate DMA transfer
+                    if (!msbComplete) break;
 					DmaRequested = true;
 					break;
 				case SATB:
+                    if (!msbComplete) break;
 					SatDmaRequested = true;
 					break;
 			}
@@ -328,8 +334,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					UpdateSpriteData(i);
 				}
 
-				CompleteMSBWrite(HDR);
-				CompleteMSBWrite(VDW);
+				RegisterCommit(HDR, true);
+				RegisterCommit(VDW, true);
 			}
 		}
 	}
