@@ -273,6 +273,16 @@ namespace EtoHawk.Config
             this.ResumeLayout();
             //this.PerformLayout();
 
+            dlMainLayout = new DynamicLayout();
+            dlMainLayout.BeginHorizontal(true);
+            dlMainLayout.Add(tabControl1,true);
+            dlMainLayout.Add(pictureBox1);
+            dlMainLayout.EndHorizontal();
+            dlMainLayout.BeginHorizontal();
+            dlMainLayout.Add(buttonOK);
+            dlMainLayout.Add(buttonCancel);
+            dlMainLayout.EndHorizontal();
+            Content = dlMainLayout;
         }
 
         #endregion
@@ -295,5 +305,6 @@ namespace EtoHawk.Config
         private Label label3;
         private Label label2;
         private Label label38;
+        private DynamicLayout dlMainLayout;
     }
 }

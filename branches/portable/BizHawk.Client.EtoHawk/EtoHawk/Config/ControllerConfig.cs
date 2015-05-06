@@ -310,8 +310,7 @@ namespace EtoHawk.Config
             //ActOnControlCollection<AnalogBindPanel>(AnalogControlsTab, c => c.Save(cd.AllTrollersAnalog[_theDefinition.Name]));
         }
 
-        private static void ActOnControlCollection<T>(Control c, Action<T> proc)
-            where T : Control
+        private static void ActOnControlCollection<T>(Control c, Action<T> proc) where T : Control
         {
             if (c is T)
             {
@@ -322,6 +321,13 @@ namespace EtoHawk.Config
                 foreach (Control cc in ((Panel)c).Controls)
                 {
                     ActOnControlCollection(cc, proc);
+                }
+            }
+            else if (c is TabControl)
+            {
+                foreach (TabPage pg in ((TabControl)c).Pages)
+                {
+                    ActOnControlCollection(pg, proc);
                 }
             }
         }

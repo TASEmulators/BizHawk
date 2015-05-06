@@ -30,4 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Throttle.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)defctrl.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

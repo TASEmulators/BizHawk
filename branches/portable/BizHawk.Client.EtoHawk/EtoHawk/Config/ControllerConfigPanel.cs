@@ -23,7 +23,7 @@ namespace EtoHawk.Config
 
         public int MarginTop = 0;
         public int Spacing = 24;
-        public int InputSize = 170;
+        public int InputSize = 130;
         public int ColumnWidth = 280;
         public int LabelWidth = 60;
 
@@ -105,7 +105,8 @@ namespace EtoHawk.Config
             for (int i = 0; i < buttons.Count; i++)
             {
                 y += Spacing;
-                if (y > (_panelSize.Height - 62))
+                //if (y > (_panelSize.Height - 62))
+                if (y > (500 - 62)) //TODO: Don't hardcode any of this
                 {
                     y = MarginTop;
                     x += ColumnWidth;

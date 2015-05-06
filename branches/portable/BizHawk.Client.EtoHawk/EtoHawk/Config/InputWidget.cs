@@ -41,6 +41,7 @@ namespace EtoHawk.Config
         public InputWidget()
         {
             //ContextMenu = new ContextMenu();
+            _timer.Interval = 1.0 / 60.0; //The WinForms version of this never actually sets an interval...
             _timer.Elapsed += Timer_Tick;
             ClearBindings();
             AutoTab = true;
