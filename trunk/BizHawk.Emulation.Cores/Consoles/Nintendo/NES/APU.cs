@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 
-		sealed class PulseUnit
+		public sealed class PulseUnit
 		{
 			public PulseUnit(APU apu, int unit) { this.unit = unit; this.apu = apu; }
 			public int unit;
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool sweep_reload;
 			//reg2/3
 			int len_cnt;
-			int timer_raw_reload_value, timer_reload_value;
+			public int timer_raw_reload_value, timer_reload_value;
 
 			//misc..
 			int lenctr_en;
@@ -184,7 +184,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public int sample;
 			bool duty_value;
 
-			int env_start_flag, env_divider, env_counter, env_output;
+			int env_start_flag, env_divider, env_counter;
+			public int env_output;
 
 			public void clock_length_and_sweep()
 			{
@@ -287,9 +288,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sample = newsample;
 				}
 			}
+
+			public bool Debug_IsSilenced
+			{
+				get
+				{
+					if (swp_silence || len_cnt == 0)
+						return true;
+					else return false;
+				}
+			}
+
+			public int Debug_DutyType
+			{
+				get
+				{
+					return duty_cnt;
+				}
+			}
+
+			public int Debug_Volume
+			{
+				get
+				{
+					return env_output;
+				}
+			}
 		}
 
-		sealed class NoiseUnit
+		public sealed class NoiseUnit
 		{
 			APU apu;
 
@@ -318,6 +345,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				this.apu = apu;
 				NOISE_TABLE = pal ? NOISE_TABLE_PAL : NOISE_TABLE_NTSC;
+			}
+
+			public bool Debug_IsSilenced
+			{
+				get
+				{
+					if (len_cnt == 0) return true;
+					else return false;
+				}
+			}
+
+			public int Debug_Period
+			{
+				get
+				{
+					return period_cnt;
+				}
+			}
+
+			public int Debug_Volume
+			{
+				get
+				{
+					return env_output;
+				}
 			}
 
 			public void SyncState(Serializer ser)
@@ -449,7 +501,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		sealed class TriangleUnit
+		public sealed class TriangleUnit
 		{
 			//reg0
 			int linear_counter_reload, control_flag;
@@ -518,6 +570,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						break;
 				}
 				//Console.WriteLine("tri timer_reload_value: {0}", timer_cnt_reload);
+			}
+
+			public bool Debug_IsSilenced
+			{
+				get
+				{
+						bool en = len_cnt != 0 && linear_counter != 0;
+						return !en;
+				}
+			}
+
+			public int Debug_PeriodValue
+			{
+				get
+				{
+					return timer_cnt;
+				}
 			}
 
 			public void Run()
@@ -820,9 +889,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
-		PulseUnit[] pulse = new PulseUnit[2];
-		TriangleUnit triangle;
-		NoiseUnit noise; //= new NoiseUnit();
+		public PulseUnit[] pulse = new PulseUnit[2];
+		public TriangleUnit triangle;
+		public NoiseUnit noise;
 		DMCUnit dmc;
 
 		bool irq_pending;
@@ -1034,6 +1103,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public Action DebugCallback;
+		public int DebugCallbackDivider;
+		public int DebugCallbackTimer;
+
 		int toggle = 0;
 		public void RunOne()
 		{
@@ -1079,6 +1152,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//since the units run concurrently, the APU frame sequencer is ran last because
 			//it can change the ouput values of the pulse/triangle channels
 			//we want the changes to affect it on the *next* cycle.
+
+			if(DebugCallbackDivider != 0)
+			{
+				if(DebugCallbackTimer==0)
+				{
+					if(DebugCallback != null)
+						DebugCallback();
+					DebugCallbackTimer = DebugCallbackDivider;
+				} else DebugCallbackTimer--;
+
+			}
 		}
 
 		public struct Delta

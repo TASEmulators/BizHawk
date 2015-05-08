@@ -1239,6 +1239,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<NESNameTableViewer>();
 		}
 
+		private void musicRipperToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<NESMusicRipper>();
+		}
+
 		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.LoadGameGenieEc();
