@@ -853,6 +853,12 @@
     <Compile Include="tools\NES\NESGameGenie.Designer.cs">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\NES\NESMusicRipper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESMusicRipper.Designer.cs">
+      <DependentUpon>NESMusicRipper.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\NESNameTableViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1377,6 +1383,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESMusicRipper.resx">
+      <DependentUpon>NESMusicRipper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESNameTableViewer.resx">
       <DependentUpon>NESNameTableViewer.cs</DependentUpon>
