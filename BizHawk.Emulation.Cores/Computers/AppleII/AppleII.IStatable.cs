@@ -36,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			CurrentDisk = reader.ReadInt32();
 			InitDisk();
 			_machine.LoadState(reader);
-			_machine.Buttons = GetButtons();
 		}
 
 		public byte[] SaveStateBinary()
