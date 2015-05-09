@@ -1201,8 +1201,7 @@ namespace BizHawk.Client.EmuHawk
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
 			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSyncSettingsForm>()
-				&& !Global.MovieSession.Movie.IsActive;
+			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 
 			NesControllerSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NesControllerSettings>()
 				&& !Global.MovieSession.Movie.IsActive;
