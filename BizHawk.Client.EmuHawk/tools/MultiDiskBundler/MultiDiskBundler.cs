@@ -25,8 +25,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MultiGameCreator_Load(object sender, EventArgs e)
 		{
+			if (!Global.Game.IsNullInstance)
+			{
+				NameBox.Text = Path.ChangeExtension(PathManager.FilesystemSafeName(Global.Game), ".xml");
+			}
+			
 			AddButton_Click(null, null);
 			AddButton_Click(null, null);
+
+			if (!Global.Game.IsNullInstance)
+			{
+				FileSelectors.First().SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+			}
 		}
 
 		#region IToolForm
@@ -115,14 +125,22 @@ namespace BizHawk.Client.EmuHawk
 			Recalculate();
 		}
 
+
+		private IEnumerable<MultiDiskFileSelector> FileSelectors
+		{
+			get
+			{
+				return FileSelectorPanel.Controls
+					.OfType<GroupBox>()
+					.SelectMany(g => g.Controls.OfType<MultiDiskFileSelector>());
+			}
+		}
+
 		private bool Recalculate()
 		{
 			try
 			{
-				var fileSelectors = FileSelectorPanel.Controls
-					.OfType<GroupBox>()
-					.SelectMany(g => g.Controls.OfType<MultiDiskFileSelector>())
-					.ToList();
+				var fileSelectors = FileSelectors.ToList();
 
 				var names = fileSelectors.Select(f => f.GetName());
 
@@ -176,10 +194,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
+			string filename = string.Empty;
+			string initialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global_NULL", "ROM"].Path, "Global_NULL");
+
+			if (!Global.Game.IsNullInstance)
+			{
+				filename = NameBox.Text;
+				if (string.IsNullOrWhiteSpace(filename))
+				{
+					filename = Path.ChangeExtension(PathManager.FilesystemSafeName(Global.Game), ".xml");
+				}
+
+				initialDirectory = Path.GetDirectoryName(filename);
+			}
+
 			var sfd = new SaveFileDialog
 			{
-				FileName = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml"),
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global_NULL", "ROM"].Path, "Global_NULL"),
+				FileName = filename,
+				InitialDirectory = initialDirectory,
 				Filter = "xml (*.xml)|*.xml|All Files|*.*"
 			};
 
