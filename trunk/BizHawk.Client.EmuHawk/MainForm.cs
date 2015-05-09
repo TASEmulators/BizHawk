@@ -3729,5 +3729,22 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<MultiDiskBundler>();
 		}
 
+		private void coreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
+			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
+		}
+
+		private void quickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = true;
+			FlagNeedsReboot();
+		}
+
+		private void nesHawkToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = false;
+			FlagNeedsReboot();
+		}
 	}
 }
