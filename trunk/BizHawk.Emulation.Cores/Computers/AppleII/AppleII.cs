@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			CoreComm = comm;
 
 			_disk1 = rom;
+			RomSet.Add(rom);
 
 			_appleIIRom = comm.CoreFileProvider.GetFirmware(
 				SystemId, "AppleIIe", true, "The Apple IIe BIOS firmware is required");
