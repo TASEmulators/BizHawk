@@ -104,8 +104,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UseCurrentRomButton.Enabled = Global.Emulator != null // For the designer
 				&& !string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom)
-				&& !GlobalWin.MainForm.CurrentlyOpenRom.Contains('|') && // Can't be archive
-				!GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
+				&& !GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
 		}
 
 		private void PathBox_TextChanged(object sender, EventArgs e)
