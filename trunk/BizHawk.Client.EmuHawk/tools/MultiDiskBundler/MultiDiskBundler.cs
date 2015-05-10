@@ -173,13 +173,15 @@ namespace BizHawk.Client.EmuHawk
 
 				string system = Global.Emulator.SystemId; // TODO: have the user pick this?
 
+				var basePath = Path.GetDirectoryName(name.Split('|').First());
+
 				_currentXml = new XElement("BizHawk-XMLGame",
 					new XAttribute("System", system),
 					new XAttribute("Name", name),
 					new XElement("LoadAssets",
 						names.Select(n => new XElement(
 							"Asset",
-							new XAttribute("FileName", n)
+							new XAttribute("FileName", GetRelativePath(basePath, n))
 						))
 					) 
 				);
@@ -233,6 +235,43 @@ namespace BizHawk.Client.EmuHawk
 			{
 				NameBox.Text = sfd.FileName;
 			}
+		}
+
+		// http://stackoverflow.com/questions/275689/how-to-get-relative-path-from-absolute-path
+		public static string GetRelativePath(string fromPath, string toPath)
+		{
+			Win32.FileAttributes fromAttr = GetPathAttribute(fromPath);
+			Win32.FileAttributes toAttr = GetPathAttribute(toPath);
+
+			var path = new StringBuilder(260); // MAX_PATH
+			if (Win32.PathRelativePathTo(
+				path,
+				fromPath,
+				fromAttr,
+				toPath,
+				toAttr) == false)
+			{
+				throw new ArgumentException("Paths must have a common prefix");
+			}
+
+			return path.ToString();
+		}
+
+		private static Win32.FileAttributes GetPathAttribute(string path)
+		{
+			var di = new DirectoryInfo(path.Split('|').First());
+			if (di.Exists)
+			{
+				return Win32.FileAttributes.Directory;
+			}
+
+			var fi = new FileInfo(path.Split('|').First());
+			if (fi.Exists)
+			{
+				return Win32.FileAttributes.Normal;
+			}
+
+			throw new FileNotFoundException();
 		}
 	}
 }
