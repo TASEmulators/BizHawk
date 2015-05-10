@@ -323,15 +323,20 @@ namespace BizHawk.Client.Common
 
 							switch (game.System)
 							{
+								case "GB":
 								case "DGB":
-									var left = Database.GetGameInfo(xmlGame.Assets["LeftRom"], "left.gb");
-									var right = Database.GetGameInfo(xmlGame.Assets["RightRom"], "right.gb");
+									// adelikat: remove need for tags to be hardcoded to left and right, we should clean this up, also maybe the DGB core should just take the xml file and handle it itself
+									var leftBytes = xmlGame.Assets.First().Value;
+									var rightBytes = xmlGame.Assets.Skip(1).First().Value;
+
+									var left = Database.GetGameInfo(leftBytes, "left.gb");
+									var right = Database.GetGameInfo(rightBytes, "right.gb");
 									nextEmulator = new GambatteLink(
 										nextComm,
 										left,
-										xmlGame.Assets["LeftRom"],
+										leftBytes,
 										right,
-										xmlGame.Assets["RightRom"],
+										rightBytes,
 										GetCoreSettings<GambatteLink>(),
 										GetCoreSyncSettings<GambatteLink>(),
 										Deterministic);

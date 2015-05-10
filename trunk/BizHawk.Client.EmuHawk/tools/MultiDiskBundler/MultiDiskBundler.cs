@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Game.IsNullInstance)
 			{
-				NameBox.Text = Path.ChangeExtension(PathManager.FilesystemSafeName(Global.Game), ".xml");
+				NameBox.Text = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml");
 			}
 			
 			AddButton_Click(null, null);
@@ -92,6 +92,8 @@ namespace BizHawk.Client.EmuHawk
 
 				DialogResult = DialogResult.OK;
 				Close();
+
+				GlobalWin.MainForm.LoadRom(fileInfo.FullName);
 			}
 		}
 
@@ -158,15 +160,13 @@ namespace BizHawk.Client.EmuHawk
 
 				string system = Global.Emulator.SystemId; // TODO: have the user pick this?
 
-				var tagNames = names.Select(n => Path.GetFileNameWithoutExtension(n));
-
 				_currentXml = new XElement("BizHawk-XMLGame",
 					new XAttribute("System", system),
-					new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
+					new XAttribute("Name", name),
 					new XElement("LoadAssets",
 						names.Select(n => new XElement(
-								ConvertToTag(Path.GetFileNameWithoutExtension(n)),
-								new XAttribute("FileName", n)
+							"Asset",
+							new XAttribute("FileName", n)
 						))
 					) 
 				);
