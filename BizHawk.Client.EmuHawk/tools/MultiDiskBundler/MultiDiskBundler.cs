@@ -27,7 +27,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Game.IsNullInstance)
 			{
-				NameBox.Text = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml");
+				string currentRom = GlobalWin.MainForm.CurrentlyOpenRom;
+				if (GlobalWin.MainForm.CurrentlyOpenRom.Contains("|"))
+				{
+					var pieces = GlobalWin.MainForm.CurrentlyOpenRom.Split('|');
+
+					var directory = Path.GetDirectoryName(pieces[0]);
+					var filename = Path.ChangeExtension(pieces[1], ".xml");
+
+					NameBox.Text = Path.Combine(directory, filename);
+				}
+				else
+				{
+					NameBox.Text = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml");
+				}
 			}
 			
 			AddButton_Click(null, null);
