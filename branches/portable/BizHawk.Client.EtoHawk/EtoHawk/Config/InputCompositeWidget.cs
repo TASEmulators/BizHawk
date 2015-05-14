@@ -60,8 +60,7 @@ namespace EtoHawk.Config
 
         public void TabNext()
         {
-            //To reimplement later
-            //Parent.SelectNextControl(btnSpecial, true, true, true, true);
+            Parent.SelectNextControl(btnSpecial, true, true, true, true);
         }
 
         ContextMenu DropdownMenu;

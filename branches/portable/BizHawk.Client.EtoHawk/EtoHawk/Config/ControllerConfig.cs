@@ -207,11 +207,12 @@ namespace EtoHawk.Config
         {
             _theDefinition = def;
             SuspendLayout();
-            LoadPanels(Global.Config);
-
+            
             checkBoxUDLR.Checked = Global.Config.AllowUD_LR;
             checkBoxAutoTab.Checked = Global.Config.InputConfigAutoTab;
 
+            LoadPanels(Global.Config);
+            
             SetControllerPicture(def.Name);
 
             var analog = tabControl1.TabPages[0];

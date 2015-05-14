@@ -208,8 +208,7 @@ namespace EtoHawk.Config
         {
             if (AutoTab)
             {
-                //TODO: Reimplement later
-                //Parent.SelectNextControl(this, false, true, true, true);
+                Parent.SelectNextControl(this, false, true, true, true);
             }
         }
 

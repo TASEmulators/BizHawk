@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Eto;
+﻿using Eto;
+using System;
 using Eto.Forms;
+using System.Text;
 using Eto.Drawing;
+using System.Collections.Generic;
 
 namespace EtoHawk.Config
 {
