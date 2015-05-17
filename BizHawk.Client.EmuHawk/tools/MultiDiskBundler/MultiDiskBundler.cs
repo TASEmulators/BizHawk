@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -41,6 +42,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					NameBox.Text = Path.ChangeExtension(GlobalWin.MainForm.CurrentlyOpenRom, ".xml");
 				}
+
+				 if (SystemDropDown.Items.Contains(Global.Emulator.SystemId))
+				 {
+					 SystemDropDown.SelectedItem = Global.Emulator.SystemId;
+				 }
 			}
 			
 			AddButton_Click(null, null);
@@ -171,7 +177,12 @@ namespace BizHawk.Client.EmuHawk
 					throw new Exception("Blank Names");
 				}
 
-				string system = Global.Emulator.SystemId; // TODO: have the user pick this?
+				var system = SystemDropDown.SelectedItem.ToString();
+
+				if (system == null)
+				{
+					throw new Exception("Blank System Id");
+				}
 
 				var basePath = Path.GetDirectoryName(name.Split('|').First());
 
