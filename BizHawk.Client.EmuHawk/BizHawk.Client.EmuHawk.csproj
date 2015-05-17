@@ -1047,6 +1047,7 @@
     </Compile>
     <Compile Include="tools\VirtualPads\schema\A26Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\A78Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
