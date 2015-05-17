@@ -283,12 +283,6 @@
     <Compile Include="config\GB\DGBPrefs.Designer.cs">
       <DependentUpon>DGBPrefs.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\DualGBFileSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\GB\DualGBFileSelector.Designer.cs">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\GB\GBPrefControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -707,12 +701,6 @@
     </Compile>
     <Compile Include="tools\GBA\MobileDetailView.Designer.cs">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\GB\DualGBXMLCreator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\DualGBXMLCreator.Designer.cs">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\GB\GBGameGenie.cs">
       <SubType>Form</SubType>
@@ -1176,9 +1164,6 @@
     <EmbeddedResource Include="config\GB\DGBPrefs.resx">
       <DependentUpon>DGBPrefs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\DualGBFileSelector.resx">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="config\GB\GBPrefControl.resx">
       <DependentUpon>GBPrefControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1326,9 +1311,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GBA\MobileDetailView.resx">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\DualGBXMLCreator.resx">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GB\GBGameGenie.resx">
       <DependentUpon>GBGameGenie.cs</DependentUpon>

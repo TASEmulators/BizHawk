@@ -1168,25 +1168,6 @@ namespace BizHawk.Client.EmuHawk
 			OpenLuaConsole();
 		}
 
-		private void CreateDualGbXmlMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Sound.StopSound();
-			using (var dlg = new DualGBXMLCreator())
-			{
-				var result = dlg.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					GlobalWin.OSD.AddMessage("XML File saved");
-				}
-				else
-				{
-					GlobalWin.OSD.AddMessage("Dual GB creator aborted");
-				}
-			}
-
-			GlobalWin.Sound.StartSound();
-		}
-
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
