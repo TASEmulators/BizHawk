@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 					foreach (XmlNode a in n.ChildNodes)
 					{
 						string filename = a.Attributes["FileName"].Value;
-						byte[] data;
+						byte[] data = new byte[0];
 						if (filename[0] == '|')
 						{
 							// in same archive
@@ -83,7 +83,22 @@ namespace BizHawk.Client.Common
 							fullpath = Path.Combine(fullpath, filename.Split('|').First());
 							try
 							{
-								data = File.ReadAllBytes(fullpath.Split('|').First());
+								using (var hf = new HawkFile(fullpath))
+								{
+									if (hf.IsArchive)
+									{
+										var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
+										hf.Unbind();
+										hf.BindArchiveMember(archiveItem);
+										data = hf.GetStream().ReadAllBytes();
+									}
+									else
+									{
+										data = File.ReadAllBytes(fullpath.Split('|').First());
+									}
+								}
+
+								
 							}
 							catch
 							{
