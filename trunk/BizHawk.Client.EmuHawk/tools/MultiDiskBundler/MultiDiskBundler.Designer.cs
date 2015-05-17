@@ -37,6 +37,8 @@
 			this.NameBox = new System.Windows.Forms.TextBox();
 			this.FileSelectorPanel = new System.Windows.Forms.Panel();
 			this.AddButton = new System.Windows.Forms.Button();
+			this.SystemDropDown = new System.Windows.Forms.ComboBox();
+			this.SystemLabel = new System.Windows.Forms.Label();
 			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -113,9 +115,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.FileSelectorPanel.AutoScroll = true;
 			this.FileSelectorPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.FileSelectorPanel.Location = new System.Drawing.Point(8, 79);
+			this.FileSelectorPanel.Location = new System.Drawing.Point(8, 101);
 			this.FileSelectorPanel.Name = "FileSelectorPanel";
-			this.FileSelectorPanel.Size = new System.Drawing.Size(486, 244);
+			this.FileSelectorPanel.Size = new System.Drawing.Size(486, 222);
 			this.FileSelectorPanel.TabIndex = 12;
 			// 
 			// AddButton
@@ -129,11 +131,36 @@
 			this.AddButton.UseVisualStyleBackColor = true;
 			this.AddButton.Click += new System.EventHandler(this.AddButton_Click);
 			// 
+			// SystemDropDown
+			// 
+			this.SystemDropDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SystemDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.SystemDropDown.FormattingEnabled = true;
+			this.SystemDropDown.Items.AddRange(new object[] {
+            "GB",
+            "Apple II"});
+			this.SystemDropDown.Location = new System.Drawing.Point(425, 75);
+			this.SystemDropDown.Name = "SystemDropDown";
+			this.SystemDropDown.Size = new System.Drawing.Size(69, 21);
+			this.SystemDropDown.TabIndex = 14;
+			// 
+			// SystemLabel
+			// 
+			this.SystemLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SystemLabel.AutoSize = true;
+			this.SystemLabel.Location = new System.Drawing.Point(375, 78);
+			this.SystemLabel.Name = "SystemLabel";
+			this.SystemLabel.Size = new System.Drawing.Size(44, 13);
+			this.SystemLabel.TabIndex = 15;
+			this.SystemLabel.Text = "System:";
+			// 
 			// MultiDiskBundler
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 364);
+			this.Controls.Add(this.SystemLabel);
+			this.Controls.Add(this.SystemDropDown);
 			this.Controls.Add(this.AddButton);
 			this.Controls.Add(this.FileSelectorPanel);
 			this.Controls.Add(this.groupBox3);
@@ -163,5 +190,7 @@
 		private System.Windows.Forms.Panel FileSelectorPanel;
 		private System.Windows.Forms.Button AddButton;
 		private System.Windows.Forms.Button BrowseBtn;
+		private System.Windows.Forms.ComboBox SystemDropDown;
+		private System.Windows.Forms.Label SystemLabel;
 	}
 }
