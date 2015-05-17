@@ -1901,6 +1901,7 @@
     <None Include="images\connect_16x16.png" />
     <None Include="images\add.png" />
     <None Include="images\HawkInLove.png" />
+    <None Include="images\ControllerImages\AppleIIKeyboard.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
