@@ -145,9 +145,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					if (!searchset.Contains(button.Name))
 					{
-						MessageBox.Show(this,
-							string.Format("Schema warning: Schema entry '{0}':'{1}' will not correspond to any control in definition '{2}'", schema.DisplayName, button.Name, def.Name),
-							"Dev Warning");
+						//MessageBox.Show(this,
+						//	string.Format("Schema warning: Schema entry '{0}':'{1}' will not correspond to any control in definition '{2}'", schema.DisplayName, button.Name, def.Name),
+						//	"Dev Warning");
 					}
 				}
 			}
