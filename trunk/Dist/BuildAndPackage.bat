@@ -30,7 +30,7 @@ rem explicitly list the OK ones here as individual copies. until then....
 
 copy *.dll dll
 
-..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
+..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders Tools gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
 
 cd ..\Dist
 .\unzip.exe %NAME% -d temp
