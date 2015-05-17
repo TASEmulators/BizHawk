@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			graphics.Clear(color);
 		}
 
-		public void Refresh()
+		public new void Refresh()
 		{
 			pictureBox.Refresh();
 		}
