@@ -26,7 +26,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MultiGameCreator_Load(object sender, EventArgs e)
 		{
-			if (!Global.Game.IsNullInstance)
+			AddButton_Click(null, null);
+			AddButton_Click(null, null);
+
+			if (!Global.Game.IsNullInstance &&  !GlobalWin.MainForm.CurrentlyOpenRom.EndsWith(".xml"))
 			{
 				string currentRom = GlobalWin.MainForm.CurrentlyOpenRom;
 				if (GlobalWin.MainForm.CurrentlyOpenRom.Contains("|"))
@@ -47,14 +50,8 @@ namespace BizHawk.Client.EmuHawk
 				 {
 					 SystemDropDown.SelectedItem = Global.Emulator.SystemId;
 				 }
-			}
-			
-			AddButton_Click(null, null);
-			AddButton_Click(null, null);
 
-			if (!Global.Game.IsNullInstance)
-			{
-				FileSelectors.First().SetName(GlobalWin.MainForm.CurrentlyOpenRom);
+				 FileSelectors.First().SetName(GlobalWin.MainForm.CurrentlyOpenRom);
 			}
 		}
 
