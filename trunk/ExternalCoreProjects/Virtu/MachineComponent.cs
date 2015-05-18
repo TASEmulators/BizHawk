@@ -7,11 +7,10 @@ namespace Jellyfish.Virtu
 {
     public abstract class MachineComponent
     {
+		public MachineComponent() { }
         protected MachineComponent(Machine machine)
         {
-            Machine = machine;
-
-            _debugService = new Lazy<DebugService>(() => Machine.Services.GetService<DebugService>());
+			_machine = machine;
         }
 
         public virtual void Initialize()
@@ -22,21 +21,17 @@ namespace Jellyfish.Virtu
         {
         }
 
-        public virtual void LoadState(BinaryReader reader, Version version)
-        {
-        }
-
         public virtual void Uninitialize()
         {
         }
 
-        public virtual void SaveState(BinaryWriter writer)
-        {
-        }
+		[Newtonsoft.Json.JsonIgnore]
+		private Machine _machine;
 
-        protected Machine Machine { get; private set; }
-        protected DebugService DebugService { get { return _debugService.Value; } }
-
-        private Lazy<DebugService> _debugService;
+		public Machine Machine
+		{
+			get { return _machine; }
+			set { _machine = value; }
+		}
     }
 }

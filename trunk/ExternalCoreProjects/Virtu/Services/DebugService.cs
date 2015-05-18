@@ -7,24 +7,22 @@ using Jellyfish.Library;
 
 namespace Jellyfish.Virtu.Services
 {
-    public class DebugService : MachineService
+	/// <summary>
+	/// this isn't really a "service" anymore
+	/// </summary>
+    public static class DebugService
     {
-        public DebugService(Machine machine) : 
-            base(machine)
-        {
-        }
-
-        public void WriteMessage(string message)
+        public static void WriteMessage(string message)
         {
             OnWriteMessage(FormatMessage(message));
         }
 
-        public void WriteMessage(string format, params object[] args)
+        public static void WriteMessage(string format, params object[] args)
         {
             OnWriteMessage(FormatMessage(format, args));
         }
 
-        protected virtual void OnWriteMessage(string message)
+        private static void OnWriteMessage(string message)
         {
 #if SILVERLIGHT
             Debug.WriteLine(message);
@@ -33,7 +31,7 @@ namespace Jellyfish.Virtu.Services
 #endif
         }
 
-        private string FormatMessage(string format, params object[] args)
+        private static string FormatMessage(string format, params object[] args)
         {
             var message = new StringBuilder(256);
             message.AppendFormat(CultureInfo.InvariantCulture, "[{0} T{1:X3} Virtu] ", DateTime.Now.ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture), Thread.CurrentThread.ManagedThreadId);
@@ -55,9 +53,5 @@ namespace Jellyfish.Virtu.Services
 
             return message.ToString();
         }
-
-        public static DebugService Default { get { return _default.Value; } }
-
-        private static readonly Lazy<DebugService> _default = new Lazy<DebugService>(() => new DebugService(null));
     }
 }

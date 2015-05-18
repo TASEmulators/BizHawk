@@ -101,6 +101,6 @@ namespace Jellyfish.Virtu
             Video.ModeC, Video.ModeD, Video.Mode1, Video.Mode2, Video.ModeE, Video.ModeF, Video.Mode1, Video.Mode2
         };
 
-        private readonly Action<int, byte>[][][] WriteRamModeBankRegion;
+        private Action<int, byte>[][][] WriteRamModeBankRegion;
     }
 }

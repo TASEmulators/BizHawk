@@ -2,6 +2,7 @@
 {
     public class PeripheralCard : MachineComponent
     {
+		public PeripheralCard() { }
         public PeripheralCard(Machine machine) : 
             base(machine)
         {

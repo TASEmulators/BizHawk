@@ -5,12 +5,12 @@ using Jellyfish.Library;
 
 namespace Jellyfish.Virtu.Services
 {
-    public abstract class AudioService : MachineService
+	/// <summary>
+	/// this isn't really a "service" anymore, just a helper for the speaker class
+	/// </summary>
+    public class AudioService
     {
-        protected AudioService(Machine machine) : 
-            base(machine)
-        {
-        }
+		public AudioService() { }
 
         public void Output(int data) // machine thread
         {
@@ -25,21 +25,16 @@ namespace Jellyfish.Virtu.Services
 		private short[] buff = new short[4096];
 		private int pos = 0;
 
-        public void Reset()
-        {
+		public void Clear()
+		{
 			pos = 0;
-        }
-
-        public abstract void SetVolume(float volume);
-
+		}
 
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
 			samples = buff;
 			nsamp = pos / 2;
 			pos = 0;
-
-			Console.WriteLine(nsamp);
 		}
     }
 }

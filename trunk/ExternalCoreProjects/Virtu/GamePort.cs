@@ -8,15 +8,31 @@ namespace Jellyfish.Virtu
 {
     public sealed class GamePort : MachineComponent
     {
+		// TODO: ressurect this
+		public bool ReadButton0() { return false; }
+		public bool ReadButton1() { return false; }
+		public bool ReadButton2() { return false; }
+
+		public bool Paddle0Strobe { get { return false; } }
+		public bool Paddle1Strobe { get { return false; } }
+		public bool Paddle2Strobe { get { return false; } }
+		public bool Paddle3Strobe { get { return false; } }
+
+		public void TriggerTimers() { }
+
+		public GamePort() { }
         public GamePort(Machine machine) :
             base(machine)
         {
+			/*
             _resetPaddle0StrobeEvent = ResetPaddle0StrobeEvent; // cache delegates; avoids garbage
             _resetPaddle1StrobeEvent = ResetPaddle1StrobeEvent;
             _resetPaddle2StrobeEvent = ResetPaddle2StrobeEvent;
             _resetPaddle3StrobeEvent = ResetPaddle3StrobeEvent;
+			*/
         }
 
+		/*
         public override void Initialize()
         {
             _keyboardService = Machine.Services.GetService<KeyboardService>();
@@ -46,137 +62,7 @@ namespace Jellyfish.Virtu
             Button2TouchHeight = 0.25f;
             Button2TouchOrder = 1;
         }
-
-        public override void LoadState(BinaryReader reader, Version version)
-        {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-
-            InvertPaddles = reader.ReadBoolean();
-            SwapPaddles = reader.ReadBoolean();
-            UseShiftKeyMod = reader.ReadBoolean();
-            JoystickDeadZone = reader.ReadSingle();
-
-            UseKeyboard = reader.ReadBoolean();
-            Joystick0UpLeftKey = reader.ReadInt32();
-            Joystick0UpKey = reader.ReadInt32();
-            Joystick0UpRightKey = reader.ReadInt32();
-            Joystick0LeftKey = reader.ReadInt32();
-            Joystick0RightKey = reader.ReadInt32();
-            Joystick0DownLeftKey = reader.ReadInt32();
-            Joystick0DownKey = reader.ReadInt32();
-            Joystick0DownRightKey = reader.ReadInt32();
-            Joystick1UpLeftKey = reader.ReadInt32();
-            Joystick1UpKey = reader.ReadInt32();
-            Joystick1UpRightKey = reader.ReadInt32();
-            Joystick1LeftKey = reader.ReadInt32();
-            Joystick1RightKey = reader.ReadInt32();
-            Joystick1DownLeftKey = reader.ReadInt32();
-            Joystick1DownKey = reader.ReadInt32();
-            Joystick1DownRightKey = reader.ReadInt32();
-            Button0Key = reader.ReadInt32();
-            Button1Key = reader.ReadInt32();
-            Button2Key = reader.ReadInt32();
-
-            UseTouch = reader.ReadBoolean();
-            Joystick0TouchX = reader.ReadSingle();
-            Joystick0TouchY = reader.ReadSingle();
-            Joystick0TouchWidth = reader.ReadSingle();
-            Joystick0TouchHeight = reader.ReadSingle();
-            Joystick0TouchOrder = reader.ReadInt32();
-            Joystick0TouchRadius = reader.ReadSingle();
-            Joystick0TouchKeepLast = reader.ReadBoolean();
-            Joystick1TouchX = reader.ReadSingle();
-            Joystick1TouchY = reader.ReadSingle();
-            Joystick1TouchWidth = reader.ReadSingle();
-            Joystick1TouchHeight = reader.ReadSingle();
-            Joystick1TouchOrder = reader.ReadInt32();
-            Joystick1TouchRadius = reader.ReadSingle();
-            Joystick1TouchKeepLast = reader.ReadBoolean();
-            Button0TouchX = reader.ReadSingle();
-            Button0TouchY = reader.ReadSingle();
-            Button0TouchWidth = reader.ReadSingle();
-            Button0TouchHeight = reader.ReadSingle();
-            Button0TouchOrder = reader.ReadInt32();
-            Button1TouchX = reader.ReadSingle();
-            Button1TouchY = reader.ReadSingle();
-            Button1TouchWidth = reader.ReadSingle();
-            Button1TouchHeight = reader.ReadSingle();
-            Button1TouchOrder = reader.ReadInt32();
-            Button2TouchX = reader.ReadSingle();
-            Button2TouchY = reader.ReadSingle();
-            Button2TouchWidth = reader.ReadSingle();
-            Button2TouchHeight = reader.ReadSingle();
-            Button2TouchOrder = reader.ReadInt32();
-        }
-
-        public override void SaveState(BinaryWriter writer)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException("writer");
-            }
-
-            writer.Write(InvertPaddles);
-            writer.Write(SwapPaddles);
-            writer.Write(UseShiftKeyMod);
-            writer.Write(JoystickDeadZone);
-
-            writer.Write(UseKeyboard);
-            writer.Write(Joystick0UpLeftKey);
-            writer.Write(Joystick0UpKey);
-            writer.Write(Joystick0UpRightKey);
-            writer.Write(Joystick0LeftKey);
-            writer.Write(Joystick0RightKey);
-            writer.Write(Joystick0DownLeftKey);
-            writer.Write(Joystick0DownKey);
-            writer.Write(Joystick0DownRightKey);
-            writer.Write(Joystick1UpLeftKey);
-            writer.Write(Joystick1UpKey);
-            writer.Write(Joystick1UpRightKey);
-            writer.Write(Joystick1LeftKey);
-            writer.Write(Joystick1RightKey);
-            writer.Write(Joystick1DownLeftKey);
-            writer.Write(Joystick1DownKey);
-            writer.Write(Joystick1DownRightKey);
-            writer.Write(Button0Key);
-            writer.Write(Button1Key);
-            writer.Write(Button2Key);
-
-            writer.Write(UseTouch);
-            writer.Write(Joystick0TouchX);
-            writer.Write(Joystick0TouchY);
-            writer.Write(Joystick0TouchWidth);
-            writer.Write(Joystick0TouchHeight);
-            writer.Write(Joystick0TouchOrder);
-            writer.Write(Joystick0TouchRadius);
-            writer.Write(Joystick0TouchKeepLast);
-            writer.Write(Joystick1TouchX);
-            writer.Write(Joystick1TouchY);
-            writer.Write(Joystick1TouchWidth);
-            writer.Write(Joystick1TouchHeight);
-            writer.Write(Joystick1TouchOrder);
-            writer.Write(Joystick1TouchRadius);
-            writer.Write(Joystick1TouchKeepLast);
-            writer.Write(Button0TouchX);
-            writer.Write(Button0TouchY);
-            writer.Write(Button0TouchWidth);
-            writer.Write(Button0TouchHeight);
-            writer.Write(Button0TouchOrder);
-            writer.Write(Button1TouchX);
-            writer.Write(Button1TouchY);
-            writer.Write(Button1TouchWidth);
-            writer.Write(Button1TouchHeight);
-            writer.Write(Button1TouchOrder);
-            writer.Write(Button2TouchX);
-            writer.Write(Button2TouchY);
-            writer.Write(Button2TouchWidth);
-            writer.Write(Button2TouchHeight);
-            writer.Write(Button2TouchOrder);
-        }
-
+		
         public bool ReadButton0()
         {
             return (_gamePortService.IsButton0Down || _keyboardService.IsOpenAppleKeyDown || 
@@ -365,6 +251,6 @@ namespace Jellyfish.Virtu
         private Action _resetPaddle3StrobeEvent;
 
         private KeyboardService _keyboardService;
-        private GamePortService _gamePortService;
+        private GamePortService _gamePortService;*/
     }
 }

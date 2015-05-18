@@ -6,6 +6,7 @@ namespace Jellyfish.Virtu
 {
     public sealed class DiskNib : Disk525
     {
+		public DiskNib() { }
         public DiskNib(string name, byte[] data, bool isWriteProtected) : 
             base(name, data, isWriteProtected)
         {

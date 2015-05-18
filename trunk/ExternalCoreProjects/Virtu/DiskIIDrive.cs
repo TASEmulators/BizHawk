@@ -7,6 +7,7 @@ namespace Jellyfish.Virtu
 {
     public sealed class DiskIIDrive : MachineComponent
     {
+		public DiskIIDrive() { }
         public DiskIIDrive(Machine machine) :
             base(machine)
         {
@@ -16,60 +17,11 @@ namespace Jellyfish.Virtu
             DriveArmStepDelta[3] = new int[] { 0,  1,  0,  1, -1,  0, -1,  0,  0,  1,  0,  1, -1,  0, -1,  0 }; // phase 3
         }
 
-        public override void LoadState(BinaryReader reader, Version version)
-        {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-
-            _trackLoaded = reader.ReadBoolean();
-            _trackChanged = reader.ReadBoolean();
-            _trackNumber = reader.ReadInt32();
-            _trackOffset = reader.ReadInt32();
-            if (_trackLoaded)
-            {
-                reader.Read(_trackData, 0, _trackData.Length);
-            }
-            if (reader.ReadBoolean())
-            {
-                DebugService.WriteMessage("Loading machine '{0}'", typeof(Disk525).Name);
-                _disk = Disk525.LoadState(reader, version);
-            }
-            else
-            {
-                _disk = null;
-            }
-        }
-
-        public override void SaveState(BinaryWriter writer)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException("writer");
-            }
-
-            writer.Write(_trackLoaded);
-            writer.Write(_trackChanged);
-            writer.Write(_trackNumber);
-            writer.Write(_trackOffset);
-            if (_trackLoaded)
-            {
-                writer.Write(_trackData);
-            }
-            writer.Write(_disk != null);
-            if (_disk != null)
-            {
-                DebugService.WriteMessage("Saving machine '{0}'", _disk.GetType().Name);
-                _disk.SaveState(writer);
-            }
-        }
-
-        public void InsertDisk(string name, Stream stream, bool isWriteProtected)
+        public void InsertDisk(string name, byte[] data, bool isWriteProtected)
         {
             DebugService.WriteMessage("Inserting disk '{0}'", name);
             FlushTrack();
-            _disk = Disk525.CreateDisk(name, stream, isWriteProtected);
+            _disk = Disk525.CreateDisk(name, data, isWriteProtected);
             _trackLoaded = false;
         }
 
@@ -116,7 +68,9 @@ namespace Jellyfish.Virtu
                 return data;
             }
 
-            return _random.Next(0x01, 0xFF);
+			return 0x80;
+			// TODO: WTF was this
+            //return _random.Next(0x01, 0xFF);
         }
 
         public void Write(int data)
@@ -152,13 +106,14 @@ namespace Jellyfish.Virtu
             }
         }
 
+		[Newtonsoft.Json.JsonIgnore]
         public bool IsWriteProtected { get { return _disk.IsWriteProtected; } }
 
         private const int TrackNumberMax = 0x44;
 
         private const int PhaseCount = 4;
 
-        private readonly int[][] DriveArmStepDelta = new int[PhaseCount][];
+        private int[][] DriveArmStepDelta = new int[PhaseCount][];
 
         private bool _trackLoaded;
         private bool _trackChanged;
@@ -166,7 +121,5 @@ namespace Jellyfish.Virtu
         private int _trackOffset;
         private byte[] _trackData = new byte[Disk525.TrackSize];
         private Disk525 _disk;
-
-        private Random _random = new Random();
     }
 }
