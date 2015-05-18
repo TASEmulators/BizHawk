@@ -48,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			//for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
+			InitSaveStates();
 			SetupMemoryDomains();
 		}
 
