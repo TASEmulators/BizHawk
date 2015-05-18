@@ -101,14 +101,14 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Minus",
+						Name = "-",
 						DisplayName = "-",
 						Location = new Point(286, 18),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Equals",
+						Name = "=",
 						DisplayName = "=",
 						Location = new Point(307, 18),
 						Type = PadSchema.PadInputType.Boolean
@@ -202,22 +202,22 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Left Bracket",
+						Name = "[",
 						DisplayName = "[",
 						Location = new Point(302, 42),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Right Bracket",
+						Name = "]",
 						DisplayName = "]",
 						Location = new Point(325, 42),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Forward Slash",
-						DisplayName = " / ",
+						Name = "\\",
+						DisplayName = " \\ ",
 						Location = new Point(349, 42),
 						Type = PadSchema.PadInputType.Boolean
 					},
@@ -295,14 +295,14 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Semicolon",
+						Name = ";",
 						DisplayName = ";",
 						Location = new Point(286, 66),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Apostrophe",
+						Name = "'",
 						DisplayName = "'",
 						Location = new Point(307, 66),
 						Type = PadSchema.PadInputType.Boolean
@@ -318,7 +318,7 @@ namespace BizHawk.Client.EmuHawk
 					/************************** Row 4 **************************/
 					new PadSchema.ButtonScema
 					{
-						Name = "Left Shift",
+						Name = "Shift",
 						DisplayName = "     Shift     ",
 						Location = new Point(10, 90),
 						Type = PadSchema.PadInputType.Boolean
@@ -374,28 +374,28 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Comma",
+						Name = ",",
 						DisplayName = ",",
 						Location = new Point(252, 90),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Period",
+						Name = ".",
 						DisplayName = ".",
 						Location = new Point(272, 90),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Forward Slash",
+						Name = "/",
 						DisplayName = "/",
 						Location = new Point(292, 90),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Right Shift",
+						Name = "Shift",
 						DisplayName = "    Shift    ",
 						Location = new Point(315, 90),
 						Type = PadSchema.PadInputType.Boolean
@@ -406,21 +406,21 @@ namespace BizHawk.Client.EmuHawk
 
 					new PadSchema.ButtonScema
 					{
-						Name = "Caps",
+						Name = "Caps Lock",
 						DisplayName = "Caps",
 						Location = new Point(10, 114),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Tilde",
+						Name = "`",
 						DisplayName = "~",
 						Location = new Point(52, 114),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
 					{
-						Name = "Leap Left",
+						Name = "White Apple",
 						DisplayName = "<",
 						Location = new Point(96, 114),
 						Type = PadSchema.PadInputType.Boolean
@@ -437,7 +437,7 @@ namespace BizHawk.Client.EmuHawk
 
 					new PadSchema.ButtonScema
 					{
-						Name = "Leap Right",
+						Name = "Black Apple",
 						DisplayName = ">",
 						Location = new Point(265, 114),
 						Type = PadSchema.PadInputType.Boolean
