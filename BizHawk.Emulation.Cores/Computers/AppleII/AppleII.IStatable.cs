@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			DeserializeEverything(new BsonReader(reader));
 		}
 		*/
-
+		
 		public void SaveStateBinary(BinaryWriter writer)
 		{
 			var tw = new StreamWriter(writer.BaseStream, new System.Text.UTF8Encoding(false));
@@ -116,6 +116,22 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			var tr = new StreamReader(reader.BaseStream, System.Text.Encoding.UTF8);
 			LoadStateText(tr);
 		}
+
+		/*
+		 * This naive attempt at making my own kind of BSON writer/reader is slow, probably because
+		 * everything has to be popped out to a full JToken graph to use it.  A real competing solution
+		 * would inherit JsonWriter\JsonReader, if that's even possible
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			var j = new JTokenWriter();
+			SerializeEverything(j);
+			new LBSONWriter(writer).Write(j.Token);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			DeserializeEverything(new JTokenReader(new LBSONReader(reader).Read()));
+		}*/
 
 		public byte[] SaveStateBinary()
 		{

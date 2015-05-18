@@ -135,6 +135,7 @@
     <Compile Include="Computers\AppleII\AppleII.IVideoProvider.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\AppleII\LBSON.cs" />
     <Compile Include="Computers\Commodore64\C64.cs" />
     <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">
       <DependentUpon>C64.cs</DependentUpon>
