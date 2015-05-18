@@ -16,10 +16,10 @@
 
 		public int[] fb;
 
-		public void SetPixel(int x, int y, uint color)
+		public void SetPixel(int x, int y, int color)
 		{
 			int i = 560 * y + x;
-			fb[i] = fb[i + 560] = (int)color;
+			fb[i] = fb[i + 560] = color;
 		}
     }
 }

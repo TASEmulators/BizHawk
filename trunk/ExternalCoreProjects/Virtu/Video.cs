@@ -31,23 +31,26 @@ namespace Jellyfish.Virtu
 			VideoService = new Services.VideoService();
 
 //#if SILVERLIGHT || WPF
-            _colorBlack = 0xFF000000; // BGRA
-            _colorDarkBlue = 0xFF000099;
-            _colorDarkGreen = 0xFF117722;
-            _colorMediumBlue = 0xFF0000FF;
-            _colorBrown = 0xFF885500;
-            _colorLightGrey = 0xFF99AAAA;
-            _colorGreen = 0xFF00EE11;
-            _colorAquamarine = 0xFF55FFAA;
-            _colorDeepRed = 0xFFFF1111;
-            _colorPurple = 0xFFDD00DD;
-            _colorDarkGrey = 0xFF445555;
-            _colorLightBlue = 0xFF33AAFF;
-            _colorOrange = 0xFFFF4411;
-            _colorPink = 0xFFFF9988;
-            _colorYellow = 0xFFFFFF11;
-            _colorWhite = 0xFFFFFFFF;
-            _colorMonochrome = 0xFF00AA00;
+			unchecked
+			{
+				_colorBlack = (int)0xFF000000; // BGRA
+				_colorDarkBlue = (int)0xFF000099;
+				_colorDarkGreen = (int)0xFF117722;
+				_colorMediumBlue = (int)0xFF0000FF;
+				_colorBrown = (int)0xFF885500;
+				_colorLightGrey = (int)0xFF99AAAA;
+				_colorGreen = (int)0xFF00EE11;
+				_colorAquamarine = (int)0xFF55FFAA;
+				_colorDeepRed = (int)0xFFFF1111;
+				_colorPurple = (int)0xFFDD00DD;
+				_colorDarkGrey = (int)0xFF445555;
+				_colorLightBlue = (int)0xFF33AAFF;
+				_colorOrange = (int)0xFFFF4411;
+				_colorPink = (int)0xFFFF9988;
+				_colorYellow = (int)0xFFFFFF11;
+				_colorWhite = (int)0xFFFFFFFF;
+				_colorMonochrome = (int)0xFF00AA00;
+			}
 //#else
 //			_colorBlack = 0xFF000000; // RGBA
 //			_colorDarkBlue = 0xFF990000;
@@ -1019,39 +1022,39 @@ namespace Jellyfish.Virtu
         }
 
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorBlack { get { return _colorBlack; } set { _colorBlack = value; SetPalette(); } }
+		public int ColorBlack { get { return _colorBlack; } set { _colorBlack = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorDarkBlue { get { return _colorDarkBlue; } set { _colorDarkBlue = value; SetPalette(); } }
+		public int ColorDarkBlue { get { return _colorDarkBlue; } set { _colorDarkBlue = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorDarkGreen { get { return _colorDarkGreen; } set { _colorDarkGreen = value; SetPalette(); } }
+		public int ColorDarkGreen { get { return _colorDarkGreen; } set { _colorDarkGreen = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorMediumBlue { get { return _colorMediumBlue; } set { _colorMediumBlue = value; SetPalette(); } }
+		public int ColorMediumBlue { get { return _colorMediumBlue; } set { _colorMediumBlue = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorBrown { get { return _colorBrown; } set { _colorBrown = value; SetPalette(); } }
+		public int ColorBrown { get { return _colorBrown; } set { _colorBrown = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorLightGrey { get { return _colorLightGrey; } set { _colorLightGrey = value; SetPalette(); } }
+		public int ColorLightGrey { get { return _colorLightGrey; } set { _colorLightGrey = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorGreen { get { return _colorGreen; } set { _colorGreen = value; SetPalette(); } }
+		public int ColorGreen { get { return _colorGreen; } set { _colorGreen = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorAquamarine { get { return _colorAquamarine; } set { _colorAquamarine = value; SetPalette(); } }
+		public int ColorAquamarine { get { return _colorAquamarine; } set { _colorAquamarine = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorDeepRed { get { return _colorDeepRed; } set { _colorDeepRed = value; SetPalette(); } }
+		public int ColorDeepRed { get { return _colorDeepRed; } set { _colorDeepRed = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorPurple { get { return _colorPurple; } set { _colorPurple = value; SetPalette(); } }
+		public int ColorPurple { get { return _colorPurple; } set { _colorPurple = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorDarkGrey { get { return _colorDarkGrey; } set { _colorDarkGrey = value; SetPalette(); } }
+		public int ColorDarkGrey { get { return _colorDarkGrey; } set { _colorDarkGrey = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorLightBlue { get { return _colorLightBlue; } set { _colorLightBlue = value; SetPalette(); } }
+		public int ColorLightBlue { get { return _colorLightBlue; } set { _colorLightBlue = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorOrange { get { return _colorOrange; } set { _colorOrange = value; SetPalette(); } }
+		public int ColorOrange { get { return _colorOrange; } set { _colorOrange = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorPink { get { return _colorPink; } set { _colorPink = value; SetPalette(); } }
+		public int ColorPink { get { return _colorPink; } set { _colorPink = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorYellow { get { return _colorYellow; } set { _colorYellow = value; SetPalette(); } }
+		public int ColorYellow { get { return _colorYellow; } set { _colorYellow = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorWhite { get { return _colorWhite; } set { _colorWhite = value; SetPalette(); } }
+		public int ColorWhite { get { return _colorWhite; } set { _colorWhite = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
-		public uint ColorMonochrome { get { return _colorMonochrome; } set { _colorMonochrome = value; SetPalette(); } }
+		public int ColorMonochrome { get { return _colorMonochrome; } set { _colorMonochrome = value; SetPalette(); } }
 		[Newtonsoft.Json.JsonIgnore]
         public bool IsMonochrome { get { return _isMonochrome; } set { _isMonochrome = value; DirtyScreen(); } }
         public ScannerOptions ScannerOptions { get { return _scannerOptions; } set { _scannerOptions = value; SetScanner(); } }
@@ -1066,23 +1069,23 @@ namespace Jellyfish.Virtu
         private Memory _memory;
 		public VideoService VideoService { get; private set; }
 
-        private uint _colorBlack;
-        private uint _colorDarkBlue;
-        private uint _colorDarkGreen;
-        private uint _colorMediumBlue;
-        private uint _colorBrown;
-        private uint _colorLightGrey;
-        private uint _colorGreen;
-        private uint _colorAquamarine;
-        private uint _colorDeepRed;
-        private uint _colorPurple;
-        private uint _colorDarkGrey;
-        private uint _colorLightBlue;
-        private uint _colorOrange;
-        private uint _colorPink;
-        private uint _colorYellow;
-        private uint _colorWhite;
-        private uint _colorMonochrome;
+        private int _colorBlack;
+        private int _colorDarkBlue;
+        private int _colorDarkGreen;
+        private int _colorMediumBlue;
+        private int _colorBrown;
+        private int _colorLightGrey;
+        private int _colorGreen;
+        private int _colorAquamarine;
+        private int _colorDeepRed;
+        private int _colorPurple;
+        private int _colorDarkGrey;
+        private int _colorLightBlue;
+        private int _colorOrange;
+        private int _colorPink;
+        private int _colorYellow;
+        private int _colorWhite;
+        private int _colorMonochrome;
         private bool _isMonochrome;
         private bool _isTextInversed;
         private ScannerOptions _scannerOptions;
@@ -1094,7 +1097,7 @@ namespace Jellyfish.Virtu
         private int _vLineLeaveVBlank;
 
         private ushort[] _charSet;
-        private uint[] _colorPalette = new uint[ColorPaletteCount];
+        private int[] _colorPalette = new int[ColorPaletteCount];
         private bool[] _isCellDirty = new bool[Height * CellColumns + 1]; // includes sentinel
     }
 }

@@ -4,6 +4,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Jellyfish.Virtu;
+using Newtonsoft.Json.Bson;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
@@ -89,52 +90,41 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			DeserializeEverything(new JsonTextReader(reader));
 		}
 
+		/*
+		 * These are horrible; the LoadStateBinary() takes over 10x as long as LoadStateText()
+		 * Until we figure out why JSON.NET's BSONwriter sucks and how to fix it, stick with text-as-binary
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			/*
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-			writer.Write(CurrentDisk);
-			_machine.SaveState(writer);
-			*/
+			SerializeEverything(new BsonWriter(writer));
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			/*
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-			CurrentDisk = reader.ReadInt32();
-			InitDisk();
-			_machine.LoadState(reader);
-			*/
+			DeserializeEverything(new BsonReader(reader));
+		}
+		*/
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			var tw = new StreamWriter(writer.BaseStream, new System.Text.UTF8Encoding(false));
+			SaveStateText(tw);
+			tw.Flush();
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			var tr = new StreamReader(reader.BaseStream, System.Text.Encoding.UTF8);
+			LoadStateText(tr);
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			return new byte[16];
-
-			if (_stateBuffer == null)
-			{
-				var stream = new MemoryStream();
-				var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				_stateBuffer = stream.ToArray();
-				writer.Close();
-				return _stateBuffer;
-			}
-			else
-			{
-				var stream = new MemoryStream(_stateBuffer);
-				var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				writer.Close();
-				return _stateBuffer;
-			}
+			// our savestate array can be of varying sizes, so this can't be too clever
+			var stream = new MemoryStream();
+			var writer = new BinaryWriter(stream);
+			SaveStateBinary(writer);
+			writer.Flush();
+			return stream.ToArray();
 		}
-
-		private byte[] _stateBuffer;
 	}
 }
