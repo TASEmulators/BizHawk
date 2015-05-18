@@ -9,197 +9,214 @@ using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
-	// test classes to see if our own lightweight BSON can be fast
-	// these don't derive JsonReader and JsonWriter because those classes are difficult to derive from,
-	// so unfortunately everything has to be loaded into memory.
+	// barebones classes for writing and reading a simple bson-like format, used to gain a bit of speed in Apple II savestates
 
-	public class LBSONReader
+	internal enum LBTOK : byte
 	{
-		private enum LToken : byte
-		{
-			Null,
-			Array,
-			Object,
-			S8,
-			U8,
-			S16,
-			U16,
-			S32,
-			U32,
-			S64,
-			U64,
-			False,
-			True,
-			String,
-			F32,
-			F64
-		}
+		Null,
+		Undefined,
+		StartArray,
+		EndArray,
+		StartObject,
+		EndObject,
+		Property,
+		S8,
+		U8,
+		S16,
+		U16,
+		S32,
+		U32,
+		S64,
+		U64,
+		False,
+		True,
+		String,
+		F32,
+		F64,
+	}
 
-		private LToken ReadToken()
-		{
-			return (LToken)r.ReadByte();
-		}
-
-		public LBSONReader(BinaryReader r)
+	public class LBR : JsonReader
+	{
+		public LBR(BinaryReader r)
 		{
 			this.r = r;
 		}
-
 		private BinaryReader r;
-
-		public JToken Read()
+		public override void Close()
 		{
-			var t = ReadToken();
+		}
+		// as best as I can tell, the serializers refer to depth, but don't actually need to work except when doing certain error recovery
+		public override int Depth { get { return 0; } }
+		public override string Path { get { throw new NotImplementedException(); } }
+		public override Type ValueType { get { return v != null ? v.GetType() : null; } }
+		public override JsonToken TokenType { get { return t; } }
+		public override object Value { get { return v; } }
+		private object v;
+		private JsonToken t;
+
+		public override bool Read()
+		{
+			LBTOK l = (LBTOK)r.ReadByte();
+			switch (l)
+			{
+				case LBTOK.StartArray: t = JsonToken.StartArray; v = null; break;
+				case LBTOK.EndArray: t = JsonToken.EndArray; v = null; break;
+				case LBTOK.StartObject: t = JsonToken.StartObject; v = null; break;
+				case LBTOK.EndObject: t = JsonToken.EndObject; v = null; break;
+				case LBTOK.Null: t = JsonToken.Null; v = null; break;
+				case LBTOK.False: t = JsonToken.Boolean; v = false; break;
+				case LBTOK.True: t = JsonToken.Boolean; v = true; break;
+				case LBTOK.Property: t = JsonToken.PropertyName; v = r.ReadString(); break;
+				case LBTOK.Undefined: t = JsonToken.Undefined; v = null; break;
+				case LBTOK.S8: t = JsonToken.Integer; v = r.ReadSByte(); break;
+				case LBTOK.U8: t = JsonToken.Integer; v = r.ReadByte(); break;
+				case LBTOK.S16: t = JsonToken.Integer; v = r.ReadInt16(); break;
+				case LBTOK.U16: t = JsonToken.Integer; v = r.ReadUInt16(); break;
+				case LBTOK.S32: t = JsonToken.Integer; v = r.ReadInt32(); break;
+				case LBTOK.U32: t = JsonToken.Integer; v = r.ReadUInt32(); break;
+				case LBTOK.S64: t = JsonToken.Integer; v = r.ReadInt64(); break;
+				case LBTOK.U64: t = JsonToken.Integer; v = r.ReadUInt64(); break;
+				case LBTOK.String: t = JsonToken.String; v = r.ReadString(); break;
+				case LBTOK.F32: t = JsonToken.Float; v = r.ReadSingle(); break;
+				case LBTOK.F64: t = JsonToken.Float; v = r.ReadDouble(); break;
+
+				default:
+					throw new InvalidOperationException();
+			}
+			return true;
+		}
+
+		public override byte[] ReadAsBytes()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override DateTime? ReadAsDateTime()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override DateTimeOffset? ReadAsDateTimeOffset()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override decimal? ReadAsDecimal()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override int? ReadAsInt32()
+		{
+			// TODO: speed this up if needed
+			if (!Read())
+				return null;
+
 			switch (t)
 			{
-				case LToken.Null: return JValue.CreateNull();
-				case LToken.Array: return ReadArray();
-				case LToken.Object: return ReadObject();
-				case LToken.S8: return new JValue(r.ReadSByte());
-				case LToken.U8: return new JValue(r.ReadByte());
-				case LToken.S16: return new JValue(r.ReadInt16());
-				case LToken.U16: return new JValue(r.ReadUInt16());
-				case LToken.S32: return new JValue(r.ReadInt32());
-				case LToken.U32: return new JValue(r.ReadUInt32());
-				case LToken.S64: return new JValue(r.ReadInt64());
-				case LToken.U64: return new JValue(r.ReadUInt64());
-				case LToken.False: return new JValue(false);
-				case LToken.True: return new JValue(true);
-				case LToken.String: return new JValue(r.ReadString());
-				case LToken.F32: return new JValue(r.ReadSingle());
-				case LToken.F64: return new JValue(r.ReadDouble());
-				default: throw new InvalidOperationException();
+				case JsonToken.Null:
+					return null;
+				case JsonToken.Integer:
+				case JsonToken.Float:
+					return Convert.ToInt32(v);
+				case JsonToken.String:
+					int i;
+					if (int.TryParse(v.ToString(), out i))
+						return i;
+					else
+						return null;
+				default:
+					return null;
 			}
 		}
 
-		private JArray ReadArray()
+		public override string ReadAsString()
 		{
-			int l = r.ReadInt32();
-			var ret = new JArray();
-			for (int i = 0; i < l; i++)
-			{
-				ret.Add(Read());
-			}
-			return ret;
-		}
+			if (!Read())
+				return null;
 
-		private JObject ReadObject()
-		{
-			int l = r.ReadInt32();
-			var ret = new JObject();
-			for (int i = 0; i < l; i++)
+			switch (t)
 			{
-				ret.Add(r.ReadString(), Read());
+				case JsonToken.Null:
+					return null;
+				case JsonToken.Float:
+				case JsonToken.Integer:
+				case JsonToken.Boolean:
+				case JsonToken.String:
+					return v.ToString();
+				default:
+					return null;
 			}
-			return ret;
 		}
 	}
 
-	public class LBSONWriter
+	public class LBW : JsonWriter
 	{
-		private enum LToken : byte
-		{
-			Null,
-			Array,
-			Object,
-			S8,
-			U8,
-			S16,
-			U16,
-			S32,
-			U32,
-			S64,
-			U64,
-			False,
-			True,
-			String,
-			F32,
-			F64
-		}
-		private void WriteToken(LToken t)
+		private void WT(LBTOK t)
 		{
 			w.Write((byte)t);
 		}
 
-		public LBSONWriter(BinaryWriter w)
+		public LBW(BinaryWriter w)
 		{
 			this.w = w;
 		}
-
 		private BinaryWriter w;
 
-		private void WriteArray(JArray j)
+		public override void Flush()
 		{
-			WriteToken(LToken.Array);
-			w.Write(j.Count);
-			foreach (var jj in j)
-			{
-				Write(jj);
-			}
-		}
-		private void WriteObject(JObject j)
-		{
-			WriteToken(LToken.Object);
-			w.Write(j.Count);
-			foreach (var jj in j)
-			{
-				w.Write(jj.Key);
-				Write(jj.Value);
-			}
+			w.Flush();
 		}
 
-		private void WriteValue(object o)
+		public override void Close()
 		{
-			switch (o.GetType().ToString())
-			{
-				case "System.SByte": WriteToken(LToken.S8); w.Write((sbyte)o); return;
-				case "System.Byte": WriteToken(LToken.U8); w.Write((byte)o); return;
-				case "System.Int16": WriteToken(LToken.S16); w.Write((short)o); return;
-				case "System.UInt16": WriteToken(LToken.U16); w.Write((ushort)o); return;
-				case "System.Int32": WriteToken(LToken.S32); w.Write((int)o); return;
-				case "System.UInt32": WriteToken(LToken.U32); w.Write((uint)o); return;
-				case "System.Int64": WriteToken(LToken.S64); w.Write((long)o); return;
-				case "System.UInt64": WriteToken(LToken.U64); w.Write((ulong)o); return;
-
-				case "System.Boolean": WriteToken((bool)o ? LToken.True : LToken.False); return;
-
-				case "System.Single": WriteToken(LToken.F32); w.Write((float)o); return;
-				case "System.Double": WriteToken(LToken.F64); w.Write((double)o); return;
-
-				case "System.String": WriteToken(LToken.String); w.Write((string)o); return;
-
-				default:
-					throw new NotImplementedException();
-			}
 		}
 
-		public void Write(JToken j)
-		{
-			switch (j.Type)
-			{
-				case JTokenType.Array:
-					WriteArray((JArray)j);
-					return;
-				case JTokenType.Object:
-					WriteObject((JObject)j);
-					return;
-				case JTokenType.Boolean:
-				case JTokenType.Bytes:
-				case JTokenType.Date:
-				case JTokenType.Float:
-				case JTokenType.Guid:
-				case JTokenType.Integer:
-				case JTokenType.String:
-					WriteValue(((JValue)j).Value);
-					return;
-					
-				case JTokenType.Null:
-					WriteToken(LToken.Null);
-					return;
+		public override void WriteValue(bool value) { WT(value ? LBTOK.True : LBTOK.False); }
 
-				default:
-					throw new NotImplementedException();
-			}
-		}
+		public override void WriteValue(sbyte value) { WT(LBTOK.S8); w.Write(value); }
+		public override void WriteValue(byte value) { WT(LBTOK.U8); w.Write(value); }
+		public override void WriteValue(short value) { WT(LBTOK.S16); w.Write(value); }
+		public override void WriteValue(ushort value) { WT(LBTOK.U16); w.Write(value); }
+		public override void WriteValue(int value) { WT(LBTOK.S32); w.Write(value); }
+		public override void WriteValue(uint value) { WT(LBTOK.U32); w.Write(value); }
+		public override void WriteValue(long value) { WT(LBTOK.S64); w.Write(value); }
+		public override void WriteValue(ulong value) { WT(LBTOK.U64); w.Write(value); }
+
+		public override void WriteStartArray() { WT(LBTOK.StartArray); }
+		public override void WriteEndArray() { WT(LBTOK.EndArray); }
+		public override void WriteStartObject() { WT(LBTOK.StartObject); }
+		public override void WriteEndObject() { WT(LBTOK.EndObject); }
+		public override void WriteNull() { WT(LBTOK.Null); }
+		public override void WriteUndefined() { WT(LBTOK.Undefined); }
+
+		public override void WriteValue(float value) { WT(LBTOK.F32); w.Write(value); }
+		public override void WriteValue(double value) { WT(LBTOK.F64); w.Write(value); }
+
+		public override void WriteComment(string text) { throw new NotImplementedException(); }
+		public override void WriteWhitespace(string ws) { throw new NotImplementedException(); }
+		protected override void WriteIndent() { throw new NotImplementedException(); }
+		protected override void WriteIndentSpace() { throw new NotImplementedException(); }
+		public override void WriteEnd() { throw new NotImplementedException(); }
+		protected override void WriteEnd(JsonToken token) { throw new NotImplementedException(); }
+		public override void WriteRaw(string json) { throw new NotImplementedException(); }
+		public override void WriteRawValue(string json) { throw new NotImplementedException(); }
+		public override void WriteStartConstructor(string name) { throw new NotImplementedException(); }
+		public override void WriteEndConstructor() { throw new NotImplementedException(); }
+		protected override void WriteValueDelimiter() { throw new NotImplementedException(); }
+
+		public override void WritePropertyName(string name) { WT(LBTOK.Property); w.Write(name); }
+		public override void WriteValue(string value) { WT(LBTOK.String); w.Write(value); }
+		public override void WritePropertyName(string name, bool escape) { WT(LBTOK.Property); w.Write(name); } // no escaping required
+
+		public override void WriteValue(byte[] value) { throw new NotImplementedException(); }
+		public override void WriteValue(char value) { throw new NotImplementedException(); }
+		public override void WriteValue(DateTime value) { throw new NotImplementedException(); }
+		public override void WriteValue(DateTimeOffset value) { throw new NotImplementedException(); }
+		public override void WriteValue(decimal value) { throw new NotImplementedException(); }
+		public override void WriteValue(Guid value) { throw new NotImplementedException(); }
+		public override void WriteValue(TimeSpan value) { throw new NotImplementedException(); }
+		public override void WriteValue(Uri value) { throw new NotImplementedException(); }
 	}
+
 }
