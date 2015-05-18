@@ -5,6 +5,7 @@ namespace Jellyfish.Virtu
 {
     public sealed class NoSlotClock : MachineComponent
     {
+		public NoSlotClock() { }
         public NoSlotClock(Machine machine) :
             base(machine)
         {
@@ -16,34 +17,6 @@ namespace Jellyfish.Virtu
             _writeEnabled = true;
             _clockRegister = new RingRegister(0x0, 0x1);
             _comparisonRegister = new RingRegister(ClockInitSequence, 0x1);
-        }
-
-        public override void LoadState(BinaryReader reader, Version version)
-        {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-
-            _clockEnabled = reader.ReadBoolean();
-            _writeEnabled = reader.ReadBoolean();
-            _clockRegister = new RingRegister(reader.ReadUInt64(), reader.ReadUInt64());
-            _comparisonRegister = new RingRegister(reader.ReadUInt64(), reader.ReadUInt64());
-        }
-
-        public override void SaveState(BinaryWriter writer)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException("writer");
-            }
-
-            writer.Write(_clockEnabled);
-            writer.Write(_writeEnabled);
-            writer.Write(_clockRegister.Data);
-            writer.Write(_clockRegister.Mask);
-            writer.Write(_comparisonRegister.Data);
-            writer.Write(_comparisonRegister.Mask);
         }
 
         public int Read(int address, int data)

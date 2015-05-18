@@ -6,8 +6,8 @@ namespace Jellyfish.Virtu
     {
         private const int OpCodeCount = 256;
 
-        private readonly Action[] ExecuteOpCode65N02;
-        private readonly Action[] ExecuteOpCode65C02;
+        private Action[] ExecuteOpCode65N02;
+        private Action[] ExecuteOpCode65C02;
 
         private const int PC = 0x01;
         private const int PZ = 0x02;

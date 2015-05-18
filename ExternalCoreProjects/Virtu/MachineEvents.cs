@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Jellyfish.Virtu
 {
@@ -25,6 +26,8 @@ namespace Jellyfish.Virtu
     {
         public void AddEvent(int delta, Action action)
         {
+			//Console.WriteLine("+{0} @ {1}", action.Method.Name, delta);
+
             var node = _used.First;
             for (; node != null; node = node.Next)
             {
@@ -68,23 +71,37 @@ namespace Jellyfish.Virtu
             for (var node = _used.First; node != null; node = node.Next)
             {
                 delta += node.Value.Delta;
-                if (object.ReferenceEquals(node.Value.Action, action)) // assumes delegate cached
-                {
-                    return delta;
-                }
+
+				var other = node.Value.Action;
+
+				if (other.Method == action.Method && other.Target == action.Target) 
+				{
+					//Console.WriteLine("={0} @ {1}", action.Method.Name, delta);
+					return delta;
+				}
+
+				// our delegate serializer doesn't preserve reference equality
+                //if (object.ReferenceEquals(node.Value.Action, action)) // assumes delegate cached
+                //{
+                //    return delta;
+                //}
             }
 
-            return 0;
+			//Console.WriteLine("=???? @ 0");
+			return 0;
         }
 
         public void HandleEvents(int delta)
         {
+			//Console.WriteLine("[{0}]", delta);
+
             var node = _used.First;
             node.Value.Delta -= delta;
 
             while (node.Value.Delta <= 0)
             {
-                node.Value.Action();
+				//Console.WriteLine("!{0} @ {1}", node.Value.Action.Method.Name, node.Value.Delta);
+				node.Value.Action();
                 RemoveEvent(node);
                 node = _used.First;
             }

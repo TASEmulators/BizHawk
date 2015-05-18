@@ -4,11 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Jellyfish.Library;
 using Jellyfish.Virtu.Services;
+using System.Collections.Generic;
 
 namespace Jellyfish.Virtu
 {
     public sealed class DiskIIController : PeripheralCard
     {
+		public DiskIIController() { }
         public DiskIIController(Machine machine, byte[] diskIIRom) : 
             base(machine)
         {
@@ -16,7 +18,7 @@ namespace Jellyfish.Virtu
 			Drive1 = new DiskIIDrive(machine);
             Drive2 = new DiskIIDrive(machine);
 
-            Drives = new Collection<DiskIIDrive> { Drive1, Drive2 };
+            Drives = new List<DiskIIDrive> { Drive1, Drive2 };
 
             BootDrive = Drive1;
         }
@@ -30,50 +32,6 @@ namespace Jellyfish.Virtu
             SetDriveNumber(0);
             _loadMode = false;
             _writeMode = false;
-        }
-
-        public override void LoadState(BinaryReader reader, Version version)
-        {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-
-            _latch = reader.ReadInt32();
-            _phaseStates = reader.ReadInt32();
-            _motorOn = reader.ReadBoolean();
-            _driveNumber = reader.ReadInt32();
-            _loadMode = reader.ReadBoolean();
-            _writeMode = reader.ReadBoolean();
-            _driveSpin = reader.ReadBoolean();
-            foreach (var drive in Drives)
-            {
-                DebugService.WriteMessage("Loading machine '{0}'", drive.GetType().Name);
-                drive.LoadState(reader, version);
-                //DebugService.WriteMessage("Loaded machine '{0}'", drive.GetType().Name);
-            }
-        }
-
-        public override void SaveState(BinaryWriter writer)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException("writer");
-            }
-
-            writer.Write(_latch);
-            writer.Write(_phaseStates);
-            writer.Write(_motorOn);
-            writer.Write(_driveNumber);
-            writer.Write(_loadMode);
-            writer.Write(_writeMode);
-            writer.Write(_driveSpin);
-            foreach (var drive in Drives)
-            {
-                DebugService.WriteMessage("Saving machine '{0}'", drive.GetType().Name);
-                drive.SaveState(writer);
-                //DebugService.WriteMessage("Saved machine '{0}'", drive.GetType().Name);
-            }
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
@@ -263,7 +221,7 @@ namespace Jellyfish.Virtu
         public DiskIIDrive Drive1 { get; private set; }
         public DiskIIDrive Drive2 { get; private set; }
 
-        public Collection<DiskIIDrive> Drives { get; private set; }
+        public List<DiskIIDrive> Drives { get; private set; }
 
         public DiskIIDrive BootDrive { get; private set; }
 

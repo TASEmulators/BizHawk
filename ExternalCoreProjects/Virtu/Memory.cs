@@ -13,6 +13,7 @@ namespace Jellyfish.Virtu
 
     public sealed partial class Memory : MachineComponent
     {
+		public Memory() { }
         public Memory(Machine machine, byte[] appleIIe) : 
             base(machine)
         {
@@ -89,7 +90,7 @@ namespace Jellyfish.Virtu
             _writeRomRegionD0FF = WriteRomRegionD0FF;
         }
 
-		private readonly byte[] _appleIIe;
+		private byte[] _appleIIe;
 
         public override void Initialize()
         {
@@ -136,55 +137,6 @@ namespace Jellyfish.Virtu
             MapRegion02BF();
             MapRegionC0CF();
             MapRegionD0FF();
-        }
-
-        public override void LoadState(BinaryReader reader, Version version)
-        {
-            if (reader == null)
-            {
-                throw new ArgumentNullException("reader");
-            }
-
-            _state = reader.ReadInt32();
-            _slotRegionC8CF = reader.ReadInt32();
-
-            reader.Read(_ramMainRegion0001, 0, _ramMainRegion0001.Length);
-            reader.Read(_ramMainRegion02BF, 0, _ramMainRegion02BF.Length);
-            reader.Read(_ramMainBank1RegionD0DF, 0, _ramMainBank1RegionD0DF.Length);
-            reader.Read(_ramMainBank2RegionD0DF, 0, _ramMainBank2RegionD0DF.Length);
-            reader.Read(_ramMainRegionE0FF, 0, _ramMainRegionE0FF.Length);
-            reader.Read(_ramAuxRegion0001, 0, _ramAuxRegion0001.Length);
-            reader.Read(_ramAuxRegion02BF, 0, _ramAuxRegion02BF.Length);
-            reader.Read(_ramAuxBank1RegionD0DF, 0, _ramAuxBank1RegionD0DF.Length);
-            reader.Read(_ramAuxBank2RegionD0DF, 0, _ramAuxBank2RegionD0DF.Length);
-            reader.Read(_ramAuxRegionE0FF, 0, _ramAuxRegionE0FF.Length);
-
-            MapRegion0001();
-            MapRegion02BF();
-            MapRegionC0CF();
-            MapRegionD0FF();
-        }
-
-        public override void SaveState(BinaryWriter writer)
-        {
-            if (writer == null)
-            {
-                throw new ArgumentNullException("writer");
-            }
-
-            writer.Write(_state);
-            writer.Write(_slotRegionC8CF);
-
-            writer.Write(_ramMainRegion0001);
-            writer.Write(_ramMainRegion02BF);
-            writer.Write(_ramMainBank1RegionD0DF);
-            writer.Write(_ramMainBank2RegionD0DF);
-            writer.Write(_ramMainRegionE0FF);
-            writer.Write(_ramAuxRegion0001);
-            writer.Write(_ramAuxRegion02BF);
-            writer.Write(_ramAuxBank1RegionD0DF);
-            writer.Write(_ramAuxBank2RegionD0DF);
-            writer.Write(_ramAuxRegionE0FF);
         }
 
         public void LoadPrg(Stream stream)
@@ -282,8 +234,6 @@ namespace Jellyfish.Virtu
             return _video.ReadFloatingBus();
         }
 
-        [SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-        [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         private int ReadIoRegionC0C0(int address)
         {
 			Machine.Lagged = false;

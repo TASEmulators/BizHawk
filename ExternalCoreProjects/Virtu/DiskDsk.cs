@@ -8,6 +8,7 @@ namespace Jellyfish.Virtu
 
     public sealed class DiskDsk : Disk525
     {
+		public DiskDsk() { }
         public DiskDsk(string name, byte[] data, bool isWriteProtected, SectorSkew sectorSkew) :
             base(name, data, isWriteProtected)
         {

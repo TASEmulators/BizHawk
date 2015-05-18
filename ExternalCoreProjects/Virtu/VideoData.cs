@@ -1627,7 +1627,7 @@ namespace Jellyfish.Virtu
         public const int ModeE = 0xE;
         public const int ModeF = 0xF;
 
-        private readonly Action<int>[] FlushRowMode;
+        private Action<int>[] FlushRowMode;
 
         private const int Width = 560;
         private const int Height = VLineEnterVBlank;

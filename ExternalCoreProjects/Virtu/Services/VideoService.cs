@@ -1,17 +1,25 @@
 ﻿namespace Jellyfish.Virtu.Services
 {
-    public abstract class VideoService : MachineService
+	/// <summary>
+	/// this isn't really a "service" anymore, just a helper for the video class
+	/// </summary>
+    public class VideoService
     {
-        protected VideoService(Machine machine) : 
-            base(machine)
-        {
-        }
+		public VideoService()
+		{
+			fb = new int[560 * 384];
+		}
+		public VideoService(int[] fb)
+		{
+			this.fb = fb;
+		}
 
-        public virtual void SetFullScreen(bool isFullScreen)
-        {
-        }
+		public int[] fb;
 
-        public abstract void SetPixel(int x, int y, uint color);
-        public abstract void Update(); // main thread
+		public void SetPixel(int x, int y, uint color)
+		{
+			int i = 560 * y + x;
+			fb[i] = fb[i + 560] = (int)color;
+		}
     }
 }

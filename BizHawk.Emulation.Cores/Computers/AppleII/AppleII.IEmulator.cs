@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		[FeatureNotImplemented]
 		public ISyncSoundProvider SyncSoundProvider
 		{
-			get { return _soundService; }
+			get { return this; }
 		}
 
 		[FeatureNotImplemented]
