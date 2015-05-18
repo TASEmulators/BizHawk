@@ -261,15 +261,17 @@ namespace BizHawk.Client.Common
 					new Dictionary<string, char>
 					{
 						{ "Tab", 't' },
-						{ "Enter", 'e' },
+						{ "Return", 'e' },
 						{ "Escape", 'x' },
-						{ "Back", 'b' },
+						{ "Delete", 'b' },
 						{ "Space", 's' },
-						{ "Ctrl", 'c' },
+						{ "Control", 'c' },
 						{ "Shift", '^' },
-						{ "Caps", 'C' },
+						{ "Caps Lock", 'C' },
 						{ "Next Disk", '>' },
-						{ "Previous Disk", '<' }
+						{ "Previous Disk", '<' },
+						{ "White Apple", 'w' },
+						{ "Black Apple", 'b' }
 					}
 				}
 			};
