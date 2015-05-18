@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
+		public bool BinarySaveStatesPreferred { get { return false; } }
 
 		private class OtherData
 		{
