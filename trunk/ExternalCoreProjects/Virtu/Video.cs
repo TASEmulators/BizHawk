@@ -25,6 +25,12 @@ namespace Jellyfish.Virtu
             };
         }
 
+		[System.Runtime.Serialization.OnDeserialized]
+		public void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
+		{
+			DirtyScreen();
+		}
+
         public override void Initialize()
         {
             _memory = Machine.Memory;

@@ -14,6 +14,7 @@
 			this.fb = fb;
 		}
 
+		[Newtonsoft.Json.JsonIgnore] // client can serialize framebuffer if it wants to
 		public int[] fb;
 
 		public void SetPixel(int x, int y, int color)
