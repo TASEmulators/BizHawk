@@ -156,6 +156,85 @@ namespace Jellyfish.Virtu
 		}
 	}
 
+	public class TypeTypeConverter : JsonConverter
+	{
+		// serialize and deserialize types, ignoring assembly entirely and only using namespace+typename
+		// all types, including generic type arguments to supplied types, must be in one of the declared assemblies (only checked on read!)
+		// the main goal here is to have something with a slight chance of working across versions
+
+		public TypeTypeConverter(IEnumerable<Assembly> ass)
+		{
+			assemblies = ass.ToList();
+		}
+
+		private List<Assembly> assemblies;
+		private Dictionary<string, Type> readlookup = new Dictionary<string, Type>();
+
+		public override bool CanConvert(Type objectType)
+		{
+			return typeof(Type).IsAssignableFrom(objectType);
+		}
+
+		public override bool CanRead { get { return true; } }
+		public override bool CanWrite { get { return true; } }
+
+		private Type GetType(string name)
+		{
+			Type ret;
+			if (!readlookup.TryGetValue(name, out ret))
+			{
+				ret = assemblies.Select(ass => ass.GetType(name, false)).Where(t => t != null).Single();
+				readlookup.Add(name, ret);
+			}
+			return ret;
+		}
+
+		private static string GetName(Type type)
+		{
+			return string.Format("{0}.{1}", type.Namespace, type.Name);
+		}
+
+		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+		{
+			if (reader.TokenType == JsonToken.Null)
+			{
+				return null;
+			}
+			else if (reader.TokenType == JsonToken.String)
+			{
+				return GetType(reader.Value.ToString());
+			}
+			else if (reader.TokenType == JsonToken.StartArray) // full generic
+			{
+				List<string> vals = serializer.Deserialize<List<string>>(reader);
+				return GetType(vals[0]).MakeGenericType(vals.Skip(1).Select(GetType).ToArray());
+			}
+			else
+			{
+				throw new InvalidOperationException();
+			}
+		}
+
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+		{
+			var type = (Type)value;
+			if (type.IsGenericType && !type.IsGenericTypeDefinition)
+			{
+				writer.WriteStartArray();
+				writer.WriteValue(GetName(type));
+				foreach (var t in type.GetGenericArguments())
+				{
+					writer.WriteValue(GetName(t));
+				}
+				writer.WriteEndArray();
+			}
+			else
+			{
+				writer.WriteValue(GetName(type));
+			}
+		}
+	}
+
 	public class DelegateConverter : JsonConverter
 	{
 		// caveats:  if used on anonymous delegates and/or closures, brittle to name changes in the generated classes and methods
