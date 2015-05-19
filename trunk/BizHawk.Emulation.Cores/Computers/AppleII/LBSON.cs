@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		String,
 		F32,
 		F64,
+		ByteArray,
 	}
 
 	public class LBR : JsonReader
@@ -79,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				case LBTOK.String: t = JsonToken.String; v = r.ReadString(); break;
 				case LBTOK.F32: t = JsonToken.Float; v = r.ReadSingle(); break;
 				case LBTOK.F64: t = JsonToken.Float; v = r.ReadDouble(); break;
+				case LBTOK.ByteArray: t = JsonToken.Bytes; v = r.ReadBytes(r.ReadInt32()); break;
 
 				default:
 					throw new InvalidOperationException();
@@ -88,7 +90,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public override byte[] ReadAsBytes()
 		{
-			throw new NotImplementedException();
+			if (!Read() || t != JsonToken.Bytes)
+				return null;
+			return (byte[])v;
 		}
 
 		public override DateTime? ReadAsDateTime()
@@ -193,6 +197,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public override void WriteValue(float value) { WT(LBTOK.F32); w.Write(value); }
 		public override void WriteValue(double value) { WT(LBTOK.F64); w.Write(value); }
 
+		public override void WriteValue(byte[] value) { WT(LBTOK.ByteArray); w.Write(value.Length); w.Write(value); }
+
 		public override void WriteComment(string text) { throw new NotImplementedException(); }
 		public override void WriteWhitespace(string ws) { throw new NotImplementedException(); }
 		protected override void WriteIndent() { throw new NotImplementedException(); }
@@ -209,7 +215,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public override void WriteValue(string value) { WT(LBTOK.String); w.Write(value); }
 		public override void WritePropertyName(string name, bool escape) { WT(LBTOK.Property); w.Write(name); } // no escaping required
 
-		public override void WriteValue(byte[] value) { throw new NotImplementedException(); }
 		public override void WriteValue(char value) { throw new NotImplementedException(); }
 		public override void WriteValue(DateTime value) { throw new NotImplementedException(); }
 		public override void WriteValue(DateTimeOffset value) { throw new NotImplementedException(); }
