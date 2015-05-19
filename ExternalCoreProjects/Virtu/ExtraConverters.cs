@@ -12,70 +12,12 @@ namespace Jellyfish.Virtu
 	public class ArrayConverter : JsonConverter
 	{
 		// JSON.NET cannot, when reading, use PreserveReferencesHandling on arrays, although it fully supports it on writing.
-		// stupid decision, but there you have it.  we need that to work here.
+		// Doing so while being able to fully preserve circular references would require storing the length of the array,
+		// or reading ahead in the JSON to compute the length.  For arrays that could contain reference types, we choose the latter.
+		// For arrays of primitive types, there is no issue. 
 
 		// TODO: on serialization, the type of the object is available, but is the expected type (ie, the one that we'll be fed during deserialization) available?
 		// need this to at least detect covariance cases...
-
-		private object ReadInternal(JsonReader reader, Type objectType, JsonSerializer serializer)
-		{
-			Type elementType = objectType.GetElementType();
-			if (elementType.IsPrimitive)
-			{
-				if (!reader.Read())
-					throw new InvalidOperationException();
-				return bareserializer.Deserialize(reader, objectType);
-			}
-			else
-			{
-				int cap = 16;
-				Array ret = Array.CreateInstance(elementType, cap);
-				int used = 0;
-
-				ReadExpectType(reader, JsonToken.StartArray);
-
-				while (true)
-				{
-					if (!reader.Read())
-						throw new InvalidOperationException();
-					if (reader.TokenType == JsonToken.EndArray)
-						break;
-					ret.SetValue(serializer.Deserialize(reader, elementType), used++);
-					if (used == cap)
-					{
-						cap *= 2;
-						Array tmp = Array.CreateInstance(elementType, cap);
-						Array.Copy(ret, tmp, used);
-						ret = tmp;
-					}
-				}
-				if (used != cap)
-				{
-					Array tmp = Array.CreateInstance(elementType, used);
-					Array.Copy(ret, tmp, used);
-					ret = tmp;
-				}
-				return ret;
-			}
-		}
-
-		private void WriteInternal(JsonWriter writer, object value, JsonSerializer serializer)
-		{
-			var elementType = value.GetType().GetElementType();
-			if (elementType.IsPrimitive)
-			{
-				bareserializer.Serialize(writer, value);
-			}
-			else
-			{
-				writer.WriteStartArray();
-				foreach (object o in (Array)value)
-				{
-					serializer.Serialize(writer, o, elementType);
-				}
-				writer.WriteEndArray();
-			}
-		}
 
 		public override bool CanConvert(Type objectType)
 		{
@@ -103,7 +45,6 @@ namespace Jellyfish.Virtu
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
-			object ret;
 			if (reader.TokenType == JsonToken.Null)
 				return null;
 			else if (reader.TokenType != JsonToken.StartObject)
@@ -112,26 +53,63 @@ namespace Jellyfish.Virtu
 			ReadExpectType(reader, JsonToken.PropertyName);
 			string prop = reader.Value.ToString();
 			ReadExpectType(reader, JsonToken.String);
-			string val = reader.Value.ToString();
+			string id = reader.Value.ToString();
 			if (prop == "$ref")
 			{
-				ret = serializer.ReferenceResolver.ResolveReference(serializer, val);
+				object ret = serializer.ReferenceResolver.ResolveReference(serializer, id);
 				ReadExpectType(reader, JsonToken.EndObject);
+				return ret;
 			}
 			else if (prop == "$id")
 			{
 				ReadExpectType(reader, JsonToken.PropertyName);
-				if (reader.Value.ToString() != "$values")
+				prop = reader.Value.ToString();
+				if (prop == "$length") // complex array
+				{
+					ReadExpectType(reader, JsonToken.Integer);
+					int length = Convert.ToInt32(reader.Value);
+					ReadExpectType(reader, JsonToken.PropertyName);
+					if (reader.Value.ToString() != "$values")
+						throw new InvalidOperationException();
+
+					Type elementType = objectType.GetElementType();
+
+					Array ret = Array.CreateInstance(elementType, length);
+					// must register reference before deserializing elements to handle possible circular references
+					serializer.ReferenceResolver.AddReference(serializer, id, ret);
+					int index = 0;
+
+					ReadExpectType(reader, JsonToken.StartArray);
+					while (true)
+					{
+						if (!reader.Read())
+							throw new InvalidOperationException();
+						if (reader.TokenType == JsonToken.EndArray)
+							break;
+						ret.SetValue(serializer.Deserialize(reader, elementType), index++);
+					}
+					ReadExpectType(reader, JsonToken.EndObject);
+					return ret;
+				}
+				else if (prop == "$values") // simple array
+				{
+					if (!reader.Read())
+						throw new InvalidOperationException();
+					object ret = bareserializer.Deserialize(reader, objectType);
+					// OK to add this after deserializing, as arrays of primitive types can't contain backrefs
+					serializer.ReferenceResolver.AddReference(serializer, id, ret);
+					ReadExpectType(reader, JsonToken.EndObject);
+					return ret;
+				}
+				else
+				{
 					throw new InvalidOperationException();
-				ret = ReadInternal(reader, objectType, serializer);
-				ReadExpectType(reader, JsonToken.EndObject);
-				serializer.ReferenceResolver.AddReference(serializer, val, ret);
+				}
 			}
 			else
 			{
 				throw new InvalidOperationException();
 			}
-			return ret;
 		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
@@ -139,17 +117,40 @@ namespace Jellyfish.Virtu
 			if (serializer.ReferenceResolver.IsReferenced(serializer, value))
 			{
 				writer.WriteStartObject();
+				
 				writer.WritePropertyName("$ref");
 				writer.WriteValue(serializer.ReferenceResolver.GetReference(serializer, value));
+				
 				writer.WriteEndObject();
 			}
 			else
 			{
 				writer.WriteStartObject();
+				
 				writer.WritePropertyName("$id");
 				writer.WriteValue(serializer.ReferenceResolver.GetReference(serializer, value));
-				writer.WritePropertyName("$values");
-				WriteInternal(writer, value, serializer);
+
+				var elementType = value.GetType().GetElementType();
+				if (elementType.IsPrimitive)
+				{
+					writer.WritePropertyName("$values");
+					bareserializer.Serialize(writer, value);
+				}
+				else
+				{
+					var array = (Array)value;
+					writer.WritePropertyName("$length");
+					writer.WriteValue(array.Length);
+
+					writer.WritePropertyName("$values");
+					writer.WriteStartArray();
+					foreach (object o in array)
+					{
+						serializer.Serialize(writer, o, elementType);
+					}
+					writer.WriteEndArray();
+				}
+
 				writer.WriteEndObject();
 			}
 		}
