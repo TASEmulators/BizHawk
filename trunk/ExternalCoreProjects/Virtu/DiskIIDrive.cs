@@ -65,6 +65,7 @@ namespace Jellyfish.Virtu
                     _trackOffset = 0;
                 }
 
+				Machine.DriveLight = true;
                 return data;
             }
 
@@ -83,6 +84,8 @@ namespace Jellyfish.Virtu
                 {
                     _trackOffset = 0;
                 }
+
+				Machine.DriveLight = true;
             }
         }
 

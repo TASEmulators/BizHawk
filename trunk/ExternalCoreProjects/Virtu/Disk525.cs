@@ -44,7 +44,7 @@ namespace Jellyfish.Virtu
         public abstract void WriteTrack(int number, int fraction, byte[] buffer);
 
         public string Name { get; private set; }
-        [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
+
         public byte[] Data { get; protected set; }
         public bool IsWriteProtected { get; private set; }
 

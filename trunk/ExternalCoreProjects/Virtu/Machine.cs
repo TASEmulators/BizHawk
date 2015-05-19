@@ -88,6 +88,7 @@ namespace Jellyfish.Virtu
 		public void BizFrameAdvance(IEnumerable<string> buttons)
 		{
 			Lagged = true;
+			DriveLight = false;
 
 			Keyboard.SetKeys(buttons);
 
@@ -195,5 +196,6 @@ namespace Jellyfish.Virtu
 		public DiskIIController BootDiskII { get; private set; }
 
 		public bool Lagged { get; set; }
+		public bool DriveLight { get; set; }
 	}
 }
