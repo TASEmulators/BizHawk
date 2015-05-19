@@ -28,6 +28,7 @@ namespace Jellyfish.Virtu
 		[System.Runtime.Serialization.OnDeserialized]
 		public void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
 		{
+			// the videoservice forgets all of its information on loadstate
 			DirtyScreen();
 		}
 
@@ -1104,6 +1105,8 @@ namespace Jellyfish.Virtu
 
         private ushort[] _charSet;
         private int[] _colorPalette = new int[ColorPaletteCount];
+
+		[Newtonsoft.Json.JsonIgnore] // everything is automatically dirtied on load, so no need to save
         private bool[] _isCellDirty = new bool[Height * CellColumns + 1]; // includes sentinel
     }
 }
