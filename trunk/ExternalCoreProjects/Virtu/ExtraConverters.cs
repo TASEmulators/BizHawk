@@ -160,6 +160,11 @@ namespace Jellyfish.Virtu
 		// caveats:  if used on anonymous delegates and/or closures, brittle to name changes in the generated classes and methods
 		// brittle to type name changes in general
 		// must be serialized in tree with any real classes referred to by closures
+		
+		// CAN NOT preserve reference equality of the delegates themselves, because the delegate must be created with
+		// target in one shot, with no possibility to change the target later.  We preserve references to targets,
+		// and lose the ability to preserve references to delegates.
+		
 
 		// TODO: much of this could be made somewhat smarter and more resilient
 
