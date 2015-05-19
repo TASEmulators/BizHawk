@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		isPorted: true,
 		isReleased: false
 		)]
-	public partial class AppleII : IEmulator
+	public partial class AppleII : IEmulator, IDriveLight
 	{
 		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, object settings)
 			: this(comm, gameInfoSet.First(), romSet.First(), settings)
@@ -119,6 +119,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			AppleIIController.BoolButtons.AddRange(RealButtons);
 			AppleIIController.BoolButtons.AddRange(ExtraButtons);
 		}
+
+		public bool DriveLightEnabled { get { return true; } }
+		public bool DriveLightOn { get { return _machine.DriveLight; } }
 
 		private void FrameAdv(bool render, bool rendersound)
 		{
