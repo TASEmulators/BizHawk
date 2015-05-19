@@ -123,6 +123,8 @@ namespace Jellyfish.Virtu
 
 		private static JsonSerializer CreateSerializer()
 		{
+			// TODO: converters could be cached for speedup
+
 			var ser = new JsonSerializer
 			{
 				TypeNameHandling = TypeNameHandling.Auto,
@@ -130,8 +132,15 @@ namespace Jellyfish.Virtu
 				ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
 			};
 
+			ser.Converters.Add(new TypeTypeConverter(new[]
+				{
+					// all expected Types to convert are either in this assembly or mscorlib
+					typeof(Machine).Assembly,
+					typeof(object).Assembly
+				}));
 			ser.Converters.Add(new DelegateConverter());
 			ser.Converters.Add(new ArrayConverter());
+
 			var cr = new DefaultContractResolver();
 			cr.DefaultMembersSearchFlags |= System.Reflection.BindingFlags.NonPublic;
 			ser.ContractResolver = cr;
