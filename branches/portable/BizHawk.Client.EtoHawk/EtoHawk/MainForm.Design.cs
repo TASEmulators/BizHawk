@@ -30,18 +30,18 @@ namespace BizHawk.Client.EtoHawk
             Content = _viewport;
             this.Closed += MainForm_Closed;
 
-            _mnuConfigControllers = new ButtonMenuItem(new Command((sender, e) =>
-                            {
-                                bool paused = EmulatorPaused;
-                                EmulatorPaused = true;
-                                ControllerConfig cc = new ControllerConfig(Global.Emulator.ControllerDefinition);
-                                if (cc.ShowModal(this))
-                                {
-                                    InitControls();
-                                    InputManager.SyncControls();
-                                }
-                                EmulatorPaused = paused;
-                            })) { Text = "Controllers..." };
+            _mnuConfigControllers = new ButtonMenuItem() { Text = "Controllers..." };
+            _mnuConfigControllers.Click += (sender, e) => {
+                bool paused = EmulatorPaused;
+                EmulatorPaused = true;
+                ControllerConfig cc = new ControllerConfig (Global.Emulator.ControllerDefinition);
+                if (cc.ShowModal (this))
+                {
+                    InitControls ();
+                    InputManager.SyncControls ();
+                }
+                EmulatorPaused = paused;
+            };
 
             Menu = new MenuBar
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Eto.Forms;
+using BizHawk.Client.EtoHawk;
 
 namespace EtoHawk.Mac
 {

@@ -120,7 +120,7 @@ namespace EtoHawk.Config
                     AutoTab = this.Autotab
                 };
 
-                iw.ToolTip = null;
+                iw.ToolTip = string.Empty;
 
                 //iw.BringToFront();
 

@@ -71,6 +71,9 @@
     <Reference Include="Eto.Mac">
       <HintPath>..\packages\Eto.Platform.Mac.2.0.7\lib\net45\Eto.Mac.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\References\OpenTK.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
