@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using Jellyfish.Library;
-using Jellyfish.Virtu.Properties;
 using Jellyfish.Virtu.Services;
 
 namespace Jellyfish.Virtu
@@ -162,7 +161,7 @@ namespace Jellyfish.Virtu
             int marker = stream.ReadWord(); // mandatory marker
             if (marker != Marker)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentUICulture, Strings.MarkerNotFound, Marker));
+				throw new InvalidOperationException(string.Format("Marker ${0:X04} not found.", Marker));
             }
             int startAddress = stream.ReadWord();
             int endAddress = stream.ReadWord();
@@ -172,7 +171,7 @@ namespace Jellyfish.Virtu
             {
                 if (startAddress > endAddress)
                 {
-                    throw new InvalidOperationException(string.Format(CultureInfo.CurrentUICulture, Strings.InvalidAddressRange, startAddress, endAddress));
+					throw new InvalidOperationException(string.Format("Invalid address range ${0:X04}-${1:X04}.", startAddress, endAddress));
                 }
                 Load(stream, startAddress, endAddress - startAddress + 1);
                 marker = stream.ReadWord(optional: true); // optional marker
