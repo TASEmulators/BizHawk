@@ -12,7 +12,7 @@ using System.Collections;
 
 namespace EtoHawk.Config
 {
-    public partial class ControllerConfig : Dialog
+    public partial class ControllerConfig : Dialog<bool>
     {
         private const int MAXPLAYERS = 8;
         private static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
@@ -346,13 +346,14 @@ namespace EtoHawk.Config
             Save();
 
             //GlobalWin.OSD.AddMessage("Controller settings saved");
-            //DialogResult = DialogResult.OK;
+            Result = true;
             Close();
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
             //GlobalWin.OSD.AddMessage("Controller config aborted");
+            Result = false;
             Close();
         }
 

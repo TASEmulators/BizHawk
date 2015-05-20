@@ -6,13 +6,14 @@ using Eto.Forms;
 using Eto.Drawing;
 using BizHawk.Client.EtoHawk;
 using System.Linq;
+using System.Threading;
 
 namespace EtoHawk.Config
 {
     public sealed class InputWidget : TextBox
     {
         // TODO: when binding, make sure that the new key combo is not in one of the other bindings
-        private readonly UITimer _timer = new UITimer();
+        private Thread _timer;
         private readonly List<string> _bindings = new List<string>();
 
         private string _wasPressed = string.Empty;
@@ -41,13 +42,24 @@ namespace EtoHawk.Config
         public InputWidget()
         {
             //ContextMenu = new ContextMenu();
-            _timer.Interval = 1.0 / 60.0; //The WinForms version of this never actually sets an interval...
-            _timer.Elapsed += Timer_Tick;
             ClearBindings();
             AutoTab = true;
             Cursor = Cursors.Arrow;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (_timer != null)
+            {
+                _timer.Interrupt(); //Shouldn't happen, we kill it when it loses focus.
+                if (!_timer.Join(50))
+                {
+                    _timer.Abort(); //Should have ended right away and didn't, so now it must die.
+                }
+                _timer = null;
+            }
+        }
 
         public bool AutoTab { get; set; }
         public string WidgetName { get; set; }
@@ -83,6 +95,16 @@ namespace EtoHawk.Config
         {
             base.OnGotFocus(e);
 
+            if (_timer != null)
+            {
+                _timer.Interrupt(); //Shouldn't happen, we kill it when it loses focus.
+                if (!_timer.Join(50))
+                {
+                    _timer.Abort(); //Should have ended right away and didn't, so now it must die.
+                }
+                _timer = null;
+            }
+            _timer = new Thread(Timer_Tick);
             _timer.Start();
 
             _wasPressed = Input.Instance.GetNextBindEvent();
@@ -91,15 +113,30 @@ namespace EtoHawk.Config
 
         protected override void OnLostFocus(EventArgs e)
         {
-            _timer.Stop();
+            if (_timer != null)
+            {
+                _timer.Interrupt();
+            }
             UpdateLabel();
             BackgroundColor = Colors.White; //SystemColors.Window;
             base.OnLostFocus(e);
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick()
         {
-            ReadKeys();
+            while (true)
+            {
+                try
+                {
+                    ReadKeys();
+                    Thread.Sleep(33);
+                }
+                catch (ThreadInterruptedException)
+                {
+                    break; //Time to leave this place
+                }
+            }
+            _timer = null;
         }
 
         public void EraseMappings()
@@ -132,40 +169,42 @@ namespace EtoHawk.Config
 
             if (bindingStr != null)
             {
-
-                //has special meaning for the binding UI system (clear it).
-                //you can set it through the special bindings dropdown menu
-                if (bindingStr == "Escape")
+                Application.Instance.Invoke(new Action(() =>
                 {
-                    EraseMappings();
-                    Increment();
-                    return;
-                }
-
-                //seriously, we refuse to allow you to bind this to anything else.
-                if (bindingStr == "Alt+F4")
-                {
-                    return;
-                }
-
-                //ignore special bindings
-                foreach (var spec in SpecialBindings)
-                    if (spec.BindingName == bindingStr)
-                        return;
-
-                if (!IsDuplicate(bindingStr))
-                {
-                    if (AutoTab)
+                    //has special meaning for the binding UI system (clear it).
+                    //you can set it through the special bindings dropdown menu
+                    if (bindingStr == "Escape")
                     {
-                        ClearBindings();
+                        EraseMappings();
+                        Increment();
+                        return;
                     }
 
-                    _bindings.Add(bindingStr);
-                }
+                    //seriously, we refuse to allow you to bind this to anything else.
+                    if (bindingStr == "Alt+F4")
+                    {
+                        return;
+                    }
 
-                _wasPressed = bindingStr;
-                UpdateLabel();
-                Increment();
+                    //ignore special bindings
+                    foreach (var spec in SpecialBindings)
+                        if (spec.BindingName == bindingStr)
+                            return;
+
+                    if (!IsDuplicate(bindingStr))
+                    {
+                        if (AutoTab)
+                        {
+                            ClearBindings();
+                        }
+
+                        _bindings.Add(bindingStr);
+                    }
+
+                    _wasPressed = bindingStr;
+                    UpdateLabel();
+                    Increment();
+                }));
             }
         }
 

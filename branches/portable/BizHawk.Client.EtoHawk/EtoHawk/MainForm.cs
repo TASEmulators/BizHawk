@@ -830,6 +830,9 @@ namespace BizHawk.Client.EtoHawk
                             Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
                         }
                     }*/
+
+                    EnableControls();
+
                     //return true;
                 }
             }

@@ -30,6 +30,19 @@ namespace BizHawk.Client.EtoHawk
             Content = _viewport;
             this.Closed += MainForm_Closed;
 
+            _mnuConfigControllers = new ButtonMenuItem(new Command((sender, e) =>
+                            {
+                                bool paused = EmulatorPaused;
+                                EmulatorPaused = true;
+                                ControllerConfig cc = new ControllerConfig(Global.Emulator.ControllerDefinition);
+                                if (cc.ShowModal(this))
+                                {
+                                    InitControls();
+                                    InputManager.SyncControls();
+                                }
+                                EmulatorPaused = paused;
+                            })) { Text = "Controllers..." };
+
             Menu = new MenuBar
             {
                 Items =
@@ -55,16 +68,7 @@ namespace BizHawk.Client.EtoHawk
                     new ButtonMenuItem{
                         Text="Config",
                         Items = {
-                            new ButtonMenuItem(new Command((sender,e)=>
-                            { 
-                                ControllerConfig cc = new ControllerConfig(Global.Emulator.ControllerDefinition);
-                                cc.ShowModal(this);
-                                if (true) //If OK
-                                {
-                                    InitControls();
-                                    InputManager.SyncControls();
-                                }
-                            })) { Text = "Controllers..." }
+                            _mnuConfigControllers
                         }
                     }
 				},
@@ -80,9 +84,15 @@ namespace BizHawk.Client.EtoHawk
                     MenuText = "About BizHawk"
                 }
             };
+            EnableControls();
         }
 
+        private void EnableControls()
+        {
+            _mnuConfigControllers.Enabled = !(Global.Emulator is NullEmulator);
+        }
 
+        private ButtonMenuItem _mnuConfigControllers;
         private Drawable _viewport;
     }
 }

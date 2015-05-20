@@ -273,12 +273,23 @@ namespace EtoHawk.Config
             this.ResumeLayout();
             //this.PerformLayout();
 
+            dlTipsChecks = new DynamicLayout();
+            dlTipsChecks.BeginHorizontal();
+            dlTipsChecks.Add(label3);
+            dlTipsChecks.Add(label38);
+            dlTipsChecks.Add(label2);
+            dlTipsChecks.Add(checkBoxAutoTab);
+            dlTipsChecks.Add(checkBoxUDLR);
+            dlTipsChecks.EndHorizontal();
+
             dlMainLayout = new DynamicLayout();
             dlMainLayout.BeginHorizontal(true);
             dlMainLayout.Add(tabControl1,true);
             dlMainLayout.Add(pictureBox1);
             dlMainLayout.EndHorizontal();
             dlMainLayout.BeginHorizontal();
+            dlMainLayout.Add(dlTipsChecks);
+            dlMainLayout.Add(btnMisc);
             dlMainLayout.Add(buttonOK);
             dlMainLayout.Add(buttonCancel);
             dlMainLayout.EndHorizontal();
@@ -306,5 +317,6 @@ namespace EtoHawk.Config
         private Label label2;
         private Label label38;
         private DynamicLayout dlMainLayout;
+        private DynamicLayout dlTipsChecks;
     }
 }
