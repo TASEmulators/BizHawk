@@ -14,6 +14,11 @@ namespace Jellyfish.Virtu
 {
 	public sealed class Machine : IDisposable
 	{
+		/// <summary>
+		/// for deserialization only!!
+		/// </summary>
+		public Machine() { }
+
 		public Machine(byte[] appleIIe, byte[] diskIIRom)
 		{
 			Events = new MachineEvents();
@@ -156,17 +161,7 @@ namespace Jellyfish.Virtu
 
 		public static Machine Deserialize(JsonReader r)
 		{
-			var ret = CreateSerializer().Deserialize<Machine>(r);
-			
-			// for some unknown reason, these particular references get nuked by JSON.NET on deserializating
-			foreach (var c in ret.Components)
-			{
-				c.Machine = ret;
-			}
-			ret.BootDiskII.Drive1.Machine = ret;
-			ret.BootDiskII.Drive2.Machine = ret;
-
-			return ret;
+			return CreateSerializer().Deserialize<Machine>(r);
 		}
 
 		public const string Version = "0.9.4.0";
