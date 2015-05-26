@@ -33,7 +33,8 @@ namespace BizHawk.Emulation.Common
 			new SystemInfo { SystemId = "TI83", FullName = "TI-83 Calculator" },
 			new SystemInfo { SystemId = "WSWAN", FullName = "WonderSwan" },
 
-			new SystemInfo { SystemId = "C64", FullName = "Commodore 64" }
+			new SystemInfo { SystemId = "C64", FullName = "Commodore 64" },
+			new SystemInfo { SystemId = "AppleII", FullName = "Apple II" }
 		};
 
 		public SystemInfo this[string systemId]
