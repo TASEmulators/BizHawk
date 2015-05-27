@@ -401,7 +401,7 @@ namespace BizHawk.Client.Common
 								var result = ChoosePlatform(rom);
 								if (!string.IsNullOrEmpty(result))
 								{
-									rom.GameInfo.System = ChoosePlatform(rom);
+									rom.GameInfo.System = result;
 								}
 								else
 								{
