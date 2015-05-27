@@ -32,15 +32,14 @@ namespace BizHawk.Client.EtoHawk
 
             _mnuConfigControllers = new ButtonMenuItem() { Text = "Controllers..." };
             _mnuConfigControllers.Click += (sender, e) => {
-                bool paused = EmulatorPaused;
-                EmulatorPaused = true;
+                _suspended = true;
                 ControllerConfig cc = new ControllerConfig (Global.Emulator.ControllerDefinition);
-                if (cc.ShowModal (this))
+                if (cc.ShowModal(this))
                 {
                     InitControls ();
                     InputManager.SyncControls ();
                 }
-                EmulatorPaused = paused;
+                _suspended = false;
             };
 
             Menu = new MenuBar
@@ -90,6 +89,13 @@ namespace BizHawk.Client.EtoHawk
         private void EnableControls()
         {
             _mnuConfigControllers.Enabled = !(Global.Emulator is NullEmulator);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            e.Handled = true;
+            //OS X will beep any time you press a key if it thinks we aren't handling it.
+            //Since OpenTK is going to handle the input, we need to let the UI know we took care of it.
         }
 
         private ButtonMenuItem _mnuConfigControllers;

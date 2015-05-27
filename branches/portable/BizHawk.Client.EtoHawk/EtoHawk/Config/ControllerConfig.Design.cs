@@ -210,7 +210,7 @@ namespace EtoHawk.Config
             //this.label3.AutoSize = true;
             //this.label3.Location = new Point(11, 550);
             //this.label3.Name = "label3";
-            this.label3.Size = new Size(30, 13);
+            //this.label3.Size = new Size(30, 13);
             //this.label3.TabIndex = 112;
             this.label3.Text = "Tips:";
             // 
@@ -220,7 +220,7 @@ namespace EtoHawk.Config
             //this.label2.AutoSize = true;
             //this.label2.Location = new Point(206, 550);
             //this.label2.Name = "label2";
-            this.label2.Size = new Size(168, 13);
+            //this.label2.Size = new Size(168, 13);
             //this.label2.TabIndex = 111;
             this.label2.Text = "* Disable Auto Tab to multiply bind";
             // 
@@ -230,7 +230,7 @@ namespace EtoHawk.Config
             //this.label38.AutoSize = true;
             //this.label38.Location = new Point(47, 550);
             //this.label38.Name = "label38";
-            this.label38.Size = new Size(153, 13);
+            //this.label38.Size = new Size(153, 13);
             //this.label38.TabIndex = 110;
             this.label38.Text = "* Escape clears a key mapping";
             // 
@@ -240,7 +240,7 @@ namespace EtoHawk.Config
             //this.btnMisc.Location = new Point(683, 542);
             //this.btnMisc.Menu = this.contextMenuStrip1;
             //this.btnMisc.Name = "btnMisc";
-            this.btnMisc.Size = new Size(75, 23);
+            //this.btnMisc.Size = new Size(75, 23);
             //this.btnMisc.TabIndex = 11;
             this.btnMisc.Text = "Misc...";
             //this.btnMisc.UseVisualStyleBackColor = true;

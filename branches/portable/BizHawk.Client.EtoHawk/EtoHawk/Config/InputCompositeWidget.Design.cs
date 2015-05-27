@@ -27,7 +27,6 @@ namespace EtoHawk.Config
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputCompositeWidget));
             this.btnSpecial = new Button();
             this.tableLayoutPanel1 = new TableLayout(2,2);
             this.widget = new InputWidget();

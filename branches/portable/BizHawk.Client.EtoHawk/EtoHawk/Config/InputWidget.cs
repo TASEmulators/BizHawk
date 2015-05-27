@@ -70,7 +70,6 @@ namespace EtoHawk.Config
             {
                 return Text;
             }
-
             set
             {
                 ClearBindings();
@@ -107,19 +106,21 @@ namespace EtoHawk.Config
             _timer = new Thread(Timer_Tick);
             _timer.Start();
 
+            //Console.WriteLine (this.Bindings + " got focus");
             _wasPressed = Input.Instance.GetNextBindEvent();
             BackgroundColor = Color.FromArgb(unchecked((int)0xFFC0FFFF)); // Color.LightCyan is too light on Windows 8, this is a bit darker
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
+            base.OnLostFocus(e);
+            //Console.WriteLine (this.Bindings + " lost focus");
             if (_timer != null)
             {
                 _timer.Interrupt();
             }
             UpdateLabel();
             BackgroundColor = Colors.White; //SystemColors.Window;
-            base.OnLostFocus(e);
         }
 
         private void Timer_Tick()

@@ -31,6 +31,7 @@ namespace BizHawk.Client.EtoHawk
         private long _runloopSecond;
         private bool _runloopLastFf;
         private bool _inResizeLoop;
+        private bool _suspended; //True if a modal dialog appears
         private readonly InputCoalescer HotkeyCoalescer = new InputCoalescer();
 
         public MainForm()
@@ -140,6 +141,11 @@ namespace BizHawk.Client.EtoHawk
 
             while (_running)
             {
+                if (_suspended)
+                {
+                    Thread.Sleep(33);
+                    continue;
+                }
                 Input.Instance.Update();
 
                 // handle events and dispatch as a hotkey action, or a hotkey button, or an input button
@@ -704,22 +710,37 @@ namespace BizHawk.Client.EtoHawk
                 var video = Global.Emulator.VideoProvider();
                 Bitmap img = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppRgb);
                 BitmapData data = img.Lock();
-                int[] buffer = video.GetVideoBuffer();
+                int[] buffer = (int[])(video.GetVideoBuffer().Clone());
+                //Buffer is cloned to prevent tearing. The emulation thread is running independent of drawing, 
+                //does not block, can (and will) update the framebuffer while we draw it.
+                if (img.Platform.IsMac)
+                {
+                    //Colors are reversed on OSX, even though it's Little Endian just like on Windows.
+                    //I think this is a bug in Eto framework. This hack won't be needed when I bring back OpenGL, or if Eto gets fixed.
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        int x = buffer [i];
+                        x = (x >> 16 & 0xFF) + (x & 0xFF00) + ((x << 16) & 0xFF0000);
+                        buffer[i] = x;
+                    }
+                }
                 Marshal.Copy(buffer, 0, data.Data, buffer.Length);
                 data.Dispose();
-                e.Graphics.DrawImage(img, 0, 0,_viewport.Width,_viewport.Height);
+                e.Graphics.DrawImage(img, 0, 0, _viewport.Width, _viewport.Height);
             }
             else
             {
-                e.Graphics.FillRectangle(Brushes.Red, new RectangleF(0, 0, 320, 240));
+                e.Graphics.FillRectangle(Brushes.Black, new RectangleF(0, 0, _viewport.Width, _viewport.Height));
             }
         }
 
         private void OpenRom()
         {
             OpenFileDialog ofd = new OpenFileDialog();
+            _suspended = true;
             if (ofd.ShowDialog(this) == DialogResult.Ok)
             {
+                _suspended = false;
                 RomLoader loader = new RomLoader();
                 var nextComm = CreateCoreComm();
                 CoreFileProvider.SyncCoreCommInputSignals(nextComm);
@@ -836,6 +857,7 @@ namespace BizHawk.Client.EtoHawk
                     //return true;
                 }
             }
+            _suspended = false;
         }
 
         CoreComm CreateCoreComm()
