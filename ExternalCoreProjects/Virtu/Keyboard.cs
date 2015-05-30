@@ -220,7 +220,7 @@ namespace Jellyfish.Virtu
 		private static int KeyToAscii(int key, bool control, bool shift)
 		{
 			int s = control ? (shift ? 0 : 16) : (shift ? 8 : 24);
-			return (int)(KeyAsciiData[key] >> s);
+			return (int)(KeyAsciiData[key] >> s & 0x7f);
 		}
 
 		private static Dictionary<string, Keys> DescriptionsToKeys = new Dictionary<string, Keys>();
@@ -317,6 +317,10 @@ namespace Jellyfish.Virtu
 				// strobe, start new repeat cycle
 				Strobe = true;
 				Latch = KeyToAscii(NewKeyPressed, control, shift);
+				//if (Latch >= 0x20 && Latch < 0x7f)
+				//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
+ 				//else
+				//	Console.WriteLine("Latch: {0:x2}", Latch);
 				FramesToRepeat = KeyRepeatStart;
 			}
 			else
@@ -327,6 +331,10 @@ namespace Jellyfish.Virtu
 				{
 					Strobe = true;
 					Latch = KeyToAscii(NewKeyPressed, control, shift);
+					//if (Latch >= 0x20 && Latch < 0x7f)
+					//	Console.WriteLine("Latch: {0:x2}, {1}", Latch, (char)Latch);
+					//else
+					//	Console.WriteLine("Latch: {0:x2}", Latch);
 					FramesToRepeat = KeyRepeatRate;
 				}
 			}
