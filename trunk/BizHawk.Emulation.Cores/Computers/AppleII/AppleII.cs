@@ -93,8 +93,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			//make a writeable memory stream cloned from the rom.
 			//for junk.dsk the .dsk is important because it determines the format from that
-
-			bool writeProtected = false; //!!!!!!!!!!!!!!!!!!
 			_machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
 
