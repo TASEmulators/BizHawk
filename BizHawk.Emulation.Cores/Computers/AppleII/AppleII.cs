@@ -105,7 +105,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private static readonly ControllerDefinition AppleIIController;
 
-		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames());
+		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
+			.Where(k => k != "White Apple") // Hack because these buttons aren't wired up yet
+			.Where(k => k != "Black Apple")
+			.Where(k => k != "Reset"));
 
 		private static readonly List<string> ExtraButtons = new List<string>
 		{
