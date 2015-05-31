@@ -119,7 +119,9 @@
     </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\AppleII\AppleII.cs" />
-    <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs" />
+    <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs">
+        <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\AppleII\AppleII.IEmulator.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
