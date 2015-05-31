@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			// InitDisk();
 		}
 
-		private class OtherData
+		public class OtherData
 		{
 			public int Frame;
 			public int LagCount;
