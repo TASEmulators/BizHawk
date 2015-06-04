@@ -349,8 +349,7 @@ namespace BizHawk.Client.Common
 									nextEmulator = new AppleII(
 										nextComm,
 										assets,
-										roms,
-										GetCoreSettings<AppleII>());
+										roms);
 									break;
 								default:
 									return false;
@@ -505,13 +504,10 @@ namespace BizHawk.Client.Common
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
 								nextEmulator = c64;
 								break;
-							case "AppleII":
-								var appleII = new AppleII(nextComm, game, rom.RomData, rom.Extension);
-								nextEmulator = appleII;
-								break;
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];
 								core = CoreInventory.Instance["GBA", "VBA-Next"];
+								//core = CoreInventory.Instance["GBA", "mGBA"];
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
