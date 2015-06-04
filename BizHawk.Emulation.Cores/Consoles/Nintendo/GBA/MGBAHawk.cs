@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, false, "NOT DONE", "NOT DONE", false)]
-	public class MGBAHawk : IEmulator, IVideoProvider
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider
 	{
 		IntPtr core;
 
@@ -41,23 +41,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(new NullSound(), 735); } }
-
-		public bool StartAsyncSound() { return false; }
-
-		public void EndAsyncSound() { }
-
 		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
 
 		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			IntPtr vp = IntPtr.Zero;
-			LibmGBA.BizAdvance(core, 0, ref vp);
-			Marshal.Copy(vp, videobuff, 0, 240 * 160);
+			Frame++;
+			LibmGBA.BizAdvance(core, 0, videobuff, ref nsamp, soundbuff);
 		}
 
 		public int Frame { get; private set; }
@@ -70,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void ResetCounters()
 		{
-			throw new NotImplementedException();
+			Frame = 0;
 		}
 
 		public CoreComm CoreComm { get; private set; }
@@ -84,21 +75,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
+		#region IVideoProvider
 		public int VirtualWidth { get { return 240; } }
 		public int VirtualHeight { get { return 160; } }
 		public int BufferWidth { get { return 240; } }
 		public int BufferHeight { get { return 160; } }
-
 		public int BackgroundColor
 		{
 			get { return unchecked((int)0xff000000); }
 		}
-
 		public int[] GetVideoBuffer()
 		{
 			return videobuff;
 		}
+		private readonly int[] videobuff = new int[240 * 160];
+		#endregion
 
-		private int[] videobuff = new int[240 * 160];
+		#region ISoundProvider
+		private readonly short[] soundbuff = new short[2048];
+		private int nsamp;
+		public void GetSamples(out short[] samples, out int nsamp)
+		{
+			nsamp = this.nsamp;
+			samples = soundbuff;
+			DiscardSamples();
+		}
+		public void DiscardSamples()
+		{
+			nsamp = 0;
+		}
+		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
+		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
+		public bool StartAsyncSound() { return false; }
+		public void EndAsyncSound() { }
+		#endregion
 	}
 }

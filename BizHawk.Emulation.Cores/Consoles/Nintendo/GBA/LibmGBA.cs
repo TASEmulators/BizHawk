@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern bool BizLoad(IntPtr ctx, byte[] data, int length);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizAdvance(IntPtr ctx, int keys, ref IntPtr vbuff);
+		public static extern void BizAdvance(IntPtr ctx, int keys, int[] vbuff, ref int nsamp, short[] sbuff);
 
 	}
 }
