@@ -120,7 +120,7 @@
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\AppleII\AppleII.cs" />
     <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs">
-        <DependentUpon>AppleII.cs</DependentUpon>
+      <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.IEmulator.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
@@ -378,6 +378,7 @@
     <Compile Include="Consoles\Nintendo\GBA\ArmV4Disassembler.cs" />
     <Compile Include="Consoles\Nintendo\GBA\IGBAGPUViewable.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibMeteor.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\LibmGBA.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.cs" />
     <Compile Include="Consoles\Nintendo\GBA\Meteor.IGBAGPUViewable.cs">
@@ -395,6 +396,7 @@
     <Compile Include="Consoles\Nintendo\GBA\Meteor.IVideoProvider.cs">
       <DependentUpon>Meteor.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IDebuggable.cs">
       <DependentUpon>VBANext.cs</DependentUpon>
