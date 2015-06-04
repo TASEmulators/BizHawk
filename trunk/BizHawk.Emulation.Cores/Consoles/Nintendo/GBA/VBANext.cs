@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			SyncTraceCallback();
 
-			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(), videobuff, soundbuff, out numsamp, videopalette);
+			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(Controller), videobuff, soundbuff, out numsamp, videopalette);
 
 			if (IsLagFrame)
 				LagCount++;
@@ -210,12 +210,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
 		public IController Controller { get; set; }
 
-		private LibVBANext.Buttons GetButtons()
+		public static LibVBANext.Buttons GetButtons(IController c)
 		{
 			LibVBANext.Buttons ret = 0;
 			foreach (string s in Enum.GetNames(typeof(LibVBANext.Buttons)))
 			{
-				if (Controller[s])
+				if (c[s])
 					ret |= (LibVBANext.Buttons)Enum.Parse(typeof(LibVBANext.Buttons), s);
 			}
 			return ret;

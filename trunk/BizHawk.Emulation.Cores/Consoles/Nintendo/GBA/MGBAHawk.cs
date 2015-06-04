@@ -40,15 +40,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
 		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
-
 		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-			LibmGBA.BizAdvance(core, 0, videobuff, ref nsamp, soundbuff);
+			if (Controller["Power"])
+				LibmGBA.BizReset(core);
+
+			LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff);
 		}
 
 		public int Frame { get; private set; }
@@ -98,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			nsamp = this.nsamp;
 			samples = soundbuff;
+			Console.WriteLine(nsamp);
 			DiscardSamples();
 		}
 		public void DiscardSamples()
