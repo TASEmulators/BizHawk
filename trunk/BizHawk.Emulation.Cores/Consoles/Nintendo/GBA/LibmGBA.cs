@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		const string dll = "mgba.dll";
 		const CallingConvention cc = CallingConvention.Cdecl;
 
-		[DllImport(dll, CallingConvention=cc)]
+		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizDestroy(IntPtr ctx);
 
 		[DllImport(dll, CallingConvention = cc)]
@@ -27,5 +27,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff);
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class MemoryAreas
+		{
+			public IntPtr bios;
+			public IntPtr wram;
+			public IntPtr iwram;
+			public IntPtr mmio;
+			public IntPtr palram;
+			public IntPtr vram;
+			public IntPtr oam;
+			public IntPtr rom;
+		}
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizGetMemoryAreas(IntPtr ctx, [Out]MemoryAreas dst);
 	}
 }

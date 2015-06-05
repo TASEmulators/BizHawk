@@ -9,18 +9,13 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, false, "NOT DONE", "NOT DONE", false)]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
 	{
 		IntPtr core;
 
 		[CoreConstructor("GBA")]
 		public MGBAHawk(byte[] file, CoreComm comm)
 		{
-			var ser = new BasicServiceProvider(this);
-			ser.Register<IDisassemblable>(new ArmV4Disassembler());
-			ServiceProvider = ser;
-			CoreComm = comm;
-
 			byte[] bios = null;
 			if (true) // TODO: config me
 			{
@@ -43,6 +38,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					throw new InvalidOperationException("BizLoad() returned FALSE!  Bad ROM?");
 				}
 
+				var ser = new BasicServiceProvider(this);
+				ser.Register<IDisassemblable>(new ArmV4Disassembler());
+				ser.Register<IMemoryDomains>(CreateMemoryDomains(file.Length));
+
+				ServiceProvider = ser;
+				CoreComm = comm;
 			}
 			catch
 			{
@@ -123,5 +124,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
 		#endregion
+
+		#region IMemoryDomains
+
+		private MemoryDomainList CreateMemoryDomains(int romsize)
+		{
+			var s = new LibmGBA.MemoryAreas();
+			var mm = new List<MemoryDomain>();
+			LibmGBA.BizGetMemoryAreas(core, s);
+
+			var l = MemoryDomain.Endian.Little;
+			mm.Add(MemoryDomain.FromIntPtr("IWRAM", 32 * 1024, l, s.iwram, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("EWRAM", 256 * 1024, l, s.wram, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("BIOS", 16 * 1024, l, s.bios, false, 4));
+			mm.Add(MemoryDomain.FromIntPtr("PALRAM", 1024, l, s.palram, false, 4));
+			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, false, 4));
+			mm.Add(MemoryDomain.FromIntPtr("ROM", romsize, l, s.rom, false, 4));
+
+			_gpumem = new GBAGPUMemoryAreas
+			{
+				mmio = s.mmio,
+				oam = s.oam,
+				palram = s.palram,
+				vram = s.vram
+			};
+
+			return new MemoryDomainList(mm);
+
+		}
+
+		#endregion
+
+		private GBAGPUMemoryAreas _gpumem;
+
+		public GBAGPUMemoryAreas GetMemoryAreas()
+		{
+			return _gpumem;
+		}
+
+		[FeatureNotImplemented]
+		public void SetScanlineCallback(Action callback, int scanline)
+		{
+		}
 	}
 }
