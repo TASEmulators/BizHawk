@@ -21,14 +21,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			ServiceProvider = ser;
 			CoreComm = comm;
 
-			core = LibmGBA.BizCreate();
+			byte[] bios = null;
+			if (true) // TODO: config me
+			{
+				bios = comm.CoreFileProvider.GetFirmware("GBA", "Bios", true);
+			}
+
+			if (bios != null && bios.Length != 16384)
+			{
+				throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
+			}
+			core = LibmGBA.BizCreate(bios);
 			if (core == IntPtr.Zero)
-				throw new InvalidOperationException("BizCreate() returned NULL!");
+			{
+				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS?");
+			}
 			try
 			{
 				if (!LibmGBA.BizLoad(core, file, file.Length))
 				{
-					throw new InvalidOperationException("BizLoad() returned FALSE!");
+					throw new InvalidOperationException("BizLoad() returned FALSE!  Bad ROM?");
 				}
 
 			}
