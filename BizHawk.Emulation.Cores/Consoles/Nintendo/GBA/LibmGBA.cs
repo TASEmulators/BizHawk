@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizDestroy(IntPtr ctx);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern IntPtr BizCreate();
+		public static extern IntPtr BizCreate(byte[] bios);
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizReset(IntPtr ctx);
