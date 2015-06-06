@@ -1393,7 +1393,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
 					// GBA vba-next core will try to eat anything, regardless of size
-					if (Global.Emulator is GBA || Global.Emulator is VBANext)
+					if (Global.Emulator is GBA || Global.Emulator is VBANext || Global.Emulator is MGBAHawk)
 					{
 						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 					}

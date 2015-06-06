@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, false, "NOT DONE", "NOT DONE", false)]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam
 	{
 		IntPtr core;
 
@@ -167,5 +167,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void SetScanlineCallback(Action callback, int scanline)
 		{
 		}
+
+		#region ISaveRam
+
+		public byte[] CloneSaveRam()
+		{
+			byte[] ret = new byte[LibmGBA.BizGetSaveRamSize(core)];
+			if (ret.Length > 0)
+			{
+				LibmGBA.BizGetSaveRam(core, ret);
+				return ret;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			int len = LibmGBA.BizGetSaveRamSize(core);
+			if (len > data.Length)
+			{
+				byte[] _tmp = new byte[len];
+				Array.Copy(data, _tmp, data.Length);
+				for (int i = data.Length; i < len; i++)
+					_tmp[i] = 0xff;
+				data = _tmp;
+			}
+			else if (len < data.Length)
+			{
+				// we could continue from this, but we don't expect it
+				throw new InvalidOperationException("Saveram will be truncated!");
+			}
+			LibmGBA.BizPutSaveRam(core, data);
+		}
+
+		public bool SaveRamModified
+		{
+			get { return LibmGBA.BizGetSaveRamSize(core) > 0; }
+		}
+
+		#endregion
 	}
 }
