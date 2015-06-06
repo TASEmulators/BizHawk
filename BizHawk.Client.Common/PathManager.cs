@@ -309,6 +309,11 @@ namespace BizHawk.Client.Common
 				name += "." + (Global.Emulator as LibsnesCore).CurrentProfile;
 			}
 
+			if (Global.Emulator.SystemId == "GBA")
+			{
+				name += "." + Global.Emulator.Attributes().CoreName;
+			}
+
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
