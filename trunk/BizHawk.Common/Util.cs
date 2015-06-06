@@ -10,15 +10,6 @@ namespace BizHawk.Common
 {
 	public static unsafe class Util
 	{
-		private static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-		private static System.Runtime.InteropServices.GCHandle HexConvHandle;
-
-		static Util()
-		{
-			HexConvHandle = System.Runtime.InteropServices.GCHandle.Alloc(HexConvArr, System.Runtime.InteropServices.GCHandleType.Pinned);
-			HexConvPtr = (char*)HexConvHandle.AddrOfPinnedObject().ToPointer();
-		}
-
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{
 			const int size = 0x2000;
@@ -32,8 +23,6 @@ namespace BizHawk.Common
 				len -= n;
 			}
 		}
-
-		public static char* HexConvPtr { get; set; }
 
 		public static bool IsPowerOfTwo(int x)
 		{

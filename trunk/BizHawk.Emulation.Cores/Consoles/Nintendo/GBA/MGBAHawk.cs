@@ -5,11 +5,12 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, false, "NOT DONE", "NOT DONE", false)]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr core;
 
@@ -44,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				ServiceProvider = ser;
 				CoreComm = comm;
+
+				InitStates();
 			}
 			catch
 			{
@@ -76,6 +79,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void ResetCounters()
 		{
 			Frame = 0;
+			_lagCount = 0;
+			IsLagFrame = false;
 		}
 
 		public CoreComm CoreComm { get; private set; }
@@ -209,5 +214,85 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		#endregion
+
+		private void InitStates()
+		{
+			savebuff = new byte[LibmGBA.BizGetStateSize()];
+			savebuff2 = new byte[savebuff.Length + 13];
+		}
+
+		private byte[] savebuff;
+		private byte[] savebuff2;
+
+		public bool BinarySaveStatesPreferred
+		{
+			get { return true; }
+		}
+
+		public void SaveStateText(TextWriter writer)
+		{
+			var tmp = SaveStateBinary();
+			BizHawk.Common.BufferExtensions.BufferExtensions.SaveAsHexFast(tmp, writer);
+		}
+		public void LoadStateText(TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			BizHawk.Common.BufferExtensions.BufferExtensions.ReadFromHexFast(state, hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			LibmGBA.BizGetState(core, savebuff);
+			writer.Write(savebuff.Length);
+			writer.Write(savebuff);
+
+			// other variables
+			writer.Write(IsLagFrame);
+			writer.Write(LagCount);
+			writer.Write(Frame);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			int length = reader.ReadInt32();
+			if (length != savebuff.Length)
+				throw new InvalidOperationException("Save buffer size mismatch!");
+			reader.Read(savebuff, 0, length);
+			LibmGBA.BizPutState(core, savebuff);
+
+			// other variables
+			IsLagFrame = reader.ReadBoolean();
+			_lagCount = reader.ReadInt32();
+			Frame = reader.ReadInt32();
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			var ms = new MemoryStream(savebuff2, true);
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
+			ms.Close();
+			return savebuff2;
+		}
+
+		public int LagCount
+		{
+			get { return _lagCount; }
+			set { throw new InvalidOperationException(); }
+		}
+		private int _lagCount;
+
+		public bool IsLagFrame { get; private set; }
+
+		[FeatureNotImplemented]
+		public IInputCallbackSystem InputCallbacks
+		{
+			get { throw new NotImplementedException(); }
+		}
 	}
 }
