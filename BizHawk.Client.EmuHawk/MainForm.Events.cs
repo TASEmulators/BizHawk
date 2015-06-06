@@ -748,7 +748,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayStatusBar ^= true;
+			SetStatusBar();
+		}
 
+		private void SetStatusBar()
+		{
 			if (!_inFullscreen)
 			{
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;

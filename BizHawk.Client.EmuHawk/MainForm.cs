@@ -64,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			HandleToggleLightAndLink();
+			SetStatusBar();
 
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
