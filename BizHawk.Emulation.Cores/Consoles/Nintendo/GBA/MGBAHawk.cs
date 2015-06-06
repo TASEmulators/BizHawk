@@ -65,7 +65,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (Controller["Power"])
 				LibmGBA.BizReset(core);
 
-			LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff);
+			LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
+				0, // TODO RTC hookup
+				(short)Controller.GetFloat("Tilt X"),
+				(short)Controller.GetFloat("Tilt Y"),
+				(short)Controller.GetFloat("Tilt Z"),
+				(byte)(255 - Controller.GetFloat("Light Sensor")));
 		}
 
 		public int Frame { get; private set; }
