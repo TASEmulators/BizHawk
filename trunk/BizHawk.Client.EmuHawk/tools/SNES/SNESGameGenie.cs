@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var watch = Watch.GenerateWatch(
-				MemoryDomains["BUS"],
+				MemoryDomains["System Bus"],
 				address,
 				Watch.WatchSize.Byte,
 				Watch.DisplayType.Hex,
