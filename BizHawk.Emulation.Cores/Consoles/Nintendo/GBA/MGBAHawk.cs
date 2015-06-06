@@ -189,8 +189,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
+		private static byte[] LegacyFix(byte[] saveram)
+		{
+			// at one point vbanext-hawk had a special saveram format which we want to load.
+			var br = new BinaryReader(new MemoryStream(saveram, false));
+			br.ReadBytes(8); // header;
+			int flashSize = br.ReadInt32();
+			int eepromsize = br.ReadInt32();
+			byte[] flash = br.ReadBytes(flashSize);
+			byte[] eeprom = br.ReadBytes(eepromsize);
+			if (flash.Length == 0)
+				return eeprom;
+			else if (eeprom.Length == 0)
+				return flash;
+			else
+			{
+				// well, isn't this a sticky situation!
+				return flash; // woops
+			}
+		}
+
 		public void StoreSaveRam(byte[] data)
 		{
+			if (data.Take(8).SequenceEqual(Encoding.ASCII.GetBytes("GBABATT\0")))
+			{
+				data = LegacyFix(data);
+			}
+
 			int len = LibmGBA.BizGetSaveRamSize(core);
 			if (len > data.Length)
 			{
