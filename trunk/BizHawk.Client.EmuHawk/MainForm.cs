@@ -3746,5 +3746,29 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.NES_InQuickNES = false;
 			FlagNeedsReboot();
 		}
+
+		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = true;
+			FlagNeedsReboot();
+		}
+
+		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = false;
+			FlagNeedsReboot();
+		}
+
+		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
+			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
+		}
+
+		private void gBAWithMGBAToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA ^= true;
+			FlagNeedsReboot();
+		}
 	}
 }

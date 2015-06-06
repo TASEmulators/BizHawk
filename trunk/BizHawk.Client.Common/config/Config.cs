@@ -411,6 +411,7 @@ namespace BizHawk.Client.Common
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = false;
+		public bool GBA_UsemGBA = false;
 	}
 
 	// These are used in the defctrl.json or wherever

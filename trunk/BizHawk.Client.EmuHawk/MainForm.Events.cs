@@ -850,6 +850,8 @@ namespace BizHawk.Client.EmuHawk
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			SnesWithSnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
 
+			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
+
 			SnesWithSnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 

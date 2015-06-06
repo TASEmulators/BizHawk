@@ -506,8 +506,14 @@ namespace BizHawk.Client.Common
 								break;
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];
-								core = CoreInventory.Instance["GBA", "VBA-Next"];
-								//core = CoreInventory.Instance["GBA", "mGBA"];
+								if (Global.Config.GBA_UsemGBA)
+								{
+									core = CoreInventory.Instance["GBA", "mGBA"];
+								}
+								else
+								{
+									core = CoreInventory.Instance["GBA", "VBA-Next"];
+								}
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
