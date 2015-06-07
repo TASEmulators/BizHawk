@@ -431,7 +431,7 @@ class Mbc5 : public DefaultMbc {
 	unsigned char rambank;
 	bool enableRam;
 
-	static unsigned adjustedRombank(const unsigned bank) { return bank ? bank : 1; }
+	static unsigned adjustedRombank(const unsigned bank) { return bank; }
 	void setRambank() const { memptrs.setRambank(enableRam ? MemPtrs::READ_EN | MemPtrs::WRITE_EN : 0, rambank & (rambanks(memptrs) - 1)); }
 	void setRombank() const { memptrs.setRombank(adjustedRombank(rombank & (rombanks(memptrs) - 1))); }
 
