@@ -160,8 +160,15 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
+		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
+			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
+			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
+			{
+				DoLoadErrorCallback("Failed multiple attempts to load ROM.", "");
+				return false;
+			}
+
 			bool cancel = false;
 
 			if (path == null)
@@ -565,7 +572,7 @@ namespace BizHawk.Client.Common
 							DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 						}
 						
-						return LoadRom(path, nextComm, forceAccurateCore: true);
+						return LoadRom(path, nextComm, true, recursiveCount + 1);
 					}
 					else if (ex is MissingFirmwareException)
 					{
@@ -575,7 +582,7 @@ namespace BizHawk.Client.Common
 					{
 						// Note: GB as SGB was set to false by this point, otherwise we would want to do it here
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-						return LoadRom(path, nextComm);
+						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}
 					else
 					{
