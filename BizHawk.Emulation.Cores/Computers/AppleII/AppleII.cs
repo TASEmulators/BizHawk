@@ -124,15 +124,30 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public bool DriveLightEnabled { get { return true; } }
 		public bool DriveLightOn { get { return _machine.DriveLight; } }
 
+		private bool _nextPressed = false;
+		private bool _prevPressed = false;
+
 		private void FrameAdv(bool render, bool rendersound)
 		{
-			if (Controller["Next Disk"])
+			if (Controller["Next Disk"] && !_nextPressed)
 			{
+				_nextPressed = true;
 				IncrementDisk();
 			}
-			else if (Controller["Previous Disk"])
+			else if (Controller["Previous Disk"] && !_prevPressed)
 			{
+				_prevPressed = true;
 				DecrementDisk();
+			}
+
+			if (!Controller["Next Disk"])
+			{
+				_nextPressed = false;
+			}
+
+			if (!Controller["Previous Disk"])
+			{
+				_prevPressed = false;
 			}
 
 			_machine.BizFrameAdvance(RealButtons.Where(b => Controller[b]));
