@@ -20,6 +20,13 @@ namespace BizHawk.Client.Common
 			{
 				var bkm = new BkmMovie(path);
 				bkm.Load();
+
+				// Hackery to fix how things used to work
+				if (bkm.SystemID == "GBC")
+				{
+					bkm.SystemID = "GB";
+				}
+
 				return bkm.ToBk2();
 			}
 
