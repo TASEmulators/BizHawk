@@ -46,6 +46,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			w.WriteValue(IsLagFrame);
 			w.WritePropertyName("CurrentDisk");
 			w.WriteValue(CurrentDisk);
+			w.WritePropertyName("PreviousDiskPressed");
+			w.WriteValue(_prevPressed);
+			w.WritePropertyName("NextDiskPressed");
+			w.WriteValue(_nextPressed);
 			w.WritePropertyName("Core");
 			_machine.Serialize(w);
 			w.WriteEndObject();
@@ -59,9 +63,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			IsLagFrame = o.IsLagFrame;
 			CurrentDisk = o.CurrentDisk;
 			_machine = o.Core;
-
-			// should not be needed.
-			// InitDisk();
+			_prevPressed = o.PreviousDiskPressed;
+			_nextPressed = o.NextDiskPressed;
 		}
 
 		public class OtherData
@@ -70,6 +73,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			public int LagCount;
 			public bool IsLagFrame;
 			public int CurrentDisk;
+			public bool PreviousDiskPressed;
+			public bool NextDiskPressed;
 			public Machine Core;
 		}
 
