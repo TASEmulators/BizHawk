@@ -215,7 +215,7 @@ namespace EtoHawk.Config
             
             SetControllerPicture(def.Name);
 
-            var analog = tabControl1.TabPages[0];
+            var analog = tabControl1.Pages[0];
 
             ResumeLayout();
         }
