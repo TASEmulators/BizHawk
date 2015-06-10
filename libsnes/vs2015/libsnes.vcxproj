@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="UNDUPOBJ" DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{488B77AD-58DF-4E01-9329-67B20D486860}</ProjectGuid>
+    <RootNamespace>libsnes</RootNamespace>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>false</SDLCheck>
+      <AdditionalIncludeDirectories>$(ProjectDir)../bsnes</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HOOKS;PROFILE_PERFORMANCE;GAMEBOY;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\bsnes\base\base.hpp" />
+    <ClInclude Include="..\bsnes\gameboy\apu\apu.hpp" />
+    <ClInclude Include="..\bsnes\gameboy\cheat\cheat.hpp" />
+    <ClInclude Include="..\bsnes\gameboy\gameboy.hpp" />
+    <ClInclude Include="..\bsnes\snes\profile-accuracy.hpp" />
+    <ClInclude Include="..\bsnes\snes\profile-compatibility.hpp" />
+    <ClInclude Include="..\bsnes\snes\profile-performance.hpp" />
+    <ClInclude Include="..\bsnes\snes\snes.hpp" />
+    <ClInclude Include="..\bsnes\target-libsnes\libsnes.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\bsnes\gameboy\apu\apu.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\cartridge\cartridge.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\cheat\cheat.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\cpu\cpu.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\interface\interface.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\lcd\lcd.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\memory\memory.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\scheduler\scheduler.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\system\system.cpp" />
+    <ClCompile Include="..\bsnes\gameboy\video\video.cpp" />
+    <ClCompile Include="..\bsnes\snes\alt\cpu\cpu.cpp" />
+    <ClCompile Include="..\bsnes\snes\alt\dsp\dsp.cpp" />
+    <ClCompile Include="..\bsnes\snes\alt\ppu-performance\ppu.cpp" />
+    <ClCompile Include="..\bsnes\snes\alt\smp\smp.cpp" />
+    <ClCompile Include="..\bsnes\snes\cartridge\cartridge.cpp" />
+    <ClCompile Include="..\bsnes\snes\cheat\cheat.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\armdsp\armdsp.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\bsx\bsx.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\hitachidsp\hitachidsp.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\icd2\icd2.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\link\link.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\msu1\msu1.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\necdsp\necdsp.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\nss\nss.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\obc1\obc1.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\sa1\sa1.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\sdd1\sdd1.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\spc7110\spc7110.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\srtc\srtc.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\sufamiturbo\sufamiturbo.cpp" />
+    <ClCompile Include="..\bsnes\snes\chip\superfx\superfx.cpp" />
+    <ClCompile Include="..\bsnes\snes\config\config.cpp" />
+    <ClCompile Include="..\bsnes\snes\controller\controller.cpp" />
+    <ClCompile Include="..\bsnes\snes\cpu\core\core.cpp" />
+    <ClCompile Include="..\bsnes\snes\cpu\cpu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\dsp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\interface\interface.cpp" />
+    <ClCompile Include="..\bsnes\snes\memory\memory.cpp" />
+    <ClCompile Include="..\bsnes\snes\ppu\ppu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\smp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\system\system.cpp" />
+    <ClCompile Include="..\bsnes\target-libsnes\libsnes.cpp" />
+    <ClCompile Include="..\bsnes\target-libsnes\libsnes_pwrap.cpp" />
+    <ClCompile Include="..\libco_msvc_win32\libco_msvc_win32.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <!-- thanks to http://stackoverflow.com/questions/841913/modify-msbuild-itemgroup-metadata -->
+  <!-- before building, let's modify all the ObjectFileNames according to a pattern which will eliminate the possibility of duplicate .obj names -->
+  <Target Name="UNDUPOBJ">
+    <Message Text="UNDUPOBJ 1: Adjusting ObjectFileName on all ClCompile targets" Importance="low" />
+    <!-- For diagnostics, print each thing we're operating on -->
+    <Message Text="UNDUPOBJ 2: ABOUT TO FIX: %(ClCompile.Identity) with obj path %(ClCompile.ObjectFileName)" Importance="low" />
+    <!-- Now, patch the ClCompile objects with a better ObjectFileName -->
+    <!-- A project which depended on a special and particular name for a handful of object files could add metadata to them in the vcxproj and we could exclude those items here -->
+    <!-- Another idea which I have achieved (but may be less reliable for other users, so it isn't done here) is to leave the directory structure semi-intact and have the obj build in a hierarchy under the IntDir -->
+    <!-- for example, myproj/src/a/x.cpp and myproj/src/b/x.cpp build to myproj/Debug/a/x.obj and myproj/Debug/b/xobj -->
+    <!-- TODO - would something other than Identity be best here? FileName? Etc.? Probably. But Identity has the advantage of removing personal information (build path) from the obj path -->
+    <ItemGroup>
+      <ClCompile>
+        <!-- selectively erase or replace characters in %(Identity) other than A-Za-z0-9 while converting backslashes to underscores -->
+        <ObjectFileName>$(IntDir)$([System.Text.RegularExpressions.Regex]::Replace('%(Identity)','[^A-Za-z0-9\\]','').Replace("\","_") ).obj</ObjectFileName>
+      </ClCompile>
+    </ItemGroup>
+    <!-- For diagnostics, print the results -->
+    <Message Text="UNDUPOBJ 3: %(ClCompile.Identity) obj path set to %(ClCompile.ObjectFileName)" Importance="low" />
+  </Target>
+  <!-- UNDUPOBJ -->
+</Project>
