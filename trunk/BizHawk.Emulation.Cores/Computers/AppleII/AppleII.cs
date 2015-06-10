@@ -10,9 +10,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	[CoreAttributes(
 		"Virtu",
-		"TODO",
+		"fool",
 		isPorted: true,
-		isReleased: false
+		isReleased: true
 		)]
 	public partial class AppleII : IEmulator, IDriveLight
 	{
