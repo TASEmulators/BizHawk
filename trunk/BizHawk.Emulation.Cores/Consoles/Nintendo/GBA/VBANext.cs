@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
+		public int LagCount { get; private set; }
 		public bool IsLagFrame { get; private set; }
 
 		private ITraceable Tracer { get; set; }

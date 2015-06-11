@@ -713,7 +713,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		int timeFrameCounter;
 		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
-		public int LagCount { get; set; }
+		public int LagCount { get; private set; }
 		public bool IsLagFrame { get; private set; }
 		public string SystemId { get; private set; }
 
