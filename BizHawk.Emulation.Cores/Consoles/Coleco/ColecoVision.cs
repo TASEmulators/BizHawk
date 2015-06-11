@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (_isLag)
 			{
-				LagCount++;
+				_lagCount++;
 			}
 		}
 

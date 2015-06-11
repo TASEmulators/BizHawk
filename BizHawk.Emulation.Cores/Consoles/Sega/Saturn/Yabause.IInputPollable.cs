@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
 	public partial class Yabause : IInputPollable
 	{
-		public int LagCount { get; set; }
+		public int LagCount { get; private set; }
 
 		public bool IsLagFrame { get; private set; }
 

@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
         internal IntPtr GambatteState = IntPtr.Zero;
 
         public int Frame { get; set; }
-        public int LagCount { get; set; }
+        public int LagCount { get; private set; }
         public bool IsLagFrame { get; private set; }
 
         // all cycle counts are relative to a 2*1024*1024 mhz refclock

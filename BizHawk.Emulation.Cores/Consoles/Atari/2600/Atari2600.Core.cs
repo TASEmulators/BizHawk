@@ -386,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_tia.CompleteAudioFrame();
 				if (_islag)
-					LagCount++;
+					_lagcount++;
 				_tia.LineCount = 0;
 				_frameStartPending = true;
 			}

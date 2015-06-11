@@ -315,8 +315,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int LagCount
 		{
 			get { return _lagCount; }
-			set { throw new InvalidOperationException(); }
 		}
+
 		private int _lagCount;
 
 		public bool IsLagFrame { get; private set; }
