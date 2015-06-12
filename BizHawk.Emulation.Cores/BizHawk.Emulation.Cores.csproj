@@ -122,6 +122,12 @@
     <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\AppleII\AppleII.IDebuggable.cs">
+        <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\AppleII\AppleII.IDisassembler.cs">
+      <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\AppleII\AppleII.IEmulator.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
