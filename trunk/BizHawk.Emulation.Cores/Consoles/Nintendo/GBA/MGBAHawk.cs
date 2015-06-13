@@ -6,21 +6,32 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, false, "NOT DONE", "NOT DONE", false)]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<object, MGBAHawk.SyncSettings>
 	{
 		IntPtr core;
 
 		[CoreConstructor("GBA")]
-		public MGBAHawk(byte[] file, CoreComm comm)
+		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, bool deterministic)
 		{
-			byte[] bios = null;
-			if (true) // TODO: config me
+			_syncSettings = syncSettings ?? new SyncSettings();
+			DeterministicEmulation = deterministic;
+
+			byte[] bios = comm.CoreFileProvider.GetFirmware("GBA", "Bios", false);
+			DeterministicEmulation &= bios != null;
+
+			if (DeterministicEmulation != deterministic)
 			{
-				bios = comm.CoreFileProvider.GetFirmware("GBA", "Bios", true);
+				throw new InvalidOperationException("A BIOS is required for deterministic recordings!");
+			}
+			if (!DeterministicEmulation && bios != null && !_syncSettings.RTCUseRealTime && !_syncSettings.SkipBios)
+			{
+				// in these situations, this core is deterministic even though it wasn't asked to be
+				DeterministicEmulation = true;
 			}
 
 			if (bios != null && bios.Length != 16384)
@@ -39,12 +50,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					throw new InvalidOperationException("BizLoad() returned FALSE!  Bad ROM?");
 				}
 
+				if (!DeterministicEmulation && _syncSettings.SkipBios)
+				{
+					LibmGBA.BizSkipBios(core);
+				}
+
 				var ser = new BasicServiceProvider(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
 				ser.Register<IMemoryDomains>(CreateMemoryDomains(file.Length));
 
 				ServiceProvider = ser;
 				CoreComm = comm;
+
+				CoreComm.VsyncNum = 262144;
+				CoreComm.VsyncDen = 4389;
+				CoreComm.NominalWidth = 240;
+				CoreComm.NominalHeight = 160;
 
 				InitStates();
 			}
@@ -66,27 +87,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				LibmGBA.BizReset(core);
 
 			IsLagFrame = LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
-				0, // TODO RTC hookup
+				RTCTime(),
 				(short)Controller.GetFloat("Tilt X"),
 				(short)Controller.GetFloat("Tilt Y"),
 				(short)Controller.GetFloat("Tilt Z"),
 				(byte)(255 - Controller.GetFloat("Light Sensor")));
+
 			if (IsLagFrame)
-				_lagCount++;
+				LagCount++;
+			// this should be called in hblank on the appropriate line, but until we implement that, just do it here
+			if (_scanlinecb != null)
+				_scanlinecb();
 		}
 
 		public int Frame { get; private set; }
 
 		public string SystemId { get { return "GBA"; } }
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get; private set; }
 
 		public string BoardName { get { return null; } }
 
 		public void ResetCounters()
 		{
 			Frame = 0;
-			_lagCount = 0;
+			LagCount = 0;
 			IsLagFrame = false;
 		}
 
@@ -168,6 +193,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#endregion
 
+		private Action _scanlinecb;
+
 		private GBAGPUMemoryAreas _gpumem;
 
 		public GBAGPUMemoryAreas GetMemoryAreas()
@@ -178,6 +205,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[FeatureNotImplemented]
 		public void SetScanlineCallback(Action callback, int scanline)
 		{
+			_scanlinecb = callback;
 		}
 
 		#region ISaveRam
@@ -296,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
-			_lagCount = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
 		}
 
@@ -312,19 +340,81 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return savebuff2;
 		}
 
-		public int LagCount
-		{
-			get { return _lagCount; }
-		}
-
-		private int _lagCount;
-
+		public int LagCount { get; private set; }
 		public bool IsLagFrame { get; private set; }
 
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks
 		{
 			get { throw new NotImplementedException(); }
+		}
+
+		private long RTCTime()
+		{
+			if (!DeterministicEmulation && _syncSettings.RTCUseRealTime)
+			{
+				return (long)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+			}
+			long basetime = (long)_syncSettings.RTCInitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+			long increment = Frame * 4389L >> 18;
+			return basetime + increment;
+		}
+
+		public object GetSettings()
+		{
+			return null;
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSettings(object o)
+		{
+			return false;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			bool ret = SyncSettings.NeedsReboot(o, _syncSettings);
+			_syncSettings = o;
+			return ret;
+		}
+
+		private SyncSettings _syncSettings;
+
+		public class SyncSettings
+		{
+			[DisplayName("Skip BIOS")]
+			[Description("Skips the BIOS intro.  Not applicable when a BIOS is not provided.")]
+			[DefaultValue(true)]
+			public bool SkipBios { get; set; }
+
+			[DisplayName("RTC Use Real Time")]
+			[Description("Causes the internal clock to reflect your system clock.  Only relevant when a game has an RTC chip.  Forced to false for movie recording.")]
+			[DefaultValue(true)]
+			public bool RTCUseRealTime { get; set; }
+
+			[DisplayName("RTC Initial Time")]
+			[Description("The initial time of emulation.  Only relevant when a game has an RTC chip and \"RTC Use Real Time\" is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime RTCInitialTime { get; set; }
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
 		}
 	}
 }

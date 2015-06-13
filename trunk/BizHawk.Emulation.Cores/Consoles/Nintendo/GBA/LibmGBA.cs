@@ -22,6 +22,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizReset(IntPtr ctx);
 
 		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSkipBios(IntPtr ctx);
+
+		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool BizLoad(IntPtr ctx, byte[] data, int length);
 
 		[DllImport(dll, CallingConvention = cc)]
