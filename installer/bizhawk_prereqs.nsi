@@ -42,7 +42,8 @@ Section "Microsoft Visual C++ 2010 SP1 Redist" SEC_CRT2010_SP1
   SetOutPath "$TEMP"
   File "dist\vcredist_2010_sp1_x86.exe"
   DetailPrint "Running Visual C++ 2010 SP1 Redistributable Setup..."
-  ExecWait '"$TEMP\vcredist_2010_sp1_x86.exe" /passive /notrestart'
+  DetailPrint "(And ordering it to attempt a repair since some user's DLLs are wrecked)"
+  ExecWait '"$TEMP\vcredist_2010_sp1_x86.exe" /repair /q /promptrestart'
   DetailPrint "Finished Visual C++ 2010 SP1 Redistributable Setup"
   
   Delete "$TEMP\vcredist_2010_sp1_x86.exe"
