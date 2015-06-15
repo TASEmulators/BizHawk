@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 
 		public string PathSubfile(string fname)
 		{
-			return Path.Combine(Path.GetDirectoryName(SubfileDirectory) ?? String.Empty, fname);
+			return Path.Combine(SubfileDirectory ?? String.Empty, fname);
 		}
 
 		public string DllPath()
@@ -110,7 +110,11 @@ namespace BizHawk.Client.Common
 		// this should go away now
 		public static void SyncCoreCommInputSignals(CoreComm target)
 		{
+			string superhack = null;
+			if (target.CoreFileProvider != null && target.CoreFileProvider is CoreFileProvider)
+				superhack = ((CoreFileProvider)target.CoreFileProvider ).SubfileDirectory;
 			var cfp = new CoreFileProvider(target.ShowMessage);
+			cfp.SubfileDirectory = superhack;
 			target.CoreFileProvider = cfp;
 			cfp.FirmwareManager = Global.FirmwareManager;
 		}

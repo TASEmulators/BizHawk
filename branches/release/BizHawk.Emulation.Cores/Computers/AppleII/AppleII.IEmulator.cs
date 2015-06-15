@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		[FeatureNotImplemented]
 		public ISyncSoundProvider SyncSoundProvider
 		{
-			get { return _soundService; }
+			get { return this; }
 		}
 
 		[FeatureNotImplemented]
@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public IController Controller { get; set; }
 
-
 		public int Frame { get; set; }
 
 		public string SystemId { get { return "AppleII"; } }
@@ -51,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public void ResetCounters()
 		{
 			Frame = 0;
+			LagCount = 0;
+			IsLagFrame = false;
 		}
 
 		public CoreComm CoreComm { get; private set; }

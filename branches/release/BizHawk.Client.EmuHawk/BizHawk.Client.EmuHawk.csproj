@@ -283,12 +283,6 @@
     <Compile Include="config\GB\DGBPrefs.Designer.cs">
       <DependentUpon>DGBPrefs.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\GB\DualGBFileSelector.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="config\GB\DualGBFileSelector.Designer.cs">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
-    </Compile>
     <Compile Include="config\GB\GBPrefControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -708,12 +702,6 @@
     <Compile Include="tools\GBA\MobileDetailView.Designer.cs">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\GB\DualGBXMLCreator.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\GB\DualGBXMLCreator.Designer.cs">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\GB\GBGameGenie.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -771,6 +759,12 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Tastudio.cs" />
+    <Compile Include="tools\Lua\LuaCanvas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Lua\LuaCanvas.Designer.cs">
+      <DependentUpon>LuaCanvas.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Lua\LuaCheckbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -820,6 +814,18 @@
       <DependentUpon>MacroInput.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\Macros\MovieZone.cs" />
+    <Compile Include="tools\MultiDiskBundler\MultiDiskFileSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\MultiDiskBundler\MultiDiskFileSelector.Designer.cs">
+      <DependentUpon>MultiDiskFileSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\MultiDiskBundler\MultiDiskBundler.Designer.cs">
+      <DependentUpon>MultiDiskBundler.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\NES\BarcodeEntry.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -834,6 +840,12 @@
     </Compile>
     <Compile Include="tools\NES\NESGameGenie.Designer.cs">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\NES\NESMusicRipper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\NES\NESMusicRipper.Designer.cs">
+      <DependentUpon>NESMusicRipper.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\NES\NESNameTableViewer.cs">
       <SubType>Form</SubType>
@@ -1035,6 +1047,7 @@
     </Compile>
     <Compile Include="tools\VirtualPads\schema\A26Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\A78Schema.cs" />
+    <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\DualGBSchema.cs" />
@@ -1151,9 +1164,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\GB\DGBPrefs.resx">
       <DependentUpon>DGBPrefs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\GB\DualGBFileSelector.resx">
-      <DependentUpon>DualGBFileSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\GB\GBPrefControl.resx">
       <DependentUpon>GBPrefControl.cs</DependentUpon>
@@ -1303,9 +1313,6 @@
     <EmbeddedResource Include="tools\GBA\MobileDetailView.resx">
       <DependentUpon>MobileDetailView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="tools\GB\DualGBXMLCreator.resx">
-      <DependentUpon>DualGBXMLCreator.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="tools\GB\GBGameGenie.resx">
       <DependentUpon>GBGameGenie.cs</DependentUpon>
     </EmbeddedResource>
@@ -1330,6 +1337,9 @@
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
+      <DependentUpon>LuaCanvas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaConsole.resx">
       <DependentUpon>LuaConsole.cs</DependentUpon>
     </EmbeddedResource>
@@ -1345,11 +1355,20 @@
     <EmbeddedResource Include="tools\Macros\MacroInput.resx">
       <DependentUpon>MacroInput.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskFileSelector.resx">
+      <DependentUpon>MultiDiskFileSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\MultiDiskBundler\MultiDiskBundler.resx">
+      <DependentUpon>MultiDiskBundler.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\BarcodeEntry.resx">
       <DependentUpon>BarcodeEntry.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESGameGenie.resx">
       <DependentUpon>NESGameGenie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\NES\NESMusicRipper.resx">
+      <DependentUpon>NESMusicRipper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\NES\NESNameTableViewer.resx">
       <DependentUpon>NESNameTableViewer.cs</DependentUpon>
@@ -1883,6 +1902,7 @@
     <None Include="images\connect_16x16.png" />
     <None Include="images\add.png" />
     <None Include="images\HawkInLove.png" />
+    <None Include="images\ControllerImages\AppleIIKeyboard.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

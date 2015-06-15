@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (_isLag)
 			{
-				LagCount++;
+				_lagCount++;
 			}
 		}
 
@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public string BoardName { get { return null; } }
 
-		public ISyncSoundProvider SyncSoundProvider { get { return null; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(SoundProvider, 735); } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }
 	}

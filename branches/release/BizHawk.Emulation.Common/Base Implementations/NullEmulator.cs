@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Common
 
 		public class NullEmulatorSettings
 		{
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool SnowyDisplay { get; set; }
 
 			public NullEmulatorSettings()

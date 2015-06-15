@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public void EndAsyncSound() { }
 
 		public int Frame { get; set; }
-		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
+		public int LagCount { get { return _lagcount; } }
 		public bool IsLagFrame { get { return islag; } }
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "GEN"; } }

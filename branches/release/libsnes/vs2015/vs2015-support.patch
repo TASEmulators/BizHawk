@@ -1,0 +1,402 @@
+Index: gameboy/system/system.hpp
+===================================================================
+--- gameboy/system/system.hpp	(revision 9394)
++++ gameboy/system/system.hpp	(working copy)
+@@ -11,9 +11,9 @@
+     GameBoyColor,
+   };
+   readonly<Revision> revision;
+-  inline bool dmg() const { return revision == Revision::GameBoy; }
+-  inline bool sgb() const { return revision == Revision::SuperGameBoy; }
+-  inline bool cgb() const { return revision == Revision::GameBoyColor; }
++  inline bool dmg() const { return (Revision)revision == Revision::GameBoy; }
++  inline bool sgb() const { return (Revision)revision == Revision::SuperGameBoy; }
++  inline bool cgb() const { return (Revision)revision == Revision::GameBoyColor; }
+ 
+   struct BootROM {
+     static const uint8 dmg[ 256];
+Index: nall/bit.hpp
+===================================================================
+--- nall/bit.hpp	(revision 9394)
++++ nall/bit.hpp	(working copy)
+@@ -10,20 +10,24 @@
+ 
+   template<unsigned bits>
+   constexpr inline uintmax_t uclip(const uintmax_t x) {
+-    enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 };
+-    return (x & m);
++    //enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 }; //test
++		//return (x & m); //test
++    return (x & ((uintmax_t)(((uintmax_t)(1ull << (bits - 1))) * 2 - 1)));
+   }
+ 
+   template<unsigned bits>
+   constexpr inline intmax_t sclamp(const intmax_t x) {
+-    enum : intmax_t { b = 1ull << (bits - 1), m = b - 1 };
+-    return (x > m) ? m : (x < -b) ? -b : x;
++    //enum : intmax_t { b = 1ull << (bits - 1), m = b - 1 }; //test
++		//(intmax_t)(1ull << (bits - 1)) //b
++		//(((intmax_t)(1ull << (bits - 1))) - 1) //m
++    //return (x > m) ? m : (x < -b) ? -b : x; //test
++		return (x > (((intmax_t)(1ull << (bits - 1))) - 1)) ? (((intmax_t)(1ull << (bits - 1))) - 1) : (x < -((intmax_t)(1ull << (bits - 1)))) ? -((intmax_t)(1ull << (bits - 1))) : x; //test
+   }
+ 
+   template<unsigned bits>
+   constexpr inline intmax_t sclip(const intmax_t x) {
+-    enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 };
+-    return ((x & m) ^ b) - b;
++    //enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 }; //test
++    return ((x & ((uintmax_t)(((uintmax_t)(1ull << (bits - 1))) * 2 - 1))) ^ ((uintmax_t)(1ull << (bits - 1)))) - ((uintmax_t)(1ull << (bits - 1)));
+   }
+ 
+   namespace bit {
+Index: nall/dsp/resample/average.hpp
+===================================================================
+--- nall/dsp/resample/average.hpp	(revision 9394)
++++ nall/dsp/resample/average.hpp	(working copy)
+@@ -50,7 +50,8 @@
+ 
+ void ResampleAverage::sampleLinear() {
+   while(fraction <= 1.0) {
+-    real channel[dsp.settings.channels];
++    //real channel[dsp.settings.channels]; //test
++		real channel[2];
+ 
+     for(unsigned n = 0; n < dsp.settings.channels; n++) {
+       real a = dsp.buffer.read(n, -1);
+Index: nall/dsp/resample/cosine.hpp
+===================================================================
+--- nall/dsp/resample/cosine.hpp	(revision 9394)
++++ nall/dsp/resample/cosine.hpp	(working copy)
+@@ -21,8 +21,10 @@
+ 
+ void ResampleCosine::sample() {
+   while(fraction <= 1.0) {
+-    real channel[dsp.settings.channels];
++    //real channel[dsp.settings.channels]; //test
++		real channel[2];
+ 
++
+     for(unsigned n = 0; n < dsp.settings.channels; n++) {
+       real a = dsp.buffer.read(n, -1);
+       real b = dsp.buffer.read(n, -0);
+Index: nall/dsp/resample/cubic.hpp
+===================================================================
+--- nall/dsp/resample/cubic.hpp	(revision 9394)
++++ nall/dsp/resample/cubic.hpp	(working copy)
+@@ -21,7 +21,8 @@
+ 
+ void ResampleCubic::sample() {
+   while(fraction <= 1.0) {
+-    real channel[dsp.settings.channels];
++    //real channel[dsp.settings.channels]; //test
++		real channel[2]; //test 
+ 
+     for(unsigned n = 0; n < dsp.settings.channels; n++) {
+       real a = dsp.buffer.read(n, -3);
+Index: nall/dsp/resample/hermite.hpp
+===================================================================
+--- nall/dsp/resample/hermite.hpp	(revision 9394)
++++ nall/dsp/resample/hermite.hpp	(working copy)
+@@ -21,7 +21,8 @@
+ 
+ void ResampleHermite::sample() {
+   while(fraction <= 1.0) {
+-    real channel[dsp.settings.channels];
++    //real channel[dsp.settings.channels]; //test
++		real channel[2];
+ 
+     for(unsigned n = 0; n < dsp.settings.channels; n++) {
+       real a = dsp.buffer.read(n, -3);
+Index: nall/dsp/resample/lib/sinc.hpp
+===================================================================
+--- nall/dsp/resample/lib/sinc.hpp	(revision 9394)
++++ nall/dsp/resample/lib/sinc.hpp	(working copy)
+@@ -4,6 +4,8 @@
+ typedef float resample_coeff_t;	// note: sizeof(resample_coeff_t) must be == to a power of 2, and not larger than 16
+ typedef float resample_samp_t;
+ 
++#include <string>
++#include <vector>
+ 
+ // ...but don't comment this single RESAMPLE_SSEREGPARM define out when disabling SSE.
+ #define RESAMPLE_SSEREGPARM	
+Index: nall/dsp/resample/linear.hpp
+===================================================================
+--- nall/dsp/resample/linear.hpp	(revision 9394)
++++ nall/dsp/resample/linear.hpp	(working copy)
+@@ -21,7 +21,8 @@
+ 
+ void ResampleLinear::sample() {
+   while(fraction <= 1.0) {
+-    real channel[dsp.settings.channels];
++    //real channel[dsp.settings.channels]; //TEST
++		real channel[2];
+ 
+     for(unsigned n = 0; n < dsp.settings.channels; n++) {
+       real a = dsp.buffer.read(n, -1);
+Index: nall/dsp/resample/nearest.hpp
+===================================================================
+--- nall/dsp/resample/nearest.hpp	(revision 9394)
++++ nall/dsp/resample/nearest.hpp	(working copy)
+@@ -21,7 +21,8 @@
+ 
+ void ResampleNearest::sample() {
+   while(fraction <= 1.0) {
+-    real channel[dsp.settings.channels];
++    //real channel[dsp.settings.channels]; //test
++		real channel[2];
+ 
+     for(unsigned n = 0; n < dsp.settings.channels; n++) {
+       real a = dsp.buffer.read(n, -1);
+Index: nall/file.hpp
+===================================================================
+--- nall/file.hpp	(revision 9394)
++++ nall/file.hpp	(working copy)
+@@ -176,7 +176,8 @@
+       struct __stat64 data;
+       _wstat64(utf16_t(filename), &data);
+       #endif
+-      return S_ISREG(data.st_mode) ? data.st_size : 0u;
++      //return S_ISREG(data.st_mode) ? data.st_size : 0u; //TEST
++			return data.st_size;
+     }
+ 
+     static time_t timestamp(const string &filename, file::time mode = file::time::create) {
+Index: nall/platform.hpp
+===================================================================
+--- nall/platform.hpp	(revision 9394)
++++ nall/platform.hpp	(working copy)
+@@ -8,6 +8,10 @@
+   #include <nall/windows/utf8.hpp>
+ #endif
+ 
++#ifdef _MSC_VER
++#define _USE_MATH_DEFINES 1
++#endif
++
+ //=========================
+ //standard platform headers
+ //=========================
+@@ -29,10 +33,13 @@
+ #if defined(_WIN32)
+   #include <io.h>
+   #include <direct.h>
+-  #include <shlobj.h>
++  //#include <shlobj.h> //bizhawk chokes?
+   #include <wchar.h>
+   #undef interface
+   #define dllexport __declspec(dllexport)
++	//bad things happen without these here
++	#include <string>
++	#include <vector>
+ #else
+   #include <unistd.h>
+   #include <pwd.h>
+@@ -100,23 +107,27 @@
+   }
+ 
+   inline char* userpath(char *path) {
+-    wchar_t fp[_MAX_PATH] = L"";
+-    SHGetFolderPathW(0, CSIDL_APPDATA | CSIDL_FLAG_CREATE, 0, 0, fp);
+-    strcpy(path, nall::utf8_t(fp));
+-    for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
+-    unsigned length = strlen(path);
+-    if(path[length] != '/') strcpy(path + length, "/");
+-    return path;
++		//TODO BIZHAWK
++		return nullptr;
++    //wchar_t fp[_MAX_PATH] = L"";
++    //SHGetFolderPathW(0, CSIDL_APPDATA | CSIDL_FLAG_CREATE, 0, 0, fp);
++    //strcpy(path, nall::utf8_t(fp));
++    //for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
++    //unsigned length = strlen(path);
++    //if(path[length] != '/') strcpy(path + length, "/");
++    //return path;
+   }
+ 
+   inline char* getcwd(char *path) {
+-    wchar_t fp[_MAX_PATH] = L"";
+-    _wgetcwd(fp, _MAX_PATH);
+-    strcpy(path, nall::utf8_t(fp));
+-    for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
+-    unsigned length = strlen(path);
+-    if(path[length] != '/') strcpy(path + length, "/");
+-    return path;
++		//TODO BIZHAWK
++		return nullptr;
++    //wchar_t fp[_MAX_PATH] = L"";
++    //_wgetcwd(fp, _MAX_PATH);
++    //strcpy(path, nall::utf8_t(fp));
++    //for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
++    //unsigned length = strlen(path);
++    //if(path[length] != '/') strcpy(path + length, "/");
++    //return path;
+   }
+ #else
+   //realpath() already exists
+Index: nall/property.hpp
+===================================================================
+--- nall/property.hpp	(revision 9394)
++++ nall/property.hpp	(working copy)
+@@ -56,17 +56,17 @@
+       const T* operator->() const { return &value; }
+       const T& operator()() const { return value; }
+       operator const T&() const { return value; }
+-    private:
++    //private:
+       T* operator->() { return &value; }
+       operator T&() { return value; }
+       const T& operator=(const T& value_) { return value = value_; }
+       T value;
+-      friend class traits<C>::type;
++      //friend class traits<C>::type;
+     };
+ 
+     template<typename T> struct writeonly {
+       void operator=(const T& value_) { value = value_; }
+-    private:
++    //private:
+       const T* operator->() const { return &value; }
+       const T& operator()() const { return value; }
+       operator const T&() const { return value; }
+@@ -73,7 +73,7 @@
+       T* operator->() { return &value; }
+       operator T&() { return value; }
+       T value;
+-      friend class traits<C>::type;
++      //friend class traits<C>::type;
+     };
+ 
+     template<typename T> struct readwrite {
+Index: nall/string/utility.hpp
+===================================================================
+--- nall/string/utility.hpp	(revision 9394)
++++ nall/string/utility.hpp	(working copy)
+@@ -1,5 +1,7 @@
+ #ifdef NALL_STRING_INTERNAL_HPP
+ 
++#include <malloc.h>
++
+ namespace nall {
+ 
+ template<bool Insensitive>
+@@ -164,7 +166,7 @@
+   buffer[size] = 0;
+ 
+   unsigned length = (length_ == 0 ? size : length_);
+-  char result[length + 1];
++	char* result = (char*)alloca(length + 1);
+   memset(result, padding, length);
+   result[length] = 0;
+ 
+@@ -209,7 +211,7 @@
+   } while(value);
+ 
+   unsigned length = (length_ == 0 ? size : length_);
+-  char result[length + 1];
++  char *result = (char*)alloca(length + 1);
+   memset(result, padding, length);
+   result[length] = 0;
+ 
+Index: snes/cartridge/markup.cpp
+===================================================================
+--- snes/cartridge/markup.cpp	(revision 9394)
++++ snes/cartridge/markup.cpp	(working copy)
+@@ -108,7 +108,7 @@
+ void Cartridge::parse_markup_icd2(XML::Node &root) {
+   #if defined(GAMEBOY)
+   if(root.exists() == false) return;
+-  if(mode != Mode::SuperGameBoy) return;
++  if(mode.value != Mode::SuperGameBoy) return;
+ 
+   icd2.revision = max(1, numeral(root["revision"].data));
+ 
+@@ -241,7 +241,8 @@
+     if(!sha256.empty()) {
+       //XML file specified SHA256 sum for program. Verify file matches the hash.
+       fp.seek(0);
+-      uint8_t data[filesize];
++      //uint8_t data[filesize]; //test
++			uint8_t *data = (uint8_t*)alloca(filesize);
+       fp.read(data, filesize);
+ 
+       if(sha256 != nall::sha256(data, filesize)) {
+@@ -367,7 +368,7 @@
+ 
+ void Cartridge::parse_markup_bsx(XML::Node &root) {
+   if(root.exists() == false) return;
+-  if(mode != Mode::BsxSlotted && mode != Mode::Bsx) return;
++  if(mode.value != Mode::BsxSlotted && mode.value != Mode::Bsx) return;
+   has_bsx_slot = true;
+ 
+   for(auto &node : root["slot"]) {
+@@ -394,7 +395,7 @@
+ 
+ void Cartridge::parse_markup_sufamiturbo(XML::Node &root) {
+   if(root.exists() == false) return;
+-  if(mode != Mode::SufamiTurbo) return;
++  if(mode.value != Mode::SufamiTurbo) return;
+ 
+   for(auto &slot : root) {
+     if(slot.name != "slot") continue;
+Index: snes/chip/armdsp/registers.hpp
+===================================================================
+--- snes/chip/armdsp/registers.hpp	(revision 9394)
++++ snes/chip/armdsp/registers.hpp	(working copy)
+@@ -93,6 +93,7 @@
+   Register& operator=(uint32 n) {
+     data = n;
+     if(write) write();
++		return *this; //test - what?
+   }
+ 
+   Register& operator+=(uint32 n) { return operator=(data + n); }
+Index: snes/chip/icd2/interface/interface.cpp
+===================================================================
+--- snes/chip/icd2/interface/interface.cpp	(revision 9394)
++++ snes/chip/icd2/interface/interface.cpp	(working copy)
+@@ -112,7 +112,7 @@
+   return 0;
+ }
+ 
+-void* ICD2::allocSharedMemory(const char* memtype, size_t amt, int initialByte) { SNES::interface()->allocSharedMemory(memtype, amt, initialByte); }
++void* ICD2::allocSharedMemory(const char* memtype, size_t amt, int initialByte) { return SNES::interface()->allocSharedMemory(memtype, amt, initialByte); }
+ void ICD2::freeSharedMemory(void* ptr) { SNES::interface()->freeSharedMemory(ptr); }
+ 
+ #endif
+Index: snes/system/system.cpp
+===================================================================
+--- snes/system/system.cpp	(revision 9394)
++++ snes/system/system.cpp	(working copy)
+@@ -155,7 +155,7 @@
+ 
+   region = config.region;
+   expansion = config.expansion_port;
+-  if(region == Region::Autodetect) {
++  if(region.value == Region::Autodetect) {
+     region = (cartridge.region() == Cartridge::Region::NTSC ? Region::NTSC : Region::PAL);
+   }
+ 
+Index: target-libsnes/libsnes_pwrap.cpp
+===================================================================
+--- target-libsnes/libsnes_pwrap.cpp	(revision 9394)
++++ target-libsnes/libsnes_pwrap.cpp	(working copy)
+@@ -854,6 +854,7 @@
+ 	case eMessage_QUERY_peek_cpu_regs:
+ 		{
+ 			//watch it! the size of this struct is important!
++			#pragma pack(push,1)
+ 			struct {
+ 				u32 pc;
+ 				u16 a,x,y,z,s,d,vector; //7x
+@@ -860,7 +861,8 @@
+ 						u8 p, nothing;
+ 				u32 aa,rd;
+ 				u8 sp, dp, db, mdr;
+-			} __attribute__((__packed__)) cpuregs;
++			} cpuregs;
++			#pragma pack(pop)
+ 
+ 			cpuregs.pc = (u32)SNES::cpu.regs.pc;
+ 			cpuregs.a = SNES::cpu.regs.a;

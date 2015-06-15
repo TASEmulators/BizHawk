@@ -5,7 +5,7 @@
 		/// <summary>
 		/// The lag count.
 		/// </summary>
-		int LagCount { get; set; }
+		int LagCount { get; }
 
 		/// <summary>
 		/// If the current frame is a lag frame.

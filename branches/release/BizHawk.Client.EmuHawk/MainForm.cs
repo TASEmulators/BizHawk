@@ -64,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			HandleToggleLightAndLink();
+			SetStatusBar();
 
 			// New version notification
 			UpdateChecker.CheckComplete += (s2, e2) =>
@@ -1393,7 +1394,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
 					// GBA vba-next core will try to eat anything, regardless of size
-					if (Global.Emulator is GBA || Global.Emulator is VBANext)
+					if (Global.Emulator is GBA || Global.Emulator is VBANext || Global.Emulator is MGBAHawk)
 					{
 						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 					}
@@ -1510,6 +1511,7 @@ namespace BizHawk.Client.EmuHawk
 			DGBSubMenu.Visible = false;
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
+			AppleSubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1586,6 +1588,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "WSWAN":
 					wonderSwanToolStripMenuItem.Visible = true;
+					break;
+				case "AppleII":
+					AppleSubMenu.Visible = true;
 					break;
 			}
 		}
@@ -1846,44 +1851,43 @@ namespace BizHawk.Client.EmuHawk
 			return str;
 		}
 
-		private void OpenRom()
+		public static string RomFilter
 		{
-			var ofd = new OpenFileDialog { InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId) };
+			get
+			{
+				if (VersionInfo.DeveloperBuild)
+				{
+					return FormatFilter(
+						"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;%ARCH%",
+						"Music Files", "*.psf;*.sid;*.nsf",
+						"Disc Images", "*.cue;*.ccd;*.m3u",
+						"NES", "*.nes;*.fds;*.nsf;%ARCH%",
+						"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+						"Master System", "*.sms;*.gg;*.sg;%ARCH%",
+						"PC Engine", "*.pce;*.sgx;*.cue;*.ccd;%ARCH%",
+						"TI-83", "*.rom;%ARCH%",
+						"Archive Files", "%ARCH%",
+						"Savestate", "*.state",
+						"Atari 2600", "*.a26;*.bin;%ARCH%",
+						"Atari 7800", "*.a78;*.bin;%ARCH%",
+						"Atari Lynx", "*.lnx;%ARCH%",
+						"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
+						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
+						"Gameboy Advance", "*.gba;%ARCH%",
+						"Colecovision", "*.col;%ARCH%",
+						"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+						"PSX Executables (experimental)", "*.exe",
+						"PSF Playstation Sound File (not supported)", "*.psf",
+						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
+						"SID Commodore 64 Music File", "*.sid;%ARCH%",
+						"Nintendo 64", "*.z64;*.v64;*.n64",
+						"WonderSwan", "*.ws;*.wsc;%ARCH%",
+						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
+						"All Files", "*.*");
+				}
 
-			// adelikat: ugly design for this, I know
-			if (VersionInfo.DeveloperBuild)
-			{
-				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;%ARCH%",
-					"Music Files", "*.psf;*.sid;*.nsf",
-					"Disc Images", "*.cue;*.ccd;*.m3u",
-					"NES", "*.nes;*.fds;*.nsf;%ARCH%",
-					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
-					"Master System", "*.sms;*.gg;*.sg;%ARCH%",
-					"PC Engine", "*.pce;*.sgx;*.cue;*.ccd;%ARCH%",
-					"TI-83", "*.rom;%ARCH%",
-					"Archive Files", "%ARCH%",
-					"Savestate", "*.state",
-					"Atari 2600", "*.a26;*.bin;%ARCH%",
-					"Atari 7800", "*.a78;*.bin;%ARCH%",
-					"Atari Lynx", "*.lnx;%ARCH%",
-					"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
-					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
-					"Gameboy Advance", "*.gba;%ARCH%",
-					"Colecovision", "*.col;%ARCH%",
-					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
-					"PSX Executables (experimental)", "*.exe",
-					"PSF Playstation Sound File (not supported)", "*.psf",
-					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
-					"SID Commodore 64 Music File", "*.sid;%ARCH%",
-					"Nintendo 64", "*.z64;*.v64;*.n64",
-					"WonderSwan", "*.ws;*.wsc;%ARCH%",
-					"All Files", "*.*");
-			}
-			else
-			{
-				ofd.Filter = FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;%ARCH%",
+				return FormatFilter(
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1901,11 +1905,20 @@ namespace BizHawk.Client.EmuHawk
 					"Savestate", "*.state",
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;*.ccd;%ARCH%",
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
+					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 					"All Files", "*.*");
 			}
+		}
 
-			ofd.RestoreDirectory = false;
-			ofd.FilterIndex = _lastOpenRomFilter;
+		private void OpenRom()
+		{
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Filter = RomFilter,
+				RestoreDirectory = false,
+				FilterIndex = _lastOpenRomFilter
+			};
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -3711,6 +3724,53 @@ namespace BizHawk.Client.EmuHawk
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
+		}
+
+		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<MultiDiskBundler>();
+		}
+
+		private void coreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
+			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
+		}
+
+		private void quickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = true;
+			FlagNeedsReboot();
+		}
+
+		private void nesHawkToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = false;
+			FlagNeedsReboot();
+		}
+
+		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = true;
+			FlagNeedsReboot();
+		}
+
+		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = false;
+			FlagNeedsReboot();
+		}
+
+		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
+			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
+		}
+
+		private void gBAWithMGBAToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA ^= true;
+			FlagNeedsReboot();
 		}
 	}
 }

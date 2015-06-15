@@ -20,6 +20,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Cores.Computers.AppleII;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -747,7 +748,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayStatusBar ^= true;
+			SetStatusBar();
+		}
 
+		private void SetStatusBar()
+		{
 			if (!_inFullscreen)
 			{
 				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
@@ -848,6 +853,8 @@ namespace BizHawk.Client.EmuHawk
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			SnesWithSnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
+
+			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
 
 			SnesWithSnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -1167,25 +1174,6 @@ namespace BizHawk.Client.EmuHawk
 			OpenLuaConsole();
 		}
 
-		private void CreateDualGbXmlMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Sound.StopSound();
-			using (var dlg = new DualGBXMLCreator())
-			{
-				var result = dlg.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					GlobalWin.OSD.AddMessage("XML File saved");
-				}
-				else
-				{
-					GlobalWin.OSD.AddMessage("Dual GB creator aborted");
-				}
-			}
-
-			GlobalWin.Sound.StartSound();
-		}
-
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
@@ -1200,8 +1188,7 @@ namespace BizHawk.Client.EmuHawk
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
 			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
-			MovieSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSyncSettingsForm>()
-				&& !Global.MovieSession.Movie.IsActive;
+			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 
 			NesControllerSettingsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NesControllerSettings>()
 				&& !Global.MovieSession.Movie.IsActive;
@@ -1236,6 +1223,11 @@ namespace BizHawk.Client.EmuHawk
 		private void NESNametableViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<NESNameTableViewer>();
+		}
+
+		private void musicRipperToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<NESMusicRipper>();
 		}
 
 		private void NESGameGenieCodesMenuItem_Click(object sender, EventArgs e)
@@ -1932,6 +1924,46 @@ namespace BizHawk.Client.EmuHawk
 		private void WondersawnSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "WonderSwan Settings");
+		}
+
+		#endregion
+
+		#region Apple II
+
+
+		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Global.Emulator is AppleII)
+			{
+				AppleDisksSubMenu.Enabled = (Global.Emulator as AppleII).DiskCount > 1;
+			}
+		}
+
+		private void AppleDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AppleDisksSubMenu.DropDownItems.Clear();
+
+			if (Global.Emulator is AppleII)
+			{
+				var appleII = Global.Emulator as AppleII;
+				for (int i = 0; i < appleII.DiskCount; i++)
+				{
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = "Disk" + (i + 1),
+						Text = "Disk" + (i + 1),
+						Checked = appleII.CurrentDisk == i
+					};
+
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						appleII.SetDisk(dummy);
+					};
+
+					AppleDisksSubMenu.DropDownItems.Add(menuItem);
+				}
+			}
 		}
 
 		#endregion

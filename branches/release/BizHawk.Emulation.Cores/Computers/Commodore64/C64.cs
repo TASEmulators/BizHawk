@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_islag = !board.inputRead;
 
 			if (_islag)
-				LagCount++;
+				_lagcount++;
 			_frame++;
 
 			//Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));

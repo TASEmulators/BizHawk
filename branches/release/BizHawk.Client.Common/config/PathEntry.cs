@@ -151,11 +151,12 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 4 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 5 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 6 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = ".", Ordinal = 7 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = Path.Combine(".", "Tools"), Ordinal = 7 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "A/V Dumps", Path = ".", Ordinal = 8 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = ".", Ordinal = 9 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = Path.Combine(".", "Tools"), Ordinal = 9 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 10 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 11 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", "Tools"), Ordinal = 12 },
 
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },
@@ -304,6 +305,12 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Lynx", SystemDisplayName = "Lynx", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
 					new PathEntry { System = "Lynx", SystemDisplayName = "Lynx", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "Lynx", SystemDisplayName = "Lynx", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Base", Path = Path.Combine(".", "Lynx"), Ordinal = 0 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "ROM", Path = ".", Ordinal = 1 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 				};
 			}
 		}

@@ -22,7 +22,14 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void Load(string path)
 		{
-			GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true);
+			if (!File.Exists(path))
+			{
+				Log(string.Format("could not find file: {0}", path));
+			}
+			else
+			{
+				GlobalWin.MainForm.LoadState(path, Path.GetFileName(path), true);
+			}
 		}
 
 		[LuaMethodAttributes(
