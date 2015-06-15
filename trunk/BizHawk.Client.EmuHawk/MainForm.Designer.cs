@@ -179,6 +179,7 @@
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesInQuickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SnesWithSnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gBAWithMGBAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.N64VideoPluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -195,6 +196,7 @@
 			this.TAStudioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VirtualPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LuaConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -393,7 +395,6 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.gBAWithMGBAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1722,6 +1723,13 @@
 			this.SnesWithSnes9xMenuItem.Text = "SNES with Snes9x";
 			this.SnesWithSnes9xMenuItem.Click += new System.EventHandler(this.SnesWithSnes9xMenuItem_Click);
 			// 
+			// gBAWithMGBAToolStripMenuItem
+			// 
+			this.gBAWithMGBAToolStripMenuItem.Name = "gBAWithMGBAToolStripMenuItem";
+			this.gBAWithMGBAToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.gBAWithMGBAToolStripMenuItem.Text = "GBA with mGBA";
+			this.gBAWithMGBAToolStripMenuItem.Click += new System.EventHandler(this.gBAWithMGBAToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
@@ -1769,6 +1777,7 @@
             this.TAStudioMenuItem,
             this.MacroToolMenuItem,
             this.VirtualPadMenuItem,
+            this.AutoHawkMenuItem,
             this.toolStripSeparator11,
             this.CheatsMenuItem,
             this.LuaConsoleMenuItem,
@@ -1855,6 +1864,13 @@
 			this.VirtualPadMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.VirtualPadMenuItem.Text = "Virtual Pad";
 			this.VirtualPadMenuItem.Click += new System.EventHandler(this.VirtualPadMenuItem_Click);
+			// 
+			// AutoHawkMenuItem
+			// 
+			this.AutoHawkMenuItem.Name = "AutoHawkMenuItem";
+			this.AutoHawkMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.AutoHawkMenuItem.Text = "AutoHawk";
+			this.AutoHawkMenuItem.Click += new System.EventHandler(this.AutoHawkMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
@@ -3472,13 +3488,6 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// gBAWithMGBAToolStripMenuItem
-			// 
-			this.gBAWithMGBAToolStripMenuItem.Name = "gBAWithMGBAToolStripMenuItem";
-			this.gBAWithMGBAToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
-			this.gBAWithMGBAToolStripMenuItem.Text = "GBA with mGBA";
-			this.gBAWithMGBAToolStripMenuItem.Click += new System.EventHandler(this.gBAWithMGBAToolStripMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -3883,6 +3892,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gBAWithMGBAToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AutoHawkMenuItem;
 	}
 }
 
