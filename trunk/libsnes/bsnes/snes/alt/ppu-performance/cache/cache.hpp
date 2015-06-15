@@ -10,6 +10,7 @@ public:
 
   void serialize(serializer&);
   Cache(PPU &self);
+	~Cache();
 
   PPU &self;
   friend class PPU;
