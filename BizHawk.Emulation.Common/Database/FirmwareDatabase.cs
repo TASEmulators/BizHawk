@@ -191,6 +191,14 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "U", psone_45a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", psone_r5e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps2_50j, FirmwareOptionStatus.Unacceptable);
+
+			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
+			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");
+			Option("AppleII", "AppleIIe", appleII_AppleIIe, FirmwareOptionStatus.Acceptable);
+
+			Firmware("AppleII", "DiskII", "DiskII.rom");
+			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "DiskII.rom", "Disk II");
+			Option("AppleII", "DiskII", appleII_DiskII, FirmwareOptionStatus.Acceptable);
 		}
 
 		//adds a defined firmware ID to the database

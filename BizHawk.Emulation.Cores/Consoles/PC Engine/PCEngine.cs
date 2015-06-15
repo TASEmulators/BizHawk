@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		bool lagged = true;
 		bool isLag = false;
 		public int Frame { get { return frame; } set { frame = value; } }
-		public int LagCount { get { return lagCount; } set { lagCount = value; } }
+		public int LagCount { get { return lagCount; } }
 		public bool IsLagFrame { get { return isLag; } }
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();

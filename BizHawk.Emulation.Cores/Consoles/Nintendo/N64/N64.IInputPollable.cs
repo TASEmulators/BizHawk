@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	public partial class N64 : IInputPollable
 	{
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
+		public int LagCount { get; private set; }
 
 		public bool IsLagFrame
 		{

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -159,8 +160,15 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
+		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
+			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
+			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
+			{
+				DoLoadErrorCallback("Failed multiple attempts to load ROM.", "");
+				return false;
+			}
+
 			bool cancel = false;
 
 			if (path == null)
@@ -322,20 +330,33 @@ namespace BizHawk.Client.Common
 
 							switch (game.System)
 							{
+								case "GB":
 								case "DGB":
-									var left = Database.GetGameInfo(xmlGame.Assets["LeftRom"], "left.gb");
-									var right = Database.GetGameInfo(xmlGame.Assets["RightRom"], "right.gb");
+									// adelikat: remove need for tags to be hardcoded to left and right, we should clean this up, also maybe the DGB core should just take the xml file and handle it itself
+									var leftBytes = xmlGame.Assets.First().Value;
+									var rightBytes = xmlGame.Assets.Skip(1).First().Value;
+
+									var left = Database.GetGameInfo(leftBytes, "left.gb");
+									var right = Database.GetGameInfo(rightBytes, "right.gb");
 									nextEmulator = new GambatteLink(
 										nextComm,
 										left,
-										xmlGame.Assets["LeftRom"],
+										leftBytes,
 										right,
-										xmlGame.Assets["RightRom"],
+										rightBytes,
 										GetCoreSettings<GambatteLink>(),
 										GetCoreSyncSettings<GambatteLink>(),
 										Deterministic);
 
 									// other stuff todo
+									break;
+								case "AppleII":
+									var assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
+									var roms = xmlGame.Assets.Select(a => a.Value);
+									nextEmulator = new AppleII(
+										nextComm,
+										assets,
+										roms);
 									break;
 								default:
 									return false;
@@ -343,8 +364,25 @@ namespace BizHawk.Client.Common
 						}
 						catch (Exception ex)
 						{
-							DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
-							return false;
+							try
+							{
+								// need to get rid of this hack at some point
+								rom = new RomGame(file);
+								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								byte[] romData = null;
+								byte[] xmlData = rom.FileData;
+
+								game = rom.GameInfo;
+								game.System = "SNES";
+								
+								var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+								nextEmulator = snes;
+							}
+							catch 
+							{
+								DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
+								return false;
+							}
 						}
 					}
 					else // most extensions
@@ -369,7 +407,7 @@ namespace BizHawk.Client.Common
 								var result = ChoosePlatform(rom);
 								if (!string.IsNullOrEmpty(result))
 								{
-									rom.GameInfo.System = ChoosePlatform(rom);
+									rom.GameInfo.System = result;
 								}
 								else
 								{
@@ -473,13 +511,16 @@ namespace BizHawk.Client.Common
 								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
 								nextEmulator = c64;
 								break;
-							case "AppleII":
-								var appleII = new AppleII(nextComm, game, rom.RomData, rom.Extension);
-								nextEmulator = appleII;
-								break;
 							case "GBA":
 								//core = CoreInventory.Instance["GBA", "Meteor"];
-								core = CoreInventory.Instance["GBA", "VBA-Next"];
+								if (Global.Config.GBA_UsemGBA)
+								{
+									core = CoreInventory.Instance["GBA", "mGBA"];
+								}
+								else
+								{
+									core = CoreInventory.Instance["GBA", "VBA-Next"];
+								}
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
@@ -526,7 +567,12 @@ namespace BizHawk.Client.Common
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
 					if (ex is UnsupportedGameException)
 					{
-						return LoadRom(path, nextComm, forceAccurateCore: true);
+						if (system == "NES")
+						{
+							DoMessageCallback("Unable to use quicknes, using NESHawk instead");
+						}
+						
+						return LoadRom(path, nextComm, true, recursiveCount + 1);
 					}
 					else if (ex is MissingFirmwareException)
 					{
@@ -536,7 +582,7 @@ namespace BizHawk.Client.Common
 					{
 						// Note: GB as SGB was set to false by this point, otherwise we would want to do it here
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
-						return LoadRom(path, nextComm);
+						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}
 					else
 					{

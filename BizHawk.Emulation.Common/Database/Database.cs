@@ -341,6 +341,8 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
+				case ".PO":
+				case ".DO":
 					game.System = "AppleII";
 					break;
 			}

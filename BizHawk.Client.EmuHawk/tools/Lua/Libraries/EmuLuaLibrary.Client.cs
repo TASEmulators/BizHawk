@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 using LuaInterface;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -414,6 +417,64 @@ namespace BizHawk.Client.EmuHawk
 		public static int Ypos()
 		{
 			return GlobalWin.MainForm.DesktopLocation.Y;
+		}
+
+		[LuaMethodAttributes(
+			"getavailabletools",
+			"Returns a list of the tools currently open"
+		)]
+		public LuaTable GetAvailableTools()
+		{
+			var t = Lua.NewTable();
+			var tools = GlobalWin.Tools.AvailableTools.ToList();
+			for (int i = 0; i < tools.Count; i++)
+			{
+				t[i] = tools[i].Name.ToLower();
+			}
+
+			return t;
+		}
+
+		[LuaMethodAttributes(
+			"gettool",
+			"Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names"
+		)]
+		public LuaTable GetTool(string name)
+		{
+			var toolType  = ReflectionUtil.GetTypeByName(name)
+				.FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
+
+			if (toolType != null)
+			{
+				GlobalWin.Tools.Load(toolType);
+			}
+
+			var selectedTool = GlobalWin.Tools.AvailableTools
+				.FirstOrDefault(tool => tool.GetType().Name.ToLower() == name.ToLower());
+
+			if (selectedTool != null)
+			{
+				return LuaHelper.ToLuaTable(Lua, selectedTool);
+			}
+
+			return null;
+		}
+
+		[LuaMethodAttributes(
+			"createinstance",
+			"returns a default instance of the given type of object if it exists (not case sensitive). Note: This will only work on objects which have a parameterless constructor.  If no suitable type is found, or the type does not have a parameterless constructor, then nil is returned"
+		)]
+		public LuaTable CreateInstance(string name)
+		{
+			var possibleTypes = ReflectionUtil.GetTypeByName(name);
+
+			if (possibleTypes.Any())
+			{
+				var instance = Activator.CreateInstance(possibleTypes.First());
+				return LuaHelper.ToLuaTable(Lua, instance);
+			}
+
+			return null;
 		}
 	}
 }

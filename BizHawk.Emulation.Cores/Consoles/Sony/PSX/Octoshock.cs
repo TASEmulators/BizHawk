@@ -659,7 +659,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public IController Controller { get; set; }
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
+		public int LagCount { get; private set; }
 		public bool IsLagFrame { get; private set; }
 
 		[FeatureNotImplemented]
