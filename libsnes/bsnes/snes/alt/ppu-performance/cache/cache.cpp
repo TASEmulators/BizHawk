@@ -120,4 +120,14 @@ PPU::Cache::Cache(PPU &self) : self(self) {
   tilevalid[2] = new uint8[ 1024]();
 }
 
+PPU::Cache::~Cache()
+{
+	delete[] tiledata[0];
+  delete[] tiledata[1];
+  delete[] tiledata[2];
+  delete[] tilevalid[0];
+  delete[] tilevalid[1];
+  delete[] tilevalid[2];
+}
+
 #endif
