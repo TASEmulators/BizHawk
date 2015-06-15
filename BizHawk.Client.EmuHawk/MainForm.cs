@@ -3772,5 +3772,10 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.GBA_UsemGBA ^= true;
 			FlagNeedsReboot();
 		}
+
+		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<AutoHawk>();
+		}
 	}
 }
