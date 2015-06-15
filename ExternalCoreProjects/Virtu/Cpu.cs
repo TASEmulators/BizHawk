@@ -3206,12 +3206,12 @@ namespace Jellyfish.Virtu
 		public bool IsThrottled { get; set; }
 		public int Multiplier { get; set; }
 
-		public int RA { get; private set; }
-		public int RX { get; private set; }
-		public int RY { get; private set; }
-		public int RS { get; private set; }
-		public int RP { get; private set; }
-		public int RPC { get; private set; }
+		public int RA { get; set; }
+		public int RX { get; set; }
+		public int RY { get; set; }
+		public int RS { get; set; }
+		public int RP { get; set; }
+		public int RPC { get; set; }
 		public int EA { get; private set; }
 		public int CC { get; private set; }
 		public int OpCode { get; private set; }
@@ -3222,12 +3222,12 @@ namespace Jellyfish.Virtu
 		private bool _is65C02;
 		private Action[] _executeOpCode;
 
-		/// <summary>Carry Flag</summary>
+		/// <summary>Carry Flag</summary>   
 		[JsonIgnore]
 		public bool FlagC
 		{
 			get { return (RP & 0x01) != 0; }
-			private set { RP = (byte)((RP & ~0x01) | (value ? 0x01 : 0x00)); }
+			set { RP = (byte)((RP & ~0x01) | (value ? 0x01 : 0x00)); }
 		}
 
 		/// <summary>Zero Flag</summary>
@@ -3235,7 +3235,7 @@ namespace Jellyfish.Virtu
 		public bool FlagZ
 		{
 			get { return (RP & 0x02) != 0; }
-			private set { RP = (byte)((RP & ~0x02) | (value ? 0x02 : 0x00)); }
+			set { RP = (byte)((RP & ~0x02) | (value ? 0x02 : 0x00)); }
 		}
 
 		/// <summary>Interrupt Disable Flag</summary>
@@ -3251,7 +3251,7 @@ namespace Jellyfish.Virtu
 		public bool FlagD
 		{
 			get { return (RP & 0x08) != 0; }
-			private set { RP = (byte)((RP & ~0x08) | (value ? 0x08 : 0x00)); }
+			set { RP = (byte)((RP & ~0x08) | (value ? 0x08 : 0x00)); }
 		}
 
 		/// <summary>Break Flag</summary>
@@ -3259,7 +3259,7 @@ namespace Jellyfish.Virtu
 		public bool FlagB
 		{
 			get { return (RP & 0x10) != 0; }
-			private set { RP = (byte)((RP & ~0x10) | (value ? 0x10 : 0x00)); }
+			set { RP = (byte)((RP & ~0x10) | (value ? 0x10 : 0x00)); }
 		}
 
 		/// <summary>T... Flag</summary>
@@ -3267,7 +3267,7 @@ namespace Jellyfish.Virtu
 		public bool FlagT
 		{
 			get { return (RP & 0x20) != 0; }
-			private set { RP = (byte)((RP & ~0x20) | (value ? 0x20 : 0x00)); }
+			set { RP = (byte)((RP & ~0x20) | (value ? 0x20 : 0x00)); }
 		}
 
 		/// <summary>Overflow Flag</summary>
@@ -3275,7 +3275,7 @@ namespace Jellyfish.Virtu
 		public bool FlagV
 		{
 			get { return (RP & 0x40) != 0; }
-			private set { RP = (byte)((RP & ~0x40) | (value ? 0x40 : 0x00)); }
+			set { RP = (byte)((RP & ~0x40) | (value ? 0x40 : 0x00)); }
 		}
 
 		/// <summary>Negative Flag</summary>
@@ -3283,7 +3283,7 @@ namespace Jellyfish.Virtu
 		public bool FlagN
 		{
 			get { return (RP & 0x80) != 0; }
-			private set { RP = (byte)((RP & ~0x80) | (value ? 0x80 : 0x00)); }
+			set { RP = (byte)((RP & ~0x80) | (value ? 0x80 : 0x00)); }
 		}
 	}
 }
