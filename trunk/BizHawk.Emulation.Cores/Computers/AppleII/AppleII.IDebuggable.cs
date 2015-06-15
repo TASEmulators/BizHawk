@@ -28,50 +28,50 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public void SetCpuRegister(string register, int value)
 		{
-            switch (register)
-            {
-                default:
-                    throw new InvalidOperationException();
-                case "A":
-                    _machine.Cpu.RA = (byte)value;
-                    break;
-                case "X":
-                    _machine.Cpu.RX = (byte)value;
-                    break;
-                case "Y":
-                    _machine.Cpu.RY = (byte)value;
-                    break;
-                case "S":
-                    _machine.Cpu.RS = (byte)value;
-                    break;
-                case "PC":
-                    _machine.Cpu.RPC = (ushort)value;
-                    break;
-                case "Flag C":
-                    _machine.Cpu.FlagC = value > 0;
-                    break;
-                case "Flag Z":
-                    _machine.Cpu.FlagZ = value > 0;
-                    break;
-                case "Flag I":
-                    _machine.Cpu.FlagI = value > 0;
-                    break;
-                case "Flag D":
-                    _machine.Cpu.FlagD = value > 0;
-                    break;
-                case "Flag B":
-                    _machine.Cpu.FlagB = value > 0;
-                    break;
-                case "Flag T":
-                    _machine.Cpu.FlagT = value > 0;
-                    break;
-                case "Flag V":
-                    _machine.Cpu.FlagV = value > 0;
-                    break;
-                case "Flag N":
-                    _machine.Cpu.FlagV = value > 0;
-                    break;
-            }
+			switch (register)
+			{
+				default:
+					throw new InvalidOperationException();
+				case "A":
+					_machine.Cpu.RA = (byte)value;
+					break;
+				case "X":
+					_machine.Cpu.RX = (byte)value;
+					break;
+				case "Y":
+					_machine.Cpu.RY = (byte)value;
+					break;
+				case "S":
+					_machine.Cpu.RS = (byte)value;
+					break;
+				case "PC":
+					_machine.Cpu.RPC = (ushort)value;
+					break;
+				case "Flag C":
+					_machine.Cpu.FlagC = value > 0;
+					break;
+				case "Flag Z":
+					_machine.Cpu.FlagZ = value > 0;
+					break;
+				case "Flag I":
+					_machine.Cpu.FlagI = value > 0;
+					break;
+				case "Flag D":
+					_machine.Cpu.FlagD = value > 0;
+					break;
+				case "Flag B":
+					_machine.Cpu.FlagB = value > 0;
+					break;
+				case "Flag T":
+					_machine.Cpu.FlagT = value > 0;
+					break;
+				case "Flag V":
+					_machine.Cpu.FlagV = value > 0;
+					break;
+				case "Flag N":
+					_machine.Cpu.FlagV = value > 0;
+					break;
+			}
 		}
 
 		public bool CanStep(StepType type) { return false; }
