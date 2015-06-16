@@ -117,12 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="lblTweakedMednafen.Text" xml:space="preserve">
+    <value>Displays all content at as multiple of 400x300.
+ • Correct aspect ratio
+ • Generally enjoyable game presentation
+ • Detail loss at 1x in fewer cases
+ • Recommended for gaming
+ • Requires certain display configuration:
+</value>
+  </data>
   <data name="lblMednafen.Text" xml:space="preserve">
     <value>Displays all content at as multiple of 320x240
  • Correct aspect ratio
  • Generally enjoyable game presentation
  • At 1x window size, detail can be lost
+ • Recommended for comparisons
  • Requires certain display configuration:
 </value>
   </data>
+  <data name="lblPixelPro.Text" xml:space="preserve">
+    <value>Converts content with nearest neighbor to 
+fit gracefully in a 800x480 window.
+ • Content is pixel perfect
+ • Aspect ratio is usually wrong
+ • Recommended for study
+ • Game may seen to have scale varying by mode</value>
+  </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

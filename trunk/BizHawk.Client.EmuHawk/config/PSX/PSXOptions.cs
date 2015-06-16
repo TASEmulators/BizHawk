@@ -142,5 +142,20 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SyncLabels();
 		}
+
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			MessageBox.Show(@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
+
+DispManagerAR = System (Use emulator-recommended AR)
+DispFixAspectRatio = true (Maintain aspect ratio [letterbox main window as needed])
+DispFinalFilter = bilinear (Like Mednafen)
+DispFixScaleInteger = false (Generally unwanted with bilinear filtering)
+
+This is a good place to write that Mednafen's default behaviour is fantastic for gaming!
+But: 1. we think we improved on it a tiny bit with the tweaked mode
+And: 2. It's not suitable for detailed scrutinizing of graphics
+");
+		}
 	}
 }
