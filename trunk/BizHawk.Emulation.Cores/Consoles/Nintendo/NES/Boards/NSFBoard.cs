@@ -6,6 +6,8 @@ using BizHawk.Common;
 //1. Have a hardcoded NSF driver rom loaded to 0x3800
 //2. Have fake registers at $3FFx for the NSF driver to use
 //3. These addresses are chosen because no known NSF could possibly use them for anything.
+//4. Patch the PRG with our own IRQ vectors when the NSF play and init routines aren't running. 
+//   That way we can use NMI for overall control and cause our code to be the NMI handler without breaking the NSF data by corrupting the last few bytes
 
 //NSF:
 //check nsfspec.txt for more on why FDS is weird. lets try not following FCEUX too much there.
