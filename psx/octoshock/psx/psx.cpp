@@ -1439,11 +1439,14 @@ void NormalizeFramebuffer()
 	//if(width == 700 && height == 480) {}
 
 	//II. as the snes 'always double size framebuffer'. I think thats a better idea, and we already have the concept
-	if(width <= 400 && height <= 276) xs=ys=2;
-	if(width > 400 && height <= 276) ys=2;
-	if(width <= 400 && height > 276) xs=2;
-	if(width > 400 && height > 276) {}
-	//TODO - shrink it entirely if cropping
+	//ORIGINALLY (as of r8528 when PAL support was added) a threshold of 276 was used. I'm not sure where that came from.
+	//288 seems to be a more correct value? (it's the typical PAL half resolution, corresponding to 240 for NTSC)
+	//maybe I meant to type 576, but that doesnt make sense--the height can't exceed that.
+	if(width <= 400 && height <= 288) xs=ys=2;
+	if(width > 400 && height <= 288) ys=2;
+	if(width <= 400 && height > 288) xs=2;
+	if(width > 400 && height > 288) {}
+	//TODO - shrink it entirely if cropping. EDIT-any idea what this means? if you figure it out, just do it.
 	xm = (virtual_width-width*xs)/2;
 
 	int curr = 0;
