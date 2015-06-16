@@ -64,11 +64,9 @@ namespace MDFN_IEN_PSX
  uint32 PSX_MemPeek32(uint32 A);
 
  // Should write to WO-locations if possible
- #if 0
  void PSX_MemPoke8(uint32 A, uint8 V);
  void PSX_MemPoke16(uint32 A, uint16 V);
  void PSX_MemPoke32(uint32 A, uint32 V);
- #endif
 
  void PSX_RequestMLExit(void);
  void ForceEventUpdates(const pscpu_timestamp_t timestamp);
