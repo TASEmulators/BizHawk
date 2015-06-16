@@ -259,12 +259,18 @@ static void PutAddressSpaceBytes(const char *name, uint32 Address, uint32 Length
  {
   while(Length--)
   {
-   pscpu_timestamp_t dummy = 0;
    Address &= 0xFFFFFFFF;
-
-   // TODO
-   PSX_MemWrite8(dummy, Address, *Buffer);
-
+   CPU->PokeMem8(Address, *Buffer);
+   Address++;
+   Buffer++;
+  }
+ }
+ else if(!strcmp(name, "ram"))
+ {
+  while(Length--)
+  {
+   Address &= 0x1FFFFF;
+   CPU->PokeMem8(Address, *Buffer);
    Address++;
    Buffer++;
   }
@@ -662,7 +668,7 @@ bool DBG_Init(void)
  MDFNDBG_AddRegGroup(&SPURegsGroup);
  MDFNDBG_AddRegGroup(&SPUVoicesRegsGroup);
  ASpace_Add(GetAddressSpaceBytes, PutAddressSpaceBytes, "cpu", "CPU Physical", 32);
- ASpace_Add(GetAddressSpaceBytes, PutAddressSpaceBytes, "ram", "CPU Main Ram", 21);
+ ASpace_Add(GetAddressSpaceBytes, PutAddressSpaceBytes, "ram", "CPU Main RAM", 21);
  ASpace_Add(GetAddressSpaceBytes, PutAddressSpaceBytes, "spu", "SPU RAM", 19);
  ASpace_Add(GetAddressSpaceBytes, PutAddressSpaceBytes, "gpu", "GPU RAM", 20);
  return(true);

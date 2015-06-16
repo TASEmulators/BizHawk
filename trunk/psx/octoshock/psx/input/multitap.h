@@ -46,8 +46,6 @@ class InputDevice_Multitap final : public InputDevice
 
  uint8 sb[4][8];
 
- bool fm_deferred_error_temp;
- bool fm_deferred_error;
  bool fm_command_error;
 
  uint8 command;

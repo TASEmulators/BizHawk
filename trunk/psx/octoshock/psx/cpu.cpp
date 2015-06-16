@@ -219,6 +219,22 @@ INLINE T PS_CPU::PeekMemory(uint32 address)
 }
 
 template<typename T>
+void PS_CPU::PokeMemory(uint32 address, T value)
+{
+ address &= addr_mask[address >> 29];
+
+ if(address >= 0x1F800000 && address <= 0x1F8003FF)
+  return ScratchRAM.Write<T>(address & 0x3FF, value);
+
+ if(sizeof(T) == 1)
+  PSX_MemPoke8(address, value);
+ else if(sizeof(T) == 2)
+  PSX_MemPoke16(address, value);
+ else
+  PSX_MemPoke32(address, value);
+}
+
+template<typename T>
 INLINE T PS_CPU::ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool DS24, bool LWC_timing)
 {
  T ret;
@@ -2382,6 +2398,20 @@ uint32 PS_CPU::PeekMem32(uint32 A)
  return PeekMemory<uint32>(A);
 }
 
+void PS_CPU::PokeMem8(uint32 A, uint8 V)
+{
+ PokeMemory<uint8>(A, V);
+}
+
+void PS_CPU::PokeMem16(uint32 A, uint16 V)
+{
+ PokeMemory<uint16>(A, V);
+}
+
+void PS_CPU::PokeMem32(uint32 A, uint32 V)
+{
+ PokeMemory<uint32>(A, V);
+}
 
 #undef BEGIN_OPF
 #undef END_OPF
