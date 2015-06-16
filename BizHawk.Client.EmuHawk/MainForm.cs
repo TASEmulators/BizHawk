@@ -3777,5 +3777,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.Load<AutoHawk>();
 		}
+
+		private void settingsToolStripMenuItem1_Click_1(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Apple II Settings");
+		}
 	}
 }

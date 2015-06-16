@@ -356,7 +356,8 @@ namespace BizHawk.Client.Common
 									nextEmulator = new AppleII(
 										nextComm,
 										assets,
-										roms);
+										roms,
+										(AppleII.Settings)GetCoreSettings<AppleII>());
 									break;
 								default:
 									return false;
