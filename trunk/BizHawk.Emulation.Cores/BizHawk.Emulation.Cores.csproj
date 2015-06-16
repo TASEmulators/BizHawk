@@ -123,7 +123,7 @@
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.IDebuggable.cs">
-        <DependentUpon>AppleII.cs</DependentUpon>
+      <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.IDisassembler.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
@@ -137,6 +137,7 @@
     <Compile Include="Computers\AppleII\AppleII.IMemoryDomains.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\AppleII\AppleII.ISettable.cs" />
     <Compile Include="Computers\AppleII\AppleII.IStatable.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>

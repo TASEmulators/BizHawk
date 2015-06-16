@@ -16,15 +16,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		)]
 	public partial class AppleII : IEmulator, IDriveLight
 	{
-		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet)
-			: this(comm, gameInfoSet.First(), romSet.First())
+		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, Settings settings)
+			: this(comm, gameInfoSet.First(), romSet.First(), settings)
 		{
 			GameInfoSet = gameInfoSet.ToList();
 			RomSet = romSet.ToList();
 		}
 
 		[CoreConstructor("AppleII")]
-		public AppleII(CoreComm comm, GameInfo game, byte[] rom)
+		public AppleII(CoreComm comm, GameInfo game, byte[] rom, Settings settings)
 		{
 			GameInfoSet = new List<GameInfo>();
 
@@ -50,6 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			InitSaveStates();
 			SetupMemoryDomains();
+			PutSettings(settings ?? new Settings());
 		}
 
 		public List<GameInfo> GameInfoSet { get; private set; }
