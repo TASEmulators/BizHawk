@@ -193,17 +193,23 @@
 			this.TraceLoggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TAStudioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VirtualPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LuaConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
-			this.CreateDualGbXmlMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MultiDiskBundlerFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.batchRunnerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.quickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.nesHawkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
 			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.musicRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator17 = new System.Windows.Forms.ToolStripSeparator();
 			this.NesControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESGraphicSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -262,9 +268,12 @@
 			this.GBGPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBASubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.GbaGpuViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
+			this.GBACoreSelectionSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBAmGBAMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBAVBANextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBAcoresettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator33 = new System.Windows.Forms.ToolStripSeparator();
+			this.GbaGpuViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -304,6 +313,9 @@
 			this.GenesisSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.wonderSwanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AppleSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -381,7 +393,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.gBAWithMGBAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -411,6 +423,7 @@
             this.DGBSubMenu,
             this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
+            this.AppleSubMenu,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -1680,6 +1693,7 @@
             this.GBInSGBMenuItem,
             this.NesInQuickNESMenuItem,
             this.SnesWithSnes9xMenuItem,
+            this.gBAWithMGBAToolStripMenuItem,
             this.toolStripSeparator8,
             this.N64VideoPluginSettingsMenuItem});
 			this.CoresSubMenu.Name = "CoresSubMenu";
@@ -1759,7 +1773,7 @@
             this.CheatsMenuItem,
             this.LuaConsoleMenuItem,
             this.toolStripSeparator29,
-            this.CreateDualGbXmlMenuItem,
+            this.MultiDiskBundlerFileMenuItem,
             this.batchRunnerToolStripMenuItem});
 			this.ToolsSubMenu.Name = "ToolsSubMenu";
 			this.ToolsSubMenu.Size = new System.Drawing.Size(48, 19);
@@ -1770,20 +1784,20 @@
 			// 
 			this.ToolBoxMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ToolBox;
 			this.ToolBoxMenuItem.Name = "ToolBoxMenuItem";
-			this.ToolBoxMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.ToolBoxMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.ToolBoxMenuItem.Text = "&Tool Box";
 			this.ToolBoxMenuItem.Click += new System.EventHandler(this.ToolBoxMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(180, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(169, 6);
 			// 
 			// RamWatchMenuItem
 			// 
 			this.RamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.watch;
 			this.RamWatchMenuItem.Name = "RamWatchMenuItem";
-			this.RamWatchMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.RamWatchMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.RamWatchMenuItem.Text = "RAM &Watch";
 			this.RamWatchMenuItem.Click += new System.EventHandler(this.RamWatchMenuItem_Click);
 			// 
@@ -1791,7 +1805,7 @@
 			// 
 			this.RamSearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.RamSearchMenuItem.Name = "RamSearchMenuItem";
-			this.RamSearchMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.RamSearchMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.RamSearchMenuItem.Text = "RAM &Search";
 			this.RamSearchMenuItem.Click += new System.EventHandler(this.RamSearchMenuItem_Click);
 			// 
@@ -1799,7 +1813,7 @@
 			// 
 			this.HexEditorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.HexEditorMenuItem.Name = "HexEditorMenuItem";
-			this.HexEditorMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.HexEditorMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.HexEditorMenuItem.Text = "&Hex Editor";
 			this.HexEditorMenuItem.Click += new System.EventHandler(this.HexEditorMenuItem_Click);
 			// 
@@ -1807,7 +1821,7 @@
 			// 
 			this.TraceLoggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.TraceLoggerMenuItem.Name = "TraceLoggerMenuItem";
-			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.TraceLoggerMenuItem.Text = "Trace &Logger";
 			this.TraceLoggerMenuItem.Click += new System.EventHandler(this.TraceLoggerMenuItem_Click);
 			// 
@@ -1815,7 +1829,7 @@
 			// 
 			this.DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.DebuggerMenuItem.Name = "DebuggerMenuItem";
-			this.DebuggerMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.DebuggerMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.DebuggerMenuItem.Text = "&Debugger";
 			this.DebuggerMenuItem.Click += new System.EventHandler(this.DebuggerMenuItem_Click);
 			// 
@@ -1823,28 +1837,35 @@
 			// 
 			this.TAStudioMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.TAStudioMenuItem.Name = "TAStudioMenuItem";
-			this.TAStudioMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.TAStudioMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.TAStudioMenuItem.Text = "&TAStudio";
 			this.TAStudioMenuItem.Click += new System.EventHandler(this.TAStudioMenuItem_Click);
+			// 
+			// MacroToolMenuItem
+			// 
+			this.MacroToolMenuItem.Name = "MacroToolMenuItem";
+			this.MacroToolMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.MacroToolMenuItem.Text = "&Macro Tool";
+			this.MacroToolMenuItem.Click += new System.EventHandler(this.MacroToolMenuItem_Click);
 			// 
 			// VirtualPadMenuItem
 			// 
 			this.VirtualPadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.VirtualPadMenuItem.Name = "VirtualPadMenuItem";
-			this.VirtualPadMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.VirtualPadMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.VirtualPadMenuItem.Text = "Virtual Pad";
 			this.VirtualPadMenuItem.Click += new System.EventHandler(this.VirtualPadMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(180, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(169, 6);
 			// 
 			// CheatsMenuItem
 			// 
 			this.CheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.CheatsMenuItem.Name = "CheatsMenuItem";
-			this.CheatsMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.CheatsMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.CheatsMenuItem.Text = "Cheats";
 			this.CheatsMenuItem.Click += new System.EventHandler(this.CheatsMenuItem_Click);
 			// 
@@ -1852,27 +1873,27 @@
 			// 
 			this.LuaConsoleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lua;
 			this.LuaConsoleMenuItem.Name = "LuaConsoleMenuItem";
-			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.LuaConsoleMenuItem.Text = "Lua Console";
 			this.LuaConsoleMenuItem.Click += new System.EventHandler(this.LuaConsoleMenuItem_Click);
 			// 
 			// toolStripSeparator29
 			// 
 			this.toolStripSeparator29.Name = "toolStripSeparator29";
-			this.toolStripSeparator29.Size = new System.Drawing.Size(180, 6);
+			this.toolStripSeparator29.Size = new System.Drawing.Size(169, 6);
 			// 
-			// CreateDualGbXmlMenuItem
+			// MultiDiskBundlerFileMenuItem
 			// 
-			this.CreateDualGbXmlMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.dual;
-			this.CreateDualGbXmlMenuItem.Name = "CreateDualGbXmlMenuItem";
-			this.CreateDualGbXmlMenuItem.Size = new System.Drawing.Size(183, 22);
-			this.CreateDualGbXmlMenuItem.Text = "Create Dual GB File...";
-			this.CreateDualGbXmlMenuItem.Click += new System.EventHandler(this.CreateDualGbXmlMenuItem_Click);
+			this.MultiDiskBundlerFileMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveConfig;
+			this.MultiDiskBundlerFileMenuItem.Name = "MultiDiskBundlerFileMenuItem";
+			this.MultiDiskBundlerFileMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.MultiDiskBundlerFileMenuItem.Text = "Multi-disk Bundler";
+			this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.CreateMultigameFileMenuItem_Click);
 			// 
 			// batchRunnerToolStripMenuItem
 			// 
 			this.batchRunnerToolStripMenuItem.Name = "batchRunnerToolStripMenuItem";
-			this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.batchRunnerToolStripMenuItem.Text = "Batch Runner";
 			this.batchRunnerToolStripMenuItem.Visible = false;
 			this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.batchRunnerToolStripMenuItem_Click);
@@ -1880,9 +1901,12 @@
 			// NESSubMenu
 			// 
 			this.NESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.coreToolStripMenuItem,
+            this.toolStripSeparator34,
             this.NESPPUViewerMenuItem,
             this.NESNametableViewerMenuItem,
             this.NESGameGenieCodesMenuItem,
+            this.musicRipperToolStripMenuItem,
             this.toolStripSeparator17,
             this.NesControllerSettingsMenuItem,
             this.NESGraphicSettingsMenuItem,
@@ -1895,6 +1919,35 @@
 			this.NESSubMenu.Size = new System.Drawing.Size(40, 19);
 			this.NESSubMenu.Text = "&NES";
 			this.NESSubMenu.DropDownOpened += new System.EventHandler(this.NESSubMenu_DropDownOpened);
+			// 
+			// coreToolStripMenuItem
+			// 
+			this.coreToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.quickNESToolStripMenuItem,
+            this.nesHawkToolStripMenuItem});
+			this.coreToolStripMenuItem.Name = "coreToolStripMenuItem";
+			this.coreToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.coreToolStripMenuItem.Text = "&Core";
+			this.coreToolStripMenuItem.DropDownOpened += new System.EventHandler(this.coreToolStripMenuItem_DropDownOpened);
+			// 
+			// quickNESToolStripMenuItem
+			// 
+			this.quickNESToolStripMenuItem.Name = "quickNESToolStripMenuItem";
+			this.quickNESToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.quickNESToolStripMenuItem.Text = "&QuickNes";
+			this.quickNESToolStripMenuItem.Click += new System.EventHandler(this.quickNESToolStripMenuItem_Click);
+			// 
+			// nesHawkToolStripMenuItem
+			// 
+			this.nesHawkToolStripMenuItem.Name = "nesHawkToolStripMenuItem";
+			this.nesHawkToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.nesHawkToolStripMenuItem.Text = "&NesHawk";
+			this.nesHawkToolStripMenuItem.Click += new System.EventHandler(this.nesHawkToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator34
+			// 
+			this.toolStripSeparator34.Name = "toolStripSeparator34";
+			this.toolStripSeparator34.Size = new System.Drawing.Size(230, 6);
 			// 
 			// NESPPUViewerMenuItem
 			// 
@@ -1916,6 +1969,13 @@
 			this.NESGameGenieCodesMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.NESGameGenieCodesMenuItem.Text = "&Game Genie Encoder/Decoder";
 			this.NESGameGenieCodesMenuItem.Click += new System.EventHandler(this.NESGameGenieCodesMenuItem_Click);
+			// 
+			// musicRipperToolStripMenuItem
+			// 
+			this.musicRipperToolStripMenuItem.Name = "musicRipperToolStripMenuItem";
+			this.musicRipperToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.musicRipperToolStripMenuItem.Text = "Music Ripper";
+			this.musicRipperToolStripMenuItem.Click += new System.EventHandler(this.musicRipperToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator17
 			// 
@@ -2361,24 +2421,37 @@
 			// GBASubMenu
 			// 
 			this.GBASubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.GbaGpuViewerMenuItem,
+            this.GBACoreSelectionSubMenu,
+            this.GBAcoresettingsToolStripMenuItem1,
             this.toolStripSeparator33,
-            this.GBAcoresettingsToolStripMenuItem1});
+            this.GbaGpuViewerMenuItem});
 			this.GBASubMenu.Name = "GBASubMenu";
 			this.GBASubMenu.Size = new System.Drawing.Size(42, 19);
 			this.GBASubMenu.Text = "GBA";
 			// 
-			// GbaGpuViewerMenuItem
+			// GBACoreSelectionSubMenu
 			// 
-			this.GbaGpuViewerMenuItem.Name = "GbaGpuViewerMenuItem";
-			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(135, 22);
-			this.GbaGpuViewerMenuItem.Text = "GPU Viewer";
-			this.GbaGpuViewerMenuItem.Click += new System.EventHandler(this.GbaGpuViewerMenuItem_Click);
+			this.GBACoreSelectionSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.GBAmGBAMenuItem,
+            this.GBAVBANextMenuItem});
+			this.GBACoreSelectionSubMenu.Name = "GBACoreSelectionSubMenu";
+			this.GBACoreSelectionSubMenu.Size = new System.Drawing.Size(135, 22);
+			this.GBACoreSelectionSubMenu.Text = "&Core";
+			this.GBACoreSelectionSubMenu.DropDownOpened += new System.EventHandler(this.GBACoreSelectionSubMenu_DropDownOpened);
 			// 
-			// toolStripSeparator33
+			// GBAmGBAMenuItem
 			// 
-			this.toolStripSeparator33.Name = "toolStripSeparator33";
-			this.toolStripSeparator33.Size = new System.Drawing.Size(132, 6);
+			this.GBAmGBAMenuItem.Name = "GBAmGBAMenuItem";
+			this.GBAmGBAMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.GBAmGBAMenuItem.Text = "mGBA";
+			this.GBAmGBAMenuItem.Click += new System.EventHandler(this.GBAmGBAMenuItem_Click);
+			// 
+			// GBAVBANextMenuItem
+			// 
+			this.GBAVBANextMenuItem.Name = "GBAVBANextMenuItem";
+			this.GBAVBANextMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.GBAVBANextMenuItem.Text = "&VBA-Next";
+			this.GBAVBANextMenuItem.Click += new System.EventHandler(this.GBAVBANextMenuItem_Click);
 			// 
 			// GBAcoresettingsToolStripMenuItem1
 			// 
@@ -2386,6 +2459,18 @@
 			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
 			this.GBAcoresettingsToolStripMenuItem1.Text = "&Settings...";
 			this.GBAcoresettingsToolStripMenuItem1.Click += new System.EventHandler(this.GBAcoresettingsToolStripMenuItem1_Click);
+			// 
+			// toolStripSeparator33
+			// 
+			this.toolStripSeparator33.Name = "toolStripSeparator33";
+			this.toolStripSeparator33.Size = new System.Drawing.Size(132, 6);
+			// 
+			// GbaGpuViewerMenuItem
+			// 
+			this.GbaGpuViewerMenuItem.Name = "GbaGpuViewerMenuItem";
+			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(135, 22);
+			this.GbaGpuViewerMenuItem.Text = "GPU Viewer";
+			this.GbaGpuViewerMenuItem.Click += new System.EventHandler(this.GbaGpuViewerMenuItem_Click);
 			// 
 			// PSXSubMenu
 			// 
@@ -2693,6 +2778,29 @@
 			this.settingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.settingsToolStripMenuItem.Text = "&Settings...";
 			this.settingsToolStripMenuItem.Click += new System.EventHandler(this.WondersawnSettingsMenuItem_Click);
+			// 
+			// AppleSubMenu
+			// 
+			this.AppleSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AppleDisksSubMenu});
+			this.AppleSubMenu.Name = "AppleSubMenu";
+			this.AppleSubMenu.Size = new System.Drawing.Size(50, 19);
+			this.AppleSubMenu.Text = "Apple";
+			this.AppleSubMenu.DropDownOpened += new System.EventHandler(this.AppleSubMenu_DropDownOpened);
+			// 
+			// AppleDisksSubMenu
+			// 
+			this.AppleDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator31});
+			this.AppleDisksSubMenu.Name = "AppleDisksSubMenu";
+			this.AppleDisksSubMenu.Size = new System.Drawing.Size(101, 22);
+			this.AppleDisksSubMenu.Text = "Disks";
+			this.AppleDisksSubMenu.DropDownOpened += new System.EventHandler(this.AppleDisksSubMenu_DropDownOpened);
+			// 
+			// toolStripSeparator31
+			// 
+			this.toolStripSeparator31.Name = "toolStripSeparator31";
+			this.toolStripSeparator31.Size = new System.Drawing.Size(57, 6);
 			// 
 			// HelpSubMenu
 			// 
@@ -3364,12 +3472,12 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// MacroToolMenuItem
+			// gBAWithMGBAToolStripMenuItem
 			// 
-			this.MacroToolMenuItem.Name = "MacroToolMenuItem";
-			this.MacroToolMenuItem.Size = new System.Drawing.Size(183, 22);
-			this.MacroToolMenuItem.Text = "&Macro Tool";
-			this.MacroToolMenuItem.Click += new System.EventHandler(this.MacroToolMenuItem_Click);
+			this.gBAWithMGBAToolStripMenuItem.Name = "gBAWithMGBAToolStripMenuItem";
+			this.gBAWithMGBAToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.gBAWithMGBAToolStripMenuItem.Text = "GBA with mGBA";
+			this.gBAWithMGBAToolStripMenuItem.Click += new System.EventHandler(this.gBAWithMGBAToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -3657,7 +3765,6 @@
 		private System.Windows.Forms.ToolStripMenuItem GBGameGenieMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GGGameGenieMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator29;
-		private System.Windows.Forms.ToolStripMenuItem CreateDualGbXmlMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem N64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem N64PluginSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaturnSubMenu;
@@ -3763,6 +3870,19 @@
 		private System.Windows.Forms.ToolStripStatusLabel UpdateNotification;
 		private System.Windows.Forms.ToolStripMenuItem PSXControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MacroToolMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AppleSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem AppleDisksSubMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator31;
+		private System.Windows.Forms.ToolStripMenuItem MultiDiskBundlerFileMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem musicRipperToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem coreToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem quickNESToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem nesHawkToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
+		private System.Windows.Forms.ToolStripMenuItem GBACoreSelectionSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem gBAWithMGBAToolStripMenuItem;
 	}
 }
 

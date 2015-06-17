@@ -13240,7 +13240,7 @@ template<bool isReader>void SyncState(NewState *ns)
 }
 
 // load a legacy battery ram file to a place where it might work, who knows
-void LoadLegacyBatteryRam(const u8 *data, int len)
+void LoadLegacyBatteryRam(const char *data, int len)
 {
 	std::memcpy(eepromData, data, std::min<int>(len, sizeof(eepromData)));
 	std::memcpy(flashSaveMemory, data, std::min<int>(len, sizeof(flashSaveMemory)));
@@ -13254,6 +13254,52 @@ void LoadLegacyBatteryRam(const u8 *data, int len)
 bool HasBatteryRam()
 {
 	return cpuSaveType != 5;
+}
+
+int BatteryRamSize()
+{
+	switch (cpuSaveType)
+	{
+	default:
+	case 0: // auto
+		return 0x10000;
+	case 1:
+	case 4: // eeprom
+		return eepromSize;
+	case 2: // sram
+		// should only be 32K, but vba uses 64K as a stand-in for both SRAM (guess no game ever checks mirroring?),
+		// and for 64K flash where the program never issues any flash commands
+		return 0x10000;
+	case 3: // flash
+		return flashSize;
+	case 5: // none
+		return 0;
+	}
+}
+
+void SaveLegacyBatteryRam(char *dest)
+{
+	switch (cpuSaveType)
+	{
+	default:
+	case 0: // auto
+		std::memcpy(dest, flashSaveMemory, 0x10000);
+		return;
+	case 1:
+	case 4: // eeprom
+		std::memcpy(dest, eepromData, eepromSize);
+		return;
+	case 2: // sram
+		// should only be 32K, but vba uses 64K as a stand-in for both SRAM (guess no game ever checks mirroring?),
+		// and for 64K flash where the program never issues any flash commands
+		std::memcpy(dest, flashSaveMemory, 0x10000);
+		return;
+	case 3: // flash
+		std::memcpy(dest, flashSaveMemory, flashSize);
+		return;
+	case 5: // none
+		return;
+	}
 }
 
 template<bool isReader>bool SyncBatteryRam(NewState *ns)
@@ -13499,6 +13545,7 @@ EXPORT int FrameAdvance(Gigazoid *g, int input, u32 *videobuffer, s16 *audiobuff
 
 EXPORT int SaveRamSize(Gigazoid *g)
 {
+	/*
 	if (g->HasBatteryRam())
 	{
 		NewStateDummy dummy;
@@ -13508,11 +13555,13 @@ EXPORT int SaveRamSize(Gigazoid *g)
 	else
 	{
 		return 0;
-	}
+	}*/
+	return g->BatteryRamSize();
 }
 
 EXPORT int SaveRamSave(Gigazoid *g, char *data, int length)
 {
+	/*
 	if (g->HasBatteryRam())
 	{
 		NewStateExternalBuffer saver(data, length);
@@ -13522,7 +13571,11 @@ EXPORT int SaveRamSave(Gigazoid *g, char *data, int length)
 	else
 	{
 		return false;
-	}
+	}*/
+	if (!g->HasBatteryRam() || length != g->BatteryRamSize())
+		return false;
+	g->SaveLegacyBatteryRam(data);
+	return true;
 }
 
 EXPORT int SaveRamLoad(Gigazoid *g, const char *data, int length)
@@ -13537,7 +13590,7 @@ EXPORT int SaveRamLoad(Gigazoid *g, const char *data, int length)
 		else
 		{
 			// couldn't find the magic signature at the top, so try a salvage load
-			g->LoadLegacyBatteryRam(reinterpret_cast<const u8*>(data), length);
+			g->LoadLegacyBatteryRam(data, length);
 			return true;
 		}
 	}

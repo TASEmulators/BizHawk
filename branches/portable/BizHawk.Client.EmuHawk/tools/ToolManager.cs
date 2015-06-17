@@ -319,6 +319,20 @@ namespace BizHawk.Client.EmuHawk
 			return Load<T>(false);
 		}
 
+		public IEnumerable<Type> AvailableTools
+		{
+			get
+			{
+				//return _tools.Where(t => !t.IsDisposed);
+				return Assembly
+					.GetAssembly(typeof(IToolForm))
+					.GetTypes()
+					.Where(t => typeof(IToolForm).IsAssignableFrom(t))
+					.Where(t => !t.IsInterface)
+					.Where(t => IsAvailable(t));
+			}
+		}
+
 		public void UpdateBefore()
 		{
 			var beforeList = _tools.Where(x => x.UpdateBefore);
@@ -548,7 +562,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsAvailable<T>()
 		{
-			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(T));
+			return IsAvailable(typeof(T));
+		}
+
+		public bool IsAvailable(Type t)
+		{
+			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t);
 		}
 
 		// Eventually we want a single game genie tool, then this mess goes away

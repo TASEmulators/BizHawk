@@ -23,6 +23,7 @@
 #include gamedb_n64.txt
 #include gamedb_gba.txt
 #include gamedb_lynx.txt
+#include gamedb_appleII.txt
 
 ; ************ TI-83 ************
 

@@ -13,9 +13,15 @@ namespace BizHawk.Client.Common
 {
 	public class XmlGame
 	{
+		public XmlGame()
+		{
+			Assets = new List<KeyValuePair<string, byte[]>>();
+			GI = new GameInfo();
+		}
+
 		public XmlDocument Xml { get; set; }
-		public GameInfo GI = new GameInfo();
-		public Dictionary<string, byte[]> Assets = new Dictionary<string, byte[]>();
+		public GameInfo GI { get; set; }
+		public IList<KeyValuePair<string, byte[]>> Assets { get; set; }
 
 		public static XmlGame Create(HawkFile f)
 		{
@@ -48,9 +54,8 @@ namespace BizHawk.Client.Common
 
 					foreach (XmlNode a in n.ChildNodes)
 					{
-						string name = a.Name;
 						string filename = a.Attributes["FileName"].Value;
-						byte[] data;
+						byte[] data = new byte[0];
 						if (filename[0] == '|')
 						{
 							// in same archive
@@ -68,7 +73,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								throw new Exception("Couldn't load XMLGame LoadAsset \"" + name + "\"");
+								throw new Exception("Couldn't load XMLGame Asset \"" + filename + "\"");
 							}
 						}
 						else
@@ -78,15 +83,30 @@ namespace BizHawk.Client.Common
 							fullpath = Path.Combine(fullpath, filename.Split('|').First());
 							try
 							{
-								data = File.ReadAllBytes(fullpath.Split('|').First());
+								using (var hf = new HawkFile(fullpath))
+								{
+									if (hf.IsArchive)
+									{
+										var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
+										hf.Unbind();
+										hf.BindArchiveMember(archiveItem);
+										data = hf.GetStream().ReadAllBytes();
+									}
+									else
+									{
+										data = File.ReadAllBytes(fullpath.Split('|').First());
+									}
+								}
+
+								
 							}
 							catch
 							{
-								throw new Exception("Couldn't load XMLGame LoadAsset \"" + name + "\"");
+								throw new Exception("Couldn't load XMLGame LoadAsset \"" + filename + "\"");
 							}
 						}
 
-						ret.Assets[name] = data;
+						ret.Assets.Add(new KeyValuePair<string, byte[]>(filename, data));
 
 						using (var sha1 = System.Security.Cryptography.SHA1.Create())
 						{

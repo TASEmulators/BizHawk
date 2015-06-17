@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 			if (_islag)
 			{
-				LagCount++;
+				_lagcount++;
 			}
 
 			avProvider.FillFrameBuffer();

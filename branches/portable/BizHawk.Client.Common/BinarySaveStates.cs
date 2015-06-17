@@ -264,13 +264,14 @@ namespace BizHawk.Client.Common
 		}
 
 
-		public BinaryStateSaver(string path, bool stateVersionTag = true) // stateVersionTag is a hack for reusing this for movie code
+		public BinaryStateSaver(string path, bool notamovie = true) // notamovie is hack, really should have separate something
 		{
-			_zip = new IonicZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			_zip = new IonicZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal
+				: Global.Config.MovieCompressionLevel);
 			//_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 			//_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 
-			if (stateVersionTag)
+			if (notamovie)
 			{
 				PutLump(BinaryStateLump.Versiontag, WriteVersion);
 			}

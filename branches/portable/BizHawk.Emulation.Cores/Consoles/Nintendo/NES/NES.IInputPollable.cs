@@ -7,7 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int LagCount
 		{
 			get { return _lagcount; }
-			set { _lagcount = value; }
 		}
 
 		public bool IsLagFrame

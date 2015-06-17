@@ -167,6 +167,7 @@ namespace BizHawk.Client.Common
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
 		public const int DefaultSaveStateCompressionLevelRewind = 0;//this isnt actually used yet 
 		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
+		public int MovieCompressionLevel = 2;
 
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;
@@ -410,6 +411,7 @@ namespace BizHawk.Client.Common
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = false;
+		public bool GBA_UsemGBA = false;
 	}
 
 	// These are used in the defctrl.json or wherever

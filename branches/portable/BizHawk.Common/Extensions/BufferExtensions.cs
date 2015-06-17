@@ -18,18 +18,22 @@ namespace BizHawk.Common.BufferExtensions
 			writer.WriteLine();
 		}
 
+		private static readonly char[] HexConvArr = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
 		public unsafe static void SaveAsHexFast(this byte[] buffer, TextWriter writer)
 		{
-			char* table = Util.HexConvPtr;
-			if (buffer.Length > 0)
+			fixed (char* table = HexConvArr)
 			{
-				int len = buffer.Length;
-				fixed (byte* src = &buffer[0])
-					for (int i = 0; i < len; i++)
-					{
-						writer.Write(table[src[i] >> 4]);
-						writer.Write(table[src[i] & 15]);
-					}
+				if (buffer.Length > 0)
+				{
+					int len = buffer.Length;
+					fixed (byte* src = buffer)
+						for (int i = 0; i < len; i++)
+						{
+							writer.Write(table[src[i] >> 4]);
+							writer.Write(table[src[i] & 15]);
+						}
+				}
 			}
 			writer.WriteLine();
 		}
