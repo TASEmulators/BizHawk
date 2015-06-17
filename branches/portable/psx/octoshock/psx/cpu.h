@@ -214,6 +214,7 @@ class PS_CPU
  template<bool DebugMode, bool BIOSPrintMode, bool ILHMode> pscpu_timestamp_t RunReal(pscpu_timestamp_t timestamp_in) NO_INLINE;
 
  template<typename T> T PeekMemory(uint32 address) MDFN_COLD;
+ template<typename T> void PokeMemory(uint32 address, T value) MDFN_COLD;
  template<typename T> T ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool DS24 = false, bool LWC_timing = false);
  template<typename T> void WriteMemory(pscpu_timestamp_t &timestamp, uint32 address, uint32 value, bool DS24 = false);
 
@@ -243,9 +244,15 @@ class PS_CPU
  uint32 GetRegister(unsigned int which, char *special, const uint32 special_len);
  void SetRegister(unsigned int which, uint32 value);
  bool PeekCheckICache(uint32 PC, uint32 *iw);
+ 
  uint8 PeekMem8(uint32 A);
  uint16 PeekMem16(uint32 A);
  uint32 PeekMem32(uint32 A);
+
+ void PokeMem8(uint32 A, uint8 V);
+ void PokeMem16(uint32 A, uint16 V);
+ void PokeMem32(uint32 A, uint32 V);
+
  private:
  void (*CPUHook)(const pscpu_timestamp_t timestamp, uint32 pc);
  void (*ADDBT)(uint32 from, uint32 to, bool exception);

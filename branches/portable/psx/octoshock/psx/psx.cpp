@@ -403,7 +403,7 @@ void PSX_RequestMLExit(void)
 //
 
 
-// Remember to update MemPeek<>() when we change address decoding in MemRW()
+// Remember to update MemPeek<>() and MemPoke<>() when we change address decoding in MemRW()
 template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu_timestamp_t &timestamp, uint32 A, uint32 &V)
 {
  #if 0
@@ -916,6 +916,60 @@ uint16 PSX_MemPeek16(uint32 A)
 uint32 PSX_MemPeek32(uint32 A)
 {
  return MemPeek<uint32, false>(0, A);
+}
+
+template<typename T, bool Access24> static INLINE void MemPoke(pscpu_timestamp_t timestamp, uint32 A, T V)
+{
+ if(A < 0x00800000)
+ {
+  if(Access24)
+   MainRAM.WriteU24(A & 0x1FFFFF, V);
+  else
+   MainRAM.Write<T>(A & 0x1FFFFF, V);
+
+  return;
+ }
+
+ if(A >= 0x1FC00000 && A <= 0x1FC7FFFF)
+ {
+  if(Access24)
+   BIOSROM->WriteU24(A & 0x7FFFF, V);
+  else
+   BIOSROM->Write<T>(A & 0x7FFFF, V);
+
+  return;
+ }
+
+ if(A >= 0x1F801000 && A <= 0x1F802FFF)
+ {
+  if(A >= 0x1F801000 && A <= 0x1F801023)
+  {
+   unsigned index = (A & 0x1F) >> 2;
+   SysControl.Regs[index] = (V << ((A & 3) * 8)) & SysControl_Mask[index];
+   return;
+  }
+ }
+
+ if(A == 0xFFFE0130)
+ {
+  CPU->SetBIU(V);
+  return;
+ }
+}
+
+void PSX_MemPoke8(uint32 A, uint8 V)
+{
+ MemPoke<uint8, false>(0, A, V);
+}
+
+void PSX_MemPoke16(uint32 A, uint16 V)
+{
+ MemPoke<uint16, false>(0, A, V);
+}
+
+void PSX_MemPoke32(uint32 A, uint32 V)
+{
+ MemPoke<uint32, false>(0, A, V);
 }
 
 static void PSX_Power(bool powering_up)
@@ -1439,11 +1493,14 @@ void NormalizeFramebuffer()
 	//if(width == 700 && height == 480) {}
 
 	//II. as the snes 'always double size framebuffer'. I think thats a better idea, and we already have the concept
-	if(width <= 400 && height <= 276) xs=ys=2;
-	if(width > 400 && height <= 276) ys=2;
-	if(width <= 400 && height > 276) xs=2;
-	if(width > 400 && height > 276) {}
-	//TODO - shrink it entirely if cropping
+	//ORIGINALLY (as of r8528 when PAL support was added) a threshold of 276 was used. I'm not sure where that came from.
+	//288 seems to be a more correct value? (it's the typical PAL half resolution, corresponding to 240 for NTSC)
+	//maybe I meant to type 576, but that doesnt make sense--the height can't exceed that.
+	if(width <= 400 && height <= 288) xs=ys=2;
+	if(width > 400 && height <= 288) ys=2;
+	if(width <= 400 && height > 288) xs=2;
+	if(width > 400 && height > 288) {}
+	//TODO - shrink it entirely if cropping. EDIT-any idea what this means? if you figure it out, just do it.
 	xm = (virtual_width-width*xs)/2;
 
 	int curr = 0;

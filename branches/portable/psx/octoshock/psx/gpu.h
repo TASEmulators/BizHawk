@@ -131,7 +131,10 @@ class PS_GPU
   uint32 Tag;
  } TexCache[256];
 
+ void InvalidateTexCache(void);
  void InvalidateCache(void);
+
+ void SetTPage(uint32);
 
  void ProcessFIFO(void);
  void WriteCB(uint32 data);

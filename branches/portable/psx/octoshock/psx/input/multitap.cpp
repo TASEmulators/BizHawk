@@ -129,12 +129,12 @@ void InputDevice_Multitap::Power(void)
  full_mode = false;
  full_mode_setting = false;
 
-  prev_fm_success = false;
+ prev_fm_success = false;
  memset(sb, 0, sizeof(sb));
 
  fm_dp = 0;
  memset(fm_buffer, 0, sizeof(fm_buffer));
- fm_deferred_error_temp = false;
+ fm_command_error = false;
 
  for(int i = 0; i < 4; i++)
  {

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PSXOptions));
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
@@ -41,7 +42,6 @@
 			this.rbMednafenMode = new System.Windows.Forms.RadioButton();
 			this.lblPixelPro = new System.Windows.Forms.Label();
 			this.rbPixelPro = new System.Windows.Forms.RadioButton();
-			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.lblPAL = new System.Windows.Forms.Label();
 			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
@@ -53,6 +53,8 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.NTSC_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.NTSC_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
+			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
@@ -65,7 +67,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(622, 240);
+			this.btnCancel.Location = new System.Drawing.Point(622, 262);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 3;
@@ -75,7 +77,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(541, 240);
+			this.btnOk.Location = new System.Drawing.Point(541, 262);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 2;
@@ -85,6 +87,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.linkLabel1);
 			this.groupBox1.Controls.Add(this.lblTweakedMednafen);
 			this.groupBox1.Controls.Add(this.rbTweakedMednafenMode);
 			this.groupBox1.Controls.Add(this.label3);
@@ -96,7 +99,7 @@
 			this.groupBox1.Controls.Add(this.rbPixelPro);
 			this.groupBox1.Location = new System.Drawing.Point(12, 7);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(474, 256);
+			this.groupBox1.Size = new System.Drawing.Size(474, 278);
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Resolution Management";
@@ -105,11 +108,9 @@
 			// 
 			this.lblTweakedMednafen.Location = new System.Drawing.Point(255, 132);
 			this.lblTweakedMednafen.Name = "lblTweakedMednafen";
-			this.lblTweakedMednafen.Size = new System.Drawing.Size(213, 79);
+			this.lblTweakedMednafen.Size = new System.Drawing.Size(213, 93);
 			this.lblTweakedMednafen.TabIndex = 28;
-			this.lblTweakedMednafen.Text = "Displays all content at as multiple of 400x300.\r\n • Correct aspect ratio\r\n • Gene" +
-    "rally enjoyable game presentation\r\n • Detail loss at 1x in fewer cases\r\n • Requi" +
-    "res certain display configuration:\r\n";
+			this.lblTweakedMednafen.Text = resources.GetString("lblTweakedMednafen.Text");
 			// 
 			// rbTweakedMednafenMode
 			// 
@@ -126,10 +127,11 @@
 			// 
 			this.label3.Location = new System.Drawing.Point(246, 39);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(213, 63);
+			this.label3.Size = new System.Drawing.Size(213, 82);
 			this.label3.TabIndex = 26;
 			this.label3.Text = "Displays all content unmodified\r\n • Window size will constantly change\r\n • Aspect" +
-    " ratio is usually wrong\r\n • Ideal for segmented AV dumping";
+    " ratio is usually wrong\r\n • Recommended for hacking\r\n • Ideal for segmented AV d" +
+    "umping\r\n";
 			// 
 			// rbDebugMode
 			// 
@@ -145,7 +147,7 @@
 			// btnNiceDisplayConfig
 			// 
 			this.btnNiceDisplayConfig.AutoSize = true;
-			this.btnNiceDisplayConfig.Location = new System.Drawing.Point(140, 221);
+			this.btnNiceDisplayConfig.Location = new System.Drawing.Point(146, 238);
 			this.btnNiceDisplayConfig.Name = "btnNiceDisplayConfig";
 			this.btnNiceDisplayConfig.Size = new System.Drawing.Size(173, 23);
 			this.btnNiceDisplayConfig.TabIndex = 24;
@@ -157,7 +159,7 @@
 			// 
 			this.lblMednafen.Location = new System.Drawing.Point(6, 132);
 			this.lblMednafen.Name = "lblMednafen";
-			this.lblMednafen.Size = new System.Drawing.Size(213, 82);
+			this.lblMednafen.Size = new System.Drawing.Size(213, 93);
 			this.lblMednafen.TabIndex = 23;
 			this.lblMednafen.Text = resources.GetString("lblMednafen.Text");
 			// 
@@ -178,9 +180,7 @@
 			this.lblPixelPro.Name = "lblPixelPro";
 			this.lblPixelPro.Size = new System.Drawing.Size(252, 78);
 			this.lblPixelPro.TabIndex = 21;
-			this.lblPixelPro.Text = "Converts content with nearest neighbor to \r\nfit gracefully in a 800x480 window.\r\n" +
-    " • Content is pixel perfect\r\n • Aspect ratio is usually wrong\r\n • Game may seen " +
-    "to have scale varying by mode\r\n\r\n\r\n";
+			this.lblPixelPro.Text = resources.GetString("lblPixelPro.Text");
 			// 
 			// rbPixelPro
 			// 
@@ -192,14 +192,6 @@
 			this.rbPixelPro.TabStop = true;
 			this.rbPixelPro.Text = "Pixel Pro Mode";
 			this.rbPixelPro.UseVisualStyleBackColor = true;
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(500, 192);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(197, 29);
-			this.label7.TabIndex = 30;
-			this.label7.Text = "Restart the core to take effect.\r\nSorry, its still in development";
 			// 
 			// groupBox2
 			// 
@@ -289,6 +281,7 @@
 			this.checkClipHorizontal.Size = new System.Drawing.Size(142, 17);
 			this.checkClipHorizontal.TabIndex = 30;
 			this.checkClipHorizontal.Text = "Clip Horizontal Overscan";
+			this.toolTip1.SetToolTip(this.checkClipHorizontal, "A mednafen option -- appears to be 5.5% horizontally");
 			this.checkClipHorizontal.UseVisualStyleBackColor = true;
 			this.checkClipHorizontal.CheckedChanged += new System.EventHandler(this.checkClipHorizontal_CheckedChanged);
 			// 
@@ -341,15 +334,25 @@
 			this.NTSC_FirstLineNumeric.TabIndex = 21;
 			this.NTSC_FirstLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
+			// linkLabel1
+			// 
+			this.linkLabel1.AutoSize = true;
+			this.linkLabel1.Location = new System.Drawing.Point(327, 248);
+			this.linkLabel1.Name = "linkLabel1";
+			this.linkLabel1.Size = new System.Drawing.Size(53, 13);
+			this.linkLabel1.TabIndex = 29;
+			this.linkLabel1.TabStop = true;
+			this.linkLabel1.Text = "About Me";
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			// 
 			// PSXOptions
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(713, 275);
+			this.ClientSize = new System.Drawing.Size(713, 297);
 			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.label7);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -380,7 +383,6 @@
 		private System.Windows.Forms.Label lblMednafen;
 		private System.Windows.Forms.RadioButton rbMednafenMode;
 		private System.Windows.Forms.Label lblPixelPro;
-		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.RadioButton rbDebugMode;
 		private System.Windows.Forms.Label lblTweakedMednafen;
@@ -396,5 +398,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.NumericUpDown NTSC_LastLineNumeric;
 		private System.Windows.Forms.NumericUpDown NTSC_FirstLineNumeric;
+		private System.Windows.Forms.LinkLabel linkLabel1;
+		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
