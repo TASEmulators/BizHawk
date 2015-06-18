@@ -10,20 +10,27 @@ namespace nall {
 
   template<unsigned bits>
   constexpr inline uintmax_t uclip(const uintmax_t x) {
-    enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 };
-    return (x & m);
+		//zero 17-jun-2015 - revised to use more standard constexpr behaviour
+    //enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 };
+		//return (x & m); //test
+    return (x & ((uintmax_t)(((uintmax_t)(1ull << (bits - 1))) * 2 - 1)));
   }
 
   template<unsigned bits>
   constexpr inline intmax_t sclamp(const intmax_t x) {
-    enum : intmax_t { b = 1ull << (bits - 1), m = b - 1 };
-    return (x > m) ? m : (x < -b) ? -b : x;
+		//zero 17-jun-2015 - revised to use more standard constexpr behaviour
+    //enum : intmax_t { b = 1ull << (bits - 1), m = b - 1 };
+		//(intmax_t)(1ull << (bits - 1)) //b
+		//(((intmax_t)(1ull << (bits - 1))) - 1) //m
+    //return (x > m) ? m : (x < -b) ? -b : x;
+		return (x > (((intmax_t)(1ull << (bits - 1))) - 1)) ? (((intmax_t)(1ull << (bits - 1))) - 1) : (x < -((intmax_t)(1ull << (bits - 1)))) ? -((intmax_t)(1ull << (bits - 1))) : x; //test
   }
 
   template<unsigned bits>
   constexpr inline intmax_t sclip(const intmax_t x) {
-    enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 };
-    return ((x & m) ^ b) - b;
+		//zero 17-jun-2015 - revised to use more standard constexpr behaviour
+    //enum : uintmax_t { b = 1ull << (bits - 1), m = b * 2 - 1 }; //test
+    return ((x & ((uintmax_t)(((uintmax_t)(1ull << (bits - 1))) * 2 - 1))) ^ ((uintmax_t)(1ull << (bits - 1)))) - ((uintmax_t)(1ull << (bits - 1)));
   }
 
   namespace bit {
