@@ -21,7 +21,7 @@ void ResampleNearest::clear() {
 
 void ResampleNearest::sample() {
   while(fraction <= 1.0) {
-		real channel = alloca(dsp.settings.channels * sizeof(real));
+		real *channel = (real*)alloca(dsp.settings.channels * sizeof(real));
 
     for(unsigned n = 0; n < dsp.settings.channels; n++) {
       real a = dsp.buffer.read(n, -1);
