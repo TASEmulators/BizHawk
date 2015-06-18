@@ -176,7 +176,13 @@ namespace nall {
       struct __stat64 data;
       _wstat64(utf16_t(filename), &data);
       #endif
-      return S_ISREG(data.st_mode) ? data.st_size : 0u;
+
+			//not readily possible in msvc; not needed in bizhawk
+			#ifdef BIZHAWK
+				return data.st_size;
+			#else
+				return S_ISREG(data.st_mode) ? data.st_size : 0u; //TEST
+			#endif
     }
 
     static time_t timestamp(const string &filename, file::time mode = file::time::create) {

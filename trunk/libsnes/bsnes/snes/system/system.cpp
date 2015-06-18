@@ -155,7 +155,7 @@ void System::power() {
 
   region = config.region;
   expansion = config.expansion_port;
-  if(region == Region::Autodetect) {
+  if(region.value == Region::Autodetect) {
     region = (cartridge.region() == Cartridge::Region::NTSC ? Region::NTSC : Region::PAL);
   }
 
