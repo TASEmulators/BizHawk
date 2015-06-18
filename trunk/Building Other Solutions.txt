@@ -41,7 +41,7 @@ Enable msys-base and pick installation > update catalogue. review changes and ap
 You now have C:\i686-4.9.2-posix-dwarf-rt_v3-rev1\msys\1.0\msys.bat
 run it, and run /postinstall/pi.sh
 enter y,y and then C:/i686-4.9.2-posix-dwarf-rt_v3-rev1/mingw32
-answer Y
+answer Y (is this step MISSING?)
 Now you've activated the mingw-w64 on this msys install.
 It will tell you "Oh joy" you dont have a better make.exe. Thats bullshit, their make.exe is terrible. In fact youll want a new one
 ln -s /mingw/bin/mingw32-make.exe /mingw/bin/make
