@@ -332,7 +332,12 @@
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
-    <Compile Include="Consoles\Intellivision\MemoryMap.cs" />
+    <Compile Include="Consoles\Intellivision\Intellivision.IEmulator.cs">
+        <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Intellivision.MemoryMap.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
@@ -780,6 +785,8 @@
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="CoreInventory.cs" />
+    <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
+    <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
     <Compile Include="CPUs\W65816\Disassembler.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
@@ -793,8 +800,6 @@
     <Compile Include="CPUs\68000\Tables.cs" />
     <Compile Include="CPUs\ARM\Darm.cs" />
     <Compile Include="CPUs\CP1610\CP1610.cs" />
-    <Compile Include="CPUs\CP1610\Disassembler.cs" />
-    <Compile Include="CPUs\CP1610\Execute.cs" />
     <Compile Include="CPUs\HuC6280\CDL.cs" />
     <Compile Include="CPUs\HuC6280\CDLOpcodes.cs" />
     <Compile Include="CPUs\HuC6280\Disassembler.cs" />

@@ -12,9 +12,9 @@
 
 		public ushort ReadMemory(ushort addr)
 		{
-			ushort? cart = Cart.ReadCart(addr);
-			ushort? stic = Stic.ReadSTIC(addr);
-			ushort? psg = Psg.ReadPSG(addr);
+			ushort? cart = _cart.ReadCart(addr);
+			ushort? stic = _stic.ReadSTIC(addr);
+			ushort? psg = _psg.ReadPSG(addr);
 			ushort? core = null;
 
 			switch (addr & 0xF000)
@@ -185,9 +185,9 @@
 
 		public bool WriteMemory(ushort addr, ushort value)
 		{
-			bool cart = Cart.WriteCart(addr, value);
-			bool stic = Stic.WriteSTIC(addr, value);
-			bool psg = Psg.WritePSG(addr, value);
+			bool cart = _cart.WriteCart(addr, value);
+			bool stic = _stic.WriteSTIC(addr, value);
+			bool psg = _psg.WritePSG(addr, value);
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
