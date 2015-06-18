@@ -1,5 +1,7 @@
 #ifdef NALL_STRING_INTERNAL_HPP
 
+#include <malloc.h>
+
 namespace nall {
 
 template<bool Insensitive>
@@ -164,7 +166,7 @@ template<unsigned length_, char padding> string decimal(uintmax_t value) {
   buffer[size] = 0;
 
   unsigned length = (length_ == 0 ? size : length_);
-  char result[length + 1];
+	char* result = (char*)alloca(length + 1);
   memset(result, padding, length);
   result[length] = 0;
 
@@ -209,7 +211,7 @@ template<unsigned length_, char padding> string hex(uintmax_t value) {
   } while(value);
 
   unsigned length = (length_ == 0 ? size : length_);
-  char result[length + 1];
+  char *result = (char*)alloca(length + 1);
   memset(result, padding, length);
   result[length] = 0;
 
