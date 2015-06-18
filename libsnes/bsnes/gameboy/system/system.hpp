@@ -11,9 +11,9 @@ struct System : property<System> {
     GameBoyColor,
   };
   readonly<Revision> revision;
-  inline bool dmg() const { return revision == Revision::GameBoy; }
-  inline bool sgb() const { return revision == Revision::SuperGameBoy; }
-  inline bool cgb() const { return revision == Revision::GameBoyColor; }
+  inline bool dmg() const { return (Revision)revision == Revision::GameBoy; }
+  inline bool sgb() const { return (Revision)revision == Revision::SuperGameBoy; }
+  inline bool cgb() const { return (Revision)revision == Revision::GameBoyColor; }
 
   struct BootROM {
     static const uint8 dmg[ 256];

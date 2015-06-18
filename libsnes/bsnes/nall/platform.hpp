@@ -8,6 +8,10 @@
   #include <nall/windows/utf8.hpp>
 #endif
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES 1
+#endif
+
 //=========================
 //standard platform headers
 //=========================
@@ -29,10 +33,13 @@
 #if defined(_WIN32)
   #include <io.h>
   #include <direct.h>
-  #include <shlobj.h>
+  //#include <shlobj.h> //bizhawk chokes?
   #include <wchar.h>
   #undef interface
   #define dllexport __declspec(dllexport)
+	//bad things happen without these here
+	#include <string>
+	#include <vector>
 #else
   #include <unistd.h>
   #include <pwd.h>
@@ -100,23 +107,27 @@
   }
 
   inline char* userpath(char *path) {
-    wchar_t fp[_MAX_PATH] = L"";
-    SHGetFolderPathW(0, CSIDL_APPDATA | CSIDL_FLAG_CREATE, 0, 0, fp);
-    strcpy(path, nall::utf8_t(fp));
-    for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
-    unsigned length = strlen(path);
-    if(path[length] != '/') strcpy(path + length, "/");
-    return path;
+		//TODO BIZHAWK
+		return nullptr;
+    //wchar_t fp[_MAX_PATH] = L"";
+    //SHGetFolderPathW(0, CSIDL_APPDATA | CSIDL_FLAG_CREATE, 0, 0, fp);
+    //strcpy(path, nall::utf8_t(fp));
+    //for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
+    //unsigned length = strlen(path);
+    //if(path[length] != '/') strcpy(path + length, "/");
+    //return path;
   }
 
   inline char* getcwd(char *path) {
-    wchar_t fp[_MAX_PATH] = L"";
-    _wgetcwd(fp, _MAX_PATH);
-    strcpy(path, nall::utf8_t(fp));
-    for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
-    unsigned length = strlen(path);
-    if(path[length] != '/') strcpy(path + length, "/");
-    return path;
+		//TODO BIZHAWK
+		return nullptr;
+    //wchar_t fp[_MAX_PATH] = L"";
+    //_wgetcwd(fp, _MAX_PATH);
+    //strcpy(path, nall::utf8_t(fp));
+    //for(unsigned n = 0; path[n]; n++) if(path[n] == '\\') path[n] = '/';
+    //unsigned length = strlen(path);
+    //if(path[length] != '/') strcpy(path + length, "/");
+    //return path;
   }
 #else
   //realpath() already exists

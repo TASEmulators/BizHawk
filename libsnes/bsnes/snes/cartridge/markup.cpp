@@ -108,7 +108,7 @@ void Cartridge::parse_markup_nss(XML::Node &root) {
 void Cartridge::parse_markup_icd2(XML::Node &root) {
   #if defined(GAMEBOY)
   if(root.exists() == false) return;
-  if(mode != Mode::SuperGameBoy) return;
+  if(mode.value != Mode::SuperGameBoy) return;
 
   icd2.revision = max(1, numeral(root["revision"].data));
 
@@ -241,7 +241,8 @@ void Cartridge::parse_markup_necdsp(XML::Node &root) {
     if(!sha256.empty()) {
       //XML file specified SHA256 sum for program. Verify file matches the hash.
       fp.seek(0);
-      uint8_t data[filesize];
+      //uint8_t data[filesize]; //test
+			uint8_t *data = (uint8_t*)alloca(filesize);
       fp.read(data, filesize);
 
       if(sha256 != nall::sha256(data, filesize)) {
@@ -367,7 +368,7 @@ void Cartridge::parse_markup_armdsp(XML::Node &root) {
 
 void Cartridge::parse_markup_bsx(XML::Node &root) {
   if(root.exists() == false) return;
-  if(mode != Mode::BsxSlotted && mode != Mode::Bsx) return;
+  if(mode.value != Mode::BsxSlotted && mode.value != Mode::Bsx) return;
   has_bsx_slot = true;
 
   for(auto &node : root["slot"]) {
@@ -394,7 +395,7 @@ void Cartridge::parse_markup_bsx(XML::Node &root) {
 
 void Cartridge::parse_markup_sufamiturbo(XML::Node &root) {
   if(root.exists() == false) return;
-  if(mode != Mode::SufamiTurbo) return;
+  if(mode.value != Mode::SufamiTurbo) return;
 
   for(auto &slot : root) {
     if(slot.name != "slot") continue;
