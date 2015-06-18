@@ -122,7 +122,9 @@ namespace nall {
       return *this;
     }
 
-    serializer(serializer &&s) {
+    serializer(serializer &&s) 
+			: idata(nullptr) //zero 16-jun-2015 - was a bug not to have this. operator= chokes on uninitialized idata otherwise
+		{
       operator=(std::move(s));
     }
 
