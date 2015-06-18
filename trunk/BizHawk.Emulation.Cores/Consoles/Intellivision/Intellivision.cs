@@ -16,19 +16,57 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	[ServiceNotApplicable(typeof(ISaveRam))]
 	public sealed partial class Intellivision : IEmulator
 	{
-		byte[] Rom;
-		GameInfo Game;
+		[CoreConstructor("INTV")]
+		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			CoreComm = comm;
 
-		CP1610 Cpu;
-		ICart Cart;
-		STIC Stic;
-		PSG Psg;
+			_rom = rom;
+			_gameInfo = game;
+			_cart = new Intellicart();
+			if (_cart.Parse(_rom) == -1)
+			{
+				_cart = new Cartridge();
+				_cart.Parse(_rom);
+			}
+
+			_cpu = new CP1610();
+			_cpu.ReadMemory = ReadMemory;
+			_cpu.WriteMemory = WriteMemory;
+			_cpu.Reset();
+
+			_stic = new STIC();
+			_stic.ReadMemory = ReadMemory;
+			_stic.WriteMemory = WriteMemory;
+			_stic.Reset();
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_stic);
+
+			_psg = new PSG();
+			_psg.ReadMemory = ReadMemory;
+			_psg.WriteMemory = WriteMemory;
+
+			Connect();
+
+			_cpu.LogData();
+
+			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
+			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
+		}
+
+		private byte[] _rom;
+		private GameInfo _gameInfo;
+
+		private CP1610 _cpu;
+		private ICart _cart;
+		private STIC _stic;
+		private PSG _psg;
 
 		public void Connect()
 		{
-			Cpu.SetIntRM(Stic.GetSr1());
-			Cpu.SetBusRq(Stic.GetSr2());
-			Stic.SetSst(Cpu.GetBusAk());
+			_cpu.SetIntRM(_stic.GetSr1());
+			_cpu.SetBusRq(_stic.GetSr2());
+			_stic.SetSst(_cpu.GetBusAk());
 		}
 
 		public void LoadExecutiveRom(byte[] erom)
@@ -37,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				throw new ApplicationException("EROM file is wrong size - expected 8192 bytes");
 			}
+
 			int index = 0;
 			// Combine every two bytes into a word.
 			while (index + 1 < erom.Length)
@@ -51,66 +90,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				throw new ApplicationException("GROM file is wrong size - expected 2048 bytes");
 			}
+
 			GraphicsRom = grom;
 		}
-
-		[CoreConstructor("INTV")]
-		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
-		{
-			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
-
-			Rom = rom;
-			Game = game;
-			Cart = new Intellicart();
-			if (Cart.Parse(Rom) == -1)
-			{
-				Cart = new Cartridge();
-				Cart.Parse(Rom);
-			}
-
-			Cpu = new CP1610();
-			Cpu.ReadMemory = ReadMemory;
-			Cpu.WriteMemory = WriteMemory;
-			Cpu.Reset();
-
-			Stic = new STIC();
-			Stic.ReadMemory = ReadMemory;
-			Stic.WriteMemory = WriteMemory;
-			Stic.Reset();
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Stic);
-
-			Psg = new PSG();
-			Psg.ReadMemory = ReadMemory;
-			Psg.WriteMemory = WriteMemory;
-
-			Connect();
-
-			Cpu.LogData();
-
-			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
-			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
-		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
-		{
-			Frame++;
-			Cpu.AddPendingCycles(14934);
-			while (Cpu.GetPendingCycles() > 0)
-			{
-				int cycles = Cpu.Execute();
-				Stic.Execute(cycles);
-				Connect();
-				Cpu.LogData();
-			}
-		}
-
-		public ISoundProvider SoundProvider { get { return NullSound.SilenceProvider; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(NullSound.SilenceProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
 
 		public static readonly ControllerDefinition IntellivisionController =
 			new ControllerDefinition
@@ -128,34 +110,5 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					"P2 Key 6", "P2 Key 7", "P2 Key 8", "P2 Key 9", "P2 Enter", "P2 Clear"
 				}
 			};
-
-		public ControllerDefinition ControllerDefinition
-		{
-			get { return IntellivisionController; }
-		}
-
-		public IController Controller { get; set; }
-		public int Frame { get; set; }
-
-		public string SystemId
-		{
-			get { return "INTV"; }
-		}
-
-		[FeatureNotImplemented]
-		public string BoardName { get { return null; } }
-
-		public bool DeterministicEmulation { get { return true; } }
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-		}
-
-		public CoreComm CoreComm { get; private set; }
-
-		public void Dispose()
-		{
-		}
 	}
 }
