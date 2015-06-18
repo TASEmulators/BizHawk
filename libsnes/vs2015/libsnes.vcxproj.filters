@@ -145,6 +145,12 @@
     <Filter Include="snes\cpu\core">
       <UniqueIdentifier>{be676f5c-dcb3-4a39-911c-4e102dfa25d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="snes\alt\ppu-compatibility">
+      <UniqueIdentifier>{ebb8bc23-969e-4273-bada-413a29d6af3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snes\smp\core">
+      <UniqueIdentifier>{f06ef20e-c749-4f16-81d3-f88d96b659bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bsnes\base\base.hpp">
@@ -307,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="..\bsnes\snes\cpu\core\core.cpp">
       <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\ppu-compatibility\ppu.cpp">
+      <Filter>snes\alt\ppu-compatibility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\core.cpp">
+      <Filter>snes\smp\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
