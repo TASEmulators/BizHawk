@@ -131,13 +131,17 @@ template<> struct stringify<const char*> {
 };
 
 template<> struct stringify<string> {
-  const string &value;
+	//zero 17-jun-2015 - this is a bug. dangling reference can and will go out of scope
+  //const string &value;
+	string value;
   operator const char*() const { return value; }
   stringify(const string &value) : value(value) {}
 };
 
 template<> struct stringify<const string&> {
-  const string &value;
+	//zero 17-jun-2015 - this is a bug. dangling reference can and will go out of scope
+  //const string &value;
+	string value;
   operator const char*() const { return value; }
   stringify(const string &value) : value(value) {}
 };
