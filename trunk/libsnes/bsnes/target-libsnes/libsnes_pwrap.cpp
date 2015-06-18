@@ -854,13 +854,23 @@ bool Handle_QUERY(eMessage msg)
 	case eMessage_QUERY_peek_cpu_regs:
 		{
 			//watch it! the size of this struct is important!
+			#ifdef _MSC_VER
+			#pragma pack(push,1)
+			#endif
 			struct {
 				u32 pc;
 				u16 a,x,y,z,s,d,vector; //7x
 						u8 p, nothing;
 				u32 aa,rd;
 				u8 sp, dp, db, mdr;
-			} __attribute__((__packed__)) cpuregs;
+			} 
+			#ifndef _MSC_VER
+			__attribute__((__packed__))
+			#endif
+			cpuregs;
+			#ifdef _MSC_VER
+			#pragma pack(pop)
+			#endif
 
 			cpuregs.pc = (u32)SNES::cpu.regs.pc;
 			cpuregs.a = SNES::cpu.regs.a;
