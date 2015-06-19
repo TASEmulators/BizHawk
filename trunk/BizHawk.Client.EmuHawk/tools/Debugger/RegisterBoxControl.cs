@@ -178,11 +178,18 @@ namespace BizHawk.Client.EmuHawk
 						{
 							try
 							{
-								Core.SetCpuRegister(t.Name, int.Parse(t.Text));
+								if (t.Text != String.Empty)
+								{
+									Core.SetCpuRegister(t.Name, int.Parse(t.Text, System.Globalization.NumberStyles.HexNumber));
+								}		
 							}
 							catch (InvalidOperationException)
 							{
 								t.Enabled = false;
+							}
+							catch (FormatException)
+							{
+
 							}
 						}
 					};
