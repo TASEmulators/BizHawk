@@ -57,7 +57,6 @@ class Memory {
 	bool LINKCABLE;
 	bool linkClockTrigger;
 
-	void updateInput();
 	void decEventCycles(MemEventId eventId, unsigned long dec);
 
 	void oamDmaInitSetup();
@@ -91,7 +90,8 @@ public:
 	void loadSavedata(const char *data) { cart.loadSavedata(data); }
 	int saveSavedataLength() {return cart.saveSavedataLength(); }
 	void saveSavedata(char *dest) { cart.saveSavedata(dest); }
-	
+	void updateInput();
+
 	bool getMemoryArea(int which, unsigned char **data, int *length); // { return cart.getMemoryArea(which, data, length); }
 
 	unsigned long stop(unsigned long cycleCounter);
