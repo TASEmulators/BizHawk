@@ -291,7 +291,7 @@ unsigned long Memory::stop(unsigned long cycleCounter) {
 		sound.generate_samples(cycleCounter, isDoubleSpeed());
 		
 		display.speedChange(cycleCounter);
-		ioamhram[0x14D] = ~ioamhram[0x14D] & 0x80;
+		ioamhram[0x14D] ^= 0x81;
 
 		intreq.setEventTime<BLIT>((ioamhram[0x140] & 0x80) ? display.nextMode1IrqTime() : cycleCounter + (70224 << isDoubleSpeed()));
 		
@@ -355,22 +355,22 @@ unsigned long Memory::resetCounters(unsigned long cycleCounter) {
 }
 
 void Memory::updateInput() {
-	unsigned button = 0xFF;
-	unsigned dpad = 0xFF;
+	unsigned state = 0xF;
 
-	if (getInput) {
-		const unsigned is = (*getInput)();
-		button ^= is      & 0x0F;
-		dpad   ^= is >> 4 & 0x0F;
+	if ((ioamhram[0x100] & 0x30) != 0x30 && getInput) {
+		unsigned input = (*getInput)();
+		unsigned dpad_state = ~input >> 4;
+		unsigned button_state = ~input;
+		if (!(ioamhram[0x100] & 0x10))
+			state &= dpad_state;
+		if (!(ioamhram[0x100] & 0x20))
+			state &= button_state;
 	}
 
-	ioamhram[0x100] |= 0xF;
+	if (state != 0xF && (ioamhram[0x100] & 0xF) == 0xF)
+		intreq.flagIrq(0x10);
 
-	if (!(ioamhram[0x100] & 0x10))
-		ioamhram[0x100] &= dpad;
-
-	if (!(ioamhram[0x100] & 0x20))
-		ioamhram[0x100] &= button;
+	ioamhram[0x100] = (ioamhram[0x100] & -0x10u) | state;
 }
 
 void Memory::updateOamDma(const unsigned long cycleCounter) {
@@ -595,8 +595,11 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 
 	switch (P & 0xFF) {
 	case 0x00:
-		data = (ioamhram[0x100] & 0xCF) | (data & 0xF0);
-		break;
+		if ((data ^ ioamhram[0x100]) & 0x30) {
+			ioamhram[0x100] = (ioamhram[0x100] & ~0x30u) | (data & 0x30);
+			updateInput();
+		}
+		return;
 	case 0x01:
 		updateSerial(cycleCounter);
 		break;
@@ -856,8 +859,8 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 		break;
 
 	case 0x4D:
-		ioamhram[0x14D] |= data & 0x01;
-		return;
+		if (isCgb())
+			ioamhram[0x14D] = (ioamhram[0x14D] & ~1u) | (data & 1);		return;
 	case 0x4F:
 		if (isCgb()) {
 			cart.setVrambank(data & 1);

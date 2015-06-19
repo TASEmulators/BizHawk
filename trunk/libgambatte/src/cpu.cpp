@@ -460,12 +460,13 @@ void CPU::loadState(const SaveState &state) {
 	PC_MOD((PC + jr_disp_var_tmp) & 0xFFFF); \
 } while (0)
 
-//CALLS, RESTARTS AND RETURNS:
-//call nn (24 cycles):
-//Push address of next instruction onto stack and then jump to address stored in next two bytes in memory:
+// CALLS, RESTARTS AND RETURNS:
+// call nn (24 cycles):
+// Jump to 16-bit immediate operand and push return address onto stack:
 #define call_nn() do { \
-	PUSH(((PC + 2) >> 8) & 0xFF, (PC + 2) & 0xFF); \
+	unsigned const npc = (PC + 2) & 0xFFFF; \
 	jp_nn(); \
+	PUSH(npc >> 8, npc & 0xFF); \
 } while (0)
 
 //rst n (16 Cycles):
@@ -487,7 +488,8 @@ void CPU::loadState(const SaveState &state) {
 
 void CPU::process(const unsigned long cycles) {
 	memory.setEndtime(cycleCounter_, cycles);
-	
+	memory.updateInput();
+
 	//unsigned char A = A_;
 	unsigned long cycleCounter = cycleCounter_;
 	
