@@ -74,10 +74,115 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type)
+		{
+			switch (type)
+			{
+				case StepType.Into:
+				case StepType.Over:
+				case StepType.Out:
+					return true;
+				default:
+					return false;
+			}
+		}
 
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		public void Step(StepType type) 
+		{
+			switch (type)
+			{
+				case StepType.Into:
+					StepInto();
+					break;
+				case StepType.Out:
+					StepOut();
+					break;
+				case StepType.Over:
+					StepOver();
+					break;
+			}
+		}
+
+		private void StepInto()
+		{
+			var machineInVblank = _machine.Video.IsVBlank;
+
+			_machine.Events.HandleEvents(_machine.Cpu.Execute());
+
+			if (!machineInVblank && _machine.Video.IsVBlank) // Check if a frame has passed while stepping
+			{
+				Frame++;
+				if (_machine.Lagged)
+				{
+					LagCount++;
+				}
+
+				_machine.Lagged = true;
+				_machine.DriveLight = false;
+			}
+		}
+
+		private void StepOver()
+		{
+			var instruction = _machine.Memory.Read(_machine.Cpu.RPC);
+
+			if (instruction == JSR)
+			{
+				var destination = _machine.Cpu.RPC + JSRSize;
+				while (_machine.Cpu.RPC != destination)
+				{
+					StepInto();
+				}
+			}
+			else
+			{
+				StepInto();
+			}
+		}
+
+		private void StepOut()
+		{
+			var instr = _machine.Memory.Read(_machine.Cpu.RPC);
+
+			JSRCount = instr == JSR ? 1 : 0;
+
+			var bailOutFrame = Frame + 1;
+
+			while (true)
+			{
+				StepInto();
+				instr = _machine.Memory.Read(_machine.Cpu.RPC);
+				if (instr == JSR)
+				{
+					JSRCount++;
+				}
+				else if (instr == RTS && JSRCount <= 0)
+				{
+					StepInto();
+					JSRCount = 0;
+					break;
+				}
+				else if (instr == RTS)
+				{
+					JSRCount--;
+				}
+				else //Emergency Bailout Logic
+				{
+					if (Frame == bailOutFrame)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		private int JSRCount = 0;
+
+		private const byte JSR = 0x20;
+		private const byte RTS = 0x60;
+
+		private const byte JSRSize = 3;
 
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
