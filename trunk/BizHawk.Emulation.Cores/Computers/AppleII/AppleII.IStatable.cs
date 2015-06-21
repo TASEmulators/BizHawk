@@ -65,6 +65,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine = o.Core;
 			_prevPressed = o.PreviousDiskPressed;
 			_nextPressed = o.NextDiskPressed;
+			// since _machine was replaced, we need to reload settings from frontend
+			PutSettings(_settings);
 		}
 
 		public class OtherData
