@@ -1942,14 +1942,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					MessageBox.Show(
+					e.Settings = Global.Config.GetCoreSyncSettings(e.Core);
+
+					// adelikat: only show this nag if the core actually has sync settings, not all cores do
+					if (e.Settings != null)
+					{
+						MessageBox.Show(
 						"No sync settings found, using currently configured settings for this core.",
 						"No sync settings found",
 						MessageBoxButtons.OK,
 						MessageBoxIcon.Warning
 						);
-
-					e.Settings = Global.Config.GetCoreSyncSettings(e.Core);
+					}
 				}
 			}
 			else
