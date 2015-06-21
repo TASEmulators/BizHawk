@@ -171,12 +171,5 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			Frame++;
 		}
-
-		private string readOpcode(ushort pc, Func<ushort, byte> peeker)
-		{
-			int unused;
-			return Cores.Components.M6502.MOS6502X.Disassemble(pc, out unused, peeker);
-		}
-
 	}
 }
