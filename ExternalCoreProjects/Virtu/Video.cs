@@ -1093,6 +1093,7 @@ namespace Jellyfish.Virtu
         private int _colorYellow;
         private int _colorWhite;
         private int _colorMonochrome;
+		[Newtonsoft.Json.JsonIgnore] // not sync relevant
         private bool _isMonochrome;
         private bool _isTextInversed;
         private ScannerOptions _scannerOptions;
