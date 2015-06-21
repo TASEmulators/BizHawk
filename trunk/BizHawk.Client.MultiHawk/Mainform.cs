@@ -1210,6 +1210,12 @@ namespace BizHawk.Client.MultiHawk
 				Global.MovieSession.PreviousSNES_InSnes9x = null;
 			}
 
+			if (Global.MovieSession.PreviousGBA_UsemGBA.HasValue)
+			{
+				Global.Config.GBA_UsemGBA = Global.MovieSession.PreviousGBA_UsemGBA.Value;
+				Global.MovieSession.PreviousGBA_UsemGBA = null;
+			}
+
 			Global.Config.RecentMovies.Add(movie.Filename);
 
 			if (EmulatorWindows.Master.Emulator.HasSavestates() && movie.StartsFromSavestate)

@@ -6,6 +6,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 using BizHawk.Client.Common;
 
@@ -456,6 +457,7 @@ namespace BizHawk.Client.Common
 		// A more elegant approach would be appreciated
 		public bool? PreviousNES_InQuickNES { get; set; }
 		public bool? PreviousSNES_InSnes9x { get; set; }
+		public bool? PreviousGBA_UsemGBA { get; set; }
 
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
@@ -514,6 +516,22 @@ namespace BizHawk.Client.Common
 				{
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = false;
+				}
+			}
+			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
+			{
+				var mGBAName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttributes))).CoreName;
+				var vbaNextName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(VBANext), typeof(CoreAttributes))).CoreName;
+
+				if (movie.Core == mGBAName)
+				{
+					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
+					Global.Config.GBA_UsemGBA = true;
+				}
+				else
+				{
+					PreviousSNES_InSnes9x = Global.Config.GBA_UsemGBA;
+					Global.Config.GBA_UsemGBA = false;
 				}
 			}
 
