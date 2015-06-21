@@ -166,26 +166,32 @@ namespace BizHawk.Client.EmuHawk
 
 				if (string.IsNullOrWhiteSpace(name))
 				{
-					throw new Exception("Blank Names");
+					throw new Exception("Xml Filename can not be blank");
 				}
 
 				if (names.Any(n => string.IsNullOrWhiteSpace(n)))
 				{
-					throw new Exception("Blank Names");
+					throw new Exception("Rom Names can not be blank");
 				}
 
 				var system = SystemDropDown.SelectedItem.ToString();
 
 				if (system == null)
 				{
-					throw new Exception("Blank System Id");
+					throw new Exception("System Id can not be blank");
 				}
 
 				var basePath = Path.GetDirectoryName(name.Split('|').First());
 
+				if (string.IsNullOrEmpty(basePath))
+				{
+					var fileInfo = new FileInfo(name);
+					basePath = Path.GetDirectoryName(fileInfo.FullName);
+				}
+
 				_currentXml = new XElement("BizHawk-XMLGame",
 					new XAttribute("System", system),
-					new XAttribute("Name", name),
+					new XAttribute("Name", Path.GetFileNameWithoutExtension(name)),
 					new XElement("LoadAssets",
 						names.Select(n => new XElement(
 							"Asset",
@@ -280,6 +286,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			throw new FileNotFoundException();
+		}
+
+		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			Recalculate();
 		}
 	}
 }
