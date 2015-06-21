@@ -177,8 +177,216 @@ namespace Jellyfish.Virtu
 				RA, RX, RY, RP, RS, RPC, EA, CC);
 		}
 
+		public string TraceState()
+		{
+			string a = string.Format("{0:X4}  {1:X2} {2} ", RPC, _memory.Read(RPC), ReadOpcode(RPC)).PadRight(30);
+			string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", RA, RX, RY, RP, RS, Cycles);
+			string state = a + b + "   ";
+			if (FlagN) state = state + "N";
+			if (FlagV) state = state + "V";
+			if (FlagT) state = state + "T";
+			if (FlagB) state = state + "B";
+			if (FlagD) state = state + "D";
+			if (FlagI) state = state + "I";
+			if (FlagZ) state = state + "Z";
+			if (FlagC) state = state + "C";
+			return state;
+		}
+
+		private string ReadOpcode(int pc)
+		{
+			//It would be so much better if I could just use the MOS6502X's Disassemble Method here.
+			switch(_memory.Read(pc))
+			{
+				case 0x00: return "BRK";
+				case 0x01: return string.Format("ORA (${0:X2},X)", _memory.Read(++pc));
+				case 0x04: return string.Format("NOP ${0:X2}", _memory.Read(++pc));
+				case 0x05: return string.Format("ORA ${0:X2}", _memory.Read(++pc));
+				case 0x06: return string.Format("ASL ${0:X2}", _memory.Read(++pc));
+				case 0x08: return "PHP";
+				case 0x09: return string.Format("ORA #${0:X2}", _memory.Read(++pc));
+				case 0x0A: return "ASL A";
+				case 0x0C: return string.Format("NOP (${0:X4})", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x0D: return string.Format("ORA ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x0E: return string.Format("ASL ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x10: return string.Format("BPL ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0x11: return string.Format("ORA (${0:X2}),Y *", _memory.Read(++pc));
+				case 0x14: return string.Format("NOP ${0:X2},X", _memory.Read(++pc));
+				case 0x15: return string.Format("ORA ${0:X2},X", _memory.Read(++pc));
+				case 0x16: return string.Format("ASL ${0:X2},X", _memory.Read(++pc));
+				case 0x18: return "CLC";
+				case 0x19: return string.Format("ORA ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x1A: return "NOP";
+				case 0x1C: return string.Format("NOP (${0:X2},X)", _memory.Read(++pc));
+				case 0x1D: return string.Format("ORA ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x1E: return string.Format("ASL ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x20: return string.Format("JSR ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x21: return string.Format("AND (${0:X2},X)", _memory.Read(++pc));
+				case 0x24: return string.Format("BIT ${0:X2}", _memory.Read(++pc));
+				case 0x25: return string.Format("AND ${0:X2}", _memory.Read(++pc));
+				case 0x26: return string.Format("ROL ${0:X2}", _memory.Read(++pc));
+				case 0x28: return "PLP";
+				case 0x29: return string.Format("AND #${0:X2}", _memory.Read(++pc));
+				case 0x2A: return "ROL A";
+				case 0x2C: return string.Format("BIT ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x2D: return string.Format("AND ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x2E: return string.Format("ROL ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x30: return string.Format("BMI ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0x31: return string.Format("AND (${0:X2}),Y *", _memory.Read(++pc));
+				case 0x34: return string.Format("NOP ${0:X2},X", _memory.Read(++pc));
+				case 0x35: return string.Format("AND ${0:X2},X", _memory.Read(++pc));
+				case 0x36: return string.Format("ROL ${0:X2},X", _memory.Read(++pc));
+				case 0x38: return "SEC";
+				case 0x39: return string.Format("AND ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x3A: return "NOP";
+				case 0x3C: return string.Format("NOP (${0:X2},X)", _memory.Read(++pc));
+				case 0x3D: return string.Format("AND ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x3E: return string.Format("ROL ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x40: return "RTI";
+				case 0x41: return string.Format("EOR (${0:X2},X)", _memory.Read(++pc));
+				case 0x44: return string.Format("NOP ${0:X2}", _memory.Read(++pc));
+				case 0x45: return string.Format("EOR ${0:X2}", _memory.Read(++pc));
+				case 0x46: return string.Format("LSR ${0:X2}", _memory.Read(++pc));
+				case 0x48: return "PHA";
+				case 0x49: return string.Format("EOR #${0:X2}", _memory.Read(++pc));
+				case 0x4A: return "LSR A";
+				case 0x4C: return string.Format("JMP ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x4D: return string.Format("EOR ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x4E: return string.Format("LSR ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x50: return string.Format("BVC ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0x51: return string.Format("EOR (${0:X2}),Y *", _memory.Read(++pc));
+				case 0x54: return string.Format("NOP ${0:X2},X", _memory.Read(++pc));
+				case 0x55: return string.Format("EOR ${0:X2},X", _memory.Read(++pc));
+				case 0x56: return string.Format("LSR ${0:X2},X", _memory.Read(++pc));
+				case 0x58: return "CLI";
+				case 0x59: return string.Format("EOR ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x5A: return "NOP";
+				case 0x5C: return string.Format("NOP (${0:X2},X)", _memory.Read(++pc));
+				case 0x5D: return string.Format("EOR ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x5E: return string.Format("LSR ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x60: return "RTS";
+				case 0x61: return string.Format("ADC (${0:X2},X)", _memory.Read(++pc));
+				case 0x64: return string.Format("NOP ${0:X2}", _memory.Read(++pc));
+				case 0x65: return string.Format("ADC ${0:X2}", _memory.Read(++pc));
+				case 0x66: return string.Format("ROR ${0:X2}", _memory.Read(++pc));
+				case 0x68: return "PLA";
+				case 0x69: return string.Format("ADC #${0:X2}", _memory.Read(++pc));
+				case 0x6A: return "ROR A";
+				case 0x6C: return string.Format("JMP (${0:X4})", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x6D: return string.Format("ADC ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x6E: return string.Format("ROR ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x70: return string.Format("BVS ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0x71: return string.Format("ADC (${0:X2}),Y *", _memory.Read(++pc));
+				case 0x74: return string.Format("NOP ${0:X2},X", _memory.Read(++pc));
+				case 0x75: return string.Format("ADC ${0:X2},X", _memory.Read(++pc));
+				case 0x76: return string.Format("ROR ${0:X2},X", _memory.Read(++pc));
+				case 0x78: return "SEI";
+				case 0x79: return string.Format("ADC ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x7A: return "NOP";
+				case 0x7C: return string.Format("NOP (${0:X2},X)", _memory.Read(++pc));
+				case 0x7D: return string.Format("ADC ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x7E: return string.Format("ROR ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x80: return string.Format("NOP #${0:X2}", _memory.Read(++pc));
+				case 0x81: return string.Format("STA (${0:X2},X)", _memory.Read(++pc));
+				case 0x82: return string.Format("NOP #${0:X2}", _memory.Read(++pc));
+				case 0x84: return string.Format("STY ${0:X2}", _memory.Read(++pc));
+				case 0x85: return string.Format("STA ${0:X2}", _memory.Read(++pc));
+				case 0x86: return string.Format("STX ${0:X2}", _memory.Read(++pc));
+				case 0x88: return "DEY";
+				case 0x89: return string.Format("NOP #${0:X2}", _memory.Read(++pc));
+				case 0x8A: return "TXA";
+				case 0x8C: return string.Format("STY ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x8D: return string.Format("STA ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x8E: return string.Format("STX ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x90: return string.Format("BCC ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0x91: return string.Format("STA (${0:X2}),Y", _memory.Read(++pc));
+				case 0x94: return string.Format("STY ${0:X2},X", _memory.Read(++pc));
+				case 0x95: return string.Format("STA ${0:X2},X", _memory.Read(++pc));
+				case 0x96: return string.Format("STX ${0:X2},Y", _memory.Read(++pc));
+				case 0x98: return "TYA";
+				case 0x99: return string.Format("STA ${0:X4},Y", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0x9A: return "TXS";
+				case 0x9D: return string.Format("STA ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xA0: return string.Format("LDY #${0:X2}", _memory.Read(++pc));
+				case 0xA1: return string.Format("LDA (${0:X2},X)", _memory.Read(++pc));
+				case 0xA2: return string.Format("LDX #${0:X2}", _memory.Read(++pc));
+				case 0xA4: return string.Format("LDY ${0:X2}", _memory.Read(++pc));
+				case 0xA5: return string.Format("LDA ${0:X2}", _memory.Read(++pc));
+				case 0xA6: return string.Format("LDX ${0:X2}", _memory.Read(++pc));
+				case 0xA8: return "TAY";
+				case 0xA9: return string.Format("LDA #${0:X2}", _memory.Read(++pc));
+				case 0xAA: return "TAX";
+				case 0xAC: return string.Format("LDY ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xAD: return string.Format("LDA ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xAE: return string.Format("LDX ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xB0: return string.Format("BCS ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0xB1: return string.Format("LDA (${0:X2}),Y *", _memory.Read(++pc));
+				case 0xB4: return string.Format("LDY ${0:X2},X", _memory.Read(++pc));
+				case 0xB5: return string.Format("LDA ${0:X2},X", _memory.Read(++pc));
+				case 0xB6: return string.Format("LDX ${0:X2},Y", _memory.Read(++pc));
+				case 0xB8: return "CLV";
+				case 0xB9: return string.Format("LDA ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xBA: return "TSX";
+				case 0xBC: return string.Format("LDY ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xBD: return string.Format("LDA ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xBE: return string.Format("LDX ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xC0: return string.Format("CPY #${0:X2}", _memory.Read(++pc));
+				case 0xC1: return string.Format("CMP (${0:X2},X)", _memory.Read(++pc));
+				case 0xC2: return string.Format("NOP #${0:X2}", _memory.Read(++pc));
+				case 0xC4: return string.Format("CPY ${0:X2}", _memory.Read(++pc));
+				case 0xC5: return string.Format("CMP ${0:X2}", _memory.Read(++pc));
+				case 0xC6: return string.Format("DEC ${0:X2}", _memory.Read(++pc));
+				case 0xC8: return "INY";
+				case 0xC9: return string.Format("CMP #${0:X2}", _memory.Read(++pc));
+				case 0xCA: return "DEX";
+				case 0xCC: return string.Format("CPY ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xCD: return string.Format("CMP ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xCE: return string.Format("DEC ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xD0: return string.Format("BNE ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0xD1: return string.Format("CMP (${0:X2}),Y *", _memory.Read(++pc));
+				case 0xD4: return string.Format("NOP ${0:X2},X", _memory.Read(++pc));
+				case 0xD5: return string.Format("CMP ${0:X2},X", _memory.Read(++pc));
+				case 0xD6: return string.Format("DEC ${0:X2},X", _memory.Read(++pc));
+				case 0xD8: return "CLD";
+				case 0xD9: return string.Format("CMP ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xDA: return "NOP";
+				case 0xDC: return string.Format("NOP (${0:X2},X)", _memory.Read(++pc));
+				case 0xDD: return string.Format("CMP ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xDE: return string.Format("DEC ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xE0: return string.Format("CPX #${0:X2}", _memory.Read(++pc));
+				case 0xE1: return string.Format("SBC (${0:X2},X)", _memory.Read(++pc));
+				case 0xE2: return string.Format("NOP #${0:X2}", _memory.Read(++pc));
+				case 0xE4: return string.Format("CPX ${0:X2}", _memory.Read(++pc));
+				case 0xE5: return string.Format("SBC ${0:X2}", _memory.Read(++pc));
+				case 0xE6: return string.Format("INC ${0:X2}", _memory.Read(++pc));
+				case 0xE8: return "INX";
+				case 0xE9: return string.Format("SBC #${0:X2}", _memory.Read(++pc));
+				case 0xEA: return "NOP";
+				case 0xEC: return string.Format("CPX ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xED: return string.Format("SBC ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xEE: return string.Format("INC ${0:X4}", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xF0: return string.Format("BEQ ${0:X4}", pc + 2 + (sbyte)_memory.Read(pc+1));
+				case 0xF1: return string.Format("SBC (${0:X2}),Y *", _memory.Read(++pc));
+				case 0xF4: return string.Format("NOP ${0:X2},X", _memory.Read(++pc));
+				case 0xF5: return string.Format("SBC ${0:X2},X", _memory.Read(++pc));
+				case 0xF6: return string.Format("INC ${0:X2},X", _memory.Read(++pc));
+				case 0xF8: return "SED";
+				case 0xF9: return string.Format("SBC ${0:X4},Y *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xFA: return "NOP";
+				case 0xFC: return string.Format("NOP (${0:X2},X)", _memory.Read(++pc));
+				case 0xFD: return string.Format("SBC ${0:X4},X *", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				case 0xFE: return string.Format("INC ${0:X4},X", _memory.Read(pc+1) | _memory.Read(pc+2) << 8);
+				default: return "---";
+			}
+		}
+
 		public int Execute()
 		{
+			if(TraceCallback != null)
+			{
+				TraceCallback(TraceState());
+			}
+
 			CC = 0;
 			OpCode = _memory.Read(RPC);
 			RPC = (RPC + 1) & 0xFFFF;
@@ -3221,6 +3429,7 @@ namespace Jellyfish.Virtu
 
 		private bool _is65C02;
 		private Action[] _executeOpCode;
+		public Action<string> TraceCallback;
 
 		/// <summary>Carry Flag</summary>   
 		[JsonIgnore]

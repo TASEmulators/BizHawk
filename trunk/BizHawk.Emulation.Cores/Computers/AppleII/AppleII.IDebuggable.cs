@@ -106,6 +106,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void StepInto()
 		{
+			if (Tracer.Enabled)
+				_machine.Cpu.TraceCallback = (s) => Tracer.Put(s);
+			else
+				_machine.Cpu.TraceCallback = null;
+
 			var machineInVblank = _machine.Video.IsVBlank;
 
 			_machine.Events.HandleEvents(_machine.Cpu.Execute());
