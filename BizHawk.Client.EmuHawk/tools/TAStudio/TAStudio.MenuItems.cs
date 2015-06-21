@@ -893,10 +893,15 @@ namespace BizHawk.Client.EmuHawk
 					(sender.OwnerItem as ToolStripMenuItem).ShowDropDown();
 				};
 
-				if (column.Name.StartsWith("P") && char.IsNumber(column.Name, 1))
+				if (column.Name.StartsWith("P") && column.Name.Length > 1 && char.IsNumber(column.Name, 1))
+				{
 					player = int.Parse(column.Name[1].ToString());
+				}
 				else
+				{
 					player = 0;
+				}
+
 				playerMenus[player].DropDownItems.Add(menuItem);
 			}
 
