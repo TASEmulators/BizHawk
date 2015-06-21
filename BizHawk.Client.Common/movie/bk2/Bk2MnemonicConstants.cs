@@ -271,7 +271,9 @@ namespace BizHawk.Client.Common
 						{ "Next Disk", '>' },
 						{ "Previous Disk", '<' },
 						{ "White Apple", 'w' },
-						{ "Black Apple", 'b' }
+						{ "Black Apple", 'b' },
+						{ "L", 'L' },
+						{ "R", 'R' }
 					}
 				}
 			};
