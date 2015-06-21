@@ -48,16 +48,23 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			//for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
+			//trace logger stuff
+			Tracer = new TraceBuffer();
+			ser.Register<ITraceable>(Tracer);
+
 			InitSaveStates();
 			SetupMemoryDomains();
 			PutSettings(settings ?? new Settings());
 		}
+
 
 		public List<GameInfo> GameInfoSet { get; private set; }
 		private readonly List<byte[]> RomSet = new List<byte[]>();
 
 		public int CurrentDisk { get; private set; }
 		public int DiskCount { get { return RomSet.Count; } }
+
+		private ITraceable Tracer { get; set; }
 
 		public void SetDisk(int discNum)
 		{
@@ -130,6 +137,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void FrameAdv(bool render, bool rendersound)
 		{
+			if (Tracer.Enabled)
+				_machine.Cpu.TraceCallback = (s) => Tracer.Put(s);
+			else
+				_machine.Cpu.TraceCallback = null;
+
 			if (Controller["Next Disk"] && !_nextPressed)
 			{
 				_nextPressed = true;
@@ -158,6 +170,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 
 			Frame++;
+		}
+
+		private string readOpcode(ushort pc, Func<ushort, byte> peeker)
+		{
+			int unused;
+			return Cores.Components.M6502.MOS6502X.Disassemble(pc, out unused, peeker);
 		}
 
 	}
