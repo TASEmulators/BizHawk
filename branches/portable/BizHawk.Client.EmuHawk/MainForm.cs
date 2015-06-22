@@ -1930,13 +1930,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRom()
 		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Filter = RomFilter,
-				RestoreDirectory = false,
-				FilterIndex = _lastOpenRomFilter
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Filter = RomFilter;
+			ofd.RestoreDirectory = false;
+			ofd.FilterIndex = _lastOpenRomFilter;
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
