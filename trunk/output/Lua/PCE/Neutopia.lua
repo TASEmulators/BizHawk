@@ -11,7 +11,6 @@ local function player()
 	local y = mainmemory.read_u8(0x10C9) - 0xA - h
 	local xrad = 0x6
 	local yrad = 0xC
-	mainmemory.write_u8(0x14C5,0x7F)
 	gui.drawText(1,1,"HP: " .. hp,0xFFFFFFFF,10,"Arial")
 	gui.drawBox(x+xrad,y+yrad,x-xrad,y-yrad,0xFF0000FF,0x400000FF)
 	
