@@ -34,7 +34,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[CoreConstructor("NES")]
 		public QuickNES(CoreComm comm, byte[] file, object Settings, object SyncSettings)
 		{
+#if WINDOWS
 			using (FP.Save())
+#else
+			if(true)
+#endif
 			{
 				ServiceProvider = new BasicServiceProvider(this);
 				CoreComm = comm;
@@ -76,11 +80,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		#region FPU precision
-
+#if WINDOWS
 		private class FPCtrl : IDisposable
 		{
+
 			[DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern uint _control87(uint @new, uint mask);
+
 
 			public static void PrintCurrentFP()
 			{
@@ -103,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		FPCtrl FP = new FPCtrl();
-
+#endif
 		#endregion
 
 		#region Controller
@@ -180,7 +186,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			CheckDisposed();
+#if WINDOWS
 			using (FP.Save())
+#else
+			if(true)
+#endif
 			{
 				if (Controller["Power"])
 					LibQuickNES.qn_reset(Context, true);
