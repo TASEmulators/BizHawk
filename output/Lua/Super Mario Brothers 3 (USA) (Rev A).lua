@@ -240,12 +240,7 @@ event.onmemoryexecute(projectiles,0xA69A)
 event.onmemoryexecute(eprojectiles,0xB7E4)
 event.onmemoryexecute(other,0xDB4E)
 
-local function cheat()
-	memory.write_u8(0x5F1,0x25) -- Timer
-end	
-
 while true do
-	cheat()  
 	draw_UI()
 	camera()
 	emu.frameadvance()
