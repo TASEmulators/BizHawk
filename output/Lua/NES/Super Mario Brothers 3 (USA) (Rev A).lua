@@ -161,7 +161,6 @@ local function check_inputs()
 	-- Mario boxes
 	if inputs["NumberPad1"] == true then
 		K1 = true
-		gui.drawText(10,10,"DOIG")
 	end
 	if inputs["NumberPad1"] == nil and K1 == true then -- Key released
 		TOGGLE_MARIO = toggle(TOGGLE_MARIO)

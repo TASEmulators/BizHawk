@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"get",
-			"Returns a lua table of all the buttons the user is currently pressing on their keyboard and gamepads\nAll buttons that are pressed have their key values set to true; all others remain nil.\nAll key names use the names from [http://www.codeproject.com/Tips/73227/Keys-Enumeration-Win] and are case-sensitive."
+			"Returns a lua table of all the buttons the user is currently pressing on their keyboard and gamepads\nAll buttons that are pressed have their key values set to true; all others remain nil."
 		)]
 		public LuaTable Get()
 		{
