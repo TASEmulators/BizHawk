@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public Action CallbackAction = delegate { };
 
 		public Disc Disc;
+		public DiscSectorReader DiscSectorReader;
 		public byte Mode = CDAudioMode_Stopped;
 		public byte PlayMode = PlaybackMode_LoopOnCompletion;
 
@@ -43,6 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public CDAudio(Disc disc, int maxVolume = short.MaxValue)
 		{
 			Disc = disc;
+			DiscSectorReader = new DiscSectorReader(disc);
 			MaxVolume = maxVolume;
 		}
 
@@ -124,7 +126,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (CurrentSector >= Disc.LBACount)
 					Array.Clear(SectorCache, 0, 2352); // request reading past end of available disc
 				else
-					Disc.ReadLBA_2352(CurrentSector, SectorCache, 0);
+					DiscSectorReader.ReadLBA_2352(CurrentSector, SectorCache, 0);
 				CachedSector = CurrentSector;
 			}
 		}

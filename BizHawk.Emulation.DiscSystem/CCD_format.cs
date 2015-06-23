@@ -80,16 +80,17 @@ namespace BizHawk.Emulation.DiscSystem
 			public int Session;
 
 			/// <summary>
-			/// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME. It's not stored on the disc, and it's redundant.
+			/// this seems just to be the LBA corresponding to AMIN:ASEC:AFRAME (give or take 150). It's not stored on the disc, and it's redundant.
 			/// </summary>
 			public int ALBA;
 
 			/// <summary>
-			/// this seems just to be the LBA corresponding to PMIN:PSEC:PFRAME. It's not stored on the disc, and it's redundant.
+			/// this seems just to be the LBA corresponding to PMIN:PSEC:PFRAME (give or take 150). It's not stored on the disc, and it's redundant.
 			/// </summary>
 			public int PLBA;
 
 			//these correspond pretty directly to values in the Q subchannel fields
+			//NOTE: they're specified as absolute MSF. That means, they're 2 seconds off from what they should be when viewed as final TOC values
 			public int Control;
 			public int ADR;
 			public int TrackNo;
@@ -119,7 +120,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public int Number;
 
 			/// <summary>
-			/// The specified data mode
+			/// The specified data mode.
 			/// </summary>
 			public int Mode;
 
@@ -285,6 +286,7 @@ namespace BizHawk.Emulation.DiscSystem
 					entry.PFrame = section.FetchOrFail("PFRAME");
 					entry.PLBA = section.FetchOrFail("PLBA");
 
+					//note: LBA 0 is Ansolute MSF 00:02:00
 					if (new Timestamp(entry.AMin, entry.ASec, entry.AFrame).Sector != entry.ALBA + 150)
 						throw new CCDParseException("Warning: inconsistency in CCD ALBA vs computed A MSF");
 					if (new Timestamp(entry.PMin, entry.PSec, entry.PFrame).Sector != entry.PLBA + 150)
@@ -362,6 +364,111 @@ namespace BizHawk.Emulation.DiscSystem
 			return ret;
 		}
 
+		public static void Dump(Disc disc, string path)
+		{
+			using (var sw = new StreamWriter(path))
+			{
+				sw.WriteLine("[CloneCD]");
+				sw.WriteLine("Version=3");
+				sw.WriteLine("[Disc]");
+				sw.WriteLine("TocEntries={0}", disc.RawTOCEntries.Count);
+				sw.WriteLine("Sessions=1");
+				sw.WriteLine("DataTracksScrambled=0");
+				sw.WriteLine("CDTextLength=0"); //not supported anyway
+				sw.WriteLine("[Session 1]");
+				sw.WriteLine("PreGapMode=2");
+				sw.WriteLine("PreGapSubC=1");
+				for (int i = 0; i < disc.RawTOCEntries.Count; i++)
+				{
+					var entry = disc.RawTOCEntries[i];
+					sw.WriteLine("[Entry {0}]", i);
+					sw.WriteLine("Session=1");
+					sw.WriteLine("Point=0x{0:x2}", entry.QData.q_index);
+					sw.WriteLine("ADR=0x{0:x2}", entry.QData.ADR);
+					sw.WriteLine("Control=0x{0:x2}", (int)entry.QData.CONTROL);
+					sw.WriteLine("TrackNo={0}", entry.QData.q_tno);
+					sw.WriteLine("AMin={0}", entry.QData.min.DecimalValue);
+					sw.WriteLine("ASec={0}", entry.QData.sec.DecimalValue);
+					sw.WriteLine("AFrame={0}", entry.QData.frame.DecimalValue);
+					sw.WriteLine("ALBA={0}", entry.QData.Timestamp.Sector - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
+					sw.WriteLine("Zero={0}", entry.QData.zero);
+					sw.WriteLine("PMin={0}", entry.QData.ap_min.DecimalValue);
+					sw.WriteLine("PSec={0}", entry.QData.ap_sec.DecimalValue);
+					sw.WriteLine("PFrame={0}", entry.QData.ap_frame.DecimalValue);
+					sw.WriteLine("PLBA={0}", entry.QData.AP_Timestamp.Sector - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
+				}
+				for (int i = 0; i < disc.Structure.Sessions[0].Tracks.Count; i++)
+				{
+					var st = disc.Structure.Sessions[0].Tracks[i];
+					sw.WriteLine("[TRACK {0}]", st.Number);
+					sw.WriteLine("MODE={0}", st.ModeHeuristic); //MAYBE A BAD PLAN!
+					//dont write an index=0 identical to an index=1. It might work, or it might not.
+					int idx = 0;
+					if (st.Indexes[0].LBA == st.Indexes[1].LBA)
+						idx = 1;
+					for (; idx < st.Indexes.Count; idx++)
+					{
+						sw.WriteLine("INDEX {0}={1}", st.Indexes[idx].Number, st.Indexes[idx].LBA);
+					}
+				}
+			}
+
+			//dump the img and sub
+			//TODO - acquire disk size first
+			string imgPath = Path.ChangeExtension(path, ".img");
+			string subPath = Path.ChangeExtension(path, ".sub");
+			var buffer = new byte[2352];
+			using (var s = File.OpenWrite(imgPath))
+			{
+				DiscSectorReader dsr = new DiscSectorReader(disc);
+
+				//TODO - dont write leadout sectors, if they exist!
+				for (int aba = 150; aba < disc.Sectors.Count; aba++)
+				{
+					dsr.ReadLBA_2352(aba - 150, buffer, 0);
+					s.Write(buffer, 0, 2352);
+				}
+			}
+			using (var s = File.OpenWrite(subPath))
+			{
+				//TODO - dont write leadout sectors, if they exist!
+				for (int aba = 150; aba < disc.Sectors.Count; aba++)
+				{
+					disc.ReadLBA_SectorEntry(aba - 150).SubcodeSector.ReadSubcodeDeinterleaved(buffer, 0);
+					s.Write(buffer, 0, 96);
+				}
+			}
+		}
+
+		class SS_CCD : ISectorSynthJob2448
+		{
+			public void Synth(SectorSynthJob job)
+			{
+				//CCD is always containing everything we'd need (unless a .sub is missing?) so don't about flags
+				var imgBlob = job.Disc.DisposableResources[0] as Disc.Blob_RawFile;
+				var subBlob = job.Disc.DisposableResources[1] as Disc.Blob_RawFile;
+				//Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
+				
+				//read the IMG data
+				long ofs = job.LBA * 2352;
+				imgBlob.Read(ofs, job.DestBuffer2448, 0, 2352);
+
+				//if subcode is needed, read it
+				if ((job.Parts & (ESectorSynthPart.SubcodeAny)) != 0)
+				{
+					ofs = job.LBA * 96;
+					imgBlob.Read(ofs, job.DestBuffer2448, 2352, 96);
+
+					//we may still need to deinterleave it
+					if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) != 0)
+					{
+						SubcodeUtils.DeinterleaveInplace(job.DestBuffer2448, 2352);
+					}
+				}
+			}
+		}
+
+
 		/// <summary>
 		/// Loads a CCD at the specified path to a Disc object
 		/// </summary>
@@ -373,23 +480,41 @@ namespace BizHawk.Emulation.DiscSystem
 
 			Disc disc = new Disc();
 
+			//mount the IMG and SUB files
 			var ccdf = loadResults.ParsedCCDFile;
 			var imgBlob = new Disc.Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
 			var subBlob = new Disc.Blob_RawFile() { PhysicalPath = loadResults.SubPath };
-			disc.Blobs.Add(imgBlob);
-			disc.Blobs.Add(subBlob);
+			disc.DisposableResources.Add(imgBlob);
+			disc.DisposableResources.Add(subBlob);
+
+			//the only instance of a sector synthesizer we'll need
+			SS_CCD synth = new SS_CCD();
 
 			//generate DiscTOCRaw items from the ones specified in the CCD file
 			//TODO - range validate these (too many truncations to byte)
 			disc.RawTOCEntries = new List<RawTOCEntry>();
-			BufferedSubcodeSector bss = new BufferedSubcodeSector();
+			BufferedSubcodeSector bss = new BufferedSubcodeSector(); //TODO - its hacky that we need this..
 			foreach (var entry in ccdf.TOCEntries)
 			{
+				BCD2 tno, ino;
+
+				//this should actually be zero. im not sure if this is stored as BCD2 or not
+				tno = BCD2.FromDecimal(entry.TrackNo); 
+				
+				//these are special values.. I think, taken from this:
+				//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
+				//the CCD will contain Points as decimal values except for these specially converted decimal values which should stay as BCD. 
+				//Why couldn't they all be BCD? I don't know. I guess because BCD is inconvenient, but only A0 and friends have special meaning. It's confusing.
+				ino = BCD2.FromDecimal(entry.Point);
+				if (entry.Point == 0xA0) ino.BCDValue = 0xA0;
+				else if (entry.Point == 0xA1) ino.BCDValue = 0xA1;
+				else if (entry.Point == 0xA2) ino.BCDValue = 0xA2;
+
 				var q = new SubchannelQ
 				{
 					q_status = SubchannelQ.ComputeStatus(entry.ADR, (EControlQ)(entry.Control & 0xF)),
-					q_tno = (byte)entry.TrackNo,
-					q_index = (byte)entry.Point,
+					q_tno = tno,
+					q_index = ino,
 					min = BCD2.FromDecimal(entry.AMin),
 					sec = BCD2.FromDecimal(entry.ASec),
 					frame = BCD2.FromDecimal(entry.AFrame),
@@ -410,56 +535,47 @@ namespace BizHawk.Emulation.DiscSystem
 			tocSynth.Run();
 			disc.TOCRaw = tocSynth.Result;
 
-			//synthesize DiscStructure
-			var structureSynth = new DiscStructure.SynthesizeFromDiscTOCRawJob() { TOCRaw = disc.TOCRaw };
-			structureSynth.Run();
-			disc.Structure = structureSynth.Result;
+			disc.Structure = new DiscStructure();
+			var ses = new DiscStructure.Session();
+			disc.Structure.Sessions.Add(ses);
 
-			//I *think* implicitly there is an index 0.. at.. i dunno, 0 maybe, for track 1
+			for(int i=1;i<=99;i++)
 			{
-				var dsi0 = new DiscStructure.Index();
-				dsi0.LBA = 0;
-				dsi0.Number = 0;
-				disc.Structure.Sessions[0].Tracks[0].Indexes.Add(dsi0);
-			}
+				if(!ccdf.TracksByNumber.ContainsKey(i))
+					continue;
+				var ccdt = ccdf.TracksByNumber[i];
 
-			//now, how to get the track types for the DiscStructure?
-			//1. the CCD tells us (somehow the reader has judged)
-			//2. scan it out of the Q subchannel
-			//lets choose1.
-			//TODO - better consider how to handle the situation where we have havent received all the [TRACK] items we need
-			foreach (var st in disc.Structure.Sessions[0].Tracks)
-			{
-				var ccdt = ccdf.TracksByNumber[st.Number];
+				DiscStructure.Track track = new DiscStructure.Track() { Number = i };
+				ses.Tracks.Add(track);
+
+				//if index 0 is missing, add it
+				if (!ccdt.Indexes.ContainsKey(0))
+					track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = ccdt.Indexes[1] });
+				for(int j=1;j<=99;j++)
+					if (ccdt.Indexes.ContainsKey(j))
+						track.Indexes.Add(new DiscStructure.Index { Number = j, LBA = ccdt.Indexes[j] });
+
+				//TODO - this should only be used in case the .sub needs reconstructing
+				//determination should be done from heuristics.
+				//if we keep this, it should just be as a memo that later heuristics can use. For example: 'use guidance from original disc image'
+				track.ModeHeuristic = ccdt.Mode;
+
+					//TODO - this should be deleted anyway (
 				switch (ccdt.Mode)
 				{
 					case 0:
-						st.TrackType = ETrackType.Audio; //for CCD, this means audio, apparently.
+						track.TrackType = DiscStructure.ETrackType.Audio; //for CCD, this means audio, apparently.
 						break;
 					case 1:
-						st.TrackType = ETrackType.Mode1_2352;
-						break;
 					case 2:
-						st.TrackType = ETrackType.Mode2_2352;
+						track.TrackType = DiscStructure.ETrackType.Data;
 						break;
 					default:
 						throw new InvalidOperationException("Unsupported CCD mode");
 				}
-
-				//add indexes for this track
-				foreach (var ccdi in ccdt.Indexes)
-				{
-					var dsi = new DiscStructure.Index();
-					//if (ccdi.Key == 0) continue;
-					dsi.LBA = ccdi.Value;
-					dsi.Number = ccdi.Key;
-					st.Indexes.Add(dsi);
-				}
 			}
 
-			//add sectors for the lead-in, which isn't stored in the CCD file, I think
-			//TODO - synthesize lead-in sectors from TOC, if the lead-in isn't available.
-			//need a test case for that though.
+			//add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
 			var leadin_sector_zero = new Sector_Zero();
 			var leadin_subcode_zero = new ZeroSubcodeSector();
 			for (int i = 0; i < 150; i++)
@@ -484,24 +600,13 @@ namespace BizHawk.Emulation.DiscSystem
 				scsec.Offset = ((long)i) * 96;
 				scsec.Blob = subBlob;
 				se.SubcodeSector = scsec;
+				se.SectorSynth = synth;
 			}
 
 			return disc;
 		}
 
-		public void Dump(Disc disc, string ccdPath)
-		{
-			//TODO!!!!!!!
 
-			StringWriter sw = new StringWriter();
-			sw.WriteLine("[CloneCD]");
-			sw.WriteLine("Version=3");
-			sw.WriteLine("[Disc]");
-			//sw.WriteLine("TocEntries={0}",disc.TOCRaw.TOCItems
-			sw.WriteLine("Sessions=1");
-			sw.WriteLine("DataTracksScrambled=0");
-			sw.WriteLine("CDTextLength=0");
-		}
 
 	} //class CCD_Format
 }

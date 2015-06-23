@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 					Blob_ECM blob = new Blob_ECM();
 					Blobs.Add(blob);
-					blob.Parse(blobPath);
+					blob.Load(blobPath);
 					cue_blob = blob;
 					blob_length_aba = (int)(blob.Length / blob_sectorsize);
 					blob_length_bytes = blob.Length;
@@ -205,7 +205,6 @@ namespace BizHawk.Emulation.DiscSystem
 							AudioDecoder dec = new AudioDecoder();
 							byte[] buf = dec.AcquireWaveData(blobPath);
 							blob.Load(new MemoryStream(buf));
-							WasSlowLoad = true;
 						}
 					}
 					catch (Exception ex)
@@ -287,8 +286,8 @@ namespace BizHawk.Emulation.DiscSystem
 					//TODO - this might need to be controlled by cue loading prefs
 					toc_track.Control = cue_track.Control;
 					if (toc_track.TrackType == ETrackType.Audio)
-						toc_track.Control |= EControlQ.StereoNoPreEmph;
-					else toc_track.Control |= EControlQ.DataUninterrupted;
+						toc_track.Control |= EControlQ.None;
+					else toc_track.Control |= EControlQ.DATA;
 
 					if (curr_track == 1)
 					{
@@ -690,7 +689,7 @@ namespace BizHawk.Emulation.DiscSystem
 							var flags = clp.ReadToken();
 							if (flags == "DCP")
 							{
-								currTrack.Control |= EControlQ.CopyPermittedMask;
+								currTrack.Control |= EControlQ.DCP;
 							} else throw new CueBrokenException("Unknown flags: " + flags);
 						}
 						break;

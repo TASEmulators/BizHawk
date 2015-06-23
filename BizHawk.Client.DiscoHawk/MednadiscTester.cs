@@ -1,21 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.DiscSystem;
 
-class MednadiscTester
+unsafe class MednadiscTester
 {
-	[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]
-	public static extern IntPtr mednadisc_LoadCD(string path);
-
-	[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]
-	public static extern int mednadisc_ReadSector(IntPtr disc, int lba, byte[] buf2448);
-
-	[DllImport("mednadisc.dll", CallingConvention = CallingConvention.Cdecl)]
-	public static extern void mednadisc_CloseCD(IntPtr disc);
-
-
 	public class QuickSubcodeReader
 	{
 		public QuickSubcodeReader(byte[] buffer)
@@ -45,29 +36,103 @@ class MednadiscTester
 		byte[] buffer;
 	}
 
-	public void TestDirectory(string dpTarget)
+	public static void TestDirectory(string dpTarget)
 	{
-		foreach (var fi in new DirectoryInfo(dpTarget).GetFiles())
+		bool skip = true;
+		var po = new ParallelOptions();
+		po.MaxDegreeOfParallelism = 1;
+		var files = new DirectoryInfo(dpTarget).GetFiles();
+		//foreach (var fi in new DirectoryInfo(dpTarget).GetFiles())
+		Parallel.ForEach(files, po, (fi) =>
 		{
 			if (fi.Extension.ToLower() == ".cue") { }
 			else if (fi.Extension.ToLower() == ".ccd") { }
-			else continue;
+			else return;
 
-			NewTest(fi.FullName);
-		}
+			//if (skip)
+			//{
+			//  //GOAL STORM!!!! (track flags)
+			//  //Street Fighter Collection (USA)!!! (data track at end)
+			//  //Wu-Tang Shaolin Style is a PS1 game that reads from the leadout area and will flip out and become unresponsive at the parental lock screen if you haven't got it at least somewhat right in regards to Q subchannel data.
+			//  if (fi.FullName.Contains("Strike Point"))
+			//    skip = false;
+			//}
+			//if (skip) return;
+	
+			NewTest(fi.FullName,true);
+		});
+		foreach (var di in new DirectoryInfo(dpTarget).GetDirectories())
+			TestDirectory(di.FullName);
 	}
 
-	static bool NewTest(string path)
+	static void ReadBizTOC(Disc disc, ref MednadiscTOC read_target, ref MednadiscTOCTrack[] tracks101)
+	{
+		read_target.disc_type = (byte)disc.TOCRaw.Session1Format;
+		read_target.first_track = (byte)disc.TOCRaw.FirstRecordedTrackNumber; //i _think_ thats what is meant here
+		read_target.last_track = (byte)disc.TOCRaw.LastRecordedTrackNumber; //i _think_ thats what is meant here
+
+		tracks101[0].lba = tracks101[0].adr = tracks101[0].control = 0;
+
+		for (int i = 1; i < 100; i++)
+		{
+			var item = disc.TOCRaw.TOCItems[i];
+			tracks101[i].adr = (byte)(item.Exists ? 1 : 0);
+			tracks101[i].lba = (uint)item.LBATimestamp.Sector;
+			tracks101[i].control = (byte)item.Control;
+		}
+
+		//"Convenience leadout track duplication." for mednafen purposes so follow mednafen rules
+		tracks101[read_target.last_track + 1].adr = 1;
+		tracks101[read_target.last_track + 1].control = (byte)(tracks101[read_target.last_track].control & 0x04);
+		tracks101[read_target.last_track + 1].lba = (uint)disc.TOCRaw.LeadoutTimestamp.Sector;
+
+		//element 100 is to be copied as the lead-out track
+		tracks101[100] = tracks101[read_target.last_track + 1];
+	}
+
+	public static bool NewTest(string path, bool useNewCuew)
 	{
 		bool ret = false;
+
+		Console.WriteLine(Path.GetFileNameWithoutExtension(path));
 		
 		Disc disc;
-		if (Path.GetExtension(path).ToLower() == ".cue") disc = Disc.FromCuePath(path, new CueBinPrefs());
-		else disc = Disc.FromCCDPath(path);
-		IntPtr mednadisc = mednadisc_LoadCD(path);
+		if (Path.GetExtension(path).ToLower() == ".cue" || Path.GetExtension(path).ToLower() == ".ccd")
+		{
+			DiscMountJob dmj = new DiscMountJob();
+			dmj.IN_FromPath = path;
+			dmj.Run();
+			disc = dmj.OUT_Disc;
+		}
+		else return false;
 
-		//TODO - test leadout a bit, or determine length some superior way
-		//TODO - check length against mednadisc
+		IntPtr mednadisc = mednadisc_LoadCD(path);
+		if (mednadisc == IntPtr.Zero)
+		{
+			Console.WriteLine("MEDNADISC COULDNT LOAD FILE");
+			goto END;
+		}
+
+		//check tocs
+		MednadiscTOC medna_toc;
+		MednadiscTOCTrack[] medna_tracks = new MednadiscTOCTrack[101];
+		fixed (MednadiscTOCTrack* _tracks = &medna_tracks[0])
+			mednadisc_ReadTOC(mednadisc, &medna_toc, _tracks);
+		MednadiscTOC biz_toc = new MednadiscTOC();
+		MednadiscTOCTrack[] biz_tracks = new MednadiscTOCTrack[101];
+		ReadBizTOC(disc, ref biz_toc, ref biz_tracks);
+		if (medna_toc.first_track != biz_toc.first_track) System.Diagnostics.Debugger.Break();
+		if (medna_toc.last_track != biz_toc.last_track) System.Diagnostics.Debugger.Break();
+		if (medna_toc.disc_type != biz_toc.disc_type) System.Diagnostics.Debugger.Break();
+		for (int i = 0; i < 101; i++)
+		{
+			if(medna_tracks[i].adr != biz_tracks[i].adr) System.Diagnostics.Debugger.Break();
+			if (medna_tracks[i].control != biz_tracks[i].control) System.Diagnostics.Debugger.Break();
+			if (medna_tracks[i].lba != biz_tracks[i].lba) System.Diagnostics.Debugger.Break();
+		}
+
+
+		//TODO - determine length some superior way
 
 		int nSectors = (int)(disc.Structure.BinarySize / 2352) - 150;
 		var subbuf = new byte[96];
@@ -76,7 +141,8 @@ class MednadiscTester
 		var disc_qbuf = new byte[96];
 		var monkey_qbuf = new byte[96];
 
-		for (int i = 0; i < nSectors; i++)
+		int startSector = 0;
+		for (int i = startSector; i < nSectors; i++)
 		{
 			mednadisc_ReadSector(mednadisc, i, monkeybuf);
 			disc.ReadLBA_2352(i, discbuf, 0);
@@ -105,6 +171,7 @@ class MednadiscTester
 					SubchannelQ monkey_q = new SubchannelQ();
 					asr.ReadLBA_SubchannelQ(12, ref monkey_q);
 
+					System.Diagnostics.Debugger.Break();
 					goto END;
 				}
 			}
@@ -114,7 +181,8 @@ class MednadiscTester
 
 	END:
 		disc.Dispose();
-		mednadisc_CloseCD(mednadisc);
+		if(mednadisc != IntPtr.Zero)
+			mednadisc_CloseCD(mednadisc);
 
 		return ret;
 	}

@@ -27,6 +27,7 @@
 //it turns out mame's cdrom.c uses pretty much this exact thing, naming the tables mul2tab->ecclow and div3tab->ecchigh
 //Corlett's ECM uses our same fundamental approach as well.
 //I can't figure out what winUAE is doing.
+//Martin writes these algorithms in his own inimitable format. We should try transcribing them here for testing.
 
 using BizHawk.Common;
 

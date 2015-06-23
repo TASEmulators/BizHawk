@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using Community.CsharpSqlite.SQLiteClient;
 
@@ -7,8 +8,18 @@ namespace BizHawk.Client.DBMan
 	internal static class Program
 	{
 		[STAThread]
-		static void Main()
+		static void Main(string[] args)
 		{
+			if (args.Length > 0 && args[0] == "--dischash")
+			{
+				new DiscHash().Run(args.Skip(1).ToArray());
+				return;
+			}
+			//if (args.Length > 0 && args[0] == "--disccmp")
+			//{
+			//  new DiscCmp().Run(args.Skip(1).ToArray());
+			//  return;
+			//}
 			try
 			{
 				InitDB();

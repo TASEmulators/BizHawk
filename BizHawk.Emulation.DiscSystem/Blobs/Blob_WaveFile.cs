@@ -7,9 +7,10 @@ namespace BizHawk.Emulation.DiscSystem
 	partial class Disc
 	{
 		/// <summary>
-		/// TODO - dont we need to modify RiffMaster to be able to stream from the disk instead of loading everything at parse time?
+		/// TODO - doublecheck that riffmaster is not filling memory at load-time but reading through to the disk
+		/// TODO - clarify stream disposing semantics
 		/// </summary>
-		class Blob_WaveFile : IBlob
+		internal class Blob_WaveFile : IBlob
 		{
 			[Serializable]
 			public class Blob_WaveFile_Exception : Exception
@@ -22,53 +23,56 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public Blob_WaveFile()
 			{
-			}	private class Blob_RawFile : IBlob
-		{
-			public string PhysicalPath { 
-				get
-				{
-					return physicalPath;
-				}
-				set
-				{
-					physicalPath = value;
-					length = new FileInfo(physicalPath).Length;
-				}
 			}
-			string physicalPath;
-			long length;
 
-			public long Offset = 0;
+			private class Blob_RawFile : IBlob
+			{
+				public string PhysicalPath
+				{
+					get
+					{
+						return physicalPath;
+					}
+					set
+					{
+						physicalPath = value;
+						length = new FileInfo(physicalPath).Length;
+					}
+				}
+				string physicalPath;
+				long length;
 
-			BufferedStream fs;
-			public void Dispose()
-			{
-				if (fs != null)
+				public long Offset = 0;
+
+				BufferedStream fs;
+				public void Dispose()
 				{
-					fs.Dispose();
-					fs = null;
+					if (fs != null)
+					{
+						fs.Dispose();
+						fs = null;
+					}
+				}
+				public int Read(long byte_pos, byte[] buffer, int offset, int count)
+				{
+					//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
+					//this enhances performance considerably
+					const int buffersize = 2352 * 75 * 2;
+					if (fs == null)
+						fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
+					long target = byte_pos + Offset;
+					if (fs.Position != target)
+						fs.Position = target;
+					return fs.Read(buffer, offset, count);
+				}
+				public long Length
+				{
+					get
+					{
+						return length;
+					}
 				}
 			}
-			public int Read(long byte_pos, byte[] buffer, int offset, int count)
-			{
-				//use quite a large buffer, because normally we will be reading these sequentially but in small chunks.
-				//this enhances performance considerably
-				const int buffersize = 2352 * 75 * 2;
-				if (fs == null)
-					fs = new BufferedStream(new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read), buffersize);
-				long target = byte_pos + Offset;
-				if(fs.Position != target)
-					fs.Position = target;
-				return fs.Read(buffer, offset, count);
-			}
-			public long Length
-			{
-				get
-				{
-					return length;
-				}
-			}
-		}
 
 			public void Load(byte[] waveData)
 			{
@@ -123,7 +127,7 @@ namespace BizHawk.Emulation.DiscSystem
 					waveDataStreamPos = dataChunk.Position;
 					mDataLength = dataChunk.Length;
 				}
-				catch
+				catch(Exception ex)
 				{
 					Dispose();
 					throw;

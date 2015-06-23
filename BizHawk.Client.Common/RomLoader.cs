@@ -237,12 +237,7 @@ namespace BizHawk.Client.Common
 							Disc disc = null;
 							string discPath = e.Path;
 							string discExt = Path.GetExtension(discPath).ToLower();
-							if (discExt == ".iso")
-								disc = Disc.FromIsoPath(discPath);
-							if (discExt == ".cue")
-								disc = Disc.FromCuePath(discPath, new CueBinPrefs());
-							if (discExt == ".ccd")
-								disc = Disc.FromCCDPath(discPath);
+							disc = Disc.LoadAutomagic(discPath);
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
 							discNames.Add(Path.GetFileNameWithoutExtension(discPath));
@@ -260,13 +255,7 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException("Can't load CD files from archives!");
 						}
 
-						Disc disc = null;
-						if(ext == ".iso")
-							disc = Disc.FromIsoPath(path);
-						if(ext == ".cue")
-							disc = Disc.FromCuePath(path, new CueBinPrefs());
-						if (ext == ".ccd")
-							disc = Disc.FromCCDPath(path);
+						Disc disc = Disc.LoadAutomagic(path);
 
 						var hash = disc.GetHash();
 						game = Database.CheckDatabase(hash);

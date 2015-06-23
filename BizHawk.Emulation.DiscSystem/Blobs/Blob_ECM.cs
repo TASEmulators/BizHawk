@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	sealed partial class Disc
 	{
-		private class Blob_ECM : IBlob
+		internal class Blob_ECM : IBlob
 		{
 			FileStream stream;
 			
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public long Length;
 
-			public void Parse(string path)
+			public void Load(string path)
 			{
 				stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
 				
@@ -136,7 +136,8 @@ namespace BizHawk.Emulation.DiscSystem
 					else MisformedException();
 				}
 
-				//TODO - endian bug. need endian-independent binary reader with good license
+				//TODO - endian bug. need an endian-independent binary reader with good license (miscutils is apache license) 
+				//extension methods on binary reader wont suffice, we need something that lets you control the endianness used for reading. a complete replacement.
 				var br = new BinaryReader(stream);
 				EDC = br.ReadInt32();
 

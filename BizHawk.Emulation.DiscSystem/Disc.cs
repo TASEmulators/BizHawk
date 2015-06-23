@@ -4,6 +4,15 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
+//ARCHITECTURE NOTE:
+//no provisions are made for caching synthesized data for later accelerated use.
+//in the worst case that might result in synthesizing an entire disc in memory.
+//instead, users should be advised to `hawk` the disc first for most rapid access
+//this will result in a completely flattened CCD where everything comes right off the hard drive
+//This might be an unwise decision for disc ID and miscellaneous purposes but it's best for gaming and stream-converting (hawking and hashing)
+
+//http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
+
 //http://www.pctechguide.com/iso-9660-data-format-for-cds-cd-roms-cd-rs-and-cd-rws
 //http://linux.die.net/man/1/cue2toc
 
@@ -29,6 +38,9 @@ using System.Collections.Generic;
 //less good
 //http://www.cyberciti.biz/faq/getting-volume-information-from-cds-iso-images/
 //http://www.cims.nyu.edu/cgi-systems/man.cgi?section=7I&topic=cdio
+
+//some other docs
+//http://www.emutalk.net/threads/54428-Reference-for-8-byte-sub-header-used-in-CDROM-XA references http://ccsun.nchu.edu.tw/~imtech/cou...act%20Disc.pdf which is pretty cool
 
 //ideas:
 /*
@@ -64,6 +76,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
+
 	public partial class Disc : IDisposable
 	{
 		/// <summary>
@@ -73,11 +86,16 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// The raw TOC entries found in the lead-in track.
+		/// NOTE: it seems unlikey that we'll ever get these exactly.
+		/// The cd reader is supposed to read the multiple copies and pick the best-of-3 and turn them into a TOCRaw
+		/// So really this only needs to stick around so we can make the TOCRaw from it.
+		/// Not much of a different view, but.. different
 		/// </summary>
 		public List<RawTOCEntry> RawTOCEntries = new List<RawTOCEntry>();
 
 		/// <summary>
-		/// The DiscTOCRaw corresponding to the RawTOCEntries
+		/// The DiscTOCRaw corresponding to the RawTOCEntries.
+		/// Note: these should be retrieved differently, through a view accessor
 		/// </summary>
 		public DiscTOCRaw TOCRaw;
 
@@ -87,14 +105,16 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscStructure Structure;
 
 		/// <summary>
-		/// The blobs mounted by this disc for supplying binary content
+		/// Disposable resources (blobs, mostly) referenced by this disc
 		/// </summary>
-		public List<IBlob> Blobs = new List<IBlob>();
+		internal List<IDisposable> DisposableResources = new List<IDisposable>();
 
 		/// <summary>
 		/// The sectors on the disc
 		/// </summary>
 		public List<SectorEntry> Sectors = new List<SectorEntry>();
+
+		internal SectorSynthParams SynthParams = new SectorSynthParams();
 
 		public Disc()
 		{
@@ -102,146 +122,76 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void Dispose()
 		{
-			foreach (var blob in Blobs)
+			foreach (var res in DisposableResources)
 			{
-				blob.Dispose();
+				res.Dispose();
 			}
 		}
 
-		void FromIsoPathInternal(string isoPath)
+
+		/// <summary>
+		/// generates lead-out sectors according to very crude approximations
+		/// </summary>
+		public class SynthesizeLeadoutJob
 		{
-			//make a fake cue file to represent this iso file
-			const string isoCueWrapper = @"
-FILE ""xarp.barp.marp.farp"" BINARY
-  TRACK 01 MODE1/2048
-    INDEX 01 00:00:00
-";
-
-			string cueDir = String.Empty;
-			var cue = new Cue();
-			CueFileResolver["xarp.barp.marp.farp"] = isoPath;
-			cue.LoadFromString(isoCueWrapper);
-			FromCueInternal(cue, cueDir, new CueBinPrefs());
-		}
-
-		
-		public CueBin DumpCueBin(string baseName, CueBinPrefs prefs)
-		{
-			if (Structure.Sessions.Count > 1)
-				throw new NotSupportedException("can't dump cue+bin with more than 1 session yet");
-
-			CueBin ret = new CueBin();
-			ret.baseName = baseName;
-			ret.disc = this;
-
-			if (!prefs.OneBlobPerTrack)
+			public int Length;
+			public Disc Disc;
+			
+			public void Run()
 			{
-				//this is the preferred mode of dumping things. we will always write full sectors.
-				string cue = new CUE_Format().GenerateCUE_OneBin(Structure,prefs);
-				var bfd = new CueBin.BinFileDescriptor {name = baseName + ".bin"};
-				ret.cue = string.Format("FILE \"{0}\" BINARY\n", bfd.name) + cue;
-				ret.bins.Add(bfd);
-				bfd.SectorSize = 2352;
+				//TODO: encode_mode2_form2_sector
+				var sz = new Sector_Zero();
 
-				//skip the mandatory track 1 pregap! cue+bin files do not contain it
-				for (int i = 150; i < Structure.LengthInSectors; i++)
+				var leadoutTs = Disc.TOCRaw.LeadoutTimestamp;
+				var lastTrackTOCItem = Disc.TOCRaw.TOCItems[Disc.TOCRaw.LastRecordedTrackNumber]; //NOTE: in case LastRecordedTrackNumber is al ie, this will malfunction
+
+				//leadout flags.. let's set them the same as the last track.
+				//THIS IS NOT EXACTLY THE SAME WAY MEDNAFEN DOES IT
+				EControlQ leadoutFlags = lastTrackTOCItem.Control;
+
+				//TODO - needs to be encoded as a certain mode (mode 2 form 2 for psx... i guess...)
+
+				for (int i = 0; i < Length; i++)
 				{
-					bfd.abas.Add(i);
-					bfd.aba_zeros.Add(false);
+					var se = new SectorEntry(sz);
+					Disc.Sectors.Add(se);
+					SubchannelQ sq = new SubchannelQ();
+
+					int track_relative_msf = i;
+					sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
+					sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
+					sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
+
+					int absolute_msf = i + leadoutTs.Sector;
+					sq.ap_min = BCD2.FromDecimal(new Timestamp(absolute_msf+150).MIN);
+					sq.ap_sec = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).SEC);
+					sq.ap_frame = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).FRAC);
+
+					sq.q_tno.DecimalValue = 0xAA; //special value for leadout
+					sq.q_index.DecimalValue = 1;
+
+					byte ADR = 1;
+					sq.SetStatus(ADR, leadoutFlags);
+
+					var subcode = new BufferedSubcodeSector();
+					subcode.Synthesize_SubchannelQ(ref sq, true);
+					se.SubcodeSector = subcode;
 				}
 			}
-			else
-			{
-				//we build our own cue here (unlike above) because we need to build the cue and the output data at the same time
-				StringBuilder sbCue = new StringBuilder();
-				
-				for (int i = 0; i < Structure.Sessions[0].Tracks.Count; i++)
-				{
-					var track = Structure.Sessions[0].Tracks[i];
-					var bfd = new CueBin.BinFileDescriptor
-						{
-							name = baseName + string.Format(" (Track {0:D2}).bin", track.Number),
-							SectorSize = Cue.BINSectorSizeForTrackType(track.TrackType)
-						};
-					ret.bins.Add(bfd);
-					int aba = 0;
-
-					//skip the mandatory track 1 pregap! cue+bin files do not contain it
-					if (i == 0) aba = 150;
-
-					for (; aba < track.LengthInSectors; aba++)
-					{
-						int thisaba = track.Indexes[0].aba + aba;
-						bfd.abas.Add(thisaba);
-						bfd.aba_zeros.Add(false);
-					}
-					sbCue.AppendFormat("FILE \"{0}\" BINARY\n", bfd.name);
-
-					sbCue.AppendFormat("  TRACK {0:D2} {1}\n", track.Number, Cue.TrackTypeStringForTrackType(track.TrackType));
-					foreach (var index in track.Indexes)
-					{
-						int x = index.aba - track.Indexes[0].aba;
-						if (index.Number == 0 && index.aba == track.Indexes[1].aba)
-						{
-						    //dont emit index 0 when it is the same as index 1, it is illegal for some reason
-						}
-						//else if (i==0 && index.num == 0)
-						//{
-						//    //don't generate the first index, it is illogical
-						//}
-						else
-						{
-							//track 1 included the lead-in at the beginning of it. sneak past that.
-							//if (i == 0) x -= 150;
-							sbCue.AppendFormat("    INDEX {0:D2} {1}\n", index.Number, new Timestamp(x).Value);
-						}
-					}
-				}
-
-				ret.cue = sbCue.ToString();
-			}
-
-			return ret;
-		}
-
-
-		public static Disc FromCuePath(string cuePath, CueBinPrefs prefs)
-		{
-			var ret = new Disc();
-			ret.FromCuePathInternal(cuePath, prefs);
-
-			ret.Structure.Synthesize_TOCPointsFromSessions();
-			ret.Synthesize_SubcodeFromStructure();
-			ret.Synthesize_TOCRawFromStructure();
-
-			//try loading SBI. make sure its done after the subcode is synthesized!
-			string sbiPath = Path.ChangeExtension(cuePath, "sbi");
-			if (File.Exists(sbiPath) && SBI_Format.QuickCheckISSBI(sbiPath))
-			{
-				var sbi = new SBI_Format().LoadSBIPath(sbiPath);
-				ret.ApplySBI(sbi);
-			}
-
-			return ret;
-		}
-
-		public static Disc FromCCDPath(string ccdPath)
-		{
-			CCD_Format ccdLoader = new CCD_Format();
-			return ccdLoader.LoadCCDToDisc(ccdPath);
 		}
 
 		/// <summary>
-		/// THIS HASNT BEEN TESTED IN A LONG TIME. DOES IT WORK?
+		/// Automagically loads a disc, without any fine-tuned control at all
 		/// </summary>
-		public static Disc FromIsoPath(string isoPath)
+		public static Disc LoadAutomagic(string path)
 		{
-			var ret = new Disc();
-			ret.FromIsoPathInternal(isoPath);
-			ret.Structure.Synthesize_TOCPointsFromSessions();
-			ret.Synthesize_SubcodeFromStructure();
-			return ret;
+			var job = new DiscMountJob { IN_FromPath = path };
+			job.IN_DiscInterface = DiscInterface.MednaDisc; //TEST
+			job.Run();
+			return job.OUT_Disc;
 		}
+
+	
 
 		/// <summary>
 		/// Synthesizes a crudely estimated TOCRaw from the disc structure.
@@ -270,7 +220,7 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		/// <summary>
 		/// applies an SBI file to the disc
 		/// </summary>
-		public void ApplySBI(SBI_Format.SBIFile sbi)
+		public void ApplySBI(SBI.SubQPatchData sbi, bool asMednafen)
 		{
 			//save this, it's small, and we'll want it for disc processing a/b checks
 			Memos["sbi"] = sbi;
@@ -289,8 +239,16 @@ FILE ""xarp.barp.marp.farp"" BINARY
 					if (patch == -1) continue;
 					else subcode[12 + j] = (byte)patch;
 				}
-				var bss = new BufferedSubcodeSector();
-				Sectors[aba].SubcodeSector = BufferedSubcodeSector.CloneFromBytesDeinterleaved(subcode);
+				var bss = BufferedSubcodeSector.CloneFromBytesDeinterleaved(subcode);
+				Sectors[aba].SubcodeSector = bss;
+
+				//not fully sure what the basis is for this, but here we go
+				if (asMednafen)
+				{
+					bss.Synthesize_SunchannelQ_Checksum();
+					bss.SubcodeDeinterleaved[12 + 10] ^= 0xFF;
+					bss.SubcodeDeinterleaved[12 + 11] ^= 0xFF;
+				}
 			}
 		}
 
@@ -333,15 +291,15 @@ FILE ""xarp.barp.marp.farp"" BINARY
 				bool pause = true;
 				if (dp.Num != 0) //TODO - shouldnt this be IndexNum?
 					pause = false;
-				if ((dp.Control & EControlQ.DataUninterrupted)!=0)
+				if ((dp.Control & EControlQ.DATA)!=0)
 					pause = false;
 
 				int adr = dp.ADR;
 
 				SubchannelQ sq = new SubchannelQ();
 				sq.q_status = SubchannelQ.ComputeStatus(adr, control);
-				sq.q_tno = BCD2.FromDecimal(dp.TrackNum).BCDValue;
-				sq.q_index = BCD2.FromDecimal(dp.IndexNum).BCDValue;
+				sq.q_tno = BCD2.FromDecimal(dp.TrackNum);
+				sq.q_index = BCD2.FromDecimal(dp.IndexNum);
 
 				int track_relative_aba = aba - dp.Track.Indexes[1].aba;
 				track_relative_aba = Math.Abs(track_relative_aba);
@@ -403,6 +361,11 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			return new BCD2 {DecimalValue = d};
 		}
 
+		public static BCD2 FromBCD(byte b)
+		{
+			return new BCD2 { BCDValue = b };
+		}
+
 		public static int BCDToInt(byte n)
 		{
 			var bcd = new BCD2();
@@ -416,45 +379,81 @@ FILE ""xarp.barp.marp.farp"" BINARY
 			int tens = Math.DivRem(n, 10, out ones);
 			return (byte)((tens << 4) | ones);
 		}
+
+		public override string ToString()
+		{
+			return BCDValue.ToString("X2");
+		}
 	}
 
+	/// <summary>
+	/// todo - rename to MSF? It can specify durations, so maybe it should be not suggestive of timestamp
+	/// TODO - can we maybe use BCD2 in here
+	/// </summary>
 	public struct Timestamp
 	{
 		/// <summary>
+		/// Checks if the string is a legit MSF. It's strict.
+		/// </summary>
+		public static bool IsMatch(string str)
+		{
+			return new Timestamp(str).Valid;
+		}
+
+		/// <summary>
 		/// creates a timestamp from a string in the form mm:ss:ff
 		/// </summary>
-		public Timestamp(string value)
+		public Timestamp(string str)
 		{
-			//TODO - could be performance-improved
-			MIN = int.Parse(value.Substring(0, 2));
-			SEC = int.Parse(value.Substring(3, 2));
-			FRAC = int.Parse(value.Substring(6, 2));
-			Sector = MIN * 60 * 75 + SEC * 75 + FRAC;
-			_value = null;
+			if (str.Length != 8) goto BOGUS;
+			if (str[0] < '0' || str[0] > '9') goto BOGUS;
+			if (str[1] < '0' || str[1] > '9') goto BOGUS;
+			if (str[2] != ':') goto BOGUS;
+			if (str[3] < '0' || str[3] > '9') goto BOGUS;
+			if (str[4] < '0' || str[4] > '9') goto BOGUS;
+			if (str[5] != ':') goto BOGUS;
+			if (str[6] < '0' || str[6] > '9') goto BOGUS;
+			if (str[7] < '0' || str[7] > '9') goto BOGUS;
+			MIN = (byte)((str[0] - '0') * 10 + (str[1] - '0'));
+			SEC = (byte)((str[3] - '0') * 10 + (str[4] - '0'));
+			FRAC = (byte)((str[6] - '0') * 10 + (str[7] - '0'));
+			Valid = true;
+			return;
+		BOGUS:
+			MIN = SEC = FRAC = 0;
+			Valid = false;
+			return;
 		}
-		public readonly int MIN, SEC, FRAC, Sector;
 
+		/// <summary>
+		/// The string representation of the MSF
+		/// </summary>
 		public string Value
-		{ 
+		{
 			get
 			{
-				if (_value != null) return _value;
-				return _value = string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
+				if (!Valid) return "--:--:--";
+				return string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
 			}
 		}
 
-		string _value;
+		public readonly byte MIN, SEC, FRAC;
+		public readonly bool Valid;
 
 		/// <summary>
-		/// creates timestamp from supplies MSF
+		/// The fully multiplied out flat-address Sector number
+		/// </summary>
+		public int Sector { get { return MIN * 60 * 75 + SEC * 75 + FRAC; } }
+
+		/// <summary>
+		/// creates timestamp from the supplied MSF
 		/// </summary>
 		public Timestamp(int m, int s, int f)
 		{
-			MIN = m;
-			SEC = s;
-			FRAC = f;
-			Sector = MIN * 60 * 75 + SEC * 75 + FRAC;
-			_value = null;
+			MIN = (byte)m;
+			SEC = (byte)s;
+			FRAC = (byte)f;
+			Valid = true;
 		}
 
 		/// <summary>
@@ -462,255 +461,23 @@ FILE ""xarp.barp.marp.farp"" BINARY
 		/// </summary>
 		public Timestamp(int SectorNumber)
 		{
-			this.Sector = SectorNumber;
-			MIN = SectorNumber / (60 * 75);
-			SEC = (SectorNumber / 75) % 60;
-			FRAC = SectorNumber % 75;
-			_value = null;
+			MIN = (byte)(SectorNumber / (60 * 75));
+			SEC = (byte)((SectorNumber / 75) % 60);
+			FRAC = (byte)(SectorNumber % 75);
+			Valid = true;
+		}
+
+		public override string ToString()
+		{
+			return Value;
 		}
 	}
 
-	/// <summary>
-	/// The type of a Track, not strictly (for now) adhering to the realistic values, but also including information for ourselves about what source the data came from. 
-	/// We should make that not the case.
-	/// TODO - let CUE have its own "track type" enum, since cue tracktypes arent strictly corresponding to "real" track types, whatever those are.
-	/// </summary>
-	public enum ETrackType
+	
+
+	//not being used yet
+	class DiscPreferences
 	{
-		/// <summary>
-		/// The track type isn't always known.. it can take this value til its populated
-		/// </summary>
-		Unknown,
 
-		/// <summary>
-		/// CD-ROM (yellowbook) specification - it is a Mode1 track, and we have all 2352 bytes for the sector
-		/// </summary>
-		Mode1_2352,
-
-		/// <summary>
-		/// CD-ROM (yellowbook) specification - it is a Mode1 track, but originally we only had 2048 bytes for the sector. 
-		/// This means, for various purposes, we need to synthesize additional data
-		/// </summary>
-		Mode1_2048,
-
-		/// <summary>
-		/// CD-ROM (yellowbook) specification - it is a Mode2 track.
-		/// </summary>
-		Mode2_2352,
-
-		/// <summary>
-		/// CD-DA (redbook) specification.. nominally. In fact, it's just 2352 raw PCM bytes per sector, and that concept isnt directly spelled out in redbook.
-		/// </summary>
-		Audio
-	}
-
-	/// <summary>
-	/// TODO - this is garbage. It's half input related, and half output related. This needs to be split up.
-	/// </summary>
-	public class CueBinPrefs
-	{
-		/// <summary>
-		/// Controls general operations: should the output be split into several blobs, or just use one?
-		/// </summary>
-		public bool OneBlobPerTrack;
-
-		/// <summary>
-		/// NOT SUPPORTED YET (just here as a reminder) If choosing OneBinPerTrack, you may wish to write wave files for audio tracks.
-		/// </summary>
-		//public bool DumpWaveFiles;
-
-		/// <summary>
-		/// turn this on to dump bins instead of just cues
-		/// </summary>
-		public bool ReallyDumpBin;
-
-		/// <summary>
-		/// Dump bins to bitbucket instead of disk
-		/// </summary>
-		public bool DumpToBitbucket;
-
-		/// <summary>
-		/// dump a .sub.q along with bins. one day we'll want to dump the entire subcode but really Q is all thats important for debugging most things
-		/// </summary>
-		public bool DumpSubchannelQ;
-
-		/// <summary>
-		/// generate remarks and other annotations to help humans understand whats going on, but which will confuse many cue parsers
-		/// </summary>
-		public bool AnnotateCue;
-
-		/// <summary>
-		/// EVIL: in theory this would attempt to generate pregap commands to save disc space, but I think this is a bad idea.
-		/// it would also be useful for OneBinPerTrack mode in making wave files.
-		/// HOWEVER - by the time we've loaded things up into our canonical format, we don't know which 'pregaps' are safe for turning back into pregaps
-		/// Because they might sometimes contain data (gapless audio discs). So we would have to inspect a series of sectors to look for silence.
-		/// And even still, the ECC information might be important. So, forget it.
-		/// NEVER USE OR IMPLEMENT THIS
-		/// </summary>
-		//public bool PreferPregapCommand = false;
-
-		/// <summary>
-		/// some cue parsers cant handle sessions. better not emit a session command then. multi-session discs will then be broken
-		/// </summary>
-		public bool SingleSession;
-
-		/// <summary>
-		/// enables various extension-aware behaviours.
-		/// enables auto-search for files with the same name but differing extension.
-		/// enables auto-detection of situations where cue blobfiles are indicating the wrong type in the cuefile
-		/// </summary>
-		public bool ExtensionAware = false;
-
-		/// <summary>
-		/// whenever we have a choice, use case sensitivity in searching for files
-		/// </summary>
-		public bool CaseSensitive = false;
-
-		/// <summary>
-		/// DO NOT CHANGE THIS! All sectors will be written with ECM data. It's a waste of space, but it is exact. (not completely supported yet)
-		/// </summary>
-		public bool DumpECM = true;
-	}
-
-	/// <summary>
-	/// Encapsulates an in-memory cue+bin (complete cuesheet and a little registry of files)
-	/// it will be based on a disc (fro mwhich it can read sectors to avoid burning through extra memory)
-	/// TODO - we must merge this with whatever reads in cue+bin
-	/// </summary>
-	public class CueBin
-	{
-		public string cue;
-		public string baseName;
-		public Disc disc;
-
-		public class BinFileDescriptor
-		{
-			public string name;
-			public List<int> abas = new List<int>();
-
-			//todo - do we really need this? i dont think so...
-			public List<bool> aba_zeros = new List<bool>();
-			public int SectorSize;
-		}
-
-		public List<BinFileDescriptor> bins = new List<BinFileDescriptor>();
-
-		//NOT SUPPORTED RIGHT NOW
-		//public string CreateRedumpReport()
-		//{
-		//    if (disc.TOC.Sessions[0].Tracks.Count != bins.Count)
-		//        throw new InvalidOperationException("Cannot generate redump report on CueBin lacking OneBinPerTrack property");
-		//    StringBuilder sb = new StringBuilder();
-		//    for (int i = 0; i < disc.TOC.Sessions[0].Tracks.Count; i++)
-		//    {
-		//        var track = disc.TOC.Sessions[0].Tracks[i];
-		//        var bfd = bins[i];
-				
-		//        //dump the track
-		//        byte[] dump = new byte[track.length_aba * 2352];
-		//        //TODO ????????? post-ABA unknown
-		//        //for (int aba = 0; aba < track.length_aba; aba++)
-		//        //    disc.ReadLBA_2352(bfd.lbas[lba],dump,lba*2352);
-		//        string crc32 = string.Format("{0:X8}", CRC32.Calculate(dump));
-		//        string md5 = Util.Hash_MD5(dump, 0, dump.Length);
-		//        string sha1 = Util.Hash_SHA1(dump, 0, dump.Length);
-
-		//        int pregap = track.Indexes[1].lba - track.Indexes[0].lba;
-		//        Timestamp pregap_ts = new Timestamp(pregap);
-		//        Timestamp len_ts = new Timestamp(track.length_lba);
-		//        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\n", 
-		//            i, 
-		//            Cue.RedumpTypeStringForTrackType(track.TrackType),
-		//            pregap_ts.Value,
-		//            len_ts.Value,
-		//            track.length_lba,
-		//            track.length_lba*Cue.BINSectorSizeForTrackType(track.TrackType),
-		//            crc32,
-		//            md5,
-		//            sha1
-		//            );
-		//    }
-		//    return sb.ToString();
-		//}
-
-		public void Dump(string directory, CueBinPrefs prefs)
-		{
-			ProgressReport pr = new ProgressReport();
-			Dump(directory, prefs, pr);
-		}
-
-		public void Dump(string directory, CueBinPrefs prefs, ProgressReport progress)
-		{
-			byte[] subcodeTemp = new byte[96];
-			progress.TaskCount = 2;
-
-			progress.Message = "Generating Cue";
-			progress.ProgressEstimate = 1;
-			progress.ProgressCurrent = 0;
-			progress.InfoPresent = true;
-			string cuePath = Path.Combine(directory, baseName + ".cue");
-			if (prefs.DumpToBitbucket) { }
-			else File.WriteAllText(cuePath, cue);
-
-			progress.Message = "Writing bin(s)";
-			progress.TaskCurrent = 1;
-			progress.ProgressEstimate = bins.Sum(bfd => bfd.abas.Count);
-			progress.ProgressCurrent = 0;
-			if(!prefs.ReallyDumpBin) return;
-
-			foreach (var bfd in bins)
-			{
-				int sectorSize = bfd.SectorSize;
-				byte[] temp = new byte[2352];
-				byte[] empty = new byte[2352];
-				string trackBinFile = bfd.name;
-				string trackBinPath = Path.Combine(directory, trackBinFile);
-				string subQPath = Path.ChangeExtension(trackBinPath, ".sub.q");
-				Stream fsSubQ = null;
-				Stream fs;
-				if(prefs.DumpToBitbucket)
-					fs = Stream.Null;
-				else fs = new FileStream(trackBinPath, FileMode.Create, FileAccess.Write, FileShare.None);
-				try
-				{
-					if (prefs.DumpSubchannelQ)
-						if (prefs.DumpToBitbucket)
-							fsSubQ = Stream.Null;
-						else fsSubQ = new FileStream(subQPath, FileMode.Create, FileAccess.Write, FileShare.None);
-
-					for (int i = 0; i < bfd.abas.Count; i++)
-					{
-						if (progress.CancelSignal) return;
-
-						progress.ProgressCurrent++;
-						int aba = bfd.abas[i];
-						if (bfd.aba_zeros[i])
-						{
-							fs.Write(empty, 0, sectorSize);
-						}
-						else
-						{
-							if (sectorSize == 2352)
-								disc.ReadABA_2352(aba, temp, 0);
-							else if (sectorSize == 2048) disc.ReadABA_2048(aba, temp, 0);
-							else throw new InvalidOperationException();
-							fs.Write(temp, 0, sectorSize);
-
-							//write subQ if necessary
-							if (fsSubQ != null)
-							{
-								disc.Sectors[aba].SubcodeSector.ReadSubcodeDeinterleaved(subcodeTemp, 0);
-								fsSubQ.Write(subcodeTemp, 12, 12);
-							}
-						}
-					}
-				}
-				finally
-				{
-					fs.Dispose();
-					if (fsSubQ != null) fsSubQ.Dispose();
-				}
-			}
-		}
 	}
 }

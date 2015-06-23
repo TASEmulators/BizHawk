@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
 			{
-				read_target->disc_type = 1; //hardcoded in octoshock
+				read_target->disc_type = (byte)Disc.TOCRaw.Session1Format;
 				read_target->first_track = (byte)Disc.TOCRaw.FirstRecordedTrackNumber; //i _think_ thats what is meant here
 				read_target->last_track = (byte)Disc.TOCRaw.LastRecordedTrackNumber; //i _think_ thats what is meant here
 
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				for (int i = 1; i < 100; i++)
 				{
 					var item = Disc.TOCRaw.TOCItems[i];
-					tracks101[i].adr = 1; //not sure what this is
+					tracks101[i].adr = (byte)(item.Exists ? 1 : 0);
 					tracks101[i].lba = (uint)item.LBATimestamp.Sector;
 					tracks101[i].control = (byte)item.Control;
 				}
@@ -178,13 +178,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				tracks101[read_target->last_track + 1].adr = 1;
 				tracks101[read_target->last_track + 1].control = 0;
 				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOCRaw.LeadoutTimestamp.Sector;
-				////laaaame
-				//tracks101[read_target->last_track + 1].lba =
-				//  (uint)(
-				//  Disc.Structure.Sessions[0].Tracks[read_target->last_track - 1].Start_ABA //AUGH. see comment in Start_ABA
-				//  + Disc.Structure.Sessions[0].Tracks[read_target->last_track - 1].LengthInSectors
-				//  - 150
-				//  );
 
 				//element 100 is to be copied as the lead-out track
 				tracks101[100] = tracks101[read_target->last_track + 1];

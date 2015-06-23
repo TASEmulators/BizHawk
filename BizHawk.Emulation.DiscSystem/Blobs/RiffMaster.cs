@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// References to large blobs remain mostly on disk in the file which RiffMaster keeps a reference too. Dispose it to close the file.
 	/// You can modify blobs however you want and write the file back out to a new path, if youre careful (that was the original point of this)
 	/// Please be sure to test round-tripping when you make any changes. This architecture is a bit tricky to use, but it works if youre careful.
+	/// TODO - clarify stream disposing semantics
 	/// </summary>
 	class RiffMaster : IDisposable
 	{
@@ -281,7 +282,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		private long readCounter;
 		private RiffChunk ReadChunk(BinaryReader br)
-		{
+		 {
 			RiffChunk ret;
 			string tag = ReadTag(br); readCounter += 4;
 			uint size = br.ReadUInt32(); readCounter += 4;
@@ -311,6 +312,7 @@ namespace BizHawk.Emulation.DiscSystem
 						Length = size
 					};
 				readCounter += size;
+				br.BaseStream.Position += size;
 				ret = rsc.Morph();
 			}
 			if (size % 2 != 0)

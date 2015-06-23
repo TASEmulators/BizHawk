@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+
+//TODO - most of these sector interfaces are really only useful for CUEs, I guess. most other disc formats arent nearly as lame.. I think
 
 namespace BizHawk.Emulation.DiscSystem
 {
@@ -13,13 +16,125 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// reads 2048 bytes of userdata.. precisely what this means isnt always 100% certain (for instance mode2 form 0 has 2336 bytes of userdata instead of 2048)..
 		/// ..but its certain enough for this to be useful
+		/// THIS IS SO ANNOYING!!!! UGH!!!!!!!!!
 		/// </summary>
 		int Read_2048(byte[] buffer, int offset);
 	}
 
+	/// <summary>
+	/// Indicates which part of a sector are needing to be synthesized.
+	/// Sector synthesis may create too much data, but this is a hint as to what's needed
+	/// </summary>
+	[Flags] enum ESectorSynthPart
+	{
+		/// <summary>
+		/// The header is required
+		/// </summary>
+		Header16 = 1,
+		
+		/// <summary>
+		/// The main 2048 user data bytes are required
+		/// </summary>
+		User2048 = 2,
+
+		/// <summary>
+		/// The 276 bytes of error correction are required
+		/// </summary>
+		ECC276 = 4,
+
+		/// <summary>
+		/// The 12 bytes preceding the ECC section are required (usually EDC and zero but also userdata sometimes)
+		/// </summary>
+		EDC12 = 8,
+
+		/// <summary>
+		/// A mode2 userdata section is required: the main 2048 user bytes AND the ECC and EDC areas
+		/// </summary>
+		User2336 = (User2048|ECC276|EDC12),
+
+		/// <summary>
+		/// The entirety of the sector userdata is required
+		/// </summary>
+		User2352 = 15,
+
+		/// <summary>
+		/// SubP is required
+		/// </summary>
+		SubchannelP = 16,
+
+		/// <summary>
+		/// SubQ is required
+		/// </summary>
+		SubchannelQ = 32,
+
+		/// <summary>
+		/// Complete subcode is required
+		/// </summary>
+		SubcodeComplete = (16|32|64|128|256|512|1024|2048),
+
+		/// <summary>
+		/// Any of the subcode might be required (just another way of writing SubcodeComplete)
+		/// </summary>
+		SubcodeAny = SubcodeComplete,
+
+		/// <summary>
+		/// The subcode should be deinterleaved
+		/// </summary>
+		SubcodeDeinterleave = 4096,
+
+		/// <summary>
+		/// The 100% complete sector is required including 2352 bytes of userdata and 96 bytes of subcode
+		/// </summary>
+		Complete2448 = SubcodeComplete | User2352,
+	}
+
+	interface ISectorSynthJob2448
+	{
+		void Synth(SectorSynthJob job);
+	}
+
+	/// <summary>
+	/// Not a proper job? maybe with additional flags, it could be
+	/// </summary>
+	class SectorSynthJob
+	{
+		public int LBA;
+		public ESectorSynthPart Parts;
+		public byte[] DestBuffer2448;
+		public int DestOffset;
+		public SectorSynthParams Params;
+		public Disc Disc;
+	}
+
+	/// <summary>
+	/// Generic parameters for sector synthesis.
+	/// To cut down on resource utilization, these can be stored in a disc and are tightly coupled to
+	/// the SectorSynths that have been setup for it
+	/// </summary>
+	struct SectorSynthParams
+	{
+		public long[] BlobOffsets;
+		public MednaDisc MednaDisc;
+	}
+
+	class SS_Multi : ISectorSynthJob2448
+	{
+		public List<ISectorSynthJob2448> Agenda = new List<ISectorSynthJob2448>();
+
+		public void Synth(SectorSynthJob job)
+		{
+			foreach (var a in Agenda)
+			{
+				a.Synth(job);
+			}
+		}
+	}
+
+
 
 	/// <summary>
 	/// this ISector is dumb and only knows how to drag chunks off a source blob
+	/// TODO - actually make it that way!
 	/// </summary>
 	public class Sector_RawBlob : ISector
 	{
@@ -37,17 +152,20 @@ namespace BizHawk.Emulation.DiscSystem
 			//YIKES!!!!!!!!!!!!!!
 			//well, we need to scrutinize it for CCD files anyway, so...
 			//this sucks.
-			Blob.Read(Offset + 16, buffer, 0, 1);
+
+			//read mode byte, use that to determine what kind of sector this is
+			Blob.Read(Offset + 15, buffer, 0, 1); 
 			byte mode = buffer[0];
 			if(mode == 1)
 				return Blob.Read(Offset + 16, buffer, offset, 2048);
 			else
-				return Blob.Read(Offset + 24, buffer, offset, 2048);
+				return Blob.Read(Offset + 24, buffer, offset, 2048); //PSX assumptions about CD-XA.. BAD BAD BAD
 		}
 	}
 
 	/// <summary>
 	/// this ISector always returns zeroes
+	/// (not even SYNC stuff is set.... pretty bogus and useless, this)
 	/// </summary>
 	class Sector_Zero : ISector
 	{
@@ -119,6 +237,7 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	//a blob that also has an ECM cache associated with it. maybe one day.
+	//UHHH this is kind of redundant right now... see how Sector_Mode1_2048 manages its own cache
 	class ECMCacheBlob
 	{
 		public ECMCacheBlob(IBlob blob)
@@ -129,7 +248,7 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	/// <summary>
-	/// this ISector is a MODE1 sector that is generating itself from an underlying MODE1/2048 userdata piece
+	/// transforms Mode1/2048 -> Mode1/2352
 	/// </summary>
 	class Sector_Mode1_2048 : ISector
 	{
@@ -197,7 +316,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//if we read the 2048 physical bytes OK, then return the complete sector
 			if (read == 2048)
 			{
-				extra_data = new byte[16 + 4 + 8 + 172 + 104];
+				extra_data = new byte[16 + 4 + 8 + 172 + 104]; //aka 2048
 				Buffer.BlockCopy(buffer, 0, extra_data, 0, 16);
 				Buffer.BlockCopy(buffer, 2064, extra_data, 16, 4 + 8 + 172 + 104);
 				has_extra_data = true;

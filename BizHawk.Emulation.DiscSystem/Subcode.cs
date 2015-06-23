@@ -1,10 +1,23 @@
 ﻿using System;
 
+//TODO - call on unmanaged code in mednadisc if available to do deinterleaving faster. be sure to benchmark it though..
+
 //a decent little subcode reference
 //http://www.jbum.com/cdg_revealed.html
 
+//NOTES: the 'subchannel Q' stuff here has a lot to do with the q-Mode 1. q-Mode 2 is different, 
+//and q-Mode 1 technically is defined a little differently in the lead-in area, although the fields align so the datastructures can be reused
+
+//Q subchannel basic structure: (quick ref: https://en.wikipedia.org/wiki/Compact_Disc_subcode)
+//Byte 1: (aka `status`)
+// q-Control: 4 bits (i.e. flags) 
+// q-Mode: 4 bits (aka ADR; WHY is this called ADR?)
+//q-Data: other stuff depending on q-Mode and type of track
+//q-CRC: CRC of preceding
+
 namespace BizHawk.Emulation.DiscSystem
 {
+	//YET ANOTHER BAD IDEA
 	public interface ISubcodeSector
 	{
 		/// <summary>
@@ -20,6 +33,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 	public static class SubcodeUtils
 	{
+		/// <summary>
+		/// Converts the useful (but unrealistic) deinterleaved data into the useless (but realistic) interleaved subchannel format.
+		/// in_buf and out_buf should not overlap
+		/// </summary>
 		public static void Interleave(byte[] in_buf, int in_buf_index, byte[] out_buf, int out_buf_index)
 		{
 			for (int d = 0; d < 12; d++)
@@ -37,6 +54,10 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
+		/// <summary>
+		/// Converts the useless (but realistic) interleaved subchannel data into a useful (but unrealistic) deinterleaved format.
+		/// in_buf and out_buf should not overlap
+		/// </summary>
 		public static void Deinterleave(byte[] in_buf, int in_buf_index, byte[] out_buf, int out_buf_index)
 		{
 			for (int i = 0; i < 96; i++)
@@ -49,11 +70,30 @@ namespace BizHawk.Emulation.DiscSystem
 					out_buf[(ch * 12) + (i >> 3) + out_buf_index] |= (byte)(((in_buf[i + in_buf_index] >> (7 - ch)) & 0x1) << (7 - (i & 0x7)));
 				}
 			}
+		}
 
+		/// <summary>
+		/// Converts the useless (but realistic) interleaved subchannel data into a useful (but unrealistic) deinterleaved format.
+		/// </summary>
+		public unsafe static void DeinterleaveInplace(byte[] buf, int buf_index)
+		{
+			byte* out_buf = stackalloc byte[96];
+
+			for (int i = 0; i < 96; i++)
+				out_buf[i] = 0;
+
+			for (int ch = 0; ch < 8; ch++)
+			{
+				for (int i = 0; i < 96; i++)
+				{
+					out_buf[(ch * 12) + (i >> 3)] |= (byte)(((buf[i + buf_index] >> (7 - ch)) & 0x1) << (7 - (i & 0x7)));
+				}
+			}
+
+			for (int i = 0; i < 96; i++)
+				buf[i + buf_index] = out_buf[i];
 		}
 	}
-
-
 
 
 	/// <summary>
@@ -76,8 +116,8 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			int offset = 12; //Q subchannel begins after P, 12 bytes in
 			SubcodeDeinterleaved[offset + 0] = sq.q_status;
-			SubcodeDeinterleaved[offset + 1] = sq.q_tno;
-			SubcodeDeinterleaved[offset + 2] = sq.q_index;
+			SubcodeDeinterleaved[offset + 1] = sq.q_tno.BCDValue;
+			SubcodeDeinterleaved[offset + 2] = sq.q_index.BCDValue;
 			SubcodeDeinterleaved[offset + 3] = sq.min.BCDValue;
 			SubcodeDeinterleaved[offset + 4] = sq.sec.BCDValue;
 			SubcodeDeinterleaved[offset + 5] = sq.frame.BCDValue;
@@ -96,6 +136,17 @@ namespace BizHawk.Emulation.DiscSystem
 			SubcodeDeinterleaved[offset + 11] = (byte)(~(crc16));
 
 			return crc16;
+		}
+
+		public void Synthesize_SunchannelQ_Checksum()
+		{
+			int offset = 12; //Q subchannel begins after P, 12 bytes in
+
+			ushort crc16 = CRC16_CCITT.Calculate(SubcodeDeinterleaved, offset, 10);
+
+			//CRC is stored inverted and big endian
+			SubcodeDeinterleaved[offset + 10] = (byte)(~(crc16 >> 8));
+			SubcodeDeinterleaved[offset + 11] = (byte)(~(crc16));
 		}
 
 		public void ReadSubcodeDeinterleaved(byte[] buffer, int offset)
@@ -157,22 +208,55 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	/// <summary>
-	/// Control bit flags for the Q Subchannel
+	/// Control bit flags for the Q Subchannel.
 	/// </summary>
 	[Flags]
 	public enum EControlQ
 	{
 		None = 0,
 
-		StereoNoPreEmph = 0,
-		StereoPreEmph = 1,
-		MonoNoPreemph = 8,
-		MonoPreEmph = 9,
-		DataUninterrupted = 4,
-		DataIncremental = 5,
+		PRE = 1, //Pre-emphasis enabled (audio tracks only)
+		DCP = 2, //Digital copy permitted
+		DATA = 4, //set for data tracks, clear for audio tracks
+		_4CH = 8, //Four channel audio
+	}
 
-		CopyProhibitedMask = 0,
-		CopyPermittedMask = 2,
+	/// <summary>
+	/// the q-mode 1 Q subchannel data. These contain TOC entries.
+	/// design of this struct is from [IEC10149].
+	/// Nothing in here is BCD
+	/// </summary>
+	public class Q_Mode_1
+	{
+		/// <summary>
+		/// Supposed to be zero, because it was in the lead-in track, but you never know
+		/// </summary>
+		public byte TNO;
+
+		/// <summary>
+		/// The track number (or a special A0 A1 A2 value) of the track being described
+		/// </summary>
+		public byte POINTER;
+
+		/// <summary>
+		/// Supposedly the timestamp within the lead-in track. but it's useless
+		/// </summary>
+		public byte MIN, SEC, FRAC;
+
+		/// <summary>
+		/// Supposed to be zero
+		/// </summary>
+		public byte ZERO;
+
+		/// <summary>
+		/// A track number of the first (for A0) or final (A1) information track; or the _absolute_ time position of an information track
+		/// </summary>
+		public byte P_MIN;
+
+		/// <summary>
+		/// ZERO for an A0 or A1 entry (where P_MIN was the track number); or the _absolute_ time position of an information track
+		/// </summary>
+		public byte P_SEC, P_FRAC;
 	}
 
 	/// <summary>
@@ -191,21 +275,23 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// normal track: BCD indications of the current track number
 		/// leadin track: should be 0 
-		/// TODO - make BCD2?
 		/// </summary>
-		public byte q_tno;
+		public BCD2 q_tno;
 
 		/// <summary>
 		/// normal track: BCD indications of the current index
 		/// leadin track: 'POINT' field used to ID the TOC entry #
 		/// </summary>				
-		public byte q_index;
+		public BCD2 q_index;
 
 		/// <summary>
 		/// These are the initial set of timestamps. Meaning varies:
 		/// check yellowbook 22.3.3 and 22.3.4
 		/// normal track: relative timestamp
 		/// leadin track: unknown
+		/// leadout: relative timestamp
+		/// TODO - why are these BCD2? having things in BCD2 is freaking annoying, I should only make them BCD2 when serializing
+		/// EDIT - elsewhere I rambled "why not BCD2?". geh. need to make a final organized approach
 		/// </summary>
 		public BCD2 min, sec, frame;
 
@@ -218,7 +304,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// These are the second set of timestamps.  Meaning varies:
 		/// check yellowbook 22.3.3 and 22.3.4
 		/// normal track: absolute timestamp
-		/// leadin track: timestamp of toc entry
+		/// leadin track q-mode 1: TOC entry, absolute MSF of track
+		/// leadout: absolute timestamp
 		/// </summary>
 		public BCD2 ap_min, ap_sec, ap_frame;
 
@@ -237,9 +324,12 @@ namespace BizHawk.Emulation.DiscSystem
 		public Timestamp Timestamp { get { return new Timestamp(min.DecimalValue, sec.DecimalValue, frame.DecimalValue); } }
 
 		/// <summary>
-		/// Retrieves the second set of timestamps (ap_min, ap_sec, ap_frac) as a convenient Timestamp
+		/// Retrieves the second set of timestamps (ap_min, ap_sec, ap_frac) as a convenient Timestamp.
 		/// </summary>
-		public Timestamp AP_Timestamp { get { return new Timestamp(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); } }
+		public Timestamp AP_Timestamp { 
+			get { return new Timestamp(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); }
+			set { ap_min.DecimalValue = value.MIN; ap_sec.DecimalValue = value.SEC; ap_frame.DecimalValue = value.FRAC; }
+		}
 
 		/// <summary>
 		/// sets the status byte from the provided adr and control values

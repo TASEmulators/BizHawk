@@ -16,17 +16,19 @@ namespace BizHawk.Client.DiscoHawk
 
 		public static void Extract(Disc disc, string path, string filebase)
 		{
+			var dsr = new DiscSectorReader(disc);
+
 			bool confirmed = false;
 			var tracks = disc.Structure.Sessions[0].Tracks;
 			foreach (var track in tracks)
 			{
-				if (track.TrackType != ETrackType.Audio)
+				if (track.TrackType != DiscStructure.ETrackType.Audio)
 					continue;
 
 				var waveData = new byte[track.LengthInSectors * 2352];
 				int startLba = track.Indexes[1].LBA;
 				for (int sector = 0; sector < track.LengthInSectors; sector++)
-					disc.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
+					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 
 				string mp3Path = string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.Number);
 				if (File.Exists(mp3Path))

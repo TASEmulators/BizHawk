@@ -442,7 +442,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			byte[] data = new byte[2352];
 			try
 			{
-				CD.ReadABA_2352(FAD, data, 0);
+				//CD.ReadABA_2352(FAD, data, 0);
+				CD.ReadLBA_2352(FAD-150, data, 0); //zero 21-jun-2015 - did I adapt this right?
 			}
 			catch (Exception e)
 			{

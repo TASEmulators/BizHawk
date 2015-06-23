@@ -178,7 +178,7 @@ namespace BizHawk.Client.DBMan
 			try
 			{
 				string ext = new FileInfo(file).Extension.ToLowerInvariant();
-				using (var disc = ext == ".iso" ? Disc.FromIsoPath(file) : Disc.FromCuePath(file, new CueBinPrefs()))
+				using (var disc = Disc.LoadAutomagic(file))
 				{
 					return disc.GetHash();
 				}
