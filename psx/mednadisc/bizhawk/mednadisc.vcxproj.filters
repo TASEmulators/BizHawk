@@ -10,6 +10,9 @@
     <Filter Include="string">
       <UniqueIdentifier>{798fa5bd-6381-487a-99d2-35a15a6da439}</UniqueIdentifier>
     </Filter>
+    <Filter Include="trio">
+      <UniqueIdentifier>{a43930f5-41a5-4b2b-92ef-bd90f9716127}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cdrom\CDAccess_Image.cpp">
@@ -51,10 +54,19 @@
       <Filter>string</Filter>
     </ClCompile>
     <ClCompile Include="..\general.cpp" />
-    <ClCompile Include="..\cdrom\audioreader.cpp">
+    <ClCompile Include="..\Mednadisc.cpp" />
+    <ClCompile Include="..\trio\trio.c">
+      <Filter>trio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cdrom\CDAFReader.cpp">
       <Filter>cdrom</Filter>
     </ClCompile>
-    <ClCompile Include="..\Mednadisc.cpp" />
+    <ClCompile Include="..\trio\trionan.c">
+      <Filter>trio</Filter>
+    </ClCompile>
+    <ClCompile Include="..\trio\triostr.c">
+      <Filter>trio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cdrom\CDAccess_Image.h">
@@ -96,9 +108,12 @@
       <Filter>string</Filter>
     </ClInclude>
     <ClInclude Include="..\general.h" />
-    <ClInclude Include="..\cdrom\audioreader.h">
+    <ClInclude Include="..\Mednadisc.h" />
+    <ClInclude Include="..\trio\trio.h">
+      <Filter>trio</Filter>
+    </ClInclude>
+    <ClInclude Include="..\cdrom\CDAFReader.h">
       <Filter>cdrom</Filter>
     </ClInclude>
-    <ClInclude Include="..\Mednadisc.h" />
   </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ EW_EXPORT void* mednadisc_LoadCD(const char* fname)
 {
 	CDAccess* disc = NULL;
 	try {
-		disc = cdaccess_open_image(fname,false);
+		disc = CDAccess_Open(fname,false);
 	}
 	catch(MDFN_Error &) {
 		return NULL;
@@ -53,6 +53,9 @@ EW_EXPORT void mednadisc_ReadTOC(MednaDisc* md, JustTOC* justToc, CDUtility::TOC
 	memcpy(tracks101,toc.tracks,sizeof(toc.tracks));
 }
 
+//NOTE: the subcode will come out interleaved.
+//this is almost useless, but it won't always be needed, so we're not deinterleaving it here yet
+//we should probably have more granular control than just reading this one sector eventually
 EW_EXPORT int32 mednadisc_ReadSector(MednaDisc* md, int lba, void* buf2448)
 {
 	CDAccess* disc = md->disc;

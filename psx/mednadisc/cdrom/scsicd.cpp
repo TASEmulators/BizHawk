@@ -28,7 +28,7 @@
 #include <emmintrin.h>
 #endif
 
-#define SCSIDBG(format, ...) { printf("[SCSICD] " format "\n",  ## __VA_ARGS__); }
+//#define SCSIDBG(format, ...) { printf("[SCSICD] " format "\n",  ## __VA_ARGS__); }
 //#define SCSIDBG(format, ...) { }
 
 using namespace CDUtility;
@@ -325,7 +325,7 @@ static void GenSubQFromSubPW(void)
 
  if(!subq_check_checksum(SubQBuf))
  {
-  SCSIDBG("SubQ checksum error!");
+  //SCSIDBG("SubQ checksum error!");
  }
  else
  {
@@ -456,7 +456,7 @@ static void SendStatusAndMessage(uint8 status, uint8 message)
  // This should never ever happen, but that doesn't mean it won't. ;)
  if(din->CanRead())
  {
-  printf("[SCSICD] BUG: %d bytes still in SCSI CD FIFO\n", din->CanRead());
+  //printf("[SCSICD] BUG: %d bytes still in SCSI CD FIFO\n", din->CanRead());
   din->Flush();
  }
 
@@ -516,7 +516,7 @@ void SCSICD_SetDisc(bool new_tray_open, CDIF *cdif, bool no_emu_side_effects)
 
 static void CommandCCError(int key, int asc = 0, int ascq = 0)
 {
- printf("[SCSICD] CC Error: %02x %02x %02x\n", key, asc, ascq);
+ //printf("[SCSICD] CC Error: %02x %02x %02x\n", key, asc, ascq);
 
  cd.key_pending = key;
  cd.asc_pending = asc;
@@ -788,10 +788,10 @@ static void FinishMODESELECT6(const uint8 *data, const uint8 data_len)
 	uint8 mode_data_length, medium_type, device_specific, block_descriptor_length;
 	uint32 offset = 0;
 
-        printf("[SCSICD] Mode Select (6) Data: Length=0x%02x, ", data_len);
-        for(uint32 i = 0; i < data_len; i++)
-         printf("0x%02x ", data[i]);
-        printf("\n");
+        //printf("[SCSICD] Mode Select (6) Data: Length=0x%02x, ", data_len);
+        //for(uint32 i = 0; i < data_len; i++)
+        // printf("0x%02x ", data[i]);
+        //printf("\n");
 
         if(data_len < 4)
         {
@@ -905,7 +905,7 @@ static void DoMODESENSE6(const uint8 *cdb)
  uint8 PageMatchOR = 0x00;
  bool AnyPageMatch = false;
 
- SCSIDBG("Mode sense 6: %02x %d %d %d", PageCode, PC, DBD, AllocSize);
+ //SCSIDBG("Mode sense 6: %02x %d %d %d", PageCode, PC, DBD, AllocSize);
 
  if(!AllocSize)
  {
@@ -1004,18 +1004,18 @@ static void DoMODESENSE6(const uint8 *cdb)
 
 static void DoSTARTSTOPUNIT6(const uint8 *cdb)
 {
- bool Immed = cdb[1] & 0x01;
- bool LoEj = cdb[4] & 0x02;
- bool Start = cdb[4] & 0x01;
+ //bool Immed = cdb[1] & 0x01;
+ //bool LoEj = cdb[4] & 0x02;
+ //bool Start = cdb[4] & 0x01;
 
- SCSIDBG("Do start stop unit 6: %d %d %d\n", Immed, LoEj, Start);
+ //SCSIDBG("Do start stop unit 6: %d %d %d\n", Immed, LoEj, Start);
 
  SendStatusAndMessage(STATUS_GOOD, 0x00);
 }
 
 static void DoREZEROUNIT(const uint8 *cdb)
 {
- SCSIDBG("Rezero Unit: %02x\n", cdb[5]);
+ //SCSIDBG("Rezero Unit: %02x\n", cdb[5]);
  SendStatusAndMessage(STATUS_GOOD, 0x00);
 }
 
@@ -1953,7 +1953,7 @@ static void DoREAD6(const uint8 *cdb)
  // TODO: confirm real PCE does this(PC-FX does at least).
  if(!sc)
  {
-  SCSIDBG("READ(6) with count == 0.\n");
+  //SCSIDBG("READ(6) with count == 0.\n");
   sc = 256;
  }
 
@@ -2260,7 +2260,7 @@ static void DoNEC_SCAN(const uint8 *cdb)
  switch (cdb[9] & 0xc0)
  {
   default:
-   SCSIDBG("Unknown NECSCAN format");
+   //SCSIDBG("Unknown NECSCAN format");
    break;
 
   case 0x00:
@@ -2894,7 +2894,7 @@ uint32 SCSICD_Run(scsicd_timestamp_t system_timestamp)
       {
        CommandCCError(SENSEKEY_ILLEGAL_REQUEST, NSE_INVALID_COMMAND);
 
-       SCSIDBG("Bad Command: %02x\n", cd.command_buffer[0]);
+       //SCSIDBG("Bad Command: %02x\n", cd.command_buffer[0]);
 
        if(SCSILog)
         SCSILog("SCSI", "Bad Command: %02x", cd.command_buffer[0]);
@@ -2905,7 +2905,7 @@ uint32 SCSICD_Run(scsicd_timestamp_t system_timestamp)
       {
        if(cmd_info_ptr->flags & SCF_UNTESTED)
        {
-        SCSIDBG("Untested SCSI command: %02x, %s", cd.command_buffer[0], cmd_info_ptr->pretty_name);
+        //SCSIDBG("Untested SCSI command: %02x, %s", cd.command_buffer[0], cmd_info_ptr->pretty_name);
        }
 
        if(TrayOpen && (cmd_info_ptr->flags & SCF_REQUIRES_MEDIUM))
@@ -2983,7 +2983,7 @@ uint32 SCSICD_Run(scsicd_timestamp_t system_timestamp)
     //if(cd_bus.DB == 0x6)		// ABORT message!
     if(1)
     {
-     printf("[SCSICD] Abort Received(DB=0x%02x)\n", cd_bus.DB);
+     //printf("[SCSICD] Abort Received(DB=0x%02x)\n", cd_bus.DB);
      din->Flush();
      cd.data_out_pos = cd.data_out_want = 0;
 
@@ -2991,8 +2991,8 @@ uint32 SCSICD_Run(scsicd_timestamp_t system_timestamp)
      cdda.CDDAStatus = CDDASTATUS_STOPPED;
      ChangePhase(PHASE_BUS_FREE);
     }
-    else
-     printf("[SCSICD] Message to target: 0x%02x\n", cd_bus.DB);
+    //else
+    // printf("[SCSICD] Message to target: 0x%02x\n", cd_bus.DB);
    }
    break;
 

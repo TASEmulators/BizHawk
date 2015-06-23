@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\cdrom\audioreader.cpp" />
     <ClCompile Include="..\cdrom\CDAccess.cpp" />
     <ClCompile Include="..\cdrom\CDAccess_CCD.cpp" />
     <ClCompile Include="..\cdrom\CDAccess_Image.cpp" />
+    <ClCompile Include="..\cdrom\CDAFReader.cpp" />
     <ClCompile Include="..\cdrom\cdromif.cpp" />
     <ClCompile Include="..\cdrom\CDUtility.cpp" />
     <ClCompile Include="..\cdrom\crc32.cpp" />
@@ -30,12 +30,15 @@
     <ClCompile Include="..\MemoryStream.cpp" />
     <ClCompile Include="..\Stream.cpp" />
     <ClCompile Include="..\string\trim.cpp" />
+    <ClCompile Include="..\trio\trio.c" />
+    <ClCompile Include="..\trio\trionan.c" />
+    <ClCompile Include="..\trio\triostr.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\cdrom\audioreader.h" />
     <ClInclude Include="..\cdrom\CDAccess.h" />
     <ClInclude Include="..\cdrom\CDAccess_CCD.h" />
     <ClInclude Include="..\cdrom\CDAccess_Image.h" />
+    <ClInclude Include="..\cdrom\CDAFReader.h" />
     <ClInclude Include="..\cdrom\cdromif.h" />
     <ClInclude Include="..\cdrom\CDUtility.h" />
     <ClInclude Include="..\cdrom\dvdisaster.h" />
@@ -51,6 +54,7 @@
     <ClInclude Include="..\MemoryStream.h" />
     <ClInclude Include="..\Stream.h" />
     <ClInclude Include="..\string\trim.h" />
+    <ClInclude Include="..\trio\trio.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5F35CAFC-6208-4FBE-AD17-0E69BA3F70EC}</ProjectGuid>
@@ -81,7 +85,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)\..\..\..\output\dll\</OutDir>
+    <OutDir>$(ProjectDir)..\..\..\output\dll\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -92,7 +96,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EW_EXPORT;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;OCTOSHOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TRIO_PUBLIC=;TRIO_PRIVATE=static;EW_EXPORT;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;OCTOSHOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../emuware/msvc;..</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>

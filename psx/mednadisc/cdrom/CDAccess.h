@@ -15,18 +15,19 @@ class CDAccess
 
  virtual void Read_Raw_Sector(uint8 *buf, int32 lba) = 0;
 
+ // Returns false if the read wouldn't be "fast"(i.e. reading from a disk),
+ // or if the read can't be done in a thread-safe re-entrant manner.
+ //
+ // Writes 96 bytes into pwbuf, and returns 'true' otherwise.
+ virtual bool Fast_Read_Raw_PW_TSRE(uint8* pwbuf, int32 lba) const noexcept = 0;
+
  virtual void Read_TOC(CDUtility::TOC *toc) = 0;
-
- virtual bool Is_Physical(void) throw() = 0;
-
- virtual void Eject(bool eject_status) = 0;		// Eject a disc if it's physical, otherwise NOP.  Returns true on success(or NOP), false on error
 
  private:
  CDAccess(const CDAccess&);	// No copy constructor.
  CDAccess& operator=(const CDAccess&); // No assignment operator.
 };
 
-CDAccess *cdaccess_open_image(const std::string& path, bool image_memcache);
-CDAccess *cdaccess_open_phys(const std::string& devicename);
+CDAccess* CDAccess_Open(const std::string& path, bool image_memcache);
 
 #endif
