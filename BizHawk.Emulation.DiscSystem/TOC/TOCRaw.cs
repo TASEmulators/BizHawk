@@ -12,9 +12,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Synthesizes the TOC from a set of raw entries.
 		/// When a disc drive firmware reads the lead-in area, it builds this TOC from finding q-mode 1 sectors in the Q subchannel of the lead-in area.
-		/// Question: does it ignore q-mode != 1?
-		/// Once upon a time, I said: "The disc drive firmware will discover other mode sectors in the lead-in area, and it will register those in separate data structures."
-		/// What do I mean by this?
+		/// Question: I guess it must ignore q-mode != 1? what else would it do with it?
 		/// </summary>
 		public class SynthesizeFromRawTOCEntriesJob
 		{
@@ -27,8 +25,8 @@ namespace BizHawk.Emulation.DiscSystem
 				SynthesizeFromRawTOCEntriesJob job = this;
 				DiscTOCRaw ret = new DiscTOCRaw();
 
-				//this is a dummy, for convenience
-				ret.TOCItems[0].LBATimestamp = new Timestamp(0);
+				//this is a dummy, for convenience in array indexing, so that track 1 is at array index 1
+				ret.TOCItems[0].LBATimestamp = new Timestamp(0); //arguably could be -150, but let's not just yet
 				ret.TOCItems[0].Control = 0;
 				ret.TOCItems[0].Exists = false;
 
@@ -73,7 +71,9 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 					else if (point == 102) //0xA2 bcd
 					{
-						ret.LeadoutTimestamp = q.AP_Timestamp;
+						ret.TOCItems[100].LBATimestamp = new Timestamp(q.AP_Timestamp.Sector - 150); //RawTOCEntries contained an absolute time
+						ret.TOCItems[100].Control = 0; //not clear what this should be
+						ret.TOCItems[100].Exists = true;
 					}
 				}
 
@@ -82,9 +82,10 @@ namespace BizHawk.Emulation.DiscSystem
 				if (ret.FirstRecordedTrackNumber == -1) { }
 				if (ret.LastRecordedTrackNumber == -1) { ret.LastRecordedTrackNumber = maxFoundTrack; }
 				if (ret.Session1Format == SessionFormat.None) ret.Session1Format = SessionFormat.Type00_CDROM_CDDA;
-				if (!ret.LeadoutTimestamp.Valid) { 
-					//we're DOOMED. we cant know the length of the last track without this....
-				}
+				
+				//if (!ret.LeadoutTimestamp.Valid) { 
+				//  //we're DOOMED. we cant know the length of the last track without this....
+				//}
 				job.Result = ret;
 			}
 		}
@@ -112,13 +113,25 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public SessionFormat Session1Format = SessionFormat.None;
 
+		/// <summary>
+		/// Information about a single track in the TOC
+		/// </summary>
 		public struct TOCItem
 		{
+			/// <summary>
+			/// [IEC10149] "the control field used in the information track"
+			/// the raw TOC entries do have a control field which is supposed to match what's found in the track.
+			/// A CD Reader could conceivably retrieve this.
+			/// </summary>
 			public EControlQ Control;
+
+			/// <summary>
+			/// The location of the track (Index 1)
+			/// </summary>
 			public Timestamp LBATimestamp;
 
 			/// <summary>
-			/// TODO - this is used for setting ADR to 1 or 0 for mednafen. maybe we need to track ADR separately? (CCD specifies it)
+			/// Whether this entry exists (since the table is 101 entries long always)
 			/// </summary>
 			public bool Exists;
 		}
@@ -131,8 +144,8 @@ namespace BizHawk.Emulation.DiscSystem
 		public TOCItem[] TOCItems = new TOCItem[101];
 
 		/// <summary>
-		/// POINT=0xA2 specifies this
+		/// The timestamp of the leadout track. In other words, the end of the user area.
 		/// </summary>
-		public Timestamp LeadoutTimestamp = new Timestamp();
+		public Timestamp LeadoutTimestamp { get { return TOCItems[100].LBATimestamp; } }
 	}
 }

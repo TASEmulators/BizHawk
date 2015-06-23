@@ -213,8 +213,6 @@ namespace BizHawk.Emulation.DiscSystem
 				TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA); //WHAT?? WE NEED THIS AFTER ALL! ZOUNDS MEANS, THERE WAS JUST SOME OTHER BUG
 				lastEnd = track.LengthInSectors + track.Indexes[1].LBA;
 			}
-
-			TOCRaw.LeadoutTimestamp = new Timestamp(lastEnd);
 		}
 
 		/// <summary>

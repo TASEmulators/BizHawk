@@ -64,6 +64,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 			BufferedSubcodeSector bss = new BufferedSubcodeSector(); //TODO - its hacky that we need this..
 
+			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
+			const int kADR = 1;
+			const int kUnknownControl = 0;
+
 			//mednafen delivers us what is essentially but not exactly (or completely) a TOCRaw.
 			//we need to synth RawTOCEntries from this and then turn it into a proper TOCRaw
 			//when coming from mednafen, there are 101 entries.
@@ -82,7 +86,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				var q = new SubchannelQ
 				{
-					q_status = 0, //unknown with mednadisc
+					q_status = SubchannelQ.ComputeStatus(kADR, (EControlQ)m_te.control), 
 					q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
 					q_index = BCD2.FromDecimal(i),
 					min = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -107,7 +111,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//synth A1 and A2 entries instead of setting FirstRecordedTrackNumber and LastRecordedTrackNumber below
 			var qA1 = new SubchannelQ
 			{
-				q_status = 0, //unknown with mednadisc
+				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
 				q_index = BCD2.FromBCD(0xA0),
 				min = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -122,7 +126,7 @@ namespace BizHawk.Emulation.DiscSystem
 			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA1 });
 			var qA2 = new SubchannelQ
 			{
-				q_status = 0, //unknown with mednadisc
+				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
 				q_index = BCD2.FromBCD(0xA1),
 				min = BCD2.FromDecimal(0), //unknown with mednadisc
