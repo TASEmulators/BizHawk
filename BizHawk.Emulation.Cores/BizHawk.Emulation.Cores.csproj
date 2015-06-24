@@ -59,6 +59,9 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ELFSharp">
+      <HintPath>..\References\ELFSharp.dll</HintPath>
+    </Reference>
     <Reference Include="EMU7800">
       <HintPath>..\References\EMU7800.dll</HintPath>
     </Reference>
@@ -732,7 +735,10 @@
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GPGXControlConverterDynamic.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GPGXDynamic.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx\LibGPGXDynamic.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
@@ -825,6 +831,7 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="ElfRunner.cs" />
     <Compile Include="FileID.cs" />
     <Compile Include="LibRetro.cs" />
     <Compile Include="LibRetroEmulator.cs" />
@@ -836,6 +843,7 @@
     <Compile Include="Consoles\PC Engine\VDC.cs" />
     <Compile Include="Consoles\PC Engine\VDC.Render.cs" />
     <Compile Include="Consoles\PC Engine\VPC.cs" />
+    <Compile Include="MemoryBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Consoles\Sega\Genesis\Genesis.cs" />
     <Compile Include="Consoles\Sega\Genesis\GenVDP.cs" />
