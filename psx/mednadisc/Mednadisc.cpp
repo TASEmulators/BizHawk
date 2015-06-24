@@ -54,18 +54,19 @@ EW_EXPORT void mednadisc_ReadTOC(MednaDisc* md, JustTOC* justToc, CDUtility::TOC
 }
 
 //NOTE: the subcode will come out interleaved.
-//this is almost useless, but it won't always be needed, so we're not deinterleaving it here yet
-//we should probably have more granular control than just reading this one sector eventually
+//Don't try changing this unless youre REALLY bored. It's convoluted.
+//If you do, make sure you have three states: must_interleave, must_deinterleaved and dontcare
 EW_EXPORT int32 mednadisc_ReadSector(MednaDisc* md, int lba, void* buf2448)
 {
 	CDAccess* disc = md->disc;
 	CDUtility::TOC &toc = md->toc;
 	try
 	{
+		//EDIT: this is handled now by the individual readers
 		//if it's at the lead-out track or beyond, synthesize it as a lead-out sector
-		if(lba >= (int32)toc.tracks[100].lba)
-			synth_leadout_sector_lba(0x02, toc, lba, (uint8*)buf2448);
-		else
+		//if(lba >= (int32)toc.tracks[100].lba)
+		//	synth_leadout_sector_lba(0x02, toc, lba, (uint8*)buf2448);
+		//else
 			disc->Read_Raw_Sector((uint8*)buf2448,lba);
 	}	
 	catch(MDFN_Error &) {

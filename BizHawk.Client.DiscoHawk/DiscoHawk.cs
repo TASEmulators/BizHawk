@@ -238,10 +238,8 @@ namespace BizHawk.Client.DiscoHawk
 				var src_toc = src_disc.TOCRaw;
 				var dst_toc = dst_disc.TOCRaw;
 
-
 				var src_databuf = new byte[2448];
 				var dst_databuf = new byte[2448];
-
 
 				Action<DiscTOCRaw.TOCItem> sw_dump_toc_one = (item) =>
 					{
@@ -302,13 +300,16 @@ namespace BizHawk.Client.DiscoHawk
 					sw.WriteLine();
 				};
 
-				Action<int, int, int, int> sw_dump_chunk = (lba, addr, count, offender) =>
+				int[] offenders = new int[12];
+				Action<int, int, int, int, int> sw_dump_chunk = (lba, dispaddr, addr, count, numoffenders) =>
 				{
+					var hashedOffenders = new HashSet<int>();
+					for (int i = 0; i < numoffenders; i++) hashedOffenders.Add(offenders[i]);
 					sw.Write("                         ");
-					for (int i = 0; i < count; i++) sw.Write((addr + i == offender) ? "vvv " : "    ");
+					for (int i = 0; i < count; i++) sw.Write((hashedOffenders.Contains(dispaddr + i)) ? "vvv " : "    ");
 					sw.WriteLine();
 					sw.Write("                         ");
-					for(int i=0;i<count;i++) sw.Write("{0:X3} ", addr+i, (i == count - 1) ? " " : "  ");
+					for (int i = 0; i < count; i++) sw.Write("{0:X3} ", dispaddr + i, (i == count - 1) ? " " : "  ");
 					sw.WriteLine();
 					sw.Write("                         ");
 					sw.Write(new string('-', count * 4));
@@ -318,7 +319,8 @@ namespace BizHawk.Client.DiscoHawk
 				};
 
 				//verify each sector contents (skip the pregap junk for now)
-				for (int lba = 0; lba < src_disc.LBACount; lba++)
+				int nSectors = src_disc.LBACount;
+				for (int lba = 0; lba < nSectors; lba++)
 				{
 					if (lba % 1000 == 0)
 						Console.WriteLine("LBA {0} of {1}", lba, src_disc.LBACount);
@@ -331,21 +333,42 @@ namespace BizHawk.Client.DiscoHawk
 					{
 						if (src_databuf[b] != dst_databuf[b])
 						{
-							//cmp_sw.Write("SRC ABA {0,6}:000 : {1:X2} {2:X2} {3:X2} {4:X2} {5:X2} {6:X2} {7:X2} {8:X2} {9:X2} {10:X2} {11:X2} {12:X2} {13:X2} {14:X2} {15:X2} ",i,disc_databuf[0],
 							sw.WriteLine("Mismatch in sector header at byte {0}",b);
-							sw_dump_chunk(lba, 0, 16, b);
+							offenders[0] = b;
+							sw_dump_chunk(lba, 0, 0, 16, 1);
 							goto SKIPPO;
 						}
 					}
 
+					//check userdata
 					for (int b = 16; b < 2352; b++)
 					{
 						if (src_databuf[b] != dst_databuf[b])
 						{
-							sw.Write("ABA {0} mismatch at byte {1}; terminating sector cmp\n", lba, b);
-							break;
+							sw.Write("LBA {0} mismatch at userdata byte {1}; terminating sector cmp\n", lba, b);
+							goto SKIPPO;
 						}
 					}
+
+					//check subchannels
+					for (int c = 0, b=2352; c < 8; c++)
+					{
+						int numOffenders = 0;
+						for (int e = 0; e < 12; e++, b++)
+						{
+							if (src_databuf[b] != dst_databuf[b])
+							{
+								offenders[numOffenders++] = e;
+							}
+						}
+						if (numOffenders != 0)
+						{
+							sw.Write("LBA {0} mismatch(es) at subchannel {1}; terminating sector cmp\n", lba, (char)('P' + c));
+							sw_dump_chunk(lba, 0, 2352 + c * 12, 12, numOffenders);
+							goto SKIPPO;
+						}
+					}
+
 				}
 
 			SKIPPO:
