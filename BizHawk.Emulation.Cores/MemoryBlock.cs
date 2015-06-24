@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores
 
 		public MemoryBlock(UIntPtr start, long size)
 		{
+#if !MONO
 			Start = Kernel32.VirtualAlloc(start, checked((UIntPtr)size),
 				Kernel32.AllocationType.RESERVE | Kernel32.AllocationType.COMMIT,
 				Kernel32.MemoryProtection.NOACCESS);
@@ -32,6 +33,15 @@ namespace BizHawk.Emulation.Cores
 			else
 				End = (UIntPtr)((long)Start + size);
 			Size = (long)End - (long)Start;
+#else
+			Start = LibC.mmap(start, checked((UIntPtr)size), 0, LibC.MapType.MAP_ANONYMOUS, -1, IntPtr.Zero);
+			if (Start == UIntPtr.Zero)
+			{
+				throw new InvalidOperationException("mmap() returned NULL");
+			}
+			End = (UIntPtr)((long)Start + size);
+			Size = (long)End - (long)Start;
+#endif
 		}
 
 		public enum Protection
@@ -47,6 +57,7 @@ namespace BizHawk.Emulation.Cores
 			if ((ulong)start + (ulong)length > (ulong)End)
 				throw new ArgumentOutOfRangeException("length");
 
+#if !MONO
 			Kernel32.MemoryProtection p;
 			switch (prot)
 			{
@@ -59,6 +70,21 @@ namespace BizHawk.Emulation.Cores
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(start, (UIntPtr)length, p, out old))
 				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+#else
+			LibC.ProtType p;
+			switch (prot)
+			{
+				case Protection.None: p = 0; break;
+				case Protection.R: p = LibC.ProtType.PROT_READ; break;
+				case Protection.RW: p = LibC.ProtType.PROT_READ | LibC.ProtType.PROT_WRITE; break;
+				case Protection.RX: p = LibC.ProtType.PROT_READ | LibC.ProtType.PROT_EXEC; break;
+				default: throw new ArgumentOutOfRangeException("prot");
+			}
+			ulong end = (ulong)start + (ulong)length;
+			ulong newstart = (ulong)start & ~((ulong)Environment.SystemPageSize - 1);
+			if (LibC.mprotect((UIntPtr)newstart, (UIntPtr)(end - newstart), p) != 0)
+				throw new InvalidOperationException("mprotect() returned -1!");
+#endif
 		}
 
 		public void Dispose()
@@ -71,7 +97,11 @@ namespace BizHawk.Emulation.Cores
 		{
 			if (Start != UIntPtr.Zero)
 			{
+#if !MONO
 				Kernel32.VirtualFree(Start, UIntPtr.Zero, Kernel32.FreeType.RELEASE);
+#else
+				LibC.munmap(Start, (UIntPtr)Size);
+#endif
 				Start = UIntPtr.Zero;
 			}
 		}
@@ -81,6 +111,7 @@ namespace BizHawk.Emulation.Cores
 			Dispose(false);
 		}
 
+#if !MONO
 		private static class Kernel32
 		{
 			[DllImport("kernel32.dll", SetLastError = true)]
@@ -129,23 +160,31 @@ namespace BizHawk.Emulation.Cores
 				NOCACHE_Modifierflag = 0x200,
 				WRITECOMBINE_Modifierflag = 0x400
 			}
-			/*
-			[Flags]
-			public enum Protection
-			{
-				PAGE_NOACCESS = 0x01,
-				PAGE_READONLY = 0x02,
-				PAGE_READWRITE = 0x04,
-				PAGE_WRITECOPY = 0x08,
-				PAGE_EXECUTE = 0x10,
-				PAGE_EXECUTE_READ = 0x20,
-				PAGE_EXECUTE_READWRITE = 0x40,
-				PAGE_EXECUTE_WRITECOPY = 0x80,
-				PAGE_GUARD = 0x100,
-				PAGE_NOCACHE = 0x200,
-				PAGE_WRITECOMBINE = 0x400
-			}*/
-
 		}
+#else
+		private static class LibC
+		{
+			[DllImport("libc.so")]
+			public static extern UIntPtr mmap(UIntPtr addr, UIntPtr length, ProtType prot, MapType flags, int fd, IntPtr offset);
+			[DllImport("libc.so")]
+			public static extern int munmap(UIntPtr addr, UIntPtr length);
+			[DllImport("libc.so")]
+			public static extern int mprotect(UIntPtr addr, UIntPtr length, ProtType prot);
+
+			[Flags]
+			public enum ProtType : int
+			{
+				PROT_EXEC = 1,
+				PROT_WRITE = 2,
+				PROT_READ = 4
+			}
+
+			[Flags]
+			public enum MapType : int
+			{
+				MAP_ANONYMOUS = 2
+			}
+		}
+#endif
 	}
 }
