@@ -400,3 +400,5 @@
 /output/OpenTK.xml
 /output/dll/miniclient.exe
 /References/*.xml
+/output/ELFSharp.dll
+/output/dll/ELFSharp.dll
