@@ -365,6 +365,7 @@
 /output/dll/OpenTK.dll
 /output/dll/OpenTK.GLControl.dll
 /output/dll/SlimDX.dll
+/output/dll/SharpCompress.dll
 /output/dll/BizHawk.Bizware.BizwareGL.GdiPlus.dll
 /output/dll/BizHawk.Bizware.BizwareGL.SlimDX.dll
 /output/dll/Virtu.dll
@@ -400,3 +401,8 @@
 /output/OpenTK.xml
 /output/dll/miniclient.exe
 /References/*.xml
+/output/*.mdb
+/output/dll/*.mdb
+/*.userprefs
+/MonoMacWrapper/bin
+/MonoMacWrapper/obj
