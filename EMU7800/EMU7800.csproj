@@ -114,7 +114,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(TargetDir)$(TargetFileName) $(ProjectDir)..\references\$(TargetFileName)
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">copy /y $(TargetDir)$(TargetFileName) $(ProjectDir)..\references\$(TargetFileName)
+</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Windows_NT' ">cp $(TargetDir)$(TargetFileName) $(ProjectDir)..\references\$(TargetFileName)
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

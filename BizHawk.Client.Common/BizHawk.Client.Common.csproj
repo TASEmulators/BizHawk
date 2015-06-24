@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -18,22 +18,22 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
+	</PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DOTNET20;UNMANAGED;COMPRESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
-  </PropertyGroup>
+	</PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,6 +58,15 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="SharpCompress">
+      <HintPath>..\References\SharpCompress.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Version\svnrev.cs">
@@ -66,42 +75,6 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="7z\ArchiveEmulationStreamProxy.cs" />
-    <Compile Include="7z\ArchiveExtractCallback.cs" />
-    <Compile Include="7z\ArchiveOpenCallback.cs" />
-    <Compile Include="7z\ArchiveUpdateCallback.cs" />
-    <Compile Include="7z\COM.cs" />
-    <Compile Include="7z\Common.cs" />
-    <Compile Include="7z\EventArgs.cs" />
-    <Compile Include="7z\Exceptions.cs" />
-    <Compile Include="7z\FileSignatureChecker.cs" />
-    <Compile Include="7z\Formats.cs" />
-    <Compile Include="7z\LibraryFeature.cs" />
-    <Compile Include="7z\LibraryManager.cs" />
-    <Compile Include="7z\LzmaDecodeStream.cs" />
-    <Compile Include="7z\LzmaEncodeStream.cs" />
-    <Compile Include="7z\LzmaProgressCallback.cs" />
-    <Compile Include="7z\NativeMethods.cs" />
-    <Compile Include="7z\sdk\Common\CRC.cs" />
-    <Compile Include="7z\sdk\Common\InBuffer.cs" />
-    <Compile Include="7z\sdk\Common\OutBuffer.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaBase.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaDecoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZMA\LzmaEncoder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\IMatchFinder.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzBinTree.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzInWindow.cs" />
-    <Compile Include="7z\sdk\Compress\LZ\LzOutWindow.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoder.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="7z\sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="7z\sdk\ICoder.cs" />
-    <Compile Include="7z\SevenZipCompressor.cs" />
-    <Compile Include="7z\SevenZipCompressorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipExtractor.cs" />
-    <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
-    <Compile Include="7z\SevenZipSfx.cs" />
-    <Compile Include="7z\StreamWrappers.cs" />
     <Compile Include="BinarySaveStates.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
@@ -223,7 +196,6 @@
     <Compile Include="SaveSlotManager.cs" />
     <Compile Include="SavestateManager.cs" />
     <Compile Include="SevenZipSharpArchiveHandler.cs" />
-    <Compile Include="SevenZipWriter.cs" />
     <Compile Include="SharpZipWriter.cs" />
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
@@ -233,6 +205,7 @@
     <Compile Include="tools\WatchList.cs" />
     <Compile Include="UIHelper.cs" />
     <Compile Include="XmlGame.cs" />
+    <Compile Include="helpers\SharpCompressHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
@@ -240,7 +213,7 @@
       <Name>BizHawk.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
-      <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
+      <Project>{E1A23168-B571-411C-B360-2229E7225E0E}</Project>
       <Name>BizHawk.Emulation.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
@@ -248,7 +221,7 @@
       <Name>BizHawk.Emulation.Cores</Name>
     </ProjectReference>
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
-      <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
+      <Project>{F51946EA-827F-4D82-B841-1F2F6D060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">

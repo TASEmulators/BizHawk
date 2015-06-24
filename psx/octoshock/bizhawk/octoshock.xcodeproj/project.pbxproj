@@ -9,18 +9,10 @@
 /* Begin PBXBuildFile section */
 		9E11BE571A41204F00CC7F6B /* CDUtility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDEB1A41204F00CC7F6B /* CDUtility.cpp */; };
 		9E11BE581A41204F00CC7F6B /* CDUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BDEC1A41204F00CC7F6B /* CDUtility.h */; };
-		9E11BE591A41204F00CC7F6B /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDED1A41204F00CC7F6B /* crc32.cpp */; };
-		9E11BE5C1A41204F00CC7F6B /* galois.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDF01A41204F00CC7F6B /* galois.cpp */; };
-		9E11BE5D1A41204F00CC7F6B /* l-ec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDF11A41204F00CC7F6B /* l-ec.cpp */; };
-		9E11BE5E1A41204F00CC7F6B /* lec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDF21A41204F00CC7F6B /* lec.cpp */; };
-		9E11BE5F1A41204F00CC7F6B /* lec.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BDF31A41204F00CC7F6B /* lec.h */; };
-		9E11BE601A41204F00CC7F6B /* recover-raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDF41A41204F00CC7F6B /* recover-raw.cpp */; };
 		9E11BE631A41204F00CC7F6B /* emuware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDF81A41204F00CC7F6B /* emuware.cpp */; };
 		9E11BE641A41204F00CC7F6B /* emuware.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BDF91A41204F00CC7F6B /* emuware.h */; };
 		9E11BE651A41204F00CC7F6B /* EW_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BDFA1A41204F00CC7F6B /* EW_state.cpp */; };
 		9E11BE661A41204F00CC7F6B /* EW_state.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BDFB1A41204F00CC7F6B /* EW_state.h */; };
-		9E11BE691A41204F00CC7F6B /* PACKED.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE001A41204F00CC7F6B /* PACKED.h */; };
-		9E11BE6A1A41204F00CC7F6B /* PACKED_END.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE011A41204F00CC7F6B /* PACKED_END.h */; };
 		9E11BE6B1A41204F00CC7F6B /* endian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BE021A41204F00CC7F6B /* endian.cpp */; };
 		9E11BE6C1A41204F00CC7F6B /* endian.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE031A41204F00CC7F6B /* endian.h */; };
 		9E11BE6D1A41204F00CC7F6B /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE041A41204F00CC7F6B /* error.h */; };
@@ -87,7 +79,6 @@
 		9E11BEB21A41204F00CC7F6B /* Deinterlacer.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE4E1A41204F00CC7F6B /* Deinterlacer.h */; };
 		9E11BEB31A41204F00CC7F6B /* surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BE4F1A41204F00CC7F6B /* surface.cpp */; };
 		9E11BEB41A41204F00CC7F6B /* surface.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE501A41204F00CC7F6B /* surface.h */; };
-		9E11BEB81A41213D00CC7F6B /* dvdisaster.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BEB71A41213D00CC7F6B /* dvdisaster.h */; };
 		9E11BEBA1A41215900CC7F6B /* SimpleFIFO.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */; };
 /* End PBXBuildFile section */
 
@@ -95,18 +86,10 @@
 		9E11BDDF1A411DA300CC7F6B /* liboctoshock.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liboctoshock.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E11BDEB1A41204F00CC7F6B /* CDUtility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CDUtility.cpp; sourceTree = "<group>"; };
 		9E11BDEC1A41204F00CC7F6B /* CDUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDUtility.h; sourceTree = "<group>"; };
-		9E11BDED1A41204F00CC7F6B /* crc32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc32.cpp; sourceTree = "<group>"; };
-		9E11BDF01A41204F00CC7F6B /* galois.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = galois.cpp; sourceTree = "<group>"; };
-		9E11BDF11A41204F00CC7F6B /* l-ec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "l-ec.cpp"; sourceTree = "<group>"; };
-		9E11BDF21A41204F00CC7F6B /* lec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lec.cpp; sourceTree = "<group>"; };
-		9E11BDF31A41204F00CC7F6B /* lec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lec.h; sourceTree = "<group>"; };
-		9E11BDF41A41204F00CC7F6B /* recover-raw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "recover-raw.cpp"; sourceTree = "<group>"; };
 		9E11BDF81A41204F00CC7F6B /* emuware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emuware.cpp; sourceTree = "<group>"; };
 		9E11BDF91A41204F00CC7F6B /* emuware.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emuware.h; sourceTree = "<group>"; };
 		9E11BDFA1A41204F00CC7F6B /* EW_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EW_state.cpp; sourceTree = "<group>"; };
 		9E11BDFB1A41204F00CC7F6B /* EW_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EW_state.h; sourceTree = "<group>"; };
-		9E11BE001A41204F00CC7F6B /* PACKED.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PACKED.h; sourceTree = "<group>"; };
-		9E11BE011A41204F00CC7F6B /* PACKED_END.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PACKED_END.h; sourceTree = "<group>"; };
 		9E11BE021A41204F00CC7F6B /* endian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = endian.cpp; path = ../endian.cpp; sourceTree = "<group>"; };
 		9E11BE031A41204F00CC7F6B /* endian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = endian.h; path = ../endian.h; sourceTree = "<group>"; };
 		9E11BE041A41204F00CC7F6B /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = error.h; path = ../error.h; sourceTree = "<group>"; };
@@ -173,7 +156,6 @@
 		9E11BE4E1A41204F00CC7F6B /* Deinterlacer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deinterlacer.h; sourceTree = "<group>"; };
 		9E11BE4F1A41204F00CC7F6B /* surface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = surface.cpp; sourceTree = "<group>"; };
 		9E11BE501A41204F00CC7F6B /* surface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = surface.h; sourceTree = "<group>"; };
-		9E11BEB71A41213D00CC7F6B /* dvdisaster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvdisaster.h; sourceTree = "<group>"; };
 		9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleFIFO.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -221,14 +203,7 @@
 			children = (
 				9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */,
 				9E11BDEC1A41204F00CC7F6B /* CDUtility.h */,
-				9E11BEB71A41213D00CC7F6B /* dvdisaster.h */,
 				9E11BDEB1A41204F00CC7F6B /* CDUtility.cpp */,
-				9E11BDED1A41204F00CC7F6B /* crc32.cpp */,
-				9E11BDF01A41204F00CC7F6B /* galois.cpp */,
-				9E11BDF11A41204F00CC7F6B /* l-ec.cpp */,
-				9E11BDF21A41204F00CC7F6B /* lec.cpp */,
-				9E11BDF31A41204F00CC7F6B /* lec.h */,
-				9E11BDF41A41204F00CC7F6B /* recover-raw.cpp */,
 			);
 			name = cdrom;
 			path = ../cdrom;
@@ -241,8 +216,6 @@
 				9E11BDF91A41204F00CC7F6B /* emuware.h */,
 				9E11BDFA1A41204F00CC7F6B /* EW_state.cpp */,
 				9E11BDFB1A41204F00CC7F6B /* EW_state.h */,
-				9E11BE001A41204F00CC7F6B /* PACKED.h */,
-				9E11BE011A41204F00CC7F6B /* PACKED_END.h */,
 			);
 			name = emuware;
 			path = ../emuware;
@@ -340,11 +313,8 @@
 				9E11BE831A41204F00CC7F6B /* dma.h in Headers */,
 				9E11BE9D1A41204F00CC7F6B /* multitap.h in Headers */,
 				9E11BEB01A41204F00CC7F6B /* Stream.h in Headers */,
-				9E11BE6A1A41204F00CC7F6B /* PACKED_END.h in Headers */,
 				9E11BE771A41204F00CC7F6B /* octoshock.h in Headers */,
-				9E11BE691A41204F00CC7F6B /* PACKED.h in Headers */,
 				9E11BE661A41204F00CC7F6B /* EW_state.h in Headers */,
-				9E11BEB81A41213D00CC7F6B /* dvdisaster.h in Headers */,
 				9E11BEAA1A41204F00CC7F6B /* spu.h in Headers */,
 				9E11BEB21A41204F00CC7F6B /* Deinterlacer.h in Headers */,
 				9E11BE811A41204F00CC7F6B /* dis.h in Headers */,
@@ -360,7 +330,6 @@
 				9E11BE581A41204F00CC7F6B /* CDUtility.h in Headers */,
 				9E11BE791A41204F00CC7F6B /* cdc.h in Headers */,
 				9E11BE7B1A41204F00CC7F6B /* cpu.h in Headers */,
-				9E11BE5F1A41204F00CC7F6B /* lec.h in Headers */,
 				9E11BE6D1A41204F00CC7F6B /* error.h in Headers */,
 				9E11BE6C1A41204F00CC7F6B /* endian.h in Headers */,
 				9E11BE641A41204F00CC7F6B /* emuware.h in Headers */,
@@ -436,7 +405,6 @@
 			files = (
 				9E11BEA71A41204F00CC7F6B /* sio.cpp in Sources */,
 				9E11BE8C1A41204F00CC7F6B /* gte.cpp in Sources */,
-				9E11BE5E1A41204F00CC7F6B /* lec.cpp in Sources */,
 				9E11BEA01A41204F00CC7F6B /* irq.cpp in Sources */,
 				9E11BE651A41204F00CC7F6B /* EW_state.cpp in Sources */,
 				9E11BEB31A41204F00CC7F6B /* surface.cpp in Sources */,
@@ -457,7 +425,6 @@
 				9E11BE841A41204F00CC7F6B /* frontio.cpp in Sources */,
 				9E11BE961A41204F00CC7F6B /* justifier.cpp in Sources */,
 				9E11BE8E1A41204F00CC7F6B /* dualanalog.cpp in Sources */,
-				9E11BE5D1A41204F00CC7F6B /* l-ec.cpp in Sources */,
 				9E11BE941A41204F00CC7F6B /* guncon.cpp in Sources */,
 				9E11BE7D1A41204F00CC7F6B /* cpu_computedgoto.inc in Sources */,
 				9E11BE7A1A41204F00CC7F6B /* cpu.cpp in Sources */,
@@ -467,15 +434,12 @@
 				9E11BE821A41204F00CC7F6B /* dma.cpp in Sources */,
 				9E11BEA51A41204F00CC7F6B /* psx.cpp in Sources */,
 				9E11BEB11A41204F00CC7F6B /* Deinterlacer.cpp in Sources */,
-				9E11BE601A41204F00CC7F6B /* recover-raw.cpp in Sources */,
 				9E11BEAF1A41204F00CC7F6B /* Stream.cpp in Sources */,
 				9E11BE9A1A41204F00CC7F6B /* mouse.cpp in Sources */,
 				9E11BE9E1A41204F00CC7F6B /* negcon.cpp in Sources */,
-				9E11BE5C1A41204F00CC7F6B /* galois.cpp in Sources */,
 				9E11BE901A41204F00CC7F6B /* dualshock.cpp in Sources */,
 				9E11BE891A41204F00CC7F6B /* gpu_line.cpp in Sources */,
 				9E11BEAD1A41204F00CC7F6B /* timer.cpp in Sources */,
-				9E11BE591A41204F00CC7F6B /* crc32.cpp in Sources */,
 				9E11BE8B1A41204F00CC7F6B /* gpu_sprite.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

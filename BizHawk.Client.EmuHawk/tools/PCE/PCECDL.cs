@@ -244,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
 			if (_cdl == null)
-			{
+		{
 				MessageBox.Show(this, "Cannot clear with no CDL loaded!", "Alert");
 			}
 			else
@@ -281,7 +281,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
-		}
+	}
 
 		#endregion
 

@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class AddBreakpointDialog : Form
+	public partial class AddBreakpointDialog : Form, IHasShowDialog
 	{
 		public AddBreakpointDialog()
 		{

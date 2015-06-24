@@ -49,12 +49,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowsePalette_Click(object sender, EventArgs e)
 		{
-			OpenFileDialog ofd = new OpenFileDialog
-				{
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES"),
-					Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*",
-					RestoreDirectory = true
-				};
+			IOpenFileDialog ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Palettes"].Path, "NES");
+			ofd.Filter = "Palette Files (.pal)|*.PAL|All Files (*.*)|*.*";
+			ofd.RestoreDirectory = true;
 
 			var result = ofd.ShowDialog();
 			if (result != DialogResult.OK)

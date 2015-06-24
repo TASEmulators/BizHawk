@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static FileInfo GetTasProjFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetWatchFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCheatFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -149,12 +149,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCdlFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog
-			{
-				Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*",
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-				RestoreDirectory = true
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*";
+			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+			ofd.RestoreDirectory = true;
 
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{

@@ -450,11 +450,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Multiselect = true,
-				Filter = FormatFilter(
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Multiselect = true;
+			ofd.Filter = FormatFilter(
 					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm",
 					"FCEUX", "*.fm2",
 					"PCEjin/Mednafen", "*.mc2;*.mcm",
@@ -470,9 +469,8 @@ namespace BizHawk.Client.EmuHawk
 					"Yabause", "*.ymv",
 					"ZSNES", "*.zmv",
 					"BizHawk Bkm", "*.bkm",
-					"All Files", "*.*"),
-				RestoreDirectory = false
-			};
+					"All Files", "*.*");
+			ofd.RestoreDirectory = false;
 
 			var result = ofd.ShowHawkDialog();
 			if (result == DialogResult.OK)
@@ -1528,12 +1526,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*",
-				RestoreDirectory = true
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Filter = "TI-83 Program Files (*.83p,*.8xp)|*.83P;*.8xp|All Files|*.*";
+			ofd.RestoreDirectory = true;
 
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{

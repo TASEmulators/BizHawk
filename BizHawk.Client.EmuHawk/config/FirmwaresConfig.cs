@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void tsmiSetCustomization_Click(object sender, EventArgs e)
 		{
-			using (var ofd = new OpenFileDialog())
+			using (var ofd = HawkDialogFactory.CreateOpenFileDialog())
 			{
 				ofd.InitialDirectory = currSelectorDir;
 				ofd.RestoreDirectory = true;

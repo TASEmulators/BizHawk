@@ -5,7 +5,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class HexColorsForm : Form
+    public partial class HexColorsForm : Form, IHasShowDialog
 	{
 		public HexColorsForm()
 		{

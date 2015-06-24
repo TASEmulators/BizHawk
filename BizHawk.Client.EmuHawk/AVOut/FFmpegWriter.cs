@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -80,29 +81,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				ffmpeg = new Process();
-#if WINDOWS
-				ffmpeg.StartInfo.FileName = System.IO.Path.Combine(PathManager.GetBasePathAbsolute(), "dll", "ffmpeg.exe");
-#else
-				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
-#endif
+			ffmpeg = new Process();
+			ffmpeg.StartInfo.FileName = FFMpeg.FFMpegPath;
 
-				string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
-				ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
-				ffmpeg.StartInfo.CreateNoWindow = true;
+			string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
+			ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
+			ffmpeg.StartInfo.CreateNoWindow = true;
 
-				// ffmpeg sends informative display to stderr, and nothing to stdout
-				ffmpeg.StartInfo.RedirectStandardError = true;
-				ffmpeg.StartInfo.RedirectStandardInput = true;
-				ffmpeg.StartInfo.UseShellExecute = false;
+			// ffmpeg sends informative display to stderr, and nothing to stdout
+			ffmpeg.StartInfo.RedirectStandardError = true;
+			ffmpeg.StartInfo.RedirectStandardInput = true;
+			ffmpeg.StartInfo.UseShellExecute = false;
 
-				commandline = "ffmpeg " + ffmpeg.StartInfo.Arguments;
+			commandline = "ffmpeg " + ffmpeg.StartInfo.Arguments;
 
-				ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
+			ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
 
-				stderr = new Queue<string>(consolebuffer);
+			stderr = new Queue<string>(consolebuffer);
 
-				ffmpeg.Start();
+			ffmpeg.Start();
 			}
 			catch
 			{

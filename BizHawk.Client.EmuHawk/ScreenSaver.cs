@@ -33,15 +33,19 @@ namespace BizHawk.Client.EmuHawk
 		private static Int32 GetScreenSaverTimeout()
 		{
 			Int32 value = 0;
+#if WINDOWS
 			SystemParametersInfo(SPI_GETSCREENSAVERTIMEOUT, 0, ref value, 0);
+#endif
 			return value;
 		}
 
 		// Pass in the number of seconds to set the screen saver timeout value.
 		private static void SetScreenSaverTimeout(Int32 Value)
 		{
+#if WINDOWS
 			int nullVar = 0;
 			SystemParametersInfo(SPI_SETSCREENSAVERTIMEOUT, Value, ref nullVar, SPIF_SENDWININICHANGE);
+#endif
 		}
 	}
 }

@@ -88,8 +88,10 @@ namespace BizHawk.Client.EmuHawk
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
+#if WINDOWS
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
-				GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+			GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+#endif
 			else
 			{
 				GlobalWin.GL = GlobalWin.IGL_GL;
@@ -108,8 +110,10 @@ namespace BizHawk.Client.EmuHawk
 			//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
 			//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
 			//pasting should be safe (not affecting the jit order of things)
+#if WINDOWS
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
+#endif
 
 			if (System.Diagnostics.Debugger.IsAttached)
 			{ // Let the debugger handle errors

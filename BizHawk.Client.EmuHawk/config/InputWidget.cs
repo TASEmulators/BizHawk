@@ -65,8 +65,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#if WINDOWS
 		[DllImport("user32")]
 		private static extern bool HideCaret(IntPtr hWnd);
+		#else
+		private static bool HideCaret(IntPtr hWnd) { return true; }
+		#endif
 
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
@@ -232,14 +236,14 @@ namespace BizHawk.Client.EmuHawk
 			switch (m.Msg)
 			{
 				case 0x0201: // WM_LBUTTONDOWN
-					Focus();
-					return;
+						Focus();
+						return;
 				case 0x0203: // WM_LBUTTONDBLCLK
 				case 0x0204: // WM_RBUTTONDOWN
 				case 0x0205: // WM_RBUTTONUP
 				case 0x0206: // WM_RBUTTONDBLCLK
-					return;
-			}
+						return;
+					}
 
 			base.WndProc(ref m);
 		}

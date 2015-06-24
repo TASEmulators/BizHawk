@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 #if WINDOWS
 using SlimDX.DirectInput;
+#else
+using OpenTK.Input;
 #endif
 
 using BizHawk.Common;
@@ -114,14 +116,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private Input()
 		{
-#if WINDOWS
 			UpdateThread = new Thread(UpdateThreadProc)
 			{
 				IsBackground = true, 
 				Priority = ThreadPriority.AboveNormal //why not? this thread shouldn't be very heavy duty, and we want it to be responsive
 			};
 			UpdateThread.Start();
-#endif
 		}
 
 		public static void Initialize()
@@ -130,6 +130,8 @@ namespace BizHawk.Client.EmuHawk
 			KeyInput.Initialize();
 			GamePad.Initialize();
 			GamePad360.Initialize();
+#else
+			OTK_Keyboard.Initialize();
 #endif
 			Instance = new Input();
 		}
@@ -192,7 +194,11 @@ namespace BizHawk.Client.EmuHawk
 		private readonly WorkingDictionary<string, object> ModifierState = new WorkingDictionary<string, object>();
 		private readonly WorkingDictionary<string, bool> LastState = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, bool> UnpressState = new WorkingDictionary<string, bool>();
+		#if WINDOWS
 		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "LeftShift", "RightShift", "LeftControl", "RightControl", "LeftAlt", "RightAlt" });
+		#else
+		private readonly HashSet<string> IgnoreKeys = new HashSet<string>(new[] { "ShiftLeft", "ShiftRight", "ControlLeft", "ControlRight", "AltLeft", "AltRight" });
+		#endif
 		private readonly WorkingDictionary<string, float> FloatValues = new WorkingDictionary<string, float>();
 		private readonly WorkingDictionary<string, float> FloatDeltas = new WorkingDictionary<string, float>();
 		private bool trackdeltas = false;
@@ -230,12 +236,21 @@ namespace BizHawk.Client.EmuHawk
 
 			//dont generate events for things like Ctrl+LeftControl
 			ModifierKey mods = _Modifiers;
+			#if WINDOWS
 			if (button == "LeftShift") mods &= ~ModifierKey.Shift;
 			if (button == "RightShift") mods &= ~ModifierKey.Shift;
 			if (button == "LeftControl") mods &= ~ModifierKey.Control;
 			if (button == "RightControl") mods &= ~ModifierKey.Control;
 			if (button == "LeftAlt") mods &= ~ModifierKey.Alt;
 			if (button == "RightAlt") mods &= ~ModifierKey.Alt;
+			#else
+			if (button == "ShiftLeft") mods &= ~ModifierKey.Shift;
+			if (button == "ShiftRight") mods &= ~ModifierKey.Shift;
+			if (button == "ControlLeft") mods &= ~ModifierKey.Control;
+			if (button == "ControlRight") mods &= ~ModifierKey.Control;
+			if (button == "AltLeft") mods &= ~ModifierKey.Alt;
+			if (button == "AltRight") mods &= ~ModifierKey.Alt;
+			#endif
 
 			var ie = new InputEvent
 				{
@@ -313,29 +328,40 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return FloatValuesCopy;
 		}
-
-#if WINDOWS
+		
 		void UpdateThreadProc()
 		{
 			for (; ; )
 			{
+				#if WINDOWS
 				var keyEvents = KeyInput.Update();
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
+				#else
+				OTK_Keyboard.Update();
+				#endif
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
 				lock (this)
 				{
 					_NewEvents.Clear();
 
+					#if WINDOWS
 					//analyze keys
 					foreach (var ke in keyEvents)
 						HandleButton(ke.Key.ToString(), ke.Pressed);
+					#else
+					foreach(Key kb in Enum.GetValues(typeof(Key)))
+					{
+						HandleButton(kb.ToString(), OTK_Keyboard.IsPressed(kb));
+					}
+					#endif
 
 					lock (FloatValues)
 					{
 						//FloatValues.Clear();
 
+						#if WINDOWS
 						//analyze xinput
 						for (int i = 0; i < GamePad360.Devices.Count; i++)
 						{
@@ -372,7 +398,7 @@ namespace BizHawk.Client.EmuHawk
 								FloatValues[n] = f;
 							}
 						}
-
+						#endif
 						// analyse moose
 						// other sorts of mouse api (raw input) could easily be added as a separate listing under a different class
 						if (WantingMouseFocus.Contains(System.Windows.Forms.Form.ActiveForm))
@@ -424,7 +450,6 @@ namespace BizHawk.Client.EmuHawk
 				Thread.Sleep(10);
 			}
 		}
-#endif
 
 		public void StartListeningForFloatEvents()
 		{

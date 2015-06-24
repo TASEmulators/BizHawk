@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A simple form that prompts the user for a single line of input
 	/// </summary>
-	public partial class InputPrompt : Form
+    public partial class InputPrompt : Form, IHasShowDialog
 	{
 		public InputPrompt()
 		{

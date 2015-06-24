@@ -122,6 +122,15 @@ namespace BizHawk.Client.EmuHawk
 
 			_throttle = new Throttle();
 
+
+			FFMpeg.FFMpegPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll", "ffmpeg");
+			#if !WINDOWS
+			if (OpenTK.Configuration.RunningOnMacOS && File.Exists(FFMpeg.FFMpegPath+"_osx"))
+			{
+				FFMpeg.FFMpegPath += "_osx";
+			}
+			#endif
+
 			Global.CheatList = new CheatCollection();
 			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
 
@@ -431,10 +440,28 @@ namespace BizHawk.Client.EmuHawk
 
 			for (; ; )
 			{
-				Input.Instance.Update();
+				if (RunLoopCore())
+				{
+					Thread.Sleep(0);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
 
-				// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
-				ProcessInput();
+		public bool RunLoopCore()
+		{
+			if (_exit)
+			{
+				Shutdown();
+				return false;
+			}
+			Input.Instance.Update();
+
+			// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
+			ProcessInput();
 				Global.ClientControls.LatchFromPhysical(HotkeyCoalescer);
 
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
@@ -478,21 +505,14 @@ namespace BizHawk.Client.EmuHawk
 
 				CheckMessages();
 
-				if (_exitRequestPending)
-				{
-					_exitRequestPending = false;
-					Close();
-				}
-
-				if (_exit)
-				{
-					break;
-				}
-
-				Thread.Sleep(0);
+			if (_exitRequestPending)
+			{
+				_exitRequestPending = false;
+				Close();
+				_exit = true;
 			}
 
-			Shutdown();
+			return true;
 		}
 
 		/// <summary>
@@ -1772,12 +1792,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
-				RestoreDirectory = true
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetSaveStatePath(Global.Game);
+			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
+			ofd.RestoreDirectory = true;
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -1912,13 +1930,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenRom()
 		{
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Filter = RomFilter,
-				RestoreDirectory = false,
-				FilterIndex = _lastOpenRomFilter
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
+			ofd.Filter = RomFilter;
+			ofd.RestoreDirectory = false;
+			ofd.FilterIndex = _lastOpenRomFilter;
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -3363,7 +3379,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
+				#if WINDOWS
 				JumpLists.AddRecentItem(loader.CanonicalFullPath);
+				#endif
 
 				// Don't load Save Ram if a movie is being loaded
 				if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))

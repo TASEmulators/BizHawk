@@ -447,6 +447,7 @@ namespace BizHawk.Client.EmuHawk
 			// virtual listviews must be Details or List view with no sorting
 			View = View.Details;
 			Sorting = SortOrder.None;
+			RetrieveVirtualItem += (sender, e) => { e.Item = GetItem(e.ItemIndex); };
 
 			UseCustomBackground = true;
 
@@ -472,16 +473,16 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <param name="index">Listview item's index.</param>
 		/// <param name="selected">Select the passed item?</param>
-		public void SelectItem(int index, bool selected) 
-		{
-			var ptrItem = IntPtr.Zero;
+		public void SelectItem(int index, bool selected) {
+			#if Windows
+			IntPtr ptrItem = IntPtr.Zero;
 
 			try 
 			{
-				// Determine whether selecting or unselecting.
-				uint select = selected ? (uint)ListViewCallBackMask.LVIS_SELECTED : 0;
+			// Determine whether selecting or unselecting.
+			uint select = selected ? (uint)ListViewCallBackMask.LVIS_SELECTED : 0;
 
-				// Fill in the LVITEM structure with state fields.
+			// Fill in the LVITEM structure with state fields.
 				var stateItem = new LvItem
 				{
 					Mask = (uint)ListViewItemMask.LVIF_STATE,
@@ -491,41 +492,45 @@ namespace BizHawk.Client.EmuHawk
 					StateMask = (uint)ListViewCallBackMask.LVIS_SELECTED
 				};
 
-				// Copy the structure to unmanaged memory.
-				ptrItem = Marshal.AllocHGlobal(Marshal.SizeOf(stateItem.GetType()));
-				Marshal.StructureToPtr(stateItem, ptrItem, true);
+			// Copy the structure to unmanaged memory.
+			ptrItem = Marshal.AllocHGlobal(Marshal.SizeOf(stateItem.GetType()));
+			Marshal.StructureToPtr(stateItem, ptrItem, true);
 
-				// Send the message to the control window.
+			// Send the message to the control window.
 				Win32.SendMessage(
-					this.Handle,
-					(int)ListViewMessages.LVM_SETITEMSTATE,
-					index,
-					ptrItem.ToInt32());
+			this.Handle,
+			(int)ListViewMessages.LVM_SETITEMSTATE,
+			index,
+			ptrItem.ToInt32());
 			} 
 			catch (Exception ex) 
 			{
-				System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
+			System.Diagnostics.Trace.WriteLine("VirtualListView.SetItemState error=" + ex.Message);
 				
-				// TODO: should this eat any exceptions?
+			// TODO: should this eat any exceptions?
 				throw;
 			} 
 			finally 
 			{
-				// Always release the unmanaged memory.
+			// Always release the unmanaged memory.
 				if (ptrItem != IntPtr.Zero) 
 				{
-					Marshal.FreeHGlobal(ptrItem);
-				}
+			Marshal.FreeHGlobal(ptrItem);
 			}
+			}
+			#endif
 		}
 
 		private void SetVirtualItemCount() 
 		{
+			#if WINDOWS
 			Win32.SendMessage(
-				this.Handle,
-				(int)ListViewMessages.LVM_SETITEMCOUNT,
+			this.Handle,
+			(int)ListViewMessages.LVM_SETITEMCOUNT,
 				this._itemCount,
-				0);
+			0);
+			#endif
+			this.VirtualListSize = _itemCount;
 		}
 
 		protected void OnDispInfoNotice(ref Message m, bool useAnsi)
@@ -551,9 +556,9 @@ namespace BizHawk.Client.EmuHawk
 						catch (Exception e)
 						{
 							Debug.WriteLine("Failed to copy text name from client: " + e, "VirtualListView.OnDispInfoNotice");
-						}
 					}
 				}
+			}
 			}
 
 			if ((info.Item.Mask & (uint)ListViewItemMask.LVIF_IMAGE) > 0)
@@ -585,13 +590,14 @@ namespace BizHawk.Client.EmuHawk
 
 		protected void OnCustomDrawNotice(ref Message m) 
 		{
+			#if WINDOWS
 			var cd = (NmLvCustomDraw)m.GetLParam(typeof(NmLvCustomDraw));
 			switch (cd.Nmcd.dwDrawStage) 
 			{
 				case (int)CustomDrawDrawStageFlags.CDDS_ITEMPREPAINT:
 				case (int)CustomDrawDrawStageFlags.CDDS_PREPAINT:
 					m.Result = new IntPtr((int)CustomDrawReturnFlags.CDRF_NOTIFYSUBITEMDRAW);
-					break;
+			break;
 				case (int)CustomDrawDrawStageFlags.CDDS_SUBITEMPREPAINT:
 					if (QueryItemBkColor != null)
 					{
@@ -599,13 +605,14 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemBkColor(cd.Nmcd.dwItemSpec, cd.SubItem, ref color);
 						cd.ClearTextBackground = (color.B << 16) | (color.G << 8) | color.R;
 						Marshal.StructureToPtr(cd, m.LParam, false);
-					}
+			}
 
 					m.Result = new IntPtr((int)CustomDrawReturnFlags.CDRF_DODEFAULT);
-					break;
+			break;
 			}
+			#endif
 		}
-		
+
 		/// <summary>
 		/// Event to be fired whenever the control scrolls
 		/// </summary>
@@ -618,6 +625,7 @@ namespace BizHawk.Client.EmuHawk
 				handler(this, e);
 			}
 		}
+		#if WINDOWS
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int GetScrollPos(IntPtr hWnd, Orientation nBar);
@@ -635,32 +643,32 @@ namespace BizHawk.Client.EmuHawk
 			var messageProcessed = false;
 			switch (m.Msg)
 			{
-				case (int)WindowsMessage.WM_REFLECT + (int)WindowsMessage.WM_NOTIFY:
+		case (int)WindowsMessage.WM_REFLECT + (int)WindowsMessage.WM_NOTIFY:
 					var nm1 = (NmHdr)m.GetLParam(typeof(NmHdr));
 					switch (nm1.Code)
 					{
-						case (int)Notices.NM_CUSTOMDRAW:
-							OnCustomDrawNotice(ref m);
-							messageProcessed = true;
+		case (int)Notices.NM_CUSTOMDRAW:
+		OnCustomDrawNotice(ref m);
+		messageProcessed = true;
 
 							if (QueryItemBkColor == null || !UseCustomBackground)
 							{
 								m.Result = (IntPtr)0;
 							}
 
-							break;
-						case (int)ListViewNotices.LVN_GETDISPINFOW:
-							OnDispInfoNotice(ref m, false);
-							messageProcessed = true;
-							break;
-						case (int)ListViewNotices.LVN_BEGINDRAG:
-							OnBeginItemDrag(MouseButtons.Left, ref m);
-							messageProcessed = true;
-							break;
-						case (int)ListViewNotices.LVN_BEGINRDRAG:
-							OnBeginItemDrag(MouseButtons.Right, ref m);
-							messageProcessed = true;
-							break;
+		break;
+		case (int)ListViewNotices.LVN_GETDISPINFOW:
+		OnDispInfoNotice(ref m, false);
+		messageProcessed = true;
+		break;
+		case (int)ListViewNotices.LVN_BEGINDRAG:
+		OnBeginItemDrag(MouseButtons.Left, ref m);
+		messageProcessed = true;
+		break;
+		case (int)ListViewNotices.LVN_BEGINRDRAG:
+		OnBeginItemDrag(MouseButtons.Right, ref m);
+		messageProcessed = true;
+		break;
 					}
 
 					break;
@@ -668,28 +676,34 @@ namespace BizHawk.Client.EmuHawk
 					// http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
 					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), m.WParam.ToInt32()));
 					break;
-				case (int)WindowsMessage.WM_ERASEBKGND:
-					if (BlazingFast)
-					{
-						messageProcessed = true;
-						m.Result = new IntPtr(1);
-					}
+		case (int)WindowsMessage.WM_ERASEBKGND:
+		if (BlazingFast)
+		{
+		messageProcessed = true;
+		m.Result = new IntPtr(1);
+		}
 
-					break;
-			}
+		break;
+		}
 			
 			if (!messageProcessed) 
 			{
 				try 
 				{
-					base.WndProc(ref m);
+		base.WndProc(ref m);
 				}
 				catch (Exception ex)
 				{
-					Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
-				}
-			}
+		Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
 		}
+		}
+		}
+		#else
+		public int VScrollPos
+		{
+			get { return AutoScrollOffset.Y; }
+		}
+		#endif
 
 		public bool BlazingFast { get; set; }
 		public bool UseCustomBackground { get; set; }
@@ -701,6 +715,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				QueryItem(idx, out item);
 			}
+
+#if !WINDOWS
+			if (QueryItemText != null)
+			{
+				//This is needed for Mono, which doesn't have any of the magic drawing stuff that windows has
+				string text = string.Empty;
+				QueryItemText(idx, 0, out text);
+				item = new ListViewItem(){ Text = text };
+				int colCount = this.Columns.Count;
+				for(int x=1; x<colCount; x++){
+					QueryItemText(idx, x, out text);
+					item.SubItems.Add(text);
+				}
+			}
+#endif
 
 			if (item == null) 
 			{
@@ -756,7 +785,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ensureVisible(int index) 
 		{
+			#if WINDOWS
 			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, index, 1);
+			#endif
 		}
 
 		public void ensureVisible() 

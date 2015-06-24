@@ -714,7 +714,7 @@ class Blip_Buffer
 
 	}
 
-		Blip_Buffer::Blip_Buffer()
+		Blip_Buffer()
 		{
 		   factor_       = INT_MAX;
 		   buffer_       = 0;
@@ -726,12 +726,12 @@ class Blip_Buffer
 		   clear();
 		}
 
-		Blip_Buffer::~Blip_Buffer()
+		~Blip_Buffer()
 		{
 			free(buffer_);
 		}
 
-		void Blip_Buffer::clear( void)
+		void clear( void)
 		{
 		   offset_       = 0;
 		   reader_accum_ = 0;
@@ -739,7 +739,7 @@ class Blip_Buffer
 			  memset( buffer_, 0, (buffer_size_ + BLIP_BUFFER_EXTRA_) * sizeof (int32_t) );
 		}
 
-		const char * Blip_Buffer::set_sample_rate( long new_rate, int msec )
+		const char * set_sample_rate( long new_rate, int msec )
 		{
 		   /* start with maximum length that resampled time can represent*/
 		   long new_size = (ULONG_MAX >> BLIP_BUFFER_ACCURACY) - BLIP_BUFFER_EXTRA_ - 64;
@@ -775,7 +775,7 @@ class Blip_Buffer
 
 		/* Sets number of source time units per second */
 
-		uint32_t Blip_Buffer::clock_rate_factor( long rate ) const
+		uint32_t clock_rate_factor( long rate ) const
 		{
 		   double ratio = (double) sample_rate_ / rate;
 		   int32_t factor = (int32_t) floor( ratio * (1L << BLIP_BUFFER_ACCURACY) + 0.5 );
@@ -805,7 +805,7 @@ class Blip_Synth
 	}
 
 	void volume( double v ) { delta_factor = int ((v * 1.0) * (1L << BLIP_SAMPLE_BITS) + 0.5); }
-	INLINE void Blip_Synth::offset_resampled( uint32_t time, int delta, Blip_Buffer* blip_buf ) const
+	INLINE void offset_resampled( uint32_t time, int delta, Blip_Buffer* blip_buf ) const
 	{
 		int32_t left, right, phase;
 		int32_t *buf;
@@ -825,7 +825,7 @@ class Blip_Synth
 		buf [1] = right;
 	}
 
-	INLINE void Blip_Synth::offset( int32_t t, int delta, Blip_Buffer* buf ) const
+	INLINE void offset( int32_t t, int delta, Blip_Buffer* buf ) const
 	{
 			offset_resampled( t * buf->factor_ + buf->offset_, delta, buf );
 	}
@@ -883,7 +883,7 @@ class Gb_Osc
 		NSS(enabled);
 	}
 
-	void Gb_Osc::clock_length()
+	void clock_length()
 	{
 			if ( (regs [4] & LENGTH_ENABLED) && length_ctr )
 			{
@@ -891,7 +891,7 @@ class Gb_Osc
 							enabled = false;
 			}
 	}
-	void Gb_Osc::reset()
+	void reset()
 	{
 			output   = 0;
 			last_amp = 0;
@@ -900,7 +900,7 @@ class Gb_Osc
 			enabled  = false;
 	}
 	protected:
-	INLINE void Gb_Osc::update_amp( int32_t time, int new_amp )
+	INLINE void update_amp( int32_t time, int new_amp )
 	{
 		int delta = new_amp - last_amp;
 			if ( delta )
@@ -909,7 +909,7 @@ class Gb_Osc
 					med_synth->offset( time, delta, output );
 			}
 	}
-	int Gb_Osc::write_trig( int frame_phase, int max_len, int old_data )
+	int write_trig( int frame_phase, int max_len, int old_data )
 	{
 			int data = regs [4];
 
@@ -952,7 +952,7 @@ class Gb_Env : public Gb_Osc
 		NSS(env_enabled);
 	}
 
-	void Gb_Env::clock_envelope()
+	void clock_envelope()
 	{
 			if ( env_enabled && --env_delay <= 0 && reload_env_timer() )
 			{
@@ -963,7 +963,7 @@ class Gb_Env : public Gb_Osc
 							env_enabled = false;
 			}
 	}
-	bool Gb_Env::write_register( int frame_phase, int reg, int old, int data )
+	bool write_register( int frame_phase, int reg, int old, int data )
 	{
 			int const max_len = 64;
 
@@ -1009,7 +1009,7 @@ class Gb_Env : public Gb_Osc
 		Gb_Osc::reset();
 	}
 	private:
-	INLINE void Gb_Env::zombie_volume( int old, int data )
+	INLINE void zombie_volume( int old, int data )
 	{
 		int v = volume;
 
@@ -1029,7 +1029,7 @@ class Gb_Env : public Gb_Osc
 			v++;
 		volume = v & 0x0F;
 	}
-	INLINE int Gb_Env::reload_env_timer()
+	INLINE int reload_env_timer()
 	{
 			int raw = regs [2] & 7;
 			env_delay = (raw ? raw : 8);
@@ -1045,14 +1045,14 @@ public:
 		Gb_Env::SyncState<isReader>(ns);
 	}
 
-	bool Gb_Square::write_register( int frame_phase, int reg, int old_data, int data )
+	bool write_register( int frame_phase, int reg, int old_data, int data )
 	{
 			bool result = Gb_Env::write_register( frame_phase, reg, old_data, data );
 			if ( result )
 					delay = (delay & (CLK_MUL_MUL_4 - 1)) + period();
 			return result;
 	}
-	void Gb_Square::run( int32_t time, int32_t end_time )
+	void run( int32_t time, int32_t end_time )
 	{
 			/* Calc duty and phase*/
 			static unsigned char const duty_offsets [4] = { 1, 1, 3, 7 };
@@ -1157,7 +1157,7 @@ class Gb_Sweep_Square : public Gb_Square
 		NSS(sweep_neg);
 	}
 
-	void Gb_Sweep_Square::clock_sweep()
+	void clock_sweep()
 	{
 			if ( --sweep_delay <= 0 )
 			{
@@ -1169,7 +1169,7 @@ class Gb_Sweep_Square : public Gb_Square
 					}
 			}
 	}
-	INLINE void Gb_Sweep_Square::write_register( int frame_phase, int reg, int old_data, int data )
+	INLINE void write_register( int frame_phase, int reg, int old_data, int data )
 	{
 			if ( reg == 0 && sweep_enabled && sweep_neg && !(data & 0x08) )
 					enabled = false; // sweep negate disabled after used
@@ -1194,7 +1194,7 @@ class Gb_Sweep_Square : public Gb_Square
 		Gb_Square::reset();
 	}
 	private:
-	void Gb_Sweep_Square::calc_sweep( bool update )
+	void calc_sweep( bool update )
 	{
 		int shift, delta, freq;
 
@@ -1304,7 +1304,7 @@ class Gb_Noise : public Gb_Env
 		return s;
 	}
 
-	void Gb_Noise::run( int32_t time, int32_t end_time )
+	void run( int32_t time, int32_t end_time )
 	{
 			/* Determine what will be generated*/
 			int vol = 0;
@@ -1388,7 +1388,7 @@ class Gb_Noise : public Gb_Env
 					phase = bits;
 			}
 	}
-	INLINE void Gb_Noise::write_register( int frame_phase, int reg, int old_data, int data )
+	INLINE void write_register( int frame_phase, int reg, int old_data, int data )
 	{
 			if ( Gb_Env::write_register( frame_phase, reg, old_data, data ) )
 			{
@@ -1419,7 +1419,7 @@ class Gb_Wave : public Gb_Osc
 		NSS(agb_mask);
 	}
 
-	INLINE void Gb_Wave::write_register( int frame_phase, int reg, int old_data, int data )
+	INLINE void write_register( int frame_phase, int reg, int old_data, int data )
 	{
 			switch ( reg )
 		{
@@ -1443,7 +1443,7 @@ class Gb_Wave : public Gb_Osc
 				}
 		}
 	}
-	void Gb_Wave::run( int32_t time, int32_t end_time )
+	void run( int32_t time, int32_t end_time )
 	{
 			/* Calc volume*/
 			static unsigned char const volumes [8] = { 0, 4, 2, 1, 3, 3, 3, 3 };
@@ -1538,7 +1538,7 @@ class Gb_Wave : public Gb_Osc
 	}
 
 	/* Reads/writes wave RAM*/
-	INLINE int Gb_Wave::read( unsigned addr ) const
+	INLINE int read( unsigned addr ) const
 	{
 		int index;
 
@@ -1552,7 +1552,7 @@ class Gb_Wave : public Gb_Osc
 		return (index < 0 ? 0xFF : wave_bank[index]);
 	}
 
-	INLINE void Gb_Wave::write( unsigned addr, int data )
+	INLINE void write( unsigned addr, int data )
 	{
 		int index;
 
@@ -1580,7 +1580,7 @@ class Gb_Wave : public Gb_Osc
 	/* Frequency timer period*/
 	int period() const { return (2048 - GB_OSC_FREQUENCY()) * (CLK_MUL_MUL_2); }
 
-	void Gb_Wave::corrupt_wave()
+	void corrupt_wave()
 	{
 			int pos = ((phase + 1) & BANK_SIZE_MIN_ONE) >> 1;
 			if ( pos < 4 )
@@ -1591,7 +1591,7 @@ class Gb_Wave : public Gb_Osc
 	}
 
 	/* Wave index that would be accessed, or -1 if no access would occur*/
-	int Gb_Wave::access( unsigned addr ) const
+	int access( unsigned addr ) const
 	{
 		//if ( mode != MODE_AGB )
 		//{
@@ -2356,7 +2356,7 @@ void soundEvent_u16_parallel(uint32_t address[])
 
 			default:
 				{
-					int gb_addr[2]	= {address[i] & ~1, address[i] | 1};
+					int gb_addr[2]	= {static_cast<int>(address[i] & ~1), static_cast<int>(address[i] | 1)};
 					uint32_t address_array[2] = {address[i] & ~ 1, address[i] | 1};
 					uint8_t data_array[2] = {0};
 					gba_to_gb_sound_parallel(&gb_addr[0], &gb_addr[1]);
@@ -2379,7 +2379,7 @@ void gba_pcm_fifo_timer_overflowed( unsigned pcm_idx )
 			// Not filled by DMA, so fill with 16 bytes of silence
 			int reg = pcm[pcm_idx].which ? FIFOB_L : FIFOA_L;
 
-			uint32_t address_array[8] = {reg, reg+2, reg, reg+2, reg, reg+2, reg, reg+2};
+			uint32_t address_array[8] = {static_cast<uint32_t>(reg), static_cast<uint32_t>(reg+2), static_cast<uint32_t>(reg), static_cast<uint32_t>(reg+2), static_cast<uint32_t>(reg), static_cast<uint32_t>(reg+2), static_cast<uint32_t>(reg), static_cast<uint32_t>(reg+2)};
 			soundEvent_u16_parallel(address_array);
 		}
 	}
@@ -2472,7 +2472,7 @@ void soundEvent_u16(uint32_t address, uint16_t data)
 
 		default:
 			{
-				int gb_addr[2]	= {address & ~1, address | 1};
+				int gb_addr[2]	= {static_cast<int>(address & ~1), static_cast<int>(address | 1)};
 				uint32_t address_array[2] = {address & ~ 1, address | 1};
 				uint8_t data_array[2] = {(uint8_t)data, (uint8_t)(data >> 8)};
 				gba_to_gb_sound_parallel(&gb_addr[0], &gb_addr[1]);
@@ -11834,7 +11834,7 @@ void CPUUpdateRegister(uint32_t address, uint16_t value)
 		case 0x80:
 		case 0x84:
 			{
-				int gb_addr[2] = {address & 0xFF, (address & 0xFF) + 1};
+				int gb_addr[2] = {static_cast<int>(address & 0xFF), static_cast<int>((address & 0xFF) + 1)};
 				uint32_t address_array[2] = {address & 0xFF, (address&0xFF)+1};
 				uint8_t data_array[2] = {(uint8_t)(value & 0xFF), (uint8_t)(value>>8)};
 				gb_addr[0] = table[gb_addr[0] - 0x60];
