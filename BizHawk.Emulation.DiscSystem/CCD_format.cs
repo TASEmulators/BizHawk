@@ -457,12 +457,12 @@ namespace BizHawk.Emulation.DiscSystem
 				if ((job.Parts & (ESectorSynthPart.SubcodeAny)) != 0)
 				{
 					ofs = job.LBA * 96;
-					imgBlob.Read(ofs, job.DestBuffer2448, 2352, 96);
+					subBlob.Read(ofs, job.DestBuffer2448, 2352, 96);
 
-					//we may still need to deinterleave it
-					if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) != 0)
+					//sub data comes to us deinterleved; we may still need to interleave it
+					if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
 					{
-						SubcodeUtils.DeinterleaveInplace(job.DestBuffer2448, 2352);
+						SubcodeUtils.InterleaveInplace(job.DestBuffer2448, 2352);
 					}
 				}
 			}

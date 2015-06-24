@@ -73,6 +73,34 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
+		/// Converts the useful (but unrealistic) deinterleaved data into the useless (but realistic) interleaved subchannel format.
+		/// </summary>
+		public unsafe static void InterleaveInplace(byte[] buf, int buf_index)
+		{
+			byte* out_buf = stackalloc byte[96];
+
+			for (int i = 0; i < 96; i++)
+				out_buf[i] = 0;
+
+			for (int d = 0; d < 12; d++)
+			{
+				for (int bitpoodle = 0; bitpoodle < 8; bitpoodle++)
+				{
+					int rawb = 0;
+
+					for (int ch = 0; ch < 8; ch++)
+					{
+						rawb |= ((buf[ch * 12 + d + buf_index] >> (7 - bitpoodle)) & 1) << (7 - ch);
+					}
+					out_buf[(d << 3) + bitpoodle] = (byte)rawb;
+				}
+			}
+
+			for (int i = 0; i < 96; i++)
+				buf[i + buf_index] = out_buf[i];
+		}
+
+		/// <summary>
 		/// Converts the useless (but realistic) interleaved subchannel data into a useful (but unrealistic) deinterleaved format.
 		/// </summary>
 		public unsafe static void DeinterleaveInplace(byte[] buf, int buf_index)
