@@ -34,6 +34,7 @@ Binaries can be found on [https://sourceforge.net/projects/bizhawk/?source=navba
  * Wonderswan
  * Gameboy Advance
  * Apple II
+ * Sony PlayStation
 
 ==Resources==
 [http://tasvideos.org/Bizhawk.html BizHawk homepage]
