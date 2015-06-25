@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
-			elf = new ElfRunner(@"D:\encodes\bizhawksrc\output\dll\gpgx.elf");
+			elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"));
 			try
 			{
 				gpgx = new LibGPGXDynamic();
