@@ -59,12 +59,17 @@ static class ToolPathUtil
 
 	public static string FindInProgramFiles(string toolName, params string[] commonLocations)
 	{
-		foreach (string location in commonLocations)
+		var trials = new[] { Environment.GetEnvironmentVariable("ProgramFiles(x86)"), Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) };
+		foreach (var t in trials)
 		{
-			string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), location);
-			if (SafeFileExists(path, toolName))
+			if (t == null) continue;
+			foreach (string location in commonLocations)
 			{
-				return path;
+				string path = Path.Combine(t, location);
+				if (SafeFileExists(path, toolName))
+				{
+					return path;
+				}
 			}
 		}
 
