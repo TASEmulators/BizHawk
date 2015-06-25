@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Mouse
 		};
 
-		[CoreConstructor("GEN")]
+		//[CoreConstructor("GEN")]
 		public GPGXDynamic(CoreComm comm, byte[] file, object Settings, object SyncSettings)
 			: this(comm, file, null, Settings, SyncSettings)
 		{
