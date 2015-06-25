@@ -94,6 +94,9 @@ namespace BizHawk.Build.Tool
 			//pick branch unnamed in case investigation fails (or isnt git)
 			string branch = "";
 
+			//pick no hash in case investigation fails (or isnt git)
+			string shorthash = "";
+
 			//try to find an SVN or GIT and run it
 			if (svn)
 			{
@@ -127,6 +130,10 @@ namespace BizHawk.Build.Tool
 							output = RunTool(gittool, "-C", wcdir, "rev-parse", "--abbrev-ref", "HEAD");
 							if(output.StartsWith("fatal")) {}
 							else branch = output;
+
+							output = RunTool(gittool, "-C", wcdir, "log", "-1", "--format=\"%h\"");
+							if (output.StartsWith("fatal")) { }
+							else shorthash = output;
 						}
 					}
 					catch (Exception ex)
@@ -139,6 +146,7 @@ namespace BizHawk.Build.Tool
 			//replace the template and dump the results if needed
 			templateContents = templateContents.Replace("$WCREV$", rev.ToString());
 			templateContents = templateContents.Replace("$WCBRANCH$", branch);
+			templateContents = templateContents.Replace("$WCSHORTHASH$", shorthash);
 			WriteTextIfChanged(outfile, templateContents);
 		}
 	}
