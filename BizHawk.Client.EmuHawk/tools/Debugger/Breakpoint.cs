@@ -19,13 +19,47 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var breakpoint in this)
 			{
+				breakpoint.ReadOnly = false;
 				breakpoint.Active = false;
 			}
 
 			base.Clear();
 		}
 
-		// TODO: override all ways to remove
+		public new bool Remove(Breakpoint b)
+		{
+			var breakpoint = Find(x => x == b);
+			if (breakpoint != null)
+			{
+				breakpoint.ReadOnly = false;
+				breakpoint.Active = false;
+			}
+			return base.Remove(b);
+		}
+
+		public new void RemoveAt(int index)
+		{
+			if (index < Count)
+			{
+				var breakpoint = this[index];
+				breakpoint.ReadOnly = false;
+				breakpoint.Active = false;
+				base.RemoveAt(index);
+			}
+		}
+
+		public new int RemoveAll(Predicate<Breakpoint> match)
+		{
+			var removeCount = 0;
+			foreach (var breakpoint in this)
+			{
+				if (match(breakpoint))
+				{
+					Remove(breakpoint);
+				}
+			}
+			return removeCount;
+		}
 	}
 
 	public class Breakpoint
@@ -36,17 +70,13 @@ namespace BizHawk.Client.EmuHawk
 		public Breakpoint(bool readOnly, IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
-
+			Type = type;
 			Callback = callBack;
 			Address = address;
-			Active = enabled;
 			Name = "Pause";
-			ReadOnly = readOnly;
 
-			if (enabled)
-			{
-				AddCallback();
-			}
+			Active = enabled;
+			ReadOnly = readOnly;
 		}
 
 		public Breakpoint(IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
@@ -55,12 +85,21 @@ namespace BizHawk.Client.EmuHawk
 			Type = type;
 			Callback = callBack;
 			Address = address;
-			Active = enabled;
 			Name = "Pause";
-			if (enabled)
-			{
-				AddCallback();
-			}
+
+			Active = enabled;
+		}
+
+		public Breakpoint(string name, bool readOnly, IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
+		{
+			_core = core;
+			Type = type;
+			Callback = callBack;
+			Address = address;
+			Name = name;
+
+			Active = enabled;
+			ReadOnly = readOnly;
 		}
 
 		public Action Callback { get; set; }
@@ -68,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		public MemoryCallbackType Type { get; set; }
 		public string Name { get; set; }
 
-		public bool ReadOnly { get; private set; }
+		public bool ReadOnly { get; set; }
 
 		// Adds an existing callback
 		public Breakpoint(IDebuggable core, IMemoryCallback callback)

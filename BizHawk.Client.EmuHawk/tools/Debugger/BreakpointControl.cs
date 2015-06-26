@@ -98,11 +98,12 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		/// </summary>
 		private void CheckForNewBreakpoints()
 		{
+
 			if (MCS != null)
 			{
 				foreach (var callback in MCS)
 				{
-					if (!Breakpoints.Any(b => 
+					if (!Breakpoints.Any(b =>
 						b.Type == callback.Type &&
 						b.Address == callback.Address &&
 						b.Name == callback.Name &&
@@ -174,14 +175,12 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			UpdateStatsLabel();
 		}
 
-		private const string SeekName = "Seek to PC ";
+		private const string SeekName = "Seek to PC 0x";
 
 		public void AddSeekBreakpoint(uint pcVal, int pcBitSize)
 		{
-			Breakpoints.Add(new Breakpoint(true, Core, SeekCallback, pcVal, MemoryCallbackType.Execute)
-			{
-				Name = SeekName + pcVal.ToHexString(pcBitSize / 4)
-			});
+			var Name = SeekName + pcVal.ToHexString(pcBitSize / 4);
+			Breakpoints.Add(new Breakpoint(Name, true, Core, SeekCallback, pcVal, MemoryCallbackType.Execute));
 		}
 
 		public void RemoveCurrentSeek()
