@@ -250,44 +250,6 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	/// <summary>
-	/// the q-mode 1 Q subchannel data. These contain TOC entries.
-	/// design of this struct is from [IEC10149].
-	/// Nothing in here is BCD
-	/// </summary>
-	public class Q_Mode_1
-	{
-		/// <summary>
-		/// Supposed to be zero, because it was in the lead-in track, but you never know
-		/// </summary>
-		public byte TNO;
-
-		/// <summary>
-		/// The track number (or a special A0 A1 A2 value) of the track being described
-		/// </summary>
-		public byte POINTER;
-
-		/// <summary>
-		/// Supposedly the timestamp within the lead-in track. but it's useless
-		/// </summary>
-		public byte MIN, SEC, FRAC;
-
-		/// <summary>
-		/// Supposed to be zero
-		/// </summary>
-		public byte ZERO;
-
-		/// <summary>
-		/// A track number of the first (for A0) or final (A1) information track; or the _absolute_ time position of an information track
-		/// </summary>
-		public byte P_MIN;
-
-		/// <summary>
-		/// ZERO for an A0 or A1 entry (where P_MIN was the track number); or the _absolute_ time position of an information track
-		/// </summary>
-		public byte P_SEC, P_FRAC;
-	}
-
-	/// <summary>
 	/// Why did I make this a struct? I thought there might be a shitton of these and I was trying to cut down on object creation churn during disc-loading.
 	/// But I ended up mostly just having a shitton of byte[] for each buffer (I could improve that later to possibly reference a blob on top of a memorystream)
 	/// So, I should probably change that.
@@ -296,18 +258,18 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		/// <summary>
 		/// ADR and CONTROL
-		/// TODO - make BCD2?
+		/// TODO - make BCD2? PROBABLY NOT. I DONT KNOW.
 		/// </summary>
 		public byte q_status;
 
 		/// <summary>
-		/// normal track: BCD indications of the current track number
+		/// normal track: BCD indication of the current track number
 		/// leadin track: should be 0 
 		/// </summary>
 		public BCD2 q_tno;
 
 		/// <summary>
-		/// normal track: BCD indications of the current index
+		/// normal track: BCD indication of the current index
 		/// leadin track: 'POINT' field used to ID the TOC entry #
 		/// </summary>				
 		public BCD2 q_index;
@@ -318,7 +280,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// normal track: relative timestamp
 		/// leadin track: unknown
 		/// leadout: relative timestamp
-		/// TODO - why are these BCD2? having things in BCD2 is freaking annoying, I should only make them BCD2 when serializing
+		/// TODO - why are these BCD2? having things in BCD2 is freaking annoying, I should only make them BCD2 when serializing into a subchannel Q buffer
 		/// EDIT - elsewhere I rambled "why not BCD2?". geh. need to make a final organized approach
 		/// </summary>
 		public BCD2 min, sec, frame;
@@ -345,7 +307,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public ushort q_crc;
 
-
 		/// <summary>
 		/// Retrieves the initial set of timestamps (min,sec,frac) as a convenient Timestamp
 		/// </summary>
@@ -360,19 +321,19 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// sets the status byte from the provided adr and control values
+		/// sets the status byte from the provided adr/qmode and control values
 		/// </summary>
-		public void SetStatus(byte adr, EControlQ control)
+		public void SetStatus(byte adr_or_qmode, EControlQ control)
 		{
-			q_status = ComputeStatus(adr, control);
+			q_status = ComputeStatus(adr_or_qmode, control);
 		}
 
 		/// <summary>
-		/// computes a status byte from the provided adr and control values
+		/// computes a status byte from the provided adr/qmode and control values
 		/// </summary>
-		public static byte ComputeStatus(int adr, EControlQ control)
+		public static byte ComputeStatus(int adr_or_qmode, EControlQ control)
 		{
-			return (byte)(adr | (((int)control) << 4));
+			return (byte)(adr_or_qmode | (((int)control) << 4));
 		}
 
 		/// <summary>

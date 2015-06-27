@@ -162,8 +162,11 @@ namespace BizHawk.Emulation.DiscSystem
 				{
 					var ext = Path.GetExtension(fi.FullName).ToLowerInvariant();
 					
-					//SBI and CUE are always bad choices
-					if (ext == ".cue" || ext == ".sbi")
+					//some choices are always bad: (we're looking for things like .bin and .wav)
+					//it's a little unclear whether we should go for a whitelist or a blacklist here. 
+					//there's similar numbers of cases either way.
+					//perhaps we could code both (and prefer choices from the whitelist)
+					if (ext == ".cue" || ext == ".sbi" || ext == ".ccd" || ext == ".sub")
 						continue;
 
 
@@ -230,7 +233,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO - once we reorganize the file ID stuff, do legit checks here (this is completely redundant with the fileID system
 				//TODO - decode vs stream vs unpossible policies in input policies object (including ffmpeg availability-checking callback (results can be cached))
 				string blobPathExt = Path.GetExtension(choice).ToUpperInvariant();
-				if (blobPathExt == ".BIN") cfi.Type = AnalyzeCueJob.CueFileType.BIN;
+				if (blobPathExt == ".BIN" || blobPathExt == ".IMG") cfi.Type = AnalyzeCueJob.CueFileType.BIN;
 				else if (blobPathExt == ".ISO") cfi.Type = AnalyzeCueJob.CueFileType.BIN;
 				else if (blobPathExt == ".WAV")
 				{

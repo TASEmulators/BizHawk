@@ -5,11 +5,14 @@ using System.IO;
 using System.Collections.Generic;
 
 //ARCHITECTURE NOTE:
-//no provisions are made for caching synthesized data for later accelerated use.
-//in the worst case that might result in synthesizing an entire disc in memory.
-//instead, users should be advised to `hawk` the disc first for most rapid access
-//this will result in a completely flattened CCD where everything comes right off the hard drive
-//This might be an unwise decision for disc ID and miscellaneous purposes but it's best for gaming and stream-converting (hawking and hashing)
+//No provisions are made for caching synthesized data for later accelerated use.
+//This is because, in the worst case that might result in synthesizing an entire disc in memory.
+//Instead, users should be advised to `hawk` the disc first for most rapid access so that synthesis won't be necessary and speed will be maximized.
+//This will result in a completely flattened CCD where everything comes right off the hard drive
+//Our choice here might be an unwise decision for disc ID and miscellaneous purposes but it's best for gaming and stream-converting (hawking and hashing)
+
+//https://books.google.com/books?id=caF_AAAAQBAJ&lpg=PA124&ots=OA9Ttj9CHZ&dq=disc%20TOC%20point%20A2&pg=PA124
+
 
 //http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
 

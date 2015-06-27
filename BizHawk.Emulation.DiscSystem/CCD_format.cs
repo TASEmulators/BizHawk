@@ -560,7 +560,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//if we keep this, it should just be as a memo that later heuristics can use. For example: 'use guidance from original disc image'
 				track.ModeHeuristic = ccdt.Mode;
 
-					//TODO - this should be deleted anyway (
+				//TODO - this should be deleted anyway (
 				switch (ccdt.Mode)
 				{
 					case 0:

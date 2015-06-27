@@ -345,9 +345,10 @@ namespace BizHawk.Emulation.DiscSystem
 			SubchannelQ priorSubchannelQ = new SubchannelQ();
 			int LBA = 0;
 			List<IDisposable> resources = disc.DisposableResources;
-			var TOCInfo = new Synthesize_A0A1A2_Job { FirstRecordedTrackNumber = -1, LastRecordedTrackNumber = -1, LeadoutLBA = -1};
-			//lets start with this. we'll change it if we ever find a track of a different format (this is based on mednafen's behaviour)
-			TOCInfo.Session1Format = DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA; 
+
+			//lets start with session type CDDA. we'll change it if we ever find a track of a different format (this is based on mednafen's behaviour)
+			var TOCMiscInfo = new Synthesize_A0A1A2_Job { IN_FirstRecordedTrackNumber = -1, IN_LastRecordedTrackNumber = -1, IN_LeadoutTimestamp = new Timestamp(0) };
+			TOCMiscInfo.IN_Session1Format = DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA; 
 
 			//a little subroutine to wrap a sector if the blob is out of space
 			Func<int,Sector_RawBlob> eatBlobAndWrap = (required) =>
@@ -384,7 +385,7 @@ namespace BizHawk.Emulation.DiscSystem
 				sq.sec = BCD2.FromDecimal(0);
 				sq.frame = BCD2.FromDecimal(0);
 
-				sq.AP_Timestamp = new Timestamp(LBA); //off by 150?
+				sq.AP_Timestamp = new Timestamp(LBA + 150); //its supposed to be an absolute timestamp
 
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = sq });
 			};
@@ -768,21 +769,21 @@ namespace BizHawk.Emulation.DiscSystem
 						disc.Structure.Sessions[0].Tracks.Add(st);
 
 						//maintain some memos
-						if (TOCInfo.FirstRecordedTrackNumber == -1)
-							TOCInfo.FirstRecordedTrackNumber = track_num;
-						TOCInfo.LastRecordedTrackNumber = track_num;
+						if (TOCMiscInfo.IN_FirstRecordedTrackNumber == -1)
+							TOCMiscInfo.IN_FirstRecordedTrackNumber = track_num;
+						TOCMiscInfo.IN_LastRecordedTrackNumber = track_num;
 						//update the disc type... do we need to do any double checks here to check for regressions? doubt it.
-						if (TOCInfo.Session1Format == DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA)
+						if (TOCMiscInfo.IN_Session1Format == DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA)
 						{
 							switch (track_currentCommand.Type)
 							{
 								case CueFile.TrackType.Mode2_2336:
 								case CueFile.TrackType.Mode2_2352:
-									TOCInfo.Session1Format = DiscTOCRaw.SessionFormat.Type20_CDXA;
+									TOCMiscInfo.IN_Session1Format = DiscTOCRaw.SessionFormat.Type20_CDXA;
 									break;
 								case CueFile.TrackType.CDI_2336:
 								case CueFile.TrackType.CDI_2352:
-									TOCInfo.Session1Format = DiscTOCRaw.SessionFormat.Type10_CDI;
+									TOCMiscInfo.IN_Session1Format = DiscTOCRaw.SessionFormat.Type10_CDI;
 									break;
 								default:
 									//no changes here
@@ -863,8 +864,8 @@ namespace BizHawk.Emulation.DiscSystem
 			disc.Structure.LengthInSectors = disc.Sectors.Count;
 
 			//add RawTOCEntries A0 A1 A2 to round out the TOC
-			TOCInfo.LeadoutLBA = LBA;
-			TOCInfo.Run(disc.RawTOCEntries);
+			TOCMiscInfo.IN_LeadoutTimestamp = new Timestamp(LBA + 150);
+			TOCMiscInfo.Run(disc.RawTOCEntries);
 
 			//generate the TOCRaw from the RawTocEntries
 			var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = disc.RawTOCEntries };

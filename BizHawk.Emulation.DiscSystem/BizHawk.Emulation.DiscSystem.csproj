@@ -85,6 +85,7 @@
     <Compile Include="Jobs\DiscMountJob.MednaDisc.cs" />
     <Compile Include="Jobs\LoadSBIJob.cs" />
     <Compile Include="Jobs\LoggedJob.cs" />
+    <Compile Include="Jobs\Synthesize_A0A1A2_Job.cs" />
     <Compile Include="M3U_file.cs" />
     <Compile Include="MednaDiscAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
