@@ -267,7 +267,7 @@ void InputDevice_Memcard::SetDTR(bool new_dtr)
  else if(dtr && !new_dtr)
  {
   if(command_phase > 0)
-   PSX_WARNING("[MCR] Communication aborted???");
+   PSX_WARNING("[MCR] Communication aborted on phase %d", command_phase);
  }
  dtr = new_dtr;
 }
@@ -379,7 +379,7 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
   }
   else if(command_phase == 1002)
   {
-	//printf("[MCR]   READ ADDR=0x%04x\n", addr);
+	PSX_DBG(PSX_DBG_SPARSE, "[MCR] Read Command: 0x%04x\n", addr);
 	if(addr >= (sizeof(card_data) >> 7))
 	 addr = 0xFFFF;
 
@@ -454,7 +454,7 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
   {
 	calced_xor ^= receive_buffer;
         addr |= receive_buffer & 0xFF;
-	//printf("[MCR]   WRITE ADDR=0x%04x\n", addr);
+	PSX_DBG(PSX_DBG_SPARSE, "[MCR] Write command: 0x%04x\n", addr);
         transmit_buffer = receive_buffer;
         transmit_count = 1;
         command_phase = 2048;
@@ -487,9 +487,15 @@ bool InputDevice_Memcard::Clock(bool TxD, int32 &dsr_pulse_delay)
 	//printf("[MCR] Write End.  Actual_XOR=0x%02x, CW_XOR=0x%02x\n", calced_xor, write_xor);
 
 	if(calced_xor != write_xor)
+	{
  	 transmit_buffer = 'N';
+   	 PSX_WARNING("[MCR] Write end, calced_xor(0x%02x) != written_xor(0x%02x)", calced_xor, write_xor);
+	}
 	else if(addr >= (sizeof(card_data) >> 7))
+	{
 	 transmit_buffer = 0xFF;
+	 PSX_WARNING("[MCR] Attempt to write to invalid block 0x%04x", addr);
+	}
 	else
 	{
 	 transmit_buffer = 'G';

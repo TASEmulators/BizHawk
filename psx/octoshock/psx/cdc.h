@@ -198,6 +198,7 @@ class PS_CDC
  void SetAIP(unsigned irq, uint8 result0, uint8 result1);
 
  int32 SeekTarget;
+ uint32 SeekRetryCounter;
 
  pscpu_timestamp_t lastts;
 
