@@ -325,6 +325,11 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
+			if (CurrentTasMovie == null)
+			{
+				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
+			}
+
 			CurrentTasMovie.Filename = file.FullName;
 			try
 			{
