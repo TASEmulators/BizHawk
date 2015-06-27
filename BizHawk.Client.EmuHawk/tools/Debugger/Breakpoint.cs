@@ -56,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				if (match(breakpoint))
 				{
 					Remove(breakpoint);
+					removeCount++;
 				}
 			}
 			return removeCount;
@@ -107,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 		public MemoryCallbackType Type { get; set; }
 		public string Name { get; set; }
 
-		public bool ReadOnly { get; set; }
+		internal bool ReadOnly { get; set; }
 
 		// Adds an existing callback
 		public Breakpoint(IDebuggable core, IMemoryCallback callback)
