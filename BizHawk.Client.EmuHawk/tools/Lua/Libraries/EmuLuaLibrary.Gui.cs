@@ -383,10 +383,10 @@ namespace BizHawk.Client.EmuHawk
 			"Draws an axis of the specified size at the coordinate pair.)"
 		)]
 
-		public void DrawAxis(int x, int y, int? size = null, Color? color = null)
+		public void DrawAxis(int x, int y, int size, Color? color = null)
 		{
-			DrawLine(x + (int) size, y, x - (int) size, y, color);
-			DrawLine(x, y + (int)size, x, y - (int)size, color);
+			DrawLine(x + size, y, x - size, y, color);
+			DrawLine(x, y + size, x, y - size, color);
 		}
 
 
