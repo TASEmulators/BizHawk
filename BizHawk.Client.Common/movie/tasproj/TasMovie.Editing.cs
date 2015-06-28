@@ -23,7 +23,10 @@ namespace BizHawk.Client.Common
 			LagLog.RemoveFrom(frame);
 			LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
-			StateManager.Capture();
+			if (!SupressGreenzonging)
+			{
+				StateManager.Capture();
+			}
 
 			if (frame != 0)
 				ChangeLog.SetGeneralRedo();
