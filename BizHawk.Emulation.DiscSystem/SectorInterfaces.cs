@@ -53,9 +53,20 @@ namespace BizHawk.Emulation.DiscSystem
 		User2336 = (User2048|ECC276|EDC12),
 
 		/// <summary>
-		/// The entirety of the sector userdata is required
+		/// The complete sector userdata (2352 bytes) is required
 		/// </summary>
-		User2352 = 15,
+		UserComplete = 15,
+
+		/// <summary>
+		/// An alias for UserComplete
+		/// </summary>
+		UserAny = UserComplete,
+
+		/// <summary>
+		/// An alias for UserComplete
+		/// </summary>
+		User2352 = UserComplete,
+
 
 		/// <summary>
 		/// SubP is required
@@ -134,7 +145,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 	/// <summary>
 	/// this ISector is dumb and only knows how to drag chunks off a source blob
-	/// TODO - actually make it that way!
+	/// TODO - garbage, delete me
 	/// </summary>
 	public class Sector_RawBlob : ISector
 	{

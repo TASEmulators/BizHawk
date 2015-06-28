@@ -75,6 +75,7 @@
     <Compile Include="CUE\CUE_Format.cs" />
     <Compile Include="CUE\CUE_Load.cs" />
     <Compile Include="CUE\CUE_Parse.cs" />
+    <Compile Include="CUE\CUE_Synths.cs" />
     <Compile Include="Decoding.cs" />
     <Compile Include="Disc.cs" />
     <Compile Include="DiscTypes.cs" />

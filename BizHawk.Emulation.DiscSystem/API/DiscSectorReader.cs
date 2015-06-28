@@ -46,6 +46,13 @@ namespace BizHawk.Emulation.DiscSystem
 		/// How about .sub files? Can't remember right now.
 		/// </summary>
 		public bool DeinterleavedSubcode = true;
+
+		/// <summary>
+		/// Indicates whether the output buffer should be cleared before returning any data.
+		/// This will involve clearing sections you didn't ask for, and clearing sections about to be filled with data from the disc.
+		/// It is a waste of performance, but it will ensure reliability.
+		/// </summary>
+		public bool DeterministicClearBuffer = true;
 	}
 
 
@@ -71,6 +78,11 @@ namespace BizHawk.Emulation.DiscSystem
 			job.Disc = disc;
 		}
 
+		void PrepareBuffer(byte[] buffer, int offset, int size)
+		{
+			if (Policy.DeterministicClearBuffer) Array.Clear(buffer, offset, size);
+		}
+
 		//todo - methods to read only subcode
 
 		/// <summary>
@@ -80,6 +92,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var sector = disc.Sectors[lba + 150];
 
+			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
 			job.DestBuffer2448 = buf2442;
 			job.DestOffset = 0;
@@ -100,6 +113,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			var sector = disc.Sectors[lba + 150];
 
+			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
 			job.DestBuffer2448 = buffer; //go straight to the caller's buffer
 			job.DestOffset = offset; //go straight to the caller's buffer
@@ -118,6 +132,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//we can read the 2048 bytes directly
 			var sector = disc.Sectors[lba + 150];
 
+			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
 			job.DestBuffer2448 = buf2442;
 			job.DestOffset = 0;
@@ -134,6 +149,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//we can read the 2048 bytes directly but we have to get them from the mode 2 data
 			var sector = disc.Sectors[lba + 150];
 
+			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
 			job.DestBuffer2448 = buf2442;
 			job.DestOffset = 0;
@@ -160,6 +176,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//in no case do we need the ECC so build special flags here
 				var sector = disc.Sectors[lba + 150];
 
+				PrepareBuffer(buffer, offset, 2352);
 				PrepareJob(lba);
 				job.DestBuffer2448 = buf2442;
 				job.DestOffset = 0;

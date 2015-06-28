@@ -302,9 +302,8 @@ namespace BizHawk.Emulation.DiscSystem
 			var zero_sector = new Sector_Zero();
 			var zero_subSector = new ZeroSubcodeSector();
 
-			//generate lead-in gap
-			//TODO - shouldnt this have proper subcode? dunno
-			//mednafen will probably be testing this in the next release
+			//add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
+			//THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
 			for(int i=0;i<150;i++)
 			{
 				var se_leadin = new SectorEntry(zero_sector);
@@ -351,17 +350,16 @@ namespace BizHawk.Emulation.DiscSystem
 			TOCMiscInfo.IN_Session1Format = DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA; 
 
 			//a little subroutine to wrap a sector if the blob is out of space
-			Func<int,Sector_RawBlob> eatBlobAndWrap = (required) =>
+			Func<int,Tuple<IBlob,long>> eatBlobAndWrap = (required) =>
 			{
 				IBlob blob = file_blob;
-				var ret = new Sector_RawBlob { Blob = file_blob, Offset = file_ofs };
+				var ret = new Tuple<IBlob,long>(file_blob, file_ofs);
 				if (file_ofs + required > file_len)
 				{
 					job.Warn("Zero-padding mis-sized file: " + Path.GetFileName(file_command.Path));
 					blob = Disc.Blob_ZeroPadBuffer.MakeBufferFrom(file_blob,file_ofs,required);
 					resources.Add(blob);
-					ret.Blob = blob;
-					ret.Offset = 0;
+					ret = new Tuple<IBlob,long>(blob,0);
 				}
 				file_ofs += required;
 				return ret;
@@ -395,6 +393,7 @@ namespace BizHawk.Emulation.DiscSystem
 			Action<SectorWriteType> writeSector = (SectorWriteType type) =>
 			{
 				ISector siface = null;
+				SS_Base ss = null;
 
 				if (type == SectorWriteType.Normal)
 				{
@@ -406,22 +405,32 @@ namespace BizHawk.Emulation.DiscSystem
 
 						case CueFile.TrackType.CDI_2352:
 						case CueFile.TrackType.Mode1_2352:
-						case CueFile.TrackType.Mode2_2352:
-						case CueFile.TrackType.Audio:
-							//these cases are all 2352 bytes.
-							//in all these cases, either no ECM is present or ECM is provided. so we just emit a Sector_RawBlob
-							siface = eatBlobAndWrap(2352);
 							break;
+
+						case CueFile.TrackType.Mode2_2352:
+							{
+								var t = eatBlobAndWrap(2352);
+								ss = new SS_2352() { Blob = t.Item1, BlobOffset = t.Item2 };
+								break;
+							}
+
+						case CueFile.TrackType.Audio:
+							{
+								var t = eatBlobAndWrap(2352);
+								ss = new SS_2352() { Blob = t.Item1, BlobOffset = t.Item2 };
+								break;
+							}
 
 						case CueFile.TrackType.Mode1_2048:
 							{
 								//2048 bytes are present. ECM needs to be generated to create a full raw sector
-								var raw = eatBlobAndWrap(2048);
-								siface = new Sector_Mode1_2048(LBA + 150)  //pass the ABA I guess
-								{
-									Blob = new ECMCacheBlob(raw.Blob), //archaic
-									Offset = raw.Offset
-								};
+								//var raw = eatBlobAndWrap(2048);
+								//siface = new Sector_Mode1_2048(LBA + 150)  //pass the ABA I guess
+								//{
+								//  Blob = new ECMCacheBlob(raw.Blob), //archaic
+								//  Offset = raw.Offset
+								//};
+								//TODO
 								break;
 							}
 
@@ -433,13 +442,13 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				else if (type == SectorWriteType.Postgap)
 				{
-					//TODO - does subchannel need to get written differently?
-					siface = zero_sector;
+					//TODO
+					//siface = zero_sector;
+					throw new InvalidOperationException("cue postgap broken right now");
 				}
 				else if (type == SectorWriteType.Pregap)
 				{
-					//TODO - does subchannel need to get written differently?
-					siface = zero_sector;
+					ss = new SS_Pregap();
 				}
 
 				//make the subcode
@@ -483,7 +492,6 @@ namespace BizHawk.Emulation.DiscSystem
 					//second interval: at least 150 sectors coded as user data track.
 					//so... we ASSUME the 150 sector pregap is more important. so if thats all there is, theres no 75 sector pregap like the old track
 					//if theres a longer pregap, then we generate weird old track pregap to contain the rest.
-					//TODO - GENERATE P SUBCHANNEL
 					if (track_relative_msf > 150)
 					{
 						//only if we're burning a data track now
@@ -501,8 +509,9 @@ namespace BizHawk.Emulation.DiscSystem
 				priorSubchannelQ = sq;
 
 				//now we have the ISector and subcode; make the SectorEntry
-				var se = new SectorEntry(siface);
-				se.SubcodeSector = subcode;
+				var se = new SectorEntry(null);
+				se.SectorSynth = ss;
+				ss.sq = sq;
 				disc.Sectors.Add(se);
 				LBA++;
 				file_ownmsf++;

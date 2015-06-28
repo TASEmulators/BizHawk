@@ -449,14 +449,17 @@ namespace BizHawk.Emulation.DiscSystem
 				var subBlob = job.Disc.DisposableResources[1] as Disc.Blob_RawFile;
 				//Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
 				
-				//read the IMG data
-				long ofs = job.LBA * 2352;
-				imgBlob.Read(ofs, job.DestBuffer2448, 0, 2352);
+				//read the IMG data if needed
+				if ((job.Parts & ESectorSynthPart.UserAny) != 0)
+				{
+					long ofs = job.LBA * 2352;
+					imgBlob.Read(ofs, job.DestBuffer2448, 0, 2352);
+				}
 
 				//if subcode is needed, read it
 				if ((job.Parts & (ESectorSynthPart.SubcodeAny)) != 0)
 				{
-					ofs = job.LBA * 96;
+					long ofs = job.LBA * 96;
 					subBlob.Read(ofs, job.DestBuffer2448, 2352, 96);
 
 					//sub data comes to us deinterleved; we may still need to interleave it
@@ -576,6 +579,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 			//add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
+			//THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
 			var leadin_sector_zero = new Sector_Zero();
 			var leadin_subcode_zero = new ZeroSubcodeSector();
 			for (int i = 0; i < 150; i++)
