@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		abstract class SS_Base : ISectorSynthJob2448
 		{
+			public IBlob Blob;
+			public long BlobOffset;
 			public SubchannelQ sq;
 
 			public abstract void Synth(SectorSynthJob job);
@@ -57,8 +59,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		class SS_2352 : SS_Base
 		{
-			public IBlob Blob;
-			public long BlobOffset;
 			public override void Synth(SectorSynthJob job)
 			{
 				//read the sector user data

@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Synthesizes the DiscStructure from RawTOCEntriesJob
 		/// TODO - move to attic, not being used
+		/// WOULD BE NICE TO USE FOR CUE
 		/// </summary>
 		public class SynthesizeFromRawTOCEntriesJob
 		{

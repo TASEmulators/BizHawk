@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//actually load it all up
 				var loadJob = new CUE_Format2.LoadCueJob();
 				loadJob.IN_AnalyzeJob = analyzeJob;
-				cue2.LoadCueFile(loadJob);
+				loadJob.Run();
 				if (loadJob.OUT_Log != "") Console.WriteLine(loadJob.OUT_Log);
 				ConcatenateJobLog(analyzeJob);
 
