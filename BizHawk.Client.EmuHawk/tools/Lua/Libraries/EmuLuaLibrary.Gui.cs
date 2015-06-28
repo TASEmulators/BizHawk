@@ -379,6 +379,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"drawAxis",
+			"Draws an axis of the specified size at the coordinate pair.)"
+		)]
+
+		public void DrawAxis(int x, int y, int? size = null, Color? color = null)
+		{
+			DrawLine(x + (int) size, y, x - (int) size, y, color);
+			DrawLine(x, y + (int)size, x, y - (int)size, color);
+		}
+
+
+		[LuaMethodAttributes(
 			"drawPie",
 			"draws a Pie shape at the given coordinates and the given width and height"
 		)]
