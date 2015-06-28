@@ -32,12 +32,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// For this job, virtually all nonsense input is treated as errors, but the process will try to recover as best it can.
 		/// The user should still reject any jobs which generated errors
 		/// </summary>
-		public class LoadCueJob : LoggedJob
+		internal class LoadCueJob : LoggedJob
 		{
 			/// <summary>
-			/// The results of the analysis job, a prerequisite for this
+			/// The results of the compile job, a prerequisite for this
 			/// </summary>
-			public AnalyzeCueJob IN_AnalyzeJob;
+			public CompileCueJob IN_CompileJob;
 
 			/// <summary>
 			/// The resulting disc
@@ -53,10 +53,6 @@ namespace BizHawk.Emulation.DiscSystem
 			int sloshy_firstRecordedTrackNumber = -1, sloshy_lastRecordedTrackNumber = -1;
 			DiscTOCRaw.SessionFormat sloshy_session1Format = DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA;
 			bool sloshy_session1Format_determined = false;
-
-			//current cdtext and ISRC state
-			string cdtext_songwriter = null, cdtext_performer = null, cdtext_title = null;
-			string isrc = null;
 
 			//current blob file state
 			int file_cfi_index = -1;
@@ -76,33 +72,6 @@ namespace BizHawk.Emulation.DiscSystem
 			BurnType burntype_current;
 			Timestamp burn_pregap_timestamp;
 
-			//TODO - could this be determiend in an entirely different job from the main TOC entries?
-			void UpdateSloshyTrackData(CueFile.Command.TRACK track)
-			{
-				if (sloshy_firstRecordedTrackNumber == -1)
-					sloshy_firstRecordedTrackNumber = track.Number;
-				sloshy_lastRecordedTrackNumber = track.Number;
-				if(!sloshy_session1Format_determined)
-				{
-					switch (track.Type)
-					{
-						case CueFile.TrackType.Mode2_2336:
-						case CueFile.TrackType.Mode2_2352:
-							sloshy_session1Format = DiscTOCRaw.SessionFormat.Type20_CDXA;
-							sloshy_session1Format_determined = true;
-							break;
-						
-						case CueFile.TrackType.CDI_2336:
-						case CueFile.TrackType.CDI_2352:
-							sloshy_session1Format = DiscTOCRaw.SessionFormat.Type10_CDI;
-							sloshy_session1Format_determined = true;
-							break;
-
-						default:
-							break;
-					}
-				}
-			}
 
 			void BeginBurnPregap()
 			{
@@ -124,50 +93,50 @@ namespace BizHawk.Emulation.DiscSystem
 
 			void ProcessFile(CueFile.Command.FILE file)
 			{
-				//if we're currently in a file, finish it
-				if (file_currentCommand != null)
-					BurnToEOF();
+				////if we're currently in a file, finish it
+				//if (file_currentCommand != null)
+				//  BurnToEOF();
 
-				//open the new blob
-				file_currentCommand = file;
-				file_msf = 0;
-				var cfi = IN_AnalyzeJob.OUT_FileInfos[++file_cfi_index];
+				////open the new blob
+				//file_currentCommand = file;
+				//file_msf = 0;
+				//var cfi = IN_CompileJob.OUT_FileInfos[++file_cfi_index];
 
-				//mount the file
-				if (cfi.Type == AnalyzeCueJob.CueFileType.BIN || cfi.Type == AnalyzeCueJob.CueFileType.Unknown)
-				{
-					//raw files:
-					var blob = new Disc.Blob_RawFile { PhysicalPath = cfi.FullPath };
-					OUT_Disc.DisposableResources.Add(file_blob = blob);
-					file_len = blob.Length;
-				}
-				else if (cfi.Type == AnalyzeCueJob.CueFileType.ECM)
-				{
-					var blob = new Disc.Blob_ECM();
-					OUT_Disc.DisposableResources.Add(file_blob = blob);
-					blob.Load(cfi.FullPath);
-					file_len = blob.Length;
-				}
-				else if (cfi.Type == AnalyzeCueJob.CueFileType.WAVE)
-				{
-					var blob = new Disc.Blob_WaveFile();
-					OUT_Disc.DisposableResources.Add(file_blob = blob);
-					blob.Load(cfi.FullPath);
-					file_len = blob.Length;
-				}
-				else if (cfi.Type == AnalyzeCueJob.CueFileType.DecodeAudio)
-				{
-					FFMpeg ffmpeg = new FFMpeg();
-					if (!ffmpeg.QueryServiceAvailable())
-					{
-						throw new DiscReferenceException(cfi.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
-					}
-					AudioDecoder dec = new AudioDecoder();
-					byte[] buf = dec.AcquireWaveData(cfi.FullPath);
-					var blob = new Disc.Blob_WaveFile();
-					OUT_Disc.DisposableResources.Add(file_blob = blob);
-					blob.Load(new MemoryStream(buf));
-				}
+				////mount the file
+				//if (cfi.Type == AnalyzeCueJob.CueFileType.BIN || cfi.Type == AnalyzeCueJob.CueFileType.Unknown)
+				//{
+				//  //raw files:
+				//  var blob = new Disc.Blob_RawFile { PhysicalPath = cfi.FullPath };
+				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
+				//  file_len = blob.Length;
+				//}
+				//else if (cfi.Type == AnalyzeCueJob.CueFileType.ECM)
+				//{
+				//  var blob = new Disc.Blob_ECM();
+				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
+				//  blob.Load(cfi.FullPath);
+				//  file_len = blob.Length;
+				//}
+				//else if (cfi.Type == AnalyzeCueJob.CueFileType.WAVE)
+				//{
+				//  var blob = new Disc.Blob_WaveFile();
+				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
+				//  blob.Load(cfi.FullPath);
+				//  file_len = blob.Length;
+				//}
+				//else if (cfi.Type == AnalyzeCueJob.CueFileType.DecodeAudio)
+				//{
+				//  FFMpeg ffmpeg = new FFMpeg();
+				//  if (!ffmpeg.QueryServiceAvailable())
+				//  {
+				//    throw new DiscReferenceException(cfi.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
+				//  }
+				//  AudioDecoder dec = new AudioDecoder();
+				//  byte[] buf = dec.AcquireWaveData(cfi.FullPath);
+				//  var blob = new Disc.Blob_WaveFile();
+				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
+				//  blob.Load(new MemoryStream(buf));
+				//}
 			}
 
 			void BurnToEOF()
@@ -254,97 +223,96 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public void Run()
 			{
-				//params
-				var cue = IN_AnalyzeJob.IN_CueFile;
-				OUT_Disc = new Disc();
+				////params
+				//var cue = IN_AnalyzeJob.IN_CueFile;
+				//OUT_Disc = new Disc();
 
-				//add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
-				//THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
-				for (int i = 0; i < 150; i++)
-				{
-					var zero_sector = new Sector_Zero();
-					var zero_subSector = new ZeroSubcodeSector();
-					var se_leadin = new SectorEntry(zero_sector);
-					se_leadin.SubcodeSector = zero_subSector;
-					OUT_Disc.Sectors.Add(se_leadin);
-				}
+				////add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
+				////THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
+				//for (int i = 0; i < 150; i++)
+				//{
+				//  var zero_sector = new Sector_Zero();
+				//  var zero_subSector = new ZeroSubcodeSector();
+				//  var se_leadin = new SectorEntry(zero_sector);
+				//  se_leadin.SubcodeSector = zero_subSector;
+				//  OUT_Disc.Sectors.Add(se_leadin);
+				//}
 
-				//now for the magic. Process commands in order
-				for (int i = 0; i < cue.Commands.Count; i++)
-				{
-					var cmd = cue.Commands[i];
+				////now for the magic. Process commands in order
+				//for (int i = 0; i < cue.Commands.Count; i++)
+				//{
+				//  var cmd = cue.Commands[i];
 
-					//these commands get dealt with globally. nothing to be done here
-					if (cmd is CueFile.Command.CATALOG || cmd is CueFile.Command.CDTEXTFILE) continue;
+				//  //these commands get dealt with globally. nothing to be done here
+				//  if (cmd is CueFile.Command.CATALOG || cmd is CueFile.Command.CDTEXTFILE) continue;
 
-					//nothing to be done for comments
-					if (cmd is CueFile.Command.REM) continue;
-					if (cmd is CueFile.Command.COMMENT) continue;
+				//  //nothing to be done for comments
+				//  if (cmd is CueFile.Command.REM) continue;
+				//  if (cmd is CueFile.Command.COMMENT) continue;
 
-					//handle cdtext and ISRC state updates, theyre kind of like little registers
-					if (cmd is CueFile.Command.PERFORMER)
-						cdtext_performer = (cmd as CueFile.Command.PERFORMER).Value;
-					if (cmd is CueFile.Command.SONGWRITER)
-						cdtext_songwriter = (cmd as CueFile.Command.SONGWRITER).Value;
-					if (cmd is CueFile.Command.TITLE)
-						cdtext_title = (cmd as CueFile.Command.TITLE).Value;
-					if (cmd is CueFile.Command.ISRC)
-						isrc = (cmd as CueFile.Command.ISRC).Value;
+				//  //handle cdtext and ISRC state updates, theyre kind of like little registers
+				//  if (cmd is CueFile.Command.PERFORMER)
+				//    cdtext_performer = (cmd as CueFile.Command.PERFORMER).Value;
+				//  if (cmd is CueFile.Command.SONGWRITER)
+				//    cdtext_songwriter = (cmd as CueFile.Command.SONGWRITER).Value;
+				//  if (cmd is CueFile.Command.TITLE)
+				//    cdtext_title = (cmd as CueFile.Command.TITLE).Value;
+				//  if (cmd is CueFile.Command.ISRC)
+				//    isrc = (cmd as CueFile.Command.ISRC).Value;
 
-					//flags are also a kind of a register. but the flags value is reset by the track command
-					if (cmd is CueFile.Command.FLAGS)
-					{
-						track_pendingFlags = (cmd as CueFile.Command.FLAGS).Flags;
-					}
+				//  //flags are also a kind of a register. but the flags value is reset by the track command
+				//  if (cmd is CueFile.Command.FLAGS)
+				//  {
+				//    track_pendingFlags = (cmd as CueFile.Command.FLAGS).Flags;
+				//  }
 
-					if (cmd is CueFile.Command.TRACK)
-					{
-						var track = cmd as CueFile.Command.TRACK;
+				//  if (cmd is CueFile.Command.TRACK)
+				//  {
+				//    var track = cmd as CueFile.Command.TRACK;
 
-						//register the track for further processing when an GENERATION command appears
-						track_pendingCommand = track;
-						track_pendingFlags = CueFile.TrackFlags.None;
+				//    //register the track for further processing when an GENERATION command appears
+				//    track_pendingCommand = track;
+				//    track_pendingFlags = CueFile.TrackFlags.None;
 						
-						UpdateSloshyTrackData(track);
-					}
+				//  }
 
-					if (cmd is CueFile.Command.FILE)
-					{
-						ProcessFile(cmd as CueFile.Command.FILE);
-					}
+				//  if (cmd is CueFile.Command.FILE)
+				//  {
+				//    ProcessFile(cmd as CueFile.Command.FILE);
+				//  }
 
-					if (cmd is CueFile.Command.INDEX)
-					{
-						ProcessIndex(cmd as CueFile.Command.INDEX);
-					}
-				}
+				//  if (cmd is CueFile.Command.INDEX)
+				//  {
+				//    ProcessIndex(cmd as CueFile.Command.INDEX);
+				//  }
+				//}
 
-				BurnToEOF();
+				//BurnToEOF();
 
-				//add RawTOCEntries A0 A1 A2 to round out the TOC
-				var TOCMiscInfo = new Synthesize_A0A1A2_Job { 
-					IN_FirstRecordedTrackNumber = sloshy_firstRecordedTrackNumber, 
-					IN_LastRecordedTrackNumber = sloshy_lastRecordedTrackNumber,
-					IN_Session1Format = sloshy_session1Format,
-					IN_LeadoutTimestamp = new Timestamp(OUT_Disc.Sectors.Count)
-				};
-				TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
+				////add RawTOCEntries A0 A1 A2 to round out the TOC
+				//var TOCMiscInfo = new Synthesize_A0A1A2_Job { 
+				//  IN_FirstRecordedTrackNumber = sloshy_firstRecordedTrackNumber, 
+				//  IN_LastRecordedTrackNumber = sloshy_lastRecordedTrackNumber,
+				//  IN_Session1Format = sloshy_session1Format,
+				//  IN_LeadoutTimestamp = new Timestamp(OUT_Disc.Sectors.Count)
+				//};
+				//TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
 
-				//generate the TOCRaw from the RawTocEntries
-				var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = OUT_Disc.RawTOCEntries };
-				tocSynth.Run();
-				OUT_Disc.TOCRaw = tocSynth.Result;
+				////generate the TOCRaw from the RawTocEntries
+				//var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = OUT_Disc.RawTOCEntries };
+				//tocSynth.Run();
+				//OUT_Disc.TOCRaw = tocSynth.Result;
 
-				//generate lead-out track with some canned number of sectors
-				//TODO - move this somewhere else and make it controllable depending on which console is loading up the disc
-				//TODO - we're not doing this yet
-				//var synthLeadoutJob = new Disc.SynthesizeLeadoutJob { Disc = disc, Length = 150 };
-				//synthLeadoutJob.Run();
+				////generate lead-out track with some canned number of sectors
+				////TODO - move this somewhere else and make it controllable depending on which console is loading up the disc
+				////TODO - we're not doing this yet
+				////var synthLeadoutJob = new Disc.SynthesizeLeadoutJob { Disc = disc, Length = 150 };
+				////synthLeadoutJob.Run();
 
-				//blech, old crap, maybe
-				OUT_Disc.Structure.Synthesize_TOCPointsFromSessions();
+				////blech, old crap, maybe
+				//OUT_Disc.Structure.Synthesize_TOCPointsFromSessions();
 
-				FinishLog();
+				//FinishLog();
 
 			} //Run()
 		} //class LoadCueJob

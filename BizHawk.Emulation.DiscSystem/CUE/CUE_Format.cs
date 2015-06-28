@@ -14,7 +14,5 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The CueFileResolver to be used by this instance
 		/// </summary>
 		public CueFileResolver Resolver;
-
-	
 	}
 }
