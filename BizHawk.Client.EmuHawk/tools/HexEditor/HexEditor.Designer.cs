@@ -584,8 +584,6 @@
 			this.HexScrollBar.Size = new System.Drawing.Size(16, 251);
 			this.HexScrollBar.TabIndex = 1;
 			this.HexScrollBar.ValueChanged += new System.EventHandler(this.HexScrollBar_ValueChanged);
-			this.HexScrollBar.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
-			this.HexScrollBar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HexEditor_KeyPress);
 			// 
 			// AddressesLabel
 			// 
