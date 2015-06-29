@@ -334,19 +334,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		//private int? GetDomainInt(string name)
-		//{
-		//	for (var i = 0; i < MemoryDomains.Count; i++)
-		//	{
-		//		if (MemoryDomains[i].Name == name)
-		//		{
-		//			return i;
-		//		}
-		//	}
-
-		//	return null;
-		//}
-
 		private static bool CurrentRomIsArchive()
 		{
 			var path = GlobalWin.MainForm.CurrentlyOpenRom;
