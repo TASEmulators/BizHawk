@@ -17,19 +17,6 @@ function axis(x,y,color,xsize,ysize)
 	gui.drawLine(x,y,x,y,"#000000FF")
 end
 
-local function player()
-	if drawn == false then
-		local x = memory.read_u8(0x516)
-		local y = memory.read_u8(0x58E)
-		local xrad = 0x06
-		local yrad = memory.read_u8(0x8C)
-		local hp = memory.read_u8(0xA7)
-		gui.drawBox(x-xrad,y-yrad,x+xrad,y+yrad,"#0000FF40","#0000FFFF")
-		axis(x,y)
-		drawn = true
-	end
-end
-
 local function collision()  -- Collision between enemies
 	if memory.read_u8(0xA2CA) == 0xBD and memory.read_u8(0xA2CB) == 0x16 and memory.read_u8(0xA2CC) == 0x05 then -- Bank check
 		local xreg = emu.getregister("X")
@@ -45,6 +32,16 @@ local function collision()  -- Collision between enemies
 		if bit.band(invuln,0x02) == 0x02 then
 			axis(x,y,0xFFFFFFFF,xrad,yrad)
 		end	
+		-- Player
+		if drawn == false then
+			x = memory.read_u8(0x516)
+			y = memory.read_u8(0x58E)
+			xrad = 0x06
+			yrad = memory.read_u8(0x8C)
+			gui.drawBox(x-xrad,y-yrad,x+xrad,y+yrad,0xFF0000FF,0x400000FF)
+			axis(x,y)
+			drawn = true
+		end
 	end
 end
 
@@ -103,7 +100,6 @@ event.onmemoryexecute(pattack,0xA050)
 event.onmemoryexecute(subweapon,0xA1DB)
 
 while true do
-	player()
 	emu.frameadvance()
 	drawn = false
 end
