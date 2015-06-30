@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.DiscSystem;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -146,5 +147,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
+
+		public static Dictionary<string, object> UserBag = new Dictionary<string, object>();
 	}
 }

@@ -27,7 +27,9 @@ namespace BizHawk.Client.Common
 		StateHistorySettings,
 		Markers,
 		ClientSettings,
-		VerificationLog
+		VerificationLog,
+
+		UserData
 	}
 
 	public static class BinaryStateFileNames
@@ -63,6 +65,7 @@ namespace BizHawk.Client.Common
 			AddLumpName(BinaryStateLump.Markers, "Markers.txt");
 			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
 			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");
+			AddLumpName(BinaryStateLump.UserData, "UserData.txt");
 		}
 
 		public static string GetReadName(BinaryStateLump lump)

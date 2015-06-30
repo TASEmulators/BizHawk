@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -58,6 +60,16 @@ namespace BizHawk.Client.Common
 							// this never should have been a core's responsibility
 							tw.WriteLine("Frame {0}", Global.Emulator.Frame);
 							Global.MovieSession.HandleMovieSaveState(tw);
+						});
+				}
+
+				if (Global.UserBag.Any())
+				{
+					bs.PutLump(BinaryStateLump.UserData,
+						delegate(TextWriter tw)
+						{
+							var data = ConfigService.SaveWithType(Global.UserBag);
+							tw.WriteLine(data);
 						});
 				}
 			}
@@ -116,6 +128,24 @@ namespace BizHawk.Client.Common
 						bl.GetCoreState(br => core.LoadStateBinary(br), tr => core.LoadStateText(tr));
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
+
+					if (bl.HasLump(BinaryStateLump.UserData))
+					{
+						string userData = string.Empty;
+						bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
+						{
+							string line;
+							while ((line = tr.ReadLine()) != null)
+							{
+								if (!string.IsNullOrWhiteSpace(line))
+								{
+									userData = line;
+								}
+							}
+						});
+
+						Global.UserBag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
+					}
 				}
 				catch
 				{
