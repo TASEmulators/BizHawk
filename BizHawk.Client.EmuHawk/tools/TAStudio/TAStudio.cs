@@ -534,8 +534,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
-			if (GlobalWin.MainForm.EmulatorPaused)
-				GlobalWin.MainForm.PauseOnFrame = frame;
+			GlobalWin.MainForm.PauseOnFrame = frame;
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
