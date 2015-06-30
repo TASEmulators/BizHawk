@@ -99,11 +99,16 @@
 			this.LuaListView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ScriptListContextMenu
@@ -493,7 +498,7 @@
 			this.OutputBox.Location = new System.Drawing.Point(6, 17);
 			this.OutputBox.Name = "OutputBox";
 			this.OutputBox.ReadOnly = true;
-			this.OutputBox.Size = new System.Drawing.Size(246, 206);
+			this.OutputBox.Size = new System.Drawing.Size(288, 249);
 			this.OutputBox.TabIndex = 2;
 			this.OutputBox.Text = "";
 			this.OutputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OutputBox_KeyDown);
@@ -523,13 +528,12 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.InputBox);
 			this.groupBox1.Controls.Add(this.OutputBox);
-			this.groupBox1.Location = new System.Drawing.Point(310, 71);
+			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox1.Location = new System.Drawing.Point(0, 0);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(258, 255);
+			this.groupBox1.Size = new System.Drawing.Size(300, 298);
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Output";
@@ -541,16 +545,16 @@
 			this.InputBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
 			this.InputBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 			this.InputBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.InputBox.Location = new System.Drawing.Point(6, 229);
+			this.InputBox.Location = new System.Drawing.Point(6, 272);
 			this.InputBox.Name = "InputBox";
-			this.InputBox.Size = new System.Drawing.Size(246, 20);
+			this.InputBox.Size = new System.Drawing.Size(288, 20);
 			this.InputBox.TabIndex = 3;
 			this.InputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InputBox_KeyDown);
 			// 
 			// NumberOfScripts
 			// 
 			this.NumberOfScripts.AutoSize = true;
-			this.NumberOfScripts.Location = new System.Drawing.Point(12, 53);
+			this.NumberOfScripts.Location = new System.Drawing.Point(3, 3);
 			this.NumberOfScripts.Name = "NumberOfScripts";
 			this.NumberOfScripts.Size = new System.Drawing.Size(56, 13);
 			this.NumberOfScripts.TabIndex = 4;
@@ -735,11 +739,11 @@
 			this.LuaListView.GridLines = true;
 			this.LuaListView.HideSelection = false;
 			this.LuaListView.ItemCount = 0;
-			this.LuaListView.Location = new System.Drawing.Point(13, 71);
+			this.LuaListView.Location = new System.Drawing.Point(4, 21);
 			this.LuaListView.Name = "LuaListView";
 			this.LuaListView.SelectAllInProgress = false;
 			this.LuaListView.selectedItem = -1;
-			this.LuaListView.Size = new System.Drawing.Size(291, 255);
+			this.LuaListView.Size = new System.Drawing.Size(273, 271);
 			this.LuaListView.TabIndex = 0;
 			this.LuaListView.UseCompatibleStateImageBehavior = false;
 			this.LuaListView.UseCustomBackground = true;
@@ -758,18 +762,34 @@
 			this.PathName.Text = "Path";
 			this.PathName.Width = 195;
 			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 49);
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.NumberOfScripts);
+			this.splitContainer1.Panel1.Controls.Add(this.LuaListView);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
+			this.splitContainer1.Size = new System.Drawing.Size(584, 298);
+			this.splitContainer1.SplitterDistance = 280;
+			this.splitContainer1.TabIndex = 7;
+			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(584, 347);
+			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.OutputMessages);
 			this.Controls.Add(this.toolStrip1);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.NumberOfScripts);
 			this.Controls.Add(this.menuStrip1);
-			this.Controls.Add(this.LuaListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(400, 180);
@@ -787,6 +807,11 @@
 			this.groupBox1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel1.PerformLayout();
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -863,5 +888,6 @@
 		private System.Windows.Forms.ToolStripButton DuplicateToolbarButton;
 		private System.Windows.Forms.ToolStripMenuItem DuplicateScriptMenuItem;
         private System.Windows.Forms.TextBox InputBox;
+		private System.Windows.Forms.SplitContainer splitContainer1;
 	}
 }
