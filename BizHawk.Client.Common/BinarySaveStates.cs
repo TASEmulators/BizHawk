@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using ICSharpCode.SharpZipLib.Zip;
 //using Ionic.Zip;
@@ -135,25 +136,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private static byte[] zipheader = new byte[] { 0x50, 0x4b, 0x03, 0x04 };
 		public static BinaryStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
 			var ret = new BinaryStateLoader();
 
-			// PORTABLE TODO - SKIP THIS.. FOR NOW
-			// check whether its an archive before we try opening it
-			bool isArchive;
-			using (var archiveChecker = new SevenZipSharpArchiveHandler())
+			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
-				int offset;
-				bool isExecutable;
-				isArchive = archiveChecker.CheckSignature(filename, out offset, out isExecutable);
+				byte[] data = new byte[4];
+				fs.Read(data, 0, 4);
+				if (!data.SequenceEqual(zipheader))
+					return null;
 			}
-
-			if (!isArchive)
-			{
-				return null;
-			}
-
+			
 			try
 			{
 				ret._zip = new ZipFile(filename);
