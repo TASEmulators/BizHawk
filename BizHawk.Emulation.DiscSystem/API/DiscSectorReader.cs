@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// Indicates whether the output buffer should be cleared before returning any data.
-		/// This will involve clearing sections you didn't ask for, and clearing sections about to be filled with data from the disc.
+		/// This will unfortunately involve clearing sections you didn't ask for, and clearing sections about to be filled with data from the disc.
 		/// It is a waste of performance, but it will ensure reliability.
 		/// </summary>
 		public bool DeterministicClearBuffer = true;

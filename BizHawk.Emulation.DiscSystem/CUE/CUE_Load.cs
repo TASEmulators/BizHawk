@@ -201,7 +201,9 @@ namespace BizHawk.Emulation.DiscSystem
 					//per "Example 05" on digitalx.org, pregap can come from index specification and pregap command
 					int specifiedPregapLength = cct.PregapLength.Sector;
 					int impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
-					//total pregap is needed for subQ addressing of the entire pregap area
+					//total pregap is needed for subQ addressing of the entire pregap area (pregap + distinct index0)
+					//during generating userdata sectors this is already handled
+					//we just need to know the difference for when we generate a better subQ here
 					int totalPregapLength = specifiedPregapLength + impliedPregapLength;
 					for (int s = 0; s < specifiedPregapLength; s++)
 					{
@@ -260,6 +262,11 @@ namespace BizHawk.Emulation.DiscSystem
 						SS_Base ss = null;
 						switch (cct.TrackType)
 						{
+							case CueFile.TrackType.Mode1_2048:
+								ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
+								curr_blobOffset += 2048;
+								break;
+
 							case CueFile.TrackType.Mode2_2352:
 							case CueFile.TrackType.Audio:
 								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
@@ -329,7 +336,22 @@ namespace BizHawk.Emulation.DiscSystem
 							break;
 					}
 
-					//TODO - POSTGAP
+					//---------------------------------
+					//gen postgap sectors
+					int specifiedPostgapLength = cct.PostgapLength.Sector;
+					for (int s = 0; s < specifiedPostgapLength; s++)
+					{
+						//TODO - do a better job synthesizing Q
+						var se_pregap = new SectorEntry(null);
+						var ss_pregap = new SS_Pregap();
+
+						//postgaps set pause flag. is this good enough?
+						ss_pregap.Pause = true;
+
+						se_pregap.SectorSynth = ss_pregap;
+						OUT_Disc.Sectors.Add(se_pregap);
+					}
+
 
 				} //end track loop
 

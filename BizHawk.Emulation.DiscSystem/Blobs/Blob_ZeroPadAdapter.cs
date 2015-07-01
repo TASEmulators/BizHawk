@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.DiscSystem
 				long end = byte_pos + todo;
 				if (end > srcBlobLength)
 				{
-					long temp = (int)(srcBlobLength - end);
+					long temp = (int)(srcBlobLength - byte_pos);
 					if (temp > int.MaxValue)
 						throw new InvalidOperationException();
 					todo = (int)temp;
