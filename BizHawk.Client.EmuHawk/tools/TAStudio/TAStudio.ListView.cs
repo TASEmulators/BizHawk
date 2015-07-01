@@ -99,11 +99,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public Func<int, string, Color?> QueryItemBgColorCallback { get; set; }
 
-		public Color? GetColorOverride(int index, InputRoll.RollColumn column)
+		private Color? GetColorOverride(int index, InputRoll.RollColumn column)
 		{
 			if (QueryItemBgColorCallback != null)
 			{
 				return QueryItemBgColorCallback(index, column.Name);
+			}
+
+			return null;
+		}
+
+		public Func<int, string, string> QueryItemTextCallback { get; set; }
+
+		private string GetTextOverride(int index, InputRoll.RollColumn column)
+		{
+			if (QueryItemTextCallback != null)
+			{
+				return QueryItemTextCallback(index, column.Name);
 			}
 
 			return null;
@@ -170,6 +182,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
 		{
+			var overrideText = GetTextOverride(index, column);
+			if (overrideText != null)
+			{
+				text = overrideText;
+				return;
+			}
+
 			try
 			{
 				text = string.Empty;

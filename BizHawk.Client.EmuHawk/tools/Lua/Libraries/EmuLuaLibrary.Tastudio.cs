@@ -148,5 +148,30 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodAttributes(
+			"onqueryitemtext",
+			"called during the text draw event of the tastudio listview"
+		)]
+		public void OnQueryItemText(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.QueryItemTextCallback = (int index, string name) =>
+				{
+					var result = luaf.Call(index, name);
+
+					if (result != null)
+					{
+						if (result[0] != null)
+						{
+							return result[0].ToString();
+						}
+					}
+
+					return (string)null;
+				};
+			}
+		}
 	}
 }
