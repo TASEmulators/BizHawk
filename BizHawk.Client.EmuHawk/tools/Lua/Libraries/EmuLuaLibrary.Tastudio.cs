@@ -125,5 +125,28 @@ namespace BizHawk.Client.EmuHawk
 
 			return false;
 		}
+
+		[LuaMethodAttributes(
+			"onqueryitembg",
+			"called during the background draw event of the tastudio listview"
+		)]
+		public void OnQueryItemBg(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.QueryItemBgColorCallback = (int index, string name) =>
+				{
+					var result = luaf.Call(index, name);
+
+					if (result != null)
+					{
+						var color = ToColor(result[0]);
+						return color;
+					}
+
+					return null;
+				};
+			}
+		}
 	}
 }

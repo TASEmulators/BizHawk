@@ -95,8 +95,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		#region Event callbacks
+
+		public Func<int, string, Color?> QueryItemBgColorCallback { get; set; }
+
+		public Color? GetColorOverride(int index, InputRoll.RollColumn column)
+		{
+			if (QueryItemBgColorCallback != null)
+			{
+				return QueryItemBgColorCallback(index, column.Name);
+			}
+
+			return null;
+		}
+
+		#endregion
+
 		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
+			var overrideColor = GetColorOverride(index, column);
+
+			if (overrideColor.HasValue)
+			{
+				color = overrideColor.Value;
+				return;
+			}
+
 			string columnName = column.Name;
 
 			if (columnName == MarkerColumnName)
