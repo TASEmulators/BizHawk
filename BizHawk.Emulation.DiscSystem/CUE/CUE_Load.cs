@@ -229,10 +229,12 @@ namespace BizHawk.Emulation.DiscSystem
 					for (; ; )
 					{
 						bool trackDone = false;
+						bool generateGap = false;
 
 						if (specifiedPregapLength > 0)
 						{
 							//if burning through a specified pregap, count it down
+							generateGap = true;
 							specifiedPregapLength--;
 						}
 						else
@@ -255,19 +257,15 @@ namespace BizHawk.Emulation.DiscSystem
 							}
 						}
 
-						//generate a sector:
-						SS_Base ss = null;
+						//if we're in a pregap, setup subQ and gap type depending on tracktype
 						EControlQ qFlags = (EControlQ)(int)cct.Flags;
 						int qRelMSF = relMSF;
+						bool audioGap = true;
 						if (curr_index == 0)
 						{
-							//generating pregap:
-							
 							//tweak relMSF due to ambiguity/contradiction in yellowbook docs
 							if (!context.DiscMountPolicy.CUE_PregapContradictionModeA)
 								qRelMSF++;
-
-							bool audioGap = true;
 
 							//normally the gap takes this track's type
 							if (cct.TrackType != CueFile.TrackType.Audio) audioGap = false;
@@ -285,25 +283,37 @@ namespace BizHawk.Emulation.DiscSystem
 									audioGap = true;
 								}
 							}
-							
-							if(audioGap) ss = new SS_AudioGap(); else ss = new SS_DataGap();
+						}
+
+						SS_Base ss = null;
+						if (generateGap)
+						{
+							if (audioGap) ss = new SS_AudioGap(); else ss = new SS_DataGap();
 						}
 						else
 						{
 							//generating normal index 1+ sector
 							switch (cct.TrackType)
 							{
-								case CueFile.TrackType.Mode1_2048:
-									ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
-									curr_blobOffset += 2048;
+								case CueFile.TrackType.Audio:
+									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 0 };
+									curr_blobOffset += 2352;
 									break;
 
 								case CueFile.TrackType.CDI_2352:
 								case CueFile.TrackType.Mode1_2352:
-								case CueFile.TrackType.Mode2_2352:
-								case CueFile.TrackType.Audio:
-									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
+									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
 									curr_blobOffset += 2352;
+									break;
+
+								case CueFile.TrackType.Mode2_2352:
+									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 2 };
+									curr_blobOffset += 2352;
+									break;
+
+								case CueFile.TrackType.Mode1_2048:
+									ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
+									curr_blobOffset += 2048;
 									break;
 
 								default:

@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public long BlobOffset;
 			public SubchannelQ sq;
 			public bool Pause;
+			public byte Mode;
 
 			public abstract void Synth(SectorSynthJob job);
 
@@ -96,7 +97,7 @@ namespace BizHawk.Emulation.DiscSystem
 					Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2048);
 
 				if ((job.Parts & ESectorSynthPart.Header16) != 0)
-					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 1);
+					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, Mode);
 
 				if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
 					SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
