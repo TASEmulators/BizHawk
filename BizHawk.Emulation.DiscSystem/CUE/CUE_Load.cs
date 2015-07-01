@@ -201,28 +201,37 @@ namespace BizHawk.Emulation.DiscSystem
 					//per "Example 05" on digitalx.org, pregap can come from index specification and pregap command
 					int specifiedPregapLength = cct.PregapLength.Sector;
 					int impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
-					//total pregap is needed for subQ addressing of the entire pregap area (pregap + distinct index0)
-					//during generating userdata sectors this is already handled
-					//we just need to know the difference for when we generate a better subQ here
 					int totalPregapLength = specifiedPregapLength + impliedPregapLength;
+
+					//from now on we'll track relative timestamp and increment it continually
+					int relMSF = -totalPregapLength;
+
+					//read more at policies declaration
+					if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
+						relMSF += 1;
+
 					for (int s = 0; s < specifiedPregapLength; s++)
 					{
-						//TODO - do a better job synthesizing Q
-						var se_pregap = new SectorEntry(null);
-						var ss_pregap = new SS_Gap();
-						
-						//pregaps set pause flag
-						//TODO - do a better job synthesizing P
-						ss_pregap.Pause = true;
+						var se = new SectorEntry(null);
+						var ss = new SS_Gap();
 
-						se_pregap.SectorSynth = ss_pregap;
-						OUT_Disc.Sectors.Add(se_pregap);
+						//-subq-
+						byte ADR = 1;
+						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
+						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
+						ss.sq.q_index = BCD2.FromDecimal(0);
+						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
+						ss.sq.Timestamp = new Timestamp(relMSF);
+
+						//-subP-
+						//always paused--is this good enough? (probably not, theres detailed handling commented out at the end of this file)
+						ss.Pause = true;
+
+						se.SectorSynth = ss;
+						OUT_Disc.Sectors.Add(se);
+						relMSF++;
 					}
 
-					//TODO - build track relative timestamp now and increment it continually
-
-
-					//after this, pregap sectors are generated like a normal sector, but the subQ is specified as a pregap instead of a normal track (actually, TBD)
 					//---------------------------------
 
 
@@ -257,6 +266,12 @@ namespace BizHawk.Emulation.DiscSystem
 									//WE ARE NOW AT INDEX 1: generate the RawTOCEntry for this track
 									EmitRawTOCEntry(cct);
 								}
+
+								//in the weird mednafen mode, we need to adjust relMSF to be 0 since we pre-adjusted it once
+								if (!context.DiscMountPolicy.CUE_PauseContradictionModeA && relMSF == 1)
+									relMSF = 0;
+								else
+									if (relMSF != 0) throw new InvalidOperationException();
 							}
 							else break;
 						}
@@ -277,28 +292,13 @@ namespace BizHawk.Emulation.DiscSystem
 								break;
 						}
 
-						//prepare fields for subQ
-						int track_relative_msf = curr_blobMSF - cct.Indexes[1].FileMSF.Sector;
-
-						//for index 0, negative MSF required and encoded oppositely. Read more at Policies declaration
-						if (curr_index == 0)
-						{
-							if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
-								track_relative_msf += 1;
-
-							if (track_relative_msf > 0) throw new InvalidOperationException("Severe error generating cue subQ (positive relMSF for pregap)");
-							track_relative_msf = -track_relative_msf;
-						}
-						else
-							if (track_relative_msf < 0) throw new InvalidOperationException("Severe error generating cue subQ (negative relMSF for non-pregap)");
-
 						//setup subQ
 						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
 						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
 						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 						ss.sq.q_index = BCD2.FromDecimal(curr_index);
 						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
-						ss.sq.Timestamp = new Timestamp(track_relative_msf);
+						ss.sq.Timestamp = new Timestamp(relMSF);
 
 						//setup subP
 						if (curr_index == 0)
@@ -309,6 +309,7 @@ namespace BizHawk.Emulation.DiscSystem
 						se.SectorSynth = ss;
 						OUT_Disc.Sectors.Add(se);
 						curr_blobMSF++;
+						relMSF++;
 
 						if (cct.IsFinalInFile)
 						{
@@ -333,20 +334,16 @@ namespace BizHawk.Emulation.DiscSystem
 					int specifiedPostgapLength = cct.PostgapLength.Sector;
 					for (int s = 0; s < specifiedPostgapLength; s++)
 					{
-						//TODO - do a better job synthesizing Q
 						var se= new SectorEntry(null);
 						var ss = new SS_Gap();
 
 						//-subq-
-						//postgap addressing continues from 
-						int lastSectorRelMSF = curr_blobMSF - cct.Indexes[1].FileMSF.Sector - 1;
-						int postgapSectorRelMSF = lastSectorRelMSF + s + 1;
 						byte ADR = 1;
 						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
 						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 						ss.sq.q_index = BCD2.FromDecimal(curr_index);
 						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
-						ss.sq.Timestamp = new Timestamp(postgapSectorRelMSF);
+						ss.sq.Timestamp = new Timestamp(relMSF);
 
 						//-subP-
 						//always paused--is this good enough?
@@ -354,6 +351,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 						se.SectorSynth = ss;
 						OUT_Disc.Sectors.Add(se);
+						relMSF++;
 					}
 
 
