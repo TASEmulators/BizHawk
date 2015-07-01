@@ -11,14 +11,17 @@ using System.Collections.Generic;
 //This will result in a completely flattened CCD where everything comes right off the hard drive
 //Our choice here might be an unwise decision for disc ID and miscellaneous purposes but it's best for gaming and stream-converting (hawking and hashing)
 
+//TODO: in principle, we could mount audio to decode only on an as-needed basis
+//this might result in hiccups during emulation, though, so it should be an option.
+//This would imply either decode-length processing (scan file without decoding) or decoding and discarding the data.
+//We should probably have some richer policy specifications for this kind of thing, but it's not a high priority. Main workflow is still discohawking.
+//Alternate policies would probably be associated with copious warnings (examples: ? ? ?)
+
+
 //https://books.google.com/books?id=caF_AAAAQBAJ&lpg=PA124&ots=OA9Ttj9CHZ&dq=disc%20TOC%20point%20A2&pg=PA124
-
-
 //http://www.staff.uni-mainz.de/tacke/scsi/SCSI2-14.html
-
 //http://www.pctechguide.com/iso-9660-data-format-for-cds-cd-roms-cd-rs-and-cd-rws
 //http://linux.die.net/man/1/cue2toc
-
 //http://cdemu.sourceforge.net/project.php#sf
 
 //apparently cdrdao is the ultimate linux tool for doing this stuff but it doesnt support DAO96 (or other DAO modes) that would be necessary to extract P-Q subchannels
@@ -27,13 +30,11 @@ using System.Collections.Generic;
 //here is a featureset list of windows cd burning programs (useful for cuesheet compatibility info)
 //http://www.dcsoft.com/cue_mastering_progs.htm
 
-//good
+//good links
 //http://linux-sxs.org/bedtime/cdapi.html
 //http://en.wikipedia.org/wiki/Track_%28CD%29
 //http://docs.google.com/viewer?a=v&q=cache:imNKye05zIEJ:www.13thmonkey.org/documentation/SCSI/mmc-r10a.pdf+q+subchannel+TOC+format&hl=en&gl=us&pid=bl&srcid=ADGEEShtYqlluBX2lgxTL3pVsXwk6lKMIqSmyuUCX4RJ3DntaNq5vI2pCvtkyze-fumj7vvrmap6g1kOg5uAVC0IxwU_MRhC5FB0c_PQ2BlZQXDD7P3GeNaAjDeomelKaIODrhwOoFNb&sig=AHIEtbRXljAcFjeBn3rMb6tauHWjSNMYrw
-//r:\consoles\~docs\yellowbook
 //http://digitalx.org/cue-sheet/examples/
-//
 
 //"qemu cdrom emulator"
 //http://www.koders.com/c/fid7171440DEC7C18B932715D671DEE03743111A95A.aspx
@@ -48,7 +49,6 @@ using System.Collections.Generic;
 //ideas:
 /*
  * do some stuff asynchronously. for example, decoding mp3 sectors.
- * keep a list of 'blobs' (giant bins or decoded wavs likely) which can reference the disk
  * keep a list of sectors and the blob/offset from which they pull -- also whether the sector is available
  * if it is not available and something requests it then it will have to block while that sector gets generated
  * perhaps the blobs know how to resolve themselves and the requested sector can be immediately resolved (priority boost)

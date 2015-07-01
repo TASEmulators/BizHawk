@@ -89,6 +89,8 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Main API to determine how many LBAs are available on the disc.
 		/// This counts from LBA 0 to the final sector available.
+		/// THIS IS DUMB. Like everything else here.
+		/// Fetch it from a toc or disc structure
 		/// </summary>
 		public int LBACount { get { return ABACount - 150; } }
 

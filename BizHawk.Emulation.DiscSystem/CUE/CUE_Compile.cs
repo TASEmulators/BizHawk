@@ -22,6 +22,10 @@ namespace BizHawk.Emulation.DiscSystem
 		internal class CompiledCueIndex
 		{
 			public int Number;
+
+			/// <summary>
+			/// this is annoying, it should just be an integer
+			/// </summary>
 			public Timestamp FileMSF;
 
 			public override string ToString()
@@ -84,6 +88,12 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public int BlobIndex;
 			public int Number;
+			
+			/// <summary>
+			/// A track that's final in the file gets its length from the length of the file; other tracks lengths are determined from the succeeding track
+			/// </summary>
+			public bool IsFinalInFile;
+
 			public CompiledCDText CDTextData = new CompiledCDText();
 			public Timestamp PregapLength, PostgapLength;
 			public CueFile.TrackFlags Flags = CueFile.TrackFlags.None;
@@ -150,6 +160,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CompiledCDText curr_cdtext;
 			int curr_blobIndex = -1;
 			CompiledCueTrack curr_track = null;
+			CompiledCueFile curr_file = null;
 			bool discinfo_session1Format_determined = false;
 
 			void UpdateDiscInfo(CueFile.Command.TRACK trackCommand)
@@ -179,8 +190,22 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 
-			void AddFile(CueFile.Command.FILE f)
+			void CloseFile()
 			{
+				if (curr_track != null)
+				{
+					//flag this track as the final one in the file
+					curr_track.IsFinalInFile = true;
+				}
+
+				curr_file = null;
+			}
+
+			void OpenFile(CueFile.Command.FILE f)
+			{
+				if (curr_file != null)
+					CloseFile();
+
 				curr_blobIndex++;
 
 				var Resolver = IN_CueFormat.Resolver;
@@ -311,7 +336,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var index0 = new CompiledCueIndex();
 					var index1 = curr_track.Indexes[0];
 					index0.Number = 0;
-					index0.FileMSF = index1.FileMSF;
+					index0.FileMSF = index1.FileMSF; //same MSF as index 1 will make it effectively nonexistent
 					curr_track.Indexes.Insert(0, index0);
 				}
 
@@ -401,7 +426,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 					if (cmd is CueFile.Command.FILE)
 					{
-						AddFile(cmd as CueFile.Command.FILE);
+						CloseFile();
+						OpenFile(cmd as CueFile.Command.FILE);
 					}
 
 					if (cmd is CueFile.Command.INDEX)
@@ -424,6 +450,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 				}
 
+				//it's a bit odd to close the file before closing the track, but...
+				//we need to be sure to CloseFile first to make sure the track is marked as the final one in the file
+				CloseFile();
 				CloseTrack();
 
 				CreateTrack1Pregap();

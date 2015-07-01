@@ -49,177 +49,35 @@ namespace BizHawk.Emulation.DiscSystem
 				Normal, Pregap, Postgap
 			}
 
-			//current blob file state
-			int file_cfi_index = -1;
-			IBlob file_blob = null;
-			CueFile.Command.FILE file_currentCommand = null;
-			long file_ofs = 0, file_len = 0;
-			int file_msf = -1;
-
-			//current track, flags, and index state
-			CueFile.Command.TRACK track_pendingCommand = null;
-			CueFile.Command.TRACK track_currentCommand = null;
-			CueFile.TrackFlags track_pendingFlags = CueFile.TrackFlags.None;
-			CueFile.TrackFlags track_currentFlags = CueFile.TrackFlags.None;
-
-			//burn state.
-			//TODO - separate burner into another class?
-			BurnType burntype_current;
-			Timestamp burn_pregap_timestamp;
-
-
-			void BeginBurnPregap()
+			class BlobInfo
 			{
-				//TODO?
+				public IBlob Blob;
+				public long Length;
 			}
 
-			void BurnPregap(Timestamp length)
+			//not sure if we need this...
+			class TrackInfo
 			{
-				burntype_current = BurnType.Pregap;
-				burn_pregap_timestamp = length;
-				int length_lba = length.Sector;
+				public int Length;
 
-				//TODO: read [IEC10149] 20, 20.1, & 20.2 to assign pre-gap and post-gap types correctly depending on track number and previous track
-				//ALSO, if the last track is data, we need to make a post-gap
-				//we can grab the previously generated sector in order to figure out how to encode new pregap sectors
-				for(int i=0;i<length_lba;i++)
-					BurnSector();
+				public CompiledCueTrack CompiledCueTrack;
 			}
 
-			void ProcessFile(CueFile.Command.FILE file)
-			{
-				////if we're currently in a file, finish it
-				//if (file_currentCommand != null)
-				//  BurnToEOF();
+			List<BlobInfo> BlobInfos;
+			List<TrackInfo> TrackInfos = new List<TrackInfo>();
 
-				////open the new blob
-				//file_currentCommand = file;
-				//file_msf = 0;
-				//var cfi = IN_CompileJob.OUT_FileInfos[++file_cfi_index];
-
-				////mount the file
-				//if (cfi.Type == AnalyzeCueJob.CueFileType.BIN || cfi.Type == AnalyzeCueJob.CueFileType.Unknown)
-				//{
-				//  //raw files:
-				//  var blob = new Disc.Blob_RawFile { PhysicalPath = cfi.FullPath };
-				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
-				//  file_len = blob.Length;
-				//}
-				//else if (cfi.Type == AnalyzeCueJob.CueFileType.ECM)
-				//{
-				//  var blob = new Disc.Blob_ECM();
-				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
-				//  blob.Load(cfi.FullPath);
-				//  file_len = blob.Length;
-				//}
-				//else if (cfi.Type == AnalyzeCueJob.CueFileType.WAVE)
-				//{
-				//  var blob = new Disc.Blob_WaveFile();
-				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
-				//  blob.Load(cfi.FullPath);
-				//  file_len = blob.Length;
-				//}
-				//else if (cfi.Type == AnalyzeCueJob.CueFileType.DecodeAudio)
-				//{
-				//  FFMpeg ffmpeg = new FFMpeg();
-				//  if (!ffmpeg.QueryServiceAvailable())
-				//  {
-				//    throw new DiscReferenceException(cfi.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
-				//  }
-				//  AudioDecoder dec = new AudioDecoder();
-				//  byte[] buf = dec.AcquireWaveData(cfi.FullPath);
-				//  var blob = new Disc.Blob_WaveFile();
-				//  OUT_Disc.DisposableResources.Add(file_blob = blob);
-				//  blob.Load(new MemoryStream(buf));
-				//}
-			}
-
-			void BurnToEOF()
-			{
-				while (file_ofs < file_len)
-					BurnSector();
-
-				//TODO - if a postgap was requested, do it now
-			}
-
-			void ProcessIndex(CueFile.Command.INDEX index)
-			{
-				//burn sectors with the previous registers until we reach the current index MSF
-				int index_file_msf = index.Timestamp.Sector;
-				while (file_msf < index_file_msf)
-					BurnSector();
-
-				//latch current track settings
-				track_currentCommand = track_pendingCommand;
-				track_currentFlags = track_pendingFlags;
-
-				//index 0 is annoying. we have to code its subchannels while knowing the index that comes next
-				//this is the main reason for transforming the cue file into a CueGrid (any index 0 can easily reference the index 1 that comes after it)
-				if (index.Number == 0)
-				{
-				}
-			}
-
-			void EatBlobFileSector(int required, out IBlob blob, out long blobOffset)
-			{
-				blob = file_blob;
-				blobOffset = file_ofs;
-				if (file_ofs + required > file_len)
-				{
-					Warn("Zero-padding mis-sized cue blob file: " + Path.GetFileName(file_currentCommand.Path));
-					blob = Disc.Blob_ZeroPadBuffer.MakeBufferFrom(file_blob,file_ofs,required);
-					OUT_Disc.DisposableResources.Add(blob);
-					blobOffset = 0;
-				}
-				file_ofs += required;
-			}
-
-			void BurnSector_Normal()
-			{
-				SS_Base ss = null;
-				switch (track_currentCommand.Type)
-				{
-					case CueFile.TrackType.Mode2_2352:
-						ss = new SS_2352();
-						EatBlobFileSector(2352, out ss.Blob, out ss.BlobOffset);
-						break;
-					case CueFile.TrackType.Audio:
-						ss = new SS_2352();
-						EatBlobFileSector(2352, out ss.Blob, out ss.BlobOffset);
-						break;
-				}
-
-				var se = new SectorEntry(null);
-				se.SectorSynth = ss;
-				OUT_Disc.Sectors.Add(se);
-			}
-
-			void BurnSector_Pregap()
-			{
-				var se = new SectorEntry(null);
-				se.SectorSynth = new SS_Mode1_2048(); //TODO - actually burn the right thing
-				OUT_Disc.Sectors.Add(se);
-
-				burn_pregap_timestamp = new Timestamp(burn_pregap_timestamp.Sector - 1);
-			}
-
-			void BurnSector()
-			{
-				switch (burntype_current)
-				{
-					case BurnType.Normal:
-						BurnSector_Normal();
-						break;
-					case BurnType.Pregap:
-						BurnSector_Pregap();
-						break;
-				}
-			}
 
 			void MountBlobs()
 			{
+				IBlob file_blob = null;
+				long file_len = 0;
+
+				BlobInfos = new List<BlobInfo>();
 				foreach (var ccf in IN_CompileJob.OUT_CompiledCueFiles)
 				{
+					var bi = new BlobInfo();
+					BlobInfos.Add(bi);
+
 					switch (ccf.Type)
 					{
 						case CompiledCueFileType.BIN:
@@ -228,7 +86,7 @@ namespace BizHawk.Emulation.DiscSystem
 								//raw files:
 								var blob = new Disc.Blob_RawFile { PhysicalPath = ccf.FullPath };
 								OUT_Disc.DisposableResources.Add(file_blob = blob);
-								file_len = blob.Length;
+								bi.Length = blob.Length;
 								break;
 							}
 						case CompiledCueFileType.ECM:
@@ -236,7 +94,7 @@ namespace BizHawk.Emulation.DiscSystem
 								var blob = new Disc.Blob_ECM();
 								OUT_Disc.DisposableResources.Add(file_blob = blob);
 								blob.Load(ccf.FullPath);
-								file_len = blob.Length;
+								bi.Length = blob.Length;
 								break;
 							}
 						case CompiledCueFileType.WAVE:
@@ -244,7 +102,7 @@ namespace BizHawk.Emulation.DiscSystem
 								var blob = new Disc.Blob_WaveFile();
 								OUT_Disc.DisposableResources.Add(file_blob = blob);
 								blob.Load(ccf.FullPath);
-								file_len = blob.Length;
+								bi.Length = blob.Length;
 								break;
 							}
 						case CompiledCueFileType.DecodeAudio:
@@ -259,13 +117,42 @@ namespace BizHawk.Emulation.DiscSystem
 								var blob = new Disc.Blob_WaveFile();
 								OUT_Disc.DisposableResources.Add(file_blob = blob);
 								blob.Load(new MemoryStream(buf));
+								bi.Length = buf.Length;
 								break;
 							}
 						default:
 							throw new InvalidOperationException();
-					}
+					} //switch(file type)
+
+					//wrap all the blobs with zero padding
+					bi.Blob = new Disc.Blob_ZeroPadAdapter(file_blob, bi.Length);
 				}
 			}
+
+
+			void AnalyzeTracks()
+			{
+				var compiledTracks = IN_CompileJob.OUT_CompiledCueTracks;
+
+				for(int t=0;t<compiledTracks.Count;t++)
+				{
+					var cct = compiledTracks[t];
+
+					var ti = new TrackInfo() { CompiledCueTrack = cct };
+					TrackInfos.Add(ti);
+
+					//OH NO! CANT DO THIS!
+					//need to read sectors from file to reliably know its ending size.
+					//could determine it from file mode.
+					//do we really need this?
+					//if (cct.IsFinalInFile)
+					//{
+					//  //length is determined from length of file
+						
+					//}
+				}
+			}
+
 
 			public void Run()
 			{
@@ -273,21 +160,26 @@ namespace BizHawk.Emulation.DiscSystem
 				var compiled = IN_CompileJob;
 				OUT_Disc = new Disc();
 
+				//generation state
+				int curr_index;
+				int curr_blobIndex = -1;
+				int curr_blobMSF = -1;
+				BlobInfo curr_blobInfo = null;
+				long curr_blobOffset = -1;
+
 				//mount all input files
 				MountBlobs();
 
-				//make a lookup from track number to CompiledCueTrack
-				Dictionary<int, CompiledCueTrack> trackLookup = new Dictionary<int, CompiledCueTrack>();
-				foreach (var cct in compiled.OUT_CompiledCueTracks)
-					trackLookup[cct.Number] = cct;
+				//unhappily, we cannot determine the length of all the tracks without knowing the length of the files
+				//now that the files are mounted, we can figure the track lengths
+				AnalyzeTracks();
 
 				//loop from track 1 to 99
 				//(track 0 isnt handled yet, that's way distant work)
-				for (int t = 1; t <= 99; t++)
+				for (int t = 1; t < TrackInfos.Count; t++)
 				{
-					CompiledCueTrack cct;
-					if (!trackLookup.TryGetValue(t, out cct))
-						continue;
+					TrackInfo ti = TrackInfos[t];
+					CompiledCueTrack cct = ti.CompiledCueTrack;
 
 					//---------------------------------
 					//generate track pregap
@@ -310,92 +202,129 @@ namespace BizHawk.Emulation.DiscSystem
 					//after this, pregap sectors are generated like a normal sector, but the subQ is specified as a pregap instead of a normal track
 					//---------------------------------
 
-					//---------------------------------
-					//WE ARE NOW AT INDEX 1
-					//---------------------------------
 
 					//---------------------------------
-					//generate the RawTOCEntry for this track
-					SubchannelQ sq = new SubchannelQ();
-					//absent some kind of policy for how to set it, this is a safe assumption:
-					byte ADR = 1;
-					sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
-					sq.q_tno.BCDValue = 0; //kind of a little weird here.. the track number becomes the 'point' and put in the index instead. 0 is the track number here.
-					sq.q_index = BCD2.FromDecimal(cct.Number);
-					//not too sure about these yet
-					sq.min = BCD2.FromDecimal(0);
-					sq.sec = BCD2.FromDecimal(0);
-					sq.frame = BCD2.FromDecimal(0);
-					sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count + 150); //its supposed to be an absolute timestamp
-					OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = sq });
-				}
+					//generate sectors for this track.
+
+					//advance to the next file if needed
+					if (curr_blobIndex != cct.BlobIndex)
+					{
+						curr_blobIndex = cct.BlobIndex;
+						curr_blobOffset = 0;
+						curr_blobMSF = 0;
+						curr_blobInfo = BlobInfos[curr_blobIndex];
+					}
+
+					//work until the next track is reached, or the end of the current file is reached, depending on the track type
+					curr_index = 0;
+					for (; ; )
+					{
+						bool trackDone = false;
+
+						//select the appropriate index by inspecting the next index and seeing if we've reached it
+						for (; ; )
+						{
+							if (curr_index == cct.Indexes.Count - 1)
+								break;
+							if (curr_blobMSF >= cct.Indexes[curr_index + 1].FileMSF.Sector)
+							{
+								curr_index++;
+								if (curr_index == 1)
+								{
+									//---- WE ARE NOW AT INDEX 1 -----
+									//generate the RawTOCEntry for this track (make another method for this please)
+									SubchannelQ toc_sq = new SubchannelQ();
+									//absent some kind of policy for how to set it, this is a safe assumption:
+									byte toc_ADR = 1;
+									toc_sq.SetStatus(toc_ADR, (EControlQ)(int)cct.Flags);
+									toc_sq.q_tno.BCDValue = 0; //kind of a little weird here.. the track number becomes the 'point' and put in the index instead. 0 is the track number here.
+									toc_sq.q_index = BCD2.FromDecimal(cct.Number);
+									//not too sure about these yet
+									toc_sq.min = BCD2.FromDecimal(0);
+									toc_sq.sec = BCD2.FromDecimal(0);
+									toc_sq.frame = BCD2.FromDecimal(0);
+									toc_sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count); //its supposed to be an absolute timestamp
+									OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = toc_sq });
+								}
+							}
+							else break;
+						}
+
+						//generate a sector:
+						ISector siface = null;
+						SS_Base ss = null;
+						switch (cct.TrackType)
+						{
+							case CueFile.TrackType.Mode2_2352:
+							case CueFile.TrackType.Audio:
+								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
+								curr_blobOffset += 2352;
+								break;
+						}
+
+						//make the subcode
+						//TODO - according to policies, or better yet, defer this til it's needed (user delivers a policies object to disc reader apis)
+						//at any rate, we'd paste this logic into there so let's go ahead and write it here
+						var subcode = new BufferedSubcodeSector(); //(its lame that we have to use this; make a static method when we delete this class)
+						SubchannelQ sq = new SubchannelQ();
+						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
+						sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
+						sq.q_tno = BCD2.FromDecimal(cct.Number);
+						sq.q_index = BCD2.FromDecimal(curr_index);
+						int LBA = OUT_Disc.Sectors.Count;
+						sq.ap_min = BCD2.FromDecimal(new Timestamp(LBA).MIN);
+						sq.ap_sec = BCD2.FromDecimal(new Timestamp(LBA).SEC);
+						sq.ap_frame = BCD2.FromDecimal(new Timestamp(LBA).FRAC);
+						int track_relative_msf = curr_blobMSF - cct.Indexes[1].FileMSF.Sector;
+						sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
+						sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
+						sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
+						//finally we're done: synthesize subchannel
+						subcode.Synthesize_SubchannelQ(ref sq, true);
+
+						//make the SectorEntry (some temporary bullshit here)
+						var se = new SectorEntry(null);
+						se.SectorSynth = ss;
+						ss.sq = sq;
+						OUT_Disc.Sectors.Add(se);
+						curr_blobMSF++;
+
+						if (cct.IsFinalInFile)
+						{
+							//sometimes, break when the file is exhausted
+							if (curr_blobOffset >= curr_blobInfo.Length)
+								trackDone = true;
+						}
+						else
+						{
+							//other times, break when the track is done
+							//(this check is safe because it's not the final track overall if it's not the final track in a file)
+							if (curr_blobMSF >= TrackInfos[t + 1].CompiledCueTrack.Indexes[0].FileMSF.Sector)
+								trackDone = true;
+						}
+
+						if (trackDone)
+							break;
+					}
+
+					//TODO - POSTGAP
+
+				} //end track loop
 
 
-			
-				////now for the magic. Process commands in order
-				//for (int i = 0; i < cue.Commands.Count; i++)
-				//{
-				//  var cmd = cue.Commands[i];
+				//add RawTOCEntries A0 A1 A2 to round out the TOC
+				var TOCMiscInfo = new Synthesize_A0A1A2_Job { 
+				  IN_FirstRecordedTrackNumber = IN_CompileJob.OUT_CompiledDiscInfo.FirstRecordedTrackNumber,
+					IN_LastRecordedTrackNumber = IN_CompileJob.OUT_CompiledDiscInfo.LastRecordedTrackNumber,
+					IN_Session1Format = IN_CompileJob.OUT_CompiledDiscInfo.SessionFormat,
+				  IN_LeadoutTimestamp = new Timestamp(OUT_Disc.Sectors.Count) //do we need a +150?
+				};
+				TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
 
-				//  //these commands get dealt with globally. nothing to be done here
-				//  if (cmd is CueFile.Command.CATALOG || cmd is CueFile.Command.CDTEXTFILE) continue;
-
-				//  //nothing to be done for comments
-				//  if (cmd is CueFile.Command.REM) continue;
-				//  if (cmd is CueFile.Command.COMMENT) continue;
-
-				//  //handle cdtext and ISRC state updates, theyre kind of like little registers
-				//  if (cmd is CueFile.Command.PERFORMER)
-				//    cdtext_performer = (cmd as CueFile.Command.PERFORMER).Value;
-				//  if (cmd is CueFile.Command.SONGWRITER)
-				//    cdtext_songwriter = (cmd as CueFile.Command.SONGWRITER).Value;
-				//  if (cmd is CueFile.Command.TITLE)
-				//    cdtext_title = (cmd as CueFile.Command.TITLE).Value;
-				//  if (cmd is CueFile.Command.ISRC)
-				//    isrc = (cmd as CueFile.Command.ISRC).Value;
-
-				//  //flags are also a kind of a register. but the flags value is reset by the track command
-				//  if (cmd is CueFile.Command.FLAGS)
-				//  {
-				//    track_pendingFlags = (cmd as CueFile.Command.FLAGS).Flags;
-				//  }
-
-				//  if (cmd is CueFile.Command.TRACK)
-				//  {
-				//    var track = cmd as CueFile.Command.TRACK;
-
-				//    //register the track for further processing when an GENERATION command appears
-				//    track_pendingCommand = track;
-				//    track_pendingFlags = CueFile.TrackFlags.None;
-						
-				//  }
-
-				//  if (cmd is CueFile.Command.FILE)
-				//  {
-				//    ProcessFile(cmd as CueFile.Command.FILE);
-				//  }
-
-				//  if (cmd is CueFile.Command.INDEX)
-				//  {
-				//    ProcessIndex(cmd as CueFile.Command.INDEX);
-				//  }
-				//}
-
-				//BurnToEOF();
-
-				////add RawTOCEntries A0 A1 A2 to round out the TOC
-				//var TOCMiscInfo = new Synthesize_A0A1A2_Job { 
-				//  IN_FirstRecordedTrackNumber = sloshy_firstRecordedTrackNumber, 
-				//  IN_LastRecordedTrackNumber = sloshy_lastRecordedTrackNumber,
-				//  IN_Session1Format = sloshy_session1Format,
-				//  IN_LeadoutTimestamp = new Timestamp(OUT_Disc.Sectors.Count)
-				//};
-				//TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
-
-				////generate the TOCRaw from the RawTocEntries
-				//var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = OUT_Disc.RawTOCEntries };
-				//tocSynth.Run();
-				//OUT_Disc.TOCRaw = tocSynth.Result;
+				//generate the TOCRaw from the RawTocEntries
+				var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = OUT_Disc.RawTOCEntries };
+				tocSynth.Run();
+				OUT_Disc.TOCRaw = tocSynth.Result;
 
 				////generate lead-out track with some canned number of sectors
 				////TODO - move this somewhere else and make it controllable depending on which console is loading up the disc
@@ -412,3 +341,29 @@ namespace BizHawk.Emulation.DiscSystem
 		} //class LoadCueJob
 	} //partial class CUE_Format2
 } //namespace BizHawk.Emulation.DiscSystem
+
+
+
+
+//TODO:
+				//if (index_num == 0 || type == SectorWriteType.Pregap)
+				//{
+				//  //PREGAP:
+				//  //things are negative here.
+				//  if (track_relative_msf > 0) throw new InvalidOperationException("Perplexing internal error with non-negative pregap MSF");
+				//  track_relative_msf = -track_relative_msf;
+
+				//  //now for something special.
+				//  //yellow-book says:
+				//  //pre-gap for "first part of a digital data track not containing user data and encoded as a pause"
+				//  //first interval: at least 75 sectors coded as preceding track
+				//  //second interval: at least 150 sectors coded as user data track.
+				//  //so... we ASSUME the 150 sector pregap is more important. so if thats all there is, theres no 75 sector pregap like the old track
+				//  //if theres a longer pregap, then we generate weird old track pregap to contain the rest.
+				//  if (track_relative_msf > 150)
+				//  {
+				//    //only if we're burning a data track now
+				//    if((track_flags & CueFile.TrackFlags.DATA)!=0)
+				//      sq.q_status = priorSubchannelQ.q_status;
+				//  }
+				//}

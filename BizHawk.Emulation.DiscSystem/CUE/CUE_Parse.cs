@@ -29,15 +29,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// Represents the contents of a cue file
-		/// This is relatively unstructured because in a lot (maybe every) way a cue file is meant to be processed one command at a time
 		/// </summary>
 		public class CueFile
 		{
-			// (here are all the commands we can encounter)
 
-			//TODO - record line number origin of command?
+			// (here are all the commands we can encounter)
 			public static class Command
 			{
+				//TODO - record line number origin of command? Kind of nice but inessential
 				public class CATALOG { public string Value; public override string ToString() { return string.Format("CATALOG: {0}", Value); } }
 				public class CDTEXTFILE { public string Path; public override string ToString() { return string.Format("CDTEXTFILE: {0}", Path); } }
 				public class FILE { public string Path; public FileType Type; public override string ToString() { return string.Format("FILE ({0}): {1}", Type, Path); } }
@@ -88,9 +87,11 @@ namespace BizHawk.Emulation.DiscSystem
 			//All audio files (WAVE, AIFF, and MP3) must be in 44.1KHz 16-bit stereo format.
 			//BUT NOTE: MP3 can be VBR and the length can't be known without decoding the whole thing. 
 			//But, some ideas: 
-			//1. we could operate ffmpeg differently to retrieve the length, which maybe it can do without having to 
+			//1. we could operate ffmpeg differently to retrieve the length, which maybe it can do without having to decode the entire thing
 			//2. we could retrieve it from an ID3 if present.
-			//3. as a last resort, since MP3 is the annoying case usually, we could include my c# mp3 parser and sum the length
+			//3. as a last resort, since MP3 is the annoying case usually, we could include my c# mp3 parser and sum the length (test the performance, this might be reasonably fast on par with ECM parsing)
+			//NOTE: once deciding the length, we would have to stick with it! samples would have to be discarded or inserted to make the track work out
+			//but we COULD effectively achieve stream-loading mp3 discs, with enough work.
 			public enum FileType
 			{
 				Unspecified,
