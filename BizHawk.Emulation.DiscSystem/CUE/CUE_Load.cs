@@ -207,8 +207,8 @@ namespace BizHawk.Emulation.DiscSystem
 					int relMSF = -totalPregapLength;
 
 					//read more at policies declaration
-					if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
-						relMSF += 1;
+					//if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
+					//  relMSF += 1;
 					//---------------------------------
 
 
@@ -250,12 +250,6 @@ namespace BizHawk.Emulation.DiscSystem
 										//WE ARE NOW AT INDEX 1: generate the RawTOCEntry for this track
 										EmitRawTOCEntry(cct);
 									}
-
-									//in the weird mednafen mode, we need to adjust relMSF to be 0 since we pre-adjusted it once
-									if (!context.DiscMountPolicy.CUE_PauseContradictionModeA && relMSF == 1)
-										relMSF = 0;
-									else
-										if (relMSF != 0) throw new InvalidOperationException();
 								}
 								else break;
 							}
@@ -264,9 +258,15 @@ namespace BizHawk.Emulation.DiscSystem
 						//generate a sector:
 						SS_Base ss = null;
 						EControlQ qFlags = (EControlQ)(int)cct.Flags;
+						int qRelMSF = relMSF;
 						if (curr_index == 0)
 						{
 							//generating pregap:
+							
+							//tweak relMSF due to ambiguity/contradiction in yellowbook docs
+							if (!context.DiscMountPolicy.CUE_PregapContradictionModeA)
+								qRelMSF++;
+
 							bool audioGap = true;
 
 							//normally the gap takes this track's type
@@ -279,8 +279,7 @@ namespace BizHawk.Emulation.DiscSystem
 							//I agree, so let's do it that way
 							if (t != 1 && cct.TrackType != CueFile.TrackType.Audio && TrackInfos[t - 1].CompiledCueTrack.TrackType == CueFile.TrackType.Audio)
 							{
-								//there may be an off by one error here depending on the CUE_PauseContradictionModeA setting.. not really sure.
-								if (relMSF <= -150)
+								if (relMSF < -150)
 								{
 									qFlags = (EControlQ)(int)TrackInfos[t - 1].CompiledCueTrack.Flags;
 									audioGap = true;
@@ -321,7 +320,7 @@ namespace BizHawk.Emulation.DiscSystem
 						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 						ss.sq.q_index = BCD2.FromDecimal(curr_index);
 						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
-						ss.sq.Timestamp = new Timestamp(relMSF);
+						ss.sq.Timestamp = new Timestamp(qRelMSF);
 
 						//setup subP
 						if (curr_index == 0)

@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.DiscSystem
 		///  (Mednafen does it this way)
 		/// Discs (including PSX) exist using A, or B, or possibly (reference please) neither.
 		/// </summary>
-		public bool CUE_PauseContradictionModeA = true;
+		public bool CUE_PregapContradictionModeA = true;
 
 		public void SetForPlaystation()
 		{

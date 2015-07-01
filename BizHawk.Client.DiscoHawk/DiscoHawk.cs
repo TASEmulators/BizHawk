@@ -233,7 +233,7 @@ namespace BizHawk.Client.DiscoHawk
 				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
 				if (cmpif == DiscInterface.MednaDisc)
 				{
-					dmj.IN_DiscMountPolicy.CUE_PauseContradictionModeA = false;
+					dmj.IN_DiscMountPolicy.CUE_PregapContradictionModeA = false;
 				}
 				dmj.Run();
 				var disc = dmj.OUT_Disc;
