@@ -6,6 +6,7 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	partial class CUE_Format2
 	{
+
 		abstract class SS_Base : ISectorSynthJob2448
 		{
 			public IBlob Blob;
@@ -17,16 +18,30 @@ namespace BizHawk.Emulation.DiscSystem
 
 			protected void SynthSubcode(SectorSynthJob job)
 			{
+				//synth P if needed
 				if ((job.Parts & ESectorSynthPart.SubchannelP) != 0)
 				{
 					SynthUtils.SubP(job.DestBuffer2448, job.DestOffset + 2352, Pause);
 				}
 
+				//synth Q if needed
 				if ((job.Parts & ESectorSynthPart.SubchannelQ) != 0)
 				{
 					var subcode = new BufferedSubcodeSector();
 					subcode.Synthesize_SubchannelQ(ref sq, true);
 					Buffer.BlockCopy(subcode.SubcodeDeinterleaved, 12, job.DestBuffer2448, job.DestOffset + 2352 + 12, 12);
+				}
+
+				//clear R-W if needed
+				if ((job.Parts & ESectorSynthPart.Subchannel_RSTUVW) != 0)
+				{
+					Array.Clear(job.DestBuffer2448, job.DestOffset + 2352 + 12 + 12, (12 * 6));
+				}
+
+				//subcode has been generated deinterleaved; we may still need to interleave it
+				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
+				{
+					SubcodeUtils.InterleaveInplace(job.DestBuffer2448, job.DestOffset + 2352);
 				}
 			}
 		}
@@ -46,9 +61,9 @@ namespace BizHawk.Emulation.DiscSystem
 				for (int i = 1; i < 11; i++) buffer[offset + i] = 0xFF;
 				buffer[offset + 11] = 0x00;
 				Timestamp ts = new Timestamp(LBA + 150);
-				buffer[offset + 12] = ts.MIN;
-				buffer[offset + 13] = ts.SEC;
-				buffer[offset + 14] = ts.FRAC;
+				buffer[offset + 12] = BCD2.IntToBCD(ts.MIN);
+				buffer[offset + 13] = BCD2.IntToBCD(ts.SEC);
+				buffer[offset + 14] = BCD2.IntToBCD(ts.FRAC);
 				buffer[offset + 15] = mode;
 			}
 

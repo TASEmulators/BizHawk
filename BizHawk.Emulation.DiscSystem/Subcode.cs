@@ -310,7 +310,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Retrieves the initial set of timestamps (min,sec,frac) as a convenient Timestamp
 		/// </summary>
-		public Timestamp Timestamp { get { return new Timestamp(min.DecimalValue, sec.DecimalValue, frame.DecimalValue); } }
+		public Timestamp Timestamp
+		{
+			get { return new Timestamp(min.DecimalValue, sec.DecimalValue, frame.DecimalValue); }
+			set { min.DecimalValue = value.MIN; sec.DecimalValue = value.SEC; frame.DecimalValue = value.FRAC; }
+		}
 
 		/// <summary>
 		/// Retrieves the second set of timestamps (ap_min, ap_sec, ap_frac) as a convenient Timestamp.

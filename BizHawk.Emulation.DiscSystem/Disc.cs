@@ -425,10 +425,12 @@ namespace BizHawk.Emulation.DiscSystem
 			SEC = (byte)((str[3] - '0') * 10 + (str[4] - '0'));
 			FRAC = (byte)((str[6] - '0') * 10 + (str[7] - '0'));
 			Valid = true;
+			Negative = false;
 			return;
 		BOGUS:
 			MIN = SEC = FRAC = 0;
 			Valid = false;
+			Negative = false;
 			return;
 		}
 
@@ -440,12 +442,12 @@ namespace BizHawk.Emulation.DiscSystem
 			get
 			{
 				if (!Valid) return "--:--:--";
-				return string.Format("{0:D2}:{1:D2}:{2:D2}", MIN, SEC, FRAC);
+				return string.Format("{0}{1:D2}:{2:D2}:{3:D2}", Negative?'-':'+',MIN, SEC, FRAC);
 			}
 		}
 
 		public readonly byte MIN, SEC, FRAC;
-		public readonly bool Valid;
+		public readonly bool Valid, Negative;
 
 		/// <summary>
 		/// The fully multiplied out flat-address Sector number
@@ -461,6 +463,7 @@ namespace BizHawk.Emulation.DiscSystem
 			SEC = (byte)s;
 			FRAC = (byte)f;
 			Valid = true;
+			Negative = false;
 		}
 
 		/// <summary>
@@ -468,6 +471,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public Timestamp(int SectorNumber)
 		{
+			if (SectorNumber < 0)
+			{
+				SectorNumber = -SectorNumber;
+				Negative = true;
+			}
+			else Negative = false;
 			MIN = (byte)(SectorNumber / (60 * 75));
 			SEC = (byte)((SectorNumber / 75) % 60);
 			FRAC = (byte)(SectorNumber % 75);

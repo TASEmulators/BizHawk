@@ -19,8 +19,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// During the Pause this relative time decreases and 
 		/// --B-- equals zero in the last Section"
 		/// This is a contradiction. 
-		/// By choosing true, mode A is selected, and the final sector of the pause is -1. I like this better. Defaulting until proven otherwise (write test case here)
-		/// By choosing false, mode B is selected, and the final sector of the pause is 0. Mednafen does it this way.
+		/// By choosing true, mode A is selected, and the final sector of the pause is -1.
+		///  (I like this better. Defaulting until proven otherwise [write test case here])
+		/// By choosing false, mode B is selected, and the final sector of the pause is 0. 
+		///  (Mednafen does it this way)
 		/// Discs (including PSX) exist using A, or B, or possibly (reference please) neither.
 		/// </summary>
 		public bool CUE_PauseContradictionModeA = true;

@@ -42,14 +42,14 @@ namespace BizHawk.Emulation.DiscSystem
 			var synth = new SS_MednaDisc();
 
 			//make sector interfaces:
-			//1. right now for dumb reasons we have 150 lead-in sectors. I want to get rid of this crap.
-			var leadin_sector_zero = new Sector_Zero();
-			var leadin_subcode_zero = new ZeroSubcodeSector();
+			var pregap_sector_zero = new Sector_Zero();
+			var pregap_subcode_zero = new ZeroSubcodeSector();
 			for (int i = 0; i < 150; i++)
 			{
-				var se = new SectorEntry(leadin_sector_zero);
+				var se = new SectorEntry(pregap_sector_zero);
+				se.SectorSynth = synth;
 				disc.Sectors.Add(se);
-				se.SubcodeSector = leadin_subcode_zero;
+				se.SubcodeSector = pregap_subcode_zero;
 			}
 
 			//2. actual sectors

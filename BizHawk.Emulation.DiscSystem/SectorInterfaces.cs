@@ -89,9 +89,14 @@ namespace BizHawk.Emulation.DiscSystem
 		SubchannelQ = 32,
 
 		/// <summary>
+		/// Subchannels R-W (all except for P and Q)
+		/// </summary>
+		Subchannel_RSTUVW = (64|128|256|512|1024|2048),
+
+		/// <summary>
 		/// Complete subcode is required
 		/// </summary>
-		SubcodeComplete = (16|32|64|128|256|512|1024|2048),
+		SubcodeComplete = (SubchannelP | SubchannelQ | Subchannel_RSTUVW),
 
 		/// <summary>
 		/// Any of the subcode might be required (just another way of writing SubcodeComplete)

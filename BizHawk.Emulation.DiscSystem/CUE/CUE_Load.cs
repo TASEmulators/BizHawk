@@ -219,6 +219,9 @@ namespace BizHawk.Emulation.DiscSystem
 						OUT_Disc.Sectors.Add(se_pregap);
 					}
 
+					//TODO - build track relative timestamp now and increment it continually
+
+
 					//after this, pregap sectors are generated like a normal sector, but the subQ is specified as a pregap instead of a normal track (actually, TBD)
 					//---------------------------------
 
@@ -274,19 +277,7 @@ namespace BizHawk.Emulation.DiscSystem
 								break;
 						}
 
-						//make the subcode
-						//TODO - according to policies, or better yet, defer this til it's needed (user delivers a policies object to disc reader apis)
-						//at any rate, we'd paste this logic into there so let's go ahead and write it here
-						var subcode = new BufferedSubcodeSector(); //(its lame that we have to use this; make a static method when we delete this class)
-						SubchannelQ sq = new SubchannelQ();
-						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
-						sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
-						sq.q_tno = BCD2.FromDecimal(cct.Number);
-						sq.q_index = BCD2.FromDecimal(curr_index);
-						int LBA = OUT_Disc.Sectors.Count;
-						sq.ap_min = BCD2.FromDecimal(new Timestamp(LBA).MIN);
-						sq.ap_sec = BCD2.FromDecimal(new Timestamp(LBA).SEC);
-						sq.ap_frame = BCD2.FromDecimal(new Timestamp(LBA).FRAC);
+						//prepare fields for subQ
 						int track_relative_msf = curr_blobMSF - cct.Indexes[1].FileMSF.Sector;
 
 						//for index 0, negative MSF required and encoded oppositely. Read more at Policies declaration
@@ -301,20 +292,21 @@ namespace BizHawk.Emulation.DiscSystem
 						else
 							if (track_relative_msf < 0) throw new InvalidOperationException("Severe error generating cue subQ (negative relMSF for non-pregap)");
 
-						sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
-						sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
-						sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
-						//finally we're done: synthesize subchannel
-						subcode.Synthesize_SubchannelQ(ref sq, true);
+						//setup subQ
+						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
+						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
+						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
+						ss.sq.q_index = BCD2.FromDecimal(curr_index);
+						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
+						ss.sq.Timestamp = new Timestamp(track_relative_msf);
 
-						//generate subP
+						//setup subP
 						if (curr_index == 0)
 							ss.Pause = true;
 
 						//make the SectorEntry (some temporary bullshit here)
 						var se = new SectorEntry(null);
 						se.SectorSynth = ss;
-						ss.sq = sq;
 						OUT_Disc.Sectors.Add(se);
 						curr_blobMSF++;
 
@@ -342,14 +334,26 @@ namespace BizHawk.Emulation.DiscSystem
 					for (int s = 0; s < specifiedPostgapLength; s++)
 					{
 						//TODO - do a better job synthesizing Q
-						var se_pregap = new SectorEntry(null);
-						var ss_pregap = new SS_Gap();
+						var se= new SectorEntry(null);
+						var ss = new SS_Gap();
 
-						//postgaps set pause flag. is this good enough?
-						ss_pregap.Pause = true;
+						//-subq-
+						//postgap addressing continues from 
+						int lastSectorRelMSF = curr_blobMSF - cct.Indexes[1].FileMSF.Sector - 1;
+						int postgapSectorRelMSF = lastSectorRelMSF + s + 1;
+						byte ADR = 1;
+						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
+						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
+						ss.sq.q_index = BCD2.FromDecimal(curr_index);
+						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
+						ss.sq.Timestamp = new Timestamp(postgapSectorRelMSF);
 
-						se_pregap.SectorSynth = ss_pregap;
-						OUT_Disc.Sectors.Add(se_pregap);
+						//-subP-
+						//always paused--is this good enough?
+						ss.Pause = true;
+
+						se.SectorSynth = ss;
+						OUT_Disc.Sectors.Add(se);
 					}
 
 
@@ -370,13 +374,9 @@ namespace BizHawk.Emulation.DiscSystem
 				tocSynth.Run();
 				OUT_Disc.TOCRaw = tocSynth.Result;
 
-				////generate lead-out track with some canned number of sectors
-				////TODO - move this somewhere else and make it controllable depending on which console is loading up the disc
-				////TODO - we're not doing this yet
-				////var synthLeadoutJob = new Disc.SynthesizeLeadoutJob { Disc = disc, Length = 150 };
-				////synthLeadoutJob.Run();
+				//TODO - generate leadout, or delegates at least
 
-				////blech, old crap, maybe
+				//blech, old crap, maybe
 				//OUT_Disc.Structure.Synthesize_TOCPointsFromSessions();
 
 				//FinishLog();
