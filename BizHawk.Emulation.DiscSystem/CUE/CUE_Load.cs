@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.DiscSystem
 					CompiledCueTrack cct = ti.CompiledCueTrack;
 
 					//---------------------------------
-					//generate track pregap
+					//setup track pregap processing
 					//per "Example 05" on digitalx.org, pregap can come from index specification and pregap command
 					int specifiedPregapLength = cct.PregapLength.Sector;
 					int impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
@@ -209,31 +209,6 @@ namespace BizHawk.Emulation.DiscSystem
 					//read more at policies declaration
 					if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
 						relMSF += 1;
-
-					for (int s = 0; s < specifiedPregapLength; s++)
-					{
-						var se = new SectorEntry(null);
-						SS_Base ss;
-						if (cct.TrackType == CueFile.TrackType.Audio) ss = new SS_AudioGap();
-						else ss = new SS_DataGap();
-
-						//-subq-
-						byte ADR = 1;
-						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
-						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
-						ss.sq.q_index = BCD2.FromDecimal(0);
-						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
-						ss.sq.Timestamp = new Timestamp(relMSF);
-
-						//-subP-
-						//always paused--is this good enough? (probably not, theres detailed handling commented out at the end of this file)
-						ss.Pause = true;
-
-						se.SectorSynth = ss;
-						OUT_Disc.Sectors.Add(se);
-						relMSF++;
-					}
-
 					//---------------------------------
 
 
@@ -255,54 +230,94 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						bool trackDone = false;
 
-						//select the appropriate index by inspecting the next index and seeing if we've reached it
-						for (; ; )
+						if (specifiedPregapLength > 0)
 						{
-							if (curr_index == cct.Indexes.Count - 1)
-								break;
-							if (curr_blobMSF >= cct.Indexes[curr_index + 1].FileMSF.Sector)
+							//if burning through a specified pregap, count it down
+							specifiedPregapLength--;
+						}
+						else
+						{
+							//if burning through the file, select the appropriate index by inspecting the next index and seeing if we've reached it
+							for (; ; )
 							{
-								curr_index++;
-								if (curr_index == 1)
+								if (curr_index == cct.Indexes.Count - 1)
+									break;
+								if (curr_blobMSF >= cct.Indexes[curr_index + 1].FileMSF.Sector)
 								{
-									//WE ARE NOW AT INDEX 1: generate the RawTOCEntry for this track
-									EmitRawTOCEntry(cct);
-								}
+									curr_index++;
+									if (curr_index == 1)
+									{
+										//WE ARE NOW AT INDEX 1: generate the RawTOCEntry for this track
+										EmitRawTOCEntry(cct);
+									}
 
-								//in the weird mednafen mode, we need to adjust relMSF to be 0 since we pre-adjusted it once
-								if (!context.DiscMountPolicy.CUE_PauseContradictionModeA && relMSF == 1)
-									relMSF = 0;
-								else
-									if (relMSF != 0) throw new InvalidOperationException();
+									//in the weird mednafen mode, we need to adjust relMSF to be 0 since we pre-adjusted it once
+									if (!context.DiscMountPolicy.CUE_PauseContradictionModeA && relMSF == 1)
+										relMSF = 0;
+									else
+										if (relMSF != 0) throw new InvalidOperationException();
+								}
+								else break;
 							}
-							else break;
 						}
 
 						//generate a sector:
 						SS_Base ss = null;
-						switch (cct.TrackType)
+						EControlQ qFlags = (EControlQ)(int)cct.Flags;
+						if (curr_index == 0)
 						{
-							case CueFile.TrackType.Mode1_2048:
-								ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
-								curr_blobOffset += 2048;
-								break;
+							//generating pregap:
+							bool audioGap = true;
 
-							default:
-							case CueFile.TrackType.Mode2_2336:
-								throw new InvalidOperationException("Not supported: " + cct.TrackType);
+							//normally the gap takes this track's type
+							if (cct.TrackType != CueFile.TrackType.Audio) audioGap = false;
+							
+							//now for something special.
+							//[IEC10149] says there's two "intervals" of a pregap.
+							//mednafen's pseudocode interpretation of this:
+							//if this is a data track and the previous track was not data, the last 150 sectors of the pregap match this track and the earlier sectors (at least 75) math the previous track
+							//I agree, so let's do it that way
+							if (t != 1 && cct.TrackType != CueFile.TrackType.Audio && TrackInfos[t - 1].CompiledCueTrack.TrackType == CueFile.TrackType.Audio)
+							{
+								//there may be an off by one error here depending on the CUE_PauseContradictionModeA setting.. not really sure.
+								if (relMSF <= -150)
+								{
+									qFlags = (EControlQ)(int)TrackInfos[t - 1].CompiledCueTrack.Flags;
+									audioGap = true;
+								}
+							}
+							
+							if(audioGap) ss = new SS_AudioGap(); else ss = new SS_DataGap();
+						}
+						else
+						{
+							//generating normal index 1+ sector
+							switch (cct.TrackType)
+							{
+								case CueFile.TrackType.Mode1_2048:
+									ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
+									curr_blobOffset += 2048;
+									break;
 
-							case CueFile.TrackType.CDI_2352:
-							case CueFile.TrackType.Mode1_2352:
-							case CueFile.TrackType.Mode2_2352:
-							case CueFile.TrackType.Audio:
-								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
-								curr_blobOffset += 2352;
-								break;
+								case CueFile.TrackType.CDI_2352:
+								case CueFile.TrackType.Mode1_2352:
+								case CueFile.TrackType.Mode2_2352:
+								case CueFile.TrackType.Audio:
+									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
+									curr_blobOffset += 2352;
+									break;
+
+								default:
+								case CueFile.TrackType.Mode2_2336:
+									throw new InvalidOperationException("Not supported: " + cct.TrackType);
+							}
+
+							curr_blobMSF++;
 						}
 
 						//setup subQ
 						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
-						ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
+						ss.sq.SetStatus(ADR, qFlags);
 						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 						ss.sq.q_index = BCD2.FromDecimal(curr_index);
 						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
@@ -316,7 +331,6 @@ namespace BizHawk.Emulation.DiscSystem
 						var se = new SectorEntry(null);
 						se.SectorSynth = ss;
 						OUT_Disc.Sectors.Add(se);
-						curr_blobMSF++;
 						relMSF++;
 
 						if (cct.IsFinalInFile)
