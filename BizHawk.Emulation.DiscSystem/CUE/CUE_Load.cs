@@ -153,6 +153,21 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 
+			void EmitRawTOCEntry(CompiledCueTrack cct)
+			{
+				SubchannelQ toc_sq = new SubchannelQ();
+				//absent some kind of policy for how to set it, this is a safe assumption:
+				byte toc_ADR = 1;
+				toc_sq.SetStatus(toc_ADR, (EControlQ)(int)cct.Flags);
+				toc_sq.q_tno.BCDValue = 0; //kind of a little weird here.. the track number becomes the 'point' and put in the index instead. 0 is the track number here.
+				toc_sq.q_index = BCD2.FromDecimal(cct.Number);
+				//not too sure about these yet
+				toc_sq.min = BCD2.FromDecimal(0);
+				toc_sq.sec = BCD2.FromDecimal(0);
+				toc_sq.frame = BCD2.FromDecimal(0);
+				toc_sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
+				OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = toc_sq });
+			}
 
 			public void Run()
 			{
@@ -231,27 +246,14 @@ namespace BizHawk.Emulation.DiscSystem
 								curr_index++;
 								if (curr_index == 1)
 								{
-									//---- WE ARE NOW AT INDEX 1 -----
-									//generate the RawTOCEntry for this track (make another method for this please)
-									SubchannelQ toc_sq = new SubchannelQ();
-									//absent some kind of policy for how to set it, this is a safe assumption:
-									byte toc_ADR = 1;
-									toc_sq.SetStatus(toc_ADR, (EControlQ)(int)cct.Flags);
-									toc_sq.q_tno.BCDValue = 0; //kind of a little weird here.. the track number becomes the 'point' and put in the index instead. 0 is the track number here.
-									toc_sq.q_index = BCD2.FromDecimal(cct.Number);
-									//not too sure about these yet
-									toc_sq.min = BCD2.FromDecimal(0);
-									toc_sq.sec = BCD2.FromDecimal(0);
-									toc_sq.frame = BCD2.FromDecimal(0);
-									toc_sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count); //its supposed to be an absolute timestamp
-									OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = toc_sq });
+									//WE ARE NOW AT INDEX 1: generate the RawTOCEntry for this track
+									EmitRawTOCEntry(cct);
 								}
 							}
 							else break;
 						}
 
 						//generate a sector:
-						ISector siface = null;
 						SS_Base ss = null;
 						switch (cct.TrackType)
 						{

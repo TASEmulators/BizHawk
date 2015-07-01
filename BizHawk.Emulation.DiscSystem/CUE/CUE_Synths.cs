@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// Represents a pregap sector
+		/// TODO - represent any zero sector
 		/// </summary>
 		class SS_Pregap : SS_Base
 		{
