@@ -106,13 +106,26 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// Represents a pregap or postgap sector.
-		/// The Pause flag isn't set in here because it might need special logic varying between sectors
+		/// Represents a data pregap or postgap sector.
+		/// The Pause flag isn't set in here because it might need special logic varying between sectors and so that's setup by the cue loader
 		/// Implemented as another sector type with a blob reading all zeros
 		/// </summary>
-		class SS_Gap : SS_Mode1_2048
+		class SS_DataGap : SS_Mode1_2048
 		{
-			public SS_Gap()
+			public SS_DataGap()
+			{
+				Blob = new Disc.Blob_Zeros();
+			}
+		}
+
+		/// <summary>
+		/// Represents an audio pregap or postgap sector.
+		/// The Pause flag isn't set in here because it might need special logic varying between sectors and so that's setup by the cue loader
+		/// Implemented as another sector type with a blob reading all zeros
+		/// </summary>
+		class SS_AudioGap : SS_2352
+		{
+			public SS_AudioGap()
 			{
 				Blob = new Disc.Blob_Zeros();
 			}

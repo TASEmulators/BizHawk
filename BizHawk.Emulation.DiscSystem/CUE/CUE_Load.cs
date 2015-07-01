@@ -213,7 +213,9 @@ namespace BizHawk.Emulation.DiscSystem
 					for (int s = 0; s < specifiedPregapLength; s++)
 					{
 						var se = new SectorEntry(null);
-						var ss = new SS_Gap();
+						SS_Base ss;
+						if (cct.TrackType == CueFile.TrackType.Audio) ss = new SS_AudioGap();
+						else ss = new SS_DataGap();
 
 						//-subq-
 						byte ADR = 1;
@@ -285,6 +287,12 @@ namespace BizHawk.Emulation.DiscSystem
 								curr_blobOffset += 2048;
 								break;
 
+							default:
+							case CueFile.TrackType.Mode2_2336:
+								throw new InvalidOperationException("Not supported: " + cct.TrackType);
+
+							case CueFile.TrackType.CDI_2352:
+							case CueFile.TrackType.Mode1_2352:
 							case CueFile.TrackType.Mode2_2352:
 							case CueFile.TrackType.Audio:
 								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset };
@@ -335,7 +343,9 @@ namespace BizHawk.Emulation.DiscSystem
 					for (int s = 0; s < specifiedPostgapLength; s++)
 					{
 						var se= new SectorEntry(null);
-						var ss = new SS_Gap();
+						SS_Base ss;
+						if (cct.TrackType == CueFile.TrackType.Audio) ss = new SS_AudioGap();
+						else ss = new SS_DataGap();
 
 						//-subq-
 						byte ADR = 1;

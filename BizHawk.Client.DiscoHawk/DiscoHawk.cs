@@ -317,22 +317,22 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					var hashedOffenders = new HashSet<int>();
 					for (int i = 0; i < numoffenders; i++) hashedOffenders.Add(offenders[i]);
-					sw.Write("                         ");
+					sw.Write("                          ");
 					for (int i = 0; i < count; i++) sw.Write((hashedOffenders.Contains(dispaddr + i)) ? "vvv " : "    ");
 					sw.WriteLine();
-					sw.Write("                         ");
+					sw.Write("                          ");
 					for (int i = 0; i < count; i++) sw.Write("{0:X3} ", dispaddr + i, (i == count - 1) ? " " : "  ");
 					sw.WriteLine();
-					sw.Write("                         ");
+					sw.Write("                          ");
 					sw.Write(new string('-', count * 4));
 					sw.WriteLine();
 					sw_dump_chunk_one(string.Format("SRC #{0,6} ({1})", lba, new Timestamp(lba)), lba, src_databuf, addr, count);
 					sw_dump_chunk_one(string.Format("DST #{0,6} ({1})", lba, new Timestamp(lba)), lba, dst_databuf, addr, count);
 				};
 
-				//verify each sector contents (skip the pregap junk for now)
+				//verify each sector contents
 				int nSectors = src_disc.LBACount;
-				for (int lba = 0; lba < nSectors; lba++)
+				for (int lba = -150; lba < nSectors; lba++)
 				{
 					if (lba % 1000 == 0)
 						Console.WriteLine("LBA {0} of {1}", lba, src_disc.LBACount);
