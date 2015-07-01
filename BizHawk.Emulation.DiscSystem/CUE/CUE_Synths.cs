@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public IBlob Blob;
 			public long BlobOffset;
 			public SubchannelQ sq;
+			public bool Pause;
 
 			public abstract void Synth(SectorSynthJob job);
 		}
@@ -43,7 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if ((job.Parts & ESectorSynthPart.SubchannelP) != 0)
 				{
-					SubSynth.P(job.DestBuffer2448, job.DestOffset + 2352, false); //for now....
+					SubSynth.P(job.DestBuffer2448, job.DestOffset + 2352, Pause);
 				}
 
 				if ((job.Parts & ESectorSynthPart.SubchannelQ) != 0)
@@ -69,7 +70,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				if ((job.Parts & ESectorSynthPart.SubchannelP) != 0)
 				{
-					SubSynth.P(job.DestBuffer2448, job.DestOffset + 2352, false); //for now....
+					SubSynth.P(job.DestBuffer2448, job.DestOffset + 2352, Pause); //for now....
 				}
 
 				if ((job.Parts & ESectorSynthPart.SubchannelQ) != 0)

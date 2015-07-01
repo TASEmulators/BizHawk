@@ -205,16 +205,19 @@ namespace BizHawk.Emulation.DiscSystem
 					int totalPregapLength = specifiedPregapLength + impliedPregapLength;
 					for (int s = 0; s < specifiedPregapLength; s++)
 					{
-						//TODO - do a better job synthesizing
-						var zero_sector = new Sector_Zero();
-						var zero_subSector = new ZeroSubcodeSector();
-						var se_pregap = new SectorEntry(zero_sector);
-						se_pregap.SubcodeSector = zero_subSector;
-						se_pregap.SectorSynth = new SS_Mode1_2048();
+						//TODO - do a better job synthesizing Q
+						var se_pregap = new SectorEntry(null);
+						var ss_pregap = new SS_Pregap();
+						
+						//pregaps set pause flag
+						//TODO - do a better job synthesizing P
+						ss_pregap.Pause = true;
+
+						se_pregap.SectorSynth = ss_pregap;
 						OUT_Disc.Sectors.Add(se_pregap);
 					}
 
-					//after this, pregap sectors are generated like a normal sector, but the subQ is specified as a pregap instead of a normal track
+					//after this, pregap sectors are generated like a normal sector, but the subQ is specified as a pregap instead of a normal track (actually, TBD)
 					//---------------------------------
 
 
@@ -278,11 +281,25 @@ namespace BizHawk.Emulation.DiscSystem
 						sq.ap_sec = BCD2.FromDecimal(new Timestamp(LBA).SEC);
 						sq.ap_frame = BCD2.FromDecimal(new Timestamp(LBA).FRAC);
 						int track_relative_msf = curr_blobMSF - cct.Indexes[1].FileMSF.Sector;
+
+						//for index 0, negative MSF required and encoded oppositely.
+						if (curr_index == 0)
+						{
+							if (track_relative_msf >= 0) throw new InvalidOperationException("Severe error generating cue subQ (positive MSF for pregap)");
+							track_relative_msf = -track_relative_msf;
+						}
+						else
+							if (track_relative_msf < 0) throw new InvalidOperationException("Severe error generating cue subQ (negative MSF for non-pregap)");
+
 						sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
 						sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
 						sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
 						//finally we're done: synthesize subchannel
 						subcode.Synthesize_SubchannelQ(ref sq, true);
+
+						//generate subP
+						if (curr_index == 0)
+							ss.Pause = true;
 
 						//make the SectorEntry (some temporary bullshit here)
 						var se = new SectorEntry(null);
