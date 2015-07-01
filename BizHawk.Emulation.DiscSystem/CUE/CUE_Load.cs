@@ -184,6 +184,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//mount all input files
 				MountBlobs();
+				var zeroBlob = new Disc.Blob_Zeros();
 
 				//unhappily, we cannot determine the length of all the tracks without knowing the length of the files
 				//now that the files are mounted, we can figure the track lengths
@@ -285,42 +286,52 @@ namespace BizHawk.Emulation.DiscSystem
 							}
 						}
 
+						//TODO - may need to extract this sector creating to a new method, 
+						//if the particulars of the mode-byte setting WRT. pregap intervals end up being more complex
+
+						//generate the right kind of sector synth for this track
+						//TODO - there are needless constructions
 						SS_Base ss = null;
+						int sectorSize = int.MaxValue;
+						switch (cct.TrackType)
+						{
+							case CueFile.TrackType.Audio:
+								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 0 };
+								sectorSize = 2352;
+								break;
+
+							case CueFile.TrackType.CDI_2352:
+							case CueFile.TrackType.Mode1_2352:
+								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
+								sectorSize = 2352;
+								break;
+
+							case CueFile.TrackType.Mode2_2352:
+								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 2 };
+								sectorSize = 2352;
+								break;
+
+							case CueFile.TrackType.Mode1_2048:
+								ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
+								sectorSize = 2048;
+								break;
+
+							default:
+							case CueFile.TrackType.Mode2_2336:
+								throw new InvalidOperationException("Not supported: " + cct.TrackType);
+						}
+
+						//if we were supposed to generate a gap, replace it with a new sector synth and feed it zeros
 						if (generateGap)
 						{
-							if (audioGap) ss = new SS_AudioGap(); else ss = new SS_DataGap();
+							if (audioGap) ss = new SS_AudioGap();
+							else ss = new SS_DataGap() { Mode = ss.Mode };
+							ss.Blob = zeroBlob;
 						}
 						else
 						{
-							//generating normal index 1+ sector
-							switch (cct.TrackType)
-							{
-								case CueFile.TrackType.Audio:
-									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 0 };
-									curr_blobOffset += 2352;
-									break;
-
-								case CueFile.TrackType.CDI_2352:
-								case CueFile.TrackType.Mode1_2352:
-									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
-									curr_blobOffset += 2352;
-									break;
-
-								case CueFile.TrackType.Mode2_2352:
-									ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 2 };
-									curr_blobOffset += 2352;
-									break;
-
-								case CueFile.TrackType.Mode1_2048:
-									ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
-									curr_blobOffset += 2048;
-									break;
-
-								default:
-								case CueFile.TrackType.Mode2_2336:
-									throw new InvalidOperationException("Not supported: " + cct.TrackType);
-							}
-
+							//otherwise we consumed data from the blob
+							curr_blobOffset += sectorSize;
 							curr_blobMSF++;
 						}
 
