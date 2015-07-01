@@ -7,6 +7,21 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	public partial class Disc : IDisposable
 	{
+		/// <summary>
+		/// A blob that always reads 0
+		/// </summary>
+		internal sealed class Blob_Zeros : IBlob
+		{
+			public int Read(long byte_pos, byte[] buffer, int offset, int count)
+			{
+				Array.Clear(buffer, offset, count);
+				return count;
+			}
+
+			public void Dispose()
+			{
+			}
+		}
 
 		internal sealed class Blob_ZeroPadAdapter : IBlob
 		{

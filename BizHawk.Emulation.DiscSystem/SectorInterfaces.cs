@@ -48,9 +48,19 @@ namespace BizHawk.Emulation.DiscSystem
 		EDC12 = 8,
 
 		/// <summary>
+		/// The entire possible 276+12=288 bytes of ECM data is required (ECC276|EDC12)
+		/// </summary>
+		ECM288Complete = (ECC276 | EDC12),
+
+		/// <summary>
+		/// An alias for ECM288Complete
+		/// </summary>
+		ECMAny = ECM288Complete,
+
+		/// <summary>
 		/// A mode2 userdata section is required: the main 2048 user bytes AND the ECC and EDC areas
 		/// </summary>
-		User2336 = (User2048|ECC276|EDC12),
+		User2336 = (User2048 | ECM288Complete),
 
 		/// <summary>
 		/// The complete sector userdata (2352 bytes) is required

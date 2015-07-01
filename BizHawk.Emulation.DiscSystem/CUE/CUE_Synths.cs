@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				if ((job.Parts & ESectorSynthPart.SubchannelP) != 0)
 				{
-					SynthUtils.P(job.DestBuffer2448, job.DestOffset + 2352, Pause);
+					SynthUtils.SubP(job.DestBuffer2448, job.DestOffset + 2352, Pause);
 				}
 
 				if ((job.Parts & ESectorSynthPart.SubchannelQ) != 0)
@@ -33,14 +33,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 		static class SynthUtils
 		{
-			public static void P(byte[] buffer, int offset, bool pause)
+			public static void SubP(byte[] buffer, int offset, bool pause)
 			{
 				byte val = (byte)(pause?0xFF:0x00);
 				for (int i = 0; i < 12; i++)
 					buffer[offset + i] = val;
 			}
 
-			public static void Header(byte[] buffer, int offset, int LBA, byte mode)
+			public static void SectorHeader(byte[] buffer, int offset, int LBA, byte mode)
 			{
 				buffer[offset + 0] = 0x00;
 				for (int i = 1; i < 11; i++) buffer[offset + i] = 0xFF;
@@ -51,17 +51,21 @@ namespace BizHawk.Emulation.DiscSystem
 				buffer[offset + 14] = ts.FRAC;
 				buffer[offset + 15] = mode;
 			}
-		}
 
-		/// <summary>
-		/// Represents a pregap sector
-		/// TODO - represent any zero sector
-		/// </summary>
-		class SS_Pregap : SS_Base
-		{
-			public override void Synth(SectorSynthJob job)
+			/// <summary>
+			/// Make sure everything else in the sector userdata is done before calling this
+			/// </summary>
+			public static void ECM_Mode1(byte[] buffer, int offset, int LBA)
 			{
+				//EDC
+				uint edc = ECM.EDC_Calc(buffer, offset, 2064);
+				ECM.PokeUint(buffer, 2064, edc);
+
+				//reserved, zero
+				for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
 				
+				//ECC
+				ECM.ECC_Populate(buffer, offset, buffer, offset, false);
 			}
 		}
 
@@ -77,12 +81,27 @@ namespace BizHawk.Emulation.DiscSystem
 					Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2048);
 
 				if ((job.Parts & ESectorSynthPart.Header16) != 0)
-					SynthUtils.Header(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 1);
+					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 1);
+
+				if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
+					SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
 
 				SynthSubcode(job);
 			}
 		}
 
+		/// <summary>
+		/// Represents a pregap or postgap sector.
+		/// The Pause flag isn't set in here because it might need special logic varying between sectors
+		/// Implemented as another sector type with a blob reading all zeros
+		/// </summary>
+		class SS_Gap : SS_Mode1_2048
+		{
+			public SS_Gap()
+			{
+				Blob = new Disc.Blob_Zeros();
+			}
+		}
 
 		/// <summary>
 		/// Represents a Mode1 or Mode2 2352-byte sector

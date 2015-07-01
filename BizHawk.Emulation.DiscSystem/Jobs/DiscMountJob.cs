@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// General disc policies to be logically applied at mounting time. The choices are irreversible once a disc is loaded.
 	/// Maybe these are only for CUEs, but maybe not. Not sure yet.
+	/// Could put caching policies here too (cached ecm calculations, etc.)
 	/// </summary>
 	public class DiscMountPolicy
 	{

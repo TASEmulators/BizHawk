@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						//TODO - do a better job synthesizing Q
 						var se_pregap = new SectorEntry(null);
-						var ss_pregap = new SS_Pregap();
+						var ss_pregap = new SS_Gap();
 						
 						//pregaps set pause flag
 						//TODO - do a better job synthesizing P
@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						//TODO - do a better job synthesizing Q
 						var se_pregap = new SectorEntry(null);
-						var ss_pregap = new SS_Pregap();
+						var ss_pregap = new SS_Gap();
 
 						//postgaps set pause flag. is this good enough?
 						ss_pregap.Pause = true;

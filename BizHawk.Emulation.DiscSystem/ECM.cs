@@ -226,7 +226,8 @@ namespace BizHawk.Emulation.DiscSystem
 				(sector[sector_offset + 12 + 0] << 0)
 				| (sector[sector_offset + 12 + 1] << 8)
 				| (sector[sector_offset + 12 + 2] << 16)
-				| (sector[sector_offset + 12 + 3] << 24));
+			);
+				//| (sector[sector_offset + 12 + 3] << 24));
 		}
 
 		/// <summary>
@@ -237,7 +238,7 @@ namespace BizHawk.Emulation.DiscSystem
 			sector[sector_offset + 12 + 0] = (byte)((address >> 0) & 0xFF);
 			sector[sector_offset + 12 + 1] = (byte)((address >> 8) & 0xFF);
 			sector[sector_offset + 12 + 2] = (byte)((address >> 16) & 0xFF);
-			sector[sector_offset + 12 + 3] = (byte)((address >> 24) & 0xFF);
+			//sector[sector_offset + 12 + 3] = (byte)((address >> 24) & 0xFF);
 		}
 
 
