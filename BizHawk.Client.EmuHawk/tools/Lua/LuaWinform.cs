@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public List<LuaEvent> ControlEvents = new List<LuaEvent>();
 
+		private string CurrentDirectory = Environment.CurrentDirectory;
+
 		public LuaWinform()
 		{
 			InitializeComponent();
@@ -28,6 +30,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
+			string oldCurrentDirectory = Environment.CurrentDirectory;
+			Environment.CurrentDirectory = CurrentDirectory;
 			foreach (LuaEvent l_event in ControlEvents)
 			{
 				if (l_event.Control == handle)
@@ -35,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 					l_event.Event.Call();
 				}
 			}
+			Environment.CurrentDirectory = oldCurrentDirectory;
 		}
 
 		public class LuaEvent
