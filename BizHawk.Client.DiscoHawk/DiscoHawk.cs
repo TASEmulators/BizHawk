@@ -258,7 +258,7 @@ namespace BizHawk.Client.DiscoHawk
 				//verify sector count
 				if (src_disc.LBACount != dst_disc.LBACount)
 				{
-					sw.Write("LBACount count {0} vs {1}", src_disc.LBACount, dst_disc.LBACount);
+					sw.Write("LBACount count {0} vs {1}\n", src_disc.LBACount, dst_disc.LBACount);
 					goto SKIPPO;
 				}
 

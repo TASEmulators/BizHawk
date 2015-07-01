@@ -71,7 +71,8 @@
     <Compile Include="cdfs\ISONode.cs" />
     <Compile Include="cdfs\ISONodeRecord.cs" />
     <Compile Include="cdfs\ISOVolumeDescriptor.cs" />
-    <Compile Include="CUE\CUE_Analyze.cs" />
+    <Compile Include="CUE\CueFileResolver.cs" />
+    <Compile Include="CUE\CUE_Compile.cs" />
     <Compile Include="CUE\CUE_Format.cs" />
     <Compile Include="CUE\CUE_Load.cs" />
     <Compile Include="CUE\CUE_Parse.cs" />

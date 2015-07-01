@@ -70,6 +70,8 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			if (ext == ".cue")
 			{
+				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
+				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
 				var cue2 = new CUE_Format2();
 
@@ -85,15 +87,17 @@ namespace BizHawk.Emulation.DiscSystem
 				if (parseJob.OUT_Log != "") Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
 
-				//resolve required bin files and find out what it's gonna take to load the cue
-				var analyzeJob = new CUE_Format2.AnalyzeCueJob();
-				analyzeJob.IN_CueFile = parseJob.OUT_CueFile;
-				cue2.AnalyzeCueFile(analyzeJob);
-				if (analyzeJob.OUT_Log != "") Console.WriteLine(analyzeJob.OUT_Log);
-				ConcatenateJobLog(analyzeJob);
+				//compile the cue file:
+				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
+				var compileJob = new CUE_Format2.CompileCueJob();
+				compileJob.IN_CueFormat = new CUE_Format2() { Resolver = cfr };
+				compileJob.IN_CueFile = parseJob.OUT_CueFile;
+				compileJob.Run();
+				if (compileJob.OUT_Log != "") Console.WriteLine(compileJob.OUT_Log);
+				ConcatenateJobLog(compileJob);
 
 				//check slow loading threshold
-				if (analyzeJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
+				if (compileJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					goto DONE;
@@ -101,10 +105,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//actually load it all up
 				var loadJob = new CUE_Format2.LoadCueJob();
-				loadJob.IN_AnalyzeJob = analyzeJob;
+				loadJob.IN_CompileJob = compileJob;
 				loadJob.Run();
 				if (loadJob.OUT_Log != "") Console.WriteLine(loadJob.OUT_Log);
-				ConcatenateJobLog(analyzeJob);
+				ConcatenateJobLog(loadJob);
 
 				OUT_Disc = loadJob.OUT_Disc;
 

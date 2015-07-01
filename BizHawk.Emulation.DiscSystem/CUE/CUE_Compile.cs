@@ -253,13 +253,25 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO - check for mismatches between track types and file types, or is that best done when interpreting the commands?
 			}
 
+			void CreateTrack1Pregap()
+			{
+				if (OUT_CompiledCueTracks[1].PregapLength.Sector == 0) { }
+				else if (OUT_CompiledCueTracks[1].PregapLength.Sector == 150) { }
+				else
+				{
+					Error("Track 1 specified an illegal pregap. It's being ignored and replaced with a 00:02:00 pregap");
+				}
+				OUT_CompiledCueTracks[1].PregapLength = new Timestamp(150);
+			}
+
 			void FinalAnalysis()
 			{
 				//some quick checks:
 				if (OUT_CompiledCueFiles.Count == 0)
 					Error("Cue file doesn't specify any input files!");
 
-				//we can't readily analyze the length of files here, because we'd have to be interpreting the commands to know the track types. Not really worth the trouble
+				//we can't reliably analyze the length of files here, because we might have to be decoding to get lengths (VBR mp3s)
+				//So, it's not really worth the trouble. We'll cope with lengths later
 				//we could check the format of the wav file here, though
 
 				//score the cost of loading the file
@@ -297,7 +309,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (curr_track.Indexes[0].Number != 0)
 				{
 					var index0 = new CompiledCueIndex();
-					var index1 = curr_track.Indexes[1];
+					var index1 = curr_track.Indexes[0];
 					index0.Number = 0;
 					index0.FileMSF = index1.FileMSF;
 					curr_track.Indexes.Insert(0, index0);
@@ -335,13 +347,21 @@ namespace BizHawk.Emulation.DiscSystem
 
 			public void Run()
 			{
-				//params
+				//in params
 				var cue = IN_CueFile;
 
+				//output state
 				OUT_GlobalCDText = new CompiledCDText();
 				OUT_CompiledDiscInfo = new CompiledDiscInfo();
 				OUT_CompiledCueFiles = new List<CompiledCueFile>();
 				OUT_CompiledCueTracks = new List<CompiledCueTrack>();
+
+				//add a track 0, for addressing convenience. 
+				//note: for future work, track 0 may need emulation (accessible by very negative LBA--the TOC is stored there)
+				var track0 = new CompiledCueTrack() {
+					Number = 0,
+				};
+				OUT_CompiledCueTracks.Add(track0); 
 
 				//global cd text will acquire the cdtext commands set before track commands
 				curr_cdtext  = OUT_GlobalCDText;
@@ -367,7 +387,10 @@ namespace BizHawk.Emulation.DiscSystem
 					//flags can only be set when a track command is running
 					if (cmd is CueFile.Command.FLAGS)
 					{
-						curr_track.Flags = (cmd as CueFile.Command.FLAGS).Flags;
+						if (curr_track == null)
+							Warn("Ignoring invalid flag commands outside of a track command");
+						else 
+							curr_track.Flags = (cmd as CueFile.Command.FLAGS).Flags;
 					}
 
 					if (cmd is CueFile.Command.TRACK)
@@ -383,14 +406,31 @@ namespace BizHawk.Emulation.DiscSystem
 
 					if (cmd is CueFile.Command.INDEX)
 					{
+						//todo - validate no postgap specified
 						AddIndex(cmd as CueFile.Command.INDEX);
 					}
+
+					if (cmd is CueFile.Command.PREGAP)
+					{
+						//validate track open
+						//validate no indexes
+						curr_track.PregapLength = (cmd as CueFile.Command.PREGAP).Length;
+					}
+
+					if (cmd is CueFile.Command.POSTGAP)
+					{
+						curr_track.PostgapLength = (cmd as CueFile.Command.POSTGAP).Length;
+					}
+
 				}
 
 				CloseTrack();
-		
 
+				CreateTrack1Pregap();
+				FinalAnalysis();
+			
 			} //Run()
+
 		} //class CompileCueJob
 
 	} //partial class CUE_Format2

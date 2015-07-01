@@ -49,11 +49,6 @@ namespace BizHawk.Emulation.DiscSystem
 				Normal, Pregap, Postgap
 			}
 
-			//some sloshy output tracking:
-			int sloshy_firstRecordedTrackNumber = -1, sloshy_lastRecordedTrackNumber = -1;
-			DiscTOCRaw.SessionFormat sloshy_session1Format = DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA;
-			bool sloshy_session1Format_determined = false;
-
 			//current blob file state
 			int file_cfi_index = -1;
 			IBlob file_blob = null;
@@ -221,23 +216,122 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 			}
 
+			void MountBlobs()
+			{
+				foreach (var ccf in IN_CompileJob.OUT_CompiledCueFiles)
+				{
+					switch (ccf.Type)
+					{
+						case CompiledCueFileType.BIN:
+						case CompiledCueFileType.Unknown:
+							{
+								//raw files:
+								var blob = new Disc.Blob_RawFile { PhysicalPath = ccf.FullPath };
+								OUT_Disc.DisposableResources.Add(file_blob = blob);
+								file_len = blob.Length;
+								break;
+							}
+						case CompiledCueFileType.ECM:
+							{
+								var blob = new Disc.Blob_ECM();
+								OUT_Disc.DisposableResources.Add(file_blob = blob);
+								blob.Load(ccf.FullPath);
+								file_len = blob.Length;
+								break;
+							}
+						case CompiledCueFileType.WAVE:
+							{
+								var blob = new Disc.Blob_WaveFile();
+								OUT_Disc.DisposableResources.Add(file_blob = blob);
+								blob.Load(ccf.FullPath);
+								file_len = blob.Length;
+								break;
+							}
+						case CompiledCueFileType.DecodeAudio:
+							{
+								FFMpeg ffmpeg = new FFMpeg();
+								if (!ffmpeg.QueryServiceAvailable())
+								{
+									throw new DiscReferenceException(ccf.FullPath, "No decoding service was available (make sure ffmpeg.exe is available. even though this may be a wav, ffmpeg is used to load oddly formatted wave files. If you object to this, please send us a note and we'll see what we can do. It shouldn't be too hard.)");
+								}
+								AudioDecoder dec = new AudioDecoder();
+								byte[] buf = dec.AcquireWaveData(ccf.FullPath);
+								var blob = new Disc.Blob_WaveFile();
+								OUT_Disc.DisposableResources.Add(file_blob = blob);
+								blob.Load(new MemoryStream(buf));
+								break;
+							}
+						default:
+							throw new InvalidOperationException();
+					}
+				}
+			}
+
 			public void Run()
 			{
-				////params
-				//var cue = IN_AnalyzeJob.IN_CueFile;
-				//OUT_Disc = new Disc();
+				//params
+				var compiled = IN_CompileJob;
+				OUT_Disc = new Disc();
 
-				////add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
-				////THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
-				//for (int i = 0; i < 150; i++)
-				//{
-				//  var zero_sector = new Sector_Zero();
-				//  var zero_subSector = new ZeroSubcodeSector();
-				//  var se_leadin = new SectorEntry(zero_sector);
-				//  se_leadin.SubcodeSector = zero_subSector;
-				//  OUT_Disc.Sectors.Add(se_leadin);
-				//}
+				//mount all input files
+				MountBlobs();
 
+				//make a lookup from track number to CompiledCueTrack
+				Dictionary<int, CompiledCueTrack> trackLookup = new Dictionary<int, CompiledCueTrack>();
+				foreach (var cct in compiled.OUT_CompiledCueTracks)
+					trackLookup[cct.Number] = cct;
+
+				//loop from track 1 to 99
+				//(track 0 isnt handled yet, that's way distant work)
+				for (int t = 1; t <= 99; t++)
+				{
+					CompiledCueTrack cct;
+					if (!trackLookup.TryGetValue(t, out cct))
+						continue;
+
+					//---------------------------------
+					//generate track pregap
+					//per "Example 05" on digitalx.org, pregap can come from index specification and pregap command
+					int specifiedPregapLength = cct.PregapLength.Sector;
+					int impliedPregapLength = cct.Indexes[1].FileMSF.Sector - cct.Indexes[0].FileMSF.Sector;
+					//total pregap is needed for subQ addressing of the entire pregap area
+					int totalPregapLength = specifiedPregapLength + impliedPregapLength;
+					for (int s = 0; s < specifiedPregapLength; s++)
+					{
+						//TODO - do a better job synthesizing
+						var zero_sector = new Sector_Zero();
+						var zero_subSector = new ZeroSubcodeSector();
+						var se_pregap = new SectorEntry(zero_sector);
+						se_pregap.SubcodeSector = zero_subSector;
+						se_pregap.SectorSynth = new SS_Mode1_2048();
+						OUT_Disc.Sectors.Add(se_pregap);
+					}
+
+					//after this, pregap sectors are generated like a normal sector, but the subQ is specified as a pregap instead of a normal track
+					//---------------------------------
+
+					//---------------------------------
+					//WE ARE NOW AT INDEX 1
+					//---------------------------------
+
+					//---------------------------------
+					//generate the RawTOCEntry for this track
+					SubchannelQ sq = new SubchannelQ();
+					//absent some kind of policy for how to set it, this is a safe assumption:
+					byte ADR = 1;
+					sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
+					sq.q_tno.BCDValue = 0; //kind of a little weird here.. the track number becomes the 'point' and put in the index instead. 0 is the track number here.
+					sq.q_index = BCD2.FromDecimal(cct.Number);
+					//not too sure about these yet
+					sq.min = BCD2.FromDecimal(0);
+					sq.sec = BCD2.FromDecimal(0);
+					sq.frame = BCD2.FromDecimal(0);
+					sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count + 150); //its supposed to be an absolute timestamp
+					OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = sq });
+				}
+
+
+			
 				////now for the magic. Process commands in order
 				//for (int i = 0; i < cue.Commands.Count; i++)
 				//{

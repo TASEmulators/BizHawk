@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.DiscSystem
 					waveDataStreamPos = dataChunk.Position;
 					mDataLength = dataChunk.Length;
 				}
-				catch(Exception ex)
+				catch(Exception)
 				{
 					Dispose();
 					throw;
