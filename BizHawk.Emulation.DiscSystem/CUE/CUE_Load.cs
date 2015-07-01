@@ -70,7 +70,6 @@ namespace BizHawk.Emulation.DiscSystem
 			void MountBlobs()
 			{
 				IBlob file_blob = null;
-				long file_len = 0;
 
 				BlobInfos = new List<BlobInfo>();
 				foreach (var ccf in IN_CompileJob.OUT_CompiledCueFiles)
@@ -173,6 +172,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//params
 				var compiled = IN_CompileJob;
+				var context = compiled.IN_CueFormat;
 				OUT_Disc = new Disc();
 
 				//generation state
@@ -282,14 +282,17 @@ namespace BizHawk.Emulation.DiscSystem
 						sq.ap_frame = BCD2.FromDecimal(new Timestamp(LBA).FRAC);
 						int track_relative_msf = curr_blobMSF - cct.Indexes[1].FileMSF.Sector;
 
-						//for index 0, negative MSF required and encoded oppositely.
+						//for index 0, negative MSF required and encoded oppositely. Read more at Policies declaration
 						if (curr_index == 0)
 						{
-							if (track_relative_msf >= 0) throw new InvalidOperationException("Severe error generating cue subQ (positive MSF for pregap)");
+							if (!context.DiscMountPolicy.CUE_PauseContradictionModeA)
+								track_relative_msf += 1;
+
+							if (track_relative_msf > 0) throw new InvalidOperationException("Severe error generating cue subQ (positive relMSF for pregap)");
 							track_relative_msf = -track_relative_msf;
 						}
 						else
-							if (track_relative_msf < 0) throw new InvalidOperationException("Severe error generating cue subQ (negative MSF for non-pregap)");
+							if (track_relative_msf < 0) throw new InvalidOperationException("Severe error generating cue subQ (negative relMSF for non-pregap)");
 
 						sq.min = BCD2.FromDecimal(new Timestamp(track_relative_msf).MIN);
 						sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);

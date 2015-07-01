@@ -83,6 +83,12 @@ namespace BizHawk.Emulation.DiscSystem
 	public partial class Disc : IDisposable
 	{
 		/// <summary>
+		/// The DiscMountPolicy used to mount the disc. Consider this read-only.
+		/// NOT SURE WE NEED THIS
+		/// </summary>
+		//public DiscMountPolicy DiscMountPolicy;
+
+		/// <summary>
 		/// Free-form optional memos about the disc
 		/// </summary>
 		public Dictionary<string, object> Memos = new Dictionary<string, object>();

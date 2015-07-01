@@ -214,17 +214,29 @@ namespace BizHawk.Client.DiscoHawk
 
 			if (infile == null)
 				return;
-			
-			var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
-			dmj.Run();
-			var disc = dmj.OUT_Disc;
-			
-			if(hawk) {} //todo - write it out
+
+
+			if (hawk)
+			{
+				//TODO - write it out
+				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
+				dmj.Run();
+				//var disc = dmj.OUT_Disc;
+			}
 
 			StringWriter sw = new StringWriter();
 			foreach (var cmpif in compareDiscInterfaces)
 			{
 				sw.WriteLine("BEGIN COMPARE: SRC {0} vs DST {1}", loadDiscInterface, cmpif);
+
+				//reload the original disc, with new policies as needed
+				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
+				if (cmpif == DiscInterface.MednaDisc)
+				{
+					dmj.IN_DiscMountPolicy.CUE_PauseContradictionModeA = false;
+				}
+				dmj.Run();
+				var disc = dmj.OUT_Disc;
 
 				var src_disc = disc;
 

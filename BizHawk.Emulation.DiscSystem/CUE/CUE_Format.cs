@@ -14,5 +14,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The CueFileResolver to be used by this instance
 		/// </summary>
 		public CueFileResolver Resolver;
+
+		/// <summary>
+		/// The DiscMountPolicy to be applied to this context
+		/// </summary>
+		public DiscMountPolicy DiscMountPolicy;
 	}
 }

@@ -123,6 +123,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// The context used for this compiling job
+			/// TODO - rename something like context
 			/// </summary>
 			public CUE_Format2 IN_CueFormat;
 

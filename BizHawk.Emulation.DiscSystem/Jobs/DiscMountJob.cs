@@ -6,6 +6,30 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
+	/// <summary>
+	/// General disc policies to be logically applied at mounting time. The choices are irreversible once a disc is loaded.
+	/// Maybe these are only for CUEs, but maybe not. Not sure yet.
+	/// </summary>
+	public class DiscMountPolicy
+	{
+		/// <summary>
+		/// "At the beginning of a Pause (i.e. Index = 00) the relative time is 
+		/// --A-- set to the duration of the Pause.
+		/// During the Pause this relative time decreases and 
+		/// --B-- equals zero in the last Section"
+		/// This is a contradiction. 
+		/// By choosing true, mode A is selected, and the final sector of the pause is -1. I like this better. Defaulting until proven otherwise (write test case here)
+		/// By choosing false, mode B is selected, and the final sector of the pause is 0. Mednafen does it this way.
+		/// Discs (including PSX) exist using A, or B, or possibly (reference please) neither.
+		/// </summary>
+		public bool CUE_PauseContradictionModeA = true;
+
+		public void SetForPlaystation()
+		{
+			//probably set CUE_PauseContradictionModeA to follow mednafen, but not proven yet
+		}
+	}
+	
 	public partial class DiscMountJob : LoggedJob
 	{
 		/// <summary>
@@ -18,6 +42,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// Set to 10 to always load a cue
 		/// </summary>
 		public int IN_SlowLoadAbortThreshold = 10;
+
+		/// <summary>
+		/// Cryptic policies to be used when mounting the disc.
+		/// </summary>
+		public DiscMountPolicy IN_DiscMountPolicy = new DiscMountPolicy();
 
 		/// <summary>
 		/// The interface to be used for loading the disc.
@@ -74,6 +103,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
 				var cue2 = new CUE_Format2();
+				cue2.DiscMountPolicy = IN_DiscMountPolicy;
 
 				cue2.Resolver = cfr;
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(Path.GetDirectoryName(infile));
@@ -90,7 +120,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
 				var compileJob = new CUE_Format2.CompileCueJob();
-				compileJob.IN_CueFormat = new CUE_Format2() { Resolver = cfr };
+				compileJob.IN_CueFormat = cue2;
 				compileJob.IN_CueFile = parseJob.OUT_CueFile;
 				compileJob.Run();
 				if (compileJob.OUT_Log != "") Console.WriteLine(compileJob.OUT_Log);
@@ -111,6 +141,7 @@ namespace BizHawk.Emulation.DiscSystem
 				ConcatenateJobLog(loadJob);
 
 				OUT_Disc = loadJob.OUT_Disc;
+				//OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; //NOT SURE WE NEED THIS
 
 				//apply SBI if it exists (TODO - for formats other than cue?)
 				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
