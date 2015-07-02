@@ -257,20 +257,16 @@ namespace BizHawk.Emulation.DiscSystem
 							}
 						}
 
-						//if we're in a pregap, setup subQ and gap type depending on tracktype
-						EControlQ qFlags = (EControlQ)(int)cct.Flags;
+						//select the track type for the subQ
+						//it's obviously the same as the main track type usually, but during a pregap it can be different
+						TrackInfo qTrack = ti;
 						int qRelMSF = relMSF;
-						bool audioGap = true;
 						if (curr_index == 0)
 						{
 							//tweak relMSF due to ambiguity/contradiction in yellowbook docs
 							if (!context.DiscMountPolicy.CUE_PregapContradictionModeA)
 								qRelMSF++;
 
-							//normally the gap takes this track's type
-							if (cct.TrackType != CueFile.TrackType.Audio) audioGap = false;
-							
-							//now for something special.
 							//[IEC10149] says there's two "intervals" of a pregap.
 							//mednafen's pseudocode interpretation of this:
 							//if this is a data track and the previous track was not data, the last 150 sectors of the pregap match this track and the earlier sectors (at least 75) math the previous track
@@ -279,10 +275,7 @@ namespace BizHawk.Emulation.DiscSystem
 							{
 								if (relMSF < -150)
 								{
-									qFlags = (EControlQ)(int)TrackInfos[t - 1].CompiledCueTrack.Flags;
-									audioGap = true;
-									//TODO - actually generate the entire sector like the track before, including audio vs data encoding
-									//that means, dont get qFlags here, but instead reference a track to pull flags +and other data+ from
+									qTrack = TrackInfos[t - 1];
 								}
 							}
 						}
@@ -291,14 +284,14 @@ namespace BizHawk.Emulation.DiscSystem
 						SS_Base ss = null;
 						if (generateGap)
 						{
-							//if we were supposed to generate a gap, replace it with a new sector synth and feed it zeros
-							ss = new SS_Gap();
-							ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
+							var ss_gap = new SS_Gap();
+							ss_gap.TrackType = qTrack.CompiledCueTrack.TrackType;
+							ss = ss_gap;
 						}
 						else
 						{
 							int sectorSize = int.MaxValue;
-							switch (cct.TrackType)
+							switch (qTrack.CompiledCueTrack.TrackType)
 							{
 								case CueFile.TrackType.Audio:
 								case CueFile.TrackType.CDI_2352:
@@ -320,7 +313,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 							ss.Blob = curr_blobInfo.Blob;
 							ss.BlobOffset = curr_blobOffset;
-							ss.TrackType = cct.TrackType;
 							curr_blobOffset += sectorSize;
 							curr_blobMSF++;
 						}
@@ -329,7 +321,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 						//setup subQ
 						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
-						ss.sq.SetStatus(ADR, qFlags);
+						ss.sq.SetStatus(ADR, (EControlQ)(int)qTrack.CompiledCueTrack.Flags);
 						ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 						ss.sq.q_index = BCD2.FromDecimal(curr_index);
 						ss.sq.AP_Timestamp = new Timestamp(OUT_Disc.Sectors.Count);
@@ -369,7 +361,7 @@ namespace BizHawk.Emulation.DiscSystem
 					for (int s = 0; s < specifiedPostgapLength; s++)
 					{
 						var se= new SectorEntry(null);
-						SS_Base ss = new SS_Gap();
+						var ss = new SS_Gap();
 						ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
 
 						//-subq-

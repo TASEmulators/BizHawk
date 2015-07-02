@@ -18,10 +18,7 @@ namespace BizHawk.Emulation.DiscSystem
 			public SubchannelQ sq;
 
 			//subP data
-			public bool Pause; //not sure I like this anymore.. .. .. should be determined from track type, right?
-
-			//required 
-			public CueFile.TrackType TrackType;
+			public bool Pause; 
 
 			public abstract void Synth(SectorSynthJob job);
 
@@ -144,7 +141,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 		class SS_Gap : SS_Base
 		{
-			//public CueFile.TrackType TrackType; //shouldnt be in base class...
+			public CueFile.TrackType TrackType;
+
 			public override void Synth(SectorSynthJob job)
 			{
 				//this isn't fully analyzed/optimized
