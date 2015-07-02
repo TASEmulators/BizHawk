@@ -121,6 +121,15 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
+		public Action<int> GreenzoneInvalidatedCallback { get; set; }
+		private void GreenzoneInvalidated(int index)
+		{
+			if (GreenzoneInvalidatedCallback != null)
+			{
+				GreenzoneInvalidatedCallback(index);
+			}
+		}
+
 		#endregion
 
 		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)

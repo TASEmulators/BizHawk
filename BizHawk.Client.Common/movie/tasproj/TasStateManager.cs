@@ -25,6 +25,16 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public Action<int> InvalidateCallback { get; set; }
+
+		private void CallInvalidateCallback(int index)
+		{
+			if (InvalidateCallback != null)
+			{
+				InvalidateCallback(index);
+			}
+		}
+
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 		private string statePath
 		{
@@ -329,6 +339,8 @@ namespace BizHawk.Client.Common
 					accessed.Remove(state.Key);
 					States.Remove(state.Key);
 				}
+
+				CallInvalidateCallback(frame);
 			}
 		}
 

@@ -173,5 +173,20 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodAttributes(
+			"ongreenzoneinvalidated",
+			"called whenever the greenzone is invalidated and returns the first frame that was invalidated"
+		)]
+		public void OnGreenzoneInvalidated(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.GreenzoneInvalidatedCallback = (int index) =>
+				{
+					luaf.Call(index);
+				};
+			}
+		}
 	}
 }
