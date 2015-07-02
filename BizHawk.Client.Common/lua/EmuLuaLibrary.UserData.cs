@@ -61,5 +61,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return Global.UserBag.Remove(key);
 		}
+
+		[LuaMethodAttributes(
+			"containskey",
+			"returns whether or not there is an entry for the given key"
+		)]
+		public bool ContainsKey(string key)
+		{
+			return Global.UserBag.ContainsKey(key);
+		}
 	}
 }
