@@ -14,6 +14,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Client.EmuHawk.tools.Lua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -37,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			InitializeComponent();
-			
+
 			Closing += (o, e) =>
 			{
 				if (AskSaveChanges())
@@ -54,6 +55,8 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
 			LuaListView.VirtualMode = true;
+
+			LuaSandbox.SetLogger(this.ConsoleLog);
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -107,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaImp.GuiLibrary.DrawFinish();
 			}
-			
+
 			var runningScripts = _luaList.Where(f => f.Enabled).ToList();
 
 			foreach (var file in runningScripts)
@@ -131,20 +134,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					file.Thread = LuaImp.SpawnCoroutine(file.Path);
-					file.Enabled = true;
+					LuaSandbox.Sandbox(() =>
+					{
+						file.Thread = LuaImp.SpawnCoroutine(file.Path);
+						file.Enabled = true;
+					}, () =>
+					{
+						file.Enabled = false;
+					});
 				}
 				catch (Exception ex)
 				{
-					if (ex is LuaScriptException)
-					{
-						file.Enabled = false;
-						ConsoleLog(ex.Message);
-					}
-					else
-					{
-						MessageBox.Show(ex.ToString());
-					}
+					MessageBox.Show(ex.ToString());
 				}
 			}
 
@@ -168,20 +169,18 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						luaFile.Thread = LuaImp.SpawnCoroutine(processedPath);
-						luaFile.Enabled = true;
+						LuaSandbox.Sandbox(() =>
+						{
+							luaFile.Thread = LuaImp.SpawnCoroutine(processedPath);
+							luaFile.Enabled = true;
+						}, () =>
+						{
+							luaFile.Enabled = false;
+						});
 					}
 					catch (Exception e)
 					{
-						if (e.GetType() == typeof(LuaInterface.LuaScriptException))
-						{
-							luaFile.Enabled = false;
-							ConsoleLog(e.Message);
-						}
-						else
-						{
-							MessageBox.Show(e.ToString());
-						}
+						MessageBox.Show(e.ToString());
 					}
 				}
 				else
@@ -221,19 +220,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						file.Thread = LuaImp.SpawnCoroutine(file.Path);
+						LuaSandbox.Sandbox(() =>
+						{
+							file.Thread = LuaImp.SpawnCoroutine(file.Path);
+						}, () =>
+						{
+							file.Enabled = false;
+						});
 					}
 					catch (Exception e)
 					{
-						if (e is LuaScriptException)
-						{
-							file.Enabled = false;
-							ConsoleLog(e.Message);
-						}
-						else
-						{
-							MessageBox.Show(e.ToString());
-						}
+						MessageBox.Show(e.ToString());
 					}
 				}
 				else
@@ -400,18 +397,21 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="includeFrameWaiters">should frame waiters be waken up? only use this immediately before a frame of emulation</param>
 		public void ResumeScripts(bool includeFrameWaiters)
 		{
-			if (_luaList.Any())
+			if (!_luaList.Any())
 			{
-				if (LuaImp.GuiLibrary.SurfaceIsNull)
-				{
-					LuaImp.GuiLibrary.DrawNew("emu");
-				}
+				return;
+			}
 
-				foreach (var lf in _luaList)
-				{
-					var oldcd = Environment.CurrentDirectory; // Save old current directory before this lua thread clobbers it for the .net thread
+			if (LuaImp.GuiLibrary.SurfaceIsNull)
+			{
+				LuaImp.GuiLibrary.DrawNew("emu");
+			}
 
-					try
+			foreach (var lf in _luaList)
+			{
+				try
+				{
+					LuaSandbox.Sandbox(() =>
 					{
 						if (lf.Enabled && lf.Thread != null && !lf.Paused)
 						{
@@ -437,25 +437,15 @@ namespace BizHawk.Client.EmuHawk
 								lf.CurrentDirectory = Environment.CurrentDirectory;
 							}
 						}
-					}
-					catch (Exception ex) // TODO: it would be better to only catch LuaScriptException and LuaException and rethrow the generic ones
+					}, () =>
 					{
-						if (ex is LuaScriptException || ex is LuaException)
-						{
-							lf.Enabled = false;
-							lf.Thread = null;
-							ConsoleLog(ex.ToString());
-						}
-						else
-						{
-							MessageBox.Show(ex.ToString());
-						}
-					}
-					finally
-					{
-						// Restore the current directory
-						Environment.CurrentDirectory = oldcd;
-					}
+						lf.Enabled = false;
+						lf.Thread = null;
+					});
+				}
+				catch (Exception ex)
+				{
+					MessageBox.Show(ex.ToString());
 				}
 			}
 		}
@@ -736,19 +726,18 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						item.Thread = LuaImp.SpawnCoroutine(item.Path);
+						LuaSandbox.Sandbox(() =>
+						{
+							item.Thread = LuaImp.SpawnCoroutine(item.Path);
+						}, () =>
+						{
+							item.Enabled = false;
+						});
+
 					}
 					catch (Exception ex)
 					{
-						if (ex is LuaScriptException)
-						{
-							item.Enabled = false;
-							ConsoleLog(ex.Message);
-						}
-						else
-						{
-							MessageBox.Show(ex.ToString());
-						}
+						MessageBox.Show(ex.ToString());
 					}
 				}
 				else if (!item.Enabled && item.Thread != null)
@@ -1018,14 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				if (ex is LuaScriptException || ex is LuaException)
-				{
-					ConsoleLog(ex.Message);
-				}
-				else
-				{
-					MessageBox.Show(ex.Message);
-				}
+				MessageBox.Show(ex.ToString());
 			}
 		}
 
@@ -1139,24 +1121,21 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Maybe make these try-catches more general
 				if (InputBox.Text != "")
 				{
-					try
+					LuaSandbox.Sandbox(() =>
 					{
 						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
-					}
-					catch
+					}, () =>
 					{
-						try
+						LuaSandbox.Sandbox(() =>
 						{
 							LuaImp.ExecuteString(InputBox.Text);
 
 							if (OutputBox.Text == consoleBeforeCall)
+							{
 								ConsoleLog("Command successfully executed");
-						}
-						catch (LuaScriptException ex)
-						{
-							ConsoleLog(ex.ToString());
-						}
-					}
+							}
+						});
+					});
 
 					_consoleCommandHistory.Insert(0, InputBox.Text);
 					_consoleCommandHistoryIndex = -1;

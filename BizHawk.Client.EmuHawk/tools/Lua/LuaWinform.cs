@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using LuaInterface;
+using BizHawk.Client.EmuHawk.tools.Lua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -30,16 +31,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			string oldCurrentDirectory = Environment.CurrentDirectory;
-			Environment.CurrentDirectory = CurrentDirectory;
-			foreach (LuaEvent l_event in ControlEvents)
+			LuaSandbox.Sandbox(() =>
 			{
-				if (l_event.Control == handle)
+				Environment.CurrentDirectory = CurrentDirectory;
+				foreach (LuaEvent l_event in ControlEvents)
 				{
-					l_event.Event.Call();
+					if (l_event.Control == handle)
+					{
+						l_event.Event.Call();
+					}
 				}
-			}
-			Environment.CurrentDirectory = oldCurrentDirectory;
+			});
 		}
 
 		public class LuaEvent
