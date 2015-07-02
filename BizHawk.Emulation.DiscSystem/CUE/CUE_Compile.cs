@@ -90,9 +90,15 @@ namespace BizHawk.Emulation.DiscSystem
 			public int Number;
 			
 			/// <summary>
-			/// A track that's final in the file gets its length from the length of the file; other tracks lengths are determined from the succeeding track
+			/// A track that's final in a file gets its length from the length of the file; other tracks lengths are determined from the succeeding track
 			/// </summary>
 			public bool IsFinalInFile;
+
+			/// <summary>
+			/// A track that's first in a file has an implicit index 0 at 00:00:00
+			/// Otherwise it has an implicit index 0 at the placement of the index 1
+			/// </summary>
+			public bool IsFirstInFile;
 
 			public CompiledCDText CDTextData = new CompiledCDText();
 			public Timestamp PregapLength, PostgapLength;
@@ -163,6 +169,7 @@ namespace BizHawk.Emulation.DiscSystem
 			CompiledCueTrack curr_track = null;
 			CompiledCueFile curr_file = null;
 			bool discinfo_session1Format_determined = false;
+			bool curr_fileHasTrack = false;
 
 			void UpdateDiscInfo(CueFile.Command.TRACK trackCommand)
 			{
@@ -208,6 +215,7 @@ namespace BizHawk.Emulation.DiscSystem
 					CloseFile();
 
 				curr_blobIndex++;
+				curr_fileHasTrack = false;
 
 				var Resolver = IN_CueFormat.Resolver;
 
@@ -338,6 +346,11 @@ namespace BizHawk.Emulation.DiscSystem
 					var index1 = curr_track.Indexes[0];
 					index0.Number = 0;
 					index0.FileMSF = index1.FileMSF; //same MSF as index 1 will make it effectively nonexistent
+
+					//well now, if it's the first in the file, an implicit index will take its value from 00:00:00 in the file
+					if (curr_track.IsFirstInFile)
+						index0.FileMSF = new Timestamp(0);
+
 					curr_track.Indexes.Insert(0, index0);
 				}
 
@@ -359,6 +372,11 @@ namespace BizHawk.Emulation.DiscSystem
 				//default flags
 				if (curr_track.TrackType != CueFile.TrackType.Audio)
 					curr_track.Flags = CueFile.TrackFlags.DATA;
+
+				if (!curr_fileHasTrack)
+				{
+					curr_fileHasTrack = curr_track.IsFirstInFile = true;
+				}
 
 				UpdateDiscInfo(trackCommand);
 			}
