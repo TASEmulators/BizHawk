@@ -348,6 +348,8 @@ namespace BizHawk.Emulation.DiscSystem
 					index0.FileMSF = index1.FileMSF; //same MSF as index 1 will make it effectively nonexistent
 
 					//well now, if it's the first in the file, an implicit index will take its value from 00:00:00 in the file
+					//this is the kind of thing I sought to solve originally by 'interpreting' the file, but it seems easy enough to handle this way
+					//my carlin.cue tests this but test cases shouldnt be hard to find
 					if (curr_track.IsFirstInFile)
 						index0.FileMSF = new Timestamp(0);
 

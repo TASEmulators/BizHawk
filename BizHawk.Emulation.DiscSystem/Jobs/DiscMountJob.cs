@@ -124,7 +124,8 @@ namespace BizHawk.Emulation.DiscSystem
 					cue_content = File.ReadAllText(cuePath);
 				parseJob.IN_CueString = cue_content;
 				cue2.ParseCueFile(parseJob);
-				if (parseJob.OUT_Log != "") Console.WriteLine(parseJob.OUT_Log);
+				//TODO - need better handling of log output
+				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
 
 				//compile the cue file:
@@ -133,7 +134,8 @@ namespace BizHawk.Emulation.DiscSystem
 				compileJob.IN_CueFormat = cue2;
 				compileJob.IN_CueFile = parseJob.OUT_CueFile;
 				compileJob.Run();
-				if (compileJob.OUT_Log != "") Console.WriteLine(compileJob.OUT_Log);
+				//TODO - need better handling of log output
+				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
 
 				//check slow loading threshold
@@ -147,7 +149,8 @@ namespace BizHawk.Emulation.DiscSystem
 				var loadJob = new CUE_Format2.LoadCueJob();
 				loadJob.IN_CompileJob = compileJob;
 				loadJob.Run();
-				if (loadJob.OUT_Log != "") Console.WriteLine(loadJob.OUT_Log);
+				//TODO - need better handling of log output
+				if (!string.IsNullOrEmpty(loadJob.OUT_Log)) Console.WriteLine(loadJob.OUT_Log);
 				ConcatenateJobLog(loadJob);
 
 				OUT_Disc = loadJob.OUT_Disc;
