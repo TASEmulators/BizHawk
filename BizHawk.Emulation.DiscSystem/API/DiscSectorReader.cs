@@ -42,8 +42,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public bool ThrowExceptions2048 = true;
 
 		/// <summary>
-		/// Indicates whether subcode should be delivered deinterleaved. It isn't stored that way on actual discs. 
-		/// How about .sub files? Can't remember right now.
+		/// Indicates whether subcode should be delivered deinterleaved. It isn't stored that way on actual discs. But it is in .sub files
 		/// </summary>
 		public bool DeinterleavedSubcode = true;
 
@@ -159,6 +158,26 @@ namespace BizHawk.Emulation.DiscSystem
 			Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048);
 
 			return 2048;
+		}
+
+		/// <summary>
+		/// Reads 12 bytes of subQ data from a sector.
+		/// This is necessarily deinterleaved.
+		/// </summary>
+		public int ReadLBA_SubQ(int lba, byte[] buffer, int offset)
+		{
+			var sector = disc.Sectors[lba + 150];
+
+			PrepareBuffer(buffer, offset, 12);
+			PrepareJob(lba);
+			job.DestBuffer2448 = buf2442;
+			job.DestOffset = 0;
+			job.Parts = ESectorSynthPart.SubchannelQ | ESectorSynthPart.SubcodeDeinterleave;
+
+			sector.SectorSynth.Synth(job);
+			Buffer.BlockCopy(buf2442, 2352 + 12, buffer, offset, 12);
+
+			return 12;
 		}
 
 		/// <summary>

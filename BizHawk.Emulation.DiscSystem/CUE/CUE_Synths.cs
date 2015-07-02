@@ -52,57 +52,6 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		static class SynthUtils
-		{
-			public static void SubP(byte[] buffer, int offset, bool pause)
-			{
-				byte val = (byte)(pause?0xFF:0x00);
-				for (int i = 0; i < 12; i++)
-					buffer[offset + i] = val;
-			}
-
-			public static void SectorHeader(byte[] buffer, int offset, int LBA, byte mode)
-			{
-				buffer[offset + 0] = 0x00;
-				for (int i = 1; i < 11; i++) buffer[offset + i] = 0xFF;
-				buffer[offset + 11] = 0x00;
-				Timestamp ts = new Timestamp(LBA + 150);
-				buffer[offset + 12] = BCD2.IntToBCD(ts.MIN);
-				buffer[offset + 13] = BCD2.IntToBCD(ts.SEC);
-				buffer[offset + 14] = BCD2.IntToBCD(ts.FRAC);
-				buffer[offset + 15] = mode;
-			}
-
-			public static void EDC_Mode2_Form1(byte[] buffer, int offset)
-			{
-				uint edc = ECM.EDC_Calc(buffer, offset + 16, 2048 + 8);
-				ECM.PokeUint(buffer, offset + 2072, edc);
-			}
-
-			public static void EDC_Mode2_Form2(byte[] buffer, int offset)
-			{
-				uint edc = ECM.EDC_Calc(buffer, offset + 16, 2324+8);
-				ECM.PokeUint(buffer, offset + 2348, edc);
-			}
-
-
-			/// <summary>
-			/// Make sure everything else in the sector userdata is done before calling this
-			/// </summary>
-			public static void ECM_Mode1(byte[] buffer, int offset, int LBA)
-			{
-				//EDC
-				uint edc = ECM.EDC_Calc(buffer, offset, 2064);
-				ECM.PokeUint(buffer, offset + 2064, edc);
-
-				//reserved, zero
-				for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
-				
-				//ECC
-				ECM.ECC_Populate(buffer, offset, buffer, offset, false);
-			}
-		}
-
 		/// <summary>
 		/// Represents a Mode1 2048-byte sector
 		/// </summary>

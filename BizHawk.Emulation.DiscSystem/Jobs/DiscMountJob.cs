@@ -33,7 +33,12 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public bool CUE_PregapMode2_As_XA_Form2 = true;
 
-		public void SetForPlaystation()
+		/// <summary>
+		/// Mednafen loads SBI files oddly
+		/// </summary>
+		public bool SBO_As_Mednafen = true;
+
+		public void SetForPSX()
 		{
 			//probably set CUE_PauseContradictionModeA to follow mednafen, but not proven yet
 			//almost surely set CUE_PregapMode2_As_XA_Form2 to follow mednafen
@@ -163,7 +168,7 @@ namespace BizHawk.Emulation.DiscSystem
 					var sbiJob = new SBI.LoadSBIJob();
 					sbiJob.IN_Path = sbiPath;
 					sbiJob.Run();
-					OUT_Disc.ApplySBI(sbiJob.OUT_Data, true);
+					OUT_Disc.ApplySBI(sbiJob.OUT_Data, IN_DiscMountPolicy.SBO_As_Mednafen);
 				}
 			}
 			else if (ext == ".ccd")

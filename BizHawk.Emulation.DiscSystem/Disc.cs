@@ -224,37 +224,67 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
+		class SS_PatchQ : ISectorSynthJob2448
+		{
+			public ISectorSynthJob2448 Original;
+			public byte[] Buffer_SubQ = new byte[12];
+			public void Synth(SectorSynthJob job)
+			{
+				Original.Synth(job);
+
+				if ((job.Parts & ESectorSynthPart.SubchannelQ) == 0)
+					return;
+
+				//apply patched subQ
+				for (int i = 0; i < 12; i++)
+					job.DestBuffer2448[2352 + 12 + i] = Buffer_SubQ[i];
+			}
+		}
+
 		/// <summary>
 		/// applies an SBI file to the disc
 		/// </summary>
 		public void ApplySBI(SBI.SubQPatchData sbi, bool asMednafen)
 		{
+			//TODO - could implement as a blob, to avoid allocating so many byte buffers
+
 			//save this, it's small, and we'll want it for disc processing a/b checks
 			Memos["sbi"] = sbi;
 
+			DiscSectorReader dsr = new DiscSectorReader(this);
+
 			int n = sbi.ABAs.Count;
-			byte[] subcode = new byte[96];
 			int b=0;
 			for (int i = 0; i < n; i++)
 			{
-				int aba = sbi.ABAs[i];
-				var oldSubcode = this.Sectors[aba].SubcodeSector;
-				oldSubcode.ReadSubcodeDeinterleaved(subcode, 0);
+				int lba = sbi.ABAs[i] - 150;
+
+				//create a synthesizer which can return the patched data
+				var ss_patchq = new SS_PatchQ() { Original = this.Sectors[lba+150].SectorSynth };
+				byte[] subQbuf = ss_patchq.Buffer_SubQ;
+
+				//read the old subcode
+				dsr.ReadLBA_SubQ(lba, subQbuf, 0);
+
+				//insert patch
+				Sectors[lba + 150].SectorSynth = ss_patchq;
+
+				//apply SBI patch
 				for (int j = 0; j < 12; j++)
 				{
 					short patch = sbi.subq[b++];
 					if (patch == -1) continue;
-					else subcode[12 + j] = (byte)patch;
+					else subQbuf[j] = (byte)patch;
 				}
-				var bss = BufferedSubcodeSector.CloneFromBytesDeinterleaved(subcode);
-				Sectors[aba].SubcodeSector = bss;
 
-				//not fully sure what the basis is for this, but here we go
+				//Apply mednafen hacks
+				//The reasoning here is that we know we expect these sectors to have a wrong checksum. therefore, generate a checksum, and make it wrong
+				//However, this seems senseless to me. The whole point of the SBI data is that it stores the patches needed to generate an acceptable subQ, right?
 				if (asMednafen)
 				{
-					bss.Synthesize_SunchannelQ_Checksum();
-					bss.SubcodeDeinterleaved[12 + 10] ^= 0xFF;
-					bss.SubcodeDeinterleaved[12 + 11] ^= 0xFF;
+					SynthUtils.SubQ_Checksum(subQbuf, 0);
+					subQbuf[10] ^= 0xFF;
+					subQbuf[11] ^= 0xFF;
 				}
 			}
 		}
@@ -489,7 +519,72 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	
+
+	static class SynthUtils
+	{
+
+		/// <summary>
+		/// Calculates the checksum of the provided Q subchannel
+		/// </summary>
+		/// <param name="buffer">12 byte Q subchannel: input and output buffer for operation</param>
+		/// <param name="offset">location within buffer of Q subchannel</param>
+		public static void SubQ_Checksum(byte[] buffer, int offset)
+		{
+			ushort crc16 = CRC16_CCITT.Calculate(buffer, offset, 10);
+
+			//CRC is stored inverted and big endian
+			buffer[offset + 10] = (byte)(~(crc16 >> 8));
+			buffer[offset + 11] = (byte)(~(crc16));
+		}
+
+		public static void SubP(byte[] buffer, int offset, bool pause)
+		{
+			byte val = (byte)(pause ? 0xFF : 0x00);
+			for (int i = 0; i < 12; i++)
+				buffer[offset + i] = val;
+		}
+
+		public static void SectorHeader(byte[] buffer, int offset, int LBA, byte mode)
+		{
+			buffer[offset + 0] = 0x00;
+			for (int i = 1; i < 11; i++) buffer[offset + i] = 0xFF;
+			buffer[offset + 11] = 0x00;
+			Timestamp ts = new Timestamp(LBA + 150);
+			buffer[offset + 12] = BCD2.IntToBCD(ts.MIN);
+			buffer[offset + 13] = BCD2.IntToBCD(ts.SEC);
+			buffer[offset + 14] = BCD2.IntToBCD(ts.FRAC);
+			buffer[offset + 15] = mode;
+		}
+
+		public static void EDC_Mode2_Form1(byte[] buffer, int offset)
+		{
+			uint edc = ECM.EDC_Calc(buffer, offset + 16, 2048 + 8);
+			ECM.PokeUint(buffer, offset + 2072, edc);
+		}
+
+		public static void EDC_Mode2_Form2(byte[] buffer, int offset)
+		{
+			uint edc = ECM.EDC_Calc(buffer, offset + 16, 2324 + 8);
+			ECM.PokeUint(buffer, offset + 2348, edc);
+		}
+
+
+		/// <summary>
+		/// Make sure everything else in the sector userdata is done before calling this
+		/// </summary>
+		public static void ECM_Mode1(byte[] buffer, int offset, int LBA)
+		{
+			//EDC
+			uint edc = ECM.EDC_Calc(buffer, offset, 2064);
+			ECM.PokeUint(buffer, offset + 2064, edc);
+
+			//reserved, zero
+			for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
+
+			//ECC
+			ECM.ECC_Populate(buffer, offset, buffer, offset, false);
+		}
+	}
 
 	//not being used yet
 	class DiscPreferences
