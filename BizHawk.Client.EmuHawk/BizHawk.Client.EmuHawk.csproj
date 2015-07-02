@@ -757,6 +757,7 @@
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\IToolForm.cs" />
+    <Compile Include="tools\Lua\EnvironmentSandbox.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
@@ -798,6 +799,7 @@
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.Designer.cs">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Lua\LuaSandbox.cs" />
     <Compile Include="tools\Lua\LuaTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
