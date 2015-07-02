@@ -435,8 +435,9 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						if (curr_track == null)
 							Warn("Ignoring invalid flag commands outside of a track command");
-						else 
-							curr_track.Flags = (cmd as CueFile.Command.FLAGS).Flags;
+						else
+							//take care to |= it here, so the data flag doesn't get cleared
+							curr_track.Flags |= (cmd as CueFile.Command.FLAGS).Flags;
 					}
 
 					if (cmd is CueFile.Command.TRACK)
