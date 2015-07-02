@@ -184,7 +184,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 				//mount all input files
 				MountBlobs();
-				var zeroBlob = new Disc.Blob_Zeros();
 
 				//unhappily, we cannot determine the length of all the tracks without knowing the length of the files
 				//now that the files are mounted, we can figure the track lengths
@@ -288,52 +287,37 @@ namespace BizHawk.Emulation.DiscSystem
 							}
 						}
 
-						//TODO - may need to extract this sector creating to a new method, 
-						//if the particulars of the mode-byte setting WRT. pregap intervals end up being more complex
-
 						//generate the right kind of sector synth for this track
-						//TODO - there are needless constructions
 						SS_Base ss = null;
-						int sectorSize = int.MaxValue;
-						switch (cct.TrackType)
-						{
-							case CueFile.TrackType.Audio:
-								ss = new SS_2352();
-								sectorSize = 2352;
-								break;
-
-							case CueFile.TrackType.CDI_2352:
-							case CueFile.TrackType.Mode1_2352:
-								ss = new SS_2352();
-								sectorSize = 2352;
-								break;
-
-							case CueFile.TrackType.Mode2_2352:
-								ss = new SS_2352();
-								sectorSize = 2352;
-								break;
-
-							case CueFile.TrackType.Mode1_2048:
-								ss = new SS_Mode1_2048();
-								sectorSize = 2048;
-								break;
-
-							default:
-							case CueFile.TrackType.Mode2_2336:
-								throw new InvalidOperationException("Not supported: " + cct.TrackType);
-						}
-
-						//if we were supposed to generate a gap, replace it with a new sector synth and feed it zeros
 						if (generateGap)
 						{
+							//if we were supposed to generate a gap, replace it with a new sector synth and feed it zeros
 							ss = new SS_Gap();
-							ss.Blob = zeroBlob;
-							ss.TrackType = cct.TrackType;
-							ss.Gap = true; //not used...
+							ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
 						}
 						else
 						{
-							//otherwise we consumed data from the blob
+							int sectorSize = int.MaxValue;
+							switch (cct.TrackType)
+							{
+								case CueFile.TrackType.Audio:
+								case CueFile.TrackType.CDI_2352:
+								case CueFile.TrackType.Mode1_2352:
+								case CueFile.TrackType.Mode2_2352:
+									ss = new SS_2352();
+									sectorSize = 2352;
+									break;
+
+								case CueFile.TrackType.Mode1_2048:
+									ss = new SS_Mode1_2048();
+									sectorSize = 2048;
+									break;
+
+								default:
+								case CueFile.TrackType.Mode2_2336:
+									throw new InvalidOperationException("Not supported: " + cct.TrackType);
+							}
+
 							ss.Blob = curr_blobInfo.Blob;
 							ss.BlobOffset = curr_blobOffset;
 							ss.TrackType = cct.TrackType;
@@ -385,9 +369,8 @@ namespace BizHawk.Emulation.DiscSystem
 					for (int s = 0; s < specifiedPostgapLength; s++)
 					{
 						var se= new SectorEntry(null);
-						SS_Base ss;
-						if (cct.TrackType == CueFile.TrackType.Audio) ss = new SS_AudioGap();
-						else ss = new SS_DataGap();
+						SS_Base ss = new SS_Gap();
+						ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
 
 						//-subq-
 						byte ADR = 1;
@@ -436,28 +419,3 @@ namespace BizHawk.Emulation.DiscSystem
 	} //partial class CUE_Format2
 } //namespace BizHawk.Emulation.DiscSystem
 
-
-
-
-//TODO:
-				//if (index_num == 0 || type == SectorWriteType.Pregap)
-				//{
-				//  //PREGAP:
-				//  //things are negative here.
-				//  if (track_relative_msf > 0) throw new InvalidOperationException("Perplexing internal error with non-negative pregap MSF");
-				//  track_relative_msf = -track_relative_msf;
-
-				//  //now for something special.
-				//  //yellow-book says:
-				//  //pre-gap for "first part of a digital data track not containing user data and encoded as a pause"
-				//  //first interval: at least 75 sectors coded as preceding track
-				//  //second interval: at least 150 sectors coded as user data track.
-				//  //so... we ASSUME the 150 sector pregap is more important. so if thats all there is, theres no 75 sector pregap like the old track
-				//  //if theres a longer pregap, then we generate weird old track pregap to contain the rest.
-				//  if (track_relative_msf > 150)
-				//  {
-				//    //only if we're burning a data track now
-				//    if((track_flags & CueFile.TrackFlags.DATA)!=0)
-				//      sq.q_status = priorSubchannelQ.q_status;
-				//  }
-				//}

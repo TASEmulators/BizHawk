@@ -11,15 +11,21 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public IBlob Blob;
 			public long BlobOffset;
-			public SubchannelQ sq;
-			public bool Pause, Gap;
-			public CueFile.TrackType TrackType;
+
 			public DiscMountPolicy Policy;
+
+			//subQ data
+			public SubchannelQ sq;
+
+			//subP data
+			public bool Pause; //not sure I like this anymore.. .. .. should be determined from track type, right?
+
+			//required 
+			public CueFile.TrackType TrackType;
 
 			public abstract void Synth(SectorSynthJob job);
 
-			//"as needed"
-			protected void SynthSubcode(SectorSynthJob job)
+			protected void SynthSubchannelAsNeed(SectorSynthJob job)
 			{
 				//synth P if needed
 				if ((job.Parts & ESectorSynthPart.SubchannelP) != 0)
@@ -117,33 +123,22 @@ namespace BizHawk.Emulation.DiscSystem
 				if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
 					SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
 
-				SynthSubcode(job);
+				SynthSubchannelAsNeed(job);
 			}
 		}
 
 		/// <summary>
-		/// Represents a data pregap or postgap sector.
-		/// The Pause flag isn't set in here because it might need special logic varying between sectors and so that's setup by the cue loader
-		/// Implemented as another sector type with a blob reading all zeros
+		/// Represents a 2352-byte sector of any sort
 		/// </summary>
-		class SS_DataGap : SS_Mode1_2048
+		class SS_2352 : SS_Base
 		{
-			public SS_DataGap()
+			public override void Synth(SectorSynthJob job)
 			{
-				Blob = new Disc.Blob_Zeros();
-			}
-		}
+				//read the sector user data
+				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2352);
 
-		/// <summary>
-		/// Represents an audio pregap or postgap sector.
-		/// The Pause flag isn't set in here because it might need special logic varying between sectors and so that's setup by the cue loader
-		/// Implemented as another sector type with a blob reading all zeros
-		/// </summary>
-		class SS_AudioGap : SS_2352
-		{
-			public SS_AudioGap()
-			{
-				Blob = new Disc.Blob_Zeros();
+				//if subcode is needed, synthesize it
+				SynthSubchannelAsNeed(job);
 			}
 		}
 
@@ -180,6 +175,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 					case CueFile.TrackType.Mode1_2048:
 						mode = 1;
+						Pause = true;
 						break;
 
 					case CueFile.TrackType.Mode2_2336:
@@ -187,8 +183,12 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new InvalidOperationException("Not supported: " + TrackType);
 				}
 
-				if ((job.Parts & ESectorSynthPart.Header16) != 0)
-					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, mode);
+				//audio has no sector header but the others do
+				if (mode != 0)
+				{
+					if ((job.Parts & ESectorSynthPart.Header16) != 0)
+						SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, mode);
+				}
 
 				if (mode == 1)
 				{
@@ -200,24 +200,10 @@ namespace BizHawk.Emulation.DiscSystem
 					SynthUtils.EDC_Mode2_Form2(job.DestBuffer2448, job.DestOffset);
 				}
 
-				SynthSubcode(job);
+				SynthSubchannelAsNeed(job);
 			}
 		}
 
-		/// <summary>
-		/// Represents a 2352-byte sector of any sort
-		/// </summary>
-		class SS_2352 : SS_Base
-		{
-			public override void Synth(SectorSynthJob job)
-			{
-				//read the sector user data
-				Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset, 2352);
-
-				//if subcode is needed, synthesize it
-				SynthSubcode(job);
-			}
-		}
 
 	}
 }
