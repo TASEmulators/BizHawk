@@ -282,6 +282,8 @@ namespace BizHawk.Emulation.DiscSystem
 								{
 									qFlags = (EControlQ)(int)TrackInfos[t - 1].CompiledCueTrack.Flags;
 									audioGap = true;
+									//TODO - actually generate the entire sector like the track before, including audio vs data encoding
+									//that means, dont get qFlags here, but instead reference a track to pull flags +and other data+ from
 								}
 							}
 						}
@@ -296,23 +298,23 @@ namespace BizHawk.Emulation.DiscSystem
 						switch (cct.TrackType)
 						{
 							case CueFile.TrackType.Audio:
-								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 0 };
+								ss = new SS_2352();
 								sectorSize = 2352;
 								break;
 
 							case CueFile.TrackType.CDI_2352:
 							case CueFile.TrackType.Mode1_2352:
-								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
+								ss = new SS_2352();
 								sectorSize = 2352;
 								break;
 
 							case CueFile.TrackType.Mode2_2352:
-								ss = new SS_2352() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 2 };
+								ss = new SS_2352();
 								sectorSize = 2352;
 								break;
 
 							case CueFile.TrackType.Mode1_2048:
-								ss = new SS_Mode1_2048() { Blob = curr_blobInfo.Blob, BlobOffset = curr_blobOffset, Mode = 1 };
+								ss = new SS_Mode1_2048();
 								sectorSize = 2048;
 								break;
 
@@ -324,16 +326,22 @@ namespace BizHawk.Emulation.DiscSystem
 						//if we were supposed to generate a gap, replace it with a new sector synth and feed it zeros
 						if (generateGap)
 						{
-							if (audioGap) ss = new SS_AudioGap();
-							else ss = new SS_DataGap() { Mode = ss.Mode };
+							ss = new SS_Gap();
 							ss.Blob = zeroBlob;
+							ss.TrackType = cct.TrackType;
+							ss.Gap = true; //not used...
 						}
 						else
 						{
 							//otherwise we consumed data from the blob
+							ss.Blob = curr_blobInfo.Blob;
+							ss.BlobOffset = curr_blobOffset;
+							ss.TrackType = cct.TrackType;
 							curr_blobOffset += sectorSize;
 							curr_blobMSF++;
 						}
+
+						ss.Policy = context.DiscMountPolicy;
 
 						//setup subQ
 						byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:

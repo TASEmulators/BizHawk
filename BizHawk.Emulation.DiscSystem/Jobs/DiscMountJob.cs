@@ -27,9 +27,16 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public bool CUE_PregapContradictionModeA = true;
 
+		/// <summary>
+		/// Mednafen sets mode2 pregap sectors as XA Form2 sectors.
+		/// This is almost surely not right in every case.
+		/// </summary>
+		public bool CUE_PregapMode2_As_XA_Form2 = true;
+
 		public void SetForPlaystation()
 		{
 			//probably set CUE_PauseContradictionModeA to follow mednafen, but not proven yet
+			//almost surely set CUE_PregapMode2_As_XA_Form2 to follow mednafen
 		}
 	}
 	
@@ -144,7 +151,7 @@ namespace BizHawk.Emulation.DiscSystem
 				ConcatenateJobLog(loadJob);
 
 				OUT_Disc = loadJob.OUT_Disc;
-				//OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; //NOT SURE WE NEED THIS
+				//OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; //NOT SURE WE NEED THIS (only makes sense for cue probably)
 
 				//apply SBI if it exists (TODO - for formats other than cue?)
 				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");

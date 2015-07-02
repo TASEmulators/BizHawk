@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Indicates which part of a sector are needing to be synthesized.
 	/// Sector synthesis may create too much data, but this is a hint as to what's needed
+	/// TODO - add a flag indicating whether clearing has happened
+	/// TODO - add output to the job indicating whether interleaving has happened. let the sector reader be responsible
 	/// </summary>
 	[Flags] enum ESectorSynthPart
 	{
@@ -76,7 +78,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// An alias for UserComplete
 		/// </summary>
 		User2352 = UserComplete,
-
 
 		/// <summary>
 		/// SubP is required

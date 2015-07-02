@@ -12,11 +12,13 @@ namespace BizHawk.Emulation.DiscSystem
 			public IBlob Blob;
 			public long BlobOffset;
 			public SubchannelQ sq;
-			public bool Pause;
-			public byte Mode;
+			public bool Pause, Gap;
+			public CueFile.TrackType TrackType;
+			public DiscMountPolicy Policy;
 
 			public abstract void Synth(SectorSynthJob job);
 
+			//"as needed"
 			protected void SynthSubcode(SectorSynthJob job)
 			{
 				//synth P if needed
@@ -68,6 +70,19 @@ namespace BizHawk.Emulation.DiscSystem
 				buffer[offset + 15] = mode;
 			}
 
+			public static void EDC_Mode2_Form1(byte[] buffer, int offset)
+			{
+				uint edc = ECM.EDC_Calc(buffer, offset + 16, 2048 + 8);
+				ECM.PokeUint(buffer, offset + 2072, edc);
+			}
+
+			public static void EDC_Mode2_Form2(byte[] buffer, int offset)
+			{
+				uint edc = ECM.EDC_Calc(buffer, offset + 16, 2324+8);
+				ECM.PokeUint(buffer, offset + 2348, edc);
+			}
+
+
 			/// <summary>
 			/// Make sure everything else in the sector userdata is done before calling this
 			/// </summary>
@@ -75,7 +90,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//EDC
 				uint edc = ECM.EDC_Calc(buffer, offset, 2064);
-				ECM.PokeUint(buffer, 2064, edc);
+				ECM.PokeUint(buffer, offset + 2064, edc);
 
 				//reserved, zero
 				for (int i = 0; i < 8; i++) buffer[offset + 2068 + i] = 0;
@@ -97,7 +112,7 @@ namespace BizHawk.Emulation.DiscSystem
 					Blob.Read(BlobOffset, job.DestBuffer2448, job.DestOffset + 16, 2048);
 
 				if ((job.Parts & ESectorSynthPart.Header16) != 0)
-					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, Mode);
+					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, 1);
 
 				if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
 					SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
@@ -132,8 +147,65 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
+		class SS_Gap : SS_Base
+		{
+			//public CueFile.TrackType TrackType; //shouldnt be in base class...
+			public override void Synth(SectorSynthJob job)
+			{
+				//this isn't fully analyzed/optimized
+				Array.Clear(job.DestBuffer2448, job.DestOffset, 2352);
+
+				byte mode = 255;
+				int form = -1;
+				switch (TrackType)
+				{
+					case CueFile.TrackType.Audio:
+						mode = 0;
+						break;
+
+					case CueFile.TrackType.CDI_2352:
+					case CueFile.TrackType.Mode1_2352:
+						mode = 1;
+						break;
+
+					case CueFile.TrackType.Mode2_2352:
+						mode = 2;
+						if (Policy.CUE_PregapMode2_As_XA_Form2)
+						{
+							job.DestBuffer2448[job.DestOffset + 12 + 6] = 0x20;
+							job.DestBuffer2448[job.DestOffset + 12 + 10] = 0x20;
+						}
+						form = 2; //no other choice right now really
+						break;
+
+					case CueFile.TrackType.Mode1_2048:
+						mode = 1;
+						break;
+
+					case CueFile.TrackType.Mode2_2336:
+					default:
+						throw new InvalidOperationException("Not supported: " + TrackType);
+				}
+
+				if ((job.Parts & ESectorSynthPart.Header16) != 0)
+					SynthUtils.SectorHeader(job.DestBuffer2448, job.DestOffset + 0, job.LBA, mode);
+
+				if (mode == 1)
+				{
+					if ((job.Parts & ESectorSynthPart.ECMAny) != 0)
+						SynthUtils.ECM_Mode1(job.DestBuffer2448, job.DestOffset + 0, job.LBA);
+				}
+				if (mode == 2 && form == 2)
+				{
+					SynthUtils.EDC_Mode2_Form2(job.DestBuffer2448, job.DestOffset);
+				}
+
+				SynthSubcode(job);
+			}
+		}
+
 		/// <summary>
-		/// Represents a Mode1 or Mode2 2352-byte sector
+		/// Represents a 2352-byte sector of any sort
 		/// </summary>
 		class SS_2352 : SS_Base
 		{
