@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			UseCustomBackground = true;
 			GridLines = true;
 			CellWidthPadding = 3;
-			CellHeightPadding = 1;
+			CellHeightPadding = 0;
 			CurrentCell = null;
 			ScrollMethod = "near";
 
