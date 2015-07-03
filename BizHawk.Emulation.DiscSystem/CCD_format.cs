@@ -397,20 +397,24 @@ namespace BizHawk.Emulation.DiscSystem
 					sw.WriteLine("PFrame={0}", entry.QData.ap_frame.DecimalValue);
 					sw.WriteLine("PLBA={0}", entry.QData.AP_Timestamp.Sector - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
 				}
-				for (int i = 0; i < disc.Structure.Sessions[0].Tracks.Count; i++)
-				{
-					var st = disc.Structure.Sessions[0].Tracks[i];
-					sw.WriteLine("[TRACK {0}]", st.Number);
-					sw.WriteLine("MODE={0}", st.ModeHeuristic); //MAYBE A BAD PLAN!
-					//dont write an index=0 identical to an index=1. It might work, or it might not.
-					int idx = 0;
-					if (st.Indexes[0].LBA == st.Indexes[1].LBA)
-						idx = 1;
-					for (; idx < st.Indexes.Count; idx++)
-					{
-						sw.WriteLine("INDEX {0}={1}", st.Indexes[idx].Number, st.Indexes[idx].LBA);
-					}
-				}
+
+				//TODO - this is nonsense, right? the whole CCD track and index list isn't really needed.
+				//at least not for us when we'll always be writing a .sub file
+				//for (int i = 0; i < disc.Structure.Sessions[0].Tracks.Count; i++)
+				//{
+				//  var st = disc.Structure.Sessions[0].Tracks[i];
+				//  sw.WriteLine("[TRACK {0}]", st.Number);
+				//  sw.WriteLine("MODE={0}", st.ModeHeuristic); //MAYBE A BAD PLAN!
+				//  //dont write an index=0 identical to an index=1. It might work, or it might not.
+				//  int idx = 0;
+				//  if (st.Indexes[0].LBA == st.Indexes[1].LBA)
+				//    idx = 1;
+				//  for (; idx < st.Indexes.Count; idx++)
+				//  {
+				//    sw.WriteLine("INDEX {0}={1}", st.Indexes[idx].Number, st.Indexes[idx].LBA);
+				//  }
+				//}
+
 			}
 
 			//dump the img and sub
@@ -538,45 +542,45 @@ namespace BizHawk.Emulation.DiscSystem
 			tocSynth.Run();
 			disc.TOCRaw = tocSynth.Result;
 
-			disc.Structure = new DiscStructure();
-			var ses = new DiscStructure.Session();
-			disc.Structure.Sessions.Add(ses);
+			//disc.Structure = new DiscStructure();
+			//var ses = new DiscStructure.Session();
+			//disc.Structure.Sessions.Add(ses);
 
-			for(int i=1;i<=99;i++)
-			{
-				if(!ccdf.TracksByNumber.ContainsKey(i))
-					continue;
-				var ccdt = ccdf.TracksByNumber[i];
+			//for(int i=1;i<=99;i++)
+			//{
+			//  if(!ccdf.TracksByNumber.ContainsKey(i))
+			//    continue;
+			//  var ccdt = ccdf.TracksByNumber[i];
 
-				DiscStructure.Track track = new DiscStructure.Track() { Number = i };
-				ses.Tracks.Add(track);
+			//  DiscStructure.Track track = new DiscStructure.Track() { Number = i };
+			//  ses.Tracks.Add(track);
 
-				//if index 0 is missing, add it
-				if (!ccdt.Indexes.ContainsKey(0))
-					track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = ccdt.Indexes[1] });
-				for(int j=1;j<=99;j++)
-					if (ccdt.Indexes.ContainsKey(j))
-						track.Indexes.Add(new DiscStructure.Index { Number = j, LBA = ccdt.Indexes[j] });
+			//  //if index 0 is missing, add it
+			//  if (!ccdt.Indexes.ContainsKey(0))
+			//    track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = ccdt.Indexes[1] });
+			//  for(int j=1;j<=99;j++)
+			//    if (ccdt.Indexes.ContainsKey(j))
+			//      track.Indexes.Add(new DiscStructure.Index { Number = j, LBA = ccdt.Indexes[j] });
 
-				//TODO - this should only be used in case the .sub needs reconstructing
-				//determination should be done from heuristics.
-				//if we keep this, it should just be as a memo that later heuristics can use. For example: 'use guidance from original disc image'
-				track.ModeHeuristic = ccdt.Mode;
+			//  //TODO - this should only be used in case the .sub needs reconstructing
+			//  //determination should be done from heuristics.
+			//  //if we keep this, it should just be as a memo that later heuristics can use. For example: 'use guidance from original disc image'
+			//  track.ModeHeuristic = ccdt.Mode;
 
-				//TODO - this should be deleted anyway (
-				switch (ccdt.Mode)
-				{
-					case 0:
-						track.TrackType = DiscStructure.ETrackType.Audio; //for CCD, this means audio, apparently.
-						break;
-					case 1:
-					case 2:
-						track.TrackType = DiscStructure.ETrackType.Data;
-						break;
-					default:
-						throw new InvalidOperationException("Unsupported CCD mode");
-				}
-			}
+			//  //TODO - this should be deleted anyway (
+			//  switch (ccdt.Mode)
+			//  {
+			//    case 0:
+			//      track.TrackType = DiscStructure.ETrackType.Audio; //for CCD, this means audio, apparently.
+			//      break;
+			//    case 1:
+			//    case 2:
+			//      track.TrackType = DiscStructure.ETrackType.Data;
+			//      break;
+			//    default:
+			//      throw new InvalidOperationException("Unsupported CCD mode");
+			//  }
+			//}
 
 			//add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
 			//THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT

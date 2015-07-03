@@ -182,6 +182,10 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// reads 2048 bytes of user data from a sector.
+		/// This is only valid for Mode 1 and XA Mode 2 (Form 1) sectors.
+		/// Attempting it on any other sectors is ill-defined.
+		/// If any console is trying to do that, we'll have to add a policy for it, or handle it in the console.
+		/// (We can add a method to this API that checks the type of a sector to make that easier)
 		/// </summary>
 		public int ReadLBA_2048(int lba, byte[] buffer, int offset)
 		{

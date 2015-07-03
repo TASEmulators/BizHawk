@@ -100,16 +100,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int ABACount { get { return Sectors.Count; } }
 
-		/// <summary>
-		/// main api for reading the structure from a disc.
-		/// TODO - this is weak sauce. Why this one method to read something which is nothing but returning a structure? Lame.
-		/// Either get rid of this, or rethink the disc API wrapper concept
-		/// </summary>
-		public DiscStructure ReadStructure()
-		{
-			return Structure;
-		}
-
 		// converts LBA to minute:second:frame format.
 		//TODO - somewhat redundant with Timestamp, which is due for refactoring into something not cue-related
 		public static void ConvertLBAtoMSF(int lba, out byte m, out byte s, out byte f)

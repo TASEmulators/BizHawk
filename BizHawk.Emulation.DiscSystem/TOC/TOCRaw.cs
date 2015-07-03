@@ -146,6 +146,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The timestamp of the leadout track. In other words, the end of the user area.
 		/// </summary>
-		public Timestamp LeadoutTimestamp { get { return TOCItems[100].LBATimestamp; } }
+		public Timestamp LeadoutLBA { get { return TOCItems[100].LBATimestamp; } }
 	}
 }

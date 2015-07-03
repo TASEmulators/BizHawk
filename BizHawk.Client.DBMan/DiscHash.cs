@@ -157,7 +157,7 @@ namespace BizHawk.Client.DBMan
 							foreach (var track in disc.Structure.Sessions[0].Tracks)
 							{
 								crc.Add(track.Start_ABA);
-								crc.Add(track.LengthInSectors);
+								crc.Add(track.Length);
 							}
 							//ZAMMO: change to disc sector reader, maybe a new class to read multiple
 							disc.ReadLBA_2352_Flat(0, discbuf, 0, discbuf.Length);

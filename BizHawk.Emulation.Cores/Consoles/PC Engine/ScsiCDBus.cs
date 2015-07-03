@@ -175,7 +175,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (DataIn.Count == 0)
 				{
 					// read in a sector and shove it in the queue
-					disc.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
+					DiscSystem.DiscSectorReader dsr = new DiscSectorReader(disc); //TODO - cache reader
+					dsr.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
 					DataIn.SignalBufferFilled(2048);
 					CurrentReadingSector++;
 					SectorsLeftToRead--;
@@ -421,7 +422,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x80: // Set start offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					audioStartLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+					audioStartLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].LBA;
 					break;
 			}
 
@@ -459,7 +460,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					if (trackNo - 1 >= disc.Structure.Sessions[0].Tracks.Count)
 						audioEndLBA = disc.LBACount;
 					else
-						audioEndLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+						audioEndLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].LBA;
 					break;
 			}
 
@@ -509,8 +510,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			subcodeReader.ReadLBA_SubchannelQ(sectorNum, ref subchannelQ);
 			DataIn.Enqueue(subchannelQ.q_status);          // I do not know what status is
-			DataIn.Enqueue(subchannelQ.q_tno);    // track
-			DataIn.Enqueue(subchannelQ.q_index);  // index
+			DataIn.Enqueue(subchannelQ.q_tno.BCDValue);    // track //zero 03-jul-2015 - did I adapt this right>
+			DataIn.Enqueue(subchannelQ.q_index.BCDValue);  // index //zero 03-jul-2015 - did I adapt this right>
 			DataIn.Enqueue(subchannelQ.min.BCDValue);    // M(rel)
 			DataIn.Enqueue(subchannelQ.sec.BCDValue);    // S(rel)
 			DataIn.Enqueue(subchannelQ.frame.BCDValue);  // F(rel)
@@ -560,9 +561,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						int lbaPos;
 
 						if (track > tracks.Count)
-							lbaPos = disc.Structure.Sessions[0].length_aba - 150;
+							lbaPos = disc.TOCRaw.LeadoutLBA.Sector; //zero 03-jul-2015 - did I adapt this right?
 						else
-							lbaPos = tracks[track].Indexes[1].aba - 150;
+							lbaPos = tracks[track].LBA;
 
 						byte m, s, f;
 						Disc.ConvertLBAtoMSF(lbaPos, out m, out s, out f);
@@ -572,7 +573,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						DataIn.Enqueue(s.BinToBCD());
 						DataIn.Enqueue(f.BinToBCD());
 
-						if (track > tracks.Count || disc.Structure.Sessions[0].Tracks[track].TrackType == ETrackType.Audio)
+						if (track > tracks.Count || disc.Structure.Sessions[0].Tracks[track].IsAudio)
 							DataIn.Enqueue(0);
 						else
 							DataIn.Enqueue(4);

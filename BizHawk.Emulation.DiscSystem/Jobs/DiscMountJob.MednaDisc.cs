@@ -145,27 +145,31 @@ namespace BizHawk.Emulation.DiscSystem
 			tocSynth.Run();
 			disc.TOCRaw = tocSynth.Result;
 
+			//DO THIS IN A MORE UNIFORM WAY PLEASE
 			//setup the DiscStructure 
-			disc.Structure = new DiscStructure();
-			var ses = new DiscStructure.Session();
-			disc.Structure.Sessions.Add(ses);
-			for (int i = 1; i < 100; i++)
-			{
-				var m_te = md.TOCTracks[i];
-				if (!m_te.Valid) continue;
+			//disc.Structure = new DiscStructure();
+			//var ses = new DiscStructure.Session();
+			//disc.Structure.Sessions.Add(ses);
+			//for (int i = 1; i < 100; i++)
+			//{
+			//  var m_te = md.TOCTracks[i];
+			//  if (!m_te.Valid) continue;
 
-				DiscStructure.Track track = new DiscStructure.Track() { Number = i };
-				ses.Tracks.Add(track);
-				if ((m_te.control & (int)EControlQ.DATA) == 0)
-					track.TrackType = DiscStructure.ETrackType.Audio;
-				else
-					track.TrackType = DiscStructure.ETrackType.Data;
+			//  DiscStructure.Track track = new DiscStructure.Track() { Number = i };
+			//  ses.Tracks.Add(track);
+			//  if ((m_te.control & (int)EControlQ.DATA) == 0)
+			//    track.IsData = false;
+			//  else
+			//    track.IsData = true;
 
-				//from mednafen, we couldnt build the index 0, and that's OK, since that's not really a sensible thing in CD terms anyway. 
-				//I need to refactor this thing to oblivion
-				track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = (int)m_te.lba }); //<-- not accurate, but due for deletion
-				track.Indexes.Add(new DiscStructure.Index { Number = 1, LBA = (int)m_te.lba });
-			}
+			//  track.Start_LBA = (int)m_te.lba;
+			//  track.
+
+			//  //from mednafen, we couldnt build the index 0, and that's OK, since that's not really a sensible thing in CD terms anyway. 
+			//  //I need to refactor this thing to oblivion
+			//  //track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = (int)m_te.lba }); //<-- not accurate, but due for deletion
+			//  //track.Indexes.Add(new DiscStructure.Index { Number = 1, LBA = (int)m_te.lba });
+			//}
 
 			//NOT FULLY COMPLETE
 

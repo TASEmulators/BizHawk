@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.DiscSystem
 	/// NOTE - actually even THAT is probably a bad idea. sector types can change on the fly.
 	/// this class promises something it can't deliver. (it's only being used to scan an ISO disc)
 	/// Well, we could make code that is full of red flags and warnings like "if this ISNT a 2048 byte sector ISO disc, then this wont work"
+	/// 
+	/// TODO - Receive some information about the track that this stream is modeling, and have the stream return EOF at the end of the track?
 	/// </summary>
 	public class DiscStream : System.IO.Stream
 	{
@@ -57,8 +59,8 @@ namespace BizHawk.Emulation.DiscSystem
 		Disc Disc;
 
 		long currPosition;
-		int cachedSector;
 		byte[] cachedSectorBuffer;
+		int cachedSector;
 		DiscSectorReader dsr;
 
 		public DiscStream(Disc disc, EDiscStreamView view, int from_lba)
@@ -103,13 +105,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 		}
 
+		//TODO - I'm not sure everything in here makes sense right now..
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			long remainInDisc = Length - currPosition;
 			if (count > remainInDisc)
 				count = (int)Math.Min(remainInDisc, int.MaxValue);
 
-			int sectorBufferHint = -1;
 			int remain = count;
 			int readed = 0;
 			while (remain > 0)
@@ -120,12 +122,11 @@ namespace BizHawk.Emulation.DiscSystem
 				int remains_in_lba = SectorSize - lba_within;
 				if (remains_in_lba < todo)
 					todo = remains_in_lba;
-				if (sectorBufferHint != lba)
+				if (cachedSector != lba)
 				{
-					//todo - read sector to cachedSectorBuffer
 					dsr.ReadLBA_2048(lba, cachedSectorBuffer, 0);
+					cachedSector = lba;
 				}
-				sectorBufferHint = lba;
 				Array.Copy(cachedSectorBuffer, lba_within, buffer, offset, todo);
 				offset += todo;
 				remain -= todo;

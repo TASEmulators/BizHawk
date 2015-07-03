@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		static Yabause AttachedCore = null;
 		GCHandle VideoHandle;
 		Disc CD;
+		DiscSectorReader DiscSectorReader;
 		GCHandle SoundHandle;
 
 		bool Disposed = false;
@@ -59,9 +60,10 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
-			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", CD.GetHash());
+			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", new DiscSystem.DiscHasher(CD).OldHash());
 			this.CoreComm = CoreComm;
 			this.CD = CD;
+			DiscSectorReader = new DiscSystem.DiscSectorReader(CD);
 
 			SyncSettings = (SaturnSyncSettings)syncSettings ?? new SaturnSyncSettings();
 
@@ -391,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		{
 			// this stuff from yabause's cdbase.c.  don't ask me to explain it
 
-			var TOC = CD.ReadStructure();
+			var TOC = CD.Structure;
 			int[] rTOC = new int[102];
 			var ses = TOC.Sessions[0];
 			int ntrk = ses.Tracks.Count;
@@ -402,19 +404,13 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				{
 					var trk = ses.Tracks[i];
 
-					uint t = (uint)trk.Indexes[1].aba;
+					uint t = (uint)trk.LBA + 150;
 
-					switch (trk.TrackType)
-					{
-						case DiscSystem.ETrackType.Audio:
-							t |= 0x01000000;
-							break;
-						case DiscSystem.ETrackType.Mode1_2048:
-						case DiscSystem.ETrackType.Mode1_2352:
-						case DiscSystem.ETrackType.Mode2_2352:
-							t |= 0x41000000;
-							break;
-					}
+					if(trk.IsAudio)
+						t |= 0x01000000;
+					else 
+						t |= 0x41000000;
+
 					rTOC[i] = (int)t;
 				}
 				else
@@ -425,7 +421,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			rTOC[99] = (int)(rTOC[0] & 0xff000000 | 0x010000);
 			rTOC[100] = (int)(rTOC[ntrk - 1] & 0xff000000 | (uint)(ntrk << 16));
-			rTOC[101] = (int)(rTOC[ntrk - 1] & 0xff000000 | (uint)(ses.length_aba));
+			rTOC[101] = (int)(rTOC[ntrk - 1] & 0xff000000 | (uint)(CD.TOCRaw.LeadoutLBA.Sector)); //zero 03-jul-2014 - maybe off by 150
+			
 
 			Marshal.Copy(rTOC, 0, dest, 102);
 			return 408;
@@ -443,7 +440,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			try
 			{
 				//CD.ReadABA_2352(FAD, data, 0);
-				CD.ReadLBA_2352(FAD-150, data, 0); //zero 21-jun-2015 - did I adapt this right?
+				DiscSectorReader.ReadLBA_2352(FAD - 150, data, 0); //zero 21-jun-2015 - did I adapt this right?
 			}
 			catch (Exception e)
 			{

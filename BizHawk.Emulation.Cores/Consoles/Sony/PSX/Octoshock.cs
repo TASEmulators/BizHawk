@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				////the lead-out track is to be synthesized
 				tracks101[read_target->last_track + 1].adr = 1;
 				tracks101[read_target->last_track + 1].control = 0;
-				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOCRaw.LeadoutTimestamp.Sector;
+				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOCRaw.LeadoutLBA.Sector;
 
 				//element 100 is to be copied as the lead-out track
 				tracks101[100] = tracks101[read_target->last_track + 1];
@@ -198,7 +198,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (subcodeLog) Console.Write("{0}|", lba);
 				else if (readLog) Console.WriteLine("Read Sector: " + lba);
 
-				Disc.ReadLBA_2352(lba, SectorBuffer, 0);
+				//todo - cache reader
+				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
+				dsr.ReadLBA_2352(lba, SectorBuffer, 0);
 				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2352);
 				Disc.ReadLBA_SectorEntry(lba).SubcodeSector.ReadSubcodeDeinterleaved(SectorBuffer, 0);
 				Marshal.Copy(SectorBuffer, 0, new IntPtr((byte*)dst + 2352), 96);

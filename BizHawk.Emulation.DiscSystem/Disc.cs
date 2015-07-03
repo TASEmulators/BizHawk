@@ -95,21 +95,18 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// The raw TOC entries found in the lead-in track.
-		/// NOTE: it seems unlikey that we'll ever get these exactly.
-		/// The cd reader is supposed to read the multiple copies and pick the best-of-3 and turn them into a TOCRaw
-		/// So really this only needs to stick around so we can make the TOCRaw from it.
-		/// Not much of a different view, but.. different
+		/// These aren't very useful, but theyre one of the most lowest-level data structures from which other TOC-related stuff is derived
 		/// </summary>
 		public List<RawTOCEntry> RawTOCEntries = new List<RawTOCEntry>();
 
 		/// <summary>
 		/// The DiscTOCRaw corresponding to the RawTOCEntries.
-		/// Note: these should be retrieved differently, through a view accessor
+		/// TODO - rename to TOC
 		/// </summary>
 		public DiscTOCRaw TOCRaw;
 
 		/// <summary>
-		/// The DiscStructure corresponding the the TOCRaw
+		/// The DiscStructure corresponding to the TOCRaw
 		/// </summary>
 		public DiscStructure Structure;
 
@@ -151,7 +148,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO: encode_mode2_form2_sector
 				var sz = new Sector_Zero();
 
-				var leadoutTs = Disc.TOCRaw.LeadoutTimestamp;
+				var leadoutTs = Disc.TOCRaw.LeadoutLBA;
 				var lastTrackTOCItem = Disc.TOCRaw.TOCItems[Disc.TOCRaw.LastRecordedTrackNumber]; //NOTE: in case LastRecordedTrackNumber is al ie, this will malfunction
 
 				//leadout flags.. let's set them the same as the last track.
@@ -198,30 +195,6 @@ namespace BizHawk.Emulation.DiscSystem
 			job.IN_DiscInterface = DiscInterface.MednaDisc; //TEST
 			job.Run();
 			return job.OUT_Disc;
-		}
-
-	
-
-		/// <summary>
-		/// Synthesizes a crudely estimated TOCRaw from the disc structure.
-		/// </summary>
-		public void Synthesize_TOCRawFromStructure()
-		{
-			TOCRaw = new DiscTOCRaw();
-			TOCRaw.FirstRecordedTrackNumber = 1;
-			TOCRaw.LastRecordedTrackNumber = Structure.Sessions[0].Tracks.Count;
-			int lastEnd = 0;
-			for (int i = 0; i < Structure.Sessions[0].Tracks.Count; i++)
-			{
-				var track = Structure.Sessions[0].Tracks[i];
-				TOCRaw.TOCItems[i + 1].Control = track.Control;
-				TOCRaw.TOCItems[i + 1].Exists = true;
-				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Start_ABA - 150); //AUGH. see comment in Start_ABA
-				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA);  //ZOUNDS!
-				//TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA + 150); //WHATEVER, I DONT KNOW. MAKES IT MATCH THE CCD, BUT THERES MORE PROBLEMS
-				TOCRaw.TOCItems[i + 1].LBATimestamp = new Timestamp(track.Indexes[1].LBA); //WHAT?? WE NEED THIS AFTER ALL! ZOUNDS MEANS, THERE WAS JUST SOME OTHER BUG
-				lastEnd = track.LengthInSectors + track.Indexes[1].LBA;
-			}
 		}
 
 		class SS_PatchQ : ISectorSynthJob2448
@@ -286,79 +259,6 @@ namespace BizHawk.Emulation.DiscSystem
 					subQbuf[10] ^= 0xFF;
 					subQbuf[11] ^= 0xFF;
 				}
-			}
-		}
-
-		/// <summary>
-		/// Creates the subcode (really, just subchannel Q) for this disc from its current TOC.
-		/// Depends on the TOCPoints existing in the structure
-		/// TODO - do we need a fully 0xFF P-subchannel for PSX?
-		/// </summary>
-		void Synthesize_SubcodeFromStructure()
-		{
-			int aba = 0;
-			int dpIndex = 0;
-
-			//TODO - from mednafen (on PC-FX chip chan kick)
-			//If we're more than 2 seconds(150 sectors) from the real "start" of the track/INDEX 01, and the track is a data track,
-			//and the preceding track is an audio track, encode it as audio(by taking the SubQ control field from the preceding 
-
-			//NOTE: discs may have subcode which is nonsense or possibly not recoverable from a sensible disc structure.
-			//but this function does what it says.
-
-			//SO: heres the main idea of how this works.
-			//we have the Structure.Points (whose name we dont like) which is a list of sectors where the tno/index changes.
-			//So for each sector, we see if we've advanced to the next point.
-			//TODO - check if this is synthesized correctly when producing a structure from a TOCRaw
-			while (aba < Sectors.Count)
-			{
-				if (dpIndex < Structure.Points.Count - 1)
-				{
-					while (aba >= Structure.Points[dpIndex + 1].ABA)
-					{
-						dpIndex++;
-					}
-				}
-				var dp = Structure.Points[dpIndex];
-
-
-				var se = Sectors[aba];
-
-				EControlQ control = dp.Control;
-				bool pause = true;
-				if (dp.Num != 0) //TODO - shouldnt this be IndexNum?
-					pause = false;
-				if ((dp.Control & EControlQ.DATA)!=0)
-					pause = false;
-
-				int adr = dp.ADR;
-
-				SubchannelQ sq = new SubchannelQ();
-				sq.q_status = SubchannelQ.ComputeStatus(adr, control);
-				sq.q_tno = BCD2.FromDecimal(dp.TrackNum);
-				sq.q_index = BCD2.FromDecimal(dp.IndexNum);
-
-				int track_relative_aba = aba - dp.Track.Indexes[1].aba;
-				track_relative_aba = Math.Abs(track_relative_aba);
-				Timestamp track_relative_timestamp = new Timestamp(track_relative_aba);
-				sq.min = BCD2.FromDecimal(track_relative_timestamp.MIN);
-				sq.sec = BCD2.FromDecimal(track_relative_timestamp.SEC);
-				sq.frame = BCD2.FromDecimal(track_relative_timestamp.FRAC);
-				sq.zero = 0;
-				Timestamp absolute_timestamp = new Timestamp(aba);
-				sq.ap_min = BCD2.FromDecimal(absolute_timestamp.MIN);
-				sq.ap_sec = BCD2.FromDecimal(absolute_timestamp.SEC);
-				sq.ap_frame = BCD2.FromDecimal(absolute_timestamp.FRAC);
-
-				var bss = new BufferedSubcodeSector();
-				bss.Synthesize_SubchannelQ(ref sq, true);
-
-				//TEST: need this for psx?
-				if(pause) bss.Synthesize_SubchannelP(true);
-
-				se.SubcodeSector = bss;
-
-				aba++;
 			}
 		}
 

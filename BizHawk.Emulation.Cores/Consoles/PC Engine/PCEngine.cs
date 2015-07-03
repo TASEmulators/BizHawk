@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
-			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
+			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, new DiscSystem.DiscHasher(disc).OldHash());
 			SetControllerButtons();
 		}
 

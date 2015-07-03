@@ -25,9 +25,9 @@ namespace BizHawk.Client.DiscoHawk
 				if (track.TrackType != DiscStructure.ETrackType.Audio)
 					continue;
 
-				var waveData = new byte[track.LengthInSectors * 2352];
+				var waveData = new byte[track.Length * 2352];
 				int startLba = track.Indexes[1].LBA;
-				for (int sector = 0; sector < track.LengthInSectors; sector++)
+				for (int sector = 0; sector < track.Length; sector++)
 					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 
 				string mp3Path = string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.Number);

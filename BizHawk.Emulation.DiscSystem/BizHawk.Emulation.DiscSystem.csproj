@@ -52,9 +52,9 @@
     </Compile>
     <Compile Include="API\Disc.API.cs" />
     <Compile Include="API\Disc.ID.cs" />
+    <Compile Include="API\DiscHasher.cs" />
     <Compile Include="API\DiscSectorReader.cs" />
     <Compile Include="API\DiscStream.cs" />
-    <Compile Include="API\OldHash.cs" />
     <Compile Include="Blobs\Blob_ECM.cs" />
     <Compile Include="Blobs\Blob_RawFile.cs" />
     <Compile Include="Blobs\Blob_WaveFile.cs" />

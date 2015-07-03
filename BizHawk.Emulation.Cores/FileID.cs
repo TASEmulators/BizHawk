@@ -218,8 +218,9 @@ namespace BizHawk.Emulation.Cores
 
 		FileIDResults IdentifyDisc(IdentifyJob job)
 		{
+			var discIdentifier = new DiscSystem.DiscIdentifier(job.Disc);
 			//DiscSystem could use some newer approaches from this file (instead of parsing ISO filesystem... maybe?)
-			switch (job.Disc.DetectDiscType())
+			switch (discIdentifier.DetectDiscType())
 			{
 				case DiscSystem.DiscType.SegaSaturn:
 					return new FileIDResults(new FileIDResult(FileIDType.Saturn, 100));
