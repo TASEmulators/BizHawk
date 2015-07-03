@@ -269,10 +269,11 @@ namespace BizHawk.Client.DiscoHawk
 				var cts = new CancellationTokenSource();
 				po.CancellationToken = cts.Token;
 				po.MaxDegreeOfParallelism = 1;
-				//po.MaxDegreeOfParallelism = System.Environment.ProcessorCount - 2; //I'm disk bound, no sense hammering this
+				//po.MaxDegreeOfParallelism = System.Environment.ProcessorCount - 2; //I'm disk or network bound, no sense hammering this
 				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
 				object olock = new object();
 				int ctr=0;
+				bool blocked = false;
 				try
 				{
 					Parallel.ForEach(todo, po, (fp) =>
@@ -283,25 +284,32 @@ namespace BizHawk.Client.DiscoHawk
 							int strlen = todo.Count.ToString().Length;
 							string fmt = string.Format("{{0,{0}}}/{{1,{0}}} {{2}}", strlen);
 							Console.WriteLine(fmt, ctr, todo.Count, Path.GetFileNameWithoutExtension(fp));
+							//if (fp.Contains("Break Out"))
+							//  blocked = false;
 						}
 
-						foreach (var cmpif in compareDiscInterfaces)
-						{
-							StringWriter sw = new StringWriter();
-							bool success = CompareFile(fp, loadDiscInterface, cmpif, verbose, cts, sw);
-							if (!success)
+						if(!blocked)
+							foreach (var cmpif in compareDiscInterfaces)
 							{
-								lock (Console.Out)
-									Console.Out.Write(sw.ToString());
+								StringWriter sw = new StringWriter();
+								bool success = CompareFile(fp, loadDiscInterface, cmpif, verbose, cts, sw);
+								if (!success)
+								{
+									lock (Console.Out)
+										Console.Out.Write(sw.ToString());
 
-								cts.Cancel();
-								return;
-							}
+									cts.Cancel();
+									return;
+								}
 						}
 					});
 				}
 				catch (AggregateException ae) {
 					Console.WriteLine(ae.ToString());
+				}
+				catch (OperationCanceledException oce)
+				{
+					Console.WriteLine(oce.ToString());
 				}
 				Console.WriteLine("--TERMINATED--");
 				return;
@@ -324,176 +332,187 @@ namespace BizHawk.Client.DiscoHawk
 
 		static bool CompareFile(string infile, DiscInterface loadDiscInterface, DiscInterface cmpif, bool verbose, CancellationTokenSource cancelToken, StringWriter sw)
 		{
-			bool success = false;
+			Disc src_disc = null, dst_disc = null;
 
-			sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
-
-			//reload the original disc, with new policies as needed
-			var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
-			if (cmpif == DiscInterface.MednaDisc)
+			try
 			{
-				dmj.IN_DiscMountPolicy.CUE_PregapContradictionModeA = false;
-			}
-			dmj.Run();
-			var disc = dmj.OUT_Disc;
+				bool success = false;
 
-			var src_disc = disc;
+				sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
 
-			var dst_dmj = new DiscMountJob { IN_DiscInterface = cmpif, IN_FromPath = infile };
-			dst_dmj.Run();
-			var dst_disc = dst_dmj.OUT_Disc;
-
-			var src_dsr = new DiscSectorReader(src_disc);
-			var dst_dsr = new DiscSectorReader(dst_disc);
-
-			var src_toc = src_disc.TOCRaw;
-			var dst_toc = dst_disc.TOCRaw;
-
-			var src_databuf = new byte[2448];
-			var dst_databuf = new byte[2448];
-
-			Action<DiscTOCRaw.TOCItem> sw_dump_toc_one = (item) =>
-			{
-				if (!item.Exists)
-					sw.Write("(---missing---)");
-				else
-					sw.Write("({0:X2} - {1})", (byte)item.Control, item.LBATimestamp);
-			};
-
-
-			Action<int> sw_dump_toc = (index) =>
-			{
-				sw.Write("SRC TOC#{0,3} ", index); sw_dump_toc_one(src_toc.TOCItems[index]); sw.WriteLine();
-				sw.Write("DST TOC#{0,3} ", index); sw_dump_toc_one(dst_toc.TOCItems[index]); sw.WriteLine();
-			};
-
-			//verify sector count
-			if (src_disc.LBACount != dst_disc.LBACount)
-			{
-				sw.Write("LBACount count {0} vs {1}\n", src_disc.LBACount, dst_disc.LBACount);
-				goto SKIPPO;
-			}
-
-			//verify TOC match
-			if (src_disc.TOCRaw.FirstRecordedTrackNumber != dst_disc.TOCRaw.FirstRecordedTrackNumber
-				|| src_disc.TOCRaw.LastRecordedTrackNumber != dst_disc.TOCRaw.LastRecordedTrackNumber)
-			{
-				sw.WriteLine("Mismatch of RecordedTrackNumbers: {0}-{1} vs {2}-{3}",
-					src_disc.TOCRaw.FirstRecordedTrackNumber, src_disc.TOCRaw.LastRecordedTrackNumber,
-					dst_disc.TOCRaw.FirstRecordedTrackNumber, dst_disc.TOCRaw.LastRecordedTrackNumber
-					);
-				goto SKIPPO;
-			}
-
-			bool badToc = false;
-			for (int t = 0; t < 101; t++)
-			{
-				if (src_toc.TOCItems[t].Exists != dst_toc.TOCItems[t].Exists
-					|| src_toc.TOCItems[t].Control != dst_toc.TOCItems[t].Control
-					|| src_toc.TOCItems[t].LBATimestamp.Sector != dst_toc.TOCItems[t].LBATimestamp.Sector
-					)
+				//reload the original disc, with new policies as needed
+				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
+				if (cmpif == DiscInterface.MednaDisc)
 				{
-					sw.WriteLine("Mismatch in TOCItem");
-					sw_dump_toc(t);
-					badToc = true;
+					dmj.IN_DiscMountPolicy.CUE_PregapContradictionModeA = false;
 				}
-			}
-			if (badToc)
-				goto SKIPPO;
+				dmj.Run();
 
-			Action<string, int, byte[], int, int> sw_dump_chunk_one = (comment, lba, buf, addr, count) =>
-			{
-				sw.Write("{0} -  ", comment);
-				for (int i = 0; i < count; i++)
+				src_disc = dmj.OUT_Disc;
+
+				var dst_dmj = new DiscMountJob { IN_DiscInterface = cmpif, IN_FromPath = infile };
+				dst_dmj.Run();
+				dst_disc = dst_dmj.OUT_Disc;
+
+				var src_dsr = new DiscSectorReader(src_disc);
+				var dst_dsr = new DiscSectorReader(dst_disc);
+
+				var src_toc = src_disc.TOCRaw;
+				var dst_toc = dst_disc.TOCRaw;
+
+				var src_databuf = new byte[2448];
+				var dst_databuf = new byte[2448];
+
+				Action<DiscTOCRaw.TOCItem> sw_dump_toc_one = (item) =>
 				{
-					if (i + addr >= buf.Length) continue;
-					sw.Write("{0:X2}{1}", buf[addr + i], (i == count - 1) ? " " : "  ");
+					if (!item.Exists)
+						sw.Write("(---missing---)");
+					else
+						sw.Write("({0:X2} - {1})", (byte)item.Control, item.LBATimestamp);
+				};
+
+
+				Action<int> sw_dump_toc = (index) =>
+				{
+					sw.Write("SRC TOC#{0,3} ", index); sw_dump_toc_one(src_toc.TOCItems[index]); sw.WriteLine();
+					sw.Write("DST TOC#{0,3} ", index); sw_dump_toc_one(dst_toc.TOCItems[index]); sw.WriteLine();
+				};
+
+				//verify sector count
+				if (src_disc.LBACount != dst_disc.LBACount)
+				{
+					sw.Write("LBACount count {0} vs {1}\n", src_disc.LBACount, dst_disc.LBACount);
+					goto SKIPPO;
 				}
-				sw.WriteLine();
-			};
 
-			int[] offenders = new int[12];
-			Action<int, int, int, int, int> sw_dump_chunk = (lba, dispaddr, addr, count, numoffenders) =>
-			{
-				var hashedOffenders = new HashSet<int>();
-				for (int i = 0; i < numoffenders; i++) hashedOffenders.Add(offenders[i]);
-				sw.Write("                          ");
-				for (int i = 0; i < count; i++) sw.Write((hashedOffenders.Contains(dispaddr + i)) ? "vvv " : "    ");
-				sw.WriteLine();
-				sw.Write("                          ");
-				for (int i = 0; i < count; i++) sw.Write("{0:X3} ", dispaddr + i, (i == count - 1) ? " " : "  ");
-				sw.WriteLine();
-				sw.Write("                          ");
-				sw.Write(new string('-', count * 4));
-				sw.WriteLine();
-				sw_dump_chunk_one(string.Format("SRC #{0,6} ({1})", lba, new Timestamp(lba)), lba, src_databuf, addr, count);
-				sw_dump_chunk_one(string.Format("DST #{0,6} ({1})", lba, new Timestamp(lba)), lba, dst_databuf, addr, count);
-			};
-
-			//verify each sector contents
-			int nSectors = src_disc.LBACount;
-			for (int lba = -150; lba < nSectors; lba++)
-			{
-				if(verbose)
-					if (lba % 1000 == 0)
-						Console.WriteLine("LBA {0} of {1}", lba, src_disc.LBACount);
-
-				if(cancelToken != null)
-					if (cancelToken.Token.IsCancellationRequested)
-						return false;
-
-				src_dsr.ReadLBA_2442(lba, src_databuf, 0);
-				dst_dsr.ReadLBA_2442(lba, dst_databuf, 0);
-
-				//check the header
-				for (int b = 0; b < 16; b++)
+				//verify TOC match
+				if (src_disc.TOCRaw.FirstRecordedTrackNumber != dst_disc.TOCRaw.FirstRecordedTrackNumber
+					|| src_disc.TOCRaw.LastRecordedTrackNumber != dst_disc.TOCRaw.LastRecordedTrackNumber)
 				{
-					if (src_databuf[b] != dst_databuf[b])
+					sw.WriteLine("Mismatch of RecordedTrackNumbers: {0}-{1} vs {2}-{3}",
+						src_disc.TOCRaw.FirstRecordedTrackNumber, src_disc.TOCRaw.LastRecordedTrackNumber,
+						dst_disc.TOCRaw.FirstRecordedTrackNumber, dst_disc.TOCRaw.LastRecordedTrackNumber
+						);
+					goto SKIPPO;
+				}
+
+				bool badToc = false;
+				for (int t = 0; t < 101; t++)
+				{
+					if (src_toc.TOCItems[t].Exists != dst_toc.TOCItems[t].Exists
+						|| src_toc.TOCItems[t].Control != dst_toc.TOCItems[t].Control
+						|| src_toc.TOCItems[t].LBATimestamp.Sector != dst_toc.TOCItems[t].LBATimestamp.Sector
+						)
 					{
-						sw.WriteLine("Mismatch in sector header at byte {0}", b);
-						offenders[0] = b;
-						sw_dump_chunk(lba, 0, 0, 16, 1);
-						goto SKIPPO;
+						sw.WriteLine("Mismatch in TOCItem");
+						sw_dump_toc(t);
+						badToc = true;
 					}
 				}
+				if (badToc)
+					goto SKIPPO;
 
-				//check userdata
-				for (int b = 16; b < 2352; b++)
+				Action<string, int, byte[], int, int> sw_dump_chunk_one = (comment, lba, buf, addr, count) =>
 				{
-					if (src_databuf[b] != dst_databuf[b])
+					sw.Write("{0} -  ", comment);
+					for (int i = 0; i < count; i++)
 					{
-						sw.Write("LBA {0} mismatch at userdata byte {1}; terminating sector cmp\n", lba, b);
-						goto SKIPPO;
+						if (i + addr >= buf.Length) continue;
+						sw.Write("{0:X2}{1}", buf[addr + i], (i == count - 1) ? " " : "  ");
 					}
-				}
+					sw.WriteLine();
+				};
 
-				//check subchannels
-				for (int c = 0, b = 2352; c < 8; c++)
+				int[] offenders = new int[12];
+				Action<int, int, int, int, int> sw_dump_chunk = (lba, dispaddr, addr, count, numoffenders) =>
 				{
-					int numOffenders = 0;
-					for (int e = 0; e < 12; e++, b++)
+					var hashedOffenders = new HashSet<int>();
+					for (int i = 0; i < numoffenders; i++) hashedOffenders.Add(offenders[i]);
+					sw.Write("                          ");
+					for (int i = 0; i < count; i++) sw.Write((hashedOffenders.Contains(dispaddr + i)) ? "vvv " : "    ");
+					sw.WriteLine();
+					sw.Write("                          ");
+					for (int i = 0; i < count; i++) sw.Write("{0:X3} ", dispaddr + i, (i == count - 1) ? " " : "  ");
+					sw.WriteLine();
+					sw.Write("                          ");
+					sw.Write(new string('-', count * 4));
+					sw.WriteLine();
+					sw_dump_chunk_one(string.Format("SRC #{0,6} ({1})", lba, new Timestamp(lba)), lba, src_databuf, addr, count);
+					sw_dump_chunk_one(string.Format("DST #{0,6} ({1})", lba, new Timestamp(lba)), lba, dst_databuf, addr, count);
+				};
+
+				//verify each sector contents
+				int nSectors = src_disc.LBACount;
+				for (int lba = -150; lba < nSectors; lba++)
+				{
+					if (verbose)
+						if (lba % 1000 == 0)
+							Console.WriteLine("LBA {0} of {1}", lba, src_disc.LBACount);
+
+					if (cancelToken != null)
+						if (cancelToken.Token.IsCancellationRequested)
+							return false;
+
+					src_dsr.ReadLBA_2442(lba, src_databuf, 0);
+					dst_dsr.ReadLBA_2442(lba, dst_databuf, 0);
+
+					//check the header
+					for (int b = 0; b < 16; b++)
 					{
 						if (src_databuf[b] != dst_databuf[b])
 						{
-							offenders[numOffenders++] = e;
+							sw.WriteLine("Mismatch in sector header at byte {0}", b);
+							offenders[0] = b;
+							sw_dump_chunk(lba, 0, 0, 16, 1);
+							goto SKIPPO;
 						}
 					}
-					if (numOffenders != 0)
+
+					//check userdata
+					for (int b = 16; b < 2352; b++)
 					{
-						sw.Write("LBA {0} mismatch(es) at subchannel {1}; terminating sector cmp\n", lba, (char)('P' + c));
-						sw_dump_chunk(lba, 0, 2352 + c * 12, 12, numOffenders);
-						goto SKIPPO;
+						if (src_databuf[b] != dst_databuf[b])
+						{
+							sw.Write("LBA {0} mismatch at userdata byte {1}; terminating sector cmp\n", lba, b);
+							goto SKIPPO;
+						}
+					}
+
+					//check subchannels
+					for (int c = 0, b = 2352; c < 8; c++)
+					{
+						int numOffenders = 0;
+						for (int e = 0; e < 12; e++, b++)
+						{
+							if (src_databuf[b] != dst_databuf[b])
+							{
+								offenders[numOffenders++] = e;
+							}
+						}
+						if (numOffenders != 0)
+						{
+							sw.Write("LBA {0} mismatch(es) at subchannel {1}; terminating sector cmp\n", lba, (char)('P' + c));
+							sw_dump_chunk(lba, 0, 2352 + c * 12, 12, numOffenders);
+							goto SKIPPO;
+						}
 					}
 				}
+
+				success = true;
+
+			SKIPPO:
+				sw.WriteLine("END COMPARE");
+				sw.WriteLine("-----------------------------");
+
+				return success;
 			}
-
-			success = true;
-
-		SKIPPO:
-			sw.WriteLine("END COMPARE");
-			sw.WriteLine("-----------------------------");
-
-			return success;
+			finally
+			{
+				if (src_disc != null)
+					src_disc.Dispose();
+				if (dst_disc != null)
+					dst_disc.Dispose();
+			}
 		
 		} //CompareFile
 
