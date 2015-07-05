@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return OctoshockDll.SHOCK_OK;
 			}
 
-			byte[] SectorBuffer = new byte[2352];
+			byte[] SectorBuffer = new byte[2448];
 
 			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
@@ -200,17 +200,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 				//todo - cache reader
 				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
-				dsr.ReadLBA_2352(lba, SectorBuffer, 0);
-				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2352);
-				Disc.ReadLBA_SectorEntry(lba).SubcodeSector.ReadSubcodeDeinterleaved(SectorBuffer, 0);
-				Marshal.Copy(SectorBuffer, 0, new IntPtr((byte*)dst + 2352), 96);
+				dsr.ReadLBA_2442(lba, SectorBuffer, 0);
+				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
 
-				if (subcodeLog)
-				{
-					for (int i = 0; i < 24; i++)
-						Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
-					Console.WriteLine();
-				}
+				//if (subcodeLog)
+				//{
+				//  for (int i = 0; i < 24; i++)
+				//    Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
+				//  Console.WriteLine();
+				//}
 
 				return OctoshockDll.SHOCK_OK;
 			}

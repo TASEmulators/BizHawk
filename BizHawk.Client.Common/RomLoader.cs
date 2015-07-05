@@ -257,14 +257,14 @@ namespace BizHawk.Client.Common
 
 						Disc disc = Disc.LoadAutomagic(path);
 
-						var hash = disc.GetHash();
+						var hash = new DiscHasher(disc).OldHash();
 						game = Database.CheckDatabase(hash);
 						if (game == null)
 						{
 							// try to use our wizard methods
 							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
 
-							switch (disc.DetectDiscType())
+							switch (new DiscIdentifier(disc).DetectDiscType())
 							{
 								case DiscType.SegaSaturn:
 									game.System = "SAT";

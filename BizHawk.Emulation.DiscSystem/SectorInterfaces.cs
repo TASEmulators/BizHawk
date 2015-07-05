@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.DiscSystem
 	[Flags] enum ESectorSynthPart
 	{
 		/// <summary>
-		/// The header is required
+		/// The data sector header is required. There's no header for audio tracks/sectors.
 		/// </summary>
 		Header16 = 1,
 		

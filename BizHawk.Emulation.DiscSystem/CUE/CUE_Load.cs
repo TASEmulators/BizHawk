@@ -394,11 +394,6 @@ namespace BizHawk.Emulation.DiscSystem
 				};
 				TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
 
-				//generate the TOCRaw from the RawTocEntries
-				var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = OUT_Disc.RawTOCEntries };
-				tocSynth.Run();
-				OUT_Disc.TOCRaw = tocSynth.Result;
-
 				//TODO - generate leadout, or delegates at least
 
 				//blech, old crap, maybe

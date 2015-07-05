@@ -3,9 +3,6 @@ using System.Collections.Generic;
 
 using BizHawk.Common.BufferExtensions;
 
-//main apis for emulator core routine use
-//(this could probably use a lot of re-considering. we need to open up views to the disc, not interrogating it directly)
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	public class DiscSectorReaderPolicy
@@ -42,7 +39,8 @@ namespace BizHawk.Emulation.DiscSystem
 		public bool ThrowExceptions2048 = true;
 
 		/// <summary>
-		/// Indicates whether subcode should be delivered deinterleaved. It isn't stored that way on actual discs. But it is in .sub files
+		/// Indicates whether subcode should be delivered deinterleaved. It isn't stored that way on actual discs. But it is in .sub files.
+		/// This defaults to true because it's most likely higher-performing, and it's rarely ever wanted interleaved.
 		/// </summary>
 		public bool DeinterleavedSubcode = true;
 
@@ -82,7 +80,24 @@ namespace BizHawk.Emulation.DiscSystem
 			if (Policy.DeterministicClearBuffer) Array.Clear(buffer, offset, size);
 		}
 
-		//todo - methods to read only subcode
+		/// <summary>
+		/// Reads the mode field from a sector
+		/// If this is an audio sector, the results will be nonsense.
+		/// </summary>
+		public int ReadLBA_Mode(int lba)
+		{
+			var sector = disc.Sectors[lba + 150];
+
+			PrepareJob(lba);
+			job.DestBuffer2448 = buf2442;
+			job.DestOffset = 0;
+			job.Parts = ESectorSynthPart.Header16;
+			job.Disc = disc;
+
+			sector.SectorSynth.Synth(job);
+
+			return buf2442[15];
+		}
 
 		/// <summary>
 		/// Reads a full 2352 bytes of user data from a sector
@@ -199,7 +214,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//in no case do we need the ECC so build special flags here
 				var sector = disc.Sectors[lba + 150];
 
-				PrepareBuffer(buffer, offset, 2352);
+				PrepareBuffer(buffer, offset, 2048);
 				PrepareJob(lba);
 				job.DestBuffer2448 = buf2442;
 				job.DestOffset = 0;

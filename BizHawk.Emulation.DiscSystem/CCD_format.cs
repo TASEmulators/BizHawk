@@ -537,10 +537,6 @@ namespace BizHawk.Emulation.DiscSystem
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
 			}
 
-			//generate the toc from the entries
-			var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = disc.RawTOCEntries };
-			tocSynth.Run();
-			disc.TOCRaw = tocSynth.Result;
 
 			//disc.Structure = new DiscStructure();
 			//var ses = new DiscStructure.Session();

@@ -75,11 +75,58 @@ namespace BizHawk.Emulation.DiscSystem
 		//      var bcd2 = new BCD2 { BCDValue = (byte)pt };
 		//      if (bcd2.DecimalValue > 99) //A0 A1 A2 leadout and crap
 		//        continue;
-		//      var track = new Track { Start_LBA = lba, Number = pt };
+		//      var track = new Track { LBA = lba, Number = pt };
 		//      session.Tracks.Add(track);
 		//    }
 		//  }
 		//}
+
+		public class SynthesizeFromTOCRawJob
+		{
+			public Disc IN_Disc;
+			public DiscTOCRaw TOCRaw;
+			public DiscStructure Result;
+
+			public void Run()
+			{
+				var dsr = new DiscSectorReader(IN_Disc);
+				dsr.Policy.DeterministicClearBuffer = false;
+
+				Result = new DiscStructure();
+				var session = new Session();
+				Result.Sessions.Add(session);
+
+				session.Number = 1;
+				
+				if(TOCRaw.FirstRecordedTrackNumber != 1)
+					throw new InvalidOperationException("Unsupported: FirstRecordedTrackNumber != 1");
+
+				int ntracks = TOCRaw.LastRecordedTrackNumber - TOCRaw.FirstRecordedTrackNumber + 1;
+				for(int i=0;i<ntracks;i++)
+				{
+					var item = TOCRaw.TOCItems[i+1];
+					var track = new DiscStructure.Track() { 
+						Number = i+1,
+						Control = item.Control,
+						LBA = item.LBATimestamp.Sector
+					};
+					session.Tracks.Add(track);
+
+					if (!item.IsData)
+						track.Mode = 0;
+					else
+					{
+						//determine the mode by a hardcoded heuristic: check mode of first sector
+						track.Mode = dsr.ReadLBA_Mode(track.LBA);
+					}
+
+					//determine track length according to law specified in comments for track length
+					if (i == ntracks - 1)
+						track.Length = TOCRaw.LeadoutLBA.Sector - track.LBA;
+					else track.Length = (TOCRaw.TOCItems[i + 2].LBATimestamp.Sector - track.LBA);
+				}
+			}
+		}
 
 		public class Session
 		{

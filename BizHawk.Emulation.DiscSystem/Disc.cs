@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public static Disc LoadAutomagic(string path)
 		{
 			var job = new DiscMountJob { IN_FromPath = path };
-			job.IN_DiscInterface = DiscInterface.MednaDisc; //TEST
+			//job.IN_DiscInterface = DiscInterface.MednaDisc; //TEST
 			job.Run();
 			return job.OUT_Disc;
 		}
