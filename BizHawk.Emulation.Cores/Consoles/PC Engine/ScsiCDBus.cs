@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		PCEngine pce;
 		public Disc disc;
-		SubcodeReader subcodeReader;
+		DiscSectorReader DiscSectorReader;
 		SubchannelQ subchannelQ;
 		int audioStartLBA;
 		int audioEndLBA;
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			this.pce = pce;
 			this.disc = disc;
-			subcodeReader = new SubcodeReader(disc);
+			DiscSectorReader = new DiscSectorReader(disc);
 		}
 
 		public void Think()
@@ -508,8 +508,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case CDAudio.CDAudioMode_Stopped: DataIn.Enqueue(3); break;
 			}
 
-			subcodeReader.ReadLBA_SubchannelQ(sectorNum, ref subchannelQ);
-			DataIn.Enqueue(subchannelQ.q_status);          // I do not know what status is
+			DiscSectorReader.ReadLBA_SubQ(sectorNum, out subchannelQ);
+			DataIn.Enqueue(subchannelQ.q_status); //status (control and q-mode; control is useful to know if it's a data or audio track)
 			DataIn.Enqueue(subchannelQ.q_tno.BCDValue);    // track //zero 03-jul-2015 - did I adapt this right>
 			DataIn.Enqueue(subchannelQ.q_index.BCDValue);  // index //zero 03-jul-2015 - did I adapt this right>
 			DataIn.Enqueue(subchannelQ.min.BCDValue);    // M(rel)

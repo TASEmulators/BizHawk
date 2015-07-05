@@ -21,44 +21,6 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	/// <summary>
-	/// Simplifies access to the subcode data in a disc
-	/// </summary>
-	public class SubcodeReader
-	{
-		public SubcodeReader(Disc disc)
-		{
-			this.disc = disc;
-		}
-
-		public void ReadLBA_SubchannelQ(int lba, ref SubchannelQ sq)
-		{
-			var se = disc.ReadLBA_SectorEntry(lba);
-			se.SubcodeSector.ReadSubcodeChannel(1, buffer, 0);
-			int offset = 0;
-
-			sq.q_status = buffer[offset + 0];
-			sq.q_tno.BCDValue = buffer[offset + 1];
-			sq.q_index.BCDValue = buffer[offset + 2];
-			sq.min.BCDValue = buffer[offset + 3];
-			sq.sec.BCDValue = buffer[offset + 4];
-			sq.frame.BCDValue = buffer[offset + 5];
-			//nothing in byte[6]
-			sq.ap_min.BCDValue = buffer[offset + 7];
-			sq.ap_sec.BCDValue = buffer[offset + 8];
-			sq.ap_frame.BCDValue = buffer[offset + 9];
-
-			//CRC is stored inverted and big endian.. so... do the opposite
-			byte hibyte = (byte)(~buffer[offset + 10]);
-			byte lobyte = (byte)(~buffer[offset + 11]);
-			sq.q_crc = (ushort)((hibyte << 8) | lobyte);
-		}
-
-		Disc disc;
-		byte[] buffer = new byte[96];
-	}
-
-
-	/// <summary>
 	/// this is junk
 	/// </summary>
 	public class ProgressReport

@@ -81,25 +81,6 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// Reads the mode field from a sector
-		/// If this is an audio sector, the results will be nonsense.
-		/// </summary>
-		public int ReadLBA_Mode(int lba)
-		{
-			var sector = disc.Sectors[lba + 150];
-
-			PrepareJob(lba);
-			job.DestBuffer2448 = buf2442;
-			job.DestOffset = 0;
-			job.Parts = ESectorSynthPart.Header16;
-			job.Disc = disc;
-
-			sector.SectorSynth.Synth(job);
-
-			return buf2442[15];
-		}
-
-		/// <summary>
 		/// Reads a full 2352 bytes of user data from a sector
 		/// </summary>
 		public int ReadLBA_2352(int lba, byte[] buffer, int offset)
@@ -256,9 +237,53 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
+		/// <summary>
+		/// Reads 12 bytes of subQ data from a sector and stores it unpacked into the provided struct
+		/// TODO - make use of deserialize code elsewhere
+		/// </summary>
+		public void ReadLBA_SubQ(int lba, out SubchannelQ sq)
+		{
+			ReadLBA_SubQ(lba, buf12, 0);
 
-		//lets not try to use this as a sector cache. it gets too complicated. its just a temporary variable.
+			sq.q_status = buf12[0];
+			sq.q_tno.BCDValue = buf12[1];
+			sq.q_index.BCDValue = buf12[2];
+			sq.min.BCDValue = buf12[3];
+			sq.sec.BCDValue = buf12[4];
+			sq.frame.BCDValue = buf12[5];
+			sq.zero = buf12[6];
+			sq.ap_min.BCDValue = buf12[7];
+			sq.ap_sec.BCDValue = buf12[8];
+			sq.ap_frame.BCDValue = buf12[9];
+
+			//CRC is stored inverted and big endian.. so... do the opposite
+			byte hibyte = (byte)(~buf12[10]);
+			byte lobyte = (byte)(~buf12[11]);
+			sq.q_crc = (ushort)((hibyte << 8) | lobyte);
+		}
+
+		/// <summary>
+		/// Reads the mode field from a sector
+		/// If this is an audio sector, the results will be nonsense.
+		/// </summary>
+		public int ReadLBA_Mode(int lba)
+		{
+			var sector = disc.Sectors[lba + 150];
+
+			PrepareJob(lba);
+			job.DestBuffer2448 = buf2442;
+			job.DestOffset = 0;
+			job.Parts = ESectorSynthPart.Header16;
+			job.Disc = disc;
+
+			sector.SectorSynth.Synth(job);
+
+			return buf2442[15];
+		}
+
+		//lets not try to these as a sector cache. it gets too complicated. its just a temporary variable.
 		byte[] buf2442 = new byte[2448];
+		byte[] buf12 = new byte[12];
 		SectorSynthJob job = new SectorSynthJob();
 	}
 }
