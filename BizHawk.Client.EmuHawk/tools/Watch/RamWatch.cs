@@ -849,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var index in indexes)
 			{
 				var watch = _watches[index];
-				_watches.Remove(watch);
+				_watches.RemoveAt(index);
 				_watches.Insert(index - 1, watch);
 			}
 
@@ -877,7 +877,7 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = indices.Count - 1; i >= 0; i--)
 			{
 				var watch = _watches[indices[i]];
-				_watches.Remove(watch);
+				_watches.RemoveAt(indices[i]);
 				_watches.Insert(indices[i] + 1, watch);
 			}
 
