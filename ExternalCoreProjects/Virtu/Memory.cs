@@ -183,7 +183,33 @@ namespace Jellyfish.Virtu
 		}
 
 		#region Core Read & Write
+		public int ReadOpcode(int address)
+		{
+			int region = PageRegion[address >> 8];
+			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
+			if (ExecuteCallback != null)
+			{
+				ExecuteCallback((uint)address);
+			}
+			if (ReadCallback != null)
+			{
+				ReadCallback((uint)address);
+			}
+			return result;
+		}
+
 		public int Read(int address)
+		{
+			int region = PageRegion[address >> 8];
+			var result = ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
+			if (ReadCallback != null)
+			{
+				ReadCallback((uint)address);
+			}
+			return result;
+		}
+
+		public int Peek(int address)
 		{
 			int region = PageRegion[address >> 8];
 			return ((address & 0xF000) != 0xC000) ? _regionRead[region][address - RegionBaseAddress[region]] : ReadIoRegionC0CF(address);
@@ -191,6 +217,10 @@ namespace Jellyfish.Virtu
 
 		public int ReadZeroPage(int address)
 		{
+			if (ReadCallback != null)
+			{
+				ReadCallback((uint)address);
+			}
 			return _zeroPage[address];
 		}
 
@@ -199,16 +229,28 @@ namespace Jellyfish.Virtu
 			int region = PageRegion[address >> 8];
 			if (_writeRegion[region] == null)
 			{
+				if (WriteCallback != null)
+				{
+					WriteCallback((uint)(_regionWrite[region][address - RegionBaseAddress[region]]));
+				}
 				_regionWrite[region][address - RegionBaseAddress[region]] = (byte)data;
 			}
 			else
 			{
+				if (WriteCallback != null)
+				{
+					WriteCallback((uint)address);
+				}
 				_writeRegion[region](address, (byte)data);
 			}
 		}
 
 		public void WriteZeroPage(int address, int data)
 		{
+			if (WriteCallback != null)
+			{
+				WriteCallback((uint)address);
+			}
 			_zeroPage[address] = (byte)data;
 		}
 		#endregion
@@ -2087,6 +2129,10 @@ namespace Jellyfish.Virtu
 		private Action<int, byte> _writeIoRegionC3C3;
 		private Action<int, byte> _writeIoRegionC8CF;
 		private Action<int, byte> _writeRomRegionD0FF;
+
+		public Action<uint> ReadCallback;
+		public Action<uint> WriteCallback;
+		public Action<uint> ExecuteCallback;
 
 		private Keyboard _keyboard;
 		private GamePort _gamePort;

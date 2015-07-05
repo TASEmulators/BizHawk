@@ -405,7 +405,7 @@ namespace Jellyfish.Virtu
 			}
 
 			CC = 0;
-			OpCode = _memory.Read(RPC);
+			OpCode = _memory.ReadOpcode(RPC);
 			RPC = (RPC + 1) & 0xFFFF;
 			_executeOpCode[OpCode]();
 			Cycles += CC;

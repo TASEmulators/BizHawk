@@ -32,6 +32,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ServiceProvider = ser;
 			CoreComm = comm;
 
+			Tracer = new TraceBuffer();
+			MemoryCallbacks = new MemoryCallbackSystem();
+
 			_disk1 = rom;
 			RomSet.Add(rom);
 
@@ -48,9 +51,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			//for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
-			//trace logger stuff
-			Tracer = new TraceBuffer();
 			ser.Register<ITraceable>(Tracer);
+
+			//Set up Memory Callbacks
+			_machine.Memory.ReadCallback = MemoryCallbacks.CallReads;
+			_machine.Memory.WriteCallback = MemoryCallbacks.CallWrites;
+			_machine.Memory.ExecuteCallback = MemoryCallbacks.CallExecutes;
 
 			InitSaveStates();
 			SetupMemoryDomains();
