@@ -231,7 +231,7 @@ namespace Jellyfish.Virtu
 			{
 				if (WriteCallback != null)
 				{
-					WriteCallback((uint)(_regionWrite[region][address - RegionBaseAddress[region]]));
+					WriteCallback((uint)address);
 				}
 				_regionWrite[region][address - RegionBaseAddress[region]] = (byte)data;
 			}
