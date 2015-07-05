@@ -417,31 +417,32 @@ namespace BizHawk.Emulation.DiscSystem
 
 			}
 
+			//TODO - actually re-add
 			//dump the img and sub
 			//TODO - acquire disk size first
-			string imgPath = Path.ChangeExtension(path, ".img");
-			string subPath = Path.ChangeExtension(path, ".sub");
-			var buffer = new byte[2352];
-			using (var s = File.OpenWrite(imgPath))
-			{
-				DiscSectorReader dsr = new DiscSectorReader(disc);
+			//string imgPath = Path.ChangeExtension(path, ".img");
+			//string subPath = Path.ChangeExtension(path, ".sub");
+			//var buffer = new byte[2352];
+			//using (var s = File.OpenWrite(imgPath))
+			//{
+			//  DiscSectorReader dsr = new DiscSectorReader(disc);
 
-				//TODO - dont write leadout sectors, if they exist!
-				for (int aba = 150; aba < disc.Sectors.Count; aba++)
-				{
-					dsr.ReadLBA_2352(aba - 150, buffer, 0);
-					s.Write(buffer, 0, 2352);
-				}
-			}
-			using (var s = File.OpenWrite(subPath))
-			{
-				//TODO - dont write leadout sectors, if they exist!
-				for (int aba = 150; aba < disc.Sectors.Count; aba++)
-				{
-					disc.ReadLBA_SectorEntry(aba - 150).SubcodeSector.ReadSubcodeDeinterleaved(buffer, 0);
-					s.Write(buffer, 0, 96);
-				}
-			}
+			//  //TODO - dont write leadout sectors, if they exist!
+			//  for (int aba = 150; aba < disc.Sectors.Count; aba++)
+			//  {
+			//    dsr.ReadLBA_2352(aba - 150, buffer, 0);
+			//    s.Write(buffer, 0, 2352);
+			//  }
+			//}
+			//using (var s = File.OpenWrite(subPath))
+			//{
+			//  //TODO - dont write leadout sectors, if they exist!
+			//  for (int aba = 150; aba < disc.Sectors.Count; aba++)
+			//  {
+			//    disc.ReadLBA_SectorEntry(aba - 150).SubcodeSector.ReadSubcodeDeinterleaved(buffer, 0);
+			//    s.Write(buffer, 0, 96);
+			//  }
+			//}
 		}
 
 		class SS_CCD : ISectorSynthJob2448

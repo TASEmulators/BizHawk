@@ -22,11 +22,11 @@ namespace BizHawk.Client.DiscoHawk
 			var tracks = disc.Structure.Sessions[0].Tracks;
 			foreach (var track in tracks)
 			{
-				if (track.TrackType != DiscStructure.ETrackType.Audio)
+				if (!track.IsAudio)
 					continue;
 
 				var waveData = new byte[track.Length * 2352];
-				int startLba = track.Indexes[1].LBA;
+				int startLba = track.LBA;
 				for (int sector = 0; sector < track.Length; sector++)
 					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 

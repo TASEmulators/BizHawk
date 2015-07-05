@@ -20,19 +20,6 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
-	/// <summary>
-	/// this is junk
-	/// </summary>
-	public class ProgressReport
-	{
-		public string Message;
-		public bool InfoPresent;
-		public double ProgressEstimate;
-		public double ProgressCurrent;
-		public int TaskCount;
-		public int TaskCurrent;
-		public bool CancelSignal;
-	}
 	
 
 	sealed public partial class Disc
