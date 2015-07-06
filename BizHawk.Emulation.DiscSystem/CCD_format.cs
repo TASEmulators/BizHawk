@@ -470,7 +470,7 @@ namespace BizHawk.Emulation.DiscSystem
 					//subcode comes to us deinterleved; we may still need to interleave it
 					if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
 					{
-						SubcodeUtils.InterleaveInplace(job.DestBuffer2448, job.DestOffset + 2352);
+						SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
 					}
 				}
 			}
@@ -501,7 +501,6 @@ namespace BizHawk.Emulation.DiscSystem
 			//generate DiscTOCRaw items from the ones specified in the CCD file
 			//TODO - range validate these (too many truncations to byte)
 			disc.RawTOCEntries = new List<RawTOCEntry>();
-			BufferedSubcodeSector bss = new BufferedSubcodeSector(); //TODO - its hacky that we need this..
 			foreach (var entry in ccdf.TOCEntries)
 			{
 				BCD2 tno, ino;
@@ -530,82 +529,27 @@ namespace BizHawk.Emulation.DiscSystem
 					ap_min = BCD2.FromDecimal(entry.PMin),
 					ap_sec = BCD2.FromDecimal(entry.PSec),
 					ap_frame = BCD2.FromDecimal(entry.PFrame),
+					q_crc = 0, //meainingless
 				};
-
-				//CRC cant be calculated til we've got all the fields setup
-				q.q_crc = bss.Synthesize_SubchannelQ(ref q, true);
 
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
 			}
 
-
-			//disc.Structure = new DiscStructure();
-			//var ses = new DiscStructure.Session();
-			//disc.Structure.Sessions.Add(ses);
-
-			//for(int i=1;i<=99;i++)
-			//{
-			//  if(!ccdf.TracksByNumber.ContainsKey(i))
-			//    continue;
-			//  var ccdt = ccdf.TracksByNumber[i];
-
-			//  DiscStructure.Track track = new DiscStructure.Track() { Number = i };
-			//  ses.Tracks.Add(track);
-
-			//  //if index 0 is missing, add it
-			//  if (!ccdt.Indexes.ContainsKey(0))
-			//    track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = ccdt.Indexes[1] });
-			//  for(int j=1;j<=99;j++)
-			//    if (ccdt.Indexes.ContainsKey(j))
-			//      track.Indexes.Add(new DiscStructure.Index { Number = j, LBA = ccdt.Indexes[j] });
-
-			//  //TODO - this should only be used in case the .sub needs reconstructing
-			//  //determination should be done from heuristics.
-			//  //if we keep this, it should just be as a memo that later heuristics can use. For example: 'use guidance from original disc image'
-			//  track.ModeHeuristic = ccdt.Mode;
-
-			//  //TODO - this should be deleted anyway (
-			//  switch (ccdt.Mode)
-			//  {
-			//    case 0:
-			//      track.TrackType = DiscStructure.ETrackType.Audio; //for CCD, this means audio, apparently.
-			//      break;
-			//    case 1:
-			//    case 2:
-			//      track.TrackType = DiscStructure.ETrackType.Data;
-			//      break;
-			//    default:
-			//      throw new InvalidOperationException("Unsupported CCD mode");
-			//  }
-			//}
-
-			//add sectors for the "mandatory track 1 pregap", which isn't stored in the CCD file
-			//THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
+			//add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
+			//TODO - THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
 			var leadin_sector_zero = new Sector_Zero();
-			var leadin_subcode_zero = new ZeroSubcodeSector();
 			for (int i = 0; i < 150; i++)
 			{
-				var se = new SectorEntry(leadin_sector_zero);
-				disc.Sectors.Add(se);
-				se.SubcodeSector = leadin_subcode_zero;
+				//TODO - YIKES!
+				disc.Sectors.Add(null);
 			}
 
 			//build the sectors:
-			//set up as many sectors as we have img/sub for, even if the TOC doesnt reference them (TOC is unreliable, although the tracks should have covered it all)
+			//set up as many sectors as we have img/sub for, even if the TOC doesnt reference them
+			//(TOC is unreliable, although the tracks should have covered it all)
 			for (int i = 0; i < loadResults.NumImgSectors; i++)
 			{
-				var isec = new Sector_RawBlob();
-				isec.Offset = ((long)i) * 2352;
-				isec.Blob = imgBlob;
-
-				var se = new SectorEntry(isec);
-				disc.Sectors.Add(se);
-
-				var scsec = new BlobSubcodeSectorPreDeinterleaved();
-				scsec.Offset = ((long)i) * 96;
-				scsec.Blob = subBlob;
-				se.SubcodeSector = scsec;
-				se.SectorSynth = synth;
+				disc.Sectors.Add(synth);
 			}
 
 			return disc;

@@ -94,7 +94,7 @@ namespace BizHawk.Emulation.DiscSystem
 			job.Parts = ESectorSynthPart.User2352;
 			job.Disc = disc;
 
-			sector.SectorSynth.Synth(job);
+			sector.Synth(job);
 
 			Buffer.BlockCopy(buf2442, 0, buffer, offset, 2352);
 
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.DiscSystem
 			if (Policy.DeinterleavedSubcode)
 				job.Parts |= ESectorSynthPart.SubcodeDeinterleave;
 
-			sector.SectorSynth.Synth(job);
+			sector.Synth(job);
 
 			//we went straight to the caller's buffer, so no need to copy
 			return 2442;
@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.DiscSystem
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.User2048;
 
-			sector.SectorSynth.Synth(job);
+			sector.Synth(job);
 			Buffer.BlockCopy(buf2442, 16, buffer, offset, 2048);
 
 			return 2048;
@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.DiscSystem
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.User2336;
 
-			sector.SectorSynth.Synth(job);
+			sector.Synth(job);
 			Buffer.BlockCopy(buf2442, 24, buffer, offset, 2048);
 
 			return 2048;
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.DiscSystem
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.SubchannelQ | ESectorSynthPart.SubcodeDeinterleave;
 
-			sector.SectorSynth.Synth(job);
+			sector.Synth(job);
 			Buffer.BlockCopy(buf2442, 2352 + 12, buffer, offset, 12);
 
 			return 12;
@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.DiscSystem
 				job.DestOffset = 0;
 				job.Parts = ESectorSynthPart.Header16 | ESectorSynthPart.User2048 | ESectorSynthPart.EDC12;
 
-				sector.SectorSynth.Synth(job);
+				sector.Synth(job);
 
 				//now the inspection, based on the mode
 				byte mode = buf2442[15];
@@ -276,7 +276,7 @@ namespace BizHawk.Emulation.DiscSystem
 			job.Parts = ESectorSynthPart.Header16;
 			job.Disc = disc;
 
-			sector.SectorSynth.Synth(job);
+			sector.Synth(job);
 
 			return buf2442[15];
 		}

@@ -331,10 +331,7 @@ namespace BizHawk.Emulation.DiscSystem
 						if (curr_index == 0)
 							ss.Pause = true;
 
-						//make the SectorEntry (some temporary bullshit here)
-						var se = new SectorEntry(null);
-						se.SectorSynth = ss;
-						OUT_Disc.Sectors.Add(se);
+						OUT_Disc.Sectors.Add(ss);
 						relMSF++;
 
 						if (cct.IsFinalInFile)
@@ -360,7 +357,6 @@ namespace BizHawk.Emulation.DiscSystem
 					int specifiedPostgapLength = cct.PostgapLength.Sector;
 					for (int s = 0; s < specifiedPostgapLength; s++)
 					{
-						var se= new SectorEntry(null);
 						var ss = new SS_Gap();
 						ss.TrackType = cct.TrackType; //TODO - old track type in some < -150 cases?
 
@@ -376,8 +372,7 @@ namespace BizHawk.Emulation.DiscSystem
 						//always paused--is this good enough?
 						ss.Pause = true;
 
-						se.SectorSynth = ss;
-						OUT_Disc.Sectors.Add(se);
+						OUT_Disc.Sectors.Add(ss);
 						relMSF++;
 					}
 

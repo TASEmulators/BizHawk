@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//we may still need to deinterleave it if subcode was requested and it needs deinterleaving
 				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave | ESectorSynthPart.SubcodeAny)) != 0)
 				{
-					SubcodeUtils.DeinterleaveInplace(job.DestBuffer2448, 2352);
+					SynthUtils.DeinterleaveSubcodeInplace(job.DestBuffer2448, 2352);
 				}
 			}
 		}
@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.DiscSystem
 		void RunMednaDisc()
 		{
 			var disc = new Disc();
+			OUT_Disc = disc;
 
 			//create a MednaDisc and give it to the disc for ownership
 			var md = new MednaDisc(IN_FromPath);
@@ -43,26 +44,16 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//make sector interfaces:
 			var pregap_sector_zero = new Sector_Zero();
-			var pregap_subcode_zero = new ZeroSubcodeSector();
 			for (int i = 0; i < 150; i++)
 			{
-				var se = new SectorEntry(pregap_sector_zero);
-				se.SectorSynth = synth;
-				disc.Sectors.Add(se);
-				se.SubcodeSector = pregap_subcode_zero;
+				disc.Sectors.Add(synth);
 			}
 
 			//2. actual sectors
 			for (int i = 0; i < nSectors; i++)
 			{
-				//var sectorInterface = new MednaDiscSectorInterface() { LBA = i, md = md };
-				var se = new SectorEntry(null);
-				//se.SubcodeSector = new MednaDiscSubcodeSectorInterface() { LBA = i, md = md };
-				se.SectorSynth = synth;
-				disc.Sectors.Add(se);
+				disc.Sectors.Add(synth);
 			}
-
-			BufferedSubcodeSector bss = new BufferedSubcodeSector(); //TODO - its hacky that we need this..
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
 			const int kADR = 1;
@@ -96,14 +87,12 @@ namespace BizHawk.Emulation.DiscSystem
 					ap_min = BCD2.FromDecimal(m_ts.MIN),
 					ap_sec = BCD2.FromDecimal(m_ts.SEC),
 					ap_frame = BCD2.FromDecimal(m_ts.FRAC),
+					q_crc = 0 //meaningless
 				};
 
 				//a special fixup: mednafen's entry 100 is the lead-out track
 				if (i == 100)
 					q.q_index.BCDValue = 0xA2;
-
-				//CRC cant be calculated til we've got all the fields setup
-				q.q_crc = bss.Synthesize_SubchannelQ(ref q, true);
 
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
 			}
@@ -121,8 +110,8 @@ namespace BizHawk.Emulation.DiscSystem
 				ap_min = BCD2.FromDecimal(md.TOC.first_track),
 				ap_sec = BCD2.FromDecimal(0),
 				ap_frame = BCD2.FromDecimal(0),
+				q_crc = 0, //meaningless
 			};
-			qA1.q_crc = bss.Synthesize_SubchannelQ(ref qA1, true);
 			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA1 });
 			var qA2 = new SubchannelQ
 			{
@@ -136,44 +125,10 @@ namespace BizHawk.Emulation.DiscSystem
 				ap_min = BCD2.FromDecimal(md.TOC.last_track),
 				ap_sec = BCD2.FromDecimal(0),
 				ap_frame = BCD2.FromDecimal(0),
+				q_crc = 0, //meaningless
 			};
-			qA2.q_crc = bss.Synthesize_SubchannelQ(ref qA2, true);
 			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA2 });
 
-			//generate the toc from the entries. still not sure we're liking this idea
-			var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = disc.RawTOCEntries };
-			tocSynth.Run();
-			disc.TOCRaw = tocSynth.Result;
-
-			//DO THIS IN A MORE UNIFORM WAY PLEASE
-			//setup the DiscStructure 
-			//disc.Structure = new DiscStructure();
-			//var ses = new DiscStructure.Session();
-			//disc.Structure.Sessions.Add(ses);
-			//for (int i = 1; i < 100; i++)
-			//{
-			//  var m_te = md.TOCTracks[i];
-			//  if (!m_te.Valid) continue;
-
-			//  DiscStructure.Track track = new DiscStructure.Track() { Number = i };
-			//  ses.Tracks.Add(track);
-			//  if ((m_te.control & (int)EControlQ.DATA) == 0)
-			//    track.IsData = false;
-			//  else
-			//    track.IsData = true;
-
-			//  track.Start_LBA = (int)m_te.lba;
-			//  track.
-
-			//  //from mednafen, we couldnt build the index 0, and that's OK, since that's not really a sensible thing in CD terms anyway. 
-			//  //I need to refactor this thing to oblivion
-			//  //track.Indexes.Add(new DiscStructure.Index { Number = 0, LBA = (int)m_te.lba }); //<-- not accurate, but due for deletion
-			//  //track.Indexes.Add(new DiscStructure.Index { Number = 1, LBA = (int)m_te.lba });
-			//}
-
-			//NOT FULLY COMPLETE
-
-			OUT_Disc = disc;
 		}
 	}
 }

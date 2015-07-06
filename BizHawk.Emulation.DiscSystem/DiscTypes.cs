@@ -19,29 +19,4 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 		BizHawk, MednaDisc, LibMirage
 	}
-
-	
-
-	/// <summary>
-	/// Main unit of organization for reading data from the disc. Represents one physical disc sector.
-	/// </summary>
-	public class SectorEntry
-	{
-		public SectorEntry(ISector sec) { Sector = sec; }
-
-		internal ISectorSynthJob2448 SectorSynth;
-
-		/// <summary>
-		/// Access the --whatsitcalled-- normal data for the sector with this
-		/// </summary>
-		public ISector Sector;
-
-		/// <summary>
-		/// Access the subcode data for the sector
-		/// </summary>
-		public ISubcodeSector SubcodeSector;
-
-		//todo - add a PARAMETER fields to this (a long, maybe) so that the ISector can use them (so that each ISector doesnt have to be constructed also)
-		//also then, maybe this could be a struct
-	}
 }

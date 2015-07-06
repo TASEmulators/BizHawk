@@ -26,16 +26,6 @@ namespace BizHawk.Emulation.DiscSystem
 	{
 
 		/// <summary>
-		/// Returns a SectorEntry from which you can retrieve various interesting pieces of information about the sector.
-		/// The SectorEntry's interface is not likely to be stable, though, but it may be more convenient.
-		/// </summary>
-		public SectorEntry ReadLBA_SectorEntry(int lba)
-		{
-			return Sectors[lba + 150];
-		}
-
-
-		/// <summary>
 		/// Main API to determine how many LBAs are available on the disc.
 		/// This counts from LBA 0 to the final sector available.
 		/// THIS IS DUMB. Like everything else here.

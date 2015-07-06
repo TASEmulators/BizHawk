@@ -31,11 +31,10 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//synth Q if needed
+				//TODO - why not already have it serialized? Into a disc resource, even.
 				if ((job.Parts & ESectorSynthPart.SubchannelQ) != 0)
 				{
-					var subcode = new BufferedSubcodeSector();
-					subcode.Synthesize_SubchannelQ(ref sq, true);
-					Buffer.BlockCopy(subcode.SubcodeDeinterleaved, 12, job.DestBuffer2448, job.DestOffset + 2352 + 12, 12);
+					SynthUtils.SubQ_Serialize(job.DestBuffer2448, job.DestOffset + 2352 + 12, ref sq);
 				}
 
 				//clear R-W if needed
@@ -47,7 +46,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//subcode has been generated deinterleaved; we may still need to interleave it
 				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
 				{
-					SubcodeUtils.InterleaveInplace(job.DestBuffer2448, job.DestOffset + 2352);
+					SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
 				}
 			}
 		}

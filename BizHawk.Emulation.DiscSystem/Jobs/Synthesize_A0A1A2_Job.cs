@@ -41,8 +41,6 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			SubchannelQ sq = new SubchannelQ();
 
-			BufferedSubcodeSector bss = new BufferedSubcodeSector(); //TODO - its hacky that we need this.. (NOT USED YET)
-
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
 			const int kADR = 1;
 			const int kUnknownControl = 0;
