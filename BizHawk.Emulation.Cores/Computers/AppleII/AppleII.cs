@@ -54,12 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			ser.Register<ITraceable>(Tracer);
 
-			//Set up Memory Callbacks
-			_machine.Memory.ReadCallback = MemoryCallbacks.CallReads;
-			_machine.Memory.WriteCallback = MemoryCallbacks.CallWrites;
-			_machine.Memory.ExecuteCallback = MemoryCallbacks.CallExecutes;
-
-			_machine.Memory.InputCallback = InputCallbacks.Call;
+			setCallbacks();
 
 			InitSaveStates();
 			SetupMemoryDomains();
@@ -180,5 +175,14 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			Frame++;
 		}
+
+		private void setCallbacks()
+		{
+			_machine.Memory.ReadCallback = MemoryCallbacks.CallReads;
+			_machine.Memory.WriteCallback = MemoryCallbacks.CallWrites;
+			_machine.Memory.ExecuteCallback = MemoryCallbacks.CallExecutes;
+			_machine.Memory.InputCallback = InputCallbacks.Call;
+		}
+
 	}
 }

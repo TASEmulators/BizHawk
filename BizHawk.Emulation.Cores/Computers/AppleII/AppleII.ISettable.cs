@@ -37,6 +37,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			_settings = o;
 			_machine.Video.IsMonochrome = _settings.Monochrome;
+
+			setCallbacks();
+
 			return false;
 		}
 
