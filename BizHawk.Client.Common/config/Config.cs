@@ -215,6 +215,8 @@ namespace BizHawk.Client.Common
 		public bool DispFixScaleInteger = true;
 		public bool DispFullscreenHacks = true;
 
+		public int DispPrescale = 1;
+
 		//warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
 		public EDispMethod DispMethod = EDispMethod.OpenGL;
 

@@ -48,6 +48,8 @@ namespace BizHawk.Client.EmuHawk.config
 			trackbarFrameSizeWindowed.Value = Global.Config.DispChrome_FrameWindowed;
 			SyncTrackbar();
 
+			nudPrescale.Value = Global.Config.DispPrescale;
+
 			// null emulator config hack
 			{
 				NullEmulator.NullEmulatorSettings s;
@@ -88,6 +90,8 @@ namespace BizHawk.Client.EmuHawk.config
 				Global.Config.DispFinalFilter = 1;
 			if (rbFinalFilterBicubic.Checked)
 				Global.Config.DispFinalFilter = 2;
+
+			Global.Config.DispPrescale = (int)nudPrescale.Value;
 
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;

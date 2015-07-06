@@ -200,6 +200,12 @@ namespace BizHawk.Client.EmuHawk
 			//add lua layer 'emu'
 			AppendLuaLayer(chain, "emu");
 
+			if (Global.Config.DispPrescale != 1)
+			{
+				Filters.PrescaleFilter fPrescale = new Filters.PrescaleFilter() { Scale = Global.Config.DispPrescale };
+				chain.AddFilter(fPrescale, "prescale");
+			}
+
 			//add user-selected retro shader
 			if (selectedChain != null)
 				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
