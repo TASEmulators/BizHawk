@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
+			InputCallbacks = new InputCallbackSystem();
 
 			_disk1 = rom;
 			RomSet.Add(rom);
@@ -57,6 +58,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine.Memory.ReadCallback = MemoryCallbacks.CallReads;
 			_machine.Memory.WriteCallback = MemoryCallbacks.CallWrites;
 			_machine.Memory.ExecuteCallback = MemoryCallbacks.CallExecutes;
+
+			_machine.Memory.InputCallback = InputCallbacks.Call;
 
 			InitSaveStates();
 			SetupMemoryDomains();

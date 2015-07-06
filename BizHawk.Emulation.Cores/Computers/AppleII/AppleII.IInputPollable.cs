@@ -12,6 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			private set { _machine.Lagged = value; }
 		}
 
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get; private set; }
+		public IInputCallbackSystem InputCallbacks { get; private set; }
 	}
 }

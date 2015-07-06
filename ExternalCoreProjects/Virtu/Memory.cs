@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using Jellyfish.Library;
 using Jellyfish.Virtu.Services;
+using Newtonsoft.Json;
 
 namespace Jellyfish.Virtu
 {
@@ -291,7 +292,15 @@ namespace Jellyfish.Virtu
 
 		private int ReadIoRegionC0C0(int address)
 		{
-			Machine.Lagged = false;
+			if ((0xC000 <= address && address <= 0xC00F) || (0xC061 <= address && address <= 0xC067) || (0xC069 <= address && address <= 0xC06F))
+			{
+				Machine.Lagged = false;
+				if (InputCallback != null)
+				{
+					InputCallback();
+				}
+			}
+
 			switch (address)
 			{
 				case 0xC000:
@@ -2130,9 +2139,17 @@ namespace Jellyfish.Virtu
 		private Action<int, byte> _writeIoRegionC8CF;
 		private Action<int, byte> _writeRomRegionD0FF;
 
+		[JsonIgnore]
 		public Action<uint> ReadCallback;
+
+		[JsonIgnore]
 		public Action<uint> WriteCallback;
+
+		[JsonIgnore]
 		public Action<uint> ExecuteCallback;
+
+		[JsonIgnore]
+		public Action InputCallback;
 
 		private Keyboard _keyboard;
 		private GamePort _gamePort;
