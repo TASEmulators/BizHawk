@@ -673,6 +673,11 @@
 			// nudPrescale
 			// 
 			this.nudPrescale.Location = new System.Drawing.Point(260, 113);
+			this.nudPrescale.Maximum = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
 			this.nudPrescale.Minimum = new decimal(new int[] {
             1,
             0,
