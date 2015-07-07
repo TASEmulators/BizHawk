@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// <summary>
 		/// Cache of all the HFONTs used, rather than create them again and again
 		/// </summary>
-		private static readonly Dictionary<Font, FontCacheEntry> FontsCache = new Dictionary<Font, FontCacheEntry>();
+		private readonly Dictionary<Font, FontCacheEntry> FontsCache = new Dictionary<Font, FontCacheEntry>();
 
 		class FontCacheEntry
 		{
@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			SelectObject(_hdc, GetCachedHFont(font));
 		}
 
-		private static IntPtr GetCachedHFont(Font font)
+		private IntPtr GetCachedHFont(Font font)
 		{
 			//the original code struck me as bad. attempting to ID fonts by picking a subset of their fields is not gonna work.
 			//don't call this.Font in InputRoll.cs, it is probably slow.
