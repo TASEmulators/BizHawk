@@ -586,6 +586,9 @@ namespace BizHawk.Emulation.Cores
 			//well... guess it's a disc.
 			//since it's just a bin, we dont need the user to provide a DiscSystem disc.
 			//lets just analyze this as best we can.
+			//of course, it's a lot of redundant logic with the discsystem disc checker.
+			//but you kind of need different approaches when loading a hugely unstructured bin file
+			//discsystem won't really even be happy mounting a .bin anyway, and we don't want it to be
 
 			//for PSX, we have a magic word to look for.
 			//it's at 0x24E0 with a mode2 (2352 byte) track 1.
@@ -601,13 +604,13 @@ namespace BizHawk.Emulation.Cores
 				return ret;
 			}
 
-			//it's not proven that this is reliable. this is actually part of the mode1 CDFS header. perhaps it's mobile?
+			//it's not proven that this is reliable. this is actually part of the Mode 1 CDFS header. perhaps it's mobile?
 			//if it's mobile, we'll need to mount it as an ISO file here via discsystem
 			if (CheckMagic(job.Stream, SimpleMagics.PSP))
 				return new FileIDResult(FileIDType.PSP, 95);
 
 			//if this was an ISO, we might discover the magic word at offset 0...
-			//if it was a mode2/2352 bin, we might discover it at offset 16 (after the sync)
+			//if it was a mode2/2352 bin, we might discover it at offset 16 (after the data sector header)
 			if(CheckMagic(job.Stream, SimpleMagics.SEGASATURN,0))
 				return new FileIDResult(FileIDType.Saturn, job.Extension == "ISO" ? 95 : 90);
 			if (CheckMagic(job.Stream, SimpleMagics.SEGASATURN, 16))

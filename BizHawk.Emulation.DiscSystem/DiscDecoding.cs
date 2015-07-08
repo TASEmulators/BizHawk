@@ -117,6 +117,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// finds audio at a path similar to the provided path (i.e. finds Track01.mp3 for Track01.wav)
+		/// TODO - isnt this redundant with CueFileResolver?
 		/// </summary>
 		string FindAudio(string audioPath)
 		{
