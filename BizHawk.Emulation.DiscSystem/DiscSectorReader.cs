@@ -93,6 +93,8 @@ namespace BizHawk.Emulation.DiscSystem
 			job.DestOffset = 0;
 			job.Parts = ESectorSynthPart.User2352;
 			job.Disc = disc;
+			if (Policy.DeinterleavedSubcode)
+				job.Parts |= ESectorSynthPart.SubcodeDeinterleave;
 
 			sector.Synth(job);
 
