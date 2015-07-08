@@ -2,13 +2,14 @@
 using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.DiscSystem;
 
 // The state of the cd player is quantized to the frame level.
 // This isn't ideal. But life's too short. 
 // I decided not to let the perfect be the enemy of the good.
 // It can always be refactored. It's at least deterministic.
 
-namespace BizHawk.Emulation.DiscSystem
+namespace BizHawk.Emulation.Common.Components
 {
 	public sealed class CDAudio : ISoundProvider
 	{
