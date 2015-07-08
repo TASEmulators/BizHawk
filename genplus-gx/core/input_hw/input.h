@@ -137,6 +137,13 @@ typedef struct
   int y_offset;                 /* gun vertical offset */
 } t_input;
 
+struct
+{
+  uint8 State;
+  uint8 Counter;
+  uint8 Timeout;
+} gamepad[MAX_DEVICES];
+
 /* Global variables */
 extern t_input input;
 extern int old_system[2];
