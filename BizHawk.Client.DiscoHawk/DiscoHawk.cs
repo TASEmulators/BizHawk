@@ -186,7 +186,7 @@ namespace BizHawk.Client.DiscoHawk
 
 	class DiscoHawk
 	{
-		static List<string> FindExtensionsRecurse(string dir, string extUppercaseWithDot)
+		static List<string> FindCuesRecurse(string dir)
 		{
 			List<string> ret = new List<string>();
 			Queue<string> dpTodo = new Queue<string>();
@@ -197,12 +197,10 @@ namespace BizHawk.Client.DiscoHawk
 				if (dpTodo.Count == 0)
 					break;
 				dpCurr = dpTodo.Dequeue();
-				Parallel.ForEach(new DirectoryInfo(dpCurr).GetFiles(), (fi) =>
+				foreach(var fi in new DirectoryInfo(dpCurr).GetFiles("*.cue"))
 				{
-					if (fi.Extension.ToUpperInvariant() == extUppercaseWithDot)
-						lock(ret)
-							ret.Add(fi.FullName);
-				});
+					ret.Add(fi.FullName);
+				}
 				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), (di) =>
 				{
 					lock(dpTodo)
@@ -264,7 +262,7 @@ namespace BizHawk.Client.DiscoHawk
 			if (scanCues)
 			{
 				verbose = false;
-				var todo = FindExtensionsRecurse(dirArg, ".CUE");
+				var todo = FindCuesRecurse(dirArg);
 				var po = new ParallelOptions();
 				var cts = new CancellationTokenSource();
 				po.CancellationToken = cts.Token;
