@@ -44,10 +44,11 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//subcode has been generated deinterleaved; we may still need to interleave it
-				if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
-				{
-					SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
-				}
+				if((job.Parts & ESectorSynthPart.SubcodeAny) != 0)
+					if ((job.Parts & (ESectorSynthPart.SubcodeDeinterleave)) == 0)
+					{
+						SynthUtils.InterleaveSubcodeInplace(job.DestBuffer2448, job.DestOffset + 2352);
+					}
 			}
 		}
 
