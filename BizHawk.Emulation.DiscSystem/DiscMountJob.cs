@@ -6,8 +6,11 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	
-	
+	/// <summary>
+	/// A Job interface for mounting discs.
+	/// This is publicly exposed because it's the main point of control for fine-tuning disc loading options.
+	/// This would typically be used to load discs.
+	/// </summary>
 	public partial class DiscMountJob : DiscJob
 	{
 		/// <summary>
@@ -142,10 +145,10 @@ namespace BizHawk.Emulation.DiscSystem
 				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
 				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
 				{
-					var sbiJob = new SBI.LoadSBIJob();
-					sbiJob.IN_Path = sbiPath;
-					sbiJob.Run();
-					OUT_Disc.ApplySBI(sbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
+					var loadSbiJob = new SBI.LoadSBIJob() { IN_Path = sbiPath };
+					loadSbiJob.Run();
+					var applySbiJob = new ApplySBIJob();
+					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
 				}
 			}
 			else if (ext == ".ccd")

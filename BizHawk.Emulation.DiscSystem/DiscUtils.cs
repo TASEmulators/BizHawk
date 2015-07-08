@@ -1,7 +1,16 @@
+using System;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	public static class DiscUtils
 	{
+		static byte IntToBCD(int n)
+		{
+			int ones;
+			int tens = Math.DivRem(n, 10, out ones);
+			return (byte)((tens << 4) | ones);
+		}
+
 		/// <summary>
 		/// converts the given int to a BCD value
 		/// </summary>

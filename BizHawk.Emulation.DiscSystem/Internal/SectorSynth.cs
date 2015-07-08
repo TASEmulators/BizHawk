@@ -126,4 +126,24 @@ namespace BizHawk.Emulation.DiscSystem
 		public long[] BlobOffsets;
 		public MednaDisc MednaDisc;
 	}
+
+
+	class SS_PatchQ : ISectorSynthJob2448
+	{
+		public ISectorSynthJob2448 Original;
+		public byte[] Buffer_SubQ = new byte[12];
+		public void Synth(SectorSynthJob job)
+		{
+			Original.Synth(job);
+
+			if ((job.Parts & ESectorSynthPart.SubchannelQ) == 0)
+				return;
+
+			//apply patched subQ
+			for (int i = 0; i < 12; i++)
+				job.DestBuffer2448[2352 + 12 + i] = Buffer_SubQ[i];
+		}
+	}
+
+
 }
