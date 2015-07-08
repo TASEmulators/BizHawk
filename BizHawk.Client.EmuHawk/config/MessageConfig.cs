@@ -403,44 +403,34 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.DispFPSx = Config.DefaultMessageOptions.DispFPSx;
 			Global.Config.DispFPSy = Config.DefaultMessageOptions.DispFPSy;
-			Global.Config.DispFrameCx = 0;
-			Global.Config.DispFrameCy = 12;
-			Global.Config.DispLagx = 0;
-			Global.Config.DispLagy = 36;
-			Global.Config.DispInpx = 0;
-			Global.Config.DispInpy = 24;
-			Global.Config.DispRecx = 0;
-			Global.Config.DispRecy = 48;
-			Global.Config.DispMultix = 0;
-			Global.Config.DispMultiy = 14;
-			Global.Config.DispMessagex = 3;
-			Global.Config.DispMessagey = 0;
-			Global.Config.DispAutoholdx = 0;
-			Global.Config.DispAutoholdy = 0;
+            Global.Config.DispFrameCx = Config.DefaultMessageOptions.DispFrameCx;
+            Global.Config.DispFrameCy = Config.DefaultMessageOptions.DispFrameCy;
+            Global.Config.DispLagx = Config.DefaultMessageOptions.DispLagx;
+            Global.Config.DispLagy = Config.DefaultMessageOptions.DispLagy;
+            Global.Config.DispInpx = Config.DefaultMessageOptions.DispInpx;
+            Global.Config.DispInpy = Config.DefaultMessageOptions.DispInpy;
+            Global.Config.DispRecx = Config.DefaultMessageOptions.DispRecx;
+            Global.Config.DispRecy = Config.DefaultMessageOptions.DispRecy;
+            Global.Config.DispMultix = Config.DefaultMessageOptions.DispMultix;
+            Global.Config.DispMultiy = Config.DefaultMessageOptions.DispMultiy;
+            Global.Config.DispMessagex = Config.DefaultMessageOptions.DispMessagex;
+            Global.Config.DispMessagey = Config.DefaultMessageOptions.DispMessagey;
+            Global.Config.DispAutoholdx = Config.DefaultMessageOptions.DispAutoholdx;
+            Global.Config.DispAutoholdy = Config.DefaultMessageOptions.DispAutoholdy;
 
-			Global.Config.MessagesColor = -1;
-			Global.Config.AlertMessageColor = -65536;
-			Global.Config.LastInputColor = -23296;
-			Global.Config.MovieInput = -8355712;
+            Global.Config.DispFPSanchor = Config.DefaultMessageOptions.DispFPSanchor;
+            Global.Config.DispFrameanchor = Config.DefaultMessageOptions.DispFrameanchor;
+            Global.Config.DispLaganchor = Config.DefaultMessageOptions.DispLaganchor;
+            Global.Config.DispInpanchor = Config.DefaultMessageOptions.DispInpanchor;
+            Global.Config.DispRecanchor = Config.DefaultMessageOptions.DispRecanchor;
+            Global.Config.DispMultianchor = Config.DefaultMessageOptions.DispMultianchor;
+            Global.Config.DispMessageanchor = Config.DefaultMessageOptions.DispMessageanchor;
+            Global.Config.DispAutoholdanchor = Config.DefaultMessageOptions.DispAutoholdanchor;
 
-			_messageColor = Global.Config.MessagesColor;
-			_alertColor = Global.Config.AlertMessageColor;
-			_lastInputColor = Global.Config.LastInputColor;
-			_movieInput = Global.Config.MovieInput;
-
-			MessageColorDialog.Color = Color.FromArgb(_messageColor);
-			AlertColorDialog.Color = Color.FromArgb(_alertColor);
-			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
-			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
-
-			Global.Config.DispFPSanchor = 0;
-			Global.Config.DispFrameanchor = 0;
-			Global.Config.DispLaganchor = 0;
-			Global.Config.DispInpanchor = 0;
-			Global.Config.DispRecanchor = 0;
-			Global.Config.DispMultianchor = 1;
-			Global.Config.DispMessageanchor = 2;
-			Global.Config.DispAutoholdanchor = 1;
+            Global.Config.MessagesColor = Config.DefaultMessageOptions.MessagesColor;
+            Global.Config.AlertMessageColor = Config.DefaultMessageOptions.AlertMessageColor;
+            Global.Config.LastInputColor = Config.DefaultMessageOptions.LastInputColor;
+            Global.Config.MovieInput = Config.DefaultMessageOptions.MovieInput;
 
 			_dispFpSx = Global.Config.DispFPSx;
 			_dispFpSy = Global.Config.DispFPSy;
@@ -466,7 +456,17 @@ namespace BizHawk.Client.EmuHawk
 			_dispRecanchor = Global.Config.DispRecanchor;
 			_dispMultiAnchor = Global.Config.DispMultianchor;
 			_dispMessageAnchor = Global.Config.DispMessageanchor;
-			_dispAutoholdAnchor = Global.Config.DispAutoholdanchor;
+            _dispAutoholdAnchor = Global.Config.DispAutoholdanchor;
+
+            _messageColor = Global.Config.MessagesColor;
+            _alertColor = Global.Config.AlertMessageColor;
+            _lastInputColor = Global.Config.LastInputColor;
+            _movieInput = Global.Config.MovieInput;
+
+            MessageColorDialog.Color = Color.FromArgb(_messageColor);
+            AlertColorDialog.Color = Color.FromArgb(_alertColor);
+            LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
+            MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
 			SetMaxXY();
 			SetColorBox();
