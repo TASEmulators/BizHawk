@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.DiscSystem
 {
 	partial class CUE_Context
 	{
-		public class ParseCueJob : LoggedJob
+		public class ParseCueJob : DiscJob
 		{
 			/// <summary>
 			/// input: the cue string to parse

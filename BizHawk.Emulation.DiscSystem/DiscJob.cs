@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// Returns WARNINGS for things which will are irregular or erroneous but later jobs might be able to handle, or which can be worked around by configuration assumptions.
 	/// TODO - make IDisposable so I don't have to remember to Finish() it?
 	/// </summary>
-	public class LoggedJob
+	public class DiscJob
 	{
 		internal int CurrentLine = -1;
 
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Concatenates the log results from the provided job into this log
 		/// </summary>
-		public void ConcatenateJobLog(LoggedJob job)
+		public void ConcatenateJobLog(DiscJob job)
 		{
 			OUT_ErrorLevel |= job.OUT_ErrorLevel;
 			swLog.Write(job.OUT_Log);

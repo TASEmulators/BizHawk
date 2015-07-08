@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-//TODO - most of these sector interfaces are really only useful for CUEs, I guess. most other disc formats arent nearly as lame.. I think
-
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>

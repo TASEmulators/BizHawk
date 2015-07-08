@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	public class Synthesize_DiscStructure_From_DiscTOC_Job
+	class Synthesize_DiscStructure_From_DiscTOC_Job
 	{
 		public Disc IN_Disc;
 		public DiscTOC TOCRaw;

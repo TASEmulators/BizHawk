@@ -50,54 +50,56 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="API\DiscExceptions.cs" />
-    <Compile Include="API\DiscHasher.cs" />
-    <Compile Include="API\DiscIdentifier.cs" />
-    <Compile Include="API\DiscSectorReader.cs" />
-    <Compile Include="API\DiscStream.cs" />
-    <Compile Include="API\DiscStructure.cs" />
-    <Compile Include="API\DiscTOC.cs" />
-    <Compile Include="Blobs\Blob_ECM.cs" />
-    <Compile Include="Blobs\Blob_RawFile.cs" />
-    <Compile Include="Blobs\Blob_WaveFile.cs" />
-    <Compile Include="Blobs\Blob_ZeroPadAdapter.cs" />
-    <Compile Include="Blobs\IBlob.cs" />
-    <Compile Include="Blobs\RiffMaster.cs" />
-    <Compile Include="CCD_format.cs" />
-    <Compile Include="cdfs\EndianBitConverter.cs" />
-    <Compile Include="cdfs\ISODirectoryNode.cs" />
-    <Compile Include="cdfs\ISOFile.cs" />
-    <Compile Include="cdfs\ISOFileNode.cs" />
-    <Compile Include="cdfs\ISONode.cs" />
-    <Compile Include="cdfs\ISONodeRecord.cs" />
-    <Compile Include="cdfs\ISOVolumeDescriptor.cs" />
-    <Compile Include="CUE\CueFileResolver.cs" />
-    <Compile Include="CUE\CUE_Compile.cs" />
-    <Compile Include="CUE\CUE_Format.cs" />
-    <Compile Include="CUE\CUE_Load.cs" />
-    <Compile Include="CUE\CUE_Parse.cs" />
-    <Compile Include="CUE\CUE_Synths.cs" />
-    <Compile Include="Decoding.cs" />
+    <Compile Include="API_MednaDisc.cs" />
+    <Compile Include="CDFS\EndianBitConverter.cs" />
+    <Compile Include="CDFS\ISODirectoryNode.cs" />
+    <Compile Include="CDFS\ISOFile.cs" />
+    <Compile Include="CDFS\ISOFileNode.cs" />
+    <Compile Include="CDFS\ISONode.cs" />
+    <Compile Include="CDFS\ISONodeRecord.cs" />
+    <Compile Include="CDFS\ISOVolumeDescriptor.cs" />
     <Compile Include="Disc.cs" />
+    <Compile Include="DiscDecoding.cs" />
+    <Compile Include="DiscExceptions.cs" />
+    <Compile Include="DiscFormats\Blobs\Blob_ECM.cs" />
+    <Compile Include="DiscFormats\Blobs\Blob_RawFile.cs" />
+    <Compile Include="DiscFormats\Blobs\Blob_WaveFile.cs" />
+    <Compile Include="DiscFormats\Blobs\Blob_ZeroPadAdapter.cs" />
+    <Compile Include="DiscFormats\Blobs\IBlob.cs" />
+    <Compile Include="DiscFormats\Blobs\RiffMaster.cs" />
+    <Compile Include="DiscFormats\CCD_format.cs" />
+    <Compile Include="DiscFormats\CUE\CueFileResolver.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_Compile.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_Context.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_Load.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_Parse.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_Synths.cs" />
+    <Compile Include="DiscFormats\M3U_file.cs" />
+    <Compile Include="DiscFormats\SBI_format.cs" />
+    <Compile Include="DiscFormats\TOC_format.cs" />
+    <Compile Include="DiscHasher.cs" />
+    <Compile Include="DiscIdentifier.cs" />
+    <Compile Include="DiscJob.cs" />
+    <Compile Include="DiscMountJob.cs" />
+    <Compile Include="DiscMountJob.MednaDisc.cs" />
+    <Compile Include="DiscMountPolicy.cs" />
+    <Compile Include="DiscSectorReader.cs" />
+    <Compile Include="DiscStream.cs" />
+    <Compile Include="DiscStructure.cs" />
+    <Compile Include="DiscSubQ.cs" />
+    <Compile Include="DiscTOC.cs" />
     <Compile Include="DiscTypes.cs" />
     <Compile Include="DiscUtils.cs" />
-    <Compile Include="ECM.cs" />
-    <Compile Include="GPL_ECM.cs" />
-    <Compile Include="Jobs\DiscMountJob.cs" />
-    <Compile Include="Jobs\DiscMountJob.MednaDisc.cs" />
-    <Compile Include="Jobs\LoadSBIJob.cs" />
-    <Compile Include="Jobs\LoggedJob.cs" />
-    <Compile Include="Jobs\Synthesize_A0A1A2_Job.cs" />
-    <Compile Include="Jobs\Synthesize_DiscStructure_From_DiscTOC_Job.cs" />
-    <Compile Include="Jobs\Synthesize_DiscTOC_From_RawTOCEntries_Job.cs" />
-    <Compile Include="Jobs\Synthesize_Leadout_Job.cs" />
-    <Compile Include="M3U_file.cs" />
-    <Compile Include="MednaDiscAPI.cs" />
+    <Compile Include="Internal\Algorithms\ECM.cs" />
+    <Compile Include="Internal\Algorithms\GPL_ECM.cs" />
+    <Compile Include="Internal\Algorithms\SubQ_CRC.cs" />
+    <Compile Include="Internal\Jobs\LoadSBIJob.cs" />
+    <Compile Include="Internal\Jobs\Synthesize_A0A1A2_Job.cs" />
+    <Compile Include="Internal\Jobs\Synthesize_DiscStructure_From_DiscTOC_Job.cs" />
+    <Compile Include="Internal\Jobs\Synthesize_DiscTOC_From_RawTOCEntries_Job.cs" />
+    <Compile Include="Internal\Jobs\Synthesize_Leadout_Job.cs" />
+    <Compile Include="Internal\SectorSynth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SBI_format.cs" />
-    <Compile Include="SectorInterfaces.cs" />
-    <Compile Include="Subcode.cs" />
-    <Compile Include="TOC_format.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
@@ -106,6 +108,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CDFS\origin.txt" />
     <Content Include="docs\notes.txt" />
   </ItemGroup>
   <ItemGroup />

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// Synthesizes RawTCOEntry A0 A1 A2 from the provided information.
 	/// This might be reused by formats other than CUE later, so it isn't directly associated with that
 	/// </summary>
-	public class Synthesize_A0A1A2_Job
+	class Synthesize_A0A1A2_Job
 	{
 		/// <summary>
 		/// "First Recorded Track Number" value for TOC (usually 1)

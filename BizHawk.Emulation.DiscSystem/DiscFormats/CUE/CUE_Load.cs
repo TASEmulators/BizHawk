@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// For this job, virtually all nonsense input is treated as errors, but the process will try to recover as best it can.
 		/// The user should still reject any jobs which generated errors
 		/// </summary>
-		internal class LoadCueJob : LoggedJob
+		internal class LoadCueJob : DiscJob
 		{
 			/// <summary>
 			/// The results of the compile job, a prerequisite for this

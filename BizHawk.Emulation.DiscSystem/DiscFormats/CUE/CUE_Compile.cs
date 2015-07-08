@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 		}
 
-		internal class CompileCueJob : LoggedJob
+		internal class CompileCueJob : DiscJob
 		{
 			/// <summary>
 			/// input: the CueFile to analyze
