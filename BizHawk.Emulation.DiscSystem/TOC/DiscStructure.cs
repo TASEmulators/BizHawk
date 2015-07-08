@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public Track SeekTrack(int lba)
 		{
-			var ses = Sessions[0];
+			var ses = Sessions[1];
 			
 			//take care with this loop bounds:
 			for (int i = 1; i <= ses.InformationTrackCount; i++)

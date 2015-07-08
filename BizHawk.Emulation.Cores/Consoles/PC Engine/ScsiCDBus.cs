@@ -413,11 +413,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					audioStartLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
 					break;
 
-				case 0x40: // Set start offset in MSF units
+				case 0x40: // Set start offset in absolute MSF units
 					byte m = CommandBuffer[2].BCDtoBin();
 					byte s = CommandBuffer[3].BCDtoBin();
 					byte f = CommandBuffer[4].BCDtoBin();
-					audioStartLBA = Disc.ConvertMSFtoLBA(m, s, f);
+					audioStartLBA = DiscUtils.Convert_AMSF_To_LBA(m, s, f);
 					break;
 
 				case 0x80: // Set start offset in track units
@@ -448,11 +448,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					audioEndLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
 					break;
 
-				case 0x40: // Set end offset in MSF units
+				case 0x40: // Set end offset in absolute MSF units
 					byte m = CommandBuffer[2].BCDtoBin();
 					byte s = CommandBuffer[3].BCDtoBin();
 					byte f = CommandBuffer[4].BCDtoBin();
-					audioEndLBA = Disc.ConvertMSFtoLBA(m, s, f);
+					audioEndLBA = DiscUtils.Convert_AMSF_To_LBA(m, s, f);
 					break;
 
 				case 0x80: // Set end offset in track units
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						int totalLbaLength = disc.Session1.LeadoutLBA;
 
 						byte m, s, f;
-						Disc.ConvertLBAtoMSF(totalLbaLength, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out m, out s, out f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
@@ -565,7 +565,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							lbaPos = tracks[track].LBA;
 
 						byte m, s, f;
-						Disc.ConvertLBAtoMSF(lbaPos, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out m, out s, out f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
