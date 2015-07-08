@@ -401,8 +401,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ResetDefaultsButton_Click(object sender, EventArgs e)
 		{
-			Global.Config.DispFPSx = 0;
-			Global.Config.DispFPSy = 0;
+			Global.Config.DispFPSx = Config.DefaultMessageOptions.DispFPSx;
+			Global.Config.DispFPSy = Config.DefaultMessageOptions.DispFPSy;
 			Global.Config.DispFrameCx = 0;
 			Global.Config.DispFrameCy = 12;
 			Global.Config.DispLagx = 0;

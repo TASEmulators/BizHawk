@@ -172,14 +172,20 @@ namespace BizHawk.Client.Common
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;
 
+		public static class DefaultMessageOptions
+		{
+			public const int DispFPSx = 99;
+			public const int DispFPSy = 99;
+		}
+
 		// Display options
 		public int MessagesColor = -1;
 		public int AlertMessageColor = -65536;
 		public int LastInputColor = -23296;
 		public int MovieInput = -8355712;
 		public bool DisplayFPS = false;
-		public int DispFPSx = 0;
-		public int DispFPSy = 0;
+		public int DispFPSx = DefaultMessageOptions.DispFPSx;
+		public int DispFPSy = DefaultMessageOptions.DispFPSy;
 		public int DispFPSanchor = 0;	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
 		public bool DisplayFrameCounter = false;
 		public int DispFrameCx = 0;
