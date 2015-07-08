@@ -83,12 +83,6 @@ namespace BizHawk.Emulation.DiscSystem
 	public partial class Disc : IDisposable
 	{
 		/// <summary>
-		/// The DiscMountPolicy used to mount the disc. Consider this read-only.
-		/// NOT SURE WE NEED THIS
-		/// </summary>
-		//public DiscMountPolicy DiscMountPolicy;
-
-		/// <summary>
 		/// Free-form optional memos about the disc
 		/// </summary>
 		public Dictionary<string, object> Memos = new Dictionary<string, object>();
@@ -102,6 +96,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The DiscTOCRaw corresponding to the RawTOCEntries.
 		/// TODO - rename to TOC
+		/// TODO - there's one of these for every session, so... having one here doesnt make sense
 		/// </summary>
 		public DiscTOCRaw TOCRaw;
 
@@ -109,6 +104,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// The DiscStructure corresponding to the TOCRaw
 		/// </summary>
 		public DiscStructure Structure;
+
+		/// <summary>
+		/// DiscStructure.Session 1 of the disc, since that's all thats needed most of the time.
+		/// </summary>
+		public DiscStructure.Session Session1 { get { return Structure.Sessions[1]; } }
 
 		/// <summary>
 		/// Disposable resources (blobs, mostly) referenced by this disc
@@ -120,7 +120,16 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		internal List<ISectorSynthJob2448> Sectors = new List<ISectorSynthJob2448>();
 
+		/// <summary>
+		/// Parameters set during disc loading which can be referenced by the sector synthesizers
+		/// </summary>
 		internal SectorSynthParams SynthParams = new SectorSynthParams();
+
+		/// <summary>
+		/// The DiscMountPolicy used to mount the disc. Consider this read-only.
+		/// NOT SURE WE NEED THIS
+		/// </summary>
+		//public DiscMountPolicy DiscMountPolicy;
 
 		public Disc()
 		{
@@ -133,7 +142,6 @@ namespace BizHawk.Emulation.DiscSystem
 				res.Dispose();
 			}
 		}
-
 
 		/// <summary>
 		/// generates lead-out sectors according to very crude approximations

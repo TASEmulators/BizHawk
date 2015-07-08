@@ -7,50 +7,34 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// Contains structural information for the disc broken down into c# data structures for easy interrogation.
 	/// This represents a best-effort interpretation of the raw disc image.
+	/// NOTE: Since this ended up really just having the list of sessions.. maybe it isn't needed and can just float on up into Disc
 	/// </summary>
 	public class DiscStructure
 	{
 		/// <summary>
 		/// This is a 0-indexed list of sessions (session 1 is at [0])
 		/// Support for multiple sessions is thoroughly not working yet
+		/// TODO - make re-index me with a null session 0
 		/// </summary>
 		public List<Session> Sessions = new List<Session>();
 
-		/// <summary>
-		/// How many sectors in the disc, including the 150 lead-in sectors, up to the end of the last track (before the lead-out track)
-		/// TODO - does anyone ever need this as the ABA Count? Rename it LBACount or ABACount
-		/// </summary>
-		public int LengthInSectors;
 
 		/// <summary>
-		/// Length (including lead-in) of the disc as a timestamp
-		/// TODO - does anyone ever need this as the ABA Count? Rename it LBACount or ABACount
-		/// </summary>
-		public Timestamp FriendlyLength { get { return new Timestamp(LengthInSectors); } }
-
-		/// <summary>
-		/// How many bytes of data in the disc (including lead-in). Disc sectors are really 2352 bytes each, so this is LengthInSectors * 2352
-		/// TODO - this is garbage
-		/// </summary>
-		public long BinarySize
-		{
-			get { return LengthInSectors * 2352; }
-		}
-
-		/// <summary>
-		/// Determines which track of session 0 is at the specified LBA.
+		/// Determines which track of session 1 is at the specified LBA.
 		/// Returns null if it's before track 1
 		/// </summary>
 		public Track SeekTrack(int lba)
 		{
 			var ses = Sessions[0];
-			for (int i = 0; i < ses.Tracks.Count; i++)
+			
+			//take care with this loop bounds:
+			for (int i = 1; i <= ses.InformationTrackCount; i++)
 			{
 				var track = ses.Tracks[i];
 				if (track.LBA > lba)
-					return (i==0)?null:ses.Tracks[i - 1];
+					return (i==1)?null:ses.Tracks[i];
 			}
-			return ses.Tracks[ses.Tracks.Count - 1];
+			return ses.Tracks[ses.Tracks.Count];
 		}
 
 		///// <summary>
@@ -94,12 +78,20 @@ namespace BizHawk.Emulation.DiscSystem
 
 				Result = new DiscStructure();
 				var session = new Session();
+				Result.Sessions.Add(null); //placeholder session for reindexing
 				Result.Sessions.Add(session);
 
 				session.Number = 1;
 				
 				if(TOCRaw.FirstRecordedTrackNumber != 1)
 					throw new InvalidOperationException("Unsupported: FirstRecordedTrackNumber != 1");
+
+				//add a lead-in track
+				session.Tracks.Add(new DiscStructure.Track() {
+					Number = 0,
+					Control = EControlQ.None, //TODO - not accurate (take from track 1?)
+					LBA = -150 //TODO - not accurate
+				});
 
 				int ntracks = TOCRaw.LastRecordedTrackNumber - TOCRaw.FirstRecordedTrackNumber + 1;
 				for(int i=0;i<ntracks;i++)
@@ -120,35 +112,72 @@ namespace BizHawk.Emulation.DiscSystem
 						track.Mode = dsr.ReadLBA_Mode(track.LBA);
 					}
 
-					//determine track length according to law specified in comments for track length
-					if (i == ntracks - 1)
-						track.Length = TOCRaw.LeadoutLBA.Sector - track.LBA;
-					else track.Length = (TOCRaw.TOCItems[i + 2].LBATimestamp.Sector - track.LBA);
+					//determine track length according to... how? It isn't clear.
+					//Let's not do this until it's needed.
+					//if (i == ntracks - 1)
+					//  track.Length = TOCRaw.LeadoutLBA.Sector - track.LBA;
+					//else track.Length = (TOCRaw.TOCItems[i + 2].LBATimestamp.Sector - track.LBA);
 				}
+
+				//add lead-out track
+				session.Tracks.Add(new DiscStructure.Track()
+				{
+					Number = 0xA0, //right?
+					Control = EControlQ.None, //TODO - not accurate (take from track 1?)
+					LBA = TOCRaw.LeadoutLBA.Sector
+				});
+
+				//link track list 
+				for (int i = 0; i < session.Tracks.Count - 1; i++)
+				{
+					session.Tracks[i].NextTrack = session.Tracks[i + 1];
+				}
+
+				//other misc fields
+				session.InformationTrackCount = session.Tracks.Count - 2;
 			}
 		}
 
 		public class Session
 		{
+			//Notable omission:
+				//Length of the session
+				//How should this be defined? It's even harder than determining a track length
+
+			/// <summary>
+			/// The LBA of the session's leadout. In other words, for all intents and purposes, the end of the session
+			/// </summary>
+			public int LeadoutLBA { get { return LeadoutTrack.LBA; } }
+
 			/// <summary>
 			/// The session number
 			/// </summary>
 			public int Number;
 
 			/// <summary>
-			/// All the tracks in the session.. but... Tracks[0] should be "Track 1". So beware of this.
-			/// Tracks.Count will be good for counting the useful user information tracks on the disc.
+			/// The number of user information tracks in the session.
+			/// This excludes track 0 and the lead-out track.
+			/// Use this instead of Tracks.Count
+			/// </summary>
+			public int InformationTrackCount;
+
+			/// <summary>
+			/// All the tracks in the session.. but... Tracks[0] is the lead-in track placeholder. Tracks[1] should be "Track 1". So beware of this.
+			/// For a disc with "3 tracks", Tracks.Count will be 5: it includes that lead-in track as well as the leadout track.
+			/// Perhaps we should turn this into a special collection type with no Count or Length, or a method to GetTrack()
 			/// </summary>
 			public List<Track> Tracks = new List<Track>();
-			//I've thought about how to solve this, but it's not easy.
-			//At some point we may need to add a true track 0, too.
-			//Ideas: Dictionary, or a separate PhysicalTracks and UserTracks list, or add a null and make all loops just cope with that
-			//But, the DiscStructure is kind of weak. It might be better to just optimize it for end-users
-			//It seems that the current end-users are happy with tracks being implemented the way it is
 
-			//removed:
-			////the length of the session (should be the sum of all track lengths)
-			//public int length_aba;
+			/// <summary>
+			/// A reference to the first information track (Track 1)
+			/// </summary>
+			public Track FirstInformationTrack { get { return Tracks[1]; } }
+
+			/// <summary>
+			/// A reference to the lead-out track.
+			/// Effectively, the end of the user area of the disc.
+			/// </summary>
+			public Track LeadoutTrack { get { return Tracks[Tracks.Count - 1]; } }
 		}
 
 		/// <summary>
@@ -184,11 +213,10 @@ namespace BizHawk.Emulation.DiscSystem
 				//Indices may need scanning sector by sector. 
 				//It's unlikely that any software would be needing indices anyway.
 				//We should add another index scanning service if that's ever needed.
-				//(note: a CCD should contain indices, but it's not clear whether it's required. logically it wshouldnt be)
+				//(note: a CCD should contain indices, but it's not clear whether it's required. logically it shouldnt be)
 			//Notable omission:
-				//Mode (0,1,2) 
-				//Modes 1 and 2 can't be generally distinguished. 
-				//It's a relatively easy heuristic, though: just read the first sector of each track.
+				//Length of the track.
+				//How should this be defined? Between which indices? It's really hard.
 
 			//These omissions could be handled by ReadStructure() policies which permit the scanning of the entire disc.
 			//After that, they could be cached in here.
@@ -228,17 +256,9 @@ namespace BizHawk.Emulation.DiscSystem
 			public int LBA;
 
 			/// <summary>
-			/// The length of the track, counted from its index 1 to the next track.
-			/// TODO - Shouldn't it exclude the post-gap?
-			/// NO - in at least one place (CDAudio) this is used.. and.. it should probably play through the post-gap
-			/// That just goes to show how ill-defined this concept is
+			/// The next track in the session. null for the leadout track of a session.
 			/// </summary>
-			public int Length;
-
-			///// <summary>
-			///// The length as a timestamp (for accessing as a MM:SS:FF)
-			///// </summary>
-			//public Timestamp FriendlyLength { get { return new Timestamp(Length); } }
+			public Track NextTrack;
 		}
 
 		public class Index
@@ -247,19 +267,6 @@ namespace BizHawk.Emulation.DiscSystem
 			public int LBA;
 		}
 
-		//public void AnalyzeLengthsFromIndexLengths()
-		//{
-		//  //this is a little more complex than it looks, because the length of a thing is not determined by summing it
-		//  //but rather by the difference in lbas between start and end
-		//  LengthInSectors = 0;
-		//  foreach (var session in Sessions)
-		//  {
-		//    var firstTrack = session.Tracks[0];
-		//    var lastTrack = session.Tracks[session.Tracks.Count - 1];
-		//    session.length_aba = lastTrack.Indexes[0].aba + lastTrack.Length - firstTrack.Indexes[0].aba;
-		//    LengthInSectors += session.length_aba;
-		//  }
-		//}
 	}
 
 }

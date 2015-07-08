@@ -19,15 +19,16 @@ namespace BizHawk.Client.DiscoHawk
 			var dsr = new DiscSectorReader(disc);
 
 			bool confirmed = false;
-			var tracks = disc.Structure.Sessions[0].Tracks;
+			var tracks = disc.Session1.Tracks;
 			foreach (var track in tracks)
 			{
 				if (!track.IsAudio)
 					continue;
 
-				var waveData = new byte[track.Length * 2352];
+				int trackLength = track.NextTrack.LBA - track.LBA;
+				var waveData = new byte[trackLength * 2352];
 				int startLba = track.LBA;
-				for (int sector = 0; sector < track.Length; sector++)
+				for (int sector = 0; sector < trackLength; sector++)
 					dsr.ReadLBA_2352(startLba + sector, waveData, sector * 2352);
 
 				string mp3Path = string.Format("{0} - Track {1:D2}.mp3", Path.Combine(path, filebase), track.Number);

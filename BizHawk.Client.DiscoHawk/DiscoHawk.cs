@@ -379,9 +379,9 @@ namespace BizHawk.Client.DiscoHawk
 				};
 
 				//verify sector count
-				if (src_disc.LBACount != dst_disc.LBACount)
+				if (src_disc.Session1.LeadoutLBA != dst_disc.Session1.LeadoutLBA)
 				{
-					sw.Write("LBACount count {0} vs {1}\n", src_disc.LBACount, dst_disc.LBACount);
+					sw.Write("LeadoutTrack.LBA {0} vs {1}\n", src_disc.Session1.LeadoutTrack.LBA, dst_disc.Session1.LeadoutTrack.LBA);
 					goto SKIPPO;
 				}
 
@@ -442,12 +442,12 @@ namespace BizHawk.Client.DiscoHawk
 				};
 
 				//verify each sector contents
-				int nSectors = src_disc.LBACount;
+				int nSectors = src_disc.Session1.LeadoutLBA;
 				for (int lba = -150; lba < nSectors; lba++)
 				{
 					if (verbose)
 						if (lba % 1000 == 0)
-							Console.WriteLine("LBA {0} of {1}", lba, src_disc.LBACount);
+							Console.WriteLine("LBA {0} of {1}", lba, nSectors);
 
 					if (cancelToken != null)
 						if (cancelToken.Token.IsCancellationRequested)

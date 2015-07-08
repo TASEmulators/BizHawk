@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			SectorSize = 2048;
 			Disc = disc;
-			NumSectors = disc.LBACount;
+			NumSectors = disc.Session1.LeadoutLBA;
 			dsr = new DiscSectorReader(disc);
 
 			//following the provided view

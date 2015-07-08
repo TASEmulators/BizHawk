@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				cbReadTOC = ShockDisc_ReadTOC;
 				cbReadLBA = ShockDisc_ReadLBA2448;
 				this.cbActivity = cbActivity;
-				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.LBACount, cbReadTOC, cbReadLBA, true);
+				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.Session1.LeadoutLBA, cbReadTOC, cbReadLBA, true);
 			}
 
 			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;

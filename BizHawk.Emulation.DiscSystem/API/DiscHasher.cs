@@ -20,13 +20,13 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			byte[] buffer = new byte[512 * 2352];
 			DiscSectorReader dsr = new DiscSectorReader(disc);
-			foreach (var track in disc.Structure.Sessions[0].Tracks)
+			foreach (var track in disc.Session1.Tracks)
 			{
 				if (track.IsAudio)
 					continue;
 
-				int lba_len = Math.Min(track.Length, 512);
-				for (int s = 0; s < 512 && s < track.Length; s++)
+				int lba_len = Math.Min(track.NextTrack.LBA, 512);
+				for (int s = 0; s < 512 && s < lba_len; s++)
 					dsr.ReadLBA_2352(track.LBA + s, buffer, s * 2352);
 
 				return buffer.HashMD5(0, lba_len * 2352);

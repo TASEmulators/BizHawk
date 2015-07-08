@@ -392,13 +392,13 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		int CD_ReadTOC(IntPtr dest)
 		{
 			// this stuff from yabause's cdbase.c.  don't ask me to explain it
+			//TODO - we could just get this out of the actual TOC, it's the same thing
 
-			var TOC = CD.Structure;
 			int[] rTOC = new int[102];
-			var ses = TOC.Sessions[0];
+			var ses = CD.Session1;
 			int ntrk = ses.Tracks.Count;
 
-			for (int i = 0; i < 99; i++)
+			for (int i = 1; i <= 99; i++)
 			{
 				if (i < ntrk)
 				{

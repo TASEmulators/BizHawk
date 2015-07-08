@@ -52,6 +52,7 @@
     </Compile>
     <Compile Include="API\Disc.API.cs" />
     <Compile Include="API\Disc.ID.cs" />
+    <Compile Include="API\DiscExceptions.cs" />
     <Compile Include="API\DiscHasher.cs" />
     <Compile Include="API\DiscSectorReader.cs" />
     <Compile Include="API\DiscStream.cs" />

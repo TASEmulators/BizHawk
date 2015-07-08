@@ -50,11 +50,14 @@ namespace BizHawk.Emulation.DiscSystem
 
 		public void PlayTrack(int track)
 		{
-			if (track < 1 || track > Disc.Structure.Sessions[0].Tracks.Count)
+			if (track < 1 || track > Disc.Session1.InformationTrackCount)
 				return;
 
-			StartLBA = Disc.Structure.Sessions[0].Tracks[track - 1].LBA;
-			EndLBA = StartLBA + Disc.Structure.Sessions[0].Tracks[track - 1].Length;
+			StartLBA = Disc.Session1.Tracks[track].LBA;
+			
+			//play until the beginning of the next track (?)
+			EndLBA = Disc.Session1.Tracks[track + 1].LBA;
+
 			PlayingTrack = track;
 			CurrentSector = StartLBA;
 			SectorOffset = 0;
@@ -71,7 +74,9 @@ namespace BizHawk.Emulation.DiscSystem
 
 			PlayingTrack = track.Number;
 			StartLBA = lba;
-			EndLBA = track.LBA + track.Length;
+
+			//play until the beginning of the next track (?)
+			EndLBA = Disc.Session1.Tracks[track.Number + 1].LBA;
 
 			CurrentSector = StartLBA;
 			SectorOffset = 0;
@@ -123,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			if (CachedSector != CurrentSector)
 			{
-				if (CurrentSector >= Disc.LBACount)
+				if (CurrentSector >= Disc.Session1.LeadoutLBA)
 					Array.Clear(SectorCache, 0, 2352); // request reading past end of available disc
 				else
 					DiscSectorReader.ReadLBA_2352(CurrentSector, SectorCache, 0);

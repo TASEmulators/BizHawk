@@ -422,7 +422,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x80: // Set start offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					audioStartLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].LBA;
+					audioStartLBA = disc.Session1.Tracks[trackNo].LBA;
 					break;
 			}
 
@@ -457,10 +457,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x80: // Set end offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					if (trackNo - 1 >= disc.Structure.Sessions[0].Tracks.Count)
-						audioEndLBA = disc.LBACount;
+					if (trackNo - 1 >= disc.Session1.Tracks.Count)
+						audioEndLBA = disc.Session1.LeadoutLBA;
 					else
-						audioEndLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].LBA;
+						audioEndLBA = disc.Session1.Tracks[trackNo].LBA;
 					break;
 			}
 
@@ -530,13 +530,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					{
 						DataIn.Clear();
 						DataIn.Enqueue(0x01);
-						DataIn.Enqueue(((byte)disc.Structure.Sessions[0].Tracks.Count).BinToBCD());
+						DataIn.Enqueue(((byte)disc.Session1.Tracks.Count).BinToBCD());
 						SetPhase(BusPhase_DataIn);
 						break;
 					}
 				case 1: // return total disc length in minutes/seconds/frames
 					{
-						int totalLbaLength = disc.LBACount;
+						//zero 07-jul-2015 - I may have broken this
+						int totalLbaLength = disc.Session1.LeadoutLBA;
 
 						byte m, s, f;
 						Disc.ConvertLBAtoMSF(totalLbaLength, out m, out s, out f);
@@ -548,20 +549,18 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						SetPhase(BusPhase_DataIn);
 						break;
 					}
-				case 2: // Return starting position of specified track in MSF format
+				case 2: // Return starting position of specified track in MSF format. TODO - did zero adapt this right? track indexing might be off
 					{
 						int track = CommandBuffer[2].BCDtoBin();
-						var tracks = disc.Structure.Sessions[0].Tracks;
+						var tracks = disc.Session1.Tracks;
 						if (CommandBuffer[2] > 0x99)
 							throw new Exception("invalid track number BCD request... is something I need to handle?");
 						if (track == 0) track = 1;
-						track--;
-
 
 						int lbaPos;
 
-						if (track > tracks.Count)
-							lbaPos = disc.TOCRaw.LeadoutLBA.Sector; //zero 03-jul-2015 - did I adapt this right?
+						if (track > disc.Session1.InformationTrackCount)
+							lbaPos = disc.Session1.LeadoutLBA; //zero 03-jul-2015 - did I adapt this right?
 						else
 							lbaPos = tracks[track].LBA;
 
@@ -573,7 +572,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						DataIn.Enqueue(s.BinToBCD());
 						DataIn.Enqueue(f.BinToBCD());
 
-						if (track > tracks.Count || disc.Structure.Sessions[0].Tracks[track].IsAudio)
+						if (track > tracks.Count || disc.Session1.Tracks[track].IsAudio)
 							DataIn.Enqueue(0);
 						else
 							DataIn.Enqueue(4);
