@@ -43,7 +43,6 @@ namespace BizHawk.Emulation.DiscSystem
 			var synth = new SS_MednaDisc();
 
 			//make sector interfaces:
-			var pregap_sector_zero = new Sector_Zero();
 			for (int i = 0; i < 150; i++)
 			{
 				disc.Sectors.Add(synth);

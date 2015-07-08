@@ -155,7 +155,6 @@ namespace BizHawk.Emulation.DiscSystem
 			public void Run()
 			{
 				//TODO: encode_mode2_form2_sector
-				var sz = new Sector_Zero();
 
 				var leadoutTs = Disc.TOCRaw.LeadoutLBA;
 				var lastTrackTOCItem = Disc.TOCRaw.TOCItems[Disc.TOCRaw.LastRecordedTrackNumber]; //NOTE: in case LastRecordedTrackNumber is al ie, this will malfunction

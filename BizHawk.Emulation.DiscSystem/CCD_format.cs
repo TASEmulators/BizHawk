@@ -537,7 +537,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
 			//TODO - THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
-			var leadin_sector_zero = new Sector_Zero();
 			for (int i = 0; i < 150; i++)
 			{
 				//TODO - YIKES!
