@@ -180,7 +180,8 @@ namespace BizHawk.Client.DBMan
 				string ext = new FileInfo(file).Extension.ToLowerInvariant();
 				using (var disc = Disc.LoadAutomagic(file))
 				{
-					return disc.GetHash();
+					var hasher = new DiscHasher(disc);
+					return hasher.OldHash();
 				}
 			}
 			catch

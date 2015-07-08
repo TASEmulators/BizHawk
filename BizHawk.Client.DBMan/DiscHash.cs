@@ -66,6 +66,33 @@ namespace BizHawk.Client.DBMan
 			}
 		}
 
+		static List<string> FindExtensionsRecurse(string dir, string extUppercaseWithDot)
+		{
+			List<string> ret = new List<string>();
+			Queue<string> dpTodo = new Queue<string>();
+			dpTodo.Enqueue(dir);
+			for (; ; )
+			{
+				string dpCurr;
+				if (dpTodo.Count == 0)
+					break;
+				dpCurr = dpTodo.Dequeue();
+				Parallel.ForEach(new DirectoryInfo(dpCurr).GetFiles(), (fi) =>
+				{
+					if (fi.Extension.ToUpperInvariant() == extUppercaseWithDot)
+						lock (ret)
+							ret.Add(fi.FullName);
+				});
+				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), (di) =>
+				{
+					lock (dpTodo)
+						dpTodo.Enqueue(di.FullName);
+				});
+			}
+
+			return ret;
+		}
+
 		void MyRun(string[] args)
 		{
 			string indir = null;
@@ -84,17 +111,6 @@ namespace BizHawk.Client.DBMan
 					fpOutfile = args[i++];
 			}
 
-			//prepare input
-			var diInput = new DirectoryInfo(indir);
-
-			//prepare output
-			if(dpTemp == null) dpTemp = Path.GetTempFileName() + ".dir";
-			//delete existing files in output
-			foreach (var fi in new DirectoryInfo(dpTemp).GetFiles())
-				fi.Delete();
-			foreach (var di in new DirectoryInfo(dpTemp).GetDirectories())
-				di.Delete(true);
-			
 			using(var outf = new StreamWriter(fpOutfile))
 			{
 
@@ -102,84 +118,67 @@ namespace BizHawk.Client.DBMan
 				object olock = new object();
 				int ctr = 0;
 
+				var todo = FindExtensionsRecurse(indir, ".CUE");
+
+				int progress = 0;
 
 				//loop over games
 				var po = new ParallelOptions();
 				po.MaxDegreeOfParallelism = Environment.ProcessorCount - 1;
-				Parallel.ForEach(diInput.GetFiles("*.7z"), po, (fi) =>
+				//po.MaxDegreeOfParallelism = 1;
+				Parallel.ForEach(todo, po, (fiCue) =>
 				{
+					string name = Path.GetFileNameWithoutExtension(fiCue);
+					
+					//if (!name.Contains("Arc the Lad II"))
+					//  return;
+
 					CRC32 crc = new CRC32();
-					byte[] discbuf = new byte[2352*28];
-
-					int myctr;
-					lock (olock)
-						myctr = ctr++;
-
-					string mydpTemp = Path.Combine(dpTemp,myctr.ToString());
-
-					var mydiTemp = new DirectoryInfo(mydpTemp);
-					mydiTemp.Create();
-
-					var process = new System.Diagnostics.Process();
-					process.StartInfo.UseShellExecute = false;
-					process.StartInfo.RedirectStandardOutput = true;
-					process.StartInfo.FileName = "7z.exe";
-					process.StartInfo.Arguments = string.Format("x -o\"{1}\" \"{0}\"", fi.FullName, mydiTemp.FullName);
-					process.Start();
-					job.AddProcess(process.Handle);
-
-					//if we need it
-					//for (; ; )
-					//{
-					//  int c = process.StandardOutput.Read();
-					//  if (c == -1)
-					//    break;
-					//  Console.Write((char)c);
-					//}
-					process.WaitForExit(); //just in case
+					byte[] buffer2352 = new byte[2352];
 
 					//now look for the cue file
-					var fiCue = mydiTemp.GetFiles("*.cue").FirstOrDefault();
-					if (fiCue == null)
+					using (var disc = Disc.LoadAutomagic(fiCue))
 					{
-						Console.WriteLine("MISSING CUE FOR: " + fi.Name);
-						outf.WriteLine("MISSING CUE FOR: " + fi.Name);
-						Console.Out.Flush();
-					}
-					else
-					{
-						using (var disc = Disc.LoadAutomagic(fiCue.FullName))
-						{
-							//generate a hash with our own custom approach
-							//basically, the "TOC" and a few early sectors completely
-							crc.Add(disc.LBACount);
-							crc.Add(disc.Structure.Sessions[0].Tracks.Count);
-							foreach (var track in disc.Structure.Sessions[0].Tracks)
-							{
-								crc.Add(track.Start_ABA);
-								crc.Add(track.Length);
-							}
-							//ZAMMO: change to disc sector reader, maybe a new class to read multiple
-							disc.ReadLBA_2352_Flat(0, discbuf, 0, discbuf.Length);
-							crc.Add(discbuf, 0, discbuf.Length);
+						var dsr = new DiscSectorReader(disc);
 
-							lock (olock)
+						//generate a hash with our own custom approach
+						//basically, the TOC and a few early sectors completely
+						//note: be sure to hash the leadout track, "A Ressha de Ikou 4" differs only by the track 1 / disc length between 1.0 and 1.1
+						//crc.Add((int)disc.TOC.Session1Format);
+						//crc.Add(disc.TOC.FirstRecordedTrackNumber);
+						//crc.Add(disc.TOC.LastRecordedTrackNumber);
+						//for (int i = 1; i <= 100; i++)
+						//{
+						//  crc.Add((int)disc.TOC.TOCItems[i].Control);
+						//  crc.Add(disc.TOC.TOCItems[i].Exists ? 1 : 0);
+						//  crc.Add((int)disc.TOC.TOCItems[i].LBATimestamp.Sector);
+						//}
+
+						//"Arc the Lad II (J) 1.0 and 1.1 conflict up to 25 sectors (so use 26)
+						//Tekken 3 (Europe) (Alt) and Tekken 3 (Europe) conflict in track 2 and 3 unfortunately, not sure what to do about this yet
+						for (int i = 0; i < 26; i++)
+						{
+							dsr.ReadLBA_2352(i, buffer2352, 0);
+							crc.Add(buffer2352, 0, 2352);
+						}
+
+						lock (olock)
+						{
+							progress++;
+							Console.WriteLine("{0}/{1} [{2:X8}] {3}", progress, todo.Count, crc.Result, Path.GetFileNameWithoutExtension(fiCue));
+							outf.WriteLine("[{0:X8}] {1}", crc.Result, name);
+							if (FoundHashes.ContainsKey(crc.Result))
 							{
-								Console.WriteLine("[{0:X8}] {1}", crc.Result, fi.Name);
-								outf.WriteLine("[{0:X8}] {1}", crc.Result, fi.Name);
-								if (FoundHashes.ContainsKey(crc.Result))
-								{
-									Console.WriteLine("--> COLLISION WITH: ", FoundHashes[crc.Result]);
-									outf.WriteLine("--> COLLISION WITH: ", FoundHashes[crc.Result]);
-								}
-								Console.Out.Flush();
+								Console.WriteLine("--> COLLISION WITH: {0}", FoundHashes[crc.Result]);
+								outf.WriteLine("--> COLLISION WITH: {0}", FoundHashes[crc.Result]);
 							}
+							else
+								FoundHashes[crc.Result] = name;
+
+							Console.Out.Flush();
 						}
 					}
 
-					foreach (var fsi in mydiTemp.GetFileSystemInfos())
-						fsi.Delete();
-					mydiTemp.Delete();
 
 				}); //major loop
 
