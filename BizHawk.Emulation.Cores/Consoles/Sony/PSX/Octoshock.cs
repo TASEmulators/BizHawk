@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 				//todo - cache reader
 				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
-				dsr.ReadLBA_2442(lba, SectorBuffer, 0);
+				dsr.ReadLBA_2448(lba, SectorBuffer, 0);
 				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
 
 				//if (subcodeLog)

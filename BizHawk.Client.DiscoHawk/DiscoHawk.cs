@@ -451,8 +451,8 @@ namespace BizHawk.Client.DiscoHawk
 						if (cancelToken.Token.IsCancellationRequested)
 							return false;
 
-					src_dsr.ReadLBA_2442(lba, src_databuf, 0);
-					dst_dsr.ReadLBA_2442(lba, dst_databuf, 0);
+					src_dsr.ReadLBA_2448(lba, src_databuf, 0);
+					dst_dsr.ReadLBA_2448(lba, dst_databuf, 0);
 
 					//check the header
 					for (int b = 0; b < 16; b++)

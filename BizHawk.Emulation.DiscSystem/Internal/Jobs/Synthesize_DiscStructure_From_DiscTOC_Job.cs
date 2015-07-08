@@ -72,9 +72,6 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				session.Tracks[i].NextTrack = session.Tracks[i + 1];
 			}
-
-			//other misc fields
-			session.InformationTrackCount = session.Tracks.Count - 2;
 		}
 	}
 }

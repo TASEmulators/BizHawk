@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// This excludes track 0 and the lead-out track.
 			/// Use this instead of Tracks.Count
 			/// </summary>
-			public int InformationTrackCount;
+			public int InformationTrackCount { get { return Tracks.Count - 2; } }
 
 			/// <summary>
 			/// All the tracks in the session.. but... Tracks[0] is the lead-in track placeholder. Tracks[1] should be "Track 1". So beware of this.
@@ -52,6 +52,11 @@ namespace BizHawk.Emulation.DiscSystem
 			/// A reference to the first information track (Track 1)
 			/// </summary>
 			public Track FirstInformationTrack { get { return Tracks[1]; } }
+
+			/// <summary>
+			/// A reference to the first information track (Track 1)
+			/// </summary>
+			public Track LastInformationTrack { get { return Tracks[InformationTrackCount]; } }
 
 			/// <summary>
 			/// A reference to the lead-out track.

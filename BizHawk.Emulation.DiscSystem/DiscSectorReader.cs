@@ -102,9 +102,9 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
-		/// Reads the absolutely complete 2442 byte sector including all the user data and subcode
+		/// Reads the absolutely complete 2448 byte sector including all the user data and subcode
 		/// </summary>
-		public int ReadLBA_2442(int lba, byte[] buffer, int offset)
+		public int ReadLBA_2448(int lba, byte[] buffer, int offset)
 		{
 			var sector = disc.Sectors[lba + 150];
 

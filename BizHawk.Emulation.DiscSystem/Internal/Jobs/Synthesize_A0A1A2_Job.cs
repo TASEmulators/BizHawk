@@ -39,6 +39,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public void Run(List<RawTOCEntry> entries)
 		{
+			//NOTE: entries are inserted at the beginning due to observations of CCD indicating they might need to be that way
+			//Since I'm being asked to synthesize them here, I guess I can put them in whatever order I want, can't I?
+
 			SubchannelQ sq = new SubchannelQ();
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
@@ -60,7 +63,7 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			sq.ap_frame.DecimalValue = 0;
 
-			entries.Add(new RawTOCEntry { QData = sq });
+			entries.Insert(0, new RawTOCEntry { QData = sq });
 
 			//last recorded track number:
 			sq.q_index.BCDValue = 0xA1;
@@ -68,14 +71,13 @@ namespace BizHawk.Emulation.DiscSystem
 			sq.ap_sec.DecimalValue = 0;
 			sq.ap_frame.DecimalValue = 0;
 
-			entries.Add(new RawTOCEntry { QData = sq });
+			entries.Insert(1, new RawTOCEntry { QData = sq });
 
 			//leadout:
 			sq.q_index.BCDValue = 0xA2;
 			sq.AP_Timestamp = IN_LeadoutTimestamp;
-			
 
-			entries.Add(new RawTOCEntry { QData = sq });
+			entries.Insert(2, new RawTOCEntry { QData = sq });
 		}
 	}
 }

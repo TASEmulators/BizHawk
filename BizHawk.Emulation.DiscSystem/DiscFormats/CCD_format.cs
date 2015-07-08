@@ -368,25 +368,38 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			using (var sw = new StreamWriter(path))
 			{
+				//NOTE: IsoBuster requires the A0,A1,A2 RawTocEntries to be first or else it can't do anything with the tracks
+				//if we ever get them in a different order, we'll have to re-order them here
+
 				sw.WriteLine("[CloneCD]");
 				sw.WriteLine("Version=3");
+				sw.WriteLine();
 				sw.WriteLine("[Disc]");
 				sw.WriteLine("TocEntries={0}", disc.RawTOCEntries.Count);
 				sw.WriteLine("Sessions=1");
 				sw.WriteLine("DataTracksScrambled=0");
 				sw.WriteLine("CDTextLength=0"); //not supported anyway
+				sw.WriteLine();
 				sw.WriteLine("[Session 1]");
 				sw.WriteLine("PreGapMode=2");
 				sw.WriteLine("PreGapSubC=1");
+				sw.WriteLine();
 				for (int i = 0; i < disc.RawTOCEntries.Count; i++)
 				{
 					var entry = disc.RawTOCEntries[i];
+
+					//ehhh something's wrong with how I track these
+					int point = entry.QData.q_index.DecimalValue;
+					if (point == 100) point = 0xA0;
+					if (point == 101) point = 0xA1;
+					if (point == 102) point = 0xA2;
+
 					sw.WriteLine("[Entry {0}]", i);
 					sw.WriteLine("Session=1");
-					sw.WriteLine("Point=0x{0:x2}", entry.QData.q_index);
+					sw.WriteLine("Point=0x{0:x2}", point);
 					sw.WriteLine("ADR=0x{0:x2}", entry.QData.ADR);
 					sw.WriteLine("Control=0x{0:x2}", (int)entry.QData.CONTROL);
-					sw.WriteLine("TrackNo={0}", entry.QData.q_tno);
+					sw.WriteLine("TrackNo={0}", entry.QData.q_tno.DecimalValue);
 					sw.WriteLine("AMin={0}", entry.QData.min.DecimalValue);
 					sw.WriteLine("ASec={0}", entry.QData.sec.DecimalValue);
 					sw.WriteLine("AFrame={0}", entry.QData.frame.DecimalValue);
@@ -396,53 +409,45 @@ namespace BizHawk.Emulation.DiscSystem
 					sw.WriteLine("PSec={0}", entry.QData.ap_sec.DecimalValue);
 					sw.WriteLine("PFrame={0}", entry.QData.ap_frame.DecimalValue);
 					sw.WriteLine("PLBA={0}", entry.QData.AP_Timestamp.Sector - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
+					sw.WriteLine();
 				}
 
-				//TODO - this is nonsense, right? the whole CCD track and index list isn't really needed.
-				//at least not for us when we'll always be writing a .sub file
-				//for (int i = 0; i < disc.Structure.Sessions[0].Tracks.Count; i++)
-				//{
-				//  var st = disc.Structure.Sessions[0].Tracks[i];
-				//  sw.WriteLine("[TRACK {0}]", st.Number);
-				//  sw.WriteLine("MODE={0}", st.ModeHeuristic); //MAYBE A BAD PLAN!
-				//  //dont write an index=0 identical to an index=1. It might work, or it might not.
-				//  int idx = 0;
-				//  if (st.Indexes[0].LBA == st.Indexes[1].LBA)
-				//    idx = 1;
-				//  for (; idx < st.Indexes.Count; idx++)
-				//  {
-				//    sw.WriteLine("INDEX {0}={1}", st.Indexes[idx].Number, st.Indexes[idx].LBA);
-				//  }
-				//}
-
+				//this is nonsense, really. the whole CCD track list shouldn't be needed.
+				//but in order to make a high quality CCD which can be inspected by various other tools, we need it
+				//now, regarding the indexes.. theyre truly useless. having indexes written out with the tracks is bad news.
+				//index information is only truly stored in subQ
+				for (int tnum = 1; tnum <= disc.Session1.LastInformationTrack.Number; tnum++)
+				{
+					var track = disc.Session1.Tracks[tnum];
+					sw.WriteLine("[TRACK {0}]", track.Number);
+					sw.WriteLine("MODE={0}", track.Mode);
+					//indexes are BS, dont write them. but we certainly need an index 1
+					sw.WriteLine("INDEX 1={0}", track.LBA);
+					sw.WriteLine();
+				}
 			}
 
 			//TODO - actually re-add
 			//dump the img and sub
 			//TODO - acquire disk size first
-			//string imgPath = Path.ChangeExtension(path, ".img");
-			//string subPath = Path.ChangeExtension(path, ".sub");
-			//var buffer = new byte[2352];
-			//using (var s = File.OpenWrite(imgPath))
-			//{
-			//  DiscSectorReader dsr = new DiscSectorReader(disc);
+			string imgPath = Path.ChangeExtension(path, ".img");
+			string subPath = Path.ChangeExtension(path, ".sub");
+			var buf2448 = new byte[2448];
+		  DiscSectorReader dsr = new DiscSectorReader(disc);
 
-			//  //TODO - dont write leadout sectors, if they exist!
-			//  for (int aba = 150; aba < disc.Sectors.Count; aba++)
-			//  {
-			//    dsr.ReadLBA_2352(aba - 150, buffer, 0);
-			//    s.Write(buffer, 0, 2352);
-			//  }
-			//}
-			//using (var s = File.OpenWrite(subPath))
-			//{
-			//  //TODO - dont write leadout sectors, if they exist!
-			//  for (int aba = 150; aba < disc.Sectors.Count; aba++)
-			//  {
-			//    disc.ReadLBA_SectorEntry(aba - 150).SubcodeSector.ReadSubcodeDeinterleaved(buffer, 0);
-			//    s.Write(buffer, 0, 96);
-			//  }
-			//}
+			using (var imgFile = File.OpenWrite(imgPath))
+				using (var subFile = File.OpenWrite(subPath))
+				{
+
+					int nLBA = disc.Session1.LeadoutLBA;
+					for (int lba = 0; lba < nLBA; lba++)
+					{
+						dsr.ReadLBA_2448(lba, buf2448, 0);
+						imgFile.Write(buf2448, 0, 2352);
+						subFile.Write(buf2448, 2352, 96);
+					}
+				}
+			
 		}
 
 		class SS_CCD : ISectorSynthJob2448
