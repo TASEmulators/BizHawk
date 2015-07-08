@@ -12,51 +12,6 @@ namespace BizHawk.Client.DBMan
 {
 	class DiscHash
 	{
-		public class CRC32
-		{
-			// Lookup table for speed.
-			private static readonly uint[] CRC32Table;
-
-			static CRC32()
-			{
-				CRC32Table = new uint[256];
-				for (uint i = 0; i < 256; ++i)
-				{
-					uint crc = i;
-					for (int j = 8; j > 0; --j)
-					{
-						if ((crc & 1) == 1)
-							crc = ((crc >> 1) ^ 0xEDB88320);
-						else
-							crc >>= 1;
-					}
-					CRC32Table[i] = crc;
-				}
-			}
-
-			uint current = 0xFFFFFFFF;
-			public void Add(byte[] data, int offset, int size)
-			{
-				for (int i = 0; i < size; i++)
-				{
-					byte b = data[offset + i];
-					current = (((Result) >> 8) ^ CRC32Table[b ^ ((Result) & 0xFF)]);
-				}
-			}
-
-			byte[] smallbuf = new byte[8];
-			public void Add(int data)
-			{
-				smallbuf[0] = (byte)((data) & 0xFF);
-				smallbuf[1] = (byte)((data >> 8) & 0xFF);
-				smallbuf[2] = (byte)((data >> 16) & 0xFF);
-				smallbuf[3] = (byte)((data >> 24) & 0xFF);
-				Add(smallbuf, 0, 4);
-			}
-
-			public uint Result { get { return current ^ 0xFFFFFFFF; } }
-		}
-
 		Job job;
 		public void Run(string[] args)
 		{
@@ -116,66 +71,42 @@ namespace BizHawk.Client.DBMan
 
 				Dictionary<uint, string> FoundHashes = new Dictionary<uint, string>();
 				object olock = new object();
-				int ctr = 0;
 
 				var todo = FindExtensionsRecurse(indir, ".CUE");
 
 				int progress = 0;
 
-				//loop over games
+				//loop over games (parallel doesnt work well when reading tons of data over the network, as we are here to do the complete redump hash)
 				var po = new ParallelOptions();
-				po.MaxDegreeOfParallelism = Environment.ProcessorCount - 1;
-				//po.MaxDegreeOfParallelism = 1;
+				//po.MaxDegreeOfParallelism = Environment.ProcessorCount - 1;
+				po.MaxDegreeOfParallelism = 1;
 				Parallel.ForEach(todo, po, (fiCue) =>
 				{
 					string name = Path.GetFileNameWithoutExtension(fiCue);
-					
-					//if (!name.Contains("Arc the Lad II"))
-					//  return;
-
-					CRC32 crc = new CRC32();
-					byte[] buffer2352 = new byte[2352];
 
 					//now look for the cue file
 					using (var disc = Disc.LoadAutomagic(fiCue))
 					{
-						var dsr = new DiscSectorReader(disc);
+						var hasher = new DiscHasher(disc);
 
-						//generate a hash with our own custom approach
-						//basically, the TOC and a few early sectors completely
-						//note: be sure to hash the leadout track, "A Ressha de Ikou 4" differs only by the track 1 / disc length between 1.0 and 1.1
-						//crc.Add((int)disc.TOC.Session1Format);
-						//crc.Add(disc.TOC.FirstRecordedTrackNumber);
-						//crc.Add(disc.TOC.LastRecordedTrackNumber);
-						//for (int i = 1; i <= 100; i++)
-						//{
-						//  crc.Add((int)disc.TOC.TOCItems[i].Control);
-						//  crc.Add(disc.TOC.TOCItems[i].Exists ? 1 : 0);
-						//  crc.Add((int)disc.TOC.TOCItems[i].LBATimestamp.Sector);
-						//}
-
-						//"Arc the Lad II (J) 1.0 and 1.1 conflict up to 25 sectors (so use 26)
-						//Tekken 3 (Europe) (Alt) and Tekken 3 (Europe) conflict in track 2 and 3 unfortunately, not sure what to do about this yet
-						for (int i = 0; i < 26; i++)
-						{
-							dsr.ReadLBA_2352(i, buffer2352, 0);
-							crc.Add(buffer2352, 0, 2352);
-						}
+						uint bizHashId = hasher.Calculate_PSX_BizIDHash();
+						uint redumpHash = hasher.Calculate_PSX_RedumpHash();
 
 						lock (olock)
 						{
 							progress++;
-							Console.WriteLine("{0}/{1} [{2:X8}] {3}", progress, todo.Count, crc.Result, Path.GetFileNameWithoutExtension(fiCue));
-							outf.WriteLine("[{0:X8}] {1}", crc.Result, name);
-							if (FoundHashes.ContainsKey(crc.Result))
+							Console.WriteLine("{0}/{1} [{2:X8}] {3}", progress, todo.Count, bizHashId, Path.GetFileNameWithoutExtension(fiCue));
+							outf.WriteLine("bizhash:{0:X8} datahash:{1:X8} //{2}", bizHashId, redumpHash, name);
+							if (FoundHashes.ContainsKey(bizHashId))
 							{
-								Console.WriteLine("--> COLLISION WITH: {0}", FoundHashes[crc.Result]);
-								outf.WriteLine("--> COLLISION WITH: {0}", FoundHashes[crc.Result]);
+								Console.WriteLine("--> COLLISION WITH: {0}", FoundHashes[bizHashId]);
+								outf.WriteLine("--> COLLISION WITH: {0}", FoundHashes[bizHashId]);
 							}
 							else
-								FoundHashes[crc.Result] = name;
+								FoundHashes[bizHashId] = name;
 
 							Console.Out.Flush();
+							outf.Flush();
 						}
 					}
 
