@@ -168,6 +168,7 @@ namespace BizHawk.Client.Common
 			LagLog.RemoveFrom(frame);
 			StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
+            base.Rerecords++;
 		}
 
 		/// <summary>

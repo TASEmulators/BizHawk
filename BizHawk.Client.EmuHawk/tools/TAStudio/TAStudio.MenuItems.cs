@@ -580,7 +580,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
 			IEnumerable<TasMovieMarker> markers = CurrentTasMovie.Markers.Where(m => TasView.SelectedRows.Contains(m.Frame));
-			foreach (TasMovieMarker m in markers)
+            foreach (TasMovieMarker m in markers.ToList())
 			{
 				CurrentTasMovie.Markers.Remove(m);
 			}
