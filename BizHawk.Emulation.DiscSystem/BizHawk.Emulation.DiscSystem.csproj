@@ -55,6 +55,8 @@
     <Compile Include="API\DiscIdentifier.cs" />
     <Compile Include="API\DiscSectorReader.cs" />
     <Compile Include="API\DiscStream.cs" />
+    <Compile Include="API\DiscStructure.cs" />
+    <Compile Include="API\TOCRaw.cs" />
     <Compile Include="Blobs\Blob_ECM.cs" />
     <Compile Include="Blobs\Blob_RawFile.cs" />
     <Compile Include="Blobs\Blob_WaveFile.cs" />
@@ -92,8 +94,6 @@
     <Compile Include="SBI_format.cs" />
     <Compile Include="SectorInterfaces.cs" />
     <Compile Include="Subcode.cs" />
-    <Compile Include="TOC\DiscStructure.cs" />
-    <Compile Include="TOC\TOCRaw.cs" />
     <Compile Include="TOC_format.cs" />
   </ItemGroup>
   <ItemGroup>
