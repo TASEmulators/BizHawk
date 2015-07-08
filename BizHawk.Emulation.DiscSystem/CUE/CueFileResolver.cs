@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	partial class CUE_Format2
+	partial class CUE_Context
 	{
 		/// <summary>
 		/// The CUE module user's hook for controlling how cue member file paths get resolved

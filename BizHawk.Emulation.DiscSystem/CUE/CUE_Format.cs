@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	public partial class CUE_Format2
+	public partial class CUE_Context
 	{
 		/// <summary>
 		/// The CueFileResolver to be used by this instance

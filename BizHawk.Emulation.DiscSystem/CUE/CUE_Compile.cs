@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	partial class CUE_Format2
+	partial class CUE_Context
 	{
 		internal class CompiledCDText
 		{
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// The context used for this compiling job
 			/// TODO - rename something like context
 			/// </summary>
-			public CUE_Format2 IN_CueFormat;
+			public CUE_Context IN_CueFormat;
 
 			/// <summary>
 			/// output: high level disc info

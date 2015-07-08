@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-	partial class CUE_Format2
+	partial class CUE_Context
 	{
 		public class ParseCueJob : LoggedJob
 		{
