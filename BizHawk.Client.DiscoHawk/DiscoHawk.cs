@@ -357,13 +357,13 @@ namespace BizHawk.Client.DiscoHawk
 				var src_dsr = new DiscSectorReader(src_disc);
 				var dst_dsr = new DiscSectorReader(dst_disc);
 
-				var src_toc = src_disc.TOCRaw;
-				var dst_toc = dst_disc.TOCRaw;
+				var src_toc = src_disc.TOC;
+				var dst_toc = dst_disc.TOC;
 
 				var src_databuf = new byte[2448];
 				var dst_databuf = new byte[2448];
 
-				Action<DiscTOCRaw.TOCItem> sw_dump_toc_one = (item) =>
+				Action<DiscTOC.TOCItem> sw_dump_toc_one = (item) =>
 				{
 					if (!item.Exists)
 						sw.Write("(---missing---)");
@@ -386,12 +386,12 @@ namespace BizHawk.Client.DiscoHawk
 				}
 
 				//verify TOC match
-				if (src_disc.TOCRaw.FirstRecordedTrackNumber != dst_disc.TOCRaw.FirstRecordedTrackNumber
-					|| src_disc.TOCRaw.LastRecordedTrackNumber != dst_disc.TOCRaw.LastRecordedTrackNumber)
+				if (src_disc.TOC.FirstRecordedTrackNumber != dst_disc.TOC.FirstRecordedTrackNumber
+					|| src_disc.TOC.LastRecordedTrackNumber != dst_disc.TOC.LastRecordedTrackNumber)
 				{
 					sw.WriteLine("Mismatch of RecordedTrackNumbers: {0}-{1} vs {2}-{3}",
-						src_disc.TOCRaw.FirstRecordedTrackNumber, src_disc.TOCRaw.LastRecordedTrackNumber,
-						dst_disc.TOCRaw.FirstRecordedTrackNumber, dst_disc.TOCRaw.LastRecordedTrackNumber
+						src_disc.TOC.FirstRecordedTrackNumber, src_disc.TOC.LastRecordedTrackNumber,
+						dst_disc.TOC.FirstRecordedTrackNumber, dst_disc.TOC.LastRecordedTrackNumber
 						);
 					goto SKIPPO;
 				}

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The session format for this TOC
 		/// </summary>
-		public DiscTOCRaw.SessionFormat IN_Session1Format;
+		public SessionFormat IN_Session1Format;
 
 		/// <summary>
 		/// Appends the new entries to the provided list
@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.DiscSystem
 			switch(IN_Session1Format)
 			{
 				//TODO these probably shouldn't be decimal values
-				case DiscTOCRaw.SessionFormat.Type00_CDROM_CDDA: sq.ap_sec.DecimalValue = 0x00; break;
-				case DiscTOCRaw.SessionFormat.Type10_CDI: sq.ap_sec.DecimalValue = 0x10; break;
-				case DiscTOCRaw.SessionFormat.Type20_CDXA: sq.ap_sec.DecimalValue = 0x20; break;
+				case SessionFormat.Type00_CDROM_CDDA: sq.ap_sec.DecimalValue = 0x00; break;
+				case SessionFormat.Type10_CDI: sq.ap_sec.DecimalValue = 0x10; break;
+				case SessionFormat.Type20_CDXA: sq.ap_sec.DecimalValue = 0x20; break;
 				default: throw new InvalidOperationException("Invalid Session1Format");
 			}
 			sq.ap_frame.DecimalValue = 0;

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.DiscSystem
 {
-
 	/// <summary>
 	/// Returns ERRORS for things which will can't be processed any further. Processing of this job will continue though to try to collect the maximum amount of feedback.
 	/// Returns WARNINGS for things which will are irregular or erroneous but later jobs might be able to handle, or which can be worked around by configuration assumptions.

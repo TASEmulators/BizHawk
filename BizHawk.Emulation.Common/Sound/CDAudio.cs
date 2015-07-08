@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Common.Components
 
 		public void PlayStartingAtLba(int lba)
 		{
-			var track = Disc.Structure.SeekTrack(lba);
+			var track = Disc.Session1.SeekTrack(lba);
 			if (track == null) return;
 
 			PlayingTrack = track.Number;

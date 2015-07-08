@@ -93,11 +93,11 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//generate toc and structure:
 				//1. TOCRaw from RawTOCEntries
-				var tocSynth = new DiscTOCRaw.SynthesizeFromRawTOCEntriesJob() { Entries = OUT_Disc.RawTOCEntries };
+				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = OUT_Disc.RawTOCEntries };
 				tocSynth.Run();
-				OUT_Disc.TOCRaw = tocSynth.Result;
+				OUT_Disc.TOC = tocSynth.Result;
 				//2. Structure frmo TOCRaw
-				var structureSynth = new DiscStructure.SynthesizeFromTOCRawJob() { IN_Disc = OUT_Disc, TOCRaw = OUT_Disc.TOCRaw };
+				var structureSynth = new Synthesize_DiscStructure_From_DiscTOC_Job() { IN_Disc = OUT_Disc, TOCRaw = OUT_Disc.TOC };
 				structureSynth.Run();
 				OUT_Disc.Structure = structureSynth.Result;
 			}

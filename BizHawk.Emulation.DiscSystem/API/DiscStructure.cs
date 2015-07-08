@@ -18,126 +18,6 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public List<Session> Sessions = new List<Session>();
 
-
-		/// <summary>
-		/// Determines which track of session 1 is at the specified LBA.
-		/// Returns null if it's before track 1
-		/// </summary>
-		public Track SeekTrack(int lba)
-		{
-			var ses = Sessions[1];
-			
-			//take care with this loop bounds:
-			for (int i = 1; i <= ses.InformationTrackCount; i++)
-			{
-				var track = ses.Tracks[i];
-				if (track.LBA > lba)
-					return (i==1)?null:ses.Tracks[i];
-			}
-			return ses.Tracks[ses.Tracks.Count];
-		}
-
-		///// <summary>
-		///// Synthesizes the DiscStructure from RawTOCEntriesJob
-		///// </summary>
-		//public class SynthesizeFromRawTOCEntriesJob
-		//{
-		//  public IEnumerable<RawTOCEntry> Entries;
-		//  public DiscStructure Result;
-
-		//  public void Run()
-		//  {
-		//    Result = new DiscStructure();
-		//    var session = new Session();
-		//    Result.Sessions.Add(session);
-
-		//    //TODO - are these necessarily in order?
-		//    foreach (var te in Entries)
-		//    {
-		//      int pt = te.QData.q_index.DecimalValue;
-		//      int lba = te.QData.Timestamp.Sector;
-		//      var bcd2 = new BCD2 { BCDValue = (byte)pt };
-		//      if (bcd2.DecimalValue > 99) //A0 A1 A2 leadout and crap
-		//        continue;
-		//      var track = new Track { LBA = lba, Number = pt };
-		//      session.Tracks.Add(track);
-		//    }
-		//  }
-		//}
-
-		public class SynthesizeFromTOCRawJob
-		{
-			public Disc IN_Disc;
-			public DiscTOCRaw TOCRaw;
-			public DiscStructure Result;
-
-			public void Run()
-			{
-				var dsr = new DiscSectorReader(IN_Disc);
-				dsr.Policy.DeterministicClearBuffer = false;
-
-				Result = new DiscStructure();
-				var session = new Session();
-				Result.Sessions.Add(null); //placeholder session for reindexing
-				Result.Sessions.Add(session);
-
-				session.Number = 1;
-				
-				if(TOCRaw.FirstRecordedTrackNumber != 1)
-					throw new InvalidOperationException("Unsupported: FirstRecordedTrackNumber != 1");
-
-				//add a lead-in track
-				session.Tracks.Add(new DiscStructure.Track() {
-					Number = 0,
-					Control = EControlQ.None, //TODO - not accurate (take from track 1?)
-					LBA = -150 //TODO - not accurate
-				});
-
-				int ntracks = TOCRaw.LastRecordedTrackNumber - TOCRaw.FirstRecordedTrackNumber + 1;
-				for(int i=0;i<ntracks;i++)
-				{
-					var item = TOCRaw.TOCItems[i+1];
-					var track = new DiscStructure.Track() { 
-						Number = i+1,
-						Control = item.Control,
-						LBA = item.LBATimestamp.Sector
-					};
-					session.Tracks.Add(track);
-
-					if (!item.IsData)
-						track.Mode = 0;
-					else
-					{
-						//determine the mode by a hardcoded heuristic: check mode of first sector
-						track.Mode = dsr.ReadLBA_Mode(track.LBA);
-					}
-
-					//determine track length according to... how? It isn't clear.
-					//Let's not do this until it's needed.
-					//if (i == ntracks - 1)
-					//  track.Length = TOCRaw.LeadoutLBA.Sector - track.LBA;
-					//else track.Length = (TOCRaw.TOCItems[i + 2].LBATimestamp.Sector - track.LBA);
-				}
-
-				//add lead-out track
-				session.Tracks.Add(new DiscStructure.Track()
-				{
-					Number = 0xA0, //right?
-					Control = EControlQ.None, //TODO - not accurate (take from track 1?)
-					LBA = TOCRaw.LeadoutLBA.Sector
-				});
-
-				//link track list 
-				for (int i = 0; i < session.Tracks.Count - 1; i++)
-				{
-					session.Tracks[i].NextTrack = session.Tracks[i + 1];
-				}
-
-				//other misc fields
-				session.InformationTrackCount = session.Tracks.Count - 2;
-			}
-		}
-
 		public class Session
 		{
 			//Notable omission:
@@ -178,6 +58,24 @@ namespace BizHawk.Emulation.DiscSystem
 			/// Effectively, the end of the user area of the disc.
 			/// </summary>
 			public Track LeadoutTrack { get { return Tracks[Tracks.Count - 1]; } }
+
+			/// <summary>
+			/// Determines which track of the session is at the specified LBA.
+			/// Returns null if it's before track 1
+			/// </summary>
+			public Track SeekTrack(int lba)
+			{
+				var ses = this;
+
+				//take care with this loop bounds:
+				for (int i = 1; i <= ses.InformationTrackCount; i++)
+				{
+					var track = ses.Tracks[i];
+					if (track.LBA > lba)
+						return (i == 1) ? null : ses.Tracks[i];
+				}
+				return ses.Tracks[ses.Tracks.Count];
+			}
 		}
 
 		/// <summary>

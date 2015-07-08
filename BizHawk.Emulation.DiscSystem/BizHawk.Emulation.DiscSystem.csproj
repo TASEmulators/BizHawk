@@ -56,7 +56,7 @@
     <Compile Include="API\DiscSectorReader.cs" />
     <Compile Include="API\DiscStream.cs" />
     <Compile Include="API\DiscStructure.cs" />
-    <Compile Include="API\TOCRaw.cs" />
+    <Compile Include="API\DiscTOC.cs" />
     <Compile Include="Blobs\Blob_ECM.cs" />
     <Compile Include="Blobs\Blob_RawFile.cs" />
     <Compile Include="Blobs\Blob_WaveFile.cs" />
@@ -88,6 +88,9 @@
     <Compile Include="Jobs\LoadSBIJob.cs" />
     <Compile Include="Jobs\LoggedJob.cs" />
     <Compile Include="Jobs\Synthesize_A0A1A2_Job.cs" />
+    <Compile Include="Jobs\Synthesize_DiscStructure_From_DiscTOC_Job.cs" />
+    <Compile Include="Jobs\Synthesize_DiscTOC_From_RawTOCEntries_Job.cs" />
+    <Compile Include="Jobs\Synthesize_Leadout_Job.cs" />
     <Compile Include="M3U_file.cs" />
     <Compile Include="MednaDiscAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,8 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="docs\notes.txt" />
-    <Content Include="docs\todo.txt" />
-    <Content Include="~notes-2015.txt" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

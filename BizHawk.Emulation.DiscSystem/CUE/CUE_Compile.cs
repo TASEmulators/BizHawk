@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.DiscSystem
 		internal class CompiledDiscInfo
 		{
 			public int FirstRecordedTrackNumber, LastRecordedTrackNumber;
-			public DiscTOCRaw.SessionFormat SessionFormat;
+			public SessionFormat SessionFormat;
 		}
 
 		internal class CompiledCueTrack
@@ -182,13 +182,13 @@ namespace BizHawk.Emulation.DiscSystem
 					{
 						case CueFile.TrackType.Mode2_2336:
 						case CueFile.TrackType.Mode2_2352:
-							OUT_CompiledDiscInfo.SessionFormat = DiscTOCRaw.SessionFormat.Type20_CDXA;
+							OUT_CompiledDiscInfo.SessionFormat = SessionFormat.Type20_CDXA;
 							discinfo_session1Format_determined = true;
 							break;
 
 						case CueFile.TrackType.CDI_2336:
 						case CueFile.TrackType.CDI_2352:
-							OUT_CompiledDiscInfo.SessionFormat = DiscTOCRaw.SessionFormat.Type10_CDI;
+							OUT_CompiledDiscInfo.SessionFormat = SessionFormat.Type10_CDI;
 							discinfo_session1Format_determined = true;
 							break;
 
