@@ -2842,13 +2842,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
 
-				if (!IsTurboing)
+				if (IsTurboing)
 				{
-					UpdateToolsAfter();
+					GlobalWin.Tools.FastUpdateAfter();
 				}
 				else
 				{
-					GlobalWin.Tools.FastUpdateAfter();
+					UpdateToolsAfter();
 				}
 
 				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
