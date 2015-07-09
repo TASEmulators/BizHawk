@@ -9,6 +9,8 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Func<int, string, Color?> QueryItemBgColorCallback { get; set; }
 		public Func<int, string, string> QueryItemTextCallback { get; set; }
+		public Func<int, string, Bitmap> QueryItemIconCallback { get; set; }
+
 		public Action<int> GreenzoneInvalidatedCallback { get; set; }
 
 		private Color? GetColorOverride(int index, InputRoll.RollColumn column)
@@ -26,6 +28,16 @@ namespace BizHawk.Client.EmuHawk
 			if (QueryItemTextCallback != null)
 			{
 				return QueryItemTextCallback(index, column.Name);
+			}
+
+			return null;
+		}
+
+		private Bitmap GetIconOverride(int index, InputRoll.RollColumn column)
+		{
+			if (QueryItemIconCallback != null)
+			{
+				return QueryItemIconCallback(index, column.Name);
 			}
 
 			return null;

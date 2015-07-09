@@ -70,6 +70,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap)
 		{
+			var overrideIcon = GetIconOverride(index, column);
+
+			if (overrideIcon != null)
+			{
+				bitmap = overrideIcon;
+				return;
+			}
+
 			var columnName = column.Name;
 
 			if (columnName == MarkerColumnName)

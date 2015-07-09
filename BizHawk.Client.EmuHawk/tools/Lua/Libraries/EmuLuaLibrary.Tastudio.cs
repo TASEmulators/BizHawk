@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using BizHawk.Client.Common;
 using LuaInterface;
+using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -170,6 +171,31 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					return (string)null;
+				};
+			}
+		}
+
+		public void OnQueryItemIcon(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.QueryItemIconCallback = (int index, string name) =>
+				{
+					var result = luaf.Call(index, name);
+					if (result != null)
+					{
+						if (result[0] != null)
+						{
+							string path = result[0].ToString();
+							Icon icon = new Icon(path);
+							if (icon != null)
+							{
+								return icon.ToBitmap();
+							}
+						}
+					}
+
+					return (Bitmap)null;
 				};
 			}
 		}
