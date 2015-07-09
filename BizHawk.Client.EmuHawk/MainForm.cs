@@ -2753,13 +2753,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
 
-				if (!IsTurboing)
+				if (IsTurboing)
 				{
-					GlobalWin.Tools.UpdateToolsBefore();
+					GlobalWin.Tools.FastUpdateBefore();
 				}
 				else
 				{
-					GlobalWin.Tools.FastUpdateBefore();
+					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
 				_runloopFps++;
