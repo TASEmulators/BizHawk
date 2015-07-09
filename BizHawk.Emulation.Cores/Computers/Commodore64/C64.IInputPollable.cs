@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public int LagCount
 		{
 			get { return _lagcount; }
+			set { _lagcount = value; }
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; private set; }

@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public int LagCount
 		{
 			get { return _lagcount; }
+			set { _lagcount = value; }
 		}
 
 		public bool IsLagFrame
