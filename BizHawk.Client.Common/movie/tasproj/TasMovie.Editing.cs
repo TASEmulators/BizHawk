@@ -469,6 +469,11 @@ namespace BizHawk.Client.Common
 		{
 			LagLog.InsertHistoryAt(frame, isLag);
 		}
+
+		public void SetLag(int frame, bool? value)
+		{
+			LagLog[frame] = value;
+		}
 		#endregion
 	}
 }

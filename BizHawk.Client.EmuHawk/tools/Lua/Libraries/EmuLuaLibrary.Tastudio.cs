@@ -111,6 +111,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"setlag",
+			"Sets the lag information for the given frame, if the frame does not exist in the lag log, it will be added. If the value is null, the lag information for that frame will be removed"
+		)]
+		public void SetLag(int frame, bool? value)
+		{
+			if (Engaged())
+			{
+				Tastudio.CurrentTasMovie.SetLag(frame, value);
+			}
+		}
+
+		[LuaMethodAttributes(
 			"hasstate",
 			"Returns whether or not the given frame has a savestate associated with it"
 		)]
