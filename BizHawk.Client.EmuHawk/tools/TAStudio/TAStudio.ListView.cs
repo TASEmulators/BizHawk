@@ -95,43 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#region Event callbacks
-
-		public Func<int, string, Color?> QueryItemBgColorCallback { get; set; }
-
-		private Color? GetColorOverride(int index, InputRoll.RollColumn column)
-		{
-			if (QueryItemBgColorCallback != null)
-			{
-				return QueryItemBgColorCallback(index, column.Name);
-			}
-
-			return null;
-		}
-
-		public Func<int, string, string> QueryItemTextCallback { get; set; }
-
-		private string GetTextOverride(int index, InputRoll.RollColumn column)
-		{
-			if (QueryItemTextCallback != null)
-			{
-				return QueryItemTextCallback(index, column.Name);
-			}
-
-			return null;
-		}
-
-		public Action<int> GreenzoneInvalidatedCallback { get; set; }
-		private void GreenzoneInvalidated(int index)
-		{
-			if (GreenzoneInvalidatedCallback != null)
-			{
-				GreenzoneInvalidatedCallback(index);
-			}
-		}
-
-		#endregion
-
 		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			var overrideColor = GetColorOverride(index, column);
