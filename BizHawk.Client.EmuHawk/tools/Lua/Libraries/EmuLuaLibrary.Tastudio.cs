@@ -187,6 +187,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodAttributes(
+			"onqueryitemicon",
+			"called during the icon draw event of the tastudio listview"
+		)]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
 			if (Engaged())
