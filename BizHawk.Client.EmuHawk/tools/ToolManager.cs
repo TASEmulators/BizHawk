@@ -549,6 +549,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdateAfter()
 		{
+			if (Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
+			{
+				LuaConsole.ResumeScripts(true);
+			}
+
 			var afterList = _tools.Where(x => !x.UpdateBefore);
 			foreach (var tool in afterList)
 			{

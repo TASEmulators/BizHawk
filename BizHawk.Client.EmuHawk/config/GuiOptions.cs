@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			BackupSRamCheckbox.Checked = Global.Config.BackupSaveram;
 			FrameAdvSkipLagCheckbox.Checked = Global.Config.SkipLagFrame;
 			LogWindowAsConsoleCheckbox.Checked = Global.Config.WIN32_CONSOLE;
+			LuaDuringTurboCheckbox.Checked = Global.Config.RunLuaDuringTurbo;
 
 			if (LogConsole.ConsoleVisible)
 			{
@@ -58,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
+			Global.Config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 
 			Close();
 			DialogResult = DialogResult.OK;

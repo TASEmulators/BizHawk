@@ -56,6 +56,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.LuaDuringTurboCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage3.SuspendLayout();
@@ -248,6 +249,7 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.LuaDuringTurboCheckbox);
 			this.tabPage3.Controls.Add(this.label12);
 			this.tabPage3.Controls.Add(this.label13);
 			this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
@@ -338,6 +340,16 @@
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
 			// 
+			// LuaDuringTurboCheckbox
+			// 
+			this.LuaDuringTurboCheckbox.AutoSize = true;
+			this.LuaDuringTurboCheckbox.Location = new System.Drawing.Point(6, 180);
+			this.LuaDuringTurboCheckbox.Name = "LuaDuringTurboCheckbox";
+			this.LuaDuringTurboCheckbox.Size = new System.Drawing.Size(166, 17);
+			this.LuaDuringTurboCheckbox.TabIndex = 15;
+			this.LuaDuringTurboCheckbox.Text = "Run lua scripts when turboing";
+			this.LuaDuringTurboCheckbox.UseVisualStyleBackColor = true;
+			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -391,5 +403,6 @@
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
+		private System.Windows.Forms.CheckBox LuaDuringTurboCheckbox;
 	}
 }
