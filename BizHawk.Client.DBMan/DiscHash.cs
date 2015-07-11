@@ -77,6 +77,15 @@ namespace BizHawk.Client.DBMan
 				{
 					string name = Path.GetFileNameWithoutExtension(fiCue);
 
+					lock (olock)
+					{
+						if (done.Contains(name))
+						{
+							progress++;
+							return;
+						}
+					}
+
 					//now look for the cue file
 					using (var disc = Disc.LoadAutomagic(fiCue))
 					{
