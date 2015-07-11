@@ -25,6 +25,7 @@
 #include "dvdisaster.h"
 #include "lec.h"
 
+#include <assert.h>
 //  Kill_LEC_Correct();
 
 
@@ -255,7 +256,12 @@ void subpw_synth_leadout_lba(const TOC& toc, const int32 lba, uint8* SubPWBuf)
  ma = ((lba + 150) / 75 / 60);
 
  uint8 adr = 0x1; // Q channel data encodes position
- uint8 control = (toc.tracks[toc.last_track].control & 0x4) | toc.tracks[100].control;
+ uint8 control = toc.tracks[100].control;
+
+ if(toc.tracks[toc.last_track].valid)
+  control |= toc.tracks[toc.last_track].control & 0x4;
+ else if(toc.disc_type == DISC_TYPE_CD_I)
+  control |= 0x4;
 
  memset(buf, 0, 0xC);
  buf[0] = (adr << 0) | (control << 4);
@@ -280,13 +286,21 @@ void subpw_synth_leadout_lba(const TOC& toc, const int32 lba, uint8* SubPWBuf)
   SubPWBuf[i] = (((buf[i >> 3] >> (7 - (i & 0x7))) & 1) ? 0x40 : 0x00) | 0x80;
 }
 
-void synth_leadout_sector_lba(const uint8 mode, const TOC& toc, const int32 lba, uint8* out_buf)
+void synth_leadout_sector_lba(uint8 mode, const TOC& toc, const int32 lba, uint8* out_buf)
 {
  memset(out_buf, 0, 2352 + 96);
  subpw_synth_leadout_lba(toc, lba, out_buf + 2352);
 
- if((toc.tracks[toc.last_track].control | toc.tracks[100].control) & 0x4)
+ if(out_buf[2352 + 1] & 0x40)
  {
+  if(mode == 0xFF) 
+  {
+   if(toc.disc_type == DISC_TYPE_CD_XA || toc.disc_type == DISC_TYPE_CD_I)
+    mode = 0x02;
+   else
+    mode = 0x01;
+  }
+
   switch(mode)
   {
    default:
@@ -298,7 +312,104 @@ void synth_leadout_sector_lba(const uint8 mode, const TOC& toc, const int32 lba,
 	break;
 
    case 0x02:
-	out_buf[18] = 0x20;
+	out_buf[12 +  6] = 0x20;
+	out_buf[12 + 10] = 0x20;
+	encode_mode2_form2_sector(LBA_to_ABA(lba), out_buf);
+	break;
+  }
+ }
+}
+
+// ISO/IEC 10149:1995 (E): 20.2
+//
+void subpw_synth_udapp_lba(const TOC& toc, const int32 lba, const int32 lba_subq_relative_offs, uint8* SubPWBuf)
+{
+ uint8 buf[0xC];
+ uint32 lba_relative;
+ uint32 ma, sa, fa;
+ uint32 m, s, f;
+
+ if(lba < -150 || lba >= 0)
+  printf("[BUG] subpw_synth_udapp_lba() lba out of range --- %d\n", lba);
+
+ {
+  int32 lba_tmp = lba + lba_subq_relative_offs;
+
+  if(lba_tmp < 0)
+   lba_relative = 0 - 1 - lba_tmp;
+  else
+   lba_relative = lba_tmp - 0;
+ }
+
+ f = (lba_relative % 75);
+ s = ((lba_relative / 75) % 60);
+ m = (lba_relative / 75 / 60);
+
+ fa = (lba + 150) % 75;
+ sa = ((lba + 150) / 75) % 60;
+ ma = ((lba + 150) / 75 / 60);
+
+ uint8 adr = 0x1; // Q channel data encodes position
+ uint8 control;
+
+ if(toc.disc_type == DISC_TYPE_CD_I && toc.first_track > 1)
+  control = 0x4;
+ else if(toc.tracks[toc.first_track].valid)
+  control = toc.tracks[toc.first_track].control;
+ else
+  control = 0x0;
+
+ memset(buf, 0, 0xC);
+ buf[0] = (adr << 0) | (control << 4);
+ buf[1] = U8_to_BCD(toc.first_track);
+ buf[2] = U8_to_BCD(0x00);
+
+ // Track relative MSF address
+ buf[3] = U8_to_BCD(m);
+ buf[4] = U8_to_BCD(s);
+ buf[5] = U8_to_BCD(f);
+
+ buf[6] = 0; // Zerroooo
+
+ // Absolute MSF address
+ buf[7] = U8_to_BCD(ma);
+ buf[8] = U8_to_BCD(sa);
+ buf[9] = U8_to_BCD(fa);
+
+ subq_generate_checksum(buf);
+
+ for(int i = 0; i < 96; i++)
+  SubPWBuf[i] = (((buf[i >> 3] >> (7 - (i & 0x7))) & 1) ? 0x40 : 0x00) | 0x80;
+}
+
+void synth_udapp_sector_lba(uint8 mode, const TOC& toc, const int32 lba, int32 lba_subq_relative_offs, uint8* out_buf)
+{
+ memset(out_buf, 0, 2352 + 96);
+ subpw_synth_udapp_lba(toc, lba, lba_subq_relative_offs, out_buf + 2352);
+
+ if(out_buf[2352 + 1] & 0x40)
+ {
+  if(mode == 0xFF) 
+  {
+   if(toc.disc_type == DISC_TYPE_CD_XA || toc.disc_type == DISC_TYPE_CD_I)
+    mode = 0x02;
+   else
+    mode = 0x01;
+  }
+
+  switch(mode)
+  {
+   default:
+	encode_mode0_sector(LBA_to_ABA(lba), out_buf);
+	break;
+
+   case 0x01:
+	encode_mode1_sector(LBA_to_ABA(lba), out_buf);
+	break;
+
+   case 0x02:
+	out_buf[12 +  6] = 0x20;
+	out_buf[12 + 10] = 0x20;
 	encode_mode2_form2_sector(LBA_to_ABA(lba), out_buf);
 	break;
   }

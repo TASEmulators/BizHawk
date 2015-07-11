@@ -30,23 +30,12 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void MainDiscoForm_Load(object sender, EventArgs e)
 		{
-
+			lvCompareTargets.Columns[0].Width = lvCompareTargets.ClientSize.Width;
 		}
 
 		private void ExitButton_Click(object sender, EventArgs e)
 		{
 			this.Close();
-		}
-
-		public static CueBinPrefs GetCuePrefs()
-		{
-			var prefs = new CueBinPrefs();
-			prefs.AnnotateCue = true; // TODO? checkCueProp_Annotations.Checked;
-			prefs.OneBlobPerTrack = false; //TODO? checkCueProp_OneBlobPerTrack.Checked;
-			prefs.ReallyDumpBin = false;
-			prefs.SingleSession = true;
-			prefs.ExtensionAware = true;
-			return prefs;
 		}
 
 		private void lblMagicDragArea_DragDrop(object sender, DragEventArgs e)
@@ -55,23 +44,16 @@ namespace BizHawk.Client.DiscoHawk
 			if (files.Count == 0) return;
 			try
 			{
+				this.Cursor = Cursors.WaitCursor;
 				foreach (var file in files)
 				{
-					var prefs = GetCuePrefs();
-					string ext = Path.GetExtension(file).ToUpper();
-					Disc disc = null;
-					if (ext == ".ISO")
-						disc = Disc.FromIsoPath(file);
-					else if (ext == ".CUE")
-						disc = Disc.FromCuePath(file, prefs);
-					else if (ext == ".CCD")
-						disc = Disc.FromCCDPath(file);
+					var disc = Disc.LoadAutomagic(file);
 					string baseName = Path.GetFileNameWithoutExtension(file);
 					baseName += "_hawked";
-					prefs.ReallyDumpBin = true;
-					var cueBin = disc.DumpCueBin(baseName, GetCuePrefs());
-					Dump(cueBin, Path.GetDirectoryName(file), prefs);
+					string outfile = Path.Combine(Path.GetDirectoryName(file), baseName) + ".ccd";
+					CCD_Format.Dump(disc, outfile);
 				}
+				this.Cursor = Cursors.Default;
 			}
 			catch (Exception ex)
 			{
@@ -80,30 +62,30 @@ namespace BizHawk.Client.DiscoHawk
 			}
 		}
 
-		bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
-		{
-			ProgressReport pr = new ProgressReport();
-			Thread workThread = new Thread(() =>
-			{
-				cueBin.Dump(directoryTo, prefs, pr);
-			});
+		//bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
+		//{
+		//  ProgressReport pr = new ProgressReport();
+		//  Thread workThread = new Thread(() =>
+		//  {
+		//    cueBin.Dump(directoryTo, prefs, pr);
+		//  });
 
-			ProgressDialog pd = new ProgressDialog(pr);
-			pd.Show(this);
-			this.Enabled = false;
-			workThread.Start();
-			for (; ; )
-			{
-				Application.DoEvents();
-				Thread.Sleep(10);
-				if (workThread.ThreadState != ThreadState.Running)
-					break;
-				pd.Update();
-			}
-			this.Enabled = true;
-			pd.Dispose();
-			return !pr.CancelSignal;
-		}
+		//  ProgressDialog pd = new ProgressDialog(pr);
+		//  pd.Show(this);
+		//  this.Enabled = false;
+		//  workThread.Start();
+		//  for (; ; )
+		//  {
+		//    Application.DoEvents();
+		//    Thread.Sleep(10);
+		//    if (workThread.ThreadState != ThreadState.Running)
+		//      break;
+		//    pd.Update();
+		//  }
+		//  this.Enabled = true;
+		//  pd.Dispose();
+		//  return !pr.CancelSignal;
+		//}
 
 		private void lblMagicDragArea_DragEnter(object sender, DragEventArgs e)
 		{
@@ -132,22 +114,23 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void lblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
 		{
-			var files = validateDrop(e.Data);
-			if (files.Count == 0) return;
-			foreach (var file in files)
-			{
-				using (var disc = Disc.FromCuePath(file, new CueBinPrefs()))
-				{
-					var path = Path.GetDirectoryName(file);
-					var filename = Path.GetFileNameWithoutExtension(file);
-					AudioExtractor.Extract(disc, path, filename);
-				}
-			}
+		//  var files = validateDrop(e.Data);
+		//  if (files.Count == 0) return;
+		//  foreach (var file in files)
+		//  {
+		//    using (var disc = Disc.FromCuePath(file, new CueBinPrefs()))
+		//    {
+		//      var path = Path.GetDirectoryName(file);
+		//      var filename = Path.GetFileNameWithoutExtension(file);
+		//      AudioExtractor.Extract(disc, path, filename);
+		//    }
+		//  }
 		}
 
 		private void btnAbout_Click(object sender, EventArgs e)
 		{
 			new About().ShowDialog();
 		}
+
 	}
 }

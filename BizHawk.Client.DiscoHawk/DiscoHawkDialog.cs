@@ -98,16 +98,6 @@ namespace BizHawk.Client.DiscoHawk
 			txtCuePreview.Text = cueBin.cue.Replace("\n", "\r\n"); ;
 		}
 
-		CueBinPrefs GetCuePrefs()
-		{
-			var prefs = new CueBinPrefs();
-			prefs.AnnotateCue = checkCueProp_Annotations.Checked;
-			prefs.OneBlobPerTrack = checkCueProp_OneBlobPerTrack.Checked;
-			prefs.ReallyDumpBin = false;
-			prefs.SingleSession = true;
-			return prefs;
-		}
-
 		private void btnPresetCanonical_Click(object sender, EventArgs e)
 		{
 			PresetCanonical();
@@ -185,30 +175,30 @@ namespace BizHawk.Client.DiscoHawk
 			return ret;
 		}
 
-		bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
-		{
-			ProgressReport pr = new ProgressReport();
-			Thread workThread = new Thread(() =>
-			{
-				cueBin.Dump(directoryTo, prefs, pr);
-			});
+		//bool Dump(CueBin cueBin, string directoryTo, CueBinPrefs prefs)
+		//{
+		//  ProgressReport pr = new ProgressReport();
+		//  Thread workThread = new Thread(() =>
+		//  {
+		//    cueBin.Dump(directoryTo, prefs, pr);
+		//  });
 
-			ProgressDialog pd = new ProgressDialog(pr);
-			pd.Show(this);
-			this.Enabled = false;
-			workThread.Start();
-			for (; ; )
-			{
-				Application.DoEvents();
-				Thread.Sleep(10);
-				if (workThread.ThreadState != ThreadState.Running)
-					break;
-				pd.Update();
-			}
-			this.Enabled = true;
-			pd.Dispose();
-			return !pr.CancelSignal;
-		}
+		//  ProgressDialog pd = new ProgressDialog(pr);
+		//  pd.Show(this);
+		//  this.Enabled = false;
+		//  workThread.Start();
+		//  for (; ; )
+		//  {
+		//    Application.DoEvents();
+		//    Thread.Sleep(10);
+		//    if (workThread.ThreadState != ThreadState.Running)
+		//      break;
+		//    pd.Update();
+		//  }
+		//  this.Enabled = true;
+		//  pd.Dispose();
+		//  return !pr.CancelSignal;
+		//}
 
 		private void btnExportCue_Click(object sender, EventArgs e)
 		{

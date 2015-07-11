@@ -32,13 +32,17 @@ class CDIF
  CDIF();
  virtual ~CDIF();
 
+ static const int32 LBA_Read_Minimum = -150;
+ static const int32 LBA_Read_Maximum = 449849;	// 100 * 75 * 60 - 150 - 1
+
  inline void ReadTOC(CDUtility::TOC *read_target)
  {
   *read_target = disc_toc;
  }
 
- virtual void HintReadSector(uint32 lba) = 0;
- virtual bool ReadRawSector(uint8 *buf, uint32 lba) = 0;
+ virtual void HintReadSector(int32 lba) = 0;
+ virtual bool ReadRawSector(uint8 *buf, int32 lba) = 0;		// Reads 2352+96 bytes of data into buf.
+ virtual bool ReadRawSectorPWOnly(uint8* pwbuf, int32 lba, bool hint_fullread) = 0;	// Reads 96 bytes(of raw subchannel PW data) into pwbuf.
 
  // Call for mode 1 or mode 2 form 1 only.
  bool ValidateRawSector(uint8 *buf);
@@ -46,25 +50,17 @@ class CDIF
  // Utility/Wrapped functions
  // Reads mode 1 and mode2 form 1 sectors(2048 bytes per sector returned)
  // Will return the type(1, 2) of the first sector read to the buffer supplied, 0 on error
- int ReadSector(uint8* pBuf, uint32 lba, uint32 nSectors);
-
- // Return true if operation succeeded or it was a NOP(either due to not being implemented, or the current status matches eject_status).
- // Returns false on failure(usually drive error of some kind; not completely fatal, can try again).
- virtual bool Eject(bool eject_status) = 0;
-
- inline bool IsPhysical(void) { return(is_phys_cache); }
+ int ReadSector(uint8* buf, int32 lba, uint32 sector_count, bool suppress_uncorrectable_message = false);
 
  // For Mode 1, or Mode 2 Form 1.
  // No reference counting or whatever is done, so if you destroy the CDIF object before you destroy the returned Stream, things will go BOOM.
- Stream *MakeStream(uint32 lba, uint32 sector_count);
+ Stream *MakeStream(int32 lba, uint32 sector_count);
 
  protected:
  bool UnrecoverableError;
- bool is_phys_cache;
  CDUtility::TOC disc_toc;
- int DiscEjected;	// 0 = inserted, 1 = ejected, -1 = DRAGONS ATE THE DISC. NOM NOM NOM.
 };
 
-CDIF *CDIF_Open(const std::string& path, const bool is_device, bool image_memcache);
+CDIF *CDIF_Open(const std::string& path, bool image_memcache);
 
 #endif

@@ -101,6 +101,11 @@ namespace BizHawk.Emulation.Common
 			return int.Parse(Options[option]);
 		}
 
+		public string GetStringValue(string option)
+		{
+			return Options[option];
+		}
+
 		public int GetHexValue(string option)
 		{
 			return int.Parse(Options[option], NumberStyles.HexNumber);

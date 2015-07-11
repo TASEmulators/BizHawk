@@ -5,6 +5,7 @@ using System.Globalization;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.PCEngine
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		PCEngine pce;
 		public Disc disc;
-		SubcodeReader subcodeReader;
+		DiscSectorReader DiscSectorReader;
 		SubchannelQ subchannelQ;
 		int audioStartLBA;
 		int audioEndLBA;
@@ -156,7 +157,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			this.pce = pce;
 			this.disc = disc;
-			subcodeReader = new SubcodeReader(disc);
+			DiscSectorReader = new DiscSectorReader(disc);
 		}
 
 		public void Think()
@@ -175,7 +176,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (DataIn.Count == 0)
 				{
 					// read in a sector and shove it in the queue
-					disc.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
+					DiscSystem.DiscSectorReader dsr = new DiscSectorReader(disc); //TODO - cache reader
+					dsr.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
 					DataIn.SignalBufferFilled(2048);
 					CurrentReadingSector++;
 					SectorsLeftToRead--;
@@ -412,16 +414,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					audioStartLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
 					break;
 
-				case 0x40: // Set start offset in MSF units
+				case 0x40: // Set start offset in absolute MSF units
 					byte m = CommandBuffer[2].BCDtoBin();
 					byte s = CommandBuffer[3].BCDtoBin();
 					byte f = CommandBuffer[4].BCDtoBin();
-					audioStartLBA = Disc.ConvertMSFtoLBA(m, s, f);
+					audioStartLBA = DiscUtils.Convert_AMSF_To_LBA(m, s, f);
 					break;
 
 				case 0x80: // Set start offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					audioStartLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+					audioStartLBA = disc.Session1.Tracks[trackNo].LBA;
 					break;
 			}
 
@@ -447,19 +449,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					audioEndLBA = (CommandBuffer[3] << 16) | (CommandBuffer[4] << 8) | CommandBuffer[5];
 					break;
 
-				case 0x40: // Set end offset in MSF units
+				case 0x40: // Set end offset in absolute MSF units
 					byte m = CommandBuffer[2].BCDtoBin();
 					byte s = CommandBuffer[3].BCDtoBin();
 					byte f = CommandBuffer[4].BCDtoBin();
-					audioEndLBA = Disc.ConvertMSFtoLBA(m, s, f);
+					audioEndLBA = DiscUtils.Convert_AMSF_To_LBA(m, s, f);
 					break;
 
 				case 0x80: // Set end offset in track units
 					byte trackNo = CommandBuffer[2].BCDtoBin();
-					if (trackNo - 1 >= disc.Structure.Sessions[0].Tracks.Count)
-						audioEndLBA = disc.LBACount;
+					if (trackNo - 1 >= disc.Session1.Tracks.Count)
+						audioEndLBA = disc.Session1.LeadoutLBA;
 					else
-						audioEndLBA = disc.Structure.Sessions[0].Tracks[trackNo - 1].Indexes[1].aba - 150;
+						audioEndLBA = disc.Session1.Tracks[trackNo].LBA;
 					break;
 			}
 
@@ -507,10 +509,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case CDAudio.CDAudioMode_Stopped: DataIn.Enqueue(3); break;
 			}
 
-			subcodeReader.ReadLBA_SubchannelQ(sectorNum, ref subchannelQ);
-			DataIn.Enqueue(subchannelQ.q_status);          // I do not know what status is
-			DataIn.Enqueue(subchannelQ.q_tno);    // track
-			DataIn.Enqueue(subchannelQ.q_index);  // index
+			DiscSectorReader.ReadLBA_SubQ(sectorNum, out subchannelQ);
+			DataIn.Enqueue(subchannelQ.q_status); //status (control and q-mode; control is useful to know if it's a data or audio track)
+			DataIn.Enqueue(subchannelQ.q_tno.BCDValue);    // track //zero 03-jul-2015 - did I adapt this right>
+			DataIn.Enqueue(subchannelQ.q_index.BCDValue);  // index //zero 03-jul-2015 - did I adapt this right>
 			DataIn.Enqueue(subchannelQ.min.BCDValue);    // M(rel)
 			DataIn.Enqueue(subchannelQ.sec.BCDValue);    // S(rel)
 			DataIn.Enqueue(subchannelQ.frame.BCDValue);  // F(rel)
@@ -529,16 +531,17 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					{
 						DataIn.Clear();
 						DataIn.Enqueue(0x01);
-						DataIn.Enqueue(((byte)disc.Structure.Sessions[0].Tracks.Count).BinToBCD());
+						DataIn.Enqueue(((byte)disc.Session1.Tracks.Count).BinToBCD());
 						SetPhase(BusPhase_DataIn);
 						break;
 					}
 				case 1: // return total disc length in minutes/seconds/frames
 					{
-						int totalLbaLength = disc.LBACount;
+						//zero 07-jul-2015 - I may have broken this
+						int totalLbaLength = disc.Session1.LeadoutLBA;
 
 						byte m, s, f;
-						Disc.ConvertLBAtoMSF(totalLbaLength, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(totalLbaLength + 150, out m, out s, out f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
@@ -547,32 +550,30 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						SetPhase(BusPhase_DataIn);
 						break;
 					}
-				case 2: // Return starting position of specified track in MSF format
+				case 2: // Return starting position of specified track in MSF format. TODO - did zero adapt this right? track indexing might be off
 					{
 						int track = CommandBuffer[2].BCDtoBin();
-						var tracks = disc.Structure.Sessions[0].Tracks;
+						var tracks = disc.Session1.Tracks;
 						if (CommandBuffer[2] > 0x99)
 							throw new Exception("invalid track number BCD request... is something I need to handle?");
 						if (track == 0) track = 1;
-						track--;
-
 
 						int lbaPos;
 
-						if (track > tracks.Count)
-							lbaPos = disc.Structure.Sessions[0].length_aba - 150;
+						if (track > disc.Session1.InformationTrackCount)
+							lbaPos = disc.Session1.LeadoutLBA; //zero 03-jul-2015 - did I adapt this right?
 						else
-							lbaPos = tracks[track].Indexes[1].aba - 150;
+							lbaPos = tracks[track].LBA;
 
 						byte m, s, f;
-						Disc.ConvertLBAtoMSF(lbaPos, out m, out s, out f);
+						DiscUtils.Convert_LBA_To_AMSF(lbaPos, out m, out s, out f);
 
 						DataIn.Clear();
 						DataIn.Enqueue(m.BinToBCD());
 						DataIn.Enqueue(s.BinToBCD());
 						DataIn.Enqueue(f.BinToBCD());
 
-						if (track > tracks.Count || disc.Structure.Sessions[0].Tracks[track].TrackType == ETrackType.Audio)
+						if (track > tracks.Count || disc.Session1.Tracks[track].IsAudio)
 							DataIn.Enqueue(0);
 						else
 							DataIn.Enqueue(4);

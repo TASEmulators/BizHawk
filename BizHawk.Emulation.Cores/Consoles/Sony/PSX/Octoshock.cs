@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				cbReadTOC = ShockDisc_ReadTOC;
 				cbReadLBA = ShockDisc_ReadLBA2448;
 				this.cbActivity = cbActivity;
-				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.LBACount, cbReadTOC, cbReadLBA, true);
+				OctoshockDll.shock_CreateDisc(out OctoshockHandle, IntPtr.Zero, disc.Session1.LeadoutLBA, cbReadTOC, cbReadLBA, true);
 			}
 
 			OctoshockDll.ShockDisc_ReadTOC cbReadTOC;
@@ -160,16 +160,16 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int ShockDisc_ReadTOC(IntPtr opaque, OctoshockDll.ShockTOC* read_target, OctoshockDll.ShockTOCTrack* tracks101)
 			{
-				read_target->disc_type = 1; //hardcoded in octoshock
-				read_target->first_track = (byte)Disc.TOCRaw.FirstRecordedTrackNumber; //i _think_ thats what is meant here
-				read_target->last_track = (byte)Disc.TOCRaw.LastRecordedTrackNumber; //i _think_ thats what is meant here
+				read_target->disc_type = (byte)Disc.TOC.Session1Format;
+				read_target->first_track = (byte)Disc.TOC.FirstRecordedTrackNumber; //i _think_ thats what is meant here
+				read_target->last_track = (byte)Disc.TOC.LastRecordedTrackNumber; //i _think_ thats what is meant here
 
 				tracks101[0].lba = tracks101[0].adr = tracks101[0].control = 0;
 
 				for (int i = 1; i < 100; i++)
 				{
-					var item = Disc.TOCRaw.TOCItems[i];
-					tracks101[i].adr = 1; //not sure what this is
+					var item = Disc.TOC.TOCItems[i];
+					tracks101[i].adr = (byte)(item.Exists ? 1 : 0);
 					tracks101[i].lba = (uint)item.LBATimestamp.Sector;
 					tracks101[i].control = (byte)item.Control;
 				}
@@ -177,14 +177,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				////the lead-out track is to be synthesized
 				tracks101[read_target->last_track + 1].adr = 1;
 				tracks101[read_target->last_track + 1].control = 0;
-				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOCRaw.LeadoutTimestamp.Sector;
-				////laaaame
-				//tracks101[read_target->last_track + 1].lba =
-				//  (uint)(
-				//  Disc.Structure.Sessions[0].Tracks[read_target->last_track - 1].Start_ABA //AUGH. see comment in Start_ABA
-				//  + Disc.Structure.Sessions[0].Tracks[read_target->last_track - 1].LengthInSectors
-				//  - 150
-				//  );
+				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOC.LeadoutLBA.Sector;
 
 				//element 100 is to be copied as the lead-out track
 				tracks101[100] = tracks101[read_target->last_track + 1];
@@ -192,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return OctoshockDll.SHOCK_OK;
 			}
 
-			byte[] SectorBuffer = new byte[2352];
+			byte[] SectorBuffer = new byte[2448];
 
 			int ShockDisc_ReadLBA2448(IntPtr opaque, int lba, void* dst)
 			{
@@ -205,17 +198,17 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (subcodeLog) Console.Write("{0}|", lba);
 				else if (readLog) Console.WriteLine("Read Sector: " + lba);
 
-				Disc.ReadLBA_2352(lba, SectorBuffer, 0);
-				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2352);
-				Disc.ReadLBA_SectorEntry(lba).SubcodeSector.ReadSubcodeDeinterleaved(SectorBuffer, 0);
-				Marshal.Copy(SectorBuffer, 0, new IntPtr((byte*)dst + 2352), 96);
+				//todo - cache reader
+				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
+				dsr.ReadLBA_2448(lba, SectorBuffer, 0);
+				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
 
-				if (subcodeLog)
-				{
-					for (int i = 0; i < 24; i++)
-						Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
-					Console.WriteLine();
-				}
+				//if (subcodeLog)
+				//{
+				//  for (int i = 0; i < 24; i++)
+				//    Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
+				//  Console.WriteLine();
+				//}
 
 				return OctoshockDll.SHOCK_OK;
 			}

@@ -237,12 +237,7 @@ namespace BizHawk.Client.Common
 							Disc disc = null;
 							string discPath = e.Path;
 							string discExt = Path.GetExtension(discPath).ToLower();
-							if (discExt == ".iso")
-								disc = Disc.FromIsoPath(discPath);
-							if (discExt == ".cue")
-								disc = Disc.FromCuePath(discPath, new CueBinPrefs());
-							if (discExt == ".ccd")
-								disc = Disc.FromCCDPath(discPath);
+							disc = Disc.LoadAutomagic(discPath);
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
 							discNames.Add(Path.GetFileNameWithoutExtension(discPath));
@@ -260,22 +255,34 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException("Can't load CD files from archives!");
 						}
 
-						Disc disc = null;
-						if(ext == ".iso")
-							disc = Disc.FromIsoPath(path);
-						if(ext == ".cue")
-							disc = Disc.FromCuePath(path, new CueBinPrefs());
-						if (ext == ".ccd")
-							disc = Disc.FromCCDPath(path);
+						string discHash = null;
 
-						var hash = disc.GetHash();
-						game = Database.CheckDatabase(hash);
+						//--- load the disc in a context which will let us abort if it's going to take too long
+						var discMountJob = new DiscMountJob { IN_FromPath = path };
+						discMountJob.IN_SlowLoadAbortThreshold = 8;
+						discMountJob.Run();
+
+						if (discMountJob.OUT_SlowLoadAborted)
+						{
+							System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+							return false;
+						}
+						var disc = discMountJob.OUT_Disc;
+						//-----------
+						
+						//TODO - use more sophisticated IDer
+						var discType = new DiscIdentifier(disc).DetectDiscType();
+						if (discType == DiscType.SonyPSX)
+							discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+						else discHash = new DiscHasher(disc).OldHash();
+
+						game = Database.CheckDatabase(discHash);
 						if (game == null)
 						{
 							// try to use our wizard methods
-							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
+							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = discHash };
 
-							switch (disc.DetectDiscType())
+							switch (new DiscIdentifier(disc).DetectDiscType())
 							{
 								case DiscType.SegaSaturn:
 									game.System = "SAT";
@@ -313,7 +320,18 @@ namespace BizHawk.Client.Common
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), new List<string>(new[]{Path.GetFileNameWithoutExtension(path)}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+								if (game.IsRomStatusBad())
+									nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
+								else
+								{
+									StringWriter sw = new StringWriter();
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+									sw.WriteLine("Ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+									sw.WriteLine("Check it in the PSX menu (eventually) and compare to this or check each .bin file individually against redump.org");
+									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+								}
 								break;
 							case "PCE":
 							case "PCECD":

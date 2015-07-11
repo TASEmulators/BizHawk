@@ -5,7 +5,7 @@
 #include <array>
 
 class Stream;
-class AudioReader;
+class CDAFReader;
 
 struct CDRFILE_TRACK_INFO
 {
@@ -30,7 +30,7 @@ struct CDRFILE_TRACK_INFO
 
 	uint32 LastSamplePos;
 
-	AudioReader *AReader;
+	CDAFReader *AReader;
 };
 #if 0
 struct Medium_Chunk
@@ -69,11 +69,10 @@ class CDAccess_Image : public CDAccess
 
  virtual void Read_Raw_Sector(uint8 *buf, int32 lba);
 
+ virtual bool Fast_Read_Raw_PW_TSRE(uint8* pwbuf, int32 lba) const noexcept;
+
  virtual void Read_TOC(CDUtility::TOC *toc);
 
- virtual bool Is_Physical(void) throw();
-
- virtual void Eject(bool eject_status);
  private:
 
  int32 NumTracks;
@@ -82,6 +81,7 @@ class CDAccess_Image : public CDAccess
  int32 total_sectors;
  uint8 disc_type;
  CDRFILE_TRACK_INFO Tracks[100]; // Track #0(HMM?) through 99
+ CDUtility::TOC toc;
 
  std::map<uint32, std::array<uint8, 12>> SubQReplaceMap;
 
@@ -89,10 +89,11 @@ class CDAccess_Image : public CDAccess
 
  void ImageOpen(const std::string& path, bool image_memcache);
  void LoadSBI(const std::string& sbi_path);
+ void GenerateTOC(void);
  void Cleanup(void);
 
  // MakeSubPQ will OR the simulated P and Q subchannel data into SubPWBuf.
- void MakeSubPQ(int32 lba, uint8 *SubPWBuf);
+ int32 MakeSubPQ(int32 lba, uint8 *SubPWBuf) const;
 
  void ParseTOCFileLineInfo(CDRFILE_TRACK_INFO *track, const int tracknum, const std::string &filename, const char *binoffset, const char *msfoffset, const char *length, bool image_memcache, std::map<std::string, Stream*> &toc_streamcache);
  uint32 GetSectorCount(CDRFILE_TRACK_INFO *track);
