@@ -111,6 +111,11 @@ namespace BizHawk.Client.DBMan
 				new DiscHash().Run(args.Skip(1).ToArray());
 				return;
 			}
+			if (args.Length > 0 && args[0] == "--psxdb")
+			{
+				new PsxDBJob().Run(args.Skip(1).ToArray());
+				return;
+			}
 			//if (args.Length > 0 && args[0] == "--disccmp")
 			//{
 			//  new DiscCmp().Run(args.Skip(1).ToArray());

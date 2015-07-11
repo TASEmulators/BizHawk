@@ -35,6 +35,7 @@
     <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSharp-SQLite">
@@ -46,6 +47,8 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DiscHash.cs" />
+    <Compile Include="PsxDBJob.cs" />
     <Compile Include="RomHasher.cs" />
     <EmbeddedResource Include="DBMan_MainForm.resx">
       <DependentUpon>DBMan_MainForm.cs</DependentUpon>
