@@ -114,17 +114,17 @@ namespace BizHawk.Client.DiscoHawk
 
 		private void lblMp3ExtractMagicArea_DragDrop(object sender, DragEventArgs e)
 		{
-		//  var files = validateDrop(e.Data);
-		//  if (files.Count == 0) return;
-		//  foreach (var file in files)
-		//  {
-		//    using (var disc = Disc.FromCuePath(file, new CueBinPrefs()))
-		//    {
-		//      var path = Path.GetDirectoryName(file);
-		//      var filename = Path.GetFileNameWithoutExtension(file);
-		//      AudioExtractor.Extract(disc, path, filename);
-		//    }
-		//  }
+			var files = validateDrop(e.Data);
+			if (files.Count == 0) return;
+			foreach (var file in files)
+			{
+				using (var disc = Disc.LoadAutomagic(file))
+				{
+					var path = Path.GetDirectoryName(file);
+					var filename = Path.GetFileNameWithoutExtension(file);
+					AudioExtractor.Extract(disc, path, filename);
+				}
+			}
 		}
 
 		private void btnAbout_Click(object sender, EventArgs e)
