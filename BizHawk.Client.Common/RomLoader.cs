@@ -256,7 +256,19 @@ namespace BizHawk.Client.Common
 						}
 
 						string discHash = null;
-						Disc disc = Disc.LoadAutomagic(path);
+
+						//--- load the disc in a context which will let us abort if it's going to take too long
+						var discMountJob = new DiscMountJob { IN_FromPath = path };
+						discMountJob.IN_SlowLoadAbortThreshold = 8;
+						discMountJob.Run();
+
+						if (discMountJob.OUT_SlowLoadAborted)
+						{
+							System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+							return false;
+						}
+						var disc = discMountJob.OUT_Disc;
+						//-----------
 						
 						//TODO - use more sophisticated IDer
 						var discType = new DiscIdentifier(disc).DetectDiscType();
