@@ -255,14 +255,20 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException("Can't load CD files from archives!");
 						}
 
+						string discHash = null;
 						Disc disc = Disc.LoadAutomagic(path);
+						
+						//TODO - use more sophisticated IDer
+						var discType = new DiscIdentifier(disc).DetectDiscType();
+						if (discType == DiscType.SonyPSX)
+							discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+						else discHash = new DiscHasher(disc).OldHash();
 
-						var hash = new DiscHasher(disc).OldHash();
-						game = Database.CheckDatabase(hash);
+						game = Database.CheckDatabase(discHash);
 						if (game == null)
 						{
 							// try to use our wizard methods
-							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = hash };
+							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = discHash };
 
 							switch (new DiscIdentifier(disc).DetectDiscType())
 							{
@@ -302,7 +308,18 @@ namespace BizHawk.Client.Common
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), new List<string>(new[]{Path.GetFileNameWithoutExtension(path)}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+								if (game.IsRomStatusBad())
+									nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
+								else
+								{
+									StringWriter sw = new StringWriter();
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+									sw.WriteLine("Ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+									sw.WriteLine("Check it in the PSX menu (eventually) and compare to this or check each .bin file individually against redump.org");
+									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+								}
 								break;
 							case "PCE":
 							case "PCECD":
