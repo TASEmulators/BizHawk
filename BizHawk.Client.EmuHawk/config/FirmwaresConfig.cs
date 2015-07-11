@@ -468,6 +468,7 @@ namespace BizHawk.Client.EmuHawk
 					name += " (variant)";
 					target = Path.Combine(dir, name) + ext;
 				}
+				Directory.CreateDirectory(Path.GetDirectoryName(target));
 				fi.CopyTo(target, false);
 				return true;
 			}
