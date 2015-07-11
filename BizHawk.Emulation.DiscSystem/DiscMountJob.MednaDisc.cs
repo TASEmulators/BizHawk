@@ -89,15 +89,17 @@ namespace BizHawk.Emulation.DiscSystem
 					q_crc = 0 //meaningless
 				};
 
-				//a special fixup: mednafen's entry 100 is the lead-out track
+				//a special fixup: mednafen's entry 100 is the lead-out track, so change it into the A2 raw toc entry
 				if (i == 100)
+				{
 					q.q_index.BCDValue = 0xA2;
+				}
 
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
 			}
 
-			//synth A1 and A2 entries instead of setting FirstRecordedTrackNumber and LastRecordedTrackNumber below
-			var qA1 = new SubchannelQ
+			//synth A0 and A1 entries (indicating first and last recorded tracks and also session type)
+			var qA0 = new SubchannelQ
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -107,12 +109,12 @@ namespace BizHawk.Emulation.DiscSystem
 				frame = BCD2.FromDecimal(0), //unknown with mednadisc
 				zero = 0, //unknown with mednadisc
 				ap_min = BCD2.FromDecimal(md.TOC.first_track),
-				ap_sec = BCD2.FromDecimal(0),
+				ap_sec = BCD2.FromDecimal(md.TOC.disc_type),
 				ap_frame = BCD2.FromDecimal(0),
 				q_crc = 0, //meaningless
 			};
-			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA1 });
-			var qA2 = new SubchannelQ
+			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA0 });
+			var qA1 = new SubchannelQ
 			{
 				q_status = SubchannelQ.ComputeStatus(kADR, kUnknownControl),
 				q_tno = BCD2.FromDecimal(0), //unknown with mednadisc
@@ -126,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 				ap_frame = BCD2.FromDecimal(0),
 				q_crc = 0, //meaningless
 			};
-			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA2 });
+			disc.RawTOCEntries.Add(new RawTOCEntry { QData = qA1 });
 
 		}
 	}
