@@ -40,6 +40,11 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public Disc OUT_Disc;
 
+		/// <summary>
+		/// Whether a mount operation was aborted due to being too slow
+		/// </summary>
+		public bool OUT_SlowLoadAborted;
+
 		public void Run()
 		{
 			switch (IN_DiscInterface)
@@ -127,6 +132,7 @@ namespace BizHawk.Emulation.DiscSystem
 				if (compileJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
+					OUT_SlowLoadAborted = true;
 					goto DONE;
 				}
 
