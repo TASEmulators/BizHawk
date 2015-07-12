@@ -42,7 +42,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will call GoToFrameIfNecessary() with this value
+        private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will call GoToFrameIfNecessary() with this value
+
+        private System.Timers.Timer _mouseWheelTimer;
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -494,6 +496,12 @@ namespace BizHawk.Client.EmuHawk
 					GoToPreviousFrame();
 				}
 			}
+
+            if (_mouseWheelTimer.Enabled) // dunno if this is telling enough and nothing like bool _mouseWheelFast is needed, but we need to check on the first scroll event, and just decide by delta if it's fast enough to increase actual scrolling speed
+            {
+                _mouseWheelTimer.Stop();
+            }
+            _mouseWheelTimer.Start();
 		}
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
