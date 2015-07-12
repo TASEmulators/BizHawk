@@ -209,15 +209,15 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
 			CurrentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
+
 		private string ClientSettingsForSave()
 		{
 			return TasView.UserSettingsSerialized();
 		}
+
 		private void GetClientSettingsOnLoad(string settingsJson)
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
-			RefreshTasView();
-
 			SetUpToolStripColumns();
 		}
 
