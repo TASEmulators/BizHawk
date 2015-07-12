@@ -99,8 +99,18 @@ namespace BizHawk.Client.Common
 				Type = type;
 			}
 
+			public RomErrorArgs(string message, string systemId, string path, bool? det, LoadErrorType type) 
+				: this(message, systemId, type)
+			{
+				Deterministic = det;
+				RomPath = path;
+			}
+
 			public string Message { get; private set; }
 			public string AttemptedCoreLoad { get; private set; }
+			public string RomPath { get; private set; }
+			public bool? Deterministic { get; set; }
+			public bool Retry { get; set; }
 			public LoadErrorType Type { get; private set; }
 		}
 
@@ -119,7 +129,7 @@ namespace BizHawk.Client.Common
 		public event SettingsLoadEventHandler OnLoadSettings;
 		public event SettingsLoadEventHandler OnLoadSyncSettings;
 
-		public delegate void LoadErrorEventHandler(object sener, RomErrorArgs e);
+		public delegate void LoadErrorEventHandler(object sender, RomErrorArgs e);
 		public event LoadErrorEventHandler OnLoadError;
 
 		public Func<HawkFile, int?> ChooseArchive { get; set; }
@@ -142,11 +152,20 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
+		//May want to phase out this method in favor of the overload with more paramaters
 		private void DoLoadErrorCallback(string message, string systemId, LoadErrorType type = LoadErrorType.Unknown)
 		{
 			if (OnLoadError != null)
 			{
 				OnLoadError(this, new RomErrorArgs(message, systemId, type));
+			}
+		}
+
+		private void DoLoadErrorCallback(string message, string systemId, string path, bool det, LoadErrorType type = LoadErrorType.Unknown)
+		{
+			if (OnLoadError != null)
+			{
+				OnLoadError(this, new RomErrorArgs(message, systemId, path, det, type));
 			}
 		}
 
@@ -595,7 +614,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (ex is MissingFirmwareException)
 					{
-						DoLoadErrorCallback(ex.Message, system, LoadErrorType.MissingFirmware);
+						DoLoadErrorCallback(ex.Message, system, path, Deterministic, LoadErrorType.MissingFirmware);
 					}
 					else if (ex is CGBNotSupportedException)
 					{

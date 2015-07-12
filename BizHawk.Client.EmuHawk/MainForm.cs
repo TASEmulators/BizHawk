@@ -3229,7 +3229,14 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 				{
-					FirmwaresMenuItem_Click(null, null);
+					FirmwaresMenuItem_Click(null, e);
+					if (e.Retry)
+					{
+						// Retry loading the ROM here. This leads to recursion, as the original call to LoadRom has not exited yet,
+						// but unless the user tries and fails to set his firmware a lot of times, nothing should happen.
+						// Refer to how RomLoader implemented its LoadRom method for a potential fix on this.
+						LoadRom(e.RomPath, e.Deterministic);
+					}
 				}
 			}
 			else
@@ -3409,6 +3416,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//This shows up if there's a problem                
 				// TODO: put all these in a single method or something
+
+				//The ROM has been loaded by a recursive invocation of the LoadROM method.
+				if (!(Global.Emulator is NullEmulator))
+				{
+					return true;
+				}
+
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateStatusSlots();
@@ -3517,7 +3531,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = false;
 		}
 
-		public bool GameIsClosing { get; set; } // Let's tools make better decisions when being called by CloseGame
+		public bool GameIsClosing { get; set; } // Lets tools make better decisions when being called by CloseGame
 
 		public void CloseRom(bool clearSram = false)
 		{

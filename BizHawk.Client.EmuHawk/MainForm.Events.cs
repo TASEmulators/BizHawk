@@ -880,7 +880,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
 		{
-			new FirmwaresConfig().ShowDialog();
+			if (e is RomLoader.RomErrorArgs)
+			{
+				var args = e as RomLoader.RomErrorArgs;
+				var firmwaredialog = new FirmwaresConfig(true).ShowDialog();
+				args.Retry = firmwaredialog == DialogResult.Retry;
+			}
+			else
+			{
+				new FirmwaresConfig().ShowDialog();
+			}
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)

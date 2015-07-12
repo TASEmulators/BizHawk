@@ -57,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 		private const int idMissing = 1;
 		private const int idOk = 2;
 
+		RomLoader.RomErrorArgs RomErrorArgs;
+
 		Font fixedFont, boldFont, boldFixedFont;
 
 		class ListViewSorter : IComparer
@@ -80,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 		string currSelectorDir;
 		ListViewSorter listviewSorter;
 
-		public FirmwaresConfig()
+		public FirmwaresConfig(bool retryLoadRom = false)
 		{
 			InitializeComponent();
 
@@ -88,6 +90,13 @@ namespace BizHawk.Client.EmuHawk
 			imageList1.Images.AddRange(new[] { Properties.Resources.RetroQuestion, Properties.Resources.ExclamationRed, Properties.Resources.GreenCheck });
 
 			listviewSorter = new ListViewSorter(this, -1);
+
+			if (retryLoadRom)
+			{
+				toolStripSeparator1.Visible = true;
+				tbbCloseReload.Visible = true;
+				tbbCloseReload.Enabled = true;
+			}
 		}
 
 		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
@@ -156,6 +165,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshBasePath();
+		}
+
+
+		private void tbbClose_Click(object sender, EventArgs e)
+		{
+			this.Close();
+			DialogResult = DialogResult.Cancel;
+		}
+
+		private void tbbCloseReload_Click(object sender, EventArgs e)
+		{
+			this.Close();
+			DialogResult = DialogResult.Retry;
 		}
 
 		private void FirmwaresConfig_FormClosed(object sender, FormClosedEventArgs e)
@@ -544,8 +566,5 @@ namespace BizHawk.Client.EmuHawk
 				RunImportJob(files);
 			}
 		}
-
-
-
 	}		//class FirmwaresConfig
 }
