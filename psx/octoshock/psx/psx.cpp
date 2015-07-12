@@ -25,6 +25,7 @@
 #include "Stream.h"
 #include "spu.h"
 #include "error.h"
+#include "tests.h"
 #include "endian.h"
 #include "emuware/EW_state.h"
 
