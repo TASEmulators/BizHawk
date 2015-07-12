@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			//params
 			var compiled = IN_CompileJob;
-			var context = compiled.IN_CueFormat;
+			var context = compiled.IN_CueContext;
 			OUT_Disc = new Disc();
 
 			//generation state

@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// The context used for this compiling job
 		/// TODO - rename something like context
 		/// </summary>
-		public CUE_Context IN_CueFormat;
+		public CUE_Context IN_CueContext;
 
 		/// <summary>
 		/// output: high level disc info
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			curr_blobIndex++;
 			curr_fileHasTrack = false;
 
-			var Resolver = IN_CueFormat.Resolver;
+			var Resolver = IN_CueContext.Resolver;
 
 			//TODO - smart audio file resolving only for AUDIO types. not BINARY or MOTOROLA or AIFF or ECM or what have you
 

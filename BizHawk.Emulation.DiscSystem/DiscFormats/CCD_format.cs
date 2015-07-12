@@ -485,7 +485,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Loads a CCD at the specified path to a Disc object
 		/// </summary>
-		public Disc LoadCCDToDisc(string ccdPath)
+		public Disc LoadCCDToDisc(string ccdPath, DiscMountPolicy IN_DiscMountPolicy)
 		{
 			var loadResults = LoadCCDPath(ccdPath);
 			if (!loadResults.Valid)
@@ -540,17 +540,54 @@ namespace BizHawk.Emulation.DiscSystem
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
 			}
 
-			//add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
-			//TODO - THIS IS JUNK. MORE CORRECTLY SYNTHESIZE IT
+			//analyze the RAWTocEntries to figure out what type of track track 1 is
+			var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = disc.RawTOCEntries };
+			tocSynth.Run();
+			
+			//Add sectors for the mandatory track 1 pregap, which isn't stored in the CCD file
+			//We reuse some CUE code for this.
+			//If we load other formats later we might should abstract this even further (to a synthesizer job)
+			//It can't really be abstracted from cue files though due to the necessity of merging this with other track 1 pregaps
+			CUE.CueTrackType pregapTrackType = CUE.CueTrackType.Audio;
+			if (tocSynth.Result.TOCItems[1].IsData)
+			{
+				if (tocSynth.Result.Session1Format == SessionFormat.Type20_CDXA)
+					pregapTrackType = CUE.CueTrackType.Mode2_2352;
+				else if (tocSynth.Result.Session1Format == SessionFormat.Type10_CDI)
+					pregapTrackType = CUE.CueTrackType.CDI_2352;
+				else if (tocSynth.Result.Session1Format == SessionFormat.Type00_CDROM_CDDA)
+					pregapTrackType = CUE.CueTrackType.Mode1_2352;
+			}
 			for (int i = 0; i < 150; i++)
 			{
-				//TODO - YIKES!
-				disc.Sectors.Add(null);
+				var ss_gap = new CUE.SS_Gap()
+				{
+					Policy = IN_DiscMountPolicy,
+					TrackType = pregapTrackType
+				};
+				disc.Sectors.Add(ss_gap);
+
+				int qRelMSF = i - 150;
+
+				//tweak relMSF due to ambiguity/contradiction in yellowbook docs
+				if (!IN_DiscMountPolicy.CUE_PregapContradictionModeA)
+					qRelMSF++;
+
+				//setup subQ
+				byte ADR = 1; //absent some kind of policy for how to set it, this is a safe assumption:
+				ss_gap.sq.SetStatus(ADR, tocSynth.Result.TOCItems[1].Control);
+				ss_gap.sq.q_tno = BCD2.FromDecimal(1);
+				ss_gap.sq.q_index = BCD2.FromDecimal(0);
+				ss_gap.sq.AP_Timestamp = new Timestamp(i);
+				ss_gap.sq.Timestamp = new Timestamp(qRelMSF);
+
+				//setup subP
+				ss_gap.Pause = true;
 			}
 
 			//build the sectors:
 			//set up as many sectors as we have img/sub for, even if the TOC doesnt reference them
-			//(TOC is unreliable, although the tracks should have covered it all)
+			//(the TOC is unreliable, and the Track records are redundant)
 			for (int i = 0; i < loadResults.NumImgSectors; i++)
 			{
 				disc.Sectors.Add(synth);

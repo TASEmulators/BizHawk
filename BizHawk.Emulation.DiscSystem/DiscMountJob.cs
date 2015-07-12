@@ -104,10 +104,10 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
 				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
-				var cue2 = new CUE_Context();
-				cue2.DiscMountPolicy = IN_DiscMountPolicy;
+				var cueContext = new CUE_Context();
+				cueContext.DiscMountPolicy = IN_DiscMountPolicy;
 
-				cue2.Resolver = cfr;
+				cueContext.Resolver = cfr;
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(Path.GetDirectoryName(infile));
 
 				//parse the cue file
@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
 				var compileJob = new CompileCueJob();
-				compileJob.IN_CueFormat = cue2;
+				compileJob.IN_CueContext = cueContext;
 				compileJob.IN_CueFile = parseJob.OUT_CueFile;
 				compileJob.Run();
 				//TODO - need better handling of log output
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.DiscSystem
 			else if (ext == ".ccd")
 			{
 				CCD_Format ccdLoader = new CCD_Format();
-				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath);
+				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
 
 		DONE: ;
