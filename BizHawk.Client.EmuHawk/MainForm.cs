@@ -393,14 +393,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<Cheats>();
 			}
 
-			if (Global.Config.DisplayStatusBar == false)
-			{
-				MainStatusBar.Visible = false;
-			}
-			else
-			{
-				DisplayStatusBarMenuItem.Checked = true;
-			}
+			SetStatusBar();
 
 			if (Global.Config.StartPaused)
 			{
