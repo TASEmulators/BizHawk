@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 //http://digitalx.org/cue-sheet/index.html "all cue sheet information is a straight 1:1 copy from the cdrwin helpfile"
 
-namespace BizHawk.Emulation.DiscSystem
+namespace BizHawk.Emulation.DiscSystem.CUE
 {
-	public partial class CUE_Context
+	public class CUE_Context
 	{
 		/// <summary>
 		/// The CueFileResolver to be used by this instance

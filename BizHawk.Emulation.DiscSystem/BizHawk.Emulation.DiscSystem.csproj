@@ -71,9 +71,11 @@
     <Compile Include="DiscFormats\CUE\CueFileResolver.cs" />
     <Compile Include="DiscFormats\CUE\CUE_Compile.cs" />
     <Compile Include="DiscFormats\CUE\CUE_Context.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_File.cs" />
     <Compile Include="DiscFormats\CUE\CUE_Load.cs" />
     <Compile Include="DiscFormats\CUE\CUE_Parse.cs" />
     <Compile Include="DiscFormats\CUE\CUE_Synths.cs" />
+    <Compile Include="DiscFormats\CUE\CUE_Types.cs" />
     <Compile Include="DiscFormats\M3U_file.cs" />
     <Compile Include="DiscFormats\SBI_format.cs" />
     <Compile Include="DiscFormats\TOC_format.cs" />

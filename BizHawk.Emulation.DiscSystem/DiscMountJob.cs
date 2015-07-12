@@ -4,6 +4,8 @@ using System.Text;
 using System.IO;
 using System.Collections.Generic;
 
+using BizHawk.Emulation.DiscSystem.CUE;
+
 namespace BizHawk.Emulation.DiscSystem
 {
 	/// <summary>
@@ -80,7 +82,7 @@ namespace BizHawk.Emulation.DiscSystem
 			string infile = IN_FromPath;
 			string cue_content = null;
 
-			var cfr = new CUE_Context.CueFileResolver();
+			var cfr = new CueFileResolver();
 
 		RERUN:
 			var ext = Path.GetExtension(infile).ToLowerInvariant();
@@ -109,18 +111,18 @@ namespace BizHawk.Emulation.DiscSystem
 				if (!cfr.IsHardcodedResolve) cfr.SetBaseDirectory(Path.GetDirectoryName(infile));
 
 				//parse the cue file
-				var parseJob = new CUE_Context.ParseCueJob();
+				var parseJob = new ParseCueJob();
 				if (cue_content == null)
 					cue_content = File.ReadAllText(cuePath);
 				parseJob.IN_CueString = cue_content;
-				cue2.ParseCueFile(parseJob);
+				parseJob.Run(parseJob);
 				//TODO - need better handling of log output
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
 
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
-				var compileJob = new CUE_Context.CompileCueJob();
+				var compileJob = new CompileCueJob();
 				compileJob.IN_CueFormat = cue2;
 				compileJob.IN_CueFile = parseJob.OUT_CueFile;
 				compileJob.Run();
@@ -137,7 +139,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 
 				//actually load it all up
-				var loadJob = new CUE_Context.LoadCueJob();
+				var loadJob = new LoadCueJob();
 				loadJob.IN_CompileJob = compileJob;
 				loadJob.Run();
 				//TODO - need better handling of log output
