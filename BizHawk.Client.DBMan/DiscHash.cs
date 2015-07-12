@@ -59,6 +59,14 @@ namespace BizHawk.Client.DBMan
 					fpOutfile = args[i++];
 			}
 
+			var done = new HashSet<string>();
+			foreach (var line in File.ReadAllLines(fpOutfile))
+			{
+				if (line.Trim() == "") continue;
+				var parts = line.Split(new[] { "//" }, StringSplitOptions.None);
+				done.Add(parts[1]);
+			}
+
 			using (var outf = new StreamWriter(fpOutfile))
 			{
 
