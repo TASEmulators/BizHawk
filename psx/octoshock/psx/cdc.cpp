@@ -1594,6 +1594,7 @@ int32 PS_CDC::Command_GetStat(const int arg_count, const uint8 *args)
  WriteResult(MakeStatus());
 
  //PSX-SPX: this command ACKs the TrayOpenBit if the shell is no longer open
+ //(mednafen does this differently)
  if(!TrayOpen)
 	Status_TrayOpenBit = false;
 
