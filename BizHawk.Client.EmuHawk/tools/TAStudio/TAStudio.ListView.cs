@@ -669,6 +669,11 @@ namespace BizHawk.Client.EmuHawk
 								setVal = BoolPatterns[controllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 						}
 						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+                        if (Settings.FollowCursor && _leftButtonHeld)
+                        {
+                            SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+                        }
+
 						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
@@ -691,7 +696,12 @@ namespace BizHawk.Client.EmuHawk
 							else
 								setVal = FloatPatterns[controllerType.FloatControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
 						}
-						CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+                        CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+                        if (Settings.FollowCursor && _leftButtonHeld)
+                        {
+                            SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+                        }
+
 						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
