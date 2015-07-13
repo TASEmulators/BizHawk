@@ -122,13 +122,19 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			if (disposed) return;
 
+			disposed = true;
+
+			//discs arent bound to shock core instances, but they may be mounted. kill the core instance first to effectively dereference the disc
 			OctoshockDll.shock_Destroy(psx);
 			psx = IntPtr.Zero;
 
-			disposed = true;
-
-			//TODO - dispose disc wrappers
-			//TODO - dispose discs
+			//destroy all discs we're managing (and the unmanaged octoshock resources)
+			foreach (var di in discInterfaces)
+			{
+				di.Disc.Dispose();
+				di.Dispose();
+			}
+			discInterfaces.Clear();
 		}
 
 		/// <summary>
