@@ -565,8 +565,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TasView.SelectRow(i, _frameDragState);
 					}
-
-					RefreshTasView();
 				}
 			}
 
@@ -650,8 +648,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (frame < _triggerAutoRestoreFromFrame)
 						_triggerAutoRestoreFromFrame = frame;
-				}
-				RefreshTasView();
+                }
 			}
 
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
@@ -669,16 +666,9 @@ namespace BizHawk.Client.EmuHawk
 								setVal = BoolPatterns[controllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 						}
 						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-                        if (Settings.FollowCursor && _leftButtonHeld)
-                        {
-                            SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
-                        }
-
 						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
-
-					RefreshTasView();
 				}
 			}
 
@@ -697,18 +687,17 @@ namespace BizHawk.Client.EmuHawk
 								setVal = FloatPatterns[controllerType.FloatControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
 						}
                         CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-                        if (Settings.FollowCursor && _leftButtonHeld)
-                        {
-                            SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
-                        }
-
 						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
 							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
 					}
-
-					RefreshTasView();
 				}
-			}
+            }
+
+            if (Settings.FollowCursor && mouseButtonHeld)
+            {
+                SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+            }
+            RefreshTasView();
 		}
 
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
