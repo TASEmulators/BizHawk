@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
-            if (GlobalWin.MainForm.EmulatorPaused || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
+            if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
             {
                 GlobalWin.MainForm.PauseOnFrame = frame;
                 GlobalWin.MainForm.UnpauseEmulator();
