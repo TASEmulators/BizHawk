@@ -8,7 +8,12 @@ namespace BizHawk.Emulation.DiscSystem
 	public enum DiscType
 	{
 		/// <summary>
-		/// Nothing is known about this disc type
+		/// Disc contains audio in track 1. Nothing more can readily be determined
+		/// </summary>
+		AudioDisc,
+
+		/// <summary>
+		/// Nothing is known about this data disc type
 		/// </summary>
 		UnknownFormat,
 
@@ -61,6 +66,9 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public DiscType DetectDiscType()
 		{
+			//check track 0. if it's an audio track, further data-track testing is useless
+			if (dsr.ReadLBA_Mode(0) == 0) return DiscType.AudioDisc;
+
 			//sega doesnt put anything identifying in the cdfs volume info. but its consistent about putting its own header here in sector 0
 			if (DetectSegaSaturn()) return DiscType.SegaSaturn;
 

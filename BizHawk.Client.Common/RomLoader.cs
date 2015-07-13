@@ -251,6 +251,7 @@ namespace BizHawk.Client.Common
 						m3u.Rebase(Path.GetDirectoryName(path));
 						List<Disc> discs = new List<Disc>();
 						List<string> discNames = new List<string>();
+						StringWriter sw = new StringWriter();
 						foreach (var e in m3u.Entries)
 						{
 							Disc disc = null;
@@ -259,11 +260,37 @@ namespace BizHawk.Client.Common
 							disc = Disc.LoadAutomagic(discPath);
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
-							discNames.Add(Path.GetFileNameWithoutExtension(discPath));
+							var discName = Path.GetFileNameWithoutExtension(discPath);
+							discNames.Add(discName);
 							discs.Add(disc);
+
+							var discType = new DiscIdentifier(disc).DetectDiscType();
+							sw.WriteLine("{0}", Path.GetFileName(discPath));
+							if (discType == DiscType.SonyPSX)
+							{
+								string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+								game = Database.CheckDatabase(discHash);
+								if (game.IsRomStatusBad())
+									sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
+								else
+								{
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's disc hasher tool");
+								}
+							}
+							else
+							{
+								sw.WriteLine("Not a PSX disc");
+							}
+							sw.WriteLine("-------------------------");
 						}
+
 						nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
+						nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
 						game.System = "PSX";
 					}
@@ -346,9 +373,9 @@ namespace BizHawk.Client.Common
 									StringWriter sw = new StringWriter();
 									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-									sw.WriteLine("Ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-									sw.WriteLine("Check it in the PSX menu (eventually) and compare to this or check each .bin file individually against redump.org");
+									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's disc hasher tool");
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 								}
 								break;
