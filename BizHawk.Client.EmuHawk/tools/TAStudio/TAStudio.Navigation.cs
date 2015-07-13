@@ -54,7 +54,10 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						GlobalWin.DisplayManager.NeedsToPaint = true;
-						SetVisibleIndex(frame);
+                        if (TasPlaybackBox.FollowCursor)
+                        {
+                            SetVisibleIndex(frame);
+                        }
 					}
 					else // Get as close as we can then emulate there
 					{
@@ -81,7 +84,10 @@ namespace BizHawk.Client.EmuHawk
 							Emulator.FrameAdvance(true);
 							GlobalWin.DisplayManager.NeedsToPaint = true;
 
-							SetVisibleIndex(frame);
+                            if (TasPlaybackBox.FollowCursor)
+                            {
+                                SetVisibleIndex(frame);
+                            }
 						}
 						else
 						{
@@ -165,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(marker.Frame);
 		}
 
-		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
+        public void SetVisibleIndex(int? indexThatMustBeVisible = null)
 		{
 			if (!indexThatMustBeVisible.HasValue)
 			{

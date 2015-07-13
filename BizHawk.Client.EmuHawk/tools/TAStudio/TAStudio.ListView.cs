@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _boolPaintState;
 		private float _floatPaintState;
 		private bool _patternPaint = false;
-		private bool _startMarkerDrag;
+		private bool _startCursorDrag;
 		private bool _startFrameDrag;
 		private bool _frameDragState;
 		private bool _supressContextMenu;
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var columnName = column.Name;
 
-			if (columnName == MarkerColumnName)
+			if (columnName == CursorColumnName)
 			{
 				if (index == Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
 				{
@@ -117,7 +117,7 @@ namespace BizHawk.Client.EmuHawk
 
 			string columnName = column.Name;
 
-			if (columnName == MarkerColumnName)
+			if (columnName == CursorColumnName)
 			{ // For debugging purposes, let's visually show the state frames
 				if (VersionInfo.DeveloperBuild && CurrentTasMovie.TasStateManager.HasState(index))
 					color = Color.FromArgb(0xEEEEEE);
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 				text = string.Empty;
 				var columnName = column.Name;
 
-				if (columnName == MarkerColumnName)
+				if (columnName == CursorColumnName)
 				{
 					// Do nothing
 				}
@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 					RefreshDialog();
 
 				}
-				else if (columnName != MarkerColumnName) // TODO: what about float?
+				else if (columnName != CursorColumnName) // TODO: what about float?
 				{
 					foreach (var index in TasView.SelectedRows)
 					{
@@ -330,9 +330,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (TasView.CurrentCell.Column.Name == MarkerColumnName)
+				if (TasView.CurrentCell.Column.Name == CursorColumnName)
 				{
-					_startMarkerDrag = true;
+					_startCursorDrag = true;
 					GoToFrame(TasView.CurrentCell.RowIndex.Value);
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
@@ -449,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Button == MouseButtons.Left)
 			{
 				CurrentTasMovie.SupressGreenzonging = false;
-				_startMarkerDrag = false;
+				_startCursorDrag = false;
 				_startFrameDrag = false;
 				_startBoolDrawColumn = string.Empty;
 				_startFloatDrawColumn = string.Empty;
@@ -550,7 +550,7 @@ namespace BizHawk.Client.EmuHawk
 				endVal = e.OldCell.RowIndex.Value;
 			}
 
-			if (_startMarkerDrag)
+			if (_startCursorDrag)
 			{
 				if (e.NewCell.RowIndex.HasValue)
 				{

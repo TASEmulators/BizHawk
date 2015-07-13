@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : Form, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-		private const string MarkerColumnName = "MarkerColumn";
+        private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TasView.AllColumns.Clear();
-			AddColumn(MarkerColumnName, string.Empty, 18);
+			AddColumn(CursorColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
 			var columnNames = GenerateColumnNames();
