@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : Form, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-        private const string CursorColumnName = "CursorColumn";
+		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
@@ -302,11 +302,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
-            _mouseWheelTimer = new System.Timers.Timer(100); // consider sub 100 ms fast scrolling
-            _mouseWheelTimer.Elapsed += (s, e) =>
-            {
-                _mouseWheelTimer.Stop();
-            };
+			_mouseWheelTimer = new System.Timers.Timer(100); // consider sub 100 ms fast scrolling
+			_mouseWheelTimer.Elapsed += (s, e) =>
+			{
+				_mouseWheelTimer.Stop();
+			};
 		}
 
 		#endregion
@@ -453,7 +453,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do not keep TAStudio's disk save states.
 			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
 				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
-            _mouseWheelTimer.Dispose();
+			_mouseWheelTimer.Dispose();
 		}
 
 		/// <summary>
@@ -535,18 +535,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
+			if (frame == Emulator.Frame)
+				return;
+
 			CurrentTasMovie.SwitchToPlay();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-			if (closestState.Value != null)
+			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
 				LoadState(closestState);
 			}
 
-            if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
-            {
-                GlobalWin.MainForm.PauseOnFrame = frame;
-                GlobalWin.MainForm.UnpauseEmulator();
-            }
+			if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
+			{
+				GlobalWin.MainForm.PauseOnFrame = frame;
+				GlobalWin.MainForm.UnpauseEmulator();
+			}
 		}
 
 		private void LoadState(KeyValuePair<int, byte[]> state)

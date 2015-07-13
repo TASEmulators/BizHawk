@@ -35,6 +35,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// Get as close as we can then emulate there
 				StartAtNearestFrameAndEmulate(frame);
+
+				if (TasPlaybackBox.FollowCursor)
+				{
+					SetVisibleIndex(frame);
+				}
+
 				return;
 			}
 			else // Emulate to a future frame
