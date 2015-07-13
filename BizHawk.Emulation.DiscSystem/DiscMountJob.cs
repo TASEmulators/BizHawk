@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			if (OUT_Disc != null)
 			{
+				OUT_Disc.Name = Path.GetFileName(IN_FromPath);
+
 				//generate toc and structure:
 				//1. TOCRaw from RawTOCEntries
 				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = OUT_Disc.RawTOCEntries };

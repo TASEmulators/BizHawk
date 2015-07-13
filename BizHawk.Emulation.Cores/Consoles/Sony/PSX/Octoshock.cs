@@ -191,29 +191,16 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{
 				cbActivity(this);
 
-				//lets you check subcode generation by logging it and checking against the CCD subcode
-				bool subcodeLog = false;
-				bool readLog = false;
-
-				if (subcodeLog) Console.Write("{0}|", lba);
-				else if (readLog) Console.WriteLine("Read Sector: " + lba);
-
 				//todo - cache reader
 				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
 				dsr.ReadLBA_2448(lba, SectorBuffer, 0);
 				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
 
-				//if (subcodeLog)
-				//{
-				//  for (int i = 0; i < 24; i++)
-				//    Console.Write("{0:X2}", *((byte*)dst + 2352 + i));
-				//  Console.WriteLine();
-				//}
-
 				return OctoshockDll.SHOCK_OK;
 			}
 		}
 
+		public List<DiscSystem.Disc> Discs;
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
@@ -237,6 +224,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			_Settings = (Settings)settings ?? new Settings();
 			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
+
+			Discs = discs;
 
 			Attach();
 

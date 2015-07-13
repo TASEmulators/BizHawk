@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.DiscSystem
 		public DiscStructure.Session Session1 { get { return Structure.Sessions[1]; } }
 
 		/// <summary>
+		/// The name of a disc. Loosely based on the filename. Just for informational purposes.
+		/// </summary>
+		public string Name;
+
+		/// <summary>
 		/// The DiscTOCRaw corresponding to the RawTOCEntries.
 		/// TODO - there's one of these for every session, so... having one here doesnt make sense
 		/// so... 

@@ -3793,5 +3793,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "Apple II Settings");
 		}
+
+		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXHashDiscs().ShowDialog();
+		}
 	}
 }
