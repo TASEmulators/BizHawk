@@ -296,6 +296,14 @@ namespace BizHawk.Client.EmuHawk
 		[Description("Occurs when the column header has been reordered")]
 		public event ColumnReorderedEventHandler ColumnReordered;
 
+		[Category("Action")]
+		[Description("Occurs when the scroll value of the visible rows change (in vertical orientation this is the vertical scroll bar change, and in horizontal it is the horizontal scroll bar)")]
+		public event RowScrollEvent RowScroll;
+
+		[Category("Action")]
+		[Description("Occurs when the scroll value of the columns (in vertical orientation this is the horizontal scroll bar change, and in horizontal it is the vertical scroll bar)")]
+		public event ColumnScrollEvent ColumnScroll;
+
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
@@ -324,6 +332,10 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void ColumnClickEventHandler(object sender, ColumnClickEventArgs e);
 
 		public delegate void ColumnReorderedEventHandler(object sender, ColumnReorderedEventArgs e);
+
+		public delegate void RowScrollEvent(object sender, EventArgs e);
+
+		public delegate void ColumnScrollEvent(object sender, EventArgs e);
 
 		public class CellEventArgs
 		{
@@ -1730,6 +1742,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Refresh();
 			}
+
+			if (_horizontalOrientation)
+			{
+				if (ColumnScroll != null)
+				{
+					ColumnScroll(this, e);
+				}
+			}
+			else
+			{
+				if (RowScroll != null)
+				{
+					RowScroll(this, e);
+				}
+			}
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
@@ -1737,6 +1764,21 @@ namespace BizHawk.Client.EmuHawk
 			if (!_programmaticallyUpdatingScrollBarValues)
 			{
 				Refresh();
+			}
+
+			if (_horizontalOrientation)
+			{
+				if (RowScroll != null)
+				{
+					RowScroll(this, e);
+				}
+			}
+			else
+			{
+				if (ColumnScroll != null)
+				{
+					ColumnScroll(this, e);
+				}
 			}
 		}
 
