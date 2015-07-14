@@ -270,7 +270,7 @@ namespace BizHawk.Client.Common
 							{
 								string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
 								game = Database.CheckDatabase(discHash);
-								if (game.IsRomStatusBad())
+								if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 									sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 								else
 								{
@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), new List<string>(new[]{Path.GetFileNameWithoutExtension(path)}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-								if (game.IsRomStatusBad())
+								if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 									nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
 								else
 								{
