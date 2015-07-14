@@ -660,7 +660,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (pauseOn.HasValue && _autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
 				{ // If we are already seeking to a later frame don't shorten that journey here
-					_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
+					_autoRestoreFrame = pauseOn;
 				}
 
 				DoAutoRestore();
