@@ -240,11 +240,11 @@ namespace BizHawk.Client.Common
 			return base.GetInputState(frame);
 		}
 
-		public bool SupressGreenzonging { get; set; }
+		public bool SupressGreenzoneing { get; set; }
 
 		public void GreenzoneCurrentFrame()
 		{
-			if (!SupressGreenzonging)
+			if (!SupressGreenzoneing)
 			{
 				LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 

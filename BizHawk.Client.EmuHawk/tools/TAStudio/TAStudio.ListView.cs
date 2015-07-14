@@ -310,7 +310,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				CurrentTasMovie.SupressGreenzonging = true; // This is necessary because we will invalidate, but we won't navigate until mouse up, during that time the user may have emulated frames and we don't want to caputre states for those
 				_leftButtonHeld = true;
 				// SuuperW: Exit float editing mode, or re-enter mouse editing
 				if (_floatEditRow != -1)
@@ -342,6 +341,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // User changed input
 				{
+					CurrentTasMovie.SupressGreenzoneing = true; // This is necessary because we will invalidate, but we won't navigate until mouse up, during that time the user may have emulated frames and we don't want to caputre states for those
+
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool");
@@ -448,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				CurrentTasMovie.SupressGreenzonging = false;
+				CurrentTasMovie.SupressGreenzoneing = false;
 				_startCursorDrag = false;
 				_startFrameDrag = false;
 				_startBoolDrawColumn = string.Empty;

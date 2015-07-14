@@ -370,6 +370,7 @@ namespace BizHawk.Client.EmuHawk
 				SetTasMovieCallbacks();
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
 				HandleMovieLoadStuff();
+				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 
 				RefreshDialog();
 			}
@@ -545,10 +546,14 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
-			if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
+			// frame == Emualtor.Frame when frame == 0
+			if (frame > Emulator.Frame)
 			{
-				GlobalWin.MainForm.PauseOnFrame = frame;
-				GlobalWin.MainForm.UnpauseEmulator();
+				if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
+				{
+					GlobalWin.MainForm.PauseOnFrame = frame;
+					GlobalWin.MainForm.UnpauseEmulator();
+				}
 			}
 		}
 
