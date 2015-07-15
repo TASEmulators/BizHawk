@@ -6,7 +6,9 @@
 
 #include <queue>
 
+#ifdef WINDOWS
 #include <Windows.h>
+#endif
 
 using namespace nall;
 

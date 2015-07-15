@@ -17,7 +17,13 @@
 //(and there are other assorted special messages...)
 
 
+#if WINDOWS
 #include <Windows.h>
+#else
+#include <sys/mman.h>
+#include <pthread.h>
+#include <fcntl.h>
+#endif
 
 #define LIBSNES_IMPORT
 #include "snes/snes.hpp"
@@ -171,7 +177,11 @@ struct EmulationControl
 					int slot;
 					const char* hint;
 					//yuck
+#if WINDOWS
 					char result[MAX_PATH];
+#else
+                    char result[PATH_MAX];
+#endif
 				} cb_path_request_params;
 				struct
 				{
@@ -197,7 +207,11 @@ static EmulationControl s_EmulationControl;
 class IPCRingBuffer
 {
 private:
+#if WINDOWS
 	HANDLE mmf;
+#else
+    int mmf;
+#endif
 	u8* mmvaPtr;
 	volatile u8* begin;
 	volatile s32* head, *tail;
@@ -210,7 +224,11 @@ private:
 		bool init = size != -1;
 		Owner = init;
 
+#if WINDOWS
 		mmvaPtr = (u8*)MapViewOfFile(mmf, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+#else
+        mmvaPtr = (u8*)mmap(0, 65536*sizeof(void*), PROT_READ | PROT_WRITE, 0, mmf, 0); //TODO: Fix Size
+#endif
 
 		//setup management area
 		head = (s32*)mmvaPtr;
@@ -231,7 +249,11 @@ private:
 			if (Available() > amt)
 				return;
 			//this is a greedy spinlock.
+#if WINDOWS
 			SwitchToThread();
+#else
+            pthread_yield_np();
+#endif
 		}
 	}
 
@@ -261,9 +283,15 @@ public:
 
 	void Open(const std::string& id)
 	{
+#if WINDOWS
 		HANDLE h = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, id.c_str());
 		if(h == INVALID_HANDLE_VALUE)
 			return;
+#else
+        int h = shm_open(id.c_str(), O_RDWR);
+        if(h == -1)
+            return;
+#endif
 
 		mmf = h;
 				
@@ -272,8 +300,12 @@ public:
 
 	~IPCRingBuffer()
 	{
-		if (mmf == NULL) return;
+		if (mmf <= 0) return;
+#if WINDOWS
 		CloseHandle(mmf);
+#else
+        close(mmf);
+#endif
 		mmf = NULL;
 	}
 
@@ -285,7 +317,11 @@ public:
 			if (available > 0)
 				return available;
 			//this is a greedy spinlock.
+#if WINDOWS
 			SwitchToThread();
+#else
+            pthread_yield_np();
+#endif
 			//NOTE: it's annoying right now because libsnes processes die and eat a whole core.
 			//we need to gracefully exit somehow
 		}
@@ -344,7 +380,7 @@ public:
 	}
 }; //class IPCRingBuffer
 
-
+#if WINDOWS
 class Watchdog
 {
 public:
@@ -358,7 +394,6 @@ public:
 private:
 
 	std::string eventName;
-
 
 	static DWORD ThreadProc(LPVOID lpParam)
 	{
@@ -383,12 +418,17 @@ private:
 		}
 	}
 }; //class Watchdog
+#endif
 
 static bool bufio = false;
 static IPCRingBuffer *rbuf = NULL, *wbuf = NULL;
 
+#if WINDOWS
 Watchdog s_Watchdog;
 HANDLE hPipe, hMapFile, hEvent;
+#else
+int hPipe, hMapFile, hEvent;
+#endif
 void* hMapFilePtr;
 static bool running = false;
 
@@ -415,8 +455,13 @@ void ReadPipeBuffer(void* buf, int len)
 		rbuf->Read(buf,len);
 		return;
 	}
+#if WINDOWS
 	DWORD bytesRead;
 	BOOL result = ReadFile(hPipe, buf, len, &bytesRead, NULL);
+#else
+    ssize_t bytesRead = read(hPipe, buf, (ssize_t)len);
+    bool result = (bytesRead > 0);
+#endif
 	if(!result || bytesRead != len)
 		exit(1);
 }
@@ -454,8 +499,13 @@ void WritePipeBuffer(const void* buf, int len)
 		return;
 	}
 
+#if WINDOWS
 	DWORD bytesWritten;
 	BOOL result = WriteFile(hPipe, buf, len, &bytesWritten, NULL);
+#else
+    size_t bytesWritten = write(hPipe, buf, len);
+    bool result = bytesWritten > 0;
+#endif
 	if(!result || bytesWritten != len)
 		exit(1);
 }
@@ -603,7 +653,11 @@ class SharedMemoryBlock
 {
 public:
 	std::string memtype;
+#if WINDOWS
 	HANDLE handle;
+#else
+    int handle;
+#endif
 };
 
 static std::map<void*,SharedMemoryBlock*> memHandleTable;
@@ -626,12 +680,20 @@ void* implementation_snes_allocSharedMemory()
 	
 	std::string blockname = ReadPipeString();
 
+#if WINDOWS
 	auto mapfile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, blockname.c_str());
 	
 	if(mapfile == INVALID_HANDLE_VALUE)
 		return NULL;
 
 	auto ptr = MapViewOfFile(mapfile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+#else
+    auto mapfile = shm_open(blockname.c_str(), O_RDWR);
+    if(mapfile == -1)
+        return NULL;
+    
+    auto ptr = mmap(0,65536*sizeof(void*), PROT_READ | PROT_WRITE, 0, mapfile, 0); //TODO FIX size value
+#endif
 
 	auto smb = new SharedMemoryBlock();
 	smb->memtype = memtype;
@@ -639,7 +701,7 @@ void* implementation_snes_allocSharedMemory()
 
 	memHandleTable[ptr] = smb;
 	
-	s_EmulationControl.cb_allocSharedMemory_params.result = ptr;
+	return s_EmulationControl.cb_allocSharedMemory_params.result = ptr;
 }
 
 void* snes_allocSharedMemory(const char* memtype, size_t amt)
@@ -661,8 +723,13 @@ void implementation_snes_freeSharedMemory()
 	void* ptr = s_EmulationControl.cb_freeSharedMemory_params.ptr;
 	if(!ptr) return;
 	auto smb = memHandleTable.find(ptr)->second;
+#if WINDOWS
 	UnmapViewOfFile(ptr);
 	CloseHandle(smb->handle);
+#else
+    munmap(ptr, 65536*sizeof(void*)); //TODO: FIX the Size thing!!!!
+    close(smb->handle);
+#endif
 	//printf("WritePipe(eMessage_SIG_freeSharedMemory);\n");
 	WritePipe(eMessage_SIG_freeSharedMemory);
 	WritePipeString(smb->memtype.c_str());
@@ -1115,7 +1182,9 @@ HANDLEMESSAGES:
 
 void OpenConsole() 
 {
+#if WINDOWS
 	AllocConsole();
+#endif
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONOUT$", "w", stderr);
 	freopen("CONIN$", "r", stdin);
@@ -1237,7 +1306,11 @@ void emuthread()
 	}
 }
 
+#if WINDOWS
 int xmain(int argc, char** argv)
+#else
+int main(int argc, char** argv)
+#endif
 {
 	if(argc != 2)
 	{
@@ -1264,8 +1337,11 @@ int xmain(int argc, char** argv)
 	printf("pipe: %s\n",pipename);
 	printf("event: %s\n",eventname);
 
+#if WINDOWS
 	s_Watchdog.Start(eventname);
+#endif
 
+#if WINDOWS
 	hPipe = CreateFile(pipename, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	if(hPipe == INVALID_HANDLE_VALUE)
@@ -1276,6 +1352,17 @@ int xmain(int argc, char** argv)
 		return 1;
 
 	hMapFilePtr = MapViewOfFile(hMapFile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
+#else
+    hPipe = open(pipename, O_RDWR);
+    if(hPipe == -1)
+        return 1;
+    
+    hMapFile = shm_open(argv[1], O_RDWR);
+    if(hMapFile == -1)
+        return 1;
+    
+    hMapFilePtr = mmap(0, 65536*sizeof(void*), PROT_READ | PROT_WRITE, 0, hMapFile, 0); //TODO: Figure out what value to use for size instead of 65536*sizeof(void*)
+#endif
 
 	//make a coroutine thread to run the emulation in. we'll switch back to this thread when communicating with the frontend
 	co_control = co_active();
@@ -1289,6 +1376,7 @@ int xmain(int argc, char** argv)
 	return 0;
 }
 
+#if WINDOWS
 int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
 	int argc = __argc;
@@ -1304,6 +1392,7 @@ int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	}
 	xmain(argc,argv);
 }
+#endif
 
 void pwrap_init()
 {

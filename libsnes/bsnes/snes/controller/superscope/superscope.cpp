@@ -92,6 +92,7 @@ uint2 SuperScope::data() {
   case 6: return offscreen;
   case 7: return 0;  //noise (1 = yes)
   }
+    return 0;
 }
 
 void SuperScope::latch(bool data) {

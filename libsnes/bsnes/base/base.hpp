@@ -3,6 +3,8 @@
 
 const char Version[] = "087";
 
+#include <string>
+#include <vector>
 #include <nall/platform.hpp>
 #include <nall/algorithm.hpp>
 #include <nall/any.hpp>

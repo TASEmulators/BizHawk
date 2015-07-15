@@ -36,6 +36,7 @@ uint8 SA1::bus_read(unsigned addr) {
     synchronize_cpu();
     return bitmap_read(addr & 0x0fffff);
   }
+    return 0;
 }
 
 void SA1::bus_write(unsigned addr, uint8 data) {
@@ -96,6 +97,7 @@ uint8 SA1::vbr_read(unsigned addr) {
   if((addr & 0x40f800) == 0x003000) {  //$00-3f|80-bf:3000-37ff
     return iram.read(addr & 0x2047);
   }
+    return 0;
 }
 
 //ROM, I-RAM and MMIO registers are accessed at ~10.74MHz (2 clock ticks)

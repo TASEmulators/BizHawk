@@ -253,6 +253,7 @@ uint8 SDD1::Decomp::OL::decompress() {
     }
     return r1;
   }
+    return r1;
 }
 
 //core

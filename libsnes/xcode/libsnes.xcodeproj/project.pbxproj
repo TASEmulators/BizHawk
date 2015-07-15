@@ -1,0 +1,996 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9EA4EC201B4236B2002FF938 /* ppu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C77E1B3CF5D900B0C884 /* ppu.cpp */; };
+		9EA4EC211B4236B6002FF938 /* ppu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7961B3CF5D900B0C884 /* ppu.cpp */; };
+		9EA4EC221B4236C2002FF938 /* smp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7BA1B3CF5D900B0C884 /* smp.cpp */; };
+		9EA4EC231B423718002FF938 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C85A1B3CF5D900B0C884 /* core.cpp */; };
+		9EA4EC241B423718002FF938 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C85A1B3CF5D900B0C884 /* core.cpp */; };
+		9EA4EC251B423823002FF938 /* apu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7031B3CF5D900B0C884 /* apu.cpp */; };
+		9EA4EC261B423824002FF938 /* apu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7031B3CF5D900B0C884 /* apu.cpp */; };
+		9EA4EC271B423828002FF938 /* cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7161B3CF5D900B0C884 /* cartridge.cpp */; };
+		9EA4EC281B423828002FF938 /* cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7161B3CF5D900B0C884 /* cartridge.cpp */; };
+		9EA4EC291B42382B002FF938 /* cheat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7321B3CF5D900B0C884 /* cheat.cpp */; };
+		9EA4EC2A1B42382C002FF938 /* cheat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7321B3CF5D900B0C884 /* cheat.cpp */; };
+		9EA4EC2B1B423830002FF938 /* cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA361B3CF6E000B0C884 /* cpu.cpp */; };
+		9EA4EC2C1B423830002FF938 /* cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA361B3CF6E000B0C884 /* cpu.cpp */; };
+		9EA4EC2D1B423833002FF938 /* interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA411B3CF6E000B0C884 /* interface.cpp */; };
+		9EA4EC2E1B423833002FF938 /* interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA411B3CF6E000B0C884 /* interface.cpp */; };
+		9EA4EC2F1B423837002FF938 /* lcd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA461B3CF6E000B0C884 /* lcd.cpp */; };
+		9EA4EC301B423837002FF938 /* lcd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA461B3CF6E000B0C884 /* lcd.cpp */; };
+		9EA4EC311B423878002FF938 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA4D1B3CF6E000B0C884 /* memory.cpp */; };
+		9EA4EC321B423878002FF938 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA4D1B3CF6E000B0C884 /* memory.cpp */; };
+		9EA4EC331B42387B002FF938 /* scheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA501B3CF6E000B0C884 /* scheduler.cpp */; };
+		9EA4EC341B42387C002FF938 /* scheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA501B3CF6E000B0C884 /* scheduler.cpp */; };
+		9EA4EC351B42387E002FF938 /* system.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA571B3CF6E000B0C884 /* system.cpp */; };
+		9EA4EC361B42387F002FF938 /* system.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA571B3CF6E000B0C884 /* system.cpp */; };
+		9EA4EC371B423881002FF938 /* video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA5A1B3CF6E000B0C884 /* video.cpp */; };
+		9EA4EC381B423882002FF938 /* video.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81CA5A1B3CF6E000B0C884 /* video.cpp */; };
+		9EA4EC391B42388A002FF938 /* dsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7721B3CF5D900B0C884 /* dsp.cpp */; };
+		9EA4EC3A1B42388A002FF938 /* dsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7721B3CF5D900B0C884 /* dsp.cpp */; };
+		9EA4EC3B1B423893002FF938 /* cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7BE1B3CF5D900B0C884 /* cartridge.cpp */; };
+		9EA4EC3C1B423893002FF938 /* cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7BE1B3CF5D900B0C884 /* cartridge.cpp */; };
+		9EA4EC3D1B423898002FF938 /* cheat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7C31B3CF5D900B0C884 /* cheat.cpp */; };
+		9EA4EC3E1B423898002FF938 /* cheat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7C31B3CF5D900B0C884 /* cheat.cpp */; };
+		9EA4EC3F1B42389B002FF938 /* armdsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7C71B3CF5D900B0C884 /* armdsp.cpp */; };
+		9EA4EC401B42389B002FF938 /* armdsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7C71B3CF5D900B0C884 /* armdsp.cpp */; };
+		9EA4EC411B42389E002FF938 /* bsx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7CF1B3CF5D900B0C884 /* bsx.cpp */; };
+		9EA4EC421B42389E002FF938 /* bsx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7CF1B3CF5D900B0C884 /* bsx.cpp */; };
+		9EA4EC431B4238A1002FF938 /* hitachidsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7DC1B3CF5D900B0C884 /* hitachidsp.cpp */; };
+		9EA4EC441B4238A1002FF938 /* hitachidsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7DC1B3CF5D900B0C884 /* hitachidsp.cpp */; };
+		9EA4EC451B4238A4002FF938 /* icd2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7E41B3CF5D900B0C884 /* icd2.cpp */; };
+		9EA4EC461B4238A4002FF938 /* icd2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7E41B3CF5D900B0C884 /* icd2.cpp */; };
+		9EA4EC471B4238A7002FF938 /* link.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7EE1B3CF5D900B0C884 /* link.cpp */; };
+		9EA4EC481B4238A8002FF938 /* link.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7EE1B3CF5D900B0C884 /* link.cpp */; };
+		9EA4EC491B4238AA002FF938 /* msu1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7F11B3CF5D900B0C884 /* msu1.cpp */; };
+		9EA4EC4A1B4238AB002FF938 /* msu1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7F11B3CF5D900B0C884 /* msu1.cpp */; };
+		9EA4EC4B1B4238AD002FF938 /* necdsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7F71B3CF5D900B0C884 /* necdsp.cpp */; };
+		9EA4EC4C1B4238AE002FF938 /* necdsp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7F71B3CF5D900B0C884 /* necdsp.cpp */; };
+		9EA4EC4D1B4238B0002FF938 /* nss.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7FC1B3CF5D900B0C884 /* nss.cpp */; };
+		9EA4EC4E1B4238B1002FF938 /* nss.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7FC1B3CF5D900B0C884 /* nss.cpp */; };
+		9EA4EC4F1B4238B5002FF938 /* obc1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7FF1B3CF5D900B0C884 /* obc1.cpp */; };
+		9EA4EC501B4238B5002FF938 /* obc1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7FF1B3CF5D900B0C884 /* obc1.cpp */; };
+		9EA4EC511B4238B7002FF938 /* sa1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C80F1B3CF5D900B0C884 /* sa1.cpp */; };
+		9EA4EC521B4238B8002FF938 /* sa1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C80F1B3CF5D900B0C884 /* sa1.cpp */; };
+		9EA4EC531B4238BA002FF938 /* sdd1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8151B3CF5D900B0C884 /* sdd1.cpp */; };
+		9EA4EC541B4238BB002FF938 /* sdd1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8151B3CF5D900B0C884 /* sdd1.cpp */; };
+		9EA4EC551B4238BE002FF938 /* spc7110.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C81C1B3CF5D900B0C884 /* spc7110.cpp */; };
+		9EA4EC561B4238BE002FF938 /* spc7110.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C81C1B3CF5D900B0C884 /* spc7110.cpp */; };
+		9EA4EC571B4238C0002FF938 /* srtc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8201B3CF5D900B0C884 /* srtc.cpp */; };
+		9EA4EC581B4238C1002FF938 /* srtc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8201B3CF5D900B0C884 /* srtc.cpp */; };
+		9EA4EC591B4238C3002FF938 /* sufamiturbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8241B3CF5D900B0C884 /* sufamiturbo.cpp */; };
+		9EA4EC5A1B4238C3002FF938 /* sufamiturbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8241B3CF5D900B0C884 /* sufamiturbo.cpp */; };
+		9EA4EC5B1B4238C6002FF938 /* superfx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C83A1B3CF5D900B0C884 /* superfx.cpp */; };
+		9EA4EC5C1B4238C6002FF938 /* superfx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C83A1B3CF5D900B0C884 /* superfx.cpp */; };
+		9EA4EC5D1B4238C9002FF938 /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8401B3CF5D900B0C884 /* config.cpp */; };
+		9EA4EC5E1B4238C9002FF938 /* config.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8401B3CF5D900B0C884 /* config.cpp */; };
+		9EA4EC5F1B4238CB002FF938 /* controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8431B3CF5D900B0C884 /* controller.cpp */; };
+		9EA4EC601B4238CC002FF938 /* controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8431B3CF5D900B0C884 /* controller.cpp */; };
+		9EA4EC631B4238D5002FF938 /* interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8851B3CF5D900B0C884 /* interface.cpp */; };
+		9EA4EC641B4238D6002FF938 /* interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8851B3CF5D900B0C884 /* interface.cpp */; };
+		9EA4EC651B4238EF002FF938 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C88A1B3CF5D900B0C884 /* memory.cpp */; };
+		9EA4EC661B4238EF002FF938 /* memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C88A1B3CF5D900B0C884 /* memory.cpp */; };
+		9EA4EC6B1B4238F7002FF938 /* system.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8C91B3CF5D900B0C884 /* system.cpp */; };
+		9EA4EC6C1B4238F8002FF938 /* system.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8C91B3CF5D900B0C884 /* system.cpp */; };
+		9EA4EC6D1B4238FB002FF938 /* libsnes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8CE1B3CF5D900B0C884 /* libsnes.cpp */; };
+		9EA4EC6E1B4238FC002FF938 /* libsnes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8CE1B3CF5D900B0C884 /* libsnes.cpp */; };
+		9EA4EC6F1B4238FE002FF938 /* libsnes_pwrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8D01B3CF5D900B0C884 /* libsnes_pwrap.cpp */; };
+		9EA4EC701B4238FF002FF938 /* libsnes_pwrap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8D01B3CF5D900B0C884 /* libsnes_pwrap.cpp */; };
+		9EA4EC711B423912002FF938 /* cpu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7661B3CF5D900B0C884 /* cpu.cpp */; };
+		9EEE15E81B55F7ED00CE1F1A /* x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE15E71B55F7ED00CE1F1A /* x86.c */; };
+		9EEE15E91B55F7FC00CE1F1A /* x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE15E71B55F7ED00CE1F1A /* x86.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9EA4EC0B1B42335B002FF938 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		9EA4EC161B4233C3002FF938 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		9E81C7001B3CF5D900B0C884 /* base.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = base.hpp; sourceTree = "<group>"; };
+		9E81C7031B3CF5D900B0C884 /* apu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = apu.cpp; sourceTree = "<group>"; };
+		9E81C7041B3CF5D900B0C884 /* apu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = apu.hpp; sourceTree = "<group>"; };
+		9E81C7161B3CF5D900B0C884 /* cartridge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cartridge.cpp; sourceTree = "<group>"; };
+		9E81C7321B3CF5D900B0C884 /* cheat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cheat.cpp; sourceTree = "<group>"; };
+		9E81C7331B3CF5D900B0C884 /* cheat.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cheat.hpp; sourceTree = "<group>"; };
+		9E81C7451B3CF5D900B0C884 /* gameboy.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = gameboy.hpp; sourceTree = "<group>"; };
+		9E81C7661B3CF5D900B0C884 /* cpu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cpu.cpp; sourceTree = "<group>"; };
+		9E81C7721B3CF5D900B0C884 /* dsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dsp.cpp; sourceTree = "<group>"; };
+		9E81C77E1B3CF5D900B0C884 /* ppu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ppu.cpp; sourceTree = "<group>"; };
+		9E81C7961B3CF5D900B0C884 /* ppu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ppu.cpp; sourceTree = "<group>"; };
+		9E81C7BA1B3CF5D900B0C884 /* smp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smp.cpp; sourceTree = "<group>"; };
+		9E81C7BE1B3CF5D900B0C884 /* cartridge.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cartridge.cpp; sourceTree = "<group>"; };
+		9E81C7C31B3CF5D900B0C884 /* cheat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cheat.cpp; sourceTree = "<group>"; };
+		9E81C7C71B3CF5D900B0C884 /* armdsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = armdsp.cpp; sourceTree = "<group>"; };
+		9E81C7CF1B3CF5D900B0C884 /* bsx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bsx.cpp; sourceTree = "<group>"; };
+		9E81C7DC1B3CF5D900B0C884 /* hitachidsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = hitachidsp.cpp; sourceTree = "<group>"; };
+		9E81C7E41B3CF5D900B0C884 /* icd2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = icd2.cpp; sourceTree = "<group>"; };
+		9E81C7EE1B3CF5D900B0C884 /* link.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = link.cpp; sourceTree = "<group>"; };
+		9E81C7F11B3CF5D900B0C884 /* msu1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = msu1.cpp; sourceTree = "<group>"; };
+		9E81C7F71B3CF5D900B0C884 /* necdsp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = necdsp.cpp; sourceTree = "<group>"; };
+		9E81C7FC1B3CF5D900B0C884 /* nss.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = nss.cpp; sourceTree = "<group>"; };
+		9E81C7FF1B3CF5D900B0C884 /* obc1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = obc1.cpp; sourceTree = "<group>"; };
+		9E81C80F1B3CF5D900B0C884 /* sa1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sa1.cpp; sourceTree = "<group>"; };
+		9E81C8151B3CF5D900B0C884 /* sdd1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sdd1.cpp; sourceTree = "<group>"; };
+		9E81C81C1B3CF5D900B0C884 /* spc7110.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spc7110.cpp; sourceTree = "<group>"; };
+		9E81C8201B3CF5D900B0C884 /* srtc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = srtc.cpp; sourceTree = "<group>"; };
+		9E81C8241B3CF5D900B0C884 /* sufamiturbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sufamiturbo.cpp; sourceTree = "<group>"; };
+		9E81C83A1B3CF5D900B0C884 /* superfx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = superfx.cpp; sourceTree = "<group>"; };
+		9E81C8401B3CF5D900B0C884 /* config.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = config.cpp; sourceTree = "<group>"; };
+		9E81C8431B3CF5D900B0C884 /* controller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controller.cpp; sourceTree = "<group>"; };
+		9E81C85A1B3CF5D900B0C884 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = "<group>"; };
+		9E81C8681B3CF5D900B0C884 /* cpu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cpu.cpp; sourceTree = "<group>"; };
+		9E81C8851B3CF5D900B0C884 /* interface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interface.cpp; sourceTree = "<group>"; };
+		9E81C88A1B3CF5D900B0C884 /* memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
+		9E81C8971B3CF5D900B0C884 /* ppu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ppu.cpp; sourceTree = "<group>"; };
+		9E81C8BD1B3CF5D900B0C884 /* smp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smp.cpp; sourceTree = "<group>"; };
+		9E81C8C21B3CF5D900B0C884 /* snes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = snes.hpp; sourceTree = "<group>"; };
+		9E81C8C91B3CF5D900B0C884 /* system.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = system.cpp; sourceTree = "<group>"; };
+		9E81C8CE1B3CF5D900B0C884 /* libsnes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = libsnes.cpp; sourceTree = "<group>"; };
+		9E81C8CF1B3CF5D900B0C884 /* libsnes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = libsnes.hpp; sourceTree = "<group>"; };
+		9E81C8D01B3CF5D900B0C884 /* libsnes_pwrap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = libsnes_pwrap.cpp; sourceTree = "<group>"; };
+		9E81CA361B3CF6E000B0C884 /* cpu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cpu.cpp; sourceTree = "<group>"; };
+		9E81CA411B3CF6E000B0C884 /* interface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interface.cpp; sourceTree = "<group>"; };
+		9E81CA421B3CF6E000B0C884 /* interface.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = interface.hpp; sourceTree = "<group>"; };
+		9E81CA461B3CF6E000B0C884 /* lcd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lcd.cpp; sourceTree = "<group>"; };
+		9E81CA4D1B3CF6E000B0C884 /* memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memory.cpp; sourceTree = "<group>"; };
+		9E81CA501B3CF6E000B0C884 /* scheduler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scheduler.cpp; sourceTree = "<group>"; };
+		9E81CA571B3CF6E000B0C884 /* system.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = system.cpp; sourceTree = "<group>"; };
+		9E81CA5A1B3CF6E000B0C884 /* video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = video.cpp; sourceTree = "<group>"; };
+		9EA4EC0D1B42335B002FF938 /* libsnes-compatibility */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "libsnes-compatibility"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EA4EC181B4233C3002FF938 /* libsnes-performance */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "libsnes-performance"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EEE15E71B55F7ED00CE1F1A /* x86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = x86.c; path = ../bsnes/libco/x86.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9EA4EC0A1B42335B002FF938 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA4EC151B4233C3002FF938 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9E81C6EF1B3CF4C100B0C884 = {
+			isa = PBXGroup;
+			children = (
+				9EEE15E61B55F7E200CE1F1A /* libco */,
+				9E81C6FF1B3CF5D900B0C884 /* base */,
+				9E81C7011B3CF5D900B0C884 /* gameboy */,
+				9E81C7631B3CF5D900B0C884 /* snes */,
+				9E81C8CD1B3CF5D900B0C884 /* target-libsnes */,
+				9E81C6F91B3CF4C100B0C884 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9E81C6F91B3CF4C100B0C884 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9EA4EC0D1B42335B002FF938 /* libsnes-compatibility */,
+				9EA4EC181B4233C3002FF938 /* libsnes-performance */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9E81C6FF1B3CF5D900B0C884 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7001B3CF5D900B0C884 /* base.hpp */,
+			);
+			name = base;
+			path = ../bsnes/base;
+			sourceTree = "<group>";
+		};
+		9E81C7011B3CF5D900B0C884 /* gameboy */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7021B3CF5D900B0C884 /* apu */,
+				9E81C7151B3CF5D900B0C884 /* cartridge */,
+				9E81C7311B3CF5D900B0C884 /* cheat */,
+				9E81CA2F1B3CF6E000B0C884 /* cpu */,
+				9E81CA401B3CF6E000B0C884 /* interface */,
+				9E81CA431B3CF6E000B0C884 /* lcd */,
+				9E81CA4C1B3CF6E000B0C884 /* memory */,
+				9E81CA4F1B3CF6E000B0C884 /* scheduler */,
+				9E81CA521B3CF6E000B0C884 /* system */,
+				9E81CA591B3CF6E000B0C884 /* video */,
+				9E81C7451B3CF5D900B0C884 /* gameboy.hpp */,
+			);
+			name = gameboy;
+			path = ../bsnes/gameboy;
+			sourceTree = "<group>";
+		};
+		9E81C7021B3CF5D900B0C884 /* apu */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7031B3CF5D900B0C884 /* apu.cpp */,
+				9E81C7041B3CF5D900B0C884 /* apu.hpp */,
+			);
+			path = apu;
+			sourceTree = "<group>";
+		};
+		9E81C7151B3CF5D900B0C884 /* cartridge */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7161B3CF5D900B0C884 /* cartridge.cpp */,
+			);
+			path = cartridge;
+			sourceTree = "<group>";
+		};
+		9E81C7311B3CF5D900B0C884 /* cheat */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7321B3CF5D900B0C884 /* cheat.cpp */,
+				9E81C7331B3CF5D900B0C884 /* cheat.hpp */,
+			);
+			path = cheat;
+			sourceTree = "<group>";
+		};
+		9E81C7631B3CF5D900B0C884 /* snes */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7641B3CF5D900B0C884 /* alt */,
+				9E81C7BD1B3CF5D900B0C884 /* cartridge */,
+				9E81C7C21B3CF5D900B0C884 /* cheat */,
+				9E81C7C51B3CF5D900B0C884 /* chip */,
+				9E81C83F1B3CF5D900B0C884 /* config */,
+				9E81C8421B3CF5D900B0C884 /* controller */,
+				9E81C8571B3CF5D900B0C884 /* cpu */,
+				9E81C8841B3CF5D900B0C884 /* interface */,
+				9E81C8881B3CF5D900B0C884 /* memory */,
+				9E81C88C1B3CF5D900B0C884 /* ppu */,
+				9E81C8AD1B3CF5D900B0C884 /* smp */,
+				9E81C8C21B3CF5D900B0C884 /* snes.hpp */,
+				9E81C8C31B3CF5D900B0C884 /* system */,
+			);
+			name = snes;
+			path = ../bsnes/snes;
+			sourceTree = "<group>";
+		};
+		9E81C7641B3CF5D900B0C884 /* alt */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7651B3CF5D900B0C884 /* cpu */,
+				9E81C76D1B3CF5D900B0C884 /* dsp */,
+				9E81C7771B3CF5D900B0C884 /* ppu-compatibility */,
+				9E81C78B1B3CF5D900B0C884 /* ppu-performance */,
+				9E81C7A21B3CF5D900B0C884 /* smp */,
+			);
+			path = alt;
+			sourceTree = "<group>";
+		};
+		9E81C7651B3CF5D900B0C884 /* cpu */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7661B3CF5D900B0C884 /* cpu.cpp */,
+			);
+			path = cpu;
+			sourceTree = "<group>";
+		};
+		9E81C76D1B3CF5D900B0C884 /* dsp */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7721B3CF5D900B0C884 /* dsp.cpp */,
+			);
+			path = dsp;
+			sourceTree = "<group>";
+		};
+		9E81C7771B3CF5D900B0C884 /* ppu-compatibility */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C77E1B3CF5D900B0C884 /* ppu.cpp */,
+			);
+			path = "ppu-compatibility";
+			sourceTree = "<group>";
+		};
+		9E81C78B1B3CF5D900B0C884 /* ppu-performance */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7961B3CF5D900B0C884 /* ppu.cpp */,
+			);
+			path = "ppu-performance";
+			sourceTree = "<group>";
+		};
+		9E81C7A21B3CF5D900B0C884 /* smp */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7BA1B3CF5D900B0C884 /* smp.cpp */,
+			);
+			path = smp;
+			sourceTree = "<group>";
+		};
+		9E81C7BD1B3CF5D900B0C884 /* cartridge */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7BE1B3CF5D900B0C884 /* cartridge.cpp */,
+			);
+			path = cartridge;
+			sourceTree = "<group>";
+		};
+		9E81C7C21B3CF5D900B0C884 /* cheat */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7C31B3CF5D900B0C884 /* cheat.cpp */,
+			);
+			path = cheat;
+			sourceTree = "<group>";
+		};
+		9E81C7C51B3CF5D900B0C884 /* chip */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7C61B3CF5D900B0C884 /* armdsp */,
+				9E81C7CE1B3CF5D900B0C884 /* bsx */,
+				9E81C7DB1B3CF5D900B0C884 /* hitachidsp */,
+				9E81C7E31B3CF5D900B0C884 /* icd2 */,
+				9E81C7ED1B3CF5D900B0C884 /* link */,
+				9E81C7F01B3CF5D900B0C884 /* msu1 */,
+				9E81C7F41B3CF5D900B0C884 /* necdsp */,
+				9E81C7FB1B3CF5D900B0C884 /* nss */,
+				9E81C7FE1B3CF5D900B0C884 /* obc1 */,
+				9E81C8021B3CF5D900B0C884 /* sa1 */,
+				9E81C8121B3CF5D900B0C884 /* sdd1 */,
+				9E81C8181B3CF5D900B0C884 /* spc7110 */,
+				9E81C81E1B3CF5D900B0C884 /* srtc */,
+				9E81C8221B3CF5D900B0C884 /* sufamiturbo */,
+				9E81C8261B3CF5D900B0C884 /* superfx */,
+			);
+			path = chip;
+			sourceTree = "<group>";
+		};
+		9E81C7C61B3CF5D900B0C884 /* armdsp */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7C71B3CF5D900B0C884 /* armdsp.cpp */,
+			);
+			path = armdsp;
+			sourceTree = "<group>";
+		};
+		9E81C7CE1B3CF5D900B0C884 /* bsx */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7CF1B3CF5D900B0C884 /* bsx.cpp */,
+			);
+			path = bsx;
+			sourceTree = "<group>";
+		};
+		9E81C7DB1B3CF5D900B0C884 /* hitachidsp */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7DC1B3CF5D900B0C884 /* hitachidsp.cpp */,
+			);
+			path = hitachidsp;
+			sourceTree = "<group>";
+		};
+		9E81C7E31B3CF5D900B0C884 /* icd2 */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7E41B3CF5D900B0C884 /* icd2.cpp */,
+			);
+			path = icd2;
+			sourceTree = "<group>";
+		};
+		9E81C7ED1B3CF5D900B0C884 /* link */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7EE1B3CF5D900B0C884 /* link.cpp */,
+			);
+			path = link;
+			sourceTree = "<group>";
+		};
+		9E81C7F01B3CF5D900B0C884 /* msu1 */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7F11B3CF5D900B0C884 /* msu1.cpp */,
+			);
+			path = msu1;
+			sourceTree = "<group>";
+		};
+		9E81C7F41B3CF5D900B0C884 /* necdsp */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7F71B3CF5D900B0C884 /* necdsp.cpp */,
+			);
+			path = necdsp;
+			sourceTree = "<group>";
+		};
+		9E81C7FB1B3CF5D900B0C884 /* nss */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7FC1B3CF5D900B0C884 /* nss.cpp */,
+			);
+			path = nss;
+			sourceTree = "<group>";
+		};
+		9E81C7FE1B3CF5D900B0C884 /* obc1 */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C7FF1B3CF5D900B0C884 /* obc1.cpp */,
+			);
+			path = obc1;
+			sourceTree = "<group>";
+		};
+		9E81C8021B3CF5D900B0C884 /* sa1 */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C80F1B3CF5D900B0C884 /* sa1.cpp */,
+			);
+			path = sa1;
+			sourceTree = "<group>";
+		};
+		9E81C8121B3CF5D900B0C884 /* sdd1 */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8151B3CF5D900B0C884 /* sdd1.cpp */,
+			);
+			path = sdd1;
+			sourceTree = "<group>";
+		};
+		9E81C8181B3CF5D900B0C884 /* spc7110 */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C81C1B3CF5D900B0C884 /* spc7110.cpp */,
+			);
+			path = spc7110;
+			sourceTree = "<group>";
+		};
+		9E81C81E1B3CF5D900B0C884 /* srtc */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8201B3CF5D900B0C884 /* srtc.cpp */,
+			);
+			path = srtc;
+			sourceTree = "<group>";
+		};
+		9E81C8221B3CF5D900B0C884 /* sufamiturbo */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8241B3CF5D900B0C884 /* sufamiturbo.cpp */,
+			);
+			path = sufamiturbo;
+			sourceTree = "<group>";
+		};
+		9E81C8261B3CF5D900B0C884 /* superfx */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C83A1B3CF5D900B0C884 /* superfx.cpp */,
+			);
+			path = superfx;
+			sourceTree = "<group>";
+		};
+		9E81C83F1B3CF5D900B0C884 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8401B3CF5D900B0C884 /* config.cpp */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+		9E81C8421B3CF5D900B0C884 /* controller */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8431B3CF5D900B0C884 /* controller.cpp */,
+			);
+			path = controller;
+			sourceTree = "<group>";
+		};
+		9E81C8571B3CF5D900B0C884 /* cpu */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8581B3CF5D900B0C884 /* core */,
+				9E81C8681B3CF5D900B0C884 /* cpu.cpp */,
+			);
+			path = cpu;
+			sourceTree = "<group>";
+		};
+		9E81C8581B3CF5D900B0C884 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C85A1B3CF5D900B0C884 /* core.cpp */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		9E81C8841B3CF5D900B0C884 /* interface */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8851B3CF5D900B0C884 /* interface.cpp */,
+			);
+			path = interface;
+			sourceTree = "<group>";
+		};
+		9E81C8881B3CF5D900B0C884 /* memory */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C88A1B3CF5D900B0C884 /* memory.cpp */,
+			);
+			path = memory;
+			sourceTree = "<group>";
+		};
+		9E81C88C1B3CF5D900B0C884 /* ppu */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8971B3CF5D900B0C884 /* ppu.cpp */,
+			);
+			path = ppu;
+			sourceTree = "<group>";
+		};
+		9E81C8AD1B3CF5D900B0C884 /* smp */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8BD1B3CF5D900B0C884 /* smp.cpp */,
+			);
+			path = smp;
+			sourceTree = "<group>";
+		};
+		9E81C8C31B3CF5D900B0C884 /* system */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8C91B3CF5D900B0C884 /* system.cpp */,
+			);
+			path = system;
+			sourceTree = "<group>";
+		};
+		9E81C8CD1B3CF5D900B0C884 /* target-libsnes */ = {
+			isa = PBXGroup;
+			children = (
+				9E81C8CE1B3CF5D900B0C884 /* libsnes.cpp */,
+				9E81C8CF1B3CF5D900B0C884 /* libsnes.hpp */,
+				9E81C8D01B3CF5D900B0C884 /* libsnes_pwrap.cpp */,
+			);
+			name = "target-libsnes";
+			path = "../bsnes/target-libsnes";
+			sourceTree = "<group>";
+		};
+		9E81CA2F1B3CF6E000B0C884 /* cpu */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA361B3CF6E000B0C884 /* cpu.cpp */,
+			);
+			path = cpu;
+			sourceTree = "<group>";
+		};
+		9E81CA401B3CF6E000B0C884 /* interface */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA411B3CF6E000B0C884 /* interface.cpp */,
+				9E81CA421B3CF6E000B0C884 /* interface.hpp */,
+			);
+			path = interface;
+			sourceTree = "<group>";
+		};
+		9E81CA431B3CF6E000B0C884 /* lcd */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA461B3CF6E000B0C884 /* lcd.cpp */,
+			);
+			path = lcd;
+			sourceTree = "<group>";
+		};
+		9E81CA4C1B3CF6E000B0C884 /* memory */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA4D1B3CF6E000B0C884 /* memory.cpp */,
+			);
+			path = memory;
+			sourceTree = "<group>";
+		};
+		9E81CA4F1B3CF6E000B0C884 /* scheduler */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA501B3CF6E000B0C884 /* scheduler.cpp */,
+			);
+			path = scheduler;
+			sourceTree = "<group>";
+		};
+		9E81CA521B3CF6E000B0C884 /* system */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA571B3CF6E000B0C884 /* system.cpp */,
+			);
+			path = system;
+			sourceTree = "<group>";
+		};
+		9E81CA591B3CF6E000B0C884 /* video */ = {
+			isa = PBXGroup;
+			children = (
+				9E81CA5A1B3CF6E000B0C884 /* video.cpp */,
+			);
+			path = video;
+			sourceTree = "<group>";
+		};
+		9EEE15E61B55F7E200CE1F1A /* libco */ = {
+			isa = PBXGroup;
+			children = (
+				9EEE15E71B55F7ED00CE1F1A /* x86.c */,
+			);
+			name = libco;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		9EA4EC0C1B42335B002FF938 /* libsnes-compatibility */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9EA4EC111B42335B002FF938 /* Build configuration list for PBXNativeTarget "libsnes-compatibility" */;
+			buildPhases = (
+				9EA4EC091B42335B002FF938 /* Sources */,
+				9EA4EC0A1B42335B002FF938 /* Frameworks */,
+				9EA4EC0B1B42335B002FF938 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libsnes-compatibility";
+			productName = "libsnes-compatibility";
+			productReference = 9EA4EC0D1B42335B002FF938 /* libsnes-compatibility */;
+			productType = "com.apple.product-type.tool";
+		};
+		9EA4EC171B4233C3002FF938 /* libsnes-performance */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9EA4EC1C1B4233C3002FF938 /* Build configuration list for PBXNativeTarget "libsnes-performance" */;
+			buildPhases = (
+				9EA4EC141B4233C3002FF938 /* Sources */,
+				9EA4EC151B4233C3002FF938 /* Frameworks */,
+				9EA4EC161B4233C3002FF938 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libsnes-performance";
+			productName = "libsnes-performance";
+			productReference = 9EA4EC181B4233C3002FF938 /* libsnes-performance */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9E81C6F01B3CF4C100B0C884 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = bizhawk;
+				TargetAttributes = {
+					9EA4EC0C1B42335B002FF938 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+					9EA4EC171B4233C3002FF938 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+				};
+			};
+			buildConfigurationList = 9E81C6F31B3CF4C100B0C884 /* Build configuration list for PBXProject "libsnes" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9E81C6EF1B3CF4C100B0C884;
+			productRefGroup = 9E81C6F91B3CF4C100B0C884 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9EA4EC0C1B42335B002FF938 /* libsnes-compatibility */,
+				9EA4EC171B4233C3002FF938 /* libsnes-performance */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9EA4EC091B42335B002FF938 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EA4EC311B423878002FF938 /* memory.cpp in Sources */,
+				9EA4EC301B423837002FF938 /* lcd.cpp in Sources */,
+				9EA4EC541B4238BB002FF938 /* sdd1.cpp in Sources */,
+				9EA4EC5A1B4238C3002FF938 /* sufamiturbo.cpp in Sources */,
+				9EA4EC6D1B4238FB002FF938 /* libsnes.cpp in Sources */,
+				9EA4EC581B4238C1002FF938 /* srtc.cpp in Sources */,
+				9EA4EC451B4238A4002FF938 /* icd2.cpp in Sources */,
+				9EA4EC281B423828002FF938 /* cartridge.cpp in Sources */,
+				9EA4EC331B42387B002FF938 /* scheduler.cpp in Sources */,
+				9EA4EC391B42388A002FF938 /* dsp.cpp in Sources */,
+				9EA4EC201B4236B2002FF938 /* ppu.cpp in Sources */,
+				9EA4EC291B42382B002FF938 /* cheat.cpp in Sources */,
+				9EA4EC701B4238FF002FF938 /* libsnes_pwrap.cpp in Sources */,
+				9EA4EC601B4238CC002FF938 /* controller.cpp in Sources */,
+				9EA4EC6C1B4238F8002FF938 /* system.cpp in Sources */,
+				9EA4EC251B423823002FF938 /* apu.cpp in Sources */,
+				9EA4EC411B42389E002FF938 /* bsx.cpp in Sources */,
+				9EA4EC641B4238D6002FF938 /* interface.cpp in Sources */,
+				9EA4EC361B42387F002FF938 /* system.cpp in Sources */,
+				9EA4EC5C1B4238C6002FF938 /* superfx.cpp in Sources */,
+				9EA4EC4E1B4238B1002FF938 /* nss.cpp in Sources */,
+				9EA4EC5E1B4238C9002FF938 /* config.cpp in Sources */,
+				9EA4EC521B4238B8002FF938 /* sa1.cpp in Sources */,
+				9EEE15E81B55F7ED00CE1F1A /* x86.c in Sources */,
+				9EA4EC501B4238B5002FF938 /* obc1.cpp in Sources */,
+				9EA4EC371B423881002FF938 /* video.cpp in Sources */,
+				9EA4EC3B1B423893002FF938 /* cartridge.cpp in Sources */,
+				9EA4EC481B4238A8002FF938 /* link.cpp in Sources */,
+				9EA4EC4A1B4238AB002FF938 /* msu1.cpp in Sources */,
+				9EA4EC4C1B4238AE002FF938 /* necdsp.cpp in Sources */,
+				9EA4EC441B4238A1002FF938 /* hitachidsp.cpp in Sources */,
+				9EA4EC2C1B423830002FF938 /* cpu.cpp in Sources */,
+				9EA4EC561B4238BE002FF938 /* spc7110.cpp in Sources */,
+				9EA4EC231B423718002FF938 /* core.cpp in Sources */,
+				9EA4EC661B4238EF002FF938 /* memory.cpp in Sources */,
+				9EA4EC2D1B423833002FF938 /* interface.cpp in Sources */,
+				9EA4EC3D1B423898002FF938 /* cheat.cpp in Sources */,
+				9EA4EC3F1B42389B002FF938 /* armdsp.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EA4EC141B4233C3002FF938 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9EA4EC711B423912002FF938 /* cpu.cpp in Sources */,
+				9EA4EC261B423824002FF938 /* apu.cpp in Sources */,
+				9EA4EC381B423882002FF938 /* video.cpp in Sources */,
+				9EA4EC4F1B4238B5002FF938 /* obc1.cpp in Sources */,
+				9EA4EC221B4236C2002FF938 /* smp.cpp in Sources */,
+				9EA4EC211B4236B6002FF938 /* ppu.cpp in Sources */,
+				9EA4EC2B1B423830002FF938 /* cpu.cpp in Sources */,
+				9EA4EC431B4238A1002FF938 /* hitachidsp.cpp in Sources */,
+				9EA4EC271B423828002FF938 /* cartridge.cpp in Sources */,
+				9EA4EC2E1B423833002FF938 /* interface.cpp in Sources */,
+				9EA4EC4D1B4238B0002FF938 /* nss.cpp in Sources */,
+				9EA4EC5B1B4238C6002FF938 /* superfx.cpp in Sources */,
+				9EA4EC341B42387C002FF938 /* scheduler.cpp in Sources */,
+				9EA4EC651B4238EF002FF938 /* memory.cpp in Sources */,
+				9EA4EC6B1B4238F7002FF938 /* system.cpp in Sources */,
+				9EA4EC5D1B4238C9002FF938 /* config.cpp in Sources */,
+				9EA4EC3E1B423898002FF938 /* cheat.cpp in Sources */,
+				9EA4EC571B4238C0002FF938 /* srtc.cpp in Sources */,
+				9EA4EC241B423718002FF938 /* core.cpp in Sources */,
+				9EA4EC6E1B4238FC002FF938 /* libsnes.cpp in Sources */,
+				9EA4EC471B4238A7002FF938 /* link.cpp in Sources */,
+				9EA4EC321B423878002FF938 /* memory.cpp in Sources */,
+				9EA4EC591B4238C3002FF938 /* sufamiturbo.cpp in Sources */,
+				9EA4EC631B4238D5002FF938 /* interface.cpp in Sources */,
+				9EA4EC3C1B423893002FF938 /* cartridge.cpp in Sources */,
+				9EA4EC421B42389E002FF938 /* bsx.cpp in Sources */,
+				9EA4EC351B42387E002FF938 /* system.cpp in Sources */,
+				9EA4EC2A1B42382C002FF938 /* cheat.cpp in Sources */,
+				9EA4EC511B4238B7002FF938 /* sa1.cpp in Sources */,
+				9EA4EC401B42389B002FF938 /* armdsp.cpp in Sources */,
+				9EA4EC5F1B4238CB002FF938 /* controller.cpp in Sources */,
+				9EA4EC551B4238BE002FF938 /* spc7110.cpp in Sources */,
+				9EA4EC6F1B4238FE002FF938 /* libsnes_pwrap.cpp in Sources */,
+				9EA4EC2F1B423837002FF938 /* lcd.cpp in Sources */,
+				9EA4EC531B4238BA002FF938 /* sdd1.cpp in Sources */,
+				9EA4EC4B1B4238AD002FF938 /* necdsp.cpp in Sources */,
+				9EEE15E91B55F7FC00CE1F1A /* x86.c in Sources */,
+				9EA4EC3A1B42388A002FF938 /* dsp.cpp in Sources */,
+				9EA4EC461B4238A4002FF938 /* icd2.cpp in Sources */,
+				9EA4EC491B4238AA002FF938 /* msu1.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		9E81C6FA1B3CF4C100B0C884 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"GAMEBOY=1",
+					"BIZHAWK=1",
+					"HOOKS=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../bsnes/",
+					/usr/include/malloc/,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9E81C6FB1B3CF4C100B0C884 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"HOOKS=1",
+					"GAMEBOY=1",
+					"BIZHAWK=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../bsnes/",
+					/usr/include/malloc/,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9EA4EC121B42335B002FF938 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"GAMEBOY=1",
+					"BIZHAWK=1",
+					"HOOKS=1",
+					"PROFILE_COMPATIBILITY=1",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9EA4EC131B42335B002FF938 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"HOOKS=1",
+					"GAMEBOY=1",
+					"BIZHAWK=1",
+					"PROFILE_COMPATIBILITY=1",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		9EA4EC1D1B4233C3002FF938 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					"GAMEBOY=1",
+					"BIZHAWK=1",
+					"HOOKS=1",
+					"PROFILE_PERFORMANCE=1",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9EA4EC1E1B4233C3002FF938 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"HOOKS=1",
+					"GAMEBOY=1",
+					"BIZHAWK=1",
+					"PROFILE_PERFORMANCE=1",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9E81C6F31B3CF4C100B0C884 /* Build configuration list for PBXProject "libsnes" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9E81C6FA1B3CF4C100B0C884 /* Debug */,
+				9E81C6FB1B3CF4C100B0C884 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9EA4EC111B42335B002FF938 /* Build configuration list for PBXNativeTarget "libsnes-compatibility" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9EA4EC121B42335B002FF938 /* Debug */,
+				9EA4EC131B42335B002FF938 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9EA4EC1C1B4233C3002FF938 /* Build configuration list for PBXNativeTarget "libsnes-performance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9EA4EC1D1B4233C3002FF938 /* Debug */,
+				9EA4EC1E1B4233C3002FF938 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9E81C6F01B3CF4C100B0C884 /* Project object */;
+}

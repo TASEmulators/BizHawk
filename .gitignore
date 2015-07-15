@@ -406,3 +406,5 @@
 /*.userprefs
 /MonoMacWrapper/bin
 /MonoMacWrapper/obj
+libsnes/xcode/libsnes.xcodeproj/project.xcworkspace/xcuserdata
+libsnes/xcode/libsnes.xcodeproj/xcuserdata

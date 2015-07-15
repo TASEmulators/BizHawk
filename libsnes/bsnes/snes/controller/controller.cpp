@@ -37,6 +37,7 @@ bool Controller::iobit() {
   case Controller::Port1: return cpu.pio() & 0x40;
   case Controller::Port2: return cpu.pio() & 0x80;
   }
+    return 0;
 }
 
 void Controller::iobit(bool data) {

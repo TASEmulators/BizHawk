@@ -91,6 +91,7 @@ uint2 Justifier::data() {
   case 30: return 0;
   case 31: return 0;
   }
+    return 0;
 }
 
 void Justifier::latch(bool data) {

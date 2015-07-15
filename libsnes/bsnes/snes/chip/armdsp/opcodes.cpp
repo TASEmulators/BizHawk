@@ -20,6 +20,7 @@ bool ArmDSP::condition() {
   case 14: return true;                             //AL (always)
   case 15: return false;                            //NV (never)
   }
+    return false;
 }
 
 //rd = target
