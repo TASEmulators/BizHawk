@@ -43,15 +43,16 @@ namespace BizHawk.Emulation.DiscSystem
 			var synth = new SS_MednaDisc();
 
 			//make sector interfaces:
+			//1. mandatory track 1 pregap
 			for (int i = 0; i < 150; i++)
 			{
-				disc.Sectors.Add(synth);
+				disc._Sectors.Add(synth);
 			}
 
 			//2. actual sectors
 			for (int i = 0; i < nSectors; i++)
 			{
-				disc.Sectors.Add(synth);
+				disc._Sectors.Add(synth);
 			}
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry

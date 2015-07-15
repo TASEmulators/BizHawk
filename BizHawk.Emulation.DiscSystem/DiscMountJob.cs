@@ -65,6 +65,14 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				OUT_Disc.Name = Path.GetFileName(IN_FromPath);
 
+				//setup the lowest level synth provider
+				var sssp = new SimpleSectorSynthProvider()
+				{
+					Sectors = OUT_Disc._Sectors,
+					FirstLBA = -150
+				};
+				OUT_Disc.SynthProvider = sssp;
+
 				//generate toc and structure:
 				//1. TOCRaw from RawTOCEntries
 				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = OUT_Disc.RawTOCEntries };

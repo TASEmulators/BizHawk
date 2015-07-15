@@ -98,8 +98,14 @@ namespace BizHawk.Emulation.DiscSystem
 		Complete2448 = SubcodeComplete | User2352,
 	}
 
+	/// <summary>
+	/// Basic unit of sector synthesis
+	/// </summary>
 	interface ISectorSynthJob2448
 	{
+		/// <summary>
+		/// Synthesizes a sctor with the given job parameters
+		/// </summary>
 		void Synth(SectorSynthJob job);
 	}
 
@@ -117,13 +123,39 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	/// <summary>
+	/// an ISectorSynthProvider that just returns a value from an array of pre-made sectors
+	/// </summary>
+	class SimpleSectorSynthProvider : ISectorSynthProvider
+	{
+		public List<ISectorSynthJob2448> Sectors = new List<ISectorSynthJob2448>();
+		public int FirstLBA;
+
+		public ISectorSynthJob2448 Get(int lba)
+		{
+			int index = lba - FirstLBA;
+			return Sectors[index];
+		}
+	}
+
+	/// <summary>
+	/// When creating a disc, this is set with a callback that can deliver an ISectorSynthJob2448 for the given LBA
+	/// </summary>
+	interface ISectorSynthProvider
+	{
+		/// <summary>
+		/// Retrieves an ISectorSynthJob2448 for the given LBA
+		/// </summary>
+		ISectorSynthJob2448 Get(int lba);
+	}
+
+	/// <summary>
 	/// Generic parameters for sector synthesis.
 	/// To cut down on resource utilization, these can be stored in a disc and are tightly coupled to
 	/// the SectorSynths that have been setup for it
 	/// </summary>
 	struct SectorSynthParams
 	{
-		public long[] BlobOffsets;
+		//public long[] BlobOffsets;
 		public MednaDisc MednaDisc;
 	}
 
