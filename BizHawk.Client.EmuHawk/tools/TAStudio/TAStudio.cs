@@ -533,6 +533,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
 					GlobalWin.MainForm.UnpauseEmulator();
 				_autoRestorePaused = null;
+				GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
 			}
 
 

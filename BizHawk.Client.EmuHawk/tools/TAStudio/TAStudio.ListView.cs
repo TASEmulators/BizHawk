@@ -49,7 +49,11 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
 			{
 				if (_autoRestorePaused == null)
+				{
 					_autoRestorePaused = GlobalWin.MainForm.EmulatorPaused;
+					if (GlobalWin.MainForm.IsSeeking) // If seeking, do not shorten seek.
+						_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
+				}
 
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
 				GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
