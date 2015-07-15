@@ -244,8 +244,8 @@ namespace BizHawk.Emulation.DiscSystem
 			
 			SubchannelQ sq = new SubchannelQ();
 			sq.SetStatus(ADR, control);
-			sq.q_index.DecimalValue = 0xAA;
-			sq.q_index.DecimalValue = 0x01;
+			sq.q_tno.BCDValue = 0xAA;
+			sq.q_index.BCDValue = 0x01;
 			sq.Timestamp = ts;
 			sq.AP_Timestamp = ats;
 			sq.zero = 0;
