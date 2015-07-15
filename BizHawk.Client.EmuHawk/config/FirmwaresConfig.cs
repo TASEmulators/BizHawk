@@ -57,8 +57,6 @@ namespace BizHawk.Client.EmuHawk
 		private const int idMissing = 1;
 		private const int idOk = 2;
 
-		RomLoader.RomErrorArgs RomErrorArgs;
-
 		Font fixedFont, boldFont, boldFixedFont;
 
 		class ListViewSorter : IComparer
@@ -82,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		string currSelectorDir;
 		ListViewSorter listviewSorter;
 
-		public FirmwaresConfig(bool retryLoadRom = false)
+		public FirmwaresConfig(bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			InitializeComponent();
 
@@ -96,6 +94,17 @@ namespace BizHawk.Client.EmuHawk
 				toolStripSeparator1.Visible = true;
 				tbbCloseReload.Visible = true;
 				tbbCloseReload.Enabled = true;
+
+
+				if (string.IsNullOrWhiteSpace(reloadRomPath))
+				{
+					tbbCloseReload.ToolTipText = "Close Firmware Manager and reload ROM";
+				}
+				else
+				{
+					tbbCloseReload.ToolTipText = "Close Firmware Manager and reload " + reloadRomPath;
+				}
+
 			}
 		}
 
