@@ -42,9 +42,22 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-        private int? _triggerAutoRestoreFromFrame; // If set and _triggerAutoRestore is true, will call GoToFrameIfNecessary() with this value
+		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
+		private bool? _autoRestorePaused = null;
+		private void JumpToGreenzone()
+		{
+			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
+			{
+				if (_autoRestorePaused == null)
+					_autoRestorePaused = GlobalWin.MainForm.EmulatorPaused;
 
-        private System.Timers.Timer _mouseWheelTimer;
+				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
+				GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
+				GlobalWin.MainForm.PauseEmulator();
+			}
+		}
+
+		private System.Timers.Timer _mouseWheelTimer;
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -226,8 +239,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						CurrentTasMovie.ToggleBoolState(index, columnName);
 						_triggerAutoRestore = true;
-						_triggerAutoRestoreFromFrame = TasView.SelectedRows.Min();
 					}
+					JumpToGreenzone();
 
 					RefreshDialog();
 				}
@@ -324,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 						_floatEditYPos = e.Y;
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
 						_triggerAutoRestore = true;
-						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						JumpToGreenzone();
 						return;
 					}
 				}
@@ -341,15 +354,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // User changed input
 				{
-					CurrentTasMovie.SupressGreenzoneing = true; // This is necessary because we will invalidate, but we won't navigate until mouse up, during that time the user may have emulated frames and we don't want to caputre states for those
-
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool");
 
 						CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 						_triggerAutoRestore = true;
-						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						JumpToGreenzone();
 						RefreshDialog();
 
 						_startBoolDrawColumn = buttonName;
@@ -373,7 +384,7 @@ namespace BizHawk.Client.EmuHawk
 							RefreshDialog();
 						}
 
-						_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						JumpToGreenzone();
 
 						_floatPaintState = CurrentTasMovie.GetFloatState(frame, buttonName);
 						if (applyPatternToPaintedInputToolStripMenuItem.Checked &&
@@ -405,7 +416,7 @@ namespace BizHawk.Client.EmuHawk
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
 								_triggerAutoRestore = true;
-								_triggerAutoRestoreFromFrame = frame;
+								JumpToGreenzone();
 							}
 							RefreshDialog();
 						}
@@ -434,7 +445,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					_rightClickLastFrame = -1;
 
-					_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+					JumpToGreenzone();
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
 					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
 				}
@@ -449,7 +460,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				CurrentTasMovie.SupressGreenzoneing = false;
 				_startCursorDrag = false;
 				_startFrameDrag = false;
 				_startBoolDrawColumn = string.Empty;
@@ -498,11 +508,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-            if (_mouseWheelTimer.Enabled) // dunno if this is telling enough and nothing like bool _mouseWheelFast is needed, but we need to check on the first scroll event, and just decide by delta if it's fast enough to increase actual scrolling speed
-            {
-                _mouseWheelTimer.Stop();
-            }
-            _mouseWheelTimer.Start();
+			if (_mouseWheelTimer.Enabled) // dunno if this is telling enough and nothing like bool _mouseWheelFast is needed, but we need to check on the first scroll event, and just decide by delta if it's fast enough to increase actual scrolling speed
+			{
+				_mouseWheelTimer.Stop();
+			}
+			_mouseWheelTimer.Start();
 		}
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -604,8 +614,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (int i = startVal; i <= endVal; i++)
 							CurrentTasMovie.SetFrame(i, _rightClickInput[(_rightClickFrame - i) % _rightClickInput.Length]);
-						if (startVal < _triggerAutoRestoreFromFrame)
-							_triggerAutoRestoreFromFrame = startVal;
+						JumpToGreenzone();
 					}
 				}
 				else
@@ -647,9 +656,8 @@ namespace BizHawk.Client.EmuHawk
 						_rightClickFrame = frame;
 					}
 
-					if (frame < _triggerAutoRestoreFromFrame)
-						_triggerAutoRestoreFromFrame = frame;
-                }
+					JumpToGreenzone();
+				}
 			}
 
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
@@ -667,8 +675,7 @@ namespace BizHawk.Client.EmuHawk
 								setVal = BoolPatterns[controllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 						}
 						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
-							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						JumpToGreenzone();
 					}
 				}
 			}
@@ -687,18 +694,17 @@ namespace BizHawk.Client.EmuHawk
 							else
 								setVal = FloatPatterns[controllerType.FloatControls.IndexOf(_startFloatDrawColumn)].GetNextValue();
 						}
-                        CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-						if (TasView.CurrentCell.RowIndex.Value < _triggerAutoRestoreFromFrame)
-							_triggerAutoRestoreFromFrame = TasView.CurrentCell.RowIndex.Value;
+						CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+						JumpToGreenzone();
 					}
 				}
-            }
+			}
 
-            if (Settings.FollowCursor && mouseButtonHeld)
-            {
-                SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
-            }
-            RefreshTasView();
+			if (Settings.FollowCursor && mouseButtonHeld)
+			{
+				SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+			}
+			RefreshTasView();
 		}
 
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
@@ -847,7 +853,7 @@ namespace BizHawk.Client.EmuHawk
 					if (value != prev) // Auto-restore
 					{
 						_triggerAutoRestore = true;
-						_triggerAutoRestoreFromFrame = _floatEditRow;
+						JumpToGreenzone();
 						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}

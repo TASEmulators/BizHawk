@@ -21,7 +21,8 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(frame);
 				}
 
-				_autoRestoreFrame = restoreFrame;
+				if (!_autoRestoreFrame.HasValue || _autoRestoreFrame.Value < restoreFrame)
+					_autoRestoreFrame = restoreFrame;
 			}
 		}
 

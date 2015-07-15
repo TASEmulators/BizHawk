@@ -36,8 +36,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private UndoHistoryForm undoForm;
 
-		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
-
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -530,6 +528,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.MainForm.UnpauseEmulator();
 				}
 			}
+			else
+			{
+				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
+					GlobalWin.MainForm.UnpauseEmulator();
+				_autoRestorePaused = null;
+			}
+
 
 			_autoRestoreFrame = null;
 		}
@@ -655,18 +660,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_triggerAutoRestore)
 			{
-				int? pauseOn = GlobalWin.MainForm.PauseOnFrame;
-				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
-
-				if (pauseOn.HasValue && _autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
-				{ // If we are already seeking to a later frame don't shorten that journey here
-					_autoRestoreFrame = pauseOn;
-				}
-
 				DoAutoRestore();
 
 				_triggerAutoRestore = false;
-				_triggerAutoRestoreFromFrame = null;
+				_autoRestorePaused = null;
 			}
 		}
 
