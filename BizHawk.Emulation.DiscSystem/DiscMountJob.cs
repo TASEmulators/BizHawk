@@ -65,14 +65,6 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				OUT_Disc.Name = Path.GetFileName(IN_FromPath);
 
-				//setup the lowest level synth provider
-				var sssp = new SimpleSectorSynthProvider()
-				{
-					Sectors = OUT_Disc._Sectors,
-					FirstLBA = -150
-				};
-				OUT_Disc.SynthProvider = sssp;
-
 				//generate toc and structure:
 				//1. TOCRaw from RawTOCEntries
 				var tocSynth = new Synthesize_DiscTOC_From_RawTOCEntries_Job() { Entries = OUT_Disc.RawTOCEntries };
@@ -84,13 +76,17 @@ namespace BizHawk.Emulation.DiscSystem
 				OUT_Disc.Structure = structureSynth.Result;
 
 				//insert a synth provider to take care of the leadout track
-				var ss_leadout = new SS_Leadout()
+				//currently, we let mednafen take care of its own leadout track (we'll make that controllable later)
+				if (IN_DiscInterface != DiscInterface.MednaDisc)
 				{
-					SessionNumber = 1,
-					Policy = IN_DiscMountPolicy
-				};
-				Func<int,bool> condition = (int lba) => lba >= OUT_Disc.Session1.LeadoutLBA;
-				new ConditionalSectorSynthProvider().Install(OUT_Disc, condition, ss_leadout);
+					var ss_leadout = new SS_Leadout()
+					{
+						SessionNumber = 1,
+						Policy = IN_DiscMountPolicy
+					};
+					Func<int, bool> condition = (int lba) => lba >= OUT_Disc.Session1.LeadoutLBA;
+					new ConditionalSectorSynthProvider().Install(OUT_Disc, condition, ss_leadout);
+				}
 			}
 
 			FinishLog();
@@ -185,6 +181,14 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 
 		DONE: ;
+
+			//setup the lowest level synth provider
+			var sssp = new ArraySectorSynthProvider()
+			{
+				Sectors = OUT_Disc._Sectors,
+				FirstLBA = -150
+			};
+			OUT_Disc.SynthProvider = sssp;
 		}
 	}
 	

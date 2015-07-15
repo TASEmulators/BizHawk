@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.DiscSystem
 	/// <summary>
 	/// an ISectorSynthProvider that just returns a value from an array of pre-made sectors
 	/// </summary>
-	class SimpleSectorSynthProvider : ISectorSynthProvider
+	class ArraySectorSynthProvider : ISectorSynthProvider
 	{
 		public List<ISectorSynthJob2448> Sectors = new List<ISectorSynthJob2448>();
 		public int FirstLBA;
@@ -135,6 +135,16 @@ namespace BizHawk.Emulation.DiscSystem
 			int index = lba - FirstLBA;
 			return Sectors[index];
 		}
+	}
+
+	/// <summary>
+	/// an ISectorSynthProvider that just returns a fixed synthesizer
+	/// </summary>
+	class SimpleSectorSynthProvider : ISectorSynthProvider
+	{
+		public ISectorSynthJob2448 SS;
+
+		public ISectorSynthJob2448 Get(int lba) { return SS; }
 	}
 
 	/// <summary>
