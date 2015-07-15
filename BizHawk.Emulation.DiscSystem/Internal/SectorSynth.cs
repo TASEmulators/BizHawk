@@ -138,6 +138,29 @@ namespace BizHawk.Emulation.DiscSystem
 	}
 
 	/// <summary>
+	/// Returns 'Patch' synth if the provided condition is met
+	/// </summary>
+	class ConditionalSectorSynthProvider : ISectorSynthProvider
+	{
+		Func<int,bool> Condition;
+		ISectorSynthJob2448 Patch;
+		ISectorSynthProvider Parent;
+		public void Install(Disc disc, Func<int, bool> condition, ISectorSynthJob2448 patch)
+		{
+			Parent = disc.SynthProvider;
+			disc.SynthProvider = this;
+			Condition = condition;
+			Patch = patch;
+		}
+		public ISectorSynthJob2448 Get(int lba)
+		{
+			if (Condition(lba))
+				return Patch;
+			else return Parent.Get(lba);
+		}
+	}
+
+	/// <summary>
 	/// When creating a disc, this is set with a callback that can deliver an ISectorSynthJob2448 for the given LBA
 	/// </summary>
 	interface ISectorSynthProvider
@@ -177,5 +200,66 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
+	class SS_Leadout : ISectorSynthJob2448
+	{
+		public int SessionNumber;
+		public DiscMountPolicy Policy;
+
+		public void Synth(SectorSynthJob job)
+		{
+			//be lazy, just generate the whole sector unconditionally
+			//this is mostly based on mednafen's approach, which was probably finely tailored for PSX
+			//heres the comments on the subject:
+			//  I'm not trusting that the "control" field for the TOC leadout entry will always be set properly, so | the control fields for the last track entry
+			//  and the leadout entry together before extracting the D2 bit.  Audio track->data leadout is fairly benign though maybe noisy(especially if we ever implement
+			//  data scrambling properly), but data track->audio leadout could break things in an insidious manner for the more accurate drive emulation code).
+
+			var ses = job.Disc.Structure.Sessions[SessionNumber];
+			int lba_relative = job.LBA - ses.LeadoutTrack.LBA;
+
+			//data is zero
+
+			Timestamp ts = new Timestamp(lba_relative);
+			Timestamp ats = new Timestamp(job.LBA);
+
+			const int ADR = 0x1; // Q channel data encodes position
+			EControlQ control = ses.LeadoutTrack.Control;
+
+			//ehhh? CDI?
+		 //if(toc.tracks[toc.last_track].valid)
+		 // control |= toc.tracks[toc.last_track].control & 0x4;
+		 //else if(toc.disc_type == DISC_TYPE_CD_I)
+		 // control |= 0x4;
+			control |= (EControlQ)(((int)ses.LastInformationTrack.Control) & 4);
+			
+			SubchannelQ sq = new SubchannelQ();
+			sq.SetStatus(ADR, control);
+			sq.q_index.DecimalValue = 0xAA;
+			sq.q_index.DecimalValue = 0x01;
+			sq.Timestamp = ts;
+			sq.AP_Timestamp = ats;
+			sq.zero = 0;
+
+			//finally, rely on a gap sector to do the heavy lifting to synthesize this
+			CUE.CueTrackType TrackType = CUE.CueTrackType.Audio;
+			if (ses.LeadoutTrack.IsData)
+			{
+				if (job.Disc.TOC.Session1Format == SessionFormat.Type20_CDXA || job.Disc.TOC.Session1Format == SessionFormat.Type10_CDI)
+					TrackType = CUE.CueTrackType.Mode2_2352;
+				else
+					TrackType = CUE.CueTrackType.Mode1_2352;
+			}
+
+			CUE.SS_Gap ss_gap = new CUE.SS_Gap()
+			{
+				Policy = Policy,
+				sq = sq,
+				TrackType = TrackType,
+				Pause = true //?
+			};
+
+			ss_gap.Synth(job);
+		}
+	}
 
 }

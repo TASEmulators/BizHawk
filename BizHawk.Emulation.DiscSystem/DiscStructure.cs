@@ -12,9 +12,8 @@ namespace BizHawk.Emulation.DiscSystem
 	public class DiscStructure
 	{
 		/// <summary>
-		/// This is a 0-indexed list of sessions (session 1 is at [0])
+		/// This is a 1-indexed list of sessions (session 1 is at [1])
 		/// Support for multiple sessions is thoroughly not working yet
-		/// TODO - make re-index me with a null session 0
 		/// </summary>
 		public List<Session> Sessions = new List<Session>();
 
@@ -50,11 +49,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// A reference to the first information track (Track 1)
+			/// The raw TOC may have specified something different; it's not clear how this discrepancy is handled.
 			/// </summary>
 			public Track FirstInformationTrack { get { return Tracks[1]; } }
 
 			/// <summary>
-			/// A reference to the first information track (Track 1)
+			/// A reference to the last information track on the disc.
+			/// The raw TOC may have specified something different; it's not clear how this discrepancy is handled.
 			/// </summary>
 			public Track LastInformationTrack { get { return Tracks[InformationTrackCount]; } }
 
@@ -147,8 +148,8 @@ namespace BizHawk.Emulation.DiscSystem
 			public bool IsAudio { get { return Mode == 0; } }
 
 			/// <summary>
-			/// The 'control' properties of the track indicated by the subchannel Q.
-			/// This is as indicated by the disc TOC. 
+			/// The 'control' properties of the track expected to be found in the track's subQ.
+			/// However, this is what's indicated by the disc TOC.
 			/// Actual sector contents may vary.
 			/// </summary>
 			public EControlQ Control;
