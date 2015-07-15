@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		"Octoshock",
 		"Ryphecha",
 		isPorted: true,
-		isReleased: false
+		isReleased: true
 		)]
 	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
 	{
