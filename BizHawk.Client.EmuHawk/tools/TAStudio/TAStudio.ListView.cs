@@ -502,13 +502,26 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
 			{
 				_supressContextMenu = true;
-				if (e.Delta < 0)
+				if (GlobalWin.MainForm.IsSeeking)
 				{
-					GoToNextFrame();
+					if (e.Delta < 0)
+						GlobalWin.MainForm.PauseOnFrame++;
+					else
+					{
+						GlobalWin.MainForm.PauseOnFrame--;
+						if (Global.Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
+						{
+							GlobalWin.MainForm.PauseEmulator();
+							GlobalWin.MainForm.PauseOnFrame = null;
+						}
+					}
 				}
 				else
 				{
-					GoToPreviousFrame();
+					if (e.Delta < 0)
+						GoToNextFrame();
+					else
+						GoToPreviousFrame();
 				}
 			}
 
