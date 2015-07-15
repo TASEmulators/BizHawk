@@ -282,8 +282,8 @@
 			this.tbbCloseReload.Image = ((System.Drawing.Image)(resources.GetObject("tbbCloseReload.Image")));
 			this.tbbCloseReload.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tbbCloseReload.Name = "tbbCloseReload";
-			this.tbbCloseReload.Size = new System.Drawing.Size(119, 22);
-			this.tbbCloseReload.Text = "Close and load ROM";
+			this.tbbCloseReload.Size = new System.Drawing.Size(129, 22);
+			this.tbbCloseReload.Text = "Close and reload ROM";
 			this.tbbCloseReload.ToolTipText = "Close and reload ROM";
 			this.tbbCloseReload.Visible = false;
 			this.tbbCloseReload.Click += new System.EventHandler(this.tbbCloseReload_Click);

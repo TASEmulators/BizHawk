@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int ReadLBA_2352(int lba, byte[] buffer, int offset)
 		{
-			var sector = disc.Sectors[lba + 150];
+			var sector = disc.SynthProvider.Get(lba);
 
 			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int ReadLBA_2448(int lba, byte[] buffer, int offset)
 		{
-			var sector = disc.Sectors[lba + 150];
+			var sector = disc.SynthProvider.Get(lba);
 
 			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.DiscSystem
 		int ReadLBA_2048_Mode1(int lba, byte[] buffer, int offset)
 		{
 			//we can read the 2048 bytes directly
-			var sector = disc.Sectors[lba + 150];
+			var sector = disc.SynthProvider.Get(lba);
 
 			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.DiscSystem
 		int ReadLBA_2048_Mode2_Form1(int lba, byte[] buffer, int offset)
 		{
 			//we can read the 2048 bytes directly but we have to get them from the mode 2 data
-			var sector = disc.Sectors[lba + 150];
+			var sector = disc.SynthProvider.Get(lba);
 
 			PrepareBuffer(buffer, offset, 2352);
 			PrepareJob(lba);
@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int ReadLBA_SubQ(int lba, byte[] buffer, int offset)
 		{
-			var sector = disc.Sectors[lba + 150];
+			var sector = disc.SynthProvider.Get(lba);
 
 			PrepareBuffer(buffer, offset, 12);
 			PrepareJob(lba);
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				//we need to determine the type of the sector.
 				//in no case do we need the ECC so build special flags here
-				var sector = disc.Sectors[lba + 150];
+				var sector = disc.SynthProvider.Get(lba);
 
 				PrepareBuffer(buffer, offset, 2048);
 				PrepareJob(lba);
@@ -271,7 +271,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public int ReadLBA_Mode(int lba)
 		{
-			var sector = disc.Sectors[lba + 150];
+			var sector = disc.SynthProvider.Get(lba);
 
 			PrepareJob(lba);
 			job.DestBuffer2448 = buf2442;

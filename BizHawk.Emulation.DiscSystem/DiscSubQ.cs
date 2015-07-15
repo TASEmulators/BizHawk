@@ -99,6 +99,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// Retrieves the second set of timestamps (ap_min, ap_sec, ap_frac) as a convenient Timestamp.
+		/// TODO - rename everything AP here, it's nonsense. (the P is)
 		/// </summary>
 		public Timestamp AP_Timestamp { 
 			get { return new Timestamp(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); }

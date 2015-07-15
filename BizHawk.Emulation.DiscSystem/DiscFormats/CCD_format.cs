@@ -565,7 +565,7 @@ namespace BizHawk.Emulation.DiscSystem
 					Policy = IN_DiscMountPolicy,
 					TrackType = pregapTrackType
 				};
-				disc.Sectors.Add(ss_gap);
+				disc._Sectors.Add(ss_gap);
 
 				int qRelMSF = i - 150;
 
@@ -590,7 +590,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//(the TOC is unreliable, and the Track records are redundant)
 			for (int i = 0; i < loadResults.NumImgSectors; i++)
 			{
-				disc.Sectors.Add(synth);
+				disc._Sectors.Add(synth);
 			}
 
 			return disc;

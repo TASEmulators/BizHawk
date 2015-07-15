@@ -88,10 +88,15 @@ namespace BizHawk.Emulation.DiscSystem
 		internal List<IDisposable> DisposableResources = new List<IDisposable>();
 
 		/// <summary>
-		/// The sectors on the disc
-		/// TODO - replace with delegate (much faster disc loading, support of reading of arbitrary lead-out and lead-in sectors)
+		/// The sectors on the disc. Don't use this directly! Use the SectorSynthProvider instead.
+		/// TODO - eliminate this entirely and do entirely with the delegate (much faster disc loading... but massively annoying architecture inside-out logic)
 		/// </summary>
-		internal List<ISectorSynthJob2448> Sectors = new List<ISectorSynthJob2448>();
+		internal List<ISectorSynthJob2448> _Sectors = new List<ISectorSynthJob2448>();
+
+		/// <summary>
+		/// ISectorSynthProvider instance for the disc. May be daisy-chained
+		/// </summary>
+		internal ISectorSynthProvider SynthProvider;
 
 		/// <summary>
 		/// Parameters set during disc loading which can be referenced by the sector synthesizers

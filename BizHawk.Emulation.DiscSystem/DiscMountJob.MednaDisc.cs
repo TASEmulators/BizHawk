@@ -41,18 +41,7 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//this is the sole sector synthesizer we'll need
 			var synth = new SS_MednaDisc();
-
-			//make sector interfaces:
-			for (int i = 0; i < 150; i++)
-			{
-				disc.Sectors.Add(synth);
-			}
-
-			//2. actual sectors
-			for (int i = 0; i < nSectors; i++)
-			{
-				disc.Sectors.Add(synth);
-			}
+			OUT_Disc.SynthProvider = new SimpleSectorSynthProvider() { SS = synth };
 
 			//ADR (q-Mode) is necessarily 0x01 for a RawTOCEntry
 			const int kADR = 1;

@@ -1,11 +1,13 @@
+set PATH=%PATH%;C:\Program Files (x86)\git\bin
+
 if "%1"=="" (
 	SET NAME=BizHawk.zip
 ) else (
 	SET NAME=%1
 )
 
-svn --version > NUL
-@if errorlevel 1 goto MISSINGSVN
+git --version > NUL
+@if errorlevel 1 goto MISSINGGIT
 
 reg query "HKLM\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0" /v MSBuildToolsPath > nul 2>&1
 if ERRORLEVEL 1 goto MISSINGMSBUILD
@@ -37,10 +39,23 @@ cd ..\Dist
 del %NAME%
 
 rmdir /s /q temp\lua
-svn export ..\output\lua temp\Lua
-svn export ..\output\firmware temp\Firmware
+rmdir /s /q temp\firmware
+rmdir /s /q gitsucks
+
+git --git-dir ../.git archive --format zip --output lua.zip master output/Lua
+git --git-dir ../.git archive --format zip --output firmware.zip master output/Firmware
+unzip lua.zip -d gitsucks
+rem del lua.zip
+move gitsucks\output\Lua temp
+unzip Firmware.zip -d gitsucks
+rem del firmware.zip
+move gitsucks\output\Firmware temp
+
+rmdir /s /q gitsucks
+
 
 cd temp
+rem remove UPX from any files we have checked in, because people's lousy security software hates it
 upx -d dll\*.dll
 upx -d dll\*.exe
 upx -d *.exe
@@ -53,6 +68,6 @@ goto END
 :MISSINGMSBUILD
 @echo Missing msbuild.exe. can't make distro without that.
 goto END
-:MISSINGSVN
-@echo missing svn.exe. can't make distro without that.
+:MISSINGGIT
+@echo missing git.exe. can't make distro without that.
 :END

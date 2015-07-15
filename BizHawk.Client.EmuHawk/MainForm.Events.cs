@@ -883,8 +883,8 @@ namespace BizHawk.Client.EmuHawk
 			if (e is RomLoader.RomErrorArgs)
 			{
 				var args = e as RomLoader.RomErrorArgs;
-				var firmwaredialog = new FirmwaresConfig(true).ShowDialog();
-				args.Retry = firmwaredialog == DialogResult.Retry;
+				var result = new FirmwaresConfig(true, args.RomPath).ShowDialog();
+				args.Retry = result == DialogResult.Retry;
 			}
 			else
 			{
