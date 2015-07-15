@@ -155,5 +155,14 @@ namespace BizHawk.Client.Common
 
 			return null;
 		}
+		public int LastValidFrame
+		{
+			get
+			{
+				if (LagLog.Count == 0)
+					return 0;
+				return LagLog.Count - 1;
+			}
+		}
 	}
 }

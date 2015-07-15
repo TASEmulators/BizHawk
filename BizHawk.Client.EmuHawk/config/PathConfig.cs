@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string[] coresToHide = { "PSX", "INTV", "C64" };
+			string[] coresToHide = { "INTV", "C64" };
 
 			foreach (var core in coresToHide)
 			{
