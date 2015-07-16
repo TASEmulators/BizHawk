@@ -118,6 +118,7 @@
 /output/*.lnk
 /output/*.lua
 /output/*.luases
+/output/*.mdb
 /output/*.rom
 /output/*.wch
 /output/*log.txt
@@ -203,6 +204,7 @@
 /output/dll/*.ilk
 /output/dll/*.exp
 /output/dll/*.lib
+/output/dll/*.mdb
 /output/dll/BizHawk.Bizware.BizwareGL.dll
 /output/dll/BizHawk.Bizware.BizwareGL.OpenTK.dll
 /output/dll/BizHawk.Client.Common.dll
@@ -221,6 +223,7 @@
 /output/dll/Newtonsoft.Json.dll
 /output/dll/OpenTK.dll
 /output/dll/OpenTK.GLControl.dll
+/output/dll/SharpCompress.dll
 /output/dll/SlimDX.dll
 /output/dll/BizHawk.Bizware.BizwareGL.GdiPlus.dll
 /output/dll/BizHawk.Bizware.BizwareGL.SlimDX.dll
@@ -248,6 +251,7 @@
 /output/dll/ELFSharp.dll
 *.opensdf
 *.user
+*.userprefs
 *.suo
 *.sdf
 *.ipch
@@ -260,4 +264,3 @@ libsnes/xcode/libsnes.xcodeproj/project.xcworkspace/xcuserdata
 libsnes/xcode/libsnes.xcodeproj/xcuserdata
 MonoMacWrapper/bin
 MonoMacWrapper/obj
-*.userprefs
