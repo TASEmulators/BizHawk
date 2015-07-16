@@ -394,14 +394,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.SelectedRows.Any())
 			{
-				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-				var needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
-				var rollBackFrame = TasView.FirstSelectedIndex.Value;
+				bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
+				bool needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
+				int rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				foreach (var frame in TasView.SelectedRows)
+				CurrentTasMovie.ChangeLog.BeginNewBatch("Clear frames " + TasView.SelectedRows.Min() + "-" + TasView.SelectedRows.Max());
+				foreach (int frame in TasView.SelectedRows)
 				{
 					CurrentTasMovie.ClearFrame(frame);
 				}
+				CurrentTasMovie.ChangeLog.EndBatch();
 
 				if (needsToRollback)
 				{

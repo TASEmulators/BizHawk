@@ -450,7 +450,21 @@ namespace BizHawk.Client.EmuHawk
 
 					JumpToGreenzone();
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
-					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
+					string undoStepName = "Right-Click Edit:";
+					if (_rightClickShift)
+					{
+						undoStepName += " Extend Input";
+						if (_rightClickControl)
+							undoStepName += ", Insert";
+					}
+					else
+					{
+						if (_rightClickControl)
+							undoStepName += " Copy";
+						else
+							undoStepName += " Move";
+					}
+					CurrentTasMovie.ChangeLog.BeginNewBatch(undoStepName);
 				}
 			}
 		}
