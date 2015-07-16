@@ -114,6 +114,7 @@
     <ClCompile Include="..\cdrom\CDUtility.cpp">
       <Filter>cdrom</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\psx\cdc.h">

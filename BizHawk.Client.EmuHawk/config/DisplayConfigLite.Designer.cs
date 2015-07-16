@@ -69,18 +69,21 @@
 			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.tpMisc = new System.Windows.Forms.TabPage();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
-			this.label9 = new System.Windows.Forms.Label();
-			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
-			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
-			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.lblFrameTypeWindowed = new System.Windows.Forms.Label();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
-			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.checkFullscreenHacks = new System.Windows.Forms.CheckBox();
+			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
+			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.lblFrameTypeWindowed = new System.Windows.Forms.Label();
+			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
+			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
+			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -91,9 +94,10 @@
 			this.groupBox3.SuspendLayout();
 			this.tpMisc.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
-			this.groupBox2.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnCancel
@@ -249,7 +253,7 @@
 			this.grpFinalFilter.Controls.Add(this.rbFinalFilterBilinear);
 			this.grpFinalFilter.Location = new System.Drawing.Point(205, 6);
 			this.grpFinalFilter.Name = "grpFinalFilter";
-			this.grpFinalFilter.Size = new System.Drawing.Size(187, 132);
+			this.grpFinalFilter.Size = new System.Drawing.Size(187, 97);
 			this.grpFinalFilter.TabIndex = 8;
 			this.grpFinalFilter.TabStop = false;
 			this.grpFinalFilter.Text = "Final Filter";
@@ -427,6 +431,9 @@
 			// 
 			// tpAR
 			// 
+			this.tpAR.Controls.Add(this.label11);
+			this.tpAR.Controls.Add(this.label10);
+			this.tpAR.Controls.Add(this.nudPrescale);
 			this.tpAR.Controls.Add(this.groupBox1);
 			this.tpAR.Controls.Add(this.checkLetterbox);
 			this.tpAR.Controls.Add(this.checkPadInteger);
@@ -538,55 +545,56 @@
 			this.tabPage1.Text = "Window";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// trackbarFrameSizeWindowed
+			// groupBox4
 			// 
-			this.trackbarFrameSizeWindowed.LargeChange = 1;
-			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
-			this.trackbarFrameSizeWindowed.Maximum = 2;
-			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
-			this.trackbarFrameSizeWindowed.TabIndex = 21;
-			this.trackbarFrameSizeWindowed.Value = 1;
-			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
+			this.groupBox4.Controls.Add(this.label1);
+			this.groupBox4.Controls.Add(this.checkFullscreenHacks);
+			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
+			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
+			this.groupBox4.Location = new System.Drawing.Point(143, 6);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(266, 212);
+			this.groupBox4.TabIndex = 27;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Fullscreen";
 			// 
-			// label9
+			// label1
 			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(6, 17);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(39, 13);
-			this.label9.TabIndex = 22;
-			this.label9.Text = "Frame:";
+			this.label1.Location = new System.Drawing.Point(7, 88);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(240, 115);
+			this.label1.TabIndex = 27;
+			this.label1.Text = resources.GetString("label1.Text");
 			// 
-			// cbStatusBarWindowed
+			// checkFullscreenHacks
 			// 
-			this.cbStatusBarWindowed.AutoSize = true;
-			this.cbStatusBarWindowed.Location = new System.Drawing.Point(9, 81);
-			this.cbStatusBarWindowed.Name = "cbStatusBarWindowed";
-			this.cbStatusBarWindowed.Size = new System.Drawing.Size(75, 17);
-			this.cbStatusBarWindowed.TabIndex = 23;
-			this.cbStatusBarWindowed.Text = "Status Bar";
-			this.cbStatusBarWindowed.UseVisualStyleBackColor = true;
+			this.checkFullscreenHacks.AutoSize = true;
+			this.checkFullscreenHacks.Location = new System.Drawing.Point(6, 65);
+			this.checkFullscreenHacks.Name = "checkFullscreenHacks";
+			this.checkFullscreenHacks.Size = new System.Drawing.Size(191, 17);
+			this.checkFullscreenHacks.TabIndex = 26;
+			this.checkFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
+			this.checkFullscreenHacks.UseVisualStyleBackColor = true;
 			// 
-			// cbCaptionWindowed
+			// cbStatusBarFullscreen
 			// 
-			this.cbCaptionWindowed.AutoSize = true;
-			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
-			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
-			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
-			this.cbCaptionWindowed.TabIndex = 24;
-			this.cbCaptionWindowed.Text = "Caption";
-			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
+			this.cbStatusBarFullscreen.AutoSize = true;
+			this.cbStatusBarFullscreen.Location = new System.Drawing.Point(6, 19);
+			this.cbStatusBarFullscreen.Name = "cbStatusBarFullscreen";
+			this.cbStatusBarFullscreen.Size = new System.Drawing.Size(75, 17);
+			this.cbStatusBarFullscreen.TabIndex = 23;
+			this.cbStatusBarFullscreen.Text = "Status Bar";
+			this.cbStatusBarFullscreen.UseVisualStyleBackColor = true;
 			// 
-			// cbMenuWindowed
+			// cbMenuFullscreen
 			// 
-			this.cbMenuWindowed.AutoSize = true;
-			this.cbMenuWindowed.Location = new System.Drawing.Point(9, 127);
-			this.cbMenuWindowed.Name = "cbMenuWindowed";
-			this.cbMenuWindowed.Size = new System.Drawing.Size(53, 17);
-			this.cbMenuWindowed.TabIndex = 25;
-			this.cbMenuWindowed.Text = "Menu";
-			this.cbMenuWindowed.UseVisualStyleBackColor = true;
+			this.cbMenuFullscreen.AutoSize = true;
+			this.cbMenuFullscreen.Location = new System.Drawing.Point(6, 42);
+			this.cbMenuFullscreen.Name = "cbMenuFullscreen";
+			this.cbMenuFullscreen.Size = new System.Drawing.Size(53, 17);
+			this.cbMenuFullscreen.TabIndex = 25;
+			this.cbMenuFullscreen.Text = "Menu";
+			this.cbMenuFullscreen.UseVisualStyleBackColor = true;
 			// 
 			// groupBox2
 			// 
@@ -612,56 +620,95 @@
 			this.lblFrameTypeWindowed.TabIndex = 26;
 			this.lblFrameTypeWindowed.Text = "(frame type)";
 			// 
-			// groupBox4
+			// cbStatusBarWindowed
 			// 
-			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Controls.Add(this.checkFullscreenHacks);
-			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
-			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
-			this.groupBox4.Location = new System.Drawing.Point(143, 6);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(266, 212);
-			this.groupBox4.TabIndex = 27;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Fullscreen";
+			this.cbStatusBarWindowed.AutoSize = true;
+			this.cbStatusBarWindowed.Location = new System.Drawing.Point(9, 81);
+			this.cbStatusBarWindowed.Name = "cbStatusBarWindowed";
+			this.cbStatusBarWindowed.Size = new System.Drawing.Size(75, 17);
+			this.cbStatusBarWindowed.TabIndex = 23;
+			this.cbStatusBarWindowed.Text = "Status Bar";
+			this.cbStatusBarWindowed.UseVisualStyleBackColor = true;
 			// 
-			// cbStatusBarFullscreen
+			// label9
 			// 
-			this.cbStatusBarFullscreen.AutoSize = true;
-			this.cbStatusBarFullscreen.Location = new System.Drawing.Point(6, 19);
-			this.cbStatusBarFullscreen.Name = "cbStatusBarFullscreen";
-			this.cbStatusBarFullscreen.Size = new System.Drawing.Size(75, 17);
-			this.cbStatusBarFullscreen.TabIndex = 23;
-			this.cbStatusBarFullscreen.Text = "Status Bar";
-			this.cbStatusBarFullscreen.UseVisualStyleBackColor = true;
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(6, 17);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(39, 13);
+			this.label9.TabIndex = 22;
+			this.label9.Text = "Frame:";
 			// 
-			// cbMenuFullscreen
+			// cbMenuWindowed
 			// 
-			this.cbMenuFullscreen.AutoSize = true;
-			this.cbMenuFullscreen.Location = new System.Drawing.Point(6, 42);
-			this.cbMenuFullscreen.Name = "cbMenuFullscreen";
-			this.cbMenuFullscreen.Size = new System.Drawing.Size(53, 17);
-			this.cbMenuFullscreen.TabIndex = 25;
-			this.cbMenuFullscreen.Text = "Menu";
-			this.cbMenuFullscreen.UseVisualStyleBackColor = true;
+			this.cbMenuWindowed.AutoSize = true;
+			this.cbMenuWindowed.Location = new System.Drawing.Point(9, 127);
+			this.cbMenuWindowed.Name = "cbMenuWindowed";
+			this.cbMenuWindowed.Size = new System.Drawing.Size(53, 17);
+			this.cbMenuWindowed.TabIndex = 25;
+			this.cbMenuWindowed.Text = "Menu";
+			this.cbMenuWindowed.UseVisualStyleBackColor = true;
 			// 
-			// label1
+			// trackbarFrameSizeWindowed
 			// 
-			this.label1.Location = new System.Drawing.Point(7, 88);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(240, 115);
-			this.label1.TabIndex = 27;
-			this.label1.Text = resources.GetString("label1.Text");
+			this.trackbarFrameSizeWindowed.LargeChange = 1;
+			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
+			this.trackbarFrameSizeWindowed.Maximum = 2;
+			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
+			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
+			this.trackbarFrameSizeWindowed.TabIndex = 21;
+			this.trackbarFrameSizeWindowed.Value = 1;
+			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
 			// 
-			// checkFullscreenHacks
+			// cbCaptionWindowed
 			// 
-			this.checkFullscreenHacks.AutoSize = true;
-			this.checkFullscreenHacks.Location = new System.Drawing.Point(6, 65);
-			this.checkFullscreenHacks.Name = "checkFullscreenHacks";
-			this.checkFullscreenHacks.Size = new System.Drawing.Size(191, 17);
-			this.checkFullscreenHacks.TabIndex = 26;
-			this.checkFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
-			this.checkFullscreenHacks.UseVisualStyleBackColor = true;
+			this.cbCaptionWindowed.AutoSize = true;
+			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
+			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
+			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
+			this.cbCaptionWindowed.TabIndex = 24;
+			this.cbCaptionWindowed.Text = "Caption";
+			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
+			// 
+			// nudPrescale
+			// 
+			this.nudPrescale.Location = new System.Drawing.Point(260, 113);
+			this.nudPrescale.Maximum = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+			this.nudPrescale.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.nudPrescale.Name = "nudPrescale";
+			this.nudPrescale.Size = new System.Drawing.Size(45, 20);
+			this.nudPrescale.TabIndex = 14;
+			this.nudPrescale.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(208, 116);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(51, 13);
+			this.label10.TabIndex = 15;
+			this.label10.Text = "Prescale:";
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(307, 117);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(14, 13);
+			this.label11.TabIndex = 16;
+			this.label11.Text = "X";
 			// 
 			// DisplayConfigLite
 			// 
@@ -693,11 +740,12 @@
 			this.tpMisc.ResumeLayout(false);
 			this.tpMisc.PerformLayout();
 			this.tabPage1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -756,5 +804,8 @@
 		private System.Windows.Forms.Label lblFrameTypeWindowed;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox checkFullscreenHacks;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.NumericUpDown nudPrescale;
 	}
 }

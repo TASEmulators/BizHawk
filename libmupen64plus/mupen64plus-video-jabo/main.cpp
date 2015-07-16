@@ -113,6 +113,7 @@ BOOL readOptionsInitflags (DWORD* options_val, DWORD* initflags_val)
 		if (RegCreateKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",NULL,NULL,NULL,KEY_READ,NULL,&mainkey,NULL) != ERROR_SUCCESS)
 		{
 			// Couldn't create the key
+			printf("readOptionsInitflags:  Couldn't create the key\n");
 			return (FALSE);
 		}
 	}
@@ -125,6 +126,7 @@ BOOL readOptionsInitflags (DWORD* options_val, DWORD* initflags_val)
 	if (result != ERROR_SUCCESS)
 	{
 		options_value = 0;
+		printf("readOptionsInitflags:  fail A\n");
 	}
 	*options_val = options_value;
 
@@ -133,6 +135,7 @@ BOOL readOptionsInitflags (DWORD* options_val, DWORD* initflags_val)
 	result = RegQueryValueEx(mainkey, "Direct3D8.InitFlags", NULL, &type, (LPBYTE)&initflags_value, &cbData);
 	if (result != ERROR_SUCCESS)
 	{
+		printf("readOptionsInitflags:  fail B\n");
 		initflags_value = 0x00e00000;
 	}
 	*initflags_val = initflags_value;
@@ -147,7 +150,7 @@ BOOL writeOptionsInitflags(DWORD options_val, DWORD initflags_val)
 	HKEY mainkey;
 	if (RegOpenKeyEx(HKEY_CURRENT_USER,"Software\\JaboSoft\\Project64 DLL\\Direct3D8 1.6.1",0,KEY_WRITE,&mainkey) != ERROR_SUCCESS)
 	{
-		//LOG("Failure to open key for write");
+		printf("writeOptionsInitflags: Failure to open key for write\n");
 		return (FALSE);
 	}
 
@@ -155,14 +158,14 @@ BOOL writeOptionsInitflags(DWORD options_val, DWORD initflags_val)
 	DWORD new_val = options_val;
 	if (RegSetValueEx(mainkey, "Options", NULL, REG_DWORD, (BYTE *)&new_val, 4) != ERROR_SUCCESS)
 	{
-		//LOG("Couldn't write options value");
+		printf("writeOptionsInitflags: Couldn't write options value\n");
 	}
 
 	// Store our init flags value
 	new_val = initflags_val;
 	if (RegSetValueEx(mainkey, "Direct3D8.InitFlags", NULL, REG_DWORD, (BYTE *)&new_val, 4) != ERROR_SUCCESS)
 	{
-		//LOG("Couldn't write init flags value");
+		LOG("writeOptionsInitflags: Couldn't write init flags value");
 	}
 
 	RegCloseKey(mainkey);

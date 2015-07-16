@@ -161,7 +161,6 @@ namespace SevenZip
                     throw new SevenZipLibraryException("library is invalid.");
                 }
             }
-}
 #endif
             if (format is InArchiveFormat)
             {
@@ -177,6 +176,7 @@ namespace SevenZip
 #endif
             throw new ArgumentException(
                 "Enum " + format + " is not a valid archive format attribute!");
+								}
 
         }
 

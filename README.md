@@ -34,6 +34,7 @@ Binaries can be found on [https://sourceforge.net/projects/bizhawk/?source=navba
  * Wonderswan
  * Gameboy Advance
  * Apple II
+ * Sony PlayStation
 
 ==Resources==
 [http://tasvideos.org/Bizhawk.html BizHawk homepage]
@@ -42,7 +43,7 @@ Binaries can be found on [https://sourceforge.net/projects/bizhawk/?source=navba
 
 [http://tasvideos.org/Bizhawk/Compiling.html Compiling] - What is needed to compile BizHawk src
 
-[http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html CompactDiscInfoDump] - A concise explanation of compact disc CDs, gathered for the first time EVER in one location
+[http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html CompactDiscInfoDump] - A concise explanation of compact disc CDs, gathered for the first time EVER in one location, and mostly inaccurate
 
 [http://tasvideos.org/Bizhawk/Rerecording.html Rerecording] - (Work in progress) - Documentation of the rerecording implementation of  BizHawk
  * [http://tasvideos.org/Bizhawk/TASFormat.html TAS movie file format] - Mnemonic patterns for each platform for .tas (input) files.

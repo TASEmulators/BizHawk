@@ -665,7 +665,7 @@ namespace BizHawk.Client.EmuHawk
 			DisplayInputMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Input Display"].Bindings;
 			SwitchToFullscreenMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Full Screen"].Bindings;
 
-			DisplayStatusBarMenuItem.Checked = Global.Config.DisplayStatusBar;
+			DisplayStatusBarMenuItem.Checked = Global.Config.DispChrome_StatusBarWindowed;
 			DisplayLogWindowMenuItem.Checked = Global.Config.ShowLogWindow;
 
 			DisplayLagCounterMenuItem.Enabled = Global.Emulator.CanPollInput();
@@ -745,7 +745,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayStatusBarMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.DisplayStatusBar ^= true;
+			Global.Config.DispChrome_StatusBarWindowed ^= true;
 			SetStatusBar();
 		}
 
@@ -753,7 +753,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_inFullscreen)
 			{
-				MainStatusBar.Visible = Global.Config.DisplayStatusBar;
+				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarWindowed;
 				PerformLayout();
 				FrameBufferResized();
 			}
@@ -878,7 +878,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FirmwaresMenuItem_Click(object sender, EventArgs e)
 		{
-			new FirmwaresConfig().ShowDialog();
+			if (e is RomLoader.RomErrorArgs)
+			{
+				var args = e as RomLoader.RomErrorArgs;
+				var result = new FirmwaresConfig(true, args.RomPath).ShowDialog();
+				args.Retry = result == DialogResult.Retry;
+			}
+			else
+			{
+				new FirmwaresConfig().ShowDialog();
+			}
 		}
 
 		private void MessagesMenuItem_Click(object sender, EventArgs e)

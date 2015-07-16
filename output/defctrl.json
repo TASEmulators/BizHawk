@@ -629,7 +629,7 @@
       "P2 A": "",
       "Power": ""
     },
-    "DualShock Controller": {
+    "PSX DualShock Controller": {
       "P1 Up": "X1 DpadUp,UpArrow",
       "P1 Down": "X1 DpadDown,DownArrow",
       "P1 Left": "X1 DpadLeft,LeftArrow",

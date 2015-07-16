@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : IInputPollable
 	{
-		public int LagCount { get; private set; }
+		public int LagCount { get; set; }
 
 		public bool IsLagFrame
 		{
@@ -12,6 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			private set { _machine.Lagged = value; }
 		}
 
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get; private set; }
+		public IInputCallbackSystem InputCallbacks { get; private set; }
 	}
 }

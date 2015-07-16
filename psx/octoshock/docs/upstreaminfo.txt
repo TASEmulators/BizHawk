@@ -68,3 +68,14 @@
 [NO] psx/psx : DiscSanityChecks fix (OK if we used this feature)
 0.9.38.1 -> 0.9.38.2
 [OK] psx/gpu_polygon : Fixes to poly rasterizing
+0.9.38.2 -> 0.9.38.4
+[OK] psx/cdc : Change to fundamental sector reading for tomb raider
+[OK] psx/cpu : Elaborate debug poke capabilities
+[OK] psx/debug : Elaborate debug poke capabilities
+[OK] psx/gpu : Alter mouse coordinate translation
+[OK] psx/gpu : Alter texcache invalidation, TPage and DrawMode commands
+[OK] psx/psx : Elaborate debug poke capabilities
+0.9.38.4 -> 0.9.38.5
+[OK] psx/cdc : substantial changes to disc swapping and seek retries
+[OK] psx/gpu : change to comments
+[OK] psx/memcard : change to debug output

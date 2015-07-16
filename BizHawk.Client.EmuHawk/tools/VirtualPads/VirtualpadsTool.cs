@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 				Readonly = false;
 			}
 
-			if (!Readonly && !StickyPads)
+			if (!Readonly && !StickyPads && !Control.MouseButtons.HasFlag(MouseButtons.Left))
 			{
 				Pads.ForEach(pad => pad.Clear());
 			}

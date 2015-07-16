@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 
 using LuaInterface;
@@ -62,6 +63,31 @@ namespace BizHawk.Client.Common
 		protected static uint LuaUInt(object luaArg)
 		{
 			return (uint)(double)luaArg;
+		}
+
+		protected static Color? ToColor(object color)
+		{
+			if (color == null)
+			{
+				return null;
+			}
+
+			double tryNum = double.NaN;
+
+			var result = double.TryParse(color.ToString(), out tryNum);
+
+			if (result)
+			{
+				var stringResult = ((int)tryNum).ToString();
+				return ColorTranslator.FromHtml(stringResult);
+			}
+
+			if (!string.IsNullOrWhiteSpace(color.ToString()))
+			{
+				return Color.FromName(color.ToString());
+			}
+
+			return null;
 		}
 	}
 }

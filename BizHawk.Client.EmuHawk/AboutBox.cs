@@ -160,11 +160,11 @@ namespace BizHawk.Client.EmuHawk
         private void AboutBox_Load(object sender, EventArgs e)
         {
 #if DEBUG
-			Text = "BizHawk Developer Build (DEBUG MODE) SVN r" + SubWCRev.SVN_REV;
+					Text = "BizHawk Developer Build (DEBUG MODE) GIT " + SubWCRev.GIT_BRANCH + "-" + SubWCRev.SVN_REV + "#" + SubWCRev.GIT_SHORTHASH;
 #else
-			Text = "BizHawk Developer Build (RELEASE MODE) SVN r" + SubWCRev.SVN_REV;
+			Text = "BizHawk Developer Build (RELEASE MODE) GIT " + SubWCRev.GIT_BRANCH + "-"+SubWCRev.SVN_REV + "#" + SubWCRev.GIT_SHORTHASH;
 #endif
-			if (DateTime.Now.Month == 12)
+					if (DateTime.Now.Month == 12)
 				if (DateTime.Now.Day > 17 && DateTime.Now.Day <= 25)
 				{
 					pictureBox1.Image = Properties.Resources.alt_about_image;

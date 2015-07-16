@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 using BizHawk.Client.Common;
 using LuaInterface;
+using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -110,6 +111,18 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"setlag",
+			"Sets the lag information for the given frame, if the frame does not exist in the lag log, it will be added. If the value is null, the lag information for that frame will be removed"
+		)]
+		public void SetLag(int frame, bool? value)
+		{
+			if (Engaged())
+			{
+				Tastudio.CurrentTasMovie.SetLag(frame, value);
+			}
+		}
+
+		[LuaMethodAttributes(
 			"hasstate",
 			"Returns whether or not the given frame has a savestate associated with it"
 		)]
@@ -124,6 +137,98 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return false;
+		}
+
+		[LuaMethodAttributes(
+			"onqueryitembg",
+			"called during the background draw event of the tastudio listview"
+		)]
+		public void OnQueryItemBg(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.QueryItemBgColorCallback = (int index, string name) =>
+				{
+					var result = luaf.Call(index, name);
+
+					if (result != null)
+					{
+						var color = ToColor(result[0]);
+						return color;
+					}
+
+					return null;
+				};
+			}
+		}
+
+		[LuaMethodAttributes(
+			"onqueryitemtext",
+			"called during the text draw event of the tastudio listview"
+		)]
+		public void OnQueryItemText(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.QueryItemTextCallback = (int index, string name) =>
+				{
+					var result = luaf.Call(index, name);
+
+					if (result != null)
+					{
+						if (result[0] != null)
+						{
+							return result[0].ToString();
+						}
+					}
+
+					return (string)null;
+				};
+			}
+		}
+
+		[LuaMethodAttributes(
+			"onqueryitemicon",
+			"called during the icon draw event of the tastudio listview"
+		)]
+		public void OnQueryItemIcon(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.QueryItemIconCallback = (int index, string name) =>
+				{
+					var result = luaf.Call(index, name);
+					if (result != null)
+					{
+						if (result[0] != null)
+						{
+							string path = result[0].ToString();
+							Icon icon = new Icon(path);
+							if (icon != null)
+							{
+								return icon.ToBitmap();
+							}
+						}
+					}
+
+					return (Bitmap)null;
+				};
+			}
+		}
+
+		[LuaMethodAttributes(
+			"ongreenzoneinvalidated",
+			"called whenever the greenzone is invalidated and returns the first frame that was invalidated"
+		)]
+		public void OnGreenzoneInvalidated(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.GreenzoneInvalidatedCallback = (int index) =>
+				{
+					luaf.Call(index);
+				};
+			}
 		}
 	}
 }

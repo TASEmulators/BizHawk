@@ -8,6 +8,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int LagCount
 		{
 			get { return _lagCount; }
+			set { _lagCount = value; }
 		}
 
 		public bool IsLagFrame

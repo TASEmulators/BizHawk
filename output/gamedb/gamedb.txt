@@ -24,6 +24,7 @@
 #include gamedb_gba.txt
 #include gamedb_lynx.txt
 #include gamedb_appleII.txt
+#include gamedb_psx.txt
 
 ; ************ TI-83 ************
 

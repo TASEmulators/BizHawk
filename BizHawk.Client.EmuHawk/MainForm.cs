@@ -402,14 +402,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Load<Cheats>();
 			}
 
-			if (Global.Config.DisplayStatusBar == false)
-			{
-				MainStatusBar.Visible = false;
-			}
-			else
-			{
-				DisplayStatusBarMenuItem.Checked = true;
-			}
+			SetStatusBar();
 
 			if (Global.Config.StartPaused)
 			{
@@ -2769,13 +2762,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
 
-				if (!IsTurboing)
+				if (IsTurboing)
 				{
-					GlobalWin.Tools.UpdateToolsBefore();
+					GlobalWin.Tools.FastUpdateBefore();
 				}
 				else
 				{
-					GlobalWin.Tools.FastUpdateBefore();
+					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
 				_runloopFps++;
@@ -2858,13 +2851,13 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
 
-				if (!IsTurboing)
+				if (IsTurboing)
 				{
-					UpdateToolsAfter();
+					GlobalWin.Tools.FastUpdateAfter();
 				}
 				else
 				{
-					GlobalWin.Tools.FastUpdateAfter();
+					UpdateToolsAfter();
 				}
 
 				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
@@ -3252,7 +3245,14 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 				{
-					FirmwaresMenuItem_Click(null, null);
+					FirmwaresMenuItem_Click(null, e);
+					if (e.Retry)
+					{
+						// Retry loading the ROM here. This leads to recursion, as the original call to LoadRom has not exited yet,
+						// but unless the user tries and fails to set his firmware a lot of times, nothing should happen.
+						// Refer to how RomLoader implemented its LoadRom method for a potential fix on this.
+						LoadRom(e.RomPath, e.Deterministic);
+					}
 				}
 			}
 			else
@@ -3434,6 +3434,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//This shows up if there's a problem                
 				// TODO: put all these in a single method or something
+
+				//The ROM has been loaded by a recursive invocation of the LoadROM method.
+				if (!(Global.Emulator is NullEmulator))
+				{
+					return true;
+				}
+
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateStatusSlots();
@@ -3542,7 +3549,7 @@ namespace BizHawk.Client.EmuHawk
 			GameIsClosing = false;
 		}
 
-		public bool GameIsClosing { get; set; } // Let's tools make better decisions when being called by CloseGame
+		public bool GameIsClosing { get; set; } // Lets tools make better decisions when being called by CloseGame
 
 		public void CloseRom(bool clearSram = false)
 		{
@@ -3803,6 +3810,11 @@ namespace BizHawk.Client.EmuHawk
 		private void settingsToolStripMenuItem1_Click_1(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Apple II Settings");
+		}
+
+		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXHashDiscs().ShowDialog();
 		}
 	}
 }

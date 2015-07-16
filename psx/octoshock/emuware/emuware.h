@@ -5,6 +5,12 @@
 #include <cstdlib>
 
 #ifdef _MSC_VER
+#define SIZEOF_CHAR sizeof(char)
+#define SIZEOF_SHORT sizeof(short)
+#define SIZEOF_INT sizeof(int)
+#define SIZEOF_LONG sizeof(long)
+#define SIZEOF_LONG_LONG sizeof(long long)
+#define SIZEOF_OFF_T sizeof(void*)
 typedef __int64 s64;
 typedef __int32 s32;
 typedef __int16 s16;
@@ -42,8 +48,6 @@ typedef __uint16_t uint16;
 typedef __uint8_t uint8;
 #endif
 
-#define final
-#define noexcept
 
 //#if MDFN_GCC_VERSION >= MDFN_MAKE_GCCV(4,7,0)
 // #define MDFN_ASSUME_ALIGNED(p, align) __builtin_assume_aligned((p), (align))
@@ -78,11 +82,17 @@ typedef __uint8_t uint8;
 #define UNALIGNED
 #endif
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
+	#define strncasecmp _strnicmp
+	#define NO_CLONE
+#endif
+
+#if defined(_MSC_VER) && _MSC_VER < 1900
   #define snprintf _snprintf
   #define vsnprintf _vsnprintf
   #define strcasecmp _stricmp
-  #define strncasecmp _strnicmp
+	#define final
+	#define noexcept
 #endif
 
 #define TRUE_1 1

@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public virtual void Initialize() { }
 		public virtual Size PresizeInput(string channel, Size size) { return size; }
 		public virtual Size PresizeOutput(string channel, Size size) { return size; }
-		public virtual void SetInputFormat(string channel, SurfaceState state) { }
+		public virtual void SetInputFormat(string channel, SurfaceState state) { } //TODO - why a different param order than DeclareOutput?
 		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
 
 		//runtime signals
@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		//setup utilities
 		protected IOSurfaceInfo DeclareInput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default") { return DeclareIO(SurfaceDirection.Input, channel, disposition); }
 		protected IOSurfaceInfo DeclareOutput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default") { return DeclareIO(SurfaceDirection.Output, channel, disposition); }
+		//TODO - why a different param order than DeclareOutput?
 
 		protected IOSurfaceInfo DeclareOutput(SurfaceState state, string channel = "default")
 		{

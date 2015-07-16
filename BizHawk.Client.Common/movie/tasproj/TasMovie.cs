@@ -28,6 +28,11 @@ namespace BizHawk.Client.Common
 			_progressReportWorker = newWorker;
 		}
 
+		public int LastValidFrame
+		{
+			get { return LagLog.LastValidFrame; }
+		}
+
 		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
 			: base(path)
 		{
@@ -168,6 +173,7 @@ namespace BizHawk.Client.Common
 			LagLog.RemoveFrom(frame);
 			StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
+            base.Rerecords++;
 		}
 
 		/// <summary>
@@ -241,12 +247,12 @@ namespace BizHawk.Client.Common
 
 		public void GreenzoneCurrentFrame()
 		{
-			LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
+				LagLog[Global.Emulator.Frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
-			if (!StateManager.HasState(Global.Emulator.Frame))
-			{
-				StateManager.Capture();
-			}
+				if (!StateManager.HasState(Global.Emulator.Frame))
+				{
+					StateManager.Capture();
+				}
 		}
 
 		public void ClearLagLog()

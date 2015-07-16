@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		static GPGX AttachedCore = null;
 
 		DiscSystem.Disc CD;
+		DiscSystem.DiscSectorReader DiscSectorReader;
 		byte[] romfile;
 		bool drivelight;
 
@@ -62,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(_tracer);
 			// this can influence some things internally
 			string romextension = "GEN";
 
@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				this.romfile = rom;
 				this.CD = CD;
+				this.DiscSectorReader = new DiscSystem.DiscSectorReader(CD);
 
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
@@ -290,9 +291,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (audio)
 			{
 				byte[] data = new byte[2352];
-				if (lba < CD.LBACount)
+				if (lba < CD.Session1.LeadoutLBA)
 				{
-					CD.ReadLBA_2352(lba, data, 0);
+					DiscSectorReader.ReadLBA_2352(lba, data, 0);
 				}
 				else
 				{
@@ -305,7 +306,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			else
 			{
 				byte[] data = new byte[2048];
-				CD.ReadLBA_2048(lba, data, 0);
+				DiscSectorReader.ReadLBA_2048(lba, data, 0);
 				Marshal.Copy(data, 0, dest, 2048);
 				drivelight = true;
 			}
@@ -320,16 +321,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ret.readcallback = cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
 
-			var ses = CD.Structure.Sessions[0];
+			var ses = CD.Session1;
 			int ntrack = ses.Tracks.Count;
 
 			// bet you a dollar this is all wrong
+			//zero 07-jul-2015 - throws a dollar in the pile, since he probably messed it up worse
 			for (int i = 0; i < LibGPGX.CD_MAX_TRACKS; i++)
 			{
 				if (i < ntrack)
 				{
-					ret.tracks[i].start = ses.Tracks[i].Indexes[1].aba - 150;
-					ret.tracks[i].end = ses.Tracks[i].LengthInSectors + ret.tracks[i].start;
+					ret.tracks[i].start = ses.Tracks[i].LBA;
+					ret.tracks[i].end = ses.Tracks[i + 1].LBA;
 					if (i == ntrack - 1)
 					{
 						ret.end = ret.tracks[i].end;
@@ -391,8 +393,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
-		private readonly TraceBuffer _tracer = new TraceBuffer();
-
 		#endregion
 
 		// TODO: use render and rendersound
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; private set; }
+		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
 		public string SystemId { get { return "GEN"; } }

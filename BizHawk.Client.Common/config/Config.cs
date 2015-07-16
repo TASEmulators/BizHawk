@@ -172,48 +172,89 @@ namespace BizHawk.Client.Common
 		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
 		public bool VSync = false;
 
+		public static class DefaultMessageOptions
+		{
+			public const int
+                DispFPSx = 0,
+			    DispFPSy = 0,
+                DispFrameCx = 0,
+                DispFrameCy = 14,
+                DispLagx = 0,
+                DispLagy = 42,
+                DispInpx = 0,
+                DispInpy = 28,
+                DispRecx = 0,
+                DispRecy = 56,
+                DispMultix = 0,
+                DispMultiy = 14,
+                DispMessagex = 3,
+                DispMessagey = 0,
+                DispAutoholdx = 0,
+                DispAutoholdy = 0,
+                DispRamWatchx = 0,
+                DispRamWatchy = 70,
+
+                MessagesColor = -1,
+                AlertMessageColor = -65536,
+                LastInputColor = -23296,
+                MovieInput = -8355712,
+
+                DispFPSanchor = 0,	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
+                DispFrameanchor = 0,
+                DispLaganchor = 0,
+                DispInpanchor = 0,
+                DispRecanchor = 0,
+                DispMultianchor = 1,
+                DispMessageanchor = 2,
+                DispAutoholdanchor = 1;
+		}
+
 		// Display options
-		public int MessagesColor = -1;
-		public int AlertMessageColor = -65536;
-		public int LastInputColor = -23296;
-		public int MovieInput = -8355712;
 		public bool DisplayFPS = false;
-		public int DispFPSx = 0;
-		public int DispFPSy = 0;
-		public int DispFPSanchor = 0;	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
 		public bool DisplayFrameCounter = false;
-		public int DispFrameCx = 0;
-		public int DispFrameCy = 14;
-		public int DispFrameanchor = 0;
 		public bool DisplayLagCounter = false;
-		public int DispLagx = 0;
-		public int DispLagy = 42;
-		public int DispLaganchor = 0;
 		public bool DisplayInput = false;
-		public int DispInpx = 0;
-		public int DispInpy = 28;
-		public int DispInpanchor = 0;
 		public bool DisplayRerecordCount = false;
-		public int DispRecx = 0;
-		public int DispRecy = 56;
-		public int DispRecanchor = 0;
-		public int DispMultix = 0;
-		public int DispMultiy = 14;
-		public int DispMultianchor = 1;
-		public bool DisplayStatusBar = true;
-		public int DispRamWatchx = 0;
-		public int DispRamWatchy = 70;
-		public int DispMessagex = 3;
-		public int DispMessagey = 0;
-		public int DispMessageanchor = 2;
-		public int DispAutoholdx = 0;
-		public int DispAutoholdy = 0;
-		public int DispAutoholdanchor = 1;
+
+        public bool DispBlurry = false; // make display look ugly
+        public bool DispFixAspectRatio = true;
+        public bool DispFixScaleInteger = true;
+        public bool DispFullscreenHacks = true;
+
+		public int DispFPSx = DefaultMessageOptions.DispFPSx;
+		public int DispFPSy = DefaultMessageOptions.DispFPSy;
+        public int DispFrameCx = DefaultMessageOptions.DispFrameCx;
+        public int DispFrameCy = DefaultMessageOptions.DispFrameCy;
+        public int DispLagx = DefaultMessageOptions.DispLagx;
+        public int DispLagy = DefaultMessageOptions.DispLagy;
+        public int DispInpx = DefaultMessageOptions.DispInpx;
+        public int DispInpy = DefaultMessageOptions.DispInpy;
+        public int DispRecx = DefaultMessageOptions.DispRecx;
+        public int DispRecy = DefaultMessageOptions.DispRecy;
+        public int DispMultix = DefaultMessageOptions.DispMultix;
+        public int DispMultiy = DefaultMessageOptions.DispMultiy;
+		public int DispRamWatchx = DefaultMessageOptions.DispRamWatchx;
+		public int DispRamWatchy = DefaultMessageOptions.DispRamWatchy;
+        public int DispMessagex = DefaultMessageOptions.DispMessagex;
+        public int DispMessagey = DefaultMessageOptions.DispMessagey;
+		public int DispAutoholdx = DefaultMessageOptions.DispAutoholdx;
+        public int DispAutoholdy = DefaultMessageOptions.DispAutoholdy;
+
+        public int DispFPSanchor = DefaultMessageOptions.DispFPSanchor;	// 0 = UL, 1 = UR, 2 = DL, 3 = DR
+        public int DispFrameanchor = DefaultMessageOptions.DispFrameanchor;
+        public int DispLaganchor = DefaultMessageOptions.DispLaganchor;
+        public int DispInpanchor = DefaultMessageOptions.DispInpanchor;
+        public int DispRecanchor = DefaultMessageOptions.DispRecanchor;
+        public int DispMultianchor = DefaultMessageOptions.DispMultianchor;
+        public int DispMessageanchor = DefaultMessageOptions.DispMessageanchor;
+        public int DispAutoholdanchor = DefaultMessageOptions.DispAutoholdanchor;
+
+        public int MessagesColor = DefaultMessageOptions.MessagesColor;
+        public int AlertMessageColor = DefaultMessageOptions.AlertMessageColor;
+        public int LastInputColor = DefaultMessageOptions.LastInputColor;
+        public int MovieInput = DefaultMessageOptions.MovieInput;
 		
-		public bool DispBlurry = false; // make display look ugly
-		public bool DispFixAspectRatio = true;
-		public bool DispFixScaleInteger = true;
-		public bool DispFullscreenHacks = true;
+		public int DispPrescale = 1;
 
 		//warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
 		public EDispMethod DispMethod = EDispMethod.OpenGL;
@@ -253,6 +294,7 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool DisableLuaScriptsOnLoad = false;
+		public bool RunLuaDuringTurbo = true;
 
 		// Watch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);

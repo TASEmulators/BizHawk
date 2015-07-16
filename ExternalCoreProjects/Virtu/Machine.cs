@@ -83,7 +83,6 @@ namespace Jellyfish.Virtu
 			}
 		}
 
-
 		public void BizInitialize()
 		{
 			Initialize();
@@ -139,11 +138,12 @@ namespace Jellyfish.Virtu
 			};
 
 			ser.Converters.Add(new TypeTypeConverter(new[]
-				{
-					// all expected Types to convert are either in this assembly or mscorlib
-					typeof(Machine).Assembly,
-					typeof(object).Assembly
-				}));
+			{
+				// all expected Types to convert are either in this assembly or mscorlib
+				typeof(Machine).Assembly,
+				typeof(object).Assembly
+			}));
+			
 			ser.Converters.Add(new DelegateConverter());
 			ser.Converters.Add(new ArrayConverter());
 

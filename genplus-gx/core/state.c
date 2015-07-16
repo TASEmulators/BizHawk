@@ -100,6 +100,7 @@ int state_load(unsigned char *state)
 
   /* IO */
   load_param(io_reg, sizeof(io_reg));
+  load_param(gamepad, sizeof(gamepad));
   if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
   {
     io_reg[0] = region_code | 0x20 | (config.bios & 1);
@@ -221,6 +222,7 @@ int state_save(unsigned char *state)
 
   /* IO */
   save_param(io_reg, sizeof(io_reg));
+  save_param(gamepad, sizeof(gamepad));
 
   /* VDP */
   bufferptr += vdp_context_save(&state[bufferptr]);

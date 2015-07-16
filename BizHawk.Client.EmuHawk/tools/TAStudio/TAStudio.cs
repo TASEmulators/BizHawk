@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : Form, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
-		private const string MarkerColumnName = "MarkerColumn";
+		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
 
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
@@ -35,8 +35,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private UndoHistoryForm undoForm;
-
-		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -209,22 +207,22 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
 			CurrentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
+
 		private string ClientSettingsForSave()
 		{
 			return TasView.UserSettingsSerialized();
 		}
+
 		private void GetClientSettingsOnLoad(string settingsJson)
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
-			RefreshTasView();
-
 			SetUpToolStripColumns();
 		}
 
 		private void SetUpColumns()
 		{
 			TasView.AllColumns.Clear();
-			AddColumn(MarkerColumnName, string.Empty, 18);
+			AddColumn(CursorColumnName, string.Empty, 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
 			var columnNames = GenerateColumnNames();
@@ -302,6 +300,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
+			_mouseWheelTimer = new System.Timers.Timer(100); // consider sub 100 ms fast scrolling
+			_mouseWheelTimer.Elapsed += (s, e) =>
+			{
+				_mouseWheelTimer.Stop();
+			};
 		}
 
 		#endregion
@@ -323,6 +326,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Settings.RecentTas.HandleLoadError(file.FullName);
 				return false;
+			}
+
+			if (CurrentTasMovie == null)
+			{
+				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
+				(Global.MovieSession.Movie as TasMovie).TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			}
 
 			CurrentTasMovie.Filename = file.FullName;
@@ -352,12 +361,14 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
+				(Global.MovieSession.Movie as TasMovie).TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 				CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 				CurrentTasMovie.PopulateWithDefaultHeaderValues();
 				SetTasMovieCallbacks();
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
 				HandleMovieLoadStuff();
+				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 
 				RefreshDialog();
 			}
@@ -441,6 +452,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do not keep TAStudio's disk save states.
 			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
 				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
+			_mouseWheelTimer.Dispose();
 		}
 
 		/// <summary>
@@ -516,22 +528,39 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.MainForm.UnpauseEmulator();
 				}
 			}
+			else
+			{
+				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
+					GlobalWin.MainForm.UnpauseEmulator();
+				_autoRestorePaused = null;
+				GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
+			}
+
 
 			_autoRestoreFrame = null;
 		}
 
 		private void StartAtNearestFrameAndEmulate(int frame)
 		{
+			if (frame == Emulator.Frame)
+				return;
+
 			CurrentTasMovie.SwitchToPlay();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-			if (closestState.Value != null)
+			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
 				LoadState(closestState);
 			}
 
-			if (GlobalWin.MainForm.EmulatorPaused)
-				GlobalWin.MainForm.PauseOnFrame = frame;
-			GlobalWin.MainForm.UnpauseEmulator();
+			// frame == Emualtor.Frame when frame == 0
+			if (frame > Emulator.Frame)
+			{
+				if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking || _mouseWheelTimer.Enabled) // make seek frame keep up with emulation on fast scrolls
+				{
+					GlobalWin.MainForm.PauseOnFrame = frame;
+					GlobalWin.MainForm.UnpauseEmulator();
+				}
+			}
 		}
 
 		private void LoadState(KeyValuePair<int, byte[]> state)
@@ -632,18 +661,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_triggerAutoRestore)
 			{
-				int? pauseOn = GlobalWin.MainForm.PauseOnFrame;
-				GoToLastEmulatedFrameIfNecessary(_triggerAutoRestoreFromFrame.Value);
-
-				if (pauseOn.HasValue && _autoRestoreFrame.HasValue && _autoRestoreFrame < pauseOn)
-				{ // If we are already seeking to a later frame don't shorten that journey here
-					_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
-				}
-
 				DoAutoRestore();
 
 				_triggerAutoRestore = false;
-				_triggerAutoRestoreFromFrame = null;
+				_autoRestorePaused = null;
 			}
 		}
 

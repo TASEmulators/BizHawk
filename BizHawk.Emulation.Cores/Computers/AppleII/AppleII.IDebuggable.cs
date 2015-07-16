@@ -20,10 +20,26 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					reg.Key,
 					reg.Key.Contains("Flag")
 						? reg.Value > 0
-						: (RegisterValue)reg.Value);
+						: getRegisterValue(reg));
 			}
 
 			return dic;
+		}
+
+		private RegisterValue getRegisterValue(KeyValuePair<string, int> reg)
+		{
+			switch (reg.Key)
+			{
+				case "A":
+				case "X":
+				case "Y":
+				case "S":
+					return (byte)reg.Value;
+				case "PC":
+					return (ushort)reg.Value;
+				default:
+					return reg.Value;
+			}
 		}
 
 		public void SetCpuRegister(string register, int value)
@@ -189,10 +205,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private const byte JSRSize = 3;
 
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
 	}
 }

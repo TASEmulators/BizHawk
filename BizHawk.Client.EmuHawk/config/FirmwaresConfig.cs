@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		string currSelectorDir;
 		ListViewSorter listviewSorter;
 
-		public FirmwaresConfig()
+		public FirmwaresConfig(bool retryLoadRom = false, string reloadRomPath = null)
 		{
 			InitializeComponent();
 
@@ -88,6 +88,24 @@ namespace BizHawk.Client.EmuHawk
 			imageList1.Images.AddRange(new[] { Properties.Resources.RetroQuestion, Properties.Resources.ExclamationRed, Properties.Resources.GreenCheck });
 
 			listviewSorter = new ListViewSorter(this, -1);
+
+			if (retryLoadRom)
+			{
+				toolStripSeparator1.Visible = true;
+				tbbCloseReload.Visible = true;
+				tbbCloseReload.Enabled = true;
+
+
+				if (string.IsNullOrWhiteSpace(reloadRomPath))
+				{
+					tbbCloseReload.ToolTipText = "Close Firmware Manager and reload ROM";
+				}
+				else
+				{
+					tbbCloseReload.ToolTipText = "Close Firmware Manager and reload " + reloadRomPath;
+				}
+
+			}
 		}
 
 		//makes sure that the specified SystemId is selected in the list (and that all the firmwares for it are visible)
@@ -156,6 +174,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshBasePath();
+		}
+
+
+		private void tbbClose_Click(object sender, EventArgs e)
+		{
+			this.Close();
+			DialogResult = DialogResult.Cancel;
+		}
+
+		private void tbbCloseReload_Click(object sender, EventArgs e)
+		{
+			this.Close();
+			DialogResult = DialogResult.Retry;
 		}
 
 		private void FirmwaresConfig_FormClosed(object sender, FormClosedEventArgs e)
@@ -468,6 +499,7 @@ namespace BizHawk.Client.EmuHawk
 					name += " (variant)";
 					target = Path.Combine(dir, name) + ext;
 				}
+				Directory.CreateDirectory(Path.GetDirectoryName(target));
 				fi.CopyTo(target, false);
 				return true;
 			}
@@ -543,8 +575,5 @@ namespace BizHawk.Client.EmuHawk
 				RunImportJob(files);
 			}
 		}
-
-
-
 	}		//class FirmwaresConfig
 }

@@ -40,13 +40,6 @@
 #include "shared.h"
 #include "gamepad.h"
 
-struct
-{
-  uint8 State;
-  uint8 Counter;
-  uint8 Timeout;
-} gamepad[MAX_DEVICES];
-
 uint8 pad_index;
 
 

@@ -44,6 +44,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -84,25 +85,18 @@
       <DependentUpon>About.cs</DependentUpon>
     </Compile>
     <Compile Include="AudioExtractor.cs" />
-    <Compile Include="DiscoHawk.cs" />
-    <Compile Include="DiscoHawkDialog.cs">
+    <Compile Include="ComparisonResults.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DiscoHawkDialog.Designer.cs">
-      <DependentUpon>DiscoHawkDialog.cs</DependentUpon>
+    <Compile Include="ComparisonResults.Designer.cs">
+      <DependentUpon>ComparisonResults.cs</DependentUpon>
     </Compile>
+    <Compile Include="DiscoHawk.cs" />
     <Compile Include="MainDiscoForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainDiscoForm.Designer.cs">
       <DependentUpon>MainDiscoForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MednadiscTester.cs" />
-    <Compile Include="ProgressDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProgressDialog.Designer.cs">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -121,15 +115,12 @@
     <EmbeddedResource Include="About.resx">
       <DependentUpon>About.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DiscoHawkDialog.resx">
-      <DependentUpon>DiscoHawkDialog.cs</DependentUpon>
+    <EmbeddedResource Include="ComparisonResults.resx">
+      <DependentUpon>ComparisonResults.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainDiscoForm.resx">
       <DependentUpon>MainDiscoForm.cs</DependentUpon>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ProgressDialog.resx">
-      <DependentUpon>ProgressDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

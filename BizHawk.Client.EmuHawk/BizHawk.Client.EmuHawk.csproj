@@ -409,6 +409,12 @@
     <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
       <DependentUpon>PSXControllerConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PSX\PSXHashDiscs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PSX\PSXHashDiscs.Designer.cs">
+      <DependentUpon>PSXHashDiscs.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PSX\PSXOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -747,6 +753,7 @@
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\IToolForm.cs" />
+    <Compile Include="tools\Lua\EnvironmentSandbox.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
@@ -788,6 +795,7 @@
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.Designer.cs">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Lua\LuaSandbox.cs" />
     <Compile Include="tools\Lua\LuaTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -950,6 +958,10 @@
     </Compile>
     <Compile Include="tools\TAStudio\PatternsForm.Designer.cs">
       <DependentUpon>PatternsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\TAStudio.Callbacks.cs">
+      <DependentUpon>TAStudio.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.IControlMainForm.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
@@ -1223,6 +1235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
       <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PSX\PSXHashDiscs.resx">
+      <DependentUpon>PSXHashDiscs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXOptions.resx">
       <DependentUpon>PSXOptions.cs</DependentUpon>

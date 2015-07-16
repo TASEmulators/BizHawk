@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Init(game, rom);
 			// the default RomStatusDetails don't do anything with Disc
-			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, disc.GetHash());
+			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, new DiscSystem.DiscHasher(disc).OldHash());
 			SetControllerButtons();
 		}
 
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		bool lagged = true;
 		bool isLag = false;
 		public int Frame { get { return frame; } set { frame = value; } }
-		public int LagCount { get { return lagCount; } }
+		public int LagCount { get { return lagCount; } set { lagCount = value; } }
 		public bool IsLagFrame { get { return isLag; } }
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();

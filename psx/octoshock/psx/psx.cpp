@@ -25,6 +25,7 @@
 #include "Stream.h"
 #include "spu.h"
 #include "error.h"
+#include "tests.h"
 #include "endian.h"
 #include "emuware/EW_state.h"
 
@@ -1914,61 +1915,38 @@ EW_EXPORT s32 shock_CreateDisc(ShockDiscRef** outDisc, void *Opaque, s32 lbaCoun
 ShockDiscRef* s_CurrDisc = NULL;
 ShockDiscInfo s_CurrDiscInfo;
 
-
-//Sets the disc in the tray. Returns SHOCK_NOCANDO if it's closed. You can pass NULL to remove a disc from the tray
-EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
+static s32 _shock_SetOrPokeDisc(void* psx, ShockDiscRef* disc, bool poke)
 {
-	//TODO - non-psx disc is legal here. should pass null ID to CDC setdisc
-	
-	//analyze disc so we dont have to annoyingly manage it from client
-
-	//TODO - so junky
 	ShockDiscInfo info;
 	strcpy(info.id,"\0\0\0\0");
 	info.region = REGION_NONE;
 	if(disc != NULL)
 	{
-		s32 ret = shock_AnalyzeDisc(disc,&info);
-		if(ret != SHOCK_OK) return ret;
+		shock_AnalyzeDisc(disc,&info);
 	}
 
 	s_CurrDiscInfo = info;
 	s_CurrDisc = disc;
 
-	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id, false);
+	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id, poke);
 
 	return SHOCK_OK;
 }
 
+//Sets the disc in the tray. Returns SHOCK_NOCANDO if it's closed (TODO). You can pass NULL to remove a disc from the tray
+EW_EXPORT s32 shock_SetDisc(void* psx, ShockDiscRef* disc)
+{
+	return _shock_SetOrPokeDisc(psx,disc,false);
+}
+
 EW_EXPORT s32 shock_PokeDisc(void* psx, ShockDiscRef* disc)
 {
-	//TODO HACKS! DONT COPY/PASTE SO MUCH! REFACTOR DISC ID STUFF!
-
 	//let's talk about why this function is needed. well, let's paste an old comment on the subject:
 	//heres a comment from some old savestating code. something to keep in mind (maybe or maybe not a surprise depending on your point of view)
 	//"Call SetDisc() BEFORE we load CDC state, since SetDisc() has emulation side effects.  We might want to clean this up in the future."
 	//I'm not really sure I like how SetDisc works, so I'm glad this was brought to our attention
 
-		//TODO - non-psx disc is legal here. should pass null ID to CDC setdisc
-	
-	//analyze disc so we dont have to annoyingly manage it from client
-
-	//TODO - so junky
-	ShockDiscInfo info;
-	strcpy(info.id,"\0\0\0\0");
-	info.region = REGION_NONE;
-	if(disc != NULL)
-	{
-		s32 ret = shock_AnalyzeDisc(disc,&info);
-		if(ret != SHOCK_OK) return ret;
-	}
-
-	s_CurrDiscInfo = info;
-	s_CurrDisc = disc;
-
-	CDC->SetDisc(s_CurrDisc,s_CurrDiscInfo.id,true);
-
-	return SHOCK_OK;
+	return _shock_SetOrPokeDisc(psx,disc,true);
 }
 
 EW_EXPORT s32 shock_OpenTray(void* psx)

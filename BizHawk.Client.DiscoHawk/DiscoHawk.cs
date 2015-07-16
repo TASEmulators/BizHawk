@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.IO;
 
 using BizHawk.Emulation.DiscSystem;
@@ -184,28 +186,335 @@ namespace BizHawk.Client.DiscoHawk
 
 	class DiscoHawk
 	{
-		public void Run(string[] args)
+		static List<string> FindCuesRecurse(string dir)
 		{
-			bool gui = true;
-			foreach (var arg in args)
+			List<string> ret = new List<string>();
+			Queue<string> dpTodo = new Queue<string>();
+			dpTodo.Enqueue(dir);
+			for (; ; )
 			{
-				if (arg.ToUpper() == "COMMAND") gui = false;
+				string dpCurr;
+				if (dpTodo.Count == 0)
+					break;
+				dpCurr = dpTodo.Dequeue();
+				foreach(var fi in new DirectoryInfo(dpCurr).GetFiles("*.cue"))
+				{
+					ret.Add(fi.FullName);
+				}
+				Parallel.ForEach(new DirectoryInfo(dpCurr).GetDirectories(), (di) =>
+				{
+					lock(dpTodo)
+						dpTodo.Enqueue(di.FullName);
+				});
 			}
 
-			if (gui)
+			return ret;
+		}
+
+		public void Run(string[] args)
+		{
+			if (args.Length == 0)
 			{
 				var dialog = new MainDiscoForm();
 				dialog.ShowDialog();
 				return;
 			}
-			else
+
+			bool scanCues = false;
+			string dirArg = null;
+			string infile = null;
+			var loadDiscInterface = DiscInterface.BizHawk;
+			var compareDiscInterfaces = new List<DiscInterface> ();
+			bool hawk = false;
+			
+			int idx = 0;
+			while (idx < args.Length)
 			{
-				//test stuff...
-				MednadiscTester tester = new MednadiscTester();
-				tester.TestDirectory(@"c:\isos\psx");
+				string a = args[idx++];
+				string au = a.ToUpperInvariant();
+				if (au == "LOAD")
+					loadDiscInterface = (DiscInterface)Enum.Parse(typeof(DiscInterface), args[idx++], true);
+				else if (au == "COMPARE")
+					compareDiscInterfaces.Add((DiscInterface)Enum.Parse(typeof(DiscInterface), args[idx++], true));
+				else if (au == "HAWK")
+					hawk = true;
+				else if (au == "CUEDIR")
+				{
+					dirArg = args[idx++];
+					scanCues = true;
+				}
+				else infile = a;
 			}
-		}
-	}
+
+			if (hawk)
+			{
+				if (infile == null)
+					return;
+
+				//TODO - write it out
+				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
+				dmj.Run();
+				//var disc = dmj.OUT_Disc;
+			}
+
+			bool verbose = true;
+
+			if (scanCues)
+			{
+				verbose = false;
+				var todo = FindCuesRecurse(dirArg);
+				var po = new ParallelOptions();
+				var cts = new CancellationTokenSource();
+				po.CancellationToken = cts.Token;
+				po.MaxDegreeOfParallelism = 1;
+				//po.MaxDegreeOfParallelism = System.Environment.ProcessorCount - 2; //I'm disk or network bound, no sense hammering this
+				if(po.MaxDegreeOfParallelism < 0) po.MaxDegreeOfParallelism = 1;
+				object olock = new object();
+				int ctr=0;
+				bool blocked = false;
+				try
+				{
+					Parallel.ForEach(todo, po, (fp) =>
+					{
+						lock (olock)
+						{
+							ctr++;
+							int strlen = todo.Count.ToString().Length;
+							string fmt = string.Format("{{0,{0}}}/{{1,{0}}} {{2}}", strlen);
+							Console.WriteLine(fmt, ctr, todo.Count, Path.GetFileNameWithoutExtension(fp));
+							//if (fp.Contains("Break Out"))
+							//  blocked = false;
+						}
+
+						if(!blocked)
+							foreach (var cmpif in compareDiscInterfaces)
+							{
+								StringWriter sw = new StringWriter();
+								bool success = CompareFile(fp, loadDiscInterface, cmpif, verbose, cts, sw);
+								if (!success)
+								{
+									lock (Console.Out)
+										Console.Out.Write(sw.ToString());
+
+									cts.Cancel();
+									return;
+								}
+						}
+					});
+				}
+				catch (AggregateException ae) {
+					Console.WriteLine(ae.ToString());
+				}
+				catch (OperationCanceledException oce)
+				{
+					Console.WriteLine(oce.ToString());
+				}
+				Console.WriteLine("--TERMINATED--");
+				return;
+			}
+
+			if (compareDiscInterfaces.Count != 0)
+			{
+				StringWriter sw = new StringWriter();
+				foreach (var cmpif in compareDiscInterfaces)
+					CompareFile(infile, loadDiscInterface, cmpif, verbose, null, sw);
+				sw.Flush();
+				string results = sw.ToString();
+				var cr = new ComparisonResults();
+				cr.textBox1.Text = results;
+				cr.ShowDialog();
+			}
+
+
+		} //Run()
+
+		static bool CompareFile(string infile, DiscInterface loadDiscInterface, DiscInterface cmpif, bool verbose, CancellationTokenSource cancelToken, StringWriter sw)
+		{
+			Disc src_disc = null, dst_disc = null;
+
+			try
+			{
+				bool success = false;
+
+				sw.WriteLine("BEGIN COMPARE: {0}\nSRC {1} vs DST {2}", infile, loadDiscInterface, cmpif);
+
+				//reload the original disc, with new policies as needed
+				var dmj = new DiscMountJob { IN_DiscInterface = loadDiscInterface, IN_FromPath = infile };
+				if (cmpif == DiscInterface.MednaDisc)
+				{
+					dmj.IN_DiscMountPolicy.CUE_PregapContradictionModeA = false;
+				}
+				dmj.Run();
+
+				src_disc = dmj.OUT_Disc;
+
+				var dst_dmj = new DiscMountJob { IN_DiscInterface = cmpif, IN_FromPath = infile };
+				dst_dmj.Run();
+				dst_disc = dst_dmj.OUT_Disc;
+
+				var src_dsr = new DiscSectorReader(src_disc);
+				var dst_dsr = new DiscSectorReader(dst_disc);
+
+				var src_toc = src_disc.TOC;
+				var dst_toc = dst_disc.TOC;
+
+				var src_databuf = new byte[2448];
+				var dst_databuf = new byte[2448];
+
+				Action<DiscTOC.TOCItem> sw_dump_toc_one = (item) =>
+				{
+					if (!item.Exists)
+						sw.Write("(---missing---)");
+					else
+						sw.Write("({0:X2} - {1})", (byte)item.Control, item.LBATimestamp);
+				};
+
+
+				Action<int> sw_dump_toc = (index) =>
+				{
+					sw.Write("SRC TOC#{0,3} ", index); sw_dump_toc_one(src_toc.TOCItems[index]); sw.WriteLine();
+					sw.Write("DST TOC#{0,3} ", index); sw_dump_toc_one(dst_toc.TOCItems[index]); sw.WriteLine();
+				};
+
+				//verify sector count
+				if (src_disc.Session1.LeadoutLBA != dst_disc.Session1.LeadoutLBA)
+				{
+					sw.Write("LeadoutTrack.LBA {0} vs {1}\n", src_disc.Session1.LeadoutTrack.LBA, dst_disc.Session1.LeadoutTrack.LBA);
+					goto SKIPPO;
+				}
+
+				//verify TOC match
+				if (src_disc.TOC.FirstRecordedTrackNumber != dst_disc.TOC.FirstRecordedTrackNumber
+					|| src_disc.TOC.LastRecordedTrackNumber != dst_disc.TOC.LastRecordedTrackNumber)
+				{
+					sw.WriteLine("Mismatch of RecordedTrackNumbers: {0}-{1} vs {2}-{3}",
+						src_disc.TOC.FirstRecordedTrackNumber, src_disc.TOC.LastRecordedTrackNumber,
+						dst_disc.TOC.FirstRecordedTrackNumber, dst_disc.TOC.LastRecordedTrackNumber
+						);
+					goto SKIPPO;
+				}
+
+				bool badToc = false;
+				for (int t = 0; t < 101; t++)
+				{
+					if (src_toc.TOCItems[t].Exists != dst_toc.TOCItems[t].Exists
+						|| src_toc.TOCItems[t].Control != dst_toc.TOCItems[t].Control
+						|| src_toc.TOCItems[t].LBATimestamp.Sector != dst_toc.TOCItems[t].LBATimestamp.Sector
+						)
+					{
+						sw.WriteLine("Mismatch in TOCItem");
+						sw_dump_toc(t);
+						badToc = true;
+					}
+				}
+				if (badToc)
+					goto SKIPPO;
+
+				Action<string, int, byte[], int, int> sw_dump_chunk_one = (comment, lba, buf, addr, count) =>
+				{
+					sw.Write("{0} -  ", comment);
+					for (int i = 0; i < count; i++)
+					{
+						if (i + addr >= buf.Length) continue;
+						sw.Write("{0:X2}{1}", buf[addr + i], (i == count - 1) ? " " : "  ");
+					}
+					sw.WriteLine();
+				};
+
+				int[] offenders = new int[12];
+				Action<int, int, int, int, int> sw_dump_chunk = (lba, dispaddr, addr, count, numoffenders) =>
+				{
+					var hashedOffenders = new HashSet<int>();
+					for (int i = 0; i < numoffenders; i++) hashedOffenders.Add(offenders[i]);
+					sw.Write("                          ");
+					for (int i = 0; i < count; i++) sw.Write((hashedOffenders.Contains(dispaddr + i)) ? "vvv " : "    ");
+					sw.WriteLine();
+					sw.Write("                          ");
+					for (int i = 0; i < count; i++) sw.Write("{0:X3} ", dispaddr + i, (i == count - 1) ? " " : "  ");
+					sw.WriteLine();
+					sw.Write("                          ");
+					sw.Write(new string('-', count * 4));
+					sw.WriteLine();
+					sw_dump_chunk_one(string.Format("SRC #{0,6} ({1})", lba, new Timestamp(lba)), lba, src_databuf, addr, count);
+					sw_dump_chunk_one(string.Format("DST #{0,6} ({1})", lba, new Timestamp(lba)), lba, dst_databuf, addr, count);
+				};
+
+				//verify each sector contents
+				int nSectors = src_disc.Session1.LeadoutLBA;
+				for (int lba = -150; lba < nSectors; lba++)
+				{
+					if (verbose)
+						if (lba % 1000 == 0)
+							Console.WriteLine("LBA {0} of {1}", lba, nSectors);
+
+					if (cancelToken != null)
+						if (cancelToken.Token.IsCancellationRequested)
+							return false;
+
+					src_dsr.ReadLBA_2448(lba, src_databuf, 0);
+					dst_dsr.ReadLBA_2448(lba, dst_databuf, 0);
+
+					//check the header
+					for (int b = 0; b < 16; b++)
+					{
+						if (src_databuf[b] != dst_databuf[b])
+						{
+							sw.WriteLine("Mismatch in sector header at byte {0}", b);
+							offenders[0] = b;
+							sw_dump_chunk(lba, 0, 0, 16, 1);
+							goto SKIPPO;
+						}
+					}
+
+					//check userdata
+					for (int b = 16; b < 2352; b++)
+					{
+						if (src_databuf[b] != dst_databuf[b])
+						{
+							sw.Write("LBA {0} mismatch at userdata byte {1}; terminating sector cmp\n", lba, b);
+							goto SKIPPO;
+						}
+					}
+
+					//check subchannels
+					for (int c = 0, b = 2352; c < 8; c++)
+					{
+						int numOffenders = 0;
+						for (int e = 0; e < 12; e++, b++)
+						{
+							if (src_databuf[b] != dst_databuf[b])
+							{
+								offenders[numOffenders++] = e;
+							}
+						}
+						if (numOffenders != 0)
+						{
+							sw.Write("LBA {0} mismatch(es) at subchannel {1}; terminating sector cmp\n", lba, (char)('P' + c));
+							sw_dump_chunk(lba, 0, 2352 + c * 12, 12, numOffenders);
+							goto SKIPPO;
+						}
+					}
+				}
+
+				success = true;
+
+			SKIPPO:
+				sw.WriteLine("END COMPARE");
+				sw.WriteLine("-----------------------------");
+
+				return success;
+			}
+			finally
+			{
+				if (src_disc != null)
+					src_disc.Dispose();
+				if (dst_disc != null)
+					dst_disc.Dispose();
+			}
+		
+		} //CompareFile
+
+	} //class DiscoHawk
 
 }
 

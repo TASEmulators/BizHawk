@@ -15,7 +15,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#ifndef _MSC_VER
 #pragma GCC optimize ("no-unroll-loops,no-peel-loops")
+#endif
 
 #include "psx.h"
 #include "gpu.h"

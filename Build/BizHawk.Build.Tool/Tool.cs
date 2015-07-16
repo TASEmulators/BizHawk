@@ -14,7 +14,8 @@ namespace BizHawk.Build.Tool
 			string[] cmdArgs = Crop(args, 1);
 			switch (cmd.ToUpperInvariant())
 			{
-				case "SVN_REV": SVN_REV(cmdArgs); break;
+				case "SVN_REV": SVN_REV(true,cmdArgs); break;
+				case "GIT_REV": SVN_REV(false,cmdArgs); break;
 			}
 		}
 
@@ -68,7 +69,7 @@ namespace BizHawk.Build.Tool
 		//gets the working copy version. use this command:
 		//BizHawk.Build.Tool.exe SCM_REV --wc c:\path\to\wcdir --template c:\path\to\templatefile --out c:\path\to\outputfile.cs
 		//if the required tools aren't found 
-		static void SVN_REV(string[] args)
+		static void SVN_REV(bool svn, string[] args)
 		{
 			string wcdir = null, templatefile = null, outfile = null;
 			int idx=0;
@@ -90,25 +91,62 @@ namespace BizHawk.Build.Tool
 			//pick revision 0 in case the WC investigation fails
 			int rev = 0;
 
-			//try to find an SVN and run it
-			string svn = FileLocator.LocateSVNTool("svnversion");
-			if (svn != "")
+			//pick branch unnamed in case investigation fails (or isnt git)
+			string branch = "";
+
+			//pick no hash in case investigation fails (or isnt git)
+			string shorthash = "";
+
+			//try to find an SVN or GIT and run it
+			if (svn)
 			{
-				try {
-					string output = RunTool(svn, wcdir);
-					var parts = output.Split(':');
-					var rstr = parts[parts.Length - 1];
-					rstr = Regex.Replace(rstr, "[^0-9]", "");
-					rev = int.Parse(rstr);
-				}
-				catch(Exception ex)
+				string svntool = FileLocator.LocateTool("svnversion");
+				if (svntool != "")
 				{
-					Console.WriteLine(ex);
+					try
+					{
+						string output = RunTool(svntool, wcdir);
+						var parts = output.Split(':');
+						var rstr = parts[parts.Length - 1];
+						rstr = Regex.Replace(rstr, "[^0-9]", "");
+						rev = int.Parse(rstr);
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine(ex);
+					}
+				}
+			}
+			else
+			{
+				string gittool = FileLocator.LocateTool("git");
+				if (gittool != "")
+				{
+					try
+					{
+						string output = RunTool(gittool, "-C", wcdir, "rev-list", "HEAD", "--count");
+						if(int.TryParse(output, out rev))
+						{
+							output = RunTool(gittool, "-C", wcdir, "rev-parse", "--abbrev-ref", "HEAD");
+							if(output.StartsWith("fatal")) {}
+							else branch = output;
+
+							output = RunTool(gittool, "-C", wcdir, "log", "-1", "--format=\"%h\"");
+							if (output.StartsWith("fatal")) { }
+							else shorthash = output;
+						}
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine(ex);
+					}
 				}
 			}
 
 			//replace the template and dump the results if needed
 			templateContents = templateContents.Replace("$WCREV$", rev.ToString());
+			templateContents = templateContents.Replace("$WCBRANCH$", branch);
+			templateContents = templateContents.Replace("$WCSHORTHASH$", shorthash);
 			WriteTextIfChanged(outfile, templateContents);
 		}
 	}

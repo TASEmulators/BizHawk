@@ -28,11 +28,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (VersionInfo.DeveloperBuild)
 			{
-				Text = " BizHawk  (SVN r" + SubWCRev.SVN_REV + ")";
+				Text = " BizHawk  (GIT " + SubWCRev.GIT_BRANCH + "-" + SubWCRev.SVN_REV + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 			else
 			{
-				Text = "Version " + VersionInfo.MAINVERSION + " (SVN " + SubWCRev.SVN_REV + ")";
+				Text = "Version " + VersionInfo.MAINVERSION + " (GIT " + SubWCRev.GIT_BRANCH + "-" + SubWCRev.SVN_REV + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 
 			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + " " + VersionInfo.RELEASEDATE;

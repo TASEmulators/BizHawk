@@ -137,7 +137,9 @@
     <Compile Include="Computers\AppleII\AppleII.IMemoryDomains.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
-    <Compile Include="Computers\AppleII\AppleII.ISettable.cs" />
+    <Compile Include="Computers\AppleII\AppleII.ISettable.cs">
+      <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\AppleII\AppleII.IStatable.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
@@ -333,7 +335,7 @@
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.IEmulator.cs">
-        <DependentUpon>Intellivision.cs</DependentUpon>
+      <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.MemoryMap.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>

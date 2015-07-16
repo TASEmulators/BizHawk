@@ -23,8 +23,6 @@ namespace BizHawk.Client.Common
 			LagLog.RemoveFrom(frame);
 			LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
-			StateManager.Capture();
-
 			if (frame != 0)
 				ChangeLog.SetGeneralRedo();
 		}
@@ -324,10 +322,10 @@ namespace BizHawk.Client.Common
 			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
 			var lg = LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+            lg.SetSource(Global.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
 
 			for (int i = 0; i < numFrames; i++)
-				_log.Add(lg.EmptyEntry);
+                _log.Add(lg.GenerateLogEntry());
 
 			Changes = true;
 
@@ -465,6 +463,11 @@ namespace BizHawk.Client.Common
 		public void InsertLagHistory(int frame, bool isLag)
 		{
 			LagLog.InsertHistoryAt(frame, isLag);
+		}
+
+		public void SetLag(int frame, bool? value)
+		{
+			LagLog[frame] = value;
 		}
 		#endregion
 	}

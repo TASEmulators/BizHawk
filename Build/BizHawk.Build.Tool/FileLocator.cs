@@ -5,7 +5,7 @@ using Microsoft.Win32;
 
 static class FileLocator
 {
-	public static string LocateSVNTool(string _toolName)
+	public static string LocateTool(string _toolName)
 	{
 		string t = ToolPathUtil.MakeToolName(_toolName);
 		string dir = null;
@@ -34,7 +34,10 @@ static class FileLocator
 						@"CollabNet Subversion Client",
 						@"VisualSVN\bin",
 						@"VisualSVN Server\bin",
-						@"SlikSvn\bin");
+						@"TortoiseSVN\bin",
+						@"SlikSvn\bin",
+						@"Git\bin"
+						);
 
 		if (toolPath == null)
 		{

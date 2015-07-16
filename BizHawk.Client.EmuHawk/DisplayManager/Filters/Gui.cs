@@ -310,6 +310,36 @@ namespace BizHawk.Client.EmuHawk.Filters
 		}
 	}
 
+	//TODO - turn this into a NOP at 1x, just in case something accidentally activates it with 1x
+	public class PrescaleFilter : BaseFilter
+	{
+		public int Scale;
+
+		public override void Initialize()
+		{
+			DeclareInput(SurfaceDisposition.Texture);
+		}
+
+		public override void SetInputFormat(string channel, SurfaceState state)
+		{
+			var OutputSize = state.SurfaceFormat.Size;
+			OutputSize.Width *= Scale;
+			OutputSize.Height *= Scale;
+			var ss = new SurfaceState(new SurfaceFormat(OutputSize), SurfaceDisposition.RenderTarget);
+			DeclareOutput(ss, channel);
+		}
+
+		public override void Run()
+		{
+			var outSize = FindOutput().SurfaceFormat.Size;
+			FilterProgram.GuiRenderer.Begin(outSize);
+			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			FilterProgram.GuiRenderer.Modelview.Scale(Scale);
+			FilterProgram.GuiRenderer.Draw(InputTexture);
+			FilterProgram.GuiRenderer.End();
+		}
+	}
+
 	public class LuaLayer : BaseFilter
 	{
 		public override void Initialize()

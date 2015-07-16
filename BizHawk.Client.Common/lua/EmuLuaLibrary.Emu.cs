@@ -192,6 +192,22 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"setlagcount",
+			"Sets the current lag count"
+		)]
+		public void SetLagCount(int count)
+		{
+			if (InputPollableCore != null)
+			{
+				InputPollableCore.LagCount = count;
+			}
+			else
+			{
+				Log(string.Format("Can not set lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
+			}
+		}
+
+		[LuaMethodAttributes(
 			"limitframerate",
 			"sets the limit framerate property of the emulator"
 		)]

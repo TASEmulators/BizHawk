@@ -97,13 +97,6 @@ extern struct
   uint8 Counter;
 } activator[2];
 
-extern struct
-{
-  uint8 State;
-  uint8 Counter;
-  uint8 Timeout;
-} gamepad[MAX_DEVICES];
-
 extern uint8 pad_index;
 
 extern struct

@@ -32,6 +32,7 @@ namespace CDUtility
   uint8 adr;
   uint8 control;
   uint32 lba;
+  bool valid;	// valid/present; oh CD-i...
  };
 
  // SubQ control field flags.
@@ -65,30 +66,28 @@ namespace CDUtility
    memset(tracks, 0, sizeof(tracks));	// FIXME if we change TOC_Track to non-POD type.
   }
 
-  INLINE int FindTrackByLBA(uint32 LBA)
+  INLINE int FindTrackByLBA(uint32 LBA) const
   {
-   for(int32 track = first_track; track <= (last_track + 1); track++)
+   int32 lvt = 0;
+
+   for(int32 track = 1; track <= 100; track++)
    {
-    if(track == (last_track + 1))
-    {
-     if(LBA < tracks[100].lba)
-      return(track - 1);
-    }
-    else
-    {
-     if(LBA < tracks[track].lba)
-      return(track - 1);
-    }
+    if(!tracks[track].valid)
+     continue;
+
+    if(LBA < tracks[track].lba)
+     break;
+
+    lvt = track;
    }
-   return(0);
+
+   return(lvt);
   }
 
   uint8 first_track;
   uint8 last_track;
   uint8 disc_type;
   TOC_Track tracks[100 + 1];  // [0] is unused, [100] is for the leadout track.
-                              // Also, for convenience, tracks[last_track + 1] will always refer
-                              // to the leadout track(even if last_track < 99, IE the leadout track details are duplicated).
  };
 
  //
@@ -172,9 +171,19 @@ namespace CDUtility
  void encode_mode2_form2_sector(uint32 aba, uint8 *sector_data);	// 2324+8 bytes of user data at offset 16
 
 
+ // User data area pre-pause(MSF 00:00:00 through 00:01:74), lba -150 through -1
  // out_buf must be able to contain 2352+96 bytes.
- // "mode" is only used if(toc.tracks[100].control & 0x4)
- void synth_leadout_sector_lba(const uint8 mode, const TOC& toc, const int32 lba, uint8* out_buf);
+ // "mode" is not used if the area is to be encoded as audio.
+ // pass 0xFF for "mode" for "don't know", and to make guess based on the TOC.
+ void synth_udapp_sector_lba(uint8 mode, const TOC& toc, const int32 lba, int32 lba_subq_relative_offs, uint8* out_buf);
+ void subpw_synth_udapp_lba(const TOC& toc, const int32 lba, const int32 lba_subq_relative_offs, uint8* SubPWBuf);
+
+ // out_buf must be able to contain 2352+96 bytes.
+ // "mode" is not used if the area is to be encoded as audio.
+ // pass 0xFF for "mode" for "don't know", and to make guess based on the TOC.
+ void synth_leadout_sector_lba(uint8 mode, const TOC& toc, const int32 lba, uint8* out_buf);
+ void subpw_synth_leadout_lba(const TOC& toc, const int32 lba, uint8* SubPWBuf);
+
 
  //
  // User data error detection and correction

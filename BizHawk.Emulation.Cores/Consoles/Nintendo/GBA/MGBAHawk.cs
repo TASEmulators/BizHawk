@@ -340,7 +340,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return savebuff2;
 		}
 
-		public int LagCount { get; private set; }
+		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
 		[FeatureNotImplemented]
