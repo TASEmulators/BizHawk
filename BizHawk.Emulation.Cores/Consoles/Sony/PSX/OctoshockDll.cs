@@ -203,6 +203,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_PowerOn(IntPtr psx);
 
 		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SoftReset(IntPtr psx);
+
+		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOff(IntPtr psx);
 
 		[DllImport(dd, CallingConvention = cc)]

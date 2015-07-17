@@ -588,6 +588,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			else
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
 
+			//apply soft reset if needed
+			if (Controller["Reset"])
+				OctoshockDll.shock_SoftReset(psx);
+
 			//------------------------
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);
 			//------------------------
