@@ -100,7 +100,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ControllerDefinition.FloatControls.Add("Disc Select");
 
 			ControllerDefinition.FloatRanges.Add(
-				new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//hmm.. I don't see why this wouldn't work
+				new[] {0f,1f,1f} 
 			);
 		}
 
