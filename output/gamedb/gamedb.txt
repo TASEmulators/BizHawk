@@ -128,6 +128,9 @@ sha1:32D71DD6C5A8D78A918FE1B9D6D6C4A570D9652D		Oeka Kids - Anpanman no Hiragana 
 ;it works, so don't laugh
 sha1:203523818A348361584CDEBE47AEB860808757FC	U	Jurassic Boy 2 (Sachen)	NES		board=NES-TR1ROM;VRAM=8
 
+;wrong mirroring, no bootgod entry
+sha1:C1D82F6BE8AF524F951FC7C9D41604E59F9FE92A	G	Dragon Wars (USA) (Proto)	NES		board=MAPPER004;PAD_H=0;PAD_V=0
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;mmc3 homebrews that need chip specification
 sha1:35C157A921156E47FD3F6573D150F54108D0EDFC		Blargg's 5.MMC3_rev_A.nes	NES		board=MAPPER004;MMC3=MMC3A
