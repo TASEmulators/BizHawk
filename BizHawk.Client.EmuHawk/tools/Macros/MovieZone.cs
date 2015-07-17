@@ -116,7 +116,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void PlaceZone(IMovie movie)
 		{
-			// TODO: This should probably do something with undo history batches/naming.
+			if (movie is TasMovie)
+				(movie as TasMovie).ChangeLog.BeginNewBatch("Place Macro at " + Start);
 
 			if (Start > movie.InputLogLength)
 			{ // Cannot place a frame here. Find a nice way around this.
@@ -150,6 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (movie is TasMovie) // Assume TAStudio is open?
 			{
+				(movie as TasMovie).ChangeLog.EndBatch();
 				if (Global.Emulator.Frame > Start)
 				{
 					// TODO: Go to start of macro? Ask TAStudio to do that?

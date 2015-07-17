@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//we can read the 2048 bytes directly
 			var sector = disc.SynthProvider.Get(lba);
 
-			PrepareBuffer(buffer, offset, 2352);
+			PrepareBuffer(buffer, offset, 2048);
 			PrepareJob(lba);
 			job.DestBuffer2448 = buf2442;
 			job.DestOffset = 0;
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//we can read the 2048 bytes directly but we have to get them from the mode 2 data
 			var sector = disc.SynthProvider.Get(lba);
 
-			PrepareBuffer(buffer, offset, 2352);
+			PrepareBuffer(buffer, offset, 2048);
 			PrepareJob(lba);
 			job.DestBuffer2448 = buf2442;
 			job.DestOffset = 0;

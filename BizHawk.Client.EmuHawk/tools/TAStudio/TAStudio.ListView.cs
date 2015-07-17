@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -60,8 +61,6 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.MainForm.PauseEmulator();
 			}
 		}
-
-		private System.Timers.Timer _mouseWheelTimer;
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
@@ -451,7 +450,21 @@ namespace BizHawk.Client.EmuHawk
 
 					JumpToGreenzone();
 					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
-					CurrentTasMovie.ChangeLog.BeginNewBatch("Right-Click Edit");
+					string undoStepName = "Right-Click Edit:";
+					if (_rightClickShift)
+					{
+						undoStepName += " Extend Input";
+						if (_rightClickControl)
+							undoStepName += ", Insert";
+					}
+					else
+					{
+						if (_rightClickControl)
+							undoStepName += " Copy";
+						else
+							undoStepName += " Move";
+					}
+					CurrentTasMovie.ChangeLog.BeginNewBatch(undoStepName);
 				}
 			}
 		}
@@ -487,6 +500,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_rightClickFrame != -1)
 				{
 					_rightClickInput = null;
+					_rightClickOverInput = null;
 					_rightClickFrame = -1;
 					CurrentTasMovie.ChangeLog.EndBatch();
 				}
@@ -524,12 +538,6 @@ namespace BizHawk.Client.EmuHawk
 						GoToPreviousFrame();
 				}
 			}
-
-			if (_mouseWheelTimer.Enabled) // dunno if this is telling enough and nothing like bool _mouseWheelFast is needed, but we need to check on the first scroll event, and just decide by delta if it's fast enough to increase actual scrolling speed
-			{
-				_mouseWheelTimer.Stop();
-			}
-			_mouseWheelTimer.Start();
 		}
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -618,7 +626,7 @@ namespace BizHawk.Client.EmuHawk
 						if (shouldInsert)
 						{
 							for (int i = startVal + 1; i <= endVal; i++)
-								CurrentTasMovie.InsertInput(i, _rightClickInput[(i - _rightClickFrame) % _rightClickInput.Length]);
+								CurrentTasMovie.InsertInput(i, _rightClickInput[(i - _rightClickFrame).Mod(_rightClickInput.Length)]);
 						}
 						else
 						{
@@ -630,7 +638,7 @@ namespace BizHawk.Client.EmuHawk
 					else // Overwrite
 					{
 						for (int i = startVal; i <= endVal; i++)
-							CurrentTasMovie.SetFrame(i, _rightClickInput[(_rightClickFrame - i) % _rightClickInput.Length]);
+							CurrentTasMovie.SetFrame(i, _rightClickInput[(i - _rightClickFrame).Mod(_rightClickInput.Length)]);
 						JumpToGreenzone();
 					}
 				}

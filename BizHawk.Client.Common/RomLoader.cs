@@ -343,6 +343,7 @@ namespace BizHawk.Client.Common
 								case DiscType.MegaCD:
 									game.System = "GEN";
 									break;
+								case DiscType.AudioDisc:
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
