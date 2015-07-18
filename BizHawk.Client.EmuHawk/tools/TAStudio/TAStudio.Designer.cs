@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.bookmarksBranchesBox1 = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
+			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -1347,13 +1347,13 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
 			// 
-			// bookmarksBranchesBox1
+			// BookMarkControl
 			// 
-			this.bookmarksBranchesBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bookmarksBranchesBox1.Location = new System.Drawing.Point(302, 120);
-			this.bookmarksBranchesBox1.Name = "bookmarksBranchesBox1";
-			this.bookmarksBranchesBox1.Size = new System.Drawing.Size(204, 205);
-			this.bookmarksBranchesBox1.TabIndex = 8;
+			this.BookMarkControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.BookMarkControl.Location = new System.Drawing.Point(302, 120);
+			this.BookMarkControl.Name = "BookMarkControl";
+			this.BookMarkControl.Size = new System.Drawing.Size(204, 205);
+			this.BookMarkControl.TabIndex = 8;
 			// 
 			// TAStudio
 			// 
@@ -1361,7 +1361,7 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 576);
-			this.Controls.Add(this.bookmarksBranchesBox1);
+			this.Controls.Add(this.BookMarkControl);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.TasPlaybackBox);
 			this.Controls.Add(this.TasStatusStrip);
@@ -1533,6 +1533,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem applyPatternToPaintedInputToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem onlyOnAutoFireColumnsToolStripMenuItem;
-		private BookmarksBranchesBox bookmarksBranchesBox1;
+		private BookmarksBranchesBox BookMarkControl;
 	}
 }

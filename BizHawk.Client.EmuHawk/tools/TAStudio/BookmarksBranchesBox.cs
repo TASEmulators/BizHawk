@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BookmarksBranchesBox : UserControl
 	{
+		public TAStudio Tastudio { get; set; }
+
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
