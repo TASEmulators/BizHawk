@@ -54,6 +54,9 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			this.disc = disc;
 			dsr = new DiscSectorReader(disc);
+			
+			//the first check for mode 0 should be sufficient for blocking attempts to read audio sectors, so dont do this
+			//dsr.Policy.ThrowExceptions2048 = false;
 		}
 
 		Disc disc;
@@ -66,8 +69,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public DiscType DetectDiscType()
 		{
-			//check track 0. if it's an audio track, further data-track testing is useless
-			if (dsr.ReadLBA_Mode(0) == 0) return DiscType.AudioDisc;
+			//check track 1's data type. if it's an audio track, further data-track testing is useless
+			//furthermore, it's probably senseless (no binary data there to read)
+			//however a sector could mark itself as audio without actually being.. we'll just wait for that one.
+			if (dsr.ReadLBA_Mode(disc.TOC.TOCItems[1].LBATimestamp.Sector) == 0) return DiscType.AudioDisc;
 
 			//sega doesnt put anything identifying in the cdfs volume info. but its consistent about putting its own header here in sector 0
 			if (DetectSegaSaturn()) return DiscType.SegaSaturn;
