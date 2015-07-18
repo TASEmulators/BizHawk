@@ -1351,10 +1351,16 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Mouse and Key Events
 
+		private bool _columnDownMoved = false;
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			_currentX = e.X;
 			_currentY = e.Y;
+
+			if (_columnDown != null)
+			{
+				_columnDownMoved = true;
+			}
 
 			if (IsPaintDown)
 			{
@@ -1553,7 +1559,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (IsHoveringOnColumnCell)
 			{
-				if (_columnDown != null)
+				if (_columnDown != null && _columnDownMoved)
 				{
 					DoColumnReorder();
 					_columnDown = null;
@@ -1570,6 +1576,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_columnDown = null;
+			_columnDownMoved = false;
 			RightButtonHeld = false;
 			IsPaintDown = false;
 			base.OnMouseUp(e);
