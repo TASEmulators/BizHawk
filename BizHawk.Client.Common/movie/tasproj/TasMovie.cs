@@ -74,6 +74,8 @@ namespace BizHawk.Client.Common
 			BindMarkersToInput = true;
 		}
 
+		public TasLagLog TasLagLog { get { return LagLog; } }
+
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
