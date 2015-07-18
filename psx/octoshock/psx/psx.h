@@ -344,6 +344,9 @@ EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size);
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);
 
+//Triggers a soft reset immediately. Returns SHOCK_NOCANDO if console is powered off.
+EW_EXPORT s32 shock_SoftReset(void* psx);
+
 //Sets the power to OFF. Returns SHOCK_NOCANDO if already off.
 EW_EXPORT s32 shock_PowerOff(void* psx);
 

@@ -1342,6 +1342,16 @@ EW_EXPORT s32 shock_PowerOn(void* psx)
 	return SHOCK_OK;
 }
 
+//Triggers a soft reset immediately. Returns SHOCK_NOCANDO if console is powered off.
+EW_EXPORT s32 shock_SoftReset(void *psx)
+{
+	if (!s_ShockState.power) return SHOCK_NOCANDO;
+
+	PSX_Power(false);
+
+	return SHOCK_OK;
+}
+
 //Sets the power to OFF. It is an error to turn an already-off console OFF again
 EW_EXPORT s32 shock_PowerOff(void* psx)
 {
