@@ -1085,7 +1085,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					Gdi.FillRectangle(column.Left.Value + 1, 1, column.Width.Value - 1, ColumnHeight - 1);
+					Gdi.FillRectangle(column.Left.Value + 1 - HBar.Value, 1, column.Width.Value - 1, ColumnHeight - 1);
 				}
 			}
 
