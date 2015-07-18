@@ -160,5 +160,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_core.MemoryCallbacks.Remove(Callback);
 		}
+		
+		public void ResetCallback()
+		{
+			if (Active)
+			{
+				RemoveCallback();
+				AddCallback();
+			}
+		}
 	}
 }
