@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = "LabelColumn",
 					Text = "",
-					Width = 139
+					Width = 125
 				}
 			});
 

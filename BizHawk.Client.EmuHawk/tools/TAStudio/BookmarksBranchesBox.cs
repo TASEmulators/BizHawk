@@ -14,11 +14,18 @@ namespace BizHawk.Client.EmuHawk
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
+			BranchView.QueryItemText += QueryItemText;
+			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
 
-		private void BookmarksBranchesGroupBox_Enter(object sender, EventArgs e)
+		private void QueryItemText(int index, int column, out string text)
 		{
+			text = string.Empty;
+		}
 
+		private void QueryItemBkColor(int index, int column, ref Color color)
+		{
+			
 		}
 	}
 }
