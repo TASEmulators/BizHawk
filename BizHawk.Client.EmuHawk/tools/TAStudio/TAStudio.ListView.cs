@@ -469,6 +469,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ClearLeftMouseStates()
+		{
+			_startCursorDrag = false;
+			_startFrameDrag = false;
+			_startBoolDrawColumn = string.Empty;
+			_startFloatDrawColumn = string.Empty;
+			// Exit float editing if value was changed with cursor
+			if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
+			{
+				_floatEditRow = -1;
+				RefreshDialog();
+			}
+			_floatPaintState = 0;
+			_floatEditYPos = -1;
+			_leftButtonHeld = false;
+
+			if (_floatEditRow == -1)
+				CurrentTasMovie.ChangeLog.EndBatch();
+		}
+
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu)
@@ -477,22 +497,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				_startCursorDrag = false;
-				_startFrameDrag = false;
-				_startBoolDrawColumn = string.Empty;
-				_startFloatDrawColumn = string.Empty;
-				// Exit float editing if value was changed with cursor
-				if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
-				{
-					_floatEditRow = -1;
-					RefreshDialog();
-				}
-				_floatPaintState = 0;
-				_floatEditYPos = -1;
-				_leftButtonHeld = false;
-
-				if (_floatEditRow == -1)
-					CurrentTasMovie.ChangeLog.EndBatch();
+				ClearLeftMouseStates();
 			}
 
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -556,6 +561,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
+						ClearLeftMouseStates();
 						CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
 					}
 				}
