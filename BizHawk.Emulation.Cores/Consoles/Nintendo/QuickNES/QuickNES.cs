@@ -272,6 +272,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					case "sha1:E8BC7E6BAE7032D571152F6834516535C34C68F0": // Bill and Ted's Excellent Adventure bad dump
 					case "sha1:401023BAE92A38B89F7D0C2E0F023E35F1FFEEFD": // Bill and Ted's Excellent Adventure bad dump
 					case "sha1:6270F9FF2BD0B32A23A45985D9D7FB2793E1CED3": // Bill and Ted's Excellent Adventure overdump dump
+					case "sha1:5E3C02A3A5F6CD4F2442311630F1C44A8E9DC7E2": // Paperboy
 						throw new UnsupportedGameException("Game known to not be playable in this core");
 					default:
 						break;
