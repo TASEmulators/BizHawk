@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 
 				if (Branches.Any())
 				{
-					bs.PutLump(BinaryStateLump.Branches, (BinaryWriter bw) => Branches.Save(bw));
+					Branches.Save(bs);
 				}
 
 				ReportProgress(PROGRESS_STEP);
@@ -270,13 +270,7 @@ namespace BizHawk.Client.Common
 					});
 				}
 
-				if (bl.HasLump(BinaryStateLump.Branches))
-				{
-					bl.GetLump(BinaryStateLump.Branches, true, delegate(BinaryReader br, long length)
-					{
-						Branches.Load(br, length);
-					});
-				}
+				Branches.Load(bl);
 			}
 
 			Changes = false;
