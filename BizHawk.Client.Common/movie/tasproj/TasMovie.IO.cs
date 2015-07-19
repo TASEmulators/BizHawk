@@ -90,6 +90,12 @@ namespace BizHawk.Client.Common
 				{
 					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
 				}
+
+				if (Branches.Any())
+				{
+					bs.PutLump(BinaryStateLump.Branches, (BinaryWriter bw) => Branches.Save(bw));
+				}
+
 				ReportProgress(PROGRESS_STEP);
 			}
 
@@ -261,6 +267,14 @@ namespace BizHawk.Client.Common
 								VerificationLog.Add(line);
 							}
 						}
+					});
+				}
+
+				if (bl.HasLump(BinaryStateLump.Branches))
+				{
+					bl.GetLump(BinaryStateLump.Branches, true, delegate(BinaryReader br, long length)
+					{
+						Branches.Load(br, length);
 					});
 				}
 			}

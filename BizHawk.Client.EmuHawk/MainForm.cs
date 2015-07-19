@@ -815,6 +815,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public byte[] CurrentFrameBuffer(bool captureOSD)
+		{
+			using (var bb = captureOSD ? CaptureOSD() : MakeScreenshotImage())
+			{
+				using (var img = bb.ToSysdrawingBitmap())
+				{
+					ImageConverter converter = new ImageConverter();
+					return (byte[])converter.ConvertTo(img, typeof(byte[]));
+				}
+			}
+		}
+
 		public void TakeScreenshotToClipboard()
 		{
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())

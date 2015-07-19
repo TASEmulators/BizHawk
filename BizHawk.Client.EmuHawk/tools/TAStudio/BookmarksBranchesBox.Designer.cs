@@ -28,12 +28,17 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.BookmarksBranchesGroupBox = new System.Windows.Forms.GroupBox();
+			this.BranchesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.AddContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BranchView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.BranchNumberColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.FrameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.TimeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.BookmarksBranchesGroupBox.SuspendLayout();
+			this.BranchesContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// BookmarksBranchesGroupBox
@@ -49,6 +54,29 @@
 			this.BookmarksBranchesGroupBox.TabStop = false;
 			this.BookmarksBranchesGroupBox.Text = "Bookmarks / Branches";
 			// 
+			// BranchesContextMenu
+			// 
+			this.BranchesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddContextMenu,
+            this.RemoveBranchContextMenuItem});
+			this.BranchesContextMenu.Name = "BranchesContextMenu";
+			this.BranchesContextMenu.Size = new System.Drawing.Size(153, 70);
+			this.BranchesContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.BranchesContextMenu_Opening);
+			// 
+			// AddContextMenu
+			// 
+			this.AddContextMenu.Name = "AddContextMenu";
+			this.AddContextMenu.Size = new System.Drawing.Size(152, 22);
+			this.AddContextMenu.Text = "Add";
+			this.AddContextMenu.Click += new System.EventHandler(this.AddContextMenu_Click);
+			// 
+			// RemoveBranchContextMenuItem
+			// 
+			this.RemoveBranchContextMenuItem.Name = "RemoveBranchContextMenuItem";
+			this.RemoveBranchContextMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.RemoveBranchContextMenuItem.Text = "Remove";
+			this.RemoveBranchContextMenuItem.Click += new System.EventHandler(this.RemoveBranchContextMenuItem_Click);
+			// 
 			// BranchView
 			// 
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -59,9 +87,12 @@
             this.BranchNumberColumn,
             this.FrameColumn,
             this.TimeColumn});
+			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
+			this.BranchView.FullRowSelect = true;
 			this.BranchView.GridLines = true;
 			this.BranchView.ItemCount = 0;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
+			this.BranchView.MultiSelect = false;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.SelectAllInProgress = false;
 			this.BranchView.selectedItem = -1;
@@ -70,6 +101,7 @@
 			this.BranchView.UseCompatibleStateImageBehavior = false;
 			this.BranchView.UseCustomBackground = true;
 			this.BranchView.View = System.Windows.Forms.View.Details;
+			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
 			// 
 			// BranchNumberColumn
 			// 
@@ -93,6 +125,7 @@
 			this.Name = "BookmarksBranchesBox";
 			this.Size = new System.Drawing.Size(204, 253);
 			this.BookmarksBranchesGroupBox.ResumeLayout(false);
+			this.BranchesContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -104,5 +137,8 @@
 		private System.Windows.Forms.ColumnHeader BranchNumberColumn;
 		private System.Windows.Forms.ColumnHeader FrameColumn;
 		private System.Windows.Forms.ColumnHeader TimeColumn;
+		private System.Windows.Forms.ContextMenuStrip BranchesContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem AddContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem RemoveBranchContextMenuItem;
 	}
 }

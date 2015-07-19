@@ -22,6 +22,8 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
+		private readonly TasBranchCollection Branches = new TasBranchCollection();
+
 		private BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
 		{
@@ -75,7 +77,8 @@ namespace BizHawk.Client.Common
 		}
 
 		public TasLagLog TasLagLog { get { return LagLog; } }
-
+		public TasBranchCollection TasBranches { get { return Branches; } }
+		public List<string> InputLog { get { return _log; } }
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }

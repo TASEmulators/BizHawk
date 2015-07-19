@@ -29,6 +29,7 @@ namespace BizHawk.Client.Common
 		Markers,
 		ClientSettings,
 		VerificationLog,
+		Branches,
 
 		UserData
 	}
@@ -67,6 +68,7 @@ namespace BizHawk.Client.Common
 			AddLumpName(BinaryStateLump.ClientSettings, "ClientSettings.json");
 			AddLumpName(BinaryStateLump.VerificationLog, "VerificationLog.txt");
 			AddLumpName(BinaryStateLump.UserData, "UserData.txt");
+			AddLumpName(BinaryStateLump.Branches, "Branches");
 		}
 
 		public static string GetReadName(BinaryStateLump lump)
