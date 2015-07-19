@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.DiscSystem
 				//if (disc.TOC.TOCItems[i].Exists) Console.WriteLine("{0:X8} {1:X2} {2:X2} {3:X8}", crc.Current, (int)disc.TOC.TOCItems[i].Control, disc.TOC.TOCItems[i].Exists ? 1 : 0, disc.TOC.TOCItems[i].LBATimestamp.Sector); //a little debugging
 				crc.Add((int)disc.TOC.TOCItems[i].Control);
 				crc.Add(disc.TOC.TOCItems[i].Exists ? 1 : 0);
-				crc.Add((int)disc.TOC.TOCItems[i].LBATimestamp.Sector);
+				crc.Add((int)disc.TOC.TOCItems[i].LBA);
 			}
 
 			//hash first 26 sectors

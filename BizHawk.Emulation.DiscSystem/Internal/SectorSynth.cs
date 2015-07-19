@@ -229,8 +229,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 			//data is zero
 
-			Timestamp ts = new Timestamp(lba_relative);
-			Timestamp ats = new Timestamp(job.LBA);
+			int ts = lba_relative;
+			int ats = job.LBA;
 
 			const int ADR = 0x1; // Q channel data encodes position
 			EControlQ control = ses.LeadoutTrack.Control;

@@ -178,14 +178,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					var item = Disc.TOC.TOCItems[i];
 					tracks101[i].adr = (byte)(item.Exists ? 1 : 0);
-					tracks101[i].lba = (uint)item.LBATimestamp.Sector;
+					tracks101[i].lba = (uint)item.LBA;
 					tracks101[i].control = (byte)item.Control;
 				}
 
 				////the lead-out track is to be synthesized
 				tracks101[read_target->last_track + 1].adr = 1;
 				tracks101[read_target->last_track + 1].control = 0;
-				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOC.LeadoutLBA.Sector;
+				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOC.LeadoutLBA;
 
 				//element 100 is to be copied as the lead-out track
 				tracks101[100] = tracks101[read_target->last_track + 1];

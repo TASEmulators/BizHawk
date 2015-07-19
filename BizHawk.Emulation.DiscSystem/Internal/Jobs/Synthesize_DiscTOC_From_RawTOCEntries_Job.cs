@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.DiscSystem
 			DiscTOC ret = new DiscTOC();
 
 			//this is a dummy, for convenience in array indexing, so that track 1 is at array index 1
-			ret.TOCItems[0].LBATimestamp = new Timestamp(0); //arguably could be -150, but let's not just yet
+			ret.TOCItems[0].LBA = 0; //arguably could be -150, but let's not just yet
 			ret.TOCItems[0].Control = 0;
 			ret.TOCItems[0].Exists = false;
 
@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.DiscSystem
 				else if (point <= 99)
 				{
 					maxFoundTrack = Math.Max(maxFoundTrack, point);
-					ret.TOCItems[point].LBATimestamp = new Timestamp(q.AP_Timestamp.Sector - 150); //RawTOCEntries contained an absolute time
+					ret.TOCItems[point].LBA = q.AP_Timestamp - 150; //RawTOCEntries contained an absolute time
 					ret.TOCItems[point].Control = q.CONTROL;
 					ret.TOCItems[point].Exists = true;
 				}
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.DiscSystem
 				}
 				else if (point == 102) //0xA2 bcd
 				{
-					ret.TOCItems[100].LBATimestamp = new Timestamp(q.AP_Timestamp.Sector - 150); //RawTOCEntries contained an absolute time
+					ret.TOCItems[100].LBA = q.AP_Timestamp - 150; //RawTOCEntries contained an absolute time
 					ret.TOCItems[100].Control = 0; //not clear what this should be
 					ret.TOCItems[100].Exists = true;
 				}

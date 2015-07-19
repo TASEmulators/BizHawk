@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//check track 1's data type. if it's an audio track, further data-track testing is useless
 			//furthermore, it's probably senseless (no binary data there to read)
 			//however a sector could mark itself as audio without actually being.. we'll just wait for that one.
-			if (dsr.ReadLBA_Mode(disc.TOC.TOCItems[1].LBATimestamp.Sector) == 0) return DiscType.AudioDisc;
+			if (dsr.ReadLBA_Mode(disc.TOC.TOCItems[1].LBA) == 0) return DiscType.AudioDisc;
 
 			//sega doesnt put anything identifying in the cdfs volume info. but its consistent about putting its own header here in sector 0
 			if (DetectSegaSaturn()) return DiscType.SegaSaturn;
