@@ -278,7 +278,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's disc hasher tool");
+									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 								}
 							}
 							else
@@ -376,7 +376,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's disc hasher tool");
+									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 								}
 								break;

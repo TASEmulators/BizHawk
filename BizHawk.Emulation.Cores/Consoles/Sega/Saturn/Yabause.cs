@@ -396,13 +396,14 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			int[] rTOC = new int[102];
 			var ses = CD.Session1;
-			int ntrk = ses.Tracks.Count;
+			int ntrk = ses.InformationTrackCount;
 
-			for (int i = 1; i <= 99; i++)
+			for (int i = 0; i < 99; i++)
 			{
-				if (i < ntrk)
+				int tnum = i + 1;
+				if (tnum <= ntrk)
 				{
-					var trk = ses.Tracks[i];
+					var trk = ses.Tracks[tnum];
 
 					uint t = (uint)trk.LBA + 150;
 
