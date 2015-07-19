@@ -558,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadState(KeyValuePair<int, byte[]> state)
+		public void LoadState(KeyValuePair<int, byte[]> state)
 		{
 			StatableEmulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
 

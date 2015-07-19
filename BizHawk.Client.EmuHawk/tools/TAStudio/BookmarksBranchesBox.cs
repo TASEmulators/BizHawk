@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -77,9 +78,11 @@ namespace BizHawk.Client.EmuHawk
 			var branch = new TasBranch
 			{
 				Frame = Global.Emulator.Frame,
-				CoreData = (Global.Emulator as IStatable).SaveStateBinary(),
+				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
 				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
-				OSDFrameBuffer = GlobalWin.MainForm.CurrentFrameBuffer(captureOSD: true)
+				//OSDFrameBuffer = GlobalWin.MainForm.CurrentFrameBuffer(captureOSD: true),
+				OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
+				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone()
 			};
 
 			Branches.Add(branch);
@@ -94,9 +97,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void LoadBranchContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedBranch != null)
+			{
+				LoadBranch(SelectedBranch);
+			}
+		}
+
 		private void BranchesContextMenu_Opening(object sender, CancelEventArgs e)
 		{
-			RemoveBranchContextMenuItem.Enabled = SelectedBranch != null;
+			RemoveBranchContextMenuItem.Enabled = 
+				LoadBranchContextMenuItem.Enabled =
+				SelectedBranch != null;
 		}
 
 		private void RemoveBranchContextMenuItem_Click(object sender, EventArgs e)
@@ -108,9 +121,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void Temp(int[] framebuffer)
+		{
+			var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+			for (int i = 0; i < buff.Length; i++)
+			{
+				buff[i] = framebuffer[i];
+			}
+		}
+
 		private void LoadBranch(TasBranch branch)
 		{
-			MessageBox.Show("TODO: load this branch");
+			Tastudio.CurrentTasMovie.LoadBranch(branch);
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
+			Tastudio.LoadState(stateInfo);
+			//SavestateManager.PopulateFramebuffer(branch.OSDFrameBuffer);
+			Temp(branch.OSDFrameBuffer);
+			GlobalWin.MainForm.PauseEmulator();
+			GlobalWin.MainForm.PauseOnFrame = null;
+			Tastudio.RefreshDialog();
 		}
 	}
 }

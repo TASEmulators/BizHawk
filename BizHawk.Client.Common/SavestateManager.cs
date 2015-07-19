@@ -106,6 +106,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public static void PopulateFramebuffer(byte[] bytes)
+		{
+			using (var ms = new MemoryStream(bytes))
+			{
+				using (var br = new BinaryReader(ms))
+				{
+					PopulateFramebuffer(br);
+				}
+			}
+		}
+
 		public static bool LoadStateFile(string path, string name)
 		{
 			var core = Global.Emulator.AsStatable();

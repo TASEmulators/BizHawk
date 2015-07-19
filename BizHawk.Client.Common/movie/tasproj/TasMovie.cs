@@ -455,5 +455,16 @@ namespace BizHawk.Client.Common
 
 			return true;
 		}
+
+		public void LoadBranch(TasBranch branch)
+		{
+			// TODO: undo?
+			_log = branch.InputLog;
+			_changes = true;
+			StateManager.ClearStateHistory();
+			StateManager.SetState(branch.Frame, branch.CoreData);
+			LagLog.Clear();
+			LagLog.FromLagLog(branch.LagLog);
+		}
 	}
 }

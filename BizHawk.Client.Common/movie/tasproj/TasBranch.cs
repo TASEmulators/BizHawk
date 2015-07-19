@@ -9,7 +9,8 @@ namespace BizHawk.Client.Common
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public List<string> InputLog { get; set; }
-		public byte[] OSDFrameBuffer { get; set; }
+		public int[] OSDFrameBuffer { get; set; }
+		public TasLagLog LagLog { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>

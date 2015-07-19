@@ -259,7 +259,8 @@ namespace BizHawk.Client.Common
 
 			File.Delete(path);
 		}
-		private void SetState(int frame, byte[] state)
+
+		internal void SetState(int frame, byte[] state)
 		{
 			if (States.ContainsKey(frame))
 			{
