@@ -11,25 +11,25 @@ namespace BizHawk.Client.Common
 {
 	public class BinaryStateLump
 	{
-		[Name("BizState 1.0")]
+		[Name("BizState 1", "0")]
 		public static BinaryStateLump Versiontag { get; private set; }
-		[Name("Core")]
+		[Name("Core", "bin")]
 		public static BinaryStateLump Corestate { get; private set; }
-		[Name("Framebuffer.bmp")]
+		[Name("Framebuffer", "bmp")]
 		public static BinaryStateLump Framebuffer { get; private set; }
-		[Name("Input Log.txt")]
+		[Name("Input Log", "txt")]
 		public static BinaryStateLump Input { get; private set; }
-		[Name("CoreText.txt")]
+		[Name("CoreText", "txt")]
 		public static BinaryStateLump CorestateText { get; private set; }
 
 		// Only for movies they probably shoudln't be leaching this stuff
-		[Name("Header.txt")]
+		[Name("Header", "txt")]
 		public static BinaryStateLump Movieheader { get; private set; }
-		[Name("Comments.txt")]
+		[Name("Comments", "txt")]
 		public static BinaryStateLump Comments { get; private set; }
-		[Name("Subtitles.txt")]
+		[Name("Subtitles", "txt")]
 		public static BinaryStateLump Subtitles { get; private set; }
-		[Name("SyncSettings.json")]
+		[Name("SyncSettings", "json")]
 		public static BinaryStateLump SyncSettings { get; private set; }
 
 		// TasMovie
@@ -37,28 +37,28 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump LagLog { get; private set; }
 		[Name("GreenZone")]
 		public static BinaryStateLump StateHistory { get; private set; }
-		[Name("GreenZoneSettings.txt")]
+		[Name("GreenZoneSettings", "txt")]
 		public static BinaryStateLump StateHistorySettings { get; private set; }
-		[Name("Markers.txt")]
+		[Name("Markers", "txt")]
 		public static BinaryStateLump Markers { get; private set; }
-		[Name("ClientSettings.json")]
+		[Name("ClientSettings", "json")]
 		public static BinaryStateLump ClientSettings { get; private set; }
-		[Name("VerificationLog.txt")]
+		[Name("VerificationLog", "txt")]
 		public static BinaryStateLump VerificationLog { get; private set; }
 
-		[Name("UserData.txt")]
+		[Name("UserData", "txt")]
 		public static BinaryStateLump UserData { get; private set; }
 
 		// branchstuff
-		[Name("Branches\\CoreData.bin")]
+		[Name("Branches\\CoreData", "bin")]
 		public static BinaryStateLump BranchCoreData { get; private set; }
-		[Name("Branches\\InputLog.txt")]
+		[Name("Branches\\InputLog", "txt")]
 		public static BinaryStateLump BranchInputLog { get; private set; }
-		[Name("Branches\\FrameBuffer.bmp")]
+		[Name("Branches\\FrameBuffer", "bmp")]
 		public static BinaryStateLump BranchFrameBuffer { get; private set; }
-		[Name("Branches\\LagLog.bin")]
+		[Name("Branches\\LagLog", "bin")]
 		public static BinaryStateLump BranchLagLog { get; private set; }
-		[Name("Branches\\Header.json")]
+		[Name("Branches\\Header", "json")]
 		public static BinaryStateLump BranchHeader { get; private set; }
 
 
@@ -66,20 +66,28 @@ namespace BizHawk.Client.Common
 		private class NameAttribute : Attribute
 		{
 			public string Name { get; private set; }
+			public string Ext { get; private set; }
 			public NameAttribute(string name)
 			{
 				Name = name;
 			}
+			public NameAttribute(string name, string ext)
+			{
+				Name = name;
+				Ext = ext;
+			}
 		}
 
-		public virtual string ReadName { get; private set; }
-		public virtual string WriteName { get; private set; }
+		public virtual string ReadName { get { return Name; } }
+		public virtual string WriteName { get { return Ext != null ? Name + '.' + Ext : Name; } }
 
-		private BinaryStateLump(string name)
+		public string Name { get; protected set; }
+		public string Ext { get; protected set; }
+
+		private BinaryStateLump(string name, string ext)
 		{
-			WriteName = name;
-			// for reading, all extensions are stripped
-			ReadName = Path.GetFileNameWithoutExtension(name);
+			Name = name;
+			Ext = ext;
 		}
 
 		protected BinaryStateLump() { }
@@ -88,8 +96,8 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var prop in typeof(BinaryStateLump).GetProperties(BindingFlags.Public | BindingFlags.Static))
 			{
-				string name = prop.GetCustomAttributes(false).OfType<NameAttribute>().Single().Name;
-				object value = new BinaryStateLump(name);
+				var attr = prop.GetCustomAttributes(false).OfType<NameAttribute>().Single();
+				object value = new BinaryStateLump(attr.Name, attr.Ext);
 				prop.SetValue(null, value, null);
 			}
 		}
@@ -105,31 +113,19 @@ namespace BizHawk.Client.Common
 		public IndexedStateLump(BinaryStateLump root)
 		{
 			_root = root;
+			Ext = _root.Ext;
+			Calc();
+		}
+
+		private void Calc()
+		{
+			Name = _root.Name + _idx;
 		}
 
 		public void Increment()
 		{
 			_idx++;
-		}
-
-		public override string ReadName
-		{
-			get
-			{
-				return base.ReadName + _idx;
-			}
-		}
-
-		public override string WriteName
-		{
-			get
-			{
-				string fn =  Path.GetFileNameWithoutExtension(base.WriteName);
-				string ext = Path.GetExtension(base.WriteName);
-				if (!string.IsNullOrEmpty(ext))
-					ext = ext.Substring(1);
-				return string.Format("{0}{1}.{2}", fn, _idx, ext);
-			}
+			Calc();
 		}
 	}
 
@@ -186,7 +182,14 @@ namespace BizHawk.Client.Common
 			_entriesbyname = new Dictionary<string, ZipEntry>();
 			foreach (ZipEntry z in _zip)
 			{
-				_entriesbyname.Add(Path.GetFileNameWithoutExtension(z.Name), z);
+				string name = z.Name;
+				int i;
+				if ((i = name.LastIndexOf('.')) != -1)
+				{
+					name = name.Substring(0, i);
+				}
+
+				_entriesbyname.Add(name.Replace('/', '\\'), z);
 			}
 		}
 
@@ -221,6 +224,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		[Obsolete]
 		public bool HasLump(BinaryStateLump lump)
 		{
 			ZipEntry e;

@@ -17,8 +17,6 @@ namespace BizHawk.Client.Common
 
 	public class TasBranchCollection : List<TasBranch>
 	{
-		private List<TasBranch> Branches = new List<TasBranch>();
-
 		public void Save(BinaryStateSaver bs)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
@@ -26,7 +24,7 @@ namespace BizHawk.Client.Common
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
-			foreach (var b in Branches)
+			foreach (var b in this)
 			{
 				bs.PutLump(nheader, delegate(TextWriter tw)
 				{
@@ -54,7 +52,7 @@ namespace BizHawk.Client.Common
 						s.Write(buff, 0, n * 4);
 					}
 				});
-				bs.PutLump(nframebuffer, delegate(BinaryWriter bw)
+				bs.PutLump(nlaglog, delegate(BinaryWriter bw)
 				{
 					b.LagLog.Save(bw);
 				});
@@ -75,7 +73,7 @@ namespace BizHawk.Client.Common
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 
-			Branches.Clear();
+			Clear();
 
 			while (true)
 			{
@@ -113,6 +111,7 @@ namespace BizHawk.Client.Common
 						s.Read(buff, 0, n * 4);
 						Buffer.BlockCopy(buff, 0, dst, i * 4, n * 4);
 					}
+					b.OSDFrameBuffer = dst;
 				});
 
 				bl.GetLump(nlaglog, true, delegate(BinaryReader br)
@@ -121,7 +120,13 @@ namespace BizHawk.Client.Common
 					b.LagLog.Load(br);
 				});
 
-				Branches.Add(b);
+				Add(b);
+
+				nheader.Increment();
+				ncore.Increment();
+				ninput.Increment();
+				nframebuffer.Increment();
+				nlaglog.Increment();
 			}
 		}
 	}
