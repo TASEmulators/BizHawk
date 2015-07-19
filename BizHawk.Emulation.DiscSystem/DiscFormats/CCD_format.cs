@@ -403,12 +403,12 @@ namespace BizHawk.Emulation.DiscSystem
 					sw.WriteLine("AMin={0}", entry.QData.min.DecimalValue);
 					sw.WriteLine("ASec={0}", entry.QData.sec.DecimalValue);
 					sw.WriteLine("AFrame={0}", entry.QData.frame.DecimalValue);
-					sw.WriteLine("ALBA={0}", entry.QData.Timestamp.Sector - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
+					sw.WriteLine("ALBA={0}", entry.QData.Timestamp - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
 					sw.WriteLine("Zero={0}", entry.QData.zero);
 					sw.WriteLine("PMin={0}", entry.QData.ap_min.DecimalValue);
 					sw.WriteLine("PSec={0}", entry.QData.ap_sec.DecimalValue);
 					sw.WriteLine("PFrame={0}", entry.QData.ap_frame.DecimalValue);
-					sw.WriteLine("PLBA={0}", entry.QData.AP_Timestamp.Sector - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
+					sw.WriteLine("PLBA={0}", entry.QData.AP_Timestamp - 150); //remember to adapt the absolute MSF to an LBA (this field is redundant...)
 					sw.WriteLine();
 				}
 
@@ -578,8 +578,8 @@ namespace BizHawk.Emulation.DiscSystem
 				ss_gap.sq.SetStatus(ADR, tocSynth.Result.TOCItems[1].Control);
 				ss_gap.sq.q_tno = BCD2.FromDecimal(1);
 				ss_gap.sq.q_index = BCD2.FromDecimal(0);
-				ss_gap.sq.AP_Timestamp = new Timestamp(i);
-				ss_gap.sq.Timestamp = new Timestamp(qRelMSF);
+				ss_gap.sq.AP_Timestamp = i;
+				ss_gap.sq.Timestamp = qRelMSF;
 
 				//setup subP
 				ss_gap.Pause = true;

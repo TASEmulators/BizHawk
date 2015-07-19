@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// The absolute timestamp of the lead-out track
 		/// </summary>
-		public Timestamp IN_LeadoutTimestamp;
+		public int IN_LeadoutTimestamp;
 
 		/// <summary>
 		/// The session format for this TOC

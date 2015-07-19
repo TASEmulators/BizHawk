@@ -91,19 +91,24 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <summary>
 		/// Retrieves the initial set of timestamps (min,sec,frac) as a convenient Timestamp
 		/// </summary>
-		public Timestamp Timestamp
-		{
-			get { return new Timestamp(min.DecimalValue, sec.DecimalValue, frame.DecimalValue); }
-			set { min.DecimalValue = value.MIN; sec.DecimalValue = value.SEC; frame.DecimalValue = value.FRAC; }
+		public int Timestamp {
+			get { return MSF.ToInt(min.DecimalValue, sec.DecimalValue, frame.DecimalValue); }
+			set {
+				var ts = new Timestamp(value);
+				min.DecimalValue = ts.MIN; sec.DecimalValue = ts.SEC; frame.DecimalValue = ts.FRAC;
+			}
 		}
 
 		/// <summary>
 		/// Retrieves the second set of timestamps (ap_min, ap_sec, ap_frac) as a convenient Timestamp.
 		/// TODO - rename everything AP here, it's nonsense. (the P is)
 		/// </summary>
-		public Timestamp AP_Timestamp { 
-			get { return new Timestamp(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); }
-			set { ap_min.DecimalValue = value.MIN; ap_sec.DecimalValue = value.SEC; ap_frame.DecimalValue = value.FRAC; }
+		public int AP_Timestamp { 
+			get { return MSF.ToInt(ap_min.DecimalValue, ap_sec.DecimalValue, ap_frame.DecimalValue); }
+			set {
+				var ts = new Timestamp(value);
+				ap_min.DecimalValue = ts.MIN; ap_sec.DecimalValue = ts.SEC; ap_frame.DecimalValue = ts.FRAC;
+			}
 		}
 
 		/// <summary>
