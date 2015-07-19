@@ -180,15 +180,18 @@ namespace BizHawk.Emulation.DiscSystem
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
 
-		DONE: ;
+		DONE:
 
 			//setup the lowest level synth provider
-			var sssp = new ArraySectorSynthProvider()
+			if (OUT_Disc != null)
 			{
-				Sectors = OUT_Disc._Sectors,
-				FirstLBA = -150
-			};
-			OUT_Disc.SynthProvider = sssp;
+				var sssp = new ArraySectorSynthProvider()
+				{
+					Sectors = OUT_Disc._Sectors,
+					FirstLBA = -150
+				};
+				OUT_Disc.SynthProvider = sssp;
+			}
 		}
 	}
 	
