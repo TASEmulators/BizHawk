@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BookmarksBranchesBox : UserControl
 	{
+		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
 		public TAStudio Tastudio { get; set; }
 
 		public TasBranchCollection Branches
@@ -62,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					text = Branches[index].Frame.ToString();
 					break;
 				case 2: // TimeColumn
-					text = "TODO";
+					text = MovieTime(Branches[index].Frame).ToString(@"hh\:mm\:ss\.fff");
 					break;
 			}
 		}
@@ -142,5 +143,41 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
+
+		// TODO: copy pasted from PLatformFrameRates
+
+		private TimeSpan MovieTime(int frameCount)
+		{
+			var dblseconds = GetSeconds(frameCount);
+			var seconds = (int)(dblseconds % 60);
+			var days = seconds / 86400;
+			var hours = seconds / 3600;
+			var minutes = (seconds / 60) % 60;
+			var milliseconds = (int)((dblseconds - seconds) * 1000);
+			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
+		}
+
+		private double GetSeconds(int frameCount)
+		{
+			double frames = frameCount;
+
+			if (frames < 1)
+			{
+				return 0;
+			}
+
+			return frames / Fps();
+		}
+
+		private double Fps()
+		{
+			var movie = Tastudio.CurrentTasMovie;
+			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
+			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
+				movie.HeaderEntries[HeaderKeys.PAL] == "1";
+
+			return FrameRates[system, pal];
+		}
+		// ***************************
 	}
 }
