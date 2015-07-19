@@ -256,10 +256,22 @@ namespace BizHawk.Client.Common
 						{
 							Disc disc = null;
 							string discPath = e.Path;
-							string discExt = Path.GetExtension(discPath).ToLower();
-							disc = Disc.LoadAutomagic(discPath);
+
+							//--- load the disc in a context which will let us abort if it's going to take too long
+							var discMountJob = new DiscMountJob { IN_FromPath = discPath };
+							discMountJob.IN_SlowLoadAbortThreshold = 8;
+							discMountJob.Run();
+							disc = discMountJob.OUT_Disc;
+
+							if (discMountJob.OUT_SlowLoadAborted)
+							{
+								System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+								return false;
+							}
+
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+
 							var discName = Path.GetFileNameWithoutExtension(discPath);
 							discNames.Add(discName);
 							discs.Add(disc);
