@@ -326,7 +326,6 @@ namespace BizHawk.Emulation.DiscSystem
 			public string ImgPath;
 			public string SubPath;
 			public string CcdPath;
-			public int NumImgSectors;
 		}
 
 		public static LoadResults LoadCCDPath(string path)
@@ -337,17 +336,8 @@ namespace BizHawk.Emulation.DiscSystem
 			ret.SubPath = Path.ChangeExtension(path, ".sub");
 			try
 			{
-				if(!File.Exists(path)) throw new CCDParseException("Malformed CCD format: nonexistent CCD file!");
-				if (!File.Exists(ret.ImgPath)) throw new CCDParseException("Malformed CCD format: nonexistent IMG file!");
-				if (!File.Exists(ret.SubPath)) throw new CCDParseException("Malformed CCD format: nonexistent SUB file!");
+				if (!File.Exists(path)) throw new CCDParseException("Malformed CCD format: nonexistent CCD file!");
 
-				//quick check of .img and .sub sizes
-				long imgLen = new FileInfo(ret.ImgPath).Length;
-				long subLen = new FileInfo(ret.SubPath).Length;
-				if(imgLen % 2352 != 0) throw new CCDParseException("Malformed CCD format: IMG file length not multiple of 2352");
-				ret.NumImgSectors = (int)(imgLen / 2352);
-				if (subLen != ret.NumImgSectors * 96) throw new CCDParseException("Malformed CCD format: SUB file length not matching IMG");
-				
 				CCDFile ccdf;
 				using (var infCCD = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
 					ccdf = new CCD_Format().ParseFrom(infCCD);
@@ -454,9 +444,9 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			public void Synth(SectorSynthJob job)
 			{
-				//CCD is always containing everything we'd need (unless a .sub is missing?) so don't about flags
-				var imgBlob = job.Disc.DisposableResources[0] as Disc.Blob_RawFile;
-				var subBlob = job.Disc.DisposableResources[1] as Disc.Blob_RawFile;
+				//CCD is always containing everything we'd need (unless a .sub is missing?) so don't worry about flags
+				var imgBlob = job.Disc.DisposableResources[0] as IBlob;
+				var subBlob = job.Disc.DisposableResources[1] as IBlob;
 				//Read_2442(job.LBA, job.DestBuffer2448, job.DestOffset);
 				
 				//read the IMG data if needed
@@ -493,12 +483,48 @@ namespace BizHawk.Emulation.DiscSystem
 
 			Disc disc = new Disc();
 
-			//mount the IMG and SUB files
-			var ccdf = loadResults.ParsedCCDFile;
-			var imgBlob = new Disc.Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
-			var subBlob = new Disc.Blob_RawFile() { PhysicalPath = loadResults.SubPath };
+			IBlob imgBlob = null, subBlob = null;
+			long imgLen = -1, subLen;
+
+			//mount the IMG file
+			//first check for a .ecm in place of the img
+			var imgPath = loadResults.ImgPath;
+			if (!File.Exists(imgPath))
+			{
+				var ecmPath = Path.ChangeExtension(imgPath, ".img.ecm");
+				if (File.Exists(ecmPath))
+				{
+					if (Disc.Blob_ECM.IsECM(ecmPath))
+					{
+						var ecm = new Disc.Blob_ECM();
+						ecm.Load(ecmPath);
+						imgBlob = ecm;
+						imgLen = ecm.Length;
+					}
+				}
+			}
+			if (imgBlob == null)
+			{
+				if (!File.Exists(loadResults.ImgPath)) throw new CCDParseException("Malformed CCD format: nonexistent IMG file!");
+				var imgFile = new Disc.Blob_RawFile() { PhysicalPath = loadResults.ImgPath };
+				imgLen = imgFile.Length;
+				imgBlob = imgFile;
+			}
 			disc.DisposableResources.Add(imgBlob);
+
+			//mount the SUB file
+			if (!File.Exists(loadResults.SubPath)) throw new CCDParseException("Malformed CCD format: nonexistent SUB file!");
+			var subFile = new Disc.Blob_RawFile() { PhysicalPath = loadResults.SubPath };
+			subBlob = subFile;
 			disc.DisposableResources.Add(subBlob);
+			subLen = subFile.Length;
+
+			//quick integrity check of file sizes
+			if (imgLen % 2352 != 0) throw new CCDParseException("Malformed CCD format: IMG file length not multiple of 2352");
+			int NumImgSectors = (int)(imgLen / 2352);
+			if (subLen != NumImgSectors * 96) throw new CCDParseException("Malformed CCD format: SUB file length not matching IMG");
+
+			var ccdf = loadResults.ParsedCCDFile;
 
 			//the only instance of a sector synthesizer we'll need
 			SS_CCD synth = new SS_CCD();
@@ -534,7 +560,7 @@ namespace BizHawk.Emulation.DiscSystem
 					ap_min = BCD2.FromDecimal(entry.PMin),
 					ap_sec = BCD2.FromDecimal(entry.PSec),
 					ap_frame = BCD2.FromDecimal(entry.PFrame),
-					q_crc = 0, //meainingless
+					q_crc = 0, //meaningless
 				};
 
 				disc.RawTOCEntries.Add(new RawTOCEntry { QData = q });
@@ -588,7 +614,7 @@ namespace BizHawk.Emulation.DiscSystem
 			//build the sectors:
 			//set up as many sectors as we have img/sub for, even if the TOC doesnt reference them
 			//(the TOC is unreliable, and the Track records are redundant)
-			for (int i = 0; i < loadResults.NumImgSectors; i++)
+			for (int i = 0; i < NumImgSectors; i++)
 			{
 				disc._Sectors.Add(synth);
 			}
