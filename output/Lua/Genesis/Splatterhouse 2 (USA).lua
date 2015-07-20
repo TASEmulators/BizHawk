@@ -1,4 +1,4 @@
---Splatterhouse 2 (JP) Collision box viewer v1.0
+--Splatterhouse 2 (USA) Collision box viewer
 --Author Pasky
 --For use with Bizhawk
 
@@ -6,6 +6,7 @@
 local cx = 0
 local player = false
 local attack = false
+local weapon = false
 
 local function camera()
 	cx = mainmemory.read_u16_be(0x9E)
@@ -53,13 +54,28 @@ local function attack_collision()
 	
 end
 
+local function weapon_collision()
+	local A6 = bit.band(emu.getregister("M68K A6"),0xFFFF)
+	local w = {0,0,0,0}
+	for i = 0,3,1 do
+		w[i] = mainmemory.read_s16_be(A6 - 0x12 - (i * 2))
+	end
+	if weapon == false then
+		gui.drawBox(w[0]-cx,w[2],w[1]-cx,w[3],0xFFFFFFFF,0x40FFFFFF)
+		weapon = true
+	end
+end
+
 local function reset()
 	player = false
 	attack = false
+	weapon = false
 end
 
-event.onmemoryexecute(touch_collision,0x014508)
-event.onmemoryexecute(attack_collision,0x0143E0)
+
+event.onmemoryexecute(touch_collision,0x1494E)
+event.onmemoryexecute(attack_collision,0x14826)
+event.onmemoryexecute(weapon_collision,0x14650)
 
 while true do
 	camera()
