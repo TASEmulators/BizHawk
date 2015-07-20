@@ -164,7 +164,12 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " LStick X",
-						MaxValue = 127,
+						MinValue = 0,
+						MidValue = 128,
+						MaxValue = 255,
+						MinValueSec = 0,
+						MidValueSec = 128,
+						MaxValueSec = 255,
 						DisplayName = "",
 						Location = new Point(3, 120),
 						Type = PadSchema.PadInputType.AnalogStick
@@ -172,7 +177,12 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonScema
 					{
 						Name = "P" + controller + " RStick X",
-						MaxValue = 127,
+						MinValue = 0,
+						MidValue = 128,
+						MaxValue = 255,
+						MinValueSec = 0,
+						MidValueSec = 128,
+						MaxValueSec = 255,
 						DisplayName = "",
 						Location = new Point(210, 120),
 						Type = PadSchema.PadInputType.AnalogStick
