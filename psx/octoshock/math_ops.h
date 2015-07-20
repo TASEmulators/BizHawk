@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef WINDOWS
 #include <intrin.h>
+#endif
 
 //
 // Result is defined for all possible inputs(including 0).

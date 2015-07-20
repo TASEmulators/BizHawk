@@ -1,5 +1,6 @@
 #ifndef __MDFN_ENDIAN_H
 #define __MDFN_ENDIAN_H
+#include <string.h>
 
 #pragma warning(once : 4519)
 static INLINE uint32 BitsExtract(const uint8* ptr, const size_t bit_offset, const size_t bit_count)

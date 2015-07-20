@@ -32,8 +32,6 @@
     <CreatePackage>false</CreatePackage>
     <EnablePackageSigning>false</EnablePackageSigning>
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
-    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
     <UseSGen>false</UseSGen>
     <UseRefCounting>false</UseRefCounting>
   </PropertyGroup>
