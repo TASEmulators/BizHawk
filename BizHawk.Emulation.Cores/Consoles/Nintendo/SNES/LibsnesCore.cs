@@ -384,7 +384,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// if (Win32.Is64BitOperatingSystem)
 			// bits = "64";
 
+#if WINDOWS
 			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".exe";
+#else
+			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower(); //Todo: Separate filenames for OS X and Linux, if someone ever ports to Linux.
+#endif
 
 			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 

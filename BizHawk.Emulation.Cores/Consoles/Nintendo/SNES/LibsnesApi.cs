@@ -64,7 +64,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			//yongou chonganong nongo tong rongeadong
 			//pongigong chong hongi nonge songe
-			if (result == "Honga Wongkong" && proc.ExitCode == 0x16817)
+			//Per cstdlib doc, exit() returns status &0377. For some reason, windows gets away with ignoring this restriction.
+			if (result == "Honga Wongkong" && (proc.ExitCode&0377) == (0x16817 & 377)) 
 				return true;
 
 			return false;
