@@ -100,7 +100,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ControllerDefinition.FloatControls.Add("Disc Select");
 
 			ControllerDefinition.FloatRanges.Add(
-				new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//hmm.. I don't see why this wouldn't work
+				new[] {0f,1f,1f} 
 			);
 		}
 
@@ -585,6 +587,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, ShockTraceCallback);
 			else
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
+
+			//apply soft reset if needed
+			if (Controller["Reset"])
+				OctoshockDll.shock_SoftReset(psx);
 
 			//------------------------
 			OctoshockDll.shock_Step(psx, OctoshockDll.eShockStep.Frame);

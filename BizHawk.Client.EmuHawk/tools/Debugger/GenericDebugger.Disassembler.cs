@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 			DisassemblyLines.Clear();
 			uint a = currentDisassemblerAddress;
-			for (int i = 0; i < line_count; ++i)
+			for (int i = 0; i <= line_count; ++i)
 			{
 				int advance;
 				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out advance);

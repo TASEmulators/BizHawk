@@ -270,7 +270,7 @@ namespace BizHawk.Client.Common
 							{
 								string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
 								game = Database.CheckDatabase(discHash);
-								if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+								if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
 									sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 								else
 								{
@@ -343,6 +343,7 @@ namespace BizHawk.Client.Common
 								case DiscType.MegaCD:
 									game.System = "GEN";
 									break;
+								case DiscType.AudioDisc:
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:

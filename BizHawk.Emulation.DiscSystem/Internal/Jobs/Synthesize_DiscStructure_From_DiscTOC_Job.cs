@@ -28,8 +28,8 @@ namespace BizHawk.Emulation.DiscSystem
 			session.Tracks.Add(new DiscStructure.Track()
 			{
 				Number = 0,
-				Control = EControlQ.None, //TODO - not accurate (take from track 1?)
-				LBA = -150 //TODO - not accurate
+				Control = EControlQ.None, //we'll set this later
+				LBA = -new Timestamp(99,99,99).Sector //obvious garbage
 			});
 
 			int ntracks = TOCRaw.LastRecordedTrackNumber - TOCRaw.FirstRecordedTrackNumber + 1;
@@ -63,7 +63,9 @@ namespace BizHawk.Emulation.DiscSystem
 			session.Tracks.Add(new DiscStructure.Track()
 			{
 				Number = 0xA0, //right?
-				Control = EControlQ.None, //TODO - not accurate (take from track 1?)
+				//kind of a guess, but not completely
+				Control = session.Tracks[session.Tracks.Count -1 ].Control,
+				Mode = session.Tracks[session.Tracks.Count - 1].Mode,
 				LBA = TOCRaw.LeadoutLBA.Sector
 			});
 
@@ -72,6 +74,11 @@ namespace BizHawk.Emulation.DiscSystem
 			{
 				session.Tracks[i].NextTrack = session.Tracks[i + 1];
 			}
+
+			//fix lead-in track type
+			//guesses:
+			session.Tracks[0].Control = session.Tracks[1].Control;
+			session.Tracks[0].Mode = session.Tracks[1].Mode;
 		}
 	}
 }

@@ -98,5 +98,13 @@ namespace BizHawk.Common.NumberExtensions
 
 			return 16;
 		}
+
+		/// <summary>
+		/// The % operator is a remainder operator. (e.g. -1 mod 4 returns -1, not 3.)
+		/// </summary>
+		public static int Mod(this int a, int b)
+		{
+			return a - (b * (int)System.Math.Floor((float)a / b));
+		}
 	}
 }
