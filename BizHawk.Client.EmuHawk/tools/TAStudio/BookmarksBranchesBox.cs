@@ -179,5 +179,10 @@ namespace BizHawk.Client.EmuHawk
 			return FrameRates[system, pal];
 		}
 		// ***************************
+
+		public void UpdateValues()
+		{
+			BranchView.ItemCount = Branches.Count;
+		}
 	}
 }

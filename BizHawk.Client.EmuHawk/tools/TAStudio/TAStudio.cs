@@ -348,6 +348,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!HandleMovieLoadStuff())
 				return false;
 
+			BookMarkControl.UpdateValues();
 			RefreshDialog();
 			return true;
 		}
@@ -366,6 +367,7 @@ namespace BizHawk.Client.EmuHawk
 				HandleMovieLoadStuff();
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 
+				BookMarkControl.UpdateValues();
 				RefreshDialog();
 			}
 		}
