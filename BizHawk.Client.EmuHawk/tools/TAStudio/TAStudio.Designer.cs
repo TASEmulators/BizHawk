@@ -172,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
+			this.BranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -1168,10 +1169,11 @@ namespace BizHawk.Client.EmuHawk
             this.InsertNumFramesContextMenuItem,
             this.toolStripSeparator18,
             this.TruncateContextMenuItem,
+            this.BranchContextMenuItem,
             this.StartFromNowSeparator,
             this.StartNewProjectFromNowMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 414);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 458);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -1354,6 +1356,14 @@ namespace BizHawk.Client.EmuHawk
 			this.BookMarkControl.Name = "BookMarkControl";
 			this.BookMarkControl.Size = new System.Drawing.Size(204, 205);
 			this.BookMarkControl.TabIndex = 8;
+			this.BookMarkControl.Tastudio = null;
+			// 
+			// BranchContextMenuItem
+			// 
+			this.BranchContextMenuItem.Name = "BranchContextMenuItem";
+			this.BranchContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.BranchContextMenuItem.Text = "&Branch";
+			this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
 			// 
 			// TAStudio
 			// 
@@ -1534,5 +1544,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem applyPatternToPaintedInputToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem onlyOnAutoFireColumnsToolStripMenuItem;
 		private BookmarksBranchesBox BookMarkControl;
+		private System.Windows.Forms.ToolStripMenuItem BranchContextMenuItem;
 	}
 }

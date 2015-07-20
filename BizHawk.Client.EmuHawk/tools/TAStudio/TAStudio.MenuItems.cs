@@ -979,12 +979,19 @@ namespace BizHawk.Client.EmuHawk
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 
 			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
+
+			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Global.Emulator.Frame;
 		}
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.MainForm.PauseOnFrame = null;
 			RefreshTasView();
+		}
+
+		private void BranchContextMenuItem_Click(object sender, EventArgs e)
+		{
+			BookMarkControl.Branch();
 		}
 
 		private void StartNewProjectFromNowMenuItem_Click(object sender, EventArgs e)

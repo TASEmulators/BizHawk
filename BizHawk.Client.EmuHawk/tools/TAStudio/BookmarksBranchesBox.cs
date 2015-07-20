@@ -184,5 +184,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			BranchView.ItemCount = Branches.Count;
 		}
+
+		public void Branch()
+		{
+			// TODO: refactor, creating a branch shouldn't be in context menu click event
+			AddContextMenu_Click(null, null);
+		}
 	}
 }
