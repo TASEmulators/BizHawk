@@ -85,9 +85,9 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = button.Name,
 							Location = UIHelper.Scale(button.Location),
-							Size = UIHelper.Scale(new Size(button.MaxValue + 79, button.MaxValue + 9)), // TODO: don't use hardcoded values here, at least make them defaults in the AnalogStick object itself
-							RangeX = button.MaxValue,
-							RangeY = button.MaxValue // TODO ability to pass in a different Y max
+							Size = UIHelper.Scale(new Size(127 + 79, 127 + 9)),
+							RangeX = new float[] { button.MinValue, button.MidValue, button.MaxValue },
+							RangeY = new float[] { button.MinValueSec, button.MidValueSec, button.MaxValueSec }, 
 						});
 						break;
 					case PadSchema.PadInputType.TargetedPair:

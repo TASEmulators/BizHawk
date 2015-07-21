@@ -87,15 +87,22 @@ namespace BizHawk.Emulation.DiscSystem
 			//an emulator frontend will likely just guess TurboCD if the disc is UnknownFormat
 			//(we can also have a gameDB!)
 
+			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
+			if (disc.TOC.Session1Format == SessionFormat.Type20_CDXA)
+				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
+
 			var iso = new ISOFile();
-			bool isIso = iso.Parse(new DiscStream(disc, EDiscStreamView.DiscStreamView_Mode1_2048, 0));
+			bool isIso = iso.Parse(new DiscStream(disc, discView, 0));
 
 			if (isIso)
 			{
 				var appId = System.Text.Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
-				//NOTE: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
-				//if (appId == "PLAYSTATION")
-				//  return DiscType.SonyPSX;
+				
+				//for example: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
+				//but, some PSX games (junky rips) don't have the 'licensed by string' so we'll hope they get caught here
+				if (appId == "PLAYSTATION")
+				  return DiscType.SonyPSX;
+
 				if(appId == "PSP GAME")
 					return DiscType.SonyPSP;
 						

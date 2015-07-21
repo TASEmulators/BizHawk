@@ -148,6 +148,11 @@ EDD7A45A7F27E396B6D686F1861642D509863132		Datach - SD Gundam - Gundam Wars	NES		
 74218AAE93E4FEBFB2284BCF15811453418A2029		Datach - Yuu Yuu Hakusho - Bakutou Ankoku Bujutsu Kai	NES		board=MAPPER157
 6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach - Crayon Shin Chan - Ora to Poi Poi	NES		board=MAPPER157
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;bad PSX (not many, so collecting here for now);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;licensed by sony... string erased:
+C94257E7	B	Looney Tunes - Sheep Raider (STATiC Dump)	PSX		dh=00000000
+
 #include gamedb_neshomebrew.txt
 #include gamedb_vs.txt
 #include gamedb_user.txt
