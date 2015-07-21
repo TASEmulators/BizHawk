@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_Peripheral_PollActive(IntPtr psx, int address, bool clear);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size);
+		public static extern int shock_MountEXE(IntPtr psx, void* exebuf, int size, bool ignore_pcsp);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_PowerOn(IntPtr psx);

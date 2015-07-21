@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common
 
 				try
 				{
-					var ext = file.Extension.ToLower();
+					var ext = file.Extension.ToLowerInvariant();
 					if (ext == ".m3u")
 					{
 						//HACK ZONE - currently only psx supports m3u
@@ -398,7 +398,7 @@ namespace BizHawk.Client.Common
 								break;
 						}
 					}
-					else if (file.Extension.ToLower() == ".xml")
+					else if (file.Extension.ToLowerInvariant() == ".xml")
 					{
 						try
 						{
@@ -463,22 +463,39 @@ namespace BizHawk.Client.Common
 							}
 						}
 					}
+					else if (file.Extension.ToLowerInvariant() == ".psf" || file.Extension.ToLowerInvariant() == ".minipsf")
+					{
+						Func<Stream, int, byte[]> cbDeflater = (Stream instream, int size) =>
+						{
+							var inflater = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false);
+							var iis = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(instream, inflater);
+							MemoryStream ret = new MemoryStream();
+							iis.CopyTo(ret);
+							return ret.ToArray();
+						};
+						PSF psf = new PSF();
+						psf.Load(path, cbDeflater);
+						nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+						nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want.";
+
+						//total garbage, this
+						rom = new RomGame(file);
+						game = rom.GameInfo;
+					}
 					else // most extensions
 					{
 						rom = new RomGame(file);
 
 						//hacky for now
-						if (file.Extension.ToLower() == ".exe")
-						{
+						if (file.Extension.ToLowerInvariant() == ".exe")
 							rom.GameInfo.System = "PSX";
-						}
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
 							// Has the user picked a preference for this extension?
-							if (PreferredPlatformIsDefined(rom.Extension.ToLower()))
+							if (PreferredPlatformIsDefined(rom.Extension.ToLowerInvariant()))
 							{
-								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()];
+								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLowerInvariant()];
 							}
 							else if (ChoosePlatform != null)
 							{
@@ -499,7 +516,7 @@ namespace BizHawk.Client.Common
 						var isXml = false;
 
 						// other xml has already been handled
-						if (file.Extension.ToLower() == ".xml")
+						if (file.Extension.ToLowerInvariant() == ".xml")
 						{
 							game.System = "SNES";
 							isXml = true;
