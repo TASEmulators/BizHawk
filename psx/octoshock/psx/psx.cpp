@@ -146,25 +146,6 @@ uint32 PSX_GetRandU32(uint32 mina, uint32 maxa)
  return PSX_PRNG.RandU32(mina, maxa);
 }
 
-
-#ifdef WANT_PSF
-class PSF1Loader : public PSFLoader
-{
- public:
-
- PSF1Loader(MDFNFILE *fp);
- virtual ~PSF1Loader();
-
- virtual void HandleEXE(const uint8 *data, uint32 len, bool ignore_pcsp = false);
-
- PSFTags tags;
-};
-#else
-class PSF1Loader {};
-#endif
-
-
-static PSF1Loader *psf_loader = NULL;
 static std::vector<CDIF*> *cdifs = NULL;
 static std::vector<const char *> cdifs_scex_ids;
 
@@ -1404,7 +1385,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	SPU->StartFrame(espec.SoundRate, ResampleQuality); 
 
 	Running = -1;
-	timestamp = CPU->Run(timestamp, psf_loader == NULL && psx_dbg_level >= PSX_DBG_BIOS_PRINT, psf_loader != NULL);
+	timestamp = CPU->Run(timestamp, psx_dbg_level >= PSX_DBG_BIOS_PRINT, /*psf_loader != NULL*/ false); //huh?
 	assert(timestamp);
 
 	ForceEventUpdates(timestamp);
@@ -1818,41 +1799,15 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  po += 4;
 }
 
-EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size)
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size, s32 ignore_pcsp)
 {
-	LoadEXE((uint8*)exebuf, (uint32)size);
+	LoadEXE((uint8*)exebuf, (uint32)size, !!ignore_pcsp);
 	return SHOCK_OK;
 }
-
-
-#ifdef WANT_PSF
-PSF1Loader::PSF1Loader(MDFNFILE *fp)
-{
- tags = Load(0x01, 2033664, fp);
-}
-
-
-PSF1Loader::~PSF1Loader()
-{
-
-}
-
-
-void PSF1Loader::HandleEXE(const uint8 *data, uint32 size, bool ignore_pcsp)
-{
- LoadEXE(data, size, ignore_pcsp);
-}
-#endif
 
 static void Cleanup(void)
 {
  TextMem.resize(0);
-
- if(psf_loader)
- {
-  delete psf_loader;
-  psf_loader = NULL;
- }
 
  if(CDC)
  {
@@ -1903,16 +1858,6 @@ static void Cleanup(void)
 
 static void CloseGame(void)
 {
- if(!psf_loader)
- {
-  for(int i = 0; i < 8; i++)
-  {
-		//DAW
-    //FIO->SaveMemcard(i, MDFN_MakeFName(MDFNMKF_SAV, 0, ext).c_str());
-  }
-
- }
-
  Cleanup();
 }
 
