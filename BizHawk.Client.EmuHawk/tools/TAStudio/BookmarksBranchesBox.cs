@@ -81,8 +81,8 @@ namespace BizHawk.Client.EmuHawk
 				Frame = Global.Emulator.Frame,
 				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
 				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
-				//OSDFrameBuffer = GlobalWin.MainForm.CurrentFrameBuffer(captureOSD: true),
-				OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
+				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
+				//OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
 				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone()
 			};
 
@@ -122,15 +122,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void Temp(int[] framebuffer)
-		{
-			var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
-			for (int i = 0; i < buff.Length; i++)
-			{
-				buff[i] = framebuffer[i];
-			}
-		}
-
 		private void LoadBranch(TasBranch branch)
 		{
 			Tastudio.CurrentTasMovie.LoadBranch(branch);
@@ -138,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
 			//SavestateManager.PopulateFramebuffer(branch.OSDFrameBuffer);
-			Temp(branch.OSDFrameBuffer);
+			//Temp(branch.OSDFrameBuffer);
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();

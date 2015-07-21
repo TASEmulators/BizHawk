@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.Common
 {
@@ -11,7 +12,7 @@ namespace BizHawk.Client.Common
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public List<string> InputLog { get; set; }
-		public int[] OSDFrameBuffer { get; set; }
+		public BitmapBuffer OSDFrameBuffer { get; set; }
 		public TasLagLog LagLog { get; set; }
 	}
 
@@ -42,15 +43,8 @@ namespace BizHawk.Client.Common
 				});
 				bs.PutLump(nframebuffer, delegate(Stream s)
 				{
-					// todo: do we want to do something more clever here?
-					byte[] buff = new byte[2048];
-					var src = b.OSDFrameBuffer;
-					for (int i = 0; i < src.Length; i += 512)
-					{
-						int n = Math.Min(512, src.Length - i);
-						Buffer.BlockCopy(src, i * 4, buff, 0, n * 4);
-						s.Write(buff, 0, n * 4);
-					}
+					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
+					QuickBmpFile.Save(vp, s, 160, 120); // todo: choose size more smarterly
 				});
 				bs.PutLump(nlaglog, delegate(BinaryWriter bw)
 				{
@@ -103,15 +97,9 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(nframebuffer, true, delegate(Stream s, long length)
 				{
-					int[] dst = new int[length / 4];
-					byte[] buff = new byte[2048];
-					for (int i = 0; i < dst.Length; i++)
-					{
-						int n = Math.Min(512, dst.Length - i);
-						s.Read(buff, 0, n * 4);
-						Buffer.BlockCopy(buff, 0, dst, i * 4, n * 4);
-					}
-					b.OSDFrameBuffer = dst;
+					b.OSDFrameBuffer = new BitmapBuffer(160, 120); // todo: choose size more smarterly
+					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
+					QuickBmpFile.Load(vp, s);
 				});
 
 				bl.GetLump(nlaglog, true, delegate(BinaryReader br)

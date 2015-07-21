@@ -143,6 +143,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public unsafe static void Copy(IVideoProvider src, IVideoProvider dst)
+		{
+			fixed (int* srcp = src.GetVideoBuffer(), dstp = dst.GetVideoBuffer())
+			{
+				Blit(new BMP
+				{
+					Data = srcp,
+					Width = src.BufferWidth,
+					Height = src.BufferHeight
+				},
+				new BMP
+				{
+					Data = dstp,
+					Width = src.BufferWidth,
+					Height = src.BufferHeight
+				});
+			}
+		}
+
 		public unsafe static bool Load(IVideoProvider v, Stream s)
 		{
 			var bf = BITMAPFILEHEADER.FromStream(s);

@@ -103,6 +103,7 @@
     <Compile Include="7z\SevenZipSfx.cs" />
     <Compile Include="7z\StreamWrappers.cs" />
     <Compile Include="BinarySaveStates.cs" />
+    <Compile Include="BitmapBufferVideoProvider.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
     <Compile Include="config\ConfigService.cs" />
