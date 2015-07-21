@@ -1864,7 +1864,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return FormatFilter(
 						"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;%ARCH%",
-						"Music Files", "*.psf;*.sid;*.nsf",
+						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.nsf;%ARCH%",
 						"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1882,7 +1882,7 @@ namespace BizHawk.Client.EmuHawk
 						"Colecovision", "*.col;%ARCH%",
 						"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 						"PSX Executables (experimental)", "*.exe",
-						"PSF Playstation Sound File (not supported)", "*.psf",
+						"PSF Playstation Sound File", "*.psf;*.minipsf",
 						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 						"SID Commodore 64 Music File", "*.sid;%ARCH%",
 						"Nintendo 64", "*.z64;*.v64;*.n64",
