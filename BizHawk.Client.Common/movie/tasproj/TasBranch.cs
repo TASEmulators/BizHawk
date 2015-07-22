@@ -98,9 +98,9 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(nframebuffer, true, delegate(Stream s, long length)
 				{
-					b.OSDFrameBuffer = new BitmapBuffer(160, 120); // todo: choose size more smarterly
-					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
+					var vp = new QuickBmpFile.LoadedBMP();
 					QuickBmpFile.Load(vp, s);
+					b.OSDFrameBuffer = new BitmapBuffer(vp.BufferWidth, vp.BufferHeight, vp.VideoBuffer);
 				});
 
 				bl.GetLump(nlaglog, true, delegate(BinaryReader br)

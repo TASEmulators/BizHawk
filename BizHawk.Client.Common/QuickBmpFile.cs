@@ -189,6 +189,20 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// if passed to QuickBMPFile.Load(), will size itself to match the incoming bmp
+		/// </summary>
+		public class LoadedBMP : IVideoProvider
+		{
+			public int[] VideoBuffer { get; set; }
+			public int[] GetVideoBuffer() { return VideoBuffer; }
+			public int VirtualWidth { get { return BufferWidth; } }
+			public int VirtualHeight { get { return BufferHeight; } }
+			public int BufferWidth { get; set; }
+			public int BufferHeight { get; set; }
+			public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+		}
+
 		public unsafe static bool Load(IVideoProvider v, Stream s)
 		{
 			var bf = BITMAPFILEHEADER.FromStream(s);
@@ -204,6 +218,13 @@ namespace BizHawk.Client.Common
 
 			byte[] src = new byte[in_w * in_h * 4];
 			s.Read(src, 0, src.Length);
+			if (v is LoadedBMP)
+			{
+				var l = v as LoadedBMP;
+				l.BufferWidth = in_w;
+				l.BufferHeight = in_h;
+				l.VideoBuffer = new int[in_w * in_h];
+			}
 			int[] dst = v.GetVideoBuffer();
 
 			fixed (byte *srcp = src)
