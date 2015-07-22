@@ -168,11 +168,11 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.BranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
-			this.BranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -1325,6 +1325,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
+			// BranchContextMenuItem
+			// 
+			this.BranchContextMenuItem.Name = "BranchContextMenuItem";
+			this.BranchContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.BranchContextMenuItem.Text = "&Branch";
+			this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
+			// 
 			// StartFromNowSeparator
 			// 
 			this.StartFromNowSeparator.Name = "StartFromNowSeparator";
@@ -1357,13 +1364,6 @@ namespace BizHawk.Client.EmuHawk
 			this.BookMarkControl.Size = new System.Drawing.Size(204, 205);
 			this.BookMarkControl.TabIndex = 8;
 			this.BookMarkControl.Tastudio = null;
-			// 
-			// BranchContextMenuItem
-			// 
-			this.BranchContextMenuItem.Name = "BranchContextMenuItem";
-			this.BranchContextMenuItem.Size = new System.Drawing.Size(272, 22);
-			this.BranchContextMenuItem.Text = "&Branch";
-			this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
 			// 
 			// TAStudio
 			// 

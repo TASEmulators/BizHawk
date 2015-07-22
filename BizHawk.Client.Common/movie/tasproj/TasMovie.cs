@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
 		private readonly TasBranchCollection Branches = new TasBranchCollection();
 
@@ -284,8 +284,7 @@ namespace BizHawk.Client.Common
 
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
-			VerificationLog.Clear();
-			foreach (var entry in log)
+			foreach (string entry in log)
 			{
 				VerificationLog.Add(entry);
 			}
@@ -458,7 +457,6 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(TasBranch branch)
 		{
-			// TODO: undo?
 			_log = branch.InputLog;
 			_changes = true;
 			StateManager.ClearStateHistory();

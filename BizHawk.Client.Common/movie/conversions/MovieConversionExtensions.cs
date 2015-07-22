@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
@@ -136,15 +137,20 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, true);
+			TasMovie tas = new TasMovie(newFilename, true);
 			tas.BinarySavestate = savestate;
 			tas.TasStateManager.Clear();
 			tas.ClearLagLog();
 
-			var entries = old.GetLogEntries();
+			List<string> entries = old.GetLogEntries();
 
 			tas.CopyLog(entries.Skip(frame));
+			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries.Take(frame));
+
+			// States: TODO
+			
+			// Lag Log: TODO
 
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)
@@ -167,12 +173,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				tas.Subtitles.Add(sub);
 			}
 
-			foreach(var marker in old.Markers)
+			foreach(TasMovieMarker marker in old.Markers)
 			{
-				if (marker.Frame > 0)
-				{
-					tas.Markers.Add(marker);
-				}
+				if (marker.Frame > frame)
+					tas.Markers.Add(new TasMovieMarker(marker.Frame - frame, marker.Message));
 			}
 
 			tas.TasStateManager.Settings = old.TasStateManager.Settings;

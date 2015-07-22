@@ -973,8 +973,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StartFromNowSeparator.Visible =
 				StartNewProjectFromNowMenuItem.Visible =
-				TasView.SelectedRows.Count() == 1 &&
-				!CurrentTasMovie.StartsFromSavestate;
+				TasView.SelectedRows.Count() == 1;
 
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 
@@ -1005,8 +1004,7 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(index);
 
 					TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
-						index,
-						(byte[])StatableEmulator.SaveStateBinary().Clone());
+						index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
 					GlobalWin.MainForm.PauseEmulator();
 					LoadFile(new FileInfo(newProject.Filename));
