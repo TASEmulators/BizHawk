@@ -86,7 +86,8 @@ namespace BizHawk.Client.EmuHawk
 				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				//OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
-				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone()
+				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
+				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie)
 			};
 
 			Branches.Add(branch);
@@ -169,9 +170,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private double Fps()
 		{
-			var movie = Tastudio.CurrentTasMovie;
-			var system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			var pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
+			TasMovie movie = Tastudio.CurrentTasMovie;
+			string system = movie.HeaderEntries[HeaderKeys.PLATFORM];
+			bool pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
 				movie.HeaderEntries[HeaderKeys.PAL] == "1";
 
 			return FrameRates[system, pal];

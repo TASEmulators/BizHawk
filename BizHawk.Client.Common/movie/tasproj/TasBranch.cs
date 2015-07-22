@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 		public List<string> InputLog { get; set; }
 		public BitmapBuffer OSDFrameBuffer { get; set; }
 		public TasLagLog LagLog { get; set; }
+		public TasMovieChangeLog ChangeLog { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>

@@ -465,6 +465,7 @@ namespace BizHawk.Client.Common
 			StateManager.SetState(branch.Frame, branch.CoreData);
 			//LagLog.Clear(); LagLog and InputLog is the same reference as what's in the branch!
 			LagLog.FromLagLog(branch.LagLog);
+			ChangeLog = branch.ChangeLog;
 		}
 	}
 }
