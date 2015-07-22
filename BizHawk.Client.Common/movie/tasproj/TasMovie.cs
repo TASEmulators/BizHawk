@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common
 			StateManager.ClearStateHistory();
 			StateManager.SetState(branch.Frame, branch.CoreData);
 			LagLog.Clear();
-			LagLog.FromLagLog(branch.LagLog);
+			LagLog = branch.LagLog.Clone();
 		}
 	}
 }

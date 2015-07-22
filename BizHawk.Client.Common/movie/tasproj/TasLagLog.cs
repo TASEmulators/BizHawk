@@ -170,15 +170,9 @@ namespace BizHawk.Client.Common
 		{
 			var log = new TasLagLog();
 			log.LagLog = LagLog.ToList();
-			log.WasLag = LagLog.ToList();
+			log.WasLag = WasLag.ToList();
 
 			return log;
-		}
-
-		public void FromLagLog(TasLagLog log)
-		{
-			LagLog = log.LagLog;
-			WasLag = log.WasLag;
 		}
 	}
 }

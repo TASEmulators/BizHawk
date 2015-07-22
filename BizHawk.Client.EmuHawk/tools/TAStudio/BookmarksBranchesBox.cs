@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddContextMenu_Click(object sender, EventArgs e)
 		{
 			// TODO: don't use Global.Emulator
-			var branch = new TasBranch
+			TasBranch branch = new TasBranch
 			{
 				Frame = Global.Emulator.Frame,
 				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
