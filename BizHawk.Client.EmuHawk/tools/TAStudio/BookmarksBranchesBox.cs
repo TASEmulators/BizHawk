@@ -130,6 +130,8 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.LoadState(stateInfo);
 			//SavestateManager.PopulateFramebuffer(branch.OSDFrameBuffer);
 			//Temp(branch.OSDFrameBuffer);
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());
+
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();

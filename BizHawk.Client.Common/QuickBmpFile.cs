@@ -156,8 +156,8 @@ namespace BizHawk.Client.Common
 				new BMP
 				{
 					Data = dstp,
-					Width = src.BufferWidth,
-					Height = src.BufferHeight
+					Width = dst.BufferWidth,
+					Height = dst.BufferHeight
 				});
 			}
 		}
