@@ -232,6 +232,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
 		{
 			Load(comm, discs, discNames, exe, settings, syncSettings, null);
+
+			if(_Settings.SkipFirmwareBoot)
+				TrySkipFirmwareBoot();
+
 			OctoshockDll.shock_PowerOn(psx);
 		}
 
@@ -385,6 +389,55 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
+		}
+
+		void TrySkipFirmwareBoot()
+		{
+			//find a SYSTEM.CNF file with a BOOT = cdrom:\exefile;1 or something like that
+			//the filenames all have a semicolon after them, I don't kno what's up with that
+			var iso = new DiscSystem.ISOFile();
+			bool isIso;
+			using (var ds = new DiscSystem.DiscStream(Discs[0], DiscSystem.EDiscStreamView.DiscStreamView_Mode2_Form1_2048, 0))
+			{
+				isIso = iso.Parse(ds);
+				ds.Position = 0;
+				if (isIso)
+				{
+					string exeName = null;
+					if (iso.Root.Children.ContainsKey("SYSTEM.CNF;1"))
+					{
+						var syscnfNode = iso.Root.Children["SYSTEM.CNF;1"];
+						var syscnfSector = syscnfNode.Offset;
+						var syscnfFile = new byte[syscnfNode.Length];
+						ds.Position = syscnfNode.Offset * 2048;
+						ds.Read(syscnfFile, 0, syscnfFile.Length);
+						var syscnfString = System.Text.Encoding.ASCII.GetString(syscnfFile).Replace("\r\n", "\n");
+						var lines = syscnfString.Split('\n');
+						foreach (var line in lines)
+						{
+							var parts = line.Split(new[] { " = " }, StringSplitOptions.None);
+							if (parts[0] == "BOOT" && parts[1].ToLowerInvariant().StartsWith("cdrom:\\"))
+							{
+								exeName = parts[1].Substring(7);
+								//don't remove it, it's needed
+								//int semicolon = exeName.IndexOf(';');
+								//if(semicolon != -1) exeName = parts[1].Substring(0,semicolon+1);
+							}
+						}
+					}
+					if (exeName != null && iso.Root.Children.ContainsKey(exeName))
+					{
+						var exeNode = iso.Root.Children[exeName];
+						var exeBuffer = new byte[exeNode.Length];
+						ds.Position = exeNode.Offset * 2048;
+						if (ds.Read(exeBuffer, 0, exeBuffer.Length) == exeBuffer.Length)
+						{
+							fixed (byte* pExe = exeBuffer)
+								OctoshockDll.shock_MountEXE(psx, pExe, exeBuffer.Length, false);
+						}
+					}
+				}
+			}
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -1018,6 +1071,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[DisplayName("Clip Horizontal Overscan")]
 			[DefaultValue(false)]
 			public bool ClipHorizontalOverscan { get; set; }
+
+			[DisplayName("Skip Firmware Boot")]
+			[DefaultValue(false)]
+			public bool SkipFirmwareBoot { get; set; }
 
 			public void Validate()
 			{
