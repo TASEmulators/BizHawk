@@ -37,7 +37,6 @@ namespace BizHawk.Client.EmuHawk
 			rbMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Mednafen;
 			rbTweakedMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.TweakedMednafen;
 			checkClipHorizontal.Checked = _settings.ClipHorizontalOverscan;
-			checkSkipFirmwareBoot.Checked = _settings.SkipFirmwareBoot;
 
 			NTSC_FirstLineNumeric.Value = _settings.ScanlineStart_NTSC;
 			NTSC_LastLineNumeric.Value = _settings.ScanlineEnd_NTSC;
@@ -77,7 +76,6 @@ namespace BizHawk.Client.EmuHawk
 			if (rbTweakedMednafenMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
 
 			settings.ClipHorizontalOverscan = checkClipHorizontal.Checked;
-			settings.SkipFirmwareBoot = checkSkipFirmwareBoot.Checked;
 
 			settings.ScanlineStart_NTSC = (int)NTSC_FirstLineNumeric.Value;
 			settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
