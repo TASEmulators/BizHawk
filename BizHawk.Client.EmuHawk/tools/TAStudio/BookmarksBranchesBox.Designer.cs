@@ -35,10 +35,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.AddContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.BranchView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.BranchNumberColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.FrameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.TimeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.BranchView = new InputRoll();
 			this.BookmarksBranchesGroupBox.SuspendLayout();
 			this.BranchesContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -101,41 +98,16 @@
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.BranchView.BlazingFast = false;
-			this.BranchView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.BranchNumberColumn,
-            this.FrameColumn,
-            this.TimeColumn});
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.GridLines = true;
-			this.BranchView.ItemCount = 0;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
 			this.BranchView.MultiSelect = false;
 			this.BranchView.Name = "BranchView";
-			this.BranchView.SelectAllInProgress = false;
-			this.BranchView.selectedItem = -1;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
 			this.BranchView.TabIndex = 0;
-			this.BranchView.UseCompatibleStateImageBehavior = false;
 			this.BranchView.UseCustomBackground = true;
-			this.BranchView.View = System.Windows.Forms.View.Details;
 			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
-			// 
-			// BranchNumberColumn
-			// 
-			this.BranchNumberColumn.Text = "#";
-			this.BranchNumberColumn.Width = 30;
-			// 
-			// FrameColumn
-			// 
-			this.FrameColumn.Text = "Frame";
-			this.FrameColumn.Width = 68;
-			// 
-			// TimeColumn
-			// 
-			this.TimeColumn.Text = "Length";
-			this.TimeColumn.Width = 83;
 			// 
 			// BookmarksBranchesBox
 			// 
@@ -152,10 +124,7 @@
 		#endregion
 
 		private System.Windows.Forms.GroupBox BookmarksBranchesGroupBox;
-		private VirtualListView BranchView;
-		private System.Windows.Forms.ColumnHeader BranchNumberColumn;
-		private System.Windows.Forms.ColumnHeader FrameColumn;
-		private System.Windows.Forms.ColumnHeader TimeColumn;
+		private InputRoll BranchView;
 		private System.Windows.Forms.ContextMenuStrip BranchesContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem AddContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem RemoveBranchContextMenuItem;

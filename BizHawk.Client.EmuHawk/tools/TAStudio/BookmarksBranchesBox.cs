@@ -15,6 +15,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BookmarksBranchesBox : UserControl
 	{
+		private const string BranchNumberColumnName = "BranchNumberColumn";
+		private const string FrameColumnName = "FrameColumn";
+		private const string TimeColumnName = "TimeColumn";
+
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
 		public TAStudio Tastudio { get; set; }
 
@@ -26,6 +30,29 @@ namespace BizHawk.Client.EmuHawk
 		public BookmarksBranchesBox()
 		{
 			InitializeComponent();
+
+			BranchView.AllColumns.AddRange(new InputRoll.RollColumn[]
+			{
+				new InputRoll.RollColumn
+				{
+					Name = BranchNumberColumnName,
+					Text = "#",
+					Width = 30
+				},
+				new InputRoll.RollColumn
+				{
+					Name = FrameColumnName,
+					Text = "Frame",
+					Width = 68
+				},
+				new InputRoll.RollColumn
+				{
+					Name = TimeColumnName,
+					Text = "Length",
+					Width = 83
+				},
+			});
+
 			BranchView.QueryItemText += QueryItemText;
 			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
@@ -34,9 +61,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (BranchView.SelectedIndices.Count > 0)
+				if (BranchView.SelectedRows.Any())
 				{
-					return Branches[BranchView.SelectedIndices[0]];
+					return Branches[BranchView.SelectedRows.First()];
 				}
 
 				return null;
@@ -45,32 +72,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private int CurrentBranch = -1;
 
-		private void QueryItemText(int index, int column, out string text)
+		private void QueryItemText(int index, InputRoll.RollColumn column, out string text)
 		{
 			text = string.Empty;
-
-			var columnName = BranchView.Columns[column].Name;
 
 			if (index >= Tastudio.CurrentTasMovie.TasBranches.Count)
 			{
 				return;
 			}
 
-			switch (column)
+			switch (column.Name)
 			{
-				case 0: // BranchNumberColumn
+				case BranchNumberColumnName:
 					text = index.ToString();
 					break;
-				case 1: // FrameColumn
+				case FrameColumnName:
 					text = Branches[index].Frame.ToString();
 					break;
-				case 2: // TimeColumn
+				case TimeColumnName:
 					text = MovieTime(Branches[index].Frame).ToString(@"hh\:mm\:ss\.fff");
 					break;
 			}
 		}
 
-		private void QueryItemBkColor(int index, int column, ref Color color)
+		private void QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			if (index == CurrentBranch)
 				color = SystemColors.HotTrack;
@@ -91,22 +116,25 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			Branches.Add(branch);
-			BranchView.ItemCount = Branches.Count;
+			BranchView.RowCount = Branches.Count;
+			BranchView.Refresh();
 		}
 
 		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
 			LoadSelectedBranch();
 		}
+
 		private void LoadBranchContextMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadSelectedBranch();
 		}
+
 		private void LoadSelectedBranch()
 		{
 			if (SelectedBranch != null)
 			{
-				CurrentBranch = BranchView.selectedItem;
+				CurrentBranch = BranchView.SelectedRows.First();
 				BranchView.Refresh();
 				LoadBranch(SelectedBranch);
 			}
@@ -124,7 +152,8 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				Branches.Remove(SelectedBranch);
-				BranchView.ItemCount = Branches.Count;
+				BranchView.RowCount = Branches.Count;
+				BranchView.Refresh();
 			}
 		}
 
@@ -181,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			BranchView.ItemCount = Branches.Count;
+			BranchView.RowCount = Branches.Count;
 		}
 
 		public void Branch()
