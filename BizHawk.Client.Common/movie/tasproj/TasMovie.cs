@@ -463,8 +463,8 @@ namespace BizHawk.Client.Common
 			_changes = true;
 			StateManager.ClearStateHistory();
 			StateManager.SetState(branch.Frame, branch.CoreData);
-			LagLog.Clear();
-			LagLog = branch.LagLog.Clone();
+			//LagLog.Clear(); LagLog and InputLog is the same reference as what's in the branch!
+			LagLog.FromLagLog(branch.LagLog);
 		}
 	}
 }

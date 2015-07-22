@@ -174,5 +174,11 @@ namespace BizHawk.Client.Common
 
 			return log;
 		}
+
+		public void FromLagLog(TasLagLog log)
+		{
+			LagLog = log.LagLog;
+			WasLag = log.WasLag;
+		}
 	}
 }

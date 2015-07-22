@@ -43,6 +43,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private int CurrentBranch = -1;
+
 		private void QueryItemText(int index, int column, out string text)
 		{
 			text = string.Empty;
@@ -70,7 +72,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QueryItemBkColor(int index, int column, ref Color color)
 		{
-			
+			if (index == CurrentBranch)
+				color = SystemColors.HotTrack;
 		}
 
 		private void AddContextMenu_Click(object sender, EventArgs e)
@@ -92,23 +95,25 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (SelectedBranch != null)
-			{
-				LoadBranch(SelectedBranch);
-			}
+			LoadSelectedBranch();
 		}
-
 		private void LoadBranchContextMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSelectedBranch();
+		}
+		private void LoadSelectedBranch()
 		{
 			if (SelectedBranch != null)
 			{
+				CurrentBranch = BranchView.selectedItem;
+				BranchView.Refresh();
 				LoadBranch(SelectedBranch);
 			}
 		}
 
 		private void BranchesContextMenu_Opening(object sender, CancelEventArgs e)
 		{
-			RemoveBranchContextMenuItem.Enabled = 
+			RemoveBranchContextMenuItem.Enabled =
 				LoadBranchContextMenuItem.Enabled =
 				SelectedBranch != null;
 		}
