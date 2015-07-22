@@ -33,6 +33,7 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnOk = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.lblTweakedMednafen = new System.Windows.Forms.Label();
 			this.rbTweakedMednafenMode = new System.Windows.Forms.RadioButton();
 			this.label3 = new System.Windows.Forms.Label();
@@ -53,14 +54,17 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.NTSC_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.NTSC_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
-			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.checkSkipFirmwareBoot = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
@@ -103,6 +107,17 @@
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Resolution Management";
+			// 
+			// linkLabel1
+			// 
+			this.linkLabel1.AutoSize = true;
+			this.linkLabel1.Location = new System.Drawing.Point(327, 248);
+			this.linkLabel1.Name = "linkLabel1";
+			this.linkLabel1.Size = new System.Drawing.Size(53, 13);
+			this.linkLabel1.TabIndex = 29;
+			this.linkLabel1.TabStop = true;
+			this.linkLabel1.Text = "About Me";
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
 			// lblTweakedMednafen
 			// 
@@ -334,16 +349,40 @@
 			this.NTSC_FirstLineNumeric.TabIndex = 21;
 			this.NTSC_FirstLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
-			// linkLabel1
+			// groupBox3
 			// 
-			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(327, 248);
-			this.linkLabel1.Name = "linkLabel1";
-			this.linkLabel1.Size = new System.Drawing.Size(53, 13);
-			this.linkLabel1.TabIndex = 29;
-			this.linkLabel1.TabStop = true;
-			this.linkLabel1.Text = "About Me";
-			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.checkSkipFirmwareBoot);
+			this.groupBox3.Controls.Add(this.checkBox1);
+			this.groupBox3.Location = new System.Drawing.Point(492, 173);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(212, 48);
+			this.groupBox3.TabIndex = 32;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Mighty Hacks";
+			// 
+			// checkBox1
+			// 
+			this.checkBox1.AutoSize = true;
+			this.checkBox1.Location = new System.Drawing.Point(7, 127);
+			this.checkBox1.Name = "checkBox1";
+			this.checkBox1.Size = new System.Drawing.Size(142, 17);
+			this.checkBox1.TabIndex = 30;
+			this.checkBox1.Text = "Clip Horizontal Overscan";
+			this.toolTip1.SetToolTip(this.checkBox1, "A mednafen option -- appears to be 5.5% horizontally");
+			this.checkBox1.UseVisualStyleBackColor = true;
+			// 
+			// checkSkipFirmwareBoot
+			// 
+			this.checkSkipFirmwareBoot.AutoSize = true;
+			this.checkSkipFirmwareBoot.Location = new System.Drawing.Point(8, 19);
+			this.checkSkipFirmwareBoot.Name = "checkSkipFirmwareBoot";
+			this.checkSkipFirmwareBoot.Size = new System.Drawing.Size(117, 17);
+			this.checkSkipFirmwareBoot.TabIndex = 45;
+			this.checkSkipFirmwareBoot.Text = "Skip Firmware Boot";
+			this.toolTip1.SetToolTip(this.checkSkipFirmwareBoot, "A mednafen option -- appears to be 5.5% horizontally");
+			this.checkSkipFirmwareBoot.UseVisualStyleBackColor = true;
 			// 
 			// PSXOptions
 			// 
@@ -352,6 +391,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(713, 297);
+			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
@@ -369,6 +409,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).EndInit();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -400,5 +442,8 @@
 		private System.Windows.Forms.NumericUpDown NTSC_FirstLineNumeric;
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.CheckBox checkSkipFirmwareBoot;
+		private System.Windows.Forms.CheckBox checkBox1;
 	}
 }
