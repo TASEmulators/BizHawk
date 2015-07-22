@@ -143,22 +143,49 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		unsafe static void Blit_Any_NoFlip(BMP src, BMP dst)
+		{
+			int w = dst.Width;
+			int h = dst.Height;
+			int in_w = src.Width;
+			int in_h = src.Height;
+			int* sp = src.Data;
+			int* dp = dst.Data;
+
+			for (int j = 0; j < h; j++)
+			{
+				sp = src.Data + in_w * (j * in_h / h);
+				for (int i = 0; i < w; i++)
+				{
+					dp[i] = sp[i * in_w / w];
+				}
+				dp += w;
+			}
+		}
+
 		public unsafe static void Copy(IVideoProvider src, IVideoProvider dst)
 		{
-			fixed (int* srcp = src.GetVideoBuffer(), dstp = dst.GetVideoBuffer())
+			if (src.BufferWidth == dst.BufferWidth && src.BufferHeight == dst.BufferHeight)
 			{
-				Blit(new BMP
+				Array.Copy(src.GetVideoBuffer(), dst.GetVideoBuffer(), src.GetVideoBuffer().Length);
+			}
+			else
+			{
+				fixed (int* srcp = src.GetVideoBuffer(), dstp = dst.GetVideoBuffer())
 				{
-					Data = srcp,
-					Width = src.BufferWidth,
-					Height = src.BufferHeight
-				},
-				new BMP
-				{
-					Data = dstp,
-					Width = dst.BufferWidth,
-					Height = dst.BufferHeight
-				});
+					Blit_Any_NoFlip(new BMP
+					{
+						Data = srcp,
+						Width = src.BufferWidth,
+						Height = src.BufferHeight
+					},
+					new BMP
+					{
+						Data = dstp,
+						Width = dst.BufferWidth,
+						Height = dst.BufferHeight
+					});
+				}
 			}
 		}
 
