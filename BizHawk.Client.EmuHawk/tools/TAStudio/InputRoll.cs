@@ -1339,7 +1339,7 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemBkColor(f + startRow, columns[j], ref itemColor);
 						if (itemColor == Color.White)
 							itemColor = rowColor;
-						else if (itemColor.A != 255)
+						else if (itemColor.A != 255 && itemColor.A != 0)
 						{
 							float alpha = (float)itemColor.A / 255;
 							itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),

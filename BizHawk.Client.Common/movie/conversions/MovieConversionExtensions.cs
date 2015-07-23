@@ -148,9 +148,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries.Take(frame));
 
-			// States: TODO
+			// States can't be easily moved over, because they contain the frame number.
+			// TODO? I'm not sure how this would be done.
 			
-			// Lag Log: TODO
+			// Lag Log
 			tas.TasLagLog.FromLagLog(old.TasLagLog);
 			tas.TasLagLog.StartFromFrame(frame);
 
