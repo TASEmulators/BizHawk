@@ -36,4 +36,31 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\SMSController.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\Help.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\A78Joystick.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\AppleIIKeyboard.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\C64Joystick.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\C64Keyboard.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\GBA_Controller.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\GBController.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\GENController.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\IntVController.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\Lynx.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\N64.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\NES_Controller.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\PCEngineController.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\PSX-Original-Controller.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\SNES_Controller.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\SaturnController.jpg" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\TI83Calculator.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\TI83_Controller.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\WonderSwanColor.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\colecovisioncontroller.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\ControllerImages\psx_dualshock.png" />
+  </ItemGroup>
 </Project>

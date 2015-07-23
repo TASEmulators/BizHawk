@@ -9,6 +9,8 @@ using BizHawk.Common;
 using BizHawk.Client.Common;
 using System.Linq;
 using System.Collections;
+using System.Reflection;
+using System.IO;
 
 namespace EtoHawk.Config
 {
@@ -20,66 +22,53 @@ namespace EtoHawk.Config
 
         static ControllerConfig()
         {
-            ControllerImages.Add("NES Controller", MakeTempImage("NES Controller"));
-            ControllerImages.Add("SNES Controller", MakeTempImage("SNES_Controller"));
-            ControllerImages.Add("Nintento 64 Controller", MakeTempImage("N64"));
-            ControllerImages.Add("Gameboy Controller", MakeTempImage("GBController"));
-            ControllerImages.Add("GBA Controller", MakeTempImage("GBA_Controller"));
-            ControllerImages.Add("Dual Gameboy Controller", MakeTempImage("GBController"));
+			ControllerImages.Add("NES Controller", GetResourceImage("NES Controller"));
+			ControllerImages.Add("SNES Controller", GetResourceImage("SNES_Controller"));
+			ControllerImages.Add("Nintento 64 Controller", GetResourceImage("N64"));
+			ControllerImages.Add("Gameboy Controller", GetResourceImage("GBController"));
+			ControllerImages.Add("GBA Controller", GetResourceImage("GBA_Controller"));
+			ControllerImages.Add("Dual Gameboy Controller", GetResourceImage("GBController"));
 
-            ControllerImages.Add("SMS Controller", MakeTempImage("SMSController"));
-            ControllerImages.Add("Genesis 3-Button Controller", MakeTempImage("GENController"));
-            ControllerImages.Add("GPGX Genesis Controller", MakeTempImage("GENController"));
-            ControllerImages.Add("Saturn Controller", MakeTempImage("SaturnController"));
+			ControllerImages.Add("SMS Controller", GetResourceImage("SMSController"));
+			ControllerImages.Add("Genesis 3-Button Controller", GetResourceImage("GENController"));
+			ControllerImages.Add("GPGX Genesis Controller", GetResourceImage("GENController"));
+			ControllerImages.Add("Saturn Controller", GetResourceImage("SaturnController"));
 
-            ControllerImages.Add("Intellivision Controller", MakeTempImage("IntVController"));
-            ControllerImages.Add("ColecoVision Basic Controller", MakeTempImage("colecovisioncontroller"));
-            ControllerImages.Add("Atari 2600 Basic Controller", MakeTempImage("atari_controller"));
-            ControllerImages.Add("Atari 7800 ProLine Joystick Controller", MakeTempImage("A78Joystick"));
+			ControllerImages.Add("Intellivision Controller", GetResourceImage("IntVController"));
+			ControllerImages.Add("ColecoVision Basic Controller", GetResourceImage("colecovisioncontroller"));
+			ControllerImages.Add("Atari 2600 Basic Controller", GetResourceImage("atari_controller"));
+			ControllerImages.Add("Atari 7800 ProLine Joystick Controller", GetResourceImage("A78Joystick"));
 
-            ControllerImages.Add("PC Engine Controller", MakeTempImage("PCEngineController"));
-            ControllerImages.Add("Commodore 64 Controller", MakeTempImage("C64Joystick"));
-            ControllerImages.Add("TI83 Controller", MakeTempImage("TI83_Controller"));
+			ControllerImages.Add("PC Engine Controller", GetResourceImage("PCEngineController"));
+			ControllerImages.Add("Commodore 64 Controller", GetResourceImage("C64Joystick"));
+			ControllerImages.Add("TI83 Controller", GetResourceImage("TI83_Controller"));
 
-            ControllerImages.Add("WonderSwan Controller", MakeTempImage("WonderSwanColor"));
-            ControllerImages.Add("Lynx Controller", MakeTempImage("Lynx"));
-            ControllerImages.Add("PSX Gamepad Controller", MakeTempImage("PSX_Original_Controller"));
-            ControllerImages.Add("PSX DualShock Controller", MakeTempImage("psx_dualshock"));
-
-            /*ControllerImages.Add("NES Controller", Properties.Resources.NES_Controller);
-            ControllerImages.Add("SNES Controller", Properties.Resources.SNES_Controller);
-            ControllerImages.Add("Nintento 64 Controller", Properties.Resources.N64);
-            ControllerImages.Add("Gameboy Controller", Properties.Resources.GBController);
-            ControllerImages.Add("GBA Controller", Properties.Resources.GBA_Controller);
-            ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
-
-            ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
-            ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
-            ControllerImages.Add("GPGX Genesis Controller", Properties.Resources.GENController);
-            ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
-
-            ControllerImages.Add("Intellivision Controller", Properties.Resources.IntVController);
-            ControllerImages.Add("ColecoVision Basic Controller", Properties.Resources.colecovisioncontroller);
-            ControllerImages.Add("Atari 2600 Basic Controller", Properties.Resources.atari_controller);
-            ControllerImages.Add("Atari 7800 ProLine Joystick Controller", Properties.Resources.A78Joystick);
-
-            ControllerImages.Add("PC Engine Controller", Properties.Resources.PCEngineController);
-            ControllerImages.Add("Commodore 64 Controller", Properties.Resources.C64Joystick);
-            ControllerImages.Add("TI83 Controller", Properties.Resources.TI83_Controller);
-
-            ControllerImages.Add("WonderSwan Controller", Properties.Resources.WonderSwanColor);
-            ControllerImages.Add("Lynx Controller", Properties.Resources.Lynx);
-            ControllerImages.Add("PSX Gamepad Controller", Properties.Resources.PSX_Original_Controller);
-            ControllerImages.Add("PSX DualShock Controller", Properties.Resources.psx_dualshock);*/
+			ControllerImages.Add("WonderSwan Controller", GetResourceImage("WonderSwanColor"));
+			ControllerImages.Add("Lynx Controller", GetResourceImage("Lynx"));
+			ControllerImages.Add("PSX Gamepad Controller", GetResourceImage("PSX_Original_Controller"));
+			ControllerImages.Add("PSX DualShock Controller", GetResourceImage("psx_dualshock"));
         }
 
-        private static Bitmap MakeTempImage(string name)
+        private static Bitmap GetResourceImage(string name)
         {
-            //This is really awful and I will replace it with the actual images as soon as possible
-            Bitmap moo = new Bitmap(new Size(150, 150), PixelFormat.Format32bppRgba);
-            Graphics g = new Graphics(moo);
-            g.DrawText(new Font(SystemFont.Label, 12), Eto.Drawing.Colors.Black, 0, 0, name + " goes here");
-            return moo;
+			Assembly assm = Assembly.GetExecutingAssembly();
+			string resName = assm.ManifestModule.Name.Replace (".exe", "." + name + ".png");
+			Bitmap img = null;
+
+			try{
+				using(Stream strm = assm.GetManifestResourceStream (resName)){
+					img = new Bitmap(strm);
+				}
+			}
+			catch(Exception ex){
+
+			}
+			if (img == null) {
+				img = new Bitmap (new Size (150, 150), PixelFormat.Format32bppRgba);
+				Graphics g = new Graphics (img);
+				g.DrawText (new Font (SystemFont.Label, 12), Eto.Drawing.Colors.Black, 0, 0, name + " image not found.");
+			}
+            return img;
         }
 
         /*protected override void OnActivated(EventArgs e)
@@ -250,7 +239,7 @@ namespace EtoHawk.Config
             Bitmap bmp;
             if (!ControllerImages.TryGetValue(controlName, out bmp))
             {
-                bmp = ControllerConfig.MakeTempImage("Question Mark"); //Properties.Resources.Help;
+				bmp = ControllerConfig.GetResourceImage("Help"); //Properties.Resources.Help;
             }
 
             pictureBox1.Image = bmp;
