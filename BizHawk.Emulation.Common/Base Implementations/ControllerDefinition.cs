@@ -120,15 +120,18 @@ namespace BizHawk.Emulation.Common
 					ret[i] = new List<string>();
 
 				for (int i = 0; i < list.Count; i++)
-				{
-					int player = 0;
-					if (list[i].Length > 3 && list[i].StartsWith("P") && char.IsNumber(list[i][1]))
-						player = int.Parse(list[i][1].ToString());
-					ret[player].Add(list[i]);
-				}
+					ret[PlayerNumber(list[i])].Add(list[i]);
 
 				return ret;
 			}
+		}
+
+		public int PlayerNumber(string buttonName)
+		{
+			int player = 0;
+			if (buttonName.Length > 3 && buttonName.StartsWith("P") && char.IsNumber(buttonName[1]))
+				player = buttonName[1] - '0';
+			return player;
 		}
 
 		// TODO: a more respectable logic here, and possibly per core implementation

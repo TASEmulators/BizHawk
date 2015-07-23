@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var overrideColor = GetColorOverride(index, column);
+			Color? overrideColor = GetColorOverride(index, column);
 
 			if (overrideColor.HasValue)
 			{
@@ -151,6 +151,10 @@ namespace BizHawk.Client.EmuHawk
 			{ // SuuperW: Analog editing is indicated by a color change.
 				color = AnalogEdit_Col;
 			}
+
+			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
+			if (player != 0 && player % 2 == 0)
+				color = Color.FromArgb(32, 0, 0, 0);
 		}
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{

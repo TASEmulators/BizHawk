@@ -151,6 +151,8 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			// States: TODO
 			
 			// Lag Log: TODO
+			tas.TasLagLog.FromLagLog(old.TasLagLog);
+			tas.TasLagLog.StartFromFrame(frame);
 
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)
@@ -162,13 +164,13 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
 			tas.Comments.Clear();
-			foreach (var comment in old.Comments)
+			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
 			tas.Subtitles.Clear();
-			foreach (var sub in old.Subtitles)
+			foreach (Subtitle sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
 			}

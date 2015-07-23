@@ -1301,6 +1301,13 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemBkColor(f + startIndex, columns[j], ref itemColor);
 						if (itemColor == Color.White)
 							itemColor = rowColor;
+						else if (itemColor.A != 255)
+						{
+							float alpha = (float)itemColor.A / 255;
+							itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
+								rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
+								rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
+						}
 
 						if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
@@ -1332,6 +1339,13 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemBkColor(f + startRow, columns[j], ref itemColor);
 						if (itemColor == Color.White)
 							itemColor = rowColor;
+						else if (itemColor.A != 255)
+						{
+							float alpha = (float)itemColor.A / 255;
+							itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
+								rowColor.G - (int)((rowColor.G - itemColor.G) * alpha),
+								rowColor.B - (int)((rowColor.B - itemColor.B) * alpha));
+						}
 
 						if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{

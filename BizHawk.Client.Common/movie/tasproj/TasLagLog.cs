@@ -180,5 +180,11 @@ namespace BizHawk.Client.Common
 			LagLog = log.LagLog;
 			WasLag = log.WasLag;
 		}
+
+		public void StartFromFrame(int index)
+		{
+			LagLog.RemoveRange(0, index);
+			WasLag.RemoveRange(0, index);
+		}
 	}
 }
