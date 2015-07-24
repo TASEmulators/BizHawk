@@ -61,11 +61,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void RestoreDefaults_Click(object sender, EventArgs e)
-		{
-			Defaults();
-		}
-
 		private void AutoTabCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			SetAutoTab();

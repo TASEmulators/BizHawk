@@ -1206,6 +1206,8 @@ namespace BizHawk.Client.EmuHawk
 				&& !Global.MovieSession.Movie.IsActive;
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
+
+			musicRipperToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESMusicRipper>();
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
