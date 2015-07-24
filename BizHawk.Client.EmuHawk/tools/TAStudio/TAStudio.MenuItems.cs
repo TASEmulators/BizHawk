@@ -521,12 +521,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
-			var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+			bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
+			int insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
+			bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
-			var framesPrompt = new FramesPrompt();
-			var result = framesPrompt.ShowDialog();
+			FramesPrompt framesPrompt = new FramesPrompt();
+			DialogResult result = framesPrompt.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				CurrentTasMovie.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
@@ -852,6 +852,17 @@ namespace BizHawk.Client.EmuHawk
 				scrollToBottomToolStripMenuItem.Checked = true;
 			else
 				scrollToCenterToolStripMenuItem.Checked = true;
+		}
+
+		private void wheelScrollSpeedToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			InputPrompt inputpromt = new InputPrompt();
+			inputpromt.TextInputType = InputPrompt.InputType.Unsigned;
+			inputpromt.Message = "Frames per tick:";
+			inputpromt.InitialValue = "1";
+			inputpromt.ShowDialog();
+			TasView.ScrollSpeed = int.Parse(inputpromt.PromptText);
+			
 		}
 
 		#endregion

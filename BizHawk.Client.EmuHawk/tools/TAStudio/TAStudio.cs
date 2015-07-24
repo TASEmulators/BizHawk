@@ -56,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool FollowCursor { get; set; }
 			public bool EmptyMarkers { get; set; }
 		}
+		int scrollSpeed = 1; // TODO: Save this value somewhere.
 
 		public TasMovie CurrentTasMovie
 		{

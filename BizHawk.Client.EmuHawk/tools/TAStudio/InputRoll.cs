@@ -22,6 +22,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly VScrollBar VBar;
 		private readonly HScrollBar HBar;
+		public int ScrollSpeed
+		{
+			get { return VBar.SmallChange; }
+			set
+			{
+				if (HorizontalOrientation)
+					HBar.SmallChange = value * CellWidth;
+				else
+					VBar.SmallChange = value * CellHeight;
+			}
+		}
 
 		private RollColumns _columns = new RollColumns();
 		private bool _horizontalOrientation;
