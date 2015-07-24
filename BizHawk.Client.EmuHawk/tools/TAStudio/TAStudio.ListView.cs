@@ -66,12 +66,10 @@ namespace BizHawk.Client.EmuHawk
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
-		public static Color GreenZone_Invalidated_FrameCol = Color.FromArgb(0xFFFFFF);
 		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
 		public static Color GreenZone_Invalidated_InputLog = Color.FromArgb(0xE0FBE0);
 
 		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
-		public static Color LagZone_Invalidated_FrameCol = Color.FromArgb(0xFFE9E9);
 		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
 		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
 
@@ -174,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				color = record.WasLagged.Value ?
 					LagZone_Invalidated_InputLog :
-					GreenZone_Invalidated_FrameCol;
+					GreenZone_Invalidated_InputLog;
 			}
 			else
 			{
@@ -694,12 +692,12 @@ namespace BizHawk.Client.EmuHawk
 					JumpToGreenzone();
 				}
 			}
-
+			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal + 1; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
+					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 					{
 						bool setVal = _boolPaintState;
 						if (_patternPaint && _boolPaintState)
@@ -719,7 +717,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (var i = startVal + 1; i <= endVal; i++) // SuuperW: <= so that it will edit the cell you are hovering over. (Inclusive)
+					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 					{
 						float setVal = _floatPaintState;
 						if (_patternPaint)
