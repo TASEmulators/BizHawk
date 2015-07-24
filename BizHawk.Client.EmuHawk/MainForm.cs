@@ -241,6 +241,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.MovieSession.Movie.Stop();
 					GlobalWin.Tools.Close();
 					SaveConfig();
+					_exitRequestPending = true;
 				}
 				else
 				{
