@@ -280,6 +280,7 @@
 			this.PSXControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.PSXDiscControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PSXHashDiscsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SNESDisplayMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SnesBg1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -396,7 +397,7 @@
 			this.ClearSRAMContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.PSXHashDiscsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -431,7 +432,7 @@
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 57);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 55);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -2524,6 +2525,13 @@
 			this.PSXDiscControlsMenuItem.Text = "&Disc Controls";
 			this.PSXDiscControlsMenuItem.Click += new System.EventHandler(this.PSXDiscControlsMenuItem_Click);
 			// 
+			// PSXHashDiscsToolStripMenuItem
+			// 
+			this.PSXHashDiscsToolStripMenuItem.Name = "PSXHashDiscsToolStripMenuItem";
+			this.PSXHashDiscsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+			this.PSXHashDiscsToolStripMenuItem.Text = "&Hash Discs";
+			this.PSXHashDiscsToolStripMenuItem.Click += new System.EventHandler(this.PSXHashDiscsToolStripMenuItem_Click);
+			// 
 			// SNESSubMenu
 			// 
 			this.SNESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3499,12 +3507,11 @@
 			this.ShowMenuContextMenuItem.Text = "Show Menu";
 			this.ShowMenuContextMenuItem.Click += new System.EventHandler(this.ShowMenuContextMenuItem_Click);
 			// 
-			// PSXHashDiscsToolStripMenuItem
+			// timerMouseIdle
 			// 
-			this.PSXHashDiscsToolStripMenuItem.Name = "PSXHashDiscsToolStripMenuItem";
-			this.PSXHashDiscsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
-			this.PSXHashDiscsToolStripMenuItem.Text = "&Hash Discs";
-			this.PSXHashDiscsToolStripMenuItem.Click += new System.EventHandler(this.PSXHashDiscsToolStripMenuItem_Click);
+			this.timerMouseIdle.Enabled = true;
+			this.timerMouseIdle.Interval = 2000;
+			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
 			// 
 			// MainForm
 			// 
@@ -3522,6 +3529,7 @@
 			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.Enter += new System.EventHandler(this.MainForm_Enter);
 			this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseClick);
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainForm_MouseMove);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.MainformMenu.ResumeLayout(false);
 			this.MainformMenu.PerformLayout();
@@ -3913,6 +3921,7 @@
 		private System.Windows.Forms.ToolStripMenuItem AutoHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem PSXHashDiscsToolStripMenuItem;
+		private System.Windows.Forms.Timer timerMouseIdle;
 	}
 }
 

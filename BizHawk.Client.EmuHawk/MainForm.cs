@@ -919,8 +919,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SynchChrome()
 		{
-			//PANTS
-
 			if (_inFullscreen)
 			{
 				//TODO - maybe apply a hack tracked during fullscreen here to override it
@@ -940,11 +938,12 @@ namespace BizHawk.Client.EmuHawk
 				else if (Global.Config.DispChrome_FrameWindowed == 2)
 					FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
 			}
-
 		}
 
 		public void ToggleFullscreen(bool allowSuppress=false)
 		{
+			AutohideCursor(false);
+
 			//prohibit this operation if the current controls include LMouse
 			if (allowSuppress)
 			{
@@ -1228,6 +1227,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _wasPaused;
 		private bool _didMenuPause;
 
+		private Cursor _blankCursor;
+		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
 
@@ -1729,6 +1730,27 @@ namespace BizHawk.Client.EmuHawk
 			if (ActiveForm != null)
 			{
 				ScreenSaver.ResetTimerPeriodically();
+			}
+		}
+
+		void AutohideCursor(bool hide)
+		{
+			if (hide && !_cursorHidden)
+			{
+				if (_blankCursor == null)
+				{
+					var ms = new System.IO.MemoryStream(BizHawk.Client.EmuHawk.Properties.Resources.BlankCursor);
+					_blankCursor = new Cursor(ms);
+				}
+				PresentationPanel.Control.Cursor = _blankCursor;
+				_cursorHidden = true;
+			}
+			else if (!hide && _cursorHidden)
+			{
+				PresentationPanel.Control.Cursor = Cursors.Default;
+				timerMouseIdle.Stop();
+				timerMouseIdle.Start();
+				_cursorHidden = false;
 			}
 		}
 
@@ -3763,55 +3785,7 @@ namespace BizHawk.Client.EmuHawk
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
 
-		private void quickNESToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NES_InQuickNES = true;
-			FlagNeedsReboot();
-		}
 
-		private void nesHawkToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NES_InQuickNES = false;
-			FlagNeedsReboot();
-		}
 
-		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA = true;
-			FlagNeedsReboot();
-		}
-
-		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA = false;
-			FlagNeedsReboot();
-		}
-
-		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
-			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
-		}
-
-		private void gBAWithMGBAToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<AutoHawk>();
-		}
-
-		private void settingsToolStripMenuItem1_Click_1(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Apple II Settings");
-		}
-
-		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new PSXHashDiscs().ShowDialog();
-		}
 	}
 }

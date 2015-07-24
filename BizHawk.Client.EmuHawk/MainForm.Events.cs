@@ -1131,6 +1131,11 @@ namespace BizHawk.Client.EmuHawk
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
+		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<AutoHawk>();
+		}
+
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<ToolBox>();
@@ -1194,6 +1199,18 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region NES
+
+		private void quickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = true;
+			FlagNeedsReboot();
+		}
+
+		private void nesHawkToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = false;
+			FlagNeedsReboot();
+		}
 
 		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1658,9 +1675,38 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<GBAGPUView>();
 		}
 
+		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = true;
+			FlagNeedsReboot();
+		}
+
+		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = false;
+			FlagNeedsReboot();
+		}
+
+		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
+			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
+		}
+
+		private void gBAWithMGBAToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA ^= true;
+			FlagNeedsReboot();
+		}
+
 		#endregion
 
 		#region PSX
+
+		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXHashDiscs().ShowDialog();
+		}
 
 		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1944,6 +1990,10 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Apple II
 
+		private void settingsToolStripMenuItem1_Click_1(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Apple II Settings");
+		}
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2365,13 +2415,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void timerMouseIdle_Tick(object sender, EventArgs e)
+		{
+			if (_inFullscreen && Global.Config.DispChrome_Fullscreen_AutohideMouse)
+				AutohideCursor(true);
+		}
+
 		private void MainForm_Enter(object sender, EventArgs e)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
+			AutohideCursor(false);
+		}
+
+		public void MainForm_MouseMove(object sender, MouseEventArgs e)
+		{
+			AutohideCursor(false);
 		}
 
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
 		{
+			AutohideCursor(false);
 			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
 			{
 				MainFormContextMenu.Show(

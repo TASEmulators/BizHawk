@@ -1793,9 +1793,6 @@
     <None Include="images\tastudio\ts_h_arrow_green_blue.png" />
     <None Include="images\tastudio\ts_h_arrow_green.png" />
     <None Include="images\tastudio\ts_h_arrow_blue.png" />
-    <None Include="images\tastudio\te_green_blue_arrow.bmp" />
-    <None Include="images\tastudio\te_green_arrow.bmp" />
-    <None Include="images\tastudio\te_arrow.bmp" />
     <None Include="images\noconnect_16x16.png" />
     <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
@@ -1809,7 +1806,6 @@
     <None Include="images\meteor.png" />
     <None Include="images\yabause.png" />
     <None Include="images\QuickNes.png" />
-    <None Include="images\QuickNES_128.ico" />
     <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
     <None Include="images\tvIcon.png" />
@@ -1926,6 +1922,7 @@
     <None Include="images\add.png" />
     <None Include="images\HawkInLove.png" />
     <None Include="images\ControllerImages\AppleIIKeyboard.png" />
+    <None Include="images\BlankCursor.cur" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
