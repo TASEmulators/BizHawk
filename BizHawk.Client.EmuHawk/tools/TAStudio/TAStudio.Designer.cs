@@ -1421,6 +1421,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.MainVertialSplit.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.MainVertialSplit.Location = new System.Drawing.Point(2, 23);
 			this.MainVertialSplit.Name = "MainVertialSplit";
 			// 
