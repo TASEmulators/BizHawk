@@ -177,8 +177,8 @@ namespace BizHawk.Client.Common
 
 		public void FromLagLog(TasLagLog log)
 		{
-			LagLog = log.LagLog;
-			WasLag = log.WasLag;
+			LagLog = log.LagLog.ToList();
+			WasLag = log.WasLag.ToList();
 		}
 
 		public void StartFromFrame(int index)

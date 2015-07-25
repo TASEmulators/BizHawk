@@ -461,10 +461,14 @@ namespace BizHawk.Client.Common
 
 			_log = branch.InputLog;
 			_changes = true;
+			LagLog.FromLagLog(branch.LagLog);
 
 			if (divergentPoint.HasValue)
 			{
 				StateManager.Invalidate(divergentPoint.Value);
+
+				// For now, even though we loaded the lag log, we are invalidating it the same as savestates to show the user the space isn't navigatable without re-emulating
+				LagLog.RemoveFrom(divergentPoint.Value);
 			}
 			else
 			{
@@ -472,9 +476,9 @@ namespace BizHawk.Client.Common
 			}
 
 			StateManager.SetState(branch.Frame, branch.CoreData);
-			//LagLog.Clear(); LagLog and InputLog is the same reference as what's in the branch!
-			LagLog.FromLagLog(branch.LagLog);
-			ChangeLog = branch.ChangeLog;
+
+			// TODO: we save the changelog, but not to disk, also this may not be intended behavior
+			//ChangeLog = branch.ChangeLog;
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
