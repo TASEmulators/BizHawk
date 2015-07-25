@@ -146,8 +146,6 @@ namespace BizHawk.Client.MultiHawk
 			if (Global.Config.DispFinalFilter == 1) finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.Bilinear;
 			if (Global.Config.DispFinalFilter == 2) finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.Bicubic;
 
-			finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.None;
-			
 			fPresent.FilterOption = finalFilter;
 
 			//add final presentation 

@@ -170,10 +170,34 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			float y0 = v0 * tex.Height;
 			float x1 = u1 * tex.Width;
 			float y1 = v1 * tex.Height;
+
+			//==========HACKY COPYPASTE=============
+
+			//first we need to make a transform that will change us from the default GDI+ transformation (a top left identity transformation) to an opengl-styled one
+			//(this is necessary because a 'GuiProjectionMatrix' call doesnt have any sense of the size of the destination viewport it's meant for)
+			var vcb = g.VisibleClipBounds;
+			float vw = vcb.Width;
+			float vh = vcb.Height;
+			Matrix4 fixmat = Matrix4.CreateTranslation(vw / 2, -vh / 2, 0);
+			fixmat *= Matrix4.CreateScale(vw / 2, -vh / 2, 1);
+
+			//------------------
+			//( reminder: this is just an experiment: we need to turn this into a transform on the GraphicsDevice )
+			//------------------
+			Matrix4 mat = Projection.Top * Modelview.Top * fixmat;
+			var tl = new Vector3(x, y, 0);
+			var tr = new Vector3(x + w, y, 0);
+			var bl = new Vector3(x, y + h, 0);
+			tl = Vector3.Transform(tl, mat);
+			tr = Vector3.Transform(tr, mat);
+			bl = Vector3.Transform(bl, mat);
+
+			//=======================================
+
 			sd.PointF[] destPoints = new sd.PointF[] {
-				new sd.PointF(x,y),
-				new sd.PointF(x+w,y),
-				new sd.PointF(x,y+h),	
+				tl.ToSDPointf(),
+				tr.ToSDPointf(),
+				bl.ToSDPointf(),
 			};
 
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(x0, y0, x1 - x0, y1 - y0), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
@@ -234,19 +258,37 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tw);
 
+			//first we need to make a transform that will change us from the default GDI+ transformation (a top left identity transformation) to an opengl-styled one
+			//(this is necessary because a 'GuiProjectionMatrix' call doesnt have any sense of the size of the destination viewport it's meant for)
+			var vcb = g.VisibleClipBounds;
+			float vw = vcb.Width;
+			float vh = vcb.Height;
+			Matrix4 fixmat = Matrix4.CreateTranslation(vw / 2, -vh / 2, 0);
+			fixmat *= Matrix4.CreateScale(vw / 2, -vh / 2, 1);
+
+			//------------------
+			//( reminder: this is just an experiment: we need to turn this into a transform on the GraphicsDevice )
+			//------------------
+			Matrix4 mat = Projection.Top * Modelview.Top * fixmat;
+			var tl = new Vector3(x, y, 0);
+			var tr = new Vector3(x + w, y, 0);
+			var bl = new Vector3(x, y + h, 0);
+			tl = Vector3.Transform(tl, mat);
+			tr = Vector3.Transform(tr, mat);
+			bl = Vector3.Transform(bl, mat);
+
 			//a little bit of a fastpath.. I think it's safe
+			//SO WHY DIDNT IT WORK?
+			//anyway, it would interfere with the transforming
 			//if (w == tex.Width && h == tex.Height && x == (int)x && y == (int)y)
 			//  g.DrawImageUnscaled(tw.SDBitmap, (int)x, (int)y);
-			//else
-			{
-				sd.PointF[] destPoints = new sd.PointF[] {
-					new sd.PointF(x,y),
-					new sd.PointF(x+w,y),
-					new sd.PointF(x,y+h),	
-				};
-				//g.DrawImage(tw.SDBitmap, x, y, w, h); //original
-				g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
-			}
+			sd.PointF[] destPoints = new sd.PointF[] {
+				tl.ToSDPointf(),
+				tr.ToSDPointf(),
+				bl.ToSDPointf(),
+			};
+
+			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
