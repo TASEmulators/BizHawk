@@ -457,13 +457,44 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(TasBranch branch)
 		{
+			int? divergentPoint = DivergantPoint(_log, branch.InputLog);
+
 			_log = branch.InputLog;
 			_changes = true;
-			StateManager.ClearStateHistory();
+
+			if (divergentPoint.HasValue)
+			{
+				StateManager.Invalidate(divergentPoint.Value);
+			}
+			else
+			{
+				StateManager.Invalidate(branch.InputLog.Count);
+			}
+
 			StateManager.SetState(branch.Frame, branch.CoreData);
 			//LagLog.Clear(); LagLog and InputLog is the same reference as what's in the branch!
 			LagLog.FromLagLog(branch.LagLog);
 			ChangeLog = branch.ChangeLog;
+		}
+
+		// TODO: use LogGenerators rather than string comparisons
+		private int? DivergantPoint(List<string> currentLog, List<string> newLog)
+		{
+			int max = newLog.Count;
+			if (currentLog.Count > newLog.Count)
+			{
+				max = currentLog.Count;
+			}
+
+			for (int i = 0; i < max; i++)
+			{
+				if (newLog[i] != currentLog[i])
+				{
+					return i;
+				}
+			}
+
+			return null;
 		}
 	}
 }
