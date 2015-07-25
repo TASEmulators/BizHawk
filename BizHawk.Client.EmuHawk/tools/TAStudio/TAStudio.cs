@@ -56,6 +56,8 @@ namespace BizHawk.Client.EmuHawk
 			public bool FollowCursor { get; set; }
 			public bool EmptyMarkers { get; set; }
 			public int ScrollSpeed { get; set; }
+			public bool FollowCursorAlwaysScroll { get; set; }
+			public string FollowCursorScrollMethod { get; set; }
 		}
 
 		public TasMovie CurrentTasMovie
@@ -153,6 +155,9 @@ namespace BizHawk.Client.EmuHawk
 			if (Settings.ScrollSpeed == 0)
 				Settings.ScrollSpeed = 1; // Default to 1, not 0. TODO: Surely there's a better way?
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
+			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
+			if (!string.IsNullOrEmpty(Settings.FollowCursorScrollMethod)) // Better default here too?
+				TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
 
 			RefreshDialog();
 			_initialized = true;

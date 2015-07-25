@@ -815,27 +815,27 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void alwaysScrollToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.AlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
+			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll = alwaysScrollToolStripMenuItem.Checked;
 		}
 		
 		private void scrollToViewToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.ScrollMethod = "near";
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "near";
 		}
 		
 		private void scrollToTopToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.ScrollMethod = "top";
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "top";
 		}
 
 		private void scrollToBottomToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.ScrollMethod = "bottom";
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "bottom";
 		}
 
 		private void scrollToCenterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			TasView.ScrollMethod = "center";
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
 		}
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
