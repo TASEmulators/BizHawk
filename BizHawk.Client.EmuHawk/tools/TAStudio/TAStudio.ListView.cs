@@ -487,8 +487,10 @@ namespace BizHawk.Client.EmuHawk
 			_floatEditYPos = -1;
 			_leftButtonHeld = false;
 
-			if (_floatEditRow == -1)
+			if (_floatEditRow == -1 && CurrentTasMovie.ChangeLog != null)
+			{
 				CurrentTasMovie.ChangeLog.EndBatch();
+			}
 		}
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
