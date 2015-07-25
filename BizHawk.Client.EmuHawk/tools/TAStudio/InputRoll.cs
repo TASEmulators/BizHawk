@@ -119,6 +119,20 @@ namespace BizHawk.Client.EmuHawk
 			HorizontalOrientation = false;
 			RecalculateScrollBars();
 			_columns.ChangedCallback = ColumnChangedCallback;
+
+			_hoverTimer.Interval = 750;
+			_hoverTimer.Tick += HoverTimerEventProcessor;
+			_hoverTimer.Stop();
+		}
+
+		private void HoverTimerEventProcessor(object sender, EventArgs e)
+		{
+			_hoverTimer.Stop();
+
+			if (CellHovered != null)
+			{
+				CellHovered(this, new CellEventArgs(LastCell, CurrentCell));
+			}
 		}
 
 		protected override void Dispose(bool disposing)
@@ -130,6 +144,8 @@ namespace BizHawk.Client.EmuHawk
 
 			base.Dispose(disposing);
 		}
+
+		private Timer _hoverTimer = new Timer();
 
 		#region Properties
 
@@ -242,6 +258,9 @@ namespace BizHawk.Client.EmuHawk
 		[Category("Behavior")]
 		public string ScrollMethod { get; set; }
 
+		/// <summary>
+		/// Gets or sets how the Intever for the hover event
+		/// </summary>
 		[Category("Behavior")]
 		public bool AlwaysScroll { get; set; }
 
@@ -252,6 +271,15 @@ namespace BizHawk.Client.EmuHawk
 		[Browsable(false)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public RollColumns AllColumns { get { return _columns; } }
+
+
+		[DefaultValue(750)]
+		[Category("Behavior")]
+		public int HoverInterval
+		{
+			get { return _hoverTimer.Interval; }
+			set { _hoverTimer.Interval = value; }
+		}
 
 		#endregion
 
@@ -288,6 +316,12 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		[Category("Mouse")]
 		public event CellChangeEventHandler PointedCellChanged;
+
+		/// <summary>
+		/// Fires when a cell is hovered on
+		/// </summary>
+		[Category("Mouse")]
+		public event HoverEventHandler CellHovered;
 
 		/// <summary>
 		/// Occurs when a column header is clicked
@@ -347,6 +381,8 @@ namespace BizHawk.Client.EmuHawk
 		public delegate bool QueryFrameLagHandler(int index, bool hideWasLag);
 
 		public delegate void CellChangeEventHandler(object sender, CellEventArgs e);
+
+		public delegate void HoverEventHandler(object sender, CellEventArgs e);
 
 		public delegate void RightMouseScrollEventHandler(object sender, MouseEventArgs e);
 
@@ -1460,6 +1496,7 @@ namespace BizHawk.Client.EmuHawk
 			_currentY = null;
 			CurrentCell = null;
 			IsPaintDown = false;
+			_hoverTimer.Stop();
 			Refresh();
 			base.OnMouseLeave(e);
 		}
@@ -1776,6 +1813,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PointedCellChanged(this, new CellEventArgs(LastCell, CurrentCell));
 			}
+
+			if (CurrentCell != null && CurrentCell.Column != null && CurrentCell.RowIndex.HasValue)
+			{
+				_hoverTimer.Start();
+			}
+			else
+			{
+				_hoverTimer.Stop();
+			}
 		}
 
 		private void VerticalBar_ValueChanged(object sender, EventArgs e)
@@ -2011,7 +2057,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				SelectedIndexChanged(this, new EventArgs());
+				if (SelectedIndexChanged != null)
+				{
+					SelectedIndexChanged(this, new EventArgs());
+				}
 			}
 		}
 
