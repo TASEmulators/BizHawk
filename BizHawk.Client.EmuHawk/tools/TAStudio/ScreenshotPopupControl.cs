@@ -18,19 +18,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public const int BorderWidth = 20;
-		private TasBranch _branch = null;
-		
-		public TasBranch Branch
-		{
-			get { return _branch; }
-			set
-			{
-				_branch = value;
-				Size = new Size(Branch.OSDFrameBuffer.Width + (BorderWidth * 2), Branch.OSDFrameBuffer.Height + (BorderWidth * 2));
-				Refresh();
-			}
-		}
+		public TasBranch Branch { get; set; }
 
 		private void ScreenshotPopupControl_Load(object sender, EventArgs e)
 		{
@@ -39,8 +27,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			e.Graphics.DrawRectangle(new Pen(Brushes.Black), 0, 0, Width - 1, Height - 1);
-			e.Graphics.DrawImage(Branch.OSDFrameBuffer.ToSysdrawingBitmap(), new Point(BorderWidth, BorderWidth));
+			var bitmap = Branch.OSDFrameBuffer.ToSysdrawingBitmap();
+			e.Graphics.DrawImage(bitmap, new Rectangle(0, 0, Width, Height));
 			base.OnPaint(e);
 		}
 	}

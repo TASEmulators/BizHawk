@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -37,9 +38,9 @@ namespace BizHawk.Client.EmuHawk
 		private UndoHistoryForm undoForm;
 
 		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
-			{
-				Size = new System.Drawing.Size(250, 250),
-			};
+		{
+			Size = new Size(200, 200),
+		};
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
