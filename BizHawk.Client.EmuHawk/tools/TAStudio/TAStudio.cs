@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
 		{
-			Size = new Size(200, 200),
+			Size = new Size(256, 240),
 		};
 
 		[ConfigPersist]

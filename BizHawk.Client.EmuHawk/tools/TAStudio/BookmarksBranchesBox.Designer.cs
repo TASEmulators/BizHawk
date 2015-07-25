@@ -106,17 +106,19 @@
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
+			this.BranchView.HoverInterval = 500;
 			this.BranchView.LagFramesToHide = 0;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
 			this.BranchView.MaxCharactersInHorizontal = 1;
 			this.BranchView.MultiSelect = false;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.RowCount = 0;
-			this.BranchView.ScrollSpeed = 182;
+			this.BranchView.ScrollSpeed = 13;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
 			this.BranchView.TabIndex = 0;
 			this.BranchView.CellHovered += new BizHawk.Client.EmuHawk.InputRoll.HoverEventHandler(this.BranchView_CellHovered);
 			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
+			this.BranchView.MouseLeave += new System.EventHandler(this.BranchView_MouseLeave);
 			this.BranchView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseMove);
 			// 
 			// BookmarksBranchesBox

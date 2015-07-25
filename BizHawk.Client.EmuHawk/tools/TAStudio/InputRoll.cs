@@ -525,6 +525,16 @@ namespace BizHawk.Client.EmuHawk
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public Cell CurrentCell { get; set; }
 
+		[Browsable(false)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool CurrentCellIsDataCell
+		{
+			get
+			{
+				return CurrentCell != null && CurrentCell.RowIndex.HasValue && CurrentCell.Column != null;
+			}
+		}
+
 		/// <summary>
 		/// The previous Cell that the mouse was in.
 		/// </summary>
@@ -1616,7 +1626,10 @@ namespace BizHawk.Client.EmuHawk
 						// But we went from selected to unselected, that is a change, so catch it here
 						if (hadIndex && CurrentCell.RowIndex.HasValue && CurrentCell.RowIndex > RowCount)
 						{
-							SelectedIndexChanged(this, new EventArgs());
+							if (SelectedIndexChanged != null)
+							{
+								SelectedIndexChanged(this, new EventArgs());
+							}
 						}
 					}
 

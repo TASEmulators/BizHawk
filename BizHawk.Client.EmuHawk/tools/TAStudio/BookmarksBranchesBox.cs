@@ -6,7 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using System.Windows.Media;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
@@ -99,6 +99,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (index == CurrentBranch)
 				color = SystemColors.HotTrack;
+
+			// Highlight the branch cell a little, if hovering over it
+			if (BranchView.CurrentCellIsDataCell &&
+				BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
+				column.Name == BranchNumberColumnName && 
+				index == BranchView.CurrentCell.RowIndex)
+			{
+				color = Color.FromArgb((byte)(color.A - 24), (byte)(color.R - 24), (byte)(color.G - 24), (byte)(color.B - 24));
+			}
 		}
 
 		private void AddContextMenu_Click(object sender, EventArgs e)
@@ -227,6 +236,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ScreenShotPopUp(Branches[e.NewCell.RowIndex.Value], e.NewCell.RowIndex.Value);
 				}
+				else
+				{
+					CloseScreenShotPopUp();
+				}
 			}
 			else
 			{
@@ -240,9 +253,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CloseScreenShotPopUp();
 			}
+			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+			{
+				BranchView.Refresh();
+			}
 		}
 
 		private void CloseScreenShotPopUp()
+		{
+			Tastudio.ScreenshotControl.Visible = false;
+		}
+
+		private void BranchView_MouseLeave(object sender, EventArgs e)
 		{
 			Tastudio.ScreenshotControl.Visible = false;
 		}
