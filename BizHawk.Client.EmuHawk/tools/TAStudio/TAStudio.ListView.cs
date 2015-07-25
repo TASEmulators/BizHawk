@@ -647,7 +647,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						for (int i = startVal; i <= endVal; i++)
 							CurrentTasMovie.SetFrame(i, _rightClickInput[(i - _rightClickFrame).Mod(_rightClickInput.Length)]);
-						JumpToGreenzone();
 					}
 				}
 				else
@@ -688,9 +687,9 @@ namespace BizHawk.Client.EmuHawk
 							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
 						_rightClickFrame = frame;
 					}
-
-					JumpToGreenzone();
 				}
+
+				JumpToGreenzone();
 			}
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
