@@ -160,6 +160,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
+				if (Branches.IndexOf(SelectedBranch) == CurrentBranch)
+				{
+					CurrentBranch = -1;
+				}
+
 				Branches.Remove(SelectedBranch);
 				BranchView.RowCount = Branches.Count;
 				BranchView.Refresh();
