@@ -112,21 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddContextMenu_Click(object sender, EventArgs e)
 		{
-			// TODO: don't use Global.Emulator
-			TasBranch branch = new TasBranch
-			{
-				Frame = Global.Emulator.Frame,
-				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
-				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
-				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				//OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
-				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
-				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie)
-			};
-
-			Branches.Add(branch);
-			BranchView.RowCount = Branches.Count;
-			BranchView.Refresh();
+			Branch();
 		}
 
 		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -177,16 +163,13 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
-			//SavestateManager.PopulateFramebuffer(branch.OSDFrameBuffer);
-			//Temp(branch.OSDFrameBuffer);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());
-
 			GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
 
-		// TODO: copy pasted from PLatformFrameRates
+		// TODO: copy pasted from PlatformFrameRates
 
 		private TimeSpan MovieTime(int frameCount)
 		{
@@ -229,8 +212,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Branch()
 		{
-			// TODO: refactor, creating a branch shouldn't be in context menu click event
-			AddContextMenu_Click(null, null);
+			// TODO: don't use Global.Emulator
+			TasBranch branch = new TasBranch
+			{
+				Frame = Global.Emulator.Frame,
+				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
+				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
+				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
+				//OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
+				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
+				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie)
+			};
+
+			Branches.Add(branch);
+			BranchView.RowCount = Branches.Count;
+			BranchView.Refresh();
 		}
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
