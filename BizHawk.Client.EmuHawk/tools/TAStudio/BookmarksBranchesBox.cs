@@ -218,5 +218,42 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: refactor, creating a branch shouldn't be in context menu click event
 			AddContextMenu_Click(null, null);
 		}
+
+		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Branches.Count)
+			{
+				if (e.NewCell.Column.Name == BranchNumberColumnName)
+				{
+					ScreenShotPopUp(Branches[e.NewCell.RowIndex.Value], e.NewCell.RowIndex.Value);
+				}
+			}
+			else
+			{
+				CloseScreenShotPopUp();
+			}
+		}
+
+		private void BranchView_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (BranchView.CurrentCell == null || !BranchView.CurrentCell.RowIndex.HasValue || BranchView.CurrentCell.Column == null)
+			{
+				CloseScreenShotPopUp();
+			}
+		}
+
+		private void CloseScreenShotPopUp()
+		{
+			Tastudio.ScreenshotControl.Visible = false;
+		}
+
+		private void ScreenShotPopUp(TasBranch branch, int index)
+		{
+			Tastudio.ScreenshotControl.Location = new Point(
+				this.Location.X - branch.OSDFrameBuffer.Width - ScreenshotPopupControl.BorderWidth,
+				this.Location.Y + ((BranchView.RowHeight * index) + BranchView.RowHeight) - branch.OSDFrameBuffer.Height - ScreenshotPopupControl.BorderWidth);
+			Tastudio.ScreenshotControl.Visible = true;
+			Tastudio.ScreenshotControl.Branch = branch;
+		}
 	}
 }

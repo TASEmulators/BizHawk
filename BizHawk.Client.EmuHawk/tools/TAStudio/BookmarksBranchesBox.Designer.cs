@@ -35,7 +35,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.AddContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.BranchView = new InputRoll();
+			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BookmarksBranchesGroupBox.SuspendLayout();
 			this.BranchesContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -95,19 +95,29 @@
 			// 
 			// BranchView
 			// 
+			this.BranchView.AllowColumnReorder = false;
+			this.BranchView.AllowColumnResize = false;
+			this.BranchView.AlwaysScroll = false;
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.BranchView.CellHeightPadding = 0;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
 			this.BranchView.FullRowSelect = true;
-			this.BranchView.GridLines = true;
+			this.BranchView.HideWasLagFrames = false;
+			this.BranchView.HorizontalOrientation = false;
+			this.BranchView.LagFramesToHide = 0;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
+			this.BranchView.MaxCharactersInHorizontal = 1;
 			this.BranchView.MultiSelect = false;
 			this.BranchView.Name = "BranchView";
+			this.BranchView.RowCount = 0;
+			this.BranchView.ScrollSpeed = 182;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
 			this.BranchView.TabIndex = 0;
-			this.BranchView.UseCustomBackground = true;
+			this.BranchView.CellHovered += new BizHawk.Client.EmuHawk.InputRoll.HoverEventHandler(this.BranchView_CellHovered);
 			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
+			this.BranchView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseMove);
 			// 
 			// BookmarksBranchesBox
 			// 

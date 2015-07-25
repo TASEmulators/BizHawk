@@ -36,6 +36,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private UndoHistoryForm undoForm;
 
+		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
+			{
+				Size = new System.Drawing.Size(250, 250),
+			};
+
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -70,6 +75,10 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+			ScreenshotControl.Visible = false;
+			Controls.Add(ScreenshotControl);
+			ScreenshotControl.BringToFront();
+			Settings = new TAStudioSettings();
 
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;

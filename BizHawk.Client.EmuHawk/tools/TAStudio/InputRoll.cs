@@ -2257,6 +2257,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private int CellWidth { get; set; }
 
+		[Browsable(false)]
+		public int RowHeight { get { return CellHeight; } }
+
 		/// <summary>
 		/// The height of a cell in Vertical Orientation. Only can be changed by changing the Font or CellPadding.
 		/// </summary>
