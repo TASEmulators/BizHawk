@@ -31,18 +31,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				//load tags
 				//tags run until the end of the file
 				fs.Position = 16 + reserved_size + compressed_size;
-				if (br.ReadStringFixedAscii(5) == "[TAG]")
+				if (fs.Position + 5 > fs.Length)
 				{
-					var tagstring = br.ReadStringFixedAscii((int)(fs.Length - fs.Position)).Replace("\r\n","\n");
-					foreach (var tag in tagstring.Split('\n', '\x0'))
+					//theres no space for tags, probably just no tags in the file
+				}
+				else
+				{
+					if (br.ReadStringFixedAscii(5) == "[TAG]")
 					{
-						if (tag.Trim() == "")
-							continue;
-						int eq = tag.IndexOf('=');
-						if (eq != -1)
-							TagsDictionary[tag.Substring(0, eq)] = tag.Substring(eq + 1);
-						else
-							LooseTags.Add(tag);
+						var tagstring = br.ReadStringFixedAscii((int)(fs.Length - fs.Position)).Replace("\r\n", "\n");
+						foreach (var tag in tagstring.Split('\n', '\x0'))
+						{
+							if (tag.Trim() == "")
+								continue;
+							int eq = tag.IndexOf('=');
+							if (eq != -1)
+								TagsDictionary[tag.Substring(0, eq)] = tag.Substring(eq + 1);
+							else
+								LooseTags.Add(tag);
+						}
 					}
 				}
 
