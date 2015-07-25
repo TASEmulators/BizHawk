@@ -459,7 +459,7 @@ namespace BizHawk.Client.Common
 		{
 			int? divergentPoint = DivergantPoint(_log, branch.InputLog);
 
-			_log = branch.InputLog;
+			_log = branch.InputLog.ToList();
 			_changes = true;
 			LagLog.FromLagLog(branch.LagLog);
 
