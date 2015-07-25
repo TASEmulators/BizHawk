@@ -176,6 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
+			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -185,6 +186,10 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.Panel1.SuspendLayout();
 			this.BranchesMarkersSplit.Panel2.SuspendLayout();
 			this.BranchesMarkersSplit.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).BeginInit();
+			this.MainVertialSplit.Panel1.SuspendLayout();
+			this.MainVertialSplit.Panel2.SuspendLayout();
+			this.MainVertialSplit.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -200,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
             this.HelpSubMenu});
 			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
-			this.TASMenu.Size = new System.Drawing.Size(506, 24);
+			this.TASMenu.Size = new System.Drawing.Size(509, 24);
 			this.TASMenu.TabIndex = 0;
 			this.TASMenu.Text = "menuStrip1";
 			// 
@@ -1047,13 +1052,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.HideWasLagFrames = false;
 			this.TasView.HorizontalOrientation = false;
 			this.TasView.LagFramesToHide = 0;
-			this.TasView.Location = new System.Drawing.Point(8, 27);
+			this.TasView.Location = new System.Drawing.Point(3, 0);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
 			this.TasView.Name = "TasView";
 			this.TasView.RowCount = 0;
 			this.TasView.ScrollSpeed = 1;
-			this.TasView.Size = new System.Drawing.Size(288, 528);
+			this.TasView.Size = new System.Drawing.Size(289, 528);
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
@@ -1078,7 +1083,7 @@ namespace BizHawk.Client.EmuHawk
             this.SplicerStatusLabel});
 			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
 			this.TasStatusStrip.Name = "TasStatusStrip";
-			this.TasStatusStrip.Size = new System.Drawing.Size(506, 22);
+			this.TasStatusStrip.Size = new System.Drawing.Size(509, 22);
 			this.TasStatusStrip.TabIndex = 4;
 			this.TasStatusStrip.Text = "statusStrip1";
 			// 
@@ -1096,7 +1101,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripStatusLabel2
 			// 
 			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(109, 17);
+			this.toolStripStatusLabel2.Size = new System.Drawing.Size(112, 17);
 			this.toolStripStatusLabel2.Spring = true;
 			// 
 			// SplicerStatusLabel
@@ -1108,8 +1113,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TasPlaybackBox
 			// 
-			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasPlaybackBox.Location = new System.Drawing.Point(302, 25);
+			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasPlaybackBox.Location = new System.Drawing.Point(3, 4);
 			this.TasPlaybackBox.Name = "TasPlaybackBox";
 			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 92);
 			this.TasPlaybackBox.TabIndex = 5;
@@ -1368,7 +1374,9 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.MarkerControl);
 			this.groupBox1.Location = new System.Drawing.Point(-2, 3);
 			this.groupBox1.Name = "groupBox1";
@@ -1379,8 +1387,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BookMarkControl
 			// 
-			this.BookMarkControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-			this.BookMarkControl.Location = new System.Drawing.Point(-2, 0);
+			this.BookMarkControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BookMarkControl.Location = new System.Drawing.Point(-2, 5);
 			this.BookMarkControl.Name = "BookMarkControl";
 			this.BookMarkControl.Size = new System.Drawing.Size(204, 163);
 			this.BookMarkControl.TabIndex = 8;
@@ -1388,9 +1398,10 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// BranchesMarkersSplit
 			// 
-			this.BranchesMarkersSplit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.BranchesMarkersSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.BranchesMarkersSplit.Location = new System.Drawing.Point(302, 115);
+			this.BranchesMarkersSplit.Location = new System.Drawing.Point(3, 89);
 			this.BranchesMarkersSplit.Name = "BranchesMarkersSplit";
 			this.BranchesMarkersSplit.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
@@ -1405,21 +1416,39 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.SplitterDistance = 169;
 			this.BranchesMarkersSplit.TabIndex = 9;
 			// 
+			// MainVertialSplit
+			// 
+			this.MainVertialSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.MainVertialSplit.Location = new System.Drawing.Point(2, 23);
+			this.MainVertialSplit.Name = "MainVertialSplit";
+			// 
+			// MainVertialSplit.Panel1
+			// 
+			this.MainVertialSplit.Panel1.Controls.Add(this.TasView);
+			// 
+			// MainVertialSplit.Panel2
+			// 
+			this.MainVertialSplit.Panel2.Controls.Add(this.TasPlaybackBox);
+			this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
+			this.MainVertialSplit.Size = new System.Drawing.Size(507, 528);
+			this.MainVertialSplit.SplitterDistance = 295;
+			this.MainVertialSplit.TabIndex = 10;
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(506, 576);
-			this.Controls.Add(this.BranchesMarkersSplit);
-			this.Controls.Add(this.TasPlaybackBox);
+			this.ClientSize = new System.Drawing.Size(509, 576);
+			this.Controls.Add(this.MainVertialSplit);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Controls.Add(this.TasView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.TASMenu;
-			this.MinimumSize = new System.Drawing.Size(437, 148);
+			this.MinimumSize = new System.Drawing.Size(200, 148);
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
@@ -1440,6 +1469,10 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).EndInit();
 			this.BranchesMarkersSplit.ResumeLayout(false);
+			this.MainVertialSplit.Panel1.ResumeLayout(false);
+			this.MainVertialSplit.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).EndInit();
+			this.MainVertialSplit.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1591,5 +1624,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 		private System.Windows.Forms.ToolStripMenuItem wheelScrollSpeedToolStripMenuItem;
 		private System.Windows.Forms.SplitContainer BranchesMarkersSplit;
+		private System.Windows.Forms.SplitContainer MainVertialSplit;
 	}
 }
