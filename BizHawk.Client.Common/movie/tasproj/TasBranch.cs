@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(nframebuffer, delegate(Stream s)
 				{
 					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
-					QuickBmpFile.Save(vp, s, 160, 120); // todo: choose size more smarterly
+					QuickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height); // todo: choose size more smarterly
 				});
 				bs.PutLump(nlaglog, delegate(BinaryWriter bw)
 				{
