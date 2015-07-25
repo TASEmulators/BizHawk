@@ -43,13 +43,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = FrameColumnName,
 					Text = "Frame",
-					Width = 68
+					Width = 64
 				},
 				new InputRoll.RollColumn
 				{
 					Name = TimeColumnName,
 					Text = "Length",
-					Width = 83
+					Width = 90
 				},
 			});
 
