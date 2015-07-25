@@ -24,7 +24,13 @@ namespace BizHawk.Client.EmuHawk
 		private readonly HScrollBar HBar;
 		public int ScrollSpeed
 		{
-			get { return VBar.SmallChange; }
+			get
+			{
+				if (HorizontalOrientation)
+					return HBar.SmallChange / CellWidth;
+				else
+					return VBar.SmallChange / CellHeight;
+			}
 			set
 			{
 				if (HorizontalOrientation)
@@ -162,8 +168,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_horizontalOrientation != value)
 				{
+					int temp = ScrollSpeed;
 					_horizontalOrientation = value;
 					OrientationChanged();
+					HBar.SmallChange = CellWidth;
+					VBar.SmallChange = CellHeight;
+					ScrollSpeed = temp;
 				}
 			}
 		}

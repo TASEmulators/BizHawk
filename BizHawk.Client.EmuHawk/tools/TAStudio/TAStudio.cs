@@ -55,8 +55,8 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutoRestoreLastPosition { get; set; }
 			public bool FollowCursor { get; set; }
 			public bool EmptyMarkers { get; set; }
+			public int ScrollSpeed { get; set; }
 		}
-		int scrollSpeed = 1; // TODO: Save this value somewhere.
 
 		public TasMovie CurrentTasMovie
 		{
@@ -68,7 +68,6 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
-			Settings = new TAStudioSettings();
 
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;
@@ -85,7 +84,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
-			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
@@ -150,6 +148,11 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.FlagChanges();
 				};
 			}
+
+			TasView.InputPaintingMode = Settings.DrawInput;
+			if (Settings.ScrollSpeed == 0)
+				Settings.ScrollSpeed = 1; // Default to 1, not 0. TODO: Surely there's a better way?
+			TasView.ScrollSpeed = Settings.ScrollSpeed;
 
 			RefreshDialog();
 			_initialized = true;
