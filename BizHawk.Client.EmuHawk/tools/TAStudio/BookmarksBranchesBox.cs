@@ -137,6 +137,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchesContextMenu_Opening(object sender, CancelEventArgs e)
 		{
+			UpdateBranchContextMenuItem.Enabled =
 			RemoveBranchContextMenuItem.Enabled =
 				LoadBranchContextMenuItem.Enabled =
 				SelectedBranch != null;
@@ -219,21 +220,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Branch()
 		{
+			var branch = CreateBranch();
+			Branches.Add(branch);
+			BranchView.RowCount = Branches.Count;
+			BranchView.Refresh();
+		}
+
+		private TasBranch CreateBranch()
+		{
 			// TODO: don't use Global.Emulator
-			TasBranch branch = new TasBranch
+			return new TasBranch
 			{
 				Frame = Global.Emulator.Frame,
 				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
 				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				//OSDFrameBuffer = (int[])(Global.Emulator.VideoProvider().GetVideoBuffer().Clone()),
 				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
 				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie)
 			};
-
-			Branches.Add(branch);
-			BranchView.RowCount = Branches.Count;
-			BranchView.Refresh();
 		}
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
@@ -290,6 +294,25 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.ScreenshotControl.Visible = true;
 			Tastudio.ScreenshotControl.Branch = branch;
 			Tastudio.ScreenshotControl.Refresh();
+		}
+
+		private void UpdateBranchContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedBranch != null)
+			{
+				UpdateBranch(SelectedBranch);
+			}
+		}
+
+		private void UpdateBranch(TasBranch branch)
+		{
+			var index = Branches.IndexOf(branch);
+
+			var newbranch = CreateBranch();
+			Branches.Insert(index, newbranch);
+
+			Branches.Remove(branch);
+			BranchView.Refresh();
 		}
 	}
 }
