@@ -279,8 +279,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenShotPopUp(TasBranch branch, int index)
 		{
-			int x = this.Location.X - Tastudio.ScreenshotControl.Width;
-			int y = this.Location.Y + (BranchView.RowHeight * index);
+			Point locationOnForm = this.FindForm().PointToClient(
+				this.Parent.PointToScreen(this.Location));
+
+			int x = locationOnForm.X - Tastudio.ScreenshotControl.Width;
+			int y = locationOnForm.Y + (BranchView.RowHeight * index);
 
 			Tastudio.ScreenshotControl.Location = new Point(x, y);
 

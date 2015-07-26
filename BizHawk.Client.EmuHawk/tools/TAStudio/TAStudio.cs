@@ -82,6 +82,15 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+
+			if (Global.Emulator != null)
+			{
+				// Set the screenshot to "1x" resolution of the core
+				// TODO: cores like n64 and psx are going to still have sizes too big for the control
+				// Find a smart way to keep them small
+				ScreenshotControl.Size = new Size(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
+			}
+
 			ScreenshotControl.Visible = false;
 			Controls.Add(ScreenshotControl);
 			ScreenshotControl.BringToFront();
