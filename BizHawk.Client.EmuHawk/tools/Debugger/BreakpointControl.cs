@@ -154,16 +154,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void AddBreakpointButton_Click(object sender, EventArgs e)
 		{
-			var b = new AddBreakpointDialog
-			{
-				// TODO: don't use Global.Emulator! Pass in an IMemoryDomains implementation from the parent tool
-				MaxAddressSize = Global.Emulator.AsMemoryDomains().SystemBus.Size - 1
-			};
-
-			if (!MCS.ExecuteCallbacksAvailable)
-			{
-				b.DisableExecuteOption();
-			}
+			var b = CreateAddBreakpointDialog(BreakpointOperation.Add);
 
 			if (b.ShowHawkDialog() == DialogResult.OK)
 			{
@@ -231,8 +222,12 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		private void UpdateBreakpointRemoveButton()
 		{
 			ToggleButton.Enabled =
-				RemoveBreakpointButton.Enabled =
-				EditableItems.Any();
+			RemoveBreakpointButton.Enabled =
+			EditableItems.Any();
+
+			DuplicateBreakpointButton.Enabled =
+			EditBreakpointButton.Enabled =
+			EditableItems.Count() == 1;
 		}
 
 		private void BreakpointView_SelectedIndexChanged(object sender, EventArgs e)
@@ -281,6 +276,79 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 			BreakpointView.ItemCount = Breakpoints.Count;
 			UpdateStatsLabel();
+		}
+
+		private void DuplicateBreakpointButton_Click(object sender, EventArgs e)
+		{
+			var breakpoint = SelectedItems.FirstOrDefault();
+
+			if (breakpoint != null && !breakpoint.ReadOnly)
+			{
+				var b = CreateAddBreakpointDialog(BreakpointOperation.Duplicate, breakpoint.Type, breakpoint.Address);
+
+				if (b.ShowHawkDialog() == DialogResult.OK)
+				{
+					Breakpoints.Add(new Breakpoint(Core, breakpoint.Callback, b.Address, b.BreakType, breakpoint.Active));
+				}
+			}
+
+			BreakpointView.ItemCount = Breakpoints.Count;
+			UpdateBreakpointRemoveButton();
+			UpdateStatsLabel();
+		}
+
+		private void EditBreakpointButton_Click(object sender, EventArgs e)
+		{
+			var breakpoint = SelectedItems.FirstOrDefault();
+
+			if (breakpoint != null && !breakpoint.ReadOnly)
+			{
+				var b = CreateAddBreakpointDialog(BreakpointOperation.Edit, breakpoint.Type, breakpoint.Address);
+
+				if (b.ShowHawkDialog() == DialogResult.OK)
+				{
+					breakpoint.Type = b.BreakType;
+					breakpoint.Address = b.Address;
+					breakpoint.ResetCallback();
+				}
+			}
+
+			BreakpointView.ItemCount = Breakpoints.Count;
+			UpdateBreakpointRemoveButton();
+			UpdateStatsLabel();
+		}
+
+		private AddBreakpointDialog CreateAddBreakpointDialog(BreakpointOperation op, MemoryCallbackType? type = null, uint? address = null)
+		{
+			var operation = (AddBreakpointDialog.BreakpointOperation)op;
+
+			var b = new AddBreakpointDialog(operation)
+			{
+				// TODO: don't use Global.Emulator! Pass in an IMemoryDomains implementation from the parent tool
+				MaxAddressSize = Global.Emulator.AsMemoryDomains().SystemBus.Size - 1
+			};
+
+			if (type != null)
+			{
+				b.BreakType = (MemoryCallbackType)type;
+			}
+
+			if (address != null)
+			{
+				b.Address = (uint)address;
+			}
+
+			if (!MCS.ExecuteCallbacksAvailable)
+			{
+				b.DisableExecuteOption();
+			}
+
+			return b;
+		}
+
+		public enum BreakpointOperation
+		{
+			Add, Edit, Duplicate
 		}
 	}
 }

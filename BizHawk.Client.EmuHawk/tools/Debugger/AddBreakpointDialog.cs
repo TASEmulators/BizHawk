@@ -13,9 +13,42 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class AddBreakpointDialog : Form, IHasShowDialog
 	{
-		public AddBreakpointDialog()
+		public AddBreakpointDialog(BreakpointOperation op)
 		{
 			InitializeComponent();
+			Operation = op;
+		}
+
+		public AddBreakpointDialog(BreakpointOperation op, uint address, MemoryCallbackType type):this(op)
+		{
+			Address = address;
+			BreakType = type;
+		}
+
+		private BreakpointOperation _operation;
+
+		private BreakpointOperation Operation
+		{
+			get 
+			{ 
+				return _operation; 
+			}
+			set
+			{
+				switch (value)
+				{
+					case BreakpointOperation.Add:
+						Text = "Add Breakpoint";
+						break;
+					case BreakpointOperation.Duplicate:
+						Text = "Duplicate Breakpoint";
+						break;
+					case BreakpointOperation.Edit:
+						Text = "Edit Breakpoint";
+						break;
+				}
+				_operation = value;
+			}
 		}
 
 		public void DisableExecuteOption()
@@ -29,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 			
 		}
 
-		public MemoryCallbackType BreakType
+		public MemoryCallbackType BreakType	
 		{
 			get
 			{
@@ -50,11 +83,29 @@ namespace BizHawk.Client.EmuHawk
 
 				return MemoryCallbackType.Read;
 			}
+
+			set
+			{
+				ReadRadio.Checked = WriteRadio.Checked = ExecuteRadio.Checked = false;
+				switch (value)
+				{
+					case MemoryCallbackType.Read:
+						ReadRadio.Checked = true;
+						break;
+					case MemoryCallbackType.Write:
+						WriteRadio.Checked = true;
+						break;
+					case MemoryCallbackType.Execute:
+						ExecuteRadio.Checked = true;
+						break;
+				}
+			}
 		}
 
 		public uint Address
 		{
 			get { return (uint)AddressBox.ToRawInt().Value; }
+			set { AddressBox.SetFromLong(value); }
 		}
 
 		public long MaxAddressSize
@@ -63,7 +114,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return AddressBox.GetMax();
 			}
-
 			set
 			{
 				AddressBox.SetHexProperties(value);
@@ -76,9 +126,21 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		private void CancelBtn_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
+		}
+
 		private void AddBreakpointDialog_Load(object sender, EventArgs e)
 		{
 
 		}
+
+		public enum BreakpointOperation
+		{
+			Add, Edit, Duplicate
+		}
+
 	}
 }

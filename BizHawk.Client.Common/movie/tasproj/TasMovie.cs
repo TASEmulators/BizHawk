@@ -20,7 +20,9 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager StateManager;
 		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-		private readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+
+		private readonly TasBranchCollection Branches = new TasBranchCollection();
 
 		private BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
@@ -74,6 +76,9 @@ namespace BizHawk.Client.Common
 			BindMarkersToInput = true;
 		}
 
+		public TasLagLog TasLagLog { get { return LagLog; } }
+		public TasBranchCollection TasBranches { get { return Branches; } }
+		public List<string> InputLog { get { return _log; } }
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
@@ -279,8 +284,7 @@ namespace BizHawk.Client.Common
 
 		public void CopyVerificationLog(IEnumerable<string> log)
 		{
-			VerificationLog.Clear();
-			foreach (var entry in log)
+			foreach (string entry in log)
 			{
 				VerificationLog.Add(entry);
 			}
@@ -449,6 +453,52 @@ namespace BizHawk.Client.Common
 			}
 
 			return true;
+		}
+
+		public void LoadBranch(TasBranch branch)
+		{
+			int? divergentPoint = DivergantPoint(_log, branch.InputLog);
+
+			_log = branch.InputLog.ToList();
+			_changes = true;
+			LagLog.FromLagLog(branch.LagLog);
+
+			if (divergentPoint.HasValue)
+			{
+				StateManager.Invalidate(divergentPoint.Value);
+
+				// For now, even though we loaded the lag log, we are invalidating it the same as savestates to show the user the space isn't navigatable without re-emulating
+				LagLog.RemoveFrom(divergentPoint.Value);
+			}
+			else
+			{
+				StateManager.Invalidate(branch.InputLog.Count);
+			}
+
+			StateManager.SetState(branch.Frame, branch.CoreData);
+
+			// TODO: we save the changelog, but not to disk, also this may not be intended behavior
+			//ChangeLog = branch.ChangeLog;
+		}
+
+		// TODO: use LogGenerators rather than string comparisons
+		private int? DivergantPoint(List<string> currentLog, List<string> newLog)
+		{
+			int max = newLog.Count;
+			if (currentLog.Count > newLog.Count)
+			{
+				max = currentLog.Count;
+			}
+
+			for (int i = 0; i < max; i++)
+			{
+				if (newLog[i] != currentLog[i])
+				{
+					return i;
+				}
+			}
+
+			return null;
 		}
 	}
 }

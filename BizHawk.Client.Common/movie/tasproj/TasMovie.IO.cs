@@ -90,6 +90,12 @@ namespace BizHawk.Client.Common
 				{
 					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
 				}
+
+				if (Branches.Any())
+				{
+					Branches.Save(bs);
+				}
+
 				ReportProgress(PROGRESS_STEP);
 			}
 
@@ -263,6 +269,8 @@ namespace BizHawk.Client.Common
 						}
 					});
 				}
+
+				Branches.Load(bl);
 			}
 
 			Changes = false;

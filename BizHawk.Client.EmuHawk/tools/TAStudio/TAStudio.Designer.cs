@@ -127,6 +127,8 @@ namespace BizHawk.Client.EmuHawk
 			this.scrollToTopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.scrollToBottomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.scrollToCenterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator25 = new System.Windows.Forms.ToolStripSeparator();
+			this.wheelScrollSpeedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColumnsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator19 = new System.Windows.Forms.ToolStripSeparator();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -168,14 +170,26 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertNumFramesContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.BranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StartFromNowSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.StartNewProjectFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
+			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
+			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
 			this.RightClickMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).BeginInit();
+			this.BranchesMarkersSplit.Panel1.SuspendLayout();
+			this.BranchesMarkersSplit.Panel2.SuspendLayout();
+			this.BranchesMarkersSplit.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).BeginInit();
+			this.MainVertialSplit.Panel1.SuspendLayout();
+			this.MainVertialSplit.Panel2.SuspendLayout();
+			this.MainVertialSplit.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TASMenu
@@ -191,7 +205,7 @@ namespace BizHawk.Client.EmuHawk
             this.HelpSubMenu});
 			this.TASMenu.Location = new System.Drawing.Point(0, 0);
 			this.TASMenu.Name = "TASMenu";
-			this.TASMenu.Size = new System.Drawing.Size(506, 24);
+			this.TASMenu.Size = new System.Drawing.Size(509, 24);
 			this.TASMenu.TabIndex = 0;
 			this.TASMenu.Text = "menuStrip1";
 			// 
@@ -825,7 +839,9 @@ namespace BizHawk.Client.EmuHawk
             this.RotateMenuItem,
             this.HideLagFramesSubMenu,
             this.toolStripSeparator23,
-            this.followCursorToolStripMenuItem});
+            this.followCursorToolStripMenuItem,
+            this.toolStripSeparator25,
+            this.wheelScrollSpeedToolStripMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
@@ -834,7 +850,7 @@ namespace BizHawk.Client.EmuHawk
 			// RotateMenuItem
 			// 
 			this.RotateMenuItem.Name = "RotateMenuItem";
-			this.RotateMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.RotateMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.RotateMenuItem.Text = "Rotate";
 			this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
 			// 
@@ -848,7 +864,7 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator12,
             this.hideWasLagFramesToolStripMenuItem});
 			this.HideLagFramesSubMenu.Name = "HideLagFramesSubMenu";
-			this.HideLagFramesSubMenu.Size = new System.Drawing.Size(162, 22);
+			this.HideLagFramesSubMenu.Size = new System.Drawing.Size(183, 22);
 			this.HideLagFramesSubMenu.Text = "Hide Lag Frames";
 			this.HideLagFramesSubMenu.DropDownOpened += new System.EventHandler(this.HideLagFramesSubMenu_DropDownOpened);
 			// 
@@ -905,7 +921,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator23
 			// 
 			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(159, 6);
+			this.toolStripSeparator23.Size = new System.Drawing.Size(180, 6);
 			// 
 			// followCursorToolStripMenuItem
 			// 
@@ -917,7 +933,7 @@ namespace BizHawk.Client.EmuHawk
             this.scrollToBottomToolStripMenuItem,
             this.scrollToCenterToolStripMenuItem});
 			this.followCursorToolStripMenuItem.Name = "followCursorToolStripMenuItem";
-			this.followCursorToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.followCursorToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.followCursorToolStripMenuItem.Text = "Follow Cursor";
 			this.followCursorToolStripMenuItem.DropDownOpened += new System.EventHandler(this.followCursorToolStripMenuItem_DropDownOpened);
 			// 
@@ -967,6 +983,18 @@ namespace BizHawk.Client.EmuHawk
 			this.scrollToCenterToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.scrollToCenterToolStripMenuItem.Text = "Scroll to Center";
 			this.scrollToCenterToolStripMenuItem.Click += new System.EventHandler(this.scrollToCenterToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator25
+			// 
+			this.toolStripSeparator25.Name = "toolStripSeparator25";
+			this.toolStripSeparator25.Size = new System.Drawing.Size(180, 6);
+			// 
+			// wheelScrollSpeedToolStripMenuItem
+			// 
+			this.wheelScrollSpeedToolStripMenuItem.Name = "wheelScrollSpeedToolStripMenuItem";
+			this.wheelScrollSpeedToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.wheelScrollSpeedToolStripMenuItem.Text = "Wheel Scroll Speed...";
+			this.wheelScrollSpeedToolStripMenuItem.Click += new System.EventHandler(this.wheelScrollSpeedToolStripMenuItem_Click);
 			// 
 			// ColumnsSubMenu
 			// 
@@ -1018,17 +1046,19 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasView.CellHeightPadding = 0;
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;
 			this.TasView.HorizontalOrientation = false;
 			this.TasView.LagFramesToHide = 0;
-			this.TasView.Location = new System.Drawing.Point(8, 27);
+			this.TasView.Location = new System.Drawing.Point(3, 0);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
 			this.TasView.Name = "TasView";
 			this.TasView.RowCount = 0;
-			this.TasView.Size = new System.Drawing.Size(288, 471);
+			this.TasView.ScrollSpeed = 1;
+			this.TasView.Size = new System.Drawing.Size(289, 528);
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
@@ -1051,9 +1081,9 @@ namespace BizHawk.Client.EmuHawk
             this.SavingProgressBar,
             this.toolStripStatusLabel2,
             this.SplicerStatusLabel});
-			this.TasStatusStrip.Location = new System.Drawing.Point(0, 497);
+			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
 			this.TasStatusStrip.Name = "TasStatusStrip";
-			this.TasStatusStrip.Size = new System.Drawing.Size(506, 22);
+			this.TasStatusStrip.Size = new System.Drawing.Size(509, 22);
 			this.TasStatusStrip.TabIndex = 4;
 			this.TasStatusStrip.Text = "statusStrip1";
 			// 
@@ -1071,7 +1101,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripStatusLabel2
 			// 
 			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(109, 17);
+			this.toolStripStatusLabel2.Size = new System.Drawing.Size(112, 17);
 			this.toolStripStatusLabel2.Spring = true;
 			// 
 			// SplicerStatusLabel
@@ -1083,10 +1113,11 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// TasPlaybackBox
 			// 
-			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.TasPlaybackBox.Location = new System.Drawing.Point(302, 25);
+			this.TasPlaybackBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TasPlaybackBox.Location = new System.Drawing.Point(3, 4);
 			this.TasPlaybackBox.Name = "TasPlaybackBox";
-			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 98);
+			this.TasPlaybackBox.Size = new System.Drawing.Size(204, 92);
 			this.TasPlaybackBox.TabIndex = 5;
 			this.TasPlaybackBox.Tastudio = null;
 			// 
@@ -1099,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl.Emulator = null;
 			this.MarkerControl.Location = new System.Drawing.Point(2, 16);
 			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(198, 343);
+			this.MarkerControl.Size = new System.Drawing.Size(194, 235);
 			this.MarkerControl.TabIndex = 6;
 			this.MarkerControl.Tastudio = null;
 			// 
@@ -1166,10 +1197,11 @@ namespace BizHawk.Client.EmuHawk
             this.InsertNumFramesContextMenuItem,
             this.toolStripSeparator18,
             this.TruncateContextMenuItem,
+            this.BranchContextMenuItem,
             this.StartFromNowSeparator,
             this.StartNewProjectFromNowMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 414);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 436);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -1321,6 +1353,13 @@ namespace BizHawk.Client.EmuHawk
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
+			// BranchContextMenuItem
+			// 
+			this.BranchContextMenuItem.Name = "BranchContextMenuItem";
+			this.BranchContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.BranchContextMenuItem.Text = "&Branch";
+			this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
+			// 
 			// StartFromNowSeparator
 			// 
 			this.StartFromNowSeparator.Name = "StartFromNowSeparator";
@@ -1335,31 +1374,84 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.MarkerControl);
-			this.groupBox1.Location = new System.Drawing.Point(302, 129);
+			this.groupBox1.Location = new System.Drawing.Point(-2, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(201, 365);
+			this.groupBox1.Size = new System.Drawing.Size(204, 257);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Markers";
+			// 
+			// BookMarkControl
+			// 
+			this.BookMarkControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BookMarkControl.Location = new System.Drawing.Point(-2, 5);
+			this.BookMarkControl.Name = "BookMarkControl";
+			this.BookMarkControl.Size = new System.Drawing.Size(204, 163);
+			this.BookMarkControl.TabIndex = 8;
+			this.BookMarkControl.Tastudio = null;
+			// 
+			// BranchesMarkersSplit
+			// 
+			this.BranchesMarkersSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BranchesMarkersSplit.Location = new System.Drawing.Point(3, 89);
+			this.BranchesMarkersSplit.Name = "BranchesMarkersSplit";
+			this.BranchesMarkersSplit.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// BranchesMarkersSplit.Panel1
+			// 
+			this.BranchesMarkersSplit.Panel1.Controls.Add(this.BookMarkControl);
+			// 
+			// BranchesMarkersSplit.Panel2
+			// 
+			this.BranchesMarkersSplit.Panel2.Controls.Add(this.groupBox1);
+			this.BranchesMarkersSplit.Size = new System.Drawing.Size(204, 436);
+			this.BranchesMarkersSplit.SplitterDistance = 169;
+			this.BranchesMarkersSplit.TabIndex = 9;
+			this.BranchesMarkersSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
+			// 
+			// MainVertialSplit
+			// 
+			this.MainVertialSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.MainVertialSplit.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.MainVertialSplit.Location = new System.Drawing.Point(2, 23);
+			this.MainVertialSplit.Name = "MainVertialSplit";
+			// 
+			// MainVertialSplit.Panel1
+			// 
+			this.MainVertialSplit.Panel1.Controls.Add(this.TasView);
+			// 
+			// MainVertialSplit.Panel2
+			// 
+			this.MainVertialSplit.Panel2.Controls.Add(this.TasPlaybackBox);
+			this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
+			this.MainVertialSplit.Size = new System.Drawing.Size(507, 528);
+			this.MainVertialSplit.SplitterDistance = 295;
+			this.MainVertialSplit.TabIndex = 10;
+			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVertialSplit_SplitterMoved);
 			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(506, 519);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.TasPlaybackBox);
+			this.ClientSize = new System.Drawing.Size(509, 576);
+			this.Controls.Add(this.MainVertialSplit);
 			this.Controls.Add(this.TasStatusStrip);
 			this.Controls.Add(this.TASMenu);
-			this.Controls.Add(this.TasView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.TASMenu;
-			this.MinimumSize = new System.Drawing.Size(437, 148);
+			this.MinimumSize = new System.Drawing.Size(200, 148);
 			this.Name = "TAStudio";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "TAStudio";
@@ -1376,6 +1468,14 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerContextMenu.ResumeLayout(false);
 			this.RightClickMenu.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
+			this.BranchesMarkersSplit.Panel1.ResumeLayout(false);
+			this.BranchesMarkersSplit.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).EndInit();
+			this.BranchesMarkersSplit.ResumeLayout(false);
+			this.MainVertialSplit.Panel1.ResumeLayout(false);
+			this.MainVertialSplit.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).EndInit();
+			this.MainVertialSplit.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1522,5 +1622,11 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem applyPatternToPaintedInputToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem onlyOnAutoFireColumnsToolStripMenuItem;
+		private BookmarksBranchesBox BookMarkControl;
+		private System.Windows.Forms.ToolStripMenuItem BranchContextMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
+		private System.Windows.Forms.ToolStripMenuItem wheelScrollSpeedToolStripMenuItem;
+		private System.Windows.Forms.SplitContainer BranchesMarkersSplit;
+		private System.Windows.Forms.SplitContainer MainVertialSplit;
 	}
 }

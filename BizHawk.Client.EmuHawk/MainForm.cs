@@ -836,6 +836,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public byte[] CurrentFrameBuffer(bool captureOSD)
+		{
+			using (var bb = captureOSD ? CaptureOSD() : MakeScreenshotImage())
+			{
+				using (var img = bb.ToSysdrawingBitmap())
+				{
+					ImageConverter converter = new ImageConverter();
+					return (byte[])converter.ConvertTo(img, typeof(byte[]));
+				}
+			}
+		}
+
 		public void TakeScreenshotToClipboard()
 		{
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
@@ -928,8 +940,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SynchChrome()
 		{
-			//PANTS
-
 			if (_inFullscreen)
 			{
 				//TODO - maybe apply a hack tracked during fullscreen here to override it
@@ -949,11 +959,12 @@ namespace BizHawk.Client.EmuHawk
 				else if (Global.Config.DispChrome_FrameWindowed == 2)
 					FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
 			}
-
 		}
 
 		public void ToggleFullscreen(bool allowSuppress=false)
 		{
+			AutohideCursor(false);
+
 			//prohibit this operation if the current controls include LMouse
 			if (allowSuppress)
 			{
@@ -1237,6 +1248,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _wasPaused;
 		private bool _didMenuPause;
 
+		private Cursor _blankCursor;
+		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
 
@@ -1741,6 +1754,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		void AutohideCursor(bool hide)
+		{
+			if (hide && !_cursorHidden)
+			{
+				if (_blankCursor == null)
+				{
+					var ms = new System.IO.MemoryStream(BizHawk.Client.EmuHawk.Properties.Resources.BlankCursor);
+					_blankCursor = new Cursor(ms);
+				}
+				PresentationPanel.Control.Cursor = _blankCursor;
+				_cursorHidden = true;
+			}
+			else if (!hide && _cursorHidden)
+			{
+				PresentationPanel.Control.Cursor = Cursors.Default;
+				timerMouseIdle.Stop();
+				timerMouseIdle.Start();
+				_cursorHidden = false;
+			}
+		}
+
 		private static unsafe BitmapBuffer MakeScreenshotImage()
 		{
 			var bb = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
@@ -1870,8 +1904,8 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;%ARCH%",
-						"Music Files", "*.psf;*.sid;*.nsf",
+						"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.nsf;%ARCH%",
 						"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -1888,8 +1922,9 @@ namespace BizHawk.Client.EmuHawk
 						"Gameboy Advance", "*.gba;%ARCH%",
 						"Colecovision", "*.col;%ARCH%",
 						"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+						"PlayStation", "*.cue;*.ccd;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
-						"PSF Playstation Sound File (not supported)", "*.psf",
+						"PSF Playstation Sound File", "*.psf;*.minipsf",
 						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 						"SID Commodore 64 Music File", "*.sid;%ARCH%",
 						"Nintendo 64", "*.z64;*.v64;*.n64",
@@ -1899,10 +1934,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
+					"PlayStation", "*.cue;*.ccd;*.m3u",
+					"PSF Playstation Sound File", "*.psf;*.minipsf",
 					"Nintendo 64", "*.z64;*.v64;*.n64",
 					"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 					"Gameboy Advance", "*.gba;%ARCH%",
@@ -3767,55 +3804,7 @@ namespace BizHawk.Client.EmuHawk
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
 
-		private void quickNESToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NES_InQuickNES = true;
-			FlagNeedsReboot();
-		}
 
-		private void nesHawkToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.NES_InQuickNES = false;
-			FlagNeedsReboot();
-		}
 
-		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA = true;
-			FlagNeedsReboot();
-		}
-
-		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA = false;
-			FlagNeedsReboot();
-		}
-
-		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
-			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
-		}
-
-		private void gBAWithMGBAToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.GBA_UsemGBA ^= true;
-			FlagNeedsReboot();
-		}
-
-		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<AutoHawk>();
-		}
-
-		private void settingsToolStripMenuItem1_Click_1(object sender, EventArgs e)
-		{
-			GenericCoreConfig.DoDialog(this, "Apple II Settings");
-		}
-
-		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new PSXHashDiscs().ShowDialog();
-		}
 	}
 }

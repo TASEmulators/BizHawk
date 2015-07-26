@@ -238,7 +238,7 @@ namespace BizHawk.Client.Common
 
 				try
 				{
-					var ext = file.Extension.ToLower();
+					var ext = file.Extension.ToLowerInvariant();
 					if (ext == ".m3u")
 					{
 						//HACK ZONE - currently only psx supports m3u
@@ -256,10 +256,22 @@ namespace BizHawk.Client.Common
 						{
 							Disc disc = null;
 							string discPath = e.Path;
-							string discExt = Path.GetExtension(discPath).ToLower();
-							disc = Disc.LoadAutomagic(discPath);
+
+							//--- load the disc in a context which will let us abort if it's going to take too long
+							var discMountJob = new DiscMountJob { IN_FromPath = discPath };
+							discMountJob.IN_SlowLoadAbortThreshold = 8;
+							discMountJob.Run();
+							disc = discMountJob.OUT_Disc;
+
+							if (discMountJob.OUT_SlowLoadAborted)
+							{
+								System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+								return false;
+							}
+
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+
 							var discName = Path.GetFileNameWithoutExtension(discPath);
 							discNames.Add(discName);
 							discs.Add(disc);
@@ -278,7 +290,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's disc hasher tool");
+									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 								}
 							}
 							else
@@ -376,7 +388,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's disc hasher tool");
+									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 								}
 								break;
@@ -386,7 +398,7 @@ namespace BizHawk.Client.Common
 								break;
 						}
 					}
-					else if (file.Extension.ToLower() == ".xml")
+					else if (file.Extension.ToLowerInvariant() == ".xml")
 					{
 						try
 						{
@@ -451,22 +463,39 @@ namespace BizHawk.Client.Common
 							}
 						}
 					}
+					else if (file.Extension.ToLowerInvariant() == ".psf" || file.Extension.ToLowerInvariant() == ".minipsf")
+					{
+						Func<Stream, int, byte[]> cbDeflater = (Stream instream, int size) =>
+						{
+							var inflater = new ICSharpCode.SharpZipLib.Zip.Compression.Inflater(false);
+							var iis = new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(instream, inflater);
+							MemoryStream ret = new MemoryStream();
+							iis.CopyTo(ret);
+							return ret.ToArray();
+						};
+						PSF psf = new PSF();
+						psf.Load(path, cbDeflater);
+						nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+						nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want.";
+
+						//total garbage, this
+						rom = new RomGame(file);
+						game = rom.GameInfo;
+					}
 					else // most extensions
 					{
 						rom = new RomGame(file);
 
 						//hacky for now
-						if (file.Extension.ToLower() == ".exe")
-						{
+						if (file.Extension.ToLowerInvariant() == ".exe")
 							rom.GameInfo.System = "PSX";
-						}
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
 							// Has the user picked a preference for this extension?
-							if (PreferredPlatformIsDefined(rom.Extension.ToLower()))
+							if (PreferredPlatformIsDefined(rom.Extension.ToLowerInvariant()))
 							{
-								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLower()];
+								rom.GameInfo.System = Global.Config.PreferredPlatformsForExtensions[rom.Extension.ToLowerInvariant()];
 							}
 							else if (ChoosePlatform != null)
 							{
@@ -487,7 +516,7 @@ namespace BizHawk.Client.Common
 						var isXml = false;
 
 						// other xml has already been handled
-						if (file.Extension.ToLower() == ".xml")
+						if (file.Extension.ToLowerInvariant() == ".xml")
 						{
 							game.System = "SNES";
 							isXml = true;

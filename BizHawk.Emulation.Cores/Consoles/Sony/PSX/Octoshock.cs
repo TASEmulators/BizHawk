@@ -178,14 +178,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				{
 					var item = Disc.TOC.TOCItems[i];
 					tracks101[i].adr = (byte)(item.Exists ? 1 : 0);
-					tracks101[i].lba = (uint)item.LBATimestamp.Sector;
+					tracks101[i].lba = (uint)item.LBA;
 					tracks101[i].control = (byte)item.Control;
 				}
 
 				////the lead-out track is to be synthesized
 				tracks101[read_target->last_track + 1].adr = 1;
 				tracks101[read_target->last_track + 1].control = 0;
-				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOC.LeadoutLBA.Sector;
+				tracks101[read_target->last_track + 1].lba = (uint)Disc.TOC.LeadoutLBA;
 
 				//element 100 is to be copied as the lead-out track
 				tracks101[100] = tracks101[read_target->last_track + 1];
@@ -221,9 +221,21 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public List<string> HackyDiscButtons = new List<string>();
 
+		public Octoshock(CoreComm comm, PSF psf, object settings, object syncSettings)
+		{
+			Load(comm, null, null, null, settings, syncSettings, psf);
+			OctoshockDll.shock_PowerOn(psx);
+		}
+
 		//note: its annoying that we have to have a disc before constructing this.
 		//might want to change that later. HOWEVER - we need to definitely have a region, at least
 		public Octoshock(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings)
+		{
+			Load(comm, discs, discNames, exe, settings, syncSettings, null);
+			OctoshockDll.shock_PowerOn(psx);
+		}
+
+		void Load(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(tracer);
@@ -237,14 +249,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			Attach();
 
-			HackyDiscButtons.AddRange(discNames);
-
 			//assume this region for EXE and PSF, maybe not correct though
 			string firmwareRegion = "U";
 			SystemRegion = OctoshockDll.eRegion.NA;
 
 			if (discs != null)
 			{
+				HackyDiscButtons.AddRange(discNames);
+
 				foreach (var disc in discs)
 				{
 					var discInterface = new DiscInterface(disc,
@@ -326,11 +338,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				CurrentTrayOpen = false;
 				CurrentDiscIndexMounted = 1;
 			}
-			else
+			else if (psf == null)
 			{
 				//must be an exe
 				fixed (byte* pExeBuffer = exe)
-					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length);
+					OctoshockDll.shock_MountEXE(psx, pExeBuffer, exe.Length, false);
+
+				//start with no disc inserted and tray closed
+				CurrentTrayOpen = false;
+				CurrentDiscIndexMounted = 0;
+				OctoshockDll.shock_CloseTray(psx);
+			}
+			else
+			{
+				//must be a psf
+				if(psf.LibData != null)
+					fixed (byte* pBuf = psf.LibData)
+						OctoshockDll.shock_MountEXE(psx, pBuf, psf.LibData.Length, true);
+				fixed (byte* pBuf = psf.Data)
+					OctoshockDll.shock_MountEXE(psx, pBuf, psf.Data.Length, false);
 
 				//start with no disc inserted and tray closed
 				CurrentTrayOpen = false;
@@ -359,8 +385,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
-
-			OctoshockDll.shock_PowerOn(psx);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -535,7 +559,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					CurrentDiscIndexMounted = requestedDisc;
 				}
 
-				if (CurrentDiscIndexMounted == 0)
+				if (CurrentDiscIndexMounted == 0 || discInterfaces.Count == 0)
 				{
 					currentDiscInterface = null;
 					OctoshockDll.shock_SetDisc(psx, IntPtr.Zero);

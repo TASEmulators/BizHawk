@@ -366,7 +366,7 @@ namespace BizHawk.Client.DiscoHawk
 					if (!item.Exists)
 						sw.Write("(---missing---)");
 					else
-						sw.Write("({0:X2} - {1})", (byte)item.Control, item.LBATimestamp);
+						sw.Write("({0:X2} - {1})", (byte)item.Control, item.LBA);
 				};
 
 
@@ -399,7 +399,7 @@ namespace BizHawk.Client.DiscoHawk
 				{
 					if (src_toc.TOCItems[t].Exists != dst_toc.TOCItems[t].Exists
 						|| src_toc.TOCItems[t].Control != dst_toc.TOCItems[t].Control
-						|| src_toc.TOCItems[t].LBATimestamp.Sector != dst_toc.TOCItems[t].LBATimestamp.Sector
+						|| src_toc.TOCItems[t].LBA != dst_toc.TOCItems[t].LBA
 						)
 					{
 						sw.WriteLine("Mismatch in TOCItem");

@@ -84,6 +84,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
 		{
+			var g = GetCurrentGraphics();
+			if((mask & ClearBufferMask.ColorBufferBit) != 0)
+			{
+				g.Clear(_currentClearColor);
+			}
 		}
 
 		public string API { get { return "GDIPLUS"; } }
@@ -94,9 +99,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			return null;
 		}
 
+		private sd.Color _currentClearColor = Color.Transparent;
 		public void SetClearColor(sd.Color color)
 		{
-	
+			_currentClearColor = color;
 		}
 		
 		public unsafe void BindArrayData(void* pData)
@@ -290,8 +296,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
-			ret.M41 = -(float)dims.Width * 0.5f; // -0.5f;
-			ret.M42 = (float)dims.Height * 0.5f; // +0.5f;
+			ret.M41 = -(float)dims.Width * 0.5f;
+			ret.M42 = (float)dims.Height * 0.5f;
 			return ret;
 		}
 
@@ -349,9 +355,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 			public BufferedGraphics MyBufferedGraphics;
 
+			public Graphics refGraphics; //?? hacky?
+
 			public void CreateGraphics()
 			{
-				Graphics refGraphics;
 				Rectangle r;
 				if (Control != null)
 				{
@@ -392,13 +399,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		{
 			int id = rt.Id.ToInt32();
 			var rtw = ResourceIDs.Lookup[id] as RenderTargetWrapper;
-			rtw.Target.Dispose();
 			ResourceIDs.Free(rt.Id);
 		}
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
-			Texture2d tex = null;
+			TextureWrapper tw = new TextureWrapper();
+			tw.SDBitmap = new Bitmap(w,h, sdi.PixelFormat.Format32bppArgb);
+			IntPtr texid = GenTexture();
+			ResourceIDs.Lookup[texid.ToInt32()] = tw;
+			var tex = new Texture2d(this, texid, null, w, h);
+
 			var rt = new RenderTarget(this, ResourceIDs.Alloc(ResourceIdManager.EResourceType.RenderTarget), tex);
 			int id = rt.Id.ToInt32();
 			RenderTargetWrapper rtw = new RenderTargetWrapper(this);
@@ -409,6 +420,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void BindRenderTarget(RenderTarget rt)
 		{
+			if (CurrentRenderTargetWrapper != null)
+			{
+				if (CurrentRenderTargetWrapper == CurrentControl.RenderTargetWrapper)
+				{
+					//dont do anything til swapbuffers
+				}
+				else
+					CurrentRenderTargetWrapper.MyBufferedGraphics.Render();
+			}
+
 			if (rt == null)
 			{
 				//null means to use the default RT for the current control
@@ -417,6 +438,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			else
 			{
 				CurrentRenderTargetWrapper = RenderTargetWrapperForRt(rt);
+				if (CurrentRenderTargetWrapper.MyBufferedGraphics == null)
+					CurrentRenderTargetWrapper.CreateGraphics();
 			}
 		}
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -36,6 +37,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private UndoHistoryForm undoForm;
 
+		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
+		{
+			Size = new Size(256, 240),
+		};
+
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -47,6 +53,9 @@ namespace BizHawk.Client.EmuHawk
 				DrawInput = true;
 				AutoPause = true;
 				FollowCursor = true;
+				ScrollSpeed = 1;
+				FollowCursorAlwaysScroll = false;
+				FollowCursorScrollMethod = "near";
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -55,6 +64,12 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutoRestoreLastPosition { get; set; }
 			public bool FollowCursor { get; set; }
 			public bool EmptyMarkers { get; set; }
+			public int ScrollSpeed { get; set; }
+			public bool FollowCursorAlwaysScroll { get; set; }
+			public string FollowCursorScrollMethod { get; set; }
+
+			public int MainVerticalSplitDistance { get; set; }
+			public int BranchMarkerSplitDistance { get; set; }
 		}
 
 		public TasMovie CurrentTasMovie
@@ -67,6 +82,18 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio()
 		{
 			InitializeComponent();
+
+			if (Global.Emulator != null)
+			{
+				// Set the screenshot to "1x" resolution of the core
+				// TODO: cores like n64 and psx are going to still have sizes too big for the control
+				// Find a smart way to keep them small
+				ScreenshotControl.Size = new Size(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
+			}
+
+			ScreenshotControl.Visible = false;
+			Controls.Add(ScreenshotControl);
+			ScreenshotControl.BringToFront();
 			Settings = new TAStudioSettings();
 
 			// TODO: show this at all times or hide it when saving is done?
@@ -77,13 +104,13 @@ namespace BizHawk.Client.EmuHawk
 			WantsToControlStopMovie = true;
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
+			BookMarkControl.Tastudio = this;
 			MarkerControl.Emulator = this.Emulator;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
 			TasView.QueryItemIcon += TasView_QueryItemIcon;
 			TasView.QueryFrameLag += TasView_QueryFrameLag;
-			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
@@ -148,6 +175,40 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.FlagChanges();
 				};
 			}
+
+			TasView.InputPaintingMode = Settings.DrawInput;
+			TasView.ScrollSpeed = Settings.ScrollSpeed;
+			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+
+			// Remembering Split container logic
+			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
+			int defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
+
+			ToolStripMenuItem restoreDefaults = TASMenu.Items
+				.OfType<ToolStripMenuItem>()
+				.Single(t => t.Name == "SettingsSubMenu")
+				.DropDownItems
+				.OfType<ToolStripMenuItem>()
+				.Single(t => t.Text == "Restore &Defaults");
+
+			restoreDefaults.Click += (o, ev) =>
+			{
+				MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
+				BranchesMarkersSplit.SplitterDistance = defaultBranchMarkerSplitDistance;
+			};
+
+			if (Settings.MainVerticalSplitDistance > 0)
+			{
+				MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+			}
+
+			if (Settings.BranchMarkerSplitDistance > 0)
+			{
+				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+			}
+
+			////////////////
 
 			RefreshDialog();
 			_initialized = true;
@@ -347,6 +408,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!HandleMovieLoadStuff())
 				return false;
 
+			BookMarkControl.UpdateValues();
 			RefreshDialog();
 			return true;
 		}
@@ -365,6 +427,7 @@ namespace BizHawk.Client.EmuHawk
 				HandleMovieLoadStuff();
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 
+				BookMarkControl.UpdateValues();
 				RefreshDialog();
 			}
 		}
@@ -406,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void DummyLoadMacro(string path)
 		{
-			if (!TasView.SelectedRows.Any())
+			if (!TasView.AnyRowsSelected)
 				return;
 
 			MovieZone loadZone = new MovieZone(path);
@@ -557,7 +620,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadState(KeyValuePair<int, byte[]> state)
+		public void LoadState(KeyValuePair<int, byte[]> state)
 		{
 			StatableEmulator.LoadStateBinary(new BinaryReader(new MemoryStream(state.Value.ToArray())));
 
@@ -740,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			EditMarkerContextMenuItem.Enabled =
 			RemoveMarkerContextMenuItem.Enabled =
 			ScrollToMarkerToolStripMenuItem.Enabled =
-				MarkerControl.MarkerInputRoll.SelectedRows.Any();
+				MarkerControl.MarkerInputRoll.AnyRowsSelected;
 		}
 
 		private void ScrollToMarkerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -806,6 +869,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.F)
 				TasPlaybackBox.FollowCursor ^= true;
+		}
+
+		private void MainVertialSplit_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			Settings.MainVerticalSplitDistance = MainVertialSplit.SplitterDistance;
+		}
+
+		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 		}
 	}
 }

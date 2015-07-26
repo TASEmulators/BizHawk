@@ -54,6 +54,9 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			this.disc = disc;
 			dsr = new DiscSectorReader(disc);
+			
+			//the first check for mode 0 should be sufficient for blocking attempts to read audio sectors, so dont do this
+			//dsr.Policy.ThrowExceptions2048 = false;
 		}
 
 		Disc disc;
@@ -66,8 +69,10 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public DiscType DetectDiscType()
 		{
-			//check track 0. if it's an audio track, further data-track testing is useless
-			if (dsr.ReadLBA_Mode(0) == 0) return DiscType.AudioDisc;
+			//check track 1's data type. if it's an audio track, further data-track testing is useless
+			//furthermore, it's probably senseless (no binary data there to read)
+			//however a sector could mark itself as audio without actually being.. we'll just wait for that one.
+			if (dsr.ReadLBA_Mode(disc.TOC.TOCItems[1].LBA) == 0) return DiscType.AudioDisc;
 
 			//sega doesnt put anything identifying in the cdfs volume info. but its consistent about putting its own header here in sector 0
 			if (DetectSegaSaturn()) return DiscType.SegaSaturn;
@@ -82,15 +87,22 @@ namespace BizHawk.Emulation.DiscSystem
 			//an emulator frontend will likely just guess TurboCD if the disc is UnknownFormat
 			//(we can also have a gameDB!)
 
+			var discView = EDiscStreamView.DiscStreamView_Mode1_2048;
+			if (disc.TOC.Session1Format == SessionFormat.Type20_CDXA)
+				discView = EDiscStreamView.DiscStreamView_Mode2_Form1_2048;
+
 			var iso = new ISOFile();
-			bool isIso = iso.Parse(new DiscStream(disc, EDiscStreamView.DiscStreamView_Mode1_2048, 0));
+			bool isIso = iso.Parse(new DiscStream(disc, discView, 0));
 
 			if (isIso)
 			{
 				var appId = System.Text.Encoding.ASCII.GetString(iso.VolumeDescriptors[0].ApplicationIdentifier).TrimEnd('\0', ' ');
-				//NOTE: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
-				//if (appId == "PLAYSTATION")
-				//  return DiscType.SonyPSX;
+				
+				//for example: PSX magical drop F (JP SLPS_02337) doesn't have the correct iso PVD fields
+				//but, some PSX games (junky rips) don't have the 'licensed by string' so we'll hope they get caught here
+				if (appId == "PLAYSTATION")
+				  return DiscType.SonyPSX;
+
 				if(appId == "PSP GAME")
 					return DiscType.SonyPSP;
 						

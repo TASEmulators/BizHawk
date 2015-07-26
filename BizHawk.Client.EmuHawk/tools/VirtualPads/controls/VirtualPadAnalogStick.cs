@@ -17,32 +17,33 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
-			RangeX = 127;
-			RangeY = 127;
 		}
 
-		public int RangeX { get; set; }
-		public int RangeY { get; set; }
+		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
+		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
+
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
 			AnalogStick.Name = Name;
 			AnalogStick.XName = Name;
 			AnalogStick.YName = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
-			AnalogStick.MaxX = RangeX;
-			AnalogStick.MaxY = RangeY;
+			AnalogStick.SetRangeX(RangeX);
+			AnalogStick.SetRangeY(RangeY);
 
-			ManualX.Minimum = AnalogStick.MinX;
-			ManualX.Maximum = AnalogStick.MaxX;
+			ManualX.Minimum = (decimal)RangeX[0];
+			ManualX.Maximum = (decimal)RangeX[2];
 
-			ManualY.Minimum = AnalogStick.MinY;
-			ManualY.Maximum = AnalogStick.MaxY;
+			ManualY.Minimum = (decimal)RangeX[0];
+			ManualY.Maximum = (decimal)RangeX[2];
 
-			MaxXNumeric.Maximum = RangeX;
-			MaxXNumeric.Value = RangeX;
+			MaxXNumeric.Minimum = 1;
+			MaxXNumeric.Maximum = 100;
+			MaxXNumeric.Value = 100;
 
-			MaxYNumeric.Maximum = RangeY;
-			MaxYNumeric.Value = RangeY; // Note: these trigger change events that change the analog stick too
+			MaxYNumeric.Minimum = 1;
+			MaxYNumeric.Maximum = 100;
+			MaxYNumeric.Value = 100; // Note: these trigger change events that change the analog stick too
 		}
 
 		#region IVirtualPadControl Implementation
@@ -233,8 +234,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!_programmaticallyUpdatingNumerics)
 			{
-				AnalogStick.MaxX = (int)MaxXNumeric.Value;
-				AnalogStick.MaxY = (int)MaxYNumeric.Value;
+				//blehh,... this damn feature
+				AnalogStick.SetUserRange((float)MaxXNumeric.Value, (float)MaxYNumeric.Value);
 			}
 		}
 	}

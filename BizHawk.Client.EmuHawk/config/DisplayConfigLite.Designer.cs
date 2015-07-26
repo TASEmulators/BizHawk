@@ -60,6 +60,9 @@
 			this.label5 = new System.Windows.Forms.Label();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tpAR = new System.Windows.Forms.TabPage();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
 			this.tpDispMethod = new System.Windows.Forms.TabPage();
 			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -71,7 +74,7 @@
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.checkFullscreenHacks = new System.Windows.Forms.CheckBox();
+			this.cbFullscreenHacks = new System.Windows.Forms.CheckBox();
 			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
 			this.cbMenuFullscreen = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -81,15 +84,14 @@
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
 			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
-			this.nudPrescale = new System.Windows.Forms.NumericUpDown();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
+			this.cbFSAutohideMouse = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tpAR.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).BeginInit();
 			this.tpDispMethod.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tpMisc.SuspendLayout();
@@ -97,7 +99,6 @@
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// btnCancel
@@ -447,6 +448,46 @@
 			this.tpAR.Text = "Scaling & Filtering";
 			this.tpAR.UseVisualStyleBackColor = true;
 			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(307, 117);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(14, 13);
+			this.label11.TabIndex = 16;
+			this.label11.Text = "X";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(208, 116);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(51, 13);
+			this.label10.TabIndex = 15;
+			this.label10.Text = "Prescale:";
+			// 
+			// nudPrescale
+			// 
+			this.nudPrescale.Location = new System.Drawing.Point(260, 113);
+			this.nudPrescale.Maximum = new decimal(new int[] {
+            16,
+            0,
+            0,
+            0});
+			this.nudPrescale.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.nudPrescale.Name = "nudPrescale";
+			this.nudPrescale.Size = new System.Drawing.Size(45, 20);
+			this.nudPrescale.TabIndex = 14;
+			this.nudPrescale.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
 			// tpDispMethod
 			// 
 			this.tpDispMethod.Controls.Add(this.label6);
@@ -547,13 +588,14 @@
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.cbFSAutohideMouse);
 			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Controls.Add(this.checkFullscreenHacks);
+			this.groupBox4.Controls.Add(this.cbFullscreenHacks);
 			this.groupBox4.Controls.Add(this.cbStatusBarFullscreen);
 			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
 			this.groupBox4.Location = new System.Drawing.Point(143, 6);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(266, 212);
+			this.groupBox4.Size = new System.Drawing.Size(266, 235);
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fullscreen";
@@ -566,15 +608,15 @@
 			this.label1.TabIndex = 27;
 			this.label1.Text = resources.GetString("label1.Text");
 			// 
-			// checkFullscreenHacks
+			// cbFullscreenHacks
 			// 
-			this.checkFullscreenHacks.AutoSize = true;
-			this.checkFullscreenHacks.Location = new System.Drawing.Point(6, 65);
-			this.checkFullscreenHacks.Name = "checkFullscreenHacks";
-			this.checkFullscreenHacks.Size = new System.Drawing.Size(191, 17);
-			this.checkFullscreenHacks.TabIndex = 26;
-			this.checkFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
-			this.checkFullscreenHacks.UseVisualStyleBackColor = true;
+			this.cbFullscreenHacks.AutoSize = true;
+			this.cbFullscreenHacks.Location = new System.Drawing.Point(6, 65);
+			this.cbFullscreenHacks.Name = "cbFullscreenHacks";
+			this.cbFullscreenHacks.Size = new System.Drawing.Size(191, 17);
+			this.cbFullscreenHacks.TabIndex = 26;
+			this.cbFullscreenHacks.Text = "Enable Windows Fullscreen Hacks";
+			this.cbFullscreenHacks.UseVisualStyleBackColor = true;
 			// 
 			// cbStatusBarFullscreen
 			// 
@@ -606,7 +648,7 @@
 			this.groupBox2.Controls.Add(this.cbCaptionWindowed);
 			this.groupBox2.Location = new System.Drawing.Point(6, 6);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(131, 212);
+			this.groupBox2.Size = new System.Drawing.Size(131, 235);
 			this.groupBox2.TabIndex = 26;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Windowed";
@@ -670,45 +712,15 @@
 			this.cbCaptionWindowed.Text = "Caption";
 			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
 			// 
-			// nudPrescale
+			// cbFSAutohideMouse
 			// 
-			this.nudPrescale.Location = new System.Drawing.Point(260, 113);
-			this.nudPrescale.Maximum = new decimal(new int[] {
-            16,
-            0,
-            0,
-            0});
-			this.nudPrescale.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			this.nudPrescale.Name = "nudPrescale";
-			this.nudPrescale.Size = new System.Drawing.Size(45, 20);
-			this.nudPrescale.TabIndex = 14;
-			this.nudPrescale.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(208, 116);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(51, 13);
-			this.label10.TabIndex = 15;
-			this.label10.Text = "Prescale:";
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(307, 117);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(14, 13);
-			this.label11.TabIndex = 16;
-			this.label11.Text = "X";
+			this.cbFSAutohideMouse.AutoSize = true;
+			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
+			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
+			this.cbFSAutohideMouse.Size = new System.Drawing.Size(139, 17);
+			this.cbFSAutohideMouse.TabIndex = 28;
+			this.cbFSAutohideMouse.Text = "Auto-hide Mouse Cursor";
+			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
 			// 
 			// DisplayConfigLite
 			// 
@@ -734,6 +746,7 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tpAR.ResumeLayout(false);
 			this.tpAR.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).EndInit();
 			this.tpDispMethod.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
@@ -745,7 +758,6 @@
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.nudPrescale)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -803,9 +815,10 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Label lblFrameTypeWindowed;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.CheckBox checkFullscreenHacks;
+		private System.Windows.Forms.CheckBox cbFullscreenHacks;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.NumericUpDown nudPrescale;
+		private System.Windows.Forms.CheckBox cbFSAutohideMouse;
 	}
 }

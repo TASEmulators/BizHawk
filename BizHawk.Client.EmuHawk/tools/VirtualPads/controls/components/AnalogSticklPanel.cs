@@ -1,9 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using System;
+
+//Just because this code was mostly rewritten, dont think it isnt still awful
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -48,31 +50,140 @@ namespace BizHawk.Client.EmuHawk
 
 		private IController _previous = null;
 
-		public int MaxX
+		float UserRangePercentageX = 100, UserRangePercentageY = 100;
+
+		public void SetUserRange(float rx, float ry)
 		{
-			get { return _maxX; }
-			set
-			{
-				_maxX = value;
-				CheckMax();
-			}
+			UserRangePercentageX = rx;
+			UserRangePercentageY = ry;
+			Rerange();
+			Refresh();
 		}
 
-		public int MaxY
+		public void SetRangeX(float[] range)
 		{
-			get { return _maxY; }
-			set
-			{
-				_maxY = value;
-				CheckMax();
-			}
+			for (int i = 0; i < 3; i++) ActualRangeX[i] = range[i];
+			Rerange();
 		}
 
-		private int _maxX = 127;
-		private int _maxY = 127;
+		public void SetRangeY(float[] range)
+		{
+			for (int i = 0; i < 3; i++) ActualRangeY[i] = range[i];
+			Rerange();
+		}
 
-		public int MinX { get { return 0 - MaxX - 1; } }
-		public int MinY { get { return 0 - MaxY - 1; } }
+		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
+		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
+		public float[] ActualRangeX = new float[] { -128f, 0.0f, 127f };
+		public float[] ActualRangeY = new float[] { -128f, 0.0f, 127f };
+
+		float flipx = 1, flipy = 1;
+
+		void Rerange()
+		{
+			//baseline:
+			//Array.Copy(ActualRangeX, RangeX, 3);
+			//Array.Copy(ActualRangeY, RangeY, 3);
+
+			float rx = ActualRangeX[2] - ActualRangeX[0];
+			float ry = ActualRangeY[2] - ActualRangeY[0];
+			float midx = rx / 2 + ActualRangeX[0];
+			float midy = ry / 2 + ActualRangeY[0];
+			rx *= UserRangePercentageX / 100;
+			ry *= UserRangePercentageY / 100;
+			float minx = midx - rx / 2;
+			float maxx = minx + rx;
+			float miny = midy - ry / 2;
+			float maxy = miny + ry;
+
+			if (minx > maxx)
+			{
+				float temp = minx;
+				minx = maxx;
+				maxx = temp;
+				flipx = -1;
+			}
+
+			if (miny > maxy)
+			{
+				float temp = miny;
+				miny = maxy;
+				maxy = temp;
+				flipy = -1;
+			}
+
+			//Range?[1] isn't really used
+			RangeX[0] = minx;
+			RangeX[2] = maxx;
+			RangeY[0] = miny;
+			RangeY[2] = maxy;
+
+			Clamp();
+		}
+
+		//dont count on this working. it's never been tested.
+		//but it kind of must be, or else nothing here would work...
+		public float ScaleX = 0.5f;
+		public float ScaleY = 0.5f;
+
+		int MinX { get { return (int)(RangeX[0]); } }
+		int MinY { get { return (int)(RangeY[0]); } }
+		int MaxX { get { return (int)(RangeX[2]); } }
+		int MaxY { get { return (int)(RangeY[2]); } }
+		int RangeSizeX { get { return (int)(MaxX - MinX + 1); } }
+		int RangeSizeY { get { return (int)(MaxY - MinY + 1); } }
+
+		int PixelSizeX { get { return (int)(RangeSizeX * ScaleX); } }
+		int PixelSizeY { get { return (int)(RangeSizeY * ScaleY); } }
+		int PixelMinX { get { return (Size.Width - PixelSizeX) / 2; } }
+		int PixelMinY { get { return (Size.Height - PixelSizeY) / 2; } }
+		int PixelMidX { get { return PixelMinX + PixelSizeX / 2; } }
+		int PixelMidY { get { return PixelMinY + PixelSizeY / 2; } }
+		int PixelMaxX { get { return PixelMinX + PixelSizeX - 1; } }
+		int PixelMaxY { get { return PixelMinY + PixelSizeY - 1; } }
+
+		private int RealToGfxX(int val)
+		{
+			int v = val;
+			if (flipx == -1)
+				v = (MaxX - val) + MinX;
+			v = (int)(((float)v - MinX) * ScaleX);
+			v += PixelMinX;
+			return v;
+		}
+
+		private int RealToGfxY(int val)
+		{
+			int v = val;
+			if (flipy == -1)
+				v = (MaxY - val) + MinY;
+			v = (int)(((float)v - MinY) * ScaleY);
+			v += PixelMinY;
+			return v;
+		}
+
+		private int GfxToRealX(int val)
+		{
+			val -= PixelMinX;
+			float v = ((float)val / ScaleX + MinX);
+			if (v < MinX) v = MinX;
+			if (v > MaxX) v = MaxX;
+			if (flipx == -1)
+				v = (MaxX - v) + MinX;
+			return (int)v;
+		}
+
+		private int GfxToRealY(int val)
+		{
+			val -= PixelMinY;
+			float v;
+			v = ((float)val / ScaleY + MinY);
+			if (v < MinX) v = MinX;
+			if (v > MaxX) v = MaxX;
+			if(flipy == -1)
+				v = (MaxY - v) + MinY;
+			return (int)v;
+		}
 
 		private readonly Brush WhiteBrush = Brushes.White;
 		private readonly Brush GrayBrush = Brushes.LightGray;
@@ -98,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public AnalogStickPanel()
 		{
-			Size = new Size(MaxX + 1, MaxY + 1);
+			Size = new Size(PixelSizeX + 1, PixelSizeY + 1);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -126,30 +237,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int RealToGfx(int val)
-		{
-			return (val + MaxX) / 2;
-		}
-
-		private int GfxToReal(int val, bool isX) // isX is a hack
-		{
-			var max = isX ? MaxX : MaxY;
-			var min = isX ? MinX : MinY;
-
-			var ret = (val * 2);
-			if (ret > max)
-			{
-				ret = max;
-			}
-
-			if (ret < min)
-			{
-				ret = min;
-			}
-
-			return ret;
-		}
-
 		private void SetAnalog()
 		{
 			var xn = HasValue ? X : (int?)null;
@@ -160,35 +247,33 @@ namespace BizHawk.Client.EmuHawk
 			Refresh();
 		}
 
-		private int MidX { get { return (int)((MaxX + 0.5) / 2); } }
-		private int MidY { get { return (int)((MaxY + 0.5) / 2); } }
-
 		private void AnalogControlPanel_Paint(object sender, PaintEventArgs e)
 		{
 			unchecked
 			{
 				// Background
 				e.Graphics.Clear(Color.Black);
-				e.Graphics.FillRectangle(GrayBrush, 0, 0, MaxX, MaxY);
-				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, 0, 0, MaxX - 1, MaxY - 3);
-				e.Graphics.DrawEllipse(BlackPen, 0, 0, MaxX - 1, MaxY - 3);
-				e.Graphics.DrawLine(BlackPen, MidX, 0, MidX, MaxY);
-				e.Graphics.DrawLine(BlackPen, 0, MidY, MaxX, MidY);
+
+				e.Graphics.FillRectangle(GrayBrush, PixelMinX, PixelMinY, PixelMaxX - PixelMinX, PixelMaxY- PixelMinY);
+				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, PixelMinX, PixelMinY, PixelMaxX - PixelMinX - 2, PixelMaxY - PixelMinY - 3);
+				e.Graphics.DrawEllipse(BlackPen, PixelMinX, PixelMinY, PixelMaxX - PixelMinX - 2, PixelMaxY - PixelMinY - 3);
+				e.Graphics.DrawLine(BlackPen, PixelMidX, 0, PixelMidX, PixelMaxY);
+				e.Graphics.DrawLine(BlackPen, 0, PixelMidY, PixelMaxX, PixelMidY);
 
 				// Previous frame
 				if (_previous != null)
 				{
 					var pX = (int)_previous.GetFloat(XName);
 					var pY = (int)_previous.GetFloat(YName);
-					e.Graphics.DrawLine(GrayPen, MidX, MidY, RealToGfx(pX), MaxY - RealToGfx(pY));
-					e.Graphics.DrawImage(GrayDot, RealToGfx(pX) - 3, MaxY - RealToGfx(pY) - 3);
+					e.Graphics.DrawLine(GrayPen, PixelMidX, PixelMidY, RealToGfxX(pX), RealToGfxY(pY));
+					e.Graphics.DrawImage(GrayDot, RealToGfxX(pX) - 3, RealToGfxY(MaxY) - RealToGfxY(pY) - 3);
 				}
 
 				// Line
 				if (HasValue)
 				{
-					e.Graphics.DrawLine(BluePen, MidX, MidY, RealToGfx(X), MaxY - RealToGfx(Y));
-					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGfx(X) - 3, MaxY - RealToGfx(Y) - 3);
+					e.Graphics.DrawLine(BluePen, PixelMidX, PixelMidY, RealToGfxX(X), RealToGfxY(Y));
+					e.Graphics.DrawImage(ReadOnly ? GrayDot : Dot, RealToGfxX(X) - 3, RealToGfxY(Y) - 3);
 				}
 			}
 		}
@@ -199,8 +284,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					X = GfxToReal(e.X - MidX, true);
-					Y = GfxToReal(-(e.Y - MidY), false);
+					X = GfxToRealX(e.X);
+					Y = GfxToRealY(e.Y);
+					Clamp();
 					HasValue = true;
 					SetAnalog();
 				}
@@ -237,8 +323,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (e.Button == MouseButtons.Left)
 				{
-					X = GfxToReal(e.X - MidX, true);
-					Y = GfxToReal(-(e.Y - MidY), false);
+					X = GfxToRealX(e.X);
+					Y = GfxToRealY(e.Y);
+					Clamp();
 					HasValue = true;
 				}
 				if (e.Button == MouseButtons.Right)
@@ -282,12 +369,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			X = xval;
 			Y = yval;
+			Clamp();
 			HasValue = true;
 			
 			Refresh();
 		}
 
-		private void CheckMax()
+		private void Clamp()
 		{
 			if (X > MaxX)
 			{
@@ -306,8 +394,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Y = MinY;
 			}
-
-			Refresh();
 		}
 	}
 }

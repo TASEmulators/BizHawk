@@ -90,6 +90,12 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Restart<VirtualpadTool>();
 			GlobalWin.DisplayManager.NeedsToPaint = true;
 
+
+			if (Global.MovieSession.Movie.Hash != Global.Game.Hash)
+			{
+				GlobalWin.OSD.AddMessage("Warning: Movie hash does not match the ROM");
+			}
+
 			return true;
 		}
 

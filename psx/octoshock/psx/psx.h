@@ -339,7 +339,7 @@ EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemc
 EW_EXPORT s32 shock_Peripheral_PollActive(void* psx, s32 address, s32 clear);
 
 //Mounts a PS-EXE executable 
-EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size);
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size, s32 ignore_pcsp);
 
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);

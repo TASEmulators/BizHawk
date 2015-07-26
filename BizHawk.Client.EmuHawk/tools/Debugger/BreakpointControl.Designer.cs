@@ -32,12 +32,14 @@
 			this.AddBreakpointButton = new System.Windows.Forms.Button();
 			this.BreakpointStatsLabel = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.ToggleButton = new System.Windows.Forms.Button();
+			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
+			this.DuplicateBreakpointButton = new System.Windows.Forms.Button();
+			this.EditBreakpointButton = new System.Windows.Forms.Button();
 			this.BreakpointView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ToggleButton = new System.Windows.Forms.Button();
-			this.RemoveBreakpointButton = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// AddBreakpointButton
@@ -60,6 +62,55 @@
 			this.BreakpointStatsLabel.Size = new System.Drawing.Size(35, 13);
 			this.BreakpointStatsLabel.TabIndex = 8;
 			this.BreakpointStatsLabel.Text = "label1";
+			// 
+			// ToggleButton
+			// 
+			this.ToggleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ToggleButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh;
+			this.ToggleButton.Location = new System.Drawing.Point(138, 387);
+			this.ToggleButton.Name = "ToggleButton";
+			this.ToggleButton.Size = new System.Drawing.Size(23, 23);
+			this.ToggleButton.TabIndex = 9;
+			this.toolTip1.SetToolTip(this.ToggleButton, "Toggle the selected breakpoints");
+			this.ToggleButton.UseVisualStyleBackColor = true;
+			this.ToggleButton.Click += new System.EventHandler(this.ToggleButton_Click);
+			// 
+			// RemoveBreakpointButton
+			// 
+			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RemoveBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
+			this.RemoveBreakpointButton.Location = new System.Drawing.Point(167, 387);
+			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
+			this.RemoveBreakpointButton.Size = new System.Drawing.Size(23, 23);
+			this.RemoveBreakpointButton.TabIndex = 7;
+			this.toolTip1.SetToolTip(this.RemoveBreakpointButton, "Remove selected breakpoints");
+			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
+			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
+			// 
+			// DuplicateBreakpointButton
+			// 
+			this.DuplicateBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.DuplicateBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
+			this.DuplicateBreakpointButton.Location = new System.Drawing.Point(109, 387);
+			this.DuplicateBreakpointButton.Name = "DuplicateBreakpointButton";
+			this.DuplicateBreakpointButton.Size = new System.Drawing.Size(23, 23);
+			this.DuplicateBreakpointButton.TabIndex = 10;
+			this.toolTip1.SetToolTip(this.DuplicateBreakpointButton, "Duplicate the selected breakpoint");
+			this.DuplicateBreakpointButton.UseVisualStyleBackColor = true;
+			this.DuplicateBreakpointButton.Click += new System.EventHandler(this.DuplicateBreakpointButton_Click);
+			// 
+			// EditBreakpointButton
+			// 
+			this.EditBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.EditBreakpointButton.BackgroundImage = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
+			this.EditBreakpointButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+			this.EditBreakpointButton.Location = new System.Drawing.Point(80, 387);
+			this.EditBreakpointButton.Name = "EditBreakpointButton";
+			this.EditBreakpointButton.Size = new System.Drawing.Size(23, 23);
+			this.EditBreakpointButton.TabIndex = 11;
+			this.toolTip1.SetToolTip(this.EditBreakpointButton, "Edit the selected breakpoint");
+			this.EditBreakpointButton.UseVisualStyleBackColor = true;
+			this.EditBreakpointButton.Click += new System.EventHandler(this.EditBreakpointButton_Click);
 			// 
 			// BreakpointView
 			// 
@@ -106,33 +157,11 @@
 			this.columnHeader3.Text = "Name";
 			this.columnHeader3.Width = 80;
 			// 
-			// ToggleButton
-			// 
-			this.ToggleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.ToggleButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh;
-			this.ToggleButton.Location = new System.Drawing.Point(138, 387);
-			this.ToggleButton.Name = "ToggleButton";
-			this.ToggleButton.Size = new System.Drawing.Size(23, 23);
-			this.ToggleButton.TabIndex = 9;
-			this.toolTip1.SetToolTip(this.ToggleButton, "Toggle the selected breakpoints");
-			this.ToggleButton.UseVisualStyleBackColor = true;
-			this.ToggleButton.Click += new System.EventHandler(this.ToggleButton_Click);
-			// 
-			// RemoveBreakpointButton
-			// 
-			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RemoveBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
-			this.RemoveBreakpointButton.Location = new System.Drawing.Point(167, 387);
-			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
-			this.RemoveBreakpointButton.Size = new System.Drawing.Size(23, 23);
-			this.RemoveBreakpointButton.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.RemoveBreakpointButton, "Remove selected breakpoints");
-			this.RemoveBreakpointButton.UseVisualStyleBackColor = true;
-			this.RemoveBreakpointButton.Click += new System.EventHandler(this.RemoveBreakpointButton_Click);
-			// 
 			// BreakpointControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.Controls.Add(this.EditBreakpointButton);
+			this.Controls.Add(this.DuplicateBreakpointButton);
 			this.Controls.Add(this.ToggleButton);
 			this.Controls.Add(this.BreakpointStatsLabel);
 			this.Controls.Add(this.RemoveBreakpointButton);
@@ -157,5 +186,7 @@
 		private System.Windows.Forms.Label BreakpointStatsLabel;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button ToggleButton;
+		private System.Windows.Forms.Button DuplicateBreakpointButton;
+		private System.Windows.Forms.Button EditBreakpointButton;
 	}
 }

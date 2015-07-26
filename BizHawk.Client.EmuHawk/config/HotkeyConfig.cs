@@ -61,11 +61,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void RestoreDefaults_Click(object sender, EventArgs e)
-		{
-			Defaults();
-		}
-
 		private void AutoTabCheckBox_CheckedChanged(object sender, EventArgs e)
 		{
 			SetAutoTab();
@@ -166,6 +161,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ClearAll(bool currentTabOnly)
+		{
+			if (currentTabOnly)
+			{
+				foreach (var w in InputWidgets)
+				{
+					w.Clear();
+				}
+			}
+			else
+			{
+				foreach (var w in HotkeyTabControl.SelectedTab.Controls.OfType<InputCompositeWidget>())
+				{
+					w.Clear();
+				}
+			}
+		}
+
 		private void SetAutoTab()
 		{
 			foreach (var w in InputWidgets)
@@ -212,6 +225,21 @@ namespace BizHawk.Client.EmuHawk
 
 				e.Handled = true;
 			}
+		}
+
+		private void clearAllToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearAll(true);
+		}
+
+		private void clearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearAll(false);
+		}
+
+		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Defaults();
 		}
 	}
 }

@@ -259,7 +259,8 @@ namespace BizHawk.Client.Common
 
 			File.Delete(path);
 		}
-		private void SetState(int frame, byte[] state)
+
+		internal void SetState(int frame, byte[] state)
 		{
 			if (States.ContainsKey(frame))
 			{
@@ -275,19 +276,19 @@ namespace BizHawk.Client.Common
 			}
 			StateAccessed(frame);
 		}
-		private void RemoveState(int index)
+		private void RemoveState(int frame)
 		{
-			if (States[index] == null)
+			if (States[frame] == null)
 			{
 				DiskUsed -= _expectedStateSize; // Disk length?
-				string path = Path.Combine(statePath, index.ToString());
+				string path = Path.Combine(statePath, frame.ToString());
 				File.Delete(path);
 			}
 			else
-				Used -= (ulong)States[index].Length;
-			States.RemoveAt(States.IndexOfKey(index));
+				Used -= (ulong)States[frame].Length;
+			States.RemoveAt(States.IndexOfKey(frame));
 
-			accessed.Remove(index);
+			accessed.Remove(frame);
 		}
 		private void StateAccessed(int index)
 		{

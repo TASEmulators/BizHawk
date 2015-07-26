@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common
 			if (!batch.Where(a => a.GetType() != typeof(MovieActionMarker)).Any())
 				return Movie.InputLogLength;
 
-			return PreviousUndoFrame;
+			return PreviousRedoFrame;
 		}
 
 		public bool CanUndo { get { return UndoIndex > -1; } }
@@ -180,7 +180,7 @@ namespace BizHawk.Client.Common
 				if (History[UndoIndex + 1].Count == 0)
 					return Movie.InputLogLength;
 
-				return History[UndoIndex + 1].Max(a => a.FirstFrame);
+				return History[UndoIndex + 1].Min(a => a.FirstFrame);
 			}
 		}
 		public int PreviousRedoFrame
@@ -193,7 +193,7 @@ namespace BizHawk.Client.Common
 				if (History[UndoIndex].Count == 0)
 					return Movie.InputLogLength;
 
-				return History[UndoIndex].Max(a => a.FirstFrame);
+				return History[UndoIndex].Min(a => a.FirstFrame);
 			}
 		}
 

@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.DiscSystem
 				sq.sec = BCD2.FromDecimal(new Timestamp(track_relative_msf).SEC);
 				sq.frame = BCD2.FromDecimal(new Timestamp(track_relative_msf).FRAC);
 
-				int absolute_msf = i + leadoutTs.Sector;
+				int absolute_msf = i + leadoutTs;
 				sq.ap_min = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).MIN);
 				sq.ap_sec = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).SEC);
 				sq.ap_frame = BCD2.FromDecimal(new Timestamp(absolute_msf + 150).FRAC);

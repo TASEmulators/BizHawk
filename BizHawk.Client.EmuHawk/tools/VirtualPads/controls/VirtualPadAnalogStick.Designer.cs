@@ -109,9 +109,9 @@
 			this.MaxLabel.AutoSize = true;
 			this.MaxLabel.Location = new System.Drawing.Point(138, 72);
 			this.MaxLabel.Name = "MaxLabel";
-			this.MaxLabel.Size = new System.Drawing.Size(27, 13);
+			this.MaxLabel.Size = new System.Drawing.Size(47, 13);
 			this.MaxLabel.TabIndex = 27;
-			this.MaxLabel.Text = "Max";
+			this.MaxLabel.Text = "Range%";
 			// 
 			// MaxXNumeric
 			// 
@@ -161,9 +161,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AnalogStick.BackColor = System.Drawing.Color.Gray;
 			this.AnalogStick.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.AnalogStick.ClearCallback = null;
 			this.AnalogStick.Location = new System.Drawing.Point(3, 3);
-			this.AnalogStick.MaxX = 127;
-			this.AnalogStick.MaxY = 127;
 			this.AnalogStick.Name = "AnalogStick";
 			this.AnalogStick.ReadOnly = false;
 			this.AnalogStick.Size = new System.Drawing.Size(129, 129);

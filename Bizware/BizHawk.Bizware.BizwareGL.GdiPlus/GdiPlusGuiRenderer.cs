@@ -166,18 +166,21 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tw);
+			SetupMatrix(g);
+
 			float x0 = u0 * tex.Width;
 			float y0 = v0 * tex.Height;
 			float x1 = u1 * tex.Width;
 			float y1 = v1 * tex.Height;
+
 			sd.PointF[] destPoints = new sd.PointF[] {
 				new sd.PointF(x,y),
 				new sd.PointF(x+w,y),
-				new sd.PointF(x,y+h),	
+				new sd.PointF(x,y+h),
 			};
 
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(x0, y0, x1 - x0, y1 - y0), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
-			//g.DrawImage(tw.SDBitmap, 0, 0); //test
+			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
 		}
 
 
@@ -228,25 +231,37 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		}
 
+		private void SetupMatrix(sd.Graphics g)
+		{
+			//first we need to make a transform that will change us from the default GDI+ transformation (a top left identity transformation) to an opengl-styled one
+			//(this is necessary because a 'GuiProjectionMatrix' etc. call doesnt have any sense of the size of the destination viewport it's meant for)
+			var vcb = g.VisibleClipBounds;
+			float vw = vcb.Width;
+			float vh = vcb.Height;
+			Matrix4 fixmat = Matrix4.CreateTranslation(vw / 2, -vh / 2, 0);
+			fixmat *= Matrix4.CreateScale(vw / 2, -vh / 2, 1);
+
+			Matrix4 mat = Projection.Top * Modelview.Top * fixmat;
+			g.Transform = new sd.Drawing2D.Matrix(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
+		}
+
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
 			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
 			PrepDraw(g, tw);
 
-			//a little bit of a fastpath.. I think it's safe
-			//if (w == tex.Width && h == tex.Height && x == (int)x && y == (int)y)
-			//  g.DrawImageUnscaled(tw.SDBitmap, (int)x, (int)y);
-			//else
-			{
-				sd.PointF[] destPoints = new sd.PointF[] {
-					new sd.PointF(x,y),
-					new sd.PointF(x+w,y),
-					new sd.PointF(x,y+h),	
-				};
-				//g.DrawImage(tw.SDBitmap, x, y, w, h); //original
-				g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
-			}
+			SetupMatrix(g);
+
+			sd.PointF[] destPoints = new sd.PointF[] {
+				new sd.PointF(x,y),
+				new sd.PointF(x+w,y),
+				new sd.PointF(x,y+h),
+			};
+
+			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
+			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
+			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)

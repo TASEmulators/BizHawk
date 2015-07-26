@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					
-					if (!e.KeyChar.IsUnsigned())
+					if (!e.KeyChar.IsSigned())
 					{
 						e.Handled = true;
 					}
@@ -95,8 +95,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return;
 					}
-					
-					if (!e.KeyChar.IsSigned())
+
+					if (!e.KeyChar.IsUnsigned())
 					{
 						e.Handled = true;
 					}

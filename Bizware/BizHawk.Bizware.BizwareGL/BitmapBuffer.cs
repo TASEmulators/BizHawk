@@ -477,6 +477,8 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public unsafe Bitmap ToSysdrawingBitmap()
 		{
+			if (WrappedBitmap != null)
+				return (Bitmap)WrappedBitmap.Clone();
 			var pf = PixelFormat.Format32bppArgb;
 			if (!HasAlpha)
 				pf = PixelFormat.Format24bppRgb;
@@ -491,6 +493,17 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		public unsafe void ToSysdrawingBitmap(Bitmap bmp)
 		{
+			if (WrappedBitmap != null)
+			{
+				using (var g = Graphics.FromImage(bmp))
+				{
+					g.CompositingMode = sd.Drawing2D.CompositingMode.SourceCopy;
+					g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+					g.DrawImageUnscaled(WrappedBitmap, 0, 0);
+					return;
+				}
+			}
+
 			//note: we lock it as 32bpp even if the bitmap is 24bpp so we can write to it more conveniently. 
 			var bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 

@@ -1053,11 +1053,13 @@ namespace BizHawk.Client.EmuHawk
 				MoveDownContextMenuItem.Visible =
 				indexes.Count > 0;
 
-			ReadBreakpointContextMenuItem.Enabled =
-				WriteBreakpointContextMenuItem.Enabled =
-					SelectedWatches.Any() &&
-					_debuggable != null &&
-					_debuggable.MemoryCallbacksAvailable();
+			ReadBreakpointContextMenuItem.Visible =
+			WriteBreakpointContextMenuItem.Visible =
+			Separator6.Visible =
+				SelectedWatches.Any() &&
+				_debuggable != null &&
+				_debuggable.MemoryCallbacksAvailable() &&
+				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : ""));
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
@@ -1197,7 +1199,15 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
 		#endregion
+
+
+		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+		{
+			PokeAddressToolBarItem.Enabled =
+				FreezeAddressToolBarItem.Enabled =
+				SelectedIndices.Any() &&
+				SelectedWatches.All(w => w.Domain.CanPoke());
+		}
 	}
 }

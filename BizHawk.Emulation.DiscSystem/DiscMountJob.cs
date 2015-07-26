@@ -87,6 +87,16 @@ namespace BizHawk.Emulation.DiscSystem
 					Func<int, bool> condition = (int lba) => lba >= OUT_Disc.Session1.LeadoutLBA;
 					new ConditionalSectorSynthProvider().Install(OUT_Disc, condition, ss_leadout);
 				}
+
+				//apply SBI if it exists
+				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
+				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
+				{
+					var loadSbiJob = new SBI.LoadSBIJob() { IN_Path = sbiPath };
+					loadSbiJob.Run();
+					var applySbiJob = new ApplySBIJob();
+					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
+				}
 			}
 
 			FinishLog();
@@ -163,16 +173,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 				OUT_Disc = loadJob.OUT_Disc;
 				//OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; //NOT SURE WE NEED THIS (only makes sense for cue probably)
-
-				//apply SBI if it exists (TODO - for formats other than cue?)
-				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
-				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
-				{
-					var loadSbiJob = new SBI.LoadSBIJob() { IN_Path = sbiPath };
-					loadSbiJob.Run();
-					var applySbiJob = new ApplySBIJob();
-					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
-				}
 			}
 			else if (ext == ".ccd")
 			{
@@ -180,15 +180,18 @@ namespace BizHawk.Emulation.DiscSystem
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
 
-		DONE: ;
+		DONE:
 
 			//setup the lowest level synth provider
-			var sssp = new ArraySectorSynthProvider()
+			if (OUT_Disc != null)
 			{
-				Sectors = OUT_Disc._Sectors,
-				FirstLBA = -150
-			};
-			OUT_Disc.SynthProvider = sssp;
+				var sssp = new ArraySectorSynthProvider()
+				{
+					Sectors = OUT_Disc._Sectors,
+					FirstLBA = -150
+				};
+				OUT_Disc.SynthProvider = sssp;
+			}
 		}
 	}
 	
