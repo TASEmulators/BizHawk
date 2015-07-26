@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool mouseButtonHeld
 		{
 			get
-			{ // Need a left click
+			{
 				return _rightClickFrame != -1 || _leftButtonHeld;
 			}
 		}
@@ -734,9 +734,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Settings.FollowCursor && mouseButtonHeld)
+			if (Settings.FollowCursor && mouseButtonHeld) // todo; why FollowCursor? Should probably have it's own flag.
 			{
-				SetVisibleIndex(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
+				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
 			}
 			RefreshTasView();
 		}

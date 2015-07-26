@@ -801,10 +801,7 @@ namespace BizHawk.Client.EmuHawk
 		private void HideLagFramesX_Click(object sender, EventArgs e)
 		{
 			TasView.LagFramesToHide = (int)(sender as ToolStripMenuItem).Tag;
-			if (TasPlaybackBox.FollowCursor)
-			{
-				SetVisibleIndex();
-			}
+			MaybeFollowCursor();
 			RefreshDialog();
 		}
 

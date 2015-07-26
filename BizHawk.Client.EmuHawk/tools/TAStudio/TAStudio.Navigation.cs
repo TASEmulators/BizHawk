@@ -37,10 +37,7 @@ namespace BizHawk.Client.EmuHawk
 				// Get as close as we can then emulate there
 				StartAtNearestFrameAndEmulate(frame);
 
-				if (TasPlaybackBox.FollowCursor)
-				{
-					SetVisibleIndex(frame);
-				}
+				MaybeFollowCursor();
 
 				return;
 			}
@@ -105,16 +102,21 @@ namespace BizHawk.Client.EmuHawk
 			GoToFrame(marker.Frame);
 		}
 
+		/// <summary>
+		/// Makes the given frame visible. If no frame is given, makes the current frame visible.
+		/// </summary>
 		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
 		{
 			if (!indexThatMustBeVisible.HasValue)
-			{
-				indexThatMustBeVisible = CurrentTasMovie.IsRecording
-					? CurrentTasMovie.InputLogLength
-					: Emulator.Frame;
-			}
+				indexThatMustBeVisible = Emulator.Frame;
 
 			TasView.ScrollToIndex(indexThatMustBeVisible.Value);
+		}
+
+		private void MaybeFollowCursor()
+		{
+			if (TasPlaybackBox.FollowCursor && !TasView.IsPaintDown)
+				SetVisibleIndex();
 		}
 	}
 }

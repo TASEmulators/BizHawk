@@ -784,14 +784,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		/// <summary>
+		/// Scrolls to the given index, according to the scroll settings.
+		/// </summary>
 		public void ScrollToIndex(int index)
 		{
-			if (ScrollMethod == "near" && !IsVisible(index))
+			if (ScrollMethod == "near")
 			{
-				if (FirstVisibleRow > index)
-					FirstVisibleRow = index;
-				else
-					LastVisibleRow = index;
+				MakeIndexVisible(index);
 			}
 			if (!IsVisible(index) || AlwaysScroll)
 			{
@@ -824,6 +824,19 @@ namespace BizHawk.Client.EmuHawk
 						} while ((lastVisible - index < 0 || lastVisible - index > lagFrames[VisibleRows]) && FirstVisibleRow != 0);
 					}
 				}
+			}
+		}
+		/// <summary>
+		/// Scrolls so that the given index is visible, if it isn't already; doesn't use scroll settings.
+		/// </summary>
+		public void MakeIndexVisible(int index)
+		{
+			if (!IsVisible(index))
+			{
+				if (FirstVisibleRow > index)
+					FirstVisibleRow = index;
+				else
+					LastVisibleRow = index;
 			}
 		}
 
@@ -1448,30 +1461,16 @@ namespace BizHawk.Client.EmuHawk
 				_columnDownMoved = true;
 			}
 
-			if (IsPaintDown)
-			{
-				if (HorizontalOrientation)
-				{
-					if (e.X <= ColumnWidth)
-						_currentX = ColumnWidth + 2; // 2 because ColumnWidth/Height isn't correct
-					else if (e.X > Width)
-						_currentX = Width;
-				}
-				else
-				{
-					if (e.Y <= ColumnHeight)
-						_currentY = ColumnHeight + 2;
-					else if (e.Y > Height)
-						_currentX = Height;
-				}
-			}
-			var newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+			Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 			// SuuperW: Hide lag frames
 			if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 			{
 				newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
 			}
 			newCell.RowIndex += FirstVisibleRow;
+			if (newCell.RowIndex < 0)
+				newCell.RowIndex = 0;
+
 			if (!newCell.Equals(CurrentCell))
 			{
 				CellChanged(newCell);
@@ -2151,10 +2150,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (HorizontalOrientation)
 				{
-					if (x >= ColumnWidth)
-					{
-						newCell.RowIndex = PixelsToRows(x);
-					}
+					newCell.RowIndex = PixelsToRows(x);
 
 					int colIndex = (y + VBar.Value) / CellHeight;
 					if (colIndex >= 0 && colIndex < columns.Count)
@@ -2164,14 +2160,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (y >= CellHeight)
-					{
-						newCell.RowIndex = PixelsToRows(y);
-					}
-
+					newCell.RowIndex = PixelsToRows(y);
 					newCell.Column = ColumnAtX(x);
 				}
 			}
+
 			return newCell;
 		}
 
@@ -2252,11 +2245,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>A row number between 0 and VisibleRows if it is a Datarow, otherwise a negative number if above all Datarows.</returns>
 		private int PixelsToRows(int pixels)
 		{
+			// Using Math.Floor and float because integer division rounds towards 0 but we want to round down.
 			if (_horizontalOrientation)
 			{
-				return (pixels - ColumnWidth) / CellWidth;
+				return (int)Math.Floor((float)(pixels - ColumnWidth) / CellWidth);
 			}
-			return (pixels - ColumnHeight) / CellHeight;
+			return (int)Math.Floor((float)(pixels - ColumnHeight) / CellHeight);
 		}
 
 		/// <summary>

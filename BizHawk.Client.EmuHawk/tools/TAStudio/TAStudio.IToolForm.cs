@@ -35,8 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			if (AutoadjustInputMenuItem.Checked)
 				refreshNeeded = AutoAdjustInput();
 
-			if (TasPlaybackBox.FollowCursor)
-				SetVisibleIndex();
+			MaybeFollowCursor();
 
 			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
@@ -56,10 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 
-			if (TasPlaybackBox.FollowCursor)
-			{
-				SetVisibleIndex();
-			}
+			MaybeFollowCursor();
 		}
 
 		public void Restart()
