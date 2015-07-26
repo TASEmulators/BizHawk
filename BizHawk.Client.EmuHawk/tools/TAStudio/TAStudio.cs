@@ -64,6 +64,9 @@ namespace BizHawk.Client.EmuHawk
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
 			public string FollowCursorScrollMethod { get; set; }
+
+			public int MainVerticalSplitDistance { get; set; }
+			public int BranchMarkerSplitDistance { get; set; }
 		}
 
 		public TasMovie CurrentTasMovie
@@ -168,6 +171,35 @@ namespace BizHawk.Client.EmuHawk
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 			if (!string.IsNullOrEmpty(Settings.FollowCursorScrollMethod)) // Better default here too?
 				TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+
+			// Remembering Split container logic
+			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
+			int defaultBranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
+
+			ToolStripMenuItem restoreDefaults = TASMenu.Items
+				.OfType<ToolStripMenuItem>()
+				.Single(t => t.Name == "SettingsSubMenu")
+				.DropDownItems
+				.OfType<ToolStripMenuItem>()
+				.Single(t => t.Text == "Restore &Defaults");
+
+			restoreDefaults.Click += (o, ev) =>
+			{
+				MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
+				BranchesMarkersSplit.SplitterDistance = defaultBranchMarkerSplitDistance;
+			};
+
+			if (Settings.MainVerticalSplitDistance > 0)
+			{
+				MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+			}
+
+			if (Settings.BranchMarkerSplitDistance > 0)
+			{
+				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+			}
+
+			////////////////
 
 			RefreshDialog();
 			_initialized = true;
@@ -828,6 +860,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyCode == Keys.F)
 				TasPlaybackBox.FollowCursor ^= true;
+		}
+
+		private void MainVertialSplit_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			Settings.MainVerticalSplitDistance = MainVertialSplit.SplitterDistance;
+		}
+
+		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
+		{
+			Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 		}
 	}
 }

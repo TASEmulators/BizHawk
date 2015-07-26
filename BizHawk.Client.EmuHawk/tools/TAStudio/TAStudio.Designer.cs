@@ -1415,6 +1415,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BranchesMarkersSplit.Size = new System.Drawing.Size(204, 436);
 			this.BranchesMarkersSplit.SplitterDistance = 169;
 			this.BranchesMarkersSplit.TabIndex = 9;
+			this.BranchesMarkersSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
 			// 
 			// MainVertialSplit
 			// 
@@ -1436,6 +1437,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.Size = new System.Drawing.Size(507, 528);
 			this.MainVertialSplit.SplitterDistance = 295;
 			this.MainVertialSplit.TabIndex = 10;
+			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVertialSplit_SplitterMoved);
 			// 
 			// TAStudio
 			// 
