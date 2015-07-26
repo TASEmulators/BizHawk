@@ -837,6 +837,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
+			alwaysScrollToolStripMenuItem.Checked = Settings.FollowCursorAlwaysScroll;
 			scrollToViewToolStripMenuItem.Checked = false;
 			scrollToTopToolStripMenuItem.Checked = false;
 			scrollToBottomToolStripMenuItem.Checked = false;

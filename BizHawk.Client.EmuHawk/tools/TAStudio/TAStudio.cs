@@ -53,6 +53,9 @@ namespace BizHawk.Client.EmuHawk
 				DrawInput = true;
 				AutoPause = true;
 				FollowCursor = true;
+				ScrollSpeed = 1;
+				FollowCursorAlwaysScroll = false;
+				FollowCursorScrollMethod = "near";
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -165,12 +168,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			TasView.InputPaintingMode = Settings.DrawInput;
-			if (Settings.ScrollSpeed == 0)
-				Settings.ScrollSpeed = 1; // Default to 1, not 0. TODO: Surely there's a better way?
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-			if (!string.IsNullOrEmpty(Settings.FollowCursorScrollMethod)) // Better default here too?
-				TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
 
 			// Remembering Split container logic
 			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
