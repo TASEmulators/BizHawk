@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaybeFollowCursor()
 		{
-			if (TasPlaybackBox.FollowCursor && !TasView.IsPaintDown)
+			if (TasPlaybackBox.FollowCursor && !mouseButtonHeld)
 				SetVisibleIndex();
 		}
 	}

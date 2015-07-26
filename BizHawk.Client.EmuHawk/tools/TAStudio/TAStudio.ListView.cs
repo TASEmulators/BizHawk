@@ -361,7 +361,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
-						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool");
+						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
 
 						CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
 						_triggerAutoRestore = true;
@@ -406,7 +406,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (e.Clicks != 2)
 						{
-							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Float");
+							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Float " + buttonName + " from frame " + frame);
 							_startFloatDrawColumn = buttonName;
 						}
 						else // Double-click enters float editing mode
