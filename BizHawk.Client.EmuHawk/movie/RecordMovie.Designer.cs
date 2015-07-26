@@ -95,7 +95,8 @@
 			this.StartFromCombo.FormattingEnabled = true;
 			this.StartFromCombo.Items.AddRange(new object[] {
             "Power-On",
-            "Now"});
+            "Now",
+            "SaveRam"});
 			this.StartFromCombo.Location = new System.Drawing.Point(83, 65);
 			this.StartFromCombo.MaxDropDownItems = 32;
 			this.StartFromCombo.Name = "StartFromCombo";

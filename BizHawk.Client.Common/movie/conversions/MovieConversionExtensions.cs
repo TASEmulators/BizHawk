@@ -68,6 +68,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			tas.TextSavestate = old.TextSavestate;
 			tas.BinarySavestate = old.BinarySavestate;
+			tas.SaveRam = old.SaveRam;
 
 			return tas;
 		}
@@ -110,6 +111,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			bk2.TextSavestate = old.TextSavestate;
 			bk2.BinarySavestate = old.BinarySavestate;
+			bk2.SaveRam = old.SaveRam;
 
 			bk2.Save();
 			return bk2;

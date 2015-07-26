@@ -82,6 +82,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				Global.Emulator.ResetCounters();
 			}
+			else if (Global.Emulator.HasSaveRam() && movie.StartsFromSaveRam)
+			{
+				Global.Emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
+			}
 
 			Global.MovieSession.RunQueuedMovie(record);
 

@@ -141,6 +141,15 @@ namespace BizHawk.Client.Common
 								SavestateFramebuffer[i] = br.ReadInt32();
 						});
 				}
+
+				else if (StartsFromSaveRam)
+				{
+					bl.GetLump(BinaryStateLump.MovieSaveRam, false,
+						delegate(BinaryReader br, long length)
+						{
+							SaveRam = br.ReadBytes((int)length);
+						});
+				}
 			}
 
 			Changes = false;
@@ -192,6 +201,10 @@ namespace BizHawk.Client.Common
 						bs.PutLump(BinaryStateLump.Framebuffer,
 							(BinaryWriter bw) => BizHawk.Common.IOExtensions.IOExtensions.Write(bw, SavestateFramebuffer));
 					}
+				}
+				else if (StartsFromSaveRam)
+				{
+					bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
 				}
 			}
 

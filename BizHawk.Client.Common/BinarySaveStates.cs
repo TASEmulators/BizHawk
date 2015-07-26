@@ -21,6 +21,8 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump Input { get; private set; }
 		[Name("CoreText", "txt")]
 		public static BinaryStateLump CorestateText { get; private set; }
+		[Name("MovieSaveRam", "bin")]
+		public static BinaryStateLump MovieSaveRam { get; private set; }
 
 		// Only for movies they probably shoudln't be leaching this stuff
 		[Name("Header", "txt")]

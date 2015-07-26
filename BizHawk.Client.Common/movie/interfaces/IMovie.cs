@@ -52,8 +52,12 @@ namespace BizHawk.Client.Common
 		byte[] BinarySavestate { get; set; }
 		int[] SavestateFramebuffer { get; set; }
 
+		// saveram anchor
+		byte[] SaveRam { get; set; }
+
 		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }
+		bool StartsFromSaveRam { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
 		string Hash { get; set; }
