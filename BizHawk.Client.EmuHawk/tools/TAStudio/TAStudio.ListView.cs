@@ -734,7 +734,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Settings.FollowCursor && mouseButtonHeld) // todo; why FollowCursor? Should probably have it's own flag.
+			if (mouseButtonHeld)
 			{
 				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
 			}

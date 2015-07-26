@@ -49,13 +49,17 @@ namespace BizHawk.Client.EmuHawk
 				color = Color.Red;
 		}
 
-		private int _lastIndex = -1;
+		private string _lastUndoAction = null;
 		public void UpdateValues()
 		{
 			HistoryView.ItemCount = log.Names.Count;
-			if (AutoScrollCheck.Checked && _lastIndex != log.UndoIndex)
+			if (AutoScrollCheck.Checked && _lastUndoAction != log.NextUndoStepName)
+			{
 				HistoryView.ensureVisible(log.UndoIndex - 1);
-			_lastIndex = log.UndoIndex;
+				HistoryView.clearSelection();
+				HistoryView.SelectItem(log.UndoIndex - 1, true);
+			}
+			_lastUndoAction = log.NextUndoStepName;
 
 			HistoryView.Refresh();
 		}

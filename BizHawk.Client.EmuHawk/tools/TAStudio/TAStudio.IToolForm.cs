@@ -40,9 +40,8 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
 
-			if (refreshNeeded)
-				RefreshDialog();
-			else if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1) // Perhaps not the best place to put this.
+			RefreshDialog(refreshNeeded);
+			if (!refreshNeeded && TasView.RowCount != CurrentTasMovie.InputLogLength + 1) // Perhaps not the best place to put this.
 				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 		}
 

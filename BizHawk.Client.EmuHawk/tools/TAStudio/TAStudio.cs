@@ -551,9 +551,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void RefreshDialog()
+		public void RefreshDialog(bool refreshTasView = true)
 		{
-			RefreshTasView();
+			if (refreshTasView)
+				RefreshTasView();
 
 			if (MarkerControl != null)
 				MarkerControl.UpdateValues();

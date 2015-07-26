@@ -84,7 +84,6 @@ namespace BizHawk.Client.EmuHawk
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.onlyOnAutoFireColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CombineConsecutiveRecordingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseInputKeysItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.BindMarkersToInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -578,7 +577,6 @@ namespace BizHawk.Client.EmuHawk
             this.DrawInputByDraggingMenuItem,
             this.applyPatternToPaintedInputToolStripMenuItem,
             this.onlyOnAutoFireColumnsToolStripMenuItem,
-            this.CombineConsecutiveRecordingsMenuItem,
             this.UseInputKeysItem,
             this.toolStripSeparator4,
             this.BindMarkersToInputMenuItem,
@@ -598,31 +596,31 @@ namespace BizHawk.Client.EmuHawk
 			// SetMaxUndoLevelsMenuItem
 			// 
 			this.SetMaxUndoLevelsMenuItem.Name = "SetMaxUndoLevelsMenuItem";
-			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(285, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(257, 6);
 			// 
 			// AutoadjustInputMenuItem
 			// 
 			this.AutoadjustInputMenuItem.CheckOnClick = true;
 			this.AutoadjustInputMenuItem.Name = "AutoadjustInputMenuItem";
-			this.AutoadjustInputMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.AutoadjustInputMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.AutoadjustInputMenuItem.Text = "Auto-adjust Input according to Lag";
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(285, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(257, 6);
 			// 
 			// DrawInputByDraggingMenuItem
 			// 
 			this.DrawInputByDraggingMenuItem.Name = "DrawInputByDraggingMenuItem";
-			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.DrawInputByDraggingMenuItem.Text = "Draw Input by dragging";
 			this.DrawInputByDraggingMenuItem.Click += new System.EventHandler(this.DrawInputByDraggingMenuItem_Click);
 			// 
@@ -630,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.applyPatternToPaintedInputToolStripMenuItem.CheckOnClick = true;
 			this.applyPatternToPaintedInputToolStripMenuItem.Name = "applyPatternToPaintedInputToolStripMenuItem";
-			this.applyPatternToPaintedInputToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.applyPatternToPaintedInputToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.applyPatternToPaintedInputToolStripMenuItem.Text = "Apply Pattern to painted input";
 			this.applyPatternToPaintedInputToolStripMenuItem.CheckedChanged += new System.EventHandler(this.applyPatternToPaintedInputToolStripMenuItem_CheckedChanged);
 			// 
@@ -641,27 +639,20 @@ namespace BizHawk.Client.EmuHawk
 			this.onlyOnAutoFireColumnsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Enabled = false;
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Name = "onlyOnAutoFireColumnsToolStripMenuItem";
-			this.onlyOnAutoFireColumnsToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Text = "Only on Auto-Fire columns";
-			// 
-			// CombineConsecutiveRecordingsMenuItem
-			// 
-			this.CombineConsecutiveRecordingsMenuItem.Enabled = false;
-			this.CombineConsecutiveRecordingsMenuItem.Name = "CombineConsecutiveRecordingsMenuItem";
-			this.CombineConsecutiveRecordingsMenuItem.Size = new System.Drawing.Size(288, 22);
-			this.CombineConsecutiveRecordingsMenuItem.Text = "Combine consecutive Recordings/Draws";
 			// 
 			// UseInputKeysItem
 			// 
 			this.UseInputKeysItem.Enabled = false;
 			this.UseInputKeysItem.Name = "UseInputKeysItem";
-			this.UseInputKeysItem.Size = new System.Drawing.Size(288, 22);
+			this.UseInputKeysItem.Size = new System.Drawing.Size(260, 22);
 			this.UseInputKeysItem.Text = "Use Input keys for Column Set";
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(285, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(257, 6);
 			// 
 			// BindMarkersToInputMenuItem
 			// 
@@ -669,52 +660,52 @@ namespace BizHawk.Client.EmuHawk
 			this.BindMarkersToInputMenuItem.CheckOnClick = true;
 			this.BindMarkersToInputMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.BindMarkersToInputMenuItem.Name = "BindMarkersToInputMenuItem";
-			this.BindMarkersToInputMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.BindMarkersToInputMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.BindMarkersToInputMenuItem.Text = "Bind Markers to Input";
 			this.BindMarkersToInputMenuItem.Click += new System.EventHandler(this.BindMarkersToInputMenuItem_Click);
 			// 
 			// EmptyNewMarkerNotesMenuItem
 			// 
 			this.EmptyNewMarkerNotesMenuItem.Name = "EmptyNewMarkerNotesMenuItem";
-			this.EmptyNewMarkerNotesMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.EmptyNewMarkerNotesMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.EmptyNewMarkerNotesMenuItem.Text = "Empty new Marker Notes";
 			this.EmptyNewMarkerNotesMenuItem.Click += new System.EventHandler(this.EmptyNewMarkerNotesMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
-			this.toolStripSeparator13.Size = new System.Drawing.Size(285, 6);
+			this.toolStripSeparator13.Size = new System.Drawing.Size(257, 6);
 			// 
 			// BranchesRestoreEntireMovieMenuItem
 			// 
 			this.BranchesRestoreEntireMovieMenuItem.Enabled = false;
 			this.BranchesRestoreEntireMovieMenuItem.Name = "BranchesRestoreEntireMovieMenuItem";
-			this.BranchesRestoreEntireMovieMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.BranchesRestoreEntireMovieMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.BranchesRestoreEntireMovieMenuItem.Text = "Branches restore entire Movie";
 			// 
 			// OsdInBranchScreenshotsMenuItem
 			// 
 			this.OsdInBranchScreenshotsMenuItem.Enabled = false;
 			this.OsdInBranchScreenshotsMenuItem.Name = "OsdInBranchScreenshotsMenuItem";
-			this.OsdInBranchScreenshotsMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.OsdInBranchScreenshotsMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.OsdInBranchScreenshotsMenuItem.Text = "OSD in Branch screenshots";
 			// 
 			// toolStripSeparator14
 			// 
 			this.toolStripSeparator14.Name = "toolStripSeparator14";
-			this.toolStripSeparator14.Size = new System.Drawing.Size(285, 6);
+			this.toolStripSeparator14.Size = new System.Drawing.Size(257, 6);
 			// 
 			// AutopauseAtEndOfMovieMenuItem
 			// 
 			this.AutopauseAtEndOfMovieMenuItem.Name = "AutopauseAtEndOfMovieMenuItem";
-			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
 			this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutopauseAtEndMenuItem_Click);
 			// 
 			// sepToolStripMenuItem
 			// 
 			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(285, 6);
+			this.sepToolStripMenuItem.Size = new System.Drawing.Size(257, 6);
 			// 
 			// autoHoldFireToolStripMenuItem
 			// 
@@ -727,7 +718,7 @@ namespace BizHawk.Client.EmuHawk
             this.setpToolStripMenuItem,
             this.setCustomsToolStripMenuItem});
 			this.autoHoldFireToolStripMenuItem.Name = "autoHoldFireToolStripMenuItem";
-			this.autoHoldFireToolStripMenuItem.Size = new System.Drawing.Size(288, 22);
+			this.autoHoldFireToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
 			this.autoHoldFireToolStripMenuItem.Text = "Auto Hold/Fire";
 			// 
 			// keepSetPatternsToolStripMenuItem
@@ -1529,7 +1520,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem AutoadjustInputMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 		private System.Windows.Forms.ToolStripMenuItem DrawInputByDraggingMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CombineConsecutiveRecordingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem UseInputKeysItem;
 		private System.Windows.Forms.ToolStripMenuItem BindMarkersToInputMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem EmptyNewMarkerNotesMenuItem;
