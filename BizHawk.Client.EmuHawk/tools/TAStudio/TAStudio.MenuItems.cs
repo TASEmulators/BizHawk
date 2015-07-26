@@ -858,9 +858,11 @@ namespace BizHawk.Client.EmuHawk
 			inputpromt.TextInputType = InputPrompt.InputType.Unsigned;
 			inputpromt.Message = "Frames per tick:";
 			inputpromt.InitialValue = TasView.ScrollSpeed.ToString();
-			inputpromt.ShowDialog();
-			TasView.ScrollSpeed = int.Parse(inputpromt.PromptText);
-			Settings.ScrollSpeed = TasView.ScrollSpeed;
+			if (inputpromt.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				TasView.ScrollSpeed = int.Parse(inputpromt.PromptText);
+				Settings.ScrollSpeed = TasView.ScrollSpeed;
+			}
 			
 		}
 
