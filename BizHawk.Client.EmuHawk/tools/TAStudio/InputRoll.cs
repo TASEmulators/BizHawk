@@ -840,6 +840,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void ClearSelectedRows()
+		{
+			SelectedItems.Clear();
+		}
+
 		public IEnumerable<ToolStripItem> GenerateContextMenuItems()
 		{
 			yield return new ToolStripSeparator();
