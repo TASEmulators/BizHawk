@@ -2168,6 +2168,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (!(IsPaintDown || RightButtonHeld) && newCell.RowIndex == -1)
+				newCell.RowIndex = null;
+
 			return newCell;
 		}
 
