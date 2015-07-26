@@ -72,6 +72,7 @@ namespace MonoMacWrapper
 				if (_queuedAction != null) {
 					_queuedAction.Invoke (); //Needs to happen in the same context as the RunLoop, otherwise we'll get weird behavior.
 					_queuedAction = null;
+					RefreshAllMenus();
 				}
 			} else {
 				_masterTimer.Invalidate();
@@ -212,6 +213,20 @@ namespace MonoMacWrapper
 				translated.State = translated.HostMenu.Checked ? NSCellStateValue.On : NSCellStateValue.Off;
 			}
 		}
+
+		private void RefreshAllMenus(){
+			
+			for (int i = 0; i < _mainWinForm.MainMenuStrip.Items.Count; i++)
+			{
+				ToolStripMenuItem item = _mainWinForm.MainMenuStrip.Items[i] as ToolStripMenuItem;
+				MenuItemAdapter mia = _menuLookup[item];
+				if (mia != null)
+				{
+					RemoveMenuItems(mia);
+					ExtractSubmenu(mia.HostMenu.DropDownItems, mia.Submenu, i==0);
+				}
+			}
+		}
 		
 		private static NSImage ImageToCocoa(System.Drawing.Image input)
 		{
@@ -227,7 +242,7 @@ namespace MonoMacWrapper
 		{
 			return text.Replace("&",string.Empty);
 		}
-		
+
 		private class MenuItemAdapter : NSMenuItem
 		{
 			public MenuItemAdapter(ToolStripMenuItem host) : base(CleanMenuString(host.Text)) 

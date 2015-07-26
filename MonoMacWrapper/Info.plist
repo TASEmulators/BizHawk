@@ -13,7 +13,7 @@
 	<key>CFBundleName</key>
 	<string>BizHawk</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.11.0</string>
+	<string>1.11.1</string>
 	<key>CFBundleVersion</key>
 	<string>OS X</string>
 	<key>LSMinimumSystemVersion</key>
@@ -24,5 +24,7 @@
 	<string>NSApplication</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>BizHawk Developers</string>
+	<key>CFBundleDisplayName</key>
+	<string>BizHawk</string>
 </dict>
 </plist>
