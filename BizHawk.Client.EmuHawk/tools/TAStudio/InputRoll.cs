@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	public class InputRoll : Control
 	{
 		private readonly GDIRenderer Gdi;
-		private readonly List<Cell> SelectedItems = new List<Cell>();
+		private readonly SortedSet<Cell> SelectedItems = new SortedSet<Cell>(new sortCell());
 
 		private readonly VScrollBar VBar;
 		private readonly HScrollBar HBar;
@@ -448,8 +448,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var items = SelectedItems.Where(cell => cell.RowIndex == index);
-					SelectedItems.RemoveAll(items.Contains);
+					IEnumerable<Cell> items = SelectedItems.Where(cell => cell.RowIndex == index);
+					SelectedItems.RemoveWhere(items.Contains);
 				}
 			}
 		}
@@ -471,7 +471,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public void TruncateSelection(int index)
 		{
-			SelectedItems.RemoveAll(cell => cell.RowIndex > index);
+			SelectedItems.RemoveWhere(cell => cell.RowIndex > index);
 		}
 
 		[Browsable(false)]
@@ -490,11 +490,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (SelectedRows.Any())
+				if (AnyRowsSelected)
 				{
-					return SelectedRows
-						.OrderBy(x => x)
-						.First();
+					return SelectedRows.Min();
 				}
 
 				return null;
@@ -507,11 +505,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (SelectedRows.Any())
+				if (AnyRowsSelected)
 				{
-					return SelectedRows
-						.OrderBy(x => x)
-						.Last();
+					return SelectedRows.Max();
 				}
 
 				return null;
@@ -852,6 +848,13 @@ namespace BizHawk.Client.EmuHawk
 					.Distinct();
 			}
 		}
+		public bool AnyRowsSelected
+		{
+			get
+			{
+				return SelectedItems.Any(cell => cell.RowIndex.HasValue);
+			}
+		}
 
 		public void ClearSelectedRows()
 		{
@@ -998,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawData(PaintEventArgs e)
 		{
-			var columns = _columns.VisibleColumns.ToList();
+			List<RollColumn> columns = _columns.VisibleColumns.ToList();
 			if (QueryItemText != null)
 			{
 				if (HorizontalOrientation)
@@ -1300,12 +1303,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
 			Color Highlight_Color = new Color();
-			foreach (var cell in SelectedItems)
+			foreach (Cell cell in SelectedItems)
 			{
 				if (cell.RowIndex > LastVisibleRow || cell.RowIndex < FirstVisibleRow)
 					continue;
 
-				var relativeCell = new Cell
+				Cell relativeCell = new Cell
 				{
 					RowIndex = cell.RowIndex - FirstVisibleRow,
 					Column = cell.Column,
@@ -1366,7 +1369,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="e"></param>
 		private void DoBackGroundCallback(PaintEventArgs e)
 		{
-			var columns = _columns.VisibleColumns.ToList();
+			List<RollColumn> columns = _columns.VisibleColumns.ToList();
 
 			if (HorizontalOrientation)
 			{
@@ -2588,6 +2591,33 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private class sortCell : IComparer<Cell>
+		{
+			int IComparer<Cell>.Compare(Cell a, Cell b)
+			{
+				Cell c1 = a as Cell;
+				Cell c2 = b as Cell;
+				if (c1.RowIndex.HasValue)
+				{
+					if (c2.RowIndex.HasValue)
+					{
+						int row = c1.RowIndex.Value.CompareTo(c2.RowIndex.Value);
+						if (row == 0)
+						{
+							return c1.Column.Name.CompareTo(c2.Column.Name);
+						}
+						else
+							return row;
+					}
+					else
+						return 1;
+				}
+				else if (c2.RowIndex.HasValue)
+					return -1;
+				else
+					return c1.Column.Name.CompareTo(c2.Column.Name);
+			}
+		}
 		#endregion
 	}
 }

@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EditMarker()
 		{
-			if (MarkerView.SelectedRows.Any())
+			if (MarkerView.AnyRowsSelected)
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Tastudio.CurrentTasMovie.Markers[index];
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int SelectedMarkerFrame()
 		{
-			if (MarkerView.SelectedRows.Any())
+			if (MarkerView.AnyRowsSelected)
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Tastudio.CurrentTasMovie.Markers[index];

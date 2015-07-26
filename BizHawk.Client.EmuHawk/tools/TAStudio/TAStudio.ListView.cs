@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_ColumnClick(object sender, InputRoll.ColumnClickEventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				var columnName = e.Column.Name;
 

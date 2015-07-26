@@ -469,7 +469,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void DummyLoadMacro(string path)
 		{
-			if (!TasView.SelectedRows.Any())
+			if (!TasView.AnyRowsSelected)
 				return;
 
 			MovieZone loadZone = new MovieZone(path);
@@ -803,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			EditMarkerContextMenuItem.Enabled =
 			RemoveMarkerContextMenuItem.Enabled =
 			ScrollToMarkerToolStripMenuItem.Enabled =
-				MarkerControl.MarkerInputRoll.SelectedRows.Any();
+				MarkerControl.MarkerInputRoll.AnyRowsSelected;
 		}
 
 		private void ScrollToMarkerToolStripMenuItem_Click(object sender, EventArgs e)

@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.LastSelectedIndex == CurrentTasMovie.InputLogLength)
 				TasView.SelectRow(CurrentTasMovie.InputLogLength, false);
 
-			if (!TasView.SelectedRows.Any())
+			if (!TasView.AnyRowsSelected)
 				return;
 
 			MovieZone macro = new MovieZone(CurrentTasMovie, TasView.FirstSelectedIndex.Value,
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void placeMacroAtSelectionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!TasView.SelectedRows.Any())
+			if (!TasView.AnyRowsSelected)
 				return;
 
 			MovieZone macro = MacroInputTool.LoadMacro();
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 			DeleteFramesMenuItem.Enabled =
 			CloneMenuItem.Enabled =
 			TruncateMenuItem.Enabled =
-				TasView.SelectedRows.Any();
+				TasView.AnyRowsSelected;
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectBetweenMarkersMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				var prevMarker = CurrentTasMovie.Markers.PreviousOrCurrent(TasView.LastSelectedIndex.Value);
 				var nextMarker = CurrentTasMovie.Markers.Next(TasView.LastSelectedIndex.Value);
@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToList();
@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
@@ -392,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				bool needsToRollback = !(TasView.FirstSelectedIndex > Emulator.Frame);
@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DeleteFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
@@ -461,7 +461,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloneMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				var wasPaused = GlobalWin.MainForm.EmulatorPaused;
 				var framesToInsert = TasView.SelectedRows.ToList();
@@ -496,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InsertFrameMenuItem_Click(object sender, EventArgs e)
 		{
 			var wasPaused = GlobalWin.MainForm.EmulatorPaused;
-			var insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
+			var insertionFrame = TasView.AnyRowsSelected ? TasView.FirstSelectedIndex.Value : 0;
 			var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 			CurrentTasMovie.InsertEmptyFrame(insertionFrame);
@@ -522,7 +522,7 @@ namespace BizHawk.Client.EmuHawk
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
-			int insertionFrame = TasView.SelectedRows.Any() ? TasView.FirstSelectedIndex.Value : 0;
+			int insertionFrame = TasView.AnyRowsSelected ? TasView.FirstSelectedIndex.Value : 0;
 			bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 			FramesPrompt framesPrompt = new FramesPrompt();
@@ -552,7 +552,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TruncateMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Any())
+			if (TasView.AnyRowsSelected)
 			{
 				var rollbackFrame = TasView.LastSelectedIndex.Value;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
@@ -981,7 +981,7 @@ namespace BizHawk.Client.EmuHawk
 				InsertFrameContextMenuItem.Enabled =
 				InsertNumFramesContextMenuItem.Enabled =
 				TruncateContextMenuItem.Enabled =
-				TasView.SelectedRows.Any();
+				TasView.AnyRowsSelected;
 
 			StartFromNowSeparator.Visible =
 				StartNewProjectFromNowMenuItem.Visible =

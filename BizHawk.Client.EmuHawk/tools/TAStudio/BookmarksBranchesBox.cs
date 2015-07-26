@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (BranchView.SelectedRows.Any())
+				if (BranchView.AnyRowsSelected)
 				{
 					return Branches[BranchView.SelectedRows.First()];
 				}
