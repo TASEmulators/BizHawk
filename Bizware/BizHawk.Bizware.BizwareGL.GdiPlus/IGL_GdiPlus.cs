@@ -296,8 +296,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
-			ret.M41 = -(float)dims.Width * 0.5f; // -0.5f;
-			ret.M42 = (float)dims.Height * 0.5f; // +0.5f;
+			ret.M41 = -(float)dims.Width * 0.5f;
+			ret.M42 = (float)dims.Height * 0.5f;
 			return ret;
 		}
 
