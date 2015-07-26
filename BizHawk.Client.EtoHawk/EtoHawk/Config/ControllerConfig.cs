@@ -22,7 +22,7 @@ namespace EtoHawk.Config
 
         static ControllerConfig()
         {
-			ControllerImages.Add("NES Controller", GetResourceImage("NES Controller"));
+			ControllerImages.Add("NES Controller", GetResourceImage("NES_Controller"));
 			ControllerImages.Add("SNES Controller", GetResourceImage("SNES_Controller"));
 			ControllerImages.Add("Nintento 64 Controller", GetResourceImage("N64"));
 			ControllerImages.Add("Gameboy Controller", GetResourceImage("GBController"));

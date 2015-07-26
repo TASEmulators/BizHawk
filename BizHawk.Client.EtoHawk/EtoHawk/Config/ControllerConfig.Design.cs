@@ -36,7 +36,6 @@ namespace EtoHawk.Config
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControllerConfig));
             this.tabControl1 = new TabControl();
             this.NormalControlsTab = new TabPage();
             this.AutofireControlsTab = new TabPage();
@@ -155,8 +154,11 @@ namespace EtoHawk.Config
             //this.tableLayoutPanel1.ColumnCount = 2;
             //this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             //this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 340F));
+			this.pictureBox1.Size = new Size(334, 501);
+			this.tableLayoutPanel1.SetColumnScale (1, false);
             this.tableLayoutPanel1.Add(this.tabControl1, 0, 0);
             this.tableLayoutPanel1.Add(this.pictureBox1, 1, 0);
+			//this.tableLayoutPanel1.
             //this.tableLayoutPanel1.Location = new Point(12, 12);
             //this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             //this.tableLayoutPanel1.RowCount = 1;
@@ -171,7 +173,6 @@ namespace EtoHawk.Config
             //this.pictureBox1.Location = new Point(571, 23);
             //this.pictureBox1.Margin = new Padding(3, 23, 3, 3);
             //this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new Size(334, 501);
             //this.pictureBox1.TabIndex = 2;
             //this.pictureBox1.TabStop = false;
             // 
@@ -305,7 +306,7 @@ namespace EtoHawk.Config
         private CheckBox checkBoxUDLR;
         private Button buttonOK;
         private Button buttonCancel;
-        private TableLayout tableLayoutPanel1;
+		private TableLayout tableLayoutPanel1;
         private ImageView pictureBox1;
         private TabPage AnalogControlsTab;
         private ContextMenu contextMenuStrip1;

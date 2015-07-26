@@ -50,7 +50,7 @@ namespace MonoMacWrapper
 				DoMenuExtraction();
 				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
-				_masterTimer = NSTimer.CreateRepeatingTimer(0.00833333333333, MacRunLoop);
+				_masterTimer = NSTimer.CreateRepeatingTimer(0.01666666666667, MacRunLoop);
 				NSRunLoop.Current.AddTimer(_masterTimer, NSRunLoopMode.Common);
 			}
 			catch (Exception e) 
@@ -62,7 +62,13 @@ namespace MonoMacWrapper
 		}
 
 		private void MacRunLoop(){
-			if (_mainWinForm.RunLoopCore()) {
+			bool runLoopVal = true;
+			for (int i = 0; i < 2; i++)
+			{
+				runLoopVal &= _mainWinForm.RunLoopCore();
+				if(!runLoopVal) break;
+			}
+			if (runLoopVal) {
 				if (_queuedAction != null) {
 					_queuedAction.Invoke (); //Needs to happen in the same context as the RunLoop, otherwise we'll get weird behavior.
 					_queuedAction = null;
