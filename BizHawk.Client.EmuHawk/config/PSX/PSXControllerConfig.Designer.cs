@@ -31,6 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PSXControllerConfig));
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.OkBtn = new System.Windows.Forms.Button();
+			this.btnTest = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// CancelBtn
@@ -56,6 +57,17 @@
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
 			// 
+			// btnTest
+			// 
+			this.btnTest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnTest.Location = new System.Drawing.Point(12, 227);
+			this.btnTest.Name = "btnTest";
+			this.btnTest.Size = new System.Drawing.Size(60, 23);
+			this.btnTest.TabIndex = 6;
+			this.btnTest.Text = "Test";
+			this.btnTest.UseVisualStyleBackColor = true;
+			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+			// 
 			// PSXControllerConfig
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -63,6 +75,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
 			this.ClientSize = new System.Drawing.Size(366, 262);
+			this.Controls.Add(this.btnTest);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -78,5 +91,6 @@
 
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.Button OkBtn;
+		private System.Windows.Forms.Button btnTest;
 	}
 }

@@ -418,6 +418,12 @@
     <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
       <DependentUpon>PSXControllerConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\PSX\PSXControllerConfigNew.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\PSX\PSXControllerConfigNew.Designer.cs">
+      <DependentUpon>PSXControllerConfigNew.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\PSX\PSXHashDiscs.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1250,6 +1256,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
       <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\PSX\PSXControllerConfigNew.resx">
+      <DependentUpon>PSXControllerConfigNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXHashDiscs.resx">
       <DependentUpon>PSXHashDiscs.cs</DependentUpon>
