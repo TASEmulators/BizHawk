@@ -336,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void button7_Click(object sender, EventArgs e)
 		{
-			using (var sfd = new SaveFileDialog())
+			using (var sfd = HawkDialogFactory.CreateSaveFileDialog())
 			{
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["GB", "Palettes"].Path, "GB");
 				sfd.FileName = Global.Game.Name + ".pal";

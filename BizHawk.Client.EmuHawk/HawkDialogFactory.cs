@@ -6,6 +6,7 @@ namespace BizHawk.Client.EmuHawk
 	public static class HawkDialogFactory
 	{
 		public static Type OpenDialogClass = typeof(DefaultOpenFileDialog);
+		public static Type SaveDialogClass = typeof(DefaultSaveFileDialog);
 		public static Type FolderBrowserClass = typeof(DefaultFolderBrowserDialog);
 
 		public static IOpenFileDialog CreateOpenFileDialog()
@@ -15,6 +16,15 @@ namespace BizHawk.Client.EmuHawk
 				return (IOpenFileDialog)OpenDialogClass.GetConstructor(Type.EmptyTypes).Invoke(null);
 			}
 			return new DefaultOpenFileDialog();
+		}
+
+		public static ISaveFileDialog CreateSaveFileDialog()
+		{
+			if(typeof(ISaveFileDialog).IsAssignableFrom(SaveDialogClass))
+			{
+				return (ISaveFileDialog)SaveDialogClass.GetConstructor(Type.EmptyTypes).Invoke(null);
+			}
+			return new DefaultSaveFileDialog();
 		}
 
 		public static IFolderBrowserDialog CreateFolderBrowserDialog()
@@ -27,10 +37,42 @@ namespace BizHawk.Client.EmuHawk
 		}
 	}
 
+	public class DefaultSaveFileDialog : DefaultOpenFileDialog, ISaveFileDialog
+	{
+		public DefaultSaveFileDialog()
+		{
+			_capsule = new SaveFileDialog();
+		}
+
+		public string DefaultExt 
+		{ 
+			get
+			{ 
+				return ((SaveFileDialog)_capsule).DefaultExt; 
+			}
+			set
+			{ 
+				((SaveFileDialog)_capsule).DefaultExt = value;
+			} 
+		}
+
+		public bool OverwritePrompt 
+		{ 
+			get
+			{ 
+				return ((SaveFileDialog)_capsule).OverwritePrompt; 
+			}
+			set
+			{ 
+				((SaveFileDialog)_capsule).OverwritePrompt = value;
+			} 
+		}
+	}
+
 	public class DefaultOpenFileDialog : IOpenFileDialog
 	{
 		//Can't extend OpenFileDialog because it's sealed, so I need to encapsulate it.
-		private OpenFileDialog _capsule;
+		protected FileDialog _capsule;
 		public DefaultOpenFileDialog()
 		{
 			_capsule = new OpenFileDialog();
@@ -52,8 +94,21 @@ namespace BizHawk.Client.EmuHawk
 		}
 		public bool Multiselect
 		{
-			get { return _capsule.Multiselect; }
-			set { _capsule.Multiselect = value; }
+			get 
+			{
+				if (_capsule is OpenFileDialog)
+				{
+					return ((OpenFileDialog)_capsule).Multiselect;
+				}
+				return false;
+			}
+			set 
+			{
+				if (_capsule is OpenFileDialog)
+				{
+					((OpenFileDialog)_capsule).Multiselect = value;
+				}
+			}
 		}
 		public bool AddExtension
 		{
@@ -63,6 +118,10 @@ namespace BizHawk.Client.EmuHawk
 		public System.Windows.Forms.DialogResult ShowDialog()
 		{
 			return _capsule.ShowDialog();
+		}
+		public System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.Form form)
+		{
+			return _capsule.ShowDialog(form);
 		}
 		public string FileName 
 		{

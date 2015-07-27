@@ -12,7 +12,13 @@ namespace BizHawk.Client.EmuHawk
 		string FileName { get; set; }
 		string[] FileNames { get; }
 		int FilterIndex { get; set; }
-		System.Windows.Forms.DialogResult ShowDialog();
+		System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.Form form);
+	}
+
+	public interface ISaveFileDialog : IOpenFileDialog
+	{
+		string DefaultExt { get; set; }
+		bool OverwritePrompt { get; set; }
 	}
 
 	public interface IHasShowDialog

@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private FileInfo GetFileFromUser()
 		{
-			var sfd = new SaveFileDialog();
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			if (_logFile == null)
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".txt";

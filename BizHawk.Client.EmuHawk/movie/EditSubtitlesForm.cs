@@ -172,7 +172,7 @@ namespace BizHawk.Client.EmuHawk
         private void Export_Click(object sender, EventArgs e)
         {
             // Get file to save as
-            var form = new SaveFileDialog();
+			var form = HawkDialogFactory.CreateSaveFileDialog();
             form.AddExtension = true;
             form.Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*";
 

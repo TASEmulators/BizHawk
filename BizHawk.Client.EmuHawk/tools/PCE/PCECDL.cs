@@ -266,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var sfd = new SaveFileDialog();
+				var sfd = HawkDialogFactory.CreateSaveFileDialog();
 				var result = sfd.ShowDialog(this);
 				if (result == DialogResult.OK)
 				{

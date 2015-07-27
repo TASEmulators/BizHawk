@@ -135,14 +135,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
-			var sfd = new SaveFileDialog
-			{
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-				DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension,
-				FileName = RecordBox.Text,
-				OverwritePrompt = false,
-				Filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|All Files|*.*"
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			sfd.DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension;
+			sfd.FileName = RecordBox.Text;
+			sfd.OverwritePrompt = false;
+			sfd.Filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|All Files|*.*";
 
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK

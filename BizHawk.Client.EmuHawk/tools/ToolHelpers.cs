@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetTasProjSaveFileFromUser(string currentFile)
 		{
-			var sfd = new SaveFileDialog();
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
-			var sfd = new SaveFileDialog();
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
 		{
-			var sfd = new SaveFileDialog();
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			if (!string.IsNullOrWhiteSpace(currentFile))
 			{
 				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);

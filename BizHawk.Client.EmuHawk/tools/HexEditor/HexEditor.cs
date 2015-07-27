@@ -399,11 +399,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string GetSaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog
-			{
-				Filter = "Text (*.txt)|*.txt|All Files|*.*",
-				RestoreDirectory = true
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
+			sfd.RestoreDirectory = true;
 
 			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
 			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
@@ -816,12 +814,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private string GetBinarySaveFileFromUser()
 		{
-			var sfd = new SaveFileDialog
-			{
-				Filter = GetSaveFileFilter(),
-				RestoreDirectory = true,
-				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null))
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.Filter = GetSaveFileFilter();
+			sfd.RestoreDirectory = true;
+			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
 
 			if (_domain.Name == "File on Disk")
 			{

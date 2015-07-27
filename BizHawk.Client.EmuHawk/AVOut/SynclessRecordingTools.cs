@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 				height = bmp.Height;
 			}
 
-			var sfd = new SaveFileDialog();
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			sfd.FileName = Path.ChangeExtension(mSynclessConfigFile, ".avi");
 			sfd.InitialDirectory = Path.GetDirectoryName(sfd.FileName);
 			if (sfd.ShowDialog() == DialogResult.Cancel)

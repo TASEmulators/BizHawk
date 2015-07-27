@@ -34,6 +34,7 @@ namespace MonoMacWrapper
 		private void StartApplication()
 		{
 			BizHawk.Client.EmuHawk.HawkDialogFactory.OpenDialogClass = typeof(MacOpenFileDialog);
+			BizHawk.Client.EmuHawk.HawkDialogFactory.SaveDialogClass = typeof(MacSaveFileDialog);
 			BizHawk.Client.EmuHawk.HawkDialogFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();

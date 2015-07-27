@@ -237,12 +237,10 @@ namespace BizHawk.Client.EmuHawk
 				initialDirectory = Path.GetDirectoryName(filename);
 			}
 
-			var sfd = new SaveFileDialog
-			{
-				FileName = filename,
-				InitialDirectory = initialDirectory,
-				Filter = "xml (*.xml)|*.xml|All Files|*.*"
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.FileName = filename;
+			sfd.InitialDirectory = initialDirectory;
+			sfd.Filter = "xml (*.xml)|*.xml|All Files|*.*";
 
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.Cancel)

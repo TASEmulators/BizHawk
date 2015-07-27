@@ -1797,14 +1797,12 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-			var sfd = new SaveFileDialog
-			{
-				AddExtension = true,
-				DefaultExt = "State",
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
-				InitialDirectory = path,
-				FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State"
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.AddExtension = true;
+			sfd.DefaultExt = "State";
+			sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
+			sfd.InitialDirectory = path;
+			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
 
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)
@@ -3039,7 +3037,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						var sfd = new SaveFileDialog();
+						var sfd = HawkDialogFactory.CreateSaveFileDialog();
 						if (Global.Game != null)
 						{
 							sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "." + ext; //dont use Path.ChangeExtension, it might wreck game names with dots in them

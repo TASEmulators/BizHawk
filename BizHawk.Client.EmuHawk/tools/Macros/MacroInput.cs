@@ -261,7 +261,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static bool SaveMacroAs(MovieZone macro)
 		{
-			SaveFileDialog dialog = new SaveFileDialog();
+			var dialog = HawkDialogFactory.CreateSaveFileDialog();
 			// Create directory?
 			bool create = false;
 			if (!Directory.Exists(SuggestedFolder()))

@@ -69,13 +69,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Screenshot()
 		{
-			var sfd = new SaveFileDialog
-				{
-					FileName = PathManager.FilesystemSafeName(Global.Game) + "-Nametables",
-					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES"),
-					Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
-					RestoreDirectory = true
-				};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Nametables";
+			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["NES", "Screenshots"].Path, "NES");
+			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
+			sfd.RestoreDirectory = true;
 
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)

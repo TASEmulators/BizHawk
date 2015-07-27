@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 		private void btnExport_Click(object sender, EventArgs e)
 		{
 			//acquire target
-			var sfd = new SaveFileDialog();
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			sfd.Filter = "XRNS (*.xrns)|*.xrns";
 			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
 				return;

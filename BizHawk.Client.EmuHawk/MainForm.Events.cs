@@ -551,12 +551,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
 
-			var sfd = new SaveFileDialog
-			{
-				InitialDirectory = Path.GetDirectoryName(path),
-				FileName = Path.GetFileName(path),
-				Filter = "PNG File (*.png)|*.png"
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.InitialDirectory = Path.GetDirectoryName(path);
+			sfd.FileName = Path.GetFileName(path);
+			sfd.Filter = "PNG File (*.png)|*.png";
 
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK)

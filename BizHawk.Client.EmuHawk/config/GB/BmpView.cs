@@ -98,13 +98,11 @@ namespace BizHawk.Client.EmuHawk
 				di.Create();
 			}
 
-			var sfd = new SaveFileDialog
-			{
-				FileName = PathManager.FilesystemSafeName(Global.Game) + "-Palettes",
-				InitialDirectory = path,
-				Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*",
-				RestoreDirectory = true
-			};
+			var sfd = HawkDialogFactory.CreateSaveFileDialog();
+			sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + "-Palettes";
+			sfd.InitialDirectory = path;
+			sfd.Filter = "PNG (*.png)|*.png|Bitmap (*.bmp)|*.bmp|All Files|*.*";
+			sfd.RestoreDirectory = true;
 
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
