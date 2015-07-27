@@ -91,6 +91,9 @@ namespace BizHawk.Client.EmuHawk
 				if (!index.HasValue)
 				{
 					//System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch(); watch.Start();
+					#if !WINDOWS
+					file.Unbind(); //Mono can't handle file sharing, must only be open once.
+					#endif
 					var movie = PreLoadMovieFile(file, force);
 					if (movie == null)
 					{

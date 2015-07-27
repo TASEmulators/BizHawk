@@ -328,7 +328,13 @@ namespace BizHawk.Common
 			{
 				_boundStream.Close();
 			}
-
+			#if !WINDOWS
+			if (_extractor != null)
+			{
+				_extractor.Dispose();
+			}
+			_extractor = null;
+			#endif
 			_boundStream = null;
 			_memberPath = null;
 			_boundIndex = null;
