@@ -881,5 +881,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
 		}
+
+		private void StartANewProjectFromSaveRamMenuItem_Click(object sender, EventArgs e)
+		{
+			if (TasView.SelectedRows.Count() == 1 &&
+				!CurrentTasMovie.StartsFromSavestate &&
+				!CurrentTasMovie.StartsFromSaveRam &&
+				SaveRamEmulator != null)
+			{
+				if (AskSaveChanges())
+				{
+					int index = TasView.SelectedRows.First();
+					GoToFrame(index);
+
+					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+						(byte[])SaveRamEmulator.CloneSaveRam());
+
+					GlobalWin.MainForm.PauseEmulator();
+					LoadFile(new FileInfo(newProject.Filename));
+				}
+			}
+		}
 	}
 }

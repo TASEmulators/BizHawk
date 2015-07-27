@@ -176,6 +176,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
 			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
 			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
+			this.StartANewProjectFromSaveRamMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TASMenu.SuspendLayout();
 			this.TasStatusStrip.SuspendLayout();
 			this.MarkerContextMenu.SuspendLayout();
@@ -1190,9 +1191,10 @@ namespace BizHawk.Client.EmuHawk
             this.TruncateContextMenuItem,
             this.BranchContextMenuItem,
             this.StartFromNowSeparator,
-            this.StartNewProjectFromNowMenuItem});
+            this.StartNewProjectFromNowMenuItem,
+            this.StartANewProjectFromSaveRamMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 436);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 480);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -1430,6 +1432,13 @@ namespace BizHawk.Client.EmuHawk
 			this.MainVertialSplit.TabIndex = 10;
 			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVertialSplit_SplitterMoved);
 			// 
+			// StartANewProjectFromSaveRamMenuItem
+			// 
+			this.StartANewProjectFromSaveRamMenuItem.Name = "StartANewProjectFromSaveRamMenuItem";
+			this.StartANewProjectFromSaveRamMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.StartANewProjectFromSaveRamMenuItem.Text = "Start a new project from SaveRam";
+			this.StartANewProjectFromSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
+			// 
 			// TAStudio
 			// 
 			this.AllowDrop = true;
@@ -1618,5 +1627,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem wheelScrollSpeedToolStripMenuItem;
 		private System.Windows.Forms.SplitContainer BranchesMarkersSplit;
 		private System.Windows.Forms.SplitContainer MainVertialSplit;
+		private System.Windows.Forms.ToolStripMenuItem StartANewProjectFromSaveRamMenuItem;
 	}
 }

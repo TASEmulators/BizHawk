@@ -983,15 +983,13 @@ namespace BizHawk.Client.EmuHawk
 				TruncateContextMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 
-			StartFromNowSeparator.Visible =
-				StartNewProjectFromNowMenuItem.Visible =
-				TasView.SelectedRows.Count() == 1;
-
+			
+			StartNewProjectFromNowMenuItem.Visible = TasView.SelectedRows.Count() == 1;
+			StartANewProjectFromSaveRamMenuItem.Visible = TasView.SelectedRows.Count() == 1 && SaveRamEmulator != null;
+			StartFromNowSeparator.Visible =StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-
 			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
-
-			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Global.Emulator.Frame;
+			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Emulator.Frame;
 		}
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)

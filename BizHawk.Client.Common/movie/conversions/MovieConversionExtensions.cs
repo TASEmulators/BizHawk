@@ -190,6 +190,66 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return tas;
 		}
 
+		public static TasMovie ConvertToSaveRamAnchoredMovie(this TasMovie old, byte[] saveRam)
+		{
+			string newFilename = old.Filename + "." + TasMovie.Extension;
+
+			if (File.Exists(newFilename))
+			{
+				int fileNum = 1;
+				bool fileConflict = true;
+				while (fileConflict)
+				{
+					if (File.Exists(newFilename))
+					{
+						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						fileNum++;
+					}
+					else
+					{
+						fileConflict = false;
+					}
+				}
+			}
+
+			TasMovie tas = new TasMovie(newFilename, true);
+			tas.SaveRam = saveRam;
+			tas.TasStateManager.Clear();
+			tas.ClearLagLog();
+
+			List<string> entries = old.GetLogEntries();
+
+			tas.CopyVerificationLog(old.VerificationLog);
+			tas.CopyVerificationLog(entries);
+
+			tas.HeaderEntries.Clear();
+			foreach (var kvp in old.HeaderEntries)
+			{
+				tas.HeaderEntries[kvp.Key] = kvp.Value;
+			}
+
+			tas.StartsFromSaveRam = true;
+			tas.StartsFromSavestate = false;
+			tas.SyncSettingsJson = old.SyncSettingsJson;
+
+			tas.Comments.Clear();
+			foreach (string comment in old.Comments)
+			{
+				tas.Comments.Add(comment);
+			}
+
+			tas.Subtitles.Clear();
+			foreach (Subtitle sub in old.Subtitles)
+			{
+				tas.Subtitles.Add(sub);
+			}
+
+			tas.TasStateManager.Settings = old.TasStateManager.Settings;
+
+			tas.Save();
+			return tas;
+		}
+
 		// TODO: This doesn't really belong here, but not sure where to put it
 		public static void PopulateWithDefaultHeaderValues(this IMovie movie, string author = null)
 		{
