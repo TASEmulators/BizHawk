@@ -666,7 +666,8 @@ namespace BizHawk.Client.Common
 						{
 							DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 						}
-						
+						file.Unbind(); //We're trying again, so don't keep the last attempt loaded.
+						file.Dispose();
 						return LoadRom(path, nextComm, true, recursiveCount + 1);
 					}
 					else if (ex is MissingFirmwareException)
