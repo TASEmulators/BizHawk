@@ -287,8 +287,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
 		{
 			Matrix4 ret = Matrix4.Identity;
-			ret.M11 = 2.0f / (float)dims.Width;
-			ret.M22 = 2.0f / (float)dims.Height;
+
+			//must handle 0s here otherwise we generate infinity and that causes problems later with gdi+
+			//gdi+ is additionally sensitive to otherwise reasonable (say, 0,0,0,0 matrices) so use a 1 here i guess
+			
+			if (dims.Width == 0)
+				ret.M11 = 1;
+			else ret.M11 = 2.0f / (float)dims.Width;
+
+			if (dims.Height == 0)
+				ret.M22 = 1;
+			else ret.M22 = 2.0f / (float)dims.Height;
+
 			return ret;
 		}
 
