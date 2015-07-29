@@ -223,8 +223,9 @@ namespace BizHawk.Client.EmuHawk
 			var branch = CreateBranch();
 			Branches.Add(branch);
 			BranchView.RowCount = Branches.Count;
-            CurrentBranch = Branches.IndexOf(branch);
+			CurrentBranch = Branches.IndexOf(branch);
 			BranchView.Refresh();
+			Tastudio.RefreshDialog();
 		}
 
 		private TasBranch CreateBranch()
