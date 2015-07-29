@@ -902,5 +902,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+		private void TasView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell != null && e.NewCell.RowIndex.HasValue &&
+				!CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
+			{
+				var currentMarker = CurrentTasMovie.Markers.Single(m => m.Frame == e.OldCell.RowIndex.Value);
+				int newFrame = e.NewCell.RowIndex.Value;
+				var newMarker = new TasMovieMarker(newFrame, currentMarker.Message);
+				CurrentTasMovie.Markers.Remove(currentMarker);
+				CurrentTasMovie.Markers.Add(newMarker);
+				RefreshDialog();
+			}
+		}
 	}
 }

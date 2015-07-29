@@ -354,8 +354,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
-					_startFrameDrag = true;
-					_frameDragState = TasView.SelectedRows.Contains(frame);
+					if (Control.ModifierKeys == Keys.Shift && CurrentTasMovie.Markers.IsMarker(frame))
+					{
+						// TODO
+						TasView.DragCurrentCell();
+					}
+					else
+					{
+						_startFrameDrag = true;
+						_frameDragState = TasView.SelectedRows.Contains(frame);
+					}
 				}
 				else // User changed input
 				{
@@ -477,6 +485,7 @@ namespace BizHawk.Client.EmuHawk
 			_startFrameDrag = false;
 			_startBoolDrawColumn = string.Empty;
 			_startFloatDrawColumn = string.Empty;
+			TasView.ReleaseCurrentCell();
 			// Exit float editing if value was changed with cursor
 			if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
 			{

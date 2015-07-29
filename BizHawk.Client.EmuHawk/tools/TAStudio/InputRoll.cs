@@ -359,6 +359,10 @@ namespace BizHawk.Client.EmuHawk
 		[Description("Occurs when the scroll value of the columns (in vertical orientation this is the horizontal scroll bar change, and in horizontal it is the vertical scroll bar)")]
 		public event ColumnScrollEvent ColumnScroll;
 
+		[Category("Action")]
+		[Description("Occurs when a cell is dragged and then dropped into a new cell, old cell is the cell that was being dragged, new cell is its new destination")]
+		public event CellDroppedEvent CellDropped;
+
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
@@ -393,6 +397,8 @@ namespace BizHawk.Client.EmuHawk
 		public delegate void RowScrollEvent(object sender, EventArgs e);
 
 		public delegate void ColumnScrollEvent(object sender, EventArgs e);
+
+		public delegate void CellDroppedEvent(object sender, CellEventArgs e);
 
 		public class CellEventArgs
 		{
@@ -780,6 +786,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private Cell DraggingCell = null;
+
+		public void DragCurrentCell()
+		{
+			DraggingCell = CurrentCell;
+		}
+
+		public void ReleaseCurrentCell()
+		{
+			if (DraggingCell != null)
+			{
+				var draggedCell = DraggingCell;
+				DraggingCell = null;
+
+				if (CurrentCell != draggedCell)
+				{
+					if (CellDropped != null)
+					{
+						CellDropped(this, new CellEventArgs(draggedCell, CurrentCell));
+					}
+				}
+			}
+		}
+
 		/// <summary>
 		/// Scrolls to the given index, according to the scroll settings.
 		/// </summary>
@@ -916,6 +946,7 @@ namespace BizHawk.Client.EmuHawk
 				DrawData(e);
 
 				DrawColumnDrag(e);
+				DrawCellDrag(e);
 
 				Gdi.CopyToScreen();
 				Gdi.EndOffScreenBitmap();
@@ -940,6 +971,42 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.DrawRectangle(x1, y1, x2, y2);
 				Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 				Gdi.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
+			}
+		}
+
+		private void DrawCellDrag(PaintEventArgs e)
+		{
+			if (DraggingCell != null)
+			{
+				try
+				{
+					var text = "";
+					if (QueryItemText != null)
+					{
+						QueryItemText(DraggingCell.RowIndex.Value, DraggingCell.Column, out text);
+					}
+
+					Color bgColor = this.BackColor;
+					if (QueryItemBkColor != null)
+					{
+						QueryItemBkColor(DraggingCell.RowIndex.Value, DraggingCell.Column, ref bgColor);
+					}
+
+					int x1 = _currentX.Value - (DraggingCell.Column.Width.Value / 2);
+					int y1 = _currentY.Value - (CellHeight / 2);
+					int x2 = x1 + DraggingCell.Column.Width.Value;
+					int y2 = y1 + CellHeight;
+
+
+					Gdi.SetBrush(bgColor);
+					Gdi.FillRectangle(x1, y1, x2 - x1, y2 - y1);
+					Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
+					Gdi.DrawString(text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
+				}
+				catch (Exception ex)
+				{
+					int zzz = 0;
+				}
 			}
 		}
 
