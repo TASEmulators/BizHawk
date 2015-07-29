@@ -86,9 +86,18 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Emulator != null)
 			{
 				// Set the screenshot to "1x" resolution of the core
-				// TODO: cores like n64 and psx are going to still have sizes too big for the control
-				// Find a smart way to keep them small
-				ScreenshotControl.Size = new Size(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
+				// cores like n64 and psx are going to still have sizes too big for the control, so cap them
+				int width = Global.Emulator.VideoProvider().BufferWidth;
+				int height = Global.Emulator.VideoProvider().BufferHeight;
+				if (width > 320)
+				{
+					double ratio = 320.0 / (double)width;
+					width = 320;
+					height = (int)((double)(height) * ratio);
+				}
+
+
+				ScreenshotControl.Size = new Size(width, height);
 			}
 
 			ScreenshotControl.Visible = false;
