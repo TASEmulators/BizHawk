@@ -978,35 +978,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (DraggingCell != null)
 			{
-				try
+				var text = "";
+				if (QueryItemText != null)
 				{
-					var text = "";
-					if (QueryItemText != null)
-					{
-						QueryItemText(DraggingCell.RowIndex.Value, DraggingCell.Column, out text);
-					}
-
-					Color bgColor = this.BackColor;
-					if (QueryItemBkColor != null)
-					{
-						QueryItemBkColor(DraggingCell.RowIndex.Value, DraggingCell.Column, ref bgColor);
-					}
-
-					int x1 = _currentX.Value - (DraggingCell.Column.Width.Value / 2);
-					int y1 = _currentY.Value - (CellHeight / 2);
-					int x2 = x1 + DraggingCell.Column.Width.Value;
-					int y2 = y1 + CellHeight;
-
-
-					Gdi.SetBrush(bgColor);
-					Gdi.FillRectangle(x1, y1, x2 - x1, y2 - y1);
-					Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
-					Gdi.DrawString(text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
+					QueryItemText(DraggingCell.RowIndex.Value, DraggingCell.Column, out text);
 				}
-				catch (Exception ex)
+
+				Color bgColor = this.BackColor;
+				if (QueryItemBkColor != null)
 				{
-					int zzz = 0;
+					QueryItemBkColor(DraggingCell.RowIndex.Value, DraggingCell.Column, ref bgColor);
 				}
+
+				int x1 = _currentX.Value - (DraggingCell.Column.Width.Value / 2);
+				int y1 = _currentY.Value - (CellHeight / 2);
+				int x2 = x1 + DraggingCell.Column.Width.Value;
+				int y2 = y1 + CellHeight;
+
+
+				Gdi.SetBrush(bgColor);
+				Gdi.FillRectangle(x1, y1, x2 - x1, y2 - y1);
+				Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
+				Gdi.DrawString(text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
 			}
 		}
 
