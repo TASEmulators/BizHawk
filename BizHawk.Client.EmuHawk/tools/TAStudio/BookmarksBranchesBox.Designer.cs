@@ -52,7 +52,7 @@
 			this.BookmarksBranchesGroupBox.Size = new System.Drawing.Size(198, 249);
 			this.BookmarksBranchesGroupBox.TabIndex = 0;
 			this.BookmarksBranchesGroupBox.TabStop = false;
-			this.BookmarksBranchesGroupBox.Text = "Bookmarks / Branches";
+			this.BookmarksBranchesGroupBox.Text = "Branches";
 			// 
 			// BranchView
 			// 

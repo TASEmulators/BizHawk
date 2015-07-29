@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 		private void QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			if (index == CurrentBranch)
-				color = SystemColors.HotTrack;
+                color = TAStudio.CurrentFrame_InputLog; // SystemColors.HotTrack;
 
 			// Highlight the branch cell a little, if hovering over it
 			if (BranchView.CurrentCellIsDataCell &&
@@ -223,6 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			var branch = CreateBranch();
 			Branches.Add(branch);
 			BranchView.RowCount = Branches.Count;
+            CurrentBranch = Branches.IndexOf(branch);
 			BranchView.Refresh();
 		}
 
@@ -312,6 +313,7 @@ namespace BizHawk.Client.EmuHawk
 			Branches.Insert(index, newbranch);
 
 			Branches.Remove(branch);
+            CurrentBranch = index;
 			BranchView.Refresh();
 		}
 	}
