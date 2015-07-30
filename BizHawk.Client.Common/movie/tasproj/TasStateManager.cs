@@ -292,6 +292,9 @@ namespace BizHawk.Client.Common
 		}
 		private void StateAccessed(int index)
 		{
+			if (index == 0 && _movie.StartsFromSavestate)
+				return;
+
 			bool removed = accessed.Remove(index);
 			accessed.Add(index);
 
@@ -355,31 +358,39 @@ namespace BizHawk.Client.Common
 			accessed.Clear();
 			Used = 0;
 			DiskUsed = 0;
+			clearDiskStates();
 		}
-
 		public void ClearStateHistory()
 		{
 			if (States.Any())
 			{
 				KeyValuePair<int, byte[]> power = States.FirstOrDefault(s => s.Key == 0);
-				if (power.Value == null)
-				{
-					StateAccessed(power.Key);
+				StateAccessed(power.Key);
+				if (power.Value == null) // if it was on disk
 					power = States.FirstOrDefault(s => s.Key == 0);
-				}
+
 				States.Clear();
 				accessed.Clear();
 
-				if (power.Value.Length > 0)
+				if (power.Value != null) // savestate-anchored movie?
 				{
 					SetState(0, power.Value);
 					Used = (ulong)power.Value.Length;
 				}
 				else
-				{
 					Used = 0;
-					DiskUsed = 0;
-				}
+
+				DiskUsed = 0;
+				clearDiskStates();
+			}
+		}
+		private void clearDiskStates()
+		{
+			string path = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+			if (Directory.Exists(path))
+			{
+				Directory.Delete(path, true);
+				Directory.CreateDirectory(path);
 			}
 		}
 

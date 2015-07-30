@@ -42,6 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			Size = new Size(256, 240),
 		};
 
+		public string statesPath
+		{
+			get { return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); }
+		}
+
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -517,8 +522,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = _originalEndAction;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 			// Do not keep TAStudio's disk save states.
-			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
-				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
+			if (Directory.Exists(statesPath))
+				Directory.Delete(statesPath, true);
 		}
 
 		/// <summary>

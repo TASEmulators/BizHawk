@@ -220,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Branch()
 		{
-			var branch = CreateBranch();
+			TasBranch branch = CreateBranch();
 			Branches.Add(branch);
 			BranchView.RowCount = Branches.Count;
 			CurrentBranch = Branches.IndexOf(branch);
