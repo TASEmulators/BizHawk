@@ -144,6 +144,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index))
 					color = Marker_FrameCol;
+                else
+                    color = Color.FromArgb(32, 0, 0, 0); // same as players 2 and 4
 			}
 			else if (index == _floatEditRow && columnName == _floatEditColumn)
 			{ // SuuperW: Analog editing is indicated by a color change.
