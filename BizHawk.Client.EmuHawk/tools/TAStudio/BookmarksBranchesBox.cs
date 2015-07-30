@@ -346,6 +346,9 @@ namespace BizHawk.Client.EmuHawk
 				int originalIndex = Branches.IndexOf(branch);
 				int newIndex = e.NewCell.RowIndex.Value;
 
+                if (newIndex >= Branches.Count)
+                    newIndex = Branches.Count - 1;
+
 				Branches.Remove(branch);
 				Branches.Insert(newIndex, branch);
 			}
