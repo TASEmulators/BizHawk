@@ -477,7 +477,7 @@ namespace BizHawk.Client.Common
 		private int? DivergantPoint(List<string> currentLog, List<string> newLog)
 		{
 			int max = newLog.Count;
-			if (currentLog.Count > newLog.Count)
+			if (currentLog.Count < newLog.Count)
 			{
 				max = currentLog.Count;
 			}
