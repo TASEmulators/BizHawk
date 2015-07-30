@@ -1362,7 +1362,8 @@ namespace BizHawk.Client.EmuHawk
 		private void DoSelectionBG(PaintEventArgs e)
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
-			Color Highlight_Color = new Color();
+			Color rowColor = new Color();
+			int lastRow = -1;
 			foreach (Cell cell in SelectedItems)
 			{
 				if (cell.RowIndex > LastVisibleRow || cell.RowIndex < FirstVisibleRow)
@@ -1375,11 +1376,27 @@ namespace BizHawk.Client.EmuHawk
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 
-				QueryItemBkColor(cell.RowIndex.Value, cell.Column, ref Highlight_Color);
-				Highlight_Color = Color.FromArgb((Highlight_Color.R + SystemColors.Highlight.R) / 2
-					, (Highlight_Color.G + SystemColors.Highlight.G) / 2
-					, (Highlight_Color.B + SystemColors.Highlight.B) / 2);
-				DrawCellBG(Highlight_Color, relativeCell);
+				if (lastRow != cell.RowIndex.Value)
+				{
+					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
+					lastRow = cell.RowIndex.Value;
+				}
+				Color cellColor = rowColor;
+				QueryItemBkColor(cell.RowIndex.Value, cell.Column, ref cellColor);
+				// Alpha layering for cell before selection
+				float alpha = (float)cellColor.A / 255;
+				if (cellColor.A != 255 && cellColor.A != 0)
+				{
+					cellColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - cellColor.R) * alpha),
+						rowColor.G - (int)((rowColor.G - cellColor.G) * alpha),
+						rowColor.B - (int)((rowColor.B - cellColor.B) * alpha));
+				}
+				// Alpha layering for selection
+				alpha = 0.33f;
+				cellColor = Color.FromArgb(cellColor.R - (int)((cellColor.R - SystemColors.Highlight.R) * alpha),
+					cellColor.G - (int)((cellColor.G - SystemColors.Highlight.G) * alpha),
+					cellColor.B - (int)((cellColor.B - SystemColors.Highlight.B) * alpha));
+				DrawCellBG(cellColor, relativeCell);
 			}
 		}
 
@@ -1449,7 +1466,7 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemBkColor(f + startIndex, columns[j], ref itemColor);
 						if (itemColor == Color.White)
 							itemColor = rowColor;
-						else if (itemColor.A != 255)
+						else if (itemColor.A != 255 && itemColor.A != 0)
 						{
 							float alpha = (float)itemColor.A / 255;
 							itemColor = Color.FromArgb(rowColor.R - (int)((rowColor.R - itemColor.R) * alpha),
