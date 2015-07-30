@@ -1362,7 +1362,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DoSelectionBG(PaintEventArgs e)
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
-			Color rowColor = new Color();
+			Color rowColor = Color.White;
 			int lastRow = -1;
 			foreach (Cell cell in SelectedItems)
 			{
@@ -1376,7 +1376,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 				relativeCell.RowIndex -= CountLagFramesAbsolute(relativeCell.RowIndex.Value);
 
-				if (lastRow != cell.RowIndex.Value)
+				if (QueryRowBkColor != null && lastRow != cell.RowIndex.Value)
 				{
 					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
 					lastRow = cell.RowIndex.Value;
