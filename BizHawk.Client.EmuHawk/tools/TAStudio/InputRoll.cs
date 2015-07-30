@@ -2637,6 +2637,11 @@ namespace BizHawk.Client.EmuHawk
 				RowIndex = cell.RowIndex;
 			}
 
+			public bool IsDataCell
+			{
+				get { return Column != null && RowIndex.HasValue; }
+			}
+
 			public override bool Equals(object obj)
 			{
 				if (obj is Cell)

@@ -317,5 +317,38 @@ namespace BizHawk.Client.EmuHawk
             CurrentBranch = index;
 			BranchView.Refresh();
 		}
+
+		private void BranchView_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
+					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+				{
+					BranchView.DragCurrentCell();
+				}
+			}
+		}
+
+		private void BranchView_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				BranchView.ReleaseCurrentCell();
+			}
+		}
+
+		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell != null && e.NewCell.IsDataCell)
+			{
+				var branch = Branches[e.OldCell.RowIndex.Value];
+				int originalIndex = Branches.IndexOf(branch);
+				int newIndex = e.NewCell.RowIndex.Value;
+
+				Branches.Remove(branch);
+				Branches.Insert(newIndex, branch);
+			}
+		}
 	}
 }
