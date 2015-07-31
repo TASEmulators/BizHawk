@@ -37,6 +37,15 @@ namespace BizHawk.Client.EmuHawk
 		public override string Name { get { return "client"; } }
 
 		[LuaMethodAttributes(
+			"exit",
+			"Closes the emulator"
+		)]
+		public void CloseEmulator()
+		{
+			GlobalWin.MainForm.CloseEmulator();
+		}
+
+		[LuaMethodAttributes(
 			"borderheight",
 			"Gets the current height in pixels of the border around the emulator's drawing area"
 		)]
