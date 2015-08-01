@@ -330,7 +330,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					OpenRom();
 				}
-				else
+
+				// If user picked a game, then do the commandline logic
+				if (!Global.Game.IsNullInstance)
 				{
 					var movie = MovieService.Get(cmdMovie);
 					Global.MovieSession.ReadOnly = true;
@@ -341,8 +343,31 @@ namespace BizHawk.Client.EmuHawk
 						_autoDumpLength = movie.InputLogLength;
 					}
 
-					StartNewMovie(movie, false);
-					Global.Config.RecentMovies.Add(cmdMovie);
+					// Copy pasta from drag & drop
+					string errorMsg;
+					string warningMsg;
+					if (MovieImport.IsValidMovieExtension(Path.GetExtension(cmdMovie)))
+					{
+						var imported = MovieImport.ImportFile(cmdMovie, out errorMsg, out warningMsg);
+						if (!string.IsNullOrEmpty(errorMsg))
+						{
+							MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+						else
+						{
+							// fix movie extension to something palatable for these purposes. 
+							// for instance, something which doesnt clobber movies you already may have had.
+							// i'm evenly torn between this, and a file in %TEMP%, but since we dont really have a way to clean up this tempfile, i choose this:
+							StartNewMovie(imported, false);
+						}
+
+						GlobalWin.OSD.AddMessage(warningMsg);
+					}
+					else
+					{
+						StartNewMovie(movie, false);
+						Global.Config.RecentMovies.Add(cmdMovie);
+					}
 				}
 			}
 			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
