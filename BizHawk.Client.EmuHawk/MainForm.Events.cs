@@ -591,15 +591,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
-			CloseEmulator();
-		}
-
-		public void CloseEmulator()
-		{
 			if (GlobalWin.Tools.AskSave())
 			{
 				Close();
 			}
+		}
+
+		public void CloseEmulator()
+		{
+			_exit = true;
 		}
 
 		#endregion
