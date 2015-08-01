@@ -15,6 +15,24 @@ namespace BizHawk.Client.Common
 		public override string Name { get { return "movie"; } }
 
 		[LuaMethodAttributes(
+			"startsfromsavestate",
+			"Returns whether or not the movie is a savestate-anchored movie"
+		)]
+		public bool StartsFromSavestate()
+		{
+			return Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.StartsFromSavestate;
+		}
+
+		[LuaMethodAttributes(
+			"startsfromsaveram",
+			"Returns whether or not the movie is a saveram-anchored movie"
+		)]
+		public bool StartsFromSaveram()
+		{
+			return Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.StartsFromSaveRam;
+		}
+
+		[LuaMethodAttributes(
 			"insertframe",
 			"Inserts a log entry string into the specified index of the movie input log"
 		)]
