@@ -326,6 +326,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (cmdMovie != null)
 			{
+				_supressSyncSettingsWarning = true; // We dont' want to be nagged if we are attempting to automate
 				if (Global.Game == null)
 				{
 					OpenRom();
@@ -368,6 +369,8 @@ namespace BizHawk.Client.EmuHawk
 						StartNewMovie(movie, false);
 						Global.Config.RecentMovies.Add(cmdMovie);
 					}
+
+					_supressSyncSettingsWarning = false;
 				}
 			}
 			else if (Global.Config.RecentMovies.AutoLoad && !Global.Config.RecentMovies.Empty)
@@ -441,6 +444,8 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.DisplayManager.NeedsToPaint = true;
 			};
 		}
+
+		private bool _supressSyncSettingsWarning = false;
 
 		public void ProgramRunLoop()
 		{
@@ -2000,7 +2005,7 @@ namespace BizHawk.Client.EmuHawk
 					e.Settings = Global.Config.GetCoreSyncSettings(e.Core);
 
 					// adelikat: only show this nag if the core actually has sync settings, not all cores do
-					if (e.Settings != null)
+					if (e.Settings != null && !_supressSyncSettingsWarning)
 					{
 						MessageBox.Show(
 						"No sync settings found, using currently configured settings for this core.",
