@@ -33,19 +33,6 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"insertframe",
-			"Inserts a log entry string into the specified index of the movie input log"
-		)]
-		public void InsertFrame(int index, string logEntry)
-		{
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				// TODO: don't make this bk2 specific, and don't expose the log as the means to do this!
-				(Global.MovieSession.Movie as Bk2Movie).Log.Insert(index, logEntry);
-			}
-		}
-
-		[LuaMethodAttributes(
 			"filename",
 			"Returns the file name including path of the currently loaded movie"
 		)]

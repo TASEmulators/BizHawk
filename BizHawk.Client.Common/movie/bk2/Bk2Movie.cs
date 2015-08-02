@@ -42,8 +42,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> Log { get { return _log; } }
-
 		public string Name { get; private set; }
 
 		public virtual string PreferredExtension { get { return Extension; } }
