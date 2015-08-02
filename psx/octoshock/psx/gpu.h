@@ -315,6 +315,7 @@ class PS_GPU
  //
  int32 hmc_to_visible;
  bool hide_hoverscan;
+ bool dump_framebuffer;
 
  bool sl_zero_reached;
  //

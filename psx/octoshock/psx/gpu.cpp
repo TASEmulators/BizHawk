@@ -1432,6 +1432,16 @@ pscpu_timestamp_t PS_GPU::Update(const pscpu_timestamp_t sys_timestamp)
 
      LineWidths[dest_line] = dmw - dmpa * 2;
 
+		 //adjustments for people who really just want to see the PSX framebuffer
+		 //effectively fixes the xstart registers to be nominal values.
+		 //it's unclear what happens to games displaying a peculiar Y range
+		 if (dump_framebuffer)
+		 {
+			 dx_start = 0;
+			 dx_end = 2560 / DotClockRatios[dmc];
+			 LineWidths[dest_line] = dx_end - dx_start;
+		 }
+
      {
       const uint16 *src = GPURAM[DisplayFB_CurLineYReadout];
       const uint32 black = surface->MakeColor(0, 0, 0);
@@ -1634,7 +1644,8 @@ SYNCFUNC(PS_GPU)
 
 void PS_GPU::SetRenderOptions(::ShockRenderOptions* opts)
 {
-	hide_hoverscan = !!opts->clipOverscan;
+	hide_hoverscan = opts->renderType == eShockRenderType_ClipOverscan;
+	dump_framebuffer = opts->renderType == eShockRenderType_Framebuffer;
 	LineVisFirst = opts->scanline_start;
 	LineVisLast = opts->scanline_end;
 }

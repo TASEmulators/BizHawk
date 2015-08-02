@@ -485,7 +485,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		/// </summary>
 		public static System.Drawing.Size CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
 		{
-			int virtual_width = settings.ClipHorizontalOverscan ? 768 : 800;
+			//some of this logic is duplicated in the c++ side, be sure to check there
+
+			int virtual_width = 800;
+			if (settings.HorizontalClipping == eHorizontalClipping.Basic) virtual_width = 768;
+			if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer) virtual_width = 736;
 
 			int scanline_start = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineStart_NTSC : settings.ScanlineStart_PAL;
 			int scanline_end = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineEnd_NTSC : settings.ScanlineEnd_PAL;
@@ -500,7 +504,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					VirtualHeight = h;
 					break;
 				case eResolutionMode.Mednafen:
-					VirtualWidth = settings.ClipHorizontalOverscan ? 302 : 320;
+					VirtualWidth = 320;
+					if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+						VirtualWidth = 302;
+					//? not sure what this should be
+					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+						VirtualWidth = 320;
 					VirtualHeight = scanline_num;
 					break;
 				case eResolutionMode.PixelPro:
@@ -508,7 +517,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					VirtualHeight = scanline_num * 2;
 					break;
 				case eResolutionMode.TweakedMednafen:
-					VirtualWidth = settings.ClipHorizontalOverscan ? 378 : 400;
+					VirtualWidth = 400;
+					if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+						VirtualWidth = 378;
+					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+					  VirtualWidth = 400;
 					VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
 					break;
 			}
@@ -592,6 +605,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//clear drive light. itll get set to light up by sector-reading callbacks
 			//TODO - debounce this by a frame or so perhaps?
+			//TODO - actually, make this feedback from the core. there should be a register or status which effectively corresponds to whether it's reading.
 			DriveLightOn = false;
 
 			Frame++;
@@ -602,8 +616,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			{
 				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
 				scanline_end = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineEnd_NTSC : _Settings.ScanlineEnd_PAL,
-				clipOverscan = _Settings.ClipHorizontalOverscan
 			};
+			if (_Settings.HorizontalClipping == eHorizontalClipping.Basic)
+				ropts.renderType = OctoshockDll.eShockRenderType.ClipOverscan;
+			if (_Settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+				ropts.renderType = OctoshockDll.eShockRenderType.Framebuffer;
+
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			//prep tracer
@@ -992,12 +1010,23 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
+		public enum eHorizontalClipping
+		{
+			None,
+			Basic,
+			Framebuffer
+		}
+
 		public class Settings
 		{
 			[DisplayName("Resolution Mode")]
 			[Description("Stuff")]
 			[DefaultValue(eResolutionMode.PixelPro)]
 			public eResolutionMode ResolutionMode { get; set; }
+
+			[DisplayName("Horizontal Clipping")]
+			[DefaultValue(eHorizontalClipping.None)]
+			public eHorizontalClipping HorizontalClipping { get; set; }
 
 			[DisplayName("ScanlineStart_NTSC")]
 			[DefaultValue(0)]
@@ -1015,9 +1044,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[DefaultValue(287)]
 			public int ScanlineEnd_PAL { get; set; }
 
-			[DisplayName("Clip Horizontal Overscan")]
-			[DefaultValue(false)]
-			public bool ClipHorizontalOverscan { get; set; }
 
 			public void Validate()
 			{

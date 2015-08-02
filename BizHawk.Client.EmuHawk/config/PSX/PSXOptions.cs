@@ -36,7 +36,9 @@ namespace BizHawk.Client.EmuHawk
 			rbDebugMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Debug;
 			rbMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Mednafen;
 			rbTweakedMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.TweakedMednafen;
-			checkClipHorizontal.Checked = _settings.ClipHorizontalOverscan;
+			rbClipNone.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.None;
+			rbClipBasic.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Basic;
+			rbClipToFramebuffer.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Framebuffer;
 
 			NTSC_FirstLineNumeric.Value = _settings.ScanlineStart_NTSC;
 			NTSC_LastLineNumeric.Value = _settings.ScanlineEnd_NTSC;
@@ -75,7 +77,9 @@ namespace BizHawk.Client.EmuHawk
 			if (rbMednafenMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
 			if (rbTweakedMednafenMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
 
-			settings.ClipHorizontalOverscan = checkClipHorizontal.Checked;
+			if (rbClipNone.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.None;
+			if (rbClipBasic.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Basic;
+			if (rbClipToFramebuffer.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Framebuffer;
 
 			settings.ScanlineStart_NTSC = (int)NTSC_FirstLineNumeric.Value;
 			settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
@@ -138,7 +142,18 @@ namespace BizHawk.Client.EmuHawk
 			SyncLabels();
 		}
 
-		private void checkClipHorizontal_CheckedChanged(object sender, EventArgs e)
+
+		private void rbClipHorizontal_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncLabels();
+		}
+
+		private void rbClipToFramebuffer_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncLabels();
+		}
+
+		private void rbClipNone_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncLabels();
 		}

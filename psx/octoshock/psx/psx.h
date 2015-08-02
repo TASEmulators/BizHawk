@@ -134,6 +134,18 @@ enum eShockFramebufferFlags
 	eShockFramebufferFlags_Normalize = 1
 };
 
+enum eShockRenderType
+{
+	eShockRenderType_Normal,
+	eShockRenderType_ClipOverscan,
+
+	//this should discard peculiar X adjustments during scan-out (done)
+	//as well as peculiar Y adjustments (not done)
+	//it's unclear whether the latter will actually ever be needed..
+	//are any earthquake effects shaking the whole screen? 
+	eShockRenderType_Framebuffer
+};
+
 enum eMemType
 {
 	eMemType_MainRAM = 0, //2048K
@@ -275,7 +287,8 @@ struct ShockFramebufferInfo
 struct ShockRenderOptions
 {
 	s32 scanline_start, scanline_end;
-	bool clipOverscan;
+	eShockRenderType renderType;
+	bool skip;
 };
 
 struct ShockMemcardTransaction

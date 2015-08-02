@@ -1373,6 +1373,9 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	espec.SoundBufSize = 0;
 	espec.SoundVolume = 1.0;
 
+	//not sure about this
+	espec.skip = s_ShockConfig.opts.skip;
+
 	//-------------------------
 
 	FIO->UpdateInput();
@@ -1443,7 +1446,7 @@ void NormalizeFramebuffer()
 	//mednafen's advised solution for smooth gaming: "scale the output width to z * nominal_width, and the output height to z * nominal_height, where nominal_width and nominal_height are members of the MDFNGI struct"
 	//IOW, mednafen's strategy is to put everything in a 320x240 and scale it up 3x to 960x720 by default (which is adequate to contain the largest PSX framebuffer of 700x480)
 	
-	//psxtech says horizontal resolutions can be:  256, 320, 368, 512, 640 pixels
+	//psxtech says horizontal resolutions can be:  256, 320, 512, 640, 368 pixels
 	//mednafen will turn those into 2800/{ 10, 8, 5, 4, 7 } -> 280,350,560,700,400
 	//additionally with the crop options we can cut it down by 160/X -> { 16, 20, 32, 40, 22 } -> { 264, 330, 528, 660, 378 }
 	//this means our virtual area for doubling is no longer 800 but 756
@@ -1468,7 +1471,16 @@ void NormalizeFramebuffer()
 
 	int width = VTLineWidths[0][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
 	int height = espec.DisplayRect.h;
-	int virtual_width = s_ShockConfig.opts.clipOverscan ? 756 : 800;
+	int virtual_width = 800;
+	
+	if (s_ShockConfig.opts.renderType == eShockRenderType_ClipOverscan)
+		virtual_width = 756;
+	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
+	{
+		//not quite sure what to here yet
+		//virtual_width = width * 2; ?
+		virtual_width = 736;
+	}
 
 	int xs=1,ys=1,xm=0;
 
