@@ -1437,6 +1437,7 @@ pscpu_timestamp_t PS_GPU::Update(const pscpu_timestamp_t sys_timestamp)
 		 //it's unclear what happens to games displaying a peculiar Y range
 		 if (dump_framebuffer)
 		 {
+			 //printf("%d %d %d\n", VertStart, VertEnd, DisplayOff);
 			 //special hack: if the game (or the bios...) is set to display no range here, don't modify it
 			 //also, as you can see just above, this condition is used to represent an 'off' display
 			 //unfortunately, this will usually be taking effect at dest_line==0, and so the 
@@ -1448,6 +1449,9 @@ pscpu_timestamp_t PS_GPU::Update(const pscpu_timestamp_t sys_timestamp)
 			 {
 				 dx_start = 0;
 				 dx_end = 2560 / DotClockRatios[dmc];
+				 if(FirstLine == -99)
+					 FirstLine = dest_line;
+
 				 LineWidths[dest_line] = dx_end - dx_start;
 			 }
 		 }
@@ -1534,6 +1538,8 @@ void PS_GPU::StartFrame(EmulateSpecStruct *espec_arg)
  DisplayRect = &espec->DisplayRect;
  LineWidths = espec->LineWidths;
  skip = espec->skip;
+
+ FirstLine = -99;
 
  if(espec->VideoFormatChanged)
  {

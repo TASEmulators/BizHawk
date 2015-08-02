@@ -151,4 +151,7 @@ fit gracefully in a 800x480 window.
 Using this option may result in objectionable levels of black bars, but will fix some rare quirks in games.
 </value>
   </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

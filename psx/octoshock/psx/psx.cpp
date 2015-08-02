@@ -42,6 +42,8 @@
 #define FB_WIDTH 800
 #define FB_HEIGHT 576
 
+#define kScanlineWidthHeuristicIndex 64
+
 //extern MDFNGI EmulatedPSX;
 
 namespace MDFN_IEN_PSX
@@ -1469,7 +1471,10 @@ void NormalizeFramebuffer()
 	//however, it will help us avoid stressing the displaymanager (for example, a 700x240 will freak it out kind of. we could send it a much more sensible 700x480)
 
 
-	int width = VTLineWidths[0][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	int width = VTLineWidths[0][kScanlineWidthHeuristicIndex]; 
+	if(width <= 0) VTLineWidths[0][0];
+
 	int height = espec.DisplayRect.h;
 	int virtual_width = 800;
 	
@@ -1531,6 +1536,7 @@ void NormalizeFramebuffer()
 		espec.DisplayRect.h = height;
 		s_FramebufferCurrentWidth = width;
 		VTLineWidths[curr^1][0] = VTLineWidths[curr][0];
+		VTLineWidths[curr^1][kScanlineWidthHeuristicIndex] = VTLineWidths[curr][kScanlineWidthHeuristicIndex];
 
 		curr ^= 1;
 	}
@@ -1574,6 +1580,7 @@ void NormalizeFramebuffer()
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		VTLineWidths[curr^1][0] = width;
+		VTLineWidths[curr ^ 1][kScanlineWidthHeuristicIndex] = width;
 		s_FramebufferCurrentWidth = width;
 
 		curr ^= 1;
@@ -1611,9 +1618,40 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	//always fetch description
 	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
 	//however, due to the dump_framebuffer, it may be incorrect at scanline 0. so lets use another one for the heuristic here
-	//64 is enough to fix the PAL bios screen...
-	int width = VTLineWidths[fbIndex][64]; 
+	//you'd think we could use FirstLine instead of kScanlineWidthHeuristicIndex, but sometimes it hasnt been set (screen off) so it's confusing
+	int width = VTLineWidths[fbIndex][kScanlineWidthHeuristicIndex];
 	int height = espec.DisplayRect.h;
+	int yo = espec.DisplayRect.y;
+
+	//fix a common error here from disabled screens (?)
+	//I think we're lucky in selecting these lines kind of randomly. need a better plan.
+	if(width <= 0) width = VTLineWidths[fbIndex][0];
+
+	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
+	{
+		//printf("%d %d %d %d | %d | %d\n",yo,height, GPU->GetVertStart(), GPU->GetVertEnd(), espec.DisplayRect.y, GPU->FirstLine);
+
+		height = GPU->GetVertEnd() - GPU->GetVertStart();
+		yo = GPU->FirstLine;
+
+		if(espec.DisplayRect.h == 288 || espec.DisplayRect.h == 240)
+		{}
+		else
+		{
+			height *= 2;
+			//only return even scanlines to avoid bouncing the interlacing
+			if(yo&1) yo--;
+		}
+
+		//this can happen when the display turns on mid-frame
+		//maybe an off by one error here..?
+		if (yo + height >= espec.DisplayRect.h)
+			yo = espec.DisplayRect.h - height;
+
+		//sometimes when changing modes we have trouble..?
+		if (yo<0) yo = 0;
+	}
+
 	fb->width = width;
 	fb->height = height;
 
@@ -1625,7 +1663,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 
 	//maybe we need to output the framebuffer
 	//do a raster loop and copy it to the target
-	uint32* src = VTBuffer[fbIndex]->pixels + (s_FramebufferCurrentWidth*espec.DisplayRect.y) + espec.DisplayRect.x;
+	uint32* src = VTBuffer[fbIndex]->pixels + (s_FramebufferCurrentWidth*yo) + espec.DisplayRect.x;
 	uint32* dst = (u32*)fb->ptr;
 	int tocopy = width*4;
 	for(int y=0;y<height;y++)
