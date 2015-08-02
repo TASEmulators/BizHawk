@@ -1609,7 +1609,10 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	int fbIndex = s_FramebufferCurrent;
 
 	//always fetch description
-	int width = VTLineWidths[fbIndex][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	//however, due to the dump_framebuffer, it may be incorrect at scanline 0. so lets use another one for the heuristic here
+	//64 is enough to fix the PAL bios screen...
+	int width = VTLineWidths[fbIndex][64]; 
 	int height = espec.DisplayRect.h;
 	fb->width = width;
 	fb->height = height;
