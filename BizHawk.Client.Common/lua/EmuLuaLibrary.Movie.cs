@@ -236,5 +236,41 @@ namespace BizHawk.Client.Common
 
 			return luaTable;
 		}
+
+		[LuaMethodAttributes(
+			"getcomments",
+			"If a movie is active, will return the movie comments as a lua table"
+		)]
+		public LuaTable GetComments()
+		{
+			var luaTable = Lua.NewTable();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				for (int i = 0; i < Global.MovieSession.Movie.Comments.Count; i++)
+				{
+					luaTable[i] = Global.MovieSession.Movie.Comments[i];
+				}
+			}
+
+			return luaTable;
+		}
+
+		[LuaMethodAttributes(
+			"getsubtitles",
+			"If a movie is active, will return the movie subtitles as a lua table"
+		)]
+		public LuaTable GetSubtitles()
+		{
+			var luaTable = Lua.NewTable();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				for (int i = 0; i < Global.MovieSession.Movie.Subtitles.Count; i++)
+				{
+					luaTable[i] = Global.MovieSession.Movie.Subtitles[i].ToString();
+				}
+			}
+
+			return luaTable;
+		}
 	}
 }
