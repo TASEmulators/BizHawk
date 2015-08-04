@@ -436,6 +436,74 @@ namespace BizHawk.Client.Common
 										roms,
 										(AppleII.Settings)GetCoreSettings<AppleII>());
 									break;
+								case "PSX":
+									var entries = xmlGame.AssetFullPaths;
+									var discs = new List<Disc>();
+									var discNames = new List<string>();
+									var sw = new StringWriter();
+									foreach (var e in entries)
+									{
+										Disc disc = null;
+										string discPath = e;
+
+										//--- load the disc in a context which will let us abort if it's going to take too long
+										var discMountJob = new DiscMountJob { IN_FromPath = discPath };
+										discMountJob.IN_SlowLoadAbortThreshold = 8;
+										discMountJob.Run();
+										disc = discMountJob.OUT_Disc;
+
+										if (discMountJob.OUT_SlowLoadAborted)
+										{
+											System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+											return false;
+										}
+
+										if (disc == null)
+											throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+
+										var discName = Path.GetFileNameWithoutExtension(discPath);
+										discNames.Add(discName);
+										discs.Add(disc);
+
+										var discType = new DiscIdentifier(disc).DetectDiscType();
+										sw.WriteLine("{0}", Path.GetFileName(discPath));
+										if (discType == DiscType.SonyPSX)
+										{
+											string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+											game = Database.CheckDatabase(discHash);
+											if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+												sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
+											else
+											{
+												sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+												sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+												sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+												sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+												sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
+											}
+										}
+										else
+										{
+											sw.WriteLine("Not a PSX disc");
+										}
+										sw.WriteLine("-------------------------");
+									}
+
+									// todo: copy pasta from PSX .cue section
+									nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+									if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+										nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
+									else
+									{
+										sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+										sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+										sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+										sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+										sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
+										nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+									}
+
+									break;
 								default:
 									return false;
 							}
