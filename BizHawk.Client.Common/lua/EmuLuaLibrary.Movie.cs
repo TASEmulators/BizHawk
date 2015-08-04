@@ -218,5 +218,23 @@ namespace BizHawk.Client.Common
 
 			return 0.0;
 		}
+
+		[LuaMethodAttributes(
+			"getheader",
+			"If a movie is active, will return the movie header as a lua table"
+		)]
+		public LuaTable GetHeader()
+		{
+			var luaTable = Lua.NewTable();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				foreach (var kvp in Global.MovieSession.Movie.HeaderEntries)
+				{
+					luaTable[kvp.Key] = kvp.Value;
+				}
+			}
+
+			return luaTable;
+		}
 	}
 }
