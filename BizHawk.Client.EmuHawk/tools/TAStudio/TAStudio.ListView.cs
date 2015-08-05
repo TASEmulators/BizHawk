@@ -198,8 +198,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == CursorColumnName)
 				{
-					// TODO: what logic should we have when there is more than 1?
-					var branch = CurrentTasMovie.TasBranches.FirstOrDefault(x => x.Frame == index);
+					var branch = CurrentTasMovie.TasBranches
+						.Where(b => b.Frame == index)
+						.OrderByDescending(b => b.TimeStamp)
+						.FirstOrDefault();
 					if (branch != null)
 					{
 						text = CurrentTasMovie.TasBranches.IndexOf(branch).ToString();
