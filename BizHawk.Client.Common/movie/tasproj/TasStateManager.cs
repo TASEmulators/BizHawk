@@ -322,8 +322,10 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Clears out all savestates after the given frame number
 		/// </summary>
-		public void Invalidate(int frame)
+		public bool Invalidate(int frame)
 		{
+			bool anyInvalidated = false;
+
 			if (Any())
 			{
 				if (!_movie.StartsFromSavestate && frame == 0) // Never invalidate frame 0 on a non-savestate-anchored movie
@@ -334,6 +336,9 @@ namespace BizHawk.Client.Common
 				var statesToRemove = States
 					.Where(x => x.Key >= frame)
 					.ToList();
+
+				anyInvalidated = statesToRemove.Any();
+
 				foreach (var state in statesToRemove)
 				{
 					if (state.Value == null)
@@ -346,6 +351,8 @@ namespace BizHawk.Client.Common
 
 				CallInvalidateCallback(frame);
 			}
+
+			return anyInvalidated;
 		}
 
 		/// <summary>

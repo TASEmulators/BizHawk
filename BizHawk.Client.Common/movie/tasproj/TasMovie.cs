@@ -176,9 +176,13 @@ namespace BizHawk.Client.Common
 		private void InvalidateAfter(int frame)
 		{
 			LagLog.RemoveFrom(frame);
-			StateManager.Invalidate(frame + 1);
+			var anyInvalidated = StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
-            base.Rerecords++;
+
+			if (anyInvalidated)
+			{
+				base.Rerecords++;
+			}
 		}
 
 		/// <summary>
