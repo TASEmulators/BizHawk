@@ -35,12 +35,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private Guid guid = Guid.NewGuid();
 		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 		private string statePath
 		{
 			get
 			{
-				return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+				var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+				return Path.Combine(basePath, guid.ToString());
 			}
 		}
 
@@ -88,12 +90,20 @@ namespace BizHawk.Client.Common
 			}
 
 			States = new SortedList<int, byte[]>(limit);
+
+			accessed = new List<int>();
+		}
+
+		/// <summary>
+		/// Mounts this instance for write access. Prior to that it's read-only
+		/// </summary>
+		public void MountWriteAccess()
+		{
 			if (Directory.Exists(statePath))
 			{
 				Directory.Delete(statePath, true); // To delete old files that may still exist.
 			}
 			Directory.CreateDirectory(statePath);
-			accessed = new List<int>();
 		}
 
 		public TasStateManagerSettings Settings { get; set; }
@@ -393,7 +403,7 @@ namespace BizHawk.Client.Common
 		}
 		private void clearDiskStates()
 		{
-			string path = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null);
+			string path = statePath;
 			if (Directory.Exists(path))
 			{
 				Directory.Delete(path, true);
