@@ -1,7 +1,4 @@
-﻿//#define SET_DIPSWITCH_0
-//#define SET_DIPSWITCH_1
-
-using System;
+﻿using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
@@ -18,7 +15,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		ByteBuffer ram_bytes = new ByteBuffer(5);
 
-		bool[] dipswitches = new bool[2];
+		[MapperProp]
+		public bool dipswitch_0;
+		[MapperProp]
+		public bool dipswitch_1;
 
 		int prg_bank_mask_8k;
 		int chr_bank_mask_1k;
@@ -46,7 +46,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int multiplicand = 0;
 		int multiplication_result = 0;
 
-		//Irq Stuff
 		bool irq_enable = false;
 		bool irq_pending = false;
 
@@ -83,12 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
-#if SET_DIPSWITCH_0
-			dipswitches[0] = true;
-#endif
-#if SET_DIPSWITCH_1
-			dipswitches[1] = true;
-#endif
+			AutoMapperProps.Apply(this);
 
 			Sync();
 
@@ -107,7 +101,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("chr_banks", ref chr_banks);
 			ser.Sync("ram_bytes", ref ram_bytes);
 
-			ser.Sync("dipswitches", ref dipswitches, false);
+			ser.Sync("dipswitch_0", ref dipswitch_0);
+			ser.Sync("dipswitch_1", ref dipswitch_1);
 
 			ser.Sync("prg_bank_mask_8k", ref prg_bank_mask_8k);
 			ser.Sync("chr_bank_mask_1k", ref chr_bank_mask_1k);
@@ -152,25 +147,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_regs.Dispose();
 			chr_regs.Dispose();
 			nt_regs.Dispose();
-
 			prg_banks.Dispose();
 			chr_banks.Dispose();
-
 			ram_bytes.Dispose();
-		}
-
-		//TODO: No interface for changing dipswitches exists in Bizhawk
-		public void SetDipswitch(int index, bool value)
-		{
-			if (index < dipswitches.Length)
-			{
-				dipswitches[index] = value;
-			}
-		}
-
-		public bool ReadDipswitch(int index)
-		{
-			return dipswitches[index];
+			base.Dispose();
 		}
 
 		private void Sync()
@@ -473,8 +453,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (addr)
 			{
 				case 0x1000:
-					int value = dipswitches[0] ? 0x80 : 0x00;
-					value = dipswitches[1] ? value | 0x40 : value;
+					int value = dipswitch_0 ? 0x80 : 0x00;
+					value = dipswitch_1 ? value | 0x40 : value;
 					return (byte)(value | (NES.DB & 0x3F));
 				case 0x1800:
 					return (byte)multiplication_result;
