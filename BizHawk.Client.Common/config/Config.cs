@@ -10,7 +10,11 @@ namespace BizHawk.Client.Common
 	{
 		public static string ControlDefaultPath
 		{
+			#if WINDOWS
 			get { return PathManager.MakeProgramRelativePath("defctrl.json"); }
+			#else
+			get { return PathManager.MakeProgramRelativePath("defctrl_opentk.json"); }
+			#endif
 		}
 
 		public void ConfigCheckAllControlDefaults()
