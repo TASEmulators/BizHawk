@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 			Changes = false;
 		}
 
-		public override bool Load()
+		public override bool Load(bool preload)
 		{
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
@@ -221,16 +221,20 @@ namespace BizHawk.Client.Common
 					StateManager.Settings.PopulateFromString(tr.ReadToEnd());
 				});
 
-				if (StateManager.Settings.SaveStateHistory)
+				if(!preload)
 				{
-					bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+					if (StateManager.Settings.SaveStateHistory)
 					{
-						StateManager.Load(br);
-					});
+						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+						{
+							StateManager.Load(br);
+						});
+					}
+
+					// Movie should always have a state at frame 0.
+					if (!this.StartsFromSavestate)
+						StateManager.Capture();
 				}
-				// Movie should always have a state at frame 0.
-				if (!this.StartsFromSavestate)
-					StateManager.Capture();
 
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
 				{

@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 		/// Tells the movie to load the contents of Filename
 		/// </summary>
 		/// <returns>Return whether or not the file was successfully loaded</returns>
-		bool Load();
+		bool Load(bool preload);
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename

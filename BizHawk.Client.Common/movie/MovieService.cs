@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 			if (Path.GetExtension(path).EndsWith("bkm"))
 			{
 				var bkm = new BkmMovie(path);
-				bkm.Load();
+				bkm.Load(false);
 
 				// Hackery to fix how things used to work
 				if (bkm.SystemID == "GBC")

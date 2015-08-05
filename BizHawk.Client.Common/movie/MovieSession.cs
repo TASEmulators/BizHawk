@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 		public bool MovieLoad()
 		{
 			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
-			return Movie.Load();
+			return Movie.Load(false);
 		}
 
 		public void StopMovie(bool saveChanges = true)
@@ -463,7 +463,7 @@ namespace BizHawk.Client.Common
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
 			{
-				movie.Load();
+				movie.Load(false);
 				if (movie.SystemID != emulator.SystemId)
 				{
 					throw new MoviePlatformMismatchException(

@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private Guid guid = Guid.NewGuid();
-		private readonly SortedList<int, byte[]> States = new SortedList<int, byte[]>();
+		private SortedList<int, byte[]> States = new SortedList<int, byte[]>();
 		private string statePath
 		{
 			get
@@ -46,6 +46,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private bool _isMountedForWrite;
 		private readonly TasMovie _movie;
 		private ulong _expectedStateSize = 0;
 
@@ -80,6 +81,25 @@ namespace BizHawk.Client.Common
 
 			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
+			accessed = new List<int>();
+		}
+
+		/// <summary>
+		/// Mounts this instance for write access. Prior to that it's read-only
+		/// </summary>
+		public void MountWriteAccess()
+		{
+			if (_isMountedForWrite)
+				return;
+
+			_isMountedForWrite = true;
+
+			if (Directory.Exists(statePath))
+			{
+				Directory.Delete(statePath, true); // To delete old files that may still exist.
+			}
+			Directory.CreateDirectory(statePath);
+
 			int limit = 0;
 
 			_expectedStateSize = (ulong)Core.SaveStateBinary().Length;
@@ -90,20 +110,6 @@ namespace BizHawk.Client.Common
 			}
 
 			States = new SortedList<int, byte[]>(limit);
-
-			accessed = new List<int>();
-		}
-
-		/// <summary>
-		/// Mounts this instance for write access. Prior to that it's read-only
-		/// </summary>
-		public void MountWriteAccess()
-		{
-			if (Directory.Exists(statePath))
-			{
-				Directory.Delete(statePath, true); // To delete old files that may still exist.
-			}
-			Directory.CreateDirectory(statePath);
 		}
 
 		public TasStateManagerSettings Settings { get; set; }

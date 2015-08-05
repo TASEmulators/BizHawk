@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 			Write(backupName);
 		}
 
-		public virtual bool Load()
+		public virtual bool Load(bool preload)
 		{
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
@@ -158,7 +158,6 @@ namespace BizHawk.Client.Common
 
 		public bool PreLoadHeaderAndLength(HawkFile hawkFile)
 		{
-			// For now, preload simply loads everything
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
 			{
@@ -166,7 +165,7 @@ namespace BizHawk.Client.Common
 			}
 
 			Filename = file.FullName;
-			return Load();
+			return Load(true);
 		}
 
 		protected virtual void Write(string fn)

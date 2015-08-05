@@ -140,7 +140,7 @@ namespace BizHawk.Client.Common
 						break;
 					case ".BKM":
 						m.Filename = path;
-						m.Load();
+						m.Load(false);
 						break;
 				}
 			}

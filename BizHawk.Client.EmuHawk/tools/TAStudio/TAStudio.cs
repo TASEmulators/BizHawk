@@ -407,7 +407,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.Filename = file.FullName;
 			try
 			{
-				CurrentTasMovie.Load();
+				CurrentTasMovie.Load(false);
 			}
 			catch
 			{

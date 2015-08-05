@@ -34,6 +34,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			}
 
 			var tas = new TasMovie(newFilename, old.StartsFromSavestate);
+			tas.TasStateManager.MountWriteAccess();
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
