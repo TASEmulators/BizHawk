@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 				new InputRoll.RollColumn
 				{
 					Name = TimeColumnName,
-					Text = "Length",
+					Text = "TimeStamp",
 					Width = 90
 				},
 			});
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 					text = Branches[index].Frame.ToString();
 					break;
 				case TimeColumnName:
-					text = MovieTime(Branches[index].Frame).ToString(@"hh\:mm\:ss\.fff");
+					text = Branches[index].TimeStamp.ToString(@"hh\:mm\:ss\.ff");
 					break;
 			}
 		}
@@ -177,42 +177,6 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		// TODO: copy pasted from PlatformFrameRates
-
-		private TimeSpan MovieTime(int frameCount)
-		{
-			var dblseconds = GetSeconds(frameCount);
-			var seconds = (int)(dblseconds % 60);
-			var days = seconds / 86400;
-			var hours = seconds / 3600;
-			var minutes = (seconds / 60) % 60;
-			var milliseconds = (int)((dblseconds - seconds) * 1000);
-			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-		}
-
-		private double GetSeconds(int frameCount)
-		{
-			double frames = frameCount;
-
-			if (frames < 1)
-			{
-				return 0;
-			}
-
-			return frames / Fps();
-		}
-
-		private double Fps()
-		{
-			TasMovie movie = Tastudio.CurrentTasMovie;
-			string system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			bool pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
-				movie.HeaderEntries[HeaderKeys.PAL] == "1";
-
-			return FrameRates[system, pal];
-		}
-		// ***************************
-
 		public void UpdateValues()
 		{
 			BranchView.RowCount = Branches.Count;
@@ -238,7 +202,8 @@ namespace BizHawk.Client.EmuHawk
 				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
-				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie)
+				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie),
+				TimeStamp = DateTime.Now
 			};
 		}
 

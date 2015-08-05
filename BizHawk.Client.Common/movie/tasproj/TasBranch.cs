@@ -15,6 +15,7 @@ namespace BizHawk.Client.Common
 		public BitmapBuffer OSDFrameBuffer { get; set; }
 		public TasLagLog LagLog { get; set; }
 		public TasMovieChangeLog ChangeLog { get; set; }
+		public DateTime TimeStamp { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>
@@ -31,7 +32,11 @@ namespace BizHawk.Client.Common
 				bs.PutLump(nheader, delegate(TextWriter tw)
 				{
 					// if this header needs more stuff in it, handle it sensibly
-					tw.WriteLine(JsonConvert.SerializeObject(new { Frame = b.Frame }));
+					tw.WriteLine(JsonConvert.SerializeObject(new
+					{
+						Frame = b.Frame,
+						TimeStamp = b.TimeStamp
+					}));
 				});
 				bs.PutLump(ncore, delegate(Stream s)
 				{
@@ -76,7 +81,19 @@ namespace BizHawk.Client.Common
 
 				if (!bl.GetLump(nheader, false, delegate(TextReader tr)
 				{
-					b.Frame = (int)((dynamic)JsonConvert.DeserializeObject(tr.ReadLine())).Frame;
+					var header = (dynamic)JsonConvert.DeserializeObject(tr.ReadLine());
+					b.Frame = (int)header.Frame;
+
+					var timestamp = (dynamic)header.TImeStamp;
+
+					if (timestamp != null)
+					{
+						b.TimeStamp = (DateTime)timestamp;
+					}
+					else
+					{
+						b.TimeStamp = DateTime.Now;
+					}
 				}))
 				{
 					return;
