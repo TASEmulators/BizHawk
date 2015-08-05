@@ -870,9 +870,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshot()
 		{
-			TakeScreenshot(
-				String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now)
-			);
+			string fmt = "{0}.{1:yyyy-MM-dd HH.mm.ss}{2}.png";
+			string prefix = PathManager.ScreenshotPrefix(Global.Game);
+			var ts = DateTime.Now;
+
+			string fname_bare = string.Format(fmt, prefix, ts, "");
+			string fname = string.Format(fmt, prefix, ts, " (0)");
+
+			//if this file already exists,
+			//1. move the original file to a numbered one (to keep a good filesystem sort ordering)
+			if (File.Exists(fname_bare))
+				File.Move(fname_bare, fname);
+			else fname = fname_bare;
+			//2. create next one sequentially named
+			int seq = 0;
+			while (File.Exists(fname))
+			{
+				var sequence = string.Format(" ({0})", seq++);
+				fname = string.Format(fmt, prefix, ts, sequence);
+			} 
+				
+			TakeScreenshot(fname);
 		}
 
 		public void TakeScreenshot(string path)
