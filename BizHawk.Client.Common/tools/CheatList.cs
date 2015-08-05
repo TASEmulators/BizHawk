@@ -164,6 +164,18 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
+		public bool Exchange(Cheat oldCheat, Cheat newCheat)
+		{
+			int index = _cheatList.IndexOf(oldCheat);
+			if (index == -1)
+				return false;
+
+			_cheatList[index] = newCheat;
+			Changes = true;
+
+			return true;
+		}
+
 		public bool Remove(Cheat c)
 		{
 			var result = _cheatList.Remove(c);

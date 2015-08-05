@@ -178,8 +178,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditCheat()
 		{
-			Global.CheatList.Remove(CheatEditor.OriginalCheat);
-			AddCheat();
+			Global.CheatList.Exchange(CheatEditor.OriginalCheat, CheatEditor.Cheat);
+			UpdateDialog();
+			UpdateMessageLabel();
 		}
 
 		public void SaveConfigSettings()
