@@ -305,14 +305,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.IsDataCell)
+			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Branches.Count)
 			{
 				var branch = Branches[e.OldCell.RowIndex.Value];
 				int originalIndex = Branches.IndexOf(branch);
 				int newIndex = e.NewCell.RowIndex.Value;
 
-                if (newIndex >= Branches.Count)
-                    newIndex = Branches.Count - 1;
+				if (newIndex >= Branches.Count)
+					newIndex = Branches.Count - 1;
 
 				Branches.Remove(branch);
 				Branches.Insert(newIndex, branch);
