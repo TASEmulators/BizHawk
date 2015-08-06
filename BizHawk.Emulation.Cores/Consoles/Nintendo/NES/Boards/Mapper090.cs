@@ -38,9 +38,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		bool nt_ram_select = false;
 
+
 		bool mirror_chr = false;
 		bool chr_block_mode = true;
-		byte chr_block = 0;
+		int chr_block = 0;
+		int prg_block = 0;
 
 		int multiplicator = 0;
 		int multiplicand = 0;
@@ -65,6 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER090":
+				case "UNIF_UNL-TEK90":
 					mapper_090 = true;
 					nt_advanced_control = false;
 					break;
@@ -82,11 +85,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
+			InitValues();
+
+			return true;
+		}
+
+		public override void NESSoftReset()
+		{
+			InitValues();
+
+			base.NESSoftReset();
+		}
+
+		private void InitValues()
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				prg_regs[i] = 0xFF;
+				nt_regs[i] = 0;
+			}
+			for (int i = 0; i < 8; i++)
+			{
+				chr_regs[i] = 0xFFFF;
+			}
+
 			AutoMapperProps.Apply(this);
 
 			Sync();
-
-			return true;
 		}
 
 		public override void SyncState(Serializer ser)
@@ -123,6 +148,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("mirror_chr", ref mirror_chr);
 			ser.Sync("chr_block_mode", ref chr_block_mode);
 			ser.Sync("chr_block", ref chr_block);
+			ser.Sync("prg_block", ref prg_block);
 
 			ser.Sync("multiplicator", ref multiplicator);
 			ser.Sync("multiplicand", ref multiplicand);
@@ -163,6 +189,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private void SetBank(IntBuffer target, byte offset, byte size, int value)
 		{
+			value &= ~(size - 1);
 			for (int i = 0; i < size; i++)
 			{
 				int index = i + offset;
@@ -171,103 +198,113 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private byte BitRev7(byte value) //adelikat: Bit reverses a 7 bit register, ugly but gets the job done
+		private byte BitRev6(int value)
 		{
 			int newvalue = 0;
 
-			newvalue |= (value & 0x01) << 6;
-			newvalue |= ((value >> 1) & 0x01) << 5;
-			newvalue |= ((value >> 2) & 0x01) << 4;
-			newvalue |= value & 0x08;
-			newvalue |= ((value >> 4) & 0x01) << 2;
-			newvalue |= ((value >> 5) & 0x01) << 1;
-			newvalue |= (value >> 6) & 0x01;
+			newvalue |= (value & 0x20) >> 5;
+			newvalue |= (value & 0x10) >> 3;
+			newvalue |= (value & 0x08) >> 1;
+			newvalue |= (value & 0x04) << 1;
+			newvalue |= (value & 0x02) << 3;
+			newvalue |= (value & 0x01) << 5;
 
 			return (byte)newvalue;
 		}
 
 		private void SyncPRGBanks()
 		{
-			switch (prg_mode_select)
+			int bankmode = prg_block << 6;
+
+			switch(prg_mode_select)
 			{
 				case 0:
-					SetBank(prg_banks, 0, 4, prg_bank_mask_8k - 3);
-					ram_bank = (prg_regs[3] << 2) + 3;
+					SetBank(prg_banks, 0, 4, ( bankmode | (prg_bank_mask_8k & 0x3F) ));
+					ram_bank = bankmode | (((prg_regs[3] << 2) + 3) & 0x3F);
 					break;
 				case 1:
-					SetBank(prg_banks, 0, 2, prg_regs[1]);
-					SetBank(prg_banks, 2, 2, prg_bank_mask_8k - 1);
-					ram_bank = (prg_regs[3] << 1) + 1;
+					SetBank(prg_banks, 0, 2, ( bankmode | (prg_regs[1] & 0x1F) ));
+					SetBank(prg_banks, 2, 2, ( bankmode | (prg_bank_mask_8k & 0x3F) ));
+					ram_bank = bankmode | (((prg_regs[3] << 1) + 1) & 0x3F);
 					break;
 				case 2:
-					SetBank(prg_banks, 0, 1, prg_regs[0]);
-					SetBank(prg_banks, 1, 1, prg_regs[1]);
-					SetBank(prg_banks, 2, 1, prg_regs[2]);
-					SetBank(prg_banks, 3, 1, prg_bank_mask_8k);
-					ram_bank = prg_regs[3];
+					SetBank(prg_banks, 0, 1, ( bankmode | prg_regs[0] ));
+					SetBank(prg_banks, 1, 1, ( bankmode | prg_regs[1] ));
+					SetBank(prg_banks, 2, 1, ( bankmode | prg_regs[2] ));
+					SetBank(prg_banks, 3, 1, ( bankmode | (prg_bank_mask_8k & 0x3F) ));
+					ram_bank = bankmode | prg_regs[3];
 					break;
 				case 3:
-					SetBank(prg_banks, 0, 1, BitRev7(prg_regs[0]));
-					SetBank(prg_banks, 1, 1, BitRev7(prg_regs[1]));
-					SetBank(prg_banks, 2, 1, BitRev7(prg_regs[2]));
-					SetBank(prg_banks, 3, 1, prg_bank_mask_8k);
-					ram_bank = BitRev7(prg_regs[3]);
+					SetBank(prg_banks, 0, 1, ( bankmode | BitRev6(prg_regs[0]) ));
+					SetBank(prg_banks, 1, 1, ( bankmode | BitRev6(prg_regs[1]) ));
+					SetBank(prg_banks, 2, 1, ( bankmode | BitRev6(prg_regs[2]) ));
+					SetBank(prg_banks, 3, 1, ( bankmode | (prg_bank_mask_8k & 0x3F) ));
+					ram_bank = bankmode | BitRev6(prg_regs[3]);
 					break;
 				case 4:
-					SetBank(prg_banks, 0, 4, prg_regs[3]);
-					ram_bank = (prg_regs[3] << 2) + 3;
+					SetBank(prg_banks, 0, 4, ( bankmode | (prg_regs[3] & 0x3F) ));
+					ram_bank = bankmode | (((prg_regs[3] << 2) + 3) & 0x3F);
 					break;
-				case 5:
-					SetBank(prg_banks, 0, 2, prg_regs[1]);
-					SetBank(prg_banks, 2, 2, prg_regs[3]);
-					ram_bank = (prg_regs[3] << 1) + 1;
+				case 5:					
+					SetBank(prg_banks, 0, 2, ( bankmode | (prg_regs[1] & 0x1F) ));
+					SetBank(prg_banks, 2, 2, ( bankmode | (prg_regs[3] & 0x1F) ));
+					ram_bank = bankmode | (((prg_regs[3] << 1) + 1) & 0x3F);
 					break;
 				case 6:
-					SetBank(prg_banks, 0, 1, prg_regs[0]);
-					SetBank(prg_banks, 1, 1, prg_regs[1]);
-					SetBank(prg_banks, 2, 1, prg_regs[2]);
-					SetBank(prg_banks, 3, 1, prg_regs[3]);
-					ram_bank = prg_regs[3];
+					SetBank(prg_banks, 0, 1, ( bankmode | prg_regs[0] ));
+					SetBank(prg_banks, 1, 1, ( bankmode | prg_regs[1] ));
+					SetBank(prg_banks, 2, 1, ( bankmode | prg_regs[2] ));
+					SetBank(prg_banks, 3, 1, ( bankmode | prg_regs[3] ));
+					ram_bank = bankmode | prg_regs[3];
 					break;
 				case 7:
-					SetBank(prg_banks, 0, 1, BitRev7(prg_regs[0]));
-					SetBank(prg_banks, 1, 1, BitRev7(prg_regs[1]));
-					SetBank(prg_banks, 2, 1, BitRev7(prg_regs[2]));
-					SetBank(prg_banks, 3, 1, BitRev7(prg_regs[3]));
-					ram_bank = BitRev7(prg_regs[3]);
+					SetBank(prg_banks, 0, 1, ( bankmode | BitRev6(prg_regs[0]) ));
+					SetBank(prg_banks, 1, 1, ( bankmode | BitRev6(prg_regs[1]) ));
+					SetBank(prg_banks, 2, 1, ( bankmode | BitRev6(prg_regs[2]) ));
+					SetBank(prg_banks, 3, 1, ( bankmode | BitRev6(prg_regs[3]) ));
+					ram_bank = bankmode | BitRev6(prg_regs[3]);
 					break;
 			}
 		}
 
 		private void SyncCHRBanks()
 		{
+			int mask = 0xFFFF;
+			int block = 0;
+
+			if (chr_block_mode)
+			{
+				mask = 0xFF >> (chr_mode_select ^ 3);
+				block = chr_block << (chr_mode_select + 5);
+			}
+
 			int mirror_chr_9002 = mirror_chr ? 0 : 2;
 			int mirror_chr_9003 = mirror_chr ? 1 : 3;
 
 			switch (chr_mode_select)
 			{
 				case 0:
-					SetBank(chr_banks, 0, 8, (chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[0]) * 8);
+					SetBank(chr_banks, 0, 8, ((chr_regs[0] & mask) | block) << 3);
 					break;
 				case 1:
-					SetBank(chr_banks, 0, 4, (chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[0]) * 4);
-					SetBank(chr_banks, 4, 4, (chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[4]) * 4);
+					SetBank(chr_banks, 0, 4, ((chr_regs[0] & mask) | block) << 2);
+					SetBank(chr_banks, 4, 4, ((chr_regs[4] & mask) | block) << 2);
 					break;
 				case 2:
-					SetBank(chr_banks, 0, 2, (chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[0]) * 2);
-					SetBank(chr_banks, 2, 2, (chr_block_mode ? (chr_block << 8) | chr_regs[mirror_chr_9002] & 0xFF : chr_regs[mirror_chr_9002]) * 2);
-					SetBank(chr_banks, 4, 2, (chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[4]) * 2);
-					SetBank(chr_banks, 6, 2, (chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[6]) * 2);
+					SetBank(chr_banks, 0, 2, ((chr_regs[0] & mask) | block) << 1);
+					SetBank(chr_banks, 2, 2, ((chr_regs[mirror_chr_9002] & mask) | block) << 1);
+					SetBank(chr_banks, 4, 2, ((chr_regs[4] & mask) | block) << 1);
+					SetBank(chr_banks, 6, 2, ((chr_regs[6] & mask) | block) << 1);
 					break;
 				case 3:
-					SetBank(chr_banks, 0, 1, chr_block_mode ? (chr_block << 8) | chr_regs[0] & 0xFF : chr_regs[0]);
-					SetBank(chr_banks, 1, 1, chr_block_mode ? (chr_block << 8) | chr_regs[1] & 0xFF : chr_regs[1]);
-					SetBank(chr_banks, 2, 1, chr_block_mode ? (chr_block << 8) | chr_regs[mirror_chr_9002] & 0xFF : chr_regs[mirror_chr_9002]);
-					SetBank(chr_banks, 3, 1, chr_block_mode ? (chr_block << 8) | chr_regs[mirror_chr_9003] & 0xFF : chr_regs[mirror_chr_9003]);
-					SetBank(chr_banks, 4, 1, chr_block_mode ? (chr_block << 8) | chr_regs[4] & 0xFF : chr_regs[4]);
-					SetBank(chr_banks, 5, 1, chr_block_mode ? (chr_block << 8) | chr_regs[5] & 0xFF : chr_regs[5]);
-					SetBank(chr_banks, 6, 1, chr_block_mode ? (chr_block << 8) | chr_regs[6] & 0xFF : chr_regs[6]);
-					SetBank(chr_banks, 7, 1, chr_block_mode ? (chr_block << 8) | chr_regs[7] & 0xFF : chr_regs[7]);
+					SetBank(chr_banks, 0, 1, (chr_regs[0] & mask) | block);
+					SetBank(chr_banks, 1, 1, (chr_regs[1] & mask) | block);
+					SetBank(chr_banks, 2, 1, (chr_regs[mirror_chr_9002] & mask) | block);
+					SetBank(chr_banks, 3, 1, (chr_regs[mirror_chr_9003] & mask) | block);
+					SetBank(chr_banks, 4, 1, (chr_regs[4] & mask) | block);
+					SetBank(chr_banks, 5, 1, (chr_regs[5] & mask) | block);
+					SetBank(chr_banks, 6, 1, (chr_regs[6] & mask) | block);
+					SetBank(chr_banks, 7, 1, (chr_regs[7] & mask) | block);
 					break;
 			}
 		}
@@ -297,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0005:
 				case 0x0006:
 				case 0x0007:
-					prg_regs[addr & 3] = (byte)(value & 0x7F);
+					prg_regs[addr & 3] = (byte)(value & 0x3F);
 					SyncPRGBanks();
 					break;
 
@@ -348,11 +385,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4000:	//0xC000 IRQ operation
 					if (value.Bit(0))
 					{
-						goto case 0x4002;
+						goto case 0x4003;
 					}
 					else
 					{
-						goto case 0x4003;
+						goto case 0x4002;						
 					}
 				case 0x4001:	//IRQ control
 					irq_count_down = value.Bit(7);
@@ -429,7 +466,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x5007:
 					mirror_chr = value.Bit(7);
 					chr_block_mode = !value.Bit(5);
-					chr_block = (byte)(value & 0x1F);
+					chr_block = ((value & 0x18) >> 2) | (value & 0x1);
+					prg_block = (value & 0x06) >> 1;
+					SyncPRGBanks();
 					SyncCHRBanks();
 					break;
 			}
@@ -450,7 +489,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadEXP(int addr)
 		{
-			switch (addr)
+			switch (addr & 0x1807)
 			{
 				case 0x1000:
 					int value = dipswitch_0 ? 0x80 : 0x00;
