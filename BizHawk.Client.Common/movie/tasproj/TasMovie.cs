@@ -179,7 +179,7 @@ namespace BizHawk.Client.Common
 			var anyInvalidated = StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
 
-			if (anyInvalidated)
+            if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)
 			{
 				base.Rerecords++;
 			}

@@ -599,7 +599,11 @@ namespace BizHawk.Client.EmuHawk
 				e.NewCell == null || e.NewCell.RowIndex == null || e.NewCell.Column == null)
 			{
 				return;
-			}
+            }
+
+            // skip rerecord counting on drawing entirely, mouse down is enough
+            // avoid introducing another global
+            bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;
@@ -714,6 +718,8 @@ namespace BizHawk.Client.EmuHawk
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
+                Global.MovieSession.Movie.IsCountingRerecords = false;
+
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
@@ -733,7 +739,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
-			{
+            {
+                Global.MovieSession.Movie.IsCountingRerecords = false;
+
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
@@ -751,6 +759,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
+            Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
 
 			if (mouseButtonHeld)
 			{
