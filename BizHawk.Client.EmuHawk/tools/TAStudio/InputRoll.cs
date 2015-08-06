@@ -1624,7 +1624,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ModifierKeys == Keys.Alt)
 					{
-						MessageBox.Show("Alt click logic is not yet implemented");
+						// MessageBox.Show("Alt click logic is not yet implemented");
+                        // do marker drag here
 					}
 					else if (ModifierKeys == Keys.Shift)
 					{

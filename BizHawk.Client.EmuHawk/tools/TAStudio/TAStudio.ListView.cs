@@ -363,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
-					if (Control.ModifierKeys == Keys.Shift && CurrentTasMovie.Markers.IsMarker(frame))
+					if (Control.ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
 					{
 						// TODO
 						TasView.DragCurrentCell();
