@@ -426,6 +426,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nsfboard.WRAM = new byte[cart.wram_size * 1024];
 				Board = nsfboard;
 				Board.PostConfigure();
+				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for NSF for now");
 				_display_type = Common.DisplayType.NTSC;
@@ -463,6 +464,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Board.VRAM = new byte[cart.vram_size * 1024];
 
 				Board.PostConfigure();
+				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for FDS disk image");
 				_display_type = Common.DisplayType.NTSC;
@@ -709,6 +711,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board.VRAM = new byte[cart.vram_size * 1024];
 
 			Board.PostConfigure();
+			AutoMapperProps.Populate(Board, SyncSettings);
 
 			// set up display type
 

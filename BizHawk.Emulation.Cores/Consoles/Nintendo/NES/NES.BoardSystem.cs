@@ -729,6 +729,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 	public static class AutoMapperProps
 	{
+		public static void Populate(NES.INESBoard board, NES.NESSyncSettings settings)
+		{
+			var fields = board.GetType().GetFields();
+			foreach (var field in fields)
+			{
+				var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
+				if (attrib == null)
+					continue;
+				string Name = attrib.Name ?? field.Name;
+				if (!settings.BoardProperties.ContainsKey(Name))
+				{
+					settings.BoardProperties.Add(Name, (string)Convert.ChangeType(field.GetValue(board), typeof(string)));
+				}
+			}
+		}
+
 		public static void Apply(NES.INESBoard board)
 		{
 			var fields = board.GetType().GetFields();
