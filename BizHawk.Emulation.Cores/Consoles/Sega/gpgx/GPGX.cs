@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedUrl: "https://code.google.com/p/genplus-gx/",
 		singleInstance: true
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable,
+	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
 	{
 		static GPGX AttachedCore = null;
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					LibGPGX.gpgx_get_fps(ref fpsnum, ref fpsden);
 					CoreComm.VsyncNum = fpsnum;
 					CoreComm.VsyncDen = fpsden;
-					DisplayType = CoreComm.VsyncRate > 55 ? DisplayType.NTSC : DisplayType.PAL;
+					Region = CoreComm.VsyncRate > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
 				// compute state size
@@ -749,7 +749,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		#region VideoProvider
 
-		public DisplayType DisplayType { get; private set; }
+		public DisplayType Region { get; private set; }
 
 		int[] vidbuff = new int[0];
 		int vwidth;

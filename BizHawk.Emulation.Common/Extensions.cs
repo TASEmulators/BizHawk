@@ -200,6 +200,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return true;
 		}
 
+		public static bool HasRegions(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IRegionable>();
+		}
+
+		public static IRegionable AsRegionable(this IEmulator core)
+		{
+			return (IRegionable)core.ServiceProvider.GetService<IRegionable>();
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{

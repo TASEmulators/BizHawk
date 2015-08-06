@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
@@ -182,7 +182,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public CoreComm CoreComm { get; private set; }
 
-		public DisplayType DisplayType { get { return _display_type; } }
+		public DisplayType Region { get { return _display_type; } }
 
 		class MyVideoProvider : IVideoProvider
 		{
@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int the_top;
 				int the_bottom;
-				if (emu.DisplayType == DisplayType.NTSC)
+				if (emu.Region == DisplayType.NTSC)
 				{
 					the_top = emu.Settings.NTSC_TopLine;
 					the_bottom = emu.Settings.NTSC_BottomLine;
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				get
 				{
-					if (emu.DisplayType == DisplayType.NTSC)
+					if (emu.Region == DisplayType.NTSC)
 					{
 						return emu.Settings.NTSC_BottomLine - emu.Settings.NTSC_TopLine + 1;
 					}

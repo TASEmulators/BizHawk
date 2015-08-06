@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -666,7 +666,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
 
-		public DisplayType DisplayType
+		public DisplayType Region
 		{
 			get
 			{

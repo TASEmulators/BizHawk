@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isPorted: false,
 		isReleased: false
 		)]
-	[ServiceNotApplicable(typeof(ISettable<,>))]
+	[ServiceNotApplicable(typeof(IRegionable), typeof(ISettable<,>))]
 	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable
 	{
 		// framework

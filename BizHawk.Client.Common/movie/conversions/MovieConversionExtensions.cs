@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
 {
@@ -283,10 +284,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.BoardName = Global.Emulator.BoardName;
 			}
 
-			if (Global.Emulator.HasPublicProperty("DisplayType"))
+			if (Global.Emulator.HasRegions())
 			{
-				var region = Global.Emulator.GetPropertyValue("DisplayType");
-				if ((DisplayType)region == DisplayType.PAL)
+				var region = Global.Emulator.AsRegionable().Region;
+				if (region == DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
 				}
