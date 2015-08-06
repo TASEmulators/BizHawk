@@ -215,14 +215,30 @@ namespace BizHawk.Client.Common
 			{
 				shouldRemove++;
 
-				// No need to have two savestates with only lag frames between them.
-				for (int i = shouldRemove; i < States.Count - 1; i++)
+				// No need to have two savestates with only lag frames between them:
+				// zero 05-aug-2015 - changed algorithm to iterate through States (a SortedList) instead of repeatedly call ElementAt (which is slow)
+				//   previously : for (int i = shouldRemove; i < States.Count - 1; i++) if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key)) { shouldRemove = i; break; } }
+				int ctr = 0;
+				KeyValuePair<int, byte[]>? prior = null;
+				foreach (var kvp in States)
 				{
-					if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key))
+					ctr++;
+					if (ctr < shouldRemove)
 					{
-						shouldRemove = i;
-						break;
+						prior = kvp;
+						continue;
 					}
+
+					if (prior.HasValue)
+					{
+						if (AllLag(prior.Value.Key, kvp.Key))
+						{
+							shouldRemove = ctr-1;
+							break;
+						}
+					}
+
+					prior = kvp;
 				}
 
 				// Keep marker states
