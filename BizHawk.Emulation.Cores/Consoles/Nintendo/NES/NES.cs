@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -88,6 +89,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (ppu != null)
 				Console.WriteLine("[{0:d5}:{1:d3}:{2:d3}] {3}", Frame, ppu.ppur.status.sl, ppu.ppur.status.cycle, string.Format(format, args));
+		}
+
+		public bool HasMapperProperties
+		{
+			get
+			{
+				var fields = Board.GetType().GetFields();
+				foreach (var field in fields)
+				{
+					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
+					if (attrib != null)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 		}
 
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)

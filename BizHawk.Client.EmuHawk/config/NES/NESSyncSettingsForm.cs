@@ -19,13 +19,26 @@ namespace BizHawk.Client.EmuHawk
 		public NESSyncSettingsForm()
 		{
 			InitializeComponent();
-			SyncSettings = ((NES)Global.Emulator).GetSyncSettings();
-			DTDB = new DataTableDictionaryBind<string, string>(SyncSettings.BoardProperties);
-			dataGridView1.DataSource = DTDB.Table;
 
-			comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-			comboBox1.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)));
-			comboBox1.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), SyncSettings.RegionOverride);
+			SyncSettings = ((NES)Global.Emulator).GetSyncSettings();
+
+			if ((Global.Emulator as NES).HasMapperProperties)
+			{
+				
+				DTDB = new DataTableDictionaryBind<string, string>(SyncSettings.BoardProperties);
+				dataGridView1.DataSource = DTDB.Table;
+				InfoLabel.Visible = false;
+			}
+			else
+			{
+				BoardPropertiesGroupBox.Enabled = false;
+				dataGridView1.DataSource = null;
+				dataGridView1.Enabled = false;
+				InfoLabel.Visible = true;
+			}
+
+			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)));
+			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), SyncSettings.RegionOverride);
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -41,9 +54,9 @@ namespace BizHawk.Client.EmuHawk
 			SyncSettings.RegionOverride = (NES.NESSyncSettings.Region)
 				Enum.Parse(
 				typeof(NES.NESSyncSettings.Region),
-				(string)comboBox1.SelectedItem);
+				(string)RegionComboBox.SelectedItem);
 
-			bool changed = DTDB.WasModified ||
+			bool changed = (DTDB != null && DTDB.WasModified) ||
 				old != SyncSettings.RegionOverride;
 
 			DialogResult = DialogResult.OK;
@@ -55,7 +68,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HelpBtn_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show(this, "Board Properties are special per-mapper system settings.  They are only useful to advanced users creating Tool Assisted Superplays.  No support will be provided if you break something with them.", "Help");
+			MessageBox.Show(
+				this,
+				"Board Properties are special per-mapper system settings.  They are only useful to advanced users creating Tool Assisted Superplays.  No support will be provided if you break something with them.",
+				"Help",
+				MessageBoxButtons.OK,
+				MessageBoxIcon.Information);
 		}
 
 		private void NESSyncSettingsForm_Load(object sender, EventArgs e)
