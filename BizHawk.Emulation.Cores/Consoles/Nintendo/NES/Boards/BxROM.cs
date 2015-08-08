@@ -31,9 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-BNROM": //Deadly Towers (U)
 					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);
 					break;
-				case "MAPPER034": // 3-D Battles of World Runner, The (U) [b5].nes
-					// TODO: No idea what to assert here
-					break;
+
 				default:
 					return false;
 			}
