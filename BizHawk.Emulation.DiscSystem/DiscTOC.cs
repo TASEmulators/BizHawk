@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// This is a convenient format for storing the TOC (taken from mednafen)
-		/// Index 0 is empty, so that track 1 is in index 1.
-		/// Index 100 is the Lead-out track
+		/// Element 0 is the Lead-in track
+		/// Element 100 is the Lead-out track
 		/// </summary>
 		public TOCItem[] TOCItems = new TOCItem[101];
 

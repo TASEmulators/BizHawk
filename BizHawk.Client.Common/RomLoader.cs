@@ -269,6 +269,9 @@ namespace BizHawk.Client.Common
 								return false;
 							}
 
+							if (discMountJob.OUT_ErrorLevel)
+								throw new InvalidOperationException(discMountJob.OUT_Log);
+
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
 
@@ -324,6 +327,10 @@ namespace BizHawk.Client.Common
 							System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
 							return false;
 						}
+
+						if (discMountJob.OUT_ErrorLevel)
+							throw new InvalidOperationException(discMountJob.OUT_Log);
+
 						var disc = discMountJob.OUT_Disc;
 						//-----------
 						
@@ -456,6 +463,9 @@ namespace BizHawk.Client.Common
 											System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
 											return false;
 										}
+
+										if (discMountJob.OUT_ErrorLevel)
+											throw new InvalidOperationException(discMountJob.OUT_Log);
 
 										if (disc == null)
 											throw new InvalidOperationException("Can't load one of the files specified in the M3U");

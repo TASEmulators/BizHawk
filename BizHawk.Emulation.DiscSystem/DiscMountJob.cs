@@ -154,6 +154,8 @@ namespace BizHawk.Emulation.DiscSystem
 				//TODO - need better handling of log output
 				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
+				if (compileJob.OUT_ErrorLevel)
+					goto DONE;
 
 				//check slow loading threshold
 				if (compileJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
@@ -179,6 +181,7 @@ namespace BizHawk.Emulation.DiscSystem
 				CCD_Format ccdLoader = new CCD_Format();
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
+
 
 		DONE:
 
