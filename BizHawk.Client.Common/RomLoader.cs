@@ -286,7 +286,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 								else
 								{
-									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}",discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -301,7 +301,6 @@ namespace BizHawk.Client.Common
 						}
 
 						nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 						nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
 						game.System = "PSX";
@@ -384,7 +383,7 @@ namespace BizHawk.Client.Common
 								else
 								{
 									StringWriter sw = new StringWriter();
-									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -475,7 +474,7 @@ namespace BizHawk.Client.Common
 												sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 											else
 											{
-												sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+												sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
 												sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 												sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 												sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -491,17 +490,9 @@ namespace BizHawk.Client.Common
 
 									// todo: copy pasta from PSX .cue section
 									nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-									if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
-										nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
-									else
-									{
-										sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
-										sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
-										sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
-										sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
-										sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
-										nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
-									}
+									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+									game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
+									game.System = "PSX";
 
 									break;
 								default:
