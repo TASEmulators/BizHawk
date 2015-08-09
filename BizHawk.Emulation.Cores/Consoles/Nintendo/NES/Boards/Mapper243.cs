@@ -126,7 +126,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				int chr_bank = regs[4] | (regs[6] << 1) | (regs[2] << 3);
+				// FCEUX and Nintendulator do HLDD instead of HDDL
+				// THis pattern works and HDDL does not, Seems like the disch docs wrong so we are going with what works
+				int chr_bank = regs[4] << 2 | (regs[6]) | (regs[2] << 3);
+
 				return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
 			}
 			else
