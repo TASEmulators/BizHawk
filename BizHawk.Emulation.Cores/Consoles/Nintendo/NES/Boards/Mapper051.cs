@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("mode", ref _mode);
 		}
 
-		public override byte ReadPPU(int addr)
+		public override byte ReadWRAM(int addr)
 		{
 			int prgBank8k;
 			if ((_mode & 0x02) > 0)
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prgBank8k = ((_bank & 4) << 2) | 0x2F;
 			}
 
-			return ROM[(prgBank8k  * 0x2000) + addr];
+			return ROM[(prgBank8k * 0x2000) + addr];
 		}
 
 		public override byte ReadPRG(int addr)
@@ -80,10 +80,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		public override void WritePPU(int addr, byte value)
+		public override void WriteWRAM(int addr, byte value)
 		{
-			_mode = value & 0x012;
-			SyncMirroring();
+			if (addr < 0x2000)
+			{
+				_mode = value & 0x012;
+				SyncMirroring();
+			}
+			else
+			{
+				base.WriteWRAM(addr, value);
+			}
 		}
 
 		public override void WritePRG(int addr, byte value)
