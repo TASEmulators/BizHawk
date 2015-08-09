@@ -46,6 +46,14 @@
 
 //extern MDFNGI EmulatedPSX;
 
+int16 soundbuf[1024 * 1024]; //how big? big enough.
+int VTBackBuffer = 0;
+static MDFN_Rect VTDisplayRects[2];
+#include	"video/Deinterlacer.h"
+static bool PrevInterlaced;
+static Deinterlacer deint;
+static EmulateSpecStruct espec;
+
 namespace MDFN_IEN_PSX
 {
 
@@ -983,6 +991,8 @@ static void PSX_Power(bool powering_up)
  IRQ_Power();
 
  ForceEventUpdates(0);
+
+ deint.ClearState();
 }
 
 
@@ -1344,14 +1354,6 @@ EW_EXPORT s32 shock_PowerOff(void* psx)
 	return SHOCK_ERROR;
 }
 
-
-int16 soundbuf[1024*1024]; //how big? big enough.
-int VTBackBuffer = 0;
-static MDFN_Rect VTDisplayRects[2];
-#include	"video/Deinterlacer.h"
-static bool PrevInterlaced;
-static Deinterlacer deint;
-static EmulateSpecStruct espec;
 EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 {
 	//only eShockStep_Frame is supported
@@ -1377,6 +1379,13 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 
 	//not sure about this
 	espec.skip = s_ShockConfig.opts.skip;
+
+	if (s_ShockConfig.opts.deinterlaceMode == eShockDeinterlaceMode_Weave)
+		deint.SetType(Deinterlacer::DEINT_WEAVE);
+	if (s_ShockConfig.opts.deinterlaceMode == eShockDeinterlaceMode_Bob)
+		deint.SetType(Deinterlacer::DEINT_BOB);
+	if (s_ShockConfig.opts.deinterlaceMode == eShockDeinterlaceMode_BobOffset)
+		deint.SetType(Deinterlacer::DEINT_BOB_OFFSET);
 
 	//-------------------------
 
@@ -1442,6 +1451,57 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	return SHOCK_OK;
 }
 
+struct FramebufferCropInfo
+{
+	int width, height, xo, yo;
+};
+
+static void _shock_AnalyzeFramebufferCropInfo(int fbIndex, FramebufferCropInfo* info)
+{
+	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	//however, due to the dump_framebuffer, it may be incorrect at scanline 0. so lets use another one for the heuristic here
+	//you'd think we could use FirstLine instead of kScanlineWidthHeuristicIndex, but sometimes it hasnt been set (screen off) so it's confusing
+	int width = VTLineWidths[fbIndex][kScanlineWidthHeuristicIndex];
+	int height = espec.DisplayRect.h;
+	int yo = espec.DisplayRect.y;
+
+	//fix a common error here from disabled screens (?)
+	//I think we're lucky in selecting these lines kind of randomly. need a better plan.
+	if (width <= 0) width = VTLineWidths[fbIndex][0];
+
+	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
+	{
+		//printf("%d %d %d %d | %d | %d\n",yo,height, GPU->GetVertStart(), GPU->GetVertEnd(), espec.DisplayRect.y, GPU->FirstLine);
+
+		height = GPU->GetVertEnd() - GPU->GetVertStart();
+		yo = GPU->FirstLine;
+
+		if (espec.DisplayRect.h == 288 || espec.DisplayRect.h == 240)
+		{
+		}
+		else
+		{
+			height *= 2;
+			//only return even scanlines to avoid bouncing the interlacing
+			if (yo & 1) yo--;
+		}
+
+		//this can happen when the display turns on mid-frame
+		//maybe an off by one error here..?
+		if (yo + height >= espec.DisplayRect.h)
+			yo = espec.DisplayRect.h - height;
+
+		//sometimes when changing modes we have trouble..?
+		if (yo<0) yo = 0;
+	}
+
+	info->width = width;
+	info->height = height;
+	info->xo = 0;
+	info->yo = yo;
+}
+
+
 //`normalizes` the framebuffer to 700x480 by pixel doubling and wrecking the AR a little bit as needed
 void NormalizeFramebuffer()
 {
@@ -1470,14 +1530,15 @@ void NormalizeFramebuffer()
 	//NOTE: this approach is very redundant with the displaymanager AR tracking stuff
 	//however, it will help us avoid stressing the displaymanager (for example, a 700x240 will freak it out kind of. we could send it a much more sensible 700x480)
 
+	//always fetch description
+	FramebufferCropInfo cropInfo;
+	_shock_AnalyzeFramebufferCropInfo(0, &cropInfo);
+	int width = cropInfo.width;
+	int height = cropInfo.height;
 
-	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
-	int width = VTLineWidths[0][kScanlineWidthHeuristicIndex]; 
-	if(width <= 0) VTLineWidths[0][0];
-
-	int height = espec.DisplayRect.h;
 	int virtual_width = 800;
-	
+	int virtual_height = 480;
+
 	if (s_ShockConfig.opts.renderType == eShockRenderType_ClipOverscan)
 		virtual_width = 756;
 	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
@@ -1487,7 +1548,7 @@ void NormalizeFramebuffer()
 		virtual_width = 736;
 	}
 
-	int xs=1,ys=1,xm=0;
+	int xs=1,ys=1;
 
 	//I. as described above
 	//if(width == 280 && height == 240) {}
@@ -1509,28 +1570,53 @@ void NormalizeFramebuffer()
 	if(width > 400 && height <= 288) ys=2;
 	if(width <= 400 && height > 288) xs=2;
 	if(width > 400 && height > 288) {}
+	
 	//TODO - shrink it entirely if cropping. EDIT-any idea what this means? if you figure it out, just do it.
-	xm = (virtual_width-width*xs)/2;
+	
+	int xm = (virtual_width - width*xs) / 2;
+	int ym = (virtual_height - height*ys) / 2;
 
 	int curr = 0;
 
 	//1. double the height, while cropping down
-	if(ys==2) //should handle ntsc or pal, but not tested yet for pal
+	if(height != virtual_height)
 	{
 		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
 		uint32* dst = VTBuffer[curr^1]->pixels;
 		int tocopy = width*4;
-		for(int y=0;y<height;y++)
+
+		//float from top as needed
+		memset(dst, 0, ym*tocopy);
+		dst += width;
+
+		if(ys==2)
 		{
-			memcpy(dst,src,tocopy);
-			dst += width;
-			memcpy(dst,src,tocopy);
-			dst += width;
-			src += s_FramebufferCurrentWidth;
+			for(int y=0;y<height;y++)
+			{
+				memcpy(dst,src,tocopy);
+				dst += width;
+				memcpy(dst,src,tocopy);
+				dst += width;
+				src += s_FramebufferCurrentWidth;
+			}
+		}
+		else
+		{
+			for(int y=0;y<height;y++)
+			{
+				memcpy(dst, src, tocopy);
+				dst += width;
+				src += s_FramebufferCurrentWidth;
+			}
 		}
 
+
+		//fill bottom
+		int remaining_lines = virtual_height - ym - height*ys;
+		memset(dst, 0, remaining_lines*tocopy);
+
 		//patch up the metrics
-		height *= 2;
+		height = virtual_height; //we floated the content vertically, so this becomes the new height
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		espec.DisplayRect.h = height;
@@ -1571,7 +1657,8 @@ void NormalizeFramebuffer()
 			}
 
 			//float the content horizontally
-			for(int x=0;x<xm;x++)
+			int remaining_pixels = virtual_width - xm - width*xs;
+			for(int x=0;x<remaining_pixels;x++)
 				*dst++ = 0;
 		}
 
@@ -1600,6 +1687,7 @@ EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer)
 	return espec.SoundBufSize;
 }
 
+
 EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 {
 	//TODO - fastpath for emitting to the final framebuffer, although if we did that, we'd have to regenerate it every time
@@ -1616,40 +1704,16 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	int fbIndex = s_FramebufferCurrent;
 
 	//always fetch description
-	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
-	//however, due to the dump_framebuffer, it may be incorrect at scanline 0. so lets use another one for the heuristic here
-	//you'd think we could use FirstLine instead of kScanlineWidthHeuristicIndex, but sometimes it hasnt been set (screen off) so it's confusing
-	int width = VTLineWidths[fbIndex][kScanlineWidthHeuristicIndex];
-	int height = espec.DisplayRect.h;
-	int yo = espec.DisplayRect.y;
+	FramebufferCropInfo cropInfo;
+	_shock_AnalyzeFramebufferCropInfo(fbIndex, &cropInfo);
+	int width = cropInfo.width;
+	int height = cropInfo.height;
+	int yo = cropInfo.yo;
 
-	//fix a common error here from disabled screens (?)
-	//I think we're lucky in selecting these lines kind of randomly. need a better plan.
-	if(width <= 0) width = VTLineWidths[fbIndex][0];
-
-	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
+	//sloppy, but the above AnalyzeFramebufferCropInfo() will give us too short of a buffer
+	if(fb->flags & eShockFramebufferFlags_Normalize)
 	{
-		//printf("%d %d %d %d | %d | %d\n",yo,height, GPU->GetVertStart(), GPU->GetVertEnd(), espec.DisplayRect.y, GPU->FirstLine);
-
-		height = GPU->GetVertEnd() - GPU->GetVertStart();
-		yo = GPU->FirstLine;
-
-		if(espec.DisplayRect.h == 288 || espec.DisplayRect.h == 240)
-		{}
-		else
-		{
-			height *= 2;
-			//only return even scanlines to avoid bouncing the interlacing
-			if(yo&1) yo--;
-		}
-
-		//this can happen when the display turns on mid-frame
-		//maybe an off by one error here..?
-		if (yo + height >= espec.DisplayRect.h)
-			yo = espec.DisplayRect.h - height;
-
-		//sometimes when changing modes we have trouble..?
-		if (yo<0) yo = 0;
+		height = espec.DisplayRect.h;
 	}
 
 	fb->width = width;

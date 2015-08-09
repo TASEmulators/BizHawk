@@ -143,6 +143,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		System.Windows.Forms.Padding CalculateCompleteContentPadding(bool user, bool source)
+		{
+			var padding = new System.Windows.Forms.Padding();
+			
+			if(user)
+				padding += GameExtraPadding;
+
+			//an experimental feature
+			if(source)
+				if (Global.Emulator is BizHawk.Emulation.Cores.Sony.PSX.Octoshock)
+				{
+					var psx = Global.Emulator as BizHawk.Emulation.Cores.Sony.PSX.Octoshock;
+					var core_padding = psx.VideoProvider_Padding;
+					padding.Left += core_padding.Width / 2;
+					padding.Right += core_padding.Width - core_padding.Width / 2;
+					padding.Top += core_padding.Height / 2;
+					padding.Bottom += core_padding.Height - core_padding.Height / 2;
+				}
+
+			return padding;
+		}
+
 		FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize, bool includeOSD)
 		{
 			//select user special FX shader chain
@@ -183,18 +205,23 @@ namespace BizHawk.Client.EmuHawk
 			chain.AddFilter(fInput, "input");
 
 			//if a non-zero padding is required, add a filter to allow for that
-			if (GameExtraPadding.Vertical != 0 || GameExtraPadding.Horizontal != 0)
+			//note, we have two sources of padding right now.. one can come from the videoprovider and one from the user.
+			//we're combining these now and just using black, for sake of being lean, despite the discussion below:
+			//keep in mind, the videoprovider design in principle might call for another color.
+			//we havent really been using this very hard, but users will probably want black there (they could fill it to another color if needed tho)
+			var padding = CalculateCompleteContentPadding(true,true);
+			if (padding.Vertical != 0 || padding.Horizontal != 0)
 			{
-				//TODO - add another filter just for this, its cumebrsome to use final presentation... I think. but maybe theres enough similarities to justify it.
+				//TODO - add another filter just for this, its cumbersome to use final presentation... I think. but maybe theres enough similarities to justify it.
 				Size size = chain_insize;
-				size.Width += GameExtraPadding.Horizontal;
-				size.Height += GameExtraPadding.Vertical;
+				size.Width += padding.Horizontal;
+				size.Height += padding.Vertical;
 				Filters.FinalPresentation fPadding = new Filters.FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.GuiRenderer = Renderer;
 				fPadding.GL = GL;
 				fPadding.Config_PadOnly = true;
-				fPadding.Padding = GameExtraPadding;
+				fPadding.Padding = padding;
 			}
 
 			//add lua layer 'emu'
@@ -367,6 +394,14 @@ namespace BizHawk.Client.EmuHawk
 				virtualHeight = Global.Config.DispCustomUserARHeight;
 			}
 
+			var padding = CalculateCompleteContentPadding(true, false);
+			virtualWidth += padding.Horizontal;
+			virtualHeight += padding.Vertical;
+
+			padding = CalculateCompleteContentPadding(true, true);
+			bufferWidth += padding.Horizontal;
+			bufferHeight += padding.Vertical;
+
 			//Console.WriteLine("DISPZOOM " + zoom); //test
 
 			//old stuff
@@ -504,6 +539,10 @@ namespace BizHawk.Client.EmuHawk
 					vh = Global.Config.DispCustomUserARHeight;
 				}
 			}
+
+			var padding = CalculateCompleteContentPadding(true,false);
+			vw += padding.Horizontal;
+			vh += padding.Vertical;
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			

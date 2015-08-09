@@ -123,6 +123,13 @@ enum eRegion
  REGION_NONE = 3
 };
 
+enum eShockDeinterlaceMode
+{
+	eShockDeinterlaceMode_Weave,
+	eShockDeinterlaceMode_Bob,
+	eShockDeinterlaceMode_BobOffset
+};
+
 enum eShockStep
 {
 	eShockStep_Frame
@@ -288,6 +295,7 @@ struct ShockRenderOptions
 {
 	s32 scanline_start, scanline_end;
 	eShockRenderType renderType;
+	eShockDeinterlaceMode deinterlaceMode;
 	bool skip;
 };
 

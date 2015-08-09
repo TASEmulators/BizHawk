@@ -40,6 +40,10 @@ namespace BizHawk.Client.EmuHawk
 			rbClipBasic.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Basic;
 			rbClipToFramebuffer.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Framebuffer;
 
+			rbWeave.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.Weave;
+			rbBob.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.Bob;
+			rbBobOffset.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.BobOffset;
+
 			NTSC_FirstLineNumeric.Value = _settings.ScanlineStart_NTSC;
 			NTSC_LastLineNumeric.Value = _settings.ScanlineEnd_NTSC;
 			PAL_FirstLineNumeric.Value = _settings.ScanlineStart_PAL;
@@ -70,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			return result;
 		}
 
-		void SyncGuiToTheseSettings(Octoshock.Settings settings)
+		void SyncSettingsFromGui(Octoshock.Settings settings)
 		{
 			if (rbPixelPro.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
 			if (rbDebugMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.Debug;
@@ -80,6 +84,10 @@ namespace BizHawk.Client.EmuHawk
 			if (rbClipNone.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.None;
 			if (rbClipBasic.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Basic;
 			if (rbClipToFramebuffer.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Framebuffer;
+
+			if(rbWeave.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Weave;
+			if(rbBob.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Bob;
+			if(rbBobOffset.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.BobOffset;
 
 			settings.ScanlineStart_NTSC = (int)NTSC_FirstLineNumeric.Value;
 			settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
@@ -97,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.DispFinalFilter = 1; //bilinear, I hope
 			}
 
-			SyncGuiToTheseSettings(_settings);
+			SyncSettingsFromGui(_settings);
 			_settings.Validate();
 			GlobalWin.MainForm.PutCoreSettings(_settings);
 
@@ -117,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 		void SyncLabels()
 		{
 			var temp = _settings.Clone();
-			SyncGuiToTheseSettings(temp);
+			SyncSettingsFromGui(temp);
 			_settings.Validate();
 
 			//actually, I think this is irrelevant. But it's nice in case we want to do some kind of a more detailed simulation later
@@ -125,16 +133,16 @@ namespace BizHawk.Client.EmuHawk
 			int h = _previewVideoSize.Height;
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
-			var size = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", string.Format("{0}x{1}", size.Width, size.Height)); ;
+			var ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
+			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height)); ;
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
-			size = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblMednafen.Text = lblMednafen_text.Replace("320x240", string.Format("{0}x{1}", size.Width, size.Height));
+			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
+			lblMednafen.Text = lblMednafen_text.Replace("320x240", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height));
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
-			size = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", string.Format("{0}x{1}", size.Width, size.Height));
+			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
+			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height));
 		}
 
 		private void DrawingArea_ValueChanged(object sender, EventArgs e)
@@ -172,5 +180,7 @@ But: 1. we think we improved on it a tiny bit with the tweaked mode
 And: 2. It's not suitable for detailed scrutinizing of graphics
 ");
 		}
+
+
 	}
 }

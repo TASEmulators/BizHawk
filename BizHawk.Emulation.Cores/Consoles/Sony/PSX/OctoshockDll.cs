@@ -89,6 +89,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Framebuffer
 		};
 
+		public enum eShockDeinterlaceMode : int
+		{
+			Weave,
+			Bob,
+			BobOffset
+		}
+
 		public const int SHOCK_OK = 0;
 		public const int SHOCK_FALSE = 0;
 		public const int SHOCK_TRUE = 1;
@@ -134,6 +141,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			public int scanline_start, scanline_end;
 			public eShockRenderType renderType;
+			public eShockDeinterlaceMode deinterlaceMode;
 			public bool skip;
 		};
 

@@ -44,6 +44,10 @@
 			this.lblPixelPro = new System.Windows.Forms.Label();
 			this.rbPixelPro = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.rbClipNone = new System.Windows.Forms.RadioButton();
+			this.rbClipToFramebuffer = new System.Windows.Forms.RadioButton();
+			this.rbClipBasic = new System.Windows.Forms.RadioButton();
 			this.lblPAL = new System.Windows.Forms.Label();
 			this.PAL_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.PAL_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
@@ -54,25 +58,25 @@
 			this.NTSC_LastLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.NTSC_FirstLineNumeric = new System.Windows.Forms.NumericUpDown();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbClipBasic = new System.Windows.Forms.RadioButton();
-			this.rbClipToFramebuffer = new System.Windows.Forms.RadioButton();
-			this.rbClipNone = new System.Windows.Forms.RadioButton();
-			this.label2 = new System.Windows.Forms.Label();
+			this.rbWeave = new System.Windows.Forms.RadioButton();
+			this.rbBobOffset = new System.Windows.Forms.RadioButton();
+			this.rbBob = new System.Windows.Forms.RadioButton();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
-			this.groupBox3.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(622, 262);
+			this.btnCancel.Location = new System.Drawing.Point(622, 309);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 3;
@@ -82,7 +86,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(541, 262);
+			this.btnOk.Location = new System.Drawing.Point(541, 309);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 2;
@@ -104,7 +108,7 @@
 			this.groupBox1.Controls.Add(this.rbPixelPro);
 			this.groupBox1.Location = new System.Drawing.Point(12, 7);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(474, 278);
+			this.groupBox1.Size = new System.Drawing.Size(474, 293);
 			this.groupBox1.TabIndex = 6;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Resolution Management";
@@ -112,7 +116,7 @@
 			// linkLabel1
 			// 
 			this.linkLabel1.AutoSize = true;
-			this.linkLabel1.Location = new System.Drawing.Point(327, 248);
+			this.linkLabel1.Location = new System.Drawing.Point(326, 254);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(53, 13);
 			this.linkLabel1.TabIndex = 29;
@@ -163,7 +167,7 @@
 			// btnNiceDisplayConfig
 			// 
 			this.btnNiceDisplayConfig.AutoSize = true;
-			this.btnNiceDisplayConfig.Location = new System.Drawing.Point(146, 238);
+			this.btnNiceDisplayConfig.Location = new System.Drawing.Point(145, 244);
 			this.btnNiceDisplayConfig.Name = "btnNiceDisplayConfig";
 			this.btnNiceDisplayConfig.Size = new System.Drawing.Size(173, 23);
 			this.btnNiceDisplayConfig.TabIndex = 24;
@@ -225,15 +229,68 @@
 			this.groupBox2.Controls.Add(this.NTSC_FirstLineNumeric);
 			this.groupBox2.Location = new System.Drawing.Point(492, 7);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(212, 245);
+			this.groupBox2.Size = new System.Drawing.Size(212, 239);
 			this.groupBox2.TabIndex = 31;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Drawing Area";
 			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.rbClipNone);
+			this.groupBox3.Controls.Add(this.rbClipToFramebuffer);
+			this.groupBox3.Controls.Add(this.rbClipBasic);
+			this.groupBox3.Location = new System.Drawing.Point(7, 131);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(197, 88);
+			this.groupBox3.TabIndex = 46;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Horizontal Overscan Clipping";
+			// 
+			// rbClipNone
+			// 
+			this.rbClipNone.AutoSize = true;
+			this.rbClipNone.Location = new System.Drawing.Point(6, 19);
+			this.rbClipNone.Name = "rbClipNone";
+			this.rbClipNone.Size = new System.Drawing.Size(51, 17);
+			this.rbClipNone.TabIndex = 48;
+			this.rbClipNone.TabStop = true;
+			this.rbClipNone.Text = "None";
+			this.toolTip1.SetToolTip(this.rbClipNone, resources.GetString("rbClipNone.ToolTip"));
+			this.rbClipNone.UseVisualStyleBackColor = true;
+			this.rbClipNone.CheckedChanged += new System.EventHandler(this.rbClipNone_CheckedChanged);
+			// 
+			// rbClipToFramebuffer
+			// 
+			this.rbClipToFramebuffer.AutoSize = true;
+			this.rbClipToFramebuffer.Location = new System.Drawing.Point(6, 65);
+			this.rbClipToFramebuffer.Name = "rbClipToFramebuffer";
+			this.rbClipToFramebuffer.Size = new System.Drawing.Size(117, 17);
+			this.rbClipToFramebuffer.TabIndex = 47;
+			this.rbClipToFramebuffer.TabStop = true;
+			this.rbClipToFramebuffer.Text = "Clip To Framebuffer";
+			this.toolTip1.SetToolTip(this.rbClipToFramebuffer, "Subverts mednafen\'s internal video display field emulation to show only the game\'" +
+        "s framebuffer.\r\nHorizontal letterbox bars may be re-added in Mednafen-style reso" +
+        "lution modes to maintain correct AR.");
+			this.rbClipToFramebuffer.UseVisualStyleBackColor = true;
+			this.rbClipToFramebuffer.CheckedChanged += new System.EventHandler(this.rbClipToFramebuffer_CheckedChanged);
+			// 
+			// rbClipBasic
+			// 
+			this.rbClipBasic.AutoSize = true;
+			this.rbClipBasic.Location = new System.Drawing.Point(6, 42);
+			this.rbClipBasic.Name = "rbClipBasic";
+			this.rbClipBasic.Size = new System.Drawing.Size(91, 17);
+			this.rbClipBasic.TabIndex = 46;
+			this.rbClipBasic.TabStop = true;
+			this.rbClipBasic.Text = "Basic Clipping";
+			this.toolTip1.SetToolTip(this.rbClipBasic, "A mednafen option -- appears to be 5.5% horizontally");
+			this.rbClipBasic.UseVisualStyleBackColor = true;
+			this.rbClipBasic.CheckedChanged += new System.EventHandler(this.rbClipHorizontal_CheckedChanged);
+			// 
 			// lblPAL
 			// 
 			this.lblPAL.AutoSize = true;
-			this.lblPAL.Location = new System.Drawing.Point(131, 22);
+			this.lblPAL.Location = new System.Drawing.Point(131, 17);
 			this.lblPAL.Name = "lblPAL";
 			this.lblPAL.Size = new System.Drawing.Size(27, 13);
 			this.lblPAL.TabIndex = 44;
@@ -241,7 +298,7 @@
 			// 
 			// PAL_LastLineNumeric
 			// 
-			this.PAL_LastLineNumeric.Location = new System.Drawing.Point(124, 67);
+			this.PAL_LastLineNumeric.Location = new System.Drawing.Point(124, 62);
 			this.PAL_LastLineNumeric.Maximum = new decimal(new int[] {
             287,
             0,
@@ -259,7 +316,7 @@
 			// 
 			// PAL_FirstLineNumeric
 			// 
-			this.PAL_FirstLineNumeric.Location = new System.Drawing.Point(124, 41);
+			this.PAL_FirstLineNumeric.Location = new System.Drawing.Point(124, 36);
 			this.PAL_FirstLineNumeric.Maximum = new decimal(new int[] {
             287,
             0,
@@ -273,7 +330,7 @@
 			// lblNTSC
 			// 
 			this.lblNTSC.AutoSize = true;
-			this.lblNTSC.Location = new System.Drawing.Point(62, 22);
+			this.lblNTSC.Location = new System.Drawing.Point(62, 17);
 			this.lblNTSC.Name = "lblNTSC";
 			this.lblNTSC.Size = new System.Drawing.Size(36, 13);
 			this.lblNTSC.TabIndex = 41;
@@ -281,9 +338,9 @@
 			// 
 			// btnAreaFull
 			// 
-			this.btnAreaFull.Location = new System.Drawing.Point(6, 98);
+			this.btnAreaFull.Location = new System.Drawing.Point(8, 94);
 			this.btnAreaFull.Name = "btnAreaFull";
-			this.btnAreaFull.Size = new System.Drawing.Size(136, 23);
+			this.btnAreaFull.Size = new System.Drawing.Size(163, 23);
 			this.btnAreaFull.TabIndex = 40;
 			this.btnAreaFull.Text = "Full [0,239] and [0,287]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
@@ -292,7 +349,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(4, 69);
+			this.label4.Location = new System.Drawing.Point(4, 64);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(49, 13);
 			this.label4.TabIndex = 24;
@@ -301,7 +358,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(5, 43);
+			this.label1.Location = new System.Drawing.Point(5, 38);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(48, 13);
 			this.label1.TabIndex = 23;
@@ -309,7 +366,7 @@
 			// 
 			// NTSC_LastLineNumeric
 			// 
-			this.NTSC_LastLineNumeric.Location = new System.Drawing.Point(59, 67);
+			this.NTSC_LastLineNumeric.Location = new System.Drawing.Point(59, 62);
 			this.NTSC_LastLineNumeric.Maximum = new decimal(new int[] {
             239,
             0,
@@ -327,7 +384,7 @@
 			// 
 			// NTSC_FirstLineNumeric
 			// 
-			this.NTSC_FirstLineNumeric.Location = new System.Drawing.Point(59, 41);
+			this.NTSC_FirstLineNumeric.Location = new System.Drawing.Point(59, 36);
 			this.NTSC_FirstLineNumeric.Maximum = new decimal(new int[] {
             239,
             0,
@@ -338,67 +395,54 @@
 			this.NTSC_FirstLineNumeric.TabIndex = 21;
 			this.NTSC_FirstLineNumeric.ValueChanged += new System.EventHandler(this.DrawingArea_ValueChanged);
 			// 
-			// groupBox3
+			// rbWeave
 			// 
-			this.groupBox3.Controls.Add(this.label2);
-			this.groupBox3.Controls.Add(this.rbClipNone);
-			this.groupBox3.Controls.Add(this.rbClipToFramebuffer);
-			this.groupBox3.Controls.Add(this.rbClipBasic);
-			this.groupBox3.Location = new System.Drawing.Point(7, 132);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(197, 106);
-			this.groupBox3.TabIndex = 46;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Horizontal Overscan Clipping";
+			this.rbWeave.AutoSize = true;
+			this.rbWeave.Location = new System.Drawing.Point(6, 19);
+			this.rbWeave.Name = "rbWeave";
+			this.rbWeave.Size = new System.Drawing.Size(60, 17);
+			this.rbWeave.TabIndex = 48;
+			this.rbWeave.TabStop = true;
+			this.rbWeave.Text = "Weave";
+			this.toolTip1.SetToolTip(this.rbWeave, "Good for low-motion video");
+			this.rbWeave.UseVisualStyleBackColor = true;
 			// 
-			// rbClipBasic
+			// rbBobOffset
 			// 
-			this.rbClipBasic.AutoSize = true;
-			this.rbClipBasic.Location = new System.Drawing.Point(6, 42);
-			this.rbClipBasic.Name = "rbClipBasic";
-			this.rbClipBasic.Size = new System.Drawing.Size(91, 17);
-			this.rbClipBasic.TabIndex = 46;
-			this.rbClipBasic.TabStop = true;
-			this.rbClipBasic.Text = "Basic Clipping";
-			this.toolTip1.SetToolTip(this.rbClipBasic, "A mednafen option -- appears to be 5.5% horizontally");
-			this.rbClipBasic.UseVisualStyleBackColor = true;
-			this.rbClipBasic.CheckedChanged += new System.EventHandler(this.rbClipHorizontal_CheckedChanged);
+			this.rbBobOffset.AutoSize = true;
+			this.rbBobOffset.Location = new System.Drawing.Point(122, 19);
+			this.rbBobOffset.Name = "rbBobOffset";
+			this.rbBobOffset.Size = new System.Drawing.Size(75, 17);
+			this.rbBobOffset.TabIndex = 47;
+			this.rbBobOffset.TabStop = true;
+			this.rbBobOffset.Text = "Bob Offset";
+			this.toolTip1.SetToolTip(this.rbBobOffset, "Good for high-motion video, but is a bit flickery; reduces the subjective vertica" +
+        "l resolution.");
+			this.rbBobOffset.UseVisualStyleBackColor = true;
 			// 
-			// rbClipToFramebuffer
+			// rbBob
 			// 
-			this.rbClipToFramebuffer.AutoSize = true;
-			this.rbClipToFramebuffer.Location = new System.Drawing.Point(6, 65);
-			this.rbClipToFramebuffer.Name = "rbClipToFramebuffer";
-			this.rbClipToFramebuffer.Size = new System.Drawing.Size(117, 17);
-			this.rbClipToFramebuffer.TabIndex = 47;
-			this.rbClipToFramebuffer.TabStop = true;
-			this.rbClipToFramebuffer.Text = "Clip To Framebuffer";
-			this.toolTip1.SetToolTip(this.rbClipToFramebuffer, "Subverts mednafen\'s internal video display field emulation to show only the game\'" +
-        "s framebuffer.");
-			this.rbClipToFramebuffer.UseVisualStyleBackColor = true;
-			this.rbClipToFramebuffer.CheckedChanged += new System.EventHandler(this.rbClipToFramebuffer_CheckedChanged);
+			this.rbBob.AutoSize = true;
+			this.rbBob.Location = new System.Drawing.Point(72, 19);
+			this.rbBob.Name = "rbBob";
+			this.rbBob.Size = new System.Drawing.Size(44, 17);
+			this.rbBob.TabIndex = 46;
+			this.rbBob.TabStop = true;
+			this.rbBob.Text = "Bob";
+			this.toolTip1.SetToolTip(this.rbBob, "Good for causing a headache. All glory to Bob.");
+			this.rbBob.UseVisualStyleBackColor = true;
 			// 
-			// rbClipNone
+			// groupBox4
 			// 
-			this.rbClipNone.AutoSize = true;
-			this.rbClipNone.Location = new System.Drawing.Point(6, 19);
-			this.rbClipNone.Name = "rbClipNone";
-			this.rbClipNone.Size = new System.Drawing.Size(51, 17);
-			this.rbClipNone.TabIndex = 48;
-			this.rbClipNone.TabStop = true;
-			this.rbClipNone.Text = "None";
-			this.toolTip1.SetToolTip(this.rbClipNone, resources.GetString("rbClipNone.ToolTip"));
-			this.rbClipNone.UseVisualStyleBackColor = true;
-			this.rbClipNone.CheckedChanged += new System.EventHandler(this.rbClipNone_CheckedChanged);
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(29, 83);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(79, 13);
-			this.label2.TabIndex = 49;
-			this.label2.Text = "(and break AR)";
+			this.groupBox4.Controls.Add(this.rbWeave);
+			this.groupBox4.Controls.Add(this.rbBobOffset);
+			this.groupBox4.Controls.Add(this.rbBob);
+			this.groupBox4.Location = new System.Drawing.Point(492, 251);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(212, 49);
+			this.groupBox4.TabIndex = 50;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Deinterlacing";
 			// 
 			// PSXOptions
 			// 
@@ -406,7 +450,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(713, 297);
+			this.ClientSize = new System.Drawing.Size(713, 344);
+			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
@@ -420,12 +465,14 @@
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_LastLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.PAL_FirstLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).EndInit();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -460,6 +507,9 @@
 		private System.Windows.Forms.RadioButton rbClipNone;
 		private System.Windows.Forms.RadioButton rbClipToFramebuffer;
 		private System.Windows.Forms.RadioButton rbClipBasic;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.RadioButton rbWeave;
+		private System.Windows.Forms.RadioButton rbBobOffset;
+		private System.Windows.Forms.RadioButton rbBob;
 	}
 }

@@ -39,13 +39,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private void SetControllerButtons()
 		{
 			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = _SyncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad) 
+			ControllerDefinition.Name = _SyncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad)
 				? "PSX Gamepad Controller"
 				: "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
 
 			ControllerDefinition.BoolButtons.Clear();
 			ControllerDefinition.FloatControls.Clear();
-			
+
 			for (int i = 0; i < _SyncSettings.Controllers.Length; i++)
 			{
 				if (_SyncSettings.Controllers[i].IsConnected)
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ControllerDefinition.FloatRanges.Add(
 				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
-				new[] {0f,1f,1f} 
+				new[] { 0f, 1f, 1f }
 			);
 		}
 
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public OctoshockDll.eRegion SystemRegion { get; private set; }
 		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
 		public System.Drawing.Size CurrentVideoSize { get; private set; }
-		
+
 		public bool CurrentTrayOpen { get; private set; }
 		public int CurrentDiscIndexMounted { get; private set; }
 
@@ -327,9 +327,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					BufferHeight = 288;
 				}
 				CurrentVideoSize = new System.Drawing.Size(BufferWidth, BufferHeight);
-				var size = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
-				BufferWidth = VirtualWidth = size.Width;
-				BufferHeight = VirtualHeight = size.Height;
+				var ri = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
+				BufferWidth = VirtualWidth = ri.Resolution.Width;
+				BufferHeight = VirtualHeight = ri.Resolution.Height;
+				//VideoProvider_Padding = new System.Drawing.Size(50,50);
 				frameBuffer = new int[BufferWidth * BufferHeight];
 			}
 
@@ -354,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			else
 			{
 				//must be a psf
-				if(psf.LibData != null)
+				if (psf.LibData != null)
 					fixed (byte* pBuf = psf.LibData)
 						OctoshockDll.shock_MountEXE(psx, pBuf, psf.LibData.Length, true);
 				fixed (byte* pBuf = psf.Data)
@@ -369,7 +370,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//setup the controller based on sync settings
 			SetControllerButtons();
 
-			var lookup = new Dictionary<ControllerSetting.ControllerType,OctoshockDll.ePeripheralType> {
+			var lookup = new Dictionary<ControllerSetting.ControllerType, OctoshockDll.ePeripheralType> {
 				{ ControllerSetting.ControllerType.Gamepad, OctoshockDll.ePeripheralType.Pad },
 				{ ControllerSetting.ControllerType.DualAnalog, OctoshockDll.ePeripheralType.DualAnalog },
 				{ ControllerSetting.ControllerType.DualShock, OctoshockDll.ePeripheralType.DualShock },
@@ -482,12 +483,21 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 		}
 
+		public class ResolutionInfo
+		{
+			public System.Drawing.Size Resolution, Padding;
+			public System.Drawing.Size Total { get { return System.Drawing.Size.Add(Resolution, Padding); } }
+		}
+
 		/// <summary>
 		/// Calculates what the output resolution would be for the given input resolution and settings
 		/// </summary>
-		public static System.Drawing.Size CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
+		public static ResolutionInfo CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
 		{
+			ResolutionInfo ret = new ResolutionInfo();
+
 			//some of this logic is duplicated in the c++ side, be sure to check there
+			//TODO - scanline control + framebuffer mode is majorly broken
 
 			int virtual_width = 800;
 			if (settings.HorizontalClipping == eHorizontalClipping.Basic) virtual_width = 768;
@@ -496,39 +506,105 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			int scanline_start = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineStart_NTSC : settings.ScanlineStart_PAL;
 			int scanline_end = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineEnd_NTSC : settings.ScanlineEnd_PAL;
 			int scanline_num = scanline_end - scanline_start + 1;
+			//int scanline_num = h; // I wanted to do this, but our logic for mednafen modes here is based on un-doubled resolution. i could do a hack to divide it by 2 though
 			int real_scanline_num = standard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
 
 			int VirtualWidth=-1, VirtualHeight=-1;
 			switch (settings.ResolutionMode)
 			{
-				case eResolutionMode.Debug:
-					VirtualWidth = w;
-					VirtualHeight = h;
-					break;
 				case eResolutionMode.Mednafen:
-					VirtualWidth = 320;
-					if (settings.HorizontalClipping == eHorizontalClipping.Basic)
-						VirtualWidth = 302;
-					//? not sure what this should be
-					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
-						VirtualWidth = 320;
+
+					//mednafen uses 320xScanlines as the 1x size
+					//it does change the 1x width when doing basic clipping.
+					//and it does easily change the height when doing scanline removal.
+					//now, our framebuffer cropping mode is more complex...
+					VirtualWidth = (standard == OctoshockDll.eVidStandard.NTSC) ? 320 : 363;
 					VirtualHeight = scanline_num;
+
+					if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+						VirtualWidth = (standard == OctoshockDll.eVidStandard.NTSC) ? 302 : 384;
+
+					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+					{
+						//mednafen typically sends us a framebuffer with overscan. 350x240 is a nominal example here. it's squished inward to 320x240 for correct PAR.
+						//ok: here we have a framebuffer without overscan. 320x240 nominal. So the VirtualWidth of what we got is off by a factor of 109.375%
+						//so a beginning approach would be this:
+						//VirtualWidth = (int)(VirtualWidth * 320.0f / 350);
+						//but that will shrink things which are already annoyingly shrunken. 
+						//therefore, lets do that, but then scale the whole window by the same factor so the width becomes unscaled and now the height is scaled up!
+						//weird, huh?
+						VirtualHeight = (int)(VirtualHeight * 350.0f / 320);
+
+						//now unfortunately we may have lost vertical pixels. common in the case of PAL (rendering 256 on a field of 288)
+						//therefore we'll be stretching way too much vertically here. 
+						//lets add those pixels back with a new hack
+						if (standard == OctoshockDll.eVidStandard.PAL)
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 576 - h);
+							else ret.Padding = new System.Drawing.Size(0, 288 - h);
+						}
+						else
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 480 - h);
+							else ret.Padding = new System.Drawing.Size(0, 240 - h);
+						}
+					}
 					break;
+
+				//384 / 288 = 1.3333333333333333333333333333333
+
+				case eResolutionMode.TweakedMednafen:
+
+					if (standard == OctoshockDll.eVidStandard.NTSC)
+					{
+						//dont make this 430, it's already been turned into 400 from 368+30 and then some fudge factor
+						VirtualWidth = 400;
+						VirtualHeight = (int)(scanline_num * 300.0f / 240);
+						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+							VirtualWidth = 378;
+					}
+					else
+					{
+						//this is a bit tricky. we know we want 400 for the virtualwidth. 
+						VirtualWidth = 400;
+						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+							VirtualWidth = 378;
+						//I'll be honest, I was just guessing here mostly
+						//I need the AR to basically work out to be 363/288 (thats what it was in mednafen mode) so...
+						VirtualHeight = (int)(scanline_num * (400.0f/363*288) / 288);
+					}
+
+					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+					{
+						//see discussion above
+						VirtualHeight = (int)(VirtualHeight * 350.0f / 320);
+
+						if (standard == OctoshockDll.eVidStandard.PAL)
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 576 - h);
+							else ret.Padding = new System.Drawing.Size(0, 288 - h);
+						}
+						else
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 480 - h);
+							else ret.Padding = new System.Drawing.Size(0, 240 - h);
+						}
+					}
+					break;
+
 				case eResolutionMode.PixelPro:
 					VirtualWidth = virtual_width;
 					VirtualHeight = scanline_num * 2;
 					break;
-				case eResolutionMode.TweakedMednafen:
-					VirtualWidth = 400;
-					if (settings.HorizontalClipping == eHorizontalClipping.Basic)
-						VirtualWidth = 378;
-					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
-					  VirtualWidth = 400;
-					VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
+
+				case eResolutionMode.Debug:
+					VirtualWidth = w;
+					VirtualHeight = h;
 					break;
 			}
 
-			return new System.Drawing.Size(VirtualWidth, VirtualHeight);
+			ret.Resolution = new System.Drawing.Size(VirtualWidth, VirtualHeight);
+			return ret;
 		}
 
 		void PokeDisc()
@@ -551,7 +627,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//if tray open is requested, and valid, apply it
 			//in the first frame, go ahead and open it up so we have a chance to put a disc in it
-			if (Controller["Open"] && !CurrentTrayOpen || Frame==0)
+			if (Controller["Open"] && !CurrentTrayOpen || Frame == 0)
 			{
 				OctoshockDll.shock_OpenTray(psx);
 				CurrentTrayOpen = true;
@@ -624,6 +700,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (_Settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
 				ropts.renderType = OctoshockDll.eShockRenderType.Framebuffer;
 
+			if (_Settings.DeinterlaceMode == eDeinterlaceMode.Weave) ropts.deinterlaceMode = OctoshockDll.eShockDeinterlaceMode.Weave;
+			if (_Settings.DeinterlaceMode == eDeinterlaceMode.Bob) ropts.deinterlaceMode = OctoshockDll.eShockDeinterlaceMode.Bob;
+			if (_Settings.DeinterlaceMode == eDeinterlaceMode.BobOffset) ropts.deinterlaceMode = OctoshockDll.eShockDeinterlaceMode.BobOffset;
+
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			//prep tracer
@@ -668,9 +748,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BufferWidth = w;
 			BufferHeight = h;
 
-			var size = CalculateResolution(this.SystemVidStandard, _Settings, w, h);
-			VirtualWidth = size.Width;
-			VirtualHeight = size.Height;
+			var ri = CalculateResolution(this.SystemVidStandard, _Settings, w, h);
+			VirtualWidth = ri.Resolution.Width;
+			VirtualHeight = ri.Resolution.Height;
+			VideoProvider_Padding = ri.Padding;
 
 			int len = w * h;
 			if (frameBuffer.Length != len)
@@ -709,6 +790,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
+		public System.Drawing.Size VideoProvider_Padding { get; private set; }
 
 		#region Debugging
 
@@ -876,7 +958,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
-			savebuff2 = new byte[savebuff.Length + 4+  4+4+1+1+4];
+			savebuff2 = new byte[savebuff.Length + 4 + 4 + 4 + 1 + 1 + 4];
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -1019,6 +1101,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			Framebuffer
 		}
 
+		public enum eDeinterlaceMode
+		{
+			Weave,
+			Bob,
+			BobOffset
+		}
+
 		public class Settings
 		{
 			[DisplayName("Resolution Mode")]
@@ -1046,6 +1135,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[DefaultValue(287)]
 			public int ScanlineEnd_PAL { get; set; }
 
+			[DisplayName("DeinterlaceMode")]
+			[DefaultValue(eDeinterlaceMode.Weave)]
+			public eDeinterlaceMode DeinterlaceMode { get; set; }
 
 			public void Validate()
 			{
@@ -1053,7 +1145,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (ScanlineStart_PAL < 0) ScanlineStart_PAL = 0;
 				if (ScanlineEnd_NTSC > 239) ScanlineEnd_NTSC = 239;
 				if (ScanlineEnd_PAL > 287) ScanlineEnd_PAL = 287;
-				
+
 				//make sure theyre not in the wrong order
 				if (ScanlineEnd_NTSC < ScanlineStart_NTSC)
 				{
