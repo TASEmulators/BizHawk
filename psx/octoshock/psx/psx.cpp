@@ -33,10 +33,11 @@
 #include "input/dualanalog.h"
 #include "input/gamepad.h"
 
-//#include <mednafen/PSFLoader.h>
-
 #include <stdarg.h>
 #include <ctype.h>
+
+//I apologize for the absolute madness of the resolution management and framebuffer management and normalizing in here.
+//It's grown entirely out of control. The main justification for the original design was not wrecking mednafen internals too much.
 
 //we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
 #define FB_WIDTH 800
@@ -1502,7 +1503,7 @@ static void _shock_AnalyzeFramebufferCropInfo(int fbIndex, FramebufferCropInfo* 
 }
 
 
-//`normalizes` the framebuffer to 700x480 by pixel doubling and wrecking the AR a little bit as needed
+//`normalizes` the framebuffer to 700x480 (or 800x576 for PAL) by pixel doubling and wrecking the AR a little bit as needed
 void NormalizeFramebuffer()
 {
 	//mednafen's advised solution for smooth gaming: "scale the output width to z * nominal_width, and the output height to z * nominal_height, where nominal_width and nominal_height are members of the MDFNGI struct"
@@ -1538,6 +1539,8 @@ void NormalizeFramebuffer()
 
 	int virtual_width = 800;
 	int virtual_height = 480;
+	if (GPU->HardwarePALType)
+		virtual_height = 576;
 
 	if (s_ShockConfig.opts.renderType == eShockRenderType_ClipOverscan)
 		virtual_width = 756;
@@ -1581,13 +1584,13 @@ void NormalizeFramebuffer()
 	//1. double the height, while cropping down
 	if(height != virtual_height)
 	{
-		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
+		uint32* src = VTBuffer[curr]->pixels + (s_FramebufferCurrentWidth * (espec.DisplayRect.y + cropInfo.yo)) + espec.DisplayRect.x; //?
 		uint32* dst = VTBuffer[curr^1]->pixels;
 		int tocopy = width*4;
 
 		//float from top as needed
 		memset(dst, 0, ym*tocopy);
-		dst += width;
+		dst += width * ym;
 
 		if(ys==2)
 		{
@@ -1714,11 +1717,12 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	if(fb->flags & eShockFramebufferFlags_Normalize)
 	{
 		height = espec.DisplayRect.h;
+		yo = 0;
 	}
 
 	fb->width = width;
 	fb->height = height;
-
+		
 	//is that all we needed?
 	if(fb->ptr == NULL)
 	{

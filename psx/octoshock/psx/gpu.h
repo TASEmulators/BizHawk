@@ -326,7 +326,9 @@ class PS_GPU
  MDFN_Rect *DisplayRect;
  int32 *LineWidths;
  bool skip;
+ public:
  bool HardwarePALType;
+ private:
  int LineVisFirst, LineVisLast;
 
  uint32 OutputLUT[384];
