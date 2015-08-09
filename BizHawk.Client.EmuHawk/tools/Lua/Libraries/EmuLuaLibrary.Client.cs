@@ -152,6 +152,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"SetGameExtraPadding",
+			"Sets the extra padding added to the 'emu' surface so that you can draw HUD elements in predictable placements"
+		)]
+		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
+		{
+			GlobalWin.DisplayManager.GameExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
+			GlobalWin.MainForm.FrameBufferResized();
+		}
+
+		[LuaMethodAttributes(
 			"ispaused",
 			"Returns true if emulator is paused, otherwise, false"
 		)]
