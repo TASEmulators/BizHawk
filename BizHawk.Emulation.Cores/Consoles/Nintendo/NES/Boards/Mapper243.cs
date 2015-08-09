@@ -4,52 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper243 : NES.NESBoardBase
 	{
-		/*
-			Here are Disch's original notes:  
-		========================
-		=  Mapper 243          =
-		========================
-
-
-		Example Games:
-		--------------------------
-		Honey
-		Poker III 5-in-1
-
-
-		Registers:
-		---------------------------
-
-		Range,Mask:   $4020-4FFF, $4101
-
-		$4100:  [.... .AAA]   Address for use with $4101
-
-		$4101:   Data port
-		R:2 -> [.... ...H]  High bit of CHR reg
-		R:4 -> [.... ...L]  Low bit of CHR reg
-		R:5 -> [.... .PPP]  PRG reg  (32k @ $8000)
-		R:6 -> [.... ..DD]  Middle bits of CHR reg
-		R:7 -> [.... .MM.]  Mirroring
-			%00 = Horz
-			%01 = Vert
-			%10 = See below
-			%11 = 1ScB
-
-
-		Mirroring:
-		---------------------------
-
-		Mirroing mode %10 is not quite 1ScB:
-
-		[  NTA  ][  NTB  ]
-		[  NTB  ][  NTB  ]
-
-
-		CHR Setup:
-		---------------------------
-
-		8k CHR page @ $0000 is selected by the given 4 bit CHR page number ('HDDL')
-		*/
+		// http://wiki.nesdev.com/w/index.php/INES_Mapper_243
 
 		int reg_addr;
 		ByteBuffer regs = new ByteBuffer(8);
@@ -126,8 +81,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				// FCEUX and Nintendulator do HLDD instead of HDDL
-				// THis pattern works and HDDL does not, Seems like the disch docs wrong so we are going with what works
 				int chr_bank = regs[4] << 2 | (regs[6]) | (regs[2] << 3);
 
 				return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
