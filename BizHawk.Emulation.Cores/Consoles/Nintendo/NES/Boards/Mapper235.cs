@@ -67,13 +67,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if ((_reg & 0x400) > 0)
 			{
-				// TODO
-				SetMirrorType(EMirrorType.Horizontal); // TODO: which one is which?
+				SetMirrorType(EMirrorType.Horizontal);
 			}
 			else
 			{
-				// TODO
-				SetMirrorType(EMirrorType.Vertical);
+				int type = ((_reg >> 13) & 1) ^ 1;
+
+				if (type == 0)
+				{
+					SetMirrorType(EMirrorType.Horizontal);
+				}
+				else
+				{
+					SetMirrorType(EMirrorType.Vertical);
+				}
 			}
 		}
 	}
