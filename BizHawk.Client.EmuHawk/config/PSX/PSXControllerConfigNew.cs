@@ -66,26 +66,31 @@ namespace BizHawk.Client.EmuHawk
 			lbl_p_2_3.Visible = b2;
 			lbl_p_2_4.Visible = b2;
 
-			int id = 1;
-			List<int> Assignments = new List<int>();
-			if (combo_1_1.SelectedIndex == 0) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_1_2.SelectedIndex == 0 || !multitap_1) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_1_3.SelectedIndex == 0 || !multitap_1) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_1_4.SelectedIndex == 0 || !multitap_1) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_2_1.SelectedIndex == 0) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_2_2.SelectedIndex == 0 || !multitap_2) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_2_3.SelectedIndex == 0 || !multitap_2) Assignments.Add(-1); else Assignments.Add(id++);
-			if (combo_2_4.SelectedIndex == 0 || !multitap_2) Assignments.Add(-1); else Assignments.Add(id++);
+			OctoshockControlUserConfig uc = new OctoshockControlUserConfig();
+			
+			uc.Multitaps[0] = multitap_1;
+			uc.Multitaps[1] = multitap_2;
+
+			var combos = new[] { combo_1_1, combo_1_2, combo_1_3, combo_1_4, combo_2_1, combo_2_2, combo_2_3, combo_2_4};
+			for (int i = 0; i < 8; i++)
+			{
+				var combo = combos[i];
+				if (combo.SelectedIndex == 0) uc.Devices8[i] = OctoshockDll.ePeripheralType.None;
+				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
+				if (combo.SelectedIndex == 2) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualShock;
+			}
+
+			var LC = uc.ToLogicalConfig();
 
 			var p_labels = new[] { lbl_p_1_1,lbl_p_1_2,lbl_p_1_3,lbl_p_1_4,lbl_p_2_1,lbl_p_2_2,lbl_p_2_3,lbl_p_2_4};
 			for (int i = 0; i < 8; i++)
 			{
 				var lbl = p_labels[i];
-				if (Assignments[i] == -1)
+				if (LC.PlayerAssignments[i] == -1)
 					lbl.Visible = false;
 				else
 				{
-					lbl.Text = "P" + Assignments[i];
+					lbl.Text = "P" + LC.PlayerAssignments[i];
 					lbl.Visible = true;
 				}
 			}
