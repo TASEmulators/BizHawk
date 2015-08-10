@@ -74,7 +74,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					return VRAM[addr];
+					if (VRAM != null) // Bad dumps such as Chu Han Zheng Ba - The War Between Chu & Han (Ch) [b1] can get us into this situation without VRAM
+					{
+						return VRAM[addr];
+					}
+					else
+					{
+						return 0xFF;
+					}
 				}
 			}
 			else
