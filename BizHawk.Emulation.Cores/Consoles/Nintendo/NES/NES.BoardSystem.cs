@@ -438,6 +438,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public GameInfo DB_GameInfo;
 			public string name;
 
+			public int trainer_size;
 			public int chr_size;
 			public int prg_size;
 			public int wram_size, vram_size;

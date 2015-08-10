@@ -691,21 +691,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			byte[] trainer = null;
 
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
 			{
+				var ms = new MemoryStream(file, false);
+				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
+				if (iNesHeaderInfo.trainer_size != 0)
+				{
+					trainer = new byte[512];
+					ms.Read(trainer, 0, 512);
+				}
+
 				Board.ROM = new byte[choice.prg_size * 1024];
-				Array.Copy(file, 16, Board.ROM, 0, Board.ROM.Length);
+				ms.Read(Board.ROM, 0, Board.ROM.Length);
+
 				if (choice.chr_size > 0)
 				{
 					Board.VROM = new byte[choice.chr_size * 1024];
-					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
+					int vrom_copy_size = ms.Read(Board.VROM, 0, Board.VROM.Length);
 
-					// if file isn't long enough for VROM, truncate
-					int vrom_copy_size = Math.Min(Board.VROM.Length, file.Length - 16 - vrom_offset);
-					Array.Copy(file, 16 + vrom_offset, Board.VROM, 0, vrom_copy_size);
 					if (vrom_copy_size < Board.VROM.Length)
 						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
 				}
@@ -760,6 +767,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Console.WriteLine("Using NES system region of {0}", _display_type);
 
 			HardReset();
+
+			if (trainer != null)
+			{
+				Console.WriteLine("Applying trainer");
+				for (int i = 0; i < 512; i++)
+					WriteMemory((ushort)(0x7000 + i), trainer[i]);
+			}
 		}
 
 		static NESSyncSettings.Region DetectRegion(string system)

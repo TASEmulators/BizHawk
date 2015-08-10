@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 1: CartV2.pad_h = 1; break;
 				}
 
+				if ((data[6] & 4) != 0)
+					CartV2.trainer_size = 512;
 			}
 			else
 			{
@@ -99,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			if (data[6].Bit(2))
-				Console.WriteLine("DANGER:  According to the flags, this iNES has a trainer in it!  We don't support this garbage.");
+				Cart.trainer_size = 512;
 
 			return true;
 		}
