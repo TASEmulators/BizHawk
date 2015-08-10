@@ -4,7 +4,7 @@ BizHawk is a multi-system emulator written in C#. BizHawk provides nice features
 
 [Here](http://tasvideos.org/Bizhawk/Features.html) is a list of features offered by bizhawk.
 
-==Download Binaries==
+=== Download Binaries === 
 
 Windows users, don't forget to run the [prereq installer](http://sourceforge.net/projects/bizhawk/files/Prerequisites/bizhawk_prereqs_v1.1.zip/download) first!
 
@@ -15,7 +15,7 @@ Binaries can be found on [the sourceforge page](https://sourceforge.net/projects
  * Nintendo Entertainment System / Famicom / Famicom Disk System (NES/FDS)
  * Super Nintendo (SNES)
  * Nintendo 64
- * Game Boy, Super Game Boy, Game Boy Color, and Super Game Boy
+ * Game Boy, Game Boy Color, and Super Game Boy
  * Game Boy Advance
  * Sony PlayStation
  * Sega Master System, Game Gear, and SG-1000
@@ -30,7 +30,8 @@ Binaries can be found on [the sourceforge page](https://sourceforge.net/projects
  * Wonderswan and Wonderswan Color 
  * Apple II
 
-==Resources==
+=== Resources ===
+
 [BizHawk homepage](http://tasvideos.org/Bizhawk.html) 
 
 [FAQ](http://tasvideos.org/Bizhawk/FAQ.html) - Frequently Asked Questions / Troubleshooting
