@@ -79,3 +79,5 @@
 [OK] psx/cdc : substantial changes to disc swapping and seek retries
 [OK] psx/gpu : change to comments
 [OK] psx/memcard : change to debug output
+0.9.38.4 -> 0.9.38.6
+[OK] psx/gpu & gpu_sprite : Fixed GPU emulation timing bugs that caused graphical glitches in "Mr. Driller G". 
