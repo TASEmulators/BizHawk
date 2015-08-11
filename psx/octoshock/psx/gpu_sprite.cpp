@@ -90,22 +90,6 @@ void PS_GPU::DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg,
  if(y_bound > (ClipY1 + 1))
   y_bound = ClipY1 + 1;
 
- if(y_bound > y_start && x_bound > x_start)
- {
-  //
-  // Note(TODO): From tests on a PS1, even a 0-width sprite takes up time to "draw" proportional to its height.
-  //
-  int32 suck_time = (x_bound - x_start) * (y_bound - y_start);
-
-  if((BlendMode >= 0) || MaskEval_TA)
-  {
-   suck_time += ((((x_bound + 1) & ~1) - (x_start & ~1)) * (y_bound - y_start)) >> 1;
-  }
-
-  DrawTimeAvail -= suck_time;
- }
-
-
  //HeightMode && !dfe && ((y & 1) == ((DisplayFB_YStart + !field_atvs) & 1)) && !DisplayOff
  //printf("%d:%d, %d, %d ---- heightmode=%d displayfb_ystart=%d field_atvs=%d displayoff=%d\n", w, h, scanline, dfe, HeightMode, DisplayFB_YStart, field_atvs, DisplayOff);
 
@@ -118,6 +102,19 @@ void PS_GPU::DrawSprite(int32 x_arg, int32 y_arg, int32 w, int32 h, uint8 u_arg,
 
   if(!LineSkipTest(y))
   {
+   if(MDFN_LIKELY(x_bound > x_start))
+   {
+    //
+    // TODO: From tests on a PS1, even a 0-width sprite takes up time to "draw" proportional to its height.
+    //
+    int32 suck_time = /*8 +*/ (x_bound - x_start);
+
+    if((BlendMode >= 0) || MaskEval_TA)
+     suck_time += (((x_bound + 1) & ~1) - (x_start & ~1)) >> 1;
+
+    DrawTimeAvail -= suck_time;
+   }
+
    for(int32 x = x_start; MDFN_LIKELY(x < x_bound); x++)
    {
     if(textured)

@@ -366,7 +366,6 @@ INLINE void PS_GPU::Command_FBFill(const uint32 *cb)
 
  //printf("[GPU] FB Fill %d:%d w=%d, h=%d\n", destX, destY, width, height);
  DrawTimeAvail -= 46;	// Approximate
- DrawTimeAvail -= ((width * height) >> 3) + (height * 9);
 
  for(int32 y = 0; y < height; y++)
  {
@@ -375,6 +374,8 @@ INLINE void PS_GPU::Command_FBFill(const uint32 *cb)
   if(LineSkipTest(d_y))
    continue;
 
+  DrawTimeAvail -= (width >> 3) + 9;
+
   for(int32 x = 0; x < width; x++)
   {
    const int32 d_x = (x + destX) & 1023;
@@ -382,7 +383,6 @@ INLINE void PS_GPU::Command_FBFill(const uint32 *cb)
    GPURAM[d_y][d_x] = fill_value;
   }
  }
-
 }
 
 INLINE void PS_GPU::Command_FBCopy(const uint32 *cb)
