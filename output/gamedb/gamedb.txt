@@ -64,6 +64,7 @@ sha1:8F42BC9919B324A63636BE2FBAD0101D8C720517	B	Banana (J) [hM03]	NES		board=HVC
 sha1:4EF2C4DAD0897F326E2991D351903A98483BC3C0	B	Banana (J) [hM03]	NES		board=HVC-CNROM;PRG=32;CHR=16
 sha1:15E04F1BF83D8FE34ECD2B29894C9CF034E6D257	B	Banana (J) [hM03]	NES		board=HVC-CNROM;PRG=32;CHR=32
 sha1:C6C6228B16AECB35B0C52467071E04DB3B34C77F	B	Banana (J) [hM03]	NES		board=HVC-CNROM;PRG=32;CHR=8
+sha1:2801CDE6D10D67889E01161476D80CF5CCC3263E	O	Ball Hack v.2 2001-03-21 [o1]	NES		board=HVC-NROM-256;PRG=32;CHR=8
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
