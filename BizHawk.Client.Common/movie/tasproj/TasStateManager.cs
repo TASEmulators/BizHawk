@@ -37,6 +37,8 @@ namespace BizHawk.Client.Common
 
 		private Guid guid = Guid.NewGuid();
 		private SortedList<int, byte[]> States = new SortedList<int, byte[]>();
+		private SortedList<int, SortedList<int, byte[]>> BranchStates = new SortedList<int, SortedList<int, byte[]>>();
+		private int branches = 0;
 		private string statePath
 		{
 			get
@@ -570,5 +572,79 @@ namespace BizHawk.Client.Common
 				return 0;
 			}
 		}
+
+		#region "Branches"
+
+		public void AddBranch()
+		{
+			foreach (KeyValuePair<int, byte[]> kvp in States)
+			{
+				if (!BranchStates.ContainsKey(kvp.Key))
+					BranchStates.Add(kvp.Key, new SortedList<int, byte[]>());
+				SortedList<int, byte[]> stateList = BranchStates[kvp.Key];
+				if (stateList == null)
+				{
+					stateList = new SortedList<int, byte[]>();
+					BranchStates[kvp.Key] = stateList;
+				}
+				stateList.Add(branches, kvp.Value);
+			}
+			branches++;
+		}
+
+		public void RemoveBranch(int index)
+		{
+			foreach (KeyValuePair<int, SortedList<int, byte[]>> kvp in BranchStates)
+			{
+				SortedList<int, byte[]> stateList = kvp.Value;
+				if (stateList == null)
+					continue;
+				stateList.Remove(index);
+				if (stateList.Count == 0)
+					BranchStates[kvp.Key] = null;
+			}
+			branches--;
+		}
+
+		public void UpdateBranch(int index)
+		{
+			// RemoveBranch
+			foreach (KeyValuePair<int, SortedList<int, byte[]>> kvp in BranchStates)
+			{
+				SortedList<int, byte[]> stateList = kvp.Value;
+				if (stateList == null)
+					continue;
+				stateList.Remove(index);
+				if (stateList.Count == 0)
+					BranchStates[kvp.Key] = null;
+			}
+
+			// AddBranch
+			foreach (KeyValuePair<int, byte[]> kvp in States)
+			{
+				SortedList<int, byte[]> stateList = BranchStates[kvp.Key];
+				if (stateList == null)
+				{
+					stateList = new SortedList<int, byte[]>();
+					BranchStates[kvp.Key] = stateList;
+				}
+				stateList.Add(index, kvp.Value);
+			}
+		}
+
+		public void LoadBranch(int index)
+		{
+			Invalidate(0); // Not a good way of doing it?
+			foreach (KeyValuePair<int, SortedList<int, byte[]>> kvp in BranchStates)
+			{
+				if (kvp.Key == 0 && States.ContainsKey(0))
+					continue; // TODO: It might be a better idea to just not put state 0 in BranchStates.
+
+				if (kvp.Value.ContainsKey(index))
+					SetState(kvp.Key, kvp.Value[index]);
+			}
+		}
+
+		#endregion
 	}
 }

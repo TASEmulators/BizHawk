@@ -198,13 +198,10 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == CursorColumnName)
 				{
-					var branch = CurrentTasMovie.TasBranches
-						.Where(b => b.Frame == index)
-						.OrderByDescending(b => b.TimeStamp)
-						.FirstOrDefault();
-					if (branch != null)
+					int branchIndex = CurrentTasMovie.BranchIndex(index);
+					if (branchIndex != -1)
 					{
-						text = CurrentTasMovie.TasBranches.IndexOf(branch).ToString();
+						text = branchIndex.ToString();
 					}
 				}
 				else if (columnName == FrameColumnName)

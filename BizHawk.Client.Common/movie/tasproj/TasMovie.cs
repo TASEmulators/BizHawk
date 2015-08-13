@@ -77,11 +77,20 @@ namespace BizHawk.Client.Common
 		}
 
 		public TasLagLog TasLagLog { get { return LagLog; } }
-		public TasBranchCollection TasBranches { get { return Branches; } }
 		public List<string> InputLog { get { return _log; } }
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
+		public TasBranch GetBranch(int id) { return Branches[id]; }
+		public int BranchCount { get { return Branches.Count; } }
+		public int BranchIndex(int frame)
+		{
+			TasBranch branch = Branches.Where(b => b.Frame == frame)
+				.OrderByDescending(b => b.TimeStamp).FirstOrDefault();
+			if (branch == null)
+				return -1;
+			return Branches.IndexOf(branch);
+		}
 
 		public override string PreferredExtension
 		{
@@ -467,10 +476,11 @@ namespace BizHawk.Client.Common
 			_changes = true;
 			LagLog.FromLagLog(branch.LagLog);
 
-			if (divergentPoint.HasValue)
-				StateManager.Invalidate(divergentPoint.Value);
-			else
-				StateManager.Invalidate(branch.InputLog.Count);
+			//if (divergentPoint.HasValue)
+			//	StateManager.Invalidate(divergentPoint.Value);
+			//else
+			//	StateManager.Invalidate(branch.InputLog.Count);
+			StateManager.LoadBranch(Branches.IndexOf(branch));
 
 			StateManager.SetState(branch.Frame, branch.CoreData);
 
@@ -495,6 +505,36 @@ namespace BizHawk.Client.Common
 			}
 
 			return null;
+		}
+
+		public void AddBranch(TasBranch branch)
+		{
+			Branches.Add(branch);
+			TasStateManager.AddBranch();
+		}
+
+		public void RemoveBranch(TasBranch branch)
+		{
+			TasStateManager.RemoveBranch(Branches.IndexOf(branch));
+			Branches.Remove(branch);
+		}
+
+		public void UpdateBranch(TasBranch old, TasBranch newBranch)
+		{
+			int index = Branches.IndexOf(old);
+			Branches[index] = newBranch;
+			TasStateManager.UpdateBranch(index);
+		}
+
+		public void SwapBranches(int b1, int b2)
+		{
+			TasBranch branch = Branches[b1];
+
+			if (b2 >= Branches.Count)
+				b2 = Branches.Count - 1;
+
+			Branches.Remove(branch);
+			Branches.Insert(b2, branch);
 		}
 	}
 }

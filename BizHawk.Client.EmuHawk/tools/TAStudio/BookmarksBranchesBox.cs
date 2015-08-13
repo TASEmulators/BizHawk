@@ -21,10 +21,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
 		public TAStudio Tastudio { get; set; }
+		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
 
-		public TasBranchCollection Branches
+		private TasBranch GetBranch(int id)
 		{
-			get { return Tastudio.CurrentTasMovie.TasBranches; }
+			return Tastudio.CurrentTasMovie.GetBranch(id);
 		}
 
 		public BookmarksBranchesBox()
@@ -63,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (BranchView.AnyRowsSelected)
 				{
-					return Branches[BranchView.SelectedRows.First()];
+					return GetBranch(BranchView.SelectedRows.First());
 				}
 
 				return null;
@@ -76,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = string.Empty;
 
-			if (index >= Tastudio.CurrentTasMovie.TasBranches.Count)
+			if (index >= Movie.BranchCount)
 			{
 				return;
 			}
@@ -87,10 +88,10 @@ namespace BizHawk.Client.EmuHawk
 					text = index.ToString();
 					break;
 				case FrameColumnName:
-					text = Branches[index].Frame.ToString();
+					text = GetBranch(index).Frame.ToString();
 					break;
 				case TimeColumnName:
-					text = Branches[index].TimeStamp.ToString(@"hh\:mm\:ss\.ff");
+					text = GetBranch(index).TimeStamp.ToString(@"hh\:mm\:ss\.ff");
 					break;
 			}
 		}
@@ -147,14 +148,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
-				int index = Branches.IndexOf(SelectedBranch);
+				int index = BranchView.SelectedRows.First();
 				if (index == CurrentBranch)
 				{
 					CurrentBranch = -1;
 				}
 
-				Branches.Remove(SelectedBranch);
-				BranchView.RowCount = Branches.Count;
+				Movie.RemoveBranch(SelectedBranch);
+				BranchView.RowCount = Movie.BranchCount;
 
 				if (index == BranchView.SelectedRows.FirstOrDefault())
 				{
@@ -179,15 +180,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			BranchView.RowCount = Branches.Count;
+			BranchView.RowCount = Movie.BranchCount;
 		}
 
 		public void Branch()
 		{
 			TasBranch branch = CreateBranch();
-			Branches.Add(branch);
-			BranchView.RowCount = Branches.Count;
-			CurrentBranch = Branches.IndexOf(branch);
+			Movie.AddBranch(branch);
+			BranchView.RowCount = Movie.BranchCount;
+			CurrentBranch = Movie.BranchCount - 1;
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}
@@ -209,11 +210,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Branches.Count)
+			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Movie.BranchCount)
 			{
 				if (e.NewCell.Column.Name == BranchNumberColumnName)
 				{
-					ScreenShotPopUp(Branches[e.NewCell.RowIndex.Value], e.NewCell.RowIndex.Value);
+					ScreenShotPopUp(GetBranch(e.NewCell.RowIndex.Value), e.NewCell.RowIndex.Value);
 				}
 				else
 				{
@@ -268,18 +269,13 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				UpdateBranch(SelectedBranch);
+				CurrentBranch = BranchView.SelectedRows.First();
 			}
 		}
 
 		private void UpdateBranch(TasBranch branch)
 		{
-			var index = Branches.IndexOf(branch);
-
-			var newbranch = CreateBranch();
-			Branches.Insert(index, newbranch);
-
-			Branches.Remove(branch);
-            CurrentBranch = index;
+			Movie.UpdateBranch(branch, CreateBranch());
 			BranchView.Refresh();
 		}
 
@@ -305,17 +301,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Branches.Count)
+			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
 			{
-				var branch = Branches[e.OldCell.RowIndex.Value];
-				int originalIndex = Branches.IndexOf(branch);
-				int newIndex = e.NewCell.RowIndex.Value;
-
-				if (newIndex >= Branches.Count)
-					newIndex = Branches.Count - 1;
-
-				Branches.Remove(branch);
-				Branches.Insert(newIndex, branch);
+				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 			}
 		}
 	}
