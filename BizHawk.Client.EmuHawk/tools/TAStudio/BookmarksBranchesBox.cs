@@ -200,11 +200,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Frame = Global.Emulator.Frame,
 				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
-				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
+				InputLog = Movie.InputLog.ToList(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
-				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie),
-				TimeStamp = DateTime.Now
+				LagLog = Movie.TasLagLog.Clone(),
+				ChangeLog = new TasMovieChangeLog(Movie),
+				TimeStamp = DateTime.Now,
+				Markers = Movie.Markers.DeepClone()
 			};
 		}
 

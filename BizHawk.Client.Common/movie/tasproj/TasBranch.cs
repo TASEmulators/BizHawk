@@ -16,6 +16,7 @@ namespace BizHawk.Client.Common
 		public TasLagLog LagLog { get; set; }
 		public TasMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
+		public TasMovieMarkerList Markers { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>

@@ -78,6 +78,15 @@ namespace BizHawk.Client.Common
 			_movie = movie;
 		}
 
+		public TasMovieMarkerList DeepClone()
+		{
+			TasMovieMarkerList ret = new TasMovieMarkerList(_movie);
+			for (int i = 0; i < this.Count; i++)
+				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message));
+
+			return ret;
+		}
+
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 
 		private void OnListChanged(NotifyCollectionChangedAction action)

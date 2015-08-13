@@ -485,6 +485,7 @@ namespace BizHawk.Client.Common
 			StateManager.SetState(branch.Frame, branch.CoreData);
 
 			ChangeLog = branch.ChangeLog;
+			Markers = branch.Markers;
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
