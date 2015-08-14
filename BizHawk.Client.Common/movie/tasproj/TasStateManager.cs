@@ -10,19 +10,24 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
-	private class tsmState
+	class tsmState : IDisposable
 	{
 		static int state_id = 0;
+		TasStateManager _manager;
 
 		byte[] _state;
 		int frame;
 		int ID;
 
-		public tsmState(byte[] state)
+		public tsmState(TasStateManager manager, byte[] state)
 		{
+			_manager = manager;
 			_state = state;
-			ID = state_id;
-			state_id++;
+			
+			//I still think this is a bad idea. IDs may need scavenging somehow
+			if (state_id > int.MaxValue - 100)
+				throw new InvalidOperationException();
+			ID = System.Threading.Interlocked.Increment(ref state_id);
 		}
 
 		public byte[] State
@@ -32,8 +37,7 @@ namespace BizHawk.Client.Common
 				if (_state != null)
 					return _state;
 
-				string path = Path.Combine(TasStateManager.statePath, ID.ToString());
-				return File.ReadAllBytes(path);
+				return _manager.ndbdatabase.FetchAll(ID.ToString());
 			}
 			set
 			{
@@ -43,8 +47,8 @@ namespace BizHawk.Client.Common
 					return;
 				}
 
-				string path = Path.Combine(TasStateManager.statePath, ID.ToString());
-				File.WriteAllBytes(path, value);
+				_state = value;
+				MoveToDisk();
 			}
 		}
 		public int Length { get { return State.Length; } }
@@ -55,8 +59,7 @@ namespace BizHawk.Client.Common
 			if (IsOnDisk)
 				return;
 
-			string path = Path.Combine(TasStateManager.statePath, ID.ToString());
-			File.WriteAllBytes(path, _state);
+			_manager.ndbdatabase.Store(ID.ToString(), _state, 0, _state.Length);
 			_state = null;
 		}
 		public void MoveToRAM()
@@ -64,17 +67,16 @@ namespace BizHawk.Client.Common
 			if (!IsOnDisk)
 				return;
 
-			string path = Path.Combine(TasStateManager.statePath, ID.ToString());
-			_state = File.ReadAllBytes(path);
-			File.Delete(path);
+			var key = ID.ToString();
+			var ret = _manager.ndbdatabase.FetchAll(key);
+			_manager.ndbdatabase.Release(key);
 		}
-		public void DeleteFile()
+		public void Dispose()
 		{
 			if (!IsOnDisk)
 				return;
 
-			string path = Path.Combine(TasStateManager.statePath, ID.ToString());
-			File.Delete(path);
+			_manager.ndbdatabase.Release(ID.ToString());
 		}
 	}
 
@@ -82,7 +84,7 @@ namespace BizHawk.Client.Common
 	/// Captures savestates and manages the logic of adding, retrieving, 
 	/// invalidating/clearing of states.  Also does memory management and limiting of states
 	/// </summary>
-	public class TasStateManager
+	public class TasStateManager : IDisposable
 	{
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
 		private IStatable Core
@@ -103,7 +105,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		static private Guid guid = Guid.NewGuid();
+		internal NDBDatabase ndbdatabase;
+		private Guid guid = Guid.NewGuid();
 		private SortedList<int, tsmState> States = new SortedList<int, tsmState>();
 		private SortedList<int, SortedList<int, tsmState>> BranchStates = new SortedList<int, SortedList<int, tsmState>>();
 		private int branches = 0;
@@ -140,7 +143,7 @@ namespace BizHawk.Client.Common
 			return -2;
 		}
 
-		public static string statePath
+		public string statePath
 		{
 			get
 			{
@@ -187,6 +190,14 @@ namespace BizHawk.Client.Common
 			accessed = new List<int>();
 		}
 
+		public void Dispose()
+		{
+			if (ndbdatabase != null)
+				ndbdatabase.Dispose();
+
+			//States and BranchStates don't need cleaning because they would only contain an ndbdatabase entry which was demolished by the above
+		}
+
 		/// <summary>
 		/// Mounts this instance for write access. Prior to that it's read-only
 		/// </summary>
@@ -196,12 +207,6 @@ namespace BizHawk.Client.Common
 				return;
 
 			_isMountedForWrite = true;
-
-			if (Directory.Exists(statePath))
-			{
-				Directory.Delete(statePath, true); // To delete old files that may still exist.
-			}
-			Directory.CreateDirectory(statePath);
 
 			int limit = 0;
 
@@ -213,6 +218,10 @@ namespace BizHawk.Client.Common
 			}
 
 			States = new SortedList<int, tsmState>(limit);
+
+			if(_expectedStateSize > int.MaxValue)
+				throw new InvalidOperationException();
+			ndbdatabase = new NDBDatabase(statePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
 
 		public TasStateManagerSettings Settings { get; set; }
@@ -371,14 +380,12 @@ namespace BizHawk.Client.Common
 
 		private void MoveStateToDisk(int index)
 		{
-			DiskUsed += _expectedStateSize;
 			Used -= (ulong)States[index].Length;
 			States[index].MoveToDisk();
 		}
 		private void MoveStateToMemory(int index)
 		{
 			States[index].MoveToRAM();
-			DiskUsed -= _expectedStateSize;
 			Used += (ulong)States[index].Length;
 		}
 
@@ -394,7 +401,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				Used += (ulong)state.Length;
-				States.Add(frame, new tsmState(state));
+				States.Add(frame, new tsmState(this, state));
 			}
 
 			StateAccessed(frame);
@@ -403,8 +410,7 @@ namespace BizHawk.Client.Common
 		{
 			if (States[frame].IsOnDisk)
 			{
-				DiskUsed -= _expectedStateSize;
-				States[frame].DeleteFile();
+				States[frame].Dispose();
 			}
 			else
 				Used -= (ulong)States[frame].Length;
@@ -465,8 +471,7 @@ namespace BizHawk.Client.Common
 				{
 					if (state.Value.IsOnDisk)
 					{
-						DiskUsed -= _expectedStateSize;
-						state.Value.DeleteFile();
+						state.Value.Dispose();
 					}
 					else
 						Used -= (ulong)state.Value.Length;
@@ -490,8 +495,8 @@ namespace BizHawk.Client.Common
 			States.Clear();
 			accessed.Clear();
 			Used = 0;
-			DiskUsed = 0;
 			clearDiskStates();
+			ndbdatabase.Clear();
 		}
 		public void ClearStateHistory()
 		{
@@ -513,17 +518,13 @@ namespace BizHawk.Client.Common
 				else
 					Used = 0;
 
-				DiskUsed = 0;
 				clearDiskStates();
 			}
 		}
 		private void clearDiskStates()
 		{
-			if (Directory.Exists(statePath))
-			{
-				Directory.Delete(statePath, true);
-				Directory.CreateDirectory(statePath);
-			}
+			if (ndbdatabase != null)
+				ndbdatabase.Clear();
 		}
 
 		// TODO: save/load BranchStates
@@ -617,8 +618,11 @@ namespace BizHawk.Client.Common
 		}
 		private ulong DiskUsed
 		{
-			get;
-			set;
+			get
+			{
+				if (ndbdatabase == null) return 0;
+				else return (ulong)ndbdatabase.Consumed;
+			}
 		}
 
 		public int StateCount
@@ -695,7 +699,7 @@ namespace BizHawk.Client.Common
 				if (stateHasDuplicate(kvp.Key, index) == -2)
 				{
 					if (stateList[index].IsOnDisk)
-						DiskUsed -= _expectedStateSize;
+					{ }
 					else
 						Used -= (ulong)stateList[index].Length;
 				}
@@ -719,7 +723,7 @@ namespace BizHawk.Client.Common
 				if (stateHasDuplicate(kvp.Key, index) == -2)
 				{
 					if (stateList[index].IsOnDisk)
-						DiskUsed -= _expectedStateSize;
+					{ }
 					else
 						Used -= (ulong)stateList[index].Length;
 				}

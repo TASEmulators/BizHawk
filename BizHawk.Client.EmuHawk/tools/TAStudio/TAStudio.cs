@@ -524,8 +524,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = _originalEndAction;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 			// Do not keep TAStudio's disk save states.
-			if (Directory.Exists(statesPath))
-				Directory.Delete(statesPath, true);
+			//if (Directory.Exists(statesPath)) Directory.Delete(statesPath, true);
+			//TODO - do we need to dispose something here instead?
 		}
 
 		/// <summary>
