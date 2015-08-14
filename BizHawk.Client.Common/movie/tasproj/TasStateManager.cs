@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -12,12 +13,12 @@ namespace BizHawk.Client.Common
 {
 	class tsmState : IDisposable
 	{
-		static int state_id = 0;
+		static long state_id = 0;
 		TasStateManager _manager;
 
 		byte[] _state;
 		int frame;
-		int ID;
+		long ID;
 
 		public tsmState(TasStateManager manager, byte[] state)
 		{
@@ -25,7 +26,7 @@ namespace BizHawk.Client.Common
 			_state = state;
 			
 			//I still think this is a bad idea. IDs may need scavenging somehow
-			if (state_id > int.MaxValue - 100)
+			if (state_id > long.MaxValue - 100)
 				throw new InvalidOperationException();
 			ID = System.Threading.Interlocked.Increment(ref state_id);
 		}

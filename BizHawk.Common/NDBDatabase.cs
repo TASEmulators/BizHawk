@@ -11,7 +11,7 @@ namespace BizHawk.Common
 	/// Blocks can be differently sized than the basic block size. Wastage will occur.
 	/// TODO: Mount on memory as well?
 	/// </summary>
-	class NDBDatabase : IDisposable
+	public class NDBDatabase : IDisposable
 	{
 		FileStream Stream;
 		int BlockSize;
