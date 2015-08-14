@@ -128,6 +128,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 #if WINDOWS
 			KeyInput.Initialize();
+			IPCKeyInput.Initialize();
 			GamePad.Initialize();
 			GamePad360.Initialize();
 #endif
@@ -319,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (; ; )
 			{
-				var keyEvents = KeyInput.Update();
+				var keyEvents = KeyInput.Update().Concat(IPCKeyInput.Update());
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
 
