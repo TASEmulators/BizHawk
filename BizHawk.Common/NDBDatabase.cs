@@ -13,12 +13,13 @@ namespace BizHawk.Common
 	/// </summary>
 	public class NDBDatabase : IDisposable
 	{
-		FileStream Stream;
-		int BlockSize;
+		readonly int BlockSize;
+		readonly long BlockCount;
+
 		Dictionary<string, Item> Items = new Dictionary<string, Item>();
 		LinkedList<Block> FreeList = new LinkedList<Block>();
-		readonly long BlockCount;
 		long FreeWatermark;
+		FileStream Stream;
 
 		class Block
 		{
@@ -74,6 +75,7 @@ namespace BizHawk.Common
 		public void Clear()
 		{
 			Consumed = 0;
+			Items.Clear();
 			FreeList.Clear();
 			FreeWatermark = 0;
 		}
