@@ -68,8 +68,8 @@ namespace BizHawk.Client.Common
 			if (!IsOnDisk)
 				return;
 
-			var key = ID.ToString();
-			var ret = _manager.ndbdatabase.FetchAll(key);
+			string key = ID.ToString();
+			_state = _manager.ndbdatabase.FetchAll(key);
 			_manager.ndbdatabase.Release(key);
 		}
 		public void Dispose()
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 			return -2;
 		}
 
-		public string statePath
+		private string statePath
 		{
 			get
 			{
@@ -313,6 +313,9 @@ namespace BizHawk.Client.Common
 
 			if (Used > Settings.Cap)
 			{
+				if (DiskUsed > (ulong)Settings.DiskCapacitymb * 1024uL * 1024uL)
+					MaybeRemoveState();
+
 				int lastMemState = -1;
 				do { lastMemState++; } while (States[accessed[lastMemState]] == null);
 				MoveStateToDisk(accessed[lastMemState]);
@@ -526,6 +529,16 @@ namespace BizHawk.Client.Common
 		{
 			if (ndbdatabase != null)
 				ndbdatabase.Clear();
+		}
+
+		/// <summary>
+		/// Deletes/moves states to follow the state storage size limits.
+		/// Used after changing the settings.
+		/// </summary>
+		public void LimitStateCount()
+		{
+			while (Used + DiskUsed > Settings.CapTotal)
+				MaybeRemoveState();
 		}
 
 		// TODO: save/load BranchStates

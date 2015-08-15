@@ -48,7 +48,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private int MaxStatesInCapacity
 		{
-			get { return (int)Math.Floor((MemCapacityNumeric.Value + DiskCapacityNumeric.Value) / _stateSizeMb); }
+			get { return (int)Math.Floor(MemCapacityNumeric.Value / _stateSizeMb)
+				+ (int)Math.Floor(DiskCapacityNumeric.Value / _stateSizeMb);
+			}
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)
