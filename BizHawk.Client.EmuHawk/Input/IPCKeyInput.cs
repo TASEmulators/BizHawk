@@ -56,7 +56,10 @@ namespace BizHawk.Client.EmuHawk
 			EventList.Clear();
 
 			lock (PendingEventList)
+			{
 				EventList.AddRange(PendingEventList);
+				PendingEventList.Clear();
+			}
 
 			return EventList;
 		}
