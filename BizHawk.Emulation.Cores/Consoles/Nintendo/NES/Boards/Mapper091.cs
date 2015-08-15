@@ -24,7 +24,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			chr_bank_mask_2k = Cart.chr_size / 2 - 1;
+			int chrSize = Cart.chr_size;
+			if (chrSize > 256) // Hack to support some bad dumps
+			{
+				chrSize = 512;
+			}
+
+			chr_bank_mask_2k = chrSize / 2 - 1;
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 
 			prg_regs_8k[3] = 0xFF;
