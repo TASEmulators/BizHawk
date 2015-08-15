@@ -98,6 +98,9 @@ sha1:E4BFD5AB3C3649DBD36B9A7280CF431641BCBCEC		Peek-A-Boo Poker (Unl)	NES		board
 sha1:39294394A0631708F58397371CE14075AE1FB7E6		Peek-A-Boo Poker (Panesian)	NES		board=NES-CNROM;PRG=32;CHR=64;WRAM=0
 sha1:C87E7E6A68DD9C7E24652CD2C7D390A14E8ADF04		Lagrange Point	NES		board=KONAMI-VRC-7;PRG=512;CHR=0;WRAM=8;PRAM=8;PCB=352402;BATT=true
 sha1:2E0889131DA5BA9505A15B94887113F4360D98CD		Shin Samurai Spirits 2 - Haoumaru Jigoku Hen (Unl)	NES		board=MAPPER209;PRG=128;CHR=512;WRAM=8
+sha1:EB35202CC4E9C2FAC320B04F36F3A6858B8916F2		Super Bros. 8	NES		board=MAPPER048;
+sha1:F949FC16932808C426074AB1628F246B0435C52C		Flintstones, The Rescue of Dino & Hoppy (J)	NES		board=MAPPER048;
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
