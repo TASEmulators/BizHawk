@@ -167,7 +167,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			addr |= (prg_bank_32k << 15);
 
-			if (ROM.Length < 0x8000) // GoodNES labels a version of Othello (HES) with only 16kb prg as the good dump. We will consider GoodNES wrong and label this as a bad dump, but this hack allows it to run just fine
+			// Some HES games are coming in with only 16 kb of PRG
+			// Othello, and Sidewinder for instance
+			if (ROM.Length < 0x8000)
 			{
 				addr &= 0x3FFF;
 			}

@@ -94,12 +94,6 @@ sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES
 sha1:F2A8BC888B888FA65DFB303126B130422E34942E	G	Kunio 8-in-1 [p1]	NES		board=MAPPER045
 sha1:27AA5F60474600FEE5C1623D4A0985421680C9FE	H	Mario + Toad (Nuts & Milk Hack)	NES		board=MAPPER000
 
-;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
-;goodNES is wrong about these
-sha1:9B75165461B58E3B49592E5E4BBF049FBD1401F6	G	Othello (HES)	NES		board=MAPPER113
-sha1:C10C526F26273C4A1E180B968665910B74C78B86	B	Othello (HES) (Bad Dump)	NES		board=MAPPER113
-sha1:000FC8E835AE78F0A41552912787D993BF9EAE7E	B	Othello (HES) (Bad Dump)	NES		board=MAPPER113
-
 ;;;;;;;;;;;;;;;;;;;;;-
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -110,6 +104,8 @@ sha1:5227195D5DB2030758BF67704150E8C5FAF056B1	B	World Hero (Unl) [b2]	NES		board
 sha1:AD350F001DB2E3C640B2BD9107B86A8F29B68AC0	G	Commandos (Ch)	NES		board=MAPPER163;
 sha1:5A91F54A6FF44762D98FC8D8974909D298EB52A8	G	Somari (NT-616) (Unl)	NES		board=MAPPER116;
 sha1:5F0943DC8145542ABC70BF20E4754B3C08653399	G	Meikyuu Jiin Dababa (FDS Conversion) (Unl)	NES		board=MAPPER108;WRAM=0
+sha1:95E86C77BB25DD23152D34FD0BB562A09535BE43	G	Pyramid (AVE) (PRG1)	NES		board=MAPPER000
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
