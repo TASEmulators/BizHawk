@@ -66,7 +66,17 @@ sha1:15E04F1BF83D8FE34ECD2B29894C9CF034E6D257	B	Banana (J) [hM03]	NES		board=HVC
 sha1:C6C6228B16AECB35B0C52467071E04DB3B34C77F	B	Banana (J) [hM03]	NES		board=HVC-CNROM;PRG=32;CHR=8
 sha1:2801CDE6D10D67889E01161476D80CF5CCC3263E	O	Ball Hack v.2 2001-03-21 [o1]	NES		board=HVC-NROM-256;PRG=32;CHR=8
 sha1:A6E7DB47B9C39E2A5B0A77F34B9AA3BEFDB70D1C	O	Dr. Mario (JU) (PRG0)	NES		board=MAPPER001;CHR=32
-sha1:2BDBD70C1E3EEF115F640B91B22A97BFCDF18B2D	B	Castlevania III - Dracula's Curse (U)	NES		board=MAPPER005;CHR=128
+sha1:2BDBD70C1E3EEF115F640B91B22A97BFCDF18B2D	B	Castlevania III - Dracula's Curse (U) (Bad Dump)	NES		board=MAPPER005;CHR=128
+sha1:0D0957F7D49E38C298EB5194472B87EFC44BBD46	B	Dragon Quest II - Akuryou no Kamigami (J) (Bad Dump)	NES		board=MAPPER002;CHR=0
+sha1:736C0AEDA14A93A2715BDA1DA6F6C92E6690A5DE	B	Dragon Quest IV - Michibikareshi Monotachi (J) (PRG1) (Bad Dump)	NES		board=MAPPER001;PRG=512
+sha1:739698BD6050572F24E739A20978E4760CF33E59	B	Dragon Quest IV - Michibikareshi Monotachi (J) (PRG1) (Bad Dump)	NES		board=MAPPER001;PRG=512
+sha1:3FB61976847BCA4187DB61F484BF21346B42C95A	B	Dragon Warrior IV (Bad Dump)	NES		board=MAPPER001;PRG=512
+sha1:697ECCCDD178809207726A05A5593D874CA39CA9	B	Dragon Warrior IV (Bad Dump)	NES		board=MAPPER001;PRG=512
+sha1:E33D3A487678F35E05C0E5DA7E4C30F8FEFA600D	B	Dragon Warrior IV (Bad Dump)	NES		board=MAPPER001;PRG=512
+sha1:3AE0469A8208023DAA32A7BB9925F3C5666FCB2D	B	Famicom Meijin Sen (J) [a1]	NES		board=HVC-SKROM;WRAM=8
+sha1:8CC5894A1E637FA63A63992E188B3797D9300337	B	Mighty Bomb Jack (U) (Bad Dump)	NES		board=NES-CNROM;PRG=32;CHR=32;WRAM=0;PAD_V=1
+sha1:CAB30771F9CBD89B2FCD06F3B2F5C8F2156BFD8A	B	Mighty Bomb Jack (U) (Bad Dump)	NES		board=NES-CNROM;PRG=32;CHR=32;WRAM=0;PAD_V=1
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -93,6 +103,7 @@ sha1:17AC56723F99A646BD44F8C999B23B8A972A3EF2	B	World Hero (Unl) [b1]	NES		board
 sha1:5227195D5DB2030758BF67704150E8C5FAF056B1	B	World Hero (Unl) [b2]	NES		board=MAPPER027
 sha1:AD350F001DB2E3C640B2BD9107B86A8F29B68AC0	G	Commandos (Ch)	NES		board=MAPPER163;
 sha1:5A91F54A6FF44762D98FC8D8974909D298EB52A8	G	Somari (NT-616) (Unl)	NES		board=MAPPER116;
+sha1:5F0943DC8145542ABC70BF20E4754B3C08653399	G	Meikyuu Jiin Dababa (FDS Conversion) (Unl)	NES		board=MAPPER108;WRAM=0
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -153,13 +164,14 @@ sha1:2F29F3DC724027FAD926BC9D4470A481884E42A5		Blargg's 6-MMC6.nes (newer)	NES		
 
 ;datach stuff
 29CC759D5CA214EEFC0CC1C6CE0F8B9111E58124		Datach - Battle Rush - Build Up Robot Tournament	NES		board=MAPPER157
-87478B635FEFB25FA13C4876E20F505A97426C1B		Datach - Dragon Ball Z - Gekitou Tenkaichi Budou Kai	NES		board=MAPPER157
+87478B635FEFB25FA13C4876E20F505A97426C1B	B	Datach - Dragon Ball Z - Gekitou Tenkaichi Budou Kai	NES		board=MAPPER157
 B2089533E05FE95814D0D77F2729944CBEB95988		Datach - J League Super Top Players	NES		board=MAPPER157
 EDD7A45A7F27E396B6D686F1861642D509863132		Datach - SD Gundam - Gundam Wars	NES		board=MAPPER157
 533170D5EB685231CCD27B9C136FFA4FAD68A7B8		Datach - Ultraman Club - Supokon Fight!	NES		board=MAPPER157
+43315F18A514F0EF1D84EFE9C8D4483B57BA712C		Datach - Ultraman Club - Supokon Fight!	NES		board=MAPPER157
 74218AAE93E4FEBFB2284BCF15811453418A2029		Datach - Yuu Yuu Hakusho - Bakutou Ankoku Bujutsu Kai	NES		board=MAPPER157
 6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach - Crayon Shin Chan - Ora to Poi Poi	NES		board=MAPPER157
-
+1218C891DEE878C18D31D38D07CAD5FB06B3B2CE		Datach - Yuu Yuu akusho - Baktutou	NES		board=MAPPER157
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;bad PSX (not many, so collecting here for now);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;licensed by sony... string erased:
