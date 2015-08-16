@@ -25,7 +25,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER011":
 					break;
-
+				case "MAPPER011_HACKY":
+					bus_conflict = false;
+					break;
 				case "Discrete_74x377-FLEX":
 					break;
 				case "COLORDREAMS-74*377":
