@@ -4,27 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper60 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 060          =
-		========================
-
-		Example Game:
-		--------------------------
-		Reset Based 4-in-1
-
-
-		Notes:
-		---------------------------
-		This mapper is very, very unique.
-
-		It's a multicart that consists of four NROM games, each with 16k PRG (put at $8000 and $C000) and 8k CHR.
-		The current block that is selected is determined by an internal register that can only be incremented by a
-		soft reset!
-
-		I would assume the register is 2 bits wide?  Don't know for sure.
-		*/
+		// http://wiki.nesdev.com/w/index.php/INES_Mapper_060
 
 		int reg = 0;
 		public override bool Configure(NES.EDetectionOrigin origin)

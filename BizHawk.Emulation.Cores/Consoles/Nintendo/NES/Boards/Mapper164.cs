@@ -4,39 +4,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper164 : NES.NESBoardBase 
 	{
-		/*
-		* Here are Disch's original notes:  
-		========================
-		=  Mapper 164          =
-		========================
- 
-		Example Game:
-		--------------------------
-		Final Fantasy V
- 
- 
- 
-		Registers:
-		---------------------------
- 
-		Range,Mask:   $5000-FFFF, $F300
- 
-		$5000, $D000:  PRG reg (32k @ $8000)
- 
-		$6000-7FFF may have SRAM (not sure)
- 
- 
-		On Reset
-		---------------------------
-		Reg seems to contain $FF on powerup/reset
- 
- 
-		Notes:
-		---------------------------
- 
-		Swapping is really simple -- the thing that is funky is the register range/mask.  $5000 and $D000 will access
-		the register, however $5100, $5200, etc will not.
-		*/
+		// http://wiki.nesdev.com/w/index.php/INES_Mapper_164
 
 		int prg_bank;
 		int prg_bank_mask_32k;

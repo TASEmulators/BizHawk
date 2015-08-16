@@ -65,6 +65,8 @@ sha1:4EF2C4DAD0897F326E2991D351903A98483BC3C0	B	Banana (J) [hM03]	NES		board=HVC
 sha1:15E04F1BF83D8FE34ECD2B29894C9CF034E6D257	B	Banana (J) [hM03]	NES		board=HVC-CNROM;PRG=32;CHR=32
 sha1:C6C6228B16AECB35B0C52467071E04DB3B34C77F	B	Banana (J) [hM03]	NES		board=HVC-CNROM;PRG=32;CHR=8
 sha1:2801CDE6D10D67889E01161476D80CF5CCC3263E	O	Ball Hack v.2 2001-03-21 [o1]	NES		board=HVC-NROM-256;PRG=32;CHR=8
+sha1:A6E7DB47B9C39E2A5B0A77F34B9AA3BEFDB70D1C	O	Dr. Mario (JU) (PRG0)	NES		board=MAPPER001;CHR=32
+sha1:2BDBD70C1E3EEF115F640B91B22A97BFCDF18B2D	B	Castlevania III - Dracula's Curse (U)	NES		board=MAPPER005;CHR=128
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -79,6 +81,9 @@ sha1:A1D674D1C7C633A317CFD516EFB9A0350CD0E45E	H	Arkanoid II (J)	NES		board=TAITO
 sha1:4D6117577CE301BB987C5C32FEEF7B132A21B046	H	Afro Man (Mega Man 3 Hack) (UNL)	NES		board=TXROM-HOMEBREW;PRG=256;CHR=128;WRAM=8
 sha1:7BD102770FE7766BF8430ACDB3C17EE51E30478C	H	Mike Tyson's Punch-Out!! (Hacked) (U)	NES		board=NES-PNROM;PRG=128;CHR=128;WRAM=0
 sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES		board=NES-PNROM;PRG=128;CHR=128;WRAM=0
+sha1:F2A8BC888B888FA65DFB303126B130422E34942E	G	Kunio 8-in-1 [p1]	NES		board=MAPPER045
+sha1:27AA5F60474600FEE5C1623D4A0985421680C9FE	H	Mario + Toad (Nuts & Milk Hack)	NES		board=MAPPER000
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -86,6 +91,8 @@ sha1:536D623BA02A622BDE8E2D7D514AE9785B5E0357	H	Punch Out!! Kirby (Hack) (U)	NES
 sha1:98B71119294DA59D1B22723D2D2955D80EADABF4		World Hero (Unl) [!]	NES		board=MAPPER027
 sha1:17AC56723F99A646BD44F8C999B23B8A972A3EF2	B	World Hero (Unl) [b1]	NES		board=MAPPER027
 sha1:5227195D5DB2030758BF67704150E8C5FAF056B1	B	World Hero (Unl) [b2]	NES		board=MAPPER027
+sha1:AD350F001DB2E3C640B2BD9107B86A8F29B68AC0	G	Commandos (Ch)	NES		board=MAPPER163;
+sha1:5A91F54A6FF44762D98FC8D8974909D298EB52A8	G	Somari (NT-616) (Unl)	NES		board=MAPPER116;
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -100,7 +107,7 @@ sha1:C87E7E6A68DD9C7E24652CD2C7D390A14E8ADF04		Lagrange Point	NES		board=KONAMI-
 sha1:2E0889131DA5BA9505A15B94887113F4360D98CD		Shin Samurai Spirits 2 - Haoumaru Jigoku Hen (Unl)	NES		board=MAPPER209;PRG=128;CHR=512;WRAM=8
 sha1:EB35202CC4E9C2FAC320B04F36F3A6858B8916F2		Super Bros. 8	NES		board=MAPPER048;
 sha1:F949FC16932808C426074AB1628F246B0435C52C		Flintstones, The Rescue of Dino & Hoppy (J)	NES		board=MAPPER048;
-
+sha1:9C801071D1AAC7B280468C38BF1B61FDE99B5FD0		Yong Zhe Dou E Long - Dragon Quest VII (Ch)	NES		board=MAPPER245;
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
