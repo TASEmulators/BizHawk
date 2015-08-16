@@ -397,8 +397,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SMROM": //Hokkaidou Rensa Satsujin: Okhotsu ni Shoyu  
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
+				case "HVC-SNROM": // Morita Kazuo no Shougi (J)
+					AssertPrg(128, 256); AssertChr(8); AssertVram(0); AssertWram(8);
+					break;
 				case "NES-SNROM": //dragon warrior 2
-				case "HVC-SNROM":
 				case "VIRGIN-SNROM":
 				case "NES-SNWEPROM": // final fantasy 2 (proto)
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
