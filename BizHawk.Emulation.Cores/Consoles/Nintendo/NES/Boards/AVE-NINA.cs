@@ -12,7 +12,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		IntBuffer chr_banks_4k = new IntBuffer(2);
 		int prg_bank_32k;
-
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -99,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 		int prg_bank_mask_32k, chr_bank_mask_8k;
 		bool mirror_control_enabled;
-
+		bool isMapper79 = false;
 		//state
 		int chr_bank_8k, prg_bank_32k;
 
@@ -108,6 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("chr_bank_8k", ref chr_bank_8k);
 			ser.Sync("prg_bank_32k", ref prg_bank_32k);
+			ser.Sync("isMapper79", ref isMapper79);
 		}
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -115,7 +115,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//configure
 			switch (Cart.board_type)
 			{
-				case "MAPPER079":
+				case "MAPPER079": // Puzzle (Unl)
+					isMapper79 = true;
 					AssertPrg(32, 64); AssertChr(32, 64);
 					break;
 				case "TXC-74*138/175": // untested
@@ -139,7 +140,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
 
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
-
 			prg_bank_32k = 0;
 
 			return true;
@@ -160,6 +160,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						SetMirrorType(value.Bit(7) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 					//NES.LogLine("chr={0:X2}, prg={1:X2}, with val={2:X2}", chr_reg, prg_reg, value);
 					break;
+			}
+		}
+
+		public override void WritePRG(int addr, byte value)
+		{
+			if (isMapper79)
+			{
+				chr_bank_8k = (value & 7) | ((value >> 3) & 0x8);
+			}
+			else
+			{
+				base.WritePRG(addr, value);
 			}
 		}
 
