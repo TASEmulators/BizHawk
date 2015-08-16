@@ -95,6 +95,12 @@ sha1:F2A8BC888B888FA65DFB303126B130422E34942E	G	Kunio 8-in-1 [p1]	NES		board=MAP
 sha1:27AA5F60474600FEE5C1623D4A0985421680C9FE	H	Mario + Toad (Nuts & Milk Hack)	NES		board=MAPPER000
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
+;goodNES is wrong about these
+sha1:9B75165461B58E3B49592E5E4BBF049FBD1401F6	G	Othello (HES)	NES		board=MAPPER113
+sha1:C10C526F26273C4A1E180B968665910B74C78B86	B	Othello (HES) (Bad Dump)	NES		board=MAPPER113
+sha1:000FC8E835AE78F0A41552912787D993BF9EAE7E	B	Othello (HES) (Bad Dump)	NES		board=MAPPER113
+
+;;;;;;;;;;;;;;;;;;;;;-
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;heres another idea. let's list rom sets from goodNES, good and bad variants together
