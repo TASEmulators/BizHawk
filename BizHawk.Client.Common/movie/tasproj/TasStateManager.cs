@@ -9,6 +9,8 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
+using stateKVP = System.Collections.Generic.KeyValuePair<int, int>;
+
 namespace BizHawk.Client.Common
 {
 	class tsmState : IDisposable
@@ -17,14 +19,15 @@ namespace BizHawk.Client.Common
 		TasStateManager _manager;
 
 		byte[] _state;
-		int frame;
 		long ID;
+		public int Frame;
 
-		public tsmState(TasStateManager manager, byte[] state)
+		public tsmState(TasStateManager manager, byte[] state, int frame)
 		{
 			_manager = manager;
 			_state = state;
-			
+			Frame = frame;
+
 			//I still think this is a bad idea. IDs may need scavenging somehow
 			if (state_id > long.MaxValue - 100)
 				throw new InvalidOperationException();
@@ -109,40 +112,6 @@ namespace BizHawk.Client.Common
 		internal NDBDatabase ndbdatabase;
 		private Guid guid = Guid.NewGuid();
 		private SortedList<int, tsmState> States = new SortedList<int, tsmState>();
-		private SortedList<int, SortedList<int, tsmState>> BranchStates = new SortedList<int, SortedList<int, tsmState>>();
-		private int branches = 0;
-
-		/// <summary>
-		/// Checks if the state at frame in the given branch (-1 for current) has any duplicates.
-		/// </summary>
-		/// <returns>Returns the ID of the branch (-1 for current) of the first match. If no match, returns -2.</returns>
-		private int stateHasDuplicate(int frame, int branch)
-		{
-			tsmState stateToMatch;
-			if (branch == -1)
-				stateToMatch = States[frame];
-			else
-			{
-				stateToMatch = BranchStates[frame][branch];
-				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
-					return -1;
-			}
-
-			for (int i = 0; i < branches; i++)
-			{
-				if (i == branch)
-					continue;
-
-				if (BranchStates.ContainsKey(frame))
-				{
-					SortedList<int, tsmState> stateList = BranchStates[frame];
-					if (stateList != null && stateList.ContainsKey(i) && stateList[i] == stateToMatch)
-						return i;
-				}
-			}
-
-			return -2;
-		}
 
 		private string statePath
 		{
@@ -180,7 +149,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private int maxStates
-		{ get { return (int)(Settings.Cap / _expectedStateSize); } }
+		{ get { return (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize); } }
 
 		public TasStateManager(TasMovie movie)
 		{
@@ -188,7 +157,7 @@ namespace BizHawk.Client.Common
 
 			Settings = new TasStateManagerSettings(Global.Config.DefaultTasProjSettings);
 
-			accessed = new List<int>();
+			accessed = new List<tsmState>();
 		}
 
 		public void Dispose()
@@ -220,7 +189,7 @@ namespace BizHawk.Client.Common
 
 			States = new SortedList<int, tsmState>(limit);
 
-			if(_expectedStateSize > int.MaxValue)
+			if (_expectedStateSize > int.MaxValue)
 				throw new InvalidOperationException();
 			ndbdatabase = new NDBDatabase(statePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
@@ -250,7 +219,7 @@ namespace BizHawk.Client.Common
 				return new KeyValuePair<int, byte[]>(-1, new byte[0]);
 			}
 		}
-		private List<int> accessed;
+		private List<tsmState> accessed;
 
 		public byte[] InitialState
 		{
@@ -313,12 +282,9 @@ namespace BizHawk.Client.Common
 
 			if (Used > Settings.Cap)
 			{
-				if (DiskUsed > (ulong)Settings.DiskCapacitymb * 1024uL * 1024uL)
-					MaybeRemoveState();
-
 				int lastMemState = -1;
-				do { lastMemState++; } while (States[accessed[lastMemState]] == null);
-				MoveStateToDisk(accessed[lastMemState]);
+				do { lastMemState++; } while (States[accessed[lastMemState].Frame] == null);
+				MoveStateToDisk(accessed[lastMemState].Frame);
 			}
 		}
 		private int StateToRemove()
@@ -326,35 +292,30 @@ namespace BizHawk.Client.Common
 			int markerSkips = maxStates / 3;
 
 			int shouldRemove = _movie.StartsFromSavestate ? -1 : 0;
+			//int minFrames = 999;
 			do
 			{
 				shouldRemove++;
 
-				// No need to have two savestates with only lag frames between them:
-				// zero 05-aug-2015 - changed algorithm to iterate through States (a SortedList) instead of repeatedly call ElementAt (which is slow)
-				//   previously : for (int i = shouldRemove; i < States.Count - 1; i++) if (AllLag(States.ElementAt(i).Key, States.ElementAt(i + 1).Key)) { shouldRemove = i; break; } }
-				int ctr = 0;
-				KeyValuePair<int, tsmState>? prior = null;
-				foreach (var kvp in States)
-				{
-					ctr++;
-					if (ctr < shouldRemove)
-					{
-						prior = kvp;
-						continue;
-					}
+				//// No need to have two savestates with only lag frames between them:
+				//for (int i = shouldRemove + 1; i < States.Count; i++)
+				//{
+				//	if (AllLag(States.Keys[i - 1], States.Keys[i]))
+				//	{
+				//		shouldRemove = i - 1;
+				//		break;
+				//	}
+				//}
 
-					if (prior.HasValue)
-					{
-						if (AllLag(prior.Value.Key, kvp.Key))
-						{
-							shouldRemove = ctr - 1;
-							break;
-						}
-					}
-
-					prior = kvp;
-				}
+				//// Find states with the fewest frames between them
+				//for (int i = shouldRemove + 1; i < States.Count; i++)
+				//{
+				//	if (States.Keys[i] - States.Keys[i - 1] < minFrames)
+				//	{
+				//		minFrames = States.Keys[i] - States.Keys[i - 1];
+				//		shouldRemove = i;
+				//	}
+				//}
 
 				// Keep marker states
 				markerSkips--;
@@ -405,39 +366,50 @@ namespace BizHawk.Client.Common
 			else
 			{
 				Used += (ulong)state.Length;
-				States.Add(frame, new tsmState(this, state));
+				States.Add(frame, new tsmState(this, state, frame));
 			}
 
 			StateAccessed(frame);
 		}
-		private void RemoveState(int frame)
+		private void RemoveState(int frame, int branch = -1)
 		{
-			if (States[frame].IsOnDisk)
+			if (branch == -1)
+				accessed.Remove(States[frame]);
+			else
+				accessed.Remove(BranchStates[frame][branch]);
+
+			if (branch == -1)
 			{
-				States[frame].Dispose();
+				if (States[frame].IsOnDisk)
+					States[frame].Dispose();
+				else
+					Used -= (ulong)States[frame].Length;
+				States.RemoveAt(States.IndexOfKey(frame));
 			}
 			else
-				Used -= (ulong)States[frame].Length;
-
-			States.RemoveAt(States.IndexOfKey(frame));
-			accessed.Remove(frame);
+			{
+				if (BranchStates[frame][branch].IsOnDisk)
+					BranchStates[frame][branch].Dispose();
+				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
+			}
 		}
-		private void StateAccessed(int index)
+		private void StateAccessed(int frame)
 		{
-			if (index == 0 && _movie.StartsFromSavestate)
+			if (frame == 0 && _movie.StartsFromSavestate)
 				return;
 
-			bool removed = accessed.Remove(index);
-			accessed.Add(index);
+			tsmState state = States[frame];
+			bool removed = accessed.Remove(state);
+			accessed.Add(state);
 
-			if (States[index].IsOnDisk)
+			if (States[frame].IsOnDisk)
 			{
-				if (!States[accessed[0]].IsOnDisk)
-					MoveStateToDisk(accessed[0]);
-				MoveStateToMemory(index);
+				if (!States[accessed[0].Frame].IsOnDisk)
+					MoveStateToDisk(accessed[0].Frame);
+				MoveStateToMemory(frame);
 			}
 
-			if (!removed && accessed.Count > (int)(Used / _expectedStateSize))
+			if (!removed && accessed.Count > maxStates)
 				accessed.RemoveAt(0);
 		}
 
@@ -465,24 +437,22 @@ namespace BizHawk.Client.Common
 					frame = 1;
 				}
 
-				var statesToRemove = States
-					.Where(x => x.Key >= frame)
-					.ToList();
+				List<KeyValuePair<int, tsmState>> statesToRemove =
+					States.Where(x => x.Key >= frame).ToList();
 
 				anyInvalidated = statesToRemove.Any();
 
-				foreach (var state in statesToRemove)
-				{
-					if (state.Value.IsOnDisk)
-					{
-						state.Value.Dispose();
-					}
-					else
-						Used -= (ulong)state.Value.Length;
+				foreach (KeyValuePair<int, tsmState> state in statesToRemove)
+					RemoveState(state.Key);
 
-					accessed.Remove(state.Key);
-					States.Remove(state.Key);
-				}
+				// Why did I put this here? The branches aren't being edited/invalidated.
+				//var bStateLists = BranchStates.Where(x => x.Key >= frame).ToList();
+				//anyInvalidated = anyInvalidated | bStateLists.Any();
+				//foreach (KeyValuePair<int, SortedList<int, tsmState>> stateList in bStateLists)
+				//{
+				//	for (int i = 0; i < stateList.Value.Count; i++)
+				//		RemoveState(stateList.Key, stateList.Value.Keys[i]);
+				//}
 
 				CallInvalidateCallback(frame);
 			}
@@ -537,8 +507,23 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			while (Used + DiskUsed > Settings.CapTotal)
-				MaybeRemoveState();
+			//while (Used + DiskUsed > Settings.CapTotal)
+			//	RemoveState(States.ElementAt(StateToRemove()).Key);
+
+			//int index = -1;
+			//while (DiskUsed > (ulong)Settings.DiskCapacitymb * 1024uL * 1024uL)
+			//{
+			//	do { index++; } while (!States[accessed[index]].IsOnDisk);
+			//	States[
+			//}
+
+			//if (Used > Settings.Cap)
+			//{
+			//	int lastMemState = -1;
+			//	do { lastMemState++; } while (States[accessed[lastMemState]] == null);
+			//	MoveStateToDisk(accessed[lastMemState]);
+			//}
+
 		}
 
 		// TODO: save/load BranchStates
@@ -685,6 +670,42 @@ namespace BizHawk.Client.Common
 
 		#region "Branches"
 
+		private SortedList<int, SortedList<int, tsmState>> BranchStates = new SortedList<int, SortedList<int, tsmState>>();
+		private int branches = 0;
+		private int currentBranch = -1;
+
+		/// <summary>
+		/// Checks if the state at frame in the given branch (-1 for current) has any duplicates.
+		/// </summary>
+		/// <returns>Returns the ID of the branch (-1 for current) of the first match. If no match, returns -2.</returns>
+		private int stateHasDuplicate(int frame, int branch)
+		{
+			tsmState stateToMatch;
+			if (branch == -1)
+				stateToMatch = States[frame];
+			else
+			{
+				stateToMatch = BranchStates[frame][branch];
+				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
+					return -1;
+			}
+
+			for (int i = 0; i < branches; i++)
+			{
+				if (i == branch)
+					continue;
+
+				if (BranchStates.ContainsKey(frame))
+				{
+					SortedList<int, tsmState> stateList = BranchStates[frame];
+					if (stateList != null && stateList.ContainsKey(i) && stateList[i] == stateToMatch)
+						return i;
+				}
+			}
+
+			return -2;
+		}
+
 		public void AddBranch()
 		{
 			foreach (KeyValuePair<int, tsmState> kvp in States)
@@ -700,6 +721,7 @@ namespace BizHawk.Client.Common
 				stateList.Add(branches, kvp.Value);
 			}
 			branches++;
+			currentBranch = branches;
 		}
 
 		public void RemoveBranch(int index)
@@ -723,6 +745,8 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = null;
 			}
 			branches--;
+			if (currentBranch <= branches)
+				currentBranch = -1;
 		}
 
 		public void UpdateBranch(int index)
@@ -760,6 +784,8 @@ namespace BizHawk.Client.Common
 				}
 				stateList.Add(index, kvp.Value);
 			}
+
+			currentBranch = index;
 		}
 
 		public void LoadBranch(int index)
@@ -773,6 +799,8 @@ namespace BizHawk.Client.Common
 				if (kvp.Value.ContainsKey(index))
 					SetState(kvp.Key, kvp.Value[index].State);
 			}
+
+			currentBranch = index;
 		}
 
 		#endregion

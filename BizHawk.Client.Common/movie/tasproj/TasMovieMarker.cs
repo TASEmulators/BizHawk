@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
 		private readonly TasMovie _movie;
-
+		
 		public TasMovieMarkerList(TasMovie movie)
 		{
 			_movie = movie;

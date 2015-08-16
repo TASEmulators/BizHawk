@@ -747,7 +747,7 @@ namespace BizHawk.Client.EmuHawk
 				Owner = GlobalWin.MainForm,
 				Location = this.ChildPointToScreen(TasView),
 				Statable = this.StatableEmulator
-			}.Show();
+			}.ShowDialog();
 			CurrentTasMovie.TasStateManager.LimitStateCount();
 			UpdateChangesIndicator();
 		}
