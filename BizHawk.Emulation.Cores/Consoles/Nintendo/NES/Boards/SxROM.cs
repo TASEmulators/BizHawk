@@ -358,8 +358,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-SH1ROM": //airwolf
 					AssertPrg(32); AssertChr(128); AssertVram(0); AssertWram(0);
 					break;
-				case "HVC-SIROM": //Igo: Kyuu Roban Taikyoku  
-					AssertPrg(32); AssertChr(16); AssertVram(0); AssertWram(8);
+				case "HVC-SIROM":
+					// NTF2 System Cart (U)
+					// bootod classifies Igo: Kyuu Roban Taikyoku as HVC-SIROM-02 with 16kb Chr online, but has this board name in the xml
+					AssertPrg(32); AssertChr(16, 64); AssertVram(0); AssertWram(8);
 					break;
 				case "HVC-SJROM": //zombie hunter (wram is missing), artelius.
 					AssertPrg(128); AssertChr(32); AssertVram(0); AssertWram(0, 8);
