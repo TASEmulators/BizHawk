@@ -44,8 +44,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteEXP(int addr, byte value)
 		{
-			if ((addr & 0x103) == 0x102)
+			//if ((addr & 0x103) == 0x102) // Nintendulator logic
+			if (addr >= 0x100 && addr <= 0x103) // FCEUX logic, Fixes Qi Wang - Chinese Chess (Ch) [p1][!]
+			{
 				reg = (byte)(value & 0x0f);
+			}
 		}
 
 		public override byte ReadEXP(int addr)
