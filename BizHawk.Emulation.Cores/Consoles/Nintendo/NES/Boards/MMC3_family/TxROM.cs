@@ -75,13 +75,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NES-TLROM": //mega man 3
 				case "KONAMI-TLROM": //Super C
 				case "HVC-TLROM": //8 eyes (J)
-				case "UNIF_NES-TLROM": // Gaiapolis (obviously a clone board, but which one?)
 				case "ACCLAIM-TLROM":
 				
 					AssertPrg(128, 256, 512); AssertChr(64, 128, 256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);
 					break;
-				case "UNIF_NES-TLROM\0\0F\a": // adelikat: This is really what comes in from Tao of 007, The by Quietust (PD) [U][a2].unf in GoodNES3.14
+				case "UNIF_NES-TLROM": // Gaiapolis (obviously a clone board, but which one?)
+					//zero edited this. does it still work?
 					break;
 				case "HVC-TL1ROM": // untested
 				case "NES-TL1ROM": //Double dragon 2
