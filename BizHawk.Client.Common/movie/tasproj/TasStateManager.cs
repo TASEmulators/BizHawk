@@ -270,6 +270,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private List<tsmState> lowPriorityStates = new List<tsmState>();
 		private void MaybeRemoveState()
 		{
 			int shouldRemove = -1;
@@ -297,15 +298,8 @@ namespace BizHawk.Client.Common
 			{
 				shouldRemove++;
 
-				//// No need to have two savestates with only lag frames between them:
-				//for (int i = shouldRemove + 1; i < States.Count; i++)
-				//{
-				//	if (AllLag(States.Keys[i - 1], States.Keys[i]))
-				//	{
-				//		shouldRemove = i - 1;
-				//		break;
-				//	}
-				//}
+				if (lowPriorityStates.Count != 0)
+					shouldRemove = States.IndexOfKey(lowPriorityStates[0].Frame);
 
 				//// Find states with the fewest frames between them
 				//for (int i = shouldRemove + 1; i < States.Count; i++)
@@ -321,7 +315,7 @@ namespace BizHawk.Client.Common
 				markerSkips--;
 				if (markerSkips < 0)
 					shouldRemove = _movie.StartsFromSavestate ? 0 : 1;
-			} while (_movie.Markers.IsMarker(States.ElementAt(shouldRemove).Key + 1) && markerSkips > -1);
+			} while (_movie.Markers.IsMarker(States.Keys[shouldRemove] + 1) && markerSkips > -1);
 
 			return shouldRemove;
 		}
@@ -370,6 +364,12 @@ namespace BizHawk.Client.Common
 			}
 
 			StateAccessed(frame);
+
+			int i = States.IndexOfKey(frame);
+			if (i > 0 && AllLag(States.Keys[i - 1], States.Keys[i]))
+			{
+				lowPriorityStates.Add(States[frame]);
+			}
 		}
 		private void RemoveState(int frame, int branch = -1)
 		{
@@ -378,8 +378,10 @@ namespace BizHawk.Client.Common
 			else
 				accessed.Remove(BranchStates[frame][branch]);
 
+			tsmState state;
 			if (branch == -1)
 			{
+				state = States[frame];
 				if (States[frame].IsOnDisk)
 					States[frame].Dispose();
 				else
@@ -388,8 +390,11 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
+				state = BranchStates[frame][branch];
 				if (BranchStates[frame][branch].IsOnDisk)
 					BranchStates[frame][branch].Dispose();
+				else
+					Used -= (ulong)BranchStates[frame][branch].Length;
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
 			}
 		}
@@ -444,15 +449,6 @@ namespace BizHawk.Client.Common
 
 				foreach (KeyValuePair<int, tsmState> state in statesToRemove)
 					RemoveState(state.Key);
-
-				// Why did I put this here? The branches aren't being edited/invalidated.
-				//var bStateLists = BranchStates.Where(x => x.Key >= frame).ToList();
-				//anyInvalidated = anyInvalidated | bStateLists.Any();
-				//foreach (KeyValuePair<int, SortedList<int, tsmState>> stateList in bStateLists)
-				//{
-				//	for (int i = 0; i < stateList.Value.Count; i++)
-				//		RemoveState(stateList.Key, stateList.Value.Keys[i]);
-				//}
 
 				CallInvalidateCallback(frame);
 			}

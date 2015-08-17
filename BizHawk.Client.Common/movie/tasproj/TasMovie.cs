@@ -472,14 +472,10 @@ namespace BizHawk.Client.Common
 		{
 			int? divergentPoint = DivergantPoint(_log, branch.InputLog);
 
-			_log = branch.InputLog;
+			_log = branch.InputLog.ToList();
 			_changes = true;
 			LagLog.FromLagLog(branch.LagLog);
 
-			//if (divergentPoint.HasValue)
-			//	StateManager.Invalidate(divergentPoint.Value);
-			//else
-			//	StateManager.Invalidate(branch.InputLog.Count);
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 
 			StateManager.SetState(branch.Frame, branch.CoreData);

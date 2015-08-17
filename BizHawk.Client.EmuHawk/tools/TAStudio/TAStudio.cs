@@ -398,28 +398,13 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			if (CurrentTasMovie == null)
-			{
-				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
-				(Global.MovieSession.Movie as TasMovie).TasStateManager.InvalidateCallback = GreenzoneInvalidated;
-			}
+			TasMovie newMovie = new TasMovie(false, _saveBackgroundWorker);
+			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
+			newMovie.Filename = file.FullName;
 
-			CurrentTasMovie.Filename = file.FullName;
-			try
-			{
-				CurrentTasMovie.Load(false);
-			}
-			catch
-			{
-				MessageBox.Show(
-					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
-					"Tastudio",
-					MessageBoxButtons.OK);
-				return false;
-			}
-			Settings.RecentTas.Add(CurrentTasMovie.Filename);
+			Settings.RecentTas.Add(newMovie.Filename);
 
-			if (!HandleMovieLoadStuff())
+			if (!HandleMovieLoadStuff(newMovie))
 				return false;
 
 			BookMarkControl.UpdateValues();
@@ -450,11 +435,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool HandleMovieLoadStuff(TasMovie movie = null)
 		{
-			if (movie == null)
-				movie = CurrentTasMovie;
 
 			WantsToControlStopMovie = false;
-			bool result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
+			bool result;
+			if (movie == null)
+			{
+				movie = CurrentTasMovie;
+				result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
+			}
+			else
+				result = StartNewMovieWrapper(false, movie);
 			if (!result)
 				return false;
 			WantsToControlStopMovie = true;
