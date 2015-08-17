@@ -507,7 +507,6 @@ namespace BizHawk.Client.Common
 			accessed.Clear();
 			Used = 0;
 			clearDiskStates();
-			ndbdatabase.Clear();
 		}
 		public void ClearStateHistory()
 		{
