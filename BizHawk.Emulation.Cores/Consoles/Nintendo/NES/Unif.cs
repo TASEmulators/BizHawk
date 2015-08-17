@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Common.IOExtensions;
+
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -81,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (chunks.TryGetValue("MAPR", out tmp))
 			{
-				ci.board_type = Encoding.ASCII.GetString(tmp);
+				ci.board_type = new BinaryReader(new MemoryStream(tmp)).ReadStringUtf8NullTerminated();
 			}
 
 			ci.board_type = ci.board_type.TrimEnd('\0');
