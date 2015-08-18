@@ -2891,6 +2891,10 @@ namespace BizHawk.Client.EmuHawk
 
 				coreskipaudio = IsTurboing && _currAviWriter == null;
 
+				//why not skip audio if the user doesnt want sound
+				if (!Global.Config.SoundEnabled)
+					coreskipaudio = true;
+
 				{
 					bool render = !_throttle.skipnextframe || _currAviWriter != null;
 					bool renderSound = !coreskipaudio;
