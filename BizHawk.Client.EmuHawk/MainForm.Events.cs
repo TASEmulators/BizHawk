@@ -815,6 +815,8 @@ namespace BizHawk.Client.EmuHawk
 			Speed100MenuItem.Image = (Global.Config.SpeedPercentAlternate == 100) ? Properties.Resources.FastForward : null;
 			Speed150MenuItem.Checked = Global.Config.SpeedPercent == 150;
 			Speed150MenuItem.Image = (Global.Config.SpeedPercentAlternate == 150) ? Properties.Resources.FastForward : null;
+			Speed400MenuItem.Checked = Global.Config.SpeedPercent == 400;
+			Speed400MenuItem.Image = (Global.Config.SpeedPercentAlternate == 400) ? Properties.Resources.FastForward : null;
 			Speed200MenuItem.Checked = Global.Config.SpeedPercent == 200;
 			Speed200MenuItem.Image = (Global.Config.SpeedPercentAlternate == 200) ? Properties.Resources.FastForward : null;
 			Speed75MenuItem.Checked = Global.Config.SpeedPercent == 75;
@@ -827,7 +829,10 @@ namespace BizHawk.Client.EmuHawk
 				Speed100MenuItem.Enabled =
 				Speed150MenuItem.Enabled =
 				Speed200MenuItem.Enabled =
+				Speed400MenuItem.Enabled =
 				Global.Config.ClockThrottle;
+
+			miUnthrottled.Checked = _unthrottled;
 		}
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1037,6 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Speed100MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(100); }
 		private void Speed150MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(150); }
 		private void Speed200MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(200); }
+		private void Speed400MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(400); }
 
 		private void BothHkAndControllerMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1102,6 +1108,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
 			GlobalWin.OSD.AddMessage("Config file loaded");
+		}
+
+		private void miUnthrottled_Click(object sender, EventArgs e)
+		{
+			_unthrottled ^= true;
 		}
 
 		#endregion
