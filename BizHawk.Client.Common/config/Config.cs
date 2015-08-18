@@ -216,10 +216,12 @@ namespace BizHawk.Client.Common
 		public bool DisplayInput = false;
 		public bool DisplayRerecordCount = false;
 
-        public bool DispBlurry = false; // make display look ugly
-        public bool DispFixAspectRatio = true;
-        public bool DispFixScaleInteger = true;
-        public bool DispFullscreenHacks = true;
+		public bool DispBlurry = false; // make display look ugly
+		public bool DispFixAspectRatio = true;
+		public bool DispFixScaleInteger = true;
+		public bool DispFullscreenHacks = true;
+		public int DispSpeedupFeatures = 2;
+
 
 		public int DispFPSx = DefaultMessageOptions.DispFPSx;
 		public int DispFPSy = DefaultMessageOptions.DispFPSy;

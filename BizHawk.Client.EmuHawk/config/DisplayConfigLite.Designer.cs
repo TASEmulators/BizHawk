@@ -36,7 +36,6 @@
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
-			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
@@ -71,8 +70,13 @@
 			this.label7 = new System.Windows.Forms.Label();
 			this.rbGDIPlus = new System.Windows.Forms.RadioButton();
 			this.tpMisc = new System.Windows.Forms.TabPage();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.rbDisplayAbsoluteZero = new System.Windows.Forms.RadioButton();
+			this.rbDisplayMinimal = new System.Windows.Forms.RadioButton();
+			this.rbDisplayFull = new System.Windows.Forms.RadioButton();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.cbFSAutohideMouse = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cbFullscreenHacks = new System.Windows.Forms.CheckBox();
 			this.cbStatusBarFullscreen = new System.Windows.Forms.CheckBox();
@@ -82,11 +86,10 @@
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
-			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
-			this.cbFSAutohideMouse = new System.Windows.Forms.CheckBox();
+			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
 			this.tabControl1.SuspendLayout();
@@ -95,9 +98,11 @@
 			this.tpDispMethod.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tpMisc.SuspendLayout();
+			this.groupBox5.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -178,19 +183,6 @@
 			this.rbUser.TabStop = true;
 			this.rbUser.Text = "User";
 			this.rbUser.UseVisualStyleBackColor = true;
-			// 
-			// tbScanlineIntensity
-			// 
-			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 256;
-			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
-			this.tbScanlineIntensity.TabIndex = 3;
-			this.tbScanlineIntensity.TickFrequency = 32;
-			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
 			// 
 			// rbNone
 			// 
@@ -377,17 +369,17 @@
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(4, 28);
+			this.label2.Location = new System.Drawing.Point(3, 125);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(398, 45);
+			this.label2.Size = new System.Drawing.Size(398, 27);
 			this.label2.TabIndex = 17;
 			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
-    " this displays an Oxoo instead.";
+    " this displays black instead.";
 			// 
 			// checkSnowyNullEmulator
 			// 
 			this.checkSnowyNullEmulator.AutoSize = true;
-			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(3, 3);
+			this.checkSnowyNullEmulator.Location = new System.Drawing.Point(3, 105);
 			this.checkSnowyNullEmulator.Name = "checkSnowyNullEmulator";
 			this.checkSnowyNullEmulator.Size = new System.Drawing.Size(159, 17);
 			this.checkSnowyNullEmulator.TabIndex = 16;
@@ -565,6 +557,7 @@
 			// 
 			// tpMisc
 			// 
+			this.tpMisc.Controls.Add(this.groupBox5);
 			this.tpMisc.Controls.Add(this.label2);
 			this.tpMisc.Controls.Add(this.checkSnowyNullEmulator);
 			this.tpMisc.Location = new System.Drawing.Point(4, 22);
@@ -573,6 +566,52 @@
 			this.tpMisc.TabIndex = 3;
 			this.tpMisc.Text = "Misc";
 			this.tpMisc.UseVisualStyleBackColor = true;
+			// 
+			// groupBox5
+			// 
+			this.groupBox5.Controls.Add(this.rbDisplayAbsoluteZero);
+			this.groupBox5.Controls.Add(this.rbDisplayMinimal);
+			this.groupBox5.Controls.Add(this.rbDisplayFull);
+			this.groupBox5.Location = new System.Drawing.Point(3, 3);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(371, 96);
+			this.groupBox5.TabIndex = 20;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = "Display Features (for speeding up replays)";
+			// 
+			// rbDisplayAbsoluteZero
+			// 
+			this.rbDisplayAbsoluteZero.AutoSize = true;
+			this.rbDisplayAbsoluteZero.Location = new System.Drawing.Point(7, 66);
+			this.rbDisplayAbsoluteZero.Name = "rbDisplayAbsoluteZero";
+			this.rbDisplayAbsoluteZero.Size = new System.Drawing.Size(174, 17);
+			this.rbDisplayAbsoluteZero.TabIndex = 2;
+			this.rbDisplayAbsoluteZero.TabStop = true;
+			this.rbDisplayAbsoluteZero.Text = "Absolute Zero - Display Nothing";
+			this.rbDisplayAbsoluteZero.UseVisualStyleBackColor = true;
+			// 
+			// rbDisplayMinimal
+			// 
+			this.rbDisplayMinimal.AutoSize = true;
+			this.rbDisplayMinimal.Enabled = false;
+			this.rbDisplayMinimal.Location = new System.Drawing.Point(7, 43);
+			this.rbDisplayMinimal.Name = "rbDisplayMinimal";
+			this.rbDisplayMinimal.Size = new System.Drawing.Size(185, 17);
+			this.rbDisplayMinimal.TabIndex = 1;
+			this.rbDisplayMinimal.TabStop = true;
+			this.rbDisplayMinimal.Text = "Minimal - Display HUD Only (TBD)";
+			this.rbDisplayMinimal.UseVisualStyleBackColor = true;
+			// 
+			// rbDisplayFull
+			// 
+			this.rbDisplayFull.AutoSize = true;
+			this.rbDisplayFull.Location = new System.Drawing.Point(7, 20);
+			this.rbDisplayFull.Name = "rbDisplayFull";
+			this.rbDisplayFull.Size = new System.Drawing.Size(137, 17);
+			this.rbDisplayFull.TabIndex = 0;
+			this.rbDisplayFull.TabStop = true;
+			this.rbDisplayFull.Text = "Full - Display Everything";
+			this.rbDisplayFull.UseVisualStyleBackColor = true;
 			// 
 			// tabPage1
 			// 
@@ -599,6 +638,16 @@
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fullscreen";
+			// 
+			// cbFSAutohideMouse
+			// 
+			this.cbFSAutohideMouse.AutoSize = true;
+			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
+			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
+			this.cbFSAutohideMouse.Size = new System.Drawing.Size(139, 17);
+			this.cbFSAutohideMouse.TabIndex = 28;
+			this.cbFSAutohideMouse.Text = "Auto-hide Mouse Cursor";
+			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
 			// 
 			// label1
 			// 
@@ -691,17 +740,6 @@
 			this.cbMenuWindowed.Text = "Menu";
 			this.cbMenuWindowed.UseVisualStyleBackColor = true;
 			// 
-			// trackbarFrameSizeWindowed
-			// 
-			this.trackbarFrameSizeWindowed.LargeChange = 1;
-			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
-			this.trackbarFrameSizeWindowed.Maximum = 2;
-			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
-			this.trackbarFrameSizeWindowed.TabIndex = 21;
-			this.trackbarFrameSizeWindowed.Value = 1;
-			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
-			// 
 			// cbCaptionWindowed
 			// 
 			this.cbCaptionWindowed.AutoSize = true;
@@ -712,15 +750,29 @@
 			this.cbCaptionWindowed.Text = "Caption";
 			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
 			// 
-			// cbFSAutohideMouse
+			// tbScanlineIntensity
 			// 
-			this.cbFSAutohideMouse.AutoSize = true;
-			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
-			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
-			this.cbFSAutohideMouse.Size = new System.Drawing.Size(139, 17);
-			this.cbFSAutohideMouse.TabIndex = 28;
-			this.cbFSAutohideMouse.Text = "Auto-hide Mouse Cursor";
-			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
+			this.tbScanlineIntensity.LargeChange = 32;
+			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
+			this.tbScanlineIntensity.Maximum = 256;
+			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.TabIndex = 3;
+			this.tbScanlineIntensity.TickFrequency = 32;
+			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			// 
+			// trackbarFrameSizeWindowed
+			// 
+			this.trackbarFrameSizeWindowed.LargeChange = 1;
+			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
+			this.trackbarFrameSizeWindowed.Maximum = 2;
+			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
+			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
+			this.trackbarFrameSizeWindowed.TabIndex = 21;
+			this.trackbarFrameSizeWindowed.Value = 1;
+			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
 			// 
 			// DisplayConfigLite
 			// 
@@ -738,7 +790,6 @@
 			this.Text = "Display Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			this.grpFinalFilter.ResumeLayout(false);
 			this.grpFinalFilter.PerformLayout();
 			this.grpARSelection.ResumeLayout(false);
@@ -752,11 +803,14 @@
 			this.groupBox3.PerformLayout();
 			this.tpMisc.ResumeLayout(false);
 			this.tpMisc.PerformLayout();
+			this.groupBox5.ResumeLayout(false);
+			this.groupBox5.PerformLayout();
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
 			this.ResumeLayout(false);
 
@@ -820,5 +874,9 @@
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.NumericUpDown nudPrescale;
 		private System.Windows.Forms.CheckBox cbFSAutohideMouse;
+		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.RadioButton rbDisplayAbsoluteZero;
+		private System.Windows.Forms.RadioButton rbDisplayMinimal;
+		private System.Windows.Forms.RadioButton rbDisplayFull;
 	}
 }

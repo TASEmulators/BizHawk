@@ -1324,6 +1324,12 @@ namespace BizHawk.Client.EmuHawk
 				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
 			}
 
+			//we need to display FPS somewhere, in this case
+			if (Global.Config.DispSpeedupFeatures == 0)
+			{
+				str = str + string.Format("({0} fps) -", _runloopLastFps);
+			}
+
 			if (Global.Emulator.IsNull())
 			{
 				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
@@ -2874,6 +2880,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					GlobalWin.OSD.FPS = fps_string;
+
+					//need to refresh window caption in this case
+					if (Global.Config.DispSpeedupFeatures == 0)
+						SetWindowText();
 				}
 
 				CaptureRewind(suppressCaptureRewind);

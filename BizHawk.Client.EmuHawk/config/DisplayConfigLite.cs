@@ -36,6 +36,10 @@ namespace BizHawk.Client.EmuHawk.config
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			cbFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
 
+			if (Global.Config.DispSpeedupFeatures == 2) rbDisplayFull.Checked = true;
+			if (Global.Config.DispSpeedupFeatures == 1) rbDisplayMinimal.Checked = true;
+			if (Global.Config.DispSpeedupFeatures == 0) rbDisplayAbsoluteZero.Checked = true;
+
 			rbOpenGL.Checked = Global.Config.DispMethod == Config.EDispMethod.OpenGL;
 			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
 			rbD3D9.Checked = Global.Config.DispMethod == Config.EDispMethod.SlimDX9;
@@ -106,6 +110,10 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispChrome_MenuFullscreen = cbMenuFullscreen.Checked;
 			Global.Config.DispChrome_FrameWindowed = trackbarFrameSizeWindowed.Value;
 			Global.Config.DispChrome_Fullscreen_AutohideMouse = cbFSAutohideMouse.Checked;
+
+			if (rbDisplayFull.Checked) Global.Config.DispSpeedupFeatures = 2;
+			if (rbDisplayMinimal.Checked) Global.Config.DispSpeedupFeatures = 1;
+			if (rbDisplayAbsoluteZero.Checked) Global.Config.DispSpeedupFeatures = 0;
 
 			// HACK:: null emulator's settings don't persist to config normally
 			{

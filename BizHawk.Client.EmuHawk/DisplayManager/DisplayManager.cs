@@ -333,12 +333,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			bool displayNothing = Global.Config.DispSpeedupFeatures == 0;
 			var job = new JobInfo
 			{
 				videoProvider = videoProvider,
-				simulate = false,
+				simulate = displayNothing,
 				chain_outsize = GraphicsControl.Size,
-				includeOSD = true
+				includeOSD = true,
+				
 			};
 			UpdateSourceInternal(job);
 		}
@@ -522,6 +524,8 @@ namespace BizHawk.Client.EmuHawk
 			IVideoProvider videoProvider = job.videoProvider;
 			bool simulate = job.simulate;
 			Size chain_outsize = job.chain_outsize;
+
+			//simulate = true;
 			
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
