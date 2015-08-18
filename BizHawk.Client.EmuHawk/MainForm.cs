@@ -1079,6 +1079,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		void ThrottleMessage()
+		{
+			string ttype = ":(none)";
+			if(Global.Config.SoundThrottle) { ttype = ":Sound"; }
+			if(Global.Config.VSyncThrottle) { ttype = String.Format(":Vsync{0}",Global.Config.VSync?"[ena]":"[dis]");  }
+			if(Global.Config.ClockThrottle) { ttype = ":Clock"; }
+			string xtype = _unthrottled ? "Unthrottled" : "Throttled";
+			string msg = string.Format("{0}{1} ",xtype,ttype);
+
+			GlobalWin.OSD.AddMessage(msg);
+		}
+
 		public void FrameSkipMessage()
 		{
 			GlobalWin.OSD.AddMessage("Frameskipping set to " + Global.Config.FrameSkip);

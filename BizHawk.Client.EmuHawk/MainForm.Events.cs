@@ -975,7 +975,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LimitFrameRateMessage();
+			ThrottleMessage();
 		}
 
 		private void AudioThrottleMenuItem_Click(object sender, EventArgs e)
@@ -992,6 +992,8 @@ namespace BizHawk.Client.EmuHawk
 					PresentationPanel.Resized = true;
 				}
 			}
+
+			ThrottleMessage();
 		}
 
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
@@ -1009,7 +1011,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			VsyncMessage();
+			if (!Global.Config.VSync)
+			{
+				Global.Config.VSync = true;
+				VsyncMessage();
+			}
+
+			ThrottleMessage();
 		}
 
 		private void VsyncEnabledMenuItem_Click(object sender, EventArgs e)
@@ -1019,6 +1027,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PresentationPanel.Resized = true;
 			}
+
+			VsyncMessage();
 		}
 
 		private void MinimizeSkippingMenuItem_Click(object sender, EventArgs e)
