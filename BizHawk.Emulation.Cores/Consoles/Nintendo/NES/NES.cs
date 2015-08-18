@@ -589,9 +589,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					LoadWriteLine("Using information from UNIF header");
 					choice = unif.CartInfo;
 					//ok, i have this Q-Boy rom with no VROM and no VRAM.
-					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set.
-					//we'll let individual boards override that and set 8KB here
-					choice.vram_size = 8;
+					//we also certainly have games with VROM and no VRAM.
+					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set. but what's the justification for this? please leave a note if you go debugging in it again.
+					//well, we know we can't have much of a NES game if there's no VROM unless there's VRAM instead.
+					//so if the VRAM isn't set, choose 8 for it.
+					//TODO - unif loading code may need to use VROR flag to transform chr_size=8 to vram_size=8 (need example)
+					if (choice.chr_size == 0 && choice.vram_size == 0)
+						choice.vram_size = 8;
 					//(do we need to suppress this in case theres a CHR rom? probably not. nes board base will use ram if no rom is available)
 					origin = EDetectionOrigin.UNIF;
 				}
