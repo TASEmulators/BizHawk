@@ -1123,6 +1123,7 @@ namespace BizHawk.Client.EmuHawk
 		private void miUnthrottled_Click(object sender, EventArgs e)
 		{
 			_unthrottled ^= true;
+			ThrottleMessage();
 		}
 
 		#endregion
