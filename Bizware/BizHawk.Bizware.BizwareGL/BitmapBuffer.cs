@@ -81,6 +81,30 @@ namespace BizHawk.Bizware.BizwareGL
 			UnlockBits(CurrLock);
 		}
 
+		public unsafe void YFlip()
+		{
+			//TODO - could be faster
+			var bmpdata = LockBits();
+			int[] newPixels = new int[Width * Height];
+			int todo = Width * Height;
+			int* s = (int*)bmpdata.Scan0.ToPointer();
+			fixed (int* d = newPixels)
+			{
+				for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
+				{
+					for (int x = 0; x < Width; x++, si++, di++)
+					{
+						d[di] = s[si];
+					}
+					di -= Width * 2;
+				}
+			}
+
+			UnlockBits(bmpdata);
+
+			Pixels = newPixels;
+		}
+
 		public unsafe void Normalize(bool yflip)
 		{
 			var bmpdata = LockBits();
@@ -214,7 +238,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		/// <summary>
-		/// loads an image from the specified stream
+		/// loads an image (png,bmp,etc) from the specified stream
 		/// </summary>
 		public BitmapBuffer(Stream stream, BitmapLoadOptions options)
 		{

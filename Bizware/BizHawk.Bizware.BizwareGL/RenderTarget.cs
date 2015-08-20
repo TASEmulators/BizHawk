@@ -5,10 +5,10 @@ namespace BizHawk.Bizware.BizwareGL
 {
 	public class RenderTarget : IDisposable
 	{
-		public RenderTarget(IGL owner, IntPtr handle, Texture2d tex)
+		public RenderTarget(IGL owner, object opaque, Texture2d tex)
 		{
 			Owner = owner;
-			Id = handle;
+			Opaque = opaque;
 			Texture2d = tex;
 			tex.IsUpsideDown = true;
 		}
@@ -18,7 +18,7 @@ namespace BizHawk.Bizware.BizwareGL
 			return string.Format("GL RT: {0}x{1}", Texture2d.Width, Texture2d.Height);
 		}
 
-		public IntPtr Id { get; private set; }
+		public object Opaque { get; private set; }
 		public IGL Owner { get; private set; }
 		public Texture2d Texture2d { get; private set; }
 

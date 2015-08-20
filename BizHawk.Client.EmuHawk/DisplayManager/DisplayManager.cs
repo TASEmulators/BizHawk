@@ -63,19 +63,22 @@ namespace BizHawk.Client.EmuHawk
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
+			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 			{
-				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
-				if (fiHq2x.Exists)
-					using (var stream = fiHq2x.OpenRead())
-						ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-				var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
-				if (fiScanlines.Exists)
-					using (var stream = fiScanlines.OpenRead())
-						ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
+				//var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
+				//if (fiHq2x.Exists)
+				//  using (var stream = fiHq2x.OpenRead())
+				//    ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				//var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+				//if (fiScanlines.Exists)
+				//  using (var stream = fiScanlines.OpenRead())
+				//    ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				string bicubic_path = "Shaders/BizHawk/bicubic-fast.cgp";
+				if(GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+					bicubic_path = "Shaders/BizHawk/bicubic-normal.cgp";
+				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), bicubic_path));
 				if (fiBicubic.Exists)
-					using (var stream = fiBicubic.OpenRead())
+					using (var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
 						ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 			}
 
@@ -241,10 +244,11 @@ namespace BizHawk.Client.EmuHawk
 			Filters.FinalPresentation.eFilterOption finalFilter = Filters.FinalPresentation.eFilterOption.None;
 			if (Global.Config.DispFinalFilter == 1) finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
 			if (Global.Config.DispFinalFilter == 2) finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
-			//if bicubic is selected and unavailable, dont use it
-			if (ShaderChain_bicubic != null && !ShaderChain_bicubic.Available && fPresent.FilterOption == Filters.FinalPresentation.eFilterOption.Bicubic)
+			//if bicubic is selected and unavailable, dont use it. use bilinear instead I guess
+			if (finalFilter == Filters.FinalPresentation.eFilterOption.Bicubic)
 			{
-				finalFilter = Filters.FinalPresentation.eFilterOption.None;
+				if (ShaderChain_bicubic == null || !ShaderChain_bicubic.Available)
+					finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
 			}
 			fPresent.FilterOption = finalFilter;
 
@@ -259,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 			AppendLuaLayer(chain, "native");
 
 			//and OSD goes on top of that
-			//TODO - things break if this isnt present (the final presentation filter gets messed up)
+			//TODO - things break if this isnt present (the final presentation filter gets messed up when used with prescaling)
 			//so, always include it (we'll handle this flag in the callback to do no rendering)
 			//if (includeOSD)
 				chain.AddFilter(fOSD, "osd");
@@ -519,7 +523,11 @@ namespace BizHawk.Client.EmuHawk
 
 		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
-			GlobalWin.GLManager.Activate(CR_GraphicsControl);
+			//no drawing actually happens. it's important not to begin drawing on a control
+			if (!job.simulate)
+			{
+				GlobalWin.GLManager.Activate(CR_GraphicsControl);
+			}
 
 			IVideoProvider videoProvider = job.videoProvider;
 			bool simulate = job.simulate;
@@ -550,19 +558,21 @@ namespace BizHawk.Client.EmuHawk
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			
-TESTEROO:
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
-			//TODO - need to do some work here for GDI+ to repair gl texture ID importing
 			BitmapBuffer bb = null;
 			Texture2d videoTexture = null;
 			if (!simulate)
 			{
-				//special codepath for GDI+
-				//TODO - make for gdi+ only. maybe other codepath for d3d
-				if (!(GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK))
+				if (isGlTextureId)
+				{
+					//FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
+					//is it workable for saturn?
+					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+				}
+				else
 				{
 					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
@@ -570,30 +580,9 @@ TESTEROO:
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = VideoTextureFrugalizer.Get(bb);
-					GL.SetTextureWrapMode(videoTexture, true);
-				}
-				else
-				{
-					if (isGlTextureId)
-					{
-						videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
-					}
-					else
-					{
-						//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
-						bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
-
-						//now, acquire the data sent from the videoProvider into a texture
-						videoTexture = VideoTextureFrugalizer.Get(bb);
-						GL.SetTextureWrapMode(videoTexture, true);
-					}
-
-					//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
-					if (!isGlTextureId)
-					{
-						videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
-						goto TESTEROO;
-					}
+					
+					//lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
+					//GL.SetTextureWrapMode(videoTexture, true);
 				}
 			}
 
@@ -647,6 +636,8 @@ TESTEROO:
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
 			//GraphicsControl.Begin();
 
+			GlobalWin.GL.BeginScene();
+
 			//run filter chain
 			Texture2d texCurr = null;
 			RenderTarget rtCurr = null;
@@ -693,6 +684,8 @@ TESTEROO:
 				}
 			}
 
+			GL.EndScene();
+
 			if (job.offscreen)
 			{
 				job.offscreenBB = rtCurr.Texture2d.Resolve();
@@ -730,6 +723,7 @@ TESTEROO:
 
 				NeedsToPaint = false; //??
 			}
+
 		}
 
 		bool? LastVsyncSetting;

@@ -55,17 +55,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public void Begin()
 		{
-		
+			sdx.BeginControl(this);
 		}
 
 		public void End()
 		{
-		
+			sdx.EndControl(this);
 		}
 
 		public void SwapBuffers()
 		{
-		
+			sdx.SwapControl(this);
 		}
 	}
 }

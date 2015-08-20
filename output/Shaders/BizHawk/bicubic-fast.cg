@@ -6,7 +6,25 @@
 /*
    bicubic-fast Shader
 
-   Programmed by Hyllian - 2012
+   Copyright (C) 2011-2015 Hyllian - sergiogdb@gmail.com
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in
+   all copies or substantial portions of the Software.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
 
 */
 
@@ -35,15 +53,15 @@ struct input
 
 
 struct out_vertex {
-	float2 texCoord;
-	float4 t1;
-	float4 t2;
-	float4 t3;
-	float4 t4;
-	float4 t5;
-	float4 t6;
-	float4 t7;
-	float2 t8;
+	float2 texCoord : TEXCOORD0;
+	float4 t1       : TEXCOORD1;
+	float4 t2       : TEXCOORD2;
+	float4 t3       : TEXCOORD3;
+	float4 t4       : TEXCOORD4;
+	float4 t5       : TEXCOORD5;
+	float4 t6       : TEXCOORD6;
+	float4 t7       : TEXCOORD7;
+	float2 t8       : COLOR0;
 };
 
 /*    VERTEX_SHADER    */
@@ -51,7 +69,7 @@ out_vertex main_vertex
 (
 	float4 position	: POSITION,
    out float4 oPosition : POSITION,
-	float2 tex      : TEXCOORD0,
+	float2 texCoord1 : TEXCOORD0,
 
    	uniform float4x4 modelViewProj,
 	uniform input IN
@@ -62,6 +80,9 @@ out_vertex main_vertex
 	float dy = ps.y;
 
    oPosition = mul(modelViewProj, position);
+
+	// This line fix a bug in ATI cards.
+	float2 tex = texCoord1 + float2(0.0000001, 0.0000001);
 
 	out_vertex OUT = { 
 		tex,
@@ -84,7 +105,6 @@ float4 main_fragment(in out_vertex VAR, uniform sampler2D s_p : TEXUNIT0, unifor
 {
 
   float2 fp = frac(VAR.texCoord*IN.texture_size);
-
   float3 c00 = tex2D(s_p, VAR.t1.xy).xyz;
   float3 c01 = tex2D(s_p, VAR.t1.zw).xyz;
   float3 c02 = tex2D(s_p, VAR.t2.xy).xyz;

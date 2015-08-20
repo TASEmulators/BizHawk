@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
-using sd=System.Drawing;
+using sd = System.Drawing;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -47,9 +47,9 @@ namespace BizHawk.Bizware.BizwareGL
 				psProgram = DefaultPixelShader_gl;
 			}
 
-			var vs = Owner.CreateVertexShader(vsProgram, true);
-			var ps = Owner.CreateFragmentShader(psProgram, true);
-			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true);
+			var vs = Owner.CreateVertexShader(false, vsProgram, "vsmain", true);
+			var ps = Owner.CreateFragmentShader(false, psProgram, "psmain", true);
+			CurrPipeline = DefaultPipeline = Owner.CreatePipeline(VertexLayout, vs, ps, true, "xgui");
 		}
 
 		OpenTK.Graphics.Color4[] CornerColors = new OpenTK.Graphics.Color4[4] {
@@ -63,7 +63,7 @@ namespace BizHawk.Bizware.BizwareGL
 			CornerColors[which] = color;
 		}
 
-	
+
 		public void SetCornerColors(OpenTK.Graphics.Color4[] colors)
 		{
 			Flush(); //dont really need to flush with current implementation. we might as well roll modulate color into it too.
@@ -74,12 +74,8 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Dispose()
 		{
-			VertexLayout.Dispose();
-			VertexLayout = null;
 			DefaultPipeline.Dispose();
-			DefaultPipeline = null;
 		}
-
 
 		public void SetPipeline(Pipeline pipeline)
 		{
@@ -112,9 +108,9 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void SetBlendState(IBlendState rsBlend)
 		{
-			#if DEBUG
+#if DEBUG
 			BlendStateSet = true;
-			#endif
+#endif
 			Flush();
 			Owner.SetBlendState(rsBlend);
 		}
@@ -148,12 +144,12 @@ namespace BizHawk.Bizware.BizwareGL
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
 
-			if (yflipped)
-			{
-				//not sure this is the best way to do it. could be done in the view matrix creation
-				Modelview.Scale(1, -1);
-				Modelview.Translate(0, -height);
-			}
+			//if (yflipped)
+			//{
+			//  //not sure this is the best way to do it. could be done in the view matrix creation
+			//  Modelview.Scale(1, -1);
+			//  Modelview.Translate(0, -height);
+			//}
 			Owner.SetViewport(width, height);
 		}
 
@@ -162,9 +158,9 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			//uhhmmm I want to throw an exception if its already active, but its annoying.
 
-			if(CurrPipeline == null)
+			if (CurrPipeline == null)
 				throw new InvalidOperationException("Pipeline hasn't been set!");
-			
+
 			IsActive = true;
 			Owner.BindPipeline(CurrPipeline);
 
@@ -175,9 +171,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Projection.Clear();
 			SetModulateColorWhite();
 
-			#if DEBUG
-				BlendStateSet = false;
-			#endif
+#if DEBUG
+			BlendStateSet = false;
+#endif
 		}
 
 
@@ -240,15 +236,18 @@ namespace BizHawk.Bizware.BizwareGL
 			art.u0 = art.v0 = 0;
 			art.u1 = art.v1 = 1;
 			art.BaseTexture = tex;
-			DrawInternal(art,x,y,w,h,false,tex.IsUpsideDown);
+			DrawInternal(art, x, y, w, h, false, tex.IsUpsideDown);
 		}
 
 		unsafe void DrawInternal(Art art, float x, float y, float w, float h, bool fx, bool fy)
 		{
-			float u0,v0,u1,v1;
-			if(fx) { u0 = art.u1; u1 = art.u0; }
+			//TEST: d3d shouldnt ever use this, it was a gl hack. maybe we can handle it some other way in gl (fix the projection? take a render-to-texture arg to the gui view transforms?)
+			fy = false;
+
+			float u0, v0, u1, v1;
+			if (fx) { u0 = art.u1; u1 = art.u0; }
 			else { u0 = art.u0; u1 = art.u1; }
-			if(fy) { v0 = art.v1; v1 = art.v0; }
+			if (fy) { v0 = art.v1; v1 = art.v0; }
 			else { v0 = art.v0; v1 = art.v1; }
 
 			float[] data = new float[32] {
@@ -259,7 +258,7 @@ namespace BizHawk.Bizware.BizwareGL
 			};
 
 			Texture2d tex = art.BaseTexture;
-			
+
 			PrepDrawSubrectInternal(tex);
 
 			fixed (float* pData = &data[0])
@@ -287,12 +286,12 @@ namespace BizHawk.Bizware.BizwareGL
 
 			if (_Projection.IsDirty)
 			{
-				CurrPipeline["um44Projection"].Set(ref _Projection.Top);
+				CurrPipeline["um44Projection"].Set(ref _Projection.Top, false);
 				_Projection.IsDirty = false;
 			}
 			if (_Modelview.IsDirty)
 			{
-				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top);
+				CurrPipeline["um44Modelview"].Set(ref _Modelview.Top, false);
 				_Modelview.IsDirty = false;
 			}
 		}
@@ -336,9 +335,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner.BindArrayData(pData);
 			Owner.DrawArrays(PrimitiveType.TriangleStrip, 0, 4);
 
-			#if DEBUG
+#if DEBUG
 			Debug.Assert(BlendStateSet);
-			#endif
+#endif
 		}
 
 		unsafe void DrawSubrectInternal(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
@@ -346,7 +345,7 @@ namespace BizHawk.Bizware.BizwareGL
 			PrepDrawSubrectInternal(tex);
 			EmitRectangleInternal(x, y, w, h, u0, v0, u1, v1);
 		}
-		
+
 		public bool IsActive { get; private set; }
 		public IGL Owner { get; private set; }
 
@@ -355,17 +354,20 @@ namespace BizHawk.Bizware.BizwareGL
 
 		//state cache
 		Texture2d sTexture;
-		#if DEBUG
-			bool BlendStateSet;
-		#endif
+#if DEBUG
+		bool BlendStateSet;
+#endif
 
+//shaders are hand-coded for each platform to make sure they stay as fast as possible
 
-			public readonly string DefaultShader_d3d9 = @"
+		public readonly string DefaultShader_d3d9 = @"
+//vertex shader uniforms
 float4x4 um44Modelview, um44Projection;
 float4 uModulateColor;
 
+//pixel shader uniforms
 bool uSamplerEnable;
-texture2D texture0;
+texture2D texture0, texture1;
 sampler uSampler0 = sampler_state { Texture = (texture0); };
 
 struct VS_INPUT
@@ -392,7 +394,7 @@ VS_OUTPUT vsmain(VS_INPUT src)
 {
 	VS_OUTPUT dst;
 	float4 temp = float4(src.aPosition,0,1);
-	dst.vPosition = mul(mul(temp,um44Modelview),um44Projection);
+	dst.vPosition = mul(um44Projection,mul(um44Modelview,temp));
 	dst.vTexcoord0 = src.aTexcoord;
 	dst.vCornerColor = src.aColor * uModulateColor;
 	return dst;
@@ -411,9 +413,12 @@ float4 psmain(PS_INPUT src) : COLOR
 uniform mat4 um44Modelview, um44Projection;
 uniform vec4 uModulateColor;
 
-attribute vec2 aPosition;
-attribute vec2 aTexcoord;
-attribute vec4 aColor;
+//attribute vec2 aPosition : gl_Vertex;
+//attribute vec2 aTexcoord : gl_MultiTexCoord0;
+//attribute vec4 aColor : gl_Color;
+#define aPosition vec2(gl_Vertex.xy)
+#define aTexcoord vec2(gl_MultiTexCoord0.xy)
+#define aColor gl_Color
 
 varying vec2 vTexcoord0;
 varying vec4 vCornerColor;

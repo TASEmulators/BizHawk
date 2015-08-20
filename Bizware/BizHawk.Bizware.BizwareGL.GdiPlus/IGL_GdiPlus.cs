@@ -73,6 +73,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 	public class IGL_GdiPlus : IGL
 	{
+		//rendering state
+		RenderTarget _CurrRenderTarget;
+
 		public IGL_GdiPlus()
 		{
 			MyBufferedGraphicsContext = new BufferedGraphicsContext();
@@ -113,17 +116,17 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public IntPtr GenTexture() { return ResourceIDs.Alloc(ResourceIdManager.EResourceType.Texture); }
 		public void FreeTexture(Texture2d tex)
 		{
-			ResourceIDs.Free(tex.Id);
+			ResourceIDs.Free((IntPtr)tex.Opaque);
 		}
 		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
 		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
 
 		
-		public Shader CreateFragmentShader(string source, bool required)
+		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
 		{
 			return null;
 		}
-		public Shader CreateVertexShader(string source, bool required)
+		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
 		{
 			return null;
 		}
@@ -142,32 +145,30 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public IBlendState BlendNoneOpaque { get { return _rsBlendNoneOpaque; } }
 		public IBlendState BlendNormal { get { return _rsBlendNormal; } }
 
-		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required)
+		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
 			return null;
 		}
 
-		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
+		public void FreePipeline(Pipeline pipeline) {}
 
-		public void BindTexture2d(Texture2d tex)
-		{
-			CurrentBoundTexture = tex;
-		}
+		public VertexLayout CreateVertexLayout() { return new VertexLayout(this, new IntPtr(0)); }
 
 		public void SetTextureWrapMode(Texture2d tex, bool clamp)
 		{
-			if (CurrentBoundTexture == null)
-				throw new InvalidOperationException();
 		}
 
 		public void DrawArrays(PrimitiveType mode, int first, int count)
 		{
-			
 		}
 
 		public void BindPipeline(Pipeline pipeline)
 		{
 
+		}
+
+		public void Internal_FreeShader(Shader shader)
+		{
 		}
 
 		public void SetPipelineUniform(PipelineUniform uniform, bool value)
@@ -199,17 +200,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		{
 		}
 
-		public void SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle)
+		public void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex)
 		{
 	
 		}
 
-		public void TexParameter2d(TextureParameterName pname, int param)
+		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
 		{
-			if (CurrentBoundTexture == null)
-				return;
-
-			TextureWrapper tw = TextureWrapperForTexture(CurrentBoundTexture);
+			TextureWrapper tw = TextureWrapperForTexture(tex);
 			if (pname == TextureParameterName.TextureMinFilter)
 				tw.MinFilter = (TextureMinFilter)param;
 			if (pname == TextureParameterName.TextureMagFilter)
@@ -223,7 +221,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			tw.SDBitmap = sdbmp;
 			IntPtr id = GenTexture();
 			ResourceIDs.Lookup[id.ToInt32()] = tw;
-			return new Texture2d(this, id, null, bitmap.Width, bitmap.Height);
+			return new Texture2d(this, id, bitmap.Width, bitmap.Height);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
@@ -257,7 +255,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var tw = new TextureWrapper();
 			tw.SDBitmap = sdbmp;
 			ResourceIDs.Lookup[id.ToInt32()] = tw;
-			return new Texture2d(this, id, null, bmp.Width, bmp.Height);
+			return new Texture2d(this, id, bmp.Width, bmp.Height);
 		}
 
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
@@ -279,9 +277,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			return CreateGuiProjectionMatrix(new sd.Size(w, h));
 		}
 
-		public Matrix4 CreateGuiViewMatrix(int w, int h)
+		public Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip)
 		{
-			return CreateGuiViewMatrix(new sd.Size(w, h));
+			return CreateGuiViewMatrix(new sd.Size(w, h), autoflip);
 		}
 
 		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
@@ -299,15 +297,25 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				ret.M22 = 1;
 			else ret.M22 = 2.0f / (float)dims.Height;
 
+
 			return ret;
 		}
 
-		public Matrix4 CreateGuiViewMatrix(sd.Size dims)
+		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoflip)
 		{
 			Matrix4 ret = Matrix4.Identity;
 			ret.M22 = -1.0f;
 			ret.M41 = -(float)dims.Width * 0.5f;
 			ret.M42 = (float)dims.Height * 0.5f;
+			if (autoflip)
+			{
+				if (_CurrRenderTarget == null) { }
+				else
+				{
+					//flip as long as we're not a final render target
+					ret.M22 = 1.0f;
+				}
+			}
 			return ret;
 		}
 
@@ -393,6 +401,14 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			}
 		}
 
+		public void BeginScene()
+		{
+		}
+
+		public void EndScene()
+		{
+		}
+
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{
 			var ret = new GLControlWrapper_GdiPlus(this);
@@ -407,9 +423,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			int id = rt.Id.ToInt32();
+			int id = (int)rt.Opaque;
 			var rtw = ResourceIDs.Lookup[id] as RenderTargetWrapper;
-			ResourceIDs.Free(rt.Id);
+			ResourceIDs.Free(new IntPtr(id));
 		}
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
@@ -418,10 +434,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			tw.SDBitmap = new Bitmap(w,h, sdi.PixelFormat.Format32bppArgb);
 			IntPtr texid = GenTexture();
 			ResourceIDs.Lookup[texid.ToInt32()] = tw;
-			var tex = new Texture2d(this, texid, null, w, h);
+			var tex = new Texture2d(this, texid, w, h);
 
 			var rt = new RenderTarget(this, ResourceIDs.Alloc(ResourceIdManager.EResourceType.RenderTarget), tex);
-			int id = rt.Id.ToInt32();
+			int id = (int)rt.Opaque;
 			RenderTargetWrapper rtw = new RenderTargetWrapper(this);
 			rtw.Target = rt;
 			ResourceIDs.Lookup[id] = rtw;
@@ -430,6 +446,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void BindRenderTarget(RenderTarget rt)
 		{
+			_CurrRenderTarget = rt;
 			if (CurrentRenderTargetWrapper != null)
 			{
 				if (CurrentRenderTargetWrapper == CurrentControl.RenderTargetWrapper)
@@ -460,12 +477,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public TextureWrapper TextureWrapperForTexture(Texture2d tex)
 		{
-			return ResourceIDs.Lookup[tex.Id.ToInt32()] as TextureWrapper;
+			return ResourceIDs.Lookup[((IntPtr)tex.Opaque).ToInt32()] as TextureWrapper;
 		}
 
 		public RenderTargetWrapper RenderTargetWrapperForRt(RenderTarget rt)
 		{
-			return ResourceIDs.Lookup[rt.Id.ToInt32()] as RenderTargetWrapper;
+			return ResourceIDs.Lookup[(int)rt.Opaque] as RenderTargetWrapper;
 		}
 
 		public Graphics GetCurrentGraphics()
@@ -476,7 +493,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public GLControlWrapper_GdiPlus CurrentControl;
 		public RenderTargetWrapper CurrentRenderTargetWrapper;
-		Texture2d CurrentBoundTexture;
 
 		//todo - not thread safe
 		public static ResourceIdManager ResourceIDs = new ResourceIdManager();
