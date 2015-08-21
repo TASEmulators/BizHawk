@@ -44,7 +44,6 @@ namespace EtoHawk.Config
             this.checkBoxUDLR = new CheckBox();
             this.buttonOK = new Button();
             this.buttonCancel = new Button();
-            this.tableLayoutPanel1 = new TableLayout(2,1);
             this.pictureBox1 = new ImageView();
             this.contextMenuStrip1 = new ContextMenu();
             this.testToolStripMenuItem = new ButtonMenuItem();
@@ -55,7 +54,6 @@ namespace EtoHawk.Config
             this.label38 = new Label();
             this.btnMisc = new Button();
             this.tabControl1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
             //this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -146,26 +144,6 @@ namespace EtoHawk.Config
             //this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += this.ButtonCancel_Click;
             // 
-            // tableLayoutPanel1
-            // 
-            /*this.tableLayoutPanel1.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
-            | AnchorStyles.Left)
-            | AnchorStyles.Right)));*/
-            //this.tableLayoutPanel1.ColumnCount = 2;
-            //this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            //this.tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 340F));
-			this.pictureBox1.Size = new Size(334, 501);
-			this.tableLayoutPanel1.SetColumnScale (1, false);
-            this.tableLayoutPanel1.Add(this.tabControl1, 0, 0);
-            this.tableLayoutPanel1.Add(this.pictureBox1, 1, 0);
-			//this.tableLayoutPanel1.
-            //this.tableLayoutPanel1.Location = new Point(12, 12);
-            //this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            //this.tableLayoutPanel1.RowCount = 1;
-            //this.tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new Size(908, 527);
-            //this.tableLayoutPanel1.TabIndex = 7;
-            // 
             // pictureBox1
             // 
             //this.pictureBox1.BorderStyle = BorderStyle.FixedSingle;
@@ -252,7 +230,7 @@ namespace EtoHawk.Config
             //this.AutoScaleDimensions = new SizeF(6F, 13F);
             //this.AutoScaleMode = AutoScaleMode.Font;
             //this.CancelButton = this.buttonCancel;
-            this.ClientSize = new Size(932, 572);
+            this.ClientSize = new Size(920, 560);
             /*this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label38);
@@ -283,16 +261,21 @@ namespace EtoHawk.Config
             dlTipsChecks.Add(checkBoxUDLR);
             dlTipsChecks.EndHorizontal();
 
+            DynamicLayout dlgButtons = new DynamicLayout ();
+            dlgButtons.BeginHorizontal ();
+            dlgButtons.Add(btnMisc);
+            dlgButtons.Add(buttonOK);
+            dlgButtons.Add(buttonCancel);
+            dlgButtons.EndHorizontal ();
+
             dlMainLayout = new DynamicLayout();
             dlMainLayout.BeginHorizontal(true);
             dlMainLayout.Add(tabControl1,true);
             dlMainLayout.Add(pictureBox1);
             dlMainLayout.EndHorizontal();
             dlMainLayout.BeginHorizontal();
-            dlMainLayout.Add(dlTipsChecks);
-            dlMainLayout.Add(btnMisc);
-            dlMainLayout.Add(buttonOK);
-            dlMainLayout.Add(buttonCancel);
+            dlMainLayout.Add(dlTipsChecks,true);
+            dlMainLayout.Add (dlgButtons);
             dlMainLayout.EndHorizontal();
             Content = dlMainLayout;
         }
@@ -306,7 +289,6 @@ namespace EtoHawk.Config
         private CheckBox checkBoxUDLR;
         private Button buttonOK;
         private Button buttonCancel;
-		private TableLayout tableLayoutPanel1;
         private ImageView pictureBox1;
         private TabPage AnalogControlsTab;
         private ContextMenu contextMenuStrip1;

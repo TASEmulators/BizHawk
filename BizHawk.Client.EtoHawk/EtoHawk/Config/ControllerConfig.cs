@@ -58,13 +58,15 @@ namespace EtoHawk.Config
 			try{
 				using(Stream strm = assm.GetManifestResourceStream (resName)){
 					img = new Bitmap(strm);
+                    img = new Bitmap(img, 250, null, ImageInterpolation.Medium);
+                    //Force the images to always be 250x250, it's the easiest way to enforce the auto-sized picture box to always be that size.
 				}
 			}
 			catch(Exception ex){
 
 			}
 			if (img == null) {
-				img = new Bitmap (new Size (150, 150), PixelFormat.Format32bppRgba);
+				img = new Bitmap (new Size (250, 250), PixelFormat.Format32bppRgba);
 				Graphics g = new Graphics (img);
 				g.DrawText (new Font (SystemFont.Label, 12), Eto.Drawing.Colors.Black, 0, 0, name + " image not found.");
 			}
