@@ -638,6 +638,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF-DREAMTECH01.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-190in1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-A65AS.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-T-262.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs">
