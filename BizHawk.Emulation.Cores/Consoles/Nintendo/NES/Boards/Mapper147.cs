@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER147":
+				case "UNIF_UNL-TC-U01-1.5M":
 					break;
 				default:
 					return false;
