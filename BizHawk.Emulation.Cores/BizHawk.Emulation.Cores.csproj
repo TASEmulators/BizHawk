@@ -478,6 +478,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI-FCG-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_02_74.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Bonza.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
