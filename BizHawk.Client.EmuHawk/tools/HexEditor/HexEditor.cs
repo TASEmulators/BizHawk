@@ -397,22 +397,6 @@ namespace BizHawk.Client.EmuHawk
 			return (char)keycode;
 		}
 
-		private static string GetSaveFileFromUser()
-		{
-			var sfd = new SaveFileDialog
-			{
-				Filter = "Text (*.txt)|*.txt|All Files|*.*",
-				RestoreDirectory = true
-			};
-
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
-
-			var result = sfd.ShowHawkDialog();
-
-			return result == DialogResult.OK ? sfd.FileName : string.Empty;
-		}
-
 		private static bool IsHexKeyCode(char key)
 		{
 			if (key >= '0' && key <= '9') // 0-9
@@ -806,12 +790,53 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_domain.Name == "File on Disk")
 			{
-				var extension = Path.GetExtension(GlobalWin.MainForm.CurrentlyOpenRom);
+				var extension = Path.GetExtension(RomName);
 
 				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
 			}
 			
 			return "Binary (*.bin)|*.bin|All Files|*.*";
+		}
+
+
+		private string RomDirectory
+		{
+			get
+			{
+				string path = Global.Config.RecentRoms.MostRecent;
+
+				if (string.IsNullOrWhiteSpace(path))
+				{
+					return path;
+				}
+
+				if (path.Contains("|"))
+				{
+					path = path.Split('|').First();
+				}
+
+				return Path.GetDirectoryName(path);
+			}
+		}
+
+		private string RomName
+		{
+			get
+			{
+				string path = Global.Config.RecentRoms.MostRecent;
+
+				if (string.IsNullOrWhiteSpace(path))
+				{
+					return path;
+				}
+
+				if (path.Contains("|"))
+				{
+					path = path.Split('|').Last();
+				}
+
+				return Path.GetFileName(path);
+			}
 		}
 
 		private string GetBinarySaveFileFromUser()
@@ -820,12 +845,35 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Filter = GetSaveFileFilter(),
 				RestoreDirectory = true,
-				InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null))
+				InitialDirectory = RomDirectory
 			};
 
 			if (_domain.Name == "File on Disk")
 			{
-				sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
+				sfd.FileName = RomName;
+			}
+			else
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			}
+
+			var result = sfd.ShowHawkDialog();
+
+			return result == DialogResult.OK ? sfd.FileName : string.Empty;
+		}
+
+		private string GetSaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog
+			{
+				Filter = "Text (*.txt)|*.txt|All Files|*.*",
+				RestoreDirectory = true,
+				InitialDirectory = RomDirectory
+			};
+
+			if (_domain.Name == "File on Disk")
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(RomName) + ".txt";
 			}
 			else
 			{
