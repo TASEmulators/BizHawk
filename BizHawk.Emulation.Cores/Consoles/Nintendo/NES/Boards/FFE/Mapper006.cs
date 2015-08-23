@@ -5,6 +5,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class Mapper006 : NES.NESBoardBase
 	{
 		private int _reg;
+		private int _mirr;
+
 		private int IRQa, mirr;
 		private int IRQCount, IRQLatch;
 
@@ -39,15 +41,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Mirroring
 			if (addr == 0x2FE || addr == 0x2FF)
 			{
-				int mirr = ((addr << 1) & 2) | ((addr >> 4) & 1);
-				SetMirror(mirr);
+				_mirr = ((addr << 1) & 2) | ((addr >> 4) & 1);
+				Sync();
 			}
+
 			// IRQ
 			else if (addr >= 0x500 && addr <= 0x503)
 			{
 				switch (addr)
 				{
 					case 0x501:
+						int zzz = 0;
 						break;
 					case 0x502:
 						break;
@@ -61,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePRG(int addr, byte value)
 		{
 			_reg = value;
+			Sync();
 		}
 
 		public override byte ReadPRG(int addr)
@@ -89,13 +94,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				VRAM[((_reg & 3) * 0x2000) + (addr & 0x1FFF)] = value;
 			}
-
-			base.WritePPU(addr, value);
+			else
+			{
+				base.WritePPU(addr, value);
+			}
 		}
 
-		private void SetMirror(int mirr)
+		private void Sync()
 		{
-			switch (mirr)
+			switch (_mirr)
 			{
 				case 0:
 					SetMirrorType(EMirrorType.OneScreenA);
@@ -107,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetMirrorType(EMirrorType.Vertical);
 					break;
 				case 3:
-					SetMirrorType(EMirrorType.Horizontal);
+					SetMirrorType(EMirrorType.Vertical);
 					break;
 			}
 		}
