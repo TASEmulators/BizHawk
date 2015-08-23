@@ -136,6 +136,8 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
+		private string _lastRom = string.Empty;
+
 		public void Restart()
 		{
 			_rom = GetRomBytes();
@@ -157,7 +159,13 @@ namespace BizHawk.Client.EmuHawk
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 			_maxRow = _domain.Size / 2;
 
-			ResetScrollBar();
+			// Don't reset scroll bar if restarting the same rom
+			if (_lastRom != GlobalWin.MainForm.CurrentlyOpenRom)
+			{
+				_lastRom = GlobalWin.MainForm.CurrentlyOpenRom;
+				ResetScrollBar();
+			}
+			
 			SetDataSize(DataSize);
 			UpdateValues();
 			AddressLabel.Text = GenerateAddressString();
