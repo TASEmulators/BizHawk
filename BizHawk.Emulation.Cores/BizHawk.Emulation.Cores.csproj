@@ -484,6 +484,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\DatachBarcode.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Farid-UNROM-8-in-1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\FFE\Mapper006.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\FS304.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\GameGenie.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\inlnsf.cs" />
