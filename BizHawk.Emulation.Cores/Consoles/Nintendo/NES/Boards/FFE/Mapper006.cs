@@ -5,10 +5,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class Mapper006 : NES.NESBoardBase
 	{
 		private int _reg;
-		private int _mirr;
 
-		private int IRQa, mirr;
-		private int IRQCount, IRQLatch;
+		private bool _irqEnable;
+		private bool _irqPending;
+		private int _irqCount;
+		private const int IRQDESTINATION = 0x10000;
 
 		private int _prgMask16k;
 
@@ -24,7 +25,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
-
 			_prgMask16k = Cart.prg_size / 16 - 1;
 
 			return true;
@@ -34,6 +34,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("reg", ref _reg);
+
+			ser.Sync("irqEnable", ref _irqEnable);
+			ser.Sync("irqPending", ref _irqPending);
+			ser.Sync("irqCount", ref _irqCount);
 		}
 
 		public override void WriteEXP(int addr, byte value)
@@ -41,8 +45,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Mirroring
 			if (addr == 0x2FE || addr == 0x2FF)
 			{
-				_mirr = ((addr << 1) & 2) | ((addr >> 4) & 1);
-				Sync();
+				int mirr = ((addr << 1) & 2) | ((value >> 4) & 1);
+				switch (mirr)
+				{
+					case 0:
+						SetMirrorType(EMirrorType.OneScreenA);
+						break;
+					case 1:
+						SetMirrorType(EMirrorType.OneScreenB);
+						break;
+					case 2:
+						SetMirrorType(EMirrorType.Vertical);
+						break;
+					case 3:
+						SetMirrorType(EMirrorType.Horizontal);
+						break;
+				}
 			}
 
 			// IRQ
@@ -51,21 +69,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				switch (addr)
 				{
 					case 0x501:
-						int zzz = 0;
+						_irqEnable = false;
 						break;
 					case 0x502:
+						_irqCount &= 0xFF00;
+						_irqCount |= value;
 						break;
 					case 0x503:
+						_irqCount &= 0x00FF;
+						_irqCount |= value << 8;
+						_irqEnable = true;
 						break;
 
 				}
+
+				SyncIRQ();
 			}
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
 			_reg = value;
-			Sync();
 		}
 
 		public override byte ReadPRG(int addr)
@@ -100,23 +124,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		private void Sync()
+		public override void ClockCPU()
 		{
-			switch (_mirr)
+			if (_irqEnable)
 			{
-				case 0:
-					SetMirrorType(EMirrorType.OneScreenA);
-					break;
-				case 1:
-					SetMirrorType(EMirrorType.OneScreenB);
-					break;
-				case 2:
-					SetMirrorType(EMirrorType.Vertical);
-					break;
-				case 3:
-					SetMirrorType(EMirrorType.Vertical);
-					break;
+				ClockIRQ();
 			}
+		}
+
+		private void ClockIRQ()
+		{
+			_irqCount++;
+			if (_irqCount >= IRQDESTINATION)
+			{
+				_irqEnable = false;
+				_irqPending = true;
+			}
+
+			SyncIRQ();
+		}
+
+		private void SyncIRQ()
+		{
+			SyncIRQ(_irqPending);
 		}
 	}
 }
