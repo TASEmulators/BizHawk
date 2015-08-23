@@ -167,6 +167,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			
 			SetDataSize(DataSize);
+			SetHeader();
+
 			UpdateValues();
 			AddressLabel.Text = GenerateAddressString();
 		}
@@ -584,6 +586,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateGroupBoxTitle();
+			SetHeader();
 			UpdateValues();
 		}
 
