@@ -66,12 +66,14 @@ namespace BizHawk.Client.EmuHawk
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
-		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
-		public static Color GreenZone_Invalidated_InputLog = Color.FromArgb(0xE0FBE0);
+        public static Color GreenZone_InputLog = Color.FromArgb(0xD2F9D3);
+        public static Color GreenZone_InputLog_Stated = Color.FromArgb(0xC4F7C8);
+		public static Color GreenZone_InputLog_Invalidated = Color.FromArgb(0xE0FBE0);
 
 		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
-		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
-		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
+        public static Color LagZone_InputLog = Color.FromArgb(0xF4DADA);
+        public static Color LagZone_InputLog_Stated = Color.FromArgb(0xF0D0D2);
+		public static Color LagZone_InputLog_Invalidated = Color.FromArgb(0xF7E5E5);
 
 		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 		public static Color AnalogEdit_Col = Color.FromArgb(0x909070); // SuuperW: When editing an analog value, it will be a gray color.
@@ -130,22 +132,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string columnName = column.Name;
-
+            
 			if (columnName == CursorColumnName)
-			{ // For debugging purposes, let's visually show the state frames
-				if (VersionInfo.DeveloperBuild && CurrentTasMovie.TasStateManager.HasState(index))
-					color = Color.FromArgb(0xEEEEEE);
-				else
-					color = Color.FromArgb(0xFEFFFF);
-				return;
-			}
-
+                color = Color.FromArgb(0xFEFFFF);
+            
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index))
 					color = Marker_FrameCol;
                 else
-                    color = Color.FromArgb(32, 0, 0, 0); // same as players 2 and 4
+                    color = Color.FromArgb(0x60FFFFFF);
 			}
 			else if (index == _floatEditRow && columnName == _floatEditColumn)
 			{ // SuuperW: Analog editing is indicated by a color change.
@@ -154,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
-				color = Color.FromArgb(32, 0, 0, 0);
+				color = Color.FromArgb(0x0C000000);
 		}
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
@@ -166,15 +162,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.Lagged.HasValue)
 			{
-				color = record.Lagged.Value ?
-					LagZone_InputLog :
-					GreenZone_InputLog;
+                if (CurrentTasMovie.TasStateManager.HasState(index))
+				    color = record.Lagged.Value ?
+					    LagZone_InputLog_Stated :
+                        GreenZone_InputLog_Stated;
+                else
+                    color = record.Lagged.Value ?
+                        LagZone_InputLog :
+                        GreenZone_InputLog;
 			}
 			else if (record.WasLagged.HasValue)
 			{
 				color = record.WasLagged.Value ?
-					LagZone_Invalidated_InputLog :
-					GreenZone_Invalidated_InputLog;
+					LagZone_InputLog_Invalidated :
+					GreenZone_InputLog_Invalidated;
 			}
 			else
 			{
