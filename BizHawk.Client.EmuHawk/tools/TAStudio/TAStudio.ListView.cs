@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
-		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap)
+		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			var overrideIcon = GetIconOverride(index, column);
 
@@ -117,6 +117,16 @@ namespace BizHawk.Client.EmuHawk
 					bitmap = TasView.HorizontalOrientation ?
 						Properties.Resources.ts_v_arrow_green :
 						Properties.Resources.ts_h_arrow_green;
+				}
+			}
+			else if (columnName == FrameColumnName)
+			{
+				TasMovieRecord record = CurrentTasMovie[index];
+				if (record.HasState)
+				{
+					offsetX = -2;
+					offsetY = 2;
+					bitmap = Properties.Resources.anchor;
 				}
 			}
 		}
@@ -183,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
+		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var overrideText = GetTextOverride(index, column);
 			if (overrideText != null)
@@ -207,6 +217,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName == FrameColumnName)
 				{
+					offsetX = 7;
 					text = (index).ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
 				}
 				else

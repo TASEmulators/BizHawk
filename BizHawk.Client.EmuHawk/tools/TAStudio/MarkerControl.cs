@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 				color = Color.White;
 		}
 
-		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
+		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = "";
 

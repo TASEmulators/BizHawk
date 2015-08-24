@@ -1639,6 +1639,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\tastudio\anchor.png" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />

@@ -366,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrieve the text for a cell
 		/// </summary>
-		public delegate void QueryItemTextHandler(int index, RollColumn column, out string text);
+		public delegate void QueryItemTextHandler(int index, RollColumn column, out string text, ref int offsetX, ref int offsetY);
 
 		/// <summary>
 		/// Retrieve the background color for a cell
@@ -377,7 +377,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Retrive the image for a given cell
 		/// </summary>
-		public delegate void QueryItemIconHandler(int index, RollColumn column, ref Bitmap icon);
+		public delegate void QueryItemIconHandler(int index, RollColumn column, ref Bitmap icon,  ref int offsetX, ref int offsetY);
 
 		/// <summary>
 		/// SuuperW: Check if a given frame is a lag frame
@@ -979,9 +979,11 @@ namespace BizHawk.Client.EmuHawk
 			if (DraggingCell != null)
 			{
 				var text = "";
+				int offsetX = 0;
+				int offsetY = 0;
 				if (QueryItemText != null)
 				{
-					QueryItemText(DraggingCell.RowIndex.Value, DraggingCell.Column, out text);
+					QueryItemText(DraggingCell.RowIndex.Value, DraggingCell.Column, out text, ref offsetX, ref offsetY);
 				}
 
 				Color bgColor = this.BackColor;
@@ -999,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.SetBrush(bgColor);
 				Gdi.FillRectangle(x1, y1, x2 - x1, y2 - y1);
 				Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
-				Gdi.DrawString(text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
+				Gdi.DrawString(text, new Point(x1 + CellWidthPadding + offsetX, y1 + CellHeightPadding + offsetY));
 			}
 		}
 
@@ -1079,25 +1081,31 @@ namespace BizHawk.Client.EmuHawk
 							Bitmap image = null;
 							int x = 0;
 							int y = 0;
+							int bitmapOffsetX = 0;
+							int bitmapOffsetY = 0;
 
 							if (QueryItemIcon != null)
-								QueryItemIcon(f + startRow, columns[j], ref image);
+							{
+								QueryItemIcon(f + startRow, columns[j], ref image, ref bitmapOffsetX, ref bitmapOffsetY);
+							}
 
 							if (image != null)
 							{
-								x = RowsToPixels(i) + CellWidthPadding;
-								y = (j * CellHeight) + (CellHeightPadding * 2);
+								x = RowsToPixels(i) + CellWidthPadding + bitmapOffsetX;
+								y = (j * CellHeight) + (CellHeightPadding * 2) + bitmapOffsetY;
 								Gdi.DrawBitmap(image, new Point(x, y), true);
 							}
-							else
-							{
+							//else
+							//{
 								string text;
-								QueryItemText(f + startRow, columns[j], out text);
+								int strOffsetX = 0;
+								int strOffsetY = 0;
+								QueryItemText(f + startRow, columns[j], out text, ref strOffsetX, ref strOffsetY);
 
 								// Center Text
 								x = RowsToPixels(i) + (CellWidth - text.Length * _charSize.Width) / 2;
 								y = (j * CellHeight) + CellHeightPadding - VBar.Value;
-								var point = new Point(x, y);
+								var point = new Point(x + strOffsetX, y + strOffsetY);
 
 								var rePrep = false;
 								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = i + startRow }))
@@ -1116,7 +1124,7 @@ namespace BizHawk.Client.EmuHawk
 								{
 									Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 								}
-							}
+							//}
 						}
 					}
 				}
@@ -1136,21 +1144,26 @@ namespace BizHawk.Client.EmuHawk
 							RollColumn col = columns[j];
 
 							string text;
+							int strOffsetX = 0;
+							int strOffsetY = 0;
 							Point point = new Point(col.Left.Value + xPadding, RowsToPixels(i) + CellHeightPadding);
 
 							Bitmap image = null;
+							int bitmapOffsetX = 0;
+							int bitmapOffsetY = 0;
+
 							if (QueryItemIcon != null)
 							{
-								QueryItemIcon(f + startRow, columns[j], ref image);
+								QueryItemIcon(f + startRow, columns[j], ref image, ref bitmapOffsetX, ref bitmapOffsetY);
 							}
 
 							if (image != null)
 							{
-								Gdi.DrawBitmap(image, new Point(point.X, point.Y + CellHeightPadding), true);
+								Gdi.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding), true);
 							}
-							else
-							{
-								QueryItemText(f + startRow, columns[j], out text);
+							//else
+							//{
+								QueryItemText(f + startRow, columns[j], out text, ref strOffsetX, ref strOffsetY);
 
 								bool rePrep = false;
 								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = f + startRow }))
@@ -1161,14 +1174,14 @@ namespace BizHawk.Client.EmuHawk
 
 								if (!string.IsNullOrWhiteSpace(text))
 								{
-									Gdi.DrawString(text, point);
+									Gdi.DrawString(text, new Point(point.X + strOffsetX, point.Y + strOffsetY));
 								}
 
 								if (rePrep)
 								{
 									Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
 								}
-							}
+							//}
 						}
 					}
 				}

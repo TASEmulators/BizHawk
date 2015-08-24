@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int CurrentBranch = -1;
 
-		private void QueryItemText(int index, InputRoll.RollColumn column, out string text)
+		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = string.Empty;
 
