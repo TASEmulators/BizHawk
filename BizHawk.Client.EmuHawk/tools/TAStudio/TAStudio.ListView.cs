@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 						Properties.Resources.ts_h_arrow_green;
 				}
 			}
-			else if (columnName == FrameColumnName)
+			else if (columnName == FrameColumnName && VersionInfo.DeveloperBuild)
 			{
 				TasMovieRecord record = CurrentTasMovie[index];
 				if (record.HasState)
