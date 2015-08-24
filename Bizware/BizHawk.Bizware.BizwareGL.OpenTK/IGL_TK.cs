@@ -177,12 +177,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			public List<int> SamplerLocs;
 		}
 
-		static int poop = 0;
-
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
-			required = true;
-			poop++;
 			bool success = true;
 
 			var vsw = vertexShader.Opaque as ShaderWrapper;
@@ -721,9 +717,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			string resultLog = GL.GetShaderInfoLog(sid);
 
 			if (errcode != ErrorCode.NoError)
+			{
+				string message = "Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog;
 				if (required)
-					throw new InvalidOperationException("Error compiling shader (CompileShader) " + errcode + "\r\n\r\n" + resultLog);
-				else success = false;
+					throw new InvalidOperationException(message);
+				else
+				{
+					Console.WriteLine(message);
+					success = false;
+				}
+			}
 
 			int n;
 			GL.GetShader(sid, ShaderParameter.CompileStatus, out n);
