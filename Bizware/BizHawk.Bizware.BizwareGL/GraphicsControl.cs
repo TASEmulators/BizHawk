@@ -12,6 +12,8 @@ namespace BizHawk.Bizware.BizwareGL
 	{
 		public GraphicsControl(IGL owner)
 		{
+			IGL = owner;
+
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -43,6 +45,8 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			OnPaint(e);
 		}
+
+		public readonly IGL IGL;
 
 		IGraphicsControl IGC;
 		Control Managed;

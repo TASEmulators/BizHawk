@@ -211,6 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
 			//TODO GL - a lot of disorganized wiring-up here
+			CGC.CGCBinPath = Path.Combine(PathManager.GetDllDirectory(), "cgc.exe");
 			PresentationPanel = new PresentationPanel();
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
 			Controls.Add(PresentationPanel);

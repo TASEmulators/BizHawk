@@ -36,6 +36,7 @@
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
+			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
@@ -86,10 +87,10 @@
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
-			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
-			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
 			this.tabControl1.SuspendLayout();
@@ -102,7 +103,6 @@
 			this.tabPage1.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -183,6 +183,19 @@
 			this.rbUser.TabStop = true;
 			this.rbUser.Text = "User";
 			this.rbUser.UseVisualStyleBackColor = true;
+			// 
+			// tbScanlineIntensity
+			// 
+			this.tbScanlineIntensity.LargeChange = 32;
+			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
+			this.tbScanlineIntensity.Maximum = 256;
+			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.TabIndex = 3;
+			this.tbScanlineIntensity.TickFrequency = 32;
+			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
 			// 
 			// rbNone
 			// 
@@ -373,8 +386,8 @@
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(398, 27);
 			this.label2.TabIndex = 17;
-			this.label2.Text = "Some people think the whitenoise is a great idea, and some people don\'t. Enabling" +
-    " this displays black instead.";
+			this.label2.Text = "Some people think the white noise is a great idea, and some people don\'t. Disabli" +
+    "ng this displays black instead.";
 			// 
 			// checkSnowyNullEmulator
 			// 
@@ -515,17 +528,17 @@
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(24, 30);
+			this.label8.Location = new System.Drawing.Point(21, 30);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(359, 47);
 			this.label8.TabIndex = 20;
-			this.label8.Text = " • Not working yet\r\n • Best compatibility\r\n • No support for custom shaders\r\n";
+			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (Saturn,N64)\r\n" +
+    "";
 			// 
 			// rbD3D9
 			// 
 			this.rbD3D9.AutoSize = true;
 			this.rbD3D9.Checked = true;
-			this.rbD3D9.Enabled = false;
 			this.rbD3D9.Location = new System.Drawing.Point(6, 10);
 			this.rbD3D9.Name = "rbD3D9";
 			this.rbD3D9.Size = new System.Drawing.Size(73, 17);
@@ -540,8 +553,8 @@
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(359, 47);
 			this.label7.TabIndex = 18;
-			this.label7.Text = " • Mainly for compatibility purposes\r\n • Missing some features\r\n • Works better o" +
-    "ver Remote Desktop, etc.\r\n";
+			this.label7.Text = " • Slow; Mainly for compatibility purposes\r\n • Missing many features\r\n • Works be" +
+    "tter over Remote Desktop, etc.\r\n";
 			// 
 			// rbGDIPlus
 			// 
@@ -644,9 +657,9 @@
 			this.cbFSAutohideMouse.AutoSize = true;
 			this.cbFSAutohideMouse.Location = new System.Drawing.Point(87, 19);
 			this.cbFSAutohideMouse.Name = "cbFSAutohideMouse";
-			this.cbFSAutohideMouse.Size = new System.Drawing.Size(139, 17);
+			this.cbFSAutohideMouse.Size = new System.Drawing.Size(141, 17);
 			this.cbFSAutohideMouse.TabIndex = 28;
-			this.cbFSAutohideMouse.Text = "Auto-hide Mouse Cursor";
+			this.cbFSAutohideMouse.Text = "Auto-Hide Mouse Cursor";
 			this.cbFSAutohideMouse.UseVisualStyleBackColor = true;
 			// 
 			// label1
@@ -740,29 +753,6 @@
 			this.cbMenuWindowed.Text = "Menu";
 			this.cbMenuWindowed.UseVisualStyleBackColor = true;
 			// 
-			// cbCaptionWindowed
-			// 
-			this.cbCaptionWindowed.AutoSize = true;
-			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
-			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
-			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
-			this.cbCaptionWindowed.TabIndex = 24;
-			this.cbCaptionWindowed.Text = "Caption";
-			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
-			// 
-			// tbScanlineIntensity
-			// 
-			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 256;
-			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
-			this.tbScanlineIntensity.TabIndex = 3;
-			this.tbScanlineIntensity.TickFrequency = 32;
-			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			// 
 			// trackbarFrameSizeWindowed
 			// 
 			this.trackbarFrameSizeWindowed.LargeChange = 1;
@@ -773,6 +763,16 @@
 			this.trackbarFrameSizeWindowed.TabIndex = 21;
 			this.trackbarFrameSizeWindowed.Value = 1;
 			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
+			// 
+			// cbCaptionWindowed
+			// 
+			this.cbCaptionWindowed.AutoSize = true;
+			this.cbCaptionWindowed.Location = new System.Drawing.Point(9, 104);
+			this.cbCaptionWindowed.Name = "cbCaptionWindowed";
+			this.cbCaptionWindowed.Size = new System.Drawing.Size(62, 17);
+			this.cbCaptionWindowed.TabIndex = 24;
+			this.cbCaptionWindowed.Text = "Caption";
+			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
 			// 
 			// DisplayConfigLite
 			// 
@@ -790,6 +790,7 @@
 			this.Text = "Display Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			this.grpFinalFilter.ResumeLayout(false);
 			this.grpFinalFilter.PerformLayout();
 			this.grpARSelection.ResumeLayout(false);
@@ -810,7 +811,6 @@
 			this.groupBox4.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
 			this.ResumeLayout(false);
 
