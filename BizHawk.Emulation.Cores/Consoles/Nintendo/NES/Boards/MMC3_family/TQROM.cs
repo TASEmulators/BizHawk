@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.board_type)
 			{
+				case "MAPPER119": // adelikat: Just in case, I didn't find a ROM with this but it could happen
 				case "NES-TQROM": //high speed and pinbot
 					AssertPrg(128); AssertChr(64); AssertVram(8); AssertWram(0);
 					break;
