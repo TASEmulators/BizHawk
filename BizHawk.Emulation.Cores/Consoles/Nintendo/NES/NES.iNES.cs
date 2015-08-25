@@ -62,6 +62,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0: CartV2.pad_v = 1; break;
 					case 1: CartV2.pad_h = 1; break;
 				}
+				switch (data[12] & 1)
+				{
+					case 0:
+						CartV2.system = "NES-NTSC";
+						break;
+					case 1:
+						CartV2.system = "NES-PAL";
+						break;
+				}
 
 				if ((data[6] & 4) != 0)
 					CartV2.trainer_size = 512;
