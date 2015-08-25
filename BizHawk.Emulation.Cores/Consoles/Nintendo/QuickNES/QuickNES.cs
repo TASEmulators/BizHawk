@@ -250,6 +250,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			Console.WriteLine("Hash for BootGod: {0}", sha1);
 			sha1 = "sha1:" + sha1; // huh?
 			var carts = Emulation.Cores.Nintendo.NES.NES.BootGodDB.Instance.Identify(sha1);
+
+			// Bail out on ROM's known to not be playable by this core
+			switch (sha1)
+			{
+				case "sha1:E39CA4477D3B96E1CE3A1C61D8055187EA5F1784": // Bill and Ted's Excellent Adventure
+				case "sha1:E8BC7E6BAE7032D571152F6834516535C34C68F0": // Bill and Ted's Excellent Adventure bad dump
+				case "sha1:401023BAE92A38B89F7D0C2E0F023E35F1FFEEFD": // Bill and Ted's Excellent Adventure bad dump
+				case "sha1:6270F9FF2BD0B32A23A45985D9D7FB2793E1CED3": // Bill and Ted's Excellent Adventure overdump dump
+				case "sha1:5E3C02A3A5F6CD4F2442311630F1C44A8E9DC7E2": // Paperboy
+				case "sha1:A65B6BC48E05C4CDBD221B811A17FBF174B45632": // Pro Action Replay (E) (REVA) [!]
+					throw new UnsupportedGameException("Game known to not be playable in this core");
+				default:
+					break;
+			}
+
 			if (carts.Count > 0)
 			{
 				Console.WriteLine("BootGod entry found: {0}", carts[0].name);
@@ -261,19 +276,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					case "Dendy":
 						Console.WriteLine("Bad region {0}! Failing over...", carts[0].system);
 						throw new UnsupportedGameException("Unsupported region!");
-					default:
-						break;
-				}
-
-				// Bail out on ROM's known to not be playable by this core
-				switch(carts[0].sha1)
-				{
-					case "sha1:E39CA4477D3B96E1CE3A1C61D8055187EA5F1784": // Bill and Ted's Excellent Adventure
-					case "sha1:E8BC7E6BAE7032D571152F6834516535C34C68F0": // Bill and Ted's Excellent Adventure bad dump
-					case "sha1:401023BAE92A38B89F7D0C2E0F023E35F1FFEEFD": // Bill and Ted's Excellent Adventure bad dump
-					case "sha1:6270F9FF2BD0B32A23A45985D9D7FB2793E1CED3": // Bill and Ted's Excellent Adventure overdump dump
-					case "sha1:5E3C02A3A5F6CD4F2442311630F1C44A8E9DC7E2": // Paperboy
-						throw new UnsupportedGameException("Game known to not be playable in this core");
 					default:
 						break;
 				}
