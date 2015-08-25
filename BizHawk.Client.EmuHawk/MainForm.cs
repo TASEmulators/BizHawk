@@ -2938,7 +2938,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.AutoFireController.IncrementStarts();
 				}
-				Global.AutofireStickyXORAdapter.IncrementLoops(IsLagFrame);
+				//Global.AutofireStickyXORAdapter.IncrementLoops(IsLagFrame);
 
 				PressFrameAdvance = false;
 
