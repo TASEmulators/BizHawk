@@ -1570,8 +1570,8 @@
             this.Frameskip5MenuItem,
             this.Frameskip6MenuItem,
             this.Frameskip7MenuItem,
-            this.Frameskip9MenuItem,
-            this.Frameskip8MenuItem});
+            this.Frameskip8MenuItem,
+            this.Frameskip9MenuItem});
 			this.toolStripMenuItem17.Name = "toolStripMenuItem17";
 			this.toolStripMenuItem17.Size = new System.Drawing.Size(181, 22);
 			this.toolStripMenuItem17.Text = "Skip 1..9";
@@ -1579,56 +1579,65 @@
 			// Frameskip1MenuItem
 			// 
 			this.Frameskip1MenuItem.Name = "Frameskip1MenuItem";
-			this.Frameskip1MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip1MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip1MenuItem.Text = "1";
+			this.Frameskip1MenuItem.Click += new System.EventHandler(this.Frameskip1MenuItem_Click);
 			// 
 			// Frameskip2MenuItem
 			// 
 			this.Frameskip2MenuItem.Name = "Frameskip2MenuItem";
-			this.Frameskip2MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip2MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip2MenuItem.Text = "2";
+			this.Frameskip2MenuItem.Click += new System.EventHandler(this.Frameskip2MenuItem_Click);
 			// 
 			// Frameskip3MenuItem
 			// 
 			this.Frameskip3MenuItem.Name = "Frameskip3MenuItem";
-			this.Frameskip3MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip3MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip3MenuItem.Text = "3";
+			this.Frameskip3MenuItem.Click += new System.EventHandler(this.Frameskip3MenuItem_Click);
 			// 
 			// Frameskip4MenuItem
 			// 
 			this.Frameskip4MenuItem.Name = "Frameskip4MenuItem";
-			this.Frameskip4MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip4MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip4MenuItem.Text = "4";
+			this.Frameskip4MenuItem.Click += new System.EventHandler(this.Frameskip4MenuItem_Click);
 			// 
 			// Frameskip5MenuItem
 			// 
 			this.Frameskip5MenuItem.Name = "Frameskip5MenuItem";
-			this.Frameskip5MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip5MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip5MenuItem.Text = "5";
+			this.Frameskip5MenuItem.Click += new System.EventHandler(this.Frameskip5MenuItem_Click);
 			// 
 			// Frameskip6MenuItem
 			// 
 			this.Frameskip6MenuItem.Name = "Frameskip6MenuItem";
-			this.Frameskip6MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip6MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip6MenuItem.Text = "6";
+			this.Frameskip6MenuItem.Click += new System.EventHandler(this.Frameskip6MenuItem_Click);
 			// 
 			// Frameskip7MenuItem
 			// 
 			this.Frameskip7MenuItem.Name = "Frameskip7MenuItem";
-			this.Frameskip7MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip7MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip7MenuItem.Text = "7";
+			this.Frameskip7MenuItem.Click += new System.EventHandler(this.Frameskip7MenuItem_Click);
 			// 
 			// Frameskip9MenuItem
 			// 
 			this.Frameskip9MenuItem.Name = "Frameskip9MenuItem";
-			this.Frameskip9MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip9MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip9MenuItem.Text = "9";
+			this.Frameskip9MenuItem.Click += new System.EventHandler(this.Frameskip9MenuItem_Click);
 			// 
 			// Frameskip8MenuItem
 			// 
 			this.Frameskip8MenuItem.Name = "Frameskip8MenuItem";
-			this.Frameskip8MenuItem.Size = new System.Drawing.Size(80, 22);
+			this.Frameskip8MenuItem.Size = new System.Drawing.Size(152, 22);
 			this.Frameskip8MenuItem.Text = "8";
+			this.Frameskip8MenuItem.Click += new System.EventHandler(this.Frameskip8MenuItem_Click);
 			// 
 			// toolStripMenuItem5
 			// 
