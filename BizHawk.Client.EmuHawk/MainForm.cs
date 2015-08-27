@@ -3844,6 +3844,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
 		}
 
+		private void BasicBotMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BasicBot>();
+		}
+
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;

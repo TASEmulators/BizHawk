@@ -1156,6 +1156,9 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
+
+			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
+			BasicBotMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)

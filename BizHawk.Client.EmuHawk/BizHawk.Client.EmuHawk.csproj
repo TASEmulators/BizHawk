@@ -646,6 +646,12 @@
     <Compile Include="tools\AutoHawk.Designer.cs">
       <DependentUpon>AutoHawk.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\BasicBot\BasicBot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\BasicBot\BasicBot.Designer.cs">
+      <DependentUpon>BasicBot.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\BatchRun.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1321,6 +1327,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\AutoHawk.resx">
       <DependentUpon>AutoHawk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
+      <DependentUpon>BasicBot.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
