@@ -652,6 +652,12 @@
     <Compile Include="tools\BasicBot\BasicBot.Designer.cs">
       <DependentUpon>BasicBot.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\BasicBot\BotControlsRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\BasicBot\BotControlsRow.Designer.cs">
+      <DependentUpon>BotControlsRow.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\BatchRun.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1330,6 +1336,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
       <DependentUpon>BasicBot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BasicBot\BotControlsRow.resx">
+      <DependentUpon>BotControlsRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
