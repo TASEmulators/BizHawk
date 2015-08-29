@@ -78,6 +78,8 @@ sha1:3AE0469A8208023DAA32A7BB9925F3C5666FCB2D	B	Famicom Meijin Sen (J) [a1]	NES	
 sha1:8CC5894A1E637FA63A63992E188B3797D9300337	B	Mighty Bomb Jack (U) (Bad Dump)	NES		board=NES-CNROM;PRG=32;CHR=32;WRAM=0;PAD_V=1
 sha1:CAB30771F9CBD89B2FCD06F3B2F5C8F2156BFD8A	B	Mighty Bomb Jack (U) (Bad Dump)	NES		board=NES-CNROM;PRG=32;CHR=32;WRAM=0;PAD_V=1
 sha1:A4CDD4BC37D44CFF1379942CC31DCD89E340B10C	B	Money Game, The (J) [hFFE][b1]	NES		board=MAPPER006;PRG=256
+sha1:8AB1B122FE96865B62290FC838FA2C248D4989FB	B	3D Bloack (Unl) [f1] (Bad Dump)	NES		board=MAPPER000;PAD_H=1
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
