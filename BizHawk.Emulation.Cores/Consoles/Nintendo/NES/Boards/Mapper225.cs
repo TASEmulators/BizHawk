@@ -3,56 +3,9 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_225
 	public sealed class Mapper225 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 225          =
-		========================
-
-		Example Games:
-		--------------------------
-		52 Games
-		58-in-1
-		64-in-1
-
-
-		Registers:
-		---------------------------
-
-		$5800-5803:  [.... RRRR]  RAM  (readable/writable)
-		(16 bits of RAM -- 4 bits in each of the 4 regs)
-		$5804-5FFF:    mirrors $5800-5803
-
-		$8000-FFFF:  A~[.HMO PPPP PPCC CCCC]
-		H = High bit (acts as bit 7 for PRG and CHR regs)
-		M = Mirroring (0=Vert, 1=Horz)
-		O = PRG Mode
-		P = PRG Reg
-		C = CHR Reg
-
-
-		CHR Setup:
-		---------------------------
-
-					  $0000   $0400   $0800   $0C00   $1000   $1400   $1800   $1C00 
-					+---------------------------------------------------------------+
-		CHR Mode 0: |                             $8000                             |
-					+---------------------------------------------------------------+
-
-
-		PRG Setup:
-		---------------------------
-
-					  $8000   $A000   $C000   $E000  
-					+-------------------------------+
-		PRG Mode 0: |            <$8000>            |
-					+-------------------------------+
-		PRG Mode 1: |     $8000     |     $8000     |
-					+---------------+---------------+
-		*/
-
 		bool prg_mode = false;
 		int chr_reg;
 		int prg_reg;
@@ -64,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER225":
+				case "MAPPER255": // Duplicate of 225 accoring to: http://problemkaputt.de/everynes.htm
 					break;
 				default:
 					return false;
