@@ -163,9 +163,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var tw = Gdi.TextureWrapperForTexture(tex);
+			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g, tw);
+			PrepDraw(g, tex);
 			SetupMatrix(g);
 
 			float x0 = u0 * tex.Width;
@@ -197,8 +197,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			DrawInternal(art, x, y, width, height);
 		}
 
-		void PrepDraw(sd.Graphics g, TextureWrapper tw)
+		void PrepDraw(sd.Graphics g, Texture2d tex)
 		{
+			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
 				throw new InvalidOperationException("tw.MagFilter != tw.MinFilter");
@@ -247,9 +248,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g, tw);
+			PrepDraw(g, tex);
 
 			SetupMatrix(g);
 
@@ -259,6 +259,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				new sd.PointF(x,y+h),
 			};
 
+			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?

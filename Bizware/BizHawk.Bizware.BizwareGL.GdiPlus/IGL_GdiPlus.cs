@@ -18,59 +18,6 @@ using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 {
-	public class ResourceIdManager
-	{
-		int Last = 1;
-		Queue<int> Available = new Queue<int>();
-
-		public Dictionary<int, object> Lookup = new Dictionary<int, object>();
-
-		public enum EResourceType
-		{
-			Texture,
-			RenderTarget
-		}
-
-		public IntPtr Alloc(EResourceType type)
-		{
-			if (Available.Count == 0)
-			{
-				return new IntPtr(Last++);
-			}
-			else return new IntPtr(Available.Dequeue());
-		}
-
-		public void Free(IntPtr handle)
-		{
-			int n = handle.ToInt32();
-			object o;
-			if (Lookup.TryGetValue(n, out o))
-			{
-				if (o is IDisposable)
-				{
-					((IDisposable)o).Dispose();
-				}
-				Lookup.Remove(n);
-			}
-			Available.Enqueue(n);
-		}
-	}
-
-	public class TextureWrapper : IDisposable
-	{
-		public sd.Bitmap SDBitmap;
-		public TextureMinFilter MinFilter = TextureMinFilter.Nearest;
-		public TextureMagFilter MagFilter = TextureMagFilter.Nearest;
-		public void Dispose()
-		{
-			if (SDBitmap != null)
-			{
-				SDBitmap.Dispose();
-				SDBitmap = null;
-			}
-		}
-	}
-
 	public class IGL_GdiPlus : IGL
 	{
 		//rendering state
@@ -113,14 +60,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		}
 
 
-		public IntPtr GenTexture() { return ResourceIDs.Alloc(ResourceIdManager.EResourceType.Texture); }
 		public void FreeTexture(Texture2d tex)
 		{
-			ResourceIDs.Free((IntPtr)tex.Opaque);
+			var tw = tex.Opaque as TextureWrapper;
+			tw.Dispose();
 		}
-		public IntPtr GetEmptyHandle() { return new IntPtr(0); }
-		public IntPtr GetEmptyUniformHandle() { return new IntPtr(-1); }
-
 		
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
 		{
@@ -207,7 +151,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void TexParameter2d(Texture2d tex, TextureParameterName pname, int param)
 		{
-			TextureWrapper tw = TextureWrapperForTexture(tex);
+			var tw = tex.Opaque as TextureWrapper;
 			if (pname == TextureParameterName.TextureMinFilter)
 				tw.MinFilter = (TextureMinFilter)param;
 			if (pname == TextureParameterName.TextureMagFilter)
@@ -219,9 +163,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			var sdbmp = (sd.Bitmap)bitmap.Clone();
 			TextureWrapper tw = new TextureWrapper();
 			tw.SDBitmap = sdbmp;
-			IntPtr id = GenTexture();
-			ResourceIDs.Lookup[id.ToInt32()] = tw;
-			return new Texture2d(this, id, bitmap.Width, bitmap.Height);
+			return new Texture2d(this, tw, bitmap.Width, bitmap.Height);
 		}
 
 		public Texture2d LoadTexture(Stream stream)
@@ -243,7 +185,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
 		{
-			bmp.ToSysdrawingBitmap(BitmapForTexture(tex));
+			var tw = tex.Opaque as TextureWrapper;
+			bmp.ToSysdrawingBitmap(tw.SDBitmap);
 		}
 
 
@@ -251,17 +194,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		{
 			//definitely needed (by TextureFrugalizer at least)
 			var sdbmp = bmp.ToSysdrawingBitmap();
-			IntPtr id = GenTexture();
 			var tw = new TextureWrapper();
 			tw.SDBitmap = sdbmp;
-			ResourceIDs.Lookup[id.ToInt32()] = tw;
-			return new Texture2d(this, id, bmp.Width, bmp.Height);
+			return new Texture2d(this, tw, bmp.Width, bmp.Height);
 		}
 
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
-			//todo
-			return null;
+			var tw = tex.Opaque as TextureWrapper;
+			return new BitmapBuffer(tw.SDBitmap, new BitmapLoadOptions()
+			{
+				AllowWrap = false //must be an independent resource
+			});
 		}
 
 		public Texture2d LoadTexture(string path)
@@ -359,6 +303,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				Gdi = gdi;
 			}
 
+			public void Dispose()
+			{
+			}
+
 			IGL_GdiPlus Gdi;
 
 			/// <summary>
@@ -385,8 +333,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				}
 				else
 				{
+					var tw = Target.Texture2d.Opaque as TextureWrapper;
 					r = Target.Texture2d.Rectangle;
-					refGraphics = Graphics.FromImage(Gdi.BitmapForTexture(Target.Texture2d));
+					refGraphics = Graphics.FromImage(tw.SDBitmap);
 				}
 
 				if (MyBufferedGraphics != null)
@@ -407,6 +356,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void EndScene()
 		{
+			//maybe an inconsistent semantic with other implementations..
+			//but accomplishes the needed goal of getting the current RT to render
+			BindRenderTarget(null);
 		}
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
@@ -423,24 +375,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void FreeRenderTarget(RenderTarget rt)
 		{
-			int id = (int)rt.Opaque;
-			var rtw = ResourceIDs.Lookup[id] as RenderTargetWrapper;
-			ResourceIDs.Free(new IntPtr(id));
+			var rtw = rt.Opaque as RenderTargetWrapper;
+			rtw.Dispose();
 		}
 
 		public unsafe RenderTarget CreateRenderTarget(int w, int h)
 		{
 			TextureWrapper tw = new TextureWrapper();
 			tw.SDBitmap = new Bitmap(w,h, sdi.PixelFormat.Format32bppArgb);
-			IntPtr texid = GenTexture();
-			ResourceIDs.Lookup[texid.ToInt32()] = tw;
-			var tex = new Texture2d(this, texid, w, h);
+			var tex = new Texture2d(this, tw, w, h);
 
-			var rt = new RenderTarget(this, ResourceIDs.Alloc(ResourceIdManager.EResourceType.RenderTarget), tex);
-			int id = (int)rt.Opaque;
 			RenderTargetWrapper rtw = new RenderTargetWrapper(this);
+			var rt = new RenderTarget(this, rtw, tex);
 			rtw.Target = rt;
-			ResourceIDs.Lookup[id] = rtw;
 			return rt;
 		}
 
@@ -464,25 +411,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			}
 			else
 			{
-				CurrentRenderTargetWrapper = RenderTargetWrapperForRt(rt);
+				CurrentRenderTargetWrapper = rt.Opaque as RenderTargetWrapper;
 				if (CurrentRenderTargetWrapper.MyBufferedGraphics == null)
 					CurrentRenderTargetWrapper.CreateGraphics();
 			}
-		}
-
-		public sd.Bitmap BitmapForTexture(Texture2d tex)
-		{
-			return TextureWrapperForTexture(tex).SDBitmap;
-		}
-
-		public TextureWrapper TextureWrapperForTexture(Texture2d tex)
-		{
-			return ResourceIDs.Lookup[((IntPtr)tex.Opaque).ToInt32()] as TextureWrapper;
-		}
-
-		public RenderTargetWrapper RenderTargetWrapperForRt(RenderTarget rt)
-		{
-			return ResourceIDs.Lookup[(int)rt.Opaque] as RenderTargetWrapper;
 		}
 
 		public Graphics GetCurrentGraphics()
@@ -494,10 +426,22 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public GLControlWrapper_GdiPlus CurrentControl;
 		public RenderTargetWrapper CurrentRenderTargetWrapper;
 
-		//todo - not thread safe
-		public static ResourceIdManager ResourceIDs = new ResourceIdManager();
-
 		public BufferedGraphicsContext MyBufferedGraphicsContext;
+
+		public class TextureWrapper : IDisposable
+		{
+			public sd.Bitmap SDBitmap;
+			public TextureMinFilter MinFilter = TextureMinFilter.Nearest;
+			public TextureMagFilter MagFilter = TextureMagFilter.Nearest;
+			public void Dispose()
+			{
+				if (SDBitmap != null)
+				{
+					SDBitmap.Dispose();
+					SDBitmap = null;
+				}
+			}
+		}
 
 
 	} //class IGL_GdiPlus
