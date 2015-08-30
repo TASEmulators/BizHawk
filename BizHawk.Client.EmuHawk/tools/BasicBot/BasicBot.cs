@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -33,6 +34,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		private bool _isBotting = false;
+
 		private void BasicBot_Load(object sender, EventArgs e)
 		{
 			int starty = 0;
@@ -59,12 +62,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
+			if (_isBotting)
+			{
+				if (Global.Emulator.Frame >= _targetFrame)
+				{
+					StatableCore.LoadStateBinary(new BinaryReader(new MemoryStream(_initialState.ToArray())));
+				}
 
-		}
+				PressButtons();
+			}
+        }
 
 		public void FastUpdate()
 		{
+			if (_isBotting)
+			{
 
+			}
 		}
 
 		public void Restart()
@@ -94,9 +108,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private int _targetFrame = 0;
+		private byte[] _initialState = null;
+
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
-			var intialState = StatableCore.SaveStateBinary();
+			_isBotting = true;
+			ControlsBox.Enabled = false;
+            RunBtn.Enabled = false;
+			StopBtn.Enabled = true;
+			
 
 			bool oldCountingSetting = false;
 			if (Global.MovieSession.Movie.IsRecording)
@@ -105,9 +126,40 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.Movie.IsCountingRerecords = false;
 			}
 
+			_initialState = StatableCore.SaveStateBinary(); ;
+			_targetFrame = Global.Emulator.Frame + (int)FrameLengthNumeric.Value; 
+
+			if (GlobalWin.MainForm.EmulatorPaused)
+			{
+				GlobalWin.MainForm.UnpauseEmulator();
+				// TODO: speed!
+			}
+
 			if (Global.MovieSession.Movie.IsRecording)
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = oldCountingSetting;
+			}
+		}
+
+		private void StopBtn_Click(object sender, EventArgs e)
+		{
+			RunBtn.Enabled = true;
+			StopBtn.Enabled = false;
+			_isBotting = false;
+			_targetFrame = 0;
+			_initialState = null;
+            ControlsBox.Enabled = true;
+			_targetFrame = 0;
+        }
+
+		private void PressButtons()
+		{
+			var rand = new Random((int)DateTime.Now.Ticks);
+			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
+			{
+				double probability = ControlProbabilities[button];
+				bool pressed = !(rand.Next(100) < probability);
+				Global.ClickyVirtualPadController.SetBool(button, pressed);
 			}
 		}
 	}

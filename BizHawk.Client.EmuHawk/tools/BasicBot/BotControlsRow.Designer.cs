@@ -45,14 +45,15 @@
 			// ProbabilityUpDown
 			// 
 			this.ProbabilityUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ProbabilityUpDown.DecimalPlaces = 1;
 			this.ProbabilityUpDown.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-			this.ProbabilityUpDown.Location = new System.Drawing.Point(96, -2);
+			this.ProbabilityUpDown.Location = new System.Drawing.Point(81, -2);
 			this.ProbabilityUpDown.Name = "ProbabilityUpDown";
-			this.ProbabilityUpDown.Size = new System.Drawing.Size(64, 20);
+			this.ProbabilityUpDown.Size = new System.Drawing.Size(79, 20);
 			this.ProbabilityUpDown.TabIndex = 1;
 			// 
 			// BotControlsRow
