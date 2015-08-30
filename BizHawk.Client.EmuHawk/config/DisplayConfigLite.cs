@@ -14,7 +14,10 @@ namespace BizHawk.Client.EmuHawk.config
 {
 	public partial class DisplayConfigLite : Form
 	{
+		public bool NeedReset;
+
 		string PathSelection;
+		
 		public DisplayConfigLite()
 		{
 			InitializeComponent();
@@ -139,12 +142,16 @@ namespace BizHawk.Client.EmuHawk.config
 			int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
 			int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
 
+			var oldDisplayMethod = Global.Config.DispMethod;
 			if(rbOpenGL.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.OpenGL;
 			if(rbGDIPlus.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 			if(rbD3D9.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.SlimDX9;
+
+			if (oldDisplayMethod != Global.Config.DispMethod)
+				NeedReset = true;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();

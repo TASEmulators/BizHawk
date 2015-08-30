@@ -2211,11 +2211,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = new config.DisplayConfigLite().ShowDialog();
+			var window = new config.DisplayConfigLite();
+			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				FrameBufferResized();
 				SynchChrome();
+				if (window.NeedReset)
+				{
+					GlobalWin.OSD.AddMessage("Restart program for changed settings");
+				}
 			}
 		}
 
