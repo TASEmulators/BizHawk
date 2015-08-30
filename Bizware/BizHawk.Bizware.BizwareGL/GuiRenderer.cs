@@ -137,19 +137,13 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void Begin(sd.Size size) { Begin(size.Width, size.Height); }
 
-		public void Begin(int width, int height, bool yflipped = false)
+		public void Begin(int width, int height)
 		{
 			Begin();
 
 			Projection = Owner.CreateGuiProjectionMatrix(width, height);
 			Modelview = Owner.CreateGuiViewMatrix(width, height);
 
-			//if (yflipped)
-			//{
-			//  //not sure this is the best way to do it. could be done in the view matrix creation
-			//  Modelview.Scale(1, -1);
-			//  Modelview.Translate(0, -height);
-			//}
 			Owner.SetViewport(width, height);
 		}
 

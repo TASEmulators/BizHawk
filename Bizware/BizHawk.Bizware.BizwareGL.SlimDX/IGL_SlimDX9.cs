@@ -672,9 +672,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight, pixels);
 			target.UnlockRectangle(0);
 			target.Dispose(); //buffer churn warning
-
-			//TEMPORARY until flipping is sorted out
-			bb.YFlip();
 			return bb;
 		}
 

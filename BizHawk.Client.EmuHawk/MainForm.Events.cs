@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
-				bb.Normalize(true);
+				bb.DiscardAlpha();
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}

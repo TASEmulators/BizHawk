@@ -105,6 +105,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Pixels = newPixels;
 		}
 
+		/// <summary>
+		/// Makes sure the alpha channel is clean and optionally y-flips
+		/// </summary>
 		public unsafe void Normalize(bool yflip)
 		{
 			var bmpdata = LockBits();
@@ -114,6 +117,7 @@ namespace BizHawk.Bizware.BizwareGL
 			fixed (int* d = newPixels)
 			{
 				if (yflip)
+				{
 					for (int y = 0, si = 0, di = (Height - 1) * Width; y < Height; y++)
 					{
 						for (int x = 0; x < Width; x++, si++, di++)
@@ -122,9 +126,16 @@ namespace BizHawk.Bizware.BizwareGL
 						}
 						di -= Width * 2;
 					}
+				}
 				else
 				{
-					//TODO
+					for (int y = 0, i=0; y < Height; y++)
+					{
+						for (int x = 0; x < Width; x++, i++)
+						{
+							d[i] = s[i] | unchecked((int)0xFF000000);
+						}
+					}
 				}
 			}
 

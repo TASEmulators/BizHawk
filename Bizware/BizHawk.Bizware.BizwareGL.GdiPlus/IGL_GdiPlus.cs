@@ -202,10 +202,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public unsafe BitmapBuffer ResolveTexture2d(Texture2d tex)
 		{
 			var tw = tex.Opaque as TextureWrapper;
-			return new BitmapBuffer(tw.SDBitmap, new BitmapLoadOptions()
+			var blow = new BitmapLoadOptions()
 			{
 				AllowWrap = false //must be an independent resource
-			});
+			};
+			var bb = new BitmapBuffer(tw.SDBitmap,blow); 
+			return bb;
 		}
 
 		public Texture2d LoadTexture(string path)
@@ -228,39 +230,24 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public Matrix4 CreateGuiProjectionMatrix(sd.Size dims)
 		{
-			Matrix4 ret = Matrix4.Identity;
-
-			//must handle 0s here otherwise we generate infinity and that causes problems later with gdi+
-			//gdi+ is additionally sensitive to otherwise reasonable (say, 0,0,0,0 matrices) so use a 1 here i guess
-			
-			if (dims.Width == 0)
-				ret.M11 = 1;
-			else ret.M11 = 2.0f / (float)dims.Width;
-
-			if (dims.Height == 0)
-				ret.M22 = 1;
-			else ret.M22 = 2.0f / (float)dims.Height;
-
-
-			return ret;
+			//see CreateGuiViewMatrix for more
+			return Matrix4.Identity;
 		}
 
 		public Matrix4 CreateGuiViewMatrix(sd.Size dims, bool autoflip)
 		{
-			Matrix4 ret = Matrix4.Identity;
-			ret.M22 = -1.0f;
-			ret.M41 = -(float)dims.Width * 0.5f;
-			ret.M42 = (float)dims.Height * 0.5f;
-			if (autoflip)
-			{
-				if (_CurrRenderTarget == null) { }
-				else
-				{
-					//flip as long as we're not a final render target
-					ret.M22 = 1.0f;
-				}
-			}
-			return ret;
+			//on account of gdi+ working internally with a default view exactly like we want, we don't need to setup a new one here
+			//furthermore, we _cant_, without inverting the GuiView and GuiProjection before drawing, to completely undo it
+			//this might be feasible, but its kind of slow and annoying and worse, seemingly numerically unstable
+			//if (autoflip && _CurrRenderTarget != null)
+			//{
+			//  Matrix4 ret = Matrix4.Identity;
+			//  ret.M22 = -1;
+			//  ret.M42 = dims.Height;
+			//  return ret;
+			//}
+			//else 
+				return Matrix4.Identity;
 		}
 
 		public void SetViewport(int x, int y, int width, int height)
@@ -393,6 +380,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void BindRenderTarget(RenderTarget rt)
 		{
+			if (_CurrentOffscreenGraphics != null)
+			{
+				_CurrentOffscreenGraphics.Dispose();
+				_CurrentOffscreenGraphics = null;
+			}
+
 			_CurrRenderTarget = rt;
 			if (CurrentRenderTargetWrapper != null)
 			{
@@ -401,7 +394,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 					//dont do anything til swapbuffers
 				}
 				else
-					CurrentRenderTargetWrapper.MyBufferedGraphics.Render();
+				{
+					//CurrentRenderTargetWrapper.MyBufferedGraphics.Render();
+				}
 			}
 
 			if (rt == null)
@@ -411,14 +406,20 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			}
 			else
 			{
+				var tw = rt.Texture2d.Opaque as TextureWrapper;
 				CurrentRenderTargetWrapper = rt.Opaque as RenderTargetWrapper;
-				if (CurrentRenderTargetWrapper.MyBufferedGraphics == null)
-					CurrentRenderTargetWrapper.CreateGraphics();
+				_CurrentOffscreenGraphics = Graphics.FromImage(tw.SDBitmap);
+				//if (CurrentRenderTargetWrapper.MyBufferedGraphics == null)
+				//  CurrentRenderTargetWrapper.CreateGraphics();
 			}
 		}
 
+		Graphics _CurrentOffscreenGraphics;
+
 		public Graphics GetCurrentGraphics()
 		{
+			if (_CurrentOffscreenGraphics != null)
+				return _CurrentOffscreenGraphics;
 			var rtw = CurrentRenderTargetWrapper;
 			return rtw.MyBufferedGraphics.Graphics;
 		}
