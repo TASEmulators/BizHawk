@@ -1657,6 +1657,11 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\tastudio\icon_anchor_lag.png" />
+    <None Include="images\tastudio\icon_anchor.png" />
+    <None Include="images\tastudio\icon_marker.png" />
+    <None Include="images\tastudio\anchor_marker.png" />
+    <None Include="images\tastudio\anchor_lag.png" />
     <None Include="images\tastudio\anchor.png" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />

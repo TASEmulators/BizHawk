@@ -119,14 +119,20 @@ namespace BizHawk.Client.EmuHawk
 						Properties.Resources.ts_h_arrow_green;
 				}
 			}
-			else if (columnName == FrameColumnName && VersionInfo.DeveloperBuild)
+			else if (columnName == FrameColumnName)
 			{
 				TasMovieRecord record = CurrentTasMovie[index];
-				if (record.HasState)
+				offsetX = -3;
+				offsetY = 1;
+
+                if (CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithIcons)
+                    bitmap = Properties.Resources.icon_marker;
+                else if (record.HasState && TasView.denoteStatesWithIcons)
 				{
-					offsetX = -2;
-					offsetY = 2;
-					bitmap = Properties.Resources.anchor;
+                    if (record.Lagged.HasValue && record.Lagged.Value)
+                        bitmap = Properties.Resources.icon_anchor_lag;
+                    else
+                        bitmap = Properties.Resources.icon_anchor;
 				}
 			}
 		}
@@ -148,7 +154,7 @@ namespace BizHawk.Client.EmuHawk
             
 			if (columnName == FrameColumnName)
 			{
-				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index))
+				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithBGColor)
 					color = Marker_FrameCol;
                 else
                     color = Color.FromArgb(0x60FFFFFF);
@@ -160,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
-				color = Color.FromArgb(0x0C000000);
+				color = Color.FromArgb(0x0D000000);
 		}
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
@@ -172,14 +178,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.Lagged.HasValue)
 			{
-                if (CurrentTasMovie.TasStateManager.HasState(index))
-				    color = record.Lagged.Value ?
-					    LagZone_InputLog_Stated :
-                        GreenZone_InputLog_Stated;
-                else
+                if (!CurrentTasMovie.TasStateManager.HasState(index) && TasView.denoteStatesWithBGColor)
                     color = record.Lagged.Value ?
                         LagZone_InputLog :
                         GreenZone_InputLog;
+                else
+				    color = record.Lagged.Value ?
+					    LagZone_InputLog_Stated :
+                        GreenZone_InputLog_Stated;
 			}
 			else if (record.WasLagged.HasValue)
 			{

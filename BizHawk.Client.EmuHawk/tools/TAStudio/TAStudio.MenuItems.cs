@@ -834,7 +834,39 @@ namespace BizHawk.Client.EmuHawk
 		private void scrollToCenterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
-		}
+        }
+
+        private void iconsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            denoteStatesWithIconsToolStripMenuItem.Checked = Settings.denoteStatesWithIcons;
+            denoteStatesWithBGColorToolStripMenuItem.Checked = Settings.denoteStatesWithBGColor;
+            denoteMarkersWithIconsToolStripMenuItem.Checked = Settings.denoteMarkersWithIcons;
+            denoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.denoteMarkersWithBGColor;
+        }
+
+        private void denoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons = denoteStatesWithIconsToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
+
+        private void denoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor = denoteStatesWithBGColorToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
+
+        private void denoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons = denoteMarkersWithIconsToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
+
+        private void denoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor = denoteMarkersWithBGColorToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{

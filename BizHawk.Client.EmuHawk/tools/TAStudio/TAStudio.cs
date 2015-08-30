@@ -61,6 +61,11 @@ namespace BizHawk.Client.EmuHawk
 				ScrollSpeed = 1;
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
+                // default to taseditor fashion
+                denoteStatesWithIcons = false;
+                denoteStatesWithBGColor = true;
+                denoteMarkersWithIcons = false;
+                denoteMarkersWithBGColor = true;
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -71,7 +76,12 @@ namespace BizHawk.Client.EmuHawk
 			public bool EmptyMarkers { get; set; }
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
-			public string FollowCursorScrollMethod { get; set; }
+            public string FollowCursorScrollMethod { get; set; }
+
+            public bool denoteStatesWithIcons { get; set; }
+            public bool denoteStatesWithBGColor { get; set; }
+            public bool denoteMarkersWithIcons { get; set; }
+            public bool denoteMarkersWithBGColor { get; set; }
 
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
@@ -193,7 +203,12 @@ namespace BizHawk.Client.EmuHawk
 			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+            TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+
+            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
+            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor;
+            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons;
+            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
 
 			// Remembering Split container logic
 			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
