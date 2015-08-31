@@ -512,5 +512,14 @@ namespace BizHawk.Client.EmuHawk
 		//to get triggered in the main form
 		public bool EnableIgnoreModifiers = false;
 
+		//sets a key as unpressed for the binding system
+		public void BindUnpress(System.Windows.Forms.Keys key)
+		{
+			//only validated for Return
+			string keystr = key.ToString();
+			UnpressState[keystr] = true;
+			LastState[keystr] = true;
+		}
+
 	}
 }
