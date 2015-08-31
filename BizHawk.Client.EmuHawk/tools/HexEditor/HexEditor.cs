@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			AddressesLabel.Text = GenerateMemoryViewString();
+			AddressesLabel.Text = GenerateMemoryViewString(true);
 			AddressLabel.Text = GenerateAddressString();
 		}
 
@@ -486,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 			return addrStr.ToString();
 		}
 
-		private string GenerateMemoryViewString()
+		private string GenerateMemoryViewString(bool forWindow)
 		{
 			var rowStr = new StringBuilder();
 
@@ -521,7 +521,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + k < _domain.Size)
 					{
-						rowStr.Append(Remap(MakeByte(_addr + k)));
+						byte b = MakeByte(_addr + k);
+						char c = Remap(b);
+						rowStr.Append(c);
+						//winforms will be using these as escape codes for hotkeys
+						if (forWindow) if (c == '&') rowStr.Append('&');
 					}
 				}
 
