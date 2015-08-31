@@ -229,6 +229,12 @@ namespace BizHawk.Client.EmuHawk
 			StopBot();
 		}
 
+		private void ClearBestButton_Click(object sender, EventArgs e)
+		{
+			_bestBotAttempt = null;
+			UpdateBestAttempt();
+		}
+
 		#endregion
 
 		private class BotAttempt
@@ -314,19 +320,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateBestAttempt()
 		{
-			BestAttemptNumberLabel.Text = _bestBotAttempt.Attempt.ToString();
-			BestMaximizeBox.Text = _bestBotAttempt.Maximize.ToString();
-			BestTieBreak1Box.Text = _bestBotAttempt.TieBreak1.ToString();
-			BestTieBreak2Box.Text = _bestBotAttempt.TieBreak2.ToString();
-			BestTieBreak3Box.Text = _bestBotAttempt.TieBreak3.ToString();
-
-			var sb = new StringBuilder();
-			foreach (var logEntry in _bestBotAttempt.Log)
+			if (_bestBotAttempt != null)
 			{
-				sb.AppendLine(logEntry);
-			}
-			BestAttemptLogLabel.Text = sb.ToString();
 
+
+				ClearBestButton.Enabled = true;
+				BestAttemptNumberLabel.Text = _bestBotAttempt.Attempt.ToString();
+				BestMaximizeBox.Text = _bestBotAttempt.Maximize.ToString();
+				BestTieBreak1Box.Text = _bestBotAttempt.TieBreak1.ToString();
+				BestTieBreak2Box.Text = _bestBotAttempt.TieBreak2.ToString();
+				BestTieBreak3Box.Text = _bestBotAttempt.TieBreak3.ToString();
+
+				var sb = new StringBuilder();
+				foreach (var logEntry in _bestBotAttempt.Log)
+				{
+					sb.AppendLine(logEntry);
+				}
+				BestAttemptLogLabel.Text = sb.ToString();
+			}
+			else
+			{
+				ClearBestButton.Enabled = false;
+				BestAttemptNumberLabel.Text = string.Empty;
+				BestMaximizeBox.Text = string.Empty;
+				BestTieBreak1Box.Text = string.Empty;
+				BestTieBreak2Box.Text = string.Empty;
+				BestTieBreak3Box.Text = string.Empty;
+				BestAttemptLogLabel.Text = string.Empty;
+			}
 		}
 
 		private void PressButtons()
@@ -361,8 +382,8 @@ namespace BizHawk.Client.EmuHawk
 			_isBotting = true;
 			ControlsBox.Enabled = false;
 			StartFromSlotBox.Enabled = false;
-			RunBtn.Enabled = false;
-			StopBtn.Enabled = true;
+			RunBtn.Visible = false;
+			StopBtn.Visible = true;
 			GoalGroupBox.Enabled = false;
 			_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 
@@ -407,8 +428,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StopBot()
 		{
-			RunBtn.Enabled = true;
-			StopBtn.Enabled = false;
+			RunBtn.Visible = true;
+			StopBtn.Visible = false;
 			_isBotting = false;
 			_targetFrame = 0;
 			_attempts = 1;
@@ -423,6 +444,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
 			}
+
+			GlobalWin.MainForm.PauseEmulator();
 		}
 	}
 }

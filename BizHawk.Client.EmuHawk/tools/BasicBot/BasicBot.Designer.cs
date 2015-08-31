@@ -30,11 +30,11 @@
 		{
 			this.BotMenu = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.recentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.countRerecordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
@@ -77,6 +77,10 @@
 			this.StopBtn = new System.Windows.Forms.Button();
 			this.label8 = new System.Windows.Forms.Label();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
+			this.ClearBestButton = new System.Windows.Forms.Button();
+			this.SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenu.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
 			this.BestGroupBox.SuspendLayout();
@@ -100,45 +104,54 @@
 			// fileToolStripMenuItem
 			// 
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem,
-            this.saveToolStripMenuItem,
-            this.recentToolStripMenuItem,
+            this.NewMenuItem,
+            this.OpenMenuItem,
+            this.SaveMenuItem,
+            this.SaveAsMenuItem,
+            this.RecentSubMenu,
             this.toolStripSeparator1,
-            this.exitToolStripMenuItem});
+            this.ExitMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
-			// openToolStripMenuItem
+			// OpenMenuItem
 			// 
-			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.openToolStripMenuItem.Text = "Open";
+			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
+			this.OpenMenuItem.Name = "OpenMenuItem";
+			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.OpenMenuItem.Text = "&Open...";
 			// 
-			// saveToolStripMenuItem
+			// SaveMenuItem
 			// 
-			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.saveToolStripMenuItem.Text = "Save";
+			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
+			this.SaveMenuItem.Name = "SaveMenuItem";
+			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SaveMenuItem.Text = "&Save";
 			// 
-			// recentToolStripMenuItem
+			// RecentSubMenu
 			// 
-			this.recentToolStripMenuItem.Name = "recentToolStripMenuItem";
-			this.recentToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.recentToolStripMenuItem.Text = "Recent";
+			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator2});
+			this.RecentSubMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Recent;
+			this.RecentSubMenu.Name = "RecentSubMenu";
+			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
+			this.RecentSubMenu.Text = "Recent";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(192, 6);
 			// 
-			// exitToolStripMenuItem
+			// ExitMenuItem
 			// 
-			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-			this.exitToolStripMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
-			this.exitToolStripMenuItem.Text = "E&xit";
-			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			this.ExitMenuItem.Name = "ExitMenuItem";
+			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
+			this.ExitMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.ExitMenuItem.Text = "E&xit";
+			this.ExitMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -158,7 +171,7 @@
 			// RunBtn
 			// 
 			this.RunBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RunBtn.Location = new System.Drawing.Point(487, 468);
+			this.RunBtn.Location = new System.Drawing.Point(487, 495);
 			this.RunBtn.Name = "RunBtn";
 			this.RunBtn.Size = new System.Drawing.Size(75, 23);
 			this.RunBtn.TabIndex = 2001;
@@ -330,6 +343,7 @@
 			// 
 			// label1
 			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(339, 46);
 			this.label1.Name = "label1";
@@ -339,6 +353,7 @@
 			// 
 			// label2
 			// 
+			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(346, 63);
 			this.label2.Name = "label2";
@@ -348,6 +363,7 @@
 			// 
 			// AttemptsLabel
 			// 
+			this.AttemptsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AttemptsLabel.AutoSize = true;
 			this.AttemptsLabel.Location = new System.Drawing.Point(397, 46);
 			this.AttemptsLabel.Name = "AttemptsLabel";
@@ -357,6 +373,7 @@
 			// 
 			// FramesLabel
 			// 
+			this.FramesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.FramesLabel.AutoSize = true;
 			this.FramesLabel.Location = new System.Drawing.Point(397, 63);
 			this.FramesLabel.Name = "FramesLabel";
@@ -537,20 +554,20 @@
 			// StopBtn
 			// 
 			this.StopBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.StopBtn.Enabled = false;
 			this.StopBtn.Location = new System.Drawing.Point(487, 495);
 			this.StopBtn.Name = "StopBtn";
 			this.StopBtn.Size = new System.Drawing.Size(75, 23);
 			this.StopBtn.TabIndex = 2002;
 			this.StopBtn.Text = "&Stop";
 			this.StopBtn.UseVisualStyleBackColor = true;
+			this.StopBtn.Visible = false;
 			this.StopBtn.Click += new System.EventHandler(this.StopBtn_Click);
 			// 
 			// label8
 			// 
 			this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(423, 436);
+			this.label8.Location = new System.Drawing.Point(423, 456);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(58, 13);
 			this.label8.TabIndex = 11;
@@ -572,16 +589,50 @@
             "Slot 7",
             "Slot 8",
             "Slot 9"});
-			this.StartFromSlotBox.Location = new System.Drawing.Point(487, 432);
+			this.StartFromSlotBox.Location = new System.Drawing.Point(487, 456);
 			this.StartFromSlotBox.Name = "StartFromSlotBox";
 			this.StartFromSlotBox.Size = new System.Drawing.Size(75, 21);
 			this.StartFromSlotBox.TabIndex = 2000;
+			// 
+			// ClearBestButton
+			// 
+			this.ClearBestButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ClearBestButton.Enabled = false;
+			this.ClearBestButton.Location = new System.Drawing.Point(490, 41);
+			this.ClearBestButton.Name = "ClearBestButton";
+			this.ClearBestButton.Size = new System.Drawing.Size(75, 23);
+			this.ClearBestButton.TabIndex = 2003;
+			this.ClearBestButton.Text = "&Clear";
+			this.ClearBestButton.UseVisualStyleBackColor = true;
+			this.ClearBestButton.Click += new System.EventHandler(this.ClearBestButton_Click);
+			// 
+			// SaveAsMenuItem
+			// 
+			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
+			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SaveAsMenuItem.Text = "Save &As...";
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			// 
+			// NewMenuItem
+			// 
+			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
+			this.NewMenuItem.Name = "NewMenuItem";
+			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.NewMenuItem.Text = "&New";
 			// 
 			// BasicBot
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(574, 552);
+			this.Controls.Add(this.ClearBestButton);
 			this.Controls.Add(this.StartFromSlotBox);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.StopBtn);
@@ -619,11 +670,11 @@
 
 		private MenuStripEx BotMenu;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.Button RunBtn;
-		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem recentToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SaveMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.StatusStrip BotStatusStrip;
 		private System.Windows.Forms.GroupBox ControlsBox;
@@ -666,5 +717,9 @@
 		private System.Windows.Forms.Label BestAttemptNumberLabel;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.Label BestAttemptLogLabel;
+		private System.Windows.Forms.Button ClearBestButton;
+		private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem NewMenuItem;
 	}
 }
