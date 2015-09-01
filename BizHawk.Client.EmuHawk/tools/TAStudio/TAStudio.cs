@@ -371,6 +371,7 @@ namespace BizHawk.Client.EmuHawk
 					Name = columnName,
 					Text = columnText,
 					Width = columnWidth,
+                    Visible = (columnName == "Power" || columnName == "Reset") ? false : true // hack to hide them by default. they are needed once per million years.
 				};
 
 				TasView.AllColumns.Add(column);
