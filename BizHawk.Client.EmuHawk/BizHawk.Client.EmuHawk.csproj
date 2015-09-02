@@ -482,6 +482,9 @@
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="CustomControls\InputRoll.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -524,9 +527,7 @@
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\VirtualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs" />
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
@@ -977,9 +978,6 @@
     </Compile>
     <Compile Include="tools\TAStudio\HeaderEditor.Designer.cs">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\TAStudio\InputRoll.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\PatternsForm.cs">
       <SubType>Form</SubType>
