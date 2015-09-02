@@ -331,6 +331,17 @@ namespace BizHawk.Client.EmuHawk
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
 
+			var columnsToHide = TasView.AllColumns
+				.Where(c => c.Name == "Power" || c.Name == "Reset");
+
+			foreach (var column in columnsToHide)
+			{
+				column.Visible = false;
+			}
+
+			TasView.AllColumns.ColumnsChanged();
+			
+
 			// Patterns
 			int bStart = 0;
 			int fStart = 0;
@@ -370,8 +381,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = columnName,
 					Text = columnText,
-					Width = columnWidth,
-                    Visible = (columnName == "Power" || columnName == "Reset") ? false : true // hack to hide them by default. they are needed once per million years.
+					Width = columnWidth
 				};
 
 				TasView.AllColumns.Add(column);
