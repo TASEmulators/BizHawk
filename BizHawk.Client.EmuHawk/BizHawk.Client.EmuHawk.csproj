@@ -485,6 +485,10 @@
     <Compile Include="CustomControls\InputRoll.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\InputRoll.Drawing.cs">
+      <DependentUpon>InputRoll.cs</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
     </Compile>
