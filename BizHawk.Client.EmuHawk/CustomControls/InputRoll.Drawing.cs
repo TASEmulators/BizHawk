@@ -539,13 +539,12 @@ namespace BizHawk.Client.EmuHawk
 		private void DoBackGroundCallback(PaintEventArgs e)
 		{
 			List<RollColumn> columns = _columns.VisibleColumns.ToList();
+			int startIndex = FirstVisibleRow;
+			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
+			int lastVisible = LastVisibleColumnIndex;
 
 			if (HorizontalOrientation)
 			{
-				int startIndex = FirstVisibleRow;
-				int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
-				int lastVisible = LastVisibleColumnIndex;
-
 				for (int i = 0, f = 0; f < range; i++, f++)
 				{
 					f += lagFrames[i];
@@ -587,10 +586,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				int startRow = FirstVisibleRow;
-				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
-				int lastVisible = LastVisibleColumnIndex;
-
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += lagFrames[i];
@@ -598,13 +593,13 @@ namespace BizHawk.Client.EmuHawk
 					Color rowColor = Color.White;
 					if (QueryRowBkColor != null)
 					{
-						QueryRowBkColor(f + startRow, ref rowColor);
+						QueryRowBkColor(f + startIndex, ref rowColor);
 					}
 
 					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 					{
 						Color itemColor = Color.White;
-						QueryItemBkColor(f + startRow, columns[j], ref itemColor);
+						QueryItemBkColor(f + startIndex, columns[j], ref itemColor);
 						if (itemColor == Color.White)
 						{
 							itemColor = rowColor;
