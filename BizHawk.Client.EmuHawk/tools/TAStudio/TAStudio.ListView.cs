@@ -86,6 +86,17 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
+		private Bitmap ts_v_arrow_green_blue = Properties.Resources.ts_v_arrow_green_blue;
+		private Bitmap ts_h_arrow_green_blue = Properties.Resources.ts_h_arrow_green_blue;
+		private Bitmap ts_v_arrow_blue = Properties.Resources.ts_v_arrow_blue;
+		private Bitmap ts_h_arrow_blue = Properties.Resources.ts_h_arrow_blue;
+		private Bitmap ts_v_arrow_green = Properties.Resources.ts_v_arrow_green;
+		private Bitmap ts_h_arrow_green = Properties.Resources.ts_h_arrow_green;
+
+		private Bitmap icon_marker = Properties.Resources.icon_marker;
+		private Bitmap icon_anchor_lag = Properties.Resources.icon_anchor_lag;
+		private Bitmap icon_anchor = Properties.Resources.icon_anchor;
+
 		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			var overrideIcon = GetIconOverride(index, column);
@@ -103,20 +114,20 @@ namespace BizHawk.Client.EmuHawk
 				if (index == Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
-						Properties.Resources.ts_v_arrow_green_blue :
-						Properties.Resources.ts_h_arrow_green_blue;
+						ts_v_arrow_green_blue :
+						ts_h_arrow_green_blue;
 				}
 				else if (index == Emulator.Frame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
-						Properties.Resources.ts_v_arrow_blue :
-						Properties.Resources.ts_h_arrow_blue;
+						ts_v_arrow_blue :
+						ts_h_arrow_blue;
 				}
 				else if (index == GlobalWin.MainForm.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
-						Properties.Resources.ts_v_arrow_green :
-						Properties.Resources.ts_h_arrow_green;
+						ts_v_arrow_green :
+						ts_h_arrow_green;
 				}
 			}
 			else if (columnName == FrameColumnName)
@@ -126,13 +137,13 @@ namespace BizHawk.Client.EmuHawk
 				offsetY = 1;
 
                 if (CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithIcons)
-                    bitmap = Properties.Resources.icon_marker;
+                    bitmap = icon_marker;
                 else if (record.HasState && TasView.denoteStatesWithIcons)
 				{
                     if (record.Lagged.HasValue && record.Lagged.Value)
-                        bitmap = Properties.Resources.icon_anchor_lag;
+                        bitmap = icon_anchor_lag;
                     else
-                        bitmap = Properties.Resources.icon_anchor;
+                        bitmap = icon_anchor;
 				}
 			}
 		}
