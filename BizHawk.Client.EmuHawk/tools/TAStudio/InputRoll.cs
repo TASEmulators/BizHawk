@@ -22,23 +22,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly VScrollBar VBar;
 		private readonly HScrollBar HBar;
-		public int ScrollSpeed
-		{
-			get
-			{
-				if (HorizontalOrientation)
-					return HBar.SmallChange / CellWidth;
-				else
-					return VBar.SmallChange / CellHeight;
-			}
-			set
-			{
-				if (HorizontalOrientation)
-					HBar.SmallChange = value * CellWidth;
-				else
-					VBar.SmallChange = value * CellHeight;
-			}
-		}
 
 		private RollColumns _columns = new RollColumns();
 		private bool _horizontalOrientation;
@@ -58,10 +41,10 @@ namespace BizHawk.Client.EmuHawk
 		public bool HideWasLagFrames { get; set; }
 		private byte[] lagFrames = new byte[100]; // Large enough value that it shouldn't ever need resizing.
 
-        public bool denoteStatesWithIcons { get; set; }
-        public bool denoteStatesWithBGColor { get; set; }
-        public bool denoteMarkersWithIcons { get; set; }
-        public bool denoteMarkersWithBGColor { get; set; }
+		public bool denoteStatesWithIcons { get; set; }
+		public bool denoteStatesWithBGColor { get; set; }
+		public bool denoteMarkersWithIcons { get; set; }
+		public bool denoteMarkersWithBGColor { get; set; }
 
 		private IntPtr RotatedFont;
 		private Font NormalFont;
@@ -115,8 +98,8 @@ namespace BizHawk.Client.EmuHawk
 				LargeChange = 20
 			};
 
-			this.Controls.Add(VBar);
-			this.Controls.Add(HBar);
+			Controls.Add(VBar);
+			Controls.Add(HBar);
 
 			VBar.ValueChanged += VerticalBar_ValueChanged;
 			HBar.ValueChanged += HorizontalBar_ValueChanged;
@@ -200,6 +183,28 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
+		/// Gets or sets the scrolling speed
+		/// </summary>
+		[Category("Behavior")]
+		public int ScrollSpeed
+		{
+			get
+			{
+				if (HorizontalOrientation)
+					return HBar.SmallChange / CellWidth;
+				else
+					return VBar.SmallChange / CellHeight;
+			}
+			set
+			{
+				if (HorizontalOrientation)
+					HBar.SmallChange = value * CellWidth;
+				else
+					VBar.SmallChange = value * CellHeight;
+			}
+		}
+
+		/// <summary>
 		/// Gets or sets the sets the virtual number of rows to be displayed. Does not include the column header row.
 		/// </summary>
 		[Category("Behavior")]
@@ -274,7 +279,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		/// <returns></returns>
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RollColumns AllColumns { get { return _columns; } }
 
 
@@ -480,13 +485,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SelectedItems.Clear();
 		}
+
 		public void TruncateSelection(int index)
 		{
 			SelectedItems.RemoveWhere(cell => cell.RowIndex > index);
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsPointingAtColumnHeader
 		{
 			get
@@ -496,7 +502,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int? FirstSelectedIndex
 		{
 			get
@@ -511,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int? LastSelectedIndex
 		{
 			get
@@ -529,11 +535,11 @@ namespace BizHawk.Client.EmuHawk
 		/// The current Cell that the mouse was in.
 		/// </summary>
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Cell CurrentCell { get; set; }
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool CurrentCellIsDataCell
 		{
 			get
@@ -574,6 +580,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return _maxCharactersInHorizontal;
 			}
+
 			set
 			{
 				_maxCharactersInHorizontal = value;
@@ -633,7 +640,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets or sets the first visible row index, if scrolling is needed
 		/// </summary>
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int FirstVisibleRow
 		{
 			get // SuuperW: This was checking if the scroll bars were needed, which is useless because their Value is 0 if they aren't needed.
@@ -676,7 +683,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		private int LastFullyVisibleRow
 		{
 			get
@@ -688,7 +695,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int LastVisibleRow
 		{
 			get
@@ -739,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets the number of rows currently visible including partially visible rows.
 		/// </summary>
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int VisibleRows
 		{
 			get
@@ -757,21 +764,25 @@ namespace BizHawk.Client.EmuHawk
 		/// Gets the first visible column index, if scrolling is needed
 		/// </summary>
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int FirstVisibleColumn
 		{
 			get
 			{
 				List<RollColumn> columnList = VisibleColumns.ToList();
 				if (HorizontalOrientation)
+				{
 					return VBar.Value / CellHeight;
+				}
 				else
+				{
 					return columnList.FindIndex(c => c.Right > HBar.Value);
+				}
 			}
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int LastVisibleColumnIndex
 		{
 			get
@@ -872,7 +883,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(false)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<int> SelectedRows
 		{
 			get
@@ -909,7 +920,7 @@ namespace BizHawk.Client.EmuHawk
 
 			rotate.Click += (o, ev) =>
 			{
-				this.HorizontalOrientation ^= true;
+				HorizontalOrientation ^= true;
 			};
 
 			yield return rotate;
@@ -1166,27 +1177,25 @@ namespace BizHawk.Client.EmuHawk
 							{
 								Gdi.DrawBitmap(image, new Point(point.X + bitmapOffsetX, point.Y + bitmapOffsetY + CellHeightPadding), true);
 							}
-							//else
-							//{
-								QueryItemText(f + startRow, columns[j], out text, ref strOffsetX, ref strOffsetY);
+							
+							QueryItemText(f + startRow, columns[j], out text, ref strOffsetX, ref strOffsetY);
 
-								bool rePrep = false;
-								if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = f + startRow }))
-								{
-									Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
-									rePrep = true;
-								}
+							bool rePrep = false;
+							if (SelectedItems.Contains(new Cell { Column = columns[j], RowIndex = f + startRow }))
+							{
+								Gdi.PrepDrawString(this.NormalFont, SystemColors.HighlightText);
+								rePrep = true;
+							}
 
-								if (!string.IsNullOrWhiteSpace(text))
-								{
-									Gdi.DrawString(text, new Point(point.X + strOffsetX, point.Y + strOffsetY));
-								}
+							if (!string.IsNullOrWhiteSpace(text))
+							{
+								Gdi.DrawString(text, new Point(point.X + strOffsetX, point.Y + strOffsetY));
+							}
 
-								if (rePrep)
-								{
-									Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
-								}
-							//}
+							if (rePrep)
+							{
+								Gdi.PrepDrawString(this.NormalFont, this.ForeColor);
+							}
 						}
 					}
 				}
@@ -1221,19 +1230,20 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				int bottomEdge = RowsToPixels(0);
-				//Gray column box and black line underneath
+
+				// Gray column box and black line underneath
 				Gdi.FillRectangle(0, 0, Width + 1, bottomEdge + 1);
 				Gdi.Line(0, 0, TotalColWidth.Value + 1, 0);
 				Gdi.Line(0, bottomEdge, TotalColWidth.Value + 1, bottomEdge);
 
-				//Vertical black seperators
+				// Vertical black seperators
 				for (int i = 0; i < columns.Count; i++)
 				{
 					int pos = columns[i].Left.Value - HBar.Value;
 					Gdi.Line(pos, 0, pos, bottomEdge);
 				}
 
-				////Draw right most line
+				// Draw right most line
 				if (columns.Any())
 				{
 					int right = TotalColWidth.Value - HBar.Value;
@@ -1318,7 +1328,7 @@ namespace BizHawk.Client.EmuHawk
 			return Color.FromArgb(col);
 		}
 
-		//TODO refactor this and DoBackGroundCallback functions.
+		// TODO refactor this and DoBackGroundCallback functions.
 		/// <summary>
 		/// Draw Gridlines and background colors using QueryItemBkColor.
 		/// </summary>
@@ -1399,6 +1409,7 @@ namespace BizHawk.Client.EmuHawk
 					QueryRowBkColor(cell.RowIndex.Value, ref rowColor);
 					lastRow = cell.RowIndex.Value;
 				}
+
 				Color cellColor = rowColor;
 				QueryItemBkColor(cell.RowIndex.Value, cell.Column, ref cellColor);
 				// Alpha layering for cell before selection
@@ -1421,8 +1432,6 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Given a cell with rowindex inbetween 0 and VisibleRows, it draws the background color specified. Do not call with absolute rowindices.
 		/// </summary>
-		/// <param name="color"></param>
-		/// <param name="cell"></param>
 		private void DrawCellBG(Color color, Cell cell)
 		{
 			var columns = _columns.VisibleColumns.ToList();
