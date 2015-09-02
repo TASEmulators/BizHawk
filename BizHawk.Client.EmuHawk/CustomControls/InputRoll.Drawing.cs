@@ -544,20 +544,27 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int startIndex = FirstVisibleRow;
 				int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
+				int lastVisible = LastVisibleColumnIndex;
 
 				for (int i = 0, f = 0; f < range; i++, f++)
 				{
 					f += lagFrames[i];
-					int LastVisible = LastVisibleColumnIndex;
+					
 					Color rowColor = Color.White;
 					if (QueryRowBkColor != null)
+					{
 						QueryRowBkColor(f + startIndex, ref rowColor);
-					for (int j = FirstVisibleColumn; j <= LastVisible; j++) // TODO: Don't query all columns
+					}
+
+					for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 					{
 						Color itemColor = Color.White;
 						QueryItemBkColor(f + startIndex, columns[j], ref itemColor);
 						if (itemColor == Color.White)
+						{
 							itemColor = rowColor;
+						}
+
 						else if (itemColor.A != 255 && itemColor.A != 0)
 						{
 							float alpha = (float)itemColor.A / 255;
@@ -568,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 
 						if (itemColor != Color.White) // An easy optimization, don't draw unless the user specified something other than the default
 						{
-							var cell = new Cell()
+							var cell = new Cell
 							{
 								Column = columns[j],
 								RowIndex = i
@@ -582,20 +589,26 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int startRow = FirstVisibleRow;
 				int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
+				int lastVisible = LastVisibleColumnIndex;
 
 				for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 				{
 					f += lagFrames[i];
-					int LastVisible = LastVisibleColumnIndex;
+					
 					Color rowColor = Color.White;
 					if (QueryRowBkColor != null)
+					{
 						QueryRowBkColor(f + startRow, ref rowColor);
-					for (int j = FirstVisibleColumn; j <= LastVisible; j++) // Horizontal
+					}
+
+					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 					{
 						Color itemColor = Color.White;
 						QueryItemBkColor(f + startRow, columns[j], ref itemColor);
 						if (itemColor == Color.White)
+						{
 							itemColor = rowColor;
+						}
 						else if (itemColor.A != 255 && itemColor.A != 0)
 						{
 							float alpha = (float)itemColor.A / 255;
