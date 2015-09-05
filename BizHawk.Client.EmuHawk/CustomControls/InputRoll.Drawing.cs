@@ -399,9 +399,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DrawBg(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
 			if (UseCustomBackground && QueryItemBkColor != null)
+			{
 				DoBackGroundCallback(e, visibleColumns);
+			}
 
-			if (GridLines)
+			if (GridLines && false)
 			{
 				Gdi.SetSolidPen(SystemColors.ControlLight);
 				if (HorizontalOrientation)
@@ -423,6 +425,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					// Columns
 					int y = ColumnHeight + 1;
+					int? totalColWidth = TotalColWidth;
 					foreach (var column in visibleColumns)
 					{
 						int x = column.Left.Value - HBar.Value;
@@ -431,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (visibleColumns.Any())
 					{
-						Gdi.Line(TotalColWidth.Value - HBar.Value, y, TotalColWidth.Value - HBar.Value, Height - 1);
+						Gdi.Line(totalColWidth.Value - HBar.Value, y, totalColWidth.Value - HBar.Value, Height - 1);
 					}
 
 					// Rows
