@@ -59,9 +59,9 @@ namespace BizHawk.Client.EmuHawk
 				int x2 = x1 + _columnDown.Width.Value;
 				int y2 = y1 + CellHeight;
 
-				Gdi.SetSolidPen(this.BackColor);
+				Gdi.SetSolidPen(_backColor);
 				Gdi.DrawRectangle(x1, y1, x2, y2);
-				Gdi.PrepDrawString(NormalFont, this.ForeColor);
+				Gdi.PrepDrawString(NormalFont, _foreColor);
 				Gdi.DrawString(_columnDown.Text, new Point(x1 + CellWidthPadding, y1 + CellHeightPadding));
 			}
 		}
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 					QueryItemText(DraggingCell.RowIndex.Value, DraggingCell.Column, out text, ref offsetX, ref offsetY);
 				}
 
-				Color bgColor = this.BackColor;
+				Color bgColor = _backColor;
 				if (QueryItemBkColor != null)
 				{
 					QueryItemBkColor(DraggingCell.RowIndex.Value, DraggingCell.Column, ref bgColor);
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Gdi.SetBrush(bgColor);
 				Gdi.FillRectangle(x1, y1, x2 - x1, y2 - y1);
-				Gdi.PrepDrawString(NormalFont, this.ForeColor);
+				Gdi.PrepDrawString(NormalFont, _foreColor);
 				Gdi.DrawString(text, new Point(x1 + CellWidthPadding + offsetX, y1 + CellHeightPadding + offsetY));
 			}
 		}
@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int start = -VBar.Value;
 
-				Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
+				Gdi.PrepDrawString(RotatedFont, _foreColor);
 
 				foreach (var column in visibleColumns)
 				{
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Gdi.PrepDrawString(NormalFont, SystemColors.HighlightText);
 						Gdi.DrawString(column.Text, point);
-						Gdi.PrepDrawString(NormalFont, this.ForeColor);
+						Gdi.PrepDrawString(NormalFont, _foreColor);
 					}
 					else
 					{
@@ -126,8 +126,8 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				//zeromus test
-				//Gdi.PrepDrawString(NormalFont, this.ForeColor);
-				Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
+				//Gdi.PrepDrawString(NormalFont, _foreColor);
+				Gdi.PrepDrawString(RotatedFont, _foreColor);
 
 				foreach (var column in visibleColumns)
 				{
@@ -137,11 +137,11 @@ namespace BizHawk.Client.EmuHawk
 					{
 						//zeromus test
 						//Gdi.PrepDrawString(NormalFont, SystemColors.HighlightText);
-						Gdi.PrepDrawString(this.RotatedFont, SystemColors.HighlightText);
+						Gdi.PrepDrawString(RotatedFont, SystemColors.HighlightText);
 						Gdi.DrawString(column.Text, point);
 						//zeromus test
-						//Gdi.PrepDrawString(NormalFont, this.ForeColor);
-						Gdi.PrepDrawString(this.RotatedFont, this.ForeColor);
+						//Gdi.PrepDrawString(NormalFont, _foreColor);
+						Gdi.PrepDrawString(RotatedFont, _foreColor);
 					}
 					else
 					{
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 					int startRow = FirstVisibleRow;
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-					Gdi.PrepDrawString(NormalFont, this.ForeColor);
+					Gdi.PrepDrawString(NormalFont, _foreColor);
 					for (int i = 0, f = 0; f < range; i++, f++)
 					{
 						f += lagFrames[i];
@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (rePrep)
 							{
-								Gdi.PrepDrawString(NormalFont, this.ForeColor);
+								Gdi.PrepDrawString(NormalFont, _foreColor);
 							}
 							//}
 						}
@@ -222,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 					int startRow = FirstVisibleRow;
 					int range = Math.Min(LastVisibleRow, RowCount - 1) - startRow + 1;
 
-					Gdi.PrepDrawString(NormalFont, this.ForeColor);
+					Gdi.PrepDrawString(NormalFont, _foreColor);
 					int xPadding = CellWidthPadding + 1 - HBar.Value;
 					for (int i = 0, f = 0; f < range; i++, f++) // Vertical
 					{
@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 
 							if (rePrep)
 							{
-								Gdi.PrepDrawString(NormalFont, this.ForeColor);
+								Gdi.PrepDrawString(NormalFont, _foreColor);
 							}
 						}
 					}

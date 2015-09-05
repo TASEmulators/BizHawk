@@ -1,6 +1,4 @@
-﻿//TODO - do not constantly reference this.ForeColor, it should be a waste of time. Cache them (and be sure to respond to system messages when the user settings change)
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -48,6 +46,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private IntPtr RotatedFont;
 		private readonly Font NormalFont;
+		private Color _foreColor;
+		private Color _backColor;
 
 		public InputRoll()
 		{
@@ -111,6 +111,9 @@ namespace BizHawk.Client.EmuHawk
 			_hoverTimer.Interval = 750;
 			_hoverTimer.Tick += HoverTimerEventProcessor;
 			_hoverTimer.Stop();
+
+			_foreColor = ForeColor;
+			_backColor = BackColor;
 		}
 
 		private void HoverTimerEventProcessor(object sender, EventArgs e)
