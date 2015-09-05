@@ -215,6 +215,7 @@ namespace BizHawk.Client.Common
 		public bool DisplayLagCounter = false;
 		public bool DisplayInput = false;
 		public bool DisplayRerecordCount = false;
+		public bool DisplayMessages = true;
 
 		public bool DispBlurry = false; // make display look ugly
 		public bool DispFixAspectRatio = true;

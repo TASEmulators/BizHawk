@@ -3849,6 +3849,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<BasicBot>();
 		}
 
+		private void DisplayMessagesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.DisplayMessages ^= true;
+		}
+
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
