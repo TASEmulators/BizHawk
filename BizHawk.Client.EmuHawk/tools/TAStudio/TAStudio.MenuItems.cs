@@ -1019,7 +1019,8 @@ namespace BizHawk.Client.EmuHawk
 			
 			StartNewProjectFromNowMenuItem.Visible =
 				TasView.SelectedRows.Count() == 1
-				&& TasView.SelectedRows.Contains(Emulator.Frame);
+				&& TasView.SelectedRows.Contains(Emulator.Frame)
+				&& !CurrentTasMovie.StartsFromSaveRam;
 			StartANewProjectFromSaveRamMenuItem.Visible = TasView.SelectedRows.Count() == 1 && SaveRamEmulator != null;
 			StartFromNowSeparator.Visible =StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
