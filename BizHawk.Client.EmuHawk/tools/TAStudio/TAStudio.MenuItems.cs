@@ -1021,7 +1021,12 @@ namespace BizHawk.Client.EmuHawk
 				TasView.SelectedRows.Count() == 1
 				&& TasView.SelectedRows.Contains(Emulator.Frame)
 				&& !CurrentTasMovie.StartsFromSaveRam;
-			StartANewProjectFromSaveRamMenuItem.Visible = TasView.SelectedRows.Count() == 1 && SaveRamEmulator != null;
+
+			StartANewProjectFromSaveRamMenuItem.Visible =
+				TasView.SelectedRows.Count() == 1
+				&& SaveRamEmulator != null
+				&& !CurrentTasMovie.StartsFromSavestate;
+
 			StartFromNowSeparator.Visible =StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
 			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
@@ -1050,6 +1055,26 @@ namespace BizHawk.Client.EmuHawk
 
 					TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
 						index, (byte[])StatableEmulator.SaveStateBinary().Clone());
+
+					GlobalWin.MainForm.PauseEmulator();
+					LoadFile(new FileInfo(newProject.Filename));
+				}
+			}
+		}
+
+		private void StartANewProjectFromSaveRamMenuItem_Click(object sender, EventArgs e)
+		{
+			if (TasView.SelectedRows.Count() == 1 &&
+				!CurrentTasMovie.StartsFromSavestate &&
+				SaveRamEmulator != null)
+			{
+				if (AskSaveChanges())
+				{
+					int index = TasView.SelectedRows.First();
+					GoToFrame(index);
+
+					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+						SaveRamEmulator.CloneSaveRam());
 
 					GlobalWin.MainForm.PauseEmulator();
 					LoadFile(new FileInfo(newProject.Filename));
