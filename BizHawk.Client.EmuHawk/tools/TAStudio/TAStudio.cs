@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!InitializeOnLoad())
 			{
 				Close();
-				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+				DialogResult = DialogResult.Cancel;
 				return;
 			}
 

@@ -199,10 +199,13 @@ namespace BizHawk.Client.EmuHawk
 
 			form.FormClosing += (o, e) =>
 			{
-				settings.Wndx = form.Location.X;
-				settings.Wndy = form.Location.Y;
-				settings.Width = form.Right - form.Left; // why not form.Size.Width?
-				settings.Height = form.Bottom - form.Top;
+				if (form.WindowState == FormWindowState.Normal)
+				{
+					settings.Wndx = form.Location.X;
+					settings.Wndy = form.Location.Y;
+					settings.Width = form.Right - form.Left; // why not form.Size.Width?
+					settings.Height = form.Bottom - form.Top;
+				}
 			};
 
 			dest[idx + 0].Click += (o, e) =>
