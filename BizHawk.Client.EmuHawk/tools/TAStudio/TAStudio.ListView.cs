@@ -317,6 +317,7 @@ namespace BizHawk.Client.EmuHawk
 				AutoPatternBool p = BoolPatterns[index];
 				// adelikat: I broke it
 				//Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
+				Global.StickyXORAdapter.SetSticky(button, true);
 			}
 			else
 			{
@@ -329,6 +330,7 @@ namespace BizHawk.Client.EmuHawk
 				AutoPatternFloat p = FloatPatterns[index];
 				// adelikat: I broke it
 				//Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
+				Global.StickyXORAdapter.SetFloat(button, value);
 			}
 		}
 
