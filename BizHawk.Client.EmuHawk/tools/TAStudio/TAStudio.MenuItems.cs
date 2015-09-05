@@ -1042,7 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 		private void StartNewProjectFromNowMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TasView.SelectedRows.Count() == 1 &&
-				!CurrentTasMovie.StartsFromSavestate)
+				!CurrentTasMovie.StartsFromSaveRam)
 			{
 				if (AskSaveChanges())
 				{
