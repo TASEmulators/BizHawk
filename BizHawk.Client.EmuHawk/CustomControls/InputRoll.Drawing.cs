@@ -452,10 +452,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
 			Color rowColor = Color.White;
+			int _lastVisibleRow = LastVisibleRow;
 			int lastRow = -1;
 			foreach (Cell cell in SelectedItems)
 			{
-				if (cell.RowIndex > LastVisibleRow || cell.RowIndex < FirstVisibleRow)
+				if (cell.RowIndex > _lastVisibleRow || cell.RowIndex < FirstVisibleRow)
 					continue;
 
 				Cell relativeCell = new Cell
