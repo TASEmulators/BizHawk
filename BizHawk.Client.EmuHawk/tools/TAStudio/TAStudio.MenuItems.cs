@@ -1046,39 +1046,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewProjectFromNowMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Count() == 1 &&
-				!CurrentTasMovie.StartsFromSaveRam)
+			if (AskSaveChanges())
 			{
-				if (AskSaveChanges())
-				{
-					int index = Emulator.Frame;
+				int index = Emulator.Frame;
 
-					TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
-						index, (byte[])StatableEmulator.SaveStateBinary().Clone());
+				TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
-					GlobalWin.MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename));
-				}
+				GlobalWin.MainForm.PauseEmulator();
+				LoadFile(new FileInfo(newProject.Filename));
 			}
 		}
 
 		private void StartANewProjectFromSaveRamMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Count() == 1 &&
-				!CurrentTasMovie.StartsFromSavestate &&
-				SaveRamEmulator != null)
+			if (AskSaveChanges())
 			{
-				if (AskSaveChanges())
-				{
-					int index = TasView.SelectedRows.First();
-					GoToFrame(index);
+				int index = TasView.SelectedRows.First();
+				GoToFrame(index);
 
-					TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
-						SaveRamEmulator.CloneSaveRam());
+				TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+					SaveRamEmulator.CloneSaveRam());
 
-					GlobalWin.MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename));
-				}
+				GlobalWin.MainForm.PauseEmulator();
+				LoadFile(new FileInfo(newProject.Filename));
 			}
 		}
 

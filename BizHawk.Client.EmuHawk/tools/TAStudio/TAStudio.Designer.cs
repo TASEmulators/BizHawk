@@ -35,6 +35,9 @@ namespace BizHawk.Client.EmuHawk
 			this.TASMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewTASMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewFromSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewFromNowMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewFromCurrentSaveRamMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenTASMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveTASMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveAsTASMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -218,6 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewTASMenuItem,
+            this.NewFromSubMenu,
             this.OpenTASMenuItem,
             this.SaveTASMenuItem,
             this.SaveAsTASMenuItem,
@@ -242,6 +246,30 @@ namespace BizHawk.Client.EmuHawk
 			this.NewTASMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.NewTASMenuItem.Text = "&New";
 			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTasMenuItem_Click);
+			// 
+			// NewFromSubMenu
+			// 
+			this.NewFromSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewFromNowMenuItem,
+            this.NewFromCurrentSaveRamMenuItem});
+			this.NewFromSubMenu.Name = "NewFromSubMenu";
+			this.NewFromSubMenu.Size = new System.Drawing.Size(203, 22);
+			this.NewFromSubMenu.Text = "New From";
+			this.NewFromSubMenu.DropDownOpened += new System.EventHandler(this.NewFromSubMenu_DropDownOpened);
+			// 
+			// NewFromNowMenuItem
+			// 
+			this.NewFromNowMenuItem.Name = "NewFromNowMenuItem";
+			this.NewFromNowMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.NewFromNowMenuItem.Text = "&Now";
+			this.NewFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
+			// 
+			// NewFromCurrentSaveRamMenuItem
+			// 
+			this.NewFromCurrentSaveRamMenuItem.Name = "NewFromCurrentSaveRamMenuItem";
+			this.NewFromCurrentSaveRamMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.NewFromCurrentSaveRamMenuItem.Text = "&Current SaveRam";
+			this.NewFromCurrentSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
 			// 
 			// OpenTASMenuItem
 			// 
@@ -1249,7 +1277,7 @@ namespace BizHawk.Client.EmuHawk
             this.StartNewProjectFromNowMenuItem,
             this.StartANewProjectFromSaveRamMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 480);
+			this.RightClickMenu.Size = new System.Drawing.Size(273, 458);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
@@ -1688,5 +1716,8 @@ namespace BizHawk.Client.EmuHawk
         private System.Windows.Forms.ToolStripMenuItem denoteStatesWithBGColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem denoteMarkersWithIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem denoteMarkersWithBGColorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem NewFromSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem NewFromNowMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem NewFromCurrentSaveRamMenuItem;
 	}
 }

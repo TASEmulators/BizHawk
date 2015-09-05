@@ -927,5 +927,16 @@ namespace BizHawk.Client.EmuHawk
 				RefreshDialog();
 			}
 		}
+
+		private void NewFromSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			NewFromNowMenuItem.Enabled =
+				CurrentTasMovie.InputLogLength > 0
+				&& !CurrentTasMovie.StartsFromSaveRam;
+
+			NewFromCurrentSaveRamMenuItem.Enabled =
+				CurrentTasMovie.InputLogLength > 0
+				&& SaveRamEmulator != null;
+		}
 	}
 }
