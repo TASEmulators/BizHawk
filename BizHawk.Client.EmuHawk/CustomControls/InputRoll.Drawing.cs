@@ -184,8 +184,7 @@ namespace BizHawk.Client.EmuHawk
 								y = (j * CellHeight) + (CellHeightPadding * 2) + bitmapOffsetY;
 								Gdi.DrawBitmap(image, new Point(x, y), true);
 							}
-							//else
-							//{
+
 							string text;
 							int strOffsetX = 0;
 							int strOffsetY = 0;
@@ -213,7 +212,6 @@ namespace BizHawk.Client.EmuHawk
 							{
 								Gdi.PrepDrawString(NormalFont, _foreColor);
 							}
-							//}
 						}
 					}
 				}
@@ -403,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 				DoBackGroundCallback(e, visibleColumns);
 			}
 
-			if (GridLines && false)
+			if (GridLines)
 			{
 				Gdi.SetSolidPen(SystemColors.ControlLight);
 				if (HorizontalOrientation)
@@ -539,8 +537,8 @@ namespace BizHawk.Client.EmuHawk
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
 			int lastVisible = LastVisibleColumnIndex;
-
-			if (HorizontalOrientation)
+			int firstVisibleColumn = FirstVisibleColumn;
+            if (HorizontalOrientation)
 			{
 				for (int i = 0, f = 0; f < range; i++, f++)
 				{
@@ -552,7 +550,7 @@ namespace BizHawk.Client.EmuHawk
 						QueryRowBkColor(f + startIndex, ref rowColor);
 					}
 
-					for (int j = FirstVisibleColumn; j <= lastVisible; j++)
+					for (int j = firstVisibleColumn; j <= lastVisible; j++)
 					{
 						Color itemColor = Color.White;
 						QueryItemBkColor(f + startIndex, visibleColumns[j], ref itemColor);

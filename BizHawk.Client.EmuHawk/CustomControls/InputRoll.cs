@@ -772,13 +772,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				List<RollColumn> columnList = VisibleColumns.ToList();
 				if (HorizontalOrientation)
 				{
 					return VBar.Value / CellHeight;
 				}
 				else
 				{
+					List<RollColumn> columnList = VisibleColumns.ToList();
 					return columnList.FindIndex(c => c.Right > HBar.Value);
 				}
 			}
