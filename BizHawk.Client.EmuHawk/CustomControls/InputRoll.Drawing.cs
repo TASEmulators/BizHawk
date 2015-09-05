@@ -399,7 +399,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DrawBg(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
 			if (UseCustomBackground && QueryItemBkColor != null)
-				DoBackGroundCallback(e);
+				DoBackGroundCallback(e, visibleColumns);
 
 			if (GridLines)
 			{
@@ -444,11 +444,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SelectedItems.Any())
 			{
-				DoSelectionBG(e);
+				DoSelectionBG(e, visibleColumns);
 			}
 		}
 
-		private void DoSelectionBG(PaintEventArgs e)
+		private void DoSelectionBG(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
 			// SuuperW: This allows user to see other colors in selected frames.
 			Color rowColor = Color.White;
@@ -486,24 +486,22 @@ namespace BizHawk.Client.EmuHawk
 				cellColor = Color.FromArgb(cellColor.R - (int)((cellColor.R - SystemColors.Highlight.R) * alpha),
 					cellColor.G - (int)((cellColor.G - SystemColors.Highlight.G) * alpha),
 					cellColor.B - (int)((cellColor.B - SystemColors.Highlight.B) * alpha));
-				DrawCellBG(cellColor, relativeCell);
+				DrawCellBG(cellColor, relativeCell, visibleColumns);
 			}
 		}
 
 		/// <summary>
 		/// Given a cell with rowindex inbetween 0 and VisibleRows, it draws the background color specified. Do not call with absolute rowindices.
 		/// </summary>
-		private void DrawCellBG(Color color, Cell cell)
+		private void DrawCellBG(Color color, Cell cell, List<RollColumn> visibleColumns)
 		{
-			var columns = _columns.VisibleColumns.ToList();
-
 			int x, y, w, h;
 
 			if (HorizontalOrientation)
 			{
 				x = RowsToPixels(cell.RowIndex.Value) + 1;
 				w = CellWidth - 1;
-				y = (CellHeight * columns.IndexOf(cell.Column)) + 1 - VBar.Value; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				y = (CellHeight * visibleColumns.IndexOf(cell.Column)) + 1 - VBar.Value; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				h = CellHeight - 1;
 				if (x < ColumnWidth) { return; }
 			}
@@ -532,9 +530,8 @@ namespace BizHawk.Client.EmuHawk
 		/// Calls QueryItemBkColor callback for all visible cells and fills in the background of those cells.
 		/// </summary>
 		/// <param name="e"></param>
-		private void DoBackGroundCallback(PaintEventArgs e)
+		private void DoBackGroundCallback(PaintEventArgs e, List<RollColumn> visibleColumns)
 		{
-			List<RollColumn> columns = _columns.VisibleColumns.ToList();
 			int startIndex = FirstVisibleRow;
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
 			int lastVisible = LastVisibleColumnIndex;
@@ -554,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 					for (int j = FirstVisibleColumn; j <= lastVisible; j++)
 					{
 						Color itemColor = Color.White;
-						QueryItemBkColor(f + startIndex, columns[j], ref itemColor);
+						QueryItemBkColor(f + startIndex, visibleColumns[j], ref itemColor);
 						if (itemColor == Color.White)
 						{
 							itemColor = rowColor;
@@ -572,10 +569,10 @@ namespace BizHawk.Client.EmuHawk
 						{
 							var cell = new Cell
 							{
-								Column = columns[j],
+								Column = visibleColumns[j],
 								RowIndex = i
 							};
-							DrawCellBG(itemColor, cell);
+							DrawCellBG(itemColor, cell, visibleColumns);
 						}
 					}
 				}
@@ -595,7 +592,7 @@ namespace BizHawk.Client.EmuHawk
 					for (int j = FirstVisibleColumn; j <= lastVisible; j++) // Horizontal
 					{
 						Color itemColor = Color.White;
-						QueryItemBkColor(f + startIndex, columns[j], ref itemColor);
+						QueryItemBkColor(f + startIndex, visibleColumns[j], ref itemColor);
 						if (itemColor == Color.White)
 						{
 							itemColor = rowColor;
@@ -612,10 +609,10 @@ namespace BizHawk.Client.EmuHawk
 						{
 							var cell = new Cell
 							{
-								Column = columns[j],
+								Column = visibleColumns[j],
 								RowIndex = i
 							};
-							DrawCellBG(itemColor, cell);
+							DrawCellBG(itemColor, cell, visibleColumns);
 						}
 					}
 				}

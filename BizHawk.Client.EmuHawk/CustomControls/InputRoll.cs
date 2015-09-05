@@ -1847,8 +1847,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			else
+			{
 				for (int i = 0; i <= VisibleRows; i++)
+				{
 					lagFrames[i] = 0;
+				}
+			}
 		}
 		private void SetLagFramesFirst()
 		{
