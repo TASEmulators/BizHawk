@@ -1,4 +1,4 @@
-﻿//TODO - do not constantly reference this.ForeColor and this.NormalFont. it should be a waste of time. Cache them (and be sure to respond to system messages when the user settings change)
+﻿//TODO - do not constantly reference this.ForeColor, it should be a waste of time. Cache them (and be sure to respond to system messages when the user settings change)
 
 using System;
 using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool denoteMarkersWithBGColor { get; set; }
 
 		private IntPtr RotatedFont;
-		private Font NormalFont;
+		private readonly Font NormalFont;
 
 		public InputRoll()
 		{
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (var LCK = Gdi.LockGraphics(g))
 			{
-				_charSize = Gdi.MeasureString("A", this.NormalFont); // TODO make this a property so changing it updates other values.
+				_charSize = Gdi.MeasureString("A", NormalFont); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Gdi.Dispose();
 
-			this.NormalFont.Dispose();
+			NormalFont.Dispose();
 			GDIRenderer.DestroyHFont(RotatedFont);
 
 			base.Dispose(disposing);
