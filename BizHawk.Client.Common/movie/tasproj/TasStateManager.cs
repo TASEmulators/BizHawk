@@ -768,7 +768,12 @@ namespace BizHawk.Client.Common
 					stateList = new SortedList<int, tsmState>();
 					BranchStates[kvp.Key] = stateList;
 				}
-				stateList.Add(branches, kvp.Value);
+
+				// adelikat: More key checking, needed for these steps:  new project, add frames, branch, add frames, branch, add frames, branch, remove first branch, add frames, branch
+				if (!stateList.ContainsKey(branches))
+				{
+					stateList.Add(branches, kvp.Value);
+				}
 			}
 			branches++;
 			currentBranch = branches;
