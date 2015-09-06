@@ -39,7 +39,7 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.countRerecordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -84,7 +84,6 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
 			this.ControlGroupBox = new System.Windows.Forms.GroupBox();
-			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenu.SuspendLayout();
 			this.BotStatusStrip.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
@@ -189,19 +188,18 @@
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.TurboWhileBottingMenuItem,
-            this.countRerecordsToolStripMenuItem});
+            this.TurboWhileBottingMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
 			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Options";
 			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
-			// countRerecordsToolStripMenuItem
+			// TurboWhileBottingMenuItem
 			// 
-			this.countRerecordsToolStripMenuItem.Enabled = false;
-			this.countRerecordsToolStripMenuItem.Name = "countRerecordsToolStripMenuItem";
-			this.countRerecordsToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-			this.countRerecordsToolStripMenuItem.Text = "Count Rerecords";
+			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
+			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
+			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
 			// 
 			// RunBtn
 			// 
@@ -690,13 +688,6 @@
 			this.ControlGroupBox.TabStop = false;
 			this.ControlGroupBox.Text = "Control";
 			// 
-			// TurboWhileBottingMenuItem
-			// 
-			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
-			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
-			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
-			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
-			// 
 			// BasicBot
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -751,7 +742,6 @@
 		private System.Windows.Forms.Label AttemptsLabel;
 		private System.Windows.Forms.Label FramesLabel;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem countRerecordsToolStripMenuItem;
 		private System.Windows.Forms.GroupBox GoalGroupBox;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label6;
