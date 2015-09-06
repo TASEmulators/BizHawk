@@ -30,9 +30,12 @@
 		{
 			this.BotMenu = new MenuStripEx();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,9 +81,7 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
 			this.ClearBestButton = new System.Windows.Forms.Button();
-			this.SaveAsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.PlayBestButton = new System.Windows.Forms.Button();
 			this.BotMenu.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
 			this.BestGroupBox.SuspendLayout();
@@ -115,6 +116,14 @@
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
+			// NewMenuItem
+			// 
+			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
+			this.NewMenuItem.Name = "NewMenuItem";
+			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.NewMenuItem.Text = "&New";
+			// 
 			// OpenMenuItem
 			// 
 			this.OpenMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.OpenFile;
@@ -131,6 +140,14 @@
 			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
 			// 
+			// SaveAsMenuItem
+			// 
+			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
+			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
+			this.SaveAsMenuItem.Text = "Save &As...";
+			// 
 			// RecentSubMenu
 			// 
 			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -139,6 +156,11 @@
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(57, 6);
 			// 
 			// toolStripSeparator1
 			// 
@@ -598,7 +620,7 @@
 			// 
 			this.ClearBestButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.ClearBestButton.Enabled = false;
-			this.ClearBestButton.Location = new System.Drawing.Point(490, 41);
+			this.ClearBestButton.Location = new System.Drawing.Point(490, 38);
 			this.ClearBestButton.Name = "ClearBestButton";
 			this.ClearBestButton.Size = new System.Drawing.Size(75, 23);
 			this.ClearBestButton.TabIndex = 2003;
@@ -606,32 +628,24 @@
 			this.ClearBestButton.UseVisualStyleBackColor = true;
 			this.ClearBestButton.Click += new System.EventHandler(this.ClearBestButton_Click);
 			// 
-			// SaveAsMenuItem
+			// PlayBestButton
 			// 
-			this.SaveAsMenuItem.Name = "SaveAsMenuItem";
-			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.SaveAsMenuItem.Text = "Save &As...";
-			// 
-			// toolStripSeparator2
-			// 
-			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
-			// 
-			// NewMenuItem
-			// 
-			this.NewMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.NewFile;
-			this.NewMenuItem.Name = "NewMenuItem";
-			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
-			this.NewMenuItem.Text = "&New";
+			this.PlayBestButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.PlayBestButton.Enabled = false;
+			this.PlayBestButton.Location = new System.Drawing.Point(490, 66);
+			this.PlayBestButton.Name = "PlayBestButton";
+			this.PlayBestButton.Size = new System.Drawing.Size(75, 23);
+			this.PlayBestButton.TabIndex = 2004;
+			this.PlayBestButton.Text = "&Play";
+			this.PlayBestButton.UseVisualStyleBackColor = true;
+			this.PlayBestButton.Click += new System.EventHandler(this.PlayBestButton_Click);
 			// 
 			// BasicBot
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(574, 552);
+			this.Controls.Add(this.PlayBestButton);
 			this.Controls.Add(this.ClearBestButton);
 			this.Controls.Add(this.StartFromSlotBox);
 			this.Controls.Add(this.label8);
@@ -721,5 +735,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveAsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem NewMenuItem;
+		private System.Windows.Forms.Button PlayBestButton;
 	}
 }

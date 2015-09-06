@@ -20,6 +20,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _oldCountingSetting = false;
 		private BotAttempt _currentBotAttempt = null;
 		private BotAttempt _bestBotAttempt = null;
+		private bool _replayMode = false;
+		private int _startFrame = 0;
 
 		private bool _dontUpdateValues = false;
 
@@ -235,6 +237,16 @@ namespace BizHawk.Client.EmuHawk
 			UpdateBestAttempt();
 		}
 
+		private void PlayBestButton_Click(object sender, EventArgs e)
+		{
+			_replayMode = true;
+			_dontUpdateValues = true;
+			GlobalWin.MainForm.LoadQuickSave(SelectedSlot); // Triggers an UpdateValues call
+			_dontUpdateValues = false;
+			_startFrame = Emulator.Frame;
+			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
 		#endregion
 
 		private class BotAttempt
@@ -261,7 +273,36 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Update(bool fast)
 		{
-			if (_isBotting && !_dontUpdateValues)
+			if (_dontUpdateValues)
+			{
+				return;
+			}
+
+			if (_replayMode)
+			{
+				int index = Emulator.Frame - _startFrame;
+
+				if (index < _bestBotAttempt.Log.Count)
+				{
+					var logEntry = _bestBotAttempt.Log[index];
+					var lg = Global.MovieSession.MovieControllerInstance();
+					lg.SetControllersAsMnemonic(logEntry);
+
+					foreach (var button in lg.Type.BoolButtons)
+					{
+						// TODO: make an input adapter specifically for the bot?
+						Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
+					}
+				}
+				else // Finished
+				{
+					GlobalWin.MainForm.PauseEmulator();
+					_startFrame = 0;
+					_replayMode = false;
+
+			}
+				}
+			else if (_isBotting)
 			{
 				if (Global.Emulator.Frame >= _targetFrame)
 				{
@@ -272,6 +313,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt.TieBreak1 = TieBreaker1Value;
 					_currentBotAttempt.TieBreak2 = TieBreaker2Value;
 					_currentBotAttempt.TieBreak3 = TieBreaker3Value;
+					PlayBestButton.Enabled = true;
 
 					if (_bestBotAttempt == null || IsBetter(_bestBotAttempt, _currentBotAttempt))
 					{
@@ -377,7 +419,6 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("Please fill out all the things!");
 				return;
 			}
-
 
 			_isBotting = true;
 			ControlsBox.Enabled = false;
