@@ -181,7 +181,14 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			BranchView.RowCount = Movie.BranchCount;
-            BranchView.Refresh();
+			BranchView.Refresh();
+		}
+
+		public void Restart()
+		{
+			BranchView.DeselectAll();
+			BranchView.RowCount = Movie.BranchCount;
+			BranchView.Refresh();
 		}
 
 		public void Branch()

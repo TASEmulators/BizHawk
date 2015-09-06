@@ -114,6 +114,12 @@ namespace BizHawk.Client.EmuHawk
 			MarkerView.Refresh();
 		}
 
+		public void Restart()
+		{
+			MarkerView.DeselectAll();
+			UpdateValues();
+		}
+
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			RemoveBtn.Enabled = MarkerView.SelectedRows.Any(i => i < Tastudio.CurrentTasMovie.Markers.Count);

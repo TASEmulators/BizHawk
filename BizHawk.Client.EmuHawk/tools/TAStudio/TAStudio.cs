@@ -454,7 +454,8 @@ namespace BizHawk.Client.EmuHawk
 				HandleMovieLoadStuff();
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 
-				BookMarkControl.UpdateValues();
+				BookMarkControl.Restart();
+				MarkerControl.Restart();
 				RefreshDialog();
 			}
 		}
