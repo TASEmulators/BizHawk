@@ -42,6 +42,7 @@
 			this.countRerecordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
+			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ControlsBox = new System.Windows.Forms.GroupBox();
 			this.ControlProbabilityPanel = new System.Windows.Forms.Panel();
 			this.BestGroupBox = new System.Windows.Forms.GroupBox();
@@ -83,6 +84,7 @@
 			this.ClearBestButton = new System.Windows.Forms.Button();
 			this.PlayBestButton = new System.Windows.Forms.Button();
 			this.BotMenu.SuspendLayout();
+			this.BotStatusStrip.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
 			this.BestGroupBox.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -115,6 +117,7 @@
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "&File";
+			this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewMenuItem
 			// 
@@ -123,6 +126,7 @@
 			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
 			this.NewMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.NewMenuItem.Text = "&New";
+			this.NewMenuItem.Click += new System.EventHandler(this.NewMenuItem_Click);
 			// 
 			// OpenMenuItem
 			// 
@@ -131,6 +135,7 @@
 			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
 			this.OpenMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.OpenMenuItem.Text = "&Open...";
+			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
 			// SaveMenuItem
 			// 
@@ -139,6 +144,7 @@
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
 			this.SaveMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveMenuItem.Text = "&Save";
+			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// SaveAsMenuItem
 			// 
@@ -147,6 +153,7 @@
             | System.Windows.Forms.Keys.S)));
 			this.SaveAsMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.SaveAsMenuItem.Text = "Save &As...";
+			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
 			// 
 			// RecentSubMenu
 			// 
@@ -156,11 +163,12 @@
 			this.RecentSubMenu.Name = "RecentSubMenu";
 			this.RecentSubMenu.Size = new System.Drawing.Size(195, 22);
 			this.RecentSubMenu.Text = "Recent";
+			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
 			// 
 			// toolStripSeparator1
 			// 
@@ -173,7 +181,7 @@
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
 			this.ExitMenuItem.Size = new System.Drawing.Size(195, 22);
 			this.ExitMenuItem.Text = "E&xit";
-			this.ExitMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
 			// optionsToolStripMenuItem
 			// 
@@ -203,11 +211,19 @@
 			// 
 			// BotStatusStrip
 			// 
+			this.BotStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MessageLabel});
 			this.BotStatusStrip.Location = new System.Drawing.Point(0, 530);
 			this.BotStatusStrip.Name = "BotStatusStrip";
 			this.BotStatusStrip.Size = new System.Drawing.Size(574, 22);
 			this.BotStatusStrip.TabIndex = 2;
 			this.BotStatusStrip.Text = "statusStrip1";
+			// 
+			// MessageLabel
+			// 
+			this.MessageLabel.Name = "MessageLabel";
+			this.MessageLabel.Size = new System.Drawing.Size(109, 17);
+			this.MessageLabel.Text = "                                  ";
 			// 
 			// ControlsBox
 			// 
@@ -667,6 +683,8 @@
 			this.Load += new System.EventHandler(this.BasicBot_Load);
 			this.BotMenu.ResumeLayout(false);
 			this.BotMenu.PerformLayout();
+			this.BotStatusStrip.ResumeLayout(false);
+			this.BotStatusStrip.PerformLayout();
 			this.ControlsBox.ResumeLayout(false);
 			this.BestGroupBox.ResumeLayout(false);
 			this.BestGroupBox.PerformLayout();
@@ -736,5 +754,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem NewMenuItem;
 		private System.Windows.Forms.Button PlayBestButton;
+		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 	}
 }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using BizHawk.Client.EmuHawk.ToolExtensions;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -13,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BasicBot : Form , IToolFormAutoConfig
 	{
+		private const string DialogTitle = "Basic Bot";
+
+		private string _currentFileName = string.Empty;
 		private bool _isBotting = false;
 		private long _attempts = 1;
 		private long _frames = 0;
@@ -42,7 +46,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public class BasicBotSettings
 		{
+			public BasicBotSettings()
+			{
+				RecentBotFiles = new RecentFiles();
+			}
 
+			public RecentFiles RecentBotFiles { get; set; }
 		}
 
 		#endregion
@@ -52,10 +61,17 @@ namespace BizHawk.Client.EmuHawk
 		public BasicBot()
 		{
 			InitializeComponent();
+			Text = DialogTitle;
+			Settings = new BasicBotSettings();
 		}
 
 		private void BasicBot_Load(object sender, EventArgs e)
 		{
+			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
+			TieBreaker1Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+			TieBreaker2Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+			TieBreaker3Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+
 			StartFromSlotBox.SelectedIndex = 0;
 
 			int starty = 0;
@@ -76,6 +92,11 @@ namespace BizHawk.Client.EmuHawk
 				ControlProbabilityPanel.Controls.Add(control);
 				accumulatedy += lineHeight;
 				count++;
+			}
+
+			if (Settings.RecentBotFiles.AutoLoad)
+			{
+				LoadFileFromRecent(Settings.RecentBotFiles.MostRecent);
 			}
 		}
 
@@ -128,6 +149,26 @@ namespace BizHawk.Client.EmuHawk
 		private int FrameLength
 		{
 			get { return (int)FrameLengthNumeric.Value; }
+			set { FrameLengthNumeric.Value = value; }
+		}
+
+		public int MaximizeAddress
+		{
+			get
+			{
+				int? addr = MaximizeAddressBox.ToRawInt();
+				if (addr.HasValue)
+				{
+					return addr.Value;
+				}
+
+				return 0;
+			}
+
+			set
+			{
+				MaximizeAddressBox.SetFromRawInt(value);
+			}
 		}
 
 		public int MaximizeValue
@@ -141,6 +182,25 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return 0;
+			}
+		}
+
+		public int TieBreaker1Address
+		{
+			get
+			{
+				int? addr = TieBreaker1Box.ToRawInt();
+				if (addr.HasValue)
+				{
+					return addr.Value;
+				}
+
+				return 0;
+			}
+
+			set
+			{
+				TieBreaker1Box.SetFromRawInt(value);
 			}
 		}
 
@@ -158,6 +218,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public int TieBreaker2Address
+		{
+			get
+			{
+				int? addr = TieBreaker2Box.ToRawInt();
+				if (addr.HasValue)
+				{
+					return addr.Value;
+				}
+
+				return 0;
+			}
+
+			set
+			{
+				TieBreaker2Box.SetFromRawInt(value);
+			}
+		}
+
 		public int TieBreaker2Value
 		{
 			get
@@ -172,6 +251,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public int TieBreaker3Address
+		{
+			get
+			{
+				int? addr = TieBreaker3Box.ToRawInt();
+				if (addr.HasValue)
+				{
+					return addr.Value;
+				}
+
+				return 0;
+			}
+
+			set
+			{
+				TieBreaker3Box.SetFromRawInt(value);
+			}
+		}
+
 		public int TieBreaker3Value
 		{
 			get
@@ -183,6 +281,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return 0;
+			}
+		}
+
+		public string FromSlot
+		{
+			get
+			{
+				return StartFromSlotBox.SelectedItem != null 
+					? StartFromSlotBox.SelectedItem.ToString()
+					: string.Empty;
+			}
+
+			set
+			{
+				var item = StartFromSlotBox.Items.
+					OfType<object>()
+					.FirstOrDefault(o => o.ToString() == value);
+
+				if (item != null)
+				{
+					StartFromSlotBox.SelectedItem = item;
+				}
+				else
+				{
+					StartFromSlotBox.SelectedItem = null;
+				}
 			}
 		}
 
@@ -216,7 +340,12 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Control Events
 
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+		private void NewMenuItem_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("TODO");
+		}
+
+		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
 		}
@@ -247,6 +376,57 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(_currentFileName);
+		}
+
+		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(
+				Settings.RecentBotFiles.RecentMenu(LoadFileFromRecent, true));
+		}
+
+		private void OpenMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = ToolHelpers.OpenFileDialog(
+					_currentFileName,
+					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
+					"Bot files",
+					"bot"
+				);
+
+			if (file != null)
+			{
+				LoadBotFile(file.FullName);
+			}
+		}
+
+		private void SaveMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!string.IsNullOrWhiteSpace(_currentFileName))
+			{
+				SaveBotFile(_currentFileName);
+			}
+		}
+
+		private void SaveAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var file = ToolHelpers.SaveFileDialog(
+					_currentFileName,
+					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
+					"Bot files",
+					"bot"
+				);
+
+			if (file != null)
+			{
+				SaveBotFile(file.FullName);
+				Text = DialogTitle + Path.GetFileNameWithoutExtension(_currentFileName);
+			}
+		}
+
 		#endregion
 
 		private class BotAttempt
@@ -262,6 +442,18 @@ namespace BizHawk.Client.EmuHawk
 			public int TieBreak2 { get; set; }
 			public int TieBreak3 { get; set; }
 			public List<string> Log { get; set; }
+		}
+
+		private class BotData
+		{
+			public BotAttempt Best { get; set; }
+			public Dictionary<string, double> ControlProbabilities { get; set; }
+			public int Maximize { get; set; }
+			public int TieBreaker1 { get; set; }
+			public int TieBreaker2 { get; set; }
+			public int TieBreaker3 { get; set; }
+			public int FrameLength { get; set; }
+			public string FromSlot { get; set; }
 		}
 
 		private int GetRamvalue(int addr)
@@ -487,6 +679,79 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.MainForm.PauseEmulator();
+		}
+
+		private void SaveBotFile(string path)
+		{
+			var data = new BotData
+			{
+				Best = _bestBotAttempt,
+				ControlProbabilities = ControlProbabilities,
+				Maximize = MaximizeAddress,
+				TieBreaker1 = TieBreaker1Address,
+				TieBreaker2 = TieBreaker2Address,
+				TieBreaker3 = TieBreaker3Address,
+				FromSlot = FromSlot
+			};
+
+			var json = ConfigService.SaveWithType(data);
+
+			File.WriteAllText(path, json);
+			_currentFileName = path;
+			Settings.RecentBotFiles.Add(_currentFileName);
+			MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+		}
+
+		private void LoadFileFromRecent(string path)
+		{
+			var result = LoadBotFile(path);
+			if (!result)
+			{
+				Settings.RecentBotFiles.HandleLoadError(path);
+			}
+		}
+
+		private bool LoadBotFile(string path)
+		{
+			var file = new FileInfo(path);
+			if (!file.Exists)
+			{
+				return false;
+			}
+
+			var json = File.ReadAllText(path);
+			var botData = (BotData)ConfigService.LoadWithType(json);
+
+			_bestBotAttempt = botData.Best;
+
+
+			var probabilityControls = ControlProbabilityPanel.Controls
+					.OfType<BotControlsRow>()
+					.ToList();
+
+			foreach (var kvp in botData.ControlProbabilities)
+			{
+				var control = probabilityControls.Single(c => c.ButtonName == kvp.Key);
+				control.Probability = kvp.Value;
+			}
+
+			MaximizeAddress = botData.Maximize;
+			TieBreaker1Address = botData.TieBreaker1;
+			TieBreaker2Address = botData.TieBreaker2;
+			TieBreaker3Address = botData.TieBreaker3;
+			FrameLength = botData.FrameLength;
+			FromSlot = botData.FromSlot;
+			UpdateBestAttempt();
+
+			if (_bestBotAttempt != null)
+			{
+				PlayBestButton.Enabled = true;
+			}
+
+			_currentFileName = path;
+			Settings.RecentBotFiles.Add(_currentFileName);
+
+			return true;
 		}
 	}
 }
