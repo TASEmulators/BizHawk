@@ -342,7 +342,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("TODO");
+			_currentFileName = string.Empty;
+			_bestBotAttempt = null;
+
+			ControlProbabilityPanel.Controls
+				.OfType<BotControlsRow>()
+				.ToList()
+				.ForEach(cp => cp.Probability = 0);
+
+			FrameLength = 0;
+			MaximizeAddress = 0;
+			TieBreaker1Address = 0;
+			TieBreaker2Address = 0;
+			TieBreaker3Address = 0;
+			StartFromSlotBox.SelectedIndex = 0;
+
+			UpdateBestAttempt();
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -571,6 +586,7 @@ namespace BizHawk.Client.EmuHawk
 					sb.AppendLine(logEntry);
 				}
 				BestAttemptLogLabel.Text = sb.ToString();
+				PlayBestButton.Enabled = true;
 			}
 			else
 			{
@@ -581,6 +597,7 @@ namespace BizHawk.Client.EmuHawk
 				BestTieBreak2Box.Text = string.Empty;
 				BestTieBreak3Box.Text = string.Empty;
 				BestAttemptLogLabel.Text = string.Empty;
+				PlayBestButton.Enabled = false;
 			}
 		}
 
