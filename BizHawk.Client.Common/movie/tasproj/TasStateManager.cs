@@ -712,6 +712,15 @@ namespace BizHawk.Client.Common
 				stateToMatch = States[frame];
 			else
 			{
+				// **************************
+				// adelikat: If you remove branches, keyNotFound exceptions occur here, I have no idea if this is okay to do, but it makes them go away
+				// Repro steps, remove this code and then: start a project, advance some frames, save branch, advance further, save another one, advance again, save. removing the first branch
+				if (!BranchStates.ContainsKey(frame))
+					return -2;
+				if (!BranchStates[frame].ContainsKey(branch))
+					return -2;
+				// **************************
+
 				stateToMatch = BranchStates[frame][branch];
 				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
 					return -1;
@@ -775,10 +784,13 @@ namespace BizHawk.Client.Common
 
 				if (stateHasDuplicate(kvp.Key, index) == -2)
 				{
-					if (stateList[index].IsOnDisk)
-					{ }
-					else
-						Used -= (ulong)stateList[index].Length;
+					if (stateList.ContainsKey(index)) // adelikat: more containsKey checking, see stateHasDuplicate code for details
+					{
+						if (stateList[index].IsOnDisk)
+						{ }
+						else
+							Used -= (ulong)stateList[index].Length;
+					}
 				}
 
 				stateList.Remove(index);
@@ -801,10 +813,13 @@ namespace BizHawk.Client.Common
 
 				if (stateHasDuplicate(kvp.Key, index) == -2)
 				{
-					if (stateList[index].IsOnDisk)
-					{ }
-					else
-						Used -= (ulong)stateList[index].Length;
+					if (stateList.ContainsKey(index)) // adelikat: more containsKey checking, see stateHasDuplicate code for details
+					{
+						if (stateList[index].IsOnDisk)
+						{ }
+						else
+							Used -= (ulong)stateList[index].Length;
+					}
 				}
 
 				stateList.Remove(index);
