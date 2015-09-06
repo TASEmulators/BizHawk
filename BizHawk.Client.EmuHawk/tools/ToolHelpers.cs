@@ -108,15 +108,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCheatFileFromUser(string currentFile)
 		{
-			var ofd = new OpenFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
+			var ofd = new OpenFileDialog
 			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-
-			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			ofd.RestoreDirectory = true;
+				FileName = !string.IsNullOrWhiteSpace(currentFile)
+					? Path.GetFileNameWithoutExtension(currentFile)
+					: PathManager.FilesystemSafeName(Global.Game),
+				InitialDirectory = PathManager.GetCheatsPath(Global.Game),
+				Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*",
+				RestoreDirectory = true
+			};
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -129,15 +129,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
 		{
-			var sfd = new SaveFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
+			var cheatsPath = PathManager.GetCheatsPath(Global.Game);
+			if (!Directory.Exists(cheatsPath))
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+				Directory.CreateDirectory(cheatsPath);
 			}
 
-			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			sfd.RestoreDirectory = true;
+			var sfd = new SaveFileDialog
+			{
+				Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*",
+				RestoreDirectory = true,
+				InitialDirectory = cheatsPath,
+				FileName = !string.IsNullOrWhiteSpace(currentFile)
+					? Path.GetFileNameWithoutExtension(currentFile)
+					: PathManager.FilesystemSafeName(Global.Game)
+			};
+
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
