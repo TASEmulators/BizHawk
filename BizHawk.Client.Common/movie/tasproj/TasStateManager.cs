@@ -767,7 +767,7 @@ namespace BizHawk.Client.Common
 
 		public void RemoveBranch(int index)
 		{
-			foreach (KeyValuePair<int, SortedList<int, tsmState>> kvp in BranchStates)
+			foreach (KeyValuePair<int, SortedList<int, tsmState>> kvp in BranchStates.ToList())
 			{
 				SortedList<int, tsmState> stateList = kvp.Value;
 				if (stateList == null)
