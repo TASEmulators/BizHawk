@@ -793,7 +793,7 @@ namespace BizHawk.Client.Common
 		public void UpdateBranch(int index)
 		{
 			// RemoveBranch
-			foreach (KeyValuePair<int, SortedList<int, tsmState>> kvp in BranchStates)
+            foreach (KeyValuePair<int, SortedList<int, tsmState>> kvp in BranchStates.ToList())
 			{
 				SortedList<int, tsmState> stateList = kvp.Value;
 				if (stateList == null)
