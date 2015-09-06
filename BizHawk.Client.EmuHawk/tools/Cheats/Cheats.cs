@@ -139,7 +139,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool SaveAs()
 		{
-			var file = ToolHelpers.GetCheatSaveFileFromUser(Global.CheatList.CurrentFileName);
+			var file = ToolHelpers.SaveFileDialog(
+				Global.CheatList.CurrentFileName,
+				PathManager.GetCheatsPath(Global.Game),
+				"Cheat Files",
+				"cht");
+
 			return file != null && Global.CheatList.SaveFile(file.FullName);
 		}
 
@@ -384,7 +389,13 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var append = sender == AppendMenuItem;
-			LoadFile(ToolHelpers.GetCheatFileFromUser(Global.CheatList.CurrentFileName), append);
+			var file = ToolHelpers.OpenFileDialog(
+				Global.CheatList.CurrentFileName,
+				PathManager.GetCheatsPath(Global.Game),
+				"Cheat Files",
+				"cht");
+
+			LoadFile(file, append);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)

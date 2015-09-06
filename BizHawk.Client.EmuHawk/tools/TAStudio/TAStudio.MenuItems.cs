@@ -57,10 +57,15 @@ namespace BizHawk.Client.EmuHawk
 				var filename = CurrentTasMovie.Filename;
 				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 				{
-					filename = "";
+					filename = string.Empty;
 				}
 
-				var file = ToolHelpers.GetTasProjFileFromUser(filename);
+				var file = ToolHelpers.OpenFileDialog(
+					filename,
+					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					"Tas Project Files",
+					"tasproj");
+
 				if (file != null)
 				{
 					LoadFile(file);
@@ -99,7 +104,12 @@ namespace BizHawk.Client.EmuHawk
 				filename = SuggestedTasProjName();
 			}
 
-			var file = ToolHelpers.GetTasProjSaveFileFromUser(filename);
+			var file = ToolHelpers.SaveFileDialog(
+				filename,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				"Tas Project Files",
+				"tasproj");
+
 			if (file != null)
 			{
 				CurrentTasMovie.Filename = file.FullName;
