@@ -527,6 +527,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleMenuItem_Click(object sender, EventArgs e)
 		{
 			SelectedCheats.ToList().ForEach(x => x.Toggle());
+			CheatListView.Refresh();
 		}
 
 		private void DisableAllCheatsMenuItem_Click(object sender, EventArgs e)
