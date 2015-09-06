@@ -857,7 +857,7 @@ namespace BizHawk.Client.Common
 				if (kvp.Key == 0 && States.ContainsKey(0))
 					continue; // TODO: It might be a better idea to just not put state 0 in BranchStates.
 
-				if (kvp.Value.ContainsKey(index))
+				if (kvp.Value != null && kvp.Value.ContainsKey(index))
 					SetState(kvp.Key, kvp.Value[index].State);
 			}
 
