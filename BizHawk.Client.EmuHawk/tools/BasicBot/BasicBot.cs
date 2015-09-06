@@ -49,9 +49,11 @@ namespace BizHawk.Client.EmuHawk
 			public BasicBotSettings()
 			{
 				RecentBotFiles = new RecentFiles();
+				TurboWhenBotting = true;
 			}
 
 			public RecentFiles RecentBotFiles { get; set; }
+			public bool TurboWhenBotting { get; set; }
 		}
 
 		#endregion
@@ -420,6 +422,20 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Options Menu
+
+		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			TurboWhileBottingMenuItem.Checked = Settings.TurboWhenBotting;
+		}
+
+		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.TurboWhenBotting ^= true;
+        }
+
+		#endregion
+
 		private void RunBtn_Click(object sender, EventArgs e)
 		{
 			StartBot();
@@ -438,11 +454,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PlayBestButton_Click(object sender, EventArgs e)
 		{
+			StopBot();
 			_replayMode = true;
 			_dontUpdateValues = true;
 			GlobalWin.MainForm.LoadQuickSave(SelectedSlot); // Triggers an UpdateValues call
 			_dontUpdateValues = false;
 			_startFrame = Emulator.Frame;
+			SetNormalSpeed();
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
@@ -543,7 +561,8 @@ namespace BizHawk.Client.EmuHawk
 				TieBreaker1 = TieBreaker1Address,
 				TieBreaker2 = TieBreaker2Address,
 				TieBreaker3 = TieBreaker3Address,
-				FromSlot = FromSlot
+				FromSlot = FromSlot,
+				FrameLength = FrameLength
 			};
 
 			var json = ConfigService.SaveWithType(data);
@@ -734,10 +753,10 @@ namespace BizHawk.Client.EmuHawk
 
 			_targetFrame = Global.Emulator.Frame + (int)FrameLengthNumeric.Value;
 
-			if (GlobalWin.MainForm.EmulatorPaused)
+			GlobalWin.MainForm.UnpauseEmulator();
+			if (Settings.TurboWhenBotting)
 			{
-				GlobalWin.MainForm.UnpauseEmulator();
-				// TODO: speed!
+				SetMaxSpeed();
 			}
 		}
 
@@ -781,6 +800,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.MainForm.PauseEmulator();
+			SetNormalSpeed();
+        }
+
+		private void SetMaxSpeed()
+		{
+			GlobalWin.MainForm.Unthrottle();
+		}
+
+		private void SetNormalSpeed()
+		{
+			GlobalWin.MainForm.Throttle();
 		}
 	}
 }

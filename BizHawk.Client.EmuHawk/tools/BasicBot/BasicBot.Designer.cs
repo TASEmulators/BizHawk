@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.BotMenu = new MenuStripEx();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OpenMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SaveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,7 +38,7 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.countRerecordsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
@@ -84,6 +84,7 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
 			this.ControlGroupBox = new System.Windows.Forms.GroupBox();
+			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenu.SuspendLayout();
 			this.BotStatusStrip.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
@@ -98,17 +99,17 @@
 			// 
 			this.BotMenu.ClickThrough = true;
 			this.BotMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.FileSubMenu,
+            this.OptionsSubMenu});
 			this.BotMenu.Location = new System.Drawing.Point(0, 0);
 			this.BotMenu.Name = "BotMenu";
 			this.BotMenu.Size = new System.Drawing.Size(587, 24);
 			this.BotMenu.TabIndex = 0;
 			this.BotMenu.Text = "menuStrip1";
 			// 
-			// fileToolStripMenuItem
+			// FileSubMenu
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewMenuItem,
             this.OpenMenuItem,
             this.SaveMenuItem,
@@ -116,10 +117,10 @@
             this.RecentSubMenu,
             this.toolStripSeparator1,
             this.ExitMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "&File";
-			this.fileToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
+			this.FileSubMenu.Name = "FileSubMenu";
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.FileSubMenu.Text = "&File";
+			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
 			// 
 			// NewMenuItem
 			// 
@@ -185,19 +186,21 @@
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
-			// optionsToolStripMenuItem
+			// OptionsSubMenu
 			// 
-			this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TurboWhileBottingMenuItem,
             this.countRerecordsToolStripMenuItem});
-			this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-			this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-			this.optionsToolStripMenuItem.Text = "&Options";
+			this.OptionsSubMenu.Name = "OptionsSubMenu";
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.OptionsSubMenu.Text = "&Options";
+			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
 			// countRerecordsToolStripMenuItem
 			// 
 			this.countRerecordsToolStripMenuItem.Enabled = false;
 			this.countRerecordsToolStripMenuItem.Name = "countRerecordsToolStripMenuItem";
-			this.countRerecordsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.countRerecordsToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.countRerecordsToolStripMenuItem.Text = "Count Rerecords";
 			// 
 			// RunBtn
@@ -687,6 +690,13 @@
 			this.ControlGroupBox.TabStop = false;
 			this.ControlGroupBox.Text = "Control";
 			// 
+			// TurboWhileBottingMenuItem
+			// 
+			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
+			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
+			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
+			// 
 			// BasicBot
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -725,7 +735,7 @@
 		#endregion
 
 		private MenuStripEx BotMenu;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.Button RunBtn;
 		private System.Windows.Forms.ToolStripMenuItem OpenMenuItem;
@@ -740,7 +750,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label AttemptsLabel;
 		private System.Windows.Forms.Label FramesLabel;
-		private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem countRerecordsToolStripMenuItem;
 		private System.Windows.Forms.GroupBox GoalGroupBox;
 		private System.Windows.Forms.Label label7;
@@ -780,5 +790,6 @@
 		private System.Windows.Forms.Button PlayBestButton;
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.GroupBox ControlGroupBox;
+		private System.Windows.Forms.ToolStripMenuItem TurboWhileBottingMenuItem;
 	}
 }

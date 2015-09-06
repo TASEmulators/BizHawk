@@ -1080,14 +1080,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void Unthrottle()
+		{
+			_unthrottled = true;
+		}
+
+		public void Throttle()
+		{
+			_unthrottled = false;
+		}
+
 		void ThrottleMessage()
 		{
 			string ttype = ":(none)";
-			if(Global.Config.SoundThrottle) { ttype = ":Sound"; }
-			if(Global.Config.VSyncThrottle) { ttype = String.Format(":Vsync{0}",Global.Config.VSync?"[ena]":"[dis]");  }
-			if(Global.Config.ClockThrottle) { ttype = ":Clock"; }
+			if (Global.Config.SoundThrottle) { ttype = ":Sound"; }
+			if (Global.Config.VSyncThrottle) { ttype = string.Format(":Vsync{0}", Global.Config.VSync?"[ena]":"[dis]");  }
+			if (Global.Config.ClockThrottle) { ttype = ":Clock"; }
 			string xtype = _unthrottled ? "Unthrottled" : "Throttled";
-			string msg = string.Format("{0}{1} ",xtype,ttype);
+			string msg = string.Format("{0}{1} ", xtype, ttype);
 
 			GlobalWin.OSD.AddMessage(msg);
 		}
