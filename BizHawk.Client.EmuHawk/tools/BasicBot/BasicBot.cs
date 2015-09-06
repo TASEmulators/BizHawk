@@ -340,6 +340,20 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Control Events
 
+		#region FileMenu
+
+		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(_currentFileName);
+		}
+
+		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			RecentSubMenu.DropDownItems.Clear();
+			RecentSubMenu.DropDownItems.AddRange(
+				Settings.RecentBotFiles.RecentMenu(LoadFileFromRecent, true));
+		}
+
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
 			_currentFileName = string.Empty;
@@ -358,49 +372,6 @@ namespace BizHawk.Client.EmuHawk
 			StartFromSlotBox.SelectedIndex = 0;
 
 			UpdateBestAttempt();
-		}
-
-		private void ExitMenuItem_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void RunBtn_Click(object sender, EventArgs e)
-		{
-			StartBot();
-		}
-
-		private void StopBtn_Click(object sender, EventArgs e)
-		{
-			StopBot();
-		}
-
-		private void ClearBestButton_Click(object sender, EventArgs e)
-		{
-			_bestBotAttempt = null;
-			UpdateBestAttempt();
-		}
-
-		private void PlayBestButton_Click(object sender, EventArgs e)
-		{
-			_replayMode = true;
-			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot); // Triggers an UpdateValues call
-			_dontUpdateValues = false;
-			_startFrame = Emulator.Frame;
-			GlobalWin.MainForm.UnpauseEmulator();
-		}
-
-		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(_currentFileName);
-		}
-
-		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Settings.RecentBotFiles.RecentMenu(LoadFileFromRecent, true));
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
@@ -442,7 +413,42 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void ExitMenuItem_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
 		#endregion
+
+		private void RunBtn_Click(object sender, EventArgs e)
+		{
+			StartBot();
+		}
+
+		private void StopBtn_Click(object sender, EventArgs e)
+		{
+			StopBot();
+		}
+
+		private void ClearBestButton_Click(object sender, EventArgs e)
+		{
+			_bestBotAttempt = null;
+			UpdateBestAttempt();
+		}
+
+		private void PlayBestButton_Click(object sender, EventArgs e)
+		{
+			_replayMode = true;
+			_dontUpdateValues = true;
+			GlobalWin.MainForm.LoadQuickSave(SelectedSlot); // Triggers an UpdateValues call
+			_dontUpdateValues = false;
+			_startFrame = Emulator.Frame;
+			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
+		#endregion
+
+		#region Classes
 
 		private class BotAttempt
 		{
@@ -470,6 +476,85 @@ namespace BizHawk.Client.EmuHawk
 			public int FrameLength { get; set; }
 			public string FromSlot { get; set; }
 		}
+
+		#endregion
+
+		#region File Handling
+
+		private void LoadFileFromRecent(string path)
+		{
+			var result = LoadBotFile(path);
+			if (!result)
+			{
+				Settings.RecentBotFiles.HandleLoadError(path);
+			}
+		}
+
+		private bool LoadBotFile(string path)
+		{
+			var file = new FileInfo(path);
+			if (!file.Exists)
+			{
+				return false;
+			}
+
+			var json = File.ReadAllText(path);
+			var botData = (BotData)ConfigService.LoadWithType(json);
+
+			_bestBotAttempt = botData.Best;
+
+
+			var probabilityControls = ControlProbabilityPanel.Controls
+					.OfType<BotControlsRow>()
+					.ToList();
+
+			foreach (var kvp in botData.ControlProbabilities)
+			{
+				var control = probabilityControls.Single(c => c.ButtonName == kvp.Key);
+				control.Probability = kvp.Value;
+			}
+
+			MaximizeAddress = botData.Maximize;
+			TieBreaker1Address = botData.TieBreaker1;
+			TieBreaker2Address = botData.TieBreaker2;
+			TieBreaker3Address = botData.TieBreaker3;
+			FrameLength = botData.FrameLength;
+			FromSlot = botData.FromSlot;
+			UpdateBestAttempt();
+
+			if (_bestBotAttempt != null)
+			{
+				PlayBestButton.Enabled = true;
+			}
+
+			_currentFileName = path;
+			Settings.RecentBotFiles.Add(_currentFileName);
+
+			return true;
+		}
+
+		private void SaveBotFile(string path)
+		{
+			var data = new BotData
+			{
+				Best = _bestBotAttempt,
+				ControlProbabilities = ControlProbabilities,
+				Maximize = MaximizeAddress,
+				TieBreaker1 = TieBreaker1Address,
+				TieBreaker2 = TieBreaker2Address,
+				TieBreaker3 = TieBreaker3Address,
+				FromSlot = FromSlot
+			};
+
+			var json = ConfigService.SaveWithType(data);
+
+			File.WriteAllText(path, json);
+			_currentFileName = path;
+			Settings.RecentBotFiles.Add(_currentFileName);
+			MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+		}
+
+		#endregion
 
 		private int GetRamvalue(int addr)
 		{
@@ -696,79 +781,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.MainForm.PauseEmulator();
-		}
-
-		private void SaveBotFile(string path)
-		{
-			var data = new BotData
-			{
-				Best = _bestBotAttempt,
-				ControlProbabilities = ControlProbabilities,
-				Maximize = MaximizeAddress,
-				TieBreaker1 = TieBreaker1Address,
-				TieBreaker2 = TieBreaker2Address,
-				TieBreaker3 = TieBreaker3Address,
-				FromSlot = FromSlot
-			};
-
-			var json = ConfigService.SaveWithType(data);
-
-			File.WriteAllText(path, json);
-			_currentFileName = path;
-			Settings.RecentBotFiles.Add(_currentFileName);
-			MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
-		}
-
-		private void LoadFileFromRecent(string path)
-		{
-			var result = LoadBotFile(path);
-			if (!result)
-			{
-				Settings.RecentBotFiles.HandleLoadError(path);
-			}
-		}
-
-		private bool LoadBotFile(string path)
-		{
-			var file = new FileInfo(path);
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			var json = File.ReadAllText(path);
-			var botData = (BotData)ConfigService.LoadWithType(json);
-
-			_bestBotAttempt = botData.Best;
-
-
-			var probabilityControls = ControlProbabilityPanel.Controls
-					.OfType<BotControlsRow>()
-					.ToList();
-
-			foreach (var kvp in botData.ControlProbabilities)
-			{
-				var control = probabilityControls.Single(c => c.ButtonName == kvp.Key);
-				control.Probability = kvp.Value;
-			}
-
-			MaximizeAddress = botData.Maximize;
-			TieBreaker1Address = botData.TieBreaker1;
-			TieBreaker2Address = botData.TieBreaker2;
-			TieBreaker3Address = botData.TieBreaker3;
-			FrameLength = botData.FrameLength;
-			FromSlot = botData.FromSlot;
-			UpdateBestAttempt();
-
-			if (_bestBotAttempt != null)
-			{
-				PlayBestButton.Enabled = true;
-			}
-
-			_currentFileName = path;
-			Settings.RecentBotFiles.Add(_currentFileName);
-
-			return true;
 		}
 	}
 }
