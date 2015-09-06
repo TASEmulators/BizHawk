@@ -29,6 +29,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _dontUpdateValues = false;
 
+		private MemoryDomain _currentDomain;
+
 		#region Services and Settings
 
 		[RequiredService]
@@ -330,7 +332,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			// TODO
+			
+			if (_currentDomain == null ||
+				MemoryDomains.Contains(_currentDomain))
+			{
+				_currentDomain = MemoryDomains.MainMemory;
+			}
+
+			// TODO restart logic
 		}
 
 		public bool AskSaveChanges()
@@ -427,6 +436,14 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			TurboWhileBottingMenuItem.Checked = Settings.TurboWhenBotting;
+		}
+
+		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			MemoryDomainsMenuItem.DropDownItems.Clear();
+			MemoryDomainsMenuItem.DropDownItems.AddRange(
+				MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name)
+				.ToArray());
 		}
 
 		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e)
@@ -575,11 +592,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void SetMemoryDomain(string name)
+		{
+			_currentDomain = MemoryDomains[name];
+		}
+
 		private int GetRamvalue(int addr)
 		{
-			// TODO: ability to pick memory domain
-			// TODO: ability to pick byte size/display type
-			return MemoryDomains.MainMemory.PeekByte(addr);
+			// TODO: ability to pick byte size/display type/endian
+			return _currentDomain.PeekByte(addr);
 		}
 
 		private void Update(bool fast)

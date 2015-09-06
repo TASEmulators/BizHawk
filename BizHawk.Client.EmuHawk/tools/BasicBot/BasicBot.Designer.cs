@@ -40,6 +40,8 @@
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MemoryDomainsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -188,6 +190,7 @@
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MemoryDomainsMenuItem,
             this.TurboWhileBottingMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
 			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
@@ -200,6 +203,20 @@
 			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
 			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
+			// 
+			// MemoryDomainsMenuItem
+			// 
+			this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator3});
+			this.MemoryDomainsMenuItem.Name = "MemoryDomainsMenuItem";
+			this.MemoryDomainsMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.MemoryDomainsMenuItem.Text = "Memory Domains";
+			this.MemoryDomainsMenuItem.DropDownOpened += new System.EventHandler(this.MemoryDomainsMenuItem_DropDownOpened);
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
 			// 
 			// RunBtn
 			// 
@@ -781,5 +798,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel MessageLabel;
 		private System.Windows.Forms.GroupBox ControlGroupBox;
 		private System.Windows.Forms.ToolStripMenuItem TurboWhileBottingMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem MemoryDomainsMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 	}
 }
