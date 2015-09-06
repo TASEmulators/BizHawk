@@ -62,6 +62,8 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump BranchLagLog { get; private set; }
 		[Name("Branches\\Header", "json")]
 		public static BinaryStateLump BranchHeader { get; private set; }
+		[Name("Branches\\Markers", "markers")]
+		public static BinaryStateLump BranchMarkers { get; private set; }
 
 
 		[AttributeUsage(AttributeTargets.Property)]

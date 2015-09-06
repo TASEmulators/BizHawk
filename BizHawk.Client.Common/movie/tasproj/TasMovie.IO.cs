@@ -287,7 +287,7 @@ namespace BizHawk.Client.Common
 					});
 				}
 
-				Branches.Load(bl);
+				Branches.Load(bl, this);
 			}
 
 			Changes = false;

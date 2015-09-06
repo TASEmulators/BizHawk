@@ -28,6 +28,7 @@ namespace BizHawk.Client.Common
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
+			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
 			foreach (var b in this)
 			{
 				bs.PutLump(nheader, delegate(TextWriter tw)
@@ -58,6 +59,11 @@ namespace BizHawk.Client.Common
 					b.LagLog.Save(bw);
 				});
 
+				bs.PutLump(nmarkers, delegate (TextWriter tw)
+				{
+					tw.WriteLine(b.Markers.ToString());
+				});
+
 				nheader.Increment();
 				ncore.Increment();
 				ninput.Increment();
@@ -66,13 +72,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Load(BinaryStateLoader bl)
+		public void Load(BinaryStateLoader bl, TasMovie movie)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
 			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
+			var nmarkers = new IndexedStateLump(BinaryStateLump.Markers);
 
 			Clear();
 
@@ -125,6 +132,19 @@ namespace BizHawk.Client.Common
 				{
 					b.LagLog = new TasLagLog();
 					b.LagLog.Load(br);
+				});
+
+				b.Markers = new TasMovieMarkerList(movie);
+				bl.GetLump(nmarkers, false, delegate (TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							b.Markers.Add(new TasMovieMarker(line));
+						}
+					}
 				});
 
 				Add(b);
