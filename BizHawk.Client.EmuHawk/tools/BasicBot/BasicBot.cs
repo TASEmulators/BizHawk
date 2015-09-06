@@ -510,6 +510,8 @@ namespace BizHawk.Client.EmuHawk
 			public int TieBreaker3 { get; set; }
 			public int FrameLength { get; set; }
 			public string FromSlot { get; set; }
+			public long Attempts { get; set; }
+			public long Frames { get; set; }
 		}
 
 		#endregion
@@ -555,6 +557,9 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker3Address = botData.TieBreaker3;
 			FrameLength = botData.FrameLength;
 			FromSlot = botData.FromSlot;
+			Attempts = botData.Attempts;
+			Frames = botData.Frames;
+
 			UpdateBestAttempt();
 
 			if (_bestBotAttempt != null)
@@ -579,7 +584,9 @@ namespace BizHawk.Client.EmuHawk
 				TieBreaker2 = TieBreaker2Address,
 				TieBreaker3 = TieBreaker3Address,
 				FromSlot = FromSlot,
-				FrameLength = FrameLength
+				FrameLength = FrameLength,
+				Attempts = Attempts,
+				Frames = Frames
 			};
 
 			var json = ConfigService.SaveWithType(data);
@@ -807,8 +814,6 @@ namespace BizHawk.Client.EmuHawk
 			StopBtn.Visible = false;
 			_isBotting = false;
 			_targetFrame = 0;
-			_attempts = 1;
-			_frames = 0;
 			ControlsBox.Enabled = true;
 			StartFromSlotBox.Enabled = true;
 			_targetFrame = 0;
@@ -822,7 +827,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GlobalWin.MainForm.PauseEmulator();
 			SetNormalSpeed();
-        }
+		}
 
 		private void SetMaxSpeed()
 		{
