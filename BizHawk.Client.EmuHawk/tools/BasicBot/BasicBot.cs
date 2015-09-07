@@ -54,6 +54,9 @@ namespace BizHawk.Client.EmuHawk
 		private bool _bigEndian;
 		private int _dataSize;
 
+		private Dictionary<string, double> _cachedControlProbabilities;
+		private ILogEntryGenerator _logGenerator;
+
 		#region Services and Settings
 
 		[RequiredService]
@@ -867,16 +870,14 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
 			{
-				double probability = ControlProbabilities[button];
+				double probability = _cachedControlProbabilities[button];
 				bool pressed = !(rand.Next(100) < probability);
 
 				buttonLog.Add(button, pressed);
 				Global.ClickyVirtualPadController.SetBool(button, pressed);
 			}
 
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.ClickyVirtualPadController);
-			_currentBotAttempt.Log.Add(lg.GenerateLogEntry());
+			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
 		}
 
 		private void StartBot()
@@ -915,7 +916,10 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
-		}
+			_cachedControlProbabilities = ControlProbabilities;
+			_logGenerator = Global.MovieSession.LogGeneratorInstance();
+			_logGenerator.SetSource(Global.ClickyVirtualPadController);
+        }
 
 		private bool CanStart()
 		{
