@@ -226,6 +226,8 @@
 			// 
 			// RunBtn
 			// 
+			this.RunBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
+			this.RunBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.RunBtn.Location = new System.Drawing.Point(6, 56);
 			this.RunBtn.Name = "RunBtn";
 			this.RunBtn.Size = new System.Drawing.Size(75, 23);
@@ -301,6 +303,8 @@
 			// PlayBestButton
 			// 
 			this.PlayBestButton.Enabled = false;
+			this.PlayBestButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Play;
+			this.PlayBestButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.PlayBestButton.Location = new System.Drawing.Point(12, 46);
 			this.PlayBestButton.Name = "PlayBestButton";
 			this.PlayBestButton.Size = new System.Drawing.Size(75, 23);
@@ -312,6 +316,8 @@
 			// ClearBestButton
 			// 
 			this.ClearBestButton.Enabled = false;
+			this.ClearBestButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Close;
+			this.ClearBestButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.ClearBestButton.Location = new System.Drawing.Point(12, 70);
 			this.ClearBestButton.Name = "ClearBestButton";
 			this.ClearBestButton.Size = new System.Drawing.Size(75, 23);
@@ -657,6 +663,8 @@
 			// 
 			// StopBtn
 			// 
+			this.StopBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
+			this.StopBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.StopBtn.Location = new System.Drawing.Point(6, 56);
 			this.StopBtn.Name = "StopBtn";
 			this.StopBtn.Size = new System.Drawing.Size(75, 23);
