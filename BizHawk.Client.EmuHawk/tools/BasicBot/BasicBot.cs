@@ -51,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _dontUpdateValues = false;
 
 		private MemoryDomain _currentDomain;
+		private bool _bigEndian;
 
 		#region Services and Settings
 
@@ -440,6 +441,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			TurboWhileBottingMenuItem.Checked = Settings.TurboWhenBotting;
+			BigEndianMenuItem.Checked = _bigEndian;
 		}
 
 		private void MemoryDomainsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -448,6 +450,11 @@ namespace BizHawk.Client.EmuHawk
 			MemoryDomainsMenuItem.DropDownItems.AddRange(
 				MemoryDomains.MenuItems(SetMemoryDomain, _currentDomain.Name)
 				.ToArray());
+		}
+
+		private void BigEndianMenuItem_Click(object sender, EventArgs e)
+		{
+			_bigEndian ^= true;
 		}
 
 		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e)
@@ -478,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 			StopBot();
 			_replayMode = true;
 			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot); // Triggers an UpdateValues call
+			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
 			_dontUpdateValues = false;
 			_startFrame = Emulator.Frame;
 			SetNormalSpeed();
@@ -717,7 +724,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
-					GlobalWin.MainForm.LoadQuickSave(SelectedSlot);
+					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
 				}
 
 				PressButtons();
@@ -841,7 +848,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot); // Triggers an UpdateValues call
+			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
 			_dontUpdateValues = false;
 
 			_targetFrame = Global.Emulator.Frame + (int)FrameLengthNumeric.Value;

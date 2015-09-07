@@ -43,6 +43,8 @@
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryDomainsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
@@ -199,6 +201,8 @@
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MemoryDomainsMenuItem,
+            this.BigEndianMenuItem,
+            this.toolStripSeparator4,
             this.TurboWhileBottingMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
 			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
@@ -218,6 +222,18 @@
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
+			// 
+			// BigEndianMenuItem
+			// 
+			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.BigEndianMenuItem.Text = "Big Endian";
+			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(178, 6);
 			// 
 			// TurboWhileBottingMenuItem
 			// 
@@ -256,7 +272,7 @@
 			this.BotStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.BotStatusButton.Name = "BotStatusButton";
 			this.BotStatusButton.RightToLeftAutoMirrorImage = true;
-			this.BotStatusButton.Size = new System.Drawing.Size(32, 20);
+			this.BotStatusButton.Size = new System.Drawing.Size(16, 17);
 			this.BotStatusButton.Text = " ";
 			this.BotStatusButton.ToolTipText = " ";
 			// 
@@ -741,7 +757,7 @@
 			this.panel2.Controls.Add(this.AttemptsLabel);
 			this.panel2.Location = new System.Drawing.Point(6, 85);
 			this.panel2.Name = "panel2";
-			this.panel2.Size = new System.Drawing.Size(82, 33);
+			this.panel2.Size = new System.Drawing.Size(140, 33);
 			this.panel2.TabIndex = 2003;
 			// 
 			// StatsContextMenu
@@ -861,5 +877,7 @@
 		private System.Windows.Forms.ContextMenuStrip StatsContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ClearStatsContextMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel BotStatusButton;
+		private System.Windows.Forms.ToolStripMenuItem BigEndianMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 	}
 }

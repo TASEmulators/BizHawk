@@ -2631,7 +2631,7 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false) // Move to client.common
+		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
 		{
 			if (!Global.Emulator.HasSavestates())
 			{
@@ -2654,7 +2654,11 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				Global.AutoFireController.ClearStarts();
-				GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
+
+				if (!supressOSD)
+				{
+					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
+				}
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
@@ -2669,7 +2673,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
 		}
 
-		public void LoadQuickSave(string quickSlotName, bool fromLua = false)
+		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
 		{
 			if (!Global.Emulator.HasSavestates())
 			{
@@ -2680,10 +2684,11 @@ namespace BizHawk.Client.EmuHawk
 			if (File.Exists(path) == false)
 			{
 				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
+
 				return;
 			}
 
-			LoadState(path, quickSlotName, fromLua);
+			LoadState(path, quickSlotName, fromLua, supressOSD);
 		}
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
