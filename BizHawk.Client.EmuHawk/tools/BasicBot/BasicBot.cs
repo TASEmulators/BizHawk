@@ -46,6 +46,7 @@ namespace BizHawk.Client.EmuHawk
 		private BotAttempt _bestBotAttempt = null;
 		private bool _replayMode = false;
 		private int _startFrame = 0;
+		private string _lastRom = string.Empty;
 
 		private bool _dontUpdateValues = false;
 
@@ -91,41 +92,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BasicBot_Load(object sender, EventArgs e)
 		{
-			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker1Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker2Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker3Box.SetHexProperties(MemoryDomains.MainMemory.Size);
 
-			StartFromSlotBox.SelectedIndex = 0;
-
-			int starty = 0;
-			int accumulatedy = 0;
-			int lineHeight = 30;
-			int marginLeft = 15;
-			int count = 0;
-			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
-			{
-				var control = new BotControlsRow
-				{
-					ButtonName = button,
-					Probability = 0.0,
-					Location = new Point(marginLeft, starty + accumulatedy),
-					TabIndex = count + 1,
-					ProbabilityChangedCallback = AssessRunButtonStatus
-				};
-
-				ControlProbabilityPanel.Controls.Add(control);
-				accumulatedy += lineHeight;
-				count++;
-			}
-
-			if (Settings.RecentBotFiles.AutoLoad)
-			{
-				LoadFileFromRecent(Settings.RecentBotFiles.MostRecent);
-			}
-
-			UpdateBotStatusIcon();
-        }
+		}
 
 		#endregion
 
@@ -355,14 +323,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			
 			if (_currentDomain == null ||
 				MemoryDomains.Contains(_currentDomain))
 			{
 				_currentDomain = MemoryDomains.MainMemory;
 			}
 
-			// TODO restart logic
+			if (_isBotting)
+			{
+				StopBot();
+			}
+			else if (_replayMode)
+			{
+				FinishReplay();
+			}
+
+
+			if (_lastRom != GlobalWin.MainForm.CurrentlyOpenRom)
+			{
+				_lastRom = GlobalWin.MainForm.CurrentlyOpenRom;
+				SetupControlsAndProperties();
+			}
 		}
 
 		public bool AskSaveChanges()
@@ -636,6 +617,47 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		private void SetupControlsAndProperties()
+		{
+			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
+			TieBreaker1Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+			TieBreaker2Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+			TieBreaker3Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+
+			StartFromSlotBox.SelectedIndex = 0;
+
+			int starty = 0;
+			int accumulatedy = 0;
+			int lineHeight = 30;
+			int marginLeft = 15;
+			int count = 0;
+
+			ControlProbabilityPanel.Controls.Clear();
+
+			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
+			{
+				var control = new BotControlsRow
+				{
+					ButtonName = button,
+					Probability = 0.0,
+					Location = new Point(marginLeft, starty + accumulatedy),
+					TabIndex = count + 1,
+					ProbabilityChangedCallback = AssessRunButtonStatus
+				};
+
+				ControlProbabilityPanel.Controls.Add(control);
+				accumulatedy += lineHeight;
+				count++;
+			}
+
+			if (Settings.RecentBotFiles.AutoLoad)
+			{
+				LoadFileFromRecent(Settings.RecentBotFiles.MostRecent);
+			}
+
+			UpdateBotStatusIcon();
+		}
+
 		private void SetMemoryDomain(string name)
 		{
 			_currentDomain = MemoryDomains[name];
@@ -670,13 +692,9 @@ namespace BizHawk.Client.EmuHawk
 						Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
 					}
 				}
-				else // Finished
+				else
 				{
-					GlobalWin.MainForm.PauseEmulator();
-					_startFrame = 0;
-					_replayMode = false;
-					UpdateBotStatusIcon();
-					MessageLabel.Text = "Replay stopped";
+					FinishReplay();
 				}
 			}
 			else if (_isBotting)
@@ -704,6 +722,15 @@ namespace BizHawk.Client.EmuHawk
 
 				PressButtons();
 			}
+		}
+
+		private void FinishReplay()
+		{
+			GlobalWin.MainForm.PauseEmulator();
+			_startFrame = 0;
+			_replayMode = false;
+			UpdateBotStatusIcon();
+			MessageLabel.Text = "Replay stopped";
 		}
 
 		private bool IsBetter(BotAttempt best, BotAttempt current)
