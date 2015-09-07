@@ -482,6 +482,17 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
+		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e)
+		{
+			AssessRunButtonStatus();
+		}
+
+		private void ClearStatsContextMenuItem_Click(object sender, EventArgs e)
+		{
+			Attempts = 0;
+			Frames = 0;
+		}
+
 		#endregion
 
 		#region Classes
@@ -846,11 +857,6 @@ namespace BizHawk.Client.EmuHawk
 				FrameLength > 0
 				&& !string.IsNullOrWhiteSpace(MaximizeAddressBox.Text)
 				&& ControlProbabilities.Any(kvp => kvp.Value > 0);
-		}
-
-		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			AssessRunButtonStatus();
 		}
 	}
 }

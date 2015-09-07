@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.BotMenu = new MenuStripEx();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.NewMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,6 +87,9 @@
 			this.label8 = new System.Windows.Forms.Label();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
 			this.ControlGroupBox = new System.Windows.Forms.GroupBox();
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.StatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.ClearStatsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenu.SuspendLayout();
 			this.BotStatusStrip.SuspendLayout();
 			this.ControlsBox.SuspendLayout();
@@ -94,6 +98,8 @@
 			this.GoalGroupBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.FrameLengthNumeric)).BeginInit();
 			this.ControlGroupBox.SuspendLayout();
+			this.panel2.SuspendLayout();
+			this.StatsContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// BotMenu
@@ -437,7 +443,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(7, 98);
+			this.label1.Location = new System.Drawing.Point(3, 2);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(51, 13);
 			this.label1.TabIndex = 5;
@@ -446,7 +452,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 115);
+			this.label2.Location = new System.Drawing.Point(10, 17);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(44, 13);
 			this.label2.TabIndex = 6;
@@ -455,7 +461,7 @@
 			// AttemptsLabel
 			// 
 			this.AttemptsLabel.AutoSize = true;
-			this.AttemptsLabel.Location = new System.Drawing.Point(65, 98);
+			this.AttemptsLabel.Location = new System.Drawing.Point(61, 2);
 			this.AttemptsLabel.Name = "AttemptsLabel";
 			this.AttemptsLabel.Size = new System.Drawing.Size(13, 13);
 			this.AttemptsLabel.TabIndex = 7;
@@ -464,7 +470,7 @@
 			// FramesLabel
 			// 
 			this.FramesLabel.AutoSize = true;
-			this.FramesLabel.Location = new System.Drawing.Point(65, 115);
+			this.FramesLabel.Location = new System.Drawing.Point(61, 17);
 			this.FramesLabel.Name = "FramesLabel";
 			this.FramesLabel.Size = new System.Drawing.Size(13, 13);
 			this.FramesLabel.TabIndex = 8;
@@ -692,20 +698,43 @@
 			// ControlGroupBox
 			// 
 			this.ControlGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.ControlGroupBox.Controls.Add(this.panel2);
 			this.ControlGroupBox.Controls.Add(this.StopBtn);
-			this.ControlGroupBox.Controls.Add(this.FramesLabel);
 			this.ControlGroupBox.Controls.Add(this.RunBtn);
-			this.ControlGroupBox.Controls.Add(this.AttemptsLabel);
 			this.ControlGroupBox.Controls.Add(this.StartFromSlotBox);
-			this.ControlGroupBox.Controls.Add(this.label2);
 			this.ControlGroupBox.Controls.Add(this.label8);
-			this.ControlGroupBox.Controls.Add(this.label1);
 			this.ControlGroupBox.Location = new System.Drawing.Point(329, 27);
 			this.ControlGroupBox.Name = "ControlGroupBox";
 			this.ControlGroupBox.Size = new System.Drawing.Size(245, 150);
 			this.ControlGroupBox.TabIndex = 2004;
 			this.ControlGroupBox.TabStop = false;
 			this.ControlGroupBox.Text = "Control";
+			// 
+			// panel2
+			// 
+			this.panel2.ContextMenuStrip = this.StatsContextMenu;
+			this.panel2.Controls.Add(this.label1);
+			this.panel2.Controls.Add(this.label2);
+			this.panel2.Controls.Add(this.FramesLabel);
+			this.panel2.Controls.Add(this.AttemptsLabel);
+			this.panel2.Location = new System.Drawing.Point(6, 85);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(82, 33);
+			this.panel2.TabIndex = 2003;
+			// 
+			// StatsContextMenu
+			// 
+			this.StatsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ClearStatsContextMenuItem});
+			this.StatsContextMenu.Name = "StatsContextMenu";
+			this.StatsContextMenu.Size = new System.Drawing.Size(102, 26);
+			// 
+			// ClearStatsContextMenuItem
+			// 
+			this.ClearStatsContextMenuItem.Name = "ClearStatsContextMenuItem";
+			this.ClearStatsContextMenuItem.Size = new System.Drawing.Size(101, 22);
+			this.ClearStatsContextMenuItem.Text = "&Clear";
+			this.ClearStatsContextMenuItem.Click += new System.EventHandler(this.ClearStatsContextMenuItem_Click);
 			// 
 			// BasicBot
 			// 
@@ -737,6 +766,9 @@
 			((System.ComponentModel.ISupportInitialize)(this.FrameLengthNumeric)).EndInit();
 			this.ControlGroupBox.ResumeLayout(false);
 			this.ControlGroupBox.PerformLayout();
+			this.panel2.ResumeLayout(false);
+			this.panel2.PerformLayout();
+			this.StatsContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -802,5 +834,8 @@
 		private System.Windows.Forms.ToolStripMenuItem TurboWhileBottingMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MemoryDomainsMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.Panel panel2;
+		private System.Windows.Forms.ContextMenuStrip StatsContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem ClearStatsContextMenuItem;
 	}
 }
