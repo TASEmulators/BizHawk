@@ -5,6 +5,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BotControlsRow : UserControl
 	{
+		private bool _programmaticallyChangingValues;
+
 		public BotControlsRow()
 		{
 			InitializeComponent();
@@ -25,6 +27,20 @@ namespace BizHawk.Client.EmuHawk
 		private void BotControlsRow_Load(object sender, EventArgs e)
 		{
 
+		}
+
+		private void ProbabilityUpDown_ValueChanged(object sender, EventArgs e)
+		{
+			_programmaticallyChangingValues = true;
+			ProbabilitySlider.Value = (int)ProbabilityUpDown.Value;
+			_programmaticallyChangingValues = false;
+		}
+
+		private void ProbabilitySlider_ValueChanged(object sender, EventArgs e)
+		{
+			_programmaticallyChangingValues = true;
+			ProbabilityUpDown.Value = ProbabilitySlider.Value;
+			_programmaticallyChangingValues = false;
 		}
 	}
 }
