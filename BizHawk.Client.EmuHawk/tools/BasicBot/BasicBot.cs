@@ -344,7 +344,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
-			return true; // TODO
+			return true;
 		}
 
 		#endregion
