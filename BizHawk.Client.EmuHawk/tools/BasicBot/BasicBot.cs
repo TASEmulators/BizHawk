@@ -17,6 +17,26 @@ namespace BizHawk.Client.EmuHawk
 		private const string DialogTitle = "Basic Bot";
 
 		private string _currentFileName = string.Empty;
+
+		private string CurrentFileName
+		{
+			get { return _currentFileName; }
+			set
+			{
+				_currentFileName = value;
+
+				if (!string.IsNullOrWhiteSpace(_currentFileName))
+				{
+					Text = DialogTitle + " - " + Path.GetFileNameWithoutExtension(_currentFileName);
+				}
+				else
+				{
+					Text = DialogTitle;
+				}
+			}
+
+		}
+
 		private bool _isBotting = false;
 		private long _attempts = 1;
 		private long _frames = 0;
@@ -103,7 +123,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LoadFileFromRecent(Settings.RecentBotFiles.MostRecent);
 			}
-		}
+
+			UpdateBotStatusIcon();
+        }
 
 		#endregion
 
@@ -356,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(_currentFileName);
+			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentFileName);
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -368,7 +390,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
-			_currentFileName = string.Empty;
+			CurrentFileName = string.Empty;
 			_bestBotAttempt = null;
 
 			ControlProbabilityPanel.Controls
@@ -389,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = ToolHelpers.OpenFileDialog(
-					_currentFileName,
+					CurrentFileName,
 					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
 					"Bot files",
 					"bot"
@@ -403,16 +425,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!string.IsNullOrWhiteSpace(_currentFileName))
+			if (!string.IsNullOrWhiteSpace(CurrentFileName))
 			{
-				SaveBotFile(_currentFileName);
+				SaveBotFile(CurrentFileName);
 			}
 		}
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = ToolHelpers.SaveFileDialog(
-					_currentFileName,
+					CurrentFileName,
 					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
 					"Bot files",
 					"bot"
@@ -421,7 +443,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				SaveBotFile(file.FullName);
-				Text = DialogTitle + Path.GetFileNameWithoutExtension(_currentFileName);
+				_currentFileName = file.FullName;
 			}
 		}
 
@@ -479,6 +501,8 @@ namespace BizHawk.Client.EmuHawk
 			_dontUpdateValues = false;
 			_startFrame = Emulator.Frame;
 			SetNormalSpeed();
+			UpdateBotStatusIcon();
+			MessageLabel.Text = "Replaying";
 			GlobalWin.MainForm.UnpauseEmulator();
 		}
 
@@ -579,8 +603,9 @@ namespace BizHawk.Client.EmuHawk
 				PlayBestButton.Enabled = true;
 			}
 
-			_currentFileName = path;
-			Settings.RecentBotFiles.Add(_currentFileName);
+			CurrentFileName = path;
+			Settings.RecentBotFiles.Add(CurrentFileName);
+			MessageLabel.Text = Path.GetFileNameWithoutExtension(path) + " loaded";
 
 			return true;
 		}
@@ -604,9 +629,9 @@ namespace BizHawk.Client.EmuHawk
 			var json = ConfigService.SaveWithType(data);
 
 			File.WriteAllText(path, json);
-			_currentFileName = path;
-			Settings.RecentBotFiles.Add(_currentFileName);
-			MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+			CurrentFileName = path;
+			Settings.RecentBotFiles.Add(CurrentFileName);
+			MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
 		}
 
 		#endregion
@@ -650,9 +675,10 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.MainForm.PauseEmulator();
 					_startFrame = 0;
 					_replayMode = false;
-
-			}
+					UpdateBotStatusIcon();
+					MessageLabel.Text = "Replay stopped";
 				}
+			}
 			else if (_isBotting)
 			{
 				if (Global.Emulator.Frame >= _targetFrame)
@@ -798,6 +824,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetMaxSpeed();
 			}
+
+			UpdateBotStatusIcon();
+			MessageLabel.Text = "Running...";
 		}
 
 		private bool CanStart()
@@ -839,6 +868,27 @@ namespace BizHawk.Client.EmuHawk
 
 			GlobalWin.MainForm.PauseEmulator();
 			SetNormalSpeed();
+			UpdateBotStatusIcon();
+			MessageLabel.Text = "Bot stopped";
+		}
+
+		private void UpdateBotStatusIcon()
+		{
+			if (_replayMode)
+			{
+				BotStatusButton.Image = Properties.Resources.Play;
+				BotStatusButton.ToolTipText = "Replaying best result";
+			}
+			else if (_isBotting)
+			{
+				BotStatusButton.Image = Properties.Resources.RecordHS;
+				BotStatusButton.ToolTipText = "Botting in progress";
+			}
+			else
+			{
+				BotStatusButton.Image = Properties.Resources.Pause;
+				BotStatusButton.ToolTipText = "Bot is currently not running";
+			}
 		}
 
 		private void SetMaxSpeed()

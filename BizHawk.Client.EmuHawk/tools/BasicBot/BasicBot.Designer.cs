@@ -46,6 +46,7 @@
 			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
+			this.BotStatusButton = new System.Windows.Forms.ToolStripStatusLabel();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.ControlsBox = new System.Windows.Forms.GroupBox();
 			this.ControlProbabilityPanel = new System.Windows.Forms.Panel();
@@ -240,12 +241,24 @@
 			// BotStatusStrip
 			// 
 			this.BotStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.BotStatusButton,
             this.MessageLabel});
 			this.BotStatusStrip.Location = new System.Drawing.Point(0, 565);
 			this.BotStatusStrip.Name = "BotStatusStrip";
 			this.BotStatusStrip.Size = new System.Drawing.Size(587, 22);
 			this.BotStatusStrip.TabIndex = 2;
 			this.BotStatusStrip.Text = "statusStrip1";
+			// 
+			// BotStatusButton
+			// 
+			this.BotStatusButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.BotStatusButton.Image = ((System.Drawing.Image)(resources.GetObject("BotStatusButton.Image")));
+			this.BotStatusButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.BotStatusButton.Name = "BotStatusButton";
+			this.BotStatusButton.RightToLeftAutoMirrorImage = true;
+			this.BotStatusButton.Size = new System.Drawing.Size(32, 20);
+			this.BotStatusButton.Text = " ";
+			this.BotStatusButton.ToolTipText = " ";
 			// 
 			// MessageLabel
 			// 
@@ -847,5 +860,6 @@
 		private System.Windows.Forms.Panel panel2;
 		private System.Windows.Forms.ContextMenuStrip StatsContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ClearStatsContextMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel BotStatusButton;
 	}
 }
