@@ -39,9 +39,9 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryDomainsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RunBtn = new System.Windows.Forms.Button();
 			this.BotStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.MessageLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -197,13 +197,6 @@
 			this.OptionsSubMenu.Text = "&Options";
 			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
 			// 
-			// TurboWhileBottingMenuItem
-			// 
-			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
-			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
-			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
-			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
-			// 
 			// MemoryDomainsMenuItem
 			// 
 			this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -216,7 +209,14 @@
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
+			// 
+			// TurboWhileBottingMenuItem
+			// 
+			this.TurboWhileBottingMenuItem.Name = "TurboWhileBottingMenuItem";
+			this.TurboWhileBottingMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.TurboWhileBottingMenuItem.Text = "Turbo While Botting";
+			this.TurboWhileBottingMenuItem.Click += new System.EventHandler(this.TurboWhileBottingMenuItem_Click);
 			// 
 			// RunBtn
 			// 
@@ -602,6 +602,7 @@
 			this.MaximizeAddressBox.Nullable = true;
 			this.MaximizeAddressBox.Size = new System.Drawing.Size(95, 20);
 			this.MaximizeAddressBox.TabIndex = 1001;
+			this.MaximizeAddressBox.TextChanged += new System.EventHandler(this.FrameLengthNumeric_ValueChanged);
 			// 
 			// maximizeLabeltext
 			// 
@@ -637,6 +638,7 @@
             0,
             0,
             0});
+			this.FrameLengthNumeric.ValueChanged += new System.EventHandler(this.FrameLengthNumeric_ValueChanged);
 			// 
 			// label3
 			// 

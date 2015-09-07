@@ -12,6 +12,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public Action ProbabilityChangedCallback { get; set; }
+
 		public string ButtonName
 		{
 			get { return ButtonNameLabel.Text; }
@@ -33,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_programmaticallyChangingValues = true;
 			ProbabilitySlider.Value = (int)ProbabilityUpDown.Value;
+			ChangedCallback();
 			_programmaticallyChangingValues = false;
 		}
 
@@ -40,7 +43,16 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_programmaticallyChangingValues = true;
 			ProbabilityUpDown.Value = ProbabilitySlider.Value;
+			ChangedCallback();
 			_programmaticallyChangingValues = false;
+		}
+
+		private void ChangedCallback()
+		{
+			if (ProbabilityChangedCallback != null)
+			{
+				ProbabilityChangedCallback();
+			}
 		}
 	}
 }

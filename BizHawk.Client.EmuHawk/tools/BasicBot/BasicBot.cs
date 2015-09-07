@@ -90,7 +90,8 @@ namespace BizHawk.Client.EmuHawk
 					ButtonName = button,
 					Probability = 0.0,
 					Location = new Point(marginLeft, starty + accumulatedy),
-					TabIndex = count + 1
+					TabIndex = count + 1,
+					ProbabilityChangedCallback = AssessRunButtonStatus
 				};
 
 				ControlProbabilityPanel.Controls.Add(control);
@@ -757,7 +758,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!CanStart())
 			{
-				MessageBox.Show("Please fill out all the things!");
+				MessageBox.Show("Unable to run with current settings");
 				return;
 			}
 
@@ -837,6 +838,19 @@ namespace BizHawk.Client.EmuHawk
 		private void SetNormalSpeed()
 		{
 			GlobalWin.MainForm.Throttle();
+		}
+
+		private void AssessRunButtonStatus()
+		{
+			RunBtn.Enabled =
+				FrameLength > 0
+				&& !string.IsNullOrWhiteSpace(MaximizeAddressBox.Text)
+				&& ControlProbabilities.Any(kvp => kvp.Value > 0);
+		}
+
+		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e)
+		{
+			AssessRunButtonStatus();
 		}
 	}
 }
