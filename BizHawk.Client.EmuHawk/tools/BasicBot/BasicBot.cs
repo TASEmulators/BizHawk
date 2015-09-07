@@ -52,6 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private MemoryDomain _currentDomain;
 		private bool _bigEndian;
+		private int _dataSize;
 
 		#region Services and Settings
 
@@ -328,6 +329,8 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains.Contains(_currentDomain))
 			{
 				_currentDomain = MemoryDomains.MainMemory;
+				_bigEndian = _currentDomain.EndianType == MemoryDomain.Endian.Big;
+				_dataSize = 1;
 			}
 
 			if (_isBotting)
@@ -457,10 +460,32 @@ namespace BizHawk.Client.EmuHawk
 			_bigEndian ^= true;
 		}
 
+		private void DataSizeMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			_1ByteMenuItem.Checked = _dataSize == 1;
+			_2ByteMenuItem.Checked = _dataSize == 2;
+			_4ByteMenuItem.Checked = _dataSize == 4;
+		}
+
+		private void _1ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			_dataSize = 1;
+		}
+
+		private void _2ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			_dataSize = 2;
+		}
+
+		private void _4ByteMenuItem_Click(object sender, EventArgs e)
+		{
+			_dataSize = 4;
+		}
+
 		private void TurboWhileBottingMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.TurboWhenBotting ^= true;
-        }
+		}
 
 		#endregion
 
@@ -536,6 +561,10 @@ namespace BizHawk.Client.EmuHawk
 			public string FromSlot { get; set; }
 			public long Attempts { get; set; }
 			public long Frames { get; set; }
+
+			public string MemoryDomain { get; set; }
+			public bool BigEndian { get; set; }
+			public int DataSize { get; set; }
 		}
 
 		#endregion
@@ -584,6 +613,13 @@ namespace BizHawk.Client.EmuHawk
 			Attempts = botData.Attempts;
 			Frames = botData.Frames;
 
+			_currentDomain = !string.IsNullOrWhiteSpace(botData.MemoryDomain)
+					? MemoryDomains[botData.MemoryDomain]
+					: MemoryDomains.MainMemory;
+
+			_bigEndian = botData.BigEndian;
+			_dataSize = botData.DataSize > 0 ? botData.DataSize : 1;
+
 			UpdateBestAttempt();
 
 			if (_bestBotAttempt != null)
@@ -611,7 +647,10 @@ namespace BizHawk.Client.EmuHawk
 				FromSlot = FromSlot,
 				FrameLength = FrameLength,
 				Attempts = Attempts,
-				Frames = Frames
+				Frames = Frames,
+				MemoryDomain = _currentDomain.Name,
+				BigEndian = _bigEndian,
+				DataSize = _dataSize
 			};
 
 			var json = ConfigService.SaveWithType(data);
@@ -668,12 +707,27 @@ namespace BizHawk.Client.EmuHawk
 		private void SetMemoryDomain(string name)
 		{
 			_currentDomain = MemoryDomains[name];
+			_bigEndian = MemoryDomains[name].EndianType == MemoryDomain.Endian.Big;
 		}
 
 		private int GetRamvalue(int addr)
 		{
-			// TODO: ability to pick byte size/display type/endian
-			return _currentDomain.PeekByte(addr);
+			int val;
+			switch (_dataSize)
+			{
+				default:
+				case 1:
+					val = _currentDomain.PeekByte(addr);
+					break;
+				case 2:
+					val = _currentDomain.PeekWord(addr, _bigEndian);
+					break;
+				case 4:
+					val = (int)_currentDomain.PeekDWord(addr, _bigEndian);
+					break;
+			}
+
+			return val;
 		}
 
 		private void Update(bool fast)

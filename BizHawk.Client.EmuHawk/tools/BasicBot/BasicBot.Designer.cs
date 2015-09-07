@@ -43,6 +43,10 @@
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryDomainsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.DataSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._1ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._2ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this._4ByteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BigEndianMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.TurboWhileBottingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -201,6 +205,7 @@
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MemoryDomainsMenuItem,
+            this.DataSizeMenuItem,
             this.BigEndianMenuItem,
             this.toolStripSeparator4,
             this.TurboWhileBottingMenuItem});
@@ -222,6 +227,38 @@
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(57, 6);
+			// 
+			// DataSizeMenuItem
+			// 
+			this.DataSizeMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this._1ByteMenuItem,
+            this._2ByteMenuItem,
+            this._4ByteMenuItem});
+			this.DataSizeMenuItem.Name = "DataSizeMenuItem";
+			this.DataSizeMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.DataSizeMenuItem.Text = "Data Size";
+			this.DataSizeMenuItem.DropDownOpened += new System.EventHandler(this.DataSizeMenuItem_DropDownOpened);
+			// 
+			// _1ByteMenuItem
+			// 
+			this._1ByteMenuItem.Name = "_1ByteMenuItem";
+			this._1ByteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._1ByteMenuItem.Text = "1 Byte";
+			this._1ByteMenuItem.Click += new System.EventHandler(this._1ByteMenuItem_Click);
+			// 
+			// _2ByteMenuItem
+			// 
+			this._2ByteMenuItem.Name = "_2ByteMenuItem";
+			this._2ByteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._2ByteMenuItem.Text = "2 Bytes";
+			this._2ByteMenuItem.Click += new System.EventHandler(this._2ByteMenuItem_Click);
+			// 
+			// _4ByteMenuItem
+			// 
+			this._4ByteMenuItem.Name = "_4ByteMenuItem";
+			this._4ByteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this._4ByteMenuItem.Text = "4 Bytes";
+			this._4ByteMenuItem.Click += new System.EventHandler(this._4ByteMenuItem_Click);
 			// 
 			// BigEndianMenuItem
 			// 
@@ -879,5 +916,9 @@
 		private System.Windows.Forms.ToolStripStatusLabel BotStatusButton;
 		private System.Windows.Forms.ToolStripMenuItem BigEndianMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem DataSizeMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem _1ByteMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem _2ByteMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem _4ByteMenuItem;
 	}
 }
