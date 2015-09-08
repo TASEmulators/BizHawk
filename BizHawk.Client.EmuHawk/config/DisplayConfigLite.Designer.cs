@@ -89,6 +89,7 @@
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
 			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
+			this.cbAllowDoubleclickFullscreen = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -628,6 +629,7 @@
 			// 
 			// tabPage1
 			// 
+			this.tabPage1.Controls.Add(this.cbAllowDoubleclickFullscreen);
 			this.tabPage1.Controls.Add(this.groupBox4);
 			this.tabPage1.Controls.Add(this.groupBox2);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
@@ -647,7 +649,7 @@
 			this.groupBox4.Controls.Add(this.cbMenuFullscreen);
 			this.groupBox4.Location = new System.Drawing.Point(143, 6);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(266, 235);
+			this.groupBox4.Size = new System.Drawing.Size(266, 211);
 			this.groupBox4.TabIndex = 27;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Fullscreen";
@@ -710,7 +712,7 @@
 			this.groupBox2.Controls.Add(this.cbCaptionWindowed);
 			this.groupBox2.Location = new System.Drawing.Point(6, 6);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(131, 235);
+			this.groupBox2.Size = new System.Drawing.Size(131, 211);
 			this.groupBox2.TabIndex = 26;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Windowed";
@@ -774,6 +776,16 @@
 			this.cbCaptionWindowed.Text = "Caption";
 			this.cbCaptionWindowed.UseVisualStyleBackColor = true;
 			// 
+			// cbAllowDoubleclickFullscreen
+			// 
+			this.cbAllowDoubleclickFullscreen.AutoSize = true;
+			this.cbAllowDoubleclickFullscreen.Location = new System.Drawing.Point(12, 223);
+			this.cbAllowDoubleclickFullscreen.Name = "cbAllowDoubleclickFullscreen";
+			this.cbAllowDoubleclickFullscreen.Size = new System.Drawing.Size(347, 17);
+			this.cbAllowDoubleclickFullscreen.TabIndex = 27;
+			this.cbAllowDoubleclickFullscreen.Text = "Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle)";
+			this.cbAllowDoubleclickFullscreen.UseVisualStyleBackColor = true;
+			// 
 			// DisplayConfigLite
 			// 
 			this.AcceptButton = this.btnOk;
@@ -807,6 +819,7 @@
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
@@ -878,5 +891,6 @@
 		private System.Windows.Forms.RadioButton rbDisplayAbsoluteZero;
 		private System.Windows.Forms.RadioButton rbDisplayMinimal;
 		private System.Windows.Forms.RadioButton rbDisplayFull;
+		private System.Windows.Forms.CheckBox cbAllowDoubleclickFullscreen;
 	}
 }

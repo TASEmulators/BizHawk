@@ -269,6 +269,7 @@ namespace BizHawk.Client.Common
 		public bool DispChrome_StatusBarFullscreen = false;
 		public bool DispChrome_MenuFullscreen = false;
 		public bool DispChrome_Fullscreen_AutohideMouse = true;
+		public bool DispChrome_AllowDoubleClickFullscreen = true;
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
 		public int DispCustomUserARWidth = 1;

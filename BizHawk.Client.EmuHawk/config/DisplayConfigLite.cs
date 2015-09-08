@@ -56,6 +56,8 @@ namespace BizHawk.Client.EmuHawk.config
 			cbFSAutohideMouse.Checked = Global.Config.DispChrome_Fullscreen_AutohideMouse;
 			SyncTrackbar();
 
+			cbAllowDoubleclickFullscreen.Checked = Global.Config.DispChrome_AllowDoubleClickFullscreen;
+
 			nudPrescale.Value = Global.Config.DispPrescale;
 
 			// null emulator config hack
@@ -113,6 +115,7 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispChrome_MenuFullscreen = cbMenuFullscreen.Checked;
 			Global.Config.DispChrome_FrameWindowed = trackbarFrameSizeWindowed.Value;
 			Global.Config.DispChrome_Fullscreen_AutohideMouse = cbFSAutohideMouse.Checked;
+			Global.Config.DispChrome_AllowDoubleClickFullscreen = cbAllowDoubleclickFullscreen.Checked;
 
 			if (rbDisplayFull.Checked) Global.Config.DispSpeedupFeatures = 2;
 			if (rbDisplayMinimal.Checked) Global.Config.DispSpeedupFeatures = 1;
