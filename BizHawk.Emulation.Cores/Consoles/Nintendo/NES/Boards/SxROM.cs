@@ -402,6 +402,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-SNROM": // Morita Kazuo no Shougi (J)
 					AssertPrg(128, 256); AssertChr(8); AssertVram(0); AssertWram(8);
 					break;
+				case "HVC-SNROM-03": // Dragon Quest III
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
+					break;
 				case "NES-SNROM": //dragon warrior 2
 				case "VIRGIN-SNROM":
 				case "NES-SNWEPROM": // final fantasy 2 (proto)
