@@ -99,7 +99,6 @@ namespace BizHawk.Client.EmuHawk
 
 				if (signal_continuousframeAdvancing)
 				{
-					int zzz = 9;
 					//dont ever skip frames when continuous frame advancing. it's meant for precision work.
 					//but we DO need to throttle
 					extraThrottle = true;

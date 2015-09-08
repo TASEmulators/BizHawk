@@ -1897,9 +1897,12 @@ namespace BizHawk.Client.EmuHawk
 			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
 		}
 
-		private static void SaveSlotSelectedMessage()
+		private void SaveSlotSelectedMessage()
 		{
-			GlobalWin.OSD.AddMessage("Slot " + Global.Config.SaveSlot + " selected.");
+			int slot = Global.Config.SaveSlot;
+			string emptypart = _stateSlots.HasSlot(slot) ? "" : " (empty)";
+			string message = string.Format("Slot {0}{1} selected.", slot, emptypart);
+			GlobalWin.OSD.AddMessage(message);
 		}
 
 		private void Render()
