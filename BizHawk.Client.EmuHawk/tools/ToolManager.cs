@@ -794,7 +794,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Load<GBGameGenie>();
 			}
-			else if (Global.Emulator.SystemId == "GEN" && VersionInfo.DeveloperBuild)
+			else if (Global.Emulator.SystemId == "GEN")
 			{
 				Load<GenGameGenie>();
 			}
