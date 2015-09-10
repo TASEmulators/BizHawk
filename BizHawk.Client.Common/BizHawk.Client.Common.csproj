@@ -134,6 +134,7 @@
     <Compile Include="lua\EmuLuaLibrary.Joypad.cs" />
     <Compile Include="lua\EmuLuaLibrary.MainMemory.cs" />
     <Compile Include="lua\EmuLuaLibrary.Memory.cs" />
+    <Compile Include="lua\EmuLuaLibrary.MemorySavestate.cs" />
     <Compile Include="lua\EmuLuaLibrary.Movie.cs" />
     <Compile Include="lua\EmuLuaLibrary.NES.cs" />
     <Compile Include="lua\EmuLuaLibrary.SNES.cs" />
