@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.DiscSystem
 					goto DONE;
 
 				//check slow loading threshold
-				if (compileJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
+				if (compileJob.OUT_LoadTime > IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					OUT_SlowLoadAborted = true;

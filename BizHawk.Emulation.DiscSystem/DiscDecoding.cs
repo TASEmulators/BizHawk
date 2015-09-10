@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.DiscSystem
 		public AudioQueryResult QueryAudio(string path)
 		{
 			var ret = new AudioQueryResult();
-			string stdout = Run("-i", path);
+			string stdout = Run("-i", path).Text;
 			ret.IsAudio = rxHasAudio.Matches(stdout).Count > 0;
 			return ret;
 		}
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.DiscSystem
 		{
 			try
 			{
-				string stdout = Run("-version");
+				string stdout = Run("-version").Text;
 				if (stdout.Contains("ffmpeg version")) return true;
 			}
 			catch
@@ -49,7 +49,13 @@ namespace BizHawk.Emulation.DiscSystem
 			return false;
 		}
 
-		public string Run(params string[] args)
+		public struct RunResults
+		{
+			public string Text;
+			public int ExitCode;
+		}
+
+		public RunResults Run(params string[] args)
 		{
 			args = Escape(args);
 			StringBuilder sbCmdline = new StringBuilder();
@@ -72,7 +78,11 @@ namespace BizHawk.Emulation.DiscSystem
 			result += proc.StandardError.ReadToEnd();
 			proc.WaitForExit();
 
-			return result;
+			return new RunResults
+			{
+				ExitCode = proc.ExitCode,
+				Text = result
+			};
 		}
 
 		public byte[] DecodeAudio(string path)
@@ -80,10 +90,12 @@ namespace BizHawk.Emulation.DiscSystem
 			string tempfile = Path.GetTempFileName();
 			try
 			{
-				string runResults = Run("-i", path, "-f", "wav", "-ar", "44100", "-ac", "2", "-acodec", "pcm_s16le", "-y", tempfile);
+				var runResults = Run("-i", path, "-xerror", "-f", "wav", "-ar", "44100", "-ac", "2", "-acodec", "pcm_s16le", "-y", tempfile);
+				if(runResults.ExitCode != 0)
+					throw new InvalidOperationException("Failure running ffmpeg for audio decode. here was its output:\r\n" + runResults.Text);
 				byte[] ret = File.ReadAllBytes(tempfile);
 				if (ret.Length == 0)
-					throw new InvalidOperationException("Failure running ffmpeg for audio decode. here was its output:\r\n" + runResults);
+					throw new InvalidOperationException("Failure running ffmpeg for audio decode. here was its output:\r\n" + runResults.Text);
 				return ret;
 			}
 			finally
