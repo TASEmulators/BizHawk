@@ -153,6 +153,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentBranch = -1;
 				}
+				else if (index < CurrentBranch)
+				{
+					CurrentBranch--;
+				}
 
 				Movie.RemoveBranch(SelectedBranch);
 				BranchView.RowCount = Movie.BranchCount;
