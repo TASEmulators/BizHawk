@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 			pictureBoxPalette.Image = bmp;
 		}
 
-		private int[,] ResolvePalette(bool showmsg = false)
+		private byte[,] ResolvePalette(bool showmsg = false)
 		{
 			if (AutoLoadPalette.Checked) // checkbox checked: try to load palette from file
 			{
@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 				else // no filename: interpret this as "reset to default"
 				{
 					if (showmsg) GlobalWin.OSD.AddMessage("Standard Palette set");
-					return (int[,])Palettes.QuickNESPalette.Clone();
+					return (byte[,])Palettes.QuickNESPalette.Clone();
 				}
 			}
 			else // checkbox unchecked: we're reusing whatever palette was set

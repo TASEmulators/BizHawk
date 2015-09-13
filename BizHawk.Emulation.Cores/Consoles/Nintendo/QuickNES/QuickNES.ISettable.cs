@@ -104,22 +104,39 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				SetDefaultColors();
 			}
 
-			public void SetNesHawkPalette(int[,] pal)
+			public void SetNesHawkPalette(byte[,] pal)
 			{
-				if (pal.GetLength(0) != 64 || pal.GetLength(1) != 3)
+				//TODO - support 512 color palettes
+				int nColors = pal.GetLength(0);
+				int nElems =  pal.GetLength(1);
+				if (!(nColors == 64 || nColors == 512) || nElems != 3)
 				{
 					throw new ArgumentOutOfRangeException();
 				}
 
-				for (int c = 0; c < 512; c++)
+				if (nColors == 512)
 				{
-					int a = c & 63;
-					byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
-					byte[] outp = new byte[3];
-					Nes_NTSC_Colors.Emphasis(inp, outp, c);
-					_Palette[c * 3] = outp[0];
-					_Palette[c * 3 + 1] = outp[1];
-					_Palette[c * 3 + 2] = outp[2];
+					//just copy the palette directly
+					for (int c = 0; c < nColors; c++)
+					{
+						_Palette[c * 3 + 0] = pal[c, 0];
+						_Palette[c * 3 + 1] = pal[c, 1];
+						_Palette[c * 3 + 2] = pal[c, 2];
+					}
+				}
+				else
+				{
+					//use quickNES's deemph calculator
+					for (int c = 0; c < 64; c++)
+					{
+						int a = c & 63;
+						byte[] inp = { (byte)pal[a, 0], (byte)pal[a, 1], (byte)pal[a, 2] };
+						byte[] outp = new byte[3];
+						Nes_NTSC_Colors.Emphasis(inp, outp, c);
+						_Palette[c * 3] = outp[0];
+						_Palette[c * 3 + 1] = outp[1];
+						_Palette[c * 3 + 2] = outp[2];
+					}
 				}
 			}
 
