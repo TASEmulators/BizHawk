@@ -473,15 +473,16 @@ namespace BizHawk.Client.Common
 			int? divergentPoint = DivergantPoint(_log, branch.InputLog);
 
 			_log = branch.InputLog.ToList();
-			_changes = true;
+			//_changes = true;
 			LagLog.FromLagLog(branch.LagLog);
 
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 
 			StateManager.SetState(branch.Frame, branch.CoreData);
 
-			ChangeLog = branch.ChangeLog;
+			//ChangeLog = branch.ChangeLog;
 			Markers = branch.Markers;
+			Changes = true;
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
@@ -508,12 +509,14 @@ namespace BizHawk.Client.Common
 		{
 			Branches.Add(branch);
 			TasStateManager.AddBranch();
+			Changes = true;
 		}
 
 		public void RemoveBranch(TasBranch branch)
 		{
 			TasStateManager.RemoveBranch(Branches.IndexOf(branch));
 			Branches.Remove(branch);
+			Changes = true;
 		}
 
 		public void UpdateBranch(TasBranch old, TasBranch newBranch)
@@ -521,6 +524,7 @@ namespace BizHawk.Client.Common
 			int index = Branches.IndexOf(old);
 			Branches[index] = newBranch;
 			TasStateManager.UpdateBranch(index);
+			Changes = true;
 		}
 
 		public void SwapBranches(int b1, int b2)
@@ -532,6 +536,7 @@ namespace BizHawk.Client.Common
 
 			Branches.Remove(branch);
 			Branches.Insert(b2, branch);
+			Changes = true;
 		}
 	}
 }

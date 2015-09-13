@@ -40,20 +40,24 @@ namespace BizHawk.Client.Common
 						TimeStamp = b.TimeStamp
 					}));
 				});
+
 				bs.PutLump(ncore, delegate(Stream s)
 				{
 					s.Write(b.CoreData, 0, b.CoreData.Length);
 				});
+
 				bs.PutLump(ninput, delegate(TextWriter tw)
 				{
 					foreach (var line in b.InputLog)
 						tw.WriteLine(line);
 				});
+
 				bs.PutLump(nframebuffer, delegate(Stream s)
 				{
 					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
 					QuickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
 				});
+
 				bs.PutLump(nlaglog, delegate(BinaryWriter bw)
 				{
 					b.LagLog.Save(bw);
@@ -69,6 +73,7 @@ namespace BizHawk.Client.Common
 				ninput.Increment();
 				nframebuffer.Increment();
 				nlaglog.Increment();
+				nmarkers.Increment();
 			}
 		}
 
@@ -79,7 +84,7 @@ namespace BizHawk.Client.Common
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
-			var nmarkers = new IndexedStateLump(BinaryStateLump.Markers);
+			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
 
 			Clear();
 
@@ -154,6 +159,7 @@ namespace BizHawk.Client.Common
 				ninput.Increment();
 				nframebuffer.Increment();
 				nlaglog.Increment();
+				nmarkers.Increment();
 			}
 		}
 	}

@@ -453,9 +453,11 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
 				HandleMovieLoadStuff();
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
-
+				// clear all selections
+				TasView.DeselectAll();
 				BookMarkControl.Restart();
 				MarkerControl.Restart();
+
 				RefreshDialog();
 			}
 		}
