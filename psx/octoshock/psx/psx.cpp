@@ -2700,3 +2700,10 @@ EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trac
 
 	return SHOCK_OK;
 }
+
+//Sets whether LEC is enabled (sector level error correction). Defaults to FALSE (disabled)
+EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled)
+{
+	CDC->SetLEC(enabled);
+	return SHOCK_OK;
+}

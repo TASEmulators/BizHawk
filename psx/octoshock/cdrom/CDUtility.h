@@ -152,6 +152,12 @@ namespace CDUtility
   return( ((num / 10) << 4) + (num % 10) );
  }
 
+ // Check EDC and L-EC data of a mode 1 or mode 2 form 1 sector, and correct bit errors if any exist.
+ //  Returns "true" if errors weren't detected, or they were corrected succesfully.
+ //  Returns "false" if errors couldn't be corrected.
+ //  sector_data should contain 2352 bytes of raw sector data.
+ bool edc_lec_check_and_correct(uint8 *sector_data, bool xa);
+
  // Returns false on checksum mismatch, true on match.
  bool subq_check_checksum(const uint8 *subq_buf);
 

@@ -63,6 +63,7 @@ PS_CDC::PS_CDC() : DMABuffer(4096)
  IsPSXDisc = false;
  Cur_disc = NULL;
  Open_disc = NULL;
+ EnableLEC = false;
 
  DriveStatus = DS_STOPPED;
  PendingCommandPhase = 0;
@@ -1016,11 +1017,14 @@ void PS_CDC::HandlePlayRead(void)
      // maybe if(!(Mode & 0x30)) too?
      if(!(buf[12 + 6] & 0x20))
      {
-			#ifdef LEC_CHECK
-      if(!edc_lec_check_and_correct(buf, true))
-      {
-       printf("Bad sector? - %d", CurSector);
-      }
+			#ifdef WANT_LEC_CHECK
+			 if (EnableLEC)
+			 {
+				 if (!edc_lec_check_and_correct(buf, true))
+				 {
+					 printf("Bad sector? - %d", CurSector);
+				 }
+			 }
 			#endif
      }
 

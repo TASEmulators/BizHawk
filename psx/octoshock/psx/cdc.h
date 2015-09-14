@@ -46,10 +46,12 @@ class PS_CDC
  void SoftReset(void);
 
  void GetCDAudio(int32 samples[2]);
+ void SetLEC(bool enable) { EnableLEC = enable; }
 
  private:
  CDIF *Cur_CDIF;
  ShockDiscRef* Cur_disc;
+ bool EnableLEC;
  bool TrayOpen;
 
  ShockDiscRef* Open_disc; //the disc that's in the tray, while the tray is open. pending, kind of. used because Cur_disc != NULL is used as a tray-closed marker in the CDC code
