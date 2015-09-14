@@ -795,7 +795,7 @@ namespace BizHawk.Client.Common
 
 				stateList.Remove(identifier);
 				if (stateList.Count == 0)
-					BranchStates[kvp.Key] = null;
+					BranchStates.Remove(kvp.Key);
 			}
 			//branches--;
 			//if (currentBranch <= _movie.BranchCount)

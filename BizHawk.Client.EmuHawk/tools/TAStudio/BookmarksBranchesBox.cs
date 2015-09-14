@@ -128,9 +128,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadSelectedBranch()
 		{
+			int index = BranchView.SelectedRows.First();
+			if (CurrentBranch == index)
+				return;
+
 			if (SelectedBranch != null)
 			{
-				CurrentBranch = BranchView.SelectedRows.First();
+				CurrentBranch = index;
 				BranchView.Refresh();
 				LoadBranch(SelectedBranch);
 			}
@@ -167,6 +171,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				BranchView.Refresh();
+				Tastudio.RefreshDialog();
 			}
 		}
 
@@ -290,6 +295,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Movie.UpdateBranch(branch, CreateBranch());
 			BranchView.Refresh();
+			Tastudio.RefreshDialog();
 		}
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
