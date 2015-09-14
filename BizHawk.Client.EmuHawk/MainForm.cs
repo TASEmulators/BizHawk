@@ -2100,7 +2100,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
 			}
-            else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
+			else if (settable.HasSyncSettings && settable.PutSyncSettings(o))
 			{
 				FlagNeedsReboot();
 			}

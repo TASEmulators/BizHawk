@@ -62,6 +62,8 @@
 			this.rbBobOffset = new System.Windows.Forms.RadioButton();
 			this.rbBob = new System.Windows.Forms.RadioButton();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.cbLEC = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -70,13 +72,14 @@
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_LastLineNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.groupBox4.SuspendLayout();
+			this.groupBox5.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(622, 309);
+			this.btnCancel.Location = new System.Drawing.Point(622, 370);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 3;
@@ -86,7 +89,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(541, 309);
+			this.btnOk.Location = new System.Drawing.Point(541, 370);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 2;
@@ -444,13 +447,36 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Deinterlacing";
 			// 
+			// groupBox5
+			// 
+			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox5.Controls.Add(this.cbLEC);
+			this.groupBox5.Location = new System.Drawing.Point(12, 306);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(299, 85);
+			this.groupBox5.TabIndex = 47;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = "Emulation";
+			// 
+			// cbLEC
+			// 
+			this.cbLEC.AutoSize = true;
+			this.cbLEC.Location = new System.Drawing.Point(9, 19);
+			this.cbLEC.Name = "cbLEC";
+			this.cbLEC.Size = new System.Drawing.Size(222, 30);
+			this.cbLEC.TabIndex = 0;
+			this.cbLEC.Text = "Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)";
+			this.cbLEC.UseVisualStyleBackColor = true;
+			// 
 			// PSXOptions
 			// 
 			this.AcceptButton = this.btnOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(713, 344);
+			this.ClientSize = new System.Drawing.Size(713, 405);
+			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -473,6 +499,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).EndInit();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
+			this.groupBox5.ResumeLayout(false);
+			this.groupBox5.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -511,5 +539,7 @@
 		private System.Windows.Forms.RadioButton rbWeave;
 		private System.Windows.Forms.RadioButton rbBobOffset;
 		private System.Windows.Forms.RadioButton rbBob;
+		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.CheckBox cbLEC;
 	}
 }

@@ -2023,7 +2023,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)Build\BizHawk.Build.Tool.exe NXCOMPAT --target $(TargetPath) --value 0</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>

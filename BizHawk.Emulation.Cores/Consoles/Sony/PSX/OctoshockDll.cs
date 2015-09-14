@@ -272,5 +272,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetTraceCallback(IntPtr psx, IntPtr opaque, ShockTraceCallback callback);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetLEC(IntPtr psx, bool enable);
 	}
 }

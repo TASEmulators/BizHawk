@@ -690,6 +690,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			SetInput();
 
+			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
+
 			var ropts = new OctoshockDll.ShockRenderOptions()
 			{
 				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
@@ -1057,6 +1059,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				return ret;
 			}
 
+			public bool EnableLEC;
+
 			public ControllerSetting[] Controllers = 
 			{
 				new ControllerSetting
@@ -1186,17 +1190,22 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			_Settings.Validate();
 			_Settings = o;
-			//TODO
-			//var native = _Settings.GetNativeSettings();
-			//BizSwan.bizswan_putsettings(Core, ref native);
+
+			//TODO - store settings into core? or we can just keep doing it before frameadvance
+
 			return false;
 		}
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
-			var ret = !DeepEquality.DeepEquals(_SyncSettings, o);
+			//check for reboot-required options (well, none right now)
+			bool reboot = false;
+
 			_SyncSettings = o;
-			return ret;
+			
+			//TODO - store settings into core? or we can just keep doing it before frameadvance
+
+			return reboot;
 		}
 
 		#endregion
