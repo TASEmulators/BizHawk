@@ -478,7 +478,7 @@ namespace BizHawk.Client.Common
 
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 
-			StateManager.SetState(branch.Frame, branch.CoreData);
+			StateManager.SetState(branch.Frame, branch.CoreData, skipRemoval: true);
 
 			//ChangeLog = branch.ChangeLog;
 			Markers = branch.Markers;

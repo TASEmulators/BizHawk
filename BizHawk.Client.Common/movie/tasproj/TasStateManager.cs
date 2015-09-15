@@ -313,7 +313,10 @@ namespace BizHawk.Client.Common
 				i = 0;
 				do
 				{
-					shouldRemove = findState(accessed[i]);
+					if (accessed.Count > i)
+						shouldRemove = findState(accessed[i]);
+					else
+						break;
 
 					// Keep marker states
 					markerSkips--;
@@ -385,9 +388,11 @@ namespace BizHawk.Client.Common
 			Used += (ulong)States[index].Length;
 		}
 
-		internal void SetState(int frame, byte[] state)
+		internal void SetState(int frame, byte[] state, bool skipRemoval = false)
 		{
-			MaybeRemoveStates(); // Remove before adding so this state won't be removed.
+			if (!skipRemoval)
+				MaybeRemoveStates(); // Remove before adding so this state won't be removed.
+
 			if (States.ContainsKey(frame))
 			{
 				if (stateHasDuplicate(frame, -1) != -2)
@@ -860,7 +865,7 @@ namespace BizHawk.Client.Common
 					continue; // TODO: It might be a better idea to just not put state 0 in BranchStates.
 
 				if (kvp.Value.ContainsKey(identifier))
-					SetState(kvp.Key, kvp.Value[identifier].State);
+					SetState(kvp.Key, kvp.Value[identifier].State, skipRemoval: true);
 			}
 
 			currentBranch = index;
