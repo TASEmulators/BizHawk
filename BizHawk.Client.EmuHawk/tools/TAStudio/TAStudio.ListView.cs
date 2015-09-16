@@ -226,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == CursorColumnName)
 				{
-					int branchIndex = CurrentTasMovie.BranchIndex(index);
+					int branchIndex = CurrentTasMovie.BranchIndexByFrame(index);
 					if (branchIndex != -1)
 					{
 						text = branchIndex.ToString();

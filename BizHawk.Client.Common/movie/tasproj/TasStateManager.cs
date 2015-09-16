@@ -195,7 +195,7 @@ namespace BizHawk.Client.Common
 
 			if (shouldCapture)
 			{
-				SetState(frame, (byte[])Core.SaveStateBinary().Clone());
+				SetState(frame, (byte[])Core.SaveStateBinary().Clone(), skipRemoval: false);
 			}
 		}
 
@@ -326,9 +326,9 @@ namespace BizHawk.Client.Common
 			Used += (ulong)States[index].Length;
 		}
 
-		internal void SetState(int frame, byte[] state, bool skipRemoval = false)
+		internal void SetState(int frame, byte[] state, bool skipRemoval = true)
 		{
-			if (!skipRemoval)
+			if (!skipRemoval) // skipRemoval: false only when capturing new states
 				MaybeRemoveStates(); // Remove before adding so this state won't be removed.
 
 			if (States.ContainsKey(frame))
@@ -564,6 +564,8 @@ namespace BizHawk.Client.Common
 				int frame = br.ReadInt32();
 				int len = br.ReadInt32();
 				byte[] data = br.ReadBytes(len);
+				// whether we should allow state removal check here is an interesting question
+				// nothing was edited yet, so it might make sense to show the project untouched first
 				SetState(frame, data);
 				//States.Add(frame, data);
 				//Used += len;
@@ -643,7 +645,6 @@ namespace BizHawk.Client.Common
 		#region "Branches"
 
 		private SortedList<int, SortedList<int, StateManagerState>> BranchStates = new SortedList<int, SortedList<int, StateManagerState>>();
-		//private int branches = 0;
 		private int currentBranch = -1;
 
 		/// <summary>
@@ -697,30 +698,28 @@ namespace BizHawk.Client.Common
 
 		public void AddBranch()
 		{
-			// let's not put serial number there, since branches can be removed and whatnot, messing it up
-			// use something unique, reliable and already present, like... total seconds?
-			// might as well just add another field to branch, like counter of added branches, and check by that
-			int identifier = (int)_movie.GetBranch(_movie.BranchCount-1).TimeStamp.TimeOfDay.TotalSeconds;
+			int branchHash = _movie.BranchHashByIndex(_movie.BranchCount - 1);
 
 			foreach (KeyValuePair<int, StateManagerState> kvp in States)
 			{
 				if (!BranchStates.ContainsKey(kvp.Key))
 					BranchStates.Add(kvp.Key, new SortedList<int, StateManagerState>());
+
 				SortedList<int, StateManagerState> stateList = BranchStates[kvp.Key];
+
 				if (stateList == null) // when does this happen?
 				{
 					stateList = new SortedList<int, StateManagerState>();
 					BranchStates[kvp.Key] = stateList;
 				}
-				stateList.Add(identifier, kvp.Value);
+				stateList.Add(branchHash, kvp.Value);
 			}
-			//branches++;
 			currentBranch = _movie.BranchCount;
 		}
 
 		public void RemoveBranch(int index)
 		{
-			int identifier = (int)_movie.GetBranch(index).TimeStamp.TimeOfDay.TotalSeconds;
+			int branchHash = _movie.BranchHashByIndex(index);
 
 			foreach (KeyValuePair<int, SortedList<int, StateManagerState>> kvp in BranchStates.ToList())
 			{
@@ -728,24 +727,21 @@ namespace BizHawk.Client.Common
 				if (stateList == null)
 					continue;
 
-				if (stateHasDuplicate(kvp.Key, identifier) == -2)
+				if (stateHasDuplicate(kvp.Key, branchHash) == -2)
 				{
-					if (stateList.ContainsKey(identifier))
+					if (stateList.ContainsKey(branchHash))
 					{
-						if (stateList[identifier].IsOnDisk)
+						if (stateList[branchHash].IsOnDisk)
 						{ }
 						else
-							Used -= (ulong)stateList[identifier].Length;
+							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
 
-				stateList.Remove(identifier);
+				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);
 			}
-			//branches--;
-			//if (currentBranch <= _movie.BranchCount)
-			//	currentBranch = -1;
 			if (currentBranch > index)
 				currentBranch--;
 			else if (currentBranch == index)
@@ -754,7 +750,7 @@ namespace BizHawk.Client.Common
 
 		public void UpdateBranch(int index)
 		{
-			int identifier = (int)_movie.GetBranch(index).TimeStamp.TimeOfDay.TotalSeconds;
+			int branchHash = _movie.BranchHashByIndex(index);
 
 			// RemoveBranch
 			foreach (KeyValuePair<int, SortedList<int, StateManagerState>> kvp in BranchStates.ToList())
@@ -763,18 +759,18 @@ namespace BizHawk.Client.Common
 				if (stateList == null)
 					continue;
 
-				if (stateHasDuplicate(kvp.Key, identifier) == -2)
+				if (stateHasDuplicate(kvp.Key, branchHash) == -2)
 				{
-					if (stateList.ContainsKey(identifier))
+					if (stateList.ContainsKey(branchHash))
 					{
-						if (stateList[identifier].IsOnDisk)
+						if (stateList[branchHash].IsOnDisk)
 						{ }
 						else
-							Used -= (ulong)stateList[identifier].Length;
+							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
 
-				stateList.Remove(identifier);
+				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
 				{
 					BranchStates[kvp.Key] = null;
@@ -786,13 +782,15 @@ namespace BizHawk.Client.Common
 			{
 				if (!BranchStates.ContainsKey(kvp.Key))
 					BranchStates.Add(kvp.Key, new SortedList<int, StateManagerState>());
+
 				SortedList<int, StateManagerState> stateList = BranchStates[kvp.Key];
+
 				if (stateList == null)
 				{
 					stateList = new SortedList<int, StateManagerState>();
 					BranchStates[kvp.Key] = stateList;
 				}
-				stateList.Add(identifier, kvp.Value);
+				stateList.Add(branchHash, kvp.Value);
 			}
 
 			currentBranch = index;
@@ -800,15 +798,17 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(int index)
 		{
-			int identifier = (int)_movie.GetBranch(index).TimeStamp.TimeOfDay.TotalSeconds;
+			int branchHash = _movie.BranchHashByIndex(index);
+
 			Invalidate(0); // Not a good way of doing it?
+
 			foreach (KeyValuePair<int, SortedList<int, StateManagerState>> kvp in BranchStates)
 			{
 				if (kvp.Key == 0 && States.ContainsKey(0))
 					continue; // TODO: It might be a better idea to just not put state 0 in BranchStates.
 
-				if (kvp.Value.ContainsKey(identifier))
-					SetState(kvp.Key, kvp.Value[identifier].State, skipRemoval: true);
+				if (kvp.Value.ContainsKey(branchHash))
+					SetState(kvp.Key, kvp.Value[branchHash].State);
 			}
 
 			currentBranch = index;

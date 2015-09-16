@@ -81,9 +81,19 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
-		public TasBranch GetBranch(int id) { return Branches[id]; }
 		public int BranchCount { get { return Branches.Count; } }
-		public int BranchIndex(int frame)
+		public TasBranch GetBranch(int index) { return Branches[index]; }
+		public int BranchHashByIndex(int index) { return Branches[index].UniqueIdentifier.GetHashCode(); }
+
+		public int BranchIndexByHash(int hash)
+		{
+			TasBranch branch = Branches.Where(b => b.UniqueIdentifier.GetHashCode() == hash).SingleOrDefault();
+			if (branch == null)
+				return -1;
+			return Branches.IndexOf(branch);
+		}
+
+		public int BranchIndexByFrame(int frame)
 		{
 			TasBranch branch = Branches.Where(b => b.Frame == frame)
 				.OrderByDescending(b => b.TimeStamp).FirstOrDefault();
@@ -478,7 +488,7 @@ namespace BizHawk.Client.Common
 
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 
-			StateManager.SetState(branch.Frame, branch.CoreData, skipRemoval: true);
+			StateManager.SetState(branch.Frame, branch.CoreData);
 
 			//ChangeLog = branch.ChangeLog;
 			Markers = branch.Markers;
