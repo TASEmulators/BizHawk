@@ -378,6 +378,9 @@ namespace BizHawk.Client.Common
 				else
 					Used -= (ulong)BranchStates[frame][branch].Length;
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
+				
+				if (BranchStates[frame].Count == 0)
+					BranchStates.Remove(frame);
 			}
 
 			if (!hasDuplicate)
@@ -650,30 +653,34 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Checks if the state at frame in the given branch (-1 for current) has any duplicates.
 		/// </summary>
-		/// <returns>Returns the ID of the branch (-1 for current) of the first match. If no match, returns -2.</returns>
-		private int stateHasDuplicate(int frame, int branch)
+		/// <returns>Index of the branch (-1 for current) of the first match. If no match, returns -2.</returns>
+		private int stateHasDuplicate(int frame, int branchHash)
 		{
 			StateManagerState stateToMatch;
-			if (branch == -1)
+
+			// figure out what state we're checking
+			if (branchHash == -1)
 				stateToMatch = States[frame];
 			else
 			{
-				if (!BranchStates[frame].ContainsKey(branch))
+				if (!BranchStates[frame].ContainsKey(branchHash))
 					return -2;
-				stateToMatch = BranchStates[frame][branch];
+				stateToMatch = BranchStates[frame][branchHash];
 				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
 					return -1;
 			}
 
+			// there's no state for that frame at all
 			if (!BranchStates.ContainsKey(frame))
 				return -2;
 
+			// find the branches whose state for that frame is the same
+			SortedList<int, StateManagerState> stateList = BranchStates[frame];
 			for (int i = 0; i < _movie.BranchCount; i++)
 			{
-				if (i == branch)
+				if (i == _movie.BranchIndexByHash(branchHash))
 					continue;
 
-				SortedList<int, StateManagerState> stateList = BranchStates[frame];
 				if (stateList != null && stateList.ContainsKey(i) && stateList[i] == stateToMatch)
 					return i;
 			}
