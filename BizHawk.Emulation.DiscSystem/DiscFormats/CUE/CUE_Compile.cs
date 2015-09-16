@@ -236,6 +236,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			}
 
 			var cfi = new CompiledCueFile();
+			curr_file = cfi;
 			OUT_CompiledCueFiles.Add(cfi);
 
 			cfi.FullPath = choice;
