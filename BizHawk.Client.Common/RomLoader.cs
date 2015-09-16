@@ -270,7 +270,7 @@ namespace BizHawk.Client.Common
 							}
 
 							if (discMountJob.OUT_ErrorLevel)
-								throw new InvalidOperationException(discMountJob.OUT_Log);
+								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
 
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
@@ -329,7 +329,7 @@ namespace BizHawk.Client.Common
 						}
 
 						if (discMountJob.OUT_ErrorLevel)
-							throw new InvalidOperationException(discMountJob.OUT_Log);
+							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
 
 						var disc = discMountJob.OUT_Disc;
 						//-----------
@@ -465,7 +465,7 @@ namespace BizHawk.Client.Common
 										}
 
 										if (discMountJob.OUT_ErrorLevel)
-											throw new InvalidOperationException(discMountJob.OUT_Log);
+											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
 
 										if (disc == null)
 											throw new InvalidOperationException("Can't load one of the files specified in the M3U");

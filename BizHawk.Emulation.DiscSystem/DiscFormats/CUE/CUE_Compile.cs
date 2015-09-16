@@ -365,6 +365,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 
 		void OpenTrack(CUE_File.Command.TRACK trackCommand)
 		{
+			//assert that a file is open
+			if(curr_file == null)
+			{
+				Error("Track command encountered with no active file");
+				throw new DiscJobAbortException();
+			}
+
 			curr_track = new CompiledCueTrack();
 
 			//spill cdtext data into this track
