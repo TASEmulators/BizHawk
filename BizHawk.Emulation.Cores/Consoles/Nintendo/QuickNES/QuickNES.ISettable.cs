@@ -27,6 +27,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			LibQuickNES.qn_set_sprite_limit(Context, _settings.NumSprites);
 			RecalculateCrops();
 			CalculatePalette();
+
+			CoreComm.ScreenLogicalOffsetX = o.ClipLeftAndRight ? 8 : 0;
+			CoreComm.ScreenLogicalOffsetY = o.ClipTopAndBottom ? 8 : 0;
+
 			return false;
 		}
 
