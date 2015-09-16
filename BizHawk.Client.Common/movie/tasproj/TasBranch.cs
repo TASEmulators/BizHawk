@@ -9,6 +9,11 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
+		public TasBranch()
+		{
+			UniqueIdentifier = Guid.NewGuid();
+		}
+
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public List<string> InputLog { get; set; }
@@ -17,6 +22,7 @@ namespace BizHawk.Client.Common
 		public TasMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
+		public Guid UniqueIdentifier { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>
@@ -37,7 +43,8 @@ namespace BizHawk.Client.Common
 					tw.WriteLine(JsonConvert.SerializeObject(new
 					{
 						Frame = b.Frame,
-						TimeStamp = b.TimeStamp
+						TimeStamp = b.TimeStamp,
+						UniqueIdentifier = b.UniqueIdentifier
 					}));
 				});
 
@@ -97,7 +104,7 @@ namespace BizHawk.Client.Common
 					var header = (dynamic)JsonConvert.DeserializeObject(tr.ReadLine());
 					b.Frame = (int)header.Frame;
 
-					var timestamp = (dynamic)header.TImeStamp;
+					var timestamp = (dynamic)header.TimeStamp;
 
 					if (timestamp != null)
 					{
@@ -106,6 +113,16 @@ namespace BizHawk.Client.Common
 					else
 					{
 						b.TimeStamp = DateTime.Now;
+					}
+
+					var identifier = (dynamic)header.UniqueIdentifier;
+					if (identifier != null)
+					{
+						b.UniqueIdentifier = (Guid)identifier;
+					}
+					else
+					{
+						b.UniqueIdentifier = Guid.NewGuid();
 					}
 				}))
 				{
