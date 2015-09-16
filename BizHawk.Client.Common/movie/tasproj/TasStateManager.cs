@@ -713,6 +713,7 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 				stateList.Add(branchHash, kvp.Value);
+				Used += (ulong)stateList[branchHash].Length;
 			}
 			currentBranch = _movie.BranchCount;
 		}
@@ -772,9 +773,7 @@ namespace BizHawk.Client.Common
 
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
-				{
-					BranchStates[kvp.Key] = null;
-				}
+					BranchStates.Remove(kvp.Key);
 			}
 
 			// AddBranch
@@ -791,8 +790,8 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 				stateList.Add(branchHash, kvp.Value);
+				Used += (ulong)stateList[branchHash].Length;
 			}
-
 			currentBranch = index;
 		}
 
