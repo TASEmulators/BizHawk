@@ -30,6 +30,8 @@ namespace EtoHawk.Config
         protected List<InputCompositeWidget> Inputs = new List<InputCompositeWidget>();
         protected List<Label> Labels = new List<Label>();
 
+        public ControllerConfig ParentConfig {get;set;}
+
         private Size _panelSize = new Size(0, 0);
         private PixelLayout _layout = new PixelLayout(); //Todo: switch to a real cross-platform layout
 
@@ -112,7 +114,7 @@ namespace EtoHawk.Config
                     x += ColumnWidth;
                 }
 
-                InputCompositeWidget iw = new InputCompositeWidget
+                InputCompositeWidget iw = new InputCompositeWidget(ParentConfig)
                 {
                     //Location = new Point(x, y),
                     Size = new Size(InputSize, 23),

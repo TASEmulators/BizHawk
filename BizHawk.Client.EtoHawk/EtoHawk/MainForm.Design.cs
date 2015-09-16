@@ -33,11 +33,13 @@ namespace BizHawk.Client.EtoHawk
             _mnuConfigControllers = new ButtonMenuItem() { Text = "Controllers..." };
             _mnuConfigControllers.Click += (sender, e) => {
                 _suspended = true;
-                ControllerConfig cc = new ControllerConfig (Global.Emulator.ControllerDefinition);
-                if (cc.ShowModal(this))
+                using(ControllerConfig cc = new ControllerConfig (Global.Emulator.ControllerDefinition))
                 {
-                    InitControls ();
-                    InputManager.SyncControls ();
+                    if (cc.ShowModal(this))
+                    {
+                        InitControls ();
+                        InputManager.SyncControls ();
+                    }
                 }
                 _suspended = false;
             };

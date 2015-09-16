@@ -10,8 +10,11 @@ namespace EtoHawk.Config
 {
     public partial class InputCompositeWidget : Panel
     {
-        public InputCompositeWidget()
+        private ControllerConfig _parent;
+        
+        public InputCompositeWidget(ControllerConfig parent)
         {
+            _parent = parent;
             InitializeComponent();
 
             DropdownMenu = new ContextMenu();

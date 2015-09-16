@@ -4,6 +4,7 @@ using System.Text;
 using Eto;
 using Eto.Forms;
 using Eto.Drawing;
+using BizHawk.Client.EtoHawk;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using BizHawk.Client.Common;
@@ -11,6 +12,7 @@ using System.Linq;
 using System.Collections;
 using System.Reflection;
 using System.IO;
+using System.Threading;
 
 namespace EtoHawk.Config
 {
@@ -19,6 +21,22 @@ namespace EtoHawk.Config
         private const int MAXPLAYERS = 8;
         private static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
         private readonly ControllerDefinition _theDefinition;
+        private Thread _timer;
+        private string _wasPressed = string.Empty;
+        private InputWidget _focusedWidget;
+        public InputWidget FocusedWidget 
+        {
+            get{ return _focusedWidget; }
+            set
+            {
+                if (_focusedWidget != value)
+                {
+                    _focusedWidget = value;
+                    _wasPressed = Input.Instance.GetNextBindEvent ();
+                    SetupTimer ();
+                }
+            } 
+        }
 
         static ControllerConfig()
         {
@@ -94,11 +112,69 @@ namespace EtoHawk.Config
             };*/
         }
 
+        private void SetupTimer()
+        {
+            if (_timer != null)
+            {
+                _timer.Interrupt(); //Shouldn't happen, we kill it when it loses focus.
+                if (!_timer.Join(50))
+                {
+                    _timer.Abort(); //Should have ended right away and didn't, so now it must die.
+                }
+                _timer = null;
+            }
+            _timer = new Thread(Timer_Tick);
+            _timer.Start();
+        }
+
+        private void Timer_Tick()
+        {
+            while (true)
+            {
+                try
+                {
+                    ReadKeys();
+                    Thread.Sleep(33);
+                }
+                catch (ThreadInterruptedException)
+                {
+                    break; //Time to leave this place
+                }
+            }
+            _timer = null;
+        }
+
+        /// <summary>
+        /// Poll input events and apply processing related to accepting that as a binding
+        /// </summary>
+        private void ReadKeys()
+        {
+            Input.Instance.Update();
+            var bindingStr = Input.Instance.GetNextBindEvent();
+            if (!string.IsNullOrEmpty(_wasPressed) && bindingStr == _wasPressed)
+            {
+                return;
+            }
+
+            if (bindingStr != null)
+            {
+                if (_focusedWidget != null)
+                {
+                    Application.Instance.Invoke (new Action (() =>
+                    {
+                        _focusedWidget.HandleMappingInput(bindingStr);
+                    }));
+                }
+                _wasPressed = bindingStr;
+            }
+        }
+
         private delegate Panel PanelCreator<T>(Dictionary<string, T> settings, List<string> buttons, Size size);
 
         private Panel CreateNormalPanel(Dictionary<string, string> settings, List<string> buttons, Size size)
         {
             var cp = new ControllerConfigPanel { /*Dock = DockStyle.Fill, AutoScroll = true*/ };
+            cp.ParentConfig = this;
             //cp.Tooltip = toolTip1;
             cp.LoadSettings(settings, checkBoxAutoTab.Checked==true, buttons, size.Width, size.Height);
             return cp;

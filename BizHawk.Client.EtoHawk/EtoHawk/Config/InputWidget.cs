@@ -13,12 +13,10 @@ namespace EtoHawk.Config
     public sealed class InputWidget : TextBox
     {
         // TODO: when binding, make sure that the new key combo is not in one of the other bindings
-        private Thread _timer;
         private readonly List<string> _bindings = new List<string>();
 
-        private string _wasPressed = string.Empty;
-
         public InputCompositeWidget CompositeWidget;
+        public ControllerConfig ParentConfig { get; set; }
 
         public class SpecialBindingInfo
         {
@@ -39,26 +37,13 @@ namespace EtoHawk.Config
 		};
 
 
-        public InputWidget()
+        public InputWidget(ControllerConfig parent)
         {
+            ParentConfig = parent;
             //ContextMenu = new ContextMenu();
             ClearBindings();
             AutoTab = true;
             Cursor = Cursors.Arrow;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            if (_timer != null)
-            {
-                _timer.Interrupt(); //Shouldn't happen, we kill it when it loses focus.
-                if (!_timer.Join(50))
-                {
-                    _timer.Abort(); //Should have ended right away and didn't, so now it must die.
-                }
-                _timer = null;
-            }
         }
 
         public bool AutoTab { get; set; }
@@ -94,20 +79,9 @@ namespace EtoHawk.Config
         {
             base.OnGotFocus(e);
 
-            if (_timer != null)
-            {
-                _timer.Interrupt(); //Shouldn't happen, we kill it when it loses focus.
-                if (!_timer.Join(50))
-                {
-                    _timer.Abort(); //Should have ended right away and didn't, so now it must die.
-                }
-                _timer = null;
-            }
-            _timer = new Thread(Timer_Tick);
-            _timer.Start();
+            ParentConfig.FocusedWidget = this;
 
             //Console.WriteLine (this.Bindings + " got focus");
-            _wasPressed = Input.Instance.GetNextBindEvent();
             BackgroundColor = Color.FromArgb(unchecked((int)0xFFC0FFFF)); // Color.LightCyan is too light on Windows 8, this is a bit darker
         }
 
@@ -115,29 +89,44 @@ namespace EtoHawk.Config
         {
             base.OnLostFocus(e);
             //Console.WriteLine (this.Bindings + " lost focus");
-            if (_timer != null)
-            {
-                _timer.Interrupt();
-            }
             UpdateLabel();
             BackgroundColor = Colors.White; //SystemColors.Window;
         }
 
-        private void Timer_Tick()
-        {
-            while (true)
+        public void HandleMappingInput(string bindingStr){
+            //Differs from SetBinding because it has the logic in it.
+            //has special meaning for the binding UI system (clear it).
+            //you can set it through the special bindings dropdown menu
+            if (bindingStr == "Escape")
             {
-                try
-                {
-                    ReadKeys();
-                    Thread.Sleep(33);
-                }
-                catch (ThreadInterruptedException)
-                {
-                    break; //Time to leave this place
-                }
+                EraseMappings();
+                Increment();
+                return;
             }
-            _timer = null;
+
+            //seriously, we refuse to allow you to bind this to anything else.
+            if (bindingStr == "Alt+F4")
+            {
+                return;
+            }
+
+            //ignore special bindings
+            foreach (var spec in SpecialBindings)
+                if (spec.BindingName == bindingStr)
+                    return;
+
+            if (!IsDuplicate(bindingStr))
+            {
+                if (AutoTab)
+                {
+                    ClearBindings();
+                }
+
+                _bindings.Add(bindingStr);
+            }
+
+            UpdateLabel();
+            Increment();
         }
 
         public void EraseMappings()
@@ -156,59 +145,6 @@ namespace EtoHawk.Config
             Increment();
         }
 
-        /// <summary>
-        /// Poll input events and apply processing related to accepting that as a binding
-        /// </summary>
-        private void ReadKeys()
-        {
-            Input.Instance.Update();
-            var bindingStr = Input.Instance.GetNextBindEvent();
-            if (!string.IsNullOrEmpty(_wasPressed) && bindingStr == _wasPressed)
-            {
-                return;
-            }
-
-            if (bindingStr != null)
-            {
-                Application.Instance.Invoke(new Action(() =>
-                {
-                    //has special meaning for the binding UI system (clear it).
-                    //you can set it through the special bindings dropdown menu
-                    if (bindingStr == "Escape")
-                    {
-                        EraseMappings();
-                        Increment();
-                        return;
-                    }
-
-                    //seriously, we refuse to allow you to bind this to anything else.
-                    if (bindingStr == "Alt+F4")
-                    {
-                        return;
-                    }
-
-                    //ignore special bindings
-                    foreach (var spec in SpecialBindings)
-                        if (spec.BindingName == bindingStr)
-                            return;
-
-                    if (!IsDuplicate(bindingStr))
-                    {
-                        if (AutoTab)
-                        {
-                            ClearBindings();
-                        }
-
-                        _bindings.Add(bindingStr);
-                    }
-
-                    _wasPressed = bindingStr;
-                    UpdateLabel();
-                    Increment();
-                }));
-            }
-        }
-
         private bool IsDuplicate(string binding)
         {
             return _bindings.FirstOrDefault(x => x == binding) != null;
@@ -220,8 +156,6 @@ namespace EtoHawk.Config
             {
                 base.OnKeyUp(e);
             }
-
-            _wasPressed = string.Empty;
         }
 
         protected override void OnKeyDown(KeyEventArgs e)

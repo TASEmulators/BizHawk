@@ -29,7 +29,7 @@ namespace EtoHawk.Config
         {
             this.btnSpecial = new Button();
             this.tableLayoutPanel1 = new TableLayout(2,2);
-            this.widget = new InputWidget();
+            this.widget = new InputWidget(_parent);
             this.tableLayoutPanel1.SuspendLayout();
             //this.SuspendLayout();
             // 

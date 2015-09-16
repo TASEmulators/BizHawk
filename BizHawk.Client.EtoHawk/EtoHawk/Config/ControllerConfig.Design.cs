@@ -24,6 +24,15 @@ namespace EtoHawk.Config
             {
                 components.Dispose();
             }
+            if (_timer != null)
+            {
+                _timer.Interrupt(); //Shouldn't happen, we kill it when it loses focus.
+                if (!_timer.Join(50))
+                {
+                    _timer.Abort(); //Should have ended right away and didn't, so now it must die.
+                }
+                _timer = null;
+            }
             base.Dispose(disposing);
         }
 
