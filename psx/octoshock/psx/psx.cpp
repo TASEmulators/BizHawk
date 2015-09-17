@@ -2415,11 +2415,12 @@ Breakout:
 bool ShockDiscRef::ReadLBA_PW(uint8* pwbuf96, int32 lba, bool hint_fullread)
 {
 	//TODO - whats that hint mean
-	//TODO - should return false if out of range totally
 	//reference:  static const int32 LBA_Read_Minimum = -150;
  //reference:  static const int32 LBA_Read_Maximum = 449849;	// 100 * 75 * 60 - 150 - 1
 	u8 tmp[2448];
-	ReadLBA2448(lba,tmp);
+	s32 ret = ReadLBA2448(lba,tmp);
+	if(ret != SHOCK_OK)
+		return false;
 	memcpy(pwbuf96,tmp+2352,96);
 	return true;
 }

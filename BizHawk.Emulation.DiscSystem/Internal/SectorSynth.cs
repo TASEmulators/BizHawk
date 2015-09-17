@@ -133,6 +133,8 @@ namespace BizHawk.Emulation.DiscSystem
 		public ISectorSynthJob2448 Get(int lba)
 		{
 			int index = lba - FirstLBA;
+			if (index < 0) return null;
+			if (index >= Sectors.Count) return null;
 			return Sectors[index];
 		}
 	}
