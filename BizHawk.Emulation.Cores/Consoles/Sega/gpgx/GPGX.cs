@@ -755,8 +755,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		int vwidth;
 		int vheight;
 		public int[] GetVideoBuffer() { return vidbuff; }
-		public int VirtualWidth { get { return BufferWidth; } } // TODO
-		public int VirtualHeight { get { return BufferHeight; } } // TODO
+		public int VirtualWidth { get { return 320; } }
+		public int VirtualHeight { get { return 224; } }
 		public int BufferWidth { get { return vwidth; } }
 		public int BufferHeight { get { return vheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
@@ -777,24 +777,37 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		unsafe void update_video()
 		{
-			int pitch = 0;
+			int gppitch, gpwidth, gpheight;
 			IntPtr src = IntPtr.Zero;
 
-			LibGPGX.gpgx_get_video(ref vwidth, ref vheight, ref pitch, ref src);
+			LibGPGX.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
+
+			vwidth = gpwidth;
+			vheight = gpheight;
+
+			if (_Settings.PadScreen320 && vwidth == 256)
+				vwidth = 320;
+
+			int xpad = (vwidth - gpwidth) / 2;
+			int xpad2 = vwidth - gpwidth - xpad;
 
 			if (vidbuff.Length < vwidth * vheight)
 				vidbuff = new int[vwidth * vheight];
 
-			int rinc = (pitch / 4) - vwidth;
+			int rinc = (gppitch / 4) - gpwidth;
 			fixed (int* pdst_ = &vidbuff[0])
 			{
 				int* pdst = pdst_;
 				int* psrc = (int*)src;
 
-				for (int j = 0; j < vheight; j++)
+				for (int j = 0; j < gpheight; j++)
 				{
-					for (int i = 0; i < vwidth; i++)
+					for(int i=0;i<xpad;i++)
+					  *pdst++ = unchecked((int)0xff000000);
+					for (int i = 0; i < gpwidth; i++)
 						*pdst++ = *psrc++;// | unchecked((int)0xff000000);
+					for (int i = 0; i < xpad2; i++)
+					  *pdst++ = unchecked((int)0xff000000);
 					psrc += rinc;
 				}
 			}
@@ -838,6 +851,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[Description("True to draw BG layer W")]
 			[DefaultValue(true)]
 			public bool DrawBGW { get; set; }
+
+			[DisplayName("Pad screen to 320")]
+			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
+			[DefaultValue(false)]
+			public bool PadScreen320 { get; set; }
 
 			public GPGXSettings()
 			{
