@@ -91,6 +91,7 @@ sha1:C969BD9F8E4353EE6463221FFDD2BFE4A844134A	B	Pin Bot (U) (Over Dump)	NES		boa
 sha1:569907CD308C28CDB178AA525F976656BF0DD886	B	Pin Bot (U) (Over Dump)	NES		board=NES-TQROM;WRAM=0;VRAM=8
 sha1:9C851967BD74E063ED8F44935928911D572527AD	B	Pin Bot (U) (Over Dump)	NES		board=NES-TQROM;WRAM=0;VRAM=8
 sha1:2FA61D1FDFCFEC20099EB85C3F45827CA87160D9	B	Yong Zhe Dou E Long - Dragon Quest V (Ch) (Over Drump)	NES		board=MAPPER245;VRAM=8;CHR=0;PAD_H=1;BATT=true
+sha1:79978AA3AD3FE63D41357E62F1E49E4761B3738A	B	Magical Taruruuto-kun 2 - Mahou Daibouken (J) (Over Dump)	NES		board=BANDAI-LZ93D50+24C01;PRG=128;CHR=128;WRAM=0;VRAM=0
 
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
