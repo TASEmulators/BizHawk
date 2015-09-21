@@ -101,7 +101,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					//dont ever skip frames when continuous frame advancing. it's meant for precision work.
 					//but we DO need to throttle
-					extraThrottle = true;
+					if(Global.Config.ClockThrottle)
+						extraThrottle = true;
 				}
 				else
 				{
