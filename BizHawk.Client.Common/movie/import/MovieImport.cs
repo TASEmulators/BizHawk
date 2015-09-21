@@ -67,98 +67,95 @@ namespace BizHawk.Client.Common
 		}
 
 		// Attempt to import another type of movie file into a movie object.
-		public static Bk2Movie ImportFile(string path, out string errorMsg, out string warningMsg)
-		{
-			errorMsg = string.Empty;
-			warningMsg = string.Empty;
-			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
+		public static Bk2Movie ImportFile(string path, out string errorMsg, out string warningMsg) {
+            errorMsg = string.Empty;
+            warningMsg = string.Empty;
+            string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
 
-			// TODO: reflect off the assembly and find an IMovieImporter with the appropriate ImportExtension metadata
-			//if (ext == ".FM2")
-			//{
-			//	var result = new Fm2Import().Import(path);
-			//	errorMsg = result.Errors.First();
-			//	warningMsg = result.Errors.First();
-			//	return result.Movie;
-			//}
+            if (UsesLegacyImporter(ext)) {
+                return LegacyImportFile(ext, path, out errorMsg, out warningMsg).ToBk2();
+            } else {
+                errorMsg = "No importer found for " + ext;
+            }
+            return null;
+        }
 
-			if (ext == ".PJM")
-			{
-				var result = new PJMImport().Import(path);
-				errorMsg = result.Errors.First();
-				warningMsg = result.Errors.First();
-				return result.Movie;
-			}
+        private static BkmMovie LegacyImportFile(string ext, string path, out string errorMsg, out string warningMsg) {
+            errorMsg = string.Empty;
+            warningMsg = string.Empty;
 
-			BkmMovie m = new BkmMovie();
 
-			try
-			{
-				switch (ext)
-				{
-					case ".FCM":
-						m = ImportFCM(path, out errorMsg, out warningMsg);
-						break;
-					case ".FM2":
-						m = ImportFM2(path, out errorMsg, out warningMsg);
-						break;
-					case ".FMV":
-						m = ImportFMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".GMV":
-						m = ImportGMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".LSMV":
-						m = ImportLSMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".MCM":
-						m = ImportMCM(path, out errorMsg, out warningMsg);
-						break;
-					case ".MC2":
-						m = ImportMC2(path, out errorMsg, out warningMsg);
-						break;
-					case ".MMV":
-						m = ImportMMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".NMV":
-						m = ImportNMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".SMV":
-						m = ImportSMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".VBM":
-						m = ImportVBM(path, out errorMsg, out warningMsg);
-						break;
-					case ".VMV":
-						m = ImportVMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".YMV":
-						m = ImportYMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".ZMV":
-						m = ImportZMV(path, out errorMsg, out warningMsg);
-						break;
-					case ".BKM":
-						m.Filename = path;
-						m.Load(false);
-						break;
-				}
-			}
-			catch (Exception except)
-			{
-				errorMsg = except.ToString();
-			}
+            BkmMovie m = new BkmMovie();
 
-			// Hack
-			return m.ToBk2();
-		}
+            try {
+                switch (ext) {
+                    case ".FCM":
+                        m = ImportFCM(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".FM2":
+                        m = ImportFM2(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".FMV":
+                        m = ImportFMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".GMV":
+                        m = ImportGMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".LSMV":
+                        m = ImportLSMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".MCM":
+                        m = ImportMCM(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".MC2":
+                        m = ImportMC2(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".MMV":
+                        m = ImportMMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".NMV":
+                        m = ImportNMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".SMV":
+                        m = ImportSMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".VBM":
+                        m = ImportVBM(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".VMV":
+                        m = ImportVMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".YMV":
+                        m = ImportYMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".ZMV":
+                        m = ImportZMV(path, out errorMsg, out warningMsg);
+                        break;
+                    case ".BKM":
+                        m.Filename = path;
+                        m.Load(false);
+                        break;
+                }
+            } catch (Exception except) {
+                errorMsg = except.ToString();
+            }
 
-		// Return whether or not the type of file provided can currently be imported.
-		public static bool IsValidMovieExtension(string extension)
+            return m;
+        }
+
+        // Return whether or not the type of file provided can currently be imported.
+        public static bool IsValidMovieExtension(string extension) {
+            // TODO: Other movie formats that don't use a legacy importer (PJM/PXM, etc),
+            //       when those are implemented
+            return UsesLegacyImporter(extension);
+        }
+
+        // Return whether or not the type of file provided is currently imported by a legacy (i.e. to BKM not BK2) importer
+        public static bool UsesLegacyImporter(string extension)
 		{
 			string[] extensions =
 			{
-				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
+				"BKM", "FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == "." + ext);
 		}
