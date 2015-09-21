@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Reflection;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -74,10 +75,52 @@ namespace BizHawk.Client.Common
 
             if (UsesLegacyImporter(ext)) {
                 return LegacyImportFile(ext, path, out errorMsg, out warningMsg).ToBk2();
-            } else {
-                errorMsg = "No importer found for " + ext;
             }
-            return null;
+
+            var importers = ImportersForExtension(ext);
+            var importerType = importers.FirstOrDefault();
+
+            if (importerType == default(Type)) {
+                errorMsg = "No importer found for file type " + ext;
+                return null;
+            }
+
+            // Create a new instance of the importer class using the no-argument constructor
+            IMovieImport importer = importerType.GetConstructor(new Type[] { })
+                                                .Invoke(new object[] { }) as IMovieImport;
+
+            Bk2Movie movie = null;
+
+            try {
+                var result = importer.Import(path);
+                if (result.Errors.Count() > 0) errorMsg = result.Errors.First();
+                if (result.Warnings.Count() > 0) warningMsg = result.Warnings.First();
+                movie = result.Movie;
+            } catch (Exception ex) {
+                errorMsg = ex.ToString();
+            }
+
+            return movie;
+        }
+
+        private static IEnumerable<Type> ImportersForExtension(string ext) {
+            var info = typeof(MovieImport).Module;
+            var importers = from t in info.GetTypes()
+                            where typeof(IMovieImport).IsAssignableFrom(t)
+                               && TypeImportsExtension(t, ext)
+                            select t;
+
+            return importers;
+        }
+
+        private static bool TypeImportsExtension(Type t, string ext) {
+            var attrs = (ImportExtension[])t.GetCustomAttributes(typeof(ImportExtension), inherit: false);
+
+            if (attrs.Where(a => a.Extension.ToUpper() == ext.ToUpper()).Count() > 0) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         private static BkmMovie LegacyImportFile(string ext, string path, out string errorMsg, out string warningMsg) {
