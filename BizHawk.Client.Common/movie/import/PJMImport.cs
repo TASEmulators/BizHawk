@@ -1,14 +1,10 @@
 ﻿using BizHawk.Emulation.Cores.Sony.PSX;
-using BizHawk.Emulation.Common;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
-namespace BizHawk.Client.Common
-{
-	[ImportExtension(".pjm")]
+using System;
+using System.IO;
+
+namespace BizHawk.Client.Common {
+    [ImportExtension(".pjm")]
 	public class PJMImport : MovieImporter
 	{
         protected override void RunImport()
@@ -20,38 +16,33 @@ namespace BizHawk.Client.Common
 
             using (var fs = SourceFile.OpenRead()) {
                 using (var br = new BinaryReader(fs)) {
-                    info = parseHeader(movie, br);
+                    info = parseHeader(movie, "PJM ", br);
 
                     fs.Seek(info.controllerDataOffset, SeekOrigin.Begin);
 
                     if(info.binaryFormat) {
                         parseBinaryInputLog(br, movie, info);
-                        return;
+                    } else {
+                        parseTextInputLog(br, movie, info);
                     }
                 }
-
-                if (!info.parseSuccessful) {
-                    return;
-                }
-
-                using (var sr = new StreamReader(fs)) {
-                    parseTextInputLog(sr, movie, info);
-                }
             }
+
+            movie.Save();
 		}
 
-        private MiscHeaderInfo parseHeader(Bk2Movie movie, BinaryReader br) {
+        protected MiscHeaderInfo parseHeader(Bk2Movie movie, string expectedMagic, BinaryReader br) {
             var info = new MiscHeaderInfo();
 
             string magic = new string(br.ReadChars(4));
-            if (magic != "PJM ") {
-                Result.Errors.Add("Not a PJM file: invalid magic number in file header.");
+            if (magic != expectedMagic) {
+                Result.Errors.Add("Not a " + expectedMagic + "file: invalid magic number in file header.");
                 return info;
             }
 
             UInt32 movieVersionNumber = br.ReadUInt32();
             if (movieVersionNumber != 2) {
-                Result.Warnings.Add(String.Format("Unexpected PJM format version: got {0}, expecting 2", movieVersionNumber));
+                Result.Warnings.Add(String.Format("Unexpected movie version: got {0}, expecting 2", movieVersionNumber));
             }
 
             // 008: UInt32 emulator version.
@@ -60,30 +51,34 @@ namespace BizHawk.Client.Common
             byte flags = br.ReadByte();
             byte flags2 = br.ReadByte();
             if ((flags & 0x02) != 0) {
-                Result.Errors.Add("PJM file starts from savestate; this is currently unsupported.");
+                Result.Errors.Add("Movie starts from savestate; this is currently unsupported.");
             }
             if ((flags & 0x04) != 0) {
                 movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
             }
             if ((flags & 0x08) != 0) {
-                Result.Errors.Add("PJM file contains embedded memory cards; this is currently unsupported.");
+                Result.Errors.Add("Movie contains embedded memory cards; this is currently unsupported.");
             }
             if ((flags & 0x10) != 0) {
-                Result.Errors.Add("PJM file contains embedded cheat list; this is currently unsupported.");
+                Result.Errors.Add("Movie contains embedded cheat list; this is currently unsupported.");
             }
             if ((flags & 0x20) != 0 || (flags2 & 0x06) != 0) {
-                Result.Errors.Add("PJM file relies on emulator hacks; this is currently unsupported.");
+                Result.Errors.Add("Movie relies on emulator hacks; this is currently unsupported.");
             }
             if ((flags & 0x40) != 0) {
                 info.binaryFormat = false;
             }
             if ((flags & 0x80) != 0 || (flags2 & 0x01) != 0) {
-                Result.Errors.Add("PJM file uses multitap; this is currently unsupported.");
+                Result.Errors.Add("Movie uses multitap; this is currently unsupported.");
                 return info;
             }
 
+            // Player 1 controller type
             switch (br.ReadByte()) {
+                // It seems to be inconsistent in the files I looked at which of these is used
+                // to mean no controller present.
                 case 0:
+                case 8:
                     info.player1Type.IsConnected = false;
                     break;
                 case 4:
@@ -93,12 +88,14 @@ namespace BizHawk.Client.Common
                     info.player1Type.Type = Octoshock.ControllerSetting.ControllerType.DualShock;
                     break;
                 default:
-                    Result.Errors.Add("PJM file has unrecognised controller type for Player 1.");
+                    Result.Errors.Add("Movie has unrecognised controller type for Player 1.");
                     return info;
             }
 
+            // Player 2 controller type
             switch (br.ReadByte()) {
                 case 0:
+                case 8:
                     info.player2Type.IsConnected = false;
                     break;
                 case 4:
@@ -108,30 +105,24 @@ namespace BizHawk.Client.Common
                     info.player2Type.Type = Octoshock.ControllerSetting.ControllerType.DualShock;
                     break;
                 default:
-                    Result.Errors.Add("PJM file has unrecognised controller type for Player 2.");
+                    Result.Errors.Add("Movie has unrecognised controller type for Player 2.");
                     return info;
             }
 
             info.frameCount = br.ReadUInt32();
             UInt32 rerecordCount = br.ReadUInt32();
-            movie.HeaderEntries.Add(HeaderKeys.RERECORDS, rerecordCount.ToString());
+            movie.HeaderEntries[HeaderKeys.RERECORDS] = rerecordCount.ToString();
 
             // 018: UInt32 savestateOffset
-            br.ReadUInt32();
-
             // 01C: UInt32 memoryCard1Offset
-            br.ReadUInt32();
-
             // 020: UInt32 memoryCard2Offset
-            br.ReadUInt32();
-
             // 024: UInt32 cheatListOffset
-            br.ReadUInt32();
 
             // 028: UInt32 cdRomIdOffset
             // Source format is just the first up-to-8 alphanumeric characters of the CD label, 
             // so not so useful.
-            br.ReadUInt32();
+
+            br.ReadBytes(20);
 
             info.controllerDataOffset = br.ReadUInt32();
 
@@ -144,7 +135,7 @@ namespace BizHawk.Client.Common
             return info;
         }
 
-        private void parseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info) {
+        protected void parseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info) {
             Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
             SimpleController controllers = new SimpleController();
             settings.Controllers = new[] { info.player1Type, info.player2Type };
@@ -155,10 +146,15 @@ namespace BizHawk.Client.Common
 
             bool isCdTrayOpen = false;
 
-            for (int frame = 0; frame < movie.FrameCount; ++frame) {
+            for (int frame = 0; frame < info.frameCount; ++frame) {
                 if (info.player1Type.IsConnected) {
                     UInt16 controllerState = br.ReadUInt16();
-                    for (int button = 0; button < buttons.Length; button++) {
+
+                    // As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
+                    // due to the layout, we handle select separately too first.
+                    controllers["P1 Select"] = (controllerState & 0x1) != 0;
+
+                    for (int button = 3; button < buttons.Length; button++) {
                         controllers["P1 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
                         if (((controllerState >> button) & 0x1) != 0 && button > 15) {
                             continue;
@@ -166,6 +162,8 @@ namespace BizHawk.Client.Common
                     }
 
                     if(info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
+                        controllers["P1 L3"] = (controllerState & 0x2) != 0;
+                        controllers["P1 R3"] = (controllerState & 0x4) != 0;
                         Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", (float)br.ReadByte());
                         Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", (float)br.ReadByte());
                         Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", (float)br.ReadByte());
@@ -216,12 +214,113 @@ namespace BizHawk.Client.Common
             }
         }
 
-        private void parseTextInputLog(TextReader tr, Bk2Movie movie, MiscHeaderInfo info) {
-            throw new NotImplementedException();
+        protected void parseTextInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info) {
+            Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
+            SimpleController controllers = new SimpleController();
+            settings.Controllers = new[] { info.player1Type, info.player2Type };
+            controllers.Type = Octoshock.CreateControllerDefinition(settings);
+
+            string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
+                                    "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
+
+            bool isCdTrayOpen = false;
+
+            for (int frame = 0; frame < info.frameCount; ++frame) {
+                if (info.player1Type.IsConnected) {
+                    // As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
+                    // due to the layout, we handle select separately too first.
+                    controllers["P1 Select"] = br.ReadChar() != '.';
+
+                    if(info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
+                        controllers["P1 L3"] = br.ReadChar() != '.';
+                        controllers["P1 R3"] = br.ReadChar() != '.';
+                    }
+
+                    for (int button = 3; button < buttons.Length; button++) {
+                        controllers["P1 " + buttons[button]] = br.ReadChar() != '.';
+                    }
+
+                    if (info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
+                        // The analog controls are encoded as four space-separated numbers with a leading space
+                        string leftXRaw = new string(br.ReadChars(4)).Trim();
+                        string leftYRaw = new string(br.ReadChars(4)).Trim();
+                        string rightXRaw = new string(br.ReadChars(4)).Trim();
+                        string rightYRaw = new string(br.ReadChars(4)).Trim();
+
+
+                        Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", float.Parse(leftXRaw));
+                        Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", float.Parse(leftYRaw));
+                        Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", float.Parse(rightXRaw));
+                        Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", float.Parse(rightYRaw));
+
+                        controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+                    }
+                }
+
+                // Each controller is terminated with a pipeline.
+                br.ReadChar();
+
+                if (info.player2Type.IsConnected) {
+                    // As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
+                    // due to the layout, we handle select separately too first.
+                    controllers["P2 Select"] = br.ReadChar() != '.';
+
+                    if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
+                        controllers["P2 L3"] = br.ReadChar() != '.';
+                        controllers["P2 R3"] = br.ReadChar() != '.';
+                    }
+
+                    for (int button = 3; button < buttons.Length; button++) {
+                        controllers["P2 " + buttons[button]] = br.ReadChar() != '.';
+                    }
+
+                    if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
+                        // The analog controls are encoded as four space-separated numbers with a leading space
+                        string leftXRaw = new string(br.ReadChars(4)).Trim();
+                        string leftYRaw = new string(br.ReadChars(4)).Trim();
+                        string rightXRaw = new string(br.ReadChars(4)).Trim();
+                        string rightYRaw = new string(br.ReadChars(4)).Trim();
+
+
+                        Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", float.Parse(leftXRaw));
+                        Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", float.Parse(leftYRaw));
+                        Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", float.Parse(rightXRaw));
+                        Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", float.Parse(rightYRaw));
+
+                        controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+                    }
+                }
+
+                // Each controller is terminated with a pipeline.
+                br.ReadChar();
+
+                byte controlState = br.ReadByte();
+                controllers["Reset"] = (controlState & 0x02) != 0;
+                if ((controlState & 0x04) != 0) {
+                    if (isCdTrayOpen) {
+                        controllers["Close"] = true;
+                    } else {
+                        controllers["Open"] = true;
+                    }
+                    isCdTrayOpen = !isCdTrayOpen;
+                } else {
+                    controllers["Close"] = false;
+                    controllers["Open"] = false;
+                }
+
+                if ((controlState & 0xFC) != 0) {
+                    Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
+                }
+
+                // Each controller is terminated with a pipeline.
+                br.ReadChar();
+
+                movie.AppendFrame(controllers);
+            }
         }
 
-        private class MiscHeaderInfo {
-            public bool binaryFormat;
+        protected class MiscHeaderInfo {
+            public bool binaryFormat = true;
             public UInt32 controllerDataOffset;
             public UInt32 frameCount;
             public Octoshock.ControllerSetting player1Type = new Octoshock.ControllerSetting() { IsConnected = true };
