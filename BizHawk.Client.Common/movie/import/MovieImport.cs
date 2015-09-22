@@ -113,9 +113,9 @@ namespace BizHawk.Client.Common
 		{
 			var info = typeof(MovieImport).Module;
 			var importers = from t in info.GetTypes()
-							where typeof(IMovieImport).IsAssignableFrom(t)
-							   && TypeImportsExtension(t, ext)
-							select t;
+			                where typeof(IMovieImport).IsAssignableFrom(t)
+			                   && TypeImportsExtension(t, ext)
+			                select t;
 
 			return importers;
 		}
@@ -124,7 +124,7 @@ namespace BizHawk.Client.Common
 		{
 			var attrs = (ImportExtension[])t.GetCustomAttributes(typeof(ImportExtension), inherit: false);
 
-			if (attrs.Where(a => a.Extension.ToUpper() == ext.ToUpper()).Count() > 0)
+			if (attrs.Any(a => a.Extension.ToUpper() == ext.ToUpper()))
 			{
 				return true;
 			}
