@@ -3,331 +3,384 @@
 using System;
 using System.IO;
 
-namespace BizHawk.Client.Common {
-    [ImportExtension(".pjm")]
+namespace BizHawk.Client.Common
+{
+	[ImportExtension(".pjm")]
 	public class PJMImport : MovieImporter
 	{
-        protected override void RunImport()
+		protected override void RunImport()
 		{
-            Bk2Movie movie = Result.Movie;
-            MiscHeaderInfo info;
+			Bk2Movie movie = Result.Movie;
+			MiscHeaderInfo info;
 
-            movie.HeaderEntries.Add(HeaderKeys.PLATFORM, "PSX");
+			movie.HeaderEntries.Add(HeaderKeys.PLATFORM, "PSX");
 
-            using (var fs = SourceFile.OpenRead()) {
-                using (var br = new BinaryReader(fs)) {
-                    info = parseHeader(movie, "PJM ", br);
+			using (var fs = SourceFile.OpenRead())
+			{
+				using (var br = new BinaryReader(fs))
+				{
+					info = parseHeader(movie, "PJM ", br);
 
-                    fs.Seek(info.controllerDataOffset, SeekOrigin.Begin);
+					fs.Seek(info.controllerDataOffset, SeekOrigin.Begin);
 
-                    if(info.binaryFormat) {
-                        parseBinaryInputLog(br, movie, info);
-                    } else {
-                        parseTextInputLog(br, movie, info);
-                    }
-                }
-            }
+					if (info.binaryFormat)
+					{
+						parseBinaryInputLog(br, movie, info);
+					}
+					else
+					{
+						parseTextInputLog(br, movie, info);
+					}
+				}
+			}
 
-            movie.Save();
+			movie.Save();
 		}
 
-        protected MiscHeaderInfo parseHeader(Bk2Movie movie, string expectedMagic, BinaryReader br) {
-            var info = new MiscHeaderInfo();
+		protected MiscHeaderInfo parseHeader(Bk2Movie movie, string expectedMagic, BinaryReader br)
+		{
+			var info = new MiscHeaderInfo();
 
-            string magic = new string(br.ReadChars(4));
-            if (magic != expectedMagic) {
-                Result.Errors.Add("Not a " + expectedMagic + "file: invalid magic number in file header.");
-                return info;
-            }
+			string magic = new string(br.ReadChars(4));
+			if (magic != expectedMagic)
+			{
+				Result.Errors.Add("Not a " + expectedMagic + "file: invalid magic number in file header.");
+				return info;
+			}
 
-            UInt32 movieVersionNumber = br.ReadUInt32();
-            if (movieVersionNumber != 2) {
-                Result.Warnings.Add(String.Format("Unexpected movie version: got {0}, expecting 2", movieVersionNumber));
-            }
+			UInt32 movieVersionNumber = br.ReadUInt32();
+			if (movieVersionNumber != 2)
+			{
+				Result.Warnings.Add(String.Format("Unexpected movie version: got {0}, expecting 2", movieVersionNumber));
+			}
 
-            // 008: UInt32 emulator version.
-            br.ReadUInt32();
+			// 008: UInt32 emulator version.
+			br.ReadUInt32();
 
-            byte flags = br.ReadByte();
-            byte flags2 = br.ReadByte();
-            if ((flags & 0x02) != 0) {
-                Result.Errors.Add("Movie starts from savestate; this is currently unsupported.");
-            }
-            if ((flags & 0x04) != 0) {
-                movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
-            }
-            if ((flags & 0x08) != 0) {
-                Result.Errors.Add("Movie contains embedded memory cards; this is currently unsupported.");
-            }
-            if ((flags & 0x10) != 0) {
-                Result.Errors.Add("Movie contains embedded cheat list; this is currently unsupported.");
-            }
-            if ((flags & 0x20) != 0 || (flags2 & 0x06) != 0) {
-                Result.Errors.Add("Movie relies on emulator hacks; this is currently unsupported.");
-            }
-            if ((flags & 0x40) != 0) {
-                info.binaryFormat = false;
-            }
-            if ((flags & 0x80) != 0 || (flags2 & 0x01) != 0) {
-                Result.Errors.Add("Movie uses multitap; this is currently unsupported.");
-                return info;
-            }
+			byte flags = br.ReadByte();
+			byte flags2 = br.ReadByte();
+			if ((flags & 0x02) != 0)
+			{
+				Result.Errors.Add("Movie starts from savestate; this is currently unsupported.");
+			}
+			if ((flags & 0x04) != 0)
+			{
+				movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
+			}
+			if ((flags & 0x08) != 0)
+			{
+				Result.Errors.Add("Movie contains embedded memory cards; this is currently unsupported.");
+			}
+			if ((flags & 0x10) != 0)
+			{
+				Result.Errors.Add("Movie contains embedded cheat list; this is currently unsupported.");
+			}
+			if ((flags & 0x20) != 0 || (flags2 & 0x06) != 0)
+			{
+				Result.Errors.Add("Movie relies on emulator hacks; this is currently unsupported.");
+			}
+			if ((flags & 0x40) != 0)
+			{
+				info.binaryFormat = false;
+			}
+			if ((flags & 0x80) != 0 || (flags2 & 0x01) != 0)
+			{
+				Result.Errors.Add("Movie uses multitap; this is currently unsupported.");
+				return info;
+			}
 
-            // Player 1 controller type
-            switch (br.ReadByte()) {
-                // It seems to be inconsistent in the files I looked at which of these is used
-                // to mean no controller present.
-                case 0:
-                case 8:
-                    info.player1Type.IsConnected = false;
-                    break;
-                case 4:
-                    info.player1Type.Type = Octoshock.ControllerSetting.ControllerType.Gamepad;
-                    break;
-                case 7:
-                    info.player1Type.Type = Octoshock.ControllerSetting.ControllerType.DualShock;
-                    break;
-                default:
-                    Result.Errors.Add("Movie has unrecognised controller type for Player 1.");
-                    return info;
-            }
+			// Player 1 controller type
+			switch (br.ReadByte())
+			{
+				// It seems to be inconsistent in the files I looked at which of these is used
+				// to mean no controller present.
+				case 0:
+				case 8:
+					info.player1Type.IsConnected = false;
+					break;
+				case 4:
+					info.player1Type.Type = Octoshock.ControllerSetting.ControllerType.Gamepad;
+					break;
+				case 7:
+					info.player1Type.Type = Octoshock.ControllerSetting.ControllerType.DualShock;
+					break;
+				default:
+					Result.Errors.Add("Movie has unrecognised controller type for Player 1.");
+					return info;
+			}
 
-            // Player 2 controller type
-            switch (br.ReadByte()) {
-                case 0:
-                case 8:
-                    info.player2Type.IsConnected = false;
-                    break;
-                case 4:
-                    info.player2Type.Type = Octoshock.ControllerSetting.ControllerType.Gamepad;
-                    break;
-                case 7:
-                    info.player2Type.Type = Octoshock.ControllerSetting.ControllerType.DualShock;
-                    break;
-                default:
-                    Result.Errors.Add("Movie has unrecognised controller type for Player 2.");
-                    return info;
-            }
+			// Player 2 controller type
+			switch (br.ReadByte())
+			{
+				case 0:
+				case 8:
+					info.player2Type.IsConnected = false;
+					break;
+				case 4:
+					info.player2Type.Type = Octoshock.ControllerSetting.ControllerType.Gamepad;
+					break;
+				case 7:
+					info.player2Type.Type = Octoshock.ControllerSetting.ControllerType.DualShock;
+					break;
+				default:
+					Result.Errors.Add("Movie has unrecognised controller type for Player 2.");
+					return info;
+			}
 
-            info.frameCount = br.ReadUInt32();
-            UInt32 rerecordCount = br.ReadUInt32();
-            movie.HeaderEntries[HeaderKeys.RERECORDS] = rerecordCount.ToString();
+			info.frameCount = br.ReadUInt32();
+			UInt32 rerecordCount = br.ReadUInt32();
+			movie.HeaderEntries[HeaderKeys.RERECORDS] = rerecordCount.ToString();
 
-            // 018: UInt32 savestateOffset
-            // 01C: UInt32 memoryCard1Offset
-            // 020: UInt32 memoryCard2Offset
-            // 024: UInt32 cheatListOffset
+			// 018: UInt32 savestateOffset
+			// 01C: UInt32 memoryCard1Offset
+			// 020: UInt32 memoryCard2Offset
+			// 024: UInt32 cheatListOffset
 
-            // 028: UInt32 cdRomIdOffset
-            // Source format is just the first up-to-8 alphanumeric characters of the CD label, 
-            // so not so useful.
+			// 028: UInt32 cdRomIdOffset
+			// Source format is just the first up-to-8 alphanumeric characters of the CD label, 
+			// so not so useful.
 
-            br.ReadBytes(20);
+			br.ReadBytes(20);
 
-            info.controllerDataOffset = br.ReadUInt32();
+			info.controllerDataOffset = br.ReadUInt32();
 
-            UInt32 authorNameLength = br.ReadUInt32();
-            char[] authorName = br.ReadChars((int)authorNameLength);
+			UInt32 authorNameLength = br.ReadUInt32();
+			char[] authorName = br.ReadChars((int)authorNameLength);
 
-            movie.HeaderEntries.Add(HeaderKeys.AUTHOR, new string(authorName));
+			movie.HeaderEntries.Add(HeaderKeys.AUTHOR, new string(authorName));
 
-            info.parseSuccessful = true;
-            return info;
-        }
+			info.parseSuccessful = true;
+			return info;
+		}
 
-        protected void parseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info) {
-            Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
-            SimpleController controllers = new SimpleController();
-            settings.Controllers = new[] { info.player1Type, info.player2Type };
-            controllers.Type = Octoshock.CreateControllerDefinition(settings);
+		protected void parseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
+		{
+			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
+			SimpleController controllers = new SimpleController();
+			settings.Controllers = new[] { info.player1Type, info.player2Type };
+			controllers.Type = Octoshock.CreateControllerDefinition(settings);
 
-            string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
-                                    "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
+			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
+									"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
 
-            bool isCdTrayOpen = false;
+			bool isCdTrayOpen = false;
 
-            for (int frame = 0; frame < info.frameCount; ++frame) {
-                if (info.player1Type.IsConnected) {
-                    UInt16 controllerState = br.ReadUInt16();
+			for (int frame = 0; frame < info.frameCount; ++frame)
+			{
+				if (info.player1Type.IsConnected)
+				{
+					UInt16 controllerState = br.ReadUInt16();
 
-                    // As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
-                    // due to the layout, we handle select separately too first.
-                    controllers["P1 Select"] = (controllerState & 0x1) != 0;
+					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
+					// due to the layout, we handle select separately too first.
+					controllers["P1 Select"] = (controllerState & 0x1) != 0;
 
-                    for (int button = 3; button < buttons.Length; button++) {
-                        controllers["P1 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
-                        if (((controllerState >> button) & 0x1) != 0 && button > 15) {
-                            continue;
-                        }
-                    }
+					for (int button = 3; button < buttons.Length; button++)
+					{
+						controllers["P1 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+						if (((controllerState >> button) & 0x1) != 0 && button > 15)
+						{
+							continue;
+						}
+					}
 
-                    if(info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
-                        controllers["P1 L3"] = (controllerState & 0x2) != 0;
-                        controllers["P1 R3"] = (controllerState & 0x4) != 0;
-                        Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", (float)br.ReadByte());
-                        Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", (float)br.ReadByte());
-                        Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", (float)br.ReadByte());
-                        Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", (float)br.ReadByte());
+					if (info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						controllers["P1 L3"] = (controllerState & 0x2) != 0;
+						controllers["P1 R3"] = (controllerState & 0x4) != 0;
+						Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", (float)br.ReadByte());
+						Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", (float)br.ReadByte());
+						Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", (float)br.ReadByte());
+						Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", (float)br.ReadByte());
 
-                        controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
-                    }
-                }
+						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+					}
+				}
 
-                if (info.player2Type.IsConnected) {
-                    UInt16 controllerState = br.ReadUInt16();
-                    for (int button = 0; button < buttons.Length; button++) {
-                        controllers["P2 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
-                        if (((controllerState >> button) & 0x1) != 0 && button > 15) {
-                            continue;
-                        }
-                    }
+				if (info.player2Type.IsConnected)
+				{
+					UInt16 controllerState = br.ReadUInt16();
+					for (int button = 0; button < buttons.Length; button++)
+					{
+						controllers["P2 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+						if (((controllerState >> button) & 0x1) != 0 && button > 15)
+						{
+							continue;
+						}
+					}
 
-                    if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
-                        Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", (float)br.ReadByte());
-                        Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", (float)br.ReadByte());
-                        Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", (float)br.ReadByte());
-                        Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", (float)br.ReadByte());
+					if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", (float)br.ReadByte());
+						Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", (float)br.ReadByte());
+						Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", (float)br.ReadByte());
+						Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", (float)br.ReadByte());
 
-                        controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
-                    }
-                }
+						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+					}
+				}
 
-                byte controlState = br.ReadByte();
-                controllers["Reset"] = (controlState & 0x02) != 0;
-                if((controlState & 0x04) != 0) {
-                    if(isCdTrayOpen) {
-                        controllers["Close"] = true;
-                    } else {
-                        controllers["Open"] = true;
-                    }
-                    isCdTrayOpen = !isCdTrayOpen;
-                } else {
-                    controllers["Close"] = false;
-                    controllers["Open"] = false;
-                }
+				byte controlState = br.ReadByte();
+				controllers["Reset"] = (controlState & 0x02) != 0;
+				if ((controlState & 0x04) != 0)
+				{
+					if (isCdTrayOpen)
+					{
+						controllers["Close"] = true;
+					}
+					else
+					{
+						controllers["Open"] = true;
+					}
+					isCdTrayOpen = !isCdTrayOpen;
+				}
+				else
+				{
+					controllers["Close"] = false;
+					controllers["Open"] = false;
+				}
 
-                if((controlState & 0xFC) != 0) {
-                    Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
-                }
+				if ((controlState & 0xFC) != 0)
+				{
+					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
+				}
 
-                movie.AppendFrame(controllers);
-            }
-        }
+				movie.AppendFrame(controllers);
+			}
+		}
 
-        protected void parseTextInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info) {
-            Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
-            SimpleController controllers = new SimpleController();
-            settings.Controllers = new[] { info.player1Type, info.player2Type };
-            controllers.Type = Octoshock.CreateControllerDefinition(settings);
+		protected void parseTextInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
+		{
+			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
+			SimpleController controllers = new SimpleController();
+			settings.Controllers = new[] { info.player1Type, info.player2Type };
+			controllers.Type = Octoshock.CreateControllerDefinition(settings);
 
-            string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
-                                    "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
+			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
+									"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
 
-            bool isCdTrayOpen = false;
+			bool isCdTrayOpen = false;
 
-            for (int frame = 0; frame < info.frameCount; ++frame) {
-                if (info.player1Type.IsConnected) {
-                    // As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
-                    // due to the layout, we handle select separately too first.
-                    controllers["P1 Select"] = br.ReadChar() != '.';
+			for (int frame = 0; frame < info.frameCount; ++frame)
+			{
+				if (info.player1Type.IsConnected)
+				{
+					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
+					// due to the layout, we handle select separately too first.
+					controllers["P1 Select"] = br.ReadChar() != '.';
 
-                    if(info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
-                        controllers["P1 L3"] = br.ReadChar() != '.';
-                        controllers["P1 R3"] = br.ReadChar() != '.';
-                    }
+					if (info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						controllers["P1 L3"] = br.ReadChar() != '.';
+						controllers["P1 R3"] = br.ReadChar() != '.';
+					}
 
-                    for (int button = 3; button < buttons.Length; button++) {
-                        controllers["P1 " + buttons[button]] = br.ReadChar() != '.';
-                    }
+					for (int button = 3; button < buttons.Length; button++)
+					{
+						controllers["P1 " + buttons[button]] = br.ReadChar() != '.';
+					}
 
-                    if (info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
-                        // The analog controls are encoded as four space-separated numbers with a leading space
-                        string leftXRaw = new string(br.ReadChars(4)).Trim();
-                        string leftYRaw = new string(br.ReadChars(4)).Trim();
-                        string rightXRaw = new string(br.ReadChars(4)).Trim();
-                        string rightYRaw = new string(br.ReadChars(4)).Trim();
-
-
-                        Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", float.Parse(leftXRaw));
-                        Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", float.Parse(leftYRaw));
-                        Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", float.Parse(rightXRaw));
-                        Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", float.Parse(rightYRaw));
-
-                        controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
-                    }
-                }
-
-                // Each controller is terminated with a pipeline.
-                br.ReadChar();
-
-                if (info.player2Type.IsConnected) {
-                    // As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
-                    // due to the layout, we handle select separately too first.
-                    controllers["P2 Select"] = br.ReadChar() != '.';
-
-                    if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
-                        controllers["P2 L3"] = br.ReadChar() != '.';
-                        controllers["P2 R3"] = br.ReadChar() != '.';
-                    }
-
-                    for (int button = 3; button < buttons.Length; button++) {
-                        controllers["P2 " + buttons[button]] = br.ReadChar() != '.';
-                    }
-
-                    if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad) {
-                        // The analog controls are encoded as four space-separated numbers with a leading space
-                        string leftXRaw = new string(br.ReadChars(4)).Trim();
-                        string leftYRaw = new string(br.ReadChars(4)).Trim();
-                        string rightXRaw = new string(br.ReadChars(4)).Trim();
-                        string rightYRaw = new string(br.ReadChars(4)).Trim();
+					if (info.player1Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						// The analog controls are encoded as four space-separated numbers with a leading space
+						string leftXRaw = new string(br.ReadChars(4)).Trim();
+						string leftYRaw = new string(br.ReadChars(4)).Trim();
+						string rightXRaw = new string(br.ReadChars(4)).Trim();
+						string rightYRaw = new string(br.ReadChars(4)).Trim();
 
 
-                        Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", float.Parse(leftXRaw));
-                        Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", float.Parse(leftYRaw));
-                        Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", float.Parse(rightXRaw));
-                        Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", float.Parse(rightYRaw));
+						Tuple<string, float> leftX = new Tuple<string, float>("P1 LStick X", float.Parse(leftXRaw));
+						Tuple<string, float> leftY = new Tuple<string, float>("P1 LStick Y", float.Parse(leftYRaw));
+						Tuple<string, float> rightX = new Tuple<string, float>("P1 RStick X", float.Parse(rightXRaw));
+						Tuple<string, float> rightY = new Tuple<string, float>("P1 RStick Y", float.Parse(rightYRaw));
 
-                        controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
-                    }
-                }
+						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+					}
+				}
 
-                // Each controller is terminated with a pipeline.
-                br.ReadChar();
+				// Each controller is terminated with a pipeline.
+				br.ReadChar();
 
-                byte controlState = br.ReadByte();
-                controllers["Reset"] = (controlState & 0x02) != 0;
-                if ((controlState & 0x04) != 0) {
-                    if (isCdTrayOpen) {
-                        controllers["Close"] = true;
-                    } else {
-                        controllers["Open"] = true;
-                    }
-                    isCdTrayOpen = !isCdTrayOpen;
-                } else {
-                    controllers["Close"] = false;
-                    controllers["Open"] = false;
-                }
+				if (info.player2Type.IsConnected)
+				{
+					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
+					// due to the layout, we handle select separately too first.
+					controllers["P2 Select"] = br.ReadChar() != '.';
 
-                if ((controlState & 0xFC) != 0) {
-                    Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
-                }
+					if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						controllers["P2 L3"] = br.ReadChar() != '.';
+						controllers["P2 R3"] = br.ReadChar() != '.';
+					}
 
-                // Each controller is terminated with a pipeline.
-                br.ReadChar();
+					for (int button = 3; button < buttons.Length; button++)
+					{
+						controllers["P2 " + buttons[button]] = br.ReadChar() != '.';
+					}
 
-                movie.AppendFrame(controllers);
-            }
-        }
+					if (info.player2Type.Type != Octoshock.ControllerSetting.ControllerType.Gamepad)
+					{
+						// The analog controls are encoded as four space-separated numbers with a leading space
+						string leftXRaw = new string(br.ReadChars(4)).Trim();
+						string leftYRaw = new string(br.ReadChars(4)).Trim();
+						string rightXRaw = new string(br.ReadChars(4)).Trim();
+						string rightYRaw = new string(br.ReadChars(4)).Trim();
 
-        protected class MiscHeaderInfo {
-            public bool binaryFormat = true;
-            public UInt32 controllerDataOffset;
-            public UInt32 frameCount;
-            public Octoshock.ControllerSetting player1Type = new Octoshock.ControllerSetting() { IsConnected = true };
-            public Octoshock.ControllerSetting player2Type = new Octoshock.ControllerSetting() { IsConnected = true };
 
-            public bool parseSuccessful = false;
-        }
+						Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", float.Parse(leftXRaw));
+						Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", float.Parse(leftYRaw));
+						Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", float.Parse(rightXRaw));
+						Tuple<string, float> rightY = new Tuple<string, float>("P2 RStick Y", float.Parse(rightYRaw));
 
-    }
+						controllers.AcceptNewFloats(new[] { leftX, leftY, rightX, rightY });
+					}
+				}
+
+				// Each controller is terminated with a pipeline.
+				br.ReadChar();
+
+				byte controlState = br.ReadByte();
+				controllers["Reset"] = (controlState & 0x02) != 0;
+				if ((controlState & 0x04) != 0)
+				{
+					if (isCdTrayOpen)
+					{
+						controllers["Close"] = true;
+					}
+					else
+					{
+						controllers["Open"] = true;
+					}
+					isCdTrayOpen = !isCdTrayOpen;
+				}
+				else
+				{
+					controllers["Close"] = false;
+					controllers["Open"] = false;
+				}
+
+				if ((controlState & 0xFC) != 0)
+				{
+					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
+				}
+
+				// Each controller is terminated with a pipeline.
+				br.ReadChar();
+
+				movie.AppendFrame(controllers);
+			}
+		}
+
+		protected class MiscHeaderInfo
+		{
+			public bool binaryFormat = true;
+			public UInt32 controllerDataOffset;
+			public UInt32 frameCount;
+			public Octoshock.ControllerSetting player1Type = new Octoshock.ControllerSetting() { IsConnected = true };
+			public Octoshock.ControllerSetting player2Type = new Octoshock.ControllerSetting() { IsConnected = true };
+
+			public bool parseSuccessful = false;
+		}
+
+	}
 }

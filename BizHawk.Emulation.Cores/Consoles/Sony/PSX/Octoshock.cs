@@ -36,77 +36,81 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public string SystemId { get { return "PSX"; } }
 
-        public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings) {
-            ControllerDefinition definition = new ControllerDefinition();
-            definition.Name = syncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad)
-                ? "PSX Gamepad Controller"
-                : "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
+		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
+		{
+			ControllerDefinition definition = new ControllerDefinition();
+			definition.Name = syncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad)
+				? "PSX Gamepad Controller"
+				: "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
 
-            definition.BoolButtons.Clear();
-            definition.FloatControls.Clear();
+			definition.BoolButtons.Clear();
+			definition.FloatControls.Clear();
 
-            for (int i = 0; i < syncSettings.Controllers.Length; i++) {
-                if (syncSettings.Controllers[i].IsConnected) {
-                    definition.BoolButtons.AddRange(new[]
-                    {
-                        "P" + (i + 1) + " Up",
-                        "P" + (i + 1) + " Down",
-                        "P" + (i + 1) + " Left",
-                        "P" + (i + 1) + " Right",
-                        "P" + (i + 1) + " Select",
-                        "P" + (i + 1) + " Start",
-                        "P" + (i + 1) + " Square",
-                        "P" + (i + 1) + " Triangle",
-                        "P" + (i + 1) + " Circle",
-                        "P" + (i + 1) + " Cross",
-                        "P" + (i + 1) + " L1",
-                        "P" + (i + 1) + " R1",
-                        "P" + (i + 1) + " L2",
-                        "P" + (i + 1) + " R2",
-                    });
+			for (int i = 0; i < syncSettings.Controllers.Length; i++)
+			{
+				if (syncSettings.Controllers[i].IsConnected)
+				{
+					definition.BoolButtons.AddRange(new[]
+					{
+						"P" + (i + 1) + " Up",
+						"P" + (i + 1) + " Down",
+						"P" + (i + 1) + " Left",
+						"P" + (i + 1) + " Right",
+						"P" + (i + 1) + " Select",
+						"P" + (i + 1) + " Start",
+						"P" + (i + 1) + " Square",
+						"P" + (i + 1) + " Triangle",
+						"P" + (i + 1) + " Circle",
+						"P" + (i + 1) + " Cross",
+						"P" + (i + 1) + " L1",
+						"P" + (i + 1) + " R1",
+						"P" + (i + 1) + " L2",
+						"P" + (i + 1) + " R2",
+					});
 
-                    if (syncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad) {
-                        definition.BoolButtons.Add("P" + (i + 1) + " L3");
-                        definition.BoolButtons.Add("P" + (i + 1) + " R3");
-                        definition.BoolButtons.Add("P" + (i + 1) + " MODE");
+					if (syncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad)
+					{
+						definition.BoolButtons.Add("P" + (i + 1) + " L3");
+						definition.BoolButtons.Add("P" + (i + 1) + " R3");
+						definition.BoolButtons.Add("P" + (i + 1) + " MODE");
 
-                        definition.FloatControls.AddRange(new[]
-                        {
-                            "P" + (i + 1) + " LStick X",
-                            "P" + (i + 1) + " LStick Y",
-                            "P" + (i + 1) + " RStick X",
-                            "P" + (i + 1) + " RStick Y"
-                        });
+						definition.FloatControls.AddRange(new[]
+						{
+							"P" + (i + 1) + " LStick X",
+							"P" + (i + 1) + " LStick Y",
+							"P" + (i + 1) + " RStick X",
+							"P" + (i + 1) + " RStick Y"
+						});
 
-                        definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-                        definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-                        definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-                        definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-                    }
-                }
-            }
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+					}
+				}
+			}
 
-            definition.BoolButtons.AddRange(new[]
-            {
-                "Open",
-                "Close",
-                "Reset"
-            });
+			definition.BoolButtons.AddRange(new[]
+			{
+				"Open",
+				"Close",
+				"Reset"
+			});
 
-            definition.FloatControls.Add("Disc Select");
+			definition.FloatControls.Add("Disc Select");
 
-            definition.FloatRanges.Add(
-                //new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
-                //hmm.. I don't see why this wouldn't work
-                new[] { 0f, 1f, 1f }
-            );
+			definition.FloatRanges.Add(
+				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
+				//hmm.. I don't see why this wouldn't work
+				new[] { 0f, 1f, 1f }
+			);
 
-            return definition;
-        }
+			return definition;
+		}
 
 		private void SetControllerButtons()
 		{
-            ControllerDefinition = CreateControllerDefinition(_SyncSettings);
+			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
 		public string BoardName { get { return null; } }
