@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 			Bk2Movie movie = Result.Movie;
 			MiscHeaderInfo info;
 
-			movie.HeaderEntries.Add(HeaderKeys.PLATFORM, "PSX");
+			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
 
 			using (var fs = SourceFile.OpenRead())
 			{
@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 			}
 			if ((flags & 0x04) != 0)
 			{
-				movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
+				movie.HeaderEntries[HeaderKeys.PAL] = "1";
 			}
 			if ((flags & 0x08) != 0)
 			{
@@ -147,7 +147,7 @@ namespace BizHawk.Client.Common
 			UInt32 authorNameLength = br.ReadUInt32();
 			char[] authorName = br.ReadChars((int)authorNameLength);
 
-			movie.HeaderEntries.Add(HeaderKeys.AUTHOR, new string(authorName));
+			movie.HeaderEntries[HeaderKeys.AUTHOR] = new string(authorName);
 
 			info.parseSuccessful = true;
 			return info;

@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common.movie.import
 			Bk2Movie movie = Result.Movie;
 			MiscHeaderInfo info;
 
-			movie.HeaderEntries.Add(HeaderKeys.PLATFORM, "PSX");
+			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
 
 			using (var fs = SourceFile.OpenRead())
 			{
