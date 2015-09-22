@@ -1,5 +1,5 @@
 ﻿using BizHawk.Emulation.Cores.Sony.PSX;
-
+using Newtonsoft.Json;
 using System;
 using System.IO;
 
@@ -127,6 +127,15 @@ namespace BizHawk.Client.Common
 					return info;
 			}
 
+			Octoshock.SyncSettings syncsettings = new Octoshock.SyncSettings();
+			syncsettings.Controllers = new[] { info.player1Type, info.player2Type };
+
+			var jsonSettings = new JsonSerializerSettings
+			{
+				TypeNameHandling = TypeNameHandling.Auto
+			};
+			movie.SyncSettingsJson = JsonConvert.SerializeObject(new { o = (object)syncsettings }, jsonSettings);
+
 			info.frameCount = br.ReadUInt32();
 			UInt32 rerecordCount = br.ReadUInt32();
 			movie.HeaderEntries[HeaderKeys.RERECORDS] = rerecordCount.ToString();
@@ -164,6 +173,7 @@ namespace BizHawk.Client.Common
 									"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
 
 			bool isCdTrayOpen = false;
+			int cdNumber = 1;
 
 			for (int frame = 0; frame < info.frameCount; ++frame)
 			{
@@ -227,6 +237,7 @@ namespace BizHawk.Client.Common
 					if (isCdTrayOpen)
 					{
 						controllers["Close"] = true;
+						cdNumber++;
 					}
 					else
 					{
@@ -239,6 +250,9 @@ namespace BizHawk.Client.Common
 					controllers["Close"] = false;
 					controllers["Open"] = false;
 				}
+
+				Tuple<string, float> discSelect = new Tuple<string, float>("Disc Select", cdNumber);
+				controllers.AcceptNewFloats(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
 				{
