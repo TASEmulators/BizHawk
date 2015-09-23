@@ -806,7 +806,7 @@ namespace BizHawk.Client.Common
 		{
 			int branchHash = _movie.BranchHashByIndex(index);
 
-			Invalidate(0); // Not a good way of doing it?
+			//Invalidate(0); // Not a good way of doing it?
 
 			foreach (KeyValuePair<int, SortedList<int, StateManagerState>> kvp in BranchStates)
 			{

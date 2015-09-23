@@ -480,11 +480,18 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(TasBranch branch)
 		{
-			int? divergentPoint = DivergantPoint(_log, branch.InputLog);
+			int? divergentPoint = DivergentPoint(_log, branch.InputLog);
 
 			_log = branch.InputLog.ToList();
 			//_changes = true;
 			LagLog.FromLagLog(branch.LagLog);
+
+			// if there are branch states, they will be loaded anyway
+			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
+			if (divergentPoint.HasValue)
+				StateManager.Invalidate(divergentPoint.Value); 
+			else
+				StateManager.Invalidate(branch.InputLog.Count);
 
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 
@@ -496,7 +503,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
-		private int? DivergantPoint(List<string> currentLog, List<string> newLog)
+		private int? DivergentPoint(List<string> currentLog, List<string> newLog)
 		{
 			int max = newLog.Count;
 			if (currentLog.Count < newLog.Count)
