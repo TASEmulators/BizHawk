@@ -130,6 +130,10 @@ namespace BizHawk.Client.Common
 			Octoshock.SyncSettings syncsettings = new Octoshock.SyncSettings();
 			syncsettings.Controllers = new[] { info.player1Type, info.player2Type };
 
+			// Annoying kludge to force the json serializer to serialize the type name for "o" object.
+			// For just the "o" object to have type information, it must be cast to a superclass such
+			// that the TypeNameHandling.Auto decides to serialize the type as well as the object
+			// contents.  As such, the object cast is NOT redundant
 			var jsonSettings = new JsonSerializerSettings
 			{
 				TypeNameHandling = TypeNameHandling.Auto
@@ -271,9 +275,10 @@ namespace BizHawk.Client.Common
 			controllers.Type = Octoshock.CreateControllerDefinition(settings);
 
 			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
-									"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
+			                     "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
 
 			bool isCdTrayOpen = false;
+			int cdNumber = 1;
 
 			for (int frame = 0; frame < info.frameCount; ++frame)
 			{
@@ -360,6 +365,7 @@ namespace BizHawk.Client.Common
 					if (isCdTrayOpen)
 					{
 						controllers["Close"] = true;
+						cdNumber++;
 					}
 					else
 					{
@@ -372,6 +378,9 @@ namespace BizHawk.Client.Common
 					controllers["Close"] = false;
 					controllers["Open"] = false;
 				}
+
+				Tuple<string, float> discSelect = new Tuple<string, float>("Disc Select", cdNumber);
+				controllers.AcceptNewFloats(new[] { discSelect });
 
 				if ((controlState & 0xFC) != 0)
 				{
