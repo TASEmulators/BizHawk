@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		IntBuffer prg_banks = new IntBuffer(4);
 		IntBuffer chr_banks = new IntBuffer(8);
+		IntBuffer chr_latches = new IntBuffer(2);
 
 		ByteBuffer ram_bytes = new ByteBuffer(5);
 
@@ -109,6 +110,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				chr_regs[i] = 0xFFFF;
 			}
 
+			chr_latches[0] = 0;
+			chr_latches[1] = 4;
+
 			AutoMapperProps.Apply(this);
 
 			Sync();
@@ -120,6 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			ser.Sync("prg_regs", ref prg_regs);
 			ser.Sync("chr_regs", ref chr_regs);
+			ser.Sync("chr_latches", ref chr_latches);
 			ser.Sync("nt_regs", ref nt_regs);
 
 			ser.Sync("prg_banks", ref prg_banks);
@@ -172,6 +177,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			prg_regs.Dispose();
 			chr_regs.Dispose();
+			chr_latches.Dispose();
 			nt_regs.Dispose();
 			prg_banks.Dispose();
 			chr_banks.Dispose();
@@ -287,8 +293,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					SetBank(chr_banks, 0, 8, ((chr_regs[0] & mask) | block) << 3);
 					break;
 				case 1:
-					SetBank(chr_banks, 0, 4, ((chr_regs[0] & mask) | block) << 2);
-					SetBank(chr_banks, 4, 4, ((chr_regs[4] & mask) | block) << 2);
+					var reg_0 = mapper_090 ? chr_regs[0] : chr_regs[chr_latches[0]];
+					var reg_1 = mapper_090 ? chr_regs[4] : chr_regs[chr_latches[1]];
+
+					SetBank(chr_banks, 0, 4, ((reg_0 & mask) | block) << 2);
+					SetBank(chr_banks, 4, 4, ((reg_1 & mask) | block) << 2);
 					break;
 				case 2:
 					SetBank(chr_banks, 0, 2, ((chr_regs[0] & mask) | block) << 1);
@@ -419,7 +428,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					xor_reg = value;
 					break;
 				case 0x4007:	//IRQ prescaler adjust
-					//Poorly understood, and no games actually appear to use it.
+					//Poorly understood, and no game actually appears to use it.
 					//We therefore forego emulating it.
 					break;
 
@@ -563,7 +572,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if((prescaler & mask) == mask)
 				{
 					irq_counter--;
-					if(irq_counter == 0xFF)
+					if (irq_counter == 0xFF)
 					{
 						irq_pending = irq_enable;
 					}
@@ -636,6 +645,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int bank = chr_banks[addr >> 10];
 				bank &= chr_bank_mask_1k;
 				int offset = addr & 0x3FF;
+
+				//Super Strange MMC2 logic
+				int side = addr >> 12;
+				int tile = addr & 0xFF8;
+
+				switch (tile)
+				{
+					case 0xFD8:
+					case 0xFE8:
+						chr_latches[side] = (addr >> 4) & ((side << 2) | 0x2);
+						SyncCHRBanks();
+						break;
+				}
 
 				return VROM[bank << 10 | offset];
 			}
