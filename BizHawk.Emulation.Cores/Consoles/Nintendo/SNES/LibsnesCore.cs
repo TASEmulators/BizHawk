@@ -539,10 +539,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				//but the fields are side by side, so it's actually 1024x224.
 				//copy the first scanline from row 0, then the 2nd scanline from row 0 (offset 512)
 				//EXAMPLE: yu yu hakushu legal screens
+				//EXAMPLE: World Class Service Super Nintendo Tester (double resolution vertically but not horizontally, in character test the stars should shrink)
 				lineDouble = false;
 				srcPitch = 512;
 				yskip = 1;
-				vidHeight /= 2;
+				vidHeight = height;
 			}
 
 			if (dotDouble)
