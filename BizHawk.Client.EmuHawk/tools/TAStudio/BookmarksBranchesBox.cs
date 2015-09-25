@@ -142,8 +142,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadSelectedBranch()
 		{
 			int index = BranchView.SelectedRows.First();
-			if (CurrentBranch == index)
-				return;
+			//if (CurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
+			//	return;
 
 			if (SelectedBranch != null)
 			{
