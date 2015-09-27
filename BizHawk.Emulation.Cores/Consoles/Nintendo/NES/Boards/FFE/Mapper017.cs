@@ -29,10 +29,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_mask_8k = Cart.prg_size / 8 - 1;
 			chr_mask_1k = Cart.chr_size / 1 - 1;
 
+			//Initial State 
 			prg_regs_8k[0] = 0x00;
 			prg_regs_8k[1] = 0x01;
 			prg_regs_8k[2] = 0xFE;
 			prg_regs_8k[3] = 0xFF;
+
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
 			return true;
@@ -71,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					irq_count |= value << 8;
 					irq_enable = true;
 					irq_pending = false;
+					SyncIRQ();
 					break;
 
 				//PRG
