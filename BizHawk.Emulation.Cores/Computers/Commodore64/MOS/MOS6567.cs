@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		static int vblankstart = 0x00D % lines;
 		static int vblankend = 0x018 % lines;
 		static int hblankoffset = 20;
-		static int hblankstart = (0x18C + hblankoffset) % scanwidth;
-		static int hblankend = (0x1F0 + hblankoffset) % scanwidth;
+		static int hblankstart = (0x18C + hblankoffset) % scanwidth - 8; // -8 because the VIC repeats internal pixel cycles around 0x18C
+		static int hblankend = (0x1F0 + hblankoffset) % scanwidth - 8;
 
 		static int[] timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, scanwidth, 0x18C, 8);
 		static int[] fetch = Vic.TimingBuilder_Fetch(timing, 0x174);

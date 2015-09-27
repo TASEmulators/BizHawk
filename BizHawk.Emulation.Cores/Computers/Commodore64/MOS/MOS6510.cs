@@ -103,9 +103,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
         }
 
-		// ------------------------------------
+        internal bool AtInstructionStart()
+        {
+            return cpu.AtInstructionStart();
+        }
 
-		public ushort PC
+        // ------------------------------------
+
+        public ushort PC
 		{
 			get
 			{

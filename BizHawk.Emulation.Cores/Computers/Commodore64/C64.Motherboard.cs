@@ -102,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			sid.HardReset();
 			vic.HardReset();
 			userPort.HardReset();
+            cassPort.HardReset();
 
 			// because of how mapping works, the cpu needs to be hard reset twice
 			cpu.HardReset();

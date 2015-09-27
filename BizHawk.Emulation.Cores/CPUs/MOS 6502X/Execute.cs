@@ -2931,5 +2931,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (!rdy_freeze)
 				mi++;
 		} //ExecuteOne
+
+        public bool AtInstructionStart()
+        {
+            return Microcode[opcode][mi] >= Uop.End;
+        }
 	}
 }
