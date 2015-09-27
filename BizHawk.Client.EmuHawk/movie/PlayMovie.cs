@@ -451,6 +451,8 @@ namespace BizHawk.Client.EmuHawk
 			var firstIndex = MovieView.SelectedIndices[0];
 			MovieView.ensureVisible(firstIndex);
 
+			bool isCGBMode = _movieList[firstIndex].HeaderEntries["IsCGBMode"] == "1";
+
 			foreach (var kvp in _movieList[firstIndex].HeaderEntries)
 			{
 				var item = new ListViewItem(kvp.Key);
@@ -474,7 +476,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 						break;
 					case HeaderKeys.PLATFORM:
-						if (kvp.Value != Global.Game.System)
+						// Kludge to have GBC and color-enabled GB games both show as a correct platform
+						// and to have the text representing that platform as close as possible to correct.
+						// Unfortunately, it appears that the emulator at present cannot distinguish between
+						// GBC and color-enabled GB games, hence the strange "(C)".
+						if(isCGBMode && kvp.Value == "GB" && Global.Game.System == "GBC")
+						{
+							item.SubItems[1].Text += "(C)";
+						}
+						else if(kvp.Value != Global.Game.System)
 						{
 							item.BackColor = Color.Pink;
 						}
