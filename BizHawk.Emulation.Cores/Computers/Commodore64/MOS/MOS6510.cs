@@ -99,18 +99,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
             set
             {
-                lagCycles = value;
-            }
-        }
+				lagCycles = value;
+			}
+		}
 
-        internal bool AtInstructionStart()
-        {
-            return cpu.AtInstructionStart();
-        }
+		internal bool AtInstructionStart()
+		{
+			return cpu.AtInstructionStart();
+		}
 
-        // ------------------------------------
+		// ------------------------------------
 
-        public ushort PC
+		public ushort PC
 		{
 			get
 			{

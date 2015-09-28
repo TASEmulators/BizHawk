@@ -315,7 +315,7 @@ namespace BizHawk.Emulation.Common
 				case ".T64":
 				case ".G64":
 				case ".CRT":
-                case ".TAP":
+				case ".TAP":
 					game.System = "C64";
 					break;
 

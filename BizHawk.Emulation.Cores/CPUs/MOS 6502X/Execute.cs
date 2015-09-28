@@ -2932,9 +2932,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				mi++;
 		} //ExecuteOne
 
-        public bool AtInstructionStart()
-        {
-            return Microcode[opcode][mi] >= Uop.End;
-        }
+		public bool AtInstructionStart()
+		{
+			return Microcode[opcode][mi] >= Uop.End;
+		}
 	}
 }

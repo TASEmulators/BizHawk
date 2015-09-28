@@ -8,22 +8,15 @@ using System.Windows.Forms;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	// TODO: use the EMulation.Common Region enum
-	public enum Region
-	{
-		NTSC,
-		PAL
-	}
-
 	[CoreAttributes(
 		"C64Hawk",
 		"SaxxonPIke",
 		isPorted: false,
 		isReleased: false
 		)]
-	[ServiceNotApplicable(typeof(IRegionable), typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable, IDisassemblable
-    {
+	[ServiceNotApplicable(typeof(ISettable<,>))]
+	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable, IDisassemblable, IRegionable
+	{
 		// framework
 		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
 		{
@@ -34,37 +27,37 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			inputFileInfo.Data = rom;
 			inputFileInfo.Extension = romextension;
 			CoreComm = comm;
-            Nullable<Region> region = queryUserForRegion();
-            if (region == null)
-            {
-                throw new Exception("Can't construct new C64 because you didn't choose anything");
-            }
-            Init(region.Value);
+			Region = queryUserForRegion();
+			Init(Region);
 			cyclesPerFrame = board.vic.CyclesPerFrame;
 			SetupMemoryDomains();
-            MemoryCallbacks = new MemoryCallbackSystem();
-            HardReset();
+			MemoryCallbacks = new MemoryCallbackSystem();
+			HardReset();
 
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(board.vic);
-        }
+		}
 
 
-        private Nullable<Region> queryUserForRegion()
-        {
-            Form prompt = new Form() { Width = 160, Height = 120, FormBorderStyle = FormBorderStyle.FixedDialog, Text = "Region selector", StartPosition = FormStartPosition.CenterScreen };
-            Label textLabel = new Label() { Left = 10, Top = 10, Width = 260, Text = "Please choose a region:" };
-            RadioButton palButton = new RadioButton() { Left = 10, Top = 30, Width = 70, Text = "PAL", Checked = true };
-            RadioButton ntscButton = new RadioButton() { Left = 80, Top = 30, Width = 70, Text = "NTSC" };
-            Button confirmation = new Button() { Text = "Ok", Left = 40, Width = 80, Top = 60, DialogResult = DialogResult.OK };
-            confirmation.Click += (sender, e) => { prompt.Close(); };
-            prompt.Controls.Add(textLabel);
-            prompt.Controls.Add(palButton);
-            prompt.Controls.Add(ntscButton);
-            prompt.Controls.Add(confirmation);
-            prompt.AcceptButton = confirmation;
+		private DisplayType queryUserForRegion()
+		{
+			Form prompt = new Form() { Width = 160, Height = 120, FormBorderStyle = FormBorderStyle.FixedDialog, Text = "Region selector", StartPosition = FormStartPosition.CenterScreen };
+			Label textLabel = new Label() { Left = 10, Top = 10, Width = 260, Text = "Please choose a region:" };
+			RadioButton palButton = new RadioButton() { Left = 10, Top = 30, Width = 70, Text = "PAL", Checked = true };
+			RadioButton ntscButton = new RadioButton() { Left = 80, Top = 30, Width = 70, Text = "NTSC" };
+			Button confirmation = new Button() { Text = "Ok", Left = 40, Width = 80, Top = 60, DialogResult = DialogResult.OK };
+			confirmation.Click += (sender, e) => { prompt.Close(); };
+			prompt.Controls.Add(textLabel);
+			prompt.Controls.Add(palButton);
+			prompt.Controls.Add(ntscButton);
+			prompt.Controls.Add(confirmation);
+			prompt.AcceptButton = confirmation;
 
-            return prompt.ShowDialog() == DialogResult.OK ? palButton.Checked ? new Nullable<Region>(Region.PAL) : ntscButton.Checked ? new Nullable<Region>(Region.NTSC) : null : null;
-        }
+			if (prompt.ShowDialog() != DialogResult.OK || !palButton.Checked && !ntscButton.Checked)
+			{
+				throw new Exception("Can't construct new C64 because you didn't choose anything");
+			}
+			return palButton.Checked ? DisplayType.PAL : DisplayType.NTSC;
+		}
 
 		// internal variables
 		private int _frame = 0;
@@ -88,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_frame = 0;
 			_lagcount = 0;
 			_islag = false;
-            frameCycles = 0;
-        }
+			frameCycles = 0;
+		}
 
 		// audio/video
 		public void EndAsyncSound() { } //TODO
@@ -118,6 +111,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
+		public DisplayType Region
+		{
+			get;
+			private set;
+		}
+
 		public void Dispose()
 		{
 			if (board.sid != null)
@@ -127,69 +126,69 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-        int frameCycles;
+		int frameCycles;
 
-        private void DoCycle()
-        {
-            if (frameCycles == 0) {
-                board.inputRead = false;
-                board.PollInput();
-                board.cpu.LagCycles = 0;
-            }
-
-            //disk.Execute();
-            board.Execute();
-            frameCycles++;
-
-            // load PRG file if needed
-            if (loadPrg)
-            {
-                // check to see if cpu PC is at the BASIC warm start vector
-                if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
-                {
-                    //board.ram.Poke(0x0302, 0xAE);
-                    //board.ram.Poke(0x0303, 0xA7);
-                    ////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
-                    ////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
-
-                    //if (inputFileInfo.Data.Length >= 6)
-                    //{
-                    //    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
-                    //    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
-                    //}
-                    PRG.Load(board.pla, inputFileInfo.Data);
-                    loadPrg = false;
-                }
-            }
-
-            if (frameCycles == cyclesPerFrame)
-            {
-                board.Flush();
-                _islag = !board.inputRead;
-
-                if (_islag)
-                    _lagcount++;
-                frameCycles -= cyclesPerFrame;
-                _frame++;
-
-                //Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
-
-                int test = board.cpu.LagCycles;
-                DriveLightOn = DriveLED;
-            }
-        }
-
-        // process frame
-        public void FrameAdvance(bool render, bool rendersound)
+		// process frame
+		public void FrameAdvance(bool render, bool rendersound)
 		{
-            do
-            {
-                DoCycle();
-            }
-            while (frameCycles != 0);
-        }
+			do
+			{
+				DoCycle();
+			}
+			while (frameCycles != 0);
+		}
 
-        private void HandleFirmwareError(string file)
+		private void DoCycle()
+		{
+			if (frameCycles == 0) {
+				board.inputRead = false;
+				board.PollInput();
+				board.cpu.LagCycles = 0;
+			}
+
+			//disk.Execute();
+			board.Execute();
+			frameCycles++;
+
+			// load PRG file if needed
+			if (loadPrg)
+			{
+				// check to see if cpu PC is at the BASIC warm start vector
+				if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
+				{
+					//board.ram.Poke(0x0302, 0xAE);
+					//board.ram.Poke(0x0303, 0xA7);
+					////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
+					////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
+
+					//if (inputFileInfo.Data.Length >= 6)
+					//{
+					//    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
+					//    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
+					//}
+					PRG.Load(board.pla, inputFileInfo.Data);
+					loadPrg = false;
+				}
+			}
+
+			if (frameCycles == cyclesPerFrame)
+			{
+				board.Flush();
+				_islag = !board.inputRead;
+
+				if (_islag)
+					_lagcount++;
+				frameCycles -= cyclesPerFrame;
+				_frame++;
+
+				//Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
+
+				int test = board.cpu.LagCycles;
+				DriveLightOn = DriveLED;
+			}
+		}
+
+		private void HandleFirmwareError(string file)
 		{
 			System.Windows.Forms.MessageBox.Show("the C64 core is referencing a firmware file which could not be found. Please make sure it's in your configured C64 firmwares folder. The referenced filename is: " + file);
 			throw new FileNotFoundException();
@@ -206,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return result;
 		}
 
-		private void Init(Region initRegion)
+		private void Init(DisplayType initRegion)
 		{
 			board = new Motherboard(this, initRegion);
 			InitRoms();
@@ -228,13 +227,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					{
 						board.cartPort.Connect(cart);
 					}
-                    break;
-                case @".TAP":
-                    CassettePort.Tape tape = CassettePort.Tape.Load(inputFileInfo.Data);
-                    if (tape != null)
-                    {
-                        board.cassPort.Connect(tape);
-                    }
+					break;
+				case @".TAP":
+					CassettePort.Tape tape = CassettePort.Tape.Load(inputFileInfo.Data);
+					if (tape != null)
+					{
+						board.cassPort.Connect(tape);
+					}
 					break;
 				case @".PRG":
 					if (inputFileInfo.Data.Length > 2)
@@ -261,5 +260,5 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			board.HardReset();
 			//disk.HardReset();
 		}
-    }
+	}
 }

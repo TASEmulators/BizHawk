@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private C64 _c64;
 
-		public Motherboard(C64 c64, Region initRegion)
+		public Motherboard(C64 c64, DisplayType initRegion)
 		{
 			// note: roms need to be added on their own externally
 			_c64 = c64;
@@ -59,8 +59,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			sid = MOS6581.Create(44100, initRegion);
 			switch (initRegion)
 			{
-				case Region.NTSC: vic = MOS6567.Create(); break;
-				case Region.PAL: vic = MOS6569.Create(); break;
+				case DisplayType.NTSC: vic = MOS6567.Create(); break;
+				case DisplayType.PAL: vic = MOS6569.Create(); break;
 			}
 			userPort = new UserPortDevice();
 		}
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			sid.HardReset();
 			vic.HardReset();
 			userPort.HardReset();
-            cassPort.HardReset();
+			cassPort.HardReset();
 
 			// because of how mapping works, the cpu needs to be hard reset twice
 			cpu.HardReset();

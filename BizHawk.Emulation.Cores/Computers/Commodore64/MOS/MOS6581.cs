@@ -4119,7 +4119,7 @@
 			}
 		};
 
-        static public Sid Create(int newSampleRate, Region newRegion)
+        static public Sid Create(int newSampleRate, Common.DisplayType newRegion)
         {
             return new Sid(waveTable, newSampleRate, newRegion);
         }

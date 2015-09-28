@@ -51,110 +51,110 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-        public bool CanStep(StepType type)
-        {
-            switch (type)
-            {
-                case StepType.Into:
-                case StepType.Over:
-                case StepType.Out:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+		public bool CanStep(StepType type)
+		{
+			switch (type)
+			{
+				case StepType.Into:
+				case StepType.Over:
+				case StepType.Out:
+					return true;
+				default:
+					return false;
+			}
+		}
 
 
-        public void Step(StepType type)
-        {
-            switch (type)
-            {
-                case StepType.Into:
-                    StepInto();
-                    break;
-                case StepType.Out:
-                    StepOut();
-                    break;
-                case StepType.Over:
-                    StepOver();
-                    break;
-            }
-        }
+		public void Step(StepType type)
+		{
+			switch (type)
+			{
+				case StepType.Into:
+					StepInto();
+					break;
+				case StepType.Out:
+					StepOut();
+					break;
+				case StepType.Over:
+					StepOver();
+					break;
+			}
+		}
 
-        private void StepInto()
-        {
-            while (board.cpu.AtInstructionStart())
-            {
-                DoCycle();
-            }
-            while (!board.cpu.AtInstructionStart())
-            {
-                DoCycle();
-            }
-        }
+		private void StepInto()
+		{
+			while (board.cpu.AtInstructionStart())
+			{
+				DoCycle();
+			}
+			while (!board.cpu.AtInstructionStart())
+			{
+				DoCycle();
+			}
+		}
 
-        private void StepOver()
-        {
-            var instruction = board.cpu.Peek(board.cpu.PC);
+		private void StepOver()
+		{
+			var instruction = board.cpu.Peek(board.cpu.PC);
 
-            if (instruction == JSR)
-            {
-                var destination = board.cpu.PC + JSRSize;
-                while (board.cpu.PC != destination)
-                {
-                    StepInto();
-                }
-            }
-            else
-            {
-                StepInto();
-            }
-        }
+			if (instruction == JSR)
+			{
+				var destination = board.cpu.PC + JSRSize;
+				while (board.cpu.PC != destination)
+				{
+					StepInto();
+				}
+			}
+			else
+			{
+				StepInto();
+			}
+		}
 
-        private void StepOut()
-        {
-            var instr = board.cpu.Peek(board.cpu.PC);
+		private void StepOut()
+		{
+			var instr = board.cpu.Peek(board.cpu.PC);
 
-            JSRCount = instr == JSR ? 1 : 0;
+			JSRCount = instr == JSR ? 1 : 0;
 
-            var bailOutFrame = Frame + 1;
+			var bailOutFrame = Frame + 1;
 
-            while (true)
-            {
-                StepInto();
-                instr = board.cpu.Peek(board.cpu.PC);
-                if (instr == JSR)
-                {
-                    JSRCount++;
-                }
-                else if ((instr == RTS || instr == RTI) && JSRCount <= 0)
-                {
-                    StepInto();
-                    JSRCount = 0;
-                    break;
-                }
-                else if (instr == RTS || instr == RTI)
-                {
-                    JSRCount--;
-                }
-                else //Emergency Bailout Logic
-                {
-                    if (Frame == bailOutFrame)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
+			while (true)
+			{
+				StepInto();
+				instr = board.cpu.Peek(board.cpu.PC);
+				if (instr == JSR)
+				{
+					JSRCount++;
+				}
+				else if ((instr == RTS || instr == RTI) && JSRCount <= 0)
+				{
+					StepInto();
+					JSRCount = 0;
+					break;
+				}
+				else if (instr == RTS || instr == RTI)
+				{
+					JSRCount--;
+				}
+				else //Emergency Bailout Logic
+				{
+					if (Frame == bailOutFrame)
+					{
+						break;
+					}
+				}
+			}
+		}
 
-        private int JSRCount = 0;
+		private int JSRCount = 0;
 
-        private const byte JSR = 0x20;
-        private const byte RTI = 0x40;
-        private const byte RTS = 0x60;
+		private const byte JSR = 0x20;
+		private const byte RTI = 0x40;
+		private const byte RTS = 0x60;
 
-        private const byte JSRSize = 3;
+		private const byte JSRSize = 3;
 
-        public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
-    }
+		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+	}
 }
