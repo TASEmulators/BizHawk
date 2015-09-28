@@ -42,25 +42,48 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private C64 _c64;
 
-		public Motherboard(C64 c64, DisplayType initRegion)
+		public Motherboard(C64 c64, C64.VicType initRegion)
 		{
 			// note: roms need to be added on their own externally
 			_c64 = c64;
-
+			int clockNum, clockDen, mainsFrq;
+			switch (initRegion)
+			{
+				case C64.VicType.PAL:
+					clockNum = 17734475;
+					clockDen = 18;
+					mainsFrq = 50;
+					break;
+				case C64.VicType.NTSC:
+				case C64.VicType.NTSC_OLD:
+					clockNum = 11250000;
+					clockDen = 11;
+					mainsFrq = 60;
+					break;
+				case C64.VicType.DREAN:
+					clockNum = 14328225;
+					clockDen = 14;
+					mainsFrq = 50;
+					break;
+				default:
+					throw new System.Exception();
+			}
 			cartPort = new CartridgePort();
 			cassPort = new CassettePortDevice();
-			cia0 = new MOS6526(initRegion);
-			cia1 = new MOS6526(initRegion);
+			cia0 = new MOS6526(clockNum, clockDen*mainsFrq);
+			cia1 = new MOS6526(clockNum, clockDen*mainsFrq);
 			colorRam = new Chip2114();
 			cpu = new MOS6510();
 			pla = new MOSPLA();
 			ram = new Chip4864();
 			serPort = new SerialPort();
-			sid = MOS6581.Create(44100, initRegion);
+			sid = MOS6581.Create(44100, clockNum, clockDen);
 			switch (initRegion)
 			{
-				case DisplayType.NTSC: vic = MOS6567.Create(); break;
-				case DisplayType.PAL: vic = MOS6569.Create(); break;
+				case C64.VicType.NTSC: vic = MOS6567R8.Create(); break;
+				case C64.VicType.PAL: vic = MOS6569.Create(); break;
+				case C64.VicType.NTSC_OLD: vic = MOS6567R56A.Create(); break;
+				case C64.VicType.DREAN: vic = MOS6572.Create(); break;
 			}
 			userPort = new UserPortDevice();
 		}

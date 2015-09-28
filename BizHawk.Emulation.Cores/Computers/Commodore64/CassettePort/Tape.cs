@@ -39,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 		{
 			if (cycle == 0)
 			{
-				Console.WriteLine("Tape @ " + pos.ToString());
 				if (pos >= end)
 				{
 					return true;

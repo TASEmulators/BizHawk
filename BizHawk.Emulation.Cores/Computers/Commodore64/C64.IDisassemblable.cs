@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		public string Cpu
 		{
-			get { return "6510"; }
+			get { return "6510"; } set { }
 		}
 
 		public string PCRegisterName

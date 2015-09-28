@@ -161,6 +161,7 @@
     <Compile Include="Computers\Commodore64\C64.IMemoryDomains.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\Commodore64\C64.ISettable.cs" />
     <Compile Include="Computers\Commodore64\C64.IStatable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
@@ -185,6 +186,7 @@
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6567R56A.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
@@ -194,7 +196,8 @@
     <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Interface.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6526-2.PortIO.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6567.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6567R8.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6572.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />

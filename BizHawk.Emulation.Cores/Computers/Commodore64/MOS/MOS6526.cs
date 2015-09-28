@@ -51,7 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// ------------------------------------
 
 		bool alarmSelect;
-		Common.DisplayType chipRegion;
 		bool cntPos;
 		bool enableIntAlarm;
 		bool enableIntFlag;
@@ -77,16 +76,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		byte[] todAlarm;
 		bool todAlarmPM;
 		int todCounter;
-		int todCounterLatch;
 		bool todIn;
 		bool todPM;
 		bool oldFlag;
 		// ------------------------------------
 
-		public MOS6526(Common.DisplayType region)
+		int todStepsNum;
+        int todStepsDen;
+
+		// todStepsNum/todStepsDen is the number of clock cycles it takes the external clock source to advance one cycle
+		// (50 or 60 Hz depending on AC frequency in use).
+		// By default the CIA assumes 60 Hz and will thus count incorrectly when fed with 50 Hz.
+		public MOS6526(int todStepsNum, int todStepsDen)
 		{
-			chipRegion = region;
-			enableIntTimer = new bool[2];
+			this.todStepsNum = todStepsNum;
+			this.todStepsDen = todStepsDen;
+            enableIntTimer = new bool[2];
 			intTimer = new bool[2];
 			timerDelay = new int[2];
 			timerInMode = new InMode[2];
@@ -96,7 +101,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			timerRunMode = new RunMode[2];
 			tod = new byte[4];
 			todAlarm = new byte[4];
-			SetTodIn(chipRegion);
 
 			portA = new LatchedPort();
 			portB = new LatchedPort();
@@ -207,27 +211,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			todAlarm[1] = 0;
 			todAlarm[2] = 0;
 			todAlarm[3] = 0;
-			todCounter = todCounterLatch;
-			todIn = (chipRegion == Common.DisplayType.PAL);
+			todCounter = 0;
+			todIn = false;
 			todPM = false;
 
 			pinCnt = false;
 			pinPC = true;
-		}
-
-		private void SetTodIn(Common.DisplayType region)
-		{
-			switch (region)
-			{
-				case Common.DisplayType.NTSC:
-					todCounterLatch = 14318181 / 140;
-					todIn = false;
-					break;
-				case Common.DisplayType.PAL:
-					todCounterLatch = 17734472 / 180;
-					todIn = true;
-					break;
-			}
 		}
 
 		// ------------------------------------
@@ -342,9 +331,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				bool todV;
 
-				if (todCounter == 0)
+				if (todCounter <= 0)
 				{
-					todCounter = todCounterLatch;
+					todCounter += todStepsNum*(todIn ? 6 : 5);
 					tod[0] = BCDAdd(tod[0], 1, out todV);
 					if (tod[0] >= 10)
 					{
@@ -370,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						}
 					}
 				}
-				todCounter--;
+				todCounter -= todStepsDen;
 			}
 		}
 

@@ -15,11 +15,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable, IDisassemblable, IRegionable
+	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable, IDisassemblable, IRegionable, ISettable<C64.C64Settings, C64.C64SyncSettings>
 	{
 		// framework
-		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension, object Settings, object SyncSettings)
 		{
+			PutSyncSettings((C64SyncSettings)SyncSettings ?? new C64SyncSettings());
+			PutSettings((C64Settings)Settings ?? new C64Settings());
+
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 
@@ -27,8 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			inputFileInfo.Data = rom;
 			inputFileInfo.Extension = romextension;
 			CoreComm = comm;
-			Region = queryUserForRegion();
-			Init(Region);
+			Init(this.SyncSettings.vicType);
 			cyclesPerFrame = board.vic.CyclesPerFrame;
 			SetupMemoryDomains();
 			MemoryCallbacks = new MemoryCallbackSystem();
@@ -38,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 
-		private DisplayType queryUserForRegion()
+		/*private DisplayType queryUserForRegion()
 		{
 			Form prompt = new Form() { Width = 160, Height = 120, FormBorderStyle = FormBorderStyle.FixedDialog, Text = "Region selector", StartPosition = FormStartPosition.CenterScreen };
 			Label textLabel = new Label() { Left = 10, Top = 10, Width = 260, Text = "Please choose a region:" };
@@ -57,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				throw new Exception("Can't construct new C64 because you didn't choose anything");
 			}
 			return palButton.Checked ? DisplayType.PAL : DisplayType.NTSC;
-		}
+		}*/
 
 		// internal variables
 		private int _frame = 0;
@@ -205,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return result;
 		}
 
-		private void Init(DisplayType initRegion)
+		private void Init(VicType initRegion)
 		{
 			board = new Motherboard(this, initRegion);
 			InitRoms();

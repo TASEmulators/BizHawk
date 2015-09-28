@@ -42,20 +42,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<byte> ReadPotX;
 		public Func<byte> ReadPotY;
 
-		public Sid(int[][] newWaveformTable, int newSampleRate, Common.DisplayType newRegion)
+		public Sid(int[][] newWaveformTable, uint sampleRate, uint cyclesNum, uint cyclesDen)
 		{
-			uint cyclesPerSec = 0;
-			uint cyclesNum;
-			uint cyclesDen;
-			uint sampleRate = 44100;
-
-			switch (newRegion)
-			{
-				case Common.DisplayType.NTSC: cyclesNum = 14318181; cyclesDen = 14; break;
-				case Common.DisplayType.PAL: cyclesNum = 17734472; cyclesDen = 18; break;
-				default: return;
-			}
-
 			waveformTable = newWaveformTable;
 
 			envelopes = new Envelope[3];
