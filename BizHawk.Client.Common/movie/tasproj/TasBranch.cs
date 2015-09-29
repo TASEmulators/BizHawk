@@ -9,11 +9,6 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
-		public TasBranch()
-		{
-			UniqueIdentifier = Guid.NewGuid();
-		}
-
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public List<string> InputLog { get; set; }

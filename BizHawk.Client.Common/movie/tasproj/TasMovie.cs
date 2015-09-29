@@ -524,6 +524,12 @@ namespace BizHawk.Client.Common
 
 		public void AddBranch(TasBranch branch)
 		{
+			// before adding, make sure guid hash is unique too, we can't afford branch id clashes
+			do
+			{
+				branch.UniqueIdentifier = Guid.NewGuid();
+			} while (BranchIndexByHash(branch.UniqueIdentifier.GetHashCode()) != -1);
+
 			Branches.Add(branch);
 			TasStateManager.AddBranch();
 			Changes = true;
