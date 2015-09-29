@@ -14,9 +14,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 		*/
 	class Tape
 	{
-		private byte[] tapeData;
-		private byte version;
-		private uint pos, cycle, start, end;
+		private readonly byte[] tapeData;
+		private readonly byte version;
+		private uint pos, cycle;
+		private readonly uint start, end;
 
 		public Tape(byte version, byte[] tapeData, uint start, uint end)
 		{
@@ -87,6 +88,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 				result = new Tape(version, tapeFile, 20, (uint)tapeFile.Length);
 			}
 			return result;
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("tape");
+			ser.Sync("pos", ref pos);
+			ser.Sync("cycle", ref cycle);
+			ser.EndSection();
 		}
 	}
 }
