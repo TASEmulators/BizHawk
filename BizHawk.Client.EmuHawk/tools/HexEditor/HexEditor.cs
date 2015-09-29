@@ -708,6 +708,7 @@ namespace BizHawk.Client.EmuHawk
 				SetHeader();
 				UpdateGroupBoxTitle();
 				UpdateValues();
+				_secondaryHighlightedAddresses.Clear();
 			}
 		}
 
