@@ -44,7 +44,8 @@
 
 *Hex Editor
 **When saving memory domains to file, account for roms in archives
-**Fix some scrambling on memory domain change
+**Fix some UI scrambling on memory domain change / data size changing
+**Change copy/paste behaviour and add 'export' option to all generally make more sense.
 **Issue #481 - keep scroll bar position when resetting the current rom as opposed to changing to a new one
 
 *PSXHawk
@@ -60,9 +61,15 @@
 *N64
 **Compatibility hack for Jabo vs some Intel GPUs on Windows8+
 
+*SNES
+**Handle interlarced modes differently
+
+*mGBA
+**Fix #507 - Add "Combined WRAM" memory domain
+
 *NESHawk
 **Improve .unf loading and support more UNIF boards
-**Add ines mappers: 6, 51, 53, 90, 136, 147, 202, 204, 209, 211, 212, 213, 214, 216, 235, 244; fix mappers 31, 60, 79, 91, 164, 243, 245, 119
+**Add ines mappers: 6, 51, 53, 90, 136, 147, 202, 204, 209, 211, 212, 213, 214, 216, 235, 244, 17; fix mappers 31, 60, 79, 91, 164, 243, 245, 119, 90, 197
 **Support many misc ROMs that are bad/over dumps, wrong/unusual header info, having trainers
 **Auto-select region from iNESv2 header
 **Fix some graphical corruptions in the PPU
