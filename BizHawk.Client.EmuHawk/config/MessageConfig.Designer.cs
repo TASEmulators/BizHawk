@@ -80,6 +80,8 @@
 			this.LInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.MovieInputColorDialog = new System.Windows.Forms.ColorDialog();
 			this.StackMessagesCheckbox = new System.Windows.Forms.CheckBox();
+			this.WatchesRadio = new System.Windows.Forms.RadioButton();
+			this.WatchesLabel = new System.Windows.Forms.Label();
 			this.MessageTypeBox.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
@@ -90,7 +92,7 @@
 			// OK
 			// 
 			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OK.Location = new System.Drawing.Point(418, 434);
+			this.OK.Location = new System.Drawing.Point(348, 441);
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 1;
@@ -100,6 +102,8 @@
 			// 
 			// MessageTypeBox
 			// 
+			this.MessageTypeBox.Controls.Add(this.WatchesLabel);
+			this.MessageTypeBox.Controls.Add(this.WatchesRadio);
 			this.MessageTypeBox.Controls.Add(this.AutoholdLabel);
 			this.MessageTypeBox.Controls.Add(this.AutoholdRadio);
 			this.MessageTypeBox.Controls.Add(this.MultitrackLabel);
@@ -118,7 +122,7 @@
 			this.MessageTypeBox.Controls.Add(this.FPSRadio);
 			this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
 			this.MessageTypeBox.Name = "MessageTypeBox";
-			this.MessageTypeBox.Size = new System.Drawing.Size(177, 216);
+			this.MessageTypeBox.Size = new System.Drawing.Size(177, 234);
 			this.MessageTypeBox.TabIndex = 2;
 			this.MessageTypeBox.TabStop = false;
 			this.MessageTypeBox.Text = "Message Type";
@@ -127,7 +131,7 @@
 			// 
 			this.AutoholdLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.AutoholdLabel.AutoSize = true;
-			this.AutoholdLabel.Location = new System.Drawing.Point(126, 188);
+			this.AutoholdLabel.Location = new System.Drawing.Point(126, 209);
 			this.AutoholdLabel.Name = "AutoholdLabel";
 			this.AutoholdLabel.Size = new System.Drawing.Size(49, 13);
 			this.AutoholdLabel.TabIndex = 15;
@@ -136,7 +140,7 @@
 			// AutoholdRadio
 			// 
 			this.AutoholdRadio.AutoSize = true;
-			this.AutoholdRadio.Location = new System.Drawing.Point(6, 186);
+			this.AutoholdRadio.Location = new System.Drawing.Point(6, 210);
 			this.AutoholdRadio.Name = "AutoholdRadio";
 			this.AutoholdRadio.Size = new System.Drawing.Size(67, 17);
 			this.AutoholdRadio.TabIndex = 14;
@@ -149,7 +153,7 @@
 			// 
 			this.MultitrackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MultitrackLabel.AutoSize = true;
-			this.MultitrackLabel.Location = new System.Drawing.Point(126, 164);
+			this.MultitrackLabel.Location = new System.Drawing.Point(126, 185);
 			this.MultitrackLabel.Name = "MultitrackLabel";
 			this.MultitrackLabel.Size = new System.Drawing.Size(49, 13);
 			this.MultitrackLabel.TabIndex = 13;
@@ -158,7 +162,7 @@
 			// MultitrackRadio
 			// 
 			this.MultitrackRadio.AutoSize = true;
-			this.MultitrackRadio.Location = new System.Drawing.Point(6, 162);
+			this.MultitrackRadio.Location = new System.Drawing.Point(6, 186);
 			this.MultitrackRadio.Name = "MultitrackRadio";
 			this.MultitrackRadio.Size = new System.Drawing.Size(71, 17);
 			this.MultitrackRadio.TabIndex = 12;
@@ -171,7 +175,7 @@
 			// 
 			this.RerecLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.RerecLabel.AutoSize = true;
-			this.RerecLabel.Location = new System.Drawing.Point(126, 140);
+			this.RerecLabel.Location = new System.Drawing.Point(126, 161);
 			this.RerecLabel.Name = "RerecLabel";
 			this.RerecLabel.Size = new System.Drawing.Size(49, 13);
 			this.RerecLabel.TabIndex = 11;
@@ -180,7 +184,7 @@
 			// RerecordsRadio
 			// 
 			this.RerecordsRadio.AutoSize = true;
-			this.RerecordsRadio.Location = new System.Drawing.Point(6, 138);
+			this.RerecordsRadio.Location = new System.Drawing.Point(6, 162);
 			this.RerecordsRadio.Name = "RerecordsRadio";
 			this.RerecordsRadio.Size = new System.Drawing.Size(74, 17);
 			this.RerecordsRadio.TabIndex = 10;
@@ -192,7 +196,7 @@
 			// 
 			this.MessLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.MessLabel.AutoSize = true;
-			this.MessLabel.Location = new System.Drawing.Point(126, 116);
+			this.MessLabel.Location = new System.Drawing.Point(126, 137);
 			this.MessLabel.Name = "MessLabel";
 			this.MessLabel.Size = new System.Drawing.Size(49, 13);
 			this.MessLabel.TabIndex = 9;
@@ -241,7 +245,7 @@
 			// MessagesRadio
 			// 
 			this.MessagesRadio.AutoSize = true;
-			this.MessagesRadio.Location = new System.Drawing.Point(6, 114);
+			this.MessagesRadio.Location = new System.Drawing.Point(6, 138);
 			this.MessagesRadio.Name = "MessagesRadio";
 			this.MessagesRadio.Size = new System.Drawing.Size(73, 17);
 			this.MessagesRadio.TabIndex = 4;
@@ -313,9 +317,9 @@
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.ColorText);
-			this.groupBox2.Location = new System.Drawing.Point(12, 234);
+			this.groupBox2.Location = new System.Drawing.Point(12, 251);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(177, 223);
+			this.groupBox2.Size = new System.Drawing.Size(177, 210);
 			this.groupBox2.TabIndex = 4;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Message Colors";
@@ -323,7 +327,7 @@
 			// label12
 			// 
 			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(1, 170);
+			this.label12.Location = new System.Drawing.Point(1, 161);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(63, 13);
 			this.label12.TabIndex = 24;
@@ -332,7 +336,7 @@
 			// MovieInputText
 			// 
 			this.MovieInputText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.MovieInputText.Location = new System.Drawing.Point(45, 187);
+			this.MovieInputText.Location = new System.Drawing.Point(45, 178);
 			this.MovieInputText.MaxLength = 8;
 			this.MovieInputText.Name = "MovieInputText";
 			this.MovieInputText.ReadOnly = true;
@@ -351,7 +355,7 @@
 			// MovieInputColor
 			// 
 			this.MovieInputColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.MovieInputColor.Location = new System.Drawing.Point(4, 187);
+			this.MovieInputColor.Location = new System.Drawing.Point(4, 178);
 			this.MovieInputColor.Name = "MovieInputColor";
 			this.MovieInputColor.Size = new System.Drawing.Size(20, 20);
 			this.MovieInputColor.TabIndex = 9;
@@ -360,7 +364,7 @@
 			// LInputColorPanel
 			// 
 			this.LInputColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.LInputColorPanel.Location = new System.Drawing.Point(6, 139);
+			this.LInputColorPanel.Location = new System.Drawing.Point(6, 130);
 			this.LInputColorPanel.Name = "LInputColorPanel";
 			this.LInputColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.LInputColorPanel.TabIndex = 7;
@@ -369,7 +373,7 @@
 			// AlertColorPanel
 			// 
 			this.AlertColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.AlertColorPanel.Location = new System.Drawing.Point(6, 90);
+			this.AlertColorPanel.Location = new System.Drawing.Point(6, 81);
 			this.AlertColorPanel.Name = "AlertColorPanel";
 			this.AlertColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.AlertColorPanel.TabIndex = 7;
@@ -378,7 +382,7 @@
 			// ColorPanel
 			// 
 			this.ColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.ColorPanel.Location = new System.Drawing.Point(6, 43);
+			this.ColorPanel.Location = new System.Drawing.Point(6, 34);
 			this.ColorPanel.Name = "ColorPanel";
 			this.ColorPanel.Size = new System.Drawing.Size(20, 20);
 			this.ColorPanel.TabIndex = 7;
@@ -387,7 +391,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(1, 120);
+			this.label7.Location = new System.Drawing.Point(1, 111);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(86, 13);
 			this.label7.TabIndex = 18;
@@ -396,7 +400,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(28, 142);
+			this.label8.Location = new System.Drawing.Point(28, 133);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(18, 13);
 			this.label8.TabIndex = 17;
@@ -405,7 +409,7 @@
 			// LInputText
 			// 
 			this.LInputText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.LInputText.Location = new System.Drawing.Point(45, 139);
+			this.LInputText.Location = new System.Drawing.Point(45, 130);
 			this.LInputText.MaxLength = 8;
 			this.LInputText.Name = "LInputText";
 			this.LInputText.ReadOnly = true;
@@ -415,7 +419,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(1, 71);
+			this.label6.Location = new System.Drawing.Point(1, 62);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(78, 13);
 			this.label6.TabIndex = 13;
@@ -424,7 +428,7 @@
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(28, 93);
+			this.label5.Location = new System.Drawing.Point(28, 84);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(18, 13);
 			this.label5.TabIndex = 12;
@@ -433,7 +437,7 @@
 			// AlertColorText
 			// 
 			this.AlertColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.AlertColorText.Location = new System.Drawing.Point(45, 90);
+			this.AlertColorText.Location = new System.Drawing.Point(45, 81);
 			this.AlertColorText.MaxLength = 8;
 			this.AlertColorText.Name = "AlertColorText";
 			this.AlertColorText.ReadOnly = true;
@@ -443,7 +447,7 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(6, 27);
+			this.label4.Location = new System.Drawing.Point(6, 18);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(80, 13);
 			this.label4.TabIndex = 8;
@@ -452,7 +456,7 @@
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(28, 46);
+			this.label3.Location = new System.Drawing.Point(28, 37);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(18, 13);
 			this.label3.TabIndex = 7;
@@ -461,7 +465,7 @@
 			// ColorText
 			// 
 			this.ColorText.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.ColorText.Location = new System.Drawing.Point(45, 43);
+			this.ColorText.Location = new System.Drawing.Point(45, 34);
 			this.ColorText.MaxLength = 8;
 			this.ColorText.Name = "ColorText";
 			this.ColorText.ReadOnly = true;
@@ -476,7 +480,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(499, 434);
+			this.Cancel.Location = new System.Drawing.Point(429, 441);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 5;
@@ -487,7 +491,7 @@
 			// ResetDefaultsButton
 			// 
 			this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ResetDefaultsButton.Location = new System.Drawing.Point(195, 434);
+			this.ResetDefaultsButton.Location = new System.Drawing.Point(195, 441);
 			this.ResetDefaultsButton.Name = "ResetDefaultsButton";
 			this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
 			this.ResetDefaultsButton.TabIndex = 6;
@@ -656,13 +660,33 @@
 			this.StackMessagesCheckbox.Text = "Stack Messages";
 			this.StackMessagesCheckbox.UseVisualStyleBackColor = true;
 			// 
+			// WatchesRadio
+			// 
+			this.WatchesRadio.AutoSize = true;
+			this.WatchesRadio.Location = new System.Drawing.Point(6, 114);
+			this.WatchesRadio.Name = "WatchesRadio";
+			this.WatchesRadio.Size = new System.Drawing.Size(68, 17);
+			this.WatchesRadio.TabIndex = 16;
+			this.WatchesRadio.Text = "Watches";
+			this.WatchesRadio.UseVisualStyleBackColor = true;
+			// 
+			// WatchesLabel
+			// 
+			this.WatchesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.WatchesLabel.AutoSize = true;
+			this.WatchesLabel.Location = new System.Drawing.Point(126, 116);
+			this.WatchesLabel.Name = "WatchesLabel";
+			this.WatchesLabel.Size = new System.Drawing.Size(49, 13);
+			this.WatchesLabel.TabIndex = 17;
+			this.WatchesLabel.Text = "255, 255";
+			// 
 			// MessageConfig
 			// 
 			this.AcceptButton = this.OK;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(612, 469);
+			this.ClientSize = new System.Drawing.Size(512, 469);
 			this.Controls.Add(this.StackMessagesCheckbox);
 			this.Controls.Add(this.ResetDefaultsButton);
 			this.Controls.Add(this.Cancel);
@@ -744,5 +768,7 @@
 		private System.Windows.Forms.CheckBox StackMessagesCheckbox;
 		private System.Windows.Forms.Label AutoholdLabel;
 		private System.Windows.Forms.RadioButton AutoholdRadio;
+		private System.Windows.Forms.Label WatchesLabel;
+		private System.Windows.Forms.RadioButton WatchesRadio;
 	}
 }
