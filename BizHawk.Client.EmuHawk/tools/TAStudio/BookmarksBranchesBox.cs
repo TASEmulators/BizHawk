@@ -148,8 +148,8 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				CurrentBranch = index;
-				BranchView.Refresh();
 				LoadBranch(SelectedBranch);
+				BranchView.Refresh();
 			}
 		}
 
