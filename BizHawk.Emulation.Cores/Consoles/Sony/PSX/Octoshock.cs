@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: true
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -395,8 +395,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
 
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
@@ -1295,7 +1293,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return OctoshockDll.SHOCK_OK;
 		}
 
-		[FeatureNotImplemented]
 		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
 
 		public bool CanStep(StepType type) { return false; }
