@@ -520,6 +520,19 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
 			}
+
+			bw.Write(currentBranch);
+			bw.Write(BranchStates.Count);
+			foreach (var s in BranchStates)
+			{
+				bw.Write(s.Key);
+				bw.Write(s.Value.Count);
+				foreach (var t in s.Value)
+				{
+					bw.Write(t.Key);
+					t.Value.Write(bw);
+				}
+			}
 		}
 
 		private List<int> ExcludeStates()
@@ -574,6 +587,25 @@ namespace BizHawk.Client.Common
 				//Used += len;
 			}
 			//}
+
+			currentBranch = br.ReadInt32();
+			int c = br.ReadInt32();
+			BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
+			while (c > 0)
+			{
+				int key = br.ReadInt32();
+				int c2 = br.ReadInt32();
+				var list = new SortedList<int, StateManagerState>(c2);
+				while (c2 > 0)
+				{
+					int key2 = br.ReadInt32();
+					var state = StateManagerState.Read(br, this);
+					list.Add(key2, state);
+					c2--;
+				}
+				BranchStates.Add(key, list);
+				c--;
+			}
 		}
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace BizHawk.Client.Common
 {
@@ -14,6 +15,20 @@ namespace BizHawk.Client.Common
 		private long _id;
 
 		public int Frame { get; set; }
+
+		public void Write(BinaryWriter w)
+		{
+			w.Write(Frame);
+			w.Write(_state.Length);
+			w.Write(_state);
+		}
+
+		public static StateManagerState Read(BinaryReader r, TasStateManager m)
+		{
+			int frame = r.ReadInt32();
+			byte[] data = r.ReadBytes(r.ReadInt32());
+			return new StateManagerState(m, data, frame);
+		}
 
 		public byte[] State
 		{
