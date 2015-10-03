@@ -315,9 +315,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 					index += controllerType.BoolButtons.Count - 1;
 				AutoPatternBool p = BoolPatterns[index];
-				// adelikat: I broke it
-				//Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
-				Global.StickyXORAdapter.SetSticky(button, true);
+				Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
 			}
 			else
 			{
@@ -328,9 +326,7 @@ namespace BizHawk.Client.EmuHawk
 				float? value = null;
 				if (isOn.Value) value = 0f;
 				AutoPatternFloat p = FloatPatterns[index];
-				// adelikat: I broke it
-				//Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
-				Global.StickyXORAdapter.SetFloat(button, value);
+				Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
 			}
 		}
 
