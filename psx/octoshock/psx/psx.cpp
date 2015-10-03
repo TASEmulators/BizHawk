@@ -32,6 +32,8 @@
 #include "input/dualshock.h"
 #include "input/dualanalog.h"
 #include "input/gamepad.h"
+#include "input/memcard.h"
+
 
 #include <stdarg.h>
 #include <ctype.h>
@@ -1197,8 +1199,15 @@ struct {
 		//TODO - once we get flexible here, do some extra condition checks.. whether memcards exist, etc. much like devices.
 		switch(transaction->transaction)
 		{
-			case eShockMemcardTransaction_Connect: return SHOCK_ERROR; //not supported yet
-			case eShockMemcardTransaction_Disconnect: return SHOCK_ERROR; //not supported yet
+			case eShockMemcardTransaction_Connect: 
+				//cant connect when a memcard is already connected
+				if(!strcmp(FIO->MCPorts[portnum]->GetName(),"InputDevice_Memcard"))
+					return SHOCK_NOCANDO;
+				delete FIO->MCPorts[portnum]; //delete dummy
+				FIO->MCPorts[portnum] = Device_Memcard_Create();
+			
+			case eShockMemcardTransaction_Disconnect: 
+				return SHOCK_ERROR; //not supported yet
 
 			case eShockMemcardTransaction_Write:
 				FIO->MCPorts[portnum]->WriteNV((uint8*)transaction->buffer128k,0,128*1024);

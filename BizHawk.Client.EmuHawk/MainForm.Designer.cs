@@ -2553,7 +2553,7 @@
 			this.PSXControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.PSXControllerSettingsMenuItem.Name = "PSXControllerSettingsMenuItem";
 			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.PSXControllerSettingsMenuItem.Text = "Controller Settings";
+			this.PSXControllerSettingsMenuItem.Text = "FrontIO Settings";
 			this.PSXControllerSettingsMenuItem.Click += new System.EventHandler(this.PSXControllerSettingsMenuItem_Click);
 			// 
 			// PSXOptionsMenuItem

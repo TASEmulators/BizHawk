@@ -1746,7 +1746,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXControllerConfig().ShowDialog();
+			new PSXControllerConfigNew().ShowDialog();
 		}
 
 		#endregion

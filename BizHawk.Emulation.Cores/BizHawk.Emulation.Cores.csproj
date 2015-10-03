@@ -797,8 +797,8 @@
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Consoles\Sony\PSX\OctoshockControlConfig.cs" />
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
+    <Compile Include="Consoles\Sony\PSX\OctoshockFIOConfig.cs" />
     <Compile Include="Consoles\Sony\PSX\PSF.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />

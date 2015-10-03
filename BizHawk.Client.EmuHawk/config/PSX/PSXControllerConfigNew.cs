@@ -34,15 +34,56 @@ namespace BizHawk.Client.EmuHawk
 				combo.SelectedIndex = 0;
 			}
 
+			var psxSettings = ((Octoshock)Global.Emulator).GetSyncSettings();
+			GuiFromUserConfig(psxSettings.FIOConfig);
+
 			RefreshLabels();
+		}
+
+		void GuiFromUserConfig(OctoshockFIOConfigUser user)
+		{
+			cbMemcard_1.Checked = user.Memcards[0];
+			cbMemcard_2.Checked = user.Memcards[1];
+			cbMultitap_1.Checked = user.Multitaps[0];
+			cbMultitap_2.Checked = user.Multitaps[1];
+
+			var combos = new[] { combo_1_1, combo_1_2, combo_1_3, combo_1_4, combo_2_1, combo_2_2, combo_2_3, combo_2_4 };
+			for (int i = 0; i < 8; i++)
+			{
+				var combo = combos[i];
+				if (user.Devices8[i] == OctoshockDll.ePeripheralType.None) combo.SelectedIndex = 0;
+				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualAnalog) combo.SelectedIndex = 1;
+				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualShock) combo.SelectedIndex = 2;
+			}
+		}
+
+		OctoshockFIOConfigUser UserConfigFromGui()
+		{
+			OctoshockFIOConfigUser uc = new OctoshockFIOConfigUser();
+
+			uc.Memcards[0] = cbMemcard_1.Checked;
+			uc.Memcards[1] = cbMemcard_2.Checked;
+
+			uc.Multitaps[0] = cbMultitap_1.Checked;
+			uc.Multitaps[1] = cbMultitap_2.Checked;
+
+			var combos = new[] { combo_1_1, combo_1_2, combo_1_3, combo_1_4, combo_2_1, combo_2_2, combo_2_3, combo_2_4 };
+			for (int i = 0; i < 8; i++)
+			{
+				var combo = combos[i];
+				if (combo.SelectedIndex == 0) uc.Devices8[i] = OctoshockDll.ePeripheralType.None;
+				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
+				if (combo.SelectedIndex == 2) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualShock;
+			}
+
+			return uc;
 		}
 
 		void RefreshLabels()
 		{
-			bool multitap_1 = cbMultitap_1.Checked;
-			bool multitap_2 = cbMultitap_2.Checked;
+			var uc = UserConfigFromGui();
 
-			bool b1 = multitap_1;
+			bool b1 = uc.Multitaps[0];
 			lbl_1_1.Visible = b1;
 			lbl_1_2.Visible = b1;
 			lbl_1_3.Visible = b1;
@@ -54,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			lbl_p_1_3.Visible = b1;
 			lbl_p_1_4.Visible = b1;
 
-			bool b2 = multitap_2;
+			bool b2 = uc.Multitaps[1];
 			lbl_2_1.Visible = b2;
 			lbl_2_2.Visible = b2;
 			lbl_2_3.Visible = b2;
@@ -66,21 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			lbl_p_2_3.Visible = b2;
 			lbl_p_2_4.Visible = b2;
 
-			OctoshockControlUserConfig uc = new OctoshockControlUserConfig();
-			
-			uc.Multitaps[0] = multitap_1;
-			uc.Multitaps[1] = multitap_2;
-
-			var combos = new[] { combo_1_1, combo_1_2, combo_1_3, combo_1_4, combo_2_1, combo_2_2, combo_2_3, combo_2_4};
-			for (int i = 0; i < 8; i++)
-			{
-				var combo = combos[i];
-				if (combo.SelectedIndex == 0) uc.Devices8[i] = OctoshockDll.ePeripheralType.None;
-				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
-				if (combo.SelectedIndex == 2) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualShock;
-			}
-
-			var LC = uc.ToLogicalConfig();
+			var LC = uc.ToLogical();
 
 			var p_labels = new[] { lbl_p_1_1,lbl_p_1_2,lbl_p_1_3,lbl_p_1_4,lbl_p_2_1,lbl_p_2_2,lbl_p_2_3,lbl_p_2_4};
 			for (int i = 0; i < 8; i++)
@@ -94,7 +121,6 @@ namespace BizHawk.Client.EmuHawk
 					lbl.Visible = true;
 				}
 			}
-
 		}
 
 		private void cb_changed(object sender, EventArgs e)
@@ -105,6 +131,18 @@ namespace BizHawk.Client.EmuHawk
 		private void combo_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			RefreshLabels();
+		}
+
+		private void btnOK_Click(object sender, EventArgs e)
+		{
+			var psxSettings = ((Octoshock)Global.Emulator).GetSyncSettings();
+
+			psxSettings.FIOConfig = UserConfigFromGui();
+			GlobalWin.MainForm.PutCoreSyncSettings(psxSettings);
+			
+			DialogResult = DialogResult.OK;
+			
+			Close();
 		}
 	}
 }
