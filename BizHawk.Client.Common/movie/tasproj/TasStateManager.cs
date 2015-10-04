@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common
 			{
 				if (BranchStates.Any())
 				{
-					var kvp = BranchStates.ElementAt(1);
+					var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
 					shouldRemove.X = kvp.Key;
 					shouldRemove.Y = kvp.Value.Keys[0];
 				}
@@ -356,7 +356,7 @@ namespace BizHawk.Client.Common
 		{
 			if (branch == -1)
 				accessed.Remove(States[frame]);
-			else
+			else if (accessed.Contains(BranchStates[frame][branch]))
 				accessed.Remove(BranchStates[frame][branch]);
 
 			StateManagerState state;

@@ -539,6 +539,7 @@ namespace BizHawk.Client.Common
 		public void UpdateBranch(TasBranch old, TasBranch newBranch)
 		{
 			int index = Branches.IndexOf(old);
+			newBranch.UniqueIdentifier = old.UniqueIdentifier;
 			Branches[index] = newBranch;
 			TasStateManager.UpdateBranch(index);
 			Changes = true;

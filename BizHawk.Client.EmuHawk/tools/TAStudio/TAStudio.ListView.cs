@@ -538,7 +538,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu)
+			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu && TasView.SelectedRows.Any())
 			{
 				if (Global.MovieSession.Movie.FrameCount < TasView.SelectedRows.Max())
 				{
