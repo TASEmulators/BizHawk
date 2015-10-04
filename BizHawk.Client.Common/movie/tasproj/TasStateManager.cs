@@ -698,8 +698,8 @@ namespace BizHawk.Client.Common
 				if (!BranchStates[frame].ContainsKey(branchHash))
 					return -2;
 				stateToMatch = BranchStates[frame][branchHash];
-				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
-					return -1;
+				//if (States.ContainsKey(frame) && States[frame] == stateToMatch)
+				//	return -1;
 			}
 
 			// there's no state for that frame at all

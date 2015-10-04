@@ -27,11 +27,8 @@ namespace BizHawk.Client.Common
 		{
 			var currentHashes = this.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
 
-			// TODO: loop until this is unique
-			if (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()))
-			{
-				item.UniqueIdentifier = Guid.NewGuid();
-			}
+			do item.UniqueIdentifier = Guid.NewGuid();
+			while (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()));
 
 			base.Add(item);
 		}

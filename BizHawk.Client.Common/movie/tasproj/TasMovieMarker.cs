@@ -218,6 +218,8 @@ namespace BizHawk.Client.Common
 			{
 				if (this[i].Frame >= startFrame)
 				{
+					if (i == 0)
+						continue;
 					_movie.ChangeLog.AddMarkerChange(null, this[i].Frame, this[i].Message);
 					RemoveAt(i);
 					deletedCount++;
