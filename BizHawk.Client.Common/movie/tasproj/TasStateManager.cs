@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 				return _movie.Markers.IsMarker(States[frame].Frame + 1);
 			else
 			{
-				if (_movie.GetBranch(branch).Markers == null)
+				if (_movie.GetBranch(_movie.BranchIndexByHash(branch)).Markers == null)
 					return _movie.Markers.IsMarker(States[frame].Frame + 1);
 				else
 					return _movie.GetBranch(branch).Markers.Any(m => m.Frame + 1 == frame);
@@ -727,7 +727,10 @@ namespace BizHawk.Client.Common
 			if (!States.ContainsValue(s))
 			{
 				if (BranchStates.ContainsKey(s.Frame))
-					ret.Y = BranchStates[s.Frame].Values.IndexOf(s);
+				{
+					int index = BranchStates[s.Frame].Values.IndexOf(s);
+					ret.Y = BranchStates[s.Frame].Keys.ElementAt(index);
+				}
 				if (ret.Y == -1)
 					return new Point(-1, -2);
 			}
