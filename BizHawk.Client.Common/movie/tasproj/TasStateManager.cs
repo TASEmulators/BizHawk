@@ -710,7 +710,7 @@ namespace BizHawk.Client.Common
 			SortedList<int, StateManagerState> stateList = BranchStates[frame];
 			for (int i = 0; i < _movie.BranchCount; i++)
 			{
-				if (i == TasMovie.BranchIndexByHash(branchHash))
+				if (i == _movie.BranchIndexByHash(branchHash))
 					continue;
 
 				if (stateList != null && stateList.ContainsKey(i) && stateList[i] == stateToMatch)

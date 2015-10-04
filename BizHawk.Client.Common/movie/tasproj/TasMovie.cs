@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
-		public static readonly TasBranchCollection Branches = new TasBranchCollection();
+		public readonly TasBranchCollection Branches = new TasBranchCollection();
 
 		private BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 		public TasBranch GetBranch(int index) { return Branches[index]; }
 		public int BranchHashByIndex(int index) { return Branches[index].UniqueIdentifier.GetHashCode(); }
 
-		public static int BranchIndexByHash(int hash)
+		public int BranchIndexByHash(int hash)
 		{
 			TasBranch branch = Branches.Where(b => b.UniqueIdentifier.GetHashCode() == hash).SingleOrDefault();
 			if (branch == null)

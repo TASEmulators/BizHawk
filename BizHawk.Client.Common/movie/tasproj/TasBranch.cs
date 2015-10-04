@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
 
@@ -9,14 +10,6 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
-		public TasBranch()
-		{
-			do
-			{
-				UniqueIdentifier = Guid.NewGuid();
-			} while (TasMovie.BranchIndexByHash(UniqueIdentifier.GetHashCode()) != -1);
-		}
-
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public List<string> InputLog { get; set; }
@@ -30,6 +23,19 @@ namespace BizHawk.Client.Common
 
 	public class TasBranchCollection : List<TasBranch>
 	{
+		public new void Add(TasBranch item)
+		{
+			var currentHashes = this.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
+
+			// TODO: loop until this is unique
+			if (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()))
+			{
+				item.UniqueIdentifier = Guid.NewGuid();
+			}
+
+			base.Add(item);
+		}
+
 		public void Save(BinaryStateSaver bs)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
