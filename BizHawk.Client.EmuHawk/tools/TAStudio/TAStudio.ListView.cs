@@ -271,7 +271,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
 					RefreshDialog();
-
 				}
 				else if (columnName != CursorColumnName) // TODO: what about float?
 				{
@@ -541,7 +540,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu)
 			{
-				RightClickMenu.Show(TasView, e.X, e.Y);
+				if (Global.MovieSession.Movie.FrameCount < TasView.SelectedRows.Max())
+				{
+					// trying to be smart here
+					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu
+					// you might need it when you load again the branch where this frame exists
+					TasView.DeselectAll();
+					RefreshTasView();
+				}
+				else
+				{
+					RightClickMenu.Show(TasView, e.X, e.Y);
+				}
 			}
 			else if (e.Button == MouseButtons.Left)
 			{

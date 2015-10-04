@@ -9,6 +9,14 @@ namespace BizHawk.Client.Common
 {
 	public class TasBranch
 	{
+		public TasBranch()
+		{
+			do
+			{
+				UniqueIdentifier = Guid.NewGuid();
+			} while (TasMovie.BranchIndexByHash(UniqueIdentifier.GetHashCode()) != -1);
+		}
+
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
 		public List<string> InputLog { get; set; }

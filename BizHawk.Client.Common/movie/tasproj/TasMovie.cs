@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
-		private readonly TasBranchCollection Branches = new TasBranchCollection();
+		public static readonly TasBranchCollection Branches = new TasBranchCollection();
 
 		private BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 		public TasBranch GetBranch(int index) { return Branches[index]; }
 		public int BranchHashByIndex(int index) { return Branches[index].UniqueIdentifier.GetHashCode(); }
 
-		public int BranchIndexByHash(int hash)
+		public static int BranchIndexByHash(int hash)
 		{
 			TasBranch branch = Branches.Where(b => b.UniqueIdentifier.GetHashCode() == hash).SingleOrDefault();
 			if (branch == null)
@@ -524,12 +524,6 @@ namespace BizHawk.Client.Common
 
 		public void AddBranch(TasBranch branch)
 		{
-			// before adding, make sure guid hash is unique too, we can't afford branch id clashes
-			do
-			{
-				branch.UniqueIdentifier = Guid.NewGuid();
-			} while (BranchIndexByHash(branch.UniqueIdentifier.GetHashCode()) != -1);
-
 			Branches.Add(branch);
 			TasStateManager.AddBranch();
 			Changes = true;
