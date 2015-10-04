@@ -2552,28 +2552,28 @@
 			// 
 			this.PSXControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.PSXControllerSettingsMenuItem.Name = "PSXControllerSettingsMenuItem";
-			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.PSXControllerSettingsMenuItem.Text = "FrontIO Settings";
+			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.PSXControllerSettingsMenuItem.Text = "Controller / Memcard Settings";
 			this.PSXControllerSettingsMenuItem.Click += new System.EventHandler(this.PSXControllerSettingsMenuItem_Click);
 			// 
 			// PSXOptionsMenuItem
 			// 
 			this.PSXOptionsMenuItem.Name = "PSXOptionsMenuItem";
-			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.PSXOptionsMenuItem.Text = "&Options";
 			this.PSXOptionsMenuItem.Click += new System.EventHandler(this.PSXOptionsMenuItem_Click);
 			// 
 			// PSXDiscControlsMenuItem
 			// 
 			this.PSXDiscControlsMenuItem.Name = "PSXDiscControlsMenuItem";
-			this.PSXDiscControlsMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXDiscControlsMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.PSXDiscControlsMenuItem.Text = "&Disc Controls";
 			this.PSXDiscControlsMenuItem.Click += new System.EventHandler(this.PSXDiscControlsMenuItem_Click);
 			// 
 			// PSXHashDiscsToolStripMenuItem
 			// 
 			this.PSXHashDiscsToolStripMenuItem.Name = "PSXHashDiscsToolStripMenuItem";
-			this.PSXHashDiscsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXHashDiscsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.PSXHashDiscsToolStripMenuItem.Text = "&Hash Discs";
 			this.PSXHashDiscsToolStripMenuItem.Click += new System.EventHandler(this.PSXHashDiscsToolStripMenuItem_Click);
 			// 
