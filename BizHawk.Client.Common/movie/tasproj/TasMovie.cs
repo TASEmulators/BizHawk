@@ -82,8 +82,21 @@ namespace BizHawk.Client.Common
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
-		public TasBranch GetBranch(int index) { return Branches[index]; }
-		public int BranchHashByIndex(int index) { return Branches[index].UniqueIdentifier.GetHashCode(); }
+		public TasBranch GetBranch(int index)
+		{
+			if (index >= Branches.Count)
+				return null; // are we allowed?
+			else
+				return Branches[index];
+		}
+
+		public int BranchHashByIndex(int index)
+		{
+			if (index >= Branches.Count)
+				return -1;
+			else
+				return Branches[index].UniqueIdentifier.GetHashCode();
+		}
 
 		public int BranchIndexByHash(int hash)
 		{

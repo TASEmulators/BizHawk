@@ -432,8 +432,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!HandleMovieLoadStuff(newMovie))
 				return false;
+			
+			// clear all selections
+			TasView.DeselectAll();
+			BookMarkControl.Restart();
+			MarkerControl.Restart();
 
-			BookMarkControl.UpdateValues();
 			RefreshDialog();
 			return true;
 		}

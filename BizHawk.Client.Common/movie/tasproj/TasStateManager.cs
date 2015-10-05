@@ -588,6 +588,9 @@ namespace BizHawk.Client.Common
 			}
 			//}
 
+			if (br.PeekChar() == -1) // at least don't crash when loading an old project
+				return;
+
 			currentBranch = br.ReadInt32();
 			int c = br.ReadInt32();
 			BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
