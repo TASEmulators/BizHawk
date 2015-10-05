@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " mb";
 			CapacityNumeric_ValueChanged(null, null);
 			SaveCapacityNumeric_ValueChanged(null, null);
+			BranchStatesInTasproj.Checked = Settings.BranchStatesInTasproj;
 		}
 
 		private int MaxStatesInCapacity
@@ -78,6 +79,11 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveCapacityNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumSaveStatesLabel.Text = ((int)Math.Floor(SaveCapacityNumeric.Value / _stateSizeMb)).ToString();
+		}
+
+		private void BranchStatesInTasproj_CheckedChanged(object sender, EventArgs e)
+		{
+			Settings.BranchStatesInTasproj = BranchStatesInTasproj.Checked;
 		}
 	}
 }

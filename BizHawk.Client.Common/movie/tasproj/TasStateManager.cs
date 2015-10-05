@@ -503,38 +503,6 @@ namespace BizHawk.Client.Common
 				MaybeRemoveStates();
 		}
 
-		// TODO: save/load BranchStates
-		public void Save(BinaryWriter bw)
-		{
-			List<int> noSave = ExcludeStates();
-
-			bw.Write(States.Count - noSave.Count);
-			for (int i = 0; i < States.Count; i++)
-			{
-				if (noSave.Contains(i))
-					continue;
-
-				StateAccessed(States.ElementAt(i).Key);
-				KeyValuePair<int, StateManagerState> kvp = States.ElementAt(i);
-				bw.Write(kvp.Key);
-				bw.Write(kvp.Value.Length);
-				bw.Write(kvp.Value.State);
-			}
-
-			bw.Write(currentBranch);
-			bw.Write(BranchStates.Count);
-			foreach (var s in BranchStates)
-			{
-				bw.Write(s.Key);
-				bw.Write(s.Value.Count);
-				foreach (var t in s.Value)
-				{
-					bw.Write(t.Key);
-					t.Value.Write(bw);
-				}
-			}
-		}
-
 		private List<int> ExcludeStates()
 		{
 			List<int> ret = new List<int>();
@@ -569,6 +537,41 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
+		public void Save(BinaryWriter bw)
+		{
+			List<int> noSave = ExcludeStates();
+
+			bw.Write(States.Count - noSave.Count);
+			for (int i = 0; i < States.Count; i++)
+			{
+				if (noSave.Contains(i))
+					continue;
+
+				StateAccessed(States.ElementAt(i).Key);
+				KeyValuePair<int, StateManagerState> kvp = States.ElementAt(i);
+				bw.Write(kvp.Key);
+				bw.Write(kvp.Value.Length);
+				bw.Write(kvp.Value.State);
+			}
+
+			bw.Write(currentBranch);
+
+			if (Settings.BranchStatesInTasproj)
+			{
+				bw.Write(BranchStates.Count);
+				foreach (var s in BranchStates)
+				{
+					bw.Write(s.Key);
+					bw.Write(s.Value.Count);
+					foreach (var t in s.Value)
+					{
+						bw.Write(t.Key);
+						t.Value.Write(bw);
+					}
+				}
+			}
+		}
+
 		public void Load(BinaryReader br)
 		{
 			States.Clear();
@@ -592,22 +595,26 @@ namespace BizHawk.Client.Common
 				return;
 
 			currentBranch = br.ReadInt32();
-			int c = br.ReadInt32();
-			BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
-			while (c > 0)
+
+			if (Settings.BranchStatesInTasproj)
 			{
-				int key = br.ReadInt32();
-				int c2 = br.ReadInt32();
-				var list = new SortedList<int, StateManagerState>(c2);
-				while (c2 > 0)
+				int c = br.ReadInt32();
+				BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
+				while (c > 0)
 				{
-					int key2 = br.ReadInt32();
-					var state = StateManagerState.Read(br, this);
-					list.Add(key2, state);
-					c2--;
+					int key = br.ReadInt32();
+					int c2 = br.ReadInt32();
+					var list = new SortedList<int, StateManagerState>(c2);
+					while (c2 > 0)
+					{
+						int key2 = br.ReadInt32();
+						var state = StateManagerState.Read(br, this);
+						list.Add(key2, state);
+						c2--;
+					}
+					BranchStates.Add(key, list);
+					c--;
 				}
-				BranchStates.Add(key, list);
-				c--;
 			}
 		}
 
