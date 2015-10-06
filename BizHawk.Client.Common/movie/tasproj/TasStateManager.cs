@@ -221,11 +221,20 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		private Point StateToRemove()
 		{
-			int markerSkips = maxStates / 2;
-
 			// X is frame, Y is branch
 			Point shouldRemove = new Point(-1, -1);
+
+			if (BranchStates.Any() && Settings.EraseBranchStatesFirst)
+			{
+				var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
+				shouldRemove.X = kvp.Key;
+				shouldRemove.Y = kvp.Value.Keys[0];
+
+				return shouldRemove;
+			}
+
 			int i = 0;
+			int markerSkips = maxStates / 2;
 			// lowPrioritySates (e.g. states with only lag frames between them)
 			do
 			{
@@ -263,7 +272,7 @@ namespace BizHawk.Client.Common
 
 			if (shouldRemove.X < 1) // only found marker states above
 			{
-				if (BranchStates.Any())
+				if (BranchStates.Any() && !Settings.EraseBranchStatesFirst)
 				{
 					var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
 					shouldRemove.X = kvp.Key;
@@ -356,7 +365,7 @@ namespace BizHawk.Client.Common
 		{
 			if (branch == -1)
 				accessed.Remove(States[frame]);
-			else if (accessed.Contains(BranchStates[frame][branch]))
+			else if (accessed.Contains(BranchStates[frame][branch]) && !Settings.EraseBranchStatesFirst)
 				accessed.Remove(BranchStates[frame][branch]);
 
 			StateManagerState state;
@@ -591,31 +600,31 @@ namespace BizHawk.Client.Common
 			}
 			//}
 
-			if (br.PeekChar() == -1) // at least don't crash when loading an old project
-				return;
-
-			currentBranch = br.ReadInt32();
-
-			if (Settings.BranchStatesInTasproj)
+			try
 			{
-				int c = br.ReadInt32();
-				BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
-				while (c > 0)
+				currentBranch = br.ReadInt32();
+				if (Settings.BranchStatesInTasproj)
 				{
-					int key = br.ReadInt32();
-					int c2 = br.ReadInt32();
-					var list = new SortedList<int, StateManagerState>(c2);
-					while (c2 > 0)
+					int c = br.ReadInt32();
+					BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
+					while (c > 0)
 					{
-						int key2 = br.ReadInt32();
-						var state = StateManagerState.Read(br, this);
-						list.Add(key2, state);
-						c2--;
+						int key = br.ReadInt32();
+						int c2 = br.ReadInt32();
+						var list = new SortedList<int, StateManagerState>(c2);
+						while (c2 > 0)
+						{
+							int key2 = br.ReadInt32();
+							var state = StateManagerState.Read(br, this);
+							list.Add(key2, state);
+							c2--;
+						}
+						BranchStates.Add(key, list);
+						c--;
 					}
-					BranchStates.Add(key, list);
-					c--;
 				}
 			}
+			catch (EndOfStreamException) { }
 		}
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)

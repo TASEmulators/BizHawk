@@ -14,6 +14,7 @@ namespace BizHawk.Client.Common
 			Capacitymb = 512;
 			DiskCapacitymb = 512;
 			BranchStatesInTasproj = false;
+			EraseBranchStatesFirst = true;
 		}
 
 		public TasStateManagerSettings(TasStateManagerSettings settings)
@@ -22,6 +23,7 @@ namespace BizHawk.Client.Common
 			Capacitymb = settings.Capacitymb;
 			DiskCapacitymb = settings.DiskCapacitymb;
 			BranchStatesInTasproj = settings.BranchStatesInTasproj;
+			EraseBranchStatesFirst = settings.EraseBranchStatesFirst;
 		}
 
 		/// <summary>
@@ -60,6 +62,13 @@ namespace BizHawk.Client.Common
 		public bool BranchStatesInTasproj { get; set; }
 
 		/// <summary>
+		/// Erase branch states before greenzone states when capacity is met
+		/// </summary>
+		[DisplayName("Erase branch states first")]
+		[Description("Erase branch states before greenzone states when capacity is met")]
+		public bool EraseBranchStatesFirst { get; set; }
+
+		/// <summary>
 		/// The total state capacity in bytes.
 		/// </summary>
 		[JsonIgnore]
@@ -87,6 +96,7 @@ namespace BizHawk.Client.Common
 			sb.AppendLine(Capacitymb.ToString());
 			sb.AppendLine(DiskCapacitymb.ToString());
 			sb.AppendLine(BranchStatesInTasproj.ToString());
+			sb.AppendLine(EraseBranchStatesFirst.ToString());
 
 			return sb.ToString();
 		}
@@ -118,6 +128,11 @@ namespace BizHawk.Client.Common
 					BranchStatesInTasproj = bool.Parse(lines[3]);
 				else
 					BranchStatesInTasproj = false;
+
+				if (lines.Length > 4)
+					EraseBranchStatesFirst = bool.Parse(lines[4]);
+				else
+					EraseBranchStatesFirst = true;
 			}
 		}
 	}
