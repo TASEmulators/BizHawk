@@ -132,6 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			GamePad360.Initialize();
 #else
 			OTK_Keyboard.Initialize();
+			OTK_GamePad.Initialize();
 #endif
 			Instance = new Input();
 		}
@@ -339,6 +340,7 @@ namespace BizHawk.Client.EmuHawk
 				GamePad360.UpdateAll();
 				#else
 				OTK_Keyboard.Update();
+				OTK_GamePad.UpdateAll();
 				#endif
 
 				//this block is going to massively modify data structures that the binding method uses, so we have to lock it all
@@ -393,6 +395,24 @@ namespace BizHawk.Client.EmuHawk
 								float f = sv.Item2;
 								//if (n == "J5 RotationZ")
 								//	System.Diagnostics.Debugger.Break();
+								if (trackdeltas)
+									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
+								FloatValues[n] = f;
+							}
+						}
+						#else
+						//analyze joysticks
+						for (int i = 0; i < OTK_GamePad.Devices.Count; i++)
+						{
+							var pad = OTK_GamePad.Devices[i];
+							string jname = "J" + (i + 1) + " ";
+
+							for (int b = 0; b < pad.NumButtons; b++)
+								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
+							foreach (var sv in pad.GetFloats())
+							{
+								string n = jname + sv.Item1;
+								float f = sv.Item2;
 								if (trackdeltas)
 									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
 								FloatValues[n] = f;

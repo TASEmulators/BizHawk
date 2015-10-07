@@ -1504,6 +1504,7 @@
     <Compile Include="HawkDialogFactory.cs" />
     <Compile Include="IFolderBrowserDialog.cs" />
     <Compile Include="IOpenFileDialog.cs" />
+    <Compile Include="Input\OTK_GamePad.cs" Condition=" '$(OS)' != 'Windows_NT' " />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
