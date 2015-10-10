@@ -4,28 +4,25 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
+using System.Windows.Forms;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	// TODO: use the EMulation.Common Region enum
-	public enum Region
-	{
-		NTSC,
-		PAL
-	}
-
 	[CoreAttributes(
 		"C64Hawk",
 		"SaxxonPIke",
 		isPorted: false,
 		isReleased: false
 		)]
-	[ServiceNotApplicable(typeof(IRegionable), typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable
+	[ServiceNotApplicable(typeof(ISettable<,>))]
+	sealed public partial class C64 : IEmulator, IStatable, IInputPollable, IDriveLight, IDebuggable, IDisassemblable, IRegionable, ISettable<C64.C64Settings, C64.C64SyncSettings>
 	{
 		// framework
-		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension)
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension, object Settings, object SyncSettings)
 		{
+			PutSyncSettings((C64SyncSettings)SyncSettings ?? new C64SyncSettings());
+			PutSettings((C64Settings)Settings ?? new C64Settings());
+
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 
@@ -33,13 +30,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			inputFileInfo.Data = rom;
 			inputFileInfo.Extension = romextension;
 			CoreComm = comm;
-			Init(Region.PAL);
+			Init(this.SyncSettings.vicType);
 			cyclesPerFrame = board.vic.CyclesPerFrame;
 			SetupMemoryDomains();
+			MemoryCallbacks = new MemoryCallbackSystem();
 			HardReset();
 
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(board.vic);
 		}
+
+
+		/*private DisplayType queryUserForRegion()
+		{
+			Form prompt = new Form() { Width = 160, Height = 120, FormBorderStyle = FormBorderStyle.FixedDialog, Text = "Region selector", StartPosition = FormStartPosition.CenterScreen };
+			Label textLabel = new Label() { Left = 10, Top = 10, Width = 260, Text = "Please choose a region:" };
+			RadioButton palButton = new RadioButton() { Left = 10, Top = 30, Width = 70, Text = "PAL", Checked = true };
+			RadioButton ntscButton = new RadioButton() { Left = 80, Top = 30, Width = 70, Text = "NTSC" };
+			Button confirmation = new Button() { Text = "Ok", Left = 40, Width = 80, Top = 60, DialogResult = DialogResult.OK };
+			confirmation.Click += (sender, e) => { prompt.Close(); };
+			prompt.Controls.Add(textLabel);
+			prompt.Controls.Add(palButton);
+			prompt.Controls.Add(ntscButton);
+			prompt.Controls.Add(confirmation);
+			prompt.AcceptButton = confirmation;
+
+			if (prompt.ShowDialog() != DialogResult.OK || !palButton.Checked && !ntscButton.Checked)
+			{
+				throw new Exception("Can't construct new C64 because you didn't choose anything");
+			}
+			return palButton.Checked ? DisplayType.PAL : DisplayType.NTSC;
+		}*/
 
 		// internal variables
 		private int _frame = 0;
@@ -63,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_frame = 0;
 			_lagcount = 0;
 			_islag = false;
+			frameCycles = 0;
 		}
 
 		// audio/video
@@ -92,6 +113,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
+		public DisplayType Region
+		{
+			get;
+			private set;
+		}
+
 		public void Dispose()
 		{
 			if (board.sid != null)
@@ -101,76 +128,66 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
+		int frameCycles;
+
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			board.inputRead = false;
-			board.PollInput();
-			board.cpu.LagCycles = 0;
-
-			for (int count = 0; count < cyclesPerFrame; count++)
+			do
 			{
-				//disk.Execute();
-				board.Execute();
+				DoCycle();
+			}
+			while (frameCycles != 0);
+		}
 
-#if false
-				if (board.cpu.PC == 0xE16F && (board.cpu.ReadPort() & 0x7) == 7)
+		private void DoCycle()
+		{
+			if (frameCycles == 0) {
+				board.inputRead = false;
+				board.PollInput();
+				board.cpu.LagCycles = 0;
+			}
+
+			//disk.Execute();
+			board.Execute();
+			frameCycles++;
+
+			// load PRG file if needed
+			if (loadPrg)
+			{
+				// check to see if cpu PC is at the BASIC warm start vector
+				if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
 				{
-					// HUGE kernal hack to load files
-					// the only purpose for this is to be able to run the Lorenz
-					// test suite!
+					//board.ram.Poke(0x0302, 0xAE);
+					//board.ram.Poke(0x0303, 0xA7);
+					////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
+					////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
 
-					int fileNameLength = board.ram.Peek(0xB7);
-					int fileNameOffset = board.ram.Peek(0xBB) | ((int)board.ram.Peek(0xBC) << 8);
-					byte[] fileNameRaw = new byte[fileNameLength];
-					for (int i = 0; i < fileNameLength; i++)
-					{
-						fileNameRaw[i] = board.ram.Peek(fileNameOffset + i);
-					}
-					var enc = System.Text.Encoding.ASCII;
-					string fileName = enc.GetString(fileNameRaw);
-					string filePath = Path.Combine(@"E:\Programming\Visual Studio 2013\Vice\testprogs\general\Lorenz-2.15\src\", fileName + ".prg");
-					if (File.Exists(filePath))
-					{
-						PRG.Load(board.pla, File.ReadAllBytes(filePath));
-					}
-					board.cpu.PC = 0xE1B5;
-				}
-#endif
-
-				// load PRG file if needed
-				if (loadPrg)
-				{
-					// check to see if cpu PC is at the BASIC warm start vector
-					if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
-					{
-						//board.ram.Poke(0x0302, 0xAE);
-						//board.ram.Poke(0x0303, 0xA7);
-						////board.ram.Poke(0x0302, board.ram.Peek(0x0308));
-						////board.ram.Poke(0x0303, board.ram.Peek(0x0309));
-
-						//if (inputFileInfo.Data.Length >= 6)
-						//{
-						//    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
-						//    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
-						//}
-						PRG.Load(board.pla, inputFileInfo.Data);
-						loadPrg = false;
-					}
+					//if (inputFileInfo.Data.Length >= 6)
+					//{
+					//    board.ram.Poke(0x0039, inputFileInfo.Data[4]);
+					//    board.ram.Poke(0x003A, inputFileInfo.Data[5]);
+					//}
+					PRG.Load(board.pla, inputFileInfo.Data);
+					loadPrg = false;
 				}
 			}
 
-			board.Flush();
-			_islag = !board.inputRead;
+			if (frameCycles == cyclesPerFrame)
+			{
+				board.Flush();
+				_islag = !board.inputRead;
 
-			if (_islag)
-				_lagcount++;
-			_frame++;
+				if (_islag)
+					_lagcount++;
+				frameCycles -= cyclesPerFrame;
+				_frame++;
 
-			//Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
+				//Console.WriteLine("CPUPC: " + C64Util.ToHex(board.cpu.PC, 4) + " 1541PC: " + C64Util.ToHex(disk.PC, 4));
 
-			int test = board.cpu.LagCycles;
-			DriveLightOn = DriveLED;
+				int test = board.cpu.LagCycles;
+				DriveLightOn = DriveLED;
+			}
 		}
 
 		private void HandleFirmwareError(string file)
@@ -190,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return result;
 		}
 
-		private void Init(Region initRegion)
+		private void Init(VicType initRegion)
 		{
 			board = new Motherboard(this, initRegion);
 			InitRoms();
@@ -211,6 +228,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					if (cart != null)
 					{
 						board.cartPort.Connect(cart);
+					}
+					break;
+				case @".TAP":
+					CassettePort.Tape tape = CassettePort.Tape.Load(inputFileInfo.Data);
+					if (tape != null)
+					{
+						board.cassPort.Connect(tape);
 					}
 					break;
 				case @".PRG":

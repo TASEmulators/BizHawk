@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		LatchedPort portA;
 		LatchedPort portB;
 
-		public MOS6526_2(Region region)
+		public MOS6526_2(Common.DisplayType region)
 		{
 			a = new CiaTimer(serialPortA, underFlowA);
 			b = new CiaTimer(serialPortB, underFlowB);
@@ -241,10 +241,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			portB = new LatchedPort();
 			switch (region)
 			{
-				case Region.NTSC:
+				case Common.DisplayType.NTSC:
 					tod_period = 14318181 / 140;
 					break;
-				case Region.PAL:
+				case Common.DisplayType.PAL:
 					tod_period = 17734472 / 180;
 					break;
 			}
