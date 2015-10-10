@@ -9,11 +9,13 @@ using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	public partial class C64 : ISettable<C64.C64Settings, C64.C64SyncSettings>
+	// adelikat: changing settings to default object untl there are actually settings, as the ui depends on it to know if there are any settings avaialable
+	public partial class C64 : ISettable<object, C64.C64SyncSettings>
 	{
-		public C64Settings GetSettings()
+		public object /*C64Settings*/ GetSettings()
 		{
-			return Settings.Clone();
+			//return Settings.Clone();
+			return null;
 		}
 
 		public C64SyncSettings GetSyncSettings()
@@ -21,9 +23,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return SyncSettings.Clone();
 		}
 
-		public bool PutSettings(C64Settings o)
+		public bool PutSettings(object /*C64Settings*/ o)
 		{
-			Settings = o;
+			//Settings = o;
 			return false;
 		}
 

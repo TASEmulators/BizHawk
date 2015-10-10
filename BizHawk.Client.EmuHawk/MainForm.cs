@@ -1595,6 +1595,7 @@ namespace BizHawk.Client.EmuHawk
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
+			C64SubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1674,6 +1675,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
+					break;
+				case "C64":
+					C64SubMenu.Visible = true;
 					break;
 			}
 		}

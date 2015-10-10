@@ -2063,6 +2063,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region C64
+
+		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "C64 Settings");
+		}
+
+		#endregion
+
 		#region Help
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
