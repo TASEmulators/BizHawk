@@ -221,11 +221,20 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		private Point StateToRemove()
 		{
-			int markerSkips = maxStates / 2;
-
 			// X is frame, Y is branch
 			Point shouldRemove = new Point(-1, -1);
+
+			if (BranchStates.Any() && Settings.EraseBranchStatesFirst)
+			{
+				var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
+				shouldRemove.X = kvp.Key;
+				shouldRemove.Y = kvp.Value.Keys[0];
+
+				return shouldRemove;
+			}
+
 			int i = 0;
+			int markerSkips = maxStates / 2;
 			// lowPrioritySates (e.g. states with only lag frames between them)
 			do
 			{
@@ -263,9 +272,9 @@ namespace BizHawk.Client.Common
 
 			if (shouldRemove.X < 1) // only found marker states above
 			{
-				if (BranchStates.Any())
+				if (BranchStates.Any() && !Settings.EraseBranchStatesFirst)
 				{
-					var kvp = BranchStates.ElementAt(1);
+					var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
 					shouldRemove.X = kvp.Key;
 					shouldRemove.Y = kvp.Value.Keys[0];
 				}
@@ -289,7 +298,7 @@ namespace BizHawk.Client.Common
 				return _movie.Markers.IsMarker(States[frame].Frame + 1);
 			else
 			{
-				if (_movie.GetBranch(branch).Markers == null)
+				if (_movie.GetBranch(_movie.BranchIndexByHash(branch)).Markers == null)
 					return _movie.Markers.IsMarker(States[frame].Frame + 1);
 				else
 					return _movie.GetBranch(branch).Markers.Any(m => m.Frame + 1 == frame);
@@ -356,7 +365,7 @@ namespace BizHawk.Client.Common
 		{
 			if (branch == -1)
 				accessed.Remove(States[frame]);
-			else
+			else if (accessed.Contains(BranchStates[frame][branch]) && !Settings.EraseBranchStatesFirst)
 				accessed.Remove(BranchStates[frame][branch]);
 
 			StateManagerState state;
@@ -503,25 +512,6 @@ namespace BizHawk.Client.Common
 				MaybeRemoveStates();
 		}
 
-		// TODO: save/load BranchStates
-		public void Save(BinaryWriter bw)
-		{
-			List<int> noSave = ExcludeStates();
-
-			bw.Write(States.Count - noSave.Count);
-			for (int i = 0; i < States.Count; i++)
-			{
-				if (noSave.Contains(i))
-					continue;
-
-				StateAccessed(States.ElementAt(i).Key);
-				KeyValuePair<int, StateManagerState> kvp = States.ElementAt(i);
-				bw.Write(kvp.Key);
-				bw.Write(kvp.Value.Length);
-				bw.Write(kvp.Value.State);
-			}
-		}
-
 		private List<int> ExcludeStates()
 		{
 			List<int> ret = new List<int>();
@@ -556,6 +546,41 @@ namespace BizHawk.Client.Common
 			return ret;
 		}
 
+		public void Save(BinaryWriter bw)
+		{
+			List<int> noSave = ExcludeStates();
+
+			bw.Write(States.Count - noSave.Count);
+			for (int i = 0; i < States.Count; i++)
+			{
+				if (noSave.Contains(i))
+					continue;
+
+				StateAccessed(States.ElementAt(i).Key);
+				KeyValuePair<int, StateManagerState> kvp = States.ElementAt(i);
+				bw.Write(kvp.Key);
+				bw.Write(kvp.Value.Length);
+				bw.Write(kvp.Value.State);
+			}
+
+			bw.Write(currentBranch);
+
+			if (Settings.BranchStatesInTasproj)
+			{
+				bw.Write(BranchStates.Count);
+				foreach (var s in BranchStates)
+				{
+					bw.Write(s.Key);
+					bw.Write(s.Value.Count);
+					foreach (var t in s.Value)
+					{
+						bw.Write(t.Key);
+						t.Value.Write(bw);
+					}
+				}
+			}
+		}
+
 		public void Load(BinaryReader br)
 		{
 			States.Clear();
@@ -574,6 +599,32 @@ namespace BizHawk.Client.Common
 				//Used += len;
 			}
 			//}
+
+			try
+			{
+				currentBranch = br.ReadInt32();
+				if (Settings.BranchStatesInTasproj)
+				{
+					int c = br.ReadInt32();
+					BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
+					while (c > 0)
+					{
+						int key = br.ReadInt32();
+						int c2 = br.ReadInt32();
+						var list = new SortedList<int, StateManagerState>(c2);
+						while (c2 > 0)
+						{
+							int key2 = br.ReadInt32();
+							var state = StateManagerState.Read(br, this);
+							list.Add(key2, state);
+							c2--;
+						}
+						BranchStates.Add(key, list);
+						c--;
+					}
+				}
+			}
+			catch (EndOfStreamException) { }
 		}
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
@@ -666,8 +717,8 @@ namespace BizHawk.Client.Common
 				if (!BranchStates[frame].ContainsKey(branchHash))
 					return -2;
 				stateToMatch = BranchStates[frame][branchHash];
-				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
-					return -1;
+				//if (States.ContainsKey(frame) && States[frame] == stateToMatch)
+				//	return -1;
 			}
 
 			// there's no state for that frame at all
@@ -695,7 +746,10 @@ namespace BizHawk.Client.Common
 			if (!States.ContainsValue(s))
 			{
 				if (BranchStates.ContainsKey(s.Frame))
-					ret.Y = BranchStates[s.Frame].Values.IndexOf(s);
+				{
+					int index = BranchStates[s.Frame].Values.IndexOf(s);
+					ret.Y = BranchStates[s.Frame].Keys.ElementAt(index);
+				}
 				if (ret.Y == -1)
 					return new Point(-1, -2);
 			}

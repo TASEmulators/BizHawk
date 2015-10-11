@@ -28,11 +28,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (VersionInfo.DeveloperBuild)
 			{
-				Text = " BizHawk  (GIT " + SubWCRev.GIT_BRANCH + "-" + SubWCRev.SVN_REV + "#" + SubWCRev.GIT_SHORTHASH + ")";
+				Text = " BizHawk  (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 			else
 			{
-				Text = "Version " + VersionInfo.MAINVERSION + " (GIT " + SubWCRev.GIT_BRANCH + "-" + SubWCRev.SVN_REV + "#" + SubWCRev.GIT_SHORTHASH + ")";
+				Text = "Version " + VersionInfo.MAINVERSION + " (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 
 			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + " " + VersionInfo.RELEASEDATE;
@@ -55,6 +55,18 @@ namespace BizHawk.Client.EmuHawk
 				});
 
 			}
+
+			linkLabel2.Text = "Commit # " + SubWCRev.GIT_SHORTHASH;
+		}
+
+		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://github.com/TASVideos/BizHawk/commit/" + SubWCRev.GIT_SHORTHASH);
+		}
+
+		private void btnCopyHash_Click(object sender, EventArgs e)
+		{
+			System.Windows.Forms.Clipboard.SetText(SubWCRev.GIT_SHORTHASH);
 		}
 	}
 }

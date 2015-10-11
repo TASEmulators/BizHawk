@@ -69,7 +69,12 @@ namespace BizHawk.Client.EmuHawk
 
 			var newTool = CreateInstance(toolType);
 
-			if (newTool is Form)
+            if (newTool == null)
+            {
+                return null;
+            }
+
+            if (newTool is Form)
 			{
 				(newTool as Form).Owner = GlobalWin.MainForm;
 			}
@@ -497,16 +502,55 @@ namespace BizHawk.Client.EmuHawk
 			return CreateInstance(typeof(T));
 		}
 
-		private IToolForm CreateInstance(Type toolType)
-		{
-			var tool = (IToolForm)Activator.CreateInstance(toolType);
+        private IToolForm CreateInstance(Type toolType)
+        {
+            IToolForm tool;
 
-			// Add to our list of tools
-			_tools.Add(tool);
-			return tool;
-		}
+            //Specific case for custom tools
+            if (toolType == typeof(ICustomGameTool))
+            {
+                string path = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
+                if (File.Exists(path)
+                  && MessageBox.Show("A custom plugin has been found for the ROM you're loading. Do you want to load it?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
+                  , "Answer to life, universe and everything else?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    try
+                    {
+                        // As the object is "remote"(external to the project), the CreateInstanceFrom returns a handle.We need to Unwrap in order to make the casting
+                        tool = System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
+                        if (tool == null)
+                        {
+                            MessageBox.Show("It seems that the object CustomMainForm does not implement IToolForm. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return null;
+                        }
+                    }
+                    catch (MissingMethodException)
+                    {
+                        MessageBox.Show("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return null;
+                    }
+                    catch (TypeLoadException)
+                    {
+                        MessageBox.Show("It seems that the object CustomMainForm does not exists. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                tool = (IToolForm)Activator.CreateInstance(toolType);
+            }
 
-		public void UpdateToolsBefore(bool fromLua = false)
+            // Add to our list of tools
+            _tools.Add(tool);
+            return tool;
+        }
+
+        public void UpdateToolsBefore(bool fromLua = false)
 		{
 			if (Has<LuaConsole>())
 			{

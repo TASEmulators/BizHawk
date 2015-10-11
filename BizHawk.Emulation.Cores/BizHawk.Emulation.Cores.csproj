@@ -151,6 +151,7 @@
     <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\Commodore64\C64.IDisassemblable.cs" />
     <Compile Include="Computers\Commodore64\C64.IDriveLight.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
@@ -160,6 +161,7 @@
     <Compile Include="Computers\Commodore64\C64.IMemoryDomains.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\Commodore64\C64.ISettable.cs" />
     <Compile Include="Computers\Commodore64\C64.IStatable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
@@ -176,14 +178,15 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
     <Compile Include="Computers\Commodore64\CassettePort\CassettePortDevice.cs" />
+    <Compile Include="Computers\Commodore64\CassettePort\Tape.cs" />
     <Compile Include="Computers\Commodore64\InputFileInfo.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
     <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
-    <Compile Include="Computers\Commodore64\MOS\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6567R56A.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
@@ -193,7 +196,8 @@
     <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Interface.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6526-2.PortIO.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6567.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6567R8.cs" />
+    <Compile Include="Computers\Commodore64\MOS\MOS6572.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
@@ -797,8 +801,8 @@
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Consoles\Sony\PSX\OctoshockControlConfig.cs" />
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
+    <Compile Include="Consoles\Sony\PSX\OctoshockFIOConfig.cs" />
     <Compile Include="Consoles\Sony\PSX\PSF.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />

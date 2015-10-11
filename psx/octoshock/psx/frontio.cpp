@@ -136,10 +136,6 @@ FrontIO::FrontIO()
 		PortData[i] = NULL;
 		MCPorts[i] = new InputDevice();
 	}
-
-	//always add one memory device for now 
-	delete MCPorts[0];
-	MCPorts[0] = Device_Memcard_Create();
 } 
 
 

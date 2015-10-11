@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
 
@@ -22,6 +23,19 @@ namespace BizHawk.Client.Common
 
 	public class TasBranchCollection : List<TasBranch>
 	{
+		public new void Add(TasBranch item)
+		{
+			if (item.UniqueIdentifier == Guid.Empty)
+			{
+				var currentHashes = this.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
+
+				do item.UniqueIdentifier = Guid.NewGuid();
+				while (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()));
+			}
+
+			base.Add(item);
+		}
+
 		public void Save(BinaryStateSaver bs)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);

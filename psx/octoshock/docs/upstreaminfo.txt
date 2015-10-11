@@ -81,3 +81,11 @@
 [OK] psx/memcard : change to debug output
 0.9.38.4 -> 0.9.38.6
 [OK] psx/gpu & gpu_sprite : Fixed GPU emulation timing bugs that caused graphical glitches in "Mr. Driller G". 
+0.9.38.5 -> 0.9.38.7
+[OK] psx/cpu : Revisions to exception handling
+[OK] psx/cpu : Many revisions and cleanups to branch and exception handling in opcode implementations
+[OK] psx/dis : Just some basic disassembly changes
+[OK] psx/gte : Cleanup
+[OK] psx/psx : Cleanup
+[OK] psx/timer : Major functional changes
+[NO] psx/timer : Added loadstate sanity checks

@@ -39,47 +39,49 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private void SetControllerButtons()
 		{
 			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = _SyncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad)
-				? "PSX Gamepad Controller"
-				: "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
+			ControllerDefinition.Name = "PSX DualShock Controller"; // <-- for compatibility
+			//ControllerDefinition.Name = "PSX FrontIO"; // TODO - later rename to this, I guess, so it's less misleading. don't want to wreck keybindings yet.
 
 			ControllerDefinition.BoolButtons.Clear();
 			ControllerDefinition.FloatControls.Clear();
 
-			for (int i = 0; i < _SyncSettings.Controllers.Length; i++)
+			var cfg = _SyncSettings.FIOConfig.ToLogical();
+
+			for (int i = 0; i < cfg.NumPlayers; i++)
 			{
-				if (_SyncSettings.Controllers[i].IsConnected)
-				{
+				int pnum = i + 1;
 					ControllerDefinition.BoolButtons.AddRange(new[]
 					{
-						"P" + (i + 1) + " Up",
-						"P" + (i + 1) + " Down",
-						"P" + (i + 1) + " Left",
-						"P" + (i + 1) + " Right",
-						"P" + (i + 1) + " Select",
-						"P" + (i + 1) + " Start",
-						"P" + (i + 1) + " Square",
-						"P" + (i + 1) + " Triangle",
-						"P" + (i + 1) + " Circle",
-						"P" + (i + 1) + " Cross",
-						"P" + (i + 1) + " L1", 
-						"P" + (i + 1) + " R1",
-						"P" + (i + 1) + " L2",
-						"P" + (i + 1) + " R2",
+						"P" + pnum + " Up",
+						"P" + pnum + " Down",
+						"P" + pnum + " Left",
+						"P" + pnum + " Right",
+						"P" + pnum + " Select",
+						"P" + pnum + " Start",
+						"P" + pnum + " Square",
+						"P" + pnum + " Triangle",
+						"P" + pnum + " Circle",
+						"P" + pnum + " Cross",
+						"P" + pnum + " L1", 
+						"P" + pnum + " R1",
+						"P" + pnum + " L2",
+						"P" + pnum + " R2",
 					});
 
-					if (_SyncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad)
+					var type = cfg.DevicesPlayer[i];
+
+					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
 					{
-						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " L3");
-						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " R3");
-						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " MODE");
+						ControllerDefinition.BoolButtons.Add("P" + pnum + " L3");
+						ControllerDefinition.BoolButtons.Add("P" + pnum + " R3");
+						ControllerDefinition.BoolButtons.Add("P" + pnum + " MODE");
 
 						ControllerDefinition.FloatControls.AddRange(new[]
 						{
-							"P" + (i + 1) + " LStick X",
-							"P" + (i + 1) + " LStick Y",
-							"P" + (i + 1) + " RStick X",
-							"P" + (i + 1) + " RStick Y"
+							"P" + pnum + " LStick X",
+							"P" + pnum + " LStick Y",
+							"P" + pnum + " RStick X",
+							"P" + pnum + " RStick Y"
 						});
 
 						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
@@ -88,7 +90,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
 					}
 				}
-			}
 
 			ControllerDefinition.BoolButtons.AddRange(new[]
 			{
@@ -374,21 +375,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//setup the controller based on sync settings
 			SetControllerButtons();
 
-			var lookup = new Dictionary<ControllerSetting.ControllerType, OctoshockDll.ePeripheralType> {
-				{ ControllerSetting.ControllerType.Gamepad, OctoshockDll.ePeripheralType.Pad },
-				{ ControllerSetting.ControllerType.DualAnalog, OctoshockDll.ePeripheralType.DualAnalog },
-				{ ControllerSetting.ControllerType.DualShock, OctoshockDll.ePeripheralType.DualShock },
+			var fioCfg = _SyncSettings.FIOConfig;
+			if(fioCfg.Devices8[0] != OctoshockDll.ePeripheralType.None)
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, fioCfg.Devices8[0]);
+			if (fioCfg.Devices8[4] != OctoshockDll.ePeripheralType.None)
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, fioCfg.Devices8[4]);
+
+			var memcardTransaction = new OctoshockDll.ShockMemcardTransaction()
+			{
+				transaction = OctoshockDll.eShockMemcardTransaction.Connect
 			};
-
-			if (_SyncSettings.Controllers[0].IsConnected)
-			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[0].Type]);
-			}
-
-			if (_SyncSettings.Controllers[1].IsConnected)
-			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, lookup[_SyncSettings.Controllers[1].Type]);
-			}
+			if (fioCfg.Memcards[0]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref memcardTransaction);
+			if (fioCfg.Memcards[1]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x02, ref memcardTransaction);
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
@@ -423,65 +421,48 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		void SetInput()
 		{
-			uint buttons = 0;
+			var fioCfg = _SyncSettings.FIOConfig.ToLogical();
 
-			if (_SyncSettings.Controllers[0].IsConnected)
+			int portNum = 0x01;
+			foreach (int slot in new[] { 0, 4 })
 			{
-				//dualshock style
-				if (Controller["P1 Select"]) buttons |= 1;
-				if (Controller["P1 L3"]) buttons |= 2;
-				if (Controller["P1 R3"]) buttons |= 4;
-				if (Controller["P1 Start"]) buttons |= 8;
-				if (Controller["P1 Up"]) buttons |= 16;
-				if (Controller["P1 Right"]) buttons |= 32;
-				if (Controller["P1 Down"]) buttons |= 64;
-				if (Controller["P1 Left"]) buttons |= 128;
-				if (Controller["P1 L2"]) buttons |= 256;
-				if (Controller["P1 R2"]) buttons |= 512;
-				if (Controller["P1 L1"]) buttons |= 1024;
-				if (Controller["P1 R1"]) buttons |= 2048;
-				if (Controller["P1 Triangle"]) buttons |= 4096;
-				if (Controller["P1 Circle"]) buttons |= 8192;
-				if (Controller["P1 Cross"]) buttons |= 16384;
-				if (Controller["P1 Square"]) buttons |= 32768;
-				if (Controller["P1 MODE"]) buttons |= 65536;
+				//no input to set
+				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
+					continue;
 
-				byte left_x = (byte)Controller.GetFloat("P1 LStick X");
-				byte left_y = (byte)Controller.GetFloat("P1 LStick Y");
-				byte right_x = (byte)Controller.GetFloat("P1 RStick X");
-				byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
+				uint buttons = 0;
+				string pstring = "P" + fioCfg.PlayerAssignments[slot] + " ";
 
-				OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
-			}
+				if (Controller[pstring + "Select"]) buttons |= 1;
+				if (Controller[pstring + "Start"]) buttons |= 8;
+				if (Controller[pstring + "Up"]) buttons |= 16;
+				if (Controller[pstring + "Right"]) buttons |= 32;
+				if (Controller[pstring + "Down"]) buttons |= 64;
+				if (Controller[pstring + "Left"]) buttons |= 128;
+				if (Controller[pstring + "L2"]) buttons |= 256;
+				if (Controller[pstring + "R2"]) buttons |= 512;
+				if (Controller[pstring + "L1"]) buttons |= 1024;
+				if (Controller[pstring + "R1"]) buttons |= 2048;
+				if (Controller[pstring + "Triangle"]) buttons |= 4096;
+				if (Controller[pstring + "Circle"]) buttons |= 8192;
+				if (Controller[pstring + "Cross"]) buttons |= 16384;
+				if (Controller[pstring + "Square"]) buttons |= 32768;
 
-			if (_SyncSettings.Controllers[1].IsConnected)
-			{
-				//dualshock style
-				buttons = 0;
-				if (Controller["P2 Select"]) buttons |= 1;
-				if (Controller["P2 L3"]) buttons |= 2;
-				if (Controller["P2 R3"]) buttons |= 4;
-				if (Controller["P2 Start"]) buttons |= 8;
-				if (Controller["P2 Up"]) buttons |= 16;
-				if (Controller["P2 Right"]) buttons |= 32;
-				if (Controller["P2 Down"]) buttons |= 64;
-				if (Controller["P2 Left"]) buttons |= 128;
-				if (Controller["P2 L2"]) buttons |= 256;
-				if (Controller["P2 R2"]) buttons |= 512;
-				if (Controller["P2 L1"]) buttons |= 1024;
-				if (Controller["P2 R1"]) buttons |= 2048;
-				if (Controller["P2 Triangle"]) buttons |= 4096;
-				if (Controller["P2 Circle"]) buttons |= 8192;
-				if (Controller["P2 Cross"]) buttons |= 16384;
-				if (Controller["P2 Square"]) buttons |= 32768;
-				if (Controller["P2 MODE"]) buttons |= 65536;
+				byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
+				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+				{
+					if (Controller[pstring + "L3"]) buttons |= 2;
+					if (Controller[pstring + "R3"]) buttons |= 4;
+					if (Controller[pstring + "MODE"]) buttons |= 65536;
 
-				byte left_x = (byte)Controller.GetFloat("P2 LStick X");
-				byte left_y = (byte)Controller.GetFloat("P2 LStick Y");
-				byte right_x = (byte)Controller.GetFloat("P2 RStick X");
-				byte right_y = (byte)Controller.GetFloat("P2 RStick Y");
+					left_x = (byte)Controller.GetFloat(pstring + "LStick X");
+					left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
+					right_x = (byte)Controller.GetFloat(pstring + "RStick X");
+					right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+				}
 
-				OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x02, buttons, left_x, left_y, right_x, right_y);
+				OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
+				portNum <<= 1;
 			}
 		}
 
@@ -858,25 +839,42 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public byte[] CloneSaveRam()
 		{
-			var buf = new byte[128 * 1024];
-			fixed (byte* pbuf = buf)
+			var cfg = _SyncSettings.FIOConfig.ToLogical();
+			int nMemcards = cfg.NumMemcards;
+			var buf = new byte[128 * 1024 * nMemcards];
+			for (int i = 0, idx = 0, addr=0x01; i < 2; i++, addr<<=1)
 			{
-				var transaction = new OctoshockDll.ShockMemcardTransaction();
-				transaction.buffer128k = pbuf;
-				transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
-				OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction);
+				if (cfg.Memcards[i])
+				{
+					fixed (byte* pbuf = buf)
+					{
+						var transaction = new OctoshockDll.ShockMemcardTransaction();
+						transaction.buffer128k = pbuf + idx * 128 * 1024;
+						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
+						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
+						idx++;
+					}
+				}
 			}
 			return buf;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			fixed (byte* pbuf = data)
+			var cfg = _SyncSettings.FIOConfig.ToLogical();
+			for (int i = 0, idx = 0, addr = 0x01; i < 2; i++, addr <<= 1)
 			{
-				var transaction = new OctoshockDll.ShockMemcardTransaction();
-				transaction.buffer128k = pbuf;
-				transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
-				OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction);
+				if (cfg.Memcards[i])
+				{
+					fixed (byte* pbuf = data)
+					{
+						var transaction = new OctoshockDll.ShockMemcardTransaction();
+						transaction.buffer128k = pbuf + idx * 128 * 1024;
+						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
+						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
+						idx++;
+					}
+				}
 			}
 		}
 
@@ -884,9 +882,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			get
 			{
-				var transaction = new OctoshockDll.ShockMemcardTransaction();
-				transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
-				return OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction) == OctoshockDll.SHOCK_TRUE;
+				var cfg = _SyncSettings.FIOConfig.ToLogical();
+				for (int i = 0, addr = 0x01; i < 2; i++, addr <<= 1)
+				{
+					if (cfg.Memcards[i])
+					{
+						var transaction = new OctoshockDll.ShockMemcardTransaction();
+						transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
+						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
+						if (OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction) == OctoshockDll.SHOCK_TRUE)
+							return true;
+					}
+				}
+
+				return false;
 			}
 		}
 
@@ -1055,49 +1064,23 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			public SyncSettings Clone()
 			{
-				var ret = (SyncSettings)MemberwiseClone();
-				ret.Controllers = Controllers.Select(x => x.Clone()).ToArray();
-
-				return ret;
+				return JsonConvert.DeserializeObject<SyncSettings>(JsonConvert.SerializeObject(this));
 			}
 
 			public bool EnableLEC;
 
-			public ControllerSetting[] Controllers = 
+			public SyncSettings()
 			{
-				new ControllerSetting
-				{
-					IsConnected = true,
-					Type = ControllerSetting.ControllerType.DualShock
-				},
-				new ControllerSetting
-				{
-					IsConnected = false,
-					Type = ControllerSetting.ControllerType.DualShock
-				}
-			};
-		}
-
-		public class ControllerSetting
-		{
-			public ControllerSetting Clone()
-			{
-				return (ControllerSetting)this.MemberwiseClone();
+				//initialize with historical default settings
+				var user = new OctoshockFIOConfigUser();
+				user.Memcards[0] = user.Memcards[1] = true;
+				user.Multitaps[0] = user.Multitaps[0] = false;
+				user.Devices8[0] = OctoshockDll.ePeripheralType.DualShock;
+				user.Devices8[4] = OctoshockDll.ePeripheralType.DualShock;
+				FIOConfig = user;
 			}
 
-			public bool IsConnected { get; set; }
-			public ControllerType Type { get; set; }
-
-			public enum ControllerType
-			{
-				Gamepad,
-
-				[Description("Dual Analog")]
-				DualAnalog,
-
-				[Description("Dual Shock")]
-				DualShock
-			}
+			public OctoshockFIOConfigUser FIOConfig;
 		}
 
 		public enum eHorizontalClipping
@@ -1200,12 +1183,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
-			//check for reboot-required options (well, none right now)
-			bool reboot = false;
+			//currently LEC and pad settings changes both require reboot
+			bool reboot = true;
+
+			//we could do it this way roughly if we need to
+			//if(JsonConvert.SerializeObject(o.FIOConfig) != JsonConvert.SerializeObject(_SyncSettings.FIOConfig)
+
 
 			_SyncSettings = o;
-			
-			//TODO - store settings into core? or we can just keep doing it before frameadvance
+
 
 			return reboot;
 		}

@@ -796,22 +796,6 @@ static INLINE int32 Lm_G(unsigned int which, int32 value)
 // limit to 4096, not 4095
 static INLINE int32 Lm_H(int32 value)
 {
-#if 0
- if(FLAGS & (1 << 15))
- {
-  value = 0;
-  FLAGS |= 1 << 12;
-  return value;
- }
-
- if(FLAGS & (1 << 16))
- {
-  value = 4096;
-  FLAGS |= 1 << 12;
-  return value;
- }
-#endif
-
  if(value < 0)
  {
   value = 0;

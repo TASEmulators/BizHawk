@@ -1746,7 +1746,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXControllerConfig().ShowDialog();
+			new PSXControllerConfigNew().ShowDialog();
 		}
 
 		#endregion
@@ -2059,6 +2059,15 @@ namespace BizHawk.Client.EmuHawk
 					AppleDisksSubMenu.DropDownItems.Add(menuItem);
 				}
 			}
+		}
+
+		#endregion
+
+		#region C64
+
+		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "C64 Settings");
 		}
 
 		#endregion

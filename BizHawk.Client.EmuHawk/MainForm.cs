@@ -1595,6 +1595,7 @@ namespace BizHawk.Client.EmuHawk
 			GenesisSubMenu.Visible = false;
 			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
+			C64SubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1674,6 +1675,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "AppleII":
 					AppleSubMenu.Visible = true;
+					break;
+				case "C64":
+					C64SubMenu.Visible = true;
 					break;
 			}
 		}
@@ -1965,7 +1969,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -1986,7 +1990,7 @@ namespace BizHawk.Client.EmuHawk
 						"PlayStation", "*.cue;*.ccd;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
 						"PSF Playstation Sound File", "*.psf;*.minipsf",
-						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
+						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
 						"SID Commodore 64 Music File", "*.sid;%ARCH%",
 						"Nintendo 64", "*.z64;*.v64;*.n64",
 						"WonderSwan", "*.ws;*.wsc;%ARCH%",
@@ -2956,7 +2960,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.AutoFireController.IncrementStarts();
 				}
-				//Global.AutofireStickyXORAdapter.IncrementLoops(IsLagFrame);
+				Global.AutofireStickyXORAdapter.IncrementLoops(IsLagFrame);
 
 				PressFrameAdvance = false;
 
@@ -3540,6 +3544,8 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
 					}
 				}
+				GlobalWin.Tools.Load<ICustomGameTool>();
+
 				return true;
 			}
 			else

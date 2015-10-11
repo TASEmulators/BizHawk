@@ -98,19 +98,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var record = Tastudio.CurrentTasMovie[GetBranch(index).Frame];
-
-			if (index == CurrentBranch)
-				color = TAStudio.CurrentFrame_InputLog; // SystemColors.HotTrack;
-			else if (record.Lagged.HasValue)
+			TasBranch branch = GetBranch(index);
+			if (branch != null)
 			{
-				if (record.Lagged.Value)
+				var record = Tastudio.CurrentTasMovie[branch.Frame];
+				if (index == CurrentBranch)
+					color = TAStudio.CurrentFrame_InputLog; // SystemColors.HotTrack;
+				else if (record.Lagged.HasValue)
 				{
-					color = TAStudio.LagZone_InputLog;
-				}
-				else
-				{
-					color = TAStudio.GreenZone_InputLog;
+					if (record.Lagged.Value)
+					{
+						color = TAStudio.LagZone_InputLog;
+					}
+					else
+					{
+						color = TAStudio.GreenZone_InputLog;
+					}
 				}
 			}
 
@@ -141,12 +144,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadSelectedBranch()
 		{
-			int index = BranchView.SelectedRows.First();
-			//if (CurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
-			//	return;
-
 			if (SelectedBranch != null)
 			{
+				int index = BranchView.SelectedRows.First();
+				//if (CurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
+				//	return;
 				CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();

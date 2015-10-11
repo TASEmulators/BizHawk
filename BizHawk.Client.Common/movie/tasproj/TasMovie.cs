@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 
-		private readonly TasBranchCollection Branches = new TasBranchCollection();
+		public readonly TasBranchCollection Branches = new TasBranchCollection();
 
 		private BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
@@ -82,8 +82,21 @@ namespace BizHawk.Client.Common
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
-		public TasBranch GetBranch(int index) { return Branches[index]; }
-		public int BranchHashByIndex(int index) { return Branches[index].UniqueIdentifier.GetHashCode(); }
+		public TasBranch GetBranch(int index)
+		{
+			if (index >= Branches.Count)
+				return null; // are we allowed?
+			else
+				return Branches[index];
+		}
+
+		public int BranchHashByIndex(int index)
+		{
+			if (index >= Branches.Count)
+				return -1;
+			else
+				return Branches[index].UniqueIdentifier.GetHashCode();
+		}
 
 		public int BranchIndexByHash(int hash)
 		{
@@ -524,12 +537,6 @@ namespace BizHawk.Client.Common
 
 		public void AddBranch(TasBranch branch)
 		{
-			// before adding, make sure guid hash is unique too, we can't afford branch id clashes
-			do
-			{
-				branch.UniqueIdentifier = Guid.NewGuid();
-			} while (BranchIndexByHash(branch.UniqueIdentifier.GetHashCode()) != -1);
-
 			Branches.Add(branch);
 			TasStateManager.AddBranch();
 			Changes = true;
@@ -545,6 +552,7 @@ namespace BizHawk.Client.Common
 		public void UpdateBranch(TasBranch old, TasBranch newBranch)
 		{
 			int index = Branches.IndexOf(old);
+			newBranch.UniqueIdentifier = old.UniqueIdentifier;
 			Branches[index] = newBranch;
 			TasStateManager.UpdateBranch(index);
 			Changes = true;

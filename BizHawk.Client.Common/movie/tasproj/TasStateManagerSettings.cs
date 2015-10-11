@@ -13,6 +13,8 @@ namespace BizHawk.Client.Common
 			DiskSaveCapacitymb = 512;
 			Capacitymb = 512;
 			DiskCapacitymb = 512;
+			BranchStatesInTasproj = false;
+			EraseBranchStatesFirst = true;
 		}
 
 		public TasStateManagerSettings(TasStateManagerSettings settings)
@@ -20,6 +22,8 @@ namespace BizHawk.Client.Common
 			DiskSaveCapacitymb = settings.DiskSaveCapacitymb;
 			Capacitymb = settings.Capacitymb;
 			DiskCapacitymb = settings.DiskCapacitymb;
+			BranchStatesInTasproj = settings.BranchStatesInTasproj;
+			EraseBranchStatesFirst = settings.EraseBranchStatesFirst;
 		}
 
 		/// <summary>
@@ -51,6 +55,20 @@ namespace BizHawk.Client.Common
 		public int DiskCapacitymb { get; set; }
 
 		/// <summary>
+		/// Put branch states to .tasproj
+		/// </summary>
+		[DisplayName("Put branch states to .tasproj")]
+		[Description("Put branch states to .tasproj")]
+		public bool BranchStatesInTasproj { get; set; }
+
+		/// <summary>
+		/// Erase branch states before greenzone states when capacity is met
+		/// </summary>
+		[DisplayName("Erase branch states first")]
+		[Description("Erase branch states before greenzone states when capacity is met")]
+		public bool EraseBranchStatesFirst { get; set; }
+
+		/// <summary>
 		/// The total state capacity in bytes.
 		/// </summary>
 		[JsonIgnore]
@@ -77,6 +95,8 @@ namespace BizHawk.Client.Common
 			sb.AppendLine(DiskSaveCapacitymb.ToString());
 			sb.AppendLine(Capacitymb.ToString());
 			sb.AppendLine(DiskCapacitymb.ToString());
+			sb.AppendLine(BranchStatesInTasproj.ToString());
+			sb.AppendLine(EraseBranchStatesFirst.ToString());
 
 			return sb.ToString();
 		}
@@ -88,6 +108,7 @@ namespace BizHawk.Client.Common
 				string[] lines = settings.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 				Capacitymb = int.Parse(lines[1]);
 				int refCapacity;
+
 				if (!int.TryParse(lines[0], out refCapacity))
 				{
 					if (bool.Parse(lines[0]))
@@ -97,10 +118,21 @@ namespace BizHawk.Client.Common
 				}
 				else
 					DiskSaveCapacitymb = refCapacity;
+
 				if (lines.Length > 2)
 					DiskCapacitymb = int.Parse(lines[2]);
 				else
 					DiskCapacitymb = 512;
+
+				if (lines.Length > 3)
+					BranchStatesInTasproj = bool.Parse(lines[3]);
+				else
+					BranchStatesInTasproj = false;
+
+				if (lines.Length > 4)
+					EraseBranchStatesFirst = bool.Parse(lines[4]);
+				else
+					EraseBranchStatesFirst = true;
 			}
 		}
 	}

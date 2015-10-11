@@ -58,8 +58,6 @@ namespace BizHawk.Client.EmuHawk
 
 			SyncSettings.Controls = ctrls;
 
-			SyncSettings.Controls = ctrls;
-
 			if (changed)
 			{
 				GlobalWin.MainForm.PutCoreSyncSettings(SyncSettings);

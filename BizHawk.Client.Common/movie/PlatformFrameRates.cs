@@ -8,6 +8,12 @@ namespace BizHawk.Client.Common
 		// these are political numbers, designed to be in accord with tasvideos.org tradition. theyre not necessarily mathematical factualities (although they may be in some cases)
 		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal valees (since this seems to be where theyre all collected)
 		// are we collecting them anywhere else? for avi-writing code perhaps?
+
+		// just some constants, according to specs
+		private static readonly double PAL_CARRIER = 15625 * 283.75 + 25;	   //  4.43361875 MHz
+		private static readonly double NTSC_CARRIER = 4500000 * 227.5 / 286;   //  3.579545454... MHz
+		private static readonly double PAL_N_CARRIER = 15625 * 229.25 + 25;		// 3.58205625 MHz
+
 		private static readonly Dictionary<string, double> _rates = new Dictionary<string, double>
 			{
 				{ "NES", 60.098813897440515532 }, // discussion here: http://forums.nesdev.com/viewtopic.php?t=492 ; a rational expression would be (19687500 / 11) / ((341*262-0.529780.5)/3) -> (118125000 / 1965513) -> 60.098813897440515529533511098629 (so our chosen number is very close)
@@ -47,6 +53,11 @@ namespace BizHawk.Client.Common
 				//according to http://problemkaputt.de/psx-spx.htm
 				{"PSX", 44100.0*768*11/7/263/3413}, //59.292862562
 				{"PSX_PAL", 44100.0*768*11/7/314/3406}, //49.7645593576
+
+				{"C64_PAL", PAL_CARRIER*2/9/312/63},
+				{"C64_NTSC", NTSC_CARRIER*2/7/263/65},
+				{"C64_NTSC_OLD", NTSC_CARRIER*2/7/262/64},
+				{"C64_DREAN", PAL_N_CARRIER*2/7/312/65},
 
 				//according to ryphecha, using
 				//clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
