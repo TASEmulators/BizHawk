@@ -3544,6 +3544,8 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
 					}
 				}
+				GlobalWin.Tools.Load<ICustomGameTool>();
+
 				return true;
 			}
 			else
