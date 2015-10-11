@@ -75,6 +75,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 
 				// display enable compare
+				if (rasterLine == 0)
+					badlineEnable = false;
+
 				if (rasterLine == 0x030)
 					badlineEnable |= displayEnable;
 

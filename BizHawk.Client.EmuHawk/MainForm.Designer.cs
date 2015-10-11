@@ -330,6 +330,8 @@
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FeaturesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.C64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainStatusBar = new StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -433,6 +435,7 @@
             this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
             this.AppleSubMenu,
+            this.C64SubMenu,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -2926,6 +2929,21 @@
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
+			// C64SubMenu
+			// 
+			this.C64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.C64SettingsMenuItem});
+			this.C64SubMenu.Name = "C64SubMenu";
+			this.C64SubMenu.Size = new System.Drawing.Size(39, 19);
+			this.C64SubMenu.Text = "&C64";
+			// 
+			// C64SettingsMenuItem
+			// 
+			this.C64SettingsMenuItem.Name = "C64SettingsMenuItem";
+			this.C64SettingsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.C64SettingsMenuItem.Text = "&Settings...";
+			this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
+			// 
 			// MainStatusBar
 			// 
 			this.MainStatusBar.ClickThrough = true;
@@ -3973,6 +3991,8 @@
 		private System.Windows.Forms.ToolStripMenuItem Speed400MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem BasicBotMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayMessagesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem C64SubMenu;
+		private System.Windows.Forms.ToolStripMenuItem C64SettingsMenuItem;
 	}
 }
 
