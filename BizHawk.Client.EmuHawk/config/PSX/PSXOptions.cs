@@ -17,10 +17,11 @@ namespace BizHawk.Client.EmuHawk
 		//backups of the labels for string replacing
 		string lblPixelPro_text, lblMednafen_text, lblTweakedMednafen_text;
 		
-		public PSXOptions(Octoshock.Settings settings, OctoshockDll.eVidStandard vidStandard, Size currentVideoSize)
+		public PSXOptions(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, OctoshockDll.eVidStandard vidStandard, Size currentVideoSize)
 		{
 			InitializeComponent();
 			_settings = settings;
+			_syncSettings = syncSettings;
 			_previewVideoStandard = vidStandard;
 			_previewVideoSize = currentVideoSize;
 
@@ -36,7 +37,15 @@ namespace BizHawk.Client.EmuHawk
 			rbDebugMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Debug;
 			rbMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.Mednafen;
 			rbTweakedMednafenMode.Checked = _settings.ResolutionMode == Octoshock.eResolutionMode.TweakedMednafen;
-			checkClipHorizontal.Checked = _settings.ClipHorizontalOverscan;
+			rbClipNone.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.None;
+			rbClipBasic.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Basic;
+			rbClipToFramebuffer.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Framebuffer;
+
+			cbLEC.Checked = _syncSettings.EnableLEC;
+
+			rbWeave.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.Weave;
+			rbBob.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.Bob;
+			rbBobOffset.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.BobOffset;
 
 			NTSC_FirstLineNumeric.Value = _settings.ScanlineStart_NTSC;
 			NTSC_LastLineNumeric.Value = _settings.ScanlineEnd_NTSC;
@@ -47,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 		Size _previewVideoSize;
 		OctoshockDll.eVidStandard _previewVideoStandard;
 		Octoshock.Settings _settings;
+		Octoshock.SyncSettings _syncSettings;
 		bool _dispSettingsSet = false;
 
 		private void btnNiceDisplayConfig_Click(object sender, EventArgs e)
@@ -62,25 +72,33 @@ namespace BizHawk.Client.EmuHawk
 			var ss = psx.GetSyncSettings();
 			var vid = psx.SystemVidStandard;
 			var size = psx.CurrentVideoSize; 
-			var dlg = new PSXOptions(s,vid,size);
+			var dlg = new PSXOptions(s,ss,vid,size);
 
 			var result = dlg.ShowDialog(owner);
 			return result;
 		}
 
-		void SyncGuiToTheseSettings(Octoshock.Settings settings)
+		void SyncSettingsFromGui(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
 		{
 			if (rbPixelPro.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
 			if (rbDebugMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.Debug;
 			if (rbMednafenMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
 			if (rbTweakedMednafenMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
 
-			settings.ClipHorizontalOverscan = checkClipHorizontal.Checked;
+			if (rbClipNone.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.None;
+			if (rbClipBasic.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Basic;
+			if (rbClipToFramebuffer.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Framebuffer;
+
+			if(rbWeave.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Weave;
+			if(rbBob.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Bob;
+			if(rbBobOffset.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.BobOffset;
 
 			settings.ScanlineStart_NTSC = (int)NTSC_FirstLineNumeric.Value;
 			settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
 			settings.ScanlineStart_PAL = (int)PAL_FirstLineNumeric.Value;
 			settings.ScanlineEnd_PAL = (int)PAL_LastLineNumeric.Value;
+
+			syncSettings.EnableLEC = cbLEC.Checked;
 		}
 
 		private void btnOk_Click(object sender, EventArgs e)
@@ -93,9 +111,10 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.DispFinalFilter = 1; //bilinear, I hope
 			}
 
-			SyncGuiToTheseSettings(_settings);
+			SyncSettingsFromGui(_settings, _syncSettings);
 			_settings.Validate();
 			GlobalWin.MainForm.PutCoreSettings(_settings);
+			GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -113,7 +132,8 @@ namespace BizHawk.Client.EmuHawk
 		void SyncLabels()
 		{
 			var temp = _settings.Clone();
-			SyncGuiToTheseSettings(temp);
+			var syncTemp = _syncSettings.Clone();
+			SyncSettingsFromGui(temp, syncTemp);
 			_settings.Validate();
 
 			//actually, I think this is irrelevant. But it's nice in case we want to do some kind of a more detailed simulation later
@@ -121,16 +141,16 @@ namespace BizHawk.Client.EmuHawk
 			int h = _previewVideoSize.Height;
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
-			var size = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", string.Format("{0}x{1}", size.Width, size.Height)); ;
+			var ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
+			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height)); ;
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
-			size = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblMednafen.Text = lblMednafen_text.Replace("320x240", string.Format("{0}x{1}", size.Width, size.Height));
+			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
+			lblMednafen.Text = lblMednafen_text.Replace("320x240", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height));
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
-			size = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", string.Format("{0}x{1}", size.Width, size.Height));
+			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
+			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height));
 		}
 
 		private void DrawingArea_ValueChanged(object sender, EventArgs e)
@@ -138,7 +158,18 @@ namespace BizHawk.Client.EmuHawk
 			SyncLabels();
 		}
 
-		private void checkClipHorizontal_CheckedChanged(object sender, EventArgs e)
+
+		private void rbClipHorizontal_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncLabels();
+		}
+
+		private void rbClipToFramebuffer_CheckedChanged(object sender, EventArgs e)
+		{
+			SyncLabels();
+		}
+
+		private void rbClipNone_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncLabels();
 		}
@@ -157,5 +188,7 @@ But: 1. we think we improved on it a tiny bit with the tweaked mode
 And: 2. It's not suitable for detailed scrutinizing of graphics
 ");
 		}
+
+
 	}
 }

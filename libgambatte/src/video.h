@@ -175,6 +175,8 @@ public:
 	void setCgbPalette(unsigned *lut);
 	void setVideoBuffer(uint_least32_t *videoBuf, int pitch);
 
+	int debugGetLY() const { return ppu.lyCounter().ly(); }
+
 	void dmgBgPaletteChange(const unsigned data, const unsigned long cycleCounter) {
 		update(cycleCounter);
 		bgpData[0] = data;

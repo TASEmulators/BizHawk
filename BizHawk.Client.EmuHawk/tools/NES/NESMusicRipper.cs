@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class NESMusicRipper : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private IEmulator _emu { get; set; }
+		private NES nes { get; set; }
 
 		public NESMusicRipper()
 		{
@@ -436,7 +436,6 @@ namespace BizHawk.Client.EmuHawk
 			//fpulse = fCPU/(16*(t+1)) (where fCPU is 1.789773 MHz for NTSC, 1.662607 MHz for PAL, and 1.773448 MHz for Dendy)
 	    //ftriangle = fCPU/(32*(tval + 1))
 
-			var nes = _emu as NES;
 			var apu = nes.apu;
 			
 			//evaluate the pitches
@@ -485,8 +484,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnControl_Click(object sender, EventArgs e)
 		{
-			var nes = _emu as NES;
-
 			if(IsRunning)
 			{
 				SyncContents();
@@ -512,7 +509,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESMusicRipper_FormClosed(object sender, FormClosedEventArgs e)
 		{
-			var nes = _emu as NES;
 			var apu = nes.apu;
 			apu.DebugCallbackDivider = 0;
 			apu.DebugCallbackTimer = 0;

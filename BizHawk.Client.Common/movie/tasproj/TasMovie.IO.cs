@@ -78,6 +78,11 @@ namespace BizHawk.Client.Common
 						bs.PutLump(BinaryStateLump.Corestate, (BinaryWriter bw) => bw.Write(BinarySavestate));
 					}
 				}
+				else if (StartsFromSaveRam)
+				{
+					bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
+				}
+
 				ReportProgress(PROGRESS_STEP);
 				if (ClientSettingsForSave != null)
 				{
@@ -90,13 +95,19 @@ namespace BizHawk.Client.Common
 				{
 					bs.PutLump(BinaryStateLump.VerificationLog, tw => tw.WriteLine(InputLogToString(VerificationLog)));
 				}
+
+				if (Branches.Any())
+				{
+					Branches.Save(bs);
+				}
+
 				ReportProgress(PROGRESS_STEP);
 			}
 
 			Changes = false;
 		}
 
-		public override bool Load()
+		public override bool Load(bool preload)
 		{
 			var file = new FileInfo(Filename);
 			if (!file.Exists)
@@ -187,6 +198,14 @@ namespace BizHawk.Client.Common
 							TextSavestate = tr.ReadToEnd();
 						});
 				}
+				else if (StartsFromSaveRam)
+				{
+					bl.GetLump(BinaryStateLump.MovieSaveRam, false,
+						delegate(BinaryReader br, long length)
+						{
+							SaveRam = br.ReadBytes((int)length);
+						});
+				}
 
 				// TasMovie enhanced information
 				if (bl.HasLump(BinaryStateLump.LagLog))
@@ -202,16 +221,20 @@ namespace BizHawk.Client.Common
 					StateManager.Settings.PopulateFromString(tr.ReadToEnd());
 				});
 
-				if (StateManager.Settings.SaveStateHistory)
+				if(!preload)
 				{
-					bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+					if (StateManager.Settings.SaveStateHistory)
 					{
-						StateManager.Load(br);
-					});
+						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+						{
+							StateManager.Load(br);
+						});
+					}
+
+					// Movie should always have a state at frame 0.
+					if (!this.StartsFromSavestate)
+						StateManager.Capture();
 				}
-				// Movie should always have a state at frame 0.
-				if (!this.StartsFromSavestate)
-					StateManager.Capture();
 
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
 				{
@@ -263,6 +286,8 @@ namespace BizHawk.Client.Common
 						}
 					});
 				}
+
+				Branches.Load(bl, this);
 			}
 
 			Changes = false;

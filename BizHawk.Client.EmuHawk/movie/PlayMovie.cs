@@ -87,26 +87,27 @@ namespace BizHawk.Client.EmuHawk
 					return null;
 				}
 				
-				var index = IsDuplicateOf(filename);
-				if (!index.HasValue)
+				//System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch(); watch.Start();
+				var movie = PreLoadMovieFile(file, force);
+				if (movie == null)
 				{
-					//System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch(); watch.Start();
-					var movie = PreLoadMovieFile(file, force);
-					if (movie == null)
-					{
-						return null;
-					}
-					//watch.Stop(); Console.WriteLine("[{0}] {1}",watch.ElapsedMilliseconds,Path.GetFileName(filename));
-					
-					lock (_movieList)
-					{
-						_movieList.Add(movie);
-						index = _movieList.Count - 1;
-					}
-
-					_sortReverse = false;
-					_sortedCol = string.Empty;
+					return null;
 				}
+				//watch.Stop(); Console.WriteLine("[{0}] {1}",watch.ElapsedMilliseconds,Path.GetFileName(filename));
+
+				int? index;
+				lock (_movieList)
+				{
+					//need to check IsDuplicateOf within the lock
+					index = IsDuplicateOf(filename);
+					if (index.HasValue) return index;
+
+					_movieList.Add(movie);
+					index = _movieList.Count - 1;
+				}
+
+				_sortReverse = false;
+				_sortedCol = string.Empty;
 
 				return index;
 			}

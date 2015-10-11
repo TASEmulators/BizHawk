@@ -10,8 +10,12 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		public IEmulator Emulator { get; private set; }
+
 		[RequiredService]
 		public IStatable StatableEmulator { get; private set; }
+
+		[OptionalService]
+		public ISaveRam SaveRamEmulator { get; private set; }
 
 		private bool _hackyDontUpdate;
 		private bool _initializing; // If true, will bypass restart logic, this is necessary since loading projects causes a movie to load which causes a rom to reload causing dialogs to restart
@@ -35,15 +39,13 @@ namespace BizHawk.Client.EmuHawk
 			if (AutoadjustInputMenuItem.Checked)
 				refreshNeeded = AutoAdjustInput();
 
-			if (TasPlaybackBox.FollowCursor)
-				SetVisibleIndex();
+			MaybeFollowCursor();
 
 			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
 
-			if (refreshNeeded)
-				RefreshDialog();
-			else if (TasView.RowCount != CurrentTasMovie.InputLogLength + 1) // Perhaps not the best place to put this.
+			RefreshDialog(refreshNeeded);
+			if (!refreshNeeded && TasView.RowCount != CurrentTasMovie.InputLogLength + 1) // Perhaps not the best place to put this.
 				TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 		}
 
@@ -56,10 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.RowCount = CurrentTasMovie.InputLogLength + 1;
 
-			if (TasPlaybackBox.FollowCursor)
-			{
-				SetVisibleIndex();
-			}
+			MaybeFollowCursor();
 		}
 
 		public void Restart()

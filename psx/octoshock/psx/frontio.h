@@ -26,6 +26,8 @@ class InputDevice
  virtual void Update(const pscpu_timestamp_t timestamp);	// Partially-implemented, don't rely on for timing any more fine-grained than a video frame for now.
  virtual void ResetTS(void);
 
+ virtual const char* GetName() const { return "InputDevice"; }
+
  
  //
  //

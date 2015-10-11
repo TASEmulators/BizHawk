@@ -14,8 +14,7 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// begin rendering, initializing viewport and projections to the given dimensions
 		/// </summary>
-		/// <param name="yflipped">Whether the matrices should be Y-flipped, for use with render targets</param>
-		void Begin(int width, int height, bool yflipped = false);
+		void Begin(int width, int height);
 
 		/// <summary>
 		/// draws the specified Art resource

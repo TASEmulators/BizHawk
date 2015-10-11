@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			toc_sq.min = BCD2.FromDecimal(0);
 			toc_sq.sec = BCD2.FromDecimal(0);
 			toc_sq.frame = BCD2.FromDecimal(0);
-			toc_sq.AP_Timestamp = new Timestamp(OUT_Disc._Sectors.Count);
+			toc_sq.AP_Timestamp = OUT_Disc._Sectors.Count;
 			OUT_Disc.RawTOCEntries.Add(new RawTOCEntry { QData = toc_sq });
 		}
 
@@ -322,8 +322,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					ss.sq.SetStatus(ADR, (EControlQ)(int)qTrack.CompiledCueTrack.Flags);
 					ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 					ss.sq.q_index = BCD2.FromDecimal(curr_index);
-					ss.sq.AP_Timestamp = new Timestamp(OUT_Disc._Sectors.Count);
-					ss.sq.Timestamp = new Timestamp(qRelMSF);
+					ss.sq.AP_Timestamp = OUT_Disc._Sectors.Count;
+					ss.sq.Timestamp = qRelMSF;
 
 					//setup subP
 					if (curr_index == 0)
@@ -363,8 +363,8 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					ss.sq.SetStatus(ADR, (EControlQ)(int)cct.Flags);
 					ss.sq.q_tno = BCD2.FromDecimal(cct.Number);
 					ss.sq.q_index = BCD2.FromDecimal(curr_index);
-					ss.sq.AP_Timestamp = new Timestamp(OUT_Disc._Sectors.Count);
-					ss.sq.Timestamp = new Timestamp(relMSF);
+					ss.sq.AP_Timestamp = OUT_Disc._Sectors.Count;
+					ss.sq.Timestamp = relMSF;
 
 					//-subP-
 					//always paused--is this good enough?
@@ -383,7 +383,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				IN_FirstRecordedTrackNumber = IN_CompileJob.OUT_CompiledDiscInfo.FirstRecordedTrackNumber,
 				IN_LastRecordedTrackNumber = IN_CompileJob.OUT_CompiledDiscInfo.LastRecordedTrackNumber,
 				IN_Session1Format = IN_CompileJob.OUT_CompiledDiscInfo.SessionFormat,
-				IN_LeadoutTimestamp = new Timestamp(OUT_Disc._Sectors.Count) //do we need a +150?
+				IN_LeadoutTimestamp = OUT_Disc._Sectors.Count
 			};
 			TOCMiscInfo.Run(OUT_Disc.RawTOCEntries);
 

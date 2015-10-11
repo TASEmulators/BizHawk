@@ -217,7 +217,7 @@ namespace BizHawk.Client.MultiHawk
 					"Colecovision", "*.col;%ARCH%",
 					"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 					"PSX Executables (experimental)", "*.exe",
-					"PSF Playstation Sound File (not supported)", "*.psf",
+					"PSF Playstation Sound File", "*.psf;*.minipsf",
 					"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt;%ARCH%",
 					"SID Commodore 64 Music File", "*.sid;%ARCH%",
 					"Nintendo 64", "*.z64;*.v64;*.n64",

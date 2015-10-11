@@ -22,7 +22,6 @@ namespace BizHawk.Bizware.BizwareGL
 		/// <summary>
 		/// Clears the specified buffer parts
 		/// </summary>
-		/// <param name="mask"></param>
 		void Clear(ClearBufferMask mask);
 
 		/// <summary>
@@ -31,29 +30,19 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetClearColor(Color color);
 
 		/// <summary>
-		/// returns an empty handle
-		/// </summary>
-		IntPtr GetEmptyHandle();
-
-		/// <summary>
-		/// returns an empty uniform handle
-		/// </summary>
-		IntPtr GetEmptyUniformHandle();
-
-		/// <summary>
 		/// compile a fragment shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
 		/// </summary>
-		Shader CreateFragmentShader(string source, bool required);
+		Shader CreateFragmentShader(bool cg, string source, string entry, bool required);
 
 		/// <summary>
 		/// compile a vertex shader. This is the simplified method. A more complex method may be added later which will accept multiple sources and preprocessor definitions independently
 		/// </summary>
-		Shader CreateVertexShader(string source, bool required);
+		Shader CreateVertexShader(bool cg, string source, string entry, bool required);
 
 		/// <summary>
 		/// Creates a complete pipeline from the provided vertex and fragment shader handles
 		/// </summary>
-		Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required);
+		Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo);
 
 		/// <summary>
 		/// Binds this pipeline as the current used for rendering
@@ -61,9 +50,9 @@ namespace BizHawk.Bizware.BizwareGL
 		void BindPipeline(Pipeline pipeline);
 
 		/// <summary>
-		/// Sets a uniform sampler to use use the provided texture handle
+		/// Sets a uniform sampler to use use the provided texture
 		/// </summary>
-		void SetPipelineUniformSampler(PipelineUniform uniform, IntPtr texHandle);
+		void SetPipelineUniformSampler(PipelineUniform uniform, Texture2d tex);
 
 		/// <summary>
 		/// Sets a uniform value
@@ -101,24 +90,25 @@ namespace BizHawk.Bizware.BizwareGL
 		void SetPipelineUniform(PipelineUniform uniform, bool value);
 
 		/// <summary>
-		/// Binds array data for use with the currently-bound VertexLayout
+		/// Binds array data for use with the currently-bound pipeline's VertexLayout
 		/// </summary>
 		unsafe void BindArrayData(void* pData);
 
 		/// <summary>
-		/// Draws based on the currently set VertexLayout and ArrayData
+		/// Begins a rendering scene; use before doing any draw calls, as per normal
+		/// </summary>
+		void BeginScene();
+
+		/// <summary>
+		/// Indicates end of scene rendering; use after alldraw calls as per normal
+		/// </summary>
+		void EndScene();
+
+		/// <summary>
+		/// Draws based on the currently set pipeline, VertexLayout and ArrayData.
+		/// Count is the VERT COUNT not the primitive count
 		/// </summary>
 		void DrawArrays(PrimitiveType mode, int first, int count);
-
-		/// <summary>
-		/// Frees the provided shader handle
-		/// </summary>
-		void FreeShader(IntPtr shader);
-
-		/// <summary>
-		/// frees the provided texture
-		/// </summary>
-		void FreeTexture(Texture2d tex);
 
 		/// <summary>
 		/// resolves the texture into a new BitmapBuffer
@@ -126,19 +116,9 @@ namespace BizHawk.Bizware.BizwareGL
 		BitmapBuffer ResolveTexture2d(Texture2d texture);
 
 		/// <summary>
-		/// frees the provided render target
-		/// </summary>
-		void FreeRenderTarget(RenderTarget rt);
-
-		/// <summary>
-		/// Binds this texture as the current texture2d target for parameter-specification
-		/// </summary>
-		void BindTexture2d(Texture2d texture);
-
-		/// <summary>
 		/// Sets a 2d texture parameter
 		/// </summary>
-		void TexParameter2d(TextureParameterName pname, int param);
+		void TexParameter2d(Texture2d texture, TextureParameterName pname, int param);
 
 		/// <summary>
 		/// creates a vertex layout resource
@@ -187,7 +167,8 @@ namespace BizHawk.Bizware.BizwareGL
 		Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height);
 
 		/// <summary>
-		/// Sets the clamp mode (for both uv) for the Texture2d
+		/// Sets the clamp mode (for both uv) for the Texture2d.
+		/// The default is clamped=true.
 		/// </summary>
 		void SetTextureWrapMode(Texture2d tex, bool clamp);
 
@@ -217,22 +198,22 @@ namespace BizHawk.Bizware.BizwareGL
 		Texture2d LoadTexture(Bitmap bitmap);
 
 		/// <summary>
-		/// sets the viewport according to the provided specifications
+		/// sets the viewport (and scissor) according to the provided specifications
 		/// </summary>
 		void SetViewport(int x, int y, int width, int height);
 
 		/// <summary>
-		/// sets the viewport according to the provided specifications
+		/// sets the viewport (and scissor) according to the provided specifications
 		/// </summary>
 		void SetViewport(int width, int height);
 
 		/// <summary>
-		/// sets the viewport according to the client area of the provided control
+		/// sets the viewport (and scissor) according to the client area of the provided control
 		/// </summary>
 		void SetViewport(swf.Control control);
 
 		/// <summary>
-		/// sets the viewport according to the provided specifications
+		/// sets the viewport (and scissor) according to the provided specifications
 		/// </summary>
 		void SetViewport(Size size);
 
@@ -250,16 +231,16 @@ namespace BizHawk.Bizware.BizwareGL
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiViewMatrix(int w, int h);
+		Matrix4 CreateGuiViewMatrix(int w, int h, bool autoflip = true);
 
 		/// <summary>
 		/// generates a proper view transform for a standard 2d ortho projection, including half-pixel jitter if necessary and
 		/// re-establishing of a normal 2d graphics top-left origin. suitable for use in a GUI
 		/// </summary>
-		Matrix4 CreateGuiViewMatrix(Size dims);
+		Matrix4 CreateGuiViewMatrix(Size dims, bool autoflip = true);
 
 		/// <summary>
-		/// Creates a render target. Includes a color buffer. Pixel format control TBD
+		/// Creates a render target. Only includes a color buffer. Pixel format control TBD
 		/// </summary>
 		RenderTarget CreateRenderTarget(int w, int h);
 
@@ -268,11 +249,31 @@ namespace BizHawk.Bizware.BizwareGL
 		/// </summary>
 		void BindRenderTarget(RenderTarget rt);
 
-		IGraphicsControl Internal_CreateGraphicsControl();
-
 		/// <summary>
 		/// returns a string representing the API employed by this context
 		/// </summary>
 		string API { get; }
+
+		/// <summary>
+		/// frees the provided render target. Same as disposing the resource.
+		/// </summary>
+		void FreeRenderTarget(RenderTarget rt);
+
+		/// <summary>
+		/// frees the provided texture. Same as disposing the resource.
+		/// </summary>
+		void FreeTexture(Texture2d tex);
+
+		/// <summary>
+		/// Frees the provided pipeline. Same as disposing the resource.
+		/// </summary>
+		void FreePipeline(Pipeline pipeline);
+
+		/// <summary>
+		/// Frees the provided texture. For internal use only.
+		/// </summary>
+		void Internal_FreeShader(Shader shader);
+
+		IGraphicsControl Internal_CreateGraphicsControl();
 	}
 }

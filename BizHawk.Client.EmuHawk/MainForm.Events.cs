@@ -576,7 +576,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
-				bb.Normalize(true);
+				bb.DiscardAlpha();
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}
@@ -595,6 +595,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Close();
 			}
+		}
+
+		public void CloseEmulator()
+		{
+			_exit = true;
 		}
 
 		#endregion
@@ -671,6 +676,8 @@ namespace BizHawk.Client.EmuHawk
 			DisplayLogWindowMenuItem.Checked = Global.Config.ShowLogWindow;
 
 			DisplayLagCounterMenuItem.Enabled = Global.Emulator.CanPollInput();
+
+			DisplayMessagesMenuItem.Checked = Global.Config.DisplayMessages;
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -810,6 +817,8 @@ namespace BizHawk.Client.EmuHawk
 			Speed100MenuItem.Image = (Global.Config.SpeedPercentAlternate == 100) ? Properties.Resources.FastForward : null;
 			Speed150MenuItem.Checked = Global.Config.SpeedPercent == 150;
 			Speed150MenuItem.Image = (Global.Config.SpeedPercentAlternate == 150) ? Properties.Resources.FastForward : null;
+			Speed400MenuItem.Checked = Global.Config.SpeedPercent == 400;
+			Speed400MenuItem.Image = (Global.Config.SpeedPercentAlternate == 400) ? Properties.Resources.FastForward : null;
 			Speed200MenuItem.Checked = Global.Config.SpeedPercent == 200;
 			Speed200MenuItem.Image = (Global.Config.SpeedPercentAlternate == 200) ? Properties.Resources.FastForward : null;
 			Speed75MenuItem.Checked = Global.Config.SpeedPercent == 75;
@@ -822,7 +831,10 @@ namespace BizHawk.Client.EmuHawk
 				Speed100MenuItem.Enabled =
 				Speed150MenuItem.Enabled =
 				Speed200MenuItem.Enabled =
+				Speed400MenuItem.Enabled =
 				Global.Config.ClockThrottle;
+
+			miUnthrottled.Checked = _unthrottled;
 		}
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -965,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LimitFrameRateMessage();
+			ThrottleMessage();
 		}
 
 		private void AudioThrottleMenuItem_Click(object sender, EventArgs e)
@@ -982,6 +994,8 @@ namespace BizHawk.Client.EmuHawk
 					PresentationPanel.Resized = true;
 				}
 			}
+
+			ThrottleMessage();
 		}
 
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
@@ -999,7 +1013,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			VsyncMessage();
+			if (!Global.Config.VSync)
+			{
+				Global.Config.VSync = true;
+				VsyncMessage();
+			}
+
+			ThrottleMessage();
 		}
 
 		private void VsyncEnabledMenuItem_Click(object sender, EventArgs e)
@@ -1009,6 +1029,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PresentationPanel.Resized = true;
 			}
+
+			VsyncMessage();
 		}
 
 		private void MinimizeSkippingMenuItem_Click(object sender, EventArgs e)
@@ -1032,6 +1054,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Speed100MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(100); }
 		private void Speed150MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(150); }
 		private void Speed200MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(200); }
+		private void Speed400MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(400); }
 
 		private void BothHkAndControllerMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1099,6 +1122,12 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Config file loaded");
 		}
 
+		private void miUnthrottled_Click(object sender, EventArgs e)
+		{
+			_unthrottled ^= true;
+			ThrottleMessage();
+		}
+
 		#endregion
 
 		#region Tools
@@ -1129,6 +1158,13 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
+
+			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
+		}
+
+		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<AutoHawk>();
 		}
 
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
@@ -1195,6 +1231,18 @@ namespace BizHawk.Client.EmuHawk
 
 		#region NES
 
+		private void quickNESToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = true;
+			FlagNeedsReboot();
+		}
+
+		private void nesHawkToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.NES_InQuickNES = false;
+			FlagNeedsReboot();
+		}
+
 		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
@@ -1206,6 +1254,8 @@ namespace BizHawk.Client.EmuHawk
 				&& !Global.MovieSession.Movie.IsActive;
 
 			barcodeReaderToolStripMenuItem.Enabled = ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, typeof(BarcodeEntry));
+
+			musicRipperToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESMusicRipper>();
 		}
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1656,9 +1706,38 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<GBAGPUView>();
 		}
 
+		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = true;
+			FlagNeedsReboot();
+		}
+
+		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA = false;
+			FlagNeedsReboot();
+		}
+
+		private void GBACoreSelectionSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBAmGBAMenuItem.Checked = Global.Config.GBA_UsemGBA == true;
+			GBAVBANextMenuItem.Checked = Global.Config.GBA_UsemGBA == false;
+		}
+
+		private void gBAWithMGBAToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA ^= true;
+			FlagNeedsReboot();
+		}
+
 		#endregion
 
 		#region PSX
+
+		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXHashDiscs().ShowDialog();
+		}
 
 		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -1667,7 +1746,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXControllerConfig().ShowDialog();
+			new PSXControllerConfigNew().ShowDialog();
 		}
 
 		#endregion
@@ -1942,6 +2021,10 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Apple II
 
+		private void settingsToolStripMenuItem1_Click_1(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Apple II Settings");
+		}
 
 		private void AppleSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2129,11 +2212,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = new config.DisplayConfigLite().ShowDialog();
+			var window = new config.DisplayConfigLite();
+			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				FrameBufferResized();
 				SynchChrome();
+				if (window.NeedReset)
+				{
+					GlobalWin.OSD.AddMessage("Restart program for changed settings");
+				}
 			}
 		}
 
@@ -2363,13 +2451,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void timerMouseIdle_Tick(object sender, EventArgs e)
+		{
+			if (_inFullscreen && Global.Config.DispChrome_Fullscreen_AutohideMouse)
+				AutohideCursor(true);
+		}
+
 		private void MainForm_Enter(object sender, EventArgs e)
 		{
 			GlobalWin.DisplayManager.NeedsToPaint = true;
+			AutohideCursor(false);
+		}
+
+		public void MainForm_MouseMove(object sender, MouseEventArgs e)
+		{
+			AutohideCursor(false);
 		}
 
 		public void MainForm_MouseClick(object sender, MouseEventArgs e)
 		{
+			AutohideCursor(false);
 			if (Global.Config.ShowContextMenu && e.Button == MouseButtons.Right)
 			{
 				MainFormContextMenu.Show(

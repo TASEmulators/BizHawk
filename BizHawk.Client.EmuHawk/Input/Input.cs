@@ -128,6 +128,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 #if WINDOWS
 			KeyInput.Initialize();
+			IPCKeyInput.Initialize();
 			GamePad.Initialize();
 			GamePad360.Initialize();
 #endif
@@ -319,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (; ; )
 			{
-				var keyEvents = KeyInput.Update();
+				var keyEvents = KeyInput.Update().Concat(IPCKeyInput.Update());
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
 
@@ -510,6 +511,15 @@ namespace BizHawk.Client.EmuHawk
 		//this should be used by hotkey binders, but we may want modifier key events
 		//to get triggered in the main form
 		public bool EnableIgnoreModifiers = false;
+
+		//sets a key as unpressed for the binding system
+		public void BindUnpress(System.Windows.Forms.Keys key)
+		{
+			//only validated for Return
+			string keystr = key.ToString();
+			UnpressState[keystr] = true;
+			LastState[keystr] = true;
+		}
 
 	}
 }

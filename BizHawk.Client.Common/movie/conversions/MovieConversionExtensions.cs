@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
 {
@@ -33,6 +35,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			}
 
 			var tas = new TasMovie(newFilename, old.StartsFromSavestate);
+			tas.TasStateManager.MountWriteAccess();
 
 			for (var i = 0; i < old.InputLogLength; i++)
 			{
@@ -67,6 +70,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 
 			tas.TextSavestate = old.TextSavestate;
 			tas.BinarySavestate = old.BinarySavestate;
+			tas.SaveRam = old.SaveRam;
 
 			return tas;
 		}
@@ -88,7 +92,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			}
 
 			bk2.HeaderEntries.Clear();
-			foreach(var kvp in old.HeaderEntries)
+			foreach (var kvp in old.HeaderEntries)
 			{
 				bk2.HeaderEntries[kvp.Key] = kvp.Value;
 			}
@@ -96,19 +100,20 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			bk2.SyncSettingsJson = old.SyncSettingsJson;
 
 			bk2.Comments.Clear();
-			foreach(var comment in old.Comments)
+			foreach (var comment in old.Comments)
 			{
 				bk2.Comments.Add(comment);
 			}
 
 			bk2.Subtitles.Clear();
-			foreach(var sub in old.Subtitles)
+			foreach (var sub in old.Subtitles)
 			{
 				bk2.Subtitles.Add(sub);
 			}
 
 			bk2.TextSavestate = old.TextSavestate;
 			bk2.BinarySavestate = old.BinarySavestate;
+			bk2.SaveRam = old.SaveRam;
 
 			bk2.Save();
 			return bk2;
@@ -136,15 +141,24 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, true);
+			TasMovie tas = new TasMovie(newFilename, true);
 			tas.BinarySavestate = savestate;
-			tas.TasStateManager.Clear();
 			tas.ClearLagLog();
 
-			var entries = old.GetLogEntries();
+			List<string> entries = old.GetLogEntries();
 
 			tas.CopyLog(entries.Skip(frame));
+			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries.Take(frame));
+
+			// States can't be easily moved over, because they contain the frame number.
+			// TODO? I'm not sure how this would be done.
+			tas.TasStateManager.MountWriteAccess();
+			old.TasStateManager.Clear();
+
+			// Lag Log
+			tas.TasLagLog.FromLagLog(old.TasLagLog);
+			tas.TasLagLog.StartFromFrame(frame);
 
 			tas.HeaderEntries.Clear();
 			foreach (var kvp in old.HeaderEntries)
@@ -156,23 +170,81 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.SyncSettingsJson = old.SyncSettingsJson;
 
 			tas.Comments.Clear();
-			foreach (var comment in old.Comments)
+			foreach (string comment in old.Comments)
 			{
 				tas.Comments.Add(comment);
 			}
 
 			tas.Subtitles.Clear();
-			foreach (var sub in old.Subtitles)
+			foreach (Subtitle sub in old.Subtitles)
 			{
 				tas.Subtitles.Add(sub);
 			}
 
-			foreach(var marker in old.Markers)
+			foreach (TasMovieMarker marker in old.Markers)
 			{
-				if (marker.Frame > 0)
+				if (marker.Frame > frame)
+					tas.Markers.Add(new TasMovieMarker(marker.Frame - frame, marker.Message));
+			}
+
+			tas.TasStateManager.Settings = old.TasStateManager.Settings;
+
+			tas.Save();
+			return tas;
+		}
+
+		public static TasMovie ConvertToSaveRamAnchoredMovie(this TasMovie old, byte[] saveRam)
+		{
+			string newFilename = old.Filename + "." + TasMovie.Extension;
+
+			if (File.Exists(newFilename))
+			{
+				int fileNum = 1;
+				bool fileConflict = true;
+				while (fileConflict)
 				{
-					tas.Markers.Add(marker);
+					if (File.Exists(newFilename))
+					{
+						newFilename = old.Filename + " (" + fileNum + ")" + "." + TasMovie.Extension;
+						fileNum++;
+					}
+					else
+					{
+						fileConflict = false;
+					}
 				}
+			}
+
+			TasMovie tas = new TasMovie(newFilename, true);
+			tas.SaveRam = saveRam;
+			tas.TasStateManager.Clear();
+			tas.ClearLagLog();
+
+			List<string> entries = old.GetLogEntries();
+
+			tas.CopyVerificationLog(old.VerificationLog);
+			tas.CopyVerificationLog(entries);
+
+			tas.HeaderEntries.Clear();
+			foreach (var kvp in old.HeaderEntries)
+			{
+				tas.HeaderEntries[kvp.Key] = kvp.Value;
+			}
+
+			tas.StartsFromSaveRam = true;
+			tas.StartsFromSavestate = false;
+			tas.SyncSettingsJson = old.SyncSettingsJson;
+
+			tas.Comments.Clear();
+			foreach (string comment in old.Comments)
+			{
+				tas.Comments.Add(comment);
+			}
+
+			tas.Subtitles.Clear();
+			foreach (Subtitle sub in old.Subtitles)
+			{
+				tas.Subtitles.Add(sub);
 			}
 
 			tas.TasStateManager.Settings = old.TasStateManager.Settings;
@@ -213,10 +285,10 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.BoardName = Global.Emulator.BoardName;
 			}
 
-			if (Global.Emulator.HasPublicProperty("DisplayType"))
+			if (Global.Emulator.HasRegions())
 			{
-				var region = Global.Emulator.GetPropertyValue("DisplayType");
-				if ((DisplayType)region == DisplayType.PAL)
+				var region = Global.Emulator.AsRegionable().Region;
+				if (region == DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
 				}
@@ -233,7 +305,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 						movie.HeaderEntries.Add(key, firmware.Hash);
 					}
 				}
-				
+
 			}
 
 			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())

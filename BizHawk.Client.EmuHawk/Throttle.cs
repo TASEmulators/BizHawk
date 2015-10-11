@@ -49,6 +49,41 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Step(bool allowSleep, int forceFrameSkip)
 		{
+			//TODO - figure out what allowSleep is supposed to be used for
+			//TODO - figure out what forceFrameSkip is supposed to be used for
+
+			bool extraThrottle = false;
+
+			//if we're paused, none of this should happen. just clean out our state and dont skip
+			//notably, if we're frame-advancing, we should be paused.
+			if (signal_paused && !signal_continuousframeAdvancing)
+			{
+				//Console.WriteLine("THE THING: {0} {1}", signal_paused ,signal_continuousframeAdvancing);
+				skipnextframe = false;
+				framesskipped = 0;
+				framestoskip = 0;
+				return;
+			}
+
+			//heres some ideas for how to begin cleaning this up
+			////at this point, its assumed that we're running.
+			////this could be a free run, an unthrottled run, or a 'continuous frame advance' (aka continuous) run
+			////free run: affected by frameskips and throttles
+			////unthrottled run: affected by frameskips only
+			////continuous run: affected by frameskips and throttles
+			////so continuous and free are the same?
+
+			//bool continuous_run = signal_continuousframeAdvancing;
+			//bool unthrottled_run = signal_unthrottle;
+			//bool free_run = !continuous_run && !unthrottled_run;
+
+			//bool do_throttle, do_skip;
+			//if (continuous_run || free_run)
+			//  do_throttle = do_skip = true;
+			//else if (unthrottled_run)
+			//  do_skip = true;
+			//else throw new InvalidOperationException();
+
 			int skipRate = (forceFrameSkip < 0) ? cfg_frameskiprate : forceFrameSkip;
 			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;
 
@@ -58,12 +93,22 @@ namespace BizHawk.Client.EmuHawk
 				framestoskip = 0; // otherwise switches to lower frameskip rates will lag behind
 			}
 
-			if (!skipnextframe || forceFrameSkip == 0 || signal_frameAdvance || (signal_continuousframeAdvancing && !signal_unthrottle))
+			if (!skipnextframe || forceFrameSkip == 0 || (signal_continuousframeAdvancing && !signal_unthrottle))
 			{
 				framesskipped = 0;
 
-				if (framestoskip > 0)
-					skipnextframe = true;
+				if (signal_continuousframeAdvancing)
+				{
+					//dont ever skip frames when continuous frame advancing. it's meant for precision work.
+					//but we DO need to throttle
+					if(Global.Config.ClockThrottle)
+						extraThrottle = true;
+				}
+				else
+				{
+					if (framestoskip > 0)
+						skipnextframe = true;
+				}
 			}
 			else
 			{
@@ -72,11 +117,9 @@ namespace BizHawk.Client.EmuHawk
 				if (framestoskip < 1)
 					skipnextframe = false;
 				else
-					skipnextframe = true;
+				  skipnextframe = true;
 
 				framesskipped++;
-
-				//NDS_SkipNextFrame();
 			}
 
 			if (signal_unthrottle)
@@ -89,14 +132,14 @@ namespace BizHawk.Client.EmuHawk
 				if (framestoskip < 1)
 					framestoskip += ffSkipRate;
 			}
-			else if ((signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit || signal_overrideSecondaryThrottle) && allowSleep)
+			else if ((extraThrottle || signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit || signal_overrideSecondaryThrottle) && allowSleep)
 			{
 				SpeedThrottle(signal_paused);
 			}
 
 			if (cfg_autoframeskipenab && cfg_frameskiprate != 0)
 			{
-				if (!signal_frameAdvance && !signal_continuousframeAdvancing)
+				if (!signal_continuousframeAdvancing)
 				{
 					AutoFrameSkip_NextFrame();
 					if (framestoskip < 1)
@@ -108,21 +151,6 @@ namespace BizHawk.Client.EmuHawk
 				if (framestoskip < 1)
 					framestoskip += skipRate;
 			}
-
-			if (signal_frameAdvance && allowSleep)
-			{
-				//this logic has been replaced by some logic in steprunloop_core.
-				//really, it should be moved back here somehow later.
-
-				//frameAdvance = false;
-				//emu_halt();
-				//SPU_Pause(1);
-			}
-			//if (execute && emu_paused && !frameAdvance)
-			//{
-			//    // safety net against running out of control in case this ever happens.
-			//    Unpause(); Pause();
-			//}
 		}
 
 		static ulong GetCurTime()

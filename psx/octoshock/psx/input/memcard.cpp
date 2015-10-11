@@ -40,6 +40,8 @@ class InputDevice_Memcard : public InputDevice
  InputDevice_Memcard();
  virtual ~InputDevice_Memcard();
 
+ virtual const char* GetName() const { return "InputDevice_Memcard"; }
+
  virtual void Power(void);
  virtual void SyncState(bool isReader, EW::NewState *ns);
  //

@@ -36,13 +36,19 @@
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.IDB_CANCEL = new System.Windows.Forms.Button();
 			this.IDB_SAVE = new System.Windows.Forms.Button();
-			this.RestoreDefaults = new System.Windows.Forms.Button();
 			this.SearchBox = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.MiscButton = new BizHawk.Client.EmuHawk.MenuButton();
+			this.clearBtnContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clearCurrentTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.restoreDefaultsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.HotkeyTabControl.SuspendLayout();
+			this.clearBtnContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label38
@@ -59,7 +65,7 @@
 			// 
 			this.AutoTabCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.AutoTabCheckBox.AutoSize = true;
-			this.AutoTabCheckBox.Location = new System.Drawing.Point(453, 440);
+			this.AutoTabCheckBox.Location = new System.Drawing.Point(432, 440);
 			this.AutoTabCheckBox.Name = "AutoTabCheckBox";
 			this.AutoTabCheckBox.Size = new System.Drawing.Size(70, 17);
 			this.AutoTabCheckBox.TabIndex = 101;
@@ -115,19 +121,6 @@
 			this.IDB_SAVE.UseVisualStyleBackColor = true;
 			this.IDB_SAVE.Click += new System.EventHandler(this.IDB_SAVE_Click);
 			// 
-			// RestoreDefaults
-			// 
-			this.RestoreDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.RestoreDefaults.Location = new System.Drawing.Point(529, 436);
-			this.RestoreDefaults.Name = "RestoreDefaults";
-			this.RestoreDefaults.Size = new System.Drawing.Size(60, 22);
-			this.RestoreDefaults.TabIndex = 105;
-			this.RestoreDefaults.TabStop = false;
-			this.RestoreDefaults.Text = "&Defaults";
-			this.toolTip1.SetToolTip(this.RestoreDefaults, "Reses _all_ bindings to default.");
-			this.RestoreDefaults.UseVisualStyleBackColor = true;
-			this.RestoreDefaults.Click += new System.EventHandler(this.RestoreDefaults_Click);
-			// 
 			// SearchBox
 			// 
 			this.SearchBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -168,17 +161,63 @@
 			this.label3.TabIndex = 109;
 			this.label3.Text = "Tips:";
 			// 
+			// MiscButton
+			// 
+			this.MiscButton.Location = new System.Drawing.Point(526, 436);
+			this.MiscButton.Menu = this.clearBtnContextMenu;
+			this.MiscButton.Name = "MiscButton";
+			this.MiscButton.Size = new System.Drawing.Size(60, 22);
+			this.MiscButton.TabIndex = 110;
+			this.MiscButton.Text = "Misc...";
+			this.MiscButton.UseVisualStyleBackColor = true;
+			// 
+			// clearBtnContextMenu
+			// 
+			this.clearBtnContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.restoreDefaultsToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.clearAllToolStripMenuItem,
+            this.clearCurrentTabToolStripMenuItem});
+			this.clearBtnContextMenu.Name = "clearBtnContextMenu";
+			this.clearBtnContextMenu.Size = new System.Drawing.Size(168, 76);
+			// 
+			// clearAllToolStripMenuItem
+			// 
+			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
+			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.clearAllToolStripMenuItem.Text = "Clear All";
+			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.clearAllToolStripMenuItem_Click);
+			// 
+			// clearCurrentTabToolStripMenuItem
+			// 
+			this.clearCurrentTabToolStripMenuItem.Name = "clearCurrentTabToolStripMenuItem";
+			this.clearCurrentTabToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.clearCurrentTabToolStripMenuItem.Text = "Clear Current Tab";
+			this.clearCurrentTabToolStripMenuItem.Click += new System.EventHandler(this.clearCurrentTabToolStripMenuItem_Click);
+			// 
+			// restoreDefaultsToolStripMenuItem
+			// 
+			this.restoreDefaultsToolStripMenuItem.Name = "restoreDefaultsToolStripMenuItem";
+			this.restoreDefaultsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+			this.restoreDefaultsToolStripMenuItem.Text = "Restore Defaults";
+			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(164, 6);
+			// 
 			// HotkeyConfig
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.IDB_CANCEL;
 			this.ClientSize = new System.Drawing.Size(753, 463);
+			this.Controls.Add(this.MiscButton);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.SearchBox);
-			this.Controls.Add(this.RestoreDefaults);
 			this.Controls.Add(this.IDB_SAVE);
 			this.Controls.Add(this.IDB_CANCEL);
 			this.Controls.Add(this.HotkeyTabControl);
@@ -190,6 +229,7 @@
 			this.Text = "Configure Hotkeys";
 			this.Load += new System.EventHandler(this.NewHotkeyWindow_Load);
 			this.HotkeyTabControl.ResumeLayout(false);
+			this.clearBtnContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -203,11 +243,16 @@
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.Button IDB_CANCEL;
 		private System.Windows.Forms.Button IDB_SAVE;
-		private System.Windows.Forms.Button RestoreDefaults;
         private System.Windows.Forms.TextBox SearchBox;
         private System.Windows.Forms.Label label1;
 				private System.Windows.Forms.Label label2;
 				private System.Windows.Forms.Label label3;
 				private System.Windows.Forms.ToolTip toolTip1;
+				private MenuButton MiscButton;
+				private System.Windows.Forms.ContextMenuStrip clearBtnContextMenu;
+				private System.Windows.Forms.ToolStripMenuItem clearAllToolStripMenuItem;
+				private System.Windows.Forms.ToolStripMenuItem clearCurrentTabToolStripMenuItem;
+				private System.Windows.Forms.ToolStripMenuItem restoreDefaultsToolStripMenuItem;
+				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 	}
 }

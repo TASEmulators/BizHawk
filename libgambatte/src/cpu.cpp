@@ -505,7 +505,7 @@ void CPU::process(const unsigned long cycles) {
 			unsigned char opcode;
 			
 			if (tracecallback) {
-				int result[13];
+				int result[14];
 				result[0] = cycleCounter;
 				result[1] = PC;
 				result[2] = SP;
@@ -520,6 +520,7 @@ void CPU::process(const unsigned long cycles) {
 				result[11] = skip;
 				PC_READ(opcode);
 				result[12] = opcode;
+				result[13] = memory.debugGetLY();
 				tracecallback((void *)result);
 			}
 			else {

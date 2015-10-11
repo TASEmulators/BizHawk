@@ -35,7 +35,6 @@
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.HR = new BizHawk.Client.EmuHawk.HorizontalLine();
 			this.label5 = new System.Windows.Forms.Label();
 			this.mom2 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -43,9 +42,14 @@
 			this.pictureBox4 = new System.Windows.Forms.PictureBox();
 			this.pictureBox3 = new System.Windows.Forms.PictureBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.pictureBox5 = new BizHawk.Client.EmuHawk.MyViewportPanel();
 			this.CloseBtn = new System.Windows.Forms.Button();
 			this.btnBizBox = new System.Windows.Forms.Button();
+			this.tbBranch = new System.Windows.Forms.TextBox();
+			this.tbCommit = new System.Windows.Forms.TextBox();
+			this.label6 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.pictureBox5 = new BizHawk.Client.EmuHawk.MyViewportPanel();
+			this.HR = new BizHawk.Client.EmuHawk.HorizontalLine();
 			((System.ComponentModel.ISupportInitialize)(this.mom2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.mom1)).BeginInit();
@@ -99,15 +103,6 @@
 			this.label4.Size = new System.Drawing.Size(175, 48);
 			this.label4.TabIndex = 5;
 			this.label4.Text = "(LEVAR BURTON\r\nCAMEO)";
-			// 
-			// HR
-			// 
-			this.HR.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.HR.Location = new System.Drawing.Point(349, 213);
-			this.HR.Name = "HR";
-			this.HR.Size = new System.Drawing.Size(158, 2);
-			this.HR.TabIndex = 4;
-			this.HR.Text = "COPYRITE 2001";
 			// 
 			// label5
 			// 
@@ -178,17 +173,9 @@
 			this.pictureBox1.TabIndex = 0;
 			this.pictureBox1.TabStop = false;
 			// 
-			// pictureBox5
-			// 
-			this.pictureBox5.Enabled = false;
-			this.pictureBox5.Location = new System.Drawing.Point(71, 223);
-			this.pictureBox5.Name = "pictureBox5";
-			this.pictureBox5.Size = new System.Drawing.Size(376, 48);
-			this.pictureBox5.TabIndex = 15;
-			this.pictureBox5.TabStop = false;
-			// 
 			// CloseBtn
 			// 
+			this.CloseBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.CloseBtn.Location = new System.Drawing.Point(424, 462);
 			this.CloseBtn.Name = "CloseBtn";
 			this.CloseBtn.Size = new System.Drawing.Size(75, 23);
@@ -200,6 +187,7 @@
 			// 
 			// btnBizBox
 			// 
+			this.btnBizBox.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.btnBizBox.Location = new System.Drawing.Point(-4, -3);
 			this.btnBizBox.Name = "btnBizBox";
 			this.btnBizBox.Size = new System.Drawing.Size(75, 23);
@@ -208,12 +196,69 @@
 			this.btnBizBox.UseVisualStyleBackColor = true;
 			this.btnBizBox.Click += new System.EventHandler(this.btnBizBox_Click);
 			// 
+			// tbBranch
+			// 
+			this.tbBranch.Location = new System.Drawing.Point(49, 476);
+			this.tbBranch.Name = "tbBranch";
+			this.tbBranch.ReadOnly = true;
+			this.tbBranch.Size = new System.Drawing.Size(100, 20);
+			this.tbBranch.TabIndex = 20;
+			// 
+			// tbCommit
+			// 
+			this.tbCommit.Location = new System.Drawing.Point(203, 476);
+			this.tbCommit.Name = "tbCommit";
+			this.tbCommit.ReadOnly = true;
+			this.tbCommit.Size = new System.Drawing.Size(100, 20);
+			this.tbCommit.TabIndex = 20;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(2, 479);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(44, 13);
+			this.label6.TabIndex = 21;
+			this.label6.Text = "Branch:";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(155, 479);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(44, 13);
+			this.label7.TabIndex = 22;
+			this.label7.Text = "Commit:";
+			// 
+			// pictureBox5
+			// 
+			this.pictureBox5.Enabled = false;
+			this.pictureBox5.Location = new System.Drawing.Point(71, 223);
+			this.pictureBox5.Name = "pictureBox5";
+			this.pictureBox5.Size = new System.Drawing.Size(376, 48);
+			this.pictureBox5.TabIndex = 15;
+			this.pictureBox5.TabStop = false;
+			// 
+			// HR
+			// 
+			this.HR.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.HR.Location = new System.Drawing.Point(349, 213);
+			this.HR.Name = "HR";
+			this.HR.Size = new System.Drawing.Size(158, 2);
+			this.HR.TabIndex = 4;
+			this.HR.Text = "COPYRITE 2001";
+			// 
 			// AboutBox
 			// 
 			this.AcceptButton = this.CloseBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.CancelButton = this.CloseBtn;
 			this.ClientSize = new System.Drawing.Size(519, 497);
+			this.Controls.Add(this.label7);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.tbCommit);
+			this.Controls.Add(this.tbBranch);
 			this.Controls.Add(this.btnBizBox);
 			this.Controls.Add(this.CloseBtn);
 			this.Controls.Add(this.pictureBox5);
@@ -268,5 +313,9 @@
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button CloseBtn;
 		private System.Windows.Forms.Button btnBizBox;
+		private System.Windows.Forms.TextBox tbBranch;
+		private System.Windows.Forms.TextBox tbCommit;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label7;
 	}
 }

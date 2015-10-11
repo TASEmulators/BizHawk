@@ -7,6 +7,6 @@ static class VersionInfo
 
 	public static string GetEmuVersion()
 	{
-		return DeveloperBuild ? "SVN " + SubWCRev.SVN_REV : ("Version " + MAINVERSION);
+		return DeveloperBuild ? ("GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH) : ("Version " + MAINVERSION);
 	}
 }

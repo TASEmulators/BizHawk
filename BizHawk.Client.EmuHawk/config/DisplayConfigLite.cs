@@ -14,7 +14,10 @@ namespace BizHawk.Client.EmuHawk.config
 {
 	public partial class DisplayConfigLite : Form
 	{
+		public bool NeedReset;
+
 		string PathSelection;
+		
 		public DisplayConfigLite()
 		{
 			InitializeComponent();
@@ -34,7 +37,11 @@ namespace BizHawk.Client.EmuHawk.config
 			tbScanlineIntensity.Value = Global.Config.TargetScanlineFilterIntensity;
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
-			checkFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
+			cbFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
+
+			if (Global.Config.DispSpeedupFeatures == 2) rbDisplayFull.Checked = true;
+			if (Global.Config.DispSpeedupFeatures == 1) rbDisplayMinimal.Checked = true;
+			if (Global.Config.DispSpeedupFeatures == 0) rbDisplayAbsoluteZero.Checked = true;
 
 			rbOpenGL.Checked = Global.Config.DispMethod == Config.EDispMethod.OpenGL;
 			rbGDIPlus.Checked = Global.Config.DispMethod == Config.EDispMethod.GdiPlus;
@@ -46,7 +53,10 @@ namespace BizHawk.Client.EmuHawk.config
 			cbStatusBarFullscreen.Checked = Global.Config.DispChrome_StatusBarFullscreen;
 			cbMenuFullscreen.Checked = Global.Config.DispChrome_MenuFullscreen;
 			trackbarFrameSizeWindowed.Value = Global.Config.DispChrome_FrameWindowed;
+			cbFSAutohideMouse.Checked = Global.Config.DispChrome_Fullscreen_AutohideMouse;
 			SyncTrackbar();
+
+			cbAllowDoubleclickFullscreen.Checked = Global.Config.DispChrome_AllowDoubleClickFullscreen;
 
 			nudPrescale.Value = Global.Config.DispPrescale;
 
@@ -96,7 +106,7 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
-			Global.Config.DispFullscreenHacks = checkFullscreenHacks.Checked;
+			Global.Config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 
 			Global.Config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
 			Global.Config.DispChrome_CaptionWindowed = cbCaptionWindowed.Checked;
@@ -104,6 +114,12 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispChrome_StatusBarFullscreen = cbStatusBarFullscreen.Checked;
 			Global.Config.DispChrome_MenuFullscreen = cbMenuFullscreen.Checked;
 			Global.Config.DispChrome_FrameWindowed = trackbarFrameSizeWindowed.Value;
+			Global.Config.DispChrome_Fullscreen_AutohideMouse = cbFSAutohideMouse.Checked;
+			Global.Config.DispChrome_AllowDoubleClickFullscreen = cbAllowDoubleclickFullscreen.Checked;
+
+			if (rbDisplayFull.Checked) Global.Config.DispSpeedupFeatures = 2;
+			if (rbDisplayMinimal.Checked) Global.Config.DispSpeedupFeatures = 1;
+			if (rbDisplayAbsoluteZero.Checked) Global.Config.DispSpeedupFeatures = 0;
 
 			// HACK:: null emulator's settings don't persist to config normally
 			{
@@ -129,12 +145,16 @@ namespace BizHawk.Client.EmuHawk.config
 			int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
 			int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
 
+			var oldDisplayMethod = Global.Config.DispMethod;
 			if(rbOpenGL.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.OpenGL;
 			if(rbGDIPlus.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 			if(rbD3D9.Checked)
 				Global.Config.DispMethod = Config.EDispMethod.SlimDX9;
+
+			if (oldDisplayMethod != Global.Config.DispMethod)
+				NeedReset = true;
 
 			Global.Config.DispUserFilterPath = PathSelection;
 			GlobalWin.DisplayManager.RefreshUserShader();
@@ -208,6 +228,11 @@ namespace BizHawk.Client.EmuHawk.config
 				lblFrameTypeWindowed.Text = "Thin";
 			if (trackbarFrameSizeWindowed.Value == 2)
 				lblFrameTypeWindowed.Text = "Thick";
+		}
+
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/DisplayConfig.html");
 		}
 
 	}

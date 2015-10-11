@@ -188,7 +188,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							int bgpx = bgpos & 7;
 							int bgtile = bgpos >> 3;
 
-							int pixel = 0, pixelcolor;
+							int pixel = 0, pixelcolor = PALRAM[pixel];
+
+							//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
+							//at one point I commented this out to fix bottom-left garbage in DW4. but it's needed for full_nes_palette. 
+							//solution is to only run when PPU is actually OFF (left-suppression doesnt count)
+							if (!reg_2001.show_bg && !reg_2001.show_obj)
+							{
+								// if there's anything wrong with how we're doing this, someone please chime in
+								int addr = ppur.get_2007access();
+								if ((addr & 0x3F00) == 0x3F00)
+								{
+									pixel = addr & 0x1F;
+								}
+								pixelcolor = PALRAM[pixel];
+								pixelcolor |= 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
+							}
 
 							//generate the BG data
 							if (renderbgnow)
@@ -200,26 +215,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								if (pixel != 0)
 									pixel |= bgdata[bgtile].at;
 								pixelcolor = PALRAM[pixel];
-							}
-							else
-							{
-								if (!renderspritenow)
-								{
-									//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
-									//EDIT - this requires corect emulation of PPU OFF state, and seems only to apply when the PPU is OFF
-									// not sure why this was off, but having it on fixes full_nes_palette, and it's a behavior that's been
-									// verified on the decapped PPU
-
-									// if there's anything wrong with how we're doing this, someone please chime in
-									int addr = ppur.get_2007access();
-									if ((addr & 0x3F00) == 0x3F00)
-									{
-									//  System.Console.WriteLine("{0:X4}", addr);
-										pixel = addr & 0x1F;
-									}
-								}
-								pixelcolor = PALRAM[pixel];
-								pixelcolor |= 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
 							}
 
 							if (!nes.Settings.DispBackground)

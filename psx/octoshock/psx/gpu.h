@@ -315,6 +315,7 @@ class PS_GPU
  //
  int32 hmc_to_visible;
  bool hide_hoverscan;
+ bool dump_framebuffer;
 
  bool sl_zero_reached;
  //
@@ -325,7 +326,9 @@ class PS_GPU
  MDFN_Rect *DisplayRect;
  int32 *LineWidths;
  bool skip;
+ public:
  bool HardwarePALType;
+ private:
  int LineVisFirst, LineVisLast;
 
  uint32 OutputLUT[384];
@@ -333,6 +336,11 @@ class PS_GPU
 
  template<uint32 out_Rshift, uint32 out_Gshift, uint32 out_Bshift>
  void ReorderRGB(bool bpp24, const uint16 *src, uint32 *dest, const int32 dx_start, const int32 dx_end, int32 fb_x) NO_INLINE;
+
+ public:
+	 uint32 GetVertStart() { return VertStart; }
+	 uint32 GetVertEnd() { return VertEnd; }
+	 int FirstLine;
 };
 
 }

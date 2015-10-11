@@ -131,7 +131,6 @@
     </Compile>
     <Compile Include="AVOut\AviWriter.cs" />
     <Compile Include="AVOut\AVSync.cs" />
-    <Compile Include="AVOut\BitmapBufferVideoProvder.cs" />
     <Compile Include="AVOut\BmpVideoProvder.cs" />
     <Compile Include="AVOut\FFmpegWriter.cs" />
     <Compile Include="AVOut\FFmpegWriterForm.cs">
@@ -413,11 +412,11 @@
     <Compile Include="config\ProfileConfig.Designer.cs">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\PSX\PSXControllerConfig.cs">
+    <Compile Include="config\PSX\PSXControllerConfigNew.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
-      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    <Compile Include="config\PSX\PSXControllerConfigNew.Designer.cs">
+      <DependentUpon>PSXControllerConfigNew.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PSX\PSXHashDiscs.cs">
       <SubType>Form</SubType>
@@ -476,6 +475,13 @@
     </Compile>
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputRoll.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputRoll.Drawing.cs">
+      <DependentUpon>InputRoll.cs</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
@@ -542,6 +548,7 @@
     <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="IControlMainform.cs" />
+    <Compile Include="Input\IPCKeyInput.cs" />
     <Compile Include="JumpLists.cs" />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -639,6 +646,18 @@
     </Compile>
     <Compile Include="tools\AutoHawk.Designer.cs">
       <DependentUpon>AutoHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\BasicBot\BasicBot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\BasicBot\BasicBot.Designer.cs">
+      <DependentUpon>BasicBot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\BasicBot\BotControlsRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\BasicBot\BotControlsRow.Designer.cs">
+      <DependentUpon>BotControlsRow.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\BatchRun.cs">
       <SubType>Form</SubType>
@@ -961,14 +980,17 @@
     <Compile Include="tools\TAStudio\HeaderEditor.Designer.cs">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\InputRoll.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\TAStudio\PatternsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="tools\TAStudio\PatternsForm.Designer.cs">
       <DependentUpon>PatternsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\TAStudio\ScreenshotPopupControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\ScreenshotPopupControl.Designer.cs">
+      <DependentUpon>ScreenshotPopupControl.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\TAStudio\TAStudio.Callbacks.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
@@ -1244,8 +1266,8 @@
     <EmbeddedResource Include="config\ProfileConfig.resx">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
-      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    <EmbeddedResource Include="config\PSX\PSXControllerConfigNew.resx">
+      <DependentUpon>PSXControllerConfigNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXHashDiscs.resx">
       <DependentUpon>PSXHashDiscs.cs</DependentUpon>
@@ -1307,6 +1329,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\AutoHawk.resx">
       <DependentUpon>AutoHawk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
+      <DependentUpon>BasicBot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BasicBot\BotControlsRow.resx">
+      <DependentUpon>BotControlsRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
@@ -1449,6 +1477,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\ScreenshotPopupControl.resx">
+      <DependentUpon>ScreenshotPopupControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
@@ -1622,6 +1653,12 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\tastudio\icon_anchor_lag.png" />
+    <None Include="images\tastudio\icon_anchor.png" />
+    <None Include="images\tastudio\icon_marker.png" />
+    <None Include="images\tastudio\anchor_marker.png" />
+    <None Include="images\tastudio\anchor_lag.png" />
+    <None Include="images\tastudio\anchor.png" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
@@ -1795,9 +1832,6 @@
     <None Include="images\tastudio\ts_h_arrow_green_blue.png" />
     <None Include="images\tastudio\ts_h_arrow_green.png" />
     <None Include="images\tastudio\ts_h_arrow_blue.png" />
-    <None Include="images\tastudio\te_green_blue_arrow.bmp" />
-    <None Include="images\tastudio\te_green_arrow.bmp" />
-    <None Include="images\tastudio\te_arrow.bmp" />
     <None Include="images\noconnect_16x16.png" />
     <None Include="images\snes9x.png" />
     <None Include="images\YellowUp.png" />
@@ -1811,7 +1845,6 @@
     <None Include="images\meteor.png" />
     <None Include="images\yabause.png" />
     <None Include="images\QuickNes.png" />
-    <None Include="images\QuickNES_128.ico" />
     <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
     <None Include="images\tvIcon.png" />
@@ -1928,6 +1961,7 @@
     <None Include="images\add.png" />
     <None Include="images\HawkInLove.png" />
     <None Include="images\ControllerImages\AppleIIKeyboard.png" />
+    <None Include="images\BlankCursor.cur" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

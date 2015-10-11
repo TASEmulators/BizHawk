@@ -15,6 +15,24 @@ namespace BizHawk.Client.Common
 		public override string Name { get { return "movie"; } }
 
 		[LuaMethodAttributes(
+			"startsfromsavestate",
+			"Returns whether or not the movie is a savestate-anchored movie"
+		)]
+		public bool StartsFromSavestate()
+		{
+			return Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.StartsFromSavestate;
+		}
+
+		[LuaMethodAttributes(
+			"startsfromsaveram",
+			"Returns whether or not the movie is a saveram-anchored movie"
+		)]
+		public bool StartsFromSaveram()
+		{
+			return Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.StartsFromSaveRam;
+		}
+
+		[LuaMethodAttributes(
 			"filename",
 			"Returns the file name including path of the currently loaded movie"
 		)]
@@ -199,6 +217,60 @@ namespace BizHawk.Client.Common
 			}
 
 			return 0.0;
+		}
+
+		[LuaMethodAttributes(
+			"getheader",
+			"If a movie is active, will return the movie header as a lua table"
+		)]
+		public LuaTable GetHeader()
+		{
+			var luaTable = Lua.NewTable();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				foreach (var kvp in Global.MovieSession.Movie.HeaderEntries)
+				{
+					luaTable[kvp.Key] = kvp.Value;
+				}
+			}
+
+			return luaTable;
+		}
+
+		[LuaMethodAttributes(
+			"getcomments",
+			"If a movie is active, will return the movie comments as a lua table"
+		)]
+		public LuaTable GetComments()
+		{
+			var luaTable = Lua.NewTable();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				for (int i = 0; i < Global.MovieSession.Movie.Comments.Count; i++)
+				{
+					luaTable[i] = Global.MovieSession.Movie.Comments[i];
+				}
+			}
+
+			return luaTable;
+		}
+
+		[LuaMethodAttributes(
+			"getsubtitles",
+			"If a movie is active, will return the movie subtitles as a lua table"
+		)]
+		public LuaTable GetSubtitles()
+		{
+			var luaTable = Lua.NewTable();
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				for (int i = 0; i < Global.MovieSession.Movie.Subtitles.Count; i++)
+				{
+					luaTable[i] = Global.MovieSession.Movie.Subtitles[i].ToString();
+				}
+			}
+
+			return luaTable;
 		}
 	}
 }

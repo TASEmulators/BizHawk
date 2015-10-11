@@ -32,17 +32,30 @@
 #include "input/dualshock.h"
 #include "input/dualanalog.h"
 #include "input/gamepad.h"
+#include "input/memcard.h"
 
-//#include <mednafen/PSFLoader.h>
 
 #include <stdarg.h>
 #include <ctype.h>
+
+//I apologize for the absolute madness of the resolution management and framebuffer management and normalizing in here.
+//It's grown entirely out of control. The main justification for the original design was not wrecking mednafen internals too much.
 
 //we're a bit sloppy right now.. use this to make sure theres adequate room for double-sizing a 400px wide screen
 #define FB_WIDTH 800
 #define FB_HEIGHT 576
 
+#define kScanlineWidthHeuristicIndex 64
+
 //extern MDFNGI EmulatedPSX;
+
+int16 soundbuf[1024 * 1024]; //how big? big enough.
+int VTBackBuffer = 0;
+static MDFN_Rect VTDisplayRects[2];
+#include	"video/Deinterlacer.h"
+static bool PrevInterlaced;
+static Deinterlacer deint;
+static EmulateSpecStruct espec;
 
 namespace MDFN_IEN_PSX
 {
@@ -146,25 +159,6 @@ uint32 PSX_GetRandU32(uint32 mina, uint32 maxa)
  return PSX_PRNG.RandU32(mina, maxa);
 }
 
-
-#ifdef WANT_PSF
-class PSF1Loader : public PSFLoader
-{
- public:
-
- PSF1Loader(MDFNFILE *fp);
- virtual ~PSF1Loader();
-
- virtual void HandleEXE(const uint8 *data, uint32 len, bool ignore_pcsp = false);
-
- PSFTags tags;
-};
-#else
-class PSF1Loader {};
-#endif
-
-
-static PSF1Loader *psf_loader = NULL;
 static std::vector<CDIF*> *cdifs = NULL;
 static std::vector<const char *> cdifs_scex_ids;
 
@@ -280,7 +274,6 @@ static void RebaseTS(const pscpu_timestamp_t timestamp)
 
 void PSX_SetEventNT(const int type, const pscpu_timestamp_t next_timestamp)
 {
- assert(type > PSX_EVENT__SYNFIRST && type < PSX_EVENT__SYNLAST);
  event_list_entry *e = &events[type];
 
  if(next_timestamp < e->event_time)
@@ -1000,6 +993,8 @@ static void PSX_Power(bool powering_up)
  IRQ_Power();
 
  ForceEventUpdates(0);
+
+ deint.ClearState();
 }
 
 
@@ -1204,8 +1199,15 @@ struct {
 		//TODO - once we get flexible here, do some extra condition checks.. whether memcards exist, etc. much like devices.
 		switch(transaction->transaction)
 		{
-			case eShockMemcardTransaction_Connect: return SHOCK_ERROR; //not supported yet
-			case eShockMemcardTransaction_Disconnect: return SHOCK_ERROR; //not supported yet
+			case eShockMemcardTransaction_Connect: 
+				//cant connect when a memcard is already connected
+				if(!strcmp(FIO->MCPorts[portnum]->GetName(),"InputDevice_Memcard"))
+					return SHOCK_NOCANDO;
+				delete FIO->MCPorts[portnum]; //delete dummy
+				FIO->MCPorts[portnum] = Device_Memcard_Create();
+			
+			case eShockMemcardTransaction_Disconnect: 
+				return SHOCK_ERROR; //not supported yet
 
 			case eShockMemcardTransaction_Write:
 				FIO->MCPorts[portnum]->WriteNV((uint8*)transaction->buffer128k,0,128*1024);
@@ -1361,14 +1363,6 @@ EW_EXPORT s32 shock_PowerOff(void* psx)
 	return SHOCK_ERROR;
 }
 
-
-int16 soundbuf[1024*1024]; //how big? big enough.
-int VTBackBuffer = 0;
-static MDFN_Rect VTDisplayRects[2];
-#include	"video/Deinterlacer.h"
-static bool PrevInterlaced;
-static Deinterlacer deint;
-static EmulateSpecStruct espec;
 EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 {
 	//only eShockStep_Frame is supported
@@ -1392,6 +1386,16 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	espec.SoundBufSize = 0;
 	espec.SoundVolume = 1.0;
 
+	//not sure about this
+	espec.skip = s_ShockConfig.opts.skip;
+
+	if (s_ShockConfig.opts.deinterlaceMode == eShockDeinterlaceMode_Weave)
+		deint.SetType(Deinterlacer::DEINT_WEAVE);
+	if (s_ShockConfig.opts.deinterlaceMode == eShockDeinterlaceMode_Bob)
+		deint.SetType(Deinterlacer::DEINT_BOB);
+	if (s_ShockConfig.opts.deinterlaceMode == eShockDeinterlaceMode_BobOffset)
+		deint.SetType(Deinterlacer::DEINT_BOB_OFFSET);
+
 	//-------------------------
 
 	FIO->UpdateInput();
@@ -1404,7 +1408,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	SPU->StartFrame(espec.SoundRate, ResampleQuality); 
 
 	Running = -1;
-	timestamp = CPU->Run(timestamp, psf_loader == NULL && psx_dbg_level >= PSX_DBG_BIOS_PRINT, psf_loader != NULL);
+	timestamp = CPU->Run(timestamp, psx_dbg_level >= PSX_DBG_BIOS_PRINT, /*psf_loader != NULL*/ false); //huh?
 	assert(timestamp);
 
 	ForceEventUpdates(timestamp);
@@ -1456,13 +1460,64 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	return SHOCK_OK;
 }
 
-//`normalizes` the framebuffer to 700x480 by pixel doubling and wrecking the AR a little bit as needed
+struct FramebufferCropInfo
+{
+	int width, height, xo, yo;
+};
+
+static void _shock_AnalyzeFramebufferCropInfo(int fbIndex, FramebufferCropInfo* info)
+{
+	//presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
+	//however, due to the dump_framebuffer, it may be incorrect at scanline 0. so lets use another one for the heuristic here
+	//you'd think we could use FirstLine instead of kScanlineWidthHeuristicIndex, but sometimes it hasnt been set (screen off) so it's confusing
+	int width = VTLineWidths[fbIndex][kScanlineWidthHeuristicIndex];
+	int height = espec.DisplayRect.h;
+	int yo = espec.DisplayRect.y;
+
+	//fix a common error here from disabled screens (?)
+	//I think we're lucky in selecting these lines kind of randomly. need a better plan.
+	if (width <= 0) width = VTLineWidths[fbIndex][0];
+
+	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
+	{
+		//printf("%d %d %d %d | %d | %d\n",yo,height, GPU->GetVertStart(), GPU->GetVertEnd(), espec.DisplayRect.y, GPU->FirstLine);
+
+		height = GPU->GetVertEnd() - GPU->GetVertStart();
+		yo = GPU->FirstLine;
+
+		if (espec.DisplayRect.h == 288 || espec.DisplayRect.h == 240)
+		{
+		}
+		else
+		{
+			height *= 2;
+			//only return even scanlines to avoid bouncing the interlacing
+			if (yo & 1) yo--;
+		}
+
+		//this can happen when the display turns on mid-frame
+		//maybe an off by one error here..?
+		if (yo + height >= espec.DisplayRect.h)
+			yo = espec.DisplayRect.h - height;
+
+		//sometimes when changing modes we have trouble..?
+		if (yo<0) yo = 0;
+	}
+
+	info->width = width;
+	info->height = height;
+	info->xo = 0;
+	info->yo = yo;
+}
+
+
+//`normalizes` the framebuffer to 700x480 (or 800x576 for PAL) by pixel doubling and wrecking the AR a little bit as needed
 void NormalizeFramebuffer()
 {
 	//mednafen's advised solution for smooth gaming: "scale the output width to z * nominal_width, and the output height to z * nominal_height, where nominal_width and nominal_height are members of the MDFNGI struct"
 	//IOW, mednafen's strategy is to put everything in a 320x240 and scale it up 3x to 960x720 by default (which is adequate to contain the largest PSX framebuffer of 700x480)
 	
-	//psxtech says horizontal resolutions can be:  256, 320, 368, 512, 640 pixels
+	//psxtech says horizontal resolutions can be:  256, 320, 512, 640, 368 pixels
 	//mednafen will turn those into 2800/{ 10, 8, 5, 4, 7 } -> 280,350,560,700,400
 	//additionally with the crop options we can cut it down by 160/X -> { 16, 20, 32, 40, 22 } -> { 264, 330, 528, 660, 378 }
 	//this means our virtual area for doubling is no longer 800 but 756
@@ -1484,12 +1539,27 @@ void NormalizeFramebuffer()
 	//NOTE: this approach is very redundant with the displaymanager AR tracking stuff
 	//however, it will help us avoid stressing the displaymanager (for example, a 700x240 will freak it out kind of. we could send it a much more sensible 700x480)
 
+	//always fetch description
+	FramebufferCropInfo cropInfo;
+	_shock_AnalyzeFramebufferCropInfo(0, &cropInfo);
+	int width = cropInfo.width;
+	int height = cropInfo.height;
 
-	int width = VTLineWidths[0][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
-	int height = espec.DisplayRect.h;
-	int virtual_width = s_ShockConfig.opts.clipOverscan ? 756 : 800;
+	int virtual_width = 800;
+	int virtual_height = 480;
+	if (GPU->HardwarePALType)
+		virtual_height = 576;
 
-	int xs=1,ys=1,xm=0;
+	if (s_ShockConfig.opts.renderType == eShockRenderType_ClipOverscan)
+		virtual_width = 756;
+	if (s_ShockConfig.opts.renderType == eShockRenderType_Framebuffer)
+	{
+		//not quite sure what to here yet
+		//virtual_width = width * 2; ?
+		virtual_width = 736;
+	}
+
+	int xs=1,ys=1;
 
 	//I. as described above
 	//if(width == 280 && height == 240) {}
@@ -1511,33 +1581,59 @@ void NormalizeFramebuffer()
 	if(width > 400 && height <= 288) ys=2;
 	if(width <= 400 && height > 288) xs=2;
 	if(width > 400 && height > 288) {}
+	
 	//TODO - shrink it entirely if cropping. EDIT-any idea what this means? if you figure it out, just do it.
-	xm = (virtual_width-width*xs)/2;
+	
+	int xm = (virtual_width - width*xs) / 2;
+	int ym = (virtual_height - height*ys) / 2;
 
 	int curr = 0;
 
 	//1. double the height, while cropping down
-	if(ys==2) //should handle ntsc or pal, but not tested yet for pal
+	if(height != virtual_height)
 	{
-		uint32* src = VTBuffer[curr]->pixels + (s_ShockConfig.fb_width*espec.DisplayRect.y) + espec.DisplayRect.x;
+		uint32* src = VTBuffer[curr]->pixels + (s_FramebufferCurrentWidth * (espec.DisplayRect.y + cropInfo.yo)) + espec.DisplayRect.x; //?
 		uint32* dst = VTBuffer[curr^1]->pixels;
 		int tocopy = width*4;
-		for(int y=0;y<height;y++)
+
+		//float from top as needed
+		memset(dst, 0, ym*tocopy);
+		dst += width * ym;
+
+		if(ys==2)
 		{
-			memcpy(dst,src,tocopy);
-			dst += width;
-			memcpy(dst,src,tocopy);
-			dst += width;
-			src += s_FramebufferCurrentWidth;
+			for(int y=0;y<height;y++)
+			{
+				memcpy(dst,src,tocopy);
+				dst += width;
+				memcpy(dst,src,tocopy);
+				dst += width;
+				src += s_FramebufferCurrentWidth;
+			}
+		}
+		else
+		{
+			for(int y=0;y<height;y++)
+			{
+				memcpy(dst, src, tocopy);
+				dst += width;
+				src += s_FramebufferCurrentWidth;
+			}
 		}
 
+
+		//fill bottom
+		int remaining_lines = virtual_height - ym - height*ys;
+		memset(dst, 0, remaining_lines*tocopy);
+
 		//patch up the metrics
-		height *= 2;
+		height = virtual_height; //we floated the content vertically, so this becomes the new height
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		espec.DisplayRect.h = height;
 		s_FramebufferCurrentWidth = width;
 		VTLineWidths[curr^1][0] = VTLineWidths[curr][0];
+		VTLineWidths[curr^1][kScanlineWidthHeuristicIndex] = VTLineWidths[curr][kScanlineWidthHeuristicIndex];
 
 		curr ^= 1;
 	}
@@ -1572,7 +1668,8 @@ void NormalizeFramebuffer()
 			}
 
 			//float the content horizontally
-			for(int x=0;x<xm;x++)
+			int remaining_pixels = virtual_width - xm - width*xs;
+			for(int x=0;x<remaining_pixels;x++)
 				*dst++ = 0;
 		}
 
@@ -1581,6 +1678,7 @@ void NormalizeFramebuffer()
 		espec.DisplayRect.x = 0;
 		espec.DisplayRect.y = 0;
 		VTLineWidths[curr^1][0] = width;
+		VTLineWidths[curr ^ 1][kScanlineWidthHeuristicIndex] = width;
 		s_FramebufferCurrentWidth = width;
 
 		curr ^= 1;
@@ -1600,6 +1698,7 @@ EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer)
 	return espec.SoundBufSize;
 }
 
+
 EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 {
 	//TODO - fastpath for emitting to the final framebuffer, although if we did that, we'd have to regenerate it every time
@@ -1616,11 +1715,22 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 	int fbIndex = s_FramebufferCurrent;
 
 	//always fetch description
-	int width = VTLineWidths[fbIndex][0]; //presently, except for contrived test programs, it is safe to assume this is the same for the entire frame (no known use by games)
-	int height = espec.DisplayRect.h;
+	FramebufferCropInfo cropInfo;
+	_shock_AnalyzeFramebufferCropInfo(fbIndex, &cropInfo);
+	int width = cropInfo.width;
+	int height = cropInfo.height;
+	int yo = cropInfo.yo;
+
+	//sloppy, but the above AnalyzeFramebufferCropInfo() will give us too short of a buffer
+	if(fb->flags & eShockFramebufferFlags_Normalize)
+	{
+		height = espec.DisplayRect.h;
+		yo = 0;
+	}
+
 	fb->width = width;
 	fb->height = height;
-
+		
 	//is that all we needed?
 	if(fb->ptr == NULL)
 	{
@@ -1629,7 +1739,7 @@ EW_EXPORT s32 shock_GetFramebuffer(void* psx, ShockFramebufferInfo* fb)
 
 	//maybe we need to output the framebuffer
 	//do a raster loop and copy it to the target
-	uint32* src = VTBuffer[fbIndex]->pixels + (s_FramebufferCurrentWidth*espec.DisplayRect.y) + espec.DisplayRect.x;
+	uint32* src = VTBuffer[fbIndex]->pixels + (s_FramebufferCurrentWidth*yo) + espec.DisplayRect.x;
 	uint32* dst = (u32*)fb->ptr;
 	int tocopy = width*4;
 	for(int y=0;y<height;y++)
@@ -1818,41 +1928,15 @@ static void LoadEXE(const uint8 *data, const uint32 size, bool ignore_pcsp = fal
  po += 4;
 }
 
-EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size)
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size, s32 ignore_pcsp)
 {
-	LoadEXE((uint8*)exebuf, (uint32)size);
+	LoadEXE((uint8*)exebuf, (uint32)size, !!ignore_pcsp);
 	return SHOCK_OK;
 }
-
-
-#ifdef WANT_PSF
-PSF1Loader::PSF1Loader(MDFNFILE *fp)
-{
- tags = Load(0x01, 2033664, fp);
-}
-
-
-PSF1Loader::~PSF1Loader()
-{
-
-}
-
-
-void PSF1Loader::HandleEXE(const uint8 *data, uint32 size, bool ignore_pcsp)
-{
- LoadEXE(data, size, ignore_pcsp);
-}
-#endif
 
 static void Cleanup(void)
 {
  TextMem.resize(0);
-
- if(psf_loader)
- {
-  delete psf_loader;
-  psf_loader = NULL;
- }
 
  if(CDC)
  {
@@ -1903,16 +1987,6 @@ static void Cleanup(void)
 
 static void CloseGame(void)
 {
- if(!psf_loader)
- {
-  for(int i = 0; i < 8; i++)
-  {
-		//DAW
-    //FIO->SaveMemcard(i, MDFN_MakeFName(MDFNMKF_SAV, 0, ext).c_str());
-  }
-
- }
-
  Cleanup();
 }
 
@@ -2349,11 +2423,12 @@ Breakout:
 bool ShockDiscRef::ReadLBA_PW(uint8* pwbuf96, int32 lba, bool hint_fullread)
 {
 	//TODO - whats that hint mean
-	//TODO - should return false if out of range totally
 	//reference:  static const int32 LBA_Read_Minimum = -150;
  //reference:  static const int32 LBA_Read_Maximum = 449849;	// 100 * 75 * 60 - 150 - 1
 	u8 tmp[2448];
-	ReadLBA2448(lba,tmp);
+	s32 ret = ReadLBA2448(lba,tmp);
+	if(ret != SHOCK_OK)
+		return false;
 	memcpy(pwbuf96,tmp+2352,96);
 	return true;
 }
@@ -2632,5 +2707,12 @@ EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trac
 	g_ShockTraceCallbackOpaque = opaque;
 	g_ShockTraceCallback = callback;
 
+	return SHOCK_OK;
+}
+
+//Sets whether LEC is enabled (sector level error correction). Defaults to FALSE (disabled)
+EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled)
+{
+	CDC->SetLEC(enabled);
 	return SHOCK_OK;
 }

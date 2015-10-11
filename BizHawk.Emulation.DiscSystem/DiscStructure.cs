@@ -35,13 +35,13 @@ namespace BizHawk.Emulation.DiscSystem
 
 			/// <summary>
 			/// The number of user information tracks in the session.
-			/// This excludes track 0 and the lead-out track.
+			/// This excludes the lead-in and lead-out tracks
 			/// Use this instead of Tracks.Count
 			/// </summary>
 			public int InformationTrackCount { get { return Tracks.Count - 2; } }
 
 			/// <summary>
-			/// All the tracks in the session.. but... Tracks[0] is the lead-in track placeholder. Tracks[1] should be "Track 1". So beware of this.
+			/// All the tracks in the session.. but... Tracks[0] is the lead-in track. Tracks[1] should be "Track 1". So beware of this.
 			/// For a disc with "3 tracks", Tracks.Count will be 5: it includes that lead-in track as well as the leadout track.
 			/// Perhaps we should turn this into a special collection type with no Count or Length, or a method to GetTrack()
 			/// </summary>
@@ -66,21 +66,25 @@ namespace BizHawk.Emulation.DiscSystem
 			public Track LeadoutTrack { get { return Tracks[Tracks.Count - 1]; } }
 
 			/// <summary>
+			/// A reference to the lead-in track
+			/// </summary>
+			public Track LeadinTrack { get { return Tracks[0]; } }
+
+			/// <summary>
 			/// Determines which track of the session is at the specified LBA.
-			/// Returns null if it's before track 1
 			/// </summary>
 			public Track SeekTrack(int lba)
 			{
 				var ses = this;
 
-				//take care with this loop bounds:
-				for (int i = 1; i <= ses.InformationTrackCount; i++)
+				for (int i = 1; i < Tracks.Count; i++)
 				{
 					var track = ses.Tracks[i];
+					//funny logic here: if the current track's LBA is > the requested track number, it means the previous track is the one we wanted
 					if (track.LBA > lba)
-						return (i == 1) ? null : ses.Tracks[i];
+						return ses.Tracks[i - 1];
 				}
-				return ses.Tracks[ses.Tracks.Count];
+				return ses.LeadoutTrack;
 			}
 		}
 

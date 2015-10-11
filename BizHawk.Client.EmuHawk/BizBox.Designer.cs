@@ -36,7 +36,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.VersionLabel = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
@@ -44,6 +43,9 @@
 			this.label37 = new System.Windows.Forms.Label();
 			this.CoreInfoPanel = new System.Windows.Forms.Panel();
 			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.VersionLabel = new System.Windows.Forms.Label();
+			this.btnCopyHash = new System.Windows.Forms.Button();
+			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -119,14 +121,6 @@
 			this.label4.TabIndex = 6;
 			this.label4.Text = "A multi-Platform Emulator";
 			// 
-			// VersionLabel
-			// 
-			this.VersionLabel.AutoSize = true;
-			this.VersionLabel.Location = new System.Drawing.Point(198, 52);
-			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(0, 13);
-			this.VersionLabel.TabIndex = 7;
-			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
@@ -197,6 +191,39 @@
 			this.textBox1.Text = "jabo_direct3d8_patched.dll is distributed with the special permission of the auth" +
     "or.";
 			// 
+			// VersionLabel
+			// 
+			this.VersionLabel.AutoSize = true;
+			this.VersionLabel.Location = new System.Drawing.Point(198, 52);
+			this.VersionLabel.Name = "VersionLabel";
+			this.VersionLabel.Size = new System.Drawing.Size(0, 13);
+			this.VersionLabel.TabIndex = 7;
+			// 
+			// btnCopyHash
+			// 
+			this.btnCopyHash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnCopyHash.AutoSize = true;
+			this.btnCopyHash.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.btnCopyHash.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
+			this.btnCopyHash.Location = new System.Drawing.Point(12, 505);
+			this.btnCopyHash.Name = "btnCopyHash";
+			this.btnCopyHash.Size = new System.Drawing.Size(22, 22);
+			this.btnCopyHash.TabIndex = 18;
+			this.btnCopyHash.UseVisualStyleBackColor = true;
+			this.btnCopyHash.Click += new System.EventHandler(this.btnCopyHash_Click);
+			// 
+			// linkLabel2
+			// 
+			this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.linkLabel2.AutoSize = true;
+			this.linkLabel2.Location = new System.Drawing.Point(40, 509);
+			this.linkLabel2.Name = "linkLabel2";
+			this.linkLabel2.Size = new System.Drawing.Size(100, 13);
+			this.linkLabel2.TabIndex = 19;
+			this.linkLabel2.TabStop = true;
+			this.linkLabel2.Text = "Commit #XXXXXXX";
+			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
@@ -204,6 +231,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
 			this.ClientSize = new System.Drawing.Size(448, 536);
+			this.Controls.Add(this.linkLabel2);
+			this.Controls.Add(this.btnCopyHash);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.CoreInfoPanel);
 			this.Controls.Add(this.label37);
@@ -240,7 +269,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label VersionLabel;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label7;
@@ -248,5 +276,8 @@
 		private System.Windows.Forms.Label label37;
 		private System.Windows.Forms.Panel CoreInfoPanel;
 		private System.Windows.Forms.TextBox textBox1;
+		private System.Windows.Forms.Label VersionLabel;
+		private System.Windows.Forms.Button btnCopyHash;
+		private System.Windows.Forms.LinkLabel linkLabel2;
 	}
 }

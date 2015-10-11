@@ -284,6 +284,7 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".PSF":
+				case ".MINIPSF":
 					game.System = "PSX";
 					break;
 

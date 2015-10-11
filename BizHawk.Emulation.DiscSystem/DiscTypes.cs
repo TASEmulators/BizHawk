@@ -81,6 +81,14 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 	}
 
+	public static class MSF
+	{
+		public static int ToInt(int m, int s, int f)
+		{
+				return m * 60 * 75 + s * 75 + f;
+		}
+	}
+
 	/// <summary>
 	/// todo - rename to MSF? It can specify durations, so maybe it should be not suggestive of timestamp
 	/// TODO - can we maybe use BCD2 in here

@@ -34,6 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			//http://stackoverflow.com/questions/547172/pass-through-mouse-events-to-parent-control (HTTRANSPARENT)
 			GraphicsControl.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
 			GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
+			GraphicsControl.MouseMove += (o, e) => GlobalWin.MainForm.MainForm_MouseMove(o, e);
 		}
 
 		bool IsDisposed = false;
@@ -57,7 +58,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//allow suppression of the toggle.. but if shift is pressed, always do the toggle
 				bool allowSuppress = Control.ModifierKeys != Keys.Shift;
-				GlobalWin.MainForm.ToggleFullscreen(allowSuppress);
+				if (Global.Config.DispChrome_AllowDoubleClickFullscreen || !allowSuppress)
+				{
+					GlobalWin.MainForm.ToggleFullscreen(allowSuppress);
+				}
 			}
 		}
 

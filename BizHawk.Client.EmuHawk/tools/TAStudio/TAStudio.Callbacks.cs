@@ -7,6 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class TAStudio
 	{
+		// Everything here is currently for Lua
 		public Func<int, string, Color?> QueryItemBgColorCallback { get; set; }
 		public Func<int, string, string> QueryItemTextCallback { get; set; }
 		public Func<int, string, Bitmap> QueryItemIconCallback { get; set; }

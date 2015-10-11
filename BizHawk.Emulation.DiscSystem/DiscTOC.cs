@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.DiscSystem
 			/// <summary>
 			/// The location of the track (Index 1)
 			/// </summary>
-			public Timestamp LBATimestamp;
+			public int LBA;
 
 			/// <summary>
 			/// Whether this entry exists (since the table is 101 entries long always)
@@ -55,15 +55,15 @@ namespace BizHawk.Emulation.DiscSystem
 
 		/// <summary>
 		/// This is a convenient format for storing the TOC (taken from mednafen)
-		/// Index 0 is empty, so that track 1 is in index 1.
-		/// Index 100 is the Lead-out track
+		/// Element 0 is the Lead-in track
+		/// Element 100 is the Lead-out track
 		/// </summary>
 		public TOCItem[] TOCItems = new TOCItem[101];
 
 		/// <summary>
 		/// The timestamp of the leadout track. In other words, the end of the user area.
 		/// </summary>
-		public Timestamp LeadoutLBA { get { return TOCItems[100].LBATimestamp; } }
+		public int LeadoutLBA { get { return TOCItems[100].LBA; } }
 	}
 
 	

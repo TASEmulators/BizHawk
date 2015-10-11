@@ -40,7 +40,15 @@ namespace BizHawk.Client.Common
 
 			if (Global.Emulator.CanDebug())
 			{
-				Global.Emulator.AsDebuggable().MemoryCallbacks.RemoveAll(this.Select(x => x.Callback));
+				try
+				{
+					var cbSys = Global.Emulator.AsDebuggable().MemoryCallbacks;
+					cbSys.RemoveAll(this.Select(x => x.Callback));
+				}
+				catch
+				{
+					//swallow exceptions here. many cores havent implemented memorycallbacks, we ought to have more granular feature querying
+				}
 			}
 
 			Clear();

@@ -85,6 +85,8 @@ public:
 	bool loaded() const { return cart.loaded(); }
 	const char * romTitle() const { return cart.romTitle(); }
 
+	int debugGetLY() const { return display.debugGetLY(); }
+
 	void setStatePtrs(SaveState &state);
 	void loadState(const SaveState &state/*, unsigned long oldCc*/);
 	void loadSavedata(const char *data) { cart.loadSavedata(data); }

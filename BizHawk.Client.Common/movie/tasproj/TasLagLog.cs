@@ -10,9 +10,9 @@ namespace BizHawk.Client.Common
 	public class TasLagLog
 	{
 		// TODO: Change this into a regular list.
-		private readonly List<bool> LagLog = new List<bool>();
+		private List<bool> LagLog = new List<bool>();
 
-		private readonly List<bool> WasLag = new List<bool>();
+		private List<bool> WasLag = new List<bool>();
 
 		public bool? this[int frame]
 		{
@@ -155,6 +155,7 @@ namespace BizHawk.Client.Common
 
 			return null;
 		}
+
 		public int LastValidFrame
 		{
 			get
@@ -163,6 +164,27 @@ namespace BizHawk.Client.Common
 					return 0;
 				return LagLog.Count - 1;
 			}
+		}
+
+		public TasLagLog Clone()
+		{
+			var log = new TasLagLog();
+			log.LagLog = LagLog.ToList();
+			log.WasLag = WasLag.ToList();
+
+			return log;
+		}
+
+		public void FromLagLog(TasLagLog log)
+		{
+			LagLog = log.LagLog.ToList();
+			WasLag = log.WasLag.ToList();
+		}
+
+		public void StartFromFrame(int index)
+		{
+			LagLog.RemoveRange(0, index);
+			WasLag.RemoveRange(0, index);
 		}
 	}
 }

@@ -14,7 +14,11 @@ extern "C"
 
 		D3D8Wrapper::IDirect3D8* WINAPI Direct3DCreate8(UINT Version)
 		{
-			// Get the real DLL path from the system directory
+			//sometimes, Intel drivers will clear the dll path. So let's save and restore it (do their job for them)
+			char oldDllDirectory[MAX_PATH];
+			GetDllDirectory(MAX_PATH, oldDllDirectory);
+
+			// Get the real DLL path from the system directory, needs to be specific to avoid binding to the d3d8.dll we're in now!
 			// Might be unsafe
 			CHAR dll_path[1024];
 			GetSystemDirectory(dll_path,1024);
@@ -29,6 +33,9 @@ extern "C"
 
 			// Wrap the object
 			D3D8Wrapper::IDirect3D8* wrappedD3D = D3D8Wrapper::IDirect3D8::GetDirect3D(realD3D);
+
+			//restore old DLL directory
+			SetDllDirectory(oldDllDirectory);
 
 			return wrappedD3D;
 		}

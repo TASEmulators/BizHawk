@@ -12,6 +12,8 @@ namespace BizHawk.Bizware.BizwareGL
 	{
 		public GraphicsControl(IGL owner)
 		{
+			IGL = owner;
+
 			SetStyle(ControlStyles.Opaque, true);
 			SetStyle(ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -32,6 +34,7 @@ namespace BizHawk.Bizware.BizwareGL
 			Managed.MouseClick += (object sender, MouseEventArgs e) => OnMouseClick(e);
 			Managed.MouseEnter += (object sender, EventArgs e) => OnMouseEnter(e);
 			Managed.MouseLeave += (object sender, EventArgs e) => OnMouseLeave(e);
+			Managed.MouseMove += (object sender, MouseEventArgs e) => OnMouseMove(e);
 
 			//the GraphicsControl is occupying all of our area. So we pretty much never get paint events ourselves.
 			//So lets capture its paint event and use it for ourselves (it doesnt know how to do anything, anyway)
@@ -42,6 +45,8 @@ namespace BizHawk.Bizware.BizwareGL
 		{
 			OnPaint(e);
 		}
+
+		public readonly IGL IGL;
 
 		IGraphicsControl IGC;
 		Control Managed;

@@ -123,6 +123,13 @@ enum eRegion
  REGION_NONE = 3
 };
 
+enum eShockDeinterlaceMode
+{
+	eShockDeinterlaceMode_Weave,
+	eShockDeinterlaceMode_Bob,
+	eShockDeinterlaceMode_BobOffset
+};
+
 enum eShockStep
 {
 	eShockStep_Frame
@@ -132,6 +139,18 @@ enum eShockFramebufferFlags
 {
 	eShockFramebufferFlags_None = 0,
 	eShockFramebufferFlags_Normalize = 1
+};
+
+enum eShockRenderType
+{
+	eShockRenderType_Normal,
+	eShockRenderType_ClipOverscan,
+
+	//this should discard peculiar X adjustments during scan-out (done)
+	//as well as peculiar Y adjustments (not done)
+	//it's unclear whether the latter will actually ever be needed..
+	//are any earthquake effects shaking the whole screen? 
+	eShockRenderType_Framebuffer
 };
 
 enum eMemType
@@ -275,7 +294,9 @@ struct ShockFramebufferInfo
 struct ShockRenderOptions
 {
 	s32 scanline_start, scanline_end;
-	bool clipOverscan;
+	eShockRenderType renderType;
+	eShockDeinterlaceMode deinterlaceMode;
+	bool skip;
 };
 
 struct ShockMemcardTransaction
@@ -339,7 +360,7 @@ EW_EXPORT s32 shock_Peripheral_MemcardTransact(void* psx, s32 address, ShockMemc
 EW_EXPORT s32 shock_Peripheral_PollActive(void* psx, s32 address, s32 clear);
 
 //Mounts a PS-EXE executable 
-EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size);
+EW_EXPORT s32 shock_MountEXE(void* psx, void* exebuf, s32 size, s32 ignore_pcsp);
 
 //Sets the power to ON. Returns SHOCK_NOCANDO if already on.
 EW_EXPORT s32 shock_PowerOn(void* psx);
@@ -382,7 +403,7 @@ EW_EXPORT s32 shock_GetSamples(void* psx, void* buffer);
 //Returns information about a memory buffer for peeking (main memory, spu memory, etc.)
 EW_EXPORT s32 shock_GetMemData(void* psx, void** ptr, s32* size, s32 memType);
 
-//savestate work. Returns the size if that's what was requested, otherwise error codes
+//Savestate work. Returns the size if that's what was requested, otherwise error codes
 EW_EXPORT s32 shock_StateTransaction(void *psx, ShockStateTransaction* transaction);
 
 //Retrieves the CPU registers in a compact struct
@@ -393,3 +414,6 @@ EW_EXPORT s32 shock_SetRegister_CPU(void* psx, s32 index, u32 value);
 
 //Sets the callback to be used for CPU tracing
 EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trace callback);
+
+//Sets whether LEC is enabled (sector level error correction). Defaults to FALSE (disabled)
+EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled);

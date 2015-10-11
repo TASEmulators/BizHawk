@@ -18,9 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER000":
-				case "MAPPER219": //adelikat: a version of 3D-Block tries to use this ROM, but plays fine as NROM and 219 is undocumented by Disch
 					break;
-
 				case "BANDAI-NROM-128":
 				case "BANDAI-NROM-256":
 				case "HVC-HROM": //Donkey Kong Jr. (J)

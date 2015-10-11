@@ -121,10 +121,21 @@ extern "C"
 		
 		STDMETHODIMP D3D8Wrapper::IDirect3D8::CreateDevice(UINT Adapter,D3D8Base::D3DDEVTYPE DeviceType,HWND hFocusWindow,DWORD BehaviorFlags,D3D8Base::D3DPRESENT_PARAMETERS* pPresentationParameters,D3D8Wrapper::IDirect3DDevice8** ppReturnedDeviceInterface)
 		{
+			//sometimes, Intel drivers will clear the dll path. So let's save and restore it (do their job for them)
+			//it doesn't seem like this happens any time besides creating the D3D8 object and a device.
+			//If it does, then this solution isn't scalable at all.
+			//This is a good place to note that it appears possible that on the affected drivers, the D3D9 interface will only SetDllDirectory the first time a D3D9 object is created
+			char oldDllDirectory[MAX_PATH];
+			GetDllDirectory(MAX_PATH, oldDllDirectory);
+
 			LOG("IDirect3D8::CreateDevice( " << Adapter << " , " << DeviceType << " , " << hFocusWindow << " , " << BehaviorFlags << " , " << pPresentationParameters << " , " << ppReturnedDeviceInterface << " ) [ " << this << " ]\n");
 			D3D8Base::IDirect3DDevice8* realDevice = NULL;
 
 			HRESULT hr = m_pD3D->CreateDevice(Adapter,DeviceType,hFocusWindow,BehaviorFlags,pPresentationParameters,&realDevice);
+
+			//restore old DLL directory
+			SetDllDirectory(oldDllDirectory);
+
 			if(FAILED(hr))
 			{
 				return hr;

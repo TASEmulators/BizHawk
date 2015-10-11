@@ -87,6 +87,16 @@ namespace BizHawk.Emulation.DiscSystem
 					Func<int, bool> condition = (int lba) => lba >= OUT_Disc.Session1.LeadoutLBA;
 					new ConditionalSectorSynthProvider().Install(OUT_Disc, condition, ss_leadout);
 				}
+
+				//apply SBI if it exists
+				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
+				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
+				{
+					var loadSbiJob = new SBI.LoadSBIJob() { IN_Path = sbiPath };
+					loadSbiJob.Run();
+					var applySbiJob = new ApplySBIJob();
+					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
+				}
 			}
 
 			FinishLog();
@@ -116,6 +126,8 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			if (ext == ".cue")
 			{
+				//TODO - major renovation of error handling needed
+
 				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
 				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
@@ -130,23 +142,29 @@ namespace BizHawk.Emulation.DiscSystem
 				if (cue_content == null)
 					cue_content = File.ReadAllText(cuePath);
 				parseJob.IN_CueString = cue_content;
-				parseJob.Run(parseJob);
-				//TODO - need better handling of log output
+				bool okParse = true;
+				try { parseJob.Run(parseJob); }
+				catch (DiscJobAbortException) { okParse = false; parseJob.FinishLog(); }
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
+				if (!okParse)
+					goto DONE;
 
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
 				var compileJob = new CompileCueJob();
 				compileJob.IN_CueContext = cueContext;
 				compileJob.IN_CueFile = parseJob.OUT_CueFile;
-				compileJob.Run();
-				//TODO - need better handling of log output
+				bool okCompile = true;
+				try { compileJob.Run(); }
+				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
 				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
+				if (!okCompile || compileJob.OUT_ErrorLevel)
+					goto DONE;
 
 				//check slow loading threshold
-				if (compileJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
+				if (compileJob.OUT_LoadTime > IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					OUT_SlowLoadAborted = true;
@@ -163,16 +181,6 @@ namespace BizHawk.Emulation.DiscSystem
 
 				OUT_Disc = loadJob.OUT_Disc;
 				//OUT_Disc.DiscMountPolicy = IN_DiscMountPolicy; //NOT SURE WE NEED THIS (only makes sense for cue probably)
-
-				//apply SBI if it exists (TODO - for formats other than cue?)
-				var sbiPath = Path.ChangeExtension(IN_FromPath, ".sbi");
-				if (File.Exists(sbiPath) && SBI.SBIFormat.QuickCheckISSBI(sbiPath))
-				{
-					var loadSbiJob = new SBI.LoadSBIJob() { IN_Path = sbiPath };
-					loadSbiJob.Run();
-					var applySbiJob = new ApplySBIJob();
-					applySbiJob.Run(OUT_Disc, loadSbiJob.OUT_Data, IN_DiscMountPolicy.SBI_As_Mednafen);
-				}
 			}
 			else if (ext == ".ccd")
 			{
@@ -180,15 +188,19 @@ namespace BizHawk.Emulation.DiscSystem
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
 
-		DONE: ;
+
+		DONE:
 
 			//setup the lowest level synth provider
-			var sssp = new ArraySectorSynthProvider()
+			if (OUT_Disc != null)
 			{
-				Sectors = OUT_Disc._Sectors,
-				FirstLBA = -150
-			};
-			OUT_Disc.SynthProvider = sssp;
+				var sssp = new ArraySectorSynthProvider()
+				{
+					Sectors = OUT_Disc._Sectors,
+					FirstLBA = -150
+				};
+				OUT_Disc.SynthProvider = sssp;
+			}
 		}
 	}
 	

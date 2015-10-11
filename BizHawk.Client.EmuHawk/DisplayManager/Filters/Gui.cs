@@ -217,7 +217,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				//TODO - redundant fix
 				LL = new LetterboxingLogic();
 				LL.vx += Padding.Left;
-				LL.vy += Padding.Right;
+				LL.vy += Padding.Top;
 				LL.vw = size.Width;
 				LL.vh = size.Height;
 			}
@@ -250,7 +250,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 				//TODO - redundant fix
 				LL = new LetterboxingLogic();
 				LL.vx += Padding.Left;
-				LL.vy += Padding.Right;
+				LL.vy += Padding.Top;
 				LL.vw = InputSize.Width;
 				LL.vh = InputSize.Height;
 			}

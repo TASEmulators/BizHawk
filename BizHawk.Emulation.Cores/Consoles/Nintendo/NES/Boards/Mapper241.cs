@@ -37,16 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return 0x50;
 		}
 
-		public override void WritePPU(int addr, byte value)
-		{
-			base.WritePPU(addr, value);
-		}
-
-		public override byte ReadPPU(int addr)
-		{
-			return base.ReadPPU(addr);
-		}
-
 		public override void WritePRG(int addr, byte value)
 		{
 			prg_banks_32k[0] = value;

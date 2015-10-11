@@ -478,11 +478,14 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI-FCG-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_02_74.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BANDAI_74_161_161_32.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Bonza.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\DatachBarcode.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Farid-UNROM-8-in-1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\FFE\Mapper006.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\FFE\Mapper017.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\FS304.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\GameGenie.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\inlnsf.cs" />
@@ -511,12 +514,15 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper015.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper029.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper030.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper034.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper036.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper041.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper042.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper045.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper051.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper053.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper057.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper058.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper069.cs" />
@@ -529,7 +535,9 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper120.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper132.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper136.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper143.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper147.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper156.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper168.cs" />
@@ -541,7 +549,12 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper193.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper200.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper201.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper202.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper203.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper204.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper212.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper213.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper214.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper218.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper222.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper225.cs" />
@@ -550,12 +563,14 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper230.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper231.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper233.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper235.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper240.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper241.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper242.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper078.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper046.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper243.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper244.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper246.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper50.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper60.cs" />
@@ -627,6 +642,18 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_017.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF-DREAMTECH01.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-190in1.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-8157.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-A65AS.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-BS-5.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-D1038.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-GS-2004.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-GS-2013.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-T-262.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-AX5705.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-CC-21.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-EDU2000.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UxROM.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -767,8 +794,12 @@
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
-    <Compile Include="Consoles\Sony\PSX\Octoshock.cs" />
+    <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
+    <Compile Include="Consoles\Sony\PSX\OctoshockFIOConfig.cs" />
+    <Compile Include="Consoles\Sony\PSX\PSF.cs" />
     <Compile Include="Consoles\WonderSwan\BizSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.cs" />
     <Compile Include="Consoles\WonderSwan\WonderSwan.Controller.cs">

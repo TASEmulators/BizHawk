@@ -53,6 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			this.label8 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.NumSaveStatesLabel = new System.Windows.Forms.Label();
+			this.BranchStatesInTasproj = new System.Windows.Forms.CheckBox();
+			this.EraseBranchStatesFirst = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.MemCapacityNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.DiskCapacityNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SaveCapacityNumeric)).BeginInit();
@@ -62,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(216, 113);
+			this.CancelBtn.Location = new System.Drawing.Point(216, 163);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 0;
@@ -73,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(150, 113);
+			this.OkBtn.Location = new System.Drawing.Point(150, 163);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 1;
@@ -116,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 9);
+			this.label2.Location = new System.Drawing.Point(9, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(88, 13);
 			this.label2.TabIndex = 5;
@@ -125,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(126, 9);
+			this.label3.Location = new System.Drawing.Point(147, 9);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(79, 13);
 			this.label3.TabIndex = 6;
@@ -134,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 			// SavestateSizeLabel
 			// 
 			this.SavestateSizeLabel.AutoSize = true;
-			this.SavestateSizeLabel.Location = new System.Drawing.Point(208, 9);
+			this.SavestateSizeLabel.Location = new System.Drawing.Point(229, 9);
 			this.SavestateSizeLabel.Name = "SavestateSizeLabel";
 			this.SavestateSizeLabel.Size = new System.Drawing.Size(25, 13);
 			this.SavestateSizeLabel.TabIndex = 7;
@@ -188,7 +190,7 @@ namespace BizHawk.Client.EmuHawk
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(12, 49);
+			this.label6.Location = new System.Drawing.Point(9, 49);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(72, 13);
 			this.label6.TabIndex = 5;
@@ -196,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// SaveCapacityNumeric
 			// 
-			this.SaveCapacityNumeric.Location = new System.Drawing.Point(158, 66);
+			this.SaveCapacityNumeric.Location = new System.Drawing.Point(150, 66);
 			this.SaveCapacityNumeric.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -215,7 +217,7 @@ namespace BizHawk.Client.EmuHawk
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(213, 69);
+			this.label7.Location = new System.Drawing.Point(205, 69);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(21, 13);
 			this.label7.TabIndex = 4;
@@ -224,7 +226,7 @@ namespace BizHawk.Client.EmuHawk
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(158, 49);
+			this.label8.Location = new System.Drawing.Point(147, 49);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(112, 13);
 			this.label8.TabIndex = 5;
@@ -233,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(155, 89);
+			this.label9.Location = new System.Drawing.Point(147, 89);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(84, 13);
 			this.label9.TabIndex = 8;
@@ -242,11 +244,35 @@ namespace BizHawk.Client.EmuHawk
 			// NumSaveStatesLabel
 			// 
 			this.NumSaveStatesLabel.AutoSize = true;
-			this.NumSaveStatesLabel.Location = new System.Drawing.Point(242, 89);
+			this.NumSaveStatesLabel.Location = new System.Drawing.Point(234, 89);
 			this.NumSaveStatesLabel.Name = "NumSaveStatesLabel";
 			this.NumSaveStatesLabel.Size = new System.Drawing.Size(25, 13);
 			this.NumSaveStatesLabel.TabIndex = 9;
 			this.NumSaveStatesLabel.Text = "1kb";
+			// 
+			// BranchStatesInTasproj
+			// 
+			this.BranchStatesInTasproj.AutoSize = true;
+			this.BranchStatesInTasproj.Location = new System.Drawing.Point(12, 115);
+			this.BranchStatesInTasproj.Name = "BranchStatesInTasproj";
+			this.BranchStatesInTasproj.Size = new System.Drawing.Size(158, 17);
+			this.BranchStatesInTasproj.TabIndex = 10;
+			this.BranchStatesInTasproj.Text = "Put branch states to .tasproj";
+			this.BranchStatesInTasproj.UseVisualStyleBackColor = true;
+			this.BranchStatesInTasproj.CheckedChanged += new System.EventHandler(this.BranchStatesInTasproj_CheckedChanged);
+			// 
+			// EraseBranchStatesFirst
+			// 
+			this.EraseBranchStatesFirst.AutoSize = true;
+			this.EraseBranchStatesFirst.Checked = true;
+			this.EraseBranchStatesFirst.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.EraseBranchStatesFirst.Location = new System.Drawing.Point(12, 140);
+			this.EraseBranchStatesFirst.Name = "EraseBranchStatesFirst";
+			this.EraseBranchStatesFirst.Size = new System.Drawing.Size(139, 17);
+			this.EraseBranchStatesFirst.TabIndex = 11;
+			this.EraseBranchStatesFirst.Text = "Erase branch states first";
+			this.EraseBranchStatesFirst.UseVisualStyleBackColor = true;
+			this.EraseBranchStatesFirst.CheckedChanged += new System.EventHandler(this.EraseBranchStatesFIrst_CheckedChanged);
 			// 
 			// StateHistorySettingsForm
 			// 
@@ -254,7 +280,9 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(288, 148);
+			this.ClientSize = new System.Drawing.Size(288, 198);
+			this.Controls.Add(this.EraseBranchStatesFirst);
+			this.Controls.Add(this.BranchStatesInTasproj);
 			this.Controls.Add(this.NumSaveStatesLabel);
 			this.Controls.Add(this.NumStatesLabel);
 			this.Controls.Add(this.label9);
@@ -303,5 +331,7 @@ namespace BizHawk.Client.EmuHawk
 		private Label label8;
 		private Label label9;
 		private Label NumSaveStatesLabel;
+		private CheckBox BranchStatesInTasproj;
+		private CheckBox EraseBranchStatesFirst;
 	}
 }

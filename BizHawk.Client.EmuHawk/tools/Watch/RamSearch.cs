@@ -313,10 +313,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveColumnInfo();
 
-			Settings.Wndx = Location.X;
-			Settings.Wndy = Location.Y;
-			Settings.Width = Right - Left;
-			Settings.Height = Bottom - Top;
+			if (WindowState == FormWindowState.Normal)
+			{
+				Settings.Wndx = Location.X;
+				Settings.Wndy = Location.Y;
+				Settings.Width = Right - Left;
+				Settings.Height = Bottom - Top;
+			}
 		}
 
 		public void NewSearch()

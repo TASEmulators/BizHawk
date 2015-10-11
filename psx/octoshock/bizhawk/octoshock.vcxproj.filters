@@ -115,6 +115,21 @@
       <Filter>cdrom</Filter>
     </ClCompile>
     <ClCompile Include="..\tests.cpp" />
+    <ClCompile Include="..\cdrom\lec.cpp">
+      <Filter>cdrom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cdrom\l-ec.cpp">
+      <Filter>cdrom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cdrom\recover-raw.cpp">
+      <Filter>cdrom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cdrom\galois.cpp">
+      <Filter>cdrom</Filter>
+    </ClCompile>
+    <ClCompile Include="..\cdrom\crc32.cpp">
+      <Filter>cdrom</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\psx\cdc.h">

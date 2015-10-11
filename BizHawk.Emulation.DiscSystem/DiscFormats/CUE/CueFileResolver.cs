@@ -67,7 +67,9 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		/// <summary>
 		/// Performs cue-intelligent logic to acquire a file requested by the cue.
 		/// Returns the resulting full path(s).
-		/// If there are multiple options, it returns them all
+		/// If there are multiple options, it returns them all.
+		/// Returns the requested path first in the list (if it was found) for more simple use.
+		/// Kind of an unusual design, I know. Consider them sorted by confidence.
 		/// </summary>
 		public List<string> Resolve(string path)
 		{
@@ -101,6 +103,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (ext == ".cue" || ext == ".sbi" || ext == ".ccd" || ext == ".sub")
 					continue;
 
+				//continuing the bad plan: forbid archives (always a wrong choice, not supported anyway)
+				//we should have a list prioritized by extension and score that way
+				if (ext == ".7z" || ext == ".rar" || ext == ".zip" || ext == ".bz2" || ext == ".gz")
+					continue;
 
 				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions
@@ -109,8 +115,13 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 					//match files with another extension added on (likely to be mygame.bin.ecm)
 					cmp = string.Compare(fragment, targetFile, !caseSensitive);
 				if (cmp == 0)
-					results.Add(fi.FileInfo);
-
+				{
+					//take care to add an exact match at the beginning
+					if (fi.FullName.ToLowerInvariant() == Path.Combine(baseDir,path).ToLowerInvariant())
+						results.Insert(0, fi.FileInfo);
+					else
+						results.Add(fi.FileInfo);
+				}
 			}
 			var ret = new List<string>();
 			foreach (var fi in results)

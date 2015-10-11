@@ -35,7 +35,8 @@ namespace BizHawk.Client.Common
 		{
 			return new ContextRef
 			{
-				gc = gc
+				gc = gc,
+				gl = gc.IGL
 			};
 		}
 
@@ -59,13 +60,24 @@ namespace BizHawk.Client.Common
 
 		public void Activate(ContextRef cr)
 		{
+			bool begun = false;
+
+			//this needs a begin signal to set the swap chain to the next backbuffer
+			if (cr.gl is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+			{
+				cr.gc.Begin();
+				begun = true;
+			}
+
 			if (cr == ActiveContext)
 				return;
+
 			ActiveContext = cr;
 			if (cr.gc != null)
 			{
 				//TODO - this is checking the current context inside to avoid an extra NOP context change. make this optional or remove it, since we're tracking it here
-				 cr.gc.Begin();
+				if(!begun)
+					cr.gc.Begin();
 			}
 			if (cr.gl != null)
 			{
