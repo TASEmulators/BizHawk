@@ -1024,7 +1024,7 @@ namespace BizHawk.Client.EmuHawk
 					if (result)
 					{
 						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
-						Global.Config.RecentWatches.Add(watches.CurrentFileName);
+						Settings.RecentSearches.Add(watches.CurrentFileName);
 					}
 				}
 			}
