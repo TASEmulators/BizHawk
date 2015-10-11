@@ -13,6 +13,7 @@
 **Sequentially number screenshots taken in the same second
 **Finetune hotkey config dialog
 **Leniency fixes to cue loading
+**Make on-screen watches position editable
 **Fix #461 - Repair autofire patterns
 **Fix #477 - Support key input over IPC for automation
 **Fix #490 - Ampersands in hex editor flakeout
@@ -38,6 +39,7 @@
 **Add movie.startsfromsavestate() and movie.startsfromsaveram(), movie.getheader(), movie.getcomments(), and movie.getsubtitles()
 **Add memorysavestate library
 **Fix bizstring.split()
+**Fix crashes removing callbacks
 **Fix #469 - forms.newform() : add an onclosed callback optional parameter
 **Fix #463 - memory.readbyterange off-by-one
 **Fix #498 - fix quicknes lua rendering being offset incorrectly sometimes
@@ -49,8 +51,9 @@
 **Issue #481 - keep scroll bar position when resetting the current rom as opposed to changing to a new one
 
 *PSXHawk
-**Update to mednafen 0.9.38.6
-**Fix loading of some .psf filess
+**Update to mednafen 0.9.38.7
+**Support 0-2 pads/shocks and 0-2 memcards
+**Fix loading of some .psf files
 **Add overscan clipping and deinterlacer options
 **Fix resolution management and PAR stuff for some PAL modes
 **Support .xml disc bundling tool as alternative to .m3u

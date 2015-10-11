@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual Studio 2015
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "octoshock", "octoshock.vcxproj", "{5F35CAFC-6208-4FBE-AD17-0E69BA3F70EC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "miniclient", "..\test\miniclient\miniclient.vcxproj", "{5A0DAC84-1170-4B1A-B9A9-F566A1D97790}"

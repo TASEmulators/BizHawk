@@ -4119,9 +4119,9 @@
 			}
 		};
 
-        static public Sid Create(int newSampleRate, Region newRegion)
+        static public Sid Create(int newSampleRate, int clockFrqNum, int clockFrqDen)
         {
-            return new Sid(waveTable, newSampleRate, newRegion);
+            return new Sid(waveTable, (uint)newSampleRate, (uint)clockFrqNum, (uint)clockFrqDen);
         }
 	}
 }

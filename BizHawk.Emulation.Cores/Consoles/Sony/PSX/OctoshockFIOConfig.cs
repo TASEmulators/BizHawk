@@ -3,28 +3,57 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	public class OctoshockControlUserConfig
+	/// <summary>
+	/// Represents a user's view of what equipment is plugged into the PSX FIO
+	/// </summary>
+	public class OctoshockFIOConfigUser
 	{
 		public bool[] Multitaps = new bool[2];
+		public bool[] Memcards = new bool[2];
 		public OctoshockDll.ePeripheralType[] Devices8 = new OctoshockDll.ePeripheralType[8];
 
-		public OctoshockControlLogicalConfig ToLogicalConfig()
+		public OctoshockFIOConfigLogical ToLogical()
 		{
-			var lc = new OctoshockControlLogicalConfig();
+			var lc = new OctoshockFIOConfigLogical();
 			lc.PopulateFrom(this);
 			return lc;
 		}
 	}
 
-	public class OctoshockControlLogicalConfig
+	/// <summary>
+	/// Represents a baked-down view of what's plugged into the PSX FIO.
+	/// But really, users are interested in it too (its what produces the player number assignments)
+	/// </summary>
+	public class OctoshockFIOConfigLogical
 	{
-		public int[] PlayerAssignments = new int[8];
 		public bool[] Multitaps;
+		public bool[] Memcards;
 		public OctoshockDll.ePeripheralType[] Devices8;
 
-		internal void PopulateFrom(OctoshockControlUserConfig userConfig)
+		/// <summary>
+		/// Total number of players defined
+		/// </summary>
+		public int NumPlayers;
+
+		/// <summary>
+		/// The player number on each of the input slots
+		/// </summary>
+		public int[] PlayerAssignments = new int[8];
+
+		/// <summary>
+		/// The device type associated with each player
+		/// </summary>
+		public OctoshockDll.ePeripheralType[] DevicesPlayer = new OctoshockDll.ePeripheralType[8];
+
+		/// <summary>
+		/// Total number of connected memcards
+		/// </summary>
+		public int NumMemcards { get { return (Memcards[0] ? 1 : 0) + (Memcards[1] ? 1 : 0); } }
+
+		internal void PopulateFrom(OctoshockFIOConfigUser userConfig)
 		{
 			Multitaps = (bool[])userConfig.Multitaps.Clone();
+			Memcards = (bool[])userConfig.Memcards.Clone();
 			Devices8 = (OctoshockDll.ePeripheralType[])userConfig.Devices8.Clone();
 
 			int id = 1;
@@ -38,6 +67,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			if (userConfig.Devices8[5] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[5] = -1; else PlayerAssignments[5] = id++;
 			if (userConfig.Devices8[6] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[6] = -1; else PlayerAssignments[6] = id++;
 			if (userConfig.Devices8[7] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[7] = -1; else PlayerAssignments[7] = id++;
+
+			NumPlayers = id - 1;
+
+			for (int i = 0; i < 8; i++)
+			{
+				int pnum = i+1;
+				for (int j = 0; j < 8; j++)
+				{
+					if(PlayerAssignments[j] == pnum)
+						DevicesPlayer[i] = userConfig.Devices8[j];
+				}
+			}
 		}
 	}
 

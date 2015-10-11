@@ -271,7 +271,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
 					RefreshDialog();
-
 				}
 				else if (columnName != CursorColumnName) // TODO: what about float?
 				{
@@ -315,9 +314,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 					index += controllerType.BoolButtons.Count - 1;
 				AutoPatternBool p = BoolPatterns[index];
-				// adelikat: I broke it
-				//Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
-				Global.StickyXORAdapter.SetSticky(button, true);
+				Global.AutofireStickyXORAdapter.SetSticky(button, isOn.Value, p);
 			}
 			else
 			{
@@ -328,9 +325,7 @@ namespace BizHawk.Client.EmuHawk
 				float? value = null;
 				if (isOn.Value) value = 0f;
 				AutoPatternFloat p = FloatPatterns[index];
-				// adelikat: I broke it
-				//Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
-				Global.StickyXORAdapter.SetFloat(button, value);
+				Global.AutofireStickyXORAdapter.SetFloat(button, value, p);
 			}
 		}
 
@@ -543,9 +538,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu)
+			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu && TasView.SelectedRows.Any())
 			{
-				RightClickMenu.Show(TasView, e.X, e.Y);
+				if (Global.MovieSession.Movie.FrameCount < TasView.SelectedRows.Max())
+				{
+					// trying to be smart here
+					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu
+					// you might need it when you load again the branch where this frame exists
+					TasView.DeselectAll();
+					RefreshTasView();
+				}
+				else
+				{
+					RightClickMenu.Show(TasView, e.X, e.Y);
+				}
 			}
 			else if (e.Button == MouseButtons.Left)
 			{

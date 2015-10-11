@@ -330,6 +330,8 @@
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FeaturesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.C64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainStatusBar = new StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -433,6 +435,7 @@
             this.GenesisSubMenu,
             this.wonderSwanToolStripMenuItem,
             this.AppleSubMenu,
+            this.C64SubMenu,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -2552,28 +2555,28 @@
 			// 
 			this.PSXControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.PSXControllerSettingsMenuItem.Name = "PSXControllerSettingsMenuItem";
-			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.PSXControllerSettingsMenuItem.Text = "Controller Settings";
+			this.PSXControllerSettingsMenuItem.Size = new System.Drawing.Size(234, 22);
+			this.PSXControllerSettingsMenuItem.Text = "Controller / Memcard Settings";
 			this.PSXControllerSettingsMenuItem.Click += new System.EventHandler(this.PSXControllerSettingsMenuItem_Click);
 			// 
 			// PSXOptionsMenuItem
 			// 
 			this.PSXOptionsMenuItem.Name = "PSXOptionsMenuItem";
-			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXOptionsMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.PSXOptionsMenuItem.Text = "&Options";
 			this.PSXOptionsMenuItem.Click += new System.EventHandler(this.PSXOptionsMenuItem_Click);
 			// 
 			// PSXDiscControlsMenuItem
 			// 
 			this.PSXDiscControlsMenuItem.Name = "PSXDiscControlsMenuItem";
-			this.PSXDiscControlsMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXDiscControlsMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.PSXDiscControlsMenuItem.Text = "&Disc Controls";
 			this.PSXDiscControlsMenuItem.Click += new System.EventHandler(this.PSXDiscControlsMenuItem_Click);
 			// 
 			// PSXHashDiscsToolStripMenuItem
 			// 
 			this.PSXHashDiscsToolStripMenuItem.Name = "PSXHashDiscsToolStripMenuItem";
-			this.PSXHashDiscsToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.PSXHashDiscsToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
 			this.PSXHashDiscsToolStripMenuItem.Text = "&Hash Discs";
 			this.PSXHashDiscsToolStripMenuItem.Click += new System.EventHandler(this.PSXHashDiscsToolStripMenuItem_Click);
 			// 
@@ -2925,6 +2928,21 @@
 			this.AboutMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
+			// 
+			// C64SubMenu
+			// 
+			this.C64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.C64SettingsMenuItem});
+			this.C64SubMenu.Name = "C64SubMenu";
+			this.C64SubMenu.Size = new System.Drawing.Size(39, 19);
+			this.C64SubMenu.Text = "&C64";
+			// 
+			// C64SettingsMenuItem
+			// 
+			this.C64SettingsMenuItem.Name = "C64SettingsMenuItem";
+			this.C64SettingsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.C64SettingsMenuItem.Text = "&Settings...";
+			this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
 			// 
 			// MainStatusBar
 			// 
@@ -3973,6 +3991,8 @@
 		private System.Windows.Forms.ToolStripMenuItem Speed400MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem BasicBotMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DisplayMessagesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem C64SubMenu;
+		private System.Windows.Forms.ToolStripMenuItem C64SettingsMenuItem;
 	}
 }
 

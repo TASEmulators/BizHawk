@@ -14,19 +14,14 @@ namespace BizHawk.Client.EmuHawk
 			var psx = ((Octoshock)Global.Emulator);
 			var settings = (Octoshock.SyncSettings)psx.GetSyncSettings();
 
-			for (int i = 0; i < settings.Controllers.Length; i++)
+			var fioConfig = settings.FIOConfig.ToLogical();
+			for (int i = 0; i < 2; i++)
 			{
-				if (settings.Controllers[i].IsConnected)
-				{
-					if (settings.Controllers[i].Type == Octoshock.ControllerSetting.ControllerType.Gamepad)
-					{
-						yield return GamePadController(i + 1);
-					}
-					else
-					{
-						yield return DualShockController(i + 1);
-					}
-				}
+				int pnum = i + 1;
+				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
+					yield return DualShockController(pnum);
+				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.Pad)
+					yield return GamePadController(pnum);
 			}
 
 			yield return ConsoleButtons(psx);

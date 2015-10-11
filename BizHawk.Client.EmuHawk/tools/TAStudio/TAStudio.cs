@@ -432,8 +432,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!HandleMovieLoadStuff(newMovie))
 				return false;
+			
+			// clear all selections
+			TasView.DeselectAll();
+			BookMarkControl.Restart();
+			MarkerControl.Restart();
 
-			BookMarkControl.UpdateValues();
 			RefreshDialog();
 			return true;
 		}
@@ -593,6 +597,9 @@ namespace BizHawk.Client.EmuHawk
 
 			if (MarkerControl != null)
 				MarkerControl.UpdateValues();
+
+			if (BookMarkControl != null)
+				BookMarkControl.UpdateValues();
 
 			if (undoForm != null && !undoForm.IsDisposed)
 				undoForm.UpdateValues();
