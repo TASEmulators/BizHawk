@@ -62,18 +62,41 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			}
 		}
 
+		PresentParameters MakePresentParameters()
+		{
+			return new PresentParameters
+			{
+				BackBufferWidth = 8,
+				BackBufferHeight = 8,
+				DeviceWindowHandle = OffscreenNativeWindow.WindowInfo.Handle,
+				PresentationInterval = PresentInterval.Immediate,
+				EnableAutoDepthStencil = false
+			};
+		}
+
+		void ResetDevice()
+		{
+			ResetHandlers.Reset();
+			for(;;)
+			{
+				var pp = MakePresentParameters();
+				try
+				{
+					dev.Reset(pp);
+				}
+				catch { }
+				if (dev.TestCooperativeLevel().IsSuccess)
+					break;
+				System.Threading.Thread.Sleep(100);
+			}
+			ResetHandlers.Restore();
+		}
+
 		public void CreateDevice()
 		{
 			DestroyDevice();
 
-			//just create some present params so we can get the device created
-			var pp = new PresentParameters
-				{
-					BackBufferWidth = 8,
-					BackBufferHeight = 8,
-					DeviceWindowHandle = OffscreenNativeWindow.WindowInfo.Handle,
-					PresentationInterval = PresentInterval.Immediate			
-				};
+			var pp = MakePresentParameters();
 
 			var flags = CreateFlags.SoftwareVertexProcessing;
 			if ((d3d.GetDeviceCaps(0, DeviceType.Hardware).DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
@@ -85,6 +108,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		void IDisposable.Dispose()
 		{
+			ResetHandlers.Reset();
+			DestroyDevice();
+			d3d.Dispose();
 		}
 
 		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
@@ -737,7 +763,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public void BeginControl(GLControlWrapper_SlimDX9 control)
 		{
 			_CurrentControl = control;
-			dev.SetRenderTarget(0, control.SwapChain.GetBackBuffer(0));
+			var bb = control.SwapChain.GetBackBuffer(0);
+			dev.SetRenderTarget(0, bb);
+			bb.Dispose();
 		}
 
 		public void EndControl(GLControlWrapper_SlimDX9 control)
@@ -745,13 +773,28 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
+			var bb = dev.GetBackBuffer(0,0);
+			dev.SetRenderTarget(0,bb);
+			bb.Dispose();
+
 			_CurrentControl = null;
 		}
 
 		public void SwapControl(GLControlWrapper_SlimDX9 control)
 		{
-			control.SwapChain.Present(Present.None);
+			EndControl(control);
+
+			try
+			{
+				var result = control.SwapChain.Present(Present.None);
+			}
+			catch(d3d9.Direct3D9Exception ex)
+			{
+				if (ex.ResultCode.Name == "D3DERR_DEVICELOST")
+					ResetDevice();
+			}
 		}
+
 		
 		public void FreeRenderTarget(RenderTarget rt)
 		{
@@ -777,7 +820,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 			if (rt == null)
 			{
-				dev.SetRenderTarget(0, _CurrentControl.SwapChain.GetBackBuffer(0));
+				var bb = _CurrentControl.SwapChain.GetBackBuffer(0);
+				dev.SetRenderTarget(0, bb);
+				bb.Dispose();
 				dev.DepthStencilSurface = null;
 				return;
 			}
@@ -795,6 +840,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				control.SwapChain.Dispose();
 				control.SwapChain = null;
 			}
+			ResetHandlers.Remove(control, "SwapChain");
 			
 			var pp = new PresentParameters
 			{
@@ -808,7 +854,65 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			};
 
 			control.SwapChain = new SwapChain(dev, pp);
+			ResetHandlers.Add(control, "SwapChain", () => { control.SwapChain.Dispose(); control.SwapChain = null; }, () => RefreshControlSwapChain(control));
 		}
+
+		DeviceLostHandler ResetHandlers = new DeviceLostHandler();
+
+		class DeviceLostHandler
+		{
+			class ResetHandlerKey
+			{
+				public string Label;
+				public object Object;
+				public override int GetHashCode()
+				{
+					return Label.GetHashCode() ^ Object.GetHashCode();
+				}
+				public override bool Equals(object obj)
+				{
+					if (obj == null) return false;
+					var key = obj as ResetHandlerKey;
+					return key.Label == Label && key.Object == Object;
+				}
+			}
+
+			class HandlerSet
+			{
+				public Action Reset, Restore;
+			}
+
+			Dictionary<ResetHandlerKey, HandlerSet> Handlers = new Dictionary<ResetHandlerKey, HandlerSet>();
+
+			public void Add(object o, string label, Action reset, Action restore)
+			{
+				ResetHandlerKey hkey = new ResetHandlerKey() { Object = o, Label = label };
+				Handlers[hkey] = new HandlerSet { Reset = reset, Restore = restore };
+			}
+
+			public void Remove(object o, string label)
+			{
+				ResetHandlerKey hkey = new ResetHandlerKey() { Object = o, Label = label };
+				if(Handlers.ContainsKey(hkey))
+					Handlers.Remove(hkey);
+			}
+
+			public void Reset()
+			{
+				foreach (var handler in Handlers)
+					handler.Value.Reset();
+			}
+
+			public void Restore()
+			{
+				var todo = Handlers.ToArray();
+				Handlers.Clear();
+				foreach (var item in todo)
+					item.Value.Restore();
+			}
+		}
+
+
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{

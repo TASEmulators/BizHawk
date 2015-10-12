@@ -7,11 +7,15 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// This singleton class manages OpenGL contexts, in an effort to minimize context changes.
 	/// </summary>
-	public class GLManager
+	public class GLManager : IDisposable
 	{
 		private GLManager()
 		{
 
+		}
+
+		public void Dispose()
+		{
 		}
 
 		public static GLManager Instance { get; private set; }
