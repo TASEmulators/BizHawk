@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: true
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable, IInputPollable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -769,6 +769,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		public IInputCallbackSystem InputCallbacks
+		{
+			[FeatureNotImplemented]
+			get
+			{ throw new NotImplementedException(); }
+		}
 
 		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
