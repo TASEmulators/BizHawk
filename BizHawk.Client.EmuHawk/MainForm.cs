@@ -878,12 +878,13 @@ namespace BizHawk.Client.EmuHawk
 			string fname_bare = string.Format(fmt, prefix, ts, "");
 			string fname = string.Format(fmt, prefix, ts, " (0)");
 
-			//if this file already exists,
-			//1. move the original file to a numbered one (to keep a good filesystem sort ordering)
-			if (File.Exists(fname_bare))
+			//if the (0) filename exists, do nothing. we'll bump up the number later
+			//if the bare filename exists, move it to (0)
+			//otherwise, no related filename exists, and we can proceed with the bare filename
+			if (File.Exists(fname)) { }
+			else if (File.Exists(fname_bare))
 				File.Move(fname_bare, fname);
 			else fname = fname_bare;
-			//2. create next one sequentially named
 			int seq = 0;
 			while (File.Exists(fname))
 			{
