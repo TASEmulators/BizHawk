@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Reflection;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -53,7 +54,7 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrWhiteSpace(warningMsg))
 			{
 				messageCallback(warningMsg);
-				
+
 			}
 			else
 			{
@@ -73,22 +74,71 @@ namespace BizHawk.Client.Common
 			warningMsg = string.Empty;
 			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
 
-			// TODO: reflect off the assembly and find an IMovieImporter with the appropriate ImportExtension metadata
-			//if (ext == ".FM2")
-			//{
-			//	var result = new Fm2Import().Import(path);
-			//	errorMsg = result.Errors.First();
-			//	warningMsg = result.Errors.First();
-			//	return result.Movie;
-			//}
-
-			if (ext == ".PJM")
+			if (UsesLegacyImporter(ext))
 			{
-				var result = new PJMImport().Import(path);
-				errorMsg = result.Errors.First();
-				warningMsg = result.Errors.First();
-				return result.Movie;
+				return LegacyImportFile(ext, path, out errorMsg, out warningMsg).ToBk2();
 			}
+
+			var importers = ImportersForExtension(ext);
+			var importerType = importers.FirstOrDefault();
+
+			if (importerType == default(Type))
+			{
+				errorMsg = "No importer found for file type " + ext;
+				return null;
+			}
+
+			// Create a new instance of the importer class using the no-argument constructor
+			IMovieImport importer = importerType.GetConstructor(new Type[] { })
+												.Invoke(new object[] { }) as IMovieImport;
+
+			Bk2Movie movie = null;
+
+			try
+			{
+				var result = importer.Import(path);
+				if (result.Errors.Count() > 0) errorMsg = result.Errors.First();
+				if (result.Warnings.Count() > 0) warningMsg = result.Warnings.First();
+				movie = result.Movie;
+			}
+			catch (Exception ex)
+			{
+				errorMsg = ex.ToString();
+			}
+
+			return movie;
+		}
+
+		private static IEnumerable<Type> ImportersForExtension(string ext)
+		{
+			var info = typeof(MovieImport).Module;
+			var importers = from t in info.GetTypes()
+			                where typeof(IMovieImport).IsAssignableFrom(t)
+			                   && TypeImportsExtension(t, ext)
+			                select t;
+
+			return importers;
+		}
+
+		private static bool TypeImportsExtension(Type t, string ext)
+		{
+			var attrs = (ImportExtension[])t.GetCustomAttributes(typeof(ImportExtension), inherit: false);
+
+			if (attrs.Any(a => a.Extension.ToUpper() == ext.ToUpper()))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private static BkmMovie LegacyImportFile(string ext, string path, out string errorMsg, out string warningMsg)
+		{
+			errorMsg = string.Empty;
+			warningMsg = string.Empty;
+
 
 			BkmMovie m = new BkmMovie();
 
@@ -149,16 +199,23 @@ namespace BizHawk.Client.Common
 				errorMsg = except.ToString();
 			}
 
-			// Hack
-			return m.ToBk2();
+			return m;
 		}
 
 		// Return whether or not the type of file provided can currently be imported.
 		public static bool IsValidMovieExtension(string extension)
 		{
+			// TODO: Other movie formats that don't use a legacy importer (PJM/PXM, etc),
+			//       when those are implemented
+			return UsesLegacyImporter(extension);
+		}
+
+		// Return whether or not the type of file provided is currently imported by a legacy (i.e. to BKM not BK2) importer
+		public static bool UsesLegacyImporter(string extension)
+		{
 			string[] extensions =
 			{
-				"FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
+				"BKM", "FCM", "FM2", "FMV", "GMV", "MCM", "MC2", "MMV", "NMV", "LSMV", "SMV", "VBM", "VMV", "YMV", "ZMV"
 			};
 			return extensions.Any(ext => extension.ToUpper() == "." + ext);
 		}
@@ -213,7 +270,7 @@ namespace BizHawk.Client.Common
 					controller = "Saturn Controller";
 					break;
 			}
-			var controllers = new SimpleController {Type = new ControllerDefinition {Name = controller}};
+			var controllers = new SimpleController { Type = new ControllerDefinition { Name = controller } };
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
@@ -643,7 +700,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.AUTHOR] = author;
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
@@ -832,7 +889,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				FDS = false;
-				
+
 			}
 
 			m.Header[HeaderKeys.PLATFORM] = "NES";
@@ -874,7 +931,7 @@ namespace BizHawk.Client.Common
 			*/
 			m.Header[HeaderKeys.PAL] = "False";
 			// 090 frame data begins here
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
 			/*
 			 * 01 Right
 			 * 02 Left
@@ -1378,7 +1435,7 @@ namespace BizHawk.Client.Common
 			r.ReadBytes(103);
 			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = name + " Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = name + " Controller" } };
 			int bytes = 256;
 			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
 			if (platform == "nes")
@@ -1499,7 +1556,7 @@ namespace BizHawk.Client.Common
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
 			m.Header[MD5] = string.Format("{0:x8}", md5.BytesToHexString().ToLower());
-			var controllers = new SimpleController { Type = new ControllerDefinition { Name = "SMS Controller" }};
+			var controllers = new SimpleController { Type = new ControllerDefinition { Name = "SMS Controller" } };
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1724,7 +1781,7 @@ namespace BizHawk.Client.Common
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
 			/*
 			 Standard controllers store data in the following format:
 			 * 01: A
@@ -1827,7 +1884,7 @@ namespace BizHawk.Client.Common
 			 * bit 4: controller 5 in use
 			 * other: reserved, set to 0
 			*/
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "SNES Controller" } };
 			bool[] controllersUsed = new bool[5];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 			{
@@ -1944,7 +2001,7 @@ namespace BizHawk.Client.Common
 			{
 				"Right", "Left", "Down", "Up", "Start", "Select", "Y", "B", "R", "L", "X", "A"
 			};
-			
+
 			for (int frame = 0; frame <= frameCount; frame++)
 			{
 				controllers["Reset"] = true;
@@ -2139,16 +2196,16 @@ namespace BizHawk.Client.Common
 			// bit 2: if "1", movie is for the SGB system
 			bool is_sgb = (((flags >> 2) & 0x1) != 0);
 			// other: reserved, set to 0
-			
+
 			// (At most one of bits 0, 1, 2 can be "1")
 			//if (!(is_gba ^ is_gbc ^ is_sgb) && (is_gba || is_gbc || is_sgb)) //TODO: adelikat: this doesn't do what the comment above suggests it is trying to check for, it is always false!
 			//{
-				//errorMsg = "This is not a valid .VBM file.";
-				//r.Close();
-				//fs.Close();
-				//return null;
+			//errorMsg = "This is not a valid .VBM file.";
+			//r.Close();
+			//fs.Close();
+			//return null;
 			//}
-			
+
 			// (If all 3 of these bits are "0", it is for regular GB.)
 			string platform = "GB";
 			if (is_gba)
@@ -2238,7 +2295,7 @@ namespace BizHawk.Client.Common
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition()};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition() };
 			if (platform != "GBA")
 			{
 				controllers.Type.Name = "Gameboy Controller";
@@ -2268,7 +2325,7 @@ namespace BizHawk.Client.Common
 			 * 00 40 Down motion sensor
 			 * 00 80 Up motion sensor
 			*/
-			string[] other = 
+			string[] other =
 			{
 				"Reset (old timing)" , "Reset (new timing since version 1.1)", "Left motion sensor",
 				"Right motion sensor", "Down motion sensor", "Up motion sensor"
@@ -2416,7 +2473,7 @@ namespace BizHawk.Client.Common
 				return m;
 			}
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "NES Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
 			/*
 			 * 01 A
 			 * 02 B
@@ -2653,7 +2710,7 @@ namespace BizHawk.Client.Common
 			uint savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
-			SimpleController controllers = new SimpleController {Type = new ControllerDefinition {Name = "SNES Controller"}};
+			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "SNES Controller" } };
 			/*
 			 * bit 11: A
 			 * bit 10: X

@@ -455,7 +455,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
 				Multiselect = true,
 				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm",
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm;*.pjm;*.pxm",
 					"FCEUX", "*.fm2",
 					"PCEjin/Mednafen", "*.mc2;*.mcm",
 					"Dega", "*.mmv",
@@ -469,6 +469,8 @@ namespace BizHawk.Client.EmuHawk
 					"Snes9x", "*.smv",
 					"Yabause", "*.ymv",
 					"ZSNES", "*.zmv",
+					"PSXjin", "*.pjm",
+					"PCSX", "*.pxm",
 					"BizHawk Bkm", "*.bkm",
 					"All Files", "*.*"),
 				RestoreDirectory = false
