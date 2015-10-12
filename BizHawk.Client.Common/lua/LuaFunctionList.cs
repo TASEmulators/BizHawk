@@ -33,22 +33,15 @@ namespace BizHawk.Client.Common
 
 		public void ClearAll()
 		{
-			if (Global.Emulator.CanPollInput())
+			if (Global.Emulator.InputCallbacksAvailable())
 			{
 				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(this.Select(x => x.Callback));
 			}
 
-			if (Global.Emulator.CanDebug())
+			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
-				try
-				{
-					var cbSys = Global.Emulator.AsDebuggable().MemoryCallbacks;
-					cbSys.RemoveAll(this.Select(x => x.Callback));
-				}
-				catch
-				{
-					//swallow exceptions here. many cores havent implemented memorycallbacks, we ought to have more granular feature querying
-				}
+				var cbSys = Global.Emulator.AsDebuggable().MemoryCallbacks;
+				cbSys.RemoveAll(this.Select(x => x.Callback));
 			}
 
 			Clear();
