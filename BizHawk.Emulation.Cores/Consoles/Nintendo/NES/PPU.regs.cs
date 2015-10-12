@@ -376,6 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			Reg2002_objhit = Reg2002_objoverflow = 0;
 			Reg2002_vblank_clear_pending = true;
+			//TODO - unfreeze ppu registers after poweron
 		}
 
 		//OAM ADDRESS (write)
