@@ -52,8 +52,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var combo = combos[i];
 				if (user.Devices8[i] == OctoshockDll.ePeripheralType.None) combo.SelectedIndex = 0;
-				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualAnalog) combo.SelectedIndex = 1;
+				if (user.Devices8[i] == OctoshockDll.ePeripheralType.Pad) combo.SelectedIndex = 1;
 				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualShock) combo.SelectedIndex = 2;
+				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualAnalog) combo.SelectedIndex = 3;
 			}
 		}
 
@@ -72,8 +73,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var combo = combos[i];
 				if (combo.SelectedIndex == 0) uc.Devices8[i] = OctoshockDll.ePeripheralType.None;
-				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
+				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.Pad;
 				if (combo.SelectedIndex == 2) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualShock;
+				if (combo.SelectedIndex == 3) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
 			}
 
 			return uc;
