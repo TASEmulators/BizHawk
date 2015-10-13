@@ -402,11 +402,11 @@
     <Compile Include="config\ProfileConfig.Designer.cs">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </Compile>
-    <Compile Include="config\PSX\PSXControllerConfig.cs">
+    <Compile Include="config\PSX\PSXControllerConfigNew.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\PSX\PSXControllerConfig.Designer.cs">
-      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    <Compile Include="config\PSX\PSXControllerConfigNew.Designer.cs">
+      <DependentUpon>PSXControllerConfigNew.cs</DependentUpon>
     </Compile>
     <Compile Include="config\PSX\PSXHashDiscs.cs">
       <SubType>Form</SubType>
@@ -465,6 +465,13 @@
     </Compile>
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputRoll.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomControls\InputRoll.Drawing.cs">
+      <DependentUpon>InputRoll.cs</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\MenuButton.cs">
       <SubType>Component</SubType>
@@ -531,6 +538,7 @@
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\Input.cs" />
     <Compile Include="IControlMainform.cs" />
+    <Compile Include="Input\IPCKeyInput.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="JumpLists.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="LogConsole.cs" />
     <Compile Include="LogWindow.cs">
@@ -628,6 +636,18 @@
     </Compile>
     <Compile Include="tools\AutoHawk.Designer.cs">
       <DependentUpon>AutoHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\BasicBot\BasicBot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\BasicBot\BasicBot.Designer.cs">
+      <DependentUpon>BasicBot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\BasicBot\BotControlsRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="tools\BasicBot\BotControlsRow.Designer.cs">
+      <DependentUpon>BotControlsRow.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\BatchRun.cs">
       <SubType>Form</SubType>
@@ -949,9 +969,6 @@
     <Compile Include="tools\TAStudio\HeaderEditor.Designer.cs">
       <DependentUpon>HeaderEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\InputRoll.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="tools\TAStudio\PatternsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1238,8 +1255,8 @@
     <EmbeddedResource Include="config\ProfileConfig.resx">
       <DependentUpon>ProfileConfig.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="config\PSX\PSXControllerConfig.resx">
-      <DependentUpon>PSXControllerConfig.cs</DependentUpon>
+    <EmbeddedResource Include="config\PSX\PSXControllerConfigNew.resx">
+      <DependentUpon>PSXControllerConfigNew.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\PSX\PSXHashDiscs.resx">
       <DependentUpon>PSXHashDiscs.cs</DependentUpon>
@@ -1301,6 +1318,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\AutoHawk.resx">
       <DependentUpon>AutoHawk.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BasicBot\BasicBot.resx">
+      <DependentUpon>BasicBot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\BasicBot\BotControlsRow.resx">
+      <DependentUpon>BotControlsRow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
@@ -1624,6 +1647,12 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\tastudio\icon_anchor_lag.png" />
+    <None Include="images\tastudio\icon_anchor.png" />
+    <None Include="images\tastudio\icon_marker.png" />
+    <None Include="images\tastudio\anchor_marker.png" />
+    <None Include="images\tastudio\anchor_lag.png" />
+    <None Include="images\tastudio\anchor.png" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />

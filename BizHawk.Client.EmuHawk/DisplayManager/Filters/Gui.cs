@@ -133,8 +133,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 					PS = trials[bestIndex];
 				}
 
-				vw = (int)(PS.X * textureWidth);
-				vh = (int)(PS.Y * textureHeight);
+				vw = (int)(PS.X * oldSourceWidth);
+				vh = (int)(PS.Y * oldSourceHeight);
 				widthScale = PS.X;
 				heightScale = PS.Y;
 			}
@@ -217,12 +217,16 @@ namespace BizHawk.Client.EmuHawk.Filters
 				//TODO - redundant fix
 				LL = new LetterboxingLogic();
 				LL.vx += Padding.Left;
-				LL.vy += Padding.Right;
+				LL.vy += Padding.Top;
 				LL.vw = size.Width;
 				LL.vh = size.Height;
 			}
 			else
+			{
 				LL = new LetterboxingLogic(Config_FixAspectRatio, Config_FixScaleInteger, OutputSize.Width, OutputSize.Height, size.Width, size.Height, TextureSize, VirtualTextureSize);
+				LL.vx += Padding.Left;
+				LL.vy += Padding.Top;
+			}
 
 			return size;
 		}
@@ -250,12 +254,20 @@ namespace BizHawk.Client.EmuHawk.Filters
 				//TODO - redundant fix
 				LL = new LetterboxingLogic();
 				LL.vx += Padding.Left;
-				LL.vy += Padding.Right;
+				LL.vy += Padding.Top;
 				LL.vw = InputSize.Width;
 				LL.vh = InputSize.Height;
 			}
-			else 
-				LL = new LetterboxingLogic(Config_FixAspectRatio, Config_FixScaleInteger, OutputSize.Width, OutputSize.Height, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
+			else
+			{
+				int ow = OutputSize.Width;
+				int oh = OutputSize.Height;
+				ow -= Padding.Horizontal;
+				oh -= Padding.Vertical;
+				LL = new LetterboxingLogic(Config_FixAspectRatio, Config_FixScaleInteger, ow, oh, InputSize.Width, InputSize.Height, TextureSize, VirtualTextureSize);
+				LL.vx += Padding.Left;
+				LL.vy += Padding.Top;
+			}
 			ContentSize = new Size(LL.vw,LL.vh);
 		}
 

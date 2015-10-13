@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common
 
 				for (int i = 0; i < splitStr.Length; i++)
 				{
-					table[i] = splitStr[i];
+					table[i + 1] = splitStr[i];
 				}
 			}
 

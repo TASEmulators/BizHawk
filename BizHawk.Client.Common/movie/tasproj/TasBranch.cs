@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
 using BizHawk.Bizware.BizwareGL;
 
@@ -15,10 +16,26 @@ namespace BizHawk.Client.Common
 		public BitmapBuffer OSDFrameBuffer { get; set; }
 		public TasLagLog LagLog { get; set; }
 		public TasMovieChangeLog ChangeLog { get; set; }
+		public DateTime TimeStamp { get; set; }
+		public TasMovieMarkerList Markers { get; set; }
+		public Guid UniqueIdentifier { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>
 	{
+		public new void Add(TasBranch item)
+		{
+			if (item.UniqueIdentifier == Guid.Empty)
+			{
+				var currentHashes = this.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
+
+				do item.UniqueIdentifier = Guid.NewGuid();
+				while (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()));
+			}
+
+			base.Add(item);
+		}
+
 		public void Save(BinaryStateSaver bs)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
@@ -26,30 +43,45 @@ namespace BizHawk.Client.Common
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
+			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
 			foreach (var b in this)
 			{
 				bs.PutLump(nheader, delegate(TextWriter tw)
 				{
 					// if this header needs more stuff in it, handle it sensibly
-					tw.WriteLine(JsonConvert.SerializeObject(new { Frame = b.Frame }));
+					tw.WriteLine(JsonConvert.SerializeObject(new
+					{
+						Frame = b.Frame,
+						TimeStamp = b.TimeStamp,
+						UniqueIdentifier = b.UniqueIdentifier
+					}));
 				});
+
 				bs.PutLump(ncore, delegate(Stream s)
 				{
 					s.Write(b.CoreData, 0, b.CoreData.Length);
 				});
+
 				bs.PutLump(ninput, delegate(TextWriter tw)
 				{
 					foreach (var line in b.InputLog)
 						tw.WriteLine(line);
 				});
+
 				bs.PutLump(nframebuffer, delegate(Stream s)
 				{
 					var vp = new BitmapBufferVideoProvider(b.OSDFrameBuffer);
 					QuickBmpFile.Save(vp, s, b.OSDFrameBuffer.Width, b.OSDFrameBuffer.Height);
 				});
+
 				bs.PutLump(nlaglog, delegate(BinaryWriter bw)
 				{
 					b.LagLog.Save(bw);
+				});
+
+				bs.PutLump(nmarkers, delegate (TextWriter tw)
+				{
+					tw.WriteLine(b.Markers.ToString());
 				});
 
 				nheader.Increment();
@@ -57,16 +89,18 @@ namespace BizHawk.Client.Common
 				ninput.Increment();
 				nframebuffer.Increment();
 				nlaglog.Increment();
+				nmarkers.Increment();
 			}
 		}
 
-		public void Load(BinaryStateLoader bl)
+		public void Load(BinaryStateLoader bl, TasMovie movie)
 		{
 			var nheader = new IndexedStateLump(BinaryStateLump.BranchHeader);
 			var ncore = new IndexedStateLump(BinaryStateLump.BranchCoreData);
 			var ninput = new IndexedStateLump(BinaryStateLump.BranchInputLog);
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
+			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
 
 			Clear();
 
@@ -76,7 +110,29 @@ namespace BizHawk.Client.Common
 
 				if (!bl.GetLump(nheader, false, delegate(TextReader tr)
 				{
-					b.Frame = (int)((dynamic)JsonConvert.DeserializeObject(tr.ReadLine())).Frame;
+					var header = (dynamic)JsonConvert.DeserializeObject(tr.ReadLine());
+					b.Frame = (int)header.Frame;
+
+					var timestamp = (dynamic)header.TimeStamp;
+
+					if (timestamp != null)
+					{
+						b.TimeStamp = (DateTime)timestamp;
+					}
+					else
+					{
+						b.TimeStamp = DateTime.Now;
+					}
+
+					var identifier = (dynamic)header.UniqueIdentifier;
+					if (identifier != null)
+					{
+						b.UniqueIdentifier = (Guid)identifier;
+					}
+					else
+					{
+						b.UniqueIdentifier = Guid.NewGuid();
+					}
 				}))
 				{
 					return;
@@ -109,6 +165,19 @@ namespace BizHawk.Client.Common
 					b.LagLog.Load(br);
 				});
 
+				b.Markers = new TasMovieMarkerList(movie);
+				bl.GetLump(nmarkers, false, delegate (TextReader tr)
+				{
+					string line;
+					while ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							b.Markers.Add(new TasMovieMarker(line));
+						}
+					}
+				});
+
 				Add(b);
 
 				nheader.Increment();
@@ -116,6 +185,7 @@ namespace BizHawk.Client.Common
 				ninput.Increment();
 				nframebuffer.Increment();
 				nlaglog.Increment();
+				nmarkers.Increment();
 			}
 		}
 	}

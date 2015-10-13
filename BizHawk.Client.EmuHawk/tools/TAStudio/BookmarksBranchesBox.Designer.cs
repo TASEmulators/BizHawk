@@ -30,13 +30,13 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.BookmarksBranchesGroupBox = new System.Windows.Forms.GroupBox();
-			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BranchesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.LoadBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.UpdateBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AddContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.UpdateBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BookmarksBranchesGroupBox.SuspendLayout();
 			this.BranchesContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -52,7 +52,55 @@
 			this.BookmarksBranchesGroupBox.Size = new System.Drawing.Size(198, 249);
 			this.BookmarksBranchesGroupBox.TabIndex = 0;
 			this.BookmarksBranchesGroupBox.TabStop = false;
-			this.BookmarksBranchesGroupBox.Text = "Bookmarks / Branches";
+			this.BookmarksBranchesGroupBox.Text = "Branches";
+			// 
+			// BranchesContextMenu
+			// 
+			this.BranchesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.LoadBranchContextMenuItem,
+            this.toolStripSeparator1,
+            this.UpdateBranchContextMenuItem,
+            this.AddContextMenu,
+            this.RemoveBranchContextMenuItem});
+			this.BranchesContextMenu.Name = "BranchesContextMenu";
+			this.BranchesContextMenu.Size = new System.Drawing.Size(118, 98);
+			this.BranchesContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.BranchesContextMenu_Opening);
+			// 
+			// LoadBranchContextMenuItem
+			// 
+			this.LoadBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Debugger;
+			this.LoadBranchContextMenuItem.Name = "LoadBranchContextMenuItem";
+			this.LoadBranchContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.LoadBranchContextMenuItem.Text = "Load";
+			this.LoadBranchContextMenuItem.Click += new System.EventHandler(this.LoadBranchContextMenuItem_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(114, 6);
+			// 
+			// UpdateBranchContextMenuItem
+			// 
+			this.UpdateBranchContextMenuItem.Name = "UpdateBranchContextMenuItem";
+			this.UpdateBranchContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.UpdateBranchContextMenuItem.Text = "&Update";
+			this.UpdateBranchContextMenuItem.Click += new System.EventHandler(this.UpdateBranchContextMenuItem_Click);
+			// 
+			// AddContextMenu
+			// 
+			this.AddContextMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
+			this.AddContextMenu.Name = "AddContextMenu";
+			this.AddContextMenu.Size = new System.Drawing.Size(117, 22);
+			this.AddContextMenu.Text = "Add";
+			this.AddContextMenu.Click += new System.EventHandler(this.AddContextMenu_Click);
+			// 
+			// RemoveBranchContextMenuItem
+			// 
+			this.RemoveBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
+			this.RemoveBranchContextMenuItem.Name = "RemoveBranchContextMenuItem";
+			this.RemoveBranchContextMenuItem.Size = new System.Drawing.Size(117, 22);
+			this.RemoveBranchContextMenuItem.Text = "Remove";
+			this.RemoveBranchContextMenuItem.Click += new System.EventHandler(this.RemoveBranchContextMenuItem_Click);
 			// 
 			// BranchView
 			// 
@@ -78,57 +126,12 @@
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
 			this.BranchView.TabIndex = 0;
 			this.BranchView.CellHovered += new BizHawk.Client.EmuHawk.InputRoll.HoverEventHandler(this.BranchView_CellHovered);
+			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);
 			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
+			this.BranchView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDown);
 			this.BranchView.MouseLeave += new System.EventHandler(this.BranchView_MouseLeave);
 			this.BranchView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseMove);
-			// 
-			// BranchesContextMenu
-			// 
-			this.BranchesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.LoadBranchContextMenuItem,
-            this.toolStripSeparator1,
-            this.UpdateBranchContextMenuItem,
-            this.AddContextMenu,
-            this.RemoveBranchContextMenuItem});
-			this.BranchesContextMenu.Name = "BranchesContextMenu";
-			this.BranchesContextMenu.Size = new System.Drawing.Size(153, 120);
-			this.BranchesContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.BranchesContextMenu_Opening);
-			// 
-			// LoadBranchContextMenuItem
-			// 
-			this.LoadBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Debugger;
-			this.LoadBranchContextMenuItem.Name = "LoadBranchContextMenuItem";
-			this.LoadBranchContextMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.LoadBranchContextMenuItem.Text = "Load";
-			this.LoadBranchContextMenuItem.Click += new System.EventHandler(this.LoadBranchContextMenuItem_Click);
-			// 
-			// toolStripSeparator1
-			// 
-			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-			// 
-			// AddContextMenu
-			// 
-			this.AddContextMenu.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
-			this.AddContextMenu.Name = "AddContextMenu";
-			this.AddContextMenu.Size = new System.Drawing.Size(152, 22);
-			this.AddContextMenu.Text = "Add";
-			this.AddContextMenu.Click += new System.EventHandler(this.AddContextMenu_Click);
-			// 
-			// RemoveBranchContextMenuItem
-			// 
-			this.RemoveBranchContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
-			this.RemoveBranchContextMenuItem.Name = "RemoveBranchContextMenuItem";
-			this.RemoveBranchContextMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.RemoveBranchContextMenuItem.Text = "Remove";
-			this.RemoveBranchContextMenuItem.Click += new System.EventHandler(this.RemoveBranchContextMenuItem_Click);
-			// 
-			// UpdateBranchContextMenuItem
-			// 
-			this.UpdateBranchContextMenuItem.Name = "UpdateBranchContextMenuItem";
-			this.UpdateBranchContextMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.UpdateBranchContextMenuItem.Text = "&Update";
-			this.UpdateBranchContextMenuItem.Click += new System.EventHandler(this.UpdateBranchContextMenuItem_Click);
+			this.BranchView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseUp);
 			// 
 			// BookmarksBranchesBox
 			// 

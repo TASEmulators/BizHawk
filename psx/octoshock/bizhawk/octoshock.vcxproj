@@ -12,6 +12,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\cdrom\CDUtility.cpp" />
+    <ClCompile Include="..\cdrom\crc32.cpp" />
+    <ClCompile Include="..\cdrom\galois.cpp" />
+    <ClCompile Include="..\cdrom\l-ec.cpp" />
+    <ClCompile Include="..\cdrom\lec.cpp" />
+    <ClCompile Include="..\cdrom\recover-raw.cpp" />
     <ClCompile Include="..\emuware\emuware.cpp" />
     <ClCompile Include="..\emuware\EW_state.cpp" />
     <ClCompile Include="..\endian.cpp" />
@@ -141,7 +146,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>EW_EXPORT;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;OCTOSHOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WANT_LEC_CHECK;EW_EXPORT;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;OCTOSHOCK_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../emuware/msvc;..</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
@@ -163,7 +168,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;EW_EXPORT;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WANT_LEC_CHECK;_CRT_SECURE_NO_WARNINGS;EW_EXPORT;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>

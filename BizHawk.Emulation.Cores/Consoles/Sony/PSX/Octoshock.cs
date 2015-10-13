@@ -32,78 +32,83 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: true
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, IInputPollable, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable, IInputPollable
 	{
 		public string SystemId { get { return "PSX"; } }
 
-		private void SetControllerButtons()
+		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = _SyncSettings.Controllers.All(c => c.Type == ControllerSetting.ControllerType.Gamepad) 
-				? "PSX Gamepad Controller"
-				: "PSX DualShock Controller"; // Meh, more nuanced logic doesn't really work with a simple property
+			ControllerDefinition definition = new ControllerDefinition();
+			definition.Name = "PSX DualShock Controller"; // <-- for compatibility
+			//ControllerDefinition.Name = "PSX FrontIO"; // TODO - later rename to this, I guess, so it's less misleading. don't want to wreck keybindings yet.
 
-			ControllerDefinition.BoolButtons.Clear();
-			ControllerDefinition.FloatControls.Clear();
-			
-			for (int i = 0; i < _SyncSettings.Controllers.Length; i++)
+			var cfg = syncSettings.FIOConfig.ToLogical();
+
+			for (int i = 0; i < cfg.NumPlayers; i++)
 			{
-				if (_SyncSettings.Controllers[i].IsConnected)
-				{
-					ControllerDefinition.BoolButtons.AddRange(new[]
+				int pnum = i + 1;
+					definition.BoolButtons.AddRange(new[]
 					{
-						"P" + (i + 1) + " Up",
-						"P" + (i + 1) + " Down",
-						"P" + (i + 1) + " Left",
-						"P" + (i + 1) + " Right",
-						"P" + (i + 1) + " Select",
-						"P" + (i + 1) + " Start",
-						"P" + (i + 1) + " Square",
-						"P" + (i + 1) + " Triangle",
-						"P" + (i + 1) + " Circle",
-						"P" + (i + 1) + " Cross",
-						"P" + (i + 1) + " L1", 
-						"P" + (i + 1) + " R1",
-						"P" + (i + 1) + " L2",
-						"P" + (i + 1) + " R2",
+						"P" + pnum + " Up",
+						"P" + pnum + " Down",
+						"P" + pnum + " Left",
+						"P" + pnum + " Right",
+						"P" + pnum + " Select",
+						"P" + pnum + " Start",
+						"P" + pnum + " Square",
+						"P" + pnum + " Triangle",
+						"P" + pnum + " Circle",
+						"P" + pnum + " Cross",
+						"P" + pnum + " L1", 
+						"P" + pnum + " R1",
+						"P" + pnum + " L2",
+						"P" + pnum + " R2",
 					});
 
-					if (_SyncSettings.Controllers[i].Type != ControllerSetting.ControllerType.Gamepad)
-					{
-						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " L3");
-						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " R3");
-						ControllerDefinition.BoolButtons.Add("P" + (i + 1) + " MODE");
+					var type = cfg.DevicesPlayer[i];
 
-						ControllerDefinition.FloatControls.AddRange(new[]
+					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
+					{
+						definition.BoolButtons.Add("P" + pnum + " L3");
+						definition.BoolButtons.Add("P" + pnum + " R3");
+						definition.BoolButtons.Add("P" + pnum + " MODE");
+
+						definition.FloatControls.AddRange(new[]
 						{
-							"P" + (i + 1) + " LStick X",
-							"P" + (i + 1) + " LStick Y",
-							"P" + (i + 1) + " RStick X",
-							"P" + (i + 1) + " RStick Y"
+							"P" + pnum + " LStick X",
+							"P" + pnum + " LStick Y",
+							"P" + pnum + " RStick X",
+							"P" + pnum + " RStick Y"
 						});
 
-						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
 					}
 				}
-			}
 
-			ControllerDefinition.BoolButtons.AddRange(new[]
+			definition.BoolButtons.AddRange(new[]
 			{
 				"Open",
 				"Close",
 				"Reset"
 			});
 
-			ControllerDefinition.FloatControls.Add("Disc Select");
+			definition.FloatControls.Add("Disc Select");
 
-			ControllerDefinition.FloatRanges.Add(
+			definition.FloatRanges.Add(
 				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
-				new[] {0f,1f,1f} 
+				new[] { 0f, 1f, 1f }
 			);
+
+			return definition;
+		}
+
+		private void SetControllerButtons()
+		{
+			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
 		public string BoardName { get { return null; } }
@@ -201,10 +206,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 				//todo - cache reader
 				DiscSystem.DiscSectorReader dsr = new DiscSystem.DiscSectorReader(Disc);
-				dsr.ReadLBA_2448(lba, SectorBuffer, 0);
-				Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
-
-				return OctoshockDll.SHOCK_OK;
+				int readed = dsr.ReadLBA_2448(lba, SectorBuffer, 0);
+				if (readed == 2448)
+				{
+					Marshal.Copy(SectorBuffer, 0, new IntPtr(dst), 2448);
+					return OctoshockDll.SHOCK_OK;
+				}
+				else
+					return OctoshockDll.SHOCK_ERROR;
 			}
 		}
 
@@ -212,10 +221,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		List<DiscInterface> discInterfaces = new List<DiscInterface>();
 		DiscInterface currentDiscInterface;
 
+		public DisplayType Region { get { return SystemVidStandard == OctoshockDll.eVidStandard.PAL ? DisplayType.PAL : DisplayType.NTSC; } }
+
 		public OctoshockDll.eRegion SystemRegion { get; private set; }
 		public OctoshockDll.eVidStandard SystemVidStandard { get; private set; }
 		public System.Drawing.Size CurrentVideoSize { get; private set; }
-		
+
 		public bool CurrentTrayOpen { get; private set; }
 		public int CurrentDiscIndexMounted { get; private set; }
 
@@ -325,9 +336,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					BufferHeight = 288;
 				}
 				CurrentVideoSize = new System.Drawing.Size(BufferWidth, BufferHeight);
-				var size = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
-				BufferWidth = VirtualWidth = size.Width;
-				BufferHeight = VirtualHeight = size.Height;
+				var ri = Octoshock.CalculateResolution(SystemVidStandard, _Settings, BufferWidth, BufferHeight);
+				BufferWidth = VirtualWidth = ri.Resolution.Width;
+				BufferHeight = VirtualHeight = ri.Resolution.Height;
+				//VideoProvider_Padding = new System.Drawing.Size(50,50);
 				frameBuffer = new int[BufferWidth * BufferHeight];
 			}
 
@@ -352,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			else
 			{
 				//must be a psf
-				if(psf.LibData != null)
+				if (psf.LibData != null)
 					fixed (byte* pBuf = psf.LibData)
 						OctoshockDll.shock_MountEXE(psx, pBuf, psf.LibData.Length, true);
 				fixed (byte* pBuf = psf.Data)
@@ -367,29 +379,24 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			//setup the controller based on sync settings
 			SetControllerButtons();
 
-			var lookup = new Dictionary<ControllerSetting.ControllerType,OctoshockDll.ePeripheralType> {
-				{ ControllerSetting.ControllerType.Gamepad, OctoshockDll.ePeripheralType.Pad },
-				{ ControllerSetting.ControllerType.DualAnalog, OctoshockDll.ePeripheralType.DualAnalog },
-				{ ControllerSetting.ControllerType.DualShock, OctoshockDll.ePeripheralType.DualShock },
+			var fioCfg = _SyncSettings.FIOConfig;
+			if(fioCfg.Devices8[0] != OctoshockDll.ePeripheralType.None)
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, fioCfg.Devices8[0]);
+			if (fioCfg.Devices8[4] != OctoshockDll.ePeripheralType.None)
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, fioCfg.Devices8[4]);
+
+			var memcardTransaction = new OctoshockDll.ShockMemcardTransaction()
+			{
+				transaction = OctoshockDll.eShockMemcardTransaction.Connect
 			};
-
-			if (_SyncSettings.Controllers[0].IsConnected)
-			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, lookup[_SyncSettings.Controllers[0].Type]);
-			}
-
-			if (_SyncSettings.Controllers[1].IsConnected)
-			{
-				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, lookup[_SyncSettings.Controllers[1].Type]);
-			}
+			if (fioCfg.Memcards[0]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref memcardTransaction);
+			if (fioCfg.Memcards[1]) OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x02, ref memcardTransaction);
 
 			//do this after framebuffers and peripherals and whatever crap are setup. kind of lame, but thats how it is for now
 			StudySaveBufferSize();
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public IInputCallbackSystem InputCallbacks { get { throw new NotImplementedException(); } }
 
 		public bool DriveLightEnabled { get; private set; }
 		public bool DriveLightOn { get; private set; }
@@ -418,102 +425,173 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		void SetInput()
 		{
-			uint buttons = 0;
+			var fioCfg = _SyncSettings.FIOConfig.ToLogical();
 
-			if (_SyncSettings.Controllers[0].IsConnected)
+			int portNum = 0x01;
+			foreach (int slot in new[] { 0, 4 })
 			{
-				//dualshock style
-				if (Controller["P1 Select"]) buttons |= 1;
-				if (Controller["P1 L3"]) buttons |= 2;
-				if (Controller["P1 R3"]) buttons |= 4;
-				if (Controller["P1 Start"]) buttons |= 8;
-				if (Controller["P1 Up"]) buttons |= 16;
-				if (Controller["P1 Right"]) buttons |= 32;
-				if (Controller["P1 Down"]) buttons |= 64;
-				if (Controller["P1 Left"]) buttons |= 128;
-				if (Controller["P1 L2"]) buttons |= 256;
-				if (Controller["P1 R2"]) buttons |= 512;
-				if (Controller["P1 L1"]) buttons |= 1024;
-				if (Controller["P1 R1"]) buttons |= 2048;
-				if (Controller["P1 Triangle"]) buttons |= 4096;
-				if (Controller["P1 Circle"]) buttons |= 8192;
-				if (Controller["P1 Cross"]) buttons |= 16384;
-				if (Controller["P1 Square"]) buttons |= 32768;
-				if (Controller["P1 MODE"]) buttons |= 65536;
+				//no input to set
+				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
+					continue;
 
-				byte left_x = (byte)Controller.GetFloat("P1 LStick X");
-				byte left_y = (byte)Controller.GetFloat("P1 LStick Y");
-				byte right_x = (byte)Controller.GetFloat("P1 RStick X");
-				byte right_y = (byte)Controller.GetFloat("P1 RStick Y");
+				uint buttons = 0;
+				string pstring = "P" + fioCfg.PlayerAssignments[slot] + " ";
 
-				OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x01, buttons, left_x, left_y, right_x, right_y);
+				if (Controller[pstring + "Select"]) buttons |= 1;
+				if (Controller[pstring + "Start"]) buttons |= 8;
+				if (Controller[pstring + "Up"]) buttons |= 16;
+				if (Controller[pstring + "Right"]) buttons |= 32;
+				if (Controller[pstring + "Down"]) buttons |= 64;
+				if (Controller[pstring + "Left"]) buttons |= 128;
+				if (Controller[pstring + "L2"]) buttons |= 256;
+				if (Controller[pstring + "R2"]) buttons |= 512;
+				if (Controller[pstring + "L1"]) buttons |= 1024;
+				if (Controller[pstring + "R1"]) buttons |= 2048;
+				if (Controller[pstring + "Triangle"]) buttons |= 4096;
+				if (Controller[pstring + "Circle"]) buttons |= 8192;
+				if (Controller[pstring + "Cross"]) buttons |= 16384;
+				if (Controller[pstring + "Square"]) buttons |= 32768;
+
+				byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
+				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+				{
+					if (Controller[pstring + "L3"]) buttons |= 2;
+					if (Controller[pstring + "R3"]) buttons |= 4;
+					if (Controller[pstring + "MODE"]) buttons |= 65536;
+
+					left_x = (byte)Controller.GetFloat(pstring + "LStick X");
+					left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
+					right_x = (byte)Controller.GetFloat(pstring + "RStick X");
+					right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+				}
+
+				OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
+				portNum <<= 1;
 			}
+		}
 
-			if (_SyncSettings.Controllers[1].IsConnected)
-			{
-				//dualshock style
-				buttons = 0;
-				if (Controller["P2 Select"]) buttons |= 1;
-				if (Controller["P2 L3"]) buttons |= 2;
-				if (Controller["P2 R3"]) buttons |= 4;
-				if (Controller["P2 Start"]) buttons |= 8;
-				if (Controller["P2 Up"]) buttons |= 16;
-				if (Controller["P2 Right"]) buttons |= 32;
-				if (Controller["P2 Down"]) buttons |= 64;
-				if (Controller["P2 Left"]) buttons |= 128;
-				if (Controller["P2 L2"]) buttons |= 256;
-				if (Controller["P2 R2"]) buttons |= 512;
-				if (Controller["P2 L1"]) buttons |= 1024;
-				if (Controller["P2 R1"]) buttons |= 2048;
-				if (Controller["P2 Triangle"]) buttons |= 4096;
-				if (Controller["P2 Circle"]) buttons |= 8192;
-				if (Controller["P2 Cross"]) buttons |= 16384;
-				if (Controller["P2 Square"]) buttons |= 32768;
-				if (Controller["P2 MODE"]) buttons |= 65536;
-
-				byte left_x = (byte)Controller.GetFloat("P2 LStick X");
-				byte left_y = (byte)Controller.GetFloat("P2 LStick Y");
-				byte right_x = (byte)Controller.GetFloat("P2 RStick X");
-				byte right_y = (byte)Controller.GetFloat("P2 RStick Y");
-
-				OctoshockDll.shock_Peripheral_SetPadInput(psx, 0x02, buttons, left_x, left_y, right_x, right_y);
-			}
+		public class ResolutionInfo
+		{
+			public System.Drawing.Size Resolution, Padding;
+			public System.Drawing.Size Total { get { return System.Drawing.Size.Add(Resolution, Padding); } }
 		}
 
 		/// <summary>
 		/// Calculates what the output resolution would be for the given input resolution and settings
 		/// </summary>
-		public static System.Drawing.Size CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
+		public static ResolutionInfo CalculateResolution(OctoshockDll.eVidStandard standard, Settings settings, int w, int h)
 		{
-			int virtual_width = settings.ClipHorizontalOverscan ? 768 : 800;
+			ResolutionInfo ret = new ResolutionInfo();
+
+			//some of this logic is duplicated in the c++ side, be sure to check there
+			//TODO - scanline control + framebuffer mode is majorly broken
+
+			int virtual_width = 800;
+			if (settings.HorizontalClipping == eHorizontalClipping.Basic) virtual_width = 768;
+			if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer) virtual_width = 736;
 
 			int scanline_start = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineStart_NTSC : settings.ScanlineStart_PAL;
 			int scanline_end = standard == OctoshockDll.eVidStandard.NTSC ? settings.ScanlineEnd_NTSC : settings.ScanlineEnd_PAL;
 			int scanline_num = scanline_end - scanline_start + 1;
+			//int scanline_num = h; // I wanted to do this, but our logic for mednafen modes here is based on un-doubled resolution. i could do a hack to divide it by 2 though
 			int real_scanline_num = standard == OctoshockDll.eVidStandard.NTSC ? 240 : 288;
 
 			int VirtualWidth=-1, VirtualHeight=-1;
 			switch (settings.ResolutionMode)
 			{
-				case eResolutionMode.Debug:
-					VirtualWidth = w;
-					VirtualHeight = h;
-					break;
 				case eResolutionMode.Mednafen:
-					VirtualWidth = settings.ClipHorizontalOverscan ? 302 : 320;
+
+					//mednafen uses 320xScanlines as the 1x size
+					//it does change the 1x width when doing basic clipping.
+					//and it does easily change the height when doing scanline removal.
+					//now, our framebuffer cropping mode is more complex...
+					VirtualWidth = (standard == OctoshockDll.eVidStandard.NTSC) ? 320 : 363;
 					VirtualHeight = scanline_num;
+
+					if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+						VirtualWidth = (standard == OctoshockDll.eVidStandard.NTSC) ? 302 : 384;
+
+					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+					{
+						//mednafen typically sends us a framebuffer with overscan. 350x240 is a nominal example here. it's squished inward to 320x240 for correct PAR.
+						//ok: here we have a framebuffer without overscan. 320x240 nominal. So the VirtualWidth of what we got is off by a factor of 109.375%
+						//so a beginning approach would be this:
+						//VirtualWidth = (int)(VirtualWidth * 320.0f / 350);
+						//but that will shrink things which are already annoyingly shrunken. 
+						//therefore, lets do that, but then scale the whole window by the same factor so the width becomes unscaled and now the height is scaled up!
+						//weird, huh?
+						VirtualHeight = (int)(VirtualHeight * 350.0f / 320);
+
+						//now unfortunately we may have lost vertical pixels. common in the case of PAL (rendering 256 on a field of 288)
+						//therefore we'll be stretching way too much vertically here. 
+						//lets add those pixels back with a new hack
+						if (standard == OctoshockDll.eVidStandard.PAL)
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 576 - h);
+							else ret.Padding = new System.Drawing.Size(0, 288 - h);
+						}
+						else
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 480 - h);
+							else ret.Padding = new System.Drawing.Size(0, 240 - h);
+						}
+					}
 					break;
+
+				//384 / 288 = 1.3333333333333333333333333333333
+
+				case eResolutionMode.TweakedMednafen:
+
+					if (standard == OctoshockDll.eVidStandard.NTSC)
+					{
+						//dont make this 430, it's already been turned into 400 from 368+30 and then some fudge factor
+						VirtualWidth = 400;
+						VirtualHeight = (int)(scanline_num * 300.0f / 240);
+						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+							VirtualWidth = 378;
+					}
+					else
+					{
+						//this is a bit tricky. we know we want 400 for the virtualwidth. 
+						VirtualWidth = 400;
+						if (settings.HorizontalClipping == eHorizontalClipping.Basic)
+							VirtualWidth = 378;
+						//I'll be honest, I was just guessing here mostly
+						//I need the AR to basically work out to be 363/288 (thats what it was in mednafen mode) so...
+						VirtualHeight = (int)(scanline_num * (400.0f/363*288) / 288);
+					}
+
+					if (settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+					{
+						//see discussion above
+						VirtualHeight = (int)(VirtualHeight * 350.0f / 320);
+
+						if (standard == OctoshockDll.eVidStandard.PAL)
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 576 - h);
+							else ret.Padding = new System.Drawing.Size(0, 288 - h);
+						}
+						else
+						{
+							if (h > 288) ret.Padding = new System.Drawing.Size(0, 480 - h);
+							else ret.Padding = new System.Drawing.Size(0, 240 - h);
+						}
+					}
+					break;
+
 				case eResolutionMode.PixelPro:
 					VirtualWidth = virtual_width;
 					VirtualHeight = scanline_num * 2;
 					break;
-				case eResolutionMode.TweakedMednafen:
-					VirtualWidth = settings.ClipHorizontalOverscan ? 378 : 400;
-					VirtualHeight = (int)(scanline_num * 300.0f / real_scanline_num);
+
+				case eResolutionMode.Debug:
+					VirtualWidth = w;
+					VirtualHeight = h;
 					break;
 			}
 
-			return new System.Drawing.Size(VirtualWidth, VirtualHeight);
+			ret.Resolution = new System.Drawing.Size(VirtualWidth, VirtualHeight);
+			return ret;
 		}
 
 		void PokeDisc()
@@ -536,7 +614,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//if tray open is requested, and valid, apply it
 			//in the first frame, go ahead and open it up so we have a chance to put a disc in it
-			if (Controller["Open"] && !CurrentTrayOpen || Frame==0)
+			if (Controller["Open"] && !CurrentTrayOpen || Frame == 0)
 			{
 				OctoshockDll.shock_OpenTray(psx);
 				CurrentTrayOpen = true;
@@ -592,18 +670,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//clear drive light. itll get set to light up by sector-reading callbacks
 			//TODO - debounce this by a frame or so perhaps?
+			//TODO - actually, make this feedback from the core. there should be a register or status which effectively corresponds to whether it's reading.
 			DriveLightOn = false;
 
 			Frame++;
 
 			SetInput();
 
+			OctoshockDll.shock_SetLEC(psx, _SyncSettings.EnableLEC);
+
 			var ropts = new OctoshockDll.ShockRenderOptions()
 			{
 				scanline_start = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineStart_NTSC : _Settings.ScanlineStart_PAL,
 				scanline_end = SystemVidStandard == OctoshockDll.eVidStandard.NTSC ? _Settings.ScanlineEnd_NTSC : _Settings.ScanlineEnd_PAL,
-				clipOverscan = _Settings.ClipHorizontalOverscan
 			};
+			if (_Settings.HorizontalClipping == eHorizontalClipping.Basic)
+				ropts.renderType = OctoshockDll.eShockRenderType.ClipOverscan;
+			if (_Settings.HorizontalClipping == eHorizontalClipping.Framebuffer)
+				ropts.renderType = OctoshockDll.eShockRenderType.Framebuffer;
+
+			if (_Settings.DeinterlaceMode == eDeinterlaceMode.Weave) ropts.deinterlaceMode = OctoshockDll.eShockDeinterlaceMode.Weave;
+			if (_Settings.DeinterlaceMode == eDeinterlaceMode.Bob) ropts.deinterlaceMode = OctoshockDll.eShockDeinterlaceMode.Bob;
+			if (_Settings.DeinterlaceMode == eDeinterlaceMode.BobOffset) ropts.deinterlaceMode = OctoshockDll.eShockDeinterlaceMode.BobOffset;
+
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			//prep tracer
@@ -648,9 +737,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BufferWidth = w;
 			BufferHeight = h;
 
-			var size = CalculateResolution(this.SystemVidStandard, _Settings, w, h);
-			VirtualWidth = size.Width;
-			VirtualHeight = size.Height;
+			var ri = CalculateResolution(this.SystemVidStandard, _Settings, w, h);
+			VirtualWidth = ri.Resolution.Width;
+			VirtualHeight = ri.Resolution.Height;
+			VideoProvider_Padding = ri.Padding;
 
 			int len = w * h;
 			if (frameBuffer.Length != len)
@@ -680,6 +770,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
 
+		public IInputCallbackSystem InputCallbacks
+		{
+			[FeatureNotImplemented]
+			get
+			{ throw new NotImplementedException(); }
+		}
+
 		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }
 
@@ -689,6 +786,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
+		public System.Drawing.Size VideoProvider_Padding { get; private set; }
 
 		#region Debugging
 
@@ -752,25 +850,42 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public byte[] CloneSaveRam()
 		{
-			var buf = new byte[128 * 1024];
-			fixed (byte* pbuf = buf)
+			var cfg = _SyncSettings.FIOConfig.ToLogical();
+			int nMemcards = cfg.NumMemcards;
+			var buf = new byte[128 * 1024 * nMemcards];
+			for (int i = 0, idx = 0, addr=0x01; i < 2; i++, addr<<=1)
 			{
-				var transaction = new OctoshockDll.ShockMemcardTransaction();
-				transaction.buffer128k = pbuf;
-				transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
-				OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction);
+				if (cfg.Memcards[i])
+				{
+					fixed (byte* pbuf = buf)
+					{
+						var transaction = new OctoshockDll.ShockMemcardTransaction();
+						transaction.buffer128k = pbuf + idx * 128 * 1024;
+						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Read;
+						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
+						idx++;
+					}
+				}
 			}
 			return buf;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			fixed (byte* pbuf = data)
+			var cfg = _SyncSettings.FIOConfig.ToLogical();
+			for (int i = 0, idx = 0, addr = 0x01; i < 2; i++, addr <<= 1)
 			{
-				var transaction = new OctoshockDll.ShockMemcardTransaction();
-				transaction.buffer128k = pbuf;
-				transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
-				OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction);
+				if (cfg.Memcards[i])
+				{
+					fixed (byte* pbuf = data)
+					{
+						var transaction = new OctoshockDll.ShockMemcardTransaction();
+						transaction.buffer128k = pbuf + idx * 128 * 1024;
+						transaction.transaction = OctoshockDll.eShockMemcardTransaction.Write;
+						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
+						idx++;
+					}
+				}
 			}
 		}
 
@@ -778,9 +893,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			get
 			{
-				var transaction = new OctoshockDll.ShockMemcardTransaction();
-				transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
-				return OctoshockDll.shock_Peripheral_MemcardTransact(psx, 0x01, ref transaction) == OctoshockDll.SHOCK_TRUE;
+				var cfg = _SyncSettings.FIOConfig.ToLogical();
+				for (int i = 0, addr = 0x01; i < 2; i++, addr <<= 1)
+				{
+					if (cfg.Memcards[i])
+					{
+						var transaction = new OctoshockDll.ShockMemcardTransaction();
+						transaction.transaction = OctoshockDll.eShockMemcardTransaction.CheckDirty;
+						OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction);
+						if (OctoshockDll.shock_Peripheral_MemcardTransact(psx, addr, ref transaction) == OctoshockDll.SHOCK_TRUE)
+							return true;
+					}
+				}
+
+				return false;
 			}
 		}
 
@@ -856,7 +982,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			transaction.transaction = OctoshockDll.eShockStateTransaction.BinarySize;
 			int size = OctoshockDll.shock_StateTransaction(psx, ref transaction);
 			savebuff = new byte[size];
-			savebuff2 = new byte[savebuff.Length + 4+  4+4+1+1+4];
+			savebuff2 = new byte[savebuff.Length + 4 + 4 + 4 + 1 + 1 + 4];
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -949,47 +1075,37 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			public SyncSettings Clone()
 			{
-				var ret = (SyncSettings)MemberwiseClone();
-				ret.Controllers = Controllers.Select(x => x.Clone()).ToArray();
-
-				return ret;
+				return JsonConvert.DeserializeObject<SyncSettings>(JsonConvert.SerializeObject(this));
 			}
 
-			public ControllerSetting[] Controllers = 
+			public bool EnableLEC;
+
+			public SyncSettings()
 			{
-				new ControllerSetting
-				{
-					IsConnected = true,
-					Type = ControllerSetting.ControllerType.DualShock
-				},
-				new ControllerSetting
-				{
-					IsConnected = false,
-					Type = ControllerSetting.ControllerType.DualShock
-				}
-			};
+				//initialize with historical default settings
+				var user = new OctoshockFIOConfigUser();
+				user.Memcards[0] = user.Memcards[1] = true;
+				user.Multitaps[0] = user.Multitaps[0] = false;
+				user.Devices8[0] = OctoshockDll.ePeripheralType.DualShock;
+				user.Devices8[4] = OctoshockDll.ePeripheralType.DualShock;
+				FIOConfig = user;
+			}
+
+			public OctoshockFIOConfigUser FIOConfig;
 		}
 
-		public class ControllerSetting
+		public enum eHorizontalClipping
 		{
-			public ControllerSetting Clone()
-			{
-				return (ControllerSetting)this.MemberwiseClone();
-			}
+			None,
+			Basic,
+			Framebuffer
+		}
 
-			public bool IsConnected { get; set; }
-			public ControllerType Type { get; set; }
-
-			public enum ControllerType
-			{
-				Gamepad,
-
-				[Description("Dual Analog")]
-				DualAnalog,
-
-				[Description("Dual Shock")]
-				DualShock
-			}
+		public enum eDeinterlaceMode
+		{
+			Weave,
+			Bob,
+			BobOffset
 		}
 
 		public class Settings
@@ -998,6 +1114,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[Description("Stuff")]
 			[DefaultValue(eResolutionMode.PixelPro)]
 			public eResolutionMode ResolutionMode { get; set; }
+
+			[DisplayName("Horizontal Clipping")]
+			[DefaultValue(eHorizontalClipping.None)]
+			public eHorizontalClipping HorizontalClipping { get; set; }
 
 			[DisplayName("ScanlineStart_NTSC")]
 			[DefaultValue(0)]
@@ -1015,9 +1135,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			[DefaultValue(287)]
 			public int ScanlineEnd_PAL { get; set; }
 
-			[DisplayName("Clip Horizontal Overscan")]
-			[DefaultValue(false)]
-			public bool ClipHorizontalOverscan { get; set; }
+			[DisplayName("DeinterlaceMode")]
+			[DefaultValue(eDeinterlaceMode.Weave)]
+			public eDeinterlaceMode DeinterlaceMode { get; set; }
 
 			public void Validate()
 			{
@@ -1025,7 +1145,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				if (ScanlineStart_PAL < 0) ScanlineStart_PAL = 0;
 				if (ScanlineEnd_NTSC > 239) ScanlineEnd_NTSC = 239;
 				if (ScanlineEnd_PAL > 287) ScanlineEnd_PAL = 287;
-				
+
 				//make sure theyre not in the wrong order
 				if (ScanlineEnd_NTSC < ScanlineStart_NTSC)
 				{
@@ -1066,17 +1186,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			_Settings.Validate();
 			_Settings = o;
-			//TODO
-			//var native = _Settings.GetNativeSettings();
-			//BizSwan.bizswan_putsettings(Core, ref native);
+
+			//TODO - store settings into core? or we can just keep doing it before frameadvance
+
 			return false;
 		}
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
-			var ret = !DeepEquality.DeepEquals(_SyncSettings, o);
+			//currently LEC and pad settings changes both require reboot
+			bool reboot = true;
+
+			//we could do it this way roughly if we need to
+			//if(JsonConvert.SerializeObject(o.FIOConfig) != JsonConvert.SerializeObject(_SyncSettings.FIOConfig)
+
+
 			_SyncSettings = o;
-			return ret;
+
+
+			return reboot;
 		}
 
 		#endregion
@@ -1162,7 +1290,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			return OctoshockDll.SHOCK_OK;
 		}
 
-		[FeatureNotImplemented]
 		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
 
 		public bool CanStep(StepType type) { return false; }

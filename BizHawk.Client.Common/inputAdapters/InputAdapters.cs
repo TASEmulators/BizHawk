@@ -383,7 +383,7 @@ namespace BizHawk.Client.Common
 		private List<string> _justPressed = new List<string>();
 	}
 
-	/// SuuperW: Old code commented
+	///// SuuperW: I'm leaving the old class in case I accidentally screwed something up
 	//public class AutoFireStickyXorAdapter : IController, ISticky
 	//{
 	//	public int On { get; set; }
@@ -534,6 +534,8 @@ namespace BizHawk.Client.Common
 
 	//	private List<string> _justPressed = new List<string>();
 	//}
+
+	// commenting this out, it breaks the autofire hotkey
 	public class AutoFireStickyXorAdapter : IController, ISticky
 	{
 		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
@@ -675,23 +677,15 @@ namespace BizHawk.Client.Common
 				_floatPatterns.ElementAt(i).Value.GetNextValue(lagged);
 		}
 
-		// SuuperW: What does this even do? I set a breakpoint inside the loop and it wasn't reached.
-		private WorkingDictionary<string, AutoPatternBool> _toggledButtons = new WorkingDictionary<string, AutoPatternBool>();
 		private List<string> _justPressed = new List<string>();
 		public void MassToggleStickyState(List<string> buttons)
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
 				if (_boolPatterns.ContainsKey(button))
-				{
-					_toggledButtons[button] = _boolPatterns[button];
 					SetSticky(button, false);
-				}
 				else
-				{
-					_boolPatterns[button] = _toggledButtons[button];
-					_toggledButtons.Remove(button);
-				}
+					SetSticky(button, true);
 			}
 
 			_justPressed = buttons;

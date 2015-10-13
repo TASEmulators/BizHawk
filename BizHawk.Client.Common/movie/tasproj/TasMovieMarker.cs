@@ -72,10 +72,19 @@ namespace BizHawk.Client.Common
 	public class TasMovieMarkerList : List<TasMovieMarker>
 	{
 		private readonly TasMovie _movie;
-
+		
 		public TasMovieMarkerList(TasMovie movie)
 		{
 			_movie = movie;
+		}
+
+		public TasMovieMarkerList DeepClone()
+		{
+			TasMovieMarkerList ret = new TasMovieMarkerList(_movie);
+			for (int i = 0; i < this.Count; i++)
+				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message));
+
+			return ret;
 		}
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -209,6 +218,8 @@ namespace BizHawk.Client.Common
 			{
 				if (this[i].Frame >= startFrame)
 				{
+					if (i == 0)
+						continue;
 					_movie.ChangeLog.AddMarkerChange(null, this[i].Frame, this[i].Message);
 					RemoveAt(i);
 					deletedCount++;

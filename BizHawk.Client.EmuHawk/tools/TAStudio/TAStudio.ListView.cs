@@ -66,12 +66,14 @@ namespace BizHawk.Client.EmuHawk
 		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
-		public static Color GreenZone_InputLog = Color.FromArgb(0xC4F7C8);
-		public static Color GreenZone_Invalidated_InputLog = Color.FromArgb(0xE0FBE0);
+        public static Color GreenZone_InputLog = Color.FromArgb(0xD2F9D3);
+        public static Color GreenZone_InputLog_Stated = Color.FromArgb(0xC4F7C8);
+		public static Color GreenZone_InputLog_Invalidated = Color.FromArgb(0xE0FBE0);
 
 		public static Color LagZone_FrameCol = Color.FromArgb(0xFFDCDD);
-		public static Color LagZone_InputLog = Color.FromArgb(0xF0D0D2);
-		public static Color LagZone_Invalidated_InputLog = Color.FromArgb(0xF7E5E5);
+        public static Color LagZone_InputLog = Color.FromArgb(0xF4DADA);
+        public static Color LagZone_InputLog_Stated = Color.FromArgb(0xF0D0D2);
+		public static Color LagZone_InputLog_Invalidated = Color.FromArgb(0xF7E5E5);
 
 		public static Color Marker_FrameCol = Color.FromArgb(0xF7FFC9);
 		public static Color AnalogEdit_Col = Color.FromArgb(0x909070); // SuuperW: When editing an analog value, it will be a gray color.
@@ -84,7 +86,18 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Query callbacks
 
-		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap)
+		private Bitmap ts_v_arrow_green_blue = Properties.Resources.ts_v_arrow_green_blue;
+		private Bitmap ts_h_arrow_green_blue = Properties.Resources.ts_h_arrow_green_blue;
+		private Bitmap ts_v_arrow_blue = Properties.Resources.ts_v_arrow_blue;
+		private Bitmap ts_h_arrow_blue = Properties.Resources.ts_h_arrow_blue;
+		private Bitmap ts_v_arrow_green = Properties.Resources.ts_v_arrow_green;
+		private Bitmap ts_h_arrow_green = Properties.Resources.ts_h_arrow_green;
+
+		private Bitmap icon_marker = Properties.Resources.icon_marker;
+		private Bitmap icon_anchor_lag = Properties.Resources.icon_anchor_lag;
+		private Bitmap icon_anchor = Properties.Resources.icon_anchor;
+
+		private void TasView_QueryItemIcon(int index, InputRoll.RollColumn column, ref Bitmap bitmap, ref int offsetX, ref int offsetY)
 		{
 			var overrideIcon = GetIconOverride(index, column);
 
@@ -101,20 +114,36 @@ namespace BizHawk.Client.EmuHawk
 				if (index == Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
-						Properties.Resources.ts_v_arrow_green_blue :
-						Properties.Resources.ts_h_arrow_green_blue;
+						ts_v_arrow_green_blue :
+						ts_h_arrow_green_blue;
 				}
 				else if (index == Emulator.Frame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
-						Properties.Resources.ts_v_arrow_blue :
-						Properties.Resources.ts_h_arrow_blue;
+						ts_v_arrow_blue :
+						ts_h_arrow_blue;
 				}
 				else if (index == GlobalWin.MainForm.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
-						Properties.Resources.ts_v_arrow_green :
-						Properties.Resources.ts_h_arrow_green;
+						ts_v_arrow_green :
+						ts_h_arrow_green;
+				}
+			}
+			else if (columnName == FrameColumnName)
+			{
+				TasMovieRecord record = CurrentTasMovie[index];
+				offsetX = -3;
+				offsetY = 1;
+
+                if (CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithIcons)
+                    bitmap = icon_marker;
+                else if (record.HasState && TasView.denoteStatesWithIcons)
+				{
+                    if (record.Lagged.HasValue && record.Lagged.Value)
+                        bitmap = icon_anchor_lag;
+                    else
+                        bitmap = icon_anchor;
 				}
 			}
 		}
@@ -130,20 +159,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string columnName = column.Name;
-
+            
 			if (columnName == CursorColumnName)
-			{ // For debugging purposes, let's visually show the state frames
-				if (VersionInfo.DeveloperBuild && CurrentTasMovie.TasStateManager.HasState(index))
-					color = Color.FromArgb(0xEEEEEE);
-				else
-					color = Color.FromArgb(0xFEFFFF);
-				return;
-			}
-
+                color = Color.FromArgb(0xFEFFFF);
+            
 			if (columnName == FrameColumnName)
 			{
-				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index))
+				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithBGColor)
 					color = Marker_FrameCol;
+                else
+                    color = Color.FromArgb(0x60FFFFFF);
 			}
 			else if (index == _floatEditRow && columnName == _floatEditColumn)
 			{ // SuuperW: Analog editing is indicated by a color change.
@@ -152,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
-				color = Color.FromArgb(32, 0, 0, 0);
+				color = Color.FromArgb(0x0D000000);
 		}
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
@@ -164,15 +189,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.Lagged.HasValue)
 			{
-				color = record.Lagged.Value ?
-					LagZone_InputLog :
-					GreenZone_InputLog;
+                if (!CurrentTasMovie.TasStateManager.HasState(index) && TasView.denoteStatesWithBGColor)
+                    color = record.Lagged.Value ?
+                        LagZone_InputLog :
+                        GreenZone_InputLog;
+                else
+				    color = record.Lagged.Value ?
+					    LagZone_InputLog_Stated :
+                        GreenZone_InputLog_Stated;
 			}
 			else if (record.WasLagged.HasValue)
 			{
 				color = record.WasLagged.Value ?
-					LagZone_Invalidated_InputLog :
-					GreenZone_Invalidated_InputLog;
+					LagZone_InputLog_Invalidated :
+					GreenZone_InputLog_Invalidated;
 			}
 			else
 			{
@@ -180,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text)
+		private void TasView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			var overrideText = GetTextOverride(index, column);
 			if (overrideText != null)
@@ -196,10 +226,15 @@ namespace BizHawk.Client.EmuHawk
 
 				if (columnName == CursorColumnName)
 				{
-					// Do nothing
+					int branchIndex = CurrentTasMovie.BranchIndexByFrame(index);
+					if (branchIndex != -1)
+					{
+						text = branchIndex.ToString();
+					}
 				}
 				else if (columnName == FrameColumnName)
 				{
+					offsetX = 7;
 					text = (index).ToString().PadLeft(CurrentTasMovie.InputLogLength.ToString().Length, '0');
 				}
 				else
@@ -236,7 +271,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
 					RefreshDialog();
-
 				}
 				else if (columnName != CursorColumnName) // TODO: what about float?
 				{
@@ -354,8 +388,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (TasView.CurrentCell.Column.Name == FrameColumnName)
 				{
-					_startFrameDrag = true;
-					_frameDragState = TasView.SelectedRows.Contains(frame);
+					if (Control.ModifierKeys == Keys.Alt && CurrentTasMovie.Markers.IsMarker(frame))
+					{
+						// TODO
+						TasView.DragCurrentCell();
+					}
+					else
+					{
+						_startFrameDrag = true;
+						_frameDragState = TasView.SelectedRows.Contains(frame);
+					}
 				}
 				else // User changed input
 				{
@@ -477,6 +519,7 @@ namespace BizHawk.Client.EmuHawk
 			_startFrameDrag = false;
 			_startBoolDrawColumn = string.Empty;
 			_startFloatDrawColumn = string.Empty;
+			TasView.ReleaseCurrentCell();
 			// Exit float editing if value was changed with cursor
 			if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
 			{
@@ -495,9 +538,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseUp(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu)
+			if (e.Button == MouseButtons.Right && !TasView.IsPointingAtColumnHeader && !_supressContextMenu && TasView.SelectedRows.Any())
 			{
-				RightClickMenu.Show(TasView, e.X, e.Y);
+				if (Global.MovieSession.Movie.FrameCount < TasView.SelectedRows.Max())
+				{
+					// trying to be smart here
+					// if a loaded branch log is shorter than selection, keep selection until you attempt to call context menu
+					// you might need it when you load again the branch where this frame exists
+					TasView.DeselectAll();
+					RefreshTasView();
+				}
+				else
+				{
+					RightClickMenu.Show(TasView, e.X, e.Y);
+				}
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
@@ -581,7 +635,11 @@ namespace BizHawk.Client.EmuHawk
 				e.NewCell == null || e.NewCell.RowIndex == null || e.NewCell.Column == null)
 			{
 				return;
-			}
+            }
+
+            // skip rerecord counting on drawing entirely, mouse down is enough
+            // avoid introducing another global
+            bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;
@@ -696,6 +754,8 @@ namespace BizHawk.Client.EmuHawk
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
+                Global.MovieSession.Movie.IsCountingRerecords = false;
+
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
@@ -715,7 +775,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
-			{
+            {
+                Global.MovieSession.Movie.IsCountingRerecords = false;
+
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
@@ -734,7 +796,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (Settings.FollowCursor && mouseButtonHeld) // todo; why FollowCursor? Should probably have it's own flag.
+            Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
+
+			if (mouseButtonHeld)
 			{
 				TasView.MakeIndexVisible(TasView.CurrentCell.RowIndex.Value); // todo: limit scrolling speed
 			}

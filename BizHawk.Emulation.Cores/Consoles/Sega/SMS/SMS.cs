@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable,
+	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
 	{
 		// Constants
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		byte ForceStereoByte = 0xAD;
 		bool IsGame3D = false;
 
-		public DisplayType DisplayType { get; set; }
+		public DisplayType Region { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 
 		[CoreConstructor("SMS", "SG", "GG")]
@@ -113,23 +113,23 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			RomBanks = (byte)(RomData.Length / BankSize);
 
-			DisplayType = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
-			if (game["PAL"] && DisplayType != DisplayType.PAL)
+			Region = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
+			if (game["PAL"] && Region != DisplayType.PAL)
 			{
-				DisplayType = DisplayType.PAL;
+				Region = DisplayType.PAL;
 				CoreComm.Notify("Display was forced to PAL mode for game compatibility.");
 			}
 			if (IsGameGear) 
-				DisplayType = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
-			CoreComm.VsyncNum = DisplayType == DisplayType.NTSC ? 60 : 50;
+				Region = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
+			CoreComm.VsyncNum = Region == DisplayType.NTSC ? 60 : 50;
 			CoreComm.VsyncDen = 1;
 
-			Region = SyncSettings.ConsoleRegion;
-			if (Region == "Auto") Region = DetermineRegion(game.Region);
+			RegionStr = SyncSettings.ConsoleRegion;
+			if (RegionStr == "Auto") RegionStr = DetermineRegion(game.Region);
 
-			if (game["Japan"] && Region != "Japan")
+			if (game["Japan"] && RegionStr != "Japan")
 			{
-				Region = "Japan";
+				RegionStr = "Japan";
 				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Cpu.WriteHardware = WritePort;
 			Cpu.MemoryCallbacks = MemoryCallbacks;
 
-			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, DisplayType);
+			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
 			PSG = new SN76489();
 			YM2413 = new YM2413();
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 			else if (game.System == "SMS")
 			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", Region, false);
+				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", RegionStr, false);
 				if (BiosRom != null && (game["RequireBios"] || SyncSettings.UseBIOS))
 					Port3E = 0xF7;
 
@@ -428,7 +428,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public string BoardName { get { return null; } }
 
 		string region;
-		public string Region
+		public string RegionStr
 		{
 			get { return region; }
 			set

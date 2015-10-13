@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		isReleased: false,
 		singleInstance: true
 		)]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public partial class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
 	{
 		[CoreConstructor("GBA")]

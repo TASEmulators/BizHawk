@@ -48,17 +48,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int prg_page;
 		public bool prg_mode;
 
+		private int prg_mask_32k;
+		private int prg_mask_16k;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
 				case "MAPPER226":
+				case "UNIF_BMC-42in1ResetSwitch":
 					break;
 				default:
 					return false;
 			}
 			prg_page = 0;
 			prg_mode = false;
+
+			prg_mask_32k = Cart.prg_size / 32 - 1;
+			prg_mask_16k = Cart.prg_size / 16 - 1;
+
 			return true;
 		}
 
@@ -98,11 +106,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (prg_mode == false)
 			{
-				return ROM[((prg_page >> 1) * 0x8000) + addr];
+				return ROM[( ((prg_page >> 1) & prg_mask_32k) * 0x8000) + (addr & 0x07FFF)];
 			}
 			else
 			{
-				return ROM[(prg_page * 0x4000) + (addr & 0x03FFF)];
+				return ROM[((prg_page & prg_mask_16k) * 0x4000) + (addr & 0x03FFF)];
 			}
 		}
 	}

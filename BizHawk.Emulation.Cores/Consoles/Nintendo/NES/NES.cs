@@ -2,6 +2,7 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -17,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true
 		)]
-	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
+	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 		ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
@@ -88,6 +89,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (ppu != null)
 				Console.WriteLine("[{0:d5}:{1:d3}:{2:d3}] {3}", Frame, ppu.ppur.status.sl, ppu.ppur.status.cycle, string.Format(format, args));
+		}
+
+		public bool HasMapperProperties
+		{
+			get
+			{
+				var fields = Board.GetType().GetFields();
+				foreach (var field in fields)
+				{
+					var attrib = field.GetCustomAttributes(typeof(MapperPropAttribute), false).OfType<MapperPropAttribute>().SingleOrDefault();
+					if (attrib != null)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
 		}
 
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)
@@ -182,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public CoreComm CoreComm { get; private set; }
 
-		public DisplayType DisplayType { get { return _display_type; } }
+		public DisplayType Region { get { return _display_type; } }
 
 		class MyVideoProvider : IVideoProvider
 		{
@@ -209,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int the_top;
 				int the_bottom;
-				if (emu.DisplayType == DisplayType.NTSC)
+				if (emu.Region == DisplayType.NTSC)
 				{
 					the_top = emu.Settings.NTSC_TopLine;
 					the_bottom = emu.Settings.NTSC_BottomLine;
@@ -289,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				get
 				{
-					if (emu.DisplayType == DisplayType.NTSC)
+					if (emu.Region == DisplayType.NTSC)
 					{
 						return emu.Settings.NTSC_BottomLine - emu.Settings.NTSC_TopLine + 1;
 					}
@@ -426,6 +445,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nsfboard.WRAM = new byte[cart.wram_size * 1024];
 				Board = nsfboard;
 				Board.PostConfigure();
+				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for NSF for now");
 				_display_type = Common.DisplayType.NTSC;
@@ -463,6 +483,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Board.VRAM = new byte[cart.vram_size * 1024];
 
 				Board.PostConfigure();
+				AutoMapperProps.Populate(Board, SyncSettings);
 
 				Console.WriteLine("Using NTSC display type for FDS disk image");
 				_display_type = Common.DisplayType.NTSC;
@@ -568,9 +589,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					LoadWriteLine("Using information from UNIF header");
 					choice = unif.CartInfo;
 					//ok, i have this Q-Boy rom with no VROM and no VRAM.
-					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set.
-					//we'll let individual boards override that and set 8KB here
-					choice.vram_size = 8;
+					//we also certainly have games with VROM and no VRAM.
+					//looks like FCEUX policy is to allocate 8KB of chr ram no matter what UNLESS certain flags are set. but what's the justification for this? please leave a note if you go debugging in it again.
+					//well, we know we can't have much of a NES game if there's no VROM unless there's VRAM instead.
+					//so if the VRAM isn't set, choose 8 for it.
+					//TODO - unif loading code may need to use VROR flag to transform chr_size=8 to vram_size=8 (need example)
+					if (choice.chr_size == 0 && choice.vram_size == 0)
+						choice.vram_size = 8;
 					//(do we need to suppress this in case theres a CHR rom? probably not. nes board base will use ram if no rom is available)
 					origin = EDetectionOrigin.UNIF;
 				}
@@ -670,21 +695,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			byte[] trainer = null;
 
 			//create the board's rom and vrom
 			if (iNesHeaderInfo != null)
 			{
+				var ms = new MemoryStream(file, false);
+				ms.Seek(16, SeekOrigin.Begin); // ines header
 				//pluck the necessary bytes out of the file
+				if (iNesHeaderInfo.trainer_size != 0)
+				{
+					trainer = new byte[512];
+					ms.Read(trainer, 0, 512);
+				}
+
 				Board.ROM = new byte[choice.prg_size * 1024];
-				Array.Copy(file, 16, Board.ROM, 0, Board.ROM.Length);
+				ms.Read(Board.ROM, 0, Board.ROM.Length);
+
 				if (choice.chr_size > 0)
 				{
 					Board.VROM = new byte[choice.chr_size * 1024];
-					int vrom_offset = iNesHeaderInfo.prg_size * 1024;
+					int vrom_copy_size = ms.Read(Board.VROM, 0, Board.VROM.Length);
 
-					// if file isn't long enough for VROM, truncate
-					int vrom_copy_size = Math.Min(Board.VROM.Length, file.Length - 16 - vrom_offset);
-					Array.Copy(file, 16 + vrom_offset, Board.VROM, 0, vrom_copy_size);
 					if (vrom_copy_size < Board.VROM.Length)
 						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
 				}
@@ -709,6 +741,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board.VRAM = new byte[cart.vram_size * 1024];
 
 			Board.PostConfigure();
+			AutoMapperProps.Populate(Board, SyncSettings);
 
 			// set up display type
 
@@ -738,6 +771,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Console.WriteLine("Using NES system region of {0}", _display_type);
 
 			HardReset();
+
+			if (trainer != null)
+			{
+				Console.WriteLine("Applying trainer");
+				for (int i = 0; i < 512; i++)
+					WriteMemory((ushort)(0x7000 + i), trainer[i]);
+			}
 		}
 
 		static NESSyncSettings.Region DetectRegion(string system)

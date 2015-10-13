@@ -2,6 +2,9 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_033
+	// http://wiki.nesdev.com/w/index.php/INES_Mapper_048
+
 	//AKA mapper 033
 
 	//Akira
@@ -95,6 +98,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "TAITO-TC0350FMR":
 					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0); AssertVram(0);
 					pal16 = false;
+					break;
+				case "MAPPER048": // TODO: Disch docs say that mapper 48 is a TC0690 which is a superset of TC0190FMC
+					pal16 = true;
+					mmc3 = new MMC3Variant(this);
 					break;
 				case "TAITO-TC0190FMC+PAL16R4":
 					//this is the same as the base TAITO-TC0190FMC, with an added PAL16R4ACN which is a "programmable TTL device", presumably just the IRQ and mirroring

@@ -1,0 +1,4 @@
+shaders = 1
+
+shader0 = bicubic-normal.cg
+scale_type0 = viewport

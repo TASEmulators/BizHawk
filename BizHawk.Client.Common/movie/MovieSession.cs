@@ -182,7 +182,7 @@ namespace BizHawk.Client.Common
 		public bool MovieLoad()
 		{
 			MovieControllerAdapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
-			return Movie.Load();
+			return Movie.Load(false);
 		}
 
 		public void StopMovie(bool saveChanges = true)
@@ -463,7 +463,8 @@ namespace BizHawk.Client.Common
 		{
 			if (!record) // The semantics of record is that we are starting a new movie, and even wiping a pre-existing movie with the same path, but non-record means we are loading an existing movie into playback mode
 			{
-				movie.Load();
+				movie.Load(false);
+				
 				if (movie.SystemID != emulator.SystemId)
 				{
 					throw new MoviePlatformMismatchException(
@@ -475,11 +476,11 @@ namespace BizHawk.Client.Common
 			}
 
 			// TODO: Delete this, this save is utterly useless.
-			//If a movie is already loaded, save it before starting a new movie
-			if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
-			{
-				Movie.Save();
-			}
+			// Movie was saved immediately before calling QueeuNewMovie. (StartNewMovie)
+			//if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
+			//{
+			//	Movie.Save();
+			//}
 
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!

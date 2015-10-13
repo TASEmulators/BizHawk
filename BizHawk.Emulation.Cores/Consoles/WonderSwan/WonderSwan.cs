@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
-	[ServiceNotApplicable(typeof(IDriveLight))]
+	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public partial class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider,
 		IInputPollable, IDebuggable
 	{

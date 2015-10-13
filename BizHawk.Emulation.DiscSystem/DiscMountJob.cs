@@ -126,6 +126,8 @@ namespace BizHawk.Emulation.DiscSystem
 			}
 			if (ext == ".cue")
 			{
+				//TODO - major renovation of error handling needed
+
 				//TODO - make sure code is designed so no matter what happens, a disc is disposed in case of errors.
 				//perhaps the CUE_Format2 (once renamed to something like Context) can handle that
 				var cuePath = IN_FromPath;
@@ -140,23 +142,29 @@ namespace BizHawk.Emulation.DiscSystem
 				if (cue_content == null)
 					cue_content = File.ReadAllText(cuePath);
 				parseJob.IN_CueString = cue_content;
-				parseJob.Run(parseJob);
-				//TODO - need better handling of log output
+				bool okParse = true;
+				try { parseJob.Run(parseJob); }
+				catch (DiscJobAbortException) { okParse = false; parseJob.FinishLog(); }
 				if (!string.IsNullOrEmpty(parseJob.OUT_Log)) Console.WriteLine(parseJob.OUT_Log);
 				ConcatenateJobLog(parseJob);
+				if (!okParse)
+					goto DONE;
 
 				//compile the cue file:
 				//includes this work: resolve required bin files and find out what it's gonna take to load the cue
 				var compileJob = new CompileCueJob();
 				compileJob.IN_CueContext = cueContext;
 				compileJob.IN_CueFile = parseJob.OUT_CueFile;
-				compileJob.Run();
-				//TODO - need better handling of log output
+				bool okCompile = true;
+				try { compileJob.Run(); }
+				catch (DiscJobAbortException) { okCompile = false; compileJob.FinishLog();  }
 				if (!string.IsNullOrEmpty(compileJob.OUT_Log)) Console.WriteLine(compileJob.OUT_Log);
 				ConcatenateJobLog(compileJob);
+				if (!okCompile || compileJob.OUT_ErrorLevel)
+					goto DONE;
 
 				//check slow loading threshold
-				if (compileJob.OUT_LoadTime >= IN_SlowLoadAbortThreshold)
+				if (compileJob.OUT_LoadTime > IN_SlowLoadAbortThreshold)
 				{
 					Warn("Loading terminated due to slow load threshold");
 					OUT_SlowLoadAborted = true;
@@ -179,6 +187,7 @@ namespace BizHawk.Emulation.DiscSystem
 				CCD_Format ccdLoader = new CCD_Format();
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
+
 
 		DONE:
 

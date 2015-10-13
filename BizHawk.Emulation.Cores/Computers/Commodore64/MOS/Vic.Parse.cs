@@ -145,8 +145,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 			else if (parseba == 0x1000)
 			{
-				pinBA = !badline;
-			}
+                pinBA = !badline;
+            }
 			else
 			{
 				parsecycleBAsprite0 = (parseba & 0x000F);

@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
 
 		//user configuration 
-		int[,] palette = new int[64,3];
 		int[] palette_compiled = new int[64*8];
 
 		// new input system
@@ -440,20 +439,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		/// <summary>
-		/// sets the provided palette as current
+		/// Sets the provided palette as current.
+		/// Applies the current deemph settings if needed to expand a 64-entry palette to 512
 		/// </summary>
-		private void SetPalette(int[,] pal)
+		private void SetPalette(byte[,] pal)
 		{
-			Array.Copy(pal,palette,64*3);
-			for(int i=0;i<64*8;i++)
+			int nColors = pal.GetLength(0);
+			int nElems = pal.GetLength(1);
+
+			if (nColors == 512)
 			{
-				int d = i >> 6;
-				int c = i & 63;
-				int r = palette[c, 0];
-				int g = palette[c, 1];
-				int b = palette[c, 2];
-				Palettes.ApplyDeemphasis(ref r, ref g, ref b, d);
-				palette_compiled[i] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+				//just copy the palette directly
+				for (int c = 0; c < 64 * 8; c++)
+				{
+					int r = pal[c, 0];
+					int g = pal[c, 1];
+					int b = pal[c, 2];
+					palette_compiled[c] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+				}
+			}
+			else
+			{
+				//expand using deemph
+				for (int i = 0; i < 64 * 8; i++)
+				{
+					int d = i >> 6;
+					int c = i & 63;
+					int r = pal[c, 0];
+					int g = pal[c, 1];
+					int b = pal[c, 2];
+					Palettes.ApplyDeemphasis(ref r, ref g, ref b, d);
+					palette_compiled[i] = (int)unchecked((int)0xFF000000 | (r << 16) | (g << 8) | b);
+				}
 			}
 		}
 

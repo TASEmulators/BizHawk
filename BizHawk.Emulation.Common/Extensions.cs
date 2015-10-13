@@ -78,6 +78,31 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (IInputPollable)core.ServiceProvider.GetService<IInputPollable>();
 		}
 
+		public static bool InputCallbacksAvailable(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			// TODO: this is a pretty ugly way to handle this
+			var pollable = (IInputPollable)core.ServiceProvider.GetService<IInputPollable>();
+			if (pollable != null)
+			{
+				try
+				{
+					var callbacks = pollable.InputCallbacks;
+					return true;
+				}
+				catch (NotImplementedException)
+				{
+					return false;
+				}
+			}
+
+			return false;
+		}
+
 		public static bool HasDriveLight(this IEmulator core)
 		{
 			if (core == null)
@@ -198,6 +223,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			}
 
 			return true;
+		}
+
+		public static bool HasRegions(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IRegionable>();
+		}
+
+		public static IRegionable AsRegionable(this IEmulator core)
+		{
+			return (IRegionable)core.ServiceProvider.GetService<IRegionable>();
 		}
 
 		// TODO: a better place for these

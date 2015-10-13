@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				value ^= 0x80;
 			}
 
-			if (Region == "Japan")
+			if (RegionStr == "Japan")
 			{
 				value ^= 0x40;
 			}

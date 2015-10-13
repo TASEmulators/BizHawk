@@ -67,6 +67,7 @@
 			// 
 			// propertyGrid1
 			// 
+			this.propertyGrid1.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
 			this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
 			this.propertyGrid1.Name = "propertyGrid1";
@@ -88,6 +89,7 @@
 			// 
 			// propertyGrid2
 			// 
+			this.propertyGrid2.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
 			this.propertyGrid2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.propertyGrid2.Location = new System.Drawing.Point(3, 3);
 			this.propertyGrid2.Name = "propertyGrid2";
@@ -143,6 +145,7 @@
 			this.Controls.Add(this.tabControl1);
 			this.Name = "GenericCoreConfig";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "GenericCoreConfig";
 			this.Load += new System.EventHandler(this.GenericCoreConfig_Load);
 			this.tabControl1.ResumeLayout(false);

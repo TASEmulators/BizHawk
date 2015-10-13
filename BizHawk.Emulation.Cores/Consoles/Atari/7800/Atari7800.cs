@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		portedUrl: "http://emu7800.sourceforge.net/"
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class Atari7800 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable
+	public partial class Atari7800 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game
@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 
 		private bool _pal;
-		public DisplayType DisplayType
+		public DisplayType Region
 		{
 			get { return _pal ? DisplayType.PAL : DisplayType.NTSC; }
 		}

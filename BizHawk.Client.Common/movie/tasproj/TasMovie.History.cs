@@ -170,6 +170,17 @@ namespace BizHawk.Client.Common
 		public bool CanUndo { get { return UndoIndex > -1; } }
 		public bool CanRedo { get { return UndoIndex < History.Count - 1; } }
 
+		public string NextUndoStepName
+		{
+			get
+			{
+				if (Names.Count == 0)
+					return null;
+				else
+					return Names[UndoIndex];
+			}
+		}
+
 		public int PreviousUndoFrame
 		{
 			get

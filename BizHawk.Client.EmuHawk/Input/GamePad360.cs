@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using SlimDX.XInput;
+
+#pragma warning disable 169
+#pragma warning disable 414
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -12,26 +16,71 @@ namespace BizHawk.Client.EmuHawk
 
 		static bool IsAvailable;
 
+		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
+		static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
+
+		delegate uint XInputGetStateExProcDelegate(uint dwUserIndex, out XINPUT_STATE state);
+
+		static bool HasGetInputStateEx;
+		static IntPtr LibraryHandle;
+		static XInputGetStateExProcDelegate XInputGetStateExProc;
+
+		struct XINPUT_GAMEPAD
+		{
+			public ushort wButtons;
+			public byte bLeftTrigger;
+			public byte bRightTrigger;
+			public short sThumbLX;
+			public short sThumbLY;
+			public short sThumbRX;
+			public short sThumbRY;
+		}
+
+		struct XINPUT_STATE
+		{
+			public uint dwPacketNumber;
+			public XINPUT_GAMEPAD Gamepad;
+		}
+
 		public static void Initialize()
 		{
 			IsAvailable = false;
 			try
 			{
 				//some users wont even have xinput installed. in order to avoid spurious exceptions and possible instability, check for the library first
-				IntPtr lib = Win32.LoadLibrary("xinput1_3.dll");
-				if (lib != IntPtr.Zero)
+				HasGetInputStateEx = true;
+				LibraryHandle = Win32.LoadLibrary("xinput1_3.dll");
+				if(LibraryHandle == IntPtr.Zero)
+					LibraryHandle = Win32.LoadLibrary("xinput1_4.dll");
+				if(LibraryHandle == IntPtr.Zero)
 				{
-					Win32.FreeLibrary(lib);
-					
+					LibraryHandle = Win32.LoadLibrary("xinput9_1_0.dll");
+					HasGetInputStateEx = false;
+				}
+
+				if (LibraryHandle != IntPtr.Zero)
+				{
+					if (HasGetInputStateEx)
+					{
+						IntPtr proc = GetProcAddressOrdinal(LibraryHandle, new IntPtr(100));
+						XInputGetStateExProc = (XInputGetStateExProcDelegate)Marshal.GetDelegateForFunctionPointer(proc, typeof(XInputGetStateExProcDelegate));
+					}
+
 					//don't remove this code. it's important to catch errors on systems with broken xinput installs.
 					//(probably, checking for the library was adequate, but lets not get rid of this anyway)
 					var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
 					IsAvailable = true;
 				}
+
 			}
 			catch { }
 
 			if (!IsAvailable) return;
+
+			//now, at this point, slimdx may be using one xinput, and we may be using another
+			//i'm not sure how slimdx picks its dll to bind to.
+			//i'm not sure how troublesome this will be
+			//maybe we should get rid of slimdx for this altogether
 
 			var c1 = new Controller(UserIndex.One);
 			var c2 = new Controller(UserIndex.Two);
@@ -54,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 		// ********************************** Instance Members **********************************
 
 		readonly Controller controller;
-		State state;
+		XINPUT_STATE state;
 
 		GamePad360(Controller c)
 		{
@@ -68,17 +117,33 @@ namespace BizHawk.Client.EmuHawk
 			if (controller.IsConnected == false)
 				return;
 
-			state = controller.GetState();
+			if (XInputGetStateExProc != null)
+			{
+				state = new XINPUT_STATE();
+				XInputGetStateExProc(0, out state);
+			}
+			else
+			{
+				var slimstate = controller.GetState();
+				state.dwPacketNumber = slimstate.PacketNumber;
+				state.Gamepad.wButtons = (ushort)slimstate.Gamepad.Buttons;
+				state.Gamepad.sThumbLX = slimstate.Gamepad.LeftThumbX;
+				state.Gamepad.sThumbLY = slimstate.Gamepad.LeftThumbY;
+				state.Gamepad.sThumbRX = slimstate.Gamepad.RightThumbX;
+				state.Gamepad.sThumbRY = slimstate.Gamepad.RightThumbY;
+				state.Gamepad.bLeftTrigger = slimstate.Gamepad.LeftTrigger;
+				state.Gamepad.bRightTrigger = slimstate.Gamepad.RightTrigger;
+			}
 		}
 
 		public IEnumerable<Tuple<string, float>> GetFloats()
 		{
 			var g = state.Gamepad;
 			const float f = 3.2768f;
-			yield return new Tuple<string, float>("LeftThumbX", g.LeftThumbX / f);
-			yield return new Tuple<string, float>("LeftThumbY", g.LeftThumbY / f);
-			yield return new Tuple<string, float>("RightThumbX", g.RightThumbX / f);
-			yield return new Tuple<string, float>("RightThumbY", g.RightThumbY / f);
+			yield return new Tuple<string, float>("LeftThumbX", g.sThumbLX / f);
+			yield return new Tuple<string, float>("LeftThumbY", g.sThumbLY / f);
+			yield return new Tuple<string, float>("RightThumbX", g.sThumbRX / f);
+			yield return new Tuple<string, float>("RightThumbY", g.sThumbRY / f);
 			yield break;
 		}
 
@@ -93,35 +158,36 @@ namespace BizHawk.Client.EmuHawk
 			const int dzn = -9000;
 			const int dzt = 40;
 
-			AddItem("A", () => (state.Gamepad.Buttons & GamepadButtonFlags.A) != 0);
-			AddItem("B", () => (state.Gamepad.Buttons & GamepadButtonFlags.B) != 0);
-			AddItem("X", () => (state.Gamepad.Buttons & GamepadButtonFlags.X) != 0);
-			AddItem("Y", () => (state.Gamepad.Buttons & GamepadButtonFlags.Y) != 0);
+			AddItem("A", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.A) != 0);
+			AddItem("B", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.B) != 0);
+			AddItem("X", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.X) != 0);
+			AddItem("Y", () => (state.Gamepad.wButtons & unchecked((ushort)GamepadButtonFlags.Y)) != 0);
+			AddItem("Guide", () => (state.Gamepad.wButtons & 1024) != 0);
 
-			AddItem("Start", () => (state.Gamepad.Buttons & GamepadButtonFlags.Start) != 0);
-			AddItem("Back", () => (state.Gamepad.Buttons & GamepadButtonFlags.Back) != 0);
-			AddItem("LeftThumb", () => (state.Gamepad.Buttons & GamepadButtonFlags.LeftThumb) != 0);
-			AddItem("RightThumb", () => (state.Gamepad.Buttons & GamepadButtonFlags.RightThumb) != 0);
-			AddItem("LeftShoulder", () => (state.Gamepad.Buttons & GamepadButtonFlags.LeftShoulder) != 0);
-			AddItem("RightShoulder", () => (state.Gamepad.Buttons & GamepadButtonFlags.RightShoulder) != 0);
+			AddItem("Start", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.Start) != 0);
+			AddItem("Back", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.Back) != 0);
+			AddItem("LeftThumb", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.LeftThumb) != 0);
+			AddItem("RightThumb", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.RightThumb) != 0);
+			AddItem("LeftShoulder", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.LeftShoulder) != 0);
+			AddItem("RightShoulder", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.RightShoulder) != 0);
 
-			AddItem("DpadUp", () => (state.Gamepad.Buttons & GamepadButtonFlags.DPadUp) != 0);
-			AddItem("DpadDown", () => (state.Gamepad.Buttons & GamepadButtonFlags.DPadDown) != 0);
-			AddItem("DpadLeft", () => (state.Gamepad.Buttons & GamepadButtonFlags.DPadLeft) != 0);
-			AddItem("DpadRight", () => (state.Gamepad.Buttons & GamepadButtonFlags.DPadRight) != 0);
+			AddItem("DpadUp", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.DPadUp) != 0);
+			AddItem("DpadDown", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.DPadDown) != 0);
+			AddItem("DpadLeft", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.DPadLeft) != 0);
+			AddItem("DpadRight", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.DPadRight) != 0);
 
-			AddItem("LStickUp", () => state.Gamepad.LeftThumbY >= dzp);
-			AddItem("LStickDown", () => state.Gamepad.LeftThumbY <= dzn);
-			AddItem("LStickLeft", () => state.Gamepad.LeftThumbX <= dzn);
-			AddItem("LStickRight", () => state.Gamepad.LeftThumbX >= dzp);
+			AddItem("LStickUp", () => state.Gamepad.sThumbLY >= dzp);
+			AddItem("LStickDown", () => state.Gamepad.sThumbLY <= dzn);
+			AddItem("LStickLeft", () => state.Gamepad.sThumbLX <= dzn);
+			AddItem("LStickRight", () => state.Gamepad.sThumbLX >= dzp);
 
-			AddItem("RStickUp", () => state.Gamepad.RightThumbY >= dzp);
-			AddItem("RStickDown", () => state.Gamepad.RightThumbY <= dzn);
-			AddItem("RStickLeft", () => state.Gamepad.RightThumbX <= dzn);
-			AddItem("RStickRight", () => state.Gamepad.RightThumbX >= dzp);
+			AddItem("RStickUp", () => state.Gamepad.sThumbLY >= dzp);
+			AddItem("RStickDown", () => state.Gamepad.sThumbLY <= dzn);
+			AddItem("RStickLeft", () => state.Gamepad.sThumbLX <= dzn);
+			AddItem("RStickRight", () => state.Gamepad.sThumbLX >= dzp);
 
-			AddItem("LeftTrigger", () => state.Gamepad.LeftTrigger > dzt);
-			AddItem("RightTrigger", () => state.Gamepad.RightTrigger > dzt);
+			AddItem("LeftTrigger", () => state.Gamepad.bLeftTrigger > dzt);
+			AddItem("RightTrigger", () => state.Gamepad.bRightTrigger > dzt);
 		}
 
 		void AddItem(string name, Func<bool> pressed)

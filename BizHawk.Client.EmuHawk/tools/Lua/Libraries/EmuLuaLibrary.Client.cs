@@ -37,6 +37,15 @@ namespace BizHawk.Client.EmuHawk
 		public override string Name { get { return "client"; } }
 
 		[LuaMethodAttributes(
+			"exit",
+			"Closes the emulator"
+		)]
+		public void CloseEmulator()
+		{
+			GlobalWin.MainForm.CloseEmulator();
+		}
+
+		[LuaMethodAttributes(
 			"borderheight",
 			"Gets the current height in pixels of the border around the emulator's drawing area"
 		)]
@@ -140,6 +149,26 @@ namespace BizHawk.Client.EmuHawk
 		public static int GetWindowSize()
 		{
 			return Global.Config.TargetZoomFactor;
+		}
+
+		[LuaMethodAttributes(
+			"SetGameExtraPadding",
+			"Sets the extra padding added to the 'emu' surface so that you can draw HUD elements in predictable placements"
+		)]
+		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
+		{
+			GlobalWin.DisplayManager.GameExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
+			GlobalWin.MainForm.FrameBufferResized();
+		}
+
+		[LuaMethodAttributes(
+			"SetClientExtraPadding",
+			"Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements"
+		)]
+		public static void SetClientExtraPadding(int left, int top, int right, int bottom)
+		{
+			GlobalWin.DisplayManager.ClientExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
+			GlobalWin.MainForm.FrameBufferResized();
 		}
 
 		[LuaMethodAttributes(

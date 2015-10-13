@@ -1,0 +1,127 @@
+=========================================
+1.11.3 (in progress)
+=========================================
+
+*C64
+**Add tape loading, settings menu, and lots of bugfixes
+
+*Lua
+**Add client.SetClientExtraPadding; fix client.SetGameExtraPadding window scaling
+
+*PSX
+**Repair lag counter
+**Fix massively broken controller config dialog which was making controllers seem effectively disconnected or malfunctiony
+
+*EmuHawk
+**Fix Direct3D display method sleep/ctrl+alt+del crashes
+**Fix Ram Search/Ram Watch recent files menu
+**Import PJM and PXM movies
+**Sequentially number screenshots taken in the same second without crashing after the 3rd one
+
+=========================================
+1.11.2
+=========================================
+
+*Released October 10, 2015
+*[http://sourceforge.net/projects/bizhawk/files/BizHawk/BizHawk-1.11.2.zip/download|Windows binary]
+*[https://github.com/TASVideos/BizHawk/commit/a44cf5a|Revision a44cf5a]
+
+*PSXHawk
+**Update to mednafen 0.9.38.7
+**Support 0-2 pads/shocks and 0-2 memcards
+**Fix loading of some .psf files
+**Add overscan clipping and deinterlacer options
+**Fix resolution management and PAR stuff for some PAL modes
+**Support .xml disc bundling tool as alternative to .m3u
+**Save PAL information in movies, and fix reported PAL movie times
+**Fix #460 - overlapping OSD elements
+**Support mednafen's emulation of disc error correction (optionally) and graceful sector-out-of-bounds reading
+
+*N64
+**Compatibility hack for Jabo vs some Intel GPUs on Windows8+
+
+*SNES
+**Handle interlarced modes differently
+
+*mGBA
+**Fix #507 - Add "Combined WRAM" memory domain
+
+*GBHawk
+**Add LY to trace log 
+
+*NESHawk
+**Improve .unf loading (header parsing, Open ROM dialog, vram inference logic) and support more UNIF boards
+**Add ines mappers: 6, 51, 53, 90, 136, 147, 202, 204, 209, 211, 212, 213, 214, 216, 235, 244, 17; fix mappers 31, 60, 79, 91, 164, 243, 245, 119, 90, 197
+**Support many misc ROMs that are bad/over dumps, wrong/unusual header info, having trainers
+**Auto-select region from iNESv2 header
+**Fix some graphical corruptions in the PPU for Dragon Warrior 4 and others
+**Support 512-entry palettes (QuickNES too)
+
+*GPGX
+**Handle AR/resolution-changing more correctly and add option to pad screen out to prevent window resizes
+**Fix #494 - cheat decoder unhooked
+
+*EmuHawk
+**Direct3D Display Method support
+**New Tool: Basic Bot
+**Make throttle vs unthrottled vs frame advance behaviour better and add 400% speedlevel
+**Add toggles for screen and hud display for true maximum turbo performance
+**Add option to suppress double-click fullscreen toggling behaviour
+**Don't reorder cheats list when editing cheats
+**Fix some crashes on Play Movie dialog
+**Support IPCKeyInput (for automation from external program)
+**Support xbox pad guide button
+**Sequentially number screenshots taken in the same second
+**Finetune hotkey config dialog
+**Leniency fixes to cue loading
+**Make on-screen watches position editable
+**Fix crash when minimizing window in gdi+ display method 
+**Fix some bugs in gdi+ display method with screenshots and prescaling
+**Aboutbox more gitified
+**Fix #461 - Repair autofire patterns
+**Fix #477 - Support key input over IPC for automation
+**Fix #490 - Ampersands in hex editor flakeout
+**Fix #493 - Add option to hide OSD messages
+**Fix #491 - Tool window sizes get whacked out sometimes
+
+**Movies
+***Ability to create/load SaveRam-anchored movies
+***Ability to import movies from commandline
+***Fix out of memory when using the Play Movie dialog 
+
+**Tastudio
+***Add Branches feature
+***Fix rerecord counting
+***Various UI improvements and bug fixes
+***Ability to move markers by alt+click dragging them
+***Fix various out of memory and other greenzone crashes
+***Hide Power and Reset columns by default.
+***Optional icons for states and markers.
+***Support creating a savestate anchored movie from another savestate anchored movie
+***Support creating a new movie from current saveram 
+
+**Lua
+***Fix graphics rendering in GDI+ mode
+***Add client.exit() and client.SetGameExtraPadding
+***Add movie.startsfromsavestate() and movie.startsfromsaveram(), movie.getheader(), movie.getcomments(), and movie.getsubtitles()
+***Add memorysavestate library for making and loading savestates in memory, with save, load, remove, and clearall methods 
+***Fix bizstring.split() (make 1-based)
+***Fix crashes removing callbacks
+***Fix #469 - forms.newform() : add an onclosed callback optional parameter
+***Fix #463 - memory.readbyterange off-by-one
+***Fix #498 - fix quicknes lua rendering being offset incorrectly sometimes
+
+**Hex Editor
+***When saving memory domains to file, account for roms in archives
+***Fix some UI scrambling on memory domain change / data size changing
+***Fix ampersand escaping output 
+***Change copy/paste behaviour and add 'export' option to all generally make more sense.
+***Fix #481 - keep scroll bar position when resetting the current rom as opposed to changing to a new one
+
+**Cheats
+***Refresh list when toggling the status of a cheat
+***Fix up open and save file dialog file/directory logic 
+
+=========================================
+1.11.1
+=========================================

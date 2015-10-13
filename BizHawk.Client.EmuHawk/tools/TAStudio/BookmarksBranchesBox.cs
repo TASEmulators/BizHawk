@@ -21,10 +21,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
 		public TAStudio Tastudio { get; set; }
+		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
 
-		public TasBranchCollection Branches
+		private TasBranch GetBranch(int id)
 		{
-			get { return Tastudio.CurrentTasMovie.TasBranches; }
+			return Tastudio.CurrentTasMovie.GetBranch(id);
 		}
 
 		public BookmarksBranchesBox()
@@ -48,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				new InputRoll.RollColumn
 				{
 					Name = TimeColumnName,
-					Text = "Length",
+					Text = "TimeStamp",
 					Width = 90
 				},
 			});
@@ -63,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (BranchView.AnyRowsSelected)
 				{
-					return Branches[BranchView.SelectedRows.First()];
+					return GetBranch(BranchView.SelectedRows.First());
 				}
 
 				return null;
@@ -72,11 +73,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private int CurrentBranch = -1;
 
-		private void QueryItemText(int index, InputRoll.RollColumn column, out string text)
+		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = string.Empty;
 
-			if (index >= Tastudio.CurrentTasMovie.TasBranches.Count)
+			if (index >= Movie.BranchCount)
 			{
 				return;
 			}
@@ -87,18 +88,34 @@ namespace BizHawk.Client.EmuHawk
 					text = index.ToString();
 					break;
 				case FrameColumnName:
-					text = Branches[index].Frame.ToString();
+					text = GetBranch(index).Frame.ToString();
 					break;
 				case TimeColumnName:
-					text = MovieTime(Branches[index].Frame).ToString(@"hh\:mm\:ss\.fff");
+					text = GetBranch(index).TimeStamp.ToString(@"hh\:mm\:ss\.ff");
 					break;
 			}
 		}
 
 		private void QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			if (index == CurrentBranch)
-				color = SystemColors.HotTrack;
+			TasBranch branch = GetBranch(index);
+			if (branch != null)
+			{
+				var record = Tastudio.CurrentTasMovie[branch.Frame];
+				if (index == CurrentBranch)
+					color = TAStudio.CurrentFrame_InputLog; // SystemColors.HotTrack;
+				else if (record.Lagged.HasValue)
+				{
+					if (record.Lagged.Value)
+					{
+						color = TAStudio.LagZone_InputLog;
+					}
+					else
+					{
+						color = TAStudio.GreenZone_InputLog;
+					}
+				}
+			}
 
 			// Highlight the branch cell a little, if hovering over it
 			if (BranchView.CurrentCellIsDataCell &&
@@ -129,9 +146,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
-				CurrentBranch = BranchView.SelectedRows.First();
-				BranchView.Refresh();
+				int index = BranchView.SelectedRows.First();
+				//if (CurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
+				//	return;
+				CurrentBranch = index;
 				LoadBranch(SelectedBranch);
+				BranchView.Refresh();
 			}
 		}
 
@@ -147,14 +167,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
-				int index = Branches.IndexOf(SelectedBranch);
+				int index = BranchView.SelectedRows.First();
 				if (index == CurrentBranch)
 				{
 					CurrentBranch = -1;
 				}
+				else if (index < CurrentBranch)
+				{
+					CurrentBranch--;
+				}
 
-				Branches.Remove(SelectedBranch);
-				BranchView.RowCount = Branches.Count;
+				Movie.RemoveBranch(SelectedBranch);
+				BranchView.RowCount = Movie.BranchCount;
 
 				if (index == BranchView.SelectedRows.FirstOrDefault())
 				{
@@ -162,6 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				BranchView.Refresh();
+				Tastudio.RefreshDialog();
 			}
 		}
 
@@ -177,53 +202,27 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		// TODO: copy pasted from PlatformFrameRates
-
-		private TimeSpan MovieTime(int frameCount)
-		{
-			var dblseconds = GetSeconds(frameCount);
-			var seconds = (int)(dblseconds % 60);
-			var days = seconds / 86400;
-			var hours = seconds / 3600;
-			var minutes = (seconds / 60) % 60;
-			var milliseconds = (int)((dblseconds - seconds) * 1000);
-			return new TimeSpan(days, hours, minutes, seconds, milliseconds);
-		}
-
-		private double GetSeconds(int frameCount)
-		{
-			double frames = frameCount;
-
-			if (frames < 1)
-			{
-				return 0;
-			}
-
-			return frames / Fps();
-		}
-
-		private double Fps()
-		{
-			TasMovie movie = Tastudio.CurrentTasMovie;
-			string system = movie.HeaderEntries[HeaderKeys.PLATFORM];
-			bool pal = movie.HeaderEntries.ContainsKey(HeaderKeys.PAL) &&
-				movie.HeaderEntries[HeaderKeys.PAL] == "1";
-
-			return FrameRates[system, pal];
-		}
-		// ***************************
-
 		public void UpdateValues()
 		{
-			BranchView.RowCount = Branches.Count;
+			BranchView.RowCount = Movie.BranchCount;
+			BranchView.Refresh();
+		}
+
+		public void Restart()
+		{
+			BranchView.DeselectAll();
+			BranchView.RowCount = Movie.BranchCount;
+			BranchView.Refresh();
 		}
 
 		public void Branch()
 		{
-			var branch = CreateBranch();
-			Branches.Add(branch);
-			BranchView.RowCount = Branches.Count;
+			TasBranch branch = CreateBranch();
+			Movie.AddBranch(branch);
+			BranchView.RowCount = Movie.BranchCount;
+			CurrentBranch = Movie.BranchCount - 1;
 			BranchView.Refresh();
+			Tastudio.RefreshDialog();
 		}
 
 		private TasBranch CreateBranch()
@@ -233,20 +232,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Frame = Global.Emulator.Frame,
 				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
-				InputLog = Tastudio.CurrentTasMovie.InputLog.ToList(),
+				InputLog = Movie.InputLog.ToList(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				LagLog = Tastudio.CurrentTasMovie.TasLagLog.Clone(),
-				ChangeLog = new TasMovieChangeLog(Tastudio.CurrentTasMovie)
+				LagLog = Movie.TasLagLog.Clone(),
+				ChangeLog = new TasMovieChangeLog(Movie),
+				TimeStamp = DateTime.Now,
+				Markers = Movie.Markers.DeepClone()
 			};
 		}
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
 		{
-			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Branches.Count)
+			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Movie.BranchCount)
 			{
 				if (e.NewCell.Column.Name == BranchNumberColumnName)
 				{
-					ScreenShotPopUp(Branches[e.NewCell.RowIndex.Value], e.NewCell.RowIndex.Value);
+					ScreenShotPopUp(GetBranch(e.NewCell.RowIndex.Value), e.NewCell.RowIndex.Value);
 				}
 				else
 				{
@@ -301,18 +302,43 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				UpdateBranch(SelectedBranch);
+				CurrentBranch = BranchView.SelectedRows.First();
 			}
 		}
 
 		private void UpdateBranch(TasBranch branch)
 		{
-			var index = Branches.IndexOf(branch);
-
-			var newbranch = CreateBranch();
-			Branches.Insert(index, newbranch);
-
-			Branches.Remove(branch);
+			Movie.UpdateBranch(branch, CreateBranch());
 			BranchView.Refresh();
+			Tastudio.RefreshDialog();
+		}
+
+		private void BranchView_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
+					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+				{
+					BranchView.DragCurrentCell();
+				}
+			}
+		}
+
+		private void BranchView_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				BranchView.ReleaseCurrentCell();
+			}
+		}
+
+		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
+			{
+				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+			}
 		}
 	}
 }

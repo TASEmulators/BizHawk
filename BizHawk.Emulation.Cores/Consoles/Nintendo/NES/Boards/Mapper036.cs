@@ -18,7 +18,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER036":
-					AssertVram(0); AssertWram(0);
+					AssertVram(0);
+					Cart.wram_size = 0; // AssertWram(0); // GoodNES good dump of Strike Wolf specifies 8kb of wram
 					break;
 				default:
 					return false;

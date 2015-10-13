@@ -544,10 +544,14 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveConfigSettings()
 		{
 			SaveColumnInfo();
-			Settings.Wndx = Location.X;
-			Settings.Wndy = Location.Y;
-			Settings.Width = Right - Left;
-			Settings.Height = Bottom - Top;
+
+			if (WindowState == FormWindowState.Normal)
+			{
+				Settings.Wndx = Location.X;
+				Settings.Wndy = Location.Y;
+				Settings.Width = Right - Left;
+				Settings.Height = Bottom - Top;
+			}
 		}
 
 		private void SetMemoryDomain(string name)

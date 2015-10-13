@@ -20,19 +20,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		/// <summary>
-		/// Loads a simple 192 byte (64 entry RGB888) or 1536 byte (64*8 = 512 entry) palette which is FCEUX format (and probably other emulators as well)
-		/// The 512-entry format is new and backwards compatible. (actually, the 512-entry format extra data isnt used yet, I just edited this to support the larger quicknes file i committed)
+		/// Loads a simple 192 byte (64 entry RGB888) or 1536 byte (64*8 = 512 entry) palette. FCEUX uses these, as do almost every NES emulator.
 		/// </summary>
 		/// <param name="fileContents">192 or 1536 bytes, the contents of the palette file</param>
-		public static int[,] Load_FCEUX_Palette(byte[] fileContents)
+		public static byte[,] Load_FCEUX_Palette(byte[] fileContents)
 		{
-			//'validate' file, solely by length
-			if (fileContents.Length == 1536) { }
-			else if (fileContents.Length != 192) return null;
+			int nColors;
 
-			int[,] ret = new int[64, 3];
+			//'validate' file, solely by length
+			if (fileContents.Length == 1536)
+			{
+				nColors = 512;
+			}
+			else if (fileContents.Length == 192)
+			{
+				nColors = 64;
+			}
+			else
+			{
+				return null;
+			}
+
+			byte[,] ret = new byte[nColors, 3];
 			int i = 0;
-			for (int c = 0; c < 64; c++)
+			for (int c = 0; c < nColors; c++)
 			{
 				for (int z = 0; z < 3; z++)
 					ret[c, z] = fileContents[i++];
@@ -41,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		const int SHIFT = 2;
-		public static int[,] FCEUX_Standard = new int[,]
+		public static byte[,] FCEUX_Standard = new byte[,]
 		{
 			{ 0x1D<<SHIFT, 0x1D<<SHIFT, 0x1D<<SHIFT }, /* Value 0 */
 			{ 0x09<<SHIFT, 0x06<<SHIFT, 0x23<<SHIFT }, /* Value 1 */
@@ -109,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{ 0x00<<SHIFT, 0x00<<SHIFT, 0x00<<SHIFT }, /* Value 63 */
 		};
 
-		public static int[,] QuickNESPalette = 
+		public static byte[,] QuickNESPalette = 
 		{
 			{102, 102, 102},
 			{0, 42, 136},

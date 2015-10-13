@@ -320,11 +320,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private bool _pal;
 
-		public DisplayType DisplayType
-		{
-			get { return _pal ? DisplayType.PAL : Common.DisplayType.NTSC; }
-		}
-
 		private void HardReset()
 		{
 			Ram = new byte[128];

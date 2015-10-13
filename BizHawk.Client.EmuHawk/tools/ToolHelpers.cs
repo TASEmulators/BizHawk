@@ -14,17 +14,22 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class ToolHelpers
 	{
-		public static FileInfo GetTasProjFileFromUser(string currentFile)
+		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
+			if (!Directory.Exists(path))
 			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
+				Directory.CreateDirectory(path);
 			}
 
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
-			ofd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
-			ofd.RestoreDirectory = true;
+			var ofd = new OpenFileDialog
+			{
+				FileName = !string.IsNullOrWhiteSpace(currentFile)
+					? Path.GetFileName(currentFile)
+					: PathManager.FilesystemSafeName(Global.Game) + "." + fileExt,
+				InitialDirectory = path,
+				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
+				RestoreDirectory = true
+			};
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
@@ -35,22 +40,23 @@ namespace BizHawk.Client.EmuHawk
 			return new FileInfo(ofd.FileName);
 		}
 
-		public static FileInfo GetTasProjSaveFileFromUser(string currentFile)
+		public static FileInfo SaveFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
-			var sfd = HawkDialogFactory.CreateSaveFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
+			if (!Directory.Exists(path))
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
-			}
-			else
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+				Directory.CreateDirectory(path);
 			}
 
-			sfd.Filter = "Tas Project Files (*.tasproj)|*.tasproj|All Files|*.*";
-			sfd.RestoreDirectory = true;
+			var sfd = new SaveFileDialog
+			{
+				FileName = !string.IsNullOrWhiteSpace(currentFile)
+					? Path.GetFileName(currentFile)
+					: PathManager.FilesystemSafeName(Global.Game) + "." + fileExt,
+				InitialDirectory = path,
+				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
+				RestoreDirectory = true,
+			};
+
 			var result = sfd.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
@@ -62,134 +68,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public static FileInfo GetWatchFileFromUser(string currentFile)
 		{
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
-			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
-			ofd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			var result = ofd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(ofd.FileName);
+			return OpenFileDialog(currentFile, PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null), "Watch Files", "wch");
 		}
 
 		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
-			var sfd = HawkDialogFactory.CreateSaveFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-				sfd.InitialDirectory = Path.GetDirectoryName(currentFile);
-			}
-			else
-			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null);
-			}
-
-			sfd.Filter = "Watch Files (*.wch)|*.wch|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(sfd.FileName);
-		}
-
-		public static FileInfo GetCheatFileFromUser(string currentFile)
-		{
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
-			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-
-			ofd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			ofd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			var result = ofd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(ofd.FileName);
-		}
-
-		public static FileInfo GetCheatSaveFileFromUser(string currentFile)
-		{
-			var sfd = HawkDialogFactory.CreateSaveFileDialog();
-			if (!string.IsNullOrWhiteSpace(currentFile))
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-
-			sfd.InitialDirectory = PathManager.GetCheatsPath(Global.Game);
-			sfd.Filter = "Cheat Files (*.cht)|*.cht|All Files|*.*";
-			sfd.RestoreDirectory = true;
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(sfd.FileName);
-		}
-
-		public static FileInfo GetCdlFileFromUser(string currentFile)
-		{
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*";
-			ofd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
-			ofd.RestoreDirectory = true;
-
-			if (!string.IsNullOrWhiteSpace(currentFile))
-			{
-				ofd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-
-			var result = ofd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(ofd.FileName);
-		}
-
-		public static FileInfo GetCdlSaveFileFromUser(string currentFile)
-		{
-			var sfd = new SaveFileDialog
-			{
-				Filter = "Code Data Logger Files (*.cdl)|*.cdl|All Files|*.*",
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-				RestoreDirectory = true
-			};
-
-			if (!string.IsNullOrWhiteSpace(currentFile))
-			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(currentFile);
-			}
-
-			var result = sfd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return null;
-			}
-
-			return new FileInfo(sfd.FileName);
-		}
+			return SaveFileDialog(currentFile, PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null), "Watch Files", "wch");
+        }
 
 		public static void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
 		{

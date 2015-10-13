@@ -224,7 +224,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 #endif
 			}
-		}
+
+			//cleanup:
+			//cleanup IGL stuff so we can get better refcounts when exiting process, for debugging
+			//DOESNT WORK FOR SOME REASON
+			//GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			//GLManager.Instance.Dispose();
+			//if (GlobalWin.IGL_GL != GlobalWin.GL)
+			//  GlobalWin.GL.Dispose();
+			//((IDisposable)GlobalWin.IGL_GL).Dispose();
+
+		} //SubMain
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
 #if WINDOWS

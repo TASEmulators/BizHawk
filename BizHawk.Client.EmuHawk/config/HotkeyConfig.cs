@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!e.Control && !e.Alt && !e.Shift &&
 				(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
 			{
-				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == SearchBox.Text);
+				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName,SearchBox.Text,true)==0);
 
 				//Found
 				if (b != null)
@@ -219,6 +219,7 @@ namespace BizHawk.Client.EmuHawk
 					if (w != null)
 					{
 						HotkeyTabControl.SelectTab((w.Parent as TabPage));
+						Input.Instance.BindUnpress(e.KeyCode);
 						w.Focus();
 					}
 				}

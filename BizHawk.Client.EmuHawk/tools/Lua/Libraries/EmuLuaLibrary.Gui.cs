@@ -116,6 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var g = _luaSurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _luaSurface.GetGraphics();
 
+			//we don't like CoreComm, right? Someone should find a different way to do this then.
 			var tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
 			var ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)

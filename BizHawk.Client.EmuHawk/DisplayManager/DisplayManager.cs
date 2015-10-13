@@ -65,19 +65,22 @@ namespace BizHawk.Client.EmuHawk
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
-			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
+			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 			{
-				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
-				if (fiHq2x.Exists)
-					using (var stream = fiHq2x.OpenRead())
-						ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-				var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
-				if (fiScanlines.Exists)
-					using (var stream = fiScanlines.OpenRead())
-						ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/bicubic-fast.cgp"));
+				//var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
+				//if (fiHq2x.Exists)
+				//  using (var stream = fiHq2x.OpenRead())
+				//    ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				//var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+				//if (fiScanlines.Exists)
+				//  using (var stream = fiScanlines.OpenRead())
+				//    ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				string bicubic_path = "Shaders/BizHawk/bicubic-fast.cgp";
+				if(GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+					bicubic_path = "Shaders/BizHawk/bicubic-normal.cgp";
+				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), bicubic_path));
 				if (fiBicubic.Exists)
-					using (var stream = fiBicubic.OpenRead())
+					using (var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
 						ShaderChain_bicubic = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 			}
 
@@ -127,6 +130,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public System.Windows.Forms.Padding GameExtraPadding;
 
+		/// <summary>
+		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
+		/// </summary>
+		public System.Windows.Forms.Padding ClientExtraPadding;
+
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
@@ -143,6 +151,28 @@ namespace BizHawk.Client.EmuHawk
 				using (var stream = fi.OpenRead())
 					ShaderChain_user = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
 			}
+		}
+
+		System.Windows.Forms.Padding CalculateCompleteContentPadding(bool user, bool source)
+		{
+			var padding = new System.Windows.Forms.Padding();
+			
+			if(user)
+				padding += GameExtraPadding;
+
+			//an experimental feature
+			if(source)
+				if (Global.Emulator is BizHawk.Emulation.Cores.Sony.PSX.Octoshock)
+				{
+					var psx = Global.Emulator as BizHawk.Emulation.Cores.Sony.PSX.Octoshock;
+					var core_padding = psx.VideoProvider_Padding;
+					padding.Left += core_padding.Width / 2;
+					padding.Right += core_padding.Width - core_padding.Width / 2;
+					padding.Top += core_padding.Height / 2;
+					padding.Bottom += core_padding.Height - core_padding.Height / 2;
+				}
+
+			return padding;
 		}
 
 		FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize, bool includeOSD)
@@ -185,18 +215,23 @@ namespace BizHawk.Client.EmuHawk
 			chain.AddFilter(fInput, "input");
 
 			//if a non-zero padding is required, add a filter to allow for that
-			if (GameExtraPadding.Vertical != 0 || GameExtraPadding.Horizontal != 0)
+			//note, we have two sources of padding right now.. one can come from the videoprovider and one from the user.
+			//we're combining these now and just using black, for sake of being lean, despite the discussion below:
+			//keep in mind, the videoprovider design in principle might call for another color.
+			//we havent really been using this very hard, but users will probably want black there (they could fill it to another color if needed tho)
+			var padding = CalculateCompleteContentPadding(true,true);
+			if (padding.Vertical != 0 || padding.Horizontal != 0)
 			{
-				//TODO - add another filter just for this, its cumebrsome to use final presentation... I think. but maybe theres enough similarities to justify it.
+				//TODO - add another filter just for this, its cumbersome to use final presentation... I think. but maybe theres enough similarities to justify it.
 				Size size = chain_insize;
-				size.Width += GameExtraPadding.Horizontal;
-				size.Height += GameExtraPadding.Vertical;
+				size.Width += padding.Horizontal;
+				size.Height += padding.Vertical;
 				Filters.FinalPresentation fPadding = new Filters.FinalPresentation(size);
 				chain.AddFilter(fPadding, "padding");
 				fPadding.GuiRenderer = Renderer;
 				fPadding.GL = GL;
 				fPadding.Config_PadOnly = true;
-				fPadding.Padding = GameExtraPadding;
+				fPadding.Padding = padding;
 			}
 
 			//add lua layer 'emu'
@@ -216,10 +251,11 @@ namespace BizHawk.Client.EmuHawk
 			Filters.FinalPresentation.eFilterOption finalFilter = Filters.FinalPresentation.eFilterOption.None;
 			if (Global.Config.DispFinalFilter == 1) finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
 			if (Global.Config.DispFinalFilter == 2) finalFilter = Filters.FinalPresentation.eFilterOption.Bicubic;
-			//if bicubic is selected and unavailable, dont use it
-			if (ShaderChain_bicubic != null && !ShaderChain_bicubic.Available && fPresent.FilterOption == Filters.FinalPresentation.eFilterOption.Bicubic)
+			//if bicubic is selected and unavailable, dont use it. use bilinear instead I guess
+			if (finalFilter == Filters.FinalPresentation.eFilterOption.Bicubic)
 			{
-				finalFilter = Filters.FinalPresentation.eFilterOption.None;
+				if (ShaderChain_bicubic == null || !ShaderChain_bicubic.Available)
+					finalFilter = Filters.FinalPresentation.eFilterOption.Bilinear;
 			}
 			fPresent.FilterOption = finalFilter;
 
@@ -234,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			AppendLuaLayer(chain, "native");
 
 			//and OSD goes on top of that
-			//TODO - things break if this isnt present (the final presentation filter gets messed up)
+			//TODO - things break if this isnt present (the final presentation filter gets messed up when used with prescaling)
 			//so, always include it (we'll handle this flag in the callback to do no rendering)
 			//if (includeOSD)
 				chain.AddFilter(fOSD, "osd");
@@ -308,12 +344,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			bool displayNothing = Global.Config.DispSpeedupFeatures == 0;
 			var job = new JobInfo
 			{
 				videoProvider = videoProvider,
-				simulate = false,
+				simulate = displayNothing,
 				chain_outsize = GraphicsControl.Size,
-				includeOSD = true
+				includeOSD = true,
+				
 			};
 			UpdateSourceInternal(job);
 		}
@@ -368,6 +406,14 @@ namespace BizHawk.Client.EmuHawk
 				virtualWidth = Global.Config.DispCustomUserARWidth;
 				virtualHeight = Global.Config.DispCustomUserARHeight;
 			}
+
+			var padding = CalculateCompleteContentPadding(true, false);
+			virtualWidth += padding.Horizontal;
+			virtualHeight += padding.Vertical;
+
+			padding = CalculateCompleteContentPadding(true, true);
+			bufferWidth += padding.Horizontal;
+			bufferHeight += padding.Vertical;
 
 			//Console.WriteLine("DISPZOOM " + zoom); //test
 
@@ -459,6 +505,9 @@ namespace BizHawk.Client.EmuHawk
 				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
+			chain_outsize.Width += ClientExtraPadding.Horizontal;
+			chain_outsize.Height += ClientExtraPadding.Vertical;
+
 			var job = new JobInfo
 			{
 				videoProvider = fvp,
@@ -484,11 +533,17 @@ namespace BizHawk.Client.EmuHawk
 
 		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
-			GlobalWin.GLManager.Activate(CR_GraphicsControl);
+			//no drawing actually happens. it's important not to begin drawing on a control
+			if (!job.simulate)
+			{
+				GlobalWin.GLManager.Activate(CR_GraphicsControl);
+			}
 
 			IVideoProvider videoProvider = job.videoProvider;
 			bool simulate = job.simulate;
 			Size chain_outsize = job.chain_outsize;
+
+			//simulate = true;
 			
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
@@ -507,21 +562,27 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			var padding = CalculateCompleteContentPadding(true,false);
+			vw += padding.Horizontal;
+			vh += padding.Vertical;
+
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 			
-TESTEROO:
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
-			//TODO - need to do some work here for GDI+ to repair gl texture ID importing
 			BitmapBuffer bb = null;
 			Texture2d videoTexture = null;
 			if (!simulate)
 			{
-				//special codepath for GDI+
-				//TODO - make for gdi+ only. maybe other codepath for d3d
-				if (!(GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK))
+				if (isGlTextureId)
+				{
+					//FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
+					//is it workable for saturn?
+					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
+				}
+				else
 				{
 					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
@@ -529,30 +590,9 @@ TESTEROO:
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = VideoTextureFrugalizer.Get(bb);
-					GL.SetTextureWrapMode(videoTexture, true);
-				}
-				else
-				{
-					if (isGlTextureId)
-					{
-						videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
-					}
-					else
-					{
-						//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
-						bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
-
-						//now, acquire the data sent from the videoProvider into a texture
-						videoTexture = VideoTextureFrugalizer.Get(bb);
-						GL.SetTextureWrapMode(videoTexture, true);
-					}
-
-					//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
-					if (!isGlTextureId)
-					{
-						videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
-						goto TESTEROO;
-					}
+					
+					//lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
+					//GL.SetTextureWrapMode(videoTexture, true);
 				}
 			}
 
@@ -579,6 +619,7 @@ TESTEROO:
 			fPresent.GuiRenderer = Renderer;
 			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
 			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+			fPresent.Padding = ClientExtraPadding;
 
 			fPresent.GL = GL;
 
@@ -605,6 +646,8 @@ TESTEROO:
 			//should this have been done earlier?
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
 			//GraphicsControl.Begin();
+
+			GlobalWin.GL.BeginScene();
 
 			//run filter chain
 			Texture2d texCurr = null;
@@ -652,6 +695,8 @@ TESTEROO:
 				}
 			}
 
+			GL.EndScene();
+
 			if (job.offscreen)
 			{
 				job.offscreenBB = rtCurr.Texture2d.Resolve();
@@ -689,6 +734,7 @@ TESTEROO:
 
 				NeedsToPaint = false; //??
 			}
+
 		}
 
 		bool? LastVsyncSetting;

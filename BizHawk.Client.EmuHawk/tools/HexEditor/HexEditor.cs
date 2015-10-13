@@ -127,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			AddressesLabel.Text = GenerateMemoryViewString();
+			AddressesLabel.Text = GenerateMemoryViewString(true);
 			AddressLabel.Text = GenerateAddressString();
 		}
 
@@ -135,6 +135,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			// Do nothing
 		}
+
+		private string _lastRom = string.Empty;
 
 		public void Restart()
 		{
@@ -157,8 +159,16 @@ namespace BizHawk.Client.EmuHawk
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 			_maxRow = _domain.Size / 2;
 
-			ResetScrollBar();
+			// Don't reset scroll bar if restarting the same rom
+			if (_lastRom != GlobalWin.MainForm.CurrentlyOpenRom)
+			{
+				_lastRom = GlobalWin.MainForm.CurrentlyOpenRom;
+				ResetScrollBar();
+			}
+			
 			SetDataSize(DataSize);
+			SetHeader();
+
 			UpdateValues();
 			AddressLabel.Text = GenerateAddressString();
 		}
@@ -397,20 +407,6 @@ namespace BizHawk.Client.EmuHawk
 			return (char)keycode;
 		}
 
-		private static string GetSaveFileFromUser()
-		{
-			var sfd = HawkDialogFactory.CreateSaveFileDialog();
-			sfd.Filter = "Text (*.txt)|*.txt|All Files|*.*";
-			sfd.RestoreDirectory = true;
-
-			sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
-
-			var result = sfd.ShowHawkDialog();
-
-			return result == DialogResult.OK ? sfd.FileName : string.Empty;
-		}
-
 		private static bool IsHexKeyCode(char key)
 		{
 			if (key >= '0' && key <= '9') // 0-9
@@ -490,7 +486,7 @@ namespace BizHawk.Client.EmuHawk
 			return addrStr.ToString();
 		}
 
-		private string GenerateMemoryViewString()
+		private string GenerateMemoryViewString(bool forWindow)
 		{
 			var rowStr = new StringBuilder();
 
@@ -525,7 +521,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + k < _domain.Size)
 					{
-						rowStr.Append(Remap(MakeByte(_addr + k)));
+						byte b = MakeByte(_addr + k);
+						char c = Remap(b);
+						rowStr.Append(c);
+						//winforms will be using these as escape codes for hotkeys
+						if (forWindow) if (c == '&') rowStr.Append('&');
 					}
 				}
 
@@ -542,14 +542,14 @@ namespace BizHawk.Client.EmuHawk
 				: _domain.PeekByte(address); 
 		}
 
-		private int MakeValue(long address)
+		private int MakeValue(int dataSize, long address)
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
 				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)DataSize ).Value;
 			}
 
-			switch (DataSize)
+			switch (dataSize)
 			{
 				default:
 				case 1:
@@ -559,6 +559,11 @@ namespace BizHawk.Client.EmuHawk
 				case 4:
 					return (int)_domain.PeekDWord(address, BigEndian);
 			}
+		}
+
+		private int MakeValue(long address)
+		{
+			return MakeValue(DataSize, address);
 		}
 
 		private void SetMemoryDomain(string name)
@@ -590,6 +595,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateGroupBoxTitle();
+			SetHeader();
 			UpdateValues();
 		}
 
@@ -707,6 +713,7 @@ namespace BizHawk.Client.EmuHawk
 				SetHeader();
 				UpdateGroupBoxTitle();
 				UpdateValues();
+				_secondaryHighlightedAddresses.Clear();
 			}
 		}
 
@@ -804,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_domain.Name == "File on Disk")
 			{
-				var extension = Path.GetExtension(GlobalWin.MainForm.CurrentlyOpenRom);
+				var extension = Path.GetExtension(RomName);
 
 				return "Binary (*" + extension + ")|*" + extension + "|All Files|*.*";
 			}
@@ -812,16 +819,82 @@ namespace BizHawk.Client.EmuHawk
 			return "Binary (*.bin)|*.bin|All Files|*.*";
 		}
 
+
+		private string RomDirectory
+		{
+			get
+			{
+				string path = Global.Config.RecentRoms.MostRecent;
+
+				if (string.IsNullOrWhiteSpace(path))
+				{
+					return path;
+				}
+
+				if (path.Contains("|"))
+				{
+					path = path.Split('|').First();
+				}
+
+				return Path.GetDirectoryName(path);
+			}
+		}
+
+		private string RomName
+		{
+			get
+			{
+				string path = Global.Config.RecentRoms.MostRecent;
+
+				if (string.IsNullOrWhiteSpace(path))
+				{
+					return path;
+				}
+
+				if (path.Contains("|"))
+				{
+					path = path.Split('|').Last();
+				}
+
+				return Path.GetFileName(path);
+			}
+		}
+
 		private string GetBinarySaveFileFromUser()
 		{
-			var sfd = HawkDialogFactory.CreateSaveFileDialog();
-			sfd.Filter = GetSaveFileFilter();
-			sfd.RestoreDirectory = true;
-			sfd.InitialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(Global.Config.RecentRoms.MostRecent, null));
+			var sfd = new SaveFileDialog
+			{
+				Filter = GetSaveFileFilter(),
+				RestoreDirectory = true,
+				InitialDirectory = RomDirectory
+			};
 
 			if (_domain.Name == "File on Disk")
 			{
-				sfd.FileName = Path.GetFileName(Global.Config.RecentRoms.MostRecent);
+				sfd.FileName = RomName;
+			}
+			else
+			{
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
+			}
+
+			var result = sfd.ShowHawkDialog();
+
+			return result == DialogResult.OK ? sfd.FileName : string.Empty;
+		}
+
+		private string GetSaveFileFromUser()
+		{
+			var sfd = new SaveFileDialog
+			{
+				Filter = "Text (*.txt)|*.txt|All Files|*.*",
+				RestoreDirectory = true,
+				InitialDirectory = RomDirectory
+			};
+
+			if (_domain.Name == "File on Disk")
+			{
+				sfd.FileName = Path.GetFileNameWithoutExtension(RomName) + ".txt";
 			}
 			else
 			{
@@ -1265,36 +1338,85 @@ namespace BizHawk.Client.EmuHawk
 			FindNextMenuItem.Enabled = !string.IsNullOrWhiteSpace(_findStr);
 		}
 
+		string MakeCopyExportString(bool export)
+		{
+			//make room for an array with _secondaryHighlightedAddresses and optionally HighlightedAddress
+			long[] addresses = new long[_secondaryHighlightedAddresses.Count + (HighlightedAddress.HasValue ? 1 : 0)];
+
+			//if there was actually nothing to do, return
+			if (addresses.Length == 0)
+				return null;
+
+			//fill the array with _secondaryHighlightedAddresses
+			for (int i = 0; i < _secondaryHighlightedAddresses.Count; i++)
+				addresses[i] = _secondaryHighlightedAddresses[i];
+			//and add HighlightedAddress if present
+			if (HighlightedAddress.HasValue)
+				addresses[addresses.Length - 1] = HighlightedAddress.Value;
+
+			//these need to be sorted. it's not just for HighlightedAddress, _secondaryHighlightedAddresses can even be jumbled
+			Array.Sort(addresses);
+
+			//find the maximum length of the exported string
+			int maximumLength = addresses.Length * (export ? 3 : 2) + 8;
+			StringBuilder sb = new StringBuilder(maximumLength);
+
+			//generate it differently for export (as you see it) or copy (raw bytes)
+			if (export)
+				for (int i = 0; i < addresses.Length; i++)
+				{
+					sb.Append(ValueString(addresses[i]));
+					if(i != addresses.Length-1)
+						sb.Append(' ');
+				}
+			else
+			{
+				for (int i = 0; i < addresses.Length; i++)
+				{
+					long start = addresses[i];
+					long end = addresses[i] + DataSize -1 ;
+					for(long a = start;a<=end;a++)
+						sb.AppendFormat("{0:X2}", MakeValue(1,a));
+				}
+			}
+
+			return sb.ToString();
+		}
+
+		private void ExportMenuItem_Click(object sender, EventArgs e)
+		{
+			var value = MakeCopyExportString(true);
+			if (!string.IsNullOrEmpty(value))
+				Clipboard.SetDataObject(value);
+		}
+
 		private void CopyMenuItem_Click(object sender, EventArgs e)
 		{
-			var value = HighlightedAddress.HasValue ? ValueString(HighlightedAddress.Value) : string.Empty;
-			value = _secondaryHighlightedAddresses.Aggregate(value, (current, x) => current + ValueString(x));
-			if (!string.IsNullOrWhiteSpace(value))
-			{
+			var value = MakeCopyExportString(false);
+			if (!string.IsNullOrEmpty(value))
 				Clipboard.SetDataObject(value);
-			}
 		}
 
 		private void PasteMenuItem_Click(object sender, EventArgs e)
 		{
 			var data = Clipboard.GetDataObject();
 
-			if (data != null && data.GetDataPresent(DataFormats.Text))
+			if (data != null && !data.GetDataPresent(DataFormats.Text))
+				return;
+			
+			var clipboardRaw = (string)data.GetData(DataFormats.Text);
+			var hex = clipboardRaw.OnlyHex();
+
+			var numBytes = hex.Length / 2;
+			for (var i = 0; i < numBytes; i++)
 			{
-				var clipboardRaw = (string)data.GetData(DataFormats.Text);
-				var hex = clipboardRaw.OnlyHex();
-
-				var numBytes = hex.Length / 2;
-				for (var i = 0; i < numBytes; i++)
-				{
-					var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
-					var address = _addressHighlighted + i;
-					_domain.PokeByte(address, (byte)value);
-				}
-
-				UpdateValues();
+				var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
+				var address = _addressHighlighted + i;
+				_domain.PokeByte(address, (byte)value);
 			}
-		}
+
+			UpdateValues();
+	}
 
 		private void FindMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2179,5 +2301,6 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show(str);
 
 		}
+
 	}
 } 

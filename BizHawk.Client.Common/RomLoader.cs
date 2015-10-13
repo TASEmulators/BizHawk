@@ -269,6 +269,9 @@ namespace BizHawk.Client.Common
 								return false;
 							}
 
+							if (discMountJob.OUT_ErrorLevel)
+								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+
 							if(disc == null)
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
 
@@ -286,7 +289,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
 								else
 								{
-									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}",discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -301,7 +304,6 @@ namespace BizHawk.Client.Common
 						}
 
 						nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-						nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 						nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
 						game.System = "PSX";
@@ -325,6 +327,10 @@ namespace BizHawk.Client.Common
 							System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
 							return false;
 						}
+
+						if (discMountJob.OUT_ErrorLevel)
+							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+
 						var disc = discMountJob.OUT_Disc;
 						//-----------
 						
@@ -384,7 +390,7 @@ namespace BizHawk.Client.Common
 								else
 								{
 									StringWriter sw = new StringWriter();
-									sw.WriteLine("Disc was identified (99.99% confidently) as known good.");
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -435,6 +441,69 @@ namespace BizHawk.Client.Common
 										assets,
 										roms,
 										(AppleII.Settings)GetCoreSettings<AppleII>());
+									break;
+								case "PSX":
+									var entries = xmlGame.AssetFullPaths;
+									var discs = new List<Disc>();
+									var discNames = new List<string>();
+									var sw = new StringWriter();
+									foreach (var e in entries)
+									{
+										Disc disc = null;
+										string discPath = e;
+
+										//--- load the disc in a context which will let us abort if it's going to take too long
+										var discMountJob = new DiscMountJob { IN_FromPath = discPath };
+										discMountJob.IN_SlowLoadAbortThreshold = 8;
+										discMountJob.Run();
+										disc = discMountJob.OUT_Disc;
+
+										if (discMountJob.OUT_SlowLoadAborted)
+										{
+											System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+											return false;
+										}
+
+										if (discMountJob.OUT_ErrorLevel)
+											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+
+										if (disc == null)
+											throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+
+										var discName = Path.GetFileNameWithoutExtension(discPath);
+										discNames.Add(discName);
+										discs.Add(disc);
+
+										var discType = new DiscIdentifier(disc).DetectDiscType();
+										sw.WriteLine("{0}", Path.GetFileName(discPath));
+										if (discType == DiscType.SonyPSX)
+										{
+											string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
+											game = Database.CheckDatabase(discHash);
+											if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+												sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
+											else
+											{
+												sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
+												sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
+												sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
+												sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
+												sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
+											}
+										}
+										else
+										{
+											sw.WriteLine("Not a PSX disc");
+										}
+										sw.WriteLine("-------------------------");
+									}
+
+									// todo: copy pasta from PSX .cue section
+									nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
+									game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
+									game.System = "PSX";
+
 									break;
 								default:
 									return false;
@@ -603,7 +672,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
 								break;
 							case "C64":
-								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension);
+								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 								nextEmulator = c64;
 								break;
 							case "GBA":

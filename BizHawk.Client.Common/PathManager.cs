@@ -29,6 +29,8 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path, null); }
 
+		public static string GetDllDirectory() { return Path.Combine(GetExeDirectoryAbsolute(), "dll"); }
+
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>

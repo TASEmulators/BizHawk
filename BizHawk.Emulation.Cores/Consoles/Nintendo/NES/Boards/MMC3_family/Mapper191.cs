@@ -21,9 +21,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BaseSetup();
 
 			//theres a possibly bogus Q Boy rom using this mapper but I have no idea what emulator its supposed to boot in, for proof
-			throw new InvalidOperationException("THIS MAPPER ISNT TESTED! WHAT GAME USES IT? PLEASE REPORT!");
+			//throw new InvalidOperationException("THIS MAPPER ISNT TESTED! WHAT GAME USES IT? PLEASE REPORT!");
 
-			//return true;
+			return true;
 		}
 
 		public override byte ReadPPU(int addr)

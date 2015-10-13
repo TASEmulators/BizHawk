@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		private int _dispLagy = Global.Config.DispLagy;
 		private int _dispInpx = Global.Config.DispInpx;
 		private int _dispInpy = Global.Config.DispInpy;
+		private int _dispWatchesx = Global.Config.DispRamWatchx;
+		private int _dispWatchesy = Global.Config.DispRamWatchy;
 		private int _lastInputColor = Global.Config.LastInputColor;
 		private int _dispRecx = Global.Config.DispRecx;
 		private int _dispRecy = Global.Config.DispRecy;
@@ -34,6 +36,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _dispFrameanchor = Global.Config.DispFrameanchor;
 		private int _dispLaganchor = Global.Config.DispLaganchor;
 		private int _dispInputanchor = Global.Config.DispInpanchor;
+		private int _dispWatchesanchor = Global.Config.DispWatchesanchor;
 		private int _dispRecanchor = Global.Config.DispRecanchor;
 		private int _dispMultiAnchor = Global.Config.DispMultianchor;
 		private int _dispMessageAnchor = Global.Config.DispMessageanchor;
@@ -142,6 +145,14 @@ namespace BizHawk.Client.EmuHawk
 				_py = _dispInpy;
 				SetAnchorRadio(_dispInputanchor);
 			}
+			else if (WatchesRadio.Checked)
+			{
+				XNumeric.Value = _dispWatchesx;
+				XNumeric.Value = _dispWatchesy;
+				_px = _dispWatchesx;
+				_py = _dispWatchesy;
+				SetAnchorRadio(_dispWatchesanchor);
+			}
 			else if (MessagesRadio.Checked)
 			{
 				XNumeric.Value = _dispMessagex;
@@ -191,6 +202,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DispLagy = _dispLagy;
 			Global.Config.DispInpx = _dispInpx;
 			Global.Config.DispInpy = _dispInpy;
+			Global.Config.DispRamWatchx = _dispWatchesx;
+			Global.Config.DispRamWatchy = _dispWatchesy;
 			Global.Config.DispRecx = _dispRecx;
 			Global.Config.DispRecy = _dispRecy;
 			Global.Config.DispMultix = _dispMultix;
@@ -368,6 +381,11 @@ namespace BizHawk.Client.EmuHawk
 				_dispInpx = _px;
 				_dispInpy = _py;
 			}
+			else if (WatchesRadio.Checked)
+			{
+				_dispWatchesx = _px;
+				_dispWatchesy = _py;
+			}
 			else if (RerecordsRadio.Checked)
 			{
 				_dispRecx = _px;
@@ -393,6 +411,7 @@ namespace BizHawk.Client.EmuHawk
 			FCLabel.Text = _dispFrameCx + ", " + _dispFrameCy;
 			LagLabel.Text = _dispLagx + ", " + _dispLagy;
 			InpLabel.Text = _dispInpx + ", " + _dispInpy;
+			WatchesLabel.Text = _dispWatchesx + ", " + _dispWatchesy;
 			RerecLabel.Text = _dispRecx + ", " + _dispRecy;
 			MultitrackLabel.Text = _dispMultix + ", " + _dispMultiy;
 			MessLabel.Text = _dispMessagex + ", " + _dispMessagey;
@@ -492,6 +511,10 @@ namespace BizHawk.Client.EmuHawk
 			else if (InputDisplayRadio.Checked)
 			{
 				_dispInputanchor = value;
+			}
+			else if (WatchesRadio.Checked)
+			{
+				_dispWatchesanchor = value;
 			}
 			else if (MessagesRadio.Checked)
 			{

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Drawing;
@@ -110,6 +110,9 @@ namespace BizHawk.Client.EmuHawk
 					_sortReverse = false;
 					_sortedCol = string.Empty;
 				}
+
+				_sortReverse = false;
+				_sortedCol = string.Empty;
 
 				return index;
 			}

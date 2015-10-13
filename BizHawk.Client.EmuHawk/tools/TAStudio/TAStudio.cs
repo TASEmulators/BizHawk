@@ -42,6 +42,11 @@ namespace BizHawk.Client.EmuHawk
 			Size = new Size(256, 240),
 		};
 
+		public string statesPath
+		{
+			get { return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); }
+		}
+
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -56,6 +61,11 @@ namespace BizHawk.Client.EmuHawk
 				ScrollSpeed = 1;
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
+                // default to taseditor fashion
+                denoteStatesWithIcons = false;
+                denoteStatesWithBGColor = true;
+                denoteMarkersWithIcons = false;
+                denoteMarkersWithBGColor = true;
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -66,7 +76,12 @@ namespace BizHawk.Client.EmuHawk
 			public bool EmptyMarkers { get; set; }
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
-			public string FollowCursorScrollMethod { get; set; }
+            public string FollowCursorScrollMethod { get; set; }
+
+            public bool denoteStatesWithIcons { get; set; }
+            public bool denoteStatesWithBGColor { get; set; }
+            public bool denoteMarkersWithIcons { get; set; }
+            public bool denoteMarkersWithBGColor { get; set; }
 
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
@@ -86,9 +101,18 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Emulator != null)
 			{
 				// Set the screenshot to "1x" resolution of the core
-				// TODO: cores like n64 and psx are going to still have sizes too big for the control
-				// Find a smart way to keep them small
-				ScreenshotControl.Size = new Size(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
+				// cores like n64 and psx are going to still have sizes too big for the control, so cap them
+				int width = Global.Emulator.VideoProvider().BufferWidth;
+				int height = Global.Emulator.VideoProvider().BufferHeight;
+				if (width > 320)
+				{
+					double ratio = 320.0 / (double)width;
+					width = 320;
+					height = (int)((double)(height) * ratio);
+				}
+
+
+				ScreenshotControl.Size = new Size(width, height);
 			}
 
 			ScreenshotControl.Visible = false;
@@ -157,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!InitializeOnLoad())
 			{
 				Close();
-				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+				DialogResult = DialogResult.Cancel;
 				return;
 			}
 
@@ -179,7 +203,12 @@ namespace BizHawk.Client.EmuHawk
 			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+            TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+
+            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
+            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor;
+            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons;
+            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
 
 			// Remembering Split container logic
 			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
@@ -302,6 +331,17 @@ namespace BizHawk.Client.EmuHawk
 				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
 			}
 
+			var columnsToHide = TasView.AllColumns
+				.Where(c => c.Name == "Power" || c.Name == "Reset");
+
+			foreach (var column in columnsToHide)
+			{
+				column.Visible = false;
+			}
+
+			TasView.AllColumns.ColumnsChanged();
+			
+
 			// Patterns
 			int bStart = 0;
 			int fStart = 0;
@@ -341,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = columnName,
 					Text = columnText,
-					Width = columnWidth,
+					Width = columnWidth
 				};
 
 				TasView.AllColumns.Add(column);
@@ -384,31 +424,20 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			if (CurrentTasMovie == null)
-			{
-				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
-				(Global.MovieSession.Movie as TasMovie).TasStateManager.InvalidateCallback = GreenzoneInvalidated;
-			}
+			TasMovie newMovie = new TasMovie(false, _saveBackgroundWorker);
+			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
+			newMovie.Filename = file.FullName;
 
-			CurrentTasMovie.Filename = file.FullName;
-			try
-			{
-				CurrentTasMovie.Load();
-			}
-			catch
-			{
-				MessageBox.Show(
-					"Tastudio could not open the file. Due to the loading process, the emulator/Tastudio may be in a unspecified state depending on the error.",
-					"Tastudio",
-					MessageBoxButtons.OK);
+			Settings.RecentTas.Add(newMovie.Filename);
+
+			if (!HandleMovieLoadStuff(newMovie))
 				return false;
-			}
-			Settings.RecentTas.Add(CurrentTasMovie.Filename);
+			
+			// clear all selections
+			TasView.DeselectAll();
+			BookMarkControl.Restart();
+			MarkerControl.Restart();
 
-			if (!HandleMovieLoadStuff())
-				return false;
-
-			BookMarkControl.UpdateValues();
 			RefreshDialog();
 			return true;
 		}
@@ -418,7 +447,9 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 			{
 				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
-				(Global.MovieSession.Movie as TasMovie).TasStateManager.InvalidateCallback = GreenzoneInvalidated;
+				var stateManager = (Global.MovieSession.Movie as TasMovie).TasStateManager;
+				stateManager.MountWriteAccess();
+				stateManager.InvalidateCallback = GreenzoneInvalidated;
 				CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 				CurrentTasMovie.PopulateWithDefaultHeaderValues();
@@ -426,19 +457,27 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.ClearChanges(); // Don't ask to save changes here.
 				HandleMovieLoadStuff();
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
+				// clear all selections
+				TasView.DeselectAll();
+				BookMarkControl.Restart();
+				MarkerControl.Restart();
 
-				BookMarkControl.UpdateValues();
 				RefreshDialog();
 			}
 		}
 
 		private bool HandleMovieLoadStuff(TasMovie movie = null)
 		{
-			if (movie == null)
-				movie = CurrentTasMovie;
 
 			WantsToControlStopMovie = false;
-			bool result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
+			bool result;
+			if (movie == null)
+			{
+				movie = CurrentTasMovie;
+				result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
+			}
+			else
+				result = StartNewMovieWrapper(false, movie);
 			if (!result)
 				return false;
 			WantsToControlStopMovie = true;
@@ -508,8 +547,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = _originalEndAction;
 			GlobalWin.MainForm.SetMainformMovieInfo();
 			// Do not keep TAStudio's disk save states.
-			if (Directory.Exists(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null)))
-				Directory.Delete(PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null), true);
+			//if (Directory.Exists(statesPath)) Directory.Delete(statesPath, true);
+			//TODO - do we need to dispose something here instead?
 		}
 
 		/// <summary>
@@ -551,12 +590,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void RefreshDialog()
+		public void RefreshDialog(bool refreshTasView = true)
 		{
-			RefreshTasView();
+			if (refreshTasView)
+				RefreshTasView();
 
 			if (MarkerControl != null)
 				MarkerControl.UpdateValues();
+
+			if (BookMarkControl != null)
+				BookMarkControl.UpdateValues();
 
 			if (undoForm != null && !undoForm.IsDisposed)
 				undoForm.UpdateValues();
@@ -879,6 +922,31 @@ namespace BizHawk.Client.EmuHawk
 		private void BranchesMarkersSplit_SplitterMoved(object sender, SplitterEventArgs e)
 		{
 			Settings.BranchMarkerSplitDistance = BranchesMarkersSplit.SplitterDistance;
+		}
+
+		private void TasView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell != null && e.NewCell.RowIndex.HasValue &&
+				!CurrentTasMovie.Markers.IsMarker(e.NewCell.RowIndex.Value))
+			{
+				var currentMarker = CurrentTasMovie.Markers.Single(m => m.Frame == e.OldCell.RowIndex.Value);
+				int newFrame = e.NewCell.RowIndex.Value;
+				var newMarker = new TasMovieMarker(newFrame, currentMarker.Message);
+				CurrentTasMovie.Markers.Remove(currentMarker);
+				CurrentTasMovie.Markers.Add(newMarker);
+				RefreshDialog();
+			}
+		}
+
+		private void NewFromSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			NewFromNowMenuItem.Enabled =
+				CurrentTasMovie.InputLogLength > 0
+				&& !CurrentTasMovie.StartsFromSaveRam;
+
+			NewFromCurrentSaveRamMenuItem.Enabled =
+				CurrentTasMovie.InputLogLength > 0
+				&& SaveRamEmulator != null;
 		}
 	}
 }

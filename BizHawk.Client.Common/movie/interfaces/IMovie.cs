@@ -52,8 +52,12 @@ namespace BizHawk.Client.Common
 		byte[] BinarySavestate { get; set; }
 		int[] SavestateFramebuffer { get; set; }
 
+		// saveram anchor
+		byte[] SaveRam { get; set; }
+
 		ulong Rerecords { get; set; }
 		bool StartsFromSavestate { get; set; }
+		bool StartsFromSaveRam { get; set; }
 		string GameName { get; set; }
 		string SystemID { get; set; }
 		string Hash { get; set; }
@@ -95,7 +99,7 @@ namespace BizHawk.Client.Common
 		/// Tells the movie to load the contents of Filename
 		/// </summary>
 		/// <returns>Return whether or not the file was successfully loaded</returns>
-		bool Load();
+		bool Load(bool preload);
 
 		/// <summary>
 		/// Instructs the movie to save the current contents to Filename

@@ -118,7 +118,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 		public void Begin(sd.Size size) { Begin(size.Width, size.Height); }
 
 
-		public void Begin(int width, int height, bool yflipped = false)
+		public void Begin(int width, int height)
 		{
 			Begin();
 
@@ -163,9 +163,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		public void DrawSubrect(Texture2d tex, float x, float y, float w, float h, float u0, float v0, float u1, float v1)
 		{
-			var tw = Gdi.TextureWrapperForTexture(tex);
+			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g, tw);
+			PrepDraw(g, tex);
 			SetupMatrix(g);
 
 			float x0 = u0 * tex.Width;
@@ -197,8 +197,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 			DrawInternal(art, x, y, width, height);
 		}
 
-		void PrepDraw(sd.Graphics g, TextureWrapper tw)
+		void PrepDraw(sd.Graphics g, Texture2d tex)
 		{
+			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			//TODO - we can support bicubic for the final presentation..
 			if ((int)tw.MagFilter != (int)tw.MinFilter)
 				throw new InvalidOperationException("tw.MagFilter != tw.MinFilter");
@@ -233,23 +234,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 
 		private void SetupMatrix(sd.Graphics g)
 		{
-			//first we need to make a transform that will change us from the default GDI+ transformation (a top left identity transformation) to an opengl-styled one
-			//(this is necessary because a 'GuiProjectionMatrix' etc. call doesnt have any sense of the size of the destination viewport it's meant for)
-			var vcb = g.VisibleClipBounds;
-			float vw = vcb.Width;
-			float vh = vcb.Height;
-			Matrix4 fixmat = Matrix4.CreateTranslation(vw / 2, -vh / 2, 0);
-			fixmat *= Matrix4.CreateScale(vw / 2, -vh / 2, 1);
-
-			Matrix4 mat = Projection.Top * Modelview.Top * fixmat;
+			//projection is always identity, so who cares i guess
+			//Matrix4 mat = Projection.Top * Modelview.Top;
+			Matrix4 mat = Modelview.Top;
 			g.Transform = new sd.Drawing2D.Matrix(mat.M11, mat.M12, mat.M21, mat.M22, mat.M41, mat.M42);
 		}
 
 		unsafe void DrawInternal(Texture2d tex, float x, float y, float w, float h)
 		{
-			var tw = Gdi.TextureWrapperForTexture(tex);
 			var g = Gdi.GetCurrentGraphics();
-			PrepDraw(g, tw);
+			PrepDraw(g, tex);
 
 			SetupMatrix(g);
 
@@ -259,6 +253,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.GdiPlus
 				new sd.PointF(x,y+h),
 			};
 
+			var tw = tex.Opaque as IGL_GdiPlus.TextureWrapper;
 			g.PixelOffsetMode = sd.Drawing2D.PixelOffsetMode.Half;
 			g.DrawImage(tw.SDBitmap, destPoints, new sd.RectangleF(0, 0, tex.Width, tex.Height), sd.GraphicsUnit.Pixel, CurrentImageAttributes);
 			g.Transform = new sd.Drawing2D.Matrix(); //.Reset() doesnt work ? ?

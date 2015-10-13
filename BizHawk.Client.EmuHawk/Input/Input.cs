@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
@@ -335,7 +335,7 @@ namespace BizHawk.Client.EmuHawk
 			for (; ; )
 			{
 				#if WINDOWS
-				var keyEvents = KeyInput.Update();
+				var keyEvents = KeyInput.Update().Concat(IPCKeyInput.Update());
 				GamePad.UpdateAll();
 				GamePad360.UpdateAll();
 				#else
@@ -555,6 +555,15 @@ namespace BizHawk.Client.EmuHawk
 		//this should be used by hotkey binders, but we may want modifier key events
 		//to get triggered in the main form
 		public bool EnableIgnoreModifiers = false;
+
+		//sets a key as unpressed for the binding system
+		public void BindUnpress(System.Windows.Forms.Keys key)
+		{
+			//only validated for Return
+			string keystr = key.ToString();
+			UnpressState[keystr] = true;
+			LastState[keystr] = true;
+		}
 
 	}
 }

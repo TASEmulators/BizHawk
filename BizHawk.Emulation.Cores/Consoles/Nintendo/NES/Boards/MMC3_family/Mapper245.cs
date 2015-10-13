@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER245":
+					AssertVram(8);
 					break;
 				default:
 					return false;

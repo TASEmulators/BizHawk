@@ -84,6 +84,7 @@
     <Compile Include="Interfaces\IInputPollable.cs" />
     <Compile Include="Interfaces\IMemoryCallbackSystem.cs" />
     <Compile Include="Interfaces\IMemoryDomains.cs" />
+    <Compile Include="Interfaces\IRegionable.cs" />
     <Compile Include="Interfaces\ISaveRam.cs" />
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
     <Compile Include="Interfaces\ISettable.cs" />

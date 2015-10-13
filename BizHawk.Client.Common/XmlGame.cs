@@ -16,12 +16,14 @@ namespace BizHawk.Client.Common
 		public XmlGame()
 		{
 			Assets = new List<KeyValuePair<string, byte[]>>();
+			AssetFullPaths = new List<string>();
 			GI = new GameInfo();
 		}
 
 		public XmlDocument Xml { get; set; }
 		public GameInfo GI { get; set; }
 		public IList<KeyValuePair<string, byte[]>> Assets { get; set; }
+		public IList<string> AssetFullPaths { get; set; } // TODO: Hack work around, to avoid having to refactor Assets into a object array, should be refactored!
 
 		public static XmlGame Create(HawkFile f)
 		{
@@ -45,6 +47,7 @@ namespace BizHawk.Client.Common
 							},
 						Xml = x
 					};
+				string fullpath = string.Empty;
 
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
@@ -79,7 +82,7 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// relative path
-							var fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? string.Empty;
+							fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? string.Empty;
 							fullpath = Path.Combine(fullpath, filename.Split('|').First());
 							try
 							{
@@ -107,7 +110,7 @@ namespace BizHawk.Client.Common
 						}
 
 						ret.Assets.Add(new KeyValuePair<string, byte[]>(filename, data));
-
+						ret.AssetFullPaths.Add(fullpath);
 						using (var sha1 = System.Security.Cryptography.SHA1.Create())
 						{
 							sha1.TransformFinalBlock(data, 0, data.Length);

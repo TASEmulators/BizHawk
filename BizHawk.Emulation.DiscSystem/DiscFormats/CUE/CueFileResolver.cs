@@ -103,6 +103,10 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 				if (ext == ".cue" || ext == ".sbi" || ext == ".ccd" || ext == ".sub")
 					continue;
 
+				//continuing the bad plan: forbid archives (always a wrong choice, not supported anyway)
+				//we should have a list prioritized by extension and score that way
+				if (ext == ".7z" || ext == ".rar" || ext == ".zip" || ext == ".bz2" || ext == ".gz")
+					continue;
 
 				string fragment = Path.GetFileNameWithoutExtension(fi.FullName);
 				//match files with differing extensions

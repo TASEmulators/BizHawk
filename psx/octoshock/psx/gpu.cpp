@@ -366,7 +366,6 @@ INLINE void PS_GPU::Command_FBFill(const uint32 *cb)
 
  //printf("[GPU] FB Fill %d:%d w=%d, h=%d\n", destX, destY, width, height);
  DrawTimeAvail -= 46;	// Approximate
- DrawTimeAvail -= ((width * height) >> 3) + (height * 9);
 
  for(int32 y = 0; y < height; y++)
  {
@@ -375,6 +374,8 @@ INLINE void PS_GPU::Command_FBFill(const uint32 *cb)
   if(LineSkipTest(d_y))
    continue;
 
+  DrawTimeAvail -= (width >> 3) + 9;
+
   for(int32 x = 0; x < width; x++)
   {
    const int32 d_x = (x + destX) & 1023;
@@ -382,7 +383,6 @@ INLINE void PS_GPU::Command_FBFill(const uint32 *cb)
    GPURAM[d_y][d_x] = fill_value;
   }
  }
-
 }
 
 INLINE void PS_GPU::Command_FBCopy(const uint32 *cb)
@@ -1432,6 +1432,30 @@ pscpu_timestamp_t PS_GPU::Update(const pscpu_timestamp_t sys_timestamp)
 
      LineWidths[dest_line] = dmw - dmpa * 2;
 
+		 //adjustments for people who really just want to see the PSX framebuffer
+		 //effectively fixes the xstart registers to be nominal values.
+		 //it's unclear what happens to games displaying a peculiar Y range
+		 if (dump_framebuffer)
+		 {
+			 //printf("%d %d %d\n", VertStart, VertEnd, DisplayOff);
+			 //special hack: if the game (or the bios...) is set to display no range here, don't modify it
+			 //also, as you can see just above, this condition is used to represent an 'off' display
+			 //unfortunately, this will usually be taking effect at dest_line==0, and so the 
+			 //fully overscanned area will get set for LineWidths[0].
+			 //so later on we'll have to use LineWidths[NN], say, as a heuristic to get the framebuffer size
+			 if (dx_start == dx_end)
+			 { }
+			 else
+			 {
+				 dx_start = 0;
+				 dx_end = 2560 / DotClockRatios[dmc];
+				 if(FirstLine == -99)
+					 FirstLine = dest_line;
+
+				 LineWidths[dest_line] = dx_end - dx_start;
+			 }
+		 }
+
      {
       const uint16 *src = GPURAM[DisplayFB_CurLineYReadout];
       const uint32 black = surface->MakeColor(0, 0, 0);
@@ -1514,6 +1538,8 @@ void PS_GPU::StartFrame(EmulateSpecStruct *espec_arg)
  DisplayRect = &espec->DisplayRect;
  LineWidths = espec->LineWidths;
  skip = espec->skip;
+
+ FirstLine = -99;
 
  if(espec->VideoFormatChanged)
  {
@@ -1634,7 +1660,8 @@ SYNCFUNC(PS_GPU)
 
 void PS_GPU::SetRenderOptions(::ShockRenderOptions* opts)
 {
-	hide_hoverscan = !!opts->clipOverscan;
+	hide_hoverscan = opts->renderType == eShockRenderType_ClipOverscan;
+	dump_framebuffer = opts->renderType == eShockRenderType_Framebuffer;
 	LineVisFirst = opts->scanline_start;
 	LineVisLast = opts->scanline_end;
 }

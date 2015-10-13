@@ -1,4 +1,4 @@
-﻿//TODO - add serializer, add interlace field variable to serializer
+﻿//TODO - add serializer (?)
 
 //http://wiki.superfamicom.org/snes/show/Backgrounds
 
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -506,7 +506,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			IsLagFrame = false;
 		}
 
-		int field = 0;
 		void snes_video_refresh(int* data, int width, int height)
 		{
 			bool doubleSize = Settings.AlwaysDoubleSize;
@@ -518,7 +517,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			int yskip = 1, xskip = 1;
 
 			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
-			//TODO - does interlacing have something to do with the correct way to handle this? need an example that turns it on.
 			if (width == 512)
 			{
 				vidHeight *= 2;
@@ -537,18 +535,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			int srcPitch = 1024;
 			int srcStart = 0;
 
-			//for interlaced mode, we're gonna alternate fields. you know, like we're supposed to
 			bool interlaced = (height == 478 || height == 448);
 			if (interlaced)
 			{
-				srcPitch = 1024;
-				if (field == 1)
-					srcStart = 512; //start on second field
-				//really only half as high as the video output
-				vidHeight /= 2;
-				height /= 2;
-				//alternate fields
-				field ^= 1;
+				//from bsnes in interlaced mode we have each field side by side
+				//so we will come in with a dimension of 512x448, say
+				//but the fields are side by side, so it's actually 1024x224.
+				//copy the first scanline from row 0, then the 2nd scanline from row 0 (offset 512)
+				//EXAMPLE: yu yu hakushu legal screens
+				//EXAMPLE: World Class Service Super Nintendo Tester (double resolution vertically but not horizontally, in character test the stars should shrink)
+				lineDouble = false;
+				srcPitch = 512;
+				yskip = 1;
+				vidHeight = height;
 			}
 
 			if (dotDouble)
@@ -670,7 +669,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
 
-		public DisplayType DisplayType
+		public DisplayType Region
 		{
 			get
 			{

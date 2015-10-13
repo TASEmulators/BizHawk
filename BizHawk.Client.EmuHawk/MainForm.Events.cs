@@ -454,7 +454,7 @@ namespace BizHawk.Client.EmuHawk
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
 			ofd.Multiselect = true;
 			ofd.Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm",
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm;*.pjm;*.pxm",
 					"FCEUX", "*.fm2",
 					"PCEjin/Mednafen", "*.mc2;*.mcm",
 					"Dega", "*.mmv",
@@ -468,6 +468,8 @@ namespace BizHawk.Client.EmuHawk
 					"Snes9x", "*.smv",
 					"Yabause", "*.ymv",
 					"ZSNES", "*.zmv",
+					"PSXjin", "*.pjm",
+					"PCSX", "*.pxm",
 					"BizHawk Bkm", "*.bkm",
 					"All Files", "*.*");
 			ofd.RestoreDirectory = false;
@@ -572,7 +574,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
-				bb.Normalize(true);
+				bb.DiscardAlpha();
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}
@@ -591,6 +593,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Close();
 			}
+		}
+
+		public void CloseEmulator()
+		{
+			_exit = true;
 		}
 
 		#endregion
@@ -667,6 +674,8 @@ namespace BizHawk.Client.EmuHawk
 			DisplayLogWindowMenuItem.Checked = Global.Config.ShowLogWindow;
 
 			DisplayLagCounterMenuItem.Enabled = Global.Emulator.CanPollInput();
+
+			DisplayMessagesMenuItem.Checked = Global.Config.DisplayMessages;
 		}
 
 		private void WindowSizeSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -806,6 +815,8 @@ namespace BizHawk.Client.EmuHawk
 			Speed100MenuItem.Image = (Global.Config.SpeedPercentAlternate == 100) ? Properties.Resources.FastForward : null;
 			Speed150MenuItem.Checked = Global.Config.SpeedPercent == 150;
 			Speed150MenuItem.Image = (Global.Config.SpeedPercentAlternate == 150) ? Properties.Resources.FastForward : null;
+			Speed400MenuItem.Checked = Global.Config.SpeedPercent == 400;
+			Speed400MenuItem.Image = (Global.Config.SpeedPercentAlternate == 400) ? Properties.Resources.FastForward : null;
 			Speed200MenuItem.Checked = Global.Config.SpeedPercent == 200;
 			Speed200MenuItem.Image = (Global.Config.SpeedPercentAlternate == 200) ? Properties.Resources.FastForward : null;
 			Speed75MenuItem.Checked = Global.Config.SpeedPercent == 75;
@@ -818,7 +829,10 @@ namespace BizHawk.Client.EmuHawk
 				Speed100MenuItem.Enabled =
 				Speed150MenuItem.Enabled =
 				Speed200MenuItem.Enabled =
+				Speed400MenuItem.Enabled =
 				Global.Config.ClockThrottle;
+
+			miUnthrottled.Checked = _unthrottled;
 		}
 
 		private void KeyPriorityMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -961,7 +975,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LimitFrameRateMessage();
+			ThrottleMessage();
 		}
 
 		private void AudioThrottleMenuItem_Click(object sender, EventArgs e)
@@ -978,6 +992,8 @@ namespace BizHawk.Client.EmuHawk
 					PresentationPanel.Resized = true;
 				}
 			}
+
+			ThrottleMessage();
 		}
 
 		private void VsyncThrottleMenuItem_Click(object sender, EventArgs e)
@@ -995,7 +1011,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			VsyncMessage();
+			if (!Global.Config.VSync)
+			{
+				Global.Config.VSync = true;
+				VsyncMessage();
+			}
+
+			ThrottleMessage();
 		}
 
 		private void VsyncEnabledMenuItem_Click(object sender, EventArgs e)
@@ -1005,6 +1027,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PresentationPanel.Resized = true;
 			}
+
+			VsyncMessage();
 		}
 
 		private void MinimizeSkippingMenuItem_Click(object sender, EventArgs e)
@@ -1028,6 +1052,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Speed100MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(100); }
 		private void Speed150MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(150); }
 		private void Speed200MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(200); }
+		private void Speed400MenuItem_Click(object sender, EventArgs e) { ClickSpeedItem(400); }
 
 		private void BothHkAndControllerMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1095,6 +1120,12 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Config file loaded");
 		}
 
+		private void miUnthrottled_Click(object sender, EventArgs e)
+		{
+			_unthrottled ^= true;
+			ThrottleMessage();
+		}
+
 		#endregion
 
 		#region Tools
@@ -1125,6 +1156,8 @@ namespace BizHawk.Client.EmuHawk
 
 			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
+
+			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1709,7 +1742,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			new PSXControllerConfig().ShowDialog();
+			new PSXControllerConfigNew().ShowDialog();
 		}
 
 		#endregion
@@ -2026,6 +2059,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region C64
+
+		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "C64 Settings");
+		}
+
+		#endregion
+
 		#region Help
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
@@ -2175,11 +2217,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = new config.DisplayConfigLite().ShowDialog();
+			var window = new config.DisplayConfigLite();
+			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				FrameBufferResized();
 				SynchChrome();
+				if (window.NeedReset)
+				{
+					GlobalWin.OSD.AddMessage("Restart program for changed settings");
+				}
 			}
 		}
 

@@ -313,10 +313,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			SaveColumnInfo();
 
-			Settings.Wndx = Location.X;
-			Settings.Wndy = Location.Y;
-			Settings.Width = Right - Left;
-			Settings.Height = Bottom - Top;
+			if (WindowState == FormWindowState.Normal)
+			{
+				Settings.Wndx = Location.X;
+				Settings.Wndy = Location.Y;
+				Settings.Width = Right - Left;
+				Settings.Height = Bottom - Top;
+			}
 		}
 
 		public void NewSearch()
@@ -1021,7 +1024,7 @@ namespace BizHawk.Client.EmuHawk
 					if (result)
 					{
 						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
-						Global.Config.RecentWatches.Add(watches.CurrentFileName);
+						Settings.RecentSearches.Add(watches.CurrentFileName);
 					}
 				}
 			}

@@ -1,51 +1,46 @@
-BizHawk is a A multi-system emulator written in C#.  BizHawk provides nice features for casual gamers such as full screen, and joypad support in addition to full rerecording and debugging tools for all system cores.  
+BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as fullscreen, rewind, and joypad support in addition to rerecording and debugging tools for all system cores.
 
-[http://tasvideos.org/Bizhawk/ReleaseHistory.html Release Notes]
+[Release Notes](http://tasvideos.org/Bizhawk/ReleaseHistory.html)
 
-[Features here] is a list of features offered by bizhawk.
+[Here](http://tasvideos.org/Bizhawk/Features.html) is a list of features offered by bizhawk.
 
-==Download Binaries==
+=== Download Binaries === 
 
-Windows users, don't forget to run the [http://sourceforge.net/projects/bizhawk/files/Prerequisites/bizhawk_prereqs_v1.1.zip/download prereq installer] first!
+Windows users, don't forget to run the [prereq installer](http://sourceforge.net/projects/bizhawk/files/Prerequisites/bizhawk_prereqs_v1.1.zip/download) first!
 
-Binaries can be found on [https://sourceforge.net/projects/bizhawk/?source=navbar the sourceforge page]
-
+Binaries can be found on [the sourceforge page](https://sourceforge.net/projects/bizhawk/?source=navbar)
 
 === Supported Systems === 
 
  * Nintendo Entertainment System / Famicom / Famicom Disk System (NES/FDS)
  * Super Nintendo (SNES)
  * Nintendo 64
- * Gameboy
- * Gameboy Color
- * Super Gameboy
- * Sega Master System
- * SG-1000
- * Game Gear
+ * Game Boy, Game Boy Color, and Super Game Boy
+ * Game Boy Advance
+ * Sony PlayStation
+ * Sega Master System, Game Gear, and SG-1000
  * Sega Genesis / Sega-CD
  * Sega Saturn
- * PC-Engine (TurboGrafx-16) / CD-ROM
- * SuperGrafx
+ * PC-Engine (TurboGrafx-16) / CD-ROM & SuperGrafx 
  * Atari 2600
  * Atari 7800
  * Atari Lynx
  * ColecoVision
  * TI-83 Calculator
- * Wonderswan
- * Gameboy Advance
+ * Wonderswan and Wonderswan Color 
  * Apple II
- * Sony PlayStation
 
-==Resources==
-[http://tasvideos.org/Bizhawk.html BizHawk homepage]
+=== Resources ===
 
-[http://tasvideos.org/Bizhawk/FAQ.html FAQ] - Frequently Asked Questions / Troubleshooting
+[BizHawk homepage](http://tasvideos.org/Bizhawk.html) 
 
-[http://tasvideos.org/Bizhawk/Compiling.html Compiling] - What is needed to compile BizHawk src
+[FAQ](http://tasvideos.org/Bizhawk/FAQ.html) - Frequently Asked Questions / Troubleshooting
 
-[http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html CompactDiscInfoDump] - A concise explanation of compact disc CDs, gathered for the first time EVER in one location, and mostly inaccurate
+[Compiling](http://tasvideos.org/Bizhawk/Compiling.html) - What is needed to compile BizHawk src
 
-[http://tasvideos.org/Bizhawk/Rerecording.html Rerecording] - (Work in progress) - Documentation of the rerecording implementation of  BizHawk
- * [http://tasvideos.org/Bizhawk/TASFormat.html TAS movie file format] - Mnemonic patterns for each platform for .tas (input) files.
+[CompactDiscInfoDump](http://tasvideos.org/Bizhawk/CompactDiscInfoDump.html) - A concise explanation of compact disc CDs, gathered for the first time EVER in one location, and mostly inaccurate
 
-[http://tasvideos.org/Bizhawk/CommandLine.html Commandline] - Documentation of the command line options in BizHawk 
+[Rerecording](http://tasvideos.org/Bizhawk/Rerecording.html) - (Work in progress) - Documentation of the rerecording implementation of  BizHawk
+ * [TAS movie file format](http://tasvideos.org/Bizhawk/TASFormat.html) - Mnemonic patterns for each platform for .tas (input) files.
+
+[Commandline](http://tasvideos.org/Bizhawk/CommandLine.html) - Documentation of the command line options in BizHawk 

@@ -20,6 +20,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "dvdisaster.h"
 #include "octoshock.h"
 #include "CDUtility.h"
 
@@ -28,10 +29,6 @@
 
 namespace CDUtility
 {
-
-	void CDUtility_Init()
-	{
-	}
 
 // lookup table for crc calculation
 static uint16 subq_crctab[256] = 
@@ -67,6 +64,54 @@ static uint16 subq_crctab[256] =
   0x2E93, 0x3EB2, 0x0ED1, 0x1EF0
 };
 
+
+static uint8 scramble_table[2352 - 12];
+
+static bool CDUtility_Inited = false;
+
+static void InitScrambleTable(void)
+{
+	unsigned cv = 1;
+
+	for (unsigned i = 12; i < 2352; i++)
+	{
+		unsigned char z = 0;
+
+		for (int b = 0; b < 8; b++)
+		{
+			z |= (cv & 1) << b;
+
+			int feedback = ((cv >> 1) & 1) ^ (cv & 1);
+			cv = (cv >> 1) | (feedback << 14);
+		}
+
+		scramble_table[i - 12] = z;
+	}
+
+	//for(int i = 0; i < 2352 - 12; i++)
+	// printf("0x%02x, ", scramble_table[i]);
+}
+
+void CDUtility_Init(void)
+{
+	if (!CDUtility_Inited)
+	{
+		#ifdef WANT_LEC_CHECK
+			Init_LEC_Correct();
+			InitScrambleTable();
+		#endif
+
+		CDUtility_Inited = true;
+	}
+}
+
+
+bool edc_lec_check_and_correct(uint8 *sector_data, bool xa)
+{
+	CDUtility_Init();
+
+	return !!ValidateRawSector(sector_data, xa);
+}
 
 bool subq_check_checksum(const uint8 *SubQBuf)
 {

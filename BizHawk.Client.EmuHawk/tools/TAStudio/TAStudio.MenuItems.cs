@@ -57,10 +57,15 @@ namespace BizHawk.Client.EmuHawk
 				var filename = CurrentTasMovie.Filename;
 				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 				{
-					filename = "";
+					filename = string.Empty;
 				}
 
-				var file = ToolHelpers.GetTasProjFileFromUser(filename);
+				var file = ToolHelpers.OpenFileDialog(
+					filename,
+					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					"Tas Project Files",
+					"tasproj");
+
 				if (file != null)
 				{
 					LoadFile(file);
@@ -99,7 +104,12 @@ namespace BizHawk.Client.EmuHawk
 				filename = SuggestedTasProjName();
 			}
 
-			var file = ToolHelpers.GetTasProjSaveFileFromUser(filename);
+			var file = ToolHelpers.SaveFileDialog(
+				filename,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				"Tas Project Files",
+				"tasproj");
+
 			if (file != null)
 			{
 				CurrentTasMovie.Filename = file.FullName;
@@ -747,7 +757,8 @@ namespace BizHawk.Client.EmuHawk
 				Owner = GlobalWin.MainForm,
 				Location = this.ChildPointToScreen(TasView),
 				Statable = this.StatableEmulator
-			}.Show();
+			}.ShowDialog();
+			CurrentTasMovie.TasStateManager.LimitStateCount();
 			UpdateChangesIndicator();
 		}
 
@@ -833,7 +844,39 @@ namespace BizHawk.Client.EmuHawk
 		private void scrollToCenterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
-		}
+        }
+
+        private void iconsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            denoteStatesWithIconsToolStripMenuItem.Checked = Settings.denoteStatesWithIcons;
+            denoteStatesWithBGColorToolStripMenuItem.Checked = Settings.denoteStatesWithBGColor;
+            denoteMarkersWithIconsToolStripMenuItem.Checked = Settings.denoteMarkersWithIcons;
+            denoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.denoteMarkersWithBGColor;
+        }
+
+        private void denoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons = denoteStatesWithIconsToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
+
+        private void denoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor = denoteStatesWithBGColorToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
+
+        private void denoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons = denoteMarkersWithIconsToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
+
+        private void denoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor = denoteMarkersWithBGColorToolStripMenuItem.Checked;
+            RefreshDialog();
+        }
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
@@ -983,15 +1026,21 @@ namespace BizHawk.Client.EmuHawk
 				TruncateContextMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 
-			StartFromNowSeparator.Visible =
-				StartNewProjectFromNowMenuItem.Visible =
-				TasView.SelectedRows.Count() == 1;
+			
+			StartNewProjectFromNowMenuItem.Visible =
+				TasView.SelectedRows.Count() == 1
+				&& TasView.SelectedRows.Contains(Emulator.Frame)
+				&& !CurrentTasMovie.StartsFromSaveRam;
 
+			StartANewProjectFromSaveRamMenuItem.Visible =
+				TasView.SelectedRows.Count() == 1
+				&& SaveRamEmulator != null
+				&& !CurrentTasMovie.StartsFromSavestate;
+
+			StartFromNowSeparator.Visible =StartNewProjectFromNowMenuItem.Visible || StartANewProjectFromSaveRamMenuItem.Visible;
 			RemoveMarkersContextMenuItem.Enabled = CurrentTasMovie.Markers.Any(m => TasView.SelectedRows.Contains(m.Frame)); // Disable the option to remove markers if no markers are selected (FCEUX does this).
-
 			CancelSeekContextMenuItem.Enabled = GlobalWin.MainForm.PauseOnFrame.HasValue;
-
-			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Global.Emulator.Frame;
+			BranchContextMenuItem.Visible = TasView.CurrentCell.RowIndex == Emulator.Frame;
 		}
 
 		private void CancelSeekContextMenuItem_Click(object sender, EventArgs e)
@@ -1007,20 +1056,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartNewProjectFromNowMenuItem_Click(object sender, EventArgs e)
 		{
-			if (TasView.SelectedRows.Count() == 1 &&
-				!CurrentTasMovie.StartsFromSavestate)
+			if (AskSaveChanges())
 			{
-				if (AskSaveChanges())
-				{
-					int index = TasView.SelectedRows.First();
-					GoToFrame(index);
+				int index = Emulator.Frame;
 
-					TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
-						index, (byte[])StatableEmulator.SaveStateBinary().Clone());
+				TasMovie newProject = CurrentTasMovie.ConvertToSavestateAnchoredMovie(
+					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
-					GlobalWin.MainForm.PauseEmulator();
-					LoadFile(new FileInfo(newProject.Filename));
-				}
+				GlobalWin.MainForm.PauseEmulator();
+				LoadFile(new FileInfo(newProject.Filename));
+			}
+		}
+
+		private void StartANewProjectFromSaveRamMenuItem_Click(object sender, EventArgs e)
+		{
+			if (AskSaveChanges())
+			{
+				int index = TasView.SelectedRows.First();
+				GoToFrame(index);
+
+				TasMovie newProject = CurrentTasMovie.ConvertToSaveRamAnchoredMovie(
+					SaveRamEmulator.CloneSaveRam());
+
+				GlobalWin.MainForm.PauseEmulator();
+				LoadFile(new FileInfo(newProject.Filename));
 			}
 		}
 

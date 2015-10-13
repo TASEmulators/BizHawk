@@ -399,11 +399,11 @@ TESTEROO:
 				}
 
 				//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
-				if (!isGlTextureId)
-				{
-					videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
-					goto TESTEROO;
-				}
+				//if (!isGlTextureId)
+				//{
+				//  videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
+				//  goto TESTEROO;
+				//}
 			}
 
 			//record the size of what we received, since lua and stuff is gonna want to draw onto it

@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			AssertPrg(64);
 			Cart.chr_size = 0; //AssertChr(0); //shitty dumps
 			Cart.vram_size = 64; //AssertVram(64); //shitty dumps
-			AssertWram(0);
+			Cart.wram_size = 0; //AssertWram(0); // shitty dumps
 			//AssertBattery(true); // battery is handled directly
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 			return true;

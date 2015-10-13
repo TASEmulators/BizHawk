@@ -16,6 +16,7 @@ namespace BizHawk.Build.Tool
 			{
 				case "SVN_REV": SVN_REV(true,cmdArgs); break;
 				case "GIT_REV": SVN_REV(false,cmdArgs); break;
+				case "NXCOMPAT": NXCOMPAT(cmdArgs); break;
 			}
 		}
 
@@ -64,6 +65,44 @@ namespace BizHawk.Build.Tool
 			if (old == content) return;
 		WRITE:
 			File.WriteAllText(path, content);
+		}
+
+		//sets NXCOMPAT bit in PE header
+		static void NXCOMPAT(string[] args)
+		{
+			string target = null, strValue = "0";
+			int idx = 0;
+			while (idx < args.Length)
+			{
+				string a = args[idx++];
+				string au = a.ToUpperInvariant();
+				if (au == "--TARGET")
+					target = args[idx++];
+				if (au == "--VALUE")
+					strValue = args[idx++];
+			}
+			if (target == null)
+			{
+				Console.WriteLine("NXCOMPAT: No target EXE specified");
+				return;
+			}
+
+			//we're going to skip around through the file and edit only the minimum required bytes (to speed things up by avoiding loading and rewriting the entire exe)
+			using(var fs = new FileStream(target,FileMode.Open,FileAccess.ReadWrite,FileShare.Read))
+			{
+				var br = new BinaryReader(fs);
+				fs.Position = 0x3C;
+				fs.Position = br.ReadUInt16(); //move to NT_HEADERS
+				fs.Position += 0x18; //move to OPTIONAL_HEADER
+				fs.Position += 0x46; //move to DllCharacteristics
+				var dllCharacteristics = br.ReadUInt16();
+				dllCharacteristics &= unchecked((ushort)~0x100);
+				if (strValue == "1") dllCharacteristics |= 0x100;
+				fs.Position -= 2; //move back to DllCharacteristics
+				var bw = new BinaryWriter(fs);
+				bw.Write(dllCharacteristics);
+				bw.Flush();
+			}
 		}
 
 		//gets the working copy version. use this command:

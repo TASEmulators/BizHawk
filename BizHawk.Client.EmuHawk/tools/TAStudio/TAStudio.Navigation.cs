@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 				MaybeFollowCursor();
 
-				return;
+				//return; seriously? well, maybe it's for some insane speedup, but it skipped updating when putting playback to frame zero.
 			}
 			else // Emulate to a future frame
 			{

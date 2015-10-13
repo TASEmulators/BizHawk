@@ -33,14 +33,15 @@ namespace BizHawk.Client.Common
 
 		public void ClearAll()
 		{
-			if (Global.Emulator.CanPollInput())
+			if (Global.Emulator.InputCallbacksAvailable())
 			{
 				Global.Emulator.AsInputPollable().InputCallbacks.RemoveAll(this.Select(x => x.Callback));
 			}
 
-			if (Global.Emulator.CanDebug())
+			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
-				Global.Emulator.AsDebuggable().MemoryCallbacks.RemoveAll(this.Select(x => x.Callback));
+				var cbSys = Global.Emulator.AsDebuggable().MemoryCallbacks;
+				cbSys.RemoveAll(this.Select(x => x.Callback));
 			}
 
 			Clear();
