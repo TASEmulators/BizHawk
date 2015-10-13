@@ -32,7 +32,9 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoPluginconfig));
 			this.N64plugintabcontrol = new System.Windows.Forms.TabControl();
 			this.N64vpluginglobaltab = new System.Windows.Forms.TabPage();
+			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
 			this.LabelVideoResolutionY = new System.Windows.Forms.Label();
+			this.VideoResolutionXTextBox = new System.Windows.Forms.TextBox();
 			this.LabelVideoResolutionX = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
 			this.RspTypeDropdown = new System.Windows.Forms.ComboBox();
@@ -275,6 +277,8 @@
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
 			this.JaboTab = new System.Windows.Forms.TabPage();
 			this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
+			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.label71 = new System.Windows.Forms.Label();
 			this.label70 = new System.Windows.Forms.Label();
 			this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
@@ -306,10 +310,6 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
-			this.VideoResolutionXTextBox = new System.Windows.Forms.TextBox();
-			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -374,6 +374,16 @@
 			this.N64vpluginglobaltab.Text = "Global";
 			this.N64vpluginglobaltab.UseVisualStyleBackColor = true;
 			// 
+			// VideoResolutionYTextBox
+			// 
+			this.VideoResolutionYTextBox.Location = new System.Drawing.Point(66, 270);
+			this.VideoResolutionYTextBox.MaxLength = 5;
+			this.VideoResolutionYTextBox.Name = "VideoResolutionYTextBox";
+			this.VideoResolutionYTextBox.Size = new System.Drawing.Size(35, 20);
+			this.VideoResolutionYTextBox.TabIndex = 22;
+			this.VideoResolutionYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.VideoResolutionYTextBox.Visible = false;
+			// 
 			// LabelVideoResolutionY
 			// 
 			this.LabelVideoResolutionY.AutoSize = true;
@@ -383,6 +393,16 @@
 			this.LabelVideoResolutionY.TabIndex = 21;
 			this.LabelVideoResolutionY.Text = "Height:";
 			this.LabelVideoResolutionY.Visible = false;
+			// 
+			// VideoResolutionXTextBox
+			// 
+			this.VideoResolutionXTextBox.Location = new System.Drawing.Point(66, 244);
+			this.VideoResolutionXTextBox.MaxLength = 5;
+			this.VideoResolutionXTextBox.Name = "VideoResolutionXTextBox";
+			this.VideoResolutionXTextBox.Size = new System.Drawing.Size(35, 20);
+			this.VideoResolutionXTextBox.TabIndex = 20;
+			this.VideoResolutionXTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.VideoResolutionXTextBox.Visible = false;
 			// 
 			// LabelVideoResolutionX
 			// 
@@ -3324,6 +3344,32 @@
 			this.JaboPerGameHacksGroupBox.TabStop = false;
 			this.JaboPerGameHacksGroupBox.Text = "Per game settings";
 			// 
+			// JaboResolutionHeightBox
+			// 
+			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
+			this.JaboResolutionHeightBox.MaxLength = 4;
+			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
+			this.JaboResolutionHeightBox.Nullable = false;
+			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionHeightBox.TabIndex = 34;
+			this.JaboResolutionHeightBox.Text = "0";
+			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
+			// 
+			// JaboResolutionWidthBox
+			// 
+			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
+			this.JaboResolutionWidthBox.MaxLength = 4;
+			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
+			this.JaboResolutionWidthBox.Nullable = false;
+			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionWidthBox.TabIndex = 33;
+			this.JaboResolutionWidthBox.Text = "0";
+			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
+			// 
 			// label71
 			// 
 			this.label71.AutoSize = true;
@@ -3626,52 +3672,6 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-			// 
-			// VideoResolutionYTextBox
-			// 
-			this.VideoResolutionYTextBox.Location = new System.Drawing.Point(66, 270);
-			this.VideoResolutionYTextBox.MaxLength = 5;
-			this.VideoResolutionYTextBox.Name = "VideoResolutionYTextBox";
-			this.VideoResolutionYTextBox.Size = new System.Drawing.Size(35, 20);
-			this.VideoResolutionYTextBox.TabIndex = 22;
-			this.VideoResolutionYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.VideoResolutionYTextBox.Visible = false;
-			// 
-			// VideoResolutionXTextBox
-			// 
-			this.VideoResolutionXTextBox.Location = new System.Drawing.Point(66, 244);
-			this.VideoResolutionXTextBox.MaxLength = 5;
-			this.VideoResolutionXTextBox.Name = "VideoResolutionXTextBox";
-			this.VideoResolutionXTextBox.Size = new System.Drawing.Size(35, 20);
-			this.VideoResolutionXTextBox.TabIndex = 20;
-			this.VideoResolutionXTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.VideoResolutionXTextBox.Visible = false;
-			// 
-			// JaboResolutionHeightBox
-			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
-			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
-			this.JaboResolutionHeightBox.MaxLength = 4;
-			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
-			this.JaboResolutionHeightBox.Nullable = false;
-			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionHeightBox.TabIndex = 34;
-			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
-			// 
-			// JaboResolutionWidthBox
-			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
-			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
-			this.JaboResolutionWidthBox.MaxLength = 4;
-			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
-			this.JaboResolutionWidthBox.Nullable = false;
-			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionWidthBox.TabIndex = 33;
-			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
 			// 
 			// N64VideoPluginconfig
 			// 
