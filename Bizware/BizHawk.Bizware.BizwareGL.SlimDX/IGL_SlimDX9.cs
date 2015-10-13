@@ -184,7 +184,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			try
 			{
 				//cgc can create shaders that will need backwards compatibility...
-				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, "ps_3_0", ShaderFlags.EnableBackwardsCompatibility, out errors);
+				string profile = "ps_1_0";
+				if (cg)
+					profile = "ps_3_0"; //todo - smarter logic somehow
+				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
 			}
 			catch(Exception ex)
 			{
@@ -225,7 +228,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			try
 			{
 				//cgc can create shaders that will need backwards compatibility...
-				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, "vs_3_0", ShaderFlags.EnableBackwardsCompatibility, out errors);
+				string profile = "vs_1_1";
+				if (cg)
+					profile = "vs_3_0"; //todo - smarter logic somehow
+				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
 			}
 			catch (Exception ex)
 			{
