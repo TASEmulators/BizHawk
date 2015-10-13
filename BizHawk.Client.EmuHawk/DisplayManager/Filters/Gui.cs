@@ -133,8 +133,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 					PS = trials[bestIndex];
 				}
 
-				vw = (int)(PS.X * textureWidth);
-				vh = (int)(PS.Y * textureHeight);
+				vw = (int)(PS.X * oldSourceWidth);
+				vh = (int)(PS.Y * oldSourceHeight);
 				widthScale = PS.X;
 				heightScale = PS.Y;
 			}
