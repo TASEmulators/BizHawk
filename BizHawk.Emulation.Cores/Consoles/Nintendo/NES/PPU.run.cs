@@ -102,7 +102,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			BGDataRecord *bgdata = stackalloc BGDataRecord[34]; //one at the end is junk, it can never be rendered
 
-			if(ppudead != 0)
+			//262 scanlines
+			if (ppudead != 0)
 			{
 				FrameAdvance_ppudead();
 				return;
@@ -127,7 +128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			runppu(postNMIlines * kLineTime - delay);
 
 			//this seems to run just before the dummy scanline begins
-			//ACTUALLY. it should run 3 cycles later
 			clear_2002();
 
 			TempOAM* oams = stackalloc TempOAM[128];
@@ -448,33 +448,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void FrameAdvance_ppudead()
 		{
-			if (ppudead == 2)
-			{
-				//"dead frame 0:"
-
-				//run scanlines 0 through 239.
-				runppu(240 * kLineTime);
-
-				//ok, that was a long time. let's call it a frame
-			}
-
-			if (ppudead == 1)
-			{
-				//"dead frame 1:"
-
-				//run pre-nmi idle (normally 1 scanline, sometimes longer)
-				runppu(preNMIlines * kLineTime);
-
-				//we're at the line where NMI is triggered. it happens 1 cycle in, but we're not worrying about that now.
-
-				//well, look at that. its time to begin the next frame in the normal FrameAdvance method
-
-				//this frame wasn't very long compared to the other one. oh well
-				//we need to keep 2 dead frames to keep from ruining old movies..
-				//i hope the basic timing changes doesnt wreck anything's logic.
-			}
-
-			ppudead--;
+			//not quite emulating all the NES power up behavior
+			//since it is known that the NES ignores writes to some
+			//register before around a full frame, but no games
+			//should write to those regs during that time, it needs
+			//to wait for vblank
+			ppur.status.sl = 241;
+			runppu(postNMIlines * kLineTime);
+			ppur.status.sl = 0;
+			runppu(241 * kLineTime);
+			runppu(preNMIlines * kLineTime);
+			--ppudead;
 		}
 	}
 }
