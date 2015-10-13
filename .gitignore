@@ -264,3 +264,10 @@ libsnes/xcode/libsnes.xcodeproj/project.xcworkspace/xcuserdata
 libsnes/xcode/libsnes.xcodeproj/xcuserdata
 MonoMacWrapper/bin
 MonoMacWrapper/obj
+*.resources
+output/dll/OpenTK.dll.config
+output/OpenTK.dll.config
+/BizHawk.Client.EtoHawk/EtoHawk.Desktop/bin/*
+/BizHawk.Client.EtoHawk/EtoHawk.Desktop/obj/*
+/BizHawk.Client.EtoHawk/EtoHawk.Mac/bin/*
+/BizHawk.Client.EtoHawk/EtoHawk.Mac/obj/*
