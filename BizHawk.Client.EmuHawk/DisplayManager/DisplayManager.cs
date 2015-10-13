@@ -128,6 +128,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public System.Windows.Forms.Padding GameExtraPadding;
 
+		/// <summary>
+		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
+		/// </summary>
+		public System.Windows.Forms.Padding ClientExtraPadding;
+
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
@@ -498,6 +503,9 @@ namespace BizHawk.Client.EmuHawk
 				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
+			chain_outsize.Width += ClientExtraPadding.Horizontal;
+			chain_outsize.Height += ClientExtraPadding.Vertical;
+
 			var job = new JobInfo
 			{
 				videoProvider = fvp,
@@ -609,6 +617,7 @@ namespace BizHawk.Client.EmuHawk
 			fPresent.GuiRenderer = Renderer;
 			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
 			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+			fPresent.Padding = ClientExtraPadding;
 
 			fPresent.GL = GL;
 
