@@ -7,6 +7,7 @@
 
 *Lua
 **Add client.SetClientExtraPadding; fix client.SetGameExtraPadding window scaling
+**Add client.GetSoundOn and client.SetSoundOn
 
 *PSX
 **Repair lag counter
@@ -14,6 +15,8 @@
 
 *EmuHawk
 **Fix Direct3D display method sleep/ctrl+alt+del crashes
+**Fix built-in shaders
+**Reduce shader level requirements for basic d3d display method functionality
 **Fix Ram Search/Ram Watch recent files menu
 **Import PJM and PXM movies
 **Sequentially number screenshots taken in the same second without crashing after the 3rd one

@@ -31,6 +31,8 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewN64PluginSettings));
 			this.PluginTabs = new System.Windows.Forms.TabControl();
 			this.GlobalTab = new System.Windows.Forms.TabPage();
+			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
+			this.LabelVideoResolutionY = new System.Windows.Forms.Label();
 			this.VideoResolutionXTextBox = new System.Windows.Forms.TextBox();
 			this.LabelVideoResolutionX = new System.Windows.Forms.Label();
 			this.label49 = new System.Windows.Forms.Label();
@@ -51,8 +53,6 @@
 			this.JaboPropertyGrid = new System.Windows.Forms.PropertyGrid();
 			this.SaveBtn = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.LabelVideoResolutionY = new System.Windows.Forms.Label();
-			this.VideoResolutionYTextBox = new System.Windows.Forms.TextBox();
 			this.PluginTabs.SuspendLayout();
 			this.GlobalTab.SuspendLayout();
 			this.RiceTab.SuspendLayout();
@@ -98,6 +98,26 @@
 			this.GlobalTab.TabIndex = 0;
 			this.GlobalTab.Text = "Global";
 			this.GlobalTab.UseVisualStyleBackColor = true;
+			// 
+			// VideoResolutionYTextBox
+			// 
+			this.VideoResolutionYTextBox.Location = new System.Drawing.Point(494, 91);
+			this.VideoResolutionYTextBox.MaxLength = 5;
+			this.VideoResolutionYTextBox.Name = "VideoResolutionYTextBox";
+			this.VideoResolutionYTextBox.Size = new System.Drawing.Size(35, 20);
+			this.VideoResolutionYTextBox.TabIndex = 108;
+			this.VideoResolutionYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.VideoResolutionYTextBox.Visible = false;
+			// 
+			// LabelVideoResolutionY
+			// 
+			this.LabelVideoResolutionY.AutoSize = true;
+			this.LabelVideoResolutionY.Location = new System.Drawing.Point(447, 94);
+			this.LabelVideoResolutionY.Name = "LabelVideoResolutionY";
+			this.LabelVideoResolutionY.Size = new System.Drawing.Size(41, 13);
+			this.LabelVideoResolutionY.TabIndex = 107;
+			this.LabelVideoResolutionY.Text = "Height:";
+			this.LabelVideoResolutionY.Visible = false;
 			// 
 			// VideoResolutionXTextBox
 			// 
@@ -233,6 +253,7 @@
 			// 
 			// RicePropertyGrid
 			// 
+			this.RicePropertyGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
 			this.RicePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.RicePropertyGrid.Location = new System.Drawing.Point(3, 3);
 			this.RicePropertyGrid.Name = "RicePropertyGrid";
@@ -253,6 +274,7 @@
 			// 
 			// Glidemk2PropertyGrid
 			// 
+			this.Glidemk2PropertyGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
 			this.Glidemk2PropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.Glidemk2PropertyGrid.Location = new System.Drawing.Point(0, 0);
 			this.Glidemk2PropertyGrid.Name = "Glidemk2PropertyGrid";
@@ -273,6 +295,7 @@
 			// 
 			// GlidePropertyGrid
 			// 
+			this.GlidePropertyGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
 			this.GlidePropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.GlidePropertyGrid.Location = new System.Drawing.Point(0, 0);
 			this.GlidePropertyGrid.Name = "GlidePropertyGrid";
@@ -293,6 +316,7 @@
 			// 
 			// JaboPropertyGrid
 			// 
+			this.JaboPropertyGrid.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
 			this.JaboPropertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.JaboPropertyGrid.Location = new System.Drawing.Point(0, 0);
 			this.JaboPropertyGrid.Name = "JaboPropertyGrid";
@@ -323,26 +347,6 @@
 			this.CancelBtn.Text = "Cancel";
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
-			// LabelVideoResolutionY
-			// 
-			this.LabelVideoResolutionY.AutoSize = true;
-			this.LabelVideoResolutionY.Location = new System.Drawing.Point(447, 94);
-			this.LabelVideoResolutionY.Name = "LabelVideoResolutionY";
-			this.LabelVideoResolutionY.Size = new System.Drawing.Size(41, 13);
-			this.LabelVideoResolutionY.TabIndex = 107;
-			this.LabelVideoResolutionY.Text = "Height:";
-			this.LabelVideoResolutionY.Visible = false;
-			// 
-			// VideoResolutionYTextBox
-			// 
-			this.VideoResolutionYTextBox.Location = new System.Drawing.Point(494, 91);
-			this.VideoResolutionYTextBox.MaxLength = 5;
-			this.VideoResolutionYTextBox.Name = "VideoResolutionYTextBox";
-			this.VideoResolutionYTextBox.Size = new System.Drawing.Size(35, 20);
-			this.VideoResolutionYTextBox.TabIndex = 108;
-			this.VideoResolutionYTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			this.VideoResolutionYTextBox.Visible = false;
 			// 
 			// NewN64PluginSettings
 			// 

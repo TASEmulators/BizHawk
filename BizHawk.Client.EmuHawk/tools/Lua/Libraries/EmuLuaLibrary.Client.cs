@@ -162,6 +162,24 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"SetSoundOn",
+			"Sets the state of the Sound On toggle"
+		)]
+		public static void SetSoundOn(bool enable)
+		{
+			Global.Config.SoundEnabled = enable;
+		}
+
+		[LuaMethodAttributes(
+			"GetSoundOn",
+			"Gets the state of the Sound On toggle"
+		)]
+		public static bool GetSoundOn()
+		{
+			return Global.Config.SoundEnabled;
+		}
+
+		[LuaMethodAttributes(
 			"SetClientExtraPadding",
 			"Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements"
 		)]
