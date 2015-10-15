@@ -161,89 +161,107 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
 		{
-			ShaderWrapper sw = new ShaderWrapper();
-			if (cg)
-			{
-				var cgc = new CGC();
-				var results = cgc.Run(source, entry, "hlslf");
-				source = results.Code;
-				entry = "main";
-				if (!results.Succeeded)
-				{
-					if (required) throw new InvalidOperationException(results.Errors);
-					else return new Shader(this, null, false);
-				}
-
-				sw.MapCodeToNative = results.MapCodeToNative;
-				sw.MapNativeToCode = results.MapNativeToCode;
-			}
-
-			string errors = null;
-			d3d9.ShaderBytecode bytecode = null;
-
 			try
 			{
-				//cgc can create shaders that will need backwards compatibility...
-				string profile = "ps_1_0";
+				ShaderWrapper sw = new ShaderWrapper();
 				if (cg)
-					profile = "ps_3_0"; //todo - smarter logic somehow
-				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+				{
+					var cgc = new CGC();
+					var results = cgc.Run(source, entry, "hlslf");
+					source = results.Code;
+					entry = "main";
+					if (!results.Succeeded)
+					{
+						if (required) throw new InvalidOperationException(results.Errors);
+						else return new Shader(this, null, false);
+					}
+
+					sw.MapCodeToNative = results.MapCodeToNative;
+					sw.MapNativeToCode = results.MapNativeToCode;
+				}
+
+				string errors = null;
+				d3d9.ShaderBytecode bytecode = null;
+
+				try
+				{
+					//cgc can create shaders that will need backwards compatibility...
+					string profile = "ps_1_0";
+					if (cg)
+						profile = "ps_3_0"; //todo - smarter logic somehow
+					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				}
+
+				sw.ps = new PixelShader(dev, bytecode);
+				sw.bytecode = bytecode;
+
+				Shader s = new Shader(this, sw, true);
+				sw.IGLShader = s;
+
+				return s;
 			}
-			catch(Exception ex)
+			catch
 			{
-				throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				if (required)
+					throw;
+				else return new Shader(this, null, false);
 			}
-
-			sw.ps = new PixelShader(dev, bytecode);
-			sw.bytecode = bytecode;
-
-			Shader s = new Shader(this, sw, true);
-			sw.IGLShader = s;
-			
-			return s;
 		}
 
 		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
 		{
-			ShaderWrapper sw = new ShaderWrapper();
-			if (cg)
-			{
-				var cgc = new CGC();
-				var results = cgc.Run(source, entry, "hlslv");
-				source = results.Code;
-				entry = "main";
-				if (!results.Succeeded)
-				{
-					if (required) throw new InvalidOperationException(results.Errors);
-					else return new Shader(this, null, false);
-				}
-
-				sw.MapCodeToNative = results.MapCodeToNative;
-				sw.MapNativeToCode = results.MapNativeToCode;
-			}
-
-			string errors = null;
-			d3d9.ShaderBytecode bytecode = null;
-
 			try
 			{
-				//cgc can create shaders that will need backwards compatibility...
-				string profile = "vs_1_1";
+				ShaderWrapper sw = new ShaderWrapper();
 				if (cg)
-					profile = "vs_3_0"; //todo - smarter logic somehow
-				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+				{
+					var cgc = new CGC();
+					var results = cgc.Run(source, entry, "hlslv");
+					source = results.Code;
+					entry = "main";
+					if (!results.Succeeded)
+					{
+						if (required) throw new InvalidOperationException(results.Errors);
+						else return new Shader(this, null, false);
+					}
+
+					sw.MapCodeToNative = results.MapCodeToNative;
+					sw.MapNativeToCode = results.MapNativeToCode;
+				}
+
+				string errors = null;
+				d3d9.ShaderBytecode bytecode = null;
+
+				try
+				{
+					//cgc can create shaders that will need backwards compatibility...
+					string profile = "vs_1_1";
+					if (cg)
+						profile = "vs_3_0"; //todo - smarter logic somehow
+					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				}
+
+				sw.vs = new VertexShader(dev, bytecode);
+				sw.bytecode = bytecode;
+
+				Shader s = new Shader(this, sw, true);
+				sw.IGLShader = s;
+				return s;
 			}
-			catch (Exception ex)
+			catch
 			{
-				throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				if (required)
+					throw;
+				else return new Shader(this, null, false);
 			}
-
-			sw.vs = new VertexShader(dev, bytecode);
-			sw.bytecode = bytecode;
-
-			Shader s = new Shader(this, sw, true);
-			sw.IGLShader = s;
-			return s;
 		}
 
 		BlendOperation ConvertBlendOp(gl.BlendEquationMode glmode)
