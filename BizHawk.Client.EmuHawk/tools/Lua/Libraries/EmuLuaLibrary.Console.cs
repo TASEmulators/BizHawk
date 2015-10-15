@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (outputs == null)
 			{
-				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
+				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("(no return)" + terminator);
 				return;
 			}
 			for (var outIndex = 0; outIndex < outputs.Length; outIndex++)
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (output == null)
 				{
-					GlobalWin.Tools.LuaConsole.WriteToOutputWindow("NULL");
+					GlobalWin.Tools.LuaConsole.WriteToOutputWindow("nil");
 				}
 				else
 				{
