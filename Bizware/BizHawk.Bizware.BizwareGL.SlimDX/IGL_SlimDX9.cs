@@ -103,6 +103,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			{
 				flags = CreateFlags.HardwareVertexProcessing;
 			}
+			
+			flags |= CreateFlags.FpuPreserve;
 			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
 		}
 
