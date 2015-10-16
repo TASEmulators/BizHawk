@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenheight",
-			"Gets the current width in pixels of the emulator's drawing area"
+			"Gets the current height in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenHeight()
 		{
@@ -360,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenwidth",
-			"Gets the current height in pixels of the emulator's drawing area"
+			"Gets the current width in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenWidth()
 		{
