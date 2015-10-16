@@ -65,7 +65,11 @@ namespace BizHawk.Client.EmuHawk
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
+			#if WINDOWS
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+			#else
+			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
+			#endif
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
 				if (fiHq2x.Exists)
@@ -76,8 +80,10 @@ namespace BizHawk.Client.EmuHawk
 					using (var stream = fiScanlines.OpenRead())
 						ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 				string bicubic_path = "Shaders/BizHawk/bicubic-fast.cgp";
+				#if WINDOWS
 				if(GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 					bicubic_path = "Shaders/BizHawk/bicubic-normal.cgp";
+				#endif
 				var fiBicubic = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), bicubic_path));
 				if (fiBicubic.Exists)
 					using (var stream = fiBicubic.Open(FileMode.Open, FileAccess.Read, FileShare.Read))

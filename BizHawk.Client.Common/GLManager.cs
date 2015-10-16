@@ -67,11 +67,13 @@ namespace BizHawk.Client.Common
 			bool begun = false;
 
 			//this needs a begin signal to set the swap chain to the next backbuffer
+			#if WINDOWS
 			if (cr.gl is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 			{
 				cr.gc.Begin();
 				begun = true;
 			}
+			#endif
 
 			if (cr == ActiveContext)
 				return;

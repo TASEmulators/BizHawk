@@ -50,4 +50,6 @@ rm dll/openal32.dll
 rm GongShell.dll
 rm dll/mgba.dll
 rm dll/Virtu.dll
-
+rm dll/gpgx.elf
+rm dll/cgc.exe
+rm dll/libdarm.dll
