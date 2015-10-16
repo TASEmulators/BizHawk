@@ -210,8 +210,7 @@ namespace BizHawk.Client.EmuHawk.config
 		{
 			Global.Config.TargetScanlineFilterIntensity = tbScanlineIntensity.Value;
 			int scanlines = Global.Config.TargetScanlineFilterIntensity;
-			float percentage = (float) scanlines / 255 * 100;
-			if (percentage > 100) percentage = 100;
+			float percentage = (float) scanlines / 256 * 100;
 			lblScanlines.Text = String.Format("{0:F2}", percentage) + "%";
 		}
 

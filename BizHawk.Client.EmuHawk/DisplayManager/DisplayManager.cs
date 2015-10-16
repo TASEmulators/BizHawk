@@ -182,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 				selectedChain = ShaderChain_hq2x;
 			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
 			{
-				//shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
 				selectedChain = ShaderChain_scanlines;
 				selectedChainProperties["uIntensity"] = 1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f;
 			}
