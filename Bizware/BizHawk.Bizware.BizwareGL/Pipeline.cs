@@ -69,6 +69,15 @@ namespace BizHawk.Bizware.BizwareGL
 		SpecialWorkingDictionary UniformsDictionary;
 		IDictionary<string, PipelineUniform> Uniforms { get { return UniformsDictionary; } }
 
+		public IEnumerable<PipelineUniform> GetUniforms() { return Uniforms.Values; }
+
+		public PipelineUniform TryGetUniform(string name)
+		{
+			PipelineUniform ret = null;
+			Uniforms.TryGetValue(name,out ret);
+			return ret;
+		}
+
 		public PipelineUniform this[string key]
 		{
 			get { return UniformsDictionary[key]; }

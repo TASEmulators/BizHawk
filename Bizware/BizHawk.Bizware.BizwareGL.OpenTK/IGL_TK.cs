@@ -311,6 +311,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 				if (type == ActiveUniformType.Sampler2D)
 				{
+					ui.IsSampler = true;
+					ui.Index = loc;
 					ui.Opaque = loc | (samplers.Count << 24);
 					samplers.Add(loc);
 				}

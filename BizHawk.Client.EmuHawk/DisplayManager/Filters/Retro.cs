@@ -51,6 +51,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 				Shaders[i] = shader;
 				if (!shader.Pipeline.Available)
 					ok = false;
+				if (!shader.Available)
+					ok = false;
 			}
 
 			Available = ok;

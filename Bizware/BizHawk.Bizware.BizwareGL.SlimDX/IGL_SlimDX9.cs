@@ -476,7 +476,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					uw.FS = (ct == fsct);
 					uw.CT = ct;
 					if (descr.Type == ParameterType.Sampler2D)
+					{
+						ui.IsSampler = true;
+						ui.Index = descr.RegisterIndex;
 						uw.SamplerIndex = descr.RegisterIndex;
+					}
 					uniforms.Add(ui);
 				}
 			}

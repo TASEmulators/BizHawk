@@ -30,7 +30,33 @@ namespace BizHawk.Bizware.BizwareGL
 			var vs = owner.CreateVertexShader(true, vsSource, "main_vertex", debug);
 			var ps = owner.CreateFragmentShader(true, psSource, "main_fragment", debug);
 			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug, "retro");
+
+			//retroarch shaders will sometimes not have the right sampler name
+			//it's unclear whether we should bind to s_p or sampler0
+			//lets bind to sampler0 in case we dont have s_p
+			sampler0 = Pipeline.TryGetUniform("s_p");
+			if (sampler0 == null)
+			{
+				//sampler wasn't named correctly. this can happen on some retroarch shaders
+				foreach (var u in Pipeline.GetUniforms())
+				{
+					if (u.Sole.IsSampler && u.Sole.Index == 0)
+					{
+						sampler0 = u;
+						break;
+					}
+				}
+			}
+
+			if (sampler0 == null)
+				return;
+
+			Available = true;
 		}
+
+		public bool Available { get; private set; }
+
+		PipelineUniform sampler0;
 
 		public void Dispose()
 		{
@@ -66,7 +92,7 @@ namespace BizHawk.Bizware.BizwareGL
 
 			Owner.SetTextureWrapMode(tex, true);
 
-			Pipeline["s_p"].Set(tex);
+			sampler0.Set(tex);
 			Owner.SetViewport(OutputSize);
 
 			int w = OutputSize.Width;
