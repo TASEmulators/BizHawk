@@ -1272,13 +1272,11 @@ namespace BizHawk.Client.EmuHawk
 				intialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(romName, null));
 			}
 
-			var ofd = new OpenFileDialog
-			{
-				FileName = Path.GetFileNameWithoutExtension(romName) + ".tbl",
-				InitialDirectory = intialDirectory,
-				Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*",
-				RestoreDirectory = false
-			};
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.FileName = Path.GetFileNameWithoutExtension(romName) + ".tbl";
+			ofd.InitialDirectory = intialDirectory;
+			ofd.Filter = "Text Table files (*.tbl)|*.tbl|All Files|*.*";
+			ofd.RestoreDirectory = false;
 
 			var result = ofd.ShowHawkDialog();
 

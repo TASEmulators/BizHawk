@@ -359,7 +359,7 @@
 		9E306A5D191D9F0B002AD90A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = BizHawk;
 			};
 			buildConfigurationList = 9E306A60191D9F0B002AD90A /* Build configuration list for PBXProject "gambatte" */;
@@ -458,7 +458,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -498,7 +498,7 @@
 					"$(SRCROOT)/../src/",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.8;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

@@ -80,6 +80,11 @@
 		9E11BEB31A41204F00CC7F6B /* surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BE4F1A41204F00CC7F6B /* surface.cpp */; };
 		9E11BEB41A41204F00CC7F6B /* surface.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE501A41204F00CC7F6B /* surface.h */; };
 		9E11BEBA1A41215900CC7F6B /* SimpleFIFO.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */; };
+		9E2385EC1BD09B9600FACD59 /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E71BD09B9600FACD59 /* crc32.cpp */; settings = {ASSET_TAGS = (); }; };
+		9E2385ED1BD09B9600FACD59 /* galois.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E81BD09B9600FACD59 /* galois.cpp */; settings = {ASSET_TAGS = (); }; };
+		9E2385EE1BD09B9600FACD59 /* l-ec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E91BD09B9600FACD59 /* l-ec.cpp */; settings = {ASSET_TAGS = (); }; };
+		9E2385EF1BD09B9600FACD59 /* lec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385EA1BD09B9600FACD59 /* lec.cpp */; settings = {ASSET_TAGS = (); }; };
+		9E2385F01BD09B9600FACD59 /* recover-raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385EB1BD09B9600FACD59 /* recover-raw.cpp */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -157,6 +162,11 @@
 		9E11BE4F1A41204F00CC7F6B /* surface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = surface.cpp; sourceTree = "<group>"; };
 		9E11BE501A41204F00CC7F6B /* surface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = surface.h; sourceTree = "<group>"; };
 		9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleFIFO.h; sourceTree = "<group>"; };
+		9E2385E71BD09B9600FACD59 /* crc32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crc32.cpp; sourceTree = "<group>"; };
+		9E2385E81BD09B9600FACD59 /* galois.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = galois.cpp; sourceTree = "<group>"; };
+		9E2385E91BD09B9600FACD59 /* l-ec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "l-ec.cpp"; sourceTree = "<group>"; };
+		9E2385EA1BD09B9600FACD59 /* lec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = lec.cpp; sourceTree = "<group>"; };
+		9E2385EB1BD09B9600FACD59 /* recover-raw.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "recover-raw.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +211,11 @@
 		9E11BDE61A41204F00CC7F6B /* cdrom */ = {
 			isa = PBXGroup;
 			children = (
+				9E2385E71BD09B9600FACD59 /* crc32.cpp */,
+				9E2385E81BD09B9600FACD59 /* galois.cpp */,
+				9E2385E91BD09B9600FACD59 /* l-ec.cpp */,
+				9E2385EA1BD09B9600FACD59 /* lec.cpp */,
+				9E2385EB1BD09B9600FACD59 /* recover-raw.cpp */,
 				9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */,
 				9E11BDEC1A41204F00CC7F6B /* CDUtility.h */,
 				9E11BDEB1A41204F00CC7F6B /* CDUtility.cpp */,
@@ -403,6 +418,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E2385EF1BD09B9600FACD59 /* lec.cpp in Sources */,
 				9E11BEA71A41204F00CC7F6B /* sio.cpp in Sources */,
 				9E11BE8C1A41204F00CC7F6B /* gte.cpp in Sources */,
 				9E11BEA01A41204F00CC7F6B /* irq.cpp in Sources */,
@@ -410,6 +426,7 @@
 				9E11BEB31A41204F00CC7F6B /* surface.cpp in Sources */,
 				9E11BE7C1A41204F00CC7F6B /* cpu_bigswitch.inc in Sources */,
 				9E11BE8A1A41204F00CC7F6B /* gpu_polygon.cpp in Sources */,
+				9E2385F01BD09B9600FACD59 /* recover-raw.cpp in Sources */,
 				9E11BE781A41204F00CC7F6B /* cdc.cpp in Sources */,
 				9E11BE801A41204F00CC7F6B /* dis.cpp in Sources */,
 				9E11BE9C1A41204F00CC7F6B /* multitap.cpp in Sources */,
@@ -421,6 +438,7 @@
 				9E11BEA91A41204F00CC7F6B /* spu.cpp in Sources */,
 				9E11BE6B1A41204F00CC7F6B /* endian.cpp in Sources */,
 				9E11BE981A41204F00CC7F6B /* memcard.cpp in Sources */,
+				9E2385ED1BD09B9600FACD59 /* galois.cpp in Sources */,
 				9E11BEAB1A41204F00CC7F6B /* spu_fir_table.inc in Sources */,
 				9E11BE841A41204F00CC7F6B /* frontio.cpp in Sources */,
 				9E11BE961A41204F00CC7F6B /* justifier.cpp in Sources */,
@@ -432,7 +450,9 @@
 				9E11BE921A41204F00CC7F6B /* gamepad.cpp in Sources */,
 				9E11BE571A41204F00CC7F6B /* CDUtility.cpp in Sources */,
 				9E11BE821A41204F00CC7F6B /* dma.cpp in Sources */,
+				9E2385EE1BD09B9600FACD59 /* l-ec.cpp in Sources */,
 				9E11BEA51A41204F00CC7F6B /* psx.cpp in Sources */,
+				9E2385EC1BD09B9600FACD59 /* crc32.cpp in Sources */,
 				9E11BEB11A41204F00CC7F6B /* Deinterlacer.cpp in Sources */,
 				9E11BEAF1A41204F00CC7F6B /* Stream.cpp in Sources */,
 				9E11BE9A1A41204F00CC7F6B /* mouse.cpp in Sources */,
@@ -478,6 +498,7 @@
 					"_DEBUG=1",
 					"_CRT_SECURE_NO_WARNINGS=1",
 					"EW_EXPORT=1",
+					"WANT_LEC_CHECK=1",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -524,6 +545,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_CRT_SECURE_NO_WARNINGS=1",
 					"EW_EXPORT=1",
+					"WANT_LEC_CHECK=1",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;

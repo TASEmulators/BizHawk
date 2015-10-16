@@ -271,3 +271,7 @@ output/OpenTK.dll.config
 /BizHawk.Client.EtoHawk/EtoHawk.Desktop/obj/*
 /BizHawk.Client.EtoHawk/EtoHawk.Mac/bin/*
 /BizHawk.Client.EtoHawk/EtoHawk.Mac/obj/*
+libgambatte/xcode/gambatte.xcodeproj/project.xcworkspace/xcuserdata
+libgambatte/xcode/gambatte.xcodeproj/xcuserdata
+psx/octoshock/bizhawk/octoshock.xcodeproj/xcuserdata
+psx/octoshock/bizhawk/octoshock.xcodeproj/project.xcworkspace/xcuserdata

@@ -21,15 +21,13 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(path);
 			}
 
-			var ofd = new OpenFileDialog
-			{
-				FileName = !string.IsNullOrWhiteSpace(currentFile)
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.FileName = !string.IsNullOrWhiteSpace(currentFile)
 					? Path.GetFileName(currentFile)
-					: PathManager.FilesystemSafeName(Global.Game) + "." + fileExt,
-				InitialDirectory = path,
-				Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt),
-				RestoreDirectory = true
-			};
+					: PathManager.FilesystemSafeName(Global.Game) + "." + fileExt;
+			ofd.InitialDirectory = path;
+			ofd.Filter = string.Format("{0} (*.{1})|*.{1}|All Files|*.*", fileType, fileExt);
+			ofd.RestoreDirectory = true;
 
 			var result = ofd.ShowHawkDialog();
 			if (result != DialogResult.OK)
