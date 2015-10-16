@@ -1,6 +1,20 @@
 =========================================
-1.11.3 (in progress)
+next
 =========================================
+
+*EmuHawk
+**Cheat Dialog: Fix flakiness in value-editing
+**DispMethod D3D: Use FPU preserve to stop lua scripts using float math from malfunctioning
+**DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
+**Improvements to Retro shader compatibility
+
+=========================================
+1.11.3
+=========================================
+
+*Released October 14, 2015
+*[http://sourceforge.net/projects/bizhawk/files/BizHawk/BizHawk-1.11.3.zip/download|Windows binary]
+*[https://github.com/TASVideos/BizHawk/commit/105cd1c|Revision 105cd1c]
 
 *C64
 **Add tape loading, settings menu, and lots of bugfixes
