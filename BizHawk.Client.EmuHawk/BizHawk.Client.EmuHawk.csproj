@@ -1145,6 +1145,7 @@
     <Compile Include="tools\Watch\WatchValueBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UIHelper.cs" />
     <Compile Include="UpdateChecker.cs">
       <SubType>Code</SubType>
     </Compile>
