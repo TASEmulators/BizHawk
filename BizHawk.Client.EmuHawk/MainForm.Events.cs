@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				var font = new System.Drawing.Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
 				SaveRAMSubMenu.Font.Dispose();
 				SaveRAMSubMenu.Font = font;
-			}
+			}			
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1160,6 +1160,9 @@ namespace BizHawk.Client.EmuHawk
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
+
+			string toolPath = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
+			customToolToolStripMenuItem.Enabled = File.Exists(toolPath);
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1220,6 +1223,11 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenLuaConsole();
+		}
+
+		private void CustomToolMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<ICustomGameTool>();
 		}
 
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)

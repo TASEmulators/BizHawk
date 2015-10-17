@@ -205,6 +205,7 @@
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LuaConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.customToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
 			this.MultiDiskBundlerFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.batchRunnerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -325,13 +326,13 @@
 			this.AppleDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
 			this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.C64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.FeaturesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.C64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainStatusBar = new StatusStripEx();
 			this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
 			this.EmuStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -1825,6 +1826,7 @@
             this.toolStripSeparator11,
             this.CheatsMenuItem,
             this.LuaConsoleMenuItem,
+            this.customToolToolStripMenuItem,
             this.toolStripSeparator29,
             this.MultiDiskBundlerFileMenuItem,
             this.batchRunnerToolStripMenuItem});
@@ -1943,6 +1945,14 @@
 			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.LuaConsoleMenuItem.Text = "Lua Console";
 			this.LuaConsoleMenuItem.Click += new System.EventHandler(this.LuaConsoleMenuItem_Click);
+			// 
+			// customToolToolStripMenuItem
+			// 
+			this.customToolToolStripMenuItem.Enabled = false;
+			this.customToolToolStripMenuItem.Name = "customToolToolStripMenuItem";
+			this.customToolToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.customToolToolStripMenuItem.Text = "Custom Tool";
+			this.customToolToolStripMenuItem.Click += new System.EventHandler(this.CustomToolMenuItem_Click);
 			// 
 			// toolStripSeparator29
 			// 
@@ -2885,6 +2895,21 @@
 			this.settingsToolStripMenuItem1.Text = "&Settings...";
 			this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click_1);
 			// 
+			// C64SubMenu
+			// 
+			this.C64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.C64SettingsMenuItem});
+			this.C64SubMenu.Name = "C64SubMenu";
+			this.C64SubMenu.Size = new System.Drawing.Size(39, 19);
+			this.C64SubMenu.Text = "&C64";
+			// 
+			// C64SettingsMenuItem
+			// 
+			this.C64SettingsMenuItem.Name = "C64SettingsMenuItem";
+			this.C64SettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.C64SettingsMenuItem.Text = "&Settings...";
+			this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
+			// 
 			// HelpSubMenu
 			// 
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -2928,21 +2953,6 @@
 			this.AboutMenuItem.Size = new System.Drawing.Size(146, 22);
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
-			// 
-			// C64SubMenu
-			// 
-			this.C64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.C64SettingsMenuItem});
-			this.C64SubMenu.Name = "C64SubMenu";
-			this.C64SubMenu.Size = new System.Drawing.Size(39, 19);
-			this.C64SubMenu.Text = "&C64";
-			// 
-			// C64SettingsMenuItem
-			// 
-			this.C64SettingsMenuItem.Name = "C64SettingsMenuItem";
-			this.C64SettingsMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.C64SettingsMenuItem.Text = "&Settings...";
-			this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
 			// 
 			// MainStatusBar
 			// 
@@ -3993,6 +4003,7 @@
 		private System.Windows.Forms.ToolStripMenuItem DisplayMessagesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem C64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem C64SettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem customToolToolStripMenuItem;
 	}
 }
 
