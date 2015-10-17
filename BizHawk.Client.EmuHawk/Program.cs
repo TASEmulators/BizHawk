@@ -198,14 +198,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception e)
 				{
-					string message = e.ToString();
-					if (e.InnerException != null)
-					{
-						message += "\n\nInner Exception:\n\n" + e.InnerException;
-					}
-
-					message += "\n\nStackTrace:\n" + e.StackTrace;
-					MessageBox.Show(message);
+					new ExceptionBox(e).ShowDialog();
 				}
 #if WINDOWS
 				finally
