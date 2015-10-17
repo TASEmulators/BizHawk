@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class ExceptionBox : Form
 	{
@@ -26,10 +26,10 @@ namespace BizHawk.Client.Common
 		void DoCopy()
 		{
 			string txt = txtException.Text;
-			System.Windows.Forms.Clipboard.SetText(txt);
+			Clipboard.SetText(txt);
 			try 
 			{
-				if (System.Windows.Forms.Clipboard.GetText() == txt)
+				if (Clipboard.GetText() == txt)
 				{
 					lblDone.Text = "Done!";
 					lblDone.ForeColor = SystemColors.ControlText;

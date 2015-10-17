@@ -111,12 +111,6 @@
     <Compile Include="config\ToolDialogSettings.cs" />
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
-    <Compile Include="ExceptionBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ExceptionBox.Designer.cs">
-      <DependentUpon>ExceptionBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="ExceptionClasses.cs" />
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="GLManager.cs">
@@ -274,11 +268,6 @@
       <Project>{9F84A0B2-861E-4EF4-B89B-5E2A3F38A465}</Project>
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ExceptionBox.resx">
-      <DependentUpon>ExceptionBox.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
