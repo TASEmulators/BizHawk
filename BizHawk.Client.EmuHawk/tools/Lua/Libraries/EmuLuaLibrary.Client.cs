@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"borderheight",
-			"Gets the current height in pixels of the border around the emulator's drawing area"
+			"Gets the current height in pixels of the letter/pillarbox area (top side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public static int BorderHeight()
 		{
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"borderwidth",
-			"Gets the current width in pixels of the border around the emulator's drawing area"
+			"Gets the current width in pixels of the letter/pillarbox area (left side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public static int BorderWidth()
 		{
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferheight",
-			"Gets the current height in pixels of the emulator's drawing area"
+			"Gets the visible height of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public int BufferHeight()
 		{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferwidth",
-			"Gets the current width in pixels of the emulator's drawing area"
+			"Gets the visible width of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public int BufferWidth()
 		{
