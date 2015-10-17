@@ -2,7 +2,7 @@ using System;
 using BizHawk.Bizware.BizwareGL;
 
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
 	/// This singleton class manages OpenGL contexts, in an effort to minimize context changes.

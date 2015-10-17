@@ -13,6 +13,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.IOExtensions;
+using BizHawk.Client.EmuHawk;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -32,7 +33,7 @@ namespace BizHawk.Client.MultiHawk
 
 		public Mainform(string[] args)
 		{
-			BizHawk.Client.Common.GLManager.CreateInstance();
+			GLManager.CreateInstance();
 
 			InitializeComponent();
 			_throttle = new BizHawk.Client.EmuHawk.Throttle();
@@ -319,7 +320,7 @@ namespace BizHawk.Client.MultiHawk
 					Emulator = loader.LoadedEmulator,
 
 					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(),
-					GLManager = BizHawk.Client.Common.GLManager.Instance,
+					GLManager = GLManager.Instance,
 					Game = loader.Game,
 					CurrentRomPath = loader.CanonicalFullPath
 				};
