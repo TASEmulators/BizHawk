@@ -144,6 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
+			string cmdLoadSlot = null;
 			string cmdMovie = null;
 			string cmdDumpType = null;
 			string cmdDumpName = null;
@@ -161,6 +162,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
+				{
+					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				if (arg.StartsWith("--load-state="))
 				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				}
@@ -401,13 +406,20 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			if (cmdLoadState != null && !Global.Game.IsNullInstance)
+			if(!Global.Game.IsNullInstance)
 			{
-				LoadQuickSave("QuickSave" + cmdLoadState);
-			}
-			else if (Global.Config.AutoLoadLastSaveSlot && !Global.Game.IsNullInstance)
-			{
-				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				if(cmdLoadState != null)
+				{
+					LoadState(cmdLoadState,Path.GetFileName(cmdLoadState));
+				}
+				else if (cmdLoadSlot != null)
+				{
+					LoadQuickSave("QuickSave" + cmdLoadSlot);
+				}
+				else if (Global.Config.AutoLoadLastSaveSlot)
+				{
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
 			}
 
 			GlobalWin.Tools.AutoLoad();
