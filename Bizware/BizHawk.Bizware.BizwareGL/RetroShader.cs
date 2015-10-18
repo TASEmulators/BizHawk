@@ -31,6 +31,12 @@ namespace BizHawk.Bizware.BizwareGL
 			var ps = owner.CreateFragmentShader(true, psSource, "main_fragment", debug);
 			Pipeline = Owner.CreatePipeline(VertexLayout, vs, ps, debug, "retro");
 
+			if (!Pipeline.Available)
+			{
+				Available = false;
+				return;
+			}
+
 			//retroarch shaders will sometimes not have the right sampler name
 			//it's unclear whether we should bind to s_p or sampler0
 			//lets bind to sampler0 in case we dont have s_p

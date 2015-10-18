@@ -179,6 +179,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
+			//if the shaders arent available, the pipeline isn't either
+			if (!vertexShader.Available || !fragmentShader.Available)
+			{
+				return new Pipeline(this, null, false, null, null, null);
+			}
+
 			bool success = true;
 
 			var vsw = vertexShader.Opaque as ShaderWrapper;
