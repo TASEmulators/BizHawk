@@ -419,6 +419,7 @@
 			this.panel1.AutoScroll = true;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel1.Controls.Add(this.BestAttemptLogLabel);
+			this.panel1.Font =  new System.Drawing.Font(System.Drawing.FontFamily.GenericMonospace.Name, 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.panel1.Location = new System.Drawing.Point(12, 112);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(227, 251);
