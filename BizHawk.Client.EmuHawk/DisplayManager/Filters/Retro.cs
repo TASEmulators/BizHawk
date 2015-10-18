@@ -142,6 +142,20 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public List<ShaderPass> Passes = new List<ShaderPass>();
 
+		/// <summary>
+		/// Indicates whether any of the passes contain GLSL filenames (these are invalid now)
+		/// </summary>
+		public bool ContainsGLSL
+		{
+			get
+			{
+				foreach (var pass in Passes)
+					if (Path.GetExtension(pass.ShaderPath).ToLowerInvariant() == ".glsl")
+						return true;
+				return false;
+			}
+		}
+
 		public enum ScaleType
 		{
 			NotSet, Source, Viewport, Absolute

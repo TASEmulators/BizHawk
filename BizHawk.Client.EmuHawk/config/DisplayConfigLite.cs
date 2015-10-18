@@ -176,7 +176,34 @@ namespace BizHawk.Client.EmuHawk.config
 			if (ofd.ShowDialog() == DialogResult.OK)
 			{
 				rbUser.Checked = true;
-				PathSelection = Path.GetFullPath(ofd.FileName);
+				var choice = Path.GetFullPath(ofd.FileName);
+				
+				//test the preset
+				using (var stream = File.OpenRead(choice))
+				{
+					var cgp = new BizHawk.Client.EmuHawk.Filters.RetroShaderPreset(stream);
+					if (cgp.ContainsGLSL)
+					{
+						MessageBox.Show("Specified CGP contains references to .glsl files. This is illegal. Use .cg");
+						return;
+					}
+
+					//try compiling it
+					bool ok = false;
+					try 
+					{
+						var filter = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GlobalWin.IGL_GL, cgp, Path.GetDirectoryName(choice));
+						ok = filter.Available;
+					}
+					catch {}
+					if (!ok)
+					{
+						MessageBox.Show("Selected filter could not be compiled.");
+						return;
+					}
+				}
+
+				PathSelection = choice;
 				RefreshState();
 			}
 		}
