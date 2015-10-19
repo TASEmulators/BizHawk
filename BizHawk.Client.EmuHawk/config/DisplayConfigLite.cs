@@ -192,7 +192,7 @@ namespace BizHawk.Client.EmuHawk.config
 					bool ok = false;
 					try 
 					{
-						var filter = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GlobalWin.IGL_GL, cgp, Path.GetDirectoryName(choice));
+						var filter = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GlobalWin.GL, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;
 					}
 					catch {}
