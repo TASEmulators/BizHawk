@@ -7,6 +7,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Drawing;
 
 using BizHawk.Common;
@@ -24,6 +25,21 @@ namespace BizHawk.Client.EmuHawk.Filters
 {
 	public class RetroShaderChain : IDisposable
 	{
+		static System.Text.RegularExpressions.Regex rxInclude = new Regex(@"^(\s)?\#include(\s)+(""|<)(.*)?(""|>)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+		static string ResolveIncludes(string content, string baseDirectory)
+		{
+			for (; ; )
+			{
+				var match = rxInclude.Match(content);
+				if(match.Value == "") break;
+				string fname = match.Groups[4].Value;
+				fname = Path.Combine(baseDirectory,fname);
+				string includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
+				content = content.Substring(0, match.Index) + includedContent + content.Substring(match.Index + match.Length);
+			}
+			return content;
+		}
+
 		public RetroShaderChain(IGL owner, RetroShaderPreset preset, string baseDirectory, bool debug = false)
 		{
 			Owner = owner;
@@ -45,7 +61,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 					ok = false;
 					break;
 				}
-				string content = File.ReadAllText(path);
+				string content = ResolveIncludes(File.ReadAllText(path), Path.GetDirectoryName(path));
+
 
 				var shader = new RetroShader(Owner, content, debug);
 				Shaders[i] = shader;
