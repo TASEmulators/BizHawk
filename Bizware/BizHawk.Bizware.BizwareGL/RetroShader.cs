@@ -46,7 +46,7 @@ namespace BizHawk.Bizware.BizwareGL
 				//sampler wasn't named correctly. this can happen on some retroarch shaders
 				foreach (var u in Pipeline.GetUniforms())
 				{
-					if (u.Sole.IsSampler && u.Sole.Index == 0)
+					if (u.Sole.IsSampler && u.Sole.SamplerIndex == 0)
 					{
 						sampler0 = u;
 						break;

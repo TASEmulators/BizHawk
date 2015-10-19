@@ -478,7 +478,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					if (descr.Type == ParameterType.Sampler2D)
 					{
 						ui.IsSampler = true;
-						ui.Index = descr.RegisterIndex;
+						ui.SamplerIndex = descr.RegisterIndex;
 						uw.SamplerIndex = descr.RegisterIndex;
 					}
 					uniforms.Add(ui);

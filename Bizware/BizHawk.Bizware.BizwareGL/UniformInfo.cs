@@ -7,7 +7,7 @@ namespace BizHawk.Bizware.BizwareGL
 	{
 		public object Opaque;
 		public string Name;
-		public int Index;
+		public int SamplerIndex;
 		public bool IsSampler;
 	}
 }
