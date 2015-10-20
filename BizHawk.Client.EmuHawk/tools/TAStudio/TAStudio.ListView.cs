@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.Lagged.HasValue)
 			{
-                if (!CurrentTasMovie.TasStateManager.HasState(index) && TasView.denoteStatesWithBGColor)
+				if (!record.HasState && TasView.denoteStatesWithBGColor)
                     color = record.Lagged.Value ?
                         LagZone_InputLog :
                         GreenZone_InputLog;
@@ -200,9 +200,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.WasLagged.HasValue)
 			{
-				color = record.WasLagged.Value ?
-					LagZone_InputLog_Invalidated :
-					GreenZone_InputLog_Invalidated;
+				if (!record.HasState && TasView.denoteStatesWithBGColor)
+					color = record.WasLagged.Value ?
+						LagZone_InputLog_Invalidated :
+						GreenZone_InputLog_Invalidated;
+				else
+					color = record.WasLagged.Value ?
+						LagZone_InputLog_Stated :
+						GreenZone_InputLog_Stated;
 			}
 			else
 			{
