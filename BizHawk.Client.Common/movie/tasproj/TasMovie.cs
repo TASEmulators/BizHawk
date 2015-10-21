@@ -497,12 +497,14 @@ namespace BizHawk.Client.Common
 
 			_log = branch.InputLog.ToList();
 			//_changes = true;
-			LagLog.FromLagLog(branch.LagLog);
 
 			// if there are branch states, they will be loaded anyway
 			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
 			if (divergentPoint.HasValue)
-				StateManager.Invalidate(divergentPoint.Value); 
+			{
+				StateManager.Invalidate(divergentPoint.Value);
+				LagLog.FromLagLog(branch.LagLog); // don't truncate LagLog if the branch's one is shorter, but input is the same
+			}
 			else
 				StateManager.Invalidate(branch.InputLog.Count);
 
