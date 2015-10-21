@@ -677,7 +677,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			if (cg)
 			{
 				var cgc = new CGC();
-				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv");
+				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv", false);
 				
 				if (!results.Succeeded)
 					return new Shader(this, null, false);

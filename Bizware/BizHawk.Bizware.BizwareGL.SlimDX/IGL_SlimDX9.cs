@@ -169,7 +169,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				if (cg)
 				{
 					var cgc = new CGC();
-					var results = cgc.Run(source, entry, "hlslf");
+					var results = cgc.Run(source, entry, "hlslf", true);
 					source = results.Code;
 					entry = "main";
 					if (!results.Succeeded)
@@ -222,7 +222,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				if (cg)
 				{
 					var cgc = new CGC();
-					var results = cgc.Run(source, entry, "hlslv");
+					var results = cgc.Run(source, entry, "hlslv", true);
 					source = results.Code;
 					entry = "main";
 					if (!results.Succeeded)
