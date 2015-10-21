@@ -1357,7 +1357,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_inResizeLoop)
 			{
 				var size = PresentationPanel.NativeSize;
-				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
+				float AR = (float)size.Width / size.Height;
+				str = str + string.Format("({0}x{1})={2} - ", size.Width, size.Height, AR);
 			}
 
 			//we need to display FPS somewhere, in this case
