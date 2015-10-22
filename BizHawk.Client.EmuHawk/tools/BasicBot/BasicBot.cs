@@ -284,7 +284,59 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public string FromSlot
+        public byte MainComparisonType
+        {
+            get
+            {
+                return (byte)mainOperator.SelectedIndex;
+            }
+            set
+            {
+                if (value < 5) mainOperator.SelectedIndex = value;
+                else mainOperator.SelectedIndex = 0;
+            }
+        }
+
+        public byte Tie1ComparisonType
+        {
+            get
+            {
+                return (byte)Tiebreak1Operator.SelectedIndex;
+            }
+            set
+            {
+                if (value < 5) Tiebreak1Operator.SelectedIndex = value;
+                else Tiebreak1Operator.SelectedIndex = 0;
+            }
+        }
+
+        public byte Tie2ComparisonType
+        {
+            get
+            {
+                return (byte)Tiebreak2Operator.SelectedIndex;
+            }
+            set
+            {
+                if (value < 5) Tiebreak2Operator.SelectedIndex = value;
+                else Tiebreak2Operator.SelectedIndex = 0;
+            }
+        }
+
+        public byte Tie3ComparisonType
+        {
+            get
+            {
+                return (byte)Tiebreak3Operator.SelectedIndex;
+            }
+            set
+            {
+                if (value < 5) Tiebreak3Operator.SelectedIndex = value;
+                else Tiebreak3Operator.SelectedIndex = 0;
+            }
+        }
+
+        public string FromSlot
 		{
 			get
 			{
@@ -392,6 +444,10 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker2Address = 0;
 			TieBreaker3Address = 0;
 			StartFromSlotBox.SelectedIndex = 0;
+            mainOperator.SelectedIndex = 0;
+            Tiebreak1Operator.SelectedIndex = 0;
+            Tiebreak2Operator.SelectedIndex = 0;
+            Tiebreak3Operator.SelectedIndex = 0;
 
 			UpdateBestAttempt();
 		}
@@ -549,6 +605,11 @@ namespace BizHawk.Client.EmuHawk
 			public int TieBreak1 { get; set; }
 			public int TieBreak2 { get; set; }
 			public int TieBreak3 { get; set; }
+            public byte ComparisonTypeMain { get; set; }
+            public byte ComparisonTypeTie1 { get; set; }
+            public byte ComparisonTypeTie2 { get; set; }
+            public byte ComparisonTypeTie3 { get; set; }
+
 			public List<string> Log { get; set; }
 		}
 
@@ -560,7 +621,11 @@ namespace BizHawk.Client.EmuHawk
 			public int TieBreaker1 { get; set; }
 			public int TieBreaker2 { get; set; }
 			public int TieBreaker3 { get; set; }
-			public int FrameLength { get; set; }
+            public byte ComparisonTypeMain { get; set; }
+            public byte ComparisonTypeTie1 { get; set; }
+            public byte ComparisonTypeTie2 { get; set; }
+            public byte ComparisonTypeTie3 { get; set; }
+            public int FrameLength { get; set; }
 			public string FromSlot { get; set; }
 			public long Attempts { get; set; }
 			public long Frames { get; set; }
@@ -611,6 +676,20 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker1Address = botData.TieBreaker1;
 			TieBreaker2Address = botData.TieBreaker2;
 			TieBreaker3Address = botData.TieBreaker3;
+            try
+            {
+                MainComparisonType = botData.ComparisonTypeMain;
+                Tie1ComparisonType = botData.ComparisonTypeTie1;
+                Tie2ComparisonType = botData.ComparisonTypeTie2;
+                Tie3ComparisonType = botData.ComparisonTypeTie3;
+            }
+            catch
+            {
+                MainComparisonType = 0;
+                Tie1ComparisonType = 0;
+                Tie2ComparisonType = 0;
+                Tie3ComparisonType = 0;
+            }
 			FrameLength = botData.FrameLength;
 			FromSlot = botData.FromSlot;
 			Attempts = botData.Attempts;
@@ -639,14 +718,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBotFile(string path)
 		{
-			var data = new BotData
-			{
-				Best = _bestBotAttempt,
-				ControlProbabilities = ControlProbabilities,
-				Maximize = MaximizeAddress,
-				TieBreaker1 = TieBreaker1Address,
-				TieBreaker2 = TieBreaker2Address,
-				TieBreaker3 = TieBreaker3Address,
+            var data = new BotData
+            {
+                Best = _bestBotAttempt,
+                ControlProbabilities = ControlProbabilities,
+                Maximize = MaximizeAddress,
+                TieBreaker1 = TieBreaker1Address,
+                TieBreaker2 = TieBreaker2Address,
+                TieBreaker3 = TieBreaker3Address,
+                ComparisonTypeMain = MainComparisonType,
+                ComparisonTypeTie1 = Tie1ComparisonType,
+                ComparisonTypeTie2 = Tie2ComparisonType,
+                ComparisonTypeTie3 = Tie3ComparisonType,
 				FromSlot = FromSlot,
 				FrameLength = FrameLength,
 				Attempts = Attempts,
@@ -799,34 +882,52 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsBetter(BotAttempt best, BotAttempt current)
 		{
-			if (current.Maximize > best.Maximize)
+			if (!TestValue(MainComparisonType, current.Maximize, best.Maximize))
 			{
-				return true;
+				return false;
 			}
 			else if (current.Maximize == best.Maximize)
 			{
-				if (current.TieBreak1 > best.TieBreak1)
+				if (!TestValue(Tie1ComparisonType, current.TieBreak1, best.TieBreak1))
 				{
-					return true;
+					return false;
 				}
 				else if (current.TieBreak1 == best.TieBreak1)
 				{
-					if (current.TieBreak2 > best.TieBreak2)
+					if (!TestValue(Tie2ComparisonType, current.TieBreak2, best.TieBreak2))
 					{
-						return true;
+						return false;
 					}
 					else if (current.TieBreak2 == best.TieBreak2)
 					{
-						if (current.TieBreak3 > current.TieBreak3)
+						if (!TestValue(Tie3ComparisonType, current.TieBreak3, current.TieBreak3))
 						{
-							return true;
+							return false;
 						}
 					}
 				}
 			}
 
-			return false;
+			return true;
 		}
+
+        private bool TestValue(byte operation, int currentValue, int bestValue)
+        {
+            switch (operation)
+            {
+                case 0:
+                    return currentValue > bestValue;
+                case 1:
+                    return currentValue >= bestValue;
+                case 2:
+                    return currentValue == bestValue;
+                case 3:
+                    return currentValue <= bestValue;
+                case 4:
+                    return currentValue < bestValue;
+            }
+            return false;
+        }
 
 		private void UpdateBestAttempt()
 		{
