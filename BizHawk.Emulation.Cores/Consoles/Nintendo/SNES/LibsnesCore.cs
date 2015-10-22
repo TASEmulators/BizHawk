@@ -679,7 +679,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//video provider
 		int IVideoProvider.BackgroundColor { get { return 0; } }
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
-		int IVideoProvider.VirtualWidth { get { return vidWidth; } }
+		int IVideoProvider.VirtualWidth { get { return (int)(vidWidth * 1.146); } }
 		public int VirtualHeight { get { return vidHeight; } }
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
