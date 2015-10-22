@@ -612,8 +612,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					GlobalWin.Tools.UpdateToolsBefore();
-					GlobalWin.Tools.UpdateToolsAfter();
+					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo);
+					GlobalWin.Tools.UpdateToolsBefore(skipScripts);
+					GlobalWin.Tools.UpdateToolsAfter(skipScripts);
 				}
 			}
 		}
