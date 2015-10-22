@@ -54,6 +54,8 @@ namespace BizHawk.Client.EmuHawk
 
 			LuaListView.QueryItemText += LuaListView_QueryItemText;
 			LuaListView.QueryItemBkColor += LuaListView_QueryItemBkColor;
+			LuaListView.QueryItemImage += LuaListView_QueryItemImage;
+			LuaListView.QueryItemIndent += LuaListView_QueryItemIndent;
 			LuaListView.VirtualMode = true;
 
 			LuaSandbox.SetLogger(this.ConsoleLog);
@@ -137,10 +139,10 @@ namespace BizHawk.Client.EmuHawk
 					LuaSandbox.Sandbox(() =>
 					{
 						file.Thread = LuaImp.SpawnCoroutine(file.Path);
-						file.Enabled = true;
+						file.State = LuaFile.RunState.Running;
 					}, () =>
 					{
-						file.Enabled = false;
+						file.State = LuaFile.RunState.Disabled;
 					});
 				}
 				catch (Exception ex)
@@ -172,10 +174,10 @@ namespace BizHawk.Client.EmuHawk
 						LuaSandbox.Sandbox(() =>
 						{
 							luaFile.Thread = LuaImp.SpawnCoroutine(processedPath);
-							luaFile.Enabled = true;
+							luaFile.State = LuaFile.RunState.Running;
 						}, () =>
 						{
-							luaFile.Enabled = false;
+							luaFile.State = LuaFile.RunState.Disabled;
 						});
 					}
 					catch (Exception e)
@@ -185,10 +187,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					luaFile.Enabled = false;
+					luaFile.State = LuaFile.RunState.Disabled;
 				}
 
-				luaFile.Paused = false;
+				//luaFile.Paused = false;
 			}
 			else
 			{
@@ -225,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 							file.Thread = LuaImp.SpawnCoroutine(file.Path);
 						}, () =>
 						{
-							file.Enabled = false;
+							file.State = LuaFile.RunState.Disabled;
 						});
 					}
 					catch (Exception e)
@@ -247,6 +249,21 @@ namespace BizHawk.Client.EmuHawk
 				Path.GetFileName(_luaList.Filename);
 		}
 
+
+		private void LuaListView_QueryItemImage(int item, int subItem, out int imageIndex)
+		{
+			imageIndex = -1;
+			if (subItem != 0) return;
+			if (_luaList[item].Paused) imageIndex = 2;
+			else if (_luaList[item].Enabled) imageIndex = 1;
+			else imageIndex = 0;
+		}
+
+		void LuaListView_QueryItemIndent(int item, out int itemIndent)
+		{
+			itemIndent = 0;
+		}
+
 		private void LuaListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
 			if (column == 0)
@@ -261,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (_luaList[index].Enabled && _luaList[index].Paused)
 				{
-					color = Color.IndianRed;
+					color = Color.LightPink;
 				}
 			}
 
@@ -271,7 +288,6 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaListView_QueryItemText(int index, int column, out string text)
 		{
 			text = string.Empty;
-
 			if (column == 0)
 			{
 				text = Path.GetFileNameWithoutExtension(_luaList[index].Path); // TODO: how about allow the user to name scripts?
@@ -439,7 +455,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}, () =>
 					{
-						lf.Enabled = false;
+						lf.State = LuaFile.RunState.Disabled;
 						lf.Thread = null;
 					});
 				}
@@ -731,7 +747,7 @@ namespace BizHawk.Client.EmuHawk
 							item.Thread = LuaImp.SpawnCoroutine(item.Path);
 						}, () =>
 						{
-							item.Enabled = false;
+							item.State = LuaFile.RunState.Disabled;
 						});
 
 					}
@@ -763,6 +779,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateDialog();
+			UpdateNumberOfScripts();
+			LuaListView.Refresh();
 		}
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)

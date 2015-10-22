@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 		public void StopAllScripts()
 		{
-			ForEach(x => x.Enabled = false);
+			ForEach(x => x.State = LuaFile.RunState.Disabled);
 		}
 
 		public new void Clear()
@@ -105,8 +105,10 @@ namespace BizHawk.Client.Common
 
 							Add(new LuaFile(scriptPath)
 							{
-								Enabled = !Global.Config.DisableLuaScriptsOnLoad &&
-								line.Substring(0, 1) == "1",
+								State = (
+										!Global.Config.DisableLuaScriptsOnLoad 
+										&& line.Substring(0, 1) == "1"
+									) ? LuaFile.RunState.Running : LuaFile.RunState.Disabled
 							});
 						}
 					}
