@@ -562,23 +562,6 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
 			}
-
-			bw.Write(currentBranch);
-
-			if (Settings.BranchStatesInTasproj)
-			{
-				bw.Write(BranchStates.Count);
-				foreach (var s in BranchStates)
-				{
-					bw.Write(s.Key);
-					bw.Write(s.Value.Count);
-					foreach (var t in s.Value)
-					{
-						bw.Write(t.Key);
-						t.Value.Write(bw);
-					}
-				}
-			}
 		}
 
 		public void Load(BinaryReader br)
@@ -599,11 +582,33 @@ namespace BizHawk.Client.Common
 				//Used += len;
 			}
 			//}
+		}
 
-			try
+		public void SaveBranchStates(BinaryWriter bw)
+		{
+			bw.Write(currentBranch);
+			if (Settings.BranchStatesInTasproj)
 			{
-				currentBranch = br.ReadInt32();
-				if (Settings.BranchStatesInTasproj)
+				bw.Write(BranchStates.Count);
+				foreach (var s in BranchStates)
+				{
+					bw.Write(s.Key);
+					bw.Write(s.Value.Count);
+					foreach (var t in s.Value)
+					{
+						bw.Write(t.Key);
+						t.Value.Write(bw);
+					}
+				}
+			}
+		}
+
+		public void LoadBranchStates(BinaryReader br)
+		{
+			currentBranch = br.ReadInt32();
+			if (Settings.BranchStatesInTasproj)
+			{
+				try
 				{
 					int c = br.ReadInt32();
 					BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
@@ -623,9 +628,10 @@ namespace BizHawk.Client.Common
 						c--;
 					}
 				}
+				catch (EndOfStreamException) { }
 			}
-			catch (EndOfStreamException) { }
 		}
+
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{

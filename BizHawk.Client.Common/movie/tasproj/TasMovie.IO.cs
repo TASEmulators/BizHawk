@@ -99,6 +99,7 @@ namespace BizHawk.Client.Common
 				if (Branches.Any())
 				{
 					Branches.Save(bs);
+					bs.PutLump(BinaryStateLump.BranchStateHistory, (BinaryWriter bw) => StateManager.SaveBranchStates(bw));
 				}
 
 				ReportProgress(PROGRESS_STEP);
@@ -288,6 +289,10 @@ namespace BizHawk.Client.Common
 				}
 
 				Branches.Load(bl, this);
+				bl.GetLump(BinaryStateLump.BranchStateHistory, false, delegate(BinaryReader br, long length)
+				{
+					StateManager.LoadBranchStates(br);
+				});
 			}
 
 			Changes = false;
