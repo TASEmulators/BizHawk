@@ -256,3 +256,5 @@
 .hgignore
 .hgtags
 /output/*.manifest
+/output/dll/*.iobj
+/output/dll/*.ipdb
