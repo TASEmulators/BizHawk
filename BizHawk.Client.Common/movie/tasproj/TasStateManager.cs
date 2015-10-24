@@ -586,7 +586,6 @@ namespace BizHawk.Client.Common
 
 		public void SaveBranchStates(BinaryWriter bw)
 		{
-			bw.Write(currentBranch);
 			if (Settings.BranchStatesInTasproj)
 			{
 				bw.Write(BranchStates.Count);
@@ -605,7 +604,6 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranchStates(BinaryReader br)
 		{
-			currentBranch = br.ReadInt32();
 			if (Settings.BranchStatesInTasproj)
 			{
 				try
@@ -705,7 +703,6 @@ namespace BizHawk.Client.Common
 		#region "Branches"
 
 		private SortedList<int, SortedList<int, StateManagerState>> BranchStates = new SortedList<int, SortedList<int, StateManagerState>>();
-		private int currentBranch = -1;
 
 		/// <summary>
 		/// Checks if the state at frame in the given branch (-1 for current) has any duplicates.
@@ -782,7 +779,6 @@ namespace BizHawk.Client.Common
 				stateList.Add(branchHash, kvp.Value);
 				Used += (ulong)stateList[branchHash].Length;
 			}
-			currentBranch = _movie.BranchCount;
 		}
 
 		public void RemoveBranch(int index)
@@ -810,10 +806,6 @@ namespace BizHawk.Client.Common
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);
 			}
-			if (currentBranch > index)
-				currentBranch--;
-			else if (currentBranch == index)
-				currentBranch = -1;
 		}
 
 		public void UpdateBranch(int index)
@@ -859,7 +851,6 @@ namespace BizHawk.Client.Common
 				stateList.Add(branchHash, kvp.Value);
 				Used += (ulong)stateList[branchHash].Length;
 			}
-			currentBranch = index;
 		}
 
 		public void LoadBranch(int index)
@@ -876,8 +867,6 @@ namespace BizHawk.Client.Common
 				if (kvp.Value.ContainsKey(branchHash))
 					SetState(kvp.Key, kvp.Value[branchHash].State);
 			}
-
-			currentBranch = index;
 		}
 
 		#endregion
