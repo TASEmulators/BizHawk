@@ -82,8 +82,8 @@ namespace BizHawk.Client.Common
 				{
 					bs.PutLump(BinaryStateLump.MovieSaveRam, (BinaryWriter bw) => bw.Write(SaveRam));
 				}
-
 				ReportProgress(PROGRESS_STEP);
+
 				if (ClientSettingsForSave != null)
 				{
 					var clientSettingsJson = ClientSettingsForSave();
@@ -99,9 +99,11 @@ namespace BizHawk.Client.Common
 				if (Branches.Any())
 				{
 					Branches.Save(bs);
-					bs.PutLump(BinaryStateLump.BranchStateHistory, (BinaryWriter bw) => StateManager.SaveBranchStates(bw));
+					if (StateManager.Settings.BranchStatesInTasproj)
+					{
+						bs.PutLump(BinaryStateLump.BranchStateHistory, (BinaryWriter bw) => StateManager.SaveBranchStates(bw));
+					}
 				}
-
 				ReportProgress(PROGRESS_STEP);
 			}
 
@@ -289,10 +291,13 @@ namespace BizHawk.Client.Common
 				}
 
 				Branches.Load(bl, this);
-				bl.GetLump(BinaryStateLump.BranchStateHistory, false, delegate(BinaryReader br, long length)
+				if (StateManager.Settings.BranchStatesInTasproj)
 				{
-					StateManager.LoadBranchStates(br);
-				});
+					bl.GetLump(BinaryStateLump.BranchStateHistory, false, delegate(BinaryReader br, long length)
+					{
+						StateManager.LoadBranchStates(br);
+					});
+				}
 			}
 
 			Changes = false;
