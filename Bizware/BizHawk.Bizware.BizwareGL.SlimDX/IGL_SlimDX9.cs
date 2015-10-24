@@ -191,7 +191,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					string profile = "ps_1_0";
 					if (cg)
 						profile = "ps_3_0"; //todo - smarter logic somehow
-					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+
+					//ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
+					//
+					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.UseLegacyD3DX9_31Dll, out errors);
 				}
 				catch (Exception ex)
 				{

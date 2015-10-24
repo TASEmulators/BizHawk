@@ -20,8 +20,9 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 
 			VertexLayout = owner.CreateVertexLayout();
-			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttributeUsage.Position, false, 24, 0);
-			VertexLayout.DefineVertexAttribute("texCoord1", 1, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 24, 16);
+			VertexLayout.DefineVertexAttribute("position", 0, 4, VertexAttribPointerType.Float, AttributeUsage.Position, false, 40, 0);
+			VertexLayout.DefineVertexAttribute("color", 1, 4, VertexAttribPointerType.Float, AttributeUsage.Color0, false, 40, 16); //just dead weight, i have no idea why this is here. but some old HLSL compilers (used in bizhawk for various reasons) will want it to exist here since it exists in the vertex shader
+			VertexLayout.DefineVertexAttribute("texCoord1", 2, 2, VertexAttribPointerType.Float, AttributeUsage.Texcoord0, false, 40, 32);
 			VertexLayout.Close();
 
 			string defines = "#define TEXCOORD TEXCOORD0\r\n"; //maybe not safe..
@@ -106,15 +107,19 @@ namespace BizHawk.Bizware.BizwareGL
 			float v0,v1;
 			if (flip) { v0 = 1; v1 = 0; }
 			else { v0 = 0; v1 = 1; }
-			float* pData = stackalloc float[8*4];
+			float* pData = stackalloc float[10*4];
 			int i=0;
 			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 1; //topleft vert
+			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 0; pData[i++] = v0;
 			pData[i++] = w; pData[i++] = 0; pData[i++] = 0; pData[i++] = 1; //topright vert
+			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 1; pData[i++] = v0;
 			pData[i++] = 0; pData[i++] = h; pData[i++] = 0; pData[i++] = 1; //bottomleft vert
+			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 0; pData[i++] = v1;
 			pData[i++] = w; pData[i++] = h; pData[i++] = 0; pData[i++] = 1; //bottomright vert
+			pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; pData[i++] = 0; //useless color
 			pData[i++] = 1; pData[i++] = v1;
 
 			Owner.SetBlendState(Owner.BlendNoneCopy);

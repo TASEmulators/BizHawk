@@ -375,13 +375,13 @@ struct VS_OUTPUT
 {
 	float4 vPosition : POSITION;
 	float2 vTexcoord0 : TEXCOORD0;
-	float4 vCornerColor : TEXCOORD1;
+	float4 vCornerColor : COLOR0;
 };
 
 struct PS_INPUT
 {
 	float2 vTexcoord0 : TEXCOORD0;
-	float4 vCornerColor : TEXCOORD1;
+	float4 vCornerColor : COLOR0;
 };
 
 VS_OUTPUT vsmain(VS_INPUT src)
