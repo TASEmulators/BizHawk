@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 
 			api = new LibsnesApi(GetExePath());
-			api.CMD_init();
 			api.ReadHook = ReadHook;
 			api.ExecHook = ExecHook;
 			api.WriteHook = WriteHook;
@@ -384,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// if (Win32.Is64BitOperatingSystem)
 			// bits = "64";
 
-			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".exe";
+			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".dll";
 
 			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 
