@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			BizHawk.Client.Common.TempFileCleaner.Start();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
