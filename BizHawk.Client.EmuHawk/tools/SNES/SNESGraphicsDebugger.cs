@@ -1163,7 +1163,10 @@ namespace BizHawk.Client.EmuHawk
 						if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
 
 						int tloc = ty * bg.ScreenSizeInTiles.Width + tx;
-						if (tloc > map.Length) break;
+						if (tx >= bg.ScreenSizeInTiles.Width) break;
+						if (ty >= bg.ScreenSizeInTiles.Height) break;
+						if (tx < 0) break;
+						if (ty < 0) break;
 
 						currMapEntryState = new MapEntryState();
 						currMapEntryState.bgnum = (int)CurrDisplaySelection;
