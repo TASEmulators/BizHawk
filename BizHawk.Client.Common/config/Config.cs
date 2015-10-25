@@ -116,7 +116,11 @@ namespace BizHawk.Client.Common
 
 		public enum ESoundOutputMethod { DirectSound, XAudio2, OpenAL, Dummy };
 
-		public enum EDispManagerAR { None, System, Custom };
+		public enum EDispManagerAR { None, System, 
+			//actually, custom SIZE (fixme on major release)
+			Custom, 
+			CustomRatio
+		};
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 
@@ -273,9 +277,14 @@ namespace BizHawk.Client.Common
 		public bool DispChrome_Fullscreen_AutohideMouse = true;
 		public bool DispChrome_AllowDoubleClickFullscreen = true;
 
-		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
-		public int DispCustomUserARWidth = 1;
-		public int DispCustomUserARHeight = 1;
+		public EDispManagerAR DispManagerAR = EDispManagerAR.System;
+
+		//these are misnomers. they're actually a fixed size (fixme on major release)
+		public int DispCustomUserARWidth = -1;
+		public int DispCustomUserARHeight = -1;
+		//these are more like the actual AR ratio (i.e. 4:3) (fixme on major release)
+		public float DispCustomUserARX = -1;
+		public float DispCustomUserARY = -1;
 
 		// Sound options
 #if WINDOWS

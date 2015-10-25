@@ -379,6 +379,24 @@ namespace BizHawk.Client.EmuHawk
 			public int BackgroundColor { get; set; }
 		}
 
+		void FixRatio(float x, float y, int inw, int inh, out int outw, out int outh)
+		{
+			float ratio = x / y;
+			if (ratio <= 1)
+			{
+				//taller. weird. expand height.
+				outw = inw;
+				outh = (int)((float)inw / ratio);
+			}
+			else
+			{
+				//wider. normal. expand width.
+				outw = (int)((float)inh * ratio);
+				outh = inh;
+			}
+		}
+
+
 		/// <summary>
 		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
 		/// TODO - this needs to be redone with a concept different from zoom factor. 
@@ -389,7 +407,8 @@ namespace BizHawk.Client.EmuHawk
 			bool ar_active = Global.Config.DispFixAspectRatio;
 			bool ar_system = Global.Config.DispManagerAR == Config.EDispManagerAR.System;
 			bool ar_custom = Global.Config.DispManagerAR == Config.EDispManagerAR.Custom;
-			bool ar_correct = ar_system || ar_custom;
+			bool ar_customRatio = Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio;
+			bool ar_correct = ar_system || ar_custom || ar_customRatio;
 			bool ar_unity = !ar_correct;
 			bool ar_integer = Global.Config.DispFixScaleInteger;
 
@@ -402,6 +421,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				virtualWidth = Global.Config.DispCustomUserARWidth;
 				virtualHeight = Global.Config.DispCustomUserARHeight;
+			}
+			
+			if (ar_customRatio)
+			{
+				FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
 			var padding = CalculateCompleteContentPadding(true, false);
@@ -556,6 +580,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					vw = Global.Config.DispCustomUserARWidth;
 					vh = Global.Config.DispCustomUserARHeight;
+				}
+				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+				{
+					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
 

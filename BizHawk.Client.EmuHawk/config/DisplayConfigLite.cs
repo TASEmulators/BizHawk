@@ -76,9 +76,17 @@ namespace BizHawk.Client.EmuHawk.config
 				rbUseSystem.Checked = true;
 			else if (Global.Config.DispManagerAR == Config.EDispManagerAR.Custom)
 				rbUseCustom.Checked = true;
+			else if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+				rbUseCustomRatio.Checked = true;
 
-			txtCustomARWidth.Text = Global.Config.DispCustomUserARWidth.ToString();
-			txtCustomARHeight.Text = Global.Config.DispCustomUserARHeight.ToString();
+			if(Global.Config.DispCustomUserARWidth != -1)
+				txtCustomARWidth.Text = Global.Config.DispCustomUserARWidth.ToString();
+			if (Global.Config.DispCustomUserARHeight != -1)
+				txtCustomARHeight.Text = Global.Config.DispCustomUserARHeight.ToString();
+			if (Global.Config.DispCustomUserARX != -1)
+				txtCustomARX.Text = Global.Config.DispCustomUserARX.ToString();
+			if (Global.Config.DispCustomUserARY != -1)
+				txtCustomARY.Text = Global.Config.DispCustomUserARY.ToString();
 
 			RefreshAspectRatioOptions();
 		}
@@ -141,9 +149,21 @@ namespace BizHawk.Client.EmuHawk.config
 				Global.Config.DispManagerAR = Config.EDispManagerAR.System;
 			else if (rbUseCustom.Checked)
 				Global.Config.DispManagerAR = Config.EDispManagerAR.Custom;
+			else if (rbUseCustomRatio.Checked)
+				Global.Config.DispManagerAR = Config.EDispManagerAR.CustomRatio;
 
-			int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
-			int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
+			if (txtCustomARWidth.Text != "")
+				int.TryParse(txtCustomARWidth.Text, out Global.Config.DispCustomUserARWidth);
+			else Global.Config.DispCustomUserARWidth = -1;
+			if (txtCustomARHeight.Text != "")
+				int.TryParse(txtCustomARHeight.Text, out Global.Config.DispCustomUserARHeight);
+			else Global.Config.DispCustomUserARHeight = -1;
+			if (txtCustomARX.Text != "")
+				float.TryParse(txtCustomARX.Text, out Global.Config.DispCustomUserARX);
+			else Global.Config.DispCustomUserARX = -1;
+			if (txtCustomARY.Text != "")
+				float.TryParse(txtCustomARY.Text, out Global.Config.DispCustomUserARY);
+			else Global.Config.DispCustomUserARY = -1;
 
 			var oldDisplayMethod = Global.Config.DispMethod;
 			if(rbOpenGL.Checked)

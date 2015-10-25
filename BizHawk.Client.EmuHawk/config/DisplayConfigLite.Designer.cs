@@ -36,6 +36,7 @@
 			this.lblUserFilterName = new System.Windows.Forms.Label();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
 			this.rbUser = new System.Windows.Forms.RadioButton();
+			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
 			this.rbHq2x = new System.Windows.Forms.RadioButton();
@@ -87,11 +88,15 @@
 			this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
+			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
-			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+			this.rbUseCustomRatio = new System.Windows.Forms.RadioButton();
+			this.txtCustomARY = new System.Windows.Forms.TextBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.txtCustomARX = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
 			this.grpARSelection.SuspendLayout();
 			this.tabControl1.SuspendLayout();
@@ -104,7 +109,6 @@
 			this.tabPage1.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -186,6 +190,19 @@
 			this.rbUser.Text = "User";
 			this.rbUser.UseVisualStyleBackColor = true;
 			// 
+			// tbScanlineIntensity
+			// 
+			this.tbScanlineIntensity.LargeChange = 32;
+			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
+			this.tbScanlineIntensity.Maximum = 256;
+			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
+			this.tbScanlineIntensity.TabIndex = 3;
+			this.tbScanlineIntensity.TickFrequency = 32;
+			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			// 
 			// rbNone
 			// 
 			this.rbNone.AutoSize = true;
@@ -233,7 +250,7 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(15, 284);
+			this.checkPadInteger.Location = new System.Drawing.Point(15, 307);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -312,6 +329,10 @@
 			// 
 			// grpARSelection
 			// 
+			this.grpARSelection.Controls.Add(this.txtCustomARY);
+			this.grpARSelection.Controls.Add(this.label12);
+			this.grpARSelection.Controls.Add(this.txtCustomARX);
+			this.grpARSelection.Controls.Add(this.rbUseCustomRatio);
 			this.grpARSelection.Controls.Add(this.label4);
 			this.grpARSelection.Controls.Add(this.txtCustomARHeight);
 			this.grpARSelection.Controls.Add(this.label3);
@@ -321,7 +342,7 @@
 			this.grpARSelection.Controls.Add(this.rbUseSystem);
 			this.grpARSelection.Location = new System.Drawing.Point(15, 171);
 			this.grpARSelection.Name = "grpARSelection";
-			this.grpARSelection.Size = new System.Drawing.Size(377, 107);
+			this.grpARSelection.Size = new System.Drawing.Size(377, 130);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
@@ -363,10 +384,10 @@
 			this.rbUseCustom.AutoSize = true;
 			this.rbUseCustom.Location = new System.Drawing.Point(26, 80);
 			this.rbUseCustom.Name = "rbUseCustom";
-			this.rbUseCustom.Size = new System.Drawing.Size(107, 17);
+			this.rbUseCustom.Size = new System.Drawing.Size(105, 17);
 			this.rbUseCustom.TabIndex = 13;
 			this.rbUseCustom.TabStop = true;
-			this.rbUseCustom.Text = "Use custom Size:";
+			this.rbUseCustom.Text = "Use custom size:";
 			this.rbUseCustom.UseVisualStyleBackColor = true;
 			// 
 			// label2
@@ -753,6 +774,17 @@
 			this.cbMenuWindowed.Text = "Menu";
 			this.cbMenuWindowed.UseVisualStyleBackColor = true;
 			// 
+			// trackbarFrameSizeWindowed
+			// 
+			this.trackbarFrameSizeWindowed.LargeChange = 1;
+			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
+			this.trackbarFrameSizeWindowed.Maximum = 2;
+			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
+			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
+			this.trackbarFrameSizeWindowed.TabIndex = 21;
+			this.trackbarFrameSizeWindowed.Value = 1;
+			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
+			// 
 			// cbCaptionWindowed
 			// 
 			this.cbCaptionWindowed.AutoSize = true;
@@ -774,29 +806,39 @@
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
-			// tbScanlineIntensity
+			// rbUseCustomRatio
 			// 
-			this.tbScanlineIntensity.LargeChange = 32;
-			this.tbScanlineIntensity.Location = new System.Drawing.Point(83, 55);
-			this.tbScanlineIntensity.Maximum = 256;
-			this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-			this.tbScanlineIntensity.Size = new System.Drawing.Size(70, 42);
-			this.tbScanlineIntensity.TabIndex = 3;
-			this.tbScanlineIntensity.TickFrequency = 32;
-			this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbScanlineIntensity.Scroll += new System.EventHandler(this.tbScanlineIntensity_Scroll);
-			this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.tbScanlineIntensity_Scroll);
+			this.rbUseCustomRatio.AutoSize = true;
+			this.rbUseCustomRatio.Location = new System.Drawing.Point(26, 103);
+			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
+			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
+			this.rbUseCustomRatio.TabIndex = 16;
+			this.rbUseCustomRatio.TabStop = true;
+			this.rbUseCustomRatio.Text = "Use custom AR:";
+			this.rbUseCustomRatio.UseVisualStyleBackColor = true;
 			// 
-			// trackbarFrameSizeWindowed
+			// txtCustomARY
 			// 
-			this.trackbarFrameSizeWindowed.LargeChange = 1;
-			this.trackbarFrameSizeWindowed.Location = new System.Drawing.Point(6, 33);
-			this.trackbarFrameSizeWindowed.Maximum = 2;
-			this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-			this.trackbarFrameSizeWindowed.Size = new System.Drawing.Size(99, 42);
-			this.trackbarFrameSizeWindowed.TabIndex = 21;
-			this.trackbarFrameSizeWindowed.Value = 1;
-			this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.trackbarFrameSizeWindowed_ValueChanged);
+			this.txtCustomARY.Location = new System.Drawing.Point(230, 102);
+			this.txtCustomARY.Name = "txtCustomARY";
+			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARY.TabIndex = 19;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(212, 107);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(10, 13);
+			this.label12.TabIndex = 17;
+			this.label12.Text = ":";
+			// 
+			// txtCustomARX
+			// 
+			this.txtCustomARX.Location = new System.Drawing.Point(134, 102);
+			this.txtCustomARX.Name = "txtCustomARX";
+			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARX.TabIndex = 18;
 			// 
 			// DisplayConfigLite
 			// 
@@ -815,6 +857,7 @@
 			this.Text = "Display Configuration";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			this.grpFinalFilter.ResumeLayout(false);
 			this.grpFinalFilter.PerformLayout();
 			this.grpARSelection.ResumeLayout(false);
@@ -836,7 +879,6 @@
 			this.groupBox4.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -907,5 +949,9 @@
 		private System.Windows.Forms.RadioButton rbDisplayFull;
 		private System.Windows.Forms.CheckBox cbAllowDoubleclickFullscreen;
 		private System.Windows.Forms.LinkLabel linkLabel1;
+		private System.Windows.Forms.RadioButton rbUseCustomRatio;
+		private System.Windows.Forms.TextBox txtCustomARY;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.TextBox txtCustomARX;
 	}
 }
