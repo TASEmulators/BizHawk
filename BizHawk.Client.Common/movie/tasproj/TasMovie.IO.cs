@@ -105,6 +105,8 @@ namespace BizHawk.Client.Common
 					}
 				}
 				ReportProgress(PROGRESS_STEP);
+
+				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(Session.ToString()));
 			}
 
 			Changes = false;
@@ -298,6 +300,11 @@ namespace BizHawk.Client.Common
 						StateManager.LoadBranchStates(br);
 					});
 				}
+
+				bl.GetLump(BinaryStateLump.Session, false, delegate(TextReader tr)
+				{
+					Session.PopulateFromString(tr.ReadToEnd());
+				});
 			}
 
 			Changes = false;

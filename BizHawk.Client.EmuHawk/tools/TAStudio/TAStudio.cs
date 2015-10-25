@@ -237,6 +237,9 @@ namespace BizHawk.Client.EmuHawk
 				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
 			}
 
+			GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
+
 			////////////////
 
 			RefreshDialog();

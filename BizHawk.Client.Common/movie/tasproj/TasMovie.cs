@@ -18,10 +18,10 @@ namespace BizHawk.Client.Common
 
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private readonly TasStateManager StateManager;
+		public readonly TasSession Session;
 		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
 		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 
 		private BackgroundWorker _progressReportWorker = null;
@@ -48,12 +48,14 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 
 			StateManager = new TasStateManager(this);
+			Session = new TasSession(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 
 			BindMarkersToInput = true;
+			CurrentBranch = -1;
 		}
 
 		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
@@ -68,12 +70,14 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 
 			StateManager = new TasStateManager(this);
+			Session = new TasSession(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			
+
 			BindMarkersToInput = true;
+			CurrentBranch = -1;
 		}
 
 		public TasLagLog TasLagLog { get { return LagLog; } }
@@ -81,6 +85,7 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
+		public int CurrentBranch { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
 		public TasBranch GetBranch(int index)
 		{

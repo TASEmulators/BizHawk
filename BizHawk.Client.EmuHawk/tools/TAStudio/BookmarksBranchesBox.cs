@@ -71,8 +71,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int CurrentBranch = -1;
-
 		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = string.Empty;
@@ -102,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 			if (branch != null)
 			{
 				var record = Tastudio.CurrentTasMovie[branch.Frame];
-				if (index == CurrentBranch)
+				if (index == Movie.CurrentBranch)
 					color = TAStudio.CurrentFrame_InputLog; // SystemColors.HotTrack;
 				else if (record.Lagged.HasValue)
 				{
@@ -147,9 +145,9 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
-				//if (CurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
+				//if (Movie.CurrentBranchCurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
 				//	return;
-				CurrentBranch = index;
+				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
 			}
@@ -168,13 +166,13 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
-				if (index == CurrentBranch)
+				if (index == Movie.CurrentBranch)
 				{
-					CurrentBranch = -1;
+					Movie.CurrentBranch = -1;
 				}
-				else if (index < CurrentBranch)
+				else if (index < Movie.CurrentBranch)
 				{
-					CurrentBranch--;
+					Movie.CurrentBranch--;
 				}
 
 				Movie.RemoveBranch(SelectedBranch);
@@ -220,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 			TasBranch branch = CreateBranch();
 			Movie.AddBranch(branch);
 			BranchView.RowCount = Movie.BranchCount;
-			CurrentBranch = Movie.BranchCount - 1;
+			Movie.CurrentBranch = Movie.BranchCount - 1;
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}
@@ -302,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				UpdateBranch(SelectedBranch);
-				CurrentBranch = BranchView.SelectedRows.First();
+				Movie.CurrentBranch = BranchView.SelectedRows.First();
 			}
 		}
 

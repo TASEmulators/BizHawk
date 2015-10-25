@@ -47,9 +47,10 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump ClientSettings { get; private set; }
 		[Name("VerificationLog", "txt")]
 		public static BinaryStateLump VerificationLog { get; private set; }
-
 		[Name("UserData", "txt")]
 		public static BinaryStateLump UserData { get; private set; }
+		[Name("Session", "txt")]
+		public static BinaryStateLump Session { get; private set; }
 
 		// branchstuff
 		[Name("Branches\\CoreData", "bin")]
