@@ -743,7 +743,9 @@ namespace BizHawk.Client.EmuHawk
 			return (index >= FirstVisibleRow) && (index <= LastFullyVisibleRow);
 		}
 		public bool IsPartiallyVisible(int index)
-		{ return (index >= FirstVisibleRow) && (index <= LastVisibleRow); }
+		{
+			return (index >= FirstVisibleRow) && (index <= LastVisibleRow);
+		}
 
 		/// <summary>
 		/// Gets the number of rows currently visible including partially visible rows.

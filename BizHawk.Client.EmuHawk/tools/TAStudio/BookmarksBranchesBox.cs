@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
-				//if (Movie.CurrentBranchCurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
+				//if (Movie.CurrentBranch == index) // if the current branch was edited, we should allow loading it. some day there might be a proper check
 				//	return;
 				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
