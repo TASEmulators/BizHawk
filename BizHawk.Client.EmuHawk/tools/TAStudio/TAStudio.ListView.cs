@@ -584,6 +584,8 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
 			{
 				_supressContextMenu = true;
+				int notch = e.Delta / 120;
+
 				if (GlobalWin.MainForm.IsSeeking)
 				{
 					if (e.Delta < 0)
@@ -600,10 +602,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (e.Delta < 0)
-						GoToNextFrame();
-					else
-						GoToPreviousFrame();
+					GoToFrame(Emulator.Frame - notch);
 				}
 			}
 		}
