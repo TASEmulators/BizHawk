@@ -3263,6 +3263,7 @@ namespace BizHawk.Client.EmuHawk
 								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 							}
 
+							bbin.DiscardAlpha();
 
 							bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
 							bmpin = bbin.ToSysdrawingBitmap();
