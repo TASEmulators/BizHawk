@@ -5,54 +5,27 @@ using System.Text;
 using System.IO;
 using BizHawk.Emulation.Common;
 
+//TODO - reorg please
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
-	public class CodeDataLog : Dictionary<string, byte[]>
+	public class CodeDataLog_PCE : CodeDataLog
 	{
-		private CodeDataLog()
-			:base()
+		public static CodeDataLog_PCE Create(IEnumerable<HuC6280.MemMapping> mm)
 		{
-		}
-
-		public void LogicalOrFrom(CodeDataLog other)
-		{
-			if (this.Count != other.Count)
-				throw new InvalidDataException("Dictionaries must have the same number of keys!");
-
-			foreach (var kvp in other)
+			var t = new CodeDataLog_PCE();
+			foreach (var kvp in SizesFromHuMap(mm))
 			{
-				byte[] fromdata = kvp.Value;
-				byte[] todata = this[kvp.Key];
-
-				if (fromdata.Length != todata.Length)
-					throw new InvalidDataException("Memory regions must be the same size!");
-
-				for (int i = 0; i < todata.Length; i++)
-					todata[i] |= fromdata[i];
+				t[kvp.Key] = new byte[kvp.Value];
 			}
+			return t;
 		}
 
-		public void ClearData()
-		{
-			foreach (byte[] data in Values)
-				Array.Clear(data, 0, data.Length);
-		}
+		public override string SubType { get { return "PCE"; } }
+		public override int SubVer { get { return 0; } }
 
-		public void Save(Stream s)
-		{
-			var w = new BinaryWriter(s);
-			w.Write("BIZHAWK-CDL-1");
-			w.Write(Count);
-			foreach (var kvp in this)
-			{
-				w.Write(kvp.Key);
-				w.Write(kvp.Value.Length);
-				w.Write(kvp.Value);
-			}
-			w.Flush();
-		}
-
-		public void Disassemble(Stream s, IMemoryDomains mem)
+		public override void Disassemble(Stream s, IMemoryDomains mem)
 		{
 			var w = new StreamWriter(s);
 			w.WriteLine("; Bizhawk CDL Disassembly");
@@ -90,26 +63,9 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			w.Flush();
 		}
 
-		public static CodeDataLog Load(Stream s)
+		public bool CheckConsistency(object arg)
 		{
-			var t = new CodeDataLog();
-			var r = new BinaryReader(s);
-			string id = r.ReadString();
-			if (id != "BIZHAWK-CDL-1")
-				throw new InvalidDataException("File is not a Bizhawk CDL file!");
-			int count = r.ReadInt32();
-			for (int i = 0; i < count; i++)
-			{
-				string key = r.ReadString();
-				int len = r.ReadInt32();
-				byte[] data = r.ReadBytes(len);
-				t[key] = data;
-			}
-			return t;
-		}
-
-		public bool CheckConsistency(IEnumerable<HuC6280.MemMapping> mm)
-		{
+			var mm = (IEnumerable<HuC6280.MemMapping>)arg;
 			var sizes = SizesFromHuMap(mm);
 			if (sizes.Count != Count)
 				return false;
@@ -140,15 +96,95 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			}
 			return sizes;
 		}
+	}
 
-		public static CodeDataLog Create(IEnumerable<HuC6280.MemMapping> mm)
+	public abstract class CodeDataLog : Dictionary<string, byte[]>
+	{
+		public CodeDataLog()
+			:base()
 		{
-			var t = new CodeDataLog();
-			foreach (var kvp in SizesFromHuMap(mm))
+		}
+
+		/// <summary>
+		/// You don't have to use this necessarily, it's just provided for convenience
+		/// </summary>
+		public bool Active;
+
+		public virtual void Disassemble(Stream s, IMemoryDomains mem) { }
+
+		public abstract string SubType { get; }
+		public abstract int SubVer { get; }
+
+		public void LogicalOrFrom(CodeDataLog other)
+		{
+			if (this.Count != other.Count)
+				throw new InvalidDataException("Dictionaries must have the same number of keys!");
+
+			foreach (var kvp in other)
 			{
-				t[kvp.Key] = new byte[kvp.Value];
+				byte[] fromdata = kvp.Value;
+				byte[] todata = this[kvp.Key];
+
+				if (fromdata.Length != todata.Length)
+					throw new InvalidDataException("Memory regions must be the same size!");
+
+				for (int i = 0; i < todata.Length; i++)
+					todata[i] |= fromdata[i];
 			}
-			return t;
+		}
+
+		public void ClearData()
+		{
+			foreach (byte[] data in Values)
+				Array.Clear(data, 0, data.Length);
+		}
+
+		public void Save(Stream s)
+		{
+			var w = new BinaryWriter(s);
+			w.Write("BIZHAWK-CDL-2");
+			w.Write(SubType.PadRight(15));
+			w.Write(Count);
+			foreach (var kvp in this)
+			{
+				w.Write(kvp.Key);
+				w.Write(kvp.Value.Length);
+				w.Write(kvp.Value);
+			}
+			w.Flush();
+		}
+
+		public static CodeDataLog Load(Stream s)
+		{
+			var br = new BinaryReader(s);
+			string id = br.ReadString();
+			string FileSubType;
+			if (id == "BIZHAWK-CDL-1")
+				FileSubType = "PCE";
+			else if (id == "BIZHAWK-CDL-2")
+				FileSubType = br.ReadString().TrimEnd(' ');
+			else
+				throw new InvalidDataException("File is not a Bizhawk CDL file!");
+
+			if (FileSubType == "PCE")
+				return new CodeDataLog_PCE().Load(br);
+			else if(FileSubType == "GB")
+				return new CodeDataLog_GB().Load(br);
+			else return null;
+		}
+
+		private CodeDataLog Load(BinaryReader br)
+		{
+			int count = br.ReadInt32();
+			for (int i = 0; i < count; i++)
+			{
+				string key = br.ReadString();
+				int len = br.ReadInt32();
+				byte[] data = br.ReadBytes(len);
+				this[key] = data;
+			}
+
+			return this;
 		}
 	}
 

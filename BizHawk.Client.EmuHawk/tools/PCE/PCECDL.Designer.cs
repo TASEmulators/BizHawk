@@ -54,9 +54,9 @@
 			this.LoggingActiveCheckbox.AutoSize = true;
 			this.LoggingActiveCheckbox.Location = new System.Drawing.Point(12, 244);
 			this.LoggingActiveCheckbox.Name = "LoggingActiveCheckbox";
-			this.LoggingActiveCheckbox.Size = new System.Drawing.Size(101, 17);
+			this.LoggingActiveCheckbox.Size = new System.Drawing.Size(107, 17);
 			this.LoggingActiveCheckbox.TabIndex = 1;
-			this.LoggingActiveCheckbox.Text = "Loging is Active";
+			this.LoggingActiveCheckbox.Text = "Logging is Active";
 			this.LoggingActiveCheckbox.UseVisualStyleBackColor = true;
 			this.LoggingActiveCheckbox.CheckedChanged += new System.EventHandler(this.LoggingActiveCheckbox_CheckedChanged);
 			// 
