@@ -577,6 +577,42 @@ INLINE void BURNODD(int cycles, int opcodes, int cyclesum)
 #endif
 
 
+void CDLog68k(uint addr, uint flags);
+
+void CDLogZ80(uint addr, uint flags)
+{
+	//in case we wrap around while reading a u16 from FFFF...
+	addr &= 0xFFFF;
+
+	if(addr < 0x4000)
+	{
+		addr &= 0x1FFFF;
+		biz_cdcallback(addr, eCDLog_AddrType_RAMZ80, flags);
+		return;
+	}
+
+	if(addr >= 0x8000)
+	{
+    addr = zbank | (addr & 0x7FFF);
+    if (zbank_memory_map[addr >> 16].write)
+    {
+			//special memory maps are hard to support here.
+      return;
+    }
+      
+		//punt to 68k mapper
+		CDLog68k(addr, flags);
+    return;
+	}
+}
+
+INLINE unsigned char CDLogZ80_RM(uint addr)
+{
+	if(biz_cdcallback)
+		CDLogZ80(addr,eCDLog_Flags_DataZ80);
+	return z80_readmem(addr);
+}
+
 /***************************************************************
  * Enter HALT state; write 1 to fake port on first execution
  ***************************************************************/
@@ -609,7 +645,7 @@ INLINE void BURNODD(int cycles, int opcodes, int cyclesum)
 /***************************************************************
  * Read a byte from given memory location
  ***************************************************************/
-#define RM(addr) z80_readmem(addr)
+#define RM(addr) CDLogZ80_RM(addr)
 
 /***************************************************************
  * Write a byte to given memory location
@@ -632,35 +668,6 @@ INLINE void WM16( UINT32 addr, PAIR *r )
 {
   WM(addr,r->b.l);
   WM((addr+1)&0xffff,r->b.h);
-}
-
-void CDLog68k(uint addr, uint flags);
-
-void CDLogZ80(uint addr, uint flags)
-{
-	//in case we wrap around while reading a u16 from FFFF...
-	addr &= 0xFFFF;
-
-	if(addr < 0x4000)
-	{
-		addr &= 0x1FFFF;
-		biz_cdcallback(addr, eCDLog_AddrType_RAMZ80, flags);
-		return;
-	}
-
-	if(addr >= 0x8000)
-	{
-    addr = zbank | (addr & 0x7FFF);
-    if (zbank_memory_map[addr >> 16].write)
-    {
-			//special memory maps are hard to support here.
-      return;
-    }
-      
-		//punt to 68k mapper
-		CDLog68k(addr, flags);
-    return;
-	}
 }
 
 /***************************************************************
