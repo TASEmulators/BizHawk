@@ -34,6 +34,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			MULTICART_COMPAT = 4
 		}
 
+		public enum CDLog_AddrType : int
+		{
+			ROM, HRAM, WRAM, CartRAM
+		}
+
+		[Flags]
+		public enum CDLog_Flags : int
+		{
+			ExecFirst = 1,
+			ExecOperand = 2,
+			Data = 4
+		}
+
 		/// <summary>
 		/// Load ROM image.
 		/// </summary>
@@ -162,6 +175,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public delegate void MemoryCallback(uint address);
 
 		/// <summary>
+		/// type of the CDLogger callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void CDCallback(int addr, CDLog_AddrType addrtype, CDLog_Flags flags);
+
+		/// <summary>
 		/// set a callback to occur immediately BEFORE EVERY cpu read, except for opcode first byte fetches
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
@@ -184,6 +203,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="callback">null to clear</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setexeccallback(IntPtr core, MemoryCallback callback);
+
+		/// <summary>
+		/// set a callback whicih enables CD Logger feedback
+		/// </summary>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gambatte_setcdcallback(IntPtr core, CDCallback callback);
 
 		/// <summary>
 		/// type of the cpu trace callback

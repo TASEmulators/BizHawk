@@ -29,12 +29,26 @@
 
 namespace gambatte {
 
+	//DOOM
+//enum eAddressMappingType
+//{
+//	eAddressMappingType_ROM,
+//	eAddressMappingType_RAM
+//};
+//
+//struct AddressMapping
+//{
+//	int32_t address;
+//	eAddressMappingType type;
+//};
+
 class Mbc {
 public:
 	virtual ~Mbc() {}
 	virtual void romWrite(unsigned P, unsigned data) = 0;
 	virtual void loadState(const SaveState::Mem &ss) = 0;
 	virtual bool isAddressWithinAreaRombankCanBeMappedTo(unsigned address, unsigned rombank) const = 0;
+	//virtual void mapAddress(AddressMapping* mapping, unsigned address) const = 0; //DOOM
 
 	template<bool isReader>void SyncState(NewState *ns)
 	{

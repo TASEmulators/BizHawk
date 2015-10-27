@@ -173,6 +173,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
 
+				//seems to have near negligable speed impact. lets always use it, for now.
+				//someone who cares can make it controllable
+				CDCallback = new LibGambatte.CDCallback(CDCallbackProc);
+				LibGambatte.gambatte_setcdcallback(GambatteState, CDCallback);
+
 				NewSaveCoreSetBuff();
 			}
 			catch
@@ -180,6 +185,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				Dispose();
 				throw;
 			}
+		}
+
+		public CodeDataLog_GB CDL;
+		LibGambatte.CDCallback CDCallback;
+		void CDCallbackProc(int addr, LibGambatte.CDLog_AddrType addrtype, LibGambatte.CDLog_Flags flags)
+		{
+			if (CDL == null) return;
+			if (!CDL.Active) return;
+			string key;
+			switch (addrtype)
+			{
+				case LibGambatte.CDLog_AddrType.ROM: key = "ROM"; break;
+				case LibGambatte.CDLog_AddrType.HRAM: key = "HRAM"; break;
+				case LibGambatte.CDLog_AddrType.WRAM: key = "WRAM"; break;
+				case LibGambatte.CDLog_AddrType.CartRAM: key = "CartRAM"; break;
+				default: throw new InvalidOperationException("Juniper lightbulb proxy");
+			}
+			CDL[key][addr] |= (byte)flags;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }

@@ -6,6 +6,8 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.Cores.PCEngine;
 
@@ -17,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class PCECDL : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		private PCEngine _emu { get; set; }
+		public IEmulator _emu { get; private set; }
 		private CodeDataLog _cdl;
 
 		private RecentFiles _recent_fld = new RecentFiles();
@@ -59,9 +61,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			LoggingActiveCheckbox.Checked = _emu.Cpu.CDLLoggingActive;
-			_cdl = _emu.Cpu.CDL;
-			_emu.InitCDLMappings();
+			if (_emu.SystemId == "PCE")
+			{
+				var pce = _emu as PCEngine;
+				LoggingActiveCheckbox.Checked = pce.Cpu.CDLLoggingActive;
+				_cdl = pce.Cpu.CDL;
+				pce.InitCDLMappings();
+			}
+			else if(_emu.SystemId == "GB")
+			{
+				var gambatte = _emu as Gameboy;
+				_cdl = gambatte.CDL;
+			}
 			UpdateDisplay();
 		}
 
@@ -116,17 +127,32 @@ namespace BizHawk.Client.EmuHawk
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
 			{
 				var newCDL = CodeDataLog.Load(fs);
-				if (!newCDL.CheckConsistency(_emu.Cpu.Mappings))
+
+				//this check may be inadequate in the future
+				if(newCDL.SubType != _emu.SystemId)
+					throw new InvalidDataException("File is a CDL file of the wrong target core (like, a different game console)!");
+
+				_cdl = newCDL;
+				if (_emu.SystemId == "PCE")
 				{
-					MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+					var pce = _emu as PCEngine;
+					var cdl_pce = newCDL as CodeDataLog_PCE;
+					if (!cdl_pce.CheckConsistency(pce.Cpu.Mappings))
+					{
+						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+						return;
+					}
+					pce.Cpu.CDL = _cdl;
 				}
-				else
+				else if (_emu.SystemId == "GB")
 				{
-					_cdl = newCDL;
-					_emu.Cpu.CDL = _cdl;
-					UpdateDisplay();
+					var gambatte = _emu as Gameboy;
+					var cdl_gb = newCDL as CodeDataLog_GB;
+					gambatte.CDL = cdl_gb;
 				}
 			}
+
+			UpdateDisplay();
 		}
 
 		#region Events
@@ -154,8 +180,21 @@ namespace BizHawk.Client.EmuHawk
 			var result = MessageBox.Show(this, "OK to create new CDL?", "Query", MessageBoxButtons.YesNo);
 			if (result == DialogResult.Yes)
 			{
-				_cdl = CodeDataLog.Create(_emu.Cpu.Mappings);
-				_emu.Cpu.CDL = _cdl;
+				if (_emu.SystemId == "PCE")
+				{
+					var pce = _emu as PCEngine;
+					_cdl = CodeDataLog_PCE.Create(pce.Cpu.Mappings);
+					pce.Cpu.CDL = _cdl;
+				}
+				else if (_emu.SystemId == "GB")
+				{
+					var gambatte = _emu as Gameboy;
+					var memd = gambatte.AsMemoryDomains();
+					var cdl_gb = CodeDataLog_GB.Create(memd);
+					gambatte.CDL = cdl_gb;
+					_cdl = cdl_gb;
+				}
+				
 				UpdateDisplay();
 			}
 		}
@@ -173,22 +212,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (file != null)
 				{
-					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
-					{
-						var newCDL = CodeDataLog.Load(fs);
-						if (!newCDL.CheckConsistency(_emu.Cpu.Mappings))
-						{
-							MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
-						}
-						else
-						{
-							_cdl = newCDL;
-							_emu.Cpu.CDL = _cdl;
-							UpdateDisplay();
-							_recent.Add(file.FullName);
-							_currentFileName = file.FullName;
-						}
-					}
+					LoadFile(file.FullName);
 				}
 			}
 		}
@@ -314,7 +338,14 @@ namespace BizHawk.Client.EmuHawk
 				LoggingActiveCheckbox.Checked = false;
 			}
 
-			_emu.Cpu.CDLLoggingActive = LoggingActiveCheckbox.Checked;
+			if (_emu.SystemId == "PCE")
+			{
+				//set a special flag on the CPU to indicate CDL is running, maybe it's faster, who knows
+				var pce = _emu as PCEngine;
+				pce.Cpu.CDLLoggingActive = LoggingActiveCheckbox.Checked;
+			}
+
+			_cdl.Active = LoggingActiveCheckbox.Checked;
 		}
 
 		private void PCECDL_DragEnter(object sender, DragEventArgs e)
