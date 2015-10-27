@@ -673,6 +673,12 @@
       <DependentUpon>BatchRun.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\BatchRunner.cs" />
+    <Compile Include="tools\CDL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\CDL.designer.cs">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -916,12 +922,6 @@
     </Compile>
     <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\PCE\PCECDL.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCECDL.Designer.cs">
-      <DependentUpon>PCECDL.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\PCE\PCESoundDebugger.cs">
       <SubType>Form</SubType>
@@ -1349,6 +1349,9 @@
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\CDL.resx">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>
     </EmbeddedResource>
@@ -1445,9 +1448,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCECDL.resx">
-      <DependentUpon>PCECDL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCESoundDebugger.resx">
       <DependentUpon>PCESoundDebugger.cs</DependentUpon>

@@ -16,7 +16,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class PCECDL : Form, IToolFormAutoConfig
+	public partial class CDL : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
 		public IEmulator _emu { get; private set; }
@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string _currentFileName = string.Empty;
 
-		public PCECDL()
+		public CDL()
 		{
 			InitializeComponent();
 		}
