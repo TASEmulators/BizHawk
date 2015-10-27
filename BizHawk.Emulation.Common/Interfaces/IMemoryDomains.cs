@@ -18,5 +18,7 @@ namespace BizHawk.Emulation.Common
 		bool HasSystemBus { get; }
 
 		MemoryDomain SystemBus { get; set; }
+
+		bool Has(string name);
 	}
 }
