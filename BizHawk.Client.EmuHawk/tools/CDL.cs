@@ -61,6 +61,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			//zeromus doesn't like this logic very much. it has to change.
+
 			if (_emu.SystemId == "PCE")
 			{
 				var pce = _emu as PCEngine;
@@ -72,6 +74,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var gambatte = _emu as Gameboy;
 				_cdl = gambatte.CDL;
+				if (_cdl == null)
+					LoggingActiveCheckbox.Checked = false;
+				else
+				LoggingActiveCheckbox.Checked = _cdl.Active;
 			}
 			UpdateDisplay();
 		}
@@ -105,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					lines.Add(string.Format("Domain {0} Size {1} Mapped {2}%", kvp.Key, kvp.Value.Length, total / (float) kvp.Value.Length * 100f));
+					lines.Add(string.Format("Domain {0} Size {1} Mapped {2}% ({3}/{4} bytes)", kvp.Key, kvp.Value.Length, total / (float) kvp.Value.Length * 100f, total, kvp.Value.Length));
 				}
 			}
 

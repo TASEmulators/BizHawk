@@ -52,7 +52,7 @@
 			// 
 			this.LoggingActiveCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.LoggingActiveCheckbox.AutoSize = true;
-			this.LoggingActiveCheckbox.Location = new System.Drawing.Point(12, 244);
+			this.LoggingActiveCheckbox.Location = new System.Drawing.Point(12, 240);
 			this.LoggingActiveCheckbox.Name = "LoggingActiveCheckbox";
 			this.LoggingActiveCheckbox.Size = new System.Drawing.Size(107, 17);
 			this.LoggingActiveCheckbox.TabIndex = 1;
@@ -67,7 +67,7 @@
             this.FileSubMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(292, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(463, 24);
 			this.menuStrip1.TabIndex = 2;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -190,22 +190,22 @@
 			this.CdlTextbox.Multiline = true;
 			this.CdlTextbox.Name = "CdlTextbox";
 			this.CdlTextbox.ReadOnly = true;
-			this.CdlTextbox.Size = new System.Drawing.Size(292, 211);
+			this.CdlTextbox.Size = new System.Drawing.Size(463, 207);
 			this.CdlTextbox.TabIndex = 3;
 			// 
-			// PCECDL
+			// CDL
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(292, 273);
+			this.ClientSize = new System.Drawing.Size(463, 269);
 			this.Controls.Add(this.CdlTextbox);
 			this.Controls.Add(this.LoggingActiveCheckbox);
 			this.Controls.Add(this.menuStrip1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.MinimumSize = new System.Drawing.Size(150, 130);
-			this.Name = "PCECDL";
+			this.Name = "CDL";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Code Data Logger";
 			this.Load += new System.EventHandler(this.PCECDL_Load);
