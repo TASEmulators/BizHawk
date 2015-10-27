@@ -240,6 +240,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (IRegionable)core.ServiceProvider.GetService<IRegionable>();
 		}
 
+		public static bool CanDataLog(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ICodeDataLogger>();
+		}
+
+		public static ICodeDataLogger AsCodeDataLogger(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ICodeDataLogger>();
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{
