@@ -95,7 +95,7 @@ public:
 	int saveSavedataLength();
 	void saveSavedata(char *dest);
 
-	bool getMemoryArea(int which, unsigned char **data, int *length);
+	bool getMemoryArea(int which, unsigned char **data, int *length) const;
 
 	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	const char * romTitle() const { return reinterpret_cast<const char *>(memptrs.romdata() + 0x134); }

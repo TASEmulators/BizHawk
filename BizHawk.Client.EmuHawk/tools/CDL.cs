@@ -154,6 +154,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var gambatte = _emu as Gameboy;
 					var cdl_gb = newCDL as CodeDataLog_GB;
+					var memd = gambatte.AsMemoryDomains();
+					if (!cdl_gb.CheckConsistency(memd))
+					{
+						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+						return;
+					}
 					gambatte.CDL = cdl_gb;
 				}
 			}
@@ -351,7 +357,10 @@ namespace BizHawk.Client.EmuHawk
 				pce.Cpu.CDLLoggingActive = LoggingActiveCheckbox.Checked;
 			}
 
-			_cdl.Active = LoggingActiveCheckbox.Checked;
+			//zeromus doesnt like this kind of logic
+
+			if (_cdl != null)
+				_cdl.Active = LoggingActiveCheckbox.Checked;
 		}
 
 		private void PCECDL_DragEnter(object sender, DragEventArgs e)

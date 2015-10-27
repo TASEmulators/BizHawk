@@ -144,10 +144,16 @@ public:
 		{
 			if(cart.wsrambankptr())
 			{
-				//not bankable
-				unsigned addr = P&0x1FFF;
-				CDMapResult ret = { eCDLog_AddrType_CartRAM, addr };
-				return ret;
+				//not bankable. but. we're not sure how much might be here
+				unsigned char *data;
+				int length;
+				bool has = cart.getMemoryArea(3,&data,&length);
+				unsigned addr = P&(length-1);
+				if(has && length!=0)
+				{
+					CDMapResult ret = { eCDLog_AddrType_CartRAM, addr };
+					return ret;
+				}
 			}
 		}
 		else if(P<0xE000)
