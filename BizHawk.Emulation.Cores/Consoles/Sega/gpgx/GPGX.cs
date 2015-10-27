@@ -170,6 +170,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				PutSettings((GPGXSettings)Settings ?? new GPGXSettings());
 
+				//TODO - this hits performance, we need to make it controllable
+				CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
+				LibGPGX.gpgx_set_cd_callback(CDCallback);
+
 				InitMemCallbacks();
 				KillMemCallbacks();
 			}
@@ -178,6 +182,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Dispose();
 				throw;
 			}
+		}
+
+		public CodeDataLog_GEN CDL;
+		void CDCallbackProc(int addr, LibGPGX.CDLog_AddrType addrtype, LibGPGX.CDLog_Flags flags)
+		{
+			if (CDL == null) return;
+			if (!CDL.Active) return;
+			string key;
+			switch (addrtype)
+			{
+				case LibGPGX.CDLog_AddrType.MDCART: key = "MD CART"; break;
+				case LibGPGX.CDLog_AddrType.RAM68k: key = "68K RAM"; break;
+				case LibGPGX.CDLog_AddrType.RAMZ80: key = "Z80 RAM"; break;
+				case LibGPGX.CDLog_AddrType.SRAM: key = "SRAM"; break;
+				default: throw new InvalidOperationException("Lagrangian earwax incident");
+			}
+			CDL[key][addr] |= (byte)flags;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -671,6 +692,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		LibGPGX.mem_cb ExecCallback;
 		LibGPGX.mem_cb ReadCallback;
 		LibGPGX.mem_cb WriteCallback;
+		LibGPGX.CDCallback CDCallback;
 
 		void InitMemCallbacks()
 		{

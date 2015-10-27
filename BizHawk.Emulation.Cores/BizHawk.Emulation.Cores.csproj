@@ -758,6 +758,7 @@
     <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
+    <Compile Include="Consoles\Sega\CodeDataLog_GEN.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />

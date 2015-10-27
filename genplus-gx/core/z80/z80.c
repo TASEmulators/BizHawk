@@ -126,6 +126,8 @@
 #include "shared.h"
 #include "z80.h"
 
+#include "../cinterface/callbacks.h"
+
 /* execute main opcodes inside a big switch statement */
 #define BIG_SWITCH 1
 
@@ -632,6 +634,35 @@ INLINE void WM16( UINT32 addr, PAIR *r )
   WM((addr+1)&0xffff,r->b.h);
 }
 
+void CDLog68k(uint addr, uint flags);
+
+void CDLogZ80(uint addr, uint flags)
+{
+	//in case we wrap around while reading a u16 from FFFF...
+	addr &= 0xFFFF;
+
+	if(addr < 0x4000)
+	{
+		addr &= 0x1FFFF;
+		biz_cdcallback(addr, eCDLog_AddrType_RAMZ80, flags);
+		return;
+	}
+
+	if(addr >= 0x8000)
+	{
+    addr = zbank | (addr & 0x7FFF);
+    if (zbank_memory_map[addr >> 16].write)
+    {
+			//special memory maps are hard to support here.
+      return;
+    }
+      
+		//punt to 68k mapper
+		CDLog68k(addr, flags);
+    return;
+	}
+}
+
 /***************************************************************
  * ROP() is identical to RM() except it is used for
  * reading opcodes. In case of system with memory mapped I/O,
@@ -641,6 +672,10 @@ INLINE UINT8 ROP(void)
 {
   unsigned pc = PCD;
   PC++;
+
+	if(biz_cdcallback)
+		CDLogZ80(PC,eCDLog_Flags_ExecZ80First);
+
   return cpu_readop(pc);
 }
 
@@ -654,6 +689,10 @@ INLINE UINT8 ARG(void)
 {
   unsigned pc = PCD;
   PC++;
+
+	if(biz_cdcallback)
+		CDLogZ80(pc,eCDLog_Flags_ExecZ80Operand);
+
   return cpu_readop_arg(pc);
 }
 
@@ -661,6 +700,13 @@ INLINE UINT32 ARG16(void)
 {
   unsigned pc = PCD;
   PC += 2;
+
+	if(biz_cdcallback)
+	{
+		CDLogZ80(pc,eCDLog_Flags_ExecZ80Operand);
+		CDLogZ80(pc+1,eCDLog_Flags_ExecZ80Operand);
+	}
+
   return cpu_readop_arg(pc) | (cpu_readop_arg((pc+1)&0xffff) << 8);
 }
 

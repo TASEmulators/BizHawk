@@ -10,6 +10,8 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Consoles.Sega;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -78,6 +80,15 @@ namespace BizHawk.Client.EmuHawk
 					LoggingActiveCheckbox.Checked = false;
 				else
 				LoggingActiveCheckbox.Checked = _cdl.Active;
+			}
+			else if (_emu is GPGX)
+			{
+				var gpgx = _emu as GPGX;
+				_cdl = gpgx.CDL;
+				if (_cdl == null)
+					LoggingActiveCheckbox.Checked = false;
+				else
+					LoggingActiveCheckbox.Checked = _cdl.Active;
 			}
 			UpdateDisplay();
 		}
@@ -162,6 +173,18 @@ namespace BizHawk.Client.EmuHawk
 					}
 					gambatte.CDL = cdl_gb;
 				}
+				else if (_emu is GPGX)
+				{
+					var gpgx = _emu as GPGX;
+					var cdl_gb = newCDL as CodeDataLog_GEN;
+					var memd = gpgx.AsMemoryDomains();
+					if (!cdl_gb.CheckConsistency(memd))
+					{
+						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+						return;
+					}
+					gpgx.CDL = cdl_gb;
+				}
 			}
 
 			UpdateDisplay();
@@ -205,6 +228,14 @@ namespace BizHawk.Client.EmuHawk
 					var cdl_gb = CodeDataLog_GB.Create(memd);
 					gambatte.CDL = cdl_gb;
 					_cdl = cdl_gb;
+				}
+				else if (_emu is GPGX)
+				{
+					var gpgx = _emu as GPGX;
+					var memd = gpgx.AsMemoryDomains();
+					var cdl_gen = CodeDataLog_GEN.Create(memd);
+					gpgx.CDL = cdl_gen;
+					_cdl = cdl_gen;
 				}
 				
 				UpdateDisplay();

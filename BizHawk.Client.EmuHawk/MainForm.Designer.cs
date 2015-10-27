@@ -406,6 +406,7 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.toolStripMenuItem18 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2816,6 +2817,7 @@
 			this.GenesisSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.vDPViewerToolStripMenuItem,
             this.GenesisGameGenieECDC,
+            this.toolStripMenuItem18,
             this.toolStripSeparator26,
             this.GenesisSettingsToolStripMenuItem});
 			this.GenesisSubMenu.Name = "GenesisSubMenu";
@@ -3586,6 +3588,13 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
 			// 
+			// toolStripMenuItem18
+			// 
+			this.toolStripMenuItem18.Name = "toolStripMenuItem18";
+			this.toolStripMenuItem18.Size = new System.Drawing.Size(217, 22);
+			this.toolStripMenuItem18.Text = "Code-Data Logger";
+			this.toolStripMenuItem18.Click += new System.EventHandler(this.CodeDataLoggerMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4003,6 +4012,7 @@
 		private System.Windows.Forms.ToolStripMenuItem C64SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem C64SettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem16;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem18;
 	}
 }
 

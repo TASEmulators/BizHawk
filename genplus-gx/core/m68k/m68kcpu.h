@@ -16,6 +16,7 @@
 #include "m68k.h"
 #include "../cinterface/callbacks.h"
 
+void CDLog68k(uint addr, uint flags);
 
 /* ======================================================================== */
 /* ============================ GENERAL DEFINES =========================== */
@@ -871,6 +872,9 @@ INLINE uint m68ki_read_8_fc(uint address, uint fc)
 	if (biz_readcb)
 		biz_readcb(address);
 
+	if(biz_cdcallback)
+		CDLog68k(address,eCDLog_Flags_Data68k);
+
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
 
   if (temp->read8) return (*temp->read8)(ADDRESS_68K(address));
@@ -882,6 +886,12 @@ INLINE uint m68ki_read_16_fc(uint address, uint fc)
   cpu_memory_map *temp;
 	if (biz_readcb)
 		biz_readcb(address);
+
+	if(biz_cdcallback)
+	{
+		CDLog68k(address,eCDLog_Flags_Data68k);
+		CDLog68k(address+1,eCDLog_Flags_Data68k);
+	}
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
   m68ki_check_address_error(address, MODE_READ, fc) /* auto-disable (see m68kcpu.h) */
@@ -896,6 +906,14 @@ INLINE uint m68ki_read_32_fc(uint address, uint fc)
   cpu_memory_map *temp;
 	if (biz_readcb)
 		biz_readcb(address);
+
+	if(biz_cdcallback)
+	{
+		CDLog68k(address,eCDLog_Flags_Data68k);
+		CDLog68k(address+1,eCDLog_Flags_Data68k);
+		CDLog68k(address+2,eCDLog_Flags_Data68k);
+		CDLog68k(address+3,eCDLog_Flags_Data68k);
+	}
 
   m68ki_set_fc(fc) /* auto-disable (see m68kcpu.h) */
   m68ki_check_address_error(address, MODE_READ, fc) /* auto-disable (see m68kcpu.h) */

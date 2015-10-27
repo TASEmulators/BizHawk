@@ -8,6 +8,7 @@ using BizHawk.Emulation.Common;
 //needed for being a factory
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Components.H6280;
+using BizHawk.Emulation.Cores.Consoles.Sega;
 
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
@@ -83,6 +84,8 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 				return new CodeDataLog_PCE().Load(br);
 			else if(FileSubType == "GB")
 				return new CodeDataLog_GB().Load(br);
+			else if (FileSubType == "GEN")
+				return new CodeDataLog_GEN().Load(br);
 			else return null;
 		}
 

@@ -1,8 +1,6 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
 
-//TODO - refactor into different files
-
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public class CodeDataLog_GB : CodeDataLog
@@ -30,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			if (memdomains["ROM"].Size != this["ROM"].Length) return false;
 			if (memdomains["WRAM"].Size != this["WRAM"].Length) return false;
+			if (memdomains.Has("CartRAM") != this.ContainsKey("CartRAM")) return false;
 			if(memdomains.Has("CartRAM"))
 				if (memdomains["CartRAM"].Size != this["CartRAM"].Length) 
 					return false;
