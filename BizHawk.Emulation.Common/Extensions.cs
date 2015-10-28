@@ -240,7 +240,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return (IRegionable)core.ServiceProvider.GetService<IRegionable>();
 		}
 
-		public static bool CanDataLog(this IEmulator core)
+		public static bool CanCDLog(this IEmulator core)
 		{
 			if (core == null)
 			{

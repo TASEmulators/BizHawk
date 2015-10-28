@@ -1146,6 +1146,7 @@ namespace BizHawk.Client.EmuHawk
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TraceLogger>();
+			CodeDataLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<CDL>();
 
 			TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TAStudio>();
 
