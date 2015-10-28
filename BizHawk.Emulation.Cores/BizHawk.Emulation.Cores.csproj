@@ -118,7 +118,6 @@
       <DependentUpon>TI83.cs</DependentUpon>
     </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
-    <Compile Include="CodeDataLog.cs" />
     <Compile Include="Computers\AppleII\AppleII.cs" />
     <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
@@ -347,8 +346,10 @@
     </Compile>
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\CodeDataLog_GB.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ICodeDataLog.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IDebuggable.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
@@ -758,7 +759,6 @@
     <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
-    <Compile Include="Consoles\Sega\CodeDataLog_GEN.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
@@ -827,7 +827,7 @@
     <Compile Include="CoreInventory.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
-    <Compile Include="CPUs\HuC6280\CodeDataLog_PCE.cs" />
+    <Compile Include="CPUs\HuC6280\HuC6280_CDL.cs" />
     <Compile Include="CPUs\W65816\Disassembler.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />

@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
                 if (Debug) Logger(State());
                 MemoryCallbacks.CallExecutes(PC);
 
-                if (CDLLoggingActive) CDLOpcode();
+                if (CDL != null && CDL.Active) CDLOpcode();
 
                 byte opcode = ReadMemory(PC++);
                 switch (opcode)

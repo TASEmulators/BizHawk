@@ -20,11 +20,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class CDL : Form, IToolFormAutoConfig
 	{
-		[RequiredService]
-		public IEmulator _emu { get; private set; }
-		private CodeDataLog _cdl;
-
 		private RecentFiles _recent_fld = new RecentFiles();
+
 		[ConfigPersist]
 		private RecentFiles _recent
 		{
@@ -48,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private ICodeDataLogger CodeDataLogger { get; set; }
 
 		private string _currentFileName = string.Empty;
+		private CodeDataLog _cdl;
 
 		public CDL()
 		{
@@ -66,33 +64,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			//zeromus doesn't like this logic very much. it has to change.
-
-			if (_emu.SystemId == "PCE")
-			{
-				var pce = _emu as PCEngine;
-				LoggingActiveCheckbox.Checked = pce.Cpu.CDLLoggingActive;
-				_cdl = pce.Cpu.CDL;
-				pce.InitCDLMappings();
-			}
-			else if(_emu.SystemId == "GB")
-			{
-				var gambatte = _emu as Gameboy;
-				_cdl = gambatte.CDL;
-				if (_cdl == null)
-					LoggingActiveCheckbox.Checked = false;
-				else
-				LoggingActiveCheckbox.Checked = _cdl.Active;
-			}
-			else if (_emu is GPGX)
-			{
-				var gpgx = _emu as GPGX;
-				_cdl = gpgx.CDL;
-				if (_cdl == null)
-					LoggingActiveCheckbox.Checked = false;
-				else
-					LoggingActiveCheckbox.Checked = _cdl.Active;
-			}
+			//don't try to recover the current CDL!
+			//even though it seems like it might be nice, it might get mixed up between games. even if we use CheckCDL. Switching games with the same memory map will be bad.
+			_cdl = null;
+			_currentFileName = null;
+			LoggingActiveCheckbox.Checked = false;
 			UpdateDisplay();
 		}
 
@@ -146,48 +122,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
 			{
-				var newCDL = CodeDataLog.Load(fs);
+				var newCDL = new CodeDataLog();
+				newCDL.Load(fs);
 
-				//this check may be inadequate in the future
-				if(newCDL.SubType != _emu.SystemId)
-					throw new InvalidDataException("File is a CDL file of the wrong target core (like, a different game console)!");
+				//have the core create a CodeDataLog to check mapping information against
+				var testCDL = new CodeDataLog();
+				CodeDataLogger.NewCDL(testCDL);
+				if (!newCDL.Check(testCDL))
+				{
+					MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+					return;
+				}
 
+				//ok, it's all good:
 				_cdl = newCDL;
-				if (_emu.SystemId == "PCE")
-				{
-					var pce = _emu as PCEngine;
-					var cdl_pce = newCDL as CodeDataLog_PCE;
-					if (!cdl_pce.CheckConsistency(pce.Cpu.Mappings))
-					{
-						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
-						return;
-					}
-					pce.Cpu.CDL = _cdl;
-				}
-				else if (_emu.SystemId == "GB")
-				{
-					var gambatte = _emu as Gameboy;
-					var cdl_gb = newCDL as CodeDataLog_GB;
-					var memd = gambatte.AsMemoryDomains();
-					if (!cdl_gb.CheckConsistency(memd))
-					{
-						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
-						return;
-					}
-					gambatte.CDL = cdl_gb;
-				}
-				else if (_emu is GPGX)
-				{
-					var gpgx = _emu as GPGX;
-					var cdl_gb = newCDL as CodeDataLog_GEN;
-					var memd = gpgx.AsMemoryDomains();
-					if (!cdl_gb.CheckConsistency(memd))
-					{
-						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
-						return;
-					}
-					gpgx.CDL = cdl_gb;
-				}
+				CodeDataLogger.SetCDL(null);
+				if (LoggingActiveCheckbox.Checked)
+					CodeDataLogger.SetCDL(_cdl);
+
+				_currentFileName = path;
 			}
 
 			UpdateDisplay();
@@ -213,68 +166,70 @@ namespace BizHawk.Client.EmuHawk
 			RecentSubMenu.DropDownItems.AddRange(_recent.RecentMenu(LoadFile, true));
 		}
 
+		void NewFileLogic()
+		{
+			_cdl = new CodeDataLog();
+			CodeDataLogger.NewCDL(_cdl);
+
+			if (LoggingActiveCheckbox.Checked)
+				CodeDataLogger.SetCDL(_cdl);
+			else CodeDataLogger.SetCDL(null);
+
+			_currentFileName = null;
+
+			UpdateDisplay();
+		}
+
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = MessageBox.Show(this, "OK to create new CDL?", "Query", MessageBoxButtons.YesNo);
-			if (result == DialogResult.Yes)
+			//take care not to clobber an existing CDL
+			if (_cdl != null)
 			{
-				if (_emu.SystemId == "PCE")
-				{
-					var pce = _emu as PCEngine;
-					_cdl = CodeDataLog_PCE.Create(pce.Cpu.Mappings);
-					pce.Cpu.CDL = _cdl;
-				}
-				else if (_emu.SystemId == "GB")
-				{
-					var gambatte = _emu as Gameboy;
-					var memd = gambatte.AsMemoryDomains();
-					var cdl_gb = CodeDataLog_GB.Create(memd);
-					gambatte.CDL = cdl_gb;
-					_cdl = cdl_gb;
-				}
-				else if (_emu is GPGX)
-				{
-					var gpgx = _emu as GPGX;
-					var memd = gpgx.AsMemoryDomains();
-					var cdl_gen = CodeDataLog_GEN.Create(memd);
-					gpgx.CDL = cdl_gen;
-					_cdl = cdl_gen;
-				}
-				
-				UpdateDisplay();
+				var result = MessageBox.Show(this, "OK to create new CDL?", "Query", MessageBoxButtons.YesNo);
+				if (result != DialogResult.Yes)
+					return;
 			}
+
+			NewFileLogic();
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
-			if (result == DialogResult.Yes)
-			{
-				var file = ToolHelpers.OpenFileDialog(
-					_currentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-					"Code Data Logger Files",
-					"cdl");
+			var file = ToolHelpers.OpenFileDialog(
+				_currentFileName,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
+				"Code Data Logger Files",
+				"cdl");
 
-				if (file != null)
-				{
-					LoadFile(file.FullName);
-				}
+			if (file == null)
+				return;
+
+			//take care not to clobber an existing CDL
+			if (_cdl != null)
+			{
+				var result = MessageBox.Show(this, "OK to load new CDL?", "Query", MessageBoxButtons.YesNo);
+				if (result != DialogResult.Yes)
+					return;
 			}
+
+			LoadFile(file.FullName);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!string.IsNullOrWhiteSpace(_currentFileName))
+			if (string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				using (var fs = new FileStream(_currentFileName, FileMode.Create, FileAccess.Write))
-				{
-					_cdl.Save(fs);
-				}
+				RunSaveAs();
+				return;
+			}
+			
+			using (var fs = new FileStream(_currentFileName, FileMode.Create, FileAccess.Write))
+			{
+				_cdl.Save(fs);
 			}
 		}
 
-		private void SaveAsMenuItem_Click(object sender, EventArgs e)
+		void RunSaveAs()
 		{
 			if (_cdl == null)
 			{
@@ -300,6 +255,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SaveAsMenuItem_Click(object sender, EventArgs e)
+		{
+			RunSaveAs();
+		}
+
 		private void AppendMenuItem_Click(object sender, EventArgs e)
 		{
 			if (_cdl == null)
@@ -318,7 +278,13 @@ namespace BizHawk.Client.EmuHawk
 				{
 					using (var fs = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
 					{
-						var newCDL = CodeDataLog.Load(fs);
+						var newCDL = new CodeDataLog();
+						newCDL.Load(fs);
+						if (!_cdl.Check(newCDL))
+						{
+							MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+							return;
+						}
 						_cdl.LogicalOrFrom(newCDL);
 						UpdateDisplay();
 					}
@@ -348,17 +314,16 @@ namespace BizHawk.Client.EmuHawk
 			if (_cdl == null)
 			{
 				MessageBox.Show(this, "Cannot disassemble with no CDL loaded!", "Alert");
+				return;
 			}
-			else
+
+			var sfd = new SaveFileDialog();
+			var result = sfd.ShowDialog(this);
+			if (result == DialogResult.OK)
 			{
-				var sfd = new SaveFileDialog();
-				var result = sfd.ShowDialog(this);
-				if (result == DialogResult.OK)
+				using (var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
 				{
-					using (var fs = new FileStream(sfd.FileName, FileMode.Create, FileAccess.Write))
-					{
-						_cdl.Disassemble(fs, MemoryDomains);
-					}
+					CodeDataLogger.DisassembleCDL(fs, _cdl);
 				}
 			}
 		}
@@ -366,6 +331,13 @@ namespace BizHawk.Client.EmuHawk
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
 			Close();
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			//deactivate logger
+			if (CodeDataLogger != null) //just in case...
+				CodeDataLogger.SetCDL(null);
 		}
 
 		#endregion
@@ -380,21 +352,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (LoggingActiveCheckbox.Checked && _cdl == null)
 			{
-				MessageBox.Show(this, "Cannot log with no CDL loaded!", "Alert");
-				LoggingActiveCheckbox.Checked = false;
+				//implicitly create a new file
+				NewFileLogic();
 			}
-
-			if (_emu.SystemId == "PCE")
-			{
-				//set a special flag on the CPU to indicate CDL is running, maybe it's faster, who knows
-				var pce = _emu as PCEngine;
-				pce.Cpu.CDLLoggingActive = LoggingActiveCheckbox.Checked;
-			}
-
-			//zeromus doesnt like this kind of logic
-
-			if (_cdl != null)
-				_cdl.Active = LoggingActiveCheckbox.Checked;
+			
+			if (_cdl != null && LoggingActiveCheckbox.Checked)
+				CodeDataLogger.SetCDL(_cdl);
+			else
+				CodeDataLogger.SetCDL(null);
 		}
 
 		private void PCECDL_DragEnter(object sender, DragEventArgs e)

@@ -5,103 +5,65 @@ using System.Text;
 using System.IO;
 using BizHawk.Emulation.Common;
 
-//needed for being a factory
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Components.H6280;
-using BizHawk.Emulation.Cores.Consoles.Sega;
-
 namespace BizHawk.Emulation.Cores.Components.H6280
 {
-	public abstract class CodeDataLog : Dictionary<string, byte[]>
+	public partial class HuC6280
 	{
-		public CodeDataLog()
-			:base()
-		{
-		}
+	  public void DisassembleCDL(Stream s, CodeDataLog cdl, IMemoryDomains mem)
+	  {
+	    var w = new StreamWriter(s);
+	    w.WriteLine("; Bizhawk CDL Disassembly");
+	    w.WriteLine();
+	    foreach (var kvp in cdl)
+	    {
+	      w.WriteLine(".\"{0}\" size=0x{1:x8}", kvp.Key, kvp.Value.Length);
 
-		/// <summary>
-		/// You don't have to use this necessarily, it's just provided for convenience
-		/// </summary>
-		public bool Active;
+	      byte[] cd = kvp.Value;
+	      var md = mem[kvp.Key];
 
-		public virtual void Disassemble(Stream s, IMemoryDomains mem) { }
+	      for (int i = 0; i < kvp.Value.Length; i++)
+	      {
+	        if ((kvp.Value[i] & (byte)HuC6280.CDLUsage.Code) != 0)
+	        {
+	          int unused;
+	          string dis = HuC6280.DisassembleExt(
+	            0,
+	            out unused,
+	            delegate(ushort addr)
+	            {
+	              return md.PeekByte(addr + i);
+	            },
+	            delegate(ushort addr)
+	            {
+	              return md.PeekWord(addr + i, false);
+	            }
+	          );
+	          w.WriteLine("0x{0:x8}: {1}", i, dis);
+	        }
+	      }
+	      w.WriteLine();
+	    }
+	    w.WriteLine("; EOF");
+	    w.Flush();
+	  }
 
-		public abstract string SubType { get; }
-		public abstract int SubVer { get; }
+	  private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
+	  {
+	    Dictionary<string, int> sizes = new Dictionary<string, int>();
+	    foreach (var m in mm)
+	    {
+	      if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
+	        sizes[m.Name] = m.MaxOffs;
+	    }
 
-		public void LogicalOrFrom(CodeDataLog other)
-		{
-			if (this.Count != other.Count)
-				throw new InvalidDataException("Dictionaries must have the same number of keys!");
-
-			foreach (var kvp in other)
-			{
-				byte[] fromdata = kvp.Value;
-				byte[] todata = this[kvp.Key];
-
-				if (fromdata.Length != todata.Length)
-					throw new InvalidDataException("Memory regions must be the same size!");
-
-				for (int i = 0; i < todata.Length; i++)
-					todata[i] |= fromdata[i];
-			}
-		}
-
-		public void ClearData()
-		{
-			foreach (byte[] data in Values)
-				Array.Clear(data, 0, data.Length);
-		}
-
-		public void Save(Stream s)
-		{
-			var w = new BinaryWriter(s);
-			w.Write("BIZHAWK-CDL-2");
-			w.Write(SubType.PadRight(15));
-			w.Write(Count);
-			foreach (var kvp in this)
-			{
-				w.Write(kvp.Key);
-				w.Write(kvp.Value.Length);
-				w.Write(kvp.Value);
-			}
-			w.Flush();
-		}
-
-		public static CodeDataLog Load(Stream s)
-		{
-			var br = new BinaryReader(s);
-			string id = br.ReadString();
-			string FileSubType;
-			if (id == "BIZHAWK-CDL-1")
-				FileSubType = "PCE";
-			else if (id == "BIZHAWK-CDL-2")
-				FileSubType = br.ReadString().TrimEnd(' ');
-			else
-				throw new InvalidDataException("File is not a Bizhawk CDL file!");
-
-			if (FileSubType == "PCE")
-				return new CodeDataLog_PCE().Load(br);
-			else if(FileSubType == "GB")
-				return new CodeDataLog_GB().Load(br);
-			else if (FileSubType == "GEN")
-				return new CodeDataLog_GEN().Load(br);
-			else return null;
-		}
-
-		private CodeDataLog Load(BinaryReader br)
-		{
-			int count = br.ReadInt32();
-			for (int i = 0; i < count; i++)
-			{
-				string key = br.ReadString();
-				int len = br.ReadInt32();
-				byte[] data = br.ReadBytes(len);
-				this[key] = data;
-			}
-
-			return this;
-		}
+	    List<string> keys = new List<string>(sizes.Keys);
+	    foreach (var key in keys)
+	    {
+	      // becase we were looking at offsets, and each bank is 8192 big, we need to add that size
+	      sizes[key] += 8192;
+	    }
+	    return sizes;
+	  }
 	}
 
 	public partial class HuC6280
@@ -117,8 +79,6 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		public MemMapping[] Mappings; // = new MemMapping[256];
 
 		public CodeDataLog CDL = null;
-
-		public bool CDLLoggingActive = false;
 
 		[Flags]
 		public enum CDLUsage : byte

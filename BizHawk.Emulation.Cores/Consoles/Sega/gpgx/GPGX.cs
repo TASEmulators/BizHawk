@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		singleInstance: true
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
-		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
+		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		static GPGX AttachedCore = null;
 
@@ -172,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				//TODO - this hits performance, we need to make it controllable
 				CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
-				LibGPGX.gpgx_set_cd_callback(CDCallback);
 
 				InitMemCallbacks();
 				KillMemCallbacks();
@@ -184,9 +183,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		public CodeDataLog_GEN CDL;
+		void ICodeDataLogger.SetCDL(CodeDataLog cdl)
+		{
+			CDL = cdl;
+			if(cdl == null) LibGPGX.gpgx_set_cd_callback(null);
+			else LibGPGX.gpgx_set_cd_callback(CDCallback);
+		}
+
+		void ICodeDataLogger.NewCDL(CodeDataLog cdl)
+		{
+			cdl["MD CART"] = new byte[MemoryDomains["MD CART"].Size];
+			cdl["68K RAM"] = new byte[MemoryDomains["68K RAM"].Size];
+			cdl["Z80 RAM"] = new byte[MemoryDomains["Z80 RAM"].Size];
+
+			if (MemoryDomains.Has("SRAM"))
+				cdl["SRAM"] = new byte[MemoryDomains["SRAM"].Size];
+
+			cdl.SubType = "GEN";
+			cdl.SubVer = 0;
+		}
+
+		//not supported
+		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl) { }
+
+		CodeDataLog CDL;
 		void CDCallbackProc(int addr, LibGPGX.CDLog_AddrType addrtype, LibGPGX.CDLog_Flags flags)
 		{
+			//TODO - hard reset makes CDL go nuts.
+
 			if (CDL == null) return;
 			if (!CDL.Active) return;
 			string key;
