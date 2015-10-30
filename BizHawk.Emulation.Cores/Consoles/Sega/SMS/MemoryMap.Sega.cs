@@ -19,7 +19,7 @@
 
 		bool BiosMapped { get { return (Port3E & 0x40) == 0x40; } }
 
-		byte ReadMemory(ushort address)
+		byte ReadMemorySega(ushort address)
 		{
 			byte ret = 0xFF;
 
@@ -56,7 +56,7 @@
 			return ret;
 		}
 
-		void WriteMemory(ushort address, byte value)
+		void WriteMemorySega(ushort address, byte value)
 		{
 			if (address >= 0xC000)
 				SystemRam[address & RamSizeMask] = value;
@@ -91,14 +91,51 @@
 			}
 		}
 
+		CDLog_MapResults MapMemorySega(ushort address, bool write)
+		{
+			if (address < 0xC000)
+			{
+				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
+					return new CDLog_MapResults();
+				else if (BiosMapped && BiosRom != null)
+					return new CDLog_MapResults(); //bios tracking of CDL is not supported
+				else if (address < 1024)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
+				else if (address < 0x4000)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank0 * BankSize) + address };
+				else if (address < 0x8000)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + address };
+				else
+				{
+					switch (SaveRamBank)
+					{
+						case 0: return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+						case 1:
+							if (SaveRAM != null) return new CDLog_MapResults() { Type = CDLog_AddrType.SaveRAM, Address = (address & BankSizeMask) % SaveRAM.Length };
+							else return new CDLog_MapResults();
+						case 2:
+							if (SaveRAM != null) return new CDLog_MapResults() { Type = CDLog_AddrType.SaveRAM, Address = (BankSize + (address & BankSizeMask)) & BankSizeMask };
+							else return new CDLog_MapResults();
+						default:
+							return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+					}
+				}
+			}
+			else
+			{
+				return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+			}
+		}
+
 		void InitSegaMapper()
 		{
-			Cpu.ReadMemory = ReadMemory;
-			Cpu.WriteMemory = WriteMemory;
-			WriteMemory(0xFFFC, 0);
-			WriteMemory(0xFFFD, 0);
-			WriteMemory(0xFFFE, 1);
-			WriteMemory(0xFFFF, 2);
+			ReadMemory = ReadMemorySega;
+			WriteMemory = WriteMemorySega;
+			MapMemory = MapMemorySega;
+			WriteMemorySega(0xFFFC, 0);
+			WriteMemorySega(0xFFFD, 0);
+			WriteMemorySega(0xFFFE, 1);
+			WriteMemorySega(0xFFFF, 2);
 		}
 
 		// Mapper when loading a BIOS as a ROM (simulating no cart loaded)
@@ -136,12 +173,12 @@
 
 		void InitBiosMapper()
 		{
-			Cpu.ReadMemory = ReadMemoryBIOS;
-			Cpu.WriteMemory = WriteMemoryBIOS;
-			WriteMemory(0xFFFC, 0);
-			WriteMemory(0xFFFD, 0);
-			WriteMemory(0xFFFE, 1);
-			WriteMemory(0xFFFF, 2);
+			ReadMemory = ReadMemoryBIOS;
+			WriteMemory = WriteMemoryBIOS;
+			WriteMemorySega(0xFFFC, 0);
+			WriteMemorySega(0xFFFD, 0);
+			WriteMemorySega(0xFFFE, 1);
+			WriteMemorySega(0xFFFF, 2);
 		}
 	}
 }

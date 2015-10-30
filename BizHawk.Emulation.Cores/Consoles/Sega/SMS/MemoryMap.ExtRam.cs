@@ -31,8 +31,8 @@
 		{
 			ExtRam = new byte[size];
 			ExtRamMask = size - 1;
-			Cpu.ReadMemory = ReadMemoryExt;
-			Cpu.WriteMemory = WriteMemoryExt;
+			ReadMemory = ReadMemoryExt;
+			WriteMemory = WriteMemoryExt;
 		}
 	}
 }

@@ -32,8 +32,8 @@
 
 		void InitCodeMastersMapper()
 		{
-			Cpu.ReadMemory = ReadMemoryCM;
-			Cpu.WriteMemory = WriteMemoryCM;
+			ReadMemory = ReadMemoryCM;
+			WriteMemory = WriteMemoryCM;
 			WriteMemoryCM(0x0000, 0);
 			WriteMemoryCM(0x4000, 1);
 			WriteMemoryCM(0x8000, 0);
@@ -85,8 +85,8 @@
 
 		void InitCodeMastersMapperRam()
 		{
-			Cpu.ReadMemory = ReadMemoryCMRam;
-			Cpu.WriteMemory = WriteMemoryCMRam;
+			ReadMemory = ReadMemoryCMRam;
+			WriteMemory = WriteMemoryCMRam;
 			WriteMemoryCM(0x0000, 0);
 			WriteMemoryCM(0x4000, 1);
 			WriteMemoryCM(0x8000, 0);

@@ -23,8 +23,8 @@
 
 		void InitKoreaMapper()
 		{
-			Cpu.ReadMemory = ReadMemoryKR;
-			Cpu.WriteMemory = WriteMemoryKR;
+			ReadMemory = ReadMemoryKR;
+			WriteMemory = WriteMemoryKR;
 			RomBank0 = 0;
 			RomBank1 = 1;
 			RomBank2 = 0;
@@ -72,8 +72,8 @@
 
 		void InitMSXMapper()
 		{
-			Cpu.ReadMemory = ReadMemoryMSX;
-			Cpu.WriteMemory = WriteMemoryMSX;
+			ReadMemory = ReadMemoryMSX;
+			WriteMemory = WriteMemoryMSX;
 			RomBank0 = 0;
 			RomBank1 = 0;
 			RomBank2 = 0;
@@ -83,7 +83,7 @@
 		void InitNemesisMapper()
 		{
 			InitMSXMapper();
-			Cpu.ReadMemory = ReadMemoryNemesis;
+			ReadMemory = ReadMemoryNemesis;
 		}
 	}
 }

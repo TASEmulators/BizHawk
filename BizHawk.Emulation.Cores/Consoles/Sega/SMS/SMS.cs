@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
-		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>
+		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>, ICodeDataLogger
 	{
 		// Constants
 		public const int BankSize = 16384;
@@ -214,6 +214,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				SaveRAM = new byte[0x8000];
 
 			SetupMemoryDomains();
+
+			//this manages the linkage between the cpu and mapper callbacks so it needs running before bootup is complete
+			((ICodeDataLogger)this).SetCDL(null);
+
 			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
 		}
 
@@ -251,6 +255,24 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Frame = 0;
 			lagCount = 0;
 			isLag = false;
+		}
+
+		/// <summary>
+		/// The ReadMemory callback for the mapper
+		/// </summary>
+		Func<ushort, byte> ReadMemory;
+
+		/// <summary>
+		/// The WriteMemory callback for the wrapper
+		/// </summary>
+		Action<ushort, byte> WriteMemory;
+
+		/// <summary>
+		/// A dummy FetchMemory that simply reads the memory
+		/// </summary>
+		public byte FetchMemory_StubThunk(ushort address, bool first)
+		{
+			return ReadMemory(address);
 		}
 
 		public byte ReadPort(ushort port)
@@ -452,6 +474,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
 				addr => Vdp.VRAM[addr],
 				(addr, value) => Vdp.VRAM[addr] = value);
+
+			var ROMDomain = new MemoryDomain("ROM", RomData.Length, MemoryDomain.Endian.Little,
+				addr => RomData[addr],
+				(addr, value) => RomData[addr] = value);
 			
 			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
@@ -469,6 +495,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);
+			domains.Add(ROMDomain);
 			domains.Add(SystemBusDomain);
 
 			if (SaveRAM != null)
