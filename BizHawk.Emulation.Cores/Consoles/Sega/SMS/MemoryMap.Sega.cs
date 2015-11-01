@@ -56,6 +56,42 @@
 			return ret;
 		}
 
+		CDLog_MapResults MapMemorySega(ushort address, bool write)
+		{
+			if (address < 0xC000)
+			{
+				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
+					return new CDLog_MapResults();
+				else if (BiosMapped && BiosRom != null)
+					return new CDLog_MapResults(); //bios tracking of CDL is not supported
+				else if (address < 1024)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
+				else if (address < 0x4000)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank0 * BankSize) + address };
+				else if (address < 0x8000)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
+				else
+				{
+					switch (SaveRamBank)
+					{
+						case 0: return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+						case 1:
+							if (SaveRAM != null) return new CDLog_MapResults() { Type = CDLog_AddrType.SaveRAM, Address = (address & BankSizeMask) % SaveRAM.Length };
+							else return new CDLog_MapResults();
+						case 2:
+							if (SaveRAM != null) return new CDLog_MapResults() { Type = CDLog_AddrType.SaveRAM, Address = (BankSize + (address & BankSizeMask)) & BankSizeMask };
+							else return new CDLog_MapResults();
+						default:
+							return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+					}
+				}
+			}
+			else
+			{
+				return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+			}
+		}
+
 		void WriteMemorySega(ushort address, byte value)
 		{
 			if (address >= 0xC000)
@@ -88,42 +124,6 @@
 				else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);
 				else if (address == 0xFFFF) RomBank2 = (byte)(value % RomBanks);
 				return;
-			}
-		}
-
-		CDLog_MapResults MapMemorySega(ushort address, bool write)
-		{
-			if (address < 0xC000)
-			{
-				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
-					return new CDLog_MapResults();
-				else if (BiosMapped && BiosRom != null)
-					return new CDLog_MapResults(); //bios tracking of CDL is not supported
-				else if (address < 1024)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
-				else if (address < 0x4000)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank0 * BankSize) + address };
-				else if (address < 0x8000)
-					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + address };
-				else
-				{
-					switch (SaveRamBank)
-					{
-						case 0: return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
-						case 1:
-							if (SaveRAM != null) return new CDLog_MapResults() { Type = CDLog_AddrType.SaveRAM, Address = (address & BankSizeMask) % SaveRAM.Length };
-							else return new CDLog_MapResults();
-						case 2:
-							if (SaveRAM != null) return new CDLog_MapResults() { Type = CDLog_AddrType.SaveRAM, Address = (BankSize + (address & BankSizeMask)) & BankSizeMask };
-							else return new CDLog_MapResults();
-						default:
-							return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
-					}
-				}
-			}
-			else
-			{
-				return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
 			}
 		}
 
