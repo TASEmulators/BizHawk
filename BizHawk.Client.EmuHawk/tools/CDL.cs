@@ -74,38 +74,45 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateDisplay()
 		{
-			var lines = new List<string>();
 			if (_cdl == null)
 			{
-				lines.Add("No CDL loaded.");
+				CdlTextbox.Text = "No CDL loaded.";
+				return;
 			}
-			else
+
+			StringWriter sw = new StringWriter();
+			sw.WriteLine("CDL contains the following domains:");
+			foreach (var kvp in _cdl)
 			{
-				lines.Add("CDL contains the following domains:");
-				foreach (var kvp in _cdl)
+				int total = 0;
+				unsafe
 				{
-					int total = 0;
-					unsafe
+					fixed (byte* data = kvp.Value)
 					{
-						fixed (byte* data = kvp.Value)
+						byte* src = data;
+						byte* end = data + kvp.Value.Length;
+						while (src < end)
 						{
-							byte* src = data;
-							byte* end = data + kvp.Value.Length;
-							while (src < end)
+							if (*src++ != 0)
 							{
-								if (*src++ != 0)
-								{
-									total++;
-								}
+								total++;
 							}
 						}
 					}
-
-					lines.Add(string.Format("Domain {0} Size {1} Mapped {2}% ({3}/{4} bytes)", kvp.Key, kvp.Value.Length, total / (float) kvp.Value.Length * 100f, total, kvp.Value.Length));
 				}
+
+				sw.WriteLine("Domain {0} Size {1} Mapped {2}% ({3}/{4} bytes)", kvp.Key, kvp.Value.Length, total / (float)kvp.Value.Length * 100f, total, kvp.Value.Length);
+			}
+			
+			sw.WriteLine();
+			
+			var bm = _cdl.GetBlockMap();
+			foreach (var kvp in bm)
+			{
+				sw.WriteLine("{0:X8}: {1}", kvp.Value, kvp.Key);
 			}
 
-			CdlTextbox.Lines = lines.ToArray();
+			CdlTextbox.Text = sw.ToString();
 		}
 
 		public bool AskSaveChanges()

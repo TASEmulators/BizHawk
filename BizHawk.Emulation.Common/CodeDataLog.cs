@@ -71,17 +71,44 @@ namespace BizHawk.Emulation.Common
 
 		public void Save(Stream s)
 		{
+			_Save(s, true);
+		}
+		
+		Dictionary<string, long> _Save(Stream s, bool forReal)
+		{
+			var ret = new Dictionary<string, long>();
 			var w = new BinaryWriter(s);
 			w.Write("BIZHAWK-CDL-2");
 			w.Write(SubType.PadRight(15));
 			w.Write(Count);
-			foreach (var kvp in this)
+			w.Flush();
+			long addr = s.Position;
+			if (forReal)
 			{
-				w.Write(kvp.Key);
-				w.Write(kvp.Value.Length);
-				w.Write(kvp.Value);
+				foreach (var kvp in this)
+				{
+					w.Write(kvp.Key);
+					w.Write(kvp.Value.Length);
+					w.Write(kvp.Value);
+				}
+			}
+			else
+			{
+				foreach (var kvp in this)
+				{
+					addr += kvp.Key.Length + 1; //assumes shortly-encoded key names
+					addr += 4;
+					ret[kvp.Key] = addr;
+					addr += kvp.Value.Length;
+				}
 			}
 			w.Flush();
+			return ret;
+		}
+
+		public Dictionary<string, long> GetBlockMap()
+		{
+			return _Save(new MemoryStream(), false);
 		}
 
 		public void Load(Stream s)
