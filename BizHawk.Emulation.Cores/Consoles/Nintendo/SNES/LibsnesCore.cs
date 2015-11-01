@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 
 			api = new LibsnesApi(GetExePath());
-			api.CMD_init();
 			api.ReadHook = ReadHook;
 			api.ExecHook = ExecHook;
 			api.WriteHook = WriteHook;
@@ -384,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// if (Win32.Is64BitOperatingSystem)
 			// bits = "64";
 
-			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".exe";
+			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".dll";
 
 			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 
@@ -679,7 +678,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//video provider
 		int IVideoProvider.BackgroundColor { get { return 0; } }
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
-		int IVideoProvider.VirtualWidth { get { return vidWidth; } }
+		int IVideoProvider.VirtualWidth { get { return (int)(vidWidth * 1.146); } }
 		public int VirtualHeight { get { return vidHeight; } }
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }

@@ -179,6 +179,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public Pipeline CreatePipeline(VertexLayout vertexLayout, Shader vertexShader, Shader fragmentShader, bool required, string memo)
 		{
+			//if the shaders arent available, the pipeline isn't either
+			if (!vertexShader.Available || !fragmentShader.Available)
+			{
+				return new Pipeline(this, null, false, null, null, null);
+			}
+
 			bool success = true;
 
 			var vsw = vertexShader.Opaque as ShaderWrapper;
@@ -311,6 +317,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 				if (type == ActiveUniformType.Sampler2D)
 				{
+					ui.IsSampler = true;
+					ui.SamplerIndex = samplers.Count;
 					ui.Opaque = loc | (samplers.Count << 24);
 					samplers.Add(loc);
 				}
@@ -669,7 +677,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			if (cg)
 			{
 				var cgc = new CGC();
-				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv");
+				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv", false);
 				
 				if (!results.Succeeded)
 					return new Shader(this, null, false);

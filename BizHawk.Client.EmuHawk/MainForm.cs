@@ -144,6 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
+			string cmdLoadSlot = null;
 			string cmdMovie = null;
 			string cmdDumpType = null;
 			string cmdDumpName = null;
@@ -161,6 +162,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
+				{
+					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				if (arg.StartsWith("--load-state="))
 				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				}
@@ -401,13 +406,20 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			if (cmdLoadState != null && !Global.Game.IsNullInstance)
+			if(!Global.Game.IsNullInstance)
 			{
-				LoadQuickSave("QuickSave" + cmdLoadState);
-			}
-			else if (Global.Config.AutoLoadLastSaveSlot && !Global.Game.IsNullInstance)
-			{
-				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				if(cmdLoadState != null)
+				{
+					LoadState(cmdLoadState,Path.GetFileName(cmdLoadState));
+				}
+				else if (cmdLoadSlot != null)
+				{
+					LoadQuickSave("QuickSave" + cmdLoadSlot);
+				}
+				else if (Global.Config.AutoLoadLastSaveSlot)
+				{
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
 			}
 
 			GlobalWin.Tools.AutoLoad();
@@ -600,8 +612,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					GlobalWin.Tools.UpdateToolsBefore();
-					GlobalWin.Tools.UpdateToolsAfter();
+					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo);
+					GlobalWin.Tools.UpdateToolsBefore(skipScripts);
+					GlobalWin.Tools.UpdateToolsAfter(skipScripts);
 				}
 			}
 		}
@@ -878,12 +891,13 @@ namespace BizHawk.Client.EmuHawk
 			string fname_bare = string.Format(fmt, prefix, ts, "");
 			string fname = string.Format(fmt, prefix, ts, " (0)");
 
-			//if this file already exists,
-			//1. move the original file to a numbered one (to keep a good filesystem sort ordering)
-			if (File.Exists(fname_bare))
+			//if the (0) filename exists, do nothing. we'll bump up the number later
+			//if the bare filename exists, move it to (0)
+			//otherwise, no related filename exists, and we can proceed with the bare filename
+			if (File.Exists(fname)) { }
+			else if (File.Exists(fname_bare))
 				File.Move(fname_bare, fname);
 			else fname = fname_bare;
-			//2. create next one sequentially named
 			int seq = 0;
 			while (File.Exists(fname))
 			{
@@ -1344,7 +1358,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_inResizeLoop)
 			{
 				var size = PresentationPanel.NativeSize;
-				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
+				float AR = (float)size.Width / size.Height;
+				str = str + string.Format("({0}x{1})={2} - ", size.Width, size.Height, AR);
 			}
 
 			//we need to display FPS somewhere, in this case
@@ -3248,6 +3263,7 @@ namespace BizHawk.Client.EmuHawk
 								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 							}
 
+							bbin.DiscardAlpha();
 
 							bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
 							bmpin = bbin.ToSysdrawingBitmap();
@@ -3892,7 +3908,6 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
-
 
 
 	}

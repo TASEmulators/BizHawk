@@ -610,6 +610,11 @@ namespace BizHawk.Client.EmuHawk
 					tool.FastUpdate();
 				}
 			}
+
+			if (Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
+			{
+				LuaConsole.EndLuaDrawing();
+			}
 		}
 
 		public bool IsAvailable<T>()

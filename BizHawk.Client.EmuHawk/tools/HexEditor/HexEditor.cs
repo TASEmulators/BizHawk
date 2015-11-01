@@ -1901,6 +1901,7 @@ namespace BizHawk.Client.EmuHawk
 						ClearNibbles();
 						SetHighlighted(_addressHighlighted + 1);
 						UpdateValues();
+						Refresh();
 					}
 
 					break;
@@ -1929,6 +1930,7 @@ namespace BizHawk.Client.EmuHawk
 						ClearNibbles();
 						SetHighlighted(_addressHighlighted + 2);
 						UpdateValues();
+						Refresh();
 					}
 
 					break;
@@ -1980,6 +1982,7 @@ namespace BizHawk.Client.EmuHawk
 						ClearNibbles();
 						SetHighlighted(_addressHighlighted + 4);
 						UpdateValues();
+						Refresh();
 					}
 
 					break;

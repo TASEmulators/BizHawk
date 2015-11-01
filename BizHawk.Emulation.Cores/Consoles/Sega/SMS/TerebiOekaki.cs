@@ -2,12 +2,7 @@
 {
 	public partial class SMS
 	{
-		// The CodeMasters mapper has 3 banks of 16kb, like the Sega mapper.
-		// The differences are that the paging control addresses are different, and the first 1K of ROM is not protected.
-		// Bank 0: Control Address $0000 - Maps $0000 - $3FFF
-		// Bank 1: Control Address $4000 - Maps $4000 - $7FFF
-		// Bank 2: Control Address $8000 - Maps $8000 - $BFFF
-		// System RAM is at $C000+ as in the Sega mapper.
+		//This doesn't look functional. Illogical and nothing like http://www.smspower.org/Articles/TerebiOekaki
 
 		byte xCoord = 128;
 		byte yCoord = 100;
@@ -51,8 +46,8 @@
 
 		void InitTerebiOekaki()
 		{
-			Cpu.ReadMemory = ReadMemoryTO;
-			Cpu.WriteMemory = WriteMemoryTO;
+			ReadMemory = ReadMemoryTO;
+			WriteMemory = WriteMemoryTO;
 		}
 	}
 }

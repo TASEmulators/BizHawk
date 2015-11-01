@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 		// Memory Access 
 
+		public Func<ushort, bool, byte> FetchMemory;
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 
@@ -46,6 +47,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			}
 
 			return ReadMemory(addr);
+		}
+
+		public byte FetchFirstMemoryWrapper(ushort addr)
+		{
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallReads(addr);
+			}
+
+			return FetchMemory(addr, true);
+		}
+
+		public byte FetchMemoryWrapper(ushort addr)
+		{
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallReads(addr);
+			}
+
+			return FetchMemory(addr, false);
 		}
 
 		public void WriteMemoryWrapper(ushort addr, byte value)

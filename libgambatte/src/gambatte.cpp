@@ -114,6 +114,10 @@ void GB::setExecCallback(void (*callback)(unsigned)) {
 	p_->cpu.setExecCallback(callback);
 }
 
+void GB::setCDCallback(CDCallback cdc) {
+	p_->cpu.setCDCallback(cdc);
+}
+
 void GB::setTraceCallback(void (*callback)(void *)) {
 	p_->cpu.setTraceCallback(callback);
 }

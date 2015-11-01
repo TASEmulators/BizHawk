@@ -62,29 +62,57 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			}
 		}
 
+		PresentParameters MakePresentParameters()
+		{
+			return new PresentParameters
+			{
+				BackBufferWidth = 8,
+				BackBufferHeight = 8,
+				DeviceWindowHandle = OffscreenNativeWindow.WindowInfo.Handle,
+				PresentationInterval = PresentInterval.Immediate,
+				EnableAutoDepthStencil = false
+			};
+		}
+
+		void ResetDevice()
+		{
+			ResetHandlers.Reset();
+			for(;;)
+			{
+				var pp = MakePresentParameters();
+				try
+				{
+					dev.Reset(pp);
+				}
+				catch { }
+				if (dev.TestCooperativeLevel().IsSuccess)
+					break;
+				System.Threading.Thread.Sleep(100);
+			}
+			ResetHandlers.Restore();
+		}
+
 		public void CreateDevice()
 		{
 			DestroyDevice();
 
-			//just create some present params so we can get the device created
-			var pp = new PresentParameters
-				{
-					BackBufferWidth = 8,
-					BackBufferHeight = 8,
-					DeviceWindowHandle = OffscreenNativeWindow.WindowInfo.Handle,
-					PresentationInterval = PresentInterval.Immediate			
-				};
+			var pp = MakePresentParameters();
 
 			var flags = CreateFlags.SoftwareVertexProcessing;
 			if ((d3d.GetDeviceCaps(0, DeviceType.Hardware).DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
 			{
 				flags = CreateFlags.HardwareVertexProcessing;
 			}
+			
+			flags |= CreateFlags.FpuPreserve;
 			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
 		}
 
 		void IDisposable.Dispose()
 		{
+			ResetHandlers.Reset();
+			DestroyDevice();
+			d3d.Dispose();
 		}
 
 		public void Clear(OpenTK.Graphics.OpenGL.ClearBufferMask mask)
@@ -135,83 +163,110 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
 		{
-			ShaderWrapper sw = new ShaderWrapper();
-			if (cg)
-			{
-				var cgc = new CGC();
-				var results = cgc.Run(source, entry, "hlslf");
-				source = results.Code;
-				entry = "main";
-				if (!results.Succeeded)
-				{
-					if (required) throw new InvalidOperationException(results.Errors);
-					else return new Shader(this, null, false);
-				}
-
-				sw.MapCodeToNative = results.MapCodeToNative;
-				sw.MapNativeToCode = results.MapNativeToCode;
-			}
-
-			string errors = null;
-			d3d9.ShaderBytecode bytecode = null;
-
 			try
 			{
-				//cgc can create shaders that will need backwards compatibility...
-				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, "ps_3_0", ShaderFlags.EnableBackwardsCompatibility, out errors);
+				ShaderWrapper sw = new ShaderWrapper();
+				if (cg)
+				{
+					var cgc = new CGC();
+					var results = cgc.Run(source, entry, "hlslf", true);
+					source = results.Code;
+					entry = "main";
+					if (!results.Succeeded)
+					{
+						if (required) throw new InvalidOperationException(results.Errors);
+						else return new Shader(this, null, false);
+					}
+
+					sw.MapCodeToNative = results.MapCodeToNative;
+					sw.MapNativeToCode = results.MapNativeToCode;
+				}
+
+				string errors = null;
+				d3d9.ShaderBytecode bytecode = null;
+
+				try
+				{
+					//cgc can create shaders that will need backwards compatibility...
+					string profile = "ps_1_0";
+					if (cg)
+						profile = "ps_3_0"; //todo - smarter logic somehow
+
+					//ShaderFlags.EnableBackwardsCompatibility - used this once upon a time (please leave a note about why)
+					//
+					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.UseLegacyD3DX9_31Dll, out errors);
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				}
+
+				sw.ps = new PixelShader(dev, bytecode);
+				sw.bytecode = bytecode;
+
+				Shader s = new Shader(this, sw, true);
+				sw.IGLShader = s;
+
+				return s;
 			}
-			catch(Exception ex)
+			catch
 			{
-				throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				if (required)
+					throw;
+				else return new Shader(this, null, false);
 			}
-
-			sw.ps = new PixelShader(dev, bytecode);
-			sw.bytecode = bytecode;
-
-			Shader s = new Shader(this, sw, true);
-			sw.IGLShader = s;
-			
-			return s;
 		}
 
 		public Shader CreateVertexShader(bool cg, string source, string entry, bool required)
 		{
-			ShaderWrapper sw = new ShaderWrapper();
-			if (cg)
-			{
-				var cgc = new CGC();
-				var results = cgc.Run(source, entry, "hlslv");
-				source = results.Code;
-				entry = "main";
-				if (!results.Succeeded)
-				{
-					if (required) throw new InvalidOperationException(results.Errors);
-					else return new Shader(this, null, false);
-				}
-
-				sw.MapCodeToNative = results.MapCodeToNative;
-				sw.MapNativeToCode = results.MapNativeToCode;
-			}
-
-			string errors = null;
-			d3d9.ShaderBytecode bytecode = null;
-
 			try
 			{
-				//cgc can create shaders that will need backwards compatibility...
-				bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, "vs_3_0", ShaderFlags.EnableBackwardsCompatibility, out errors);
+				ShaderWrapper sw = new ShaderWrapper();
+				if (cg)
+				{
+					var cgc = new CGC();
+					var results = cgc.Run(source, entry, "hlslv", true);
+					source = results.Code;
+					entry = "main";
+					if (!results.Succeeded)
+					{
+						if (required) throw new InvalidOperationException(results.Errors);
+						else return new Shader(this, null, false);
+					}
+
+					sw.MapCodeToNative = results.MapCodeToNative;
+					sw.MapNativeToCode = results.MapNativeToCode;
+				}
+
+				string errors = null;
+				d3d9.ShaderBytecode bytecode = null;
+
+				try
+				{
+					//cgc can create shaders that will need backwards compatibility...
+					string profile = "vs_1_1";
+					if (cg)
+						profile = "vs_3_0"; //todo - smarter logic somehow
+					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
+				}
+				catch (Exception ex)
+				{
+					throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				}
+
+				sw.vs = new VertexShader(dev, bytecode);
+				sw.bytecode = bytecode;
+
+				Shader s = new Shader(this, sw, true);
+				sw.IGLShader = s;
+				return s;
 			}
-			catch (Exception ex)
+			catch
 			{
-				throw new InvalidOperationException("Error compiling shader: " + errors, ex);
+				if (required)
+					throw;
+				else return new Shader(this, null, false);
 			}
-
-			sw.vs = new VertexShader(dev, bytecode);
-			sw.bytecode = bytecode;
-
-			Shader s = new Shader(this, sw, true);
-			sw.IGLShader = s;
-			return s;
 		}
 
 		BlendOperation ConvertBlendOp(gl.BlendEquationMode glmode)
@@ -424,7 +479,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					uw.FS = (ct == fsct);
 					uw.CT = ct;
 					if (descr.Type == ParameterType.Sampler2D)
+					{
+						ui.IsSampler = true;
+						ui.SamplerIndex = descr.RegisterIndex;
 						uw.SamplerIndex = descr.RegisterIndex;
+					}
 					uniforms.Add(ui);
 				}
 			}
@@ -737,7 +796,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public void BeginControl(GLControlWrapper_SlimDX9 control)
 		{
 			_CurrentControl = control;
-			dev.SetRenderTarget(0, control.SwapChain.GetBackBuffer(0));
+			var bb = control.SwapChain.GetBackBuffer(0);
+			dev.SetRenderTarget(0, bb);
+			bb.Dispose();
 		}
 
 		public void EndControl(GLControlWrapper_SlimDX9 control)
@@ -745,13 +806,28 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
+			var bb = dev.GetBackBuffer(0,0);
+			dev.SetRenderTarget(0,bb);
+			bb.Dispose();
+
 			_CurrentControl = null;
 		}
 
 		public void SwapControl(GLControlWrapper_SlimDX9 control)
 		{
-			control.SwapChain.Present(Present.None);
+			EndControl(control);
+
+			try
+			{
+				var result = control.SwapChain.Present(Present.None);
+			}
+			catch(d3d9.Direct3D9Exception ex)
+			{
+				if (ex.ResultCode.Name == "D3DERR_DEVICELOST")
+					ResetDevice();
+			}
 		}
+
 		
 		public void FreeRenderTarget(RenderTarget rt)
 		{
@@ -777,7 +853,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 			if (rt == null)
 			{
-				dev.SetRenderTarget(0, _CurrentControl.SwapChain.GetBackBuffer(0));
+				var bb = _CurrentControl.SwapChain.GetBackBuffer(0);
+				dev.SetRenderTarget(0, bb);
+				bb.Dispose();
 				dev.DepthStencilSurface = null;
 				return;
 			}
@@ -795,6 +873,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				control.SwapChain.Dispose();
 				control.SwapChain = null;
 			}
+			ResetHandlers.Remove(control, "SwapChain");
 			
 			var pp = new PresentParameters
 			{
@@ -808,7 +887,65 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			};
 
 			control.SwapChain = new SwapChain(dev, pp);
+			ResetHandlers.Add(control, "SwapChain", () => { control.SwapChain.Dispose(); control.SwapChain = null; }, () => RefreshControlSwapChain(control));
 		}
+
+		DeviceLostHandler ResetHandlers = new DeviceLostHandler();
+
+		class DeviceLostHandler
+		{
+			class ResetHandlerKey
+			{
+				public string Label;
+				public object Object;
+				public override int GetHashCode()
+				{
+					return Label.GetHashCode() ^ Object.GetHashCode();
+				}
+				public override bool Equals(object obj)
+				{
+					if (obj == null) return false;
+					var key = obj as ResetHandlerKey;
+					return key.Label == Label && key.Object == Object;
+				}
+			}
+
+			class HandlerSet
+			{
+				public Action Reset, Restore;
+			}
+
+			Dictionary<ResetHandlerKey, HandlerSet> Handlers = new Dictionary<ResetHandlerKey, HandlerSet>();
+
+			public void Add(object o, string label, Action reset, Action restore)
+			{
+				ResetHandlerKey hkey = new ResetHandlerKey() { Object = o, Label = label };
+				Handlers[hkey] = new HandlerSet { Reset = reset, Restore = restore };
+			}
+
+			public void Remove(object o, string label)
+			{
+				ResetHandlerKey hkey = new ResetHandlerKey() { Object = o, Label = label };
+				if(Handlers.ContainsKey(hkey))
+					Handlers.Remove(hkey);
+			}
+
+			public void Reset()
+			{
+				foreach (var handler in Handlers)
+					handler.Value.Reset();
+			}
+
+			public void Restore()
+			{
+				var todo = Handlers.ToArray();
+				Handlers.Clear();
+				foreach (var item in todo)
+					item.Value.Restore();
+			}
+		}
+
+
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{

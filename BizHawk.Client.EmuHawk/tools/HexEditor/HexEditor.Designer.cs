@@ -220,7 +220,7 @@
 			this.CopyMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.CopyMenuItem.Text = "&Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -228,7 +228,7 @@
 			// 
 			this.ExportMenuItem.Name = "ExportMenuItem";
 			this.ExportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-			this.ExportMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ExportMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.ExportMenuItem.Text = "&Export";
 			this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
 			// 
@@ -237,20 +237,20 @@
 			this.PasteMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Paste;
 			this.PasteMenuItem.Name = "PasteMenuItem";
 			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.PasteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.PasteMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.PasteMenuItem.Text = "&Paste";
 			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(141, 6);
 			// 
 			// FindMenuItem
 			// 
 			this.FindMenuItem.Name = "FindMenuItem";
 			this.FindMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.FindMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FindMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.FindMenuItem.Text = "&Find...";
 			this.FindMenuItem.Click += new System.EventHandler(this.FindMenuItem_Click);
 			// 
@@ -258,7 +258,7 @@
 			// 
 			this.FindNextMenuItem.Name = "FindNextMenuItem";
 			this.FindNextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-			this.FindNextMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FindNextMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.FindNextMenuItem.Text = "Find Next";
 			this.FindNextMenuItem.Click += new System.EventHandler(this.FindNextMenuItem_Click);
 			// 
@@ -266,7 +266,7 @@
 			// 
 			this.FindPrevMenuItem.Name = "FindPrevMenuItem";
 			this.FindPrevMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-			this.FindPrevMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FindPrevMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.FindPrevMenuItem.Text = "Find Prev";
 			this.FindPrevMenuItem.Click += new System.EventHandler(this.FindPrevMenuItem_Click);
 			// 

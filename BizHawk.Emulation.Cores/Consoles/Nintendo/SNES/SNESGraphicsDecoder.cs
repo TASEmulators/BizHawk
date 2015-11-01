@@ -663,7 +663,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							int mapIndex = mty * dims.Width + mtx;
 							var te = map[mapIndex];
-							int tileNum = te.tilenum + tx + ty * 16 + baseTileNum;
+							
+							//apply metatile flipping
+							int tnx = tx, tny = ty;
+							if (tilesize == 16)
+							{
+								if ((te.flags & TileEntryFlags.Horz) != 0) tnx = 1 - tnx;
+								if ((te.flags & TileEntryFlags.Vert) != 0) tny = 1 - tny;
+							}
+
+							int tileNum = te.tilenum + tnx + tny * 16 + baseTileNum;
 							int srcOfs = tileNum * 64;
 							for (int i = 0, y = 0; y < 8; y++)
 							{

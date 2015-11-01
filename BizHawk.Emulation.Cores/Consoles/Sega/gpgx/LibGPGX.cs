@@ -109,6 +109,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			DEVICE_ACTIVATOR = 0x0a,// Activator
 		};
 
+
+		public enum CDLog_AddrType
+		{
+			MDCART, RAM68k, RAMZ80, SRAM,
+		};
+
+		[Flags]
+		public enum CDLog_Flags
+		{
+			Exec68k = 0x01,
+			Data68k = 0x04,
+			ExecZ80First = 0x08,
+			ExecZ80Operand = 0x10,
+			DataZ80 = 0x20,
+			DMASource = 0x40,
+		};
+
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void input_cb();
 
@@ -118,8 +136,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void mem_cb(uint addr);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void CDCallback(int addr, CDLog_AddrType addrtype, CDLog_Flags flags);
+
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_set_mem_callback(mem_cb read, mem_cb write, mem_cb exec);
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_set_cd_callback(CDCallback cd);
+
+
 
 		/// <summary>
 		/// not every flag is valid for every device!

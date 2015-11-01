@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		public enum LoadErrorType { Unknown, MissingFirmware, XML }
+		public enum LoadErrorType { Unknown, MissingFirmware, XML, DiscError }
 
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()
@@ -265,7 +265,7 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_SlowLoadAborted)
 							{
-								System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 								return false;
 							}
 
@@ -324,7 +324,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_SlowLoadAborted)
 						{
-							System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 							return false;
 						}
 
@@ -460,7 +460,7 @@ namespace BizHawk.Client.Common
 
 										if (discMountJob.OUT_SlowLoadAborted)
 										{
-											System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+											DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "PSX", LoadErrorType.DiscError);
 											return false;
 										}
 
@@ -515,7 +515,7 @@ namespace BizHawk.Client.Common
 							{
 								// need to get rid of this hack at some point
 								rom = new RomGame(file);
-								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", string.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 								byte[] romData = null;
 								byte[] xmlData = rom.FileData;
 

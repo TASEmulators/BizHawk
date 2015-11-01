@@ -455,7 +455,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
 				Multiselect = true,
 				Filter = FormatFilter(
-					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm",
+					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm;*.pjm;*.pxm",
 					"FCEUX", "*.fm2",
 					"PCEjin/Mednafen", "*.mc2;*.mcm",
 					"Dega", "*.mmv",
@@ -469,6 +469,8 @@ namespace BizHawk.Client.EmuHawk
 					"Snes9x", "*.smv",
 					"Yabause", "*.ymv",
 					"ZSNES", "*.zmv",
+					"PSXjin", "*.pjm",
+					"PCSX", "*.pxm",
 					"BizHawk Bkm", "*.bkm",
 					"All Files", "*.*"),
 				RestoreDirectory = false
@@ -1144,6 +1146,7 @@ namespace BizHawk.Client.EmuHawk
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TraceLogger>();
+			CodeDataLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<CDL>();
 
 			TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TAStudio>();
 
@@ -1393,7 +1396,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<PCECDL>();
+			GlobalWin.Tools.Load<CDL>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
@@ -2616,8 +2619,8 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (ext.ToUpper() == ".CDL" && Global.Emulator is PCEngine)
 			{
-				GlobalWin.Tools.Load<PCECDL>();
-				(GlobalWin.Tools.Get<PCECDL>() as PCECDL).LoadFile(filePaths[0]);
+				GlobalWin.Tools.Load<CDL>();
+				(GlobalWin.Tools.Get<CDL>() as CDL).LoadFile(filePaths[0]);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))

@@ -33,6 +33,7 @@
 			this.WatchCountLabel = new System.Windows.Forms.Label();
 			this.MemDomainLabel = new System.Windows.Forms.Label();
 			this.ListViewContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.EditContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DuplicateContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -144,6 +145,7 @@
 			// ListViewContextMenu
 			// 
 			this.ListViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
             this.EditContextMenuItem,
             this.RemoveContextMenuItem,
             this.DuplicateContextMenuItem,
@@ -159,8 +161,16 @@
             this.MoveUpContextMenuItem,
             this.MoveDownContextMenuItem});
 			this.ListViewContextMenu.Name = "contextMenuStrip1";
-			this.ListViewContextMenu.Size = new System.Drawing.Size(191, 280);
+			this.ListViewContextMenu.Size = new System.Drawing.Size(191, 324);
 			this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
+			// 
+			// newToolStripMenuItem
+			// 
+			this.newToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.addWatch;
+			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+			this.newToolStripMenuItem.Text = "&New Watch";
+			this.newToolStripMenuItem.Click += new System.EventHandler(this.NewWatchMenuItem_Click);
 			// 
 			// EditContextMenuItem
 			// 
@@ -1041,5 +1051,6 @@
 		private System.Windows.Forms.ToolStripSeparator Separator4;
 		private System.Windows.Forms.ToolStripMenuItem ReadBreakpointContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem WriteBreakpointContextMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 	}
 }

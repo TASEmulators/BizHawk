@@ -28,6 +28,7 @@ Memory::Memory(const Interrupter &interrupter_in)
 : readCallback(0),
   writeCallback(0),
   execCallback(0),
+  cdCallback(0),
   getInput(0),
   divLastUpdate(0),
   lastOamDmaUpdate(DISABLED_TIME),

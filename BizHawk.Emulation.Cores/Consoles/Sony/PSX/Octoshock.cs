@@ -32,25 +32,22 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: true
 		)]
-	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable
+	public unsafe class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IDebuggable, IRegionable, IInputPollable
 	{
 		public string SystemId { get { return "PSX"; } }
 
-		private void SetControllerButtons()
+		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			ControllerDefinition = new ControllerDefinition();
-			ControllerDefinition.Name = "PSX DualShock Controller"; // <-- for compatibility
+			ControllerDefinition definition = new ControllerDefinition();
+			definition.Name = "PSX DualShock Controller"; // <-- for compatibility
 			//ControllerDefinition.Name = "PSX FrontIO"; // TODO - later rename to this, I guess, so it's less misleading. don't want to wreck keybindings yet.
 
-			ControllerDefinition.BoolButtons.Clear();
-			ControllerDefinition.FloatControls.Clear();
-
-			var cfg = _SyncSettings.FIOConfig.ToLogical();
+			var cfg = syncSettings.FIOConfig.ToLogical();
 
 			for (int i = 0; i < cfg.NumPlayers; i++)
 			{
 				int pnum = i + 1;
-					ControllerDefinition.BoolButtons.AddRange(new[]
+					definition.BoolButtons.AddRange(new[]
 					{
 						"P" + pnum + " Up",
 						"P" + pnum + " Down",
@@ -72,11 +69,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
 					{
-						ControllerDefinition.BoolButtons.Add("P" + pnum + " L3");
-						ControllerDefinition.BoolButtons.Add("P" + pnum + " R3");
-						ControllerDefinition.BoolButtons.Add("P" + pnum + " MODE");
+						definition.BoolButtons.Add("P" + pnum + " L3");
+						definition.BoolButtons.Add("P" + pnum + " R3");
+						definition.BoolButtons.Add("P" + pnum + " MODE");
 
-						ControllerDefinition.FloatControls.AddRange(new[]
+						definition.FloatControls.AddRange(new[]
 						{
 							"P" + pnum + " LStick X",
 							"P" + pnum + " LStick Y",
@@ -84,27 +81,34 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 							"P" + pnum + " RStick Y"
 						});
 
-						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-						ControllerDefinition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-						ControllerDefinition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
 					}
 				}
 
-			ControllerDefinition.BoolButtons.AddRange(new[]
+			definition.BoolButtons.AddRange(new[]
 			{
 				"Open",
 				"Close",
 				"Reset"
 			});
 
-			ControllerDefinition.FloatControls.Add("Disc Select");
+			definition.FloatControls.Add("Disc Select");
 
-			ControllerDefinition.FloatRanges.Add(
+			definition.FloatRanges.Add(
 				//new[] {-1f,-1f,-1f} //this is carefully chosen so that we end up with a -1 disc by default (indicating that it's never been set)
 				//hmm.. I don't see why this wouldn't work
 				new[] { 0f, 1f, 1f }
 			);
+
+			return definition;
+		}
+
+		private void SetControllerButtons()
+		{
+			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
 		public string BoardName { get { return null; } }
@@ -765,6 +769,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; private set; }
+
+		public IInputCallbackSystem InputCallbacks
+		{
+			[FeatureNotImplemented]
+			get
+			{ throw new NotImplementedException(); }
+		}
 
 		[FeatureNotImplemented]
 		public bool DeterministicEmulation { get { return true; } }

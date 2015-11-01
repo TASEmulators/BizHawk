@@ -1086,6 +1086,8 @@ namespace BizHawk.Client.EmuHawk
 			UnfreezeAllContextMenuItem.Visible = Global.CheatList.ActiveCount > 0;
 
 			ViewInHexEditorContextMenuItem.Visible = SelectedWatches.Count() == 1;
+
+			newToolStripMenuItem.Visible = indexes.Count == 0;
 		}
 
 		private void UnfreezeAllContextMenuItem_Click(object sender, EventArgs e)
@@ -1213,5 +1215,6 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 		}
+
 	}
 }

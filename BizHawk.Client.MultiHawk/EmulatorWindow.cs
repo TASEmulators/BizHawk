@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
+using BizHawk.Client.EmuHawk;
 using BizHawk.Bizware.BizwareGL;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;

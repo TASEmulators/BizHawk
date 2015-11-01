@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 				DrawInput = true;
 				AutoPause = true;
 				FollowCursor = true;
-				ScrollSpeed = 1;
+				ScrollSpeed = 3;
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
                 // default to taseditor fashion
@@ -236,6 +236,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
 			}
+
+			GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 
 			////////////////
 

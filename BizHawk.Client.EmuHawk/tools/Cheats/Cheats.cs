@@ -629,7 +629,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_Click(object sender, EventArgs e)
 		{
-			DoSelectedIndexChange();
 		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)

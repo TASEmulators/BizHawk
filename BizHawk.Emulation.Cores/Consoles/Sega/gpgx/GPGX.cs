@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		singleInstance: true
 		)]
 	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
-		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight
+		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		static GPGX AttachedCore = null;
 
@@ -170,6 +170,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				PutSettings((GPGXSettings)Settings ?? new GPGXSettings());
 
+				//TODO - this hits performance, we need to make it controllable
+				CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
+
 				InitMemCallbacks();
 				KillMemCallbacks();
 			}
@@ -178,6 +181,48 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Dispose();
 				throw;
 			}
+		}
+
+		void ICodeDataLogger.SetCDL(CodeDataLog cdl)
+		{
+			CDL = cdl;
+			if(cdl == null) LibGPGX.gpgx_set_cd_callback(null);
+			else LibGPGX.gpgx_set_cd_callback(CDCallback);
+		}
+
+		void ICodeDataLogger.NewCDL(CodeDataLog cdl)
+		{
+			cdl["MD CART"] = new byte[MemoryDomains["MD CART"].Size];
+			cdl["68K RAM"] = new byte[MemoryDomains["68K RAM"].Size];
+			cdl["Z80 RAM"] = new byte[MemoryDomains["Z80 RAM"].Size];
+
+			if (MemoryDomains.Has("SRAM"))
+				cdl["SRAM"] = new byte[MemoryDomains["SRAM"].Size];
+
+			cdl.SubType = "GEN";
+			cdl.SubVer = 0;
+		}
+
+		//not supported
+		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl) { }
+
+		CodeDataLog CDL;
+		void CDCallbackProc(int addr, LibGPGX.CDLog_AddrType addrtype, LibGPGX.CDLog_Flags flags)
+		{
+			//TODO - hard reset makes CDL go nuts.
+
+			if (CDL == null) return;
+			if (!CDL.Active) return;
+			string key;
+			switch (addrtype)
+			{
+				case LibGPGX.CDLog_AddrType.MDCART: key = "MD CART"; break;
+				case LibGPGX.CDLog_AddrType.RAM68k: key = "68K RAM"; break;
+				case LibGPGX.CDLog_AddrType.RAMZ80: key = "Z80 RAM"; break;
+				case LibGPGX.CDLog_AddrType.SRAM: key = "SRAM"; break;
+				default: throw new InvalidOperationException("Lagrangian earwax incident");
+			}
+			CDL[key][addr] |= (byte)flags;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -671,6 +716,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		LibGPGX.mem_cb ExecCallback;
 		LibGPGX.mem_cb ReadCallback;
 		LibGPGX.mem_cb WriteCallback;
+		LibGPGX.CDCallback CDCallback;
 
 		void InitMemCallbacks()
 		{

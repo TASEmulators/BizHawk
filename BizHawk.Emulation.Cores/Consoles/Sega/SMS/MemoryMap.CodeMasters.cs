@@ -20,6 +20,14 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
+		CDLog_MapResults MapMemoryCM(ushort address, bool write)
+		{
+			if (address < 0x4000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
+			else if (address < 0x8000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
+			else if (address < 0xC000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+			else return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+		}
+
 		void WriteMemoryCM(ushort address, byte value)
 		{
 			if (address >= 0xC000)
@@ -32,8 +40,9 @@
 
 		void InitCodeMastersMapper()
 		{
-			Cpu.ReadMemory = ReadMemoryCM;
-			Cpu.WriteMemory = WriteMemoryCM;
+			ReadMemory = ReadMemoryCM;
+			WriteMemory = WriteMemoryCM;
+			MapMemory = MapMemoryCM;
 			WriteMemoryCM(0x0000, 0);
 			WriteMemoryCM(0x4000, 1);
 			WriteMemoryCM(0x8000, 0);
@@ -63,6 +72,25 @@
 			return SystemRam[address & RamSizeMask];
 		}
 
+		CDLog_MapResults MapMemoryCMRam(ushort address, bool write)
+		{
+			if (address < 0x4000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
+			else if (address < 0x8000)
+			{
+				if (address >= 0x6000 && RomBank3 == 1)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.CartRAM, Address = address & 0x1FFF };
+				else
+					return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank1 * BankSize) + (address & BankSizeMask) };
+			}
+			else if (address < 0xC000)
+			{
+				if (address >= 0xA000 && RomBank3 == 1)
+					return new CDLog_MapResults() { Type = CDLog_AddrType.CartRAM, Address = address & 0x1FFF };
+				return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = (RomBank2 * BankSize) + (address & BankSizeMask) };
+			}
+			else return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+		}
+
 		void WriteMemoryCMRam(ushort address, byte value)
 		{
 			if (address >= 0xC000)
@@ -85,8 +113,9 @@
 
 		void InitCodeMastersMapperRam()
 		{
-			Cpu.ReadMemory = ReadMemoryCMRam;
-			Cpu.WriteMemory = WriteMemoryCMRam;
+			ReadMemory = ReadMemoryCMRam;
+			WriteMemory = WriteMemoryCMRam;
+			MapMemory = MapMemoryCMRam;
 			WriteMemoryCM(0x0000, 0);
 			WriteMemoryCM(0x4000, 1);
 			WriteMemoryCM(0x8000, 0);

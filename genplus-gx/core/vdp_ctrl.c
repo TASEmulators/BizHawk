@@ -41,6 +41,7 @@
 
 #include "shared.h"
 #include "hvc.h"
+#include "../cinterface/callbacks.h"
 
 /* Mark a pattern as modified */
 #define MARK_BG_DIRTY(addr)                         \
@@ -3021,6 +3022,8 @@ static void vdp_z80_data_w_sg(unsigned int data)
 /* DMA operations (Mega Drive VDP only)                                     */
 /*--------------------------------------------------------------------------*/
 
+void CDLog68k(uint addr, uint flags);
+
 /* DMA from 68K bus: $000000-$7FFFFF (external area) */
 static void vdp_dma_68k_ext(unsigned int length)
 {
@@ -3040,6 +3043,16 @@ static void vdp_dma_68k_ext(unsigned int length)
     {
       data = *(uint16 *)(m68k.memory_map[source>>16].base + (source & 0xFFFF));
     }
+
+		if(biz_cdcallback)
+		{
+			//if((code & 0x0F) == 0x01) //VRAM target //lets handle everything here
+			{
+				CDLog68k(source,eCDLog_Flags_DMASource);
+				CDLog68k(source+1,eCDLog_Flags_DMASource);
+			}
+		}
+
  
     /* Increment source address */
     source += 2;

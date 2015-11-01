@@ -9,8 +9,7 @@ namespace BizHawk.Client.Common
 		{
 			Name = string.Empty;
 			Path = path;
-			Enabled = true;
-			Paused = false;
+			State = RunState.Running;
 			FrameWaiting = false;
 		}
 
@@ -29,27 +28,33 @@ namespace BizHawk.Client.Common
 			IsSeparator = isSeparator;
 			Name = string.Empty;
 			Path = string.Empty;
-			Enabled = false;
+			State = RunState.Disabled;
 		}
 
 		public LuaFile(LuaFile file)
 		{
 			Name = file.Name;
 			Path = file.Path;
-			Enabled = file.Enabled;
-			Paused = file.Paused;
+			State = file.State;
 			IsSeparator = file.IsSeparator;
 			CurrentDirectory = file.CurrentDirectory;
 		}
 
 		public string Name { get; set; }
 		public string Path { get; set; }
-		public bool Enabled { get; set; }
-		public bool Paused { get; set; }
+		public bool Enabled { get { return State != RunState.Disabled; } }
+		public bool Paused { get { return State == RunState.Paused; } }
 		public bool IsSeparator { get; set; }
 		public LuaInterface.Lua Thread { get; set; }
 		public bool FrameWaiting { get; set; }
 		public string CurrentDirectory { get; set; }
+
+		public enum RunState
+		{
+			Disabled, Running, Paused
+		}
+
+		public RunState State { get; set; }
 
 		public static LuaFile SeparatorInstance
 		{
@@ -58,22 +63,25 @@ namespace BizHawk.Client.Common
 
 		public void Stop()
 		{
-			Enabled = false;
+			State = RunState.Disabled;
 			Thread = null;
 		}
 
 		public void Toggle()
 		{
-			Enabled ^= true;
-			if (Enabled)
-			{
-				Paused = false;
-			}
+			if (State == RunState.Paused)
+				State = RunState.Running;
+			else if (State == RunState.Disabled)
+				State = RunState.Running;
+			else State = RunState.Disabled;
 		}
 
 		public void TogglePause()
 		{
-			Paused ^= true;
+			if (State == RunState.Paused)
+				State = RunState.Running;
+			else if(State == RunState.Running)
+				State = RunState.Paused;
 		}
 	}
 }

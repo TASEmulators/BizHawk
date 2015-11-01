@@ -143,16 +143,16 @@ namespace BizHawk.Client.EmuHawk
 		public Lua SpawnCoroutine(string file)
 		{
 			var lua = _lua.NewThread();
-            var main = lua.LoadString(File.ReadAllText(file), "main");
+			var main = lua.LoadString(File.ReadAllText(file), "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
 
-        public void ExecuteString(string command)
-        {
-            _currThread = _lua.NewThread();
-            _currThread.DoString(command);
-        }
+		public void ExecuteString(string command)
+		{
+			_currThread = _lua.NewThread();
+			_currThread.DoString(command);
+		}
 
 		public ResumeResult ResumeScript(Lua script)
 		{

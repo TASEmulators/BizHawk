@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BeginBufferIO,
 			eMessage_EndBufferIO,
 			eMessage_ResumeAfterBRK,
+			eMessage_Shutdown,
 
 			eMessage_QUERY_library_id,
 			eMessage_QUERY_library_revision_major,

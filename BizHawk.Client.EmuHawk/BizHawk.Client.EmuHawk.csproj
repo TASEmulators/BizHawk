@@ -466,6 +466,12 @@
     <Compile Include="CoreFeatureAnalysis.Designer.cs">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ExceptionBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\ExceptionBox.designer.cs">
+      <DependentUpon>ExceptionBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -525,9 +531,7 @@
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\VirtualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs" />
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
@@ -543,6 +547,7 @@
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Extensions\CoreExtensions.cs" />
     <Compile Include="Extensions\ToolExtensions.cs" />
+    <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" />
@@ -666,6 +671,12 @@
       <DependentUpon>BatchRun.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\BatchRunner.cs" />
+    <Compile Include="tools\CDL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\CDL.designer.cs">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -911,12 +922,6 @@
     <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\PCE\PCECDL.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCECDL.Designer.cs">
-      <DependentUpon>PCECDL.cs</DependentUpon>
-    </Compile>
     <Compile Include="tools\PCE\PCESoundDebugger.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1146,6 +1151,7 @@
     <Compile Include="tools\Watch\WatchValueBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UIHelper.cs" />
     <Compile Include="UpdateChecker.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1290,6 +1296,9 @@
     <EmbeddedResource Include="CoreFeatureAnalysis.resx">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\ExceptionBox.resx">
+      <DependentUpon>ExceptionBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
       <DependentUpon>InputConfigBase.cs</DependentUpon>
     </EmbeddedResource>
@@ -1338,6 +1347,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\CDL.resx">
+      <DependentUpon>CDL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>
@@ -1435,9 +1447,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCECDL.resx">
-      <DependentUpon>PCECDL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCESoundDebugger.resx">
       <DependentUpon>PCESoundDebugger.cs</DependentUpon>

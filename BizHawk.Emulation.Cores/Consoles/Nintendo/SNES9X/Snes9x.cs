@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		private int[] _vbuff = new int[512 * 480];
 		public int[] GetVideoBuffer() { return _vbuff; }
 		public int VirtualWidth
-		{ get { return BufferWidth; } }
+		{ get { return (int)(BufferWidth * 1.146); ; } }
 		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth { get { return 256; } }
 		public int BufferHeight { get { return 224; } }

@@ -65,14 +65,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 			{
-				//var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
-				//if (fiHq2x.Exists)
-				//  using (var stream = fiHq2x.OpenRead())
-				//    ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
-				//var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
-				//if (fiScanlines.Exists)
-				//  using (var stream = fiScanlines.OpenRead())
-				//    ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
+				if (fiHq2x.Exists)
+					using (var stream = fiHq2x.OpenRead())
+						ShaderChain_hq2x = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
+				var fiScanlines = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/BizScanlines.cgp"));
+				if (fiScanlines.Exists)
+					using (var stream = fiScanlines.OpenRead())
+						ShaderChain_scanlines = new Filters.RetroShaderChain(GL, new Filters.RetroShaderPreset(stream), Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk"));
 				string bicubic_path = "Shaders/BizHawk/bicubic-fast.cgp";
 				if(GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 					bicubic_path = "Shaders/BizHawk/bicubic-normal.cgp";
@@ -128,6 +128,11 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public System.Windows.Forms.Padding GameExtraPadding;
 
+		/// <summary>
+		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
+		/// </summary>
+		public System.Windows.Forms.Padding ClientExtraPadding;
+
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
@@ -177,7 +182,6 @@ namespace BizHawk.Client.EmuHawk
 				selectedChain = ShaderChain_hq2x;
 			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
 			{
-				//shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
 				selectedChain = ShaderChain_scanlines;
 				selectedChainProperties["uIntensity"] = 1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f;
 			}
@@ -375,6 +379,24 @@ namespace BizHawk.Client.EmuHawk
 			public int BackgroundColor { get; set; }
 		}
 
+		void FixRatio(float x, float y, int inw, int inh, out int outw, out int outh)
+		{
+			float ratio = x / y;
+			if (ratio <= 1)
+			{
+				//taller. weird. expand height.
+				outw = inw;
+				outh = (int)((float)inw / ratio);
+			}
+			else
+			{
+				//wider. normal. expand width.
+				outw = (int)((float)inh * ratio);
+				outh = inh;
+			}
+		}
+
+
 		/// <summary>
 		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
 		/// TODO - this needs to be redone with a concept different from zoom factor. 
@@ -385,7 +407,8 @@ namespace BizHawk.Client.EmuHawk
 			bool ar_active = Global.Config.DispFixAspectRatio;
 			bool ar_system = Global.Config.DispManagerAR == Config.EDispManagerAR.System;
 			bool ar_custom = Global.Config.DispManagerAR == Config.EDispManagerAR.Custom;
-			bool ar_correct = ar_system || ar_custom;
+			bool ar_customRatio = Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio;
+			bool ar_correct = ar_system || ar_custom || ar_customRatio;
 			bool ar_unity = !ar_correct;
 			bool ar_integer = Global.Config.DispFixScaleInteger;
 
@@ -398,6 +421,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				virtualWidth = Global.Config.DispCustomUserARWidth;
 				virtualHeight = Global.Config.DispCustomUserARHeight;
+			}
+			
+			if (ar_customRatio)
+			{
+				FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
 			var padding = CalculateCompleteContentPadding(true, false);
@@ -498,6 +526,9 @@ namespace BizHawk.Client.EmuHawk
 				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
+			chain_outsize.Width += ClientExtraPadding.Horizontal;
+			chain_outsize.Height += ClientExtraPadding.Vertical;
+
 			var job = new JobInfo
 			{
 				videoProvider = fvp,
@@ -549,6 +580,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					vw = Global.Config.DispCustomUserARWidth;
 					vh = Global.Config.DispCustomUserARHeight;
+				}
+				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+				{
+					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
 
@@ -609,6 +644,7 @@ namespace BizHawk.Client.EmuHawk
 			fPresent.GuiRenderer = Renderer;
 			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
 			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+			fPresent.Padding = ClientExtraPadding;
 
 			fPresent.GL = GL;
 

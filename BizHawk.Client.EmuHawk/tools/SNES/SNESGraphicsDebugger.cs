@@ -978,10 +978,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//view a BG tile 
 				int paletteStart = 0;
-				var bmp = new Bitmap(8, 8, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-				var bmpdata = bmp.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				var bgs = currMapEntryState;
 				var oneTileEntry = new SNESGraphicsDecoder.TileEntry[] { bgs.entry };
+				int tileSize = si.BG[bgs.bgnum].TileSize;
+				int pixels = tileSize * tileSize;
+
+				var bmp = new Bitmap(tileSize, tileSize, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				var bmpdata = bmp.LockBits(new Rectangle(0, 0, tileSize, tileSize), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
 				if (viewBgMode == SNESGraphicsDecoder.BGMode.Mode7)
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, false, 1, currMapEntryState.entry.tilenum, 1);
@@ -991,9 +994,9 @@ namespace BizHawk.Client.EmuHawk
 					gd.RenderMode7TilesToScreen((int*)bmpdata.Scan0, bmpdata.Stride / 4, false, true, 1, currMapEntryState.entry.tilenum, 1);
 				else
 				{
-					gd.DecodeBG((int*)bmpdata.Scan0, bmpdata.Stride / 4, oneTileEntry, si.BG[bgs.bgnum].TiledataAddr, SNESGraphicsDecoder.ScreenSize.Hacky_1x1, si.BG[bgs.bgnum].Bpp, 8, paletteStart);
-					gd.Paletteize((int*)bmpdata.Scan0, 0, 0, 64);
-					gd.Colorize((int*)bmpdata.Scan0, 0, 64);
+					gd.DecodeBG((int*)bmpdata.Scan0, bmpdata.Stride / 4, oneTileEntry, si.BG[bgs.bgnum].TiledataAddr, SNESGraphicsDecoder.ScreenSize.Hacky_1x1, si.BG[bgs.bgnum].Bpp, tileSize, paletteStart);
+					gd.Paletteize((int*)bmpdata.Scan0, 0, 0, pixels);
+					gd.Colorize((int*)bmpdata.Scan0, 0, pixels);
 				}
 
 				bmp.UnlockBits(bmpdata);
@@ -1160,7 +1163,10 @@ namespace BizHawk.Client.EmuHawk
 						if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
 
 						int tloc = ty * bg.ScreenSizeInTiles.Width + tx;
-						if (tloc > map.Length) break;
+						if (tx >= bg.ScreenSizeInTiles.Width) break;
+						if (ty >= bg.ScreenSizeInTiles.Height) break;
+						if (tx < 0) break;
+						if (ty < 0) break;
 
 						currMapEntryState = new MapEntryState();
 						currMapEntryState.bgnum = (int)CurrDisplaySelection;

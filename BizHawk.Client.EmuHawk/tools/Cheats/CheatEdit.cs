@@ -63,11 +63,6 @@ namespace BizHawk.Client.EmuHawk
 
 			AddressBox.SetHexProperties(_cheat.Domain.Size);
 
-			NameBox.Text = _cheat.Name;
-			AddressBox.Text = _cheat.AddressStr;
-			ValueBox.Text = _cheat.ValueStr;
-			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
-
 			ValueBox.ByteSize =
 				CompareBox.ByteSize =
 				_cheat.Size;
@@ -81,6 +76,11 @@ namespace BizHawk.Client.EmuHawk
 				_cheat.Type == Watch.DisplayType.Hex ? HexInd : string.Empty;
 
 			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
+
+			NameBox.Text = _cheat.Name;
+			AddressBox.Text = _cheat.AddressStr;
+			ValueBox.Text = _cheat.ValueStr;
+			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
 
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)

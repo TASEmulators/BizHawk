@@ -25,6 +25,7 @@
 #include "interrupter.h"
 #include "tima.h"
 #include "newstate.h"
+#include "gambatte.h"
 
 namespace gambatte {
 class InputGetter;
@@ -37,6 +38,7 @@ class Memory {
 	void (*readCallback)(unsigned);
 	void (*writeCallback)(unsigned);
 	void (*execCallback)(unsigned);
+	CDCallback cdCallback;
 
 	unsigned (*getInput)();
 	unsigned long divLastUpdate;
@@ -117,15 +119,84 @@ public:
 		return P < 0xFF80 ? nontrivial_ff_read(P, cycleCounter) : ioamhram[P - 0xFE00];
 	}
 
+	struct CDMapResult
+	{
+		eCDLog_AddrType type;
+		unsigned addr;
+	};
+
+	CDMapResult CDMap(const unsigned P) const
+	{
+		if(P<0x4000)
+		{
+			CDMapResult ret = { eCDLog_AddrType_ROM, P };
+			return ret;
+		}
+		else if(P<0x8000) 
+		{
+			unsigned bank = cart.rmem(P>>12) - cart.rmem(0);
+			unsigned addr = P+bank;
+			CDMapResult ret = { eCDLog_AddrType_ROM, addr };
+			return ret;
+		}
+		else if(P<0xA000) {}
+		else if(P<0xC000)
+		{
+			if(cart.wsrambankptr())
+			{
+				//not bankable. but. we're not sure how much might be here
+				unsigned char *data;
+				int length;
+				bool has = cart.getMemoryArea(3,&data,&length);
+				unsigned addr = P&(length-1);
+				if(has && length!=0)
+				{
+					CDMapResult ret = { eCDLog_AddrType_CartRAM, addr };
+					return ret;
+				}
+			}
+		}
+		else if(P<0xE000)
+		{
+			unsigned bank = cart.wramdata(P >> 12 & 1) - cart.wramdata(0);
+			unsigned addr = (P&0xFFF)+bank;
+			CDMapResult ret = { eCDLog_AddrType_WRAM, addr };
+			return ret;
+		}
+		else if(P<0xFF80) {}
+		else 
+		{
+			////this is just for debugging, really, it's pretty useless
+			//CDMapResult ret = { eCDLog_AddrType_HRAM, (P-0xFF80) };
+			//return ret;
+		}
+
+		CDMapResult ret = { eCDLog_AddrType_None };
+		return ret;
+	}
+
+
 	unsigned read(const unsigned P, const unsigned long cycleCounter) {
 		if (readCallback)
 			readCallback(P);
+		if(cdCallback)
+		{
+			CDMapResult map = CDMap(P);
+			if(map.type != eCDLog_AddrType_None)
+				cdCallback(map.addr,map.type,eCDLog_Flags_Data);
+		}
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
 
-	unsigned read_excb(const unsigned P, const unsigned long cycleCounter) {
+	unsigned read_excb(const unsigned P, const unsigned long cycleCounter, bool first) {
 		if (execCallback)
 			execCallback(P);
+		if(cdCallback)
+		{
+			CDMapResult map = CDMap(P);
+			if(map.type != eCDLog_AddrType_None)
+				cdCallback(map.addr,map.type,first?eCDLog_Flags_ExecFirst : eCDLog_Flags_ExecOperand);
+		}
 		return cart.rmem(P >> 12) ? cart.rmem(P >> 12)[P] : nontrivial_read(P, cycleCounter);
 	}
 
@@ -147,6 +218,12 @@ public:
 			nontrivial_write(P, data, cycleCounter);
 		if (writeCallback)
 			writeCallback(P);
+		if(cdCallback)
+		{
+			CDMapResult map = CDMap(P);
+			if(map.type != eCDLog_AddrType_None)
+				cdCallback(map.addr,map.type,eCDLog_Flags_Data);
+		}
 	}
 	
 	void ff_write(const unsigned P, const unsigned data, const unsigned long cycleCounter) {
@@ -154,6 +231,12 @@ public:
 			ioamhram[P - 0xFE00] = data;
 		} else
 			nontrivial_ff_write(P, data, cycleCounter);
+		if(cdCallback)
+		{
+			CDMapResult map = CDMap(P);
+			if(map.type != eCDLog_AddrType_None)
+				cdCallback(map.addr,map.type,eCDLog_Flags_Data);
+		}
 	}
 
 	unsigned long event(unsigned long cycleCounter);
@@ -173,6 +256,9 @@ public:
 	}
 	void setExecCallback(void (*callback)(unsigned)) {
 		this->execCallback = callback;
+	}
+	void setCDCallback(CDCallback cdc) {
+		this->cdCallback = cdc;
 	}
 
 	void setScanlineCallback(void (*callback)(), int sl) {

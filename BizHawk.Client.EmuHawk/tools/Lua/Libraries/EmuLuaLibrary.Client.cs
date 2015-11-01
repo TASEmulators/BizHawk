@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"borderheight",
-			"Gets the current height in pixels of the border around the emulator's drawing area"
+			"Gets the current height in pixels of the letter/pillarbox area (top side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public static int BorderHeight()
 		{
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"borderwidth",
-			"Gets the current width in pixels of the border around the emulator's drawing area"
+			"Gets the current width in pixels of the letter/pillarbox area (left side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public static int BorderWidth()
 		{
@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferheight",
-			"Gets the current height in pixels of the emulator's drawing area"
+			"Gets the visible height of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public int BufferHeight()
 		{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferwidth",
-			"Gets the current width in pixels of the emulator's drawing area"
+			"Gets the visible width of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public int BufferWidth()
 		{
@@ -158,6 +158,34 @@ namespace BizHawk.Client.EmuHawk
 		public static void SetGameExtraPadding(int left, int top, int right, int bottom)
 		{
 			GlobalWin.DisplayManager.GameExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
+			GlobalWin.MainForm.FrameBufferResized();
+		}
+
+		[LuaMethodAttributes(
+			"SetSoundOn",
+			"Sets the state of the Sound On toggle"
+		)]
+		public static void SetSoundOn(bool enable)
+		{
+			Global.Config.SoundEnabled = enable;
+		}
+
+		[LuaMethodAttributes(
+			"GetSoundOn",
+			"Gets the state of the Sound On toggle"
+		)]
+		public static bool GetSoundOn()
+		{
+			return Global.Config.SoundEnabled;
+		}
+
+		[LuaMethodAttributes(
+			"SetClientExtraPadding",
+			"Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements"
+		)]
+		public static void SetClientExtraPadding(int left, int top, int right, int bottom)
+		{
+			GlobalWin.DisplayManager.ClientExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
 			GlobalWin.MainForm.FrameBufferResized();
 		}
 
@@ -280,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenheight",
-			"Gets the current width in pixels of the emulator's drawing area"
+			"Gets the current height in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenHeight()
 		{
@@ -332,7 +360,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenwidth",
-			"Gets the current height in pixels of the emulator's drawing area"
+			"Gets the current width in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenWidth()
 		{

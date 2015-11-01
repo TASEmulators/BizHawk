@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			CreateMemoryDomain(LibGambatte.MemoryAreas.wram, "WRAM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.rom, "ROM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.vram, "VRAM");
-			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram, "Cart RAM");
+			CreateMemoryDomain(LibGambatte.MemoryAreas.cartram, "CartRAM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.oam, "OAM");
 			CreateMemoryDomain(LibGambatte.MemoryAreas.hram, "HRAM");
 

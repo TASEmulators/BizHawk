@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			BizHawk.Client.Common.TempFileCleaner.Start();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
@@ -198,14 +199,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				catch (Exception e)
 				{
-					string message = e.ToString();
-					if (e.InnerException != null)
-					{
-						message += "\n\nInner Exception:\n\n" + e.InnerException;
-					}
-
-					message += "\n\nStackTrace:\n" + e.StackTrace;
-					MessageBox.Show(message);
+					new ExceptionBox(e).ShowDialog();
 				}
 #if WINDOWS
 				finally
@@ -220,7 +214,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 #endif
 			}
-		}
+
+			//cleanup:
+			//cleanup IGL stuff so we can get better refcounts when exiting process, for debugging
+			//DOESNT WORK FOR SOME REASON
+			//GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
+			//GLManager.Instance.Dispose();
+			//if (GlobalWin.IGL_GL != GlobalWin.GL)
+			//  GlobalWin.GL.Dispose();
+			//((IDisposable)GlobalWin.IGL_GL).Dispose();
+
+		} //SubMain
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
 #if WINDOWS

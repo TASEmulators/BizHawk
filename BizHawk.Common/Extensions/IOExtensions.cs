@@ -25,6 +25,7 @@ namespace BizHawk.Common.IOExtensions
 		}
 
 		// Read bytes from a BinaryReader and translate them into the UTF-8 string they represent.
+		//WHAT? WHY IS THIS NAMED ASCII BUT USING UTF8
 		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
 		{
 			var read = new byte[bytes];

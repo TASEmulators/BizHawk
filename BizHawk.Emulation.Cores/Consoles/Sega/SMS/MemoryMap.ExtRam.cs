@@ -19,6 +19,13 @@
 			return ret;
 		}
 
+		CDLog_MapResults MapMemoryExt(ushort address, bool write)
+		{
+			if (address < 0x8000) return new CDLog_MapResults() { Type = CDLog_AddrType.ROM, Address = address };
+			else if (address < 0xC000) return new CDLog_MapResults() { Type = CDLog_AddrType.CartRAM, Address = address & ExtRamMask };
+			else return new CDLog_MapResults() { Type = CDLog_AddrType.MainRAM, Address = address & RamSizeMask };
+		}
+
 		void WriteMemoryExt(ushort address, byte value)
 		{
 			if (address < 0xC000 && address >= 0x8000)
@@ -31,8 +38,9 @@
 		{
 			ExtRam = new byte[size];
 			ExtRamMask = size - 1;
-			Cpu.ReadMemory = ReadMemoryExt;
-			Cpu.WriteMemory = WriteMemoryExt;
+			ReadMemory = ReadMemoryExt;
+			WriteMemory = WriteMemoryExt;
+			MapMemory = MapMemoryExt;
 		}
 	}
 }
