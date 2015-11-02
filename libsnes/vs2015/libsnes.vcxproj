@@ -167,13 +167,147 @@
     <ClInclude Include="..\bsnes\gameboy\apu\apu.hpp" />
     <ClInclude Include="..\bsnes\gameboy\cheat\cheat.hpp" />
     <ClInclude Include="..\bsnes\gameboy\gameboy.hpp" />
+    <ClInclude Include="..\bsnes\snes\alt\cpu\cpu.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_common.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_config.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_endian.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_source.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\dsp.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\SPC_DSP.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\smp\smp.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cartridge\cartridge.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\core.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\disassembler\disassembler.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\memory.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\registers.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\cpu.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\memory\memory.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\dsp\dsp.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\interface\interface.hpp" />
     <ClInclude Include="..\bsnes\snes\profile-accuracy.hpp" />
     <ClInclude Include="..\bsnes\snes\profile-compatibility.hpp" />
     <ClInclude Include="..\bsnes\snes\profile-performance.hpp" />
+    <ClInclude Include="..\bsnes\snes\smp\core\core.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\core\memory.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\core\registers.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\memory\memory.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\smp.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\timing\timing.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\bsnes\snes\snes.hpp" />
     <ClInclude Include="..\bsnes\target-libsnes\libsnes.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\bsnes\base\base.cpp" />
     <ClCompile Include="..\bsnes\gameboy\apu\apu.cpp" />
     <ClCompile Include="..\bsnes\gameboy\cartridge\cartridge.cpp" />
     <ClCompile Include="..\bsnes\gameboy\cheat\cheat.cpp" />
@@ -188,7 +322,49 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\dma.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\memory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\mmio.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\timing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\alt\dsp\dsp.cpp" />
+    <ClCompile Include="..\bsnes\snes\alt\dsp\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\dsp\SPC_DSP.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\alt\ppu-compatibility\ppu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
@@ -197,11 +373,125 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\algorithms.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\generate.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_misc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_mov.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_pc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_read.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_rmw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_misc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_mov.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_pc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_read.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_rmw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\disassembler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\iplrom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\memory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\alt\smp\smp.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\timing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\cartridge\cartridge.cpp" />
+    <ClCompile Include="..\bsnes\snes\cartridge\markup.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cartridge\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\cheat\cheat.cpp" />
     <ClCompile Include="..\bsnes\snes\chip\armdsp\armdsp.cpp" />
     <ClCompile Include="..\bsnes\snes\chip\bsx\bsx.cpp" />
@@ -220,18 +510,132 @@
     <ClCompile Include="..\bsnes\snes\chip\superfx\superfx.cpp" />
     <ClCompile Include="..\bsnes\snes\config\config.cpp" />
     <ClCompile Include="..\bsnes\snes\controller\controller.cpp" />
+    <ClCompile Include="..\bsnes\snes\cpu\core\algorithms.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\cpu\core\core.cpp" />
+    <ClCompile Include="..\bsnes\snes\cpu\core\disassembler\disassembler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_misc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_pc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_read.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_rmw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_write.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\table.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\cpu\cpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\memory\memory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\brr.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\counter.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\dsp\dsp.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\echo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\envelope.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\gaussian.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\misc.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\voice.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\bsnes\snes\interface\interface.cpp" />
     <ClCompile Include="..\bsnes\snes\memory\memory.cpp" />
@@ -241,17 +645,109 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\algorithms.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\smp\core\core.cpp" />
+    <ClCompile Include="..\bsnes\snes\smp\core\disassembler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\opcodes.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\uop.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\iplrom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\memory\memory.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\serialization.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\smp\smp.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\timing\timing.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\bsnes\snes\system\system.cpp" />
     <ClCompile Include="..\bsnes\target-libsnes\libsnes.cpp" />
     <ClCompile Include="..\bsnes\target-libsnes\libsnes_pwrap.cpp" />
     <ClCompile Include="..\libco_msvc_win32\libco_msvc_win32.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bsnes\snes\alt\smp\core\cc.sh">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_misc.b">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_mov.b">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_pc.b">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_read.b">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_rmw.b">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

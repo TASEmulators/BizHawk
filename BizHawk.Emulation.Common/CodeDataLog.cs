@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,40 @@ namespace BizHawk.Emulation.Common
 		public CodeDataLog()
 		{
 		}
+
+		/// <summary>
+		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing thish ere will remind us to check for the pin condition and abort
+		/// </summary>
+		public void Pin()
+		{
+			if (Pins.Count != 0)
+				throw new InvalidOperationException("incremental astrological examination");
+			foreach (var kvp in this)
+				Pins[kvp.Key] = GCHandle.Alloc(kvp.Value, GCHandleType.Pinned);
+		}
+
+		/// <summary>
+		/// Unpins the managed arrays, to be paired with calls to Pin()
+		/// </summary>
+		public void Unpin()
+		{
+			foreach (var pin in Pins.Values)
+				pin.Free();
+			Pins.Clear();
+		}
+
+		/// <summary>
+		/// Retrieves the pointer to a managed array
+		/// </summary>
+		public IntPtr GetPin(string key)
+		{
+			return Pins[key].AddrOfPinnedObject();
+		}
+
+		/// <summary>
+		/// Pinned managed arrays
+		/// </summary>
+		Dictionary<string, GCHandle> Pins = new Dictionary<string, GCHandle>();
 
 		/// <summary>
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core

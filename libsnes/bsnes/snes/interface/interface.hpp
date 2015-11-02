@@ -1,3 +1,4 @@
+
 struct Interface {
 	Interface();
   virtual void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan);

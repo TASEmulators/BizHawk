@@ -90,7 +90,7 @@ public:
 
   void tick();
   alwaysinline void op_io();
-  alwaysinline uint8 op_read(uint16 addr);
+  alwaysinline uint8 op_read(uint16 addr, eCDLog_Flags flags);
   alwaysinline void op_write(uint16 addr, uint8 data);
   alwaysinline void op_step();
   static const unsigned cycle_count_table[256];

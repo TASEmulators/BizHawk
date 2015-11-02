@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
@@ -180,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			public uint pc;
 			public ushort a, x, y, z, s, d, vector; //7x
-				public byte p, nothing;
+			public byte p, nothing;
 			public uint aa, rd;
 			public byte sp, dp, db, mdr;
 			public const int SIZEOF = 32;
@@ -194,6 +195,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			brPipe.Read(temp, 0, CpuRegs.SIZEOF);
 			fixed(CpuRegs* ptr = &ret)
 				Marshal.Copy(temp, 0, new IntPtr(ptr), CpuRegs.SIZEOF);
+		}
+
+		public void QUERY_set_cdl(CodeDataLog cdl)
+		{
+			WritePipeMessage(eMessage.eMessage_QUERY_set_cdl);
+			if (cdl == null)
+			{
+				for(int i=0;i<4*2;i++)
+					WritePipePointer(IntPtr.Zero);
+			}
+			else
+			{
+				WritePipePointer(cdl.GetPin("CARTROM"),false);
+				bwPipe.Write(cdl["CARTROM"].Length);
+				
+				WritePipePointer(cdl.GetPin("CARTRAM"), false);
+				bwPipe.Write(cdl["CARTRAM"].Length);
+				
+				WritePipePointer(cdl.GetPin("WRAM"));
+				bwPipe.Write(cdl["WRAM"].Length);
+				
+				WritePipePointer(cdl.GetPin("APURAM"), false);
+				bwPipe.Write(cdl["APURAM"].Length);
+				bwPipe.Flush();
+			}
 		}
 		
 	}

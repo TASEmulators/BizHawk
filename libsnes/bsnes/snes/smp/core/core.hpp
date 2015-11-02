@@ -1,6 +1,6 @@
 struct SMPcore {
   virtual void op_io() = 0;
-  virtual uint8 op_read(uint16 addr) = 0;
+  virtual uint8 op_read(uint16 addr, eCDLog_Flags flags = eCDLog_Flags_CPUData) = 0;
   virtual void op_write(uint16 addr, uint8 data) = 0;
   void op_step();
 

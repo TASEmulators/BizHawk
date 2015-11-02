@@ -19,7 +19,7 @@ public:
   void mmio_write(unsigned addr, uint8 data);
 
   void op_io();
-  uint8 op_read(unsigned addr);
+  uint8 op_read(unsigned addr, eCDLog_Flags = eCDLog_Flags_CPUData);
   void op_write(unsigned addr, uint8 data);
 
   void enter();

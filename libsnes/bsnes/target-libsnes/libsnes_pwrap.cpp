@@ -33,6 +33,8 @@
 #include <string>
 #include <vector>
 
+extern SNES::Interface *iface;
+
 typedef uint8 u8;
 typedef int32 s32;
 typedef uint32 u32;
@@ -73,7 +75,8 @@ enum eMessage : int32
 	eMessage_QUERY_set_backdropColor,
 	eMessage_QUERY_peek_logical_register,
 	eMessage_QUERY_peek_cpu_regs,
-	
+	eMessage_QUERY_set_cdl,
+
 	eMessage_CMD_FIRST,
 	eMessage_CMD_init,
 	eMessage_CMD_power,
@@ -883,6 +886,15 @@ bool Handle_QUERY(eMessage msg)
 	case eMessage_QUERY_state_hook_irq:
 		SNES::cpu.debugger.op_irq = ReadPipe<bool>() ? debug_op_irq : hook<void ()>(); 
 		break;
+
+	case eMessage_QUERY_set_cdl:
+		for (int i = 0; i<eCDLog_AddrType_NUM; i++)
+		{
+			cdlInfo.blocks[i] = ReadPipe<uint8_t*>();
+			cdlInfo.blockSizes[i] = ReadPipe<uint32_t>();
+		}
+		break;
+
 	}
 	return true;
 }

@@ -107,7 +107,8 @@ void SA1::op_io() {
   tick();
 }
 
-uint8 SA1::op_read(unsigned addr) {
+uint8 SA1::op_read(unsigned addr, eCDLog_Flags flags) {
+	(void)flags; //this was needed for inheritance purposes, as SA-1 is derived from the main CPU class
   tick();
   if(((addr & 0x40e000) == 0x006000) || ((addr & 0xd00000) == 0x400000)) tick();
   return bus_read(addr);

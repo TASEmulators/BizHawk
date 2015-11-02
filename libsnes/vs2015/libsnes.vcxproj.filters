@@ -151,6 +151,21 @@
     <Filter Include="snes\smp\core">
       <UniqueIdentifier>{f06ef20e-c749-4f16-81d3-f88d96b659bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="snes\cpu\core\disassembler">
+      <UniqueIdentifier>{abb9e273-8335-47ae-b389-76395d57844c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snes\cpu\memory">
+      <UniqueIdentifier>{b17bd430-7d56-4e93-b78c-d41b2c6f3d85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snes\alt\smp\core">
+      <UniqueIdentifier>{1e74e41b-9992-4e18-b2a9-91827d350402}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snes\smp\memory">
+      <UniqueIdentifier>{f1711f3e-853c-4ec3-bd3d-2c21d85c65bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="snes\smp\timing">
+      <UniqueIdentifier>{a2db2d0e-68ec-4fa0-91fc-2bcc8ac33d32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\bsnes\base\base.hpp">
@@ -179,6 +194,75 @@
     </ClInclude>
     <ClInclude Include="..\bsnes\target-libsnes\libsnes.hpp">
       <Filter>target-libsnes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\interface\interface.hpp">
+      <Filter>snes\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\disassembler\disassembler.hpp">
+      <Filter>snes\cpu\core\disassembler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\core.hpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\memory.hpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\core\registers.hpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\cpu.hpp">
+      <Filter>snes\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cartridge\cartridge.hpp">
+      <Filter>snes\cartridge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\cpu\memory\memory.hpp">
+      <Filter>snes\cpu\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\cpu\cpu.hpp">
+      <Filter>snes\alt\cpu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\smp\smp.hpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\core\core.hpp">
+      <Filter>snes\smp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\core\memory.hpp">
+      <Filter>snes\smp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\core\registers.hpp">
+      <Filter>snes\smp\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\memory\memory.hpp">
+      <Filter>snes\smp\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\timing\timing.hpp">
+      <Filter>snes\smp\timing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\smp\smp.hpp">
+      <Filter>snes\smp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\dsp.hpp">
+      <Filter>snes\alt\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\SPC_DSP.h">
+      <Filter>snes\alt\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_common.h">
+      <Filter>snes\alt\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_config.h">
+      <Filter>snes\alt\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_endian.h">
+      <Filter>snes\alt\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\alt\dsp\blargg_source.h">
+      <Filter>snes\alt\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\bsnes\snes\dsp\dsp.hpp">
+      <Filter>snes\dsp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -320,5 +404,190 @@
     <ClCompile Include="..\bsnes\snes\smp\core\core.cpp">
       <Filter>snes\smp\core</Filter>
     </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\disassembler\disassembler.cpp">
+      <Filter>snes\cpu\core\disassembler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_misc.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_pc.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_read.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_rmw.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\opcode_write.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\serialization.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\table.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\core\algorithms.cpp">
+      <Filter>snes\cpu\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\serialization.cpp">
+      <Filter>snes\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cartridge\markup.cpp">
+      <Filter>snes\cartridge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cartridge\serialization.cpp">
+      <Filter>snes\cartridge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\base\base.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\cpu\memory\memory.cpp">
+      <Filter>snes\cpu\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\dma.cpp">
+      <Filter>snes\alt\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\memory.cpp">
+      <Filter>snes\alt\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\mmio.cpp">
+      <Filter>snes\alt\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\serialization.cpp">
+      <Filter>snes\alt\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\cpu\timing.cpp">
+      <Filter>snes\alt\cpu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\memory.cpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\algorithms.cpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core.cpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\disassembler.cpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\iplrom.cpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\timing.cpp">
+      <Filter>snes\alt\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\generate.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_misc.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_mov.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_pc.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_read.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\op_rmw.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_misc.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_mov.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_pc.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_read.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\smp\core\opcycle_rmw.cpp">
+      <Filter>snes\alt\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\disassembler.cpp">
+      <Filter>snes\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\opcodes.cpp">
+      <Filter>snes\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\serialization.cpp">
+      <Filter>snes\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\uop.cpp">
+      <Filter>snes\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\core\algorithms.cpp">
+      <Filter>snes\smp\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\memory\memory.cpp">
+      <Filter>snes\smp\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\timing\timing.cpp">
+      <Filter>snes\smp\timing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\iplrom.cpp">
+      <Filter>snes\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\smp\serialization.cpp">
+      <Filter>snes\smp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\dsp\serialization.cpp">
+      <Filter>snes\alt\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\alt\dsp\SPC_DSP.cpp">
+      <Filter>snes\alt\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\echo.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\envelope.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\gaussian.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\misc.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\serialization.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\voice.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\brr.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\snes\dsp\counter.cpp">
+      <Filter>snes\dsp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\bsnes\snes\alt\smp\core\op_misc.b">
+      <Filter>snes\alt\smp\core</Filter>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_mov.b">
+      <Filter>snes\alt\smp\core</Filter>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_pc.b">
+      <Filter>snes\alt\smp\core</Filter>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_read.b">
+      <Filter>snes\alt\smp\core</Filter>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\op_rmw.b">
+      <Filter>snes\alt\smp\core</Filter>
+    </None>
+    <None Include="..\bsnes\snes\alt\smp\core\cc.sh">
+      <Filter>snes\alt\smp\core</Filter>
+    </None>
   </ItemGroup>
 </Project>

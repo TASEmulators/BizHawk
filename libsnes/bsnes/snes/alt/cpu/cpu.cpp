@@ -77,7 +77,7 @@ void CPU::enter() {
 }
 
 alwaysinline void CPU::op_step() {
-  (this->*opcode_table[op_readpc()])();
+  (this->*opcode_table[op_readpcfirst()])();
 }
 
 void CPU::enable() {
@@ -96,8 +96,8 @@ void CPU::enable() {
   bus.map(Bus::MapMode::Direct, 0x00, 0x3f, 0x4300, 0x437f, read, write);
   bus.map(Bus::MapMode::Direct, 0x80, 0xbf, 0x4300, 0x437f, read, write);
 
-  read = [](unsigned addr) { return cpu.wram[addr]; };
-  write = [](unsigned addr, uint8 data) { cpu.wram[addr] = data; };
+	read = [](unsigned addr) { cdlInfo.set(eCDLog_AddrType_WRAM, addr); return cpu.wram[addr]; };
+	write = [](unsigned addr, uint8 data) { cpu.wram[addr] = data; };
 
   bus.map(Bus::MapMode::Linear, 0x00, 0x3f, 0x0000, 0x1fff, read, write, 0x000000, 0x002000);
   bus.map(Bus::MapMode::Linear, 0x80, 0xbf, 0x0000, 0x1fff, read, write, 0x000000, 0x002000);
