@@ -258,3 +258,6 @@
 /output/*.manifest
 /output/dll/*.iobj
 /output/dll/*.ipdb
+/LuaInterface/Lua/src/.libs
+/LuaInterface/Lua/src/Release-LUAPERKS
+/LuaInterface/Release-LUAPERKS
