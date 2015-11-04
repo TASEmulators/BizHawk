@@ -1972,6 +1972,7 @@
     <None Include="images\HawkInLove.png" />
     <None Include="images\ControllerImages\AppleIIKeyboard.png" />
     <None Include="images\BlankCursor.cur" />
+    <None Include="images\cdlogger.ico" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

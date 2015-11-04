@@ -196,6 +196,7 @@
 			this.RamSearchMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HexEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TraceLoggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CodeDataLoggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TAStudioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -404,7 +405,6 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.CodeDataLoggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1878,6 +1878,14 @@
 			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(162, 22);
 			this.TraceLoggerMenuItem.Text = "Trace &Logger";
 			this.TraceLoggerMenuItem.Click += new System.EventHandler(this.TraceLoggerMenuItem_Click);
+			// 
+			// CodeDataLoggerMenuItem
+			// 
+			this.CodeDataLoggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.cdlogger;
+			this.CodeDataLoggerMenuItem.Name = "CodeDataLoggerMenuItem";
+			this.CodeDataLoggerMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.CodeDataLoggerMenuItem.Text = "Code-Data Logger";
+			this.CodeDataLoggerMenuItem.Click += new System.EventHandler(this.CodeDataLoggerMenuItem_Click);
 			// 
 			// DebuggerMenuItem
 			// 
@@ -3569,13 +3577,6 @@
 			this.timerMouseIdle.Enabled = true;
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
-			// 
-			// CodeDataLoggerMenuItem
-			// 
-			this.CodeDataLoggerMenuItem.Name = "CodeDataLoggerMenuItem";
-			this.CodeDataLoggerMenuItem.Size = new System.Drawing.Size(162, 22);
-			this.CodeDataLoggerMenuItem.Text = "Code-Data Logger";
-			this.CodeDataLoggerMenuItem.Click += new System.EventHandler(this.CodeDataLoggerMenuItem_Click);
 			// 
 			// MainForm
 			// 

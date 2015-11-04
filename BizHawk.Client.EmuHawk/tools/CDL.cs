@@ -16,6 +16,14 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
+//TODO - select which memorydomains go out to the CDL file. will this cause a problem when re-importing it? 
+  //perhaps missing domains shouldnt fail a check
+//OR - just add a contextmenu option to the listview item that selects it for export.
+//TODO - add a contextmenu option which warps to the hexeditor with the provided domain selected for visualizing on the hex editor.
+//TODO - consider setting colors for columns in CDL
+//TODO - option to print domain name in caption instead of 0x01 etc.
+//TODO - context menu should have copy option too
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class CDL : Form, IToolFormAutoConfig
@@ -33,9 +41,17 @@ namespace BizHawk.Client.EmuHawk
 				if (_recent_fld.AutoLoad)
 				{
 					LoadFile(_recent.MostRecent);
-					_currentFileName = _recent.MostRecent;
+					SetCurrentFilename(_recent.MostRecent);
 				}
 			}
+		}
+
+		void SetCurrentFilename(string fname)
+		{
+			_currentFilename = fname;
+			if (_currentFilename == null)
+				Text = "Code Data Logger";
+			else Text = string.Format("Code Data Logger - {0}", fname);
 		}
 
 		[RequiredService]
@@ -44,17 +60,22 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private ICodeDataLogger CodeDataLogger { get; set; }
 
-		private string _currentFileName = string.Empty;
+		private string _currentFilename = null;
 		private CodeDataLog _cdl;
 
 		public CDL()
 		{
+			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+			SetStyle(ControlStyles.UserPaint, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			InitializeComponent();
+
+			tsbViewStyle.SelectedIndex = 0;
 		}
 
 		public void UpdateValues()
 		{
-			UpdateDisplay();
+			UpdateDisplay(false);
 		}
 
 		public void FastUpdate()
@@ -67,52 +88,104 @@ namespace BizHawk.Client.EmuHawk
 			//don't try to recover the current CDL!
 			//even though it seems like it might be nice, it might get mixed up between games. even if we use CheckCDL. Switching games with the same memory map will be bad.
 			_cdl = null;
-			_currentFileName = null;
-			LoggingActiveCheckbox.Checked = false;
-			UpdateDisplay();
+			SetCurrentFilename(null);
+			SetLoggingActiveCheck(false);
+			UpdateDisplay(true);
 		}
 
-		private void UpdateDisplay()
+		void SetLoggingActiveCheck(bool value)
 		{
+			tsbLoggingActive.Checked = value;
+		}
+
+		string[][] listContents = new string[0][];
+
+		private void UpdateDisplay(bool force)
+		{
+			if (!tsbViewUpdate.Checked && !force)
+				return;
+
+
 			if (_cdl == null)
 			{
-				CdlTextbox.Text = "No CDL loaded.";
+				lvCDL.BeginUpdate();
+				lvCDL.Items.Clear();
+				lvCDL.EndUpdate();
 				return;
 			}
 
-			StringWriter sw = new StringWriter();
-			sw.WriteLine("CDL contains the following domains:");
+			lvCDL.BeginUpdate();
+
+			listContents = new string[_cdl.Count][];
+
+			int idx = 0;
 			foreach (var kvp in _cdl)
 			{
+				int[] totals = new int[8];
 				int total = 0;
 				unsafe
 				{
+					int* map = stackalloc int[256];
+					for (int i = 0; i < 256; i++)
+						map[i] = 0;
+
 					fixed (byte* data = kvp.Value)
 					{
 						byte* src = data;
 						byte* end = data + kvp.Value.Length;
 						while (src < end)
 						{
-							if (*src++ != 0)
-							{
-								total++;
-							}
+							byte s = *src++;
+							map[s]++;
 						}
+					}
+
+					for (int i = 0; i < 256; i++)
+					{
+						if(i!=0) total += map[i];
+						if ((i & 0x01) != 0) totals[0] += map[i];
+						if ((i & 0x02) != 0) totals[1] += map[i];
+						if ((i & 0x04) != 0) totals[2] += map[i];
+						if ((i & 0x08) != 0) totals[3] += map[i];
+						if ((i & 0x10) != 0) totals[4] += map[i];
+						if ((i & 0x20) != 0) totals[5] += map[i];
+						if ((i & 0x40) != 0) totals[6] += map[i];
+						if ((i & 0x80) != 0) totals[7] += map[i];
 					}
 				}
 
-				sw.WriteLine("Domain {0} Size {1} Mapped {2}% ({3}/{4} bytes)", kvp.Key, kvp.Value.Length, total / (float)kvp.Value.Length * 100f, total, kvp.Value.Length);
-			}
-			
-			sw.WriteLine();
-			
-			var bm = _cdl.GetBlockMap();
-			foreach (var kvp in bm)
-			{
-				sw.WriteLine("{0:X8}: {1}", kvp.Value, kvp.Key);
-			}
+				var bm = _cdl.GetBlockMap();
+				long addr = bm[kvp.Key];
 
-			CdlTextbox.Text = sw.ToString();
+				var lvi = listContents[idx++] = new string[13];
+				lvi[0] = string.Format("{0:X8}", addr);
+				lvi[1] = kvp.Key;
+				lvi[2] = string.Format("{0:0.00}%", total / (float)kvp.Value.Length * 100f);
+				if (tsbViewStyle.SelectedIndex == 2)
+					lvi[3] = string.Format("{0:0.00}", total / 1024.0f);
+				else
+					lvi[3] = string.Format("{0}", total);
+				if (tsbViewStyle.SelectedIndex == 2)
+				{
+					int n = (int)(kvp.Value.Length / 1024.0f);
+					float ncheck = kvp.Value.Length / 1024.0f;
+					lvi[4] = string.Format("of {0}{1} KBytes", n == ncheck ? "" : "~", n);
+				}
+				else
+					lvi[4] = string.Format("of {0} Bytes", kvp.Value.Length);
+				for (int i = 0; i < 8; i++)
+				{
+				  if (tsbViewStyle.SelectedIndex == 0)
+				    lvi[5 + i] = string.Format("{0:0.00}%", totals[i] / (float)kvp.Value.Length * 100f);
+				  if (tsbViewStyle.SelectedIndex == 1)
+				    lvi[5 + i] = string.Format("{0}", totals[i]);
+				  if (tsbViewStyle.SelectedIndex == 2)
+				    lvi[5 + i] = string.Format("{0:0.00}", totals[i] / 1024.0f);
+				}
+
+			}
+			lvCDL.VirtualListSize = _cdl.Count;
+			lvCDL.EndUpdate();
 		}
 
 		public bool AskSaveChanges()
@@ -144,22 +217,18 @@ namespace BizHawk.Client.EmuHawk
 				//ok, it's all good:
 				_cdl = newCDL;
 				CodeDataLogger.SetCDL(null);
-				if (LoggingActiveCheckbox.Checked)
+				if (tsbLoggingActive.Checked)
 					CodeDataLogger.SetCDL(_cdl);
 
-				_currentFileName = path;
+				SetCurrentFilename(path);
 			}
 
-			UpdateDisplay();
+			UpdateDisplay(true);
 		}
-
-		#region Events
-
-		#region File
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(_currentFileName);
+			SaveMenuItem.Enabled = _currentFilename != null;
 			SaveAsMenuItem.Enabled =
 				AppendMenuItem.Enabled =
 				ClearMenuItem.Enabled =
@@ -178,13 +247,13 @@ namespace BizHawk.Client.EmuHawk
 			_cdl = new CodeDataLog();
 			CodeDataLogger.NewCDL(_cdl);
 
-			if (LoggingActiveCheckbox.Checked)
+			if (tsbLoggingActive.Checked)
 				CodeDataLogger.SetCDL(_cdl);
 			else CodeDataLogger.SetCDL(null);
 
-			_currentFileName = null;
+			SetCurrentFilename(null);
 
-			UpdateDisplay();
+			UpdateDisplay(true);
 		}
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
@@ -203,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var file = ToolHelpers.OpenFileDialog(
-				_currentFileName,
+				_currentFilename,
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
 				"Code Data Logger Files",
 				"cdl");
@@ -224,13 +293,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
-			if (string.IsNullOrWhiteSpace(_currentFileName))
+			if (string.IsNullOrWhiteSpace(_currentFilename))
 			{
 				RunSaveAs();
 				return;
 			}
 			
-			using (var fs = new FileStream(_currentFileName, FileMode.Create, FileAccess.Write))
+			using (var fs = new FileStream(_currentFilename, FileMode.Create, FileAccess.Write))
 			{
 				_cdl.Save(fs);
 			}
@@ -245,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				var file = ToolHelpers.SaveFileDialog(
-					_currentFileName,
+					_currentFilename,
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
 					"Code Data Logger Files",
 					"cdl");
@@ -256,7 +325,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_cdl.Save(fs);
 						_recent.Add(file.FullName);
-						_currentFileName = file.FullName;
+						SetCurrentFilename(file.FullName);
 					}
 				}
 			}
@@ -276,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				var file = ToolHelpers.OpenFileDialog(
-					_currentFileName,
+					_currentFilename,
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
 					"Code Data Logger Files",
 					"cdl");
@@ -293,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 							return;
 						}
 						_cdl.LogicalOrFrom(newCDL);
-						UpdateDisplay();
+						UpdateDisplay(true);
 					}
 				}
 			}
@@ -311,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result == DialogResult.Yes)
 				{
 					_cdl.ClearData();
-					UpdateDisplay();
+					UpdateDisplay(true);
 				}
 			}
 		}
@@ -347,26 +416,8 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		#endregion
-
-		#region Dialog Events
-
 		private void PCECDL_Load(object sender, EventArgs e)
 		{
-		}
-
-		private void LoggingActiveCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			if (LoggingActiveCheckbox.Checked && _cdl == null)
-			{
-				//implicitly create a new file
-				NewFileLogic();
-			}
-			
-			if (_cdl != null && LoggingActiveCheckbox.Checked)
-				CodeDataLogger.SetCDL(_cdl);
-			else
-				CodeDataLogger.SetCDL(null);
 		}
 
 		private void PCECDL_DragEnter(object sender, DragEventArgs e)
@@ -383,8 +434,42 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		#endregion
+	
 
-		#endregion
+		private void tsbViewStyle_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateDisplay(true);
+		}
+
+		private void tsbLoggingActive_CheckedChanged(object sender, EventArgs e)
+		{
+			if (tsbLoggingActive.Checked && _cdl == null)
+			{
+				//implicitly create a new file
+				NewFileLogic();
+			}
+
+			if (_cdl != null && tsbLoggingActive.Checked)
+				CodeDataLogger.SetCDL(_cdl);
+			else
+				CodeDataLogger.SetCDL(null);
+		}
+
+		private void lvCDL_QueryItemText(int item, int subItem, out string text)
+		{
+			text = listContents[item][subItem];
+		}
+
+		private void tsbExportText_Click(object sender, EventArgs e)
+		{
+			StringWriter sw = new StringWriter();
+			foreach(var line in listContents)
+			{
+				foreach (var entry in line)
+					sw.Write("{0} |", entry);
+				sw.WriteLine();
+			}
+			Clipboard.SetText(sw.ToString());
+		}
 	}
 }
