@@ -49,6 +49,11 @@ namespace BizHawk.Emulation.Common
 		Dictionary<string, GCHandle> Pins = new Dictionary<string, GCHandle>();
 
 		/// <summary>
+		/// Whether the CDL is tracking a block with the given name
+		/// </summary>
+		public bool Has(string blockname) { return ContainsKey(blockname); }
+
+		/// <summary>
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core
 		/// </summary>
 		public bool Active = true;

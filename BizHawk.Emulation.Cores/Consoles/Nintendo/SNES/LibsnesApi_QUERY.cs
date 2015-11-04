@@ -209,9 +209,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				WritePipePointer(cdl.GetPin("CARTROM"),false);
 				bwPipe.Write(cdl["CARTROM"].Length);
-				
-				WritePipePointer(cdl.GetPin("CARTRAM"), false);
-				bwPipe.Write(cdl["CARTRAM"].Length);
+
+				if (cdl.Has("CARTRAM"))
+				{
+					WritePipePointer(cdl.GetPin("CARTRAM"), false);
+					bwPipe.Write(cdl["CARTRAM"].Length);
+				}
+				else
+				{
+					WritePipePointer(IntPtr.Zero);
+					WritePipePointer(IntPtr.Zero);
+				}
 				
 				WritePipePointer(cdl.GetPin("WRAM"));
 				bwPipe.Write(cdl["WRAM"].Length);

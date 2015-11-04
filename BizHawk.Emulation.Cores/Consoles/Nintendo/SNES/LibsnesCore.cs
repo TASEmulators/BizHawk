@@ -185,7 +185,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void NewCDL(CodeDataLog cdl)
 		{
 			cdl["CARTROM"] = new byte[MemoryDomains["CARTROM"].Size];
-			cdl["CARTRAM"] = new byte[MemoryDomains["CARTRAM"].Size];
+
+			if (MemoryDomains.Has("CARTRAM"))
+				cdl["CARTRAM"] = new byte[MemoryDomains["CARTRAM"].Size];
+
 			cdl["WRAM"] = new byte[MemoryDomains["WRAM"].Size];
 			cdl["APURAM"] = new byte[MemoryDomains["APURAM"].Size];
 

@@ -5,6 +5,10 @@
 //helpful detailed reg list
 //http://wiki.superfamicom.org/snes/show/Registers
 
+//TODO
+//SF2 title art doesnt seem to show up.. 
+//scanline control doesnt work?
+
 using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
