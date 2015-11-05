@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			CheatEditor.MemoryDomains = Core;
+			CheatEditor.Restart();
 		}
 
 		/// <summary>
