@@ -136,6 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
+			FormsLibrary.DestroyAll();
 			_lua = new Lua();
 			GuiLibrary.Dispose();
 		}
