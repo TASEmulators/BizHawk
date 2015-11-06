@@ -17,6 +17,12 @@ namespace BizHawk.Emulation.Common
 		/// <returns></returns>
 		string DllPath();
 
+		/// <summary>
+		/// produces a path that contains saveram... because libretro cores need it? not sure yet
+		/// </summary>
+		string GetSaveRAMPath();
+
+
 		#region EmuLoadHelper api
 
 		/// <summary>

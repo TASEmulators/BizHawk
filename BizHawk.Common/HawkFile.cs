@@ -105,6 +105,11 @@ namespace BizHawk.Common
 		/// </summary>
 		public bool IsArchive { get { return _isArchive; } }
 
+		/// <summary>
+		/// Indicates whether the file is an archive member (IsArchive && IsBound[to member])
+		/// </summary>
+		public bool IsArchiveMember { get { return IsArchive && IsBound; } }
+
 		public IList<HawkFileArchiveItem> ArchiveItems
 		{
 			get
@@ -165,6 +170,19 @@ namespace BizHawk.Common
 					stream.CopyTo(ms);
 					return ms.GetBuffer();
 				}
+			}
+		}
+
+		/// <summary>
+		/// attempts to read all the content from the file
+		/// </summary>
+		public byte[] ReadAllBytes()
+		{
+			using (Stream stream = GetStream())
+			{
+				var ms = new MemoryStream((int)stream.Length);
+				stream.CopyTo(ms);
+				return ms.GetBuffer();
 			}
 		}
 

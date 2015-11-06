@@ -1,19 +1,96 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using Newtonsoft.Json;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores
 {
-	[CoreAttributes("DEBUG ONLY DON'T USE", "natt")]
-	public unsafe class LibRetroEmulator : IEmulator, IVideoProvider
+	[CoreAttributes("Libretro", "natt&zeromus")]
+	public unsafe class LibRetroEmulator : IEmulator, ISettable<LibRetroEmulator.Settings, LibRetroEmulator.SyncSettings>,
+		ISaveRam, IStatable, IVideoProvider, IInputPollable
 	{
+		#region Settings
+
+		Settings _Settings = new Settings();
+		SyncSettings _SyncSettings;
+
+		public class SyncSettings
+		{
+			public SyncSettings Clone()
+			{
+				return JsonConvert.DeserializeObject<SyncSettings>(JsonConvert.SerializeObject(this));
+			}
+
+			public SyncSettings()
+			{
+			}
+		}
+
+
+		public class Settings
+		{
+			public void Validate()
+			{
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+		}
+
+		public Settings GetSettings()
+		{
+			return _Settings.Clone();
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _SyncSettings.Clone();
+		}
+
+		public bool PutSettings(Settings o)
+		{
+			_Settings.Validate();
+			_Settings = o;
+
+			//TODO - store settings into core? or we can just keep doing it before frameadvance
+
+			return false;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			//currently LEC and pad settings changes both require reboot
+			bool reboot = true;
+
+			//we could do it this way roughly if we need to
+			//if(JsonConvert.SerializeObject(o.FIOConfig) != JsonConvert.SerializeObject(_SyncSettings.FIOConfig)
+
+
+			_SyncSettings = o;
+
+
+			return reboot;
+		}
+
+		#endregion
+
 		#region callbacks
 
-		bool retro_environment(LibRetro.RETRO_ENVIRONMENT cmd, IntPtr data)
+		unsafe bool retro_environment(LibRetro.RETRO_ENVIRONMENT cmd, IntPtr data)
 		{
 			switch (cmd)
 			{
@@ -72,6 +149,7 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.GET_VARIABLE_UPDATE:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_SUPPORT_NO_GAME:
+					EnvironmentInfo.SupportNoGame = true;
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_LIBRETRO_PATH:
 					return false;
@@ -83,6 +161,19 @@ namespace BizHawk.Emulation.Cores
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_INPUT_DEVICE_CAPABILITIES:
 					return false;
+				case LibRetro.RETRO_ENVIRONMENT.GET_LOG_INTERFACE:
+					return false;
+				case LibRetro.RETRO_ENVIRONMENT.GET_PERF_INTERFACE:
+					return false;
+				case LibRetro.RETRO_ENVIRONMENT.GET_LOCATION_INTERFACE:
+					return false;
+				case LibRetro.RETRO_ENVIRONMENT.GET_CORE_ASSETS_DIRECTORY:
+					return false;
+				case LibRetro.RETRO_ENVIRONMENT.GET_SAVE_DIRECTORY:
+					//this will suffice for now. if we find evidence later it's needed we can stash a string with 
+					//unmanagedResources and CoreFileProvider
+					*((IntPtr*)data.ToPointer()) = IntPtr.Zero; 
+					return false;
 				default:
 					Console.WriteLine("Unknkown retro_environment command {0}", (int)cmd);
 					return false;
@@ -92,9 +183,53 @@ namespace BizHawk.Emulation.Cores
 		{
 			IsLagFrame = false;
 		}
+
+		private bool GetButton(uint pnum, string type, string button)
+		{
+			string key = string.Format("P{0} {1} {2}", pnum, type, button);
+			bool b = Controller[key];
+			if (b == true)
+			{
+				return true; //debugging placeholder
+			}
+			else return false;
+		}
+
+		//port = console physical port?
+		//device = logical device type
+		//index = sub device index? (multitap?)
+		//id = button id
 		short retro_input_state(uint port, uint device, uint index, uint id)
 		{
-			return 0;
+			switch ((LibRetro.RETRO_DEVICE)device)
+			{
+				case LibRetro.RETRO_DEVICE.JOYPAD:
+					{
+						//The JOYPAD is sometimes called RetroPad (and we'll call it that in user-facing stuff cos retroarch does)
+						//It is essentially a Super Nintendo controller, but with additional L2/R2/L3/R3 buttons, similar to a PS1 DualShock.
+					
+						string button = "";
+						switch ((LibRetro.RETRO_DEVICE_ID_JOYPAD)id)
+						{
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.A: button = "A"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.B: button = "B"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.X: button = "X"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.Y: button = "Y"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.UP: button = "Up"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.DOWN: button = "Down"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.LEFT: button = "Left"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.RIGHT: button = "Right"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.L: button = "L"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.R: button = "R"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.SELECT: button = "Select"; break;
+							case LibRetro.RETRO_DEVICE_ID_JOYPAD.START: button = "Start"; break;
+						}
+
+						return (short)(GetButton(port+1, "RetroPad", button) ? 1 : 0);
+					}
+				default:
+					return 0;
+			}
 		}
 
 		LibRetro.retro_environment_t retro_environment_cb;
@@ -107,33 +242,23 @@ namespace BizHawk.Emulation.Cores
 		#endregion
 
 		private LibRetro retro;
+		private UnmanagedResourceHeap unmanagedResources = new UnmanagedResourceHeap();
 
-		public static LibRetroEmulator CreateDebug(CoreComm nextComm, byte[] debugfile)
+		//todo - make private
+		public LibRetro.retro_system_info system_info = new LibRetro.retro_system_info();
+
+		public struct RetroEnvironmentInfo
 		{
-			System.IO.TextReader tr = new System.IO.StreamReader(new System.IO.MemoryStream(debugfile, false));
-			string modulename = tr.ReadLine();
-			string romname = tr.ReadLine();
-
-			byte[] romdata = System.IO.File.ReadAllBytes(romname);
-
-			var emu = new LibRetroEmulator(nextComm, modulename);
-			try
-			{
-				if (!emu.Load(romdata))
-					throw new Exception("LibRetroEmulator.Load() failed");
-				// ...
-			}
-			catch
-			{
-				emu.Dispose();
-				throw;
-			}
-			return emu;
+			public bool SupportNoGame;
 		}
+		public RetroEnvironmentInfo EnvironmentInfo = new RetroEnvironmentInfo();
+
 
 		public LibRetroEmulator(CoreComm nextComm, string modulename)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
+
+			_SyncSettings = new SyncSettings();
 
 			retro_environment_cb = new LibRetro.retro_environment_t(retro_environment);
 			retro_video_refresh_cb = new LibRetro.retro_video_refresh_t(retro_video_refresh);
@@ -147,13 +272,7 @@ namespace BizHawk.Emulation.Cores
 			{
 				CoreComm = nextComm;
 
-				LibRetro.retro_system_info sys = new LibRetro.retro_system_info();
-				retro.retro_get_system_info(ref sys);
-
-				if (sys.need_fullpath)
-					throw new ArgumentException("This libretro core needs filepaths");
-				if (sys.block_extract)
-					throw new ArgumentException("This libretro needs non-blocked extract");
+				retro.retro_get_system_info(ref system_info);
 
 				retro.retro_set_environment(retro_environment_cb);
 				retro.retro_init();
@@ -166,13 +285,16 @@ namespace BizHawk.Emulation.Cores
 			catch
 			{
 				retro.Dispose();
+				retro = null;
 				throw;
 			}
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public bool Load(byte[] data)
+
+
+		public bool LoadData(byte[] data)
 		{
 			LibRetro.retro_game_info gi = new LibRetro.retro_game_info();
 			fixed (byte* p = &data[0])
@@ -181,14 +303,34 @@ namespace BizHawk.Emulation.Cores
 				gi.meta = "";
 				gi.path = "";
 				gi.size = (uint)data.Length;
-				if (!retro.retro_load_game(ref gi))
-				{
-					Console.WriteLine("retro_load_game() failed");
-					return false;
-				}
-				savebuff = new byte[retro.retro_serialize_size()];
-				savebuff2 = new byte[savebuff.Length + 13];
+				return LoadWork(ref gi);
 			}
+		}
+
+		public bool LoadPath(string path)
+		{
+			LibRetro.retro_game_info gi = new LibRetro.retro_game_info();
+			gi.path = path; //is this the right encoding? seems to be ok
+			return LoadWork(ref gi);
+		}
+
+		public bool LoadNoGame()
+		{
+			LibRetro.retro_game_info gi = new LibRetro.retro_game_info();
+			return LoadWork(ref gi);
+		}
+
+		bool LoadWork(ref LibRetro.retro_game_info gi)
+		{
+			if (!retro.retro_load_game(ref gi))
+			{
+				Console.WriteLine("retro_load_game() failed");
+				return false;
+			}
+
+			//TODO - libretro cores can return a varying serialize size over time. I tried to get them to write it in the docs...
+			savebuff = new byte[retro.retro_serialize_size()];
+			savebuff2 = new byte[savebuff.Length + 13];
 
 			LibRetro.retro_system_av_info av = new LibRetro.retro_system_av_info();
 			retro.retro_get_system_av_info(ref av);
@@ -204,33 +346,44 @@ namespace BizHawk.Emulation.Cores
 
 			SetupResampler(av.timing.fps, av.timing.sample_rate);
 
+			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
+
 			return true;
 		}
 
-
-		public ControllerDefinition ControllerDefinition
+		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
-			get { return NullEmulator.NullController; }
+			ControllerDefinition definition = new ControllerDefinition();
+			definition.Name = "LibRetro Controls"; // <-- for compatibility
+
+			foreach(var item in new[] {
+					"P1 {0} Up", "P1 {0} Down", "P1 {0} Left", "P1 {0} Right", "P1 {0} Select", "P1 {0} Start", "P1 {0} Y", "P1 {0} B", "P1 {0} X", "P1 {0} A", "P1 {0} L", "P1 {0} R",
+					"P2 {0} Up", "P2 {0} Down", "P2 {0} Left", "P2 {0} Right", "P2 {0} Select", "P2 {0} Start", "P2 {0} Y", "P2 {0} B", "P2 {0} X", "P2 {0} A", "P2 {0} L", "P2 {0} R",
+			})
+				definition.BoolButtons.Add(string.Format(item,"RetroPad"));
+
+			return definition;
 		}
 
+		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
+			//TODO - consider changing directory and using Libretro subdir of bizhawk as a kind of sandbox, for the duration of the run?
+			CloneSaveRam();
 			IsLagFrame = true;
 			Frame++;
 			nsamprecv = 0;
 			retro.retro_run();
-			Console.WriteLine("[{0}]", nsamprecv);
+			//Console.WriteLine("[{0}]", nsamprecv);
 		}
 
 		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
 
 		public string SystemId
 		{
-			get { return "TEST"; }
+			get { return "Libretro"; }
 		}
 
 		public bool DeterministicEmulation
@@ -244,7 +397,8 @@ namespace BizHawk.Emulation.Cores
 			get { return null; }
 		}
 
-		#region saveram
+		#region ISaveRam
+		//TODO - terrible things will happen if this changes at runtime
 
 		byte[] saverambuff = new byte[0];
 
@@ -256,8 +410,8 @@ namespace BizHawk.Emulation.Cores
 
 			IntPtr src = retro.retro_get_memory_data(LibRetro.RETRO_MEMORY.SAVE_RAM);
 			if (src == IntPtr.Zero)
-				throw new Exception("retro_get_memory_data(RETRO_MEMORY_SAVE_RAM) returned NULL");
-
+				return null;
+			
 			Marshal.Copy(src, saverambuff, 0, size);
 			return (byte[])saverambuff.Clone();
 		}
@@ -265,8 +419,9 @@ namespace BizHawk.Emulation.Cores
 		public void StoreSaveRam(byte[] data)
 		{
 			int size = (int)retro.retro_get_memory_size(LibRetro.RETRO_MEMORY.SAVE_RAM);
-			if (data.Length != size)
-				throw new Exception("Passed saveram does not match retro_get_memory_size(RETRO_MEMORY_SAVE_RAM");
+
+			if (size == 0)
+				return;
 
 			IntPtr dst = retro.retro_get_memory_data(LibRetro.RETRO_MEMORY.SAVE_RAM);
 			if (dst == IntPtr.Zero)
@@ -278,7 +433,14 @@ namespace BizHawk.Emulation.Cores
 		public bool SaveRamModified
 		{
 			[FeatureNotImplemented]
-			get { return true; }
+			get
+			{
+				//if we dont have saveram, it isnt modified. otherwise, assume iti s
+				int size = (int)retro.retro_get_memory_size(LibRetro.RETRO_MEMORY.SAVE_RAM);
+				if (size == 0)
+					return false;
+				return true;
+			}
 
 			[FeatureNotImplemented]
 			set { throw new NotImplementedException(); }
@@ -298,16 +460,18 @@ namespace BizHawk.Emulation.Cores
 		private byte[] savebuff;
 		private byte[] savebuff2;
 
-		[FeatureNotImplemented]
 		public void SaveStateText(System.IO.TextWriter writer)
 		{
-			throw new NotImplementedException();
+			var temp = SaveStateBinary();
+			temp.SaveAsHex(writer);
 		}
 
-		[FeatureNotImplemented]
 		public void LoadStateText(System.IO.TextReader reader)
 		{
-			throw new NotImplementedException();
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHex(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
@@ -384,6 +548,8 @@ namespace BizHawk.Emulation.Cores
 				retro.Dispose();
 				retro = null;
 			}
+			unmanagedResources.Dispose();
+			unmanagedResources = null;
 		}
 
 		#region ISoundProvider
@@ -470,13 +636,13 @@ namespace BizHawk.Emulation.Cores
 				{
 					short ci = *row;
 					int r = ci & 0x001f;
-					int g = ci & 0x07e0;
-					int b = ci & 0xf800;
+					int g = (ci & 0x07e0)>>5;
+					int b = (ci & 0xf800)>>11;
 
 					r = (r << 3) | (r >> 2);
-					g = (g >> 3) | (g >> 9);
-					b = (b >> 8) | (b >> 13);
-					int co = r | g | b | unchecked((int)0xff000000);
+					g = (g << 2) | (g >> 4);
+					b = (b << 3) | (b >> 2);
+					int co = (b<<16) | (g<<8) | r;
 
 					*dst = co;
 					dst++;
@@ -534,7 +700,7 @@ namespace BizHawk.Emulation.Cores
 			get
 			{
 				if (dar > 1.0f)
-					return (int)(BufferWidth * dar);
+					return (int)(BufferHeight * dar);
 				else
 					return BufferWidth;
 			}
@@ -544,7 +710,7 @@ namespace BizHawk.Emulation.Cores
 			get
 			{
 				if (dar < 1.0f)
-					return (int)(BufferHeight / dar);
+					return (int)(BufferWidth / dar);
 				else
 					return BufferHeight;
 			}
@@ -554,6 +720,17 @@ namespace BizHawk.Emulation.Cores
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
+		#endregion
+
+		#region IInputPollable
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; private set; }
+		public IInputCallbackSystem InputCallbacks
+		{
+			[FeatureNotImplemented]
+			get
+			{ throw new NotImplementedException(); }
+		}
 		#endregion
 	}
 }

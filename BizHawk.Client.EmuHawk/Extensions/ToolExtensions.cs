@@ -5,15 +5,16 @@ using System.Windows.Forms;
 using System.Linq;
 
 using BizHawk.Common;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+
+//todo - add some more options for libretro types
 
 namespace BizHawk.Client.EmuHawk.ToolExtensions
 {
 	public static class ToolExtensions
 	{
-		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, bool autoload = false)
+		public static ToolStripItem[] RecentMenu(this RecentFiles recent, Action<string> loadFileCallback, bool autoload = false, bool romloading = false)
 		{
 			var items = new List<ToolStripItem>();
 
@@ -26,97 +27,120 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			{
 				foreach (var filename in recent)
 				{
+					string caption = filename;
+					string path = filename;
+					string physicalPath = filename;
+					bool crazyStuff = true;
+
+					//sentinel for newer format OpenAdvanced type code
+					if (romloading)
+					{
+						if (filename.StartsWith("*"))
+						{
+							var oa = OpenAdvancedSerializer.ParseWithLegacy(filename);
+							caption = oa.DisplayName;
+
+							crazyStuff = false;
+							if (oa is OpenAdvanced_OpenRom)
+							{
+								crazyStuff = true;
+								physicalPath = ((oa as OpenAdvanced_OpenRom).Path);
+							}
+						}
+					}
+
 					//TODO - do TSMI and TSDD need disposing? yuck
-					var temp = filename;
-					var item = new ToolStripMenuItem { Text = temp };
+					var item = new ToolStripMenuItem { Text = caption };
 					items.Add(item);
 
 					item.Click += (o, ev) =>
 					{
-						loadFileCallback(temp);
+						loadFileCallback(path);
 					};
-					
-					//TODO - use standard methods to split filename (hawkfile acquire?)
-					var hf = new HawkFile();
-					hf.Parse(temp);
-					bool canExplore = true;
-					if (!File.Exists(hf.FullPathWithoutMember))
-						canExplore = false;
 
 					var tsdd = new ToolStripDropDownMenu();
 
-					if (canExplore)
+					if (crazyStuff)
 					{
-						//make a menuitem to show the last modified timestamp
-						var timestamp = File.GetLastWriteTime(hf.FullPathWithoutMember);
-						var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString() };
+						//TODO - use standard methods to split filename (hawkfile acquire?)
+						var hf = new HawkFile();
+						hf.Parse(physicalPath);
+						bool canExplore = true;
+						if (!File.Exists(hf.FullPathWithoutMember))
+							canExplore = false;
 
-						tsdd.Items.Add(tsmiTimestamp);
-						tsdd.Items.Add(new ToolStripSeparator());
-
-
-
-						if (hf.IsArchive)
+						if (canExplore)
 						{
-							//make a menuitem to let you copy the path
-							var tsmiCopyCanonicalPath = new ToolStripMenuItem { Text = "&Copy Canonical Path" };
-							tsmiCopyCanonicalPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(temp); };
-							tsdd.Items.Add(tsmiCopyCanonicalPath);
+							//make a menuitem to show the last modified timestamp
+							var timestamp = File.GetLastWriteTime(hf.FullPathWithoutMember);
+							var tsmiTimestamp = new ToolStripLabel { Text = timestamp.ToString() };
 
-							var tsmiCopyArchivePath = new ToolStripMenuItem { Text = "Copy Archive Path" };
-							tsmiCopyArchivePath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(hf.FullPathWithoutMember); };
-							tsdd.Items.Add(tsmiCopyArchivePath);
+							tsdd.Items.Add(tsmiTimestamp);
+							tsdd.Items.Add(new ToolStripSeparator());
 
-							var tsmiOpenArchive = new ToolStripMenuItem { Text = "Open &Archive" };
-							tsmiOpenArchive.Click += (o, ev) => { System.Diagnostics.Process.Start(hf.FullPathWithoutMember); };
-							tsdd.Items.Add(tsmiOpenArchive);
+							if (hf.IsArchive)
+							{
+								//make a menuitem to let you copy the path
+								var tsmiCopyCanonicalPath = new ToolStripMenuItem { Text = "&Copy Canonical Path" };
+								tsmiCopyCanonicalPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(physicalPath); };
+								tsdd.Items.Add(tsmiCopyCanonicalPath);
+
+								var tsmiCopyArchivePath = new ToolStripMenuItem { Text = "Copy Archive Path" };
+								tsmiCopyArchivePath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(hf.FullPathWithoutMember); };
+								tsdd.Items.Add(tsmiCopyArchivePath);
+
+								var tsmiOpenArchive = new ToolStripMenuItem { Text = "Open &Archive" };
+								tsmiOpenArchive.Click += (o, ev) => { System.Diagnostics.Process.Start(hf.FullPathWithoutMember); };
+								tsdd.Items.Add(tsmiOpenArchive);
+							}
+							else
+							{
+								//make a menuitem to let you copy the path
+								var tsmiCopyPath = new ToolStripMenuItem { Text = "&Copy Path" };
+								tsmiCopyPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(physicalPath); };
+								tsdd.Items.Add(tsmiCopyPath);
+							}
+
+							tsdd.Items.Add(new ToolStripSeparator());
+
+							//make a menuitem to let you explore to it
+							var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
+							string explorePath = "\"" + hf.FullPathWithoutMember + "\"";
+							tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + explorePath); };
+							tsdd.Items.Add(tsmiExplore);
+
+							var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
+							var lame = new System.Collections.Specialized.StringCollection();
+							lame.Add(hf.FullPathWithoutMember);
+							tsmiCopyFile.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetFileDropList(lame); };
+							tsdd.Items.Add(tsmiCopyFile);
+
+							var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
+							tsmiTest.Click += (o, ev) =>
+							{
+								var si = new GongSolutions.Shell.ShellItem(hf.FullPathWithoutMember);
+								var scm = new GongSolutions.Shell.ShellContextMenu(si);
+								var tsddi = o as ToolStripDropDownItem;
+								tsddi.Owner.Update();
+								scm.ShowContextMenu(tsddi.Owner, new System.Drawing.Point(0, 0));
+							};
+							tsdd.Items.Add(tsmiTest);
+
+							tsdd.Items.Add(new ToolStripSeparator());
 						}
 						else
 						{
-							//make a menuitem to let you copy the path
-							var tsmiCopyPath = new ToolStripMenuItem { Text = "&Copy Path" };
-							tsmiCopyPath.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetText(temp); };
-							tsdd.Items.Add(tsmiCopyPath);
+							//make a menuitem to show the last modified timestamp
+							var tsmiMissingFile = new ToolStripLabel { Text = "-Missing-" };
+							tsdd.Items.Add(tsmiMissingFile);
+							tsdd.Items.Add(new ToolStripSeparator());
 						}
 
-						tsdd.Items.Add(new ToolStripSeparator());
+					} //crazystuff
 
-						//make a menuitem to let you explore to it
-						var tsmiExplore = new ToolStripMenuItem { Text = "&Explore" };
-						string explorePath = "\"" + hf.FullPathWithoutMember + "\"";
-						tsmiExplore.Click += (o, ev) => { System.Diagnostics.Process.Start("explorer.exe", "/select, " + explorePath); };
-						tsdd.Items.Add(tsmiExplore);
-
-						var tsmiCopyFile = new ToolStripMenuItem { Text = "Copy &File" };
-						var lame = new System.Collections.Specialized.StringCollection();
-						lame.Add(hf.FullPathWithoutMember);
-						tsmiCopyFile.Click += (o, ev) => { System.Windows.Forms.Clipboard.SetFileDropList(lame); };
-						tsdd.Items.Add(tsmiCopyFile);
-
-						var tsmiTest = new ToolStripMenuItem { Text = "&Shell Context Menu" };
-						tsmiTest.Click += (o, ev) => {
-							var si = new GongSolutions.Shell.ShellItem(hf.FullPathWithoutMember);
-							var scm = new GongSolutions.Shell.ShellContextMenu(si);
-							var tsddi = o as ToolStripDropDownItem;
-							tsddi.Owner.Update();
-							scm.ShowContextMenu(tsddi.Owner, new System.Drawing.Point(0, 0));
-						};
-						tsdd.Items.Add(tsmiTest);
-
-						tsdd.Items.Add(new ToolStripSeparator());
-					}
-					else
-					{
-						//make a menuitem to show the last modified timestamp
-						var tsmiMissingFile = new ToolStripLabel { Text = "-Missing-" };
-						tsdd.Items.Add(tsmiMissingFile);
-						tsdd.Items.Add(new ToolStripSeparator());
-					}
-					
-					//in either case, make a menuitem to let you remove the path
+					//in any case, make a menuitem to let you remove the item
 					var tsmiRemovePath = new ToolStripMenuItem { Text = "&Remove" };
-					tsmiRemovePath.Click += (o, ev) => { recent.Remove(temp); };
-
+					tsmiRemovePath.Click += (o, ev) => { recent.Remove(path); };
 					tsdd.Items.Add(tsmiRemovePath);
 
 					////experiment of popping open a submenu. doesnt work well.
@@ -134,7 +158,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 					//  tsdd.Show(pos);
 					//};
 
-					//just add it to the submenu for now
+					//just add it to the submenu for now. seems to work well enough, even though its a bit odd
 					item.MouseDown += (o, mev) =>
 					{
 						if (mev.Button != MouseButtons.Right) return;

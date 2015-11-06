@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores
 {
 	/// <summary>
@@ -284,6 +286,22 @@ namespace BizHawk.Emulation.Cores
 			SET_FRAME_TIME_CALLBACK = 21,
 			GET_RUMBLE_INTERFACE = 23,
 			GET_INPUT_DEVICE_CAPABILITIES = 24,
+			//25,26 are experimental
+			GET_LOG_INTERFACE = 27,
+			GET_PERF_INTERFACE = 28,
+			GET_LOCATION_INTERFACE = 29,
+			GET_CORE_ASSETS_DIRECTORY = 30,
+			GET_SAVE_DIRECTORY = 31,
+			SET_SYSTEM_AV_INFO = 32,
+			SET_PROC_ADDRESS_CALLBACK = 33,
+			SET_SUBSYSTEM_INFO = 34,
+			SET_CONTROLLER_INFO = 35,
+			SET_MEMORY_MAPS = 36 | EXPERIMENTAL,
+			SET_GEOMETRY = 37,
+			GET_USERNAME = 38,
+			GET_LANGUAGE = 39,
+
+			EXPERIMENTAL = 0x10000
 		};
 
 		public enum RETRO_PIXEL_FORMAT
@@ -457,63 +475,20 @@ namespace BizHawk.Emulation.Cores
 		public epretro_get_memory_size retro_get_memory_size;
 		#endregion
 
-		private static Dictionary<IntPtr, LibRetro> AttachedCores = new Dictionary<IntPtr, LibRetro>();
-		private IntPtr hModule = IntPtr.Zero;
-
 		public void Dispose()
 		{
-			// like many other emu cores, libretros are in general single instance, so we track some things
-			lock (AttachedCores)
-			{
-				if (hModule != IntPtr.Zero)
-				{
-					retro_deinit();
-					ClearAllEntryPoints();
-					Win32.FreeLibrary(hModule);
-					AttachedCores.Remove(hModule);
-					hModule = IntPtr.Zero;
-				}
-			}
+			dll.Dispose();
 		}
 
+		InstanceDll dll;
 		public LibRetro(string modulename)
 		{
-			// like many other emu cores, libretros are in general single instance, so we track some things
-			lock (AttachedCores)
+			dll = new InstanceDll(modulename);
+			if (!ConnectAllEntryPoints())
 			{
-				IntPtr newmodule = Win32.LoadLibrary(modulename);
-				if (newmodule == IntPtr.Zero)
-					throw new Exception(string.Format("LoadLibrary(\"{0}\") returned NULL", modulename));
-
-				if (AttachedCores.ContainsKey(newmodule))
-				{
-					// this core is already loaded, so we must detatch the old instance
-					LibRetro martyr = AttachedCores[newmodule];
-					martyr.retro_deinit();
-					martyr.ClearAllEntryPoints();
-					martyr.hModule = IntPtr.Zero;
-					Win32.FreeLibrary(newmodule); // decrease ref count by 1
-				}
-				AttachedCores[newmodule] = this;
-				hModule = newmodule;
-				if (!ConnectAllEntryPoints())
-				{
-					ClearAllEntryPoints();
-					Win32.FreeLibrary(hModule);
-					hModule = IntPtr.Zero;
-					throw new Exception("ConnectAllEntryPoints() failed.  The console may contain more details.");
-				}
+				dll.Dispose();
+				throw new Exception("ConnectAllEntryPoints() failed.  The console may contain more details.");
 			}
-		}
-
-		private static class Win32
-		{
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr LoadLibrary(string dllToLoad);
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-			[DllImport("kernel32.dll")]
-			public static extern bool FreeLibrary(IntPtr hModule);
 		}
 
 		private static IEnumerable<FieldInfo> GetAllEntryPoints()
@@ -535,7 +510,7 @@ namespace BizHawk.Emulation.Cores
 			foreach (var field in GetAllEntryPoints())
 			{
 				string fieldname = field.Name;
-				IntPtr entry = Win32.GetProcAddress(hModule, fieldname);
+				IntPtr entry = dll.GetProcAddress(fieldname);
 				if (entry != IntPtr.Zero)
 				{
 					field.SetValue(this, Marshal.GetDelegateForFunctionPointer(entry, field.FieldType));

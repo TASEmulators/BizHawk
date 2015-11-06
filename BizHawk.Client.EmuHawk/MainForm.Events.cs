@@ -58,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentRomSubMenu.DropDownItems.Clear();
 			RecentRomSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true));
+				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true, true));
 		}
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -298,6 +298,56 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenRom();
+		}
+
+		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
+		{
+			var oac = new OpenAdvancedChooser(this);
+			if (oac.ShowHawkDialog() == System.Windows.Forms.DialogResult.Cancel)
+				return;
+
+			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchNoGame)
+			{
+				var argsNoGame = new LoadRomArgs();
+				argsNoGame.OpenAdvanced = new OpenAdvanced_LibretroNoGame(Global.Config.LibretroCore);
+				LoadRom("", argsNoGame);
+				return;
+			}
+
+			var args = new LoadRomArgs();
+
+			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchGame)
+				args.OpenAdvanced = new OpenAdvanced_Libretro();
+			else if (oac.Result == OpenAdvancedChooser.Command.ClassicLaunchGame)
+				args.OpenAdvanced = new OpenAdvanced_OpenRom();
+			else throw new InvalidOperationException("Automatic Alpha Sanitizer");
+
+
+			//-----------------
+			//CLONE OF CODE FROM OpenRom (mostly)
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
+				Filter = RomFilter,
+				RestoreDirectory = false,
+				FilterIndex = _lastOpenRomFilter,
+				Title = "Open Advanced"
+			};
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var file = new FileInfo(ofd.FileName);
+			Global.Config.LastRomPath = file.DirectoryName;
+			_lastOpenRomFilter = ofd.FilterIndex;
+			//-----------------
+
+		
+
+			LoadRom(file.FullName, args);
 		}
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
@@ -1130,6 +1180,34 @@ namespace BizHawk.Client.EmuHawk
 			ThrottleMessage();
 		}
 
+		public void RunLibretroCoreChooser()
+		{
+			var ofd = new OpenFileDialog();
+
+			if (Global.Config.LibretroCore != null)
+			{
+				ofd.FileName = Path.GetFileName(Global.Config.LibretroCore);
+				ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.LibretroCore);
+			}
+			else
+			{
+				ofd.InitialDirectory = PathManager.GetPathType("Libretro", "Cores");
+			}
+
+			ofd.RestoreDirectory = true;
+			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
+
+			if (ofd.ShowDialog() == DialogResult.Cancel)
+				return;
+
+			Global.Config.LibretroCore = ofd.FileName;
+		}
+
+		private void setLibretroCoreToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunLibretroCoreChooser();
+		}
+
 		#endregion
 
 		#region Tools
@@ -1202,6 +1280,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudioMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!Global.Emulator.CanPollInput())
+			{
+				MessageBox.Show("Current core does not support input polling. TAStudio can't be used.");
+				return;
+			}
 			GlobalWin.Tools.Load<TAStudio>();
 		}
 
