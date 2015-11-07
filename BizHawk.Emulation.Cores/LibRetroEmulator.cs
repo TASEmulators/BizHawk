@@ -114,6 +114,8 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.SET_PERFORMANCE_LEVEL:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_SYSTEM_DIRECTORY:
+					//please write an example of a core that crashes without this (fmsx malfunctions..)
+					//"this is optional, but many cores will silently malfunction without it as they can't load their firmware files"
 					//an alternative (alongside where the saverams and such will go?)
 					//*((IntPtr*)data.ToPointer()) = unmanagedResources.StringToHGlobalAnsi(CoreComm.CoreFileProvider.GetGameBasePath());
 					*((IntPtr*)data.ToPointer()) = SystemDirectoryAtom;
@@ -188,15 +190,18 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.GET_LOG_INTERFACE:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_PERF_INTERFACE:
-					return false;
+					//some builds of fmsx core crash without this set
+					Marshal.StructureToPtr(retro_perf_callback, data, false);
+					return true;
 				case LibRetro.RETRO_ENVIRONMENT.GET_LOCATION_INTERFACE:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_CORE_ASSETS_DIRECTORY:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_SAVE_DIRECTORY:
+					//supposedly optional like everything else here, but without it ?? crashes (please write which case)
 					//this will suffice for now. if we find evidence later it's needed we can stash a string with 
 					//unmanagedResources and CoreFileProvider
-					*((IntPtr*)data.ToPointer()) = IntPtr.Zero; 
+					//*((IntPtr*)data.ToPointer()) = IntPtr.Zero; 
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_CONTROLLER_INFO:
 					return true;
@@ -265,6 +270,8 @@ namespace BizHawk.Emulation.Cores
 		LibRetro.retro_input_poll_t retro_input_poll_cb;
 		LibRetro.retro_input_state_t retro_input_state_cb;
 
+		LibRetro.retro_perf_callback retro_perf_callback = new LibRetro.retro_perf_callback();
+
 		#endregion
 
 		private LibRetro retro;
@@ -292,13 +299,28 @@ namespace BizHawk.Emulation.Cores
 			ServiceProvider = new BasicServiceProvider(this);
 
 			_SyncSettings = new SyncSettings();
-
+		
 			retro_environment_cb = new LibRetro.retro_environment_t(retro_environment);
 			retro_video_refresh_cb = new LibRetro.retro_video_refresh_t(retro_video_refresh);
 			retro_audio_sample_cb = new LibRetro.retro_audio_sample_t(retro_audio_sample);
 			retro_audio_sample_batch_cb = new LibRetro.retro_audio_sample_batch_t(retro_audio_sample_batch);
 			retro_input_poll_cb = new LibRetro.retro_input_poll_t(retro_input_poll);
 			retro_input_state_cb = new LibRetro.retro_input_state_t(retro_input_state);
+
+			//no way (need new mechanism) to check for SSSE3, MMXEXT, SSE4, SSE42
+			retro_perf_callback.get_cpu_features = new LibRetro.retro_get_cpu_features_t(() => (ulong)(
+					(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsXMMIAvailable) ? LibRetro.RETRO_SIMD.SSE : 0) |
+					(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsXMMI64Available) ? LibRetro.RETRO_SIMD.SSE2 : 0) |
+					(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsSSE3Available) ? LibRetro.RETRO_SIMD.SSE3 : 0) |
+					(Win32PInvokes.IsProcessorFeaturePresent(Win32PInvokes.ProcessorFeature.InstructionsMMXAvailable) ? LibRetro.RETRO_SIMD.MMX : 0)
+				) );
+			retro_perf_callback.get_perf_counter = new LibRetro.retro_perf_get_counter_t(() => System.Diagnostics.Stopwatch.GetTimestamp());
+			retro_perf_callback.get_time_usec = new LibRetro.retro_perf_get_time_usec_t(() => DateTime.Now.Ticks / 10);
+			retro_perf_callback.perf_log = new LibRetro.retro_perf_log_t( () => {} );
+			retro_perf_callback.perf_register = new LibRetro.retro_perf_register_t((ref LibRetro.retro_perf_counter counter) => { });
+			retro_perf_callback.perf_start = new LibRetro.retro_perf_start_t((ref LibRetro.retro_perf_counter counter) => { });
+			retro_perf_callback.perf_stop = new LibRetro.retro_perf_stop_t((ref LibRetro.retro_perf_counter counter) => { });
+
 
 			retro = new LibRetro(modulename);
 			try

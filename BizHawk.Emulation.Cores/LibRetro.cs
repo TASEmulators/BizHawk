@@ -263,6 +263,29 @@ namespace BizHawk.Emulation.Cores
 			SCROLLLOCK = 64
 		};
 
+		[Flags]
+		public enum RETRO_SIMD
+		{
+			SSE = (1 << 0),
+			SSE2 = (1 << 1),
+			VMX = (1 << 2),
+			VMX128 = (1 << 3),
+			AVX = (1 << 4),
+			NEON = (1 << 5),
+			SSE3 = (1 << 6),
+			SSSE3 = (1 << 7),
+			MMX = (1 << 8),
+			MMXEXT = (1 << 9),
+			SSE4 = (1 << 10),
+			SSE42 = (1 << 11),
+			AVX2 = (1 << 12),
+			VFPU = (1 << 13),
+			PS = (1 << 14),
+			AES = (1 << 15),
+			VFPV3 = (1 << 16),
+			VFPV4 = (1 << 17),
+		}
+
 		public enum RETRO_ENVIRONMENT
 		{
 			SET_ROTATION = 1,
@@ -369,6 +392,46 @@ namespace BizHawk.Emulation.Cores
 			public IntPtr data;
 			public uint size;
 			public string meta;
+		}
+
+		//untested
+		public struct retro_perf_counter
+		{
+			public string ident;
+			public ulong start;
+			public ulong total;
+			public ulong call_cnt;
+
+			[MarshalAs(UnmanagedType.U1)]
+			public bool registered;
+		};
+
+		//perf callbacks
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate long retro_perf_get_time_usec_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate long retro_perf_get_counter_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate ulong retro_get_cpu_features_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_log_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_register_t(ref retro_perf_counter counter);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_start_t(ref retro_perf_counter counter);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_stop_t(ref retro_perf_counter counter);
+
+		//for GET_PERF_INTERFACE
+		public struct retro_perf_callback
+		{
+			public retro_perf_get_time_usec_t get_time_usec;
+			public retro_get_cpu_features_t get_cpu_features;
+			public retro_perf_get_counter_t get_perf_counter;
+			public retro_perf_register_t perf_register;
+			public retro_perf_start_t perf_start;
+			public retro_perf_stop_t perf_stop;
+			public retro_perf_log_t perf_log;
 		}
 
 		#region callback prototypes

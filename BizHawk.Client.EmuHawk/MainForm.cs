@@ -836,7 +836,7 @@ namespace BizHawk.Client.EmuHawk
 		public void RebootCore()
 		{
 			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRom);
-			if (ioa is IOpenAdvancedLibretro)
+			if (ioa is OpenAdvanced_LibretroNoGame)
 				LoadRom("", CurrentlyOpenRomArgs);
 			else
 				LoadRom(ioa.SimplePath, CurrentlyOpenRomArgs);
