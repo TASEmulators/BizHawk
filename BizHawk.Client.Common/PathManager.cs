@@ -259,9 +259,6 @@ namespace BizHawk.Client.Common
 			var filesystemSafeName = game.Name.Replace("|", "+");
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
-			//var parts = filesystemSafeName.Split(System.IO.Path.PathSeparator);
-			//var dirParts = new string[parts.Length - 1];
-			//Array.Copy(parts, dirParts, dirParts.Length);
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
 			filesystemSafeName = Path.GetFileName(filesystemSafeName);
 
@@ -293,6 +290,14 @@ namespace BizHawk.Client.Common
 							Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
+		}
+
+		public static string GetGameBasePath(GameInfo game)
+		{
+			var name = FilesystemSafeName(game);
+
+			var pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
 
 		public static string GetSaveStatePath(GameInfo game)

@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		string GetSaveRAMPath();
 
+		string GetGameBasePath();
+
 
 		#region EmuLoadHelper api
 

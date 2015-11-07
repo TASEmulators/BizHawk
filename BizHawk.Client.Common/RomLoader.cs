@@ -181,6 +181,35 @@ namespace BizHawk.Client.Common
 
 		public bool AsLibretro;
 
+		bool HandleArchiveBinding(HawkFile file)
+		{
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
+
+			// try binding normal rom extensions first
+			if (!file.IsBound)
+			{
+				file.BindSoleItemOf(romExtensions);
+			}
+
+			// if we have an archive and need to bind something, then pop the dialog
+			if (file.IsArchive && !file.IsBound)
+			{
+				int? result = HandleArchive(file);
+				if (result.HasValue)
+				{
+					file.BindArchiveMember(result.Value);
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			CanonicalFullPath = file.CanonicalFullPath;
+
+			return true;
+		}
+
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
 			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
@@ -199,7 +228,6 @@ namespace BizHawk.Client.Common
 
 			using (var file = new HawkFile())
 			{
-				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
 
 				//only try mounting a file if a filename was given
 				if (!string.IsNullOrEmpty(path))
@@ -213,30 +241,9 @@ namespace BizHawk.Client.Common
 					{
 						return false;
 					}
-
-					// try binding normal rom extensions first
-					if (!file.IsBound)
-					{
-						file.BindSoleItemOf(romExtensions);
-					}
-
-					// if we have an archive and need to bind something, then pop the dialog
-					if (file.IsArchive && !file.IsBound)
-					{
-						int? result = HandleArchive(file);
-						if (result.HasValue)
-						{
-							file.BindArchiveMember(result.Value);
-						}
-						else
-						{
-							return false;
-						}
-					}
-
-					// set this here so we can see what file we tried to load even if an error occurs
-					CanonicalFullPath = file.CanonicalFullPath;
 				}
+
+				CanonicalFullPath = file.CanonicalFullPath;
 
 				IEmulator nextEmulator = null;
 				RomGame rom = null;
@@ -291,7 +298,11 @@ namespace BizHawk.Client.Common
 								if (retro.system_info.need_fullpath)
 									ret = retro.LoadPath(file.FullPathWithoutMember);
 								else
-									ret = retro.LoadData(file.ReadAllBytes());
+								{
+									ret = HandleArchiveBinding(file);
+									if (ret)
+										ret = retro.LoadData(file.ReadAllBytes());
+								}
 
 								if (!ret)
 								{
@@ -311,8 +322,14 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						//if not libretro, do extension checknig
+						//if not libretro:
+						
+						//do extension checknig
 						ext = file.Extension.ToLowerInvariant();
+
+						//do the archive binding we had to skip
+						if (!HandleArchiveBinding(file))
+							return false;
 					}
 
 					if (string.IsNullOrEmpty(ext)) { }

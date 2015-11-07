@@ -92,6 +92,7 @@ namespace BizHawk.Emulation.Cores
 
 		unsafe bool retro_environment(LibRetro.RETRO_ENVIRONMENT cmd, IntPtr data)
 		{
+			Console.WriteLine(cmd);
 			switch (cmd)
 			{
 				case LibRetro.RETRO_ENVIRONMENT.SET_ROTATION:
@@ -113,6 +114,9 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.SET_PERFORMANCE_LEVEL:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_SYSTEM_DIRECTORY:
+					//an alternative (alongside where the saverams and such will go?)
+					//*((IntPtr*)data.ToPointer()) = unmanagedResources.StringToHGlobalAnsi(CoreComm.CoreFileProvider.GetGameBasePath());
+					*((IntPtr*)data.ToPointer()) = SystemDirectoryAtom;
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_PIXEL_FORMAT:
 					{
@@ -143,8 +147,28 @@ namespace BizHawk.Emulation.Cores
 					// this can be done in principle, but there's no reason to right now
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_VARIABLE:
+					{
+						void** variables = (void**)data.ToPointer();
+						IntPtr pKey = new IntPtr(*variables++);
+						string key = Marshal.PtrToStringAnsi(pKey);
+						Console.WriteLine("Requesting variable: {0}", key);
+						*variables = unmanagedResources.StringToHGlobalAnsi("0").ToPointer();
+					}
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_VARIABLES:
+					{
+						void** variables = (void**)data.ToPointer();
+						for (; ; )
+						{
+							IntPtr pKey = new IntPtr(*variables++);
+							IntPtr pValue = new IntPtr(*variables++);
+							if(pKey == IntPtr.Zero)
+								break;
+							string key = Marshal.PtrToStringAnsi(pKey);
+							string value = Marshal.PtrToStringAnsi(pValue);
+							Console.WriteLine("Defined variable: {0} = {1}", key, value);
+						}
+					}
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_VARIABLE_UPDATE:
 					return false;
@@ -174,6 +198,8 @@ namespace BizHawk.Emulation.Cores
 					//unmanagedResources and CoreFileProvider
 					*((IntPtr*)data.ToPointer()) = IntPtr.Zero; 
 					return false;
+				case LibRetro.RETRO_ENVIRONMENT.SET_CONTROLLER_INFO:
+					return true;
 				default:
 					Console.WriteLine("Unknkown retro_environment command {0}", (int)cmd);
 					return false;
@@ -253,9 +279,16 @@ namespace BizHawk.Emulation.Cores
 		}
 		public RetroEnvironmentInfo EnvironmentInfo = new RetroEnvironmentInfo();
 
+		string CoresDirectory;
+		string SystemDirectory;
+		IntPtr SystemDirectoryAtom;
 
 		public LibRetroEmulator(CoreComm nextComm, string modulename)
 		{
+			CoresDirectory = Path.GetDirectoryName(new FileInfo(modulename).FullName);
+			SystemDirectory = Path.Combine(CoresDirectory, "System");
+			SystemDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SystemDirectory);
+
 			ServiceProvider = new BasicServiceProvider(this);
 
 			_SyncSettings = new SyncSettings();
@@ -371,7 +404,6 @@ namespace BizHawk.Emulation.Cores
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			//TODO - consider changing directory and using Libretro subdir of bizhawk as a kind of sandbox, for the duration of the run?
-			CloneSaveRam();
 			IsLagFrame = true;
 			Frame++;
 			nsamprecv = 0;
@@ -476,11 +508,16 @@ namespace BizHawk.Emulation.Cores
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			fixed (byte* ptr = &savebuff[0])
+			//is this the only way we know of to detect unavailable savestates?
+			if (savebuff.Length > 0)
 			{
-				if (!retro.retro_serialize((IntPtr)ptr, (uint)savebuff.Length))
-					throw new Exception("retro_serialize() failed");
+				fixed (byte* ptr = &savebuff[0])
+				{
+					if (!retro.retro_serialize((IntPtr)ptr, (uint)savebuff.Length))
+						throw new Exception("retro_serialize() failed");
+				}
 			}
+
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
 			// other variables
@@ -495,10 +532,13 @@ namespace BizHawk.Emulation.Cores
 			if (newlen > savebuff.Length)
 				throw new Exception("Unexpected buffer size");
 			reader.Read(savebuff, 0, newlen);
-			fixed (byte* ptr = &savebuff[0])
+			if (savebuff.Length > 0)
 			{
-				if (!retro.retro_unserialize((IntPtr)ptr, (uint)newlen))
-					throw new Exception("retro_unserialize() failed");
+				fixed (byte* ptr = &savebuff[0])
+				{
+					if (!retro.retro_unserialize((IntPtr)ptr, (uint)newlen))
+						throw new Exception("retro_unserialize() failed");
+				}
 			}
 			// other variables
 			Frame = reader.ReadInt32();
@@ -699,7 +739,9 @@ namespace BizHawk.Emulation.Cores
 		{
 			get
 			{
-				if (dar > 1.0f)
+				if(dar==0)
+					return BufferWidth;
+				else if (dar > 1.0f)
 					return (int)(BufferHeight * dar);
 				else
 					return BufferWidth;
@@ -709,6 +751,8 @@ namespace BizHawk.Emulation.Cores
 		{
 			get
 			{
+				if(dar==0)
+					return BufferHeight;
 				if (dar < 1.0f)
 					return (int)(BufferWidth / dar);
 				else
