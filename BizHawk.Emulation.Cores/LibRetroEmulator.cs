@@ -73,15 +73,12 @@ namespace BizHawk.Emulation.Cores
 
 		public bool PutSyncSettings(SyncSettings o)
 		{
-			//currently LEC and pad settings changes both require reboot
-			bool reboot = true;
-
+			bool reboot = false;
+			
 			//we could do it this way roughly if we need to
 			//if(JsonConvert.SerializeObject(o.FIOConfig) != JsonConvert.SerializeObject(_SyncSettings.FIOConfig)
 
-
 			_SyncSettings = o;
-
 
 			return reboot;
 		}
@@ -168,14 +165,14 @@ namespace BizHawk.Emulation.Cores
 								break;
 							string key = Marshal.PtrToStringAnsi(pKey);
 							string value = Marshal.PtrToStringAnsi(pValue);
-							Console.WriteLine("Defined variable: {0} = {1}", key, value);
+							environmentInfo.Variables.Add(Tuple.Create(key, value));
 						}
 					}
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_VARIABLE_UPDATE:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_SUPPORT_NO_GAME:
-					EnvironmentInfo.SupportNoGame = true;
+					environmentInfo.SupportNoGame = true;
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_LIBRETRO_PATH:
 					return false;
@@ -274,18 +271,75 @@ namespace BizHawk.Emulation.Cores
 
 		#endregion
 
+		class RetroEnvironmentInfo
+		{
+			public bool SupportNoGame;
+			public List<Tuple<string, string>> Variables = new List<Tuple<string, string>>();
+		}
+
+		//disposable resources
 		private LibRetro retro;
 		private UnmanagedResourceHeap unmanagedResources = new UnmanagedResourceHeap();
 
-		//todo - make private
-		public LibRetro.retro_system_info system_info = new LibRetro.retro_system_info();
+		/// <summary>
+		/// Cached information sent to the frontend by environment calls
+		/// </summary>
+		RetroEnvironmentInfo environmentInfo = new RetroEnvironmentInfo();
 
-		public struct RetroEnvironmentInfo
+		public class RetroDescription
 		{
-			public bool SupportNoGame;
-		}
-		public RetroEnvironmentInfo EnvironmentInfo = new RetroEnvironmentInfo();
+			/// <summary>
+			/// String containing a friendly display name for the core, but we probably shouldn't use this. I decided it's better to get the user used to using filenames as core 'codenames' instead.
+			/// </summary>
+			public string LibraryName;
 
+			/// <summary>
+			/// String containing a friendly version number for the core library
+			/// </summary>
+			public string LibraryVersion;
+
+			/// <summary>
+			/// List of extensions as "sfc|smc|fig" which this core accepts.
+			/// </summary>
+			public string ValidExtensions;
+
+			/// <summary>
+			/// Whether the core needs roms to be specified as paths (can't take rom data buffersS)
+			/// </summary>
+			public bool NeedsRomAsPath;
+
+			/// <summary>
+			/// Whether the core needs roms stored as archives (e.g. arcade roms). We probably shouldn't employ the dearchiver prompts when opening roms for these cores.
+			/// </summary>
+			public bool NeedsArchives;
+
+			/// <summary>
+			/// Whether the core can be run without a game provided (e.g. stand-alone games, like 2048)
+			/// </summary>
+			public bool SupportsNoGame;
+
+			/// <summary>
+			/// Variables defined by the core
+			/// </summary>
+			public Dictionary<string, VariableDescription> Variables = new Dictionary<string, VariableDescription>();
+		}
+
+		public class VariableDescription
+		{
+			public string Name;
+			public string Description;
+			public string[] Options;
+			public string DefaultOption { get { return Options[0]; } }
+
+			public override string ToString()
+			{
+				return string.Format("{0} ({1}) = ({2})", Name, Description, string.Join("|", Options));
+			}
+		}
+
+		public readonly RetroDescription Description = new RetroDescription();
+
+		//path configuration
 		string CoresDirectory;
 		string SystemDirectory;
 		IntPtr SystemDirectoryAtom;
@@ -321,21 +375,41 @@ namespace BizHawk.Emulation.Cores
 			retro_perf_callback.perf_start = new LibRetro.retro_perf_start_t((ref LibRetro.retro_perf_counter counter) => { });
 			retro_perf_callback.perf_stop = new LibRetro.retro_perf_stop_t((ref LibRetro.retro_perf_counter counter) => { });
 
-
 			retro = new LibRetro(modulename);
+
 			try
 			{
 				CoreComm = nextComm;
 
+				//this series of steps may be mystical.
+				LibRetro.retro_system_info system_info = new LibRetro.retro_system_info();
 				retro.retro_get_system_info(ref system_info);
 
 				retro.retro_set_environment(retro_environment_cb);
+				
 				retro.retro_init();
+
 				retro.retro_set_video_refresh(retro_video_refresh_cb);
 				retro.retro_set_audio_sample(retro_audio_sample_cb);
 				retro.retro_set_audio_sample_batch(retro_audio_sample_batch_cb);
 				retro.retro_set_input_poll(retro_input_poll_cb);
 				retro.retro_set_input_state(retro_input_state_cb);
+
+				//compile descriptive information
+				Description.NeedsArchives = system_info.block_extract;
+				Description.NeedsRomAsPath = system_info.need_fullpath;
+				Description.LibraryName = system_info.library_name;
+				Description.LibraryVersion = system_info.library_version;
+				Description.ValidExtensions = system_info.valid_extensions;
+				Description.SupportsNoGame = environmentInfo.SupportNoGame;
+				foreach (var vv in environmentInfo.Variables)
+				{
+					var vd = new VariableDescription() { Name = vv.Item1 };
+					var parts = vv.Item2.Split(';');
+					vd.Description = parts[0];
+					vd.Options = parts[1].TrimStart(' ').Split('|');
+					Description.Variables[vd.Name] = vd;
+				}
 			}
 			catch
 			{
@@ -343,6 +417,8 @@ namespace BizHawk.Emulation.Cores
 				retro = null;
 				throw;
 			}
+
+
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }

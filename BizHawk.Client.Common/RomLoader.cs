@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 						var retro = new LibRetroEmulator(nextComm, nextComm.LaunchLibretroCore);
 						nextEmulator = retro;
 
-						if (retro.EnvironmentInfo.SupportNoGame && string.IsNullOrEmpty(path))
+						if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
 						{
 							//if we are allowed to run NoGame and we dont have a game, boot up the core that way
 							bool ret = retro.LoadNoGame();
@@ -283,7 +283,7 @@ namespace BizHawk.Client.Common
 
 							//if the core requires an archive file, then try passing the filename of the archive
 							//(but do we ever need to actually load the contents of the archive file into ram?)
-							if (retro.system_info.block_extract)
+							if (retro.Description.NeedsArchives)
 							{
 								if (file.IsArchiveMember)
 									throw new InvalidOperationException("Should not have bound file member for libretro block_extract core");
@@ -292,10 +292,10 @@ namespace BizHawk.Client.Common
 							else
 							{
 								//otherwise load the data or pass the filename, as requested. but..
-								if (retro.system_info.need_fullpath && file.IsArchiveMember)
+								if (retro.Description.NeedsRomAsPath && file.IsArchiveMember)
 									throw new InvalidOperationException("Cannot pass archive member to libretro needs_fullpath core");
 
-								if (retro.system_info.need_fullpath)
+								if (retro.Description.NeedsRomAsPath)
 									ret = retro.LoadPath(file.FullPathWithoutMember);
 								else
 								{
@@ -314,7 +314,7 @@ namespace BizHawk.Client.Common
 							}
 
 							//game name == name of core + extensionless_game_filename
-							gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.CanonicalName));
+							gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
 						}
 
 						game = new GameInfo { Name = gameName, System = "Libretro" };

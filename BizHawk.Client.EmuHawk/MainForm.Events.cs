@@ -316,8 +316,13 @@ namespace BizHawk.Client.EmuHawk
 
 			var args = new LoadRomArgs();
 
+			var filter = RomFilter;
+
 			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchGame)
+			{
 				args.OpenAdvanced = new OpenAdvanced_Libretro();
+				filter = oac.SuggestedExtensionFilter;
+			}
 			else if (oac.Result == OpenAdvancedChooser.Command.ClassicLaunchGame)
 				args.OpenAdvanced = new OpenAdvanced_OpenRom();
 			else throw new InvalidOperationException("Automatic Alpha Sanitizer");
@@ -328,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 			var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId),
-				Filter = RomFilter,
+				Filter = filter,
 				RestoreDirectory = false,
 				FilterIndex = _lastOpenRomFilter,
 				Title = "Open Advanced"

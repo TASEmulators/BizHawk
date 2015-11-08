@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public Command Result;
+		public string SuggestedExtensionFilter;
 
 		public OpenAdvancedChooser(MainForm mainForm)
 		{
@@ -33,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 			InitializeComponent();
 
-			RefreshLibretroCore();
+			RefreshLibretroCore(true);
 		}
 
 		private void btnOK_Click(object sender, EventArgs e)
@@ -51,10 +52,11 @@ namespace BizHawk.Client.EmuHawk
 		private void btnSetLibretroCore_Click(object sender, EventArgs e)
 		{
 			mainForm.RunLibretroCoreChooser();
-			RefreshLibretroCore();
+			RefreshLibretroCore(false);
 		}
 
-		void RefreshLibretroCore()
+		LibRetroEmulator.RetroDescription CurrentDescription;
+		void RefreshLibretroCore(bool bootstrap)
 		{
 			txtLibretroCore.Text = "";
 			btnLibretroLaunchNoGame.Enabled = false;
@@ -65,22 +67,60 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			txtLibretroCore.Text = core;
-			btnLibretroLaunchGame.Enabled = true;
+			CurrentDescription = null;
 
-			//scan the current libretro core to see if it can be launched with NoGame
+			//scan the current libretro core to see if it can be launched with NoGame,and other stuff
 			try
 			{
 				using (var retro = new LibRetroEmulator(new BizHawk.Emulation.Common.CoreComm(null, null), core))
 				{
-					if (retro.EnvironmentInfo.SupportNoGame)
+					btnLibretroLaunchGame.Enabled = true;
+					if (retro.Description.SupportsNoGame)
 						btnLibretroLaunchNoGame.Enabled = true;
+
+					//print descriptive information
+					var descr = retro.Description;
+					CurrentDescription = descr;
+					Console.WriteLine("core name: {0} version {1}", descr.LibraryName, descr.LibraryVersion);
+					Console.WriteLine("extensions: ", descr.ValidExtensions);
+					Console.WriteLine("NeedsRomAsPath: {0}", descr.NeedsRomAsPath);
+					Console.WriteLine("AcceptsArchives: {0}", descr.NeedsArchives);
+					Console.WriteLine("SupportsNoGame: {0}", descr.SupportsNoGame);
+					
+					foreach (var v in descr.Variables.Values)
+						Console.WriteLine(v);
 				}
 			}
-			catch { }
+			catch
+			{
+				if (!bootstrap)
+					MessageBox.Show("Couldn't load the selected Libretro core for analysis. It won't be available.");
+			}
 		}
 
 		private void btnLibretroLaunchGame_Click(object sender, EventArgs e)
 		{
+			//build a list of extensions suggested for use for this core
+			StringWriter sw = new StringWriter();
+			foreach(var ext in CurrentDescription.ValidExtensions.Split('|'))
+				sw.Write("*.{0};",ext);
+			var filter = sw.ToString();
+			filter = filter.Substring(0,filter.Length-1);
+			List<string> args = new List<string>();
+			args.Add("Rom Files");
+			if (!CurrentDescription.NeedsArchives)
+				filter += ";%ARCH%";
+			args.Add(filter);
+			if (!CurrentDescription.NeedsArchives)
+			{
+				args.Add("Archive Files");
+				args.Add("%ARCH%");
+			}
+			args.Add("All Files");
+			args.Add("*.*");
+			filter = MainForm.FormatFilter(args.ToArray());
+			SuggestedExtensionFilter = filter;
+
 			Result = Command.RetroLaunchGame;
 			DialogResult = System.Windows.Forms.DialogResult.OK;
 			Close();

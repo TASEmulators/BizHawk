@@ -506,6 +506,7 @@ namespace BizHawk.Emulation.Cores
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate uint epretro_get_memory_size(RETRO_MEMORY id);
 		#endregion
+
 		#region entry points
 		// these are all hooked up by reflection on dll load
 		public epretro_set_environment retro_set_environment;
