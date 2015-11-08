@@ -2735,7 +2735,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LoadRom(filePaths[0]);
+				var args = new LoadRomArgs();
+				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
+				LoadRom(filePaths[0],args);
 			}
 		}
 
