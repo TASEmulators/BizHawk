@@ -127,14 +127,14 @@
   <data name="ts_v_piano_13" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_13.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_h_piano_00_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_h_piano_00_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="AudioHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\AudioHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Scan" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Scan.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_v_piano_02_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_v_piano_02_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Square" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Square.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="A78Joystick" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ControllerImages\A78Joystick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -157,8 +157,8 @@
   <data name="FastForward" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\FastForward.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Close" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Close.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ts_h_piano_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_h_piano_11.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MoveDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\MoveDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,8 +166,8 @@
   <data name="ToolBox" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ToolBox.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="FindHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\FindHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\ControllerImages\NES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SNES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ControllerImages\SNES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -232,14 +232,14 @@
   <data name="Triangle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Triangle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="NESControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\NESControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MoveLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\MoveLeft.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_h_piano_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_h_piano_11.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Erase" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Erase.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_v_piano_11_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_v_piano_11_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ts_v_piano_17_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_v_piano_17_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_h_piano_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -253,8 +253,8 @@
   <data name="ts_h_piano_15_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_15_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_v_piano_07_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_v_piano_07_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="restart" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\restart.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="YellowDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\YellowDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -273,9 +273,6 @@
   </data>
   <data name="ts_v_piano_18" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_18.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Square" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Square.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_v_arrow_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_arrow_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -313,8 +310,8 @@
   <data name="ts_v_piano_18_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_18_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_v_piano_15_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_v_piano_15_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Stop.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="monitor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\monitor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -337,11 +334,23 @@
   <data name="BlueDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\BlueDown.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ts_v_piano_11_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_v_piano_11_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cheat" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\cheat.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Previous" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Previous.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ts_v_piano_07_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_v_piano_07_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ts_v_piano_00_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_00_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_marker" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\icon_marker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="reboot" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\reboot.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -355,11 +364,14 @@
   <data name="ts_h_arrow_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_arrow_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TurboFastForward" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\TurboFastForward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ts_h_piano_17_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_h_piano_17_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GenesisControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\GenesisControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="icon_anchor_lag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\icon_anchor_lag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="GameController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\GameController.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -436,6 +448,9 @@
   <data name="ts_h_piano_04_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_04_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TurboFastForward" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\TurboFastForward.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="whiteTriLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\whiteTriLeft.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -490,9 +505,6 @@
   <data name="ts_h_piano_00_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_00_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_v_piano_17_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_v_piano_17_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ts_h_piano_06_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_06_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -523,6 +535,9 @@
   <data name="ts_h_piano_07" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_07.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="gambatte" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\gambatte.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ts_v_piano_01_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_01_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -549,6 +564,9 @@
   </data>
   <data name="ts_v_piano_15_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_15_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ts_v_piano_02_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_v_piano_02_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_v_piano_09_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_09_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -589,9 +607,6 @@
   <data name="OpenFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\OpenFile.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_h_piano_17_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_h_piano_17_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="ts_h_piano_19_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_19_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -625,6 +640,12 @@
   <data name="ts_h_piano_06_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_06_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ts_h_piano_00_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_h_piano_00_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Close" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\Close.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ts_h_piano_17" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_17.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -634,11 +655,8 @@
   <data name="TAStudio" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\TAStudio.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ts_h_piano_08" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\ts_h_piano_08.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="LightOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\LightOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bsnes" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\bsnes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_v_piano_16_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_16_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -672,9 +690,6 @@
   </data>
   <data name="ts_v_piano_01" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_01.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MoveLeft" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\MoveLeft.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_v_piano_11_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_11_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -715,11 +730,11 @@
   <data name="ts_h_piano_01_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_01_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="LightOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\LightOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="QuickNes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\QuickNes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Erase" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Erase.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_h_piano_07_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_07_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -727,8 +742,8 @@
   <data name="ts_h_piano_14" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_14.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gambatte" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\gambatte.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ts_v_piano_15_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_v_piano_15_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_h_piano_04" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_04.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -766,8 +781,8 @@
   <data name="Both" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Both.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LightOn" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\LightOn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ts_h_piano_08" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\ts_h_piano_08.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Duplicate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\Duplicate.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -796,9 +811,6 @@
   <data name="ts_h_piano_18_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_18_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AudioHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\AudioHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="TI83Calculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\ControllerImages\TI83Calculator.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -825,9 +837,6 @@
   </data>
   <data name="ts_h_piano_09_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_09_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bsnes" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\bsnes.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SaturnController" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\controllerimages\saturncontroller.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -874,6 +883,9 @@
   <data name="SaveConfig" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\SaveConfig.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="LightOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\LightOff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ts_h_piano_03_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_03_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -888,6 +900,9 @@
   </data>
   <data name="pcb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pcb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="kitchensink" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\kitchensink.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_h_piano_18_green" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_18_green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -915,9 +930,6 @@
   </data>
   <data name="ts_v_piano_02" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_02.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\Stop.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="pcejin1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\pcejin1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -976,11 +988,8 @@
   <data name="ts_h_piano_10_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_10_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="NES_Controller" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\ControllerImages\NES_Controller.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cheat" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\cheat.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="NESControllerIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\NESControllerIcon.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_h_piano_15_green_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_15_green_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1003,8 +1012,8 @@
   <data name="ts_h_piano_06_blue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_06_blue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="restart" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\restart.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="icon_anchor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\tastudio\icon_anchor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ts_h_piano_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_h_piano_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1461,6 +1470,9 @@
   <data name="NewFile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\NewFile.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FindHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\FindHS.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ts_v_piano_00" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\tastudio\ts_v_piano_00.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1497,16 +1509,7 @@
   <data name="whiteTriUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\images\whiteTriUp.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="kitchensink" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\kitchensink.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_anchor_lag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\icon_anchor_lag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_marker" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\icon_marker.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="icon_anchor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\tastudio\icon_anchor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="cdlogger" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\images\cdlogger.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			DomainDropDown.Items.AddRange(MemoryDomains
 				.Select(d => d.ToString())
 				.ToArray());
-			DomainDropDown.SelectedItem = MemoryDomains.MainMemory.ToString();
+			DomainDropDown.SelectedItem = domain.ToString();
 
 			SetTitle();
 		}

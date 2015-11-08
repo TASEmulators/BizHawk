@@ -32,6 +32,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatEdit_Load(object sender, EventArgs e)
 		{
+			Restart();
+		}
+
+		public void Restart()
+		{
 			if (MemoryDomains != null) // the designer needs this check
 			{
 				DomainDropDown.Items.Clear();

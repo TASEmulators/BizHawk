@@ -27,6 +27,34 @@ extern "C"
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
+
+	
+
+int iuplua_open(lua_State * L);
+int iupcontrolslua_open(lua_State * L);
+int luaopen_winapi(lua_State * L);
+
+//luasocket
+int luaopen_socket_core(lua_State *L);
+int luaopen_mime_core(lua_State *L);
+
+static void luaperks(lua_State *L)
+{
+	#ifdef LUAPERKS
+		iuplua_open(L);
+		iupcontrolslua_open(L);
+		luaopen_winapi(L);
+
+		//luasocket - yeah, have to open this in a weird way
+		lua_pushcfunction(L,luaopen_socket_core);
+		lua_setglobal(L,"tmp");
+		luaL_dostring(L, "package.preload[\"socket.core\"] = _G.tmp");
+		lua_pushcfunction(L,luaopen_mime_core);
+		lua_setglobal(L,"tmp");
+		luaL_dostring(L, "package.preload[\"mime.core\"] = _G.tmp");
+	#endif
+}
+
 }
 
 // Not sure of the purpose of this, but I'm keeping it -kevinh
@@ -209,6 +237,7 @@ namespace Lua511
 		static void luaL_openlibs(IntPtr luaState)
 		{
 			::luaL_openlibs(toState);
+			::luaperks(toState);
 		}
 
 		// Not yet wrapped

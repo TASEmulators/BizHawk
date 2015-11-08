@@ -234,9 +234,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.AskSave())
 				{
-					CloseGame();
+					//zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
 					Global.MovieSession.Movie.Stop();
 					GlobalWin.Tools.Close();
+					CloseGame();
+					//does this need to be last for any particular reason? do tool dialogs persist settings when closing?
 					SaveConfig();
 				}
 				else
@@ -406,11 +408,11 @@ namespace BizHawk.Client.EmuHawk
 				ToggleFullscreen();
 			}
 
-			if(!Global.Game.IsNullInstance)
+			if (!Global.Game.IsNullInstance)
 			{
-				if(cmdLoadState != null)
+				if (cmdLoadState != null)
 				{
-					LoadState(cmdLoadState,Path.GetFileName(cmdLoadState));
+					LoadState(cmdLoadState, Path.GetFileName(cmdLoadState));
 				}
 				else if (cmdLoadSlot != null)
 				{
@@ -538,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			//NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
-		
+
 			if (GlobalWin.DisplayManager != null)
 			{
 				GlobalWin.DisplayManager.Dispose();
@@ -592,7 +594,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Properties
 
-		public string CurrentlyOpenRom;
+		public string CurrentlyOpenRom; //todo - delete me and use only args instead
+		LoadRomArgs CurrentlyOpenRomArgs;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
@@ -818,21 +821,25 @@ namespace BizHawk.Client.EmuHawk
 					float x = P.X / (float)video.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
-					
+
 				if (o.Item1 == "WMouse Y")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
 					float y = P.Y / (float)video.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
-					
+
 				return o;
 			}));
 		}
 
 		public void RebootCore()
 		{
-			LoadRom(CurrentlyOpenRom);
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRom);
+			if (ioa is OpenAdvanced_LibretroNoGame)
+				LoadRom("", CurrentlyOpenRomArgs);
+			else
+				LoadRom(ioa.SimplePath, CurrentlyOpenRomArgs);
 		}
 
 		public void PauseEmulator()
@@ -875,7 +882,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using(var img = bb.ToSysdrawingBitmap())
+				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}
 
@@ -903,8 +910,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var sequence = string.Format(" ({0})", seq++);
 				fname = string.Format(fmt, prefix, ts, sequence);
-			} 
-				
+			}
+
 			TakeScreenshot(fname);
 		}
 
@@ -1003,7 +1010,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void ToggleFullscreen(bool allowSuppress=false)
+		public void ToggleFullscreen(bool allowSuppress = false)
 		{
 			AutohideCursor(false);
 
@@ -1017,23 +1024,23 @@ namespace BizHawk.Client.EmuHawk
 			if (_inFullscreen == false)
 			{
 				SuspendLayout();
-				#if WINDOWS
-					//Work around an AMD driver bug in >= vista:
-					//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-					//AMD cards manifest a problem under these circumstances, flickering other monitors. 
-					//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
-					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
-					//At any rate, we can solve this by adding a 1px black border around the GL control
-					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					if (Global.Config.DispFullscreenHacks)
-					{
-						//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-						//It seems that some statusbar elements composite with the backcolor. 
-						//Maybe we could add another control under the statusbar. with a different backcolor
-						Padding = new Padding(1);
-						BackColor = Color.Black;
-					}
-				#endif
+#if WINDOWS
+				//Work around an AMD driver bug in >= vista:
+				//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
+				//AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
+				//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
+				//At any rate, we can solve this by adding a 1px black border around the GL control
+				//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
+				if (Global.Config.DispFullscreenHacks)
+				{
+					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
+					//It seems that some statusbar elements composite with the backcolor. 
+					//Maybe we could add another control under the statusbar. with a different backcolor
+					Padding = new Padding(1);
+					BackColor = Color.Black;
+				}
+#endif
 
 				_windowedLocation = Location;
 
@@ -1050,16 +1057,16 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-				#if WINDOWS
-					//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
-					Padding = new Padding(0);
-					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
-					//so we need the statusbar and mainform backdrop color to match
-					BackColor = SystemColors.Control; 
-				#endif
+#if WINDOWS
+				//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
+				Padding = new Padding(0);
+				//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
+				//so we need the statusbar and mainform backdrop color to match
+				BackColor = SystemColors.Control;
+#endif
 
 				_inFullscreen = false;
-					
+
 				SynchChrome();
 				Location = _windowedLocation;
 				ResumeLayout();
@@ -1108,7 +1115,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string ttype = ":(none)";
 			if (Global.Config.SoundThrottle) { ttype = ":Sound"; }
-			if (Global.Config.VSyncThrottle) { ttype = string.Format(":Vsync{0}", Global.Config.VSync?"[ena]":"[dis]");  }
+			if (Global.Config.VSyncThrottle) { ttype = string.Format(":Vsync{0}", Global.Config.VSync ? "[ena]" : "[dis]"); }
 			if (Global.Config.ClockThrottle) { ttype = ":Clock"; }
 			string xtype = _unthrottled ? "Unthrottled" : "Throttled";
 			string msg = string.Format("{0}{1} ", xtype, ttype);
@@ -1732,7 +1739,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadRomFromRecent(string rom)
 		{
-			if (!LoadRom(rom))
+
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(rom);
+
+			LoadRomArgs args = new LoadRomArgs()
+			{
+				OpenAdvanced = ioa
+			};
+
+			//if(ioa is this or that) - for more complex behaviour
+			rom = ioa.SimplePath;
+
+			if (!LoadRom(rom, args))
 			{
 				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
@@ -1929,8 +1947,8 @@ namespace BizHawk.Client.EmuHawk
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider();
 			//bool change = false;
-			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
-			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualHeight);
+			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
+			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
 			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
 			{
 				_lastVideoSize = currVideoSize;
@@ -1954,7 +1972,7 @@ namespace BizHawk.Client.EmuHawk
 			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
 		}
 
-		private static string FormatFilter(params string[] args)
+		public static string FormatFilter(params string[] args)
 		{
 			var sb = new StringBuilder();
 			if (args.Length % 2 != 0)
@@ -1984,7 +2002,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2058,7 +2076,9 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
-			LoadRom(file.FullName);
+
+			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
+			LoadRom(file.FullName, lra);
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -3385,7 +3405,7 @@ namespace BizHawk.Client.EmuHawk
 						// Retry loading the ROM here. This leads to recursion, as the original call to LoadRom has not exited yet,
 						// but unless the user tries and fails to set his firmware a lot of times, nothing should happen.
 						// Refer to how RomLoader implemented its LoadRom method for a potential fix on this.
-						LoadRom(e.RomPath, e.Deterministic);
+						LoadRom(e.RomPath, CurrentLoadRomArgs);
 					}
 				}
 			}
@@ -3417,171 +3437,239 @@ namespace BizHawk.Client.EmuHawk
 			return platformChooser.PlatformChoice;
 		}
 
-		// Still needs a good bit of refactoring
-		public bool LoadRom(string path, bool? deterministicemulation = null)
+		public class LoadRomArgs
 		{
-			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
-			bool deterministic = deterministicemulation.HasValue ?
-				deterministicemulation.Value :
-				Global.MovieSession.QueuedMovie != null;
-				//Global.MovieSession.Movie.IsActive;
-			
-			if (!GlobalWin.Tools.AskSave())
+			public bool? Deterministic;
+			public IOpenAdvanced OpenAdvanced;
+		}
+
+		LoadRomArgs CurrentLoadRomArgs;
+
+		// Still needs a good bit of refactoring
+		public bool LoadRom(string path, LoadRomArgs args = null)
+		{
+			//default args
+			if (args == null) args = new LoadRomArgs();
+
+			//if this is the first call to LoadRom (they will come in recursively) then stash the args
+			bool firstCall = false;
+			if (CurrentLoadRomArgs == null)
 			{
-				return false;
+				firstCall = true;
+				CurrentLoadRomArgs = args;
+			}
+			else
+			{
+				args = CurrentLoadRomArgs;
 			}
 
-			var loader = new RomLoader
+			try
+			{
+				// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
+				bool deterministic = args.Deterministic.HasValue ?
+					args.Deterministic.Value :
+					Global.MovieSession.QueuedMovie != null;
+				//Global.MovieSession.Movie.IsActive;
+
+				if (!GlobalWin.Tools.AskSave())
+				{
+					return false;
+				}
+
+				bool asLibretro = (args.OpenAdvanced is OpenAdvanced_Libretro || args.OpenAdvanced is OpenAdvanced_LibretroNoGame);
+
+				var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
-					MessageCallback = GlobalWin.OSD.AddMessage
+					MessageCallback = GlobalWin.OSD.AddMessage,
+					AsLibretro = asLibretro
 				};
-			Global.FirmwareManager.RecentlyServed.Clear();
+				Global.FirmwareManager.RecentlyServed.Clear();
 
-			loader.OnLoadError += ShowLoadError;
-			loader.OnLoadSettings += CoreSettings;
-			loader.OnLoadSyncSettings += CoreSyncSettings;
+				loader.OnLoadError += ShowLoadError;
+				loader.OnLoadSettings += CoreSettings;
+				loader.OnLoadSyncSettings += CoreSyncSettings;
 
-			// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
-			// any settings changes that we made need to make it back to config before we try to instantiate that core with
-			// the new settings objects
-			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
-			CloseGame();
-			
-			var nextComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-			var result = loader.LoadRom(path, nextComm);
+				// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
+				// any settings changes that we made need to make it back to config before we try to instantiate that core with
+				// the new settings objects
+				CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
+				CloseGame();
 
-			if (result)
-			{
-				Global.Emulator = loader.LoadedEmulator;
-				Global.Game = loader.Game;
+				var nextComm = CreateCoreComm();
+
+				//we need to inform LoadRom which Libretro core to use...
+				IOpenAdvanced ioa = args.OpenAdvanced;
+				if (ioa is IOpenAdvancedLibretro)
+				{
+					var ioaretro = ioa as IOpenAdvancedLibretro;
+					
+					//prepare a core specification
+					//if it wasnt already specified, use the current default
+					if (ioaretro.CorePath == null) ioaretro.CorePath = Global.Config.LibretroCore;
+					nextComm.LaunchLibretroCore = ioaretro.CorePath;
+					if (nextComm.LaunchLibretroCore == null)
+						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
+				}
+
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-				InputManager.SyncControls();
+				var result = loader.LoadRom(path, nextComm);
 
-				if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+				//we need to replace the path in the OpenAdvanced with the canonical one the user chose.
+				//It can't be done until loder.LoadRom happens (for CanonicalFullPath)
+				//i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
+				if (ioa is OpenAdvanced_Libretro)
 				{
-					GlobalWin.Tools.Load<TI83KeyPad>();
+					var oaretro = ioa as OpenAdvanced_Libretro;
+					oaretro.token.Path = loader.CanonicalFullPath;
 				}
+				if (ioa is OpenAdvanced_OpenRom) ((OpenAdvanced_OpenRom)ioa).Path = loader.CanonicalFullPath;
+				string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
 
-				if (loader.LoadedEmulator is NES)
+				if (result)
 				{
-					var nes = loader.LoadedEmulator as NES;
-					if (!string.IsNullOrWhiteSpace(nes.GameName))
+					Global.Emulator = loader.LoadedEmulator;
+					Global.Game = loader.Game;
+					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
+					InputManager.SyncControls();
+
+					if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
-						Global.Game.Name = nes.GameName;
+						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
 
-					Global.Game.Status = nes.RomStatus;
-				}
-				else if (loader.LoadedEmulator is QuickNES)
-				{
-					var qns = loader.LoadedEmulator as QuickNES;
-					if (!string.IsNullOrWhiteSpace(qns.BootGodName))
+					if (loader.LoadedEmulator is NES)
 					{
-						Global.Game.Name = qns.BootGodName;
+						var nes = loader.LoadedEmulator as NES;
+						if (!string.IsNullOrWhiteSpace(nes.GameName))
+						{
+							Global.Game.Name = nes.GameName;
+						}
+
+						Global.Game.Status = nes.RomStatus;
 					}
-					if (qns.BootGodStatus.HasValue)
+					else if (loader.LoadedEmulator is QuickNES)
 					{
-						Global.Game.Status = qns.BootGodStatus.Value;
+						var qns = loader.LoadedEmulator as QuickNES;
+						if (!string.IsNullOrWhiteSpace(qns.BootGodName))
+						{
+							Global.Game.Name = qns.BootGodName;
+						}
+						if (qns.BootGodStatus.HasValue)
+						{
+							Global.Game.Status = qns.BootGodStatus.Value;
+						}
 					}
-				}
 
-				Global.Rewinder.ResetRewindBuffer();
+					Global.Rewinder.ResetRewindBuffer();
 
-				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
-				{
-					Global.Emulator.CoreComm.RomStatusDetails = string.Format(
-						"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
-						loader.Game.Name,
-						loader.Rom.RomData.HashSHA1(),
-						loader.Rom.RomData.HashMD5());
-				}
-
-				if (Global.Emulator.BoardName != null)
-				{
-					Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
-				}
-
-				// restarts the lua console if a different rom is loaded.
-				// im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loader.CanonicalFullPath)
-				{
-					GlobalWin.Tools.Restart<LuaConsole>();
-				}
-
-				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
-				JumpLists.AddRecentItem(loader.CanonicalFullPath);
-
-				// Don't load Save Ram if a movie is being loaded
-				if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
-				{
-					LoadSaveRam();
-				}
-
-				GlobalWin.Tools.Restart();
-
-				if (Global.Config.LoadCheatFileByGame)
-				{
-					if (Global.CheatList.AttemptToLoadCheatFile())
+					if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
 					{
-						GlobalWin.OSD.AddMessage("Cheats file loaded");
+						Global.Emulator.CoreComm.RomStatusDetails = string.Format(
+							"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+							loader.Game.Name,
+							loader.Rom.RomData.HashSHA1(),
+							loader.Rom.RomData.HashMD5());
 					}
-				}
 
-				SetWindowText();
-				CurrentlyOpenRom = loader.CanonicalFullPath;
-				HandlePlatformMenus();
-				_stateSlots.Clear();
-				UpdateCoreStatusBarButton();
-				UpdateDumpIcon();
-				SetMainformMovieInfo();
-
-				Global.Rewinder.CaptureRewindState();
-
-				Global.StickyXORAdapter.ClearStickies();
-				Global.StickyXORAdapter.ClearStickyFloats();
-				Global.AutofireStickyXORAdapter.ClearStickies();
-
-				RewireSound();
-				ToolHelpers.UpdateCheatRelatedTools(null, null);
-				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
-				{
-					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
-				}
-
-				if (Global.FirmwareManager.RecentlyServed.Count > 0)
-				{
-					Console.WriteLine("Active Firmwares:");
-					foreach (var f in Global.FirmwareManager.RecentlyServed)
+					if (Global.Emulator.BoardName != null)
 					{
-						Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
+						Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
 					}
+
+					// restarts the lua console if a different rom is loaded.
+					// im not really a fan of how this is done..
+					if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loaderName)
+					{
+						GlobalWin.Tools.Restart<LuaConsole>();
+					}
+
+					Global.Config.RecentRoms.Add(loaderName);
+					JumpLists.AddRecentItem(loaderName, ioa.DisplayName);
+
+					// Don't load Save Ram if a movie is being loaded
+					if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
+					{
+						LoadSaveRam();
+					}
+
+					GlobalWin.Tools.Restart();
+
+					if (Global.Config.LoadCheatFileByGame)
+					{
+						if (Global.CheatList.AttemptToLoadCheatFile())
+						{
+							GlobalWin.OSD.AddMessage("Cheats file loaded");
+						}
+					}
+
+					SetWindowText();
+					CurrentlyOpenRom = loaderName;
+					HandlePlatformMenus();
+					_stateSlots.Clear();
+					UpdateCoreStatusBarButton();
+					UpdateDumpIcon();
+					SetMainformMovieInfo();
+					CurrentlyOpenRomArgs = args;
+
+					Global.Rewinder.CaptureRewindState();
+
+					Global.StickyXORAdapter.ClearStickies();
+					Global.StickyXORAdapter.ClearStickyFloats();
+					Global.AutofireStickyXORAdapter.ClearStickies();
+
+					RewireSound();
+					ToolHelpers.UpdateCheatRelatedTools(null, null);
+					if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
+					{
+						LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+					}
+
+					if (Global.FirmwareManager.RecentlyServed.Count > 0)
+					{
+						Console.WriteLine("Active Firmwares:");
+						foreach (var f in Global.FirmwareManager.RecentlyServed)
+						{
+							Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
+						}
+					}
+					return true;
+				}
+				else
+				{
+					//This shows up if there's a problem                
+					// TODO: put all these in a single method or something
+
+					//The ROM has been loaded by a recursive invocation of the LoadROM method.
+					if (!(Global.Emulator is NullEmulator))
+					{
+						return true;
+					}
+<<<<<<< HEAD
 				}				
 
 				return true;
-			}
-			else
-			{
-				//This shows up if there's a problem                
-				// TODO: put all these in a single method or something
+=======
 
-				//The ROM has been loaded by a recursive invocation of the LoadROM method.
-				if (!(Global.Emulator is NullEmulator))
-				{
-					return true;
+					HandlePlatformMenus();
+					_stateSlots.Clear();
+					UpdateStatusSlots();
+					UpdateCoreStatusBarButton();
+					UpdateDumpIcon();
+					SetMainformMovieInfo();
+					SetWindowText();
+					return false;
 				}
-
-				HandlePlatformMenus();
-				_stateSlots.Clear();
-				UpdateStatusSlots();
-				UpdateCoreStatusBarButton();
-				UpdateDumpIcon();
-				SetMainformMovieInfo();
-				SetWindowText();
-				return false;
+>>>>>>> refs/remotes/TASVideos/master
+			}
+			finally
+			{
+				if (firstCall)
+				{
+					CurrentLoadRomArgs = null;
+				}
 			}
 		}
 
@@ -3708,6 +3796,8 @@ namespace BizHawk.Client.EmuHawk
 				PauseOnFrame = null;
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 				UpdateStatusSlots();
+				CurrentlyOpenRom = null;
+				CurrentlyOpenRomArgs = null;
 			}
 		}
 
@@ -3823,7 +3913,7 @@ namespace BizHawk.Client.EmuHawk
 					return master.Rewind();
 				}
 			}
-			
+
 			var isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
@@ -3908,7 +3998,6 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
-
 
 	}
 }

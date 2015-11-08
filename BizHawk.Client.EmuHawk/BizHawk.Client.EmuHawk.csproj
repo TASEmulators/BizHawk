@@ -618,6 +618,13 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OpenAdvanced.cs" />
+    <Compile Include="OpenAdvancedChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenAdvancedChooser.Designer.cs">
+      <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlatformChooser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1325,6 +1332,9 @@
       <DependentUpon>NameStateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="OpenAdvancedChooser.resx">
+      <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlatformChooser.resx">
       <DependentUpon>PlatformChooser.cs</DependentUpon>
     </EmbeddedResource>
@@ -1971,6 +1981,7 @@
     <None Include="images\HawkInLove.png" />
     <None Include="images\ControllerImages\AppleIIKeyboard.png" />
     <None Include="images\BlankCursor.cur" />
+    <None Include="images\cdlogger.ico" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

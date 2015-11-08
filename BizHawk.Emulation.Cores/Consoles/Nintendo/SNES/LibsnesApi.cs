@@ -151,6 +151,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public int MessageCounter;
 
+		void WritePipeInt(int n)
+		{
+		}
+
+		void WritePipePointer(IntPtr ptr, bool flush = true)
+		{
+			bwPipe.Write(ptr.ToInt32());
+			if(flush) bwPipe.Flush();
+		}
+
 		void WritePipeMessage(eMessage msg)
 		{
 			if(!bufio) MessageCounter++;
@@ -190,6 +200,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public Action<uint> ReadHook, ExecHook;
 		public Action<uint, byte> WriteHook;
+
+		public enum eCDLog_AddrType
+		{
+			CARTROM, CARTRAM, WRAM, APURAM,
+			NUM
+		};
+
+		public enum eCDLog_Flags
+		{
+			ExecFirst = 0x01,
+			ExecOperand = 0x02,
+			CPUData = 0x04,
+			DMAData = 0x08, //not supported yet
+			BRR = 0x80,
+		};
 
 		Dictionary<string, SharedMemoryBlock> SharedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
 		Dictionary<string, SharedMemoryBlock> DeallocatedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();

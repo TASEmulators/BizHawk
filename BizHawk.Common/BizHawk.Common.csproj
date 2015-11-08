@@ -74,8 +74,10 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="SimpleTime.cs" />
+    <Compile Include="Sprintf.cs" />
     <Compile Include="SwitcherStream.cs" />
     <Compile Include="UndoHistory.cs" />
+    <Compile Include="UnmanagedResourceHeap.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Win32Hacks.cs" />
   </ItemGroup>

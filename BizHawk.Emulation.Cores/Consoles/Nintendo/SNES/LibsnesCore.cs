@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
 			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 
-			api = new LibsnesApi(GetExePath());
+			api = new LibsnesApi(GetDllPath());
 			api.ReadHook = ReadHook;
 			api.ExecHook = ExecHook;
 			api.WriteHook = WriteHook;
@@ -170,6 +170,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
+		CodeDataLog currCdl;
+
+		public void SetCDL(CodeDataLog cdl)
+		{
+			if(currCdl != null) currCdl.Unpin();
+			currCdl = cdl;
+			if(currCdl != null) currCdl.Pin();
+			
+			//set it no matter what. if its null, the cdl will be unhooked from libsnes internally
+			api.QUERY_set_cdl(currCdl);
+		}
+
+		public void NewCDL(CodeDataLog cdl)
+		{
+			cdl["CARTROM"] = new byte[MemoryDomains["CARTROM"].Size];
+
+			if (MemoryDomains.Has("CARTRAM"))
+				cdl["CARTRAM"] = new byte[MemoryDomains["CARTRAM"].Size];
+
+			cdl["WRAM"] = new byte[MemoryDomains["WRAM"].Size];
+			cdl["APURAM"] = new byte[MemoryDomains["APURAM"].Size];
+
+			cdl.SubType = "SNES";
+			cdl.SubVer = 0;			
+		}
+
+		public void DisassembleCDL(Stream s, CodeDataLog cdl)
+		{
+			//not supported yet
+		}
+
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private GameInfo _game;
@@ -204,6 +235,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			resampler.Dispose();
 			api.Dispose();
+
+			if (currCdl != null) currCdl.Unpin();
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
@@ -376,21 +409,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi api;
 		System.Xml.XmlDocument romxml;
 
-		string GetExePath()
+		string GetDllPath()
 		{
-			const string bits = "32";
-			// disabled til it works
-			// if (Win32.Is64BitOperatingSystem)
-			// bits = "64";
+			var exename = "libsneshawk-32-" + CurrentProfile.ToLower() + ".dll";
 
-			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".dll";
+			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 
-			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
+			if (!File.Exists(dllPath))
+				throw new InvalidOperationException("Couldn't locate the DLL for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
 
-			if (!File.Exists(exePath))
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-
-			return exePath;
+			return dllPath;
 		}
 
 		void ReadHook(uint addr)

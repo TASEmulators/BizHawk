@@ -24,13 +24,13 @@ namespace BizHawk.Client.EmuHawk
 		/// add an item to the W7+ jumplist
 		/// </summary>
 		/// <param name="fullpath">fully qualified path, can include '|' character for archives</param>
-		public static void AddRecentItem(string fullpath)
+		public static void AddRecentItem(string fullpath, string title)
 		{
-			string title;
-			if (fullpath.Contains('|'))
-				title = fullpath.Split('|')[1];
-			else
-				title = Path.GetFileName(fullpath);
+			//string title;
+			//if (fullpath.Contains('|'))
+			//  title = fullpath.Split('|')[1];
+			//else
+			//  title = Path.GetFileName(fullpath);
 
 			string exepath = Assembly.GetEntryAssembly().Location;
 

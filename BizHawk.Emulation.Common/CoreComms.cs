@@ -38,6 +38,9 @@ namespace BizHawk.Emulation.Common
 		public bool LinkConnected = false;
 		public bool UsesLinkCable = false;
 
+		//I know we want to get rid of CoreComm, but while it's still here, I'll use it for this
+		public string LaunchLibretroCore;
+
 		/// <summary>
 		/// show a message.  reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>

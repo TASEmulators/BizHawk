@@ -55,6 +55,39 @@ template<typename R, typename... P> struct hook<R (P...)> {
   #define privileged private
 #endif
 
+enum eCDLog_AddrType
+{
+	eCDLog_AddrType_CARTROM, eCDLog_AddrType_CARTRAM, eCDLog_AddrType_WRAM, eCDLog_AddrType_APURAM,
+	eCDLog_AddrType_NUM
+};
+
+enum eCDLog_Flags
+{
+	eCDLog_Flags_None = 0x00,
+	eCDLog_Flags_ExecFirst = 0x01,
+	eCDLog_Flags_ExecOperand = 0x02,
+	eCDLog_Flags_CPUData = 0x04,
+	eCDLog_Flags_DMAData = 0x08, //not supported yet
+	eCDLog_Flags_BRR = 0x80
+};
+
+struct CDLInfo
+{
+	eCDLog_Flags currFlags;
+	uint8_t* blocks[eCDLog_AddrType_NUM]; //[0]==nullptr -> disabled
+	uint32_t blockSizes[eCDLog_AddrType_NUM];
+	void set(eCDLog_AddrType addrType, uint32_t addr)
+	{
+		if(!blocks[0]) return;
+		if(addr >= blockSizes[addrType])
+			return;
+		blocks[addrType][addr] |= currFlags;
+	}
+};
+
+extern CDLInfo cdlInfo;
+inline bool wantCDL() { return cdlInfo.blocks[0] != nullptr; }
+
 typedef  int1_t int1;
 typedef  int2_t int2;
 typedef  int3_t int3;

@@ -62,13 +62,31 @@ void Cartridge::parse_markup_map(Mapping &m, XML::Node &map) {
   }
 }
 
-//
+uint8 Cartridge::rom_read(unsigned addr)
+{
+	cdlInfo.set(eCDLog_AddrType_CARTROM, addr);
+	return rom.read(addr);
+}
+void Cartridge::rom_write(unsigned addr, uint8 n)
+{
+	rom.write(addr,n);
+}
+
+uint8 Cartridge::ram_read(unsigned addr)
+{
+	cdlInfo.set(eCDLog_AddrType_CARTRAM, addr);
+	return ram.read(addr);
+}
+void Cartridge::ram_write(unsigned addr, uint8 n)
+{
+	ram.write(addr, n);
+}
 
 void Cartridge::parse_markup_rom(XML::Node &root) {
   if(root.exists() == false) return;
   for(auto &node : root) {
     if(node.name != "map") continue;
-    Mapping m(rom);
+		Mapping m({&Cartridge::rom_read, this}, {&Cartridge::rom_write, this});
     parse_markup_map(m, node);
     if(m.size == 0) m.size = rom.size();
     mapping.append(m);
@@ -79,7 +97,7 @@ void Cartridge::parse_markup_ram(XML::Node &root) {
   if(root.exists() == false) return;
   ram_size = numeral(root["size"].data);
   for(auto &node : root) {
-    Mapping m(ram);
+		Mapping m({ &Cartridge::ram_read, this }, { &Cartridge::ram_write, this });
     parse_markup_map(m, node);
     if(m.size == 0) m.size = ram_size;
     mapping.append(m);

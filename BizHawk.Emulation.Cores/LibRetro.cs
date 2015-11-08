@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores
 {
 	/// <summary>
@@ -44,6 +46,16 @@ namespace BizHawk.Emulation.Cores
 			R2 = 13,
 			L3 = 14,
 			R3 = 15
+		};
+
+		public enum RETRO_LOG_LEVEL : int //exact type size is unclear
+		{
+			 DEBUG = 0,
+			 INFO,
+			 WARN,
+			 ERROR,
+
+			 DUMMY = Int32.MaxValue
 		};
 
 		public enum RETRO_DEVICE_ID_ANALOG
@@ -102,150 +114,150 @@ namespace BizHawk.Emulation.Cores
 
 		public enum RETRO_KEY
 		{
-			   UNKNOWN = 0,
-   FIRST = 0,
-   BACKSPACE = 8,
-   TAB = 9,
-   CLEAR = 12,
-   RETURN = 13,
-   PAUSE = 19,
-   ESCAPE = 27,
-   SPACE = 32,
-   EXCLAIM = 33,
-   QUOTEDBL = 34,
-   HASH = 35,
-   DOLLAR = 36,
-   AMPERSAND = 38,
-   QUOTE = 39,
-   LEFTPAREN = 40,
-   RIGHTPAREN = 41,
-   ASTERISK = 42,
-   PLUS = 43,
-   COMMA = 44,
-   MINUS = 45,
-   PERIOD = 46,
-   SLASH = 47,
-   _0 = 48,
-   _1 = 49,
-   _2 = 50,
-   _3 = 51,
-   _4 = 52,
-   _5 = 53,
-   _6 = 54,
-   _7 = 55,
-   _8 = 56,
-   _9 = 57,
-   COLON = 58,
-   SEMICOLON = 59,
-   LESS = 60,
-   EQUALS = 61,
-   GREATER = 62,
-   QUESTION = 63,
-   AT = 64,
-   LEFTBRACKET = 91,
-   BACKSLASH = 92,
-   RIGHTBRACKET = 93,
-   CARET = 94,
-   UNDERSCORE = 95,
-   BACKQUOTE = 96,
-   a = 97,
-   b = 98,
-   c = 99,
-   d = 100,
-   e = 101,
-   f = 102,
-   g = 103,
-   h = 104,
-   i = 105,
-   j = 106,
-   k = 107,
-   l = 108,
-   m = 109,
-   n = 110,
-   o = 111,
-   p = 112,
-   q = 113,
-   r = 114,
-   s = 115,
-   t = 116,
-   u = 117,
-   v = 118,
-   w = 119,
-   x = 120,
-   y = 121,
-   z = 122,
-   DELETE = 127,
+			UNKNOWN = 0,
+			FIRST = 0,
+			BACKSPACE = 8,
+			TAB = 9,
+			CLEAR = 12,
+			RETURN = 13,
+			PAUSE = 19,
+			ESCAPE = 27,
+			SPACE = 32,
+			EXCLAIM = 33,
+			QUOTEDBL = 34,
+			HASH = 35,
+			DOLLAR = 36,
+			AMPERSAND = 38,
+			QUOTE = 39,
+			LEFTPAREN = 40,
+			RIGHTPAREN = 41,
+			ASTERISK = 42,
+			PLUS = 43,
+			COMMA = 44,
+			MINUS = 45,
+			PERIOD = 46,
+			SLASH = 47,
+			_0 = 48,
+			_1 = 49,
+			_2 = 50,
+			_3 = 51,
+			_4 = 52,
+			_5 = 53,
+			_6 = 54,
+			_7 = 55,
+			_8 = 56,
+			_9 = 57,
+			COLON = 58,
+			SEMICOLON = 59,
+			LESS = 60,
+			EQUALS = 61,
+			GREATER = 62,
+			QUESTION = 63,
+			AT = 64,
+			LEFTBRACKET = 91,
+			BACKSLASH = 92,
+			RIGHTBRACKET = 93,
+			CARET = 94,
+			UNDERSCORE = 95,
+			BACKQUOTE = 96,
+			a = 97,
+			b = 98,
+			c = 99,
+			d = 100,
+			e = 101,
+			f = 102,
+			g = 103,
+			h = 104,
+			i = 105,
+			j = 106,
+			k = 107,
+			l = 108,
+			m = 109,
+			n = 110,
+			o = 111,
+			p = 112,
+			q = 113,
+			r = 114,
+			s = 115,
+			t = 116,
+			u = 117,
+			v = 118,
+			w = 119,
+			x = 120,
+			y = 121,
+			z = 122,
+			DELETE = 127,
 
-   KP0 = 256,
-   KP1 = 257,
-   KP2 = 258,
-   KP3 = 259,
-   KP4 = 260,
-   KP5 = 261,
-   KP6 = 262,
-   KP7 = 263,
-   KP8 = 264,
-   KP9 = 265,
-   KP_PERIOD = 266,
-   KP_DIVIDE = 267,
-   KP_MULTIPLY = 268,
-   KP_MINUS = 269,
-   KP_PLUS = 270,
-   KP_ENTER = 271,
-   KP_EQUALS = 272,
+			KP0 = 256,
+			KP1 = 257,
+			KP2 = 258,
+			KP3 = 259,
+			KP4 = 260,
+			KP5 = 261,
+			KP6 = 262,
+			KP7 = 263,
+			KP8 = 264,
+			KP9 = 265,
+			KP_PERIOD = 266,
+			KP_DIVIDE = 267,
+			KP_MULTIPLY = 268,
+			KP_MINUS = 269,
+			KP_PLUS = 270,
+			KP_ENTER = 271,
+			KP_EQUALS = 272,
 
-   UP = 273,
-   DOWN = 274,
-   RIGHT = 275,
-   LEFT = 276,
-   INSERT = 277,
-   HOME = 278,
-   END = 279,
-   PAGEUP = 280,
-   PAGEDOWN = 281,
+			UP = 273,
+			DOWN = 274,
+			RIGHT = 275,
+			LEFT = 276,
+			INSERT = 277,
+			HOME = 278,
+			END = 279,
+			PAGEUP = 280,
+			PAGEDOWN = 281,
 
-   F1 = 282,
-   F2 = 283,
-   F3 = 284,
-   F4 = 285,
-   F5 = 286,
-   F6 = 287,
-   F7 = 288,
-   F8 = 289,
-   F9 = 290,
-   F10 = 291,
-   F11 = 292,
-   F12 = 293,
-   F13 = 294,
-   F14 = 295,
-   F15 = 296,
+			F1 = 282,
+			F2 = 283,
+			F3 = 284,
+			F4 = 285,
+			F5 = 286,
+			F6 = 287,
+			F7 = 288,
+			F8 = 289,
+			F9 = 290,
+			F10 = 291,
+			F11 = 292,
+			F12 = 293,
+			F13 = 294,
+			F14 = 295,
+			F15 = 296,
 
-   NUMLOCK = 300,
-   CAPSLOCK = 301,
-   SCROLLOCK = 302,
-   RSHIFT = 303,
-   LSHIFT = 304,
-   RCTRL = 305,
-   LCTRL = 306,
-   RALT = 307,
-   LALT = 308,
-   RMETA = 309,
-   LMETA = 310,
-   LSUPER = 311,
-   RSUPER = 312,
-   MODE = 313,
-   COMPOSE = 314,
+			NUMLOCK = 300,
+			CAPSLOCK = 301,
+			SCROLLOCK = 302,
+			RSHIFT = 303,
+			LSHIFT = 304,
+			RCTRL = 305,
+			LCTRL = 306,
+			RALT = 307,
+			LALT = 308,
+			RMETA = 309,
+			LMETA = 310,
+			LSUPER = 311,
+			RSUPER = 312,
+			MODE = 313,
+			COMPOSE = 314,
 
-   HELP = 315,
-   PRINT = 316,
-   SYSREQ = 317,
-   BREAK = 318,
-   MENU = 319,
-   POWER = 320,
-   EURO = 321,
-   UNDO = 322,
+			HELP = 315,
+			PRINT = 316,
+			SYSREQ = 317,
+			BREAK = 318,
+			MENU = 319,
+			POWER = 320,
+			EURO = 321,
+			UNDO = 322,
 
-   LAST
+			LAST
 		};
 
 		[Flags]
@@ -260,6 +272,29 @@ namespace BizHawk.Emulation.Cores
 			CAPSLOCK = 32,
 			SCROLLLOCK = 64
 		};
+
+		[Flags]
+		public enum RETRO_SIMD
+		{
+			SSE = (1 << 0),
+			SSE2 = (1 << 1),
+			VMX = (1 << 2),
+			VMX128 = (1 << 3),
+			AVX = (1 << 4),
+			NEON = (1 << 5),
+			SSE3 = (1 << 6),
+			SSSE3 = (1 << 7),
+			MMX = (1 << 8),
+			MMXEXT = (1 << 9),
+			SSE4 = (1 << 10),
+			SSE42 = (1 << 11),
+			AVX2 = (1 << 12),
+			VFPU = (1 << 13),
+			PS = (1 << 14),
+			AES = (1 << 15),
+			VFPV3 = (1 << 16),
+			VFPV4 = (1 << 17),
+		}
 
 		public enum RETRO_ENVIRONMENT
 		{
@@ -284,6 +319,22 @@ namespace BizHawk.Emulation.Cores
 			SET_FRAME_TIME_CALLBACK = 21,
 			GET_RUMBLE_INTERFACE = 23,
 			GET_INPUT_DEVICE_CAPABILITIES = 24,
+			//25,26 are experimental
+			GET_LOG_INTERFACE = 27,
+			GET_PERF_INTERFACE = 28,
+			GET_LOCATION_INTERFACE = 29,
+			GET_CORE_ASSETS_DIRECTORY = 30,
+			GET_SAVE_DIRECTORY = 31,
+			SET_SYSTEM_AV_INFO = 32,
+			SET_PROC_ADDRESS_CALLBACK = 33,
+			SET_SUBSYSTEM_INFO = 34,
+			SET_CONTROLLER_INFO = 35,
+			SET_MEMORY_MAPS = 36 | EXPERIMENTAL,
+			SET_GEOMETRY = 37,
+			GET_USERNAME = 38,
+			GET_LANGUAGE = 39,
+
+			EXPERIMENTAL = 0x10000
 		};
 
 		public enum RETRO_PIXEL_FORMAT
@@ -353,7 +404,49 @@ namespace BizHawk.Emulation.Cores
 			public string meta;
 		}
 
+		//untested
+		public struct retro_perf_counter
+		{
+			public string ident;
+			public ulong start;
+			public ulong total;
+			public ulong call_cnt;
+
+			[MarshalAs(UnmanagedType.U1)]
+			public bool registered;
+		};
+
+		//perf callbacks
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate long retro_perf_get_time_usec_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate long retro_perf_get_counter_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate ulong retro_get_cpu_features_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_log_t();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_register_t(ref retro_perf_counter counter);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_start_t(ref retro_perf_counter counter);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void retro_perf_stop_t(ref retro_perf_counter counter);
+
+		//for GET_PERF_INTERFACE
+		public struct retro_perf_callback
+		{
+			public retro_perf_get_time_usec_t get_time_usec;
+			public retro_get_cpu_features_t get_cpu_features;
+			public retro_perf_get_counter_t get_perf_counter;
+			public retro_perf_register_t perf_register;
+			public retro_perf_start_t perf_start;
+			public retro_perf_stop_t perf_stop;
+			public retro_perf_log_t perf_log;
+		}
+
 		#region callback prototypes
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public unsafe delegate void retro_log_printf_t(RETRO_LOG_LEVEL level, string fmt, IntPtr a0, IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4, IntPtr a5, IntPtr a6, IntPtr a7, IntPtr a8, IntPtr a9, IntPtr a10, IntPtr a11, IntPtr a12, IntPtr a13, IntPtr a14, IntPtr a15);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return:MarshalAs(UnmanagedType.U1)]
 		public delegate bool retro_environment_t(RETRO_ENVIRONMENT cmd, IntPtr data);
@@ -425,6 +518,7 @@ namespace BizHawk.Emulation.Cores
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate uint epretro_get_memory_size(RETRO_MEMORY id);
 		#endregion
+
 		#region entry points
 		// these are all hooked up by reflection on dll load
 		public epretro_set_environment retro_set_environment;
@@ -457,63 +551,20 @@ namespace BizHawk.Emulation.Cores
 		public epretro_get_memory_size retro_get_memory_size;
 		#endregion
 
-		private static Dictionary<IntPtr, LibRetro> AttachedCores = new Dictionary<IntPtr, LibRetro>();
-		private IntPtr hModule = IntPtr.Zero;
-
 		public void Dispose()
 		{
-			// like many other emu cores, libretros are in general single instance, so we track some things
-			lock (AttachedCores)
-			{
-				if (hModule != IntPtr.Zero)
-				{
-					retro_deinit();
-					ClearAllEntryPoints();
-					Win32.FreeLibrary(hModule);
-					AttachedCores.Remove(hModule);
-					hModule = IntPtr.Zero;
-				}
-			}
+			dll.Dispose();
 		}
 
+		InstanceDll dll;
 		public LibRetro(string modulename)
 		{
-			// like many other emu cores, libretros are in general single instance, so we track some things
-			lock (AttachedCores)
+			dll = new InstanceDll(modulename);
+			if (!ConnectAllEntryPoints())
 			{
-				IntPtr newmodule = Win32.LoadLibrary(modulename);
-				if (newmodule == IntPtr.Zero)
-					throw new Exception(string.Format("LoadLibrary(\"{0}\") returned NULL", modulename));
-
-				if (AttachedCores.ContainsKey(newmodule))
-				{
-					// this core is already loaded, so we must detatch the old instance
-					LibRetro martyr = AttachedCores[newmodule];
-					martyr.retro_deinit();
-					martyr.ClearAllEntryPoints();
-					martyr.hModule = IntPtr.Zero;
-					Win32.FreeLibrary(newmodule); // decrease ref count by 1
-				}
-				AttachedCores[newmodule] = this;
-				hModule = newmodule;
-				if (!ConnectAllEntryPoints())
-				{
-					ClearAllEntryPoints();
-					Win32.FreeLibrary(hModule);
-					hModule = IntPtr.Zero;
-					throw new Exception("ConnectAllEntryPoints() failed.  The console may contain more details.");
-				}
+				dll.Dispose();
+				throw new Exception("ConnectAllEntryPoints() failed.  The console may contain more details.");
 			}
-		}
-
-		private static class Win32
-		{
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr LoadLibrary(string dllToLoad);
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-			[DllImport("kernel32.dll")]
-			public static extern bool FreeLibrary(IntPtr hModule);
 		}
 
 		private static IEnumerable<FieldInfo> GetAllEntryPoints()
@@ -535,7 +586,7 @@ namespace BizHawk.Emulation.Cores
 			foreach (var field in GetAllEntryPoints())
 			{
 				string fieldname = field.Name;
-				IntPtr entry = Win32.GetProcAddress(hModule, fieldname);
+				IntPtr entry = dll.GetProcAddress(fieldname);
 				if (entry != IntPtr.Zero)
 				{
 					field.SetValue(this, Marshal.GetDelegateForFunctionPointer(entry, field.FieldType));

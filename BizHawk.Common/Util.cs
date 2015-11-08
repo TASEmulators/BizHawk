@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace BizHawk.Common
 {
-	public static unsafe class Util
+	public static unsafe partial class Util
 	{
 		public static void CopyStream(Stream src, Stream dest, long len)
 		{

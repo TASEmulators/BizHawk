@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_QUERY_set_backdropColor,
 			eMessage_QUERY_peek_logical_register,
 			eMessage_QUERY_peek_cpu_regs,
+			eMessage_QUERY_set_cdl,
 
 			eMessage_CMD_FIRST,
 			eMessage_CMD_init,
