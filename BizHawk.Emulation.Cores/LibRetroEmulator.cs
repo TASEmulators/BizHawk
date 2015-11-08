@@ -151,9 +151,19 @@ namespace BizHawk.Emulation.Cores
 						IntPtr pKey = new IntPtr(*variables++);
 						string key = Marshal.PtrToStringAnsi(pKey);
 						Console.WriteLine("Requesting variable: {0}", key);
-						*variables = unmanagedResources.StringToHGlobalAnsi("0").ToPointer();
+						//always return default
+						//TODO: cache settings atoms
+						if(!Description.Variables.ContainsKey(key))
+							return false;
+						//HACK: return pointer for desmume mouse, i want to implement that first
+						if (key == "desmume_pointer_type")
+						{
+							*variables = unmanagedResources.StringToHGlobalAnsi("touch").ToPointer();
+							return true;
+						}
+						*variables = unmanagedResources.StringToHGlobalAnsi(Description.Variables[key].DefaultOption).ToPointer();
+						return true;
 					}
-					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_VARIABLES:
 					{
 						void** variables = (void**)data.ToPointer();
@@ -165,7 +175,11 @@ namespace BizHawk.Emulation.Cores
 								break;
 							string key = Marshal.PtrToStringAnsi(pKey);
 							string value = Marshal.PtrToStringAnsi(pValue);
-							environmentInfo.Variables.Add(Tuple.Create(key, value));
+							var vd = new VariableDescription() { Name = key};
+							var parts = value.Split(';');
+							vd.Description = parts[0];
+							vd.Options = parts[1].TrimStart(' ').Split('|');
+							Description.Variables[vd.Name] = vd;
 						}
 					}
 					return false;
@@ -223,14 +237,29 @@ namespace BizHawk.Emulation.Cores
 			else return false;
 		}
 
+		//meanings (they are kind of hazy, but once we're done implementing this it will be completely defined by example)
 		//port = console physical port?
 		//device = logical device type
 		//index = sub device index? (multitap?)
 		//id = button id
 		short retro_input_state(uint port, uint device, uint index, uint id)
 		{
+			//helpful debugging
+			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
+
 			switch ((LibRetro.RETRO_DEVICE)device)
 			{
+				case LibRetro.RETRO_DEVICE.POINTER:
+					{
+						switch ((LibRetro.RETRO_DEVICE_ID_POINTER)id)
+						{
+							case LibRetro.RETRO_DEVICE_ID_POINTER.X: return (short)Controller.GetFloat("Pointer X");
+							case LibRetro.RETRO_DEVICE_ID_POINTER.Y: return (short)Controller.GetFloat("Pointer Y");
+							case LibRetro.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(Controller["Pointer Pressed"] ? 1 : 0);
+						}
+						return 0;
+					}
+
 				case LibRetro.RETRO_DEVICE.JOYPAD:
 					{
 						//The JOYPAD is sometimes called RetroPad (and we'll call it that in user-facing stuff cos retroarch does)
@@ -274,7 +303,6 @@ namespace BizHawk.Emulation.Cores
 		class RetroEnvironmentInfo
 		{
 			public bool SupportNoGame;
-			public List<Tuple<string, string>> Variables = new List<Tuple<string, string>>();
 		}
 
 		//disposable resources
@@ -402,14 +430,8 @@ namespace BizHawk.Emulation.Cores
 				Description.LibraryVersion = system_info.library_version;
 				Description.ValidExtensions = system_info.valid_extensions;
 				Description.SupportsNoGame = environmentInfo.SupportNoGame;
-				foreach (var vv in environmentInfo.Variables)
-				{
-					var vd = new VariableDescription() { Name = vv.Item1 };
-					var parts = vv.Item2.Split(';');
-					vd.Description = parts[0];
-					vd.Options = parts[1].TrimStart(' ').Split('|');
-					Description.Variables[vd.Name] = vd;
-				}
+				//variables need to be done ahead of time, when theyre set through the environment
+				//some retro_init (for example, desmume) will continue to use variables (and maybe other parts of the environment) from within retro_init
 			}
 			catch
 			{
@@ -492,6 +514,12 @@ namespace BizHawk.Emulation.Cores
 					"P2 {0} Up", "P2 {0} Down", "P2 {0} Left", "P2 {0} Right", "P2 {0} Select", "P2 {0} Start", "P2 {0} Y", "P2 {0} B", "P2 {0} X", "P2 {0} A", "P2 {0} L", "P2 {0} R",
 			})
 				definition.BoolButtons.Add(string.Format(item,"RetroPad"));
+
+			definition.BoolButtons.Add("Pointer Pressed");
+			definition.FloatControls.Add("Pointer X");
+			definition.FloatControls.Add("Pointer Y");
+			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
+			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
 
 			return definition;
 		}

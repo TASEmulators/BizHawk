@@ -24,7 +24,8 @@
       "P2 RetroPad X": "",
       "P2 RetroPad A": "",
       "P2 RetroPad L": "",
-      "P2 RetroPad R": ""
+      "P2 RetroPad R": "",
+      "Pointer Pressed": "WMouse L",
     },
     "NES Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -1142,6 +1143,28 @@
         "Deadzone": 0.1
       }
     },
-    "Apple IIe Keyboard": {}
+    "Apple IIe Keyboard": {},
+    "LibRetro Controls": {
+      "Pointer X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "Pointer Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Pointer X": {
+        "Value": "",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Pointer Y": {
+        "Value": "",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    }
   }
 }
