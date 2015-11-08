@@ -87,6 +87,15 @@ namespace BizHawk.Emulation.Cores
 
 		#region callbacks
 
+		unsafe void retro_log_printf(LibRetro.RETRO_LOG_LEVEL level, string fmt, IntPtr a0, IntPtr a1, IntPtr a2, IntPtr a3, IntPtr a4, IntPtr a5, IntPtr a6, IntPtr a7, IntPtr a8, IntPtr a9, IntPtr a10, IntPtr a11, IntPtr a12, IntPtr a13, IntPtr a14, IntPtr a15)
+		{
+			//avert your eyes, these things were not meant to be seen in c#
+			//I'm not sure this is a great idea. It would suck for silly logging to be unstable. But.. I dont think this is unstable. The sprintf might just print some garbledy stuff.
+			var args = new IntPtr[] { a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15 };
+			int idx = 0;
+			Console.Write(Sprintf.sprintf(fmt, () => args[idx++]));
+		}
+
 		unsafe bool retro_environment(LibRetro.RETRO_ENVIRONMENT cmd, IntPtr data)
 		{
 			Console.WriteLine(cmd);
@@ -199,7 +208,8 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.GET_INPUT_DEVICE_CAPABILITIES:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_LOG_INTERFACE:
-					return false;
+					*(IntPtr*)data = Marshal.GetFunctionPointerForDelegate(retro_log_printf_cb);
+					return true;
 				case LibRetro.RETRO_ENVIRONMENT.GET_PERF_INTERFACE:
 					//some builds of fmsx core crash without this set
 					Marshal.StructureToPtr(retro_perf_callback, data, false);
@@ -295,6 +305,7 @@ namespace BizHawk.Emulation.Cores
 		LibRetro.retro_audio_sample_batch_t retro_audio_sample_batch_cb;
 		LibRetro.retro_input_poll_t retro_input_poll_cb;
 		LibRetro.retro_input_state_t retro_input_state_cb;
+		LibRetro.retro_log_printf_t retro_log_printf_cb;
 
 		LibRetro.retro_perf_callback retro_perf_callback = new LibRetro.retro_perf_callback();
 
@@ -388,6 +399,7 @@ namespace BizHawk.Emulation.Cores
 			retro_audio_sample_batch_cb = new LibRetro.retro_audio_sample_batch_t(retro_audio_sample_batch);
 			retro_input_poll_cb = new LibRetro.retro_input_poll_t(retro_input_poll);
 			retro_input_state_cb = new LibRetro.retro_input_state_t(retro_input_state);
+			retro_log_printf_cb = new LibRetro.retro_log_printf_t(retro_log_printf);
 
 			//no way (need new mechanism) to check for SSSE3, MMXEXT, SSE4, SSE42
 			retro_perf_callback.get_cpu_features = new LibRetro.retro_get_cpu_features_t(() => (ulong)(
