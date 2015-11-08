@@ -453,22 +453,6 @@
 			// FileSubMenu
 			// 
 			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-<<<<<<< HEAD
-			this.OpenRomMenuItem,
-			this.RecentRomSubMenu,
-			this.CloseRomMenuItem,
-			this.toolStripMenuItem1,
-			this.SaveStateSubMenu,
-			this.LoadStateSubMenu,
-			this.SaveSlotSubMenu,
-			this.SaveRAMSubMenu,
-			this.toolStripMenuItem2,
-			this.MovieSubMenu,
-			this.AVSubMenu,
-			this.ScreenshotSubMenu,
-			this.toolStripSeparator4,
-			this.ExitMenuItem});
-=======
             this.OpenRomMenuItem,
             this.RecentRomSubMenu,
             this.OpenAdvancedMenuItem,
@@ -484,7 +468,6 @@
             this.ScreenshotSubMenu,
             this.toolStripSeparator4,
             this.ExitMenuItem});
->>>>>>> refs/remotes/TASVideos/master
 			this.FileSubMenu.Name = "FileSubMenu";
 			this.FileSubMenu.Size = new System.Drawing.Size(35, 17);
 			this.FileSubMenu.Text = "&File";
@@ -1755,14 +1738,6 @@
 			// CoresSubMenu
 			// 
 			this.CoresSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-<<<<<<< HEAD
-			this.GBInSGBMenuItem,
-			this.NesInQuickNESMenuItem,
-			this.SnesWithSnes9xMenuItem,
-			this.gBAWithMGBAToolStripMenuItem,
-			this.toolStripSeparator8,
-			this.N64VideoPluginSettingsMenuItem});
-=======
             this.GBInSGBMenuItem,
             this.NesInQuickNESMenuItem,
             this.SnesWithSnes9xMenuItem,
@@ -1770,7 +1745,6 @@
             this.toolStripSeparator8,
             this.N64VideoPluginSettingsMenuItem,
             this.setLibretroCoreToolStripMenuItem});
->>>>>>> refs/remotes/TASVideos/master
 			this.CoresSubMenu.Name = "CoresSubMenu";
 			this.CoresSubMenu.Size = new System.Drawing.Size(165, 22);
 			this.CoresSubMenu.Text = "Cores";
