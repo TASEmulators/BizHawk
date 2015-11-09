@@ -106,6 +106,8 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.GET_OVERSCAN:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_CAN_DUPE:
+					//gambatte requires this
+					*(bool*)data.ToPointer() = true;
 					return true;
 				case LibRetro.RETRO_ENVIRONMENT.SET_MESSAGE:
 					{
@@ -118,14 +120,14 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.SHUTDOWN:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_PERFORMANCE_LEVEL:
-					return false;
+					Console.WriteLine("Core suggested SET_PERFORMANCE_LEVEL {0}", *(uint*)data.ToPointer());
+					return true;
 				case LibRetro.RETRO_ENVIRONMENT.GET_SYSTEM_DIRECTORY:
-					//please write an example of a core that crashes without this (fmsx malfunctions..)
-					//"this is optional, but many cores will silently malfunction without it as they can't load their firmware files"
-					//an alternative (alongside where the saverams and such will go?)
-					//*((IntPtr*)data.ToPointer()) = unmanagedResources.StringToHGlobalAnsi(CoreComm.CoreFileProvider.GetGameBasePath());
+					//mednafen NGP neopop fails to launch with no system directory
+					Directory.CreateDirectory(SystemDirectory); //just to be safe, it seems likely that cores will crash without a created system directory
+					Console.WriteLine("returning system directory: " + SystemDirectory);
 					*((IntPtr*)data.ToPointer()) = SystemDirectoryAtom;
-					return false;
+					return true;
 				case LibRetro.RETRO_ENVIRONMENT.SET_PIXEL_FORMAT:
 					{
 						LibRetro.RETRO_PIXEL_FORMAT fmt = 0;
@@ -222,10 +224,16 @@ namespace BizHawk.Emulation.Cores
 					//supposedly optional like everything else here, but without it ?? crashes (please write which case)
 					//this will suffice for now. if we find evidence later it's needed we can stash a string with 
 					//unmanagedResources and CoreFileProvider
-					//*((IntPtr*)data.ToPointer()) = IntPtr.Zero; 
-					return false;
+					//mednafen NGP neopop, desmume, and others, request this, and falls back on the system directory if it isn't provided
+					//desmume crashes if the directory doesn't exist
+					Directory.CreateDirectory(SaveDirectory);
+					Console.WriteLine("returning save directory: " + SaveDirectory);
+					*((IntPtr*)data.ToPointer()) = SaveDirectoryAtom;
+					return true;
 				case LibRetro.RETRO_ENVIRONMENT.SET_CONTROLLER_INFO:
 					return true;
+				case LibRetro.RETRO_ENVIRONMENT.SET_MEMORY_MAPS:
+					return false;
 				default:
 					Console.WriteLine("Unknkown retro_environment command {0}", (int)cmd);
 					return false;
@@ -379,16 +387,11 @@ namespace BizHawk.Emulation.Cores
 		public readonly RetroDescription Description = new RetroDescription();
 
 		//path configuration
-		string CoresDirectory;
-		string SystemDirectory;
-		IntPtr SystemDirectoryAtom;
+		string SystemDirectory, SaveDirectory;
+		IntPtr SystemDirectoryAtom, SaveDirectoryAtom;
 
 		public LibRetroEmulator(CoreComm nextComm, string modulename)
 		{
-			CoresDirectory = Path.GetDirectoryName(new FileInfo(modulename).FullName);
-			SystemDirectory = Path.Combine(CoresDirectory, "System");
-			SystemDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SystemDirectory);
-
 			ServiceProvider = new BasicServiceProvider(this);
 
 			_SyncSettings = new SyncSettings();
@@ -427,8 +430,6 @@ namespace BizHawk.Emulation.Cores
 
 				retro.retro_set_environment(retro_environment_cb);
 				
-				retro.retro_init();
-
 				retro.retro_set_video_refresh(retro_video_refresh_cb);
 				retro.retro_set_audio_sample(retro_audio_sample_cb);
 				retro.retro_set_audio_sample_batch(retro_audio_sample_batch_cb);
@@ -442,8 +443,6 @@ namespace BizHawk.Emulation.Cores
 				Description.LibraryVersion = system_info.library_version;
 				Description.ValidExtensions = system_info.valid_extensions;
 				Description.SupportsNoGame = environmentInfo.SupportNoGame;
-				//variables need to be done ahead of time, when theyre set through the environment
-				//some retro_init (for example, desmume) will continue to use variables (and maybe other parts of the environment) from within retro_init
 			}
 			catch
 			{
@@ -487,6 +486,25 @@ namespace BizHawk.Emulation.Cores
 
 		bool LoadWork(ref LibRetro.retro_game_info gi)
 		{
+			//defer this until loading because during the LibRetroEmulator constructor, we dont have access to the game name and so paths can't be selected
+			//this cannot be done until set_environment is complete
+			if (CoreComm.CoreFileProvider == null)
+			{
+				SaveDirectory = SystemDirectory = "";
+			}
+			else
+			{
+				SystemDirectory = CoreComm.CoreFileProvider.GetRetroSystemPath();
+				SaveDirectory = CoreComm.CoreFileProvider.GetRetroSaveRAMDirectory();
+				SystemDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SystemDirectory);
+				SaveDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SaveDirectory);
+			}
+
+			//defer this until loading because it triggers the core to read save and system paths
+			//if any cores did that from set_environment then i'm assured we can call set_environment again here before retro_init and it should work
+			//--alcaro says any cores that can't handle that should be considered a bug
+			retro.retro_init();
+
 			if (!retro.retro_load_game(ref gi))
 			{
 				Console.WriteLine("retro_load_game() failed");
@@ -605,7 +623,7 @@ namespace BizHawk.Emulation.Cores
 			[FeatureNotImplemented]
 			get
 			{
-				//if we dont have saveram, it isnt modified. otherwise, assume iti s
+				//if we dont have saveram, it isnt modified. otherwise, assume it is
 				int size = (int)retro.retro_get_memory_size(LibRetro.RETRO_MEMORY.SAVE_RAM);
 				if (size == 0)
 					return false;
@@ -877,7 +895,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			get
 			{
-				if(dar==0)
+				if(dar<=0)
 					return BufferWidth;
 				else if (dar > 1.0f)
 					return (int)(BufferHeight * dar);
@@ -889,7 +907,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			get
 			{
-				if(dar==0)
+				if(dar<=0)
 					return BufferHeight;
 				if (dar < 1.0f)
 					return (int)(BufferWidth / dar);

@@ -337,6 +337,89 @@ namespace BizHawk.Emulation.Cores
 			EXPERIMENTAL = 0x10000
 		};
 
+		struct retro_memory_map
+		{
+			public IntPtr descriptors; //retro_memory_descriptor *
+			public uint num_descriptors;
+		};
+
+		struct retro_memory_descriptor
+		{
+			ulong flags;
+
+			/* Pointer to the start of the relevant ROM or RAM chip.
+			 * It's strongly recommended to use 'offset' if possible, rather than 
+			 * doing math on the pointer.
+			 *
+			 * If the same byte is mapped my multiple descriptors, their descriptors 
+			 * must have the same pointer.
+			 * If 'start' does not point to the first byte in the pointer, put the 
+			 * difference in 'offset' instead.
+			 *
+			 * May be NULL if there's nothing usable here (e.g. hardware registers and 
+			 * open bus). No flags should be set if the pointer is NULL.
+			 * It's recommended to minimize the number of descriptors if possible,
+			 * but not mandatory. */
+			IntPtr ptr;
+			IntPtr offset; //size_t
+
+			/* This is the location in the emulated address space 
+			 * where the mapping starts. */
+			IntPtr start; //size_t
+
+			/* Which bits must be same as in 'start' for this mapping to apply.
+			 * The first memory descriptor to claim a certain byte is the one 
+			 * that applies.
+			 * A bit which is set in 'start' must also be set in this.
+			 * Can be zero, in which case each byte is assumed mapped exactly once. 
+			 * In this case, 'len' must be a power of two. */
+			IntPtr select; //size_t
+
+			/* If this is nonzero, the set bits are assumed not connected to the 
+			 * memory chip's address pins. */
+			IntPtr disconnect; //size_t
+
+			/* This one tells the size of the current memory area.
+			 * If, after start+disconnect are applied, the address is higher than 
+			 * this, the highest bit of the address is cleared.
+			 *
+			 * If the address is still too high, the next highest bit is cleared.
+			 * Can be zero, in which case it's assumed to be infinite (as limited 
+			 * by 'select' and 'disconnect'). */
+			IntPtr len; //size_t
+
+			/* To go from emulated address to physical address, the following 
+			 * order applies:
+			 * Subtract 'start', pick off 'disconnect', apply 'len', add 'offset'.
+			 *
+			 * The address space name must consist of only a-zA-Z0-9_-, 
+			 * should be as short as feasible (maximum length is 8 plus the NUL),
+			 * and may not be any other address space plus one or more 0-9A-F 
+			 * at the end.
+			 * However, multiple memory descriptors for the same address space is 
+			 * allowed, and the address space name can be empty. NULL is treated 
+			 * as empty.
+			 *
+			 * Address space names are case sensitive, but avoid lowercase if possible.
+			 * The same pointer may exist in multiple address spaces.
+			 *
+			 * Examples:
+			 * blank+blank - valid (multiple things may be mapped in the same namespace)
+			 * 'Sp'+'Sp' - valid (multiple things may be mapped in the same namespace)
+			 * 'A'+'B' - valid (neither is a prefix of each other)
+			 * 'S'+blank - valid ('S' is not in 0-9A-F)
+			 * 'a'+blank - valid ('a' is not in 0-9A-F)
+			 * 'a'+'A' - valid (neither is a prefix of each other)
+			 * 'AR'+blank - valid ('R' is not in 0-9A-F)
+			 * 'ARB'+blank - valid (the B can't be part of the address either, because 
+			 * there is no namespace 'AR')
+			 * blank+'B' - not valid, because it's ambigous which address space B1234 
+			 * would refer to.
+			 * The length can't be used for that purpose; the frontend may want 
+			 * to append arbitrary data to an address, without a separator. */
+			string addrspace;
+		};
+
 		public enum RETRO_PIXEL_FORMAT
 		{
 			XRGB1555 = 0,

@@ -255,31 +255,41 @@ namespace BizHawk.Client.Common
 
 					if (AsLibretro)
 					{
-						//we'll need to generate a game name for purposes of state/saveram pathing etc.
-						string gameName;
-
 						string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
 
 						var retro = new LibRetroEmulator(nextComm, nextComm.LaunchLibretroCore);
 						nextEmulator = retro;
 
+						//kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesnt fail
+						var oldGame = Global.Game;
+
 						if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
 						{
+							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+							//game name == name of core
+							var gameName = codePathPart;
+							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
+
 							//if we are allowed to run NoGame and we dont have a game, boot up the core that way
 							bool ret = retro.LoadNoGame();
+
+							Global.Game = oldGame;
+
 							if (!ret)
 							{
 								DoLoadErrorCallback("LibretroNoGame failed to load. This is weird", "Libretro");
 								retro.Dispose();
 								return false;
 							}
-
-							//game name == name of core
-							gameName = codePathPart;
 						}
 						else
 						{
 							bool ret;
+
+							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+							//game name == name of core + extensionless_game_filename
+							var gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
+							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
 
 							//if the core requires an archive file, then try passing the filename of the archive
 							//(but do we ever need to actually load the contents of the archive file into ram?)
@@ -287,7 +297,7 @@ namespace BizHawk.Client.Common
 							{
 								if (file.IsArchiveMember)
 									throw new InvalidOperationException("Should not have bound file member for libretro block_extract core");
-								retro.LoadPath(file.FullPathWithoutMember);
+								ret = retro.LoadPath(file.FullPathWithoutMember);
 							}
 							else
 							{
@@ -303,21 +313,18 @@ namespace BizHawk.Client.Common
 									if (ret)
 										ret = retro.LoadData(file.ReadAllBytes());
 								}
-
-								if (!ret)
-								{
-									DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", "Libretro");
-									retro.Dispose();
-									return false;
-								}
-
 							}
 
-							//game name == name of core + extensionless_game_filename
-							gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
+							Global.Game = oldGame;
+
+							if (!ret)
+							{
+								DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", "Libretro");
+								retro.Dispose();
+								return false;
+							}
 						}
 
-						game = new GameInfo { Name = gameName, System = "Libretro" };
 
 					}
 					else
