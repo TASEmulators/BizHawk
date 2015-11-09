@@ -58,9 +58,22 @@ namespace BizHawk.Client.Common
 			get { return _rewindFrequency; }
 		}
 
+		bool IsRewindEnabledAtAll
+		{
+			get
+			{
+				if (!Global.Config.RewindEnabledLarge && !Global.Config.RewindEnabledMedium && !Global.Config.RewindEnabledSmall)
+					return false;
+				else return true;
+			}
+		}
+
 		// TOOD: this should not be parameterless?! It is only possible due to passing a static context in
 		public void CaptureRewindState()
 		{
+			if (!IsRewindEnabledAtAll)
+				return;
+
 			if (Global.Emulator.HasSavestates())
 			{
 				if (_rewindImpossible)
