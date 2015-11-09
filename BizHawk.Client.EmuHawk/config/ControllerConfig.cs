@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using BizHawk.Common;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
@@ -84,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			return new AnalogBindPanel(settings, buttons) { Dock = DockStyle.Fill, AutoScroll = true };
 		}
 
-		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
+		private static void LoadToPanel<T>(Control dest, string controllerName, IList<string> controllerButtons, Dictionary<string,string> categoryLabels, IDictionary<string, Dictionary<string, T>> settingsblock, T defaultvalue, PanelCreator<T> createpanel)
 		{
 			Dictionary<string, T> settings;
 			if (!settingsblock.TryGetValue(controllerName, out settings))
@@ -109,6 +110,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// split the list of all settings into buckets by player number
 			var buckets = new List<string>[MAXPLAYERS + 1];
+			var categoryBuckets = new WorkingDictionary<string, List<string>>();
 			for (var i = 0; i < buckets.Length; i++)
 			{
 				buckets[i] = new List<string>();
@@ -133,7 +135,14 @@ namespace BizHawk.Client.EmuHawk
 					i = 0;
 				}
 
-				buckets[i].Add(button);
+				if (button == "Pointer Pressed")
+				{
+					int zzz = 9;
+				}
+
+				if (categoryLabels.ContainsKey(button))
+					categoryBuckets[categoryLabels[button]].Add(button);
+				else buckets[i].Add(button);
 			}
 
 			if (buckets[0].Count == controllerButtons.Count)
@@ -156,6 +165,13 @@ namespace BizHawk.Client.EmuHawk
 						tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[i], tt.Size));
 						pageidx++;
 					}
+				}
+
+				foreach (var cat in categoryBuckets)
+				{
+					string tabname = cat.Key;
+					tt.TabPages.Add(tabname);
+					tt.TabPages[pageidx].Controls.Add(createpanel(settings, cat.Value, tt.Size));
 				}
 
 				if (buckets[0].Count > 0)
@@ -189,9 +205,9 @@ namespace BizHawk.Client.EmuHawk
 			IDictionary<string, Dictionary<string, string>> autofire,
 			IDictionary<string, Dictionary<string, Config.AnalogBind>> analog)
 		{
-			LoadToPanel(NormalControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, normal, string.Empty, CreateNormalPanel);
-			LoadToPanel(AutofireControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, autofire, string.Empty, CreateNormalPanel);
-			LoadToPanel(AnalogControlsTab, _theDefinition.Name, _theDefinition.FloatControls, analog, new Config.AnalogBind(string.Empty, 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(NormalControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, normal, string.Empty, CreateNormalPanel);
+			LoadToPanel(AutofireControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, autofire, string.Empty, CreateNormalPanel);
+			LoadToPanel(AnalogControlsTab, _theDefinition.Name, _theDefinition.FloatControls, _theDefinition.CategoryLabels, analog, new Config.AnalogBind(string.Empty, 1.0f, 0.1f), CreateAnalogPanel);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{

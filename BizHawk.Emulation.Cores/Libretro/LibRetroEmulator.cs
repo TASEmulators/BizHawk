@@ -13,7 +13,7 @@ using BizHawk.Common.BufferExtensions;
 namespace BizHawk.Emulation.Cores
 {
 	[CoreAttributes("Libretro", "natt&zeromus")]
-	public unsafe class LibRetroEmulator : IEmulator, ISettable<LibRetroEmulator.Settings, LibRetroEmulator.SyncSettings>,
+	public unsafe partial class LibRetroEmulator : IEmulator, ISettable<LibRetroEmulator.Settings, LibRetroEmulator.SyncSettings>,
 		ISaveRam, IStatable, IVideoProvider, IInputPollable
 	{
 		#region Settings
@@ -255,58 +255,6 @@ namespace BizHawk.Emulation.Cores
 			else return false;
 		}
 
-		//meanings (they are kind of hazy, but once we're done implementing this it will be completely defined by example)
-		//port = console physical port?
-		//device = logical device type
-		//index = sub device index? (multitap?)
-		//id = button id
-		short retro_input_state(uint port, uint device, uint index, uint id)
-		{
-			//helpful debugging
-			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
-
-			switch ((LibRetro.RETRO_DEVICE)device)
-			{
-				case LibRetro.RETRO_DEVICE.POINTER:
-					{
-						switch ((LibRetro.RETRO_DEVICE_ID_POINTER)id)
-						{
-							case LibRetro.RETRO_DEVICE_ID_POINTER.X: return (short)Controller.GetFloat("Pointer X");
-							case LibRetro.RETRO_DEVICE_ID_POINTER.Y: return (short)Controller.GetFloat("Pointer Y");
-							case LibRetro.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(Controller["Pointer Pressed"] ? 1 : 0);
-						}
-						return 0;
-					}
-
-				case LibRetro.RETRO_DEVICE.JOYPAD:
-					{
-						//The JOYPAD is sometimes called RetroPad (and we'll call it that in user-facing stuff cos retroarch does)
-						//It is essentially a Super Nintendo controller, but with additional L2/R2/L3/R3 buttons, similar to a PS1 DualShock.
-					
-						string button = "";
-						switch ((LibRetro.RETRO_DEVICE_ID_JOYPAD)id)
-						{
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.A: button = "A"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.B: button = "B"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.X: button = "X"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.Y: button = "Y"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.UP: button = "Up"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.DOWN: button = "Down"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.LEFT: button = "Left"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.RIGHT: button = "Right"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.L: button = "L"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.R: button = "R"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.SELECT: button = "Select"; break;
-							case LibRetro.RETRO_DEVICE_ID_JOYPAD.START: button = "Start"; break;
-						}
-
-						return (short)(GetButton(port+1, "RetroPad", button) ? 1 : 0);
-					}
-				default:
-					return 0;
-			}
-		}
-
 		LibRetro.retro_environment_t retro_environment_cb;
 		LibRetro.retro_video_refresh_t retro_video_refresh_cb;
 		LibRetro.retro_audio_sample_t retro_audio_sample_cb;
@@ -428,6 +376,12 @@ namespace BizHawk.Emulation.Cores
 				LibRetro.retro_system_info system_info = new LibRetro.retro_system_info();
 				retro.retro_get_system_info(ref system_info);
 
+				//the dosbox core calls GET_SYSTEM_DIRECTORY and GET_SAVE_DIRECTORY from retro_set_environment.
+				//so, lets set some temporary values (which we'll replace)
+				SystemDirectory = Path.GetDirectoryName(modulename);
+				SystemDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SystemDirectory);
+				SaveDirectory = Path.GetDirectoryName(modulename);
+				SaveDirectoryAtom = unmanagedResources.StringToHGlobalAnsi(SaveDirectory);
 				retro.retro_set_environment(retro_environment_cb);
 				
 				retro.retro_set_video_refresh(retro_video_refresh_cb);
@@ -503,6 +457,8 @@ namespace BizHawk.Emulation.Cores
 			//defer this until loading because it triggers the core to read save and system paths
 			//if any cores did that from set_environment then i'm assured we can call set_environment again here before retro_init and it should work
 			//--alcaro says any cores that can't handle that should be considered a bug
+			//UPDATE: dosbox does that, so lets try it
+			retro.retro_set_environment(retro_environment_cb);
 			retro.retro_init();
 
 			if (!retro.retro_load_game(ref gi))
@@ -545,11 +501,30 @@ namespace BizHawk.Emulation.Cores
 			})
 				definition.BoolButtons.Add(string.Format(item,"RetroPad"));
 
-			definition.BoolButtons.Add("Pointer Pressed");
+			definition.BoolButtons.Add("Pointer Pressed"); //TODO: this isnt showing up in the binding panel. I dont want to find out why.
 			definition.FloatControls.Add("Pointer X");
 			definition.FloatControls.Add("Pointer Y");
 			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
 			definition.FloatRanges.Add(new ControllerDefinition.FloatRange(-32767, 0, 32767));
+
+			foreach (var key in new[]{
+				"Key Backspace", "Key Tab", "Key Clear", "Key Return", "Key Pause", "Key Escape",
+				"Key Space", "Key Exclaim", "Key QuoteDbl", "Key Hash", "Key Dollar", "Key Ampersand", "Key Quote", "Key LeftParen", "Key RightParen", "Key Asterisk", "Key Plus", "Key Comma", "Key Minus", "Key Period", "Key Slash",
+				"Key 0", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9",
+				"Key Colon", "Key Semicolon", "Key Less", "Key Equals", "Key Greater", "Key Question", "Key At", "Key LeftBracket", "Key Backslash", "Key RightBracket", "Key Caret", "Key Underscore", "Key Backquote",
+				"Key A", "Key B", "Key C", "Key D", "Key E", "Key F", "Key G", "Key H", "Key I", "Key J", "Key K", "Key L", "Key M", "Key N", "Key O", "Key P", "Key Q", "Key R", "Key S", "Key T", "Key U", "Key V", "Key W", "Key X", "Key Y", "Key Z",
+				"Key Delete",
+				"Key KP0", "Key KP1", "Key KP2", "Key KP3", "Key KP4", "Key KP5", "Key KP6", "Key KP7", "Key KP8", "Key KP9",
+				"Key KP_Period", "Key KP_Divide", "Key KP_Multiply", "Key KP_Minus", "Key KP_Plus", "Key KP_Enter", "Key KP_Equals",
+				"Key Up", "Key Down", "Key Right", "Key Left", "Key Insert", "Key Home", "Key End", "Key PageUp", "Key PageDown",
+				"Key F1", "Key F2", "Key F3", "Key F4", "Key F5", "Key F6", "Key F7", "Key F8", "Key F9", "Key F10", "Key F11", "Key F12", "Key F13", "Key F14", "Key F15",
+				"Key NumLock", "Key CapsLock", "Key ScrollLock", "Key RShift", "Key LShift", "Key RCtrl", "Key LCtrl", "Key RAlt", "Key LAlt", "Key RMeta", "Key LMeta", "Key LSuper", "Key RSuper", "Key Mode", "Key Compose",
+				"Key Help", "Key Print", "Key SysReq", "Key Break", "Key Menu", "Key Power", "Key Euro", "Key Undo"
+			})
+			{
+				definition.BoolButtons.Add(key);
+				definition.CategoryLabels[key] = "RetroKeyboard";
+			}
 
 			return definition;
 		}
