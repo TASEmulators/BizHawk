@@ -154,8 +154,12 @@ namespace BizHawk.Emulation.Cores
 				case LibRetro.RETRO_ENVIRONMENT.SET_DISK_CONTROL_INTERFACE:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.SET_HW_RENDER:
-					// this can be done in principle, but there's no reason to right now
-					return false;
+					{
+						//mupen64plus needs this, as well as 3dengine
+						LibRetro.retro_hw_render_callback* info = (LibRetro.retro_hw_render_callback*)data.ToPointer();
+						Console.WriteLine("SET_HW_RENDER: {0}, version={1}.{2}, dbg/cache={3}/{4}, depth/stencil = {5}/{6}{7}", info->context_type, info->version_minor, info->version_major, info->debug_context, info->cache_context, info->depth, info->stencil, info->bottom_left_origin ? " (bottomleft)" : "");
+						return true;
+					}
 				case LibRetro.RETRO_ENVIRONMENT.GET_VARIABLE:
 					{
 						void** variables = (void**)data.ToPointer();
