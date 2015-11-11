@@ -190,10 +190,9 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DestroyAll()
 		{
-			foreach (var form in _luaForms)
+			for (var i = _luaForms.Count - 1; i >= 0; i--)
 			{
-				form.Close();
-				_luaForms.Remove(form);
+				_luaForms.ElementAt(i).Close();
 			}
 		}
 
