@@ -307,7 +307,7 @@ namespace BizHawk.Client.EmuHawk
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 			{
 				if (e.CommandLine.Count >= 1)
-					(MainForm as MainForm).LoadRom(e.CommandLine[0]);
+					(MainForm as MainForm).LoadRom(e.CommandLine[0], new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 			}
 
 			protected override void OnCreateMainForm()
