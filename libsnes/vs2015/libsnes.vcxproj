@@ -81,12 +81,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">
     <TargetName>libsneshawk-32-compatibility</TargetName>
-    <OutDir>..\..\output\dll</OutDir>
+    <OutDir>..\..\output\dll\</OutDir>
     <IntDir>.obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-Performance|Win32'">
     <TargetName>libsneshawk-32-performance</TargetName>
-    <OutDir>..\..\output\dll</OutDir>
+    <OutDir>..\..\output\dll\</OutDir>
     <IntDir>.obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">
@@ -135,6 +135,7 @@
       <OmitFramePointers>true</OmitFramePointers>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -146,7 +147,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
@@ -154,6 +155,10 @@
       <AdditionalIncludeDirectories>$(ProjectDir)../bsnes</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HOOKS;BIZHAWK;PROFILE_COMPATIBILITY;GAMEBOY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>true</OmitFramePointers>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -318,6 +323,7 @@
     <ClCompile Include="..\bsnes\gameboy\scheduler\scheduler.cpp" />
     <ClCompile Include="..\bsnes\gameboy\system\system.cpp" />
     <ClCompile Include="..\bsnes\gameboy\video\video.cpp" />
+    <ClCompile Include="..\bsnes\libco\x86.c" />
     <ClCompile Include="..\bsnes\snes\alt\cpu\cpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
@@ -709,7 +715,6 @@
     <ClCompile Include="..\bsnes\snes\system\system.cpp" />
     <ClCompile Include="..\bsnes\target-libsnes\libsnes.cpp" />
     <ClCompile Include="..\bsnes\target-libsnes\libsnes_pwrap.cpp" />
-    <ClCompile Include="..\libco_msvc_win32\libco_msvc_win32.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\bsnes\snes\alt\smp\core\cc.sh">

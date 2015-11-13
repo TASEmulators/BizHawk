@@ -139,9 +139,6 @@
     <Filter Include="target-libsnes">
       <UniqueIdentifier>{1d1cf6c9-9e1b-402c-b1cc-7ed8866092e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libco_msvc_win32">
-      <UniqueIdentifier>{d2cbafd7-caaf-404c-9fdb-4adaaf5c1687}</UniqueIdentifier>
-    </Filter>
     <Filter Include="snes\cpu\core">
       <UniqueIdentifier>{be676f5c-dcb3-4a39-911c-4e102dfa25d8}</UniqueIdentifier>
     </Filter>
@@ -165,6 +162,9 @@
     </Filter>
     <Filter Include="snes\smp\timing">
       <UniqueIdentifier>{a2db2d0e-68ec-4fa0-91fc-2bcc8ac33d32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libco">
+      <UniqueIdentifier>{70659d45-e958-48ff-94a3-8a57aa76dd61}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -392,9 +392,6 @@
     <ClCompile Include="..\bsnes\target-libsnes\libsnes_pwrap.cpp">
       <Filter>target-libsnes</Filter>
     </ClCompile>
-    <ClCompile Include="..\libco_msvc_win32\libco_msvc_win32.c">
-      <Filter>libco_msvc_win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\bsnes\snes\cpu\core\core.cpp">
       <Filter>snes\cpu\core</Filter>
     </ClCompile>
@@ -568,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="..\bsnes\snes\dsp\counter.cpp">
       <Filter>snes\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\bsnes\libco\x86.c">
+      <Filter>libco</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
