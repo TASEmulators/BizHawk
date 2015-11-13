@@ -120,6 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
+		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
@@ -800,8 +801,16 @@ namespace BizHawk.Client.EmuHawk
 			int currNativeWidth = presentationPanel.NativeSize.Width;
 			int currNativeHeight = presentationPanel.NativeSize.Height;
 
+			currNativeWidth += ClientExtraPadding.Horizontal;
+			currNativeHeight += ClientExtraPadding.Vertical;
+
 			int width,height;
-			if(name == "emu") { width = currEmuWidth; height = currEmuHeight; }
+			if(name == "emu") { 
+				width = currEmuWidth; 
+				height = currEmuHeight;
+				width += GameExtraPadding.Horizontal;
+				height += GameExtraPadding.Vertical;
+			}
 			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
 			else throw new InvalidOperationException("Unknown lua surface name: " +name);
 
