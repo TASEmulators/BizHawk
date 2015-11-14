@@ -114,6 +114,7 @@
 			this.MaximizeBox = false;
 			this.Name = "GameShark";
 			this.Text = "GameShark Converter";
+			this.Load += new System.EventHandler(this.GameShark_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
