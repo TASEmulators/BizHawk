@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Windows.Forms;
 using BizHawk.Emulation.Common;
+//Using the GameBoy Core Directly, is an issue with the limitations for what this tool does.
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.Common;
 using System.Globalization;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
-		[ToolAttributes(released: true, supportedSystems: new[] { "GB" })]
 		//We are using Memory Domains, so we NEED this.
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
+
 		public GameShark()
 		{
 			InitializeComponent();
@@ -32,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			
+			throw new NotImplementedException();
 		}
 
 		public void Restart()
@@ -71,8 +74,8 @@ namespace BizHawk.Client.EmuHawk
 			RAMAddress = RAMAddress + parseString.Remove(2, 2);
 			//We now have our values.
 			//This part, is annoying...
-			try
-			{
+			//try
+			//{
 				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
 				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
@@ -81,11 +84,11 @@ namespace BizHawk.Client.EmuHawk
 				//Clear old Inputs
 				txtCheat.Clear();
 				txtDescription.Clear();
-			}
-			catch (Exception ex)
+			/*}
+			catch
 			{
-				MessageBox.Show("An Error occured:" + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+				MessageBox.Show("An Error occured", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			} */
 		}
 
 		private void btnClear_Click(object sender, EventArgs e)
@@ -93,6 +96,11 @@ namespace BizHawk.Client.EmuHawk
 			//Clear old Inputs
 			txtCheat.Clear();
 			txtDescription.Clear();
+		}
+
+		private void GameShark_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }

@@ -50,7 +50,7 @@
 			this.btnClear.Location = new System.Drawing.Point(141, 132);
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(75, 23);
-			this.btnClear.TabIndex = 4;
+			this.btnClear.TabIndex = 16;
 			this.btnClear.Text = "Clear";
 			this.btnClear.UseVisualStyleBackColor = true;
 			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
@@ -69,14 +69,14 @@
 			this.txtCheat.Location = new System.Drawing.Point(128, 106);
 			this.txtCheat.Name = "txtCheat";
 			this.txtCheat.Size = new System.Drawing.Size(100, 20);
-			this.txtCheat.TabIndex = 2;
+			this.txtCheat.TabIndex = 10;
 			// 
 			// btnGo
 			// 
 			this.btnGo.Location = new System.Drawing.Point(35, 131);
 			this.btnGo.Name = "btnGo";
 			this.btnGo.Size = new System.Drawing.Size(75, 23);
-			this.btnGo.TabIndex = 3;
+			this.btnGo.TabIndex = 9;
 			this.btnGo.Text = "Convert";
 			this.btnGo.UseVisualStyleBackColor = true;
 			this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
@@ -95,7 +95,7 @@
 			this.txtDescription.Location = new System.Drawing.Point(22, 106);
 			this.txtDescription.Name = "txtDescription";
 			this.txtDescription.Size = new System.Drawing.Size(100, 20);
-			this.txtDescription.TabIndex = 1;
+			this.txtDescription.TabIndex = 18;
 			// 
 			// GameShark
 			// 
