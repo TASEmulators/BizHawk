@@ -8,16 +8,13 @@ using System.Globalization;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		//We are using Memory Domains, so we NEED this.
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
-		//Since this is only using GameBoy at the moment, we do this.
-		//TODO:
-		//Expand this so that this tool supports ALL cores that are capable of using GameShark/CodeBreaker/Action Replay/Game Genie
-		[RequiredService]
-		private Gameboy GB { get; set; }
+
 		public GameShark()
 		{
 			InitializeComponent();
@@ -99,6 +96,11 @@ namespace BizHawk.Client.EmuHawk
 			//Clear old Inputs
 			txtCheat.Clear();
 			txtDescription.Clear();
+		}
+
+		private void GameShark_Load(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
