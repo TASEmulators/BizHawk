@@ -190,7 +190,9 @@ namespace BizHawk.Client.EmuHawk
 			SuspendLayout();
 			LoadPanels(Global.Config);
 
-			checkBoxUDLR.Checked = Global.Config.AllowUD_LR;
+			rbUDLRAllow.Checked = Global.Config.AllowUD_LR;
+			rbUDLRForbid.Checked = Global.Config.ForbidUD_LR;
+			rbUDLRPriority.Checked = !Global.Config.AllowUD_LR && !Global.Config.ForbidUD_LR;
 			checkBoxAutoTab.Checked = Global.Config.InputConfigAutoTab;
 
 			SetControllerPicture(def.Name);
@@ -314,7 +316,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ButtonOk_Click(object sender, EventArgs e)
 		{
-			Global.Config.AllowUD_LR = checkBoxUDLR.Checked;
+			Global.Config.AllowUD_LR = rbUDLRAllow.Checked;
+			Global.Config.ForbidUD_LR = rbUDLRForbid.Checked;
 			Global.Config.InputConfigAutoTab = checkBoxAutoTab.Checked;
 
 			Save();
