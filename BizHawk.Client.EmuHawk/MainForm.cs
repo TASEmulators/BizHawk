@@ -3977,6 +3977,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayMessages ^= true;
 		}
 
+		private void gameSharkConverterToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			//TODO:
+			//Wire up the Connection to the Object
+			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
+			GlobalWin.Tools.Load<GameShark>();
+		}
+
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
