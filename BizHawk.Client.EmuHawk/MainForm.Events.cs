@@ -1246,6 +1246,8 @@ namespace BizHawk.Client.EmuHawk
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
+
+			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
