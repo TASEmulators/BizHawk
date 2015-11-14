@@ -3979,8 +3979,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void gameSharkConverterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			//TODO:
-			//Wire up the Connection to the Object
 			GlobalWin.Tools.Load<GameShark>();
 		}
 
