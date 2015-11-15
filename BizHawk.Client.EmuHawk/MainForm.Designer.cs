@@ -408,6 +408,8 @@
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
 			this.OpenAdvancedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+
+			this.gameSharkConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1841,6 +1843,9 @@
 			this.customToolToolStripMenuItem,
 			this.toolStripSeparator29,
 			this.MultiDiskBundlerFileMenuItem,
+			this.toolStripSeparator29,
+            this.MultiDiskBundlerFileMenuItem,
+            this.gameSharkConverterToolStripMenuItem,
 			this.batchRunnerToolStripMenuItem});
 			this.ToolsSubMenu.Name = "ToolsSubMenu";
 			this.ToolsSubMenu.Size = new System.Drawing.Size(44, 17);
@@ -3459,6 +3464,7 @@
 			this.toolStripMenuItem13.Name = "toolStripMenuItem13";
 			this.toolStripMenuItem13.Size = new System.Drawing.Size(157, 22);
 			this.toolStripMenuItem13.Text = "&Autofire...";
+			this.toolStripMenuItem13.Click += new System.EventHandler(this.AutofireMenuItem_Click);
 			// 
 			// toolStripMenuItem14
 			// 
@@ -3502,16 +3508,19 @@
 			// 
 			this.SavestateTypeDefaultContextMenuItem.Name = "SavestateTypeDefaultContextMenuItem";
 			this.SavestateTypeDefaultContextMenuItem.Size = new System.Drawing.Size(67, 22);
+			this.SavestateTypeDefaultContextMenuItem.Text = "&Default";
 			// 
 			// SavestateBinaryContextMenuItem
 			// 
 			this.SavestateBinaryContextMenuItem.Name = "SavestateBinaryContextMenuItem";
 			this.SavestateBinaryContextMenuItem.Size = new System.Drawing.Size(67, 22);
+			this.SavestateBinaryContextMenuItem.Text = "&Binary";
 			// 
 			// SavestateTextContextMenuItem
 			// 
 			this.SavestateTextContextMenuItem.Name = "SavestateTextContextMenuItem";
 			this.SavestateTextContextMenuItem.Size = new System.Drawing.Size(67, 22);
+			this.SavestateTextContextMenuItem.Text = "&Text";
 			// 
 			// CoreSelectionContextSubMenu
 			// 
@@ -3605,6 +3614,14 @@
 			this.OpenAdvancedMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.OpenAdvancedMenuItem.Text = "Open Ad&vanced";
 			this.OpenAdvancedMenuItem.Click += new System.EventHandler(this.OpenAdvancedMenuItem_Click);
+			// 
+			// gameSharkConverterToolStripMenuItem
+			// 
+			this.gameSharkConverterToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("gameSharkConverterToolStripMenuItem.Image")));
+			this.gameSharkConverterToolStripMenuItem.Name = "gameSharkConverterToolStripMenuItem";
+			this.gameSharkConverterToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.gameSharkConverterToolStripMenuItem.Text = "GameShark Converter";
+			this.gameSharkConverterToolStripMenuItem.Click += new System.EventHandler(this.gameSharkConverterToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
@@ -4025,6 +4042,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CodeDataLoggerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem setLibretroCoreToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem OpenAdvancedMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem gameSharkConverterToolStripMenuItem;
 	}
 }
-

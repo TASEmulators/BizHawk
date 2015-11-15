@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.BinarySavestate = savestate;
 			tas.ClearLagLog();
 
-			List<string> entries = old.GetLogEntries();
+			var entries = old.GetLogEntries();
 
 			tas.CopyLog(entries.Skip(frame));
 			tas.CopyVerificationLog(old.VerificationLog);
@@ -220,7 +220,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			tas.TasStateManager.Clear();
 			tas.ClearLagLog();
 
-			List<string> entries = old.GetLogEntries();
+			var entries = old.GetLogEntries();
 
 			tas.CopyVerificationLog(old.VerificationLog);
 			tas.CopyVerificationLog(entries);

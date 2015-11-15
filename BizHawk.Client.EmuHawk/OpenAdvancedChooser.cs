@@ -72,7 +72,10 @@ namespace BizHawk.Client.EmuHawk
 			//scan the current libretro core to see if it can be launched with NoGame,and other stuff
 			try
 			{
-				using (var retro = new LibRetroEmulator(new BizHawk.Emulation.Common.CoreComm(null, null), core))
+				//a stub corecomm. to reinforce that this won't touch the frontend at all!
+				//LibRetroEmulator should be able to survive having this stub corecomm
+				var coreComm = new BizHawk.Emulation.Common.CoreComm(null, null);
+				using (var retro = new LibRetroEmulator(coreComm, core))
 				{
 					btnLibretroLaunchGame.Enabled = true;
 					if (retro.Description.SupportsNoGame)

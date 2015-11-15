@@ -59,13 +59,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Client.Common.TempFileCleaner.Start();
+			BizHawk.Common.TempFileCleaner.Start();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+		
 			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
 			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			BizHawk.Client.Common.StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
 
 			//super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			for (int i = 0; i < args.Length; i++)
@@ -307,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 			void this_StartupNextInstance(object sender, StartupNextInstanceEventArgs e)
 			{
 				if (e.CommandLine.Count >= 1)
-					(MainForm as MainForm).LoadRom(e.CommandLine[0]);
+					(MainForm as MainForm).LoadRom(e.CommandLine[0], new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 			}
 
 			protected override void OnCreateMainForm()

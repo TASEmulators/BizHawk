@@ -43,10 +43,14 @@ namespace BizHawk.Client.EmuHawk
 		public IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
-				throw new ArgumentException(String.Format("Type {0} does not implement IToolForm.", toolType.Name));
+			{
+				throw new ArgumentException(string.Format("Type {0} does not implement IToolForm.", toolType.Name));
+			}
 
-			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, toolType))
+			if (!IsAvailable(toolType))
+			{
 				return null;
+			}
 
 			var existingTool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
 
@@ -63,6 +67,7 @@ namespace BizHawk.Client.EmuHawk
 						existingTool.Show();
 						existingTool.Focus();
 					}
+
 					return existingTool;
 				}
 			}
@@ -624,7 +629,37 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsAvailable(Type t)
 		{
-			return ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t);
+			if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+			{
+				return false;
+			}
+
+			var tool = Assembly
+					.GetAssembly(typeof(IToolForm))
+					.GetTypes()
+					.FirstOrDefault(type => type == t);
+
+			if (tool == null) // This isn't a tool, must not be available
+			{
+				return false;
+			}
+
+			var attr = tool.GetCustomAttributes(false)
+				.OfType<ToolAttributes>()
+				.FirstOrDefault();
+
+			if (attr == null) // If no attributes there is no supported systems documented so assume all
+			{
+				return true;
+			}
+
+			// If no supported systems mentioned assume all
+			if (attr.SupportedSystems != null && attr.SupportedSystems.Any())
+			{
+				return attr.SupportedSystems.Contains(Global.Emulator.SystemId);
+			}
+
+			return true;
 		}
 
 		// Eventually we want a single game genie tool, then this mess goes away

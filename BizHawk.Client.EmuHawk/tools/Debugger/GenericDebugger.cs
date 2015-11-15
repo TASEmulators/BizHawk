@@ -13,7 +13,6 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[ToolAttributes(released: true)]
 	public partial class GenericDebugger : Form, IToolFormAutoConfig, IControlMainform
 	{
 		public GenericDebugger()

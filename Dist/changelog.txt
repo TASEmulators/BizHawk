@@ -3,8 +3,10 @@ next
 =========================================
 
 *EmuHawk
+**Add libretro player, compatible with selected cores
+**Support Code-Data Logger for GB/GBC, SMS/GG, SNES, and Genesis
+**Add GameShark cheat converter
 **Add custom exception display box, so exception info can be clipboarded out
-**Support Code-Data Logger for GB/GBC, SMS/GG, and Genesis
 **Cheat Dialog: Fix flakiness in value-editing
 **Stop FP precision conflicts between lua scripts and D3D Display method
 **DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
@@ -12,8 +14,13 @@ next
 **Validate user shaders at selection time
 **Support user custom AR selection
 **Add --load-state commandline
+**Streamline editing RAM Watches
+**Tidy main form context menu
+**Add more options for U+D/L+R forbid/mutex
 **Fix #525 - Memorywatch hex textbox now remembers values across memdomain switches
 **Fix #526 - Hex editor repainting fails and garbage rendering
+**Fix #535 - domain list does not update when changing cores
+**Fix #537 - Annoyance with "always on top"
 
 **Tastudio (TODO - editorialize this section)
 ***color stated frames on WasLag too.
@@ -33,6 +40,8 @@ next
 **Lua
 **Fix gameExtraPadding coordinate translation
 **Clarify script pause/stop state in UI and logic
+**Fix forms.destroyall() and call it when lua console closes
+**Fix error in sizing of lua draw buffers with SetGameExtraPadding (and probably ClientExtraPadding) use
 
 *PSX
 **Fix #530 "AV Resizing shows black screen with PSX"
@@ -40,6 +49,7 @@ next
 *SNES
 **Fix crashes in GFX debugger (including fix #529)
 **Recommend proper SNES PAR
+**Build dlls without msvcrt14 dependencies (to run on more systems)
 
 *Genesis
 **Fix missing scrollbars in VDP viewer

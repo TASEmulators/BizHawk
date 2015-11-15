@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 	{
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
-		public List<string> InputLog { get; set; }
+		public IStringLog InputLog { get; set; }
 		public BitmapBuffer OSDFrameBuffer { get; set; }
 		public TasLagLog LagLog { get; set; }
 		public TasMovieChangeLog ChangeLog { get; set; }
@@ -64,8 +64,9 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(ninput, delegate(TextWriter tw)
 				{
-					foreach (var line in b.InputLog)
-						tw.WriteLine(line);
+					int todo = b.InputLog.Count;
+					for (int i = 0; i < todo; i++)
+						tw.WriteLine(b.InputLog[i]);
 				});
 
 				bs.PutLump(nframebuffer, delegate(Stream s)
@@ -146,7 +147,7 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(ninput, true, delegate(TextReader tr)
 				{
-					b.InputLog = new List<string>();
+					b.InputLog = StringLogUtil.MakeStringLog();
 					string line;
 					while ((line = tr.ReadLine()) != null)
 						b.InputLog.Add(line);

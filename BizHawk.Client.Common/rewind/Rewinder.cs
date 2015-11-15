@@ -58,9 +58,22 @@ namespace BizHawk.Client.Common
 			get { return _rewindFrequency; }
 		}
 
+		bool IsRewindEnabledAtAll
+		{
+			get
+			{
+				if (!Global.Config.RewindEnabledLarge && !Global.Config.RewindEnabledMedium && !Global.Config.RewindEnabledSmall)
+					return false;
+				else return true;
+			}
+		}
+
 		// TOOD: this should not be parameterless?! It is only possible due to passing a static context in
 		public void CaptureRewindState()
 		{
+			if (!IsRewindEnabledAtAll)
+				return;
+
 			if (Global.Emulator.HasSavestates())
 			{
 				if (_rewindImpossible)
@@ -83,6 +96,12 @@ namespace BizHawk.Client.Common
 
 		public void DoRewindSettings()
 		{
+			if (_rewindThread != null)
+			{
+				_rewindThread.Dispose();
+				_rewindThread = null;
+			}
+
 			if (Global.Emulator.HasSavestates())
 			{
 				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
@@ -132,11 +151,6 @@ namespace BizHawk.Client.Common
 
 					_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, capacity, BufferManage);
 
-					if (_rewindThread != null)
-					{
-						_rewindThread.Dispose();
-					}
-
 					_rewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
 				}
 			}
@@ -144,7 +158,7 @@ namespace BizHawk.Client.Common
 
 		public void Rewind(int frames)
 		{
-			if (Global.Emulator.HasSavestates())
+			if (Global.Emulator.HasSavestates() && _rewindThread != null)
 			{
 				_rewindThread.Rewind(frames);
 			}

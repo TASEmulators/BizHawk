@@ -1249,6 +1249,7 @@ namespace BizHawk.Client.EmuHawk
 
 			string toolPath = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
 			customToolToolStripMenuItem.Enabled = File.Exists(toolPath);
+			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)

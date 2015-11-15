@@ -18,9 +18,15 @@ namespace BizHawk.Emulation.Common
 		string DllPath();
 
 		/// <summary>
-		/// produces a path that contains saveram... because libretro cores need it? not sure yet
+		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
-		string GetSaveRAMPath();
+		/// <returns></returns>
+		string GetRetroSaveRAMDirectory();
+
+		/// <summary>
+		/// produces a path for use as a libretro system path (different for each core)
+		/// </summary>
+		string GetRetroSystemPath();
 
 		string GetGameBasePath();
 

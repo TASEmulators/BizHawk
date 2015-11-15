@@ -442,7 +442,9 @@ namespace BizHawk.Common
 					#region s - string
 					case 's':   // string
 						string t = "{0" + ( fieldLength != int.MinValue ? "," + ( flagLeft2Right ? "-" : String.Empty ) + fieldLength.ToString() : String.Empty ) + ":s}";
-						w = Marshal.PtrToStringAnsi(n);
+						if (n == IntPtr.Zero)
+							w = "(null)";
+						else w = Marshal.PtrToStringAnsi(n);
 						if ( fieldPrecision >= 0 )
 							w = w.Substring( 0, fieldPrecision );
 

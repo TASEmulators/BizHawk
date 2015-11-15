@@ -756,7 +756,7 @@ namespace BizHawk.Client.EmuHawk
 				MemoryDomains = _memoryDomains
 			};
 			we.SetWatch(_watches.Domain);
-			we.ShowHawkDialog();
+			we.ShowHawkDialog(this);
 			if (we.DialogResult == DialogResult.OK)
 			{
 				_watches.Add(we.Watches[0]);

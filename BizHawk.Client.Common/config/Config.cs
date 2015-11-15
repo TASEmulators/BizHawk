@@ -74,8 +74,10 @@ namespace BizHawk.Client.Common
 		public bool AcceptBackgroundInput = false;
 		public bool SingleInstanceMode = false;
 		public bool AllowUD_LR = false;
+		public bool ForbidUD_LR = false;
 		public bool ShowContextMenu = true;
 		public bool EnableBackupMovies = true;
+		public bool MoviesOnDisk = false;
 		public bool HotkeyConfigAutoTab = true;
 		public bool InputConfigAutoTab = true;
 		public bool ShowLogWindow = false;

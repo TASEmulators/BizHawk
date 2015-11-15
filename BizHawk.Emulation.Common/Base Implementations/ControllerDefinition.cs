@@ -81,6 +81,7 @@ namespace BizHawk.Emulation.Common
 
 		public string Name { get; set; }
 
+		public Dictionary<string, string> CategoryLabels = new Dictionary<string, string>();
 		public List<string> BoolButtons { get; set; }
 		public List<string> FloatControls { get; private set; }
 		public List<FloatRange> FloatRanges { get; private set; }

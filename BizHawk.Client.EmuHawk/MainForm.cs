@@ -321,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 			if (cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				LoadRom(cmdRom);
+				LoadRom(cmdRom, new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 				if (Global.Game == null)
 				{
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
@@ -3446,7 +3446,7 @@ namespace BizHawk.Client.EmuHawk
 		LoadRomArgs CurrentLoadRomArgs;
 
 		// Still needs a good bit of refactoring
-		public bool LoadRom(string path, LoadRomArgs args = null)
+		public bool LoadRom(string path, LoadRomArgs args)
 		{
 			//default args
 			if (args == null) args = new LoadRomArgs();
@@ -3975,6 +3975,11 @@ namespace BizHawk.Client.EmuHawk
 		private void DisplayMessagesMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisplayMessages ^= true;
+		}
+
+		private void gameSharkConverterToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GameShark>();
 		}
 
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -240,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void OpenRom(string path)
 		{
-			GlobalWin.MainForm.LoadRom(path);
+			GlobalWin.MainForm.LoadRom(path, new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 		}
 
 		[LuaMethodAttributes(

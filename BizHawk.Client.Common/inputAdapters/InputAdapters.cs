@@ -105,8 +105,13 @@ namespace BizHawk.Client.Common
 			return Source.GetFloat(name);
 		}
 
+		HashSet<string> Unpresses = new HashSet<string>();
+
 		public bool IsPressed(string button)
 		{
+			bool PriorityUD_LR = !Global.Config.AllowUD_LR && !Global.Config.ForbidUD_LR; //implied by neither of the others being set (left as non-enum for back-compatibility)
+
+
 			if (Global.Config.AllowUD_LR)
 			{
 				return Source.IsPressed(button);
@@ -116,37 +121,63 @@ namespace BizHawk.Client.Common
 
 			//" C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
 
+			//regarding the unpressing and UDLR logic...... don't think about it. don't question it. don't look at it.
+
 			if (button.Contains("Down") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Down");
-				if (Source.IsPressed(prefix + "Up"))
-					return false;
+				string other = prefix + "Up";
+				if (Source.IsPressed(other))
+				{
+					if (Unpresses.Contains(button)) return false;
+					if (Global.Config.ForbidUD_LR) return false;
+					Unpresses.Add(other);
+				}
+				else Unpresses.Remove(button);
 			}
 
 			if (button.Contains("Up") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Up");
-				if (Source.IsPressed(prefix + "Down"))
-					return false;
+				string other = prefix + "Down";
+				if (Source.IsPressed(other))
+				{
+					if (Unpresses.Contains(button)) return false;
+					if (Global.Config.ForbidUD_LR) return false;
+					Unpresses.Add(other);
+				}
+				else Unpresses.Remove(button);
 			}
 
 
 			if (button.Contains("Right") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Right");
-				if (Source.IsPressed(prefix + "Left"))
+				string other = prefix + "Left";
+				if (Source.IsPressed(other))
 				{
-					return false;
+					if (Unpresses.Contains(button)) return false;
+					if (Global.Config.ForbidUD_LR) return false;
+					Unpresses.Add(other);
 				}
+				else Unpresses.Remove(button);
 			}
 
 			if (button.Contains("Left") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Left");
-				if (Source.IsPressed(prefix + "Right"))
+				string other = prefix + "Right";
+				if (Source.IsPressed(other))
 				{
-					return false;
+					if (Unpresses.Contains(button)) return false;
+					if (Global.Config.ForbidUD_LR) return false;
+					Unpresses.Add(other);
 				}
+				else Unpresses.Remove(button);
 			}
 
 			return Source.IsPressed(button);
