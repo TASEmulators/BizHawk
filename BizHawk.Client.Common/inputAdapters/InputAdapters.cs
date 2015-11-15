@@ -121,8 +121,11 @@ namespace BizHawk.Client.Common
 
 			//" C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
 
+			//regarding the unpressing and UDLR logic...... don't think about it. don't question it. don't look at it.
+
 			if (button.Contains("Down") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Down");
 				string other = prefix + "Up";
 				if (Source.IsPressed(other))
@@ -136,6 +139,7 @@ namespace BizHawk.Client.Common
 
 			if (button.Contains("Up") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Up");
 				string other = prefix + "Down";
 				if (Source.IsPressed(other))
@@ -150,6 +154,7 @@ namespace BizHawk.Client.Common
 
 			if (button.Contains("Right") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Right");
 				string other = prefix + "Left";
 				if (Source.IsPressed(other))
@@ -163,6 +168,7 @@ namespace BizHawk.Client.Common
 
 			if (button.Contains("Left") && !button.Contains(" C "))
 			{
+				if (!Source.IsPressed(button)) Unpresses.Remove(button);
 				prefix = button.GetPrecedingString("Left");
 				string other = prefix + "Right";
 				if (Source.IsPressed(other))
