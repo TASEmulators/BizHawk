@@ -104,8 +104,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					break;
 				case "N64":
-					//N64 Cheats are going be more, limited/restricted.  I am NOT going to support the non-8XXXXXXX YYYY style of codes.  That's too much work/hassle.
-					//I think they can in theory work with straight conversion as written?
+					//These codes, more or less work without Needing much work.
 					if (txtCheat.Text.Contains(" ") == false)
 					{
 						MessageBox.Show("All N64 GameShark Cheats need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -143,23 +142,31 @@ namespace BizHawk.Client.EmuHawk
 						//Do we support the GameShark Button?  No.  But these cheats, can be toggled.  Which "Counts"
 						//<Ocean_Prince> Consequences be damned!
 						case "88":
+							//Byte
+							isByte = true;
 							break;
 						case "89":
+							//Word
+							isByte = false;
 							break;
 						//These are compare Address X to Value Y, then apply Value B to Address A
 						//This is not supported, yet
 						//TODO: When BizHawk supports a compare RAM Address's value is true then apply a value to another address, make it a thing.
 						case "D0":
-                        case "D1":
+							//Byte
+						case "D1":
+							//Word
                         case "D2":
+							//Byte
 						case "D3":
+							//Word
 							MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 						//These codes are for Disabling the Expansion Pak.  that's a bad thing?  Assuming bad codes, until told otherwise.
 						case "EE":
 						case "DD":
 						case "CC":
-							MessageBox.Show("The code you entered is for Disabling the Expansion Pak.  This is not allowed.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+							MessageBox.Show("The code you entered is for Disabling the Expansion Pak.  This is not allowed by this tool.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 						//Enable Code
 						//Not Necessary?  Think so?
@@ -173,6 +180,7 @@ namespace BizHawk.Client.EmuHawk
 							return;
 						//TODO: Make Patch Code (5000XXYY) work.
 						case "50":
+							//Word?
 							MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 							return;
 						//I hope this isn't a thing.
