@@ -230,7 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Frame = Global.Emulator.Frame,
 				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
-				InputLog = Movie.InputLog.ToList(),
+				InputLog = Movie.InputLog.Clone(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				LagLog = Movie.TasLagLog.Clone(),
 				ChangeLog = new TasMovieChangeLog(Movie),

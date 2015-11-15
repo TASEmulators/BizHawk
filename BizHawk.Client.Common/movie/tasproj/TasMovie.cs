@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		public readonly TasSession Session;
 		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
+		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 
 		private BackgroundWorker _progressReportWorker = null;
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public TasLagLog TasLagLog { get { return LagLog; } }
-		public List<string> InputLog { get { return _log; } }
+		public IStringLog InputLog { get { return _log; } }
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
@@ -331,7 +331,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> GetLogEntries()
+		public IStringLog GetLogEntries()
 		{
 			return _log;
 		}
@@ -350,7 +350,7 @@ namespace BizHawk.Client.Common
 			{
 				TimelineBranchFrame = null;
 
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
+				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
@@ -500,7 +500,8 @@ namespace BizHawk.Client.Common
 		{
 			int? divergentPoint = DivergentPoint(_log, branch.InputLog);
 
-			_log = branch.InputLog.ToList();
+			if (_log != null) _log.Dispose();
+				_log = branch.InputLog.Clone();
 			//_changes = true;
 
 			// if there are branch states, they will be loaded anyway
@@ -523,7 +524,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
-		private int? DivergentPoint(List<string> currentLog, List<string> newLog)
+		private int? DivergentPoint(IStringLog currentLog, IStringLog newLog)
 		{
 			int max = newLog.Count;
 			if (currentLog.Count < newLog.Count)

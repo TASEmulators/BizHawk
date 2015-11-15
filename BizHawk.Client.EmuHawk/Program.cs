@@ -62,10 +62,13 @@ namespace BizHawk.Client.EmuHawk
 			BizHawk.Client.Common.TempFileCleaner.Start();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+
+			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+		
 			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
 			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
-			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
+			BizHawk.Client.Common.StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
 
 			//super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			for (int i = 0; i < args.Length; i++)
