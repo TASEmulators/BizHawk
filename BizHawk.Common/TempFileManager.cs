@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace BizHawk.Client.Common
+namespace BizHawk.Common
 {
 	/// <summary>
 	/// Starts a thread which cleans any filenames in %temp% beginning with bizhawk.bizdelete.
@@ -11,6 +11,23 @@ namespace BizHawk.Client.Common
 	public static class TempFileCleaner
 	{
 		//todo - manage paths other than %temp%, make not static, or allow adding multiple paths to static instance
+
+		public static string GetTempFilename(string friendlyname, string extension = null, bool delete = true)
+		{
+			string guidPart = Guid.NewGuid().ToString();
+			var fname = string.Format("biz-{0}-{1}-{2}{3}", System.Diagnostics.Process.GetCurrentProcess().Id, friendlyname, guidPart, extension ?? "");
+			if (delete) fname = RenameTempFilenameForDelete(fname);
+			return Path.Combine(Path.GetTempPath(), fname);
+		}
+
+		public static string RenameTempFilenameForDelete(string path)
+		{
+			string filename = Path.GetFileName(path);
+			string dir = Path.GetDirectoryName(path);
+			if (!filename.StartsWith("biz-")) throw new InvalidOperationException();
+			filename = "bizdelete-" + filename.Remove(0, 4);
+			return Path.Combine(dir, filename);
+		}
 
 		public static void Start()
 		{
@@ -31,7 +48,7 @@ namespace BizHawk.Client.Common
 			var di = new DirectoryInfo(Path.GetTempPath());
 			for (; ; )
 			{
-				var fis = di.GetFiles("bizhawk.bizdelete*");
+				var fis = di.GetFiles("bizdelete-*");
 				foreach (var fi in fis)
 				{
 					try
