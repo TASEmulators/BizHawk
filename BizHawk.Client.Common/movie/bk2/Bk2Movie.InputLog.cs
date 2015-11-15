@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected List<string> _log = new List<string>();
+		protected IStringLog _log;
 		protected string LogKey = string.Empty;
 
 		public string GetInputLog()
@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
+				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;

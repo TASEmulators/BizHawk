@@ -154,6 +154,7 @@
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
+    <Compile Include="movie\bk2\StringLogs.cs" />
     <Compile Include="movie\import\PXMImport.cs" />
     <Compile Include="movie\tasproj\StateManagerState.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
@@ -229,7 +230,6 @@
     <Compile Include="SevenZipWriter.cs" />
     <Compile Include="SharpZipWriter.cs" />
     <Compile Include="SystemInfo.cs" />
-    <Compile Include="TempFileCleaner.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\RamSearchEngine.cs" />

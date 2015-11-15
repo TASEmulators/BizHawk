@@ -319,7 +319,7 @@ namespace BizHawk.Client.Common
 			ChangeLog.ClearLog();
 		}
 
-		private static string InputLogToString(List<string> log)
+		private static string InputLogToString(IStringLog log)
 		{
 			var sb = new StringBuilder();
 			foreach (var record in log)

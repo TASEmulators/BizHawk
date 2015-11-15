@@ -5,6 +5,8 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Reflection;
 
+#pragma warning disable 649, 169
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores
