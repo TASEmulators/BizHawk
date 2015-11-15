@@ -117,19 +117,28 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					//We need to determine what kind of cheat this is.
+					//I need to determine if this is a Byte or Word.
+					Boolean isByte = false;
 					string testo = txtCheat.Text.Remove(2, 11);
-					//MessageBox.Show(testo);
 					switch (testo)
 					{
 						//80 and 81 are the most common, so let's not get all worried.
 						case "80":
-							break;
+							//Byte
+							isByte = true;
+                            break;
 						case "81":
+							//Word
+							isByte = false;
 							break;
 						//Case A0 and A1 means "Write to Uncached address.
 						case "A0":
+							//Byte
+							isByte = true;
 							break;
 						case "A1":
+							//Word
+							isByte = false;
 							break;
 						//Do we support the GameShark Button?  No.  But these cheats, can be toggled.  Which "Counts"
 						//<Ocean_Prince> Consequences be damned!
@@ -189,16 +198,7 @@ namespace BizHawk.Client.EmuHawk
 					RAMAddress = parseString.Remove(6, 5);
 					//Get RAM Value
 					RAMValue = parseString.Remove(0, 7);
-					//I need to determine if this is a Byte or Word.
-					//TODO: Make this suck less?  I feel it's sloppy as is and it may be false-postive.
-					Boolean isByte = false;
-					string firstTwo = null;
-					firstTwo = RAMValue.Remove(2, 2);
-					//MessageBox.Show(firstTwo);
-					if (firstTwo == "00")
-					{
-						isByte = true;
-                    }
+
 					try
 					{
 						//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
