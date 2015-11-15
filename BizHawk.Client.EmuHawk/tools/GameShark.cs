@@ -53,6 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			string RAMAddress = null;
 			string RAMValue = null;
 			//What System are we running?
+			//We want Upper Case.
+			txtCheat.Text = txtCheat.Text.ToUpper();
 			switch (Emulator.SystemId)
 			{
 				case "GB":
@@ -60,6 +62,12 @@ namespace BizHawk.Client.EmuHawk
 					if (txtCheat.Text.Length != 8)
 					{
 						MessageBox.Show("All GameShark cheats need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
+					if (txtCheat.Text.StartsWith("0") == false)
+					{
+						MessageBox.Show("All GameShark cheats for GameBoy need to start with the number 0", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
 					//Sample Input for GB/GBC:
@@ -97,17 +105,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "N64":
 					//N64 Cheats are going be more, limited/restricted.  I am NOT going to support the non-8XXXXXXX YYYY style of codes.  That's too much work/hassle.
-					//TODO: Find someone to impliment the Non-8XXXXXXX YYYY style of codes  Or Ignore them all together?
 					//I think they can in theory work with straight conversion as written?
 					if (txtCheat.Text.Contains(" ") == false)
 					{
 						MessageBox.Show("All N64 GameShark Cheats need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
-					}
-					//Big Endian is USED constantly here.  The question is, how do we determine if it's one or two bytes?
-					if (txtCheat.Text.StartsWith("8") == false)
-					{
-						MessageBox.Show("All N64 GameShark Cheats need to start with the number 8.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
 					if (txtCheat.Text.Length != 13)
@@ -115,6 +116,64 @@ namespace BizHawk.Client.EmuHawk
 						MessageBox.Show("All N64 GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
+					//We need to determine what kind of cheat this is.
+					string testo = txtCheat.Text.Remove(2, 11);
+					//MessageBox.Show(testo);
+					switch (testo)
+					{
+						//80 and 81 are the most common, so let's not get all worried.
+						case "80":
+							break;
+						case "81":
+							break;
+						//Case A0 and A1 means "Write to Uncached address.
+						case "A0":
+							break;
+						case "A1":
+							break;
+						//Do we support the GameShark Button?  No.  But these cheats, can be toggled.  Which "Counts"
+						//<Ocean_Prince> Consequences be damned!
+						case "88":
+							break;
+						case "89":
+							break;
+						//These are compare Address X to Value Y, then apply Value B to Address A
+						//This is not supported, yet
+						//TODO: When BizHawk supports a compare RAM Address's value is true then apply a value to another address, make it a thing.
+						case "D0":
+                        case "D1":
+                        case "D2":
+						case "D3":
+							MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						//These codes are for Disabling the Expansion Pak.  that's a bad thing?  Assuming bad codes, until told otherwise.
+						case "EE":
+						case "DD":
+						case "CC":
+							MessageBox.Show("The code you entered is for Disabling the Expansion Pak.  This is not allowed.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						//Enable Code
+						//Not Necessary?  Think so?
+						case "DE":
+						//Single Write ON-Boot code.
+						//Not Necessary?  Think so?
+						case "F0":
+						case "F1":
+						case "2A":
+							MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						//TODO: Make Patch Code (5000XXYY) work.
+						case "50":
+							MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						//I hope this isn't a thing.
+						default:
+							MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							//Leave this Method, before someone gets hurt.
+							return;
+							//break;
+					}
+					//Big Endian is USED constantly here.  The question is, how do we determine if it's one or two bytes?					
 					//Now to get clever.
 					//Sample Input for N64:
 					//8133B21E 08FF
@@ -167,6 +226,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					}
+					break;
+				case "PSX":
+					//Not yet.
 					break;
 				default:
 					//This should NEVER happen
