@@ -54,21 +54,30 @@ namespace BizHawk.Client.EmuHawk
 			string RAMValue = null;
 			//What System are we running?
 			//We want Upper Case.
+			int byteSize = 0;
 			txtCheat.Text = txtCheat.Text.ToUpper();
+			string testo = txtCheat.Text.Remove(2, 11);
 			switch (Emulator.SystemId)
 			{
 				case "GB":
 					//This Check ONLY applies to GB/GBC codes.
 					if (txtCheat.Text.Length != 8)
 					{
-						MessageBox.Show("All GameShark cheats need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("All GameShark Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
 					//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
-					if (txtCheat.Text.StartsWith("0") == false)
+					switch (testo)
 					{
-						MessageBox.Show("All GameShark cheats for GameBoy need to start with the number 0", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return;
+						//Is this 00 or 01?
+						case "00":
+						case "01":
+							//Good.
+							break;
+						default:
+							//No.
+							MessageBox.Show("All GameShark Codes for GameBoy need to start with 00 or 01", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							return;
 					}
 					//Sample Input for GB/GBC:
 					//010FF6C1
@@ -107,47 +116,45 @@ namespace BizHawk.Client.EmuHawk
 					//These codes, more or less work without Needing much work.
 					if (txtCheat.Text.Contains(" ") == false)
 					{
-						MessageBox.Show("All N64 GameShark Cheats need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("All N64 GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
 					if (txtCheat.Text.Length != 13)
 					{
-						MessageBox.Show("All N64 GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("All N64 GameShark Codes need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
 					}
 					//We need to determine what kind of cheat this is.
 					//I need to determine if this is a Byte or Word.
-					Boolean isByte = false;
-					string testo = txtCheat.Text.Remove(2, 11);
 					switch (testo)
 					{
 						//80 and 81 are the most common, so let's not get all worried.
 						case "80":
 							//Byte
-							isByte = true;
+							byteSize = 8;
                             break;
 						case "81":
 							//Word
-							isByte = false;
+							byteSize = 16;
 							break;
 						//Case A0 and A1 means "Write to Uncached address.
 						case "A0":
 							//Byte
-							isByte = true;
+							byteSize = 8;
 							break;
 						case "A1":
 							//Word
-							isByte = false;
+							byteSize = 16;
 							break;
 						//Do we support the GameShark Button?  No.  But these cheats, can be toggled.  Which "Counts"
 						//<Ocean_Prince> Consequences be damned!
 						case "88":
 							//Byte
-							isByte = true;
+							byteSize = 8;
 							break;
 						case "89":
 							//Word
-							isByte = false;
+							byteSize = 16;
 							break;
 						//These are compare Address X to Value Y, then apply Value B to Address A
 						//This is not supported, yet
@@ -211,14 +218,14 @@ namespace BizHawk.Client.EmuHawk
 					{
 						//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
 						//System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
-						if (isByte == false)
+						if (byteSize == 8)
 						{
 							//We have a Word (Double Byte) sized Value
 							var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, true);
 							//Take Watch, Add our Value we want, and it should be active when addded?
 							Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 						}
-						if (isByte == true)
+						if (byteSize == 16)
 						{
 							//We have a Byte sized value
 							var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, true);
@@ -237,6 +244,43 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "PSX":
 					//Not yet.
+					//These codes, more or less work without Needing much work.
+					if (txtCheat.Text.Contains(" ") == false)
+					{
+						MessageBox.Show("All PSX GameShark Cheats need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					if (txtCheat.Text.Length != 13)
+					{
+						MessageBox.Show("All PSX GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					//We need to determine what kind of cheat this is.
+					//I need to determine if this is a Byte or Word.
+					switch (testo)
+					{
+						//30 80 Cheats mean, "Write, don't care otherwise."
+						case "30":
+							byteSize = 8;
+							break;
+						case "80":
+							byteSize = 16;
+                            break;
+						//When value hits YYYY, make the next cheat go off
+						case "E0":
+						//E0 byteSize = 8;
+						case "D0":
+							//D0 byteSize = 16;
+							MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+							return;
+						//Something wrong with their input.
+						default:
+							MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							//Leave this Method, before someone gets hurt.
+							return;
+					}
+
+					//MainRAM
 					break;
 				default:
 					//This should NEVER happen
