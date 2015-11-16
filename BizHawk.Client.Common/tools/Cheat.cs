@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_compare.HasValue)
 				{
-					if (_compare.Value == _watch.Value)
+					if (_compare.Value == _watch.ValueNoFreeze)
 					{
 						_watch.Poke(GetStringForPulse(_val));
 					}

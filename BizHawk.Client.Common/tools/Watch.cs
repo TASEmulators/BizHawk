@@ -113,6 +113,9 @@ namespace BizHawk.Client.Common
 		public abstract string ValueString { get; }
 		public abstract WatchSize Size { get; }
 
+		//zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326
+		public abstract int? ValueNoFreeze { get; }
+
 		public abstract uint MaxValue { get; }
 
 		public abstract int? Previous { get; }
@@ -237,10 +240,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected byte GetByte()
+		protected byte GetByte(bool bypassFreeze = false)
 		{
-			if (Global.CheatList.IsActive(_domain, _address))
+			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
+				//LIAR logic
 				return Global.CheatList.GetByteValue(_domain, _address).Value;
 			}
 			else
@@ -256,10 +260,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected ushort GetWord()
+		protected ushort GetWord(bool bypassFreeze = false)
 		{
-			if (Global.CheatList.IsActive(_domain, _address))
+			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
+				//LIAR logic
 				return (ushort)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word).Value;
 			}
 			else
@@ -275,10 +280,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected uint GetDWord()
+		protected uint GetDWord(bool bypassFreeze = false)
 		{
-			if (Global.CheatList.IsActive(_domain, _address))
+			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
+				//LIAR logic
 				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
 			}
 			else
@@ -458,6 +464,11 @@ namespace BizHawk.Client.Common
 			get { return null; }
 		}
 
+		public override int? ValueNoFreeze
+		{
+			get { return null; }
+		}
+
 		public override int? Previous
 		{
 			get { return null; }
@@ -560,6 +571,11 @@ namespace BizHawk.Client.Common
 		public override int? Value
 		{
 			get { return GetByte(); }
+		}
+
+		public override int? ValueNoFreeze
+		{
+			get { return GetByte(true); }
 		}
 
 		public override string ValueString
@@ -792,6 +808,11 @@ namespace BizHawk.Client.Common
 			get { return GetWord(); }
 		}
 
+		public override int? ValueNoFreeze
+		{
+			get { return GetWord(true); }
+		}
+
 		public override int? Previous
 		{
 			get { return _previous; }
@@ -1006,6 +1027,11 @@ namespace BizHawk.Client.Common
 		public override int? Value
 		{
 			get { return (int)GetDWord(); }
+		}
+
+		public override int? ValueNoFreeze
+		{
+			get { return (int)GetDWord(true); }
 		}
 
 		public override int? Previous
