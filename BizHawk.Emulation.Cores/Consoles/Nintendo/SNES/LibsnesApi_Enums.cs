@@ -61,7 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_SIG_input_state,
 			eMessage_SIG_input_notify,
 			eMessage_SIG_audio_flush,
-			eMessage_SIG_scanlineStart,
 			eMessage_SIG_path_request,
 			eMessage_SIG_trace_callback,
 			eMessage_SIG_allocSharedMemory, //?
@@ -73,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BRK_hook_write,
 			eMessage_BRK_hook_nmi,
 			eMessage_BRK_hook_irq,
+			eMessage_BRK_scanlineStart,
 		};
 
 

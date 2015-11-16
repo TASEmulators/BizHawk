@@ -32,10 +32,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						WriteHook((uint)addr, value);
 						break;
 					}
+
+				//not supported yet
 				case eMessage.eMessage_BRK_hook_nmi:
 					break;
 				case eMessage.eMessage_BRK_hook_irq:
 					break;
+
+				case eMessage.eMessage_BRK_scanlineStart:
+					int line = brPipe.ReadInt32();
+					if (scanlineStart != null)
+						scanlineStart(line);
+					SPECIAL_Resume();
+					break;
+
 			} //switch(msg)
 			return true;
 		}
