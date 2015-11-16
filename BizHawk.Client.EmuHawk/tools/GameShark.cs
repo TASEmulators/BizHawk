@@ -6,7 +6,22 @@ using System.Globalization;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "N64", "PSX", "SAT" })]
+
+	//TODO:
+	//Add Support/Handling for The Following Systems and Devices:
+	//NES: Game Genie, Pro Action Replay
+	//GB/GBC: Pro Action Replay
+	//GBA: GameShark, Action Replay (Same?), Code Breaker
+	//GameGear: Game Genie, Pro Action Replay
+	//Genesis: Game Genie, Pro Action Replay
+	//N64: Action Replay
+	//PSX: Code Breaker, Action Replay, Game Busters (What is that?!)
+	//Saturn: Pro Action Replay  (Is it the same as GameShark?  Appears to be so?)
+	//SMS: Pro Action Replay
+	//SNES: Game Genie, Pro Action Replay
+
+
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "N64", "PSX", "SAT", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		//We are using Memory Domains, so we NEED this.
@@ -62,8 +77,6 @@ namespace BizHawk.Client.EmuHawk
 			byteSize = 0;
 			//We want Upper Case.
 			txtCheat.Text = txtCheat.Text.ToUpper();
-			//This determies what kind of Code we have
-			testo = txtCheat.Text.Remove(2, 11);
 			//What System are we running?
 			switch (Emulator.SystemId)
 			{
@@ -71,14 +84,24 @@ namespace BizHawk.Client.EmuHawk
 					GB();
                     break;
 				case "N64":
+					//This determies what kind of Code we have
+					testo = txtCheat.Text.Remove(2, 11);
 					N64();
 					break;
 				case "PSX":
+					//This determies what kind of Code we have
+					testo = txtCheat.Text.Remove(2, 11);
 					PSX();
 					break;
 				case "SAT":
+					//This determies what kind of Code we have
+					testo = txtCheat.Text.Remove(2, 11);
 					SAT();
                     break;
+				case "SNES":
+					//Currently only does Action Replay
+					SNES();
+					break;
 				default:
 					//This should NEVER happen
 					break;
@@ -92,6 +115,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("All GameShark Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
+			testo = txtCheat.Text.Remove(2, 6);
 			//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
 			switch (testo)
 			{
@@ -463,7 +487,38 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		private void btnClear_Click(object sender, EventArgs e)
+		private void SNES()
+		{
+			//This ONLY applies to Action Replay.
+			if (txtCheat.Text.Length != 8)
+			{
+				MessageBox.Show("All Action Replay Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			//The Action Replay, is odd.
+			//Checking won't be done.
+			//Remove first two octets
+			RAMAddress = txtCheat.Text.Remove(6, 2);
+			//Get RAM Value
+			RAMValue = txtCheat.Text.Remove(0, 6);
+			try
+			{
+				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
+				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
+				//Take Watch, Add our Value we want, and it should be active when addded?
+				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				//Clear old Inputs
+				txtCheat.Clear();
+				txtDescription.Clear();
+			}
+			//Someone broke the world?
+			catch (Exception ex)
+			{
+				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+        private void btnClear_Click(object sender, EventArgs e)
 		{
 			//Clear old Inputs
 			txtCheat.Clear();
