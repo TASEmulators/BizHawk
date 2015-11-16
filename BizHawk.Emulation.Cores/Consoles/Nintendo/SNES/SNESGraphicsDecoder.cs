@@ -6,8 +6,7 @@
 //http://wiki.superfamicom.org/snes/show/Registers
 
 //TODO
-//SF2 title art doesnt seem to show up.. 
-//scanline control doesnt work?
+//when a BG is not available, the last rendered BG still shows up. should clear it
 
 using System;
 
@@ -645,6 +644,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		public void DecodeBG(int* screen, int stride, TileEntry[] map, int tiledataBaseAddr, ScreenSize size, int bpp, int tilesize, int paletteStart)
 		{
+			//emergency backstop. this can only happen if we're displaying an unavailable BG or other similar such value
+			if (bpp == 0) return;
+
 			int ncolors = 1 << bpp;
 
 			int[] tileBuf = new int[16*16];
