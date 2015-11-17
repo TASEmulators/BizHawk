@@ -48,19 +48,22 @@ namespace BizHawk.Common
 			var di = new DirectoryInfo(Path.GetTempPath());
 			for (; ; )
 			{
-				var fis = di.GetFiles("bizdelete-*");
-				foreach (var fi in fis)
+				if (!System.Diagnostics.Debugger.IsAttached) //exceptions due to can't-delete are annoying. see this for another approach: http://www.codeproject.com/Articles/14402/Testing-File-Access-Rights-in-NET
 				{
-					try
+					var fis = di.GetFiles("bizdelete-*");
+					foreach (var fi in fis)
 					{
-						fi.Delete();
-					}
-					catch
-					{
-					}
+						try
+						{
+							fi.Delete();
+						}
+						catch
+						{
+						}
 
-					//try not to do more than one thing per frame
-					System.Threading.Thread.Sleep(100);
+						//try not to do more than one thing per frame
+						System.Threading.Thread.Sleep(100);
+					}
 				}
 
 				//try not to slam the filesystem too hard, we dont want this to cause any hiccups
