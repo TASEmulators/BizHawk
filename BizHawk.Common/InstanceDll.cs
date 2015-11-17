@@ -21,7 +21,7 @@ namespace BizHawk.Common
 			var envpath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
 			try
 			{
-				string envpath_new = Path.GetDirectoryName(path) + ";" + envpath;
+				string envpath_new = Path.GetDirectoryName(dllPath) + ";" + envpath;
 				Environment.SetEnvironmentVariable("PATH", envpath_new, EnvironmentVariableTarget.Process);
 				_hModule = LoadLibrary(path); //consider using LoadLibraryEx instead of shenanigans?
 				var newfname = TempFileCleaner.RenameTempFilenameForDelete(path);

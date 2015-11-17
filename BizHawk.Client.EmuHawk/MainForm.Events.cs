@@ -1185,7 +1185,7 @@ namespace BizHawk.Client.EmuHawk
 			ThrottleMessage();
 		}
 
-		public void RunLibretroCoreChooser()
+		public bool RunLibretroCoreChooser()
 		{
 			var ofd = new OpenFileDialog();
 
@@ -1203,9 +1203,11 @@ namespace BizHawk.Client.EmuHawk
 			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
-				return;
+				return false;
 
 			Global.Config.LibretroCore = ofd.FileName;
+
+			return true;
 		}
 
 		private void setLibretroCoreToolStripMenuItem_Click(object sender, EventArgs e)
