@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileCleaner.Start();
+			BizHawk.Client.Common.TempFileCleaner.Start();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 

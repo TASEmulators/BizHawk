@@ -76,7 +76,6 @@
     <Compile Include="SimpleTime.cs" />
     <Compile Include="Sprintf.cs" />
     <Compile Include="SwitcherStream.cs" />
-    <Compile Include="TempFileManager.cs" />
     <Compile Include="UndoHistory.cs" />
     <Compile Include="UnmanagedResourceHeap.cs" />
     <Compile Include="Util.cs" />

@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using BizHawk.Common;
-
 namespace BizHawk.Client.Common
 {
 	public static class StringLogUtil
@@ -64,7 +62,7 @@ namespace BizHawk.Client.Common
 		FileStream stream;
 		public DiskStringLog()
 		{
-			var path = TempFileCleaner.GetTempFilename("movieOnDisk");
+			var path = Path.Combine(Path.GetTempPath(), "bizhawk.disklist-pid" + System.Diagnostics.Process.GetCurrentProcess().Id + "-" + Guid.NewGuid());
 			stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
 			bw = new BinaryWriter(stream);
 			br = new BinaryReader(stream);
