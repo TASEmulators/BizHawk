@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Sound\Sound.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Throttle.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Input\OTK_GamePad.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)defctrl.json">

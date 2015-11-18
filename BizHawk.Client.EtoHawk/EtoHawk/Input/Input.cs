@@ -107,7 +107,8 @@ namespace BizHawk.Client.EtoHawk
 
         public static void Initialize()
         {
-            OTK_Keyboard.Initialize();
+			OTK_Keyboard.Initialize();
+			OTK_GamePad.Initialize();
             Instance = new Input();
         }
 
@@ -296,6 +297,7 @@ namespace BizHawk.Client.EtoHawk
             for (; ; )
             {
                 OTK_Keyboard.Update();
+				OTK_GamePad.UpdateAll();
 
                 //this block is going to massively modify data structures that the binding method uses, so we have to lock it all
                 lock (this)
@@ -311,28 +313,10 @@ namespace BizHawk.Client.EtoHawk
                     {
                         //FloatValues.Clear();
 
-#if ADAPT_WHEN_WE_USE_OPENTK_GAMEPAD
-						//analyze xinput
-						for (int i = 0; i < GamePad360.Devices.Count; i++)
-						{
-							var pad = GamePad360.Devices[i];
-							string xname = "X" + (i + 1) + " ";
-							for (int b = 0; b < pad.NumButtons; b++)
-								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
-							foreach (var sv in pad.GetFloats())
-							{
-								string n = xname + sv.Item1;
-								float f = sv.Item2;
-								if (trackdeltas)
-									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
-								FloatValues[n] = f;
-							}
-						}
-
 						//analyze joysticks
-						for (int i = 0; i < GamePad.Devices.Count; i++)
+						for (int i = 0; i < OTK_GamePad.Devices.Count; i++)
 						{
-							var pad = GamePad.Devices[i];
+							var pad = OTK_GamePad.Devices[i];
 							string jname = "J" + (i + 1) + " ";
 
 							for (int b = 0; b < pad.NumButtons; b++)
@@ -341,14 +325,12 @@ namespace BizHawk.Client.EtoHawk
 							{
 								string n = jname + sv.Item1;
 								float f = sv.Item2;
-								//if (n == "J5 RotationZ")
-								//	System.Diagnostics.Debugger.Break();
 								if (trackdeltas)
 									FloatDeltas[n] += Math.Abs(f - FloatValues[n]);
 								FloatValues[n] = f;
 							}
 						}
-#endif
+
                         // analyse moose
                         // other sorts of mouse api (raw input) could easily be added as a separate listing under a different class
                         /*if (WantingMouseFocus.Contains(System.Windows.Forms.Form.ActiveForm))
