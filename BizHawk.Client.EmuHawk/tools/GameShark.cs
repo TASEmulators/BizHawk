@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 
 
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "PSX", "SAT", "SNES" })]
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		//We are using Memory Domains, so we NEED this.
@@ -104,6 +104,9 @@ namespace BizHawk.Client.EmuHawk
 					testo = txtCheat.Text.Remove(2, 11);
 					SAT();
                     break;
+				case "SMS":
+					SMS();
+					break;
 				case "SNES":
 					//Currently only does Action Replay
 					SNES();
@@ -172,6 +175,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//Nothing, yet
 			//Sample of Decryption Code from mGBA
+			//const uint32_t GBACheatGameSharkSeeds[4] = { 0x09F4FBBD, 0x9681884A, 0x352027E9, 0xF3DEE5A7 };
 			/* void GBACheatDecryptGameShark(uint32_t* op1, uint32_t* op2, const uint32_t* seeds) {
 				uint32_t sum = 0xC6EF3720;
 				int i;
@@ -664,6 +668,45 @@ namespace BizHawk.Client.EmuHawk
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
+				//Clear old Inputs
+				txtCheat.Clear();
+				txtDescription.Clear();
+			}
+			//Someone broke the world?
+			catch (Exception ex)
+			{
+				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+		private void SMS()
+		{
+			//This is FUN!
+			if (txtCheat.Text.IndexOf("-") != 4)
+			{
+				MessageBox.Show("All Master System Action Replay Codes need to contain a dash after the fourth character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			if (txtCheat.Text.Length != 9)
+			{
+				MessageBox.Show("All Master System Action Replay Codes need to nine charaters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			parseString = txtCheat.Text;
+			parseString = parseString.Remove(0, 2);
+			//MessageBox.Show(parseString);
+			RAMAddress = parseString.Remove(4, 2);
+			//MessageBox.Show(RAMAddress);
+			RAMAddress = RAMAddress.Replace("-", "");
+			MessageBox.Show(RAMAddress);
+			RAMValue = parseString.Remove(0, 5);
+			MessageBox.Show(RAMValue);
+			try
+			{
+				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
+				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
+				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
+				//Take Watch, Add our Value we want, and it should be active when addded?
+				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				//Clear old Inputs
 				txtCheat.Clear();
 				txtDescription.Clear();
