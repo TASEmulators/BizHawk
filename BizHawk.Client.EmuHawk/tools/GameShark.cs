@@ -3,25 +3,25 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using System.Globalization;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
 
 	//TODO:
 	//Add Support/Handling for The Following Systems and Devices:
-	//NES: Game Genie, Pro Action Replay
 	//GB/GBC: Pro Action Replay
 	//GBA: GameShark, Action Replay (Same?), Code Breaker
 	//GameGear: Game Genie, Pro Action Replay
-	//Genesis: Game Genie, Pro Action Replay
-	//N64: Action Replay
+	//NES: Game Genie, Pro Action Replay
 	//PSX: Code Breaker, Action Replay, Game Busters (What is that?!)
-	//Saturn: Pro Action Replay  (Is it the same as GameShark?  Appears to be so?)
 	//SMS: Pro Action Replay
 	//SNES: Game Genie, Pro Action Replay
+	//Saturn: Pro Action Replay  (Is it the same as GameShark?  Appears to be so?)
 
 
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "N64", "PSX", "SAT", "SNES" })]
+
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "PSX", "SAT", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		//We are using Memory Domains, so we NEED this.
@@ -83,6 +83,12 @@ namespace BizHawk.Client.EmuHawk
 				case "GB":
 					GB();
                     break;
+				case "GBA":
+					GBA();
+					break;
+				case "GEN":
+					GEN();
+					break;
 				case "N64":
 					//This determies what kind of Code we have
 					testo = txtCheat.Text.Remove(2, 11);
@@ -162,9 +168,193 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
+		private void GBA()
+		{
+			//Nothing, yet
+			//Sample of Decryption Code from mGBA
+			/* void GBACheatDecryptGameShark(uint32_t* op1, uint32_t* op2, const uint32_t* seeds) {
+				uint32_t sum = 0xC6EF3720;
+				int i;
+				for (i = 0; i < 32; ++i)
+				{
+					*op2 -= ((*op1 << 4) + seeds[2]) ^ (*op1 + sum) ^ ((*op1 >> 5) + seeds[3]);
+					*op1 -= ((*op2 << 4) + seeds[0]) ^ (*op2 + sum) ^ ((*op2 >> 5) + seeds[1]);
+					sum -= 0x9E3779B9;
+				}
+			}
+			*/
+
+		}
+		//This applies to the Genesis Game Genie.
+		private readonly Dictionary<char, int> _GENgameGenieTable = new Dictionary<char, int>
+		{
+			{ 'A', 0 },
+			{ 'B', 1 },
+			{ 'C', 2 },
+			{ 'D', 3 },
+			{ 'E', 4 },
+			{ 'F', 5 },
+			{ 'G', 6 },
+			{ 'H', 7 },
+			{ 'J', 8 },
+			{ 'K', 9 },
+			{ 'L', 10 },
+			{ 'M', 11 },
+			{ 'N', 12 },
+			{ 'P', 13 },
+			{ 'R', 14 },
+			{ 'S', 15 },
+			{ 'T', 16 },
+			{ 'V', 17 },
+			{ 'W', 18 },
+			{ 'X', 19 },
+			{ 'Y', 20 },
+			{ 'Z', 21 },
+			{ '0', 22 },
+			{ '1', 23 },
+			{ '2', 24 },
+			{ '3', 25 },
+			{ '4', 26 },
+			{ '5', 27 },
+			{ '6', 28 },
+			{ '7', 29 },
+			{ '8', 30 },
+			{ '9', 31 }
+		};
+		private void GEN()
+		{
+			//Game Genie only, for now.
+			//This applies to the Game Genie
+			if (txtCheat.Text.Length == 9 && txtCheat.Text.Contains("-"))
+			{
+				if (txtCheat.Text.IndexOf("-") != 5)
+				{
+					MessageBox.Show("All Genesis Game Genie Codes need to contain a dash after the fourth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+				if (txtCheat.Text.Contains("I") == true | txtCheat.Text.Contains("O") == true | txtCheat.Text.Contains("Q") == true | txtCheat.Text.Contains("U") == true)
+				{
+					MessageBox.Show("All Genesis Game Genie Codes do not use I, O, Q or U.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+				//This is taken from the GenGameGenie.CS file.
+				string code = txtCheat.Text;
+				int val = 0;
+				int add = 0;
+				string address = null;
+				string value = null;
+				//Remove the -
+				code = code.Remove(4, 1);
+				long hexcode = 0;
+
+				// convert code to a long binary string
+				foreach (var t in code)
+				{
+					hexcode <<= 5;
+					int y;
+					_GENgameGenieTable.TryGetValue(t, out y);
+					hexcode |= y;
+				}
+				long decoded = (hexcode & 0xFF00000000) >> 32;
+				decoded |= hexcode & 0x00FF000000;
+				decoded |= (hexcode & 0x0000FF0000) << 16;
+				decoded |= (hexcode & 0x00000000700) << 5;
+				decoded |= (hexcode & 0x000000F800) >> 3;
+				decoded |= (hexcode & 0x00000000FF) << 16;
+
+				val = (int)(decoded & 0x000000FFFF);
+				add = (int)((decoded & 0xFFFFFF0000) >> 16);
+				//Make our Strings get the Hex Values.
+				address = add.ToString("X6");
+				value = val.ToString("X4");
+				//Game Geneie, modifies the "ROM" which is why it says, "MD CART"
+				var watch = Watch.GenerateWatch(MemoryDomains["MD CART"], long.Parse(address, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, true);
+				//Add Cheat
+				Global.CheatList.Add(new Cheat(watch, val));
+			}
+			//Action Replay?
+			if (txtCheat.Text.Contains(":"))
+			{
+				//We start from Zero.
+				if (txtCheat.Text.IndexOf(":") != 6)
+				{
+					MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+				//Problem: I don't know what the Non-FF Style codes are.
+				//TODO: Fix that.
+				if (txtCheat.Text.StartsWith("FF") == false)
+				{
+					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					return;
+				}
+				//Now to do some work.
+				//Determine Length, to Determine Byte Size
+
+				parseString = txtCheat.Text.Remove(0, 2);
+				switch (txtCheat.Text.Length)
+				{
+					case 9:
+						//Sample Code of 1-Byte:
+						//FFF761:64
+						//Becomes:
+						//Address: F761
+						//Value: 64
+						RAMAddress = parseString.Remove(4, 3);
+						RAMValue = parseString.Remove(0, 5);
+						byteSize = 1;
+                        break;
+					case 11:
+						//Sample Code of 2-Byte:
+						//FFF761:6411
+						//Becomes:
+						//Address: F761
+						//Value: 6411
+						RAMAddress = parseString.Remove(4, 5);
+						RAMValue = parseString.Remove(0, 5);
+						byteSize = 2;
+						break;
+					default:
+						//We could have checked above but here is fine, since it's a quick check due to one of three possibilities.
+						MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters in length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+				}
+				//Try and add.
+				try
+				{
+					//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
+					//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description, Big Endian.
+					if (byteSize == 1)
+					{
+						var watch = Watch.GenerateWatch(MemoryDomains["68K RAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
+						//Take Watch, Add our Value we want, and it should be active when addded?
+						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+						//Clear old Inputs
+						txtCheat.Clear();
+						txtDescription.Clear();
+					}
+					if (byteSize == 2)
+					{
+						var watch = Watch.GenerateWatch(MemoryDomains["68K RAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, true);
+						//Take Watch, Add our Value we want, and it should be active when addded?
+						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+						//Clear old Inputs
+						txtCheat.Clear();
+						txtDescription.Clear();
+					}
+
+				}
+				//Someone broke the world?
+				catch (Exception ex)
+				{
+					MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
+		}
 		private void N64()
-		{ //These codes, more or less work without Needing much work.
-			if (txtCheat.Text.Contains(" ") == false)
+		{
+			//These codes, more or less work without Needing much work.
+			if (txtCheat.Text.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All N64 GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -247,9 +437,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					//Leave this Method, before someone gets hurt.
 					return;
-					//break;
-			}
-			//Big Endian is USED constantly here.  The question is, how do we determine if it's one or two bytes?					
+			}		
 			//Now to get clever.
 			//Sample Input for N64:
 			//8133B21E 08FF
@@ -265,22 +453,21 @@ namespace BizHawk.Client.EmuHawk
 			RAMAddress = parseString.Remove(6, 5);
 			//Get RAM Value
 			RAMValue = parseString.Remove(0, 7);
-
 			try
 			{
 				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				//System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
+				//System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description, Big Endian.
 				if (byteSize == 8)
 				{
 					//We have a Byte sized value
-					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, true);
+					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, true);
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
 				if (byteSize == 16)
 				{
 					//We have a Word (Double Byte) sized Value
-					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, true);
+					var watch = Watch.GenerateWatch(MemoryDomains["RDRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, true);
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
@@ -297,9 +484,9 @@ namespace BizHawk.Client.EmuHawk
 		private void PSX()
 		{
 			//These codes, more or less work without Needing much work.
-			if (txtCheat.Text.Contains(" ") == false)
+			if (txtCheat.Text.IndexOf(" ") != 8)
 			{
-				MessageBox.Show("All PSX GameShark Cheats need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("All PSX GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			if (txtCheat.Text.Length != 13)
@@ -412,9 +599,9 @@ namespace BizHawk.Client.EmuHawk
 		private void SAT()
 		{
 			//Not yet.
-			if (txtCheat.Text.Contains(" ") == false)
+			if (txtCheat.Text.IndexOf(" ") != 8)
 			{
-				MessageBox.Show("All Saturn GameShark Cheats need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("All Saturn GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			if (txtCheat.Text.Length != 13)
@@ -489,6 +676,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void SNES()
 		{
+			//TODO: Sample Code and Get Smarter?
 			//This ONLY applies to Action Replay.
 			if (txtCheat.Text.Length != 8)
 			{
