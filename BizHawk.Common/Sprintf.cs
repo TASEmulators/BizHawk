@@ -245,8 +245,8 @@ namespace BizHawk.Common
 		{
 			var ms = new MemoryStream(8);
 			var bw = new BinaryWriter(ms);
-			bw.Write(second.ToInt32());
 			bw.Write(first.ToInt32());
+			bw.Write(second.ToInt32());
 			bw.Flush();
 			ms.Position = 0;
 			var br = new BinaryReader(ms);
