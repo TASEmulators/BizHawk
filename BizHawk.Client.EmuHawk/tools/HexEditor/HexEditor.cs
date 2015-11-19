@@ -367,8 +367,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static byte[] GetRomBytes()
 		{
-			var path = GlobalWin.MainForm.CurrentlyOpenRom;
-			if (path == null)
+			var path = GlobalWin.MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
+			if (string.IsNullOrEmpty(path))
 			{
 				return new byte[] { 0xFF };
 			}
