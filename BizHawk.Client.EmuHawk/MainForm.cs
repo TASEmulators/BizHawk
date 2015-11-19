@@ -595,7 +595,7 @@ namespace BizHawk.Client.EmuHawk
 		#region Properties
 
 		public string CurrentlyOpenRom; //todo - delete me and use only args instead
-		LoadRomArgs CurrentlyOpenRomArgs;
+		public LoadRomArgs CurrentlyOpenRomArgs;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
