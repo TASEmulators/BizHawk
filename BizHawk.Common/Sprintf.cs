@@ -240,6 +240,19 @@ namespace BizHawk.Common
 			}
 		}
 		#endregion
+
+		static double GetDouble(IntPtr first, IntPtr second)
+		{
+			var ms = new MemoryStream(8);
+			var bw = new BinaryWriter(ms);
+			bw.Write(first.ToInt32());
+			bw.Write(second.ToInt32());
+			bw.Flush();
+			ms.Position = 0;
+			var br = new BinaryReader(ms);
+			return br.ReadDouble();
+		}
+
 		#region sprintf
 		public static string sprintf( string Format, Func<IntPtr> fetcher )
 		{
@@ -458,23 +471,23 @@ namespace BizHawk.Common
 					#endregion
 					#region f - double number
 					case 'f':   // double
-						throw new InvalidOperationException("cataleptic kangaroo orchestra");
-						//w = FormatNumber( ( flagGroupThousands ? "n" : "f" ), flagAlternate,
-						//        fieldLength, fieldPrecision, flagLeft2Right,
-						//        flagPositiveSign, flagPositiveSpace,
-						//        paddingCharacter, o );
-						//defaultParamIx++;
-						//break;
+						o = GetDouble(n, fetcher());
+						w = FormatNumber( ( flagGroupThousands ? "n" : "f" ), flagAlternate,
+						        fieldLength, fieldPrecision, flagLeft2Right,
+						        flagPositiveSign, flagPositiveSpace,
+						        paddingCharacter, o );
+						defaultParamIx++;
+						break;
 					#endregion
 					#region e - exponent number
 					case 'e':   // double / exponent
-						throw new InvalidOperationException("cataleptic kangaroo orchestra");
-						//w = FormatNumber( "e", flagAlternate,
-						//        fieldLength, fieldPrecision, flagLeft2Right,
-						//        flagPositiveSign, flagPositiveSpace,
-						//        paddingCharacter, o );
-						//defaultParamIx++;
-						//break;
+						o = GetDouble(n, fetcher());
+						w = FormatNumber( "e", flagAlternate,
+						        fieldLength, fieldPrecision, flagLeft2Right,
+						        flagPositiveSign, flagPositiveSpace,
+						        paddingCharacter, o );
+						defaultParamIx++;
+						break;
 					#endregion
 					#region E - exponent number
 					case 'E':   // double / exponent

@@ -74,5 +74,3 @@ namespace BizHawk.Common
 
 		static System.Threading.Thread thread;
 	}
-
-}

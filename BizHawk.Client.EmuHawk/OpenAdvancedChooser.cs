@@ -51,8 +51,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void btnSetLibretroCore_Click(object sender, EventArgs e)
 		{
-			mainForm.RunLibretroCoreChooser();
-			RefreshLibretroCore(false);
+			if(mainForm.RunLibretroCoreChooser())
+				RefreshLibretroCore(false);
 		}
 
 		LibRetroEmulator.RetroDescription CurrentDescription;

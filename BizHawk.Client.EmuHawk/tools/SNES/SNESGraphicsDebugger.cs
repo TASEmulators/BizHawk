@@ -1160,6 +1160,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var bg = si.BG[(int)CurrDisplaySelection];
 
+						//unavailable BG for this mode
+						if (bg.Bpp == 0)
+							break;
+
 						if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
 
 						int tloc = ty * bg.ScreenSizeInTiles.Width + tx;

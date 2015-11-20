@@ -95,7 +95,6 @@ enum eMessage : int32
 	eMessage_SIG_input_state,
 	eMessage_SIG_input_notify,
 	eMessage_SIG_audio_flush,
-	eMessage_SIG_scanlineStart,
 	eMessage_SIG_path_request,
 	eMessage_SIG_trace_callback,
 	eMessage_SIG_allocSharedMemory, //?
@@ -107,6 +106,7 @@ enum eMessage : int32
 	eMessage_BRK_hook_write,
 	eMessage_BRK_hook_nmi,
 	eMessage_BRK_hook_irq,
+	eMessage_BRK_scanlineStart, //implemented as a BRK because that's really what it is, its just a graphical event and not a CPU event
 };
 
 
@@ -122,6 +122,7 @@ enum eEmulationCallback
 {
 	eEmulationCallback_snes_video_refresh,
 	eEmulationCallback_snes_audio_flush,
+	eEmulationCallback_snes_scanline,
 	eEmulationCallback_snes_input_poll,
 	eEmulationCallback_snes_input_state,
 	eEmulationCallback_snes_input_notify,
@@ -161,6 +162,10 @@ struct EmulationControl
 					unsigned width;
 					unsigned height;
 				} cb_video_refresh_params;
+				struct
+				{
+					int32_t scanline;
+				} cb_scanline_params;
 				struct
 				{
 					unsigned port, device, index, id;
@@ -552,14 +557,10 @@ const char* snes_path_request(int slot, const char* hint)
 void RunControlMessageLoop();
 void snes_scanlineStart(int line)
 {
-	//TODO
-	//WritePipe(eMessage_snes_cb_scanlineStart);
-	//WritePipe(line);
-
-	////we've got to wait for the frontend to finish processing.
-	////in theory we could let emulation proceed after snagging the vram and registers, and do decoding and stuff on another thread...
-	////but its too hard for now.
-	//RunMessageLoop();
+	s_EmulationControl.exitReason = eEmulationExitReason_BRK;
+	s_EmulationControl.hookExitType = eMessage_BRK_scanlineStart;
+	s_EmulationControl.cb_scanline_params.scanline = line;
+	SETCONTROL;
 }
 
 class SharedMemoryBlock
@@ -979,9 +980,10 @@ TOP:
 					char* buf = (char*)hMapFilePtr + destOfs;
 					int bufsize = 512 * 480 * 4;
 					memcpy(buf,s_EmulationControl.cb_video_refresh_params.data,bufsize);
-					WritePipe((char)0); //dummy synchronization
+					WritePipe((char)0); //dummy synchronization (alert frontend we're done with buffer)
 					break;
 				}
+
 			case eEmulationCallback_snes_audio_flush:
 				Handle_SIG_audio_flush();
 				break;
@@ -1029,6 +1031,10 @@ TOP:
 			s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
 			switch(s_EmulationControl.hookExitType)
 			{
+			case eMessage_BRK_scanlineStart:
+				WritePipe(eMessage_BRK_scanlineStart);
+				WritePipe((uint32)s_EmulationControl.hookAddr);
+				break;
 			case eMessage_BRK_hook_exec:
 				WritePipe(eMessage_BRK_hook_exec);
 				WritePipe((uint32)s_EmulationControl.hookAddr);
