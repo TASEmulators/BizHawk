@@ -10,20 +10,100 @@ namespace BizHawk.Client.EmuHawk
 
 	//TODO:
 	//Add Support/Handling for The Following Systems and Devices:
-	//GB/GBC: Pro Action Replay
 	//GBA: GameShark, Action Replay (Same?), Code Breaker
 	//GameGear: Game Genie, Pro Action Replay
 	//NES: Game Genie, Pro Action Replay
 	//PSX: Code Breaker, Action Replay, Game Busters (What is that?!)
-	//SMS: Pro Action Replay
-	//SNES: Game Genie, Pro Action Replay
-	//Saturn: Pro Action Replay  (Is it the same as GameShark?  Appears to be so?)
+	//SNES: Possible Warning for Game Genie not working?  Test fixed behaviors when ready.
 
+	//This applies to the Genesis Game Genie.
+	
 
-
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "PSX", "SAT", "SMS", "SNES" })]
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
+		#region " Game Genie Dictionary "
+		private readonly Dictionary<char, int> _GENgameGenieTable = new Dictionary<char, int>
+		{
+			{ 'A', 0 },
+			{ 'B', 1 },
+			{ 'C', 2 },
+			{ 'D', 3 },
+			{ 'E', 4 },
+			{ 'F', 5 },
+			{ 'G', 6 },
+			{ 'H', 7 },
+			{ 'J', 8 },
+			{ 'K', 9 },
+			{ 'L', 10 },
+			{ 'M', 11 },
+			{ 'N', 12 },
+			{ 'P', 13 },
+			{ 'R', 14 },
+			{ 'S', 15 },
+			{ 'T', 16 },
+			{ 'V', 17 },
+			{ 'W', 18 },
+			{ 'X', 19 },
+			{ 'Y', 20 },
+			{ 'Z', 21 },
+			{ '0', 22 },
+			{ '1', 23 },
+			{ '2', 24 },
+			{ '3', 25 },
+			{ '4', 26 },
+			{ '5', 27 },
+			{ '6', 28 },
+			{ '7', 29 },
+			{ '8', 30 },
+			{ '9', 31 }
+		};
+		//This only applies to the NES
+		private readonly Dictionary<char, int> _NESgameGenieTable = new Dictionary<char, int>
+			{
+				{ 'A', 0 },  // 0000
+				{ 'P', 1 },  // 0001
+				{ 'Z', 2 },  // 0010
+				{ 'L', 3 },  // 0011
+				{ 'G', 4 },  // 0100
+				{ 'I', 5 },  // 0101
+				{ 'T', 6 },  // 0110
+				{ 'Y', 7 },  // 0111
+				{ 'E', 8 },  // 1000
+				{ 'O', 9 },  // 1001
+				{ 'X', 10 }, // 1010
+				{ 'U', 11 }, // 1011
+				{ 'K', 12 }, // 1100
+				{ 'S', 13 }, // 1101
+				{ 'V', 14 }, // 1110
+				{ 'N', 15 }, // 1111
+			};
+		// including transposition
+		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
+		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
+		//This only applies to the SNES
+		private readonly Dictionary<char, int> _SNESgameGenieTable = new Dictionary<char, int>
+		{
+			{ 'D', 0 },  // 0000
+			{ 'F', 1 },  // 0001
+			{ '4', 2 },  // 0010
+			{ '7', 3 },  // 0011
+			{ '0', 4 },  // 0100
+			{ '9', 5 },  // 0101
+			{ '1', 6 },  // 0110
+			{ '5', 7 },  // 0111
+			{ '6', 8 },  // 1000
+			{ 'B', 9 },  // 1001
+			{ 'C', 10 }, // 1010 
+			{ '8', 11 }, // 1011 
+			{ 'A', 12 }, // 1100 
+			{ '2', 13 }, // 1101 
+			{ '3', 14 }, // 1110 
+			{ 'E', 15 }  // 1111 
+		};
+		#endregion
+
+
 		//We are using Memory Domains, so we NEED this.
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -93,6 +173,9 @@ namespace BizHawk.Client.EmuHawk
 					//This determies what kind of Code we have
 					testo = txtCheat.Text.Remove(2, 11);
 					N64();
+					break;
+				case "NES":
+					NES();
 					break;
 				case "PSX":
 					//This determies what kind of Code we have
@@ -189,42 +272,6 @@ namespace BizHawk.Client.EmuHawk
 			*/
 
 		}
-		//This applies to the Genesis Game Genie.
-		private readonly Dictionary<char, int> _GENgameGenieTable = new Dictionary<char, int>
-		{
-			{ 'A', 0 },
-			{ 'B', 1 },
-			{ 'C', 2 },
-			{ 'D', 3 },
-			{ 'E', 4 },
-			{ 'F', 5 },
-			{ 'G', 6 },
-			{ 'H', 7 },
-			{ 'J', 8 },
-			{ 'K', 9 },
-			{ 'L', 10 },
-			{ 'M', 11 },
-			{ 'N', 12 },
-			{ 'P', 13 },
-			{ 'R', 14 },
-			{ 'S', 15 },
-			{ 'T', 16 },
-			{ 'V', 17 },
-			{ 'W', 18 },
-			{ 'X', 19 },
-			{ 'Y', 20 },
-			{ 'Z', 21 },
-			{ '0', 22 },
-			{ '1', 23 },
-			{ '2', 24 },
-			{ '3', 25 },
-			{ '4', 26 },
-			{ '5', 27 },
-			{ '6', 28 },
-			{ '7', 29 },
-			{ '8', 30 },
-			{ '9', 31 }
-		};
 		private void GEN()
 		{
 			//Game Genie only, for now.
@@ -485,7 +532,100 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		private void PSX()
+		private void NES()
+		{
+			//Original code from adelikat
+			if (txtCheat.Text.Length != 6 || txtCheat.Text.Length != 8)
+			{
+				int Value = 0;
+				int Address = 0x8000;
+				int x;
+				int Compare = 0;
+				// char 3 bit 3 denotes the code length.
+				string code = txtCheat.Text;
+                if (txtCheat.Text.Length == 6)
+				{
+					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |
+					// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
+					// maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|5|E|F|G|
+
+					_NESgameGenieTable.TryGetValue(code[0], out x);
+					Value |= x & 0x07;
+					Value |= (x & 0x08) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[1], out x);
+					Value |= (x & 0x07) << 4;
+					Address |= (x & 0x08) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[2], out x);
+					Address |= (x & 0x07) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[3], out x);
+					Address |= (x & 0x07) << 12;
+					Address |= x & 0x08;
+
+					_NESgameGenieTable.TryGetValue(code[4], out x);
+					Address |= x & 0x07;
+					Address |= (x & 0x08) << 8;
+
+					_NESgameGenieTable.TryGetValue(code[5], out x);
+					Address |= (x & 0x07) << 8;
+					Value |= x & 0x08;
+					//Test Code.  Remove me.
+					MessageBox.Show(string.Format("{0:X6}", Address));
+					MessageBox.Show(string.Format("{0:X2}", Value));
+					MessageBox.Show(string.Format("{0:X2}", Compare));
+				}
+				else if (txtCheat.Text.Length == 8)
+				{
+					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+					// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
+					// maps to|1|6|7|8|H|2|3|4|-|I|J|K|L|A|B|C|D|M|N|O|%|E|F|G|!|^|&|*|5|@|#|$|
+					Value = 0;
+					Address = 0x8000;
+					Compare = 0;
+
+
+					_NESgameGenieTable.TryGetValue(code[0], out x);
+					Value |= x & 0x07;
+					Value |= (x & 0x08) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[1], out x);
+					Value |= (x & 0x07) << 4;
+					Address |= (x & 0x08) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[2], out x);
+					Address |= (x & 0x07) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[3], out x);
+					Address |= (x & 0x07) << 12;
+					Address |= x & 0x08;
+
+					_NESgameGenieTable.TryGetValue(code[4], out x);
+					Address |= x & 0x07;
+					Address |= (x & 0x08) << 8;
+
+					_NESgameGenieTable.TryGetValue(code[5], out x);
+					Address |= (x & 0x07) << 8;
+					Compare |= x & 0x08;
+
+					_NESgameGenieTable.TryGetValue(code[6], out x);
+					Compare |= x & 0x07;
+					Compare |= (x & 0x08) << 4;
+
+					_NESgameGenieTable.TryGetValue(code[7], out x);
+					Compare |= (x & 0x07) << 4;
+					Value |= x & 0x08;
+					//Test Code.  Remove me.
+					MessageBox.Show(string.Format("{0:X6}", Address));
+					MessageBox.Show(string.Format("{0:X2}", Value));
+					MessageBox.Show(string.Format("{0:X2}", Compare));
+				}
+				
+
+			}
+		}
+        private void PSX()
 		{
 			//These codes, more or less work without Needing much work.
 			if (txtCheat.Text.IndexOf(" ") != 8)
@@ -717,28 +857,131 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
+
+		
+		//Original code from adelikat
+		private void SnesGGDecode(string code, ref int val, ref int add)
+		{
+			// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
+			// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
+			// XXYY-YYYY, where XX is the value, and YY-YYYY is the address.
+			// Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |
+			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
+			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
+			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
+			int x;
+
+			// Getting Value
+			if (code.Length > 0)
+			{
+				_SNESgameGenieTable.TryGetValue(code[0], out x);
+				val = x << 4;
+			}
+
+			if (code.Length > 1)
+			{
+				_SNESgameGenieTable.TryGetValue(code[1], out x);
+				val |= x;
+			}
+
+			// Address
+			if (code.Length > 2)
+			{
+				_SNESgameGenieTable.TryGetValue(code[2], out x);
+				add = x << 12;
+			}
+
+			if (code.Length > 3)
+			{
+				_SNESgameGenieTable.TryGetValue(code[3], out x);
+				add |= x << 4;
+			}
+
+			if (code.Length > 4)
+			{
+				_SNESgameGenieTable.TryGetValue(code[4], out x);
+				add |= (x & 0xC) << 6;
+				add |= (x & 0x3) << 22;
+			}
+
+			if (code.Length > 5)
+			{
+				_SNESgameGenieTable.TryGetValue(code[5], out x);
+				add |= (x & 0xC) << 18;
+				add |= (x & 0x3) << 2;
+			}
+
+			if (code.Length > 6)
+			{
+				_SNESgameGenieTable.TryGetValue(code[6], out x);
+				add |= (x & 0xC) >> 2;
+				add |= (x & 0x3) << 18;
+			}
+
+			if (code.Length > 7)
+			{
+				_SNESgameGenieTable.TryGetValue(code[7], out x);
+				add |= (x & 0xC) << 14;
+				add |= (x & 0x3) << 10;
+			}
+		}
 		private void SNES()
 		{
-			//TODO: Sample Code and Get Smarter?
-			//This ONLY applies to Action Replay.
-			if (txtCheat.Text.Length != 8)
+			//TODO:  Make these checks Suck less.
+			//Game Genie check and do.
+			if (txtCheat.Text.Contains("-") && txtCheat.Text.Length == 9)
 			{
-				MessageBox.Show("All Action Replay Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
+				int val = 0, add = 0;
+				string input;
+				//We have to remove the - since it will cause issues later on.
+				input = txtCheat.Text.Replace("-", "");
+				SnesGGDecode(input, ref val, ref add);
+				RAMAddress = string.Format("{0:X6}", add);
+				RAMValue = string.Format("{0:X2}", val);
+				//Note, it's not actually a byte, but a Word.  However, we are using this to keep from repeating code.
+				byteSize = 8;
+            }
+			//This ONLY applies to Action Replay.
+			if (txtCheat.Text.Length == 8)
+			{
+				//Sample Code:
+				//7E18A428
+				//Address: 7E18A4
+				//Value: 28
+				//Remove last two octets
+				RAMAddress = txtCheat.Text.Remove(6, 2);
+				//Get RAM Value
+				RAMValue = txtCheat.Text.Remove(0, 6);
+				//Note, it's a Word.  However, we are using this to keep from repeating code.
+				byteSize = 16;
 			}
-			//The Action Replay, is odd.
-			//Checking won't be done.
-			//Remove first two octets
-			RAMAddress = txtCheat.Text.Remove(6, 2);
-			//Get RAM Value
-			RAMValue = txtCheat.Text.Remove(0, 6);
+			if (txtCheat.Text.Contains("-") && txtCheat.Text.Length != 9)
+			{
+				MessageBox.Show("Game Genie Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			if (txtCheat.Text.Length != 9 && txtCheat.Text.Length !=8)
+			{
+				MessageBox.Show("Pro Action Replay Codes need to be eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 			try
 			{
 				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
-				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
+				//Action Replay
+				if (byteSize == 16)
+				{
+					//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, false);
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+				if (byteSize == 8)
+				{
+					//Is this correct?
+					//I don't think so, but Changing it to CARTROM, causes a major issue.
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, false);
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
 				//Take Watch, Add our Value we want, and it should be active when addded?
-				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+
 				//Clear old Inputs
 				txtCheat.Clear();
 				txtDescription.Clear();
@@ -758,9 +1001,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GameShark_Load(object sender, EventArgs e)
 		{
-			//Welp, let's determine what System we got.
-			//NOTE: This is a sloppy Debugger/testing code.  For Bad Development usage.  DO NOT release with that line uncommented
-			//MessageBox.Show(Emulator.SystemId);
+			//TODO?
+			//Add special handling for cores that need special things?
 		}
 	}
 }
