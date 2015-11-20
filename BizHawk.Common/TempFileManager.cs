@@ -46,7 +46,7 @@ namespace BizHawk.Common
 		static void ThreadProc()
 		{
 			var di = new DirectoryInfo(Path.GetTempPath());
-			for (; ; )
+			for (;;)
 			{
 				var fis = di.GetFiles("bizdelete-*");
 				foreach (var fi in fis)
@@ -74,3 +74,4 @@ namespace BizHawk.Common
 
 		static System.Threading.Thread thread;
 	}
+}
