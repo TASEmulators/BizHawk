@@ -467,7 +467,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckMessages();
 			LogConsole.PositionConsole();
 
-			for (; ; )
+			for (;;)
 			{
 				Input.Instance.Update();
 
@@ -714,7 +714,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerInputCoalescer conInput = Global.ControllerInputCoalescer as ControllerInputCoalescer;
 
-			for (; ; )
+			for (;;)
 			{
 
 				// loop through all available events
@@ -3505,7 +3505,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ioa is IOpenAdvancedLibretro)
 				{
 					var ioaretro = ioa as IOpenAdvancedLibretro;
-					
+
 					//prepare a core specification
 					//if it wasnt already specified, use the current default
 					if (ioaretro.CorePath == null) ioaretro.CorePath = Global.Config.LibretroCore;

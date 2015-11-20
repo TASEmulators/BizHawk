@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Linq;
@@ -175,3 +175,4 @@ namespace BizHawk.Emulation.Common
 	
 	}
 }
+
