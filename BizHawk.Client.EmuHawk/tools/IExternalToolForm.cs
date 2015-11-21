@@ -8,7 +8,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// Interface to implements in order to make a custom tool for a specific game
 	/// </summary>
-	public interface ICustomGameTool:IToolForm
+	public interface IExternalToolForm :IToolForm
 	{
 	}
 }

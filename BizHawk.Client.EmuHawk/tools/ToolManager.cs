@@ -512,9 +512,9 @@ namespace BizHawk.Client.EmuHawk
             IToolForm tool;
 
             //Specific case for custom tools
-            if (toolType == typeof(ICustomGameTool))
+            if (toolType == typeof(IExternalToolForm))
             {
-                string path = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
+                string path = Path.Combine(Global.Config.PathEntries["Global", "External Tools"].Path, string.Format("{0}.dll", Global.Game.Name));
                 if (File.Exists(path)
                   && MessageBox.Show("A custom plugin has been found for the ROM you're loading. Do you want to load it?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
                   , "Answer to life, universe and everything else?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -522,7 +522,7 @@ namespace BizHawk.Client.EmuHawk
                     try
                     {
                         // As the object is "remote"(external to the project), the CreateInstanceFrom returns a handle.We need to Unwrap in order to make the casting
-                        tool = System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
+                        tool = Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
                         if (tool == null)
                         {
                             MessageBox.Show("It seems that the object CustomMainForm does not implement IToolForm. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

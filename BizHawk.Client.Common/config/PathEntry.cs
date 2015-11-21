@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 10 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 11 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", "Tools"), Ordinal = 12 },
-                    new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "GameTools", Path = Path.Combine(".", "GameTools"), Ordinal = 13 },
+                    new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "External Tools", Path = Path.Combine(".", "ExternalTools"), Ordinal = 13 },
 
                     new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },
