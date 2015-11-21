@@ -75,7 +75,7 @@
 			// 
 			this.btnGo.Location = new System.Drawing.Point(35, 131);
 			this.btnGo.Name = "btnGo";
-			this.btnGo.Size = new System.Drawing.Size(75, 23);
+			this.btnGo.Size = new System.Drawing.Size(75, 24);
 			this.btnGo.TabIndex = 3;
 			this.btnGo.Text = "Convert";
 			this.btnGo.UseVisualStyleBackColor = true;

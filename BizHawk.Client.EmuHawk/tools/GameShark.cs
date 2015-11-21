@@ -11,18 +11,39 @@ namespace BizHawk.Client.EmuHawk
 	//TODO:
 	//Add Support/Handling for The Following Systems and Devices:
 	//GBA: GameShark, Action Replay (Same?), Code Breaker
+	//GB: Game Genie
 	//GameGear: Game Genie, Pro Action Replay
-	//NES: Game Genie, Pro Action Replay
+	//NES: Pro Action Replay
 	//PSX: Code Breaker, Action Replay, Game Busters (What is that?!)
 	//SNES: Possible Warning for Game Genie not working?  Test fixed behaviors when ready.
 
-	//This applies to the Genesis Game Genie.
+	//Clean up the checks to be more robust/less "hacky"
+	//They work but feel bad
 	
 
 	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		#region " Game Genie Dictionary "
+		private readonly Dictionary<char, int> _GBGGgameGenieTable = new Dictionary<char, int>
+		{
+			{'0', 0 },
+			{'1', 1 },
+			{'2', 2 },
+			{'3', 3 },
+			{'4', 4 },
+			{'5', 5 },
+			{'6', 6 },
+			{'7', 7 },
+			{'8', 8 },
+			{'9', 9 },
+			{'A', 10 },
+			{'B', 11 },
+			{'C', 12 },
+			{'D', 13 },
+			{'E', 14 },
+			{'F', 15 }
+		};
 		private readonly Dictionary<char, int> _GENgameGenieTable = new Dictionary<char, int>
 		{
 			{ 'A', 0 },
@@ -103,7 +124,9 @@ namespace BizHawk.Client.EmuHawk
 		};
 		#endregion
 
-
+		//TODO:
+		//Add GG/GB Game Genie Support.
+		//Look at the file GBGameGenie.CS
 		//We are using Memory Domains, so we NEED this.
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -199,43 +222,138 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 		}
+		//Original Code by adelikat
+		//Decodes GameGear and GameBoy
+		public void GBGGDecode(string code, ref int val, ref int add, ref int cmp)
+		{
+			// No cypher on value
+			// Char # |   0   |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+			// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
+			// maps to|      Value    |A|B|C|D|E|F|G|H|I|J|K|L|XOR 0xF|a|b|c|c|NotUsed|e|f|g|h|
+			// proper |      Value    |XOR 0xF|A|B|C|D|E|F|G|H|I|J|K|L|g|h|a|b|Nothing|c|d|e|f|
+			int x;
+			// Getting Value
+			if (code.Length > 0)
+			{
+				_GBGGgameGenieTable.TryGetValue(code[0], out x);
+				val = x << 4;
+			}
+
+			if (code.Length > 1)
+			{
+				_GBGGgameGenieTable.TryGetValue(code[1], out x);
+				val |= x;
+			}
+			// Address
+			if (code.Length > 2)
+			{
+				_GBGGgameGenieTable.TryGetValue(code[2], out x);
+				add = x << 8;
+			}
+			else
+			{
+				add = -1;
+			}
+
+			if (code.Length > 3)
+			{
+				_GBGGgameGenieTable.TryGetValue(code[3], out x);
+				add |= x << 4;
+			}
+
+			if (code.Length > 4)
+			{
+				_GBGGgameGenieTable.TryGetValue(code[4], out x);
+				add |= x;
+			}
+
+			if (code.Length > 5)
+			{
+				_GBGGgameGenieTable.TryGetValue(code[5], out x);
+				add |= (x ^ 0xF) << 12;
+			}
+
+			// compare need to be full
+			if (code.Length > 8)
+			{
+				int comp = 0;
+				_GBGGgameGenieTable.TryGetValue(code[6], out x);
+				comp = x << 2;
+
+				// 8th character ignored
+				_GBGGgameGenieTable.TryGetValue(code[8], out x);
+				comp |= (x & 0xC) >> 2;
+				comp |= (x & 0x3) << 6;
+				cmp = comp ^ 0xBA;
+			}
+			else
+			{
+				cmp = -1;
+			}
+		}
 		private void GB()
 		{
-			//This Check ONLY applies to GB/GBC codes.
-			if (txtCheat.Text.Length != 8)
+			string RAMCompare = null;
+
+			//Game Genie
+			if (txtCheat.Text.LastIndexOf("-") == 7 && txtCheat.Text.IndexOf("-") == 3)
+			{
+				int val = 0;
+				int add = 0;
+				int cmp = 0;
+				parseString = txtCheat.Text.Replace("-", "");
+				GBGGDecode(parseString, ref val, ref add, ref cmp);
+				RAMAddress = string.Format("{0:X4}", add);
+				RAMValue = string.Format("{0:X2}", val);
+				RAMCompare = string.Format("{0:X2}", cmp);
+			}
+			//Game Genie
+			else if (txtCheat.Text.Contains("-") == true && txtCheat.Text.LastIndexOf("-") != 7 && txtCheat.Text.IndexOf("-") != 3)
+			{
+				MessageBox.Show("All GameBoy Game Geneie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			//Game Shark codes
+			if (txtCheat.Text.Length != 8 && txtCheat.Text.Contains("-") == false)
 			{
 				MessageBox.Show("All GameShark Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			testo = txtCheat.Text.Remove(2, 6);
-			//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
-			switch (testo)
+			else if (txtCheat.Text.Length == 8 && txtCheat.Text.Contains("-") == false)
 			{
-				//Is this 00 or 01?
-				case "00":
-				case "01":
-					//Good.
-					break;
-				default:
-					//No.
-					MessageBox.Show("All GameShark Codes for GameBoy need to start with 00 or 01", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-			}
-			//Sample Input for GB/GBC:
-			//010FF6C1
-			//Becomes:
-			//Address C1F6
-			//Value 0F
+				testo = txtCheat.Text.Remove(2, 6);
+				//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
+				switch (testo)
+				{
+					//Is this 00 or 01?
+					case "00":
+					case "01":
+						//Good.
+						break;
+					default:
+						//No.
+						MessageBox.Show("All GameShark Codes for GameBoy need to start with 00 or 01", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+				}
+				//Sample Input for GB/GBC:
+				//010FF6C1
+				//Becomes:
+				//Address C1F6
+				//Value 0F
 
-			parseString = txtCheat.Text.Remove(0, 2);
-			//Now we need to break it down a little more.
-			RAMValue = parseString.Remove(2, 4);
-			parseString = parseString.Remove(0, 2);
-			//The issue is Endian...  Time to get ultra clever.  And Regret it.
-			//First Half
-			RAMAddress = parseString.Remove(0, 2);
-			RAMAddress = RAMAddress + parseString.Remove(2, 2);
-			//We now have our values.
+				parseString = txtCheat.Text.Remove(0, 2);
+				//Now we need to break it down a little more.
+				RAMValue = parseString.Remove(2, 4);
+				parseString = parseString.Remove(0, 2);
+				//The issue is Endian...  Time to get ultra clever.  And Regret it.
+				//First Half
+				RAMAddress = parseString.Remove(0, 2);
+				RAMAddress = RAMAddress + parseString.Remove(2, 2);
+				//We now have our values.
+				
+			}
+
 			//This part, is annoying...
 			try
 			{
@@ -243,7 +361,15 @@ namespace BizHawk.Client.EmuHawk
 				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
 				//Take Watch, Add our Value we want, and it should be active when addded?
-				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				if (RAMCompare == null)
+				{
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+				else if (RAMCompare != null)
+				{
+					//We have a Compare
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(RAMCompare, NumberStyles.HexNumber)));
+				}
 				//Clear old Inputs
 				txtCheat.Clear();
 				txtDescription.Clear();
@@ -534,6 +660,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void NES()
 		{
+			string strCompare = null;
 			//Original code from adelikat
 			if (txtCheat.Text.Length != 6 || txtCheat.Text.Length != 8)
 			{
@@ -571,11 +698,10 @@ namespace BizHawk.Client.EmuHawk
 					_NESgameGenieTable.TryGetValue(code[5], out x);
 					Address |= (x & 0x07) << 8;
 					Value |= x & 0x08;
-					//Test Code.  Remove me.
-					MessageBox.Show(string.Format("{0:X6}", Address));
-					MessageBox.Show(string.Format("{0:X2}", Value));
-					MessageBox.Show(string.Format("{0:X2}", Compare));
-				}
+					RAMAddress = string.Format("{0:X4}", Address);
+					RAMValue = string.Format("{0:X2}", Value);					
+					strCompare = string.Format("{0:X2}", Compare);
+                }
 				else if (txtCheat.Text.Length == 8)
 				{
 					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
@@ -616,13 +742,41 @@ namespace BizHawk.Client.EmuHawk
 					_NESgameGenieTable.TryGetValue(code[7], out x);
 					Compare |= (x & 0x07) << 4;
 					Value |= x & 0x08;
-					//Test Code.  Remove me.
-					MessageBox.Show(string.Format("{0:X6}", Address));
-					MessageBox.Show(string.Format("{0:X2}", Value));
-					MessageBox.Show(string.Format("{0:X2}", Compare));
+					RAMAddress = string.Format("{0:X4}", Address);
+					RAMValue = string.Format("{0:X2}", Value);
+					strCompare = string.Format("{0:X2}", Compare);
 				}
-				
+			}
+			if (txtCheat.Text.Length != 6 && txtCheat.Text.Length != 8)
+			{
+				//Not a proper Code
+				MessageBox.Show("Game Genie codes need to be six or eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			try
+			{
 
+				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
+				//System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
+				//We have a Byte sized value
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
+				//Take Watch, Add our Value we want, and it should be active when addded?
+				if (strCompare == "00")
+				{
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+				if (strCompare != "00")
+				{
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(strCompare, NumberStyles.HexNumber)));
+				}
+				//Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), )
+				//Clear old Inputs
+				txtCheat.Clear();
+				txtDescription.Clear();
+			}
+			//Someone broke the world?
+			catch (Exception ex)
+			{
+				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
         private void PSX()
@@ -818,35 +972,59 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
+		//This also handles Game Gear due to shared hardware.  Go figure.
 		private void SMS()
 		{
-			//This is FUN!
-			if (txtCheat.Text.IndexOf("-") != 4)
+			string RAMCompare = null;
+			//Game Genie
+			if (txtCheat.Text.LastIndexOf("-") == 7 && txtCheat.Text.IndexOf("-") == 3)
 			{
-				MessageBox.Show("All Master System Action Replay Codes need to contain a dash after the fourth character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				int val = 0;
+				int add = 0;
+				int cmp = 0;		
+				parseString = txtCheat.Text.Replace("-", "");
+				GBGGDecode(parseString, ref val, ref add, ref cmp);
+				RAMAddress = string.Format("{0:X4}", add);
+				RAMValue = string.Format("{0:X2}", val);
+				RAMCompare = string.Format("{0:X2}", cmp);
+			}
+			//Action Replay
+			else if (txtCheat.Text.IndexOf("-") == 3 && txtCheat.Text.Length == 9)
+			{
+				parseString = txtCheat.Text;
+				parseString = parseString.Remove(0, 2);
+				RAMAddress = parseString.Remove(4, 2);
+				RAMAddress = RAMAddress.Replace("-", "");
+				RAMValue = parseString.Remove(0, 5);
+			}
+			//It's an Action Replay
+			if (txtCheat.Text.Length != 9 && txtCheat.Text.LastIndexOf("-") != 7)
+			{
+				MessageBox.Show("All Master System Action Replay Codes need to be nine charaters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			if (txtCheat.Text.Length != 9)
+			//Game Genie
+			else if (txtCheat.Text.LastIndexOf("-") != 7 && txtCheat.Text.IndexOf("-") != 3)
 			{
-				MessageBox.Show("All Master System Action Replay Codes need to nine charaters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("All Master System Game Geneie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			parseString = txtCheat.Text;
-			parseString = parseString.Remove(0, 2);
-			//MessageBox.Show(parseString);
-			RAMAddress = parseString.Remove(4, 2);
-			//MessageBox.Show(RAMAddress);
-			RAMAddress = RAMAddress.Replace("-", "");
-			MessageBox.Show(RAMAddress);
-			RAMValue = parseString.Remove(0, 5);
-			MessageBox.Show(RAMValue);
 			try
 			{
 				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
 				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
 				var watch = Watch.GenerateWatch(MemoryDomains["Main RAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
-				//Take Watch, Add our Value we want, and it should be active when addded?
-				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				//Take Watch, Add our Value we want, and it should be active when addded
+
+				if (RAMCompare == null)
+				{
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+				else if (RAMCompare != null)
+				{
+					//We have a Compare
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(RAMCompare, NumberStyles.HexNumber)));
+				}
 				//Clear old Inputs
 				txtCheat.Clear();
 				txtDescription.Clear();
@@ -856,9 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-		}
-
-		
+		}	
 		//Original code from adelikat
 		private void SnesGGDecode(string code, ref int val, ref int add)
 		{
