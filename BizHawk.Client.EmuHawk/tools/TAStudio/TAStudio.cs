@@ -110,9 +110,8 @@ namespace BizHawk.Client.EmuHawk
 					width = 320;
 					height = (int)((double)(height) * ratio);
 				}
-
-
-				ScreenshotControl.Size = new Size(width, height);
+				ScreenshotControl.DrawingHeight = height;
+				ScreenshotControl.Size = new Size(width, ScreenshotControl.DrawingHeight + ScreenshotControl.UserPadding);
 			}
 
 			ScreenshotControl.Visible = false;

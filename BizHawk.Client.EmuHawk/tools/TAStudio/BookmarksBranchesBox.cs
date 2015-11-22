@@ -288,10 +288,11 @@ namespace BizHawk.Client.EmuHawk
 			int x = locationOnForm.X - Tastudio.ScreenshotControl.Width;
 			int y = locationOnForm.Y; // keep consistent height, helps when conparing screenshots
 
-			if (x < 0) x = 0;
+			if (x < 1) x = 1;
 
+			Tastudio.ScreenshotControl.UserText = "";
+			Tastudio.ScreenshotControl.RecalculatePadding();
 			Tastudio.ScreenshotControl.Location = new Point(x, y);
-
 			Tastudio.ScreenshotControl.Visible = true;
 			Tastudio.ScreenshotControl.Branch = branch;
 			Tastudio.ScreenshotControl.Refresh();
