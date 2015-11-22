@@ -53,6 +53,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTools()
 		{
+			ToolBoxStrip.Items.Clear();
+
 			var availableTools = Assembly
 				.GetAssembly(typeof(IToolForm))
 				.GetTypes()
@@ -73,8 +75,8 @@ namespace BizHawk.Client.EmuHawk
 					ShowIcon = (instance as Form).ShowIcon
 				})
 				.ToList();
-
-			foreach (var tool in availableTools)
+			
+            foreach (var tool in availableTools)
 			{
 				var t = new ToolStripButton
 				{

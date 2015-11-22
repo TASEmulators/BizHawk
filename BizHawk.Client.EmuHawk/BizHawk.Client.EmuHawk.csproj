@@ -807,7 +807,7 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\ICustomGameTool.cs" />
+    <Compile Include="tools\IExternalToolForm.cs" />
     <Compile Include="tools\IToolForm.cs" />
     <Compile Include="tools\Lua\EnvironmentSandbox.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />

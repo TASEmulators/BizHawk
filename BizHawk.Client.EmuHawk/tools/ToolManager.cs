@@ -16,10 +16,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class ToolManager
 	{
-		public ToolManager(Form owner)
-		{
-			_owner = owner;
-		}
+		#region Fields
 
 		private readonly Form _owner;
 
@@ -28,31 +25,70 @@ namespace BizHawk.Client.EmuHawk
 		// Also a UsesRam, and similar method
 		private readonly List<IToolForm> _tools = new List<IToolForm>();
 
-		/// <summary>
-		/// Loads the tool dialog T, if it does not exist it will be created, if it is already open, it will be focused
-		/// </summary>
-		public T Load<T>(bool focus = true) where T : IToolForm
-		{
-			return (T)Load(typeof(T), focus);
-		}
+		#endregion
+
+		#region cTor(s)
 
 		/// <summary>
-		/// Loads a tool dialog of type toolType if it does not exist it will be
-		/// created, if it is already open, it will be focused.
+		/// Initialize an new ToolManager instance 
 		/// </summary>
-		public IToolForm Load(Type toolType, bool focus = true)
+		/// <param name="owner">Form that handle the ToolManager</param>
+		public ToolManager(Form owner)
+		{
+			_owner = owner;
+		}
+
+		#endregion
+
+		/// <summary>
+		/// Loads the tool dialog T (T must implemants <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
+		/// This method should be used only if you can't use the generic one
+		/// </summary>
+		/// <param name="toolType">Type of tool you want to load</param>
+		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
+		/// <returns>An instanciated <see cref="IToolForm"/></returns>
+		/// <exception cref="ArgumentException">Raised if <paramref name="toolType"/> can't be casted into IToolForm </exception>
+		internal IToolForm Load(Type toolType, bool focus = true)
 		{
 			if (!typeof(IToolForm).IsAssignableFrom(toolType))
 			{
 				throw new ArgumentException(string.Format("Type {0} does not implement IToolForm.", toolType.Name));
 			}
+			else
+			{
+				MethodInfo method = GetType().GetMethod("Load").MakeGenericMethod(toolType);
+				return (IToolForm)method.Invoke(this, new object[] { focus });
+			}
+		}
 
-			if (!IsAvailable(toolType))
+		/// <summary>
+		/// Loads the tool dialog T (T must implemants <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
+		/// </summary>
+		/// <typeparam name="T">Type of tool you want to load</typeparam>
+		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
+		/// <returns>An instanciated <see cref="IToolForm"/></returns>
+		public T Load<T>(bool focus = true)
+			where T : class, IToolForm
+		{
+			return Load<T>(string.Empty, focus);
+		}
+
+		/// <summary>
+		/// Loads the tool dialog T (T must implemants <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
+		/// </summary>
+		/// <typeparam name="T">Type of tool you want to load</typeparam>
+		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
+		/// <param name="toolPath">Path to the dll of the external tool</param>
+		/// <returns>An instanciated <see cref="IToolForm"/></returns>
+		public T Load<T>(string toolPath, bool focus = true)
+			where T : class, IToolForm
+		{
+			if (!IsAvailable<T>())
 			{
 				return null;
 			}
 
-			var existingTool = _tools.FirstOrDefault(x => toolType.IsAssignableFrom(x.GetType()));
+			T existingTool = (T)_tools.FirstOrDefault(x => x is T);
 
 			if (existingTool != null)
 			{
@@ -72,28 +108,29 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newTool = CreateInstance(toolType);
+			IToolForm newTool = CreateInstance<T>(toolPath);
 
-            if (newTool == null)
-            {
-                return null;
-            }
+			if (newTool == null)
+			{
+				return null;
+			}
 
-            if (newTool is Form)
+			if (newTool is Form)
 			{
 				(newTool as Form).Owner = GlobalWin.MainForm;
 			}
 
 			ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, newTool);
+			string toolType = typeof(T).ToString();
 
 			// auto settings
 			if (newTool is IToolFormAutoConfig)
 			{
 				ToolDialogSettings settings;
-				if (!Global.Config.CommonToolSettings.TryGetValue(toolType.ToString(), out settings))
+				if (!Global.Config.CommonToolSettings.TryGetValue(toolType, out settings))
 				{
 					settings = new ToolDialogSettings();
-					Global.Config.CommonToolSettings[toolType.ToString()] = settings;
+					Global.Config.CommonToolSettings[toolType] = settings;
 				}
 				AttachSettingHooks(newTool as IToolFormAutoConfig, settings);
 			}
@@ -102,17 +139,17 @@ namespace BizHawk.Client.EmuHawk
 			if (HasCustomConfig(newTool))
 			{
 				Dictionary<string, object> settings;
-				if (!Global.Config.CustomToolSettings.TryGetValue(toolType.ToString(), out settings))
+				if (!Global.Config.CustomToolSettings.TryGetValue(toolType, out settings))
 				{
 					settings = new Dictionary<string, object>();
-					Global.Config.CustomToolSettings[toolType.ToString()] = settings;
+					Global.Config.CustomToolSettings[toolType] = settings;
 				}
 				InstallCustomConfig(newTool, settings);
 			}
 
 			newTool.Restart();
 			newTool.Show();
-			return newTool;
+			return (T)newTool;
 		}
 
 		public void AutoLoad()
@@ -301,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-	
+
 		/// <summary>
 		/// Determines whether a given IToolForm is already loaded
 		/// </summary>
@@ -327,7 +364,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Gets the instance of T, or creates and returns a new instance
 		/// </summary>
-		public IToolForm Get<T>() where T : IToolForm
+		public IToolForm Get<T>() where T : class, IToolForm
 		{
 			return Load<T>(false);
 		}
@@ -501,61 +538,71 @@ namespace BizHawk.Client.EmuHawk
 			_tools.Clear();
 		}
 
-		private IToolForm CreateInstance<T>()
-			where T: IToolForm
+		/// <summary>
+		/// Create a new instance of an IToolForm and return it
+		/// </summary>
+		/// <typeparam name="T">Type of tool you want to create</typeparam>
+		/// <param name="dllPath">Path dll for an external tool</param>
+		/// <returns>New instance of an IToolForm</returns>
+		private IToolForm CreateInstance<T>(string dllPath)
+			where T : IToolForm
 		{
-			return CreateInstance(typeof(T));
+			return CreateInstance(typeof(T), dllPath);
 		}
 
-        private IToolForm CreateInstance(Type toolType)
-        {
-            IToolForm tool;
+		/// <summary>
+		/// Create a new instance of an IToolForm and return it
+		/// </summary>
+		/// <param name="toolType">Type of tool you want to create</param>
+		/// <param name="dllPath">Path dll for an external tool</param>
+		/// <returns>New instance of an IToolForm</returns>
+		private IToolForm CreateInstance(Type toolType, string dllPath)
+		{
+			IToolForm tool;
 
-            //Specific case for custom tools
-            if (toolType == typeof(ICustomGameTool))
-            {
-                string path = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
-                if (File.Exists(path)
-                  && MessageBox.Show("A custom plugin has been found for the ROM you're loading. Do you want to load it?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
-                  , "Answer to life, universe and everything else?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        // As the object is "remote"(external to the project), the CreateInstanceFrom returns a handle.We need to Unwrap in order to make the casting
-                        tool = System.Activator.CreateInstanceFrom(path, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IToolForm;
-                        if (tool == null)
-                        {
-                            MessageBox.Show("It seems that the object CustomMainForm does not implement IToolForm. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            return null;
-                        }
-                    }
-                    catch (MissingMethodException)
-                    {
-                        MessageBox.Show("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        return null;
-                    }
-                    catch (TypeLoadException)
-                    {
-                        MessageBox.Show("It seems that the object CustomMainForm does not exists. Please review the code.", "Boom!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        return null;
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                tool = (IToolForm)Activator.CreateInstance(toolType);
-            }
+			//Specific case for custom tools
+			//TODO: Use AppDomain in order to be able to unload the assembly			
+			if (toolType == typeof(IExternalToolForm))
+			{
+				if (MessageBox.Show(@"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
+				, "Confirmm loading", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+				{
+					try
+					{
+						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
+						if (tool == null)
+						{
+							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+							return null;
+						}
+					}
+					catch (MissingMethodException)
+					{
+						MessageBox.Show("It seems that the object CustomMainForm does not have a public default constructor. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						return null;
+					}
+					catch (TypeLoadException ex)
+					{
+						MessageBox.Show("It seems that the object CustomMainForm does not exists. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						return null;
+					}
+				}
+				else
+				{
+					return null;
+				}
+			}
+			else
+			{
+				tool = (IToolForm)Activator.CreateInstance(toolType);
+			}
 
-            // Add to our list of tools
-            _tools.Add(tool);
-            return tool;
-        }
+			// Add to our list of tools
+			_tools.Add(tool);
+			return tool;
+		}
 
-        public void UpdateToolsBefore(bool fromLua = false)
+		public void UpdateToolsBefore(bool fromLua = false)
 		{
 			if (Has<LuaConsole>())
 			{
@@ -694,7 +741,7 @@ namespace BizHawk.Client.EmuHawk
 						return tool as RamWatch;
 					}
 				}
-				
+
 				var newTool = new RamWatch();
 				_tools.Add(newTool);
 				return newTool;
@@ -889,7 +936,7 @@ namespace BizHawk.Client.EmuHawk
 		public static string GenerateDefaultCheatFilename()
 		{
 			var pathEntry = Global.Config.PathEntries[Global.Game.System, "Cheats"]
-			                ?? Global.Config.PathEntries[Global.Game.System, "Base"];
+							?? Global.Config.PathEntries[Global.Game.System, "Base"];
 
 			var path = PathManager.MakeAbsolutePath(pathEntry.Path, Global.Game.System);
 

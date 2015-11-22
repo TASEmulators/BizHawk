@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Reflection;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -51,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 				var font = new System.Drawing.Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
 				SaveRAMSubMenu.Font.Dispose();
 				SaveRAMSubMenu.Font = font;
-			}			
+			}
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -350,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastOpenRomFilter = ofd.FilterIndex;
 			//-----------------
 
-		
+
 
 			LoadRom(file.FullName, args);
 		}
@@ -1249,9 +1251,72 @@ namespace BizHawk.Client.EmuHawk
 
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
 
-			string toolPath = Path.Combine(Global.Config.PathEntries["Global", "GameTools"].Path, string.Format("{0}.dll", Global.Game.Name));
-			customToolToolStripMenuItem.Enabled = File.Exists(toolPath);
 			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
+		}
+
+		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		{
+			externalToolToolStripMenuItem.DropDownItems.Clear();
+			string path = Path.Combine(Global.Config.PathEntries["Global", "External Tools"].Path);
+			if (Directory.Exists(path))
+			{
+				DirectoryInfo dInfo = new DirectoryInfo(path);
+				Type[] assemblyTypes;
+				Assembly externalToolFile;
+				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
+				{
+					try
+					{
+						externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
+					}
+					catch (BadImageFormatException)
+					{
+						ToolStripMenuItem item = new ToolStripMenuItem(fi.Name, Properties.Resources.ExclamationRed);
+						item.ToolTipText = "This is not an assembly";
+						item.ForeColor = Color.Gray;
+						externalToolToolStripMenuItem.DropDownItems.Add(item);
+						continue;
+					}
+
+					ToolStripMenuItem externalToolMenu = new ToolStripMenuItem(externalToolFile.GetName().Name);
+
+					/*
+					The reason of using this ugly try catch is due to the use of ReflectionOnlyLoadFrom methods
+					When the assembly is loaded this way, referenced assemblies are not loaded and so, as soon as a type
+					existing in another assembly, it raises the exception.
+
+					But the advantage of this is that memory footprint is reduced
+					*/
+					try
+					{
+						assemblyTypes = externalToolFile.GetTypes();
+					}
+					catch (ReflectionTypeLoadException ex)
+					{
+						assemblyTypes = ex.Types.Where<Type>(t => t != null && t.FullName.Contains("BizHawk.Client.EmuHawk.CustomMainForm")).ToArray<Type>();
+					}
+
+					if (assemblyTypes.Count() == 1)
+					{
+						externalToolMenu.Image = Properties.Resources.Debugger;
+						externalToolMenu.Tag = fi.FullName;
+						externalToolMenu.Click += delegate (object sender2, EventArgs e2)
+						{
+							GlobalWin.Tools.Load<IExternalToolForm>(fi.FullName);
+						};
+					}
+					else
+					{
+						externalToolMenu.Image = Properties.Resources.ExclamationRed;
+						externalToolMenu.ForeColor = Color.Gray;
+					}
+					externalToolToolStripMenuItem.DropDownItems.Add(externalToolMenu);
+				}
+			}
+			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
+			{
+				externalToolToolStripMenuItem.DropDownItems.Add("None");
+			}
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1317,11 +1382,6 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenLuaConsole();
-		}
-
-		private void CustomToolMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<ICustomGameTool>();
 		}
 
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2748,7 +2808,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var args = new LoadRomArgs();
 				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
-				LoadRom(filePaths[0],args);
+				LoadRom(filePaths[0], args);
 			}
 		}
 
