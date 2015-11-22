@@ -277,7 +277,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseLeave(object sender, EventArgs e)
 		{
-			Tastudio.ScreenshotControl.Visible = false;
+			// Tastudio.ScreenshotControl.Visible = false;
 		}
 
 		private void ScreenShotPopUp(TasBranch branch, int index)
@@ -286,7 +286,9 @@ namespace BizHawk.Client.EmuHawk
 				this.Parent.PointToScreen(this.Location));
 
 			int x = locationOnForm.X - Tastudio.ScreenshotControl.Width;
-			int y = locationOnForm.Y + (BranchView.RowHeight * index);
+			int y = locationOnForm.Y; // keep consistent height, helps when conparing screenshots
+
+			if (x < 0) x = 0;
 
 			Tastudio.ScreenshotControl.Location = new Point(x, y);
 

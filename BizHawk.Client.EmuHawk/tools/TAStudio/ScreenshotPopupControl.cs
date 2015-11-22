@@ -31,5 +31,15 @@ namespace BizHawk.Client.EmuHawk
 			e.Graphics.DrawImage(bitmap, new Rectangle(0, 0, Width, Height));
 			base.OnPaint(e);
 		}
+
+		private void ScreenshotPopupControl_MouseLeave(object sender, EventArgs e)
+		{
+			Visible = false;
+		}
+
+		private void ScreenshotPopupControl_MouseHover(object sender, EventArgs e)
+		{
+			// todo: switch screenshots by hotkey
+		}
 	}
 }

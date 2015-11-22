@@ -38,7 +38,8 @@
 			this.Size = new System.Drawing.Size(237, 255);
 			this.Load += new System.EventHandler(this.ScreenshotPopupControl_Load);
 			this.ResumeLayout(false);
-
+			this.MouseLeave += new System.EventHandler(ScreenshotPopupControl_MouseLeave);
+			this.MouseHover += new System.EventHandler(ScreenshotPopupControl_MouseHover);
 		}
 
 		#endregion
