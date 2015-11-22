@@ -237,9 +237,6 @@ namespace BizHawk.Client.EmuHawk
 				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
 			}
 
-			GoToFrame(CurrentTasMovie.Session.CurrentFrame);
-			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
-
 			////////////////
 
 			RefreshDialog();
@@ -435,6 +432,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!HandleMovieLoadStuff(newMovie))
 				return false;
+
+			SetUpColumns();
+			GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
 			// clear all selections
 			TasView.DeselectAll();
