@@ -56,7 +56,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				MethodInfo method = GetType().GetMethod("Load").MakeGenericMethod(toolType);
+				//The type[] in parameter is used to avoid an ambigous name exception
+				MethodInfo method = GetType().GetMethod("Load", new Type[] { typeof(bool) }).MakeGenericMethod(toolType);
 				return (IToolForm)method.Invoke(this, new object[] { focus });
 			}
 		}
