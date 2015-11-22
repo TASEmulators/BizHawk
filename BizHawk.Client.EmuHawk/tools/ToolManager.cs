@@ -536,7 +536,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_tools.ForEach(x => x.Close());
 			_tools.Clear();
-		}		
+		}
 
 		/// <summary>
 		/// Create a new instance of an IToolForm and return it
@@ -548,8 +548,8 @@ namespace BizHawk.Client.EmuHawk
 			where T : IToolForm
 		{
 			return CreateInstance(typeof(T), dllPath);
-        }
-		
+		}
+
 		/// <summary>
 		/// Create a new instance of an IToolForm and return it
 		/// </summary>
@@ -568,13 +568,13 @@ namespace BizHawk.Client.EmuHawk
 				, "Confirmm loading", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 				{
 					try
-					{									
+					{
 						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
 						if (tool == null)
 						{
 							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							return null;
-						}						
+						}
 					}
 					catch (MissingMethodException)
 					{

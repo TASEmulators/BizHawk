@@ -1263,7 +1263,7 @@ namespace BizHawk.Client.EmuHawk
 				DirectoryInfo dInfo = new DirectoryInfo(path);
 				Type[] assemblyTypes;
 				Assembly externalToolFile;
-                foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
+				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
 				{
 					try
 					{
@@ -1279,7 +1279,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					ToolStripMenuItem externalToolMenu = new ToolStripMenuItem(externalToolFile.GetName().Name);
-					
+
 					/*
 					The reason of using this ugly try catch is due to the use of ReflectionOnlyLoadFrom methods
 					When the assembly is loaded this way, referenced assemblies are not loaded and so, as soon as a type
@@ -1311,8 +1311,8 @@ namespace BizHawk.Client.EmuHawk
 						externalToolMenu.ForeColor = Color.Gray;
 					}
 					externalToolToolStripMenuItem.DropDownItems.Add(externalToolMenu);
-				}				
-            }
+				}
+			}
 			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
