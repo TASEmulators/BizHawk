@@ -415,10 +415,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 				parseString = RAMValue.Remove(4, 4);
 				//Is it a Word or Double Word?	
-				//MessageBox.Show(parseString);
 				if (parseString == "0000")
 				{
-					//We assume.  Why not.
+					//We assume.  Why not?
 					byteSize = 16;
 					RAMValue = RAMValue.Remove(0, 4);
 					//MessageBox.Show(RAMValue);
@@ -483,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (byteSize == 32)
 				{
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.DWord, Watch.DisplayType.Hex, txtCheat.Text, false);
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.DWord, Watch.DisplayType.Hex, txtDescription.Text, false);
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
 			}
