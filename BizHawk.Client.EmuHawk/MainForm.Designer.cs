@@ -209,6 +209,7 @@
 			this.CheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.LuaConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.externalToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.dummyExternalTool = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
 			this.MultiDiskBundlerFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gameSharkConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -409,7 +410,6 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.dummyExternalTool = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1984,6 +1984,12 @@
 			this.externalToolToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.externalToolToolStripMenuItem.Text = "External Tool";
 			this.externalToolToolStripMenuItem.DropDownOpening += new System.EventHandler(this.ExternalToolToolStripMenuItem_DropDownOpening);
+			// 
+			// dummyExternalTool
+			// 
+			this.dummyExternalTool.Name = "dummyExternalTool";
+			this.dummyExternalTool.Size = new System.Drawing.Size(103, 22);
+			this.dummyExternalTool.Text = "None";
 			// 
 			// toolStripSeparator29
 			// 
@@ -3621,12 +3627,6 @@
 			this.timerMouseIdle.Enabled = true;
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
-			// 
-			// dummyExternalTool
-			// 
-			this.dummyExternalTool.Name = "dummyExternalTool";
-			this.dummyExternalTool.Size = new System.Drawing.Size(172, 22);
-			this.dummyExternalTool.Text = "DummyItemMenu";
 			// 
 			// MainForm
 			// 

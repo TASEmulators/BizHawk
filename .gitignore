@@ -246,7 +246,7 @@
 /References/*.xml
 /output/ELFSharp.dll
 /output/dll/ELFSharp.dll
-/output/ExternalTools/*.dll
+/output/ExternalTools/*.*
 *.opensdf
 *.user
 *.suo

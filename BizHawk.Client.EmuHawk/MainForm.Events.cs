@@ -1250,7 +1250,7 @@ namespace BizHawk.Client.EmuHawk
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
-			
+
 			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
@@ -1261,11 +1261,25 @@ namespace BizHawk.Client.EmuHawk
 			if (Directory.Exists(path))
 			{
 				DirectoryInfo dInfo = new DirectoryInfo(path);
-				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
+				Type[] assemblyTypes;
+				Assembly externalToolFile;
+                foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
 				{
-					Assembly externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
+					try
+					{
+						externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
+					}
+					catch (BadImageFormatException)
+					{
+						ToolStripMenuItem item = new ToolStripMenuItem(fi.Name, Properties.Resources.ExclamationRed);
+						item.ToolTipText = "This is not an assembly";
+						item.ForeColor = Color.Gray;
+						externalToolToolStripMenuItem.DropDownItems.Add(item);
+						continue;
+					}
+
 					ToolStripMenuItem externalToolMenu = new ToolStripMenuItem(externalToolFile.GetName().Name);
-					Type[] assemblyTypes;
+					
 					/*
 					The reason of using this ugly try catch is due to the use of ReflectionOnlyLoadFrom methods
 					When the assembly is loaded this way, referenced assemblies are not loaded and so, as soon as a type
@@ -1275,28 +1289,34 @@ namespace BizHawk.Client.EmuHawk
 					*/
 					try
 					{
-						assemblyTypes = externalToolFile.GetTypes();						
-                    }
-					catch(ReflectionTypeLoadException ex)
+						assemblyTypes = externalToolFile.GetTypes();
+					}
+					catch (ReflectionTypeLoadException ex)
 					{
 						assemblyTypes = ex.Types.Where<Type>(t => t != null && t.FullName.Contains("BizHawk.Client.EmuHawk.CustomMainForm")).ToArray<Type>();
 					}
 
 					if (assemblyTypes.Count() == 1)
 					{
-						externalToolMenu.Image = Properties.Resources.Debugger;						
+						externalToolMenu.Image = Properties.Resources.Debugger;
+						externalToolMenu.Tag = fi.FullName;
+						externalToolMenu.Click += delegate (object sender2, EventArgs e2)
+						{
+							GlobalWin.Tools.Load<IExternalToolForm>(fi.FullName);
+						};
 					}
 					else
 					{
-						externalToolMenu.Image = Properties.Resources.ExclamationRed;						
+						externalToolMenu.Image = Properties.Resources.ExclamationRed;
+						externalToolMenu.ForeColor = Color.Gray;
 					}
 					externalToolToolStripMenuItem.DropDownItems.Add(externalToolMenu);
-				}
-			}
-			if(externalToolToolStripMenuItem.DropDownItems.Count == 0)
-			{
-				externalToolToolStripMenuItem.DropDownItems.Add("Dummy External Tool");
+				}				
             }
+			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
+			{
+				externalToolToolStripMenuItem.DropDownItems.Add("None");
+			}
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1362,7 +1382,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenLuaConsole();
-		}		
+		}
 
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
