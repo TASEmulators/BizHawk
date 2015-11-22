@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _patternPaint = false;
 		private bool _startCursorDrag;
-		private bool _startFrameDrag;
-		private bool _frameDragState;
+		private bool _startSelectionDrag;
+		private bool _selectionDragState;
 		private bool _supressContextMenu;
 		// SuuperW: For editing analog input
 		private string _floatEditColumn = string.Empty;
@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		private string[] _rightClickOverInput = null;
 		private int _rightClickFrame = -1;
 		private int _rightClickLastFrame = -1;
-		private bool _rightClickShift, _rightClickControl;
+		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
 		private bool _leftButtonHeld = false;
 		private bool mouseButtonHeld
 		{
@@ -400,8 +400,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_startFrameDrag = true;
-						_frameDragState = TasView.SelectedRows.Contains(frame);
+						_startSelectionDrag = true;
+						_selectionDragState = TasView.SelectedRows.Contains(frame);
 					}
 				}
 				else // User changed input
@@ -481,6 +481,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_rightClickControl = (Control.ModifierKeys | Keys.Control) == Control.ModifierKeys;
 					_rightClickShift = (Control.ModifierKeys | Keys.Shift) == Control.ModifierKeys;
+					_rightClickAlt = (Control.ModifierKeys | Keys.Alt) == Control.ModifierKeys;
 					if (TasView.SelectedRows.Contains(frame))
 					{
 						_rightClickInput = new string[TasView.SelectedRows.Count()];
@@ -497,23 +498,26 @@ namespace BizHawk.Client.EmuHawk
 					}
 					_rightClickLastFrame = -1;
 
-					JumpToGreenzone();
-					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
-					string undoStepName = "Right-Click Edit:";
-					if (_rightClickShift)
+					if (_rightClickAlt || _rightClickControl || _rightClickShift)
 					{
-						undoStepName += " Extend Input";
-						if (_rightClickControl)
-							undoStepName += ", Insert";
-					}
-					else
-					{
-						if (_rightClickControl)
-							undoStepName += " Copy";
+						JumpToGreenzone();
+						// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
+						string undoStepName = "Right-Click Edit:";
+						if (_rightClickShift)
+						{
+							undoStepName += " Extend Input";
+							if (_rightClickControl)
+								undoStepName += ", Insert";
+						}
 						else
-							undoStepName += " Move";
+						{
+							if (_rightClickControl)
+								undoStepName += " Copy";
+							else // _rightClickAlt
+								undoStepName += " Move";
+						}
+						CurrentTasMovie.ChangeLog.BeginNewBatch(undoStepName);
 					}
-					CurrentTasMovie.ChangeLog.BeginNewBatch(undoStepName);
 				}
 			}
 		}
@@ -521,7 +525,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearLeftMouseStates()
 		{
 			_startCursorDrag = false;
-			_startFrameDrag = false;
+			_startSelectionDrag = false;
 			_startBoolDrawColumn = string.Empty;
 			_startFloatDrawColumn = string.Empty;
 			TasView.ReleaseCurrentCell();
@@ -665,21 +669,19 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(e.NewCell.RowIndex.Value);
 				}
 			}
-			else if (_startFrameDrag)
+			else if (_startSelectionDrag)
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (var i = startVal; i <= endVal; i++)
 					{
-						TasView.SelectRow(i, _frameDragState);
+						TasView.SelectRow(i, _selectionDragState);
 					}
 				}
 			}
 
 			else if (_rightClickFrame != -1)
 			{
-				_triggerAutoRestore = true;
-				_supressContextMenu = true;
 				if (frame > CurrentTasMovie.InputLogLength - _rightClickInput.Length)
 					frame = CurrentTasMovie.InputLogLength - _rightClickInput.Length;
 				if (_rightClickShift)
@@ -734,7 +736,7 @@ namespace BizHawk.Client.EmuHawk
 						for (int i = 0; i < _rightClickInput.Length; i++) // Place copied input
 							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
 					}
-					else
+					else if (_rightClickAlt)
 					{
 						int shiftBy = _rightClickFrame - frame;
 						string[] shiftInput = new string[Math.Abs(shiftBy)];
@@ -752,8 +754,12 @@ namespace BizHawk.Client.EmuHawk
 						_rightClickFrame = frame;
 					}
 				}
-
-				JumpToGreenzone();
+				if (_rightClickAlt || _rightClickControl || _rightClickShift)
+				{
+					JumpToGreenzone();
+					_triggerAutoRestore = true;
+					_supressContextMenu = true;
+				}
 			}
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
