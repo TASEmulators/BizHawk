@@ -10,18 +10,17 @@ namespace BizHawk.Client.EmuHawk
 
 	//TODO:
 	//Add Support/Handling for The Following Systems and Devices:
-	//GBA: GameShark, Action Replay (Same?), Code Breaker
-	//GB: Game Genie
-	//GameGear: Game Genie, Pro Action Replay
-	//NES: Pro Action Replay
-	//PSX: Code Breaker, Action Replay, Game Busters (What is that?!)
+	//GBA: Action Replay MAX, Code Breaker (That uses unique Encryption keys)
+	//NES: Pro Action Rocky  (When someone asks)
 	//SNES: Possible Warning for Game Genie not working?  Test fixed behaviors when ready.
 
 	//Clean up the checks to be more robust/less "hacky"
 	//They work but feel bad
+
+	//Verify all wording in the error reports
 	
 
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
+	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		#region " Game Genie Dictionary "
@@ -124,9 +123,6 @@ namespace BizHawk.Client.EmuHawk
 		};
 		#endregion
 
-		//TODO:
-		//Add GG/GB Game Genie Support.
-		//Look at the file GBGameGenie.CS
 		//We are using Memory Domains, so we NEED this.
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -380,23 +376,117 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		private void GBA()
+		//Provided by mGBA and endrift
+		UInt32[] GBAGameSharkSeeds = { UInt32.Parse("09F4FBBD", NumberStyles.HexNumber), UInt32.Parse("9681884A", NumberStyles.HexNumber), UInt32.Parse("352027E9", NumberStyles.HexNumber), UInt32.Parse("F3DEE5A7", NumberStyles.HexNumber) };
+		UInt32[] GBAProActionReplaySeeds = { UInt32.Parse("7AA9648F", NumberStyles.HexNumber), UInt32.Parse("7FAE6994", NumberStyles.HexNumber), UInt32.Parse("C0EFAAD5", NumberStyles.HexNumber), UInt32.Parse("42712C57", NumberStyles.HexNumber) };
+        private void GBA()
 		{
-			//Nothing, yet
-			//Sample of Decryption Code from mGBA
-			//const uint32_t GBACheatGameSharkSeeds[4] = { 0x09F4FBBD, 0x9681884A, 0x352027E9, 0xF3DEE5A7 };
-			/* void GBACheatDecryptGameShark(uint32_t* op1, uint32_t* op2, const uint32_t* seeds) {
-				uint32_t sum = 0xC6EF3720;
+			Boolean blnNoCode = true;
+			//TODO:
+			//Clean the detection methods and improve/optimize code conversion.
+			testo = null;
+			//We have a Game Shark or Action Replay.
+            if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
+			{
+				parseString = txtCheat.Text;
+				UInt32 op1 = 0;
+				UInt32 op2 = 0;
+				UInt32 sum = 0xC6EF3720;
+				op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+				op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
+				//Tiny Encryption Algorithm
 				int i;
 				for (i = 0; i < 32; ++i)
 				{
-					*op2 -= ((*op1 << 4) + seeds[2]) ^ (*op1 + sum) ^ ((*op1 >> 5) + seeds[3]);
-					*op1 -= ((*op2 << 4) + seeds[0]) ^ (*op2 + sum) ^ ((*op2 >> 5) + seeds[1]);
+					op2 -= ((op1 << 4) + GBAGameSharkSeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAGameSharkSeeds[3]);
+					op1 -= ((op2 << 4) + GBAGameSharkSeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAGameSharkSeeds[1]);
 					sum -= 0x9E3779B9;
 				}
+				//op1 has the Address
+				//op2 has the Value
+				//Sum, is pointless?
+				RAMAddress = string.Format("{0:X8}", op1);
+				RAMAddress = RAMAddress.Remove(0, 1);
+				RAMValue = string.Format("{0:X8}", op2);
+				if (RAMAddress.StartsWith("D4"))
+				{
+					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+				}
+				parseString = RAMValue.Remove(4, 4);
+				//Is it a Word or Double Word?	
+				//MessageBox.Show(parseString);
+				if (parseString == "0000")
+				{
+					//We assume.  Why not.
+					byteSize = 16;
+					RAMValue = RAMValue.Remove(0, 4);
+					//MessageBox.Show(RAMValue);
+				}
+				else if (parseString != "0000")
+				{
+					byteSize = 32;
+				}
+				blnNoCode = false;
+            }
+			if (txtCheat.Text.Length == 12)
+			{
+				MessageBox.Show("Encrypted Codebreaker/GameShark SP/Xploder codes are not supported by this tool.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
 			}
-			*/
+			if (txtCheat.Text.IndexOf(" ") != 8 && txtCheat.Text.Length != 12)
+			{
+				MessageBox.Show("ALL Codes for Action Replay, Action Replay MAX, Codebreaker, GameShark Advance, GameShark SP, Xploder have a Space after the 8th character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
 
+			//Decrypted Codebreaker, GameShark SP, Xploder
+			//Encypted Codebreaker, GameShark SP, Xploder is not handled, yet.
+			if (txtCheat.Text.Length == 13 && txtCheat.Text.IndexOf(" ") == 8)
+			{
+				//Get the first byte to deterime what kind of code it is.
+				testo = txtCheat.Text.Remove(1, 12);
+				switch(testo)
+                    {
+					case "3":
+						//8-Bit
+						byteSize = 8;
+						break;
+					case "8":
+					case "E":
+						//16-Bit
+						byteSize = 16;
+                        break;
+					default:
+						//What code is this?!  It must be bad?
+						MessageBox.Show("The code you entered is not recognized as a decrypted Codebreaker, GameShark SP or Xploder Code.", "Unrecognized Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+						return;
+				}
+				blnNoCode = false;
+				//Now let's do some legit crazy
+				parseString = txtCheat.Text.Remove(0, 1);
+				RAMAddress = parseString.Remove(7, 5);
+				RAMValue = parseString.Remove(0, 8);
+			}
+			//We have a code
+			if (blnNoCode == false)
+			{
+				if (byteSize == 8)
+				{
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Byte, Watch.DisplayType.Hex, txtDescription.Text, false);
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+				else if (byteSize == 16)
+				{
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.Word, Watch.DisplayType.Hex, txtDescription.Text, false);
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+				else if (byteSize == 32)
+				{
+					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.DWord, Watch.DisplayType.Hex, txtCheat.Text, false);
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+				}
+			}
 		}
 		private void GEN()
 		{
