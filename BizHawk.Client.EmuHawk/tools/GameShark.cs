@@ -485,6 +485,9 @@ namespace BizHawk.Client.EmuHawk
 					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), Watch.WatchSize.DWord, Watch.DisplayType.Hex, txtDescription.Text, false);
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
+				//Clear old Inputs
+				txtCheat.Clear();
+				txtDescription.Clear();
 			}
 		}
 		private void GEN()
