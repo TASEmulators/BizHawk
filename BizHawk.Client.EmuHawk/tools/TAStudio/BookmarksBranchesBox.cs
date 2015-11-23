@@ -58,19 +58,6 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
 
-		public TasBranch SelectedBranch
-		{
-			get
-			{
-				if (BranchView.AnyRowsSelected)
-				{
-					return GetBranch(BranchView.SelectedRows.First());
-				}
-
-				return null;
-			}
-		}
-
 		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
 			text = string.Empty;
@@ -125,19 +112,63 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void AddContextMenu_Click(object sender, EventArgs e)
+		public void Branch()
 		{
-			Branch();
+			TasBranch branch = CreateBranch();
+			Movie.AddBranch(branch);
+			BranchView.RowCount = Movie.BranchCount;
+			Movie.CurrentBranch = Movie.BranchCount - 1;
+			BranchView.Refresh();
+			Tastudio.RefreshDialog();
 		}
 
-		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
+		public TasBranch SelectedBranch
 		{
-			LoadSelectedBranch();
+			get
+			{
+				if (BranchView.AnyRowsSelected)
+				{
+					return GetBranch(BranchView.SelectedRows.First());
+				}
+
+				return null;
+			}
 		}
 
-		private void LoadBranchContextMenuItem_Click(object sender, EventArgs e)
+		private TasBranch CreateBranch()
 		{
-			LoadSelectedBranch();
+			// TODO: don't use Global.Emulator
+			return new TasBranch
+			{
+				Frame = Global.Emulator.Frame,
+				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
+				InputLog = Movie.InputLog.Clone(),
+				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
+				LagLog = Movie.TasLagLog.Clone(),
+				ChangeLog = new TasMovieChangeLog(Movie),
+				TimeStamp = DateTime.Now,
+				Markers = Movie.Markers.DeepClone(),
+				UserText = ""
+			};
+		}
+
+		private void LoadBranch(TasBranch branch)
+		{
+			Tastudio.CurrentTasMovie.LoadBranch(branch);
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
+			Tastudio.LoadState(stateInfo);
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());
+			GlobalWin.MainForm.PauseEmulator();
+			GlobalWin.MainForm.PauseOnFrame = null;
+			Tastudio.RefreshDialog();
+		}
+
+		private void UpdateBranch(TasBranch branch)
+		{
+			Movie.UpdateBranch(branch, CreateBranch());
+			BranchView.Refresh();
+			Tastudio.RefreshDialog();
 		}
 
 		private void LoadSelectedBranch()
@@ -159,6 +190,40 @@ namespace BizHawk.Client.EmuHawk
 			RemoveBranchContextMenuItem.Enabled =
 				LoadBranchContextMenuItem.Enabled =
 				SelectedBranch != null;
+		}
+
+		private void AddContextMenu_Click(object sender, EventArgs e)
+		{
+			Branch();
+		}
+
+		private void AddBranchWithTextToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Branch();
+			Tastudio.CallEditBranchTextPopUp(Movie.CurrentBranch);
+		}
+
+		private void LoadBranchContextMenuItem_Click(object sender, EventArgs e)
+		{
+			LoadSelectedBranch();
+		}
+
+		private void UpdateBranchContextMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedBranch != null)
+			{
+				UpdateBranch(SelectedBranch);
+				Movie.CurrentBranch = BranchView.SelectedRows.First();
+			}
+		}
+
+		private void EditBranchTextToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedBranch != null)
+			{
+				int index = BranchView.SelectedRows.First();
+				Tastudio.CallEditBranchTextPopUp(index);
+			}
 		}
 
 		private void RemoveBranchContextMenuItem_Click(object sender, EventArgs e)
@@ -188,18 +253,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadBranch(TasBranch branch)
-		{
-			Tastudio.CurrentTasMovie.LoadBranch(branch);
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
-			Tastudio.LoadState(stateInfo);
-			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());
-			GlobalWin.MainForm.PauseEmulator();
-			GlobalWin.MainForm.PauseOnFrame = null;
-			Tastudio.RefreshDialog();
-		}
-
 		public void UpdateValues()
 		{
 			BranchView.RowCount = Movie.BranchCount;
@@ -213,30 +266,68 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.Refresh();
 		}
 
-		public void Branch()
+		private void ScreenShotPopUp(TasBranch branch, int index)
 		{
-			TasBranch branch = CreateBranch();
-			Movie.AddBranch(branch);
-			BranchView.RowCount = Movie.BranchCount;
-			Movie.CurrentBranch = Movie.BranchCount - 1;
-			BranchView.Refresh();
-			Tastudio.RefreshDialog();
+			Point locationOnForm = this.FindForm().PointToClient(
+				this.Parent.PointToScreen(this.Location));
+
+			int x = locationOnForm.X - Tastudio.ScreenshotControl.Width;
+			int y = locationOnForm.Y; // keep consistent height, helps when conparing screenshots
+
+			if (x < 1) x = 1;
+
+			Tastudio.ScreenshotControl.Location = new Point(x, y);
+			Tastudio.ScreenshotControl.Visible = true;
+			Tastudio.ScreenshotControl.Branch = branch;
+			Tastudio.ScreenshotControl.RecalculateHeight();
+			Tastudio.ScreenshotControl.Refresh();
 		}
 
-		private TasBranch CreateBranch()
+		private void CloseScreenShotPopUp()
 		{
-			// TODO: don't use Global.Emulator
-			return new TasBranch
+			Tastudio.ScreenshotControl.Visible = false;
+		}
+
+		private void BranchView_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
 			{
-				Frame = Global.Emulator.Frame,
-				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
-				InputLog = Movie.InputLog.Clone(),
-				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
-				LagLog = Movie.TasLagLog.Clone(),
-				ChangeLog = new TasMovieChangeLog(Movie),
-				TimeStamp = DateTime.Now,
-				Markers = Movie.Markers.DeepClone()
-			};
+				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
+					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+				{
+					BranchView.DragCurrentCell();
+				}
+			}
+		}
+
+		private void BranchView_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				BranchView.ReleaseCurrentCell();
+			}
+		}
+
+		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			LoadSelectedBranch();
+		}
+
+		private void BranchView_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (BranchView.CurrentCell == null || !BranchView.CurrentCell.RowIndex.HasValue || BranchView.CurrentCell.Column == null)
+			{
+				CloseScreenShotPopUp();
+			}
+			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
+			{
+				BranchView.Refresh();
+			}
+		}
+
+		private void BranchView_MouseLeave(object sender, EventArgs e)
+		{
+			// Tastudio.ScreenshotControl.Visible = false;
 		}
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
@@ -255,82 +346,6 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				CloseScreenShotPopUp();
-			}
-		}
-
-		private void BranchView_MouseMove(object sender, MouseEventArgs e)
-		{
-			if (BranchView.CurrentCell == null || !BranchView.CurrentCell.RowIndex.HasValue || BranchView.CurrentCell.Column == null)
-			{
-				CloseScreenShotPopUp();
-			}
-			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
-			{
-				BranchView.Refresh();
-			}
-		}
-
-		private void CloseScreenShotPopUp()
-		{
-			Tastudio.ScreenshotControl.Visible = false;
-		}
-
-		private void BranchView_MouseLeave(object sender, EventArgs e)
-		{
-			// Tastudio.ScreenshotControl.Visible = false;
-		}
-
-		private void ScreenShotPopUp(TasBranch branch, int index)
-		{
-			Point locationOnForm = this.FindForm().PointToClient(
-				this.Parent.PointToScreen(this.Location));
-
-			int x = locationOnForm.X - Tastudio.ScreenshotControl.Width;
-			int y = locationOnForm.Y; // keep consistent height, helps when conparing screenshots
-
-			if (x < 1) x = 1;
-
-			Tastudio.ScreenshotControl.UserText = "";
-			Tastudio.ScreenshotControl.RecalculatePadding();
-			Tastudio.ScreenshotControl.Location = new Point(x, y);
-			Tastudio.ScreenshotControl.Visible = true;
-			Tastudio.ScreenshotControl.Branch = branch;
-			Tastudio.ScreenshotControl.Refresh();
-		}
-
-		private void UpdateBranchContextMenuItem_Click(object sender, EventArgs e)
-		{
-			if (SelectedBranch != null)
-			{
-				UpdateBranch(SelectedBranch);
-				Movie.CurrentBranch = BranchView.SelectedRows.First();
-			}
-		}
-
-		private void UpdateBranch(TasBranch branch)
-		{
-			Movie.UpdateBranch(branch, CreateBranch());
-			BranchView.Refresh();
-			Tastudio.RefreshDialog();
-		}
-
-		private void BranchView_MouseDown(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
-					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
-				{
-					BranchView.DragCurrentCell();
-				}
-			}
-		}
-
-		private void BranchView_MouseUp(object sender, MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				BranchView.ReleaseCurrentCell();
 			}
 		}
 

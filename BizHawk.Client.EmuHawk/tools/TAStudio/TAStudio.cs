@@ -755,6 +755,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void CallEditBranchTextPopUp(int index)
+		{
+			TasBranch branch = CurrentTasMovie.GetBranch(index);
+			if (branch == null)
+				return;
+
+			InputPrompt i = new InputPrompt
+			{
+				Text = "Text for branch " + index,
+				TextInputType = InputPrompt.InputType.Text,
+				Message = "Enter a message",
+				InitialValue = branch.UserText
+			};
+
+			var result = i.ShowHawkDialog();
+
+			if (result == DialogResult.OK)
+			{
+				branch.UserText = i.PromptText;
+				BookMarkControl.UpdateValues();
+			}
+		}
+
 		private void UpdateChangesIndicator()
 		{
 			// TODO

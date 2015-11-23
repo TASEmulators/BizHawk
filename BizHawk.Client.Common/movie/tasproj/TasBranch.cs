@@ -19,6 +19,7 @@ namespace BizHawk.Client.Common
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
 		public Guid UniqueIdentifier { get; set; }
+		public string UserText { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>
@@ -44,6 +45,7 @@ namespace BizHawk.Client.Common
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
+			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 			foreach (var b in this)
 			{
 				bs.PutLump(nheader, delegate(TextWriter tw)
@@ -85,12 +87,18 @@ namespace BizHawk.Client.Common
 					tw.WriteLine(b.Markers.ToString());
 				});
 
+				bs.PutLump(nusertext, delegate(TextWriter tw)
+				{
+					tw.WriteLine(b.UserText);
+				});
+
 				nheader.Increment();
 				ncore.Increment();
 				ninput.Increment();
 				nframebuffer.Increment();
 				nlaglog.Increment();
 				nmarkers.Increment();
+				nusertext.Increment();
 			}
 		}
 
@@ -102,6 +110,7 @@ namespace BizHawk.Client.Common
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
+			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 
 			Clear();
 
@@ -179,6 +188,19 @@ namespace BizHawk.Client.Common
 					}
 				});
 
+
+				bl.GetLump(nusertext, false, delegate(TextReader tr)
+				{
+					string line;
+					if ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							b.UserText = line;
+						}
+					}
+				});
+
 				Add(b);
 
 				nheader.Increment();
@@ -187,6 +209,7 @@ namespace BizHawk.Client.Common
 				nframebuffer.Increment();
 				nlaglog.Increment();
 				nmarkers.Increment();
+				nusertext.Increment();
 			}
 		}
 	}
