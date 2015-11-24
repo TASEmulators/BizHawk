@@ -1686,9 +1686,6 @@
     <None Include="images\tastudio\icon_anchor_lag.png" />
     <None Include="images\tastudio\icon_anchor.png" />
     <None Include="images\tastudio\icon_marker.png" />
-    <None Include="images\tastudio\anchor_marker.png" />
-    <None Include="images\tastudio\anchor_lag.png" />
-    <None Include="images\tastudio\anchor.png" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
@@ -1993,6 +1990,7 @@
     <None Include="images\ControllerImages\AppleIIKeyboard.png" />
     <None Include="images\BlankCursor.cur" />
     <None Include="images\cdlogger.ico" />
+    <None Include="images\AddEdit.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

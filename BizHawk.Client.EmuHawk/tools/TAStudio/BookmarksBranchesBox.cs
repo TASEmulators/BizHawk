@@ -188,27 +188,28 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateBranchContextMenuItem.Enabled =
 			RemoveBranchContextMenuItem.Enabled =
-				LoadBranchContextMenuItem.Enabled =
+			LoadBranchContextMenuItem.Enabled =
+			EditBranchTextContextMenuItem.Enabled =
 				SelectedBranch != null;
 		}
 
-		private void AddContextMenu_Click(object sender, EventArgs e)
+		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
 		}
 
-		private void AddBranchWithTextToolStripMenuItem_Click(object sender, EventArgs e)
+		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
 			Tastudio.CallEditBranchTextPopUp(Movie.CurrentBranch);
 		}
 
-		private void LoadBranchContextMenuItem_Click(object sender, EventArgs e)
+		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadSelectedBranch();
 		}
 
-		private void UpdateBranchContextMenuItem_Click(object sender, EventArgs e)
+		private void UpdateBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SelectedBranch != null)
 			{
@@ -226,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RemoveBranchContextMenuItem_Click(object sender, EventArgs e)
+		private void RemoveBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SelectedBranch != null)
 			{
@@ -290,7 +291,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+			UpdateBranchButton.Enabled =
+			RemoveBranchButton.Enabled =
+			LoadBranchButton.Enabled =
+			EditBranchTextButton.Enabled =
+				SelectedBranch != null;
+			if (e.Button == MouseButtons.Left)
 			{
 				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell
 					&& BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
