@@ -866,37 +866,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region "Marker Control right-click menu"
-		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
-		{
-			EditMarkerContextMenuItem.Enabled =
-			RemoveMarkerContextMenuItem.Enabled =
-			ScrollToMarkerToolStripMenuItem.Enabled =
-				MarkerControl.MarkerInputRoll.AnyRowsSelected;
-		}
-
-		private void ScrollToMarkerToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			SetVisibleIndex(MarkerControl.SelectedMarkerFrame());
-			RefreshTasView();
-		}
-
-		private void EditMarkerContextMenuItem_Click(object sender, EventArgs e)
-		{
-			MarkerControl.EditMarker();
-		}
-
-		private void AddMarkerContextMenuItem_Click(object sender, EventArgs e)
-		{
-			MarkerControl.AddMarker();
-		}
-
-		private void RemoveMarkerContextMenuItem_Click(object sender, EventArgs e)
-		{
-			MarkerControl.RemoveMarker();
-		}
-		#endregion
-
 		private bool AutoAdjustInput()
 		{
 			TasMovieRecord lagLog = CurrentTasMovie[Emulator.Frame - 1]; // Minus one because get frame is +1;

@@ -1683,6 +1683,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\ScrollTo.png" />
     <None Include="images\tastudio\icon_anchor_lag.png" />
     <None Include="images\tastudio\icon_anchor.png" />
     <None Include="images\tastudio\icon_marker.png" />
@@ -1991,6 +1992,7 @@
     <None Include="images\BlankCursor.cur" />
     <None Include="images\cdlogger.ico" />
     <None Include="images\AddEdit.png" />
+    <None Include="images\JumpTo.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

@@ -36,7 +36,6 @@
 			this.AddWithTextBranchButton = new System.Windows.Forms.Button();
 			this.AddBranchButton = new System.Windows.Forms.Button();
 			this.LoadBranchButton = new System.Windows.Forms.Button();
-			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BranchesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.AddBranchContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.AddBranchWithTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +45,7 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BookmarksBranchesGroupBox.SuspendLayout();
 			this.BranchesContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -71,9 +71,10 @@
 			// 
 			// RemoveBranchButton
 			// 
+			this.RemoveBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.RemoveBranchButton.Enabled = false;
 			this.RemoveBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
-			this.RemoveBranchButton.Location = new System.Drawing.Point(164, 19);
+			this.RemoveBranchButton.Location = new System.Drawing.Point(161, 249);
 			this.RemoveBranchButton.Name = "RemoveBranchButton";
 			this.RemoveBranchButton.Size = new System.Drawing.Size(25, 23);
 			this.RemoveBranchButton.TabIndex = 6;
@@ -83,9 +84,10 @@
 			// 
 			// EditBranchTextButton
 			// 
+			this.EditBranchTextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.EditBranchTextButton.Enabled = false;
 			this.EditBranchTextButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
-			this.EditBranchTextButton.Location = new System.Drawing.Point(133, 19);
+			this.EditBranchTextButton.Location = new System.Drawing.Point(130, 249);
 			this.EditBranchTextButton.Name = "EditBranchTextButton";
 			this.EditBranchTextButton.Size = new System.Drawing.Size(25, 23);
 			this.EditBranchTextButton.TabIndex = 5;
@@ -95,9 +97,10 @@
 			// 
 			// UpdateBranchButton
 			// 
+			this.UpdateBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.UpdateBranchButton.Enabled = false;
 			this.UpdateBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.reboot;
-			this.UpdateBranchButton.Location = new System.Drawing.Point(102, 19);
+			this.UpdateBranchButton.Location = new System.Drawing.Point(99, 249);
 			this.UpdateBranchButton.Name = "UpdateBranchButton";
 			this.UpdateBranchButton.Size = new System.Drawing.Size(25, 23);
 			this.UpdateBranchButton.TabIndex = 4;
@@ -107,8 +110,9 @@
 			// 
 			// AddWithTextBranchButton
 			// 
+			this.AddWithTextBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AddWithTextBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AddEdit;
-			this.AddWithTextBranchButton.Location = new System.Drawing.Point(40, 19);
+			this.AddWithTextBranchButton.Location = new System.Drawing.Point(37, 249);
 			this.AddWithTextBranchButton.Name = "AddWithTextBranchButton";
 			this.AddWithTextBranchButton.Size = new System.Drawing.Size(25, 23);
 			this.AddWithTextBranchButton.TabIndex = 3;
@@ -118,8 +122,9 @@
 			// 
 			// AddBranchButton
 			// 
+			this.AddBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AddBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
-			this.AddBranchButton.Location = new System.Drawing.Point(9, 19);
+			this.AddBranchButton.Location = new System.Drawing.Point(6, 249);
 			this.AddBranchButton.Name = "AddBranchButton";
 			this.AddBranchButton.Size = new System.Drawing.Size(25, 23);
 			this.AddBranchButton.TabIndex = 2;
@@ -129,50 +134,16 @@
 			// 
 			// LoadBranchButton
 			// 
+			this.LoadBranchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.LoadBranchButton.Enabled = false;
 			this.LoadBranchButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Debugger;
-			this.LoadBranchButton.Location = new System.Drawing.Point(71, 19);
+			this.LoadBranchButton.Location = new System.Drawing.Point(68, 249);
 			this.LoadBranchButton.Name = "LoadBranchButton";
 			this.LoadBranchButton.Size = new System.Drawing.Size(25, 23);
 			this.LoadBranchButton.TabIndex = 1;
 			this.toolTip1.SetToolTip(this.LoadBranchButton, "Load Branch");
 			this.LoadBranchButton.UseVisualStyleBackColor = true;
 			this.LoadBranchButton.Click += new System.EventHandler(this.LoadBranchToolStripMenuItem_Click);
-			// 
-			// BranchView
-			// 
-			this.BranchView.AllowColumnReorder = false;
-			this.BranchView.AllowColumnResize = false;
-			this.BranchView.AlwaysScroll = false;
-			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BranchView.CellHeightPadding = 0;
-			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
-			this.BranchView.denoteMarkersWithBGColor = false;
-			this.BranchView.denoteMarkersWithIcons = false;
-			this.BranchView.denoteStatesWithBGColor = false;
-			this.BranchView.denoteStatesWithIcons = false;
-			this.BranchView.FullRowSelect = true;
-			this.BranchView.HideWasLagFrames = false;
-			this.BranchView.HorizontalOrientation = false;
-			this.BranchView.HoverInterval = 500;
-			this.BranchView.LagFramesToHide = 0;
-			this.BranchView.Location = new System.Drawing.Point(6, 49);
-			this.BranchView.MaxCharactersInHorizontal = 1;
-			this.BranchView.MultiSelect = false;
-			this.BranchView.Name = "BranchView";
-			this.BranchView.RowCount = 0;
-			this.BranchView.ScrollSpeed = 13;
-			this.BranchView.Size = new System.Drawing.Size(186, 223);
-			this.BranchView.TabIndex = 0;
-			this.BranchView.CellHovered += new BizHawk.Client.EmuHawk.InputRoll.HoverEventHandler(this.BranchView_CellHovered);
-			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);
-			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
-			this.BranchView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDown);
-			this.BranchView.MouseLeave += new System.EventHandler(this.BranchView_MouseLeave);
-			this.BranchView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseMove);
-			this.BranchView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseUp);
 			// 
 			// BranchesContextMenu
 			// 
@@ -240,6 +211,41 @@
 			this.RemoveBranchContextMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.RemoveBranchContextMenuItem.Text = "Remove";
 			this.RemoveBranchContextMenuItem.Click += new System.EventHandler(this.RemoveBranchToolStripMenuItem_Click);
+			// 
+			// BranchView
+			// 
+			this.BranchView.AllowColumnReorder = false;
+			this.BranchView.AllowColumnResize = false;
+			this.BranchView.AlwaysScroll = false;
+			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.BranchView.CellHeightPadding = 0;
+			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
+			this.BranchView.denoteMarkersWithBGColor = false;
+			this.BranchView.denoteMarkersWithIcons = false;
+			this.BranchView.denoteStatesWithBGColor = false;
+			this.BranchView.denoteStatesWithIcons = false;
+			this.BranchView.FullRowSelect = true;
+			this.BranchView.HideWasLagFrames = false;
+			this.BranchView.HorizontalOrientation = false;
+			this.BranchView.HoverInterval = 500;
+			this.BranchView.LagFramesToHide = 0;
+			this.BranchView.Location = new System.Drawing.Point(6, 19);
+			this.BranchView.MaxCharactersInHorizontal = 1;
+			this.BranchView.MultiSelect = false;
+			this.BranchView.Name = "BranchView";
+			this.BranchView.RowCount = 0;
+			this.BranchView.ScrollSpeed = 13;
+			this.BranchView.Size = new System.Drawing.Size(186, 224);
+			this.BranchView.TabIndex = 0;
+			this.BranchView.CellHovered += new BizHawk.Client.EmuHawk.InputRoll.HoverEventHandler(this.BranchView_CellHovered);
+			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);
+			this.BranchView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDoubleClick);
+			this.BranchView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseDown);
+			this.BranchView.MouseLeave += new System.EventHandler(this.BranchView_MouseLeave);
+			this.BranchView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseMove);
+			this.BranchView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BranchView_MouseUp);
 			// 
 			// BookmarksBranchesBox
 			// 

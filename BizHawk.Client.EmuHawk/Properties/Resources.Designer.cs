@@ -564,6 +564,13 @@ namespace BizHawk.Client.EmuHawk.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap JumpTo {
+            get {
+                object obj = ResourceManager.GetObject("JumpTo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap kitchensink {
             get {
                 object obj = ResourceManager.GetObject("kitchensink", resourceCulture);
@@ -909,6 +916,13 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap Scan {
             get {
                 object obj = ResourceManager.GetObject("Scan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScrollTo {
+            get {
+                object obj = ResourceManager.GetObject("ScrollTo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
