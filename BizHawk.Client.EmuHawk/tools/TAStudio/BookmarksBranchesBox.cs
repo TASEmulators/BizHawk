@@ -116,6 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Branch()
 		{
 			TasBranch branch = CreateBranch();
+			Movie.NewBranchText = ""; // reset every time it's used
 			Movie.AddBranch(branch);
 			BranchView.RowCount = Movie.BranchCount;
 			Movie.CurrentBranch = Movie.BranchCount - 1;
@@ -149,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 				ChangeLog = new TasMovieChangeLog(Movie),
 				TimeStamp = DateTime.Now,
 				Markers = Movie.Markers.DeepClone(),
-				UserText = ""
+				UserText = Movie.NewBranchText
 			};
 		}
 

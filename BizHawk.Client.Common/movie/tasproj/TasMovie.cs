@@ -85,6 +85,7 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
+		public string NewBranchText = "";
 		public int CurrentBranch { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
 		public TasBranch GetBranch(int index)
