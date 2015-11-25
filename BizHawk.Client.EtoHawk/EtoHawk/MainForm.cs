@@ -13,6 +13,8 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using BizHawk.Emulation.Cores.Nintendo.NES;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EtoHawk
 {
@@ -755,7 +757,7 @@ namespace BizHawk.Client.EtoHawk
                     /*if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
                     {
                         GlobalWin.Tools.Load<TI83KeyPad>();
-                    }
+                    }*/
 
                     if (loader.LoadedEmulator is NES)
                     {
@@ -778,7 +780,7 @@ namespace BizHawk.Client.EtoHawk
                         {
                             Global.Game.Status = qns.BootGodStatus.Value;
                         }
-                    }*/
+                    }
 
                     Global.Rewinder.ResetRewindBuffer();
 

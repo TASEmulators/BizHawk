@@ -19,12 +19,18 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -f -n -R &quot;${ProjectDir}/../../output/&quot; &quot;${TargetDir}/EtoHawk.Mac.app/Contents/MonoBundle/&quot;" />
+      </CustomCommands>
+    </CustomCommands>
     <UseRefCounting>false</UseRefCounting>
     <UseSGen>false</UseSGen>
     <IncludeMonoRuntime>false</IncludeMonoRuntime>
     <EnablePackageSigning>false</EnablePackageSigning>
     <EnableCodeSigning>false</EnableCodeSigning>
     <CreatePackage>false</CreatePackage>
+    <Profiling>false</Profiling>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -33,6 +39,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -f -n -R &quot;${ProjectDir}/../../output/&quot; &quot;${TargetDir}/EtoHawk.Mac.app/Contents/MonoBundle/&quot;" />
+      </CustomCommands>
+    </CustomCommands>
     <LinkMode>SdkOnly</LinkMode>
     <UseRefCounting>false</UseRefCounting>
     <UseSGen>false</UseSGen>
@@ -41,6 +52,7 @@
     <CodeSigningKey>Developer ID Application</CodeSigningKey>
     <EnableCodeSigning>true</EnableCodeSigning>
     <EnablePackageSigning>false</EnablePackageSigning>
+    <Profiling>false</Profiling>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -49,6 +61,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -f -n -R &quot;${ProjectDir}/../../output/&quot; &quot;${TargetDir}/EtoHawk.Mac.app/Contents/MonoBundle/&quot;" />
+      </CustomCommands>
+    </CustomCommands>
     <LinkMode>SdkOnly</LinkMode>
     <UseRefCounting>false</UseRefCounting>
     <UseSGen>false</UseSGen>
@@ -58,21 +75,22 @@
     <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
     <EnableCodeSigning>true</EnableCodeSigning>
     <EnablePackageSigning>true</EnablePackageSigning>
+    <Profiling>false</Profiling>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Eto">
-      <HintPath>..\packages\Eto.Forms.2.0.7\lib\net45\Eto.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoMac">
-      <HintPath>..\packages\Eto.Platform.Mac.2.0.7\lib\net45\MonoMac.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto.Mac">
-      <HintPath>..\packages\Eto.Platform.Mac.2.0.7\lib\net45\Eto.Mac.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\..\References\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto">
+      <HintPath>..\packages\Eto.Forms.2.1.0\lib\net45\Eto.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMac">
+      <HintPath>..\packages\Eto.Platform.Mac.2.1.0\lib\net45\MonoMac.dll</HintPath>
+    </Reference>
+    <Reference Include="Eto.Mac">
+      <HintPath>..\packages\Eto.Platform.Mac.2.1.0\lib\net45\Eto.Mac.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
