@@ -30,12 +30,12 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			this.MarkerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.JumpToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.JumpToMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScrollToMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.EditMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AddMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.EditMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AddMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.RemoveMarkerContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveMarkerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.JumpToMarkerButton = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.EditMarkerButton = new System.Windows.Forms.Button();
@@ -49,23 +49,23 @@
 			// MarkerContextMenu
 			// 
 			this.MarkerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.JumpToToolStripMenuItem,
+            this.JumpToMarkerToolStripMenuItem,
             this.ScrollToMarkerToolStripMenuItem,
-            this.EditMarkerContextMenuItem,
-            this.AddMarkerContextMenuItem,
+            this.EditMarkerToolStripMenuItem,
+            this.AddMarkerToolStripMenuItem,
             this.toolStripSeparator1,
-            this.RemoveMarkerContextMenuItem});
+            this.RemoveMarkerToolStripMenuItem});
 			this.MarkerContextMenu.Name = "MarkerContextMenu";
 			this.MarkerContextMenu.Size = new System.Drawing.Size(126, 120);
 			this.MarkerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MarkerContextMenu_Opening);
 			// 
-			// JumpToToolStripMenuItem
+			// JumpToMarkerToolStripMenuItem
 			// 
-			this.JumpToToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
-			this.JumpToToolStripMenuItem.Name = "JumpToToolStripMenuItem";
-			this.JumpToToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.JumpToToolStripMenuItem.Text = "Jump To";
-			this.JumpToToolStripMenuItem.Click += new System.EventHandler(this.JumpToMarkerToolStripMenuItem_Click);
+			this.JumpToMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
+			this.JumpToMarkerToolStripMenuItem.Name = "JumpToMarkerToolStripMenuItem";
+			this.JumpToMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.JumpToMarkerToolStripMenuItem.Text = "Jump To";
+			this.JumpToMarkerToolStripMenuItem.Click += new System.EventHandler(this.JumpToMarkerToolStripMenuItem_Click);
 			// 
 			// ScrollToMarkerToolStripMenuItem
 			// 
@@ -75,34 +75,34 @@
 			this.ScrollToMarkerToolStripMenuItem.Text = "Scroll To";
 			this.ScrollToMarkerToolStripMenuItem.Click += new System.EventHandler(this.ScrollToMarkerToolStripMenuItem_Click);
 			// 
-			// EditMarkerContextMenuItem
+			// EditMarkerToolStripMenuItem
 			// 
-			this.EditMarkerContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
-			this.EditMarkerContextMenuItem.Name = "EditMarkerContextMenuItem";
-			this.EditMarkerContextMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.EditMarkerContextMenuItem.Text = "Edit";
-			this.EditMarkerContextMenuItem.Click += new System.EventHandler(this.EditMarkerToolStripMenuItem_Click);
+			this.EditMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
+			this.EditMarkerToolStripMenuItem.Name = "EditMarkerToolStripMenuItem";
+			this.EditMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.EditMarkerToolStripMenuItem.Text = "Edit";
+			this.EditMarkerToolStripMenuItem.Click += new System.EventHandler(this.EditMarkerToolStripMenuItem_Click);
 			// 
-			// AddMarkerContextMenuItem
+			// AddMarkerToolStripMenuItem
 			// 
-			this.AddMarkerContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
-			this.AddMarkerContextMenuItem.Name = "AddMarkerContextMenuItem";
-			this.AddMarkerContextMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AddMarkerContextMenuItem.Text = "Add";
-			this.AddMarkerContextMenuItem.Click += new System.EventHandler(this.AddMarkerToolStripMenuItem_Click);
+			this.AddMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
+			this.AddMarkerToolStripMenuItem.Name = "AddMarkerToolStripMenuItem";
+			this.AddMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AddMarkerToolStripMenuItem.Text = "Add";
+			this.AddMarkerToolStripMenuItem.Click += new System.EventHandler(this.AddMarkerToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
 			// 
-			// RemoveMarkerContextMenuItem
+			// RemoveMarkerToolStripMenuItem
 			// 
-			this.RemoveMarkerContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
-			this.RemoveMarkerContextMenuItem.Name = "RemoveMarkerContextMenuItem";
-			this.RemoveMarkerContextMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.RemoveMarkerContextMenuItem.Text = "Remove";
-			this.RemoveMarkerContextMenuItem.Click += new System.EventHandler(this.RemoveMarkerToolStripMenuItem_Click);
+			this.RemoveMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
+			this.RemoveMarkerToolStripMenuItem.Name = "RemoveMarkerToolStripMenuItem";
+			this.RemoveMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.RemoveMarkerToolStripMenuItem.Text = "Remove";
+			this.RemoveMarkerToolStripMenuItem.Click += new System.EventHandler(this.RemoveMarkerToolStripMenuItem_Click);
 			// 
 			// JumpToMarkerButton
 			// 
@@ -221,16 +221,16 @@
 		private InputRoll MarkerView;
 		private System.Windows.Forms.Button AddMarkerButton;
 		private System.Windows.Forms.Button RemoveMarkerButton;
-		private System.Windows.Forms.ContextMenuStrip MarkerContextMenu;
-		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem EditMarkerContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AddMarkerContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerContextMenuItem;
-		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button JumpToMarkerButton;
 		private System.Windows.Forms.Button EditMarkerButton;
 		private System.Windows.Forms.Button ScrollToMarkerButton;
-		private System.Windows.Forms.ToolStripMenuItem JumpToToolStripMenuItem;
+		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ContextMenuStrip MarkerContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem ScrollToMarkerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem EditMarkerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem AddMarkerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem JumpToMarkerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 
 	}

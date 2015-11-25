@@ -715,69 +715,6 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text = message;
 		}
 
-		public void CallAddMarkerPopUp(int? frame = null)
-		{
-			var markerFrame = frame ?? TasView.LastSelectedIndex ?? Emulator.Frame;
-			InputPrompt i = new InputPrompt
-			{
-				Text = "Marker for frame " + markerFrame,
-				TextInputType = InputPrompt.InputType.Text,
-				Message = "Enter a message",
-				InitialValue = CurrentTasMovie.Markers.IsMarker(markerFrame) ? CurrentTasMovie.Markers.PreviousOrCurrent(markerFrame).Message : ""
-			};
-
-			var result = i.ShowHawkDialog();
-
-			if (result == DialogResult.OK)
-			{
-				CurrentTasMovie.Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
-				MarkerControl.UpdateValues();
-			}
-		}
-
-		public void CallEditMarkerPopUp(TasMovieMarker marker)
-		{
-			var markerFrame = marker.Frame;
-			InputPrompt i = new InputPrompt
-			{
-				Text = "Marker for frame " + markerFrame,
-				TextInputType = InputPrompt.InputType.Text,
-				Message = "Enter a message",
-				InitialValue = CurrentTasMovie.Markers.IsMarker(markerFrame) ? CurrentTasMovie.Markers.PreviousOrCurrent(markerFrame).Message : ""
-			};
-
-			var result = i.ShowHawkDialog();
-
-			if (result == DialogResult.OK)
-			{
-				marker.Message = i.PromptText;
-				MarkerControl.UpdateValues();
-			}
-		}
-
-		public void CallEditBranchTextPopUp(int index)
-		{
-			TasBranch branch = CurrentTasMovie.GetBranch(index);
-			if (branch == null)
-				return;
-
-			InputPrompt i = new InputPrompt
-			{
-				Text = "Text for branch " + index,
-				TextInputType = InputPrompt.InputType.Text,
-				Message = "Enter a message",
-				InitialValue = branch.UserText
-			};
-
-			var result = i.ShowHawkDialog();
-
-			if (result == DialogResult.OK)
-			{
-				branch.UserText = i.PromptText;
-				BookMarkControl.UpdateValues();
-			}
-		}
-
 		private void UpdateChangesIndicator()
 		{
 			// TODO

@@ -585,7 +585,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var index in TasView.SelectedRows)
 			{
-				CallAddMarkerPopUp(index);
+				MarkerControl.AddMarkerPopUp(index);
 			}
 		}
 

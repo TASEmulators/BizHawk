@@ -10,6 +10,7 @@ using System.Windows.Media;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Common;
+using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -201,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
-			Tastudio.CallEditBranchTextPopUp(Movie.CurrentBranch);
+			EditBranchTextPopUp(Movie.CurrentBranch);
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -223,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
-				Tastudio.CallEditBranchTextPopUp(index);
+				EditBranchTextPopUp(index);
 			}
 		}
 
@@ -265,6 +266,29 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.DeselectAll();
 			BranchView.RowCount = Movie.BranchCount;
 			BranchView.Refresh();
+		}
+
+		public void EditBranchTextPopUp(int index)
+		{
+			TasBranch branch = Movie.GetBranch(index);
+			if (branch == null)
+				return;
+
+			InputPrompt i = new InputPrompt
+			{
+				Text = "Text for branch " + index,
+				TextInputType = InputPrompt.InputType.Text,
+				Message = "Enter a message",
+				InitialValue = branch.UserText
+			};
+
+			var result = i.ShowHawkDialog();
+
+			if (result == DialogResult.OK)
+			{
+				branch.UserText = i.PromptText;
+				UpdateValues();
+			}
 		}
 
 		private void ScreenShotPopUp(TasBranch branch, int index)
