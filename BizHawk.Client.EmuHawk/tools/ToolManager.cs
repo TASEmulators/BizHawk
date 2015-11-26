@@ -562,7 +562,8 @@ namespace BizHawk.Client.EmuHawk
 			IToolForm tool;
 
 			//Specific case for custom tools
-			//TODO: Use AppDomain in order to be able to unload the assembly			
+			//TODO: Use AppDomain in order to be able to unload the assembly
+			//Hard stuff as we need a proxy object that inherit from MarshalByRefObject.			
 			if (toolType == typeof(IExternalToolForm))
 			{
 				if (MessageBox.Show(@"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
@@ -571,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 					try
 					{
 						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
-						if (tool == null)
+                        if (tool == null)
 						{
 							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							return null;
@@ -683,7 +684,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var tool = Assembly
-					.GetAssembly(typeof(IToolForm))
+					.GetExecutingAssembly()
 					.GetTypes()
 					.FirstOrDefault(type => type == t);
 

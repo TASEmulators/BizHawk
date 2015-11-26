@@ -3,6 +3,8 @@
 /BizHawk.Client.Common/bin
 /BizHawk.Client.Common/obj
 /BizHawk.Client.Common/Properties/svnrev.cs
+/BizHawk.Client.ApiHawk/bin
+/BizHawk.Client.ApiHawk/obj
 /BizHawk.Client.DBMan/obj
 /BizHawk.Client.DiscoHawk/obj
 /BizHawk.Client.DiscoHawk/Properties/svnrev.cs
@@ -247,7 +249,7 @@
 /References/*.xml
 /output/ELFSharp.dll
 /output/dll/ELFSharp.dll
-/output/ExternalTools/*.*
+/output/ExternalTools
 *.opensdf
 *.user
 *.suo
@@ -263,3 +265,4 @@
 /LuaInterface/Lua/src/.libs
 /LuaInterface/Lua/src/Release-LUAPERKS
 /LuaInterface/Release-LUAPERKS
+output/BizHawk.Client.ApiHawk.dll

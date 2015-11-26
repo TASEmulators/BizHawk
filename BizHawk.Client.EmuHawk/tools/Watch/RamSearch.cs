@@ -1511,7 +1511,7 @@ namespace BizHawk.Client.EmuHawk
 				var sb = new StringBuilder();
 				foreach (var watch in SelectedItems)
 				{
-					sb.AppendLine(Watch.ToString(watch, _searches.Domain));
+					sb.AppendLine(watch.ToString());
 				}
 
 				if (sb.Length > 0)

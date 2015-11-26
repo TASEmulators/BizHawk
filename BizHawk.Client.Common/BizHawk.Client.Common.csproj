@@ -232,9 +232,16 @@
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
+    <Compile Include="tools\Watch\ByteWatch.cs" />
+    <Compile Include="tools\Watch\DisplayType.cs" />
+    <Compile Include="tools\Watch\DwordWatch.cs" />
+    <Compile Include="tools\Watch\PreviousType.cs" />
     <Compile Include="tools\RamSearchEngine.cs" />
-    <Compile Include="tools\Watch.cs" />
-    <Compile Include="tools\WatchList.cs" />
+    <Compile Include="tools\Watch\SeparatorWatch.cs" />
+    <Compile Include="tools\Watch\Watch.cs" />
+    <Compile Include="tools\Watch\WatchList.cs" />
+    <Compile Include="tools\Watch\WatchSize.cs" />
+    <Compile Include="tools\Watch\WordWatch.cs" />
     <Compile Include="XmlGame.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -267,6 +274,7 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
