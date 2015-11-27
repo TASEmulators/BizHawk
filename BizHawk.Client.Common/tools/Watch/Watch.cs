@@ -25,6 +25,27 @@ namespace BizHawk.Client.Common
 		#region Static
 
 		/// <summary>
+		/// Gets a list of Available types for specific <see cref="WatchSize"/>
+		/// </summary>
+		/// <param name="size">Desired size</param>
+		/// <returns>An array of <see cref="DisplayType"/> that ca be used to be displayed</returns>
+		public static List<DisplayType> AvailableTypes(WatchSize size)
+		{
+			switch (size)
+			{
+				default:
+				case WatchSize.Separator:
+					return SeparatorWatch.ValidTypes;
+				case WatchSize.Byte:
+					return ByteWatch.ValidTypes;
+				case WatchSize.Word:
+					return WordWatch.ValidTypes;
+				case WatchSize.DWord:
+					return DWordWatch.ValidTypes;
+			}
+		}
+
+		/// <summary>
 		/// Generate a <see cref="Watch"/> from a given string
 		/// String is tab separate
 		/// </summary>
@@ -55,7 +76,7 @@ namespace BizHawk.Client.Common
 		/// </list>
 		/// </param>
 		/// <param name="domains"><see cref="Watch"/>'s memory domain</param>
-		/// <returns></returns>
+		/// <returns>A brand new <see cref="Watch"/></returns>
 		public static Watch FromString(string line, IMemoryDomains domains)
 		{
 			string[] parts = line.Split(new char[] { '\t' }, 6);
@@ -94,7 +115,210 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Generate a new <see cref="Watch"/> instance
+		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
+		/// </summary>
+		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
+		/// <param name="address">The address into the <see cref="MemoryDomain"/></param>
+		/// <param name="size">The size</param>
+		/// <param name="type">How the watch will be displayed</param>
+		/// <param name="bigendian">Endianess (true for big endian)</param>
+		/// <param name="prev">Previous value</param>
+		/// <param name="changecount">How many times value has change</param>
+		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
+		{
+			switch (size)
+			{
+				default:
+				case WatchSize.Separator:
+					return SeparatorWatch.Instance;
+				case WatchSize.Byte:
+					return new ByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
+				case WatchSize.Word:
+					return new WordWatch(domain, address, type, bigendian, (ushort)prev, changecount);
+				case WatchSize.DWord:
+					return new DWordWatch(domain, address, type, bigendian, (uint)prev, changecount);
+			}
+		}
+
+		/// <summary>
+		/// Generate a new <see cref="Watch"/> instance
+		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
+		/// </summary>
+		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
+		/// <param name="address">The address into the <see cref="MemoryDomain"/></param>
+		/// <param name="size">The size</param>
+		/// <param name="type">How the watch will be displayed</param>
+		/// <param name="bigendian">Endianess (true for big endian)</param>
+		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, string notes, bool bigEndian)			
+		{
+			return GenerateWatch(domain, address, size, type, bigEndian, 0, 0);
+		}
+
+		public static bool operator ==(Watch a, Watch b)
+		{
+			if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))
+			{
+				return false;
+			}
+			else if (object.ReferenceEquals(a, b))
+			{
+				return true;
+			}
+			else
+			{
+				return a.Equals(b);
+			}
+		}
+
+		public static bool operator ==(Watch a, Cheat b)
+		{
+			return a.Equals(b);
+		}
+
+		public static bool operator !=(Watch a, Watch b)
+		{
+			return !(a == b);
+		}
+
+		public static bool operator !=(Watch a, Cheat b)
+		{
+			return !(a == b);
+		}
+
 		#endregion Static
+
+		#region Abstracts
+
+		public abstract void ResetPrevious();
+		public abstract void Update();
+
+		#endregion Abstracts
+
+		#region Protected
+
+		protected byte GetByte(bool bypassFreeze = false)
+		{
+			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
+			{
+				//LIAR logic
+				return Global.CheatList.GetByteValue(_domain, _address).Value;
+			}
+			else
+			{
+				if (_domain.Size == 0)
+				{
+					return _domain.PeekByte(_address);
+				}
+				else
+				{
+					return _domain.PeekByte(_address % _domain.Size);
+				}
+			}
+		}
+
+		protected ushort GetWord(bool bypassFreeze = false)
+		{
+			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
+			{
+				//LIAR logic
+				return (ushort)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word).Value;
+			}
+			else
+			{
+				if (_domain.Size == 0)
+				{
+					return _domain.PeekWord(_address, _bigEndian);
+				}
+				else
+				{
+					return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+				}
+			}
+		}
+
+		protected uint GetDWord(bool bypassFreeze = false)
+		{
+			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
+			{
+				//LIAR logic
+				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
+			}
+			else
+			{
+				if (_domain.Size == 0)
+				{
+					return _domain.PeekDWord(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+				}
+				else
+				{
+					return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+				}
+			}
+		}
+
+		protected void PokeByte(byte val)
+		{
+			if (_domain.Size == 0)
+				_domain.PokeByte(_address, val);
+			else _domain.PokeByte(_address % _domain.Size, val);
+		}
+
+		protected void PokeWord(ushort val)
+		{
+			if (_domain.Size == 0)
+				_domain.PokeWord(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			else _domain.PokeWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+		}
+
+		protected void PokeDWord(uint val)
+		{
+			if (_domain.Size == 0)
+				_domain.PokeDWord(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			else _domain.PokeDWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+		}
+
+		#endregion Protected
+
+		public void ClearChangeCount()
+		{
+			_changecount = 0;
+		}
+
+		/// <summary>
+		/// Determine if this object is Equals to another
+		/// </summary>
+		/// <param name="obj">The object to compare</param>
+		/// <returns>True if both object are equals; otherwise, false</returns>
+		public override bool Equals(object obj)
+		{
+			Watch watch = (Watch)obj;
+
+			if (obj is Watch)
+			{
+				return this.Domain == watch.Domain &&
+					this.Address == watch.Address &&
+					this.Size == watch.Size &&
+					this.Type == watch.Type &&
+					this.Notes == watch.Notes;
+			}
+			else if (obj is Cheat)
+			{
+				return this.Domain == watch.Domain && this.Address == watch.Address;
+			}
+			else
+			{
+				return base.Equals(obj);
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
+		}
 
 		/// <summary>
 		/// Transform the current instance into a string
@@ -118,6 +342,7 @@ namespace BizHawk.Client.Common
 
 		#region Abstracts
 
+		public abstract string Diff { get; }
 		public abstract uint MaxValue { get; }
 		public abstract int? Value { get; }
 		//zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326
@@ -127,14 +352,13 @@ namespace BizHawk.Client.Common
 		public abstract bool Poke(string value);
 		public abstract int? Previous { get; }
 		public abstract string PreviousStr { get; }
-		public abstract void ResetPrevious();
 
 		#endregion Abstracts
 
 		#region Virtual
 
 		/// <summary>
-		/// Gets the address in the <see cref="IMemoryDomains"/>
+		/// Gets the address in the <see cref="MemoryDomain"/>
 		/// </summary>
 		public virtual long? Address
 		{
@@ -176,7 +400,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets the address in the <see cref="IMemoryDomains"/> formatted as string
+		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
 		/// </summary>
 		public virtual string AddressString
 		{
@@ -199,10 +423,80 @@ namespace BizHawk.Client.Common
 
 		#endregion Virtual
 
+		public string AddressFormatStr
+		{
+			get
+			{
+				if (_domain != null)
+				{
+					return "X" + (_domain.Size - 1).NumHexDigits();
+				}
 
-		public MemoryDomain Domain { get { return _domain; } set { _domain = value; } }
+				return string.Empty;
+			}
+		}
 
-		public string DomainName { get { return _domain != null ? _domain.Name : string.Empty; } }
+		public int ChangeCount
+		{
+			get
+			{
+				return _changecount;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets current <see cref="MemoryDomain"/>
+		/// </summary>
+		public MemoryDomain Domain
+		{
+			get
+			{
+				return _domain;
+			}
+			set
+			{
+				_domain = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the domain name of the current <see cref="MemoryDomain"/>
+		/// It's the same of doing myWatch.Domain.Name
+		/// </summary>
+		public string DomainName
+		{
+			get
+			{
+				if (_domain != null)
+				{
+					return _domain.Name;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
+		public bool IsOutOfRange
+		{
+			get
+			{
+				return !IsSeparator && (Domain.Size != 0 && Address.Value >= Domain.Size);
+			}
+		}
+
+		public string Notes
+		{
+			get
+			{
+				return _notes;
+			}
+			set
+			{
+				_notes = value;
+			}
+		}
 
 		#endregion
 
@@ -324,225 +618,6 @@ namespace BizHawk.Client.Common
 				case 'f':
 					return DisplayType.Float;
 			}
-		}
-
-		public string AddressFormatStr
-		{
-			get
-			{
-				if (_domain != null)
-				{
-					return "X" + (_domain.Size - 1).NumHexDigits();
-				}
-
-				return string.Empty;
-			}
-		}
-
-		protected byte GetByte(bool bypassFreeze = false)
-		{
-			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
-			{
-				//LIAR logic
-				return Global.CheatList.GetByteValue(_domain, _address).Value;
-			}
-			else
-			{
-				if (_domain.Size == 0)
-				{
-					return _domain.PeekByte(_address);
-				}
-				else
-				{
-					return _domain.PeekByte(_address % _domain.Size);
-				}
-			}
-		}
-
-		protected ushort GetWord(bool bypassFreeze = false)
-		{
-			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
-			{
-				//LIAR logic
-				return (ushort)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word).Value;
-			}
-			else
-			{
-				if (_domain.Size == 0)
-				{
-					return _domain.PeekWord(_address, _bigEndian);
-				}
-				else
-				{
-					return _domain.PeekWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-				}
-			}
-		}
-
-		protected uint GetDWord(bool bypassFreeze = false)
-		{
-			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
-			{
-				//LIAR logic
-				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
-			}
-			else
-			{
-				if (_domain.Size == 0)
-				{
-					return _domain.PeekDWord(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-				}
-				else
-				{
-					return _domain.PeekDWord(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-				}
-			}
-		}
-
-		protected void PokeByte(byte val)
-		{
-			if (_domain.Size == 0)
-				_domain.PokeByte(_address, val);
-			else _domain.PokeByte(_address % _domain.Size, val);
-		}
-
-		protected void PokeWord(ushort val)
-		{
-			if (_domain.Size == 0)
-				_domain.PokeWord(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-			else _domain.PokeWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-		}
-
-		protected void PokeDWord(uint val)
-		{
-			if (_domain.Size == 0)
-				_domain.PokeDWord(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-			else _domain.PokeDWord(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-		}
-
-		public void ClearChangeCount() { _changecount = 0; }
-
-		public bool IsOutOfRange
-		{
-			get
-			{
-				return !IsSeparator && (Domain.Size != 0 && Address.Value >= Domain.Size);
-			}
-		}
-
-		public string Notes { get { return _notes; } set { _notes = value; } }
-
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, string notes, bool bigEndian)
-		{
-			switch (size)
-			{
-				default:
-				case WatchSize.Separator:
-					return SeparatorWatch.Instance;
-				case WatchSize.Byte:
-					return new ByteWatch(domain, address, type, bigEndian, notes);
-				case WatchSize.Word:
-					return new WordWatch(domain, address, type, bigEndian, notes);
-				case WatchSize.DWord:
-					return new DWordWatch(domain, address, type, bigEndian, notes);
-			}
-		}
-
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
-		{
-			switch (size)
-			{
-				default:
-				case WatchSize.Separator:
-					return SeparatorWatch.Instance;
-				case WatchSize.Byte:
-					return new ByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
-				case WatchSize.Word:
-					return new WordWatch(domain, address, type, bigendian, (ushort)prev, changecount);
-				case WatchSize.DWord:
-					return new DWordWatch(domain, address, type, bigendian, (uint)prev, changecount);
-			}
-		}
-
-		public static List<DisplayType> AvailableTypes(WatchSize size)
-		{
-			switch (size)
-			{
-				default:
-				case WatchSize.Separator:
-					return SeparatorWatch.ValidTypes;
-				case WatchSize.Byte:
-					return ByteWatch.ValidTypes;
-				case WatchSize.Word:
-					return WordWatch.ValidTypes;
-				case WatchSize.DWord:
-					return DWordWatch.ValidTypes;
-			}
-		}
-
-		public int ChangeCount { get { return _changecount; } }
-
-		public abstract string Diff { get; }
-
-		public abstract void Update();
-
-		public override bool Equals(object obj)
-		{
-			if (obj is Watch)
-			{
-				var watch = obj as Watch;
-
-				return this.Domain == watch.Domain &&
-					this.Address == watch.Address &&
-					this.Size == watch.Size &&
-					this.Type == watch.Type &&
-					this.Notes == watch.Notes;
-			}
-
-			if (obj is Cheat)
-			{
-				var cheat = obj as Cheat;
-				return this.Domain == cheat.Domain && this.Address == cheat.Address;
-			}
-
-			return base.Equals(obj);
-		}
-
-		public override int GetHashCode()
-		{
-			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
-		}
-
-		public static bool operator ==(Watch a, Watch b)
-		{
-			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
-			{
-				return false;
-			}
-
-			return a.Equals(b);
-		}
-
-		public static bool operator !=(Watch a, Watch b)
-		{
-			return !a.Equals(b);
-		}
-
-		public static bool operator ==(Watch a, Cheat b)
-		{
-			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
-			{
-				return false;
-			}
-
-			return a.Domain == b.Domain && a.Address == b.Address;
-		}
-
-		public static bool operator !=(Watch a, Cheat b)
-		{
-			return !(a == b);
 		}
 	}
 }
