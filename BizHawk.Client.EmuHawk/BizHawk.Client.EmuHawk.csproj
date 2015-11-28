@@ -1687,6 +1687,8 @@
     <None Include="images\tastudio\icon_anchor_lag.png" />
     <None Include="images\tastudio\icon_anchor.png" />
     <None Include="images\tastudio\icon_marker.png" />
+    <EmbeddedResource Include="Resources\gens.ttf" />
+    <EmbeddedResource Include="Resources\fceux.ttf" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />

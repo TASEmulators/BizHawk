@@ -734,7 +734,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			foreach (var item in SelectedFiles)
+			var files = !SelectedFiles.Any() && Global.Config.ReturnAllIfNoneSelected ? _luaList : SelectedFiles;
+			foreach (var item in files)
 			{
 				item.Toggle();
 
@@ -950,11 +951,17 @@ namespace BizHawk.Client.EmuHawk
 		private void OptionsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
+			ReturnAllIfNoneSelectedMenuItem.Checked = Global.Config.ReturnAllIfNoneSelected;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.DisableLuaScriptsOnLoad ^= true;
+		}
+
+		private void ReturnAllIfNoneSelectedMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.ReturnAllIfNoneSelected ^= true;
 		}
 
 		#endregion

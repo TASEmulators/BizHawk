@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 
 using LuaInterface;
@@ -23,6 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color DefaultForeground = Color.White;
 		private Color? DefaultBackground = null;
+		private Color? DefaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
 		public override string Name { get { return "gui"; } }
 
@@ -499,12 +501,13 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? color = null,
+			Color? forecolor = null,
+			Color? backcolor = null,
 			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null)
 		{
-			DrawText(x, y, message, color, fontsize, fontfamily, fontstyle);
+			DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle);
 		}
 
 		[LuaMethodAttributes(
@@ -515,7 +518,8 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? color = null,
+			Color? forecolor = null,
+			Color? backcolor = null,
 			int? fontsize = null,
 			string fontfamily = null,
 			string fontstyle = null)
@@ -555,8 +559,57 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+					Size sizeOfText = g.MeasureString(message, font).ToSize();
+					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
+					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-					g.DrawString(message, font, GetBrush(color ?? DefaultForeground), x, y);
+					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
+				}
+				catch (Exception)
+				{
+					return;
+				}
+			}
+		}
+
+		[LuaMethodAttributes(
+			"pixelText",
+			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class. The fontsize default is 12. The default font style. Font style options are regular, bold, italic, strikethrough, underline"
+		)]
+		public void DrawText(
+			int x,
+			int y,
+			string message,
+			Color? forecolor = null,
+			Color? backcolor = null,
+			string fontfamily = null)
+		{
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+			using (var g = GetGraphics())
+			{
+				try
+				{
+					var index = 0;
+					if (!string.IsNullOrEmpty(fontfamily))
+					{
+						switch (fontfamily)
+						{
+							case "fceux":
+							case "0":
+								index = 0;
+								break;
+							case "gens":
+							case "1":
+								index = 1;
+								break;
+						}
+					}
+					var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
+					Size sizeOfText = g.MeasureString(message, font, 0, StringFormat.GenericTypographic).ToSize();
+					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
+					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
+					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
 				}
 				catch (Exception)
 				{
@@ -573,8 +626,8 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			Color? background = null,
 			Color? forecolor = null,
+			Color? background = null,
 			string anchor = null)
 		{
 			var a = 0;

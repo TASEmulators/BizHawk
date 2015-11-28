@@ -63,6 +63,11 @@ namespace BizHawk.Client.EmuHawk
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
 
+			using (var gens = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.gens.ttf"))
+				LoadCustomFont(gens);
+			using (var fceux = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.fceux.ttf"))
+				LoadCustomFont(fceux);
+
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 			{
 				var fiHq2x = new FileInfo(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "Shaders/BizHawk/hq2x.cgp"));
@@ -133,6 +138,11 @@ namespace BizHawk.Client.EmuHawk
 		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
 		/// </summary>
 		public System.Windows.Forms.Padding ClientExtraPadding;
+
+		/// <summary>
+		/// custom fonts that don't need to be installed on the user side
+		/// </summary>
+		public System.Drawing.Text.PrivateFontCollection CustomFonts = new System.Drawing.Text.PrivateFontCollection();
 
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
@@ -760,7 +770,17 @@ namespace BizHawk.Client.EmuHawk
 
 				NeedsToPaint = false; //??
 			}
+		}
 
+		private void LoadCustomFont(Stream fontstream)
+		{
+			System.IntPtr data = System.Runtime.InteropServices.Marshal.AllocCoTaskMem((int)fontstream.Length);
+			byte[] fontdata = new byte[fontstream.Length];
+			fontstream.Read(fontdata, 0, (int)fontstream.Length);
+			System.Runtime.InteropServices.Marshal.Copy(fontdata, 0, data, (int)fontstream.Length);
+			CustomFonts.AddMemoryFont(data, fontdata.Length);
+			fontstream.Close();
+			System.Runtime.InteropServices.Marshal.FreeCoTaskMem(data);
 		}
 
 		bool? LastVsyncSetting;
