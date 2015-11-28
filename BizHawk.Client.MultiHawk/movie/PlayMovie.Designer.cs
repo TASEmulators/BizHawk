@@ -251,7 +251,7 @@
 			// StopOnFrameTextBox
 			// 
 			this.StopOnFrameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.DWord;
+			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.WatchSize.DWord;
 			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.StopOnFrameTextBox.Location = new System.Drawing.Point(438, 355);
 			this.StopOnFrameTextBox.MaxLength = 10;
@@ -259,7 +259,7 @@
 			this.StopOnFrameTextBox.Nullable = true;
 			this.StopOnFrameTextBox.Size = new System.Drawing.Size(54, 20);
 			this.StopOnFrameTextBox.TabIndex = 58;
-			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.Watch.DisplayType.Unsigned;
+			this.StopOnFrameTextBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
 			this.StopOnFrameTextBox.TextChanged += new System.EventHandler(this.StopOnFrameTextBox_TextChanged_1);
 			// 
 			// MovieView

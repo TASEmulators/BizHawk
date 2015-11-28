@@ -374,8 +374,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
-			
-TESTEROO:
+
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;

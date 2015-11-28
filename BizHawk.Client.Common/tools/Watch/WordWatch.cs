@@ -10,33 +10,51 @@ namespace BizHawk.Client.Common
 {
 	public sealed class WordWatch : Watch
 	{
+		#region Fields
+
 		private ushort _previous;
 		private ushort _value;
 
-		public WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
+		#endregion
+
+		#region cTor(s)
+
+		internal WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, ushort value, ushort previous, int changeCount)
+			: base(domain, address, WatchSize.Word, type, bigEndian, note)
 		{
-			_domain = domain;
-			_address = address;
-			_value = _previous = GetWord();
+			this._value = value;
+			this._previous = previous;
+			this._changecount = changeCount;
+		}
 
-			if (AvailableTypes(WatchSize.Word).Contains(type))
+		internal WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note)
+			:this(domain, address, type, bigEndian, note, 0, 0, 0)
+		{
+			_previous = GetWord();
+			_value = GetWord();
+		}
+
+		#endregion
+
+		public static IEnumerable<DisplayType> ValidTypes
+		{
+			get
 			{
-				_type = type;
-			}
-
-			_bigEndian = bigEndian;
-
-			if (notes != null)
-			{
-				Notes = notes;
+				yield return DisplayType.Unsigned;
+				yield return DisplayType.Signed;
+				yield return DisplayType.Hex;
+				yield return DisplayType.Binary;
+				yield return DisplayType.FixedPoint_12_4;
 			}
 		}
 
-		public WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, ushort prev, int changeCount, string notes = null)
-			: this(domain, address, type, bigEndian, notes)
+		public override IEnumerable<DisplayType> AvailableTypes()
 		{
-			_previous = prev;
-			_changecount = changeCount;
+			yield return DisplayType.Unsigned;
+			yield return DisplayType.Signed;
+			yield return DisplayType.Hex;
+			yield return DisplayType.Binary;
+			yield return DisplayType.FixedPoint_12_4;
 		}
 
 		public override uint MaxValue
@@ -67,22 +85,6 @@ namespace BizHawk.Client.Common
 		public override void ResetPrevious()
 		{
 			_previous = GetWord();
-		}
-
-		public override WatchSize Size
-		{
-			get { return WatchSize.Word; }
-		}
-
-		public static List<DisplayType> ValidTypes
-		{
-			get
-			{
-				return new List<DisplayType>
-				{
-					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_12_4, DisplayType.Binary
-				};
-			}
 		}
 
 		public override string ValueString

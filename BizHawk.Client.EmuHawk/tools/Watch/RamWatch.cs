@@ -352,7 +352,7 @@ namespace BizHawk.Client.EmuHawk
 				var sb = new StringBuilder();
 				foreach (var watch in SelectedItems)
 				{
-					sb.AppendLine(watch.ToString());
+					sb.AppendLine(ToString());
 				}
 
 				if (sb.Length > 0)
@@ -925,24 +925,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DefinePreviousValueSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			PreviousFrameMenuItem.Checked = Global.Config.RamWatchDefinePrevious == Watch.PreviousType.LastFrame;
-			LastChangeMenuItem.Checked = Global.Config.RamWatchDefinePrevious == Watch.PreviousType.LastChange;
-			OriginalMenuItem.Checked = Global.Config.RamWatchDefinePrevious == Watch.PreviousType.Original;
+			PreviousFrameMenuItem.Checked = Global.Config.RamWatchDefinePrevious == PreviousType.LastFrame;
+			LastChangeMenuItem.Checked = Global.Config.RamWatchDefinePrevious == PreviousType.LastChange;
+			OriginalMenuItem.Checked = Global.Config.RamWatchDefinePrevious == PreviousType.Original;
 		}
 
 		private void PreviousFrameMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
+			Global.Config.RamWatchDefinePrevious = PreviousType.LastFrame;
 		}
 
 		private void LastChangeMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.LastChange;
+			Global.Config.RamWatchDefinePrevious = PreviousType.LastChange;
 		}
 
 		private void OriginalMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.RamWatchDefinePrevious = Watch.PreviousType.Original;
+			Global.Config.RamWatchDefinePrevious = PreviousType.Original;
 		}
 
 		private void WatchesOnScreenMenuItem_Click(object sender, EventArgs e)

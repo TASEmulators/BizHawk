@@ -532,9 +532,9 @@ namespace BizHawk.Client.Common
 							memDomain,
 							addr,
 							size,
-							type,
-							notes,
-							bigEndian));
+							type,							
+							bigEndian,
+                            notes));
 					_domain = _memoryDomains[domain];
 				}
 

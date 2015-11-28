@@ -10,37 +10,50 @@ namespace BizHawk.Client.Common
 {
 	public sealed class ByteWatch : Watch
 	{
+		#region Fields
+
 		private byte _previous;
 		private byte _value;
 
-		public ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
+		#endregion
+
+		#region cTor(s)
+
+		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
+			: base(domain, address, WatchSize.Byte, type, bigEndian, note)
 		{
-			_address = address;
-			_domain = domain;
-			_value = _previous = GetByte();
-			if (AvailableTypes(WatchSize.Byte).Contains(type))
+			this._value = value;
+			this._previous = previous;
+			this._changecount = changeCount;
+		}
+
+		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note)
+			:this(domain, address, type, bigEndian, note, 0, 0, 0)
+		{
+			_previous = GetByte();
+			_value = GetByte();			
+		}		
+
+		#endregion
+
+		public static IEnumerable<DisplayType> ValidTypes
+		{
+			get
 			{
-				_type = type;
-			}
-
-			_bigEndian = bigEndian;
-			if (notes != null)
-			{
-				Notes = notes;
+				yield return DisplayType.Unsigned;
+				yield return DisplayType.Signed;
+				yield return DisplayType.Hex;
+				yield return DisplayType.Binary;
 			}
 		}
 
-		public ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, byte prev, int changeCount, string notes = null)
-			: this(domain, address, type, bigEndian, notes)
+		public override IEnumerable<DisplayType> AvailableTypes()
 		{
-			_previous = prev;
-			_changecount = changeCount;
-		}
-
-		public override long? Address
-		{
-			get { return _address; }
-		}
+			yield return DisplayType.Unsigned;
+			yield return DisplayType.Signed;
+			yield return DisplayType.Hex;
+			yield return DisplayType.Binary;
+        }
 
 		public override int? Value
 		{
@@ -76,28 +89,7 @@ namespace BizHawk.Client.Common
 		{
 			return Notes + ": " + ValueString;
 		}
-
-		public override bool IsSeparator
-		{
-			get { return false; }
-		}
-
-		public override WatchSize Size
-		{
-			get { return WatchSize.Byte; }
-		}
-
-		public static List<DisplayType> ValidTypes
-		{
-			get
-			{
-				return new List<DisplayType>
-				{
-					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.Binary
-				};
-			}
-		}
-
+		
 		public override uint MaxValue
 		{
 			get { return byte.MaxValue; }
@@ -210,7 +202,7 @@ namespace BizHawk.Client.Common
 
 				return diff + FormatValue((byte)(_previous - _value));
 			}
-		}
+		}		
 
 		public override void Update()
 		{

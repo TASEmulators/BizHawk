@@ -234,7 +234,7 @@
     <Compile Include="tools\CheatList.cs" />
     <Compile Include="tools\Watch\ByteWatch.cs" />
     <Compile Include="tools\Watch\DisplayType.cs" />
-    <Compile Include="tools\Watch\DwordWatch.cs" />
+    <Compile Include="tools\Watch\DWordWatch.cs" />
     <Compile Include="tools\Watch\PreviousType.cs" />
     <Compile Include="tools\RamSearchEngine.cs" />
     <Compile Include="tools\Watch\SeparatorWatch.cs" />

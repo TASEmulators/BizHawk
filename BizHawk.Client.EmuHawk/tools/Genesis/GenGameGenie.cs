@@ -316,10 +316,10 @@ namespace BizHawk.Client.EmuHawk
 			var watch = Watch.GenerateWatch(
 				MemoryDomains["MD CART"],
 				address,
-				Watch.WatchSize.Word,
-				Watch.DisplayType.Hex,
-				name,
-				true
+				WatchSize.Word,
+				Client.Common.DisplayType.Hex,
+				true,
+				name
 			);
 
 			Global.CheatList.Add(new Cheat(

@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
 	public sealed class SeparatorWatch : Watch
 	{
+		internal SeparatorWatch()
+			:base(null, 0, WatchSize.Separator, DisplayType.Separator, true, string.Empty)
+		{ }
+
 		public static SeparatorWatch Instance
 		{
 			get { return new SeparatorWatch(); }
-		}
-
-		public override long? Address
-		{
-			get { return null; }
 		}
 
 		public override int? Value
@@ -27,12 +27,7 @@ namespace BizHawk.Client.Common
 		public override int? Previous
 		{
 			get { return null; }
-		}
-
-		public override string AddressString
-		{
-			get { return string.Empty; }
-		}
+		}		
 
 		public override string ValueString
 		{
@@ -47,27 +42,7 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			return "----";
-		}
-
-		public override bool IsSeparator
-		{
-			get { return true; }
-		}
-
-		public override WatchSize Size
-		{
-			get { return WatchSize.Separator; }
-		}
-
-		public static List<DisplayType> ValidTypes
-		{
-			get { return new List<DisplayType> { DisplayType.Separator }; }
-		}
-
-		public override DisplayType Type
-		{
-			get { return DisplayType.Separator; }
-		}
+		}								
 
 		public override bool Poke(string value)
 		{
@@ -87,5 +62,10 @@ namespace BizHawk.Client.Common
 		}
 
 		public override void Update() { return; }
+
+		public override IEnumerable<DisplayType> AvailableTypes()
+		{
+			yield return DisplayType.Separator;
+		}
 	}
 }

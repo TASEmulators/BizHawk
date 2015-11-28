@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -288,7 +286,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (Global.Emulator.HasRegions())
 			{
 				var region = Global.Emulator.AsRegionable().Region;
-				if (region == DisplayType.PAL)
+				if (region == Emulation.Common.DisplayType.PAL)
 				{
 					movie.HeaderEntries.Add(HeaderKeys.PAL, "1");
 				}

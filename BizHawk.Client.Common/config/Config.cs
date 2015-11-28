@@ -317,7 +317,7 @@ namespace BizHawk.Client.Common
 
 		// Watch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);
-		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
+		public PreviousType RamWatchDefinePrevious = PreviousType.LastFrame;
 		public bool DisplayRamWatch = false;
 
 		// Hex Editor Colors

@@ -3,14 +3,15 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
+using Emu = BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class CheatEdit : UserControl
 	{
-		public IMemoryDomains MemoryDomains { get; set; }
+		public Emu.IMemoryDomains MemoryDomains { get; set; }
 
 		public CheatEdit()
 		{
@@ -78,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == Watch.DisplayType.Hex ? HexInd : string.Empty;
+				_cheat.Type == DisplayType.Hex ? HexInd : string.Empty;
 
 			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
 
@@ -99,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetFormToDefault()
 		{
 			_loading = true;
-			SetSizeSelected(Watch.WatchSize.Byte);
+			SetSizeSelected(WatchSize.Byte);
 			PopulateTypeDropdown();
 
 			NameBox.Text = string.Empty;
@@ -111,11 +112,11 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueBox.ByteSize = 
 				CompareBox.ByteSize =
-				Watch.WatchSize.Byte;
+				WatchSize.Byte;
 
 			ValueBox.Type = 
 				CompareBox.Type =
-				Watch.DisplayType.Hex;
+				DisplayType.Hex;
 
 			ValueBox.ResetText();
 			CompareBox.ResetText();
@@ -126,31 +127,31 @@ namespace BizHawk.Client.EmuHawk
 
 			BigEndianCheckBox.Checked = false;
 
-			SetTypeSelected(Watch.DisplayType.Hex);
+			SetTypeSelected(DisplayType.Hex);
 
 			CheckFormState();
 			CompareBox.Text = string.Empty; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 
-		private void SetSizeSelected(Watch.WatchSize size)
+		private void SetSizeSelected(WatchSize size)
 		{
 			switch (size)
 			{
 				default:
-				case Watch.WatchSize.Byte:
+				case WatchSize.Byte:
 					SizeDropDown.SelectedIndex = 0;
 					break;
-				case Watch.WatchSize.Word:
+				case WatchSize.Word:
 					SizeDropDown.SelectedIndex = 1;
 					break;
-				case Watch.WatchSize.DWord:
+				case WatchSize.DWord:
 					SizeDropDown.SelectedIndex = 2;
 					break;
 			}
 		}
 
-		private void SetTypeSelected(Watch.DisplayType type)
+		private void SetTypeSelected(Common.DisplayType type)
 		{
 			foreach (var item in DisplayTypeDropDown.Items)
 			{
@@ -162,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SetDomainSelected(MemoryDomain domain)
+		private void SetDomainSelected(Emu.MemoryDomain domain)
 		{
 			foreach (var item in DomainDropDown.Items)
 			{
@@ -181,13 +182,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					DisplayTypeDropDown.Items.AddRange(ByteWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
+					foreach(DisplayType t in ByteWatch.ValidTypes)
+					{
+						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
+					}
 					break;
 				case 1:
-					DisplayTypeDropDown.Items.AddRange(WordWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
+					foreach (DisplayType t in WordWatch.ValidTypes)
+					{
+						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
+					}
 					break;
 				case 2:
-					DisplayTypeDropDown.Items.AddRange(DWordWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
+					foreach (DisplayType t in DWordWatch.ValidTypes)
+					{
+						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
+					}
 					break;
 			}
 
@@ -222,17 +232,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Watch.WatchSize GetCurrentSize()
+		private WatchSize GetCurrentSize()
 		{
 			switch (SizeDropDown.SelectedIndex)
 			{
 				default:
 				case 0:
-					return Watch.WatchSize.Byte;
+					return WatchSize.Byte;
 				case 1:
-					return Watch.WatchSize.Word;
+					return WatchSize.Word;
 				case 2:
-					return Watch.WatchSize.DWord;
+					return WatchSize.DWord;
 			}
 		}
 
@@ -295,7 +305,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				var address = AddressBox.ToRawInt().Value;
-				//var address = AddressBox.ToRawInt() ?? 0;
 				if (address < domain.Size)
 				{
 					var watch = Watch.GenerateWatch(
@@ -303,8 +312,9 @@ namespace BizHawk.Client.EmuHawk
 						AddressBox.ToRawInt().Value,
 						GetCurrentSize(),
 						Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
-						NameBox.Text,
-						BigEndianCheckBox.Checked);
+						BigEndianCheckBox.Checked,
+                        NameBox.Text
+						);
 
 					return new Cheat(
 						watch,

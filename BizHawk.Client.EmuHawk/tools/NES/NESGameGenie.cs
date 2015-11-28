@@ -183,10 +183,10 @@ namespace BizHawk.Client.EmuHawk
 				var watch = Watch.GenerateWatch(
 					MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
-					Watch.WatchSize.Byte,
-					Watch.DisplayType.Hex,
-					GameGenieCode.Text,
-					false);
+					WatchSize.Byte,
+					Client.Common.DisplayType.Hex,
+					false,
+					GameGenieCode.Text);
 
 				Global.CheatList.Add(new Cheat(
 					watch,

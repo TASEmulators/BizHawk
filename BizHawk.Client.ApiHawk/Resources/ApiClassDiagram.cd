@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="BizHawk.Client.EmuHawk.ConfigPersistAttribute">
-    <Position X="11.5" Y="0.75" Width="1.5" />
+    <Position X="11.5" Y="0.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Attributes\ConfigPersistAttribute.cs</FileName>
@@ -12,17 +12,6 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Enum Name="BizHawk.Client.Common.Watch.DisplayType">
-        <TypeIdentifier />
-      </Enum>
-      <Enum Name="BizHawk.Client.Common.Watch.PreviousType">
-        <TypeIdentifier />
-      </Enum>
-      <Enum Name="BizHawk.Client.Common.Watch.WatchSize">
-        <TypeIdentifier />
-      </Enum>
-    </NestedTypes>
     <TypeIdentifier />
   </Class>
   <Class Name="BizHawk.Client.Common.SeparatorWatch">
@@ -42,7 +31,7 @@
     <TypeIdentifier />
   </Class>
   <Class Name="BizHawk.Client.Common.WatchList">
-    <Position X="27.25" Y="1" Width="5" />
+    <Position X="30.75" Y="1" Width="5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -75,5 +64,17 @@
       <FileName>Interfaces\IToolFormAutoConfig.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Enum Name="BizHawk.Client.Common.WatchSize">
+    <Position X="26.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Enum Name="BizHawk.Client.Common.DisplayType">
+    <Position X="26.5" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Enum Name="BizHawk.Client.Common.PreviousType">
+    <Position X="28.5" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

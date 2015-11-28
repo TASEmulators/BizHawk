@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -14,36 +15,48 @@ namespace BizHawk.Client.Common
 		protected long _address;
 		protected MemoryDomain _domain;
 		protected DisplayType _type;
+		protected WatchSize _size;
 		protected bool _bigEndian;
-		protected int _changecount;
-		protected string _notes = string.Empty;
+		protected string _notes;
+		protected int _changecount = 0;
+
+		#endregion
+
+		#region cTor(s)
+
+		/// <summary>
+		/// Initialize a new instance of <see cref="Watch"/>
+		/// </summary>
+		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
+		/// <param name="address">The address you want to track</param>
+		/// <param name="size">A <see cref="WatchSize"/> (byte, word, double word)</param>
+		/// <param name="type">How you you want to display the value See <see cref="DisplayType"/></param>
+		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
+		/// <param name="note">A custom note about the <see cref="Watch"/></param>
+		protected Watch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note)
+		{
+			if (IsDiplayTypeAvailable(type))
+			{
+				this._domain = domain;
+				this._address = address;
+				this._size = size;
+				this._type = type;
+				this._bigEndian = bigEndian;
+				this._notes = note;
+				return;
+
+			}
+			else
+			{
+				throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", type.ToString()), "type");
+			}
+		}
 
 		#endregion
 
 		#region Methods
-
-		#region Static
-
-		/// <summary>
-		/// Gets a list of Available types for specific <see cref="WatchSize"/>
-		/// </summary>
-		/// <param name="size">Desired size</param>
-		/// <returns>An array of <see cref="DisplayType"/> that ca be used to be displayed</returns>
-		public static List<DisplayType> AvailableTypes(WatchSize size)
-		{
-			switch (size)
-			{
-				default:
-				case WatchSize.Separator:
-					return SeparatorWatch.ValidTypes;
-				case WatchSize.Byte:
-					return ByteWatch.ValidTypes;
-				case WatchSize.Word:
-					return WordWatch.ValidTypes;
-				case WatchSize.DWord:
-					return DWordWatch.ValidTypes;
-			}
-		}
+		
+		#region Static		
 
 		/// <summary>
 		/// Generate a <see cref="Watch"/> from a given string
@@ -105,8 +118,8 @@ namespace BizHawk.Client.Common
 					address,
 					size,
 					type,
-					notes,
-					bigEndian
+					bigEndian,
+					notes
 					);
 			}
 			else
@@ -123,11 +136,13 @@ namespace BizHawk.Client.Common
 		/// <param name="address">The address into the <see cref="MemoryDomain"/></param>
 		/// <param name="size">The size</param>
 		/// <param name="type">How the watch will be displayed</param>
-		/// <param name="bigendian">Endianess (true for big endian)</param>
+		/// <param name="bigEndian">Endianess (true for big endian)</param>
+		/// <param name="note">A custom note about the <see cref="Watch"/></param>
+		/// <param name="value">The current watch value</param>
 		/// <param name="prev">Previous value</param>
-		/// <param name="changecount">How many times value has change</param>
+		/// <param name="changeCount">Number of changes occurs in current <see cref="Watch"/></param>
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigendian, long prev, int changecount)
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note, long value, long prev, int changeCount)
 		{
 			switch (size)
 			{
@@ -135,11 +150,11 @@ namespace BizHawk.Client.Common
 				case WatchSize.Separator:
 					return SeparatorWatch.Instance;
 				case WatchSize.Byte:
-					return new ByteWatch(domain, address, type, bigendian, (byte)prev, changecount);
+					return new ByteWatch(domain, address, type, bigEndian, note, (byte)value, (byte)prev, changeCount);
 				case WatchSize.Word:
-					return new WordWatch(domain, address, type, bigendian, (ushort)prev, changecount);
+					return new WordWatch(domain, address, type, bigEndian, note, (ushort)value, (ushort)prev, changeCount);
 				case WatchSize.DWord:
-					return new DWordWatch(domain, address, type, bigendian, (uint)prev, changecount);
+					return new DWordWatch(domain, address, type, bigEndian, note, (uint)value, (uint)prev, changeCount);
 			}
 		}
 
@@ -151,13 +166,35 @@ namespace BizHawk.Client.Common
 		/// <param name="address">The address into the <see cref="MemoryDomain"/></param>
 		/// <param name="size">The size</param>
 		/// <param name="type">How the watch will be displayed</param>
-		/// <param name="bigendian">Endianess (true for big endian)</param>
+		/// <param name="bigEndian">Endianess (true for big endian)</param>
+		/// <param name="note">A customp note about your watch</param>
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
-		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, string notes, bool bigEndian)			
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note)
 		{
-			return GenerateWatch(domain, address, size, type, bigEndian, 0, 0);
+			return GenerateWatch(domain, address, size, type, bigEndian, note, 0, 0, 0);
 		}
 
+		/// <summary>
+		/// Generate a new <see cref="Watch"/> instance
+		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
+		/// </summary>
+		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
+		/// <param name="address">The address into the <see cref="MemoryDomain"/></param>
+		/// <param name="size">The size</param>
+		/// <param name="type">How the watch will be displayed</param>
+		/// <param name="bigEndian">Endianess (true for big endian)</param>
+		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
+		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian)
+		{
+			return GenerateWatch(domain, address, size, type, bigEndian, string.Empty, 0, 0, 0);
+		}
+
+		/// <summary>
+		/// Equality operator between two <see cref="Watch"/>
+		/// </summary>
+		/// <param name="a">First watch</param>
+		/// <param name="b">Second watch</param>
+		/// <returns>True if both watch are equals; otherwise, false</returns>
 		public static bool operator ==(Watch a, Watch b)
 		{
 			if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))
@@ -174,16 +211,34 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Equality operator between a <see cref="Watch"/> and a <see cref="Cheat"/>
+		/// </summary>
+		/// <param name="a">The watch</param>
+		/// <param name="b">The cheat</param>
+		/// <returns>True if they are equals; otherwise, false</returns>
 		public static bool operator ==(Watch a, Cheat b)
 		{
 			return a.Equals(b);
 		}
 
+		/// <summary>
+		/// Inequality operator between two <see cref="Watch"/>
+		/// </summary>
+		/// <param name="a">First watch</param>
+		/// <param name="b">Second watch</param>
+		/// <returns>True if both watch are different; otherwise, false</returns>
 		public static bool operator !=(Watch a, Watch b)
 		{
 			return !(a == b);
 		}
 
+		/// <summary>
+		/// Inequality operator between a <see cref="Watch"/> and a <see cref="Cheat"/>
+		/// </summary>
+		/// <param name="a">The watch</param>
+		/// <param name="b">The cheat</param>
+		/// <returns>True if they are different; otherwise, false</returns>
 		public static bool operator !=(Watch a, Cheat b)
 		{
 			return !(a == b);
@@ -193,7 +248,20 @@ namespace BizHawk.Client.Common
 
 		#region Abstracts
 
+		/// <summary>
+		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="Watch"/>
+		/// </summary>
+		/// <returns>An enumartion that contains all valid <see cref="DisplayType"/></returns>
+		public abstract IEnumerable<DisplayType> AvailableTypes();
+
+		/// <summary>
+		/// Reset the previous value
+		/// </summary>
 		public abstract void ResetPrevious();
+
+		/// <summary>
+		/// Update the Watch (read it from <see cref="MemoryDomain"/>
+		/// </summary>
 		public abstract void Update();
 
 		#endregion Abstracts
@@ -283,6 +351,9 @@ namespace BizHawk.Client.Common
 
 		#endregion Protected
 
+		/// <summary>
+		/// Set the number of changes to 0
+		/// </summary>
 		public void ClearChangeCount()
 		{
 			_changecount = 0;
@@ -315,10 +386,25 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Hash the current watch and gets a unique value
+		/// </summary>
+		/// <returns>int that can serves as a unique representation of current Watch</returns>
 		public override int GetHashCode()
 		{
 			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
 		}
+
+		/// <summary>
+		/// Determine if the specified <see cref="DisplayType"/> can be
+		/// used for the current <see cref="Watch"/>
+		/// </summary>
+		/// <param name="type"><see cref="DisplayType"/> you want to check</param>
+		/// <returns></returns>
+		public bool IsDiplayTypeAvailable(DisplayType type)
+		{
+			return AvailableTypes().Where<DisplayType>(d => d == type).Any<DisplayType>();
+        }
 
 		/// <summary>
 		/// Transform the current instance into a string
@@ -348,19 +434,16 @@ namespace BizHawk.Client.Common
 		//zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326
 		public abstract int? ValueNoFreeze { get; }
 		public abstract string ValueString { get; }
-		public abstract WatchSize Size { get; }
 		public abstract bool Poke(string value);
 		public abstract int? Previous { get; }
 		public abstract string PreviousStr { get; }
 
 		#endregion Abstracts
 
-		#region Virtual
-
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/>
 		/// </summary>
-		public virtual long? Address
+		public long? Address
 		{
 			get
 			{
@@ -369,61 +452,9 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets or sets the endianess of current <see cref="Watch"/>
-		/// True for big endian, flase for little endian
+		/// Gets the format tha should be used by string.Format()
 		/// </summary>
-		public virtual bool BigEndian
-		{
-			get
-			{
-				return _bigEndian;
-			}
-			set
-			{
-				_bigEndian = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets or set the way current <see cref="Watch"/> is displayed
-		/// </summary>
-		public virtual DisplayType Type
-		{
-			get
-			{
-				return _type;
-			}
-			set
-			{
-				_type = value;
-			}
-		}
-
-		/// <summary>
-		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
-		/// </summary>
-		public virtual string AddressString
-		{
-			get
-			{
-				return _address.ToString(AddressFormatStr);
-			}
-		}
-
-		/// <summary>
-		/// Gets a value that defined if the current <see cref="Watch"/> is actually a <see cref="SeparatorWatch"/>
-		/// </summary>
-		public virtual bool IsSeparator
-		{
-			get
-			{
-				return false;
-			}
-		}
-
-		#endregion Virtual
-
-		public string AddressFormatStr
+		private string AddressFormatStr
 		{
 			get
 			{
@@ -436,11 +467,63 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
+		/// </summary>
+		public string AddressString
+		{
+			get
+			{
+				return _address.ToString(AddressFormatStr);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the endianess of current <see cref="Watch"/>
+		/// True for big endian, flase for little endian
+		/// </summary>
+		public bool BigEndian
+		{
+			get
+			{
+				return _bigEndian;
+			}
+			set
+			{
+				_bigEndian = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of time tha value of current <see cref="Watch"/> has changed
+		/// </summary>
 		public int ChangeCount
 		{
 			get
 			{
 				return _changecount;
+			}
+		}
+
+		/// <summary>
+		/// Gets or set the way current <see cref="Watch"/> is displayed
+		/// </summary>
+		public DisplayType Type
+		{
+			get
+			{
+				return _type;
+			}
+			set
+			{
+				if (IsDiplayTypeAvailable(value))
+				{
+					_type = value;
+				}
+				else
+				{
+					throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", value.ToString()));
+				}
 			}
 		}
 
@@ -478,14 +561,32 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		/// <summary>
+		/// Gets a value that defined if the current address is 
+		/// well in the range of current <see cref="MemoryDomain"/>
+		/// </summary>
 		public bool IsOutOfRange
 		{
 			get
 			{
-				return !IsSeparator && (Domain.Size != 0 && Address.Value >= Domain.Size);
+				return !IsSeparator && (_domain.Size != 0 && _address >= _domain.Size);
 			}
 		}
 
+		/// <summary>
+		/// Gets a value that defined if the current <see cref="Watch"/> is actually a <see cref="SeparatorWatch"/>
+		/// </summary>
+		public bool IsSeparator
+		{
+			get
+			{
+				return this is SeparatorWatch;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets notes for current <see cref="Watch"/>
+		/// </summary>
 		public string Notes
 		{
 			get
@@ -495,6 +596,17 @@ namespace BizHawk.Client.Common
 			set
 			{
 				_notes = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the current size of the watch
+		/// </summary>
+		public WatchSize Size
+		{
+			get
+			{
+				return _size;
 			}
 		}
 

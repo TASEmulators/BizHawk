@@ -11,36 +11,56 @@ namespace BizHawk.Client.Common
 {
 	public sealed class DWordWatch : Watch
 	{
+		#region Fields
+
 		private uint _value;
 		private uint _previous;
 
-		public DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string notes)
+		#endregion
+
+		#region cTor(s)
+
+		internal DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, uint value, uint previous, int changeCount)
+			: base(domain, address, WatchSize.DWord, type, bigEndian, note)
 		{
-			_domain = domain;
-			_address = address;
-			_value = _previous = GetDWord();
+			this._value = value;
+			this._previous = previous;
+			this._changecount = changeCount;
+		}
 
-			if (AvailableTypes(WatchSize.DWord).Contains(type))
+		internal DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note)
+			:this(domain, address, type, bigEndian, note, 0, 0, 0)
+		{
+			_previous = GetDWord();
+			_value = GetDWord();
+		}
+
+		#endregion
+
+		public static IEnumerable<DisplayType> ValidTypes
+		{
+			get
 			{
-				_type = type;
-			}
-
-			_bigEndian = bigEndian;
-
-			if (notes != null)
-			{
-				Notes = notes;
+				yield return DisplayType.Unsigned;
+				yield return DisplayType.Signed;
+				yield return DisplayType.Hex;
+				yield return DisplayType.Binary;
+				yield return DisplayType.FixedPoint_20_12;
+				yield return DisplayType.FixedPoint_16_16;
+				yield return DisplayType.Float;
 			}
 		}
 
-		public DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, uint prev, int changeCount, string notes = null)
-			: this(domain, address, type, bigEndian, notes)
+		public override IEnumerable<DisplayType> AvailableTypes()
 		{
-			_previous = prev;
-			_changecount = changeCount;
-			_type = type;
-			_bigEndian = bigEndian;
-		}
+			yield return DisplayType.Unsigned;
+			yield return DisplayType.Signed;
+			yield return DisplayType.Hex;
+			yield return DisplayType.Binary;
+			yield return DisplayType.FixedPoint_20_12;
+			yield return DisplayType.FixedPoint_16_16;
+			yield return DisplayType.Float;
+        }
 
 		public override int? Value
 		{
@@ -65,22 +85,6 @@ namespace BizHawk.Client.Common
 		public override void ResetPrevious()
 		{
 			_previous = GetWord();
-		}
-
-		public override WatchSize Size
-		{
-			get { return WatchSize.DWord; }
-		}
-
-		public static List<DisplayType> ValidTypes
-		{
-			get
-			{
-				return new List<DisplayType>
-					{
-					DisplayType.Unsigned, DisplayType.Signed, DisplayType.Hex, DisplayType.FixedPoint_20_12, DisplayType.FixedPoint_16_16, DisplayType.Float
-				};
-			}
 		}
 
 		public override uint MaxValue

@@ -105,11 +105,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Watch.WatchSize WatchSize
+		private WatchSize WatchSize
 		{
 			get
 			{
-				return (Watch.WatchSize)DataSize;
+				return (WatchSize)DataSize;
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, Watch.WatchSize size)
+		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, WatchSize size)
 		{
 			DataSize = (int)size;
 			SetDataSize(DataSize);
@@ -546,7 +546,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
-				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)DataSize ).Value;
+				return Global.CheatList.GetCheatValue(_domain, address, (WatchSize)DataSize ).Value;
 			}
 
 			switch (dataSize)
@@ -722,12 +722,12 @@ namespace BizHawk.Client.EmuHawk
 			switch (DataSize)
 			{
 				default:
-				case 1:
-					return new ByteWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
-				case 2:
-					return new WordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+				case 1:										
+					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
+                case 2:
+					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
 				case 4:
-					return new DWordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
 			}
 		}
 
@@ -757,8 +757,7 @@ namespace BizHawk.Client.EmuHawk
 					_domain,
 					address,
 					WatchSize,
-					Watch.DisplayType.Hex,
-					string.Empty,
+					Client.Common.DisplayType.Hex,
 					BigEndian);
 
 				Global.CheatList.Add(new Cheat(
@@ -776,8 +775,7 @@ namespace BizHawk.Client.EmuHawk
 					_domain,
 					address,
 					WatchSize,
-					Watch.DisplayType.Hex,
-					string.Empty,
+					Client.Common.DisplayType.Hex,
 					BigEndian);
 
 				cheats.Add(new Cheat(
@@ -1616,9 +1614,8 @@ namespace BizHawk.Client.EmuHawk
 					address => Watch.GenerateWatch(
 						_domain,
 						address,
-						(Watch.WatchSize)DataSize,
-						Watch.DisplayType.Hex,
-						string.Empty,
+						(WatchSize)DataSize,
+						Client.Common.DisplayType.Hex,
 						BigEndian));
 
 				poke.SetWatch(watches);
@@ -2109,7 +2106,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var gaps = (int)cheat.Size - (int)DataSize;
 
-						if (cheat.Size == Watch.WatchSize.DWord && DataSize == 2)
+						if (cheat.Size == WatchSize.DWord && DataSize == 2)
 						{
 							gaps -= 1;
 						}
