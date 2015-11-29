@@ -97,11 +97,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaConsole_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.RecentLuaSession.AutoLoad)
+			if (Global.Config.RecentLuaSession.AutoLoad && !Global.Config.RecentLuaSession.Empty)
 			{
-				if (!Global.Config.RecentLuaSession.Empty)
-				{
 					LoadSessionFromRecent(Global.Config.RecentLuaSession[0]);
+			}
+			else if (Global.Config.RecentLua.AutoLoad)
+			{
+				if (!Global.Config.RecentLua.Empty)
+				{
+					LoadLuaFromRecent(Global.Config.RecentLua[0]);
 				}
 			}
 		}
@@ -619,7 +623,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentScriptsSubMenu.DropDownItems.Clear();
 			RecentScriptsSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentLua.RecentMenu(LoadLuaFromRecent));
+				Global.Config.RecentLua.RecentMenu(LoadLuaFromRecent, true));
 		}
 
 		private void NewSessionMenuItem_Click(object sender, EventArgs e)
