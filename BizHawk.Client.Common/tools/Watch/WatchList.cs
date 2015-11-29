@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 					if (reverse)
 					{
 						_watchList = _watchList
-							.OrderByDescending(x => x.Address ?? 0)
+							.OrderByDescending(x => x.Address)
 							.ThenBy(x => x.Domain.Name)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 					else
 					{
 						_watchList = _watchList
-							.OrderBy(x => x.Address ?? 0)
+							.OrderBy(x => x.Address)
 							.ThenBy(x => x.Domain.Name)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
@@ -141,8 +141,8 @@ namespace BizHawk.Client.Common
 					if (reverse)
 					{
 						_watchList = _watchList
-							.OrderByDescending(x => x.Value ?? 0)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(x => x.Value)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ThenBy(x => x.BigEndian)
@@ -151,8 +151,8 @@ namespace BizHawk.Client.Common
 					else
 					{
 						_watchList = _watchList
-							.OrderBy(x => x.Value ?? 0)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(x => x.Value)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ThenBy(x => x.BigEndian)

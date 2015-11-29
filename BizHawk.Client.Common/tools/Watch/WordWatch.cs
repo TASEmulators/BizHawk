@@ -62,17 +62,17 @@ namespace BizHawk.Client.Common
 			get { return ushort.MaxValue; }
 		}
 
-		public override int? Value
+		public override int Value
 		{
 			get { return GetWord(); }
 		}
 
-		public override int? ValueNoFreeze
+		public override int ValueNoFreeze
 		{
 			get { return GetWord(true); }
 		}
 
-		public override int? Previous
+		public override int Previous
 		{
 			get { return _previous; }
 		}

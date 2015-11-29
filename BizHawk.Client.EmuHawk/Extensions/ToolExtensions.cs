@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			Global.CheatList.AddRange(
 				watches
 				.Where(w => !w.IsSeparator)
-				.Select(w => new Cheat(w, w.Value ?? 0)));
+				.Select(w => new Cheat(w, w.Value)));
 		}
 
 		public static void UnfreezeAll(this IEnumerable<Watch> watches)

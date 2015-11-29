@@ -1,13 +1,18 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
+	/// <summary>
+	/// This class holds a watch i.e. something inside a <see cref="MemoryDomain"/> identified by an address
+	/// with a specific size (8, 16 or 32bits).
+	/// This is an abstract class
+	/// </summary>
 	public abstract partial class Watch
 		: IEquatable<Watch>,
 		IEquatable<Cheat>,
@@ -311,7 +316,7 @@ namespace BizHawk.Client.Common
 		public abstract IEnumerable<DisplayType> AvailableTypes();
 
 		/// <summary>
-		/// Reset the previous value
+		/// Reset the previous value; set it to the current one
 		/// </summary>
 		public abstract void ResetPrevious();
 
@@ -322,14 +327,14 @@ namespace BizHawk.Client.Common
 
 		#endregion Abstracts
 
-		#region Protected
-
+		#region Protected		
+		
 		protected byte GetByte(bool bypassFreeze = false)
 		{
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
-				//LIAR logic
-				return Global.CheatList.GetByteValue(_domain, _address).Value;
+				//LIAR logic				
+				return Global.CheatList.GetByteValue(_domain, _address) ?? 0;
 			}
 			else
 			{
@@ -349,7 +354,7 @@ namespace BizHawk.Client.Common
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
 				//LIAR logic
-				return (ushort)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word).Value;
+				return (ushort)(Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word) ?? 0);
 			}
 			else
 			{
@@ -369,7 +374,7 @@ namespace BizHawk.Client.Common
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
 				//LIAR logic
-				return (uint)Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord).Value;
+				return (uint)(Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord) ?? 0);
 			}
 			else
 			{
@@ -424,7 +429,8 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public bool Equals(Watch other)
 		{
-			return this._domain == other._domain &&
+			return !object.ReferenceEquals(other, null) &&
+					this._domain == other._domain &&
 					this._address == other._address &&
 					this._size == other._size;
 		}
@@ -440,7 +446,8 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public bool Equals(Cheat other)
 		{
-			return this._domain == other.Domain &&
+			return !object.ReferenceEquals(other, null) &&
+					this._domain == other.Domain &&
 					this._address == other.Address &&
 					this._size == other.Size;
 		}
@@ -467,7 +474,11 @@ namespace BizHawk.Client.Common
 			{
 				return 0;
 			}
-			else if (_address.Equals(other._address))
+			else if (object.ReferenceEquals(other, null))
+			{
+				return 1;
+			}
+            else if (_address.Equals(other._address))
 			{
 				return ((int)_size).CompareTo((int)other._size);
 			}
@@ -543,14 +554,50 @@ namespace BizHawk.Client.Common
 
 		#region Abstracts
 
+		/// <summary>
+		/// Get a string representation of difference
+		/// between current value and the previous one
+		/// </summary>
 		public abstract string Diff { get; }
+
+		/// <summary>
+		/// Get the maximum possible value
+		/// </summary>
 		public abstract uint MaxValue { get; }
-		public abstract int? Value { get; }
-		//zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326
-		public abstract int? ValueNoFreeze { get; }
+
+		/// <summary>
+		/// Get the current value
+		/// </summary>
+		public abstract int Value { get; }
+
+		/// <summary>
+		/// Gets the current value
+		/// but with stuff I don't understand
+		/// </summary>
+		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
+		public abstract int ValueNoFreeze { get; }
+
+		/// <summary>
+		/// Get a string representation of the current value
+		/// </summary>
 		public abstract string ValueString { get; }
+
+		/// <summary>
+		/// Try to sets the value into the <see cref="MemoryDomain"/>
+		/// at the current <see cref="Watch"/> address
+		/// </summary>
+		/// <param name="value">Value to set</param>
+		/// <returns>True if value successfully sets; othewise, false</returns>
 		public abstract bool Poke(string value);
-		public abstract int? Previous { get; }
+
+		/// <summary>
+		/// Get the previous value
+		/// </summary>
+		public abstract int Previous { get; }
+
+		/// <summary>
+		/// Get a string representation of the previous value
+		/// </summary>
 		public abstract string PreviousStr { get; }
 
 		#endregion Abstracts
@@ -728,6 +775,7 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+		//TODO: Replace all the following stuff by implementing ISerializable
 		public static string DisplayTypeToString(DisplayType type)
 		{
 			switch (type)

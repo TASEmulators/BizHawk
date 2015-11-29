@@ -62,17 +62,17 @@ namespace BizHawk.Client.Common
 			yield return DisplayType.Float;
         }
 
-		public override int? Value
+		public override int Value
 		{
 			get { return (int)GetDWord(); }
 		}
 
-		public override int? ValueNoFreeze
+		public override int ValueNoFreeze
 		{
 			get { return (int)GetDWord(true); }
 		}
 
-		public override int? Previous
+		public override int Previous
 		{
 			get { return (int)_previous; }
 		}

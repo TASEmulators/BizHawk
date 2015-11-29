@@ -1,13 +1,17 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Common.StringExtensions;
-using BizHawk.Emulation.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.Common
 {
+	/// <summary>
+	/// This class holds a byte (8 bits) <see cref="Watch"/>
+	/// </summary>
 	public sealed class ByteWatch : Watch
 	{
 		#region Fields
@@ -19,6 +23,18 @@ namespace BizHawk.Client.Common
 
 		#region cTor(s)
 
+		/// <summary>
+		/// Inialize a new instance of <see cref="ByteWatch"/>
+		/// </summary>
+		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
+		/// <param name="address">The address you want to track</param>
+		/// <param name="type">How you you want to display the value See <see cref="DisplayType"/></param>
+		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
+		/// <param name="note">A custom note about the <see cref="Watch"/></param>
+		/// <param name="value">Current value</param>
+		/// <param name="previous">Previous value</param>
+		/// <param name="changeCount">How many times value has changed</param>
+		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with <see cref="WatchSize.Byte"/></exception>
 		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
 			: base(domain, address, WatchSize.Byte, type, bigEndian, note)
 		{
@@ -27,15 +43,13 @@ namespace BizHawk.Client.Common
 			this._changecount = changeCount;
 		}
 
-		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note)
-			:this(domain, address, type, bigEndian, note, 0, 0, 0)
-		{
-			_previous = GetByte();
-			_value = GetByte();			
-		}		
-
 		#endregion
 
+		#region Methods		
+
+		/// <summary>
+		/// Enumerate wich <see cref="DisplayType"/> are valid for a <see cref="ByteWatch"/>
+		/// </summary>
 		public static IEnumerable<DisplayType> ValidTypes
 		{
 			get
@@ -47,54 +61,59 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		#region Implements
+
+		/// <summary>
+		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="ByteWatch"/>
+		/// </summary>
+		/// <returns>An enumartion that contains all valid <see cref="DisplayType"/></returns>
 		public override IEnumerable<DisplayType> AvailableTypes()
 		{
-			yield return DisplayType.Unsigned;
-			yield return DisplayType.Signed;
-			yield return DisplayType.Hex;
-			yield return DisplayType.Binary;
-        }
-
-		public override int? Value
-		{
-			get { return GetByte(); }
+			return ValidTypes;
 		}
 
-		public override int? ValueNoFreeze
-		{
-			get { return GetByte(true); }
-		}
-
-		public override string ValueString
-		{
-			get { return FormatValue(GetByte()); }
-		}
-
-		public override int? Previous
-		{
-			get { return _previous; }
-		}
-
-		public override string PreviousStr
-		{
-			get { return FormatValue(_previous); }
-		}
-
+		/// <summary>
+		/// Reset the previous value; set it to the current one
+		/// </summary>
 		public override void ResetPrevious()
 		{
 			_previous = GetByte();
 		}
 
-		public override string ToString()
+		/// <summary>
+		/// Update the Watch (read it from <see cref="MemoryDomain"/>
+		/// </summary>
+		public override void Update()
 		{
-			return Notes + ": " + ValueString;
-		}
-		
-		public override uint MaxValue
-		{
-			get { return byte.MaxValue; }
+			switch (Global.Config.RamWatchDefinePrevious)
+			{
+				case PreviousType.Original:
+					return;
+				case PreviousType.LastChange:
+					var temp = _value;
+					_value = GetByte();
+					if (_value != temp)
+					{
+						_previous = _value;
+						_changecount++;
+					}
+
+					break;
+				case PreviousType.LastFrame:
+					_previous = _value;
+					_value = GetByte();
+					if (_value != Previous)
+					{
+						_changecount++;
+					}
+
+					break;
+			}
 		}
 
+		#endregion
+
+		//TODO: Implements IFormattable
 		public string FormatValue(byte val)
 		{
 			switch (Type)
@@ -111,6 +130,92 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		#endregion
+
+		public override string ToString()
+		{			
+			return Notes + ": " + ValueString;
+		}
+
+		#region Properties
+
+		#region Implements
+
+		/// <summary>
+		/// Get a string representation of difference
+		/// between current value and the previous one
+		/// </summary>
+		public override string Diff
+		{
+			get
+			{
+				string diff = string.Empty;
+				byte diffVal = Convert.ToByte(_value - _previous);
+				if (diffVal > 0)
+				{
+					diff = "+";
+				}
+				else if (diffVal < 0)
+				{
+					diff = "-";
+				}
+
+				return string.Format("{0}{1}", diff, FormatValue(diffVal));
+			}
+		}
+
+		/// <summary>
+		/// Get the maximum possible value
+		/// </summary>
+		public override uint MaxValue
+		{
+			get
+			{
+				return byte.MaxValue;
+			}
+		}
+
+		/// <summary>
+		/// Get the current value
+		/// </summary>
+		public override int Value
+		{
+			get
+			{
+				return GetByte();
+			}
+		}
+
+		/// <summary>
+		/// Gets the current value
+		/// but with stuff I don't understand
+		/// </summary>
+		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
+		public override int ValueNoFreeze
+		{
+			get
+			{
+				return GetByte(true);
+			}
+		}
+
+		/// <summary>
+		/// Get a string representation of the current value
+		/// </summary>
+		public override string ValueString
+		{
+			get
+			{
+				return FormatValue(_value);
+			}
+		}
+
+		/// <summary>
+		/// Try to sets the value into the <see cref="MemoryDomain"/>
+		/// at the current <see cref="Watch"/> address
+		/// </summary>
+		/// <param name="value">Value to set</param>
+		/// <returns>True if value successfully sets; othewise, false</returns>
 		public override bool Poke(string value)
 		{
 			try
@@ -185,51 +290,30 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public override string Diff
+		/// <summary>
+		/// Get the previous value
+		/// </summary>
+		public override int Previous
 		{
 			get
 			{
-				var diff = string.Empty;
-				var diffVal = _value - _previous;
-				if (diffVal > 0)
-				{
-					diff = "+";
-				}
-				else if (diffVal < 0)
-				{
-					diff = "-";
-				}
-
-				return diff + FormatValue((byte)(_previous - _value));
-			}
-		}		
-
-		public override void Update()
-		{
-			switch (Global.Config.RamWatchDefinePrevious)
-			{
-				case PreviousType.Original:
-					return;
-				case PreviousType.LastChange:
-					var temp = _value;
-					_value = GetByte();
-					if (_value != temp)
-					{
-						_previous = _value;
-						_changecount++;
-					}
-
-					break;
-				case PreviousType.LastFrame:
-					_previous = _value;
-					_value = GetByte();
-					if (_value != Previous)
-					{
-						_changecount++;
-					}
-
-					break;
+				return _previous;
 			}
 		}
+
+		/// <summary>
+		/// Get a string representation of the previous value
+		/// </summary>
+		public override string PreviousStr
+		{
+			get
+			{
+				return FormatValue(_previous);
+			}
+		}
+
+		#endregion Implements
+
+		#endregion		
 	}
 }

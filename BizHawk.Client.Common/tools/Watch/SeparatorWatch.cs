@@ -14,19 +14,19 @@ namespace BizHawk.Client.Common
 			get { return new SeparatorWatch(); }
 		}
 
-		public override int? Value
+		public override int Value
 		{
-			get { return null; }
+			get { return 0; }
 		}
 
-		public override int? ValueNoFreeze
+		public override int ValueNoFreeze
 		{
-			get { return null; }
+			get { return 0; }
 		}
 
-		public override int? Previous
+		public override int Previous
 		{
-			get { return null; }
+			get { return 0; }
 		}		
 
 		public override string ValueString

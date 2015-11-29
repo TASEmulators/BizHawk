@@ -762,7 +762,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.CheatList.Add(new Cheat(
 					watch,
-					watch.Value ?? 0));
+					watch.Value));
 			}
 		}
 
@@ -780,7 +780,7 @@ namespace BizHawk.Client.EmuHawk
 
 				cheats.Add(new Cheat(
 					watch,
-					watch.Value ?? 0));
+					watch.Value));
 			}
 
 			Global.CheatList.AddRange(cheats);
