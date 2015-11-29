@@ -312,7 +312,8 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool DisableLuaScriptsOnLoad = false;
-		public bool ReturnAllIfNoneSelected = true;
+		public bool ToggleAllIfNoneSelected = true;
+		public bool RemoveRegisteredFunctionsOnToggle = true;
 		public bool RunLuaDuringTurbo = true;
 
 		// Watch Settings

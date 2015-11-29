@@ -70,6 +70,8 @@
 			this.RegisteredFunctionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SettingsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisableScriptsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ReturnAllIfNoneSelectedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RemoveRegisteredFunctionsOnToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.FunctionsListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineDocsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,7 +103,6 @@
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.ReturnAllIfNoneSelectedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
@@ -454,7 +455,8 @@
 			// 
 			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DisableScriptsOnLoadMenuItem,
-            this.ReturnAllIfNoneSelectedMenuItem});
+            this.ReturnAllIfNoneSelectedMenuItem,
+            this.RemoveRegisteredFunctionsOnToggleMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(58, 20);
 			this.SettingsSubMenu.Text = "&Settings";
@@ -463,9 +465,23 @@
 			// DisableScriptsOnLoadMenuItem
 			// 
 			this.DisableScriptsOnLoadMenuItem.Name = "DisableScriptsOnLoadMenuItem";
-			this.DisableScriptsOnLoadMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.DisableScriptsOnLoadMenuItem.Size = new System.Drawing.Size(278, 22);
 			this.DisableScriptsOnLoadMenuItem.Text = "Disable Scripts on Load";
 			this.DisableScriptsOnLoadMenuItem.Click += new System.EventHandler(this.DisableScriptsOnLoadMenuItem_Click);
+			// 
+			// ReturnAllIfNoneSelectedMenuItem
+			// 
+			this.ReturnAllIfNoneSelectedMenuItem.Name = "ReturnAllIfNoneSelectedMenuItem";
+			this.ReturnAllIfNoneSelectedMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.ReturnAllIfNoneSelectedMenuItem.Text = "Toggle All if None Selected";
+			this.ReturnAllIfNoneSelectedMenuItem.Click += new System.EventHandler(this.ToggleAllIfNoneSelectedMenuItem_Click);
+			// 
+			// RemoveRegisteredFunctionsOnToggleMenuItem
+			// 
+			this.RemoveRegisteredFunctionsOnToggleMenuItem.Name = "RemoveRegisteredFunctionsOnToggleMenuItem";
+			this.RemoveRegisteredFunctionsOnToggleMenuItem.Size = new System.Drawing.Size(278, 22);
+			this.RemoveRegisteredFunctionsOnToggleMenuItem.Text = "Remove Registered Functions on Toggle";
+			this.RemoveRegisteredFunctionsOnToggleMenuItem.Click += new System.EventHandler(this.RemoveRegisteredFunctionsOnToggleMenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -791,13 +807,6 @@
 			this.splitContainer1.SplitterDistance = 280;
 			this.splitContainer1.TabIndex = 7;
 			// 
-			// ReturnAllIfNoneSelectedMenuItem
-			// 
-			this.ReturnAllIfNoneSelectedMenuItem.Name = "ReturnAllIfNoneSelectedMenuItem";
-			this.ReturnAllIfNoneSelectedMenuItem.Size = new System.Drawing.Size(213, 22);
-			this.ReturnAllIfNoneSelectedMenuItem.Text = "Return All if None Selected";
-			this.ReturnAllIfNoneSelectedMenuItem.Click += new System.EventHandler(this.ReturnAllIfNoneSelectedMenuItem_Click);
-			// 
 			// LuaConsole
 			// 
 			this.AllowDrop = true;
@@ -909,5 +918,6 @@
 				private System.Windows.Forms.SplitContainer splitContainer1;
 				private System.Windows.Forms.ImageList imageList1;
 				private System.Windows.Forms.ToolStripMenuItem ReturnAllIfNoneSelectedMenuItem;
+				private System.Windows.Forms.ToolStripMenuItem RemoveRegisteredFunctionsOnToggleMenuItem;
 	}
 }

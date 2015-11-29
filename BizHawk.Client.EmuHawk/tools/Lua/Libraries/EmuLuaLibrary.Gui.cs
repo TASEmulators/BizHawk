@@ -614,7 +614,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 					Size sizeOfText = g.MeasureString(message, font, 0, StringFormat.GenericTypographic).ToSize();
-					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 1));
+					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
 					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
