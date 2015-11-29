@@ -379,55 +379,74 @@ namespace BizHawk.Client.EmuHawk
 		//Provided by mGBA and endrift
 		UInt32[] GBAGameSharkSeeds = { UInt32.Parse("09F4FBBD", NumberStyles.HexNumber), UInt32.Parse("9681884A", NumberStyles.HexNumber), UInt32.Parse("352027E9", NumberStyles.HexNumber), UInt32.Parse("F3DEE5A7", NumberStyles.HexNumber) };
 		UInt32[] GBAProActionReplaySeeds = { UInt32.Parse("7AA9648F", NumberStyles.HexNumber), UInt32.Parse("7FAE6994", NumberStyles.HexNumber), UInt32.Parse("C0EFAAD5", NumberStyles.HexNumber), UInt32.Parse("42712C57", NumberStyles.HexNumber) };
-        private void GBA()
+		private string firstSlide;
+		private string secondSlide;
+		Boolean Slider = false;
+
+		private void GBA()
 		{
 			Boolean blnNoCode = true;
 			//TODO:
 			//Clean the detection methods and improve/optimize code conversion.
 			testo = null;
-			//We have a Game Shark or Action Replay.
-            if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
+			//Slider is special code that allows us to break out and do Slide Codes.  It needs work
+			//TODO:
+			//Make Slide Code Handling suck less.
+			//TODO:
+			//Determine how to make Action Replay Max Code detection a thing?
+			if (Slider == true)
 			{
-				parseString = txtCheat.Text;
-				UInt32 op1 = 0;
-				UInt32 op2 = 0;
-				UInt32 sum = 0xC6EF3720;
-				op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
-				op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
-				//Tiny Encryption Algorithm
-				int i;
-				for (i = 0; i < 32; ++i)
+				secondSlide = txtCheat.Text;
+				GBASlide();
+			}
+			else if (Slider == false)
+			{
+				//We have a Game Shark or Action Replay?
+				if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
 				{
-					op2 -= ((op1 << 4) + GBAGameSharkSeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAGameSharkSeeds[3]);
-					op1 -= ((op2 << 4) + GBAGameSharkSeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAGameSharkSeeds[1]);
-					sum -= 0x9E3779B9;
+					parseString = txtCheat.Text;
+					UInt32 op1 = 0;
+					UInt32 op2 = 0;
+					UInt32 sum = 0xC6EF3720;
+					op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+					op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
+					//Tiny Encryption Algorithm
+					int i;
+					for (i = 0; i < 32; ++i)
+					{
+						op2 -= ((op1 << 4) + GBAGameSharkSeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAGameSharkSeeds[3]);
+						op1 -= ((op2 << 4) + GBAGameSharkSeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAGameSharkSeeds[1]);
+						sum -= 0x9E3779B9;
+					}
+					//op1 has the Address
+					//op2 has the Value
+					//Sum, is pointless?
+					RAMAddress = string.Format("{0:X8}", op1);
+					RAMAddress = RAMAddress.Remove(0, 1);
+					RAMValue = string.Format("{0:X8}", op2);
+					if (RAMAddress.StartsWith("D4"))
+					{
+						MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+						return;
+					}
+					parseString = RAMValue;
+					MessageBox.Show(parseString);
+					parseString = RAMValue.Remove(4, 4);
+					//Is it a Word or Double Word?	
+					if (parseString == "0000")
+					{
+						//We assume.  Why not?
+						byteSize = 16;
+						RAMValue = RAMValue.Remove(0, 4);
+						//MessageBox.Show(RAMValue);
+					}
+					else if (parseString != "0000")
+					{
+						byteSize = 32;
+					}
+					blnNoCode = false;
 				}
-				//op1 has the Address
-				//op2 has the Value
-				//Sum, is pointless?
-				RAMAddress = string.Format("{0:X8}", op1);
-				RAMAddress = RAMAddress.Remove(0, 1);
-				RAMValue = string.Format("{0:X8}", op2);
-				if (RAMAddress.StartsWith("D4"))
-				{
-					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-					return;
-				}
-				parseString = RAMValue.Remove(4, 4);
-				//Is it a Word or Double Word?	
-				if (parseString == "0000")
-				{
-					//We assume.  Why not?
-					byteSize = 16;
-					RAMValue = RAMValue.Remove(0, 4);
-					//MessageBox.Show(RAMValue);
-				}
-				else if (parseString != "0000")
-				{
-					byteSize = 32;
-				}
-				blnNoCode = false;
-            }
+			}
 			if (txtCheat.Text.Length == 12)
 			{
 				MessageBox.Show("Encrypted Codebreaker/GameShark SP/Xploder codes are not supported by this tool.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -490,6 +509,33 @@ namespace BizHawk.Client.EmuHawk
 				txtDescription.Clear();
 			}
 		}
+		public void GBASlide()
+		{
+			//This works on the Action Replay MAX, not the Codebreaker, GameShark SP/Xploder
+			string s = firstSlide.Remove(0, 11).Insert(1, "0");
+			string str2 = secondSlide.Remove(8, 9);
+			if (str2.StartsWith("0000"))
+			{
+				str2 = str2.Remove(0, 4);
+			}
+			long num = 0L;
+			num = long.Parse(secondSlide.Remove(0, 9).Remove(4, 4), NumberStyles.HexNumber);
+			long num2 = long.Parse(secondSlide.Remove(0, 13), NumberStyles.HexNumber);
+			long num3 = long.Parse(s, NumberStyles.HexNumber);
+			for (double i = 0.0; i != num; i++)
+			{
+				s = string.Format("{0:X8}", num3);
+				Watch watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(s, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				int? compare = null;
+				Global.CheatList.Add(new Cheat(watch, int.Parse(str2, NumberStyles.HexNumber), compare, true));
+				num3 = long.Parse(s, NumberStyles.HexNumber) + num2;
+			}
+			Slider = false;
+			txtCheat.Clear();
+			txtDescription.Clear();
+		}
+
+
 		private void GEN()
 		{
 			//Game Genie only, for now.
