@@ -9,6 +9,9 @@ using System.Linq;
 namespace BizHawk.Client.Common
 {
 	public abstract partial class Watch
+		: IEquatable<Watch>,
+		IEquatable<Cheat>,
+		IComparable<Watch>
 	{
 		#region Fields
 
@@ -33,6 +36,7 @@ namespace BizHawk.Client.Common
 		/// <param name="type">How you you want to display the value See <see cref="DisplayType"/></param>
 		/// <param name="bigEndian">Specify the endianess. true for big endian</param>
 		/// <param name="note">A custom note about the <see cref="Watch"/></param>
+		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
 		protected Watch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian, string note)
 		{
 			if (IsDiplayTypeAvailable(type))
@@ -55,7 +59,7 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region Methods
-		
+
 		#region Static		
 
 		/// <summary>
@@ -189,6 +193,8 @@ namespace BizHawk.Client.Common
 			return GenerateWatch(domain, address, size, type, bigEndian, string.Empty, 0, 0, 0);
 		}
 
+		#region Operators
+
 		/// <summary>
 		/// Equality operator between two <see cref="Watch"/>
 		/// </summary>
@@ -243,6 +249,56 @@ namespace BizHawk.Client.Common
 		{
 			return !(a == b);
 		}
+
+		/// <summary>
+		/// Compare two <see cref="Watch"/> together
+		/// </summary>
+		/// <param name="a">First <see cref="Watch"/></param>
+		/// <param name="b">Second <see cref="Watch"/></param>
+		/// <returns>True if first is lesser than b; otherwise, false</returns>
+		/// <exception cref="InvalidOperationException">Occurs when you try to compare two <see cref="Watch"/> throughout different <see cref="MemoryDomain"/></exception>
+		public static bool operator <(Watch a, Watch b)
+		{
+			return a.CompareTo(b) < 0;
+		}
+
+		/// <summary>
+		/// Compare two <see cref="Watch"/> together
+		/// </summary>
+		/// <param name="a">First <see cref="Watch"/></param>
+		/// <param name="b">Second <see cref="Watch"/></param>
+		/// <returns>True if first is greater than b; otherwise, false</returns>
+		/// <exception cref="InvalidOperationException">Occurs when you try to compare two <see cref="Watch"/> throughout different <see cref="MemoryDomain"/></exception>
+		public static bool operator >(Watch a, Watch b)
+		{
+			return a.CompareTo(b) > 0;
+		}
+
+		/// <summary>
+		/// Compare two <see cref="Watch"/> together
+		/// </summary>
+		/// <param name="a">First <see cref="Watch"/></param>
+		/// <param name="b">Second <see cref="Watch"/></param>
+		/// <returns>True if first is lesser or equals to b; otherwise, false</returns>
+		/// <exception cref="InvalidOperationException">Occurs when you try to compare two <see cref="Watch"/> throughout different <see cref="MemoryDomain"/></exception>
+		public static bool operator <=(Watch a, Watch b)
+		{
+			return a.CompareTo(b) <= 0;
+		}
+
+		/// <summary>
+		/// Compare two <see cref="Watch"/> together
+		/// </summary>
+		/// <param name="a">First <see cref="Watch"/></param>
+		/// <param name="b">Second <see cref="Watch"/></param>
+		/// <returns>True if first is greater or equals to b; otherwise, false</returns>
+		/// <exception cref="InvalidOperationException">Occurs when you try to compare two <see cref="Watch"/> throughout different <see cref="MemoryDomain"/></exception>
+		public static bool operator >=(Watch a, Watch b)
+		{
+			return a.CompareTo(b) >= 0;
+		}
+
+		#endregion Operators
 
 		#endregion Static
 
@@ -359,6 +415,70 @@ namespace BizHawk.Client.Common
 			_changecount = 0;
 		}
 
+		#region IEquatable<Watch>
+
+		/// <summary>
+		/// Determine if this <see cref="Watch"/> is equals to another
+		/// </summary>
+		/// <param name="obj">The <see cref="Watch"/> to compare</param>
+		/// <returns>True if both object are equals; otherwise, false</returns>
+		public bool Equals(Watch other)
+		{
+			return this._domain == other._domain &&
+					this._address == other._address &&
+					this._size == other._size;
+		}
+
+		#endregion IEquatable<Watch>
+
+		#region IEquatable<Cheat>
+
+		/// <summary>
+		/// Determine if this <see cref="Watch"/> is equals to an instance of <see cref="Cheat"/>
+		/// </summary>
+		/// <param name="obj">The <see cref="Cheat"/> to compare</param>
+		/// <returns>True if both object are equals; otherwise, false</returns>
+		public bool Equals(Cheat other)
+		{
+			return this._domain == other.Domain &&
+					this._address == other.Address &&
+					this._size == other.Size;
+		}
+
+		#endregion IEquatable<Cheat>
+
+		#region  IComparable<Watch>
+
+		/// <summary>
+		/// Compare two <see cref="Watch"/> together and determine wich one comes first.
+		/// First we look the address and then the size
+		/// </summary>
+		/// <param name="other">The other <see cref="Watch"/> to compare to</param>
+		/// <returns>0 if they are equals, 1 if the other is greater, -1 if the other is lesser</returns>
+		/// <exception cref="InvalidOperationException">Occurs when you try to compare two <see cref="Watch"/> throughout different <see cref="MemoryDomain"/></exception>
+		public int CompareTo(Watch other)
+		{
+			if (this._domain != other._domain)
+			{
+				throw new InvalidOperationException("Watch cannot be compared through different domain");
+			}
+
+			if (this.Equals(other))
+			{
+				return 0;
+			}
+			else if (_address.Equals(other._address))
+			{
+				return ((int)_size).CompareTo((int)other._size);
+			}
+			else
+			{
+				return _address.CompareTo(other._address);
+			}
+		}
+
+		#endregion IComparable<Watch>
+
 		/// <summary>
 		/// Determine if this object is Equals to another
 		/// </summary>
@@ -366,19 +486,14 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public override bool Equals(object obj)
 		{
-			Watch watch = (Watch)obj;
-
 			if (obj is Watch)
 			{
-				return this.Domain == watch.Domain &&
-					this.Address == watch.Address &&
-					this.Size == watch.Size &&
-					this.Type == watch.Type &&
-					this.Notes == watch.Notes;
+				return Equals((Watch)obj);
 			}
+
 			else if (obj is Cheat)
 			{
-				return this.Domain == watch.Domain && this.Address == watch.Address;
+				return Equals((Cheat)obj);
 			}
 			else
 			{
@@ -404,7 +519,7 @@ namespace BizHawk.Client.Common
 		public bool IsDiplayTypeAvailable(DisplayType type)
 		{
 			return AvailableTypes().Where<DisplayType>(d => d == type).Any<DisplayType>();
-        }
+		}
 
 		/// <summary>
 		/// Transform the current instance into a string
@@ -508,6 +623,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets or set the way current <see cref="Watch"/> is displayed
 		/// </summary>
+		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
 		public DisplayType Type
 		{
 			get

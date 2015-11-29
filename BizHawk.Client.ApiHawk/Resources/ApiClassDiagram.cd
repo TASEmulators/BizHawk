@@ -13,6 +13,7 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier />
+    <Lollipop Orientation="Left" Position="0.1" />
   </Class>
   <Class Name="BizHawk.Client.Common.SeparatorWatch">
     <Position X="6" Y="19" Width="2.75" />
