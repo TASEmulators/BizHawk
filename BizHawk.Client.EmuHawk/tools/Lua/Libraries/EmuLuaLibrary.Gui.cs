@@ -25,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		private Color DefaultForeground = Color.White;
 		private Color? DefaultBackground = null;
 		private Color? DefaultTextBackground = Color.FromArgb(128, 0, 0, 0);
+		private int DefaultPixelFont = 1; // gens
 
 		public override string Name { get { return "gui"; } }
 
@@ -590,7 +591,11 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					var index = 0;
-					if (!string.IsNullOrEmpty(fontfamily))
+					if (string.IsNullOrEmpty(fontfamily))
+					{
+						index = DefaultPixelFont;
+					}
+					else
 					{
 						switch (fontfamily)
 						{
@@ -602,11 +607,14 @@ namespace BizHawk.Client.EmuHawk
 							case "1":
 								index = 1;
 								break;
+							default:
+								Log(string.Format("Unable to find font family: {0}", fontfamily));
+								return;
 						}
 					}
 					var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 					Size sizeOfText = g.MeasureString(message, font, 0, StringFormat.GenericTypographic).ToSize();
-					Rectangle rect = new Rectangle(new Point(x, y - 1), sizeOfText + new Size(1, 2));
+					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 1));
 					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
