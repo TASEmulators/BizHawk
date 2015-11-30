@@ -61,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 				ScrollSpeed = 3;
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
+				BranchCellHoverInterval = 1;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -77,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
             public string FollowCursorScrollMethod { get; set; }
+			public int BranchCellHoverInterval { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -202,7 +204,8 @@ namespace BizHawk.Client.EmuHawk
 			TasView.InputPaintingMode = Settings.DrawInput;
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
-            TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
 
             TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
             TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor;
