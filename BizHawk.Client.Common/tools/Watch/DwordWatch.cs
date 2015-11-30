@@ -97,10 +97,10 @@ namespace BizHawk.Client.Common
 			get { return FormatValue(GetDWord()); }
 		}
 
-		public override string ToString()
+		/*public override string ToString()
 		{
 			return Notes + ": " + ValueString;
-		}
+		}*/
 
 		public string FormatValue(uint val)
 		{
