@@ -81,136 +81,6 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Update the Watch (read it from <see cref="MemoryDomain"/>
-		/// </summary>
-		public override void Update()
-		{
-			switch (Global.Config.RamWatchDefinePrevious)
-			{
-				case PreviousType.Original:
-					return;
-				case PreviousType.LastChange:
-					var temp = _value;
-					_value = GetByte();
-					if (_value != temp)
-					{
-						_previous = _value;
-						_changecount++;
-					}
-
-					break;
-				case PreviousType.LastFrame:
-					_previous = _value;
-					_value = GetByte();
-					if (_value != Previous)
-					{
-						_changecount++;
-					}
-
-					break;
-			}
-		}
-
-		#endregion
-
-		//TODO: Implements IFormattable
-		public string FormatValue(byte val)
-		{
-			switch (Type)
-			{
-				default:
-				case DisplayType.Unsigned:
-					return val.ToString();
-				case DisplayType.Signed:
-					return ((sbyte)val).ToString();
-				case DisplayType.Hex:
-					return val.ToHexString(2);
-				case DisplayType.Binary:
-					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
-			}
-		}
-
-		#endregion
-
-		/*public override string ToString()
-		{ 	
-			return Notes + ": " + ValueString;
-		}*/
-
-		#region Properties
-
-		#region Implements
-
-		/// <summary>
-		/// Get a string representation of difference
-		/// between current value and the previous one
-		/// </summary>
-		public override string Diff
-		{
-			get
-			{
-				string diff = string.Empty;
-				byte diffVal = Convert.ToByte(_value - _previous);
-				if (diffVal > 0)
-				{
-					diff = "+";
-				}
-				else if (diffVal < 0)
-				{
-					diff = "-";
-				}
-
-				return string.Format("{0}{1}", diff, FormatValue(diffVal));
-			}
-		}
-
-		/// <summary>
-		/// Get the maximum possible value
-		/// </summary>
-		public override uint MaxValue
-		{
-			get
-			{
-				return byte.MaxValue;
-			}
-		}
-
-		/// <summary>
-		/// Get the current value
-		/// </summary>
-		public override int Value
-		{
-			get
-			{
-				return GetByte();
-			}
-		}
-
-		/// <summary>
-		/// Gets the current value
-		/// but with stuff I don't understand
-		/// </summary>
-		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
-		public override int ValueNoFreeze
-		{
-			get
-			{
-				return GetByte(true);
-			}
-		}
-
-		/// <summary>
-		/// Get a string representation of the current value
-		/// </summary>
-		public override string ValueString
-		{
-			get
-			{
-				return FormatValue(_value);
-			}
-		}
-
-		/// <summary>
 		/// Try to sets the value into the <see cref="MemoryDomain"/>
 		/// at the current <see cref="Watch"/> address
 		/// </summary>
@@ -291,6 +161,131 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// Update the Watch (read it from <see cref="MemoryDomain"/>
+		/// </summary>
+		public override void Update()
+		{
+			switch (Global.Config.RamWatchDefinePrevious)
+			{
+				case PreviousType.Original:
+					return;
+				case PreviousType.LastChange:
+					var temp = _value;
+					_value = GetByte();
+					if (_value != temp)
+					{
+						_previous = _value;
+						_changecount++;
+					}
+
+					break;
+				case PreviousType.LastFrame:
+					_previous = _value;
+					_value = GetByte();
+					if (_value != Previous)
+					{
+						_changecount++;
+					}
+
+					break;
+			}
+		}
+
+		#endregion Implements
+
+		//TODO: Implements IFormattable
+		public string FormatValue(byte val)
+		{
+			switch (Type)
+			{
+				default:
+				case DisplayType.Unsigned:
+					return val.ToString();
+				case DisplayType.Signed:
+					return ((sbyte)val).ToString();
+				case DisplayType.Hex:
+					return val.ToHexString(2);
+				case DisplayType.Binary:
+					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
+			}
+		}
+
+		#endregion
+
+		#region Properties
+
+		#region Implements
+
+		/// <summary>
+		/// Get a string representation of difference
+		/// between current value and the previous one
+		/// </summary>
+		public override string Diff
+		{
+			get
+			{
+				string diff = string.Empty;
+				byte diffVal = Convert.ToByte(_value - _previous);
+				if (diffVal > 0)
+				{
+					diff = "+";
+				}
+				else if (diffVal < 0)
+				{
+					diff = "-";
+				}
+
+				return string.Format("{0}{1}", diff, FormatValue(diffVal));
+			}
+		}
+
+		/// <summary>
+		/// Get the maximum possible value
+		/// </summary>
+		public override uint MaxValue
+		{
+			get
+			{
+				return byte.MaxValue;
+			}
+		}
+
+		/// <summary>
+		/// Get the current value
+		/// </summary>
+		public override int Value
+		{
+			get
+			{
+				return GetByte();
+			}
+		}
+
+		/// <summary>
+		/// Gets the current value
+		/// but with stuff I don't understand
+		/// </summary>
+		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
+		public override int ValueNoFreeze
+		{
+			get
+			{
+				return GetByte(true);
+			}
+		}
+
+		/// <summary>
+		/// Get a string representation of the current value
+		/// </summary>
+		public override string ValueString
+		{
+			get
+			{
+				return FormatValue(_value);
+			}
+		}
+
+		/// <summary>
 		/// Get the previous value
 		/// </summary>
 		public override int Previous
@@ -314,6 +309,6 @@ namespace BizHawk.Client.Common
 
 		#endregion Implements
 
-		#endregion		
+		#endregion
 	}
 }

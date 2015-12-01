@@ -248,12 +248,12 @@ namespace BizHawk.Client.Common
 				case WatchSize.Separator:
 					return false;
 				case WatchSize.Byte:
-					return (_watch.Address ?? 0) == addr;
+					return _watch.Address == addr;
 				case WatchSize.Word:
-					return (addr == (_watch.Address ?? 0)) || (addr == (_watch.Address ?? 0) + 1);
+					return (addr == _watch.Address) || (addr == (_watch.Address) + 1);
 				case WatchSize.DWord:
-					return (addr == (_watch.Address ?? 0)) || (addr == (_watch.Address ?? 0) + 1) ||
-						(addr == (_watch.Address ?? 0) + 2) || (addr == (_watch.Address ?? 0) + 3);
+					return (addr == (_watch.Address)) || (addr == (_watch.Address) + 1) ||
+						(addr == (_watch.Address) + 2) || (addr == (_watch.Address) + 3);
 			}
 		}
 
@@ -271,22 +271,22 @@ namespace BizHawk.Client.Common
 				case WatchSize.Byte:
 					return (byte?)_val;
 				case WatchSize.Word:
-					if (addr == (_watch.Address ?? 0))
+					if (addr == (_watch.Address))
 					{
 						return (byte)(_val >> 8);
 					}
 
 					return (byte)(_val & 0xFF);
 				case WatchSize.DWord:
-					if (addr == (_watch.Address ?? 0))
+					if (addr == (_watch.Address))
 					{
 						return (byte)((_val >> 24) & 0xFF);
 					}
-					else if (addr == (_watch.Address ?? 0) + 1)
+					else if (addr == (_watch.Address) + 1)
 					{
 						return (byte)((_val >> 16) & 0xFF);
 					}
-					else if (addr == ((_watch.Address ?? 0)) + 2)
+					else if (addr == ((_watch.Address)) + 2)
 					{
 						return (byte)((_val >> 8) & 0xFF);
 					}

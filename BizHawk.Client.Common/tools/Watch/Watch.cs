@@ -327,8 +327,8 @@ namespace BizHawk.Client.Common
 
 		#endregion Abstracts
 
-		#region Protected		
-		
+		#region Protected
+
 		protected byte GetByte(bool bypassFreeze = false)
 		{
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
@@ -429,10 +429,16 @@ namespace BizHawk.Client.Common
 		/// <returns>True if both object are equals; otherwise, false</returns>
 		public bool Equals(Watch other)
 		{
-			return !object.ReferenceEquals(other, null) &&
-					this._domain == other._domain &&
-					this._address == other._address &&
-					this._size == other._size;
+			if (object.ReferenceEquals(other, null))
+			{
+				return false;
+			}
+			else
+			{
+				return this._domain == other._domain &&
+				this._address == other._address &&
+				this._size == other._size;
+			}
 		}
 
 		#endregion IEquatable<Watch>
@@ -478,7 +484,7 @@ namespace BizHawk.Client.Common
 			{
 				return 1;
 			}
-            else if (_address.Equals(other._address))
+			else if (_address.Equals(other._address))
 			{
 				return ((int)_size).CompareTo((int)other._size);
 			}
@@ -518,7 +524,7 @@ namespace BizHawk.Client.Common
 		/// <returns>int that can serves as a unique representation of current Watch</returns>
 		public override int GetHashCode()
 		{
-			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
+			return this.Domain.GetHashCode() + (int)(this.Address);
 		}
 
 		/// <summary>
@@ -539,7 +545,7 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}"
-				, (Address ?? 0).ToHexString((Domain.Size - 1).NumHexDigits())
+				, Address.ToHexString((Domain.Size - 1).NumHexDigits())
 				, SizeAsChar
 				, TypeAsChar
 				, Convert.ToInt32(BigEndian)
@@ -605,7 +611,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/>
 		/// </summary>
-		public long? Address
+		public long Address
 		{
 			get
 			{
@@ -699,9 +705,16 @@ namespace BizHawk.Client.Common
 			{
 				return _domain;
 			}
-			set
+			internal set
 			{
-				_domain = value;
+				if (_domain.Name == value.Name)
+				{
+					_domain = value;
+				}
+				else
+				{
+					throw new InvalidOperationException("You cannot set diffrent domain to a watch on the fly");
+				}
 			}
 		}
 
@@ -719,7 +732,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return null;
+					return string.Empty;
 				}
 			}
 		}

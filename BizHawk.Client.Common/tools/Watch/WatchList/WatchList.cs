@@ -1,23 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
+
 namespace BizHawk.Client.Common
 {
-	public class WatchList : IList<Watch>
+	/// <summary>
+	/// This class hold a collection <see cref="Watch"/>
+	/// Different memory domain can be mixed
+	/// </summary>
+	public sealed partial class WatchList
+		: IList<Watch>
 	{
-		private IMemoryDomains _memoryDomains;
-		private List<Watch> _watchList = new List<Watch>();
-		private MemoryDomain _domain;
-		private string _currentFilename = string.Empty;
-		private string _systemid;
+		#region Fields
 
 		public const string ADDRESS = "AddressColumn";
 		public const string VALUE = "ValueColumn";
@@ -27,14 +31,62 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
+		private static readonly WatchDomainComparer domainComparer = new WatchDomainComparer();
+		private static readonly WatchAddressComparer addressComparer = new WatchAddressComparer();
+
+		private static IMemoryDomains _memoryDomains;
+
+		private List<Watch> _watchList = new List<Watch>(0);
+		private MemoryDomain _domain;
+		private string _currentFilename = string.Empty;
+		private string _systemid;
+
+		#endregion
+
+		#region cTor(s)
+
+		/// <summary>
+		/// Initialize a new instance of <see cref="WatchList"/> that will
+		/// contains a set of <see cref="Watch"/>
+		/// </summary>
+		/// <param name="core">All available memomry domains</param>
+		/// <param name="domain">Domain you want to watch</param>
+		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
+		[Obsolete("Use the constructor with two parameters instead")]
 		public WatchList(IMemoryDomains core, MemoryDomain domain, string systemid)
 		{
-			_memoryDomains = core;
+			if (_memoryDomains == null)
+			{
+				_memoryDomains = core;
+			}
 			_domain = domain;
 			_systemid = systemid;
 		}
 
-		public void RefreshDomans(IMemoryDomains core, MemoryDomain domain)
+		/// <summary>
+		/// Initialize a new instance of <see cref="WatchList"/> that will
+		/// contains a set of <see cref="Watch"/>
+		/// </summary>
+		/// <param name="core">All available memomry domains</param>
+		/// <param name="domain">Domain you want to watch</param>
+		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
+		public WatchList(IMemoryDomains core, string systemid)
+		{
+			if (_memoryDomains == null)
+			{
+				_memoryDomains = core;
+			}
+			//TODO: Remove this after tests
+			_domain = core.MainMemory;
+			_systemid = systemid;
+		}
+
+		#endregion
+
+		#region Methods
+
+		[Obsolete("Use the method with single parameter instead")]
+		public void RefreshDomains(IMemoryDomains core, MemoryDomain domain)
 		{
 			_memoryDomains = core;
 			_domain = domain;
@@ -47,8 +99,21 @@ namespace BizHawk.Client.Common
 				}
 			});
 		}
-		
-		public enum WatchPrevDef { LastSearch, Original, LastFrame, LastChange }
+
+		public void RefreshDomains(IMemoryDomains core)
+		{
+			_memoryDomains = core;
+			Parallel.ForEach<Watch>(_watchList, watch =>
+			{
+				watch.Domain = core[watch.Domain.Name];
+				watch.ResetPrevious();
+				watch.Update();
+				watch.ClearChangeCount();
+			}
+			);
+		}
+
+		#endregion
 
 		public string AddressFormatStr // TODO: this is probably compensating for not using the ToHex string extension
 		{
@@ -65,19 +130,30 @@ namespace BizHawk.Client.Common
 
 		public int Count
 		{
-			get { return _watchList.Count; }
+			get
+			{
+				return _watchList.Count;
+			}
 		}
 
 		public int WatchCount
 		{
-			get { return _watchList.Count(w => !w.IsSeparator); }
+			get
+			{
+				return _watchList.Count<Watch>(watch => !watch.IsSeparator);
+			}
 		}
 
+		[Obsolete("Use count property instead")]
 		public int ItemCount
 		{
-			get { return _watchList.Count; }
+			get
+			{
+				return Count;
+			}
 		}
 
+		[Obsolete("Use domain from individual watch instead")]
 		public MemoryDomain Domain
 		{
 			get { return _domain; }
@@ -117,23 +193,12 @@ namespace BizHawk.Client.Common
 				case ADDRESS:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.Address)
-							.ThenBy(x => x.Domain.Name)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ThenBy(x => x.BigEndian)
-							.ToList();
+						_watchList.Sort(addressComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.Address)
-							.ThenBy(x => x.Domain.Name)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ThenBy(x => x.BigEndian)
-							.ToList();
+						_watchList.Sort();
 					}
 
 					break;
@@ -165,7 +230,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderByDescending(x => x.PreviousStr)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -174,7 +239,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderBy(x => x.PreviousStr)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -186,7 +251,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderByDescending(x => x.Diff)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -195,7 +260,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderBy(x => x.Diff)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -207,7 +272,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderByDescending(x => x.ChangeCount)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -216,7 +281,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderBy(x => x.ChangeCount)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -226,23 +291,12 @@ namespace BizHawk.Client.Common
 				case DOMAIN:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.Domain)
-							.ThenBy(x => x.Address ?? 0)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ThenBy(x => x.BigEndian)
-							.ToList();
+						_watchList.Sort(domainComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.Domain)
-							.ThenBy(x => x.Address ?? 0)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ThenBy(x => x.BigEndian)
-							.ToList();
+						_watchList.Sort(domainComparer);
 					}
 
 					break;
@@ -251,7 +305,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderByDescending(x => x.Notes)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -260,7 +314,7 @@ namespace BizHawk.Client.Common
 					{
 						_watchList = _watchList
 							.OrderBy(x => x.Notes)
-							.ThenBy(x => x.Address ?? 0)
+							.ThenBy(x => x.Address)
 							.ThenBy(x => x.Size)
 							.ThenBy(x => x.Type)
 							.ToList();
@@ -279,11 +333,11 @@ namespace BizHawk.Client.Common
 
 		public void UpdateValues()
 		{
-			foreach (var watch in _watchList)
+			Parallel.ForEach<Watch>(_watchList, watch =>
 			{
 				watch.Update();
-			}
-        }
+			});
+		}
 
 		public void Add(Watch watch)
 		{
@@ -412,7 +466,7 @@ namespace BizHawk.Client.Common
 				CurrentFileName = file.FullName;
 				return Save();
 			}
-			
+
 			return false;
 		}
 
@@ -476,7 +530,7 @@ namespace BizHawk.Client.Common
 					{
 						isOldBizHawkWatch = true; // This supports the legacy .wch format from 1.0.5 and earlier
 					}
-					else 
+					else
 					{
 						continue;   // If not 4, something is wrong with this line, ignore it
 					}
@@ -532,9 +586,9 @@ namespace BizHawk.Client.Common
 							memDomain,
 							addr,
 							size,
-							type,							
+							type,
 							bigEndian,
-                            notes));
+							notes));
 					_domain = _memoryDomains[domain];
 				}
 

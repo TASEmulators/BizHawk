@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.SetFromLong(_watchList[0].Address ?? 0);
+						AddressBox.SetFromLong(_watchList[0].Address);
 					}
 
 					SetBigEndianCheckBox();
@@ -267,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_watchList.Add(Watch.GenerateWatch(
 								watch.Domain,
-								watch.Address ?? 0,
+								watch.Address,
 								watch.Size,
 								watch.Type,
 								watch.BigEndian,
@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 
 					_watchList[i] = Watch.GenerateWatch(
 						_watchList[i].Domain,
-						_watchList.Count == 1 ? AddressBox.ToRawInt() ?? 0 : _watchList[i].Address ?? 0,
+						_watchList.Count == 1 ? AddressBox.ToRawInt() ?? 0 : _watchList[i].Address,
 						size,
 						_watchList[i].Type,						
 						_watchList[i].BigEndian,
