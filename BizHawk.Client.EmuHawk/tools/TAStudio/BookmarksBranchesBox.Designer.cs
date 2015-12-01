@@ -229,7 +229,7 @@
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
-			this.BranchView.HoverInterval = 500;
+			this.BranchView.HoverInterval = 1;
 			this.BranchView.LagFramesToHide = 0;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
 			this.BranchView.MaxCharactersInHorizontal = 1;

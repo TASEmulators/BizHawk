@@ -81,6 +81,7 @@ namespace BizHawk.Client.EmuHawk
 			this.StateHistoryIntegrityCheckMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ConfigSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetMaxUndoLevelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SetBranchCellHoverIntervalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
@@ -599,6 +600,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ConfigSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMaxUndoLevelsMenuItem,
+            this.SetBranchCellHoverIntervalMenuItem,
             this.toolStripSeparator9,
             this.AutoadjustInputMenuItem,
             this.toolStripSeparator11,
@@ -627,6 +629,13 @@ namespace BizHawk.Client.EmuHawk
 			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(253, 22);
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
+			// 
+			// SetBranchCellHoverIntervalMenuItem
+			// 
+			this.SetBranchCellHoverIntervalMenuItem.Name = "SetBranchCellHoverIntervalMenuItem";
+			this.SetBranchCellHoverIntervalMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.SetBranchCellHoverIntervalMenuItem.Text = "Set Branch Cell Hover Interval";
+			this.SetBranchCellHoverIntervalMenuItem.Click += new System.EventHandler(this.SetBranchCellHoverIntervalMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -1667,5 +1676,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem NewFromSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewFromNowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewFromCurrentSaveRamMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SetBranchCellHoverIntervalMenuItem;
 	}
 }

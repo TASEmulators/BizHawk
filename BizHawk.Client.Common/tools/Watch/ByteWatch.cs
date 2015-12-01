@@ -132,10 +132,10 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		public override string ToString()
-		{			
+		/*public override string ToString()
+		{ 	
 			return Notes + ": " + ValueString;
-		}
+		}*/
 
 		#region Properties
 

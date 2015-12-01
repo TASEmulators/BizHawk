@@ -21,8 +21,13 @@ namespace BizHawk.Client.EmuHawk
 		private const string TimeColumnName = "TimeColumn";
 
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
-		public TAStudio Tastudio { get; set; }
 		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
+		public TAStudio Tastudio { get; set; }
+
+		public int HoverInterval {
+			get { return BranchView.HoverInterval; }
+			set { BranchView.HoverInterval = value; }
+		}
 
 		private TasBranch GetBranch(int id)
 		{

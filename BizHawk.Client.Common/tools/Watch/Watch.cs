@@ -542,7 +542,7 @@ namespace BizHawk.Client.Common
 				, (Address ?? 0).ToHexString((Domain.Size - 1).NumHexDigits())
 				, SizeAsChar
 				, TypeAsChar
-				, BigEndian
+				, Convert.ToInt32(BigEndian)
 				, DomainName
 				, Notes.Trim('\r', '\n')
 				);
