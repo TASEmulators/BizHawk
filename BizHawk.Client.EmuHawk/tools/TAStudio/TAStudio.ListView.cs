@@ -628,7 +628,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						ClearLeftMouseStates();
-						MarkerControl.AddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
+						MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
 					}
 				}
 			}
