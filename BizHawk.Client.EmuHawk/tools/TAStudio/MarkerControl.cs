@@ -189,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool EditMarkerPopUp(TasMovieMarker marker)
+		public void EditMarkerPopUp(TasMovieMarker marker)
 		{
 			var markerFrame = marker.Frame;
 			InputPrompt i = new InputPrompt
@@ -209,9 +209,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				marker.Message = i.PromptText;
 				UpdateValues();
-				return true;
 			}
-			return false;
 		}
 
 		public void UpdateValues()
