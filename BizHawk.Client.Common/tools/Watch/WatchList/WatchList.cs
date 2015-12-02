@@ -85,107 +85,161 @@ namespace BizHawk.Client.Common
 
 		#region Methods
 
-		[Obsolete("Use the method with single parameter instead")]
-		public void RefreshDomains(IMemoryDomains core, MemoryDomain domain)
-		{
-			_memoryDomains = core;
-			_domain = domain;
+		#region ICollection<Watch>
 
-			_watchList.ForEach(w =>
-			{
-				if (w.Domain != null)
-				{
-					w.Domain = _memoryDomains[w.Domain.Name];
-				}
-			});
+		/// <summary>
+		/// Adds a <see cref="Watch"/> into the current collection
+		/// </summary>
+		/// <param name="watch"><see cref="Watch"/> to add</param>
+		public void Add(Watch watch)
+		{
+			_watchList.Add(watch);
+			Changes = true;
 		}
 
-		public void RefreshDomains(IMemoryDomains core)
+		/// <summary>
+		/// Removes all item from the current collection
+		/// Clear also the file name
+		/// </summary>
+		public void Clear()
 		{
-			_memoryDomains = core;
-			Parallel.ForEach<Watch>(_watchList, watch =>
+			_watchList.Clear();
+			Changes = false;
+			_currentFilename = string.Empty;
+		}
+
+		/// <summary>
+		/// Determines if the current <see cref="WatchList"/> contains the
+		/// specified <see cref="Watch"/>
+		/// </summary>
+		/// <param name="watch">The object to</param>
+		/// <returns></returns>
+		public bool Contains(Watch watch)
+		{
+			return _watchList.Contains(watch);
+		}
+
+		/// <summary>
+		/// Copies the elements of the current <see cref="WatchList"/>
+		/// into an <see cref="Array"/> starting at a particular <see cref="Array"/> index
+		/// </summary>
+		/// <param name="array">The one-dimension <see cref="Array"/> that will serve as destination to copy</param>
+		/// <param name="arrayIndex">Zero-based index where the copy should starts</param>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		public void CopyTo(Watch[] array, int arrayIndex)
+		{
+			_watchList.CopyTo(array, arrayIndex);
+		}
+
+		/// <summary>
+		/// Removes the first of specified <see cref="Watch"/>
+		/// </summary>
+		/// <param name="watch"><see cref="Watch"/> to remove</param>
+		/// <returns>True if <see cref="Watch"/> successfully removed; otherwise, false</returns>
+		public bool Remove(Watch watch)
+		{
+			bool result = _watchList.Remove(watch);
+			if (result)
 			{
-				watch.Domain = core[watch.Domain.Name];
-				watch.ResetPrevious();
-				watch.Update();
-				watch.ClearChangeCount();
+				Changes = true;
 			}
-			);
+
+			return result;
 		}
 
 		#endregion
 
-		public string AddressFormatStr // TODO: this is probably compensating for not using the ToHex string extension
-		{
-			get
-			{
-				if (_domain != null)
-				{
-					return "{0:X" + (_domain.Size - 1).NumHexDigits() + "}";
-				}
+		#region IList<Watch>
 
-				return string.Empty;
-			}
+		/// <summary>
+		/// Determines the zero-base position of the specified <see cref="Watch"/>
+		/// into the <see cref="WatchList"/>
+		/// </summary>
+		/// <param name="watch"><see cref="Watch"/> to look for</param>
+		/// <returns>Zero-base position if <see cref="Watch"/> has been found; otherwise -1</returns>
+		public int IndexOf(Watch watch)
+		{
+			return _watchList.IndexOf(watch);
 		}
 
-		public int Count
+		/// <summary>
+		/// Insert a <see cref="Watch"/> at the specified index
+		/// </summary>
+		/// <param name="index">The zero-base index where the <see cref="Watch"/> should be inserted</param>
+		/// <param name="watch"><see cref="Watch"/> to insert</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public void Insert(int index, Watch watch)
 		{
-			get
-			{
-				return _watchList.Count;
-			}
+			_watchList.Insert(index, watch);
 		}
 
-		public int WatchCount
+		/// <summary>
+		/// Removes item at the specified index
+		/// </summary>
+		/// <param name="index">Zero-based index of the <see cref="Watch"/> to remove</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public void RemoveAt(int index)
 		{
-			get
-			{
-				return _watchList.Count<Watch>(watch => !watch.IsSeparator);
-			}
+			_watchList.RemoveAt(index);
+			Changes = true;
 		}
 
-		[Obsolete("Use count property instead")]
-		public int ItemCount
-		{
-			get
-			{
-				return Count;
-			}
-		}
+		#endregion IList<Watch>
 
-		[Obsolete("Use domain from individual watch instead")]
-		public MemoryDomain Domain
-		{
-			get { return _domain; }
-			set { _domain = value; }
-		}
+		#region IEnumerable<Watch>
 
-		public bool IsReadOnly { get { return false; } }
-
-		public string CurrentFileName
-		{
-			get { return _currentFilename; }
-			set { _currentFilename = value; }
-		}
-
-		public bool Changes { get; set; }
-
-		public Watch this[int index]
-		{
-			get { return _watchList[index]; }
-			set { _watchList[index] = value; }
-		}
-
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection
+		/// </summary>
+		/// <returns>An <see cref="IEnumerator{T}"/> for the current collection</returns>
 		public IEnumerator<Watch> GetEnumerator()
 		{
 			return _watchList.GetEnumerator();
 		}
 
+		/// <summary>
+		/// Returns an enumerator that iterates through the collection
+		/// </summary>
+		/// <returns>An <see cref="IEnumerator"/> for the current collection</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
 
+		#endregion IEnumerable<Watch>		
+
+		/// <summary>
+		/// Add an existing collection of <see cref="Watch"/> into the current one
+		/// <see cref="Watch"/> equality will be checked to avoid doubles
+		/// </summary>
+		/// <param name="watches"><see cref="IEnumerable{Watch}"/> of watch to merge</param>
+		public void AddRange(IEnumerable<Watch> watches)
+		{
+			Parallel.ForEach<Watch>(watches, watch =>
+			{
+				if (!_watchList.Contains(watch))
+				{
+					_watchList.Add(watch);
+				}
+			});
+			Changes = true;
+		}
+
+		/// <summary>
+		/// Clears change count of all <see cref="Watch"/> in the collection
+		/// </summary>
+		public void ClearChangeCounts()
+		{
+			Parallel.ForEach<Watch>(_watchList, watch => watch.ClearChangeCount());
+		}
+
+		/// <summary>
+		/// Sort the current list based on one of the constant
+		/// </summary>
+		/// <param name="column">Value that specify sorting base</param>
+		/// <param name="reverse">Value that define the ordering. Ascending (true) or desceding (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
 			switch (column)
@@ -324,13 +378,27 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Clear()
+		/// <summary>
+		/// Sets WatchList's domain list to a new one
+		/// <see cref="Watch"/> domain will also be refreshed
+		/// </summary>
+		/// <param name="core">New domains</param>
+		public void RefreshDomains(IMemoryDomains core)
 		{
-			_watchList.Clear();
-			Changes = false;
-			_currentFilename = string.Empty;
+			_memoryDomains = core;
+			Parallel.ForEach<Watch>(_watchList, watch =>
+			{
+				watch.Domain = core[watch.Domain.Name];
+				watch.ResetPrevious();
+				watch.Update();
+				watch.ClearChangeCount();
+			}
+			);
 		}
 
+		/// <summary>
+		/// Updates all <see cref="Watch"/> ine the current collection
+		/// </summary>
 		public void UpdateValues()
 		{
 			Parallel.ForEach<Watch>(_watchList, watch =>
@@ -339,66 +407,134 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public void Add(Watch watch)
+		public string AddressFormatStr // TODO: this is probably compensating for not using the ToHex string extension
 		{
-			_watchList.Add(watch);
-			Changes = true;
-		}
-
-		public void AddRange(IList<Watch> watches)
-		{
-			_watchList.AddRange(watches);
-			Changes = true;
-		}
-
-		public bool Remove(Watch watch)
-		{
-			var result = _watchList.Remove(watch);
-			if (result)
+			get
 			{
-				Changes = true;
-			}
+				if (_domain != null)
+				{
+					return "{0:X" + (_domain.Size - 1).NumHexDigits() + "}";
+				}
 
-			return result;
-		}
-
-		public void Insert(int index, Watch watch)
-		{
-			_watchList.Insert(index, watch);
-		}
-
-		public void ClearChangeCounts()
-		{
-			foreach (var watch in _watchList)
-			{
-				watch.ClearChangeCount();
+				return string.Empty;
 			}
 		}
 
-		public bool Contains(Watch watch)
+		#endregion
+
+		#region Propeties
+
+		#region ICollection<Watch>
+
+		/// <summary>
+		/// Gets the number of elements contained in this <see cref="WatchList"/>
+		/// </summary>
+		public int Count
 		{
-			return _watchList.Any(w =>
-				w.Size == watch.Size &&
-				w.Type == watch.Type &&
-				w.Domain == watch.Domain &&
-				w.Address == watch.Address &&
-				w.BigEndian == watch.BigEndian);
+			get
+			{
+				return _watchList.Count;
+			}
 		}
 
-		public void CopyTo(Watch[] array, int arrayIndex)
+		/// <summary>
+		/// <see cref="WatchList"/> is alsways read-write
+		/// so this value will be always false
+		/// </summary>
+		public bool IsReadOnly
 		{
-			_watchList.CopyTo(array, arrayIndex);
+			get
+			{
+				return false;
+			}
 		}
 
-		public int IndexOf(Watch watch)
+		#endregion ICollection<Watch>
+
+		#region IList<Watch>
+
+		/// <summary>
+		/// Gets or sets element at the specified index
+		/// </summary>
+		/// <param name="index">The zero based index of the element you want to get or set</param>
+		/// <returns><see cref="Watch"/> at the specified index</returns>
+		public Watch this[int index]
 		{
-			return _watchList.IndexOf(watch);
+			get
+			{
+				return _watchList[index];
+			}
+			set
+			{
+				_watchList[index] = value;
+			}
 		}
 
-		public void RemoveAt(int index)
+		#endregion IList<Watch>
+
+		/// <summary>
+		/// Gets a value indicating if collection has changed or not
+		/// </summary>
+		public bool Changes { get; set; }
+
+		/// <summary>
+		/// Gets or sets current <see cref="WatchList"/>'s filename
+		/// </summary>
+		public string CurrentFileName
 		{
-			_watchList.RemoveAt(index);
-			Changes = true;
+			get
+			{
+				return _currentFilename;
+			}
+			set
+			{
+				_currentFilename = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets the number of <see cref="Watch"/> that are not <see cref="SeparatorWatch"/>
+		/// </summary>
+		public int WatchCount
+		{
+			get
+			{
+				return _watchList.Count<Watch>(watch => !watch.IsSeparator);
+			}
+		}
+
+		#endregion
+
+
+		[Obsolete("Use the method with single parameter instead")]
+		public void RefreshDomains(IMemoryDomains core, MemoryDomain domain)
+		{
+			_memoryDomains = core;
+			_domain = domain;
+
+			_watchList.ForEach(w =>
+			{
+				if (w.Domain != null)
+				{
+					w.Domain = _memoryDomains[w.Domain.Name];
+				}
+			});
+		}
+
+		[Obsolete("Use count property instead")]
+		public int ItemCount
+		{
+			get
+			{
+				return Count;
+			}
+		}
+
+		[Obsolete("Use domain from individual watch instead")]
+		public MemoryDomain Domain
+		{
+			get { return _domain; }
+			set { _domain = value; }
 		}
 
 		#region File handling logic - probably needs to be its own class
@@ -608,7 +744,6 @@ namespace BizHawk.Client.Common
 
 			return true;
 		}
-
 		#endregion
 	}
 }
