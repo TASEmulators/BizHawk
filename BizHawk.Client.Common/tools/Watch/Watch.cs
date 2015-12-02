@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Diagnostics;
 
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
@@ -13,6 +14,7 @@ namespace BizHawk.Client.Common
 	/// with a specific size (8, 16 or 32bits).
 	/// This is an abstract class
 	/// </summary>
+	[DebuggerDisplay("Note={Notes}, Value={ValueString}")]
 	public abstract partial class Watch
 		: IEquatable<Watch>,
 		IEquatable<Cheat>,
@@ -68,7 +70,7 @@ namespace BizHawk.Client.Common
 		#region Static		
 
 		/// <summary>
-		/// Generate a <see cref="Watch"/> from a given string
+		/// Generate sa <see cref="Watch"/> from a given string
 		/// String is tab separate
 		/// </summary>
 		/// <param name="line">Entire string, tab seperated for each value Order is:
@@ -138,7 +140,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Generate a new <see cref="Watch"/> instance
+		/// Generates a new <see cref="Watch"/> instance
 		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
 		/// </summary>
 		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
@@ -168,7 +170,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Generate a new <see cref="Watch"/> instance
+		/// Generates a new <see cref="Watch"/> instance
 		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
 		/// </summary>
 		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
@@ -184,7 +186,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Generate a new <see cref="Watch"/> instance
+		/// Generates a new <see cref="Watch"/> instance
 		/// Can be either <see cref="ByteWatch"/>, <see cref="WordWatch"/>, <see cref="DWordWatch"/> or <see cref="SeparatorWatch"/>
 		/// </summary>
 		/// <param name="domain">The <see cref="MemoryDomain"/> where you want to watch</param>
@@ -310,18 +312,18 @@ namespace BizHawk.Client.Common
 		#region Abstracts
 
 		/// <summary>
-		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="Watch"/>
+		/// Gets a list a <see cref="DisplayType"/> that can be used for this <see cref="Watch"/>
 		/// </summary>
 		/// <returns>An enumartion that contains all valid <see cref="DisplayType"/></returns>
 		public abstract IEnumerable<DisplayType> AvailableTypes();
 
 		/// <summary>
-		/// Reset the previous value; set it to the current one
+		/// Resets the previous value; set it to the current one
 		/// </summary>
 		public abstract void ResetPrevious();
 
 		/// <summary>
-		/// Update the Watch (read it from <see cref="MemoryDomain"/>
+		/// Updates the Watch (read it from <see cref="MemoryDomain"/>
 		/// </summary>
 		public abstract void Update();
 
@@ -413,7 +415,7 @@ namespace BizHawk.Client.Common
 		#endregion Protected
 
 		/// <summary>
-		/// Set the number of changes to 0
+		/// Sets the number of changes to 0
 		/// </summary>
 		public void ClearChangeCount()
 		{
@@ -423,7 +425,7 @@ namespace BizHawk.Client.Common
 		#region IEquatable<Watch>
 
 		/// <summary>
-		/// Determine if this <see cref="Watch"/> is equals to another
+		/// Determines if this <see cref="Watch"/> is equals to another
 		/// </summary>
 		/// <param name="obj">The <see cref="Watch"/> to compare</param>
 		/// <returns>True if both object are equals; otherwise, false</returns>
@@ -446,7 +448,7 @@ namespace BizHawk.Client.Common
 		#region IEquatable<Cheat>
 
 		/// <summary>
-		/// Determine if this <see cref="Watch"/> is equals to an instance of <see cref="Cheat"/>
+		/// Determines if this <see cref="Watch"/> is equals to an instance of <see cref="Cheat"/>
 		/// </summary>
 		/// <param name="obj">The <see cref="Cheat"/> to compare</param>
 		/// <returns>True if both object are equals; otherwise, false</returns>
@@ -463,7 +465,7 @@ namespace BizHawk.Client.Common
 		#region  IComparable<Watch>
 
 		/// <summary>
-		/// Compare two <see cref="Watch"/> together and determine wich one comes first.
+		/// Compares two <see cref="Watch"/> together and determine wich one comes first.
 		/// First we look the address and then the size
 		/// </summary>
 		/// <param name="other">The other <see cref="Watch"/> to compare to</param>
@@ -497,7 +499,7 @@ namespace BizHawk.Client.Common
 		#endregion IComparable<Watch>
 
 		/// <summary>
-		/// Determine if this object is Equals to another
+		/// Determines if this object is Equals to another
 		/// </summary>
 		/// <param name="obj">The object to compare</param>
 		/// <returns>True if both object are equals; otherwise, false</returns>
@@ -521,14 +523,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Hash the current watch and gets a unique value
 		/// </summary>
-		/// <returns>int that can serves as a unique representation of current Watch</returns>
+		/// <returns><see cref="int"/> that can serves as a unique representation of current Watch</returns>
 		public override int GetHashCode()
 		{
 			return this.Domain.GetHashCode() + (int)(this.Address);
 		}
 
 		/// <summary>
-		/// Determine if the specified <see cref="DisplayType"/> can be
+		/// Determines if the specified <see cref="DisplayType"/> can be
 		/// used for the current <see cref="Watch"/>
 		/// </summary>
 		/// <param name="type"><see cref="DisplayType"/> you want to check</param>
@@ -539,7 +541,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Transform the current instance into a string
+		/// Transforms the current instance into a string
 		/// </summary>
 		/// <returns>A <see cref="string"/> representation of the current <see cref="Watch"/></returns>
 		public override string ToString()

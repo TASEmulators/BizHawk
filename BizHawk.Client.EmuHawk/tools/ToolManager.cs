@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 		public T Load<T>(string toolPath, bool focus = true)
 			where T : class, IToolForm
 		{
-			if (!IsAvailable<T>())
+			if (!IsAvailable<T>() && typeof(T) != typeof(IExternalToolForm))
 			{
 				return null;
 			}
@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 			//Hard stuff as we need a proxy object that inherit from MarshalByRefObject.			
 			if (toolType == typeof(IExternalToolForm))
 			{
-				if (MessageBox.Show(@"Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
+				if (MessageBox.Show("Are you sure want to load this external tool?\r\nAccept ONLY if you trust the source and if you know what you're doing. In any other case, choose no."
 				, "Confirmm loading", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 				{
 					try

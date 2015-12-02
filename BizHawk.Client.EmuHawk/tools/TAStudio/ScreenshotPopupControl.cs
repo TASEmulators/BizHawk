@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public ScreenshotPopupControl()
 		{
-			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+			//SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			//SetStyle(ControlStyles.Opaque, true);
 			//this.BackColor = Color.Transparent;
 			
@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
+			Branch.OSDFrameBuffer.DiscardAlpha();
 			var bitmap = Branch.OSDFrameBuffer.ToSysdrawingBitmap();
 			e.Graphics.DrawImage(bitmap, new Rectangle(0, 0, Width, DrawingHeight));
 			if (UserPadding > 0)
