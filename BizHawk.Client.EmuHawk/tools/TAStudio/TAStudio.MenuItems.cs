@@ -583,10 +583,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
+			if (TasView.SelectedRows.Count() > 50)
+			{
+				var result = MessageBox.Show("Are you sure you want to add more than 50 markers?", "Add markers", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result != DialogResult.OK)
+					return;
+			}
 			foreach (var index in TasView.SelectedRows)
 			{
-				MarkerControl.AddMarkerPopUp(index);
+				MarkerControl.AddMarker(false, index);
 			}
+		}
+
+		private void SetMarkerWithTextMenuItem_Click(object sender, EventArgs e)
+		{
+			MarkerControl.AddMarker(true, TasView.SelectedRows.FirstOrDefault());
 		}
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)

@@ -153,6 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
 			this.RightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.SetMarkersContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SetMarkerWithTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveMarkersContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
 			this.DeselectContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1215,6 +1216,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.RightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMarkersContextMenuItem,
+            this.SetMarkerWithTextContextMenuItem,
             this.RemoveMarkersContextMenuItem,
             this.toolStripSeparator15,
             this.DeselectContextMenuItem,
@@ -1240,32 +1242,39 @@ namespace BizHawk.Client.EmuHawk
             this.StartNewProjectFromNowMenuItem,
             this.StartANewProjectFromSaveRamMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(273, 458);
+			this.RightClickMenu.Size = new System.Drawing.Size(270, 502);
 			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
 			// 
 			// SetMarkersContextMenuItem
 			// 
 			this.SetMarkersContextMenuItem.Name = "SetMarkersContextMenuItem";
-			this.SetMarkersContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.SetMarkersContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.SetMarkersContextMenuItem.Text = "Set Markers";
 			this.SetMarkersContextMenuItem.Click += new System.EventHandler(this.SetMarkersMenuItem_Click);
+			// 
+			// SetMarkerWithTextContextMenuItem
+			// 
+			this.SetMarkerWithTextContextMenuItem.Name = "SetMarkerWithTextContextMenuItem";
+			this.SetMarkerWithTextContextMenuItem.Size = new System.Drawing.Size(269, 22);
+			this.SetMarkerWithTextContextMenuItem.Text = "Set Marker with Text";
+			this.SetMarkerWithTextContextMenuItem.Click += new System.EventHandler(this.SetMarkerWithTextMenuItem_Click);
 			// 
 			// RemoveMarkersContextMenuItem
 			// 
 			this.RemoveMarkersContextMenuItem.Name = "RemoveMarkersContextMenuItem";
-			this.RemoveMarkersContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.RemoveMarkersContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.RemoveMarkersContextMenuItem.Text = "Remove Markers";
 			this.RemoveMarkersContextMenuItem.Click += new System.EventHandler(this.RemoveMarkersMenuItem_Click);
 			// 
 			// toolStripSeparator15
 			// 
 			this.toolStripSeparator15.Name = "toolStripSeparator15";
-			this.toolStripSeparator15.Size = new System.Drawing.Size(269, 6);
+			this.toolStripSeparator15.Size = new System.Drawing.Size(266, 6);
 			// 
 			// DeselectContextMenuItem
 			// 
 			this.DeselectContextMenuItem.Name = "DeselectContextMenuItem";
-			this.DeselectContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.DeselectContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.DeselectContextMenuItem.Text = "Deselect";
 			this.DeselectContextMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
 			// 
@@ -1274,39 +1283,39 @@ namespace BizHawk.Client.EmuHawk
 			this.SelectBetweenMarkersContextMenuItem.Name = "SelectBetweenMarkersContextMenuItem";
 			this.SelectBetweenMarkersContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.A)));
-			this.SelectBetweenMarkersContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.SelectBetweenMarkersContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.SelectBetweenMarkersContextMenuItem.Text = "Select between Markers";
 			this.SelectBetweenMarkersContextMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
 			// 
 			// toolStripSeparator16
 			// 
 			this.toolStripSeparator16.Name = "toolStripSeparator16";
-			this.toolStripSeparator16.Size = new System.Drawing.Size(269, 6);
+			this.toolStripSeparator16.Size = new System.Drawing.Size(266, 6);
 			// 
 			// UngreenzoneContextMenuItem
 			// 
 			this.UngreenzoneContextMenuItem.Name = "UngreenzoneContextMenuItem";
-			this.UngreenzoneContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.UngreenzoneContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.UngreenzoneContextMenuItem.Text = "Clear Greenzone";
 			this.UngreenzoneContextMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
 			// 
 			// CancelSeekContextMenuItem
 			// 
 			this.CancelSeekContextMenuItem.Name = "CancelSeekContextMenuItem";
-			this.CancelSeekContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.CancelSeekContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.CancelSeekContextMenuItem.Text = "Cancel Seek";
 			this.CancelSeekContextMenuItem.Click += new System.EventHandler(this.CancelSeekContextMenuItem_Click);
 			// 
 			// toolStripSeparator17
 			// 
 			this.toolStripSeparator17.Name = "toolStripSeparator17";
-			this.toolStripSeparator17.Size = new System.Drawing.Size(269, 6);
+			this.toolStripSeparator17.Size = new System.Drawing.Size(266, 6);
 			// 
 			// copyToolStripMenuItem
 			// 
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.copyToolStripMenuItem.Text = "Copy";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -1314,7 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.pasteToolStripMenuItem.Text = "Paste";
 			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
@@ -1322,7 +1331,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.pasteInsertToolStripMenuItem.Name = "pasteInsertToolStripMenuItem";
 			this.pasteInsertToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Shift+V";
-			this.pasteInsertToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.pasteInsertToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.pasteInsertToolStripMenuItem.Text = "Paste Insert";
 			this.pasteInsertToolStripMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
 			// 
@@ -1330,20 +1339,20 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
 			this.cutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
-			this.cutToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.cutToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.cutToolStripMenuItem.Text = "Cut";
 			this.cutToolStripMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
 			// 
 			// separateToolStripMenuItem
 			// 
 			this.separateToolStripMenuItem.Name = "separateToolStripMenuItem";
-			this.separateToolStripMenuItem.Size = new System.Drawing.Size(269, 6);
+			this.separateToolStripMenuItem.Size = new System.Drawing.Size(266, 6);
 			// 
 			// ClearContextMenuItem
 			// 
 			this.ClearContextMenuItem.Name = "ClearContextMenuItem";
 			this.ClearContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
-			this.ClearContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.ClearContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.ClearContextMenuItem.Text = "Clear";
 			this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
@@ -1351,7 +1360,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.DeleteFramesContextMenuItem.Name = "DeleteFramesContextMenuItem";
 			this.DeleteFramesContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.DeleteFramesContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.DeleteFramesContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.DeleteFramesContextMenuItem.Text = "Delete";
 			this.DeleteFramesContextMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
 			// 
@@ -1359,7 +1368,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.CloneContextMenuItem.Name = "CloneContextMenuItem";
 			this.CloneContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
-			this.CloneContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.CloneContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.CloneContextMenuItem.Text = "Clone";
 			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneMenuItem_Click);
 			// 
@@ -1368,7 +1377,7 @@ namespace BizHawk.Client.EmuHawk
 			this.InsertFrameContextMenuItem.Name = "InsertFrameContextMenuItem";
 			this.InsertFrameContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.Insert)));
-			this.InsertFrameContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.InsertFrameContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.InsertFrameContextMenuItem.Text = "Insert";
 			this.InsertFrameContextMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
 			// 
@@ -1376,45 +1385,45 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.InsertNumFramesContextMenuItem.Name = "InsertNumFramesContextMenuItem";
 			this.InsertNumFramesContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
-			this.InsertNumFramesContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.InsertNumFramesContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.InsertNumFramesContextMenuItem.Text = "Insert # of Frames";
 			this.InsertNumFramesContextMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
 			// 
 			// toolStripSeparator18
 			// 
 			this.toolStripSeparator18.Name = "toolStripSeparator18";
-			this.toolStripSeparator18.Size = new System.Drawing.Size(269, 6);
+			this.toolStripSeparator18.Size = new System.Drawing.Size(266, 6);
 			// 
 			// TruncateContextMenuItem
 			// 
 			this.TruncateContextMenuItem.Name = "TruncateContextMenuItem";
-			this.TruncateContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.TruncateContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.TruncateContextMenuItem.Text = "Truncate Movie";
 			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
 			// 
 			// BranchContextMenuItem
 			// 
 			this.BranchContextMenuItem.Name = "BranchContextMenuItem";
-			this.BranchContextMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.BranchContextMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.BranchContextMenuItem.Text = "&Branch";
 			this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
 			// 
 			// StartFromNowSeparator
 			// 
 			this.StartFromNowSeparator.Name = "StartFromNowSeparator";
-			this.StartFromNowSeparator.Size = new System.Drawing.Size(269, 6);
+			this.StartFromNowSeparator.Size = new System.Drawing.Size(266, 6);
 			// 
 			// StartNewProjectFromNowMenuItem
 			// 
 			this.StartNewProjectFromNowMenuItem.Name = "StartNewProjectFromNowMenuItem";
-			this.StartNewProjectFromNowMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.StartNewProjectFromNowMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.StartNewProjectFromNowMenuItem.Text = "Start a new project from Now";
 			this.StartNewProjectFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
 			// 
 			// StartANewProjectFromSaveRamMenuItem
 			// 
 			this.StartANewProjectFromSaveRamMenuItem.Name = "StartANewProjectFromSaveRamMenuItem";
-			this.StartANewProjectFromSaveRamMenuItem.Size = new System.Drawing.Size(272, 22);
+			this.StartANewProjectFromSaveRamMenuItem.Size = new System.Drawing.Size(269, 22);
 			this.StartANewProjectFromSaveRamMenuItem.Text = "Start a new project from SaveRam";
 			this.StartANewProjectFromSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
 			// 
@@ -1436,6 +1445,7 @@ namespace BizHawk.Client.EmuHawk
 			this.BookMarkControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.BookMarkControl.HoverInterval = 1;
 			this.BookMarkControl.Location = new System.Drawing.Point(-2, 5);
 			this.BookMarkControl.Name = "BookMarkControl";
 			this.BookMarkControl.Size = new System.Drawing.Size(204, 163);
@@ -1677,5 +1687,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem NewFromNowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewFromCurrentSaveRamMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SetBranchCellHoverIntervalMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SetMarkerWithTextContextMenuItem;
 	}
 }

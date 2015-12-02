@@ -219,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null && !string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
-				_watches.RefreshDomans(_memoryDomains, _memoryDomains.MainMemory);
+				_watches.RefreshDomains(_memoryDomains, _memoryDomains.MainMemory);
 				_watches.Reload();
 				SetPlatformAndMemoryDomainLabel();
 				UpdateStatusBar();
@@ -251,7 +251,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = 0; i < _watches.Count; i++)
 					{
-						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address ?? 0);
+						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 						GlobalWin.OSD.AddGUIText(
 							_watches[i].ToString(),
 							Global.Config.DispRamWatchx,
@@ -286,7 +286,7 @@ namespace BizHawk.Client.EmuHawk
 						return true;
 					}
 
-					if (Global.CheatList.IsActive(_watches.Domain, watch.Address ?? 0))
+					if (Global.CheatList.IsActive(_watches.Domain, watch.Address))
 					{
 						return true;
 					}
@@ -321,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					for (var i = 0; i < _watches.Count; i++)
 					{
-						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address ?? 0);
+						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 						GlobalWin.OSD.AddGUIText(
 							_watches[i].ToString(),
 							Global.Config.DispRamWatchx,
@@ -585,7 +585,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => (watch.Address ?? 0) >= watch.Domain.Size);
+			ErrorIconButton.Visible = _watches.Where(watch => !watch.IsSeparator).Any(watch => (watch.Address) >= watch.Domain.Size);
 
 			MessageLabel.Text = message;
 		}
@@ -608,11 +608,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					color = BackColor;
 				}
-				else if (_watches[index].Address.Value >= _watches[index].Domain.Size)
+				else if (_watches[index].Address >= _watches[index].Domain.Size)
 				{
 					color = Color.PeachPuff;
 				}
-				else if (Global.CheatList.IsActive(_watches.Domain, _watches[index].Address ?? 0))
+				else if (Global.CheatList.IsActive(_watches.Domain, _watches[index].Address))
 				{
 					color = Color.LightCyan;
 				}
@@ -813,7 +813,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FreezeAddressMenuItem_Click(object sender, EventArgs e)
 		{
-			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
+			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
 			if (allCheats)
 			{
 				SelectedWatches.UnfreezeAll();
@@ -1074,7 +1074,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 
-			var allCheats = _watches.All(x => Global.CheatList.IsActive(x.Domain, x.Address ?? 0));
+			var allCheats = _watches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
 
 			if (allCheats)
 			{
@@ -1108,11 +1108,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
+					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address }, selected.First().Size);
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
+					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ), selected.First().Size);
 				}
 			}
 		}
@@ -1127,7 +1127,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var watch in selected)
 				{
-					debugger.AddBreakpoint((uint)watch.Address.Value, MemoryCallbackType.Read);
+					debugger.AddBreakpoint((uint)watch.Address, MemoryCallbackType.Read);
 				}
 			}
 		}
@@ -1142,7 +1142,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var watch in selected)
 				{
-					debugger.AddBreakpoint((uint)watch.Address.Value, MemoryCallbackType.Write);
+					debugger.AddBreakpoint((uint)watch.Address, MemoryCallbackType.Write);
 				}
 			}
 		}
@@ -1194,7 +1194,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
 			var items = _watches
-				.Where(watch => (watch.Address ?? 0) >= watch.Domain.Size)
+				.Where(watch => (watch.Address) >= watch.Domain.Size)
 				.ToList();
 
 			foreach (var item in items)

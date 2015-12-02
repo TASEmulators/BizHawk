@@ -42,6 +42,7 @@
 			this.AddMarkerButton = new System.Windows.Forms.Button();
 			this.RemoveMarkerButton = new System.Windows.Forms.Button();
 			this.ScrollToMarkerButton = new System.Windows.Forms.Button();
+			this.AddMarkerWithTextButton = new System.Windows.Forms.Button();
 			this.MarkerView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.MarkerContextMenu.SuspendLayout();
 			this.SuspendLayout();
@@ -63,7 +64,7 @@
 			// 
 			this.JumpToMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
 			this.JumpToMarkerToolStripMenuItem.Name = "JumpToMarkerToolStripMenuItem";
-			this.JumpToMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.JumpToMarkerToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.JumpToMarkerToolStripMenuItem.Text = "Jump To";
 			this.JumpToMarkerToolStripMenuItem.Click += new System.EventHandler(this.JumpToMarkerToolStripMenuItem_Click);
 			// 
@@ -71,7 +72,7 @@
 			// 
 			this.ScrollToMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ScrollTo;
 			this.ScrollToMarkerToolStripMenuItem.Name = "ScrollToMarkerToolStripMenuItem";
-			this.ScrollToMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ScrollToMarkerToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.ScrollToMarkerToolStripMenuItem.Text = "Scroll To";
 			this.ScrollToMarkerToolStripMenuItem.Click += new System.EventHandler(this.ScrollToMarkerToolStripMenuItem_Click);
 			// 
@@ -79,7 +80,7 @@
 			// 
 			this.EditMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.EditMarkerToolStripMenuItem.Name = "EditMarkerToolStripMenuItem";
-			this.EditMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.EditMarkerToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.EditMarkerToolStripMenuItem.Text = "Edit";
 			this.EditMarkerToolStripMenuItem.Click += new System.EventHandler(this.EditMarkerToolStripMenuItem_Click);
 			// 
@@ -87,20 +88,20 @@
 			// 
 			this.AddMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
 			this.AddMarkerToolStripMenuItem.Name = "AddMarkerToolStripMenuItem";
-			this.AddMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AddMarkerToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.AddMarkerToolStripMenuItem.Text = "Add";
 			this.AddMarkerToolStripMenuItem.Click += new System.EventHandler(this.AddMarkerToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(122, 6);
 			// 
 			// RemoveMarkerToolStripMenuItem
 			// 
 			this.RemoveMarkerToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveMarkerToolStripMenuItem.Name = "RemoveMarkerToolStripMenuItem";
-			this.RemoveMarkerToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.RemoveMarkerToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
 			this.RemoveMarkerToolStripMenuItem.Text = "Remove";
 			this.RemoveMarkerToolStripMenuItem.Click += new System.EventHandler(this.RemoveMarkerToolStripMenuItem_Click);
 			// 
@@ -109,7 +110,7 @@
 			this.JumpToMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.JumpToMarkerButton.Enabled = false;
 			this.JumpToMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.JumpTo;
-			this.JumpToMarkerButton.Location = new System.Drawing.Point(6, 174);
+			this.JumpToMarkerButton.Location = new System.Drawing.Point(61, 174);
 			this.JumpToMarkerButton.Name = "JumpToMarkerButton";
 			this.JumpToMarkerButton.Size = new System.Drawing.Size(23, 23);
 			this.JumpToMarkerButton.TabIndex = 8;
@@ -122,7 +123,7 @@
 			this.EditMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.EditMarkerButton.Enabled = false;
 			this.EditMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
-			this.EditMarkerButton.Location = new System.Drawing.Point(64, 174);
+			this.EditMarkerButton.Location = new System.Drawing.Point(119, 174);
 			this.EditMarkerButton.Name = "EditMarkerButton";
 			this.EditMarkerButton.Size = new System.Drawing.Size(23, 23);
 			this.EditMarkerButton.TabIndex = 9;
@@ -134,11 +135,11 @@
 			// 
 			this.AddMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AddMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.add;
-			this.AddMarkerButton.Location = new System.Drawing.Point(93, 174);
+			this.AddMarkerButton.Location = new System.Drawing.Point(3, 174);
 			this.AddMarkerButton.Name = "AddMarkerButton";
 			this.AddMarkerButton.Size = new System.Drawing.Size(23, 23);
 			this.AddMarkerButton.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.AddMarkerButton, "Add Marker");
+			this.toolTip1.SetToolTip(this.AddMarkerButton, "Add Marker to Emulated Frame");
 			this.AddMarkerButton.UseVisualStyleBackColor = true;
 			this.AddMarkerButton.Click += new System.EventHandler(this.AddMarkerToolStripMenuItem_Click);
 			// 
@@ -147,7 +148,7 @@
 			this.RemoveMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.RemoveMarkerButton.Enabled = false;
 			this.RemoveMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
-			this.RemoveMarkerButton.Location = new System.Drawing.Point(122, 174);
+			this.RemoveMarkerButton.Location = new System.Drawing.Point(148, 174);
 			this.RemoveMarkerButton.Name = "RemoveMarkerButton";
 			this.RemoveMarkerButton.Size = new System.Drawing.Size(23, 23);
 			this.RemoveMarkerButton.TabIndex = 7;
@@ -160,13 +161,25 @@
 			this.ScrollToMarkerButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.ScrollToMarkerButton.Enabled = false;
 			this.ScrollToMarkerButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ScrollTo;
-			this.ScrollToMarkerButton.Location = new System.Drawing.Point(35, 174);
+			this.ScrollToMarkerButton.Location = new System.Drawing.Point(90, 174);
 			this.ScrollToMarkerButton.Name = "ScrollToMarkerButton";
 			this.ScrollToMarkerButton.Size = new System.Drawing.Size(23, 23);
 			this.ScrollToMarkerButton.TabIndex = 10;
 			this.toolTip1.SetToolTip(this.ScrollToMarkerButton, "Scroll View To Marker Frame");
 			this.ScrollToMarkerButton.UseVisualStyleBackColor = true;
 			this.ScrollToMarkerButton.Click += new System.EventHandler(this.ScrollToMarkerToolStripMenuItem_Click);
+			// 
+			// AddMarkerWithTextButton
+			// 
+			this.AddMarkerWithTextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddMarkerWithTextButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AddEdit;
+			this.AddMarkerWithTextButton.Location = new System.Drawing.Point(32, 174);
+			this.AddMarkerWithTextButton.Name = "AddMarkerWithTextButton";
+			this.AddMarkerWithTextButton.Size = new System.Drawing.Size(23, 23);
+			this.AddMarkerWithTextButton.TabIndex = 11;
+			this.toolTip1.SetToolTip(this.AddMarkerWithTextButton, "Add Marker with Text to Emulated Frame");
+			this.AddMarkerWithTextButton.UseVisualStyleBackColor = true;
+			this.AddMarkerWithTextButton.Click += new System.EventHandler(this.AddMarkerWithTextToolStripMenuItem_Click);
 			// 
 			// MarkerView
 			// 
@@ -202,10 +215,11 @@
 			// MarkerControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.Controls.Add(this.AddMarkerWithTextButton);
 			this.Controls.Add(this.MarkerView);
+			this.Controls.Add(this.EditMarkerButton);
 			this.Controls.Add(this.JumpToMarkerButton);
 			this.Controls.Add(this.ScrollToMarkerButton);
-			this.Controls.Add(this.EditMarkerButton);
 			this.Controls.Add(this.RemoveMarkerButton);
 			this.Controls.Add(this.AddMarkerButton);
 			this.Name = "MarkerControl";
@@ -232,6 +246,7 @@
 		private System.Windows.Forms.ToolStripMenuItem RemoveMarkerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem JumpToMarkerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.Button AddMarkerWithTextButton;
 
 	}
 }

@@ -137,7 +137,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddMarkerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			AddMarkerPopUp();
+			AddMarker();
+			MarkerView_SelectedIndexChanged(null, null);
+		}
+
+		private void AddMarkerWithTextToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			AddMarker(editText: true);
 			MarkerView_SelectedIndexChanged(null, null);
 		}
 
@@ -152,31 +158,38 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void AddMarkerPopUp(int? frame = null)
+		public void AddMarker(bool editText = false, int? frame = null)
 		{
-			// feos: we specify the selected frame if we call it from TasView, otherwise it should be added to the emulated frame
+			// feos: we specify the selected frame if we call this from TasView, otherwise marker should be added to the emulated frame
 			var markerFrame = frame ?? Global.Emulator.Frame;
-			InputPrompt i = new InputPrompt
-			{
-				Text = "Marker for frame " + markerFrame,
-				TextInputType = InputPrompt.InputType.Text,
-				Message = "Enter a message",
-				InitialValue =
-					Markers.IsMarker(markerFrame) ?
-					Markers.PreviousOrCurrent(markerFrame).Message :
-					""
-			};
 
-			var result = i.ShowHawkDialog();
-
-			if (result == DialogResult.OK)
+			if (editText)
 			{
-				Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
+				InputPrompt i = new InputPrompt
+				{
+					Text = "Marker for frame " + markerFrame,
+					TextInputType = InputPrompt.InputType.Text,
+					Message = "Enter a message",
+					InitialValue =
+						Markers.IsMarker(markerFrame) ?
+						Markers.PreviousOrCurrent(markerFrame).Message :
+						""
+				};
+				var result = i.ShowHawkDialog();
+				if (result == DialogResult.OK)
+				{
+					Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
+					UpdateValues();
+				}
+			}
+			else
+			{
+				Markers.Add(new TasMovieMarker(markerFrame, ""));
 				UpdateValues();
 			}
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker)
+		public bool EditMarkerPopUp(TasMovieMarker marker)
 		{
 			var markerFrame = marker.Frame;
 			InputPrompt i = new InputPrompt
@@ -196,7 +209,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				marker.Message = i.PromptText;
 				UpdateValues();
+				return true;
 			}
+			return false;
 		}
 
 		public void UpdateValues()
@@ -263,11 +278,6 @@ namespace BizHawk.Client.EmuHawk
 				return marker.Frame;
 			}
 			return -1;
-		}
-
-		private void JumpToMarkerToolStripMenuItem_Click(object sender, MouseEventArgs e)
-		{
-
 		}
 	}
 }

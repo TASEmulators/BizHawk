@@ -346,7 +346,7 @@ namespace BizHawk.Client.Common
 				_history.AddState(_watchList);
 			}
 
-			var addresses = watches.Select(x => x.Address ?? 0);
+			var addresses = watches.Select(x => x.Address);
 			var removeList = _watchList.Where(x => !addresses.Contains(x.Address)).ToList();
 		}
 

@@ -239,7 +239,9 @@
     <Compile Include="tools\RamSearchEngine.cs" />
     <Compile Include="tools\Watch\SeparatorWatch.cs" />
     <Compile Include="tools\Watch\Watch.cs" />
-    <Compile Include="tools\Watch\WatchList.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchDomainComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchAddressComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchList.cs" />
     <Compile Include="tools\Watch\WatchSize.cs" />
     <Compile Include="tools\Watch\WordWatch.cs" />
     <Compile Include="XmlGame.cs" />
