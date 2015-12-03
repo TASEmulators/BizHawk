@@ -43,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool denoteStatesWithBGColor { get; set; }
 		public bool denoteMarkersWithIcons { get; set; }
 		public bool denoteMarkersWithBGColor { get; set; }
+		public bool allowRightClickSelecton { get; set; }
 
 		private IntPtr RotatedFont;
 		private readonly Font NormalFont;
@@ -1133,6 +1134,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			base.OnMouseDown(e);
+
+			if (allowRightClickSelecton && e.Button == MouseButtons.Right)
+			{
+				if (!IsHoveringOnColumnCell)
+				{
+					_currentX = e.X;
+					_currentY = e.Y;
+					Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+					CellChanged(newCell);
+					SelectCell(CurrentCell);
+				}
+			}
 		}
 
 		protected override void OnMouseUp(MouseEventArgs e)

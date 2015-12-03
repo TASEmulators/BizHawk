@@ -185,6 +185,7 @@
 			// 
 			this.MarkerView.AllowColumnReorder = false;
 			this.MarkerView.AllowColumnResize = false;
+			this.MarkerView.allowRightClickSelecton = true;
 			this.MarkerView.AlwaysScroll = false;
 			this.MarkerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -210,6 +211,7 @@
 			this.MarkerView.TabIndex = 5;
 			this.MarkerView.TabStop = false;
 			this.MarkerView.SelectedIndexChanged += new System.EventHandler(this.MarkerView_SelectedIndexChanged);
+			this.MarkerView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MarkerView_MouseClick);
 			this.MarkerView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.MarkerView_MouseDoubleClick);
 			// 
 			// MarkerControl
