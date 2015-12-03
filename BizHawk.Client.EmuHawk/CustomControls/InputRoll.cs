@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool denoteMarkersWithIcons { get; set; }
 		public bool denoteMarkersWithBGColor { get; set; }
 		public bool allowRightClickSelecton { get; set; }
+		public bool letKeysModifySelection { get; set; }
 
 		private IntPtr RotatedFont;
 		private readonly Font NormalFont;
@@ -1293,6 +1294,58 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LastVisibleRow = RowCount;
 				Refresh();
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
+			{
+				if (SelectedRows.Any() && letKeysModifySelection)
+				{
+					foreach (var row in SelectedRows.ToList())
+					{
+						SelectRow(row - 1, true);
+						SelectRow(row, false);
+					}
+				}
+			}
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
+			{
+				if (SelectedRows.Any() && letKeysModifySelection)
+				{
+					foreach (var row in SelectedRows.Reverse().ToList())
+					{
+						SelectRow(row + 1, true);
+						SelectRow(row, false);
+					}
+				}
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
+			{
+				if (SelectedRows.Any() && letKeysModifySelection)
+				{
+					SelectRow(SelectedRows.First() - 1, true);
+				}
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
+			{
+				if (SelectedRows.Any() && letKeysModifySelection)
+				{
+					SelectRow(SelectedRows.Last() + 1, true);
+				}
+			}
+			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
+			{
+				if (FirstVisibleRow > 0)
+				{
+					FirstVisibleRow--;
+					Refresh();
+				}
+			}
+			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
+			{
+				if (FirstVisibleRow < RowCount - 1)
+				{
+					FirstVisibleRow++;
+					Refresh();
+				}
 			}
 
 			base.OnKeyDown(e);
