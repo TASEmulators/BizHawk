@@ -226,6 +226,7 @@
 			this.BranchView.denoteMarkersWithIcons = false;
 			this.BranchView.denoteStatesWithBGColor = false;
 			this.BranchView.denoteStatesWithIcons = false;
+			this.BranchView.allowRightClickSelecton = true;
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;

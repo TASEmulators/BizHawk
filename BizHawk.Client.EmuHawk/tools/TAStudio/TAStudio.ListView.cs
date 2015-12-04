@@ -855,21 +855,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToPreviousMarker();
 			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Left
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
 			{
 				GoToNextMarker();
-			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
-			{
-				GoToPreviousFrame();
-			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
-			{
-				GoToNextFrame();
-			}
-			else if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
-			{
-				TasView.HorizontalOrientation ^= true;
 			}
 
 			// SuuperW: Float Editing

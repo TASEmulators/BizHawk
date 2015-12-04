@@ -1125,6 +1125,8 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.denoteMarkersWithIcons = false;
 			this.TasView.denoteStatesWithBGColor = false;
 			this.TasView.denoteStatesWithIcons = false;
+			this.TasView.allowRightClickSelecton = false;
+			this.TasView.letKeysModifySelection = true;
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;

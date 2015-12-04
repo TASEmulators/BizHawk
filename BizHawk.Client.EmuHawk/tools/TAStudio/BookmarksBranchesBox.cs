@@ -326,6 +326,9 @@ namespace BizHawk.Client.EmuHawk
 			LoadBranchButton.Enabled =
 			EditBranchTextButton.Enabled =
 				SelectedBranch != null;
+
+			BranchesContextMenu.Close();
+
 			if (e.Button == MouseButtons.Left)
 			{
 				if (BranchView.CurrentCell != null && BranchView.CurrentCell.IsDataCell

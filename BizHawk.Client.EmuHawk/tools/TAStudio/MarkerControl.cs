@@ -277,5 +277,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return -1;
 		}
+
+		private void MarkerView_MouseClick(object sender, MouseEventArgs e)
+		{
+			MarkerContextMenu.Close();
+		}
 	}
 }
