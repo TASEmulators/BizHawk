@@ -10,10 +10,10 @@ namespace BizHawk.Client.Common
 	{
 		/// <summary>
 		/// Netsed private class that define how to compare two <see cref="Watch"/>
-		/// based on their domain
+		/// based on their values
 		/// </summary>
-		private sealed class WatchDomainComparer
-			: WatchEqualityComparer,
+		private sealed class WatchValueComparer
+		: WatchEqualityComparer,
 			IComparer<Watch>
 		{
 			/// <summary>
@@ -26,11 +26,32 @@ namespace BizHawk.Client.Common
 			/// <returns>0 for equality, 1 if x comes first; -1 if y comes first</returns>
 			public int Compare(Watch x, Watch y)
 			{
+				int xValue;
+				int yValue;
+
+				if (x.Type == DisplayType.Signed)
+				{
+					int.TryParse(x.ValueString, out xValue);
+				}
+				else
+				{
+					xValue = x.Value;
+				}
+
+				if (y.Type == DisplayType.Signed)
+				{
+					int.TryParse(y.ValueString, out yValue);
+				}
+				else
+				{
+					yValue = y.Value;
+				}
+
 				if (Equals(x, y))
 				{
 					return 0;
 				}
-				else if (x.Domain.Name.Equals(y.Domain.Name))
+				else if (xValue.Equals(yValue))
 				{
 					if (x.Address.Equals(y.Address))
 					{
@@ -43,7 +64,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return x.Domain.Name.CompareTo(y.Domain.Name);
+					return xValue.CompareTo(yValue);
 				}
 			}
 		}
