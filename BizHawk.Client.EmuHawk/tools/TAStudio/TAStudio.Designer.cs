@@ -376,8 +376,8 @@ namespace BizHawk.Client.EmuHawk
             this.SelectionRedoMenuItem,
             this.toolStripSeparator5,
             this.DeselectMenuItem,
-            this.SelectAllMenuItem,
             this.SelectBetweenMarkersMenuItem,
+            this.SelectAllMenuItem,
             this.ReselectClipboardMenuItem,
             this.toolStripSeparator7,
             this.CopyMenuItem,
@@ -386,9 +386,9 @@ namespace BizHawk.Client.EmuHawk
             this.CutMenuItem,
             this.toolStripSeparator8,
             this.ClearMenuItem,
+            this.InsertFrameMenuItem,
             this.DeleteFramesMenuItem,
             this.CloneMenuItem,
-            this.InsertFrameMenuItem,
             this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
             this.TruncateMenuItem,
@@ -456,7 +456,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
-			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.A)));
 			this.SelectAllMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
@@ -464,8 +465,7 @@ namespace BizHawk.Client.EmuHawk
 			// SelectBetweenMarkersMenuItem
 			// 
 			this.SelectBetweenMarkersMenuItem.Name = "SelectBetweenMarkersMenuItem";
-			this.SelectBetweenMarkersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.A)));
+			this.SelectBetweenMarkersMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
 			this.SelectBetweenMarkersMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.SelectBetweenMarkersMenuItem.Text = "Select between Markers";
 			this.SelectBetweenMarkersMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
@@ -525,7 +525,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ClearMenuItem.Name = "ClearMenuItem";
 			this.ClearMenuItem.ShortcutKeyDisplayString = "";
-			this.ClearMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
+			this.ClearMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.ClearMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.ClearMenuItem.Text = "Clear";
 			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
@@ -533,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 			// DeleteFramesMenuItem
 			// 
 			this.DeleteFramesMenuItem.Name = "DeleteFramesMenuItem";
-			this.DeleteFramesMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+			this.DeleteFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
 			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.DeleteFramesMenuItem.Text = "&Delete";
 			this.DeleteFramesMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
@@ -549,8 +549,7 @@ namespace BizHawk.Client.EmuHawk
 			// InsertFrameMenuItem
 			// 
 			this.InsertFrameMenuItem.Name = "InsertFrameMenuItem";
-			this.InsertFrameMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.Insert)));
+			this.InsertFrameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
 			this.InsertFrameMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.InsertFrameMenuItem.Text = "&Insert";
 			this.InsertFrameMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
@@ -559,7 +558,8 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.InsertNumFramesMenuItem.Name = "InsertNumFramesMenuItem";
 			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "";
-			this.InsertNumFramesMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
+			this.InsertNumFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.Insert)));
 			this.InsertNumFramesMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
 			this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
@@ -1116,6 +1116,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;
+			this.TasView.allowRightClickSelecton = false;
 			this.TasView.AlwaysScroll = false;
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -1125,13 +1126,12 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.denoteMarkersWithIcons = false;
 			this.TasView.denoteStatesWithBGColor = false;
 			this.TasView.denoteStatesWithIcons = false;
-			this.TasView.allowRightClickSelecton = false;
-			this.TasView.letKeysModifySelection = true;
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;
 			this.TasView.HorizontalOrientation = false;
 			this.TasView.LagFramesToHide = 0;
+			this.TasView.letKeysModifySelection = true;
 			this.TasView.Location = new System.Drawing.Point(3, 0);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
