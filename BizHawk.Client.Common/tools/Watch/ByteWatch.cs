@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		{
 			if (value == 0)
 			{
-				value = GetByte();
+				this._value = GetByte();
 			}
 			else
 			{
@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		#region Methods		
+		#region Methods
 
 		/// <summary>
 		/// Enumerate wich <see cref="DisplayType"/> are valid for a <see cref="ByteWatch"/>

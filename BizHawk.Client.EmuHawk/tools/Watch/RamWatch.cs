@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				foreach(var watch in _watches)
+				foreach (var watch in _watches)
 				{
 					if (watch.IsSeparator)
 					{
@@ -409,7 +409,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
-				
+
 				var result = we.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
@@ -1038,7 +1038,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Load(filePaths[0], append: false);
 				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 				WatchListView.ItemCount = _watches.Count;
-				}
+			}
 		}
 
 		private void NewRamWatch_Enter(object sender, EventArgs e)
@@ -1056,9 +1056,9 @@ namespace BizHawk.Client.EmuHawk
 				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
 				Separator4.Visible =
-				ReadBreakpointContextMenuItem.Visible = 
+				ReadBreakpointContextMenuItem.Visible =
 				WriteBreakpointContextMenuItem.Visible =
-				Separator6.Visible = 
+				Separator6.Visible =
 				InsertSeperatorContextMenuItem.Visible =
 				MoveUpContextMenuItem.Visible =
 				MoveDownContextMenuItem.Visible =
@@ -1115,7 +1115,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ), selected.First().Size);
+					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address), selected.First().Size);
 				}
 			}
 		}
@@ -1134,7 +1134,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		
+
 		private void WriteBreakpointContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedWatches.ToList();

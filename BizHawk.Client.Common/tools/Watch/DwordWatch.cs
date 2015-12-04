@@ -40,7 +40,7 @@ namespace BizHawk.Client.Common
 		{
 			if (value == 0)
 			{
-				value = GetDWord();
+				this._value = GetDWord();
 			}
 			else
 			{

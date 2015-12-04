@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 			T existingTool = (T)_tools.FirstOrDefault(x => x is T);
 
-			if (existingTool != null && typeof(T) != typeof(IExternalToolForm))
+			if (existingTool != null)
 			{
 				if (existingTool.IsDisposed)
 				{
@@ -572,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 					try
 					{
 						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
-                        if (tool == null)
+						if (tool == null)
 						{
 							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							return null;

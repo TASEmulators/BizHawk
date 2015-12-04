@@ -23,6 +23,7 @@ using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
+using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1257,65 +1258,23 @@ namespace BizHawk.Client.EmuHawk
 		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
 			externalToolToolStripMenuItem.DropDownItems.Clear();
-			string path = Path.Combine(Global.Config.PathEntries["Global", "External Tools"].Path);
-			if (Directory.Exists(path))
+
+			foreach(ToolStripMenuItem item in ExternalToolManager.ToolStripMenu)
 			{
-				DirectoryInfo dInfo = new DirectoryInfo(path);
-				Type[] assemblyTypes;
-				Assembly externalToolFile;
-				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
+				if(item.Enabled)
 				{
-					try
+					item.Click += delegate
 					{
-						//externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
-						externalToolFile = Assembly.LoadFrom(fi.FullName);
-					}
-					catch (BadImageFormatException)
-					{
-						ToolStripMenuItem item = new ToolStripMenuItem(fi.Name, Properties.Resources.ExclamationRed);
-						item.ToolTipText = "This is not an assembly";
-						item.ForeColor = Color.Gray;
-						externalToolToolStripMenuItem.DropDownItems.Add(item);
-						continue;
-					}
-
-					ToolStripMenuItem externalToolMenu = new ToolStripMenuItem(externalToolFile.GetName().Name);
-
-					/*
-					The reason of using this ugly try catch is due to the use of ReflectionOnlyLoadFrom methods
-					When the assembly is loaded this way, referenced assemblies are not loaded and so, as soon as a type
-					existing in another assembly, it raises the exception.
-
-					But the advantage of this is that memory footprint is reduced
-
-					EDIT: In fact, I have some trouble when loading Reflection only... moved to regular load
-					*/
-					try
-					{
-						assemblyTypes = externalToolFile.GetTypes().Where<Type>(t => t != null && t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm").ToArray<Type>();
-					}
-					catch (ReflectionTypeLoadException ex)
-					{
-						assemblyTypes = ex.Types.Where<Type>(t => t != null && t.FullName.Contains("BizHawk.Client.EmuHawk.CustomMainForm")).ToArray<Type>();
-					}
-
-					if (assemblyTypes.Count() == 1)
-					{
-						externalToolMenu.Image = Properties.Resources.Debugger;
-						externalToolMenu.Tag = fi.FullName;
-						externalToolMenu.Click += delegate (object sender2, EventArgs e2)
-						{
-							GlobalWin.Tools.Load<IExternalToolForm>(fi.FullName);
-						};
-					}
-					else
-					{
-						externalToolMenu.Image = Properties.Resources.ExclamationRed;
-						externalToolMenu.ForeColor = Color.Gray;
-					}
-					externalToolToolStripMenuItem.DropDownItems.Add(externalToolMenu);
+						GlobalWin.Tools.Load<IExternalToolForm>((string)item.Tag);
+					};
 				}
+				else
+				{
+					item.Image = Properties.Resources.ExclamationRed;
+				}
+				externalToolToolStripMenuItem.DropDownItems.Add(item);
 			}
+			
 			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
