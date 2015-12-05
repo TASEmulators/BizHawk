@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Loads the tool dialog T (T must implemants <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
+		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
 		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Loads the tool dialog T (T must implemants <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
+		/// Loads the tool dialog T (T must implement <see cref="IToolForm"/>) , if it does not exist it will be created, if it is already open, it will be focused
 		/// </summary>
 		/// <typeparam name="T">Type of tool you want to load</typeparam>
 		/// <param name="focus">Define if the tool form has to get the focus or not (Default is true)</param>
@@ -883,6 +883,29 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var newTool = new LuaConsole();
+				_tools.Add(newTool);
+				return newTool;
+			}
+		}
+
+		public TAStudio TAStudio
+		{
+			get
+			{
+				var tool = _tools.FirstOrDefault(x => x is TAStudio);
+				if (tool != null)
+				{
+					if (tool.IsDisposed)
+					{
+						_tools.Remove(tool);
+					}
+					else
+					{
+						return tool as TAStudio;
+					}
+				}
+
+				var newTool = new TAStudio();
 				_tools.Add(newTool);
 				return newTool;
 			}

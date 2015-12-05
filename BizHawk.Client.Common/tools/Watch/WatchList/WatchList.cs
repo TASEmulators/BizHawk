@@ -590,7 +590,6 @@ namespace BizHawk.Client.Common
 				sw.WriteLine(sb.ToString());
 			}
 
-			Global.Config.RecentWatches.Add(CurrentFileName);
 			Changes = false;
 			return true;
 		}
@@ -734,7 +733,6 @@ namespace BizHawk.Client.Common
 
 			if (!append)
 			{
-				Global.Config.RecentWatches.Add(path);
 				Changes = false;
 			}
 			else

@@ -1567,6 +1567,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
+				if (GlobalWin.Tools.TAStudio != null)
+				{
+					return;
+				}
+
 				Global.Config.SaveSlot = num;
 				SaveSlotSelectedMessage();
 				UpdateStatusSlots();
@@ -1882,6 +1887,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (GlobalWin.Tools.TAStudio != null)
+			{
+				return;
+			}
+
 			var path = PathManager.GetSaveStatePath(Global.Game);
 
 			var file = new FileInfo(path);
@@ -1909,6 +1919,11 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadStateAs()
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (GlobalWin.Tools.TAStudio != null)
 			{
 				return;
 			}
@@ -2177,6 +2192,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
+				if (GlobalWin.Tools.TAStudio != null)
+				{
+					return;
+				}
+
 				if (Global.Config.SaveSlot == 0)
 				{
 					Global.Config.SaveSlot = 9; // Wrap to end of slot list
@@ -2199,6 +2219,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
+				if (GlobalWin.Tools.TAStudio != null)
+				{
+					return;
+				}
+
 				if (Global.Config.SaveSlot >= 9)
 				{
 					Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
@@ -2368,7 +2393,7 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
-		private void DecreaseWIndowSize()
+		private void DecreaseWindowSize()
 		{
 			switch (Global.Config.TargetZoomFactor)
 			{
@@ -2680,6 +2705,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (GlobalWin.Tools.TAStudio != null)
+			{
+				return;
+			}
+
 			// If from lua, disable counting rerecords
 			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
 
@@ -2722,6 +2752,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (GlobalWin.Tools.TAStudio != null)
+			{
+				return;
+			}
+
 			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
 			if (File.Exists(path) == false)
 			{
@@ -2736,6 +2771,11 @@ namespace BizHawk.Client.EmuHawk
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (GlobalWin.Tools.TAStudio != null)
 			{
 				return;
 			}
@@ -3671,6 +3711,11 @@ namespace BizHawk.Client.EmuHawk
 		public void SaveQuickSave(string quickSlotName)
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (GlobalWin.Tools.TAStudio != null)
 			{
 				return;
 			}
