@@ -5,9 +5,10 @@ next
 *EmuHawk
 **Add libretro player, compatible with selected cores
 **Support Code-Data Logger for GB/GBC, SMS/GG, SNES, and Genesis
-**Add GameShark cheat converter
-**Add custom exception display box, so exception info can be clipboarded out
+**Add GameShark cheat converter for N64, GB/GBC, Saturn, GBA, PSX; Action Replay for SMS, SNES, Genesis, GBA; Game Genie for Genesis, SNES, GG, NES
 **Cheat Dialog: Fix flakiness in value-editing
+**Add custom exception display box, so exception info can be clipboarded out
+**Improve main OSD font
 **Stop FP precision conflicts between lua scripts and D3D Display method
 **DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
 **Improvements to Retro shader compatibility
@@ -21,6 +22,7 @@ next
 **Fix #526 - Hex editor repainting fails and garbage rendering
 **Fix #535 - domain list does not update when changing cores
 **Fix #537 - Annoyance with "always on top"
+**Fix #541 - Heavy CPU usage when emulation is paused
 
 **Tastudio (TODO - editorialize this section)
 ***color stated frames on WasLag too.
@@ -38,6 +40,7 @@ next
 ***Get smarter
 
 **Lua
+**Add tons of new fonts and text rendering options
 **Fix gameExtraPadding coordinate translation
 **Clarify script pause/stop state in UI and logic
 **Fix forms.destroyall() and call it when lua console closes
