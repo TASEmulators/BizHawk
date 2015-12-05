@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 			T existingTool = (T)_tools.FirstOrDefault(x => x is T);
 
-			if (existingTool != null)
+			if (existingTool != null && typeof(T) != typeof(IExternalToolForm))
 			{
 				if (existingTool.IsDisposed)
 				{
