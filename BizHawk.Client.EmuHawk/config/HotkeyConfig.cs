@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var b in bindings)
 				{
 					var l = new Label
-						{
+					{
 						Text = b.DisplayName,
 						Location = new Point(_x, _y),
 						Size = new Size(iwOffsetX - UIHelper.ScaleX(2), UIHelper.ScaleY(15)),
@@ -146,6 +146,16 @@ namespace BizHawk.Client.EmuHawk
 						_x += iwOffsetX + iwWidth + UIHelper.ScaleX(10);
 						_y = UIHelper.ScaleY(14);
 					}
+				}
+
+				if (tab == "TAStudio")
+				{
+					tb.Controls.Add(new Label
+					{
+						Text = "Save States hotkeys operate with branches when TAStudio is engaged.",
+						Location = new Point(_x, _y),
+						Size = new Size(iwWidth + iwOffsetX, HotkeyTabControl.Height - _y),
+					});
 				}
 
 				HotkeyTabControl.TabPages.Add(tb);
