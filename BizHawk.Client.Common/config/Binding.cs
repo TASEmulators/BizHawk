@@ -207,6 +207,7 @@ namespace BizHawk.Client.Common
 						new Binding { DisplayName = "ToolBox", Bindings = "Shift+T", TabGroup = "Tools", DefaultBinding = "" },
 						new Binding { DisplayName = "Virtual Pad", Bindings = "", TabGroup = "Tools", DefaultBinding = "" },
 
+						//Ram Search
 						new Binding { DisplayName = "New Search", Bindings = "", TabGroup = "Ram Search", DefaultBinding = "" },
 						new Binding { DisplayName = "Do Search", Bindings = "", TabGroup = "Ram Search", DefaultBinding = "" },
 						new Binding { DisplayName = "Previous Compare To", Bindings = "", TabGroup = "Ram Search", DefaultBinding = "" },

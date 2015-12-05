@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 					IncreaseWindowSize();
 					break;
 				case "Smaller Window":
-					DecreaseWIndowSize();
+					DecreaseWindowSize();
 					break;
 				case "Increase Speed":
 					IncreaseSpeed();

@@ -88,6 +88,7 @@ namespace BizHawk.Client.Common
 		public string NewBranchText = "";
 		public int CurrentBranch { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
+
 		public TasBranch GetBranch(int index)
 		{
 			if (index >= Branches.Count)
