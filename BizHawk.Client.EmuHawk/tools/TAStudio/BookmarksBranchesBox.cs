@@ -188,6 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
+				GlobalWin.OSD.AddMessage("Loaded branch " + Movie.CurrentBranch.ToString());
 			}
 		}
 
@@ -203,12 +204,14 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
+			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
 		}
 
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
+			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -222,6 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie.CurrentBranch = BranchView.SelectedRows.First();
 				UpdateBranch(SelectedBranch);
+				GlobalWin.OSD.AddMessage("Saved branch " + Movie.CurrentBranch.ToString());
 			}
 		}
 
@@ -231,6 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int index = BranchView.SelectedRows.First();
 				EditBranchTextPopUp(index);
+				GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
 			}
 		}
 
@@ -259,6 +264,7 @@ namespace BizHawk.Client.EmuHawk
 
 				//BranchView.Refresh();
 				Tastudio.RefreshDialog();
+				GlobalWin.OSD.AddMessage("Removed branch " + index.ToString());
 			}
 		}
 
@@ -279,6 +285,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					NonExistentBranchMessage(slot);
 					return;
 				}
 			}
@@ -295,6 +302,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					NonExistentBranchMessage(slot);
 					return;
 				}
 			}
@@ -312,6 +320,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BranchView.SelectRow(slot, true);
 				BranchView.Refresh();
+			}
+			else
+			{
+				NonExistentBranchMessage(slot);
 			}
 		}
 
@@ -341,6 +353,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			BranchView.Refresh();
+		}
+
+		public void NonExistentBranchMessage(int slot)
+		{
+			string binding = Global.Config.HotkeyBindings.Where(x => x.DisplayName == "Add Branch").FirstOrDefault().Bindings;
+			GlobalWin.OSD.AddMessage("Branch " + slot.ToString() + " does not exist");
+			GlobalWin.OSD.AddMessage("Use " + binding + " to add branches");
 		}
 
 		public void UpdateValues()

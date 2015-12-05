@@ -1567,7 +1567,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
-				if (GlobalWin.Tools.TAStudio != null)
+				if (GlobalWin.Tools.Has<TAStudio>())
 				{
 					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(num);
 					return;
@@ -1888,7 +1888,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				return;
 			}
@@ -1924,7 +1924,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				return;
 			}
@@ -2193,7 +2193,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
-				if (GlobalWin.Tools.TAStudio != null)
+				if (GlobalWin.Tools.Has<TAStudio>())
 				{
 					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(false);
 					return;
@@ -2221,7 +2221,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
-				if (GlobalWin.Tools.TAStudio != null)
+				if (GlobalWin.Tools.Has<TAStudio>())
 				{
 					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(true);
 					return;
@@ -2713,7 +2713,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal();
 				return;
@@ -2761,7 +2761,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal(SlotToInt(quickSlotName));
 				return;
@@ -2785,7 +2785,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal();
 				return;
@@ -3726,7 +3726,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal(SlotToInt(quickSlotName));
 				return;
