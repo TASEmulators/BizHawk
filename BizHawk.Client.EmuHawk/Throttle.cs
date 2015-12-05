@@ -58,10 +58,13 @@ namespace BizHawk.Client.EmuHawk
 			//notably, if we're frame-advancing, we should be paused.
 			if (signal_paused && !signal_continuousframeAdvancing)
 			{
-				//Console.WriteLine("THE THING: {0} {1}", signal_paused ,signal_continuousframeAdvancing);
+				Console.WriteLine("THE THING: {0} {1}", signal_paused ,signal_continuousframeAdvancing);
 				skipnextframe = false;
 				framesskipped = 0;
 				framestoskip = 0;
+
+				//keep from burning CPU
+				Thread.Sleep(10);
 				return;
 			}
 
