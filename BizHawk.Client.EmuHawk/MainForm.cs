@@ -667,33 +667,40 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Controls whether the app generates input events. should be turned off for most modal dialogs
 		/// </summary>
-		public bool AllowInput
+		public bool AllowInput(bool yield_alt)
 		{
-			get
+			// the main form gets input
+			if (ActiveForm == this)
 			{
-				// the main form gets input
-				if (ActiveForm == this)
-				{
-					return true;
-				}
-
-				// modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyConfig ||
-					ActiveForm is ControllerConfig ||
-					ActiveForm is TAStudio ||
-					ActiveForm is VirtualpadTool)
-				{
-					return true;
-				}
-
-				// if no form is active on this process, then the background input setting applies
-				if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
-				{
-					return true;
-				}
-
-				return false;
+				return true;
 			}
+
+			//even more special logic for TAStudio:
+			//TODO - implement by event filter in TAStudio
+			if (ActiveForm is TAStudio)
+			{
+				if(yield_alt) return false;
+				var ts = ActiveForm as TAStudio;
+				if(ts.IsInMenuLoop)
+					return false;
+			}
+
+			// modals that need to capture input for binding purposes get input, of course
+			if (ActiveForm is HotkeyConfig ||
+				ActiveForm is ControllerConfig ||
+				ActiveForm is TAStudio ||
+				ActiveForm is VirtualpadTool)
+			{
+				return true;
+			}
+
+			// if no form is active on this process, then the background input setting applies
+			if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 

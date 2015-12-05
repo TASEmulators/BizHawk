@@ -409,12 +409,14 @@ namespace BizHawk.Client.EmuHawk
 
 					}
 
-					bool swallow = !GlobalWin.MainForm.AllowInput;
+					bool swallow = !GlobalWin.MainForm.AllowInput(false);
 
 					foreach (var ie in _NewEvents)
 					{
 						//events are swallowed in some cases:
-						if (ie.EventType == InputEventType.Press && swallow)
+						if (ie.LogicalButton.Alt && !GlobalWin.MainForm.AllowInput(true))
+						{ }
+						else if (ie.EventType == InputEventType.Press && swallow)
 						{ }
 						else
 							EnqueueEvent(ie);
@@ -471,7 +473,7 @@ namespace BizHawk.Client.EmuHawk
 			lock (this)
 			{
 				if (InputEvents.Count == 0) return null;
-				if (!GlobalWin.MainForm.AllowInput) return null;
+				if (!GlobalWin.MainForm.AllowInput(false)) return null;
 
 				//we only listen to releases for input binding, because we need to distinguish releases of pure modifierkeys from modified keys
 				//if you just pressed ctrl, wanting to bind ctrl, we'd see: pressed:ctrl, unpressed:ctrl

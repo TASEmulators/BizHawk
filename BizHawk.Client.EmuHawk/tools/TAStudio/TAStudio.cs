@@ -47,6 +47,8 @@ namespace BizHawk.Client.EmuHawk
 			get { return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); }
 		}
 
+		public bool IsInMenuLoop { get; private set; }
+
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
 
@@ -882,6 +884,16 @@ namespace BizHawk.Client.EmuHawk
 			NewFromCurrentSaveRamMenuItem.Enabled =
 				CurrentTasMovie.InputLogLength > 0
 				&& SaveRamEmulator != null;
+		}
+
+		private void TASMenu_MenuActivate(object sender, EventArgs e)
+		{
+			IsInMenuLoop = true;
+		}
+
+		private void TASMenu_MenuDeactivate(object sender, EventArgs e)
+		{
+			IsInMenuLoop = false;
 		}
 	}
 }
