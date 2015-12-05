@@ -1569,6 +1569,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.TAStudio != null)
 				{
+					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(num);
 					return;
 				}
 
@@ -2194,6 +2195,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.TAStudio != null)
 				{
+					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(false);
 					return;
 				}
 
@@ -2221,6 +2223,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.TAStudio != null)
 				{
+					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(true);
 					return;
 				}
 
@@ -2698,6 +2701,11 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
+		private int SlotToInt(string slot)
+		{
+			return int.Parse(slot.Substring(slot.Length - 1, 1));
+		}
+
 		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
 		{
 			if (!Global.Emulator.HasSavestates())
@@ -2707,6 +2715,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Tools.TAStudio != null)
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal();
 				return;
 			}
 
@@ -2754,6 +2763,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Tools.TAStudio != null)
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal(SlotToInt(quickSlotName));
 				return;
 			}
 
@@ -2777,6 +2787,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Tools.TAStudio != null)
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal();
 				return;
 			}
 
@@ -3717,6 +3728,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (GlobalWin.Tools.TAStudio != null)
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal(SlotToInt(quickSlotName));
 				return;
 			}
 

@@ -174,8 +174,8 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateBranch(TasBranch branch)
 		{
 			Movie.UpdateBranch(branch, CreateBranch());
-			BranchView.Refresh();
 			Tastudio.RefreshDialog();
+			//BranchView.Refresh();
 		}
 
 		private void LoadSelectedBranch()
@@ -220,8 +220,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
-				UpdateBranch(SelectedBranch);
 				Movie.CurrentBranch = BranchView.SelectedRows.First();
+				UpdateBranch(SelectedBranch);
 			}
 		}
 
@@ -251,14 +251,96 @@ namespace BizHawk.Client.EmuHawk
 				Movie.RemoveBranch(SelectedBranch);
 				BranchView.RowCount = Movie.BranchCount;
 
-				if (index == BranchView.SelectedRows.FirstOrDefault())
+				if (index == Movie.BranchCount)
 				{
 					BranchView.ClearSelectedRows();
+					BranchView.SelectRow(Movie.BranchCount - 1, true);
 				}
 
-				BranchView.Refresh();
+				//BranchView.Refresh();
 				Tastudio.RefreshDialog();
 			}
+		}
+
+		public void AddBranchExternal()
+		{
+			AddBranchToolStripMenuItem_Click(null, null);
+			BranchView.SelectRow(Movie.CurrentBranch, true);
+			BranchView.Refresh();
+		}
+
+		public void LoadBranchExternal(int slot = -1)
+		{
+			if (slot != -1)
+			{
+				if (GetBranch(slot) != null)
+				{
+					BranchView.SelectRow(slot, true);
+				}
+				else
+				{
+					return;
+				}
+			}
+			LoadBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public void UpdateBranchExternal(int slot = -1)
+		{
+			if (slot != -1)
+			{
+				if (GetBranch(slot) != null)
+				{
+					BranchView.SelectRow(slot, true);
+				}
+				else
+				{
+					return;
+				}
+			}
+			UpdateBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public void RemoveBranchExtrenal()
+		{
+			RemoveBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public void SelectBranchExternal(int slot)
+		{
+			if (GetBranch(slot) != null)
+			{
+				BranchView.SelectRow(slot, true);
+				BranchView.Refresh();
+			}
+		}
+
+		public void SelectBranchExternal(bool next)
+		{
+			if (SelectedBranch == null)
+			{
+				BranchView.SelectRow(Movie.CurrentBranch, true);
+				BranchView.Refresh();
+				return;
+			}
+			int sel = BranchView.SelectedRows.First();
+			if (next)
+			{
+				if (GetBranch(sel + 1) != null)
+				{
+					BranchView.SelectRow(sel, false);
+					BranchView.SelectRow(sel + 1, true);
+				}
+			}
+			else // previous
+			{
+				if (GetBranch(sel - 1) != null)
+				{
+					BranchView.SelectRow(sel, false);
+					BranchView.SelectRow(sel - 1, true);
+				}
+			}
+			BranchView.Refresh();
 		}
 
 		public void UpdateValues()

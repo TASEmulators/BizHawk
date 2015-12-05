@@ -1672,7 +1672,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem scrollToCenterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem applyPatternToPaintedInputToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem onlyOnAutoFireColumnsToolStripMenuItem;
-		private BookmarksBranchesBox BookMarkControl;
+		public BookmarksBranchesBox BookMarkControl;
 		private System.Windows.Forms.ToolStripMenuItem BranchContextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator25;
 		private System.Windows.Forms.ToolStripMenuItem wheelScrollSpeedToolStripMenuItem;

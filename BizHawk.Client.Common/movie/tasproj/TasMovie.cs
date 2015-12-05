@@ -91,8 +91,8 @@ namespace BizHawk.Client.Common
 
 		public TasBranch GetBranch(int index)
 		{
-			if (index >= Branches.Count)
-				return null; // are we allowed?
+			if (index >= Branches.Count || index < 0)
+				return null;
 			else
 				return Branches[index];
 		}
