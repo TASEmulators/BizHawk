@@ -141,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_watches.Save();
+						Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					}
 				}
 				else if (result == DialogResult.No)
@@ -693,6 +694,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_watches.Save())
 				{
+					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					UpdateStatusBar(saved: true);
 				}
 			}
@@ -1034,6 +1036,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Path.GetExtension(filePaths[0]) == ".wch")
 			{
 				_watches.Load(filePaths[0], append: false);
+				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 				WatchListView.ItemCount = _watches.ItemCount;
 			}
 		}

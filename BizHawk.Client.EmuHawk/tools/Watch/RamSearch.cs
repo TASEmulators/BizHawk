@@ -850,6 +850,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId);
 				watches.Load(file.FullName, append);
+				Settings.RecentSearches.Add(watches.CurrentFileName);
 
 				var watchList = watches.Where(x => !x.IsSeparator);
 				var addresses = watchList.Select(x => x.Address).ToList();
@@ -1041,6 +1042,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_currentFileName = watches.CurrentFileName;
 						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
+						Settings.RecentSearches.Add(watches.CurrentFileName);
 					}
 				}
 				else
