@@ -95,11 +95,11 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = Global.CheatList.Load(path, append: false);
 				if (!loadResult)
 				{
-					Global.Config.RecentWatches.HandleLoadError(path);
+					Global.Config.RecentCheats.HandleLoadError(path);
 				}
 				else
 				{
-					Global.Config.RecentWatches.Add(path);
+					Global.Config.RecentCheats.Add(path);
 					UpdateDialog();
 					UpdateMessageLabel();
 				}
