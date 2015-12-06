@@ -174,8 +174,8 @@ namespace BizHawk.Client.EmuHawk
 		private void UpdateBranch(TasBranch branch)
 		{
 			Movie.UpdateBranch(branch, CreateBranch());
-			BranchView.Refresh();
 			Tastudio.RefreshDialog();
+			//BranchView.Refresh();
 		}
 
 		private void LoadSelectedBranch()
@@ -188,6 +188,7 @@ namespace BizHawk.Client.EmuHawk
 				Movie.CurrentBranch = index;
 				LoadBranch(SelectedBranch);
 				BranchView.Refresh();
+				GlobalWin.OSD.AddMessage("Loaded branch " + Movie.CurrentBranch.ToString());
 			}
 		}
 
@@ -203,12 +204,14 @@ namespace BizHawk.Client.EmuHawk
 		private void AddBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
+			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
 		}
 
 		private void AddBranchWithTexToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Branch();
 			EditBranchTextPopUp(Movie.CurrentBranch);
+			GlobalWin.OSD.AddMessage("Added branch " + Movie.CurrentBranch.ToString());
 		}
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
@@ -220,8 +223,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedBranch != null)
 			{
-				UpdateBranch(SelectedBranch);
 				Movie.CurrentBranch = BranchView.SelectedRows.First();
+				UpdateBranch(SelectedBranch);
+				GlobalWin.OSD.AddMessage("Saved branch " + Movie.CurrentBranch.ToString());
 			}
 		}
 
@@ -231,6 +235,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int index = BranchView.SelectedRows.First();
 				EditBranchTextPopUp(index);
+				GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
 			}
 		}
 
@@ -251,14 +256,110 @@ namespace BizHawk.Client.EmuHawk
 				Movie.RemoveBranch(SelectedBranch);
 				BranchView.RowCount = Movie.BranchCount;
 
-				if (index == BranchView.SelectedRows.FirstOrDefault())
+				if (index == Movie.BranchCount)
 				{
 					BranchView.ClearSelectedRows();
+					BranchView.SelectRow(Movie.BranchCount - 1, true);
 				}
 
-				BranchView.Refresh();
+				//BranchView.Refresh();
 				Tastudio.RefreshDialog();
+				GlobalWin.OSD.AddMessage("Removed branch " + index.ToString());
 			}
+		}
+
+		public void AddBranchExternal()
+		{
+			AddBranchToolStripMenuItem_Click(null, null);
+			BranchView.SelectRow(Movie.CurrentBranch, true);
+			BranchView.Refresh();
+		}
+
+		public void LoadBranchExternal(int slot = -1)
+		{
+			if (slot != -1)
+			{
+				if (GetBranch(slot) != null)
+				{
+					BranchView.SelectRow(slot, true);
+				}
+				else
+				{
+					NonExistentBranchMessage(slot);
+					return;
+				}
+			}
+			LoadBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public void UpdateBranchExternal(int slot = -1)
+		{
+			if (slot != -1)
+			{
+				if (GetBranch(slot) != null)
+				{
+					BranchView.SelectRow(slot, true);
+				}
+				else
+				{
+					NonExistentBranchMessage(slot);
+					return;
+				}
+			}
+			UpdateBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public void RemoveBranchExtrenal()
+		{
+			RemoveBranchToolStripMenuItem_Click(null, null);
+		}
+
+		public void SelectBranchExternal(int slot)
+		{
+			if (GetBranch(slot) != null)
+			{
+				BranchView.SelectRow(slot, true);
+				BranchView.Refresh();
+			}
+			else
+			{
+				NonExistentBranchMessage(slot);
+			}
+		}
+
+		public void SelectBranchExternal(bool next)
+		{
+			if (SelectedBranch == null)
+			{
+				BranchView.SelectRow(Movie.CurrentBranch, true);
+				BranchView.Refresh();
+				return;
+			}
+			int sel = BranchView.SelectedRows.First();
+			if (next)
+			{
+				if (GetBranch(sel + 1) != null)
+				{
+					BranchView.SelectRow(sel, false);
+					BranchView.SelectRow(sel + 1, true);
+				}
+			}
+			else // previous
+			{
+				if (GetBranch(sel - 1) != null)
+				{
+					BranchView.SelectRow(sel, false);
+					BranchView.SelectRow(sel - 1, true);
+				}
+			}
+			BranchView.Refresh();
+		}
+
+		public void NonExistentBranchMessage(int slot)
+		{
+			string binding = Global.Config.HotkeyBindings.Where(x => x.DisplayName == "Add Branch").FirstOrDefault().Bindings;
+			GlobalWin.OSD.AddMessage("Branch " + slot.ToString() + " does not exist");
+			GlobalWin.OSD.AddMessage("Use " + binding + " to add branches");
 		}
 
 		public void UpdateValues()

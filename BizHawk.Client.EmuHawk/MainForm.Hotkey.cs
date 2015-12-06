@@ -341,6 +341,14 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.RamSearch.NextOperator();
 					break;
 
+				//TAStudio
+				case "Add Branch":
+					GlobalWin.Tools.TAStudio.BookMarkControl.AddBranchExternal();
+					break;
+				case "Delete Branch":
+					GlobalWin.Tools.TAStudio.BookMarkControl.RemoveBranchExtrenal();
+					break;
+
 				// SNES
 				case "Toggle BG 1":
 					SNES_ToggleBG1();

@@ -1267,7 +1267,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
+						//externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
+						externalToolFile = Assembly.LoadFrom(fi.FullName);
 					}
 					catch (BadImageFormatException)
 					{
@@ -1286,10 +1287,12 @@ namespace BizHawk.Client.EmuHawk
 					existing in another assembly, it raises the exception.
 
 					But the advantage of this is that memory footprint is reduced
+
+					EDIT: In fact, I have some trouble when loading Reflection only... moved to regular load
 					*/
 					try
 					{
-						assemblyTypes = externalToolFile.GetTypes();
+						assemblyTypes = externalToolFile.GetTypes().Where<Type>(t => t != null && t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm").ToArray<Type>();
 					}
 					catch (ReflectionTypeLoadException ex)
 					{

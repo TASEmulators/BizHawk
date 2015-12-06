@@ -217,8 +217,8 @@ namespace BizHawk.Client.Common
 						Bind("Ram Search", "Previous Operator"),
 						Bind("Ram Search", "Next Operator"),
 
-						Bind("TAStudio", "Add Branch"),
-						Bind("TAStudio", "Delete Branch"),
+						Bind("TAStudio", "Add Branch", "Alt+Insert"),
+						Bind("TAStudio", "Delete Branch", "Alt+Delete"),
 
 						Bind("SNES", "Toggle BG 1"),
 						Bind("SNES", "Toggle BG 2"),

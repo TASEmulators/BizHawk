@@ -667,33 +667,40 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Controls whether the app generates input events. should be turned off for most modal dialogs
 		/// </summary>
-		public bool AllowInput
+		public bool AllowInput(bool yield_alt)
 		{
-			get
+			// the main form gets input
+			if (ActiveForm == this)
 			{
-				// the main form gets input
-				if (ActiveForm == this)
-				{
-					return true;
-				}
-
-				// modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyConfig ||
-					ActiveForm is ControllerConfig ||
-					ActiveForm is TAStudio ||
-					ActiveForm is VirtualpadTool)
-				{
-					return true;
-				}
-
-				// if no form is active on this process, then the background input setting applies
-				if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
-				{
-					return true;
-				}
-
-				return false;
+				return true;
 			}
+
+			//even more special logic for TAStudio:
+			//TODO - implement by event filter in TAStudio
+			if (ActiveForm is TAStudio)
+			{
+				if(yield_alt) return false;
+				var ts = ActiveForm as TAStudio;
+				if(ts.IsInMenuLoop)
+					return false;
+			}
+
+			// modals that need to capture input for binding purposes get input, of course
+			if (ActiveForm is HotkeyConfig ||
+				ActiveForm is ControllerConfig ||
+				ActiveForm is TAStudio ||
+				ActiveForm is VirtualpadTool)
+			{
+				return true;
+			}
+
+			// if no form is active on this process, then the background input setting applies
+			if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 
@@ -1567,8 +1574,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
-				if (GlobalWin.Tools.TAStudio != null)
+				if (GlobalWin.Tools.Has<TAStudio>())
 				{
+					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(num);
 					return;
 				}
 
@@ -1887,7 +1895,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				return;
 			}
@@ -1923,7 +1931,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
 				return;
 			}
@@ -2192,8 +2200,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
-				if (GlobalWin.Tools.TAStudio != null)
+				if (GlobalWin.Tools.Has<TAStudio>())
 				{
+					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(false);
 					return;
 				}
 
@@ -2219,8 +2228,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.HasSavestates())
 			{
-				if (GlobalWin.Tools.TAStudio != null)
+				if (GlobalWin.Tools.Has<TAStudio>())
 				{
+					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(true);
 					return;
 				}
 
@@ -2698,6 +2708,11 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
+		private int SlotToInt(string slot)
+		{
+			return int.Parse(slot.Substring(slot.Length - 1, 1));
+		}
+
 		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
 		{
 			if (!Global.Emulator.HasSavestates())
@@ -2705,8 +2720,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal();
 				return;
 			}
 
@@ -2752,8 +2768,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal(SlotToInt(quickSlotName));
 				return;
 			}
 
@@ -2775,8 +2792,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal();
 				return;
 			}
 
@@ -3715,8 +3733,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (GlobalWin.Tools.TAStudio != null)
+			if (GlobalWin.Tools.Has<TAStudio>())
 			{
+				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal(SlotToInt(quickSlotName));
 				return;
 			}
 
