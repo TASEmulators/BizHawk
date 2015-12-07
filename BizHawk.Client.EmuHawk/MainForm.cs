@@ -3609,6 +3609,16 @@ namespace BizHawk.Client.EmuHawk
 			this.master = master;
 		}
 
+		private bool IsSlave
+		{
+			get { return master != null; }
+		}
+
+		public void TakeBackControl()
+		{
+			master = null;
+		}
+
 		private int SlotToInt(string slot)
 		{
 			return int.Parse(slot.Substring(slot.Length - 1, 1));
@@ -3936,16 +3946,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool IsSlave
-		{
-			get { return master != null; }
-		}
-
-		public void TakeBackControl()
-		{
-			master = null;
-		}
-
 		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
@@ -3970,7 +3970,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.ClientControls["Rewind"] || PressRewind)
 				{
-					runFrame = false; // TODO: the master should be deciding this!
+					runFrame = true; // TODO: the master should be deciding this!
 					return master.Rewind();
 				}
 			}
