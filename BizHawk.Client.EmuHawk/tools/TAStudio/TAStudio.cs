@@ -296,10 +296,12 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void SetTasMovieCallbacks()
+		private void SetTasMovieCallbacks(TasMovie movie = null)
 		{
-			CurrentTasMovie.ClientSettingsForSave = ClientSettingsForSave;
-			CurrentTasMovie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
+			if (movie == null)
+				movie = CurrentTasMovie;
+			movie.ClientSettingsForSave = ClientSettingsForSave;
+			movie.GetClientSettingsOnLoad = GetClientSettingsOnLoad;
 		}
 
 		private string ClientSettingsForSave()
@@ -343,8 +345,7 @@ namespace BizHawk.Client.EmuHawk
 				column.Visible = false;
 			}
 
-			TasView.AllColumns.ColumnsChanged();
-			
+			TasView.AllColumns.ColumnsChanged();			
 
 			// Patterns
 			int bStart = 0;
@@ -437,7 +438,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!HandleMovieLoadStuff(newMovie))
 				return false;
 
-			SetUpColumns();
+			if (TasView.AllColumns.Count() == 0)
+				SetUpColumns();
 			GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
@@ -476,9 +478,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool HandleMovieLoadStuff(TasMovie movie = null)
 		{
-
-			WantsToControlStopMovie = false;
 			bool result;
+			WantsToControlStopMovie = false;
+
 			if (movie == null)
 			{
 				movie = CurrentTasMovie;
@@ -486,8 +488,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 				result = StartNewMovieWrapper(false, movie);
+
 			if (!result)
 				return false;
+
 			WantsToControlStopMovie = true;
 
 			CurrentTasMovie.ChangeLog.ClearLog();
@@ -503,6 +507,7 @@ namespace BizHawk.Client.EmuHawk
 			_initializing = true;
 			if (movie == null)
 				movie = CurrentTasMovie;
+			SetTasMovieCallbacks(movie as TasMovie);
 			bool result = GlobalWin.MainForm.StartNewMovie(movie, record);
 			_initializing = false;
 
@@ -684,6 +689,16 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.UpdateBefore();
 			GlobalWin.Tools.UpdateAfter();
 			_hackyDontUpdate = false;
+		}
+
+		public void AddBranchExternal()
+		{
+			BookMarkControl.AddBranchExternal();
+		}
+
+		public void RemoveBranchExtrenal()
+		{
+			BookMarkControl.RemoveBranchExtrenal();
 		}
 
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
