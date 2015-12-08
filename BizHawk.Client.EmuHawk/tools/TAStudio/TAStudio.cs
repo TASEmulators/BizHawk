@@ -421,7 +421,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
 		}
 
-		private bool LoadFile(FileInfo file)
+		private bool LoadFile(FileInfo file, bool startsFromSavestate = false)
 		{
 			if (!file.Exists)
 			{
@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			TasMovie newMovie = new TasMovie(false, _saveBackgroundWorker);
+			TasMovie newMovie = new TasMovie(startsFromSavestate, _saveBackgroundWorker);
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
@@ -440,7 +440,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (TasView.AllColumns.Count() == 0)
 				SetUpColumns();
-			GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+			if (startsFromSavestate)
+				GoToFrame(0);
+			else
+				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
 			// clear all selections

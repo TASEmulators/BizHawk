@@ -1097,7 +1097,7 @@ namespace BizHawk.Client.EmuHawk
 					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
 				GlobalWin.MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename));
+				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
 
@@ -1112,7 +1112,7 @@ namespace BizHawk.Client.EmuHawk
 					SaveRamEmulator.CloneSaveRam());
 
 				GlobalWin.MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename));
+				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
 

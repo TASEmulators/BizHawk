@@ -138,6 +138,10 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (frame == 0) {
+					return new KeyValuePair<int, byte[]>(0, InitialState);
+				}
+
 				if (States.ContainsKey(frame))
 				{
 					StateAccessed(frame);
