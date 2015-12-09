@@ -444,6 +444,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(0);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
 			// clear all selections
