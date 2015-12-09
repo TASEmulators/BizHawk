@@ -2824,10 +2824,17 @@ namespace BizHawk.Client.EmuHawk
 					UpdateToolsAfter();
 				}
 
-				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
+				if (IsSeeking)
 				{
-					PauseEmulator();
-					PauseOnFrame = null;
+					if (Global.Emulator.Frame == PauseOnFrame.Value)
+					{
+						PauseEmulator();
+						PauseOnFrame = null;
+					}
+					else if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.ReportSeekingProgress();
+					}
 				}
 			}
 
