@@ -38,7 +38,14 @@ namespace BizHawk.Client.Common
 		internal WordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, ushort value, ushort previous, int changeCount)
 			: base(domain, address, WatchSize.Word, type, bigEndian, note)
 		{
-			this._value = value;
+			if (value == 0)
+			{
+				value = GetWord();
+			}
+			else
+			{
+				this._value = value;
+			}
 			this._previous = previous;
 			this._changecount = changeCount;
 		}
