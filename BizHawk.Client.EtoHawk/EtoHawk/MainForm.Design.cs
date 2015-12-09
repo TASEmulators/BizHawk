@@ -43,6 +43,15 @@ namespace BizHawk.Client.EtoHawk
                 }
                 _suspended = false;
             };
+			_mnuConfigFirmwares = new ButtonMenuItem () { Text = "Firmwares..." };
+			_mnuConfigFirmwares.Click += (sender, e) => {
+				_suspended = true;
+				using(FirmwaresConfig cc = new FirmwaresConfig())
+				{
+					cc.ShowModal(this);
+				}
+				_suspended = false;
+			};
 
             Menu = new MenuBar
             {
@@ -69,7 +78,8 @@ namespace BizHawk.Client.EtoHawk
                     new ButtonMenuItem{
                         Text="Config",
                         Items = {
-                            _mnuConfigControllers
+                            _mnuConfigControllers,
+							_mnuConfigFirmwares
                         }
                     }
 				},
@@ -101,6 +111,7 @@ namespace BizHawk.Client.EtoHawk
         }
 
         private ButtonMenuItem _mnuConfigControllers;
+		private ButtonMenuItem _mnuConfigFirmwares;
         private Drawable _viewport;
     }
 }

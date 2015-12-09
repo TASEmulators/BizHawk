@@ -31,6 +31,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Throttle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Input\OTK_GamePad.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\FirmwaresConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Config\FirmwaresConfig.Design.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)defctrl.json">
