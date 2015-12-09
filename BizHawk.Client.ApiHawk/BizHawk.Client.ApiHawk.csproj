@@ -59,10 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\ConfigPersistAttribute.cs" />
-    <Compile Include="Interfaces\IToolFormAutoConfig.cs" />
     <Compile Include="Interfaces\IExternalToolForm.cs" />
-    <Compile Include="Interfaces\IToolForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +77,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Attributes\" />
     <Folder Include="Classes\" />
   </ItemGroup>
   <ItemGroup>

@@ -232,7 +232,18 @@ namespace BizHawk.Client.Common
 		/// <returns>True if they are equals; otherwise, false</returns>
 		public static bool operator ==(Watch a, Cheat b)
 		{
-			return a.Equals(b);
+			if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))
+			{
+				return false;
+			}
+			else if (object.ReferenceEquals(a, b))
+			{
+				return true;
+			}
+			else
+			{
+				return a.Equals(b);
+			}
 		}
 
 		/// <summary>
