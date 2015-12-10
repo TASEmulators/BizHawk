@@ -430,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 						return;
 					}
 					parseString = RAMValue;
-					MessageBox.Show(parseString);
+					//MessageBox.Show(parseString);
 					parseString = RAMValue.Remove(4, 4);
 					//Is it a Word or Double Word?	
 					if (parseString == "0000")
