@@ -107,6 +107,7 @@
 			// 
 			// RemoveButton
 			// 
+			this.RemoveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.RemoveButton.Enabled = false;
 			this.RemoveButton.Location = new System.Drawing.Point(93, 284);
 			this.RemoveButton.Name = "RemoveButton";
@@ -140,6 +141,7 @@
 			// 
 			// RemoveAllBtn
 			// 
+			this.RemoveAllBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.RemoveAllBtn.Enabled = false;
 			this.RemoveAllBtn.Location = new System.Drawing.Point(174, 284);
 			this.RemoveAllBtn.Name = "RemoveAllBtn";
@@ -161,7 +163,7 @@
 			this.Controls.Add(this.FunctionView);
 			this.Controls.Add(this.OK);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(200, 50);
+			this.MinimumSize = new System.Drawing.Size(360, 150);
 			this.Name = "LuaRegisteredFunctionsList";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Active Registered Functions";
