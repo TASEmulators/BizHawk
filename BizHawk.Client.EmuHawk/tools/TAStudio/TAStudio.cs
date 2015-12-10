@@ -444,6 +444,7 @@ namespace BizHawk.Client.EmuHawk
 				GoToFrame(0);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
 			// clear all selections
@@ -640,6 +641,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
+					_seekStartFrame = Emulator.Frame;
 					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
 					GlobalWin.MainForm.UnpauseEmulator();
 				}
@@ -673,6 +675,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking) // make seek frame keep up with emulation on fast scrolls
 				{
+					_seekStartFrame = Emulator.Frame;
 					GlobalWin.MainForm.PauseOnFrame = frame;
 					GlobalWin.MainForm.UnpauseEmulator();
 				}
@@ -702,6 +705,17 @@ namespace BizHawk.Client.EmuHawk
 		public void RemoveBranchExtrenal()
 		{
 			BookMarkControl.RemoveBranchExtrenal();
+		}
+
+		public void ReportSeekingProgress()
+		{
+			if (_seekStartFrame.HasValue)
+			{
+				CurrentTasMovie.ReportProgress((double)100d /
+					(GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value) *
+					(Global.Emulator.Frame - _seekStartFrame.Value));
+				RefreshDialog();
+			}
 		}
 
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this

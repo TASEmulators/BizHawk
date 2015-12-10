@@ -45,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 		private bool? _autoRestorePaused = null;
+		private int? _seekStartFrame = null;
 		private void JumpToGreenzone()
 		{
 			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)

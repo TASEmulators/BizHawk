@@ -565,6 +565,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
+				_movie.ReportProgress((double)100d / States.Count * i);
 			}
 		}
 

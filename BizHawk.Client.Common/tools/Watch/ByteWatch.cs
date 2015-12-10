@@ -38,7 +38,14 @@ namespace BizHawk.Client.Common
 		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
 			: base(domain, address, WatchSize.Byte, type, bigEndian, note)
 		{
-			this._value = value;
+			if (value == 0)
+			{
+				value = GetByte();
+			}
+			else
+			{
+				this._value = value;
+			}
 			this._previous = previous;
 			this._changecount = changeCount;
 		}
