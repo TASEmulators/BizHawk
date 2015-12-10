@@ -288,7 +288,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return FormatValue(_value);
+				return FormatValue(GetByte());
 			}
 		}
 
