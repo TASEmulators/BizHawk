@@ -41,7 +41,7 @@
 			// Ok
 			// 
 			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.Ok.Location = new System.Drawing.Point(471, 411);
+			this.Ok.Location = new System.Drawing.Point(616, 505);
 			this.Ok.Name = "Ok";
 			this.Ok.Size = new System.Drawing.Size(75, 23);
 			this.Ok.TabIndex = 0;
@@ -53,7 +53,7 @@
 			// 
 			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(552, 411);
+			this.Cancel.Location = new System.Drawing.Point(697, 505);
 			this.Cancel.Name = "Cancel";
 			this.Cancel.Size = new System.Drawing.Size(75, 23);
 			this.Cancel.TabIndex = 1;
@@ -70,13 +70,13 @@
 			this.PathTabControl.Multiline = true;
 			this.PathTabControl.Name = "PathTabControl";
 			this.PathTabControl.SelectedIndex = 0;
-			this.PathTabControl.Size = new System.Drawing.Size(615, 364);
+			this.PathTabControl.Size = new System.Drawing.Size(760, 458);
 			this.PathTabControl.TabIndex = 2;
 			// 
 			// SaveBtn
 			// 
 			this.SaveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.SaveBtn.Location = new System.Drawing.Point(12, 411);
+			this.SaveBtn.Location = new System.Drawing.Point(12, 505);
 			this.SaveBtn.Name = "SaveBtn";
 			this.SaveBtn.Size = new System.Drawing.Size(75, 23);
 			this.SaveBtn.TabIndex = 3;
@@ -88,7 +88,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(527, 19);
+			this.label1.Location = new System.Drawing.Point(672, 19);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(97, 13);
 			this.label1.TabIndex = 210;
@@ -98,7 +98,7 @@
 			// 
 			this.SpecialCommandsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.SpecialCommandsBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
-			this.SpecialCommandsBtn.Location = new System.Drawing.Point(496, 14);
+			this.SpecialCommandsBtn.Location = new System.Drawing.Point(641, 14);
 			this.SpecialCommandsBtn.Name = "SpecialCommandsBtn";
 			this.SpecialCommandsBtn.Size = new System.Drawing.Size(26, 23);
 			this.SpecialCommandsBtn.TabIndex = 209;
@@ -119,7 +119,7 @@
 			// DefaultsBtn
 			// 
 			this.DefaultsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.DefaultsBtn.Location = new System.Drawing.Point(93, 411);
+			this.DefaultsBtn.Location = new System.Drawing.Point(93, 505);
 			this.DefaultsBtn.Name = "DefaultsBtn";
 			this.DefaultsBtn.Size = new System.Drawing.Size(75, 23);
 			this.DefaultsBtn.TabIndex = 211;
@@ -133,7 +133,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(639, 446);
+			this.ClientSize = new System.Drawing.Size(784, 540);
 			this.Controls.Add(this.DefaultsBtn);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.SpecialCommandsBtn);
