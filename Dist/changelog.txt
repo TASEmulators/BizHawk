@@ -3,37 +3,46 @@ next
 =========================================
 
 *EmuHawk
-**Add libretro player, compatible with selected cores
+**Add libretro player, compatible with selected cores (check wiki)
+**Add External Tool system for c#-based tool plugins
 **Support Code-Data Logger for GB/GBC, SMS/GG, SNES, and Genesis
-**Add GameShark cheat converter for N64, GB/GBC, Saturn, GBA, PSX; Action Replay for SMS, SNES, Genesis, GBA; Game Genie for Genesis, SNES, GG, NES
 **Cheat Dialog: Fix flakiness in value-editing
 **Add custom exception display box, so exception info can be clipboarded out
 **Improve main OSD font
-**Stop FP precision conflicts between lua scripts and D3D Display method
-**DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
-**Improvements to Retro shader compatibility
 **Validate user shaders at selection time
 **Support user custom AR selection
 **Add --load-state commandline
 **Streamline editing RAM Watches
 **Tidy main form context menu
 **Add more options for U+D/L+R forbid/mutex
+**Fix Ram Search, Ram Watch, Cheats recent file lists
+**Fix ffmpeg path for AV writer broken a couple of releases ago
+**Fix toolbox
+**Improvements to Retro shader compatibility
+**DispMethod D3D: Stop FP precision conflicts with lua scripts
+**DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
 **Fix #525 - Memorywatch hex textbox now remembers values across memdomain switches
 **Fix #526 - Hex editor repainting fails and garbage rendering
 **Fix #535 - domain list does not update when changing cores
 **Fix #537 - Annoyance with "always on top"
 **Fix #541 - Heavy CPU usage when emulation is paused
 
-**Tastudio (TODO - editorialize this section)
-***color stated frames on WasLag too.
-***don't truncate LagLog if the branch's one is shorter, but input is the same.
-***clean up garbage lua text and drawings.
-***put branch states to a separate greenzone file.
-***tsm never actually uses currentBranch, so why should it have it?
-***last preparation before new tasproject entry.
-***save/load TasSession variables in .tasproj.
-***update RowCount before scrolling to frame.
-***account for mouse speed when advancing/rewinding.
+**Cheats
+***Add GameShark converter for N64, GB/GBC, Saturn, GBA, PSX
+***Add Action Replay converter for SMS, SNES, Genesis, GBA
+***Add Game Genie converter for Genesis, SNES, GG, NES
+
+**Tastudio (TODO - feos adelikat write about it)
+***Color stated frames on WasLag too.
+***Don't truncate LagLog if the branch's one is shorter, but input is the same.
+***Clean up garbage lua text and drawings.
+***Put branch states to a separate greenzone file.
+***TSM never actually uses currentBranch, so why should it have it?
+***Last preparation before new tasproject entry.
+***Save/load TasSession variables in .tasproj.
+***Update RowCount before scrolling to frame.
+***Account for mouse speed when advancing/rewinding.
+***Fix ALT+ hotkeys
 
 **Basic Bot
 ***Monospaced input display
@@ -56,6 +65,7 @@ next
 
 *Genesis
 **Fix missing scrollbars in VDP viewer
+**Fix #543 (support up to 32MB roms)
 
 =========================================
 1.11.3
