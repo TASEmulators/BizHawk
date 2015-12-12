@@ -405,7 +405,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (startFullscreen || Global.Config.StartFullscreen)
 			{
-				ToggleFullscreen();
+				_needsFullscreenOnLoad = true;
 			}
 
 			if (!Global.Game.IsNullInstance)
@@ -464,8 +464,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ProgramRunLoop()
 		{
-			CheckMessages();
+			CheckMessages(); //can someone leave a note about why this is needed?
 			LogConsole.PositionConsole();
+
+			//needs to be done late, after the log console snaps on top
+			//fullscreen should snap on top even harder!
+			if (_needsFullscreenOnLoad)
+			{
+				_needsFullscreenOnLoad = false;
+				ToggleFullscreen();
+			}
+
+			//incantation required to get the program reliably on top of the console window
+			//we might want it in ToggleFullscreen later, but here, it needs to happen regardless
+			BringToFront();
+			Activate();
+			BringToFront();
 
 			for (;;)
 			{
@@ -1330,6 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
+		private bool _needsFullscreenOnLoad;
 
 		private int _autoDumpLength;
 		private readonly bool _autoCloseOnDump;
