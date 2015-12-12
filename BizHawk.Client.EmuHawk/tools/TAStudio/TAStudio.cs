@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 
 		private BackgroundWorker _saveBackgroundWorker;
+		private BackgroundWorker _seekBackgroundWorker;
 
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private Dictionary<string, string> GenerateColumnNames()
@@ -127,6 +128,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SavingProgressBar.Visible = false;
 
 			InitializeSaveWorker();
+			InitializeSeekWorker();
 
 			WantsToControlStopMovie = true;
 			TasPlaybackBox.Tastudio = this;
@@ -176,6 +178,50 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentTasMovie != null) // Again required. TasMovie has a separate reference.
 				CurrentTasMovie.NewBGWorker(_saveBackgroundWorker);
+		}
+
+		private void InitializeSeekWorker()
+		{
+			if (_seekBackgroundWorker != null)
+			{
+				_seekBackgroundWorker.Dispose();
+				_seekBackgroundWorker = null; // Idk if this line is even useful.
+			}
+
+			_seekBackgroundWorker = new BackgroundWorker();
+			_seekBackgroundWorker.WorkerReportsProgress = true;
+			_seekBackgroundWorker.WorkerSupportsCancellation = true;
+
+			_seekBackgroundWorker.DoWork += (s, e) =>
+			{
+				this.Invoke(() => this.MessageStatusLabel.Text = "Seeking...");
+				this.Invoke(() => this.SavingProgressBar.Visible = true);
+				for ( ; ; )
+				{
+					if (_seekBackgroundWorker.CancellationPending)
+					{
+						e.Cancel = true;
+						break;
+					}
+					double progress = (double)100d /
+						(GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value) *
+						(Global.Emulator.Frame - _seekStartFrame.Value);
+					_seekBackgroundWorker.ReportProgress((int)progress);
+					System.Threading.Thread.Sleep(1);
+				}
+			};
+
+			_seekBackgroundWorker.ProgressChanged += (s, e) =>
+			{
+				SavingProgressBar.Value = e.ProgressPercentage;
+			};
+
+			_seekBackgroundWorker.RunWorkerCompleted += (s, e) =>
+			{
+				this.Invoke(() => this.SavingProgressBar.Visible = false);
+				this.Invoke(() => this.MessageStatusLabel.Text = "");
+				InitializeSeekWorker(); // Required, or it will error when trying to report progress again.
+			};
 		}
 
 		private bool _initialized = false;
@@ -641,9 +687,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
-					_seekStartFrame = Emulator.Frame;
-					GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
-					GlobalWin.MainForm.UnpauseEmulator();
+					StartSeeking(_autoRestoreFrame);
 				}
 			}
 			else
@@ -653,8 +697,6 @@ namespace BizHawk.Client.EmuHawk
 				_autoRestorePaused = null;
 				GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
 			}
-
-
 			_autoRestoreFrame = null;
 		}
 
@@ -675,9 +717,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.MainForm.EmulatorPaused || GlobalWin.MainForm.IsSeeking) // make seek frame keep up with emulation on fast scrolls
 				{
-					_seekStartFrame = Emulator.Frame;
-					GlobalWin.MainForm.PauseOnFrame = frame;
-					GlobalWin.MainForm.UnpauseEmulator();
+					StartSeeking(frame);
 				}
 			}
 		}
@@ -705,17 +745,6 @@ namespace BizHawk.Client.EmuHawk
 		public void RemoveBranchExtrenal()
 		{
 			BookMarkControl.RemoveBranchExtrenal();
-		}
-
-		public void ReportSeekingProgress()
-		{
-			if (_seekStartFrame.HasValue)
-			{
-				CurrentTasMovie.ReportProgress((double)100d /
-					(GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value) *
-					(Global.Emulator.Frame - _seekStartFrame.Value));
-				RefreshDialog();
-			}
 		}
 
 		private void UpdateOtherTools() // a hack probably, surely there is a better way to do this
