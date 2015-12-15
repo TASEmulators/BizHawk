@@ -73,7 +73,7 @@ function endScript()
     client.pause()
     if exitOnResults then
         client.closerom()
-        client.exit()
+        client.exitCode(emu.framecount())
     end
 end
 

@@ -662,6 +662,12 @@ namespace BizHawk.Client.EmuHawk
 			_exit = true;
 		}
 
+		public void CloseEmulator(int exitCode)
+		{
+			_exit = true;
+			_exitCode = exitCode;
+		}
+
 		#endregion
 
 		#region Emulation Menu
