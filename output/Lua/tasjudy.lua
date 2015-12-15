@@ -90,13 +90,13 @@ end
 -- Alias for writing results; blanks out times with reason.
 function writeFailureToResults(reason)
 
-    writeResults(parseHash(), movie.getheader()["author"], reason, reason, reason)
+    writeResults(parseHash(), movie.getheader()["Author"], reason, reason, reason)
 end
 
 -- Alias for writing results; takes in endFrame and in game time --
 function writeSuccessToResults(endFrame, inGameTime)
 
-    writeResults(parseHash(),  movie.getheader()["author"], endFrame, movie.length(), inGameTime)
+    writeResults(parseHash(),  movie.getheader()["Author"], endFrame, movie.length(), inGameTime)
 end
 
 function movieHasFinished() 
