@@ -204,7 +204,11 @@
       <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release-LUAPERKS|Win32'">false</ExceptionHandling>
       <ExceptionHandling Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExceptionHandling>
     </ClCompile>
-    <ClCompile Include="luaglue.cpp" />
+    <ClCompile Include="luaglue.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release-LUAPERKS|Win32'">false</CompileAsManaged>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lapi.h" />
