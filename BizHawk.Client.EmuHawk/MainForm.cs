@@ -2902,10 +2902,12 @@ namespace BizHawk.Client.EmuHawk
 			// select IVideoWriter to use
 			IVideoWriter aw = null;
 
-			if (unattended)
+			if (string.IsNullOrEmpty(videowritername) && !string.IsNullOrEmpty(Global.Config.VideoWriter))
+				videowritername = Global.Config.VideoWriter;
+
+			if (unattended && !string.IsNullOrEmpty(videowritername))
 			{
 				aw = VideoWriterInventory.GetVideoWriter(videowritername);
-
 			}
 			else
 			{
@@ -2946,7 +2948,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
-				if (unattended)
+				if (unattended && !string.IsNullOrEmpty(filename))
 				{
 					aw.SetDefaultVideoCodecToken();
 				}
@@ -2964,7 +2966,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// select file to save to
-				if (unattended)
+				if (unattended && !string.IsNullOrEmpty(filename))
 				{
 					aw.OpenFile(filename);
 				}

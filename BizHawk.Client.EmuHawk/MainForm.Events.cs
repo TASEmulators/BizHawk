@@ -276,18 +276,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
+			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
 			StopAVIMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Global.Config.AVI_CaptureOSD;
 
+			RecordAVMenuItem.Enabled = !string.IsNullOrEmpty(Global.Config.VideoWriter) && _currAviWriter == null;
+
 			if (_currAviWriter == null)
 			{
-				RecordAVMenuItem.Enabled = true;
+				ConfigAndRecordAVMenuItem.Enabled = true;
 				StopAVIMenuItem.Enabled = false;
 			}
 			else
 			{
-				RecordAVMenuItem.Enabled = false;
+				ConfigAndRecordAVMenuItem.Enabled = false;
 				StopAVIMenuItem.Enabled = true;
 			}
 		}
@@ -584,9 +586,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = MovieEndAction.Pause;
 		}
 
-		private void RecordAVMenuItem_Click(object sender, EventArgs e)
+		private void ConfigAndRecordAVMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordAv();
+		}
+
+		private void RecordAVMenuItem_Click(object sender, EventArgs e)
+		{
+			RecordAv(null, null); // force unattended, but allow tradtional setup
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
