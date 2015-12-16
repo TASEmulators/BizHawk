@@ -584,7 +584,8 @@ namespace BizHawk.Client.EmuHawk
 
 				int ret = Win32.AVISaveOptions(owner, 0, 1, streams, infPtrs);
 
-				opts = (Win32.AVICOMPRESSOPTIONS)Marshal.PtrToStructure(mem, typeof(Win32.AVICOMPRESSOPTIONS));
+				if (ret == 1)
+					opts = (Win32.AVICOMPRESSOPTIONS)Marshal.PtrToStructure(mem, typeof(Win32.AVICOMPRESSOPTIONS));
 
 				Marshal.FreeHGlobal(mem);
 
@@ -653,6 +654,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					comprOptions = currVideoCodecToken.comprOptions;
 				}
+				else if (!string.IsNullOrEmpty(Global.Config.AVICodecToken))
+				{
+					comprOptions = CodecToken.DeSerialize(Global.Config.AVICodecToken).comprOptions;
+				}
+
 				if (AVISaveOptions(pAviRawVideoStream, ref comprOptions, hwnd) != 0)
 				{
 					CodecToken ret = CodecToken.TakePossession(comprOptions);
