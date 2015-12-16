@@ -34,15 +34,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[STAThread]
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
-			SubMain(args);
+			return SubMain(args);
 		}
 
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-		static void SubMain(string[] args)
+		static int SubMain(string[] args)
 		{
+			GlobalWin.ExitCode = 0;
+
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
@@ -55,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				if (thisversion != utilversion || thisversion != emulversion)
 				{
 					MessageBox.Show("Conflicting revisions found!  Don't mix .dll versions!");
-					return;
+					return -1;
 				}
 			}
 
@@ -138,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 						mf.Show();
 						mf.Text = title;
 
-						mf.ProgramRunLoop();
+						GlobalWin.ExitCode = mf.ProgramRunLoop();
 					}
 				}
 			}
@@ -169,13 +171,13 @@ namespace BizHawk.Client.EmuHawk
 
 							if (System.Diagnostics.Debugger.IsAttached)
 							{
-								mf.ProgramRunLoop();
+								GlobalWin.ExitCode = mf.ProgramRunLoop();
 							}
 							else
 							{
 								try
 								{
-									mf.ProgramRunLoop();
+									GlobalWin.ExitCode = mf.ProgramRunLoop();
 								}
 								catch (Exception e)
 								{
@@ -227,6 +229,8 @@ namespace BizHawk.Client.EmuHawk
 			//  GlobalWin.GL.Dispose();
 			//((IDisposable)GlobalWin.IGL_GL).Dispose();
 
+			//return 0 assuming things have gone well, non-zero values could be used as error codes or for scripting purposes
+			return GlobalWin.ExitCode;
 		} //SubMain
 
 		//declared here instead of a more usual place to avoid dependencies on the more usual place
@@ -319,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 				var title = MainForm.Text;
 				MainForm.Show();
 				MainForm.Text = title;
-				(MainForm as MainForm).ProgramRunLoop();
+				GlobalWin.ExitCode = (MainForm as MainForm).ProgramRunLoop();
 			}
 		}
 

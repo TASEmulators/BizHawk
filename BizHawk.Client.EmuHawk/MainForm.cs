@@ -462,7 +462,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _supressSyncSettingsWarning = false;
 
-		public void ProgramRunLoop()
+		public int ProgramRunLoop()
 		{
 			CheckMessages(); //can someone leave a note about why this is needed?
 			LogConsole.PositionConsole();
@@ -545,6 +545,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Shutdown();
+			return _exitCode;
 		}
 
 		/// <summary>
@@ -1322,6 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _avwriterpad;
 
 		private bool _exit;
+		private int _exitCode;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
