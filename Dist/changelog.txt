@@ -12,11 +12,13 @@ next
 **Validate user shaders at selection time
 **Support user custom AR selection
 **Add --load-state commandline
+**fix --fullscreen and fullscreenOnLoad options
 **Streamline editing RAM Watches
 **Tidy main form context menu
 **Add more options for U+D/L+R forbid/mutex
 **Fix Ram Search, Ram Watch, Cheats recent file lists
 **Fix ffmpeg path for AV writer broken a couple of releases ago
+**Remember codec selection between program sessions
 **Fix toolbox
 **Improvements to Retro shader compatibility
 **DispMethod D3D: Stop FP precision conflicts with lua scripts
@@ -26,6 +28,7 @@ next
 **Fix #535 - domain list does not update when changing cores
 **Fix #537 - Annoyance with "always on top"
 **Fix #541 - Heavy CPU usage when emulation is paused
+**Fix #546 - Incorrect Lua Documentation
 
 **Cheats
 ***Add GameShark converter for N64, GB/GBC, Saturn, GBA, PSX
@@ -51,6 +54,8 @@ next
 **Lua
 **Add tons of new fonts and text rendering options
 **Fix gameExtraPadding coordinate translation
+**Fix (or at least temporarily banish) floating point math errors when running n64
+**Add CloseEmulatorWithCode (for returning exe process return code from script)
 **Clarify script pause/stop state in UI and logic
 **Fix forms.destroyall() and call it when lua console closes
 **Fix error in sizing of lua draw buffers with SetGameExtraPadding (and probably ClientExtraPadding) use
