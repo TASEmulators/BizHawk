@@ -542,7 +542,7 @@ namespace BizHawk.Client.EmuHawk
 			//This applies to the Game Genie
 			if (txtCheat.Text.Length == 9 && txtCheat.Text.Contains("-"))
 			{
-				if (txtCheat.Text.IndexOf("-") != 5)
+				if (txtCheat.Text.IndexOf("-") != 4)
 				{
 					MessageBox.Show("All Genesis Game Genie Codes need to contain a dash after the fourth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
