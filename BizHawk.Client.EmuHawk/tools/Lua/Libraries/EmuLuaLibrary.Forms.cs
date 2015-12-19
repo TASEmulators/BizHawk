@@ -482,6 +482,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (form.Handle == ptr)
 				{
+					if (form.GetType().GetProperty(property).PropertyType.IsEnum)
+					{
+						value = Enum.Parse(form.GetType().GetProperty(property).PropertyType, value.ToString(), true);
+					}
 					form
 						.GetType()
 						.GetProperty(property)
@@ -493,6 +497,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
+							if (control.GetType().GetProperty(property).PropertyType.IsEnum)
+							{
+								value = Enum.Parse(control.GetType().GetProperty(property).PropertyType, value.ToString(), true);
+							}
 							control
 								.GetType()
 								.GetProperty(property)
