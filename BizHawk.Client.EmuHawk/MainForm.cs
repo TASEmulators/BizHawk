@@ -2925,6 +2925,8 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				bool usingAvi = aw is AviWriter; //SO GROSS!
+
 				if (_dumpaudiosync)
 				{
 					aw = new VideoStretcher(aw);
@@ -2954,6 +2956,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
+					//THIS IS REALLY SLOPPY!
+					//PLEASE REDO ME TO NOT CARE WHICH AVWRITER IS USED!
+					if(usingAvi && !string.IsNullOrEmpty(Global.Config.AVICodecToken))
+						aw.SetDefaultVideoCodecToken();
+
 					var token = aw.AcquireVideoCodecToken(this);
 					if (token == null)
 					{
