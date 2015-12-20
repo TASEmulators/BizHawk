@@ -7,10 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Sega.Genesis;
-
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
@@ -172,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				GlobalWin.Tools.GameGenieAvailable;
+				GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
 		private void AddCheat()
@@ -443,7 +439,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
-				GlobalWin.Tools.GameGenieAvailable;
+				GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)

@@ -716,19 +716,6 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		// Eventually we want a single game genie tool, then this mess goes away
-		public bool GameGenieAvailable
-		{
-			get
-			{
-				return (Global.Emulator.SystemId == "NES")
-					|| (Global.Emulator.SystemId == "GEN")
-					|| (Global.Emulator.SystemId == "GB")
-					|| (Global.Game.System == "GG")
-					|| (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore);
-			}
-		}
-
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
 		#region Tools
 
@@ -943,21 +930,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadGameGenieEc()
 		{
-			if (Global.Emulator.SystemId == "NES")
+			if (GlobalWin.Tools.IsAvailable<GameShark>())
 			{
-				Load<NESGameGenie>();
-			}
-			else if (Global.Emulator.SystemId == "SNES")
-			{
-				Load<SNESGameGenie>();
-			}
-			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
-			{
-				Load<GBGameGenie>();
-			}
-			else if (Global.Emulator.SystemId == "GEN")
-			{
-				Load<GenGameGenie>();
+				GlobalWin.Tools.Load<GameShark>();
 			}
 		}
 
