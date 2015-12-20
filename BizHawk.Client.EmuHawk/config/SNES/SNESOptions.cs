@@ -15,6 +15,35 @@ namespace BizHawk.Client.EmuHawk
 		bool SuppressDoubleSize;
 		bool UserDoubleSizeOption;
 
+		public static void DoSettingsDialog(IWin32Window owner)
+		{
+			var s = ((LibsnesCore)Global.Emulator).GetSettings();
+			var ss = ((LibsnesCore)Global.Emulator).GetSyncSettings();
+			var dlg = new SNESOptions
+			{
+				UseRingBuffer = s.UseRingBuffer,
+				AlwaysDoubleSize = s.AlwaysDoubleSize,
+				ForceDeterminism = s.ForceDeterminism,
+				Profile = ss.Profile
+			};
+
+			var result = dlg.ShowDialog(owner);
+			if (result == DialogResult.OK)
+			{
+				s.UseRingBuffer = dlg.UseRingBuffer;
+				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+				s.ForceDeterminism = dlg.ForceDeterminism;
+				ss.Profile = dlg.Profile;
+				GlobalWin.MainForm.PutCoreSettings(s);
+				GlobalWin.MainForm.PutCoreSyncSettings(ss);
+			}
+		}
+
+		private void SNESOptions_Load(object sender, EventArgs e)
+		{
+			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
+		}
+
 		public string Profile
 		{
 			get
@@ -45,45 +74,10 @@ namespace BizHawk.Client.EmuHawk
 			set { UserDoubleSizeOption = value; RefreshDoubleSizeOption();  }
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		public bool ForceDeterminism
 		{
-			DialogResult = DialogResult.OK;
-			Close();
-		}
-
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			DialogResult = DialogResult.Cancel;
-			Close();
-		}
-
-		public static void DoSettingsDialog(IWin32Window owner)
-		{
-			var s = ((LibsnesCore)Global.Emulator).GetSettings();
-			var ss = ((LibsnesCore)Global.Emulator).GetSyncSettings();
-			var dlg = new SNESOptions
-			{
-				UseRingBuffer = s.UseRingBuffer,
-				AlwaysDoubleSize = s.AlwaysDoubleSize,
-				Profile = ss.Profile
-			};
-
-			var result = dlg.ShowDialog(owner);
-			if (result == DialogResult.OK)
-			{
-				s.UseRingBuffer = dlg.UseRingBuffer;
-				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				ss.Profile = dlg.Profile;
-				GlobalWin.MainForm.PutCoreSettings(s);
-				GlobalWin.MainForm.PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void rbAccuracy_CheckedChanged(object sender, EventArgs e)
-		{
-			cbDoubleSize.Enabled = !rbAccuracy.Checked;
-			lblDoubleSize.ForeColor = cbDoubleSize.Enabled ? System.Drawing.SystemColors.ControlText : System.Drawing.SystemColors.GrayText;
-			RefreshDoubleSizeOption();
+			get { return cbForceDeterminism.Checked; }
+			set { cbForceDeterminism.Checked = value; }
 		}
 
 		void RefreshDoubleSizeOption()
@@ -95,15 +89,34 @@ namespace BizHawk.Client.EmuHawk
 			SuppressDoubleSize = false;
 		}
 
+		private void rbAccuracy_CheckedChanged(object sender, EventArgs e)
+		{
+			cbDoubleSize.Enabled = !rbAccuracy.Checked;
+			lblDoubleSize.ForeColor = cbDoubleSize.Enabled ? System.Drawing.SystemColors.ControlText : System.Drawing.SystemColors.GrayText;
+			RefreshDoubleSizeOption();
+		}
+
 		private void cbDoubleSize_CheckedChanged(object sender, EventArgs e)
 		{
 			if (SuppressDoubleSize) return;
 			UserDoubleSizeOption = cbDoubleSize.Checked;
 		}
 
-		private void SNESOptions_Load(object sender, EventArgs e)
+		private void cbForceDeterminism_CheckedChanged(object sender, EventArgs e)
 		{
-			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
+
+		}
+
+		private void btnOk_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 
 	}

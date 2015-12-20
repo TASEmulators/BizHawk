@@ -748,12 +748,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// adelikat: Nasty hack to force new business logic.  Compatibility (and Accuracy when fully supported) will ALWAYS be in deterministic mode,
 		// a consequence is a permanent performance hit to the compatibility core
 		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
+		// feos: Nasty hack to a nasty hack. Allow user disable it with a strong warning.
 		public bool DeterministicEmulation
 		{
-			get { return CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy"; }
+			get
+			{
+				return Settings.ForceDeterminism &&
+				(CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
+			}
 			private set {  /* Do nothing */ }
 		}
-
 
 		public bool SaveRamModified
 		{
@@ -1238,6 +1242,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool UseRingBuffer = true;
 			public bool AlwaysDoubleSize = false;
+			public bool ForceDeterminism = true;
 			public string Palette = "BizHawk";
 
 			public SnesSettings Clone()
