@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	//Add Support/Handling for The Following Systems and Devices:
 	//GBA: Action Replay MAX, Code Breaker (That uses unique Encryption keys)
 	//NES: Pro Action Rocky  (When someone asks)
-	//SNES: Possible Warning for Game Genie not working?  Test fixed behaviors when ready.
+	//SNES: GoldFinger (Action Replay II) Support?
 
 	//Clean up the checks to be more robust/less "hacky"
 	//They work but feel bad
@@ -210,7 +210,6 @@ namespace BizHawk.Client.EmuHawk
 					SMS();
 					break;
 				case "SNES":
-					//Currently only does Action Replay
 					SNES();
 					break;
 				default:
@@ -394,7 +393,13 @@ namespace BizHawk.Client.EmuHawk
 			//Make Slide Code Handling suck less.
 			//TODO:
 			//Determine how to make Action Replay Max Code detection a thing?
-			if (Slider == true)
+			//DEADFACE means, "NEW Decryption Keys ahead."
+			if (txtCheat.Text == "DEADFACE")
+			{
+				MessageBox.Show("Sorry, this tool does not support DEADFACE codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+				if (Slider == true)
 			{
 				secondSlide = txtCheat.Text;
 				GBASlide();
@@ -457,7 +462,32 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("ALL Codes for Action Replay, Action Replay MAX, Codebreaker, GameShark Advance, GameShark SP, Xploder have a Space after the 8th character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-
+			//Action Replay MAX Code stuff.  Not detected, yet.
+			//TODO: Detect Action Replay MAX codes.
+			//DEADFACE is NOT to be used.  It's a special code.
+			if (txtCheat.Text == "DEADFACE")
+			{
+				return;
+			parseString = txtCheat.Text;
+			UInt32 op1 = 0;
+			UInt32 op2 = 0;
+			UInt32 sum = 0xC6EF3720;
+			op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+			op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
+			//Tiny Encryption Algorithm
+			int i;
+			for (i = 0; i < 32; ++i)
+			{
+				op2 -= ((op1 << 4) + GBAProActionReplaySeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAProActionReplaySeeds[3]);
+				op1 -= ((op2 << 4) + GBAProActionReplaySeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAProActionReplaySeeds[1]);
+				sum -= 0x9E3779B9;
+			}
+			RAMAddress = string.Format("{0:X8}", op1);
+			RAMAddress = RAMAddress.Remove(0, 1);
+			RAMValue = string.Format("{0:X8}", op2);
+			MessageBox.Show(RAMAddress);
+			MessageBox.Show(RAMValue);
+			}
 			//Decrypted Codebreaker, GameShark SP, Xploder
 			//Encypted Codebreaker, GameShark SP, Xploder is not handled, yet.
 			if (txtCheat.Text.Length == 13 && txtCheat.Text.IndexOf(" ") == 8)
@@ -1241,8 +1271,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 		private void SNES()
 		{
-			//TODO:  Make these checks Suck less.
-			//Game Genie check and do.
+			Boolean GameGenie = false;
 			if (txtCheat.Text.Contains("-") && txtCheat.Text.Length == 9)
 			{
 				int val = 0, add = 0;
@@ -1252,9 +1281,13 @@ namespace BizHawk.Client.EmuHawk
 				SnesGGDecode(input, ref val, ref add);
 				RAMAddress = string.Format("{0:X6}", add);
 				RAMValue = string.Format("{0:X2}", val);
+				//We trim the first value here to make it work.
+				RAMAddress = RAMAddress.Remove(0, 1);
 				//Note, it's not actually a byte, but a Word.  However, we are using this to keep from repeating code.
 				byteSize = 8;
-            }
+				GameGenie = true;
+
+			}
 			//This ONLY applies to Action Replay.
 			if (txtCheat.Text.Length == 8)
 			{
@@ -1290,9 +1323,16 @@ namespace BizHawk.Client.EmuHawk
 				if (byteSize == 8)
 				{
 					//Is this correct?
-					//I don't think so, but Changing it to CARTROM, causes a major issue.
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+					if (GameGenie == true)
+					{
+						var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+					}
+					else if (GameGenie == false)
+					{
+						var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+					}
 				}
 				//Take Watch, Add our Value we want, and it should be active when addded?
 
