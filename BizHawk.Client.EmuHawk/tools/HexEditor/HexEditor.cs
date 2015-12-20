@@ -480,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 					addrStr.Append("  ");
 				}
 
-				addrStr.AppendLine(_addr.ToHexString(_numDigits));
+				addrStr.AppendLine(_addr.ToHexString(_numDigits) + " |");
 			}
 
 			return addrStr.ToString();
@@ -516,7 +516,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				rowStr.Append("  | ");
+				rowStr.Append("| ");
 				for (var k = 0; k < 16; k++)
 				{
 					if (_addr + k < _domain.Size)
@@ -669,13 +669,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateFormText()
 		{
+			Text = "Hex Editor";
 			if (_addressHighlighted >= 0)
 			{
-				Text = "Hex Editor - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
-			}
-			else
-			{
-				Text = "Hex Editor";
+				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
+				if (_secondaryHighlightedAddresses.Any())
+				{
+					Text += string.Format(" (Selected 0x{0:X})", _secondaryHighlightedAddresses.Count() +
+						(_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1));
+				}
 			}
 		}
 
@@ -690,13 +692,13 @@ namespace BizHawk.Client.EmuHawk
 			switch (DataSize)
 			{
 				case 1:
-					Header.Text = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+					Header.Text = "         0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 					break;
 				case 2:
-					Header.Text = "       0    2    4    6    8    A    C    E";
+					Header.Text = "         0    2    4    6    8    A    C    E";
 					break;
 				case 4:
-					Header.Text = "       0        4        8        C";
+					Header.Text = "         0        4        8        C";
 					break;
 			}
 
@@ -977,6 +979,17 @@ namespace BizHawk.Client.EmuHawk
 						_secondaryHighlightedAddresses.Add(x);
 					}
 				}
+
+				if (!IsVisible(_addressOver))
+				{
+					var value = (_addressOver / 16) + 1 - ((_addressOver / 16) < HexScrollBar.Value ? 1 : _rowsVisible);
+					if (value < 0)
+					{
+						value = 0;
+					}
+
+					HexScrollBar.Value = (int)value; // This will fail on a sufficiently large domain
+				}
 			}
 		}
 
@@ -1043,7 +1056,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToSecondaryHighlights(long address)
 		{
-			if (address >= 0 && address < _domain.Size)
+			if (address >= 0 && address < _domain.Size && !_secondaryHighlightedAddresses.Contains(address))
 			{
 				_secondaryHighlightedAddresses.Add(address);
 			}
@@ -2190,6 +2203,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_mouseIsDown)
 			{
 				DoShiftClick();
+				UpdateFormText();
 				MemoryViewerBox.Refresh();
 			}
 		}
