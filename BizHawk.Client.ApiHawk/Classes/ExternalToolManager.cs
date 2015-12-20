@@ -19,7 +19,7 @@ namespace BizHawk.Client.ApiHawk
 	{
 		#region Fields
 
-		private static FileSystemWatcher directoryMonitor = new FileSystemWatcher(Global.Config.PathEntries["Global", "External Tools"].Path, "*.dll");
+		private static FileSystemWatcher directoryMonitor;
 		private static List<ToolStripMenuItem> menuItems = new List<ToolStripMenuItem>();
 
 		#endregion
@@ -31,6 +31,11 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		static ExternalToolManager()
 		{
+			if(!Directory.Exists(Global.Config.PathEntries["Global", "External Tools"].Path))
+			{
+				Directory.CreateDirectory(Global.Config.PathEntries["Global", "External Tools"].Path);
+			}
+			directoryMonitor = new FileSystemWatcher(Global.Config.PathEntries["Global", "External Tools"].Path, "*.dll");
 			directoryMonitor.IncludeSubdirectories = false;
 			directoryMonitor.Created += DirectoryMonitor_Created;
 

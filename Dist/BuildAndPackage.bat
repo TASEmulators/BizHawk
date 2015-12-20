@@ -46,6 +46,12 @@ rmdir /s /q temp\firmware
 rmdir /s /q gitsucks
 git --git-dir ../.git archive --format zip --output lua.zip master output/Lua
 git --git-dir ../.git archive --format zip --output firmware.zip master output/Firmware
+rem Getting externaltools example from my repo
+rem I once talked about a dedicated repo for external tools, think about moving the exemple to it it it happend
+git clone https://github.com/Hathor86/HelloWorld_BizHawkTool.git
+git --git-dir HelloWorld_BizHawkTool/.git archive --format zip --output HelloWorld_BizHawkTool.zip master
+rmdir /s /q  HelloWorld_BizHawkTool
+
 unzip lua.zip -d gitsucks
 rem del lua.zip
 move gitsucks\output\Lua temp
@@ -64,6 +70,7 @@ upx -d *.exe
 rem Patch up working dir with a few other things we want
 mkdir ExternalTools
 copy ..\HelloWorld_BizHawkTool.dll ExternalTools
+copy ..\HelloWorld_BizHawkTool.zip ExternalTools
 
 rem Build the final zip
 ..\zip.exe -X -9 -r ..\%NAME% . -i \*
