@@ -2179,8 +2179,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect);
-						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), textrect);
+						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor)), rect);
+						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor)), textrect);
 					}
 				}
 			}
