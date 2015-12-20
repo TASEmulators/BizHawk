@@ -5,11 +5,11 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(false, null)]
 	public partial class GBGameGenie : Form, IToolFormAutoConfig
 	{
 		// TODO: fix the use of Global.Game.System and Emulator.SystemId
