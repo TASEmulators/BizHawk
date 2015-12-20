@@ -312,7 +312,10 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void RebootCore()
 		{
+			//pretty hacky.. we dont want a lua script to be able to restart itself by rebooting the core
+			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).IsRebootingCore = true;
 			GlobalWin.MainForm.RebootCore();
+			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).IsRebootingCore = false;
 		}
 
 		[LuaMethodAttributes(

@@ -27,6 +27,8 @@ namespace BizHawk.Client.EmuHawk
 		private List<string> _consoleCommandHistory = new List<string>();
 		private int _consoleCommandHistoryIndex = -1;
 
+		public bool IsRebootingCore;
+
 		public LuaConsole()
 		{
 			_sortReverse = false;

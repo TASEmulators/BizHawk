@@ -441,7 +441,12 @@ namespace BizHawk.Client.EmuHawk
 				if (ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool.GetType()))
 				{
 					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
+					bool restartTool = false;
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for Ram Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+						restartTool = true;
+					if (tool is LuaConsole && ((LuaConsole)tool).IsRebootingCore)
+						restartTool = false;
+					if(restartTool)
 					{
 						tool.Restart();
 					}
