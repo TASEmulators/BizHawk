@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"defaultForeground",
-			"Sets the default foreground color to use when using drawing methods, white by default"
+			"Sets the default foreground color to use in drawing methods, white by default"
 		)]
 		public void SetDefaultForegroundColor(Color color)
 		{
@@ -173,11 +173,20 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"defaultBackground",
-			"Sets the default background color to use when using drawing methods, transparent by default"
+			"Sets the default background color to use in drawing methods, transparent by default"
 		)]
 		public void SetDefaultBackgroundColor(Color color)
 		{
 			DefaultBackground = color;
+		}
+
+		[LuaMethodAttributes(
+			"defaultTextBackground",
+			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default"
+		)]
+		public void SetDefaultTextBackground(Color color)
+		{
+			DefaultTextBackground = color;
 		}
 
 		[LuaMethodAttributes(
