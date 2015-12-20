@@ -394,12 +394,14 @@ namespace BizHawk.Client.EmuHawk
 			//TODO:
 			//Determine how to make Action Replay Max Code detection a thing?
 			//DEADFACE means, "NEW Decryption Keys ahead."
-			if (txtCheat.Text == "DEADFACE")
+
+			if (txtCheat.Text.Contains("DEADFACE") == true)
 			{
 				MessageBox.Show("Sorry, this tool does not support DEADFACE codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				return;
 			}
-				if (Slider == true)
+
+			if (Slider == true)
 			{
 				secondSlide = txtCheat.Text;
 				GBASlide();
