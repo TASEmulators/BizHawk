@@ -92,6 +92,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdi32.lib;opengl32.lib;shell32.lib;user32.lib;comctl32.lib;kernel32.lib;ws2_32.lib;psapi.lib;AdvAPI32.Lib;ole32.lib;mpr.lib;comdlg32.lib;WinSpool.Lib</AdditionalDependencies>
@@ -116,6 +117,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CallingConvention>Cdecl</CallingConvention>
       <PreprocessorDefinitions>_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>.libs\luaperks.lib;gdi32.lib;opengl32.lib;shell32.lib;user32.lib;comctl32.lib;kernel32.lib;ws2_32.lib;psapi.lib;AdvAPI32.Lib;ole32.lib;mpr.lib;comdlg32.lib;WinSpool.Lib</AdditionalDependencies>
@@ -158,6 +160,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <CallingConvention>Cdecl</CallingConvention>
       <PreprocessorDefinitions>LUAPERKS;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>.libs\luaperks.lib;gdi32.lib;opengl32.lib;shell32.lib;user32.lib;comctl32.lib;kernel32.lib;ws2_32.lib;psapi.lib;AdvAPI32.Lib;ole32.lib;mpr.lib;comdlg32.lib;WinSpool.Lib</AdditionalDependencies>
