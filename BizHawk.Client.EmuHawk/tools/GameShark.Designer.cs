@@ -42,12 +42,12 @@
 			// 
 			this.mnuGameShark.Location = new System.Drawing.Point(0, 0);
 			this.mnuGameShark.Name = "mnuGameShark";
-			this.mnuGameShark.Size = new System.Drawing.Size(284, 24);
+			this.mnuGameShark.Size = new System.Drawing.Size(281, 24);
 			this.mnuGameShark.TabIndex = 0;
 			// 
 			// btnClear
 			// 
-			this.btnClear.Location = new System.Drawing.Point(149, 92);
+			this.btnClear.Location = new System.Drawing.Point(156, 90);
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(75, 23);
 			this.btnClear.TabIndex = 4;
@@ -58,7 +58,7 @@
 			// lblCheat
 			// 
 			this.lblCheat.AutoSize = true;
-			this.lblCheat.Location = new System.Drawing.Point(155, 51);
+			this.lblCheat.Location = new System.Drawing.Point(162, 49);
 			this.lblCheat.Name = "lblCheat";
 			this.lblCheat.Size = new System.Drawing.Size(63, 13);
 			this.lblCheat.TabIndex = 11;
@@ -66,14 +66,14 @@
 			// 
 			// txtCheat
 			// 
-			this.txtCheat.Location = new System.Drawing.Point(136, 66);
+			this.txtCheat.Location = new System.Drawing.Point(143, 64);
 			this.txtCheat.Name = "txtCheat";
 			this.txtCheat.Size = new System.Drawing.Size(100, 20);
 			this.txtCheat.TabIndex = 2;
 			// 
 			// btnGo
 			// 
-			this.btnGo.Location = new System.Drawing.Point(43, 91);
+			this.btnGo.Location = new System.Drawing.Point(50, 89);
 			this.btnGo.Name = "btnGo";
 			this.btnGo.Size = new System.Drawing.Size(75, 24);
 			this.btnGo.TabIndex = 3;
@@ -84,7 +84,7 @@
 			// lblDescription
 			// 
 			this.lblDescription.AutoSize = true;
-			this.lblDescription.Location = new System.Drawing.Point(50, 50);
+			this.lblDescription.Location = new System.Drawing.Point(57, 48);
 			this.lblDescription.Name = "lblDescription";
 			this.lblDescription.Size = new System.Drawing.Size(60, 13);
 			this.lblDescription.TabIndex = 17;
@@ -92,7 +92,7 @@
 			// 
 			// txtDescription
 			// 
-			this.txtDescription.Location = new System.Drawing.Point(30, 66);
+			this.txtDescription.Location = new System.Drawing.Point(37, 64);
 			this.txtDescription.Name = "txtDescription";
 			this.txtDescription.Size = new System.Drawing.Size(100, 20);
 			this.txtDescription.TabIndex = 1;
@@ -101,7 +101,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(284, 261);
+			this.ClientSize = new System.Drawing.Size(281, 144);
 			this.Controls.Add(this.txtDescription);
 			this.Controls.Add(this.lblDescription);
 			this.Controls.Add(this.btnClear);
