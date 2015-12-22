@@ -198,6 +198,18 @@ namespace MonoMacWrapper
 			}
 		}
 
+		public string Title
+		{
+			get
+			{
+				return _savePanel.Title;
+			}
+			set
+			{
+				_savePanel.Title = value;
+			}
+		}
+
 		public string[] FileNames 
 		{
 			get 
@@ -374,6 +386,18 @@ namespace MonoMacWrapper
 					retval[i] = _openPanel.Urls[i].Path;
 				}
 				return retval;
+			}
+		}
+
+		public string Title
+		{
+			get
+			{
+				return _openPanel.Title;
+			}
+			set
+			{
+				_openPanel.Title = value;
 			}
 		}
 
