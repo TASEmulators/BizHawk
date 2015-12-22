@@ -62,6 +62,9 @@ namespace BizHawk.Client.EmuHawk
 				skipnextframe = false;
 				framesskipped = 0;
 				framestoskip = 0;
+
+				//keep from burning CPU
+				Thread.Sleep(10);
 				return;
 			}
 

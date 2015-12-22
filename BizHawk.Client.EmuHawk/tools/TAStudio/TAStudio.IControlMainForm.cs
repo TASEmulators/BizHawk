@@ -6,7 +6,47 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private bool _suppressAskSave = false;
 
+		public bool WantsToControlSavestates { get { return true; } }
+
+		public void SaveState()
+		{
+			BookMarkControl.UpdateBranchExternal();
+		}
+		public void LoadState()
+		{
+			BookMarkControl.LoadBranchExternal();
+		}
+		public void SaveStateAs()
+		{
+			// dummy
+		}
+		public void LoadStateAs()
+		{
+			// dummy
+		}
+		public void SaveQuickSave(int slot)
+		{
+			BookMarkControl.UpdateBranchExternal(slot);
+		}
+		public void LoadQuickSave(int slot)
+		{
+			BookMarkControl.LoadBranchExternal(slot);
+		}
+		public void SelectSlot(int slot)
+		{
+			BookMarkControl.SelectBranchExternal(slot);
+		}
+		public void PreviousSlot()
+		{
+			BookMarkControl.SelectBranchExternal(false);
+		}
+		public void NextSlot()
+		{
+			BookMarkControl.SelectBranchExternal(true);
+		}
+
 		public bool WantsToControlReadOnly { get { return false; } }
+
 		public void ToggleReadOnly()
 		{
 			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
@@ -31,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Rewind()
 		{
-			GoToPreviousFrame();
+			GoToPreviousFrame(); // todo: behave as normal rewind in differentiating between hitting rewind once and holding it.
 			return true;
 		}
 

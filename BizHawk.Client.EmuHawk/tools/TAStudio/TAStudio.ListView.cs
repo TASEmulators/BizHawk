@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private float _floatPaintState;
 		private bool _patternPaint = false;
 		private bool _startCursorDrag;
-		private bool _startFrameDrag;
-		private bool _frameDragState;
+		private bool _startSelectionDrag;
+		private bool _selectionDragState;
 		private bool _supressContextMenu;
 		// SuuperW: For editing analog input
 		private string _floatEditColumn = string.Empty;
@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 		private string[] _rightClickOverInput = null;
 		private int _rightClickFrame = -1;
 		private int _rightClickLastFrame = -1;
-		private bool _rightClickShift, _rightClickControl;
+		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
 		private bool _leftButtonHeld = false;
 		private bool mouseButtonHeld
 		{
@@ -45,6 +45,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 		private bool? _autoRestorePaused = null;
+		private int? _seekStartFrame = null;
+
 		private void JumpToGreenzone()
 		{
 			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
@@ -57,9 +59,30 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
-				GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
-				GlobalWin.MainForm.PauseEmulator();
+				StartSeeking(_autoRestoreFrame, true);
 			}
+		}
+
+		private void StartSeeking(int? frame, bool pause = false)
+		{
+			if (!frame.HasValue)
+				return;
+
+			_seekStartFrame = Emulator.Frame;
+			GlobalWin.MainForm.PauseOnFrame = frame.Value;
+
+			if (pause)
+				GlobalWin.MainForm.PauseEmulator();
+			else
+				GlobalWin.MainForm.UnpauseEmulator();
+
+			if (!_seekBackgroundWorker.IsBusy)
+				_seekBackgroundWorker.RunWorkerAsync();
+		}
+
+		public void StopSeeking()
+		{
+			_seekBackgroundWorker.CancelAsync();
 		}
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
@@ -189,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.Lagged.HasValue)
 			{
-                if (!CurrentTasMovie.TasStateManager.HasState(index) && TasView.denoteStatesWithBGColor)
+				if (!record.HasState && TasView.denoteStatesWithBGColor)
                     color = record.Lagged.Value ?
                         LagZone_InputLog :
                         GreenZone_InputLog;
@@ -200,9 +223,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.WasLagged.HasValue)
 			{
-				color = record.WasLagged.Value ?
-					LagZone_InputLog_Invalidated :
-					GreenZone_InputLog_Invalidated;
+				if (!record.HasState && TasView.denoteStatesWithBGColor)
+					color = record.WasLagged.Value ?
+						LagZone_InputLog_Invalidated :
+						GreenZone_InputLog_Invalidated;
+				else
+					color = record.WasLagged.Value ?
+						LagZone_InputLog_Stated :
+						GreenZone_InputLog_Stated;
 			}
 			else
 			{
@@ -395,8 +423,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						_startFrameDrag = true;
-						_frameDragState = TasView.SelectedRows.Contains(frame);
+						_startSelectionDrag = true;
+						_selectionDragState = TasView.SelectedRows.Contains(frame);
 					}
 				}
 				else // User changed input
@@ -476,6 +504,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_rightClickControl = (Control.ModifierKeys | Keys.Control) == Control.ModifierKeys;
 					_rightClickShift = (Control.ModifierKeys | Keys.Shift) == Control.ModifierKeys;
+					_rightClickAlt = (Control.ModifierKeys | Keys.Alt) == Control.ModifierKeys;
 					if (TasView.SelectedRows.Contains(frame))
 					{
 						_rightClickInput = new string[TasView.SelectedRows.Count()];
@@ -492,23 +521,26 @@ namespace BizHawk.Client.EmuHawk
 					}
 					_rightClickLastFrame = -1;
 
-					JumpToGreenzone();
-					// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
-					string undoStepName = "Right-Click Edit:";
-					if (_rightClickShift)
+					if (_rightClickAlt || _rightClickControl || _rightClickShift)
 					{
-						undoStepName += " Extend Input";
-						if (_rightClickControl)
-							undoStepName += ", Insert";
-					}
-					else
-					{
-						if (_rightClickControl)
-							undoStepName += " Copy";
+						JumpToGreenzone();
+						// TODO: Turn off ChangeLog.IsRecording and handle the GeneralUndo here.
+						string undoStepName = "Right-Click Edit:";
+						if (_rightClickShift)
+						{
+							undoStepName += " Extend Input";
+							if (_rightClickControl)
+								undoStepName += ", Insert";
+						}
 						else
-							undoStepName += " Move";
+						{
+							if (_rightClickControl)
+								undoStepName += " Copy";
+							else // _rightClickAlt
+								undoStepName += " Move";
+						}
+						CurrentTasMovie.ChangeLog.BeginNewBatch(undoStepName);
 					}
-					CurrentTasMovie.ChangeLog.BeginNewBatch(undoStepName);
 				}
 			}
 		}
@@ -516,7 +548,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearLeftMouseStates()
 		{
 			_startCursorDrag = false;
-			_startFrameDrag = false;
+			_startSelectionDrag = false;
 			_startBoolDrawColumn = string.Empty;
 			_startFloatDrawColumn = string.Empty;
 			TasView.ReleaseCurrentCell();
@@ -579,6 +611,8 @@ namespace BizHawk.Client.EmuHawk
 			if (TasView.RightButtonHeld && TasView.CurrentCell.RowIndex.HasValue)
 			{
 				_supressContextMenu = true;
+				int notch = e.Delta / 120;
+
 				if (GlobalWin.MainForm.IsSeeking)
 				{
 					if (e.Delta < 0)
@@ -595,10 +629,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (e.Delta < 0)
-						GoToNextFrame();
-					else
-						GoToPreviousFrame();
+					GoToFrame(Emulator.Frame - notch);
 				}
 			}
 		}
@@ -620,7 +651,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						ClearLeftMouseStates();
-						CallAddMarkerPopUp(TasView.CurrentCell.RowIndex.Value);
+						MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
 					}
 				}
 			}
@@ -661,21 +692,19 @@ namespace BizHawk.Client.EmuHawk
 					GoToFrame(e.NewCell.RowIndex.Value);
 				}
 			}
-			else if (_startFrameDrag)
+			else if (_startSelectionDrag)
 			{
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
 					for (var i = startVal; i <= endVal; i++)
 					{
-						TasView.SelectRow(i, _frameDragState);
+						TasView.SelectRow(i, _selectionDragState);
 					}
 				}
 			}
 
 			else if (_rightClickFrame != -1)
 			{
-				_triggerAutoRestore = true;
-				_supressContextMenu = true;
 				if (frame > CurrentTasMovie.InputLogLength - _rightClickInput.Length)
 					frame = CurrentTasMovie.InputLogLength - _rightClickInput.Length;
 				if (_rightClickShift)
@@ -730,7 +759,7 @@ namespace BizHawk.Client.EmuHawk
 						for (int i = 0; i < _rightClickInput.Length; i++) // Place copied input
 							CurrentTasMovie.SetFrame(frame + i, _rightClickInput[i]);
 					}
-					else
+					else if (_rightClickAlt)
 					{
 						int shiftBy = _rightClickFrame - frame;
 						string[] shiftInput = new string[Math.Abs(shiftBy)];
@@ -748,8 +777,12 @@ namespace BizHawk.Client.EmuHawk
 						_rightClickFrame = frame;
 					}
 				}
-
-				JumpToGreenzone();
+				if (_rightClickAlt || _rightClickControl || _rightClickShift)
+				{
+					JumpToGreenzone();
+					_triggerAutoRestore = true;
+					_supressContextMenu = true;
+				}
 			}
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
@@ -845,21 +878,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToPreviousMarker();
 			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Left
+			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
 			{
 				GoToNextMarker();
-			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
-			{
-				GoToPreviousFrame();
-			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
-			{
-				GoToNextFrame();
-			}
-			else if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.R) // Ctrl + Shift + R
-			{
-				TasView.HorizontalOrientation ^= true;
 			}
 
 			// SuuperW: Float Editing

@@ -1,4 +1,4 @@
-﻿//TODO
+//TODO
 //we could flag textures as 'actually' render targets (keep a reference to the render target?) which could allow us to convert between them more quickly in some cases
 
 using System;
@@ -64,8 +64,13 @@ namespace BizHawk.Client.EmuHawk
 			using (var xml = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px.fnt"))
 			using (var tex = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.courier16px_0.png"))
 				TheOneFont = new StringRenderer(GL, xml, tex);
+			using (var gens = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.gens.ttf"))
+				LoadCustomFont(gens);
+			using (var fceux = typeof(Program).Assembly.GetManifestResourceStream("BizHawk.Client.EmuHawk.Resources.fceux.ttf"))
+				LoadCustomFont(fceux);
 
 			#if WINDOWS
+
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK || GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
 			#else
 			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
@@ -128,6 +133,7 @@ namespace BizHawk.Client.EmuHawk
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
+		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
@@ -140,6 +146,11 @@ namespace BizHawk.Client.EmuHawk
 		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
 		/// </summary>
 		public System.Windows.Forms.Padding ClientExtraPadding;
+
+		/// <summary>
+		/// custom fonts that don't need to be installed on the user side
+		/// </summary>
+		public System.Drawing.Text.PrivateFontCollection CustomFonts = new System.Drawing.Text.PrivateFontCollection();
 
 		TextureFrugalizer VideoTextureFrugalizer;
 		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
@@ -190,7 +201,6 @@ namespace BizHawk.Client.EmuHawk
 				selectedChain = ShaderChain_hq2x;
 			if (Global.Config.TargetDisplayFilter == 2 && ShaderChain_scanlines != null && ShaderChain_scanlines.Available)
 			{
-				//shader.Pipeline["uIntensity"].Set(1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f);
 				selectedChain = ShaderChain_scanlines;
 				selectedChainProperties["uIntensity"] = 1.0f - Global.Config.TargetScanlineFilterIntensity / 256.0f;
 			}
@@ -388,6 +398,24 @@ namespace BizHawk.Client.EmuHawk
 			public int BackgroundColor { get; set; }
 		}
 
+		void FixRatio(float x, float y, int inw, int inh, out int outw, out int outh)
+		{
+			float ratio = x / y;
+			if (ratio <= 1)
+			{
+				//taller. weird. expand height.
+				outw = inw;
+				outh = (int)((float)inw / ratio);
+			}
+			else
+			{
+				//wider. normal. expand width.
+				outw = (int)((float)inh * ratio);
+				outh = inh;
+			}
+		}
+
+
 		/// <summary>
 		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
 		/// TODO - this needs to be redone with a concept different from zoom factor. 
@@ -398,7 +426,8 @@ namespace BizHawk.Client.EmuHawk
 			bool ar_active = Global.Config.DispFixAspectRatio;
 			bool ar_system = Global.Config.DispManagerAR == Config.EDispManagerAR.System;
 			bool ar_custom = Global.Config.DispManagerAR == Config.EDispManagerAR.Custom;
-			bool ar_correct = ar_system || ar_custom;
+			bool ar_customRatio = Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio;
+			bool ar_correct = ar_system || ar_custom || ar_customRatio;
 			bool ar_unity = !ar_correct;
 			bool ar_integer = Global.Config.DispFixScaleInteger;
 
@@ -411,6 +440,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				virtualWidth = Global.Config.DispCustomUserARWidth;
 				virtualHeight = Global.Config.DispCustomUserARHeight;
+			}
+			
+			if (ar_customRatio)
+			{
+				FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
 			}
 
 			var padding = CalculateCompleteContentPadding(true, false);
@@ -565,6 +599,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					vw = Global.Config.DispCustomUserARWidth;
 					vh = Global.Config.DispCustomUserARHeight;
+				}
+				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+				{
+					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
 				}
 			}
 
@@ -740,7 +778,17 @@ namespace BizHawk.Client.EmuHawk
 
 				NeedsToPaint = false; //??
 			}
+		}
 
+		private void LoadCustomFont(Stream fontstream)
+		{
+			System.IntPtr data = System.Runtime.InteropServices.Marshal.AllocCoTaskMem((int)fontstream.Length);
+			byte[] fontdata = new byte[fontstream.Length];
+			fontstream.Read(fontdata, 0, (int)fontstream.Length);
+			System.Runtime.InteropServices.Marshal.Copy(fontdata, 0, data, (int)fontstream.Length);
+			CustomFonts.AddMemoryFont(data, fontdata.Length);
+			fontstream.Close();
+			System.Runtime.InteropServices.Marshal.FreeCoTaskMem(data);
 		}
 
 		bool? LastVsyncSetting;
@@ -781,8 +829,16 @@ namespace BizHawk.Client.EmuHawk
 			int currNativeWidth = presentationPanel.NativeSize.Width;
 			int currNativeHeight = presentationPanel.NativeSize.Height;
 
+			currNativeWidth += ClientExtraPadding.Horizontal;
+			currNativeHeight += ClientExtraPadding.Vertical;
+
 			int width,height;
-			if(name == "emu") { width = currEmuWidth; height = currEmuHeight; }
+			if(name == "emu") { 
+				width = currEmuWidth; 
+				height = currEmuHeight;
+				width += GameExtraPadding.Horizontal;
+				height += GameExtraPadding.Vertical;
+			}
 			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
 			else throw new InvalidOperationException("Unknown lua surface name: " +name);
 

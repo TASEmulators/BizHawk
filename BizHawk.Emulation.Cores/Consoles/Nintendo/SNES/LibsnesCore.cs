@@ -1,4 +1,4 @@
-﻿//TODO - add serializer (?)
+//TODO - add serializer (?)
 
 //http://wiki.superfamicom.org/snes/show/Backgrounds
 
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable,
+	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -56,8 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
 			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 
-			api = new LibsnesApi(GetExePath());
-			api.CMD_init();
+			api = new LibsnesApi(GetDllPath());
 			api.ReadHook = ReadHook;
 			api.ExecHook = ExecHook;
 			api.WriteHook = WriteHook;
@@ -171,6 +170,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
+		CodeDataLog currCdl;
+
+		public void SetCDL(CodeDataLog cdl)
+		{
+			if(currCdl != null) currCdl.Unpin();
+			currCdl = cdl;
+			if(currCdl != null) currCdl.Pin();
+			
+			//set it no matter what. if its null, the cdl will be unhooked from libsnes internally
+			api.QUERY_set_cdl(currCdl);
+		}
+
+		public void NewCDL(CodeDataLog cdl)
+		{
+			cdl["CARTROM"] = new byte[MemoryDomains["CARTROM"].Size];
+
+			if (MemoryDomains.Has("CARTRAM"))
+				cdl["CARTRAM"] = new byte[MemoryDomains["CARTRAM"].Size];
+
+			cdl["WRAM"] = new byte[MemoryDomains["WRAM"].Size];
+			cdl["APURAM"] = new byte[MemoryDomains["APURAM"].Size];
+
+			cdl.SubType = "SNES";
+			cdl.SubVer = 0;			
+		}
+
+		public void DisassembleCDL(Stream s, CodeDataLog cdl)
+		{
+			//not supported yet
+		}
+
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private GameInfo _game;
@@ -205,6 +235,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			resampler.Dispose();
 			api.Dispose();
+
+			if (currCdl != null) currCdl.Unpin();
 		}
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
@@ -377,25 +409,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi api;
 		System.Xml.XmlDocument romxml;
 
-		string GetExePath()
+		string GetDllPath()
 		{
-			const string bits = "32";
-			// disabled til it works
-			// if (Win32.Is64BitOperatingSystem)
-			// bits = "64";
+			var exename = "libsneshawk-32-" + CurrentProfile.ToLower() + ".dll";
 
-#if WINDOWS
-			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower() + ".exe";
-#else
-			var exename = "libsneshawk-" + bits + "-" + CurrentProfile.ToLower(); //Todo: Separate filenames for OS X and Linux, if someone ever ports to Linux.
-#endif
+			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 
-			string exePath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
+			if (!File.Exists(dllPath))
+				throw new InvalidOperationException("Couldn't locate the DLL for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
 
-			if (!File.Exists(exePath))
-				throw new InvalidOperationException("Couldn't locate the executable for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-
-			return exePath;
+			return dllPath;
 		}
 
 		void ReadHook(uint addr)
@@ -683,7 +706,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//video provider
 		int IVideoProvider.BackgroundColor { get { return 0; } }
 		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
-		int IVideoProvider.VirtualWidth { get { return vidWidth; } }
+		int IVideoProvider.VirtualWidth { get { return (int)(vidWidth * 1.146); } }
 		public int VirtualHeight { get { return vidHeight; } }
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
@@ -725,12 +748,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// adelikat: Nasty hack to force new business logic.  Compatibility (and Accuracy when fully supported) will ALWAYS be in deterministic mode,
 		// a consequence is a permanent performance hit to the compatibility core
 		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
+		// feos: Nasty hack to a nasty hack. Allow user disable it with a strong warning.
 		public bool DeterministicEmulation
 		{
-			get { return CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy"; }
+			get
+			{
+				return Settings.ForceDeterminism &&
+				(CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
+			}
 			private set {  /* Do nothing */ }
 		}
-
 
 		public bool SaveRamModified
 		{
@@ -1215,6 +1242,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool UseRingBuffer = true;
 			public bool AlwaysDoubleSize = false;
+			public bool ForceDeterminism = true;
 			public string Palette = "BizHawk";
 
 			public SnesSettings Clone()

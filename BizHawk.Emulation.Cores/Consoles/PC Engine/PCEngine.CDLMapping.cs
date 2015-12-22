@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-	    /// <summary>
+		/// <summary>
 		/// informs the CPU of the general memory layout, so it can do CDL
-	    /// </summary>
+		/// </summary>
 		public void InitCDLMappings()
 		{
 			if (Cpu.Mappings != null)

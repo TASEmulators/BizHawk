@@ -78,8 +78,10 @@ namespace BizHawk.Client.Common
 		public bool AcceptBackgroundInput = false;
 		public bool SingleInstanceMode = false;
 		public bool AllowUD_LR = false;
+		public bool ForbidUD_LR = false;
 		public bool ShowContextMenu = true;
 		public bool EnableBackupMovies = true;
+		public bool MoviesOnDisk = false;
 		public bool HotkeyConfigAutoTab = true;
 		public bool InputConfigAutoTab = true;
 		public bool ShowLogWindow = false;
@@ -120,7 +122,11 @@ namespace BizHawk.Client.Common
 
 		public enum ESoundOutputMethod { DirectSound, XAudio2, OpenAL, Dummy };
 
-		public enum EDispManagerAR { None, System, Custom };
+		public enum EDispManagerAR { None, System, 
+			//actually, custom SIZE (fixme on major release)
+			Custom, 
+			CustomRatio
+		};
 
 		public enum SaveStateTypeE { Default, Binary, Text };
 
@@ -277,9 +283,14 @@ namespace BizHawk.Client.Common
 		public bool DispChrome_Fullscreen_AutohideMouse = true;
 		public bool DispChrome_AllowDoubleClickFullscreen = true;
 
-		public EDispManagerAR DispManagerAR = EDispManagerAR.System; 
-		public int DispCustomUserARWidth = 1;
-		public int DispCustomUserARHeight = 1;
+		public EDispManagerAR DispManagerAR = EDispManagerAR.System;
+
+		//these are misnomers. they're actually a fixed size (fixme on major release)
+		public int DispCustomUserARWidth = -1;
+		public int DispCustomUserARHeight = -1;
+		//these are more like the actual AR ratio (i.e. 4:3) (fixme on major release)
+		public float DispCustomUserARX = -1;
+		public float DispCustomUserARY = -1;
 
 		// Sound options
 #if WINDOWS
@@ -305,11 +316,13 @@ namespace BizHawk.Client.Common
 		public RecentFiles RecentLua = new RecentFiles(8);
 		public RecentFiles RecentLuaSession = new RecentFiles(8);
 		public bool DisableLuaScriptsOnLoad = false;
+		public bool ToggleAllIfNoneSelected = true;
+		public bool RemoveRegisteredFunctionsOnToggle = true;
 		public bool RunLuaDuringTurbo = true;
 
 		// Watch Settings
 		public RecentFiles RecentWatches = new RecentFiles(8);
-		public Watch.PreviousType RamWatchDefinePrevious = Watch.PreviousType.LastFrame;
+		public PreviousType RamWatchDefinePrevious = PreviousType.LastFrame;
 		public bool DisplayRamWatch = false;
 
 		// Hex Editor Colors
@@ -465,6 +478,7 @@ namespace BizHawk.Client.Common
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = false;
 		public bool GBA_UsemGBA = false;
+		public string LibretroCore;
 	}
 
 	// These are used in the defctrl.json or wherever

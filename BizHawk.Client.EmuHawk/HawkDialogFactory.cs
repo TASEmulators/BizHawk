@@ -132,6 +132,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get { return _capsule.FileNames; }
 		}
+		public string Title
+		{
+			get { return _capsule.Title; }
+			set { _capsule.Title = value; }
+		}
 		public int FilterIndex
 		{
 			get { return _capsule.FilterIndex; }

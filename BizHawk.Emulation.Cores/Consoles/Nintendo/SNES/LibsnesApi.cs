@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -28,13 +28,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		//speedups to deploy later:
 		//todo - convey rom data faster than pipe blob (use shared memory) (WARNING: right now our general purpose shared memory is only 1MB. maybe wait until ring buffer IPC)
-		//todo - collapse input messages to one IPC operation. right now theresl ike 30 of them
+		//todo - collapse input messages to one IPC operation. right now theres like 30 of them
 		//todo - collect all memory block names whenever a memory block is alloc/dealloced. that way we avoid the overhead when using them for gui stuff (gfx debugger, hex editor)
 
-		
+
+		InstanceDll instanceDll;
 		string InstanceName;
-		Process process;
-		System.Threading.EventWaitHandle watchdogEvent;
 		NamedPipeServerStream pipe;
 		BinaryWriter bwPipe;
 		BinaryReader brPipe;
@@ -49,46 +48,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
 		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
 
-		static bool DryRun(string exePath)
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void DllInit(string ipcname);
+
+		public LibsnesApi(string dllPath)
 		{
-			ProcessStartInfo oInfo = new ProcessStartInfo(exePath, "Bongizong");
-			oInfo.WorkingDirectory = Path.GetDirectoryName(exePath);
-			oInfo.UseShellExecute = false;
-			oInfo.CreateNoWindow = true;
-			oInfo.RedirectStandardOutput = true;
-			oInfo.RedirectStandardError = true;
-
-			Process proc = System.Diagnostics.Process.Start(oInfo);
-			string result = proc.StandardError.ReadToEnd();
-			proc.WaitForExit();
-
-			//yongou chonganong nongo tong rongeadong
-			//pongigong chong hongi nonge songe
-			//Per cstdlib doc, exit() returns status &0377. For some reason, windows gets away with ignoring this restriction.
-			if (result == "Honga Wongkong" && (proc.ExitCode&0377) == (0x16817 & 377)) 
-				return true;
-
-			return false;
-		}
-
-		static HashSet<string> okExes = new HashSet<string>();
-		public LibsnesApi(string exePath)
-		{
-			//make sure we've checked this exe for OKness.. the dry run should keep us from freezing up or crashing weirdly if the external process isnt correct
-			if (!okExes.Contains(exePath))
-			{
-				bool ok = DryRun(exePath);
-				if (!ok)
-					throw new InvalidOperationException(string.Format("Couldn't launch {0} to run SNES core. Not sure why this would have happened. Try redownloading BizHawk first.", Path.GetFileName(exePath)));
-				okExes.Add(exePath);
-			}
-
 			InstanceName = "libsneshawk_" + Guid.NewGuid().ToString();
-
-#if DEBUG
-			//use this to get a debug console with libsnes output
-			InstanceName = "console-" + InstanceName;
-#endif
 
 			var pipeName = InstanceName;
 
@@ -98,19 +63,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 1024 * 1024, 1024);
 
-			//slim chance this might be useful sometimes:
-			//http://stackoverflow.com/questions/2590334/creating-a-cross-process-eventwaithandle
-			//create an event for the child process to monitor with a watchdog, to make sure it terminates when the emuhawk process terminates.
-			//NOTE: this is alarming! for some reason .net releases this event when it gets finalized, instead of when i (dont) dispose it.
-			bool createdNew;
-			watchdogEvent = new System.Threading.EventWaitHandle(false, System.Threading.EventResetMode.AutoReset, InstanceName + "-event", out createdNew);
-
-			process = new Process();
-			process.StartInfo.WorkingDirectory = Path.GetDirectoryName(exePath);
-			process.StartInfo.FileName = exePath;
-			process.StartInfo.Arguments = pipeName;
-			process.StartInfo.ErrorDialog = true;
-			process.Start();
+			instanceDll = new InstanceDll(dllPath);
+			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
+			dllinit(pipeName);
 
 			//TODO - start a thread to wait for process to exit and gracefully handle errors? how about the pipe?
 
@@ -143,10 +98,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void Dispose()
 		{
-			watchdogEvent.Dispose();
-			process.Kill();
-			process.Dispose();
-			process = null;
+			WritePipeMessage(eMessage.eMessage_Shutdown);
+			WaitForCompletion();
+			instanceDll.Dispose();
+
 			pipe.Dispose();
 			mmva.Dispose();
 			mmf.Dispose();
@@ -196,6 +151,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public int MessageCounter;
 
+		void WritePipeInt(int n)
+		{
+		}
+
+		void WritePipePointer(IntPtr ptr, bool flush = true)
+		{
+			bwPipe.Write(ptr.ToInt32());
+			if(flush) bwPipe.Flush();
+		}
+
 		void WritePipeMessage(eMessage msg)
 		{
 			if(!bufio) MessageCounter++;
@@ -235,6 +200,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public Action<uint> ReadHook, ExecHook;
 		public Action<uint, byte> WriteHook;
+
+		public enum eCDLog_AddrType
+		{
+			CARTROM, CARTRAM, WRAM, APURAM,
+			NUM
+		};
+
+		public enum eCDLog_Flags
+		{
+			ExecFirst = 0x01,
+			ExecOperand = 0x02,
+			CPUData = 0x04,
+			DMAData = 0x08, //not supported yet
+			BRR = 0x80,
+		};
 
 		Dictionary<string, SharedMemoryBlock> SharedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
 		Dictionary<string, SharedMemoryBlock> DeallocatedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();

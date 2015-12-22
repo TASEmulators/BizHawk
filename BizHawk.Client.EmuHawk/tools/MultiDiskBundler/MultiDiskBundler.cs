@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.OK;
 				Close();
 
-				GlobalWin.MainForm.LoadRom(fileInfo.FullName);
+				GlobalWin.MainForm.LoadRom(fileInfo.FullName, new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 			}
 		}
 

@@ -53,43 +53,39 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTools()
 		{
-			var availableTools = Assembly
-				.GetAssembly(typeof(IToolForm))
-				.GetTypes()
-				.Where(t => typeof(IToolForm).IsAssignableFrom(t))
-				.Where(t => typeof(Form).IsAssignableFrom(t))
-				.Where(t => !(typeof(ToolBox).IsAssignableFrom(t)))
-				.Where(t => VersionInfo.DeveloperBuild ? true : !(t.GetCustomAttributes(false)
-					.OfType<ToolAttributes>().Any(a => !a.Released)))
-				.Where(t => !(t == typeof(GBGameGenie))) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
-				.Where(t => BizHawk.Emulation.Common.ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
-				.Select(t => Activator.CreateInstance(t))
-				.Select(instance => new
-				{
-					Type = instance.GetType(),
-					Instance = instance,
-					Icon = (instance as Form).Icon.ToBitmap(),
-					Text = (instance as Form).Text,
-					ShowIcon = (instance as Form).ShowIcon
-				})
-				.ToList();
+			ToolBoxStrip.Items.Clear();
 
-			foreach (var tool in availableTools)
+			foreach (var t in Assembly.GetAssembly(GetType()).GetTypes())
 			{
-				var t = new ToolStripButton
+				if (!typeof(IToolForm).IsAssignableFrom(t))
+					continue;
+				if (!typeof(Form).IsAssignableFrom(t))
+					continue;
+				if (typeof(ToolBox).IsAssignableFrom(t))  //yo dawg i head you like toolboxes
+					continue;
+				if (VersionInfo.DeveloperBuild && t.GetCustomAttributes(false).OfType<ToolAttributes>().Any(a => !a.Released))
+					continue;
+				if (t == typeof(GBGameGenie)) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
+					continue;
+				if (!BizHawk.Emulation.Common.ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+					continue;
+
+				var instance = Activator.CreateInstance(t);
+
+				var tsb = new ToolStripButton
 				{
-					Image = tool.Icon,
-					Text = tool.Text,
-					DisplayStyle = tool.ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
+					Image = (instance as Form).Icon.ToBitmap(),
+					Text = (instance as Form).Text,
+					DisplayStyle = (instance as Form).ShowIcon ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text
 				};
 
-				t.Click += (o, e) =>
+				tsb.Click += (o, e) =>
 				{
-					GlobalWin.Tools.Load(tool.Type);
+					GlobalWin.Tools.Load(t);
 					Close();
 				};
 
-				ToolBoxStrip.Items.Add(t);
+				ToolBoxStrip.Items.Add(tsb);
 			}
 		}
 

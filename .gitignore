@@ -3,6 +3,8 @@
 /BizHawk.Client.Common/bin
 /BizHawk.Client.Common/obj
 /BizHawk.Client.Common/Properties/svnrev.cs
+/BizHawk.Client.ApiHawk/bin
+/BizHawk.Client.ApiHawk/obj
 /BizHawk.Client.DBMan/obj
 /BizHawk.Client.DiscoHawk/obj
 /BizHawk.Client.DiscoHawk/Properties/svnrev.cs
@@ -150,6 +152,7 @@
 /output/EMU7800.dll
 /output/EmuHawk.exe
 /output/GBA
+/output/Gameboy
 /output/Game Gear
 /output/Genesis
 /output/GongShell.dll
@@ -249,6 +252,7 @@
 /References/*.xml
 /output/ELFSharp.dll
 /output/dll/ELFSharp.dll
+/output/ExternalTools
 *.opensdf
 *.user
 *.userprefs
@@ -275,3 +279,10 @@ libgambatte/xcode/gambatte.xcodeproj/project.xcworkspace/xcuserdata
 libgambatte/xcode/gambatte.xcodeproj/xcuserdata
 psx/octoshock/bizhawk/octoshock.xcodeproj/xcuserdata
 psx/octoshock/bizhawk/octoshock.xcodeproj/project.xcworkspace/xcuserdata
+/output/dll/*.iobj
+/output/dll/*.ipdb
+/LuaInterface/Lua/src/.libs
+/LuaInterface/Lua/src/Release-LUAPERKS
+/LuaInterface/Release-LUAPERKS
+output/BizHawk.Client.ApiHawk.dll
+output/dll/BizHawk.Client.ApiHawk.dll

@@ -11,6 +11,7 @@ namespace BizHawk.Client.EmuHawk
 		bool AddExtension { get; set; }
 		string FileName { get; set; }
 		string[] FileNames { get; }
+		string Title { get; set; }
 		int FilterIndex { get; set; }
 		System.Windows.Forms.DialogResult ShowDialog(System.Windows.Forms.Form form);
 	}

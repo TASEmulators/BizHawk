@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IDriveLight))]
-	public partial class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
+	public partial class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
 		/// <summary>
@@ -173,6 +173,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
 
+				CDCallback = new LibGambatte.CDCallback(CDCallbackProc);
+
 				NewSaveCoreSetBuff();
 			}
 			catch
@@ -182,6 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+	
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
         #region ALL SAVESTATEABLE STATE GOES HERE

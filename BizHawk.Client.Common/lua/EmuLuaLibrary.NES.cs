@@ -44,10 +44,10 @@ namespace BizHawk.Client.Common
 				var watch = Watch.GenerateWatch(
 					Global.Emulator.AsMemoryDomains()["System Bus"],
 					decoder.Address,
-					Watch.WatchSize.Byte,
-					Watch.DisplayType.Hex,
-					code,
-					false);
+					WatchSize.Byte,
+					DisplayType.Hex,
+					false,
+					code);
 
 				Global.CheatList.Add(new Cheat(
 					watch,

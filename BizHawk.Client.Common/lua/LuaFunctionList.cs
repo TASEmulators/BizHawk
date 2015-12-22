@@ -18,12 +18,12 @@ namespace BizHawk.Client.Common
 
 		public new bool Remove(NamedLuaFunction function)
 		{
-			if (Global.Emulator.CanPollInput())
+			if (Global.Emulator.InputCallbacksAvailable())
 			{
 				Global.Emulator.AsInputPollable().InputCallbacks.Remove(function.Callback);
 			}
 
-			if (Global.Emulator.CanDebug() && Global.Emulator.MemoryCallbacksAvailable())
+			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
 				Global.Emulator.AsDebuggable().MemoryCallbacks.Remove(function.Callback);
 			}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -153,6 +153,7 @@ namespace BizHawk.Client.EmuHawk
 			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
 			string cmdRom = null;
 			string cmdLoadState = null;
+			string cmdLoadSlot = null;
 			string cmdMovie = null;
 			string cmdDumpType = null;
 			string cmdDumpName = null;
@@ -170,6 +171,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var arg = args[i].ToLower();
 				if (arg.StartsWith("--load-slot="))
+				{
+					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				if (arg.StartsWith("--load-state="))
 				{
 					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
 				}
@@ -244,9 +249,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (GlobalWin.Tools.AskSave())
 				{
-					CloseGame();
+					//zero 03-nov-2015 - close game after other steps. tools might need to unhook themselves from a core.
 					Global.MovieSession.Movie.Stop();
 					GlobalWin.Tools.Close();
+					CloseGame();
+					//does this need to be last for any particular reason? do tool dialogs persist settings when closing?
 					SaveConfig();
 					_exitRequestPending = true;
 				}
@@ -330,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 			if (cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				LoadRom(cmdRom);
+				LoadRom(cmdRom, new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 				if (Global.Game == null)
 				{
 					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
@@ -414,16 +421,23 @@ namespace BizHawk.Client.EmuHawk
 
 			if (startFullscreen || Global.Config.StartFullscreen)
 			{
-				ToggleFullscreen();
+				_needsFullscreenOnLoad = true;
 			}
 
-			if (cmdLoadState != null && !Global.Game.IsNullInstance)
+			if (!Global.Game.IsNullInstance)
 			{
-				LoadQuickSave("QuickSave" + cmdLoadState);
-			}
-			else if (Global.Config.AutoLoadLastSaveSlot && !Global.Game.IsNullInstance)
-			{
-				LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				if (cmdLoadState != null)
+				{
+					LoadState(cmdLoadState, Path.GetFileName(cmdLoadState));
+				}
+				else if (cmdLoadSlot != null)
+				{
+					LoadQuickSave("QuickSave" + cmdLoadSlot);
+				}
+				else if (Global.Config.AutoLoadLastSaveSlot)
+				{
+					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+				}
 			}
 
 			GlobalWin.Tools.AutoLoad();
@@ -464,10 +478,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _supressSyncSettingsWarning = false;
 
-		public void ProgramRunLoop()
+		public int ProgramRunLoop()
 		{
-			CheckMessages();
+			CheckMessages(); //can someone leave a note about why this is needed?
 			LogConsole.PositionConsole();
+
+			//needs to be done late, after the log console snaps on top
+			//fullscreen should snap on top even harder!
+			if (_needsFullscreenOnLoad)
+			{
+				_needsFullscreenOnLoad = false;
+				ToggleFullscreen();
+			}
+
+			//incantation required to get the program reliably on top of the console window
+			//we might want it in ToggleFullscreen later, but here, it needs to happen regardless
+			BringToFront();
+			Activate();
+			BringToFront();
 
 			for (; ; )
 			{
@@ -477,16 +505,17 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					break;
+					Shutdown();
+					return _exitCode;
 				}
 			}
 		}
+
 
 		public bool RunLoopCore()
 		{
 			if (_exit)
 			{
-				Shutdown();
 				return false;
 			}
 			Input.Instance.Update();
@@ -553,7 +582,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void Dispose(bool disposing)
 		{
 			//NOTE: this gets called twice sometimes. once by using() in Program.cs and once from winforms internals when the form is closed...
-		
+
 			if (GlobalWin.DisplayManager != null)
 			{
 				GlobalWin.DisplayManager.Dispose();
@@ -607,7 +636,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Properties
 
-		public string CurrentlyOpenRom;
+		public string CurrentlyOpenRom; //todo - delete me and use only args instead
+		public LoadRomArgs CurrentlyOpenRomArgs;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
 		public bool PressRewind = false;
@@ -627,8 +657,9 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					GlobalWin.Tools.UpdateToolsBefore();
-					GlobalWin.Tools.UpdateToolsAfter();
+					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo);
+					GlobalWin.Tools.UpdateToolsBefore(skipScripts);
+					GlobalWin.Tools.UpdateToolsAfter(skipScripts);
 				}
 			}
 		}
@@ -678,33 +709,40 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Controls whether the app generates input events. should be turned off for most modal dialogs
 		/// </summary>
-		public bool AllowInput
+		public bool AllowInput(bool yield_alt)
 		{
-			get
+			// the main form gets input
+			if (ActiveForm == this)
 			{
-				// the main form gets input
-				if (ActiveForm == this)
-				{
-					return true;
-				}
-
-				// modals that need to capture input for binding purposes get input, of course
-				if (ActiveForm is HotkeyConfig ||
-					ActiveForm is ControllerConfig ||
-					ActiveForm is TAStudio ||
-					ActiveForm is VirtualpadTool)
-				{
-					return true;
-				}
-
-				// if no form is active on this process, then the background input setting applies
-				if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
-				{
-					return true;
-				}
-
-				return false;
+				return true;
 			}
+
+			//even more special logic for TAStudio:
+			//TODO - implement by event filter in TAStudio
+			if (ActiveForm is TAStudio)
+			{
+				if(yield_alt) return false;
+				var ts = ActiveForm as TAStudio;
+				if(ts.IsInMenuLoop)
+					return false;
+			}
+
+			// modals that need to capture input for binding purposes get input, of course
+			if (ActiveForm is HotkeyConfig ||
+				ActiveForm is ControllerConfig ||
+				ActiveForm is TAStudio ||
+				ActiveForm is VirtualpadTool)
+			{
+				return true;
+			}
+
+			// if no form is active on this process, then the background input setting applies
+			if (ActiveForm == null && Global.Config.AcceptBackgroundInput)
+			{
+				return true;
+			}
+
+			return false;
 		}
 
 
@@ -725,7 +763,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllerInputCoalescer conInput = Global.ControllerInputCoalescer as ControllerInputCoalescer;
 
-			for (; ; )
+			for (;;)
 			{
 
 				// loop through all available events
@@ -832,21 +870,25 @@ namespace BizHawk.Client.EmuHawk
 					float x = P.X / (float)video.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
-					
+
 				if (o.Item1 == "WMouse Y")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
 					float y = P.Y / (float)video.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
-					
+
 				return o;
 			}));
 		}
 
 		public void RebootCore()
 		{
-			LoadRom(CurrentlyOpenRom);
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRom);
+			if (ioa is OpenAdvanced_LibretroNoGame)
+				LoadRom("", CurrentlyOpenRomArgs);
+			else
+				LoadRom(ioa.SimplePath, CurrentlyOpenRomArgs);
 		}
 
 		public void PauseEmulator()
@@ -889,7 +931,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = Global.Config.Screenshot_CaptureOSD ? CaptureOSD() : MakeScreenshotImage())
 			{
-				using(var img = bb.ToSysdrawingBitmap())
+				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}
 
@@ -917,8 +959,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var sequence = string.Format(" ({0})", seq++);
 				fname = string.Format(fmt, prefix, ts, sequence);
-			} 
-				
+			}
+
 			TakeScreenshot(fname);
 		}
 
@@ -1017,7 +1059,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void ToggleFullscreen(bool allowSuppress=false)
+		public void ToggleFullscreen(bool allowSuppress = false)
 		{
 			AutohideCursor(false);
 
@@ -1031,23 +1073,23 @@ namespace BizHawk.Client.EmuHawk
 			if (_inFullscreen == false)
 			{
 				SuspendLayout();
-				#if WINDOWS
-					//Work around an AMD driver bug in >= vista:
-					//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
-					//AMD cards manifest a problem under these circumstances, flickering other monitors. 
-					//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
-					//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
-					//At any rate, we can solve this by adding a 1px black border around the GL control
-					//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-					if (Global.Config.DispFullscreenHacks)
-					{
-						//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
-						//It seems that some statusbar elements composite with the backcolor. 
-						//Maybe we could add another control under the statusbar. with a different backcolor
-						Padding = new Padding(1);
-						BackColor = Color.Black;
-					}
-				#endif
+#if WINDOWS
+				//Work around an AMD driver bug in >= vista:
+				//It seems windows will activate opengl fullscreen mode when a GL control is occupying the exact space of a screen (0,0 and dimensions=screensize)
+				//AMD cards manifest a problem under these circumstances, flickering other monitors. 
+				//It isnt clear whether nvidia cards are failing to employ this optimization, or just not flickering.
+				//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
+				//At any rate, we can solve this by adding a 1px black border around the GL control
+				//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
+				if (Global.Config.DispFullscreenHacks)
+				{
+					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
+					//It seems that some statusbar elements composite with the backcolor. 
+					//Maybe we could add another control under the statusbar. with a different backcolor
+					Padding = new Padding(1);
+					BackColor = Color.Black;
+				}
+#endif
 
 				_windowedLocation = Location;
 
@@ -1064,16 +1106,16 @@ namespace BizHawk.Client.EmuHawk
 
 				WindowState = FormWindowState.Normal;
 
-				#if WINDOWS
-					//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
-					Padding = new Padding(0);
-					//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
-					//so we need the statusbar and mainform backdrop color to match
-					BackColor = SystemColors.Control; 
-				#endif
+#if WINDOWS
+				//do this even if DispFullscreenHacks arent enabled, to restore it in case it changed underneath us or something
+				Padding = new Padding(0);
+				//it's important that we set the form color back to this, because the statusbar icons blend onto the mainform, not onto the statusbar--
+				//so we need the statusbar and mainform backdrop color to match
+				BackColor = SystemColors.Control;
+#endif
 
 				_inFullscreen = false;
-					
+
 				SynchChrome();
 				Location = _windowedLocation;
 				ResumeLayout();
@@ -1122,7 +1164,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string ttype = ":(none)";
 			if (Global.Config.SoundThrottle) { ttype = ":Sound"; }
-			if (Global.Config.VSyncThrottle) { ttype = string.Format(":Vsync{0}", Global.Config.VSync?"[ena]":"[dis]");  }
+			if (Global.Config.VSyncThrottle) { ttype = string.Format(":Vsync{0}", Global.Config.VSync ? "[ena]" : "[dis]"); }
 			if (Global.Config.ClockThrottle) { ttype = ":Clock"; }
 			string xtype = _unthrottled ? "Unthrottled" : "Throttled";
 			string msg = string.Format("{0}{1} ", xtype, ttype);
@@ -1308,6 +1350,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _avwriterpad;
 
 		private bool _exit;
+		private int _exitCode;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
@@ -1330,6 +1373,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
+		private bool _needsFullscreenOnLoad;
 
 		private int _autoDumpLength;
 		private readonly bool _autoCloseOnDump;
@@ -1372,7 +1416,8 @@ namespace BizHawk.Client.EmuHawk
 			if (_inResizeLoop)
 			{
 				var size = PresentationPanel.NativeSize;
-				str = str + string.Format("({0}x{1}) - ", size.Width, size.Height);
+				float AR = (float)size.Width / size.Height;
+				str = str + string.Format("({0}x{1})={2} - ", size.Width, size.Height, AR);
 			}
 
 			//we need to display FPS somewhere, in this case
@@ -1569,16 +1614,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SelectSlot(int num)
-		{
-			if (Global.Emulator.HasSavestates())
-			{
-				Global.Config.SaveSlot = num;
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
-			}
-		}
-
 		private void RewireSound()
 		{
 			if (_dumpProxy != null)
@@ -1745,7 +1780,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadRomFromRecent(string rom)
 		{
-			if (!LoadRom(rom))
+
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(rom);
+
+			LoadRomArgs args = new LoadRomArgs()
+			{
+				OpenAdvanced = ioa
+			};
+
+			//if(ioa is this or that) - for more complex behaviour
+			rom = ioa.SimplePath;
+
+			if (!LoadRom(rom, args))
 			{
 				Global.Config.RecentRoms.HandleLoadError(rom);
 			}
@@ -1870,61 +1916,6 @@ namespace BizHawk.Client.EmuHawk
 			return bb;
 		}
 
-		private void SaveStateAs()
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			var path = PathManager.GetSaveStatePath(Global.Game);
-
-			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
-			{
-				file.Directory.Create();
-			}
-
-			var sfd = HawkDialogFactory.CreateSaveFileDialog();
-			sfd.AddExtension = true;
-			sfd.DefaultExt = "State";
-			sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
-			sfd.InitialDirectory = path;
-			sfd.FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State";
-
-			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK)
-			{
-				SaveState(sfd.FileName, sfd.FileName, false);
-			}
-		}
-
-		private void LoadStateAs()
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetSaveStatePath(Global.Game);
-			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
-			ofd.RestoreDirectory = true;
-
-			var result = ofd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-
-			if (File.Exists(ofd.FileName) == false)
-			{
-				return;
-			}
-
-			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
-		}
-
 		private void SaveSlotSelectedMessage()
 		{
 			int slot = Global.Config.SaveSlot;
@@ -1938,8 +1929,8 @@ namespace BizHawk.Client.EmuHawk
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider();
 			//bool change = false;
-			Size currVideoSize = new Size(video.BufferWidth,video.BufferHeight);
-			Size currVirtualSize = new Size(video.VirtualWidth,video.VirtualHeight);
+			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
+			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
 			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
 			{
 				_lastVideoSize = currVideoSize;
@@ -1963,7 +1954,7 @@ namespace BizHawk.Client.EmuHawk
 			typeof(ToolStrip).InvokeMember("ProcessMnemonicInternal", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.InvokeMethod | System.Reflection.BindingFlags.Instance, null, MainformMenu, new object[] { c });
 		}
 
-		private static string FormatFilter(params string[] args)
+		public static string FormatFilter(params string[] args)
 		{
 			var sb = new StringBuilder();
 			if (args.Length % 2 != 0)
@@ -1993,7 +1984,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2065,7 +2056,9 @@ namespace BizHawk.Client.EmuHawk
 			var file = new FileInfo(ofd.FileName);
 			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
-			LoadRom(file.FullName);
+
+			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
+			LoadRom(file.FullName, lra);
 		}
 
 		private void CoreSyncSettings(object sender, RomLoader.SettingsLoadArgs e)
@@ -2158,50 +2151,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
-		}
-
-		private void PreviousSlot()
-		{
-			if (Global.Emulator.HasSavestates())
-			{
-				if (Global.Config.SaveSlot == 0)
-				{
-					Global.Config.SaveSlot = 9; // Wrap to end of slot list
-				}
-				else if (Global.Config.SaveSlot > 9)
-				{
-					Global.Config.SaveSlot = 9; // Meh, just in case
-				}
-				else
-				{
-					Global.Config.SaveSlot--;
-				}
-
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
-			}
-		}
-
-		private void NextSlot()
-		{
-			if (Global.Emulator.HasSavestates())
-			{
-				if (Global.Config.SaveSlot >= 9)
-				{
-					Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
-				}
-				else if (Global.Config.SaveSlot < 0)
-				{
-					Global.Config.SaveSlot = 0; // Meh, just in case
-				}
-				else
-				{
-					Global.Config.SaveSlot++;
-				}
-
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
-			}
 		}
 
 		private static void ToggleFPS()
@@ -2355,7 +2304,7 @@ namespace BizHawk.Client.EmuHawk
 			FrameBufferResized();
 		}
 
-		private void DecreaseWIndowSize()
+		private void DecreaseWindowSize()
 		{
 			switch (Global.Config.TargetZoomFactor)
 			{
@@ -2660,89 +2609,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			// If from lua, disable counting rerecords
-			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
-
-			if (fromLua)
-				Global.MovieSession.Movie.IsCountingRerecords = false;
-
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-
-			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
-			{
-				SetMainformMovieInfo();
-				GlobalWin.OSD.ClearGUIText();
-				GlobalWin.Tools.UpdateToolsBefore(fromLua);
-				UpdateToolsAfter(fromLua);
-				UpdateToolsLoadstate();
-				Global.AutoFireController.ClearStarts();
-
-				if (!supressOSD)
-				{
-					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
-				}
-
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
-				}
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Loadstate error!");
-			}
-
-			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
-		}
-
-		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
-			if (File.Exists(path) == false)
-			{
-				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
-
-				return;
-			}
-
-			LoadState(path, quickSlotName, fromLua, supressOSD);
-		}
-
-		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			try
-			{
-				SavestateManager.SaveStateFile(path, userFriendlyStateName);
-
-				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
-			}
-			catch (IOException)
-			{
-				GlobalWin.OSD.AddMessage("Unable to save state " + path);
-			}
-			if (!fromLua)
-			{
-				UpdateStatusSlots();
-			}
-		}
-
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
@@ -3004,6 +2870,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					PauseEmulator();
 					PauseOnFrame = null;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.StopSeeking();
+					}
 				}
 			}
 
@@ -3057,10 +2927,12 @@ namespace BizHawk.Client.EmuHawk
 			// select IVideoWriter to use
 			IVideoWriter aw = null;
 
-			if (unattended)
+			if (string.IsNullOrEmpty(videowritername) && !string.IsNullOrEmpty(Global.Config.VideoWriter))
+				videowritername = Global.Config.VideoWriter;
+
+			if (unattended && !string.IsNullOrEmpty(videowritername))
 			{
 				aw = VideoWriterInventory.GetVideoWriter(videowritername);
-
 			}
 			else
 			{
@@ -3078,6 +2950,8 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				bool usingAvi = aw is AviWriter; //SO GROSS!
+
 				if (_dumpaudiosync)
 				{
 					aw = new VideoStretcher(aw);
@@ -3101,12 +2975,17 @@ namespace BizHawk.Client.EmuHawk
 
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
-				if (unattended)
+				if (unattended && !string.IsNullOrEmpty(filename))
 				{
 					aw.SetDefaultVideoCodecToken();
 				}
 				else
 				{
+					//THIS IS REALLY SLOPPY!
+					//PLEASE REDO ME TO NOT CARE WHICH AVWRITER IS USED!
+					if(usingAvi && !string.IsNullOrEmpty(Global.Config.AVICodecToken))
+						aw.SetDefaultVideoCodecToken();
+
 					var token = aw.AcquireVideoCodecToken(this);
 					if (token == null)
 					{
@@ -3119,7 +2998,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// select file to save to
-				if (unattended)
+				if (unattended && !string.IsNullOrEmpty(filename))
 				{
 					aw.OpenFile(filename);
 				}
@@ -3270,6 +3149,7 @@ namespace BizHawk.Client.EmuHawk
 								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
 							}
 
+							bbin.DiscardAlpha();
 
 							bmpout = new Bitmap(_avwriterResizew, _avwriterResizeh, PixelFormat.Format32bppArgb);
 							bmpin = bbin.ToSysdrawingBitmap();
@@ -3391,7 +3271,7 @@ namespace BizHawk.Client.EmuHawk
 						// Retry loading the ROM here. This leads to recursion, as the original call to LoadRom has not exited yet,
 						// but unless the user tries and fails to set his firmware a lot of times, nothing should happen.
 						// Refer to how RomLoader implemented its LoadRom method for a potential fix on this.
-						LoadRom(e.RomPath, e.Deterministic);
+						LoadRom(e.RomPath, CurrentLoadRomArgs);
 					}
 				}
 			}
@@ -3423,210 +3303,235 @@ namespace BizHawk.Client.EmuHawk
 			return platformChooser.PlatformChoice;
 		}
 
-		// Still needs a good bit of refactoring
-		public bool LoadRom(string path, bool? deterministicemulation = null)
+		public class LoadRomArgs
 		{
-			// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
-			bool deterministic = deterministicemulation.HasValue ?
-				deterministicemulation.Value :
-				Global.MovieSession.QueuedMovie != null;
-				//Global.MovieSession.Movie.IsActive;
-			
-			if (!GlobalWin.Tools.AskSave())
+			public bool? Deterministic;
+			public IOpenAdvanced OpenAdvanced;
+		}
+
+		LoadRomArgs CurrentLoadRomArgs;
+
+		// Still needs a good bit of refactoring
+		public bool LoadRom(string path, LoadRomArgs args)
+		{
+			//default args
+			if (args == null) args = new LoadRomArgs();
+
+			//if this is the first call to LoadRom (they will come in recursively) then stash the args
+			bool firstCall = false;
+			if (CurrentLoadRomArgs == null)
 			{
-				return false;
+				firstCall = true;
+				CurrentLoadRomArgs = args;
+			}
+			else
+			{
+				args = CurrentLoadRomArgs;
 			}
 
-			var loader = new RomLoader
+			try
+			{
+				// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
+				bool deterministic = args.Deterministic.HasValue ?
+					args.Deterministic.Value :
+					Global.MovieSession.QueuedMovie != null;
+				//Global.MovieSession.Movie.IsActive;
+
+				if (!GlobalWin.Tools.AskSave())
+				{
+					return false;
+				}
+
+				bool asLibretro = (args.OpenAdvanced is OpenAdvanced_Libretro || args.OpenAdvanced is OpenAdvanced_LibretroNoGame);
+
+				var loader = new RomLoader
 				{
 					ChooseArchive = LoadArhiveChooser,
 					ChoosePlatform = ChoosePlatformForRom,
 					Deterministic = deterministic,
-					MessageCallback = GlobalWin.OSD.AddMessage
+					MessageCallback = GlobalWin.OSD.AddMessage,
+					AsLibretro = asLibretro
 				};
-			Global.FirmwareManager.RecentlyServed.Clear();
+				Global.FirmwareManager.RecentlyServed.Clear();
 
-			loader.OnLoadError += ShowLoadError;
-			loader.OnLoadSettings += CoreSettings;
-			loader.OnLoadSyncSettings += CoreSyncSettings;
+				loader.OnLoadError += ShowLoadError;
+				loader.OnLoadSettings += CoreSettings;
+				loader.OnLoadSyncSettings += CoreSyncSettings;
 
-			// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
-			// any settings changes that we made need to make it back to config before we try to instantiate that core with
-			// the new settings objects
-			CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
-			CloseGame();
-			
-			var nextComm = CreateCoreComm();
-			CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-			var result = loader.LoadRom(path, nextComm);
+				// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
+				// any settings changes that we made need to make it back to config before we try to instantiate that core with
+				// the new settings objects
+				CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
+				CloseGame();
 
-			if (result)
-			{
-				Global.Emulator = loader.LoadedEmulator;
-				Global.Game = loader.Game;
+				var nextComm = CreateCoreComm();
+
+				//we need to inform LoadRom which Libretro core to use...
+				IOpenAdvanced ioa = args.OpenAdvanced;
+				if (ioa is IOpenAdvancedLibretro)
+				{
+					var ioaretro = ioa as IOpenAdvancedLibretro;
+
+					//prepare a core specification
+					//if it wasnt already specified, use the current default
+					if (ioaretro.CorePath == null) ioaretro.CorePath = Global.Config.LibretroCore;
+					nextComm.LaunchLibretroCore = ioaretro.CorePath;
+					if (nextComm.LaunchLibretroCore == null)
+						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
+				}
+
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
-				InputManager.SyncControls();
+				var result = loader.LoadRom(path, nextComm);
 
-				if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+				//we need to replace the path in the OpenAdvanced with the canonical one the user chose.
+				//It can't be done until loder.LoadRom happens (for CanonicalFullPath)
+				//i'm not sure this needs to be more abstractly engineered yet until we have more OpenAdvanced examples
+				if (ioa is OpenAdvanced_Libretro)
 				{
-					GlobalWin.Tools.Load<TI83KeyPad>();
+					var oaretro = ioa as OpenAdvanced_Libretro;
+					oaretro.token.Path = loader.CanonicalFullPath;
 				}
+				if (ioa is OpenAdvanced_OpenRom) ((OpenAdvanced_OpenRom)ioa).Path = loader.CanonicalFullPath;
+				string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
 
-				if (loader.LoadedEmulator is NES)
+				if (result)
 				{
-					var nes = loader.LoadedEmulator as NES;
-					if (!string.IsNullOrWhiteSpace(nes.GameName))
+					Global.Emulator = loader.LoadedEmulator;
+					Global.Game = loader.Game;
+					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
+					InputManager.SyncControls();
+
+					if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
-						Global.Game.Name = nes.GameName;
+						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
 
-					Global.Game.Status = nes.RomStatus;
-				}
-				else if (loader.LoadedEmulator is QuickNES)
-				{
-					var qns = loader.LoadedEmulator as QuickNES;
-					if (!string.IsNullOrWhiteSpace(qns.BootGodName))
+					if (loader.LoadedEmulator is NES)
 					{
-						Global.Game.Name = qns.BootGodName;
+						var nes = loader.LoadedEmulator as NES;
+						if (!string.IsNullOrWhiteSpace(nes.GameName))
+						{
+							Global.Game.Name = nes.GameName;
+						}
+
+						Global.Game.Status = nes.RomStatus;
 					}
-					if (qns.BootGodStatus.HasValue)
+					else if (loader.LoadedEmulator is QuickNES)
 					{
-						Global.Game.Status = qns.BootGodStatus.Value;
+						var qns = loader.LoadedEmulator as QuickNES;
+						if (!string.IsNullOrWhiteSpace(qns.BootGodName))
+						{
+							Global.Game.Name = qns.BootGodName;
+						}
+						if (qns.BootGodStatus.HasValue)
+						{
+							Global.Game.Status = qns.BootGodStatus.Value;
+						}
 					}
-				}
 
-				Global.Rewinder.ResetRewindBuffer();
+					Global.Rewinder.ResetRewindBuffer();
 
-				if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
-				{
-					Global.Emulator.CoreComm.RomStatusDetails = string.Format(
-						"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
-						loader.Game.Name,
-						loader.Rom.RomData.HashSHA1(),
-						loader.Rom.RomData.HashMD5());
-				}
-
-				if (Global.Emulator.BoardName != null)
-				{
-					Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
-				}
-
-				// restarts the lua console if a different rom is loaded.
-				// im not really a fan of how this is done..
-				if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loader.CanonicalFullPath)
-				{
-					GlobalWin.Tools.Restart<LuaConsole>();
-				}
-
-				Global.Config.RecentRoms.Add(loader.CanonicalFullPath);
-				#if WINDOWS
-				JumpLists.AddRecentItem(loader.CanonicalFullPath);
-				#endif
-
-				// Don't load Save Ram if a movie is being loaded
-				if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
-				{
-					LoadSaveRam();
-				}
-
-				GlobalWin.Tools.Restart();
-
-				if (Global.Config.LoadCheatFileByGame)
-				{
-					if (Global.CheatList.AttemptToLoadCheatFile())
+					if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
 					{
-						GlobalWin.OSD.AddMessage("Cheats file loaded");
+						Global.Emulator.CoreComm.RomStatusDetails = string.Format(
+							"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
+							loader.Game.Name,
+							loader.Rom.RomData.HashSHA1(),
+							loader.Rom.RomData.HashMD5());
 					}
-				}
 
-				SetWindowText();
-				CurrentlyOpenRom = loader.CanonicalFullPath;
-				HandlePlatformMenus();
-				_stateSlots.Clear();
-				UpdateCoreStatusBarButton();
-				UpdateDumpIcon();
-				SetMainformMovieInfo();
-
-				Global.Rewinder.CaptureRewindState();
-
-				Global.StickyXORAdapter.ClearStickies();
-				Global.StickyXORAdapter.ClearStickyFloats();
-				Global.AutofireStickyXORAdapter.ClearStickies();
-
-				RewireSound();
-				ToolHelpers.UpdateCheatRelatedTools(null, null);
-				if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
-				{
-					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
-				}
-
-				if (Global.FirmwareManager.RecentlyServed.Count > 0)
-				{
-					Console.WriteLine("Active Firmwares:");
-					foreach (var f in Global.FirmwareManager.RecentlyServed)
+					if (Global.Emulator.BoardName != null)
 					{
-						Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
+						Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
 					}
-				}
-				return true;
-			}
-			else
-			{
-				//This shows up if there's a problem                
-				// TODO: put all these in a single method or something
 
-				//The ROM has been loaded by a recursive invocation of the LoadROM method.
-				if (!(Global.Emulator is NullEmulator))
-				{
+					// restarts the lua console if a different rom is loaded.
+					// im not really a fan of how this is done..
+					if (Global.Config.RecentRoms.Empty || Global.Config.RecentRoms.MostRecent != loaderName)
+					{
+						GlobalWin.Tools.Restart<LuaConsole>();
+					}
+
+					Global.Config.RecentRoms.Add(loaderName);
+					#if WINDOWS
+					JumpLists.AddRecentItem(loaderName, ioa.DisplayName);
+					#endif
+
+					// Don't load Save Ram if a movie is being loaded
+					if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
+					{
+						LoadSaveRam();
+					}
+
+					GlobalWin.Tools.Restart();
+
+					if (Global.Config.LoadCheatFileByGame)
+					{
+						if (Global.CheatList.AttemptToLoadCheatFile())
+						{
+							GlobalWin.OSD.AddMessage("Cheats file loaded");
+						}
+					}
+
+					SetWindowText();
+					CurrentlyOpenRom = loaderName;
+					HandlePlatformMenus();
+					_stateSlots.Clear();
+					UpdateCoreStatusBarButton();
+					UpdateDumpIcon();
+					SetMainformMovieInfo();
+					CurrentlyOpenRomArgs = args;
+
+					Global.Rewinder.CaptureRewindState();
+
+					Global.StickyXORAdapter.ClearStickies();
+					Global.StickyXORAdapter.ClearStickyFloats();
+					Global.AutofireStickyXORAdapter.ClearStickies();
+
+					RewireSound();
+					ToolHelpers.UpdateCheatRelatedTools(null, null);
+					if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
+					{
+						LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+					}
+
+					if (Global.FirmwareManager.RecentlyServed.Count > 0)
+					{
+						Console.WriteLine("Active Firmwares:");
+						foreach (var f in Global.FirmwareManager.RecentlyServed)
+						{
+							Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
+						}
+					}
 					return true;
 				}
-
-				HandlePlatformMenus();
-				_stateSlots.Clear();
-				UpdateStatusSlots();
-				UpdateCoreStatusBarButton();
-				UpdateDumpIcon();
-				SetMainformMovieInfo();
-				SetWindowText();
-				return false;
-			}
-		}
-
-		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
-		public void SaveQuickSave(string quickSlotName)
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
-
-			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
-			{
-				file.Directory.Create();
-			}
-
-
-			// Make backup first
-			if (Global.Config.BackupSavestates && file.Exists)
-			{
-				var backup = path + ".bak";
-				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists)
+				else
 				{
-					backupFile.Delete();
+					//This shows up if there's a problem                
+					// TODO: put all these in a single method or something
+
+					//The ROM has been loaded by a recursive invocation of the LoadROM method.
+					if (!(Global.Emulator is NullEmulator))
+					{
+						return true;
+					}
+
+					HandlePlatformMenus();
+					_stateSlots.Clear();
+					UpdateStatusSlots();
+					UpdateCoreStatusBarButton();
+					UpdateDumpIcon();
+					SetMainformMovieInfo();
+					SetWindowText();
+					return false;
 				}
-
-				File.Move(path, backup);
 			}
-
-			SaveState(path, quickSlotName, false);
-
-			if (GlobalWin.Tools.Has<LuaConsole>())
+			finally
 			{
-				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
+				if (firstCall)
+				{
+					CurrentLoadRomArgs = null;
+				}
 			}
 		}
 
@@ -3715,6 +3620,8 @@ namespace BizHawk.Client.EmuHawk
 				PauseOnFrame = null;
 				ToolHelpers.UpdateCheatRelatedTools(null, null);
 				UpdateStatusSlots();
+				CurrentlyOpenRom = null;
+				CurrentlyOpenRomArgs = null;
 			}
 		}
 
@@ -3753,9 +3660,309 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO: move me
 		public IControlMainform master { get; private set; }
+
 		public void RelinquishControl(IControlMainform master)
 		{
 			this.master = master;
+		}
+
+		private bool IsSlave
+		{
+			get { return master != null; }
+		}
+
+		public void TakeBackControl()
+		{
+			master = null;
+		}
+
+		private int SlotToInt(string slot)
+		{
+			return int.Parse(slot.Substring(slot.Length - 1, 1));
+		}
+
+		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.LoadState();
+				return;
+			}
+
+			// If from lua, disable counting rerecords
+			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+
+			if (fromLua)
+				Global.MovieSession.Movie.IsCountingRerecords = false;
+
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+
+			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
+			{
+				SetMainformMovieInfo();
+				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.Tools.UpdateToolsBefore(fromLua);
+				UpdateToolsAfter(fromLua);
+				UpdateToolsLoadstate();
+				Global.AutoFireController.ClearStarts();
+
+				if (!supressOSD)
+				{
+					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
+				}
+
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
+				}
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Loadstate error!");
+			}
+
+			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
+		}
+
+		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.LoadQuickSave(SlotToInt(quickSlotName));
+				return;
+			}
+
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+			if (File.Exists(path) == false)
+			{
+				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
+
+				return;
+			}
+
+			LoadState(path, quickSlotName, fromLua, supressOSD);
+		}
+
+		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.SaveState();
+				return;
+			}
+
+			try
+			{
+				SavestateManager.SaveStateFile(path, userFriendlyStateName);
+
+				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
+			}
+			catch (IOException)
+			{
+				GlobalWin.OSD.AddMessage("Unable to save state " + path);
+			}
+			if (!fromLua)
+			{
+				UpdateStatusSlots();
+			}
+		}
+
+		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
+		public void SaveQuickSave(string quickSlotName)
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.SaveQuickSave(SlotToInt(quickSlotName));
+				return;
+			}
+
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+
+			var file = new FileInfo(path);
+			if (file.Directory != null && file.Directory.Exists == false)
+			{
+				file.Directory.Create();
+			}
+
+
+			// Make backup first
+			if (Global.Config.BackupSavestates && file.Exists)
+			{
+				var backup = path + ".bak";
+				var backupFile = new FileInfo(backup);
+				if (backupFile.Exists)
+				{
+					backupFile.Delete();
+				}
+
+				File.Move(path, backup);
+			}
+
+			SaveState(path, quickSlotName, false);
+
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
+			}
+		}
+
+		private void SaveStateAs()
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.SaveStateAs();
+				return;
+			}
+
+			var path = PathManager.GetSaveStatePath(Global.Game);
+
+			var file = new FileInfo(path);
+			if (file.Directory != null && file.Directory.Exists == false)
+			{
+				file.Directory.Create();
+			}
+
+			var sfd = HawkDialogFactory.CreateSaveFileDialog ();
+			sfd.AddExtension = true;
+			sfd.DefaultExt = "State";
+			sfd.Filter = "Save States (*.State)|*.State|All Files|*.*";
+			sfd.InitialDirectory = path;
+			sfd.FileName = PathManager.SaveStatePrefix (Global.Game) + "." + "QuickSave0.State";
+
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				SaveState(sfd.FileName, sfd.FileName, false);
+			}
+		}
+
+		private void LoadStateAs()
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.LoadStateAs();
+				return;
+			}
+
+			var ofd = HawkDialogFactory.CreateOpenFileDialog ();
+			ofd.InitialDirectory = PathManager.GetSaveStatePath (Global.Game);
+			ofd.Filter = "Save States (*.State)|*.State|All Files|*.*";
+			ofd.RestoreDirectory = true;
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			if (File.Exists(ofd.FileName) == false)
+			{
+				return;
+			}
+
+			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
+		}
+
+		private void SelectSlot(int slot)
+		{
+			if (Global.Emulator.HasSavestates())
+			{
+				if (IsSlave && master.WantsToControlSavestates)
+				{
+					master.SelectSlot(slot);
+					return;
+				}
+
+				Global.Config.SaveSlot = slot;
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
+		}
+
+		private void PreviousSlot()
+		{
+			if (Global.Emulator.HasSavestates())
+			{
+				if (IsSlave && master.WantsToControlSavestates)
+				{
+					master.PreviousSlot();
+					return;
+				}
+
+				if (Global.Config.SaveSlot == 0)
+				{
+					Global.Config.SaveSlot = 9; // Wrap to end of slot list
+				}
+				else if (Global.Config.SaveSlot > 9)
+				{
+					Global.Config.SaveSlot = 9; // Meh, just in case
+				}
+				else
+				{
+					Global.Config.SaveSlot--;
+				}
+
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
+		}
+
+		private void NextSlot()
+		{
+			if (Global.Emulator.HasSavestates())
+			{
+				if (IsSlave && master.WantsToControlSavestates)
+				{
+					master.NextSlot();
+					return;
+				}
+
+				if (Global.Config.SaveSlot >= 9)
+				{
+					Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
+				}
+				else if (Global.Config.SaveSlot < 0)
+				{
+					Global.Config.SaveSlot = 0; // Meh, just in case
+				}
+				else
+				{
+					Global.Config.SaveSlot++;
+				}
+
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
 		}
 
 		private void ToggleReadOnly()
@@ -3792,16 +3999,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool IsSlave
-		{
-			get { return master != null; }
-		}
-
-		public void TakeBackControl()
-		{
-			master = null;
-		}
-
 		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
@@ -3826,11 +4023,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.ClientControls["Rewind"] || PressRewind)
 				{
-					runFrame = false; // TODO: the master should be deciding this!
+					runFrame = true; // TODO: the master should be deciding this!
 					return master.Rewind();
 				}
 			}
-			
+
 			var isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
@@ -3900,6 +4097,11 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayMessages ^= true;
 		}
 
+		private void gameSharkConverterToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GameShark>();
+		}
+
 		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
@@ -3915,8 +4117,6 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
-
-
 
 	}
 }

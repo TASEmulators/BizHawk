@@ -4,7 +4,7 @@ fileVersion=1
 # font settings
 fontName=Courier
 fontFile=
-charSet=0
+charSet=204
 fontSize=16
 aa=1
 scaleH=100
@@ -47,9 +47,9 @@ invG=0
 invB=0
 
 # outline
-outlineThickness=0
+outlineThickness=2
 
 # selected chars
-chars=32-127,129,141,143-144,157,160-255
+chars=32-127,152,160,164,166-167,169,171-174,176-177,181-183,187
 
 # imported icon images

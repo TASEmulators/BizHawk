@@ -58,8 +58,7 @@ namespace BizHawk.Client.EmuHawk
 					if (lastState > Emulator.Frame)
 						LoadState(CurrentTasMovie.TasStateManager[lastState]); // STATE ACCESS
 
-					GlobalWin.MainForm.UnpauseEmulator();
-					GlobalWin.MainForm.PauseOnFrame = frame;
+					StartSeeking(frame);
 				}
 			}
 

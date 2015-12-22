@@ -46,8 +46,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"exitCode",
+			"Closes the emulator and returns the provided code"
+		)]
+		public void CloseEmulatorWithCode(int exitCode)
+		{
+			GlobalWin.MainForm.CloseEmulator(exitCode);
+		}
+
+		[LuaMethodAttributes(
 			"borderheight",
-			"Gets the current height in pixels of the border around the emulator's drawing area"
+			"Gets the current height in pixels of the letter/pillarbox area (top side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public static int BorderHeight()
 		{
@@ -57,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"borderwidth",
-			"Gets the current width in pixels of the border around the emulator's drawing area"
+			"Gets the current width in pixels of the letter/pillarbox area (left side only) around the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public static int BorderWidth()
 		{
@@ -67,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferheight",
-			"Gets the current height in pixels of the emulator's drawing area"
+			"Gets the visible height of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public int BufferHeight()
 		{
@@ -79,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferwidth",
-			"Gets the current width in pixels of the emulator's drawing area"
+			"Gets the visible width of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
 		)]
 		public int BufferWidth()
 		{
@@ -240,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void OpenRom(string path)
 		{
-			GlobalWin.MainForm.LoadRom(path);
+			GlobalWin.MainForm.LoadRom(path, new MainForm.LoadRomArgs() { OpenAdvanced = new OpenAdvanced_OpenRom() });
 		}
 
 		[LuaMethodAttributes(
@@ -303,12 +312,15 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void RebootCore()
 		{
+			//pretty hacky.. we dont want a lua script to be able to restart itself by rebooting the core
+			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).IsRebootingCore = true;
 			GlobalWin.MainForm.RebootCore();
+			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).IsRebootingCore = false;
 		}
 
 		[LuaMethodAttributes(
 			"screenheight",
-			"Gets the current width in pixels of the emulator's drawing area"
+			"Gets the current height in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenHeight()
 		{
@@ -360,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"screenwidth",
-			"Gets the current height in pixels of the emulator's drawing area"
+			"Gets the current width in pixels of the emulator's drawing area"
 		)]
 		public static int ScreenWidth()
 		{

@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 						y -= ((line - 1) * 18);
 					}
 
-					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					//g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
 					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
 			}
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 						y -= ((line - 1) * 18);
 					}
 
-					g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
+					//g.DrawString(messages[i].Message, MessageFont, Color.Black, x + 2, y + 2);
 					g.DrawString(messages[i].Message, MessageFont, FixedMessagesColor, x, y);
 				}
 			}
@@ -214,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 					float posx = GetX(g, text.X, text.Anchor, text.Message);
 					float posy = GetY(g, text.Y, text.Anchor, text.Message);
 
-					g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
+					//g.DrawString(text.Message, MessageFont, text.BackGround, posx + 2, posy + 2);
 					g.DrawString(text.Message, MessageFont, text.ForeColor, posx, posy);
 				}
 				catch (Exception)
@@ -312,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawOsdMessage(IBlitter g, string message, Color color, float x, float y)
 		{
-			g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
+			//g.DrawString(message, MessageFont, Color.Black, x + 1, y + 1);
 			g.DrawString(message, MessageFont, color, x, y);
 		}
 
@@ -343,7 +343,7 @@ namespace BizHawk.Client.EmuHawk
 					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, input);
 					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, input);
 					Color c = Color.FromArgb(Global.Config.MovieInput);
-					g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
+					//g.DrawString(input, MessageFont, Color.Black, x + 1, y + 1);
 					g.DrawString(input, MessageFont, c, x, y);
 				}
 

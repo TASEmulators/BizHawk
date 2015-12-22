@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			// TODO: dont do this all in one scanline. I guess it can do about 227 words per scanline.
 			// TODO: to be honest, dont do it in a block per scanline. put it in the CPU think function.
-			Console.WriteLine("******************************* Doing some dma ******************************");
+			//Console.WriteLine("******************************* Doing some dma ******************************");
 			int advanceSource = (Registers[DCR] & 4) == 0 ? +1 : -1;
 			int advanceDest = (Registers[DCR] & 8) == 0 ? +1 : -1;
 			int wordsDone = 0;

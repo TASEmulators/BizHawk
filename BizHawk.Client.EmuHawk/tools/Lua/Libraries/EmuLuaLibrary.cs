@@ -136,6 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Close()
 		{
+			FormsLibrary.DestroyAll();
 			_lua = new Lua();
 			GuiLibrary.Dispose();
 		}
@@ -143,16 +144,17 @@ namespace BizHawk.Client.EmuHawk
 		public Lua SpawnCoroutine(string file)
 		{
 			var lua = _lua.NewThread();
-            var main = lua.LoadString(File.ReadAllText(file), "main");
+			var content = File.ReadAllText(file);
+			var main = lua.LoadString(content, "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
 			return lua;
 		}
 
-        public void ExecuteString(string command)
-        {
-            _currThread = _lua.NewThread();
-            _currThread.DoString(command);
-        }
+		public void ExecuteString(string command)
+		{
+			_currThread = _lua.NewThread();
+			_currThread.DoString(command);
+		}
 
 		public ResumeResult ResumeScript(Lua script)
 		{

@@ -41,35 +41,59 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected uint ReadUnsignedByte(int addr)
+		public string VerifyMemoryDomain(string domain)
 		{
-			if (addr < Domain.Size)
+			try
 			{
-				return Domain.PeekByte(addr);
+				if (DomainList[domain] == null)
+				{
+					Log(string.Format("Unable to find domain: {0}, fallung back to current", domain));
+					return Domain.Name;
+				}
+				else
+				{
+					return domain;
+				}
+
+			}
+			catch // Just in case
+			{
+				Log(string.Format("Unable to find domain: {0}, fallung back to current", domain));
+			}
+			return Domain.Name;
+		}
+
+		protected uint ReadUnsignedByte(int addr, string domain = null)
+		{
+			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
+			if (addr < d.Size)
+			{
+				return d.PeekByte(addr);
 			}
 
 			Log("Warning: attempted read of " + addr +
-				" outside the memory size of " + Domain.Size);
+				" outside the memory size of " + d.Size);
 			return 0;
 		}
 
-		protected void WriteUnsignedByte(int addr, uint v)
+		protected void WriteUnsignedByte(int addr, uint v, string domain = null)
 		{
-			if (Domain.CanPoke())
+			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
+			if (d.CanPoke())
 			{
 				if (addr < Domain.Size)
 				{
-					Domain.PokeByte(addr, (byte)v);
+					d.PokeByte(addr, (byte)v);
 				}
 				else
 				{
 					Log("Warning: attempted write to " + addr +
-					" outside the memory size of " + Domain.Size);
+					" outside the memory size of " + d.Size);
 				}
 			}
 			else
 			{
-				Log(string.Format("Error: the domain {0} is not writable", Domain.Name));
+				Log(string.Format("Error: the domain {0} is not writable", d.Name));
 			}
 		}
 
@@ -81,65 +105,65 @@ namespace BizHawk.Client.Common
 			return s;
 		}
 
-		protected int ReadSignedLittleCore(int addr, int size)
+		protected int ReadSignedLittleCore(int addr, int size, string domain = null)
 		{
-			return U2S(ReadUnsignedLittle(addr, size), size);
+			return U2S(ReadUnsignedLittle(addr, size, domain), size);
 		}
 
-		protected uint ReadUnsignedLittle(int addr, int size)
+		protected uint ReadUnsignedLittle(int addr, int size, string domain = null)
 		{
 			uint v = 0;
 			for (var i = 0; i < size; ++i)
 			{
-				v |= ReadUnsignedByte(addr + i) << (8 * i);
+				v |= ReadUnsignedByte(addr + i, domain) << (8 * i);
 			}
 
 			return v;
 		}
 
-		protected int ReadSignedBig(int addr, int size)
+		protected int ReadSignedBig(int addr, int size, string domain = null)
 		{
-			return U2S(ReadUnsignedBig(addr, size), size);
+			return U2S(ReadUnsignedBig(addr, size, domain), size);
 		}
 
-		protected uint ReadUnsignedBig(int addr, int size)
+		protected uint ReadUnsignedBig(int addr, int size, string domain = null)
 		{
 			uint v = 0;
 			for (var i = 0; i < size; ++i)
 			{
-				v |= ReadUnsignedByte(addr + i) << (8 * (size - 1 - i));
+				v |= ReadUnsignedByte(addr + i, domain) << (8 * (size - 1 - i));
 			}
 
 			return v;
 		}
 
-		protected void WriteSignedLittle(int addr, int v, int size)
+		protected void WriteSignedLittle(int addr, int v, int size, string domain = null)
 		{
-			WriteUnsignedLittle(addr, (uint)v, size);
+			WriteUnsignedLittle(addr, (uint)v, size, domain);
 		}
 
-		protected void WriteUnsignedLittle(int addr, uint v, int size)
-		{
-			for (var i = 0; i < size; ++i)
-			{
-				WriteUnsignedByte(addr + i, (v >> (8 * i)) & 0xFF);
-			}
-		}
-
-		protected void WriteSignedBig(int addr, int v, int size)
-		{
-			WriteUnsignedBig(addr, (uint)v, size);
-		}
-
-		protected void WriteUnsignedBig(int addr, uint v, int size)
+		protected void WriteUnsignedLittle(int addr, uint v, int size, string domain = null)
 		{
 			for (var i = 0; i < size; ++i)
 			{
-				WriteUnsignedByte(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF);
+				WriteUnsignedByte(addr + i, (v >> (8 * i)) & 0xFF, domain);
 			}
 		}
 
-		protected uint ReadSignedLittle(int addr, int size)
+		protected void WriteSignedBig(int addr, int v, int size, string domain = null)
+		{
+			WriteUnsignedBig(addr, (uint)v, size, domain);
+		}
+
+		protected void WriteUnsignedBig(int addr, uint v, int size, string domain = null)
+		{
+			for (var i = 0; i < size; ++i)
+			{
+				WriteUnsignedByte(addr + i, (v >> (8 * (size - 1 - i))) & 0xFF, domain);
+			}
+		}
+
+		protected uint ReadSignedLittle(int addr, int size) // only used by mainmemory, so no domain can be passed
 		{
 			uint v = 0;
 			for (var i = 0; i < size; ++i)
@@ -152,84 +176,88 @@ namespace BizHawk.Client.Common
 
 		#region public Library implementations
 
-		protected LuaTable ReadByteRange(int addr, int length)
+		protected LuaTable ReadByteRange(int addr, int length, string domain = null)
 		{
+			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			var lastAddr = length + addr;
 			var table = Lua.NewTable();
-			if (lastAddr < Domain.Size)
+			if (lastAddr < d.Size)
 			{
 				for (var i = 0; i <length ; i++)
 				{
 					int a = addr + i;
-					var v = Domain.PeekByte(a);
+					var v = d.PeekByte(a);
 					table[i] = v;
 				}
 			}
 			else
 			{
 				Log("Warning: Attempted read " + lastAddr + " outside memory domain size of " +
-					Domain.Size + " in readbyterange()");
+					d.Size + " in readbyterange()");
 			}
 
 			return table;
 		}
 
-		protected void WriteByteRange(LuaTable memoryblock)
+		protected void WriteByteRange(LuaTable memoryblock, string domain = null)
 		{
-			if (Domain.CanPoke())
+			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
+			if (d.CanPoke())
 			{
 				foreach (var address in memoryblock.Keys)
 				{
 					var addr = LuaInt(address);
-					if (addr < Domain.Size)
+					if (addr < d.Size)
 					{
-						Domain.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
+						d.PokeByte(addr, (byte)LuaInt(memoryblock[address]));
 					}
 					else
 					{
 						Log("Warning: Attempted write " + addr + " outside memory domain size of " +
-							Domain.Size + " in writebyterange()");
+							d.Size + " in writebyterange()");
 					}
 				}
 			}
 			else
 			{
-				Log(string.Format("Error: the domain {0} is not writable", Domain.Name));
+				Log(string.Format("Error: the domain {0} is not writable", d.Name));
 			}
 		}
 
-		protected float ReadFloat(int addr, bool bigendian)
+		protected float ReadFloat(int addr, bool bigendian, string domain = null)
 		{
-			if (addr < Domain.Size)
+			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
+			if (addr < d.Size)
 			{
-				var val = Domain.PeekDWord(addr, bigendian);
+				var val = d.PeekDWord(addr, bigendian);
 				var bytes = BitConverter.GetBytes(val);
 				return BitConverter.ToSingle(bytes, 0);
 			}
 			else
 			{
 				Log("Warning: Attempted read " + addr +
-					" outside memory size of " + Domain.Size);
+					" outside memory size of " + d.Size);
 
 				return 0;
 			}
 		}
 
-		protected void WriteFloat(int addr, double value, bool bigendian)
+		protected void WriteFloat(int addr, double value, bool bigendian, string domain = null)
 		{
-			if (Domain.CanPoke())
+			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
+			if (d.CanPoke())
 			{
-				if (addr < Domain.Size)
+				if (addr < d.Size)
 				{
 					var dv = (float)value;
 					var bytes = BitConverter.GetBytes(dv);
 					var v = BitConverter.ToUInt32(bytes, 0);
-					Domain.PokeDWord(addr, v, bigendian);
+					d.PokeDWord(addr, v, bigendian);
 				}
 				else
 				{
 					Log("Warning: Attempted write " + addr +
-						" outside memory size of " + Domain.Size);
+						" outside memory size of " + d.Size);
 				}
 			}
 			else

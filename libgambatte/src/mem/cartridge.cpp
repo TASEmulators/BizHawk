@@ -710,7 +710,7 @@ void Cartridge::saveSavedata(char *dest) {
 	}
 }
 
-bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) {
+bool Cartridge::getMemoryArea(int which, unsigned char **data, int *length) const {
 	if (!data || !length)
 		return false;
 

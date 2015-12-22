@@ -217,6 +217,11 @@ namespace BizHawk.Emulation.Common
 		private MemoryDomain _mainMemory;
 		private MemoryDomain _systemBus;
 
+		public bool Has(string name)
+		{
+			return this.FirstOrDefault((md) => md.Name == name) != null;
+		}
+
 		public MemoryDomainList(IList<MemoryDomain> domains) 
 			: base(domains)
 		{

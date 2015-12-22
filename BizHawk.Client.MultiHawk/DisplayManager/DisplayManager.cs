@@ -9,6 +9,7 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk;
 using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Bizware.BizwareGL;
 
@@ -373,8 +374,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
-			
-TESTEROO:
+
 			int bufferWidth = videoProvider.BufferWidth;
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;

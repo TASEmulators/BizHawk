@@ -35,7 +35,6 @@
 			this.AutofireControlsTab = new System.Windows.Forms.TabPage();
 			this.AnalogControlsTab = new System.Windows.Forms.TabPage();
 			this.checkBoxAutoTab = new System.Windows.Forms.CheckBox();
-			this.checkBoxUDLR = new System.Windows.Forms.CheckBox();
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -48,6 +47,10 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label38 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
+			this.rbUDLRForbid = new System.Windows.Forms.RadioButton();
+			this.rbUDLRPriority = new System.Windows.Forms.RadioButton();
+			this.rbUDLRAllow = new System.Windows.Forms.RadioButton();
 			this.btnMisc = new BizHawk.Client.EmuHawk.MenuButton();
 			this.tabControl1.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
@@ -82,7 +85,7 @@
 			this.AutofireControlsTab.Location = new System.Drawing.Point(4, 22);
 			this.AutofireControlsTab.Name = "AutofireControlsTab";
 			this.AutofireControlsTab.Padding = new System.Windows.Forms.Padding(3);
-			this.AutofireControlsTab.Size = new System.Drawing.Size(554, 478);
+			this.AutofireControlsTab.Size = new System.Drawing.Size(554, 495);
 			this.AutofireControlsTab.TabIndex = 1;
 			this.AutofireControlsTab.Text = "Autofire Controls";
 			this.AutofireControlsTab.UseVisualStyleBackColor = true;
@@ -91,7 +94,7 @@
 			// 
 			this.AnalogControlsTab.Location = new System.Drawing.Point(4, 22);
 			this.AnalogControlsTab.Name = "AnalogControlsTab";
-			this.AnalogControlsTab.Size = new System.Drawing.Size(554, 478);
+			this.AnalogControlsTab.Size = new System.Drawing.Size(554, 495);
 			this.AnalogControlsTab.TabIndex = 2;
 			this.AnalogControlsTab.Text = "Analog Controls";
 			this.AnalogControlsTab.UseVisualStyleBackColor = true;
@@ -100,24 +103,13 @@
 			// 
 			this.checkBoxAutoTab.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxAutoTab.AutoSize = true;
-			this.checkBoxAutoTab.Location = new System.Drawing.Point(394, 548);
+			this.checkBoxAutoTab.Location = new System.Drawing.Point(371, 548);
 			this.checkBoxAutoTab.Name = "checkBoxAutoTab";
 			this.checkBoxAutoTab.Size = new System.Drawing.Size(70, 17);
 			this.checkBoxAutoTab.TabIndex = 3;
 			this.checkBoxAutoTab.Text = "Auto Tab";
 			this.checkBoxAutoTab.UseVisualStyleBackColor = true;
 			this.checkBoxAutoTab.CheckedChanged += new System.EventHandler(this.CheckBoxAutoTab_CheckedChanged);
-			// 
-			// checkBoxUDLR
-			// 
-			this.checkBoxUDLR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.checkBoxUDLR.AutoSize = true;
-			this.checkBoxUDLR.Location = new System.Drawing.Point(470, 548);
-			this.checkBoxUDLR.Name = "checkBoxUDLR";
-			this.checkBoxUDLR.Size = new System.Drawing.Size(101, 17);
-			this.checkBoxUDLR.TabIndex = 4;
-			this.checkBoxUDLR.Text = "Allow U+D/L+R";
-			this.checkBoxUDLR.UseVisualStyleBackColor = true;
 			// 
 			// buttonOK
 			// 
@@ -177,26 +169,26 @@
             this.loadDefaultsToolStripMenuItem,
             this.clearToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(147, 70);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(142, 70);
 			// 
 			// testToolStripMenuItem
 			// 
 			this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-			this.testToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.testToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.testToolStripMenuItem.Text = "Save Defaults";
 			this.testToolStripMenuItem.Click += new System.EventHandler(this.ButtonSaveDefaults_Click);
 			// 
 			// loadDefaultsToolStripMenuItem
 			// 
 			this.loadDefaultsToolStripMenuItem.Name = "loadDefaultsToolStripMenuItem";
-			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.loadDefaultsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.loadDefaultsToolStripMenuItem.Text = "Load Defaults";
 			this.loadDefaultsToolStripMenuItem.Click += new System.EventHandler(this.ButtonLoadDefaults_Click);
 			// 
 			// clearToolStripMenuItem
 			// 
 			this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-			this.clearToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.clearToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.clearToolStripMenuItem.Text = "Clear";
 			this.clearToolStripMenuItem.Click += new System.EventHandler(this.ClearBtn_Click);
 			// 
@@ -214,7 +206,7 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(206, 550);
+			this.label2.Location = new System.Drawing.Point(197, 550);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(168, 13);
 			this.label2.TabIndex = 111;
@@ -224,11 +216,53 @@
 			// 
 			this.label38.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label38.AutoSize = true;
-			this.label38.Location = new System.Drawing.Point(47, 550);
+			this.label38.Location = new System.Drawing.Point(41, 550);
 			this.label38.Name = "label38";
 			this.label38.Size = new System.Drawing.Size(153, 13);
 			this.label38.TabIndex = 110;
 			this.label38.Text = "* Escape clears a key mapping";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(442, 550);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(57, 13);
+			this.label1.TabIndex = 113;
+			this.label1.Text = "U+D/L+R:";
+			// 
+			// rbUDLRForbid
+			// 
+			this.rbUDLRForbid.AutoSize = true;
+			this.rbUDLRForbid.Location = new System.Drawing.Point(559, 548);
+			this.rbUDLRForbid.Name = "rbUDLRForbid";
+			this.rbUDLRForbid.Size = new System.Drawing.Size(54, 17);
+			this.rbUDLRForbid.TabIndex = 114;
+			this.rbUDLRForbid.TabStop = true;
+			this.rbUDLRForbid.Text = "Forbid";
+			this.rbUDLRForbid.UseVisualStyleBackColor = true;
+			// 
+			// rbUDLRPriority
+			// 
+			this.rbUDLRPriority.AutoSize = true;
+			this.rbUDLRPriority.Location = new System.Drawing.Point(622, 548);
+			this.rbUDLRPriority.Name = "rbUDLRPriority";
+			this.rbUDLRPriority.Size = new System.Drawing.Size(56, 17);
+			this.rbUDLRPriority.TabIndex = 115;
+			this.rbUDLRPriority.TabStop = true;
+			this.rbUDLRPriority.Text = "Priority";
+			this.rbUDLRPriority.UseVisualStyleBackColor = true;
+			// 
+			// rbUDLRAllow
+			// 
+			this.rbUDLRAllow.AutoSize = true;
+			this.rbUDLRAllow.Location = new System.Drawing.Point(503, 548);
+			this.rbUDLRAllow.Name = "rbUDLRAllow";
+			this.rbUDLRAllow.Size = new System.Drawing.Size(50, 17);
+			this.rbUDLRAllow.TabIndex = 116;
+			this.rbUDLRAllow.TabStop = true;
+			this.rbUDLRAllow.Text = "Allow";
+			this.rbUDLRAllow.UseVisualStyleBackColor = true;
 			// 
 			// btnMisc
 			// 
@@ -248,11 +282,14 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(932, 572);
+			this.Controls.Add(this.rbUDLRAllow);
+			this.Controls.Add(this.rbUDLRPriority);
+			this.Controls.Add(this.rbUDLRForbid);
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label38);
 			this.Controls.Add(this.btnMisc);
-			this.Controls.Add(this.checkBoxUDLR);
 			this.Controls.Add(this.tableLayoutPanel1);
 			this.Controls.Add(this.buttonCancel);
 			this.Controls.Add(this.buttonOK);
@@ -277,7 +314,6 @@
 		private System.Windows.Forms.TabPage NormalControlsTab;
 		private System.Windows.Forms.TabPage AutofireControlsTab;
 		private System.Windows.Forms.CheckBox checkBoxAutoTab;
-		private System.Windows.Forms.CheckBox checkBoxUDLR;
 		private System.Windows.Forms.Button buttonOK;
 		private System.Windows.Forms.Button buttonCancel;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -292,5 +328,9 @@
 				private System.Windows.Forms.Label label3;
 				private System.Windows.Forms.Label label2;
 				private System.Windows.Forms.Label label38;
+				private System.Windows.Forms.Label label1;
+				private System.Windows.Forms.RadioButton rbUDLRForbid;
+				private System.Windows.Forms.RadioButton rbUDLRPriority;
+				private System.Windows.Forms.RadioButton rbUDLRAllow;
 	}
 }

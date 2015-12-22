@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(false, null)]
 	public partial class NESGameGenie : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
@@ -183,10 +183,10 @@ namespace BizHawk.Client.EmuHawk
 				var watch = Watch.GenerateWatch(
 					MemoryDomains["System Bus"],
 					AddressBox.ToRawInt().Value,
-					Watch.WatchSize.Byte,
-					Watch.DisplayType.Hex,
-					GameGenieCode.Text,
-					false);
+					WatchSize.Byte,
+					Client.Common.DisplayType.Hex,
+					false,
+					GameGenieCode.Text);
 
 				Global.CheatList.Add(new Cheat(
 					watch,

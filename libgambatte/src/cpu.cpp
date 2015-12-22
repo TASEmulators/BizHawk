@@ -112,7 +112,8 @@ void CPU::loadState(const SaveState &state) {
 
 #define READ(dest, addr) do { (dest) = memory.read(addr, cycleCounter); cycleCounter += 4; } while (0)
 // #define PC_READ(dest, addr) do { (dest) = memory.pc_read(addr, cycleCounter); cycleCounter += 4; } while (0)
-#define PC_READ(dest) do { (dest) = memory.read_excb(PC, cycleCounter); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
+#define PC_READ(dest) do { (dest) = memory.read_excb(PC, cycleCounter, false); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
+#define PC_READ_FIRST(dest) do { (dest) = memory.read_excb(PC, cycleCounter, true); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define FF_READ(dest, addr) do { (dest) = memory.ff_read(addr, cycleCounter); cycleCounter += 4; } while (0)
 
 #define WRITE(addr, data) do { memory.write(addr, data, cycleCounter); cycleCounter += 4; } while (0)
@@ -518,13 +519,13 @@ void CPU::process(const unsigned long cycles) {
 				result[9] = H;
 				result[10] = L;
 				result[11] = skip;
-				PC_READ(opcode);
+				PC_READ_FIRST(opcode);
 				result[12] = opcode;
 				result[13] = memory.debugGetLY();
 				tracecallback((void *)result);
 			}
 			else {
-				PC_READ(opcode);
+				PC_READ_FIRST(opcode);
 			}
 			
 			if (skip) {

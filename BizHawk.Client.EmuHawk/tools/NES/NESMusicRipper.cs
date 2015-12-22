@@ -515,5 +515,9 @@ namespace BizHawk.Client.EmuHawk
 			apu.DebugCallback = null;
 		}
 
+		private void NESMusicRipper_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

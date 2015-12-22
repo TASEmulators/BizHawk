@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using System.Reflection;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -21,6 +23,7 @@ using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
+using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -58,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RecentRomSubMenu.DropDownItems.Clear();
 			RecentRomSubMenu.DropDownItems.AddRange(
-				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true));
+				Global.Config.RecentRoms.RecentMenu(LoadRomFromRecent, true, true));
 		}
 
 		private void SaveStateSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -273,18 +276,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
+			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
 			StopAVIMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Global.Config.AVI_CaptureOSD;
 
+			RecordAVMenuItem.Enabled = !string.IsNullOrEmpty(Global.Config.VideoWriter) && _currAviWriter == null;
+
 			if (_currAviWriter == null)
 			{
-				RecordAVMenuItem.Enabled = true;
+				ConfigAndRecordAVMenuItem.Enabled = true;
 				StopAVIMenuItem.Enabled = false;
 			}
 			else
 			{
-				RecordAVMenuItem.Enabled = false;
+				ConfigAndRecordAVMenuItem.Enabled = false;
 				StopAVIMenuItem.Enabled = true;
 			}
 		}
@@ -298,6 +303,59 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenRom();
+		}
+
+		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
+		{
+			var oac = new OpenAdvancedChooser(this);
+			if (oac.ShowHawkDialog() == System.Windows.Forms.DialogResult.Cancel)
+				return;
+
+			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchNoGame)
+			{
+				var argsNoGame = new LoadRomArgs();
+				argsNoGame.OpenAdvanced = new OpenAdvanced_LibretroNoGame(Global.Config.LibretroCore);
+				LoadRom("", argsNoGame);
+				return;
+			}
+
+			var args = new LoadRomArgs();
+
+			var filter = RomFilter;
+
+			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchGame)
+			{
+				args.OpenAdvanced = new OpenAdvanced_Libretro();
+				filter = oac.SuggestedExtensionFilter;
+			}
+			else if (oac.Result == OpenAdvancedChooser.Command.ClassicLaunchGame)
+				args.OpenAdvanced = new OpenAdvanced_OpenRom();
+			else throw new InvalidOperationException("Automatic Alpha Sanitizer");
+
+
+			//-----------------
+			//CLONE OF CODE FROM OpenRom (mostly)
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
+			ofd.InitialDirectory = PathManager.GetRomsPath (Global.Emulator.SystemId);
+			ofd.Filter = filter;
+			ofd.RestoreDirectory = false;
+			ofd.FilterIndex = _lastOpenRomFilter;
+			ofd.Title = "Open Advanced";
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			var file = new FileInfo(ofd.FileName);
+			Global.Config.LastRomPath = file.DirectoryName;
+			_lastOpenRomFilter = ofd.FilterIndex;
+			//-----------------
+
+
+
+			LoadRom(file.FullName, args);
 		}
 
 		private void CloseRomMenuItem_Click(object sender, EventArgs e)
@@ -524,9 +582,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = MovieEndAction.Pause;
 		}
 
-		private void RecordAVMenuItem_Click(object sender, EventArgs e)
+		private void ConfigAndRecordAVMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordAv();
+		}
+
+		private void RecordAVMenuItem_Click(object sender, EventArgs e)
+		{
+			RecordAv(null, null); // force unattended, but allow tradtional setup
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
@@ -598,6 +661,12 @@ namespace BizHawk.Client.EmuHawk
 		public void CloseEmulator()
 		{
 			_exit = true;
+		}
+
+		public void CloseEmulator(int exitCode)
+		{
+			_exit = true;
+			_exitCode = exitCode;
 		}
 
 		#endregion
@@ -1126,6 +1195,36 @@ namespace BizHawk.Client.EmuHawk
 			ThrottleMessage();
 		}
 
+		public bool RunLibretroCoreChooser()
+		{
+			var ofd = new OpenFileDialog();
+
+			if (Global.Config.LibretroCore != null)
+			{
+				ofd.FileName = Path.GetFileName(Global.Config.LibretroCore);
+				ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.LibretroCore);
+			}
+			else
+			{
+				ofd.InitialDirectory = PathManager.GetPathType("Libretro", "Cores");
+			}
+
+			ofd.RestoreDirectory = true;
+			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
+
+			if (ofd.ShowDialog() == DialogResult.Cancel)
+				return false;
+
+			Global.Config.LibretroCore = ofd.FileName;
+
+			return true;
+		}
+
+		private void setLibretroCoreToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			RunLibretroCoreChooser();
+		}
+
 		#endregion
 
 		#region Tools
@@ -1142,6 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 			VirtualPadMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Virtual Pad"].Bindings;
 			TraceLoggerMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Trace Logger"].Bindings;
 			TraceLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TraceLogger>();
+			CodeDataLoggerMenuItem.Enabled = GlobalWin.Tools.IsAvailable<CDL>();
 
 			TAStudioMenuItem.Enabled = GlobalWin.Tools.IsAvailable<TAStudio>();
 
@@ -1158,6 +1258,34 @@ namespace BizHawk.Client.EmuHawk
 			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
 
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
+
+			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
+		}
+
+		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+		{
+			externalToolToolStripMenuItem.DropDownItems.Clear();
+
+			foreach(ToolStripMenuItem item in ExternalToolManager.ToolStripMenu)
+			{
+				if(item.Enabled)
+				{
+					item.Click += delegate
+					{
+						GlobalWin.Tools.Load<IExternalToolForm>((string)item.Tag);
+					};
+				}
+				else
+				{
+					item.Image = Properties.Resources.ExclamationRed;
+				}
+				externalToolToolStripMenuItem.DropDownItems.Add(item);
+			}
+			
+			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
+			{
+				externalToolToolStripMenuItem.DropDownItems.Add("None");
+			}
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1197,6 +1325,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudioMenuItem_Click(object sender, EventArgs e)
 		{
+			if (!Global.Emulator.CanPollInput())
+			{
+				MessageBox.Show("Current core does not support input polling. TAStudio can't be used.");
+				return;
+			}
 			GlobalWin.Tools.Load<TAStudio>();
 		}
 
@@ -1383,7 +1516,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.Tools.Load<PCECDL>();
+			GlobalWin.Tools.Load<CDL>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
@@ -2604,8 +2737,8 @@ namespace BizHawk.Client.EmuHawk
 
 			else if (ext.ToUpper() == ".CDL" && Global.Emulator is PCEngine)
 			{
-				GlobalWin.Tools.Load<PCECDL>();
-				(GlobalWin.Tools.Get<PCECDL>() as PCECDL).LoadFile(filePaths[0]);
+				GlobalWin.Tools.Load<CDL>();
+				(GlobalWin.Tools.Get<CDL>() as CDL).LoadFile(filePaths[0]);
 			}
 
 			else if (MovieImport.IsValidMovieExtension(Path.GetExtension(filePaths[0])))
@@ -2640,7 +2773,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LoadRom(filePaths[0]);
+				var args = new LoadRomArgs();
+				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
+				LoadRom(filePaths[0], args);
 			}
 		}
 

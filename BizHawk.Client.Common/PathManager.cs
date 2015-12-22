@@ -257,6 +257,11 @@ namespace BizHawk.Client.Common
 		public static string FilesystemSafeName(GameInfo game)
 		{
 			var filesystemSafeName = game.Name.Replace("|", "+");
+
+			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
+			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
+			filesystemSafeName = Path.GetFileName(filesystemSafeName);
+
 			filesystemSafeName = RemoveInvalidFileSystemChars(filesystemSafeName);
 
 			// zero 22-jul-2012 - i dont think this is used the same way it used to. game.Name shouldnt be a path, so this stuff is illogical.
@@ -267,10 +272,10 @@ namespace BizHawk.Client.Common
 			// This hack is to prevent annoying things like Super Mario Bros..bk2
 			if (filesystemSafeName.EndsWith("."))
 			{
-				return filesystemSafeName.Remove(filesystemSafeName.Length - 1, 1);
+				filesystemSafeName = filesystemSafeName.Remove(filesystemSafeName.Length - 1, 1);
 			}
 
-			return filesystemSafeName;
+			return Path.Combine(filesystemDir, filesystemSafeName);
 		}
 
 		public static string SaveRamPath(GameInfo game)
@@ -285,6 +290,46 @@ namespace BizHawk.Client.Common
 							Global.Config.PathEntries[game.System, "Base"];
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
+		}
+
+		public static string RetroSaveRAMDirectory(GameInfo game)
+		{
+			//hijinx here to get the core name out of the game name
+			var name = FilesystemSafeName(game);
+			name = Path.GetDirectoryName(name);
+			if (name == "") name = FilesystemSafeName(game);
+
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				name = Path.Combine(name, "movie-" + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename));
+			}
+
+			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
+							Global.Config.PathEntries[game.System, "Base"];
+
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+		}
+
+
+		public static string RetroSystemPath(GameInfo game)
+		{
+			//hijinx here to get the core name out of the game name
+			var name = FilesystemSafeName(game);
+			name = Path.GetDirectoryName(name);
+			if(name == "") name = FilesystemSafeName(game);
+
+			var pathEntry = Global.Config.PathEntries[game.System, "System"] ??
+							Global.Config.PathEntries[game.System, "Base"];
+
+			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+		}
+
+		public static string GetGameBasePath(GameInfo game)
+		{
+			var name = FilesystemSafeName(game);
+
+			var pathEntry = Global.Config.PathEntries[game.System, "Base"];
+			return MakeAbsolutePath(pathEntry.Path, game.System);
 		}
 
 		public static string GetSaveStatePath(GameInfo game)
@@ -333,6 +378,12 @@ namespace BizHawk.Client.Common
 							Global.Config.PathEntries[game.System, "Base"];
 
 			return MakeAbsolutePath(pathEntry.Path, game.System);
+		}
+
+		public static string GetPathType(string system, string type)
+		{
+			var path = PathManager.GetPathEntryWithFallback(type, system).Path;
+			return MakeAbsolutePath(path, system);
 		}
 
 		public static string ScreenshotPrefix(GameInfo game)

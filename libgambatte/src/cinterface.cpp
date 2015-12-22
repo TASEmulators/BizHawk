@@ -83,6 +83,12 @@ GBEXPORT void gambatte_setexeccallback(GB *g, void (*callback)(unsigned))
 	g->setExecCallback(callback);
 }
 
+GBEXPORT void gambatte_setcdcallback(GB *g, CDCallback cdc)
+{
+	g->setCDCallback(cdc);
+}
+
+
 GBEXPORT void gambatte_settracecallback(GB *g, void (*callback)(void *))
 {
 	g->setTraceCallback(callback);

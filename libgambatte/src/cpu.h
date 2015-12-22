@@ -79,6 +79,10 @@ public:
 		memory.setExecCallback(callback);
 	}
 
+	void setCDCallback(CDCallback cdc) {
+		memory.setCDCallback(cdc);
+	}
+
 	void setTraceCallback(void (*callback)(void *)) {
 		tracecallback = callback;
 	}

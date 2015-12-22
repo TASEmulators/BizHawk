@@ -12,13 +12,14 @@ namespace BizHawk.Client.Common
 	{
 		public int Frame { get; set; }
 		public byte[] CoreData { get; set; }
-		public List<string> InputLog { get; set; }
+		public IStringLog InputLog { get; set; }
 		public BitmapBuffer OSDFrameBuffer { get; set; }
 		public TasLagLog LagLog { get; set; }
 		public TasMovieChangeLog ChangeLog { get; set; }
 		public DateTime TimeStamp { get; set; }
 		public TasMovieMarkerList Markers { get; set; }
 		public Guid UniqueIdentifier { get; set; }
+		public string UserText { get; set; }
 	}
 
 	public class TasBranchCollection : List<TasBranch>
@@ -44,6 +45,7 @@ namespace BizHawk.Client.Common
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
+			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 			foreach (var b in this)
 			{
 				bs.PutLump(nheader, delegate(TextWriter tw)
@@ -64,8 +66,9 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(ninput, delegate(TextWriter tw)
 				{
-					foreach (var line in b.InputLog)
-						tw.WriteLine(line);
+					int todo = b.InputLog.Count;
+					for (int i = 0; i < todo; i++)
+						tw.WriteLine(b.InputLog[i]);
 				});
 
 				bs.PutLump(nframebuffer, delegate(Stream s)
@@ -84,12 +87,18 @@ namespace BizHawk.Client.Common
 					tw.WriteLine(b.Markers.ToString());
 				});
 
+				bs.PutLump(nusertext, delegate(TextWriter tw)
+				{
+					tw.WriteLine(b.UserText);
+				});
+
 				nheader.Increment();
 				ncore.Increment();
 				ninput.Increment();
 				nframebuffer.Increment();
 				nlaglog.Increment();
 				nmarkers.Increment();
+				nusertext.Increment();
 			}
 		}
 
@@ -101,6 +110,7 @@ namespace BizHawk.Client.Common
 			var nframebuffer = new IndexedStateLump(BinaryStateLump.BranchFrameBuffer);
 			var nlaglog = new IndexedStateLump(BinaryStateLump.BranchLagLog);
 			var nmarkers = new IndexedStateLump(BinaryStateLump.BranchMarkers);
+			var nusertext = new IndexedStateLump(BinaryStateLump.BranchUserText);
 
 			Clear();
 
@@ -146,7 +156,7 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(ninput, true, delegate(TextReader tr)
 				{
-					b.InputLog = new List<string>();
+					b.InputLog = StringLogUtil.MakeStringLog();
 					string line;
 					while ((line = tr.ReadLine()) != null)
 						b.InputLog.Add(line);
@@ -178,6 +188,19 @@ namespace BizHawk.Client.Common
 					}
 				});
 
+
+				bl.GetLump(nusertext, false, delegate(TextReader tr)
+				{
+					string line;
+					if ((line = tr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrWhiteSpace(line))
+						{
+							b.UserText = line;
+						}
+					}
+				});
+
 				Add(b);
 
 				nheader.Increment();
@@ -186,6 +209,7 @@ namespace BizHawk.Client.Common
 				nframebuffer.Increment();
 				nlaglog.Increment();
 				nmarkers.Increment();
+				nusertext.Increment();
 			}
 		}
 	}

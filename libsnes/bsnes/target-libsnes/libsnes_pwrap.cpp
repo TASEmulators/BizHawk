@@ -39,6 +39,8 @@
 #include <string>
 #include <vector>
 
+extern SNES::Interface *iface;
+
 typedef uint8 u8;
 typedef int32 s32;
 typedef uint32 u32;
@@ -52,6 +54,7 @@ enum eMessage : int32
 	eMessage_BeginBufferIO,
 	eMessage_EndBufferIO,
 	eMessage_ResumeAfterBRK, //resumes execution of the core, after a BRK. no change to current CMD
+	eMessage_Shutdown,
 
 	eMessage_QUERY_library_id,
 	eMessage_QUERY_library_revision_major,
@@ -78,7 +81,8 @@ enum eMessage : int32
 	eMessage_QUERY_set_backdropColor,
 	eMessage_QUERY_peek_logical_register,
 	eMessage_QUERY_peek_cpu_regs,
-	
+	eMessage_QUERY_set_cdl,
+
 	eMessage_CMD_FIRST,
 	eMessage_CMD_init,
 	eMessage_CMD_power,
@@ -97,7 +101,6 @@ enum eMessage : int32
 	eMessage_SIG_input_state,
 	eMessage_SIG_input_notify,
 	eMessage_SIG_audio_flush,
-	eMessage_SIG_scanlineStart,
 	eMessage_SIG_path_request,
 	eMessage_SIG_trace_callback,
 	eMessage_SIG_allocSharedMemory, //?
@@ -109,6 +112,7 @@ enum eMessage : int32
 	eMessage_BRK_hook_write,
 	eMessage_BRK_hook_nmi,
 	eMessage_BRK_hook_irq,
+	eMessage_BRK_scanlineStart, //implemented as a BRK because that's really what it is, its just a graphical event and not a CPU event
 };
 
 
@@ -124,6 +128,7 @@ enum eEmulationCallback
 {
 	eEmulationCallback_snes_video_refresh,
 	eEmulationCallback_snes_audio_flush,
+	eEmulationCallback_snes_scanline,
 	eEmulationCallback_snes_input_poll,
 	eEmulationCallback_snes_input_state,
 	eEmulationCallback_snes_input_notify,
@@ -163,6 +168,10 @@ struct EmulationControl
 					unsigned width;
 					unsigned height;
 				} cb_video_refresh_params;
+				struct
+				{
+					int32_t scanline;
+				} cb_scanline_params;
 				struct
 				{
 					unsigned port, device, index, id;
@@ -380,51 +389,9 @@ public:
 	}
 }; //class IPCRingBuffer
 
-#if WINDOWS
-class Watchdog
-{
-public:
-	void Start(const char* _eventName)
-	{
-		HANDLE thread = CreateThread( NULL, 0, (LPTHREAD_START_ROUTINE)&ThreadProc, this, 0, NULL);
-		SetThreadPriority(thread,THREAD_PRIORITY_LOWEST);
-		eventName = _eventName;
-	}
-
-private:
-
-	std::string eventName;
-
-	static DWORD ThreadProc(LPVOID lpParam)
-	{
-		Watchdog* w = (Watchdog*)lpParam;
-		for(;;)
-		{
-			//only check once per second
-			Sleep(1000);
-
-			//try opening the handle. if its gone, the process is gone
-			HANDLE hEvent = OpenEvent(SYNCHRONIZE  | EVENT_ALL_ACCESS, FALSE, w->eventName.c_str());
-			
-			//printf("event handle: %08X (%d)\n",hEvent,hEvent?0:GetLastError()); //debugging
-			
-			//handle was gone, terminate process
-			if(hEvent == 0)
-			{
-				TerminateProcess(INVALID_HANDLE_VALUE,0);
-			}
-
-			CloseHandle(hEvent);
-		}
-	}
-}; //class Watchdog
-#endif
-
 static bool bufio = false;
 static IPCRingBuffer *rbuf = NULL, *wbuf = NULL;
 
-#if WINDOWS
-Watchdog s_Watchdog;
 HANDLE hPipe, hMapFile, hEvent;
 #else
 int hPipe, hMapFile, hEvent;
@@ -639,14 +606,10 @@ const char* snes_path_request(int slot, const char* hint)
 void RunControlMessageLoop();
 void snes_scanlineStart(int line)
 {
-	//TODO
-	//WritePipe(eMessage_snes_cb_scanlineStart);
-	//WritePipe(line);
-
-	////we've got to wait for the frontend to finish processing.
-	////in theory we could let emulation proceed after snagging the vram and registers, and do decoding and stuff on another thread...
-	////but its too hard for now.
-	//RunMessageLoop();
+	s_EmulationControl.exitReason = eEmulationExitReason_BRK;
+	s_EmulationControl.hookExitType = eMessage_BRK_scanlineStart;
+	s_EmulationControl.cb_scanline_params.scanline = line;
+	SETCONTROL;
 }
 
 class SharedMemoryBlock
@@ -701,7 +664,9 @@ void* implementation_snes_allocSharedMemory()
 
 	memHandleTable[ptr] = smb;
 	
-	return s_EmulationControl.cb_allocSharedMemory_params.result = ptr;
+	s_EmulationControl.cb_allocSharedMemory_params.result = ptr;
+
+	return ptr;
 }
 
 void* snes_allocSharedMemory(const char* memtype, size_t amt)
@@ -988,6 +953,15 @@ bool Handle_QUERY(eMessage msg)
 	case eMessage_QUERY_state_hook_irq:
 		SNES::cpu.debugger.op_irq = ReadPipe<bool>() ? debug_op_irq : hook<void ()>(); 
 		break;
+
+	case eMessage_QUERY_set_cdl:
+		for (int i = 0; i<eCDLog_AddrType_NUM; i++)
+		{
+			cdlInfo.blocks[i] = ReadPipe<uint8_t*>();
+			cdlInfo.blockSizes[i] = ReadPipe<uint32_t>();
+		}
+		break;
+
 	}
 	return true;
 }
@@ -1028,7 +1002,7 @@ void Handle_SIG_audio_flush()
 	audiobuffer_idx = 0;
 }
 
-void RunControlMessageLoop()
+void MessageLoop()
 {
 	for(;;)
 	{
@@ -1072,9 +1046,10 @@ TOP:
 					char* buf = (char*)hMapFilePtr + destOfs;
 					int bufsize = 512 * 480 * 4;
 					memcpy(buf,s_EmulationControl.cb_video_refresh_params.data,bufsize);
-					WritePipe((char)0); //dummy synchronization
+					WritePipe((char)0); //dummy synchronization (alert frontend we're done with buffer)
 					break;
 				}
+
 			case eEmulationCallback_snes_audio_flush:
 				Handle_SIG_audio_flush();
 				break;
@@ -1122,6 +1097,10 @@ TOP:
 			s_EmulationControl.exitReason = eEmulationExitReason_NotSet;
 			switch(s_EmulationControl.hookExitType)
 			{
+			case eMessage_BRK_scanlineStart:
+				WritePipe(eMessage_BRK_scanlineStart);
+				WritePipe((uint32)s_EmulationControl.hookAddr);
+				break;
 			case eMessage_BRK_hook_exec:
 				WritePipe(eMessage_BRK_hook_exec);
 				WritePipe((uint32)s_EmulationControl.hookAddr);
@@ -1154,6 +1133,10 @@ HANDLEMESSAGES:
 		{
 		case eMessage_BRK_Complete:
 			return;
+
+		case eMessage_Shutdown:
+			//terminate this dll process
+			return;
 		
 		case eMessage_SetBuffer:
 			{
@@ -1177,6 +1160,15 @@ HANDLEMESSAGES:
 
 		} //switch(msg)
 	}
+}
+
+static DWORD WINAPI ThreadProc(_In_ LPVOID lpParameter)
+{
+	MessageLoop();
+	//send a message to the other thread to synchronize the shutdown of this thread
+	//after that message is received, this thread (and the whole dll instance) is dead.
+	WritePipe(eMessage_BRK_Complete);
+	return 0;
 }
 
 
@@ -1306,50 +1298,27 @@ void emuthread()
 	}
 }
 
-#if WINDOWS
-int xmain(int argc, char** argv)
-#else
-int main(int argc, char** argv)
-#endif
+BOOL WINAPI DllMain(_In_ HINSTANCE hinstDLL, _In_ DWORD     fdwReason, _In_ LPVOID    lpvReserved)
 {
-	if(argc != 2)
-	{
-		printf("This program is run from the libsneshawk emulator core. It is useless to you directly.");
-		exit(1);
-	}
 
-	if(!strcmp(argv[1],"Bongizong"))
-	{
-		fprintf(stderr,"Honga Wongkong");
-		exit(0x16817);
-	}
+extern "C" dllexport bool __cdecl DllInit(const char* ipcname)
+{
+	printf("NEW INSTANCE: %08X\n", &s_EmulationControl);
 
 	char pipename[256];
 	char eventname[256];
-	sprintf(pipename, "\\\\.\\Pipe\\%s",argv[1]);
-	sprintf(eventname, "%s-event",argv[1]);
-
-	if(!strncmp(argv[1],"console",7))
-	{
-		OpenConsole();
-	}
 
 	printf("pipe: %s\n",pipename);
 	printf("event: %s\n",eventname);
 
-#if WINDOWS
-	s_Watchdog.Start(eventname);
-#endif
-
-#if WINDOWS
 	hPipe = CreateFile(pipename, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
 
 	if(hPipe == INVALID_HANDLE_VALUE)
-		return 1;
+		return false;
 
-	hMapFile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, argv[1]);
+	hMapFile = OpenFileMapping(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, ipcname);
 	if(hMapFile == INVALID_HANDLE_VALUE)
-		return 1;
+		return false;
 
 	hMapFilePtr = MapViewOfFile(hMapFile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
 #else
@@ -1371,28 +1340,12 @@ int main(int argc, char** argv)
 	running = true;
 	printf("running\n");
 
-	RunControlMessageLoop();
-	
-	return 0;
+	DWORD tid;
+	CreateThread(nullptr, 0, &ThreadProc, nullptr, 0, &tid);
+
+	return true;
 }
 
-#if WINDOWS
-int CALLBACK WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
-{
-	int argc = __argc;
-	char** argv = __argv;
-	if(argc != 2)
-	{
-		if(IDOK == MessageBox(0,"This program is run from the libsneshawk emulator core. It is useless to you directly. But if you're really, that curious, click OK.","Whatfor my daddy-o",MB_OKCANCEL))
-		{
-			ShellExecute(0,"open","http://www.youtube.com/watch?v=boanuwUMNNQ#t=98s",NULL,NULL,SW_SHOWNORMAL);
-		}
-		exit(1);
-		
-	}
-	xmain(argc,argv);
-}
-#endif
 
 void pwrap_init()
 {

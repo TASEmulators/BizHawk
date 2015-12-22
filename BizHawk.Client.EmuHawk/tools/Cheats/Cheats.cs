@@ -7,10 +7,6 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.Sega.Genesis;
-
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
@@ -73,6 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			CheatEditor.MemoryDomains = Core;
+			CheatEditor.Restart();
 		}
 
 		/// <summary>
@@ -94,11 +91,11 @@ namespace BizHawk.Client.EmuHawk
 				var loadResult = Global.CheatList.Load(path, append: false);
 				if (!loadResult)
 				{
-					Global.Config.RecentWatches.HandleLoadError(path);
+					Global.Config.RecentCheats.HandleLoadError(path);
 				}
 				else
 				{
-					Global.Config.RecentWatches.Add(path);
+					Global.Config.RecentCheats.Add(path);
 					UpdateDialog();
 					UpdateMessageLabel();
 				}
@@ -171,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GameGenieToolbarSeparator.Visible =
 				LoadGameGenieToolbarItem.Visible =
-				GlobalWin.Tools.GameGenieAvailable;
+				GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
 		private void AddCheat()
@@ -442,7 +439,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GameGenieSeparator.Visible =
 				OpenGameGenieEncoderDecoderMenuItem.Visible =
-				GlobalWin.Tools.GameGenieAvailable;
+				GlobalWin.Tools.IsAvailable<GameShark>();
 		}
 
 		private void RemoveCheatMenuItem_Click(object sender, EventArgs e)
@@ -629,7 +626,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_Click(object sender, EventArgs e)
 		{
-			DoSelectedIndexChange();
 		}
 
 		private void CheatListView_DoubleClick(object sender, EventArgs e)

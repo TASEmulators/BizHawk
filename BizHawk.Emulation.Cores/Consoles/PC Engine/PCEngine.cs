@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		isReleased: true
 		)]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IStatable, IInputPollable,
-		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight
+		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		// ROM
 		public byte[] RomData;
@@ -314,6 +314,47 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
+
+		void ICodeDataLogger.SetCDL(CodeDataLog cdl)
+		{
+			Cpu.CDL = cdl;
+		}
+
+		void ICodeDataLogger.NewCDL(CodeDataLog cdl)
+		{
+			InitCDLMappings();
+			var mm = this.Cpu.Mappings;
+			foreach (var kvp in SizesFromHuMap(mm))
+			{
+				cdl[kvp.Key] = new byte[kvp.Value];
+			}
+
+			cdl.SubType = "PCE";
+			cdl.SubVer = 0;
+		}
+
+		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl)
+		{
+			Cpu.DisassembleCDL(s, cdl, memoryDomains);
+		}
+
+		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
+		{
+		  Dictionary<string, int> sizes = new Dictionary<string, int>();
+		  foreach (var m in mm)
+		  {
+		    if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
+		      sizes[m.Name] = m.MaxOffs;
+		  }
+
+		  List<string> keys = new List<string>(sizes.Keys);
+		  foreach (var key in keys)
+		  {
+		    // becase we were looking at offsets, and each bank is 8192 big, we need to add that size
+		    sizes[key] += 8192;
+		  }
+		  return sizes;
+		}
 
 		public void ResetCounters()
 		{

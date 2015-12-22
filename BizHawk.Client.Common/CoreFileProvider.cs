@@ -27,6 +27,27 @@ namespace BizHawk.Client.Common
 			return Path.Combine(PathManager.GetExeDirectoryAbsolute(), "dll");
 		}
 
+		public string GetSaveRAMPath()
+		{
+			return PathManager.SaveRamPath(Global.Game);
+		}
+
+
+		public string GetRetroSaveRAMDirectory()
+		{
+			return PathManager.RetroSaveRAMDirectory(Global.Game);
+		}
+
+		public string GetRetroSystemPath()
+		{
+			return PathManager.RetroSystemPath(Global.Game);
+		}
+
+		public string GetGameBasePath()
+		{
+			return PathManager.GetGameBasePath(Global.Game);
+		}
+
 		#region EmuLoadHelper api
 
 		private void FirmwareWarn(string sysID, string firmwareID, bool required, string msg = null)

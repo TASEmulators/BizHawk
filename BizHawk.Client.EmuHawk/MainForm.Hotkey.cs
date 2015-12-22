@@ -93,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 					IncreaseWindowSize();
 					break;
 				case "Smaller Window":
-					DecreaseWIndowSize();
+					DecreaseWindowSize();
 					break;
 				case "Increase Speed":
 					IncreaseSpeed();
@@ -339,6 +339,14 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Next Operator":
 					GlobalWin.Tools.RamSearch.NextOperator();
+					break;
+
+				//TAStudio
+				case "Add Branch":
+					GlobalWin.Tools.TAStudio.AddBranchExternal();
+					break;
+				case "Delete Branch":
+					GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
 					break;
 
 				// SNES

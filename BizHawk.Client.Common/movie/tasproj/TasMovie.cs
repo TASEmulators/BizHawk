@@ -18,13 +18,13 @@ namespace BizHawk.Client.Common
 
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private readonly TasStateManager StateManager;
+		public readonly TasSession Session;
 		private readonly TasLagLog LagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> InputStateCache = new Dictionary<int, IController>();
-		public readonly List<string> VerificationLog = new List<string>(); // For movies that do not begin with power-on, this is the input required to get into the initial state
-
+		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 
-		private BackgroundWorker _progressReportWorker = null;
+		public BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
 		{
 			_progressReportWorker = newWorker;
@@ -48,12 +48,14 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 
 			StateManager = new TasStateManager(this);
+			Session = new TasSession(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
 
 			BindMarkersToInput = true;
+			CurrentBranch = -1;
 		}
 
 		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
@@ -68,24 +70,29 @@ namespace BizHawk.Client.Common
 			ChangeLog = new TasMovieChangeLog(this);
 
 			StateManager = new TasStateManager(this);
+			Session = new TasSession(this);
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0 Tasproj v1.0";
 			Markers = new TasMovieMarkerList(this);
 			Markers.CollectionChanged += Markers_CollectionChanged;
 			Markers.Add(0, startsFromSavestate ? "Savestate" : "Power on");
-			
+
 			BindMarkersToInput = true;
+			CurrentBranch = -1;
 		}
 
 		public TasLagLog TasLagLog { get { return LagLog; } }
-		public List<string> InputLog { get { return _log; } }
+		public IStringLog InputLog { get { return _log; } }
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
+		public string NewBranchText = "";
+		public int CurrentBranch { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
+
 		public TasBranch GetBranch(int index)
 		{
-			if (index >= Branches.Count)
-				return null; // are we allowed?
+			if (index >= Branches.Count || index < 0)
+				return null;
 			else
 				return Branches[index];
 		}
@@ -139,6 +146,16 @@ namespace BizHawk.Client.Common
 					Lagged = LagLog[index + 1],
 					WasLagged = LagLog.History(index + 1)
 				};
+			}
+		}
+
+		public void ReportProgress(double percent)
+		{
+			if (percent > 100d)
+				return;
+			if (_progressReportWorker != null)
+			{
+				_progressReportWorker.ReportProgress((int)percent);
 			}
 		}
 
@@ -326,7 +343,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> GetLogEntries()
+		public IStringLog GetLogEntries()
 		{
 			return _log;
 		}
@@ -345,7 +362,7 @@ namespace BizHawk.Client.Common
 			{
 				TimelineBranchFrame = null;
 
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
+				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
@@ -495,14 +512,17 @@ namespace BizHawk.Client.Common
 		{
 			int? divergentPoint = DivergentPoint(_log, branch.InputLog);
 
-			_log = branch.InputLog.ToList();
+			if (_log != null) _log.Dispose();
+				_log = branch.InputLog.Clone();
 			//_changes = true;
-			LagLog.FromLagLog(branch.LagLog);
 
 			// if there are branch states, they will be loaded anyway
 			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
 			if (divergentPoint.HasValue)
-				StateManager.Invalidate(divergentPoint.Value); 
+			{
+				StateManager.Invalidate(divergentPoint.Value);
+				LagLog.FromLagLog(branch.LagLog); // don't truncate LagLog if the branch's one is shorter, but input is the same
+			}
 			else
 				StateManager.Invalidate(branch.InputLog.Count);
 
@@ -516,7 +536,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
-		private int? DivergentPoint(List<string> currentLog, List<string> newLog)
+		private int? DivergentPoint(IStringLog currentLog, IStringLog newLog)
 		{
 			int max = newLog.Count;
 			if (currentLog.Count < newLog.Count)

@@ -47,9 +47,10 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump ClientSettings { get; private set; }
 		[Name("VerificationLog", "txt")]
 		public static BinaryStateLump VerificationLog { get; private set; }
-
 		[Name("UserData", "txt")]
 		public static BinaryStateLump UserData { get; private set; }
+		[Name("Session", "txt")]
+		public static BinaryStateLump Session { get; private set; }
 
 		// branchstuff
 		[Name("Branches\\CoreData", "bin")]
@@ -64,6 +65,10 @@ namespace BizHawk.Client.Common
 		public static BinaryStateLump BranchHeader { get; private set; }
 		[Name("Branches\\Markers", "txt")]
 		public static BinaryStateLump BranchMarkers { get; private set; }
+		[Name("Branches\\UserText", "txt")]
+		public static BinaryStateLump BranchUserText { get; private set; }
+		[Name("Branches\\GreenZone")]
+		public static BinaryStateLump BranchStateHistory { get; private set; }
 
 		[AttributeUsage(AttributeTargets.Property)]
 		private class NameAttribute : Attribute

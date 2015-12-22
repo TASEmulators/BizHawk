@@ -68,7 +68,7 @@
 			// 
 			// NumFramesBox
 			// 
-			this.NumFramesBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.NumFramesBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
 			this.NumFramesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.NumFramesBox.Location = new System.Drawing.Point(138, 16);
 			this.NumFramesBox.MaxLength = 5;
@@ -77,7 +77,7 @@
 			this.NumFramesBox.Size = new System.Drawing.Size(51, 20);
 			this.NumFramesBox.TabIndex = 3;
 			this.NumFramesBox.Text = "1";
-			this.NumFramesBox.Type = BizHawk.Client.Common.Watch.DisplayType.Unsigned;
+			this.NumFramesBox.Type = BizHawk.Client.Common.DisplayType.Unsigned;
 			// 
 			// FramesPrompt
 			// 

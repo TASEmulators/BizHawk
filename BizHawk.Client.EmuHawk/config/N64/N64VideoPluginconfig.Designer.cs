@@ -3346,7 +3346,7 @@
 			// 
 			// JaboResolutionHeightBox
 			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
 			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
 			this.JaboResolutionHeightBox.MaxLength = 4;
@@ -3355,11 +3355,11 @@
 			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
 			this.JaboResolutionHeightBox.TabIndex = 34;
 			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
+			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
 			// 
 			// JaboResolutionWidthBox
 			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
 			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
 			this.JaboResolutionWidthBox.MaxLength = 4;
@@ -3368,7 +3368,7 @@
 			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
 			this.JaboResolutionWidthBox.TabIndex = 33;
 			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.Watch.DisplayType.Signed;
+			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
 			// 
 			// label71
 			// 

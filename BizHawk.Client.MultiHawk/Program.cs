@@ -73,7 +73,9 @@ namespace BizHawk.Client.MultiHawk
 			//note: this is pasted instead of being put in a static method due to this initialization code being sensitive to things like that, and not wanting to cause it to break
 			//pasting should be safe (not affecting the jit order of things)
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+			#if WINDOWS
 			SetDllDirectory(dllDir);
+			#endif
 
 			try
 			{

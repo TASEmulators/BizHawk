@@ -32,18 +32,26 @@ rem explicitly list the OK ones here as individual copies. until then....
 
 copy *.dll dll
 
-..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders Tools gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk
+rem Now, we're about to zip and then unzip. Why, you ask? Because that's just the way this evolved.
+..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.ipdb -x *.iobj -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk -x dll\gpgx.elf -x dll\miniclient.* -x dll\*.xml
 
 cd ..\Dist
 .\unzip.exe %NAME% -d temp
 del %NAME%
 
+rem Remove things we can't allow the user's junky files to pollute the dist with. We'll export fresh copies from git
 rmdir /s /q temp\lua
 rmdir /s /q temp\firmware
-rmdir /s /q gitsucks
 
+rmdir /s /q gitsucks
 git --git-dir ../.git archive --format zip --output lua.zip master output/Lua
 git --git-dir ../.git archive --format zip --output firmware.zip master output/Firmware
+rem Getting externaltools example from my repo
+rem I once talked about a dedicated repo for external tools, think about moving the exemple to it it it happend
+git clone https://github.com/Hathor86/HelloWorld_BizHawkTool.git
+git --git-dir HelloWorld_BizHawkTool/.git archive --format zip --output HelloWorld_BizHawkTool.zip master
+rmdir /s /q  HelloWorld_BizHawkTool
+
 unzip lua.zip -d gitsucks
 rem del lua.zip
 move gitsucks\output\Lua temp
@@ -53,15 +61,22 @@ move gitsucks\output\Firmware temp
 
 rmdir /s /q gitsucks
 
-
 cd temp
 rem remove UPX from any files we have checked in, because people's lousy security software hates it
 upx -d dll\*.dll
 upx -d dll\*.exe
 upx -d *.exe
+
+rem Patch up working dir with a few other things we want
+mkdir ExternalTools
+copy ..\HelloWorld_BizHawkTool.dll ExternalTools
+copy ..\HelloWorld_BizHawkTool.zip ExternalTools
+
+rem Build the final zip
 ..\zip.exe -X -9 -r ..\%NAME% . -i \*
 cd ..
 
+rem DONE!
 rmdir /s /q temp
 goto END
 

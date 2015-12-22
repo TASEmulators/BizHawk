@@ -133,6 +133,7 @@ struct Interface : public SNES::Interface {
 	{
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
+		memset(&cdlInfo,0,sizeof(cdlInfo));
   }
 
   ~Interface() {
@@ -142,7 +143,7 @@ struct Interface : public SNES::Interface {
 };
 
 void pwrap_init();
-static Interface *iface = nullptr;
+Interface *iface = nullptr;
 namespace SNES {
 SNES::Interface *interface()
 {

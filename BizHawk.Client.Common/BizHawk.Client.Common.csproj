@@ -52,7 +52,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -79,6 +78,7 @@
     <Compile Include="BitmapBufferVideoProvider.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
+    <Compile Include="config\ConfigPersistAttribute.cs" />
     <Compile Include="config\ConfigService.cs" />
     <Compile Include="config\PathEntry.cs" />
     <Compile Include="config\ToolDialogSettings.cs" />
@@ -86,9 +86,6 @@
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="ExceptionClasses.cs" />
     <Compile Include="FirmwareManager.cs" />
-    <Compile Include="GLManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Global.cs" />
     <Compile Include="inputAdapters\AutoPattern.cs" />
     <Compile Include="inputAdapters\BitwiseAdapters.cs" />
@@ -131,6 +128,7 @@
     <Compile Include="movie\bk2\Bk2Movie.HeaderApi.cs">
       <DependentUpon>Bk2Movie.cs</DependentUpon>
     </Compile>
+    <Compile Include="movie\bk2\StringLogs.cs" />
     <Compile Include="movie\import\PXMImport.cs" />
     <Compile Include="movie\tasproj\StateManagerState.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
@@ -186,6 +184,7 @@
     </Compile>
     <Compile Include="movie\tasproj\TasMovie.cs" />
     <Compile Include="movie\tasproj\TasMovieMarker.cs" />
+    <Compile Include="movie\tasproj\TasSession.cs" />
     <Compile Include="movie\tasproj\TasStateManager.cs" />
     <Compile Include="movie\tasproj\TasMovieRecord.cs" />
     <Compile Include="movie\tasproj\TasStateManagerSettings.cs" />
@@ -206,10 +205,26 @@
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
+    <Compile Include="tools\Interfaces\IToolForm.cs" />
+    <Compile Include="tools\Interfaces\IToolFormAutoConfig.cs" />
+    <Compile Include="tools\Watch\ByteWatch.cs" />
+    <Compile Include="tools\Watch\DisplayType.cs" />
+    <Compile Include="tools\Watch\DWordWatch.cs" />
+    <Compile Include="tools\Watch\PreviousType.cs" />
     <Compile Include="tools\RamSearchEngine.cs" />
-    <Compile Include="tools\Watch.cs" />
-    <Compile Include="tools\WatchList.cs" />
-    <Compile Include="UIHelper.cs" />
+    <Compile Include="tools\Watch\SeparatorWatch.cs" />
+    <Compile Include="tools\Watch\Watch.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchChangeCountComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchEqualityComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchDomainComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchAddressComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchList.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchNoteComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchPreviousValueComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchValueComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchValueDifferenceComparer.cs" />
+    <Compile Include="tools\Watch\WatchSize.cs" />
+    <Compile Include="tools\Watch\WordWatch.cs" />
     <Compile Include="XmlGame.cs" />
     <Compile Include="helpers\SharpCompressHelpers.cs" />
   </ItemGroup>
@@ -243,6 +258,7 @@
       <Name>BizHawk.Bizware.BizwareGL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

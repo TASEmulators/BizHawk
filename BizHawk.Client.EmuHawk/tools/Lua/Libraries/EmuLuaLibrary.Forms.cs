@@ -190,10 +190,9 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DestroyAll()
 		{
-			foreach (var form in _luaForms)
+			for (var i = _luaForms.Count - 1; i >= 0; i--)
 			{
-				form.Close();
-				_luaForms.Remove(form);
+				_luaForms.ElementAt(i).Close();
 			}
 		}
 
@@ -483,6 +482,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (form.Handle == ptr)
 				{
+					if (form.GetType().GetProperty(property).PropertyType.IsEnum)
+					{
+						value = Enum.Parse(form.GetType().GetProperty(property).PropertyType, value.ToString(), true);
+					}
 					form
 						.GetType()
 						.GetProperty(property)
@@ -494,6 +497,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control.Handle == ptr)
 						{
+							if (control.GetType().GetProperty(property).PropertyType.IsEnum)
+							{
+								value = Enum.Parse(control.GetType().GetProperty(property).PropertyType, value.ToString(), true);
+							}
 							control
 								.GetType()
 								.GetProperty(property)

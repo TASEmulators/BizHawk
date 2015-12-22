@@ -105,11 +105,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private Watch.WatchSize WatchSize
+		private WatchSize WatchSize
 		{
 			get
 			{
-				return (Watch.WatchSize)DataSize;
+				return (WatchSize)DataSize;
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressLabel.Text = GenerateAddressString();
 		}
 
-		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, Watch.WatchSize size)
+		public void SetToAddresses(IEnumerable<long> addresses, MemoryDomain domain, WatchSize size)
 		{
 			DataSize = (int)size;
 			SetDataSize(DataSize);
@@ -367,8 +367,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private static byte[] GetRomBytes()
 		{
-			var path = GlobalWin.MainForm.CurrentlyOpenRom;
-			if (path == null)
+			var path = GlobalWin.MainForm.CurrentlyOpenRomArgs.OpenAdvanced.SimplePath;
+			if (string.IsNullOrEmpty(path))
 			{
 				return new byte[] { 0xFF };
 			}
@@ -480,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 					addrStr.Append("  ");
 				}
 
-				addrStr.AppendLine(_addr.ToHexString(_numDigits));
+				addrStr.AppendLine(_addr.ToHexString(_numDigits) + " |");
 			}
 
 			return addrStr.ToString();
@@ -516,7 +516,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				rowStr.Append("  | ");
+				rowStr.Append("| ");
 				for (var k = 0; k < 16; k++)
 				{
 					if (_addr + k < _domain.Size)
@@ -546,7 +546,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
-				return Global.CheatList.GetCheatValue(_domain, address, (Watch.WatchSize)DataSize ).Value;
+				return Global.CheatList.GetCheatValue(_domain, address, (WatchSize)DataSize ).Value;
 			}
 
 			switch (dataSize)
@@ -669,13 +669,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateFormText()
 		{
+			Text = "Hex Editor";
 			if (_addressHighlighted >= 0)
 			{
-				Text = "Hex Editor - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
-			}
-			else
-			{
-				Text = "Hex Editor";
+				Text += " - Editing Address 0x" + string.Format(_numDigitsStr, _addressHighlighted);
+				if (_secondaryHighlightedAddresses.Any())
+				{
+					Text += string.Format(" (Selected 0x{0:X})", _secondaryHighlightedAddresses.Count() +
+						(_secondaryHighlightedAddresses.Contains(_addressHighlighted) ? 0 : 1));
+				}
 			}
 		}
 
@@ -690,13 +692,13 @@ namespace BizHawk.Client.EmuHawk
 			switch (DataSize)
 			{
 				case 1:
-					Header.Text = "       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
+					Header.Text = "         0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F";
 					break;
 				case 2:
-					Header.Text = "       0    2    4    6    8    A    C    E";
+					Header.Text = "         0    2    4    6    8    A    C    E";
 					break;
 				case 4:
-					Header.Text = "       0        4        8        C";
+					Header.Text = "         0        4        8        C";
 					break;
 			}
 
@@ -722,12 +724,12 @@ namespace BizHawk.Client.EmuHawk
 			switch (DataSize)
 			{
 				default:
-				case 1:
-					return new ByteWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
-				case 2:
-					return new WordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+				case 1:										
+					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
+                case 2:
+					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
 				case 4:
-					return new DWordWatch(_domain, address, Watch.DisplayType.Hex, BigEndian, string.Empty);
+					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
 			}
 		}
 
@@ -757,13 +759,12 @@ namespace BizHawk.Client.EmuHawk
 					_domain,
 					address,
 					WatchSize,
-					Watch.DisplayType.Hex,
-					string.Empty,
+					Client.Common.DisplayType.Hex,
 					BigEndian);
 
 				Global.CheatList.Add(new Cheat(
 					watch,
-					watch.Value ?? 0));
+					watch.Value));
 			}
 		}
 
@@ -776,13 +777,12 @@ namespace BizHawk.Client.EmuHawk
 					_domain,
 					address,
 					WatchSize,
-					Watch.DisplayType.Hex,
-					string.Empty,
+					Client.Common.DisplayType.Hex,
 					BigEndian);
 
 				cheats.Add(new Cheat(
 					watch,
-					watch.Value ?? 0));
+					watch.Value));
 			}
 
 			Global.CheatList.AddRange(cheats);
@@ -979,6 +979,17 @@ namespace BizHawk.Client.EmuHawk
 						_secondaryHighlightedAddresses.Add(x);
 					}
 				}
+
+				if (!IsVisible(_addressOver))
+				{
+					var value = (_addressOver / 16) + 1 - ((_addressOver / 16) < HexScrollBar.Value ? 1 : _rowsVisible);
+					if (value < 0)
+					{
+						value = 0;
+					}
+
+					HexScrollBar.Value = (int)value; // This will fail on a sufficiently large domain
+				}
 			}
 		}
 
@@ -1045,7 +1056,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddToSecondaryHighlights(long address)
 		{
-			if (address >= 0 && address < _domain.Size)
+			if (address >= 0 && address < _domain.Size && !_secondaryHighlightedAddresses.Contains(address))
 			{
 				_secondaryHighlightedAddresses.Add(address);
 			}
@@ -1614,9 +1625,8 @@ namespace BizHawk.Client.EmuHawk
 					address => Watch.GenerateWatch(
 						_domain,
 						address,
-						(Watch.WatchSize)DataSize,
-						Watch.DisplayType.Hex,
-						string.Empty,
+						(WatchSize)DataSize,
+						Client.Common.DisplayType.Hex,
 						BigEndian));
 
 				poke.SetWatch(watches);
@@ -1899,6 +1909,7 @@ namespace BizHawk.Client.EmuHawk
 						ClearNibbles();
 						SetHighlighted(_addressHighlighted + 1);
 						UpdateValues();
+						Refresh();
 					}
 
 					break;
@@ -1927,6 +1938,7 @@ namespace BizHawk.Client.EmuHawk
 						ClearNibbles();
 						SetHighlighted(_addressHighlighted + 2);
 						UpdateValues();
+						Refresh();
 					}
 
 					break;
@@ -1978,6 +1990,7 @@ namespace BizHawk.Client.EmuHawk
 						ClearNibbles();
 						SetHighlighted(_addressHighlighted + 4);
 						UpdateValues();
+						Refresh();
 					}
 
 					break;
@@ -2104,7 +2117,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var gaps = (int)cheat.Size - (int)DataSize;
 
-						if (cheat.Size == Watch.WatchSize.DWord && DataSize == 2)
+						if (cheat.Size == WatchSize.DWord && DataSize == 2)
 						{
 							gaps -= 1;
 						}
@@ -2164,8 +2177,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), rect);
-						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x77FFD4D4)), textrect);
+						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor)), rect);
+						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(0x44, Global.Config.HexHighlightColor)), textrect);
 					}
 				}
 			}
@@ -2188,6 +2201,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_mouseIsDown)
 			{
 				DoShiftClick();
+				UpdateFormText();
 				MemoryViewerBox.Refresh();
 			}
 		}

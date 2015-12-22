@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BeginBufferIO,
 			eMessage_EndBufferIO,
 			eMessage_ResumeAfterBRK,
+			eMessage_Shutdown,
 
 			eMessage_QUERY_library_id,
 			eMessage_QUERY_library_revision_major,
@@ -40,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_QUERY_set_backdropColor,
 			eMessage_QUERY_peek_logical_register,
 			eMessage_QUERY_peek_cpu_regs,
+			eMessage_QUERY_set_cdl,
 
 			eMessage_CMD_FIRST,
 			eMessage_CMD_init,
@@ -59,7 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_SIG_input_state,
 			eMessage_SIG_input_notify,
 			eMessage_SIG_audio_flush,
-			eMessage_SIG_scanlineStart,
 			eMessage_SIG_path_request,
 			eMessage_SIG_trace_callback,
 			eMessage_SIG_allocSharedMemory, //?
@@ -71,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BRK_hook_write,
 			eMessage_BRK_hook_nmi,
 			eMessage_BRK_hook_irq,
+			eMessage_BRK_scanlineStart,
 		};
 
 

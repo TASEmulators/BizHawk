@@ -583,10 +583,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMarkersMenuItem_Click(object sender, EventArgs e)
 		{
+			if (TasView.SelectedRows.Count() > 50)
+			{
+				var result = MessageBox.Show("Are you sure you want to add more than 50 markers?", "Add markers", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+				if (result != DialogResult.OK)
+					return;
+			}
 			foreach (var index in TasView.SelectedRows)
 			{
-				CallAddMarkerPopUp(index);
+				MarkerControl.AddMarker(false, index);
 			}
+		}
+
+		private void SetMarkerWithTextMenuItem_Click(object sender, EventArgs e)
+		{
+			MarkerControl.AddMarker(true, TasView.SelectedRows.FirstOrDefault());
 		}
 
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
@@ -658,6 +669,28 @@ namespace BizHawk.Client.EmuHawk
 					int val = int.Parse(prompt.PromptText);
 					if (val > 0)
 						CurrentTasMovie.ChangeLog.MaxSteps = val;
+				}
+			}
+		}
+
+		private void SetBranchCellHoverIntervalMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "ScreenshotPopUp Delay",
+				InitialValue = Settings.BranchCellHoverInterval.ToString()
+			})
+			{
+				DialogResult result = prompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					int val = int.Parse(prompt.PromptText);
+					if (val > 0)
+					{
+						Settings.BranchCellHoverInterval = val;
+						BookMarkControl.HoverInterval = val;
+					}
 				}
 			}
 		}
@@ -1064,7 +1097,7 @@ namespace BizHawk.Client.EmuHawk
 					index, (byte[])StatableEmulator.SaveStateBinary().Clone());
 
 				GlobalWin.MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename));
+				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
 
@@ -1079,7 +1112,7 @@ namespace BizHawk.Client.EmuHawk
 					SaveRamEmulator.CloneSaveRam());
 
 				GlobalWin.MainForm.PauseEmulator();
-				LoadFile(new FileInfo(newProject.Filename));
+				LoadFile(new FileInfo(newProject.Filename), true);
 			}
 		}
 

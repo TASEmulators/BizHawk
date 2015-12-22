@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DD448B37-BA3F-4544-9754-5406E8094723}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -12,8 +10,6 @@
     <AssemblyName>EmuHawk</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>
-    </StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>images\logo.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -60,7 +56,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
@@ -70,10 +66,6 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="LuaInterface, Version=2.0.4.35439, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
@@ -98,6 +90,9 @@
     </Reference>
     <Reference Include="SlimDX" Condition=" '$(OS)' == 'Windows_NT'">
       <HintPath>..\References\SlimDX.dll</HintPath>
+    </Reference>
+    <Reference Include="LuaInterface">
+      <HintPath>..\References\LuaInterface.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -456,6 +451,12 @@
     <Compile Include="CoreFeatureAnalysis.Designer.cs">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ExceptionBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\ExceptionBox.designer.cs">
+      <DependentUpon>ExceptionBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\FolderBrowserDialogEx.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -533,6 +534,7 @@
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Extensions\CoreExtensions.cs" />
     <Compile Include="Extensions\ToolExtensions.cs" />
+    <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
     <Compile Include="Input\GamePad360.cs" Condition=" '$(OS)' == 'Windows_NT' " />
@@ -603,6 +605,13 @@
     <Compile Include="NameStateForm.Designer.cs">
       <DependentUpon>NameStateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="OpenAdvanced.cs" />
+    <Compile Include="OpenAdvancedChooser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenAdvancedChooser.Designer.cs">
+      <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
+    </Compile>
     <Compile Include="PlatformChooser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -656,6 +665,12 @@
       <DependentUpon>BatchRun.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\BatchRunner.cs" />
+    <Compile Include="tools\CDL.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\CDL.designer.cs">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Cheats\CheatEdit.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -704,6 +719,12 @@
     </Compile>
     <Compile Include="tools\Debugger\RegisterBoxControl.Designer.cs">
       <DependentUpon>RegisterBoxControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\GameShark.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\GameShark.Designer.cs">
+      <DependentUpon>GameShark.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\GBA\GBAGPUView.cs">
       <SubType>Form</SubType>
@@ -771,7 +792,6 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\IToolForm.cs" />
     <Compile Include="tools\Lua\EnvironmentSandbox.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
@@ -899,12 +919,6 @@
     </Compile>
     <Compile Include="tools\PCE\PCEBGViewer.Designer.cs">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </Compile>
-    <Compile Include="tools\PCE\PCECDL.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="tools\PCE\PCECDL.Designer.cs">
-      <DependentUpon>PCECDL.cs</DependentUpon>
     </Compile>
     <Compile Include="tools\PCE\PCESoundDebugger.cs">
       <SubType>Form</SubType>
@@ -1135,6 +1149,7 @@
     <Compile Include="tools\Watch\WatchValueBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UIHelper.cs" />
     <Compile Include="UpdateChecker.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1279,6 +1294,9 @@
     <EmbeddedResource Include="CoreFeatureAnalysis.resx">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\ExceptionBox.resx">
+      <DependentUpon>ExceptionBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\InputConfigBase.resx">
       <DependentUpon>InputConfigBase.cs</DependentUpon>
     </EmbeddedResource>
@@ -1305,6 +1323,9 @@
       <DependentUpon>NameStateForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="OpenAdvancedChooser.resx">
+      <DependentUpon>OpenAdvancedChooser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PlatformChooser.resx">
       <DependentUpon>PlatformChooser.cs</DependentUpon>
     </EmbeddedResource>
@@ -1328,6 +1349,9 @@
     <EmbeddedResource Include="tools\BatchRun.resx">
       <DependentUpon>BatchRun.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\CDL.resx">
+      <DependentUpon>CDL.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Cheats\CheatEdit.resx">
       <DependentUpon>CheatEdit.cs</DependentUpon>
     </EmbeddedResource>
@@ -1345,6 +1369,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Debugger\RegisterBoxControl.resx">
       <DependentUpon>RegisterBoxControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\GameShark.resx">
+      <DependentUpon>GameShark.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\GBA\GBAGPUView.resx">
       <DependentUpon>GBAGPUView.cs</DependentUpon>
@@ -1424,9 +1451,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCEBGViewer.resx">
       <DependentUpon>PCEBGViewer.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="tools\PCE\PCECDL.resx">
-      <DependentUpon>PCECDL.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\PCE\PCESoundDebugger.resx">
       <DependentUpon>PCESoundDebugger.cs</DependentUpon>
@@ -1530,6 +1554,10 @@
     <Compile Include="Input\OTK_GamePad.cs" Condition=" '$(OS)' != 'Windows_NT' " />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BizHawk.Client.ApiHawk\BizHawk.Client.ApiHawk.csproj">
+      <Project>{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}</Project>
+      <Name>BizHawk.Client.ApiHawk</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BizHawk.Client.Common\BizHawk.Client.Common.csproj">
       <Project>{24A0AA3C-B25F-4197-B23D-476D6462DBA0}</Project>
       <Name>BizHawk.Client.Common</Name>
@@ -1647,12 +1675,12 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\ScrollTo.png" />
     <None Include="images\tastudio\icon_anchor_lag.png" />
     <None Include="images\tastudio\icon_anchor.png" />
     <None Include="images\tastudio\icon_marker.png" />
-    <None Include="images\tastudio\anchor_marker.png" />
-    <None Include="images\tastudio\anchor_lag.png" />
-    <None Include="images\tastudio\anchor.png" />
+    <EmbeddedResource Include="Resources\gens.ttf" />
+    <EmbeddedResource Include="Resources\fceux.ttf" />
     <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
@@ -1956,6 +1984,9 @@
     <None Include="images\HawkInLove.png" />
     <None Include="images\ControllerImages\AppleIIKeyboard.png" />
     <None Include="images\BlankCursor.cur" />
+    <None Include="images\cdlogger.ico" />
+    <None Include="images\AddEdit.png" />
+    <None Include="images\JumpTo.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

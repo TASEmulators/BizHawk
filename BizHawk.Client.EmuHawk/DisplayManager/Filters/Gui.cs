@@ -257,6 +257,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 				LL.vy += Padding.Top;
 				LL.vw = InputSize.Width;
 				LL.vh = InputSize.Height;
+				LL.WidthScale = 1;
+				LL.HeightScale = 1;
 			}
 			else
 			{

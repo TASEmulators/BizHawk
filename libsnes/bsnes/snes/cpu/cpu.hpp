@@ -1,5 +1,8 @@
 struct CPU : public Processor, public CPUcore, public PPUcounter {
   uint8 *wram; //[128 * 1024];
+  
+	function<uint8 (unsigned)> read_wram;
+	function<void (unsigned, uint8)> write_wram;
 
   enum : bool { Threaded = true };
   array<Processor*> coprocessors;

@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			ValueBox.ByteSize = _watchList[0].Size;
 			ValueBox.Type = _watchList[0].Type;
 
-			ValueHexLabel.Text = _watchList[0].Type == Watch.DisplayType.Hex ? "0x" : string.Empty;
+			ValueHexLabel.Text = _watchList[0].Type == DisplayType.Hex ? "0x" : string.Empty;
 			ValueBox.Text = _watchList[0].ValueString.Replace(" ", string.Empty);
 			DomainLabel.Text = _watchList[0].Domain.Name;
 			SizeLabel.Text = _watchList[0].Size.ToString();

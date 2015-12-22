@@ -138,6 +138,10 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (frame == 0) {
+					return new KeyValuePair<int, byte[]>(0, InitialState);
+				}
+
 				if (States.ContainsKey(frame))
 				{
 					StateAccessed(frame);
@@ -561,23 +565,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
-			}
-
-			bw.Write(currentBranch);
-
-			if (Settings.BranchStatesInTasproj)
-			{
-				bw.Write(BranchStates.Count);
-				foreach (var s in BranchStates)
-				{
-					bw.Write(s.Key);
-					bw.Write(s.Value.Count);
-					foreach (var t in s.Value)
-					{
-						bw.Write(t.Key);
-						t.Value.Write(bw);
-					}
-				}
+				_movie.ReportProgress((double)100d / States.Count * i);
 			}
 		}
 
@@ -599,33 +587,48 @@ namespace BizHawk.Client.Common
 				//Used += len;
 			}
 			//}
+		}
 
+		public void SaveBranchStates(BinaryWriter bw)
+		{
+			bw.Write(BranchStates.Count);
+			foreach (var s in BranchStates)
+			{
+				bw.Write(s.Key);
+				bw.Write(s.Value.Count);
+				foreach (var t in s.Value)
+				{
+					bw.Write(t.Key);
+					t.Value.Write(bw);
+				}
+			}
+		}
+
+		public void LoadBranchStates(BinaryReader br)
+		{
 			try
 			{
-				currentBranch = br.ReadInt32();
-				if (Settings.BranchStatesInTasproj)
+				int c = br.ReadInt32();
+				BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
+				while (c > 0)
 				{
-					int c = br.ReadInt32();
-					BranchStates = new SortedList<int, SortedList<int, StateManagerState>>(c);
-					while (c > 0)
+					int key = br.ReadInt32();
+					int c2 = br.ReadInt32();
+					var list = new SortedList<int, StateManagerState>(c2);
+					while (c2 > 0)
 					{
-						int key = br.ReadInt32();
-						int c2 = br.ReadInt32();
-						var list = new SortedList<int, StateManagerState>(c2);
-						while (c2 > 0)
-						{
-							int key2 = br.ReadInt32();
-							var state = StateManagerState.Read(br, this);
-							list.Add(key2, state);
-							c2--;
-						}
-						BranchStates.Add(key, list);
-						c--;
+						int key2 = br.ReadInt32();
+						var state = StateManagerState.Read(br, this);
+						list.Add(key2, state);
+						c2--;
 					}
+					BranchStates.Add(key, list);
+					c--;
 				}
 			}
 			catch (EndOfStreamException) { }
 		}
+
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{
@@ -699,7 +702,6 @@ namespace BizHawk.Client.Common
 		#region "Branches"
 
 		private SortedList<int, SortedList<int, StateManagerState>> BranchStates = new SortedList<int, SortedList<int, StateManagerState>>();
-		private int currentBranch = -1;
 
 		/// <summary>
 		/// Checks if the state at frame in the given branch (-1 for current) has any duplicates.
@@ -776,7 +778,6 @@ namespace BizHawk.Client.Common
 				stateList.Add(branchHash, kvp.Value);
 				Used += (ulong)stateList[branchHash].Length;
 			}
-			currentBranch = _movie.BranchCount;
 		}
 
 		public void RemoveBranch(int index)
@@ -804,10 +805,6 @@ namespace BizHawk.Client.Common
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);
 			}
-			if (currentBranch > index)
-				currentBranch--;
-			else if (currentBranch == index)
-				currentBranch = -1;
 		}
 
 		public void UpdateBranch(int index)
@@ -853,7 +850,6 @@ namespace BizHawk.Client.Common
 				stateList.Add(branchHash, kvp.Value);
 				Used += (ulong)stateList[branchHash].Length;
 			}
-			currentBranch = index;
 		}
 
 		public void LoadBranch(int index)
@@ -870,8 +866,6 @@ namespace BizHawk.Client.Common
 				if (kvp.Value.ContainsKey(branchHash))
 					SetState(kvp.Key, kvp.Value[branchHash].State);
 			}
-
-			currentBranch = index;
 		}
 
 		#endregion

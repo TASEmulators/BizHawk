@@ -70,17 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						brPipe.ReadInt32();  //dummy synchronization
 						break;
 					}
-				case eMessage.eMessage_SIG_scanlineStart:
-					{
-						int line = brPipe.ReadInt32();
-						if (scanlineStart != null)
-							scanlineStart(line);
-
-						//we have to notify the unmanaged process that we're done peeking thruogh its memory and whatnot so it can proceed with emulation
-						//HUM??????????? BRK_COMPLETE???? SCANLINE CB NEEDS RE-EVALUATING
-						WritePipeMessage(eMessage.eMessage_BRK_Complete);
-						break;
-					}
 				case eMessage.eMessage_SIG_path_request:
 					{
 						int slot = brPipe.ReadInt32();

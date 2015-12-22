@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="BizHawk.Client.Common.Watch">
+    <Position X="17" Y="0.75" Width="10" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier />
+    <Lollipop Orientation="Left" Position="0.1" />
+  </Class>
+  <Class Name="BizHawk.Client.Common.SeparatorWatch">
+    <Position X="6" Y="19" Width="3.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BizHawk.Client.Common.ByteWatch">
+    <Position X="28.5" Y="19" Width="3.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BizHawk.Client.Common.WordWatch">
+    <Position X="9.5" Y="19" Width="3.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BizHawk.Client.Common.DWordWatch">
+    <Position X="19" Y="19" Width="3.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BizHawk.Client.Common.WatchList">
+    <Position X="30.75" Y="1" Width="5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier />
+    <Lollipop Orientation="Right" Position="0.1" />
+  </Class>
+  <Class Name="BizHawk.Client.EmuHawk.ConfigPersistAttribute">
+    <Position X="11.5" Y="0.75" Width="2" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.ExternalToolManager">
+    <Position X="4.75" Y="6.75" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAQAAAAAAgBAAAAAAACAAAAAAI=</HashCode>
+      <FileName>Classes\ExternalToolManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.BizHawkExternalToolAttribute">
+    <Position X="11" Y="2.25" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAIAAAIAQAAAAAACAEAAAAAAAAAAA=</HashCode>
+      <FileName>Attributes\ExternalToolAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="BizHawk.Client.EmuHawk.IExternalToolForm">
+    <Position X="4.5" Y="4.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IExternalToolForm.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BizHawk.Client.EmuHawk.IToolForm">
+    <Position X="6" Y="0.75" Width="2.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BizHawk.Client.EmuHawk.IToolFormAutoConfig">
+    <Position X="8" Y="4.5" Width="1.75" />
+    <TypeIdentifier />
+  </Interface>
+  <Enum Name="BizHawk.Client.Common.WatchSize">
+    <Position X="28.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Enum Name="BizHawk.Client.Common.DisplayType">
+    <Position X="28.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Enum Name="BizHawk.Client.Common.PreviousType">
+    <Position X="28.5" Y="1" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

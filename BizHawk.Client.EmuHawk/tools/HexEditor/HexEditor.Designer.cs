@@ -87,8 +87,8 @@
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.viewN64MatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
-			this.AddressLabel = new System.Windows.Forms.Label();
 			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
+			this.AddressLabel = new System.Windows.Forms.Label();
 			this.AddressesLabel = new System.Windows.Forms.Label();
 			this.Header = new System.Windows.Forms.Label();
 			this.HexMenuStrip.SuspendLayout();
@@ -133,7 +133,7 @@
 			this.SaveMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveMenuItem.Name = "SaveMenuItem";
 			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.SaveMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.SaveMenuItem.Text = "Save";
 			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
@@ -142,33 +142,33 @@
 			this.SaveAsBinaryMenuItem.Name = "SaveAsBinaryMenuItem";
 			this.SaveAsBinaryMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.SaveAsBinaryMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.SaveAsBinaryMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.SaveAsBinaryMenuItem.Text = "Save as binary...";
 			this.SaveAsBinaryMenuItem.Click += new System.EventHandler(this.SaveAsBinaryMenuItem_Click);
 			// 
 			// SaveAsTextMenuItem
 			// 
 			this.SaveAsTextMenuItem.Name = "SaveAsTextMenuItem";
-			this.SaveAsTextMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.SaveAsTextMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.SaveAsTextMenuItem.Text = "Save as text...";
 			this.SaveAsTextMenuItem.Click += new System.EventHandler(this.SaveAsTextMenuItem_Click);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(222, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(233, 6);
 			// 
 			// LoadTableFileMenuItem
 			// 
 			this.LoadTableFileMenuItem.Name = "LoadTableFileMenuItem";
-			this.LoadTableFileMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.LoadTableFileMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.LoadTableFileMenuItem.Text = "&Load .tbl file";
 			this.LoadTableFileMenuItem.Click += new System.EventHandler(this.LoadTableFileMenuItem_Click);
 			// 
 			// CloseTableFileMenuItem
 			// 
 			this.CloseTableFileMenuItem.Name = "CloseTableFileMenuItem";
-			this.CloseTableFileMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.CloseTableFileMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.CloseTableFileMenuItem.Text = "Close .tbl file";
 			this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
 			// 
@@ -177,26 +177,26 @@
 			this.RecentTablesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem});
 			this.RecentTablesSubMenu.Name = "RecentTablesSubMenu";
-			this.RecentTablesSubMenu.Size = new System.Drawing.Size(225, 22);
+			this.RecentTablesSubMenu.Size = new System.Drawing.Size(236, 22);
 			this.RecentTablesSubMenu.Text = "Recent";
 			this.RecentTablesSubMenu.DropDownOpened += new System.EventHandler(this.RecentTablesSubMenu_DropDownOpened);
 			// 
 			// noneToolStripMenuItem
 			// 
 			this.noneToolStripMenuItem.Name = "noneToolStripMenuItem";
-			this.noneToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
+			this.noneToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(222, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(233, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.ExitMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(236, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -220,7 +220,7 @@
 			this.CopyMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.CopyMenuItem.Text = "&Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -228,7 +228,7 @@
 			// 
 			this.ExportMenuItem.Name = "ExportMenuItem";
 			this.ExportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-			this.ExportMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.ExportMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.ExportMenuItem.Text = "&Export";
 			this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
 			// 
@@ -237,20 +237,20 @@
 			this.PasteMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Paste;
 			this.PasteMenuItem.Name = "PasteMenuItem";
 			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.PasteMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.PasteMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.PasteMenuItem.Text = "&Paste";
 			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(141, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(152, 6);
 			// 
 			// FindMenuItem
 			// 
 			this.FindMenuItem.Name = "FindMenuItem";
 			this.FindMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.FindMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.FindMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.FindMenuItem.Text = "&Find...";
 			this.FindMenuItem.Click += new System.EventHandler(this.FindMenuItem_Click);
 			// 
@@ -258,7 +258,7 @@
 			// 
 			this.FindNextMenuItem.Name = "FindNextMenuItem";
 			this.FindNextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-			this.FindNextMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.FindNextMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.FindNextMenuItem.Text = "Find Next";
 			this.FindNextMenuItem.Click += new System.EventHandler(this.FindNextMenuItem_Click);
 			// 
@@ -266,7 +266,7 @@
 			// 
 			this.FindPrevMenuItem.Name = "FindPrevMenuItem";
 			this.FindPrevMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-			this.FindPrevMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.FindPrevMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.FindPrevMenuItem.Text = "Find Prev";
 			this.FindPrevMenuItem.Click += new System.EventHandler(this.FindPrevMenuItem_Click);
 			// 
@@ -292,7 +292,7 @@
 			this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
 			this.MemoryDomainsMenuItem.Name = "MemoryDomainsMenuItem";
-			this.MemoryDomainsMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.MemoryDomainsMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.MemoryDomainsMenuItem.Text = "&Memory Domains";
 			this.MemoryDomainsMenuItem.DropDownOpened += new System.EventHandler(this.MemoryDomainsMenuItem_DropDownOpened);
 			// 
@@ -308,47 +308,47 @@
             this.DataSizeWordMenuItem,
             this.DataSizeDWordMenuItem});
 			this.DataSizeSubMenu.Name = "DataSizeSubMenu";
-			this.DataSizeSubMenu.Size = new System.Drawing.Size(206, 22);
+			this.DataSizeSubMenu.Size = new System.Drawing.Size(217, 22);
 			this.DataSizeSubMenu.Text = "Data Size";
 			// 
 			// DataSizeByteMenuItem
 			// 
 			this.DataSizeByteMenuItem.Name = "DataSizeByteMenuItem";
-			this.DataSizeByteMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.DataSizeByteMenuItem.Size = new System.Drawing.Size(116, 22);
 			this.DataSizeByteMenuItem.Text = "1 Byte";
 			this.DataSizeByteMenuItem.Click += new System.EventHandler(this.DataSizeByteMenuItem_Click);
 			// 
 			// DataSizeWordMenuItem
 			// 
 			this.DataSizeWordMenuItem.Name = "DataSizeWordMenuItem";
-			this.DataSizeWordMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.DataSizeWordMenuItem.Size = new System.Drawing.Size(116, 22);
 			this.DataSizeWordMenuItem.Text = "2 Byte";
 			this.DataSizeWordMenuItem.Click += new System.EventHandler(this.DataSizeWordMenuItem_Click);
 			// 
 			// DataSizeDWordMenuItem
 			// 
 			this.DataSizeDWordMenuItem.Name = "DataSizeDWordMenuItem";
-			this.DataSizeDWordMenuItem.Size = new System.Drawing.Size(105, 22);
+			this.DataSizeDWordMenuItem.Size = new System.Drawing.Size(116, 22);
 			this.DataSizeDWordMenuItem.Text = "4 Byte";
 			this.DataSizeDWordMenuItem.Click += new System.EventHandler(this.DataSizeDWordMenuItem_Click);
 			// 
 			// BigEndianMenuItem
 			// 
 			this.BigEndianMenuItem.Name = "BigEndianMenuItem";
-			this.BigEndianMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.BigEndianMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.BigEndianMenuItem.Text = "Big Endian";
 			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(203, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(214, 6);
 			// 
 			// GoToAddressMenuItem
 			// 
 			this.GoToAddressMenuItem.Name = "GoToAddressMenuItem";
 			this.GoToAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-			this.GoToAddressMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.GoToAddressMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.GoToAddressMenuItem.Text = "&Go to Address...";
 			this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
 			// 
@@ -357,7 +357,7 @@
 			this.AddToRamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.FindHS;
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
 			this.AddToRamWatchMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
-			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.AddToRamWatchMenuItem.Text = "Add to Ram Watch";
 			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
@@ -366,7 +366,7 @@
 			this.FreezeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.FreezeAddressMenuItem.Name = "FreezeAddressMenuItem";
 			this.FreezeAddressMenuItem.ShortcutKeyDisplayString = "Space";
-			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.FreezeAddressMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.FreezeAddressMenuItem.Text = "&Freeze Address";
 			this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
 			// 
@@ -375,7 +375,7 @@
 			this.UnfreezeAllMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Unfreeze;
 			this.UnfreezeAllMenuItem.Name = "UnfreezeAllMenuItem";
 			this.UnfreezeAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
-			this.UnfreezeAllMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.UnfreezeAllMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.UnfreezeAllMenuItem.Text = "Unfreeze All";
 			this.UnfreezeAllMenuItem.Click += new System.EventHandler(this.UnfreezeAllMenuItem_Click);
 			// 
@@ -384,7 +384,7 @@
 			this.PokeAddressMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.PokeAddressMenuItem.Name = "PokeAddressMenuItem";
 			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.PokeAddressMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.PokeAddressMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.PokeAddressMenuItem.Text = "&Poke Address";
 			this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
 			// 
@@ -403,25 +403,25 @@
             this.toolStripSeparator8,
             this.ResetColorsToDefaultMenuItem});
 			this.CustomColorsSubMenu.Name = "CustomColorsSubMenu";
-			this.CustomColorsSubMenu.Size = new System.Drawing.Size(143, 22);
+			this.CustomColorsSubMenu.Size = new System.Drawing.Size(154, 22);
 			this.CustomColorsSubMenu.Text = "Custom Colors";
 			// 
 			// SetColorsMenuItem
 			// 
 			this.SetColorsMenuItem.Name = "SetColorsMenuItem";
-			this.SetColorsMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.SetColorsMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.SetColorsMenuItem.Text = "Set Colors";
 			this.SetColorsMenuItem.Click += new System.EventHandler(this.SetColorsMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(150, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(161, 6);
 			// 
 			// ResetColorsToDefaultMenuItem
 			// 
 			this.ResetColorsToDefaultMenuItem.Name = "ResetColorsToDefaultMenuItem";
-			this.ResetColorsToDefaultMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.ResetColorsToDefaultMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.ResetColorsToDefaultMenuItem.Text = "Reset to Default";
 			this.ResetColorsToDefaultMenuItem.Click += new System.EventHandler(this.ResetColorsToDefaultMenuItem_Click);
 			// 
@@ -570,18 +570,30 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MemoryViewerBox.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.MemoryViewerBox.Controls.Add(this.AddressLabel);
 			this.MemoryViewerBox.Controls.Add(this.HexScrollBar);
+			this.MemoryViewerBox.Controls.Add(this.AddressLabel);
 			this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
+			this.MemoryViewerBox.Controls.Add(this.Header);
 			this.MemoryViewerBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MemoryViewerBox.Location = new System.Drawing.Point(12, 27);
 			this.MemoryViewerBox.MaximumSize = new System.Drawing.Size(600, 1024);
 			this.MemoryViewerBox.MinimumSize = new System.Drawing.Size(260, 180);
 			this.MemoryViewerBox.Name = "MemoryViewerBox";
-			this.MemoryViewerBox.Size = new System.Drawing.Size(558, 262);
+			this.MemoryViewerBox.Size = new System.Drawing.Size(560, 262);
 			this.MemoryViewerBox.TabIndex = 2;
 			this.MemoryViewerBox.TabStop = false;
 			this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
+			// 
+			// HexScrollBar
+			// 
+			this.HexScrollBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.HexScrollBar.LargeChange = 16;
+			this.HexScrollBar.Location = new System.Drawing.Point(544, 16);
+			this.HexScrollBar.Name = "HexScrollBar";
+			this.HexScrollBar.Size = new System.Drawing.Size(16, 246);
+			this.HexScrollBar.TabIndex = 1;
+			this.HexScrollBar.ValueChanged += new System.EventHandler(this.HexScrollBar_ValueChanged);
 			// 
 			// AddressLabel
 			// 
@@ -593,22 +605,11 @@
 			this.AddressLabel.TabIndex = 2;
 			this.AddressLabel.Text = "      ";
 			// 
-			// HexScrollBar
-			// 
-			this.HexScrollBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.HexScrollBar.LargeChange = 16;
-			this.HexScrollBar.Location = new System.Drawing.Point(539, 8);
-			this.HexScrollBar.Name = "HexScrollBar";
-			this.HexScrollBar.Size = new System.Drawing.Size(16, 251);
-			this.HexScrollBar.TabIndex = 1;
-			this.HexScrollBar.ValueChanged += new System.EventHandler(this.HexScrollBar_ValueChanged);
-			// 
 			// AddressesLabel
 			// 
 			this.AddressesLabel.AutoSize = true;
 			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.AddressesLabel.Location = new System.Drawing.Point(65, 30);
+			this.AddressesLabel.Location = new System.Drawing.Point(79, 30);
 			this.AddressesLabel.Name = "AddressesLabel";
 			this.AddressesLabel.Size = new System.Drawing.Size(31, 13);
 			this.AddressesLabel.TabIndex = 0;

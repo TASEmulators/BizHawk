@@ -91,6 +91,10 @@
 			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+			this.rbUseCustomRatio = new System.Windows.Forms.RadioButton();
+			this.txtCustomARY = new System.Windows.Forms.TextBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.txtCustomARX = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -246,7 +250,7 @@
 			// checkPadInteger
 			// 
 			this.checkPadInteger.AutoSize = true;
-			this.checkPadInteger.Location = new System.Drawing.Point(15, 284);
+			this.checkPadInteger.Location = new System.Drawing.Point(15, 307);
 			this.checkPadInteger.Name = "checkPadInteger";
 			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
 			this.checkPadInteger.TabIndex = 9;
@@ -325,6 +329,10 @@
 			// 
 			// grpARSelection
 			// 
+			this.grpARSelection.Controls.Add(this.txtCustomARY);
+			this.grpARSelection.Controls.Add(this.label12);
+			this.grpARSelection.Controls.Add(this.txtCustomARX);
+			this.grpARSelection.Controls.Add(this.rbUseCustomRatio);
 			this.grpARSelection.Controls.Add(this.label4);
 			this.grpARSelection.Controls.Add(this.txtCustomARHeight);
 			this.grpARSelection.Controls.Add(this.label3);
@@ -334,7 +342,7 @@
 			this.grpARSelection.Controls.Add(this.rbUseSystem);
 			this.grpARSelection.Location = new System.Drawing.Point(15, 171);
 			this.grpARSelection.Name = "grpARSelection";
-			this.grpARSelection.Size = new System.Drawing.Size(377, 107);
+			this.grpARSelection.Size = new System.Drawing.Size(377, 130);
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
@@ -376,10 +384,10 @@
 			this.rbUseCustom.AutoSize = true;
 			this.rbUseCustom.Location = new System.Drawing.Point(26, 80);
 			this.rbUseCustom.Name = "rbUseCustom";
-			this.rbUseCustom.Size = new System.Drawing.Size(107, 17);
+			this.rbUseCustom.Size = new System.Drawing.Size(105, 17);
 			this.rbUseCustom.TabIndex = 13;
 			this.rbUseCustom.TabStop = true;
-			this.rbUseCustom.Text = "Use custom Size:";
+			this.rbUseCustom.Text = "Use custom size:";
 			this.rbUseCustom.UseVisualStyleBackColor = true;
 			// 
 			// label2
@@ -798,6 +806,40 @@
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
+			// rbUseCustomRatio
+			// 
+			this.rbUseCustomRatio.AutoSize = true;
+			this.rbUseCustomRatio.Location = new System.Drawing.Point(26, 103);
+			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
+			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
+			this.rbUseCustomRatio.TabIndex = 16;
+			this.rbUseCustomRatio.TabStop = true;
+			this.rbUseCustomRatio.Text = "Use custom AR:";
+			this.rbUseCustomRatio.UseVisualStyleBackColor = true;
+			// 
+			// txtCustomARY
+			// 
+			this.txtCustomARY.Location = new System.Drawing.Point(230, 102);
+			this.txtCustomARY.Name = "txtCustomARY";
+			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARY.TabIndex = 19;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(212, 107);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(10, 13);
+			this.label12.TabIndex = 17;
+			this.label12.Text = ":";
+			// 
+			// txtCustomARX
+			// 
+			this.txtCustomARX.Location = new System.Drawing.Point(134, 102);
+			this.txtCustomARX.Name = "txtCustomARX";
+			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARX.TabIndex = 18;
+			// 
 			// DisplayConfigLite
 			// 
 			this.AcceptButton = this.btnOk;
@@ -907,5 +949,9 @@
 		private System.Windows.Forms.RadioButton rbDisplayFull;
 		private System.Windows.Forms.CheckBox cbAllowDoubleclickFullscreen;
 		private System.Windows.Forms.LinkLabel linkLabel1;
+		private System.Windows.Forms.RadioButton rbUseCustomRatio;
+		private System.Windows.Forms.TextBox txtCustomARY;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.TextBox txtCustomARX;
 	}
 }

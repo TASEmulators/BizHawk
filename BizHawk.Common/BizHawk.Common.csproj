@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -28,7 +28,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -63,6 +63,7 @@
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />
+    <Compile Include="InstanceDll.cs" />
     <Compile Include="IPC\IPCRingBuffer.cs" />
     <Compile Include="IPC\SharedMemoryBlock.cs" />
     <Compile Include="Log.cs" />
@@ -73,8 +74,11 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="SettingsUtil.cs" />
     <Compile Include="SimpleTime.cs" />
+    <Compile Include="Sprintf.cs" />
     <Compile Include="SwitcherStream.cs" />
+    <Compile Include="TempFileManager.cs" />
     <Compile Include="UndoHistory.cs" />
+    <Compile Include="UnmanagedResourceHeap.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Win32Hacks.cs" />
   </ItemGroup>

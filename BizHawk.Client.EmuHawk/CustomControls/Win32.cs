@@ -7,7 +7,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public static class Win32
+	public unsafe static class Win32
 	{
 		public static bool Is64BitProcess { get { return (IntPtr.Size == 8); } }
 		public static bool Is64BitOperatingSystem { get { return Is64BitProcess || InternalCheckIsWow64(); } }
@@ -386,12 +386,7 @@ namespace BizHawk.Client.EmuHawk
 
 		// Retrieve the save options for a file and returns them in a buffer 
 		[DllImport("avifil32.dll")]
-		public static extern int AVISaveOptions(
-			IntPtr hwnd,
-			int flags,
-			int streams,
-			[In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] ppavi,
-			[In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] plpOptions);
+		public static extern int AVISaveOptions(IntPtr hwnd, int flags, int streams, void* ppAvi, void* plpOptions);
 
 		// Free the resources allocated by the AVISaveOptions function 
 		[DllImport("avifil32.dll")]

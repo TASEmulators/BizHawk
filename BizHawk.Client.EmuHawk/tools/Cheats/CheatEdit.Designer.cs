@@ -231,7 +231,7 @@
 			// 
 			// CompareBox
 			// 
-			this.CompareBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.CompareBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
 			this.CompareBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.CompareBox.Location = new System.Drawing.Point(113, 91);
 			this.CompareBox.MaxLength = 2;
@@ -239,11 +239,11 @@
 			this.CompareBox.Nullable = true;
 			this.CompareBox.Size = new System.Drawing.Size(65, 20);
 			this.CompareBox.TabIndex = 15;
-			this.CompareBox.Type = BizHawk.Client.Common.Watch.DisplayType.Hex;
+			this.CompareBox.Type = BizHawk.Client.Common.DisplayType.Hex;
 			// 
 			// ValueBox
 			// 
-			this.ValueBox.ByteSize = BizHawk.Client.Common.Watch.WatchSize.Byte;
+			this.ValueBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
 			this.ValueBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.ValueBox.Location = new System.Drawing.Point(113, 65);
 			this.ValueBox.MaxLength = 2;
@@ -252,7 +252,7 @@
 			this.ValueBox.Size = new System.Drawing.Size(65, 20);
 			this.ValueBox.TabIndex = 12;
 			this.ValueBox.Text = "00";
-			this.ValueBox.Type = BizHawk.Client.Common.Watch.DisplayType.Hex;
+			this.ValueBox.Type = BizHawk.Client.Common.DisplayType.Hex;
 			// 
 			// CheatEdit
 			// 

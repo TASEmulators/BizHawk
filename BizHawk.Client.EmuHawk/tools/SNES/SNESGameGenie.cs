@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(false, null)]
 	public partial class SNESGameGenie : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
@@ -213,10 +213,10 @@ namespace BizHawk.Client.EmuHawk
 			var watch = Watch.GenerateWatch(
 				MemoryDomains["System Bus"],
 				address,
-				Watch.WatchSize.Byte,
-				Watch.DisplayType.Hex,
-				name,
-				bigEndian: false
+				WatchSize.Byte,
+				Client.Common.DisplayType.Hex,
+				false,
+				name
 			);
 
 			Global.CheatList.Add(new Cheat(

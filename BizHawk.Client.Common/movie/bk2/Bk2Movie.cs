@@ -27,6 +27,8 @@ namespace BizHawk.Client.Common
 			MakeBackup = true;
 
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
+
+			_log = StringLogUtil.MakeStringLog();
 		}
 
 		private string _filename;

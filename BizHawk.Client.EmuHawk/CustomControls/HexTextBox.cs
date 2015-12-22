@@ -30,11 +30,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetHexProperties(long domainSize)
 		{
+			bool wasMaxSizeSet = _maxSize.HasValue;
+			int currMaxLength = MaxLength;
+
 			_maxSize = domainSize - 1;
+
 			MaxLength = _maxSize.Value.NumHexDigits();
 			_addressFormatStr = "{0:X" + MaxLength + "}";
-			
-			ResetText();
+
+			//try to preserve the old value, as best we can
+			if(!wasMaxSizeSet)
+				ResetText();
+			else if(_nullable)
+				Text = "";
+			else if (MaxLength != currMaxLength)
+			{
+				long? value = ToLong();
+				if (value.HasValue)
+					value = value.Value & ((1L << (MaxLength * 4)) - 1);
+				else value = 0;
+				Text = string.Format(_addressFormatStr, value.Value);
+			}
 		}
 
 		public long GetMax()

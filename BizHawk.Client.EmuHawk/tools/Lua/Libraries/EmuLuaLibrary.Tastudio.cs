@@ -38,6 +38,22 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"setbranchtext",
+			"adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified"
+			)]
+		public void SetBranchText(string text, int? index = null)
+		{
+			if (index != null)
+			{
+				Tastudio.CurrentTasMovie.GetBranch(index.Value).UserText = text;
+			}
+			else
+			{
+				Tastudio.CurrentTasMovie.NewBranchText = text;
+			}
+		}
+
+		[LuaMethodAttributes(
 			"getmarker",
 			"returns the marker text at the given frame, or an empty string if there is no marker for the given frame"
 		)]

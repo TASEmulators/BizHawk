@@ -293,7 +293,7 @@ namespace BizHawk.Client.Common
 		/// <param name="addr">The starting address for which you will get the number of bytes
 		/// <param name="size">The number of bytes of the cheat to return</param>
 		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>
-		public int? GetCheatValue(MemoryDomain domain, long addr, Watch.WatchSize size)
+		public int? GetCheatValue(MemoryDomain domain, long addr, WatchSize size)
 		{
 			var activeCheat = _cheatList.FirstOrDefault(cheat => cheat.Contains(addr));
 			if (activeCheat == (Cheat)null)
@@ -304,21 +304,21 @@ namespace BizHawk.Client.Common
 			switch (activeCheat.Size)
 			{
 				default:
-				case Watch.WatchSize.Byte:
+				case WatchSize.Byte:
 					return activeCheat.Value;
-				case Watch.WatchSize.Word:
-					if (size == Watch.WatchSize.Byte)
+				case WatchSize.Word:
+					if (size == WatchSize.Byte)
 					{
 						return GetByteValue(domain, addr);
 					}
 
 					return activeCheat.Value;
-				case Watch.WatchSize.DWord:
-					if (size == Watch.WatchSize.Byte)
+				case WatchSize.DWord:
+					if (size == WatchSize.Byte)
 					{
 						return GetByteValue(domain, addr);
 					}
-					else if (size == Watch.WatchSize.Word)
+					else if (size == WatchSize.Word)
 					{
 						if (activeCheat.Address == addr)
 						{
@@ -385,7 +385,7 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// Set to hex for saving 
-							cheat.SetType(Watch.DisplayType.Hex);
+							cheat.SetType(DisplayType.Hex);
 
 							sb
 								.Append(cheat.AddressStr).Append('\t')
@@ -447,8 +447,8 @@ namespace BizHawk.Client.Common
 						else
 						{
 							int? compare;
-							var size = Watch.WatchSize.Byte;
-							var type = Watch.DisplayType.Hex;
+							var size = WatchSize.Byte;
+							var type = DisplayType.Hex;
 							var bigendian = false;
 
 							if (s.Length < 6)
@@ -485,9 +485,9 @@ namespace BizHawk.Client.Common
 								domain,
 								address,
 								size,
-								type,
-								name,
-								bigendian);
+								type,								
+								bigendian,
+                                name);
 
 							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled));
 						}

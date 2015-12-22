@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		public enum LoadErrorType { Unknown, MissingFirmware, XML }
+		public enum LoadErrorType { Unknown, MissingFirmware, XML, DiscError }
 
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()
@@ -179,6 +179,37 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		public bool AsLibretro;
+
+		bool HandleArchiveBinding(HawkFile file)
+		{
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
+
+			// try binding normal rom extensions first
+			if (!file.IsBound)
+			{
+				file.BindSoleItemOf(romExtensions);
+			}
+
+			// if we have an archive and need to bind something, then pop the dialog
+			if (file.IsArchive && !file.IsBound)
+			{
+				int? result = HandleArchive(file);
+				if (result.HasValue)
+				{
+					file.BindArchiveMember(result.Value);
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			CanonicalFullPath = file.CanonicalFullPath;
+
+			return true;
+		}
+
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
 			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
@@ -197,39 +228,21 @@ namespace BizHawk.Client.Common
 
 			using (var file = new HawkFile())
 			{
-				var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
 
-				// lets not use this unless we need to
-				// file.NonArchiveExtensions = romExtensions;
-				file.Open(path);
-
-				// if the provided file doesnt even exist, give up!
-				if (!file.Exists)
+				//only try mounting a file if a filename was given
+				if (!string.IsNullOrEmpty(path))
 				{
-					return false;
-				}
+					// lets not use this unless we need to
+					// file.NonArchiveExtensions = romExtensions;
+					file.Open(path);
 
-				// try binding normal rom extensions first
-				if (!file.IsBound)
-				{
-					file.BindSoleItemOf(romExtensions);
-				}
-
-				// if we have an archive and need to bind something, then pop the dialog
-				if (file.IsArchive && !file.IsBound)
-				{
-					int? result = HandleArchive(file);
-					if (result.HasValue)
-					{
-						file.BindArchiveMember(result.Value);
-					}
-					else
+					// if the provided file doesnt even exist, give up!
+					if (!file.Exists)
 					{
 						return false;
 					}
 				}
 
-				// set this here so we can see what file we tried to load even if an error occurs
 				CanonicalFullPath = file.CanonicalFullPath;
 
 				IEmulator nextEmulator = null;
@@ -238,8 +251,96 @@ namespace BizHawk.Client.Common
 
 				try
 				{
-					var ext = file.Extension.ToLowerInvariant();
-					if (ext == ".m3u")
+					string ext = null;
+
+					if (AsLibretro)
+					{
+						string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
+
+						var retro = new LibRetroEmulator(nextComm, nextComm.LaunchLibretroCore);
+						nextEmulator = retro;
+
+						//kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesnt fail
+						var oldGame = Global.Game;
+
+						if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
+						{
+							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+							//game name == name of core
+							var gameName = codePathPart;
+							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
+
+							//if we are allowed to run NoGame and we dont have a game, boot up the core that way
+							bool ret = retro.LoadNoGame();
+
+							Global.Game = oldGame;
+
+							if (!ret)
+							{
+								DoLoadErrorCallback("LibretroNoGame failed to load. This is weird", "Libretro");
+								retro.Dispose();
+								return false;
+							}
+						}
+						else
+						{
+							bool ret;
+
+							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+							//game name == name of core + extensionless_game_filename
+							var gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
+							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
+
+							//if the core requires an archive file, then try passing the filename of the archive
+							//(but do we ever need to actually load the contents of the archive file into ram?)
+							if (retro.Description.NeedsArchives)
+							{
+								if (file.IsArchiveMember)
+									throw new InvalidOperationException("Should not have bound file member for libretro block_extract core");
+								ret = retro.LoadPath(file.FullPathWithoutMember);
+							}
+							else
+							{
+								//otherwise load the data or pass the filename, as requested. but..
+								if (retro.Description.NeedsRomAsPath && file.IsArchiveMember)
+									throw new InvalidOperationException("Cannot pass archive member to libretro needs_fullpath core");
+
+								if (retro.Description.NeedsRomAsPath)
+									ret = retro.LoadPath(file.FullPathWithoutMember);
+								else
+								{
+									ret = HandleArchiveBinding(file);
+									if (ret)
+										ret = retro.LoadData(file.ReadAllBytes());
+								}
+							}
+
+							Global.Game = oldGame;
+
+							if (!ret)
+							{
+								DoLoadErrorCallback("Libretro failed to load the given file. This is probably due to a core/content mismatch. Moreover, the process is now likely to be hosed. We suggest you restart the program.", "Libretro");
+								retro.Dispose();
+								return false;
+							}
+						}
+
+
+					}
+					else
+					{
+						//if not libretro:
+						
+						//do extension checknig
+						ext = file.Extension.ToLowerInvariant();
+
+						//do the archive binding we had to skip
+						if (!HandleArchiveBinding(file))
+							return false;
+					}
+
+					if (string.IsNullOrEmpty(ext)) { }
+					else if (ext == ".m3u")
 					{
 						//HACK ZONE - currently only psx supports m3u
 						M3U_File m3u;
@@ -265,7 +366,7 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_SlowLoadAborted)
 							{
-								System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 								return false;
 							}
 
@@ -324,7 +425,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_SlowLoadAborted)
 						{
-							System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 							return false;
 						}
 
@@ -460,7 +561,7 @@ namespace BizHawk.Client.Common
 
 										if (discMountJob.OUT_SlowLoadAborted)
 										{
-											System.Windows.Forms.MessageBox.Show("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk");
+											DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "PSX", LoadErrorType.DiscError);
 											return false;
 										}
 
@@ -515,7 +616,7 @@ namespace BizHawk.Client.Common
 							{
 								// need to get rid of this hack at some point
 								rom = new RomGame(file);
-								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", string.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 								byte[] romData = null;
 								byte[] xmlData = rom.FileData;
 
@@ -545,13 +646,13 @@ namespace BizHawk.Client.Common
 						PSF psf = new PSF();
 						psf.Load(path, cbDeflater);
 						nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
-						nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want.";
+						nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 
 						//total garbage, this
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 					}
-					else // most extensions
+					else if(ext != null) // most extensions
 					{
 						rom = new RomGame(file);
 
@@ -689,13 +790,6 @@ namespace BizHawk.Client.Common
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
-								break;
-							case "DEBUG":
-								if (VersionInfo.DeveloperBuild)
-								{
-									nextEmulator = LibRetroEmulator.CreateDebug(nextComm, rom.RomData);
-								}
-
 								break;
 						}
 

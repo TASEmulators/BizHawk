@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(false, null)]
 	public partial class GenGameGenie : Form, IToolFormAutoConfig
 	{
 		#pragma warning disable 675
@@ -316,10 +317,10 @@ namespace BizHawk.Client.EmuHawk
 			var watch = Watch.GenerateWatch(
 				MemoryDomains["MD CART"],
 				address,
-				Watch.WatchSize.Word,
-				Watch.DisplayType.Hex,
-				name,
-				true
+				WatchSize.Word,
+				Client.Common.DisplayType.Hex,
+				true,
+				name
 			);
 
 			Global.CheatList.Add(new Cheat(

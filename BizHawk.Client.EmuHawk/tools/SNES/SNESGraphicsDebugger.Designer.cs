@@ -2143,10 +2143,9 @@
 			// pnDetailsPaletteColor
 			// 
 			this.pnDetailsPaletteColor.BackColor = System.Drawing.Color.Red;
-			this.pnDetailsPaletteColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.pnDetailsPaletteColor.Location = new System.Drawing.Point(3, 4);
+			this.pnDetailsPaletteColor.Location = new System.Drawing.Point(6, 6);
 			this.pnDetailsPaletteColor.Name = "pnDetailsPaletteColor";
-			this.pnDetailsPaletteColor.Size = new System.Drawing.Size(69, 68);
+			this.pnDetailsPaletteColor.Size = new System.Drawing.Size(64, 64);
 			this.pnDetailsPaletteColor.TabIndex = 3;
 			this.pnDetailsPaletteColor.DoubleClick += new System.EventHandler(this.pnDetailsPaletteColor_DoubleClick);
 			// 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
+using Emu = BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly List<Watch> _watchList = new List<Watch>();
 
-		public IMemoryDomains MemoryDomains { get; set; }
+		public Emu.IMemoryDomains MemoryDomains { get; set; }
 
 		private Mode _mode = Mode.New;
 		private bool _loading = true;
@@ -64,13 +64,13 @@ namespace BizHawk.Client.EmuHawk
 				case Mode.Edit:
 					switch (_watchList[0].Size)
 					{
-						case Watch.WatchSize.Byte:
+						case WatchSize.Byte:
 							SizeDropDown.SelectedItem = SizeDropDown.Items[0];
 							break;
-						case Watch.WatchSize.Word:
+						case WatchSize.Word:
 							SizeDropDown.SelectedItem = SizeDropDown.Items[1];
 							break;
-						case Watch.WatchSize.DWord:
+						case WatchSize.DWord:
 							SizeDropDown.SelectedItem = SizeDropDown.Items[2];
 							break;
 					}
@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						NotesBox.Text = _watchList[0].Notes;
-						AddressBox.SetFromLong(_watchList[0].Address ?? 0);
+						AddressBox.SetFromLong(_watchList[0].Address);
 					}
 
 					SetBigEndianCheckBox();
@@ -105,7 +105,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetWatch(MemoryDomain domain, IEnumerable<Watch> watches = null, Mode mode = Mode.New)
+		public void SetWatch(Emu.MemoryDomain domain, IEnumerable<Watch> watches = null, Mode mode = Mode.New)
 		{
 			if (watches != null)
 			{
@@ -118,7 +118,7 @@ namespace BizHawk.Client.EmuHawk
 			DomainDropDown.Items.AddRange(MemoryDomains
 				.Select(d => d.ToString())
 				.ToArray());
-			DomainDropDown.SelectedItem = MemoryDomains.MainMemory.ToString();
+			DomainDropDown.SelectedItem = domain.ToString();
 
 			SetTitle();
 		}
@@ -160,13 +160,22 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					DisplayTypeDropDown.Items.AddRange(ByteWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
+					foreach(DisplayType t in ByteWatch.ValidTypes)
+					{
+						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
+                    }
 					break;
 				case 1:
-					DisplayTypeDropDown.Items.AddRange(WordWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
+					foreach (DisplayType t in WordWatch.ValidTypes)
+					{
+						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
+					}
 					break;
 				case 2:
-					DisplayTypeDropDown.Items.AddRange(DWordWatch.ValidTypes.ConvertAll(e => Watch.DisplayTypeToString(e)).ToArray());
+					foreach (DisplayType t in DWordWatch.ValidTypes)
+					{
+						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
+					}
 					break;
 			}
 
@@ -209,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var domain = MemoryDomains.FirstOrDefault(d => d.Name == DomainDropDown.SelectedItem.ToString()) ??
 						 MemoryDomains.MainMemory;
-			BigEndianCheckBox.Checked = domain.EndianType == MemoryDomain.Endian.Big;
+			BigEndianCheckBox.Checked = domain.EndianType == Emu.MemoryDomain.Endian.Big;
 		}
 
 		#region Events
@@ -236,13 +245,13 @@ namespace BizHawk.Client.EmuHawk
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
-							_watchList.Add(new ByteWatch(domain, address, type, bigendian, notes));
+							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Byte, type, bigendian, notes));
 							break;
 						case 1:
-							_watchList.Add(new WordWatch(domain, address, type, bigendian, notes));
+							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.Word, type, bigendian, notes));
 							break;
 						case 2:
-							_watchList.Add(new DWordWatch(domain, address, type, bigendian, notes));
+							_watchList.Add(Watch.GenerateWatch(domain, address, WatchSize.DWord, type, bigendian, notes));
 							break;
 					}
 
@@ -258,11 +267,11 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_watchList.Add(Watch.GenerateWatch(
 								watch.Domain,
-								watch.Address ?? 0,
+								watch.Address,
 								watch.Size,
 								watch.Type,
-								watch.Notes,
-								watch.BigEndian));
+								watch.BigEndian,
+								watch.Notes));
 					}
 
 					DoEdit();
@@ -283,28 +292,28 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (var i = 0; i < _watchList.Count; i++)
 				{
-					var size = Watch.WatchSize.Byte;
+					var size = WatchSize.Byte;
 					switch (SizeDropDown.SelectedIndex)
 					{
 						case 0:
-							size = Watch.WatchSize.Byte;
+							size = WatchSize.Byte;
 							break;
 						case 1:
-							size = Watch.WatchSize.Word;
+							size = WatchSize.Word;
 							break;
 						case 2:
-							size = Watch.WatchSize.DWord;
+							size = WatchSize.DWord;
 							break;
 					}
 
 					_watchList[i] = Watch.GenerateWatch(
 						_watchList[i].Domain,
-						_watchList.Count == 1 ? AddressBox.ToRawInt() ?? 0 : _watchList[i].Address ?? 0,
+						_watchList.Count == 1 ? AddressBox.ToRawInt() ?? 0 : _watchList[i].Address,
 						size,
-						_watchList[i].Type,
-						_watchList[i].Notes,
-						_watchList[i].BigEndian
-					);
+						_watchList[i].Type,						
+						_watchList[i].BigEndian,
+						_watchList[i].Notes
+                    );
 				}
 			}
 

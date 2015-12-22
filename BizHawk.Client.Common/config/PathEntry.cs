@@ -157,8 +157,9 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 10 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 11 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", "Tools"), Ordinal = 12 },
+                    new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "External Tools", Path = Path.Combine(".", "ExternalTools"), Ordinal = 13 },
 
-					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
+                    new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
@@ -311,6 +312,15 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 					new PathEntry { System = "AppleII", SystemDisplayName = "Apple II", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
+
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Base", Path = Path.Combine(".", "Libretro"), Ordinal = 0 },
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Cores", Path = Path.Combine(".", "Cores"), Ordinal = 1 },
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "System", Path = Path.Combine(".", "System"), Ordinal = 2 },
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Savestates", Path = Path.Combine(".", "State"), Ordinal = 3 },
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 4 },
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 5 },
+					new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 6 },
+
 				};
 			}
 		}

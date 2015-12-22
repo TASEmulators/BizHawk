@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 //todo - be able to run out of PATH too
 
@@ -31,7 +32,9 @@ namespace BizHawk.Bizware.BizwareGL
 			public Dictionary<string, string> MapNativeToCode = new Dictionary<string, string>();
 		}
 
-		public Results Run(string code, string entry, string profile)
+		Regex rxHlslSamplerCrashWorkaround = new Regex(@"\((.*?)(in sampler2D)(.*?)\)", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+		public Results Run(string code, string entry, string profile, bool hlslHacks)
 		{
 			//version=110; GLSL generates old fashioned semantic attributes and not generic attributes
 			string[] args = new[]{"-profile", profile, "-entry", entry, "-po", "version=110"};
@@ -100,6 +103,11 @@ namespace BizHawk.Bizware.BizwareGL
 				if (!ok)
 					Console.WriteLine(ret.Errors);
 
+				if (hlslHacks)
+				{
+					ret.Code = rxHlslSamplerCrashWorkaround.Replace(ret.Code, m => string.Format("({0}uniform sampler2D{1})", m.Groups[1].Value, m.Groups[3].Value));
+				}
+
 				//make variable name map
 				//loop until the first line that doesnt start with a comment
 				var reader = new StringReader(ret.Code);
@@ -127,7 +135,6 @@ namespace BizHawk.Bizware.BizwareGL
 
 				return ret;
 			}
-
 		}
 	}
 }
