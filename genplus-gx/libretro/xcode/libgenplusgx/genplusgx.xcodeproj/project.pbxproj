@@ -583,7 +583,7 @@
 		9EB9177B189DBE7D002DF58F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = bizhawk;
 			};
 			buildConfigurationList = 9EB9177E189DBE7D002DF58F /* Build configuration list for PBXProject "genplusgx" */;
@@ -709,7 +709,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -751,7 +751,7 @@
 					"$(SRCROOT)/../../",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
@@ -765,7 +765,7 @@
 					"$(SRCROOT)/../../",
 				);
 				PRODUCT_NAME = genplusgx;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -779,7 +779,7 @@
 					"$(SRCROOT)/../../",
 				);
 				PRODUCT_NAME = genplusgx;
-				SDKROOT = macosx10.9;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
