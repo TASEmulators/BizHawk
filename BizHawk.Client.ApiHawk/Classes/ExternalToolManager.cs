@@ -37,7 +37,10 @@ namespace BizHawk.Client.ApiHawk
 			}
 			directoryMonitor = new FileSystemWatcher(Global.Config.PathEntries["Global", "External Tools"].Path, "*.dll");
 			directoryMonitor.IncludeSubdirectories = false;
-			directoryMonitor.Created += DirectoryMonitor_Created;
+			directoryMonitor.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName;
+			directoryMonitor.Filter = "*.dll";
+			directoryMonitor.Created += new FileSystemEventHandler(DirectoryMonitor_Created);
+			directoryMonitor.EnableRaisingEvents = true;
 
 			BuildToolStrip();
 		}

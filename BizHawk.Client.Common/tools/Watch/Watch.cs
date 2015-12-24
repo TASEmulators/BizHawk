@@ -567,9 +567,14 @@ namespace BizHawk.Client.Common
 				);
 		}
 
+		/// <summary>
+		/// Transform the current instance into a displayable (short representation) string
+		/// It's used by the "Display on screen" option in the RamWatch window
+		/// </summary>
+		/// <returns>A well formatted string representation</returns>
 		public virtual string ToDisplayString()
 		{
-			return Notes + ": " + ValueString;
+			return string.Format("{0}: {1}", Notes, ValueString);
 		}
 
 		#endregion
