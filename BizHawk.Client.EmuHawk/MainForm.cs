@@ -4094,6 +4094,5 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
-
 	}
 }

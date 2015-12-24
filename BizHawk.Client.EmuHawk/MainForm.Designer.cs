@@ -1072,7 +1072,7 @@
 			// 
 			this.RecordAVMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.RecordHS;
 			this.RecordAVMenuItem.Name = "RecordAVMenuItem";
-			this.RecordAVMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.RecordAVMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.RecordAVMenuItem.Text = "&Record AVI/WAV";
 			this.RecordAVMenuItem.Click += new System.EventHandler(this.RecordAVMenuItem_Click);
 			// 
@@ -1080,7 +1080,7 @@
 			// 
 			this.ConfigAndRecordAVMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.AVI;
 			this.ConfigAndRecordAVMenuItem.Name = "ConfigAndRecordAVMenuItem";
-			this.ConfigAndRecordAVMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.ConfigAndRecordAVMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.ConfigAndRecordAVMenuItem.Text = "Config and Record AVI/WAV";
 			this.ConfigAndRecordAVMenuItem.Click += new System.EventHandler(this.ConfigAndRecordAVMenuItem_Click);
 			// 
@@ -1088,26 +1088,26 @@
 			// 
 			this.StopAVIMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.StopAVIMenuItem.Name = "StopAVIMenuItem";
-			this.StopAVIMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.StopAVIMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.StopAVIMenuItem.Text = "&Stop AVI/WAV";
 			this.StopAVIMenuItem.Click += new System.EventHandler(this.StopAVMenuItem_Click);
 			// 
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(220, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(222, 6);
 			// 
 			// CaptureOSDMenuItem
 			// 
 			this.CaptureOSDMenuItem.Name = "CaptureOSDMenuItem";
-			this.CaptureOSDMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.CaptureOSDMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.CaptureOSDMenuItem.Text = "Capture OSD";
 			this.CaptureOSDMenuItem.Click += new System.EventHandler(this.CaptureOSDMenuItem_Click);
 			// 
 			// SynclessRecordingMenuItem
 			// 
 			this.SynclessRecordingMenuItem.Name = "SynclessRecordingMenuItem";
-			this.SynclessRecordingMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.SynclessRecordingMenuItem.Size = new System.Drawing.Size(225, 22);
 			this.SynclessRecordingMenuItem.Text = "S&yncless Recording Tools";
 			this.SynclessRecordingMenuItem.Click += new System.EventHandler(this.SynclessRecordingMenuItem_Click);
 			// 
@@ -1865,7 +1865,7 @@
             this.batchRunnerToolStripMenuItem,
             this.ExperimentalToolsSubMenu});
 			this.ToolsSubMenu.Name = "ToolsSubMenu";
-			this.ToolsSubMenu.Size = new System.Drawing.Size(47, 19);
+			this.ToolsSubMenu.Size = new System.Drawing.Size(48, 19);
 			this.ToolsSubMenu.Text = "&Tools";
 			this.ToolsSubMenu.DropDownOpened += new System.EventHandler(this.ToolsSubMenu_DropDownOpened);
 			// 
@@ -2046,6 +2046,7 @@
 			this.NewHexEditorMenuItem.Name = "NewHexEditorMenuItem";
 			this.NewHexEditorMenuItem.Size = new System.Drawing.Size(155, 22);
 			this.NewHexEditorMenuItem.Text = "New Hex Editor";
+			this.NewHexEditorMenuItem.Click += new System.EventHandler(this.NewHexEditorMenuItem_Click);
 			// 
 			// NESSubMenu
 			// 
@@ -2212,7 +2213,7 @@
 			// 
 			this.PceControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.PceControllerSettingsMenuItem.Name = "PceControllerSettingsMenuItem";
-			this.PceControllerSettingsMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PceControllerSettingsMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PceControllerSettingsMenuItem.Text = "Controller Settings";
 			this.PceControllerSettingsMenuItem.Click += new System.EventHandler(this.PceControllerSettingsMenuItem_Click);
 			// 
@@ -2220,59 +2221,59 @@
 			// 
 			this.PCEGraphicsSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.tvIcon;
 			this.PCEGraphicsSettingsMenuItem.Name = "PCEGraphicsSettingsMenuItem";
-			this.PCEGraphicsSettingsMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PCEGraphicsSettingsMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEGraphicsSettingsMenuItem.Text = "Graphics Settings";
 			this.PCEGraphicsSettingsMenuItem.Click += new System.EventHandler(this.PCEGraphicsSettingsMenuItem_Click);
 			// 
 			// toolStripSeparator32
 			// 
 			this.toolStripSeparator32.Name = "toolStripSeparator32";
-			this.toolStripSeparator32.Size = new System.Drawing.Size(255, 6);
+			this.toolStripSeparator32.Size = new System.Drawing.Size(256, 6);
 			// 
 			// PCEBGViewerMenuItem
 			// 
 			this.PCEBGViewerMenuItem.Name = "PCEBGViewerMenuItem";
-			this.PCEBGViewerMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PCEBGViewerMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEBGViewerMenuItem.Text = "&BG Viewer";
 			this.PCEBGViewerMenuItem.Click += new System.EventHandler(this.PCEBGViewerMenuItem_Click);
 			// 
 			// PCEtileViewerToolStripMenuItem
 			// 
 			this.PCEtileViewerToolStripMenuItem.Name = "PCEtileViewerToolStripMenuItem";
-			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PCEtileViewerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEtileViewerToolStripMenuItem.Text = "&Tile Viewer";
 			this.PCEtileViewerToolStripMenuItem.Click += new System.EventHandler(this.PceTileViewerMenuItem_Click);
 			// 
 			// PceSoundDebuggerToolStripMenuItem
 			// 
 			this.PceSoundDebuggerToolStripMenuItem.Name = "PceSoundDebuggerToolStripMenuItem";
-			this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PceSoundDebuggerToolStripMenuItem.Text = "&Sound Debugger";
 			this.PceSoundDebuggerToolStripMenuItem.Click += new System.EventHandler(this.PceSoundDebuggerToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator25
 			// 
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(255, 6);
+			this.toolStripSeparator25.Size = new System.Drawing.Size(256, 6);
 			// 
 			// PCEAlwaysPerformSpriteLimitMenuItem
 			// 
 			this.PCEAlwaysPerformSpriteLimitMenuItem.Name = "PCEAlwaysPerformSpriteLimitMenuItem";
-			this.PCEAlwaysPerformSpriteLimitMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PCEAlwaysPerformSpriteLimitMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEAlwaysPerformSpriteLimitMenuItem.Text = "Always Perform Sprite Limit";
 			this.PCEAlwaysPerformSpriteLimitMenuItem.Click += new System.EventHandler(this.PCEAlwaysPerformSpriteLimitMenuItem_Click);
 			// 
 			// PCEAlwaysEqualizeVolumesMenuItem
 			// 
 			this.PCEAlwaysEqualizeVolumesMenuItem.Name = "PCEAlwaysEqualizeVolumesMenuItem";
-			this.PCEAlwaysEqualizeVolumesMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PCEAlwaysEqualizeVolumesMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEAlwaysEqualizeVolumesMenuItem.Text = "Always Equalize Volumes (PCE-CD)";
 			this.PCEAlwaysEqualizeVolumesMenuItem.Click += new System.EventHandler(this.PCEAlwaysEqualizeVolumesMenuItem_Click);
 			// 
 			// PCEArcadeCardRewindEnableMenuItem
 			// 
 			this.PCEArcadeCardRewindEnableMenuItem.Name = "PCEArcadeCardRewindEnableMenuItem";
-			this.PCEArcadeCardRewindEnableMenuItem.Size = new System.Drawing.Size(258, 22);
+			this.PCEArcadeCardRewindEnableMenuItem.Size = new System.Drawing.Size(259, 22);
 			this.PCEArcadeCardRewindEnableMenuItem.Text = "Arcade Card Rewind-Enable Hack";
 			this.PCEArcadeCardRewindEnableMenuItem.Click += new System.EventHandler(this.PCEArcadeCardRewindEnableMenuItem_Click);
 			// 

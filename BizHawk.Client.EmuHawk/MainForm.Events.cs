@@ -1369,6 +1369,11 @@ namespace BizHawk.Client.EmuHawk
 			new BatchRun().ShowDialog();
 		}
 
+		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<NewHexEditor>();
+		}
+
 		#endregion
 
 		#region NES

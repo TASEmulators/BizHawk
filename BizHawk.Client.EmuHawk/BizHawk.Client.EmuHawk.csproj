@@ -479,6 +479,9 @@
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\HexView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
