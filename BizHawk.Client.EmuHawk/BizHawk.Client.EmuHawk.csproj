@@ -807,6 +807,12 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\HexEditor\NewHexEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\HexEditor\NewHexEditor.Designer.cs">
+      <DependentUpon>NewHexEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Lua\EnvironmentSandbox.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
@@ -1420,6 +1426,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexEditor\NewHexEditor.resx">
+      <DependentUpon>NewHexEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
       <DependentUpon>LuaCanvas.cs</DependentUpon>

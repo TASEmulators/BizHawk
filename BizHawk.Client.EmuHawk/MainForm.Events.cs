@@ -1260,12 +1260,11 @@ namespace BizHawk.Client.EmuHawk
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 
-			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
-			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
-
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
 
 			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
+
+			ExperimentalToolsSubMenu.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -1292,6 +1291,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
 			}
+		}
+
+		private void ExperimentalToolsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
+			NewHexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NewHexEditor>();
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)

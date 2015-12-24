@@ -204,17 +204,19 @@
 			this.TAStudioMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MacroToolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.VirtualPadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.BasicBotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.LuaConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			this.CheatsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.LuaConsoleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.externalToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.dummyExternalTool = new System.Windows.Forms.ToolStripMenuItem();
+			this.gameSharkConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator29 = new System.Windows.Forms.ToolStripSeparator();
 			this.MultiDiskBundlerFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.gameSharkConverterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.externalToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.dummyExternalTool = new System.Windows.Forms.ToolStripMenuItem();
 			this.batchRunnerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ExperimentalToolsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AutoHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.NewHexEditorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.quickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1852,7 +1854,6 @@
             this.TAStudioMenuItem,
             this.MacroToolMenuItem,
             this.VirtualPadMenuItem,
-            this.AutoHawkMenuItem,
             this.BasicBotMenuItem,
             this.LuaConsoleMenuItem,
             this.toolStripSeparator11,
@@ -1861,7 +1862,8 @@
             this.toolStripSeparator29,
             this.MultiDiskBundlerFileMenuItem,
             this.externalToolToolStripMenuItem,
-            this.batchRunnerToolStripMenuItem});
+            this.batchRunnerToolStripMenuItem,
+            this.ExperimentalToolsSubMenu});
 			this.ToolsSubMenu.Name = "ToolsSubMenu";
 			this.ToolsSubMenu.Size = new System.Drawing.Size(47, 19);
 			this.ToolsSubMenu.Text = "&Tools";
@@ -1951,19 +1953,20 @@
 			this.VirtualPadMenuItem.Text = "Virtual Pad";
 			this.VirtualPadMenuItem.Click += new System.EventHandler(this.VirtualPadMenuItem_Click);
 			// 
-			// AutoHawkMenuItem
-			// 
-			this.AutoHawkMenuItem.Name = "AutoHawkMenuItem";
-			this.AutoHawkMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.AutoHawkMenuItem.Text = "AutoHawk";
-			this.AutoHawkMenuItem.Click += new System.EventHandler(this.AutoHawkMenuItem_Click);
-			// 
 			// BasicBotMenuItem
 			// 
 			this.BasicBotMenuItem.Name = "BasicBotMenuItem";
 			this.BasicBotMenuItem.Size = new System.Drawing.Size(189, 22);
 			this.BasicBotMenuItem.Text = "Basic Bot";
 			this.BasicBotMenuItem.Click += new System.EventHandler(this.BasicBotMenuItem_Click);
+			// 
+			// LuaConsoleMenuItem
+			// 
+			this.LuaConsoleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lua;
+			this.LuaConsoleMenuItem.Name = "LuaConsoleMenuItem";
+			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.LuaConsoleMenuItem.Text = "Lua Console";
+			this.LuaConsoleMenuItem.Click += new System.EventHandler(this.LuaConsoleMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
@@ -1978,28 +1981,13 @@
 			this.CheatsMenuItem.Text = "Cheats";
 			this.CheatsMenuItem.Click += new System.EventHandler(this.CheatsMenuItem_Click);
 			// 
-			// LuaConsoleMenuItem
+			// gameSharkConverterToolStripMenuItem
 			// 
-			this.LuaConsoleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lua;
-			this.LuaConsoleMenuItem.Name = "LuaConsoleMenuItem";
-			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.LuaConsoleMenuItem.Text = "Lua Console";
-			this.LuaConsoleMenuItem.Click += new System.EventHandler(this.LuaConsoleMenuItem_Click);
-			// 
-			// externalToolToolStripMenuItem
-			// 
-			this.externalToolToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.dummyExternalTool});
-			this.externalToolToolStripMenuItem.Name = "externalToolToolStripMenuItem";
-			this.externalToolToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.externalToolToolStripMenuItem.Text = "External Tool";
-			this.externalToolToolStripMenuItem.DropDownOpening += new System.EventHandler(this.ExternalToolToolStripMenuItem_DropDownOpening);
-			// 
-			// dummyExternalTool
-			// 
-			this.dummyExternalTool.Name = "dummyExternalTool";
-			this.dummyExternalTool.Size = new System.Drawing.Size(152, 22);
-			this.dummyExternalTool.Text = "None";
+			this.gameSharkConverterToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("gameSharkConverterToolStripMenuItem.Image")));
+			this.gameSharkConverterToolStripMenuItem.Name = "gameSharkConverterToolStripMenuItem";
+			this.gameSharkConverterToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.gameSharkConverterToolStripMenuItem.Text = "GameShark Converter";
+			this.gameSharkConverterToolStripMenuItem.Click += new System.EventHandler(this.gameSharkConverterToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator29
 			// 
@@ -2014,13 +2002,20 @@
 			this.MultiDiskBundlerFileMenuItem.Text = "Multi-disk Bundler";
 			this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.CreateMultigameFileMenuItem_Click);
 			// 
-			// gameSharkConverterToolStripMenuItem
+			// externalToolToolStripMenuItem
 			// 
-			this.gameSharkConverterToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("gameSharkConverterToolStripMenuItem.Image")));
-			this.gameSharkConverterToolStripMenuItem.Name = "gameSharkConverterToolStripMenuItem";
-			this.gameSharkConverterToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.gameSharkConverterToolStripMenuItem.Text = "GameShark Converter";
-			this.gameSharkConverterToolStripMenuItem.Click += new System.EventHandler(this.gameSharkConverterToolStripMenuItem_Click);
+			this.externalToolToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.dummyExternalTool});
+			this.externalToolToolStripMenuItem.Name = "externalToolToolStripMenuItem";
+			this.externalToolToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.externalToolToolStripMenuItem.Text = "External Tool";
+			this.externalToolToolStripMenuItem.DropDownOpening += new System.EventHandler(this.ExternalToolToolStripMenuItem_DropDownOpening);
+			// 
+			// dummyExternalTool
+			// 
+			this.dummyExternalTool.Name = "dummyExternalTool";
+			this.dummyExternalTool.Size = new System.Drawing.Size(103, 22);
+			this.dummyExternalTool.Text = "None";
 			// 
 			// batchRunnerToolStripMenuItem
 			// 
@@ -2029,6 +2024,28 @@
 			this.batchRunnerToolStripMenuItem.Text = "Batch Runner";
 			this.batchRunnerToolStripMenuItem.Visible = false;
 			this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.batchRunnerToolStripMenuItem_Click);
+			// 
+			// ExperimentalToolsSubMenu
+			// 
+			this.ExperimentalToolsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AutoHawkMenuItem,
+            this.NewHexEditorMenuItem});
+			this.ExperimentalToolsSubMenu.Name = "ExperimentalToolsSubMenu";
+			this.ExperimentalToolsSubMenu.Size = new System.Drawing.Size(189, 22);
+			this.ExperimentalToolsSubMenu.Text = "Experimental Tools";
+			this.ExperimentalToolsSubMenu.DropDownOpened += new System.EventHandler(this.ExperimentalToolsSubMenu_DropDownOpened);
+			// 
+			// AutoHawkMenuItem
+			// 
+			this.AutoHawkMenuItem.Name = "AutoHawkMenuItem";
+			this.AutoHawkMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.AutoHawkMenuItem.Text = "AutoHawk";
+			// 
+			// NewHexEditorMenuItem
+			// 
+			this.NewHexEditorMenuItem.Name = "NewHexEditorMenuItem";
+			this.NewHexEditorMenuItem.Size = new System.Drawing.Size(155, 22);
+			this.NewHexEditorMenuItem.Text = "New Hex Editor";
 			// 
 			// NESSubMenu
 			// 
@@ -4033,7 +4050,6 @@
 		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem gBAWithMGBAToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem PSXHashDiscsToolStripMenuItem;
 		private System.Windows.Forms.Timer timerMouseIdle;
@@ -4060,5 +4076,8 @@
 		private System.Windows.Forms.ToolStripMenuItem gameSharkConverterToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem dummyExternalTool;
 		private System.Windows.Forms.ToolStripMenuItem RecordAVMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ExperimentalToolsSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem AutoHawkMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem NewHexEditorMenuItem;
 	}
 }
