@@ -36,6 +36,8 @@ namespace BizHawk.Client.DiscoHawk
 
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+#else
+			SubMain(new string[0]);
 #endif
 		}
 
