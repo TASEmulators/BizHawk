@@ -31,7 +31,7 @@
 			this.HexMenu = new System.Windows.Forms.MenuStrip();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.hexView1 = new BizHawk.Client.EmuHawk.HexView();
+			this.HexViewControl = new BizHawk.Client.EmuHawk.HexView();
 			this.HexMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -62,23 +62,24 @@
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
-			// hexView1
+			// HexViewControl
 			// 
-			this.hexView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.HexViewControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.hexView1.Location = new System.Drawing.Point(12, 27);
-			this.hexView1.Name = "hexView1";
-			this.hexView1.Size = new System.Drawing.Size(424, 231);
-			this.hexView1.TabIndex = 1;
-			this.hexView1.Text = "hexView1";
+			this.HexViewControl.ArrayLength = 0;
+			this.HexViewControl.Location = new System.Drawing.Point(12, 27);
+			this.HexViewControl.Name = "HexViewControl";
+			this.HexViewControl.Size = new System.Drawing.Size(424, 231);
+			this.HexViewControl.TabIndex = 1;
+			this.HexViewControl.Text = "hexView1";
 			// 
 			// NewHexEditor
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(448, 270);
-			this.Controls.Add(this.hexView1);
+			this.Controls.Add(this.HexViewControl);
 			this.Controls.Add(this.HexMenu);
 			this.MainMenuStrip = this.HexMenu;
 			this.Name = "NewHexEditor";
@@ -96,6 +97,6 @@
 		private System.Windows.Forms.MenuStrip HexMenu;
 		private System.Windows.Forms.ToolStripMenuItem FileSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
-		private HexView hexView1;
+		private HexView HexViewControl;
 	}
 }

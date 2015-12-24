@@ -16,6 +16,8 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Font NormalFont;
 		private Size _charSize;
 
+		private long _arrayLength;
+
 		public HexView()
 		{
 			NormalFont = new Font("Courier New", 8);  // Only support fixed width
@@ -43,6 +45,8 @@ namespace BizHawk.Client.EmuHawk
 			base.Dispose(disposing);
 		}
 
+		#region Paint
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			using (var LCK = Gdi.LockGraphics(e.Graphics))
@@ -60,6 +64,53 @@ namespace BizHawk.Client.EmuHawk
 				Gdi.CopyToScreen();
 				Gdi.EndOffScreenBitmap();
 			}
+		}
+
+		#endregion
+
+		#region Properties
+
+		/// <summary>
+		/// Gets or sets the sets the virtual number of the length of the array to display
+		/// </summary>
+		[Category("Behavior")]
+		public long ArrayLength
+		{
+			get
+			{
+				return _arrayLength;
+			}
+
+			set
+			{
+				_arrayLength = value;
+				RecalculateScrollBars();
+			}
+		}
+
+		#endregion
+
+		#region Event Handlers
+
+		[Category("Virtual")]
+		public event QueryIndexValueHandler QueryIndexValue;
+
+		[Category("Virtual")]
+		public event QueryIndexBkColorHandler QueryIndexBgColor;
+
+		[Category("Virtual")]
+		public event QueryIndexForeColorHandler QueryIndexForeColor;
+
+		public delegate void QueryIndexValueHandler(int index, out long value);
+
+		public delegate void QueryIndexBkColorHandler(int index, ref Color color);
+
+		public delegate void QueryIndexForeColorHandler(int index, ref Color color);
+
+		#endregion
+
+		private void RecalculateScrollBars()
+		{
 		}
 	}
 }

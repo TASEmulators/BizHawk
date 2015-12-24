@@ -23,11 +23,15 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 
 			Closing += (o, e) => SaveConfigSettings();
+
+			HexViewControl.QueryIndexValue += HexView_QueryIndexValue;
+			HexViewControl.QueryIndexForeColor += HexView_QueryIndexForeColor;
+			HexViewControl.QueryIndexBgColor += HexView_QueryIndexForeColor;
 		}
 
 		private void NewHexEditor_Load(object sender, EventArgs e)
 		{
-
+			HexViewControl.ArrayLength = MemoryDomains.MainMemory.Size;
 		}
 
 		private void SaveConfigSettings()
@@ -60,6 +64,25 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool UpdateBefore {  get { return false; } }
+
+		#endregion
+
+		#region HexView Callbacks
+
+		private void HexView_QueryIndexValue(int index, out long value)
+		{
+			value = MemoryDomains.MainMemory.PeekByte(index);
+		}
+
+		private void HexView_QueryIndexBgColor(int index, ref Color color)
+		{
+			color = Color.White;
+		}
+
+		private void HexView_QueryIndexForeColor(int index, ref Color color)
+		{
+			color = Color.Black;
+		}
 
 		#endregion
 
