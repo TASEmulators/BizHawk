@@ -1197,7 +1197,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool RunLibretroCoreChooser()
 		{
-			var ofd = new OpenFileDialog();
+			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 
 			if (Global.Config.LibretroCore != null)
 			{
@@ -1210,7 +1210,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ofd.RestoreDirectory = true;
-			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
+			if (OpenTK.Configuration.RunningOnMacOS)
+			{
+				ofd.Filter = "Libretro Cores (*.dylib)|*.dylib";
+			}
+			else
+			{
+				ofd.Filter = "Libretro Cores (*.dll)|*.dll";
+			}
 
 			if (ofd.ShowDialog() == DialogResult.Cancel)
 				return false;

@@ -617,10 +617,17 @@ namespace BizHawk.Emulation.Cores
 			dll.Dispose();
 		}
 
-		InstanceDll dll;
+		IInstanceDll dll;
 		public LibRetro(string modulename)
 		{
-			dll = new InstanceDll(modulename);
+			if (OpenTK.Configuration.RunningOnMacOS)
+			{
+				dll = new InstanceDylib(modulename);
+			}
+			else
+			{
+				dll = new InstanceDll(modulename);
+			}
 			if (!ConnectAllEntryPoints())
 			{
 				dll.Dispose();

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	public class InstanceDll : IDisposable
+	public class InstanceDll : IDisposable, IInstanceDll
 	{
 		public InstanceDll(string dllPath)
 		{
