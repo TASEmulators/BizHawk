@@ -558,13 +558,18 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}"
-				, Address.ToHexString((Domain.Size - 1).NumHexDigits())
+				, Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain.Size - 1).NumHexDigits())
 				, SizeAsChar
 				, TypeAsChar
 				, Convert.ToInt32(BigEndian)
 				, DomainName
 				, Notes.Trim('\r', '\n')
 				);
+		}
+
+		public virtual string ToDisplayString()
+		{
+			return Notes + ": " + ValueString;
 		}
 
 		#endregion

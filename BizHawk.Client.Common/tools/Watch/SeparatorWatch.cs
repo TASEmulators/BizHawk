@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 			get { return string.Empty; }
 		}
 		
-		public override string ToString()
+		public override string ToDisplayString()
 		{
 			return "----";
 		}
