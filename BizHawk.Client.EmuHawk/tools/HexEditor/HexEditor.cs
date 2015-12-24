@@ -942,10 +942,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var column = x / (fontWidth * colWidth);
 
-			var start = GetTextOffset() - 50;
+			var innerOffset = AddressesLabel.Location.X - AddressLabel.Location.X + AddressesLabel.Margin.Left;
+			var start = GetTextOffset() - innerOffset;
 			if (x > start)
 			{
-				column = (x - start) / (fontWidth / DataSize);
+				column = (x - start) / (fontWidth * DataSize);
 			}
 
 			if (i >= 0 && i <= _maxRow && column >= 0 && column < (16 / DataSize))
@@ -1022,7 +1023,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int start = (16 / DataSize) * fontWidth * (DataSize * 2 + 1);
 			start += AddressesLabel.Location.X + fontWidth / 2;
-			start += fontWidth * 4;
+			start += fontWidth * 2;
 			return start;
 		}
 
