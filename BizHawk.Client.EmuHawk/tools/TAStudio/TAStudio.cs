@@ -206,6 +206,8 @@ namespace BizHawk.Client.EmuHawk
 					double progress = (double)100d /
 						(GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value) *
 						(Global.Emulator.Frame - _seekStartFrame.Value);
+					if (progress < 0)
+						progress = 0;
 					_seekBackgroundWorker.ReportProgress((int)progress);
 					System.Threading.Thread.Sleep(1);
 				}
