@@ -31,20 +31,20 @@ local SHIFTL = bit.lshift
 local SHIFTR = bit.rshift
 
 event.onframestart(function()
-	rngcount = 0
-	rngcolor = "white"
+	rngcount  = 0
 	rngobject = 0
+	rngcolor  = "white"
 end)
 
 event.onmemorywrite(function()
-	rngcount = rngcount+1
-	rngcolor = "red"
-	rngobject = emu.getregister("M68K A1")
+	rngcount   = rngcount+1
+	rngcolor   = "red"
+	rngobject  = emu.getregister("M68K A1")
 	rngroutine = emu.getregister("M68K A0")	
 	for i = 1, 30 do
 		if MsgTable[i] == nil then
 			MsgTable[i] = {
-				timer_ = MsgTime + emu.framecount(),
+				timer_   = MsgTime + emu.framecount(),
 				object_  = rngobject-0xff0000,
 				routine_ = rngroutine
 			}
@@ -137,7 +137,9 @@ local function GetFloor(x, y)
 	local a1 = 0xb806+rw(0xfb9e)
 	local a2 = 0x273e1e
 	local d3 = SHIFTR(rw(a0+d0*2),1)
-	local d5 = SHIFTL(rb(a1+d3),4)+d2
+	local temp = a1+d3
+	if temp>0xffff then return {0,0} end
+	local d5 = SHIFTL(rb(temp),4)+d2
 	local newd5 = SHIFTL(rb(a1+d3),4)+d2+15
 	local newd0 = AND(rb(a2+newd5,"MD CART"),0x1f)
 	return {AND(rb(a2+d5,"MD CART"),0x1f), newd0}
@@ -150,8 +152,12 @@ local function GetWall(x, y)
 	if y<0 then return 0 end
 	local d6 = SHIFTR(AND(y+6,0xfff0),3)
 	local a0 = rw(d6+0xb4e6)
-	local d0 = rw(a0+SHIFTR(x,4)*2)
-	return rb(0xb808+SHIFTR(d0,1))
+	local temp = a0+SHIFTR(x,4)*2
+	if temp>0xffff then return 0 end
+	local d0 = rw(temp)
+	temp = 0xb808+SHIFTR(d0,1)
+	if temp>0xffff then return 0 end
+	return rb(temp)
 end
 
 local function DrawBG()
@@ -227,42 +233,6 @@ local function DrawBG()
 	end
 end
 
-local function Configs()
-	local rng = rl(0xa1d4)
-	text(120,0,string.format("rng: %08X:%d",rng,rngcount),rngcolor)
-	local cfg0 = rl(0xfc2a)
-	if cfg0==0 then return end
-	local cfg1 = rl(0xfc9a)
-	text(220,0,string.format("cfg old:  %X\ncfg step: %d",cfg1,dcfg))
-	if lastcfg~=cfg0 then dcfg = cfg0-lastcfg end
-	lastcfg = cfg0
-	local h = 7
-	for i=0,20 do
-		local config = rl(0xfc2a)+i
-		local action = rb(config,"MD CART")
-		local newaction = memory.readbyte(config+1,"MD CART")
-		if action==0x62
-		or (action==0xe and newaction==8)
-		or action==8
-		or action==3 then color = "red"
-		elseif action>=0x63 and action<=0x64 then color = "orange"
-		elseif action>=0x30 and action<=0x32 then color = 0xff00ff00
-		elseif action>=0x65 and action<=0x70 then color = 0xff00cc00
-		elseif action==0x7a then color = "white"
-		else color = 0xffaaaaaa
-		end
-		text(270,i*h+42,string.format("%X:%02X",config,action),color)		
-		if i>0
-		and action==0x7a
-		or action==0x2b
-		or action==0x2d
-		then break
-		end
-	end
-	Bounce()
-	Seek()
-end
-
 local function Seek()
 	bytes = 0
 	waves = 0
@@ -313,6 +283,42 @@ local function Bounce()
 	text(60,0,string.format("bounce: %X",bounce))
 end
 
+local function Configs()
+	local rng = rl(0xa1d4)
+	text(120,0,string.format("rng: %08X:%d",rng,rngcount),rngcolor)
+	local cfg0 = rl(0xfc2a)
+	if cfg0==0 then return end
+	local cfg1 = rl(0xfc9a)
+	text(220,0,string.format("cfg old:  %X\ncfg step: %d",cfg1,dcfg))
+	if lastcfg~=cfg0 then dcfg = cfg0-lastcfg end
+	lastcfg = cfg0
+	local h = 7
+	for i=0,20 do
+		local config = rl(0xfc2a)+i
+		local action = rb(config,"MD CART")
+		local newaction = memory.readbyte(config+1,"MD CART")
+		if action==0x62
+		or (action==0xe and newaction==8)
+		or action==8
+		or action==3 then color = "red"
+		elseif action>=0x63 and action<=0x64 then color = "orange"
+		elseif action>=0x30 and action<=0x32 then color = 0xff00ff00
+		elseif action>=0x65 and action<=0x70 then color = 0xff00cc00
+		elseif action==0x7a then color = "white"
+		else color = 0xffaaaaaa
+		end
+		text(270,i*h+42,string.format("%X:%02X",config,action),color)		
+		if i>0
+		and action==0x7a
+		or action==0x2b
+		or action==0x2d
+		then break
+		end
+	end
+	Bounce()
+	Seek()
+end
+
 while true do
 	camx = rw(0xa172)
 	camy = rw(0xa174)
@@ -321,7 +327,7 @@ while true do
 	absx = rw(0xa17e)-0x1000
 	absy = rw(0xa180)-0x1000
 	invcount = rb(0xfbd6)	
-	if rb(0xa313)==4 then
+	if rb(0xa313)==4 and rb(0xa317)~=2 then
 		DrawBG()
 		Objects(0xa2ea, 0x23)
 		Objects(0xa20e, 0)
