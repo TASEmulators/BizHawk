@@ -7,7 +7,7 @@ namespace BizHawk.Client.ApiHawk
 	/// This attribute helps BizHawk to handle ExternalTools
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Assembly)]
-	public class BizHawkExternalToolAttribute : Attribute
+	public sealed class BizHawkExternalToolAttribute : Attribute
 	{
 		#region Fields
 

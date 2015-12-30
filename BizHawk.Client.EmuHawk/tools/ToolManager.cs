@@ -84,12 +84,22 @@ namespace BizHawk.Client.EmuHawk
 		public T Load<T>(string toolPath, bool focus = true)
 			where T : class, IToolForm
 		{
-			if (!IsAvailable<T>() && typeof(T) != typeof(IExternalToolForm))
+			bool isExternal = typeof(T) == typeof(IExternalToolForm);
+
+			if (!IsAvailable<T>() && !isExternal)
 			{
 				return null;
 			}
 
-			T existingTool = (T)_tools.FirstOrDefault(x => x is T);
+			T existingTool;
+			if (isExternal)
+			{
+				existingTool = (T)_tools.FirstOrDefault(x => x is T && x.GetType().Assembly.Location == toolPath);
+			}
+			else
+			{
+				existingTool = (T)_tools.FirstOrDefault(x => x is T);
+			}
 
 			if (existingTool != null)
 			{
@@ -446,7 +456,7 @@ namespace BizHawk.Client.EmuHawk
 						restartTool = true;
 					if (tool is LuaConsole && ((LuaConsole)tool).IsRebootingCore)
 						restartTool = false;
-					if(restartTool)
+					if (restartTool)
 					{
 						tool.Restart();
 					}
