@@ -393,14 +393,14 @@ namespace BizHawk.Client.EmuHawk
 		Boolean blnUnneeded = false;
 		private void GBA()
 		{
-			bool blnNoCode = true;
+			bool blnNoCode = false;
 			//Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
 			//Seriously, it's that complex.
 
 			//Check Game Shark/Action Replay (Not Max) Codes
 			if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
 			{
-				bool blnNoCode = true;
+				blnNoCode = true;
 				//Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
 				//Seriously, it's that complex.
 
