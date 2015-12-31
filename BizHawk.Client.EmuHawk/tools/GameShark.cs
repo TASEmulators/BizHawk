@@ -10,7 +10,7 @@ namespace BizHawk.Client.EmuHawk
 
 	//TODO:
 	//Add Support/Handling for The Following Systems and Devices:
-	//GBA: Action Replay MAX, Code Breaker (That uses unique Encryption keys)
+	//GBA: Code Breaker (That uses unique Encryption keys)
 	//NES: Pro Action Rocky  (When someone asks)
 	//SNES: GoldFinger (Action Replay II) Support?
 
@@ -381,166 +381,1969 @@ namespace BizHawk.Client.EmuHawk
 		private string firstSlide;
 		private string secondSlide;
 		Boolean Slider = false;
-
+		//blnGameShark means, "This is a Game Shark/Action Replay (Not MAX) code."
+		Boolean blnGameShark = false;
+		//blnActionReplayMax means "This is an Action Replay MAX code."
+		Boolean blnActionReplayMax = false;
+		//blnCodeBreaker means "This is a CodeBreaker code."
+		Boolean blnCodeBreaker = false;
+		//blnUnhandled means "BizHawk can't do this one or the tool can't."
+		Boolean blnUnhandled = false;
+		//blnUnneeded means "You don't need this code."
+		Boolean blnUnneeded = false;
 		private void GBA()
 		{
-			Boolean blnNoCode = true;
-			//TODO:
-			//Clean the detection methods and improve/optimize code conversion.
-			testo = null;
-			//Slider is special code that allows us to break out and do Slide Codes.  It needs work
-			//TODO:
-			//Make Slide Code Handling suck less.
-			//TODO:
-			//Determine how to make Action Replay Max Code detection a thing?
-			//DEADFACE means, "NEW Decryption Keys ahead."
+			bool blnNoCode = true;
+			//Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
+			//Seriously, it's that complex.
 
-			if (txtCheat.Text.Contains("DEADFACE") == true)
+			//Check Game Shark/Action Replay (Not Max) Codes
+			if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
 			{
-				MessageBox.Show("Sorry, this tool does not support DEADFACE codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				return;
-			}
+				bool blnNoCode = true;
+				//Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
+				//Seriously, it's that complex.
 
-			if (Slider == true)
-			{
-				secondSlide = txtCheat.Text;
-				GBASlide();
-			}
-			else if (Slider == false)
-			{
-				//We have a Game Shark or Action Replay?
+				//Check Game Shark/Action Replay (Not Max) Codes
 				if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
 				{
-					parseString = txtCheat.Text;
+					//These are for the Decyption Values for GameShark and Action Replay MAX.
 					UInt32 op1 = 0;
 					UInt32 op2 = 0;
 					UInt32 sum = 0xC6EF3720;
-					op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
-					op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
-					//Tiny Encryption Algorithm
-					int i;
-					for (i = 0; i < 32; ++i)
+
+					//Let's get the stuff seperated.
+					RAMAddress = txtCheat.Text.Remove(8, 9);
+					RAMValue = txtCheat.Text.Remove(0, 9);
+					//Let's see if this code matches the GameShark.
+					GBAGameShark();
+					//We got an Un-Needed code.
+					if (blnUnneeded == true)
 					{
-						op2 -= ((op1 << 4) + GBAGameSharkSeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAGameSharkSeeds[3]);
-						op1 -= ((op2 << 4) + GBAGameSharkSeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAGameSharkSeeds[1]);
-						sum -= 0x9E3779B9;
-					}
-					//op1 has the Address
-					//op2 has the Value
-					//Sum, is pointless?
-					RAMAddress = string.Format("{0:X8}", op1);
-					RAMAddress = RAMAddress.Remove(0, 1);
-					RAMValue = string.Format("{0:X8}", op2);
-					if (RAMAddress.StartsWith("D4"))
-					{
-						MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 						return;
 					}
-					parseString = RAMValue;
-					//MessageBox.Show(parseString);
-					parseString = RAMValue.Remove(4, 4);
-					//Is it a Word or Double Word?	
-					if (parseString == "0000")
+					//We got an Unhandled code.
+					else if (blnUnhandled == true)
 					{
-						//We assume.  Why not?
-						byteSize = 16;
-						RAMValue = RAMValue.Remove(0, 4);
-						//MessageBox.Show(RAMValue);
-					}
-					else if (parseString != "0000")
-					{
-						byteSize = 32;
-					}
-					blnNoCode = false;
-				}
-			}
-			if (txtCheat.Text.Length == 12)
-			{
-				MessageBox.Show("Encrypted Codebreaker/GameShark SP/Xploder codes are not supported by this tool.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				return;
-			}
-			if (txtCheat.Text.IndexOf(" ") != 8 && txtCheat.Text.Length != 12)
-			{
-				MessageBox.Show("ALL Codes for Action Replay, Action Replay MAX, Codebreaker, GameShark Advance, GameShark SP, Xploder have a Space after the 8th character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-			//Action Replay MAX Code stuff.  Not detected, yet.
-			//TODO: Detect Action Replay MAX codes.
-			//DEADFACE is NOT to be used.  It's a special code.
-			if (txtCheat.Text == "DEADFACE")
-			{
-				return;
-			parseString = txtCheat.Text;
-			UInt32 op1 = 0;
-			UInt32 op2 = 0;
-			UInt32 sum = 0xC6EF3720;
-			op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
-			op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
-			//Tiny Encryption Algorithm
-			int i;
-			for (i = 0; i < 32; ++i)
-			{
-				op2 -= ((op1 << 4) + GBAProActionReplaySeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAProActionReplaySeeds[3]);
-				op1 -= ((op2 << 4) + GBAProActionReplaySeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAProActionReplaySeeds[1]);
-				sum -= 0x9E3779B9;
-			}
-			RAMAddress = string.Format("{0:X8}", op1);
-			RAMAddress = RAMAddress.Remove(0, 1);
-			RAMValue = string.Format("{0:X8}", op2);
-			MessageBox.Show(RAMAddress);
-			MessageBox.Show(RAMValue);
-			}
-			//Decrypted Codebreaker, GameShark SP, Xploder
-			//Encypted Codebreaker, GameShark SP, Xploder is not handled, yet.
-			if (txtCheat.Text.Length == 13 && txtCheat.Text.IndexOf(" ") == 8)
-			{
-				//Get the first byte to deterime what kind of code it is.
-				testo = txtCheat.Text.Remove(1, 12);
-				switch(testo)
-                    {
-					case "3":
-						//8-Bit
-						byteSize = 8;
-						break;
-					case "8":
-					case "E":
-						//16-Bit
-						byteSize = 16;
-                        break;
-					default:
-						//What code is this?!  It must be bad?
-						MessageBox.Show("The code you entered is not recognized as a decrypted Codebreaker, GameShark SP or Xploder Code.", "Unrecognized Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 						return;
+					}
+					if (blnGameShark == false)
+					{
+						//We don't have a GameShark code, or we have an encrypted code?
+						//Further testing required.
+						//GameShark Decryption Method
+						parseString = txtCheat.Text;
+
+						op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+						op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
+						//Tiny Encryption Algorithm
+						int i;
+						for (i = 0; i < 32; ++i)
+						{
+							op2 -= ((op1 << 4) + GBAGameSharkSeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAGameSharkSeeds[3]);
+							op1 -= ((op2 << 4) + GBAGameSharkSeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAGameSharkSeeds[1]);
+							sum -= 0x9E3779B9;
+						}
+						//op1 has the Address
+						//op2 has the Value
+						//Sum, is pointless?
+						RAMAddress = string.Format("{0:X8}", op1);
+						RAMValue = string.Format("{0:X8}", op2);
+						GBAGameShark();
+					}
+					//We don't do Else If after the if here because it won't allow us to verify the second code check.
+					if (blnGameShark == true)
+					{
+						//We got a Valid GameShark Code.  Hopefully.
+						//AddGBA();
+						return;
+					}
+
+					//We are going to assume that we got an Action Replay MAX code, or at least try to guess that we did.
+					GBAActionReplay();
+
+					if (blnActionReplayMax == false)
+					{
+						//Action Replay Max decryption Method
+						parseString = txtCheat.Text;
+						op1 = 0;
+						op2 = 0;
+						sum = 0xC6EF3720;
+						op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+						op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
+						//Tiny Encryption Algorithm
+						int j;
+						for (j = 0; j < 32; ++j)
+						{
+							op2 -= ((op1 << 4) + GBAProActionReplaySeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAProActionReplaySeeds[3]);
+							op1 -= ((op2 << 4) + GBAProActionReplaySeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAProActionReplaySeeds[1]);
+							sum -= 0x9E3779B9;
+						}
+						//op1 has the Address
+						//op2 has the Value
+						//Sum, is pointless?
+						RAMAddress = string.Format("{0:X8}", op1);
+						RAMValue = string.Format("{0:X8}", op2);
+						MessageBox.Show(RAMAddress);
+						MessageBox.Show(RAMValue);
+						GBAActionReplay();
+					}
+					MessageBox.Show(blnActionReplayMax.ToString());
+					//We don't do Else If after the if here because it won't allow us to verify the second code check.
+					if (blnActionReplayMax == true)
+					{
+						//We got a Valid Action Replay Max Code.  Hopefully.
+						//AddGBA();
+						MessageBox.Show("ARM");
+						return;
+					}
 				}
-				blnNoCode = false;
-				//Now let's do some legit crazy
-				parseString = txtCheat.Text.Remove(0, 1);
-				RAMAddress = parseString.Remove(7, 5);
-				RAMValue = parseString.Remove(0, 8);
-			}
-			//We have a code
-			if (blnNoCode == false)
-			{
-				if (byteSize == 8)
+				//Detect CodeBreaker/GameShark SP/Xploder codes
+				if (txtCheat.Text.Length == 12 && txtCheat.Text.IndexOf(" ") != 8)
 				{
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+					MessageBox.Show("Codebreaker/GameShark SP/Xploder codes are not supported by this tool.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					return;
+
+					//WARNING!!
+					//This code is NOT ready yet.
+					//The GameShark Key
+					//09F4FBBD
+					//9681884A
+					//352027E9
+					//F3DEE5A7
+
+					//The CodeBreaker Key, for Advance Wars 2 (USA)
+					//911B9B36
+					//BC7C46FC
+					//CE58668D
+					//5C453661
+					//Four sets, and this guy...
+					//9D6E
+
+					//Sample Code
+					//Encyped:		6C2A1F51C2C0
+					//Decrypted:	82028048 FFFFFFFF
+					GBACodeBreaker();
+
+					if (blnCodeBreaker == false)
+					{
+						parseString = txtCheat.Text;
+						UInt32 op1 = 0;
+						UInt32 op2 = 0;
+						UInt32 sum = 0xC6EF3720;
+						string test1;
+						string test2;
+						test1 = parseString.Remove(5, 6);
+						test2 = parseString.Remove(0, 6);
+						MessageBox.Show(test1.ToString());
+						MessageBox.Show(test2.ToString());
+						op1 = UInt32.Parse(parseString.Remove(5, 6), NumberStyles.HexNumber);
+						op2 = UInt32.Parse(parseString.Remove(0, 6), NumberStyles.HexNumber);
+
+						//Tiny Encryption Algorithm
+						int i;
+						for (i = 0; i < 32; ++i)
+						{
+							op2 -= ((op1 << 4) + GBAGameSharkSeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAGameSharkSeeds[3]);
+							op1 -= ((op2 << 4) + GBAGameSharkSeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAGameSharkSeeds[1]);
+							sum -= 0x9E3779B9;
+						}
+						//op1 has the Address
+						//op2 has the Value
+						//Sum, is pointless?
+						RAMAddress = string.Format("{0:X8}", op1);
+						//RAMAddress = RAMAddress.Remove(0, 1);
+						RAMValue = string.Format("{0:X8}", op2);
+						// && RAMAddress[6] == '0'
+					}
+
+					if (blnCodeBreaker == true)
+					{
+						//We got a Valid Code Breaker Code.  Hopefully.
+						//AddGBA();
+						return;
+					}
+
+					if (txtCheat.Text.IndexOf(" ") != 8 && txtCheat.Text.Length != 12)
+					{
+						MessageBox.Show("ALL Codes for Action Replay, Action Replay MAX, Codebreaker, GameShark Advance, GameShark SP, Xploder have a Space after the 8th character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					//We have a code
+					if (blnNoCode == false)
+					{
+					}
+
 				}
-				else if (byteSize == 16)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
-				}
-				else if (byteSize == 32)
-				{
-					var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.DWord, Client.Common.DisplayType.Hex, false, txtDescription.Text);
-					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
-				}
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 		}
+		public void GBAGameShark()
+		{
+			//This is for the Game Shark/Action Replay (Not Max)
+			if (RAMAddress.StartsWith("0") == true && RAMValue.StartsWith("000000") == true)
+			{
+				//0aaaaaaaa 000000xx  1 Byte Constant Write
+				//1 Byte Size Value
+				byteSize = 8;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("0000") == true)
+			{
+				//1aaaaaaaa 0000xxxx  2 Byte Constant Write
+				//2 Byte Size Value
+				byteSize = 16;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("2") == true)
+			{
+				//2aaaaaaaa xxxxxxxx  4 Byte Constant Write
+				//4 Byte Size Value
+				byteSize = 32;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("3000") == true)
+			{
+				//3000cccc xxxxxxxx aaaaaaaa  4 Byte Group Write  What?  Is this like a Slide Code
+				//4 Byte Size Value
+				//Sample
+				//30000004 01010101 03001FF0 03001FF4 03001FF8 00000000
+				//write 01010101 to 3 addresses - 01010101, 03001FF0, 03001FF4, and 03001FF8. '00000000' is used for padding, to ensure the last code encrypts correctly.
+				//Note: The device improperly writes the Value, to the address.  We should ignore that.
+				MessageBox.Show("Sorry, this tool does not support 3000XXXX codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("6") == true && RAMValue.StartsWith("0000") == true)
+			{
+				//6aaaaaaa 0000xxxx  2 Byte ROM patch
+				byteSize = 16;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("6") == true && RAMValue.StartsWith("1000") == true)
+			{
+				//6aaaaaaa 1000xxxx  4 Byte ROM patch
+				byteSize = 32;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("6") == true && RAMValue.StartsWith("2000") == true)
+			{
+				//6aaaaaaa 2000xxxx  8 Byte ROM patch
+				byteSize = 32;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("8") == true && RAMAddress[2] == '1' == true && RAMValue.StartsWith("00") == true)
+			{
+				//8a1aaaaa 000000xx  1 Byte Write when GS Button Pushed
+				//Treat as Constant Write.
+				byteSize = 8;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("8") == true && RAMAddress[2] == '2' == true && RAMValue.StartsWith("00") == true)
+			{
+				//8a2aaaaa 000000xx  2 Byte Write when GS Button Pushed
+				//Treat as Constant Write.
+				byteSize = 16;
+				blnGameShark = true;
+			}
+			else if (RAMAddress.StartsWith("80F00000") == true)
+			{
+				//80F00000 0000xxxx  Slow down when GS Button Pushed.
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("D") == true && RAMAddress.StartsWith("DEADFACE") == false && RAMValue.StartsWith("0000") == true)
+			{
+				//Daaaaaaa 0000xxxx  2 Byte If Equal, Activate next code
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("E0") == true)
+			{
+				//E0zzxxxx aaaaaaaa  2 Byte if Equal, Activate ZZ Lines.
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("F") == true && RAMValue.StartsWith("0000") == true)
+			{
+				//Faaaaaaa 0000xxxx  Hook Routine.  Probably not necessary?
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("001DC0DE") == true)
+			{
+				//xxxxxxxx 001DC0DE  Auto-Detect Game.  Useless for Us.
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("DEADFACE") == true)
+			{
+				//DEADFACE 0000xxxx  Change Encryption Seeds.  Unsure how this works.
+				MessageBox.Show("Sorry, this tool does not support DEADFACE codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			else
+			{
+				blnGameShark = false;
+			}
+			//It's not a GameShark/Action Replay (Not MAX) code, so we say False.
+
+			return;
+		}
+		public void GBAActionReplay()
+		{
+			//These checks are done on the DECYPTED code, not the Encrypted one.
+			//ARM Code Types
+			// 1) Normal RAM Write Codes
+			if (RAMAddress.StartsWith("002") == true)
+			{
+				// 0022 Should be Changed to 020
+				// Fill area (XXXXXXXX) to (XXXXXXXX+YYYYYY) with Byte ZZ.
+				// XXXXXXXX
+				// YYYYYYZZ
+				//This corrects the value
+				RAMAddress = RAMAddress.Replace("002", "020");
+				blnActionReplayMax = true;
+				byteSize = 8;
+			}
+			else if (RAMAddress.StartsWith("022") == true)
+			{
+				// 0222 Should be Changed to 020
+				// Fill area (XXXXXXXX) to (XXXXXXXX+YYYY*2) with Halfword ZZZZ.
+				// XXXXXXXX
+				// YYYYZZZZ
+				//This corrects the value
+				RAMAddress = RAMAddress.Replace("022", "020");
+				blnActionReplayMax = true;
+				byteSize = 16;
+			}
+
+			else if (RAMAddress.StartsWith("042") == true)
+			{
+				// 0422 Should be Changed to 020
+				// Write the Word ZZZZZZZZ to address XXXXXXXX.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				//This corrects the value
+				RAMAddress = RAMAddress.Replace("042", "020");
+				blnActionReplayMax = true;
+				byteSize = 32;
+			}
+			// 2) Pointer RAM Write Codes
+			else if (RAMAddress.StartsWith("402") == true)
+			{
+				// 4022 Should be Changed to 020
+				// Writes Byte ZZ to ([the address kept in XXXXXXXX]+[YYYYYY]).
+				// XXXXXXXX
+				// YYYYYYZZ
+				//This corrects the value
+				RAMAddress = RAMAddress.Replace("402", "020");
+				blnActionReplayMax = true;
+				byteSize = 8;
+			}
+			else if (RAMAddress.StartsWith("420") == true)
+			{
+				// 4202 Should be Changed to 020
+				// Writes Halfword ZZZZ ([the address kept in XXXXXXXX]+[YYYY*2]).
+				// XXXXXXXX
+				// YYYYZZZZ
+				//This corrects the value
+				RAMAddress = RAMAddress.Replace("420", "020");
+				blnActionReplayMax = true;
+				byteSize = 16;
+			}
+			else if (RAMAddress.StartsWith("422") == true)
+			{
+				// 442 Should be Changed to 020
+				// Writes the Word ZZZZZZZZ to [the address kept in XXXXXXXX].
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("422", "020");
+				blnActionReplayMax = true;
+				byteSize = 32;
+			}
+			// 3) Add Codes
+			else if (RAMAddress.StartsWith("802") == true)
+			{
+				// 802 Should be Changed to 020
+				// Add the Byte ZZ to the Byte stored in XXXXXXXX.
+				// XXXXXXXX
+				// 000000ZZ
+				//RAMAddress = RAMAddress.Replace("8022", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("822") == true & RAMAddress.StartsWith("8222") == false)
+			{
+				// 822 Should be Changed to 020
+				// Add the Halfword ZZZZ to the Halfword stored in XXXXXXXX.
+				// XXXXXXXX
+				// 0000ZZZZ
+				//RAMAddress = RAMAddress.Replace("822", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("842") == true)
+			{
+				//NOTE!
+				//This is duplicated below with different function results.
+				// 842 Should be Changed to 020
+				// Add the Word ZZZZ to the Halfword stored in XXXXXXXX.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				//RAMAddress = RAMAddress.Replace("842", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+
+			// 4) Write to $4000000 (IO Registers!)
+			else if (RAMAddress.StartsWith("C6000130") == true)
+			{
+				// C6000130 Should be Changed to 00000130
+				// Write the Halfword ZZZZ to the address $4XXXXXX
+				// 00XXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("C6000130", "00000130");
+				blnActionReplayMax = true;
+				byteSize = 16;
+			}
+			else if (RAMAddress.StartsWith("C7000130") == true)
+			{
+				// C7000130 Should be Changed to 00000130
+				// Write the Word ZZZZZZZZ to the address $4XXXXXX
+				// 00XXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("C7000130", "00000130");
+				blnActionReplayMax = true;
+				byteSize = 32;
+			}
+			// 5) If Equal Code (= Joker Code)
+			else if (RAMAddress.StartsWith("082") == true)
+			{
+				// 082 Should be Changed to 020
+				// If Byte at XXXXXXXX = ZZ then execute next code.
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("082", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("482") == true)
+			{
+				// 482 Should be Changed to 020
+				// If Byte at XXXXXXXX = ZZ then execute next 2 codes.
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("482", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("882") == true)
+			{
+				// 882 Should be Changed to 020
+				// If Byte at XXXXXXXX = ZZ execute all the codes below this one in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("882", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("C82") == true)
+			{
+				// C82 Should be Changed to 020
+				// While Byte at XXXXXXXX <> ZZ turn off all codes.
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("C82", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("0A2") == true)
+			{
+				// 0A2 Should be Changed to 020
+				// If Halfword at XXXXXXXX = ZZZZ then execute next code.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("0A2", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("4A2") == true)
+			{
+				// 4A2 Should be Changed to 020
+				// If Halfword at XXXXXXXX = ZZZZ then execute next 2 codes.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("4A2", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("8A2") == true)
+			{
+				// 8A2 Should be Changed to 020
+				// If Halfword at XXXXXXXX = ZZZZ execute all the codes below this one in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("8A2", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("CA2") == true)
+			{
+				// CA2 Should be Changed to 020
+				// While Halfword at XXXXXXXX <> ZZZZ turn off all codes.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("CA2", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("0C2") == true)
+			{
+				// 0C2 Should be Changed to 020
+				// If Word at XXXXXXXX = ZZZZZZZZ then execute next code.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("0C2", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("4C2") == true)
+			{
+				// 4C2 Should be Changed to 020
+				// If Word at XXXXXXXX = ZZZZZZZZ then execute next 2 codes.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("4C2", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("8C2") == true)
+			{
+				// 8C2 Should be Changed to 020
+				// If Word at XXXXXXXX = ZZZZZZZZ execute all the codes below this one in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("8C2", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("CC2") == true)
+			{
+				// CC2 Should be Changed to 020
+				// While Word at XXXXXXXX <> ZZZZZZZZ turn off all codes.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("CC2", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 6) If Different Code
+			else if (RAMAddress.StartsWith("102") == true)
+			{
+				// 102 Should be Changed to 020
+				// If Byte at XXXXXXXX <> ZZ then execute next code.
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("102", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("502") == true)
+			{
+				// 502 Should be Changed to 020
+				// If Byte at XXXXXXXX <> ZZ then execute next 2 codes.
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("502", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("902") == true)
+			{
+				// 902 Should be Changed to 020
+				// If Byte at XXXXXXXX <> ZZ execute all the codes below this one in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("902", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("D02") == true)
+			{
+				// D02 Should be Changed to 020
+				// While Byte at XXXXXXXX = ZZ turn off all codes.
+				// XXXXXXXX
+				// 000000ZZ
+				RAMAddress = RAMAddress.Replace("D02", "020");
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("122") == true)
+			{
+				// 122 Should be Changed to 020
+				// If Halfword at XXXXXXXX <> ZZZZ then execute next code.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("122", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("522") == true)
+			{
+				// 522 Should be Changed to 020
+				// If Halfword at XXXXXXXX <> ZZZZ then execute next 2 codes.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("522", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("922") == true)
+			{
+				// 922 Should be Changed to 020
+				// If Halfword at XXXXXXXX <> ZZZZ disable all the codes below this one.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("922", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("D22") == true)
+			{
+				// D22 Should be Changed to 020
+				// While Halfword at XXXXXXXX = ZZZZ turn off all codes.
+				// XXXXXXXX
+				// 0000ZZZZ
+				RAMAddress = RAMAddress.Replace("D22", "020");
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("142") == true)
+			{
+				// 142 Should be Changed to 020
+				// If Word at XXXXXXXX <> ZZZZZZZZ then execute next code.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("142", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("542") == true)
+			{
+				// 542 Should be Changed to 020
+				// If Word at XXXXXXXX <> ZZZZZZZZ then execute next 2 codes.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("542", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("942") == true)
+			{
+				// 942 Should be Changed to 020
+				// If Word at XXXXXXXX <> ZZZZZZZZ disable all the codes below this one.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("942", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("D42") == true)
+			{
+				// D42 Should be Changed to 020
+				// While Word at XXXXXXXX = ZZZZZZZZ turn off all codes.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				RAMAddress = RAMAddress.Replace("D42", "020");
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 7)
+			// [If Byte at address XXXXXXXX is lower than ZZ] (signed) Code
+			// Signed means : For bytes : values go from -128 to +127. For Halfword : values go from -32768/+32767. For Words : values go from -2147483648 to 2147483647. For exemple, for the Byte comparison, 7F (127) will be > to FF (-1).
+			// 
+			// 
+			else if (RAMAddress.StartsWith("182") == true)
+			{
+				// 182 Should be Changed to 020
+				// If ZZ > Byte at XXXXXXXX then execute next code.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("182") == true)
+				{
+					RAMAddress = RAMAddress.Replace("182", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("582") == true)
+			{
+				// 582 Should be Changed to 020
+				// If ZZ > Byte at XXXXXXXX then execute next 2 codes.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("582") == true)
+				{
+					RAMAddress = RAMAddress.Replace("582", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("982") == true)
+			{
+				// 982 Should be Changed to 020
+				// If ZZ > Byte at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("982") == true)
+				{
+					RAMAddress = RAMAddress.Replace("982", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("D82") == true || (RAMAddress.StartsWith("E82") == true))
+			{
+				// D82 or E82 Should be Changed to 020
+				// While ZZ <= Byte at XXXXXXXX turn off all codes.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("D82") == true)
+				{
+					RAMAddress = RAMAddress.Replace("D82", "020");
+				}
+				else if ((RAMAddress.StartsWith("E82") == true))
+				{
+					RAMAddress = RAMAddress.Replace("E82", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("1A2") == true)
+			{
+				// 1A2 Should be Changed to 020
+				// If ZZZZ > Halfword at XXXXXXXX then execute next line.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("1A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("1A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("5A2") == true)
+			{
+				// 5A2  Should be Changed to 020
+				// If ZZZZ > Halfword at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("5A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("5A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("9A2") == true)
+			{
+				// 9A2 Should be Changed to 020
+				// If ZZZZ > Halfword at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX 0000ZZZZ 
+				if (RAMAddress.StartsWith("9A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("9A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("DA2") == true)
+			{
+				// DA2 Should be Changed to 020
+				// While ZZZZ <= Halfword at XXXXXXXX turn off all codes.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("DA2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("DA2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("1C2") == true)
+			{
+				// 1C2 or Should be Changed to 020
+				// If ZZZZ > Word at XXXXXXXX then execute next line.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("1C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("1C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("5C2") == true)
+			{
+				// 5C2 Should be Changed to 020
+				// If ZZZZ > Word at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("5C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("5C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("9C2") == true)
+			{
+				// 9C2 Should be Changed to 020
+				// If ZZZZZZZZ > Word at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("9C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("9C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("DC2") == true)
+			{
+				// DC2 Should be Changed to 020
+				// While ZZZZZZZZ <= Word at XXXXXXXX turn off all codes.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("DC2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("DC2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 8)
+			// [If Byte at address XXXXXXXX is higher than ZZ] (signed) Code
+			// Signed means : For bytes : values go from -128 to +127. For Halfword : values go from -32768/+32767. For Words : values go from -2147483648 to 2147483647. For exemple, for the Byte comparison, 7F (127) will be > to FF (-1).
+			//
+			else if (RAMAddress.StartsWith("202") == true)
+			{
+				// 202 Should be Changed to 020
+				// If ZZ < Byte at XXXXXXXX then execute next code.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("202") == true)
+				{
+					RAMAddress = RAMAddress.Replace("202", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("602") == true)
+			{
+				// 602 Should be Changed to 020
+				// If ZZ < Byte at XXXXXXXX then execute next 2 codes.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("602") == true)
+				{
+					RAMAddress = RAMAddress.Replace("602", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("A02") == true)
+			{
+				// A02 Should be Changed to 020
+				// If ZZ < Byte at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("A02") == true)
+				{
+					RAMAddress = RAMAddress.Replace("A02", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("E02") == true)
+			{
+				// E02 Should be Changed to 020
+				// While ZZ => Byte at XXXXXXXX turn off all codes.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("E02") == true)
+				{
+					RAMAddress = RAMAddress.Replace("E02", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("222") == true)
+			{
+				// 222 Should be Changed to 020
+				// If ZZZZ < Halfword at XXXXXXXX then execute next line.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("222") == true)
+				{
+					RAMAddress = RAMAddress.Replace("222", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("622") == true)
+			{
+				// 622 Should be Changed to 020
+				// If ZZZZ < Halfword at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("622") == true)
+				{
+					RAMAddress = RAMAddress.Replace("622", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("A22") == true)
+			{
+				// A22 Should be Changed to 020
+				// If ZZZZ < Halfword at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("A22") == true)
+				{
+					RAMAddress = RAMAddress.Replace("A22", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("E22") == true)
+			{
+				// E22 Should be Changed to 020
+				// While ZZZZ => Halfword at XXXXXXXX turn off all codes.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("E22") == true)
+				{
+					RAMAddress = RAMAddress.Replace("E22", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("242") == true)
+			{
+				// 242 Should be Changed to 020
+				// If ZZZZ < Halfword at XXXXXXXX then execute next line.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("242") == true)
+				{
+					RAMAddress = RAMAddress.Replace("242", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("642") == true)
+			{
+				// 642 Should be Changed to 020
+				// If ZZZZ < Halfword at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("642") == true)
+				{
+					RAMAddress = RAMAddress.Replace("642", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("A42") == true)
+			{
+				// A42 Should be Changed to 020
+				// If ZZZZ < Halfword at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("A42") == true)
+				{
+					RAMAddress = RAMAddress.Replace("A42", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("E42") == true)
+			{
+				// E42 Should be Changed to 020
+				// While ZZZZ => Halfword at XXXXXXXX turn off all codes.
+				// XXXXXXXX 0000ZZZZ
+				if (RAMAddress.StartsWith("E42") == true)
+				{
+					RAMAddress = RAMAddress.Replace("E42", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 9)
+			// [If Value at adress XXXXXXXX is lower than...] (unsigned) Code
+			// Unsigned means : For bytes : values go from 0 to +255. For Halfword : values go from 0 to +65535. For Words : values go from 0 to 4294967295. For exemple, for the Byte comparison, 7F (127) will be < to FF (255).
+			// 
+			// 
+			else if (RAMAddress.StartsWith("282") == true)
+			{
+				// 282 Should be Changed to 020
+				// If ZZZZZZZZ > Byte at XXXXXXXX then execute next line.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("282") == true)
+				{
+					RAMAddress = RAMAddress.Replace("282", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("682") == true)
+			{
+				// 682 Should be Changed to 020
+				// If ZZZZZZZZ > Byte at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("682") == true)
+				{
+					RAMAddress = RAMAddress.Replace("682", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("A82") == true)
+			{
+				// A82 Should be Changed to 020
+				// If ZZZZZZZZ > Byte at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("A82") == true)
+				{
+					RAMAddress = RAMAddress.Replace("A82", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("2A2") == true)
+			{
+				// 2A2 Should be Changed to 020
+				// If ZZZZZZZZ > Halfword at XXXXXXXX then execute next line.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("2A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("2A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("6A2") == true)
+			{
+				// 6A2 Should be Changed to 020
+				// If ZZZZZZZZ > Halfword at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("6A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("6A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("AA2") == true)
+			{
+				// AA2 Should be Changed to 020
+				// If ZZZZZZZZ > Halfword at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("AA2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("AA2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("EA2") == true)
+			{
+				// EA2 Should be Changed to 020
+				// While ZZZZZZZZ <= Halfword at XXXXXXXX turn off all codes.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("EA2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("EA2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("2C2") == true)
+			{
+				// 2C2 Should be Changed to 020
+				// If ZZZZZZZZ > Word at XXXXXXXX then execute next line.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("2C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("2C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("6C2") == true)
+			{
+				// 6C2 Should be Changed to 020
+				// If ZZZZZZZZ > Word at XXXXXXXX then execute next 2 lines.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("6C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("6C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("AC2") == true)
+			{
+				// AC2 Should be Changed to 020
+				// If ZZZZZZZZ > Word at XXXXXXXX then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("AC2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("AC2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("EC2") == true)
+			{
+				// EC2 Should be Changed to 020
+				// While ZZZZZZZZ <= Word at XXXXXXXX turn off all codes.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("EC2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("EC2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 10)
+			// [If Value at adress XXXXXXXX is higher than...] (unsigned) Code
+			// Unsigned means For bytes : values go from 0 to +255. For Halfword : values go from 0 to +65535. For Words : values go from 0 to 4294967295. For exemple, for the Byte comparison, 7F (127) will be < to FF (255).
+			else if (RAMAddress.StartsWith("302") == true)
+			{
+				// 302 Should be Changed to 020
+				// If ZZZZZZZZ < Byte at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("302") == true)
+				{
+					RAMAddress = RAMAddress.Replace("302", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("702") == true)
+			{
+				// 702 Should be Changed to 020
+				// If ZZZZZZZZ < Byte at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("702") == true)
+				{
+					RAMAddress = RAMAddress.Replace("702", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("B02") == true)
+			{
+				// B02 Should be Changed to 020
+				// If ZZZZZZZZ < Byte at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("B02") == true)
+				{
+					RAMAddress = RAMAddress.Replace("B02", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("F02") == true)
+			{
+				// F02 Should be Changed to 020
+				// If ZZZZZZZZ < Byte at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("F02") == true)
+				{
+					RAMAddress = RAMAddress.Replace("F02", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("322") == true)
+			{
+				// 322 Should be Changed to 020
+				//If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line.  
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("322") == true)
+				{
+					RAMAddress = RAMAddress.Replace("322", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("722") == true)
+			{
+				// 722 Should be Changed to 020
+				// If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("722") == true)
+				{
+					RAMAddress = RAMAddress.Replace("722", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("B22") == true)
+			{
+				// B22 Should be Changed to 020
+				// If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("B22") == true)
+				{
+					RAMAddress = RAMAddress.Replace("B22", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("F22") == true)
+			{
+				// F22 Should be Changed to 020
+				// If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("F22") == true)
+				{
+					RAMAddress = RAMAddress.Replace("F22", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+
+			else if (RAMAddress.StartsWith("342") == true)
+			{
+				// 342 Should be Changed to 020
+				//If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line.  
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("342") == true)
+				{
+					RAMAddress = RAMAddress.Replace("342", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("742") == true)
+			{
+				// 742 Should be Changed to 020
+				// If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("742") == true)
+				{
+					RAMAddress = RAMAddress.Replace("742", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("B42") == true)
+			{
+				// B42 Should be Changed to 020
+				// If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("B42") == true)
+				{
+					RAMAddress = RAMAddress.Replace("B42", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("F42") == true)
+			{
+				// F42 Should be Changed to 020
+				// If ZZZZZZZZ < Halfword at XXXXXXXX then execute next line..
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("F42") == true)
+				{
+					RAMAddress = RAMAddress.Replace("F42", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 11) If AND Code
+			else if (RAMAddress.StartsWith("382") == true)
+			{
+				// 382 Should be Changed to 020
+				// If ZZ AND Byte at XXXXXXXX <> 0 (= True) then execute next code.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("382") == true)
+				{
+					RAMAddress = RAMAddress.Replace("382", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("782") == true)
+			{
+				// 782 Should be Changed to 020
+				// If ZZ AND Byte at XXXXXXXX <> 0 (= True) then execute next 2 codes.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("782") == true)
+				{
+					RAMAddress = RAMAddress.Replace("782", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("B82") == true)
+			{
+				// B82 Should be Changed to 020
+				// If ZZ AND Byte at XXXXXXXX <> 0 (= True) then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("B82") == true)
+				{
+					RAMAddress = RAMAddress.Replace("B82", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("F82") == true)
+			{
+				// F82 Should be Changed to 020
+				// While ZZ AND Byte at XXXXXXXX = 0 (= False) then turn off all codes.
+				// XXXXXXXX
+				// 000000ZZ
+				if (RAMAddress.StartsWith("F82") == true)
+				{
+					RAMAddress = RAMAddress.Replace("F82", "020");
+				}
+				byteSize = 8;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("3A2") == true)
+			{
+				// 3A2 Should be Changed to 020
+				// If ZZZZ AND Halfword at XXXXXXXX <> 0 (= True) then execute next code.
+				// XXXXXXXX
+				// 0000ZZZZ
+				if (RAMAddress.StartsWith("3A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("3A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("7A2") == true)
+			{
+				// 7A2 Should be Changed to 020
+				// If ZZZZ AND Halfword at XXXXXXXX <> 0 (= True) then execute next 2 codes.
+				// XXXXXXXX
+				// 0000ZZZZ
+				if (RAMAddress.StartsWith("7A2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("7A2", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("3C2") == true)
+			{
+				// 3C2 Should be Changed to 020
+				// If ZZZZZZZZ AND Word at XXXXXXXX <> 0 (= True) then execute next code.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				if (RAMAddress.StartsWith("3C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("3C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("7C2") == true)
+			{
+				// 7C2 Should be Changed to 020
+				// If ZZZZZZZZ AND Word at XXXXXXXX <> 0 (= True) then execute next 2 codes.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				if (RAMAddress.StartsWith("7C2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("7C2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("BC2") == true)
+			{
+				// BC2 Should be Changed to 020
+				// If ZZZZZZZZ AND Word at XXXXXXXX <> 0 (= True) then execute all following codes in the same row (else execute none of the codes below).
+				// XXXXXXXX
+				// ZZZZZZZZ
+				if (RAMAddress.StartsWith("BC2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("BC2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("FC2") == true)
+			{
+				// FC2 Should be Changed to 020
+				// While ZZZZZZZZ AND Word at XXXXXXXX = 0 (= False) then turn off all codes.
+				// XXXXXXXX
+				// ZZZZZZZZ
+				if (RAMAddress.StartsWith("FC2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("FC2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 12) "Always..." Codes
+			// For the "Always..." codes: -XXXXXXXX can be any authorised address BUT 00000000 (use 02000000 if you don't know what to choose). -ZZZZZZZZ can be anything. -The "y" in the code data must be in the [1-7] range (which means not 0).
+			// 
+			// 
+			else if (RAMAddress.StartsWith("0E2") == true)
+			{
+				// 0E2 Should be Changed to 020
+				// Always skip next line.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("0E2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("0E2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("4E2") == true)
+			{
+				// 4E2 Should be Changed to 020
+				// Always skip next 2 lines.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("4E2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("4E2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("8E2") == true)
+			{
+				// 8E2 Should be Changed to 020
+				// Always Stops executing all the codes below.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("8E2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("8E2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("CE2") == true)
+			{
+				// CE2 Should be Changed to 020
+				// Always turn off all codes.
+				// XXXXXXXX ZZZZZZZZ
+				if (RAMAddress.StartsWith("CE2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("CE2", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			// 13) 1 Line Special Codes (= starting with "00000000")
+			else if (RAMAddress.StartsWith("00000000") == true)
+			{
+				// End of the code list (even if you put values in the 2nd line).
+				// 00000000
+				//Let's ignore the user's input on this one?
+				if (RAMAddress.StartsWith("00000000") == true)
+				{
+					RAMAddress = RAMAddress.Replace("00000000", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("080") == true)
+			{
+				// End of the code list (even if you put values in the 2nd line).
+				// 00000000
+				//Let's ignore the user's input on this one?
+				if (RAMAddress.StartsWith("080") == true)
+				{
+					RAMAddress = RAMAddress.Replace("080", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("0800") == true && RAMAddress[6] == '0' == true && RAMAddress[7] == '0' == true)
+			{
+				// AR Slowdown : loops the AR XX times
+				// 0800XX00
+				if (RAMAddress.StartsWith("0800") == true && RAMAddress[6] == '0' == true && RAMAddress[7] == '0' == true)
+				{
+					RAMAddress = RAMAddress.Replace("0800", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			// 14) 2 Lines Special Codes (= starting with '00000000' and padded (if needed) with "00000000")
+			// Note: You have to add the 0es manually, after clicking the "create" button.
+			//Ocean Prince's note:
+			//Several of these appear to be conflicted with above detections.
+			else if (RAMAddress.StartsWith("1E2") == true)
+			{
+				// 1E2 Should be Changed to 020
+				// Patches ROM address (XXXXXXXX << 1) with Halfword ZZZZ. Does not work on V1/2 upgraded to V3. Only for a real V3 Hardware?
+				// XXXXXXXX
+				// 0000ZZZZ
+				if (RAMAddress.StartsWith("1E2") == true)
+				{
+					RAMAddress = RAMAddress.Replace("1E2", "020");
+				}
+				byteSize = 16;
+				blnActionReplayMax = true;
+			}
+			else if (RAMAddress.StartsWith("40000000") == true)
+			{
+				// 40000000 Should be Changed to 00000000
+				// (SP = 0) (means : stops the "then execute all following codes in the same row" and stops the "else execute none of the codes below)".
+				// 00000000
+				// 00000000
+				if (RAMAddress.StartsWith("40000000") == true)
+				{
+					RAMAddress = RAMAddress.Replace("40000000", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("60000000") == true)
+			{
+				// 60000000 Should be Changed to 00000000
+				// (SP = 1) (means : start to execute all codes until end of codes or SP = 0). (bypass the number of codes to executes set by the master code). Should be Changed to (If SP <> 2)
+				// 00000000
+				// 00000000
+				if (RAMAddress.StartsWith("60000000") == true)
+				{
+					RAMAddress = RAMAddress.Replace("60000000", "020");
+				}
+				byteSize = 16;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			//TODO:
+			//Figure out how these work.
+			//NOTE:
+			//This is a Three Line Checker
+			#region "The Three Line Adds"
+			else if (RAMAddress.StartsWith("8022") == true)
+			{
+				// 802 Should be Changed to 020
+				// Writes Byte YY at address XXXXXXXX. Then makes YY = YY + Z1, XXXXXXXX = XXXXXXXX + Z3Z3, Z2 = Z2 - 1, and repeats until Z2 < 0.
+				// XXXXXXXX
+				// 000000YY
+				// Z1Z2Z3Z3
+				if (RAMAddress.StartsWith("8022") == true)
+				{
+					RAMAddress = RAMAddress.Replace("8022", "0200");
+				}
+				byteSize = 8;
+				MessageBox.Show("Sorry, this tool does not support 8022 codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			//I Don't get what this is doing.
+			else if (RAMAddress.StartsWith("8222") == true)
+			{
+				// 822 Should be Changed to 020
+				// Writes Halfword YYYY at address XXXXXXXX. Then makes YYYY = YYYY + Z1, XXXXXXXX = XXXXXXXX + Z3Z3*2,
+				// XXXXXXXX
+				// 0000YYYY
+				// Z1Z2Z3Z3
+				if (RAMAddress.StartsWith("8222") == true)
+				{
+					RAMAddress = RAMAddress.Replace("8222", "0200");
+				}
+				byteSize = 16;
+				MessageBox.Show("Sorry, this tool does not support 8222 codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("842") == true)
+			{
+				// 842 Should be Changed to 020
+				// Writes Word YYYYYYYY at address XXXXXXXX. Then makes YYYYYYYY = YYYYYYYY + Z1, XXXXXXXX = XXXXXXXX + Z3Z3*4, Z2 = Z2 - 1, and repeats until Z2<0.
+				// XXXXXXXX
+				// YYYYYYYY
+				// Z1Z2Z3Z3
+				// WARNING: There is a BUG on the REAL AR (v2 upgraded to v3, and maybe on real v3) with the 32Bits Increment Slide code. You HAVE to add a code (best choice is 80000000 00000000 : add 0 to value at address 0) right after it, else the AR will erase the 2 last 8 digits lines of the 32 Bits Inc. Slide code when you enter it !!!
+				if (RAMAddress.StartsWith("842") == true)
+				{
+					RAMAddress = RAMAddress.Replace("842", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("Sorry, this tool does not support 8222 codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			#endregion
+			// 15) Special Codes
+			// -Master Code-
+			// address to patch AND $1FFFFFE Should be Changed to address to patch
+			// Master Code settings.
+			// XXXXXXXX
+			// 0000YYYY
+			// 
+			else if (RAMValue.StartsWith("001DC0DE") == true)
+			{
+				// -ID Code-
+				// Word at address 080000AC
+				// Must always be 001DC0DE
+				// XXXXXXXX
+				// 001DC0DE
+				if (RAMValue.StartsWith("001DC0DE") == true)
+				{
+					RAMValue = RAMValue.Replace("001DC0DE", "020");
+				}
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("DEADFACE") == true)
+			{
+				// -DEADFACE-
+				// New Encryption seed.
+				// DEADFACE
+				// 0000XXXX
+				MessageBox.Show("Sorry, this tool does not support DEADFACE codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			else if (blnActionReplayMax == false)
+			{
+				//Is it a bad code?  Check the others.
+				blnActionReplayMax = false;
+			}
+			return;
+		}
+		public void GBACodeBreaker()
+		{
+			//These checks are done on the DECYPTED code, not the Encrypted one.
+			if (RAMAddress.StartsWith("0000") == true && RAMValue.StartsWith("0008") == true || RAMAddress.StartsWith("0000") == true && RAMValue.StartsWith("0002") == true)
+			{
+				//Master Code #1
+				//0000xxxx yyyy
+
+				//xxxx is the CRC value (the "Game ID" converted to hex)
+				//Flags("yyyy"):
+				//0008 - CRC Exists(CRC is used to autodetect the inserted game)
+				//0002 - Disable Interupts
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("1000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("2000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("3000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("4000") == true || RAMAddress.StartsWith("1") == true && RAMValue.StartsWith("0020") == true)
+			{
+				//Master Code #2	 
+				//1aaaaaaa xxxy
+				//'y' is the CBA Code Handler Store Address(0 - 7)[address = ((d << 0x16) + 0x08000100)]
+
+				//1000 - 32 - bit Long - Branch Type(Thumb)
+				//2000 - 32 - bit Long - Branch Type(ARM)
+				//3000 - 8 - bit(?) Long - Branch Type(Thumb)
+				//4000 - 8 - bit(?) Long - Branch Type(ARM)
+				//0020 - Unknown(Odd Effect)
+				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnneeded = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("3") == true)
+			{
+				//8 - Bit Constant RAM Write
+				//3aaaaaaa 00yy
+				//Continuosly writes the 8 - Bit value specified by 'yy' to address aaaaaaa.
+				RAMAddress = RAMAddress.Remove(0, 1);
+				byteSize = 16;
+			}
+			else if (RAMAddress.StartsWith("4") == true)
+			{
+				//Slide Code
+				//4aaaaaaa yyyy
+				//xxxxxxxx iiii
+				//This is one of those two - line codes.The "yyyy" set is the data to store at the address (aaaaaaa), with xxxxxxxx being the number of addresses to store to, and iiii being the value to increment the addresses by.  The codetype is usually use to fill memory with a certain value.
+				RAMAddress = RAMAddress.Remove(0, 1);
+				byteSize = 32;
+				MessageBox.Show("Sorry, this tool does not support 4 codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("6") == true)
+			{
+				//16 - Bit Logical AND
+				//6aaaaaaa yyyy
+				//Performs the AND function on the address provided with the value provided. I'm not going to explain what AND does, so if you'd like to know I suggest you see the instruction manual for a graphing calculator.
+				//This is another advanced code type you'll probably never need to use.  
+
+				//Ocean Prince's note:
+				//AND means "If ALL conditions are True then Do"
+				//I don't understand how this would be applied/works.  Samples are requested.
+				MessageBox.Show("Sorry, this tool does not support 6 codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("7") == true)
+			{
+				//16 - Bit 'If Equal To' Activator
+				//7aaaaaaa yyyy
+				//If the value at the specified RAM address(aaaaaaa) is equal to yyyy value, active the code on the next line.
+				byteSize = 32;
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("8") == true)
+			{
+				//16 - Bit Constant RAM Write
+				//8aaaaaaa yyyy
+				//Continuosly writes yyyy values to the specified RAM address(aaaaaaa).
+				//Continuosly writes the 8 - Bit value specified by 'yy' to address aaaaaaa.
+				RAMAddress = RAMAddress.Remove(0, 1);
+				byteSize = 32;
+			}
+			else if (RAMAddress.StartsWith("9") == true)
+			{
+				//Change Encryption Seeds
+				//9yyyyyyy yyyy
+				//(When 1st Code Only!)
+				//Works like the DEADFACE on GSA.Changes the encryption seeds used for the rest of the codes.
+				MessageBox.Show("Sorry, this tool does not support 9 codes.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				byteSize = 32;
+				blnUnhandled = true;
+				return;
+			}
+			else if (RAMAddress.StartsWith("A") == true)
+			{
+				//16 - Bit 'If Not Equal' Activator
+				//Axxxxxxx yyyy
+				//Basicly the opposite of an 'If Equal To' Activator.Activates the code on the next line if address xxxxxxx is NOT equal to yyyy
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				byteSize = 32;
+				return;
+
+			}
+			else if (RAMAddress.StartsWith("D00000") == true)
+			{
+				//16 - Bit Conditional RAM Write
+				//D00000xx yyyy
+				//No Description available at this time.
+				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+				blnUnhandled = true;
+				byteSize = 32;
+				return;
+			}
+			return;
+		}
+		public void AddGBA()
+		{
+			if (byteSize == 8)
+			{
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+			}
+			else if (byteSize == 16)
+			{
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+			}
+			else if (byteSize == 32)
+			{
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.DWord, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+			}
+			//Clear old Inputs
+			txtCheat.Clear();
+			txtDescription.Clear();
+		}
+		//TODO:
+		//Make Slide Code Handling suck less.
+		//Make Slide Code Handling exist.
 		public void GBASlide()
 		{
 			//This works on the Action Replay MAX, not the Codebreaker, GameShark SP/Xploder
@@ -566,8 +2369,6 @@ namespace BizHawk.Client.EmuHawk
 			txtCheat.Clear();
 			txtDescription.Clear();
 		}
-
-
 		private void GEN()
 		{
 			//Game Genie only, for now.
@@ -1359,6 +3160,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//TODO?
 			//Add special handling for cores that need special things?
+			//GBA may need a special thing.
 		}
 	}
 }
