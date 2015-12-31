@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x00
 			/*BRK [implied]*/ new Uop[] { Uop.Fetch2, Uop.PushPCH, Uop.PushPCL, Uop.PushP_BRK, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*ORA (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_ORA, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*SLO* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_SLO, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*NOP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_NOP, Uop.End },
 			/*ORA zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_ORA, Uop.End },
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x10
 			/*BPL +/-rel*/ new Uop[] { Uop.RelBranch_Stage2_BPL, Uop.End },
 			/*ORA (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_ORA, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*SLO (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_SLO, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*ORA zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_ORA, Uop.End },
@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x20
 			/*JSR*/ new Uop[] { Uop.Fetch2, Uop.NOP, Uop.PushPCH, Uop.PushPCL, Uop.JSR, Uop.End },
 			/*AND (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_AND, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*RLA* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_RLA, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*BIT zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_BIT, Uop.End },
 			/*AND zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_AND, Uop.End },
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x30
 			/*BMI +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BMI, Uop.End },
 			/*AND (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_AND, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*RLA* (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_RLA, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*AND zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_AND, Uop.End },
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x40
 			/*RTI*/ new Uop[] { Uop.FetchDummy, Uop.IncS, Uop.PullP, Uop.PullPCL, Uop.PullPCH_NoInc, Uop.End },
 			/*EOR (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_EOR, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*SRE* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_SRE, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*NOP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_NOP, Uop.End },
 			/*EOR zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_EOR, Uop.End },
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x50
 			/*BVC +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BVC, Uop.End },
 			/*EOR (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_EOR, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*SRE* (addr),Y* [indirect indexed RMW] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_SRE, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*EOR zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_EOR, Uop.End },
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x60
 			/*RTS*/ new Uop[] { Uop.FetchDummy, Uop.IncS, Uop.PullPCL, Uop.PullPCH_NoInc, Uop.IncPC, Uop.End }, //can't fetch here because the PC isnt ready until the end of the last clock
 			/*ADC (addr,X) [indexed indirect READ]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_READ_ADC, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*RRA* (addr,X) [indexed indirect RMW] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.IdxInd_Stage3, Uop.IdxInd_Stage4, Uop.IdxInd_Stage5, Uop.IdxInd_Stage6_RMW, Uop.IdxInd_Stage7_RMW_RRA, Uop.IdxInd_Stage8_RMW, Uop.End },
 			/*NOP zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_NOP, Uop.End },
 			/*ADC zp [zero page READ]*/ new Uop[] { Uop.Fetch2, Uop.ZP_READ_ADC, Uop.End },
@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x70
 			/*BVS +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BVS, Uop.End },
 			/*ADC (addr),Y [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_ADC, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*RRA* (addr),Y [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_RRA, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*ADC zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_ADC, Uop.End },
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0x90
 			/*BCC +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BCC, Uop.End },
 			/*STA (addr),Y [indirect indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_STA, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*SHA** [indirect indexed WRITE] [unofficial] [not tested by blargg's instruction tests]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_WRITE_Stage5, Uop.IndIdx_WRITE_Stage6_SHA, Uop.End },
 			/*STY zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STY, Uop.End },
 			/*STA zp,X [zero page indexed WRITE X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_WRITE_STA, Uop.End },
@@ -221,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0xB0
 			/*BCS +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BCS, Uop.End },
 			/*LDA (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_LDA, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*LAX* (addr),Y* [indirect indexed READ] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_LAX, Uop.End },
 			/*LDY zp,X [zero page indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_LDY, Uop.End },
 			/*LDA zp,X [zero page indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_LDA, Uop.End },
@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0xD0
 			/*BNE +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BNE, Uop.End },
 			/*CMP (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_CMP, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*DCP* (addr),Y* [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_DCP, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*CMP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_CMP, Uop.End },
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//0xF0
 			/*BEQ +/-rel [relative]*/ new Uop[] { Uop.RelBranch_Stage2_BEQ, Uop.End },
 			/*SBC (addr),Y* [indirect indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_READ_Stage5, Uop.IndIdx_READ_Stage6_SBC, Uop.End },
-			/*JAM*/ new Uop[] { Uop.End },
+			/*JAM*/ new Uop[] { Uop.Jam },
 			/*ISC* (addr),Y* [indirect indexed RMW Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.IndIdx_Stage3, Uop.IndIdx_Stage4, Uop.IndIdx_RMW_Stage5, Uop.IndIdx_RMW_Stage6, Uop.IndIdx_RMW_Stage7_ISC, Uop.IndIdx_RMW_Stage8, Uop.End },
 			/*NOP zp,X [zero page indexed READ]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_NOP, Uop.End },
 			/*SBC zp,X [zero page indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.ZpIdx_Stage3_X, Uop.ZP_READ_SBC, Uop.End },
@@ -466,6 +466,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			End_ISpecial, //same as end, but preserves the iflag set by the instruction
 			End_BranchSpecial,
 			End_SuppressInterrupt,
+
+			Jam,
 		}
 
 		void InitOpcodeHandlers()
@@ -2659,6 +2661,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			End();
 		}
 
+		void Jam()
+		{
+			rdy_freeze = true;
+		}
+
 		void ExecuteOneRetry()
 		{
 			//dont know whether this system is any faster. hard to get benchmarks someone else try it?
@@ -2912,6 +2919,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				case Uop.End_SuppressInterrupt: End_SuppressInterrupt(); break;
 				case Uop.End: End(); break;
 				case Uop.End_BranchSpecial: End_BranchSpecial(); break;
+				case Uop.Jam: Jam(); break;
 			}
 		}
 
