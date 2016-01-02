@@ -299,8 +299,9 @@ namespace BizHawk.Client.Common
 			var lg = new Bk2LogEntryGenerator(LogKey);
 			lg.SetSource(Global.MovieOutputHardpoint);
 
-			var sb = new StringBuilder();
+			var sb = new StringBuilder();			
 			sb.AppendLine(lg.GenerateLogKey());
+			sb.EnsureCapacity(sb.Capacity + _log.Count);
 			foreach (var record in _log)
 			{
 				sb.AppendLine(record);
