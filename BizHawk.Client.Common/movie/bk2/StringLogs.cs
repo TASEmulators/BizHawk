@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 		class Enumerator : IEnumerator<string>
 		{
 			public DiskStringLog log;
-			int index;
+			int index = -1;
 			public string Current { get { return log[index]; } }
 			object System.Collections.IEnumerator.Current { get { return log[index]; } }
 			bool System.Collections.IEnumerator.MoveNext()
@@ -156,7 +156,7 @@ namespace BizHawk.Client.Common
 				}
 				return true;
 			}
-			void System.Collections.IEnumerator.Reset() { index = 0; }
+			void System.Collections.IEnumerator.Reset() { index = -1; }
 			
 			public void Dispose() { }
 		}
