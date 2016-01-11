@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Comments, tw => tw.WriteLine(CommentsString()));
 				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
 				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(SyncSettingsJson));
-				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
+				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
 
 				// TasProj extras
 				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(StateManager.Settings.ToString()));

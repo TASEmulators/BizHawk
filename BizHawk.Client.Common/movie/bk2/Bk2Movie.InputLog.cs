@@ -14,12 +14,17 @@ namespace BizHawk.Client.Common
 		public string GetInputLog()
 		{
 			var sb = new StringBuilder();
-
-			sb.AppendLine("[Input]");
-			sb.Append(RawInputLog());
-			sb.AppendLine("[/Input]");
-
+			var writer = new StringWriter(sb);
+			WriteInputLog(writer);
+			writer.Flush();
 			return sb.ToString();
+		}
+
+		public void WriteInputLog(TextWriter writer)
+		{
+			writer.WriteLine("[Input]");
+			WriteRawInputLog(writer);
+			writer.WriteLine("[/Input]");
 		}
 
 		public string GetInputLogEntry(int frame)
@@ -294,20 +299,17 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		protected StringBuilder RawInputLog()
+		protected void WriteRawInputLog(TextWriter writer)
 		{
 			var lg = new Bk2LogEntryGenerator(LogKey);
 			lg.SetSource(Global.MovieOutputHardpoint);
 
-			var sb = new StringBuilder();			
-			sb.AppendLine(lg.GenerateLogKey());
-			sb.EnsureCapacity(sb.Capacity + _log.Count);
+			writer.WriteLine(lg.GenerateLogKey());
+
 			foreach (var record in _log)
 			{
-				sb.AppendLine(record);
+				writer.WriteLine(record);
 			}
-
-			return sb;
 		}
 
 		/// <summary>
