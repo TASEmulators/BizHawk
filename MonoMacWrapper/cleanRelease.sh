@@ -12,10 +12,10 @@ rm zip.exe
 rm dll/libmeteor.dll
 rm dll/MusashiDLL.dll
 rm dll/libmednahawk.dll
-rm dll/libsneshawk-32-compatibility.exe
-rm dll/libsneshawk-64-compatibility.exe
-rm dll/libsneshawk-32-performance.exe
-rm dll/libsneshawk-64-performance.exe
+rm dll/libsneshawk-32-compatibility.dll
+rm dll/libsneshawk-64-compatibility.dll
+rm dll/libsneshawk-32-performance.dll
+rm dll/libsneshawk-64-performance.dll
 rm dll/blip_buf.dll
 rm dll/PPSSPPBizhawk.dll
 rm dll/libyabause.dll

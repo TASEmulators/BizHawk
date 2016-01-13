@@ -15,7 +15,7 @@ namespace BizHawk.Client.EtoHawk
 		public string Description { get { return Record.descr; } }
 		public string ResolvedWith { get; set; }
 		public string Location { get; set; }
-		public int Size { get; set; }
+		public long Size { get; set; }
 		public string Hash { get; set; }
 	}
 
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EtoHawk
 			//populate listview from firmware DB
 			//var groups = new Dictionary<string, ListViewGroup>();
 			List<FirmwareRow> firmwareList = new List<FirmwareRow>();
-			foreach (var fr in FirmwareDatabase.FirmwareRecords)
+			foreach (FirmwareDatabase.FirmwareRecord fr in FirmwareDatabase.FirmwareRecords)
 			{
 				var lvi = new FirmwareRow();
 				lvi.Record = fr;
@@ -70,6 +70,92 @@ namespace BizHawk.Client.EtoHawk
 			RefreshBasePath();*/
 		}
 
+		private void SetCustom_Click (object sender, EventArgs e)
+		{
+			//Unfortunately, Eto seems to have no way to tell where you right-clicked on a grid via the context menu.
+			//I will probably get rid of the context menu and just add set/clear buttons to a toolbar, but not right now.
+			if (gvFirmwares.SelectedItem != null && gvFirmwares.SelectedItem is FirmwareRow)
+			{
+				OpenFileDialog ofd = new OpenFileDialog();
+				if (ofd.ShowDialog(this) == DialogResult.Ok) 
+				{
+					FirmwareRow fr = (FirmwareRow)gvFirmwares.SelectedItem;
+					Global.Config.FirmwareUserSpecifications[fr.Record.ConfigKey] = ofd.FileName;
+					DoScan();
+				}
+			}
+		}
+
+		private void ClearCustom_Click (object sender, EventArgs e)
+		{
+			if (gvFirmwares.SelectedItem != null && gvFirmwares.SelectedItem is FirmwareRow) 
+			{
+				FirmwareRow fr = (FirmwareRow)gvFirmwares.SelectedItem;
+				Global.Config.FirmwareUserSpecifications.Remove(fr.Record.ConfigKey);
+				DoScan();
+			}
+		}
+
+		FirmwareManager Manager { get { return Global.FirmwareManager; } }
+		private void DoScan()
+		{
+			//lvFirmwares.BeginUpdate();
+			Manager.DoScanAndResolve();
+
+			//for each type of firmware, try resolving and record the result
+			foreach (FirmwareRow lvi in gvFirmwares.DataStore)
+			{
+				var fr = lvi.Record;
+				var ri = Manager.Resolve(fr, true);
+
+				if (ri == null)
+				{
+					//lvi.Description = "Missing!";
+				}
+				else
+				{
+					//lazy substring extraction. really should do a better job
+					var basePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null) + System.IO.Path.DirectorySeparatorChar;
+
+					var path = ri.FilePath.Replace(basePath, "");
+
+					//bolden the item if the user has specified a path for it
+					bool bolden = ri.UserSpecified;
+
+					//set columns based on whether it was a known file
+					if (ri.KnownFirmwareFile == null)
+					{
+						//lvi.ImageIndex = idUnsure;
+						//lvi.Description = "-custom-";
+					}
+					else
+					{
+						//lvi.ImageIndex = idOk;
+						//lvi.Description = ri.KnownFirmwareFile.descr;
+					}
+
+					//if the user specified a file but its missing, mark it as such
+					/*if (ri.Missing)
+					{
+						lvi.ImageIndex = idMissing;
+						lvi.ToolTipText = "Missing!";
+					}*/
+
+					//if the user specified a known firmware file but its for some other firmware, it was probably a mistake. mark it as suspicious
+					/*if (ri.KnownMismatching)
+						lvi.ImageIndex = idUnsure;*/
+
+					lvi.Location = path;
+
+					lvi.Size = ri.Size;
+
+					if (ri.Hash != null) lvi.Hash = "sha1:" + ri.Hash;
+					else lvi.Hash = "";
+				}
+			}
+
+			//lvFirmwares.EndUpdate();
+		}
 	}
 }
 
