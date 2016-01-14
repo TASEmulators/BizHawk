@@ -285,25 +285,6 @@ namespace BizHawk.Client.EmuHawk
 			DeleteFileW(path + ":Zone.Identifier");
 		}
 
-		//for debugging purposes, this is provided. when we're satisfied everyone understands whats going on, we'll get rid of this
-		[DllImportAttribute("kernel32.dll", EntryPoint = "CreateFileW")]
-		public static extern IntPtr CreateFileW([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, [InAttribute()] int lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, [InAttribute()] int hTemplateFile);
-		static void ApplyMOTW(string path)
-		{
-			int generic_write = 0x40000000;
-			int file_share_write = 2;
-			int create_always = 2;
-			var adsHandle = CreateFileW(path + ":Zone.Identifier", generic_write, file_share_write, 0, create_always, 0, 0);
-			using (var sfh = new Microsoft.Win32.SafeHandles.SafeFileHandle(adsHandle, true))
-			{
-				var adsStream = new FileStream(sfh, FileAccess.Write);
-				StreamWriter sw = new StreamWriter(adsStream);
-				sw.Write("[ZoneTransfer]\r\nZoneId=3");
-				sw.Flush();
-				adsStream.Close();
-			}
-		}
-
 		static void WhackAllMOTW(string dllDir)
 		{
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
