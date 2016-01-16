@@ -150,10 +150,30 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
-		{
+		{			
+			string movieFolderPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			
+			// Create movie folder if it doesn't already exist
+			try
+			{
+				if (!Directory.Exists(movieFolderPath))
+				{
+					Directory.CreateDirectory(movieFolderPath);
+				}
+			}
+			catch (Exception movieDirException)
+			when (
+						movieDirException is IOException ||
+						movieDirException is UnauthorizedAccessException ||
+						movieDirException is PathTooLongException
+					)
+				{
+
+			}
+			
 			var sfd = new SaveFileDialog
 			{
-				InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				InitialDirectory = movieFolderPath,
 				DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension,
 				FileName = RecordBox.Text,
 				OverwritePrompt = false,
