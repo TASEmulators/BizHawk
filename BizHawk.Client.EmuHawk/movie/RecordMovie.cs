@@ -166,9 +166,9 @@ namespace BizHawk.Client.EmuHawk
 						movieDirException is IOException ||
 						movieDirException is UnauthorizedAccessException ||
 						movieDirException is PathTooLongException
-					)
-				{
-
+				)
+			{
+				//TO DO : Pass error to user?
 			}
 			
 			var sfd = new SaveFileDialog
