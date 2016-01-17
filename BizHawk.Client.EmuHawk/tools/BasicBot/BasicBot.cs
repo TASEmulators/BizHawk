@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _oldCountingSetting = false;
 		private BotAttempt _currentBotAttempt = null;
 		private BotAttempt _bestBotAttempt = null;
+		private BotAttempt _comparisonBotAttempt = null;
 		private bool _replayMode = false;
 		private int _startFrame = 0;
 		private string _lastRom = string.Empty;
@@ -93,7 +94,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Text = DialogTitle;
 			Settings = new BasicBotSettings();
-		}
+
+			_comparisonBotAttempt = new BotAttempt();
+        }
 
 		private void BasicBot_Load(object sender, EventArgs e)
 		{
@@ -1100,6 +1103,86 @@ namespace BizHawk.Client.EmuHawk
 				FrameLength > 0
 				&& !string.IsNullOrWhiteSpace(MaximizeAddressBox.Text)
 				&& ControlProbabilities.Any(kvp => kvp.Value > 0);
+		}
+
+		private void mainBestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.mainValueNumeric.Enabled = false;
+				_comparisonBotAttempt.Maximize = _bestBotAttempt == null ? 0 : _bestBotAttempt.Maximize;
+            }
+		}
+
+		private void tiebreak1BestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.tiebreak1Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak1;
+			}
+		}
+
+		private void tiebreak2BestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.tiebreak2Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak2;
+			}
+		}
+
+		private void tiebreak3BestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.tiebreak3Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak3;
+			}
+		}
+
+		private void mainValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.mainValueNumeric.Enabled = true;
+				_comparisonBotAttempt.Maximize = (int)this.mainValueNumeric.Value;
+            }
+		}
+
+		private void tiebreak1ValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.tiebreak1Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak1 = (int)this.tiebreak1Numeric.Value;
+			}
+		}
+
+		private void tiebreak2ValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.tiebreak2Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak2 = (int)this.tiebreak2Numeric.Value;
+			}
+		}
+
+		private void tiebreak3ValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.tiebreak3Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak3 = (int)this.tiebreak3Numeric.Value;
+			}
 		}
 	}
 }
