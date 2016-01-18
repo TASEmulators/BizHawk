@@ -1208,7 +1208,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void mainBestRadio_CheckedChanged(object sender, EventArgs e)
+		private void MainBestRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1218,7 +1218,7 @@ namespace BizHawk.Client.EmuHawk
             }
 		}
 
-		private void tiebreak1BestRadio_CheckedChanged(object sender, EventArgs e)
+		private void Tiebreak1BestRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1228,7 +1228,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tiebreak2BestRadio_CheckedChanged(object sender, EventArgs e)
+		private void Tiebreak2BestRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1238,7 +1238,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tiebreak3BestRadio_CheckedChanged(object sender, EventArgs e)
+		private void Tiebreak3BestRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1248,7 +1248,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void mainValueRadio_CheckedChanged(object sender, EventArgs e)
+		private void MainValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1258,7 +1258,7 @@ namespace BizHawk.Client.EmuHawk
             }
 		}
 
-		private void tiebreak1ValueRadio_CheckedChanged(object sender, EventArgs e)
+		private void TieBreak1ValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1268,7 +1268,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tiebreak2ValueRadio_CheckedChanged(object sender, EventArgs e)
+		private void TieBreak2ValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1278,7 +1278,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void tiebreak3ValueRadio_CheckedChanged(object sender, EventArgs e)
+		private void TieBreak3ValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
@@ -1288,25 +1288,25 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void mainValueNumeric_ValueChanged(object sender, EventArgs e)
+		private void MainValueNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.Maximize = (int)numericUpDown.Value;
 		}
 
-		private void tiebreak1Numeric_ValueChanged(object sender, EventArgs e)
+		private void TieBreak1Numeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak1 = (int)numericUpDown.Value;
 		}
 
-		private void tiebreak2Numeric_ValueChanged(object sender, EventArgs e)
+		private void TieBreak2Numeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak2 = (int)numericUpDown.Value;
 		}
 
-		private void tiebreak3Numeric_ValueChanged(object sender, EventArgs e)
+		private void TieBreak3Numeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;

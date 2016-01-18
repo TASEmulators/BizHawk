@@ -670,7 +670,7 @@
 			this.TieBreak3Numeric.Name = "TieBreak3Numeric";
 			this.TieBreak3Numeric.Size = new System.Drawing.Size(120, 20);
 			this.TieBreak3Numeric.TabIndex = 1013;
-			this.TieBreak3Numeric.ValueChanged += new System.EventHandler(this.tiebreak3Numeric_ValueChanged);
+			this.TieBreak3Numeric.ValueChanged += new System.EventHandler(this.TieBreak3Numeric_ValueChanged);
 			// 
 			// TieBreak3ValueRadio
 			// 
@@ -681,7 +681,7 @@
 			this.TieBreak3ValueRadio.TabIndex = 1012;
 			this.TieBreak3ValueRadio.Text = "Value";
 			this.TieBreak3ValueRadio.UseVisualStyleBackColor = true;
-			this.TieBreak3ValueRadio.CheckedChanged += new System.EventHandler(this.tiebreak3ValueRadio_CheckedChanged);
+			this.TieBreak3ValueRadio.CheckedChanged += new System.EventHandler(this.TieBreak3ValueRadio_CheckedChanged);
 			// 
 			// TieBreak3BestRadio
 			// 
@@ -694,7 +694,7 @@
 			this.TieBreak3BestRadio.TabStop = true;
 			this.TieBreak3BestRadio.Text = "Best";
 			this.TieBreak3BestRadio.UseVisualStyleBackColor = true;
-			this.TieBreak3BestRadio.CheckedChanged += new System.EventHandler(this.tiebreak3BestRadio_CheckedChanged);
+			this.TieBreak3BestRadio.CheckedChanged += new System.EventHandler(this.Tiebreak3BestRadio_CheckedChanged);
 			// 
 			// label4
 			// 
@@ -763,7 +763,7 @@
 			this.MainValueNumeric.Name = "MainValueNumeric";
 			this.MainValueNumeric.Size = new System.Drawing.Size(120, 20);
 			this.MainValueNumeric.TabIndex = 1013;
-			this.MainValueNumeric.ValueChanged += new System.EventHandler(this.mainValueNumeric_ValueChanged);
+			this.MainValueNumeric.ValueChanged += new System.EventHandler(this.MainValueNumeric_ValueChanged);
 			// 
 			// MainValueRadio
 			// 
@@ -774,7 +774,7 @@
 			this.MainValueRadio.TabIndex = 1012;
 			this.MainValueRadio.Text = "Value";
 			this.MainValueRadio.UseVisualStyleBackColor = true;
-			this.MainValueRadio.CheckedChanged += new System.EventHandler(this.mainValueRadio_CheckedChanged);
+			this.MainValueRadio.CheckedChanged += new System.EventHandler(this.MainValueRadio_CheckedChanged);
 			// 
 			// MainBestRadio
 			// 
@@ -787,7 +787,7 @@
 			this.MainBestRadio.TabStop = true;
 			this.MainBestRadio.Text = "Best";
 			this.MainBestRadio.UseVisualStyleBackColor = true;
-			this.MainBestRadio.CheckedChanged += new System.EventHandler(this.mainBestRadio_CheckedChanged);
+			this.MainBestRadio.CheckedChanged += new System.EventHandler(this.MainBestRadio_CheckedChanged);
 			// 
 			// MainOperator
 			// 
@@ -863,7 +863,7 @@
 			this.TieBreak1Numeric.Name = "TieBreak1Numeric";
 			this.TieBreak1Numeric.Size = new System.Drawing.Size(120, 20);
 			this.TieBreak1Numeric.TabIndex = 1013;
-			this.TieBreak1Numeric.ValueChanged += new System.EventHandler(this.tiebreak1Numeric_ValueChanged);
+			this.TieBreak1Numeric.ValueChanged += new System.EventHandler(this.TieBreak1Numeric_ValueChanged);
 			// 
 			// TieBreak1ValueRadio
 			// 
@@ -874,7 +874,7 @@
 			this.TieBreak1ValueRadio.TabIndex = 1012;
 			this.TieBreak1ValueRadio.Text = "Value";
 			this.TieBreak1ValueRadio.UseVisualStyleBackColor = true;
-			this.TieBreak1ValueRadio.CheckedChanged += new System.EventHandler(this.tiebreak1ValueRadio_CheckedChanged);
+			this.TieBreak1ValueRadio.CheckedChanged += new System.EventHandler(this.TieBreak1ValueRadio_CheckedChanged);
 			// 
 			// Tiebreak1Operator
 			// 
@@ -901,7 +901,7 @@
 			this.TieBreak1BestRadio.TabStop = true;
 			this.TieBreak1BestRadio.Text = "Best";
 			this.TieBreak1BestRadio.UseVisualStyleBackColor = true;
-			this.TieBreak1BestRadio.CheckedChanged += new System.EventHandler(this.tiebreak1BestRadio_CheckedChanged);
+			this.TieBreak1BestRadio.CheckedChanged += new System.EventHandler(this.Tiebreak1BestRadio_CheckedChanged);
 			// 
 			// label5
 			// 
@@ -963,7 +963,7 @@
 			this.TieBreak2Numeric.Name = "TieBreak2Numeric";
 			this.TieBreak2Numeric.Size = new System.Drawing.Size(120, 20);
 			this.TieBreak2Numeric.TabIndex = 1013;
-			this.TieBreak2Numeric.ValueChanged += new System.EventHandler(this.tiebreak2Numeric_ValueChanged);
+			this.TieBreak2Numeric.ValueChanged += new System.EventHandler(this.TieBreak2Numeric_ValueChanged);
 			// 
 			// Tiebreak2Operator
 			// 
@@ -988,7 +988,7 @@
 			this.TieBreak2ValueRadio.TabIndex = 1012;
 			this.TieBreak2ValueRadio.Text = "Value";
 			this.TieBreak2ValueRadio.UseVisualStyleBackColor = true;
-			this.TieBreak2ValueRadio.CheckedChanged += new System.EventHandler(this.tiebreak2ValueRadio_CheckedChanged);
+			this.TieBreak2ValueRadio.CheckedChanged += new System.EventHandler(this.TieBreak2ValueRadio_CheckedChanged);
 			// 
 			// TieBreak2BestRadio
 			// 
@@ -1001,7 +1001,7 @@
 			this.TieBreak2BestRadio.TabStop = true;
 			this.TieBreak2BestRadio.Text = "Best";
 			this.TieBreak2BestRadio.UseVisualStyleBackColor = true;
-			this.TieBreak2BestRadio.CheckedChanged += new System.EventHandler(this.tiebreak2BestRadio_CheckedChanged);
+			this.TieBreak2BestRadio.CheckedChanged += new System.EventHandler(this.Tiebreak2BestRadio_CheckedChanged);
 			// 
 			// label11
 			// 
