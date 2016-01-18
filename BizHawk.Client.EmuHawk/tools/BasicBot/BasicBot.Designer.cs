@@ -657,6 +657,16 @@
 			// 
 			this.TieBreak3Numeric.Enabled = false;
 			this.TieBreak3Numeric.Location = new System.Drawing.Point(417, 4);
+			this.TieBreak3Numeric.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.TieBreak3Numeric.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
 			this.TieBreak3Numeric.Name = "TieBreak3Numeric";
 			this.TieBreak3Numeric.Size = new System.Drawing.Size(120, 20);
 			this.TieBreak3Numeric.TabIndex = 1013;
@@ -740,6 +750,16 @@
 			// 
 			this.MainValueNumeric.Enabled = false;
 			this.MainValueNumeric.Location = new System.Drawing.Point(417, 4);
+			this.MainValueNumeric.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.MainValueNumeric.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
 			this.MainValueNumeric.Name = "MainValueNumeric";
 			this.MainValueNumeric.Size = new System.Drawing.Size(120, 20);
 			this.MainValueNumeric.TabIndex = 1013;
@@ -830,6 +850,16 @@
 			// 
 			this.TieBreak1Numeric.Enabled = false;
 			this.TieBreak1Numeric.Location = new System.Drawing.Point(417, 4);
+			this.TieBreak1Numeric.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.TieBreak1Numeric.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
 			this.TieBreak1Numeric.Name = "TieBreak1Numeric";
 			this.TieBreak1Numeric.Size = new System.Drawing.Size(120, 20);
 			this.TieBreak1Numeric.TabIndex = 1013;
@@ -920,6 +950,16 @@
 			// 
 			this.TieBreak2Numeric.Enabled = false;
 			this.TieBreak2Numeric.Location = new System.Drawing.Point(417, 4);
+			this.TieBreak2Numeric.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.TieBreak2Numeric.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
 			this.TieBreak2Numeric.Name = "TieBreak2Numeric";
 			this.TieBreak2Numeric.Size = new System.Drawing.Size(120, 20);
 			this.TieBreak2Numeric.TabIndex = 1013;

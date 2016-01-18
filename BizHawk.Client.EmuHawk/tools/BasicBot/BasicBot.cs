@@ -638,7 +638,15 @@ namespace BizHawk.Client.EmuHawk
             public byte ComparisonTypeTie1 { get; set; }
             public byte ComparisonTypeTie2 { get; set; }
             public byte ComparisonTypeTie3 { get; set; }
-            public int FrameLength { get; set; }
+			public bool MainCompareToBest { get; set; } = true; 
+			public bool TieBreaker1CompareToBest { get; set; } = true;
+			public bool TieBreaker2CompareToBest { get; set; } = true;
+			public bool TieBreaker3CompareToBest { get; set; } = true;
+			public int MainCompareToValue { get; set; }
+			public int TieBreaker1CompareToValue { get; set; }
+			public int TieBreaker2CompareToValue { get; set; }
+			public int TieBreaker3CompareToValue { get; set; }
+			public int FrameLength { get; set; }
 			public string FromSlot { get; set; }
 			public long Attempts { get; set; }
 			public long Frames { get; set; }
@@ -674,7 +682,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_bestBotAttempt = botData.Best;
 
-
 			var probabilityControls = ControlProbabilityPanel.Controls
 					.OfType<BotControlsRow>()
 					.ToList();
@@ -695,14 +702,42 @@ namespace BizHawk.Client.EmuHawk
                 Tie1ComparisonType = botData.ComparisonTypeTie1;
                 Tie2ComparisonType = botData.ComparisonTypeTie2;
                 Tie3ComparisonType = botData.ComparisonTypeTie3;
-            }
+
+				MainBestRadio.Checked = botData.MainCompareToBest;
+				TieBreak1BestRadio.Checked = botData.TieBreaker1CompareToBest;
+				TieBreak2BestRadio.Checked = botData.TieBreaker2CompareToBest;
+				TieBreak3BestRadio.Checked = botData.TieBreaker3CompareToBest;
+				MainValueRadio.Checked = !botData.MainCompareToBest;
+				TieBreak1ValueRadio.Checked = !botData.TieBreaker1CompareToBest;
+				TieBreak2ValueRadio.Checked = !botData.TieBreaker2CompareToBest;
+				TieBreak3ValueRadio.Checked = !botData.TieBreaker3CompareToBest;
+
+				MainValueNumeric.Value = botData.MainCompareToValue;
+				TieBreak1Numeric.Value = botData.TieBreaker1CompareToValue;
+				TieBreak2Numeric.Value = botData.TieBreaker2CompareToValue;
+				TieBreak3Numeric.Value = botData.TieBreaker3CompareToValue;
+			}
             catch
             {
                 MainComparisonType = 0;
                 Tie1ComparisonType = 0;
                 Tie2ComparisonType = 0;
                 Tie3ComparisonType = 0;
-            }
+
+				MainBestRadio.Checked = true;
+				TieBreak1BestRadio.Checked = true;
+				TieBreak2BestRadio.Checked = true;
+				TieBreak3BestRadio.Checked = true;
+				MainBestRadio.Checked = false;
+				TieBreak1BestRadio.Checked = false;
+				TieBreak2BestRadio.Checked = false;
+				TieBreak3BestRadio.Checked = false;
+
+				MainValueNumeric.Value = 0;
+				TieBreak1Numeric.Value = 0;
+				TieBreak2Numeric.Value = 0;
+				TieBreak3Numeric.Value = 0;
+			}
 			FrameLength = botData.FrameLength;
 			FromSlot = botData.FromSlot;
 			Attempts = botData.Attempts;
@@ -744,6 +779,14 @@ namespace BizHawk.Client.EmuHawk
                 ComparisonTypeTie1 = Tie1ComparisonType,
                 ComparisonTypeTie2 = Tie2ComparisonType,
                 ComparisonTypeTie3 = Tie3ComparisonType,
+				MainCompareToBest = MainBestRadio.Checked,
+				TieBreaker1CompareToBest = TieBreak1BestRadio.Checked,
+				TieBreaker2CompareToBest = TieBreak2BestRadio.Checked,
+				TieBreaker3CompareToBest = TieBreak3BestRadio.Checked,
+				MainCompareToValue = (int)MainValueNumeric.Value,
+				TieBreaker1CompareToValue = (int)TieBreak1Numeric.Value,
+				TieBreaker2CompareToValue = (int)TieBreak2Numeric.Value,
+				TieBreaker3CompareToValue = (int)TieBreak3Numeric.Value,
 				FromSlot = FromSlot,
 				FrameLength = FrameLength,
 				Attempts = Attempts,
