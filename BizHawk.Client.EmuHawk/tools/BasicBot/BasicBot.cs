@@ -291,12 +291,12 @@ namespace BizHawk.Client.EmuHawk
         {
             get
             {
-                return (byte)mainOperator.SelectedIndex;
+                return (byte)MainOperator.SelectedIndex;
             }
             set
             {
-                if (value < 5) mainOperator.SelectedIndex = value;
-                else mainOperator.SelectedIndex = 0;
+                if (value < 5) MainOperator.SelectedIndex = value;
+                else MainOperator.SelectedIndex = 0;
             }
         }
 
@@ -447,10 +447,18 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker2Address = 0;
 			TieBreaker3Address = 0;
 			StartFromSlotBox.SelectedIndex = 0;
-            mainOperator.SelectedIndex = 0;
+            MainOperator.SelectedIndex = 0;
             Tiebreak1Operator.SelectedIndex = 0;
             Tiebreak2Operator.SelectedIndex = 0;
             Tiebreak3Operator.SelectedIndex = 0;
+			MainBestRadio.Checked = true;
+			MainValueNumeric.Value = 0;
+			TieBreak1Numeric.Value = 0;
+			TieBreak2Numeric.Value = 0;
+			TieBreak3Numeric.Value = 0;
+			TieBreak1BestRadio.Checked = true;
+			TieBreak2BestRadio.Checked = true;
+			TieBreak3BestRadio.Checked = true;
 
 			UpdateBestAttempt();
 			UpdateComparisonBotAttempt();
@@ -1113,44 +1121,44 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if(_bestBotAttempt == null)
 			{
-				if (mainBestRadio.Checked)
+				if (MainBestRadio.Checked)
 				{
 					_comparisonBotAttempt.Maximize = 0;
 				}
 
-				if (tiebreak1BestRadio.Checked)
+				if (TieBreak1BestRadio.Checked)
 				{
 					_comparisonBotAttempt.TieBreak1 = 0;
 				}
 
-				if (tiebreak2BestRadio.Checked)
+				if (TieBreak2BestRadio.Checked)
 				{
 					_comparisonBotAttempt.TieBreak2= 0;
 				}
 
-				if (tiebreak3BestRadio.Checked)
+				if (TieBreak3BestRadio.Checked)
 				{
 					_comparisonBotAttempt.TieBreak3 = 0;
 				}
 			}
 			else
 			{
-				if (mainBestRadio.Checked && _bestBotAttempt.Maximize != _comparisonBotAttempt.Maximize)
+				if (MainBestRadio.Checked && _bestBotAttempt.Maximize != _comparisonBotAttempt.Maximize)
 				{
 					_comparisonBotAttempt.Maximize = _bestBotAttempt.Maximize;
 				}
 
-				if (tiebreak1BestRadio.Checked && _bestBotAttempt.TieBreak1 != _comparisonBotAttempt.TieBreak1)
+				if (TieBreak1BestRadio.Checked && _bestBotAttempt.TieBreak1 != _comparisonBotAttempt.TieBreak1)
 				{
 					_comparisonBotAttempt.TieBreak1 = _bestBotAttempt.TieBreak1;
 				}
 
-				if (tiebreak2BestRadio.Checked && _bestBotAttempt.TieBreak2 != _comparisonBotAttempt.TieBreak2)
+				if (TieBreak2BestRadio.Checked && _bestBotAttempt.TieBreak2 != _comparisonBotAttempt.TieBreak2)
 				{
 					_comparisonBotAttempt.TieBreak2 = _bestBotAttempt.TieBreak2;
                 }
 
-				if (tiebreak3BestRadio.Checked && _bestBotAttempt.TieBreak3 != _comparisonBotAttempt.TieBreak3)
+				if (TieBreak3BestRadio.Checked && _bestBotAttempt.TieBreak3 != _comparisonBotAttempt.TieBreak3)
 				{
 					_comparisonBotAttempt.TieBreak3 = _bestBotAttempt.TieBreak3;
 				}
@@ -1162,7 +1170,7 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.mainValueNumeric.Enabled = false;
+				this.MainValueNumeric.Enabled = false;
 				_comparisonBotAttempt.Maximize = _bestBotAttempt == null ? 0 : _bestBotAttempt.Maximize;
             }
 		}
@@ -1172,7 +1180,7 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.tiebreak1Numeric.Enabled = false;
+				this.TieBreak1Numeric.Enabled = false;
 				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak1;
 			}
 		}
@@ -1182,7 +1190,7 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.tiebreak2Numeric.Enabled = false;
+				this.TieBreak2Numeric.Enabled = false;
 				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak2;
 			}
 		}
@@ -1192,7 +1200,7 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.tiebreak3Numeric.Enabled = false;
+				this.TieBreak3Numeric.Enabled = false;
 				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak3;
 			}
 		}
@@ -1202,8 +1210,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.mainValueNumeric.Enabled = true;
-				_comparisonBotAttempt.Maximize = (int)this.mainValueNumeric.Value;
+				this.MainValueNumeric.Enabled = true;
+				_comparisonBotAttempt.Maximize = (int)this.MainValueNumeric.Value;
             }
 		}
 
@@ -1212,8 +1220,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.tiebreak1Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak1 = (int)this.tiebreak1Numeric.Value;
+				this.TieBreak1Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak1 = (int)this.TieBreak1Numeric.Value;
 			}
 		}
 
@@ -1222,8 +1230,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.tiebreak2Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak2 = (int)this.tiebreak2Numeric.Value;
+				this.TieBreak2Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak2 = (int)this.TieBreak2Numeric.Value;
 			}
 		}
 
@@ -1232,8 +1240,8 @@ namespace BizHawk.Client.EmuHawk
 			RadioButton radioButton = (RadioButton)sender;
 			if (radioButton.Checked)
 			{
-				this.tiebreak3Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak3 = (int)this.tiebreak3Numeric.Value;
+				this.TieBreak3Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak3 = (int)this.TieBreak3Numeric.Value;
 			}
 		}
 
