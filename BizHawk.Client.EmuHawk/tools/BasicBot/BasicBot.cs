@@ -561,6 +561,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearBestButton_Click(object sender, EventArgs e)
 		{
 			_bestBotAttempt = null;
+			Attempts = 0;
+			Frames = 0;
 			UpdateBestAttempt();
 		}
 
