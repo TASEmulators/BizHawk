@@ -3,20 +3,20 @@ using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic
+	public sealed partial class Vic
 	{
-		public Func<int, byte> ReadColorRam;
-		public Func<int, byte> ReadMemory;
+		public Func<int, int> ReadColorRam;
+		public Func<int, int> ReadMemory;
 
 		public bool ReadAECBuffer() { return pinAEC; }
 		public bool ReadBABuffer() { return pinBA; }
 		public bool ReadIRQBuffer() { return pinIRQ; }
 
-		private int cyclesPerSec;
+		private readonly int cyclesPerSec;
 		private int irqShift;
-		private int[][] pipeline;
-		private int totalCycles;
-		private int totalLines;
+		private readonly int[][] pipeline;
+		private readonly int totalCycles;
+		private readonly int totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{

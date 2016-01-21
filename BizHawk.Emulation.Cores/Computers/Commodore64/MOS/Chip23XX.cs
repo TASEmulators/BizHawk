@@ -17,23 +17,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	sealed public class Chip23XX
 	{
-		int addrMask;
-		byte[] rom;
+	    readonly int addrMask;
+	    readonly int[] rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
 		{
 			switch (model)
 			{
 				case Chip23XXmodel.Chip2332:
-					rom = new byte[0x1000];
+					rom = new int[0x1000];
 					addrMask = 0xFFF;
 					break;
 				case Chip23XXmodel.Chip2364:
-					rom = new byte[0x2000];
+					rom = new int[0x2000];
 					addrMask = 0x1FFF;
 					break;
 				case Chip23XXmodel.Chip23128:
-					rom = new byte[0x4000];
+					rom = new int[0x4000];
 					addrMask = 0x3FFF;
 					break;
 				default:
@@ -42,12 +42,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			Array.Copy(data, rom, rom.Length);
 		}
 
-		public byte Peek(int addr)
+		public int Peek(int addr)
 		{
 			return rom[addr & addrMask];
 		}
 
-		public byte Read(int addr)
+		public int Read(int addr)
 		{
 			return rom[addr & addrMask];
 		}

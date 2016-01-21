@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
 
-	sealed public class MOS6526
+	public sealed class MOS6526
 	{
 		// ------------------------------------
 
@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			Output
 		}
 
-		static byte[] PBOnBit = new byte[] { 0x40, 0x80 };
-		static byte[] PBOnMask = new byte[] { 0xBF, 0x7F };
+		static readonly int[] PBOnBit = { 0x40, 0x80 };
+		static readonly int[] PBOnMask = { 0xBF, 0x7F };
 
 		// ------------------------------------
 
@@ -55,25 +55,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		bool enableIntAlarm;
 		bool enableIntFlag;
 		bool enableIntSP;
-		bool[] enableIntTimer;
+	    readonly bool[] enableIntTimer;
 		bool intAlarm;
 		bool intFlag;
 		bool intSP;
-		bool[] intTimer;
+	    readonly bool[] intTimer;
 		bool pinCnt;
 		bool pinCntLast;
 		bool pinPC;
 		bool pinSP;
-		byte sr;
-		int[] timerDelay;
-		InMode[] timerInMode;
-		OutMode[] timerOutMode;
-		bool[] timerPortEnable;
-		bool[] timerPulse;
-		RunMode[] timerRunMode;
+        int sr;
+	    readonly int[] timerDelay;
+	    readonly InMode[] timerInMode;
+	    readonly OutMode[] timerOutMode;
+	    readonly bool[] timerPortEnable;
+	    readonly bool[] timerPulse;
+	    readonly RunMode[] timerRunMode;
 		SPMode timerSPMode;
-		byte[] tod;
-		byte[] todAlarm;
+	    readonly int[] tod;
+	    readonly int[] todAlarm;
 		bool todAlarmPM;
 		int todCounter;
 		bool todIn;
@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		bool oldFlag;
 		// ------------------------------------
 
-		int todStepsNum;
-        int todStepsDen;
+	    readonly int todStepsNum;
+	    readonly int todStepsDen;
 
 		// todStepsNum/todStepsDen is the number of clock cycles it takes the external clock source to advance one cycle
 		// (50 or 60 Hz depending on AC frequency in use).
@@ -99,8 +99,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			timerPortEnable = new bool[2];
 			timerPulse = new bool[2];
 			timerRunMode = new RunMode[2];
-			tod = new byte[4];
-			todAlarm = new byte[4];
+			tod = new int[4];
+			todAlarm = new int[4];
 
 			portA = new LatchedPort();
 			portB = new LatchedPort();
@@ -129,8 +129,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void ExecutePhase2()
 		{
 			{
-				bool sumCnt = ReadCNT();
-				cntPos |= (!pinCntLast && sumCnt);
+				var sumCnt = ReadCNT();
+				cntPos |= !pinCntLast && sumCnt;
 				pinCntLast = sumCnt;
 
 				pinPC = true;
@@ -155,18 +155,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				else
 					timerDelay[1]--;
 
-				intAlarm |= (
-					tod[0] == todAlarm[0] &&
-					tod[1] == todAlarm[1] &&
-					tod[2] == todAlarm[2] &&
-					tod[3] == todAlarm[3] &&
-					todPM == todAlarmPM);
+				intAlarm |= tod[0] == todAlarm[0] &&
+				            tod[1] == todAlarm[1] &&
+				            tod[2] == todAlarm[2] &&
+				            tod[3] == todAlarm[3] &&
+				            todPM == todAlarmPM;
 
 				cntPos = false;
 				underflow[0] = false;
 				underflow[1] = false;
 
-				bool newFlag = ReadFlag();
+				var newFlag = ReadFlag();
 				intFlag |= oldFlag && !newFlag;
 				oldFlag = newFlag;
 			}
@@ -221,179 +220,158 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		private byte BCDAdd(byte i, byte j, out bool overflow)
+		private static int BCDAdd(int i, int j, out bool overflow)
 		{
-
+			var lo = (i & 0x0F) + (j & 0x0F);
+			var hi = (i & 0x70) + (j & 0x70);
+			if (lo > 0x09)
 			{
-				int lo;
-				int hi;
-				int result;
-
-				lo = (i & 0x0F) + (j & 0x0F);
-				hi = (i & 0x70) + (j & 0x70);
-				if (lo > 0x09)
-				{
-					hi += 0x10;
-					lo += 0x06;
-				}
-				if (hi > 0x50)
-				{
-					hi += 0xA0;
-				}
-				overflow = hi >= 0x60;
-				result = (hi & 0x70) + (lo & 0x0F);
-				return (byte)(result & 0xFF);
+				hi += 0x10;
+				lo += 0x06;
 			}
+			if (hi > 0x50)
+			{
+				hi += 0xA0;
+			}
+			overflow = hi >= 0x60;
+			var result = (hi & 0x70) + (lo & 0x0F);
+			return result & 0xFF;
 		}
 
 		private void TimerRun(int index)
 		{
 
 			{
-				if (timerOn[index])
-				{
-					int t = timer[index];
-					bool u = false;
+			    if (!timerOn[index])
+			    {
+			        return;
+			    }
 
-					{
-						switch (timerInMode[index])
-						{
-							case InMode.CNT:
-								// CNT positive
-								if (cntPos)
-								{
-									t--;
-									u = (t == 0);
-									intTimer[index] |= (t == 0);
-								}
-								break;
-							case InMode.Phase2:
-								// every clock
-								t--;
-								u = (t == 0);
-								intTimer[index] |= (t == 0);
-								break;
-							case InMode.TimerAUnderflow:
-								// every underflow[0]
-								if (underflow[0])
-								{
-									t--;
-									u = (t == 0);
-									intTimer[index] |= (t == 0);
-								}
-								break;
-							case InMode.TimerAUnderflowCNT:
-								// every underflow[0] while CNT high
-								if (underflow[0] && pinCnt)
-								{
-									t--;
-									u = (t == 0);
-									intTimer[index] |= (t == 0);
-								}
-								break;
-						}
+			    var t = timer[index];
+			    var u = false;
+			    switch (timerInMode[index])
+			    {
+			        case InMode.CNT:
+			            // CNT positive
+			            if (cntPos)
+			            {
+			                t--;
+			                u = t == 0;
+			                intTimer[index] |= t == 0;
+			            }
+			            break;
+			        case InMode.Phase2:
+			            // every clock
+			            t--;
+			            u = t == 0;
+			            intTimer[index] |= t == 0;
+			            break;
+			        case InMode.TimerAUnderflow:
+			            // every underflow[0]
+			            if (underflow[0])
+			            {
+			                t--;
+			                u = t == 0;
+			                intTimer[index] |= t == 0;
+			            }
+			            break;
+			        case InMode.TimerAUnderflowCNT:
+			            // every underflow[0] while CNT high
+			            if (underflow[0] && pinCnt)
+			            {
+			                t--;
+			                u = t == 0;
+			                intTimer[index] |= t == 0;
+			            }
+			            break;
+			    }
 
-						// underflow?
-						if (u)
-						{
-							timerDelay[index] = 1;
-							t = timerLatch[index];
-							if (timerRunMode[index] == RunMode.Oneshot)
-								timerOn[index] = false;
+			    // underflow?
+			    if (u)
+			    {
+			        timerDelay[index] = 1;
+			        t = timerLatch[index];
+			        if (timerRunMode[index] == RunMode.Oneshot)
+			            timerOn[index] = false;
 
-							if (timerPortEnable[index])
-							{
-								// force port B bit to output
-								portB.Direction |= PBOnBit[index];
-								switch (timerOutMode[index])
-								{
-									case OutMode.Pulse:
-										timerPulse[index] = true;
-										portB.Latch |= PBOnBit[index];
-										break;
-									case OutMode.Toggle:
-										portB.Latch ^= PBOnBit[index];
-										break;
-								}
-							}
-						}
+			        if (timerPortEnable[index])
+			        {
+			            // force port B bit to output
+			            portB.Direction |= PBOnBit[index];
+			            switch (timerOutMode[index])
+			            {
+			                case OutMode.Pulse:
+			                    timerPulse[index] = true;
+			                    portB.Latch |= PBOnBit[index];
+			                    break;
+			                case OutMode.Toggle:
+			                    portB.Latch ^= PBOnBit[index];
+			                    break;
+			            }
+			        }
+			    }
 
-						underflow[index] = u;
-						timer[index] = t;
-					}
-				}
+			    underflow[index] = u;
+			    timer[index] = t;
 			}
 		}
 
 		private void TODRun()
 		{
 
-			{
-				bool todV;
+            if (todCounter <= 0)
+            {
+                todCounter += todStepsNum * (todIn ? 6 : 5);
+                bool todV;
+                tod[0] = BCDAdd(tod[0], 1, out todV);
+                if (tod[0] >= 10)
+                {
+                    tod[0] = 0;
+                    tod[1] = BCDAdd(tod[1], 1, out todV);
+                    if (todV)
+                    {
+                        tod[1] = 0;
+                        tod[2] = BCDAdd(tod[2], 1, out todV);
+                        if (todV)
+                        {
+                            tod[2] = 0;
+                            tod[3] = BCDAdd(tod[3], 1, out todV);
+                            if (tod[3] > 12)
+                            {
+                                tod[3] = 1;
+                            }
+                            else if (tod[3] == 12)
+                            {
+                                todPM = !todPM;
+                            }
+                        }
+                    }
+                }
+            }
+            todCounter -= todStepsDen;
+        }
 
-				if (todCounter <= 0)
-				{
-					todCounter += todStepsNum*(todIn ? 6 : 5);
-					tod[0] = BCDAdd(tod[0], 1, out todV);
-					if (tod[0] >= 10)
-					{
-						tod[0] = 0;
-						tod[1] = BCDAdd(tod[1], 1, out todV);
-						if (todV)
-						{
-							tod[1] = 0;
-							tod[2] = BCDAdd(tod[2], 1, out todV);
-							if (todV)
-							{
-								tod[2] = 0;
-								tod[3] = BCDAdd(tod[3], 1, out todV);
-								if (tod[3] > 12)
-								{
-									tod[3] = 1;
-								}
-								else if (tod[3] == 12)
-								{
-									todPM = !todPM;
-								}
-							}
-						}
-					}
-				}
-				todCounter -= todStepsDen;
-			}
-		}
+        // ------------------------------------
 
-		// ------------------------------------
-
-		public byte Peek(long addr)
+		public int Peek(int addr)
 		{
-			return ReadRegister((int)addr & 0xF);
+			return ReadRegister(addr & 0xF);
 		}
 
-		public void Poke(long addr, byte val)
+		public void Poke(int addr, int val)
 		{
-			WriteRegister((int)(addr & 0xF), val);
+			WriteRegister(addr & 0xF, val);
 		}
 
-		public byte Peek(int addr)
-		{
-			return ReadRegister((int)addr & 0xF);
-		}
-
-		public void Poke(int addr, byte val)
-		{
-			WriteRegister((int)(addr & 0xF), val);
-		}
-
-		public byte Read(int addr)
+		public int Read(int addr)
 		{
 			return Read(addr, 0xFF);
 		}
 
-		public byte Read(int addr, byte mask)
+		public int Read(int addr, int mask)
 		{
 			addr &= 0xF;
-			byte val;
+            int val;
 
 			switch (addr)
 			{
@@ -429,9 +407,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			return pinPC;
 		}
 
-		private byte ReadRegister(int addr)
+		private int ReadRegister(int addr)
 		{
-			byte val = 0x00; //unused pin value
+            var val = 0x00; //unused pin value
 			int timerVal;
 
 			switch (addr)
@@ -537,34 +515,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private int ReadTimerValue(int index)
 		{
-			if (timerOn[index])
-			{
-				if (timer[index] == 0)
-					return timerLatch[index];
-				else
-					return timer[index];
-			}
-			else
-			{
-				return timer[index];
-			}
+		    if (!timerOn[index])
+		    {
+                return timer[index];
+		    }
+
+		    return timer[index] == 0 
+                ? timerLatch[index] 
+                : timer[index];
 		}
 
-		public void SyncState(Serializer ser)
+	    public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
 		}
 
-		public void Write(int addr, byte val)
+		public void Write(int addr, int val)
 		{
 			Write(addr, val, 0xFF);
 		}
 
-		public void Write(int addr, byte val, byte mask)
+		public void Write(int addr, int val, int mask)
 		{
 			addr &= 0xF;
 			val &= mask;
-			val |= (byte)(ReadRegister(addr) & ~mask);
+			val |= ReadRegister(addr) & ~mask;
 
 			switch (addr)
 			{
@@ -598,11 +573,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public void WriteRegister(int addr, byte val)
+		public void WriteRegister(int addr, int val)
 		{
-			bool intReg;
-
-			switch (addr)
+		    switch (addr)
 			{
 				case 0x0:
 					portA.Latch = val;
@@ -634,39 +607,39 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					break;
 				case 0x8:
 					if (alarmSelect)
-						todAlarm[0] = (byte)(val & 0xF);
+						todAlarm[0] = (val & 0xF);
 					else
-						tod[0] = (byte)(val & 0xF);
+						tod[0] = (val & 0xF);
 					break;
 				case 0x9:
 					if (alarmSelect)
-						todAlarm[1] = (byte)(val & 0x7F);
+						todAlarm[1] = (val & 0x7F);
 					else
-						tod[1] = (byte)(val & 0x7F);
+						tod[1] = (val & 0x7F);
 					break;
 				case 0xA:
 					if (alarmSelect)
-						todAlarm[2] = (byte)(val & 0x7F);
+						todAlarm[2] = (val & 0x7F);
 					else
-						tod[2] = (byte)(val & 0x7F);
+						tod[2] = (val & 0x7F);
 					break;
 				case 0xB:
 					if (alarmSelect)
 					{
-						todAlarm[3] = (byte)(val & 0x1F);
-						todAlarmPM = ((val & 0x80) != 0);
+						todAlarm[3] = (val & 0x1F);
+						todAlarmPM = (val & 0x80) != 0;
 					}
 					else
 					{
-						tod[3] = (byte)(val & 0x1F);
-						todPM = ((val & 0x80) != 0);
+						tod[3] = (val & 0x1F);
+						todPM = (val & 0x80) != 0;
 					}
 					break;
 				case 0xC:
 					sr = val;
 					break;
 				case 0xD:
-					intReg = ((val & 0x80) != 0);
+					var intReg = (val & 0x80) != 0;
 					if ((val & 0x01) != 0)
 						enableIntTimer[0] = intReg;
 					if ((val & 0x02) != 0)
@@ -681,21 +654,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0xE:
 					if ((val & 0x01) != 0 && !timerOn[0])
 						timerDelay[0] = 2;
-					timerOn[0] = ((val & 0x01) != 0);
-					timerPortEnable[0] = ((val & 0x02) != 0);
-					timerOutMode[0] = ((val & 0x04) != 0) ? OutMode.Toggle : OutMode.Pulse;
-					timerRunMode[0] = ((val & 0x08) != 0) ? RunMode.Oneshot : RunMode.Continuous;
-					timerInMode[0] = ((val & 0x20) != 0) ? InMode.CNT : InMode.Phase2;
-					timerSPMode = ((val & 0x40) != 0) ? SPMode.Output : SPMode.Input;
-					todIn = ((val & 0x80) != 0);
+					timerOn[0] = (val & 0x01) != 0;
+					timerPortEnable[0] = (val & 0x02) != 0;
+					timerOutMode[0] = (val & 0x04) != 0 ? OutMode.Toggle : OutMode.Pulse;
+					timerRunMode[0] = (val & 0x08) != 0 ? RunMode.Oneshot : RunMode.Continuous;
+					timerInMode[0] = (val & 0x20) != 0 ? InMode.CNT : InMode.Phase2;
+					timerSPMode = (val & 0x40) != 0 ? SPMode.Output : SPMode.Input;
+					todIn = (val & 0x80) != 0;
 					break;
 				case 0xF:
 					if ((val & 0x01) != 0 && !timerOn[1])
 						timerDelay[1] = 2;
-					timerOn[1] = ((val & 0x01) != 0);
-					timerPortEnable[1] = ((val & 0x02) != 0);
-					timerOutMode[1] = ((val & 0x04) != 0) ? OutMode.Toggle : OutMode.Pulse;
-					timerRunMode[1] = ((val & 0x08) != 0) ? RunMode.Oneshot : RunMode.Continuous;
+					timerOn[1] = (val & 0x01) != 0;
+					timerPortEnable[1] = (val & 0x02) != 0;
+					timerOutMode[1] = (val & 0x04) != 0 ? OutMode.Toggle : OutMode.Pulse;
+					timerRunMode[1] = (val & 0x08) != 0 ? RunMode.Oneshot : RunMode.Continuous;
 					switch (val & 0x60)
 					{
 						case 0x00: timerInMode[1] = InMode.Phase2; break;
@@ -703,26 +676,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						case 0x40: timerInMode[1] = InMode.TimerAUnderflow; break;
 						case 0x60: timerInMode[1] = InMode.TimerAUnderflowCNT; break;
 					}
-					alarmSelect = ((val & 0x80) != 0);
+					alarmSelect = (val & 0x80) != 0;
 					break;
 			}
 		}
 
 		// ------------------------------------
 
-		public byte PortAMask = 0xFF;
-		public byte PortBMask = 0xFF;
+		public int PortAMask = 0xFF;
+		public int PortBMask = 0xFF;
 
 		bool pinIRQ;
-		LatchedPort portA;
-		LatchedPort portB;
-		int[] timer;
-		int[] timerLatch;
-		bool[] timerOn;
-		bool[] underflow;
+	    readonly LatchedPort portA;
+	    readonly LatchedPort portB;
+	    readonly int[] timer;
+	    readonly int[] timerLatch;
+	    readonly bool[] timerOn;
+	    readonly bool[] underflow;
 
-		public Func<byte> ReadPortA = (() => { return 0xFF; });
-		public Func<byte> ReadPortB = (() => { return 0xFF; });
+		public Func<int> ReadPortA = () => 0xFF;
+		public Func<int> ReadPortB = () => 0xFF;
 
 		void HardResetInternal()
 		{
@@ -733,7 +706,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			pinIRQ = true;
 		}
 
-		public byte PortAData
+		public int PortAData
 		{
 			get
 			{
@@ -741,7 +714,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortADirection
+		public int PortADirection
 		{
 			get
 			{
@@ -749,7 +722,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortALatch
+		public int PortALatch
 		{
 			get
 			{
@@ -757,7 +730,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBData
+		public int PortBData
 		{
 			get
 			{
@@ -765,7 +738,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBDirection
+		public int PortBDirection
 		{
 			get
 			{
@@ -773,7 +746,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBLatch
+		public int PortBLatch
 		{
 			get
 			{

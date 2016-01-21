@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		int volume;
 		int[][] waveformTable;
 
-		public Func<byte> ReadPotX;
-		public Func<byte> ReadPotY;
+		public Func<int> ReadPotX;
+		public Func<int> ReadPotY;
 
 		public Sid(int[][] newWaveformTable, uint sampleRate, uint cyclesNum, uint cyclesDen)
 		{

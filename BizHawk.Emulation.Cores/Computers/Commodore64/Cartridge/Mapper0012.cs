@@ -17,21 +17,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// - read to 8xxx selects bank 0 in A000-BFFF
 		// - read to 9xxx selects bank 1 in A000-BFFF
 
-		public Mapper0012(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
+		public Mapper0012(IList<int> newAddresses, IList<int> newBanks, IList<byte[]> newData)
 		{
 			bankMain = new byte[0x2000];
 			bankHigh = new byte[2][];
 			dummyBank = new byte[0x2000];
 
 			// create dummy bank just in case
-			for (int i = 0; i < 0x2000; i++)
+			for (var i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF;
 
 			bankHigh[0] = dummyBank;
 			bankHigh[1] = dummyBank;
 
 			// load in the banks
-			for (int i = 0; i < newAddresses.Count; i++)
+			for (var i = 0; i < newAddresses.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 					Array.Copy(newData[i], bankMain, 0x1000);
@@ -48,24 +48,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		}
 
-		public override byte Peek8000(int addr)
+		public override int Peek8000(int addr)
 		{
 			return bankMain[addr];
 		}
 
-		public override byte PeekA000(int addr)
+		public override int PeekA000(int addr)
 		{
 			return bankHighSelected[addr];
 		}
 
-		public override byte Read8000(int addr)
+		public override int Read8000(int addr)
 		{
 			bankIndex = (addr & 0x1000) >> 12;
 			bankHighSelected = bankHigh[bankIndex];
 			return bankMain[addr];
 		}
 
-		public override byte ReadA000(int addr)
+		public override int ReadA000(int addr)
 		{
 			return bankHighSelected[addr];
 		}

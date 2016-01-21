@@ -2,17 +2,15 @@
 {
 	public sealed partial class Motherboard
 	{
-		private int[] joystickPressed = new int[10];
-		private int[] keyboardPressed = new int[64];
+		private readonly int[] joystickPressed = new int[10];
+		private readonly int[] keyboardPressed = new int[64];
 
-		private static string[,] joystickMatrix = new string[2, 5]
-		{
+		private static readonly string[,] joystickMatrix = {
 			{"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button"},
 			{"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button"}
 		};
 
-		private static string[,] keyboardMatrix = new string[8, 8]
-		{
+		private static readonly string[,] keyboardMatrix = {
 			{ "Key Insert/Delete", "Key Return", "Key Cursor Left/Right", "Key F7", "Key F1", "Key F3", "Key F5", "Key Cursor Up/Down" },
 			{ "Key 3", "Key W", "Key A", "Key 4", "Key Z", "Key S", "Key E", "Key Left Shift" },
 			{ "Key 5", "Key R", "Key D", "Key 6", "Key C", "Key F", "Key T", "Key X" },
@@ -23,11 +21,11 @@
 			{ "Key 1", "Key Left Arrow", "Key Control", "Key 2", "Key Space", "Key Commodore", "Key Q", "Key Run/Stop" }
 		};
 
-		static private byte[] inputBitMask = new byte[] { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
-		static private byte[] inputBitSelect = new byte[] { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
+		private static readonly byte[] inputBitMask = { 0xFE, 0xFD, 0xFB, 0xF7, 0xEF, 0xDF, 0xBF, 0x7F };
+		private static readonly byte[] inputBitSelect = { 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80 };
 
-		byte cia0InputLatchA;
-		byte cia0InputLatchB;
+        int cia0InputLatchA;
+        int cia0InputLatchB;
 		int pollIndex;
 
 		public void PollInput()
@@ -35,9 +33,9 @@
 			_c64.InputCallbacks.Call();
 			// scan joysticks
 			pollIndex = 0;
-			for (int j = 0; j < 5; j++)
+			for (var j = 0; j < 5; j++)
 			{
-				for (int i = 0; i < 2; i++)
+				for (var i = 0; i < 2; i++)
 				{
 					joystickPressed[pollIndex++] = controller[joystickMatrix[i, j]] ? -1 : 0;
 				}
@@ -45,9 +43,9 @@
 
 			// scan keyboard
 			pollIndex = 0;
-			for (int i = 0; i < 8; i++)
+			for (var i = 0; i < 8; i++)
 			{
-				for (int j = 0; j < 8; j++)
+				for (var j = 0; j < 8; j++)
 				{
 					keyboardPressed[pollIndex++] = controller[keyboardMatrix[i, j]] ? -1 : 0;
 				}
@@ -56,17 +54,17 @@
 
 		private void WriteInputPort()
 		{
-			byte portA = cia0.PortAData;
-			byte portB = cia0.PortBData;
-			byte resultA = 0xFF;
-			byte resultB = 0xFF;
-			byte joyA = 0xFF;
-			byte joyB = 0xFF;
+			var portA = cia0.PortAData;
+			var portB = cia0.PortBData;
+			var resultA = 0xFF;
+			var resultB = 0xFF;
+			var joyA = 0xFF;
+			var joyB = 0xFF;
 
 			pollIndex = 0;
-			for (int i = 0; i < 8; i++)
+			for (var i = 0; i < 8; i++)
 			{
-				for (int j = 0; j < 8; j++)
+				for (var j = 0; j < 8; j++)
 				{
 					if (keyboardPressed[pollIndex++] != 0)
 					{
@@ -80,7 +78,7 @@
 			}
 
 			pollIndex = 0;
-			for (int i = 0; i < 5; i++)
+			for (var i = 0; i < 5; i++)
 			{
 				if (joystickPressed[pollIndex++] != 0)
 					joyB &= inputBitMask[i];

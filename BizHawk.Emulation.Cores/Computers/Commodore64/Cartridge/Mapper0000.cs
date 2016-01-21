@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	sealed public class Mapper0000 : Cart
+	public sealed class Mapper0000 : Cart
 	{
-		private byte[] romA;
-		private int romAMask;
-		private byte[] romB;
-		private int romBMask;
+		private readonly byte[] romA;
+		private readonly int romAMask;
+		private readonly byte[] romB;
+		private readonly int romBMask;
 
 		// standard cartridge mapper (Commodore)
 		// note that this format also covers Ultimax carts
 
-		public Mapper0000(List<int> newAddresses, List<int> newBanks, List<byte[]> newData, bool game, bool exrom)
+		public Mapper0000(IList<int> newAddresses, IList<int> newBanks, IList<byte[]> newData, bool game, bool exrom)
 		{
 			pinGame = game;
 			pinExRom = exrom;
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			romA[0] = 0xFF;
 			romB[0] = 0xFF;
 
-			for (int i = 0; i < newAddresses.Count; i++)
+			for (var i = 0; i < newAddresses.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -73,22 +73,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		public override byte Peek8000(int addr)
+		public override int Peek8000(int addr)
 		{
 			return romA[addr & romAMask];
 		}
 
-		public override byte PeekA000(int addr)
+		public override int PeekA000(int addr)
 		{
 			return romB[addr & romBMask];
 		}
 
-		public override byte Read8000(int addr)
+		public override int Read8000(int addr)
 		{
 			return romA[addr & romAMask];
 		}
 
-		public override byte ReadA000(int addr)
+		public override int ReadA000(int addr)
 		{
 			return romB[addr & romBMask];
 		}

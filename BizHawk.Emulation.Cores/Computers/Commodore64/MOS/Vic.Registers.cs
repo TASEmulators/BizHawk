@@ -5,29 +5,19 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic
+	public sealed partial class Vic
 	{
-		public byte Peek(long addr)
+		public int Peek(int addr)
 		{
-			return ReadRegister((int)(addr & 0x3F));
+			return ReadRegister(addr & 0x3F);
 		}
 
-		public void Poke(long addr, byte val)
+		public void Poke(int addr, int val)
 		{
-			WriteRegister((int)(addr & 0x3F), val);
+			WriteRegister(addr & 0x3F, val);
 		}
 
-		public byte Peek(int addr)
-		{
-			return ReadRegister((int)(addr & 0x3F));
-		}
-
-		public void Poke(int addr, byte val)
-		{
-			WriteRegister((int)(addr & 0x3F), val);
-		}
-
-		public byte Read(int addr)
+		public int Read(int addr)
 		{
 			byte result;
 			addr &= 0x3F;
@@ -269,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			return result;
 		}
 
-		public void Write(int addr, byte val)
+		public void Write(int addr, int val)
 		{
 			addr &= 0x3F;
 			switch (addr)
@@ -318,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		private void WriteRegister(int addr, byte val)
+		private void WriteRegister(int addr, int val)
 		{
 			switch (addr)
 			{

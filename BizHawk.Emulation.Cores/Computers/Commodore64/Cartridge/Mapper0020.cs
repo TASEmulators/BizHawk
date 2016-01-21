@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	sealed public class Mapper0020 : Cart
 	{
-		private byte[][] banksA = new byte[64][]; //8000
-		private byte[][] banksB = new byte[64][]; //A000
+		private readonly byte[][] banksA = new byte[64][]; //8000
+		private readonly byte[][] banksB = new byte[64][]; //A000
 		private int bankNumber;
 		private bool boardLed;
 		private byte[] currentBankA;
@@ -31,18 +31,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private byte[] dummyBank;
         private bool jumper = false;
         private int stateBits;
-		private byte[] ram = new byte[256];
+		private readonly byte[] ram = new byte[256];
 		private bool commandLatch55;
 		private bool commandLatchAA;
 		private int internalRomState;
 
-		public Mapper0020(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
+		public Mapper0020(IList<int> newAddresses, IList<int> newBanks, IList<byte[]> newData)
 		{
-			int count = newAddresses.Count;
+			var count = newAddresses.Count;
 
 			// build dummy bank
 			dummyBank = new byte[0x2000];
-			for (int i = 0; i < 0x2000; i++)
+			for (var i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 
 			// force ultimax mode (the cart SHOULD set this
@@ -51,13 +51,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			pinExRom = true;
 
 			// for safety, initialize all banks to dummy
-			for (int i = 0; i < 64; i++)
+			for (var i = 0; i < 64; i++)
 				banksA[i] = dummyBank;
-			for (int i = 0; i < 64; i++)
+			for (var i = 0; i < 64; i++)
 				banksB[i] = dummyBank;
 
 			// load in all banks
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -84,17 +84,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			UpdateState();
 		}
 
-		public override byte Peek8000(int addr)
+		public override int Peek8000(int addr)
 		{
 			return currentBankA[addr];
 		}
 
-		public override byte PeekA000(int addr)
+		public override int PeekA000(int addr)
 		{
 			return currentBankB[addr];
 		}
 
-		public override byte PeekDE00(int addr)
+		public override int PeekDE00(int addr)
 		{
 			// normally you can't read these regs
 			// but Peek is provided here for debug reasons
@@ -106,12 +106,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                 return (byte)stateBits;
 		}
 
-		public override byte PeekDF00(int addr)
+		public override int PeekDF00(int addr)
 		{
 			return ram[addr];
 		}
 
-		public override void PokeDE00(int addr, byte val)
+		public override void PokeDE00(int addr, int val)
 		{
             addr &= 0x02;
 			if (addr == 0x00)
@@ -120,22 +120,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				StateSet(val);
 		}
 
-		public override void PokeDF00(int addr, byte val)
+		public override void PokeDF00(int addr, int val)
 		{
-			ram[addr] = val;
+			ram[addr] = unchecked((byte)val);
 		}
 
-		public override byte Read8000(int addr)
+		public override int Read8000(int addr)
 		{
 			return ReadInternal(addr);
 		}
 
-		public override byte ReadA000(int addr)
+		public override int ReadA000(int addr)
 		{
 			return ReadInternal(addr | 0x2000);
 		}
 
-		public override byte ReadDF00(int addr)
+		public override int ReadDF00(int addr)
 		{
 			return ram[addr];
 		}
@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		private void StateSet(byte val)
+		private void StateSet(int val)
 		{
             stateBits = val &= 0x87;
             if ((val & 0x04) != 0)
@@ -191,17 +191,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			currentBankB = banksB[bankNumber];
 		}
 
-        public override void Write8000(int addr, byte val)
+        public override void Write8000(int addr, int val)
         {
 			WriteInternal(addr, val);
         }
 
-		public override void WriteA000(int addr, byte val)
+		public override void WriteA000(int addr, int val)
 		{
 			WriteInternal(addr | 0x2000, val);
 		}
 
-		private void WriteInternal(int addr, byte val)
+		private void WriteInternal(int addr, int val)
 		{
 			if (!pinGame && pinExRom)
 			{
@@ -220,14 +220,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 							if ((addr & 0x2000) == 0)
 							{
 								addr &= 0x1FFF;
-								banksA[bankNumber][addr] = val;
-								currentBankA[addr] = val;
+								banksA[bankNumber][addr] = unchecked((byte)val);
+								currentBankA[addr] = unchecked((byte)val);
 							}
 							else
 							{
 								addr &= 0x1FFF;
-								banksB[bankNumber][addr] = val;
-								currentBankB[addr] = val;
+								banksB[bankNumber][addr] = unchecked((byte)val);
+								currentBankB[addr] = unchecked((byte)val);
 							}
 							break;
 					}
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		public override void WriteDE00(int addr, byte val)
+		public override void WriteDE00(int addr, int val)
 		{
             addr &= 0x02;
 			if (addr == 0x00)
@@ -275,9 +275,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				StateSet(val);
 		}
 
-		public override void WriteDF00(int addr, byte val)
+		public override void WriteDF00(int addr, int val)
 		{
-			ram[addr] = val;
+			ram[addr] = unchecked((byte)val);
 		}
 
 		public override void SyncState(Serializer ser)

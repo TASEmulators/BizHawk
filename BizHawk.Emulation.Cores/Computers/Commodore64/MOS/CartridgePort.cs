@@ -3,7 +3,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public class CartridgePort
+	public sealed class CartridgePort
 	{
 		public Func<bool> ReadIRQ;
 		public Func<bool> ReadNMI;
@@ -19,27 +19,65 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------------
 
-		public byte PeekHiExp(int addr) { if (connected) { return cart.PeekDF00(addr & 0x00FF); } else { return 0xFF; } }
-		public byte PeekHiRom(int addr) { if (connected) { return cart.PeekA000(addr & 0x1FFF); } else { return 0xFF; } }
-		public byte PeekLoExp(int addr) { if (connected) { return cart.PeekDE00(addr & 0x00FF); } else { return 0xFF; } }
-		public byte PeekLoRom(int addr) { if (connected) { return cart.Peek8000(addr & 0x1FFF); } else { return 0xFF; } }
+		public int PeekHiExp(int addr)
+		{
+		    return connected ? cart.PeekDF00(addr & 0x00FF) : 0xFF;
+		}
 
-		public void PokeHiExp(int addr, byte val) { if (connected) { cart.PokeDF00(addr & 0x00FF, val); } }
-		public void PokeHiRom(int addr, byte val) { if (connected) { cart.PokeA000(addr & 0x1FFF, val); } }
-		public void PokeLoExp(int addr, byte val) { if (connected) { cart.PokeDE00(addr & 0x00FF, val); } }
-		public void PokeLoRom(int addr, byte val) { if (connected) { cart.Poke8000(addr & 0x1FFF, val); } }
+	    public int PeekHiRom(int addr)
+	    {
+	        return connected ? cart.PeekA000(addr & 0x1FFF) : 0xFF;
+	    }
 
-		public bool ReadExRom() { if (connected) { return cart.ExRom; } else { return true; } }
-		public bool ReadGame() { if (connected) { return cart.Game; } else { return true; } }
-		public byte ReadHiExp(int addr) { if (connected) { return cart.ReadDF00((addr & 0x00FF)); } else { return 0xFF; } }
-		public byte ReadHiRom(int addr) { if (connected) { return cart.ReadA000((addr & 0x1FFF)); } else { return 0xFF; } }
-		public byte ReadLoExp(int addr) { if (connected) { return cart.ReadDE00((addr & 0x00FF)); } else { return 0xFF; } }
-		public byte ReadLoRom(int addr) { if (connected) { return cart.Read8000((addr & 0x1FFF)); } else { return 0xFF; } }
+	    public int PeekLoExp(int addr)
+	    {
+	        return connected ? cart.PeekDE00(addr & 0x00FF) : 0xFF;
+	    }
 
-		public void WriteHiExp(int addr, byte val) { if (connected) { cart.WriteDF00((addr & 0x00FF), val); } }
-		public void WriteHiRom(int addr, byte val) { if (connected) { cart.WriteA000((addr & 0x1FFF), val); } }
-		public void WriteLoExp(int addr, byte val) { if (connected) { cart.WriteDE00((addr & 0x00FF), val); } }
-		public void WriteLoRom(int addr, byte val) { if (connected) { cart.Write8000((addr & 0x1FFF), val); } }
+	    public int PeekLoRom(int addr)
+	    {
+	        return connected ? cart.Peek8000(addr & 0x1FFF) : 0xFF;
+	    }
+
+	    public void PokeHiExp(int addr, int val) { if (connected) { cart.PokeDF00(addr & 0x00FF, val); } }
+		public void PokeHiRom(int addr, int val) { if (connected) { cart.PokeA000(addr & 0x1FFF, val); } }
+		public void PokeLoExp(int addr, int val) { if (connected) { cart.PokeDE00(addr & 0x00FF, val); } }
+		public void PokeLoRom(int addr, int val) { if (connected) { cart.Poke8000(addr & 0x1FFF, val); } }
+
+		public bool ReadExRom()
+		{
+		    return !connected || cart.ExRom;
+		}
+
+	    public bool ReadGame()
+	    {
+	        return !connected || cart.Game;
+	    }
+
+	    public int ReadHiExp(int addr)
+	    {
+	        return connected ? cart.ReadDF00((addr & 0x00FF)) : 0xFF;
+	    }
+
+	    public int ReadHiRom(int addr)
+	    {
+	        return connected ? cart.ReadA000((addr & 0x1FFF)) : 0xFF;
+	    }
+
+	    public int ReadLoExp(int addr)
+	    {
+	        return connected ? cart.ReadDE00((addr & 0x00FF)) : 0xFF;
+	    }
+
+	    public int ReadLoRom(int addr)
+	    {
+	        return connected ? cart.Read8000((addr & 0x1FFF)) : 0xFF;
+	    }
+
+	    public void WriteHiExp(int addr, int val) { if (connected) { cart.WriteDF00((addr & 0x00FF), val); } }
+		public void WriteHiRom(int addr, int val) { if (connected) { cart.WriteA000((addr & 0x1FFF), val); } }
+		public void WriteLoExp(int addr, int val) { if (connected) { cart.WriteDE00((addr & 0x00FF), val); } }
+		public void WriteLoRom(int addr, int val) { if (connected) { cart.Write8000((addr & 0x1FFF), val); } }
 
 		// ------------------------------------------
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	sealed public partial class Motherboard
+	public sealed partial class Motherboard
 	{
 		bool CassPort_ReadDataOutput()
 		{
@@ -22,12 +22,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (userPort.ReadCounter1Buffer() && cia0.ReadCNTBuffer());
 		}
 
-		byte Cia0_ReadPortA()
+        int Cia0_ReadPortA()
 		{
 			return cia0InputLatchA;
 		}
 
-		byte Cia0_ReadPortB()
+        int Cia0_ReadPortB()
 		{
 			return cia0InputLatchB;
 		}
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (userPort.ReadCounter2Buffer() && cia1.ReadCNTBuffer());
 		}
 
-		byte Cia1_ReadPortA()
+        int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
 			byte result = 0xFF;
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (userPort.ReadSerial2Buffer() && cia1.ReadSPBuffer());
 		}
 
-		byte Cpu_ReadPort()
+		int Cpu_ReadPort()
 		{
 			byte data = 0x1F;
 			if (!cassPort.ReadSenseBuffer())
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return data;
 		}
 
-		void Cpu_WriteMemoryPort(int addr, byte val)
+		void Cpu_WriteMemoryPort(int addr, int val)
 		{
 			pla.WriteMemory(addr, bus);
 		}
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (cpu.PortData & 0x04) != 0;
 		}
 
-		byte Pla_ReadCia0(int addr)
+        int Pla_ReadCia0(int addr)
 		{
 			if (addr == 0xDC00 || addr == 0xDC01)
 			{
@@ -91,9 +91,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return cia0.Read(addr);
 		}
 
-		byte Pla_ReadColorRam(int addr)
+        int Pla_ReadColorRam(int addr)
 		{
-			byte result = bus;
+            var result = bus;
 			result &= 0xF0;
 			result |= colorRam.Read(addr);
 			return result;
@@ -124,17 +124,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (cia1.PortAData & 0x20) == 0;
 		}
 
-		byte Sid_ReadPotX()
+        int Sid_ReadPotX()
 		{
 			return 0;
 		}
 
-		byte Sid_ReadPotY()
+        int Sid_ReadPotY()
 		{
 			return 0;
 		}
 
-		byte Vic_ReadMemory(int addr)
+        int Vic_ReadMemory(int addr)
 		{
 			// the system sees (cia1.PortAData & 0x3) but we use a shortcut
 			addr |= (0x3 - (((cia1.PortALatch & cia1.PortADirection) | (~cia1.PortADirection)) & 0x3)) << 14;
