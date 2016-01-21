@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-    sealed public partial class MOS6526_2
+    public sealed partial class MOS6526_2
     {
 		int read_data;
 

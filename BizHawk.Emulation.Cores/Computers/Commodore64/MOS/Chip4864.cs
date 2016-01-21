@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			// stripe the ram
 			for (var i = 0; i < 10000; i++)
-				ram[i] = ((i & 0x40) != 0) ? 0xFF : 0x00;
+				ram[i] = (i & 0x40) != 0 ? 0xFF : 0x00;
 		}
 
 		public int Peek(long addr)

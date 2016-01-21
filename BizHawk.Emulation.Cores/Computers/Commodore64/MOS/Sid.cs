@@ -9,21 +9,21 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Sid
+	public sealed partial class Sid
 	{
 
 		// ------------------------------------
 
 		public SpeexResampler resampler;
 
-		static int[] syncNextTable = new int[] { 1, 2, 0 };
-		static int[] syncPrevTable = new int[] { 2, 0, 1 };
+		static readonly int[] syncNextTable = { 1, 2, 0 };
+		static readonly int[] syncPrevTable = { 2, 0, 1 };
 
 		int cachedCycles;
 		bool disableVoice3;
-		int[] envelopeOutput;
-		Envelope[] envelopes;
-		bool[] filterEnable;
+	    readonly int[] envelopeOutput;
+	    readonly Envelope[] envelopes;
+	    readonly bool[] filterEnable;
 		int filterFrequency;
 		int filterResonance;
 		bool filterSelectBandPass;
@@ -34,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		int potX;
 		int potY;
 		short sample;
-		int[] voiceOutput;
-		Voice[] voices;
+	    readonly int[] voiceOutput;
+	    readonly Voice[] voices;
 		int volume;
 		int[][] waveformTable;
 
@@ -47,17 +47,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			waveformTable = newWaveformTable;
 
 			envelopes = new Envelope[3];
-			for (int i = 0; i < 3; i++)
+			for (var i = 0; i < 3; i++)
 				envelopes[i] = new Envelope();
 			envelopeOutput = new int[3];
 
 			voices = new Voice[3];
-			for (int i = 0; i < 3; i++)
+			for (var i = 0; i < 3; i++)
 				voices[i] = new Voice(newWaveformTable);
 			voiceOutput = new int[3];
 
 			filterEnable = new bool[3];
-			for (int i = 0; i < 3; i++)
+			for (var i = 0; i < 3; i++)
 				filterEnable[i] = false;
 
 			resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-			for (int i = 0; i < 3; i++)
+			for (var i = 0; i < 3; i++)
 			{
 				envelopes[i].HardReset();
 				voices[i].HardReset();
@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				envelopes[2].ExecutePhase2();
 
 				// process sync
-				for (int i = 0; i < 3; i++)
+				for (var i = 0; i < 3; i++)
 					voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
 
 				// get output

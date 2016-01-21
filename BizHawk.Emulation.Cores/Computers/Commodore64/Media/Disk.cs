@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public class Track
 	{
@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	public class Disk
 	{
 
-		public List<Track> tracks = new List<Track>();
+		public readonly List<Track> tracks = new List<Track>();
 		public bool valid;
 	}
 }

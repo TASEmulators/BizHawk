@@ -11,27 +11,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	/// <summary>
 	/// Contains the onboard chipset and glue.
 	/// </summary>
-	sealed public partial class Motherboard
+	public sealed partial class Motherboard
 	{
 		// chips
 		public Chip23XX basicRom;
 		public Chip23XX charRom;
-		public MOS6526 cia0;
-		public MOS6526 cia1;
-		public Chip2114 colorRam;
-		public MOS6510 cpu;
+		public readonly MOS6526 cia0;
+		public readonly MOS6526 cia1;
+		public readonly Chip2114 colorRam;
+		public readonly MOS6510 cpu;
 		public Chip23XX kernalRom;
-		public MOSPLA pla;
-		public Chip4864 ram;
-		public Sid sid;
-		public Vic vic;
+		public readonly MOSPLA pla;
+		public readonly Chip4864 ram;
+		public readonly Sid sid;
+		public readonly Vic vic;
 
 		// ports
-		public CartridgePort cartPort;
-		public CassettePortDevice cassPort;
+		public readonly CartridgePort cartPort;
+		public readonly CassettePortDevice cassPort;
 		public IController controller;
-		public SerialPort serPort;
-		public UserPortDevice userPort;
+		public readonly SerialPort serPort;
+		public readonly UserPortDevice userPort;
 
 		// state
 		//public int address;
@@ -232,50 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.BeginSection("motherboard");
 			SaveState.SyncObject(ser, this);
 			ser.EndSection();
-
-            //ser.BeginSection("cartridge");
-            //cartPort.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("cassette");
-            //cassPort.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("cia0");
-            //cia0.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("cia1");
-            //cia1.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("colorram");
-            //colorRam.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("cpu");
-            //cpu.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("pla");
-            //pla.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("ram");
-            //ram.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("sid");
-            //sid.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("user");
-            //userPort.SyncState(ser);
-            //ser.EndSection();
-
-            //ser.BeginSection("vic");
-            //vic.SyncState(ser);
-            //ser.EndSection();
 		}
 	}
 }

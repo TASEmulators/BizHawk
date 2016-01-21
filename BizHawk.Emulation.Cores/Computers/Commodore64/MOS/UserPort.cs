@@ -15,52 +15,52 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 		}
 
-		virtual public void HardReset()
+		public virtual void HardReset()
 		{
 			// note: this will not disconnect any attached media
 		}
 
-		virtual public bool ReadAtn()
+		public virtual bool ReadAtn()
 		{
 			return true;
 		}
 
-		virtual public bool ReadCounter1Buffer()
+		public virtual bool ReadCounter1Buffer()
 		{
 			return true;
 		}
 
-		virtual public bool ReadCounter2Buffer()
+		public virtual bool ReadCounter2Buffer()
 		{
 			return true;
 		}
 
-		virtual public byte ReadData()
+		public virtual byte ReadData()
 		{
 			return 0xFF;
 		}
 
-		virtual public bool ReadFlag2()
+		public virtual bool ReadFlag2()
 		{
 			return true;
 		}
 
-		virtual public bool ReadPA2()
+		public virtual bool ReadPA2()
 		{
 			return true;
 		}
 
-		virtual public bool ReadReset()
+		public virtual bool ReadReset()
 		{
 			return true;
 		}
 
-		virtual public bool ReadSerial1Buffer()
+		public virtual bool ReadSerial1Buffer()
 		{
 			return true;
 		}
 
-		virtual public bool ReadSerial2Buffer()
+		public virtual bool ReadSerial2Buffer()
 		{
 			return true;
 		}

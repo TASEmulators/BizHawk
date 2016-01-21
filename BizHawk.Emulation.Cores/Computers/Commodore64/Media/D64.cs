@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public static class D64
 	{
-		private static int[] densityTable =
+		private static readonly int[] densityTable =
 		{
 			3, 3, 3, 3, 3,
 			3, 3, 3, 3, 3,
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			0, 0, 0, 0, 0
 		};
 
-		private static int[] gcrDecodeTable =
+		private static readonly int[] gcrDecodeTable =
 		{
 			0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //00xxx
 			0xFF, 0x08, 0x00, 0x01, 0xFF, 0x0C, 0x04, 0x05, //01xxx
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			0xFF, 0x09, 0x0A, 0x0B, 0xFF, 0x0D, 0x0E, 0xFF  //11xxx
 		};
 
-		private static int[] gcrEncodeTable =
+		private static readonly int[] gcrEncodeTable =
 		{
 			Convert.ToByte("01010", 2), // 0
 			Convert.ToByte("01011", 2), // 1
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Convert.ToByte("10101", 2)  // F
 		};
 
-		private static int[] sectorsPerTrack =
+		private static readonly int[] sectorsPerTrack =
 		{
 			21, 21, 21, 21, 21,
 			21, 21, 21, 21, 21,
@@ -57,17 +57,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			17, 17, 17, 17, 17
 		};
 
-		private static int[] standardTrackLengthBytes =
+		private static readonly int[] standardTrackLengthBytes =
 		{
 			6250, 6666, 7142, 7692
 		};
 
 		private static byte Checksum(byte[] source)
 		{
-			int count = source.Length;
+			var count = source.Length;
 			byte result = 0;
 
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 				result ^= source[i];
 
 			return result;
@@ -81,13 +81,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private static byte[] ConvertSectorToGCR(byte[] source, byte sectorNo, byte trackNo, byte formatA, byte formatB, out int bitsWritten)
 		{
-			MemoryStream mem = new MemoryStream();
-			BinaryWriter writer = new BinaryWriter(mem);
-			byte[] writtenData;
-			byte headerChecksum = (byte)(sectorNo ^ trackNo ^ formatA ^ formatB);
+			var mem = new MemoryStream();
+			var writer = new BinaryWriter(mem);
+		    var headerChecksum = (byte)(sectorNo ^ trackNo ^ formatA ^ formatB);
 
 			// assemble written data for GCR encoding
-			writtenData = new byte[260];
+			var writtenData = new byte[260];
 			Array.Copy(source, 0, writtenData, 1, 256);
 			writtenData[0] = 0x07;
 			writtenData[0x101] = Checksum(source);
@@ -111,14 +110,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private static byte[] DecodeGCR(byte[] source)
 		{
 			// 5 GCR encoded bytes -> 4 bytes
-			int[] gcr = new int[8];
-			byte[] data = new byte[4];
-			int count = source.Length;
-			int outputValue;
-			MemoryStream mem = new MemoryStream();
-			BinaryWriter writer = new BinaryWriter(mem);
+			var gcr = new int[8];
+			var data = new byte[4];
+			var count = source.Length;
+		    var mem = new MemoryStream();
+			var writer = new BinaryWriter(mem);
 
-			for (int i = 0; i < count; i += 5)
+			for (var i = 0; i < count; i += 5)
 			{
 				Array.Copy(source, i, data, 0, 5);
 
@@ -134,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				gcr[6] = ((data[3] >> 6) | data[4] << 2) & 0x1F;
 				gcr[7] = ((data[4] >> 3)) & 0x1F;
 
-				outputValue = gcrDecodeTable[gcr[0]] | (gcrDecodeTable[gcr[1]] << 4);
+				var outputValue = gcrDecodeTable[gcr[0]] | (gcrDecodeTable[gcr[1]] << 4);
 				writer.Write((byte)(outputValue & 0xFF));
 				outputValue = gcrDecodeTable[gcr[2]] | (gcrDecodeTable[gcr[3]] << 4);
 				writer.Write((byte)(outputValue & 0xFF));
@@ -150,14 +148,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private static byte[] EncodeGCR(byte[] source)
 		{
 			// 4 bytes -> 5 GCR encoded bytes
-			int[] gcr = new int[8];
-			byte[] data = new byte[4];
-			int count = source.Length;
-			int outputValue;
-			MemoryStream mem = new MemoryStream();
-			BinaryWriter writer = new BinaryWriter(mem);
+			var gcr = new int[8];
+			var data = new byte[4];
+			var count = source.Length;
+		    var mem = new MemoryStream();
+			var writer = new BinaryWriter(mem);
 
-			for (int i = 0; i < count; i += 4)
+			for (var i = 0; i < count; i += 4)
 			{
 				Array.Copy(source, i, data, 0, 4);
 				gcr[0] = gcrEncodeTable[data[0] & 0xF];
@@ -172,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				// -------- -------- -------- -------- --------
 				// 11100000 32222211 44443333 66555554 77777666
 
-				outputValue = (gcr[0]) | (gcr[1] << 5);
+				var outputValue = (gcr[0]) | (gcr[1] << 5);
 				writer.Write((byte)(outputValue & 0xFF));
 				outputValue = (gcr[1] >> 3) | (gcr[2] << 2) | (gcr[3] << 7);
 				writer.Write((byte)(outputValue & 0xFF));
@@ -189,10 +186,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public static Disk Read(byte[] source)
 		{
-			MemoryStream mem = new MemoryStream(source);
-			BinaryReader reader = new BinaryReader(mem);
-			Disk result = new Disk();
-			int trackCount = 0;
+			var mem = new MemoryStream(source);
+			var reader = new BinaryReader(mem);
+			var result = new Disk();
+			var trackCount = 0;
 
 			switch (source.Length)
 			{
@@ -210,17 +207,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					break;
 			}
 
-			for (int i = 0; i < trackCount; i++)
+			for (var i = 0; i < trackCount; i++)
 			{
-				Track track = new Track();
-				int sectors = sectorsPerTrack[i];
-				MemoryStream trackMem = new MemoryStream();
+				var track = new Track();
+				var sectors = sectorsPerTrack[i];
+				var trackMem = new MemoryStream();
 
-				for (int j = 0; j < sectors; j++)
+				for (var j = 0; j < sectors; j++)
 				{
 					int bitsWritten;
-					byte[] sectorData = reader.ReadBytes(256);
-					byte[] diskData = ConvertSectorToGCR(sectorData, (byte)j, (byte)i, (byte)0x00, (byte)0x00, out bitsWritten);
+					var sectorData = reader.ReadBytes(256);
+					var diskData = ConvertSectorToGCR(sectorData, (byte)j, (byte)i, 0x00, 0x00, out bitsWritten);
 					trackMem.Write(diskData, 0, diskData.Length);
 				}
 				track.density = densityTable[i];

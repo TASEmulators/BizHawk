@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// emulates the PLA
 	// which handles all bank switching
 
-	sealed public class MOSPLA
+	public sealed class MOSPLA
 	{
 		// ------------------------------------
 

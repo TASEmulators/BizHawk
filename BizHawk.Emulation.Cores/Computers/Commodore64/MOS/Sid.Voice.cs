@@ -7,36 +7,36 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Sid
+	public sealed partial class Sid
 	{
-		sealed class Voice
+	    private sealed class Voice
 		{
-			int accBits;
-			int accNext;
-			int accumulator;
-			bool controlTestPrev;
-			int controlWavePrev;
-			int delay;
-			int floatOutputTTL;
-			int frequency;
-			bool msbRising;
-			int noise;
-			int noNoise;
-			int noNoiseOrNoise;
-			int noPulse;
-			int output;
-			int pulse;
-			int pulseWidth;
-			bool ringMod;
-			int ringMsbMask;
-			int shiftRegister;
-			int shiftRegisterReset;
-			bool sync;
-			bool test;
-			int[] wave;
-			int waveform;
-			int waveformIndex;
-			int[][] waveTable;
+		    private int accBits;
+		    private int accNext;
+		    private int accumulator;
+		    private bool controlTestPrev;
+		    private int controlWavePrev;
+		    private int delay;
+		    private int floatOutputTTL;
+		    private int frequency;
+		    private bool msbRising;
+		    private int noise;
+		    private int noNoise;
+		    private int noNoiseOrNoise;
+		    private int noPulse;
+		    private int output;
+		    private int pulse;
+		    private int pulseWidth;
+		    private bool ringMod;
+		    private int ringMsbMask;
+		    private int shiftRegister;
+		    private int shiftRegisterReset;
+		    private bool sync;
+		    private bool test;
+		    private int[] wave;
+		    private int waveform;
+		    private int waveformIndex;
+		    private readonly int[][] waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
