@@ -7,48 +7,44 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Sid
+	public sealed partial class Sid
 	{
-		sealed class Envelope
+	    private sealed class Envelope
 		{
-			const int stateAttack = 0;
-			const int stateDecay = 1;
-			const int stateRelease = 2;
+		    private const int stateAttack = 0;
+		    private const int stateDecay = 1;
+		    private const int stateRelease = 2;
 
-			int attack;
-			int decay;
-			bool delay;
-			int envCounter;
-			int expCounter;
-			int expPeriod;
-			bool freeze;
-			int lfsr;
-			bool gate;
-			int rate;
-			int release;
-			int state;
-			int sustain;
+		    private int attack;
+		    private int decay;
+		    private bool delay;
+		    private int envCounter;
+		    private int expCounter;
+		    private int expPeriod;
+		    private bool freeze;
+		    private int lfsr;
+		    private bool gate;
+		    private int rate;
+		    private int release;
+		    private int state;
+		    private int sustain;
 
-			static int[] adsrTable = new int[]
-			{
+		    private static readonly int[] adsrTable = {
 				0x7F00, 0x0006, 0x003C, 0x0330,
 				0x20C0, 0x6755, 0x3800, 0x500E,
 				0x1212, 0x0222, 0x1848, 0x59B8,
 				0x3840, 0x77E2, 0x7625, 0x0A93
 			};
 
-			static int[] expCounterTable = new int[]
-			{
+		    private static readonly int[] expCounterTable = {
 				0xFF, 0x5D, 0x36, 0x1A, 0x0E, 0x06, 0x00
 			};
 
-			static int[] expPeriodTable = new int[]
-			{
+		    private static readonly int[] expPeriodTable = {
 				0x01, 0x02, 0x04, 0x08, 0x10, 0x1E, 0x01
 			};
 
-			static int[] sustainTable = new int[]
-			{
+		    private static readonly int[] sustainTable = {
 				0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 				0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
 			};
@@ -60,64 +56,63 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public void ExecutePhase2()
 			{
-
+				if (!delay)
 				{
-					if (!delay)
-					{
-						envCounter--;
-						delay = true;
-						UpdateExpCounter();
-					}
-
-					if (lfsr != rate)
-					{
-						int feedback = ((lfsr >> 14) ^ (lfsr >> 13)) & 0x1;
-						lfsr = ((lfsr << 1) & 0x7FFF) | feedback;
-						return;
-					}
-					lfsr = 0x7FFF;
-
-					if (state == stateAttack || ++expCounter == expPeriod)
-					{
-						expCounter = 0;
-						if (freeze)
-							return;
-
-						switch (state)
-						{
-							case stateAttack:
-								envCounter++;
-								if (envCounter == 0xFF)
-								{
-									state = stateDecay;
-									rate = adsrTable[decay];
-								}
-								break;
-							case stateDecay:
-								if (envCounter == sustainTable[sustain])
-								{
-									return;
-								}
-								if (expPeriod != 1)
-								{
-									delay = false;
-									return;
-								}
-								envCounter--;
-								break;
-							case stateRelease:
-								if (expPeriod != 1)
-								{
-									delay = false;
-									return;
-								}
-								envCounter--;
-								break;
-						}
-						envCounter &= 0xFF;
-						UpdateExpCounter();
-					}
+					envCounter--;
+					delay = true;
+					UpdateExpCounter();
 				}
+
+				if (lfsr != rate)
+				{
+					var feedback = ((lfsr >> 14) ^ (lfsr >> 13)) & 0x1;
+					lfsr = ((lfsr << 1) & 0x7FFF) | feedback;
+					return;
+				}
+				lfsr = 0x7FFF;
+
+				if (state != stateAttack && ++expCounter != expPeriod)
+				{
+				    return;
+				}
+
+				expCounter = 0;
+				if (freeze)
+				    return;
+
+				switch (state)
+				{
+				    case stateAttack:
+				        envCounter++;
+				        if (envCounter == 0xFF)
+				        {
+				            state = stateDecay;
+				            rate = adsrTable[decay];
+				        }
+				        break;
+				    case stateDecay:
+				        if (envCounter == sustainTable[sustain])
+				        {
+				            return;
+				        }
+				        if (expPeriod != 1)
+				        {
+				            delay = false;
+				            return;
+				        }
+				        envCounter--;
+				        break;
+				    case stateRelease:
+				        if (expPeriod != 1)
+				        {
+				            delay = false;
+				            return;
+				        }
+				        envCounter--;
+				        break;
+				}
+				envCounter &= 0xFF;
+				UpdateExpCounter();
 			}
 
 			public void HardReset()
@@ -141,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 
 				{
-					for (int i = 0; i < 7; i++)
+					for (var i = 0; i < 7; i++)
 					{
 						if (envCounter == expCounterTable[i])
 							expPeriod = expPeriodTable[i];
@@ -161,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				set
 				{
-					attack = (value & 0xF);
+					attack = value & 0xF;
 					if (state == stateAttack)
 						rate = adsrTable[attack];
 				}
@@ -175,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				set
 				{
-					decay = (value & 0xF);
+					decay = value & 0xF;
 					if (state == stateDecay)
 						rate = adsrTable[decay];
 				}
@@ -189,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				set
 				{
-					bool nextGate = value;
+					var nextGate = value;
 					if (nextGate && !gate)
 					{
 						state = stateAttack;
@@ -222,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				set
 				{
-					release = (value & 0xF);
+					release = value & 0xF;
 					if (state == stateRelease)
 						rate = adsrTable[release];
 				}
@@ -236,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 				set
 				{
-					sustain = (value & 0xF);
+					sustain = value & 0xF;
 				}
 			}
 

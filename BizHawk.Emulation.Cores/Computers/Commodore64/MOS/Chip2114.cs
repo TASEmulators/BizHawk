@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Write(int addr, int val)
 		{
-			ram[addr & 0x3FF] = (val & 0xF);
+			ram[addr & 0x3FF] = val & 0xF;
 		}
 	}
 }

@@ -66,14 +66,12 @@
 			{
 				for (var j = 0; j < 8; j++)
 				{
-					if (keyboardPressed[pollIndex++] != 0)
-					{
-						if (((portA & inputBitSelect[i]) == 0) || ((portB & inputBitSelect[j]) == 0))
-						{
-							resultA &= inputBitMask[i];
-							resultB &= inputBitMask[j];
-						}
-					}
+				    if (keyboardPressed[pollIndex++] != 0 &&
+				        (((portA & inputBitSelect[i]) == 0) || ((portB & inputBitSelect[j]) == 0)))
+				    {
+				        resultA &= inputBitMask[i];
+				        resultB &= inputBitMask[j];
+				    }
 				}
 			}
 

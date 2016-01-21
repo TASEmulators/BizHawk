@@ -15,15 +15,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 
 		public void HardReset()
 		{
-			if (tape != null) tape.rewind();
+			if (tape != null) tape.Rewind();
 		}
 
-		virtual public bool ReadDataInputBuffer()
+		public virtual bool ReadDataInputBuffer()
 		{
-			return tape != null && !ReadMotor() ? tape.read() : true;
+			return tape == null || ReadMotor() || tape.Read();
 		}
 
-		virtual public bool ReadSenseBuffer()
+		public virtual bool ReadSenseBuffer()
 		{
 			return tape == null; // Just assume that "play" is constantly pressed as long as a tape is inserted
 		}

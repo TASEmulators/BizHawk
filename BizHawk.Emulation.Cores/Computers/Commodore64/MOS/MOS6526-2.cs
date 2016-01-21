@@ -16,9 +16,9 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class MOS6526_2
+	public sealed partial class MOS6526_2
 	{
-		sealed private class CiaTimer
+		private sealed class CiaTimer
 		{
 			public const int TIMER_CR_START = 0x01;
 			public const int TIMER_STEP = 0x04;

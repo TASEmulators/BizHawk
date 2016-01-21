@@ -56,28 +56,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	    public int ReadHiExp(int addr)
 	    {
-	        return connected ? cart.ReadDF00((addr & 0x00FF)) : 0xFF;
+	        return connected ? cart.ReadDF00(addr & 0x00FF) : 0xFF;
 	    }
 
 	    public int ReadHiRom(int addr)
 	    {
-	        return connected ? cart.ReadA000((addr & 0x1FFF)) : 0xFF;
+	        return connected ? cart.ReadA000(addr & 0x1FFF) : 0xFF;
 	    }
 
 	    public int ReadLoExp(int addr)
 	    {
-	        return connected ? cart.ReadDE00((addr & 0x00FF)) : 0xFF;
+	        return connected ? cart.ReadDE00(addr & 0x00FF) : 0xFF;
 	    }
 
 	    public int ReadLoRom(int addr)
 	    {
-	        return connected ? cart.Read8000((addr & 0x1FFF)) : 0xFF;
+	        return connected ? cart.Read8000(addr & 0x1FFF) : 0xFF;
 	    }
 
-	    public void WriteHiExp(int addr, int val) { if (connected) { cart.WriteDF00((addr & 0x00FF), val); } }
-		public void WriteHiRom(int addr, int val) { if (connected) { cart.WriteA000((addr & 0x1FFF), val); } }
-		public void WriteLoExp(int addr, int val) { if (connected) { cart.WriteDE00((addr & 0x00FF), val); } }
-		public void WriteLoRom(int addr, int val) { if (connected) { cart.Write8000((addr & 0x1FFF), val); } }
+	    public void WriteHiExp(int addr, int val) { if (connected) { cart.WriteDF00(addr & 0x00FF, val); } }
+		public void WriteHiRom(int addr, int val) { if (connected) { cart.WriteA000(addr & 0x1FFF, val); } }
+		public void WriteLoExp(int addr, int val) { if (connected) { cart.WriteDE00(addr & 0x00FF, val); } }
+		public void WriteLoRom(int addr, int val) { if (connected) { cart.Write8000(addr & 0x1FFF, val); } }
 
 		// ------------------------------------------
 

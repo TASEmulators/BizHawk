@@ -15,10 +15,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		Chip23128
 	}
 
-	sealed public class Chip23XX
+	public sealed class Chip23XX
 	{
-	    readonly int addrMask;
-	    readonly int[] rom;
+	    private readonly int addrMask;
+	    private readonly int[] rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
 		{
