@@ -1313,5 +1313,6 @@ namespace BizHawk.Client.EmuHawk
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
 			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
 		}
+
 	}
 }
