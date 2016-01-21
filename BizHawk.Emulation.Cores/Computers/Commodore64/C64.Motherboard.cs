@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		// state
 		//public int address;
-		public byte bus;
+		public int bus;
 		public bool inputRead;
 		public bool irq;
 		public bool nmi;

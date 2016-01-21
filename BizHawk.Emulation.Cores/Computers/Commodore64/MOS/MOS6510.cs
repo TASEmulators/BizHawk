@@ -9,39 +9,39 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 
-	sealed public class MOS6510
+	public sealed class MOS6510
 	{
 		// ------------------------------------
 
-		MOS6502X cpu;
-        int lagCycles;
-		bool pinNMILast;
+	    readonly MOS6502X cpu;
+	    bool pinNMILast;
 		LatchedPort port;
 		bool thisNMI;
 
-		public Func<int, byte> PeekMemory;
-		public Action<int, byte> PokeMemory;
+		public Func<int, int> PeekMemory;
+		public Action<int, int> PokeMemory;
 		public Func<bool> ReadAEC;
 		public Func<bool> ReadIRQ;
 		public Func<bool> ReadNMI;
 		public Func<bool> ReadRDY;
-		public Func<int, byte> ReadMemory;
-		public Func<byte> ReadPort;
-		public Action<int, byte> WriteMemory;
-		public Action<int, byte> WriteMemoryPort;
+		public Func<int, int> ReadMemory;
+		public Func<int> ReadPort;
+		public Action<int, int> WriteMemory;
+		public Action<int, int> WriteMemoryPort;
 
 		// ------------------------------------
 
 		public MOS6510()
 		{
-			cpu = new MOS6502X();
+            // configure cpu r/w
+            cpu = new MOS6502X
+		    {
+		        DummyReadMemory = addr => unchecked((byte)Read(addr)),
+		        ReadMemory = addr => unchecked((byte)Read(addr)),
+		        WriteMemory = (addr, val) => Write(addr, val)
+		    };
 
-			// configure cpu r/w
-			cpu.DummyReadMemory = Read;
-			cpu.ReadMemory = Read;
-			cpu.WriteMemory = Write;
-
-			// perform hard reset
+		    // perform hard reset
 			HardReset();
 		}
 
@@ -52,14 +52,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			cpu.FlagI = true;
 			cpu.BCD_Enabled = true;
 			if (ReadMemory != null)
-				cpu.PC = (ushort)(ReadMemory(0x0FFFC) | (ReadMemory(0x0FFFD) << 8));
+				cpu.PC = unchecked((ushort)(ReadMemory(0x0FFFC) | (ReadMemory(0x0FFFD) << 8)));
 
 			// configure data port defaults
-			port = new LatchedPort();
-			port.Direction = 0x00;
-			port.Latch = 0xFF;
+		    port = new LatchedPort
+		    {
+		        Direction = 0x00,
+		        Latch = 0xFF
+		    };
 
-			// NMI is high on startup (todo: verify)
+		    // NMI is high on startup (todo: verify)
 			pinNMILast = true;
 		}
 
@@ -87,23 +89,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
             else
             {
-                lagCycles++;
+                LagCycles++;
             }
 		}
 
-        public int LagCycles
-        {
-            get
-            {
-                return lagCycles;
-            }
-            set
-            {
-				lagCycles = value;
-			}
-		}
+        public int LagCycles { get; set; }
 
-		internal bool AtInstructionStart()
+	    internal bool AtInstructionStart()
 		{
 			return cpu.AtInstructionStart();
 		}
@@ -122,24 +114,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte A
+		public int A
 		{
-			get { return cpu.A; } set { cpu.A = value; }
+			get { return cpu.A; } set { cpu.A = unchecked((byte)value); }
 		}
 
-		public byte X
+		public int X
 		{
-			get { return cpu.X; } set { cpu.X = value; }
+			get { return cpu.X; } set { cpu.X = unchecked((byte)value); }
 		}
 
-		public byte Y
+		public int Y
 		{
-			get { return cpu.Y; } set { cpu.Y = value; }
+			get { return cpu.Y; } set { cpu.Y = unchecked((byte)value); }
 		}
 
-		public byte S
+		public int S
 		{
-			get { return cpu.S; } set { cpu.S = value; }
+			get { return cpu.S; } set { cpu.S = unchecked((byte)value); }
 		}
 
 		public bool FlagC { get { return cpu.FlagC; } }
@@ -151,27 +143,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public bool FlagN { get { return cpu.FlagN; } }
 		public bool FlagT { get { return cpu.FlagT; } }
 
-		public byte Peek(long addr)
+		public int Peek(int addr)
 		{
-			if (addr == 0x0000)
-				return port.Direction;
-			else if (addr == 0x0001)
-				return PortData;
-			else
-				return PeekMemory((int)addr);
+		    switch (addr)
+		    {
+		        case 0x0000:
+		            return port.Direction;
+		        case 0x0001:
+		            return PortData;
+		        default:
+		            return PeekMemory(addr);
+		    }
 		}
 
-		public void Poke(long addr, byte val)
-		{
-			if (addr == 0x0000)
-				port.Direction = val;
-			else if (addr == 0x0001)
-				port.Latch = val;
-			else
-				PokeMemory((int)addr, val);
-		}
+	    public void Poke(int addr, int val)
+	    {
+	        switch (addr)
+	        {
+	            case 0x0000:
+	                port.Direction = val;
+	                break;
+	            case 0x0001:
+	                port.Latch = val;
+	                break;
+	            default:
+	                PokeMemory(addr, val);
+	                break;
+	        }
+	    }
 
-		public byte PortData
+	    public int PortData
 		{
 			get
 			{
@@ -183,38 +184,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte Read(ushort addr)
+		public int Read(int addr)
 		{
-			if (addr == 0x0000)
-				return port.Direction;
-			else if (addr == 0x0001)
-				return PortData;
-			else
-				return ReadMemory(addr);
+		    switch (addr)
+		    {
+		        case 0x0000:
+		            return port.Direction;
+		        case 0x0001:
+		            return PortData;
+		        default:
+		            return ReadMemory(addr);
+		    }
 		}
 
-		public void SyncState(Serializer ser)
+	    public void SyncState(Serializer ser)
 		{
 			cpu.SyncState(ser);
 			SaveState.SyncObject(ser, this);
 		}
 
-		public void Write(ushort addr, byte val)
+		public void Write(int addr, int val)
 		{
-			if (addr == 0x0000)
-			{
-				port.Direction = val;
-				WriteMemoryPort(addr, val);
-			}
-			else if (addr == 0x0001)
-			{
-				port.Latch = val;
-				WriteMemoryPort(addr, val);
-			}
-			else
-			{
-				WriteMemory(addr, val);
-			}
+		    switch (addr)
+		    {
+		        case 0x0000:
+		            port.Direction = val;
+		            WriteMemoryPort(addr, val);
+		            break;
+		        case 0x0001:
+		            port.Latch = val;
+		            WriteMemoryPort(addr, val);
+		            break;
+		        default:
+		            WriteMemory(addr, val);
+		            break;
+		    }
 		}
 	}
 }

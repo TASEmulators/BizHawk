@@ -3,10 +3,10 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public class LatchedPort
+	public sealed class LatchedPort
 	{
-		public byte Direction;
-		public byte Latch;
+		public int Direction;
+		public int Latch;
 
 		public LatchedPort()
 		{
@@ -27,14 +27,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// both the direction and latch are 1 (the keyboard and joystick port 2 can do this.)
 		// the class does not handle this case as it must be handled differently in every occurrence.
 
-		public byte ReadInput(byte bus)
+		public int ReadInput(int bus)
 		{
-			return (byte)((Latch & Direction) | ((Direction ^ 0xFF) & bus));
+			return (Latch & Direction) | ((Direction ^ 0xFF) & bus);
 		}
 
-		public byte ReadOutput()
+		public int ReadOutput()
 		{
-			return (byte)((Latch & Direction) | (Direction ^ 0xFF));
+			return (Latch & Direction) | (Direction ^ 0xFF);
 		}
 
 		public void SyncState(Serializer ser)
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 	}
 
-	sealed public class LatchedBooleanPort
+	public sealed class LatchedBooleanPort
 	{
 		public bool Direction;
 		public bool Latch;

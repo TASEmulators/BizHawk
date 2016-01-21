@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			reset();
 		}
 
-		public byte PortAData
+		public int PortAData
 		{
 			get
 			{
@@ -35,13 +35,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortAMask
+		public int PortAMask
 		{
 			get;
 			set;
 		}
 
-		public byte PortADirection
+		public int PortADirection
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortALatch
+		public int PortALatch
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBData
+		public int PortBData
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBDirection
+		public int PortBDirection
 		{
 			get
 			{
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBLatch
+		public int PortBLatch
 		{
 			get
 			{
@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public byte PortBMask
+		public int PortBMask
 		{
 			get;
 			set;

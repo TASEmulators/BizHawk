@@ -13,44 +13,44 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	// memory is striped 00/FF at intervals of 0x40
 
-	sealed public class Chip4864
+	public sealed class Chip4864
 	{
-		byte[] ram;
+	    private readonly int[] ram;
 
 		public Chip4864()
 		{
-			ram = new byte[0x10000];
+			ram = new int[0x10000];
 			HardReset();
 		}
 
 		public void HardReset()
 		{
 			// stripe the ram
-			for (int i = 0; i < 10000; i++)
-				ram[i] = ((i & 0x40) != 0) ? (byte)0xFF : (byte)0x00;
+			for (var i = 0; i < 10000; i++)
+				ram[i] = ((i & 0x40) != 0) ? 0xFF : 0x00;
 		}
 
-		public byte Peek(long addr)
+		public int Peek(long addr)
 		{
 			return ram[addr];
 		}
 
-		public void Poke(long addr, byte val)
+		public void Poke(long addr, int val)
 		{
 			ram[addr] = val;
 		}
 
-		public byte Peek(int addr)
+		public int Peek(int addr)
 		{
 			return ram[addr];
 		}
 
-		public void Poke(int addr, byte val)
+		public void Poke(int addr, int val)
 		{
 			ram[addr] = val;
 		}
 
-		public byte Read(int addr)
+		public int Read(int addr)
 		{
 			return ram[addr];
 		}
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			SaveState.SyncObject(ser, this);
 		}
 
-		public void Write(int addr, byte val)
+		public void Write(int addr, int val)
 		{
 			ram[addr] = val;
 		}

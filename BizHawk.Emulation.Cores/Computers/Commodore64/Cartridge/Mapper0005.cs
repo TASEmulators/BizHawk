@@ -17,11 +17,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public Mapper0005(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
 		{
-			int count = newAddresses.Count;
+			var count = newAddresses.Count;
 
 			// build dummy bank
 			dummyBank = new byte[0x2000];
-			for (int i = 0; i < 0x2000; i++)
+			for (var i = 0; i < 0x2000; i++)
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
 
 			if (count == 64) //512k
@@ -82,13 +82,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 
 			// for safety, initialize all banks to dummy
-			for (int i = 0; i < banksA.Length; i++)
+			for (var i = 0; i < banksA.Length; i++)
 				banksA[i] = dummyBank;
-			for (int i = 0; i < banksB.Length; i++)
+			for (var i = 0; i < banksB.Length; i++)
 				banksB[i] = dummyBank;
 
 			// now load in the banks
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
 				{
@@ -117,33 +117,33 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				currentBankB = dummyBank;
 		}
 
-		public override byte Peek8000(int addr)
+		public override int Peek8000(int addr)
 		{
 			return currentBankA[addr];
 		}
 
-		public override byte PeekA000(int addr)
+		public override int PeekA000(int addr)
 		{
 			return currentBankB[addr];
 		}
 
-		public override void PokeDE00(int addr, byte val)
+		public override void PokeDE00(int addr, int val)
 		{
 			if (addr == 0x00)
 				BankSet(val);
 		}
 
-		public override byte Read8000(int addr)
+		public override int Read8000(int addr)
 		{
 			return currentBankA[addr];
 		}
 
-		public override byte ReadA000(int addr)
+		public override int ReadA000(int addr)
 		{
 			return currentBankB[addr];
 		}
 
-		public override void WriteDE00(int addr, byte val)
+		public override void WriteDE00(int addr, int val)
 		{
 			if (addr == 0x00)
 				BankSet(val);

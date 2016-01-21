@@ -9,24 +9,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	public class Mapper0011 : Mapper000F
 	{
-		public Mapper0011(List<int> newAddresses, List<int> newBanks, List<byte[]> newData)
+		public Mapper0011(IList<int> newAddresses, IList<int> newBanks, IList<byte[]> newData)
 			: base(newAddresses, newBanks, newData)
 		{
 			// required to pass information to base class
 		}
 
-		public override void PokeDE00(int addr, byte val)
+		public override void PokeDE00(int addr, int val)
 		{
 			// do nothing
 		}
 
-		public override byte ReadDE00(int addr)
+		public override int ReadDE00(int addr)
 		{
 			BankSet(addr);
 			return base.ReadDE00(addr);
 		}
 
-		public override void WriteDE00(int addr, byte val)
+		public override void WriteDE00(int addr, int val)
 		{
 			// do nothing
 		}
