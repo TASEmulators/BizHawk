@@ -8,9 +8,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int, int> ReadColorRam;
 		public Func<int, int> ReadMemory;
 
-		public bool ReadAecBuffer() { return _pinAec; }
-		public bool ReadBaBuffer() { return _pinBa; }
-		public bool ReadIrqBuffer() { return _pinIrq; }
+		public bool ReadAec() { return _pinAec; }
+		public bool ReadBa() { return _pinBa; }
+		public bool ReadIrq() { return _pinIrq; }
 
 		private readonly int _cyclesPerSec;
 		private int _irqShift;

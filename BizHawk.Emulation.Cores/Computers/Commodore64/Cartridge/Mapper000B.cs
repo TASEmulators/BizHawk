@@ -10,9 +10,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
     // the RAM underneath (BASIC variable values probably)
     // and then disables once loaded.
 
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
-        private sealed class Mapper000B : Cart
+        private sealed class Mapper000B : CartridgeDevice
         {
             private readonly int[] _rom = new int[0x4000];
 

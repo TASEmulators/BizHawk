@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
-        private sealed class Mapper0000 : Cart
+        private sealed class Mapper0000 : CartridgeDevice
         {
             private readonly int[] _romA;
             private readonly int _romAMask;

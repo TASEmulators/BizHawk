@@ -13,12 +13,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			if (id == @"GCR-1541")
 			{
-				int trackCount;
-				var trackOffsetTable = new int[84];
+			    var trackOffsetTable = new int[84];
 				var trackSpeedTable = new int[84];
 
 				reader.ReadByte(); //version
-				trackCount = reader.ReadByte();
+				int trackCount = reader.ReadByte();
 				reader.ReadInt16(); //max track size in bytes
 
 				for (var i = 0; i < 84; i++)
@@ -31,21 +30,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				{
 					if (trackOffsetTable[i] > 0)
 					{
-					    var track = new Track();
+					    var track = new Disk.Track();
 
 						mem.Position = trackOffsetTable[i];
 						int trackLength = reader.ReadInt16();
 						var trackData = reader.ReadBytes(trackLength);
-						track.bits = trackLength * 8;
-						track.data = trackData;
-						track.density = trackSpeedTable[i];
-						track.index = i;
-						result.tracks.Add(track);
+						track.Bits = trackLength * 8;
+						track.Data = trackData;
+						track.Density = trackSpeedTable[i];
+						track.Index = i;
+						result.Tracks.Add(track);
 					}
 				}
 			}
 
-			result.valid = result.tracks.Count > 0;
+			result.Valid = result.Tracks.Count > 0;
 			return result;
 		}
 

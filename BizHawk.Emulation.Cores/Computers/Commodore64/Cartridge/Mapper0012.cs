@@ -4,9 +4,9 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
-        private sealed class Mapper0012 : Cart
+        private sealed class Mapper0012 : CartridgeDevice
         {
             private readonly int[] _bankMain;
             private readonly int[][] _bankHigh;

@@ -13,12 +13,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			// chips must be initialized before this code runs!
 		    var domains = new List<MemoryDomain>
 		    {
-                C64MemoryDomainFactory.Create("System Bus", 0x10000, _board.cpu.Peek, _board.cpu.Poke),
-                C64MemoryDomainFactory.Create("RAM", 0x10000, _board.ram.Peek, _board.ram.Poke),
-                C64MemoryDomainFactory.Create("CIA0", 0x10, _board.cia0.Peek, _board.cia0.Poke),
-                C64MemoryDomainFactory.Create("CIA1", 0x10, _board.cia1.Peek, _board.cia1.Poke),
-                C64MemoryDomainFactory.Create("VIC", 0x40, _board.vic.Peek, _board.vic.Poke),
-                C64MemoryDomainFactory.Create("SID", 0x20, _board.sid.Peek, _board.sid.Poke)
+                C64MemoryDomainFactory.Create("System Bus", 0x10000, _board.Cpu.Peek, _board.Cpu.Poke),
+                C64MemoryDomainFactory.Create("RAM", 0x10000, _board.Ram.Peek, _board.Ram.Poke),
+                C64MemoryDomainFactory.Create("CIA0", 0x10, _board.Cia0.Peek, _board.Cia0.Poke),
+                C64MemoryDomainFactory.Create("CIA1", 0x10, _board.Cia1.Peek, _board.Cia1.Poke),
+                C64MemoryDomainFactory.Create("VIC", 0x40, _board.Vic.Peek, _board.Vic.Poke),
+                C64MemoryDomainFactory.Create("SID", 0x20, _board.Sid.Peek, _board.Sid.Poke)
             };
 		    //domains.Add(new MemoryDomain("1541 Bus", 0x10000, MemoryDomain.Endian.Little, new Func<int, byte>(disk.Peek), new Action<int, byte>(disk.Poke)));
 			//domains.Add(new MemoryDomain("1541 VIA0", 0x10, MemoryDomain.Endian.Little, new Func<int, byte>(disk.PeekVia0), new Action<int, byte>(disk.PokeVia0)));

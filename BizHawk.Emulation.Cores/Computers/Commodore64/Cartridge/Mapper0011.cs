@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
     // done by reads to the DExx region instead of writes.
     // This is why mapper 0011 inherits directly from 000F.
 
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
         private class Mapper0011 : Mapper000F
         {

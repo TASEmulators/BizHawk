@@ -9,17 +9,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 	    private bool CassPort_ReadDataOutput()
 		{
-			return (cpu.PortData & 0x08) != 0;
+			return (Cpu.PortData & 0x08) != 0;
 		}
 
 	    private bool CassPort_ReadMotor()
 		{
-			return (cpu.PortData & 0x20) != 0;
+			return (Cpu.PortData & 0x20) != 0;
 		}
 
 	    private bool Cia0_ReadCnt()
 		{
-			return userPort.ReadCounter1Buffer() && cia0.ReadCNTBuffer();
+			return User.ReadCounter1() && Cia0.ReadCntBuffer();
 		}
 
 	    private int Cia0_ReadPortA()
@@ -34,51 +34,56 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    private bool Cia0_ReadSP()
 		{
-			return userPort.ReadSerial1Buffer() && cia0.ReadSPBuffer();
+			return User.ReadSerial1() && Cia0.ReadSpBuffer();
 		}
 
 	    private bool Cia1_ReadCnt()
 		{
-			return userPort.ReadCounter2Buffer() && cia1.ReadCNTBuffer();
+			return User.ReadCounter2() && Cia1.ReadCntBuffer();
 		}
 
 	    private int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
 			byte result = 0xFF;
-			if (serPort.WriteDataIn())
+			if (Serial.WriteDataIn())
 				result &= 0x7F;
-			if (serPort.WriteClockIn())
+			if (Serial.WriteClockIn())
 				result &= 0xBF;
 			return result;
 		}
 
 	    private bool Cia1_ReadSP()
 		{
-			return userPort.ReadSerial2Buffer() && cia1.ReadSPBuffer();
+			return User.ReadSerial2() && Cia1.ReadSpBuffer();
 		}
 
 	    private int Cpu_ReadPort()
 		{
 			byte data = 0x1F;
-			if (!cassPort.ReadSenseBuffer())
+			if (!Cassette.ReadSenseBuffer())
 				data &= 0xEF;
 			return data;
 		}
 
 	    private void Cpu_WriteMemoryPort(int addr, int val)
 		{
-			pla.WriteMemory(addr, bus);
+			Pla.WriteMemory(addr, Bus);
 		}
 
 	    private bool Glue_ReadIRQ()
 		{
-			return cia0.ReadIRQBuffer() & vic.ReadIrqBuffer() & cartPort.ReadIRQBuffer();
+			return Cia0.ReadIrq() && Vic.ReadIrq() && CartPort.ReadIrq();
 		}
 
-	    private bool Pla_ReadCharen()
+        private bool Glue_ReadNMI()
+        {
+            return Cia1.ReadIrq() && CartPort.ReadNmi();
+        }
+
+        private bool Pla_ReadCharen()
 		{
-			return (cpu.PortData & 0x04) != 0;
+			return (Cpu.PortData & 0x04) != 0;
 		}
 
 	    private int Pla_ReadCia0(int addr)
@@ -86,42 +91,42 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (addr == 0xDC00 || addr == 0xDC01)
 			{
 				WriteInputPort();
-				inputRead = true;
+				InputRead = true;
 			}
-			return cia0.Read(addr);
+			return Cia0.Read(addr);
 		}
 
 	    private int Pla_ReadColorRam(int addr)
 		{
-            var result = bus;
+            var result = Bus;
 			result &= 0xF0;
-			result |= colorRam.Read(addr);
+			result |= ColorRam.Read(addr);
 			return result;
 		}
 
 	    private bool Pla_ReadHiRam()
 		{
-			return (cpu.PortData & 0x02) != 0;
+			return (Cpu.PortData & 0x02) != 0;
 		}
 
 	    private bool Pla_ReadLoRam()
 		{
-			return (cpu.PortData & 0x01) != 0;
+			return (Cpu.PortData & 0x01) != 0;
 		}
 
 	    private bool SerPort_ReadAtnOut()
 		{
-			return (cia1.PortBData & 0x08) == 0;
+			return (Cia1.PortBData & 0x08) == 0;
 		}
 
 	    private bool SerPort_ReadClockOut()
 		{
-			return (cia1.PortAData & 0x10) == 0;
+			return (Cia1.PortAData & 0x10) == 0;
 		}
 
 	    private bool SerPort_ReadDataOut()
 		{
-			return (cia1.PortAData & 0x20) == 0;
+			return (Cia1.PortAData & 0x20) == 0;
 		}
 
 	    private int Sid_ReadPotX()
@@ -137,8 +142,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	    private int Vic_ReadMemory(int addr)
 		{
 			// the system sees (cia1.PortAData & 0x3) but we use a shortcut
-			addr |= (0x3 - (((cia1.PortALatch & cia1.PortADirection) | ~cia1.PortADirection) & 0x3)) << 14;
-			return pla.VicRead(addr);
+			addr |= (0x3 - (((Cia1.PortALatch & Cia1.PortADirection) | ~Cia1.PortADirection) & 0x3)) << 14;
+			return Pla.VicRead(addr);
 		}
 	}
 }

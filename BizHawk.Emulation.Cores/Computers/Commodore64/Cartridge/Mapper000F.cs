@@ -12,9 +12,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
     // register DE00+BankNr. For example, bank 01 is a write
     // to DE01.
 
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
-        private class Mapper000F : Cart
+        private class Mapper000F : CartridgeDevice
         {
             private readonly int[][] _banks; //8000
             private readonly int _bankMask;

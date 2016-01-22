@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
 using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
+using BizHawk.Emulation.Cores.Computers.Commodore64.Cassette;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
@@ -36,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		    CoreComm = comm;
 			Init(SyncSettings.VicType);
-			_cyclesPerFrame = _board.vic.CyclesPerFrame;
+			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			SetupMemoryDomains();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			HardReset();
@@ -53,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		            break;
 		    }
 
-			((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.vic);
+			((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.Vic);
 		}
 
 		// internal variables
@@ -85,11 +86,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void EndAsyncSound() { } //TODO
 		public ISoundProvider SoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return false; } //TODO
-		public ISyncSoundProvider SyncSoundProvider { get { return _board.sid.Resampler; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return _board.Sid.Resampler; } }
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get { return _board.controller; } set { _board.controller = value; } }
+		public IController Controller { get { return _board.Controller; } set { _board.Controller = value; } }
 
 	    private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
@@ -117,9 +118,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Dispose()
 		{
-			if (_board.sid != null)
+			if (_board.Sid != null)
 			{
-				_board.sid.Dispose();
+				_board.Sid.Dispose();
 			}
 		}
 
@@ -138,9 +139,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void DoCycle()
 		{
 			if (_frameCycles == 0) {
-				_board.inputRead = false;
+				_board.InputRead = false;
 				_board.PollInput();
-				_board.cpu.LagCycles = 0;
+				_board.Cpu.LagCycles = 0;
 			}
 
 			//disk.Execute();
@@ -151,9 +152,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_loadPrg)
 			{
 				// check to see if cpu PC is at the BASIC warm start vector
-				if (_board.cpu.PC == ((_board.ram.Peek(0x0303) << 8) | _board.ram.Peek(0x0302)))
+				if (_board.Cpu.PC == ((_board.Ram.Peek(0x0303) << 8) | _board.Ram.Peek(0x0302)))
 				{
-					PRG.Load(_board.pla, _inputFileInfo.Data);
+					Prg.Load(_board.Pla, _inputFileInfo.Data);
 					_loadPrg = false;
 				}
 			}
@@ -164,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		    }
 
 		    _board.Flush();
-		    _islag = !_board.inputRead;
+		    _islag = !_board.InputRead;
 
 		    if (_islag)
 		        _lagcount++;
@@ -199,8 +200,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			InitMedia();
 
 			// configure video
-			CoreComm.VsyncDen = _board.vic.CyclesPerFrame;
-			CoreComm.VsyncNum = _board.vic.CyclesPerSecond;
+			CoreComm.VsyncDen = _board.Vic.CyclesPerFrame;
+			CoreComm.VsyncNum = _board.Vic.CyclesPerSecond;
 		}
 
 		private void InitMedia()
@@ -208,17 +209,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			switch (_inputFileInfo.Extension.ToUpper())
 			{
 				case @".CRT":
-					var cart = Cart.Load(_inputFileInfo.Data);
+					var cart = CartridgeDevice.Load(_inputFileInfo.Data);
 					if (cart != null)
 					{
-						_board.cartPort.Connect(cart);
+						_board.CartPort.Connect(cart);
 					}
 					break;
 				case @".TAP":
 					var tape = Tape.Load(_inputFileInfo.Data);
 					if (tape != null)
 					{
-						_board.cassPort.Connect(tape);
+					    var tapeDrive = new TapeDrive();
+					    tapeDrive.Insert(tape);
+                        _board.Cassette.Connect(tapeDrive);
 					}
 					break;
 				case @".PRG":
@@ -234,9 +237,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			var charRom = GetFirmware("Chargen", 0x1000);
 			var kernalRom = GetFirmware("Kernal", 0x2000);
 
-			_board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
-			_board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
-			_board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
+			_board.BasicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
+			_board.KernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
+			_board.CharRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
 		}
 
 		// ------------------------------------
