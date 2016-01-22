@@ -5,19 +5,19 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic : IVideoProvider
+	public sealed partial class Vic : IVideoProvider
 	{
-		private int[] buf;
-		private int bufHeight;
-		private int bufLength;
-		private int bufOffset;
-		private int bufWidth;
-		private int pixBufferSize = 12;
-		private int[] pixBuffer;
-		private int pixBufferIndex;
+		private readonly int[] _buf;
+		private readonly int _bufHeight;
+		private readonly int _bufLength;
+		private int _bufOffset;
+		private readonly int _bufWidth;
+	    private const int PixBufferSize = 12;
+	    private int[] _pixBuffer;
+		private int _pixBufferIndex;
 
 		// palette
-		private int[] palette =
+		private readonly int[] _palette =
 		{
 				Colors.ARGB(0x00, 0x00, 0x00),
 				Colors.ARGB(0xFF, 0xFF, 0xFF),
@@ -44,27 +44,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int BufferHeight
 		{
-			get { return bufHeight; }
+			get { return _bufHeight; }
 		}
 
 		public int BufferWidth
 		{
-			get { return bufWidth; }
+			get { return _bufWidth; }
 		}
 
 		public int[] GetVideoBuffer()
 		{
-			return buf;
+			return _buf;
 		}
 
 		public int VirtualWidth
 		{
-			get { return bufWidth; }
+			get { return _bufWidth; }
 		}
 
 		public int VirtualHeight
 		{
-			get { return bufHeight; }
+			get { return _bufHeight; }
 		}
 	}
 }

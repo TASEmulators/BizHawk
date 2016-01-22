@@ -10,11 +10,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	internal static class SaveState
 	{
-		private static readonly Encoding encoding = Encoding.Unicode;
+		private static readonly Encoding Encoding = Encoding.Unicode;
 
 		public static void SyncObject(Serializer ser, object obj)
 		{
-			var defaultFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+			const BindingFlags defaultFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 			var members = obj.GetType().GetMembers(defaultFlags);
 
 		    foreach (var member in members)
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				PropertyInfo propInfo = null;
 				Type valueType = null;
 
-				if (member.MemberType == MemberTypes.Field)
+				if (member.MemberType == MemberTypes.Field && member.ReflectedType != null)
 				{
 					fieldInfo = member.ReflectedType.GetField(member.Name, defaultFlags);
 					valueType = fieldInfo.FieldType;
@@ -134,9 +134,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			            case "String":
 			            {
 			                var refString = (string)currentValue;
-			                var refVal = new ByteBuffer(encoding.GetBytes(refString));
+			                var refVal = new ByteBuffer(Encoding.GetBytes(refString));
 			                ser.Sync(member.Name, ref refVal);
-			                currentValue = encoding.GetString(refVal.Arr);
+			                currentValue = Encoding.GetString(refVal.Arr);
 			            }
 			                break;
 			            case "UInt16":

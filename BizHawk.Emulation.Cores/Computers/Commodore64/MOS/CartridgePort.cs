@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {

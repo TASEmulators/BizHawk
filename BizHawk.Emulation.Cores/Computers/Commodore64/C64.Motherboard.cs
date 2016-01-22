@@ -49,18 +49,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			int clockNum, clockDen, mainsFrq;
 			switch (initRegion)
 			{
-				case C64.VicType.PAL:
+				case C64.VicType.Pal:
 					clockNum = 17734475;
 					clockDen = 18;
 					mainsFrq = 50;
 					break;
-				case C64.VicType.NTSC:
-				case C64.VicType.NTSC_OLD:
+				case C64.VicType.Ntsc:
+				case C64.VicType.NtscOld:
 					clockNum = 11250000;
 					clockDen = 11;
 					mainsFrq = 60;
 					break;
-				case C64.VicType.DREAN:
+				case C64.VicType.Drean:
 					clockNum = 14328225;
 					clockDen = 14;
 					mainsFrq = 50;
@@ -80,10 +80,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			sid = MOS6581.Create(44100, clockNum, clockDen);
 			switch (initRegion)
 			{
-				case C64.VicType.NTSC: vic = MOS6567R8.Create(); break;
-				case C64.VicType.PAL: vic = MOS6569.Create(); break;
-				case C64.VicType.NTSC_OLD: vic = MOS6567R56A.Create(); break;
-				case C64.VicType.DREAN: vic = MOS6572.Create(); break;
+				case C64.VicType.Ntsc: vic = MOS6567R8.Create(); break;
+				case C64.VicType.Pal: vic = MOS6569.Create(); break;
+				case C64.VicType.NtscOld: vic = MOS6567R56A.Create(); break;
+				case C64.VicType.Drean: vic = MOS6572.Create(); break;
 			}
 			userPort = new UserPortDevice();
 		}
@@ -153,11 +153,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			cpu.PeekMemory = pla.Peek;
 			cpu.PokeMemory = pla.Poke;
-			cpu.ReadAEC = vic.ReadAECBuffer;
+			cpu.ReadAEC = vic.ReadAecBuffer;
 			cpu.ReadIRQ = Glue_ReadIRQ;
 			cpu.ReadNMI = cia1.ReadIRQBuffer;
 			cpu.ReadPort = Cpu_ReadPort;
-			cpu.ReadRDY = vic.ReadBABuffer;
+			cpu.ReadRDY = vic.ReadBaBuffer;
 			cpu.ReadMemory = pla.Read;
 			cpu.WriteMemory = pla.Write;
 			cpu.WriteMemoryPort = Cpu_WriteMemoryPort;
@@ -185,8 +185,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			pla.PokeMemory = ram.Poke;
 			pla.PokeSid = sid.Poke;
 			pla.PokeVic = vic.Poke;
-			pla.ReadAEC = vic.ReadAECBuffer;
-			pla.ReadBA = vic.ReadBABuffer;
+			pla.ReadAEC = vic.ReadAecBuffer;
+			pla.ReadBA = vic.ReadBaBuffer;
 			pla.ReadBasicRom = basicRom.Read;
 			pla.ReadCartridgeHi = cartPort.ReadHiRom;
 			pla.ReadCartridgeLo = cartPort.ReadLoRom;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 {
@@ -11,21 +12,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 	{
 		public Func<bool> ReadDataOutput;
 		public Func<bool> ReadMotor;
-		Commodore64.CassettePort.Tape tape;
+	    private Tape _tape;
 
 		public void HardReset()
 		{
-			if (tape != null) tape.Rewind();
+			if (_tape != null) _tape.Rewind();
 		}
 
 		public virtual bool ReadDataInputBuffer()
 		{
-			return tape == null || ReadMotor() || tape.Read();
+			return _tape == null || ReadMotor() || _tape.Read();
 		}
 
 		public virtual bool ReadSenseBuffer()
 		{
-			return tape == null; // Just assume that "play" is constantly pressed as long as a tape is inserted
+			return _tape == null; // Just assume that "play" is constantly pressed as long as a tape is inserted
 		}
 
 		public void SyncState(Serializer ser)
@@ -35,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
 
 		internal void Connect(Tape tape)
 		{
-			this.tape = tape;
+			_tape = tape;
 		}
 	}
 }
