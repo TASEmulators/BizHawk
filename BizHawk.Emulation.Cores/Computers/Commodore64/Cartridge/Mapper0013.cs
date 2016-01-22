@@ -12,9 +12,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
     // Bank select is DE00, bit 7 enabled means to disable
     // ROM in 8000-9FFF.
 
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
-        private sealed class Mapper0013 : Cart
+        private sealed class Mapper0013 : CartridgeDevice
         {
             private readonly int[][] _banks; //8000
             private readonly int _bankMask;

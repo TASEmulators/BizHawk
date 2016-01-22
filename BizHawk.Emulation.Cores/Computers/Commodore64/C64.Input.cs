@@ -37,7 +37,7 @@
 			{
 				for (var i = 0; i < 2; i++)
 				{
-					joystickPressed[pollIndex++] = controller[joystickMatrix[i, j]] ? -1 : 0;
+					joystickPressed[pollIndex++] = Controller[joystickMatrix[i, j]] ? -1 : 0;
 				}
 			}
 
@@ -47,15 +47,15 @@
 			{
 				for (var j = 0; j < 8; j++)
 				{
-					keyboardPressed[pollIndex++] = controller[keyboardMatrix[i, j]] ? -1 : 0;
+					keyboardPressed[pollIndex++] = Controller[keyboardMatrix[i, j]] ? -1 : 0;
 				}
 			}
 		}
 
 		private void WriteInputPort()
 		{
-			var portA = cia0.PortAData;
-			var portB = cia0.PortBData;
+			var portA = Cia0.PortAData;
+			var portB = Cia0.PortBData;
 			var resultA = 0xFF;
 			var resultB = 0xFF;
 			var joyA = 0xFF;
@@ -91,7 +91,7 @@
 			cia0InputLatchB = resultB;
 
 			// this joystick has special rules.
-			cia0.PortAMask = joyA;
+			Cia0.PortAMask = joyA;
 		}
 	}
 }

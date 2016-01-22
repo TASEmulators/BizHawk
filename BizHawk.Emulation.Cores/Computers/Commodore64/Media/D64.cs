@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 			for (var i = 0; i < trackCount; i++)
 			{
-				var track = new Track();
+				var track = new Disk.Track();
 				var sectors = sectorsPerTrack[i];
 				var trackMem = new MemoryStream();
 
@@ -220,21 +220,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					var diskData = ConvertSectorToGCR(sectorData, (byte)j, (byte)i, 0x00, 0x00, out bitsWritten);
 					trackMem.Write(diskData, 0, diskData.Length);
 				}
-				track.density = densityTable[i];
+				track.Density = densityTable[i];
 
 				// we pad the tracks with extra gap bytes to meet MNIB standards
-				while (trackMem.Length < standardTrackLengthBytes[track.density])
+				while (trackMem.Length < standardTrackLengthBytes[track.Density])
 				{
 					trackMem.WriteByte(0x55);
 				}
-				track.data = trackMem.ToArray();
-				track.bits = (int)trackMem.Length;
-				track.index = i;
-				result.tracks.Add(track);
+				track.Data = trackMem.ToArray();
+				track.Bits = (int)trackMem.Length;
+				track.Index = i;
+				result.Tracks.Add(track);
 				trackMem.Dispose();
 			}
 
-			result.valid = (result.tracks.Count > 0);
+			result.Valid = (result.Tracks.Count > 0);
 			return result;
 		}
 

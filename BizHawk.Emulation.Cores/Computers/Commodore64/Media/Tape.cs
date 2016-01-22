@@ -9,49 +9,49 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		*/
 	public class Tape
 	{
-		private readonly byte[] tapeData;
-		private readonly byte version;
-		private int pos, cycle;
-		private readonly int start, end;
+		private readonly byte[] _tapeData;
+		private readonly byte _version;
+		private int _pos, _cycle;
+		private readonly int _start, _end;
 
 		public Tape(byte version, byte[] tapeData, int start, int end)
 		{
-			this.version = version;
-			this.tapeData = tapeData;
-			this.start = start;
-			this.end = end;
+			_version = version;
+			_tapeData = tapeData;
+			_start = start;
+			_end = end;
 			Rewind();
 		}
 
 		// Rewinds the tape back to start
 		public void Rewind()
 		{
-			pos = start;
-			cycle = 0;
+			_pos = _start;
+			_cycle = 0;
 		}
 
 		// Reads from tape, this will tell the caller if the flag pin should be raised
 		public bool Read()
 		{
-			if (cycle == 0)
+			if (_cycle == 0)
 			{
-				if (pos >= end)
+				if (_pos >= _end)
 				{
 					return true;
 				}
 
-			    cycle = tapeData[pos++]*8;
-			    if (cycle == 0)
+			    _cycle = _tapeData[_pos++]*8;
+			    if (_cycle == 0)
 			    {
-			        if (version == 0)
+			        if (_version == 0)
 			        {
-			            cycle = 256 * 8; // unspecified overflow condition
+			            _cycle = 256 * 8; // unspecified overflow condition
 			        }
 			        else
 			        {
-			            cycle = BitConverter.ToInt32(tapeData, pos-1)>>8;
-			            pos += 3;
-			            if (cycle == 0)
+			            _cycle = BitConverter.ToInt32(_tapeData, _pos-1)>>8;
+			            _pos += 3;
+			            if (_cycle == 0)
 			            {
 			                throw new Exception("Bad tape data");
 			            }
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			}
 
 			// Send a single negative pulse at the end of a cycle
-			return --cycle != 0;
+			return --_cycle != 0;
 		}
 
 		// Try to construct a tape file from file data. Returns null if not a tape file, throws exceptions for bad tape files.
@@ -86,8 +86,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("tape");
-			ser.Sync("pos", ref pos);
-			ser.Sync("cycle", ref cycle);
+			ser.Sync("pos", ref _pos);
+			ser.Sync("cycle", ref _cycle);
 			ser.EndSection();
 		}
 	}

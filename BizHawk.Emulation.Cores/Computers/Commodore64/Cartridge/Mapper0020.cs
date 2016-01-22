@@ -20,9 +20,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
     // We emulate having the AM29F040 chip.
 
-    public abstract partial class Cart
+    public abstract partial class CartridgeDevice
     {
-        private sealed class Mapper0020 : Cart
+        private sealed class Mapper0020 : CartridgeDevice
         {
             private readonly int[][] _banksA = new int[64][]; //8000
             private readonly int[][] _banksB = new int[64][]; //A000

@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public Func<bool> ReadCNT;
+		public Func<bool> ReadCnt;
 		public Func<bool> ReadFlag;
-		public Func<bool> ReadSP;
+		public Func<bool> ReadSp;
 
 		// ------------------------------------
 
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void ExecutePhase2()
 		{
 			{
-				var sumCnt = ReadCNT();
+				var sumCnt = ReadCnt();
 				cntPos |= !pinCntLast && sumCnt;
 				pinCntLast = sumCnt;
 
@@ -397,12 +397,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			return val;
 		}
 
-		public bool ReadCNTBuffer()
+		public bool ReadCntBuffer()
 		{
 			return pinCnt;
 		}
 
-		public bool ReadPCBuffer()
+		public bool ReadPcBuffer()
 		{
 			return pinPC;
 		}
@@ -508,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			return val;
 		}
 
-		public bool ReadSPBuffer()
+		public bool ReadSpBuffer()
 		{
 			return pinSP;
 		}
@@ -754,6 +754,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public bool ReadIRQBuffer() { return pinIRQ; }
+		public bool ReadIrq() { return pinIRQ; }
 	}
 }
