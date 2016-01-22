@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    private bool Glue_ReadIRQ()
 		{
-			return cia0.ReadIRQBuffer() & vic.ReadIRQBuffer() & cartPort.ReadIRQBuffer();
+			return cia0.ReadIRQBuffer() & vic.ReadIrqBuffer() & cartPort.ReadIRQBuffer();
 		}
 
 	    private bool Pla_ReadCharen()

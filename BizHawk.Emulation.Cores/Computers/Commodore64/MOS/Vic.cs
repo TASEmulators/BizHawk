@@ -8,49 +8,55 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<int, int> ReadColorRam;
 		public Func<int, int> ReadMemory;
 
-		public bool ReadAECBuffer() { return pinAEC; }
-		public bool ReadBABuffer() { return pinBA; }
-		public bool ReadIRQBuffer() { return pinIRQ; }
+		public bool ReadAecBuffer() { return _pinAec; }
+		public bool ReadBaBuffer() { return _pinBa; }
+		public bool ReadIrqBuffer() { return _pinIrq; }
 
-		private readonly int cyclesPerSec;
-		private int irqShift;
-		private readonly int[][] pipeline;
-		private readonly int totalCycles;
-		private readonly int totalLines;
+		private readonly int _cyclesPerSec;
+		private int _irqShift;
+		private readonly int[][] _pipeline;
+		private readonly int _totalCycles;
+		private readonly int _totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
-			{
-				this.hblankStart = hblankStart;
-				this.hblankEnd = hblankEnd;
-				this.vblankStart = vblankStart;
-				this.vblankEnd = vblankEnd;
+            _hblankStart = hblankStart;
+            _hblankEnd = hblankEnd;
+            _vblankStart = vblankStart;
+            _vblankEnd = vblankEnd;
 
-				totalCycles = newCycles;
-				totalLines = newLines;
-				pipeline = newPipeline;
-				cyclesPerSec = newCyclesPerSec;
+            _totalCycles = newCycles;
+            _totalLines = newLines;
+            _pipeline = newPipeline;
+            _cyclesPerSec = newCyclesPerSec;
 
-				bufWidth = TimingBuilder_ScreenWidth(pipeline[0], hblankStart, hblankEnd);
-				bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
+            _bufWidth = TimingBuilder_ScreenWidth(_pipeline[0], hblankStart, hblankEnd);
+            _bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
 
-				buf = new int[bufWidth * bufHeight];
-				bufLength = buf.Length;
+            _buf = new int[_bufWidth * _bufHeight];
+            _bufLength = _buf.Length;
 
-				sprites = new Sprite[8];
-				for (int i = 0; i < 8; i++)
-					sprites[i] = new Sprite();
+            _sprites = new Sprite[8];
+            for (var i = 0; i < 8; i++)
+                _sprites[i] = new Sprite();
+		    _sprite0 = _sprites[0];
+            _sprite1 = _sprites[1];
+            _sprite2 = _sprites[2];
+            _sprite3 = _sprites[3];
+            _sprite4 = _sprites[4];
+            _sprite5 = _sprites[5];
+            _sprite6 = _sprites[6];
+            _sprite7 = _sprites[7];
 
-				bufferC = new int[40];
-				bufferG = new int[40];
-			}
-		}
+            _bufferC = new int[40];
+            _bufferG = new int[40];
+        }
 
-		public int CyclesPerFrame
+        public int CyclesPerFrame
 		{
 			get
 			{
-				return (totalCycles * totalLines);
+				return _totalCycles * _totalLines;
 			}
 		}
 
@@ -58,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return cyclesPerSec;
+				return _cyclesPerSec;
 			}
 		}
 
@@ -66,42 +72,42 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			{
 				// raster IRQ compare
-				if ((cycle == rasterIrqLineXCycle && rasterLine > 0) || (cycle == rasterIrqLine0Cycle && rasterLine == 0))
+				if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
 				{
-					if (rasterLine != lastRasterLine)
-						if (rasterLine == rasterInterruptLine)
-							intRaster = true;
-					lastRasterLine = rasterLine;
+					if (_rasterLine != _lastRasterLine)
+						if (_rasterLine == _rasterInterruptLine)
+							_intRaster = true;
+					_lastRasterLine = _rasterLine;
 				}
 
 				// display enable compare
-				if (rasterLine == 0)
-					badlineEnable = false;
+				if (_rasterLine == 0)
+					_badlineEnable = false;
 
-				if (rasterLine == 0x030)
-					badlineEnable |= displayEnable;
+				if (_rasterLine == 0x030)
+					_badlineEnable |= _displayEnable;
 
 				// badline compare
-				if (badlineEnable && rasterLine >= 0x030 && rasterLine < 0x0F7 && ((rasterLine & 0x7) == yScroll))
+				if (_badlineEnable && _rasterLine >= 0x030 && _rasterLine < 0x0F7 && ((_rasterLine & 0x7) == _yScroll))
 				{
-					badline = true;
+					_badline = true;
 				}
 				else
 				{
-					badline = false;
+					_badline = false;
 				}
 
 				// go into display state on a badline
-				if (badline)
-					idle = false;
+				if (_badline)
+					_idle = false;
 
 				ParseCycle();
 
 				Render();
 
 				// if the BA counter is nonzero, allow CPU bus access
-				UpdateBA();
-				pinAEC = false;
+				UpdateBa();
+				_pinAec = false;
 
 				// must always come last
 				//UpdatePins();
@@ -115,98 +121,96 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				ParseCycle();
 
 				// advance cycle and optionally raster line
-				cycle++;
-				if (cycle == totalCycles)
+				_cycle++;
+				if (_cycle == _totalCycles)
 				{
-					if (rasterLine == borderB)
-						borderOnVertical = true;
-					if (rasterLine == borderT && displayEnable)
-						borderOnVertical = false;
+					if (_rasterLine == _borderB)
+						_borderOnVertical = true;
+					if (_rasterLine == _borderT && _displayEnable)
+						_borderOnVertical = false;
 
-					if (rasterLine == vblankStart)
-						vblank = true;
-					if (rasterLine == vblankEnd)
-						vblank = false;
+					if (_rasterLine == _vblankStart)
+						_vblank = true;
+					if (_rasterLine == _vblankEnd)
+						_vblank = false;
 
-					cycleIndex = 0;
-					cycle = 0;
-					rasterLine++;
-					if (rasterLine == totalLines)
+					_cycleIndex = 0;
+					_cycle = 0;
+					_rasterLine++;
+					if (_rasterLine == _totalLines)
 					{
-						rasterLine = 0;
-						vcbase = 0;
-						vc = 0;
+						_rasterLine = 0;
+						_vcbase = 0;
+						_vc = 0;
 					}
 				}
 
 				Render();
-				UpdateBA();
-				pinAEC = (baCount > 0);
+				UpdateBa();
+				_pinAec = _baCount > 0;
 
 				// must always come last
 				UpdatePins();
 			}
 		}
 
-		private void UpdateBA()
+		private void UpdateBa()
 		{
-			if (pinBA)
-				baCount = baResetCounter;
-			else if (baCount > 0)
-				baCount--;
+			if (_pinBa)
+				_baCount = BaResetCounter;
+			else if (_baCount > 0)
+				_baCount--;
 		}
 
 		private void UpdateBorder()
 		{
-			borderL = columnSelect ? 0x018 : 0x01F;
-			borderR = columnSelect ? 0x158 : 0x14F;
-			//borderL = columnSelect ? 28 : 35;
-			//borderR = columnSelect ? 348 : 339;
-			borderT = rowSelect ? 0x033 : 0x037;
-			borderB = rowSelect ? 0x0FB : 0x0F7;
+			_borderL = _columnSelect ? 0x018 : 0x01F;
+			_borderR = _columnSelect ? 0x158 : 0x14F;
+			_borderT = _rowSelect ? 0x033 : 0x037;
+			_borderB = _rowSelect ? 0x0FB : 0x0F7;
 		}
 
 		private void UpdatePins()
 		{
-			bool irqTemp = !(
-				(enableIntRaster & intRaster) |
-				(enableIntSpriteDataCollision & intSpriteDataCollision) |
-				(enableIntSpriteCollision & intSpriteCollision) |
-				(enableIntLightPen & intLightPen));
+			var irqTemp = !(
+				(_enableIntRaster & _intRaster) |
+				(_enableIntSpriteDataCollision & _intSpriteDataCollision) |
+				(_enableIntSpriteCollision & _intSpriteCollision) |
+				(_enableIntLightPen & _intLightPen));
 
-			irqShift <<= 1;
-			irqShift |= (irqTemp ? 0x1 : 0x0);
-			pinIRQ = (irqShift & 0x1) != 0;
+			_irqShift <<= 1;
+			_irqShift |= irqTemp ? 0x1 : 0x0;
+			_pinIrq = (_irqShift & 0x1) != 0;
 		}
 
 		private void UpdateVideoMode()
 		{
-			if (!extraColorMode && !bitmapMode && !multicolorMode)
+			if (!_extraColorMode && !_bitmapMode && !_multicolorMode)
 			{
-				videoMode = 0;
+				_videoMode = 0;
 				return;
 			}
-			else if (!extraColorMode && !bitmapMode && multicolorMode)
-			{
-				videoMode = 1;
-				return;
-			}
-			else if (!extraColorMode && bitmapMode && !multicolorMode)
-			{
-				videoMode = 2;
-				return;
-			}
-			else if (!extraColorMode && bitmapMode && multicolorMode)
-			{
-				videoMode = 3;
-				return;
-			}
-			else if (extraColorMode && !bitmapMode && !multicolorMode)
-			{
-				videoMode = 4;
-				return;
-			}
-			videoMode = -1;
+		    if (!_extraColorMode && !_bitmapMode && _multicolorMode)
+		    {
+		        _videoMode = 1;
+		        return;
+		    }
+		    if (!_extraColorMode && _bitmapMode && !_multicolorMode)
+		    {
+		        _videoMode = 2;
+		        return;
+		    }
+		    if (!_extraColorMode && _bitmapMode && _multicolorMode)
+		    {
+		        _videoMode = 3;
+		        return;
+		    }
+		    if (_extraColorMode && !_bitmapMode && !_multicolorMode)
+		    {
+		        _videoMode = 4;
+		        return;
+		    }
+		    _videoMode = -1;
 		}
 	}
 }

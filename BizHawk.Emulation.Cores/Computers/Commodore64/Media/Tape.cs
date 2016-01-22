@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.IO;
-
 using BizHawk.Common;
 
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.CassettePort
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	/**
 		* This class represents a tape. Only TAP-style tapes are supported for now.

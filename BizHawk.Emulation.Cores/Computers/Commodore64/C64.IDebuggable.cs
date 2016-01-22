@@ -11,19 +11,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", board.cpu.A },
-				{ "X", board.cpu.X },
-				{ "Y", board.cpu.Y },
-				{ "S", board.cpu.S },
-				{ "PC", board.cpu.PC },
-				{ "Flag C", board.cpu.FlagC },
-				{ "Flag Z", board.cpu.FlagZ },
-				{ "Flag I", board.cpu.FlagI },
-				{ "Flag D", board.cpu.FlagD },
-				{ "Flag B", board.cpu.FlagB },
-				{ "Flag V", board.cpu.FlagV },
-				{ "Flag N", board.cpu.FlagN },
-				{ "Flag T", board.cpu.FlagT }
+				{ "A", _board.cpu.A },
+				{ "X", _board.cpu.X },
+				{ "Y", _board.cpu.Y },
+				{ "S", _board.cpu.S },
+				{ "PC", _board.cpu.PC },
+				{ "Flag C", _board.cpu.FlagC },
+				{ "Flag Z", _board.cpu.FlagZ },
+				{ "Flag I", _board.cpu.FlagI },
+				{ "Flag D", _board.cpu.FlagD },
+				{ "Flag B", _board.cpu.FlagB },
+				{ "Flag V", _board.cpu.FlagV },
+				{ "Flag N", _board.cpu.FlagN },
+				{ "Flag T", _board.cpu.FlagT }
 			};
 		}
 
@@ -34,19 +34,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					board.cpu.A = (byte)value;
+					_board.cpu.A = (byte)value;
 					break;
 				case "X":
-					board.cpu.X = (byte)value;
+					_board.cpu.X = (byte)value;
 					break;
 				case "Y":
-					board.cpu.Y = (byte)value;
+					_board.cpu.Y = (byte)value;
 					break;
 				case "S":
-					board.cpu.S = (byte)value;
+					_board.cpu.S = (byte)value;
 					break;
 				case "PC":
-					board.cpu.PC = (ushort)value;
+					_board.cpu.PC = (ushort)value;
 					break;
 			}
 		}
@@ -83,11 +83,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void StepInto()
 		{
-			while (board.cpu.AtInstructionStart())
+			while (_board.cpu.AtInstructionStart())
 			{
 				DoCycle();
 			}
-			while (!board.cpu.AtInstructionStart())
+			while (!_board.cpu.AtInstructionStart())
 			{
 				DoCycle();
 			}
@@ -95,12 +95,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void StepOver()
 		{
-			var instruction = board.cpu.Peek(board.cpu.PC);
+			var instruction = _board.cpu.Peek(_board.cpu.PC);
 
 			if (instruction == JSR)
 			{
-				var destination = board.cpu.PC + JSRSize;
-				while (board.cpu.PC != destination)
+				var destination = _board.cpu.PC + JSRSize;
+				while (_board.cpu.PC != destination)
 				{
 					StepInto();
 				}
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void StepOut()
 		{
-			var instr = board.cpu.Peek(board.cpu.PC);
+			var instr = _board.cpu.Peek(_board.cpu.PC);
 
 			JSRCount = instr == JSR ? 1 : 0;
 
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			while (true)
 			{
 				StepInto();
-				instr = board.cpu.Peek(board.cpu.PC);
+				instr = _board.cpu.Peek(_board.cpu.PC);
 				if (instr == JSR)
 				{
 					JSRCount++;

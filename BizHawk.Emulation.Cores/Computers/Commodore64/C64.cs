@@ -5,6 +5,7 @@ using System.IO;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
 using System.Windows.Forms;
+using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
@@ -16,40 +17,55 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
-	sealed public partial class C64 : IEmulator, IRegionable
+	public sealed partial class C64 : IEmulator, IRegionable
 	{
 		// framework
-		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension, object Settings, object SyncSettings)
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension, object settings, object syncSettings)
 		{
-			PutSyncSettings((C64SyncSettings)SyncSettings ?? new C64SyncSettings());
-			PutSettings((C64Settings)Settings ?? new C64Settings());
+			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
+			PutSettings((C64Settings)settings ?? new C64Settings());
 
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 
-			inputFileInfo = new InputFileInfo();
-			inputFileInfo.Data = rom;
-			inputFileInfo.Extension = romextension;
-			CoreComm = comm;
-			Init(this.SyncSettings.vicType);
-			cyclesPerFrame = board.vic.CyclesPerFrame;
+		    _inputFileInfo = new InputFileInfo
+		    {
+		        Data = rom,
+		        Extension = romextension
+		    };
+
+		    CoreComm = comm;
+			Init(SyncSettings.VicType);
+			_cyclesPerFrame = _board.vic.CyclesPerFrame;
 			SetupMemoryDomains();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			HardReset();
 
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(board.vic);
+		    switch (SyncSettings.VicType)
+		    {
+		        case VicType.Ntsc:
+                case VicType.Drean:
+                case VicType.NtscOld:
+                    Region = DisplayType.NTSC;
+		            break;
+                case VicType.Pal:
+                    Region = DisplayType.PAL;
+		            break;
+		    }
+
+			((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.vic);
 		}
 
 		// internal variables
-		private int _frame = 0;
-		private readonly int cyclesPerFrame;
-		private InputFileInfo inputFileInfo;
+		private int _frame;
+		private readonly int _cyclesPerFrame;
+		private InputFileInfo _inputFileInfo;
 
 		// bizhawk I/O
 		public CoreComm CoreComm { get; private set; }
 
 		// game/rom specific
-		public GameInfo game;
+		public GameInfo Game;
 		public string SystemId { get { return "C64"; } }
 
 		public string BoardName { get { return null; } }
@@ -62,19 +78,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_frame = 0;
 			_lagcount = 0;
 			_islag = false;
-			frameCycles = 0;
+			_frameCycles = 0;
 		}
 
 		// audio/video
 		public void EndAsyncSound() { } //TODO
 		public ISoundProvider SoundProvider { get { return null; } }
 		public bool StartAsyncSound() { return false; } //TODO
-		public ISyncSoundProvider SyncSoundProvider { get { return board.sid.resampler; } }
+		public ISyncSoundProvider SyncSoundProvider { get { return _board.sid.Resampler; } }
 
 		// controller
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		public IController Controller { get { return board.controller; } set { board.controller = value; } }
-		public static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
+		public IController Controller { get { return _board.controller; } set { _board.controller = value; } }
+
+	    private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller",
 			BoolButtons =
@@ -100,13 +117,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Dispose()
 		{
-			if (board.sid != null)
+			if (_board.sid != null)
 			{
-				board.sid.Dispose();
+				_board.sid.Dispose();
 			}
 		}
 
-	    private int frameCycles;
+	    private int _frameCycles;
 
 		// process frame
 		public void FrameAdvance(bool render, bool rendersound)
@@ -115,43 +132,43 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				DoCycle();
 			}
-			while (frameCycles != 0);
+			while (_frameCycles != 0);
 		}
 
 		private void DoCycle()
 		{
-			if (frameCycles == 0) {
-				board.inputRead = false;
-				board.PollInput();
-				board.cpu.LagCycles = 0;
+			if (_frameCycles == 0) {
+				_board.inputRead = false;
+				_board.PollInput();
+				_board.cpu.LagCycles = 0;
 			}
 
 			//disk.Execute();
-			board.Execute();
-			frameCycles++;
+			_board.Execute();
+			_frameCycles++;
 
 			// load PRG file if needed
-			if (loadPrg)
+			if (_loadPrg)
 			{
 				// check to see if cpu PC is at the BASIC warm start vector
-				if (board.cpu.PC == ((board.ram.Peek(0x0303) << 8) | board.ram.Peek(0x0302)))
+				if (_board.cpu.PC == ((_board.ram.Peek(0x0303) << 8) | _board.ram.Peek(0x0302)))
 				{
-					PRG.Load(board.pla, inputFileInfo.Data);
-					loadPrg = false;
+					PRG.Load(_board.pla, _inputFileInfo.Data);
+					_loadPrg = false;
 				}
 			}
 
-		    if (frameCycles != cyclesPerFrame)
+		    if (_frameCycles != _cyclesPerFrame)
 		    {
 		        return;
 		    }
 
-		    board.Flush();
-		    _islag = !board.inputRead;
+		    _board.Flush();
+		    _islag = !_board.inputRead;
 
 		    if (_islag)
 		        _lagcount++;
-		    frameCycles -= cyclesPerFrame;
+		    _frameCycles -= _cyclesPerFrame;
 		    _frame++;
 
 		    DriveLightOn = DriveLED;
@@ -163,12 +180,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			throw new FileNotFoundException();
 		}
 
-		private Motherboard board;
-		private bool loadPrg;
+		private Motherboard _board;
+		private bool _loadPrg;
 
 		private byte[] GetFirmware(string name, int length)
 		{
-			byte[] result = CoreComm.CoreFileProvider.GetFirmware("C64", name, true);
+			var result = CoreComm.CoreFileProvider.GetFirmware("C64", name, true);
 			if (result.Length != length)
 				throw new MissingFirmwareException(string.Format("Firmware {0} was {1} bytes, should be {2} bytes", name, result.Length, length));
 			return result;
@@ -176,57 +193,57 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void Init(VicType initRegion)
 		{
-			board = new Motherboard(this, initRegion);
+			_board = new Motherboard(this, initRegion);
 			InitRoms();
-			board.Init();
+			_board.Init();
 			InitMedia();
 
 			// configure video
-			CoreComm.VsyncDen = board.vic.CyclesPerFrame;
-			CoreComm.VsyncNum = board.vic.CyclesPerSecond;
+			CoreComm.VsyncDen = _board.vic.CyclesPerFrame;
+			CoreComm.VsyncNum = _board.vic.CyclesPerSecond;
 		}
 
 		private void InitMedia()
 		{
-			switch (inputFileInfo.Extension.ToUpper())
+			switch (_inputFileInfo.Extension.ToUpper())
 			{
 				case @".CRT":
-					var cart = Cart.Load(inputFileInfo.Data);
+					var cart = Cart.Load(_inputFileInfo.Data);
 					if (cart != null)
 					{
-						board.cartPort.Connect(cart);
+						_board.cartPort.Connect(cart);
 					}
 					break;
 				case @".TAP":
-					var tape = CassettePort.Tape.Load(inputFileInfo.Data);
+					var tape = Tape.Load(_inputFileInfo.Data);
 					if (tape != null)
 					{
-						board.cassPort.Connect(tape);
+						_board.cassPort.Connect(tape);
 					}
 					break;
 				case @".PRG":
-					if (inputFileInfo.Data.Length > 2)
-						loadPrg = true;
+					if (_inputFileInfo.Data.Length > 2)
+						_loadPrg = true;
 					break;
 			}
 		}
 
 		private void InitRoms()
 		{
-			byte[] basicRom = GetFirmware("Basic", 0x2000);
-			byte[] charRom = GetFirmware("Chargen", 0x1000);
-			byte[] kernalRom = GetFirmware("Kernal", 0x2000);
+			var basicRom = GetFirmware("Basic", 0x2000);
+			var charRom = GetFirmware("Chargen", 0x1000);
+			var kernalRom = GetFirmware("Kernal", 0x2000);
 
-			board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
-			board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
-			board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
+			_board.basicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
+			_board.kernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
+			_board.charRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
 		}
 
 		// ------------------------------------
 
 		public void HardReset()
 		{
-			board.HardReset();
+			_board.HardReset();
 			//disk.HardReset();
 		}
 	}

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Linq;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	// this is the base cartridge class
 
-	public abstract class Cart
+	public abstract partial class Cart
 	{
 		// ---------------------------------
 
@@ -24,14 +24,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		    var chipAddress = new List<int>();
 		    var chipBank = new List<int>();
-		    var chipData = new List<byte[]>();
+		    var chipData = new List<int[]>();
 		    var chipType = new List<int>();
 
 		    var headerLength = ReadCRTInt(reader);
 		    var version = ReadCRTShort(reader);
 		    var mapper = ReadCRTShort(reader);
-		    var exrom = (reader.ReadByte() != 0);
-		    var game = (reader.ReadByte() != 0);
+		    var exrom = reader.ReadByte() != 0;
+		    var game = reader.ReadByte() != 0;
 
 		    // reserved
 		    reader.ReadBytes(6);
@@ -58,8 +58,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		        chipBank.Add(ReadCRTShort(reader));
 		        chipAddress.Add(ReadCRTShort(reader));
 		        var chipDataLength = ReadCRTShort(reader);
-		        chipData.Add(reader.ReadBytes(chipDataLength));
-		        chipLength -= (chipDataLength + 0x10);
+		        chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
+		        chipLength -= chipDataLength + 0x10;
 		        if (chipLength > 0)
 		            reader.ReadBytes(chipLength);
 		    }

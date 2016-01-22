@@ -3,10 +3,6 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-#pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
-#pragma warning disable 169 //adelikat: Disable dumb warnings until this file is complete
-#pragma warning disable 219 //adelikat: Disable dumb warnings until this file is complete
-
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Sid
@@ -14,61 +10,72 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public SpeexResampler resampler;
+		public SpeexResampler Resampler;
 
-		static readonly int[] syncNextTable = { 1, 2, 0 };
-		static readonly int[] syncPrevTable = { 2, 0, 1 };
+	    private static readonly int[] SyncNextTable = { 1, 2, 0 };
+	    private static readonly int[] SyncPrevTable = { 2, 0, 1 };
 
-		int cachedCycles;
-		bool disableVoice3;
-	    readonly int[] envelopeOutput;
-	    readonly Envelope[] envelopes;
-	    readonly bool[] filterEnable;
-		int filterFrequency;
-		int filterResonance;
-		bool filterSelectBandPass;
-		bool filterSelectLoPass;
-		bool filterSelectHiPass;
-		int mixer;
-		int potCounter;
-		int potX;
-		int potY;
-		short sample;
-	    readonly int[] voiceOutput;
-	    readonly Voice[] voices;
-		int volume;
-		int[][] waveformTable;
+	    private int _cachedCycles;
+	    private bool _disableVoice3;
+	    private int _envelopeOutput0;
+        private int _envelopeOutput1;
+        private int _envelopeOutput2;
+        private readonly Envelope[] _envelopes;
+	    private readonly Envelope _envelope0;
+        private readonly Envelope _envelope1;
+        private readonly Envelope _envelope2;
+        private readonly bool[] _filterEnable;
+	    private int _filterFrequency;
+	    private int _filterResonance;
+	    private bool _filterSelectBandPass;
+	    private bool _filterSelectLoPass;
+	    private bool _filterSelectHiPass;
+	    private int _mixer;
+	    private int _potCounter;
+	    private int _potX;
+	    private int _potY;
+	    private short _sample;
+	    private int _voiceOutput0;
+        private int _voiceOutput1;
+        private int _voiceOutput2;
+        private readonly Voice[] _voices;
+	    private readonly Voice _voice0;
+        private readonly Voice _voice1;
+        private readonly Voice _voice2;
+        private int _volume;
 
-		public Func<int> ReadPotX;
+	    public Func<int> ReadPotX;
 		public Func<int> ReadPotY;
 
 		public Sid(int[][] newWaveformTable, uint sampleRate, uint cyclesNum, uint cyclesDen)
 		{
-			waveformTable = newWaveformTable;
-
-			envelopes = new Envelope[3];
+		    _envelopes = new Envelope[3];
 			for (var i = 0; i < 3; i++)
-				envelopes[i] = new Envelope();
-			envelopeOutput = new int[3];
+				_envelopes[i] = new Envelope();
+		    _envelope0 = _envelopes[0];
+            _envelope1 = _envelopes[1];
+            _envelope2 = _envelopes[2];
 
-			voices = new Voice[3];
+            _voices = new Voice[3];
 			for (var i = 0; i < 3; i++)
-				voices[i] = new Voice(newWaveformTable);
-			voiceOutput = new int[3];
+				_voices[i] = new Voice(newWaveformTable);
+		    _voice0 = _voices[0];
+            _voice1 = _voices[1];
+            _voice2 = _voices[2];
 
-			filterEnable = new bool[3];
+            _filterEnable = new bool[3];
 			for (var i = 0; i < 3; i++)
-				filterEnable[i] = false;
+				_filterEnable[i] = false;
 
-			resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
+			Resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
 		}
 
 		public void Dispose()
 		{
-			if (resampler != null)
+			if (Resampler != null)
 			{
-				resampler.Dispose();
-				resampler = null;
+				Resampler.Dispose();
+				Resampler = null;
 			}
 		}
 
@@ -78,63 +85,63 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			for (var i = 0; i < 3; i++)
 			{
-				envelopes[i].HardReset();
-				voices[i].HardReset();
+				_envelopes[i].HardReset();
+				_voices[i].HardReset();
 			}
-			potCounter = 0;
-			potX = 0;
-			potY = 0;
+			_potCounter = 0;
+			_potX = 0;
+			_potY = 0;
 		}
 
 		// ------------------------------------
 
 		public void ExecutePhase2()
 		{
-			cachedCycles++;
+			_cachedCycles++;
 
 			// potentiometer values refresh every 512 cycles
-			if (potCounter == 0)
+			if (_potCounter == 0)
 			{
-				potCounter = 512;
-				potX = ReadPotX();
-				potY = ReadPotY();
+				_potCounter = 512;
+				_potX = ReadPotX();
+				_potY = ReadPotY();
 				Flush(); //this is here unrelated to the pots, just to keep the buffer somewhat loaded
 			}
-			potCounter--;
+			_potCounter--;
 		}
 
 		public void Flush()
 		{
-			while (cachedCycles > 0)
+			while (_cachedCycles > 0)
 			{
 				// process voices and envelopes
-				voices[0].ExecutePhase2();
-				voices[1].ExecutePhase2();
-				voices[2].ExecutePhase2();
-				envelopes[0].ExecutePhase2();
-				envelopes[1].ExecutePhase2();
-				envelopes[2].ExecutePhase2();
+				_voice0.ExecutePhase2();
+				_voice1.ExecutePhase2();
+				_voice2.ExecutePhase2();
+				_envelope0.ExecutePhase2();
+				_envelope1.ExecutePhase2();
+				_envelope2.ExecutePhase2();
 
 				// process sync
 				for (var i = 0; i < 3; i++)
-					voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
+					_voices[i].Synchronize(_voices[SyncNextTable[i]], _voices[SyncPrevTable[i]]);
 
 				// get output
-				voiceOutput[0] = voices[0].Output(voices[2]);
-				voiceOutput[1] = voices[1].Output(voices[0]);
-				voiceOutput[2] = voices[2].Output(voices[1]);
-				envelopeOutput[0] = envelopes[0].Level;
-				envelopeOutput[1] = envelopes[1].Level;
-				envelopeOutput[2] = envelopes[2].Level;
+				_voiceOutput0 = _voice0.Output(_voice2);
+				_voiceOutput1 = _voice1.Output(_voice0);
+				_voiceOutput2 = _voice2.Output(_voice1);
+				_envelopeOutput0 = _envelope0.Level;
+				_envelopeOutput1 = _envelope1.Level;
+				_envelopeOutput2 = _envelope2.Level;
 
-				mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
-				mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
-				mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
-				mixer = (mixer * volume) >> 4;
+				_mixer = (_voiceOutput0 * _envelopeOutput0) >> 7;
+				_mixer += (_voiceOutput1 * _envelopeOutput1) >> 7;
+				_mixer += (_voiceOutput2 * _envelopeOutput2) >> 7;
+				_mixer = (_mixer * _volume) >> 4;
 
-				sample = (short)mixer;
-				resampler.EnqueueSample(sample, sample);
-				cachedCycles--;
+				_sample = (short)_mixer;
+				Resampler.EnqueueSample(_sample, _sample);
+				_cachedCycles--;
 			}
 		}
 
@@ -144,22 +151,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			SaveState.SyncObject(ser, this);
 			ser.BeginSection("env0");
-			envelopes[0].SyncState(ser);
+			_envelopes[0].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("wav0");
-			voices[0].SyncState(ser);
+			_voices[0].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("env1");
-			envelopes[1].SyncState(ser);
+			_envelopes[1].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("wav1");
-			voices[1].SyncState(ser);
+			_voices[1].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("env2");
-			envelopes[2].SyncState(ser);
+			_envelopes[2].SyncState(ser);
 			ser.EndSection();
 			ser.BeginSection("wav2");
-			voices[2].SyncState(ser);
+			_voices[2].SyncState(ser);
 			ser.EndSection();
 		}
 	}

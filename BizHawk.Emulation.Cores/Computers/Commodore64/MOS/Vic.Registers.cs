@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
@@ -19,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public int Read(int addr)
 		{
-			byte result;
+			int result;
 			addr &= 0x3F;
 
 			switch (addr)
@@ -31,15 +26,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					WriteRegister(addr, 0);
 					break;
 				default:
-					result = ReadRegister((addr & 0x3F));
+					result = ReadRegister(addr & 0x3F);
 					break;
 			}
 			return result;
 		}
 
-		private byte ReadRegister(int addr)
+		private int ReadRegister(int addr)
 		{
-			byte result = 0xFF; //unused bit value
+			var result = 0xFF; //unused bit value
 
 			switch (addr)
 			{
@@ -51,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0A:
 				case 0x0C:
 				case 0x0E:
-					result = (byte)(sprites[addr >> 1].x & 0xFF);
+					result = _sprites[addr >> 1].X & 0xFF;
 					break;
 				case 0x01:
 				case 0x03:
@@ -61,184 +56,158 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0B:
 				case 0x0D:
 				case 0x0F:
-					result = (byte)(sprites[addr >> 1].y & 0xFF);
+					result = _sprites[addr >> 1].Y & 0xFF;
 					break;
 				case 0x10:
-					result = (byte)(
-						((sprites[0].x >> 8) & 0x01) |
-						((sprites[1].x >> 7) & 0x02) |
-						((sprites[2].x >> 6) & 0x04) |
-						((sprites[3].x >> 5) & 0x08) |
-						((sprites[4].x >> 4) & 0x10) |
-						((sprites[5].x >> 3) & 0x20) |
-						((sprites[6].x >> 2) & 0x40) |
-						((sprites[7].x >> 1) & 0x80)
-						);
+					result = ((_sprite0.X >> 8) & 0x01) |
+					         ((_sprite1.X >> 7) & 0x02) |
+					         ((_sprite2.X >> 6) & 0x04) |
+					         ((_sprite3.X >> 5) & 0x08) |
+					         ((_sprite4.X >> 4) & 0x10) |
+					         ((_sprite5.X >> 3) & 0x20) |
+					         ((_sprite6.X >> 2) & 0x40) |
+					         ((_sprite7.X >> 1) & 0x80);
 					break;
 				case 0x11:
-					result = (byte)(
-						(yScroll & 0x7) |
-						(rowSelect ? 0x08 : 0x00) |
-						(displayEnable ? 0x10 : 0x00) |
-						(bitmapMode ? 0x20 : 0x00) |
-						(extraColorMode ? 0x40 : 0x00) |
-						((rasterLine & 0x100) >> 1)
-						);
+					result = (_yScroll & 0x7) |
+					         (_rowSelect ? 0x08 : 0x00) |
+					         (_displayEnable ? 0x10 : 0x00) |
+					         (_bitmapMode ? 0x20 : 0x00) |
+					         (_extraColorMode ? 0x40 : 0x00) |
+					         ((_rasterLine & 0x100) >> 1);
 					break;
 				case 0x12:
-					result = (byte)(rasterLine & 0xFF);
+					result = _rasterLine & 0xFF;
 					break;
 				case 0x13:
-					result = (byte)(lightPenX & 0xFF);
+					result = _lightPenX & 0xFF;
 					break;
 				case 0x14:
-					result = (byte)(lightPenY & 0xFF);
+					result = _lightPenY & 0xFF;
 					break;
 				case 0x15:
-					result = (byte)(
-						(sprites[0].enable ? 0x01 : 0x00) |
-						(sprites[1].enable ? 0x02 : 0x00) |
-						(sprites[2].enable ? 0x04 : 0x00) |
-						(sprites[3].enable ? 0x08 : 0x00) |
-						(sprites[4].enable ? 0x10 : 0x00) |
-						(sprites[5].enable ? 0x20 : 0x00) |
-						(sprites[6].enable ? 0x40 : 0x00) |
-						(sprites[7].enable ? 0x80 : 0x00)
-						);
+					result = (_sprite0.Enable ? 0x01 : 0x00) |
+					         (_sprite1.Enable ? 0x02 : 0x00) |
+					         (_sprite2.Enable ? 0x04 : 0x00) |
+					         (_sprite3.Enable ? 0x08 : 0x00) |
+					         (_sprite4.Enable ? 0x10 : 0x00) |
+					         (_sprite5.Enable ? 0x20 : 0x00) |
+					         (_sprite6.Enable ? 0x40 : 0x00) |
+					         (_sprite7.Enable ? 0x80 : 0x00);
 					break;
 				case 0x16:
 					result &= 0xC0;
-					result |= (byte)(
-						(xScroll & 0x7) |
-						(columnSelect ? 0x08 : 0x00) |
-						(multicolorMode ? 0x10 : 0x00)
-						);
+					result |= (_xScroll & 0x7) |
+					          (_columnSelect ? 0x08 : 0x00) |
+					          (_multicolorMode ? 0x10 : 0x00);
 					break;
 				case 0x17:
-					result = (byte)(
-						(sprites[0].yExpand ? 0x01 : 0x00) |
-						(sprites[1].yExpand ? 0x02 : 0x00) |
-						(sprites[2].yExpand ? 0x04 : 0x00) |
-						(sprites[3].yExpand ? 0x08 : 0x00) |
-						(sprites[4].yExpand ? 0x10 : 0x00) |
-						(sprites[5].yExpand ? 0x20 : 0x00) |
-						(sprites[6].yExpand ? 0x40 : 0x00) |
-						(sprites[7].yExpand ? 0x80 : 0x00)
-						);
+					result = (_sprite0.YExpand ? 0x01 : 0x00) |
+					         (_sprite1.YExpand ? 0x02 : 0x00) |
+					         (_sprite2.YExpand ? 0x04 : 0x00) |
+					         (_sprite3.YExpand ? 0x08 : 0x00) |
+					         (_sprite4.YExpand ? 0x10 : 0x00) |
+					         (_sprite5.YExpand ? 0x20 : 0x00) |
+					         (_sprite6.YExpand ? 0x40 : 0x00) |
+					         (_sprite7.YExpand ? 0x80 : 0x00);
 					break;
 				case 0x18:
 					result &= 0x01;
-					result |= (byte)(
-						((pointerVM & 0x3C00) >> 6) |
-						((pointerCB & 0x7) << 1)
-						);
+					result |= ((_pointerVm & 0x3C00) >> 6) |
+					          ((_pointerCb & 0x7) << 1);
 					break;
 				case 0x19:
 					result &= 0x70;
-					result |= (byte)(
-						(intRaster ? 0x01 : 0x00) |
-						(intSpriteDataCollision ? 0x02 : 0x00) |
-						(intSpriteCollision ? 0x04 : 0x00) |
-						(intLightPen ? 0x08 : 0x00) |
-						(pinIRQ ? 0x00 : 0x80)
-						);
+					result |= (_intRaster ? 0x01 : 0x00) |
+					          (_intSpriteDataCollision ? 0x02 : 0x00) |
+					          (_intSpriteCollision ? 0x04 : 0x00) |
+					          (_intLightPen ? 0x08 : 0x00) |
+					          (_pinIrq ? 0x00 : 0x80);
 					break;
 				case 0x1A:
 					result &= 0xF0;
-					result |= (byte)(
-						(enableIntRaster ? 0x01 : 0x00) |
-						(enableIntSpriteDataCollision ? 0x02 : 0x00) |
-						(enableIntSpriteCollision ? 0x04 : 0x00) |
-						(enableIntLightPen ? 0x08 : 0x00)
-						);
+					result |= (_enableIntRaster ? 0x01 : 0x00) |
+					          (_enableIntSpriteDataCollision ? 0x02 : 0x00) |
+					          (_enableIntSpriteCollision ? 0x04 : 0x00) |
+					          (_enableIntLightPen ? 0x08 : 0x00);
 					break;
 				case 0x1B:
-					result = (byte)(
-						(sprites[0].priority ? 0x01 : 0x00) |
-						(sprites[1].priority ? 0x02 : 0x00) |
-						(sprites[2].priority ? 0x04 : 0x00) |
-						(sprites[3].priority ? 0x08 : 0x00) |
-						(sprites[4].priority ? 0x10 : 0x00) |
-						(sprites[5].priority ? 0x20 : 0x00) |
-						(sprites[6].priority ? 0x40 : 0x00) |
-						(sprites[7].priority ? 0x80 : 0x00)
-						);
+					result = (_sprite0.Priority ? 0x01 : 0x00) |
+					         (_sprite1.Priority ? 0x02 : 0x00) |
+					         (_sprite2.Priority ? 0x04 : 0x00) |
+					         (_sprite3.Priority ? 0x08 : 0x00) |
+					         (_sprite4.Priority ? 0x10 : 0x00) |
+					         (_sprite5.Priority ? 0x20 : 0x00) |
+					         (_sprite6.Priority ? 0x40 : 0x00) |
+					         (_sprite7.Priority ? 0x80 : 0x00);
 					break;
 				case 0x1C:
-					result = (byte)(
-						(sprites[0].multicolor ? 0x01 : 0x00) |
-						(sprites[1].multicolor ? 0x02 : 0x00) |
-						(sprites[2].multicolor ? 0x04 : 0x00) |
-						(sprites[3].multicolor ? 0x08 : 0x00) |
-						(sprites[4].multicolor ? 0x10 : 0x00) |
-						(sprites[5].multicolor ? 0x20 : 0x00) |
-						(sprites[6].multicolor ? 0x40 : 0x00) |
-						(sprites[7].multicolor ? 0x80 : 0x00)
-						);
+					result = (_sprite0.Multicolor ? 0x01 : 0x00) |
+					         (_sprite1.Multicolor ? 0x02 : 0x00) |
+					         (_sprite2.Multicolor ? 0x04 : 0x00) |
+					         (_sprite3.Multicolor ? 0x08 : 0x00) |
+					         (_sprite4.Multicolor ? 0x10 : 0x00) |
+					         (_sprite5.Multicolor ? 0x20 : 0x00) |
+					         (_sprite6.Multicolor ? 0x40 : 0x00) |
+					         (_sprite7.Multicolor ? 0x80 : 0x00);
 					break;
 				case 0x1D:
-					result = (byte)(
-						(sprites[0].xExpand ? 0x01 : 0x00) |
-						(sprites[1].xExpand ? 0x02 : 0x00) |
-						(sprites[2].xExpand ? 0x04 : 0x00) |
-						(sprites[3].xExpand ? 0x08 : 0x00) |
-						(sprites[4].xExpand ? 0x10 : 0x00) |
-						(sprites[5].xExpand ? 0x20 : 0x00) |
-						(sprites[6].xExpand ? 0x40 : 0x00) |
-						(sprites[7].xExpand ? 0x80 : 0x00)
-						);
+					result = (_sprite0.XExpand ? 0x01 : 0x00) |
+					         (_sprite1.XExpand ? 0x02 : 0x00) |
+					         (_sprite2.XExpand ? 0x04 : 0x00) |
+					         (_sprite3.XExpand ? 0x08 : 0x00) |
+					         (_sprite4.XExpand ? 0x10 : 0x00) |
+					         (_sprite5.XExpand ? 0x20 : 0x00) |
+					         (_sprite6.XExpand ? 0x40 : 0x00) |
+					         (_sprite7.XExpand ? 0x80 : 0x00);
 					break;
 				case 0x1E:
-					result = (byte)(
-						(sprites[0].collideSprite ? 0x01 : 0x00) |
-						(sprites[1].collideSprite ? 0x02 : 0x00) |
-						(sprites[2].collideSprite ? 0x04 : 0x00) |
-						(sprites[3].collideSprite ? 0x08 : 0x00) |
-						(sprites[4].collideSprite ? 0x10 : 0x00) |
-						(sprites[5].collideSprite ? 0x20 : 0x00) |
-						(sprites[6].collideSprite ? 0x40 : 0x00) |
-						(sprites[7].collideSprite ? 0x80 : 0x00)
-						);
+					result = (_sprite0.CollideSprite ? 0x01 : 0x00) |
+					         (_sprite1.CollideSprite ? 0x02 : 0x00) |
+					         (_sprite2.CollideSprite ? 0x04 : 0x00) |
+					         (_sprite3.CollideSprite ? 0x08 : 0x00) |
+					         (_sprite4.CollideSprite ? 0x10 : 0x00) |
+					         (_sprite5.CollideSprite ? 0x20 : 0x00) |
+					         (_sprite6.CollideSprite ? 0x40 : 0x00) |
+					         (_sprite7.CollideSprite ? 0x80 : 0x00);
 					break;
 				case 0x1F:
-					result = (byte)(
-						(sprites[0].collideData ? 0x01 : 0x00) |
-						(sprites[1].collideData ? 0x02 : 0x00) |
-						(sprites[2].collideData ? 0x04 : 0x00) |
-						(sprites[3].collideData ? 0x08 : 0x00) |
-						(sprites[4].collideData ? 0x10 : 0x00) |
-						(sprites[5].collideData ? 0x20 : 0x00) |
-						(sprites[6].collideData ? 0x40 : 0x00) |
-						(sprites[7].collideData ? 0x80 : 0x00)
-						);
+					result = (_sprite0.CollideData ? 0x01 : 0x00) |
+					         (_sprite1.CollideData ? 0x02 : 0x00) |
+					         (_sprite2.CollideData ? 0x04 : 0x00) |
+					         (_sprite3.CollideData ? 0x08 : 0x00) |
+					         (_sprite4.CollideData ? 0x10 : 0x00) |
+					         (_sprite5.CollideData ? 0x20 : 0x00) |
+					         (_sprite6.CollideData ? 0x40 : 0x00) |
+					         (_sprite7.CollideData ? 0x80 : 0x00);
 					break;
 				case 0x20:
 					result &= 0xF0;
-					result |= (byte)(borderColor & 0x0F);
+					result |= _borderColor & 0x0F;
 					break;
 				case 0x21:
 					result &= 0xF0;
-					result |= (byte)(backgroundColor0 & 0x0F);
+					result |= _backgroundColor0 & 0x0F;
 					break;
 				case 0x22:
 					result &= 0xF0;
-					result |= (byte)(backgroundColor1 & 0x0F);
+					result |= _backgroundColor1 & 0x0F;
 					break;
 				case 0x23:
 					result &= 0xF0;
-					result |= (byte)(backgroundColor2 & 0x0F);
+					result |= _backgroundColor2 & 0x0F;
 					break;
 				case 0x24:
 					result &= 0xF0;
-					result |= (byte)(backgroundColor3 & 0x0F);
+					result |= _backgroundColor3 & 0x0F;
 					break;
 				case 0x25:
 					result &= 0xF0;
-					result |= (byte)(spriteMulticolor0 & 0x0F);
+					result |= _spriteMulticolor0 & 0x0F;
 					break;
 				case 0x26:
 					result &= 0xF0;
-					result |= (byte)(spriteMulticolor1 & 0x0F);
+					result |= _spriteMulticolor1 & 0x0F;
 					break;
 				case 0x27:
 				case 0x28:
@@ -249,10 +218,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x2D:
 				case 0x2E:
 					result &= 0xF0;
-					result |= (byte)(sprites[addr - 0x27].color & 0xF);
-					break;
-				default:
-					// not connected
+					result |= _sprites[addr - 0x27].Color & 0xF;
 					break;
 			}
 
@@ -267,13 +233,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x19:
 					// interrupts are cleared by writing a 1
 					if ((val & 0x01) != 0)
-						intRaster = false;
+						_intRaster = false;
 					if ((val & 0x02) != 0)
-						intSpriteDataCollision = false;
+						_intSpriteDataCollision = false;
 					if ((val & 0x04) != 0)
-						intSpriteCollision = false;
+						_intSpriteCollision = false;
 					if ((val & 0x08) != 0)
-						intLightPen = false;
+						_intLightPen = false;
 					UpdatePins();
 					break;
 				case 0x1A:
@@ -320,8 +286,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0A:
 				case 0x0C:
 				case 0x0E:
-					sprites[addr >> 1].x &= 0x100;
-					sprites[addr >> 1].x |= val;
+					_sprites[addr >> 1].X &= 0x100;
+					_sprites[addr >> 1].X |= val;
 					break;
 				case 0x01:
 				case 0x03:
@@ -331,154 +297,154 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0B:
 				case 0x0D:
 				case 0x0F:
-					sprites[addr >> 1].y = val;
+					_sprites[addr >> 1].Y = val;
 					break;
 				case 0x10:
-					sprites[0].x = (sprites[0].x & 0xFF) | ((val & 0x01) << 8);
-					sprites[1].x = (sprites[1].x & 0xFF) | ((val & 0x02) << 7);
-					sprites[2].x = (sprites[2].x & 0xFF) | ((val & 0x04) << 6);
-					sprites[3].x = (sprites[3].x & 0xFF) | ((val & 0x08) << 5);
-					sprites[4].x = (sprites[4].x & 0xFF) | ((val & 0x10) << 4);
-					sprites[5].x = (sprites[5].x & 0xFF) | ((val & 0x20) << 3);
-					sprites[6].x = (sprites[6].x & 0xFF) | ((val & 0x40) << 2);
-					sprites[7].x = (sprites[7].x & 0xFF) | ((val & 0x80) << 1);
+					_sprite0.X = (_sprite0.X & 0xFF) | ((val & 0x01) << 8);
+					_sprite1.X = (_sprite1.X & 0xFF) | ((val & 0x02) << 7);
+					_sprite2.X = (_sprite2.X & 0xFF) | ((val & 0x04) << 6);
+					_sprite3.X = (_sprite3.X & 0xFF) | ((val & 0x08) << 5);
+					_sprite4.X = (_sprite4.X & 0xFF) | ((val & 0x10) << 4);
+					_sprite5.X = (_sprite5.X & 0xFF) | ((val & 0x20) << 3);
+					_sprite6.X = (_sprite6.X & 0xFF) | ((val & 0x40) << 2);
+					_sprite7.X = (_sprite7.X & 0xFF) | ((val & 0x80) << 1);
 					break;
 				case 0x11:
-					yScroll = (val & 0x07);
-					rowSelect = ((val & 0x08) != 0);
-					displayEnable = ((val & 0x10) != 0);
-					bitmapMode = ((val & 0x20) != 0);
-					extraColorMode = ((val & 0x40) != 0);
-					rasterInterruptLine &= 0xFF;
-					rasterInterruptLine |= (val & 0x80) << 1;
+					_yScroll = val & 0x07;
+					_rowSelect = (val & 0x08) != 0;
+					_displayEnable = (val & 0x10) != 0;
+					_bitmapMode = (val & 0x20) != 0;
+					_extraColorMode = (val & 0x40) != 0;
+					_rasterInterruptLine &= 0xFF;
+					_rasterInterruptLine |= (val & 0x80) << 1;
 					UpdateBorder();
 					UpdateVideoMode();
 					break;
 				case 0x12:
-					rasterInterruptLine &= 0x100;
-					rasterInterruptLine |= val;
+					_rasterInterruptLine &= 0x100;
+					_rasterInterruptLine |= val;
 					break;
 				case 0x13:
-					lightPenX = val;
+					_lightPenX = val;
 					break;
 				case 0x14:
-					lightPenY = val;
+					_lightPenY = val;
 					break;
 				case 0x15:
-					sprites[0].enable = ((val & 0x01) != 0);
-					sprites[1].enable = ((val & 0x02) != 0);
-					sprites[2].enable = ((val & 0x04) != 0);
-					sprites[3].enable = ((val & 0x08) != 0);
-					sprites[4].enable = ((val & 0x10) != 0);
-					sprites[5].enable = ((val & 0x20) != 0);
-					sprites[6].enable = ((val & 0x40) != 0);
-					sprites[7].enable = ((val & 0x80) != 0);
+					_sprite0.Enable = (val & 0x01) != 0;
+					_sprite1.Enable = (val & 0x02) != 0;
+					_sprite2.Enable = (val & 0x04) != 0;
+					_sprite3.Enable = (val & 0x08) != 0;
+					_sprite4.Enable = (val & 0x10) != 0;
+					_sprite5.Enable = (val & 0x20) != 0;
+					_sprite6.Enable = (val & 0x40) != 0;
+					_sprite7.Enable = (val & 0x80) != 0;
 					break;
 				case 0x16:
-					xScroll = (val & 0x07);
-					columnSelect = ((val & 0x08) != 0);
-					multicolorMode = ((val & 0x10) != 0);
+					_xScroll = val & 0x07;
+					_columnSelect = (val & 0x08) != 0;
+					_multicolorMode = (val & 0x10) != 0;
 					UpdateBorder();
 					UpdateVideoMode();
 					break;
 				case 0x17:
-					sprites[0].yExpand = ((val & 0x01) != 0);
-					sprites[1].yExpand = ((val & 0x02) != 0);
-					sprites[2].yExpand = ((val & 0x04) != 0);
-					sprites[3].yExpand = ((val & 0x08) != 0);
-					sprites[4].yExpand = ((val & 0x10) != 0);
-					sprites[5].yExpand = ((val & 0x20) != 0);
-					sprites[6].yExpand = ((val & 0x40) != 0);
-					sprites[7].yExpand = ((val & 0x80) != 0);
+					_sprite0.YExpand = (val & 0x01) != 0;
+					_sprite1.YExpand = (val & 0x02) != 0;
+					_sprite2.YExpand = (val & 0x04) != 0;
+					_sprite3.YExpand = (val & 0x08) != 0;
+					_sprite4.YExpand = (val & 0x10) != 0;
+					_sprite5.YExpand = (val & 0x20) != 0;
+					_sprite6.YExpand = (val & 0x40) != 0;
+					_sprite7.YExpand = (val & 0x80) != 0;
 					break;
 				case 0x18:
-					pointerVM = ((val << 6) & 0x3C00);
-					pointerCB = ((val >> 1) & 0x7);
+					_pointerVm = (val << 6) & 0x3C00;
+					_pointerCb = (val >> 1) & 0x7;
 					break;
 				case 0x19:
-					intRaster = ((val & 0x01) != 0);
-					intSpriteDataCollision = ((val & 0x02) != 0);
-					intSpriteCollision = ((val & 0x04) != 0);
-					intLightPen = ((val & 0x08) != 0);
+					_intRaster = (val & 0x01) != 0;
+					_intSpriteDataCollision = (val & 0x02) != 0;
+					_intSpriteCollision = (val & 0x04) != 0;
+					_intLightPen = (val & 0x08) != 0;
 					UpdatePins();
 					break;
 				case 0x1A:
-					enableIntRaster = ((val & 0x01) != 0);
-					enableIntSpriteDataCollision = ((val & 0x02) != 0);
-					enableIntSpriteCollision = ((val & 0x04) != 0);
-					enableIntLightPen = ((val & 0x08) != 0);
+					_enableIntRaster = (val & 0x01) != 0;
+					_enableIntSpriteDataCollision = (val & 0x02) != 0;
+					_enableIntSpriteCollision = (val & 0x04) != 0;
+					_enableIntLightPen = (val & 0x08) != 0;
 					UpdatePins();
 					break;
 				case 0x1B:
-					sprites[0].priority = ((val & 0x01) != 0);
-					sprites[1].priority = ((val & 0x02) != 0);
-					sprites[2].priority = ((val & 0x04) != 0);
-					sprites[3].priority = ((val & 0x08) != 0);
-					sprites[4].priority = ((val & 0x10) != 0);
-					sprites[5].priority = ((val & 0x20) != 0);
-					sprites[6].priority = ((val & 0x40) != 0);
-					sprites[7].priority = ((val & 0x80) != 0);
+					_sprite0.Priority = (val & 0x01) != 0;
+					_sprite1.Priority = (val & 0x02) != 0;
+					_sprite2.Priority = (val & 0x04) != 0;
+					_sprite3.Priority = (val & 0x08) != 0;
+					_sprite4.Priority = (val & 0x10) != 0;
+					_sprite5.Priority = (val & 0x20) != 0;
+					_sprite6.Priority = (val & 0x40) != 0;
+					_sprite7.Priority = (val & 0x80) != 0;
 					break;
 				case 0x1C:
-					sprites[0].multicolor = ((val & 0x01) != 0);
-					sprites[1].multicolor = ((val & 0x02) != 0);
-					sprites[2].multicolor = ((val & 0x04) != 0);
-					sprites[3].multicolor = ((val & 0x08) != 0);
-					sprites[4].multicolor = ((val & 0x10) != 0);
-					sprites[5].multicolor = ((val & 0x20) != 0);
-					sprites[6].multicolor = ((val & 0x40) != 0);
-					sprites[7].multicolor = ((val & 0x80) != 0);
+					_sprite0.Multicolor = (val & 0x01) != 0;
+					_sprite1.Multicolor = (val & 0x02) != 0;
+					_sprite2.Multicolor = (val & 0x04) != 0;
+					_sprite3.Multicolor = (val & 0x08) != 0;
+					_sprite4.Multicolor = (val & 0x10) != 0;
+					_sprite5.Multicolor = (val & 0x20) != 0;
+					_sprite6.Multicolor = (val & 0x40) != 0;
+					_sprite7.Multicolor = (val & 0x80) != 0;
 					break;
 				case 0x1D:
-					sprites[0].xExpand = ((val & 0x01) != 0);
-					sprites[1].xExpand = ((val & 0x02) != 0);
-					sprites[2].xExpand = ((val & 0x04) != 0);
-					sprites[3].xExpand = ((val & 0x08) != 0);
-					sprites[4].xExpand = ((val & 0x10) != 0);
-					sprites[5].xExpand = ((val & 0x20) != 0);
-					sprites[6].xExpand = ((val & 0x40) != 0);
-					sprites[7].xExpand = ((val & 0x80) != 0);
+					_sprite0.XExpand = (val & 0x01) != 0;
+					_sprite1.XExpand = (val & 0x02) != 0;
+					_sprite2.XExpand = (val & 0x04) != 0;
+					_sprite3.XExpand = (val & 0x08) != 0;
+					_sprite4.XExpand = (val & 0x10) != 0;
+					_sprite5.XExpand = (val & 0x20) != 0;
+					_sprite6.XExpand = (val & 0x40) != 0;
+					_sprite7.XExpand = (val & 0x80) != 0;
 					break;
 				case 0x1E:
-					sprites[0].collideSprite = ((val & 0x01) != 0);
-					sprites[1].collideSprite = ((val & 0x02) != 0);
-					sprites[2].collideSprite = ((val & 0x04) != 0);
-					sprites[3].collideSprite = ((val & 0x08) != 0);
-					sprites[4].collideSprite = ((val & 0x10) != 0);
-					sprites[5].collideSprite = ((val & 0x20) != 0);
-					sprites[6].collideSprite = ((val & 0x40) != 0);
-					sprites[7].collideSprite = ((val & 0x80) != 0);
+					_sprite0.CollideSprite = (val & 0x01) != 0;
+					_sprite1.CollideSprite = (val & 0x02) != 0;
+					_sprite2.CollideSprite = (val & 0x04) != 0;
+					_sprite3.CollideSprite = (val & 0x08) != 0;
+					_sprite4.CollideSprite = (val & 0x10) != 0;
+					_sprite5.CollideSprite = (val & 0x20) != 0;
+					_sprite6.CollideSprite = (val & 0x40) != 0;
+					_sprite7.CollideSprite = (val & 0x80) != 0;
 					break;
 				case 0x1F:
-					sprites[0].collideData = ((val & 0x01) != 0);
-					sprites[1].collideData = ((val & 0x02) != 0);
-					sprites[2].collideData = ((val & 0x04) != 0);
-					sprites[3].collideData = ((val & 0x08) != 0);
-					sprites[4].collideData = ((val & 0x10) != 0);
-					sprites[5].collideData = ((val & 0x20) != 0);
-					sprites[6].collideData = ((val & 0x40) != 0);
-					sprites[7].collideData = ((val & 0x80) != 0);
+					_sprite0.CollideData = (val & 0x01) != 0;
+					_sprite1.CollideData = (val & 0x02) != 0;
+					_sprite2.CollideData = (val & 0x04) != 0;
+					_sprite3.CollideData = (val & 0x08) != 0;
+					_sprite4.CollideData = (val & 0x10) != 0;
+					_sprite5.CollideData = (val & 0x20) != 0;
+					_sprite6.CollideData = (val & 0x40) != 0;
+					_sprite7.CollideData = (val & 0x80) != 0;
 					break;
 				case 0x20:
-					borderColor = (val & 0xF);
+					_borderColor = val & 0xF;
 					break;
 				case 0x21:
-					backgroundColor0 = (val & 0xF);
+					_backgroundColor0 = val & 0xF;
 					break;
 				case 0x22:
-					backgroundColor1 = (val & 0xF);
+					_backgroundColor1 = val & 0xF;
 					break;
 				case 0x23:
-					backgroundColor2 = (val & 0xF);
+					_backgroundColor2 = val & 0xF;
 					break;
 				case 0x24:
-					backgroundColor3 = (val & 0xF);
+					_backgroundColor3 = val & 0xF;
 					break;
 				case 0x25:
-					spriteMulticolor0 = (val & 0xF);
+					_spriteMulticolor0 = val & 0xF;
 					break;
 				case 0x26:
-					spriteMulticolor1 = (val & 0xF);
+					_spriteMulticolor1 = val & 0xF;
 					break;
 				case 0x27:
 				case 0x28:
@@ -488,9 +454,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x2C:
 				case 0x2D:
 				case 0x2E:
-					sprites[addr - 0x27].color = (val & 0xF);
-					break;
-				default:
+					_sprites[addr - 0x27].Color = val & 0xF;
 					break;
 			}
 		}

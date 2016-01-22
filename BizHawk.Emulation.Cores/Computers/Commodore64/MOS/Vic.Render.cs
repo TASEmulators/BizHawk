@@ -1,261 +1,263 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic
+	public sealed partial class Vic
 	{
-		private int delayC;
-		private int ecmPixel;
-		private int pixel;
-		private int pixelCounter;
-		private int pixelData;
-		private int pixelOwner;
-		private int sprData;
-		private int sprIndex;
-		private int sprPixel;
-		private int srC = 0;
-		private int srSync = 0;
-		private int videoMode;
+		private int _delayC;
+		private int _ecmPixel;
+		private int _pixel;
+		private int _pixelCounter;
+		private int _pixelData;
+		private int _pixelOwner;
+		private int _sprData;
+		private int _sprIndex;
+		private int _sprPixel;
+		private int _srC;
+		private int _srSync;
+		private int _videoMode;
 
 		private void Render()
 		{
-			if (hblankCheckEnableL)
+			if (_hblankCheckEnableL)
 			{
-				if (rasterX == hblankEnd)
-					hblank = false;
+				if (_rasterX == _hblankEnd)
+					_hblank = false;
 			}
-			else if (hblankCheckEnableR)
+			else if (_hblankCheckEnableR)
 			{
-				if (rasterX == hblankStart)
-					hblank = true;
+				if (_rasterX == _hblankStart)
+					_hblank = true;
 			}
 
-			renderEnabled = (!hblank && !vblank);
-			pixelCounter = -1;
-			while (pixelCounter++ < 3)
+			_renderEnabled = !_hblank && !_vblank;
+			_pixelCounter = -1;
+			while (_pixelCounter++ < 3)
 			{
 
-				if (delayC > 0)
-					delayC--;
+				if (_delayC > 0)
+					_delayC--;
 				else
-					displayC = (srC >> 12) & 0xFFF;
+					_displayC = (_srC >> 12) & 0xFFF;
 
 
 				#region PRE-RENDER BORDER
-				if (borderCheckLEnable && (rasterX == borderL))
+				if (_borderCheckLEnable && (_rasterX == _borderL))
 				{
-					if (rasterLine == borderB)
-						borderOnVertical = true;
-					if (rasterLine == borderT && displayEnable)
-						borderOnVertical = false;
-					if (!borderOnVertical)
-						borderOnMain = false;
+					if (_rasterLine == _borderB)
+						_borderOnVertical = true;
+					if (_rasterLine == _borderT && _displayEnable)
+						_borderOnVertical = false;
+					if (!_borderOnVertical)
+						_borderOnMain = false;
 				}
 				#endregion
 
 				#region CHARACTER GRAPHICS
-				switch (videoMode)
+				switch (_videoMode)
 				{
 					case 0:
-						pixelData = sr & srMask2;
-						pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+						_pixelData = _sr & _srMask2;
+						_pixel = _pixelData != 0 ? _displayC >> 8 : _backgroundColor0;
 						break;
 					case 1:
-						if ((displayC & 0x800) != 0)
+						if ((_displayC & 0x800) != 0)
 						{
 							// multicolor 001
-							if ((srSync & srMask2) != 0)
-								pixelData = sr & srMask3;
+							if ((_srSync & _srMask2) != 0)
+								_pixelData = _sr & _srMask3;
 
-							if (pixelData == 0)
-								pixel = backgroundColor0;
-							else if (pixelData == srMask1)
-								pixel = backgroundColor1;
-							else if (pixelData == srMask2)
-								pixel = backgroundColor2;
+							if (_pixelData == 0)
+								_pixel = _backgroundColor0;
+							else if (_pixelData == _srMask1)
+								_pixel = _backgroundColor1;
+							else if (_pixelData == _srMask2)
+								_pixel = _backgroundColor2;
 							else
-								pixel = (displayC & 0x700) >> 8;
+								_pixel = (_displayC & 0x700) >> 8;
 						}
 						else
 						{
 							// standard 001
-							pixelData = sr & srMask2;
-							pixel = (pixelData != 0) ? (displayC >> 8) : backgroundColor0;
+							_pixelData = _sr & _srMask2;
+							_pixel = _pixelData != 0 ? _displayC >> 8 : _backgroundColor0;
 						}
 						break;
 					case 2:
-						pixelData = sr & srMask2;
-						pixel = (pixelData != 0) ? (displayC >> 4) : (displayC);
+						_pixelData = _sr & _srMask2;
+						_pixel = _pixelData != 0 ? _displayC >> 4 : _displayC;
 						break;
 					case 3:
-						if ((srSync & srMask2) != 0)
-							pixelData = sr & srMask3;
+						if ((_srSync & _srMask2) != 0)
+							_pixelData = _sr & _srMask3;
 
-						if (pixelData == 0)
-							pixel = backgroundColor0;
-						else if (pixelData == srMask1)
-							pixel = (displayC >> 4);
-						else if (pixelData == srMask2)
-							pixel = displayC;
+						if (_pixelData == 0)
+							_pixel = _backgroundColor0;
+						else if (_pixelData == _srMask1)
+							_pixel = _displayC >> 4;
+						else if (_pixelData == _srMask2)
+							_pixel = _displayC;
 						else
-							pixel = (displayC >> 8);
+							_pixel = _displayC >> 8;
 						break;
 					case 4:
-						pixelData = sr & srMask2;
-						if (pixelData != 0)
+						_pixelData = _sr & _srMask2;
+						if (_pixelData != 0)
 						{
-							pixel = displayC >> 8;
+							_pixel = _displayC >> 8;
 						}
 						else
 						{
-							ecmPixel = (displayC) & 0xC0;
-							if (ecmPixel == 0x00)
-								pixel = backgroundColor0;
-							else if (ecmPixel == 0x40)
-								pixel = backgroundColor1;
-							else if (ecmPixel == 0x80)
-								pixel = backgroundColor2;
-							else
-								pixel = backgroundColor3;
+						    _ecmPixel = _displayC & 0xC0;
+						    switch (_ecmPixel)
+						    {
+						        case 0x00:
+						            _pixel = _backgroundColor0;
+						            break;
+						        case 0x40:
+						            _pixel = _backgroundColor1;
+						            break;
+						        case 0x80:
+						            _pixel = _backgroundColor2;
+						            break;
+						        default:
+						            _pixel = _backgroundColor3;
+						            break;
+						    }
 						}
-						break;
+				        break;
 					default:
-						pixelData = 0;
-						pixel = 0;
+						_pixelData = 0;
+						_pixel = 0;
 						break;
 				}
-				pixel &= 0xF;
-				sr <<= 1;
-				srSync <<= 1;
-#endregion
+				_pixel &= 0xF;
+				_sr <<= 1;
+				_srSync <<= 1;
+                #endregion
 
 				#region SPRITES
 				// render sprites
-				pixelOwner = -1;
-				sprIndex = 0;
-				foreach (var spr in sprites)
+				_pixelOwner = -1;
+				_sprIndex = 0;
+				foreach (var spr in _sprites)
 				{
-					sprData = 0;
-					sprPixel = pixel;
+					_sprData = 0;
+					_sprPixel = _pixel;
 
-					if (spr.x == rasterX)
+					if (spr.X == _rasterX)
 					{
-						spr.shiftEnable = spr.display;
-						spr.xCrunch = !spr.xExpand;
-						spr.multicolorCrunch = false;
+						spr.ShiftEnable = spr.Display;
+						spr.XCrunch = !spr.XExpand;
+						spr.MulticolorCrunch = false;
 					}
 					else
 					{
-						spr.xCrunch |= !spr.xExpand;
+						spr.XCrunch |= !spr.XExpand;
 					}
 
-					if (spr.shiftEnable) // sprite rule 6
+					if (spr.ShiftEnable) // sprite rule 6
 					{
-						if (spr.multicolor)
+						if (spr.Multicolor)
 						{
-							sprData = (spr.sr & srSpriteMaskMC);
-							if (spr.multicolorCrunch && spr.xCrunch && !rasterXHold)
+							_sprData = spr.Sr & _srSpriteMaskMc;
+							if (spr.MulticolorCrunch && spr.XCrunch && !_rasterXHold)
 							{
-								if (spr.loaded == 0)
+								if (spr.Loaded == 0)
 								{
-									spr.shiftEnable = false;
+									spr.ShiftEnable = false;
 								}
-								spr.sr <<= 2;
-								spr.loaded >>= 2;
+								spr.Sr <<= 2;
+								spr.Loaded >>= 2;
 							}
-							spr.multicolorCrunch ^= spr.xCrunch;
+							spr.MulticolorCrunch ^= spr.XCrunch;
 						}
 						else
 						{
-							sprData = (spr.sr & srSpriteMask);
-							if (spr.xCrunch && !rasterXHold)
+							_sprData = spr.Sr & _srSpriteMask;
+							if (spr.XCrunch && !_rasterXHold)
 							{
-								if (spr.loaded == 0)
+								if (spr.Loaded == 0)
 								{
-									spr.shiftEnable = false;
+									spr.ShiftEnable = false;
 								}
-								spr.sr <<= 1;
-								spr.loaded >>= 1;
+								spr.Sr <<= 1;
+								spr.Loaded >>= 1;
 							}
 						}
-						spr.xCrunch ^= spr.xExpand;
+						spr.XCrunch ^= spr.XExpand;
 
-						if (sprData != 0)
+						if (_sprData != 0)
 						{
 							// sprite-sprite collision
-							if (pixelOwner < 0)
+							if (_pixelOwner < 0)
 							{
-								if (sprData == srSpriteMask1)
-									sprPixel = spriteMulticolor0;
-								else if (sprData == srSpriteMask2)
-									sprPixel = spr.color;
-								else if (sprData == srSpriteMask3)
-									sprPixel = spriteMulticolor1;
-								pixelOwner = sprIndex;
+								if (_sprData == _srSpriteMask1)
+									_sprPixel = _spriteMulticolor0;
+								else if (_sprData == _srSpriteMask2)
+									_sprPixel = spr.Color;
+								else if (_sprData == _srSpriteMask3)
+									_sprPixel = _spriteMulticolor1;
+								_pixelOwner = _sprIndex;
 							}
 							else
 							{
-								if (!borderOnVertical)
+								if (!_borderOnVertical)
 								{
-									spr.collideSprite = true;
-									sprites[pixelOwner].collideSprite = true;
+									spr.CollideSprite = true;
+									_sprites[_pixelOwner].CollideSprite = true;
 								}
 							}
 
 							// sprite-data collision
-							if (!borderOnVertical && (pixelData >= srMask2))
+							if (!_borderOnVertical && (_pixelData >= _srMask2))
 							{
-								spr.collideData = true;
+								spr.CollideData = true;
 							}
 
 							// sprite priority logic
-							if (spr.priority)
+							if (spr.Priority)
 							{
-								pixel = (pixelData >= srMask2) ? pixel : sprPixel;
+								_pixel = _pixelData >= _srMask2 ? _pixel : _sprPixel;
 							}
 							else
 							{
-								pixel = sprPixel;
+								_pixel = _sprPixel;
 							}
 						}
 					}
 
-					sprIndex++;
+					_sprIndex++;
 				}
 
-#endregion
+                #endregion
 
 				#region POST-RENDER BORDER
-				if (borderCheckREnable && (rasterX == borderR))
-					borderOnMain = true;
+				if (_borderCheckREnable && (_rasterX == _borderR))
+					_borderOnMain = true;
 
 				// border doesn't work with the background buffer
-				if (borderOnMain || borderOnVertical)
-					pixel = borderColor;
+				if (_borderOnMain || _borderOnVertical)
+					_pixel = _borderColor;
 				#endregion
 
 				// plot pixel if within viewing area
-				if (renderEnabled)
+				if (_renderEnabled)
 				{
-					buf[bufOffset] = palette[pixBuffer[pixBufferIndex]];
-					bufOffset++;
-					if (bufOffset == bufLength)
-						bufOffset = 0;
+					_buf[_bufOffset] = _palette[_pixBuffer[_pixBufferIndex]];
+					_bufOffset++;
+					if (_bufOffset == _bufLength)
+						_bufOffset = 0;
 				}
 
-				pixBuffer[pixBufferIndex] = pixel;
-				pixBufferIndex++;
+				_pixBuffer[_pixBufferIndex] = _pixel;
+				_pixBufferIndex++;
 
-				if (!rasterXHold)
-					rasterX++;
-				bitmapColumn++;
+				if (!_rasterXHold)
+					_rasterX++;
+				_bitmapColumn++;
 			}
 
-			if (pixBufferIndex >= pixBufferSize)
-				pixBufferIndex = 0;
+			if (_pixBufferIndex >= PixBufferSize)
+				_pixBufferIndex = 0;
 		}
 	}
 }
