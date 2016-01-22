@@ -162,13 +162,15 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			catch (Exception movieDirException)
-			when (
-						movieDirException is IOException ||
+			{
+				if (movieDirException is IOException ||
 						movieDirException is UnauthorizedAccessException ||
 						movieDirException is PathTooLongException
-				)
-			{
-				//TO DO : Pass error to user?
+					)
+				{
+					//TO DO : Pass error to user?
+				}
+				else throw;
 			}
 			
 			var sfd = new SaveFileDialog

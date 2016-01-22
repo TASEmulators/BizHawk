@@ -630,20 +630,28 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BotData
 		{
+			public BotData()
+			{
+				MainCompareToBest = true;
+				TieBreaker1CompareToBest = true;
+				TieBreaker2CompareToBest = true;
+				TieBreaker3CompareToBest = true;
+			}
+
 			public BotAttempt Best { get; set; }
 			public Dictionary<string, double> ControlProbabilities { get; set; }
 			public int Maximize { get; set; }
 			public int TieBreaker1 { get; set; }
 			public int TieBreaker2 { get; set; }
 			public int TieBreaker3 { get; set; }
-            public byte ComparisonTypeMain { get; set; }
-            public byte ComparisonTypeTie1 { get; set; }
-            public byte ComparisonTypeTie2 { get; set; }
-            public byte ComparisonTypeTie3 { get; set; }
-			public bool MainCompareToBest { get; set; } = true; 
-			public bool TieBreaker1CompareToBest { get; set; } = true;
-			public bool TieBreaker2CompareToBest { get; set; } = true;
-			public bool TieBreaker3CompareToBest { get; set; } = true;
+			public byte ComparisonTypeMain { get; set; }
+			public byte ComparisonTypeTie1 { get; set; }
+			public byte ComparisonTypeTie2 { get; set; }
+			public byte ComparisonTypeTie3 { get; set; }
+			public bool MainCompareToBest { get; set; }
+			public bool TieBreaker1CompareToBest { get; set; }
+			public bool TieBreaker2CompareToBest { get; set; }
+			public bool TieBreaker3CompareToBest { get; set; }
 			public int MainCompareToValue { get; set; }
 			public int TieBreaker1CompareToValue { get; set; }
 			public int TieBreaker2CompareToValue { get; set; }
@@ -769,18 +777,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBotFile(string path)
 		{
-            var data = new BotData
-            {
-                Best = _bestBotAttempt,
-                ControlProbabilities = ControlProbabilities,
-                Maximize = MaximizeAddress,
-                TieBreaker1 = TieBreaker1Address,
-                TieBreaker2 = TieBreaker2Address,
-                TieBreaker3 = TieBreaker3Address,
-                ComparisonTypeMain = MainComparisonType,
-                ComparisonTypeTie1 = Tie1ComparisonType,
-                ComparisonTypeTie2 = Tie2ComparisonType,
-                ComparisonTypeTie3 = Tie3ComparisonType,
+			var data = new BotData
+			{
+				Best = _bestBotAttempt,
+				ControlProbabilities = ControlProbabilities,
+				Maximize = MaximizeAddress,
+				TieBreaker1 = TieBreaker1Address,
+				TieBreaker2 = TieBreaker2Address,
+				TieBreaker3 = TieBreaker3Address,
+				ComparisonTypeMain = MainComparisonType,
+				ComparisonTypeTie1 = Tie1ComparisonType,
+				ComparisonTypeTie2 = Tie2ComparisonType,
+				ComparisonTypeTie3 = Tie3ComparisonType,
 				MainCompareToBest = MainBestRadio.Checked,
 				TieBreaker1CompareToBest = TieBreak1BestRadio.Checked,
 				TieBreaker2CompareToBest = TieBreak2BestRadio.Checked,
