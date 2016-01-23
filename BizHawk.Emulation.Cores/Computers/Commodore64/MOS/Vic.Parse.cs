@@ -33,12 +33,12 @@
 		private void ParseCycle()
 		{
 			_parseaddr = 0x3FFF;
-			_parsefetch = _pipeline[1][_cycleIndex];
-			_parseba = _pipeline[2][_cycleIndex];
-			_parseact = _pipeline[3][_cycleIndex];
+			_parsefetch = _fetchPipeline[_cycleIndex];
+			_parseba = _baPipeline[_cycleIndex];
+			_parseact = _actPipeline[_cycleIndex];
 
 			// apply X location
-			_rasterX = _pipeline[0][_cycleIndex];
+			_rasterX = _rasterXPipeline[_cycleIndex];
 			_rasterXHold = (_parseact & PipelineHoldX) != 0;
 
 			// perform fetch

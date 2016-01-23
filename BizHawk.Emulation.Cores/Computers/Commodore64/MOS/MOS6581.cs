@@ -4119,7 +4119,7 @@
 			}
 		};
 
-        static public Sid Create(int newSampleRate, int clockFrqNum, int clockFrqDen)
+        public static Sid Create(int newSampleRate, int clockFrqNum, int clockFrqDen)
         {
             return new Sid(waveTable, (uint)newSampleRate, (uint)clockFrqNum, (uint)clockFrqDen);
         }

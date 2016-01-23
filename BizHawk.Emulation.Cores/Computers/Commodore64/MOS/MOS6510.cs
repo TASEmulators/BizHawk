@@ -9,21 +9,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 
-	public sealed class MOS6510
+	public sealed class Mos6510
 	{
 		// ------------------------------------
 
-	    readonly MOS6502X cpu;
-	    bool pinNMILast;
-		LatchedPort port;
-		bool thisNMI;
+	    private readonly MOS6502X _cpu;
+	    private bool _pinNmiLast;
+	    private LatchedPort _port;
+	    private bool _thisNmi;
 
 		public Func<int, int> PeekMemory;
 		public Action<int, int> PokeMemory;
-		public Func<bool> ReadAEC;
-		public Func<bool> ReadIRQ;
-		public Func<bool> ReadNMI;
-		public Func<bool> ReadRDY;
+		public Func<bool> ReadAec;
+		public Func<bool> ReadIrq;
+		public Func<bool> ReadNmi;
+		public Func<bool> ReadRdy;
 		public Func<int, int> ReadMemory;
 		public Func<int> ReadPort;
 		public Action<int, int> WriteMemory;
@@ -31,10 +31,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public MOS6510()
+		public Mos6510()
 		{
             // configure cpu r/w
-            cpu = new MOS6502X
+            _cpu = new MOS6502X
 		    {
 		        DummyReadMemory = addr => unchecked((byte)Read(addr)),
 		        ReadMemory = addr => unchecked((byte)Read(addr)),
@@ -48,44 +48,44 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void HardReset()
 		{
 			// configure CPU defaults
-			cpu.Reset();
-			cpu.FlagI = true;
-			cpu.BCD_Enabled = true;
+			_cpu.Reset();
+			_cpu.FlagI = true;
+			_cpu.BCD_Enabled = true;
 			if (ReadMemory != null)
-				cpu.PC = unchecked((ushort)(ReadMemory(0x0FFFC) | (ReadMemory(0x0FFFD) << 8)));
+				_cpu.PC = unchecked((ushort)(ReadMemory(0x0FFFC) | (ReadMemory(0x0FFFD) << 8)));
 
 			// configure data port defaults
-		    port = new LatchedPort
+		    _port = new LatchedPort
 		    {
 		        Direction = 0x00,
 		        Latch = 0xFF
 		    };
 
 		    // NMI is high on startup (todo: verify)
-			pinNMILast = true;
+			_pinNmiLast = true;
 		}
 
 		// ------------------------------------
 
 		public void ExecutePhase1()
 		{
-			cpu.IRQ = !ReadIRQ();
+			_cpu.IRQ = !ReadIrq();
 		}
 
 		public void ExecutePhase2()
 		{
-			cpu.RDY = ReadRDY();
+			_cpu.RDY = ReadRdy();
 
 			// the 6502 core expects active high
 			// so we reverse the polarity here
-			thisNMI = ReadNMI();
-			if (!thisNMI && pinNMILast)
-				cpu.NMI = true;
+			_thisNmi = ReadNmi();
+			if (!_thisNmi && _pinNmiLast)
+				_cpu.NMI = true;
 
-            if (ReadAEC())
+            if (ReadAec())
             {
-                cpu.ExecuteOne();
-                pinNMILast = thisNMI;
+                _cpu.ExecuteOne();
+                _pinNmiLast = _thisNmi;
             }
             else
             {
@@ -97,58 +97,58 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	    internal bool AtInstructionStart()
 		{
-			return cpu.AtInstructionStart();
+			return _cpu.AtInstructionStart();
 		}
 
 		// ------------------------------------
 
-		public ushort PC
+		public ushort Pc
 		{
 			get
 			{
-				return cpu.PC;
+				return _cpu.PC;
 			}
 			set
 			{
-				cpu.PC = value;
+				_cpu.PC = value;
 			}
 		}
 
 		public int A
 		{
-			get { return cpu.A; } set { cpu.A = unchecked((byte)value); }
+			get { return _cpu.A; } set { _cpu.A = unchecked((byte)value); }
 		}
 
 		public int X
 		{
-			get { return cpu.X; } set { cpu.X = unchecked((byte)value); }
+			get { return _cpu.X; } set { _cpu.X = unchecked((byte)value); }
 		}
 
 		public int Y
 		{
-			get { return cpu.Y; } set { cpu.Y = unchecked((byte)value); }
+			get { return _cpu.Y; } set { _cpu.Y = unchecked((byte)value); }
 		}
 
 		public int S
 		{
-			get { return cpu.S; } set { cpu.S = unchecked((byte)value); }
+			get { return _cpu.S; } set { _cpu.S = unchecked((byte)value); }
 		}
 
-		public bool FlagC { get { return cpu.FlagC; } }
-		public bool FlagZ { get { return cpu.FlagZ; } }
-		public bool FlagI { get { return cpu.FlagI; } }
-		public bool FlagD { get { return cpu.FlagD; } }
-		public bool FlagB { get { return cpu.FlagB; } }
-		public bool FlagV { get { return cpu.FlagV; } }
-		public bool FlagN { get { return cpu.FlagN; } }
-		public bool FlagT { get { return cpu.FlagT; } }
+		public bool FlagC { get { return _cpu.FlagC; } }
+		public bool FlagZ { get { return _cpu.FlagZ; } }
+		public bool FlagI { get { return _cpu.FlagI; } }
+		public bool FlagD { get { return _cpu.FlagD; } }
+		public bool FlagB { get { return _cpu.FlagB; } }
+		public bool FlagV { get { return _cpu.FlagV; } }
+		public bool FlagN { get { return _cpu.FlagN; } }
+		public bool FlagT { get { return _cpu.FlagT; } }
 
 		public int Peek(int addr)
 		{
 		    switch (addr)
 		    {
 		        case 0x0000:
-		            return port.Direction;
+		            return _port.Direction;
 		        case 0x0001:
 		            return PortData;
 		        default:
@@ -161,10 +161,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	        switch (addr)
 	        {
 	            case 0x0000:
-	                port.Direction = val;
+	                _port.Direction = val;
 	                break;
 	            case 0x0001:
-	                port.Latch = val;
+	                _port.Latch = val;
 	                break;
 	            default:
 	                PokeMemory(addr, val);
@@ -176,11 +176,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			get
 			{
-				return port.ReadInput(ReadPort());
+				return _port.ReadInput(ReadPort());
 			}
 			set
 			{
-				port.Latch = value;
+				_port.Latch = value;
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		    switch (addr)
 		    {
 		        case 0x0000:
-		            return port.Direction;
+		            return _port.Direction;
 		        case 0x0001:
 		            return PortData;
 		        default:
@@ -199,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	    public void SyncState(Serializer ser)
 		{
-			cpu.SyncState(ser);
+			_cpu.SyncState(ser);
 			SaveState.SyncObject(ser, this);
 		}
 
@@ -208,11 +208,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		    switch (addr)
 		    {
 		        case 0x0000:
-		            port.Direction = val;
+		            _port.Direction = val;
 		            WriteMemoryPort(addr, val);
 		            break;
 		        case 0x0001:
-		            port.Latch = val;
+		            _port.Latch = val;
 		            WriteMemoryPort(addr, val);
 		            break;
 		        default:

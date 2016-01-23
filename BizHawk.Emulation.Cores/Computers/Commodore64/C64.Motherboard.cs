@@ -17,10 +17,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// chips
 		public Chip23XX BasicRom;
 		public Chip23XX CharRom;
-		public readonly MOS6526 Cia0;
-		public readonly MOS6526 Cia1;
+		public readonly Mos6526 Cia0;
+		public readonly Mos6526 Cia1;
 		public readonly Chip2114 ColorRam;
-		public readonly MOS6510 Cpu;
+		public readonly Mos6510 Cpu;
 		public Chip23XX KernalRom;
 		public readonly MOSPLA Pla;
 		public readonly Chip4864 Ram;
@@ -71,10 +71,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
-			Cia0 = new MOS6526(clockNum, clockDen*mainsFrq);
-			Cia1 = new MOS6526(clockNum, clockDen*mainsFrq);
+			Cia0 = new Mos6526(clockNum, clockDen*mainsFrq);
+			Cia1 = new Mos6526(clockNum, clockDen*mainsFrq);
 			ColorRam = new Chip2114();
-			Cpu = new MOS6510();
+			Cpu = new Mos6510();
 			Pla = new MOSPLA();
 			Ram = new Chip4864();
 			Serial = new SerialPort();
@@ -151,11 +151,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			Cpu.PeekMemory = Pla.Peek;
 			Cpu.PokeMemory = Pla.Poke;
-			Cpu.ReadAEC = Vic.ReadAec;
-			Cpu.ReadIRQ = Glue_ReadIRQ;
-			Cpu.ReadNMI = Glue_ReadNMI;
+			Cpu.ReadAec = Vic.ReadAec;
+			Cpu.ReadIrq = Glue_ReadIRQ;
+			Cpu.ReadNmi = Glue_ReadNMI;
 			Cpu.ReadPort = Cpu_ReadPort;
-			Cpu.ReadRDY = Vic.ReadBa;
+			Cpu.ReadRdy = Vic.ReadBa;
 			Cpu.ReadMemory = Pla.Read;
 			Cpu.WriteMemory = Pla.Write;
 			Cpu.WriteMemoryPort = Cpu_WriteMemoryPort;

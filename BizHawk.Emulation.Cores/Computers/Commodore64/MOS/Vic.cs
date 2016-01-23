@@ -14,8 +14,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private readonly int _cyclesPerSec;
 		private int _irqShift;
-		private readonly int[][] _pipeline;
-		private readonly int _totalCycles;
+        private readonly int[] _rasterXPipeline;
+        private readonly int[] _fetchPipeline;
+        private readonly int[] _baPipeline;
+        private readonly int[] _actPipeline;
+        private readonly int _totalCycles;
 		private readonly int _totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
@@ -25,12 +28,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _vblankStart = vblankStart;
             _vblankEnd = vblankEnd;
 
+		    _rasterXPipeline = newPipeline[0];
+            _fetchPipeline = newPipeline[1];
+            _baPipeline = newPipeline[2];
+            _actPipeline = newPipeline[3];
+
             _totalCycles = newCycles;
             _totalLines = newLines;
-            _pipeline = newPipeline;
             _cyclesPerSec = newCyclesPerSec;
 
-            _bufWidth = TimingBuilder_ScreenWidth(_pipeline[0], hblankStart, hblankEnd);
+            _bufWidth = TimingBuilder_ScreenWidth(_rasterXPipeline, hblankStart, hblankEnd);
             _bufHeight = TimingBuilder_ScreenHeight(vblankStart, vblankEnd, newLines);
 
             _buf = new int[_bufWidth * _bufHeight];
@@ -70,91 +77,79 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-			{
-				// raster IRQ compare
-				if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
-				{
-					if (_rasterLine != _lastRasterLine)
-						if (_rasterLine == _rasterInterruptLine)
-							_intRaster = true;
-					_lastRasterLine = _rasterLine;
-				}
+            // raster IRQ compare
+            if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
+            {
+                if (_rasterLine != _lastRasterLine)
+                    if (_rasterLine == _rasterInterruptLine)
+                        _intRaster = true;
+                _lastRasterLine = _rasterLine;
+            }
 
-				// display enable compare
-				if (_rasterLine == 0)
-					_badlineEnable = false;
+            // display enable compare
+            if (_rasterLine == 0)
+                _badlineEnable = false;
 
-				if (_rasterLine == 0x030)
-					_badlineEnable |= _displayEnable;
+            if (_rasterLine == 0x030)
+                _badlineEnable |= _displayEnable;
 
-				// badline compare
-				if (_badlineEnable && _rasterLine >= 0x030 && _rasterLine < 0x0F7 && ((_rasterLine & 0x7) == _yScroll))
-				{
-					_badline = true;
-				}
-				else
-				{
-					_badline = false;
-				}
+            // badline compare
+		    _badline = _badlineEnable && _rasterLine >= 0x030 && _rasterLine < 0x0F7 && ((_rasterLine & 0x7) == _yScroll);
 
-				// go into display state on a badline
-				if (_badline)
-					_idle = false;
+            // go into display state on a badline
+            if (_badline)
+                _idle = false;
 
-				ParseCycle();
+            ParseCycle();
 
-				Render();
+            Render();
 
-				// if the BA counter is nonzero, allow CPU bus access
-				UpdateBa();
-				_pinAec = false;
+            // if the BA counter is nonzero, allow CPU bus access
+            UpdateBa();
+            _pinAec = false;
 
-				// must always come last
-				//UpdatePins();
-			}
-		}
+            // must always come last
+            //UpdatePins();
+        }
 
-		public void ExecutePhase2()
+        public void ExecutePhase2()
 		{
+            ParseCycle();
 
-			{
-				ParseCycle();
+            // advance cycle and optionally raster line
+            _cycle++;
+            if (_cycle == _totalCycles)
+            {
+                if (_rasterLine == _borderB)
+                    _borderOnVertical = true;
+                if (_rasterLine == _borderT && _displayEnable)
+                    _borderOnVertical = false;
 
-				// advance cycle and optionally raster line
-				_cycle++;
-				if (_cycle == _totalCycles)
-				{
-					if (_rasterLine == _borderB)
-						_borderOnVertical = true;
-					if (_rasterLine == _borderT && _displayEnable)
-						_borderOnVertical = false;
+                if (_rasterLine == _vblankStart)
+                    _vblank = true;
+                if (_rasterLine == _vblankEnd)
+                    _vblank = false;
 
-					if (_rasterLine == _vblankStart)
-						_vblank = true;
-					if (_rasterLine == _vblankEnd)
-						_vblank = false;
+                _cycleIndex = 0;
+                _cycle = 0;
+                _rasterLine++;
+                if (_rasterLine == _totalLines)
+                {
+                    _rasterLine = 0;
+                    _vcbase = 0;
+                    _vc = 0;
+                }
+            }
 
-					_cycleIndex = 0;
-					_cycle = 0;
-					_rasterLine++;
-					if (_rasterLine == _totalLines)
-					{
-						_rasterLine = 0;
-						_vcbase = 0;
-						_vc = 0;
-					}
-				}
+            Render();
+            UpdateBa();
+            _pinAec = _baCount > 0;
 
-				Render();
-				UpdateBa();
-				_pinAec = _baCount > 0;
+            // must always come last
+            UpdatePins();
+        }
 
-				// must always come last
-				UpdatePins();
-			}
-		}
-
-		private void UpdateBa()
+        private void UpdateBa()
 		{
 			if (_pinBa)
 				_baCount = BaResetCounter;
