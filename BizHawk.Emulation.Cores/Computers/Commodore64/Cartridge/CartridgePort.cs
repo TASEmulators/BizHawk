@@ -80,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public void Connect(CartridgeDevice newCartridgeDevice)
 		{
             _connected = true;
+		    _cartridgeDevice = newCartridgeDevice;
 		}
 
 		public void Disconnect()
