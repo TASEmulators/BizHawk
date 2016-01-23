@@ -52,13 +52,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			int cycleSkippingEvent = -1;
 			int nextTick = 0;
 
-			Action serialPort;
-			Action underFlow;
+		    readonly Action serialPort;
+		    readonly Action underFlow;
 
 			public CiaTimer(Action serialPortCallback, Action underFlowCallback)
 			{
-				this.serialPort = serialPortCallback;
-				this.underFlow = underFlowCallback;
+				serialPort = serialPortCallback;
+				underFlow = underFlowCallback;
 			}
 
 			public void clock()

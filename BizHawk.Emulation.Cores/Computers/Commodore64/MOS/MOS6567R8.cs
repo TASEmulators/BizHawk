@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic ntsc
-	static public class MOS6567R8
+	public static class MOS6567R8
 	{
 		static int cycles = 65;
 		static int scanwidth = cycles * 8;
@@ -19,15 +19,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		static int[] ba = Vic.TimingBuilder_BA(fetch);
 		static int[] act = Vic.TimingBuilder_Act(timing, 0x004, 0x14C, hblankstart, hblankend);
 
-		static int[][] pipeline = new int[][]
-			{
+		static int[][] pipeline = {
 				timing,
 				fetch,
 				ba,
                 act
 			};
 
-		static public Vic Create()
+		public static Vic Create()
 		{
 			return new Vic(
 				cycles, lines,

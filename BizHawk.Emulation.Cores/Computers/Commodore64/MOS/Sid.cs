@@ -12,9 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public SpeexResampler Resampler;
 
-	    private static readonly int[] SyncNextTable = { 1, 2, 0 };
-	    private static readonly int[] SyncPrevTable = { 2, 0, 1 };
-
 	    private int _cachedCycles;
 	    private bool _disableVoice3;
 	    private int _envelopeOutput0;
@@ -112,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Flush()
 		{
-			while (_cachedCycles > 0)
+			while (_cachedCycles-- > 0)
 			{
 				// process voices and envelopes
 				_voice0.ExecutePhase2();
@@ -122,12 +119,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_envelope1.ExecutePhase2();
 				_envelope2.ExecutePhase2();
 
-				// process sync
-				for (var i = 0; i < 3; i++)
-					_voices[i].Synchronize(_voices[SyncNextTable[i]], _voices[SyncPrevTable[i]]);
+                _voice0.Synchronize(_voice1, _voice2);
+                _voice1.Synchronize(_voice2, _voice0);
+                _voice2.Synchronize(_voice0, _voice1);
 
-				// get output
-				_voiceOutput0 = _voice0.Output(_voice2);
+                // get output
+                _voiceOutput0 = _voice0.Output(_voice2);
 				_voiceOutput1 = _voice1.Output(_voice0);
 				_voiceOutput2 = _voice2.Output(_voice1);
 				_envelopeOutput0 = _envelope0.Level;
@@ -138,10 +135,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_mixer += (_voiceOutput1 * _envelopeOutput1) >> 7;
 				_mixer += (_voiceOutput2 * _envelopeOutput2) >> 7;
 				_mixer = (_mixer * _volume) >> 4;
+			    _mixer -= _volume << 8;
 
-				_sample = (short)_mixer;
+			    if (_mixer > 0x7FFF)
+			    {
+			        _mixer = 0x7FFF;
+			    }
+			    if (_mixer < -0x8000)
+			    {
+			        _mixer = -0x8000;
+			    }
+
+				_sample = unchecked((short)_mixer);
 				Resampler.EnqueueSample(_sample, _sample);
-				_cachedCycles--;
 			}
 		}
 

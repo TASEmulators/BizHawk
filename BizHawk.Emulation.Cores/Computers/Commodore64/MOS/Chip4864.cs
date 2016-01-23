@@ -15,11 +15,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	public sealed class Chip4864
 	{
-	    private readonly int[] ram;
+	    private readonly int[] _ram;
 
 		public Chip4864()
 		{
-			ram = new int[0x10000];
+			_ram = new int[0x10000];
 			HardReset();
 		}
 
@@ -27,32 +27,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			// stripe the ram
 			for (var i = 0; i < 10000; i++)
-				ram[i] = (i & 0x40) != 0 ? 0xFF : 0x00;
-		}
-
-		public int Peek(long addr)
-		{
-			return ram[addr];
-		}
-
-		public void Poke(long addr, int val)
-		{
-			ram[addr] = val;
+				_ram[i] = (i & 0x40) != 0 ? 0xFF : 0x00;
 		}
 
 		public int Peek(int addr)
 		{
-			return ram[addr];
+			return _ram[addr];
 		}
 
 		public void Poke(int addr, int val)
 		{
-			ram[addr] = val;
+			_ram[addr] = val;
 		}
 
 		public int Read(int addr)
 		{
-			return ram[addr];
+			return _ram[addr];
 		}
 
 		public void SyncState(Serializer ser)
@@ -62,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Write(int addr, int val)
 		{
-			ram[addr] = val;
+			_ram[addr] = val;
 		}
 	}
 }

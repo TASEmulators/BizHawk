@@ -17,39 +17,39 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	public sealed class Chip23XX
 	{
-	    private readonly int addrMask;
-	    private readonly int[] rom;
+	    private readonly int _addrMask;
+	    private readonly int[] _rom;
 
 		public Chip23XX(Chip23XXmodel model, byte[] data)
 		{
 			switch (model)
 			{
 				case Chip23XXmodel.Chip2332:
-					rom = new int[0x1000];
-					addrMask = 0xFFF;
+					_rom = new int[0x1000];
+					_addrMask = 0xFFF;
 					break;
 				case Chip23XXmodel.Chip2364:
-					rom = new int[0x2000];
-					addrMask = 0x1FFF;
+					_rom = new int[0x2000];
+					_addrMask = 0x1FFF;
 					break;
 				case Chip23XXmodel.Chip23128:
-					rom = new int[0x4000];
-					addrMask = 0x3FFF;
+					_rom = new int[0x4000];
+					_addrMask = 0x3FFF;
 					break;
 				default:
 					throw new Exception("Invalid chip model.");
 			}
-			Array.Copy(data, rom, rom.Length);
+			Array.Copy(data, _rom, _rom.Length);
 		}
 
 		public int Peek(int addr)
 		{
-			return rom[addr & addrMask];
+			return _rom[addr & _addrMask];
 		}
 
 		public int Read(int addr)
 		{
-			return rom[addr & addrMask];
+			return _rom[addr & _addrMask];
 		}
 
 		public void SyncState(Serializer ser)

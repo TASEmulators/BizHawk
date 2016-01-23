@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_loadPrg)
 			{
 				// check to see if cpu PC is at the BASIC warm start vector
-				if (_board.Cpu.PC == ((_board.Ram.Peek(0x0303) << 8) | _board.Ram.Peek(0x0302)))
+				if (_board.Cpu.Pc == ((_board.Ram.Peek(0x0303) << 8) | _board.Ram.Peek(0x0302)))
 				{
 					Prg.Load(_board.Pla, _inputFileInfo.Data);
 					_loadPrg = false;

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic ntsc old
 	// TODO is everything right? it's mostly a copy from the other NTSC chip with tweaks wherever it was neccessary to fix something
-	static public class MOS6567R56A
+	public static class MOS6567R56A
 	{
 		static int cycles = 64;
 		static int scanwidth = cycles * 8;
@@ -23,15 +23,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		static int[] ba = Vic.TimingBuilder_BA(fetch);
 		static int[] act = Vic.TimingBuilder_Act(timing, 0x004, 0x14C, hblankstart, hblankend);
 
-		static int[][] pipeline = new int[][]
-			{
+		static int[][] pipeline = {
 				timing,
 				fetch,
 				ba,
 				act
 			};
 
-		static public Vic Create()
+		public static Vic Create()
 		{
 			return new Vic(
 				cycles, lines,

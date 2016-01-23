@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	    private int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
-			byte result = 0xFF;
+			var result = 0xFF;
 			if (Serial.WriteDataIn())
 				result &= 0x7F;
 			if (Serial.WriteClockIn())
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    private int Cpu_ReadPort()
 		{
-			byte data = 0x1F;
+			var data = 0x1F;
 			if (!Cassette.ReadSenseBuffer())
 				data &= 0xEF;
 			return data;

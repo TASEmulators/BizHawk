@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	public sealed class Chip2114
 	{
-		int[] ram;
+	    private int[] _ram;
 
 		public Chip2114()
 		{
@@ -15,27 +15,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-			ram = new int[0x400];
+			_ram = new int[0x400];
 		}
 
 		public int Peek(int addr)
 		{
-			return ram[addr & 0x3FF];
+			return _ram[addr & 0x3FF];
 		}
 
 		public void Poke(int addr, int val)
 		{
-			ram[addr & 0x3FF] = val & 0xF;
+			_ram[addr & 0x3FF] = val & 0xF;
 		}
 
 		public int Read(int addr)
 		{
-			return ram[addr & 0x3FF];
+			return _ram[addr & 0x3FF];
 		}
 
 		public int ReadInt(int addr)
 		{
-			return ram[addr & 0x3FF];
+			return _ram[addr & 0x3FF];
 		}
 
 		public void SyncState(Serializer ser)
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Write(int addr, int val)
 		{
-			ram[addr & 0x3FF] = val & 0xF;
+			_ram[addr & 0x3FF] = val & 0xF;
 		}
 	}
 }
