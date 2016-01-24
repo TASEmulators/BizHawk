@@ -37,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _dataG;
 		private bool _displayEnable;
 		private int _displayC;
+	    private int _displayCLatch;
 		private bool _enableIntLightPen;
 		private bool _enableIntRaster;
 		private bool _enableIntSpriteCollision;
@@ -86,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _srMask2;
 		private int _srMask3;
 		private int _srMaskMc;
+	    private int _srColorMask;
 		private int _srSpriteMask;
 		private int _srSpriteMask1;
 		private int _srSpriteMask2;
@@ -102,8 +104,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-			// *** SHIFT REGISTER BITMASKS ***
-			_srMask1 = 0x20000;
+            // *** SHIFT REGISTER BITMASKS ***
+		    _srColorMask = 0x8000;
+            _srMask1 = 0x20000;
 			_srMask2 = _srMask1 << 1;
 			_srMask3 = _srMask1 | _srMask2;
 			_srMask = _srMask2;

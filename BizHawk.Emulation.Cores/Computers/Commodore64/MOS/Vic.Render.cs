@@ -2,8 +2,7 @@
 {
 	public sealed partial class Vic
 	{
-		private int _delayC;
-		private int _ecmPixel;
+	    private int _ecmPixel;
 		private int _pixel;
 		private int _pixelCounter;
 		private int _pixelData;
@@ -11,8 +10,9 @@
 		private int _sprData;
 		private int _sprIndex;
 		private int _sprPixel;
-		private int _srC;
-		private int _srSync;
+	    private int _srSync;
+	    private int _srColorSync;
+	    private int _srColorIndexLatch;
 		private int _videoMode;
 
 		private void Render()
@@ -33,14 +33,14 @@
 			while (_pixelCounter++ < 3)
 			{
 
-				if (_delayC > 0)
-					_delayC--;
-				else
-					_displayC = (_srC >> 12) & 0xFFF;
+			    if ((_srColorSync & _srColorMask) != 0)
+			    {
+                    _displayC = _bufferC[_srColorIndexLatch];
+                    _srColorIndexLatch = (_srColorIndexLatch + 1) & 0x3F;
+                }
 
-
-				#region PRE-RENDER BORDER
-				if (_borderCheckLEnable && (_rasterX == _borderL))
+                #region PRE-RENDER BORDER
+                if (_borderCheckLEnable && (_rasterX == _borderL))
 				{
 					if (_rasterLine == _borderB)
 						_borderOnVertical = true;
@@ -132,11 +132,12 @@
 				_pixel &= 0xF;
 				_sr <<= 1;
 				_srSync <<= 1;
+			    _srColorSync <<= 1;
                 #endregion
 
-				#region SPRITES
-				// render sprites
-				_pixelOwner = -1;
+                #region SPRITES
+                // render sprites
+                _pixelOwner = -1;
 				_sprIndex = 0;
 				foreach (var spr in _sprites)
 				{

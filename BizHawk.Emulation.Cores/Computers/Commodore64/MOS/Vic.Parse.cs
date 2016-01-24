@@ -52,7 +52,6 @@
 			        ReadMemory(_parseaddr);
 			        break;
 			    case 0x200:
-			        _delayC = _xScroll;
 			        if (!_idle)
 			        {
 			            if (_badline)
@@ -72,9 +71,8 @@
 			            _dataC = 0;
 			            _bufferC[_vmli] = _dataC;
 			        }
-			        _srC <<= 12;
-			        _srC |= _dataC;
-			        break;
+			        _srColorSync |= 0x01 << (7 - _xScroll);
+                    break;
 			    case 0x300:
 			        // fetch G
 			        if (_idle)
@@ -91,9 +89,9 @@
 			        _dataG = ReadMemory(_parseaddr);
 			        _sr |= _dataG << (7 - _xScroll);
 			        _srSync |= 0xAA << (7 - _xScroll);
-			        if (!_idle)
-			        {
-			            _bufferG[_vmli] = _dataG;
+                    if (!_idle)
+                    {
+                        _bufferG[_vmli] = _dataG;
 			            _vmli = (_vmli + 1) & 0x3F;
 			            _vc = (_vc + 1) & 0x3FF;
 			        }
@@ -240,6 +238,7 @@
 			if ((_parseact & PipelineUpdateVc) != 0) // VC/RC rule 2
 			{
 				_vc = _vcbase;
+			    _srColorIndexLatch = 0;
 				_vmli = 0;
 				if (_badline)
 					_rc = 0;
