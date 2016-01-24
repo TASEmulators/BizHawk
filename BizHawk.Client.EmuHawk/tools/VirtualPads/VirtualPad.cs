@@ -85,7 +85,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							Name = button.Name,
 							Location = UIHelper.Scale(button.Location),
-							Size = UIHelper.Scale(new Size(127 + 79, 127 + 9)),
+							Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
 							RangeX = new float[] { button.MinValue, button.MidValue, button.MaxValue },
 							RangeY = new float[] { button.MinValueSec, button.MidValueSec, button.MaxValueSec }, 
 						});

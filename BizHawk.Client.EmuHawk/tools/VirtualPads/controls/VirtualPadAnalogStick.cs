@@ -5,18 +5,34 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using System.Windows;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogStick : UserControl, IVirtualPadControl
 	{
+		#region Fields
+
 		private bool _programmaticallyUpdatingNumerics;
 		private bool _readonly;
+
+		private EventHandler manualXYValueChangedEventHandler;
+		private EventHandler polarNumericChangedEventHandler;
+
+		#endregion
 
 		public VirtualPadAnalogStick()
 		{
 			InitializeComponent();
 			AnalogStick.ClearCallback = ClearCallback;
+
+			manualXYValueChangedEventHandler = new EventHandler(ManualXY_ValueChanged);
+			polarNumericChangedEventHandler = new EventHandler(PolarNumeric_Changed);
+
+			ManualX.ValueChanged += manualXYValueChangedEventHandler;
+			ManualY.ValueChanged += manualXYValueChangedEventHandler;
+			manualR.ValueChanged += polarNumericChangedEventHandler;
+			manualTheta.ValueChanged += polarNumericChangedEventHandler;
 		}
 
 		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
@@ -64,6 +80,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ManualX.Value = 0;
 			ManualY.Value = 0;
+			manualR.Value = 0;
+			manualTheta.Value = 0;
 			//see HOOMOO
 			Global.AutofireStickyXORAdapter.SetSticky(AnalogStick.XName, false);
 			Global.StickyXORAdapter.Unset(AnalogStick.XName);
@@ -95,12 +113,16 @@ namespace BizHawk.Client.EmuHawk
 						MaxLabel.Enabled =
 						MaxXNumeric.Enabled =
 						MaxYNumeric.Enabled =
+						manualR.Enabled =
+						rLabel.Enabled =
+						manualTheta.Enabled =
+						thetaLabel.Enabled =
 						!value;
 
-					AnalogStick.ReadOnly = 
+					AnalogStick.ReadOnly =
 						_readonly =
 						value;
-				
+
 					Refresh();
 				}
 			}
@@ -130,24 +152,30 @@ namespace BizHawk.Client.EmuHawk
 			AnalogStick.SetPrevious(previous);
 		}
 
-		private void ManualX_ValueChanged(object sender, EventArgs e)
+		private void ManualXY_ValueChanged(object sender, EventArgs e)
 		{
 			SetAnalogControlFromNumerics();
 		}
-
-		private void ManualX_KeyUp(object sender, KeyEventArgs e)
+		private void MaxManualXY_ValueChanged(object sender, EventArgs e)
 		{
-			SetAnalogControlFromNumerics();
+			SetAnalogMaxFromNumerics();
 		}
 
-		private void ManualY_KeyUp(object sender, KeyEventArgs e)
+		private void PolarNumeric_Changed(object sender, EventArgs e)
 		{
-			SetAnalogControlFromNumerics();
-		}
+			ManualX.ValueChanged -= manualXYValueChangedEventHandler;
+			ManualY.ValueChanged -= manualXYValueChangedEventHandler;
 
-		private void ManualY_ValueChanged(object sender, EventArgs e)
-		{
-			SetAnalogControlFromNumerics();
+			ManualX.Value = Math.Ceiling(manualR.Value * (decimal)Math.Cos(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127);
+			ManualY.Value = Math.Ceiling(manualR.Value * (decimal)Math.Sin(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127);
+
+			AnalogStick.X = (int)ManualX.Value;
+			AnalogStick.Y = (int)ManualY.Value;
+			AnalogStick.HasValue = true;
+			AnalogStick.Refresh();
+
+			ManualX.ValueChanged += manualXYValueChangedEventHandler;
+			ManualY.ValueChanged += manualXYValueChangedEventHandler;
 		}
 
 		private void SetAnalogControlFromNumerics()
@@ -188,6 +216,15 @@ namespace BizHawk.Client.EmuHawk
 					ManualY.Value = 0;
 				}
 			}
+
+			manualR.ValueChanged -= polarNumericChangedEventHandler;
+			manualTheta.ValueChanged -= polarNumericChangedEventHandler;
+
+			manualR.Value = (decimal)Math.Sqrt(Math.Pow(AnalogStick.X, 2) + Math.Pow(AnalogStick.Y, 2));
+			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y, AnalogStick.X) * (180 / Math.PI));
+
+			manualR.ValueChanged += polarNumericChangedEventHandler;
+			manualTheta.ValueChanged += polarNumericChangedEventHandler;
 		}
 
 		private void AnalogStick_MouseDown(object sender, MouseEventArgs e)
@@ -208,26 +245,6 @@ namespace BizHawk.Client.EmuHawk
 				SetNumericsFromAnalog();
 				_programmaticallyUpdatingNumerics = false;
 			}
-		}
-
-		private void MaxXNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			SetAnalogMaxFromNumerics();
-		}
-
-		private void MaxXNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			SetAnalogMaxFromNumerics();
-		}
-
-		private void MaxYNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			SetAnalogMaxFromNumerics();
-		}
-
-		private void MaxYNumeric_KeyUp(object sender, KeyEventArgs e)
-		{
-			SetAnalogMaxFromNumerics();
 		}
 
 		private void SetAnalogMaxFromNumerics()

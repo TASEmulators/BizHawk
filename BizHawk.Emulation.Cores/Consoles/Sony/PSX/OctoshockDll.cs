@@ -96,6 +96,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			BobOffset
 		}
 
+		[Flags]
+		public enum eShockMemCb : int
+		{
+			None = 0,
+			Read = 1,
+			Write = 2,
+			Execute = 4
+		}
+
 		public const int SHOCK_OK = 0;
 		public const int SHOCK_FALSE = 0;
 		public const int SHOCK_TRUE = 1;
@@ -172,14 +181,18 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			public TextStateFPtrs ff;
 		};
 
+
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis);
+		public delegate void ShockCallback_Trace(IntPtr opaque, uint PC, uint inst, string dis);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ShockDisc_ReadTOC(IntPtr opaque, ShockTOC* read_target, ShockTOCTrack* tracks101);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int ShockDisc_ReadLBA(IntPtr opaque, int lba, void* dst);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void ShockCallback_Mem(uint address, eShockMemCb type, uint size, uint value);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Util_DisassembleMIPS(uint PC, uint instr, IntPtr outbuf, int buflen);
@@ -192,8 +205,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_AnalyzeDisc(IntPtr disc, out ShockDiscInfo info);
-
-
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Create(out IntPtr psx, eRegion region, void* firmware512k);
@@ -271,7 +282,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public static extern int shock_SetRegister_CPU(IntPtr psx, int index, uint value);
 
 		[DllImport(dd, CallingConvention = cc)]
-		public static extern int shock_SetTraceCallback(IntPtr psx, IntPtr opaque, ShockTraceCallback callback);
+		public static extern int shock_SetTraceCallback(IntPtr psx, IntPtr opaque, ShockCallback_Trace callback);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_SetMemCb(IntPtr psx, ShockCallback_Mem cb, eShockMemCb cbMask);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetLEC(IntPtr psx, bool enable);

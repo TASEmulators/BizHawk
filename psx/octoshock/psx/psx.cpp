@@ -2700,6 +2700,8 @@ EW_EXPORT s32 shock_SetRenderOptions(void* pxs, ShockRenderOptions* opts)
 
 extern void* g_ShockTraceCallbackOpaque;
 extern ShockCallback_Trace g_ShockTraceCallback;
+extern ShockCallback_Mem g_ShockMemCallback;
+extern eShockMemCb g_ShockMemCbType;
 
 //Sets the callback to be used for CPU tracing
 EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trace callback)
@@ -2707,6 +2709,14 @@ EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trac
 	g_ShockTraceCallbackOpaque = opaque;
 	g_ShockTraceCallback = callback;
 
+	return SHOCK_OK;
+}
+
+//Sets the callback to be used for memory hook events
+EW_EXPORT s32 shock_SetMemCb(void* psx, ShockCallback_Mem callback, eShockMemCb cbMask)
+{
+	g_ShockMemCallback = callback;
+	g_ShockMemCbType = cbMask;
 	return SHOCK_OK;
 }
 
