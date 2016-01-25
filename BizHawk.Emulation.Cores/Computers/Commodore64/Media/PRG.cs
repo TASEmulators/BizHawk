@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public static class Prg
 	{
-		public static void Load(MOSPLA pla, byte[] prgFile)
+		public static void Load(Chip90611401 pla, byte[] prgFile)
 		{
 			var length = prgFile.Length;
 		    if (length <= 2)

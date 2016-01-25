@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
 
-	public sealed class Mos6526
+	public sealed class Chip6526
 	{
 		// ------------------------------------
 
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// todStepsNum/todStepsDen is the number of clock cycles it takes the external clock source to advance one cycle
 		// (50 or 60 Hz depending on AC frequency in use).
 		// By default the CIA assumes 60 Hz and will thus count incorrectly when fed with 50 Hz.
-		public Mos6526(int todStepsNum, int todStepsDen)
+		public Chip6526(int todStepsNum, int todStepsDen)
 		{
 			_todStepsNum = todStepsNum;
 			_todStepsDen = todStepsDen;
