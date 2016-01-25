@@ -54,6 +54,7 @@
 
 		private void WriteInputPort()
 		{
+            /*
 			var portA = Cia0.PortAData;
 			var portB = Cia0.PortBData;
 			var resultA = 0xFF;
@@ -92,6 +93,7 @@
 
 			// this joystick has special rules.
 			Cia0.PortAMask = joyA;
+            */
 		}
 	}
 }
