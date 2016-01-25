@@ -237,9 +237,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			var charRom = GetFirmware("Chargen", 0x1000);
 			var kernalRom = GetFirmware("Kernal", 0x2000);
 
-			_board.BasicRom = new Chip23XX(Chip23XXmodel.Chip2364, basicRom);
-			_board.KernalRom = new Chip23XX(Chip23XXmodel.Chip2364, kernalRom);
-			_board.CharRom = new Chip23XX(Chip23XXmodel.Chip2332, charRom);
+			_board.BasicRom = new Chip23128(basicRom);
+			_board.KernalRom = new Chip23128(kernalRom);
+			_board.CharRom = new Chip23128(charRom);
 		}
 
 		// ------------------------------------

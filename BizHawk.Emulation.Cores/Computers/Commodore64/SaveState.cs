@@ -10,6 +10,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	internal static class SaveState
 	{
+	    public class DoNotSave : Attribute
+	    {
+	    }
+
 		private static readonly Encoding Encoding = Encoding.Unicode;
 
 		public static void SyncObject(Serializer ser, object obj)
@@ -28,9 +32,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				if (member.MemberType == MemberTypes.Field && member.ReflectedType != null)
 				{
 					fieldInfo = member.ReflectedType.GetField(member.Name, defaultFlags);
-					valueType = fieldInfo.FieldType;
-					currentValue = fieldInfo.GetValue(obj);
-				}
+				    if (fieldInfo != null)
+				    {
+                        if (fieldInfo.GetCustomAttributes(true).Any(a => a is DoNotSave))
+                        {
+                            fail = true;
+                        }
+                        else
+                        {
+                            valueType = fieldInfo.FieldType;
+                            currentValue = fieldInfo.GetValue(obj);
+                        }
+                    }
+				    else
+				    {
+				        fail = true;
+				    }
+                }
 				else
 				{
 					fail = true;

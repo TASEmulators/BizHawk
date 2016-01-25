@@ -186,7 +186,7 @@
     <Compile Include="Computers\Commodore64\Cartridge\CartridgePort.cs" />
     <Compile Include="Computers\Commodore64\Cassette\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip23128.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
     <Compile Include="Computers\Commodore64\MOS\Cia.cs" />
     <Compile Include="Computers\Commodore64\MOS\Cia.Port.cs" />
