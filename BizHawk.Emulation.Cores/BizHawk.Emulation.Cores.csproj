@@ -194,9 +194,6 @@
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
     <Compile Include="Computers\Commodore64\Media\Disk.cs" />
     <Compile Include="Computers\Commodore64\Media\G64.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Interface.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.PortIO.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6567R8.cs" />
     <Compile Include="Computers\Commodore64\MOS\MOS6572.cs" />
@@ -936,7 +933,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Registers.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
