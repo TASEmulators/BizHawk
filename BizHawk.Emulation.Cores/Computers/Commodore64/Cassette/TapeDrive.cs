@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
         public override bool ReadSenseBuffer()
         {
-            return _tape == null; // Just assume that "play" is constantly pressed as long as a tape is inserted
+            return _tape == null;
         }
 
         public override void SyncState(Serializer ser)

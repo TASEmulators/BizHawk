@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic ntsc
-	public static class MOS6567R8
+	public static class Chip6567R8
 	{
 		static int cycles = 65;
 		static int scanwidth = cycles * 8;

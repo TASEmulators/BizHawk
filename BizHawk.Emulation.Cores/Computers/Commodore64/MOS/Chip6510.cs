@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
 
-	public sealed class Mos6510
+	public sealed class Chip6510
 	{
 		// ------------------------------------
 
@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public Mos6510()
+		public Chip6510()
 		{
             // configure cpu r/w
             _cpu = new MOS6502X

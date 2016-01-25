@@ -3,7 +3,7 @@
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic pal
-	static public class MOS6569
+	public static class Chip6569
 	{
 		static int cycles = 63;
 		static int scanwidth = cycles * 8;

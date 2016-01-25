@@ -17,12 +17,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// chips
 		public Chip23XX BasicRom;
 		public Chip23XX CharRom;
-		public readonly Mos6526 Cia0;
-		public readonly Mos6526 Cia1;
+		public readonly Chip6526 Cia0;
+		public readonly Chip6526 Cia1;
 		public readonly Chip2114 ColorRam;
-		public readonly Mos6510 Cpu;
+		public readonly Chip6510 Cpu;
 		public Chip23XX KernalRom;
-		public readonly MOSPLA Pla;
+		public readonly Chip90611401 Pla;
 		public readonly Chip4864 Ram;
 		public readonly Sid Sid;
 		public readonly Vic Vic;
@@ -71,20 +71,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
-			Cia0 = new Mos6526(clockNum, clockDen*mainsFrq);
-			Cia1 = new Mos6526(clockNum, clockDen*mainsFrq);
+			Cia0 = new Chip6526(clockNum, clockDen*mainsFrq);
+			Cia1 = new Chip6526(clockNum, clockDen*mainsFrq);
 			ColorRam = new Chip2114();
-			Cpu = new Mos6510();
-			Pla = new MOSPLA();
+			Cpu = new Chip6510();
+			Pla = new Chip90611401();
 			Ram = new Chip4864();
 			Serial = new SerialPort();
-			Sid = MOS6581.Create(44100, clockNum, clockDen);
+			Sid = Chip6581.Create(44100, clockNum, clockDen);
 			switch (initRegion)
 			{
-				case C64.VicType.Ntsc: Vic = MOS6567R8.Create(); break;
-				case C64.VicType.Pal: Vic = MOS6569.Create(); break;
-				case C64.VicType.NtscOld: Vic = MOS6567R56A.Create(); break;
-				case C64.VicType.Drean: Vic = MOS6572.Create(); break;
+				case C64.VicType.Ntsc: Vic = Chip6567R8.Create(); break;
+				case C64.VicType.Pal: Vic = Chip6569.Create(); break;
+				case C64.VicType.NtscOld: Vic = Chip6567R56A.Create(); break;
+				case C64.VicType.Drean: Vic = Chip6572.Create(); break;
 			}
 			User = new UserPort();
 		}
