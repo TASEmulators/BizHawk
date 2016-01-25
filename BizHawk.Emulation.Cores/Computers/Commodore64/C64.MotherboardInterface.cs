@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (Cpu.PortData & 0x20) != 0;
 		}
 
+        /*
 	    private bool Cia0_ReadCnt()
 		{
 			return User.ReadCounter1() && Cia0.ReadCntBuffer();
@@ -37,12 +38,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return User.ReadSerial1() && Cia0.ReadSpBuffer();
 		}
 
+	    private bool Cia1_ReadSP()
+		{
+			return User.ReadSerial2() && Cia1.ReadSpBuffer();
+		}
+
 	    private bool Cia1_ReadCnt()
 		{
 			return User.ReadCounter2() && Cia1.ReadCntBuffer();
 		}
+        */
 
-	    private int Cia1_ReadPortA()
+        private int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
 			var result = 0xFF;
@@ -51,11 +58,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (Serial.WriteClockIn())
 				result &= 0xBF;
 			return result;
-		}
-
-	    private bool Cia1_ReadSP()
-		{
-			return User.ReadSerial2() && Cia1.ReadSpBuffer();
 		}
 
 	    private int Cpu_ReadPort()
@@ -114,6 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (Cpu.PortData & 0x01) != 0;
 		}
 
+        /*
 	    private bool SerPort_ReadAtnOut()
 		{
 			return (Cia1.PortBData & 0x08) == 0;
@@ -128,6 +131,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			return (Cia1.PortAData & 0x20) == 0;
 		}
+        */
 
 	    private int Sid_ReadPotX()
 		{
@@ -142,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	    private int Vic_ReadMemory(int addr)
 		{
 			// the system sees (cia1.PortAData & 0x3) but we use a shortcut
-			addr |= (0x3 - (((Cia1.PortALatch & Cia1.PortADirection) | ~Cia1.PortADirection) & 0x3)) << 14;
+			addr |= (0x3 - (Cia1.ReadPortA() & 0x3)) << 14;
 			return Pla.VicRead(addr);
 		}
 	}

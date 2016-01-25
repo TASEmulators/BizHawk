@@ -17,8 +17,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// chips
 		public Chip23128 BasicRom;
 		public Chip23128 CharRom;
-		public readonly Chip6526 Cia0;
-		public readonly Chip6526 Cia1;
+		public readonly Cia Cia0;
+		public readonly Cia Cia1;
 		public readonly Chip2114 ColorRam;
 		public readonly Chip6510 Cpu;
 		public Chip23128 KernalRom;
@@ -71,9 +71,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
-			Cia0 = new Chip6526(clockNum, clockDen*mainsFrq);
-			Cia1 = new Chip6526(clockNum, clockDen*mainsFrq);
-			ColorRam = new Chip2114();
+			Cia0 = new Cia(clockNum, clockDen * mainsFrq, keyboardPressed, joystickPressed);
+            Cia1 = new Cia(clockNum, clockDen * mainsFrq, Cia1_ReadPortA);
+            ColorRam = new Chip2114();
 			Cpu = new Chip6510();
 			Pla = new Chip90611401();
 			Ram = new Chip4864();
@@ -137,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cassette.ReadDataOutput = CassPort_ReadDataOutput;
 			Cassette.ReadMotor = CassPort_ReadMotor;
 
+            /*
 			Cia0.ReadCnt = Cia0_ReadCnt;
 			Cia0.ReadFlag = Cassette.ReadDataInputBuffer;
 			Cia0.ReadPortA = Cia0_ReadPortA;
@@ -148,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cia1.ReadPortA = Cia1_ReadPortA;
 			Cia1.ReadPortB = User.ReadData;
 			Cia1.ReadSp = Cia1_ReadSP;
+            */
 
 			Cpu.PeekMemory = Pla.Peek;
 			Cpu.PokeMemory = Pla.Poke;
@@ -214,18 +216,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla.WriteSid = Sid.Write;
 			Pla.WriteVic = Vic.Write;
 
+            /*
 			Serial.ReadAtnOut = SerPort_ReadAtnOut;
 			Serial.ReadClockOut = SerPort_ReadClockOut;
 			Serial.ReadDataOut = SerPort_ReadDataOut;
+            */
 
 			Sid.ReadPotX = Sid_ReadPotX;
 			Sid.ReadPotY = Sid_ReadPotY;
 
+            /*
 		    User.ReadCounter1 = Cia0.ReadCntBuffer;
 		    User.ReadCounter2 = Cia1.ReadCntBuffer;
 		    User.ReadHandshake = Cia1.ReadPcBuffer;
 		    User.ReadSerial1 = Cia0.ReadSpBuffer;
 		    User.ReadSerial2 = Cia1.ReadSpBuffer;
+            */
 
 			Vic.ReadMemory = Vic_ReadMemory;
 			Vic.ReadColorRam = ColorRam.Read;
