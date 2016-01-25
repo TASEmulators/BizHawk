@@ -28,10 +28,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	    private bool _filterSelectLoPass;
 	    private bool _filterSelectHiPass;
 	    private int _mixer;
-	    private int _potCounter;
+        private readonly short[] _outputBuffer;
+	    private int _outputBufferIndex;
+        private int _potCounter;
 	    private int _potX;
 	    private int _potY;
-	    private short _sample;
+        private short _sample;
 	    private int _voiceOutput0;
         private int _voiceOutput1;
         private int _voiceOutput2;
@@ -64,7 +66,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			for (var i = 0; i < 3; i++)
 				_filterEnable[i] = false;
 
-			Resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
+		    _outputBuffer = new short[0x800];
+            Resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
 		}
 
 		public void Dispose()
@@ -109,7 +112,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Flush()
 		{
-			while (_cachedCycles-- > 0)
+            _outputBufferIndex = 0;
+            while (_cachedCycles-- > 0)
 			{
 				// process voices and envelopes
 				_voice0.ExecutePhase2();
@@ -146,14 +150,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			        _mixer = -0x8000;
 			    }
 
-				_sample = unchecked((short)_mixer);
-				Resampler.EnqueueSample(_sample, _sample);
-			}
-		}
+                _sample = unchecked((short)_mixer);
+                _outputBuffer[_outputBufferIndex++] = _sample;
+                _outputBuffer[_outputBufferIndex++] = _sample;
+                if (_outputBufferIndex == 0x800)
+                {
+                    Resampler.EnqueueSamples(_outputBuffer, 0x400);
+                    _outputBufferIndex = 0;
+                }
+            }
 
-		// ----------------------------------
+            if (_outputBufferIndex > 0)
+            {
+                Resampler.EnqueueSamples(_outputBuffer, _outputBufferIndex >> 1);
+            }
+        }
 
-		public void SyncState(Serializer ser)
+        // ----------------------------------
+
+        public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
 			ser.BeginSection("env0");
