@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	public sealed partial class Motherboard
 	{
 		// chips
-		public Chip23XX BasicRom;
-		public Chip23XX CharRom;
+		public Chip23128 BasicRom;
+		public Chip23128 CharRom;
 		public readonly Chip6526 Cia0;
 		public readonly Chip6526 Cia1;
 		public readonly Chip2114 ColorRam;
 		public readonly Chip6510 Cpu;
-		public Chip23XX KernalRom;
+		public Chip23128 KernalRom;
 		public readonly Chip90611401 Pla;
 		public readonly Chip4864 Ram;
 		public readonly Sid Sid;
