@@ -112,10 +112,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
             Cassette.ExecutePhase2();
             Vic.ExecutePhase2();
-			Cpu.ExecutePhase2();
-			Cia0.ExecutePhase2();
-			Cia1.ExecutePhase2();
-			Sid.ExecutePhase2();
+            Sid.ExecutePhase2();
+            Cia0.ExecutePhase2();
+            Cia1.ExecutePhase2();
+            Cpu.ExecutePhase2();
 		}
 
 		public void Flush()
