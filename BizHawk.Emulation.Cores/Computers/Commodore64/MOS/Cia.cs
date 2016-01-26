@@ -132,11 +132,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
         }
 
-        public void ExecutePhase1()
-        {
-            
-        }
-
         public void ExecutePhase2()
         {
             CheckIrqs();
@@ -166,6 +161,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     if (_ta == 1)
                     {
                         Ta_Interrupt();
+                        _taUnderflow = true;
+                        Ta_Idle();
                     }
                     else
                     {
@@ -206,6 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     if (_tb == 1)
                     {
                         Tb_Interrupt();
+                        Tb_Idle();
                     }
                     else
                     {
@@ -301,6 +299,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                             }
                         }
                         break;
+                    case TimerState.Count:
+                        if ((_newCra & 0x01) != 0)
+                        {
+                            if ((_newCra & 0x10) != 0)
+                            {
+                                _taState = TimerState.LoadThenWaitThenCount;
+                            }
+                        }
+                        else
+                        {
+                            if ((_newCra & 0x10) != 0)
+                            {
+                                _taState = TimerState.LoadThenStop;
+                            }
+                            else
+                            {
+                                _taState = TimerState.CountThenStop;
+                            }
+                        }
+                        break;
                     case TimerState.LoadThenCount:
                     case TimerState.WaitThenCount:
                         if ((_newCra & 0x01) != 0)
@@ -384,6 +402,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                             if ((_newCrb & 0x10) != 0)
                             {
                                 _tbState = TimerState.LoadThenStop;
+                            }
+                        }
+                        break;
+                    case TimerState.Count:
+                        if ((_newCrb & 0x01) != 0)
+                        {
+                            if ((_newCrb & 0x10) != 0)
+                            {
+                                _tbState = TimerState.LoadThenWaitThenCount;
+                            }
+                        }
+                        else
+                        {
+                            if ((_newCrb & 0x10) != 0)
+                            {
+                                _tbState = TimerState.LoadThenStop;
+                            }
+                            else
+                            {
+                                _tbState = TimerState.CountThenStop;
                             }
                         }
                         break;

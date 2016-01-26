@@ -28,11 +28,11 @@
 			_c64.InputCallbacks.Call();
 			// scan joysticks
 			_pollIndex = 0;
-			for (var j = 0; j < 5; j++)
+			for (var j = 0; j < 2; j++)
 			{
-				for (var i = 0; i < 2; i++)
+				for (var i = 0; i < 5; i++)
 				{
-					_joystickPressed[_pollIndex++] = Controller[JoystickMatrix[i, j]] ? -1 : 0;
+					_joystickPressed[_pollIndex++] = Controller[JoystickMatrix[j, i]] ? -1 : 0;
 				}
 			}
 
