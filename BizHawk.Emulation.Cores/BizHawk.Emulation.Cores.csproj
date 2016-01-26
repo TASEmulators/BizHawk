@@ -204,6 +204,8 @@
     <Compile Include="Computers\Commodore64\MOS\Chip6569.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip90611401.cs" />
     <Compile Include="Computers\Commodore64\MOS\LatchedPort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\NewVic\Vic.cs" />
+    <Compile Include="Computers\Commodore64\MOS\NewVic\Vic.Registers.cs" />
     <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Envelope.cs" />
