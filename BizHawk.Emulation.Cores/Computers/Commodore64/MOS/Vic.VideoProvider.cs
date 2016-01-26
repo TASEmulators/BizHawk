@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _pixBufferIndex;
 
 		// palette
-		private readonly int[] _palette =
+		private static readonly int[] Palette =
 		{
 				Colors.ARGB(0x00, 0x00, 0x00),
 				Colors.ARGB(0xFF, 0xFF, 0xFF),

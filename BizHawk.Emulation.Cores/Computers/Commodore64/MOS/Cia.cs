@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private int _cra;
         private int _crb;
         private int _intMask;
-        private bool _todHalt;
+        private bool _todLatch;
         private bool _taCntPhi2;
         private bool _tbCntPhi2;
         private bool _tbCntTa;
@@ -56,13 +56,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private TimerState _tbState;
         private int _newCra;
         private int _newCrb;
-        private bool _taUnderflow;
+        [SaveState.DoNotSave] private bool _taUnderflow;
 
-        private Port _port;
-        private int _todlo;
-        private int _todhi;
-        private int _todNum;
-        private int _todDen;
+        private readonly Port _port;
+        [SaveState.DoNotSave] private int _todlo;
+        [SaveState.DoNotSave] private int _todhi;
+        [SaveState.DoNotSave] private readonly int _todNum;
+        [SaveState.DoNotSave] private readonly int _todDen;
         private int _todCounter;
 
         private Cia(int todNum, int todDen)
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _cra = 0;
             _crb = 0;
             _intMask = 0;
-            _todHalt = false;
+            _todLatch = false;
             _taCntPhi2 = false;
             _tbCntPhi2 = false;
             _tbCntTa = false;
@@ -220,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             CountTod();
 
-            if (!_todHalt)
+            if (!_todLatch)
             {
                 _latch10Ths = _tod10Ths;
                 _latchSec = _todSec;

@@ -243,7 +243,7 @@
 				// plot pixel if within viewing area
 				if (_renderEnabled)
 				{
-					_buf[_bufOffset] = _palette[_pixBuffer[_pixBufferIndex]];
+					_buf[_bufOffset] = Palette[_pixBuffer[_pixBufferIndex]];
 					_bufOffset++;
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;
@@ -254,7 +254,6 @@
 
 				if (!_rasterXHold)
 					_rasterX++;
-				_bitmapColumn++;
 			}
 
 			if (_pixBufferIndex >= PixBufferSize)
