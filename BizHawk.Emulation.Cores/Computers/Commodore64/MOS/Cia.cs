@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -456,6 +457,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _icr |= num;
             if ((_int_mask & num) == 0) return;
             _icr |= 0x80;
+        }
+
+        public void SyncState(Serializer ser)
+        {
+            SaveState.SyncObject(ser, this);
         }
     }
 }
