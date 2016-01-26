@@ -28,14 +28,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             switch (addr)
             {
                 case 0x8:
-                    _todHalt = false;
+                    _todLatch = false;
                     return _latch10Ths;
                 case 0x9:
                     return _latchSec;
                 case 0xA:
                     return _latchMin;
                 case 0xB:
-                    _todHalt = true;
+                    _todLatch = true;
                     return _latchHr;
                 case 0xD:
                     var icrTemp = _icr;

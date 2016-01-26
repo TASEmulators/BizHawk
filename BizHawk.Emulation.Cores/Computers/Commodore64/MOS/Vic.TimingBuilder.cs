@@ -7,18 +7,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
-	    private const int BorderLeft38 = 0x01F;
-	    private const int BorderLeft40 = 0x018;
-	    private const int BorderRight38 = 0x14F;
-	    private const int BorderRight40 = 0x158;
+	    [SaveState.DoNotSave] private const int BorderLeft38 = 0x01F;
+	    [SaveState.DoNotSave] private const int BorderLeft40 = 0x018;
+	    [SaveState.DoNotSave] private const int BorderRight38 = 0x14F;
+	    [SaveState.DoNotSave] private const int BorderRight40 = 0x158;
 
-		// The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
-		private static readonly int[] TimingBuilderCycle14Act = {
+        // The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
+        [SaveState.DoNotSave]
+        private static readonly int[] TimingBuilderCycle14Act = {
 			PipelineUpdateVc, 0,
 			PipelineChkSprCrunch, 0,
 			PipelineUpdateMcBase, 0,
         };
-		private static readonly int[] TimingBuilderCycle55Act = {
+
+        [SaveState.DoNotSave]
+        private static readonly int[] TimingBuilderCycle55Act = {
 			PipelineChkSprDma, 0,
 			PipelineChkSprDma | PipelineChkSprExp, 0,
 			0, 0,

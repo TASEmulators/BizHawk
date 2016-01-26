@@ -14,10 +14,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private readonly int _cyclesPerSec;
 		private int _irqShift;
-        private readonly int[] _rasterXPipeline;
-        private readonly int[] _fetchPipeline;
-        private readonly int[] _baPipeline;
-        private readonly int[] _actPipeline;
+        [SaveState.DoNotSave] private readonly int[] _rasterXPipeline;
+        [SaveState.DoNotSave] private readonly int[] _fetchPipeline;
+        [SaveState.DoNotSave] private readonly int[] _baPipeline;
+        [SaveState.DoNotSave] private readonly int[] _actPipeline;
         private readonly int _totalCycles;
 		private readonly int _totalLines;
 

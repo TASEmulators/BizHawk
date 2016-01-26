@@ -11,9 +11,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	{
 	    private sealed class Envelope
 		{
-		    private const int StateAttack = 0;
-		    private const int StateDecay = 1;
-		    private const int StateRelease = 2;
+		    [SaveState.DoNotSave] private const int StateAttack = 0;
+		    [SaveState.DoNotSave] private const int StateDecay = 1;
+		    [SaveState.DoNotSave] private const int StateRelease = 2;
 
 		    private int _attack;
 		    private int _decay;
