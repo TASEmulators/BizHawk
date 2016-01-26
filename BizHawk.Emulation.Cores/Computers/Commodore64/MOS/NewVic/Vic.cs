@@ -542,5 +542,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS.NewVic
                     return;
             }
         }
+
+        private void DrawSprites()
+        {
+            
+        }
     }
 }
