@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool IsLagFrame
 		{
 			get { return islag; }
-            set { islag = value; }
+			set { islag = value; }
 		}
 
 		public IInputCallbackSystem InputCallbacks

@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public bool IsLagFrame
 		{
 			get { return _isLag; }
-            set { _isLag = value; }
+			set { _isLag = value; }
 		}
 	}
 }
