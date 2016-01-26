@@ -73,5 +73,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			Pal, Ntsc, NtscOld, Drean
 		}
+
+	    public enum CiaType
+	    {
+	        Pal, Ntsc, PalRevA, NtscRevA
+	    }
 	}
 }

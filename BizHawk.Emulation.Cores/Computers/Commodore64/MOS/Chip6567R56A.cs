@@ -1,43 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic ntsc old
 	// TODO is everything right? it's mostly a copy from the other NTSC chip with tweaks wherever it was neccessary to fix something
 	public static class Chip6567R56A
 	{
-		static int cycles = 64;
-		static int scanwidth = cycles * 8;
-		static int lines = 262;
-		static int vblankstart = 0x00D % lines;
-		static int vblankend = 0x018 % lines;
-		static int hblankoffset = 20;
-		static int hblankstart = (0x18C + hblankoffset) % scanwidth;
-		static int hblankend = (0x1F0 + hblankoffset) % scanwidth;
+	    private static readonly int Cycles = 64;
+	    private static readonly int ScanWidth = Cycles * 8;
+	    private static readonly int Lines = 262;
+	    private static readonly int Vblankstart = 0x00D % Lines;
+	    private static readonly int VblankEnd = 0x018 % Lines;
+	    private static readonly int HblankOffset = 20;
+	    private static readonly int HblankStart = (0x18C + HblankOffset) % ScanWidth;
+	    private static readonly int HblankEnd = (0x1F0 + HblankOffset) % ScanWidth;
 
-		static int[] timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, scanwidth, -1, -1);
-		static int[] fetch = Vic.TimingBuilder_Fetch(timing, 0x174);
-		static int[] ba = Vic.TimingBuilder_BA(fetch);
-		static int[] act = Vic.TimingBuilder_Act(timing, 0x004, 0x14C, hblankstart, hblankend);
+	    private static readonly int[] Timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, ScanWidth, -1, -1);
+	    private static readonly int[] Fetch = Vic.TimingBuilder_Fetch(Timing, 0x174);
+	    private static readonly int[] Ba = Vic.TimingBuilder_BA(Fetch);
+	    private static readonly int[] Act = Vic.TimingBuilder_Act(Timing, 0x004, 0x14C, HblankStart, HblankEnd);
 
-		static int[][] pipeline = {
-				timing,
-				fetch,
-				ba,
-				act
+	    private static readonly int[][] Pipeline = {
+				Timing,
+				Fetch,
+				Ba,
+				Act
 			};
 
 		public static Vic Create()
 		{
 			return new Vic(
-				cycles, lines,
-				pipeline,
+				Cycles, Lines,
+				Pipeline,
 				14318181 / 14,
-				hblankstart, hblankend,
-				vblankstart, vblankend
+				HblankStart, HblankEnd,
+				Vblankstart, VblankEnd
 				);
 		}
 	}

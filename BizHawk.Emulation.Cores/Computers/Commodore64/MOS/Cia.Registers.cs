@@ -28,11 +28,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             switch (addr)
             {
                 case 0x8:
-                    _tod_halt = false;
-                    return ReadRegister(addr);
+                    _todLatch = false;
+                    return _latch10Ths;
+                case 0x9:
+                    return _latchSec;
+                case 0xA:
+                    return _latchMin;
                 case 0xB:
-                    _tod_halt = true;
-                    return ReadRegister(addr);
+                    _todLatch = true;
+                    return _latchHr;
                 case 0xD:
                     var icrTemp = _icr;
                     _icr = 0;
@@ -62,13 +66,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 case 0x7:
                     return (_tb >> 8) & 0xFF;
                 case 0x8:
-                    return _tod_10ths;
+                    return _tod10Ths;
                 case 0x9:
-                    return _tod_sec;
+                    return _todSec;
                 case 0xA:
-                    return _tod_min;
+                    return _todMin;
                 case 0xB:
-                    return _tod_hr;
+                    return _todHr;
                 case 0xC:
                     return _sdr;
                 case 0xD:
@@ -126,41 +130,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 case 0x8:
                     if ((_crb & 0x80) != 0)
                     {
-                        _alm_10ths = val & 0xF;
+                        _alm10Ths = val & 0xF;
                     }
                     else
                     {
-                        _tod_10ths = val & 0xF;
+                        _tod10Ths = val & 0xF;
                     }
                     break;
                 case 0x9:
                     if ((_crb & 0x80) != 0)
                     {
-                        _alm_sec = val & 0x7F;
+                        _almSec = val & 0x7F;
                     }
                     else
                     {
-                        _tod_sec = val & 0x7F;
+                        _todSec = val & 0x7F;
                     }
                     break;
                 case 0xA:
                     if ((_crb & 0x80) != 0)
                     {
-                        _alm_min = val & 0x7F;
+                        _almMin = val & 0x7F;
                     }
                     else
                     {
-                        _tod_min = val & 0x7F;
+                        _todMin = val & 0x7F;
                     }
                     break;
                 case 0xB:
                     if ((_crb & 0x80) != 0)
                     {
-                        _alm_hr = val & 0x9F;
+                        _almHr = val & 0x9F;
                     }
                     else
                     {
-                        _tod_hr = val & 0x9F;
+                        _todHr = val & 0x9F;
                     }
                     break;
                 case 0xC:
@@ -170,23 +174,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 case 0xD:
                     if ((val & 0x80) != 0)
                     {
-                        _int_mask |= (val & 0x7F);
+                        _intMask |= (val & 0x7F);
                     }
                     else
                     {
-                        _int_mask &= ~val;
+                        _intMask &= ~val;
+                    }
+                    if ((_icr & _intMask & 0x1F) != 0)
+                    {
+                        _icr |= 0x80;
                     }
                     break;
                 case 0xE:
-                    _has_new_cra = true;
-                    _new_cra = val;
-                    _ta_cnt_phi2 = ((val & 0x20) == 0);
+                    _hasNewCra = true;
+                    _newCra = val;
+                    _taCntPhi2 = ((val & 0x20) == 0);
                     break;
                 case 0xF:
-                    _has_new_crb = true;
-                    _new_crb = val;
-                    _tb_cnt_phi2 = ((val & 0x60) == 0);
-                    _tb_cnt_ta = ((val & 0x60) == 0x40);
+                    _hasNewCrb = true;
+                    _newCrb = val;
+                    _tbCntPhi2 = ((val & 0x60) == 0);
+                    _tbCntTa = ((val & 0x60) == 0x40);
                     break;
             }
         }
@@ -224,31 +232,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     _tb = _latchb;
                     break;
                 case 0x8:
-                    _tod_10ths = val & 0xF;
+                    _tod10Ths = val & 0xF;
                     break;
                 case 0x9:
-                    _tod_sec = val & 0x7F;
+                    _todSec = val & 0x7F;
                     break;
                 case 0xA:
-                    _tod_min = val & 0x7F;
+                    _todMin = val & 0x7F;
                     break;
                 case 0xB:
-                    _tod_hr = val & 0x9F;
+                    _todHr = val & 0x9F;
                     break;
                 case 0xC:
                     _sdr = val;
                     break;
                 case 0xD:
-                    _int_mask = val;
+                    _intMask = val;
                     break;
                 case 0xE:
                     _cra = val;
-                    _ta_cnt_phi2 = ((val & 0x20) == 0);
+                    _taCntPhi2 = ((val & 0x20) == 0);
                     break;
                 case 0xF:
                     _crb = val;
-                    _tb_cnt_phi2 = ((val & 0x60) == 0);
-                    _tb_cnt_ta = ((val & 0x60) == 0x40);
+                    _tbCntPhi2 = ((val & 0x60) == 0);
+                    _tbCntTa = ((val & 0x60) == 0x40);
                     break;
             }
         }

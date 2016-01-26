@@ -33,10 +33,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		    private int _shiftRegisterReset;
 		    private bool _sync;
 		    private bool _test;
-		    private int[] _wave;
+		    [SaveState.DoNotSave] private int[] _wave;
 		    private int _waveform;
 		    private int _waveformIndex;
-		    private readonly int[][] _waveTable;
+            [SaveState.DoNotSave] private readonly int[][] _waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
@@ -304,7 +304,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public void SyncState(Serializer ser)
 			{
 				SaveState.SyncObject(ser, this);
-			}
+                _wave = _waveTable[_waveform & 0x07];
+            }
 		}
 
 	}

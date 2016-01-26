@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private int _envelopeOutput1;
         private int _envelopeOutput2;
         private readonly Envelope[] _envelopes;
-	    private readonly Envelope _envelope0;
-        private readonly Envelope _envelope1;
-        private readonly Envelope _envelope2;
+	    [SaveState.DoNotSave] private readonly Envelope _envelope0;
+        [SaveState.DoNotSave] private readonly Envelope _envelope1;
+        [SaveState.DoNotSave] private readonly Envelope _envelope2;
         private readonly bool[] _filterEnable;
 	    private int _filterFrequency;
 	    private int _filterResonance;
@@ -38,9 +38,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private int _voiceOutput1;
         private int _voiceOutput2;
         private readonly Voice[] _voices;
-	    private readonly Voice _voice0;
-        private readonly Voice _voice1;
-        private readonly Voice _voice2;
+	    [SaveState.DoNotSave] private readonly Voice _voice0;
+        [SaveState.DoNotSave] private readonly Voice _voice1;
+        [SaveState.DoNotSave] private readonly Voice _voice2;
         private int _volume;
 
 	    public Func<int> ReadPotX;

@@ -1,39 +1,37 @@
-﻿using System.Drawing;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// vic ntsc
 	public static class Chip6567R8
 	{
-		static int cycles = 65;
-		static int scanwidth = cycles * 8;
-		static int lines = 263;
-		static int vblankstart = 0x00D % lines;
-		static int vblankend = 0x018 % lines;
-		static int hblankoffset = 20;
-		static int hblankstart = (0x18C + hblankoffset) % scanwidth - 8; // -8 because the VIC repeats internal pixel cycles around 0x18C
-		static int hblankend = (0x1F0 + hblankoffset) % scanwidth - 8;
+	    private static readonly int Cycles = 65;
+	    private static readonly int ScanWidth = Cycles * 8;
+	    private static readonly int Lines = 263;
+	    private static readonly int VblankStart = 0x00D % Lines;
+	    private static readonly int VblankEnd = 0x018 % Lines;
+	    private static readonly int HblankOffset = 12;
+	    private static readonly int HblankStart = (0x18C + HblankOffset) % ScanWidth - 8; // -8 because the VIC repeats internal pixel cycles around 0x18C
+	    private static readonly int HblankEnd = (0x1F0 + HblankOffset) % ScanWidth - 8;
 
-		static int[] timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, scanwidth, 0x18C, 8);
-		static int[] fetch = Vic.TimingBuilder_Fetch(timing, 0x174);
-		static int[] ba = Vic.TimingBuilder_BA(fetch);
-		static int[] act = Vic.TimingBuilder_Act(timing, 0x004, 0x14C, hblankstart, hblankend);
+	    private static readonly int[] Timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, ScanWidth, 0x18C, 8);
+	    private static readonly int[] Fetch = Vic.TimingBuilder_Fetch(Timing, 0x174);
+	    private static readonly int[] Ba = Vic.TimingBuilder_BA(Fetch);
+	    private static readonly int[] Act = Vic.TimingBuilder_Act(Timing, 0x004, 0x14C, HblankStart, HblankEnd);
 
-		static int[][] pipeline = {
-				timing,
-				fetch,
-				ba,
-                act
+	    private static readonly int[][] Pipeline = {
+				Timing,
+				Fetch,
+				Ba,
+                Act
 			};
 
 		public static Vic Create()
 		{
 			return new Vic(
-				cycles, lines,
-				pipeline,
+				Cycles, Lines,
+				Pipeline,
 				14318181 / 14,
-				hblankstart, hblankend,
-				vblankstart, vblankend
+				HblankStart, HblankEnd,
+				VblankStart, VblankEnd
 				);
 		}
 	}

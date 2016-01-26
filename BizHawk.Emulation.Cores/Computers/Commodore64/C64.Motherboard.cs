@@ -71,8 +71,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
-			Cia0 = new Cia(clockNum, clockDen * mainsFrq, keyboardPressed, joystickPressed);
-            Cia1 = new Cia(clockNum, clockDen * mainsFrq, Cia1_ReadPortA);
             ColorRam = new Chip2114();
 			Cpu = new Chip6510();
 			Pla = new Chip90611401();
@@ -81,10 +79,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Sid = Chip6581.Create(44100, clockNum, clockDen);
 			switch (initRegion)
 			{
-				case C64.VicType.Ntsc: Vic = Chip6567R8.Create(); break;
-				case C64.VicType.Pal: Vic = Chip6569.Create(); break;
-				case C64.VicType.NtscOld: Vic = Chip6567R56A.Create(); break;
-				case C64.VicType.Drean: Vic = Chip6572.Create(); break;
+				case C64.VicType.Ntsc:
+                    Vic = Chip6567R8.Create();
+                    Cia0 = Chip6526.Create(C64.CiaType.Ntsc,  _keyboardPressed, _joystickPressed);
+                    Cia1 = Chip6526.Create(C64.CiaType.Ntsc, Cia1_ReadPortA);
+                    break;
+				case C64.VicType.Pal:
+                    Vic = Chip6569.Create();
+                    Cia0 = Chip6526.Create(C64.CiaType.Pal, _keyboardPressed, _joystickPressed);
+                    Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
+                    break;
+                case C64.VicType.NtscOld:
+                    Vic = Chip6567R56A.Create();
+                    Cia0 = Chip6526.Create(C64.CiaType.NtscRevA, _keyboardPressed, _joystickPressed);
+                    Cia1 = Chip6526.Create(C64.CiaType.NtscRevA, Cia1_ReadPortA);
+			        break;
+                case C64.VicType.Drean:
+                    Vic = Chip6572.Create();
+                    Cia0 = Chip6526.Create(C64.CiaType.Pal, _keyboardPressed, _joystickPressed);
+                    Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
+                    break;
 			}
 			User = new UserPort();
 		}
@@ -95,10 +109,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			Vic.ExecutePhase1();
 			Cpu.ExecutePhase1();
-			Cia0.ExecutePhase1();
-			Cia1.ExecutePhase1();
 
-			Vic.ExecutePhase2();
+            Cassette.ExecutePhase2();
+            Vic.ExecutePhase2();
 			Cpu.ExecutePhase2();
 			Cia0.ExecutePhase2();
 			Cia1.ExecutePhase2();
@@ -137,6 +150,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cassette.ReadDataOutput = CassPort_ReadDataOutput;
 			Cassette.ReadMotor = CassPort_ReadMotor;
 
+		    Cia0.ReadFlag = Cassette.ReadDataInputBuffer;
             /*
 			Cia0.ReadCnt = Cia0_ReadCnt;
 			Cia0.ReadFlag = Cassette.ReadDataInputBuffer;
@@ -185,8 +199,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla.PokeMemory = Ram.Poke;
 			Pla.PokeSid = Sid.Poke;
 			Pla.PokeVic = Vic.Poke;
-			Pla.ReadAEC = Vic.ReadAec;
-			Pla.ReadBA = Vic.ReadBa;
+			Pla.ReadAec = Vic.ReadAec;
+			Pla.ReadBa = Vic.ReadBa;
 			Pla.ReadBasicRom = BasicRom.Read;
 			Pla.ReadCartridgeHi = CartPort.ReadHiRom;
 			Pla.ReadCartridgeLo = CartPort.ReadLoRom;

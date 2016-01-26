@@ -92,7 +92,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			if (addr == 0xDC00 || addr == 0xDC01)
 			{
-				WriteInputPort();
 				InputRead = true;
 			}
 			return Cia0.Read(addr);

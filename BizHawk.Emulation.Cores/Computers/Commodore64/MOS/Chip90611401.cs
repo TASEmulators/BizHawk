@@ -33,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Action<int, int> PokeMemory;
 		public Action<int, int> PokeSid;
 		public Action<int, int> PokeVic;
-        public Func<bool> ReadAEC;
-        public Func<bool> ReadBA;
+        public Func<bool> ReadAec;
+        public Func<bool> ReadBa;
 		public Func<int, int> ReadBasicRom;
 		public Func<int, int> ReadCartridgeLo;
 		public Func<int, int> ReadCartridgeHi;
@@ -66,14 +66,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	
 		// ------------------------------------
 
-        enum PLABank
+        private enum PlaBank
 		{
 			None,
-			RAM,
-			BasicROM,
-			KernalROM,
-			CharROM,
-			IO,
+			Ram,
+			BasicRom,
+			KernalRom,
+			CharRom,
 			CartridgeLo,
 			CartridgeHi,
 			Vic,
@@ -87,124 +86,124 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-        bool p24;
-        bool p25;
-        bool p26;
-        bool p27;
-        bool p28;
-        bool loram;
-        bool hiram;
-        bool game;
-        bool exrom;
-        bool charen;
-        bool a15;
-        bool a14;
-        bool a13;
-        bool a12;
+	    private bool _p24;
+	    private bool _p25;
+	    private bool _p26;
+	    private bool _p27;
+	    private bool _p28;
+	    private bool _loram;
+	    private bool _hiram;
+	    private bool _game;
+	    private bool _exrom;
+	    private bool _charen;
+	    private bool _a15;
+	    private bool _a14;
+	    private bool _a13;
+	    private bool _a12;
 
-		private PLABank Bank(int addr, bool read)
+		private PlaBank Bank(int addr, bool read)
 		{
-            loram = ReadLoRam();
-            hiram = ReadHiRam();
-            game = ReadGame();
+            _loram = ReadLoRam();
+            _hiram = ReadHiRam();
+            _game = ReadGame();
 
-            a15 = (addr & 0x08000) != 0;
-            a14 = (addr & 0x04000) != 0;
-            a13 = (addr & 0x02000) != 0;
-            a12 = (addr & 0x01000) != 0;
+            _a15 = (addr & 0x08000) != 0;
+            _a14 = (addr & 0x04000) != 0;
+            _a13 = (addr & 0x02000) != 0;
+            _a12 = (addr & 0x01000) != 0;
 
             // upper memory regions 8000-FFFF
-            exrom = ReadExRom();
-            if (a15)
+            _exrom = ReadExRom();
+            if (_a15)
             {
                 // io/character access
-                if (a14 && !a13 && a12)
+                if (_a14 && !_a13 && _a12)
                 {
                     // character rom, banked in at D000-DFFF
-                    charen = ReadCharen();
-                    if (read && !charen && (((hiram || loram) && game) || (hiram && !exrom && !game)))
-                        return PLABank.CharROM;
+                    _charen = ReadCharen();
+                    if (read && !_charen && (((_hiram || _loram) && _game) || (_hiram && !_exrom && !_game)))
+                        return PlaBank.CharRom;
 
                     // io block, banked in at D000-DFFF
-                    if ((charen && (hiram || loram)) || (exrom && !game))
+                    if ((_charen && (_hiram || _loram)) || (_exrom && !_game))
                     {
                         if (addr < 0xD400)
-                            return PLABank.Vic;
+                            return PlaBank.Vic;
                         if (addr < 0xD800)
-                            return PLABank.Sid;
+                            return PlaBank.Sid;
                         if (addr < 0xDC00)
-                            return PLABank.ColorRam;
+                            return PlaBank.ColorRam;
                         if (addr < 0xDD00)
-                            return PLABank.Cia0;
+                            return PlaBank.Cia0;
                         if (addr < 0xDE00)
-                            return PLABank.Cia1;
-                        if (addr < 0xDF00)
-                            return PLABank.Expansion0;
-                        return PLABank.Expansion1;
+                            return PlaBank.Cia1;
+                        return addr < 0xDF00
+                            ? PlaBank.Expansion0
+                            : PlaBank.Expansion1;
                     }
                 }
 
                 // cartridge high, banked either at A000-BFFF or E000-FFFF depending
-                if (a13 && !game && ((hiram && !a14 && read && !exrom) || (a14 && exrom)))
-                    return PLABank.CartridgeHi;
+                if (_a13 && !_game && ((_hiram && !_a14 && read && !_exrom) || (_a14 && _exrom)))
+                    return PlaBank.CartridgeHi;
 
                 // cartridge low, banked at 8000-9FFF
-                if (!a14 && !a13 && ((loram && hiram && read && !exrom) || (exrom && !game)))
-                    return PLABank.CartridgeLo;
+                if (!_a14 && !_a13 && ((_loram && _hiram && read && !_exrom) || (_exrom && !_game)))
+                    return PlaBank.CartridgeLo;
 
                 // kernal rom, banked at E000-FFFF
-                if (hiram && a14 && a13 && read && (game || (!exrom && !game)))
-                    return PLABank.KernalROM;
+                if (_hiram && _a14 && _a13 && read && (_game || (!_exrom && !_game)))
+                    return PlaBank.KernalRom;
 
                 // basic rom, banked at A000-BFFF
-                if (loram && hiram && !a14 && a13 && read && game)
-                    return PLABank.BasicROM;
+                if (_loram && _hiram && !_a14 && _a13 && read && _game)
+                    return PlaBank.BasicRom;
             }
 
             // ultimax mode ram exclusion
-            if (exrom && !game)
+            if (_exrom && !_game)
             {
-                p24 = !a15 && !a14 && a12;        //00x1 1000-1FFF, 3000-3FFF
-                p25 = !a15 && !a14 && a13;        //001x 2000-3FFF
-                p26 = !a15 && a14;                //01xx 4000-7FFF
-                p27 = a15 && !a14 && a13;         //101x A000-BFFF
-                p28 = a15 && a14 && !a13 && !a12; //1100 C000-CFFF
-                if (p24 || p25 || p26 || p27 || p28)
-                    return PLABank.None;
+                _p24 = !_a15 && !_a14 && _a12;        //00x1 1000-1FFF, 3000-3FFF
+                _p25 = !_a15 && !_a14 && _a13;        //001x 2000-3FFF
+                _p26 = !_a15 && _a14;                //01xx 4000-7FFF
+                _p27 = _a15 && !_a14 && _a13;         //101x A000-BFFF
+                _p28 = _a15 && _a14 && !_a13 && !_a12; //1100 C000-CFFF
+                if (_p24 || _p25 || _p26 || _p27 || _p28)
+                    return PlaBank.None;
             }
 
-            return PLABank.RAM;
+            return PlaBank.Ram;
         }
 
 		public int Peek(int addr)
 		{
 			switch (Bank(addr, true))
 			{
-				case PLABank.BasicROM:
+				case PlaBank.BasicRom:
 					return PeekBasicRom(addr);
-				case PLABank.CartridgeHi:
+				case PlaBank.CartridgeHi:
 					return PeekCartridgeHi(addr);
-				case PLABank.CartridgeLo:
+				case PlaBank.CartridgeLo:
 					return PeekCartridgeLo(addr);
-				case PLABank.CharROM:
+				case PlaBank.CharRom:
 					return PeekCharRom(addr);
-				case PLABank.Cia0:
+				case PlaBank.Cia0:
 					return PeekCia0(addr);
-				case PLABank.Cia1:
+				case PlaBank.Cia1:
 					return PeekCia1(addr);
-				case PLABank.ColorRam:
+				case PlaBank.ColorRam:
 					return PeekColorRam(addr);
-				case PLABank.Expansion0:
+				case PlaBank.Expansion0:
 					return PeekExpansionLo(addr);
-				case PLABank.Expansion1:
+				case PlaBank.Expansion1:
 					return PeekExpansionHi(addr);
-				case PLABank.KernalROM:
+				case PlaBank.KernalRom:
 					return PeekKernalRom(addr);
-				case PLABank.RAM:
+				case PlaBank.Ram:
 					return PeekMemory(addr);
-				case PLABank.Sid:
+				case PlaBank.Sid:
 					return PeekSid(addr);
-				case PLABank.Vic:
+				case PlaBank.Vic:
 					return PeekVic(addr);
 			}
 			return 0xFF;
@@ -214,34 +213,34 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			switch (Bank(addr, false))
 			{
-				case PLABank.CartridgeHi:
+				case PlaBank.CartridgeHi:
 					PokeCartridgeHi(addr, val);
 					break;
-				case PLABank.CartridgeLo:
+				case PlaBank.CartridgeLo:
 					PokeCartridgeLo(addr, val);
 					break;
-				case PLABank.Cia0:
+				case PlaBank.Cia0:
 					PokeCia0(addr, val);
 					break;
-				case PLABank.Cia1:
+				case PlaBank.Cia1:
 					PokeCia1(addr, val);
 					break;
-				case PLABank.ColorRam:
+				case PlaBank.ColorRam:
 					PokeColorRam(addr, val);
 					break;
-				case PLABank.Expansion0:
+				case PlaBank.Expansion0:
 					PokeExpansionLo(addr, val);
 					break;
-				case PLABank.Expansion1:
+				case PlaBank.Expansion1:
 					PokeExpansionHi(addr, val);
 					break;
-				case PLABank.RAM:
+				case PlaBank.Ram:
 					PokeMemory(addr, val);
 					break;
-				case PLABank.Sid:
+				case PlaBank.Sid:
 					PokeSid(addr, val);
 					break;
-				case PLABank.Vic:
+				case PlaBank.Vic:
 					PokeVic(addr, val);
 					break;
 			}
@@ -251,31 +250,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			switch (Bank(addr, true))
 			{
-				case PLABank.BasicROM:
+				case PlaBank.BasicRom:
 					return ReadBasicRom(addr);
-				case PLABank.CartridgeHi:
+				case PlaBank.CartridgeHi:
 					return ReadCartridgeHi(addr);
-				case PLABank.CartridgeLo:
+				case PlaBank.CartridgeLo:
 					return ReadCartridgeLo(addr);
-				case PLABank.CharROM:
+				case PlaBank.CharRom:
 					return ReadCharRom(addr);
-				case PLABank.Cia0:
+				case PlaBank.Cia0:
 					return ReadCia0(addr);
-				case PLABank.Cia1:
+				case PlaBank.Cia1:
 					return ReadCia1(addr);
-				case PLABank.ColorRam:
+				case PlaBank.ColorRam:
 					return ReadColorRam(addr);
-				case PLABank.Expansion0:
+				case PlaBank.Expansion0:
 					return ReadExpansionLo(addr);
-				case PLABank.Expansion1:
+				case PlaBank.Expansion1:
 					return ReadExpansionHi(addr);
-				case PLABank.KernalROM:
+				case PlaBank.KernalRom:
 					return ReadKernalRom(addr);
-				case PLABank.RAM:
+				case PlaBank.Ram:
 					return ReadMemory(addr);
-				case PLABank.Sid:
+				case PlaBank.Sid:
 					return ReadSid(addr);
-				case PLABank.Vic:
+				case PlaBank.Vic:
 					return ReadVic(addr);
 			}
 			return 0xFF;
@@ -288,18 +287,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
         public int VicRead(int addr)
         {
-            game = ReadGame();
-            exrom = ReadExRom();
-            a14 = (addr & 0x04000) == 0;
-            a13 = (addr & 0x02000) != 0;
-            a12 = (addr & 0x01000) != 0;
+            _game = ReadGame();
+            _exrom = ReadExRom();
+            _a14 = (addr & 0x04000) == 0;
+            _a13 = (addr & 0x02000) != 0;
+            _a12 = (addr & 0x01000) != 0;
 
             // read char rom at 1000-1FFF and 9000-9FFF
-            if (a14 && !a13 && a12 && (game || !exrom))
+            if (_a14 && !_a13 && _a12 && (_game || !_exrom))
                 return ReadCharRom(addr);
 
             // read cartridge rom in ultimax mode
-            if (a13 && a12 && exrom && !game)
+            if (_a13 && _a12 && _exrom && !_game)
                 return ReadCartridgeHi(addr);
 
             return ReadMemory(addr);
@@ -309,42 +308,42 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			switch (Bank(addr, false))
 			{
-				case PLABank.CartridgeHi:
+				case PlaBank.CartridgeHi:
 					WriteCartridgeHi(addr, val);
                     if (ReadGame() || !ReadExRom())
                     {
                         WriteMemory(addr, val);
                     }
 					break;
-				case PLABank.CartridgeLo:
+				case PlaBank.CartridgeLo:
 					WriteCartridgeLo(addr, val);
                     if (ReadGame() || !ReadExRom())
                     {
                         WriteMemory(addr, val);
                     }
 					break;
-				case PLABank.Cia0:
+				case PlaBank.Cia0:
 					WriteCia0(addr, val);
 					break;
-				case PLABank.Cia1:
+				case PlaBank.Cia1:
 					WriteCia1(addr, val);
 					break;
-				case PLABank.ColorRam:
+				case PlaBank.ColorRam:
 					WriteColorRam(addr, val);
 					break;
-				case PLABank.Expansion0:
+				case PlaBank.Expansion0:
 					WriteExpansionLo(addr, val);
 					return;
-				case PLABank.Expansion1:
+				case PlaBank.Expansion1:
 					WriteExpansionHi(addr, val);
                     return;
-				case PLABank.RAM:
+				case PlaBank.Ram:
 			        WriteMemory(addr, val);
 					break;
-				case PLABank.Sid:
+				case PlaBank.Sid:
 					WriteSid(addr, val);
 					break;
-				case PLABank.Vic:
+				case PlaBank.Vic:
 					WriteVic(addr, val);
 					break;
 			}
