@@ -8,13 +8,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
     public sealed partial class Cia
     {
-        private const int T_STOP = 0;
-        private const int T_WAIT_THEN_COUNT = 1;
-        private const int T_LOAD_THEN_STOP = 2;
-        private const int T_LOAD_THEN_COUNT = 3;
-        private const int T_LOAD_THEN_WAIT_THEN_COUNT = 4;
-        private const int T_COUNT = 5;
-        private const int T_COUNT_THEN_STOP = 6;
+        private enum TimerState
+        {
+            Stop = 0,
+            WaitThenCount = 1,
+            LoadThenStop = 2,
+            LoadThenCount = 3,
+            LoadThenWaitThenCount = 4,
+            Count = 5,
+            CountThenStop = 6
+        }
 
         private int _pra;
         private int _prb;
@@ -24,45 +27,48 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private int _tb;
         private int _latcha;
         private int _latchb;
-        private int _tod_10ths;
-        private int _tod_sec;
-        private int _tod_min;
-        private int _tod_hr;
-        private int _alm_10ths;
-        private int _alm_sec;
-        private int _alm_min;
-        private int _alm_hr;
+        private int _tod10Ths;
+        private int _todSec;
+        private int _todMin;
+        private int _todHr;
+        private int _latch10Ths;
+        private int _latchSec;
+        private int _latchMin;
+        private int _latchHr;
+        private int _alm10Ths;
+        private int _almSec;
+        private int _almMin;
+        private int _almHr;
         private int _sdr;
         private int _icr;
         private int _cra;
         private int _crb;
-        private int _int_mask;
-        private int _tod_divider;
-        private bool _tod_halt;
-        private bool _ta_cnt_phi2;
-        private bool _tb_cnt_phi2;
-        private bool _tb_cnt_ta;
-        private bool _ta_irq_next_cycle;
-        private bool _tb_irq_next_cycle;
-        private bool _has_new_cra;
-        private bool _has_new_crb;
-        private int _ta_state;
-        private int _tb_state;
-        private int _new_cra;
-        private int _new_crb;
-        private bool _ta_underflow;
+        private int _intMask;
+        private bool _todHalt;
+        private bool _taCntPhi2;
+        private bool _tbCntPhi2;
+        private bool _tbCntTa;
+        private bool _taIrqNextCycle;
+        private bool _tbIrqNextCycle;
+        private bool _hasNewCra;
+        private bool _hasNewCrb;
+        private TimerState _taState;
+        private TimerState _tbState;
+        private int _newCra;
+        private int _newCrb;
+        private bool _taUnderflow;
 
         private Port _port;
         private int _todlo;
         private int _todhi;
-        private int _tod_num;
-        private int _tod_den;
-        private int _tod_counter;
+        private int _todNum;
+        private int _todDen;
+        private int _todCounter;
 
         private Cia(int todNum, int todDen)
         {
-            _tod_num = todNum;
-            _tod_den = todDen;
+            _todNum = todNum;
+            _todDen = todDen;
         }
 
         public Cia(int todNum, int todDen, int[] keyboard, int[] joysticks) : this(todNum, todDen)
@@ -85,40 +91,39 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _tb = 0xFFFF;
             _latcha = 1;
             _latchb = 1;
-            _tod_10ths = 0;
-            _tod_sec = 0;
-            _tod_min = 0;
-            _tod_hr = 0;
-            _alm_10ths = 0;
-            _alm_sec = 0;
-            _alm_min = 0;
-            _alm_hr = 0;
+            _tod10Ths = 0;
+            _todSec = 0;
+            _todMin = 0;
+            _todHr = 0;
+            _alm10Ths = 0;
+            _almSec = 0;
+            _almMin = 0;
+            _almHr = 0;
             _sdr = 0;
             _icr = 0;
             _cra = 0;
             _crb = 0;
-            _int_mask = 0;
-            _tod_halt = false;
-            _tod_divider = 0;
-            _ta_cnt_phi2 = false;
-            _tb_cnt_phi2 = false;
-            _tb_cnt_ta = false;
-            _ta_irq_next_cycle = false;
-            _tb_irq_next_cycle = false;
-            _ta_state = T_STOP;
-            _tb_state = T_STOP;
+            _intMask = 0;
+            _todHalt = false;
+            _taCntPhi2 = false;
+            _tbCntPhi2 = false;
+            _tbCntTa = false;
+            _taIrqNextCycle = false;
+            _tbIrqNextCycle = false;
+            _taState = TimerState.Stop;
+            _tbState = TimerState.Stop;
         }
 
         private void CheckIrqs()
         {
-            if (_ta_irq_next_cycle)
+            if (_taIrqNextCycle)
             {
-                _ta_irq_next_cycle = false;
+                _taIrqNextCycle = false;
                 TriggerInterrupt(1);
             }
-            if (_tb_irq_next_cycle)
+            if (_tbIrqNextCycle)
             {
-                _tb_irq_next_cycle = false;
+                _tbIrqNextCycle = false;
                 TriggerInterrupt(2);
             }
         }
@@ -131,29 +136,29 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         public void ExecutePhase2()
         {
             CheckIrqs();
-            _ta_underflow = false;
+            _taUnderflow = false;
 
-            switch (_ta_state)
+            switch (_taState)
             {
-                case T_WAIT_THEN_COUNT:
-                    _ta_state = T_COUNT;
+                case TimerState.WaitThenCount:
+                    _taState = TimerState.Count;
                     Ta_Idle();
                     break;
-                case T_STOP:
+                case TimerState.Stop:
                     Ta_Idle();
                     break;
-                case T_LOAD_THEN_STOP:
-                    _ta_state = T_STOP;
+                case TimerState.LoadThenStop:
+                    _taState = TimerState.Stop;
                     _ta = _latcha;
                     Ta_Idle();
                     break;
-                case T_LOAD_THEN_COUNT:
-                    _ta_state = T_COUNT;
+                case TimerState.LoadThenCount:
+                    _taState = TimerState.Count;
                     _ta = _latcha;
                     Ta_Idle();
                     break;
-                case T_LOAD_THEN_WAIT_THEN_COUNT:
-                    _ta_state = T_WAIT_THEN_COUNT;
+                case TimerState.LoadThenWaitThenCount:
+                    _taState = TimerState.WaitThenCount;
                     if (_ta == 1)
                     {
                         Ta_Interrupt();
@@ -164,36 +169,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         Ta_Idle();
                     }
                     break;
-                case T_COUNT:
+                case TimerState.Count:
                     Ta_Count();
                     break;
-                case T_COUNT_THEN_STOP:
-                    _ta_state = T_STOP;
+                case TimerState.CountThenStop:
+                    _taState = TimerState.Stop;
                     Ta_Count();
                     break;
             }
 
-            switch (_tb_state)
+            switch (_tbState)
             {
-                case T_WAIT_THEN_COUNT:
-                    _tb_state = T_COUNT;
+                case TimerState.WaitThenCount:
+                    _tbState = TimerState.Count;
                     Tb_Idle();
                     break;
-                case T_STOP:
+                case TimerState.Stop:
                     Tb_Idle();
                     break;
-                case T_LOAD_THEN_STOP:
-                    _tb_state = T_STOP;
+                case TimerState.LoadThenStop:
+                    _tbState = TimerState.Stop;
                     _tb = _latchb;
                     Tb_Idle();
                     break;
-                case T_LOAD_THEN_COUNT:
-                    _tb_state = T_COUNT;
+                case TimerState.LoadThenCount:
+                    _tbState = TimerState.Count;
                     _tb = _latchb;
                     Tb_Idle();
                     break;
-                case T_LOAD_THEN_WAIT_THEN_COUNT:
-                    _tb_state = T_WAIT_THEN_COUNT;
+                case TimerState.LoadThenWaitThenCount:
+                    _tbState = TimerState.WaitThenCount;
                     if (_tb == 1)
                     {
                         Tb_Interrupt();
@@ -204,29 +209,37 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         Tb_Idle();
                     }
                     break;
-                case T_COUNT:
+                case TimerState.Count:
                     Tb_Count();
                     break;
-                case T_COUNT_THEN_STOP:
-                    _tb_state = T_STOP;
+                case TimerState.CountThenStop:
+                    _tbState = TimerState.Stop;
                     Tb_Count();
                     break;
             }
 
             CountTod();
+
+            if (!_todHalt)
+            {
+                _latch10Ths = _tod10Ths;
+                _latchSec = _todSec;
+                _latchMin = _todMin;
+                _latchHr = _todHr;
+            }
         }
 
         private void Ta_Count()
         {
-            if (_ta_cnt_phi2)
+            if (_taCntPhi2)
             {
                 if (_ta == 0 || --_ta == 0)
                 {
-                    if (_ta_state != T_STOP)
+                    if (_taState != TimerState.Stop)
                     {
                         Ta_Interrupt();
                     }
-                    _ta_underflow = true;
+                    _taUnderflow = true;
                 }
             }
             Ta_Idle();
@@ -235,80 +248,80 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private void Ta_Interrupt()
         {
             _ta = _latcha;
-            _ta_irq_next_cycle = true;
+            _taIrqNextCycle = true;
             _icr |= 1;
 
             if ((_cra & 0x08) != 0)
             {
                 _cra &= 0xFE;
-                _new_cra &= 0xFE;
-                _ta_state = T_LOAD_THEN_STOP;
+                _newCra &= 0xFE;
+                _taState = TimerState.LoadThenStop;
             }
             else
             {
-                _ta_state = T_LOAD_THEN_COUNT;
+                _taState = TimerState.LoadThenCount;
             }
         }
 
         private void Ta_Idle()
         {
-            if (_has_new_cra)
+            if (_hasNewCra)
             {
-                switch (_ta_state)
+                switch (_taState)
                 {
-                    case T_STOP:
-                    case T_LOAD_THEN_STOP:
-                        if ((_new_cra & 0x01) != 0)
+                    case TimerState.Stop:
+                    case TimerState.LoadThenStop:
+                        if ((_newCra & 0x01) != 0)
                         {
-                            if ((_new_cra & 0x10) != 0)
+                            if ((_newCra & 0x10) != 0)
                             {
-                                _ta_state = T_LOAD_THEN_WAIT_THEN_COUNT;
+                                _taState = TimerState.LoadThenWaitThenCount;
                             }
                             else
                             {
-                                _ta_state = T_WAIT_THEN_COUNT;
+                                _taState = TimerState.WaitThenCount;
                             }
                         }
                         else
                         {
-                            if ((_new_cra & 0x10) != 0)
+                            if ((_newCra & 0x10) != 0)
                             {
-                                _ta_state = T_LOAD_THEN_STOP;
+                                _taState = TimerState.LoadThenStop;
                             }
                         }
                         break;
-                    case T_LOAD_THEN_COUNT:
-                    case T_WAIT_THEN_COUNT:
-                        if ((_new_cra & 0x01) != 0)
+                    case TimerState.LoadThenCount:
+                    case TimerState.WaitThenCount:
+                        if ((_newCra & 0x01) != 0)
                         {
-                            if ((_new_cra & 0x08) != 0)
+                            if ((_newCra & 0x08) != 0)
                             {
-                                _new_cra &= 0xFE;
-                                _ta_state = T_STOP;
+                                _newCra &= 0xFE;
+                                _taState = TimerState.Stop;
                             }
-                            else if ((_new_cra & 0x10) != 0)
+                            else if ((_newCra & 0x10) != 0)
                             {
-                                _ta_state = T_LOAD_THEN_WAIT_THEN_COUNT;
+                                _taState = TimerState.LoadThenWaitThenCount;
                             }
                         }
                         else
                         {
-                            _ta_state = T_STOP;
+                            _taState = TimerState.Stop;
                         }
                         break;
                 }
-                _cra = _new_cra & 0xEF;
-                _has_new_cra = false;
+                _cra = _newCra & 0xEF;
+                _hasNewCra = false;
             }
         }
 
         private void Tb_Count()
         {
-            if (_tb_cnt_phi2 || (_tb_cnt_ta && _ta_underflow))
+            if (_tbCntPhi2 || (_tbCntTa && _taUnderflow))
             {
                 if (_tb == 0 || --_tb == 0)
                 {
-                    if (_tb_state != T_STOP)
+                    if (_tbState != TimerState.Stop)
                     {
                         Tb_Interrupt();
                     }
@@ -320,89 +333,89 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private void Tb_Interrupt()
         {
             _tb = _latchb;
-            _tb_irq_next_cycle = true;
+            _tbIrqNextCycle = true;
             _icr |= 2;
 
             if ((_crb & 0x08) != 0)
             {
                 _crb &= 0xFE;
-                _new_crb &= 0xFE;
-                _tb_state = T_LOAD_THEN_STOP;
+                _newCrb &= 0xFE;
+                _tbState = TimerState.LoadThenStop;
             }
             else
             {
-                _tb_state = T_LOAD_THEN_COUNT;
+                _tbState = TimerState.LoadThenCount;
             }
 
         }
 
         private void Tb_Idle()
         {
-            if (_has_new_crb)
+            if (_hasNewCrb)
             {
-                switch (_tb_state)
+                switch (_tbState)
                 {
-                    case T_STOP:
-                    case T_LOAD_THEN_STOP:
-                        if ((_new_crb & 0x01) != 0)
+                    case TimerState.Stop:
+                    case TimerState.LoadThenStop:
+                        if ((_newCrb & 0x01) != 0)
                         {
-                            if ((_new_crb & 0x10) != 0)
+                            if ((_newCrb & 0x10) != 0)
                             {
-                                _tb_state = T_LOAD_THEN_WAIT_THEN_COUNT;
+                                _tbState = TimerState.LoadThenWaitThenCount;
                             }
                             else
                             {
-                                _tb_state = T_WAIT_THEN_COUNT;
+                                _tbState = TimerState.WaitThenCount;
                             }
                         }
                         else
                         {
-                            if ((_new_crb & 0x10) != 0)
+                            if ((_newCrb & 0x10) != 0)
                             {
-                                _tb_state = T_LOAD_THEN_STOP;
+                                _tbState = TimerState.LoadThenStop;
                             }
                         }
                         break;
-                    case T_LOAD_THEN_COUNT:
-                    case T_WAIT_THEN_COUNT:
-                        if ((_new_crb & 0x01) != 0)
+                    case TimerState.LoadThenCount:
+                    case TimerState.WaitThenCount:
+                        if ((_newCrb & 0x01) != 0)
                         {
-                            if ((_new_crb & 0x08) != 0)
+                            if ((_newCrb & 0x08) != 0)
                             {
-                                _new_crb &= 0xFE;
-                                _ta_state = T_STOP;
+                                _newCrb &= 0xFE;
+                                _taState = TimerState.Stop;
                             }
-                            else if ((_new_crb & 0x10) != 0)
+                            else if ((_newCrb & 0x10) != 0)
                             {
-                                _tb_state = T_LOAD_THEN_WAIT_THEN_COUNT;
+                                _tbState = TimerState.LoadThenWaitThenCount;
                             }
                         }
                         else
                         {
-                            _ta_state = T_STOP;
+                            _taState = TimerState.Stop;
                         }
                         break;
                 }
-                _crb = _new_crb & 0xEF;
-                _has_new_crb = false;
+                _crb = _newCrb & 0xEF;
+                _hasNewCrb = false;
             }
         }
 
         private void CountTod()
         {
-            if (_tod_counter > 0)
+            if (_todCounter > 0)
             {
-                _tod_counter -= _tod_den;
+                _todCounter -= _todDen;
                 return;
             }
 
-            _tod_counter += _tod_num * ((_cra & 0x80) != 0 ? 6 : 5);
-             _tod_10ths++;
-            if (_tod_10ths > 9)
+            _todCounter += _todNum * ((_cra & 0x80) != 0 ? 6 : 5);
+             _tod10Ths++;
+            if (_tod10Ths > 9)
             {
-                _tod_10ths = 0;
-                _todlo = (_tod_sec & 0x0F) + 1;
-                _todhi = (_tod_sec >> 4);
+                _tod10Ths = 0;
+                _todlo = (_todSec & 0x0F) + 1;
+                _todhi = (_todSec >> 4);
                 if (_todlo > 9)
                 {
                     _todlo = 0;
@@ -410,9 +423,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 }
                 if (_todhi > 5)
                 {
-                    _tod_sec = 0;
-                    _todlo = (_tod_min & 0x0F) + 1;
-                    _todhi = (_tod_min >> 4);
+                    _todSec = 0;
+                    _todlo = (_todMin & 0x0F) + 1;
+                    _todhi = (_todMin >> 4);
                     if (_todlo > 9)
                     {
                         _todlo = 0;
@@ -420,33 +433,33 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     }
                     if (_todhi > 5)
                     {
-                        _tod_min = 0;
-                        _todlo = (_tod_hr & 0x0F) + 1;
-                        _todhi = (_tod_hr >> 4);
-                        _tod_hr &= 0x80;
+                        _todMin = 0;
+                        _todlo = (_todHr & 0x0F) + 1;
+                        _todhi = (_todHr >> 4);
+                        _todHr &= 0x80;
                         if (_todlo > 9)
                         {
                             _todlo = 0;
                             _todhi++;
                         }
-                        _tod_hr |= (_todhi << 4) | _todlo;
-                        if ((_tod_hr & 0x1F) > 0x11)
+                        _todHr |= (_todhi << 4) | _todlo;
+                        if ((_todHr & 0x1F) > 0x11)
                         {
-                            _tod_hr &= 0x80 ^ 0x80;
+                            _todHr &= 0x80 ^ 0x80;
                         }
                     }
                     else
                     {
-                        _tod_min = (_todhi << 4) | _todlo;
+                        _todMin = (_todhi << 4) | _todlo;
                     }
                 }
                 else
                 {
-                    _tod_sec = (_todhi << 4) | _todlo;
+                    _todSec = (_todhi << 4) | _todlo;
                 }
             }
 
-            if (_tod_10ths == _alm_10ths && _tod_sec == _alm_sec && _tod_min == _alm_min && _tod_hr == _alm_hr)
+            if (_tod10Ths == _alm10Ths && _todSec == _almSec && _todMin == _almMin && _todHr == _almHr)
             {
                 TriggerInterrupt(4);
             }
@@ -455,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private void TriggerInterrupt(int num)
         {
             _icr |= num;
-            if ((_int_mask & num) == 0) return;
+            if ((_intMask & num) == 0) return;
             _icr |= 0x80;
         }
 
