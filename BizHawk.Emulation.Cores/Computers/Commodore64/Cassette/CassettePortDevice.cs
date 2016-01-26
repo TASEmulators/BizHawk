@@ -8,6 +8,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
         public Func<bool> ReadDataOutput;
         public Func<bool> ReadMotor;
 
+        public virtual void ExecutePhase2()
+        {
+        }
+
         public virtual void HardReset()
         {
         }

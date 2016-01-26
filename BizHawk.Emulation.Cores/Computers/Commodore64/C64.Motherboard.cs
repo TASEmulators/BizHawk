@@ -109,10 +109,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			Vic.ExecutePhase1();
 			Cpu.ExecutePhase1();
-			Cia0.ExecutePhase1();
-			Cia1.ExecutePhase1();
 
-			Vic.ExecutePhase2();
+            Cassette.ExecutePhase2();
+            Vic.ExecutePhase2();
 			Cpu.ExecutePhase2();
 			Cia0.ExecutePhase2();
 			Cia1.ExecutePhase2();
@@ -151,6 +150,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cassette.ReadDataOutput = CassPort_ReadDataOutput;
 			Cassette.ReadMotor = CassPort_ReadMotor;
 
+		    Cia0.ReadFlag = Cassette.ReadDataInputBuffer;
             /*
 			Cia0.ReadCnt = Cia0_ReadCnt;
 			Cia0.ReadFlag = Cassette.ReadDataInputBuffer;

@@ -137,9 +137,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                             return PlaBank.Cia0;
                         if (addr < 0xDE00)
                             return PlaBank.Cia1;
-                        if (addr < 0xDF00)
-                            return PlaBank.Expansion0;
-                        return PlaBank.Expansion1;
+                        return addr < 0xDF00
+                            ? PlaBank.Expansion0
+                            : PlaBank.Expansion1;
                     }
                 }
 

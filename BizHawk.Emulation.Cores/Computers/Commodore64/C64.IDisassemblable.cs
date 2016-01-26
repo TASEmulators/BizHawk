@@ -7,17 +7,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public partial class C64 : IDisassemblable
 	{
+        [SaveState.DoNotSave]
 		public string Cpu
 		{
 			get { return "6510"; } set { }
 		}
 
-		public string PCRegisterName
+        [SaveState.DoNotSave]
+        public string PCRegisterName
 		{
 			get { return "PC"; }
 		}
 
-		public IEnumerable<string> AvailableCpus
+        [SaveState.DoNotSave]
+        public IEnumerable<string> AvailableCpus
 		{
 			get { yield return "6510"; }
 		}

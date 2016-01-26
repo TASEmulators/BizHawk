@@ -3,7 +3,7 @@
 	// sid
 	public static class Chip6581
 	{
-		static int[][] waveTable = {
+		static readonly int[][] WaveTable = {
 			new[] {
 				0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 
 				0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 0xFFF, 
@@ -4120,7 +4120,7 @@
 
         public static Sid Create(int newSampleRate, int clockFrqNum, int clockFrqDen)
         {
-            return new Sid(waveTable, (uint)newSampleRate, (uint)clockFrqNum, (uint)clockFrqDen);
+            return new Sid(WaveTable, (uint)newSampleRate, (uint)clockFrqNum, (uint)clockFrqDen);
         }
 	}
 }

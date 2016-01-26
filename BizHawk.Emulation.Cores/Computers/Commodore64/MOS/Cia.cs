@@ -19,6 +19,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             CountThenStop = 6
         }
 
+        public Func<bool> ReadFlag = () => true; 
+
         private int _pra;
         private int _prb;
         private int _ddra;
@@ -56,6 +58,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private TimerState _tbState;
         private int _newCra;
         private int _newCrb;
+        private bool _flagLatch;
+        [SaveState.DoNotSave] private bool _flagInput;
         [SaveState.DoNotSave] private bool _taUnderflow;
 
         private readonly Port _port;
@@ -227,6 +231,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 _latchMin = _todMin;
                 _latchHr = _todHr;
             }
+
+            _flagInput = ReadFlag();
+            if (!_flagInput && _flagLatch)
+            {
+                TriggerInterrupt(16);
+            }
+            _flagLatch = _flagInput;
         }
 
         private void Ta_Count()
