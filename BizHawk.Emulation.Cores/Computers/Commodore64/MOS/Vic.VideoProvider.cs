@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic : IVideoProvider
 	{
-		private readonly int[] _buf;
+        [SaveState.DoNotSave] private readonly int[] _buf;
 		private readonly int _bufHeight;
 		private readonly int _bufLength;
 		private int _bufOffset;
