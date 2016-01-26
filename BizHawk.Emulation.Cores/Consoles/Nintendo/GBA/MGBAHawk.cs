@@ -371,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks

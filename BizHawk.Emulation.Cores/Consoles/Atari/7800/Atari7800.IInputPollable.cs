@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public bool IsLagFrame
 		{
 			get { return _islag; }
+            set { _islag = value; }
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; private set; }

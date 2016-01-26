@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public bool IsLagFrame
 		{
 			get { return _isLag; }
+            set { _isLag = value; }
 		}
 
 		public IInputCallbackSystem InputCallbacks

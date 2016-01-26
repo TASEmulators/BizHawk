@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public bool IsLagFrame
 		{
 			get { return _islag; }
+            set { _islag = value; }
 		}
 
 		public int LagCount

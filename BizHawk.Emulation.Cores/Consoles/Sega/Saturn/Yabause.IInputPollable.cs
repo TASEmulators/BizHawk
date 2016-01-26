@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 	{
 		public int LagCount { get; set; }
 
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
 		public IInputCallbackSystem InputCallbacks

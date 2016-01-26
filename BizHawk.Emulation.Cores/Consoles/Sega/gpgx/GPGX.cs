@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		public string SystemId { get { return "GEN"; } }
 		public bool DeterministicEmulation { get { return true; } }
