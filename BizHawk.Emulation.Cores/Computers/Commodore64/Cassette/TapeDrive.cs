@@ -7,6 +7,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
     {
         private Tape _tape;
 
+        public override void ExecutePhase2()
+        {
+            if (_tape != null && !ReadMotor()) _tape.ExecuteCycle2();
+        }
+
         public override void HardReset()
         {
             if (_tape != null) _tape.Rewind();
@@ -14,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
         public override bool ReadDataInputBuffer()
         {
-            return _tape == null || ReadMotor() || _tape.Read();
+            return _tape == null || _tape.Read();
         }
 
         public override bool ReadSenseBuffer()

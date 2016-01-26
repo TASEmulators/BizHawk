@@ -18,6 +18,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
             }
         }
 
+        public void ExecutePhase2()
+        {
+            _device.ExecutePhase2();
+        }
+
         public bool ReadDataInputBuffer()
         {
             return !_connected || _device.ReadDataInputBuffer();

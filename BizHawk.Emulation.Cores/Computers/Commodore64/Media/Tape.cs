@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		private readonly byte _version;
 		private int _pos, _cycle;
 		private readonly int _start, _end;
+	    private bool _data;
 
 		public Tape(byte version, byte[] tapeData, int start, int end)
 		{
@@ -23,8 +24,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			Rewind();
 		}
 
-		// Rewinds the tape back to start
-		public void Rewind()
+	    public void ExecuteCycle2()
+	    {
+            if (_cycle == 0)
+            {
+                if (_pos >= _end)
+                {
+                    _data = true;
+                    return;
+                }
+
+                _cycle = _tapeData[_pos++] * 8;
+                if (_cycle == 0)
+                {
+                    if (_version == 0)
+                    {
+                        _cycle = 256 * 8; // unspecified overflow condition
+                    }
+                    else
+                    {
+                        _cycle = BitConverter.ToInt32(_tapeData, _pos - 1) >> 8;
+                        _pos += 3;
+                        if (_cycle == 0)
+                        {
+                            throw new Exception("Bad tape data");
+                        }
+                    }
+                }
+            }
+
+            // Send a single negative pulse at the end of a cycle
+            _data = --_cycle != 0;
+        }
+
+        // Rewinds the tape back to start
+        public void Rewind()
 		{
 			_pos = _start;
 			_cycle = 0;
@@ -33,34 +67,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		// Reads from tape, this will tell the caller if the flag pin should be raised
 		public bool Read()
 		{
-			if (_cycle == 0)
-			{
-				if (_pos >= _end)
-				{
-					return true;
-				}
-
-			    _cycle = _tapeData[_pos++]*8;
-			    if (_cycle == 0)
-			    {
-			        if (_version == 0)
-			        {
-			            _cycle = 256 * 8; // unspecified overflow condition
-			        }
-			        else
-			        {
-			            _cycle = BitConverter.ToInt32(_tapeData, _pos-1)>>8;
-			            _pos += 3;
-			            if (_cycle == 0)
-			            {
-			                throw new Exception("Bad tape data");
-			            }
-			        }
-			    }
-			}
-
-			// Send a single negative pulse at the end of a cycle
-			return --_cycle != 0;
+		    return _data;
 		}
 
 		// Try to construct a tape file from file data. Returns null if not a tape file, throws exceptions for bad tape files.
