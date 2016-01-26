@@ -180,6 +180,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     {
                         _intMask &= ~val;
                     }
+                    if ((_icr & _intMask & 0x1F) != 0)
+                    {
+                        _icr |= 0x80;
+                    }
                     break;
                 case 0xE:
                     _hasNewCra = true;
