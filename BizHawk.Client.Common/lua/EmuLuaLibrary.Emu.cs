@@ -175,6 +175,22 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"setislagged",
+			"marks the current frame as a lag frame"
+		)]
+		public void SetIsLagged(bool value = true)
+		{
+			if (InputPollableCore != null)
+			{
+				InputPollableCore.IsLagFrame = value;
+			}
+			else
+			{
+				Log(string.Format("Can not set lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
+			}
+		}
+
+		[LuaMethodAttributes(
 			"lagcount",
 			"Returns the current lag count"
 		)]
