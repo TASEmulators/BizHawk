@@ -187,6 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				Markers.Add(new TasMovieMarker(markerFrame, ""));
 				UpdateValues();
 			}
+			Tastudio.RefreshDialog();
 		}
 
 		public void EditMarkerPopUp(TasMovieMarker marker)

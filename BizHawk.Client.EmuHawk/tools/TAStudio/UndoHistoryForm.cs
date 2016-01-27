@@ -44,9 +44,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			if (row == log.UndoIndex)
-				color = Color.Green;
+				color = TAStudio.GreenZone_InputLog;
 			else if (row > log.UndoIndex)
-				color = Color.Red;
+				color = TAStudio.LagZone_InputLog;
 		}
 
 		private string _lastUndoAction = null;
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 			HistoryView.ItemCount = log.Names.Count;
 			if (AutoScrollCheck.Checked && _lastUndoAction != log.NextUndoStepName)
 			{
-				HistoryView.ensureVisible(log.UndoIndex - 1);
+				HistoryView.ensureVisible(log.UndoIndex);
 				HistoryView.clearSelection();
 				HistoryView.SelectItem(log.UndoIndex - 1, true);
 			}
