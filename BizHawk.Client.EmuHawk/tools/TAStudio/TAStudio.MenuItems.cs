@@ -695,6 +695,28 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SetSeekingCutoffIntervalMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Seeking Cutoff Interval",
+				InitialValue = Settings.SeekingCutoffInterval.ToString()
+			})
+			{
+				DialogResult result = prompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					int val = int.Parse(prompt.PromptText);
+					if (val > 0)
+					{
+						Settings.SeekingCutoffInterval = val;
+						TasView.SeekingCutoffInterval = val;
+					}
+				}
+			}
+		}
+
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
