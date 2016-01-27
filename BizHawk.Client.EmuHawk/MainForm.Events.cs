@@ -1188,11 +1188,48 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Saved settings");
 		}
 
+		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var path = PathManager.DefaultIniPath;
+			var sfd = new SaveFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "Config File (*.ini)|*.ini"
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				SaveConfig(sfd.FileName);
+				GlobalWin.OSD.AddMessage("Copied settings");
+			}
+		}
+
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
 			GlobalWin.OSD.AddMessage("Config file loaded");
+		}
+
+		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
+		{
+			var path = PathManager.DefaultIniPath;
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "Config File (*.ini)|*.ini"
+			};
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				Global.Config = ConfigService.Load<Config>(ofd.FileName);
+				Global.Config.ResolveDefaults();
+				GlobalWin.OSD.AddMessage("Config file loaded");
+			}
 		}
 
 		private void miUnthrottled_Click(object sender, EventArgs e)

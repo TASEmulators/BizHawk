@@ -2100,7 +2100,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfig()
+		private void SaveConfig(string path = "")
 		{
 			if (Global.Config.SaveWindowPosition)
 			{
@@ -2125,7 +2125,10 @@ namespace BizHawk.Client.EmuHawk
 				LogConsole.SaveConfigSettings();
 			}
 
-			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
+			if (string.IsNullOrEmpty(path))
+				path = PathManager.DefaultIniPath;
+
+			ConfigService.Save(path, Global.Config);
 		}
 
 		private static void ToggleFPS()
