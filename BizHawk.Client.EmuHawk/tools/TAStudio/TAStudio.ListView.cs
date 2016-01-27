@@ -70,13 +70,15 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekStartFrame = Emulator.Frame;
 			GlobalWin.MainForm.PauseOnFrame = frame.Value;
+			int? diff = GlobalWin.MainForm.PauseOnFrame - _seekStartFrame;
+			int seekCutoff = 2; // todo
 
 			if (pause)
 				GlobalWin.MainForm.PauseEmulator();
 			else
 				GlobalWin.MainForm.UnpauseEmulator();
 
-			if (!_seekBackgroundWorker.IsBusy)
+			if (!_seekBackgroundWorker.IsBusy && diff.Value > seekCutoff)
 				_seekBackgroundWorker.RunWorkerAsync();
 		}
 

@@ -203,11 +203,16 @@ namespace BizHawk.Client.EmuHawk
 						e.Cancel = true;
 						break;
 					}
-					double progress = (double)100d /
-						(GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value) *
-						(Global.Emulator.Frame - _seekStartFrame.Value);
+
+					int diff = Global.Emulator.Frame - _seekStartFrame.Value;
+					int unit = GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
+					double progress = 0;
+
+					if (diff != 0 && unit != 0)
+						progress = (double)100d / unit * diff;
 					if (progress < 0)
 						progress = 0;
+
 					_seekBackgroundWorker.ReportProgress((int)progress);
 					System.Threading.Thread.Sleep(1);
 				}
@@ -215,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekBackgroundWorker.ProgressChanged += (s, e) =>
 			{
-				SavingProgressBar.Value = e.ProgressPercentage;
+				this.Invoke(() => this.SavingProgressBar.Value = e.ProgressPercentage);
 			};
 
 			_seekBackgroundWorker.RunWorkerCompleted += (s, e) =>
