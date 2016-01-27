@@ -159,7 +159,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"islagged",
-			"returns whether or not the current frame is a lag frame"
+			"Returns whether or not the current frame is a lag frame"
 		)]
 		public bool IsLagged()
 		{
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"setislagged",
-			"marks the current frame as a lag frame"
+			"Sets the lag flag for the current frame. If no value is provided, it will default to true"
 		)]
 		public void SetIsLagged(bool value = true)
 		{
