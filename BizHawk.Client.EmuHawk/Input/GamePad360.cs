@@ -181,10 +181,10 @@ namespace BizHawk.Client.EmuHawk
 			AddItem("LStickLeft", () => state.Gamepad.sThumbLX <= dzn);
 			AddItem("LStickRight", () => state.Gamepad.sThumbLX >= dzp);
 
-			AddItem("RStickUp", () => state.Gamepad.sThumbLY >= dzp);
-			AddItem("RStickDown", () => state.Gamepad.sThumbLY <= dzn);
-			AddItem("RStickLeft", () => state.Gamepad.sThumbLX <= dzn);
-			AddItem("RStickRight", () => state.Gamepad.sThumbLX >= dzp);
+			AddItem("RStickUp", () => state.Gamepad.sThumbRY >= dzp);
+			AddItem("RStickDown", () => state.Gamepad.sThumbRY <= dzn);
+			AddItem("RStickLeft", () => state.Gamepad.sThumbRX <= dzn);
+			AddItem("RStickRight", () => state.Gamepad.sThumbRX >= dzp);
 
 			AddItem("LeftTrigger", () => state.Gamepad.bLeftTrigger > dzt);
 			AddItem("RightTrigger", () => state.Gamepad.bRightTrigger > dzt);
