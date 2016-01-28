@@ -45,11 +45,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	        switch (type)
 	        {
 	            case C64.CiaType.Ntsc:
+                    return new Cia(14318181, 14 * 60, keyboard, joysticks)
+                    {
+                        DelayedInterrupts = true
+                    };
                 case C64.CiaType.NtscRevA:
-                    return new Cia(14318181, 14 * 60, keyboard, joysticks);
+                    return new Cia(14318181, 14 * 60, keyboard, joysticks)
+                    {
+                        DelayedInterrupts = false
+                    };
                 case C64.CiaType.Pal:
+                    return new Cia(17734472, 18 * 50, keyboard, joysticks)
+                    {
+                        DelayedInterrupts = true
+                    };
                 case C64.CiaType.PalRevA:
-                    return new Cia(17734472, 18 * 50, keyboard, joysticks);
+                    return new Cia(17734472, 18 * 50, keyboard, joysticks)
+                    {
+                        DelayedInterrupts = false
+                    };
                 default:
                     throw new Exception("Unrecognized CIA timer type.");
             }
