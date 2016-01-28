@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    private int Cpu_ReadPort()
 		{
-			var data = 0x1F;
+			var data = 0x3F;
 			if (!Cassette.ReadSenseBuffer())
 				data &= 0xEF;
 			return data;

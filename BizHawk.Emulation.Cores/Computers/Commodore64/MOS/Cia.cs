@@ -19,7 +19,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             CountThenStop = 6
         }
 
-        public Func<bool> ReadFlag = () => true; 
+        public Func<bool> ReadFlag = () => true;
+        public bool DelayedInterrupts = true;
 
         private int _pra;
         private int _prb;
@@ -134,8 +135,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
         public void ExecutePhase2()
         {
-            CheckIrqs();
             _taUnderflow = false;
+            if (DelayedInterrupts)
+            {
+                CheckIrqs();
+            }
 
             switch (_taState)
             {
@@ -236,6 +240,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 TriggerInterrupt(16);
             }
             _flagLatch = _flagInput;
+
+            if (!DelayedInterrupts)
+            {
+                CheckIrqs();
+            }
         }
 
         private void Ta_Count()
@@ -432,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                             if ((_newCrb & 0x08) != 0)
                             {
                                 _newCrb &= 0xFE;
-                                _taState = TimerState.Stop;
+                                _tbState = TimerState.Stop;
                             }
                             else if ((_newCrb & 0x10) != 0)
                             {
@@ -441,7 +450,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         }
                         else
                         {
-                            _taState = TimerState.Stop;
+                            _tbState = TimerState.Stop;
                         }
                         break;
                 }
