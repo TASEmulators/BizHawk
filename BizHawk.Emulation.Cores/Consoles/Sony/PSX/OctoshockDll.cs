@@ -289,5 +289,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_SetLEC(IntPtr psx, bool enable);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_GetGPUUnlagged(IntPtr psx);
 	}
 }

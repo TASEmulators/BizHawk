@@ -51,6 +51,7 @@
 
 int16 soundbuf[1024 * 1024]; //how big? big enough.
 int VTBackBuffer = 0;
+bool GpuFrameForLag = false;
 static MDFN_Rect VTDisplayRects[2];
 #include	"video/Deinterlacer.h"
 static bool PrevInterlaced;
@@ -547,8 +548,15 @@ template<typename T, bool IsWrite, bool Access24> static INLINE void MemRW(pscpu
    if(!IsWrite)
     timestamp++;
 
-   if(IsWrite)
-    MDEC_Write(timestamp, A, V);
+	 if (IsWrite)
+	 {
+		 if (A == 0x1F801820)
+		 {
+			 //per pcsx-rr:
+			 GpuFrameForLag = true;
+		 }
+		 MDEC_Write(timestamp, A, V);
+	 }
    else
     V = MDEC_Read(timestamp, A);
 
@@ -1406,6 +1414,8 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 	//not that it matters, but we may need to control this at some point
 	static const int ResampleQuality = 5;
 	SPU->StartFrame(espec.SoundRate, ResampleQuality); 
+
+	GpuFrameForLag = false;
 
 	Running = -1;
 	timestamp = CPU->Run(timestamp, psx_dbg_level >= PSX_DBG_BIOS_PRINT, /*psf_loader != NULL*/ false); //huh?
@@ -2725,4 +2735,11 @@ EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled)
 {
 	CDC->SetLEC(enabled);
 	return SHOCK_OK;
+}
+
+//whether "determine lag from GPU frames" signal is set (GPU did something considered non-lag)
+//returns SHOCK_TRUE or SHOCK_FALSE
+EW_EXPORT s32 shock_GetGPUUnlagged(void* psx)
+{
+	return GpuFrameForLag ? SHOCK_TRUE : SHOCK_FALSE;
 }

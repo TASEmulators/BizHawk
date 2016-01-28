@@ -716,6 +716,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			IsLagFrame = true;
 			if (pad1 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
 			if (pad2 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
+			if (_Settings.GPULag)
+				IsLagFrame = OctoshockDll.shock_GetGPUUnlagged(psx) != OctoshockDll.SHOCK_TRUE;
 			if (IsLagFrame)
 				LagCount++;
 
@@ -1144,8 +1146,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public class Settings
 		{
+			[DisplayName("Determine Lag from GPU Frames")]
+			[DefaultValue(false)]
+			public bool GPULag { get; set; }
+
 			[DisplayName("Resolution Mode")]
-			[Description("Stuff")]
 			[DefaultValue(eResolutionMode.PixelPro)]
 			public eResolutionMode ResolutionMode { get; set; }
 

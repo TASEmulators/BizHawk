@@ -44,6 +44,7 @@ enum
  CH_OT = 6,
 };
 
+extern bool GpuFrameForLag;
 
 // RunChannels(128 - whatevercounter);
 //
@@ -256,7 +257,11 @@ static INLINE void ChRW(const unsigned ch, const uint32 CRModeCache, uint32 *V, 
 
   case CH_GPU:
 	  if(CRModeCache & 0x1)
+		{
+			if(DMACH[CH_GPU].ChanControl == 0x01000401)
+				GpuFrameForLag = true;
 	   GPU->WriteDMA(*V);
+		}
 	  else
 	   *V = GPU->ReadDMA();
 	  break;

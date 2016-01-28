@@ -429,3 +429,7 @@ EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trac
 
 //Sets whether LEC is enabled (sector level error correction). Defaults to FALSE (disabled)
 EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled);
+
+//whether "determine lag from GPU frames" signal is set (GPU did something considered non-lag)
+//returns SHOCK_TRUE or SHOCK_FALSE
+EW_EXPORT s32 shock_GetGPUUnlagged(void* psx);
