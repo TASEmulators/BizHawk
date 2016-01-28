@@ -553,6 +553,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.Config.EnableBackupMovies)
+				Global.MovieSession.Movie.SaveBackup();
 			StopMovie(saveChanges: false);
 		}
 
