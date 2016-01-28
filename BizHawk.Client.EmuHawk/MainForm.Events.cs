@@ -238,6 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			StopMovieMenuItem.Enabled
 				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
+				= SaveMovieAsMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
@@ -2344,6 +2345,7 @@ namespace BizHawk.Client.EmuHawk
 				ViewSubtitlesContextMenuItem.Visible =
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
+				SaveMovieAsContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
 			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;
