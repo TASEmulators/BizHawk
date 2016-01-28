@@ -551,6 +551,28 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovie();
 		}
 
+		private void SaveMovieAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var filename = Global.MovieSession.Movie.Filename;
+			if (string.IsNullOrWhiteSpace(filename))
+			{
+				filename = PathManager.FilesystemSafeName(Global.Game);
+			}
+
+			var file = ToolHelpers.SaveFileDialog(
+				filename,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				"Movie Files",
+				Global.MovieSession.Movie.PreferredExtension);
+
+			if (file != null)
+			{
+				Global.MovieSession.Movie.Filename = file.FullName;
+				Global.Config.RecentMovies.Add(Global.MovieSession.Movie.Filename);
+				SaveMovie();
+			}
+		}
+
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
 			if (Global.Config.EnableBackupMovies)
