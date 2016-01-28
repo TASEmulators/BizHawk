@@ -3,17 +3,17 @@
 	public sealed partial class Vic
 	{
 	    private const int BaResetCounter = 7;
-	    private const int PipelineUpdateVc = 1;
-	    private const int PipelineChkSprCrunch = 2;
-	    private const int PipelineUpdateMcBase = 4;
-	    private const int PipelineChkBrdL1 = 8;
-	    private const int PipelineChkBrdL0 = 16;
-	    private const int PipelineChkSprDma = 32;
-	    private const int PipelineChkBrdR0 = 64;
-	    private const int PipelineChkSprExp = 128;
-	    private const int PipelineChkBrdR1 = 256;
-	    private const int PipelineChkSprDisp = 512;
-	    private const int PipelineUpdateRc = 1024;
+	    private const int PipelineUpdateVc = 0x00000001; // vc/rc rule 2
+	    private const int PipelineChkSprCrunch = 0x00000002;
+	    private const int PipelineUpdateMcBase = 0x00000004;
+	    private const int PipelineChkBrdL1 = 0x00000008;
+	    private const int PipelineChkBrdL0 = 0x00000010;
+	    private const int PipelineChkSprDma = 0x00000020; // sprite rule 3
+	    private const int PipelineChkBrdR0 = 0x00000040;
+	    private const int PipelineChkSprExp = 0x00000080; // sprite rule 2
+	    private const int PipelineChkBrdR1 = 0x00000100;
+	    private const int PipelineChkSprDisp = 0x00000200; // sprite rule 4
+	    private const int PipelineUpdateRc = 0x00000400; // vc/rc rule 5
 	    private const int PipelineHBlankL = 0x10000000;
 	    private const int PipelineHBlankR = 0x20000000;
 	    private const int PipelineHoldX = 0x40000000;
@@ -52,6 +52,7 @@
 			        ReadMemory(_parseaddr);
 			        break;
 			    case 0x200:
+                    // fetch C
 			        if (!_idle)
 			        {
 			            if (_badline)
@@ -156,13 +157,13 @@
 			_hblankCheckEnableL = (_parseact & PipelineHBlankL) != 0;
 			_hblankCheckEnableR = (_parseact & PipelineHBlankR) != 0;
 
-			foreach (var spr in _sprites)
+			foreach (var spr in _sprites) // sprite rule 1
 			{
 				if (!spr.YExpand)
 					spr.YCrunch = true;
 			}
 
-			if ((_parseact & PipelineChkSprExp) != 0)
+			if ((_parseact & PipelineChkSprExp) != 0) // sprite rule 2
 			{
 				foreach (var spr in _sprites)
 				{
@@ -171,7 +172,7 @@
 				}
 			}
 
-			if ((_parseact & PipelineChkSprDma) != 0)
+			if ((_parseact & PipelineChkSprDma) != 0) // sprite rule 3
 			{
 				foreach (var spr in _sprites)
 				{
@@ -184,7 +185,7 @@
 				}
 			}
 
-			if ((_parseact & PipelineChkSprDisp) != 0)
+			if ((_parseact & PipelineChkSprDisp) != 0) // VIC addendum on sprite rule 4
 			{
 				foreach (var spr in _sprites)
 				{
@@ -200,13 +201,13 @@
 				}
 			}
 
-			if ((_parseact & PipelineChkSprCrunch) != 0)
+			if ((_parseact & PipelineChkSprCrunch) != 0) // VIC addendum sprite rule 7
 			{
 				// not sure if anything has to go here,
 				// some sources say yes, some say no...
 			}
 
-			if ((_parseact & PipelineUpdateMcBase) != 0)
+			if ((_parseact & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
 			{
 				foreach (var spr in _sprites)
 				{
@@ -215,9 +216,6 @@
 						spr.Mcbase = spr.Mc;
 						if (spr.Mcbase == 63)
 						{
-							if (!spr.YCrunch)
-							{
-							}
 							spr.Dma = false;
 						}
 					}

@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
         [SaveState.DoNotSave]
         private static readonly int[] TimingBuilderCycle55Act = {
-			PipelineChkSprDma, 0,
 			PipelineChkSprDma | PipelineChkSprExp, 0,
+			PipelineChkSprDma, 0,
 			0, 0,
 			PipelineChkSprDisp, PipelineUpdateRc
         };
@@ -156,11 +156,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			for (var i = 0; i < length; i++)
 			{
-				result[i++] = 0x500;
-				result[i] = 0x100;
-			}
+                result[i++] = 0x400;
+                result[i] = 0x500;
+            }
 
-			while (true)
+            while (true)
 			{
 				index++;
 				if (index >= length)
