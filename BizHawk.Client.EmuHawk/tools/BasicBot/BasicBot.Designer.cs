@@ -76,14 +76,6 @@
 			this.AttemptsLabel = new System.Windows.Forms.Label();
 			this.FramesLabel = new System.Windows.Forms.Label();
 			this.GoalGroupBox = new System.Windows.Forms.GroupBox();
-			this.panel6 = new System.Windows.Forms.Panel();
-			this.Tiebreak3Operator = new System.Windows.Forms.ComboBox();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.TieBreaker3Box = new BizHawk.Client.EmuHawk.HexTextBox();
-			this.TieBreak3Numeric = new System.Windows.Forms.NumericUpDown();
-			this.TieBreak3ValueRadio = new System.Windows.Forms.RadioButton();
-			this.TieBreak3BestRadio = new System.Windows.Forms.RadioButton();
 			this.label4 = new System.Windows.Forms.Label();
 			this.FrameLengthNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
@@ -111,6 +103,14 @@
 			this.label11 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.TieBreaker2Box = new BizHawk.Client.EmuHawk.HexTextBox();
+			this.panel6 = new System.Windows.Forms.Panel();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.TieBreaker3Box = new BizHawk.Client.EmuHawk.HexTextBox();
+			this.TieBreak3Numeric = new System.Windows.Forms.NumericUpDown();
+			this.TieBreak3ValueRadio = new System.Windows.Forms.RadioButton();
+			this.TieBreak3BestRadio = new System.Windows.Forms.RadioButton();
+			this.Tiebreak3Operator = new System.Windows.Forms.ComboBox();
 			this.StopBtn = new System.Windows.Forms.Button();
 			this.label8 = new System.Windows.Forms.Label();
 			this.StartFromSlotBox = new System.Windows.Forms.ComboBox();
@@ -124,8 +124,6 @@
 			this.BestGroupBox.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.GoalGroupBox.SuspendLayout();
-			this.panel6.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.TieBreak3Numeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.FrameLengthNumeric)).BeginInit();
 			this.panel3.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.MainValueNumeric)).BeginInit();
@@ -133,6 +131,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.TieBreak1Numeric)).BeginInit();
 			this.panel5.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TieBreak2Numeric)).BeginInit();
+			this.panel6.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.TieBreak3Numeric)).BeginInit();
 			this.ControlGroupBox.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.StatsContextMenu.SuspendLayout();
@@ -146,7 +146,7 @@
             this.OptionsSubMenu});
 			this.BotMenu.Location = new System.Drawing.Point(0, 0);
 			this.BotMenu.Name = "BotMenu";
-			this.BotMenu.Size = new System.Drawing.Size(842, 24);
+			this.BotMenu.Size = new System.Drawing.Size(687, 24);
 			this.BotMenu.TabIndex = 0;
 			this.BotMenu.Text = "menuStrip1";
 			// 
@@ -326,7 +326,7 @@
             this.MessageLabel});
 			this.BotStatusStrip.Location = new System.Drawing.Point(0, 565);
 			this.BotStatusStrip.Name = "BotStatusStrip";
-			this.BotStatusStrip.Size = new System.Drawing.Size(842, 22);
+			this.BotStatusStrip.Size = new System.Drawing.Size(687, 22);
 			this.BotStatusStrip.TabIndex = 2;
 			this.BotStatusStrip.Text = "statusStrip1";
 			// 
@@ -355,7 +355,7 @@
 			this.ControlsBox.Controls.Add(this.ControlProbabilityPanel);
 			this.ControlsBox.Location = new System.Drawing.Point(12, 183);
 			this.ControlsBox.Name = "ControlsBox";
-			this.ControlsBox.Size = new System.Drawing.Size(567, 369);
+			this.ControlsBox.Size = new System.Drawing.Size(422, 369);
 			this.ControlsBox.TabIndex = 3;
 			this.ControlsBox.TabStop = false;
 			this.ControlsBox.Text = "Controls";
@@ -368,7 +368,7 @@
 			this.ControlProbabilityPanel.AutoScroll = true;
 			this.ControlProbabilityPanel.Location = new System.Drawing.Point(6, 19);
 			this.ControlProbabilityPanel.Name = "ControlProbabilityPanel";
-			this.ControlProbabilityPanel.Size = new System.Drawing.Size(554, 344);
+			this.ControlProbabilityPanel.Size = new System.Drawing.Size(410, 350);
 			this.ControlProbabilityPanel.TabIndex = 0;
 			// 
 			// BestGroupBox
@@ -388,9 +388,9 @@
 			this.BestGroupBox.Controls.Add(this.label15);
 			this.BestGroupBox.Controls.Add(this.label14);
 			this.BestGroupBox.Controls.Add(this.label13);
-			this.BestGroupBox.Location = new System.Drawing.Point(585, 183);
+			this.BestGroupBox.Location = new System.Drawing.Point(441, 183);
 			this.BestGroupBox.Name = "BestGroupBox";
-			this.BestGroupBox.Size = new System.Drawing.Size(245, 369);
+			this.BestGroupBox.Size = new System.Drawing.Size(230, 369);
 			this.BestGroupBox.TabIndex = 4;
 			this.BestGroupBox.TabStop = false;
 			this.BestGroupBox.Text = "Best";
@@ -450,7 +450,7 @@
 			this.panel1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.panel1.Location = new System.Drawing.Point(12, 112);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(227, 251);
+			this.panel1.Size = new System.Drawing.Size(212, 251);
 			this.panel1.TabIndex = 21;
 			// 
 			// BestAttemptLogLabel
@@ -465,7 +465,7 @@
 			// BestTieBreak3Box
 			// 
 			this.BestTieBreak3Box.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BestTieBreak3Box.Location = new System.Drawing.Point(178, 73);
+			this.BestTieBreak3Box.Location = new System.Drawing.Point(163, 73);
 			this.BestTieBreak3Box.Name = "BestTieBreak3Box";
 			this.BestTieBreak3Box.ReadOnly = true;
 			this.BestTieBreak3Box.Size = new System.Drawing.Size(58, 20);
@@ -475,7 +475,7 @@
 			// BestTieBreak2Box
 			// 
 			this.BestTieBreak2Box.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BestTieBreak2Box.Location = new System.Drawing.Point(178, 53);
+			this.BestTieBreak2Box.Location = new System.Drawing.Point(163, 53);
 			this.BestTieBreak2Box.Name = "BestTieBreak2Box";
 			this.BestTieBreak2Box.ReadOnly = true;
 			this.BestTieBreak2Box.Size = new System.Drawing.Size(58, 20);
@@ -485,7 +485,7 @@
 			// BestTieBreak1Box
 			// 
 			this.BestTieBreak1Box.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BestTieBreak1Box.Location = new System.Drawing.Point(178, 33);
+			this.BestTieBreak1Box.Location = new System.Drawing.Point(163, 33);
 			this.BestTieBreak1Box.Name = "BestTieBreak1Box";
 			this.BestTieBreak1Box.ReadOnly = true;
 			this.BestTieBreak1Box.Size = new System.Drawing.Size(58, 20);
@@ -495,7 +495,7 @@
 			// BestMaximizeBox
 			// 
 			this.BestMaximizeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BestMaximizeBox.Location = new System.Drawing.Point(178, 13);
+			this.BestMaximizeBox.Location = new System.Drawing.Point(163, 13);
 			this.BestMaximizeBox.Name = "BestMaximizeBox";
 			this.BestMaximizeBox.ReadOnly = true;
 			this.BestMaximizeBox.Size = new System.Drawing.Size(58, 20);
@@ -506,7 +506,7 @@
 			// 
 			this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(111, 76);
+			this.label16.Location = new System.Drawing.Point(96, 76);
 			this.label16.Name = "label16";
 			this.label16.Size = new System.Drawing.Size(61, 13);
 			this.label16.TabIndex = 16;
@@ -516,7 +516,7 @@
 			// 
 			this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(111, 56);
+			this.label15.Location = new System.Drawing.Point(96, 56);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(61, 13);
 			this.label15.TabIndex = 15;
@@ -526,7 +526,7 @@
 			// 
 			this.label14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(111, 36);
+			this.label14.Location = new System.Drawing.Point(96, 36);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(61, 13);
 			this.label14.TabIndex = 6;
@@ -536,7 +536,7 @@
 			// 
 			this.label13.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(119, 16);
+			this.label13.Location = new System.Drawing.Point(104, 16);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(63, 13);
 			this.label13.TabIndex = 0;
@@ -582,119 +582,19 @@
 			// 
 			this.GoalGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.GoalGroupBox.Controls.Add(this.panel6);
 			this.GoalGroupBox.Controls.Add(this.label4);
 			this.GoalGroupBox.Controls.Add(this.FrameLengthNumeric);
 			this.GoalGroupBox.Controls.Add(this.label3);
 			this.GoalGroupBox.Controls.Add(this.panel3);
 			this.GoalGroupBox.Controls.Add(this.panel4);
 			this.GoalGroupBox.Controls.Add(this.panel5);
+			this.GoalGroupBox.Controls.Add(this.panel6);
 			this.GoalGroupBox.Location = new System.Drawing.Point(12, 27);
 			this.GoalGroupBox.Name = "GoalGroupBox";
-			this.GoalGroupBox.Size = new System.Drawing.Size(567, 150);
+			this.GoalGroupBox.Size = new System.Drawing.Size(422, 150);
 			this.GoalGroupBox.TabIndex = 9;
 			this.GoalGroupBox.TabStop = false;
 			this.GoalGroupBox.Text = " ";
-			// 
-			// panel6
-			// 
-			this.panel6.Controls.Add(this.Tiebreak3Operator);
-			this.panel6.Controls.Add(this.label12);
-			this.panel6.Controls.Add(this.label7);
-			this.panel6.Controls.Add(this.TieBreaker3Box);
-			this.panel6.Controls.Add(this.TieBreak3Numeric);
-			this.panel6.Controls.Add(this.TieBreak3ValueRadio);
-			this.panel6.Controls.Add(this.TieBreak3BestRadio);
-			this.panel6.Location = new System.Drawing.Point(9, 120);
-			this.panel6.Name = "panel6";
-			this.panel6.Size = new System.Drawing.Size(546, 26);
-			this.panel6.TabIndex = 3;
-			// 
-			// Tiebreak3Operator
-			// 
-			this.Tiebreak3Operator.FormattingEnabled = true;
-			this.Tiebreak3Operator.Items.AddRange(new object[] {
-            ">",
-            ">=",
-            "=",
-            "<=",
-            "<"});
-			this.Tiebreak3Operator.Location = new System.Drawing.Point(262, 3);
-			this.Tiebreak3Operator.Name = "Tiebreak3Operator";
-			this.Tiebreak3Operator.Size = new System.Drawing.Size(40, 21);
-			this.Tiebreak3Operator.TabIndex = 1017;
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(67, 7);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(59, 13);
-			this.label12.TabIndex = 1015;
-			this.label12.Text = "Address 0x";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(1, 7);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(61, 13);
-			this.label7.TabIndex = 1014;
-			this.label7.Text = "Tiebreak 3:";
-			// 
-			// TieBreaker3Box
-			// 
-			this.TieBreaker3Box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.TieBreaker3Box.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.TieBreaker3Box.Location = new System.Drawing.Point(133, 4);
-			this.TieBreaker3Box.Name = "TieBreaker3Box";
-			this.TieBreaker3Box.Nullable = true;
-			this.TieBreaker3Box.Size = new System.Drawing.Size(123, 20);
-			this.TieBreaker3Box.TabIndex = 1016;
-			// 
-			// TieBreak3Numeric
-			// 
-			this.TieBreak3Numeric.Enabled = false;
-			this.TieBreak3Numeric.Location = new System.Drawing.Point(417, 4);
-			this.TieBreak3Numeric.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-			this.TieBreak3Numeric.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
-			this.TieBreak3Numeric.Name = "TieBreak3Numeric";
-			this.TieBreak3Numeric.Size = new System.Drawing.Size(120, 20);
-			this.TieBreak3Numeric.TabIndex = 1013;
-			this.TieBreak3Numeric.ValueChanged += new System.EventHandler(this.TieBreak3Numeric_ValueChanged);
-			// 
-			// TieBreak3ValueRadio
-			// 
-			this.TieBreak3ValueRadio.AutoSize = true;
-			this.TieBreak3ValueRadio.Location = new System.Drawing.Point(359, 6);
-			this.TieBreak3ValueRadio.Name = "TieBreak3ValueRadio";
-			this.TieBreak3ValueRadio.Size = new System.Drawing.Size(52, 17);
-			this.TieBreak3ValueRadio.TabIndex = 1012;
-			this.TieBreak3ValueRadio.Text = "Value";
-			this.TieBreak3ValueRadio.UseVisualStyleBackColor = true;
-			this.TieBreak3ValueRadio.CheckedChanged += new System.EventHandler(this.TieBreak3ValueRadio_CheckedChanged);
-			// 
-			// TieBreak3BestRadio
-			// 
-			this.TieBreak3BestRadio.AutoSize = true;
-			this.TieBreak3BestRadio.Checked = true;
-			this.TieBreak3BestRadio.Location = new System.Drawing.Point(307, 6);
-			this.TieBreak3BestRadio.Name = "TieBreak3BestRadio";
-			this.TieBreak3BestRadio.Size = new System.Drawing.Size(46, 17);
-			this.TieBreak3BestRadio.TabIndex = 1011;
-			this.TieBreak3BestRadio.TabStop = true;
-			this.TieBreak3BestRadio.Text = "Best";
-			this.TieBreak3BestRadio.UseVisualStyleBackColor = true;
-			this.TieBreak3BestRadio.CheckedChanged += new System.EventHandler(this.Tiebreak3BestRadio_CheckedChanged);
 			// 
 			// label4
 			// 
@@ -743,13 +643,13 @@
 			this.panel3.Controls.Add(this.maximizeLabeltext);
 			this.panel3.Location = new System.Drawing.Point(9, 51);
 			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(546, 26);
+			this.panel3.Size = new System.Drawing.Size(407, 26);
 			this.panel3.TabIndex = 0;
 			// 
 			// MainValueNumeric
 			// 
 			this.MainValueNumeric.Enabled = false;
-			this.MainValueNumeric.Location = new System.Drawing.Point(417, 4);
+			this.MainValueNumeric.Location = new System.Drawing.Point(336, 4);
 			this.MainValueNumeric.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -761,14 +661,14 @@
             0,
             -2147483648});
 			this.MainValueNumeric.Name = "MainValueNumeric";
-			this.MainValueNumeric.Size = new System.Drawing.Size(120, 20);
+			this.MainValueNumeric.Size = new System.Drawing.Size(61, 20);
 			this.MainValueNumeric.TabIndex = 1013;
 			this.MainValueNumeric.ValueChanged += new System.EventHandler(this.MainValueNumeric_ValueChanged);
 			// 
 			// MainValueRadio
 			// 
 			this.MainValueRadio.AutoSize = true;
-			this.MainValueRadio.Location = new System.Drawing.Point(359, 6);
+			this.MainValueRadio.Location = new System.Drawing.Point(281, 6);
 			this.MainValueRadio.Name = "MainValueRadio";
 			this.MainValueRadio.Size = new System.Drawing.Size(52, 17);
 			this.MainValueRadio.TabIndex = 1012;
@@ -780,7 +680,7 @@
 			// 
 			this.MainBestRadio.AutoSize = true;
 			this.MainBestRadio.Checked = true;
-			this.MainBestRadio.Location = new System.Drawing.Point(307, 6);
+			this.MainBestRadio.Location = new System.Drawing.Point(235, 6);
 			this.MainBestRadio.Name = "MainBestRadio";
 			this.MainBestRadio.Size = new System.Drawing.Size(46, 17);
 			this.MainBestRadio.TabIndex = 1011;
@@ -798,7 +698,7 @@
             "=",
             "<=",
             "<"});
-			this.MainOperator.Location = new System.Drawing.Point(262, 3);
+			this.MainOperator.Location = new System.Drawing.Point(187, 3);
 			this.MainOperator.Name = "MainOperator";
 			this.MainOperator.Size = new System.Drawing.Size(40, 21);
 			this.MainOperator.TabIndex = 1010;
@@ -820,7 +720,7 @@
 			this.MaximizeAddressBox.Location = new System.Drawing.Point(133, 4);
 			this.MaximizeAddressBox.Name = "MaximizeAddressBox";
 			this.MaximizeAddressBox.Nullable = true;
-			this.MaximizeAddressBox.Size = new System.Drawing.Size(123, 20);
+			this.MaximizeAddressBox.Size = new System.Drawing.Size(47, 20);
 			this.MaximizeAddressBox.TabIndex = 1009;
 			// 
 			// maximizeLabeltext
@@ -843,13 +743,13 @@
 			this.panel4.Controls.Add(this.label10);
 			this.panel4.Location = new System.Drawing.Point(9, 74);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(546, 26);
+			this.panel4.Size = new System.Drawing.Size(407, 26);
 			this.panel4.TabIndex = 1;
 			// 
 			// TieBreak1Numeric
 			// 
 			this.TieBreak1Numeric.Enabled = false;
-			this.TieBreak1Numeric.Location = new System.Drawing.Point(417, 4);
+			this.TieBreak1Numeric.Location = new System.Drawing.Point(336, 4);
 			this.TieBreak1Numeric.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -861,14 +761,14 @@
             0,
             -2147483648});
 			this.TieBreak1Numeric.Name = "TieBreak1Numeric";
-			this.TieBreak1Numeric.Size = new System.Drawing.Size(120, 20);
+			this.TieBreak1Numeric.Size = new System.Drawing.Size(61, 20);
 			this.TieBreak1Numeric.TabIndex = 1013;
 			this.TieBreak1Numeric.ValueChanged += new System.EventHandler(this.TieBreak1Numeric_ValueChanged);
 			// 
 			// TieBreak1ValueRadio
 			// 
 			this.TieBreak1ValueRadio.AutoSize = true;
-			this.TieBreak1ValueRadio.Location = new System.Drawing.Point(359, 6);
+			this.TieBreak1ValueRadio.Location = new System.Drawing.Point(281, 6);
 			this.TieBreak1ValueRadio.Name = "TieBreak1ValueRadio";
 			this.TieBreak1ValueRadio.Size = new System.Drawing.Size(52, 17);
 			this.TieBreak1ValueRadio.TabIndex = 1012;
@@ -885,7 +785,7 @@
             "=",
             "<=",
             "<"});
-			this.Tiebreak1Operator.Location = new System.Drawing.Point(262, 3);
+			this.Tiebreak1Operator.Location = new System.Drawing.Point(187, 3);
 			this.Tiebreak1Operator.Name = "Tiebreak1Operator";
 			this.Tiebreak1Operator.Size = new System.Drawing.Size(40, 21);
 			this.Tiebreak1Operator.TabIndex = 1007;
@@ -894,7 +794,7 @@
 			// 
 			this.TieBreak1BestRadio.AutoSize = true;
 			this.TieBreak1BestRadio.Checked = true;
-			this.TieBreak1BestRadio.Location = new System.Drawing.Point(307, 6);
+			this.TieBreak1BestRadio.Location = new System.Drawing.Point(235, 6);
 			this.TieBreak1BestRadio.Name = "TieBreak1BestRadio";
 			this.TieBreak1BestRadio.Size = new System.Drawing.Size(46, 17);
 			this.TieBreak1BestRadio.TabIndex = 1011;
@@ -920,7 +820,7 @@
 			this.TieBreaker1Box.Location = new System.Drawing.Point(133, 4);
 			this.TieBreaker1Box.Name = "TieBreaker1Box";
 			this.TieBreaker1Box.Nullable = true;
-			this.TieBreaker1Box.Size = new System.Drawing.Size(123, 20);
+			this.TieBreaker1Box.Size = new System.Drawing.Size(47, 20);
 			this.TieBreaker1Box.TabIndex = 1002;
 			// 
 			// label10
@@ -943,13 +843,13 @@
 			this.panel5.Controls.Add(this.TieBreaker2Box);
 			this.panel5.Location = new System.Drawing.Point(9, 97);
 			this.panel5.Name = "panel5";
-			this.panel5.Size = new System.Drawing.Size(546, 26);
+			this.panel5.Size = new System.Drawing.Size(407, 26);
 			this.panel5.TabIndex = 2;
 			// 
 			// TieBreak2Numeric
 			// 
 			this.TieBreak2Numeric.Enabled = false;
-			this.TieBreak2Numeric.Location = new System.Drawing.Point(417, 4);
+			this.TieBreak2Numeric.Location = new System.Drawing.Point(336, 4);
 			this.TieBreak2Numeric.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -961,7 +861,7 @@
             0,
             -2147483648});
 			this.TieBreak2Numeric.Name = "TieBreak2Numeric";
-			this.TieBreak2Numeric.Size = new System.Drawing.Size(120, 20);
+			this.TieBreak2Numeric.Size = new System.Drawing.Size(61, 20);
 			this.TieBreak2Numeric.TabIndex = 1013;
 			this.TieBreak2Numeric.ValueChanged += new System.EventHandler(this.TieBreak2Numeric_ValueChanged);
 			// 
@@ -974,7 +874,7 @@
             "=",
             "<=",
             "<"});
-			this.Tiebreak2Operator.Location = new System.Drawing.Point(262, 3);
+			this.Tiebreak2Operator.Location = new System.Drawing.Point(187, 3);
 			this.Tiebreak2Operator.Name = "Tiebreak2Operator";
 			this.Tiebreak2Operator.Size = new System.Drawing.Size(40, 21);
 			this.Tiebreak2Operator.TabIndex = 1008;
@@ -982,7 +882,7 @@
 			// TieBreak2ValueRadio
 			// 
 			this.TieBreak2ValueRadio.AutoSize = true;
-			this.TieBreak2ValueRadio.Location = new System.Drawing.Point(359, 6);
+			this.TieBreak2ValueRadio.Location = new System.Drawing.Point(281, 6);
 			this.TieBreak2ValueRadio.Name = "TieBreak2ValueRadio";
 			this.TieBreak2ValueRadio.Size = new System.Drawing.Size(52, 17);
 			this.TieBreak2ValueRadio.TabIndex = 1012;
@@ -994,7 +894,7 @@
 			// 
 			this.TieBreak2BestRadio.AutoSize = true;
 			this.TieBreak2BestRadio.Checked = true;
-			this.TieBreak2BestRadio.Location = new System.Drawing.Point(307, 6);
+			this.TieBreak2BestRadio.Location = new System.Drawing.Point(235, 6);
 			this.TieBreak2BestRadio.Name = "TieBreak2BestRadio";
 			this.TieBreak2BestRadio.Size = new System.Drawing.Size(46, 17);
 			this.TieBreak2BestRadio.TabIndex = 1011;
@@ -1029,8 +929,108 @@
 			this.TieBreaker2Box.Location = new System.Drawing.Point(133, 4);
 			this.TieBreaker2Box.Name = "TieBreaker2Box";
 			this.TieBreaker2Box.Nullable = true;
-			this.TieBreaker2Box.Size = new System.Drawing.Size(123, 20);
+			this.TieBreaker2Box.Size = new System.Drawing.Size(47, 20);
 			this.TieBreaker2Box.TabIndex = 1003;
+			// 
+			// panel6
+			// 
+			this.panel6.Controls.Add(this.label12);
+			this.panel6.Controls.Add(this.label7);
+			this.panel6.Controls.Add(this.TieBreaker3Box);
+			this.panel6.Controls.Add(this.TieBreak3Numeric);
+			this.panel6.Controls.Add(this.TieBreak3ValueRadio);
+			this.panel6.Controls.Add(this.TieBreak3BestRadio);
+			this.panel6.Controls.Add(this.Tiebreak3Operator);
+			this.panel6.Location = new System.Drawing.Point(9, 120);
+			this.panel6.Name = "panel6";
+			this.panel6.Size = new System.Drawing.Size(407, 26);
+			this.panel6.TabIndex = 3;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(67, 7);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(59, 13);
+			this.label12.TabIndex = 1015;
+			this.label12.Text = "Address 0x";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(1, 7);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(61, 13);
+			this.label7.TabIndex = 1014;
+			this.label7.Text = "Tiebreak 3:";
+			// 
+			// TieBreaker3Box
+			// 
+			this.TieBreaker3Box.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.TieBreaker3Box.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.TieBreaker3Box.Location = new System.Drawing.Point(133, 4);
+			this.TieBreaker3Box.Name = "TieBreaker3Box";
+			this.TieBreaker3Box.Nullable = true;
+			this.TieBreaker3Box.Size = new System.Drawing.Size(47, 20);
+			this.TieBreaker3Box.TabIndex = 1016;
+			// 
+			// TieBreak3Numeric
+			// 
+			this.TieBreak3Numeric.Enabled = false;
+			this.TieBreak3Numeric.Location = new System.Drawing.Point(336, 4);
+			this.TieBreak3Numeric.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+			this.TieBreak3Numeric.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
+			this.TieBreak3Numeric.Name = "TieBreak3Numeric";
+			this.TieBreak3Numeric.Size = new System.Drawing.Size(61, 20);
+			this.TieBreak3Numeric.TabIndex = 1013;
+			this.TieBreak3Numeric.ValueChanged += new System.EventHandler(this.TieBreak3Numeric_ValueChanged);
+			// 
+			// TieBreak3ValueRadio
+			// 
+			this.TieBreak3ValueRadio.AutoSize = true;
+			this.TieBreak3ValueRadio.Location = new System.Drawing.Point(281, 6);
+			this.TieBreak3ValueRadio.Name = "TieBreak3ValueRadio";
+			this.TieBreak3ValueRadio.Size = new System.Drawing.Size(52, 17);
+			this.TieBreak3ValueRadio.TabIndex = 1012;
+			this.TieBreak3ValueRadio.Text = "Value";
+			this.TieBreak3ValueRadio.UseVisualStyleBackColor = true;
+			this.TieBreak3ValueRadio.CheckedChanged += new System.EventHandler(this.TieBreak3ValueRadio_CheckedChanged);
+			// 
+			// TieBreak3BestRadio
+			// 
+			this.TieBreak3BestRadio.AutoSize = true;
+			this.TieBreak3BestRadio.Checked = true;
+			this.TieBreak3BestRadio.Location = new System.Drawing.Point(235, 6);
+			this.TieBreak3BestRadio.Name = "TieBreak3BestRadio";
+			this.TieBreak3BestRadio.Size = new System.Drawing.Size(46, 17);
+			this.TieBreak3BestRadio.TabIndex = 1011;
+			this.TieBreak3BestRadio.TabStop = true;
+			this.TieBreak3BestRadio.Text = "Best";
+			this.TieBreak3BestRadio.UseVisualStyleBackColor = true;
+			this.TieBreak3BestRadio.CheckedChanged += new System.EventHandler(this.Tiebreak3BestRadio_CheckedChanged);
+			// 
+			// Tiebreak3Operator
+			// 
+			this.Tiebreak3Operator.FormattingEnabled = true;
+			this.Tiebreak3Operator.Items.AddRange(new object[] {
+            ">",
+            ">=",
+            "=",
+            "<=",
+            "<"});
+			this.Tiebreak3Operator.Location = new System.Drawing.Point(187, 3);
+			this.Tiebreak3Operator.Name = "Tiebreak3Operator";
+			this.Tiebreak3Operator.Size = new System.Drawing.Size(40, 21);
+			this.Tiebreak3Operator.TabIndex = 1017;
 			// 
 			// StopBtn
 			// 
@@ -1082,9 +1082,9 @@
 			this.ControlGroupBox.Controls.Add(this.RunBtn);
 			this.ControlGroupBox.Controls.Add(this.StartFromSlotBox);
 			this.ControlGroupBox.Controls.Add(this.label8);
-			this.ControlGroupBox.Location = new System.Drawing.Point(584, 27);
+			this.ControlGroupBox.Location = new System.Drawing.Point(440, 27);
 			this.ControlGroupBox.Name = "ControlGroupBox";
-			this.ControlGroupBox.Size = new System.Drawing.Size(245, 150);
+			this.ControlGroupBox.Size = new System.Drawing.Size(230, 150);
 			this.ControlGroupBox.TabIndex = 2004;
 			this.ControlGroupBox.TabStop = false;
 			this.ControlGroupBox.Text = "Control";
@@ -1119,7 +1119,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(842, 587);
+			this.AutoSize = true;
+			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.ClientSize = new System.Drawing.Size(687, 587);
 			this.Controls.Add(this.ControlGroupBox);
 			this.Controls.Add(this.GoalGroupBox);
 			this.Controls.Add(this.BestGroupBox);
@@ -1143,9 +1145,6 @@
 			this.panel1.PerformLayout();
 			this.GoalGroupBox.ResumeLayout(false);
 			this.GoalGroupBox.PerformLayout();
-			this.panel6.ResumeLayout(false);
-			this.panel6.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.TieBreak3Numeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.FrameLengthNumeric)).EndInit();
 			this.panel3.ResumeLayout(false);
 			this.panel3.PerformLayout();
@@ -1156,6 +1155,9 @@
 			this.panel5.ResumeLayout(false);
 			this.panel5.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.TieBreak2Numeric)).EndInit();
+			this.panel6.ResumeLayout(false);
+			this.panel6.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.TieBreak3Numeric)).EndInit();
 			this.ControlGroupBox.ResumeLayout(false);
 			this.ControlGroupBox.PerformLayout();
 			this.panel2.ResumeLayout(false);
