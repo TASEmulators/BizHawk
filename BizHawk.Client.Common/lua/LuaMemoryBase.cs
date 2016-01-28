@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 			{
 				if (DomainList[domain] == null)
 				{
-					Log(string.Format("Unable to find domain: {0}, fallung back to current", domain));
+					Log(string.Format("Unable to find domain: {0}, falling back to current", domain));
 					return Domain.Name;
 				}
 				else
@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 			}
 			catch // Just in case
 			{
-				Log(string.Format("Unable to find domain: {0}, fallung back to current", domain));
+				Log(string.Format("Unable to find domain: {0}, falling back to current", domain));
 			}
 			return Domain.Name;
 		}
