@@ -132,7 +132,7 @@
 			// perform BA flag manipulation
 			switch (_parseba)
 			{
-			    case 0x0000:
+			    case 0x0888:
 			        _pinBa = true;
 			        break;
 			    case 0x1000:
