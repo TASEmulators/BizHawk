@@ -80,9 +80,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             // raster IRQ compare
             if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
             {
-                if (_rasterLine != _lastRasterLine)
-                    if (_rasterLine == _rasterInterruptLine)
-                        _intRaster = true;
+                if (_rasterLine != _lastRasterLine && _rasterLine == _rasterInterruptLine)
+                    _intRaster = true;
                 _lastRasterLine = _rasterLine;
             }
 
@@ -107,9 +106,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             // if the BA counter is nonzero, allow CPU bus access
             UpdateBa();
             _pinAec = false;
-
-            // must always come last
-            //UpdatePins();
         }
 
         public void ExecutePhase2()
@@ -175,6 +171,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			_irqShift <<= 1;
 			_irqShift |= irqTemp ? 0x1 : 0x0;
+
+            // if delaying IRQ, use higher bitmask
 			_pinIrq = (_irqShift & 0x1) != 0;
 		}
 
