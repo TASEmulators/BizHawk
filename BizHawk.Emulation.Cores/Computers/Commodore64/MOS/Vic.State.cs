@@ -41,7 +41,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _enableIntSpriteCollision;
 		private bool _enableIntSpriteDataCollision;
 		private bool _extraColorMode;
-		private bool _hblank;
+        private bool _extraColorModeBuffer;
+        private bool _hblank;
 		private bool _idle;
 		private bool _intLightPen;
 		private bool _intRaster;
@@ -51,8 +52,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		[SaveState.DoNotSave] private readonly int _hblankStart;
 		private bool _hblankCheckEnableL;
 		private bool _hblankCheckEnableR;
-		private int _lastRasterLine;
-		private int _lightPenX;
+	    private int _lightPenX;
 		private int _lightPenY;
 		private bool _multicolorMode;
 		private bool _pinAec = true;
@@ -61,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _pointerCb;
 		private int _pointerVm;
 		private int _rasterInterruptLine;
+	    private bool _rasterInterruptTriggered;
 		private int _rasterLine;
 		private int _rasterX;
 		private bool _rasterXHold;
@@ -68,7 +69,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _refreshCounter;
 		private bool _renderEnabled;
 		private bool _rowSelect;
-		private int _spriteMulticolor0;
+        private bool _spriteBackgroundCollisionClearPending;
+        private bool _spriteSpriteCollisionClearPending;
+        private int _spriteMulticolor0;
 	    private int _spriteMulticolor1;
 	    [SaveState.DoNotSave] private readonly Sprite _sprite0;
         [SaveState.DoNotSave] private readonly Sprite _sprite1;
@@ -143,7 +146,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_intRaster = false;
 			_intSpriteCollision = false;
 			_intSpriteDataCollision = false;
-			_lastRasterLine = 0;
 			_lightPenX = 0;
 			_lightPenY = 0;
 			_multicolorMode = false;
@@ -155,7 +157,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_rc = 7;
 			_refreshCounter = 0xFF;
 			_rowSelect = false;
-			_spriteMulticolor0 = 0;
+            _spriteBackgroundCollisionClearPending = false;
+            _spriteSpriteCollisionClearPending = false;
+            _spriteMulticolor0 = 0;
 			_spriteMulticolor1 = 0;
 			_sr = 0;
 			_vblank = true;

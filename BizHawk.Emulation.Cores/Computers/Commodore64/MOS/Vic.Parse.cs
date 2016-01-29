@@ -4,62 +4,72 @@
 	{
 	    private const int BaResetCounter = 4;
 	    private const int PipelineUpdateVc = 0x00000001; // vc/rc rule 2
-	    private const int PipelineChkSprCrunch = 0x00000002;
+	    private const int PipelineSpriteCrunch = 0x00000002;
 	    private const int PipelineUpdateMcBase = 0x00000004;
-	    private const int PipelineChkBrdL1 = 0x00000008;
-	    private const int PipelineChkBrdL0 = 0x00000010;
-	    private const int PipelineChkSprDma = 0x00000020; // sprite rule 3
-	    private const int PipelineChkBrdR0 = 0x00000040;
-	    private const int PipelineChkSprExp = 0x00000080; // sprite rule 2
-	    private const int PipelineChkBrdR1 = 0x00000100;
-	    private const int PipelineChkSprDisp = 0x00000200; // sprite rule 4
+	    private const int PipelineBorderLeft1 = 0x00000008;
+	    private const int PipelineBorderLeft0 = 0x00000010;
+	    private const int PipelineSpriteDma = 0x00000020; // sprite rule 3
+	    private const int PipelineBorderRight0 = 0x00000040;
+	    private const int PipelineSpriteExpansion = 0x00000080; // sprite rule 2
+	    private const int PipelineBorderRight1 = 0x00000100;
+	    private const int PipelineSpriteDisplay = 0x00000200; // sprite rule 4
 	    private const int PipelineUpdateRc = 0x00000400; // vc/rc rule 5
-	    private const int PipelineHBlankL = 0x10000000;
-	    private const int PipelineHBlankR = 0x20000000;
+	    private const int PipelineHBlankLeft = 0x10000000;
+	    private const int PipelineHBlankRight = 0x20000000;
 	    private const int PipelineHoldX = 0x40000000;
 	    private const int RasterIrqLine0Cycle = 1;
 	    private const int RasterIrqLineXCycle = 0;
+	    private const int FetchTypeSprite = 0x0000;
+	    private const int FetchTypeRefresh = 0x0100;
+        private const int FetchTypeColor = 0x0200;
+        private const int FetchTypeGraphics = 0x0300;
+	    private const int FetchTypeIdle = 0x0400;
+	    private const int FetchTypeNone = 0x0500;
+	    private const int BaTypeNone = 0x0888;
+	    private const int BaTypeCharacter = 0x1000;
+	    private const int BaTypeMaskSprite0 = 0x0007;
+        private const int BaTypeMaskSprite1 = 0x0070;
+        private const int BaTypeMaskSprite2 = 0x0700;
+	    private const int AddressMask = 0x3FFF;
+	    private const int AddressMaskEc = 0x39FF;
+	    private const int AddressMaskRefresh = 0x3F00;
 
-		private int _parseaddr;
-		private int _parsecycleBAsprite0;
-		private int _parsecycleBAsprite1;
-		private int _parsecycleBAsprite2;
-		private int _parsecycleFetchSpriteIndex;
-		private int _parsefetch;
-		private int _parsefetchType;
-		private int _parseba;
-		private int _parseact;
+        [SaveState.DoNotSave] private int _parseAddr;
+		[SaveState.DoNotSave] private int _parseCycleBaSprite0;
+		[SaveState.DoNotSave] private int _parseCycleBaSprite1;
+		[SaveState.DoNotSave] private int _parseCycleBaSprite2;
+		[SaveState.DoNotSave] private int _parseCycleFetchSpriteIndex;
+		[SaveState.DoNotSave] private int _parseFetch;
+		[SaveState.DoNotSave] private int _parseFetchType;
+		[SaveState.DoNotSave] private int _parseBa;
+		[SaveState.DoNotSave] private int _parseAct;
+	    private bool _parseIsSprCrunch;
 
 		private void ParseCycle()
 		{
-			_parseaddr = 0x3FFF;
-			_parsefetch = _fetchPipeline[_cycleIndex];
-			_parseba = _baPipeline[_cycleIndex];
-			_parseact = _actPipeline[_cycleIndex];
+            // initialization
+			_parseAddr = AddressMask;
+			_parseFetch = _fetchPipeline[_cycleIndex];
+			_parseBa = _baPipeline[_cycleIndex];
+			_parseAct = _actPipeline[_cycleIndex];
 
 			// apply X location
 			_rasterX = _rasterXPipeline[_cycleIndex];
-			_rasterXHold = (_parseact & PipelineHoldX) != 0;
+			_rasterXHold = (_parseAct & PipelineHoldX) != 0;
 
 			// perform fetch
-			_parsefetchType = _parsefetch & 0xFF00;
-			switch (_parsefetchType)
+			_parseFetchType = _parseFetch & 0xFF00;
+			switch (_parseFetchType)
 			{
-			    case 0x100:
-			        // fetch R
-			        _refreshCounter = (_refreshCounter - 1) & 0xFF;
-			        _parseaddr = 0x3F00 | _refreshCounter;
-			        ReadMemory(_parseaddr);
-			        break;
-			    case 0x200:
+			    case FetchTypeColor:
                     // fetch C
 			        if (!_idle)
 			        {
 			            if (_badline)
 			            {
-			                _parseaddr = _pointerVm | _vc;
-			                _dataC = ReadMemory(_parseaddr);
-			                _dataC |= (ReadColorRam(_parseaddr) & 0xF) << 8;
+			                _parseAddr = _pointerVm | _vc;
+			                _dataC = ReadMemory(_parseAddr);
+			                _dataC |= (ReadColorRam(_parseAddr) & 0xF) << 8;
 			                _bufferC[_vmli] = _dataC;
 			            }
 			            else
@@ -74,20 +84,18 @@
 			        }
 			        _srColorSync |= 0x01 << (7 - _xScroll);
                     break;
-			    case 0x300:
+			    case FetchTypeGraphics:
 			        // fetch G
-			        if (_idle)
-			            _parseaddr = 0x3FFF;
-			        else
+			        if (!_idle)
 			        {
 			            if (_bitmapMode)
-			                _parseaddr = _rc | (_vc << 3) | ((_pointerCb & 0x4) << 11);
+			                _parseAddr = _rc | (_vc << 3) | ((_pointerCb & 0x4) << 11);
 			            else
-			                _parseaddr = _rc | ((_dataC & 0xFF) << 3) | (_pointerCb << 11);
+			                _parseAddr = _rc | ((_dataC & 0xFF) << 3) | (_pointerCb << 11);
 			        }
-			        if (_extraColorMode)
-			            _parseaddr &= 0x39FF;
-			        _dataG = ReadMemory(_parseaddr);
+			        if (_extraColorModeBuffer)
+			            _parseAddr &= AddressMaskEc;
+			        _dataG = ReadMemory(_parseAddr);
 			        _sr |= _dataG << (7 - _xScroll);
 			        _srSync |= 0xAA << (7 - _xScroll);
                     if (!_idle)
@@ -97,31 +105,37 @@
 			            _vc = (_vc + 1) & 0x3FF;
 			        }
 			        break;
-			    case 0x400:
+                case FetchTypeNone:
+                    // fetch none
+                    break;
+                case FetchTypeRefresh:
+                    // fetch R
+                    _refreshCounter = (_refreshCounter - 1) & 0xFF;
+                    _parseAddr = AddressMaskRefresh | _refreshCounter;
+                    ReadMemory(_parseAddr);
+                    break;
+                case FetchTypeIdle:
 			        // fetch I
-			        _parseaddr = _extraColorMode ? 0x39FF : 0x3FFF;
-			        _dataG = ReadMemory(_parseaddr);
-			        break;
-			    case 0x500:
-			        // fetch none
+			        _parseAddr = _extraColorModeBuffer ? AddressMaskEc : AddressMask;
+			        _dataG = ReadMemory(_parseAddr);
 			        break;
 			    default:
-			        _parsecycleFetchSpriteIndex = _parsefetch & 0x7;
-			        if ((_parsefetch & 0xF0) == 0) // sprite rule 5
+			        _parseCycleFetchSpriteIndex = _parseFetch & 0x7;
+			        if ((_parseFetch & 0xF0) == 0) // sprite rule 5
 			        {
 			            // fetch P
-			            _parseaddr = 0x3F8 | _pointerVm | _parsecycleFetchSpriteIndex;
-			            _sprites[_parsecycleFetchSpriteIndex].Pointer = ReadMemory(_parseaddr);
-			            _sprites[_parsecycleFetchSpriteIndex].ShiftEnable = false;
+			            _parseAddr = 0x3F8 | _pointerVm | _parseCycleFetchSpriteIndex;
+			            _sprites[_parseCycleFetchSpriteIndex].Pointer = ReadMemory(_parseAddr);
+			            _sprites[_parseCycleFetchSpriteIndex].ShiftEnable = false;
 			        }
 			        else
 			        {
 			            // fetch S
-			            var spr = _sprites[_parsecycleFetchSpriteIndex];
+			            var spr = _sprites[_parseCycleFetchSpriteIndex];
 			            if (spr.Dma)
 			            {
-			                _parseaddr = spr.Mc | (spr.Pointer << 6);
-			                spr.Sr |= ReadMemory(_parseaddr) << ((0x30 - (_parsefetch & 0x30)) >> 1);
+			                _parseAddr = spr.Mc | (spr.Pointer << 6);
+			                spr.Sr |= ReadMemory(_parseAddr) << ((0x30 - (_parseFetch & 0x30)) >> 1);
 			                spr.Mc++;
 			                spr.Loaded |= 0x800000;
 			            }
@@ -130,10 +144,10 @@
 			}
 
 			// perform actions
-			_borderCheckLEnable = (_parseact & (PipelineChkBrdL0 | PipelineChkBrdL1)) != 0;
-			_borderCheckREnable = (_parseact & (PipelineChkBrdR0 | PipelineChkBrdR1)) != 0;
-			_hblankCheckEnableL = (_parseact & PipelineHBlankL) != 0;
-			_hblankCheckEnableR = (_parseact & PipelineHBlankR) != 0;
+			_borderCheckLEnable = (_parseAct & (PipelineBorderLeft0 | PipelineBorderLeft1)) != 0;
+			_borderCheckREnable = (_parseAct & (PipelineBorderRight0 | PipelineBorderRight1)) != 0;
+			_hblankCheckEnableL = (_parseAct & PipelineHBlankLeft) != 0;
+			_hblankCheckEnableR = (_parseAct & PipelineHBlankRight) != 0;
 
 			foreach (var spr in _sprites) // sprite rule 1
 			{
@@ -141,16 +155,22 @@
 					spr.YCrunch = true;
 			}
 
-			if ((_parseact & PipelineChkSprExp) != 0) // sprite rule 2
-			{
-				foreach (var spr in _sprites)
-				{
-					if (spr.Dma && spr.YExpand)
-						spr.YCrunch ^= true;
-				}
-			}
+            if ((_parseAct & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
+            {
+                foreach (var spr in _sprites)
+                {
+                    if (spr.YCrunch)
+                    {
+                        spr.Mcbase = spr.Mc;
+                        if (spr.Mcbase == 63)
+                        {
+                            spr.Dma = false;
+                        }
+                    }
+                }
+            }
 
-			if ((_parseact & PipelineChkSprDma) != 0) // sprite rule 3
+            if ((_parseAct & PipelineSpriteDma) != 0) // sprite rule 3
 			{
 				foreach (var spr in _sprites)
 				{
@@ -163,79 +183,73 @@
 				}
 			}
 
-			if ((_parseact & PipelineChkSprDisp) != 0) // VIC addendum on sprite rule 4
+            if ((_parseAct & PipelineSpriteExpansion) != 0) // sprite rule 2
+            {
+                foreach (var spr in _sprites)
+                {
+                    if (spr.Dma && spr.YExpand)
+                        spr.YCrunch ^= true;
+                }
+            }
+
+            if ((_parseAct & PipelineSpriteDisplay) != 0) // VIC addendum on sprite rule 4
 			{
 				foreach (var spr in _sprites)
 				{
 					spr.Mc = spr.Mcbase;
-					if (spr.Dma && spr.Y == (_rasterLine & 0xFF))
+					if (spr.Dma)
 					{
-						spr.Display = true;
+                        if (spr.Enable && spr.Y == (_rasterLine & 0xFF))
+						    spr.Display = true;
 					}
-					else if (!spr.Dma)
+					else
 					{
 						spr.Display = false;
 					}
 				}
 			}
 
-			if ((_parseact & PipelineChkSprCrunch) != 0) // VIC addendum sprite rule 7
-			{
-				// not sure if anything has to go here,
-				// some sources say yes, some say no...
-			}
+		    _parseIsSprCrunch = (_parseAct & PipelineSpriteCrunch) != 0; // VIC addendum sprite rule 7
 
-			if ((_parseact & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
-			{
-				foreach (var spr in _sprites)
-				{
-					if (spr.YCrunch)
-					{
-						spr.Mcbase = spr.Mc;
-						if (spr.Mcbase == 63)
-						{
-							spr.Dma = false;
-						}
-					}
-                }
-			}
+            if ((_parseAct & PipelineUpdateVc) != 0) // VC/RC rule 2
+            {
+                _vc = _vcbase;
+                _srColorIndexLatch = 0;
+                _vmli = 0;
+                if (_badline)
+                    _rc = 0;
+            }
 
-			if ((_parseact & PipelineUpdateRc) != 0) // VC/RC rule 5
+            if ((_parseAct & PipelineUpdateRc) != 0) // VC/RC rule 5
 			{
 				if (_rc == 7)
 				{
 					_idle = true;
 					_vcbase = _vc;
 				}
-				if (!_idle)
-					_rc = (_rc + 1) & 0x7;
-			}
-
-			if ((_parseact & PipelineUpdateVc) != 0) // VC/RC rule 2
-			{
-				_vc = _vcbase;
-			    _srColorIndexLatch = 0;
-				_vmli = 0;
-				if (_badline)
-					_rc = 0;
-			}
+			    if (!_idle || _badline)
+			    {
+                    _rc = (_rc + 1) & 0x7;
+			        _idle = false;
+			    }
+            }
 
             // perform BA flag manipulation
-            switch (_parseba)
+            switch (_parseBa)
             {
-                case 0x0888:
+                case BaTypeNone:
                     _pinBa = true;
                     break;
-                case 0x1000:
+                case BaTypeCharacter:
                     _pinBa = !_badline;
                     break;
                 default:
-                    _parsecycleBAsprite0 = _parseba & 0x000F;
-                    _parsecycleBAsprite1 = (_parseba & 0x00F0) >> 4;
-                    _parsecycleBAsprite2 = (_parseba & 0x0F00) >> 8;
-                    if ((_parsecycleBAsprite0 < 8 && _sprites[_parsecycleBAsprite0].Dma) ||
-                        (_parsecycleBAsprite1 < 8 && _sprites[_parsecycleBAsprite1].Dma) ||
-                        (_parsecycleBAsprite2 < 8 && _sprites[_parsecycleBAsprite2].Dma))
+                    _parseCycleBaSprite0 = _parseBa & BaTypeMaskSprite0;
+                    _parseCycleBaSprite1 = (_parseBa & BaTypeMaskSprite1) >> 4;
+                    _parseCycleBaSprite2 = (_parseBa & BaTypeMaskSprite2) >> 8;
+                    if ((_parseCycleBaSprite0 < 8 && _sprites[_parseCycleBaSprite0].Dma) ||
+                        (_parseCycleBaSprite1 < 8 && _sprites[_parseCycleBaSprite1].Dma) ||
+                        (_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma))
                         _pinBa = false;
                     else
                         _pinBa = true;
