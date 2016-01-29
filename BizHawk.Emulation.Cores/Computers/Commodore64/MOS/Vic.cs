@@ -100,12 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 _idle = false;
 
             ParseCycle();
-
-            Render();
-
-            // if the BA counter is nonzero, allow CPU bus access
-            UpdateBa();
             _pinAec = false;
+            Render();
         }
 
         public void ExecutePhase2()
@@ -137,9 +133,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 }
             }
 
-            Render();
+            // if the BA counter is nonzero, allow CPU bus access
             UpdateBa();
-            _pinAec = _baCount > 0;
+            _pinAec = _pinBa || _baCount > 0;
+            Render();
 
             // must always come last
             UpdatePins();

@@ -2,6 +2,7 @@
 {
 	public sealed partial class Vic
 	{
+	    private int _bufferPixel;
 	    private int _ecmPixel;
 		private int _pixel;
 		private int _pixelCounter;
@@ -243,7 +244,8 @@
 				// plot pixel if within viewing area
 				if (_renderEnabled)
 				{
-					_buf[_bufOffset] = Palette[_pixBuffer[_pixBufferIndex]];
+				    _bufferPixel = _pixBuffer[_pixBufferIndex];
+                    _buf[_bufOffset] = Palette[_bufferPixel];
 					_bufOffset++;
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;

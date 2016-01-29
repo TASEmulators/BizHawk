@@ -8,7 +8,7 @@
 	    private static readonly int Lines = 312;
 	    private static readonly int VblankStart = 0x12C % Lines;
 	    private static readonly int VblankEnd = 0x00F % Lines;
-	    private static readonly int HblankOffset = 20;
+	    private static readonly int HblankOffset = 12;
 	    private static readonly int HblankStart = (0x17C + HblankOffset) % ScanWidth;
 	    private static readonly int HblankEnd = (0x1E0 + HblankOffset) % ScanWidth;
 
