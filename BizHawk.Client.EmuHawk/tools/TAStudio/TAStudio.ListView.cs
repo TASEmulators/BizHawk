@@ -244,7 +244,10 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (index < CurrentTasMovie.InputLogLength)
+					// Display typed float value (string "-" can't be parsed, so CurrentTasMovie.DisplayValue can't return it)
+					if (index == _floatEditRow && columnName == _floatEditColumn)
+						text = _floatTypedValue;
+					else if (index < CurrentTasMovie.InputLogLength)
 						text = CurrentTasMovie.DisplayValue(index, columnName);
 				}
 			}
@@ -885,7 +888,7 @@ namespace BizHawk.Client.EmuHawk
 					_floatTypedValue += e.KeyCode - Keys.D0;
 				else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
 					_floatTypedValue += e.KeyCode - Keys.NumPad0;
-				else if (e.KeyCode == Keys.OemMinus)
+				else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
 				{
 					if (_floatTypedValue.StartsWith("-"))
 						_floatTypedValue = _floatTypedValue.Substring(1);
@@ -939,12 +942,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						value = Convert.ToSingle(_floatTypedValue);
-						if (value > rMax)
-							value = rMax;
-						else if (value < rMin)
-							value = rMin;
-						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+						if (float.TryParse(_floatTypedValue, out value)) // String "-" can't be parsed.
+						{
+							if (value > rMax)
+								value = rMax;
+							else if (value < rMin)
+								value = rMin;
+							CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+						}
 					}
 					if (value != prev) // Auto-restore
 					{
