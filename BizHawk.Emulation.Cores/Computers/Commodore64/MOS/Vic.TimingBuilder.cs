@@ -16,16 +16,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         [SaveState.DoNotSave]
         private static readonly int[] TimingBuilderCycle14Act = {
 			PipelineUpdateVc, 0,
-			PipelineChkSprCrunch, 0,
+			PipelineSpriteCrunch, 0,
 			PipelineUpdateMcBase, 0,
         };
 
         [SaveState.DoNotSave]
         private static readonly int[] TimingBuilderCycle55Act = {
-			PipelineChkSprDma | PipelineChkSprExp, 0,
-			PipelineChkSprDma, 0,
+			PipelineSpriteDma | PipelineSpriteExpansion, 0,
+			PipelineSpriteDma, 0,
 			0, 0,
-			PipelineChkSprDisp, PipelineUpdateRc
+			PipelineSpriteDisplay, PipelineUpdateRc
         };
 
 		// This builds a table of special actions to take on each half-cycle. Cycle14 is the X-raster position where
@@ -54,17 +54,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				// pipeline border checks
 				if (timing[i] == (BorderLeft40 & 0xFFC))
-					result[i] |= PipelineChkBrdL1;
+					result[i] |= PipelineBorderLeft1;
 				if (timing[i] == (BorderLeft38 & 0xFFC))
-					result[i] |= PipelineChkBrdL0;
+					result[i] |= PipelineBorderLeft0;
 				if (timing[i] == (BorderRight38 & 0xFFC))
-					result[i] |= PipelineChkBrdR0;
+					result[i] |= PipelineBorderRight0;
 				if (timing[i] == (BorderRight40 & 0xFFC))
-					result[i] |= PipelineChkBrdR1;
+					result[i] |= PipelineBorderRight1;
 				if (timing[i] == (hblankStart & 0xFFC))
-					result[i] |= PipelineHBlankR;
+					result[i] |= PipelineHBlankRight;
 				if (timing[i] == (hblankEnd & 0xFFC))
-					result[i] |= PipelineHBlankL;
+					result[i] |= PipelineHBlankLeft;
 			}
 
 			return result.ToArray();
@@ -82,14 +82,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			while (true)
 			{
-				if (fetch[start] == 0)
+				if (fetch[start] == FetchTypeSprite)
 					break;
 				start++;
 			}
 
 			while (true)
 			{
-				if (fetch[start] == 0x200)
+				if (fetch[start] == FetchTypeColor)
 					break;
 				start--;
 			}
@@ -100,11 +100,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			while (true)
 			{
-				var ba = 0x0888;
+				var ba = BaTypeNone;
 
-				if (fetch[offset] == 0x200)
+				if (fetch[offset] == FetchTypeColor)
 					charBa = baRestart;
-				else if ((fetch[offset] & 0xFF00) == 0x0000)
+				else if ((fetch[offset] & 0xFF00) == FetchTypeSprite)
 					spriteBa[fetch[offset] & 0x007] = baRestart;
 
 				for (var i = 0; i < 8; i++)
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				if (charBa > 0)
 				{
-					ba = 0x1000;
+					ba = BaTypeCharacter;
 					charBa--;
 				}
 
@@ -156,8 +156,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			for (var i = 0; i < length; i++)
 			{
-                result[i++] = 0x400;
-                result[i] = 0x500;
+                result[i++] = FetchTypeIdle;
+                result[i] = FetchTypeNone;
             }
 
             while (true)
@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				if (charCounter > 0)
 				{
-					result[index] = (charCounter & 1) == 0 ? 0x200 : 0x300;
+					result[index] = (charCounter & 1) == 0 ? FetchTypeColor : FetchTypeGraphics;
 					charCounter--;
 					if (charCounter == 0)
 						break;
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				if (refreshCounter > 0)
 				{
-					result[index] = (refreshCounter & 1) == 0 ? 0x500 : 0x100;
+					result[index] = (refreshCounter & 1) == 0 ? FetchTypeNone : FetchTypeRefresh;
 					refreshCounter--;
 					if (refreshCounter == 0)
 						charCounter = 80;

@@ -12,14 +12,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public bool ReadBa() { return _pinBa; }
 		public bool ReadIrq() { return _pinIrq; }
 
-		private readonly int _cyclesPerSec;
+		[SaveState.DoNotSave] private readonly int _cyclesPerSec;
 		private int _irqShift;
         [SaveState.DoNotSave] private readonly int[] _rasterXPipeline;
         [SaveState.DoNotSave] private readonly int[] _fetchPipeline;
         [SaveState.DoNotSave] private readonly int[] _baPipeline;
         [SaveState.DoNotSave] private readonly int[] _actPipeline;
-        private readonly int _totalCycles;
-		private readonly int _totalLines;
+        [SaveState.DoNotSave] private readonly int _totalCycles;
+		[SaveState.DoNotSave] private readonly int _totalLines;
 
 		public Vic(int newCycles, int newLines, int[][] newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd)
 		{
@@ -77,59 +77,101 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase1()
 		{
-            // raster IRQ compare
+            // bg collision clear
+		    if (_spriteBackgroundCollisionClearPending)
+		    {
+		        foreach (var spr in _sprites)
+		        {
+		            spr.CollideData = false;
+		        }
+		        _spriteBackgroundCollisionClearPending = false;
+		    }
+
+            // sprite collision clear
+		    if (_spriteSpriteCollisionClearPending)
+		    {
+                foreach (var spr in _sprites)
+                {
+                    spr.CollideSprite = false;
+                }
+                _spriteSpriteCollisionClearPending = false;
+		    }
+
+            // start of rasterline
             if ((_cycle == RasterIrqLineXCycle && _rasterLine > 0) || (_cycle == RasterIrqLine0Cycle && _rasterLine == 0))
             {
-                if (_rasterLine != _lastRasterLine && _rasterLine == _rasterInterruptLine)
-                    _intRaster = true;
-                _lastRasterLine = _rasterLine;
+                _rasterInterruptTriggered = false;
+
+                if (_rasterLine == 0x0F8)
+                    _badlineEnable = false;
+            }
+
+            // rasterline IRQ compare
+		    if (!_rasterInterruptTriggered && _rasterLine == _rasterInterruptLine)
+		    {
+		        _rasterInterruptTriggered = true;
+                _intRaster = true;
             }
 
             // display enable compare
-            if (_rasterLine == 0)
-                _badlineEnable = false;
-
             if (_rasterLine == 0x030)
                 _badlineEnable |= _displayEnable;
 
             // badline compare
-		    _badline = _badlineEnable && _rasterLine >= 0x030 && _rasterLine < 0x0F7 && ((_rasterLine & 0x7) == _yScroll);
+		    if (_badlineEnable)
+		    {
+                if ((_rasterLine & 0x7) == _yScroll)
+		        {
+		            _badline = true;
 
-            // go into display state on a badline
-            if (_badline)
-                _idle = false;
+                    // go into display state on a badline
+                    _idle = false;
+		        }
+		        else
+		        {
+		            _badline = false;
+		        }
+		    }
 
             ParseCycle();
             _pinAec = false;
             Render();
-        }
+		}
 
         public void ExecutePhase2()
 		{
             ParseCycle();
+            _extraColorModeBuffer = _extraColorMode;
 
             // advance cycle and optionally raster line
             _cycle++;
             if (_cycle == _totalCycles)
             {
+                // border check
                 if (_rasterLine == _borderB)
                     _borderOnVertical = true;
                 if (_rasterLine == _borderT && _displayEnable)
                     _borderOnVertical = false;
 
+                // vblank check
                 if (_rasterLine == _vblankStart)
                     _vblank = true;
                 if (_rasterLine == _vblankEnd)
                     _vblank = false;
 
+                // reset to beginning of rasterline
                 _cycleIndex = 0;
                 _cycle = 0;
                 _rasterLine++;
+
                 if (_rasterLine == _totalLines)
                 {
+                    // reset to rasterline 0
                     _rasterLine = 0;
                     _vcbase = 0;
                     _vc = 0;
+                    _badlineEnable = false;
+                    _refreshCounter = 0xFF;
                 }
             }
 
