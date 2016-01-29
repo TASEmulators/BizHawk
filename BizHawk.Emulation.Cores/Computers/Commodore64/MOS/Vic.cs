@@ -176,21 +176,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
 
             // if the BA counter is nonzero, allow CPU bus access
-            UpdateBa();
+            if (_pinBa)
+                _baCount = BaResetCounter;
+            else if (_baCount > 0)
+                _baCount--;
             _pinAec = _pinBa || _baCount > 0;
             Render();
 
             // must always come last
             UpdatePins();
         }
-
-        private void UpdateBa()
-		{
-			if (_pinBa)
-				_baCount = BaResetCounter;
-			else if (_baCount > 0)
-				_baCount--;
-		}
 
 		private void UpdateBorder()
 		{
@@ -219,30 +214,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			if (!_extraColorMode && !_bitmapMode && !_multicolorMode)
 			{
-				_videoMode = 0;
+				_videoMode = VideoMode000;
 				return;
 			}
 		    if (!_extraColorMode && !_bitmapMode && _multicolorMode)
 		    {
-		        _videoMode = 1;
+		        _videoMode = VideoMode001;
 		        return;
 		    }
 		    if (!_extraColorMode && _bitmapMode && !_multicolorMode)
 		    {
-		        _videoMode = 2;
+		        _videoMode = VideoMode010;
 		        return;
 		    }
 		    if (!_extraColorMode && _bitmapMode && _multicolorMode)
 		    {
-		        _videoMode = 3;
+		        _videoMode = VideoMode011;
 		        return;
 		    }
 		    if (_extraColorMode && !_bitmapMode && !_multicolorMode)
 		    {
-		        _videoMode = 4;
+		        _videoMode = VideoMode100;
 		        return;
 		    }
-		    _videoMode = -1;
+		    _videoMode = VideoModeInvalid;
 		}
 	}
 }

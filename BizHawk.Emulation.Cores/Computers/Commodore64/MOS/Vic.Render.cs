@@ -2,21 +2,38 @@
 {
 	public sealed partial class Vic
 	{
-	    private int _bufferPixel;
-	    private int _ecmPixel;
-		private int _pixel;
-		private int _pixelCounter;
-		private int _pixelData;
-		private int _pixelOwner;
-		private int _sprData;
-		private int _sprIndex;
-		private int _sprPixel;
+	    [SaveState.DoNotSave] private int _bufferPixel;
+	    [SaveState.DoNotSave] private int _ecmPixel;
+		[SaveState.DoNotSave] private int _pixel;
+		[SaveState.DoNotSave] private int _pixelCounter;
+		[SaveState.DoNotSave] private int _pixelData;
+		[SaveState.DoNotSave] private int _pixelOwner;
+		[SaveState.DoNotSave] private int _sprData;
+		[SaveState.DoNotSave] private int _sprIndex;
+		[SaveState.DoNotSave] private int _sprPixel;
 	    private int _srSync;
 	    private int _srColorSync;
 	    private int _srColorIndexLatch;
 		private int _videoMode;
 
-		private void Render()
+	    [SaveState.DoNotSave] private const int VideoMode000 = 0;
+        [SaveState.DoNotSave] private const int VideoMode001 = 1;
+        [SaveState.DoNotSave] private const int VideoMode010 = 2;
+        [SaveState.DoNotSave] private const int VideoMode011 = 3;
+        [SaveState.DoNotSave] private const int VideoMode100 = 4;
+	    [SaveState.DoNotSave] private const int VideoModeInvalid = -1;
+
+	    [SaveState.DoNotSave] private const int SrMask1 = 0x20000;
+		[SaveState.DoNotSave] private const int SrMask2 = SrMask1 << 1;
+		[SaveState.DoNotSave] private const int SrMask3 = SrMask1 | SrMask2;
+	    [SaveState.DoNotSave] private const int SrColorMask = 0x8000;
+        [SaveState.DoNotSave] private const int SrSpriteMask = SrSpriteMask2;
+        [SaveState.DoNotSave] private const int SrSpriteMask1 = 0x400000;
+		[SaveState.DoNotSave] private const int SrSpriteMask2 = SrSpriteMask1 << 1;
+		[SaveState.DoNotSave] private const int SrSpriteMask3 = SrSpriteMask1 | SrSpriteMask2;
+        [SaveState.DoNotSave] private const int SrSpriteMaskMc = SrSpriteMask3;
+
+        private void Render()
 		{
 			if (_hblankCheckEnableL)
 			{
@@ -34,7 +51,7 @@
 			while (_pixelCounter++ < 3)
 			{
 
-			    if ((_srColorSync & _srColorMask) != 0)
+			    if ((_srColorSync & SrColorMask) != 0)
 			    {
                     _displayC = _bufferC[_srColorIndexLatch];
                     _srColorIndexLatch = (_srColorIndexLatch + 1) & 0x3F;
@@ -55,68 +72,82 @@
 				#region CHARACTER GRAPHICS
 				switch (_videoMode)
 				{
-					case 0:
-						_pixelData = _sr & _srMask2;
+					case VideoMode000:
+						_pixelData = _sr & SrMask2;
 						_pixel = _pixelData != 0 ? _displayC >> 8 : _backgroundColor0;
 						break;
-					case 1:
+					case VideoMode001:
 						if ((_displayC & 0x800) != 0)
 						{
-							// multicolor 001
-							if ((_srSync & _srMask2) != 0)
-								_pixelData = _sr & _srMask3;
+						    // multicolor 001
+							if ((_srSync & SrMask2) != 0)
+								_pixelData = _sr & SrMask3;
 
-							if (_pixelData == 0)
-								_pixel = _backgroundColor0;
-							else if (_pixelData == _srMask1)
-								_pixel = _backgroundColor1;
-							else if (_pixelData == _srMask2)
-								_pixel = _backgroundColor2;
-							else
-								_pixel = (_displayC & 0x700) >> 8;
+						    switch (_pixelData)
+						    {
+						        case 0:
+						            _pixel = _backgroundColor0;
+						            break;
+						        case SrMask1:
+						            _pixel = _backgroundColor1;
+						            break;
+						        case SrMask2:
+						            _pixel = _backgroundColor2;
+						            break;
+						        default:
+						            _pixel = (_displayC & 0x700) >> 8;
+						            break;
+						    }
 						}
 						else
 						{
 							// standard 001
-							_pixelData = _sr & _srMask2;
+							_pixelData = _sr & SrMask2;
 							_pixel = _pixelData != 0 ? _displayC >> 8 : _backgroundColor0;
 						}
 						break;
-					case 2:
-						_pixelData = _sr & _srMask2;
+					case VideoMode010:
+						_pixelData = _sr & SrMask2;
 						_pixel = _pixelData != 0 ? _displayC >> 4 : _displayC;
 						break;
-					case 3:
-						if ((_srSync & _srMask2) != 0)
-							_pixelData = _sr & _srMask3;
+					case VideoMode011:
+						if ((_srSync & SrMask2) != 0)
+							_pixelData = _sr & SrMask3;
 
-						if (_pixelData == 0)
-							_pixel = _backgroundColor0;
-						else if (_pixelData == _srMask1)
-							_pixel = _displayC >> 4;
-						else if (_pixelData == _srMask2)
-							_pixel = _displayC;
-						else
-							_pixel = _displayC >> 8;
+						switch (_pixelData)
+						{
+						    case 0:
+						        _pixel = _backgroundColor0;
+						        break;
+						    case SrMask1:
+						        _pixel = _displayC >> 4;
+						        break;
+						    case SrMask2:
+						        _pixel = _displayC;
+						        break;
+						    default:
+						        _pixel = _displayC >> 8;
+						        break;
+						}
 						break;
-					case 4:
-						_pixelData = _sr & _srMask2;
+					case VideoMode100:
+						_pixelData = _sr & SrMask2;
 						if (_pixelData != 0)
 						{
 							_pixel = _displayC >> 8;
 						}
 						else
 						{
-						    _ecmPixel = _displayC & 0xC0;
+						    _ecmPixel = (_displayC & 0xC0) >> 6;
 						    switch (_ecmPixel)
 						    {
-						        case 0x00:
+						        case 0:
 						            _pixel = _backgroundColor0;
 						            break;
-						        case 0x40:
+						        case 1:
 						            _pixel = _backgroundColor1;
 						            break;
-						        case 0x80:
+						        case 2:
 						            _pixel = _backgroundColor2;
 						            break;
 						        default:
@@ -160,7 +191,7 @@
 					{
 						if (spr.Multicolor)
 						{
-							_sprData = spr.Sr & _srSpriteMaskMc;
+							_sprData = spr.Sr & SrSpriteMaskMc;
 							if (spr.MulticolorCrunch && spr.XCrunch && !_rasterXHold)
 							{
 								if (spr.Loaded == 0)
@@ -174,7 +205,7 @@
 						}
 						else
 						{
-							_sprData = spr.Sr & _srSpriteMask;
+							_sprData = spr.Sr & SrSpriteMask;
 							if (spr.XCrunch && !_rasterXHold)
 							{
 								if (spr.Loaded == 0)
@@ -192,13 +223,19 @@
 							// sprite-sprite collision
 							if (_pixelOwner < 0)
 							{
-								if (_sprData == _srSpriteMask1)
-									_sprPixel = _spriteMulticolor0;
-								else if (_sprData == _srSpriteMask2)
-									_sprPixel = spr.Color;
-								else if (_sprData == _srSpriteMask3)
-									_sprPixel = _spriteMulticolor1;
-								_pixelOwner = _sprIndex;
+							    switch (_sprData)
+							    {
+							        case SrSpriteMask1:
+							            _sprPixel = _spriteMulticolor0;
+							            break;
+							        case SrSpriteMask2:
+							            _sprPixel = spr.Color;
+							            break;
+							        case SrSpriteMask3:
+							            _sprPixel = _spriteMulticolor1;
+							            break;
+							    }
+							    _pixelOwner = _sprIndex;
 							}
 							else
 							{
@@ -210,7 +247,7 @@
 							}
 
 							// sprite-data collision
-							if (!_borderOnVertical && (_pixelData >= _srMask2))
+							if (!_borderOnVertical && (_pixelData >= SrMask2))
 							{
 								spr.CollideData = true;
 							}
@@ -218,7 +255,7 @@
 							// sprite priority logic
 							if (spr.Priority)
 							{
-								_pixel = _pixelData >= _srMask2 ? _pixel : _sprPixel;
+								_pixel = _pixelData >= SrMask2 ? _pixel : _sprPixel;
 							}
 							else
 							{
