@@ -12,25 +12,25 @@ namespace BizHawk.Client.Common
 		/// Netsed private class that define how to compare two <see cref="Watch"/>
 		/// based on their domain
 		/// </summary>
-		private struct WatchDomainComparer
-			: IEqualityComparer<Watch>,
+		private sealed class WatchDomainComparer
+			: WatchEqualityComparer,
 			IComparer<Watch>
 		{
 			/// <summary>
-			/// Compare two <see cref="Watch"/> between them
-			/// and determine wich one comes first.
+			/// Compares two <see cref="Watch"/> between them
+			/// and determines wich one comes first.
 			/// If they are equals, comapraison will done one the address and next on size
 			/// </summary>
 			/// <param name="x">First <see cref="Watch"/></param>
-			/// <returns>True if <see cref="Watch"/> are equal; otherwise, false</returns>
-			/// <returns></returns>
+			///<param name="y">Second <see cref="Watch"/></param>
+			/// <returns>0 for equality, 1 if x comes first; -1 if y comes first</returns>
 			public int Compare(Watch x, Watch y)
 			{
-				if(Equals(x, y))
+				if (Equals(x, y))
 				{
 					return 0;
 				}
-				else if(x.Domain.Name.Equals(y.Domain.Name))
+				else if (x.Domain.Name.Equals(y.Domain.Name))
 				{
 					if (x.Address.Equals(y.Address))
 					{
@@ -45,49 +45,6 @@ namespace BizHawk.Client.Common
 				{
 					return x.Domain.Name.CompareTo(y.Domain.Name);
 				}
-			}
-
-			/// <summary>
-			/// Determine if two <see cref="Watch"/> are equals
-			/// </summary>
-			/// <param name="x">First <see cref="Watch"/></param>
-			/// <param name="y">Second <see cref="Watch"/></param>
-			/// <returns>True if <see cref="Watch"/> are equal; otherwise, false</returns>
-			public bool Equals(Watch x, Watch y)
-			{
-				if(object.ReferenceEquals(x, null))
-				{
-					if(object.ReferenceEquals(y, null))
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-				else if(object.ReferenceEquals(y, null))
-				{
-					return false;
-				}
-				else if(object.ReferenceEquals(x,y))
-				{
-					return true;
-				}
-				else
-				{
-					return x.Domain.Name.Equals(y.Domain.Name);
-				}				
-			}
-
-			/// <summary>
-			/// Get the hash value of specified <see cref="Watch"/>
-			/// </summary>
-			/// <param name="obj">Watch to get hash</param>
-			/// <returns>int that can serves as a unique representation of current Watch</returns>
-			public int GetHashCode(Watch obj)
-			{
-				return obj.GetHashCode();
 			}
 		}
 	}

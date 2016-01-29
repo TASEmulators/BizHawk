@@ -65,7 +65,7 @@
 			this.ProbabilitySlider.Location = new System.Drawing.Point(147, -2);
 			this.ProbabilitySlider.Maximum = 100;
 			this.ProbabilitySlider.Name = "ProbabilitySlider";
-			this.ProbabilitySlider.Size = new System.Drawing.Size(111, 45);
+			this.ProbabilitySlider.Size = new System.Drawing.Size(203, 45);
 			this.ProbabilitySlider.TabIndex = 2;
 			this.ProbabilitySlider.TickFrequency = 25;
 			this.ProbabilitySlider.ValueChanged += new System.EventHandler(this.ProbabilitySlider_ValueChanged);
@@ -78,7 +78,7 @@
 			this.Controls.Add(this.ProbabilityUpDown);
 			this.Controls.Add(this.ButtonNameLabel);
 			this.Name = "BotControlsRow";
-			this.Size = new System.Drawing.Size(258, 29);
+			this.Size = new System.Drawing.Size(350, 29);
 			this.Load += new System.EventHandler(this.BotControlsRow_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ProbabilityUpDown)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.ProbabilitySlider)).EndInit();

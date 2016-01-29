@@ -32,20 +32,22 @@
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.rbCompatibility = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.rbAccuracy = new System.Windows.Forms.RadioButton();
 			this.rbPerformance = new System.Windows.Forms.RadioButton();
 			this.cbRingbuf = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cbDoubleSize = new System.Windows.Forms.CheckBox();
 			this.lblDoubleSize = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.cbForceDeterminism = new System.Windows.Forms.CheckBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(136, 277);
+			this.btnOk.Location = new System.Drawing.Point(136, 344);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 0;
@@ -57,7 +59,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(217, 277);
+			this.btnCancel.Location = new System.Drawing.Point(217, 344);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -88,6 +90,14 @@
 			this.groupBox1.TabIndex = 3;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Core Selection";
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(72, 85);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(136, 21);
+			this.label2.TabIndex = 8;
+			this.label2.Text = "NOT SUPPORTED YET!";
 			// 
 			// rbAccuracy
 			// 
@@ -152,13 +162,25 @@
     "orce the SNES output to stay double-size always. NOTE: The Accuracy core runs as" +
     " if this is selected.\r\n";
 			// 
-			// label2
+			// cbForceDeterminism
 			// 
-			this.label2.Location = new System.Drawing.Point(72, 85);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(136, 21);
-			this.label2.TabIndex = 8;
-			this.label2.Text = "NOT SUPPORTED YET!";
+			this.cbForceDeterminism.AutoSize = true;
+			this.cbForceDeterminism.Location = new System.Drawing.Point(19, 271);
+			this.cbForceDeterminism.Name = "cbForceDeterminism";
+			this.cbForceDeterminism.Size = new System.Drawing.Size(113, 17);
+			this.cbForceDeterminism.TabIndex = 8;
+			this.cbForceDeterminism.Text = "Force Determinism";
+			this.cbForceDeterminism.UseVisualStyleBackColor = true;
+			this.cbForceDeterminism.CheckedChanged += new System.EventHandler(this.cbForceDeterminism_CheckedChanged);
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(38, 295);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(251, 41);
+			this.label3.TabIndex = 9;
+			this.label3.Text = "Guarantee deterministic emulation by savestating every frame. Don\'t TAS without i" +
+    "t! Only ~75% of runs sync without it, but speed boost is ~30%.";
 			// 
 			// SNESOptions
 			// 
@@ -166,7 +188,9 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(304, 312);
+			this.ClientSize = new System.Drawing.Size(304, 379);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.cbForceDeterminism);
 			this.Controls.Add(this.lblDoubleSize);
 			this.Controls.Add(this.cbDoubleSize);
 			this.Controls.Add(this.label1);
@@ -202,5 +226,7 @@
 		private System.Windows.Forms.Label lblDoubleSize;
 		private System.Windows.Forms.RadioButton rbAccuracy;
 		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox cbForceDeterminism;
+		private System.Windows.Forms.Label label3;
 	}
 }

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	{
 		public int LagCount { get; set; }
 
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		// TODO
 		public IInputCallbackSystem InputCallbacks

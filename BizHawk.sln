@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Version", "Version\Version.csproj", "{0CE8B337-08E3-4602-BF10-C4D4C75D2F13}"
 EndProject
@@ -250,18 +250,18 @@ Global
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Win32.Build.0 = Debug|Any CPU
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Win32.ActiveCfg = Debug|x86
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|Win32.Build.0 = Debug|x86
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|x86.ActiveCfg = Debug|x86
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Debug|x86.Build.0 = Debug|x86
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Win32.ActiveCfg = Release|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Win32.Build.0 = Release|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x86.ActiveCfg = Release|Any CPU
-		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x86.Build.0 = Release|Any CPU
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Win32.ActiveCfg = Release|x86
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|Win32.Build.0 = Release|x86
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x86.ActiveCfg = Release|x86
+		{8E2F11F2-3955-4382-8C3A-CEBA1276CAEA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

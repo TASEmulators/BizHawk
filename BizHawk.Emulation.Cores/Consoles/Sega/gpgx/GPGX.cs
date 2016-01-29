@@ -70,8 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// http://www.sega-16.com/forum/showthread.php?4398-Forgotten-Worlds-giving-you-GAME-OVER-immediately-Fix-inside&highlight=forgotten%20worlds
 
 			//hack, don't use
-			//romfile = File.ReadAllBytes(@"D:\encodes\bizhawksrc\output\SANIC CD\PierSolar (E).bin");
-			if (rom != null && rom.Length > 16 * 1024 * 1024)
+			if (rom != null && rom.Length > 32 * 1024 * 1024)
 			{
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
@@ -476,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		public string SystemId { get { return "GEN"; } }
 		public bool DeterministicEmulation { get { return true; } }

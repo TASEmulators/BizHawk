@@ -23,6 +23,7 @@ using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
+using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -237,6 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			StopMovieMenuItem.Enabled
 				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
+				= SaveMovieAsMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
@@ -275,18 +277,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AVSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			RecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
+			ConfigAndRecordAVMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Record A/V"].Bindings;
 			StopAVIMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Stop A/V"].Bindings;
 			CaptureOSDMenuItem.Checked = Global.Config.AVI_CaptureOSD;
 
+			RecordAVMenuItem.Enabled = !string.IsNullOrEmpty(Global.Config.VideoWriter) && _currAviWriter == null;
+
 			if (_currAviWriter == null)
 			{
-				RecordAVMenuItem.Enabled = true;
+				ConfigAndRecordAVMenuItem.Enabled = true;
 				StopAVIMenuItem.Enabled = false;
 			}
 			else
 			{
-				RecordAVMenuItem.Enabled = false;
+				ConfigAndRecordAVMenuItem.Enabled = false;
 				StopAVIMenuItem.Enabled = true;
 			}
 		}
@@ -548,8 +552,32 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovie();
 		}
 
+		private void SaveMovieAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var filename = Global.MovieSession.Movie.Filename;
+			if (string.IsNullOrWhiteSpace(filename))
+			{
+				filename = PathManager.FilesystemSafeName(Global.Game);
+			}
+
+			var file = ToolHelpers.SaveFileDialog(
+				filename,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				"Movie Files",
+				Global.MovieSession.Movie.PreferredExtension);
+
+			if (file != null)
+			{
+				Global.MovieSession.Movie.Filename = file.FullName;
+				Global.Config.RecentMovies.Add(Global.MovieSession.Movie.Filename);
+				SaveMovie();
+			}
+		}
+
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.Config.EnableBackupMovies)
+				Global.MovieSession.Movie.SaveBackup();
 			StopMovie(saveChanges: false);
 		}
 
@@ -583,9 +611,14 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = MovieEndAction.Pause;
 		}
 
-		private void RecordAVMenuItem_Click(object sender, EventArgs e)
+		private void ConfigAndRecordAVMenuItem_Click(object sender, EventArgs e)
 		{
 			RecordAv();
+		}
+
+		private void RecordAVMenuItem_Click(object sender, EventArgs e)
+		{
+			RecordAv(null, null); // force unattended, but allow tradtional setup
 		}
 
 		private void StopAVMenuItem_Click(object sender, EventArgs e)
@@ -659,6 +692,12 @@ namespace BizHawk.Client.EmuHawk
 		public void CloseEmulator()
 		{
 			_exit = true;
+		}
+
+		public void CloseEmulator(int exitCode)
+		{
+			_exit = true;
+			_exitCode = exitCode;
 		}
 
 		#endregion
@@ -1174,11 +1213,48 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Saved settings");
 		}
 
+		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var path = PathManager.DefaultIniPath;
+			var sfd = new SaveFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "Config File (*.ini)|*.ini"
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				SaveConfig(sfd.FileName);
+				GlobalWin.OSD.AddMessage("Copied settings");
+			}
+		}
+
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
 			GlobalWin.OSD.AddMessage("Config file loaded");
+		}
+
+		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
+		{
+			var path = PathManager.DefaultIniPath;
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "Config File (*.ini)|*.ini"
+			};
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				Global.Config = ConfigService.Load<Config>(ofd.FileName);
+				Global.Config.ResolveDefaults();
+				GlobalWin.OSD.AddMessage("Config file loaded");
+			}
 		}
 
 		private void miUnthrottled_Click(object sender, EventArgs e)
@@ -1246,80 +1322,43 @@ namespace BizHawk.Client.EmuHawk
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 
-			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
-			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
-
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
 
 			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
+
+			ExperimentalToolsSubMenu.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
 		{
 			externalToolToolStripMenuItem.DropDownItems.Clear();
-			string path = Path.Combine(Global.Config.PathEntries["Global", "External Tools"].Path);
-			if (Directory.Exists(path))
+
+			foreach(ToolStripMenuItem item in ExternalToolManager.ToolStripMenu)
 			{
-				DirectoryInfo dInfo = new DirectoryInfo(path);
-				Type[] assemblyTypes;
-				Assembly externalToolFile;
-				foreach (FileInfo fi in dInfo.GetFiles("*.dll"))
+				if(item.Enabled)
 				{
-					try
+					item.Click += delegate
 					{
-						//externalToolFile = Assembly.ReflectionOnlyLoadFrom(fi.FullName);
-						externalToolFile = Assembly.LoadFrom(fi.FullName);
-					}
-					catch (BadImageFormatException)
-					{
-						ToolStripMenuItem item = new ToolStripMenuItem(fi.Name, Properties.Resources.ExclamationRed);
-						item.ToolTipText = "This is not an assembly";
-						item.ForeColor = Color.Gray;
-						externalToolToolStripMenuItem.DropDownItems.Add(item);
-						continue;
-					}
-
-					ToolStripMenuItem externalToolMenu = new ToolStripMenuItem(externalToolFile.GetName().Name);
-
-					/*
-					The reason of using this ugly try catch is due to the use of ReflectionOnlyLoadFrom methods
-					When the assembly is loaded this way, referenced assemblies are not loaded and so, as soon as a type
-					existing in another assembly, it raises the exception.
-
-					But the advantage of this is that memory footprint is reduced
-
-					EDIT: In fact, I have some trouble when loading Reflection only... moved to regular load
-					*/
-					try
-					{
-						assemblyTypes = externalToolFile.GetTypes().Where<Type>(t => t != null && t.FullName == "BizHawk.Client.EmuHawk.CustomMainForm").ToArray<Type>();
-					}
-					catch (ReflectionTypeLoadException ex)
-					{
-						assemblyTypes = ex.Types.Where<Type>(t => t != null && t.FullName.Contains("BizHawk.Client.EmuHawk.CustomMainForm")).ToArray<Type>();
-					}
-
-					if (assemblyTypes.Count() == 1)
-					{
-						externalToolMenu.Image = Properties.Resources.Debugger;
-						externalToolMenu.Tag = fi.FullName;
-						externalToolMenu.Click += delegate (object sender2, EventArgs e2)
-						{
-							GlobalWin.Tools.Load<IExternalToolForm>(fi.FullName);
-						};
-					}
-					else
-					{
-						externalToolMenu.Image = Properties.Resources.ExclamationRed;
-						externalToolMenu.ForeColor = Color.Gray;
-					}
-					externalToolToolStripMenuItem.DropDownItems.Add(externalToolMenu);
+						GlobalWin.Tools.Load<IExternalToolForm>((string)item.Tag);
+					};
 				}
+				else
+				{
+					item.Image = Properties.Resources.ExclamationRed;
+				}
+				externalToolToolStripMenuItem.DropDownItems.Add(item);
 			}
+			
 			if (externalToolToolStripMenuItem.DropDownItems.Count == 0)
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
 			}
+		}
+
+		private void ExperimentalToolsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
+			NewHexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NewHexEditor>();
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1390,6 +1429,11 @@ namespace BizHawk.Client.EmuHawk
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
+		}
+
+		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<NewHexEditor>();
 		}
 
 		#endregion
@@ -2301,6 +2345,7 @@ namespace BizHawk.Client.EmuHawk
 				ViewSubtitlesContextMenuItem.Visible =
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
+				SaveMovieAsContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
 			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;

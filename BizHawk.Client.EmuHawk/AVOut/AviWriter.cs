@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 			File.Delete(tempfile);
 			tempfile = Path.ChangeExtension(tempfile, "avi");
 			temp.OpenFile(tempfile, temp_params, null); //lastToken);
-			CodecToken token = (CodecToken)temp.AcquireVideoCodecToken(hwnd.Handle);
+			CodecToken token = (CodecToken)temp.AcquireVideoCodecToken(hwnd.Handle, currVideoCodecToken);
 			temp.CloseFile();
 			File.Delete(tempfile);
 			return token;
@@ -346,66 +346,59 @@ namespace BizHawk.Client.EmuHawk
 
 		public class CodecToken : IDisposable
 		{
-			~CodecToken()
-			{
-				Dispose();
-			}
-			public static CodecToken TakePossession(Win32.AVICOMPRESSOPTIONS comprOptions)
+			public void Dispose() { }
+			private CodecToken() { }
+			private Win32.AVICOMPRESSOPTIONS comprOptions;
+			public string codec;
+			public byte[] Format = new byte[0];
+			public byte[] Parms = new byte[0];
+
+			public static CodecToken CreateFromAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
 			{
 				CodecToken ret = new CodecToken();
-				ret.allocated = true;
-				ret.comprOptions = comprOptions;
-				ret.codec = Win32.decode_mmioFOURCC(comprOptions.fccHandler);
+				ret.comprOptions = opts;
+				ret.codec = Win32.decode_mmioFOURCC(opts.fccHandler);
+				ret.Format = new byte[opts.cbFormat];
+				ret.Parms = new byte[opts.cbParms];
+				if(opts.lpFormat != 0) Marshal.Copy(new IntPtr(opts.lpFormat), ret.Format, 0, opts.cbFormat);
+				if (opts.lpParms != 0) Marshal.Copy(new IntPtr(opts.lpParms), ret.Parms, 0, opts.cbParms);
+
 				return ret;
 			}
-			private CodecToken() { }
-			public Win32.AVICOMPRESSOPTIONS comprOptions;
-			public string codec;
-			/// <summary>
-			/// true if data was allocated by AviSaveOptions and should be freed by AVISaveOptionsFree
-			/// </summary>
-			bool allocated = false;
-			/// <summary>
-			/// true if data was allocated by AllocHGlobal and should be freed by FreeHGlobal
-			/// </summary>
-			bool marshaled = false;
-			public void Dispose()
+
+
+			[DllImport("kernel32.dll", SetLastError = true)]
+			public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, int lpMem);
+			[DllImport("kernel32.dll", SetLastError = true)]
+			public static extern IntPtr GetProcessHeap();
+			[DllImport("kernel32.dll", SetLastError = false)]
+			public static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwFlags, int dwBytes);
+
+			public static void DeallocateAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
 			{
-				if (allocated)
-				{
-					IntPtr[] infPtrs = new IntPtr[1];
-					IntPtr mem;
-
-					// alloc unmanaged memory 
-					mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Win32.AVICOMPRESSOPTIONS)));
-					infPtrs[0] = mem;
-
-					// copy from managed structure to unmanaged memory 
-					Marshal.StructureToPtr(comprOptions, mem, false);
-
-					Win32.AVISaveOptionsFree(1, infPtrs);
-					Marshal.FreeHGlobal(mem);
-
-					codec = null;
-					comprOptions = new Win32.AVICOMPRESSOPTIONS();
-					allocated = false;
-				}
-				if (marshaled)
-				{
-					IntPtr p;
-					p = (IntPtr)comprOptions.lpFormat;
-					if (p != IntPtr.Zero)
-						Marshal.FreeHGlobal(p);
-					p = (IntPtr)comprOptions.lpParms;
-					if (p != IntPtr.Zero)
-						Marshal.FreeHGlobal(p);
-
-					codec = null;
-					comprOptions = new Win32.AVICOMPRESSOPTIONS();
-					marshaled = false;
-				}
+				//test: increase stability by never freeing anything, ever
+				//if (opts.lpParms != 0) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpParms);
+				//if (opts.lpFormat != 0) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpFormat);
+				opts.lpParms = 0;
+				opts.lpFormat = 0;
 			}
 
+
+			public void AllocateToAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
+			{
+				opts = comprOptions;
+				if (opts.cbParms != 0)
+				{
+					opts.lpParms = HeapAlloc(GetProcessHeap(), 0, opts.cbParms).ToInt32();
+					Marshal.Copy(Parms, 0, new IntPtr(opts.lpParms), opts.cbParms);
+				}
+				if (opts.cbFormat != 0)
+				{
+					opts.lpFormat = HeapAlloc(GetProcessHeap(), 0, opts.cbFormat).ToInt32();
+					Marshal.Copy(Format, 0, new IntPtr(opts.lpFormat), opts.cbFormat);
+				}
+			}
+		
 			byte[] SerializeToByteArray()
 			{
 				var m = new MemoryStream();
@@ -422,17 +415,8 @@ namespace BizHawk.Client.EmuHawk
 				//b.Write(comprOptions.lpParms);
 				b.Write(comprOptions.cbParms);
 				b.Write(comprOptions.dwInterleaveEvery);
-
-				// make opaque copies of the unmanaged structs pointed to
-				byte[] Format = new byte[comprOptions.cbFormat];
-				byte[] Params = new byte[comprOptions.cbParms];
-				if (comprOptions.lpFormat != 0)
-					Marshal.Copy(new IntPtr(comprOptions.lpFormat), Format, 0, Format.Length);
-				if (comprOptions.lpParms != 0)
-				Marshal.Copy(new IntPtr(comprOptions.lpParms), Params, 0, Params.Length);
-
 				b.Write(Format);
-				b.Write(Params);
+				b.Write(Parms);
 				b.Close();
 				return m.ToArray();
 			}
@@ -445,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 				Win32.AVICOMPRESSOPTIONS comprOptions = new Win32.AVICOMPRESSOPTIONS();
 
 				byte[] Format;
-				byte[] Params;
+				byte[] Parms;
 
 				try
 				{
@@ -463,7 +447,7 @@ namespace BizHawk.Client.EmuHawk
 					comprOptions.dwInterleaveEvery = b.ReadInt32();
 
 					Format = b.ReadBytes(comprOptions.cbFormat);
-					Params = b.ReadBytes(comprOptions.cbParms);
+					Parms = b.ReadBytes(comprOptions.cbParms);
 				}
 				catch (IOException)
 				{
@@ -475,27 +459,10 @@ namespace BizHawk.Client.EmuHawk
 					b.Close();
 				}
 
-				// create unmanaged copies of Format, Params
-				if (comprOptions.cbFormat != 0)
-				{
-					IntPtr lpFormat = Marshal.AllocHGlobal(comprOptions.cbFormat);
-					Marshal.Copy(Format, 0, lpFormat, comprOptions.cbFormat);
-					comprOptions.lpFormat = (int)lpFormat;
-				}
-				else
-					comprOptions.lpFormat = (int)IntPtr.Zero;
-				if (comprOptions.cbParms != 0)
-				{
-					IntPtr lpParms = Marshal.AllocHGlobal(comprOptions.cbParms);
-					Marshal.Copy(Params, 0, lpParms, comprOptions.cbParms);
-					comprOptions.lpParms = (int)lpParms;
-				}
-				else
-					comprOptions.lpParms = (int)IntPtr.Zero;
-
 				CodecToken ret = new CodecToken();
-				ret.marshaled = true;
 				ret.comprOptions = comprOptions;
+				ret.Format = Format;
+				ret.Parms = Parms;
 				ret.codec = Win32.decode_mmioFOURCC(comprOptions.fccHandler);
 				return ret;
 			}
@@ -573,22 +540,15 @@ namespace BizHawk.Client.EmuHawk
 
 			public long GetLengthApproximation() { return outStatus.video_bytes + outStatus.audio_bytes; }
 
-			static int AVISaveOptions(IntPtr stream, ref Win32.AVICOMPRESSOPTIONS opts, IntPtr owner)
+			static unsafe int AVISaveOptions(IntPtr stream, ref Win32.AVICOMPRESSOPTIONS opts, IntPtr owner)
 			{
-				IntPtr mem = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Win32.AVICOMPRESSOPTIONS)));
-
-				Marshal.StructureToPtr(opts, mem, false);
-
-				IntPtr[] streams = new[] { stream };
-				IntPtr[] infPtrs = new[] { mem };
-
-				int ret = Win32.AVISaveOptions(owner, 0, 1, streams, infPtrs);
-
-				opts = (Win32.AVICOMPRESSOPTIONS)Marshal.PtrToStructure(mem, typeof(Win32.AVICOMPRESSOPTIONS));
-
-				Marshal.FreeHGlobal(mem);
-
-				return ret;
+				fixed (Win32.AVICOMPRESSOPTIONS* _popts = &opts)
+				{
+					IntPtr* pStream = &stream;
+					Win32.AVICOMPRESSOPTIONS* popts = _popts;
+					Win32.AVICOMPRESSOPTIONS** ppopts = &popts;
+					return Win32.AVISaveOptions(owner, 0, 1, (void*)pStream, (void*)ppopts);
+				}
 			}
 
 			Parameters parameters;
@@ -640,23 +600,40 @@ namespace BizHawk.Client.EmuHawk
 				IsOpen = true;
 			}
 
+
 			/// <summary>
 			/// Acquires a video codec configuration from the user
 			/// </summary>
-			public IDisposable AcquireVideoCodecToken(IntPtr hwnd)
+			public IDisposable AcquireVideoCodecToken(IntPtr hwnd, CodecToken lastCodecToken)
 			{
 				if (!IsOpen) throw new InvalidOperationException("File must be opened before acquiring a codec token (or else the stream formats wouldnt be known)");
+
+				if (lastCodecToken != null)
+					currVideoCodecToken = lastCodecToken;
 
 				//encoder params
 				Win32.AVICOMPRESSOPTIONS comprOptions = new Win32.AVICOMPRESSOPTIONS();
 				if (currVideoCodecToken != null)
 				{
-					comprOptions = currVideoCodecToken.comprOptions;
+					currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref comprOptions);
 				}
-				if (AVISaveOptions(pAviRawVideoStream, ref comprOptions, hwnd) != 0)
+
+				bool result = AVISaveOptions(pAviRawVideoStream, ref comprOptions, hwnd) != 0;
+				CodecToken ret = CodecToken.CreateFromAVICOMPRESSOPTIONS(ref comprOptions);
+
+				//so, AVISaveOptions may have changed some of the pointers
+				//if it changed the pointers, did it it free the old ones? we don't know
+				//let's assume it frees them. if we're wrong, we leak. if we assume otherwise and we're wrong, we may crash.
+				//so that means any pointers that come in here are either
+				//1. ones we allocated a minute ago
+				//2. ones VFW allocated
+				//guess what? doesn't matter. We'll free them all ourselves.
+				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref comprOptions);
+
+				
+				if(result)
 				{
-					CodecToken ret = CodecToken.TakePossession(comprOptions);
-					// save to config as well
+					// save to config and return it
 					Global.Config.AVICodecToken = ret.Serialize();
 					return ret;
 				}
@@ -673,7 +650,12 @@ namespace BizHawk.Client.EmuHawk
 					throw new InvalidOperationException("set a video codec token before opening the streams!");
 
 				//open compressed video stream
-				if (Win32.FAILED(Win32.AVIMakeCompressedStream(out pAviCompressedVideoStream, pAviRawVideoStream, ref currVideoCodecToken.comprOptions, IntPtr.Zero)))
+				Win32.AVICOMPRESSOPTIONS opts = new Win32.AVICOMPRESSOPTIONS();
+				currVideoCodecToken.AllocateToAVICOMPRESSOPTIONS(ref opts);
+				bool failed = Win32.FAILED(Win32.AVIMakeCompressedStream(out pAviCompressedVideoStream, pAviRawVideoStream, ref opts, IntPtr.Zero));
+				CodecToken.DeallocateAVICOMPRESSOPTIONS(ref opts);
+				
+				if(failed)
 				{
 					CloseStreams();
 					throw new InvalidOperationException("Failed making compressed video stream");

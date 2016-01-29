@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
 				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
 
-				bs.PutLump(BinaryStateLump.Input, tw => tw.WriteLine(RawInputLog()));
+				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
 
 				if (StartsFromSavestate)
 				{

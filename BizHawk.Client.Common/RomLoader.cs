@@ -652,13 +652,16 @@ namespace BizHawk.Client.Common
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 					}
-					else if(ext != null) // most extensions
+					else if (ext != null) // most extensions
 					{
 						rom = new RomGame(file);
 
 						//hacky for now
 						if (file.Extension.ToLowerInvariant() == ".exe")
 							rom.GameInfo.System = "PSX";
+						else if (file.Extension.ToLowerInvariant() == ".nsf")
+							rom.GameInfo.System = "NES";
+
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{

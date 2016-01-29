@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 			{
 				if (value)
 				{
-					Header.Add(HeaderKeys.STARTSFROMSAVESTATE, "True");
+					Header[HeaderKeys.STARTSFROMSAVESTATE] = "True";
 				}
 				else
 				{

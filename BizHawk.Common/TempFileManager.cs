@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
@@ -43,6 +44,11 @@ namespace BizHawk.Common
 			}
 		}
 
+		#if WINDOWS
+		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
+		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+		#endif
+
 		static void ThreadProc()
 		{
 			var di = new DirectoryInfo(Path.GetTempPath());
@@ -53,7 +59,12 @@ namespace BizHawk.Common
 				{
 					try
 					{
+						//SHUT. UP. THE. EXCEPTIONS.
+						#if WINDOWS
+						DeleteFileW(fi.FullName);
+						#else
 						fi.Delete();
+						#endif
 					}
 					catch
 					{

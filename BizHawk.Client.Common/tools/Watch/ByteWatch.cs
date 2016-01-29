@@ -38,14 +38,21 @@ namespace BizHawk.Client.Common
 		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
 			: base(domain, address, WatchSize.Byte, type, bigEndian, note)
 		{
-			this._value = value;
+			if (value == 0)
+			{
+				this._value = GetByte();
+			}
+			else
+			{
+				this._value = value;
+			}
 			this._previous = previous;
 			this._changecount = changeCount;
 		}
 
 		#endregion
 
-		#region Methods		
+		#region Methods
 
 		/// <summary>
 		/// Enumerate wich <see cref="DisplayType"/> are valid for a <see cref="ByteWatch"/>
@@ -281,7 +288,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return FormatValue(_value);
+				return FormatValue(GetByte());
 			}
 		}
 

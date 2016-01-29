@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 
-		private BackgroundWorker _progressReportWorker = null;
+		public BackgroundWorker _progressReportWorker = null;
 		public void NewBGWorker(BackgroundWorker newWorker)
 		{
 			_progressReportWorker = newWorker;
@@ -146,6 +146,16 @@ namespace BizHawk.Client.Common
 					Lagged = LagLog[index + 1],
 					WasLagged = LagLog.History(index + 1)
 				};
+			}
+		}
+
+		public void ReportProgress(double percent)
+		{
+			if (percent > 100d)
+				return;
+			if (_progressReportWorker != null)
+			{
+				_progressReportWorker.ReportProgress((int)percent);
 			}
 		}
 

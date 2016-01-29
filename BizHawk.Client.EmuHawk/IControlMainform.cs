@@ -2,6 +2,18 @@
 {
 	public interface IControlMainform
 	{
+		bool WantsToControlSavestates { get; }
+
+		void SaveState();
+		void LoadState();
+		void SaveStateAs();
+		void LoadStateAs();
+		void SaveQuickSave(int slot);
+		void LoadQuickSave(int slot);
+		void SelectSlot(int slot);
+		void PreviousSlot();
+		void NextSlot();
+
 		bool WantsToControlReadOnly { get; }
 
 		/// <summary>

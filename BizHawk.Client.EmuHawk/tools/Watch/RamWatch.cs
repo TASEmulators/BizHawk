@@ -119,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddWatch(Watch watch)
 		{
 			_watches.Add(watch);
-			WatchListView.ItemCount = _watches.ItemCount;
+			WatchListView.ItemCount = _watches.Count;
 			UpdateValues();
 			UpdateWatchCount();
 			Changes();
@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					Global.Config.RecentWatches.Add(path);
-					WatchListView.ItemCount = _watches.ItemCount;
+					WatchListView.ItemCount = _watches.Count;
 					UpdateWatchCount();
 					UpdateStatusBar();
 					_watches.Changes = false;
@@ -197,7 +197,7 @@ namespace BizHawk.Client.EmuHawk
 				if (result)
 				{
 					_watches.Load(file.FullName, append);
-					WatchListView.ItemCount = _watches.ItemCount;
+					WatchListView.ItemCount = _watches.Count;
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
 					SetMemoryDomain(_watches.Domain.ToString());
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 						GlobalWin.OSD.AddGUIText(
-							_watches[i].ToString(),
+							_watches[i].ToDisplayString(),
 							Global.Config.DispRamWatchx,
 							Global.Config.DispRamWatchy + (i * 14),
 							Color.Black,
@@ -280,7 +280,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				foreach(var watch in _watches)
+				foreach (var watch in _watches)
 				{
 					if (watch.IsSeparator)
 					{
@@ -324,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						var frozen = !_watches[i].IsSeparator && Global.CheatList.IsActive(_watches[i].Domain, _watches[i].Address);
 						GlobalWin.OSD.AddGUIText(
-							_watches[i].ToString(),
+							_watches[i].ToDisplayString(),
 							Global.Config.DispRamWatchx,
 							Global.Config.DispRamWatchy + (i * 14),
 							Color.Black,
@@ -386,7 +386,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FullyUpdateWatchList()
 		{
-			WatchListView.ItemCount = _watches.ItemCount;
+			WatchListView.ItemCount = _watches.Count;
 			UpdateWatchCount();
 			UpdateStatusBar();
 			UpdateValues();
@@ -409,7 +409,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
-				
+
 				var result = we.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
@@ -417,7 +417,7 @@ namespace BizHawk.Client.EmuHawk
 					if (duplicate)
 					{
 						_watches.AddRange(we.Watches);
-						WatchListView.ItemCount = _watches.ItemCount;
+						WatchListView.ItemCount = _watches.Count;
 					}
 					else
 					{
@@ -499,7 +499,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result || suppressAsk)
 			{
 				_watches.Clear();
-				WatchListView.ItemCount = _watches.ItemCount;
+				WatchListView.ItemCount = _watches.Count;
 				UpdateWatchCount();
 				UpdateStatusBar();
 				_sortReverse = false;
@@ -598,7 +598,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (index >= _watches.ItemCount)
+			if (index >= _watches.Count)
 			{
 				return;
 			}
@@ -624,7 +624,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = string.Empty;
 
-			if (index >= _watches.ItemCount || _watches[index].IsSeparator)
+			if (index >= _watches.Count || _watches[index].IsSeparator)
 			{
 				return;
 			}
@@ -764,7 +764,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Add(we.Watches[0]);
 				Changes();
 				UpdateWatchCount();
-				WatchListView.ItemCount = _watches.ItemCount;
+				WatchListView.ItemCount = _watches.Count;
 				UpdateValues();
 			}
 		}
@@ -784,7 +784,7 @@ namespace BizHawk.Client.EmuHawk
 					_watches.Remove(item);
 				}
 
-				WatchListView.ItemCount = _watches.ItemCount;
+				WatchListView.ItemCount = _watches.Count;
 				UpdateValues();
 				UpdateWatchCount();
 			}
@@ -838,7 +838,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Add(SeparatorWatch.Instance);
 			}
 
-			WatchListView.ItemCount = _watches.ItemCount;
+			WatchListView.ItemCount = _watches.Count;
 			Changes();
 			UpdateWatchCount();
 		}
@@ -873,7 +873,7 @@ namespace BizHawk.Client.EmuHawk
 				WatchListView.SelectItem(t, true);
 			}
 
-			WatchListView.ItemCount = _watches.ItemCount;
+			WatchListView.ItemCount = _watches.Count;
 		}
 
 		private void MoveDownMenuItem_Click(object sender, EventArgs e)
@@ -900,7 +900,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Changes();
-			WatchListView.ItemCount = _watches.ItemCount;
+			WatchListView.ItemCount = _watches.Count;
 		}
 
 		private void SelectAllMenuItem_Click(object sender, EventArgs e)
@@ -1037,7 +1037,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_watches.Load(filePaths[0], append: false);
 				Global.Config.RecentWatches.Add(_watches.CurrentFileName);
-				WatchListView.ItemCount = _watches.ItemCount;
+				WatchListView.ItemCount = _watches.Count;
 			}
 		}
 
@@ -1056,9 +1056,9 @@ namespace BizHawk.Client.EmuHawk
 				PokeContextMenuItem.Visible =
 				FreezeContextMenuItem.Visible =
 				Separator4.Visible =
-				ReadBreakpointContextMenuItem.Visible = 
+				ReadBreakpointContextMenuItem.Visible =
 				WriteBreakpointContextMenuItem.Visible =
-				Separator6.Visible = 
+				Separator6.Visible =
 				InsertSeperatorContextMenuItem.Visible =
 				MoveUpContextMenuItem.Visible =
 				MoveDownContextMenuItem.Visible =
@@ -1115,7 +1115,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ), selected.First().Size);
+					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address), selected.First().Size);
 				}
 			}
 		}
@@ -1134,7 +1134,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		
+
 		private void WriteBreakpointContextMenuItem_Click(object sender, EventArgs e)
 		{
 			var selected = SelectedWatches.ToList();
@@ -1205,7 +1205,7 @@ namespace BizHawk.Client.EmuHawk
 				_watches.Remove(item);
 			}
 
-			WatchListView.ItemCount = _watches.ItemCount;
+			WatchListView.ItemCount = _watches.Count;
 			UpdateValues();
 			UpdateWatchCount();
 			UpdateStatusBar();

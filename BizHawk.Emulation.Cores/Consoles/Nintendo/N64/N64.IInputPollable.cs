@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				return !_inputProvider.LastFrameInputPolled;
 			}
 
-			internal set
+			set
 			{
 				if (_settings.UseMupenStyleLag)
 				{

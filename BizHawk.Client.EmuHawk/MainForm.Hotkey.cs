@@ -343,10 +343,10 @@ namespace BizHawk.Client.EmuHawk
 
 				//TAStudio
 				case "Add Branch":
-					GlobalWin.Tools.TAStudio.BookMarkControl.AddBranchExternal();
+					GlobalWin.Tools.TAStudio.AddBranchExternal();
 					break;
 				case "Delete Branch":
-					GlobalWin.Tools.TAStudio.BookMarkControl.RemoveBranchExtrenal();
+					GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
 					break;
 
 				// SNES

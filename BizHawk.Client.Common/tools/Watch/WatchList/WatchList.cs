@@ -33,6 +33,11 @@ namespace BizHawk.Client.Common
 
 		private static readonly WatchDomainComparer domainComparer = new WatchDomainComparer();
 		private static readonly WatchAddressComparer addressComparer = new WatchAddressComparer();
+		private static readonly WatchValueComparer valueComparer = new WatchValueComparer();
+		private static readonly WatchPreviousValueComparer previousValueComparer = new WatchPreviousValueComparer();
+		private static readonly WatchValueDifferenceComparer valueDifferenceComparer = new WatchValueDifferenceComparer();
+		private static readonly WatchChangeCountComparer changeCountComparer = new WatchChangeCountComparer();
+		private static readonly WatchNoteComparer noteComparer = new WatchNoteComparer();
 
 		private static IMemoryDomains _memoryDomains;
 
@@ -256,92 +261,58 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
+
 				case VALUE:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.Value)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ThenBy(x => x.BigEndian)
-							.ToList();
+						_watchList.Sort(valueComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.Value)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ThenBy(x => x.BigEndian)
-							.ToList();
+						_watchList.Sort(valueComparer);
 					}
 
 					break;
-				case PREV: // Note: these only work if all entries are detailed objects!
+
+				case PREV:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.PreviousStr)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(previousValueComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.PreviousStr)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(previousValueComparer);
 					}
 
 					break;
+
 				case DIFF:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.Diff)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(valueDifferenceComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.Diff)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(valueDifferenceComparer);
 					}
-
 					break;
+
 				case CHANGES:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.ChangeCount)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(changeCountComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.ChangeCount)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(changeCountComparer);
 					}
 
 					break;
+
 				case DOMAIN:
 					if (reverse)
 					{
@@ -354,24 +325,16 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
+
 				case NOTES:
 					if (reverse)
 					{
-						_watchList = _watchList
-							.OrderByDescending(x => x.Notes)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(noteComparer);
+						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList = _watchList
-							.OrderBy(x => x.Notes)
-							.ThenBy(x => x.Address)
-							.ThenBy(x => x.Size)
-							.ThenBy(x => x.Type)
-							.ToList();
+						_watchList.Sort(noteComparer);
 					}
 
 					break;
@@ -521,20 +484,20 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		[Obsolete("Use count property instead")]
+		[Obsolete("Use domain from individual watch instead")]
+		public MemoryDomain Domain
+		{
+			get { return _domain; }
+			set { _domain = value; }
+		}
+
+		[Obsolete("Use count property instead", true)]
 		public int ItemCount
 		{
 			get
 			{
 				return Count;
 			}
-		}
-
-		[Obsolete("Use domain from individual watch instead")]
-		public MemoryDomain Domain
-		{
-			get { return _domain; }
-			set { _domain = value; }
 		}
 
 		#region File handling logic - probably needs to be its own class

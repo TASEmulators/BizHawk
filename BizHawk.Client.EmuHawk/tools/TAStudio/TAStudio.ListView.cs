@@ -45,6 +45,8 @@ namespace BizHawk.Client.EmuHawk
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 		private bool? _autoRestorePaused = null;
+		private int? _seekStartFrame = null;
+
 		private void JumpToGreenzone()
 		{
 			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
@@ -57,9 +59,31 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
-				GlobalWin.MainForm.PauseOnFrame = _autoRestoreFrame;
-				GlobalWin.MainForm.PauseEmulator();
+				StartSeeking(_autoRestoreFrame, true);
 			}
+		}
+
+		private void StartSeeking(int? frame, bool pause = false)
+		{
+			if (!frame.HasValue)
+				return;
+
+			_seekStartFrame = Emulator.Frame;
+			GlobalWin.MainForm.PauseOnFrame = frame.Value;
+			int? diff = GlobalWin.MainForm.PauseOnFrame - _seekStartFrame;
+
+			if (pause)
+				GlobalWin.MainForm.PauseEmulator();
+			else
+				GlobalWin.MainForm.UnpauseEmulator();
+
+			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.SeekingCutoffInterval)
+				_seekBackgroundWorker.RunWorkerAsync();
+		}
+
+		public void StopSeeking()
+		{
+			_seekBackgroundWorker.CancelAsync();
 		}
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?

@@ -64,6 +64,10 @@ namespace BizHawk.Client.EmuHawk
 						break;
 				}
 			}
+			else if (e.KeyData == (Keys.Control | Keys.A))
+			{
+				base.SelectAll();
+			}
 			else
 			{
 				base.OnKeyDown(e);

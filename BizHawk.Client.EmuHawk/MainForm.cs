@@ -405,7 +405,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (startFullscreen || Global.Config.StartFullscreen)
 			{
-				ToggleFullscreen();
+				_needsFullscreenOnLoad = true;
 			}
 
 			if (!Global.Game.IsNullInstance)
@@ -462,10 +462,24 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _supressSyncSettingsWarning = false;
 
-		public void ProgramRunLoop()
+		public int ProgramRunLoop()
 		{
-			CheckMessages();
+			CheckMessages(); //can someone leave a note about why this is needed?
 			LogConsole.PositionConsole();
+
+			//needs to be done late, after the log console snaps on top
+			//fullscreen should snap on top even harder!
+			if (_needsFullscreenOnLoad)
+			{
+				_needsFullscreenOnLoad = false;
+				ToggleFullscreen();
+			}
+
+			//incantation required to get the program reliably on top of the console window
+			//we might want it in ToggleFullscreen later, but here, it needs to happen regardless
+			BringToFront();
+			Activate();
+			BringToFront();
 
 			for (;;)
 			{
@@ -531,6 +545,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Shutdown();
+			return _exitCode;
 		}
 
 		/// <summary>
@@ -1308,6 +1323,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _avwriterpad;
 
 		private bool _exit;
+		private int _exitCode;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
@@ -1330,6 +1346,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _cursorHidden;
 		private bool _inFullscreen;
 		private Point _windowedLocation;
+		private bool _needsFullscreenOnLoad;
 
 		private int _autoDumpLength;
 		private readonly bool _autoCloseOnDump;
@@ -1567,22 +1584,6 @@ namespace BizHawk.Client.EmuHawk
 
 				writer.Write(saveram, 0, saveram.Length);
 				writer.Close();
-			}
-		}
-
-		private void SelectSlot(int num)
-		{
-			if (Global.Emulator.HasSavestates())
-			{
-				if (GlobalWin.Tools.Has<TAStudio>())
-				{
-					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(num);
-					return;
-				}
-
-				Global.Config.SaveSlot = num;
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
 			}
 		}
 
@@ -1888,75 +1889,6 @@ namespace BizHawk.Client.EmuHawk
 			return bb;
 		}
 
-		private void SaveStateAs()
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (GlobalWin.Tools.Has<TAStudio>())
-			{
-				return;
-			}
-
-			var path = PathManager.GetSaveStatePath(Global.Game);
-
-			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
-			{
-				file.Directory.Create();
-			}
-
-			var sfd = new SaveFileDialog
-			{
-				AddExtension = true,
-				DefaultExt = "State",
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
-				InitialDirectory = path,
-				FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State"
-			};
-
-			var result = sfd.ShowHawkDialog();
-			if (result == DialogResult.OK)
-			{
-				SaveState(sfd.FileName, sfd.FileName, false);
-			}
-		}
-
-		private void LoadStateAs()
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (GlobalWin.Tools.Has<TAStudio>())
-			{
-				return;
-			}
-
-			var ofd = new OpenFileDialog
-			{
-				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
-				Filter = "Save States (*.State)|*.State|All Files|*.*",
-				RestoreDirectory = true
-			};
-
-			var result = ofd.ShowHawkDialog();
-			if (result != DialogResult.OK)
-			{
-				return;
-			}
-
-			if (File.Exists(ofd.FileName) == false)
-			{
-				return;
-			}
-
-			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
-		}
-
 		private void SaveSlotSelectedMessage()
 		{
 			int slot = Global.Config.SaveSlot;
@@ -2168,7 +2100,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfig()
+		private void SaveConfig(string path = "")
 		{
 			if (Global.Config.SaveWindowPosition)
 			{
@@ -2193,63 +2125,10 @@ namespace BizHawk.Client.EmuHawk
 				LogConsole.SaveConfigSettings();
 			}
 
-			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
-		}
+			if (string.IsNullOrEmpty(path))
+				path = PathManager.DefaultIniPath;
 
-		private void PreviousSlot()
-		{
-			if (Global.Emulator.HasSavestates())
-			{
-				if (GlobalWin.Tools.Has<TAStudio>())
-				{
-					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(false);
-					return;
-				}
-
-				if (Global.Config.SaveSlot == 0)
-				{
-					Global.Config.SaveSlot = 9; // Wrap to end of slot list
-				}
-				else if (Global.Config.SaveSlot > 9)
-				{
-					Global.Config.SaveSlot = 9; // Meh, just in case
-				}
-				else
-				{
-					Global.Config.SaveSlot--;
-				}
-
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
-			}
-		}
-
-		private void NextSlot()
-		{
-			if (Global.Emulator.HasSavestates())
-			{
-				if (GlobalWin.Tools.Has<TAStudio>())
-				{
-					GlobalWin.Tools.TAStudio.BookMarkControl.SelectBranchExternal(true);
-					return;
-				}
-
-				if (Global.Config.SaveSlot >= 9)
-				{
-					Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
-				}
-				else if (Global.Config.SaveSlot < 0)
-				{
-					Global.Config.SaveSlot = 0; // Meh, just in case
-				}
-				else
-				{
-					Global.Config.SaveSlot++;
-				}
-
-				SaveSlotSelectedMessage();
-				UpdateStatusSlots();
-			}
+			ConfigService.Save(path, Global.Config);
 		}
 
 		private static void ToggleFPS()
@@ -2708,112 +2587,6 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
-		private int SlotToInt(string slot)
-		{
-			return int.Parse(slot.Substring(slot.Length - 1, 1));
-		}
-
-		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (GlobalWin.Tools.Has<TAStudio>())
-			{
-				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal();
-				return;
-			}
-
-			// If from lua, disable counting rerecords
-			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
-
-			if (fromLua)
-				Global.MovieSession.Movie.IsCountingRerecords = false;
-
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-
-			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
-			{
-				SetMainformMovieInfo();
-				GlobalWin.OSD.ClearGUIText();
-				GlobalWin.Tools.UpdateToolsBefore(fromLua);
-				UpdateToolsAfter(fromLua);
-				UpdateToolsLoadstate();
-				Global.AutoFireController.ClearStarts();
-
-				if (!supressOSD)
-				{
-					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
-				}
-
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
-				}
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Loadstate error!");
-			}
-
-			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
-		}
-
-		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (GlobalWin.Tools.Has<TAStudio>())
-			{
-				GlobalWin.Tools.TAStudio.BookMarkControl.LoadBranchExternal(SlotToInt(quickSlotName));
-				return;
-			}
-
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
-			if (File.Exists(path) == false)
-			{
-				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
-
-				return;
-			}
-
-			LoadState(path, quickSlotName, fromLua, supressOSD);
-		}
-
-		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (GlobalWin.Tools.Has<TAStudio>())
-			{
-				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal();
-				return;
-			}
-
-			try
-			{
-				SavestateManager.SaveStateFile(path, userFriendlyStateName);
-
-				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
-			}
-			catch (IOException)
-			{
-				GlobalWin.OSD.AddMessage("Unable to save state " + path);
-			}
-			if (!fromLua)
-			{
-				UpdateStatusSlots();
-			}
-		}
-
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
@@ -3075,6 +2848,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					PauseEmulator();
 					PauseOnFrame = null;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.StopSeeking();
+					}
 				}
 			}
 
@@ -3128,10 +2905,12 @@ namespace BizHawk.Client.EmuHawk
 			// select IVideoWriter to use
 			IVideoWriter aw = null;
 
-			if (unattended)
+			if (string.IsNullOrEmpty(videowritername) && !string.IsNullOrEmpty(Global.Config.VideoWriter))
+				videowritername = Global.Config.VideoWriter;
+
+			if (unattended && !string.IsNullOrEmpty(videowritername))
 			{
 				aw = VideoWriterInventory.GetVideoWriter(videowritername);
-
 			}
 			else
 			{
@@ -3149,6 +2928,8 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
+				bool usingAvi = aw is AviWriter; //SO GROSS!
+
 				if (_dumpaudiosync)
 				{
 					aw = new VideoStretcher(aw);
@@ -3172,12 +2953,17 @@ namespace BizHawk.Client.EmuHawk
 
 				// select codec token
 				// do this before save dialog because ffmpeg won't know what extension it wants until it's been configured
-				if (unattended)
+				if (unattended && !string.IsNullOrEmpty(filename))
 				{
 					aw.SetDefaultVideoCodecToken();
 				}
 				else
 				{
+					//THIS IS REALLY SLOPPY!
+					//PLEASE REDO ME TO NOT CARE WHICH AVWRITER IS USED!
+					if(usingAvi && !string.IsNullOrEmpty(Global.Config.AVICodecToken))
+						aw.SetDefaultVideoCodecToken();
+
 					var token = aw.AcquireVideoCodecToken(this);
 					if (token == null)
 					{
@@ -3190,7 +2976,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// select file to save to
-				if (unattended)
+				if (unattended && !string.IsNullOrEmpty(filename))
 				{
 					aw.OpenFile(filename);
 				}
@@ -3725,50 +3511,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
-		public void SaveQuickSave(string quickSlotName)
-		{
-			if (!Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (GlobalWin.Tools.Has<TAStudio>())
-			{
-				GlobalWin.Tools.TAStudio.BookMarkControl.UpdateBranchExternal(SlotToInt(quickSlotName));
-				return;
-			}
-
-			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
-
-			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
-			{
-				file.Directory.Create();
-			}
-
-
-			// Make backup first
-			if (Global.Config.BackupSavestates && file.Exists)
-			{
-				var backup = path + ".bak";
-				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists)
-				{
-					backupFile.Delete();
-				}
-
-				File.Move(path, backup);
-			}
-
-			SaveState(path, quickSlotName, false);
-
-			if (GlobalWin.Tools.Has<LuaConsole>())
-			{
-				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
-			}
-		}
-
 		private static void CommitCoreSettingsToConfig()
 		{
 			// save settings object
@@ -3894,9 +3636,313 @@ namespace BizHawk.Client.EmuHawk
 
 		// TODO: move me
 		public IControlMainform master { get; private set; }
+
 		public void RelinquishControl(IControlMainform master)
 		{
 			this.master = master;
+		}
+
+		private bool IsSlave
+		{
+			get { return master != null; }
+		}
+
+		public void TakeBackControl()
+		{
+			master = null;
+		}
+
+		private int SlotToInt(string slot)
+		{
+			return int.Parse(slot.Substring(slot.Length - 1, 1));
+		}
+
+		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.LoadState();
+				return;
+			}
+
+			// If from lua, disable counting rerecords
+			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+
+			if (fromLua)
+				Global.MovieSession.Movie.IsCountingRerecords = false;
+
+			GlobalWin.DisplayManager.NeedsToPaint = true;
+
+			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
+			{
+				SetMainformMovieInfo();
+				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.Tools.UpdateToolsBefore(fromLua);
+				UpdateToolsAfter(fromLua);
+				UpdateToolsLoadstate();
+				Global.AutoFireController.ClearStarts();
+
+				if (!supressOSD)
+				{
+					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
+				}
+
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
+				}
+			}
+			else
+			{
+				GlobalWin.OSD.AddMessage("Loadstate error!");
+			}
+
+			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
+		}
+
+		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.LoadQuickSave(SlotToInt(quickSlotName));
+				return;
+			}
+
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+			if (File.Exists(path) == false)
+			{
+				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
+
+				return;
+			}
+
+			LoadState(path, quickSlotName, fromLua, supressOSD);
+		}
+
+		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.SaveState();
+				return;
+			}
+
+			try
+			{
+				SavestateManager.SaveStateFile(path, userFriendlyStateName);
+
+				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
+			}
+			catch (IOException)
+			{
+				GlobalWin.OSD.AddMessage("Unable to save state " + path);
+			}
+			if (!fromLua)
+			{
+				UpdateStatusSlots();
+			}
+		}
+
+		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
+		public void SaveQuickSave(string quickSlotName)
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.SaveQuickSave(SlotToInt(quickSlotName));
+				return;
+			}
+
+			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
+
+			var file = new FileInfo(path);
+			if (file.Directory != null && file.Directory.Exists == false)
+			{
+				file.Directory.Create();
+			}
+
+
+			// Make backup first
+			if (Global.Config.BackupSavestates && file.Exists)
+			{
+				var backup = path + ".bak";
+				var backupFile = new FileInfo(backup);
+				if (backupFile.Exists)
+				{
+					backupFile.Delete();
+				}
+
+				File.Move(path, backup);
+			}
+
+			SaveState(path, quickSlotName, false);
+
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				GlobalWin.Tools.LuaConsole.LuaImp.CallSaveStateEvent(quickSlotName);
+			}
+		}
+
+		private void SaveStateAs()
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.SaveStateAs();
+				return;
+			}
+
+			var path = PathManager.GetSaveStatePath(Global.Game);
+
+			var file = new FileInfo(path);
+			if (file.Directory != null && file.Directory.Exists == false)
+			{
+				file.Directory.Create();
+			}
+
+			var sfd = new SaveFileDialog
+			{
+				AddExtension = true,
+				DefaultExt = "State",
+				Filter = "Save States (*.State)|*.State|All Files|*.*",
+				InitialDirectory = path,
+				FileName = PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave0.State"
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				SaveState(sfd.FileName, sfd.FileName, false);
+			}
+		}
+
+		private void LoadStateAs()
+		{
+			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (IsSlave && master.WantsToControlSavestates)
+			{
+				master.LoadStateAs();
+				return;
+			}
+
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = PathManager.GetSaveStatePath(Global.Game),
+				Filter = "Save States (*.State)|*.State|All Files|*.*",
+				RestoreDirectory = true
+			};
+
+			var result = ofd.ShowHawkDialog();
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
+
+			if (File.Exists(ofd.FileName) == false)
+			{
+				return;
+			}
+
+			LoadState(ofd.FileName, Path.GetFileName(ofd.FileName));
+		}
+
+		private void SelectSlot(int slot)
+		{
+			if (Global.Emulator.HasSavestates())
+			{
+				if (IsSlave && master.WantsToControlSavestates)
+				{
+					master.SelectSlot(slot);
+					return;
+				}
+
+				Global.Config.SaveSlot = slot;
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
+		}
+
+		private void PreviousSlot()
+		{
+			if (Global.Emulator.HasSavestates())
+			{
+				if (IsSlave && master.WantsToControlSavestates)
+				{
+					master.PreviousSlot();
+					return;
+				}
+
+				if (Global.Config.SaveSlot == 0)
+				{
+					Global.Config.SaveSlot = 9; // Wrap to end of slot list
+				}
+				else if (Global.Config.SaveSlot > 9)
+				{
+					Global.Config.SaveSlot = 9; // Meh, just in case
+				}
+				else
+				{
+					Global.Config.SaveSlot--;
+				}
+
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
+		}
+
+		private void NextSlot()
+		{
+			if (Global.Emulator.HasSavestates())
+			{
+				if (IsSlave && master.WantsToControlSavestates)
+				{
+					master.NextSlot();
+					return;
+				}
+
+				if (Global.Config.SaveSlot >= 9)
+				{
+					Global.Config.SaveSlot = 0; // Wrap to beginning of slot list
+				}
+				else if (Global.Config.SaveSlot < 0)
+				{
+					Global.Config.SaveSlot = 0; // Meh, just in case
+				}
+				else
+				{
+					Global.Config.SaveSlot++;
+				}
+
+				SaveSlotSelectedMessage();
+				UpdateStatusSlots();
+			}
 		}
 
 		private void ToggleReadOnly()
@@ -3933,16 +3979,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool IsSlave
-		{
-			get { return master != null; }
-		}
-
-		public void TakeBackControl()
-		{
-			master = null;
-		}
-
 		private void GBAcoresettingsToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
@@ -3967,7 +4003,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.ClientControls["Rewind"] || PressRewind)
 				{
-					runFrame = false; // TODO: the master should be deciding this!
+					runFrame = true; // TODO: the master should be deciding this!
 					return master.Rewind();
 				}
 			}
@@ -4061,6 +4097,5 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
-
 	}
 }

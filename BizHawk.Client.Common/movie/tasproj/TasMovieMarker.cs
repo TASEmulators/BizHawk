@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 
 		public new void Remove(TasMovieMarker item)
 		{
-			if (item == null) // TODO: Don't do this.
+			if (item == null || item.Frame == 0) // TODO: Don't do this.
 				return;
 			_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
 			base.Remove(item);

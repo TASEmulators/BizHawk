@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _oldCountingSetting = false;
 		private BotAttempt _currentBotAttempt = null;
 		private BotAttempt _bestBotAttempt = null;
+		private BotAttempt _comparisonBotAttempt = null;
 		private bool _replayMode = false;
 		private int _startFrame = 0;
 		private string _lastRom = string.Empty;
@@ -93,7 +94,9 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Text = DialogTitle;
 			Settings = new BasicBotSettings();
-		}
+
+			_comparisonBotAttempt = new BotAttempt();
+        }
 
 		private void BasicBot_Load(object sender, EventArgs e)
 		{
@@ -288,12 +291,12 @@ namespace BizHawk.Client.EmuHawk
         {
             get
             {
-                return (byte)mainOperator.SelectedIndex;
+                return (byte)MainOperator.SelectedIndex;
             }
             set
             {
-                if (value < 5) mainOperator.SelectedIndex = value;
-                else mainOperator.SelectedIndex = 0;
+                if (value < 5) MainOperator.SelectedIndex = value;
+                else MainOperator.SelectedIndex = 0;
             }
         }
 
@@ -444,12 +447,21 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker2Address = 0;
 			TieBreaker3Address = 0;
 			StartFromSlotBox.SelectedIndex = 0;
-            mainOperator.SelectedIndex = 0;
+            MainOperator.SelectedIndex = 0;
             Tiebreak1Operator.SelectedIndex = 0;
             Tiebreak2Operator.SelectedIndex = 0;
             Tiebreak3Operator.SelectedIndex = 0;
+			MainBestRadio.Checked = true;
+			MainValueNumeric.Value = 0;
+			TieBreak1Numeric.Value = 0;
+			TieBreak2Numeric.Value = 0;
+			TieBreak3Numeric.Value = 0;
+			TieBreak1BestRadio.Checked = true;
+			TieBreak2BestRadio.Checked = true;
+			TieBreak3BestRadio.Checked = true;
 
 			UpdateBestAttempt();
+			UpdateComparisonBotAttempt();
 		}
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
@@ -561,7 +573,10 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearBestButton_Click(object sender, EventArgs e)
 		{
 			_bestBotAttempt = null;
+			Attempts = 0;
+			Frames = 0;
 			UpdateBestAttempt();
+			UpdateComparisonBotAttempt();
 		}
 
 		private void PlayBestButton_Click(object sender, EventArgs e)
@@ -615,17 +630,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private class BotData
 		{
+			public BotData()
+			{
+				MainCompareToBest = true;
+				TieBreaker1CompareToBest = true;
+				TieBreaker2CompareToBest = true;
+				TieBreaker3CompareToBest = true;
+			}
+
 			public BotAttempt Best { get; set; }
 			public Dictionary<string, double> ControlProbabilities { get; set; }
 			public int Maximize { get; set; }
 			public int TieBreaker1 { get; set; }
 			public int TieBreaker2 { get; set; }
 			public int TieBreaker3 { get; set; }
-            public byte ComparisonTypeMain { get; set; }
-            public byte ComparisonTypeTie1 { get; set; }
-            public byte ComparisonTypeTie2 { get; set; }
-            public byte ComparisonTypeTie3 { get; set; }
-            public int FrameLength { get; set; }
+			public byte ComparisonTypeMain { get; set; }
+			public byte ComparisonTypeTie1 { get; set; }
+			public byte ComparisonTypeTie2 { get; set; }
+			public byte ComparisonTypeTie3 { get; set; }
+			public bool MainCompareToBest { get; set; }
+			public bool TieBreaker1CompareToBest { get; set; }
+			public bool TieBreaker2CompareToBest { get; set; }
+			public bool TieBreaker3CompareToBest { get; set; }
+			public int MainCompareToValue { get; set; }
+			public int TieBreaker1CompareToValue { get; set; }
+			public int TieBreaker2CompareToValue { get; set; }
+			public int TieBreaker3CompareToValue { get; set; }
+			public int FrameLength { get; set; }
 			public string FromSlot { get; set; }
 			public long Attempts { get; set; }
 			public long Frames { get; set; }
@@ -661,7 +692,6 @@ namespace BizHawk.Client.EmuHawk
 
 			_bestBotAttempt = botData.Best;
 
-
 			var probabilityControls = ControlProbabilityPanel.Controls
 					.OfType<BotControlsRow>()
 					.ToList();
@@ -682,14 +712,42 @@ namespace BizHawk.Client.EmuHawk
                 Tie1ComparisonType = botData.ComparisonTypeTie1;
                 Tie2ComparisonType = botData.ComparisonTypeTie2;
                 Tie3ComparisonType = botData.ComparisonTypeTie3;
-            }
+
+				MainBestRadio.Checked = botData.MainCompareToBest;
+				TieBreak1BestRadio.Checked = botData.TieBreaker1CompareToBest;
+				TieBreak2BestRadio.Checked = botData.TieBreaker2CompareToBest;
+				TieBreak3BestRadio.Checked = botData.TieBreaker3CompareToBest;
+				MainValueRadio.Checked = !botData.MainCompareToBest;
+				TieBreak1ValueRadio.Checked = !botData.TieBreaker1CompareToBest;
+				TieBreak2ValueRadio.Checked = !botData.TieBreaker2CompareToBest;
+				TieBreak3ValueRadio.Checked = !botData.TieBreaker3CompareToBest;
+
+				MainValueNumeric.Value = botData.MainCompareToValue;
+				TieBreak1Numeric.Value = botData.TieBreaker1CompareToValue;
+				TieBreak2Numeric.Value = botData.TieBreaker2CompareToValue;
+				TieBreak3Numeric.Value = botData.TieBreaker3CompareToValue;
+			}
             catch
             {
                 MainComparisonType = 0;
                 Tie1ComparisonType = 0;
                 Tie2ComparisonType = 0;
                 Tie3ComparisonType = 0;
-            }
+
+				MainBestRadio.Checked = true;
+				TieBreak1BestRadio.Checked = true;
+				TieBreak2BestRadio.Checked = true;
+				TieBreak3BestRadio.Checked = true;
+				MainBestRadio.Checked = false;
+				TieBreak1BestRadio.Checked = false;
+				TieBreak2BestRadio.Checked = false;
+				TieBreak3BestRadio.Checked = false;
+
+				MainValueNumeric.Value = 0;
+				TieBreak1Numeric.Value = 0;
+				TieBreak2Numeric.Value = 0;
+				TieBreak3Numeric.Value = 0;
+			}
 			FrameLength = botData.FrameLength;
 			FromSlot = botData.FromSlot;
 			Attempts = botData.Attempts;
@@ -703,6 +761,7 @@ namespace BizHawk.Client.EmuHawk
 			_dataSize = botData.DataSize > 0 ? botData.DataSize : 1;
 
 			UpdateBestAttempt();
+			UpdateComparisonBotAttempt();
 
 			if (_bestBotAttempt != null)
 			{
@@ -718,18 +777,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveBotFile(string path)
 		{
-            var data = new BotData
-            {
-                Best = _bestBotAttempt,
-                ControlProbabilities = ControlProbabilities,
-                Maximize = MaximizeAddress,
-                TieBreaker1 = TieBreaker1Address,
-                TieBreaker2 = TieBreaker2Address,
-                TieBreaker3 = TieBreaker3Address,
-                ComparisonTypeMain = MainComparisonType,
-                ComparisonTypeTie1 = Tie1ComparisonType,
-                ComparisonTypeTie2 = Tie2ComparisonType,
-                ComparisonTypeTie3 = Tie3ComparisonType,
+			var data = new BotData
+			{
+				Best = _bestBotAttempt,
+				ControlProbabilities = ControlProbabilities,
+				Maximize = MaximizeAddress,
+				TieBreaker1 = TieBreaker1Address,
+				TieBreaker2 = TieBreaker2Address,
+				TieBreaker3 = TieBreaker3Address,
+				ComparisonTypeMain = MainComparisonType,
+				ComparisonTypeTie1 = Tie1ComparisonType,
+				ComparisonTypeTie2 = Tie2ComparisonType,
+				ComparisonTypeTie3 = Tie3ComparisonType,
+				MainCompareToBest = MainBestRadio.Checked,
+				TieBreaker1CompareToBest = TieBreak1BestRadio.Checked,
+				TieBreaker2CompareToBest = TieBreak2BestRadio.Checked,
+				TieBreaker3CompareToBest = TieBreak3BestRadio.Checked,
+				MainCompareToValue = (int)MainValueNumeric.Value,
+				TieBreaker1CompareToValue = (int)TieBreak1Numeric.Value,
+				TieBreaker2CompareToValue = (int)TieBreak2Numeric.Value,
+				TieBreaker3CompareToValue = (int)TieBreak3Numeric.Value,
 				FromSlot = FromSlot,
 				FrameLength = FrameLength,
 				Attempts = Attempts,
@@ -857,7 +924,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt.TieBreak3 = TieBreaker3Value;
 					PlayBestButton.Enabled = true;
 
-					if (_bestBotAttempt == null || IsBetter(_bestBotAttempt, _currentBotAttempt))
+					if (IsBetter(_comparisonBotAttempt, _currentBotAttempt))
 					{
 						_bestBotAttempt = _currentBotAttempt;
 						UpdateBestAttempt();
@@ -880,25 +947,25 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Replay stopped";
 		}
 
-		private bool IsBetter(BotAttempt best, BotAttempt current)
+		private bool IsBetter(BotAttempt comparison, BotAttempt current)
 		{
-			if (!TestValue(MainComparisonType, current.Maximize, best.Maximize))
+			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize))
 			{
 				return false;
 			}
-			else if (current.Maximize == best.Maximize)
+			else if (current.Maximize == comparison.Maximize)
 			{
-				if (!TestValue(Tie1ComparisonType, current.TieBreak1, best.TieBreak1))
+				if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1))
 				{
 					return false;
 				}
-				else if (current.TieBreak1 == best.TieBreak1)
+				else if (current.TieBreak1 == comparison.TieBreak1)
 				{
-					if (!TestValue(Tie2ComparisonType, current.TieBreak2, best.TieBreak2))
+					if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2))
 					{
 						return false;
 					}
-					else if (current.TieBreak2 == best.TieBreak2)
+					else if (current.TieBreak2 == comparison.TieBreak2)
 					{
 						if (!TestValue(Tie3ComparisonType, current.TieBreak3, current.TieBreak3))
 						{
@@ -933,8 +1000,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_bestBotAttempt != null)
 			{
-
-
 				ClearBestButton.Enabled = true;
 				BestAttemptNumberLabel.Text = _bestBotAttempt.Attempt.ToString();
 				BestMaximizeBox.Text = _bestBotAttempt.Maximize.ToString();
@@ -1101,5 +1166,161 @@ namespace BizHawk.Client.EmuHawk
 				&& !string.IsNullOrWhiteSpace(MaximizeAddressBox.Text)
 				&& ControlProbabilities.Any(kvp => kvp.Value > 0);
 		}
+
+		/// <summary>
+		/// Updates comparison bot attempt with current best bot attempt values for values where the "best" radio button is selected
+		/// </summary>
+		private void UpdateComparisonBotAttempt()
+		{
+			if(_bestBotAttempt == null)
+			{
+				if (MainBestRadio.Checked)
+				{
+					_comparisonBotAttempt.Maximize = 0;
+				}
+
+				if (TieBreak1BestRadio.Checked)
+				{
+					_comparisonBotAttempt.TieBreak1 = 0;
+				}
+
+				if (TieBreak2BestRadio.Checked)
+				{
+					_comparisonBotAttempt.TieBreak2= 0;
+				}
+
+				if (TieBreak3BestRadio.Checked)
+				{
+					_comparisonBotAttempt.TieBreak3 = 0;
+				}
+			}
+			else
+			{
+				if (MainBestRadio.Checked && _bestBotAttempt.Maximize != _comparisonBotAttempt.Maximize)
+				{
+					_comparisonBotAttempt.Maximize = _bestBotAttempt.Maximize;
+				}
+
+				if (TieBreak1BestRadio.Checked && _bestBotAttempt.TieBreak1 != _comparisonBotAttempt.TieBreak1)
+				{
+					_comparisonBotAttempt.TieBreak1 = _bestBotAttempt.TieBreak1;
+				}
+
+				if (TieBreak2BestRadio.Checked && _bestBotAttempt.TieBreak2 != _comparisonBotAttempt.TieBreak2)
+				{
+					_comparisonBotAttempt.TieBreak2 = _bestBotAttempt.TieBreak2;
+                }
+
+				if (TieBreak3BestRadio.Checked && _bestBotAttempt.TieBreak3 != _comparisonBotAttempt.TieBreak3)
+				{
+					_comparisonBotAttempt.TieBreak3 = _bestBotAttempt.TieBreak3;
+				}
+			}
+		}
+
+		private void MainBestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.MainValueNumeric.Enabled = false;
+				_comparisonBotAttempt.Maximize = _bestBotAttempt == null ? 0 : _bestBotAttempt.Maximize;
+            }
+		}
+
+		private void Tiebreak1BestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.TieBreak1Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak1;
+			}
+		}
+
+		private void Tiebreak2BestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.TieBreak2Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak2;
+			}
+		}
+
+		private void Tiebreak3BestRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.TieBreak3Numeric.Enabled = false;
+				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak3;
+			}
+		}
+
+		private void MainValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.MainValueNumeric.Enabled = true;
+				_comparisonBotAttempt.Maximize = (int)this.MainValueNumeric.Value;
+            }
+		}
+
+		private void TieBreak1ValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.TieBreak1Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak1 = (int)this.TieBreak1Numeric.Value;
+			}
+		}
+
+		private void TieBreak2ValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.TieBreak2Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak2 = (int)this.TieBreak2Numeric.Value;
+			}
+		}
+
+		private void TieBreak3ValueRadio_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton radioButton = (RadioButton)sender;
+			if (radioButton.Checked)
+			{
+				this.TieBreak3Numeric.Enabled = true;
+				_comparisonBotAttempt.TieBreak3 = (int)this.TieBreak3Numeric.Value;
+			}
+		}
+
+		private void MainValueNumeric_ValueChanged(object sender, EventArgs e)
+		{
+			NumericUpDown numericUpDown = (NumericUpDown)sender;
+			this._comparisonBotAttempt.Maximize = (int)numericUpDown.Value;
+		}
+
+		private void TieBreak1Numeric_ValueChanged(object sender, EventArgs e)
+		{
+			NumericUpDown numericUpDown = (NumericUpDown)sender;
+			this._comparisonBotAttempt.TieBreak1 = (int)numericUpDown.Value;
+		}
+
+		private void TieBreak2Numeric_ValueChanged(object sender, EventArgs e)
+		{
+			NumericUpDown numericUpDown = (NumericUpDown)sender;
+			this._comparisonBotAttempt.TieBreak2 = (int)numericUpDown.Value;
+		}
+
+		private void TieBreak3Numeric_ValueChanged(object sender, EventArgs e)
+		{
+			NumericUpDown numericUpDown = (NumericUpDown)sender;
+			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
+		}
+
 	}
 }

@@ -105,6 +105,7 @@
     <Compile Include="BitmapBufferVideoProvider.cs" />
     <Compile Include="config\Binding.cs" />
     <Compile Include="config\Config.cs" />
+    <Compile Include="config\ConfigPersistAttribute.cs" />
     <Compile Include="config\ConfigService.cs" />
     <Compile Include="config\PathEntry.cs" />
     <Compile Include="config\ToolDialogSettings.cs" />
@@ -232,6 +233,8 @@
     <Compile Include="SystemInfo.cs" />
     <Compile Include="tools\Cheat.cs" />
     <Compile Include="tools\CheatList.cs" />
+    <Compile Include="tools\Interfaces\IToolForm.cs" />
+    <Compile Include="tools\Interfaces\IToolFormAutoConfig.cs" />
     <Compile Include="tools\Watch\ByteWatch.cs" />
     <Compile Include="tools\Watch\DisplayType.cs" />
     <Compile Include="tools\Watch\DWordWatch.cs" />
@@ -239,9 +242,15 @@
     <Compile Include="tools\RamSearchEngine.cs" />
     <Compile Include="tools\Watch\SeparatorWatch.cs" />
     <Compile Include="tools\Watch\Watch.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchChangeCountComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchEqualityComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchDomainComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchAddressComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchList.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchNoteComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchPreviousValueComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchValueComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchValueDifferenceComparer.cs" />
     <Compile Include="tools\Watch\WatchSize.cs" />
     <Compile Include="tools\Watch\WordWatch.cs" />
     <Compile Include="XmlGame.cs" />

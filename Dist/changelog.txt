@@ -3,48 +3,76 @@ next
 =========================================
 
 *EmuHawk
-**Add libretro player, compatible with selected cores
+**Add libretro player, compatible with selected cores (check wiki)
+**Add External Tool system for c#-based tool plugins
 **Support Code-Data Logger for GB/GBC, SMS/GG, SNES, and Genesis
-**Add GameShark cheat converter for N64, GB/GBC, Saturn, GBA, PSX; Action Replay for SMS, SNES, Genesis, GBA; Game Genie for Genesis, SNES, GG, NES
 **Cheat Dialog: Fix flakiness in value-editing
 **Add custom exception display box, so exception info can be clipboarded out
 **Improve main OSD font
-**Stop FP precision conflicts between lua scripts and D3D Display method
-**DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
-**Improvements to Retro shader compatibility
 **Validate user shaders at selection time
 **Support user custom AR selection
 **Add --load-state commandline
+**Fix --fullscreen and fullscreenOnLoad options
 **Streamline editing RAM Watches
 **Tidy main form context menu
 **Add more options for U+D/L+R forbid/mutex
+**Fix Ram Search, Ram Watch, Cheats recent file lists
+**Fix ffmpeg path for AV writer broken a couple of releases ago
+**Add menu command to record avi skipping av writer selection
+**Remember codec selection between program sessions
+**Fix toolbox
+**Improvements to Retro shader compatibility
+**DispMethod D3D: Stop FP precision conflicts with lua scripts
+**DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
 **Fix #525 - Memorywatch hex textbox now remembers values across memdomain switches
 **Fix #526 - Hex editor repainting fails and garbage rendering
 **Fix #535 - domain list does not update when changing cores
 **Fix #537 - Annoyance with "always on top"
 **Fix #541 - Heavy CPU usage when emulation is paused
+**Fix #546 - Incorrect Lua Documentation
 
-**Tastudio (TODO - editorialize this section)
-***color stated frames on WasLag too.
-***don't truncate LagLog if the branch's one is shorter, but input is the same.
-***clean up garbage lua text and drawings.
-***put branch states to a separate greenzone file.
-***tsm never actually uses currentBranch, so why should it have it?
-***last preparation before new tasproject entry.
-***save/load TasSession variables in .tasproj.
-***update RowCount before scrolling to frame.
-***account for mouse speed when advancing/rewinding.
+**Cheats
+***Add GameShark converter for N64, GB/GBC, Saturn, GBA, PSX
+***Add Action Replay converter for SMS, SNES, Genesis, GBA
+***Add Game Genie converter for Genesis, SNES, GG, NES
+
+**Tastudio
+***Color stated frames on WasLag too
+***Don't truncate LagLog if the branch's one is shorter, but input is the same
+***Clean up garbage lua text and drawings in branches
+***Default scroll speed to 3
+***Put branch states to a separate greenzone file
+***Save/load TasSession variables (current frame and branch) in .tasproj
+***Fix scrolling when loading a branch
+***Account for mouse speed when advancing/rewinding
+***Fix ALT+ hotkeys
+***Update columns on every file load
+***ScreenshotControl tweaks and fixes
+***UserText in branches, available from lua and menu, is printed in ScreenshotControl
+***Add GUI buttons to branch view and marker view
+***Rightclick selects rows in branch and marker views
+***Hotkeys and shortcuts for input view and branch view
+***Add seeking progressbar
+***Saving progressbar reports progress gradually
+***Allow going to frame 0 for savestate-anchored movies
+***Fix #515 - Save and load column settings in projects
+***Fix #520 - An item with the same key has already been added
+***Fix #504 - TAStudio opened several thousand Set Markers dialogs
 
 **Basic Bot
 ***Monospaced input display
 ***Get smarter
 
 **Lua
-**Add tons of new fonts and text rendering options
+**Add two new fonts (gens/snes9x and fceux) and text rendering options
 **Fix gameExtraPadding coordinate translation
+**Fix (or at least temporarily banish) floating point math errors when running n64
+**Add CloseEmulatorWithCode (for returning exe process return code from script)
 **Clarify script pause/stop state in UI and logic
+**Autoload recent scripts (unless there's a recent session to autoload)
 **Fix forms.destroyall() and call it when lua console closes
 **Fix error in sizing of lua draw buffers with SetGameExtraPadding (and probably ClientExtraPadding) use
+**Fix #538 - Ability to pass memory domain to memory read/write functions
 
 *PSX
 **Fix #530 "AV Resizing shows black screen with PSX"
@@ -55,7 +83,8 @@ next
 **Build dlls without msvcrt14 dependencies (to run on more systems)
 
 *Genesis
-**Fix missing scrollbars in VDP viewer
+**Add missing scrollbars in VDP viewer
+**Fix #543 (support up to 32MB roms)
 
 =========================================
 1.11.3

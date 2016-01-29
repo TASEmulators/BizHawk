@@ -219,7 +219,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Movie.IsActive)
 			{
-				writer.Write(Movie.GetInputLog());
+				Movie.WriteInputLog(writer);
 			}
 		}
 

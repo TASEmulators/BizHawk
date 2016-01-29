@@ -192,6 +192,13 @@ enum eShockMemcardTransaction
 	eShockMemcardTransaction_CheckDirty = 4, //checks whether the memcard is dirty
 };
 
+enum eShockMemCb
+{
+	eShockMemCb_None = 0,
+	eShockMemCb_Read = 1,
+	eShockMemCb_Write = 2,
+	eShockMemCb_Execute = 4
+};
 
 #define MDFN_MSC_RESET 0
 #define MDFN_MSC_POWER 1
@@ -237,7 +244,12 @@ typedef s32 (*ShockDisc_ReadTOC)(void* opaque, ShockTOC *read_target, ShockTOCTr
 typedef s32 (*ShockDisc_ReadLBA)(void* opaque, s32 lba, void* dst);
 
 //The callback to be issued for traces
-typedef s32 (*ShockCallback_Trace)(void* opaque, u32 PC, u32 inst, const char* msg);
+typedef void (*ShockCallback_Trace)(void* opaque, u32 PC, u32 inst, const char* msg);
+
+//the callback to be issued for memory hook events
+//note: only one callback can be set. the type is sent to mask that one callback, not indicate which event type the callback is fore.
+//there isnt one callback per type.
+typedef void (*ShockCallback_Mem)(u32 address, eShockMemCb type, u32 size, u32 value);
 
 class ShockDiscRef
 {
@@ -417,3 +429,7 @@ EW_EXPORT s32 shock_SetTraceCallback(void* psx, void* opaque, ShockCallback_Trac
 
 //Sets whether LEC is enabled (sector level error correction). Defaults to FALSE (disabled)
 EW_EXPORT s32 shock_SetLEC(void* psx, bool enabled);
+
+//whether "determine lag from GPU frames" signal is set (GPU did something considered non-lag)
+//returns SHOCK_TRUE or SHOCK_FALSE
+EW_EXPORT s32 shock_GetGPUUnlagged(void* psx);

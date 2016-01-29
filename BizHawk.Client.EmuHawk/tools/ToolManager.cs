@@ -84,14 +84,24 @@ namespace BizHawk.Client.EmuHawk
 		public T Load<T>(string toolPath, bool focus = true)
 			where T : class, IToolForm
 		{
-			if (!IsAvailable<T>() && typeof(T) != typeof(IExternalToolForm))
+			bool isExternal = typeof(T) == typeof(IExternalToolForm);
+
+			if (!IsAvailable<T>() && !isExternal)
 			{
 				return null;
 			}
 
-			T existingTool = (T)_tools.FirstOrDefault(x => x is T);
+			T existingTool;
+			if (isExternal)
+			{
+				existingTool = (T)_tools.FirstOrDefault(x => x is T && x.GetType().Assembly.Location == toolPath);
+			}
+			else
+			{
+				existingTool = (T)_tools.FirstOrDefault(x => x is T);
+			}
 
-			if (existingTool != null && typeof(T) != typeof(IExternalToolForm))
+			if (existingTool != null)
 			{
 				if (existingTool.IsDisposed)
 				{
@@ -441,7 +451,12 @@ namespace BizHawk.Client.EmuHawk
 				if (ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, tool.GetType()))
 				{
 					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
+					bool restartTool = false;
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for Ram Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+						restartTool = true;
+					if (tool is LuaConsole && ((LuaConsole)tool).IsRebootingCore)
+						restartTool = false;
+					if (restartTool)
 					{
 						tool.Restart();
 					}
@@ -572,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 					try
 					{
 						tool = Activator.CreateInstanceFrom(dllPath, "BizHawk.Client.EmuHawk.CustomMainForm").Unwrap() as IExternalToolForm;
-                        if (tool == null)
+						if (tool == null)
 						{
 							MessageBox.Show("It seems that the object CustomMainForm does not implement IExternalToolForm. Please review the code.", "No, no, no. Wrong Way !", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							return null;
@@ -709,19 +724,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
-		}
-
-		// Eventually we want a single game genie tool, then this mess goes away
-		public bool GameGenieAvailable
-		{
-			get
-			{
-				return (Global.Emulator.SystemId == "NES")
-					|| (Global.Emulator.SystemId == "GEN")
-					|| (Global.Emulator.SystemId == "GB")
-					|| (Global.Game.System == "GG")
-					|| (Global.Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore);
-			}
 		}
 
 		// Note: Referencing these properties creates an instance of the tool and persists it.  They should be referenced by type if this is not desired
@@ -938,21 +940,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadGameGenieEc()
 		{
-			if (Global.Emulator.SystemId == "NES")
+			if (GlobalWin.Tools.IsAvailable<GameShark>())
 			{
-				Load<NESGameGenie>();
-			}
-			else if (Global.Emulator.SystemId == "SNES")
-			{
-				Load<SNESGameGenie>();
-			}
-			else if ((Global.Emulator.SystemId == "GB") || (Global.Game.System == "GG"))
-			{
-				Load<GBGameGenie>();
-			}
-			else if (Global.Emulator.SystemId == "GEN")
-			{
-				Load<GenGameGenie>();
+				GlobalWin.Tools.Load<GameShark>();
 			}
 		}
 

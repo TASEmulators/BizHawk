@@ -4,11 +4,11 @@ using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[ToolAttributes(false, null)]
 	public partial class NESGameGenie : Form, IToolFormAutoConfig
 	{
 		[RequiredService]

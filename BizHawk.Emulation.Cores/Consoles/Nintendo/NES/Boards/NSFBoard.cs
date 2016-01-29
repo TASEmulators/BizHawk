@@ -125,12 +125,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Buffer.BlockCopy(nsf.NSFData, 0x80, FakePRG, load_start, load_size);
 			}
 
-			ReplayInit();
 			CurrentSong = nsf.StartingSong;
+			ReplayInit();
 		}
 
 		void ReplayInit()
 		{
+			Console.WriteLine("NSF: Playing track {0}/{1}", CurrentSong, nsf.TotalSongs-1);
 			InitPending = true;
 			Patch_Vectors = true;
 		}
@@ -330,13 +331,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool reset = false;
 			if (right)
 			{
-				CurrentSong++;
-				reset = true;
+				if (CurrentSong < nsf.TotalSongs - 1)
+				{
+					CurrentSong++;
+					reset = true;
+				}
 			}
 			if (left)
 			{
-				CurrentSong--;
-				reset = true;
+				if (CurrentSong > 0)
+				{
+					CurrentSong--;
+					reset = true;
+				}
 			}
 
 			if (a)

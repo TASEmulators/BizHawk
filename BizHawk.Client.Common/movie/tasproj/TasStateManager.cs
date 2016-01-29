@@ -138,6 +138,10 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
+				if (frame == 0) {
+					return new KeyValuePair<int, byte[]>(0, InitialState);
+				}
+
 				if (States.ContainsKey(frame))
 				{
 					StateAccessed(frame);
@@ -316,7 +320,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = from; i < upTo; i++)
 			{
-				if (!_movie[i].Lagged.Value)
+				if (_movie[i].Lagged == null)
 					return false;
 			}
 
@@ -561,6 +565,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
+				_movie.ReportProgress((double)100d / States.Count * i);
 			}
 		}
 

@@ -232,7 +232,18 @@ namespace BizHawk.Client.Common
 		/// <returns>True if they are equals; otherwise, false</returns>
 		public static bool operator ==(Watch a, Cheat b)
 		{
-			return a.Equals(b);
+			if (object.ReferenceEquals(a, null) || object.ReferenceEquals(b, null))
+			{
+				return false;
+			}
+			else if (object.ReferenceEquals(a, b))
+			{
+				return true;
+			}
+			else
+			{
+				return a.Equals(b);
+			}
 		}
 
 		/// <summary>
@@ -547,13 +558,23 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}"
-				, Address.ToHexString((Domain.Size - 1).NumHexDigits())
+				, Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain.Size - 1).NumHexDigits())
 				, SizeAsChar
 				, TypeAsChar
 				, Convert.ToInt32(BigEndian)
 				, DomainName
 				, Notes.Trim('\r', '\n')
 				);
+		}
+
+		/// <summary>
+		/// Transform the current instance into a displayable (short representation) string
+		/// It's used by the "Display on screen" option in the RamWatch window
+		/// </summary>
+		/// <returns>A well formatted string representation</returns>
+		public virtual string ToDisplayString()
+		{
+			return string.Format("{0}: {1}", Notes, ValueString);
 		}
 
 		#endregion
