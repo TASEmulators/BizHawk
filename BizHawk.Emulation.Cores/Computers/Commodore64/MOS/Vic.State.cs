@@ -83,15 +83,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         [SaveState.DoNotSave] private readonly Sprite _sprite7;
         private readonly Sprite[] _sprites;
 		private int _sr;
-	    private int _srMask1;
-		private int _srMask2;
-		private int _srMask3;
-	    private int _srColorMask;
-		private int _srSpriteMask;
-		private int _srSpriteMask1;
-		private int _srSpriteMask2;
-		private int _srSpriteMask3;
-		private int _srSpriteMaskMc;
 		private bool _vblank;
 		[SaveState.DoNotSave] private readonly int _vblankEnd;
         [SaveState.DoNotSave] private readonly int _vblankStart;
@@ -103,17 +94,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-            // *** SHIFT REGISTER BITMASKS ***
-		    _srColorMask = 0x8000;
-            _srMask1 = 0x20000;
-			_srMask2 = _srMask1 << 1;
-			_srMask3 = _srMask1 | _srMask2;
-		    _srSpriteMask1 = 0x400000;
-			_srSpriteMask2 = _srSpriteMask1 << 1;
-			_srSpriteMask3 = _srSpriteMask1 | _srSpriteMask2;
-			_srSpriteMask = _srSpriteMask2;
-			_srSpriteMaskMc = _srSpriteMask3;
-
 			_pinAec = true;
 			_pinBa = true;
 			_pinIrq = true;

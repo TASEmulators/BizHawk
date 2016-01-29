@@ -7,17 +7,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic : IVideoProvider
 	{
+	    [SaveState.DoNotSave] private static readonly int BgColor = Colors.ARGB(0, 0, 0);
         [SaveState.DoNotSave] private readonly int[] _buf;
-		private readonly int _bufHeight;
-		private readonly int _bufLength;
+		[SaveState.DoNotSave] private readonly int _bufHeight;
+		[SaveState.DoNotSave] private readonly int _bufLength;
 		private int _bufOffset;
-		private readonly int _bufWidth;
-	    private const int PixBufferSize = 12;
+		[SaveState.DoNotSave] private readonly int _bufWidth;
+	    [SaveState.DoNotSave] private const int PixBufferSize = 12;
 	    private int[] _pixBuffer;
 		private int _pixBufferIndex;
 
-		// palette
-		private static readonly int[] Palette =
+        // palette
+        [SaveState.DoNotSave]
+        private static readonly int[] Palette =
 		{
 				Colors.ARGB(0x00, 0x00, 0x00),
 				Colors.ARGB(0xFF, 0xFF, 0xFF),
@@ -37,17 +39,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				Colors.ARGB(0x95, 0x95, 0x95)
 		};
 
-		public int BackgroundColor
+        [SaveState.DoNotSave]
+        public int BackgroundColor
 		{
 			get { return Colors.ARGB(0, 0, 0); }
 		}
 
-		public int BufferHeight
+        [SaveState.DoNotSave]
+        public int BufferHeight
 		{
 			get { return _bufHeight; }
 		}
 
-		public int BufferWidth
+        [SaveState.DoNotSave]
+        public int BufferWidth
 		{
 			get { return _bufWidth; }
 		}
@@ -57,12 +62,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			return _buf;
 		}
 
-		public int VirtualWidth
+        [SaveState.DoNotSave]
+        public int VirtualWidth
 		{
 			get { return _bufWidth; }
 		}
 
-		public int VirtualHeight
+        [SaveState.DoNotSave]
+        public int VirtualHeight
 		{
 			get { return _bufHeight; }
 		}
