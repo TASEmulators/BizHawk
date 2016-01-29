@@ -2,7 +2,7 @@
 {
 	public sealed partial class Vic
 	{
-	    private const int BaResetCounter = 7;
+	    private const int BaResetCounter = 4;
 	    private const int PipelineUpdateVc = 0x00000001; // vc/rc rule 2
 	    private const int PipelineChkSprCrunch = 0x00000002;
 	    private const int PipelineUpdateMcBase = 0x00000004;
@@ -129,28 +129,6 @@
 			        break;
 			}
 
-			// perform BA flag manipulation
-			switch (_parseba)
-			{
-			    case 0x0888:
-			        _pinBa = true;
-			        break;
-			    case 0x1000:
-			        _pinBa = !_badline;
-			        break;
-			    default:
-			        _parsecycleBAsprite0 = _parseba & 0x000F;
-			        _parsecycleBAsprite1 = (_parseba & 0x00F0) >> 4;
-			        _parsecycleBAsprite2 = (_parseba & 0x0F00) >> 8;
-			        if ((_parsecycleBAsprite0 < 8 && _sprites[_parsecycleBAsprite0].Dma) ||
-			            (_parsecycleBAsprite1 < 8 && _sprites[_parsecycleBAsprite1].Dma) ||
-			            (_parsecycleBAsprite2 < 8 && _sprites[_parsecycleBAsprite2].Dma))
-			            _pinBa = false;
-			        else
-			            _pinBa = true;
-			        break;
-			}
-
 			// perform actions
 			_borderCheckLEnable = (_parseact & (PipelineChkBrdL0 | PipelineChkBrdL1)) != 0;
 			_borderCheckREnable = (_parseact & (PipelineChkBrdR0 | PipelineChkBrdR1)) != 0;
@@ -167,7 +145,7 @@
 			{
 				foreach (var spr in _sprites)
 				{
-					if (spr.YExpand)
+					if (spr.Dma && spr.YExpand)
 						spr.YCrunch ^= true;
 				}
 			}
@@ -180,7 +158,7 @@
 					{
 						spr.Dma = true;
 						spr.Mcbase = 0;
-						spr.YCrunch = !spr.YExpand;
+						spr.YCrunch = true;
 					}
 				}
 			}
@@ -242,7 +220,29 @@
 					_rc = 0;
 			}
 
-			_cycleIndex++;
+            // perform BA flag manipulation
+            switch (_parseba)
+            {
+                case 0x0888:
+                    _pinBa = true;
+                    break;
+                case 0x1000:
+                    _pinBa = !_badline;
+                    break;
+                default:
+                    _parsecycleBAsprite0 = _parseba & 0x000F;
+                    _parsecycleBAsprite1 = (_parseba & 0x00F0) >> 4;
+                    _parsecycleBAsprite2 = (_parseba & 0x0F00) >> 8;
+                    if ((_parsecycleBAsprite0 < 8 && _sprites[_parsecycleBAsprite0].Dma) ||
+                        (_parsecycleBAsprite1 < 8 && _sprites[_parsecycleBAsprite1].Dma) ||
+                        (_parsecycleBAsprite2 < 8 && _sprites[_parsecycleBAsprite2].Dma))
+                        _pinBa = false;
+                    else
+                        _pinBa = true;
+                    break;
+            }
+
+            _cycleIndex++;
 		}
 	}
 }
