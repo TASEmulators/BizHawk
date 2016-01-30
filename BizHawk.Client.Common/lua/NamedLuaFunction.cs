@@ -56,9 +56,12 @@ namespace BizHawk.Client.Common
 
 		public void Call(string name = null)
 		{
-			LuaSandbox.Sandbox(() => {
-				_function.Call(name);
-			});
+			// TODO
+			//LuaSandbox.Sandbox(() => {
+			//	_function.Call(name);
+			//});
+
+			_function.Call(name);
 		}
 	}
 }
