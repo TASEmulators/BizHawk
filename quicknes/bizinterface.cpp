@@ -16,6 +16,20 @@ public:
 	long size() const { return size_; }
 };
 
+// 0 filled new just for kicks
+void *operator new(std::size_t n)
+{
+	if (!n)
+		n = 1;
+	void *p = std::malloc(n);
+	std::memset(p, 0, n);
+	return p;
+}
+
+void operator delete(void *p)
+{
+	std::free(p);
+}
 
 #define EXPORT extern "C" __declspec(dllexport)
 
@@ -313,4 +327,9 @@ EXPORT void qn_peek_ppubus(Nes_Emu *e, byte *dest)
 {
 	for (int i = 0; i < 0x3000; i++)
 		dest[i] = e->peek_ppu(i);
+}
+
+EXPORT void qn_set_tracecb(Nes_Emu *e, void (*cb)(unsigned int *dest))
+{
+	e->set_tracecb(cb);
 }

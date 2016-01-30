@@ -215,6 +215,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
 		public static extern IntPtr qn_get_mapper(IntPtr e, ref int number);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback(IntPtr data);
+
+		/// <summary>
+		/// set a trace callback to be run on each cycle
+		/// </summary>
+		/// <param name="e">Context</param>
+		/// <param name="cb"></param>
+		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
+		public static extern void qn_set_tracecb(IntPtr e, TraceCallback cb);
+
 
 
 		[DllImport(dllname, CallingConvention = CallingConvention.Cdecl)]
