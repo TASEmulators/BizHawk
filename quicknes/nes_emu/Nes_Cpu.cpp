@@ -219,7 +219,7 @@ loop:
 		scratch[1] = x;
 		scratch[2] = y;
 		scratch[3] = sp;
-		scratch[4] = pc;
+		scratch[4] = pc - 1;
 		scratch[5] = status;
 		scratch[6] = opcode;
 		tracecb(scratch);
