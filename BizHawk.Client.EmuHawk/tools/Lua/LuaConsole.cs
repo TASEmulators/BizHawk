@@ -450,6 +450,7 @@ namespace BizHawk.Client.EmuHawk
 								{
 									LuaImp.CallExitEvent(lf.Thread);
 									lf.Stop();
+									UpdateDialog();
 								}
 
 								lf.FrameWaiting = result.WaitForFrame;
