@@ -14,7 +14,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Client.EmuHawk.tools.Lua;
 
 namespace BizHawk.Client.EmuHawk
 {

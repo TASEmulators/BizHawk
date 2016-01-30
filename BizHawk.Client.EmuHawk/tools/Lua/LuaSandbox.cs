@@ -5,7 +5,7 @@ using System.Text;
 using LuaInterface;
 using System.Windows.Forms;
 
-namespace BizHawk.Client.EmuHawk.tools.Lua
+namespace BizHawk.Client.Common
 {
 	class LuaSandbox
 	{

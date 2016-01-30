@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 using LuaInterface;
-using BizHawk.Client.EmuHawk.tools.Lua;
 
 namespace BizHawk.Client.EmuHawk
 {
