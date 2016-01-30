@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using LuaInterface;
 
 namespace BizHawk.Client.Common
@@ -155,6 +156,29 @@ namespace BizHawk.Client.Common
 		public static string RerecordCount()
 		{
 			return GetRerecordCount().ToString();
+		}
+
+		[LuaMethodAttributes(
+			"save",
+			"Saves the current movie to the disc. If the filename is provided (no extension or path needed), the movie is saved under the specified name to the current movie directory. The filename may contain a subdirectory, it will be created if it doesn't exist. Existing files won't get overwritten."
+		)]
+		public void Save(string filename = "")
+		{
+			if (!Global.MovieSession.Movie.IsActive)
+				return;
+
+			if (!string.IsNullOrEmpty(filename))
+			{
+				filename += "." + Global.MovieSession.Movie.PreferredExtension;
+				var test = new FileInfo(filename);
+				if (test.Exists)
+				{
+					Log(string.Format("File {0} already exists, will not overwrite.", filename));
+					return;
+				}
+				Global.MovieSession.Movie.Filename = filename;
+			}
+			Global.MovieSession.Movie.Save();
 		}
 
 		[LuaMethodAttributes(
