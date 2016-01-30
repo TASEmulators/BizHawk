@@ -535,5 +535,14 @@ namespace BizHawk.Client.EmuHawk
 
 			return null;
 		}
+
+		[LuaMethodAttributes(
+			"displaymessages",
+			"sets whether or not on screen messages will display"
+		)]
+		public void DisplayMessages(bool value)
+		{
+			Global.Config.DisplayMessages = value;
+		}
 	}
 }
