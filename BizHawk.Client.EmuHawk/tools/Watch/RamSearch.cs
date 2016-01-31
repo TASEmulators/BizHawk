@@ -618,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DoDisplayTypeClick(BizHawk.Client.Common.DisplayType type)
+		private void DoDisplayTypeClick(Client.Common.DisplayType type)
 		{
 			if (_settings.Type != type)
 			{
@@ -665,17 +665,17 @@ namespace BizHawk.Client.EmuHawk
 			switch (size)
 			{
 				case WatchSize.Byte:
-					isTypeCompatible = ByteWatch.ValidTypes.Where(t => t == _settings.Type).Any();
+					isTypeCompatible = ByteWatch.ValidTypes.Any(t => t == _settings.Type);
 					SizeDropdown.SelectedIndex = 0;
 					break;
 
 				case WatchSize.Word:
-					isTypeCompatible = WordWatch.ValidTypes.Where(t => t == _settings.Type).Any();
+					isTypeCompatible = WordWatch.ValidTypes.Any(t => t == _settings.Type);
 					SizeDropdown.SelectedIndex = 1;
 					break;
 
 				case WatchSize.DWord:
-					isTypeCompatible = DWordWatch.ValidTypes.Where(t => t == _settings.Type).Any();
+					isTypeCompatible = DWordWatch.ValidTypes.Any(t => t == _settings.Type);
 					SizeDropdown.SelectedIndex = 2;
 					break;
 			}
@@ -685,7 +685,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.Type = Client.Common.DisplayType.Unsigned;
 			}
 
-			_dropdownDontfire = true;			
+			_dropdownDontfire = true;
 
 			PopulateTypeDropDown();
 			_dropdownDontfire = false;
@@ -709,7 +709,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				case WatchSize.Word:
-					types = WordWatch.ValidTypes;					
+					types = WordWatch.ValidTypes;
 					break;
 
 				case WatchSize.DWord:

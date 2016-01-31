@@ -637,11 +637,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Settings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#endregion
 
 		#region Winform Events
