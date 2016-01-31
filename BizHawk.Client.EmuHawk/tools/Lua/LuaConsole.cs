@@ -450,36 +450,33 @@ namespace BizHawk.Client.EmuHawk
 				LuaImp.GuiLibrary.DrawNew("emu");
 			}
 
-			foreach (var lf in _luaList)
+			foreach (var lf in _luaList.Where(l => l.Enabled && l.Thread != null && !l.Paused))
 			{
 				try
 				{
 					LuaSandbox.Sandbox(() =>
 					{
-						if (lf.Enabled && lf.Thread != null && !lf.Paused)
+						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
+						if (!prohibit)
 						{
-							var prohibit = lf.FrameWaiting && !includeFrameWaiters;
-							if (!prohibit)
+							// Restore this lua thread's preferred current directory
+							if (lf.CurrentDirectory != null)
 							{
-								// Restore this lua thread's preferred current directory
-								if (lf.CurrentDirectory != null)
-								{
-									Environment.CurrentDirectory = PathManager.MakeAbsolutePath(lf.CurrentDirectory, null);
-								}
-
-								var result = LuaImp.ResumeScript(lf.Thread);
-								if (result.Terminated)
-								{
-									LuaImp.CallExitEvent(lf.Thread);
-									lf.Stop();
-									UpdateDialog();
-								}
-
-								lf.FrameWaiting = result.WaitForFrame;
-
-								// If the lua thread changed its current directory, capture that here
-								lf.CurrentDirectory = Environment.CurrentDirectory;
+								Environment.CurrentDirectory = PathManager.MakeAbsolutePath(lf.CurrentDirectory, null);
 							}
+
+							var result = LuaImp.ResumeScript(lf.Thread);
+							if (result.Terminated)
+							{
+								LuaImp.CallExitEvent(lf.Thread);
+								lf.Stop();
+								UpdateDialog();
+							}
+
+							lf.FrameWaiting = result.WaitForFrame;
+
+							// If the lua thread changed its current directory, capture that here
+							lf.CurrentDirectory = Environment.CurrentDirectory;
 						}
 					}, () =>
 					{
