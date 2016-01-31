@@ -418,7 +418,7 @@ namespace BizHawk.Client.EmuHawk
 					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
 				olvi.SubItems[0].Text = ff.size.ToString();
 				olvi.SubItems[0].Font = this.Font; //why doesnt this work?
-				olvi.SubItems[1].Text = o.hash;
+				olvi.SubItems[1].Text = "sha1:" + o.hash;
 				olvi.SubItems[1].Font = fixedFont;
 				olvi.SubItems[2].Text = ff.recommendedName;
 				olvi.SubItems[2].Font = this.Font; //why doesnt this work?
