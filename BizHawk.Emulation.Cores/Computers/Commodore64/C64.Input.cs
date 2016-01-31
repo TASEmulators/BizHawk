@@ -22,6 +22,7 @@
 		};
 
 	    [SaveState.DoNotSave] int _pollIndex;
+	    private bool _restorePressed;
 
 		public void PollInput()
 		{
@@ -45,6 +46,8 @@
 					_keyboardPressed[_pollIndex++] = Controller[KeyboardMatrix[i, j]] ? -1 : 0;
 				}
 			}
+
+		    _restorePressed = Controller["Key Restore"];
 		}
 	}
 }
