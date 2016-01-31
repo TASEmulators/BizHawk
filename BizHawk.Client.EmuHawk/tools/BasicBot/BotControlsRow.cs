@@ -26,25 +26,26 @@ namespace BizHawk.Client.EmuHawk
 			set { ProbabilityUpDown.Value = (decimal)value; }
 		}
 
-		private void BotControlsRow_Load(object sender, EventArgs e)
-		{
-
-		}
-
 		private void ProbabilityUpDown_ValueChanged(object sender, EventArgs e)
 		{
-			_programmaticallyChangingValues = true;
-			ProbabilitySlider.Value = (int)ProbabilityUpDown.Value;
-			ChangedCallback();
-			_programmaticallyChangingValues = false;
+			if (!_programmaticallyChangingValues)
+			{
+				_programmaticallyChangingValues = true;
+				ProbabilitySlider.Value = (int)ProbabilityUpDown.Value;
+				ChangedCallback();
+				_programmaticallyChangingValues = false;
+			}
 		}
 
 		private void ProbabilitySlider_ValueChanged(object sender, EventArgs e)
 		{
-			_programmaticallyChangingValues = true;
-			ProbabilityUpDown.Value = ProbabilitySlider.Value;
-			ChangedCallback();
-			_programmaticallyChangingValues = false;
+			if (!_programmaticallyChangingValues)
+			{
+				_programmaticallyChangingValues = true;
+				ProbabilityUpDown.Value = ProbabilitySlider.Value;
+				ChangedCallback();
+				_programmaticallyChangingValues = false;
+			}
 		}
 
 		private void ChangedCallback()

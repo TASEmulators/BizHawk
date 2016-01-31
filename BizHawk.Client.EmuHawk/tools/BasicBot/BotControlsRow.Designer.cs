@@ -79,7 +79,6 @@
 			this.Controls.Add(this.ButtonNameLabel);
 			this.Name = "BotControlsRow";
 			this.Size = new System.Drawing.Size(350, 29);
-			this.Load += new System.EventHandler(this.BotControlsRow_Load);
 			((System.ComponentModel.ISupportInitialize)(this.ProbabilityUpDown)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.ProbabilitySlider)).EndInit();
 			this.ResumeLayout(false);
