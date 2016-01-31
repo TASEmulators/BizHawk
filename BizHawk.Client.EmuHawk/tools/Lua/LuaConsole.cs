@@ -28,8 +28,28 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsRebootingCore;
 
+		public ToolDialogSettings.ColumnList Columns { get; set; }
+
+		public class LuaConsoleSettings
+		{
+			public LuaConsoleSettings()
+			{
+				Columns = new ToolDialogSettings.ColumnList
+				{
+					new ToolDialogSettings.Column { Name = "Script", Visible = true, Index = 0, Width = 92 },
+					new ToolDialogSettings.Column { Name = "PathName", Visible = true, Index = 0, Width = 195 }
+				};
+			}
+
+			public ToolDialogSettings.ColumnList Columns { get; set; }
+		}
+
+		[ConfigPersist]
+		public LuaConsoleSettings Settings { get; set; }
+
 		public LuaConsole()
 		{
+			Settings = new LuaConsoleSettings();
 			_sortReverse = false;
 			_lastColumnSorted = string.Empty;
 			_luaList = new LuaFileList
@@ -44,6 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (AskSaveChanges())
 				{
+					SaveColumnInfo();
 					CloseLua();
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 				}
@@ -100,14 +121,39 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Config.RecentLuaSession.AutoLoad && !Global.Config.RecentLuaSession.Empty)
 			{
-					LoadSessionFromRecent(Global.Config.RecentLuaSession[0]);
+					LoadSessionFromRecent(Global.Config.RecentLuaSession.MostRecent);
 			}
 			else if (Global.Config.RecentLua.AutoLoad)
 			{
 				if (!Global.Config.RecentLua.Empty)
 				{
-					LoadLuaFromRecent(Global.Config.RecentLua[0]);
+					LoadLuaFromRecent(Global.Config.RecentLua.MostRecent);
 				}
+			}
+
+			LoadColumnInfo();
+        }
+
+		private void LoadColumnInfo()
+		{
+			LuaListView.Columns.Clear();
+
+			var columns = Settings.Columns
+				.Where(c => c.Visible)
+				.OrderBy(c => c.Index);
+
+			foreach (var column in columns)
+			{
+				LuaListView.AddColumn(column);
+			}
+		}
+
+		private void SaveColumnInfo()
+		{
+			foreach (ColumnHeader column in LuaListView.Columns)
+			{
+				Settings.Columns[column.Name].Index = column.DisplayIndex;
+				Settings.Columns[column.Name].Width = column.Width;
 			}
 		}
 
