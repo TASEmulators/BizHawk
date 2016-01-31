@@ -159,11 +159,11 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var file in runningScripts)
 			{
+				string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
 				try
 				{
 					LuaSandbox.Sandbox(() =>
 					{
-						string pathToLoad = PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
 						file.Thread = LuaImp.SpawnCoroutine(pathToLoad);
 						file.State = LuaFile.RunState.Running;
 					}, () =>
@@ -183,6 +183,7 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadLuaFile(string path)
 		{
 			var processedPath = PathManager.TryMakeRelative(path);
+			string pathToLoad = Path.IsPathRooted(processedPath) ? processedPath : PathManager.MakeProgramRelativePath(processedPath); //JUNIPIER SQUATCHBOX COMPLEX
 
 			if (LuaAlreadyInSession(processedPath) == false)
 			{
@@ -199,7 +200,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LuaSandbox.Sandbox(() =>
 						{
-							string pathToLoad = PathManager.MakeProgramRelativePath(processedPath); //JUNIPIER SQUATCHBOX COMPLEX
 							luaFile.Thread = LuaImp.SpawnCoroutine(pathToLoad);
 							luaFile.State = LuaFile.RunState.Running;
 						}, () =>

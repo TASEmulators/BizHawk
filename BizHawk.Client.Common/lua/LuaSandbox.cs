@@ -33,7 +33,8 @@ namespace BizHawk.Client.Common
 				//moreover we don't really have a sense of sandboxing individual scripts, they kind of all get run together in the same VM, i think
 				//so let's just try keeping one 'current directory' for all lua. it's an improvement over lua's 'current directory' for the process, interfering with the core emulator's
 				savedEnvironmentCurrDir = Environment.CurrentDirectory;
-				Environment.CurrentDirectory = CurrentDirectory;
+				if(System.IO.Directory.Exists(CurrentDirectory)) //race condition for great justice
+					Environment.CurrentDirectory = CurrentDirectory;
 
 				EnvironmentSandbox.Sandbox(callback);
 				CurrentDirectory = Environment.CurrentDirectory;
@@ -48,8 +49,11 @@ namespace BizHawk.Client.Common
 			}
 			finally
 			{
-				if(savedEnvironmentCurrDir != null)
-					Environment.CurrentDirectory = savedEnvironmentCurrDir;
+				if (savedEnvironmentCurrDir != null)
+				{
+					if (System.IO.Directory.Exists(savedEnvironmentCurrDir)) //race condition for great justice
+						Environment.CurrentDirectory = savedEnvironmentCurrDir;
+				}
 			}
 		}
 	}
