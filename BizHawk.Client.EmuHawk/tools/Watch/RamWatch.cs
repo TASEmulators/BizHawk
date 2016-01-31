@@ -1043,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedIndices.Any() &&
 				SelectedWatches.All(w => w.Domain.CanPoke());
 
-			var allCheats = _watches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
+			var allCheats = SelectedWatches.All(x => Global.CheatList.IsActive(x.Domain, x.Address));
 
 			if (allCheats)
 			{
