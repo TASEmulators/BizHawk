@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
             }
         }
 
-        public void ExecutePhase2()
+        public void ExecutePhase()
         {
             if (_connected)
             {

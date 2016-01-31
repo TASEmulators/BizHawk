@@ -2,6 +2,7 @@
 {
 	public sealed partial class Vic
 	{
+	    [SaveState.DoNotSave] private int _borderPixel;
 	    [SaveState.DoNotSave] private int _bufferPixel;
 	    [SaveState.DoNotSave] private int _ecmPixel;
 		[SaveState.DoNotSave] private int _pixel;
@@ -15,6 +16,7 @@
 	    private int _srColorSync;
 	    private int _srColorIndexLatch;
 		private int _videoMode;
+	    private int _borderOnShiftReg;
 
 	    [SaveState.DoNotSave] private const int VideoMode000 = 0;
         [SaveState.DoNotSave] private const int VideoMode001 = 1;
@@ -58,19 +60,26 @@
                 }
 
                 #region PRE-RENDER BORDER
+
+                // check left border
                 if (_borderCheckLEnable && (_rasterX == _borderL))
 				{
 					if (_rasterLine == _borderB)
 						_borderOnVertical = true;
-					if (_rasterLine == _borderT && _displayEnable)
+					if (_cycle == _totalCycles && _rasterLine == _borderT && _displayEnable)
 						_borderOnVertical = false;
 					if (!_borderOnVertical)
 						_borderOnMain = false;
 				}
-				#endregion
 
-				#region CHARACTER GRAPHICS
-				switch (_videoMode)
+                // check right border
+                if (_borderCheckREnable && (_rasterX == _borderR))
+                    _borderOnMain = true;
+
+                #endregion
+
+                #region CHARACTER GRAPHICS
+                switch (_videoMode)
 				{
 					case VideoMode000:
 						_pixelData = _sr & SrMask2;
@@ -269,33 +278,36 @@
 
                 #endregion
 
-				#region POST-RENDER BORDER
-				if (_borderCheckREnable && (_rasterX == _borderR))
-					_borderOnMain = true;
+                #region POST-RENDER BORDER
 
-				// border doesn't work with the background buffer
-				if (_borderOnMain || _borderOnVertical)
-					_pixel = _borderColor;
+                // border doesn't work with the background buffer
+			    _borderPixel = _pixBorderBuffer[_pixBufferBorderIndex];
+                _pixBorderBuffer[_pixBufferBorderIndex] = _borderColor;
 				#endregion
 
 				// plot pixel if within viewing area
 				if (_renderEnabled)
 				{
-				    _bufferPixel = _pixBuffer[_pixBufferIndex];
+				    _bufferPixel = (_borderOnShiftReg & 0x80000) != 0 ? _borderPixel : _pixBuffer[_pixBufferIndex];
                     _buf[_bufOffset] = Palette[_bufferPixel];
 					_bufOffset++;
 					if (_bufOffset == _bufLength)
 						_bufOffset = 0;
 				}
 
-				_pixBuffer[_pixBufferIndex] = _pixel;
+			    _borderOnShiftReg <<= 1;
+			    _borderOnShiftReg |= (_borderOnVertical || _borderOnMain) ? 1 : 0;
+                _pixBuffer[_pixBufferIndex] = _pixel;
 				_pixBufferIndex++;
+                _pixBufferBorderIndex++;
 
-				if (!_rasterXHold)
+                if (!_rasterXHold)
 					_rasterX++;
 			}
 
-			if (_pixBufferIndex >= PixBufferSize)
+            if (_pixBufferBorderIndex >= PixBorderBufferSize)
+                _pixBufferBorderIndex = 0;
+            if (_pixBufferIndex >= PixBufferSize)
 				_pixBufferIndex = 0;
 		}
 	}

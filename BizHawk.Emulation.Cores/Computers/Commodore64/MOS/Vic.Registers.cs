@@ -25,7 +25,7 @@
 			        _spriteBackgroundCollisionClearPending = true;
 					return ReadRegister(addr);
 				default:
-					return ReadRegister(addr & 0x3F);
+					return ReadRegister(addr);
 			}
 		}
 

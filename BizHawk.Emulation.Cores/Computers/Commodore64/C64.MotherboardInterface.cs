@@ -7,6 +7,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class Motherboard
 	{
+	    private int _lastReadVicAddress = 0x3FFF;
+	    private int _lastReadVicData = 0xFF;
+	    private int _vicBank = 0xC000;
+
 	    private bool CassPort_ReadDataOutput()
 		{
 			return (Cpu.PortData & 0x08) != 0;
@@ -62,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    private int Cpu_ReadPort()
 		{
-			var data = 0x3F;
+			var data = 0x1F;
 			if (!Cassette.ReadSenseBuffer())
 				data &= 0xEF;
 			return data;
@@ -115,6 +119,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return (Cpu.PortData & 0x01) != 0;
 		}
 
+	    private int Pla_ReadExpansion0(int addr)
+	    {
+	        return CartPort.IsConnected ? CartPort.ReadLoExp(addr) : _lastReadVicData;
+	    }
+
+        private int Pla_ReadExpansion1(int addr)
+        {
+            return CartPort.IsConnected ? CartPort.ReadHiExp(addr) : _lastReadVicData;
+        }
+
         /*
 	    private bool SerPort_ReadAtnOut()
 		{
@@ -132,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
         */
 
-	    private int Sid_ReadPotX()
+        private int Sid_ReadPotX()
 		{
 			return 0;
 		}
@@ -144,9 +158,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    private int Vic_ReadMemory(int addr)
 		{
-			// the system sees (cia1.PortAData & 0x3) but we use a shortcut
-			addr |= (0x3 - (Cia1.ReadPortA() & 0x3)) << 14;
-			return Pla.VicRead(addr);
+            // the system sees (cia1.PortAData & 0x3) but we use a shortcut
+            _lastReadVicAddress = addr | _vicBank;
+			_lastReadVicData = Pla.VicRead(_lastReadVicAddress);
+            return _lastReadVicData;
 		}
 	}
 }
