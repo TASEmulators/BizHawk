@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using LuaInterface;
-using System.Windows.Forms;
 
 namespace BizHawk.Client.Common
 {
-	class LuaSandbox
+	public class LuaSandbox
 	{
 		protected static Action<string> Logger;
 
