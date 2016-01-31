@@ -14,12 +14,29 @@ namespace BizHawk.Client.Common
 		{
 			Logger = logger;
 		}
-		
+
+		public static void SetCurrentDirectory(string dir)
+		{
+			CurrentDirectory = dir;
+		}
+
+		static string CurrentDirectory;
+
 		public static void Sandbox(Action callback, Action exceptionCallback = null)
 		{
+			string savedEnvironmentCurrDir = null;
 			try
 			{
+				//so. lets talk about current directories.
+				//ideally we'd have one current directory per script. but things get hairy.
+				//events and callbacks can get setup and it isn't clear what script they belong to.
+				//moreover we don't really have a sense of sandboxing individual scripts, they kind of all get run together in the same VM, i think
+				//so let's just try keeping one 'current directory' for all lua. it's an improvement over lua's 'current directory' for the process, interfering with the core emulator's
+				savedEnvironmentCurrDir = Environment.CurrentDirectory;
+				Environment.CurrentDirectory = CurrentDirectory;
+
 				EnvironmentSandbox.Sandbox(callback);
+				CurrentDirectory = Environment.CurrentDirectory;
 			}
 			catch (LuaException ex)
 			{
@@ -28,6 +45,11 @@ namespace BizHawk.Client.Common
 				{
 					exceptionCallback();
 				}
+			}
+			finally
+			{
+				if(savedEnvironmentCurrDir != null)
+					Environment.CurrentDirectory = savedEnvironmentCurrDir;
 			}
 		}
 	}

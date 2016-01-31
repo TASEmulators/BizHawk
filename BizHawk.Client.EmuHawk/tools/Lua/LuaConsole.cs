@@ -77,6 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.VirtualMode = true;
 
 			LuaSandbox.SetLogger(this.ConsoleLog);
+			LuaSandbox.SetCurrentDirectory(PathManager.GetLuaPath());
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -162,7 +163,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LuaSandbox.Sandbox(() =>
 					{
-						file.Thread = LuaImp.SpawnCoroutine(file.Path);
+						string pathToLoad = PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
+						file.Thread = LuaImp.SpawnCoroutine(pathToLoad);
 						file.State = LuaFile.RunState.Running;
 					}, () =>
 					{
@@ -197,7 +199,8 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LuaSandbox.Sandbox(() =>
 						{
-							luaFile.Thread = LuaImp.SpawnCoroutine(processedPath);
+							string pathToLoad = PathManager.MakeProgramRelativePath(processedPath); //JUNIPIER SQUATCHBOX COMPLEX
+							luaFile.Thread = LuaImp.SpawnCoroutine(pathToLoad);
 							luaFile.State = LuaFile.RunState.Running;
 						}, () =>
 						{
