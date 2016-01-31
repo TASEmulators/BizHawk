@@ -199,7 +199,6 @@ namespace BizHawk.Client.EmuHawk
 					WatchListView.ItemCount = _watches.Count;
 					UpdateWatchCount();
 					Global.Config.RecentWatches.Add(_watches.CurrentFileName);
-					SetMemoryDomain(_watches.Domain.ToString());
 					UpdateStatusBar();
 
 					PokeAddressToolBarItem.Enabled =
@@ -219,14 +218,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null && !string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
-				_watches.RefreshDomains(_memoryDomains, _memoryDomains.MainMemory);
+				_watches.RefreshDomains(_memoryDomains);
 				_watches.Reload();
-				SetPlatformAndMemoryDomainLabel();
 				UpdateStatusBar();
 			}
 			else
 			{
-				_watches = new WatchList(_memoryDomains, _memoryDomains.MainMemory, _emu.SystemId);
+				_watches = new WatchList(_memoryDomains, _emu.SystemId);
 				NewWatchList(true);
 			}
 		}
@@ -286,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 						return true;
 					}
 
-					if (Global.CheatList.IsActive(_watches.Domain, watch.Address))
+					if (Global.CheatList.IsActive(watch.Domain, watch.Address))
 					{
 						return true;
 					}
@@ -537,14 +535,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetMemoryDomain(string name)
 		{
-			_watches.Domain = _memoryDomains[name];
-			SetPlatformAndMemoryDomainLabel();
+			CurrentDomain = _memoryDomains[name];
 			Update();
-		}
-
-		private void SetPlatformAndMemoryDomainLabel()
-		{
-			MemDomainLabel.Text = _emu.SystemId + " " + _watches.Domain.Name;
 		}
 
 		private void UpdateStatusBar(bool saved = false)
@@ -589,7 +581,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					color = Color.PeachPuff;
 				}
-				else if (Global.CheatList.IsActive(_watches.Domain, _watches[index].Address))
+				else if (Global.CheatList.IsActive(_watches[index].Domain, _watches[index].Address))
 				{
 					color = Color.LightCyan;
 				}
@@ -713,11 +705,19 @@ namespace BizHawk.Client.EmuHawk
 			PauseMenuItem.Text = _paused ? "Unpause" : "Pause";
 		}
 
+		private MemoryDomain _currentDomain = null;
+
+		private MemoryDomain CurrentDomain
+		{
+			get { return _currentDomain ?? _memoryDomains.MainMemory; }
+			set { _currentDomain = value; }
+		}
+
 		private void MemoryDomainsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			MemoryDomainsSubMenu.DropDownItems.Clear();
 			MemoryDomainsSubMenu.DropDownItems.AddRange(
-				_memoryDomains.MenuItems(SetMemoryDomain, _watches.Domain.Name)
+				_memoryDomains.MenuItems(SetMemoryDomain, CurrentDomain.Name)
 				.ToArray());
 		}
 
@@ -728,7 +728,7 @@ namespace BizHawk.Client.EmuHawk
 				InitialLocation = this.ChildPointToScreen(WatchListView),
 				MemoryDomains = _memoryDomains
 			};
-			we.SetWatch(_watches.Domain);
+			we.SetWatch(CurrentDomain);
 			we.ShowHawkDialog(this);
 			if (we.DialogResult == DialogResult.OK)
 			{
@@ -974,7 +974,7 @@ namespace BizHawk.Client.EmuHawk
 		private void NewRamWatch_Load(object sender, EventArgs e)
 		{
 			TopMost = Settings.TopMost;
-			_watches = new WatchList(_memoryDomains, _memoryDomains.MainMemory, _emu.SystemId);
+			_watches = new WatchList(_memoryDomains, _emu.SystemId);
 			LoadConfigSettings();
 			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 			UpdateStatusBar();
@@ -1183,5 +1183,10 @@ namespace BizHawk.Client.EmuHawk
 				SelectedWatches.All(w => w.Domain.CanPoke());
 		}
 
+		// Stupid designer
+		protected void DragEnterWrapper(object sender, DragEventArgs e)
+		{
+			base.GenericDragEnter(sender, e);
+		}
 	}
 }

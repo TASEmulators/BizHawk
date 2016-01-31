@@ -214,7 +214,7 @@
 			this.WatchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.WatchListView_ColumnClick);
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
-			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.GenericDragEnter);
+			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
 			this.WatchListView.Enter += new System.EventHandler(this.WatchListView_Enter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
@@ -1399,7 +1399,7 @@
 			this.Activated += new System.EventHandler(this.NewRamSearch_Activated);
 			this.Load += new System.EventHandler(this.RamSearch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.GenericDragEnter);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
 			this.ListViewContextMenu.ResumeLayout(false);
 			this.RamSearchMenu.ResumeLayout(false);
 			this.RamSearchMenu.PerformLayout();

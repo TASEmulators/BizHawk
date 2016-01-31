@@ -42,7 +42,6 @@ namespace BizHawk.Client.Common
 		private static IMemoryDomains _memoryDomains;
 
 		private List<Watch> _watchList = new List<Watch>(0);
-		private MemoryDomain _domain;
 		private string _currentFilename = string.Empty;
 		private string _systemid;
 
@@ -57,32 +56,13 @@ namespace BizHawk.Client.Common
 		/// <param name="core">All available memomry domains</param>
 		/// <param name="domain">Domain you want to watch</param>
 		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
-		[Obsolete("Use the constructor with two parameters instead")]
-		public WatchList(IMemoryDomains core, MemoryDomain domain, string systemid)
-		{
-			if (_memoryDomains == null)
-			{
-				_memoryDomains = core;
-			}
-			_domain = domain;
-			_systemid = systemid;
-		}
-
-		/// <summary>
-		/// Initialize a new instance of <see cref="WatchList"/> that will
-		/// contains a set of <see cref="Watch"/>
-		/// </summary>
-		/// <param name="core">All available memomry domains</param>
-		/// <param name="domain">Domain you want to watch</param>
-		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
 		public WatchList(IMemoryDomains core, string systemid)
 		{
 			if (_memoryDomains == null)
 			{
 				_memoryDomains = core;
 			}
-			//TODO: Remove this after tests
-			_domain = core.MainMemory;
+
 			_systemid = systemid;
 		}
 
@@ -370,19 +350,6 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-		public string AddressFormatStr // TODO: this is probably compensating for not using the ToHex string extension
-		{
-			get
-			{
-				if (_domain != null)
-				{
-					return "{0:X" + (_domain.Size - 1).NumHexDigits() + "}";
-				}
-
-				return string.Empty;
-			}
-		}
-
 		#endregion
 
 		#region Propeties
@@ -468,38 +435,6 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-
-		[Obsolete("Use the method with single parameter instead")]
-		public void RefreshDomains(IMemoryDomains core, MemoryDomain domain)
-		{
-			_memoryDomains = core;
-			_domain = domain;
-
-			_watchList.ForEach(w =>
-			{
-				if (w.Domain != null)
-				{
-					w.Domain = _memoryDomains[w.Domain.Name];
-				}
-			});
-		}
-
-		[Obsolete("Use domain from individual watch instead")]
-		public MemoryDomain Domain
-		{
-			get { return _domain; }
-			set { _domain = value; }
-		}
-
-		[Obsolete("Use count property instead", true)]
-		public int ItemCount
-		{
-			get
-			{
-				return Count;
-			}
-		}
-
 		#region File handling logic - probably needs to be its own class
 
 		public bool Load(string path, bool append)
@@ -541,9 +476,7 @@ namespace BizHawk.Client.Common
 			using (var sw = new StreamWriter(CurrentFileName))
 			{
 				var sb = new StringBuilder();
-				sb
-					.Append("Domain ").AppendLine(_domain.Name)
-					.Append("SystemID ").AppendLine(_systemid);
+				sb.Append("SystemID ").AppendLine(_systemid);
 
 				foreach (var watch in _watchList)
 				{
@@ -570,7 +503,6 @@ namespace BizHawk.Client.Common
 
 		private bool LoadFile(string path, bool append)
 		{
-			var domain = string.Empty;
 			var file = new FileInfo(path);
 			if (file.Exists == false)
 			{
@@ -600,7 +532,6 @@ namespace BizHawk.Client.Common
 
 					if (line.Length >= 6 && line.Substring(0, 6) == "Domain")
 					{
-						domain = line.Substring(7, line.Length - 7);
 						isBizHawkWatch = true;
 					}
 
@@ -687,10 +618,8 @@ namespace BizHawk.Client.Common
 							type,
 							bigEndian,
 							notes));
-					_domain = _memoryDomains[domain];
 				}
 
-				Domain = _memoryDomains[domain] ?? _memoryDomains.MainMemory;
 				_currentFilename = path;
 			}
 

@@ -965,5 +965,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			IsInMenuLoop = false;
 		}
+
+		// Stupid designer
+		protected void DragEnterWrapper(object sender, DragEventArgs e)
+		{
+			base.GenericDragEnter(sender, e);
+		}
 	}
 }

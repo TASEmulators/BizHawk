@@ -821,7 +821,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentFileName = file.FullName;
 				}
 
-				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId);
+				var watches = new WatchList(MemoryDomains, Emu.SystemId);
 				watches.Load(file.FullName, append);
 				Settings.RecentSearches.Add(watches.CurrentFileName);
 
@@ -1003,7 +1003,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
+				var watches = new WatchList(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
 				for (var i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -1020,7 +1020,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var result = watches.SaveAs(ToolFormBase.GetWatchSaveFileFromUser(watches.CurrentFileName));
+					var result = watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName));
 					if (result)
 					{
 						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
@@ -1032,13 +1032,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
+			var watches = new WatchList(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
 			for (var i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);
 			}
 
-			if (watches.SaveAs(ToolFormBase.GetWatchSaveFileFromUser(watches.CurrentFileName)))
+			if (watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName)))
 			{
 				_currentFileName = watches.CurrentFileName;
 				MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
@@ -1790,6 +1790,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			base.OnShown(e);
+		}
+
+		// Stupid designer
+		protected void DragEnterWrapper(object sender, DragEventArgs e)
+		{
+			base.GenericDragEnter(sender, e);
 		}
 
 		#endregion

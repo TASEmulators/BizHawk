@@ -1240,6 +1240,12 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.DisplayManager.ClearLuaSurfaces();
 		}
 
+		// Stupid designer
+		protected void DragEnterWrapper(object sender, DragEventArgs e)
+		{
+			base.GenericDragEnter(sender, e);
+		}
+
 		#endregion
 	}
 }
