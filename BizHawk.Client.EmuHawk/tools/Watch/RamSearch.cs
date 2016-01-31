@@ -134,6 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			SpecificValueBox.ByteSize = _settings.Size;
 			SpecificValueBox.Type = _settings.Type;
 			DifferentByBox.Type = Common.DisplayType.Unsigned;
+			DifferenceBox.Type = Common.DisplayType.Unsigned;
 
 			MessageLabel.Text = string.Empty;
 			SpecificAddressBox.MaxLength = (MemoryDomains.MainMemory.Size - 1).NumHexDigits();
