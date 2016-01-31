@@ -510,7 +510,6 @@ namespace BizHawk.Client.Common
 			}
 
 			var isBizHawkWatch = true; // Hack to support .wch files from other emulators
-			var isOldBizHawkWatch = false;
 			using (var sr = file.OpenText())
 			{
 				string line;
@@ -555,10 +554,6 @@ namespace BizHawk.Client.Common
 							line = line.Substring(startIndex, line.Length - startIndex);   // 5 digit value representing the watch position number
 						}
 					}
-					else if (numColumns == 4)
-					{
-						isOldBizHawkWatch = true; // This supports the legacy .wch format from 1.0.5 and earlier
-					}
 					else
 					{
 						continue;   // If not 4, something is wrong with this line, ignore it
@@ -599,7 +594,7 @@ namespace BizHawk.Client.Common
 
 					var bigEndian = startIndex != 0;
 
-					if (isBizHawkWatch && !isOldBizHawkWatch)
+					if (isBizHawkWatch)
 					{
 						startIndex = line.IndexOf('\t') + 1;
 						line = line.Substring(startIndex, line.Length - startIndex);   // Domain
