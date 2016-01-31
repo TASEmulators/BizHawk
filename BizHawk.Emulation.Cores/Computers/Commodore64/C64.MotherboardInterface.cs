@@ -56,13 +56,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
         private int Cia1_ReadPortA()
 		{
 			// the low bits are actually the VIC memory address.
-			var result = 0xFF;
+			var result = 0x00;
 			if (Serial.WriteDataIn())
-				result &= 0x7F;
+				result |= 0x80;
 			if (Serial.WriteClockIn())
-				result &= 0xBF;
+				result |= 0x40;
 			return result;
 		}
+
+	    private int Cia1_ReadPortB()
+	    {
+	        return 0xFF;
+	    }
 
 	    private int Cpu_ReadPort()
 		{
@@ -84,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
         private bool Glue_ReadNMI()
         {
-            return Cia1.ReadIrq() && CartPort.ReadNmi();
+            return !_restorePressed && Cia1.ReadIrq() && CartPort.ReadNmi();
         }
 
         private bool Pla_ReadCharen()

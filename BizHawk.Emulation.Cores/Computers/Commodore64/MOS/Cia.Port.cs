@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             public override int ReadPra(int pra, int ddra, int prb, int ddrb)
             {
-                _ret = pra | ~ddra;
+                _ret = (pra | ~ddra) & 0xFF;
                 _tst = (prb | ~ddrb) & GetJoystick1();
                 _ret &= GetKeyboardColumns(_tst);
                 return _ret & GetJoystick2();
@@ -105,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             public override int ReadPrb(int pra, int ddra, int prb, int ddrb)
             {
-                _ret = ~ddrb;
+                _ret = ~ddrb & 0xFF;
                 _tst = (pra | ~ddra) & GetJoystick2();
                 _ret &= GetKeyboardRows(_tst);
                 return (_ret | (prb & ddrb)) & GetJoystick1();
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
         private sealed class IecPort : Port
         {
-            private Func<int> _readIec;
+            private readonly Func<int> _readIec;
 
             public IecPort(Func<int> readIec)
             {
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             public override int ReadPrb(int pra, int ddra, int prb, int ddrb)
             {
-                return prb | ~ddrb;
+                return (prb | ~ddrb) & 0xFF;
             }
         }
     }

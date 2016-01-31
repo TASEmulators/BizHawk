@@ -49,10 +49,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         private int _intMask;
         private bool _todLatch;
         private bool _taCntPhi2;
+        private bool _taCntCnt;
         private bool _tbCntPhi2;
         private bool _tbCntTa;
+        private bool _tbCntCnt;
         private bool _taIrqNextCycle;
+        private bool _taPrb6NegativeNextCycle;
         private bool _tbIrqNextCycle;
+        private bool _tbPrb7NegativeNextCycle;
         private bool _hasNewCra;
         private bool _hasNewCrb;
         private TimerState _taState;
@@ -111,8 +115,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _intMask = 0;
             _todLatch = false;
             _taCntPhi2 = false;
+            _taCntCnt = false;
             _tbCntPhi2 = false;
             _tbCntTa = false;
+            _tbCntCnt = false;
             _taIrqNextCycle = false;
             _tbIrqNextCycle = false;
             _taState = TimerState.Stop;
@@ -141,6 +147,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 CheckIrqs();
             }
 
+            if (_taPrb6NegativeNextCycle)
+            {
+                _prb &= 0xBF;
+                _taPrb6NegativeNextCycle = false;
+            }
+            if (_tbPrb7NegativeNextCycle)
+            {
+                _prb &= 0x7F;
+                _tbPrb7NegativeNextCycle = false;
+            }
+            
+
             switch (_taState)
             {
                 case TimerState.WaitThenCount:
@@ -166,13 +184,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     {
                         Ta_Interrupt();
                         _taUnderflow = true;
-                        Ta_Idle();
                     }
                     else
                     {
                         _ta = _latcha;
-                        Ta_Idle();
                     }
+                    Ta_Idle();
                     break;
                 case TimerState.Count:
                     Ta_Count();
@@ -207,13 +224,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     if (_tb == 1)
                     {
                         Tb_Interrupt();
-                        Tb_Idle();
                     }
                     else
                     {
                         _tb = _latchb;
-                        Tb_Idle();
                     }
+                    Tb_Idle();
                     break;
                 case TimerState.Count:
                     Tb_Count();
@@ -251,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         {
             if (_taCntPhi2)
             {
-                if (_ta == 0 || --_ta == 0)
+                if (_ta <= 0 || --_ta == 0)
                 {
                     if (_taState != TimerState.Stop)
                     {
@@ -279,6 +295,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             {
                 _taState = TimerState.LoadThenCount;
             }
+
+            if ((_cra & 0x02) != 0)
+            {
+                if ((_cra & 0x04) != 0)
+                {
+                    _taPrb6NegativeNextCycle = true;
+                    _prb |= 0x40;
+                }
+                else
+                {
+                    _prb ^= 0x40;
+                }
+                _ddrb |= 0x40;
+            }
         }
 
         private void Ta_Idle()
@@ -291,14 +321,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     case TimerState.LoadThenStop:
                         if ((_newCra & 0x01) != 0)
                         {
-                            if ((_newCra & 0x10) != 0)
-                            {
-                                _taState = TimerState.LoadThenWaitThenCount;
-                            }
-                            else
-                            {
-                                _taState = TimerState.WaitThenCount;
-                            }
+                            _taState = (_newCra & 0x10) != 0
+                                ? TimerState.LoadThenWaitThenCount
+                                : TimerState.WaitThenCount;
                         }
                         else
                         {
@@ -318,14 +343,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         }
                         else
                         {
-                            if ((_newCra & 0x10) != 0)
-                            {
-                                _taState = TimerState.LoadThenStop;
-                            }
-                            else
-                            {
-                                _taState = TimerState.CountThenStop;
-                            }
+                            _taState = (_newCra & 0x10) != 0
+                                ? TimerState.LoadThenStop
+                                : TimerState.CountThenStop;
                         }
                         break;
                     case TimerState.LoadThenCount:
@@ -357,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         {
             if (_tbCntPhi2 || (_tbCntTa && _taUnderflow))
             {
-                if (_tb == 0 || --_tb == 0)
+                if (_tb <= 0 || --_tb == 0)
                 {
                     if (_tbState != TimerState.Stop)
                     {
@@ -385,6 +405,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 _tbState = TimerState.LoadThenCount;
             }
 
+            if ((_cra & 0x02) != 0)
+            {
+                if ((_cra & 0x04) != 0)
+                {
+                    _tbPrb7NegativeNextCycle = true;
+                    _prb |= 0x80;
+                }
+                else
+                {
+                    _prb ^= 0x80;
+                }
+                _ddrb |= 0x80;
+            }
         }
 
         private void Tb_Idle()
@@ -397,14 +430,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     case TimerState.LoadThenStop:
                         if ((_newCrb & 0x01) != 0)
                         {
-                            if ((_newCrb & 0x10) != 0)
-                            {
-                                _tbState = TimerState.LoadThenWaitThenCount;
-                            }
-                            else
-                            {
-                                _tbState = TimerState.WaitThenCount;
-                            }
+                            _tbState = (_newCrb & 0x10) != 0
+                                ? TimerState.LoadThenWaitThenCount
+                                : TimerState.WaitThenCount;
                         }
                         else
                         {
@@ -424,14 +452,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         }
                         else
                         {
-                            if ((_newCrb & 0x10) != 0)
-                            {
-                                _tbState = TimerState.LoadThenStop;
-                            }
-                            else
-                            {
-                                _tbState = TimerState.CountThenStop;
-                            }
+                            _tbState = (_newCrb & 0x10) != 0
+                                ? TimerState.LoadThenStop
+                                : TimerState.CountThenStop;
                         }
                         break;
                     case TimerState.LoadThenCount:
@@ -523,16 +546,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
         }
 
-        private void TriggerInterrupt(int num)
+        private void TriggerInterrupt(int bit)
         {
-            _icr |= num;
-            if ((_intMask & num) == 0) return;
+            _icr |= bit;
+            if ((_intMask & bit) == 0) return;
             _icr |= 0x80;
         }
 
         public void SyncState(Serializer ser)
         {
             SaveState.SyncObject(ser, this);
+        }
+
+        public int DdrA
+        {
+            get { return _ddra; }
+        }
+
+        public int DdrB
+        {
+            get { return _ddrb; }
+        }
+
+        public int PrA
+        {
+            get { return _pra; }
+        }
+
+        public int PrB
+        {
+            get { return _prb; }
         }
     }
 }

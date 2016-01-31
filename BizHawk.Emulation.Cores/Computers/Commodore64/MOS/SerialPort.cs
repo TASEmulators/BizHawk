@@ -12,10 +12,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Func<bool> ReadClockOut;
 		public Func<bool> ReadDataOut;
 
-		public SerialPort()
-		{
-		}
-
 		public void HardReset()
 		{
 		}

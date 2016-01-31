@@ -69,19 +69,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void ExecutePhase()
 		{
-            _cpu.IRQ = !ReadIrq();
             _cpu.RDY = ReadRdy();
-
-			// the 6502 core expects active high
-			// so we reverse the polarity here
-			_thisNmi = ReadNmi();
-			if (!_thisNmi && _pinNmiLast)
-				_cpu.NMI = true;
 
             if (ReadAec())
             {
-                _cpu.ExecuteOne();
+                _cpu.IRQ = !ReadIrq();
                 _pinNmiLast = _thisNmi;
+                _thisNmi = ReadNmi();
+                _cpu.NMI |= _pinNmiLast && !_thisNmi;
+                _cpu.ExecuteOne();
             }
             else
             {
