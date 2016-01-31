@@ -247,7 +247,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void HardReset()
 		{
 			_board.HardReset();
-			//disk.HardReset();
 		}
 	}
 }

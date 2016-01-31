@@ -95,18 +95,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             addr &= 0xF;
             switch (addr)
             {
-                case 0x0:
-                    _pra = val;
-                    break;
-                case 0x1:
-                    _prb = val;
-                    break;
-                case 0x2:
-                    _ddra = val;
-                    break;
-                case 0x3:
-                    _ddrb = val;
-                    break;
                 case 0x4:
                     _latcha = (_latcha & 0xFF00) | val;
                     break;
@@ -185,16 +173,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         _icr |= 0x80;
                     }
                     break;
-                case 0xE:
-                    _hasNewCra = true;
-                    _newCra = val;
-                    _taCntPhi2 = ((val & 0x20) == 0);
-                    break;
-                case 0xF:
-                    _hasNewCrb = true;
-                    _newCrb = val;
-                    _tbCntPhi2 = ((val & 0x60) == 0);
-                    _tbCntTa = ((val & 0x60) == 0x40);
+                default:
+                    WriteRegister(addr, val);
                     break;
             }
         }
@@ -250,11 +230,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     _intMask = val;
                     break;
                 case 0xE:
-                    _cra = val;
+                    _hasNewCra = true;
+                    _newCra = val;
                     _taCntPhi2 = ((val & 0x20) == 0);
                     break;
                 case 0xF:
-                    _crb = val;
+                    _hasNewCrb = true;
+                    _newCrb = val;
                     _tbCntPhi2 = ((val & 0x60) == 0);
                     _tbCntTa = ((val & 0x60) == 0x40);
                     break;

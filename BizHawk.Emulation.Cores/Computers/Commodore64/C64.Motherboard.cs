@@ -107,15 +107,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Execute()
 		{
-			Vic.ExecutePhase1();
-			Cpu.ExecutePhase1();
+		    _vicBank = (0x3 - (Cia1.ReadPortA() & 0x3)) << 14;
 
-            Cassette.ExecutePhase2();
-            Vic.ExecutePhase2();
-            Sid.ExecutePhase2();
-            Cia0.ExecutePhase2();
-            Cia1.ExecutePhase2();
-            Cpu.ExecutePhase2();
+            Vic.ExecutePhase();
+            Cassette.ExecutePhase();
+            Sid.ExecutePhase();
+            Cia0.ExecutePhase();
+            Cia1.ExecutePhase();
+            Cpu.ExecutePhase();
 		}
 
 		public void Flush()
@@ -209,8 +208,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pla.ReadCia0 = Pla_ReadCia0;
 			Pla.ReadCia1 = Cia1.Read;
 			Pla.ReadColorRam = Pla_ReadColorRam;
-			Pla.ReadExpansionHi = CartPort.ReadHiExp;
-			Pla.ReadExpansionLo = CartPort.ReadLoExp;
+			Pla.ReadExpansionHi = Pla_ReadExpansion1;
+			Pla.ReadExpansionLo = Pla_ReadExpansion0;
 			Pla.ReadExRom = CartPort.ReadExRom;
 			Pla.ReadGame = CartPort.ReadGame;
 			Pla.ReadHiRam = Pla_ReadHiRam;

@@ -67,14 +67,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public void ExecutePhase1()
+		public void ExecutePhase()
 		{
-			_cpu.IRQ = !ReadIrq();
-		}
-
-		public void ExecutePhase2()
-		{
-			_cpu.RDY = ReadRdy();
+            _cpu.IRQ = !ReadIrq();
+            _cpu.RDY = ReadRdy();
 
 			// the 6502 core expects active high
 			// so we reverse the polarity here

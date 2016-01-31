@@ -8,9 +8,9 @@
 	    private static readonly int Lines = 263;
 	    private static readonly int VblankStart = 0x00D % Lines;
 	    private static readonly int VblankEnd = 0x018 % Lines;
-	    private static readonly int HblankOffset = 12;
-	    private static readonly int HblankStart = (0x18C + HblankOffset) % ScanWidth - 8; // -8 because the VIC repeats internal pixel cycles around 0x18C
-	    private static readonly int HblankEnd = (0x1F0 + HblankOffset) % ScanWidth - 8;
+	    private static readonly int HblankOffset = 24;
+	    private static readonly int HblankStart = (0x18C + HblankOffset) % ScanWidth;
+	    private static readonly int HblankEnd = (0x1F0 + HblankOffset) % ScanWidth;
 
 	    private static readonly int[] Timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, ScanWidth, 0x18C, 8);
 	    private static readonly int[] Fetch = Vic.TimingBuilder_Fetch(Timing, 0x174);

@@ -120,7 +120,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_enableIntSpriteCollision = false;
 			_enableIntSpriteDataCollision = false;
 			_extraColorMode = false;
-			_hblank = true;
 			_idle = true;
 			_intLightPen = false;
 			_intRaster = false;
@@ -142,12 +141,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _spriteMulticolor0 = 0;
 			_spriteMulticolor1 = 0;
 			_sr = 0;
-			_vblank = true;
 			_vc = 0;
 			_vcbase = 0;
 			_vmli = 0;
 			_xScroll = 0;
 			_yScroll = 0;
+		    _cycle = 0;
 
 			// reset sprites
 			for (var i = 0; i < 8; i++)
@@ -161,7 +160,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			_pixBuffer = new int[PixBufferSize];
-			UpdateBorder();
+            _pixBorderBuffer = new int[PixBorderBufferSize];
+		    _pixBufferIndex = 0;
+            _pixBufferBorderIndex = 0;
+            UpdateBorder();
 		}
 
 		public void SyncState(Serializer ser)

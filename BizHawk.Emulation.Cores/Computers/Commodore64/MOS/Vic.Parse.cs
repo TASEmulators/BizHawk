@@ -17,8 +17,8 @@
 	    private const int PipelineHBlankLeft = 0x10000000;
 	    private const int PipelineHBlankRight = 0x20000000;
 	    private const int PipelineHoldX = 0x40000000;
-	    private const int RasterIrqLine0Cycle = 1;
-	    private const int RasterIrqLineXCycle = 0;
+	    private const int RasterIrqLine0Cycle = 2;
+	    private const int RasterIrqLineXCycle = 1;
 	    private const int FetchTypeSprite = 0x0000;
 	    private const int FetchTypeRefresh = 0x0100;
         private const int FetchTypeColor = 0x0200;
@@ -116,8 +116,7 @@
                     break;
                 case FetchTypeIdle:
 			        // fetch I
-			        _parseAddr = _extraColorModeBuffer ? AddressMaskEc : AddressMask;
-			        _dataG = ReadMemory(_parseAddr);
+			        ReadMemory(AddressMask);
 			        break;
 			    default:
 			        _parseCycleFetchSpriteIndex = _parseFetch & 0x7;
@@ -139,7 +138,11 @@
 			                spr.Mc++;
 			                spr.Loaded |= 0x800000;
 			            }
-			        }
+			            else if ((_parseFetch & 0xF0) == 0x20)
+			            {
+                            ReadMemory(AddressMask);
+                        }
+                    }
 			        break;
 			}
 

@@ -13,9 +13,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		[SaveState.DoNotSave] private readonly int _bufLength;
 		private int _bufOffset;
 		[SaveState.DoNotSave] private readonly int _bufWidth;
-	    [SaveState.DoNotSave] private const int PixBufferSize = 12;
+	    [SaveState.DoNotSave] private const int PixBufferSize = 24;
+	    [SaveState.DoNotSave] private const int PixBorderBufferSize = 12;
 	    private int[] _pixBuffer;
 		private int _pixBufferIndex;
+	    private int[] _pixBorderBuffer;
+	    private int _pixBufferBorderIndex;
 
         // palette
         [SaveState.DoNotSave]

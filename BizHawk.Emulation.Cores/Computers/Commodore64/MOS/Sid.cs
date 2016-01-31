@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		// ------------------------------------
 
-		public void ExecutePhase2()
+		public void ExecutePhase()
 		{
 			_cachedCycles++;
 

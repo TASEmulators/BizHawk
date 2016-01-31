@@ -7,10 +7,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
-	    [SaveState.DoNotSave] private const int BorderLeft38 = 0x01F;
-	    [SaveState.DoNotSave] private const int BorderLeft40 = 0x018;
-	    [SaveState.DoNotSave] private const int BorderRight38 = 0x14F;
-	    [SaveState.DoNotSave] private const int BorderRight40 = 0x158;
+	    [SaveState.DoNotSave] private const int BorderLeft38 = 0x023;
+	    [SaveState.DoNotSave] private const int BorderLeft40 = 0x01C;
+	    [SaveState.DoNotSave] private const int BorderRight38 = 0x153;
+	    [SaveState.DoNotSave] private const int BorderRight40 = 0x15C;
+        [SaveState.DoNotSave] private const int BorderTop25 = 0x033;
+        [SaveState.DoNotSave] private const int BorderTop24 = 0x037;
+        [SaveState.DoNotSave] private const int BorderBottom25 = 0x0FB;
+        [SaveState.DoNotSave] private const int BorderBottom24 = 0x0F7;
+        [SaveState.DoNotSave] private const int FirstDmaLine = 0x030;
+        [SaveState.DoNotSave] private const int LastDmaLine = 0x0F7;
 
         // The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
         [SaveState.DoNotSave]
@@ -211,7 +217,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// This uses the vBlank values to determine the height of the visible screen.
 	    private static int TimingBuilder_ScreenHeight(int vblankStart, int vblankEnd, int lines)
 		{
-			var offset = vblankEnd;
+            if (vblankStart < 0 || vblankEnd < 0)
+            {
+                return lines;
+            }
+
+            var offset = vblankEnd;
 			var result = 0;
 			while (true)
 			{
@@ -227,6 +238,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// This uses the hBlank values to determine the width of the visible screen.
 	    private static int TimingBuilder_ScreenWidth(IList<int> timing, int hblankStart, int hblankEnd)
 		{
+	        if (hblankStart < 0 || hblankEnd < 0)
+	        {
+	            return timing.Count * 4;
+	        }
+
 			var length = timing.Count;
 			var result = 0;
 			var offset = 0;
