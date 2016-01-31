@@ -881,7 +881,7 @@
 			this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
 			this.WatchListView.VirtualItemsSelectionRangeChanged += new System.Windows.Forms.ListViewVirtualItemsSelectionRangeChangedEventHandler(this.WatchListView_VirtualItemsSelectionRangeChanged);
 			this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
-			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
+			this.WatchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.GenericDragEnter);
 			this.WatchListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.WatchListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.WatchListView_MouseDoubleClick);
 			// 
@@ -948,7 +948,7 @@
 			this.Activated += new System.EventHandler(this.NewRamWatch_Activated);
 			this.Load += new System.EventHandler(this.NewRamWatch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.NewRamWatch_DragEnter);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.GenericDragEnter);
 			this.Enter += new System.EventHandler(this.NewRamWatch_Enter);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.WatchListView_KeyDown);
 			this.ListViewContextMenu.ResumeLayout(false);

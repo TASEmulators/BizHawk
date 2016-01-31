@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -17,7 +16,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class RamWatch : Form, IToolForm
+	public partial class RamWatch : ToolFormBase, IToolForm
 	{
 		private WatchList _watches;
 
@@ -455,20 +454,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadColumnInfo()
-		{
-			WatchListView.Columns.Clear();
-
-			var columns = Settings.Columns
-				.Where(c => c.Visible)
-				.OrderBy(c => c.Index);
-
-			foreach (var column in columns)
-			{
-				WatchListView.AddColumn(column);
-			}
-		}
-
 		private void LoadConfigSettings()
 		{
 			// Size and Positioning
@@ -485,7 +470,7 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			LoadColumnInfo();
+			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
 		private void NewWatchList(bool suppressAsk)
@@ -529,7 +514,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAs()
 		{
-			var result = _watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(_watches.CurrentFileName));
+			var result = _watches.SaveAs(GetWatchSaveFileFromUser(_watches.CurrentFileName));
 			if (result)
 			{
 				UpdateStatusBar(saved: true);
@@ -537,18 +522,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveColumnInfo()
-		{
-			foreach (ColumnHeader column in WatchListView.Columns)
-			{
-				Settings.Columns[column.Name].Index = column.DisplayIndex;
-				Settings.Columns[column.Name].Width = column.Width;
-			}
-		}
-
 		private void SaveConfigSettings()
 		{
-			SaveColumnInfo();
+			SaveColumnInfo(WatchListView, Settings.Columns);
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -685,7 +661,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			var append = sender == AppendMenuItem;
-			LoadWatchFile(ToolHelpers.GetWatchFileFromUser(_watches.CurrentFileName), append);
+			LoadWatchFile(GetWatchFileFromUser(_watches.CurrentFileName), append);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -993,7 +969,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.DisplayRamWatch = false;
 
 			RefreshFloatingWindowControl();
-			LoadColumnInfo();
+			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
 		#endregion
@@ -1016,18 +992,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo();
-			LoadColumnInfo();
+			SaveColumnInfo(WatchListView, Settings.Columns);
+			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
 		private void NewRamWatch_Activated(object sender, EventArgs e)
 		{
 			WatchListView.Refresh();
-		}
-
-		private void NewRamWatch_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void NewRamWatch_DragDrop(object sender, DragEventArgs e)
@@ -1111,11 +1082,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address }, selected.First().Size);
+					ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address }, selected.First().Size);
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address), selected.First().Size);
+					ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address), selected.First().Size);
 				}
 			}
 		}

@@ -17,7 +17,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TAStudio : Form, IToolFormAutoConfig, IControlMainform
+	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
 		private const string CursorColumnName = "CursorColumn";
@@ -839,11 +839,10 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
-		private void TAStudio_DragEnter(object sender, DragEventArgs e)
+		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
-
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
 			if (!AskSaveChanges())

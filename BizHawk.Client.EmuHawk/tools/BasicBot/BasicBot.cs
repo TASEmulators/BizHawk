@@ -12,7 +12,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BasicBot : Form , IToolFormAutoConfig
+	public partial class BasicBot : ToolFormBase , IToolFormAutoConfig
 	{
 		private const string DialogTitle = "Basic Bot";
 
@@ -466,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = ToolHelpers.OpenFileDialog(
+			var file = OpenFileDialog(
 					CurrentFileName,
 					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
 					"Bot files",
@@ -489,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = ToolHelpers.SaveFileDialog(
+			var file = SaveFileDialog(
 					CurrentFileName,
 					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
 					"Bot files",

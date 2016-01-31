@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Components.H6280;
-using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Consoles.Sega;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -26,7 +18,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class CDL : Form, IToolFormAutoConfig
+	public partial class CDL : ToolFormBase, IToolFormAutoConfig
 	{
 		private RecentFiles _recent_fld = new RecentFiles();
 
@@ -271,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = ToolHelpers.OpenFileDialog(
+			var file = OpenFileDialog(
 				_currentFilename,
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
 				"Code Data Logger Files",
@@ -313,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolHelpers.SaveFileDialog(
+				var file = SaveFileDialog(
 					_currentFilename,
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
 					"Code Data Logger Files",
@@ -344,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				var file = ToolHelpers.OpenFileDialog(
+				var file = ToolFormBase.OpenFileDialog(
 					_currentFilename,
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
 					"Code Data Logger Files",

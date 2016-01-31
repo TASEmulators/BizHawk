@@ -21,7 +21,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 namespace BizHawk.Client.EmuHawk
 {
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
-	public partial class HexEditor : Form, IToolFormAutoConfig
+	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -1589,7 +1589,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ToolHelpers.UpdateCheatRelatedTools(null, null);
+			UpdateCheatRelatedTools(null, null);
 			MemoryViewerBox.Refresh();
 		}
 

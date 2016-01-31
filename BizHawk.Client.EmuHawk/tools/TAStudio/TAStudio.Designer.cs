@@ -1526,7 +1526,7 @@ namespace BizHawk.Client.EmuHawk
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
 			this.Load += new System.EventHandler(this.Tastudio_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragEnter);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.GenericDragEnter);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TAStudio_KeyDown);
 			this.MouseLeave += new System.EventHandler(this.TAStudio_MouseLeave);
 			this.TASMenu.ResumeLayout(false);

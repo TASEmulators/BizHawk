@@ -825,7 +825,7 @@
 			this.Text = "Lua Console";
 			this.Load += new System.EventHandler(this.LuaConsole_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LuaConsole_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.LuaConsole_DragEnter);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.GenericDragEnter);
 			this.ScriptListContextMenu.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();

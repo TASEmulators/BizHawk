@@ -560,7 +560,7 @@ namespace BizHawk.Client.EmuHawk
 				filename = PathManager.FilesystemSafeName(Global.Game);
 			}
 
-			var file = ToolHelpers.SaveFileDialog(
+			var file = ToolFormBase.SaveFileDialog(
 				filename,
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 				"Movie Files",

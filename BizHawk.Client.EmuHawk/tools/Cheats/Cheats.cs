@@ -13,7 +13,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class Cheats : Form, IToolForm
+	public partial class Cheats : ToolFormBase, IToolForm
 	{
 		private const string NAME = "NamesColumn";
 		private const string ADDRESS = "AddressColumn";
@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool SaveAs()
 		{
-			var file = ToolHelpers.SaveFileDialog(
+			var file = SaveFileDialog(
 				Global.CheatList.CurrentFileName,
 				PathManager.GetCheatsPath(Global.Game),
 				"Cheat Files",
@@ -160,8 +160,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo();
-			LoadColumnInfo();
+			SaveColumnInfo(CheatListView, Settings.Columns);
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		private void ToggleGameGenieButton()
@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveConfigSettings()
 		{
-			SaveColumnInfo();
+			SaveColumnInfo(CheatListView, Settings.Columns);
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -213,37 +213,14 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			LoadColumnInfo();
-		}
-
-		private void LoadColumnInfo()
-		{
-			CheatListView.Columns.Clear();
-
-			var columns = Settings.Columns
-				.Where(c => c.Visible)
-				.OrderBy(c => c.Index);
-
-			foreach (var column in columns)
-			{
-				CheatListView.AddColumn(column);
-			}
-		}
-
-		private void SaveColumnInfo()
-		{
-			foreach (ColumnHeader column in CheatListView.Columns)
-			{
-				Settings.Columns[column.Name].Index = column.DisplayIndex;
-				Settings.Columns[column.Name].Width = column.Width;
-			}
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		private void DoColumnToggle(string column)
 		{
 			Settings.Columns[column].Visible ^= true;
-			SaveColumnInfo();
-			LoadColumnInfo();
+			SaveColumnInfo(CheatListView, Settings.Columns);
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
@@ -385,14 +362,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			var append = sender == AppendMenuItem;
-			var file = ToolHelpers.OpenFileDialog(
+			var file = OpenFileDialog(
 				Global.CheatList.CurrentFileName,
 				PathManager.GetCheatsPath(Global.Game),
 				"Cheat Files",
 				"cht");
 
-			LoadFile(file, append);
+			LoadFile(file, append: sender == AppendMenuItem);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -617,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.CheatsAutoSaveOnClose = true;
 
 			RefreshFloatingWindowControl();
-			LoadColumnInfo();
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		#endregion
@@ -699,11 +675,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
+					ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
+					ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
 				}
 			}
 		}

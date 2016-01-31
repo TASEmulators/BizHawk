@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
-			ToolHelpers.UpdateCheatRelatedTools(null, null);
+			ToolFormBase.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
 			UpdateNotification.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			_throttle = new Throttle();
 
 			Global.CheatList = new CheatCollection();
-			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+			Global.CheatList.Changed += ToolFormBase.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -3465,7 +3465,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.AutofireStickyXORAdapter.ClearStickies();
 
 					RewireSound();
-					ToolHelpers.UpdateCheatRelatedTools(null, null);
+					ToolFormBase.UpdateCheatRelatedTools(null, null);
 					if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
 					{
 						LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
@@ -3594,7 +3594,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateCoreStatusBarButton();
 				ClearHolds();
 				PauseOnFrame = null;
-				ToolHelpers.UpdateCheatRelatedTools(null, null);
+				ToolFormBase.UpdateCheatRelatedTools(null, null);
 				UpdateStatusSlots();
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;

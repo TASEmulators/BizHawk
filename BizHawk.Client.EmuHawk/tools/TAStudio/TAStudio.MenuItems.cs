@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
@@ -60,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 					filename = string.Empty;
 				}
 
-				var file = ToolHelpers.OpenFileDialog(
+				var file = OpenFileDialog(
 					filename,
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 					"Tas Project Files",
@@ -104,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				filename = SuggestedTasProjName();
 			}
 
-			var file = ToolHelpers.SaveFileDialog(
+			var file = SaveFileDialog(
 				filename,
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 				"Tas Project Files",

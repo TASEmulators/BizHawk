@@ -7,17 +7,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-using LuaInterface;
-
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class LuaConsole : Form, IToolFormAutoConfig
+	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig
 	{
 		private readonly LuaFileList _luaList;
 		private bool _sortReverse;
@@ -64,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (AskSaveChanges())
 				{
-					SaveColumnInfo();
+					SaveColumnInfo(LuaListView, Settings.Columns);
 					CloseLua();
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 				}
@@ -131,30 +127,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			LoadColumnInfo();
-        }
-
-		private void LoadColumnInfo()
-		{
-			LuaListView.Columns.Clear();
-
-			var columns = Settings.Columns
-				.Where(c => c.Visible)
-				.OrderBy(c => c.Index);
-
-			foreach (var column in columns)
-			{
-				LuaListView.AddColumn(column);
-			}
-		}
-
-		private void SaveColumnInfo()
-		{
-			foreach (ColumnHeader column in LuaListView.Columns)
-			{
-				Settings.Columns[column.Name].Index = column.DisplayIndex;
-				Settings.Columns[column.Name].Width = column.Width;
-			}
+			LoadColumnInfo(LuaListView, Settings.Columns);
 		}
 
 		public void Restart()
@@ -1094,11 +1067,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				MessageBox.Show(ex.ToString());
 			}
-		}
-
-		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		private void LuaListView_KeyDown(object sender, KeyEventArgs e)
