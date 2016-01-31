@@ -419,11 +419,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Settings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		private void ToggleSearchDependentToolBarItems()
 		{
 			DoSearchToolButton.Enabled =
@@ -1384,7 +1379,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 		}
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
@@ -1412,7 +1407,7 @@ namespace BizHawk.Client.EmuHawk
 				SetToFastMode();
 			}
 
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
@@ -1793,7 +1788,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnShown(EventArgs e)
 		{
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			base.OnShown(e);
 		}
 

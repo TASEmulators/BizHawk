@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TI83KeyPad : Form, IToolForm
+	public partial class TI83KeyPad : ToolFormBase, IToolForm
 	{
 		[RequiredService]
 		public TI83 Emu { get; private set; }
@@ -119,11 +119,6 @@ namespace BizHawk.Client.EmuHawk
 			KeyPadToolTips.RemoveAll();
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Global.Config.TI83KeypadSettings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#region Events
 
 		#region Menu
@@ -169,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.TI83KeypadSettings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Global.Config.TI83KeypadSettings.FloatingWindow);
 		}
 
 		#endregion
@@ -428,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnShown(EventArgs e)
 		{
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Global.Config.TI83KeypadSettings.FloatingWindow);
 			base.OnShown(e);
 		}
 

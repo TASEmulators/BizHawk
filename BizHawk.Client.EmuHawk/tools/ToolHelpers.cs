@@ -126,5 +126,10 @@ namespace BizHawk.Client.EmuHawk
 				columns[column.Name].Width = column.Width;
 			}
 		}
+
+		protected void RefreshFloatingWindowControl(bool floatingWindow)
+		{
+			Owner = floatingWindow ? null : GlobalWin.MainForm;
+		}
 	}
 }

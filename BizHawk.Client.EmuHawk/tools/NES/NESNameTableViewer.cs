@@ -191,10 +191,6 @@ namespace BizHawk.Client.EmuHawk
 			NameTableView.Refresh();
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-		}
-
 		#region Events
 
 		#region Menu and Context Menu
@@ -236,12 +232,6 @@ namespace BizHawk.Client.EmuHawk
 
 					break;
 			}
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 
 		private void NESNameTableViewer_FormClosed(object sender, FormClosedEventArgs e)

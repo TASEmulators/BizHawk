@@ -334,11 +334,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Settings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#region Events
 
 		#region File
@@ -572,7 +567,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 		}
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
@@ -592,7 +587,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.LoadCheatFileByGame = true;
 			Global.Config.CheatsAutoSaveOnClose = true;
 
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
@@ -686,7 +681,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnShown(EventArgs e)
 		{
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			base.OnShown(e);
 		}
 

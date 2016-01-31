@@ -42,17 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-		}
-
 		bool IsRunning;
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
 
 		//http://www.phy.mtu.edu/~suits/notefreqs.html
 		//begins at C0. ends at B8

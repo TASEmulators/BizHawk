@@ -950,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 		}
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
@@ -968,7 +968,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.DisplayRamWatch = false;
 
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
@@ -1157,12 +1157,6 @@ namespace BizHawk.Client.EmuHawk
 		private void WatchListView_ColumnClick(object sender, ColumnClickEventArgs e)
 		{
 			OrderColumn(e.Column);
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 
 		private void ErrorIconButton_Click(object sender, EventArgs e)
