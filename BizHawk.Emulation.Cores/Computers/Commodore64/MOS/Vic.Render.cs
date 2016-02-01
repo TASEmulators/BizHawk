@@ -289,6 +289,10 @@
 				if (_renderEnabled)
 				{
 				    _bufferPixel = (_borderOnShiftReg & 0x80000) != 0 ? _borderPixel : _pixBuffer[_pixBufferIndex];
+				    if (!_pinAec)
+				    {
+				        _bufferPixel = 2;
+				    }
                     _buf[_bufOffset] = Palette[_bufferPixel];
 					_bufOffset++;
 					if (_bufOffset == _bufLength)

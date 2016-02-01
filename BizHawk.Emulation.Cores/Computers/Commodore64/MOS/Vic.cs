@@ -46,6 +46,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		        _hblank = true;
 		    }
 
+            Debug.WriteLine("C64 VIC timings:");
+            Debug.WriteLine("RX   FTCH BA   ACT");
+		    for (var i = 0; i < newPipeline[0].Length; i++)
+		    {
+		        Debug.WriteLine("{0:x4} {1:x4} {2:x4} {3:x8}", newPipeline[0][i], newPipeline[1][i], newPipeline[2][i], newPipeline[3][i]);
+		    }
 
             _rasterXPipeline = newPipeline[0];
             _fetchPipeline = newPipeline[1];
@@ -177,16 +183,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
 
             // check top and bottom border
-            if (_cycle == _totalCycles)
+            if (_rasterLine == _borderB)
             {
-                if (_rasterLine == _borderB - 1)
-                {
-                    _borderOnVertical = true;
-                }
-                if (_displayEnable && _rasterLine == _borderT - 1)
-                {
-                    _borderOnVertical = false;
-                }
+                _borderOnVertical = true;
+            }
+            if (_displayEnable && _rasterLine == _borderT)
+            {
+                _borderOnVertical = false;
             }
 
             // display enable compare
@@ -208,13 +211,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     _badline = false;
                 }
             }
+            else
+            {
+                _badline = false;
+            }
 
             // render
+            ParseCycle();
+            Render();
+            ParseCycle();
+            Render();
             _extraColorModeBuffer = _extraColorMode;
-            ParseCycle();
-            Render();
-            ParseCycle();
-            Render();
 
             // if the BA counter is nonzero, allow CPU bus access
             if (_pinBa)
