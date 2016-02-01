@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;
 			OutputBox.SelectionStart = OutputBox.Text.Length;
 			OutputBox.ScrollToCaret();
-			UpdateNumberOfScripts();
+			UpdateDialog();
 		}
 
 		private void LuaConsole_Load(object sender, EventArgs e)
