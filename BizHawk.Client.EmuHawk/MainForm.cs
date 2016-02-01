@@ -964,7 +964,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < 2; i++)
 			{
 				var video = Global.Emulator.VideoProvider();
-				int zoom = Global.Config.TargetZoomFactor;
+				int zoom = Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
 				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;
@@ -2257,55 +2257,55 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			switch (Global.Config.TargetZoomFactor)
+			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
 			{
 				case 1:
-					Global.Config.TargetZoomFactor = 2;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
 					break;
 				case 2:
-					Global.Config.TargetZoomFactor = 3;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
 					break;
 				case 3:
-					Global.Config.TargetZoomFactor = 4;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
 					break;
 				case 4:
-					Global.Config.TargetZoomFactor = 5;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
 					break;
 				case 5:
-					Global.Config.TargetZoomFactor = 10;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 10;
 					break;
 				case 10:
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactor + "x");
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Global.Emulator.SystemId] + "x");
 			FrameBufferResized();
 		}
 
 		private void DecreaseWindowSize()
 		{
-			switch (Global.Config.TargetZoomFactor)
+			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
 			{
 				case 1:
 					return;
 				case 2:
-					Global.Config.TargetZoomFactor = 1;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 1;
 					break;
 				case 3:
-					Global.Config.TargetZoomFactor = 2;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
 					break;
 				case 4:
-					Global.Config.TargetZoomFactor = 3;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
 					break;
 				case 5:
-					Global.Config.TargetZoomFactor = 4;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
 					break;
 				case 10:
-					Global.Config.TargetZoomFactor = 5;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactor + "x");
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Global.Emulator.SystemId] + "x");
 			FrameBufferResized();
 		}
 

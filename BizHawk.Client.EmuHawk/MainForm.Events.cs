@@ -786,7 +786,7 @@ namespace BizHawk.Client.EmuHawk
 				x4MenuItem.Checked =
 				x5MenuItem.Checked = false;
 
-			switch (Global.Config.TargetZoomFactor)
+			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
 			{
 				case 1: x1MenuItem.Checked = true; break;
 				case 2: x2MenuItem.Checked = true; break;
@@ -799,12 +799,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			if (sender == x1MenuItem) Global.Config.TargetZoomFactor = 1;
-			if (sender == x2MenuItem) Global.Config.TargetZoomFactor = 2;
-			if (sender == x3MenuItem) Global.Config.TargetZoomFactor = 3;
-			if (sender == x4MenuItem) Global.Config.TargetZoomFactor = 4;
-			if (sender == x5MenuItem) Global.Config.TargetZoomFactor = 5;
-			if (sender == mzMenuItem) Global.Config.TargetZoomFactor = 10;
+			if (sender == x1MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 1;
+			if (sender == x2MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
+			if (sender == x3MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
+			if (sender == x4MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
+			if (sender == x5MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
+			if (sender == mzMenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 10;
 
 			FrameBufferResized();
 		}
