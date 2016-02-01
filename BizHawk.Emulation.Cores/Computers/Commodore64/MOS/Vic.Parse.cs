@@ -238,10 +238,10 @@
             }
 
             // perform BA flag manipulation
+            _pinBa = true;
             switch (_parseBa)
             {
                 case BaTypeNone:
-                    _pinBa = true;
                     break;
                 case BaTypeCharacter:
                     _pinBa = !_badline;
@@ -254,8 +254,6 @@
                         (_parseCycleBaSprite1 < 8 && _sprites[_parseCycleBaSprite1].Dma) ||
                         (_parseCycleBaSprite2 < 8 && _sprites[_parseCycleBaSprite2].Dma))
                         _pinBa = false;
-                    else
-                        _pinBa = true;
                     break;
             }
 
