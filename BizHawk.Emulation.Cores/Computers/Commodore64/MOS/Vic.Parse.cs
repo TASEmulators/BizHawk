@@ -27,9 +27,9 @@
 	    private const int FetchTypeNone = 0x0500;
 	    private const int BaTypeNone = 0x0888;
 	    private const int BaTypeCharacter = 0x1000;
-	    private const int BaTypeMaskSprite0 = 0x0007;
-        private const int BaTypeMaskSprite1 = 0x0070;
-        private const int BaTypeMaskSprite2 = 0x0700;
+	    private const int BaTypeMaskSprite0 = 0x000F;
+        private const int BaTypeMaskSprite1 = 0x00F0;
+        private const int BaTypeMaskSprite2 = 0x0F00;
 	    private const int AddressMask = 0x3FFF;
 	    private const int AddressMaskEc = 0x39FF;
 	    private const int AddressMaskRefresh = 0x3F00;
