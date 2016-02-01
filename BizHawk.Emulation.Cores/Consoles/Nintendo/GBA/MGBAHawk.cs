@@ -165,8 +165,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return *(byte*)xwram.ToPointer();}
-		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { *(byte*)xwram.ToPointer() = value; }
+		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram.ToPointer())[addr];}
+		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram.ToPointer())[addr] = value; }
 
 		private MemoryDomainList CreateMemoryDomains(int romsize)
 		{
