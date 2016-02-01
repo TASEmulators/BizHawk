@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
@@ -309,6 +310,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())
 			{
 				movie.HeaderEntries.Add("IsCGBMode", "1");
+			}
+
+			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsSG1000)
+			{
+				movie.HeaderEntries.Add("IsSGMode", "1");
 			}
 
 			movie.Core = ((CoreAttributes)Attribute
