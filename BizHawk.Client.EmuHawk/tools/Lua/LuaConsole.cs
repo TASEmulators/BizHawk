@@ -76,8 +76,8 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemIndent += LuaListView_QueryItemIndent;
 			LuaListView.VirtualMode = true;
 
-			LuaSandbox.SetLogger(this.ConsoleLog);
-			LuaSandbox.SetCurrentDirectory(PathManager.GetLuaPath());
+			//this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
+			LuaSandbox.DefaultLogger = ConsoleLog;
 		}
 
 		public EmuLuaLibrary LuaImp { get; set; }
@@ -162,9 +162,10 @@ namespace BizHawk.Client.EmuHawk
 				string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
 				try
 				{
-					LuaSandbox.Sandbox(() =>
+					LuaSandbox.Sandbox(file.Thread, () =>
 					{
 						file.Thread = LuaImp.SpawnCoroutine(pathToLoad);
+						LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(pathToLoad));
 						file.State = LuaFile.RunState.Running;
 					}, () =>
 					{
@@ -198,9 +199,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						LuaSandbox.Sandbox(() =>
+						LuaSandbox.Sandbox(null, () =>
 						{
 							luaFile.Thread = LuaImp.SpawnCoroutine(pathToLoad);
+							LuaSandbox.CreateSandbox(luaFile.Thread, Path.GetDirectoryName(pathToLoad));
 							luaFile.State = LuaFile.RunState.Running;
 						}, () =>
 						{
@@ -245,13 +247,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (var file in _luaList)
 			{
-				if (file.Enabled && file.Thread == null)
+				if (!file.Enabled && file.Thread == null)
 				{
 					try
 					{
-						LuaSandbox.Sandbox(() =>
+						LuaSandbox.Sandbox(null, () =>
 						{
+							string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
 							file.Thread = LuaImp.SpawnCoroutine(file.Path);
+							LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(pathToLoad));
 						}, () =>
 						{
 							file.State = LuaFile.RunState.Disabled;
@@ -454,17 +458,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					LuaSandbox.Sandbox(() =>
+					LuaSandbox.Sandbox(lf.Thread, () =>
 					{
 						var prohibit = lf.FrameWaiting && !includeFrameWaiters;
 						if (!prohibit)
 						{
-							// Restore this lua thread's preferred current directory
-							if (lf.CurrentDirectory != null)
-							{
-								Environment.CurrentDirectory = PathManager.MakeAbsolutePath(lf.CurrentDirectory, null);
-							}
-
 							var result = LuaImp.ResumeScript(lf.Thread);
 							if (result.Terminated)
 							{
@@ -474,9 +472,6 @@ namespace BizHawk.Client.EmuHawk
 							}
 
 							lf.FrameWaiting = result.WaitForFrame;
-
-							// If the lua thread changed its current directory, capture that here
-							lf.CurrentDirectory = Environment.CurrentDirectory;
 						}
 					}, () =>
 					{
@@ -768,9 +763,11 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						LuaSandbox.Sandbox(() =>
+						LuaSandbox.Sandbox(null, () =>
 						{
+							string pathToLoad = Path.IsPathRooted(item.Path) ? item.Path : PathManager.MakeProgramRelativePath(item.Path); //JUNIPIER SQUATCHBOX COMPLEX
 							item.Thread = LuaImp.SpawnCoroutine(item.Path);
+							LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
 						}, () =>
 						{
 							item.State = LuaFile.RunState.Disabled;
@@ -1174,12 +1171,12 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Maybe make these try-catches more general
 				if (InputBox.Text != "")
 				{
-					LuaSandbox.Sandbox(() =>
+					LuaSandbox.Sandbox(null, () =>
 					{
 						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
 					}, () =>
 					{
-						LuaSandbox.Sandbox(() =>
+						LuaSandbox.Sandbox(null, () =>
 						{
 							LuaImp.ExecuteString(InputBox.Text);
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 
 using LuaInterface;
 using BizHawk.Common.ReflectionExtensions;
@@ -23,6 +24,31 @@ namespace BizHawk.Client.Common
 		public abstract string Name { get; }
 		public Action<string> LogOutputCallback { get; set; }
 		public Lua Lua { get; set; }
+
+		public static Lua CurrentThread { get; private set; }
+		static Thread CurrentHostThread;
+		static object ThreadMutex = new object();
+
+		public static void ClearCurrentThread()
+		{
+			lock (ThreadMutex)
+			{
+				CurrentHostThread = null;
+				CurrentThread = null;
+			}
+		}
+
+		public static void SetCurrentThread(Lua luaThread)
+		{
+			lock (ThreadMutex)
+			{
+				if (CurrentHostThread != null)
+					throw new InvalidOperationException("Can't have lua running in two host threads at a time!");
+				CurrentHostThread = Thread.CurrentThread;
+				CurrentThread = luaThread;
+			}
+		}
+		
 
 		protected void Log(object message)
 		{

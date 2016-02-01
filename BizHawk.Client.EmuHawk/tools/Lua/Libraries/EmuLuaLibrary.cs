@@ -153,34 +153,44 @@ namespace BizHawk.Client.EmuHawk
 		public void ExecuteString(string command)
 		{
 			_currThread = _lua.NewThread();
+
 			_currThread.DoString(command);
 		}
 
 		public ResumeResult ResumeScript(Lua script)
 		{
-			EventsLibrary.CurrentThread = script;
 			_currThread = script;
-			var execResult = script.Resume(0);
 
-			_lua.RunScheduledDisposes();
-			//not sure how this is going to work out, so do this too
-			script.RunScheduledDisposes();
-
-			_currThread = null;
-			var result = new ResumeResult();
-			if (execResult == 0)
+			try
 			{
-				// terminated
-				result.Terminated = true;
-			}
-			else
-			{
-				// yielded
-				result.WaitForFrame = FrameAdvanceRequested;
-			}
+				LuaLibraryBase.SetCurrentThread(_currThread);
 
-			FrameAdvanceRequested = false;
-			return result;
+				var execResult = script.Resume(0);
+
+				_lua.RunScheduledDisposes();
+				//not sure how this is going to work out, so do this too
+				script.RunScheduledDisposes();
+
+				_currThread = null;
+				var result = new ResumeResult();
+				if (execResult == 0)
+				{
+					// terminated
+					result.Terminated = true;
+				}
+				else
+				{
+					// yielded
+					result.WaitForFrame = FrameAdvanceRequested;
+				}
+
+				FrameAdvanceRequested = false;
+				return result;
+			}
+			finally
+			{
+				LuaLibraryBase.ClearCurrentThread();
+			}
 		}
 
 		public static void Print(params object[] outputs)

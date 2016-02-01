@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
 		{
-			var form = new LuaWinform();
+			var form = new LuaWinform(CurrentThread);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{

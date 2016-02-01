@@ -12,9 +12,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private string CurrentDirectory = Environment.CurrentDirectory;
 
-		public LuaWinform()
+		Lua OwnerThread;
+
+		public LuaWinform(Lua ownerThread)
 		{
 			InitializeComponent();
+			OwnerThread = ownerThread;
 			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}
@@ -31,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			LuaSandbox.Sandbox(() =>
+			LuaSandbox.Sandbox(OwnerThread, () =>
 			{
 				Environment.CurrentDirectory = CurrentDirectory;
 				foreach (LuaEvent l_event in ControlEvents)
