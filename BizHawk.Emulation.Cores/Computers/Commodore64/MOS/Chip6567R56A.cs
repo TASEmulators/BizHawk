@@ -15,7 +15,7 @@
 	    private static readonly int[] Timing = Vic.TimingBuilder_XRaster(0x19C, 0x200, ScanWidth, -1, -1);
 	    private static readonly int[] Fetch = Vic.TimingBuilder_Fetch(Timing, 0x16C);
 	    private static readonly int[] Ba = Vic.TimingBuilder_BA(Fetch);
-	    private static readonly int[] Act = Vic.TimingBuilder_Act(Timing, 0x004, 0x14C, HblankStart, HblankEnd);
+	    private static readonly int[] Act = Vic.TimingBuilder_Act(Timing, 0x004, 0x154, 0x164, HblankStart, HblankEnd);
 
 	    private static readonly int[][] Pipeline = {
 				Timing,

@@ -27,17 +27,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			PipelineUpdateMcBase, 0,
         };
 
-        [SaveState.DoNotSave]
-        private static readonly int[] TimingBuilderCycle55Act = {
-			PipelineSpriteDma | PipelineSpriteExpansion, 0,
-			PipelineSpriteDma, 0,
-			0, 0,
-			PipelineSpriteDisplay, PipelineUpdateRc
-        };
-
 		// This builds a table of special actions to take on each half-cycle. Cycle14 is the X-raster position where
 		// pre-display operations happen, and Cycle55 is the X-raster position where post-display operations happen.
-		public static int[] TimingBuilder_Act(int[] timing, int cycle14, int cycle55, int hblankStart, int hblankEnd)
+		public static int[] TimingBuilder_Act(int[] timing, int cycle14, int sprite0Ba, int sprDisp, int hblankStart, int hblankEnd)
 		{
 			var result = new List<int>();
 
@@ -48,8 +40,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					i++;
 				if (timing[i] == cycle14)
 					result.AddRange(TimingBuilderCycle14Act);
-				else if (timing[i] == cycle55)
-					result.AddRange(TimingBuilderCycle55Act);
 				else
 					result.Add(0);
 			}
@@ -72,6 +62,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					result[i] |= PipelineHBlankRight;
 				if (timing[i] == (hblankEnd & 0xFFC))
 					result[i] |= PipelineHBlankLeft;
+
+                // right side timing
+			    if (timing[i] == 0x0158)
+			        result[i] |= PipelineSpriteExpansion;
+			    if (timing[i] == 0x0168)
+			        result[i] |= PipelineUpdateRc;
+			    if (timing[i] == sprite0Ba || timing[i] == sprite0Ba + 8)
+			        result[i] |= PipelineSpriteDma;
+			    if (timing[i] == sprDisp)
+			        result[i] |= PipelineSpriteDisplay;
+
 			}
 
 			return result.ToArray();
