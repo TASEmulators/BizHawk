@@ -61,11 +61,12 @@ move gitsucks\output\Firmware temp
 
 rmdir /s /q gitsucks
 
-cd temp
 rem remove UPX from any files we have checked in, because people's lousy security software hates it
-upx -d dll\*.dll
-upx -d dll\*.exe
-upx -d *.exe
+rem upx -d temp\dll\*.dll
+rem upx -d temp\dll\*.exe
+rem upx -d temp\*.exe
+
+cd temp
 
 rem Patch up working dir with a few other things we want
 mkdir ExternalTools
