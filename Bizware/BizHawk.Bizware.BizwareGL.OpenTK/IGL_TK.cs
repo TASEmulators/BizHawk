@@ -182,7 +182,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			//if the shaders arent available, the pipeline isn't either
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
-				return new Pipeline(this, null, false, null, null, null);
+				string errors = string.Format("Vertex Shader:\r\n {0} \r\n-------\r\nFragment Shader:\r\n{1}", vertexShader.Errors, fragmentShader.Errors);
+				if (required)
+					throw new InvalidOperationException("Couldn't build required GL pipeline:\r\n" + errors);
+				var pipeline = new Pipeline(this, null, false, null, null, null);
+				pipeline.Errors = errors;
+				return pipeline;
 			}
 
 			bool success = true;

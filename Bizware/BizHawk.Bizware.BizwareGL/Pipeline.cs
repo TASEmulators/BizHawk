@@ -87,6 +87,7 @@ namespace BizHawk.Bizware.BizwareGL
 		public object Opaque { get; private set; }
 		public VertexLayout VertexLayout { get; private set; }
 		public bool Available { get; private set; }
+		public string Errors { get; set; }
 
 		public void Dispose()
 		{

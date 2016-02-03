@@ -34,7 +34,7 @@
 			this.txtException = new System.Windows.Forms.TextBox();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.btnCopy = new System.Windows.Forms.Button();
-			this.lblDone = new ExceptionBox.MyLabel();
+			this.lblDone = new BizHawk.Client.EmuHawk.ExceptionBox.MyLabel();
 			this.timer1 = new System.Windows.Forms.Timer(this.components);
 			this.tableLayoutPanel1.SuspendLayout();
 			this.flowLayoutPanel1.SuspendLayout();
@@ -77,6 +77,7 @@
 			this.txtException.Multiline = true;
 			this.txtException.Name = "txtException";
 			this.txtException.ReadOnly = true;
+			this.txtException.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.txtException.Size = new System.Drawing.Size(697, 295);
 			this.txtException.TabIndex = 1;
 			// 

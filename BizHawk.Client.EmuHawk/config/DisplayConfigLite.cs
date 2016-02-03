@@ -210,15 +210,17 @@ namespace BizHawk.Client.EmuHawk.config
 
 					//try compiling it
 					bool ok = false;
+					string errors = "";
 					try 
 					{
 						var filter = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GlobalWin.GL, cgp, Path.GetDirectoryName(choice));
 						ok = filter.Available;
+						errors = filter.Errors;
 					}
 					catch {}
 					if (!ok)
 					{
-						MessageBox.Show("Selected filter could not be compiled.");
+						new ExceptionBox(errors).ShowDialog();
 						return;
 					}
 				}

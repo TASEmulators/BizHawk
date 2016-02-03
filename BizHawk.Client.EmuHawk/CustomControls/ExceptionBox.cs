@@ -18,6 +18,13 @@ namespace BizHawk.Client.EmuHawk
 			timer1.Start();
 		}
 
+		public ExceptionBox(string str)
+		{
+			InitializeComponent();
+			txtException.Text = str;
+			timer1.Start();
+		}
+
 		private void btnCopy_Click(object sender, EventArgs e)
 		{
 			DoCopy();
