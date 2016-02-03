@@ -303,8 +303,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				Cheat.ComparisonType comparisonType = Cheat.ComparisonType.EQUAL;
 				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
-				var address = AddressBox.ToRawInt().Value;
+				var address = AddressBox.ToRawInt().Value;				
 				if (address < domain.Size)
 				{
 					var watch = Watch.GenerateWatch(
@@ -316,11 +317,35 @@ namespace BizHawk.Client.EmuHawk
                         NameBox.Text
 						);
 
-					return new Cheat(
-						watch,
-						ValueBox.ToRawInt().Value,
-						 CompareBox.ToRawInt()
-					);
+					if(CompareBox.ToRawInt() == null)
+					{
+						return new Cheat(
+							watch,
+							ValueBox.ToRawInt().Value
+						);
+					}
+					else
+					{
+						switch (CompareTypeDropDown.SelectedText)
+						{
+							case "="  : comparisonType = Cheat.ComparisonType.EQUAL;                 break;
+							case ">"  : comparisonType = Cheat.ComparisonType.GREATER_THAN;          break;
+							case ">=" : comparisonType = Cheat.ComparisonType.GREATER_THAN_OR_EQUAL; break;
+							case "<"  : comparisonType = Cheat.ComparisonType.LESS_THAN;             break;
+							case "<=" : comparisonType = Cheat.ComparisonType.LESS_THAN_OR_EQUAL;    break;
+							case "!=" : comparisonType = Cheat.ComparisonType.NOT_EQUAL;             break;
+							default   : comparisonType = Cheat.ComparisonType.EQUAL;                 break;
+						}
+
+						return new Cheat(
+							watch,
+							ValueBox.ToRawInt().Value,
+							comparisonType,
+							CompareBox.ToRawInt().Value
+						);
+					}
+
+					
 				}
 				else
 				{

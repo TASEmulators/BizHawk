@@ -48,6 +48,8 @@
 			this.EditButton = new System.Windows.Forms.Button();
 			this.CompareBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.ValueBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.CompareTypeDropDown = new System.Windows.Forms.ComboBox();
+			this.CompareTypeLabel = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// NameBox
@@ -124,7 +126,7 @@
 			// CompareLabel
 			// 
 			this.CompareLabel.AutoSize = true;
-			this.CompareLabel.Location = new System.Drawing.Point(18, 95);
+			this.CompareLabel.Location = new System.Drawing.Point(24, 95);
 			this.CompareLabel.Name = "CompareLabel";
 			this.CompareLabel.Size = new System.Drawing.Size(49, 13);
 			this.CompareLabel.TabIndex = 13;
@@ -133,7 +135,7 @@
 			// DomainLabel
 			// 
 			this.DomainLabel.AutoSize = true;
-			this.DomainLabel.Location = new System.Drawing.Point(24, 124);
+			this.DomainLabel.Location = new System.Drawing.Point(24, 158);
 			this.DomainLabel.Name = "DomainLabel";
 			this.DomainLabel.Size = new System.Drawing.Size(43, 13);
 			this.DomainLabel.TabIndex = 16;
@@ -143,7 +145,7 @@
 			// 
 			this.DomainDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.DomainDropDown.FormattingEnabled = true;
-			this.DomainDropDown.Location = new System.Drawing.Point(78, 118);
+			this.DomainDropDown.Location = new System.Drawing.Point(78, 154);
 			this.DomainDropDown.Name = "DomainDropDown";
 			this.DomainDropDown.Size = new System.Drawing.Size(100, 21);
 			this.DomainDropDown.TabIndex = 17;
@@ -152,7 +154,7 @@
 			// SizeLabel
 			// 
 			this.SizeLabel.AutoSize = true;
-			this.SizeLabel.Location = new System.Drawing.Point(40, 150);
+			this.SizeLabel.Location = new System.Drawing.Point(40, 190);
 			this.SizeLabel.Name = "SizeLabel";
 			this.SizeLabel.Size = new System.Drawing.Size(27, 13);
 			this.SizeLabel.TabIndex = 18;
@@ -166,7 +168,7 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.SizeDropDown.Location = new System.Drawing.Point(78, 144);
+			this.SizeDropDown.Location = new System.Drawing.Point(78, 184);
 			this.SizeDropDown.Name = "SizeDropDown";
 			this.SizeDropDown.Size = new System.Drawing.Size(100, 21);
 			this.SizeDropDown.TabIndex = 19;
@@ -175,7 +177,7 @@
 			// DisplayTypeLael
 			// 
 			this.DisplayTypeLael.AutoSize = true;
-			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 176);
+			this.DisplayTypeLael.Location = new System.Drawing.Point(11, 219);
 			this.DisplayTypeLael.Name = "DisplayTypeLael";
 			this.DisplayTypeLael.Size = new System.Drawing.Size(56, 13);
 			this.DisplayTypeLael.TabIndex = 20;
@@ -189,7 +191,7 @@
             "1 Byte",
             "2 Byte",
             "4 Byte"});
-			this.DisplayTypeDropDown.Location = new System.Drawing.Point(78, 170);
+			this.DisplayTypeDropDown.Location = new System.Drawing.Point(78, 213);
 			this.DisplayTypeDropDown.Name = "DisplayTypeDropDown";
 			this.DisplayTypeDropDown.Size = new System.Drawing.Size(100, 21);
 			this.DisplayTypeDropDown.TabIndex = 21;
@@ -198,7 +200,7 @@
 			// BigEndianCheckBox
 			// 
 			this.BigEndianCheckBox.AutoSize = true;
-			this.BigEndianCheckBox.Location = new System.Drawing.Point(101, 196);
+			this.BigEndianCheckBox.Location = new System.Drawing.Point(101, 242);
 			this.BigEndianCheckBox.Name = "BigEndianCheckBox";
 			this.BigEndianCheckBox.Size = new System.Drawing.Size(77, 17);
 			this.BigEndianCheckBox.TabIndex = 22;
@@ -209,7 +211,7 @@
 			// 
 			this.AddButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.AddButton.Enabled = false;
-			this.AddButton.Location = new System.Drawing.Point(7, 220);
+			this.AddButton.Location = new System.Drawing.Point(7, 265);
 			this.AddButton.Name = "AddButton";
 			this.AddButton.Size = new System.Drawing.Size(65, 23);
 			this.AddButton.TabIndex = 23;
@@ -221,7 +223,7 @@
 			// 
 			this.EditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.EditButton.Enabled = false;
-			this.EditButton.Location = new System.Drawing.Point(113, 220);
+			this.EditButton.Location = new System.Drawing.Point(113, 265);
 			this.EditButton.Name = "EditButton";
 			this.EditButton.Size = new System.Drawing.Size(65, 23);
 			this.EditButton.TabIndex = 24;
@@ -254,9 +256,41 @@
 			this.ValueBox.Text = "00";
 			this.ValueBox.Type = BizHawk.Client.Common.DisplayType.Hex;
 			// 
+			// CompareTypeDropDown
+			// 
+			this.CompareTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CompareTypeDropDown.FormattingEnabled = true;
+			this.CompareTypeDropDown.Location = new System.Drawing.Point(113, 122);
+			this.CompareTypeDropDown.Name = "CompareTypeDropDown";
+			this.CompareTypeDropDown.Size = new System.Drawing.Size(65, 21);
+			this.CompareTypeDropDown.TabIndex = 26;
+			this.CompareTypeDropDown.Items.AddRange(
+				new object[] {
+					"=",
+					">",
+					">=",
+					"<",
+					"<=",
+					"!="
+				}
+			);
+			this.CompareTypeDropDown.SelectedIndex = 0;
+			// 
+			// CompareTypeLabel
+			// 
+			this.CompareTypeLabel.AutoSize = true;
+			this.CompareTypeLabel.Location = new System.Drawing.Point(24, 125);
+			this.CompareTypeLabel.Name = "CompareTypeLabel";
+			this.CompareTypeLabel.Size = new System.Drawing.Size(76, 13);
+			this.CompareTypeLabel.TabIndex = 25;
+			this.CompareTypeLabel.Text = "Compare Type";
+			this.CompareTypeLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			// 
 			// CheatEdit
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.Controls.Add(this.CompareTypeDropDown);
+			this.Controls.Add(this.CompareTypeLabel);
 			this.Controls.Add(this.EditButton);
 			this.Controls.Add(this.AddButton);
 			this.Controls.Add(this.BigEndianCheckBox);
@@ -278,7 +312,7 @@
 			this.Controls.Add(this.NameBox);
 			this.Controls.Add(this.NameLabel);
 			this.Name = "CheatEdit";
-			this.Size = new System.Drawing.Size(191, 253);
+			this.Size = new System.Drawing.Size(191, 298);
 			this.Load += new System.EventHandler(this.CheatEdit_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -307,5 +341,7 @@
 		private System.Windows.Forms.CheckBox BigEndianCheckBox;
 		private System.Windows.Forms.Button AddButton;
 		private System.Windows.Forms.Button EditButton;
+		private System.Windows.Forms.ComboBox CompareTypeDropDown;
+		private System.Windows.Forms.Label CompareTypeLabel;
 	}
 }

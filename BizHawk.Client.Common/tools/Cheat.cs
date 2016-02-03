@@ -6,10 +6,14 @@ namespace BizHawk.Client.Common
 {
 	public class Cheat
 	{
+		public enum ComparisonType { EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL};
+
 		private readonly Watch _watch;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;
+		private ComparisonType _comparisonType;
+		
 
 		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true)
 		{
@@ -17,6 +21,25 @@ namespace BizHawk.Client.Common
 			_watch = watch;
 			_compare = compare;
 			_val = value;
+
+			Pulse();
+		}
+
+		/// <summary>
+		/// Adding second constructor for comparison type because I fear updating the method signiture for something in the Common namespace
+		/// </summary>
+		/// <param name="watch"></param>
+		/// <param name="value"></param>
+		/// <param name="comparisonType"></param>
+		/// <param name="compare"></param>
+		/// <param name="enabled"></param>
+		public Cheat(Watch watch, int value, ComparisonType comparisonType, int compare, bool enabled = true)
+		{
+			_enabled = enabled;
+			_watch = watch;
+			_compare = compare;
+			_val = value;
+			_comparisonType = comparisonType;
 
 			Pulse();
 		}
@@ -217,7 +240,7 @@ namespace BizHawk.Client.Common
 			{
 				if (_compare.HasValue)
 				{
-					if (_compare.Value == _watch.ValueNoFreeze)
+					if (_compare.Value == _watch.ValueNoFreeze) // NOTE : THIS IS THE PLACE TO ADD DIFFERENT COMPARISON TYPES
 					{
 						_watch.Poke(GetStringForPulse(_val));
 					}
