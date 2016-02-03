@@ -167,6 +167,8 @@ namespace BizHawk.Client.EmuHawk
 		string RAMValue = null;
 		int byteSize = 0;
 		string testo = null;
+		string SingleCheat = null;
+		int loopValue = 0;
 		private void btnGo_Click(object sender, EventArgs e)
 		{
 			//Reset Variables
@@ -174,48 +176,56 @@ namespace BizHawk.Client.EmuHawk
 			RAMAddress = null;
 			RAMValue = null;
 			byteSize = 0;
-			//We want Upper Case.
-			txtCheat.Text = txtCheat.Text.ToUpper();
-			//What System are we running?
-			switch (Emulator.SystemId)
+
+			SingleCheat = null;
+			for (int i = 0; i < txtCheat.Lines.Length; i++)
 			{
-				case "GB":
-					GB();
-                    break;
-				case "GBA":
-					GBA();
-					break;
-				case "GEN":
-					GEN();
-					break;
-				case "N64":
-					//This determies what kind of Code we have
-					testo = txtCheat.Text.Remove(2, 11);
-					N64();
-					break;
-				case "NES":
-					NES();
-					break;
-				case "PSX":
-					//This determies what kind of Code we have
-					testo = txtCheat.Text.Remove(2, 11);
-					PSX();
-					break;
-				case "SAT":
-					//This determies what kind of Code we have
-					testo = txtCheat.Text.Remove(2, 11);
-					SAT();
-                    break;
-				case "SMS":
-					SMS();
-					break;
-				case "SNES":
-					SNES();
-					break;
-				default:
-					//This should NEVER happen
-					break;
+				loopValue = i;
+				SingleCheat = txtCheat.Lines[i].ToUpper();
+				//What System are we running?
+				switch (Emulator.SystemId)
+				{
+					case "GB":
+						GB();
+						break;
+					case "GBA":
+						GBA();
+						break;
+					case "GEN":
+						GEN();
+						break;
+					case "N64":
+						//This determies what kind of Code we have
+						testo = SingleCheat.Remove(2, 11);
+						N64();
+						break;
+					case "NES":
+						NES();
+						break;
+					case "PSX":
+						//This determies what kind of Code we have
+						testo = SingleCheat.Remove(2, 11);
+						PSX();
+						break;
+					case "SAT":
+						//This determies what kind of Code we have
+						testo = SingleCheat.Remove(2, 11);
+						SAT();
+						break;
+					case "SMS":
+						SMS();
+						break;
+					case "SNES":
+						SNES();
+						break;
+					default:
+						//This should NEVER happen
+						break;
+				}
 			}
+			//We did the lines.  Let's clear.
+			txtCheat.Clear();
+			txtDescription.Clear();
 		}
 		//Original Code by adelikat
 		//Decodes GameGear and GameBoy
@@ -291,33 +301,33 @@ namespace BizHawk.Client.EmuHawk
 			string RAMCompare = null;
 
 			//Game Genie
-			if (txtCheat.Text.LastIndexOf("-") == 7 && txtCheat.Text.IndexOf("-") == 3)
+			if (SingleCheat.LastIndexOf("-") == 7 && SingleCheat.IndexOf("-") == 3)
 			{
 				int val = 0;
 				int add = 0;
 				int cmp = 0;
-				parseString = txtCheat.Text.Replace("-", "");
+				parseString = SingleCheat.Replace("-", "");
 				GBGGDecode(parseString, ref val, ref add, ref cmp);
 				RAMAddress = string.Format("{0:X4}", add);
 				RAMValue = string.Format("{0:X2}", val);
 				RAMCompare = string.Format("{0:X2}", cmp);
 			}
 			//Game Genie
-			else if (txtCheat.Text.Contains("-") == true && txtCheat.Text.LastIndexOf("-") != 7 && txtCheat.Text.IndexOf("-") != 3)
+			else if (SingleCheat.Contains("-") == true && SingleCheat.LastIndexOf("-") != 7 && SingleCheat.IndexOf("-") != 3)
 			{
 				MessageBox.Show("All GameBoy Game Geneie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			//Game Shark codes
-			if (txtCheat.Text.Length != 8 && txtCheat.Text.Contains("-") == false)
+			if (SingleCheat.Length != 8 && SingleCheat.Contains("-") == false)
 			{
 				MessageBox.Show("All GameShark Codes need to be Eight characters in Length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			else if (txtCheat.Text.Length == 8 && txtCheat.Text.Contains("-") == false)
+			else if (SingleCheat.Length == 8 && SingleCheat.Contains("-") == false)
 			{
-				testo = txtCheat.Text.Remove(2, 6);
+				testo = SingleCheat.Remove(2, 6);
 				//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
 				switch (testo)
 				{
@@ -337,7 +347,7 @@ namespace BizHawk.Client.EmuHawk
 				//Address C1F6
 				//Value 0F
 
-				parseString = txtCheat.Text.Remove(0, 2);
+				parseString = SingleCheat.Remove(0, 2);
 				//Now we need to break it down a little more.
 				RAMValue = parseString.Remove(2, 4);
 				parseString = parseString.Remove(0, 2);
@@ -346,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 				RAMAddress = parseString.Remove(0, 2);
 				RAMAddress = RAMAddress + parseString.Remove(2, 2);
 				//We now have our values.
-				
+
 			}
 
 			//This part, is annoying...
@@ -365,9 +375,6 @@ namespace BizHawk.Client.EmuHawk
 					//We have a Compare
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(RAMCompare, NumberStyles.HexNumber)));
 				}
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
@@ -378,9 +385,8 @@ namespace BizHawk.Client.EmuHawk
 		//Provided by mGBA and endrift
 		UInt32[] GBAGameSharkSeeds = { UInt32.Parse("09F4FBBD", NumberStyles.HexNumber), UInt32.Parse("9681884A", NumberStyles.HexNumber), UInt32.Parse("352027E9", NumberStyles.HexNumber), UInt32.Parse("F3DEE5A7", NumberStyles.HexNumber) };
 		UInt32[] GBAProActionReplaySeeds = { UInt32.Parse("7AA9648F", NumberStyles.HexNumber), UInt32.Parse("7FAE6994", NumberStyles.HexNumber), UInt32.Parse("C0EFAAD5", NumberStyles.HexNumber), UInt32.Parse("42712C57", NumberStyles.HexNumber) };
-		private string firstSlide;
-		private string secondSlide;
-		Boolean Slider = false;
+		//blnEncrypted is used to see if the previous line for Slide code was encrypted or not.
+		Boolean blnEncrypted = false;
 		//blnGameShark means, "This is a Game Shark/Action Replay (Not MAX) code."
 		Boolean blnGameShark = false;
 		//blnActionReplayMax means "This is an Action Replay MAX code."
@@ -393,19 +399,20 @@ namespace BizHawk.Client.EmuHawk
 		Boolean blnUnneeded = false;
 		private void GBA()
 		{
+			blnEncrypted = false;
 			bool blnNoCode = false;
 			//Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
 			//Seriously, it's that complex.
 
 			//Check Game Shark/Action Replay (Not Max) Codes
-			if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
+			if (SingleCheat.Length == 17 && SingleCheat.IndexOf(" ") == 8)
 			{
 				blnNoCode = true;
 				//Super Ultra Mega HD BizHawk GameShark/Action Replay/Code Breaker Final Hyper Edition Arcade Remix EX + α GBA Code detection method.
 				//Seriously, it's that complex.
 
 				//Check Game Shark/Action Replay (Not Max) Codes
-				if (txtCheat.Text.Length == 17 && txtCheat.Text.IndexOf(" ") == 8)
+				if (SingleCheat.Length == 17 && SingleCheat.IndexOf(" ") == 8)
 				{
 					//These are for the Decyption Values for GameShark and Action Replay MAX.
 					UInt32 op1 = 0;
@@ -413,8 +420,8 @@ namespace BizHawk.Client.EmuHawk
 					UInt32 sum = 0xC6EF3720;
 
 					//Let's get the stuff seperated.
-					RAMAddress = txtCheat.Text.Remove(8, 9);
-					RAMValue = txtCheat.Text.Remove(0, 9);
+					RAMAddress = SingleCheat.Remove(8, 9);
+					RAMValue = SingleCheat.Remove(0, 9);
 					//Let's see if this code matches the GameShark.
 					GBAGameShark();
 					//We got an Un-Needed code.
@@ -432,7 +439,7 @@ namespace BizHawk.Client.EmuHawk
 						//We don't have a GameShark code, or we have an encrypted code?
 						//Further testing required.
 						//GameShark Decryption Method
-						parseString = txtCheat.Text;
+						parseString = SingleCheat;
 
 						op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
 						op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
@@ -455,7 +462,7 @@ namespace BizHawk.Client.EmuHawk
 					if (blnGameShark == true)
 					{
 						//We got a Valid GameShark Code.  Hopefully.
-						//AddGBA();
+						AddGBA();
 						return;
 					}
 
@@ -465,7 +472,7 @@ namespace BizHawk.Client.EmuHawk
 					if (blnActionReplayMax == false)
 					{
 						//Action Replay Max decryption Method
-						parseString = txtCheat.Text;
+						parseString = SingleCheat;
 						op1 = 0;
 						op2 = 0;
 						sum = 0xC6EF3720;
@@ -484,22 +491,21 @@ namespace BizHawk.Client.EmuHawk
 						//Sum, is pointless?
 						RAMAddress = string.Format("{0:X8}", op1);
 						RAMValue = string.Format("{0:X8}", op2);
-						MessageBox.Show(RAMAddress);
-						MessageBox.Show(RAMValue);
+						blnEncrypted = true;
 						GBAActionReplay();
 					}
-					MessageBox.Show(blnActionReplayMax.ToString());
+					//MessageBox.Show(blnActionReplayMax.ToString());
 					//We don't do Else If after the if here because it won't allow us to verify the second code check.
 					if (blnActionReplayMax == true)
 					{
 						//We got a Valid Action Replay Max Code.  Hopefully.
-						//AddGBA();
-						MessageBox.Show("ARM");
+						AddGBA();
+						//MessageBox.Show("ARM");
 						return;
 					}
 				}
 				//Detect CodeBreaker/GameShark SP/Xploder codes
-				if (txtCheat.Text.Length == 12 && txtCheat.Text.IndexOf(" ") != 8)
+				if (SingleCheat.Length == 12 && SingleCheat.IndexOf(" ") != 8)
 				{
 					MessageBox.Show("Codebreaker/GameShark SP/Xploder codes are not supported by this tool.", "Tool error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					return;
@@ -527,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (blnCodeBreaker == false)
 					{
-						parseString = txtCheat.Text;
+						parseString = SingleCheat;
 						UInt32 op1 = 0;
 						UInt32 op2 = 0;
 						UInt32 sum = 0xC6EF3720;
@@ -560,11 +566,11 @@ namespace BizHawk.Client.EmuHawk
 					if (blnCodeBreaker == true)
 					{
 						//We got a Valid Code Breaker Code.  Hopefully.
-						//AddGBA();
+						AddGBA();
 						return;
 					}
 
-					if (txtCheat.Text.IndexOf(" ") != 8 && txtCheat.Text.Length != 12)
+					if (SingleCheat.IndexOf(" ") != 8 && SingleCheat.Length != 12)
 					{
 						MessageBox.Show("ALL Codes for Action Replay, Action Replay MAX, Codebreaker, GameShark Advance, GameShark SP, Xploder have a Space after the 8th character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return;
@@ -2018,19 +2024,116 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			// 13) 1 Line Special Codes (= starting with "00000000")
-			else if (RAMAddress.StartsWith("00000000") == true)
+			//Special Slide Code Detection Method
+			else if (RAMAddress.StartsWith("00000000") == true && RAMValue.StartsWith("8"))
 			{
-				// End of the code list (even if you put values in the 2nd line).
-				// 00000000
-				//Let's ignore the user's input on this one?
-				if (RAMAddress.StartsWith("00000000") == true)
+				//Code Sample
+				//00000000 82222C96
+				//00000063 0032000C
+
+				//This says:
+				// Write to Address 2222C96
+				// The value 63
+				// Fifty (50) times (32 in Hex)
+				// Incriment the Address by 12 (Hex)
+
+				//Sample Compare:
+				// 00222696 00000063  Unit 1 HP
+				// 002226A2 00000063  Unit 2 HP
+				// Goes up by C (12)
+
+				//Parse and go
+				//We reset RAM Address to the RAM Value, because the Value holds the address on the first line.
+
+				int incriment;
+				int looper;
+				string RealAddress = null;
+				string realValue = null;
+				RealAddress = RAMValue.Remove(0, 1);
+				//MessageBox.Show("Real Address: " + RealAddress);
+				//We need the next line
+				try
 				{
-					RAMAddress = RAMAddress.Replace("00000000", "020");
+					loopValue += 1;
+					//MessageBox.Show("Loop Value: " + loopValue.ToString());
+					SingleCheat = txtCheat.Lines[loopValue].ToUpper();
+					//We need to parse now.
+					if (SingleCheat.Length == 17 && SingleCheat.IndexOf(" ") == 8)
+					{
+						if (blnEncrypted == true)
+						{
+							//The code was Encrypted
+							//Decrypt before we do stuff.
+							//Action Replay Max decryption Method
+							parseString = SingleCheat;
+							UInt32 op1 = 0;
+							UInt32 op2 = 0;
+							UInt32 sum = 0xC6EF3720;
+							op1 = 0;
+							op2 = 0;
+							sum = 0xC6EF3720;
+							op1 = UInt32.Parse(parseString.Remove(8, 9), NumberStyles.HexNumber);
+							op2 = UInt32.Parse(parseString.Remove(0, 9), NumberStyles.HexNumber);
+							//Tiny Encryption Algorithm
+							int j;
+							for (j = 0; j < 32; ++j)
+							{
+								op2 -= ((op1 << 4) + GBAProActionReplaySeeds[2]) ^ (op1 + sum) ^ ((op1 >> 5) + GBAProActionReplaySeeds[3]);
+								op1 -= ((op2 << 4) + GBAProActionReplaySeeds[0]) ^ (op2 + sum) ^ ((op2 >> 5) + GBAProActionReplaySeeds[1]);
+								sum -= 0x9E3779B9;
+							}
+							//op1 has the Address
+							//op2 has the Value
+							//Sum, is pointless?
+							RAMAddress = string.Format("{0:X8}", op1);
+							RAMValue = string.Format("{0:X8}", op2);
+						}
+						else if (blnEncrypted == false)
+						{
+							RAMAddress = SingleCheat.Remove(8, 9);
+							RAMValue = SingleCheat.Remove(0, 9);
+						}
+						//We need to determine the Byte Size.
+						//Determine how many leading Zeros there are.
+						realValue = RAMAddress;
+						if (realValue.StartsWith("000000"))
+						{
+							//Byte
+							byteSize = 8;
+						}
+						else if (realValue.StartsWith("0000"))
+						{
+							//2 Byte
+							byteSize = 16;
+						}
+						else
+						{
+							//4 Byte
+							byteSize = 32;
+						}
+						//I need the Incriment Value (Add to RAM Address)
+						//I also need the Loop Value
+						incriment = int.Parse(RAMValue.Remove(0, 4), NumberStyles.HexNumber);
+						looper = int.Parse(RAMValue.Remove(4, 4), NumberStyles.HexNumber);
+						//We set the RAMAddress to our RealAddress
+						RAMAddress = RealAddress;
+						//We set the RAMValue to our RealValue
+						RAMValue = realValue;
+						for (int i = 0; i < looper; i++)
+						{
+							//We need to Bulk Add codes
+							//Add our Cheat
+							AddGBA();
+							//Time to add
+							RAMAddress = (int.Parse(RAMAddress) + incriment).ToString();
+						}
+					}
 				}
-				byteSize = 32;
-				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				blnUnneeded = true;
-				return;
+				catch (Exception ex)
+				{
+					//We should warn the user.
+					MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 			}
 			else if (RAMAddress.StartsWith("080") == true)
 			{
@@ -2337,56 +2440,25 @@ namespace BizHawk.Client.EmuHawk
 				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.DWord, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 			}
-			//Clear old Inputs
-			txtCheat.Clear();
-			txtDescription.Clear();
-		}
-		//TODO:
-		//Make Slide Code Handling suck less.
-		//Make Slide Code Handling exist.
-		public void GBASlide()
-		{
-			//This works on the Action Replay MAX, not the Codebreaker, GameShark SP/Xploder
-			string s = firstSlide.Remove(0, 11).Insert(1, "0");
-			string str2 = secondSlide.Remove(8, 9);
-			if (str2.StartsWith("0000"))
-			{
-				str2 = str2.Remove(0, 4);
-			}
-			long num = 0L;
-			num = long.Parse(secondSlide.Remove(0, 9).Remove(4, 4), NumberStyles.HexNumber);
-			long num2 = long.Parse(secondSlide.Remove(0, 13), NumberStyles.HexNumber);
-			long num3 = long.Parse(s, NumberStyles.HexNumber);
-			for (double i = 0.0; i != num; i++)
-			{
-				s = string.Format("{0:X8}", num3);
-				Watch watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(s, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
-				int? compare = null;
-				Global.CheatList.Add(new Cheat(watch, int.Parse(str2, NumberStyles.HexNumber), compare, true));
-				num3 = long.Parse(s, NumberStyles.HexNumber) + num2;
-			}
-			Slider = false;
-			txtCheat.Clear();
-			txtDescription.Clear();
 		}
 		private void GEN()
 		{
 			//Game Genie only, for now.
 			//This applies to the Game Genie
-			if (txtCheat.Text.Length == 9 && txtCheat.Text.Contains("-"))
+			if (SingleCheat.Length == 9 && SingleCheat.Contains("-"))
 			{
-				if (txtCheat.Text.IndexOf("-") != 4)
+				if (SingleCheat.IndexOf("-") != 4)
 				{
 					MessageBox.Show("All Genesis Game Genie Codes need to contain a dash after the fourth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
-				if (txtCheat.Text.Contains("I") == true | txtCheat.Text.Contains("O") == true | txtCheat.Text.Contains("Q") == true | txtCheat.Text.Contains("U") == true)
+				if (SingleCheat.Contains("I") == true | SingleCheat.Contains("O") == true | SingleCheat.Contains("Q") == true | SingleCheat.Contains("U") == true)
 				{
 					MessageBox.Show("All Genesis Game Genie Codes do not use I, O, Q or U.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 				//This is taken from the GenGameGenie.CS file.
-				string code = txtCheat.Text;
+				string code = SingleCheat;
 				int val = 0;
 				int add = 0;
 				string address = null;
@@ -2421,17 +2493,17 @@ namespace BizHawk.Client.EmuHawk
 				Global.CheatList.Add(new Cheat(watch, val));
 			}
 			//Action Replay?
-			if (txtCheat.Text.Contains(":"))
+			if (SingleCheat.Contains(":"))
 			{
 				//We start from Zero.
-				if (txtCheat.Text.IndexOf(":") != 6)
+				if (SingleCheat.IndexOf(":") != 6)
 				{
 					MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to contain a colon after the sixth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
 				//Problem: I don't know what the Non-FF Style codes are.
 				//TODO: Fix that.
-				if (txtCheat.Text.StartsWith("FF") == false)
+				if (SingleCheat.StartsWith("FF") == false)
 				{
 					MessageBox.Show("This Action Replay Code, is not understood by this tool.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					return;
@@ -2439,8 +2511,8 @@ namespace BizHawk.Client.EmuHawk
 				//Now to do some work.
 				//Determine Length, to Determine Byte Size
 
-				parseString = txtCheat.Text.Remove(0, 2);
-				switch (txtCheat.Text.Length)
+				parseString = SingleCheat.Remove(0, 2);
+				switch (SingleCheat.Length)
 				{
 					case 9:
 						//Sample Code of 1-Byte:
@@ -2451,7 +2523,7 @@ namespace BizHawk.Client.EmuHawk
 						RAMAddress = parseString.Remove(4, 3);
 						RAMValue = parseString.Remove(0, 5);
 						byteSize = 1;
-                        break;
+						break;
 					case 11:
 						//Sample Code of 2-Byte:
 						//FFF761:6411
@@ -2477,18 +2549,12 @@ namespace BizHawk.Client.EmuHawk
 						var watch = Watch.GenerateWatch(MemoryDomains["68K RAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 						//Take Watch, Add our Value we want, and it should be active when addded?
 						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
-						//Clear old Inputs
-						txtCheat.Clear();
-						txtDescription.Clear();
 					}
 					if (byteSize == 2)
 					{
 						var watch = Watch.GenerateWatch(MemoryDomains["68K RAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, true, txtDescription.Text);
 						//Take Watch, Add our Value we want, and it should be active when addded?
 						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
-						//Clear old Inputs
-						txtCheat.Clear();
-						txtDescription.Clear();
 					}
 
 				}
@@ -2502,12 +2568,12 @@ namespace BizHawk.Client.EmuHawk
 		private void N64()
 		{
 			//These codes, more or less work without Needing much work.
-			if (txtCheat.Text.IndexOf(" ") != 8)
+			if (SingleCheat.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All N64 GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			if (txtCheat.Text.Length != 13)
+			if (SingleCheat.Length != 13)
 			{
 				MessageBox.Show("All N64 GameShark Codes need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -2573,7 +2639,7 @@ namespace BizHawk.Client.EmuHawk
 				case "2A":
 				case "3C":
 				case "FF":
-                    MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				//TODO: Make Patch Code (5000XXYY) work.
 				case "50":
@@ -2585,7 +2651,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					//Leave this Method, before someone gets hurt.
 					return;
-			}		
+			}
 			//Now to get clever.
 			//Sample Input for N64:
 			//8133B21E 08FF
@@ -2596,7 +2662,7 @@ namespace BizHawk.Client.EmuHawk
 			//Note, 80XXXXXX 00YY
 			//Is Byte, not Word
 			//Remove the 80 Octect
-			parseString = txtCheat.Text.Remove(0, 2);
+			parseString = SingleCheat.Remove(0, 2);
 			//Get RAM Address
 			RAMAddress = parseString.Remove(6, 5);
 			//Get RAM Value
@@ -2619,9 +2685,6 @@ namespace BizHawk.Client.EmuHawk
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
@@ -2633,15 +2696,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string strCompare = null;
 			//Original code from adelikat
-			if (txtCheat.Text.Length != 6 || txtCheat.Text.Length != 8)
+			if (SingleCheat.Length != 6 || SingleCheat.Length != 8)
 			{
 				int Value = 0;
 				int Address = 0x8000;
 				int x;
 				int Compare = 0;
 				// char 3 bit 3 denotes the code length.
-				string code = txtCheat.Text;
-                if (txtCheat.Text.Length == 6)
+				string code = SingleCheat;
+				if (SingleCheat.Length == 6)
 				{
 					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |
 					// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
@@ -2670,10 +2733,10 @@ namespace BizHawk.Client.EmuHawk
 					Address |= (x & 0x07) << 8;
 					Value |= x & 0x08;
 					RAMAddress = string.Format("{0:X4}", Address);
-					RAMValue = string.Format("{0:X2}", Value);					
+					RAMValue = string.Format("{0:X2}", Value);
 					strCompare = string.Format("{0:X2}", Compare);
-                }
-				else if (txtCheat.Text.Length == 8)
+				}
+				else if (SingleCheat.Length == 8)
 				{
 					// Char # |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
 					// Bit  # |3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|3|2|1|0|
@@ -2718,7 +2781,7 @@ namespace BizHawk.Client.EmuHawk
 					strCompare = string.Format("{0:X2}", Compare);
 				}
 			}
-			if (txtCheat.Text.Length != 6 && txtCheat.Text.Length != 8)
+			if (SingleCheat.Length != 6 && SingleCheat.Length != 8)
 			{
 				//Not a proper Code
 				MessageBox.Show("Game Genie codes need to be six or eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -2740,9 +2803,6 @@ namespace BizHawk.Client.EmuHawk
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(strCompare, NumberStyles.HexNumber)));
 				}
 				//Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), )
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
@@ -2750,15 +2810,15 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-        private void PSX()
+		private void PSX()
 		{
 			//These codes, more or less work without Needing much work.
-			if (txtCheat.Text.IndexOf(" ") != 8)
+			if (SingleCheat.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All PSX GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			if (txtCheat.Text.Length != 13)
+			if (SingleCheat.Length != 13)
 			{
 				MessageBox.Show("All PSX GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -2804,7 +2864,7 @@ namespace BizHawk.Client.EmuHawk
 				case "20":
 				//20 byteSize = 8
 				case "21":
-				//21 byteSize = 8
+					//21 byteSize = 8
 					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
 					return;
 				case "C0":
@@ -2829,7 +2889,7 @@ namespace BizHawk.Client.EmuHawk
 			//Address: 0D10BA
 			//Value:  0009
 			//Remove first two octets
-			parseString = txtCheat.Text.Remove(0, 2);
+			parseString = SingleCheat.Remove(0, 2);
 			//Get RAM Address
 			RAMAddress = parseString.Remove(6, 5);
 			//Get RAM Value
@@ -2854,9 +2914,6 @@ namespace BizHawk.Client.EmuHawk
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
@@ -2868,12 +2925,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SAT()
 		{
 			//Not yet.
-			if (txtCheat.Text.IndexOf(" ") != 8)
+			if (SingleCheat.IndexOf(" ") != 8)
 			{
 				MessageBox.Show("All Saturn GameShark Codes need to contain a space after the eighth character", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			if (txtCheat.Text.Length != 13)
+			if (SingleCheat.Length != 13)
 			{
 				MessageBox.Show("All Saturn GameShark Cheats need to be 13 characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -2908,7 +2965,7 @@ namespace BizHawk.Client.EmuHawk
 			//Value:  90
 			//Note, 3XXXXXXX are Big Endian
 			//Remove first two octets
-			parseString = txtCheat.Text.Remove(0, 2);
+			parseString = SingleCheat.Remove(0, 2);
 			//Get RAM Address
 			RAMAddress = parseString.Remove(6, 5);
 			//Get RAM Value
@@ -2933,9 +2990,6 @@ namespace BizHawk.Client.EmuHawk
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
@@ -2948,34 +3002,34 @@ namespace BizHawk.Client.EmuHawk
 		{
 			string RAMCompare = null;
 			//Game Genie
-			if (txtCheat.Text.LastIndexOf("-") == 7 && txtCheat.Text.IndexOf("-") == 3)
+			if (SingleCheat.LastIndexOf("-") == 7 && SingleCheat.IndexOf("-") == 3)
 			{
 				int val = 0;
 				int add = 0;
-				int cmp = 0;		
-				parseString = txtCheat.Text.Replace("-", "");
+				int cmp = 0;
+				parseString = SingleCheat.Replace("-", "");
 				GBGGDecode(parseString, ref val, ref add, ref cmp);
 				RAMAddress = string.Format("{0:X4}", add);
 				RAMValue = string.Format("{0:X2}", val);
 				RAMCompare = string.Format("{0:X2}", cmp);
 			}
 			//Action Replay
-			else if (txtCheat.Text.IndexOf("-") == 3 && txtCheat.Text.Length == 9)
+			else if (SingleCheat.IndexOf("-") == 3 && SingleCheat.Length == 9)
 			{
-				parseString = txtCheat.Text;
+				parseString = SingleCheat;
 				parseString = parseString.Remove(0, 2);
 				RAMAddress = parseString.Remove(4, 2);
 				RAMAddress = RAMAddress.Replace("-", "");
 				RAMValue = parseString.Remove(0, 5);
 			}
 			//It's an Action Replay
-			if (txtCheat.Text.Length != 9 && txtCheat.Text.LastIndexOf("-") != 7)
+			if (SingleCheat.Length != 9 && SingleCheat.LastIndexOf("-") != 7)
 			{
 				MessageBox.Show("All Master System Action Replay Codes need to be nine charaters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 			//Game Genie
-			else if (txtCheat.Text.LastIndexOf("-") != 7 && txtCheat.Text.IndexOf("-") != 3)
+			else if (SingleCheat.LastIndexOf("-") != 7 && SingleCheat.IndexOf("-") != 3)
 			{
 				MessageBox.Show("All Master System Game Geneie Codes need to have a dash after the third character and seventh character.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
@@ -2996,16 +3050,13 @@ namespace BizHawk.Client.EmuHawk
 					//We have a Compare
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(RAMCompare, NumberStyles.HexNumber)));
 				}
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
 			{
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-		}	
+		}
 		//Original code from adelikat
 		private void SnesGGDecode(string code, ref int val, ref int add)
 		{
@@ -3075,12 +3126,12 @@ namespace BizHawk.Client.EmuHawk
 		private void SNES()
 		{
 			Boolean GameGenie = false;
-			if (txtCheat.Text.Contains("-") && txtCheat.Text.Length == 9)
+			if (SingleCheat.Contains("-") && SingleCheat.Length == 9)
 			{
 				int val = 0, add = 0;
 				string input;
 				//We have to remove the - since it will cause issues later on.
-				input = txtCheat.Text.Replace("-", "");
+				input = SingleCheat.Replace("-", "");
 				SnesGGDecode(input, ref val, ref add);
 				RAMAddress = string.Format("{0:X6}", add);
 				RAMValue = string.Format("{0:X2}", val);
@@ -3092,24 +3143,24 @@ namespace BizHawk.Client.EmuHawk
 
 			}
 			//This ONLY applies to Action Replay.
-			if (txtCheat.Text.Length == 8)
+			if (SingleCheat.Length == 8)
 			{
 				//Sample Code:
 				//7E18A428
 				//Address: 7E18A4
 				//Value: 28
 				//Remove last two octets
-				RAMAddress = txtCheat.Text.Remove(6, 2);
+				RAMAddress = SingleCheat.Remove(6, 2);
 				//Get RAM Value
-				RAMValue = txtCheat.Text.Remove(0, 6);
+				RAMValue = SingleCheat.Remove(0, 6);
 				//Note, it's a Word.  However, we are using this to keep from repeating code.
 				byteSize = 16;
 			}
-			if (txtCheat.Text.Contains("-") && txtCheat.Text.Length != 9)
+			if (SingleCheat.Contains("-") && SingleCheat.Length != 9)
 			{
 				MessageBox.Show("Game Genie Codes need to be nine characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-			if (txtCheat.Text.Length != 9 && txtCheat.Text.Length !=8)
+			if (SingleCheat.Length != 9 && SingleCheat.Length != 8)
 			{
 				MessageBox.Show("Pro Action Replay Codes need to be eight characters in length.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
@@ -3138,10 +3189,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 				//Take Watch, Add our Value we want, and it should be active when addded?
-
-				//Clear old Inputs
-				txtCheat.Clear();
-				txtDescription.Clear();
 			}
 			//Someone broke the world?
 			catch (Exception ex)
@@ -3149,10 +3196,10 @@ namespace BizHawk.Client.EmuHawk
 				MessageBox.Show("An Error occured: " + ex.GetType().ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-        private void btnClear_Click(object sender, EventArgs e)
+		private void btnClear_Click(object sender, EventArgs e)
 		{
 			//Clear old Inputs
-			txtCheat.Clear();
+			
 			txtDescription.Clear();
 		}
 
