@@ -9,7 +9,7 @@ using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	// adelikat: changing settings to default object untl there are actually settings, as the ui depends on it to know if there are any settings avaialable
+	// adelikat: changing settings to default object until there are actually settings, as the ui depends on it to know if there are any settings avaialable
 	public partial class C64 : ISettable<object, C64.C64SyncSettings>
 	{
 		public object /*C64Settings*/ GetSettings()
@@ -55,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			[DisplayName("VIC type")]
 			[Description("Set the type of video chip to use")]
-			[DefaultValue(VicType.PAL)]
-			public VicType vicType { get; set; }
+			[DefaultValue(VicType.Pal)]
+			public VicType VicType { get; set; }
 
 			public C64SyncSettings Clone()
 			{
@@ -71,7 +71,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public enum VicType
 		{
-			PAL, NTSC, NTSC_OLD, DREAN
+			Pal, Ntsc, NtscOld, Drean
 		}
+
+	    public enum CiaType
+	    {
+	        Pal, Ntsc, PalRevA, NtscRevA
+	    }
 	}
 }

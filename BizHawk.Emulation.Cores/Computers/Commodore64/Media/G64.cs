@@ -1,53 +1,50 @@
 ﻿using System.IO;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public static class G64
 	{
 		public static Disk Read(byte[] source)
 		{
-			MemoryStream mem = new MemoryStream(source);
-			BinaryReader reader = new BinaryReader(mem);
-			Disk result = new Disk();
-			string id = new string(reader.ReadChars(8));
+			var mem = new MemoryStream(source);
+			var reader = new BinaryReader(mem);
+			var result = new Disk();
+			var id = new string(reader.ReadChars(8));
 
 			if (id == @"GCR-1541")
 			{
-				int trackCount;
-				int[] trackOffsetTable = new int[84];
-				int[] trackSpeedTable = new int[84];
+			    var trackOffsetTable = new int[84];
+				var trackSpeedTable = new int[84];
 
 				reader.ReadByte(); //version
-				trackCount = reader.ReadByte();
+				int trackCount = reader.ReadByte();
 				reader.ReadInt16(); //max track size in bytes
 
-				for (int i = 0; i < 84; i++)
+				for (var i = 0; i < 84; i++)
 					trackOffsetTable[i] = reader.ReadInt32();
 
-				for (int i = 0; i < 84; i++)
+				for (var i = 0; i < 84; i++)
 					trackSpeedTable[i] = reader.ReadInt32();
 
-				for (int i = 0; i < 84; i++)
+				for (var i = 0; i < 84; i++)
 				{
 					if (trackOffsetTable[i] > 0)
 					{
-						int trackLength;
-						byte[] trackData;
-						Track track = new Track();
+					    var track = new Disk.Track();
 
 						mem.Position = trackOffsetTable[i];
-						trackLength = reader.ReadInt16();
-						trackData = reader.ReadBytes(trackLength);
-						track.bits = trackLength * 8;
-						track.data = trackData;
-						track.density = trackSpeedTable[i];
-						track.index = i;
-						result.tracks.Add(track);
+						int trackLength = reader.ReadInt16();
+						var trackData = reader.ReadBytes(trackLength);
+						track.Bits = trackLength * 8;
+						track.Data = trackData;
+						track.Density = trackSpeedTable[i];
+						track.Index = i;
+						result.Tracks.Add(track);
 					}
 				}
 			}
 
-			result.valid = (result.tracks.Count > 0);
+			result.Valid = result.Tracks.Count > 0;
 			return result;
 		}
 

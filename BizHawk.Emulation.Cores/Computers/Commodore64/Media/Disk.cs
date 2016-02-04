@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
-	public class Track
-	{
-		public int bits;
-		public byte[] data;
-		public int density;
-		public int index;
-	}
-
 	public class Disk
 	{
 
-		public List<Track> tracks = new List<Track>();
-		public bool valid;
-	}
+		public readonly List<Track> Tracks = new List<Track>();
+		public bool Valid;
+
+	    public class Track
+        {
+            public int Bits;
+            public byte[] Data;
+            public int Density;
+            public int Index;
+        }
+    }
 }

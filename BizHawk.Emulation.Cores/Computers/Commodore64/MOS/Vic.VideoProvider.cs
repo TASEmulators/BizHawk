@@ -5,19 +5,24 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic : IVideoProvider
+	public sealed partial class Vic : IVideoProvider
 	{
-		private int[] buf;
-		private int bufHeight;
-		private int bufLength;
-		private int bufOffset;
-		private int bufWidth;
-		private int pixBufferSize = 12;
-		private int[] pixBuffer;
-		private int pixBufferIndex;
+	    [SaveState.DoNotSave] private static readonly int BgColor = Colors.ARGB(0, 0, 0);
+        [SaveState.DoNotSave] private readonly int[] _buf;
+		[SaveState.DoNotSave] private readonly int _bufHeight;
+		[SaveState.DoNotSave] private readonly int _bufLength;
+		private int _bufOffset;
+		[SaveState.DoNotSave] private readonly int _bufWidth;
+	    [SaveState.DoNotSave] private const int PixBufferSize = 24;
+	    [SaveState.DoNotSave] private const int PixBorderBufferSize = 12;
+	    private int[] _pixBuffer;
+		private int _pixBufferIndex;
+	    private int[] _pixBorderBuffer;
+	    private int _pixBufferBorderIndex;
 
-		// palette
-		private int[] palette =
+        // palette
+        [SaveState.DoNotSave]
+        private static readonly int[] Palette =
 		{
 				Colors.ARGB(0x00, 0x00, 0x00),
 				Colors.ARGB(0xFF, 0xFF, 0xFF),
@@ -37,34 +42,39 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				Colors.ARGB(0x95, 0x95, 0x95)
 		};
 
-		public int BackgroundColor
+        [SaveState.DoNotSave]
+        public int BackgroundColor
 		{
 			get { return Colors.ARGB(0, 0, 0); }
 		}
 
-		public int BufferHeight
+        [SaveState.DoNotSave]
+        public int BufferHeight
 		{
-			get { return bufHeight; }
+			get { return _bufHeight; }
 		}
 
-		public int BufferWidth
+        [SaveState.DoNotSave]
+        public int BufferWidth
 		{
-			get { return bufWidth; }
+			get { return _bufWidth; }
 		}
 
 		public int[] GetVideoBuffer()
 		{
-			return buf;
+			return _buf;
 		}
 
-		public int VirtualWidth
+        [SaveState.DoNotSave]
+        public int VirtualWidth
 		{
-			get { return bufWidth; }
+			get { return _bufWidth; }
 		}
 
-		public int VirtualHeight
+        [SaveState.DoNotSave]
+        public int VirtualHeight
 		{
-			get { return bufHeight; }
+			get { return _bufHeight; }
 		}
 	}
 }

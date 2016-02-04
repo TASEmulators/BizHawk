@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Sync("frame", ref _frame);
 			ser.Sync("islag", ref _islag);
 			ser.Sync("lagcount", ref _lagcount);
-			board.SyncState(ser);
+			_board.SyncState(ser);
 			ser.EndSection();
 		}
 	}

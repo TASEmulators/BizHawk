@@ -8,180 +8,171 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic
+	public sealed partial class Vic
 	{
-		private int backgroundColor0;
-		private int backgroundColor1;
-		private int backgroundColor2;
-		private int backgroundColor3;
-		private int baCount;
-		private bool badline;
-		private bool badlineEnable;
-		private int bitmapColumn;
-		private bool bitmapMode;
-		private int borderB;
-		private bool borderCheckLEnable;
-		private bool borderCheckREnable;
-		private int borderColor;
-		private int borderL;
-		private bool borderOnMain;
-		private bool borderOnVertical;
-		private int borderR;
-		private int borderT;
-		private int[] bufferC;
-		private int[] bufferG;
-		private int cycle;
-		private int cycleIndex;
-		private bool columnSelect;
-		private int dataC;
-		private int dataG;
-		private bool displayEnable;
-		private int displayC;
-		private bool enableIntLightPen;
-		private bool enableIntRaster;
-		private bool enableIntSpriteCollision;
-		private bool enableIntSpriteDataCollision;
-		private bool extraColorMode;
-		private bool hblank;
-		private bool idle;
-		private bool intLightPen;
-		private bool intRaster;
-		private bool intSpriteCollision;
-		private bool intSpriteDataCollision;
-		private int hblankEnd;
-		private int hblankStart;
-		private bool hblankCheckEnableL;
-		private bool hblankCheckEnableR;
-		private int lastRasterLine;
-		private int lightPenX;
-		private int lightPenY;
-		private bool multicolorMode;
-		private bool pinAEC = true;
-		private bool pinBA = true;
-		private bool pinIRQ = true;
-		private int pointerCB;
-		private int pointerVM;
-		private int rasterInterruptLine;
-		private int rasterLine;
-		private int rasterX;
-		private bool rasterXHold;
-		private int rc;
-		private int refreshCounter;
-		private bool renderEnabled;
-		private bool rowSelect;
-		private int spriteMulticolor0;
-		private int spriteMulticolor1;
-		private Sprite[] sprites;
-		private int sr;
-		private int srMask;
-		private int srMask1;
-		private int srMask2;
-		private int srMask3;
-		private int srMaskMC;
-		private int srSpriteMask;
-		private int srSpriteMask1;
-		private int srSpriteMask2;
-		private int srSpriteMask3;
-		private int srSpriteMaskMC;
-		private bool vblank;
-		private int vblankEnd;
-		private int vblankStart;
-		private int vc;
-		private int vcbase;
-		private int vmli;
-		private int xScroll;
-		private int yScroll;
+		private int _backgroundColor0;
+		private int _backgroundColor1;
+		private int _backgroundColor2;
+		private int _backgroundColor3;
+		private int _baCount;
+		private bool _badline;
+		private bool _badlineEnable;
+	    private bool _bitmapMode;
+		private int _borderB;
+		private bool _borderCheckLEnable;
+		private bool _borderCheckREnable;
+		private int _borderColor;
+		private int _borderL;
+		private bool _borderOnMain;
+		private bool _borderOnVertical;
+		private int _borderR;
+		private int _borderT;
+		private readonly int[] _bufferC;
+		private readonly int[] _bufferG;
+		private int _cycle;
+		private int _cycleIndex;
+		private bool _columnSelect;
+		private int _dataC;
+		private int _dataG;
+		private bool _displayEnable;
+		private int _displayC;
+	    private bool _enableIntLightPen;
+		private bool _enableIntRaster;
+		private bool _enableIntSpriteCollision;
+		private bool _enableIntSpriteDataCollision;
+		private bool _extraColorMode;
+        private bool _extraColorModeBuffer;
+        private bool _hblank;
+		private bool _idle;
+		private bool _intLightPen;
+		private bool _intRaster;
+		private bool _intSpriteCollision;
+		private bool _intSpriteDataCollision;
+		[SaveState.DoNotSave] private readonly int _hblankEnd;
+		[SaveState.DoNotSave] private readonly int _hblankStart;
+		private bool _hblankCheckEnableL;
+		private bool _hblankCheckEnableR;
+	    private int _lightPenX;
+		private int _lightPenY;
+		private bool _multicolorMode;
+		private bool _pinAec = true;
+		private bool _pinBa = true;
+		private bool _pinIrq = true;
+		private int _pointerCb;
+		private int _pointerVm;
+		private int _rasterInterruptLine;
+	    private bool _rasterInterruptTriggered;
+		private int _rasterLine;
+		private int _rasterX;
+		private bool _rasterXHold;
+		private int _rc;
+		private int _refreshCounter;
+		private bool _renderEnabled;
+		private bool _rowSelect;
+        private bool _spriteBackgroundCollisionClearPending;
+        private bool _spriteSpriteCollisionClearPending;
+        private int _spriteMulticolor0;
+	    private int _spriteMulticolor1;
+	    [SaveState.DoNotSave] private readonly Sprite _sprite0;
+        [SaveState.DoNotSave] private readonly Sprite _sprite1;
+        [SaveState.DoNotSave] private readonly Sprite _sprite2;
+        [SaveState.DoNotSave] private readonly Sprite _sprite3;
+        [SaveState.DoNotSave] private readonly Sprite _sprite4;
+        [SaveState.DoNotSave] private readonly Sprite _sprite5;
+        [SaveState.DoNotSave] private readonly Sprite _sprite6;
+        [SaveState.DoNotSave] private readonly Sprite _sprite7;
+        private readonly Sprite[] _sprites;
+		private int _sr;
+		private bool _vblank;
+		[SaveState.DoNotSave] private readonly int _vblankEnd;
+        [SaveState.DoNotSave] private readonly int _vblankStart;
+		private int _vc;
+		private int _vcbase;
+		private int _vmli;
+		private int _xScroll;
+		private int _yScroll;
 
 		public void HardReset()
 		{
-			// *** SHIFT REGISTER BITMASKS ***
-			srMask1 = 0x20000;
-			srMask2 = srMask1 << 1;
-			srMask3 = srMask1 | srMask2;
-			srMask = srMask2;
-			srMaskMC = srMask3;
-			srSpriteMask1 = 0x400000;
-			srSpriteMask2 = srSpriteMask1 << 1;
-			srSpriteMask3 = srSpriteMask1 | srSpriteMask2;
-			srSpriteMask = srSpriteMask2;
-			srSpriteMaskMC = srSpriteMask3;
+			_pinAec = true;
+			_pinBa = true;
+			_pinIrq = true;
 
-			pinAEC = true;
-			pinBA = true;
-			pinIRQ = true;
+			_bufOffset = 0;
 
-			bufOffset = 0;
-
-			backgroundColor0 = 0;
-			backgroundColor1 = 0;
-			backgroundColor2 = 0;
-			backgroundColor3 = 0;
-			baCount = baResetCounter;
-			badline = false;
-			badlineEnable = false;
-			bitmapMode = false;
-			borderCheckLEnable = false;
-			borderCheckREnable = false;
-			borderColor = 0;
-			borderOnMain = true;
-			borderOnVertical = true;
-			columnSelect = false;
-			displayEnable = false;
-			enableIntLightPen = false;
-			enableIntRaster = false;
-			enableIntSpriteCollision = false;
-			enableIntSpriteDataCollision = false;
-			extraColorMode = false;
-			hblank = true;
-			idle = true;
-			intLightPen = false;
-			intRaster = false;
-			intSpriteCollision = false;
-			intSpriteDataCollision = false;
-			lastRasterLine = 0;
-			lightPenX = 0;
-			lightPenY = 0;
-			multicolorMode = false;
-			pointerCB = 0;
-			pointerVM = 0;
-			rasterInterruptLine = 0;
-			rasterLine = 0;
-			rasterX = 0;
-			rc = 7;
-			refreshCounter = 0xFF;
-			rowSelect = false;
-			spriteMulticolor0 = 0;
-			spriteMulticolor1 = 0;
-			sr = 0;
-			vblank = true;
-			vc = 0;
-			vcbase = 0;
-			vmli = 0;
-			xScroll = 0;
-			yScroll = 0;
+			_backgroundColor0 = 0;
+			_backgroundColor1 = 0;
+			_backgroundColor2 = 0;
+			_backgroundColor3 = 0;
+			_baCount = BaResetCounter;
+			_badline = false;
+			_badlineEnable = false;
+			_bitmapMode = false;
+			_borderCheckLEnable = false;
+			_borderCheckREnable = false;
+			_borderColor = 0;
+			_borderOnMain = true;
+			_borderOnVertical = true;
+			_columnSelect = false;
+			_displayEnable = false;
+			_enableIntLightPen = false;
+			_enableIntRaster = false;
+			_enableIntSpriteCollision = false;
+			_enableIntSpriteDataCollision = false;
+			_extraColorMode = false;
+			_idle = true;
+			_intLightPen = false;
+			_intRaster = false;
+			_intSpriteCollision = false;
+			_intSpriteDataCollision = false;
+			_lightPenX = 0;
+			_lightPenY = 0;
+			_multicolorMode = false;
+			_pointerCb = 0;
+			_pointerVm = 0;
+			_rasterInterruptLine = 0;
+			_rasterLine = 0;
+			_rasterX = 0;
+			_rc = 7;
+			_refreshCounter = 0xFF;
+			_rowSelect = false;
+            _spriteBackgroundCollisionClearPending = false;
+            _spriteSpriteCollisionClearPending = false;
+            _spriteMulticolor0 = 0;
+			_spriteMulticolor1 = 0;
+			_sr = 0;
+			_vc = 0;
+			_vcbase = 0;
+			_vmli = 0;
+			_xScroll = 0;
+			_yScroll = 0;
+		    _cycle = 0;
 
 			// reset sprites
-			for (int i = 0; i < 8; i++)
-				sprites[i].HardReset();
+			for (var i = 0; i < 8; i++)
+				_sprites[i].HardReset();
 
 			// clear C buffer
-			for (int i = 0; i < 40; i++)
+			for (var i = 0; i < 40; i++)
 			{
-				bufferC[i] = 0;
-				bufferG[i] = 0;
+				_bufferC[i] = 0;
+				_bufferG[i] = 0;
 			}
 
-			pixBuffer = new int[pixBufferSize];
-			UpdateBorder();
+			_pixBuffer = new int[PixBufferSize];
+            _pixBorderBuffer = new int[PixBorderBufferSize];
+		    _pixBufferIndex = 0;
+            _pixBufferBorderIndex = 0;
+            UpdateBorder();
 		}
 
 		public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
-			for (int i = 0; i < 8; i++)
+			for (var i = 0; i < 8; i++)
 			{
 				ser.BeginSection("sprite" + i.ToString());
-				SaveState.SyncObject(ser, sprites[i]);
+				SaveState.SyncObject(ser, _sprites[i]);
 				ser.EndSection();
 			}
 		}

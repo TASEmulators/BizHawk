@@ -177,37 +177,43 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0012.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
-    <Compile Include="Computers\Commodore64\CassettePort\CassettePortDevice.cs" />
-    <Compile Include="Computers\Commodore64\CassettePort\Tape.cs" />
+    <Compile Include="Computers\Commodore64\Cassette\CassettePortDevice.cs" />
+    <Compile Include="Computers\Commodore64\Cassette\TapeDrive.cs" />
+    <Compile Include="Computers\Commodore64\Media\Tape.cs" />
     <Compile Include="Computers\Commodore64\InputFileInfo.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
-    <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
-    <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\CartridgeDevice.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\Cassette\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip23128.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6567R56A.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.Registers.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.Timer.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6567R56A.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6510.cs" />
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
     <Compile Include="Computers\Commodore64\Media\Disk.cs" />
     <Compile Include="Computers\Commodore64\Media\G64.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Interface.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.PortIO.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6567R8.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6572.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6526.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6567R8.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6572.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6581.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6569.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip90611401.cs" />
+    <Compile Include="Computers\Commodore64\MOS\LatchedPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Envelope.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Registers.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Voice.cs" />
-    <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.Registers.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.Timer.cs" />
+    <Compile Include="Computers\Commodore64\User\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Parse.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Registers.cs" />
@@ -217,7 +223,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.TimingBuilder.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
-    <Compile Include="Computers\Commodore64\UserPort\UserPortDevice.cs" />
+    <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -917,7 +923,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Computers\Commodore64\Serial\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
       <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
@@ -933,7 +941,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Registers.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
