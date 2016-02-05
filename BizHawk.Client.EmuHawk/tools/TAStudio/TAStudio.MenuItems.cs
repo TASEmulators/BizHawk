@@ -375,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 				Clipboard.SetDataObject(sb.ToString());
 				CurrentTasMovie.RemoveFrames(list);
 				SetSplicer();
-				TasView.DeselectAll();
+				//TasView.DeselectAll(); feos: what if I want to continuously cut?
 
 				if (needsToRollback)
 				{

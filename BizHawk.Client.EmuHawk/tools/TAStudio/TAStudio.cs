@@ -702,10 +702,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
-					GlobalWin.MainForm.UnpauseEmulator();
+				// feos: if we disable autorestore, we shouldn't ever get it paused
+				// moreover, this function is only called if we *were* paused, so the check makes no sense
+				//if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
+				//	GlobalWin.MainForm.UnpauseEmulator();
 				_autoRestorePaused = null;
-				GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
+				// feos: seek gets triggered by the previous function, so we don't wanna kill the seek frame before it ends
+				//GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
 			}
 			_autoRestoreFrame = null;
 		}
