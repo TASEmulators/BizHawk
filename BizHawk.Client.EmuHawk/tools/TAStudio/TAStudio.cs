@@ -489,17 +489,19 @@ namespace BizHawk.Client.EmuHawk
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
-			Settings.RecentTas.Add(newMovie.Filename);
-
 			if (!HandleMovieLoadStuff(newMovie))
 				return false;
 
-			if (TasView.AllColumns.Count() == 0)
+			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
+
+			if (TasView.AllColumns.Count() == 0 || file.Extension != TasMovie.Extension)
 				SetUpColumns();
+
 			if (startsFromSavestate)
 				GoToFrame(0);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+
 			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
@@ -547,7 +549,30 @@ namespace BizHawk.Client.EmuHawk
 				result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
 			}
 			else
+			{
+				if (movie.Filename.EndsWith(TasMovie.Extension))
+				{
+				
+				}
+				else if (movie.Filename.EndsWith(".bkm") || movie.Filename.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
+				{
+					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+					if (result1 == DialogResult.OK)
+					{
+						ConvertCurrentMovieToTasproj();
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else 
+				{
+					MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
 				result = StartNewMovieWrapper(false, movie);
+			}
 
 			if (!result)
 				return false;
