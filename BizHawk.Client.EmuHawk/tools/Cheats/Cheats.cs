@@ -52,8 +52,7 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private IMemoryDomains Core { get; set; }
 
-		// Adam Sturge : I commented this out because it was causing me issues by removing the comparison type column
-		//[ConfigPersist]
+		[ConfigPersist]
 		public CheatsSettings Settings { get; set; }
 
 		public bool UpdateBefore { get { return false; } }
@@ -263,6 +262,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case TYPE:
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
+					break;
+				case COMPARISONTYPE:
+					text = Global.CheatList[index].ComparisonType.ToString();
 					break;
 			}
 		}

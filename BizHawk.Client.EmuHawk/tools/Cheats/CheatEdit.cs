@@ -303,7 +303,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				Cheat.ComparisonType comparisonType = Cheat.ComparisonType.EQUAL;
+				Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.EQUAL;
 				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				var address = AddressBox.ToRawInt().Value;				
 				if (address < domain.Size)
@@ -328,13 +328,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						switch (CompareTypeDropDown.SelectedText)
 						{
-							case "="  : comparisonType = Cheat.ComparisonType.EQUAL;                 break;
-							case ">"  : comparisonType = Cheat.ComparisonType.GREATER_THAN;          break;
-							case ">=" : comparisonType = Cheat.ComparisonType.GREATER_THAN_OR_EQUAL; break;
-							case "<"  : comparisonType = Cheat.ComparisonType.LESS_THAN;             break;
-							case "<=" : comparisonType = Cheat.ComparisonType.LESS_THAN_OR_EQUAL;    break;
-							case "!=" : comparisonType = Cheat.ComparisonType.NOT_EQUAL;             break;
-							default   : comparisonType = Cheat.ComparisonType.EQUAL;                 break;
+							case "="  : comparisonType = Cheat.COMPARISONTYPE.EQUAL;                 break;
+							case ">"  : comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN;          break;
+							case ">=" : comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
+							case "<"  : comparisonType = Cheat.COMPARISONTYPE.LESS_THAN;             break;
+							case "<=" : comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL;    break;
+							case "!=" : comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL;             break;
+							default   : comparisonType = Cheat.COMPARISONTYPE.EQUAL;                 break;
 						}
 
 						return new Cheat(

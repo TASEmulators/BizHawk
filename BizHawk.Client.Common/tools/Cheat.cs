@@ -6,13 +6,13 @@ namespace BizHawk.Client.Common
 {
 	public class Cheat
 	{
-		public enum ComparisonType { EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL};
+		public enum COMPARISONTYPE { EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL};
 
 		private readonly Watch _watch;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;
-		private ComparisonType _comparisonType;
+		private COMPARISONTYPE _comparisonType;
 		
 
 		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true)
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 		/// <param name="comparisonType"></param>
 		/// <param name="compare"></param>
 		/// <param name="enabled"></param>
-		public Cheat(Watch watch, int value, ComparisonType comparisonType, int compare, bool enabled = true)
+		public Cheat(Watch watch, int value, COMPARISONTYPE comparisonType, int compare, bool enabled = true)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -184,6 +184,11 @@ namespace BizHawk.Client.Common
 				
 				return string.Empty;
 			}
+		}
+
+		public COMPARISONTYPE ComparisonType
+		{
+			get { return _comparisonType; }
 		}
 
 		public void Enable(bool handleChange = true)
