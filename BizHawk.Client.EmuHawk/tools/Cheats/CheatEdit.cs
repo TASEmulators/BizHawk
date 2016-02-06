@@ -326,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						switch (CompareTypeDropDown.SelectedText)
+						switch (CompareTypeDropDown.SelectedItem.ToString())
 						{
 							case "="  : comparisonType = Cheat.COMPARISONTYPE.EQUAL;                 break;
 							case ">"  : comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN;          break;

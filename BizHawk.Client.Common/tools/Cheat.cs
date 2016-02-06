@@ -6,7 +6,15 @@ namespace BizHawk.Client.Common
 {
 	public class Cheat
 	{
-		public enum COMPARISONTYPE { EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL};
+		public enum COMPARISONTYPE
+		{
+            EQUAL,
+			GREATER_THAN,
+			GREATER_THAN_OR_EQUAL,
+			LESS_THAN,
+			LESS_THAN_OR_EQUAL,
+			NOT_EQUAL
+		};
 
 		private readonly Watch _watch;
 		private int? _compare;
