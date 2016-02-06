@@ -1272,16 +1272,14 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
 			string romName;
-			string intialDirectory;
+			string intialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null);
 			if (Global.Config.RecentRoms.MostRecent.Contains('|'))
 			{
 				romName = Global.Config.RecentRoms.MostRecent.Split('|').Last();
-				intialDirectory = Global.Config.RecentRoms.MostRecent.Split('|').First();
 			}
 			else
 			{
 				romName = Global.Config.RecentRoms.MostRecent;
-				intialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(romName, null));
 			}
 
 			var ofd = new OpenFileDialog

@@ -127,11 +127,47 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public string ToolsPathFragment
+		{
+			get { return Global.Config.PathEntries["Global", "Tools"].Path; }
+		}
+
+		private static string ResolveToolsPath(string subPath)
+		{
+			if (Path.IsPathRooted(subPath))
+			{
+				return subPath;
+			}
+
+			var toolsPath = Global.Config.PathEntries["Global", "Tools"].Path;
+
+			// Hack for backwards compabitilbity, preior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
+			if (subPath == "Tools")
+			{
+				return toolsPath;
+			}
+
+			return Path.Combine(toolsPath, subPath);
+		}
+
 		//Some frequently requested paths, made into a property for convenience
-		public string WatchPathFragment { get { return Global.Config.PathEntries["Global", "Watch (.wch)"].Path; } }
+		public string WatchPathFragment
+		{
+			get { return ResolveToolsPath(Global.Config.PathEntries["Global", "Watch (.wch)"].Path); }
+		}
+
+		public string MultiDiskBundlesFragment
+		{
+			get { return ResolveToolsPath(Global.Config.PathEntries["Global", "Multi-Disk Bundles"].Path); }
+		}
+
+		public string LogPathFragment
+		{
+			get { return ResolveToolsPath(Global.Config.PathEntries["Global", "Debug Logs"].Path); }
+		}
+
 		public string MoviesPathFragment { get { return Global.Config.PathEntries["Global", "Movies"].Path; } }
 		public string LuaPathFragment { get { return Global.Config.PathEntries["Global", "Lua"].Path; } }
-		public string LogPathFragment { get { return Global.Config.PathEntries["Global", "Debug Logs"].Path; } }
 		public string FirmwaresPathFragment { get { return Global.Config.PathEntries["Global", "Firmware"].Path; } }
 		public string AvPathFragment { get { return Global.Config.PathEntries["Global", "A/V Dumps"].Path; } }
 		public string GlobalRomFragment { get { return Global.Config.PathEntries["Global", "ROM"].Path; } }
@@ -150,16 +186,17 @@ namespace BizHawk.Client.Common
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Firmware", Path = Path.Combine(".", "Firmware"), Ordinal = 3 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movies", Path = Path.Combine(".", "Movies"), Ordinal = 4 },
 					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Movie backups", Path = Path.Combine(".", "Movies", "backup"), Ordinal = 5 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 6 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = Path.Combine(".", "Tools"), Ordinal = 7 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "A/V Dumps", Path = ".", Ordinal = 8 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = Path.Combine(".", "Tools"), Ordinal = 9 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 10 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 11 },
-					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", "Tools"), Ordinal = 12 },
-                    new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "External Tools", Path = Path.Combine(".", "ExternalTools"), Ordinal = 13 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "A/V Dumps", Path = ".", Ordinal = 6 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Tools", Path = Path.Combine(".", "Tools"), Ordinal = 7 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 8 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Watch (.wch)", Path = Path.Combine(".", "."), Ordinal = 9 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Debug Logs", Path = Path.Combine(".", ""), Ordinal = 10 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 11 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 12 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", ""), Ordinal = 13 },
+					new PathEntry { System = "Global_NULL", SystemDisplayName="Global", Type = "External Tools", Path = Path.Combine(".", "ExternalTools"), Ordinal = 14 },
 
-                    new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
+					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Savestates",  Path= Path.Combine(".", "State"), Ordinal = 2 },
 					new PathEntry { System = "INTV", SystemDisplayName="Intellivision", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },

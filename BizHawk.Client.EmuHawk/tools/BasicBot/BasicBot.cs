@@ -468,7 +468,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = OpenFileDialog(
 					CurrentFileName,
-					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
+					PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null),
 					"Bot files",
 					"bot"
 				);
@@ -491,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var file = SaveFileDialog(
 					CurrentFileName,
-					PathManager.GetRomsPath(Global.Game.System), // TODO: bot path
+					PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null),
 					"Bot files",
 					"bot"
 				);
