@@ -103,6 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio()
 		{
+			Settings = new TAStudioSettings();
 			InitializeComponent();
 
 			if (Global.Emulator != null)
@@ -124,7 +125,6 @@ namespace BizHawk.Client.EmuHawk
 			ScreenshotControl.Visible = false;
 			Controls.Add(ScreenshotControl);
 			ScreenshotControl.BringToFront();
-			Settings = new TAStudioSettings();
 
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;
