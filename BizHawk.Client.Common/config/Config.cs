@@ -339,6 +339,7 @@ namespace BizHawk.Client.Common
 		public bool DisableLuaScriptsOnLoad = false;
 		public bool ToggleAllIfNoneSelected = true;
 		public bool RemoveRegisteredFunctionsOnToggle = true;
+		public bool LuaReloadOnScriptFileChange = false;
 		public bool RunLuaDuringTurbo = true;
 
 		// Watch Settings

@@ -31,15 +31,6 @@ namespace BizHawk.Client.Common
 			State = RunState.Disabled;
 		}
 
-		//public LuaFile(LuaFile file)
-		//{
-		//  Name = file.Name;
-		//  Path = file.Path;
-		//  State = file.State;
-		//  IsSeparator = file.IsSeparator;
-		//  CurrentDirectory = file.CurrentDirectory;
-		//}
-
 		public string Name { get; set; }
 		public string Path { get; set; }
 		public bool Enabled { get { return State != RunState.Disabled; } }

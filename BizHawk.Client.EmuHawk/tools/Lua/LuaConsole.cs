@@ -181,6 +181,48 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 		}
 
+		private readonly List<FileSystemWatcher> _watches = new List<FileSystemWatcher>();
+
+		private void AddFileWatches()
+		{
+			_watches.Clear();
+			foreach (var item in _luaList)
+			{
+				var processedPath = PathManager.TryMakeRelative(item.Path);
+				string pathToLoad = Path.IsPathRooted(processedPath)
+					? processedPath
+					: PathManager.MakeProgramRelativePath(processedPath);
+
+				CreateFileWatcher(pathToLoad);
+			}
+		}
+
+		private void CreateFileWatcher(string path)
+		{
+			var watcher = new FileSystemWatcher
+			{
+				Path = Path.GetDirectoryName(path),
+				Filter = Path.GetFileName(path),
+				NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+							 | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+				EnableRaisingEvents = true,
+			};
+
+			// TODO, Deleted and Renamed events
+			watcher.Changed += new FileSystemEventHandler(OnChanged);
+
+			_watches.Add(watcher);
+        }
+
+		private void OnChanged(object source, FileSystemEventArgs e)
+		{
+			string message = "File: " + e.FullPath + " " + e.ChangeType;
+			Invoke(new MethodInvoker(delegate
+			{
+				RefreshScriptMenuItem_Click(null, null);
+			}));
+		}
+
 		public void LoadLuaFile(string path)
 		{
 			var processedPath = PathManager.TryMakeRelative(path);
@@ -193,7 +235,6 @@ namespace BizHawk.Client.EmuHawk
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
 				Global.Config.RecentLua.Add(processedPath);
-
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
 				{
@@ -211,12 +252,18 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
+
 						MessageBox.Show(e.ToString());
 					}
 				}
 				else
 				{
 					luaFile.State = LuaFile.RunState.Disabled;
+				}
+
+				if (Global.Config.LuaReloadOnScriptFileChange)
+				{
+					CreateFileWatcher(processedPath);
 				}
 
 				//luaFile.Paused = false;
@@ -766,13 +813,17 @@ namespace BizHawk.Client.EmuHawk
 						LuaSandbox.Sandbox(null, () =>
 						{
 							string pathToLoad = Path.IsPathRooted(item.Path) ? item.Path : PathManager.MakeProgramRelativePath(item.Path); //JUNIPIER SQUATCHBOX COMPLEX
-							item.Thread = LuaImp.SpawnCoroutine(item.Path);
+							item.Thread = LuaImp.SpawnCoroutine(pathToLoad);
 							LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
 						}, () =>
 						{
 							item.State = LuaFile.RunState.Disabled;
 						});
 
+					}
+					catch (IOException)
+					{
+						ConsoleLog("Unable to access file " + item.Path);
 					}
 					catch (Exception ex)
 					{
@@ -977,6 +1028,7 @@ namespace BizHawk.Client.EmuHawk
 			DisableScriptsOnLoadMenuItem.Checked = Global.Config.DisableLuaScriptsOnLoad;
 			ReturnAllIfNoneSelectedMenuItem.Checked = Global.Config.ToggleAllIfNoneSelected;
 			RemoveRegisteredFunctionsOnToggleMenuItem.Checked = Global.Config.RemoveRegisteredFunctionsOnToggle;
+			ReloadWhenScriptFileChangesMenuItem.Checked = Global.Config.LuaReloadOnScriptFileChange;
 		}
 
 		private void DisableScriptsOnLoadMenuItem_Click(object sender, EventArgs e)
@@ -992,6 +1044,20 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveRegisteredFunctionsOnToggleMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.RemoveRegisteredFunctionsOnToggle ^= true;
+		}
+
+		private void ReloadWhenScriptFileChangesMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.LuaReloadOnScriptFileChange ^= true;
+
+			if (Global.Config.LuaReloadOnScriptFileChange)
+			{
+				AddFileWatches();
+            }
+			else
+			{
+				_watches.Clear();
+			}
 		}
 
 		#endregion
