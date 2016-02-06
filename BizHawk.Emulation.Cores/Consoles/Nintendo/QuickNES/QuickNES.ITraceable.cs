@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
+using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -30,19 +24,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			byte opcode = (byte)s[6];
 
-			Tracer.Put(string.Format("{0:X2} {1:X2} {2:X2} {3:X4} {4:X4} {5:X2} {6:X2}",
-				a, x, y, sp, pc, p, opcode));
+			int notused = 0;
+			string opcodeStr = MOS6502X.Disassemble(pc, out notused, (address) => _memoryDomains.SystemBus.PeekByte(address));
+
+			Tracer.Put(string.Format(
+				"{0:x4}:{1} SP:{2:x2} A:{3:x2} P:{4:x2} X:{5:x2} Y:{6:x2} ",
+			pc,
+			opcodeStr.PadRight(26),
+			sp,
+			a,
+			p,
+			x,
+			y));
 
 		}
 
-		private const string TraceHeader = "_A _X _Y _SP_ _PC_ _P OP";
+		private const string TraceHeader = "PC:OP SP_A_P_X_Y ";
 
 		private void ConnectTracer()
 		{
-			Tracer = new TraceBuffer
-				{
-					Header = TraceHeader
-				};
+			Tracer = new TraceBuffer { Header = TraceHeader };
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			_tracecb = new LibQuickNES.TraceCallback(MakeTrace);
 		}
