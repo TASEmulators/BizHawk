@@ -33,8 +33,10 @@
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.label14 = new System.Windows.Forms.Label();
+			this.StartFullScreenCheckbox = new System.Windows.Forms.CheckBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.SingleInstanceModeCheckbox = new System.Windows.Forms.CheckBox();
 			this.NeverAskSaveCheckbox = new System.Windows.Forms.CheckBox();
@@ -44,7 +46,6 @@
 			this.RunInBackgroundCheckbox = new System.Windows.Forms.CheckBox();
 			this.SaveWindowPositionCheckbox = new System.Windows.Forms.CheckBox();
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
-			this.StartPausedCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.LuaDuringTurboCheckbox = new System.Windows.Forms.CheckBox();
@@ -57,11 +58,12 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.cbMoviesOnDisk = new System.Windows.Forms.CheckBox();
+			this.label5 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			this.tabPage3.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+			this.tabPage3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// OkBtn
@@ -119,15 +121,29 @@
 			this.tabPage1.Text = "General";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// StartFullScreenCheckbox
+			// groupBox1
 			// 
-			this.StartFullScreenCheckbox.AutoSize = true;
-			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(6, 42);
-			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
-			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
-			this.StartFullScreenCheckbox.TabIndex = 3;
-			this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
-			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
+			this.groupBox1.Controls.Add(this.StartPausedCheckbox);
+			this.groupBox1.Controls.Add(this.label14);
+			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
+			this.groupBox1.Controls.Add(this.label3);
+			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
+			this.groupBox1.Location = new System.Drawing.Point(6, 177);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(369, 140);
+			this.groupBox1.TabIndex = 13;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Startup Options";
+			// 
+			// StartPausedCheckbox
+			// 
+			this.StartPausedCheckbox.AutoSize = true;
+			this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 19);
+			this.StartPausedCheckbox.Name = "StartPausedCheckbox";
+			this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
+			this.StartPausedCheckbox.TabIndex = 2;
+			this.StartPausedCheckbox.Text = "Start paused";
+			this.StartPausedCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label14
 			// 
@@ -137,6 +153,16 @@
 			this.label14.Size = new System.Drawing.Size(306, 13);
 			this.label14.TabIndex = 12;
 			this.label14.Text = "Note: Requires closing and reopening EmuHawk to take effect.";
+			// 
+			// StartFullScreenCheckbox
+			// 
+			this.StartFullScreenCheckbox.AutoSize = true;
+			this.StartFullScreenCheckbox.Location = new System.Drawing.Point(6, 42);
+			this.StartFullScreenCheckbox.Name = "StartFullScreenCheckbox";
+			this.StartFullScreenCheckbox.Size = new System.Drawing.Size(110, 17);
+			this.StartFullScreenCheckbox.TabIndex = 3;
+			this.StartFullScreenCheckbox.Text = "Start in Fullscreen";
+			this.StartFullScreenCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label3
 			// 
@@ -225,16 +251,6 @@
 			this.EnableContextMenuCheckbox.Text = "Enable Context Menu";
 			this.EnableContextMenuCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// StartPausedCheckbox
-			// 
-			this.StartPausedCheckbox.AutoSize = true;
-			this.StartPausedCheckbox.Location = new System.Drawing.Point(6, 19);
-			this.StartPausedCheckbox.Name = "StartPausedCheckbox";
-			this.StartPausedCheckbox.Size = new System.Drawing.Size(86, 17);
-			this.StartPausedCheckbox.TabIndex = 2;
-			this.StartPausedCheckbox.Text = "Start paused";
-			this.StartPausedCheckbox.UseVisualStyleBackColor = true;
-			// 
 			// PauseWhenMenuActivatedCheckbox
 			// 
 			this.PauseWhenMenuActivatedCheckbox.AutoSize = true;
@@ -247,6 +263,8 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.label5);
+			this.tabPage3.Controls.Add(this.cbMoviesOnDisk);
 			this.tabPage3.Controls.Add(this.LuaDuringTurboCheckbox);
 			this.tabPage3.Controls.Add(this.label12);
 			this.tabPage3.Controls.Add(this.label13);
@@ -348,19 +366,25 @@
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// groupBox1
+			// cbMoviesOnDisk
 			// 
-			this.groupBox1.Controls.Add(this.StartPausedCheckbox);
-			this.groupBox1.Controls.Add(this.label14);
-			this.groupBox1.Controls.Add(this.StartFullScreenCheckbox);
-			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Controls.Add(this.SingleInstanceModeCheckbox);
-			this.groupBox1.Location = new System.Drawing.Point(6, 177);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(369, 140);
-			this.groupBox1.TabIndex = 13;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Startup Options";
+			this.cbMoviesOnDisk.AutoSize = true;
+			this.cbMoviesOnDisk.Location = new System.Drawing.Point(6, 206);
+			this.cbMoviesOnDisk.Name = "cbMoviesOnDisk";
+			this.cbMoviesOnDisk.Size = new System.Drawing.Size(259, 17);
+			this.cbMoviesOnDisk.TabIndex = 16;
+			this.cbMoviesOnDisk.Text = "Store movie working data on disk instead of RAM";
+			this.cbMoviesOnDisk.UseVisualStyleBackColor = true;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(27, 226);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(299, 26);
+			this.label5.TabIndex = 17;
+			this.label5.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou should probably " +
+    "restart the program after changing this.";
 			// 
 			// EmuHawkOptions
 			// 
@@ -380,10 +404,10 @@
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage3.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			this.tabPage3.ResumeLayout(false);
+			this.tabPage3.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -419,5 +443,7 @@
 		private System.Windows.Forms.CheckBox StartFullScreenCheckbox;
 		private System.Windows.Forms.CheckBox LuaDuringTurboCheckbox;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.CheckBox cbMoviesOnDisk;
 	}
 }
