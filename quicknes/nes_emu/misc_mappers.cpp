@@ -264,7 +264,8 @@ public:
 };
 
 class Mapper_212 : public Nes_Mapper {
-
+	// something about this doesn't work right?
+	// TODO: fix me
 	int reg;
 	void writeinternal(int data, int changed)
 	{
@@ -342,6 +343,6 @@ void register_misc_mappers()
 	register_mapper<Mapper_Quattro>( 232 );
 
 	register_mapper<Mapper_78>( 78 );
-	register_mapper<Mapper_212>( 212 );
+	// register_mapper<Mapper_212>( 212 );
 }
 
