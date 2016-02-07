@@ -1060,6 +1060,68 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private readonly LuaAutocompleteInstaller LuaAutoInstaller = new LuaAutocompleteInstaller();
+
+		private void RegisterToTextEditorsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			// Hide until this one is implemented
+			RegisterNotePadMenuItem.Visible = false;
+
+			if (LuaAutoInstaller.IsInstalled(LuaAutocompleteInstaller.TextEditors.Sublime2))
+			{
+				if (LuaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.Sublime2))
+				{
+					RegisterSublimeText2MenuItem.Text = "Sublime Text 2 (installed)";
+					RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Regular);
+					RegisterSublimeText2MenuItem.Image = Properties.Resources.GreenCheck;
+				}
+				else
+				{
+					RegisterSublimeText2MenuItem.Text = "Sublime Text 2 (detected)";
+					RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Italic);
+					RegisterSublimeText2MenuItem.Image = null;
+				}
+			}
+			else
+			{
+				RegisterSublimeText2MenuItem.Text = "Sublime Text 2";
+				RegisterSublimeText2MenuItem.Font = new Font(RegisterSublimeText2MenuItem.Font, FontStyle.Regular);
+				RegisterSublimeText2MenuItem.Image = null;
+			}
+
+			if (LuaAutoInstaller.IsInstalled(LuaAutocompleteInstaller.TextEditors.NotePad))
+			{
+				if (LuaAutoInstaller.IsBizLuaRegistered(LuaAutocompleteInstaller.TextEditors.NotePad))
+				{
+					RegisterNotePadMenuItem.Text = "Notepad++ (installed)";
+					RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Regular);
+					RegisterNotePadMenuItem.Image = Properties.Resources.GreenCheck;
+				}
+				else
+				{
+					RegisterNotePadMenuItem.Text = "Notepad++ (detected)";
+					RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Italic);
+					RegisterNotePadMenuItem.Image = null;
+				}
+			}
+			else
+			{
+				RegisterNotePadMenuItem.Text = "Notepad++";
+				RegisterNotePadMenuItem.Font = new Font(RegisterNotePadMenuItem.Font, FontStyle.Regular);
+				RegisterNotePadMenuItem.Image = null;
+			}
+		}
+
+		private void RegisterSublimeText2MenuItem_Click(object sender, EventArgs e)
+		{
+			LuaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.Sublime2);
+		}
+
+		private void RegisterNotePadMenuItem_Click(object sender, EventArgs e)
+		{
+			LuaAutoInstaller.InstallBizLua(LuaAutocompleteInstaller.TextEditors.NotePad);
+		}
+
 		#endregion
 
 		#region Help

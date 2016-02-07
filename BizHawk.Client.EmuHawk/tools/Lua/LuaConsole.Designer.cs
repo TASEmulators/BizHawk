@@ -72,6 +72,10 @@
 			this.DisableScriptsOnLoadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ReturnAllIfNoneSelectedMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RemoveRegisteredFunctionsOnToggleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ReloadWhenScriptFileChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.RegisterToTextEditorsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.RegisterSublimeText2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.FunctionsListMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineDocsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,7 +107,7 @@
 			this.PathName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-			this.ReloadWhenScriptFileChangesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RegisterNotePadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ScriptListContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.ConsoleContextMenu.SuspendLayout();
@@ -458,7 +462,9 @@
             this.DisableScriptsOnLoadMenuItem,
             this.ReturnAllIfNoneSelectedMenuItem,
             this.RemoveRegisteredFunctionsOnToggleMenuItem,
-            this.ReloadWhenScriptFileChangesMenuItem});
+            this.ReloadWhenScriptFileChangesMenuItem,
+            this.toolStripSeparator4,
+            this.RegisterToTextEditorsSubMenu});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
 			this.SettingsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.SettingsSubMenu.Text = "&Settings";
@@ -484,6 +490,36 @@
 			this.RemoveRegisteredFunctionsOnToggleMenuItem.Size = new System.Drawing.Size(286, 22);
 			this.RemoveRegisteredFunctionsOnToggleMenuItem.Text = "Remove Registered Functions on Toggle";
 			this.RemoveRegisteredFunctionsOnToggleMenuItem.Click += new System.EventHandler(this.RemoveRegisteredFunctionsOnToggleMenuItem_Click);
+			// 
+			// ReloadWhenScriptFileChangesMenuItem
+			// 
+			this.ReloadWhenScriptFileChangesMenuItem.Name = "ReloadWhenScriptFileChangesMenuItem";
+			this.ReloadWhenScriptFileChangesMenuItem.Size = new System.Drawing.Size(286, 22);
+			this.ReloadWhenScriptFileChangesMenuItem.Text = "Reload When Script File Changes";
+			this.ReloadWhenScriptFileChangesMenuItem.Click += new System.EventHandler(this.ReloadWhenScriptFileChangesMenuItem_Click);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(283, 6);
+			// 
+			// RegisterToTextEditorsSubMenu
+			// 
+			this.RegisterToTextEditorsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RegisterSublimeText2MenuItem,
+            this.RegisterNotePadMenuItem});
+			this.RegisterToTextEditorsSubMenu.Name = "RegisterToTextEditorsSubMenu";
+			this.RegisterToTextEditorsSubMenu.Size = new System.Drawing.Size(286, 22);
+			this.RegisterToTextEditorsSubMenu.Text = "Register To Text Editors";
+			this.RegisterToTextEditorsSubMenu.DropDownOpened += new System.EventHandler(this.RegisterToTextEditorsSubMenu_DropDownOpened);
+			// 
+			// RegisterSublimeText2MenuItem
+			// 
+			this.RegisterSublimeText2MenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GreenCheck;
+			this.RegisterSublimeText2MenuItem.Name = "RegisterSublimeText2MenuItem";
+			this.RegisterSublimeText2MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.RegisterSublimeText2MenuItem.Text = "&Sublime Text 2";
+			this.RegisterSublimeText2MenuItem.Click += new System.EventHandler(this.RegisterSublimeText2MenuItem_Click);
 			// 
 			// HelpSubMenu
 			// 
@@ -809,12 +845,12 @@
 			this.splitContainer1.SplitterDistance = 280;
 			this.splitContainer1.TabIndex = 7;
 			// 
-			// ReloadWhenScriptFileChangesMenuItem
+			// RegisterNotePadMenuItem
 			// 
-			this.ReloadWhenScriptFileChangesMenuItem.Name = "ReloadWhenScriptFileChangesMenuItem";
-			this.ReloadWhenScriptFileChangesMenuItem.Size = new System.Drawing.Size(286, 22);
-			this.ReloadWhenScriptFileChangesMenuItem.Text = "Reload When Script File Changes";
-			this.ReloadWhenScriptFileChangesMenuItem.Click += new System.EventHandler(this.ReloadWhenScriptFileChangesMenuItem_Click);
+			this.RegisterNotePadMenuItem.Name = "RegisterNotePadMenuItem";
+			this.RegisterNotePadMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.RegisterNotePadMenuItem.Text = "Notepad++";
+			this.RegisterNotePadMenuItem.Click += new System.EventHandler(this.RegisterNotePadMenuItem_Click);
 			// 
 			// LuaConsole
 			// 
@@ -929,5 +965,9 @@
 				private System.Windows.Forms.ToolStripMenuItem ReturnAllIfNoneSelectedMenuItem;
 				private System.Windows.Forms.ToolStripMenuItem RemoveRegisteredFunctionsOnToggleMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ReloadWhenScriptFileChangesMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripMenuItem RegisterToTextEditorsSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem RegisterSublimeText2MenuItem;
+		private System.Windows.Forms.ToolStripMenuItem RegisterNotePadMenuItem;
 	}
 }

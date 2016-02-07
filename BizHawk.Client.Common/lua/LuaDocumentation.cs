@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
@@ -53,6 +54,93 @@ namespace BizHawk.Client.Common
 
 			return sb.ToString();
 		}
+
+		private class SublimeCompletions
+		{
+			public SublimeCompletions()
+			{
+				Scope = "source.lua";
+			}
+
+			[JsonProperty(PropertyName = "scope")]
+			public string Scope { get; set; }
+
+			[JsonProperty(PropertyName = "completions")]
+			public List<Completion> Completions = new List<Completion>();
+
+			public class Completion
+			{
+				[JsonProperty(PropertyName = "trigger")]
+				public string Trigger { get; set; }
+
+				[JsonProperty(PropertyName = "contents")]
+				public string Contents { get; set; }
+			}
+		}
+
+		public string ToSublime2CompletionList()
+		{
+			var sc = new SublimeCompletions();
+
+			foreach (var f in this.OrderBy(lf => lf.Library).ThenBy(lf => lf.Name))
+			{
+				var completion = new SublimeCompletions.Completion
+				{
+					Trigger = f.Library + "." + f.Name
+				};
+
+				var sb = new StringBuilder();
+
+				if (f.ParameterList.Any())
+				{
+					sb
+						.Append(string.Format("{0}.{1}(", f.Library, f.Name));
+
+					var parameters = f.Method.GetParameters()
+						.ToList();
+
+					for (int i = 0; i < parameters.Count; i++)
+					{
+						sb
+							.Append("${")
+							.Append(i + 1)
+							.Append(":");
+
+						if (parameters[i].IsOptional)
+						{
+							sb.Append(string.Format("[{0}]", parameters[i].Name));
+						}
+						else
+						{
+							sb.Append(parameters[i].Name);
+						}
+
+						sb.Append("}");
+
+						if (i < parameters.Count - 1)
+						{
+							sb.Append(",");
+						}
+					}
+
+					sb.Append(")");
+				}
+				else
+				{
+					sb.Append(string.Format("{0}.{1}()", f.Library, f.Name));
+				}
+
+				completion.Contents = sb.ToString();
+				sc.Completions.Add(completion);
+			}
+
+			return JsonConvert.SerializeObject(sc);
+		}
+
+		public string ToNotepadPlusPlusAutoComplete()
+		{
+			return string.Empty; // TODO
+		}
 	}
 
 	public class LibraryFunction
@@ -72,6 +160,8 @@ namespace BizHawk.Client.Common
 
 		public string Library { get; private set; }
 		public string LibraryDescription { get; private set; }
+
+		public MethodInfo Method {  get { return _method; } }
 
 		public string Name
 		{
