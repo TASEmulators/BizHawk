@@ -674,6 +674,25 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
+				case COMPARISONTYPE:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.ComparisonType)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address ?? 0)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.ComparisonType)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address ?? 0)
+							.ToList();
+					}
+
+					break;
 			}
 		}
 
@@ -706,5 +725,6 @@ namespace BizHawk.Client.Common
 		public const string SIZE = "SizeColumn";
 		public const string ENDIAN = "EndianColumn";
 		public const string TYPE = "DisplayTypeColumn";
+		private const string COMPARISONTYPE = "ComparisonTypeColumn";
 	}
 }

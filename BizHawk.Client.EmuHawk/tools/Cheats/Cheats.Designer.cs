@@ -111,10 +111,10 @@
 			this.CheatListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.CheatName,
             this.Address,
-            this.Value,
-            this.ComparisonType,
+            this.Value,          
             this.Compare,
-            this.On,
+			this.ComparisonType,
+			this.On,
             this.Domain});
 			this.CheatListView.ContextMenuStrip = this.CheatsContextMenu;
 			this.CheatListView.FullRowSelect = true;

@@ -253,10 +253,54 @@ namespace BizHawk.Client.Common
 			{
 				if (_compare.HasValue)
 				{
-					if (_compare.Value == _watch.ValueNoFreeze) // NOTE : THIS IS THE PLACE TO ADD DIFFERENT COMPARISON TYPES
+					switch (_comparisonType)
 					{
-						_watch.Poke(GetStringForPulse(_val));
+						case Cheat.COMPARISONTYPE.EQUAL:
+							if (_compare.Value == _watch.ValueNoFreeze) 
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+						case Cheat.COMPARISONTYPE.GREATER_THAN:
+							if (_compare.Value > _watch.ValueNoFreeze) 
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+						case Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL:
+							if (_compare.Value >= _watch.ValueNoFreeze)
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+						case Cheat.COMPARISONTYPE.LESS_THAN:
+							if (_compare.Value < _watch.ValueNoFreeze) 
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+						case Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL:
+							if (_compare.Value <= _watch.ValueNoFreeze)
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+						case Cheat.COMPARISONTYPE.NOT_EQUAL:
+							if (_compare.Value != _watch.ValueNoFreeze)
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+						default :
+							if (_compare.Value == _watch.ValueNoFreeze) 
+							{
+								_watch.Poke(GetStringForPulse(_val));
+							}
+							break;
+
 					}
+
+					
 				}
 				else
 				{
