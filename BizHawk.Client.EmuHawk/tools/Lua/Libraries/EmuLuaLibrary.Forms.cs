@@ -482,9 +482,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (form.Handle == ptr)
 				{
-					if (form.GetType().GetProperty(property).PropertyType.IsEnum)
+					var pt = form.GetType().GetProperty(property).PropertyType;
+					if (pt.IsEnum)
 					{
 						value = Enum.Parse(form.GetType().GetProperty(property).PropertyType, value.ToString(), true);
+					}
+					if (pt == typeof(Color))
+					{
+						//relying on exceptions for error handling here
+						var sval = (string)value;
+						if (sval[0] != '#') throw new Exception("Invalid #aarrggbb color");
+						if (sval.Length != 9) throw new Exception("Invalid #aarrggbb color");
+						value = Color.FromArgb(int.Parse(sval.Substring(1),System.Globalization.NumberStyles.HexNumber));
 					}
 					form
 						.GetType()
@@ -509,6 +518,15 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+		}
+
+		[LuaMethodAttributes(
+				"createcolor",
+				"Creates a color object useful with setproperty"
+			)]
+		public Color CreateColor(int r, int g, int b, int a)
+		{
+			return Color.FromArgb(a, r, g, b);
 		}
 
 		[LuaMethodAttributes(
