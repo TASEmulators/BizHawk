@@ -91,6 +91,7 @@
 			this.trackBarCompression = new System.Windows.Forms.TrackBar();
 			this.nudCompression = new System.Windows.Forms.NumericUpDown();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.label20 = new System.Windows.Forms.Label();
 			this.KbLabel = new System.Windows.Forms.Label();
 			this.BigScreenshotNumeric = new System.Windows.Forms.NumericUpDown();
 			this.LowResLargeScreenshotsCheckbox = new System.Windows.Forms.CheckBox();
@@ -101,7 +102,6 @@
 			this.label16 = new System.Windows.Forms.Label();
 			this.BackupSavestatesCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
-			this.label20 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.LargeSavestateNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.MediumSavestateNumeric)).BeginInit();
@@ -398,7 +398,7 @@
 			this.MediumStateTrackbar.Maximum = 4096;
 			this.MediumStateTrackbar.Minimum = 1;
 			this.MediumStateTrackbar.Name = "MediumStateTrackbar";
-			this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 45);
+			this.MediumStateTrackbar.Size = new System.Drawing.Size(186, 42);
 			this.MediumStateTrackbar.TabIndex = 7;
 			this.MediumStateTrackbar.TickFrequency = 256;
 			this.MediumStateTrackbar.Value = 1;
@@ -492,7 +492,7 @@
 			this.LargeStateTrackbar.Maximum = 16384;
 			this.LargeStateTrackbar.Minimum = 256;
 			this.LargeStateTrackbar.Name = "LargeStateTrackbar";
-			this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 45);
+			this.LargeStateTrackbar.Size = new System.Drawing.Size(186, 42);
 			this.LargeStateTrackbar.TabIndex = 10;
 			this.LargeStateTrackbar.TickFrequency = 1024;
 			this.LargeStateTrackbar.Value = 256;
@@ -690,7 +690,7 @@
 			// EstTimeLabel
 			// 
 			this.EstTimeLabel.AutoSize = true;
-			this.EstTimeLabel.Location = new System.Drawing.Point(261, 48);
+			this.EstTimeLabel.Location = new System.Drawing.Point(273, 48);
 			this.EstTimeLabel.Name = "EstTimeLabel";
 			this.EstTimeLabel.Size = new System.Drawing.Size(32, 13);
 			this.EstTimeLabel.TabIndex = 19;
@@ -699,7 +699,7 @@
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(209, 48);
+			this.label11.Location = new System.Drawing.Point(221, 48);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(54, 13);
 			this.label11.TabIndex = 18;
@@ -708,7 +708,7 @@
 			// AverageStoredStateSizeLabel
 			// 
 			this.AverageStoredStateSizeLabel.AutoSize = true;
-			this.AverageStoredStateSizeLabel.Location = new System.Drawing.Point(261, 16);
+			this.AverageStoredStateSizeLabel.Location = new System.Drawing.Point(273, 16);
 			this.AverageStoredStateSizeLabel.Name = "AverageStoredStateSizeLabel";
 			this.AverageStoredStateSizeLabel.Size = new System.Drawing.Size(41, 13);
 			this.AverageStoredStateSizeLabel.TabIndex = 17;
@@ -717,7 +717,7 @@
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(149, 16);
+			this.label9.Location = new System.Drawing.Point(161, 16);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(114, 13);
 			this.label9.TabIndex = 16;
@@ -726,7 +726,7 @@
 			// ApproxFramesLabel
 			// 
 			this.ApproxFramesLabel.AutoSize = true;
-			this.ApproxFramesLabel.Location = new System.Drawing.Point(261, 32);
+			this.ApproxFramesLabel.Location = new System.Drawing.Point(273, 32);
 			this.ApproxFramesLabel.Name = "ApproxFramesLabel";
 			this.ApproxFramesLabel.Size = new System.Drawing.Size(47, 13);
 			this.ApproxFramesLabel.TabIndex = 15;
@@ -735,7 +735,7 @@
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(197, 32);
+			this.label8.Location = new System.Drawing.Point(209, 32);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(66, 13);
 			this.label8.TabIndex = 14;
@@ -822,7 +822,7 @@
 			this.trackBarCompression.Location = new System.Drawing.Point(22, 37);
 			this.trackBarCompression.Maximum = 9;
 			this.trackBarCompression.Name = "trackBarCompression";
-			this.trackBarCompression.Size = new System.Drawing.Size(157, 45);
+			this.trackBarCompression.Size = new System.Drawing.Size(157, 42);
 			this.trackBarCompression.TabIndex = 20;
 			this.toolTip1.SetToolTip(this.trackBarCompression, "0 = None; 9 = Maximum");
 			this.trackBarCompression.Value = 1;
@@ -869,6 +869,15 @@
 			this.groupBox7.TabIndex = 2;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "Savestate Options";
+			// 
+			// label20
+			// 
+			this.label20.AutoSize = true;
+			this.label20.Location = new System.Drawing.Point(21, 291);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(315, 13);
+			this.label20.TabIndex = 34;
+			this.label20.Text = "Use a low resolution screenshot for better save/load performance";
 			// 
 			// KbLabel
 			// 
@@ -976,15 +985,6 @@
 			this.label12.Size = new System.Drawing.Size(96, 13);
 			this.label12.TabIndex = 24;
 			this.label12.Text = "Compression Level";
-			// 
-			// label20
-			// 
-			this.label20.AutoSize = true;
-			this.label20.Location = new System.Drawing.Point(21, 291);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(315, 13);
-			this.label20.TabIndex = 34;
-			this.label20.Text = "Use a low resolution screenshot for better save/load performance";
 			// 
 			// RewindConfig
 			// 
