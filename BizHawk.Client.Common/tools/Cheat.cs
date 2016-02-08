@@ -23,25 +23,7 @@ namespace BizHawk.Client.Common
 		private COMPARISONTYPE _comparisonType;
 		
 
-		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true)
-		{
-			_enabled = enabled;
-			_watch = watch;
-			_compare = compare;
-			_val = value;
-
-			Pulse();
-		}
-
-		/// <summary>
-		/// Adding second constructor for comparison type because I fear updating the method signiture for something in the Common namespace
-		/// </summary>
-		/// <param name="watch"></param>
-		/// <param name="value"></param>
-		/// <param name="comparisonType"></param>
-		/// <param name="compare"></param>
-		/// <param name="enabled"></param>
-		public Cheat(Watch watch, int value, COMPARISONTYPE comparisonType, int compare, bool enabled = true)
+		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, COMPARISONTYPE comparisonType = COMPARISONTYPE.EQUAL)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -297,10 +279,7 @@ namespace BizHawk.Client.Common
 								_watch.Poke(GetStringForPulse(_val));
 							}
 							break;
-
-					}
-
-					
+					}		
 				}
 				else
 				{

@@ -317,34 +317,27 @@ namespace BizHawk.Client.EmuHawk
                         NameBox.Text
 						);
 
-					if(CompareBox.ToRawInt() == null)
+					switch (CompareTypeDropDown.SelectedItem.ToString())
 					{
-						return new Cheat(
-							watch,
-							ValueBox.ToRawInt().Value
-						);
-					}
-					else
-					{
-						switch (CompareTypeDropDown.SelectedItem.ToString())
-						{
-							case "="  : comparisonType = Cheat.COMPARISONTYPE.EQUAL;                 break;
-							case ">"  : comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN;          break;
-							case ">=" : comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
-							case "<"  : comparisonType = Cheat.COMPARISONTYPE.LESS_THAN;             break;
-							case "<=" : comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL;    break;
-							case "!=" : comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL;             break;
-							default   : comparisonType = Cheat.COMPARISONTYPE.EQUAL;                 break;
-						}
-
-						return new Cheat(
-							watch,
-							ValueBox.ToRawInt().Value,
-							comparisonType,
-							CompareBox.ToRawInt().Value
-						);
+						case "=": comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
+						case ">": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN; break;
+						case ">=": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
+						case "<": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN; break;
+						case "<=": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL; break;
+						case "!=": comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL; break;
+						default: comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
 					}
 
+					int? c = CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value;
+
+
+					return new Cheat(
+						watch,
+						ValueBox.ToRawInt().Value,
+						CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value,
+						true,
+						comparisonType
+					);
 					
 				}
 				else
