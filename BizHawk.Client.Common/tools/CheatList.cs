@@ -484,7 +484,7 @@ namespace BizHawk.Client.Common
 							}
 							
 							// For backwards compatibility, don't assume these values exist
-							if (vals.Length > 8)
+							if (vals.Length > 9)
 							{
 								if(!Enum.TryParse<Cheat.COMPARISONTYPE>(vals[9], out comparisonType))
 								{
