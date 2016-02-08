@@ -85,6 +85,8 @@ public:
 
 	void blitTo(gambatte::uint_least32_t *videoBuf, int pitch);
 
+	void setLayers(unsigned mask);
+
 	/** Reset to initial state.
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */

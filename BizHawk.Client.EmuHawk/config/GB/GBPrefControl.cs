@@ -34,6 +34,8 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			propertyGrid1.SelectedObject = this.ss;
 			propertyGrid1.Enabled = !Global.MovieSession.Movie.IsActive;
 			checkBoxMuted.Checked = this.s.Muted;
+			cbDisplayBG.Checked = this.s.DisplayBG;
+			cbDisplayOBJ.Checked = this.s.DisplayOBJ;
 		}
 
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
@@ -65,6 +67,16 @@ namespace BizHawk.Client.EmuHawk.config.GB
 		private void checkBoxMuted_CheckedChanged(object sender, EventArgs e)
 		{
 			s.Muted = (sender as CheckBox).Checked;
+		}
+
+		private void cbDisplayBG_CheckedChanged(object sender, EventArgs e)
+		{
+			s.DisplayBG = (sender as CheckBox).Checked;
+		}
+
+		private void cbDisplayOBJ_CheckedChanged(object sender, EventArgs e)
+		{
+			s.DisplayOBJ = (sender as CheckBox).Checked;
 		}
 	}
 }

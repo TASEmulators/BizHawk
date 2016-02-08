@@ -174,6 +174,7 @@ public:
 	void setDmgPaletteColor(unsigned palNum, unsigned colorNum, unsigned long rgb32);
 	void setCgbPalette(unsigned *lut);
 	void setVideoBuffer(uint_least32_t *videoBuf, int pitch);
+	void setLayers(unsigned mask) { ppu.setLayers(mask); }
 
 	int debugGetLY() const { return ppu.lyCounter().ly(); }
 

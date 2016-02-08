@@ -298,6 +298,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			else
 				tracecb = null;
 			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
+
+			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0));
 		}
 
 		internal void FrameAdvancePost()

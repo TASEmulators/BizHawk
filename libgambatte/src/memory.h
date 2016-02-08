@@ -103,6 +103,8 @@ public:
 	bool ime() const { return intreq.ime(); }
 	bool halted() const { return intreq.halted(); }
 	unsigned long nextEventTime() const { return intreq.minEventTime(); }
+
+	void setLayers(unsigned mask) { display.setLayers(mask); }
 	
 	bool isActive() const { return intreq.eventTime(END) != DISABLED_TIME; }
 	

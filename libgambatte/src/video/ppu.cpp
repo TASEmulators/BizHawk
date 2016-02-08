@@ -408,68 +408,71 @@ namespace M3Loop {
 				
 				int i = nextSprite - 1;
 			
-				if (!(p.lcdc & 2)) {
-					do {
-						const int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
-						p.spwordList[i] >>= pos * 2 >= 0 ? 16 - pos * 2 : 16 + pos * 2;
-						--i;
-					} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
-				} else {
-					do {
-						int n;
-						int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
-						
-						if (pos < 0) {
-							n = pos + 8;
-							pos = 0;
-						} else
-							n = 8 - pos;
-						
-						const unsigned attrib = p.spriteList[i].attrib;
-						unsigned spword       = p.spwordList[i];
-						const unsigned long *const spPalette = p.spPalette + (attrib >> 2 & 4);
-						uint_least32_t *d = dst + pos;
-						
-						if (!(attrib & 0x80)) {
-							switch (n) {
-							case 8: if (spword >> 14    ) { d[7] = spPalette[spword >> 14    ]; }
-							case 7: if (spword >> 12 & 3) { d[6] = spPalette[spword >> 12 & 3]; }
-							case 6: if (spword >> 10 & 3) { d[5] = spPalette[spword >> 10 & 3]; }
-							case 5: if (spword >>  8 & 3) { d[4] = spPalette[spword >>  8 & 3]; }
-							case 4: if (spword >>  6 & 3) { d[3] = spPalette[spword >>  6 & 3]; }
-							case 3: if (spword >>  4 & 3) { d[2] = spPalette[spword >>  4 & 3]; }
-							case 2: if (spword >>  2 & 3) { d[1] = spPalette[spword >>  2 & 3]; }
-							case 1: if (spword       & 3) { d[0] = spPalette[spword       & 3]; }
-							}
-							
-							spword >>= n * 2;
-							
-							/*do {
+				if(p.layersMask & LAYER_MASK_OBJ)
+				{
+					if (!(p.lcdc & 2)) {
+						do {
+							const int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+							p.spwordList[i] >>= pos * 2 >= 0 ? 16 - pos * 2 : 16 + pos * 2;
+							--i;
+						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+					} else {
+						do {
+							int n;
+							int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+
+							if (pos < 0) {
+								n = pos + 8;
+								pos = 0;
+							} else
+								n = 8 - pos;
+
+							const unsigned attrib = p.spriteList[i].attrib;
+							unsigned spword       = p.spwordList[i];
+							const unsigned long *const spPalette = p.spPalette + (attrib >> 2 & 4);
+							uint_least32_t *d = dst + pos;
+
+							if (!(attrib & 0x80)) {
+								switch (n) {
+								case 8: if (spword >> 14    ) { d[7] = spPalette[spword >> 14    ]; }
+								case 7: if (spword >> 12 & 3) { d[6] = spPalette[spword >> 12 & 3]; }
+								case 6: if (spword >> 10 & 3) { d[5] = spPalette[spword >> 10 & 3]; }
+								case 5: if (spword >>  8 & 3) { d[4] = spPalette[spword >>  8 & 3]; }
+								case 4: if (spword >>  6 & 3) { d[3] = spPalette[spword >>  6 & 3]; }
+								case 3: if (spword >>  4 & 3) { d[2] = spPalette[spword >>  4 & 3]; }
+								case 2: if (spword >>  2 & 3) { d[1] = spPalette[spword >>  2 & 3]; }
+								case 1: if (spword       & 3) { d[0] = spPalette[spword       & 3]; }
+								}
+
+								spword >>= n * 2;
+
+								/*do {
 								if (spword & 3)
-									dst[pos] = spPalette[spword & 3];
-								
+								dst[pos] = spPalette[spword & 3];
+
 								spword >>= 2;
 								++pos;
-							} while (--n);*/
-						} else {
-							unsigned tw = tileword >> pos * 2;
-							d += n;
-							n = -n;
-							
-							do {
-								if (spword & 3) {
-									d[n] = tw & 3 ? p.bgPalette[tw     & 3]
-									              :   spPalette[spword & 3];
-								}
-								
-								spword >>= 2;
-								tw     >>= 2;
-							} while (++n);
-						}
-						
-						p.spwordList[i] = spword;
-						--i;
-					} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+								} while (--n);*/
+							} else {
+								unsigned tw = tileword >> pos * 2;
+								d += n;
+								n = -n;
+
+								do {
+									if (spword & 3) {
+										d[n] = tw & 3 ? p.bgPalette[tw     & 3]
+										:   spPalette[spword & 3];
+									}
+
+									spword >>= 2;
+									tw     >>= 2;
+								} while (++n);
+							}
+
+							p.spwordList[i] = spword;
+							--i;
+						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+					}
 				}
 			}
 			
@@ -491,6 +494,13 @@ namespace M3Loop {
 		int xpos = p.xpos;
 		const unsigned char *const vram = p.vram;
 		const unsigned tdoffset = tileline * 2 + (~p.lcdc & 0x10) * 0x100;
+
+		if(!(p.layersMask & LAYER_MASK_BG))
+		{
+			for(int x=xpos,i=0;x<xend;x++,i++)
+				dbufline[i] = p.bgPalette[0]; //guessing?
+			return;
+		}
 		
 		do {
 			int nextSprite = p.nextSprite;
@@ -593,103 +603,106 @@ namespace M3Loop {
 				dst[7] = bgPalette[ tileword           >> 14];
 				
 				int i = nextSprite - 1;
-			
-				if (!(p.lcdc & 2)) {
-					do {
-						const int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
-						p.spwordList[i] >>= pos * 2 >= 0 ? 16 - pos * 2 : 16 + pos * 2;
-						--i;
-					} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
-				} else {
-					unsigned char idtab[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-					const unsigned bgenmask = p.lcdc << 7 & 0x80;
-					
-					do {
-						int n;
-						int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
-						
-						if (pos < 0) {
-							n = pos + 8;
-							pos = 0;
-						} else
-							n = 8 - pos;
-						
-						const unsigned char id = p.spriteList[i].oampos;
-						const unsigned sattrib = p.spriteList[i].attrib;
-						unsigned spword        = p.spwordList[i];
-						const unsigned long *const spPalette = p.spPalette + (sattrib & 7) * 4;
-						
-						if (!((attrib | sattrib) & bgenmask)) {
-							unsigned char  *const idt = idtab + pos;
-							uint_least32_t *const   d =   dst + pos;
-							
-							switch (n) {
-							case 8: if ((spword >> 14    ) && id < idt[7]) {
-							        	idt[7] = id;
-							        	  d[7] = spPalette[spword >> 14    ];
-							        }
-							case 7: if ((spword >> 12 & 3) && id < idt[6]) {
-							        	idt[6] = id;
-							        	  d[6] = spPalette[spword >> 12 & 3];
-							        }
-							case 6: if ((spword >> 10 & 3) && id < idt[5]) {
-							        	idt[5] = id;
-							        	  d[5] = spPalette[spword >> 10 & 3];
-							        }
-							case 5: if ((spword >>  8 & 3) && id < idt[4]) {
-							        	idt[4] = id;
-							        	  d[4] = spPalette[spword >>  8 & 3];
-							        }
-							case 4: if ((spword >>  6 & 3) && id < idt[3]) {
-							        	idt[3] = id;
-							        	  d[3] = spPalette[spword >>  6 & 3];
-							        }
-							case 3: if ((spword >>  4 & 3) && id < idt[2]) {
-							        	idt[2] = id;
-							        	  d[2] = spPalette[spword >>  4 & 3];
-							        }
-							case 2: if ((spword >>  2 & 3) && id < idt[1]) {
-							        	idt[1] = id;
-							        	  d[1] = spPalette[spword >>  2 & 3];
-							        }
-							case 1: if ((spword       & 3) && id < idt[0]) {
-							        	idt[0] = id;
-							        	  d[0] = spPalette[spword       & 3];
-							        }
+
+				if(p.layersMask & LAYER_MASK_OBJ)
+				{
+					if (!(p.lcdc & 2)) {
+						do {
+							const int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+							p.spwordList[i] >>= pos * 2 >= 0 ? 16 - pos * 2 : 16 + pos * 2;
+							--i;
+						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+					} else {
+						unsigned char idtab[8] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+						const unsigned bgenmask = p.lcdc << 7 & 0x80;
+
+						do {
+							int n;
+							int pos = static_cast<int>(p.spriteList[i].spx) - xpos;
+
+							if (pos < 0) {
+								n = pos + 8;
+								pos = 0;
+							} else
+								n = 8 - pos;
+
+							const unsigned char id = p.spriteList[i].oampos;
+							const unsigned sattrib = p.spriteList[i].attrib;
+							unsigned spword        = p.spwordList[i];
+							const unsigned long *const spPalette = p.spPalette + (sattrib & 7) * 4;
+
+							if (!((attrib | sattrib) & bgenmask)) {
+								unsigned char  *const idt = idtab + pos;
+								uint_least32_t *const   d =   dst + pos;
+
+								switch (n) {
+								case 8: if ((spword >> 14    ) && id < idt[7]) {
+									idt[7] = id;
+									d[7] = spPalette[spword >> 14    ];
+												}
+								case 7: if ((spword >> 12 & 3) && id < idt[6]) {
+									idt[6] = id;
+									d[6] = spPalette[spword >> 12 & 3];
+												}
+								case 6: if ((spword >> 10 & 3) && id < idt[5]) {
+									idt[5] = id;
+									d[5] = spPalette[spword >> 10 & 3];
+												}
+								case 5: if ((spword >>  8 & 3) && id < idt[4]) {
+									idt[4] = id;
+									d[4] = spPalette[spword >>  8 & 3];
+												}
+								case 4: if ((spword >>  6 & 3) && id < idt[3]) {
+									idt[3] = id;
+									d[3] = spPalette[spword >>  6 & 3];
+												}
+								case 3: if ((spword >>  4 & 3) && id < idt[2]) {
+									idt[2] = id;
+									d[2] = spPalette[spword >>  4 & 3];
+												}
+								case 2: if ((spword >>  2 & 3) && id < idt[1]) {
+									idt[1] = id;
+									d[1] = spPalette[spword >>  2 & 3];
+												}
+								case 1: if ((spword       & 3) && id < idt[0]) {
+									idt[0] = id;
+									d[0] = spPalette[spword       & 3];
+												}
+								}
+
+								spword >>= n * 2;
+
+								/*do {
+								if ((spword & 3) && id < idtab[pos]) {
+								idtab[pos] = id;
+								dst[pos] = spPalette[spword & 3];
+								}
+
+								spword >>= 2;
+								++pos;
+								} while (--n);*/
+							} else {
+								unsigned tw = tileword >> pos * 2;
+
+								do {
+									if ((spword & 3) && id < idtab[pos]) {
+										idtab[pos] = id;
+										dst[pos] = tw & 3 ? bgPalette[tw & 3] : spPalette[spword & 3];
+									}
+
+									spword >>= 2;
+									tw     >>= 2;
+									++pos;
+								} while (--n);
 							}
-							
-							spword >>= n * 2;
-							
-							/*do {
-								if ((spword & 3) && id < idtab[pos]) {
-									idtab[pos] = id;
-										dst[pos] = spPalette[spword & 3];
-								}
-								
-								spword >>= 2;
-								++pos;
-							} while (--n);*/
-						} else {
-							unsigned tw = tileword >> pos * 2;
-							
-							do {
-								if ((spword & 3) && id < idtab[pos]) {
-									idtab[pos] = id;
-									  dst[pos] = tw & 3 ? bgPalette[tw & 3] : spPalette[spword & 3];
-								}
-								
-								spword >>= 2;
-								tw     >>= 2;
-								++pos;
-							} while (--n);
-						}
-						
-						p.spwordList[i] = spword;
-						--i;
-					} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+
+							p.spwordList[i] = spword;
+							--i;
+						} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
+					}
 				}
 			}
-			
+
 			{
 				unsigned const tno     = tileMapLine[ tileMapXpos & 0x1F          ];
 				unsigned const nattrib = tileMapLine[(tileMapXpos & 0x1F) + 0x2000];
@@ -715,7 +728,7 @@ namespace M3Loop {
 		
 		if (xpos >= xend)
 			return;
-		
+	
 		uint_least32_t *const dbufline = p.framebuf.fbline();
 		const unsigned char *tileMapLine;
 		unsigned tileline;
@@ -759,6 +772,7 @@ namespace M3Loop {
 	}
 	
 	static void plotPixel(PPUPriv &p) {
+		//ZING!
 		const int xpos = p.xpos;
 		const unsigned tileword = p.tileword;
 		uint_least32_t *const fbline = p.framebuf.fbline();
@@ -774,6 +788,11 @@ namespace M3Loop {
 		const unsigned twdata = tileword & ((p.lcdc & 1) | p.cgb) * 3;
 		unsigned long pixel = p.bgPalette[twdata + (p.attrib & 7) * 4];
 		int i = static_cast<int>(p.nextSprite) - 1;
+
+		if(!(p.layersMask & LAYER_MASK_BG))
+		{
+			pixel = p.bgPalette[0]; //guessing? clobber the tile that was read
+		}
 		
 		if (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8) {
 			unsigned spdata = 0;
@@ -793,8 +812,11 @@ namespace M3Loop {
 					--i;
 				} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
 				
-				if (spdata && (p.lcdc & 2) && (!((attrib | p.attrib) & 0x80) || !twdata || !(p.lcdc & 1)))
-					pixel = p.spPalette[(attrib & 7) * 4 + spdata];
+				if(p.layersMask & LAYER_MASK_OBJ)
+				{
+					if (spdata && (p.lcdc & 2) && (!((attrib | p.attrib) & 0x80) || !twdata || !(p.lcdc & 1)))
+						pixel = p.spPalette[(attrib & 7) * 4 + spdata];
+				}
 			} else {
 				do {
 					if (p.spwordList[i] & 3) {
@@ -806,8 +828,11 @@ namespace M3Loop {
 					--i;
 				} while (i >= 0 && static_cast<int>(p.spriteList[i].spx) > xpos - 8);
 				
-				if (spdata && (p.lcdc & 2) && (!(attrib & 0x80) || !twdata))
-					pixel = p.spPalette[(attrib >> 2 & 4) + spdata];
+				if(p.layersMask & LAYER_MASK_OBJ)
+				{
+					if (spdata && (p.lcdc & 2) && (!(attrib & 0x80) || !twdata))
+						pixel = p.spPalette[(attrib >> 2 & 4) + spdata];
+				}
 			}
 		}
 		
@@ -1445,6 +1470,7 @@ namespace gambatte {
 PPUPriv::PPUPriv(NextM0Time &nextM0Time, const unsigned char *const oamram, const unsigned char *const vram) :
 	nextSprite(0),
 	currentSprite(0xFF),
+	layersMask(LAYER_MASK_BG|LAYER_MASK_OBJ),
 	vram(vram),
 	nextCallPtr(&M2::Ly0::f0_),
 	now(0),
