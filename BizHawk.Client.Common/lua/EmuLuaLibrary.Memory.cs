@@ -77,6 +77,18 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"getmemorydomainsize",
+			"Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size"
+		)]
+		public uint GetMemoryDomainSize(string name = "")
+		{
+			if (string.IsNullOrEmpty(name))
+				return (uint)Domain.Size;
+			else
+				return (uint)DomainList[VerifyMemoryDomain(name)].Size;
+		}
+
+		[LuaMethodAttributes(
 			"getcurrentmemorydomain",
 			"Returns a string name of the current memory domain selected by Lua. The default is Main memory"
 		)]
