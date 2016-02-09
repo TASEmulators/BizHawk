@@ -1,5 +1,5 @@
 =========================================
-next
+1.11.4
 =========================================
 
 *EmuHawk
@@ -22,6 +22,7 @@ next
 **Remember codec selection between program sessions
 **Fix toolbox
 **Improvements to Retro shader compatibility
+**Several Hex Editor usability enhancements
 **DispMethod D3D: Stop FP precision conflicts with lua scripts
 **DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
 **Fix #525 - Memorywatch hex textbox now remembers values across memdomain switches
@@ -72,6 +73,7 @@ next
 **Autoload recent scripts (unless there's a recent session to autoload)
 **Fix forms.destroyall() and call it when lua console closes
 **Fix error in sizing of lua draw buffers with SetGameExtraPadding (and probably ClientExtraPadding) use
+**Add gui.defaultTextBackground
 **Fix #538 - Ability to pass memory domain to memory read/write functions
 
 *PSX
@@ -81,6 +83,8 @@ next
 **Fix crashes in GFX debugger (including fix #529)
 **Recommend proper SNES PAR
 **Build dlls without msvcrt14 dependencies (to run on more systems)
+**Fix several cheat bugs
+**Fix #134 - Add option to disable "force determinism", aka, turn off `savestate every frame`, for reduced reliability and greater speed.
 
 *Genesis
 **Add missing scrollbars in VDP viewer
