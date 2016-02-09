@@ -347,7 +347,7 @@
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(383, 13);
 			this.label2.TabIndex = 27;
-			this.label2.Text = "Firmware such as BIOS files are copyright material and not provided by BizHawk";
+			this.label2.Text = "Firmware such as BIOS files are copyrighted material and not provided by BizHawk";
 			// 
 			// FirmwaresConfig
 			// 
