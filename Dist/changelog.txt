@@ -1,4 +1,59 @@
 =========================================
+1.11.5 (in progress)
+=========================================
+
+*EmuHawk
+**Improve OSD watches
+**Add polar coordinates to VirtualPad analog controls
+**Save and load named config files manually
+**Add "store movie working data on disk instead of RAM" option to permit creation of hours-long movies
+**Allow multiple concurrent ExternalTools
+**IsLagFrame can now be set by external tools and lua
+**Add Movie Save As menu function
+**Default window zooms now configurable per platform
+**Assorted usability improvements to Lua console, ram watch, ram search, firmwares config
+**Fix #561 - xpad rightstick unresponsive
+
+**Cheats
+***Add comparison
+***Multiline codes support
+***GBA: Support Action Replay MAX, Slide codes
+
+**Tastudio
+***Too many improvements to count, this tool is under hot development. **TODO** but feos or adelikat may want to take a stab at the high level features
+***Many efforts to reduce out-of-memory crashes
+
+**Basic Bot **TODO** anything else?
+***Support comparison values
+
+**Lua
+***Forms: Allow scrollbars on textbox
+***Support script auto hot-reloading
+***Add movie.save, client.displaymessages
+***Fix #488 - Sandbox current directory better
+***Fix #547 - Allow "#aarrggbb" as Color parameter to forms.setproperty. 
+***Fix #565 - bugs in lua's memorysavestate apis
+
+*NES
+**Better support for JAM/KIL opcode, mapper 226
+**Support Tracer for QuickNES
+**Bugfixes to NSF player
+
+*PSX
+**Support memory callbacks
+**Support "determine lag from GPU frames" to mimic PCSXRR
+
+*GBA
+**Update to mgb 0.4.0
+**Fix #563 0 Combined WRAM not working in mGBA
+
+*Other cores:
+**N64: Better defaults for DK64
+**GB/GBC: Add layer toggles
+**SMS: Support SG-1000 recording
+
+
+=========================================
 1.11.4
 =========================================
 
