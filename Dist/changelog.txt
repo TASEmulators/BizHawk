@@ -31,7 +31,7 @@
 ***Support script auto hot-reloading
 ***Add movie.save, client.displaymessages
 ***Fix #488 - Sandbox current directory better
-***Fix #547 - Allow "#aarrggbb" as Color parameter to forms.setproperty. 
+***Fix #547 - Allow "#aarrggbb" as Color parameter to forms.setproperty
 ***Fix #565 - bugs in lua's memorysavestate apis
 
 *NES
@@ -44,7 +44,7 @@
 **Support "determine lag from GPU frames" to mimic PCSXRR
 
 *GBA
-**Update to mgb 0.4.0
+**Update to mgba 0.4.0
 **Fix #563 0 Combined WRAM not working in mGBA
 
 *Other cores:
