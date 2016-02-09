@@ -397,6 +397,7 @@ namespace BizHawk.Client.Common
 								.Append(cheat.SizeAsChar).Append('\t')
 								.Append(cheat.TypeAsChar).Append('\t')
 								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
+								.Append(cheat.ComparisonType.ToString()).Append('\t')
 								.AppendLine();
 						}
 					}
@@ -450,6 +451,7 @@ namespace BizHawk.Client.Common
 							var size = WatchSize.Byte;
 							var type = DisplayType.Hex;
 							var bigendian = false;
+							Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.EQUAL;
 
 							if (s.Length < 6)
 							{
@@ -480,6 +482,15 @@ namespace BizHawk.Client.Common
 								type = Watch.DisplayTypeFromChar(vals[7][0]);
 								bigendian = vals[8] == "1";
 							}
+							
+							// For backwards compatibility, don't assume these values exist
+							if (vals.Length > 9)
+							{
+								if(!Enum.TryParse<Cheat.COMPARISONTYPE>(vals[9], out comparisonType))
+								{
+									continue; //Not sure if this is the best answer, could just resort to ==
+								}
+							}
 
 							var watch = Watch.GenerateWatch(
 								domain,
@@ -489,7 +500,7 @@ namespace BizHawk.Client.Common
 								bigendian,
                                 name);
 
-							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled));
+							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled, comparisonType));
 						}
 					}
 					catch
@@ -674,6 +685,25 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
+				case COMPARISONTYPE:
+					if (reverse)
+					{
+						_cheatList = _cheatList
+							.OrderByDescending(x => x.ComparisonType)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address ?? 0)
+							.ToList();
+					}
+					else
+					{
+						_cheatList = _cheatList
+							.OrderBy(x => x.ComparisonType)
+							.ThenBy(x => x.Name)
+							.ThenBy(x => x.Address ?? 0)
+							.ToList();
+					}
+
+					break;
 			}
 		}
 
@@ -706,5 +736,6 @@ namespace BizHawk.Client.Common
 		public const string SIZE = "SizeColumn";
 		public const string ENDIAN = "EndianColumn";
 		public const string TYPE = "DisplayTypeColumn";
+		private const string COMPARISONTYPE = "ComparisonTypeColumn";
 	}
 }

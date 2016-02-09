@@ -87,6 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressBox.Text = _cheat.AddressStr;
 			ValueBox.Text = _cheat.ValueStr;
 			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
+			CompareTypeDropDown.SelectedIndex = (int)_cheat.ComparisonType;
 
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
@@ -303,8 +304,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.EQUAL;
 				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
-				var address = AddressBox.ToRawInt().Value;
+				var address = AddressBox.ToRawInt().Value;				
 				if (address < domain.Size)
 				{
 					var watch = Watch.GenerateWatch(
@@ -316,11 +318,28 @@ namespace BizHawk.Client.EmuHawk
                         NameBox.Text
 						);
 
+					switch (CompareTypeDropDown.SelectedItem.ToString())
+					{
+						case "=": comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
+						case ">": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN; break;
+						case ">=": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
+						case "<": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN; break;
+						case "<=": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL; break;
+						case "!=": comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL; break;
+						default: comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
+					}
+
+					int? c = CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value;
+
+
 					return new Cheat(
 						watch,
 						ValueBox.ToRawInt().Value,
-						 CompareBox.ToRawInt()
+						CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value,
+						true,
+						comparisonType
 					);
+					
 				}
 				else
 				{
@@ -341,5 +360,41 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void CompareBox_TextChanged(object sender, EventArgs e)
+		{
+			WatchValueBox compareBox = (WatchValueBox)sender;
+
+			PopulateComparisonTypeBox(String.IsNullOrWhiteSpace(compareBox.Text));
+		}
+
+		/// <summary>
+		/// Populates the comparison type drop down
+		/// </summary>
+		/// <param name="empty">True if drop down should be left empty</param>
+		private void PopulateComparisonTypeBox(bool empty = false)
+		{
+
+			// Don't need to do anything in this case
+			if (!empty && this.CompareTypeDropDown.Items.Count > 0)
+			{
+				return;
+			}
+
+			this.CompareTypeDropDown.Items.Clear();
+
+			if (!empty)
+			{
+				this.CompareTypeDropDown.Items.AddRange(new object[] {
+					"=",
+					">",
+					">=",
+					"<",
+					"<=",
+					"!="
+				});
+			}
+			
+		}
 	}
 }

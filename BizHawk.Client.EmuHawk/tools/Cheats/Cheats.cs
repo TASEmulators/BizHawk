@@ -10,6 +10,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Diagnostics;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -24,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string SIZE = "SizeColumn";
 		private const string ENDIAN = "EndianColumn";
 		private const string TYPE = "DisplayTypeColumn";
+		private const string COMPARISONTYPE = "ComparisonTypeColumn";
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -261,6 +263,19 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case TYPE:
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
+					break;
+				case COMPARISONTYPE:
+					switch (Global.CheatList[index].ComparisonType)
+					{
+						case Cheat.COMPARISONTYPE.EQUAL                 : text = "=";  break;
+						case Cheat.COMPARISONTYPE.GREATER_THAN          : text = ">";  break;
+						case Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL : text = ">="; break;
+						case Cheat.COMPARISONTYPE.LESS_THAN             : text = "<";  break;
+						case Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL    : text = "<="; break;
+						case Cheat.COMPARISONTYPE.NOT_EQUAL             : text = "!="; break;
+						default                                         : break;
+					}
+					
 					break;
 			}
 		}
@@ -699,11 +714,12 @@ namespace BizHawk.Client.EmuHawk
 					new Column { Name = ADDRESS, Visible = true, Index = 1, Width = 60 },
 					new Column { Name = VALUE, Visible = true, Index = 2, Width = 59 },
 					new Column { Name = COMPARE, Visible = true, Index = 3, Width = 59 },
-					new Column { Name = ON, Visible = false, Index = 4, Width = 28 },
-					new Column { Name = DOMAIN, Visible = true, Index = 5, Width = 55 },
-					new Column { Name = SIZE, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = ENDIAN, Visible = false, Index = 7, Width = 55 },
-					new Column { Name = TYPE, Visible = false, Index = 8, Width = 55 }
+					new Column { Name = COMPARISONTYPE, Visible = true, Index = 4, Width = 60 },
+					new Column { Name = ON, Visible = false, Index = 5, Width = 28 },
+					new Column { Name = DOMAIN, Visible = true, Index = 6, Width = 55 },
+					new Column { Name = SIZE, Visible = true, Index = 7, Width = 55 },
+					new Column { Name = ENDIAN, Visible = false, Index = 8, Width = 55 },
+					new Column { Name = TYPE, Visible = false, Index = 9, Width = 55 }
 				};
 			}
 
