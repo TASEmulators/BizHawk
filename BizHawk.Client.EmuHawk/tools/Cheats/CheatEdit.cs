@@ -87,6 +87,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressBox.Text = _cheat.AddressStr;
 			ValueBox.Text = _cheat.ValueStr;
 			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
+			CompareTypeDropDown.SelectedIndex = (int)_cheat.ComparisonType;
 
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
