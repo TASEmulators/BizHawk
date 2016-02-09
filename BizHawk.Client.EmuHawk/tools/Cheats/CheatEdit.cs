@@ -359,5 +359,41 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		private void CompareBox_TextChanged(object sender, EventArgs e)
+		{
+			WatchValueBox compareBox = (WatchValueBox)sender;
+
+			PopulateComparisonTypeBox(String.IsNullOrWhiteSpace(compareBox.Text));
+		}
+
+		/// <summary>
+		/// Populates the comparison type drop down
+		/// </summary>
+		/// <param name="empty">True if drop down should be left empty</param>
+		private void PopulateComparisonTypeBox(bool empty = false)
+		{
+
+			// Don't need to do anything in this case
+			if (!empty && this.CompareTypeDropDown.Items.Count > 0)
+			{
+				return;
+			}
+
+			this.CompareTypeDropDown.Items.Clear();
+
+			if (!empty)
+			{
+				this.CompareTypeDropDown.Items.AddRange(new object[] {
+					"=",
+					">",
+					">=",
+					"<",
+					"<=",
+					"!="
+				});
+			}
+			
+		}
 	}
 }
