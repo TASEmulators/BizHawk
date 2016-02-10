@@ -48,6 +48,10 @@
 			this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
 			this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.label6 = new System.Windows.Forms.Label();
+			this.cbMoviesInAWE = new System.Windows.Forms.CheckBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.cbMoviesOnDisk = new System.Windows.Forms.CheckBox();
 			this.LuaDuringTurboCheckbox = new System.Windows.Forms.CheckBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
@@ -58,8 +62,6 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.cbMoviesOnDisk = new System.Windows.Forms.CheckBox();
-			this.label5 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -69,11 +71,11 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(280, 367);
+			this.OkBtn.Location = new System.Drawing.Point(280, 372);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 0;
-			this.OkBtn.Text = "&Ok";
+			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
 			// 
@@ -81,7 +83,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(346, 367);
+			this.CancelBtn.Location = new System.Drawing.Point(346, 372);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 1;
@@ -263,6 +265,8 @@
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.label6);
+			this.tabPage3.Controls.Add(this.cbMoviesInAWE);
 			this.tabPage3.Controls.Add(this.label5);
 			this.tabPage3.Controls.Add(this.cbMoviesOnDisk);
 			this.tabPage3.Controls.Add(this.LuaDuringTurboCheckbox);
@@ -280,6 +284,47 @@
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Advanced";
 			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(27, 270);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(296, 39);
+			this.label6.TabIndex = 19;
+			this.label6.Text = "Will reduce many Out Of Memory crashes during long movies.\r\nThis is experimental;" +
+    " it may require admin permissions.\r\nYou must restart the program after changing " +
+    "this.";
+			// 
+			// cbMoviesInAWE
+			// 
+			this.cbMoviesInAWE.AutoSize = true;
+			this.cbMoviesInAWE.Location = new System.Drawing.Point(6, 250);
+			this.cbMoviesInAWE.Name = "cbMoviesInAWE";
+			this.cbMoviesInAWE.Size = new System.Drawing.Size(262, 17);
+			this.cbMoviesInAWE.TabIndex = 18;
+			this.cbMoviesInAWE.Text = "Store movie working data in extended > 1GB Ram";
+			this.cbMoviesInAWE.UseVisualStyleBackColor = true;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(27, 221);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(299, 26);
+			this.label5.TabIndex = 17;
+			this.label5.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou must restart the" +
+    " program after changing this.";
+			// 
+			// cbMoviesOnDisk
+			// 
+			this.cbMoviesOnDisk.AutoSize = true;
+			this.cbMoviesOnDisk.Location = new System.Drawing.Point(6, 201);
+			this.cbMoviesOnDisk.Name = "cbMoviesOnDisk";
+			this.cbMoviesOnDisk.Size = new System.Drawing.Size(259, 17);
+			this.cbMoviesOnDisk.TabIndex = 16;
+			this.cbMoviesOnDisk.Text = "Store movie working data on disk instead of RAM";
+			this.cbMoviesOnDisk.UseVisualStyleBackColor = true;
 			// 
 			// LuaDuringTurboCheckbox
 			// 
@@ -366,26 +411,6 @@
 			this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
 			this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
 			// 
-			// cbMoviesOnDisk
-			// 
-			this.cbMoviesOnDisk.AutoSize = true;
-			this.cbMoviesOnDisk.Location = new System.Drawing.Point(6, 206);
-			this.cbMoviesOnDisk.Name = "cbMoviesOnDisk";
-			this.cbMoviesOnDisk.Size = new System.Drawing.Size(259, 17);
-			this.cbMoviesOnDisk.TabIndex = 16;
-			this.cbMoviesOnDisk.Text = "Store movie working data on disk instead of RAM";
-			this.cbMoviesOnDisk.UseVisualStyleBackColor = true;
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(27, 226);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(299, 26);
-			this.label5.TabIndex = 17;
-			this.label5.Text = "Will prevent many Out Of Memory crashes during long movies.\r\nYou should probably " +
-    "restart the program after changing this.";
-			// 
 			// EmuHawkOptions
 			// 
 			this.AcceptButton = this.OkBtn;
@@ -399,7 +424,7 @@
 			this.Name = "EmuHawkOptions";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Gui Options";
+			this.Text = "Customization Options";
 			this.Load += new System.EventHandler(this.GuiOptions_Load);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
@@ -445,5 +470,7 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.CheckBox cbMoviesOnDisk;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.CheckBox cbMoviesInAWE;
 	}
 }

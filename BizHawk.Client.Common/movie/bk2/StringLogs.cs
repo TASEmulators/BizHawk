@@ -12,10 +12,13 @@ namespace BizHawk.Client.Common
 	public static class StringLogUtil
 	{
 		public static bool DefaultToDisk;
+		public static bool DefaultToAWE;
 		public static IStringLog MakeStringLog()
 		{
 			if (DefaultToDisk)
-				return new DiskStringLog();
+				return new StreamStringLog(true);
+			else if(DefaultToAWE)
+				return new StreamStringLog(false);
 			else return new ListStringLog();
 		}
 	}
@@ -54,25 +57,34 @@ namespace BizHawk.Client.Common
 	/// It should be faster than those alternatives, but wasteful of disk space.
 	/// It should also be easier to add new IList<string>-like methods than dealing with a database
 	/// </summary>
-	class DiskStringLog : IStringLog
+	class StreamStringLog : IStringLog
 	{
 		List<long> Offsets = new List<long>();
 		long cursor = 0;
 		BinaryWriter bw;
 		BinaryReader br;
+		bool mDisk;
 
-		FileStream stream;
-		public DiskStringLog()
+		Stream stream;
+		public StreamStringLog(bool disk)
 		{
-			var path = TempFileCleaner.GetTempFilename("movieOnDisk");
-			stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
+			mDisk = disk;
+			if (disk)
+			{
+				var path = TempFileCleaner.GetTempFilename("movieOnDisk");
+				stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.None, 4 * 1024, FileOptions.DeleteOnClose);
+			}
+			else
+			{
+				stream = new AWEMemoryStream();
+			}
 			bw = new BinaryWriter(stream);
 			br = new BinaryReader(stream);
 		}
 
 		public IStringLog Clone()
 		{
-			DiskStringLog ret = new DiskStringLog();
+			StreamStringLog ret = new StreamStringLog(mDisk); //doesnt necessarily make sense to copy the mDisk value, they could be designated for different targets...
 			for (int i = 0; i < Count; i++)
 				ret.Add(this[i]);
 			return ret;
@@ -142,7 +154,7 @@ namespace BizHawk.Client.Common
 
 		class Enumerator : IEnumerator<string>
 		{
-			public DiskStringLog log;
+			public StreamStringLog log;
 			int index = -1;
 			public string Current { get { return log[index]; } }
 			object System.Collections.IEnumerator.Current { get { return log[index]; } }

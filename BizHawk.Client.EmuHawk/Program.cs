@@ -111,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
 			BizHawk.Client.Common.StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
+			BizHawk.Client.Common.StringLogUtil.DefaultToAWE = Global.Config.MoviesInAWE;
 
 			//super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			for (int i = 0; i < args.Length; i++)
