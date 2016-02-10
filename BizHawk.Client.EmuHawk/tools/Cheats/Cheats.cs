@@ -267,13 +267,14 @@ namespace BizHawk.Client.EmuHawk
 				case COMPARISONTYPE:
 					switch (Global.CheatList[index].ComparisonType)
 					{
+						case Cheat.COMPARISONTYPE.NONE                  : text = ""; break;
 						case Cheat.COMPARISONTYPE.EQUAL                 : text = "=";  break;
 						case Cheat.COMPARISONTYPE.GREATER_THAN          : text = ">";  break;
 						case Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL : text = ">="; break;
 						case Cheat.COMPARISONTYPE.LESS_THAN             : text = "<";  break;
 						case Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL    : text = "<="; break;
 						case Cheat.COMPARISONTYPE.NOT_EQUAL             : text = "!="; break;
-						default                                         : break;
+						default                                         : text = ""; break;
 					}
 					
 					break;

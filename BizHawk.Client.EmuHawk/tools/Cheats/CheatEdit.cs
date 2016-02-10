@@ -87,7 +87,16 @@ namespace BizHawk.Client.EmuHawk
 			AddressBox.Text = _cheat.AddressStr;
 			ValueBox.Text = _cheat.ValueStr;
 			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
-			CompareTypeDropDown.SelectedIndex = (int)_cheat.ComparisonType;
+
+			if (_cheat.ComparisonType.Equals(Cheat.COMPARISONTYPE.NONE))
+			{
+				CompareTypeDropDown.SelectedIndex = 0;
+			}
+			else
+			{
+				CompareTypeDropDown.SelectedIndex = ((int)_cheat.ComparisonType - 1);
+			}
+			
 
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
@@ -304,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.EQUAL;
+				Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
 				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
 				var address = AddressBox.ToRawInt().Value;				
 				if (address < domain.Size)
@@ -320,13 +329,14 @@ namespace BizHawk.Client.EmuHawk
 
 					switch (CompareTypeDropDown.SelectedItem.ToString())
 					{
+						case "": comparisonType = Cheat.COMPARISONTYPE.NONE; break;
 						case "=": comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
 						case ">": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN; break;
 						case ">=": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
 						case "<": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN; break;
 						case "<=": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL; break;
 						case "!=": comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL; break;
-						default: comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
+						default: comparisonType = Cheat.COMPARISONTYPE.NONE; break;
 					}
 
 					int? c = CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value;
@@ -376,14 +386,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 			// Don't need to do anything in this case
-			if (!empty && this.CompareTypeDropDown.Items.Count > 0)
+			if(empty && this.CompareTypeDropDown.Items.Count == 1)
+			{
+				return;
+			}
+			
+			// Don't need to do anything in this case
+			if (!empty && this.CompareTypeDropDown.Items.Count == 6)
 			{
 				return;
 			}
 
 			this.CompareTypeDropDown.Items.Clear();
 
-			if (!empty)
+			if (empty)
+			{
+				this.CompareTypeDropDown.Items.AddRange(new object[] {
+					""
+				});
+			}
+			else 
 			{
 				this.CompareTypeDropDown.Items.AddRange(new object[] {
 					"=",
@@ -394,7 +416,9 @@ namespace BizHawk.Client.EmuHawk
 					"!="
 				});
 			}
-			
+
+			this.CompareTypeDropDown.SelectedIndex = 0;
+
 		}
 	}
 }

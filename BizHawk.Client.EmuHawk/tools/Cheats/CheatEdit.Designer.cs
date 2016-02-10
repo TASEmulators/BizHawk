@@ -265,6 +265,10 @@
 			this.CompareTypeDropDown.Name = "CompareTypeDropDown";
 			this.CompareTypeDropDown.Size = new System.Drawing.Size(65, 33);
 			this.CompareTypeDropDown.TabIndex = 26;
+			this.CompareTypeDropDown.Items.AddRange(new object[] {
+				""
+			});
+			this.CompareTypeDropDown.SelectedIndex = 0;
 			// 
 			// CompareTypeLabel
 			// 

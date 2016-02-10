@@ -8,7 +8,8 @@ namespace BizHawk.Client.Common
 	{
 		public enum COMPARISONTYPE
 		{
-            EQUAL,
+			NONE,
+			EQUAL,
 			GREATER_THAN,
 			GREATER_THAN_OR_EQUAL,
 			LESS_THAN,
@@ -23,7 +24,7 @@ namespace BizHawk.Client.Common
 		private COMPARISONTYPE _comparisonType;
 		
 
-		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, COMPARISONTYPE comparisonType = COMPARISONTYPE.EQUAL)
+		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, COMPARISONTYPE comparisonType = COMPARISONTYPE.NONE)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -237,6 +238,8 @@ namespace BizHawk.Client.Common
 				{
 					switch (_comparisonType)
 					{
+						case Cheat.COMPARISONTYPE.NONE: // This should never happen, but it's here just in case
+							break;
 						case Cheat.COMPARISONTYPE.EQUAL:
 							if (_compare.Value == _watch.ValueNoFreeze) 
 							{
@@ -274,10 +277,6 @@ namespace BizHawk.Client.Common
 							}
 							break;
 						default :
-							if (_compare.Value == _watch.ValueNoFreeze) 
-							{
-								_watch.Poke(GetStringForPulse(_val));
-							}
 							break;
 					}		
 				}

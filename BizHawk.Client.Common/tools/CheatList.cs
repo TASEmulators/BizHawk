@@ -451,7 +451,7 @@ namespace BizHawk.Client.Common
 							var size = WatchSize.Byte;
 							var type = DisplayType.Hex;
 							var bigendian = false;
-							Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.EQUAL;
+							Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
 
 							if (s.Length < 6)
 							{
