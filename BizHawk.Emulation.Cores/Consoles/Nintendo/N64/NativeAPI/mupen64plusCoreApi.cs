@@ -394,26 +394,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64p_error result = m64pCoreStartup(0x20001, "", "", "Core",
 				null, "", IntPtr.Zero);
 
+			// Open the core settings section in the config system
+			IntPtr core_section = IntPtr.Zero;
+			m64pConfigOpenSection("Core", ref core_section);
+
 			// Set the savetype if needed
 			if (DisableExpansionSlot)
 			{
-				IntPtr core_section = IntPtr.Zero;
 				int disable = 1;
-				m64pConfigOpenSection("Core", ref core_section);
 				m64pConfigSetParameter(core_section, "DisableExtraMem", m64p_type.M64TYPE_INT, ref disable);
 			}
 
 			// Set the savetype if needed
 			if (SaveType != 0)
 			{
-				IntPtr core_section = IntPtr.Zero;
-				m64pConfigOpenSection("Core", ref core_section);
 				m64pConfigSetParameter(core_section, "SaveType", m64p_type.M64TYPE_INT, ref SaveType);
 			}
 
-			IntPtr coreSection = IntPtr.Zero;
-			m64pConfigOpenSection("Core", ref coreSection);
-			m64pConfigSetParameter(coreSection, "R4300Emulator", m64p_type.M64TYPE_INT, ref CoreType);
+			m64pConfigSetParameter(core_section, "R4300Emulator", m64p_type.M64TYPE_INT, ref CoreType);
 
 			// Pass the rom to the core
 			result = m64pCoreDoCommandByteArray(m64p_command.M64CMD_ROM_OPEN, rom.Length, rom);
