@@ -8,7 +8,6 @@
 **Save and load named config files manually
 **Add "store movie working data on disk instead of RAM" option to permit creation of hours-long movies
 **Allow multiple concurrent ExternalTools
-**IsLagFrame can now be set by external tools and lua
 **Add Movie Save As menu function
 **Default window zooms now configurable per platform
 **Assorted usability improvements to Lua console, ram watch, ram search, firmwares config
@@ -27,6 +26,7 @@
 ***Support comparison values
 
 **Lua
+***add emu.setislagframe
 ***Forms: Allow scrollbars on textbox
 ***Support script auto hot-reloading
 ***Add movie.save, client.displaymessages
@@ -35,7 +35,8 @@
 ***Fix #565 - bugs in lua's memorysavestate apis
 
 *NES
-**Better support for JAM/KIL opcode, mapper 226
+**Better support for JAM/KIL opcode
+**Properly support unif board 42in1ResetSwitch
 **Support Tracer for QuickNES
 **Bugfixes to NSF player
 
@@ -50,7 +51,7 @@
 *Other cores:
 **N64: Better defaults for DK64
 **GB/GBC: Add layer toggles
-**SMS: Support SG-1000 recording
+**SMS: Flag SG-1000 movies
 
 
 =========================================
