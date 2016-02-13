@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (FlagI) val = val + "I";
 			if (FlagZ) val = val + "Z";
 			if (FlagC) val = val + "C";
+			if (!RDY) val = val + "R";
 			return val;
 		}
 
