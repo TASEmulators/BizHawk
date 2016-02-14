@@ -34,8 +34,8 @@
 			this.CheatName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Value = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.ComparisonType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Compare = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.ComparisonType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.On = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Domain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.CheatsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -111,10 +111,10 @@
 			this.CheatListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.CheatName,
             this.Address,
-            this.Value,          
+            this.Value,
             this.Compare,
-			this.ComparisonType,
-			this.On,
+            this.ComparisonType,
+            this.On,
             this.Domain});
 			this.CheatListView.ContextMenuStrip = this.CheatsContextMenu;
 			this.CheatListView.FullRowSelect = true;
@@ -125,7 +125,7 @@
 			this.CheatListView.Name = "CheatListView";
 			this.CheatListView.SelectAllInProgress = false;
 			this.CheatListView.selectedItem = -1;
-			this.CheatListView.Size = new System.Drawing.Size(414, 315);
+			this.CheatListView.Size = new System.Drawing.Size(414, 321);
 			this.CheatListView.TabIndex = 1;
 			this.CheatListView.UseCompatibleStateImageBehavior = false;
 			this.CheatListView.UseCustomBackground = true;
@@ -153,14 +153,14 @@
 			this.Value.Text = "Value";
 			this.Value.Width = 40;
 			// 
+			// Compare
+			// 
+			this.Compare.Text = "Compare";
+			// 
 			// ComparisonType
 			// 
 			this.ComparisonType.Text = "Comparison Type";
 			this.ComparisonType.Width = 194;
-			// 
-			// Compare
-			// 
-			this.Compare.Text = "Compare";
 			// 
 			// On
 			// 
@@ -175,14 +175,13 @@
 			// 
 			// CheatsContextMenu
 			// 
-			this.CheatsContextMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
 			this.CheatsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToggleContextMenuItem,
             this.RemoveContextMenuItem,
             this.DisableAllContextMenuItem,
             this.ViewInHexEditorContextMenuItem});
 			this.CheatsContextMenu.Name = "contextMenuStrip1";
-			this.CheatsContextMenu.Size = new System.Drawing.Size(186, 156);
+			this.CheatsContextMenu.Size = new System.Drawing.Size(170, 92);
 			this.CheatsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.CheatsContextMenu_Opening);
 			// 
 			// ToggleContextMenuItem
@@ -190,7 +189,7 @@
 			this.ToggleContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.ToggleContextMenuItem.Name = "ToggleContextMenuItem";
 			this.ToggleContextMenuItem.ShortcutKeyDisplayString = "Enter";
-			this.ToggleContextMenuItem.Size = new System.Drawing.Size(185, 38);
+			this.ToggleContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ToggleContextMenuItem.Text = "&Toggle";
 			this.ToggleContextMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
 			// 
@@ -199,7 +198,7 @@
 			this.RemoveContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveContextMenuItem.Name = "RemoveContextMenuItem";
 			this.RemoveContextMenuItem.ShortcutKeyDisplayString = "Delete";
-			this.RemoveContextMenuItem.Size = new System.Drawing.Size(185, 38);
+			this.RemoveContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.RemoveContextMenuItem.Text = "&Remove";
 			this.RemoveContextMenuItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
@@ -207,21 +206,20 @@
 			// 
 			this.DisableAllContextMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Stop;
 			this.DisableAllContextMenuItem.Name = "DisableAllContextMenuItem";
-			this.DisableAllContextMenuItem.Size = new System.Drawing.Size(185, 38);
+			this.DisableAllContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.DisableAllContextMenuItem.Text = "&Disable All";
 			this.DisableAllContextMenuItem.Click += new System.EventHandler(this.DisableAllCheatsMenuItem_Click);
 			// 
 			// ViewInHexEditorContextMenuItem
 			// 
 			this.ViewInHexEditorContextMenuItem.Name = "ViewInHexEditorContextMenuItem";
-			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(185, 38);
+			this.ViewInHexEditorContextMenuItem.Size = new System.Drawing.Size(169, 22);
 			this.ViewInHexEditorContextMenuItem.Text = "View in Hex Editor";
 			this.ViewInHexEditorContextMenuItem.Click += new System.EventHandler(this.ViewInHexEditorContextMenuItem_Click);
 			// 
 			// CheatsMenu
 			// 
 			this.CheatsMenu.ClickThrough = true;
-			this.CheatsMenu.ImageScalingSize = new System.Drawing.Size(32, 32);
 			this.CheatsMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.CheatsSubMenu,
@@ -507,7 +505,6 @@
 			// toolStrip1
 			// 
 			this.toolStrip1.ClickThrough = true;
-			this.toolStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewToolBarItem,
             this.OpenToolBarItem,
@@ -522,7 +519,7 @@
             this.LoadGameGenieToolbarItem});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(646, 39);
+			this.toolStrip1.Size = new System.Drawing.Size(646, 25);
 			this.toolStrip1.TabIndex = 3;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -532,7 +529,7 @@
 			this.NewToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("NewToolBarItem.Image")));
 			this.NewToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.NewToolBarItem.Name = "NewToolBarItem";
-			this.NewToolBarItem.Size = new System.Drawing.Size(36, 36);
+			this.NewToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.NewToolBarItem.Text = "&New";
 			this.NewToolBarItem.Click += new System.EventHandler(this.NewMenuItem_Click);
 			// 
@@ -542,7 +539,7 @@
 			this.OpenToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("OpenToolBarItem.Image")));
 			this.OpenToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.OpenToolBarItem.Name = "OpenToolBarItem";
-			this.OpenToolBarItem.Size = new System.Drawing.Size(36, 36);
+			this.OpenToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.OpenToolBarItem.Text = "&Open";
 			this.OpenToolBarItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
 			// 
@@ -552,14 +549,14 @@
 			this.SaveToolBarItem.Image = ((System.Drawing.Image)(resources.GetObject("SaveToolBarItem.Image")));
 			this.SaveToolBarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SaveToolBarItem.Name = "SaveToolBarItem";
-			this.SaveToolBarItem.Size = new System.Drawing.Size(36, 36);
+			this.SaveToolBarItem.Size = new System.Drawing.Size(23, 22);
 			this.SaveToolBarItem.Text = "&Save";
 			this.SaveToolBarItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
 			// 
 			// toolStripSeparator
 			// 
 			this.toolStripSeparator.Name = "toolStripSeparator";
-			this.toolStripSeparator.Size = new System.Drawing.Size(6, 39);
+			this.toolStripSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// RemoveToolbarItem
 			// 
@@ -567,7 +564,7 @@
 			this.RemoveToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
 			this.RemoveToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.RemoveToolbarItem.Name = "RemoveToolbarItem";
-			this.RemoveToolbarItem.Size = new System.Drawing.Size(36, 36);
+			this.RemoveToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.RemoveToolbarItem.Text = "&Remove";
 			this.RemoveToolbarItem.Click += new System.EventHandler(this.RemoveCheatMenuItem_Click);
 			// 
@@ -577,14 +574,14 @@
 			this.SeparatorToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.InsertSeparator;
 			this.SeparatorToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.SeparatorToolbarItem.Name = "SeparatorToolbarItem";
-			this.SeparatorToolbarItem.Size = new System.Drawing.Size(36, 36);
+			this.SeparatorToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.SeparatorToolbarItem.Text = "Insert Separator";
 			this.SeparatorToolbarItem.Click += new System.EventHandler(this.InsertSeparatorMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 39);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
 			// 
 			// MoveUpToolbarItem
 			// 
@@ -592,7 +589,7 @@
 			this.MoveUpToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveUp;
 			this.MoveUpToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveUpToolbarItem.Name = "MoveUpToolbarItem";
-			this.MoveUpToolbarItem.Size = new System.Drawing.Size(36, 36);
+			this.MoveUpToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.MoveUpToolbarItem.Text = "Move Up";
 			this.MoveUpToolbarItem.Click += new System.EventHandler(this.MoveUpMenuItem_Click);
 			// 
@@ -602,14 +599,14 @@
 			this.MoveDownToolbarItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.MoveDown;
 			this.MoveDownToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.MoveDownToolbarItem.Name = "MoveDownToolbarItem";
-			this.MoveDownToolbarItem.Size = new System.Drawing.Size(36, 36);
+			this.MoveDownToolbarItem.Size = new System.Drawing.Size(23, 22);
 			this.MoveDownToolbarItem.Text = "Move Down";
 			this.MoveDownToolbarItem.Click += new System.EventHandler(this.MoveDownMenuItem_Click);
 			// 
 			// GameGenieToolbarSeparator
 			// 
 			this.GameGenieToolbarSeparator.Name = "GameGenieToolbarSeparator";
-			this.GameGenieToolbarSeparator.Size = new System.Drawing.Size(6, 39);
+			this.GameGenieToolbarSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// LoadGameGenieToolbarItem
 			// 
@@ -617,7 +614,7 @@
 			this.LoadGameGenieToolbarItem.Image = ((System.Drawing.Image)(resources.GetObject("LoadGameGenieToolbarItem.Image")));
 			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";
-			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 36);
+			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 22);
 			this.LoadGameGenieToolbarItem.Text = "Game Genie";
 			this.LoadGameGenieToolbarItem.ToolTipText = "Open the Game Genie Encoder/Decoder";
 			this.LoadGameGenieToolbarItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);
@@ -635,7 +632,7 @@
 			// 
 			this.MessageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.MessageLabel.AutoSize = true;
-			this.MessageLabel.Location = new System.Drawing.Point(13, 391);
+			this.MessageLabel.Location = new System.Drawing.Point(13, 397);
 			this.MessageLabel.Name = "MessageLabel";
 			this.MessageLabel.Size = new System.Drawing.Size(31, 13);
 			this.MessageLabel.TabIndex = 7;
@@ -648,7 +645,7 @@
 			this.CheatGroupBox.Controls.Add(this.CheatEditor);
 			this.CheatGroupBox.Location = new System.Drawing.Point(432, 66);
 			this.CheatGroupBox.Name = "CheatGroupBox";
-			this.CheatGroupBox.Size = new System.Drawing.Size(202, 321);
+			this.CheatGroupBox.Size = new System.Drawing.Size(202, 327);
 			this.CheatGroupBox.TabIndex = 8;
 			this.CheatGroupBox.TabStop = false;
 			this.CheatGroupBox.Text = "New Cheat";
@@ -668,7 +665,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(646, 407);
+			this.ClientSize = new System.Drawing.Size(646, 413);
 			this.Controls.Add(this.CheatGroupBox);
 			this.Controls.Add(this.MessageLabel);
 			this.Controls.Add(this.TotalLabel);
@@ -676,7 +673,7 @@
 			this.Controls.Add(this.CheatsMenu);
 			this.Controls.Add(this.CheatListView);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MinimumSize = new System.Drawing.Size(280, 369);
+			this.MinimumSize = new System.Drawing.Size(285, 384);
 			this.Name = "Cheats";
 			this.Text = "Cheats";
 			this.Load += new System.EventHandler(this.Cheats_Load);
