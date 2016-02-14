@@ -2071,8 +2071,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>call "$(VS100COMNTOOLS)..\tools\vsvars32.bat"
-editbin /largeaddressaware "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>..\Build\BizHawk.Build.Tool.exe LARGEADDRESS --value 1 --target $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>
