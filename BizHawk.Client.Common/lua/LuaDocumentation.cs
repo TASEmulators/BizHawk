@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		{
 			public SublimeCompletions()
 			{
-				Scope = "source.lua";
+				Scope = "source.lua - string";
 			}
 
 			[JsonProperty(PropertyName = "scope")]
