@@ -299,6 +299,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ScreenshotCaptureOSDMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
 			ScreenshotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
+			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ScreenshotToClipboard"].Bindings;
+			ScreenshotClientClipboardMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screen Client to Clipboard"].Bindings;
 		}
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
@@ -309,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
 			var oac = new OpenAdvancedChooser(this);
-			if (oac.ShowHawkDialog() == System.Windows.Forms.DialogResult.Cancel)
+			if (oac.ShowHawkDialog() == DialogResult.Cancel)
 				return;
 
 			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchNoGame)
@@ -643,7 +645,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+			var path = string.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
 
 			var sfd = new SaveFileDialog
 			{
@@ -666,14 +668,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
-			{
-				bb.DiscardAlpha();
-				using (var img = bb.ToSysdrawingBitmap())
-					Clipboard.SetImage(img);
-			}
-
-			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
+			TakeScreenshotClientToClipboard();
 		}
 
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)

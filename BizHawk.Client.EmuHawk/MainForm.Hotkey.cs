@@ -38,6 +38,12 @@ namespace BizHawk.Client.EmuHawk
 				case "Screenshot":
 					TakeScreenshot();
 					break;
+				case "Screen Raw to Clipboard":
+					TakeScreenshotToClipboard();
+					break;
+				case "Screen Client to Clipboard":
+					TakeScreenshotClientToClipboard();
+					break;
 				case "Full Screen":
 					ToggleFullscreen();
 					break;
