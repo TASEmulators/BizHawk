@@ -875,7 +875,7 @@
 			// 
 			this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FlushSaveRAMMenuItem});
-			this.SaveRAMSubMenu.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold);
+			this.SaveRAMSubMenu.Font = new System.Drawing.Font("Segoe UI", 9F);
 			this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
 			this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.SaveRAMSubMenu.Text = "Save &RAM";
@@ -884,7 +884,7 @@
 			// 
 			this.FlushSaveRAMMenuItem.Font = new System.Drawing.Font("Tahoma", 8.25F);
 			this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
-			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(150, 22);
+			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
 			this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
 			// 
