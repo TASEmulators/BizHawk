@@ -31,7 +31,7 @@ void operator delete(void *p)
 	std::free(p);
 }
 
-#define EXPORT extern "C" __declspec(dllexport)
+#define EXPORT extern "C" __declspec(dllexport) __attribute__((force_align_arg_pointer))
 
 EXPORT void qn_setup_mappers()
 {
