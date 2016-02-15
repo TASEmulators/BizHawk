@@ -620,7 +620,9 @@ namespace BizHawk.Client.EmuHawk
 					_luaList.Changes = false;
 				}
 			}
-		}
+
+			AddFileWatches();
+        }
 
 		public bool AskSaveChanges()
 		{
