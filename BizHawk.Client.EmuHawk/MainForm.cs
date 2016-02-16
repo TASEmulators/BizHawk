@@ -3692,6 +3692,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
+				}
+
 				SetMainformMovieInfo();
 				GlobalWin.OSD.ClearGUIText();
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
@@ -3702,11 +3707,6 @@ namespace BizHawk.Client.EmuHawk
 				if (!supressOSD)
 				{
 					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
-				}
-
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
 				}
 			}
 			else
