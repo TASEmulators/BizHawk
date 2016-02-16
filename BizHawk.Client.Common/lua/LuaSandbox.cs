@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 					Environment.CurrentDirectory = CurrentDirectory; //thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
 					return true;
 				}
-				else return false
+			else return false;
 			#endif
 		}
 

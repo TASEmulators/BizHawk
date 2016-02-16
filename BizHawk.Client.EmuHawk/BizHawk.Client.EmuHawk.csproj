@@ -2063,7 +2063,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>..\Build\BizHawk.Build.Tool.exe LARGEADDRESS --value 1 --target $(TargetPath)</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Windows_NT' " >..\Build\BizHawk.Build.Tool.exe LARGEADDRESS --value 1 --target $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent />
