@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Color;
 			public byte HPosCnt;
 			public byte ScanCnt;
-			public byte ScanStrchCnt;
+			public bool ScanCntInit;
 			public byte HM;
 			public bool Reflect;
 			public bool Delay;
@@ -27,77 +27,105 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				var result = false;
 				if (ScanCnt < 8)
 				{
-					// Make the mask to check the graphic
-					byte playerMask = (byte)(1 << (8 - 1 - ScanCnt));
-
-					// Reflect it if needed
-					if (Reflect)
+					if (!ScanCntInit)
 					{
-						playerMask = (byte)ReverseBits(playerMask, 8);
-					}
+						// Make the mask to check the graphic
+						byte playerMask = (byte)(1 << (8 - 1 - ScanCnt));
 
-					// Check the graphic (depending on delay)
-					if (!Delay)
-					{
-						if ((Grp & playerMask) != 0)
+						// Reflect it if needed
+						if (Reflect)
 						{
-							result = true;
+							playerMask = (byte)ReverseBits(playerMask, 8);
+						}
+
+						// Check the graphic (depending on delay)
+						if (!Delay)
+						{
+							if ((Grp & playerMask) != 0)
+							{
+								result = true;
+							}
+						}
+						else
+						{
+							if ((Dgrp & playerMask) != 0)
+							{
+								result = true;
+							}
+						}
+
+						// Reset missile, if desired
+						if (ScanCnt == 0x04 && HPosCnt <= 16 && Missile.ResetToPlayer)
+						{
+							Missile.HPosCnt = 0;
 						}
 					}
-					else
-					{
-						if ((Dgrp & playerMask) != 0)
-						{
-							result = true;
-						}
-					}
 
-					// Reset missile, if desired
-					if (ScanCnt == 0x04 && HPosCnt <= 16 && Missile.ResetToPlayer)
-					{
-						Missile.HPosCnt = 0;
-					}
 
-					// Increment counter
-					// When this reaches 8, we've run out of pixel
+					// Increment the Player Graphics Scan Counter
 
-					// If we're drawing a stretched player, only incrememnt the
-					// counter every 2 or 4 clocks
+					// This counter advances once per clock for single sized players,
+					// once every 2 clocks for double sized players (Nusiz == 0x05),
+					// and once every 4 clocks for quad sizes players (Nusize == 0x07)
 
-					// Double size player
+					// The ticks for starting and advancing this counter are tied to the div4 clocking phase.
+					// The first tick for single sized players happens immediately.
+					// The first tick for double and quad sized players is delayed one clock cycle,
+					// and then happen every 2 or 4 clocks
+
 					if ((Nusiz & 0x07) == 0x05)
 					{
-						ScanStrchCnt++;
-						ScanStrchCnt %= 2;
+						if ((HPosCnt + 3) % 2 == 0)
+						{
+							if (ScanCntInit)
+							{
+								ScanCntInit = false;
+								ScanCnt = 0;
+							}
+							else
+							{
+								ScanCnt++;
+							}
+						}
 					}
-
-					// Quad size player
 					else if ((Nusiz & 0x07) == 0x07)
 					{
-						ScanStrchCnt++;
-						ScanStrchCnt %= 4;
+						if ((HPosCnt + 3) % 4 == 0)
+						{
+							if (ScanCntInit)
+							{
+								ScanCntInit = false;
+								ScanCnt = 0;
+							}
+							else
+							{
+								ScanCnt++;
+							}
+						}
 					}
-
-					// Single size player
 					else
 					{
-						ScanStrchCnt = 0;
-					}
-
-					if (ScanStrchCnt == 0)
-					{
+						ScanCntInit = false;
 						ScanCnt++;
 					}
 				}
 
-				// At counter position 0 we should start drawing, a pixel late
-				// Set the scan counter at 0, and at the next pixel the graphic will start drawing
+				// At counter position 0 we should initalize the scan counter. 
+				// Note that for double and quad sized players that the scan counter is not started immediately.
 				if (HPosCnt == 0 && !Reset)
 				{
 					ScanCnt = 0;
-					if ((Nusiz & 0x07) == 0x05 || (Nusiz & 0x07) == 0x07)
+					if ((Nusiz & 0x07) == 0x05)
 					{
-						ScanStrchCnt = 0;
+						ScanCntInit = true;
+					}
+					else if ((Nusiz & 0x07) == 0x07)
+					{
+						ScanCntInit = true;
+					}
+					else
+					{
+						ScanCntInit = false;
 					}
 				}
 
@@ -148,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("color", ref Color);
 				ser.Sync("hPosCnt", ref HPosCnt);
 				ser.Sync("scanCnt", ref ScanCnt);
-				ser.Sync("scanStrchCnt", ref ScanStrchCnt);
+				ser.Sync("scanCntInit", ref ScanCntInit);
 				ser.Sync("HM", ref HM);
 				ser.Sync("reflect", ref Reflect);
 				ser.Sync("delay", ref Delay);
