@@ -1,5 +1,61 @@
 =========================================
-next
+1.11.5 (in progress)
+=========================================
+
+*EmuHawk
+**Improve OSD watches
+**Add polar coordinates to VirtualPad analog controls
+**Save and load named config files manually
+**Add "store movie working data on disk instead of RAM" option to permit creation of hours-long movies
+**Allow multiple concurrent ExternalTools
+**Add Movie Save As menu function
+**Default window zooms now configurable per platform
+**Assorted usability improvements to Lua console, ram watch, ram search, firmwares config
+**Fix #561 - xpad rightstick unresponsive
+
+**Cheats
+***Add comparison
+***Multiline codes support
+***GBA: Support Action Replay MAX, Slide codes
+
+**Tastudio
+***Too many improvements to count, this tool is under hot development. **TODO** but feos or adelikat may want to take a stab at the high level features
+***Many efforts to reduce out-of-memory crashes
+
+**Basic Bot **TODO** anything else?
+***Support comparison values
+
+**Lua
+***add emu.setislagframe
+***Forms: Allow scrollbars on textbox
+***Support script auto hot-reloading
+***Add movie.save, client.displaymessages
+***Fix #488 - Sandbox current directory better
+***Fix #547 - Allow "#aarrggbb" as Color parameter to forms.setproperty
+***Fix #565 - bugs in lua's memorysavestate apis
+
+*NES
+**Better support for JAM/KIL opcode
+**Properly support unif board 42in1ResetSwitch
+**Support Tracer for QuickNES
+**Bugfixes to NSF player
+
+*PSX
+**Support memory callbacks
+**Support "determine lag from GPU frames" to mimic PCSXRR
+
+*GBA
+**Update to mgba 0.4.0
+**Fix #563 0 Combined WRAM not working in mGBA
+
+*Other cores:
+**N64: Better defaults for DK64
+**GB/GBC: Add layer toggles
+**SMS: Flag SG-1000 movies
+
+
+=========================================
+1.11.4
 =========================================
 
 *EmuHawk
@@ -22,6 +78,7 @@ next
 **Remember codec selection between program sessions
 **Fix toolbox
 **Improvements to Retro shader compatibility
+**Several Hex Editor usability enhancements
 **DispMethod D3D: Stop FP precision conflicts with lua scripts
 **DispMethod D3D: More leniency in compilation of optional shaders (so it's able to run on more low spec systems)
 **Fix #525 - Memorywatch hex textbox now remembers values across memdomain switches
@@ -72,6 +129,7 @@ next
 **Autoload recent scripts (unless there's a recent session to autoload)
 **Fix forms.destroyall() and call it when lua console closes
 **Fix error in sizing of lua draw buffers with SetGameExtraPadding (and probably ClientExtraPadding) use
+**Add gui.defaultTextBackground
 **Fix #538 - Ability to pass memory domain to memory read/write functions
 
 *PSX
@@ -81,6 +139,8 @@ next
 **Fix crashes in GFX debugger (including fix #529)
 **Recommend proper SNES PAR
 **Build dlls without msvcrt14 dependencies (to run on more systems)
+**Fix several cheat bugs
+**Fix #134 - Add option to disable "force determinism", aka, turn off `savestate every frame`, for reduced reliability and greater speed.
 
 *Genesis
 **Add missing scrollbars in VDP viewer

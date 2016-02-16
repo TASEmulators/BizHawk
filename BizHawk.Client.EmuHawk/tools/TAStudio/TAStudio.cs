@@ -17,7 +17,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class TAStudio : Form, IToolFormAutoConfig, IControlMainform
+	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
 		private const string CursorColumnName = "CursorColumn";
@@ -65,6 +65,7 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
+				SeekingCutoffInterval = 2;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -82,6 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool FollowCursorAlwaysScroll { get; set; }
             public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
+			public int SeekingCutoffInterval { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -101,6 +103,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio()
 		{
+			Settings = new TAStudioSettings();
 			InitializeComponent();
 
 			if (Global.Emulator != null)
@@ -122,7 +125,6 @@ namespace BizHawk.Client.EmuHawk
 			ScreenshotControl.Visible = false;
 			Controls.Add(ScreenshotControl);
 			ScreenshotControl.BringToFront();
-			Settings = new TAStudioSettings();
 
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;
@@ -203,9 +205,16 @@ namespace BizHawk.Client.EmuHawk
 						e.Cancel = true;
 						break;
 					}
-					double progress = (double)100d /
-						(GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value) *
-						(Global.Emulator.Frame - _seekStartFrame.Value);
+
+					int diff = Global.Emulator.Frame - _seekStartFrame.Value;
+					int unit = GlobalWin.MainForm.PauseOnFrame.Value - _seekStartFrame.Value;
+					double progress = 0;
+
+					if (diff != 0 && unit != 0)
+						progress = (double)100d / unit * diff;
+					if (progress < 0)
+						progress = 0;
+
 					_seekBackgroundWorker.ReportProgress((int)progress);
 					System.Threading.Thread.Sleep(1);
 				}
@@ -213,7 +222,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_seekBackgroundWorker.ProgressChanged += (s, e) =>
 			{
-				SavingProgressBar.Value = e.ProgressPercentage;
+				this.Invoke(() => this.SavingProgressBar.Value = e.ProgressPercentage);
 			};
 
 			_seekBackgroundWorker.RunWorkerCompleted += (s, e) =>
@@ -253,6 +262,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ScrollSpeed = Settings.ScrollSpeed;
 			TasView.AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
+			TasView.SeekingCutoffInterval = Settings.SeekingCutoffInterval;
 			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
 
             TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
@@ -479,17 +489,19 @@ namespace BizHawk.Client.EmuHawk
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
-			Settings.RecentTas.Add(newMovie.Filename);
-
 			if (!HandleMovieLoadStuff(newMovie))
 				return false;
 
-			if (TasView.AllColumns.Count() == 0)
+			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
+
+			if (TasView.AllColumns.Count() == 0 || file.Extension != TasMovie.Extension)
 				SetUpColumns();
+
 			if (startsFromSavestate)
 				GoToFrame(0);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+
 			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
 			
@@ -537,7 +549,30 @@ namespace BizHawk.Client.EmuHawk
 				result = StartNewMovieWrapper(movie.InputLogLength == 0, movie);
 			}
 			else
+			{
+				if (movie.Filename.EndsWith(TasMovie.Extension))
+				{
+				
+				}
+				else if (movie.Filename.EndsWith(".bkm") || movie.Filename.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
+				{
+					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+					if (result1 == DialogResult.OK)
+					{
+						ConvertCurrentMovieToTasproj();
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else 
+				{
+					MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
 				result = StartNewMovieWrapper(false, movie);
+			}
 
 			if (!result)
 				return false;
@@ -692,10 +727,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
-					GlobalWin.MainForm.UnpauseEmulator();
+				// feos: if we disable autorestore, we shouldn't ever get it paused
+				// moreover, this function is only called if we *were* paused, so the check makes no sense
+				//if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
+				//	GlobalWin.MainForm.UnpauseEmulator();
 				_autoRestorePaused = null;
-				GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
+				// feos: seek gets triggered by the previous function, so we don't wanna kill the seek frame before it ends
+				//GlobalWin.MainForm.PauseOnFrame = null; // Cancel seek to autorestore point
 			}
 			_autoRestoreFrame = null;
 		}
@@ -829,11 +867,10 @@ namespace BizHawk.Client.EmuHawk
 			SetTextProperty();
 		}
 
-		private void TAStudio_DragEnter(object sender, DragEventArgs e)
+		private void LuaConsole_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
-
 		private void TAStudio_DragDrop(object sender, DragEventArgs e)
 		{
 			if (!AskSaveChanges())
@@ -955,6 +992,12 @@ namespace BizHawk.Client.EmuHawk
 		private void TASMenu_MenuDeactivate(object sender, EventArgs e)
 		{
 			IsInMenuLoop = false;
+		}
+
+		// Stupid designer
+		protected void DragEnterWrapper(object sender, DragEventArgs e)
+		{
+			base.GenericDragEnter(sender, e);
 		}
 	}
 }

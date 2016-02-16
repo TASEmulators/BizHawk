@@ -737,6 +737,7 @@
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ITraceable.cs" />
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IVideoProvider.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>

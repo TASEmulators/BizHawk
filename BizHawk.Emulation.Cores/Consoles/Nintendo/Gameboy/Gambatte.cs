@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
         public int Frame { get; set; }
         public int LagCount { get; set; }
-        public bool IsLagFrame { get; private set; }
+        public bool IsLagFrame { get; set; }
 
         // all cycle counts are relative to a 2*1024*1024 mhz refclock
 
@@ -298,6 +298,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			else
 				tracecb = null;
 			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
+
+			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0));
 		}
 
 		internal void FrameAdvancePost()

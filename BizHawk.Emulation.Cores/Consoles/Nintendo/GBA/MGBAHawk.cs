@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CoreAttributes("mGBA", "endrift", true, true, "0.2.0", "https://mgba.io/", false)]
+	[CoreAttributes("mGBA", "endrift", true, true, "0.4.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<object, MGBAHawk.SyncSettings>
 	{
@@ -165,8 +165,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return *(byte*)xwram.ToPointer();}
-		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { *(byte*)xwram.ToPointer() = value; }
+		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram.ToPointer())[addr];}
+		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram.ToPointer())[addr] = value; }
 
 		private MemoryDomainList CreateMemoryDomains(int romsize)
 		{
@@ -350,7 +350,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (length != savebuff.Length)
 				throw new InvalidOperationException("Save buffer size mismatch!");
 			reader.Read(savebuff, 0, length);
-			LibmGBA.BizPutState(core, savebuff);
+			if (!LibmGBA.BizPutState(core, savebuff))
+				throw new InvalidOperationException("Core rejected the savestate!");
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -371,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		[FeatureNotImplemented]
 		public IInputCallbackSystem InputCallbacks

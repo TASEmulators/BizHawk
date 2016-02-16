@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using BizHawk.Client.Common;
 using LuaInterface;
-using BizHawk.Client.EmuHawk.tools.Lua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -12,9 +12,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private string CurrentDirectory = Environment.CurrentDirectory;
 
-		public LuaWinform()
+		Lua OwnerThread;
+
+		public LuaWinform(Lua ownerThread)
 		{
 			InitializeComponent();
+			OwnerThread = ownerThread;
 			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}
@@ -31,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			LuaSandbox.Sandbox(() =>
+			LuaSandbox.Sandbox(OwnerThread, () =>
 			{
 				Environment.CurrentDirectory = CurrentDirectory;
 				foreach (LuaEvent l_event in ControlEvents)

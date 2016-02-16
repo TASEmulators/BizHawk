@@ -135,11 +135,6 @@ namespace BizHawk.Client.EmuHawk
 					i = 0;
 				}
 
-				if (button == "Pointer Pressed")
-				{
-					int zzz = 9;
-				}
-
 				if (categoryLabels.ContainsKey(button))
 					categoryBuckets[categoryLabels[button]].Add(button);
 				else buckets[i].Add(button);

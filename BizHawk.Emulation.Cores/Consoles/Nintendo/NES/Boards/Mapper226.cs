@@ -5,58 +5,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper226 : NES.NESBoardBase
 	{
-		/*
-		 *  Here are Disch's original notes:  
-		 ========================
-		 =  Mapper 226          =
-		 ========================
- 
-		 Example Games:
-		 --------------------------
-		 76-in-1
-		 Super 42-in-1
- 
- 
-		 Registers:
-		 ---------------------------
- 
-		 Range, Mask:  $8000-FFFF, $8001
- 
-		   $8000:  [PMOP PPPP]
-			  P = Low 6 bits of PRG Reg
-			  M = Mirroring (0=Horz, 1=Vert)
-			  O = PRG Mode
- 
-		   $8001:  [.... ...H]
-			  H = high bit of PRG
- 
- 
-		 PRG Setup:
-		 ---------------------------
- 
-		 Low 6 bits of the PRG Reg come from $8000, high bit comes from $8001
- 
- 
-						$8000   $A000   $C000   $E000  
-					  +-------------------------------+
-		 PRG Mode 0:  |             <Reg>             |
-					  +-------------------------------+
-		 PRG Mode 1:  |      Reg      |      Reg      |
-					  +---------------+---------------+
-		*/
-
+		// http://wiki.nesdev.com/w/index.php/INES_Mapper_226
 		public int prg_page;
 		public bool prg_mode;
 
 		private int prg_mask_32k;
 		private int prg_mask_16k;
 
+		private bool resetFlag = false;
+		private bool resetSwitchMode = false;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
 				case "MAPPER226":
+					break;
 				case "UNIF_BMC-42in1ResetSwitch":
+					resetSwitchMode = true;
 					break;
 				default:
 					return false;
@@ -64,16 +30,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_page = 0;
 			prg_mode = false;
 
-			prg_mask_32k = Cart.prg_size / 32 - 1;
-			prg_mask_16k = Cart.prg_size / 16 - 1;
+			prg_mask_32k = (Cart.prg_size / 2) / 32 - 1;
+			prg_mask_16k = (Cart.prg_size / 2) / 16 - 1;
 
 			return true;
+		}
+
+		public override void NESSoftReset()
+		{
+			resetFlag ^= true;
+			prg_page = 0;
+			prg_mode = false;
+			base.NESSoftReset();
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("prg_page", ref prg_page);
 			ser.Sync("prg_mode", ref prg_mode);
+			ser.Sync("resetFlag", ref resetFlag);
+			ser.Sync("resetSwitchMode", ref resetSwitchMode);
 			base.SyncState(ser);
 		}
 
@@ -104,13 +80,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		
 		public override byte ReadPRG(int addr)
 		{
+			int baseAddr = resetSwitchMode && resetFlag ? 0x80000 : 0;
+
 			if (prg_mode == false)
-			{
-				return ROM[( ((prg_page >> 1) & prg_mask_32k) * 0x8000) + (addr & 0x07FFF)];
+			{				
+                return ROM[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
 			}
 			else
 			{
-				return ROM[((prg_page & prg_mask_16k) * 0x4000) + (addr & 0x03FFF)];
+				return ROM[baseAddr + (((prg_page & prg_mask_16k) << 14) + (addr & 0x3FFF))];
 			}
 		}
 	}

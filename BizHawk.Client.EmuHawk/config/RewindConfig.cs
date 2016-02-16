@@ -88,20 +88,26 @@ namespace BizHawk.Client.EmuHawk
 				ScreenshotInStatesCheckbox.Checked;
 		}
 
-		private void SetStateSize()
+		string FormatKB(long n)
 		{
-			double num = _stateSize / 1024.0;
+			double num = n / 1024.0;
 
 			if (num >= 1024)
 			{
 				num /= 1024.0;
-				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " MB";
+				return String.Format("{0:0.00}", num) + " MB";
 			}
 			else
 			{
-				StateSizeLabel.Text = String.Format("{0:0.00}", num) + " KB";
+				return String.Format("{0:0.00}", num) + " KB";
 			}
+		}
 
+		private void SetStateSize()
+		{
+			double num = _stateSize / 1024.0;
+
+			StateSizeLabel.Text = FormatKB(_stateSize);
 
 			SmallLabel1.Text = "Small savestates (less than " + (_mediumStateSize / 1024) + "KB)";
 			MediumLabel1.Text = "Medium savestates (" + (_mediumStateSize / 1024)
@@ -335,7 +341,7 @@ namespace BizHawk.Client.EmuHawk
 			long est_total_frames = est_frames * est_frequency;
 			double minutes = est_total_frames / 60 / 60;
 
-			AverageStoredStateSizeLabel.Text = String.Format("{0:n0}", avg_state_size) + " bytes";
+			AverageStoredStateSizeLabel.Text = FormatKB(avg_state_size);
 			ApproxFramesLabel.Text = String.Format("{0:n0}", est_frames) + " frames";
 			EstTimeLabel.Text = String.Format("{0:n}", minutes) + " minutes";
 		}
@@ -384,7 +390,6 @@ namespace BizHawk.Client.EmuHawk
 		private void btnResetCompression_Click(object sender, EventArgs e)
 		{
 			nudCompression.Value = Config.DefaultSaveStateCompressionLevelNormal;
-
 		}
 	}
 }

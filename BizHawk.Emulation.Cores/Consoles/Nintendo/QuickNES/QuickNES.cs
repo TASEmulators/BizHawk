@@ -68,6 +68,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 					SetControllerDefinition();
 					ComputeBootGod();
+
+					ConnectTracer();
 				}
 				catch
 				{
@@ -199,6 +201,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				int j1, j2;
 				SetPads(out j1, out j2);
+
+				if (Tracer.Enabled)
+					LibQuickNES.qn_set_tracecb(Context, _tracecb);
+				else
+					LibQuickNES.qn_set_tracecb(Context, null);
 
 				Frame++;
 				LibQuickNES.ThrowStringError(LibQuickNES.qn_emulate_frame(Context, j1, j2));

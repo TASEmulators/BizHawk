@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	{
 		public int LagCount { get; set; }
 
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		public IInputCallbackSystem InputCallbacks
 		{

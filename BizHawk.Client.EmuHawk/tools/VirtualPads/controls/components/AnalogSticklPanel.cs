@@ -123,8 +123,8 @@ namespace BizHawk.Client.EmuHawk
 
 		//dont count on this working. it's never been tested.
 		//but it kind of must be, or else nothing here would work...
-		public float ScaleX = 0.5f;
-		public float ScaleY = 0.5f;
+		public float ScaleX = 0.60f;
+		public float ScaleY = 0.60f;
 
 		int MinX { get { return (int)(RangeX[0]); } }
 		int MinY { get { return (int)(RangeY[0]); } }
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			unchecked
 			{
 				// Background
-				e.Graphics.Clear(Color.Black);
+				e.Graphics.Clear(Color.LightGray);
 
 				e.Graphics.FillRectangle(GrayBrush, PixelMinX, PixelMinY, PixelMaxX - PixelMinX, PixelMaxY- PixelMinY);
 				e.Graphics.FillEllipse(ReadOnly ? OffWhiteBrush : WhiteBrush, PixelMinX, PixelMinY, PixelMaxX - PixelMinX - 2, PixelMaxY - PixelMinY - 3);

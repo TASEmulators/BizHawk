@@ -280,6 +280,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool AlwaysScroll { get; set; }
 
 		/// <summary>
+		/// Gets or sets the lowest seek interval to activate the progress bar
+		/// </summary>
+		[Category("Behavior")]
+		public int SeekingCutoffInterval { get; set; }
+
+		/// <summary>
 		/// Returns all columns including those that are not visible
 		/// </summary>
 		/// <returns></returns>

@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 			"readbyterange",
 			"Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key)."
 		)]
-		public new LuaTable ReadByteRange(int addr, int length)
+		public LuaTable ReadByteRange(int addr, int length)
 		{
 			return base.ReadByteRange(addr, length);
 		}
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 			"writebyterange",
 			"Writes the given values to the given addresses as unsigned bytes"
 		)]
-		public new void WriteByteRange(LuaTable memoryblock)
+		public void WriteByteRange(LuaTable memoryblock)
 		{
 			base.WriteByteRange(memoryblock);
 		}
@@ -98,7 +98,7 @@ namespace BizHawk.Client.Common
 			"readfloat",
 			"Reads the given address as a 32-bit float value from the main memory domain with th e given endian"
 		)]
-		public new float ReadFloat(int addr, bool bigendian)
+		public float ReadFloat(int addr, bool bigendian)
 		{
 			return base.ReadFloat(addr, bigendian);
 		}
@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 			"writefloat",
 			"Writes the given 32-bit float value to the given address and endian"
 		)]
-		public new void WriteFloat(int addr, double value, bool bigendian)
+		public void WriteFloat(int addr, double value, bool bigendian)
 		{
 			base.WriteFloat(addr, value, bigendian);
 		}

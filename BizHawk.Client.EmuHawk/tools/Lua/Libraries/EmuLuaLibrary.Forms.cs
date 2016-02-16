@@ -382,7 +382,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
 		{
-			var form = new LuaWinform();
+			var form = new LuaWinform(CurrentThread);
 			_luaForms.Add(form);
 			if (width.HasValue && height.HasValue)
 			{
@@ -482,9 +482,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (form.Handle == ptr)
 				{
-					if (form.GetType().GetProperty(property).PropertyType.IsEnum)
+					var pt = form.GetType().GetProperty(property).PropertyType;
+					if (pt.IsEnum)
 					{
 						value = Enum.Parse(form.GetType().GetProperty(property).PropertyType, value.ToString(), true);
+					}
+					if (pt == typeof(Color))
+					{
+						//relying on exceptions for error handling here
+						var sval = (string)value;
+						if (sval[0] != '#') throw new Exception("Invalid #aarrggbb color");
+						if (sval.Length != 9) throw new Exception("Invalid #aarrggbb color");
+						value = Color.FromArgb(int.Parse(sval.Substring(1),System.Globalization.NumberStyles.HexNumber));
 					}
 					form
 						.GetType()
@@ -509,6 +518,15 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+		}
+
+		[LuaMethodAttributes(
+				"createcolor",
+				"Creates a color object useful with setproperty"
+			)]
+		public Color CreateColor(int r, int g, int b, int a)
+		{
+			return Color.FromArgb(a, r, g, b);
 		}
 
 		[LuaMethodAttributes(
@@ -565,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"textbox",
-			"Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font"
+			"Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox"
 		)]
 		public int Textbox(
 			int formHandle,
@@ -576,7 +594,8 @@ namespace BizHawk.Client.EmuHawk
 			int? x = null,
 			int? y = null,
 			bool multiline = false,
-			bool fixedWidth = false)
+			bool fixedWidth = false,
+			string scrollbars = null)
 		{
 			var form = GetForm(formHandle);
 			if (form == null)
@@ -591,6 +610,26 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			textbox.Multiline = multiline;
+			if (scrollbars != null)
+			{
+				switch (scrollbars.ToUpper())
+				{
+					case "VERTICAL":
+						textbox.ScrollBars = ScrollBars.Vertical;
+						break;
+					case "HORIZONTAL":
+						textbox.ScrollBars = ScrollBars.Horizontal;
+						textbox.WordWrap = false;
+						break;
+					case "BOTH":
+						textbox.ScrollBars = ScrollBars.Both;
+						textbox.WordWrap = false;
+						break;
+					case "NONE":
+						textbox.ScrollBars = ScrollBars.None;
+						break;
+				}
+			}
 			SetText(textbox, caption);
 
 			if (x.HasValue && y.HasValue)

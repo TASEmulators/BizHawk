@@ -115,6 +115,11 @@ namespace BizHawk.Client.Common
 		string GetInputLog();
 
 		/// <summary>
+		/// Writes the input log directly to the stream, bypassing the need to load it all into ram as a string
+		/// </summary>
+		void WriteInputLog(TextWriter writer);
+
+		/// <summary>
 		/// Gets one frame from the input log.
 		/// </summary>
 		/// <param name="frame">The frame to get.</param>

@@ -27,6 +27,8 @@
 
 namespace gambatte {
 
+enum { LAYER_MASK_BG = 1, LAYER_MASK_OBJ = 2 };
+
 class PPUFrameBuf {
 	uint_least32_t *buf_;
 	uint_least32_t *fbline_;
@@ -57,6 +59,7 @@ struct PPUPriv {
 	unsigned short spwordList[11];
 	unsigned char nextSprite;
 	unsigned char currentSprite;
+	unsigned layersMask;
 
 	const unsigned char *vram;
 	const PPUState *nextCallPtr;
@@ -129,6 +132,7 @@ public:
 	void speedChange(unsigned long cycleCounter);
 	unsigned long * spPalette() { return p_.spPalette; }
 	void update(unsigned long cc);
+	void setLayers(unsigned mask) { p_.layersMask = mask; }
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

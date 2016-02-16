@@ -150,14 +150,36 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
-		{
+		{			
+			string movieFolderPath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
+			
+			// Create movie folder if it doesn't already exist
+			try
+			{
+				if (!Directory.Exists(movieFolderPath))
+				{
+					Directory.CreateDirectory(movieFolderPath);
+				}
+			}
+			catch (Exception movieDirException)
+			{
+				if (movieDirException is IOException ||
+						movieDirException is UnauthorizedAccessException ||
+						movieDirException is PathTooLongException
+					)
+				{
+					//TO DO : Pass error to user?
+				}
+				else throw;
+			}
+			
 			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null);
 			sfd.DefaultExt = "." + Global.MovieSession.Movie.PreferredExtension;
 			sfd.FileName = RecordBox.Text;
 			sfd.OverwritePrompt = false;
 			sfd.Filter = "Movie Files (*." + Global.MovieSession.Movie.PreferredExtension + ")|*." + Global.MovieSession.Movie.PreferredExtension + "|All Files|*.*";
-
+			
 			var result = sfd.ShowHawkDialog();
 			if (result == DialogResult.OK
 				&& !string.IsNullOrWhiteSpace(sfd.FileName))

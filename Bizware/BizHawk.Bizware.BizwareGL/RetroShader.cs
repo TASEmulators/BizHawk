@@ -62,6 +62,7 @@ namespace BizHawk.Bizware.BizwareGL
 		}
 
 		public bool Available { get; private set; }
+		public string Errors { get { return Pipeline.Errors; } }
 
 		PipelineUniform sampler0;
 

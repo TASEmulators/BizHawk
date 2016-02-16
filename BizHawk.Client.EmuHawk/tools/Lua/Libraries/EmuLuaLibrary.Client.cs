@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static int GetWindowSize()
 		{
-			return Global.Config.TargetZoomFactor;
+			return Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
 		}
 
 		[LuaMethodAttributes(
@@ -387,7 +387,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				Global.Config.TargetZoomFactor = size;
+				Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = size;
 				GlobalWin.MainForm.FrameBufferResized();
 				GlobalWin.OSD.AddMessage("Window size set to " + size + "x");
 			}
@@ -534,6 +534,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return null;
+		}
+
+		[LuaMethodAttributes(
+			"displaymessages",
+			"sets whether or not on screen messages will display"
+		)]
+		public void DisplayMessages(bool value)
+		{
+			Global.Config.DisplayMessages = value;
 		}
 	}
 }

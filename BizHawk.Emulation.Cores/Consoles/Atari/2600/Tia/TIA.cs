@@ -395,6 +395,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			// Still ignoring cycles...
 
+			// Reset the RDY flag when we reach hblank
+			if (_hsyncCnt <= 0)
+			{
+				_core.Cpu.RDY = true;
+			}
+
 			// Assume we're on the left side of the screen for now
 			var rightSide = false;
 
@@ -850,18 +856,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x02) // WSYNC
 			{
-				int count = 0;
-				while (_hsyncCnt > 0)
-				{
-					count++;
-					Execute(1);
-
-					// Add a cycle to the cpu every 3 TIA clocks (corrects timer error in M6532)
-					if (count % 3 == 0)
-					{
-						_core.M6532.Timer.Tick();
-					}
-				}
+				// Halt the CPU until we reach hblank
+				_core.Cpu.RDY = false;
 			}
 			else if (maskedAddr == 0x04) // NUSIZ0
 			{

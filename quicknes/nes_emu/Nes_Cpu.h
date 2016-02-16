@@ -65,6 +65,8 @@ public:
 	
 	// One of the many opcodes that are undefined and stop CPU emulation.
 	enum { bad_opcode = 0xD2 };
+
+	void set_tracecb(void (*cb)(unsigned int *dest));
 	
 private:
 	uint8_t const* code_map [page_count + 1];
@@ -77,6 +79,8 @@ private:
 	enum { irq_inhibit = 0x04 };
 	void set_code_page( int, uint8_t const* );
 	void update_clock_limit();
+
+	void (*tracecb)(unsigned int *dest);
 	
 public:
 	registers_t r;

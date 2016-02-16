@@ -10,10 +10,11 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Diagnostics;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class Cheats : Form, IToolForm
+	public partial class Cheats : ToolFormBase, IToolForm
 	{
 		private const string NAME = "NamesColumn";
 		private const string ADDRESS = "AddressColumn";
@@ -24,6 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string SIZE = "SizeColumn";
 		private const string ENDIAN = "EndianColumn";
 		private const string TYPE = "DisplayTypeColumn";
+		private const string COMPARISONTYPE = "ComparisonTypeColumn";
 
 		private int _defaultWidth;
 		private int _defaultHeight;
@@ -136,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool SaveAs()
 		{
-			var file = ToolHelpers.SaveFileDialog(
+			var file = SaveFileDialog(
 				Global.CheatList.CurrentFileName,
 				PathManager.GetCheatsPath(Global.Game),
 				"Cheat Files",
@@ -160,8 +162,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo();
-			LoadColumnInfo();
+			SaveColumnInfo(CheatListView, Settings.Columns);
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		private void ToggleGameGenieButton()
@@ -187,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveConfigSettings()
 		{
-			SaveColumnInfo();
+			SaveColumnInfo(CheatListView, Settings.Columns);
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -213,37 +215,14 @@ namespace BizHawk.Client.EmuHawk
 				Size = Settings.WindowSize;
 			}
 
-			LoadColumnInfo();
-		}
-
-		private void LoadColumnInfo()
-		{
-			CheatListView.Columns.Clear();
-
-			var columns = Settings.Columns
-				.Where(c => c.Visible)
-				.OrderBy(c => c.Index);
-
-			foreach (var column in columns)
-			{
-				CheatListView.AddColumn(column);
-			}
-		}
-
-		private void SaveColumnInfo()
-		{
-			foreach (ColumnHeader column in CheatListView.Columns)
-			{
-				Settings.Columns[column.Name].Index = column.DisplayIndex;
-				Settings.Columns[column.Name].Width = column.Width;
-			}
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		private void DoColumnToggle(string column)
 		{
 			Settings.Columns[column].Visible ^= true;
-			SaveColumnInfo();
-			LoadColumnInfo();
+			SaveColumnInfo(CheatListView, Settings.Columns);
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
@@ -284,6 +263,20 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case TYPE:
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
+					break;
+				case COMPARISONTYPE:
+					switch (Global.CheatList[index].ComparisonType)
+					{
+						case Cheat.COMPARISONTYPE.NONE                  : text = ""; break;
+						case Cheat.COMPARISONTYPE.EQUAL                 : text = "=";  break;
+						case Cheat.COMPARISONTYPE.GREATER_THAN          : text = ">";  break;
+						case Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL : text = ">="; break;
+						case Cheat.COMPARISONTYPE.LESS_THAN             : text = "<";  break;
+						case Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL    : text = "<="; break;
+						case Cheat.COMPARISONTYPE.NOT_EQUAL             : text = "!="; break;
+						default                                         : text = ""; break;
+					}
+					
 					break;
 			}
 		}
@@ -357,11 +350,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Settings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
-
 		#region Events
 
 		#region File
@@ -385,14 +373,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
-			var append = sender == AppendMenuItem;
-			var file = ToolHelpers.OpenFileDialog(
+			var file = OpenFileDialog(
 				Global.CheatList.CurrentFileName,
 				PathManager.GetCheatsPath(Global.Game),
 				"Cheat Files",
 				"cht");
 
-			LoadFile(file, append);
+			LoadFile(file, append: sender == AppendMenuItem);
 		}
 
 		private void SaveMenuItem_Click(object sender, EventArgs e)
@@ -596,7 +583,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 		}
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
@@ -616,8 +603,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.LoadCheatFileByGame = true;
 			Global.Config.CheatsAutoSaveOnClose = true;
 
-			RefreshFloatingWindowControl();
-			LoadColumnInfo();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
+			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
 		#endregion
@@ -699,18 +686,18 @@ namespace BizHawk.Client.EmuHawk
 
 				if (selected.Select(x => x.Domain).Distinct().Count() > 1)
 				{
-					ToolHelpers.ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
+					ViewInHexEditor(selected[0].Domain, new List<long> { selected.First().Address ?? 0 }, selected.First().Size);
 				}
 				else
 				{
-					ToolHelpers.ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
+					ViewInHexEditor(selected.First().Domain, selected.Select(x => x.Address ?? 0), selected.First().Size);
 				}
 			}
 		}
 
 		protected override void OnShown(EventArgs e)
 		{
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			base.OnShown(e);
 		}
 
@@ -728,11 +715,12 @@ namespace BizHawk.Client.EmuHawk
 					new Column { Name = ADDRESS, Visible = true, Index = 1, Width = 60 },
 					new Column { Name = VALUE, Visible = true, Index = 2, Width = 59 },
 					new Column { Name = COMPARE, Visible = true, Index = 3, Width = 59 },
-					new Column { Name = ON, Visible = false, Index = 4, Width = 28 },
-					new Column { Name = DOMAIN, Visible = true, Index = 5, Width = 55 },
-					new Column { Name = SIZE, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = ENDIAN, Visible = false, Index = 7, Width = 55 },
-					new Column { Name = TYPE, Visible = false, Index = 8, Width = 55 }
+					new Column { Name = COMPARISONTYPE, Visible = true, Index = 4, Width = 60 },
+					new Column { Name = ON, Visible = false, Index = 5, Width = 28 },
+					new Column { Name = DOMAIN, Visible = true, Index = 6, Width = 55 },
+					new Column { Name = SIZE, Visible = true, Index = 7, Width = 55 },
+					new Column { Name = ENDIAN, Visible = false, Index = 8, Width = 55 },
+					new Column { Name = TYPE, Visible = false, Index = 9, Width = 55 }
 				};
 			}
 

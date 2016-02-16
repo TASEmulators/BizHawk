@@ -283,6 +283,11 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
+				if (oldPosition == -1)
+					name = "Set Marker at frame " + newMarker.Frame;
+				else
+					name = "Remove Marker at frame " + oldPosition;
+
 				AddMovieAction(name);
 				History.Last().Add(new MovieActionMarker(newMarker, oldPosition, old_message));
 			}

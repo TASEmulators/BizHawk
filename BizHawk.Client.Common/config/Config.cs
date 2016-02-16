@@ -60,6 +60,31 @@ namespace BizHawk.Client.Common
 		public int Input_Hotkey_OverrideOptions = 0;
 		public bool StackOSDMessages = true;
 		public int TargetZoomFactor = 2;
+
+		// TODO: move me
+		public class ToomFactors : Dictionary<string, int>
+		{
+			public new int this[string index]
+			{
+				get
+				{
+					if (!ContainsKey(index))
+					{
+						Add(index, 2);
+					}
+
+					return base[index];
+				}
+
+				set
+				{
+					base[index] = value;
+				}
+			}
+		}
+
+		public ToomFactors TargetZoomFactors = new ToomFactors();
+
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
 		public int DispFinalFilter = 0;
@@ -82,6 +107,7 @@ namespace BizHawk.Client.Common
 		public bool ShowContextMenu = true;
 		public bool EnableBackupMovies = true;
 		public bool MoviesOnDisk = false;
+		public bool MoviesInAWE = false;
 		public bool HotkeyConfigAutoTab = true;
 		public bool InputConfigAutoTab = true;
 		public bool ShowLogWindow = false;
@@ -318,6 +344,7 @@ namespace BizHawk.Client.Common
 		public bool DisableLuaScriptsOnLoad = false;
 		public bool ToggleAllIfNoneSelected = true;
 		public bool RemoveRegisteredFunctionsOnToggle = true;
+		public bool LuaReloadOnScriptFileChange = false;
 		public bool RunLuaDuringTurbo = true;
 
 		// Watch Settings

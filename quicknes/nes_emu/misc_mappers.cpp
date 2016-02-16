@@ -263,6 +263,75 @@ public:
 	}
 };
 
+class Mapper_212 : public Nes_Mapper {
+	// something about this doesn't work right?
+	// TODO: fix me
+	int reg;
+	void writeinternal(int data, int changed)
+	{
+		reg = data;
+
+		if (changed & 0x0007)
+		{
+			set_chr_bank(0x0000, bank_8k, reg & 0x0007);
+		}
+		if (changed & 0x0008)
+		{
+			if (reg & 0x0008)
+			{
+				mirror_horiz();
+			}
+			else
+			{
+				mirror_vert();
+			}
+		}
+		if (changed & 0x4007)
+		{
+			if (reg & 0x4000)
+			{
+				set_prg_bank(0x8000, bank_32k, reg >> 1 & 0x0003);
+			}
+			else
+			{
+				set_prg_bank(0x8000, bank_16k, reg & 0x0007);
+				set_prg_bank(0xc000, bank_16k, reg & 0x0007);
+			}
+		}
+	}
+
+public:
+	Mapper_212()
+	{
+		register_state(&reg, 4);
+	}
+
+	virtual void reset_state()
+	{
+		reg = 0xffff;
+	}
+
+	virtual void apply_mapping()
+	{
+		//intercept_reads(0xe000, 0x2000); // some sort of bus conflict or anti-piracy bs
+		writeinternal(reg, 0xffff);
+	}
+	/*
+	// as written.  this will never be hit.  what's going on?
+	virtual int read( nes_time_t time, nes_addr_t addr )
+	{
+		int ret = Nes_Mapper::read(time, addr);
+		if ((addr & 0xe010) == 0x6000)
+			ret |= 0x80;
+		return ret;
+	}*/
+
+	virtual void write( nes_time_t, nes_addr_t addr, int data)
+	{
+		writeinternal(addr, addr ^ reg);
+	}
+};
+
 void register_misc_mappers();
 void register_misc_mappers()
 {
@@ -274,5 +343,6 @@ void register_misc_mappers()
 	register_mapper<Mapper_Quattro>( 232 );
 
 	register_mapper<Mapper_78>( 78 );
+	// register_mapper<Mapper_212>( 212 );
 }
 

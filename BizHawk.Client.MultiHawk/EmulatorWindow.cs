@@ -312,7 +312,7 @@ namespace BizHawk.Client.MultiHawk
 			for (int i = 0; i < 2; i++)
 			{
 				var video = Emulator.VideoProvider();
-				int zoom = Global.Config.TargetZoomFactor;
+				int zoom = Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
 				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;

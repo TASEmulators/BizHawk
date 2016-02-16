@@ -110,6 +110,7 @@
     <Compile Include="lua\EmuLuaLibrary.SNES.cs" />
     <Compile Include="lua\EmuLuaLibrary.String.cs" />
     <Compile Include="lua\EmuLuaLibrary.UserData.cs" />
+    <Compile Include="lua\EnvironmentSandbox.cs" />
     <Compile Include="lua\LuaAttributes.cs" />
     <Compile Include="lua\LuaDocumentation.cs" />
     <Compile Include="lua\LuaFile.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="lua\LuaHelper.cs" />
     <Compile Include="lua\LuaLibraryBase.cs" />
     <Compile Include="lua\LuaMemoryBase.cs" />
+    <Compile Include="lua\LuaSandbox.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
     <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
     <Compile Include="movie\bk2\Bk2Header.cs" />

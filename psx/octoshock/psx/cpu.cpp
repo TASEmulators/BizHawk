@@ -29,6 +29,8 @@
 //not very organized, is it
 void* g_ShockTraceCallbackOpaque = NULL;
 ShockCallback_Trace g_ShockTraceCallback = NULL;
+ShockCallback_Mem g_ShockMemCallback;
+eShockMemCb g_ShockMemCbType;
 
 /* TODO
 	Make sure load delays are correct.
@@ -252,6 +254,9 @@ INLINE T PS_CPU::ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool D
  ReadAbsorb[ReadAbsorbWhich] = 0;
  ReadAbsorbWhich = 0;
 
+ if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Read))
+	 g_ShockMemCallback(address, eShockMemCb_Read, DS24 ? 24 : 32, 0);
+
  address &= addr_mask[address >> 29];
 
  if(address >= 0x1F800000 && address <= 0x1F8003FF)
@@ -296,6 +301,9 @@ INLINE T PS_CPU::ReadMemory(pscpu_timestamp_t &timestamp, uint32 address, bool D
 template<typename T>
 INLINE void PS_CPU::WriteMemory(pscpu_timestamp_t &timestamp, uint32 address, uint32 value, bool DS24)
 {
+	if (g_ShockMemCallback && (g_ShockMemCbType & eShockMemCb_Write))
+		g_ShockMemCallback(address, eShockMemCb_Write, DS24 ? 24 : 32, value);
+
  if(MDFN_LIKELY(!(CP0.SR & 0x10000)))
  {
   address &= addr_mask[address >> 29];

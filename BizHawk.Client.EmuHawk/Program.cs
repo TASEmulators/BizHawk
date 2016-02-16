@@ -19,6 +19,37 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
+			//try loading libraries we know we'll need
+			//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
+			//but oddly it lets us proceed and we'll then catch it here
+			var d3dx9 = Win32.LoadLibrary("d3dx9_43.dll");
+			var vc2015 = Win32.LoadLibrary("vcruntime140.dll");
+			var vc2010 = Win32.LoadLibrary("msvcr100.dll"); //TODO - check version?
+			var vc2010p = Win32.LoadLibrary("msvcp100.dll");
+			bool fail = false;
+			fail |= d3dx9 == IntPtr.Zero;
+			fail |= vc2015 == IntPtr.Zero;
+			fail |= vc2010 == IntPtr.Zero;
+			fail |= vc2010p == IntPtr.Zero;
+			if (fail)
+			{
+				var sw = new System.IO.StringWriter();
+				sw.WriteLine("[ OK ] .Net 4.0 (You couldn't even get here without it)");
+				sw.WriteLine("[{0}] Direct3d 9", d3dx9 == IntPtr.Zero ? "FAIL" : " OK ");
+				sw.WriteLine("[{0}] Visual C++ 2010 SP1 Runtime", (vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero) ? "FAIL" : " OK ");
+				sw.WriteLine("[{0}] Visual C++ 2015 Runtime", (vc2015 == IntPtr.Zero) ? "FAIL" : " OK ");
+				var str = sw.ToString();
+				var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert();
+				box.textBox1.Text = str;
+				box.ShowDialog();
+				System.Diagnostics.Process.GetCurrentProcess().Kill();
+			}
+
+			Win32.FreeLibrary(d3dx9);
+			Win32.FreeLibrary(vc2015);
+			Win32.FreeLibrary(vc2010);
+			Win32.FreeLibrary(vc2010p);
+
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
@@ -30,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+
 #endif
 		}
 
@@ -39,12 +71,20 @@ namespace BizHawk.Client.EmuHawk
 			return SubMain(args);
 		}
 
+		private static class Win32
+		{
+			[DllImport("kernel32.dll")]
+			public static extern IntPtr LoadLibrary(string dllToLoad);
+			[DllImport("kernel32.dll")]
+			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+			[DllImport("kernel32.dll")]
+			public static extern bool FreeLibrary(IntPtr hModule);
+		}
+
 		//NoInlining should keep this code from getting jammed into Main() which would create dependencies on types which havent been setup by the resolver yet... or something like that
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 		static int SubMain(string[] args)
 		{
-			GlobalWin.ExitCode = 0;
-
 			// this check has to be done VERY early.  i stepped through a debug build with wrong .dll versions purposely used,
 			// and there was a TypeLoadException before the first line of SubMain was reached (some static ColorType init?)
 			// zero 25-dec-2012 - only do for public builds. its annoying during development
@@ -71,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
 			BizHawk.Client.Common.StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
+			BizHawk.Client.Common.StringLogUtil.DefaultToAWE = Global.Config.MoviesInAWE;
 
 			//super hacky! this needs to be done first. still not worth the trouble to make this system fully proper
 			for (int i = 0; i < args.Length; i++)
@@ -247,25 +288,6 @@ namespace BizHawk.Client.EmuHawk
 		static void RemoveMOTW(string path)
 		{
 			DeleteFileW(path + ":Zone.Identifier");
-		}
-
-		//for debugging purposes, this is provided. when we're satisfied everyone understands whats going on, we'll get rid of this
-		[DllImportAttribute("kernel32.dll", EntryPoint = "CreateFileW")]
-		public static extern IntPtr CreateFileW([InAttribute()] [MarshalAsAttribute(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, [InAttribute()] int lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, [InAttribute()] int hTemplateFile);
-		static void ApplyMOTW(string path)
-		{
-			int generic_write = 0x40000000;
-			int file_share_write = 2;
-			int create_always = 2;
-			var adsHandle = CreateFileW(path + ":Zone.Identifier", generic_write, file_share_write, 0, create_always, 0, 0);
-			using (var sfh = new Microsoft.Win32.SafeHandles.SafeFileHandle(adsHandle, true))
-			{
-				var adsStream = new FileStream(sfh, FileAccess.Write);
-				StreamWriter sw = new StreamWriter(adsStream);
-				sw.Write("[ZoneTransfer]\r\nZoneId=3");
-				sw.Flush();
-				adsStream.Close();
-			}
 		}
 
 		static void WhackAllMOTW(string dllDir)

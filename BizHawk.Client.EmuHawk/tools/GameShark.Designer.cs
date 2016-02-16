@@ -42,12 +42,13 @@
 			// 
 			this.mnuGameShark.Location = new System.Drawing.Point(0, 0);
 			this.mnuGameShark.Name = "mnuGameShark";
-			this.mnuGameShark.Size = new System.Drawing.Size(281, 24);
+			this.mnuGameShark.Size = new System.Drawing.Size(259, 24);
 			this.mnuGameShark.TabIndex = 0;
 			// 
 			// btnClear
 			// 
-			this.btnClear.Location = new System.Drawing.Point(156, 90);
+			this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnClear.Location = new System.Drawing.Point(78, 218);
 			this.btnClear.Name = "btnClear";
 			this.btnClear.Size = new System.Drawing.Size(75, 23);
 			this.btnClear.TabIndex = 4;
@@ -58,7 +59,7 @@
 			// lblCheat
 			// 
 			this.lblCheat.AutoSize = true;
-			this.lblCheat.Location = new System.Drawing.Point(162, 49);
+			this.lblCheat.Location = new System.Drawing.Point(12, 63);
 			this.lblCheat.Name = "lblCheat";
 			this.lblCheat.Size = new System.Drawing.Size(63, 13);
 			this.lblCheat.TabIndex = 11;
@@ -66,17 +67,23 @@
 			// 
 			// txtCheat
 			// 
-			this.txtCheat.Location = new System.Drawing.Point(143, 64);
+			this.txtCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtCheat.Location = new System.Drawing.Point(78, 60);
+			this.txtCheat.Multiline = true;
 			this.txtCheat.Name = "txtCheat";
-			this.txtCheat.Size = new System.Drawing.Size(100, 20);
+			this.txtCheat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.txtCheat.Size = new System.Drawing.Size(169, 152);
 			this.txtCheat.TabIndex = 2;
 			// 
 			// btnGo
 			// 
-			this.btnGo.Location = new System.Drawing.Point(50, 89);
+			this.btnGo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnGo.Location = new System.Drawing.Point(172, 217);
 			this.btnGo.Name = "btnGo";
 			this.btnGo.Size = new System.Drawing.Size(75, 24);
-			this.btnGo.TabIndex = 3;
+			this.btnGo.TabIndex = 5;
 			this.btnGo.Text = "Convert";
 			this.btnGo.UseVisualStyleBackColor = true;
 			this.btnGo.Click += new System.EventHandler(this.btnGo_Click);
@@ -84,7 +91,7 @@
 			// lblDescription
 			// 
 			this.lblDescription.AutoSize = true;
-			this.lblDescription.Location = new System.Drawing.Point(57, 48);
+			this.lblDescription.Location = new System.Drawing.Point(12, 38);
 			this.lblDescription.Name = "lblDescription";
 			this.lblDescription.Size = new System.Drawing.Size(60, 13);
 			this.lblDescription.TabIndex = 17;
@@ -92,16 +99,18 @@
 			// 
 			// txtDescription
 			// 
-			this.txtDescription.Location = new System.Drawing.Point(37, 64);
+			this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.txtDescription.Location = new System.Drawing.Point(78, 34);
 			this.txtDescription.Name = "txtDescription";
-			this.txtDescription.Size = new System.Drawing.Size(100, 20);
+			this.txtDescription.Size = new System.Drawing.Size(169, 20);
 			this.txtDescription.TabIndex = 1;
 			// 
 			// GameShark
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(281, 144);
+			this.ClientSize = new System.Drawing.Size(259, 249);
 			this.Controls.Add(this.txtDescription);
 			this.Controls.Add(this.lblDescription);
 			this.Controls.Add(this.btnClear);
@@ -112,6 +121,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.mnuGameShark;
 			this.MaximizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(230, 155);
 			this.Name = "GameShark";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "GameShark Converter";

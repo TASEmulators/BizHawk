@@ -13,17 +13,22 @@ namespace BizHawk.Client.Common
 		public string GetInputLog()
 		{
 			var sb = new StringBuilder();
+			var writer = new StringWriter(sb);
+			WriteInputLog(writer);
+			writer.Flush();
+			return sb.ToString();
+		}
 
-			sb.AppendLine("[Input]");
+		public void WriteInputLog(TextWriter writer)
+		{
+			writer.WriteLine("[Input]");
 
 			foreach (var record in _log)
 			{
-				sb.AppendLine(record);
+				writer.WriteLine(record);
 			}
 
-			sb.AppendLine("[/Input]");
-
-			return sb.ToString();
+			writer.WriteLine("[/Input]");
 		}
 
 		public string GetInputLogEntry(int frame)

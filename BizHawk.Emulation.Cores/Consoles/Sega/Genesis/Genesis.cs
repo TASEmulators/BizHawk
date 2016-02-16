@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public int Frame { get; set; }
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }
-		public bool IsLagFrame { get { return islag; } }
+		public bool IsLagFrame { get { return islag; } set { islag = value; } }
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "GEN"; } }
 

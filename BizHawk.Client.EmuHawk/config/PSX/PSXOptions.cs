@@ -42,6 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			rbClipToFramebuffer.Checked = _settings.HorizontalClipping == Octoshock.eHorizontalClipping.Framebuffer;
 
 			cbLEC.Checked = _syncSettings.EnableLEC;
+			cbGpuLag.Checked = _settings.GPULag;
 
 			rbWeave.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.Weave;
 			rbBob.Checked = _settings.DeinterlaceMode == Octoshock.eDeinterlaceMode.Bob;
@@ -97,6 +98,8 @@ namespace BizHawk.Client.EmuHawk
 			settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
 			settings.ScanlineStart_PAL = (int)PAL_FirstLineNumeric.Value;
 			settings.ScanlineEnd_PAL = (int)PAL_LastLineNumeric.Value;
+
+			settings.GPULag = cbGpuLag.Checked;
 
 			syncSettings.EnableLEC = cbLEC.Checked;
 		}

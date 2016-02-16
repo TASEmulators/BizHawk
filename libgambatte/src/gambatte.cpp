@@ -27,10 +27,11 @@ namespace gambatte {
 struct GB::Priv {
 	CPU cpu;
 	bool gbaCgbMode;
+	unsigned layersMask;
 
 	uint_least32_t vbuff[160*144];
 	
-	Priv() : gbaCgbMode(false)
+	Priv() : gbaCgbMode(false), layersMask(LAYER_MASK_BG | LAYER_MASK_OBJ)
 	{
 	}
 
@@ -60,6 +61,11 @@ long GB::runFor(gambatte::uint_least32_t *const soundBuf, unsigned &samples) {
 	samples = p_->cpu.fillSoundBuffer();
 	
 	return cyclesSinceBlit < 0 ? cyclesSinceBlit : static_cast<long>(samples) - (cyclesSinceBlit >> 1);
+}
+
+void GB::setLayers(unsigned mask)
+{
+	p_->cpu.setLayers(mask);
 }
 
 void GB::blitTo(gambatte::uint_least32_t *videoBuf, int pitch)

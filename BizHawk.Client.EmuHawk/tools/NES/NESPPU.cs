@@ -322,10 +322,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RefreshFloatingWindowControl()
-		{
-		}
-
 		#region Events
 
 		#region Menu and Context Menu
@@ -547,12 +543,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Messagetimer.Stop();
 			toolStripStatusLabel1.Text = "Use CTRL+C to copy the pane under the mouse to the clipboard.";
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 
 		private void PaletteView_MouseClick(object sender, MouseEventArgs e)

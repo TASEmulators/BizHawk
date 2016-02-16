@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
+			public bool DisplayBG = true, DisplayOBJ = true;
+
 			/// <summary>
 			/// true to mute all audio
 			/// </summary>
@@ -62,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				GBPalette = (int[])DefaultPalette.Clone();
 				CGBColors = GBColors.ColorType.gambatte;
 			}
+
 
 			public GambatteSettings Clone()
 			{

@@ -12,7 +12,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public static class ToolHelpers
+	public class ToolFormBase : Form
 	{
 		public static FileInfo OpenFileDialog(string currentFile, string path, string fileType, string fileExt)
 		{
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		public static FileInfo GetWatchSaveFileFromUser(string currentFile)
 		{
 			return SaveFileDialog(currentFile, PathManager.MakeAbsolutePath(Global.Config.PathEntries.WatchPathFragment, null), "Watch Files", "wch");
-        }
+		}
 
 		public static void UpdateCheatRelatedTools(object sender, CheatCollection.CheatListEventArgs e)
 		{
@@ -95,6 +95,39 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.Tools.Load<HexEditor>();
 			GlobalWin.Tools.HexEditor.SetToAddresses(addresses, domain, size);
+		}
+
+		protected void GenericDragEnter(object sender, DragEventArgs e)
+		{
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		protected void LoadColumnInfo(VirtualListView listView, ToolDialogSettings.ColumnList columns)
+		{
+			listView.Columns.Clear();
+
+			var cl = columns
+				.Where(c => c.Visible)
+				.OrderBy(c => c.Index);
+
+			foreach (var column in cl)
+			{
+				listView.AddColumn(column);
+			}
+		}
+
+		protected void SaveColumnInfo(VirtualListView listview, ToolDialogSettings.ColumnList columns)
+		{
+			foreach (ColumnHeader column in listview.Columns)
+			{
+				columns[column.Name].Index = column.DisplayIndex;
+				columns[column.Name].Width = column.Width;
+			}
+		}
+
+		protected void RefreshFloatingWindowControl(bool floatingWindow)
+		{
+			Owner = floatingWindow ? null : GlobalWin.MainForm;
 		}
 	}
 }

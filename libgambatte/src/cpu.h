@@ -52,6 +52,7 @@ public:
 	long runFor(unsigned long cycles);
 	void setStatePtrs(SaveState &state);
 	void loadState(const SaveState &state);
+	void setLayers(unsigned mask) { memory.setLayers(mask); }
 	
 	void loadSavedata(const char *data) { memory.loadSavedata(data); }
 	int saveSavedataLength() {return memory.saveSavedataLength(); }

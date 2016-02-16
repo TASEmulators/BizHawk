@@ -190,6 +190,30 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"defaultPixelFont",
+			"Sets the default font to use in gui.pixelText(), \"gens\" by default"
+		)]
+		public void SetDefaultTextBackground(string fontfamily)
+		{
+			switch (fontfamily)
+			{
+				case "fceux":
+				case "0":
+					DefaultPixelFont = 0;
+					break;
+				case "gens":
+				case "1":
+					DefaultPixelFont = 1;
+					break;
+				default:
+					Log(string.Format("Unable to find font family: {0}", fontfamily));
+					return;
+			}
+		}
+
+
+
+		[LuaMethodAttributes(
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color"
 		)]

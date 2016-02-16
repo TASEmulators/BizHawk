@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		public string SystemId { get { return "WSWAN"; } }
 		public bool DeterministicEmulation { get; private set; }

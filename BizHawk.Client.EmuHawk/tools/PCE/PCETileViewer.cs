@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using System.Drawing.Imaging;
 using BizHawk.Emulation.Common;
@@ -236,16 +232,6 @@ namespace BizHawk.Client.EmuHawk
 		private void PCETileViewer_Load(object sender, EventArgs e)
 		{
 			vce = emu.VCE;
-		}
-
-		private void RefreshFloatingWindowControl()
-		{
-		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
 		}
 	}
 }

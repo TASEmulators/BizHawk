@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		bool isLag = false;
 		public int Frame { get { return frame; } set { frame = value; } }
 		public int LagCount { get { return lagCount; } set { lagCount = value; } }
-		public bool IsLagFrame { get { return isLag; } }
+		public bool IsLagFrame { get { return isLag; } set { isLag = value; } }
 
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }

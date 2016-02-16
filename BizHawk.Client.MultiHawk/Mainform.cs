@@ -1469,33 +1469,33 @@ namespace BizHawk.Client.MultiHawk
 
 		private void ViewSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			_1xMenuItem.Checked = Global.Config.TargetZoomFactor == 1;
-			_2xMenuItem.Checked = Global.Config.TargetZoomFactor == 2;
-			_3xMenuItem.Checked = Global.Config.TargetZoomFactor == 3;
-			_4xMenuItem.Checked = Global.Config.TargetZoomFactor == 4;
+			_1xMenuItem.Checked = Global.Config.TargetZoomFactors[Global.Emulator.SystemId] == 1;
+			_2xMenuItem.Checked = Global.Config.TargetZoomFactors[Global.Emulator.SystemId] == 2;
+			_3xMenuItem.Checked = Global.Config.TargetZoomFactors[Global.Emulator.SystemId] == 3;
+			_4xMenuItem.Checked = Global.Config.TargetZoomFactors[Global.Emulator.SystemId] == 4;
 		}
 
 		private void _1xMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TargetZoomFactor = 1;
+			Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 1;
 			ReRenderAllWindows();
 		}
 
 		private void _2xMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TargetZoomFactor = 2;
+			Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
 			ReRenderAllWindows();
 		}
 
 		private void _3xMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TargetZoomFactor = 3;
+			Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
 			ReRenderAllWindows();
 		}
 
 		private void _4xMenuItem_Click(object sender, EventArgs e)
 		{
-			Global.Config.TargetZoomFactor = 4;
+			Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
 			ReRenderAllWindows();
 		}
 

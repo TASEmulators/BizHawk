@@ -47,6 +47,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			Passes = preset.Passes.ToArray();
 
 			bool ok = true;
+			Errors = "";
 
 			//load up the shaders
 			Shaders = new RetroShader[preset.Passes.Count];
@@ -66,10 +67,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 				var shader = new RetroShader(Owner, content, debug);
 				Shaders[i] = shader;
-				if (!shader.Pipeline.Available)
-					ok = false;
 				if (!shader.Available)
+				{
+					Errors += string.Format("===================\r\nPass {0}:\r\n{1}",i,shader.Errors);
 					ok = false;
+				}
 			}
 
 			Available = ok;
@@ -84,6 +86,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		/// Whether this shader chain is available (it wont be available if some resources failed to load or compile)
 		/// </summary>
 		public bool Available { get; private set; }
+		public string Errors { get; private set; }
 
 		public readonly IGL Owner;
 		public readonly RetroShaderPreset Preset;

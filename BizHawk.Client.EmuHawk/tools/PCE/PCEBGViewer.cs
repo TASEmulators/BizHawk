@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Common;
 
@@ -36,10 +35,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private void PceBgViewer_Load(object sender, EventArgs e)
-		{
-		}
-
-		private void RefreshFloatingWindowControl()
 		{
 		}
 
@@ -140,8 +135,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		#region Dialog and Controls
-
 		private void Canvas_MouseMove(object sender, MouseEventArgs e)
 		{
 			var vdc = _vdcType == 0 ? _pce.VDC1 : _pce.VDC2;
@@ -153,14 +146,6 @@ namespace BizHawk.Client.EmuHawk
 			XYLabel.Text = xTile + ":" + yTile;
 			PaletteLabel.Text = paletteNo.ToString();
 		}
-
-		protected override void OnShown(EventArgs e)
-		{
-			RefreshFloatingWindowControl();
-			base.OnShown(e);
-		}
-
-		#endregion
 
 		#endregion
 	}

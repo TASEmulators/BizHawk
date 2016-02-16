@@ -209,11 +209,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 				return s;
 			}
-			catch
+			catch (Exception ex)
 			{
 				if (required)
 					throw;
-				else return new Shader(this, null, false);
+				var s = new Shader(this, null, false);
+				s.Errors = ex.ToString();
+				return s;
 			}
 		}
 
@@ -247,6 +249,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 					string profile = "vs_1_1";
 					if (cg)
 						profile = "vs_3_0"; //todo - smarter logic somehow
+
 					bytecode = d3d9.ShaderBytecode.Compile(source, null, null, entry, profile, ShaderFlags.EnableBackwardsCompatibility, out errors);
 				}
 				catch (Exception ex)
@@ -261,11 +264,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				sw.IGLShader = s;
 				return s;
 			}
-			catch
+			catch(Exception ex)
 			{
 				if (required)
 					throw;
-				else return new Shader(this, null, false);
+				var s = new Shader(this, null, false);
+				s.Errors = ex.ToString();
+				return s;
 			}
 		}
 
@@ -362,9 +367,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		{
 			if (!vertexShader.Available || !fragmentShader.Available)
 			{
+				string errors = string.Format("Vertex Shader:\r\n {0} \r\n-------\r\nFragment Shader:\r\n{1}", vertexShader.Errors, fragmentShader.Errors);
 				if (required)
-					throw new InvalidOperationException("Couldn't build required GL pipeline");
-				else return new Pipeline(this, null, false, null, null,null);
+					throw new InvalidOperationException("Couldn't build required GL pipeline:\r\n" + errors);
+				var pipeline = new Pipeline(this, null, false, null, null, null);
+				pipeline.Errors = errors;
+				return pipeline;
 			}
 
 			VertexElement[] ves = new VertexElement[vertexLayout.Items.Count];

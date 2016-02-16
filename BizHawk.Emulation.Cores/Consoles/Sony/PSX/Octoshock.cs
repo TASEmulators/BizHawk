@@ -324,6 +324,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_Create(out psx, SystemRegion, pFirmware);
 
 			SetMemoryDomains();
+			InitMemCallbacks();
 
 			//set a default framebuffer based on the first frame of emulation, to cut down on flickering or whatever
 			//this is probably quixotic, but we have to pick something
@@ -715,6 +716,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			IsLagFrame = true;
 			if (pad1 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
 			if (pad2 == OctoshockDll.SHOCK_TRUE) IsLagFrame = false;
+			if (_Settings.GPULag)
+				IsLagFrame = OctoshockDll.shock_GetGPUUnlagged(psx) != OctoshockDll.SHOCK_TRUE;
 			if (IsLagFrame)
 				LagCount++;
 
@@ -768,7 +771,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
-		public bool IsLagFrame { get; private set; }
+		public bool IsLagFrame { get; set; }
 
 		public IInputCallbackSystem InputCallbacks
 		{
@@ -789,6 +792,39 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public System.Drawing.Size VideoProvider_Padding { get; private set; }
 
 		#region Debugging
+
+		OctoshockDll.ShockCallback_Mem mem_cb;
+
+		void ShockMemCallback(uint address, OctoshockDll.eShockMemCb type, uint size, uint value)
+		{
+			switch (type)
+			{
+				case OctoshockDll.eShockMemCb.Read: 
+					MemoryCallbacks.CallReads(address);
+					break;
+				case OctoshockDll.eShockMemCb.Write:
+					MemoryCallbacks.CallWrites(address);
+					break;
+				case OctoshockDll.eShockMemCb.Execute:
+					MemoryCallbacks.CallExecutes(address);
+					break;
+			}
+		}
+
+		void InitMemCallbacks()
+		{
+			mem_cb = new OctoshockDll.ShockCallback_Mem(ShockMemCallback);
+			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
+		}
+
+		void RefreshMemCallbacks()
+		{
+			OctoshockDll.eShockMemCb mask = OctoshockDll.eShockMemCb.None;
+			if (MemoryCallbacks.HasReads) mask |= OctoshockDll.eShockMemCb.Read;
+			if (MemoryCallbacks.HasWrites) mask |= OctoshockDll.eShockMemCb.Write;
+			if (MemoryCallbacks.HasExecutes) mask |= OctoshockDll.eShockMemCb.Execute;
+			OctoshockDll.shock_SetMemCb(psx, mem_cb, mask);
+		}
 
 		unsafe void SetMemoryDomains()
 		{
@@ -1110,8 +1146,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public class Settings
 		{
+			[DisplayName("Determine Lag from GPU Frames")]
+			[DefaultValue(false)]
+			public bool GPULag { get; set; }
+
 			[DisplayName("Resolution Mode")]
-			[Description("Stuff")]
 			[DefaultValue(eResolutionMode.PixelPro)]
 			public eResolutionMode ResolutionMode { get; set; }
 
@@ -1284,13 +1323,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public ITraceable Tracer { get { return tracer; } }
 
-		public int ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
+		public void ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
 		{
 			Tracer.Put(dis);
-			return OctoshockDll.SHOCK_OK;
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
 
 		public bool CanStep(StepType type) { return false; }
 

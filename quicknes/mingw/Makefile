@@ -1,7 +1,10 @@
 CXX = g++
-CXXFLAGS = -Wall -DDISABLE_AUTO_FILE -D__LIBRETRO__ -DNDEBUG -I.. -O3 -Wno-multichar -fno-exceptions -fomit-frame-pointer
+CXXFLAGS = -Wall -DDISABLE_AUTO_FILE -D__LIBRETRO__ -DNDEBUG -I.. -O3 -Wno-multichar -fno-exceptions -fomit-frame-pointer -march=pentium4 -mtune=core2 -flto
+# TODO: include these as options in the Makefile
+# -fprofile-generate
+# -fprofile-use
 TARGET = libquicknes.dll
-LDFLAGS = -shared -static-libgcc -static-libstdc++ $(CXXFLAGS)
+LDFLAGS = -shared -static -static-libgcc -static-libstdc++ $(CXXFLAGS)
 RM = rm
 CP = cp
 

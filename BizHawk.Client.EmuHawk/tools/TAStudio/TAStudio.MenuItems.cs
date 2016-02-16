@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
@@ -60,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 					filename = string.Empty;
 				}
 
-				var file = ToolHelpers.OpenFileDialog(
+				var file = OpenFileDialog(
 					filename,
 					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 					"Tas Project Files",
@@ -104,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
 				filename = SuggestedTasProjName();
 			}
 
-			var file = ToolHelpers.SaveFileDialog(
+			var file = SaveFileDialog(
 				filename,
 				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
 				"Tas Project Files",
@@ -379,7 +375,7 @@ namespace BizHawk.Client.EmuHawk
 				Clipboard.SetDataObject(sb.ToString());
 				CurrentTasMovie.RemoveFrames(list);
 				SetSplicer();
-				TasView.DeselectAll();
+				//TasView.DeselectAll(); feos: what if I want to continuously cut?
 
 				if (needsToRollback)
 				{
@@ -690,6 +686,28 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Settings.BranchCellHoverInterval = val;
 						BookMarkControl.HoverInterval = val;
+					}
+				}
+			}
+		}
+
+		private void SetSeekingCutoffIntervalMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Seeking Cutoff Interval",
+				InitialValue = Settings.SeekingCutoffInterval.ToString()
+			})
+			{
+				DialogResult result = prompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					int val = int.Parse(prompt.PromptText);
+					if (val > 0)
+					{
+						Settings.SeekingCutoffInterval = val;
+						TasView.SeekingCutoffInterval = val;
 					}
 				}
 			}

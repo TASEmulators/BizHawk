@@ -34,6 +34,8 @@ namespace BizHawk.Client.EmuHawk
 			FrameAdvSkipLagCheckbox.Checked = Global.Config.SkipLagFrame;
 			LogWindowAsConsoleCheckbox.Checked = Global.Config.WIN32_CONSOLE;
 			LuaDuringTurboCheckbox.Checked = Global.Config.RunLuaDuringTurbo;
+			cbMoviesOnDisk.Checked = Global.Config.MoviesOnDisk;
+			cbMoviesInAWE.Checked = Global.Config.MoviesInAWE;
 
 			if (LogConsole.ConsoleVisible)
 			{
@@ -60,6 +62,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
 			Global.Config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
+			Global.Config.MoviesOnDisk = cbMoviesOnDisk.Checked;
+			Global.Config.MoviesInAWE = cbMoviesInAWE.Checked;
 
 			Close();
 			DialogResult = DialogResult.OK;

@@ -238,6 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			StopMovieMenuItem.Enabled
 				= PlayFromBeginningMenuItem.Enabled
 				= SaveMovieMenuItem.Enabled
+				= SaveMovieAsMenuItem.Enabled
 				= Global.MovieSession.Movie.IsActive;
 
 			ReadonlyMenuItem.Checked = Global.MovieSession.ReadOnly;
@@ -298,6 +299,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ScreenshotCaptureOSDMenuItem1.Checked = Global.Config.Screenshot_CaptureOSD;
 			ScreenshotMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screenshot"].Bindings;
+			ScreenshotClipboardMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ScreenshotToClipboard"].Bindings;
+			ScreenshotClientClipboardMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Screen Client to Clipboard"].Bindings;
 		}
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)
@@ -308,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenAdvancedMenuItem_Click(object sender, EventArgs e)
 		{
 			var oac = new OpenAdvancedChooser(this);
-			if (oac.ShowHawkDialog() == System.Windows.Forms.DialogResult.Cancel)
+			if (oac.ShowHawkDialog() == DialogResult.Cancel)
 				return;
 
 			if (oac.Result == OpenAdvancedChooser.Command.RetroLaunchNoGame)
@@ -547,8 +550,32 @@ namespace BizHawk.Client.EmuHawk
 			SaveMovie();
 		}
 
+		private void SaveMovieAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var filename = Global.MovieSession.Movie.Filename;
+			if (string.IsNullOrWhiteSpace(filename))
+			{
+				filename = PathManager.FilesystemSafeName(Global.Game);
+			}
+
+			var file = ToolFormBase.SaveFileDialog(
+				filename,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+				"Movie Files",
+				Global.MovieSession.Movie.PreferredExtension);
+
+			if (file != null)
+			{
+				Global.MovieSession.Movie.Filename = file.FullName;
+				Global.Config.RecentMovies.Add(Global.MovieSession.Movie.Filename);
+				SaveMovie();
+			}
+		}
+
 		private void StopMovieWithoutSavingMenuItem_Click(object sender, EventArgs e)
 		{
+			if (Global.Config.EnableBackupMovies)
+				Global.MovieSession.Movie.SaveBackup();
 			StopMovie(saveChanges: false);
 		}
 
@@ -614,7 +641,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var path = String.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
+			var path = string.Format(PathManager.ScreenshotPrefix(Global.Game) + ".{0:yyyy-MM-dd HH.mm.ss}.png", DateTime.Now);
 
 			var sfd = HawkDialogFactory.CreateSaveFileDialog();
 			sfd.InitialDirectory = Path.GetDirectoryName(path);
@@ -635,14 +662,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ScreenshotClientClipboardMenuItem_Click(object sender, EventArgs e)
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
-			{
-				bb.DiscardAlpha();
-				using (var img = bb.ToSysdrawingBitmap())
-					Clipboard.SetImage(img);
-			}
-
-			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
+			TakeScreenshotClientToClipboard();
 		}
 
 		private void ScreenshotCaptureOSDMenuItem_Click(object sender, EventArgs e)
@@ -755,7 +775,7 @@ namespace BizHawk.Client.EmuHawk
 				x4MenuItem.Checked =
 				x5MenuItem.Checked = false;
 
-			switch (Global.Config.TargetZoomFactor)
+			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
 			{
 				case 1: x1MenuItem.Checked = true; break;
 				case 2: x2MenuItem.Checked = true; break;
@@ -768,12 +788,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WindowSize_Click(object sender, EventArgs e)
 		{
-			if (sender == x1MenuItem) Global.Config.TargetZoomFactor = 1;
-			if (sender == x2MenuItem) Global.Config.TargetZoomFactor = 2;
-			if (sender == x3MenuItem) Global.Config.TargetZoomFactor = 3;
-			if (sender == x4MenuItem) Global.Config.TargetZoomFactor = 4;
-			if (sender == x5MenuItem) Global.Config.TargetZoomFactor = 5;
-			if (sender == mzMenuItem) Global.Config.TargetZoomFactor = 10;
+			if (sender == x1MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 1;
+			if (sender == x2MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
+			if (sender == x3MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
+			if (sender == x4MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
+			if (sender == x5MenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
+			if (sender == mzMenuItem) Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 10;
 
 			FrameBufferResized();
 		}
@@ -1182,11 +1202,48 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Saved settings");
 		}
 
+		private void SaveConfigAsMenuItem_Click(object sender, EventArgs e)
+		{
+			var path = PathManager.DefaultIniPath;
+			var sfd = new SaveFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "Config File (*.ini)|*.ini"
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				SaveConfig(sfd.FileName);
+				GlobalWin.OSD.AddMessage("Copied settings");
+			}
+		}
+
 		private void LoadConfigMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
 			GlobalWin.OSD.AddMessage("Config file loaded");
+		}
+
+		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
+		{
+			var path = PathManager.DefaultIniPath;
+			var ofd = new OpenFileDialog
+			{
+				InitialDirectory = Path.GetDirectoryName(path),
+				FileName = Path.GetFileName(path),
+				Filter = "Config File (*.ini)|*.ini"
+			};
+
+			var result = ofd.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				Global.Config = ConfigService.Load<Config>(ofd.FileName);
+				Global.Config.ResolveDefaults();
+				GlobalWin.OSD.AddMessage("Config file loaded");
+			}
 		}
 
 		private void miUnthrottled_Click(object sender, EventArgs e)
@@ -1261,12 +1318,11 @@ namespace BizHawk.Client.EmuHawk
 
 			batchRunnerToolStripMenuItem.Visible = VersionInfo.DeveloperBuild;
 
-			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
-			AutoHawkMenuItem.Visible = VersionInfo.DeveloperBuild;
-
 			BasicBotMenuItem.Enabled = GlobalWin.Tools.IsAvailable<BasicBot>();
 
 			gameSharkConverterToolStripMenuItem.Enabled = GlobalWin.Tools.IsAvailable<GameShark>();
+
+			ExperimentalToolsSubMenu.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private void ExternalToolToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
@@ -1293,6 +1349,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				externalToolToolStripMenuItem.DropDownItems.Add("None");
 			}
+		}
+
+		private void ExperimentalToolsSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			AutoHawkMenuItem.Enabled = GlobalWin.Tools.IsAvailable<AutoHawk>();
+			NewHexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NewHexEditor>();
 		}
 
 		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
@@ -1363,6 +1425,11 @@ namespace BizHawk.Client.EmuHawk
 		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
+		}
+
+		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<NewHexEditor>();
 		}
 
 		#endregion
@@ -2272,6 +2339,7 @@ namespace BizHawk.Client.EmuHawk
 				ViewSubtitlesContextMenuItem.Visible =
 				ViewCommentsContextMenuItem.Visible =
 				SaveMovieContextMenuItem.Visible =
+				SaveMovieAsContextMenuItem.Visible =
 				Global.MovieSession.Movie.IsActive;
 
 			BackupMovieContextMenuItem.Visible = Global.MovieSession.Movie.IsActive;

@@ -320,7 +320,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = from; i < upTo; i++)
 			{
-				if (!_movie[i].Lagged.Value)
+				if (_movie[i].Lagged == null)
 					return false;
 			}
 

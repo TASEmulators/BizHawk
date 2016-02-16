@@ -33,7 +33,7 @@ rem explicitly list the OK ones here as individual copies. until then....
 copy *.dll dll
 
 rem Now, we're about to zip and then unzip. Why, you ask? Because that's just the way this evolved.
-..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.ipdb -x *.iobj -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk -x dll\gpgx.elf -x dll\miniclient.* -x dll\*.xml
+..\dist\zip.exe -X -r ..\Dist\%NAME% EmuHawk.exe DiscoHawk.exe defctrl.json dll shaders gamedb Tools NES\Palettes Lua Gameboy\Palettes -x *.pdb -x *.lib -x *.pgd -x *.ipdb -x *.iobj -x *.exp -x dll\libsneshawk-64*.exe -x *.ilk -x dll\gpgx.elf -x dll\miniclient.* -x dll\*.xml
 
 cd ..\Dist
 .\unzip.exe %NAME% -d temp
@@ -61,11 +61,12 @@ move gitsucks\output\Firmware temp
 
 rmdir /s /q gitsucks
 
-cd temp
 rem remove UPX from any files we have checked in, because people's lousy security software hates it
-upx -d dll\*.dll
-upx -d dll\*.exe
-upx -d *.exe
+rem upx -d temp\dll\*.dll
+rem upx -d temp\dll\*.exe
+rem upx -d temp\*.exe
+
+cd temp
 
 rem Patch up working dir with a few other things we want
 mkdir ExternalTools

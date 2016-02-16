@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public bool IsLagFrame
 		{
 			get { return _machine.Lagged; }
-			private set { _machine.Lagged = value; }
+			set { _machine.Lagged = value; }
 		}
 
 		public IInputCallbackSystem InputCallbacks { get; private set; }

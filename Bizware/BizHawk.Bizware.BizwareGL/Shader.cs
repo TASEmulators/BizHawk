@@ -15,11 +15,13 @@ namespace BizHawk.Bizware.BizwareGL
 			Owner = owner;
 			Opaque = opaque;
 			Available = available;
+			Errors = "";
 		}
 
 		public IGL Owner { get; private set; }
 		public object Opaque { get; private set; }
 		public bool Available { get; private set; }
+		public string Errors { get; set; }
 
 		int RefCount;
 

@@ -91,6 +91,10 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 				var filter = Filters[i];
 				point = filter.UntransformPoint(channel, point);
 			}
+
+			//we COULD handle the case where the output size is 0,0, but it's not mathematically sensible
+			//it should be considered a bug to call this under those conditions
+
 			return point;
 		}
 
@@ -104,6 +108,14 @@ namespace BizHawk.Client.EmuHawk.FilterManager
 				var filter = Filters[i];
 				point = filter.TransformPoint(channel, point);
 			}
+
+			//we COULD handle the case where the output size is 0,0, but it's not mathematically sensible
+			//it should be considered a bug to call this under those conditions
+			////in case the output size is zero, transform all points to zero, since the above maths may have malfunctioned
+			//var size = Filters[Filters.Count - 1].FindOutput().SurfaceFormat.Size;
+			//if (size.Width == 0) point.X = 0;
+			//if (size.Height == 0) point.Y = 0;
+
 			return point;
 		}
 

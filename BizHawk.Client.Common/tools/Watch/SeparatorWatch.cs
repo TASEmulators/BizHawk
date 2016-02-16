@@ -74,8 +74,13 @@ namespace BizHawk.Client.Common
 		{
 			get { return string.Empty; }
 		}
-		
-		public override string ToString()
+
+		/// <summary>
+		/// TTransform the current instance into a displayable (short representation) string
+		/// It's used by the "Display on screen" option in the RamWatch window
+		/// </summary>
+		/// <returns>A well formatted string representation</returns>
+		public override string ToDisplayString()
 		{
 			return "----";
 		}

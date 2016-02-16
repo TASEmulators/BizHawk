@@ -59,6 +59,7 @@
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.linkBasePath = new System.Windows.Forms.LinkLabel();
 			this.label1 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.lvFirmwaresContextMenuStrip.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -92,7 +93,7 @@
 			this.lvFirmwares.Location = new System.Drawing.Point(0, 25);
 			this.lvFirmwares.Name = "lvFirmwares";
 			this.lvFirmwares.ShowItemToolTips = true;
-			this.lvFirmwares.Size = new System.Drawing.Size(824, 424);
+			this.lvFirmwares.Size = new System.Drawing.Size(824, 404);
 			this.lvFirmwares.SmallImageList = this.imageList1;
 			this.lvFirmwares.TabIndex = 24;
 			this.lvFirmwares.UseCompatibleStateImageBehavior = false;
@@ -184,9 +185,9 @@
 			this.panel1.Controls.Add(this.lvFirmwares);
 			this.panel1.Controls.Add(this.toolStrip1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(3, 3);
+			this.panel1.Location = new System.Drawing.Point(3, 23);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(824, 449);
+			this.panel1.Size = new System.Drawing.Size(824, 429);
 			this.panel1.TabIndex = 24;
 			// 
 			// toolStrip1
@@ -292,12 +293,14 @@
 			// 
 			this.tableLayoutPanel1.ColumnCount = 1;
 			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.panel1, 0, 1);
+			this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 2);
+			this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 2;
+			this.tableLayoutPanel1.RowCount = 3;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanel1.Size = new System.Drawing.Size(830, 478);
@@ -335,6 +338,16 @@
 			this.label1.Size = new System.Drawing.Size(119, 13);
 			this.label1.TabIndex = 25;
 			this.label1.Text = "Firmwares Search Path:";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(5, 5);
+			this.label2.Margin = new System.Windows.Forms.Padding(5, 5, 3, 0);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(383, 13);
+			this.label2.TabIndex = 27;
+			this.label2.Text = "Firmware such as BIOS files are copyrighted material and not provided by BizHawk";
 			// 
 			// FirmwaresConfig
 			// 
@@ -393,5 +406,6 @@
 				private System.Windows.Forms.ToolStripButton tbbClose;
 				private System.Windows.Forms.ToolStripButton tbbCloseReload;
 				private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    }
+		private System.Windows.Forms.Label label2;
+	}
 }

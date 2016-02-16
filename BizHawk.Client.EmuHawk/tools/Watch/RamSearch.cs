@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// A form designed to search through ram values
 	/// </summary>
-	public partial class RamSearch : Form, IToolForm
+	public partial class RamSearch : ToolFormBase, IToolForm
 	{
 		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
 
@@ -115,8 +115,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ColumnToggleCallback()
 		{
-			SaveColumnInfo();
-			LoadColumnInfo();
+			SaveColumnInfo(WatchListView, Settings.Columns);
+			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
 		private void RamSearch_Load(object sender, EventArgs e)
@@ -133,6 +133,8 @@ namespace BizHawk.Client.EmuHawk
 			LoadConfigSettings();
 			SpecificValueBox.ByteSize = _settings.Size;
 			SpecificValueBox.Type = _settings.Type;
+			DifferentByBox.Type = Common.DisplayType.Unsigned;
+			DifferenceBox.Type = Common.DisplayType.Unsigned;
 
 			MessageLabel.Text = string.Empty;
 			SpecificAddressBox.MaxLength = (MemoryDomains.MainMemory.Size - 1).NumHexDigits();
@@ -243,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TopMost = Settings.TopMost;
 
-			LoadColumnInfo();
+			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
 		#endregion
@@ -311,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveConfigSettings()
 		{
-			SaveColumnInfo();
+			SaveColumnInfo(WatchListView, Settings.Columns);
 
 			if (WindowState == FormWindowState.Normal)
 			{
@@ -417,11 +419,6 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Private
-
-		private void RefreshFloatingWindowControl()
-		{
-			Owner = Settings.FloatingWindow ? null : GlobalWin.MainForm;
-		}
 
 		private void ToggleSearchDependentToolBarItems()
 		{
@@ -622,30 +619,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadColumnInfo()
-		{
-			WatchListView.Columns.Clear();
-
-			var columns = Settings.Columns
-				.Where(c => c.Visible)
-				.OrderBy(c => c.Index);
-
-			foreach (var column in columns)
-			{
-				WatchListView.AddColumn(column);
-			}
-		}
-
-		private void SaveColumnInfo()
-		{
-			foreach (ColumnHeader column in WatchListView.Columns)
-			{
-				Settings.Columns[column.Name].Index = column.DisplayIndex;
-				Settings.Columns[column.Name].Width = column.Width;
-			}
-		}
-
-		private void DoDisplayTypeClick(BizHawk.Client.Common.DisplayType type)
+		private void DoDisplayTypeClick(Client.Common.DisplayType type)
 		{
 			if (_settings.Type != type)
 			{
@@ -692,17 +666,17 @@ namespace BizHawk.Client.EmuHawk
 			switch (size)
 			{
 				case WatchSize.Byte:
-					isTypeCompatible = ByteWatch.ValidTypes.Where(t => t == _settings.Type).Any();
+					isTypeCompatible = ByteWatch.ValidTypes.Any(t => t == _settings.Type);
 					SizeDropdown.SelectedIndex = 0;
 					break;
 
 				case WatchSize.Word:
-					isTypeCompatible = WordWatch.ValidTypes.Where(t => t == _settings.Type).Any();
+					isTypeCompatible = WordWatch.ValidTypes.Any(t => t == _settings.Type);
 					SizeDropdown.SelectedIndex = 1;
 					break;
 
 				case WatchSize.DWord:
-					isTypeCompatible = DWordWatch.ValidTypes.Where(t => t == _settings.Type).Any();
+					isTypeCompatible = DWordWatch.ValidTypes.Any(t => t == _settings.Type);
 					SizeDropdown.SelectedIndex = 2;
 					break;
 			}
@@ -712,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.Type = Client.Common.DisplayType.Unsigned;
 			}
 
-			_dropdownDontfire = true;			
+			_dropdownDontfire = true;
 
 			PopulateTypeDropDown();
 			_dropdownDontfire = false;
@@ -736,7 +710,7 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				case WatchSize.Word:
-					types = WordWatch.ValidTypes;					
+					types = WordWatch.ValidTypes;
 					break;
 
 				case WatchSize.DWord:
@@ -848,7 +822,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentFileName = file.FullName;
 				}
 
-				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId);
+				var watches = new WatchList(MemoryDomains, Emu.SystemId);
 				watches.Load(file.FullName, append);
 				Settings.RecentSearches.Add(watches.CurrentFileName);
 
@@ -1020,7 +994,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadWatchFile(
-				ToolHelpers.GetWatchFileFromUser(string.Empty),
+				GetWatchFileFromUser(string.Empty),
 				sender == AppendFileMenuItem,
 				sender == TruncateFromFileMenuItem
 				);
@@ -1030,7 +1004,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!string.IsNullOrWhiteSpace(_currentFileName))
 			{
-				var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
+				var watches = new WatchList(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
 				for (var i = 0; i < _searches.Count; i++)
 				{
 					watches.Add(_searches[i]);
@@ -1047,7 +1021,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var result = watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(watches.CurrentFileName));
+					var result = watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName));
 					if (result)
 					{
 						MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
@@ -1059,13 +1033,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
 		{
-			var watches = new WatchList(MemoryDomains, _settings.Domain, Emu.SystemId) { CurrentFileName = _currentFileName };
+			var watches = new WatchList(MemoryDomains, Emu.SystemId) { CurrentFileName = _currentFileName };
 			for (var i = 0; i < _searches.Count; i++)
 			{
 				watches.Add(_searches[i]);
 			}
 
-			if (watches.SaveAs(ToolHelpers.GetWatchSaveFileFromUser(watches.CurrentFileName)))
+			if (watches.SaveAs(GetWatchSaveFileFromUser(watches.CurrentFileName)))
 			{
 				_currentFileName = watches.CurrentFileName;
 				MessageLabel.Text = Path.GetFileName(_currentFileName) + " saved";
@@ -1406,7 +1380,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FloatingWindowMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.FloatingWindow ^= true;
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 		}
 
 		private void RestoreDefaultsMenuItem_Click(object sender, EventArgs e)
@@ -1434,8 +1408,8 @@ namespace BizHawk.Client.EmuHawk
 				SetToFastMode();
 			}
 
-			RefreshFloatingWindowControl();
-			LoadColumnInfo();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
+			LoadColumnInfo(WatchListView, Settings.Columns);
 		}
 
 		#endregion
@@ -1492,7 +1466,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				ToolHelpers.ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address), SelectedSize);
+				ViewInHexEditor(_searches.Domain, SelectedWatches.Select(x => x.Address), SelectedSize);
 			}
 		}
 
@@ -1800,11 +1774,6 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.Refresh();
 		}
 
-		private void NewRamSearch_DragEnter(object sender, DragEventArgs e)
-		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
 		private void NewRamSearch_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -1820,8 +1789,14 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnShown(EventArgs e)
 		{
-			RefreshFloatingWindowControl();
+			RefreshFloatingWindowControl(Settings.FloatingWindow);
 			base.OnShown(e);
+		}
+
+		// Stupid designer
+		protected void DragEnterWrapper(object sender, DragEventArgs e)
+		{
+			base.GenericDragEnter(sender, e);
 		}
 
 		#endregion

@@ -224,7 +224,7 @@ namespace BizHawk.Client.EmuHawk
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
 			string filename = string.Empty;
-			string initialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global_NULL", "Multi-Disk Bundles"].Path, "Global_NULL");
+			string initialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MultiDiskBundlesFragment, "Global_NULL");
 
 			if (!Global.Game.IsNullInstance)
 			{

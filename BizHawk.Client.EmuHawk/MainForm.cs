@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 			PlayRecordStatusButton.Visible = false;
 			AVIStatusLabel.Visible = false;
 			SetPauseStatusbarIcon();
-			ToolHelpers.UpdateCheatRelatedTools(null, null);
+			ToolFormBase.UpdateCheatRelatedTools(null, null);
 			RebootStatusBarIcon.Visible = false;
 			UpdateNotification.Visible = false;
 			StatusBarDiskLightOnImage = Properties.Resources.LightOn;
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			#endif
 
 			Global.CheatList = new CheatCollection();
-			Global.CheatList.Changed += ToolHelpers.UpdateCheatRelatedTools;
+			Global.CheatList.Changed += ToolFormBase.UpdateCheatRelatedTools;
 
 			UpdateStatusSlots();
 			UpdateKeyPriorityIcon();
@@ -938,6 +938,18 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Screenshot (raw) saved to clipboard.");
 		}
 
+		public void TakeScreenshotClientToClipboard()
+		{
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
+			{
+				bb.DiscardAlpha();
+				using (var img = bb.ToSysdrawingBitmap())
+					Clipboard.SetImage(img);
+			}
+
+			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
+		}
+
 		public void TakeScreenshot()
 		{
 			string fmt = "{0}.{1:yyyy-MM-dd HH.mm.ss}{2}.png";
@@ -991,7 +1003,7 @@ namespace BizHawk.Client.EmuHawk
 			for (int i = 0; i < 2; i++)
 			{
 				var video = Global.Emulator.VideoProvider();
-				int zoom = Global.Config.TargetZoomFactor;
+				int zoom = Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
 				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;
@@ -2125,7 +2137,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveConfig()
+		private void SaveConfig(string path = "")
 		{
 			if (Global.Config.SaveWindowPosition)
 			{
@@ -2150,7 +2162,10 @@ namespace BizHawk.Client.EmuHawk
 				LogConsole.SaveConfigSettings();
 			}
 
-			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
+			if (string.IsNullOrEmpty(path))
+				path = PathManager.DefaultIniPath;
+
+			ConfigService.Save(path, Global.Config);
 		}
 
 		private static void ToggleFPS()
@@ -2279,55 +2294,55 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IncreaseWindowSize()
 		{
-			switch (Global.Config.TargetZoomFactor)
+			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
 			{
 				case 1:
-					Global.Config.TargetZoomFactor = 2;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
 					break;
 				case 2:
-					Global.Config.TargetZoomFactor = 3;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
 					break;
 				case 3:
-					Global.Config.TargetZoomFactor = 4;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
 					break;
 				case 4:
-					Global.Config.TargetZoomFactor = 5;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
 					break;
 				case 5:
-					Global.Config.TargetZoomFactor = 10;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 10;
 					break;
 				case 10:
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactor + "x");
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Global.Emulator.SystemId] + "x");
 			FrameBufferResized();
 		}
 
 		private void DecreaseWindowSize()
 		{
-			switch (Global.Config.TargetZoomFactor)
+			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
 			{
 				case 1:
 					return;
 				case 2:
-					Global.Config.TargetZoomFactor = 1;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 1;
 					break;
 				case 3:
-					Global.Config.TargetZoomFactor = 2;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
 					break;
 				case 4:
-					Global.Config.TargetZoomFactor = 3;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
 					break;
 				case 5:
-					Global.Config.TargetZoomFactor = 4;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
 					break;
 				case 10:
-					Global.Config.TargetZoomFactor = 5;
+					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactor + "x");
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Global.Emulator.SystemId] + "x");
 			FrameBufferResized();
 		}
 
@@ -3489,7 +3504,7 @@ namespace BizHawk.Client.EmuHawk
 					Global.AutofireStickyXORAdapter.ClearStickies();
 
 					RewireSound();
-					ToolHelpers.UpdateCheatRelatedTools(null, null);
+					ToolFormBase.UpdateCheatRelatedTools(null, null);
 					if (Global.Config.AutoLoadLastSaveSlot && _stateSlots.HasSlot(Global.Config.SaveSlot))
 					{
 						LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
@@ -3618,7 +3633,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateCoreStatusBarButton();
 				ClearHolds();
 				PauseOnFrame = null;
-				ToolHelpers.UpdateCheatRelatedTools(null, null);
+				ToolFormBase.UpdateCheatRelatedTools(null, null);
 				UpdateStatusSlots();
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
@@ -3704,6 +3719,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
+				if (GlobalWin.Tools.Has<LuaConsole>())
+				{
+					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
+				}
+
 				SetMainformMovieInfo();
 				GlobalWin.OSD.ClearGUIText();
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
@@ -3714,11 +3734,6 @@ namespace BizHawk.Client.EmuHawk
 				if (!supressOSD)
 				{
 					GlobalWin.OSD.AddMessage("Loaded state: " + userFriendlyStateName);
-				}
-
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
 				}
 			}
 			else
@@ -4117,6 +4132,5 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
-
 	}
 }

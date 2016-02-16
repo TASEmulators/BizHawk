@@ -10,6 +10,7 @@
     <AssemblyName>EmuHawk</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>images\logo.ico</ApplicationIcon>
     <FileUpgradeFlags>
@@ -464,6 +465,9 @@
     <Compile Include="CustomControls\HexTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="CustomControls\HexView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CustomControls\InputConfigBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -485,6 +489,12 @@
     </Compile>
     <Compile Include="CustomControls\MsgBox.designer.cs">
       <DependentUpon>MsgBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\PrereqsAlert.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomControls\PrereqsAlert.Designer.cs">
+      <DependentUpon>PrereqsAlert.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\QuickProgressPopup.cs">
       <SubType>Form</SubType>
@@ -792,7 +802,12 @@
     <Compile Include="tools\HexEditor\HexFind.Designer.cs">
       <DependentUpon>HexFind.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\EnvironmentSandbox.cs" />
+    <Compile Include="tools\HexEditor\NewHexEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\HexEditor\NewHexEditor.Designer.cs">
+      <DependentUpon>NewHexEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Client.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Console.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.cs" />
@@ -801,6 +816,7 @@
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Input.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Savestate.cs" />
     <Compile Include="tools\Lua\Libraries\EmuLuaLibrary.Tastudio.cs" />
+    <Compile Include="tools\Lua\LuaAutocompleteInstaller.cs" />
     <Compile Include="tools\Lua\LuaCanvas.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -834,7 +850,6 @@
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.Designer.cs">
       <DependentUpon>LuaRegisteredFunctionsList.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\Lua\LuaSandbox.cs" />
     <Compile Include="tools\Lua\LuaTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1050,7 +1065,9 @@
     <Compile Include="tools\TI83\TI83KeyPad.Designer.cs">
       <DependentUpon>TI83KeyPad.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\ToolHelpers.cs" />
+    <Compile Include="tools\ToolHelpers.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="tools\ToolManager.cs" />
     <Compile Include="tools\TraceLogger.cs">
       <SubType>Form</SubType>
@@ -1303,6 +1320,9 @@
     <EmbeddedResource Include="CustomControls\MsgBox.resx">
       <DependentUpon>MsgBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControls\PrereqsAlert.resx">
+      <DependentUpon>PrereqsAlert.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControls\QuickProgressPopup.resx">
       <DependentUpon>QuickProgressPopup.cs</DependentUpon>
     </EmbeddedResource>
@@ -1405,6 +1425,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\HexEditor\HexFind.resx">
       <DependentUpon>HexFind.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\HexEditor\NewHexEditor.resx">
+      <DependentUpon>NewHexEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\Lua\LuaCanvas.resx">
       <DependentUpon>LuaCanvas.cs</DependentUpon>
@@ -2040,8 +2063,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>..\Build\BizHawk.Build.Tool.exe LARGEADDRESS --value 1 --target $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent />

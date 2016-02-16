@@ -64,6 +64,8 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.cbLEC = new System.Windows.Forms.CheckBox();
+			this.cbGpuLag = new System.Windows.Forms.CheckBox();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -73,6 +75,7 @@
 			((System.ComponentModel.ISupportInitialize)(this.NTSC_FirstLineNumeric)).BeginInit();
 			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnCancel
@@ -454,10 +457,10 @@
 			this.groupBox5.Controls.Add(this.cbLEC);
 			this.groupBox5.Location = new System.Drawing.Point(12, 306);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(299, 85);
+			this.groupBox5.Size = new System.Drawing.Size(238, 85);
 			this.groupBox5.TabIndex = 47;
 			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Emulation";
+			this.groupBox5.Text = "Emulation Sync Settings";
 			// 
 			// cbLEC
 			// 
@@ -469,6 +472,28 @@
 			this.cbLEC.Text = "Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)";
 			this.cbLEC.UseVisualStyleBackColor = true;
 			// 
+			// cbGpuLag
+			// 
+			this.cbGpuLag.AutoSize = true;
+			this.cbGpuLag.Location = new System.Drawing.Point(16, 19);
+			this.cbGpuLag.Name = "cbGpuLag";
+			this.cbGpuLag.Size = new System.Drawing.Size(181, 17);
+			this.cbGpuLag.TabIndex = 1;
+			this.cbGpuLag.Text = "Determine Lag from GPU Frames";
+			this.cbGpuLag.UseVisualStyleBackColor = true;
+			// 
+			// groupBox6
+			// 
+			this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox6.Controls.Add(this.cbGpuLag);
+			this.groupBox6.Location = new System.Drawing.Point(264, 308);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(238, 85);
+			this.groupBox6.TabIndex = 48;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = "Emulation User Settings";
+			// 
 			// PSXOptions
 			// 
 			this.AcceptButton = this.btnOk;
@@ -476,6 +501,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
 			this.ClientSize = new System.Drawing.Size(713, 405);
+			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox2);
@@ -501,6 +527,8 @@
 			this.groupBox4.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -541,5 +569,7 @@
 		private System.Windows.Forms.RadioButton rbBob;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.CheckBox cbLEC;
+		private System.Windows.Forms.CheckBox cbGpuLag;
+		private System.Windows.Forms.GroupBox groupBox6;
 	}
 }

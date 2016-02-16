@@ -17,6 +17,7 @@ namespace BizHawk.Build.Tool
 				case "SVN_REV": SVN_REV(true,cmdArgs); break;
 				case "GIT_REV": SVN_REV(false,cmdArgs); break;
 				case "NXCOMPAT": NXCOMPAT(cmdArgs); break;
+				case "LARGEADDRESS": LARGEADDRESS(cmdArgs); break;
 			}
 		}
 
@@ -66,6 +67,52 @@ namespace BizHawk.Build.Tool
 		WRITE:
 			File.WriteAllText(path, content);
 		}
+
+		static void LARGEADDRESS(string[] args)
+		{
+			string target = null, strValue = "0";
+			int idx = 0;
+			while (idx < args.Length)
+			{
+				string a = args[idx++];
+				string au = a.ToUpperInvariant();
+				if (au == "--TARGET")
+					target = args[idx++];
+				if (au == "--VALUE")
+					strValue = args[idx++];
+			}
+			if (target == null)
+			{
+				Console.WriteLine("LARGEADDRESS: No target EXE specified");
+				return;
+			}
+
+			//http://stackoverflow.com/questions/9054469/how-to-check-if-exe-is-set-as-largeaddressaware
+			using (var fs = new FileStream(target, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+			{
+				var br = new BinaryReader(fs);
+
+				if (br.ReadInt16() != 0x5A4D)       //No MZ Header
+					return;
+
+				br.BaseStream.Position = 0x3C;
+				var peloc = br.ReadInt32();         //Get the PE header location.
+
+				br.BaseStream.Position = peloc;
+				if (br.ReadInt32() != 0x4550)       //No PE header
+					return;
+
+				br.BaseStream.Position += 0x12;
+				var characteristics = br.ReadUInt16();
+				characteristics &= unchecked((ushort)~0x20); //IMAGE_FILE_LARGE_ADDRESS_AWARE
+				if (strValue == "1") characteristics |= 0x20;
+				fs.Position -= 2; //move back to characteristics
+				var bw = new BinaryWriter(fs);
+				bw.Write(characteristics);
+				bw.Flush();
+			}
+		}
+
 
 		//sets NXCOMPAT bit in PE header
 		static void NXCOMPAT(string[] args)

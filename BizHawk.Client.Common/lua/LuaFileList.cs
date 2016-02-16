@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 							if (!Path.IsPathRooted(scriptPath))
 							{
 								var directory = Path.GetDirectoryName(path);
-								scriptPath = Path.Combine(directory, scriptPath);
+								scriptPath = Path.GetFullPath(Path.Combine(directory, scriptPath));
 							}
 
 							Add(new LuaFile(scriptPath)

@@ -24,21 +24,21 @@ namespace BizHawk.Client.Common
 			"savecorestate",
 			"creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate"
 		)]
-		public Guid SaveCoreStateToMemory()
+		public string SaveCoreStateToMemory()
 		{
 			if (Global.Emulator.HasSavestates())
 			{
 				var guid = Guid.NewGuid();
-				var bytes = Global.Emulator.AsStatable().SaveStateBinary();
+				var bytes = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
 
 				MemorySavestates.Add(guid, bytes);
 
-				return guid;
+				return guid.ToString();
 			}
 			else
 			{
 				Log("Savestates not supported on this core");
-				return Guid.Empty;
+				return Guid.Empty.ToString();
 			}
 		}
 

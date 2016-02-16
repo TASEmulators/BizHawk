@@ -48,6 +48,11 @@ GBEXPORT void gambatte_blitto(GB *g, unsigned long *videobuf, int pitch)
 	g->blitTo((unsigned int *)videobuf, pitch);
 }
 
+GBEXPORT void gambatte_setlayers(GB *g, unsigned mask)
+{
+	g->setLayers(mask);
+}
+
 GBEXPORT void gambatte_reset(GB *g, long long now)
 {
 	g->reset(now);

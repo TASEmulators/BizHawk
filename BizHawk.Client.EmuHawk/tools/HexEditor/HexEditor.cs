@@ -21,7 +21,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 namespace BizHawk.Client.EmuHawk
 {
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
-	public partial class HexEditor : Form, IToolFormAutoConfig
+	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
 	{
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
@@ -942,10 +942,11 @@ namespace BizHawk.Client.EmuHawk
 
 			var column = x / (fontWidth * colWidth);
 
-			var start = GetTextOffset() - 50;
+			var innerOffset = AddressesLabel.Location.X - AddressLabel.Location.X + AddressesLabel.Margin.Left;
+			var start = GetTextOffset() - innerOffset;
 			if (x > start)
 			{
-				column = (x - start) / (fontWidth / DataSize);
+				column = (x - start) / (fontWidth * DataSize);
 			}
 
 			if (i >= 0 && i <= _maxRow && column >= 0 && column < (16 / DataSize))
@@ -1022,7 +1023,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int start = (16 / DataSize) * fontWidth * (DataSize * 2 + 1);
 			start += AddressesLabel.Location.X + fontWidth / 2;
-			start += fontWidth * 4;
+			start += fontWidth * 2;
 			return start;
 		}
 
@@ -1271,16 +1272,14 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTableFileMenuItem_Click(object sender, EventArgs e)
 		{
 			string romName;
-			string intialDirectory;
+			string intialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null);
 			if (Global.Config.RecentRoms.MostRecent.Contains('|'))
 			{
 				romName = Global.Config.RecentRoms.MostRecent.Split('|').Last();
-				intialDirectory = Global.Config.RecentRoms.MostRecent.Split('|').First();
 			}
 			else
 			{
 				romName = Global.Config.RecentRoms.MostRecent;
-				intialDirectory = Path.GetDirectoryName(PathManager.MakeAbsolutePath(romName, null));
 			}
 
 			var ofd = HawkDialogFactory.CreateOpenFileDialog();
@@ -1586,7 +1585,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			ToolHelpers.UpdateCheatRelatedTools(null, null);
+			UpdateCheatRelatedTools(null, null);
 			MemoryViewerBox.Refresh();
 		}
 
