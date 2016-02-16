@@ -2792,7 +2792,14 @@ namespace BizHawk.Client.EmuHawk
 				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
 				//System Bus Domain, The Address to Watch, Byte size (Word), Hex Display, Description.  Big Endian.
 				//We have a Byte sized value
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+
+				var description = SingleCheat;
+				if (!string.IsNullOrWhiteSpace(txtDescription.Text))
+				{
+					description = txtDescription.Text;
+				}
+
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, description);
 				//Take Watch, Add our Value we want, and it should be active when addded?
 				if (strCompare == "00")
 				{
