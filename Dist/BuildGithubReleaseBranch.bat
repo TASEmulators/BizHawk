@@ -5,7 +5,7 @@ mkdir %WORKDIR%
 cd %WORKDIR%
 
 rem http://stackoverflow.com/questions/13750182/git-how-to-archive-from-remote-repository-directly
-git clone --depth=1 --single-branch --branch master http://github.com/TASVideos/BizHawk.git .
+git clone --depth=1 --single-branch --branch Release http://github.com/TASVideos/BizHawk.git .
 
 cd dist
 call BuildAndPackage_Release.bat
