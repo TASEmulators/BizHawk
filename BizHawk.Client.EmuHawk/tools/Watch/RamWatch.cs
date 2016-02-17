@@ -407,7 +407,7 @@ namespace BizHawk.Client.EmuHawk
 
 				we.SetWatch(SelectedWatches.First().Domain, SelectedWatches, duplicate ? WatchEditor.Mode.Duplicate : WatchEditor.Mode.Edit);
 
-				var result = we.ShowHawkDialog();
+				var result = we.ShowHawkDialog(this);
 				if (result == DialogResult.OK)
 				{
 					Changes();
@@ -777,7 +777,7 @@ namespace BizHawk.Client.EmuHawk
 
 				poke.SetWatch(SelectedWatches);
 
-				if (poke.ShowHawkDialog() == DialogResult.OK)
+				if (poke.ShowHawkDialog(this) == DialogResult.OK)
 				{
 					UpdateValues();
 				}
