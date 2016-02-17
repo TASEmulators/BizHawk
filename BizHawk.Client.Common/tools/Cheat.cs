@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -50,10 +48,10 @@ namespace BizHawk.Client.Common
 					cheat.Domain,
 					cheat.Address ?? 0,
 					cheat.Size,
-					cheat.Type,					
+					cheat.Type,
 					cheat.BigEndian ?? false,
 					cheat.Name
-                    );
+				);
 				_compare = cheat.Compare;
 				_val = cheat.Value ?? 0;
 
@@ -238,45 +236,44 @@ namespace BizHawk.Client.Common
 				{
 					switch (_comparisonType)
 					{
-						case Cheat.COMPARISONTYPE.NONE: // This should never happen, but it's here just in case
+						default:
+						case COMPARISONTYPE.NONE: // This should never happen, but it's here just in case
 							break;
-						case Cheat.COMPARISONTYPE.EQUAL:
+						case COMPARISONTYPE.EQUAL:
 							if (_compare.Value == _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 							break;
-						case Cheat.COMPARISONTYPE.GREATER_THAN:
+						case COMPARISONTYPE.GREATER_THAN:
 							if (_compare.Value > _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 							break;
-						case Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL:
+						case COMPARISONTYPE.GREATER_THAN_OR_EQUAL:
 							if (_compare.Value >= _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 							break;
-						case Cheat.COMPARISONTYPE.LESS_THAN:
+						case COMPARISONTYPE.LESS_THAN:
 							if (_compare.Value < _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 							break;
-						case Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL:
+						case COMPARISONTYPE.LESS_THAN_OR_EQUAL:
 							if (_compare.Value <= _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 							break;
-						case Cheat.COMPARISONTYPE.NOT_EQUAL:
+						case COMPARISONTYPE.NOT_EQUAL:
 							if (_compare.Value != _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
-							break;
-						default :
 							break;
 					}		
 				}
@@ -413,13 +410,13 @@ namespace BizHawk.Client.Common
 			if (obj is Watch)
 			{
 				var watch = obj as Watch;
-				return this.Domain == watch.Domain && this.Address == watch.Address;
+				return Domain == watch.Domain && Address == watch.Address;
 			}
 
 			if (obj is Cheat)
 			{
 				var cheat = obj as Cheat;
-				return this.Domain == cheat.Domain && this.Address == cheat.Address;
+				return Domain == cheat.Domain && Address == cheat.Address;
 			}
 
 			return base.Equals(obj);
@@ -427,7 +424,7 @@ namespace BizHawk.Client.Common
 
 		public override int GetHashCode()
 		{
-			return this.Domain.GetHashCode() + (int)(this.Address ?? 0);
+			return Domain.GetHashCode() + (int)(Address ?? 0);
 		}
 
 		public static bool operator ==(Cheat a, Cheat b)
