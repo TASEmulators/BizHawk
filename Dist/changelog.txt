@@ -2,57 +2,87 @@
 1.11.5 (in progress)
 =========================================
 
-*EmuHawk
-**Improve OSD watches
-**Add polar coordinates to VirtualPad analog controls
-**Save and load named config files manually
-**Add "store movie working data on disk instead of RAM" option to permit creation of hours-long movies
-**Allow multiple concurrent ExternalTools
-**Add Movie Save As menu function
-**Default window zooms now configurable per platform
-**Assorted usability improvements to Lua console, ram watch, ram search, firmwares config
-**Fix #561 - xpad rightstick unresponsive
+*GBA
+* Update mGBA to 0.4.0
+* Fix #563 -  mGBA Combined WRAM not working
 
-**Cheats
-***Add comparison
-***Multiline codes support
-***GBA: Support Action Replay MAX, Slide codes
-
-**Tastudio
-***Too many improvements to count, this tool is under hot development. **TODO** but feos or adelikat may want to take a stab at the high level features
-***Many efforts to reduce out-of-memory crashes
-
-**Basic Bot **TODO** anything else?
-***Support comparison values
-
-**Lua
-***add emu.setislagframe
-***Forms: Allow scrollbars on textbox
-***Support script auto hot-reloading
-***Add movie.save, client.displaymessages
-***Fix #488 - Sandbox current directory better
-***Fix #547 - Allow "#aarrggbb" as Color parameter to forms.setproperty
-***Fix #565 - bugs in lua's memorysavestate apis
-
-*NES
-**Better support for JAM/KIL opcode
-**Properly support unif board 42in1ResetSwitch
-**Support Tracer for QuickNES
-**Bugfixes to NSF player
+*Nes
+** QuickNes - trace logger support
+** NesHawk - properly emulate JAM/KIL
+** Support the unif board UNIF_BMC-42in1ResetSwitch
+** NSF player - limit track number to legal range and print current track number to console
 
 *PSX
-**Support memory callbacks
-**Support "determine lag from GPU frames" to mimic PCSXRR
+** Add "determine lag from GPU frames" option
+** Support memory callbacks
 
-*GBA
-**Update to mgba 0.4.0
-**Fix #563 0 Combined WRAM not working in mGBA
+*N64
+** Fix per game settings for DK64 + Glide64mk2
+** VirtualPad - Add polar coordinates to Analog stick
 
-*Other cores:
-**N64: Better defaults for DK64
-**GB/GBC: Add layer toggles
-**SMS: Flag SG-1000 movies
+*GB
+**Add GB layer toggles
 
+*EmuHawk
+** Try catching some missing prereqs in emuhawk startup and print a report about it
+** Better error handling in shader compiling, fixes some startup issues
+** Cheats - New Feature - cheat comparison types
+** Game Shark tool - Added Multiline Cheat Code handling for all supported cores.  Added GBA Slide code handling.
+** Make current windows size a per system setting
+** Fix #561 - can't set the xpad right stick
+** Ability to save/load specific config files
+** External Tools - Allow several tools running simultaneously
+** Fix selections in HexEditor text columns
+
+**Lua
+*** Add emu.setislagged()
+*** Add movie.save()
+*** Add client.displaymessages()
+*** Add gui.defaultpixelfont()
+*** Add memory.getmemorydomainsize()
+*** Fix #565 - bugs in lua's memorysavestate APIs
+*** Make fceux font monospace
+*** Fix #57 - Allow "#aarrggbb" as Color parameter to forms.setproperty()
+*** forms.textbox() - Added a scrollbars argument
+
+** Lua Console
+*** Add option to detect changes in scripts and automatically reload them.  Have this option off by default for now
+*** Fix exception when reloading a lua script with registered functions while the registered functions dialog is open
+*** Remember column widths
+*** Refresh the lua console when a script exits
+*** When a lua exception occurs, also want to update the script status icons
+*** Fix current directory bugs
+
+**Tastudio
+*** Fix upward drawing.
+*** Fix null reference errors with the splitter controls
+*** Don't clear selection on Cut
+*** Don't mindlessly unpause the emulator if autorestore is off and we're editing input via menu
+*** Account for loading files with "All Files" filter.
+*** Implement SeekingCutoffInterval
+*** Seek progress bar, ignore if seeking closer than 2 frames ahead
+*** History form - report marker operations, canonical colors, show the current item better
+*** Markers - adding markers updates dialog
+*** Don't ever remove marker 0
+
+**Ram Watch
+Ram Watch - fix "Display watches on Screen" feature
+Ram Watch - fixed saving of separators
+
+**Movies
+*** Save to Disk option (intended for large movies)
+*** Fix OutOfMemory when saving states
+*** When automatic movie backups are enabled, take a backup when the movie is closed without saving
+*** Save as menu item
+*** Flag for SG-1000 movies, fixes TASVideos submission parser
+
+**Ram Search
+***Fix "Exclude Ram Watch" option
+***Fix leadings zeros in the Difference and Differnet By boxes
+
+**Basic Bot
+***Compare To feature
+***Clear button clears out the attempts and frames values
 
 =========================================
 1.11.4
