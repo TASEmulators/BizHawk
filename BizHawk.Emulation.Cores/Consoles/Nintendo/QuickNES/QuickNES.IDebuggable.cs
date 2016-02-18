@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			int[] regs = new int[6];
 			var ret = new Dictionary<string, RegisterValue>();
-			LibQuickNES.qn_get_cpuregs(Context, regs);
+			QN.qn_get_cpuregs(Context, regs);
 			ret["A"] = (byte)regs[0];
 			ret["X"] = (byte)regs[1];
 			ret["Y"] = (byte)regs[2];

@@ -64,6 +64,9 @@
     <Compile Include="Base Implementations\NullSound.cs" />
     <Compile Include="Base Implementations\TraceBuffer.cs" />
     <Compile Include="BinaryQuickSerializer.cs" />
+    <Compile Include="BizInvoke\BizInvoker.cs" />
+    <Compile Include="BizInvoke\IImportResolver.cs" />
+    <Compile Include="BizInvoke\Win32LibraryImportResolver.cs" />
     <Compile Include="CodeDataLog.cs" />
     <Compile Include="CoreAttributes.cs" />
     <Compile Include="CoreComms.cs" />
