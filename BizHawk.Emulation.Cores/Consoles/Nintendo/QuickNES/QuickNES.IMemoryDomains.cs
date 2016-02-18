@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				bool writable = false;
 				IntPtr name = IntPtr.Zero;
 
-				if (!LibQuickNES.qn_get_memory_area(Context, i, ref data, ref size, ref writable, ref name))
+				if (!QN.qn_get_memory_area(Context, i, ref data, ref size, ref writable, ref name))
 					break;
 
 				if (data != IntPtr.Zero && size > 0 && name != IntPtr.Zero)
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 						throw new ArgumentOutOfRangeException();
 					}
 
-					return LibQuickNES.qn_peek_prgbus(Context, (int)addr);
+					return QN.qn_peek_prgbus(Context, (int)addr);
 				},
 				delegate(long addr, byte val)
 				{
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 						throw new ArgumentOutOfRangeException();
 					}
 
-					LibQuickNES.qn_poke_prgbus(Context, (int)addr, val);
+					QN.qn_poke_prgbus(Context, (int)addr, val);
 				}
 			));
 

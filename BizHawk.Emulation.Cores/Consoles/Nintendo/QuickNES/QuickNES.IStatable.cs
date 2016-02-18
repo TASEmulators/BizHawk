@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
 			CheckDisposed();
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_save(Context, SaveStateBuff, SaveStateBuff.Length));
+			LibQuickNES.ThrowStringError(QN.qn_state_save(Context, SaveStateBuff, SaveStateBuff.Length));
 			writer.Write(SaveStateBuff.Length);
 			writer.Write(SaveStateBuff);
 			// other variables
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (len != SaveStateBuff.Length)
 				throw new InvalidOperationException("Unexpected savestate buffer length!");
 			reader.Read(SaveStateBuff, 0, SaveStateBuff.Length);
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_load(Context, SaveStateBuff, SaveStateBuff.Length));
+			LibQuickNES.ThrowStringError(QN.qn_state_load(Context, SaveStateBuff, SaveStateBuff.Length));
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void InitSaveStateBuff()
 		{
 			int size = 0;
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_state_size(Context, ref size));
+			LibQuickNES.ThrowStringError(QN.qn_state_size(Context, ref size));
 			SaveStateBuff = new byte[size];
 			SaveStateBuff2 = new byte[size + 13];
 		}

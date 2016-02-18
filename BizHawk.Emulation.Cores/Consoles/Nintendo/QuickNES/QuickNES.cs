@@ -11,6 +11,7 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Emulation.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -26,9 +27,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	public partial class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IInputPollable,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
+		static readonly LibQuickNES QN;
+		static readonly Win32LibraryImportResolver Resolver;
+
+
 		static QuickNES()
 		{
-			LibQuickNES.qn_setup_mappers();
+			Resolver = new Win32LibraryImportResolver(LibQuickNES.dllname);
+			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver);
 		}
 
 		[CoreConstructor("NES")]
@@ -39,12 +45,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				ServiceProvider = new BasicServiceProvider(this);
 				CoreComm = comm;
 
-				Context = LibQuickNES.qn_new();
+				Context = QN.qn_new();
 				if (Context == IntPtr.Zero)
 					throw new InvalidOperationException("qn_new() returned NULL");
 				try
 				{
-					LibQuickNES.ThrowStringError(LibQuickNES.qn_loadines(Context, file, file.Length));
+					unsafe
+					{
+						fixed (byte* p = file)
+						{
+							Console.WriteLine((IntPtr)p);
+							LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
+						}
+					}
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
@@ -52,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					InitMemoryDomains();
 
 					int mapper = 0;
-					string mappername = Marshal.PtrToStringAnsi(LibQuickNES.qn_get_mapper(Context, ref mapper));
+					string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
 					Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
 					BoardName = mappername;
 					CoreComm.VsyncNum = 39375000;
@@ -185,21 +198,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			using (FP.Save())
 			{
 				if (Controller["Power"])
-					LibQuickNES.qn_reset(Context, true);
+					QN.qn_reset(Context, true);
 				if (Controller["Reset"])
-					LibQuickNES.qn_reset(Context, false);
+					QN.qn_reset(Context, false);
 
 				int j1, j2;
 				SetPads(out j1, out j2);
 
 				if (Tracer.Enabled)
-					LibQuickNES.qn_set_tracecb(Context, _tracecb);
+					QN.qn_set_tracecb(Context, _tracecb);
 				else
-					LibQuickNES.qn_set_tracecb(Context, null);
+					QN.qn_set_tracecb(Context, null);
 
 				Frame++;
-				LibQuickNES.ThrowStringError(LibQuickNES.qn_emulate_frame(Context, j1, j2));
-				IsLagFrame = LibQuickNES.qn_get_joypad_read_count(Context) == 0;
+				LibQuickNES.ThrowStringError(QN.qn_emulate_frame(Context, j1, j2));
+				IsLagFrame = QN.qn_get_joypad_read_count(Context) == 0;
 				if (IsLagFrame)
 					LagCount++;
 
@@ -214,7 +227,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		IntPtr Context;
-
 		public int Frame { get; private set; }
 
 		public string SystemId { get { return "NES"; } }
@@ -304,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			if (Context != IntPtr.Zero)
 			{
-				LibQuickNES.qn_delete(Context);
+				QN.qn_delete(Context);
 				Context = IntPtr.Zero;
 			}
 		}
@@ -324,12 +336,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		void InitAudio()
 		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_set_sample_rate(Context, 44100));
+			LibQuickNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
 		}
 
 		void DrainAudio()
 		{
-			NumSamples = LibQuickNES.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
+			NumSamples = QN.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
 			unsafe
 			{
 				fixed (short* _src = &MonoBuff[0], _dst = &StereoBuff[0])

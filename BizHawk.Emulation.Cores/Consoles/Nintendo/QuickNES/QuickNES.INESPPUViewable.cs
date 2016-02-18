@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			return VideoPalette;
 		}
 
-		private byte R2000 { get { return LibQuickNES.qn_get_reg2000(Context); } }
+		private byte R2000 { get { return QN.qn_get_reg2000(Context); } }
 
 		public bool BGBaseHigh
 		{
@@ -39,27 +39,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private byte[] ppubusbuf = new byte[0x3000];
 		public byte[] GetPPUBus()
 		{
-			LibQuickNES.qn_peek_ppubus(Context, ppubusbuf);
+			QN.qn_peek_ppubus(Context, ppubusbuf);
 			return ppubusbuf;
 		}
 
 		private byte[] palrambuf = new byte[0x20];
 		public byte[] GetPalRam()
 		{
-			Marshal.Copy(LibQuickNES.qn_get_palmem(Context), palrambuf, 0, 0x20);
+			Marshal.Copy(QN.qn_get_palmem(Context), palrambuf, 0, 0x20);
 			return palrambuf;
 		}
 
 		byte[] oambuf = new byte[0x100];
 		public byte[] GetOam()
 		{
-			Marshal.Copy(LibQuickNES.qn_get_oammem(Context), oambuf, 0, 0x100);
+			Marshal.Copy(QN.qn_get_oammem(Context), oambuf, 0, 0x100);
 			return oambuf;
 		}
 
 		public byte PeekPPU(int addr)
 		{
-			return LibQuickNES.qn_peek_ppu(Context, addr);
+			return QN.qn_peek_ppu(Context, addr);
 		}
 
 		// we don't use quicknes's MMC5 at all, so these three methods are just stubs

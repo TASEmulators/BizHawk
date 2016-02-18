@@ -6,20 +6,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 	{
 		public byte[] CloneSaveRam()
 		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_save(Context, SaveRamBuff, SaveRamBuff.Length));
+			LibQuickNES.ThrowStringError(QN.qn_battery_ram_save(Context, SaveRamBuff, SaveRamBuff.Length));
 			return (byte[])SaveRamBuff.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_load(Context, data, data.Length));
+			LibQuickNES.ThrowStringError(QN.qn_battery_ram_load(Context, data, data.Length));
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				return LibQuickNES.qn_has_battery_ram(Context);
+				return QN.qn_has_battery_ram(Context);
 			}
 		}
 
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void InitSaveRamBuff()
 		{
 			int size = 0;
-			LibQuickNES.ThrowStringError(LibQuickNES.qn_battery_ram_size(Context, ref size));
+			LibQuickNES.ThrowStringError(QN.qn_battery_ram_size(Context, ref size));
 			SaveRamBuff = new byte[size];
 		}
 	}

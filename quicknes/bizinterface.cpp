@@ -31,7 +31,11 @@ void operator delete(void *p)
 	std::free(p);
 }
 
+#ifdef _MSC_VER
+#define EXPORT extern "C" __declspec(dllexport)
+#else
 #define EXPORT extern "C" __declspec(dllexport) __attribute__((force_align_arg_pointer))
+#endif
 
 EXPORT void qn_setup_mappers()
 {
