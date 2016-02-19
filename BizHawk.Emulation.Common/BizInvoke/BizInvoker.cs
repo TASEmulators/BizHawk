@@ -48,6 +48,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 					throw new InvalidOperationException("Method " + na.Info.Name + " is not abstract!");
 			}
 
+			// hooks that will be run on the created proxy object
+			var postCreateHooks = new List<Action<object>>();
+
 			var aname = new AssemblyName(baseType.Name + Guid.NewGuid().ToString("N"));
 			var assy = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
 			var module = assy.DefineDynamicModule("BizInvoker");
@@ -55,40 +58,103 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 			foreach (var mi in baseMethods)
 			{
-				var paramInfos = mi.Info.GetParameters();
-				var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
-				var nativeParamTypes = new List<Type>();
-				var returnType = mi.Info.ReturnType;
-				var method = type.DefineMethod(mi.Info.Name, MethodAttributes.Virtual | MethodAttributes.Public,
-					CallingConventions.HasThis, returnType, paramTypes);
-
 				var entryPointName = mi.Attr.EntryPoint ?? mi.Info.Name;
 				var entryPtr = dll.Resolve(entryPointName);
 				if (entryPtr == IntPtr.Zero)
 					throw new InvalidOperationException("Resolver returned NULL for entry point " + entryPointName);
 
-				if (returnType != typeof(void) && !returnType.IsPrimitive)
-					throw new InvalidOperationException("Only primitive return types are supported");
-
-				var il = method.GetILGenerator();
-				for (int i = 0; i < paramTypes.Length; i++)
+				if (false)
 				{
-					// arg 0 is this, so + 1
-					nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i]));
+					ImplementMethodCalli(type, mi.Info, entryPtr, mi.Attr.CallingConvention);
 				}
-				LoadConstant(il, entryPtr);
-				il.EmitCalli(OpCodes.Calli, mi.Attr.CallingConvention, returnType, nativeParamTypes.ToArray());
-
-				// either there's a primitive on the stack and we're expected to return that primitive,
-				// or there's nothing on the stack and we're expected to return nothing
-				il.Emit(OpCodes.Ret);
-
-				type.DefineMethodOverride(method, mi.Info);
+				else
+				{
+					var hook = ImplementMethodDelegate(type, mi.Info, entryPtr, mi.Attr.CallingConvention);
+					postCreateHooks.Add(hook);
+				}
 			}
 
-			return (T)Activator.CreateInstance(type.CreateType());
+			var ret = Activator.CreateInstance(type.CreateType());
+			foreach (var hook in postCreateHooks)
+				hook(ret);
+			return (T)ret;
 		}
 
+		private static Action<object> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, IntPtr entryPtr, CallingConvention nativeCall)
+		{
+			var paramInfos = baseMethod.GetParameters();
+			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
+			var returnType = baseMethod.ReturnType;
+
+			// create the delegate type
+			var delegateType = type.DefineNestedType("DelegateType" + baseMethod.Name,
+				TypeAttributes.Class | TypeAttributes.NestedPrivate | TypeAttributes.Sealed, typeof(MulticastDelegate));
+			var delegateCtor = delegateType.DefineConstructor(
+				MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,
+				CallingConventions.Standard, new Type[] { typeof(object), typeof(IntPtr) });
+			delegateCtor.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+			var delegateInvoke = delegateType.DefineMethod("Invoke",
+				MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual, returnType, paramTypes);
+			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
+			var attr = new CustomAttributeBuilder(typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) }), new object[] { nativeCall });
+			delegateType.SetCustomAttribute(attr);
+
+			// define a field on the class to hold the delegate
+			var field = type.DefineField("DelegateField" + baseMethod.Name, delegateType,
+				FieldAttributes.Public);
+
+			var method = type.DefineMethod(baseMethod.Name, MethodAttributes.Virtual | MethodAttributes.Public,
+				CallingConventions.HasThis, returnType, paramTypes);
+			var il = method.GetILGenerator();
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldfld, field);
+			for (int i = 0; i < paramTypes.Length; i++)
+				il.Emit(OpCodes.Ldarg, (short)(i + 1));
+			il.Emit(OpCodes.Callvirt, delegateInvoke);
+
+			il.Emit(OpCodes.Ret);
+
+			type.DefineMethodOverride(method, baseMethod);
+
+			return (o) =>
+			{
+				var interopDelegate = Marshal.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
+				o.GetType().GetField(field.Name).SetValue(o, interopDelegate);
+			};
+		}
+
+		private static void ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, IntPtr entryPtr, CallingConvention nativeCall)
+		{
+			var paramInfos = baseMethod.GetParameters();
+			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
+			var nativeParamTypes = new List<Type>();
+			var returnType = baseMethod.ReturnType;
+			var method = type.DefineMethod(baseMethod.Name, MethodAttributes.Virtual | MethodAttributes.Public,
+				CallingConventions.HasThis, returnType, paramTypes);
+
+			if (returnType != typeof(void) && !returnType.IsPrimitive)
+				throw new InvalidOperationException("Only primitive return types are supported");
+
+			var il = method.GetILGenerator();
+			for (int i = 0; i < paramTypes.Length; i++)
+			{
+				// arg 0 is this, so + 1
+				nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i]));
+			}
+			LoadConstant(il, entryPtr);
+			il.EmitCalli(OpCodes.Calli, nativeCall, returnType, nativeParamTypes.ToArray());
+
+			// either there's a primitive on the stack and we're expected to return that primitive,
+			// or there's nothing on the stack and we're expected to return nothing
+			il.Emit(OpCodes.Ret);
+
+			type.DefineMethodOverride(method, baseMethod);
+		}
+
+		/// <summary>
+		/// load an IntPtr constant in an il stream
+		/// </summary>
 		private static void LoadConstant(ILGenerator il, IntPtr p)
 		{
 			if (p == IntPtr.Zero)
@@ -100,6 +166,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			il.Emit(OpCodes.Conv_I);
 		}
 
+		/// <summary>
+		/// load a UIntPtr constant in an il stream
+		/// </summary>
 		private static void LoadConstant(ILGenerator il, UIntPtr p)
 		{
 			if (p == UIntPtr.Zero)
