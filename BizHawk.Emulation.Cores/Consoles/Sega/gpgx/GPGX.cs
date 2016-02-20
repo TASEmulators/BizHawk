@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		portedUrl: "https://code.google.com/p/genplus-gx/",
 		singleInstance: true
 		)]
-	public class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
-		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight, ICodeDataLogger
+	public partial class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
+		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		static GPGX AttachedCore = null;
 
@@ -667,39 +667,52 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
 				}
 			}
-			mm.Add(new MemoryDomain("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-				delegate(long addr)
+			var m68Bus = new MemoryDomain("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+				delegate (long addr)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
 					return LibGPGX.gpgx_peek_m68k_bus(a);
 				},
-				delegate(long addr, byte val)
+				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
 					LibGPGX.gpgx_write_m68k_bus(a, val);
-				}, 2));
-			mm.Add(new MemoryDomain("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-				delegate(long addr)
+				}, 2);
+
+			mm.Add(m68Bus);
+
+			var s68Bus = new MemoryDomain("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+				delegate (long addr)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
 					return LibGPGX.gpgx_peek_s68k_bus(a);
 				},
-				delegate(long addr, byte val)
+				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
 					LibGPGX.gpgx_write_s68k_bus(a, val);
-				}, 2));
+				}, 2);
+
+			if (IsSegaCD)
+			{
+				mm.Add(s68Bus);
+			}
+
 			MemoryDomains = new MemoryDomainList(mm);
+			MemoryDomains.SystemBus = IsSegaCD ? s68Bus : m68Bus;
+
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
+
+		public bool IsSegaCD { get { return CD != null; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{

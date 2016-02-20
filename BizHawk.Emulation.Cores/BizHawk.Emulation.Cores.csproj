@@ -738,7 +738,7 @@
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ITraceable.cs">
-        <DependentUpon>QuickNES.cs</DependentUpon>
+      <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IVideoProvider.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
@@ -770,6 +770,7 @@
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IDisassembler.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
