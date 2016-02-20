@@ -320,5 +320,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_set_draw_mask(DrawMask mask);
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_write_m68k_bus(uint addr, byte data);
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_write_s68k_bus(uint addr, byte data);
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte gpgx_peek_m68k_bus(uint addr);
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte gpgx_peek_s68k_bus(uint addr);
+
 	}
 }
