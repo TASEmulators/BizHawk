@@ -28,12 +28,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		static readonly LibQuickNES QN;
-		static readonly Win32LibraryImportResolver Resolver;
+		static readonly DynamicLibraryImportResolver Resolver;
 
 
 		static QuickNES()
 		{
-			Resolver = new Win32LibraryImportResolver(LibQuickNES.dllname);
+			Resolver = new DynamicLibraryImportResolver(LibQuickNES.dllname);
 			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver);
 		}
 

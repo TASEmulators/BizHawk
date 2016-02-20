@@ -6,27 +6,40 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Common.BizInvoke
 {
-	public class Win32LibraryImportResolver : IImportResolver, IDisposable
+	public class DynamicLibraryImportResolver : IImportResolver, IDisposable
 	{
 		private IntPtr _p;
 
-		public Win32LibraryImportResolver(string dllName)
+		public DynamicLibraryImportResolver(string dllName)
 		{
+#if !MONO
 			_p = Win32.LoadLibrary(dllName);
+#else
+			// TODO: how can we read name remaps out of app.confg <dllmap> ?
+			_p = Libdl.dlopen(dllName, Libdl.RTLD_NOW);
+#endif
 			if (_p == IntPtr.Zero)
 				throw new InvalidOperationException("LoadLibrary returned NULL");
 		}
 
 		public IntPtr Resolve(string entryPoint)
 		{
+#if !MONO
 			return Win32.GetProcAddress(_p, entryPoint);
+#else
+			return Libdl.dlsym(_p, entryPoint);
+#endif
 		}
 
 		private void Free()
 		{
 			if (_p != IntPtr.Zero)
 			{
+#if !MONO
 				Win32.FreeLibrary(_p);
+#else
+				Libdl.dlclose(_p);
+#endif
 				_p = IntPtr.Zero;
 			}
 		}
@@ -37,11 +50,12 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			GC.SuppressFinalize(this);
 		}
 
-		~Win32LibraryImportResolver()
+		~DynamicLibraryImportResolver()
 		{
 			Free();
 		}
 
+#if !MONO
 		private static class Win32
 		{
 			[DllImport("kernel32.dll")]
@@ -51,5 +65,17 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			[DllImport("kernel32.dll")]
 			public static extern bool FreeLibrary(IntPtr hModule);
 		}
+#else
+		private static class Libdl
+		{
+			[DllImport("libdl.so")]
+			public static extern IntPtr dlopen(string filename, int flags);
+			[DllImport("libdl.so")]
+			public static extern IntPtr dlsym(IntPtr handle, string symbol);
+			[DllImport("libdl.so")]
+			public static extern int dlclose(IntPtr handle);
+			public const int RTLD_NOW = 2;
+		}
+#endif
 	}
 }
