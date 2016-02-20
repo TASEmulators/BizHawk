@@ -10,10 +10,65 @@ namespace BizHawk.Emulation.Common.BizInvoke
 {
 	public static class BizInvoker
 	{
+		/// <summary>
+		/// holds information about a proxy implementation, including type and setup hooks
+		/// </summary>
+		private class InvokerImpl
+		{
+			public Type ImplType;
+			public List<Action<object, IImportResolver>> Hooks;
+
+			public object Create(IImportResolver dll)
+			{
+				var ret = Activator.CreateInstance(ImplType);
+				foreach (var f in Hooks)
+					f(ret, dll);
+				return ret;
+			}
+		}
+
+		/// <summary>
+		/// dictionary of all generated proxy implementations and their basetypes
+		/// </summary>
+		private static IDictionary<Type, InvokerImpl> Impls = new Dictionary<Type, InvokerImpl>();
+
+		/// <summary>
+		/// the assembly that all proxies are placed in
+		/// </summary>
+		private static readonly AssemblyBuilder ImplAssemblyBuilder;
+		/// <summary>
+		/// the module that all proxies are placed in
+		/// </summary>
+		private static readonly ModuleBuilder ImplModuleBilder;
+
+		static BizInvoker()
+		{
+			var aname = new AssemblyName("BizInvokeProxyAssembly");
+			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
+			ImplModuleBilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
+		}
+
+		/// <summary>
+		/// get an implementation proxy for an interop class
+		/// </summary>
 		public static T GetInvoker<T>(IImportResolver dll)
 			where T : class
 		{
-			var baseType = typeof(T);
+			InvokerImpl impl;
+			lock (Impls)
+			{
+				var baseType = typeof(T);
+				if (!Impls.TryGetValue(baseType, out impl))
+				{
+					impl = CreateProxy(baseType);
+					Impls.Add(baseType, impl);
+				}
+			}
+			return (T)impl.Create(dll);
+		}
+
+		private static InvokerImpl CreateProxy(Type baseType)
+		{
 			if (baseType.IsSealed)
 				throw new InvalidOperationException("Can't proxy a sealed type");
 			if (!baseType.IsPublic)
@@ -49,38 +104,32 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			}
 
 			// hooks that will be run on the created proxy object
-			var postCreateHooks = new List<Action<object>>();
+			var postCreateHooks = new List<Action<object, IImportResolver>>();
 
-			var aname = new AssemblyName(baseType.Name + Guid.NewGuid().ToString("N"));
-			var assy = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
-			var module = assy.DefineDynamicModule("BizInvoker");
-			var type = module.DefineType("Bizhawk.BizInvokeProxy", TypeAttributes.Class | TypeAttributes.Public, baseType);
+			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
 			foreach (var mi in baseMethods)
 			{
 				var entryPointName = mi.Attr.EntryPoint ?? mi.Info.Name;
-				var entryPtr = dll.Resolve(entryPointName);
-				if (entryPtr == IntPtr.Zero)
-					throw new InvalidOperationException("Resolver returned NULL for entry point " + entryPointName);
 
-				if (false)
-				{
-					ImplementMethodCalli(type, mi.Info, entryPtr, mi.Attr.CallingConvention);
-				}
-				else
-				{
-					var hook = ImplementMethodDelegate(type, mi.Info, entryPtr, mi.Attr.CallingConvention);
-					postCreateHooks.Add(hook);
-				}
+				var hook = mi.Attr.Compatibility
+					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName)
+					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName);
+
+				postCreateHooks.Add(hook);
 			}
 
-			var ret = Activator.CreateInstance(type.CreateType());
-			foreach (var hook in postCreateHooks)
-				hook(ret);
-			return (T)ret;
+			return new InvokerImpl
+			{
+				Hooks = postCreateHooks,
+				ImplType = type.CreateType()
+			};
 		}
 
-		private static Action<object> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, IntPtr entryPtr, CallingConvention nativeCall)
+		/// <summary>
+		/// create a method implementation that uses GetDelegateForFunctionPointer internally
+		/// </summary>
+		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -117,24 +166,33 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 			type.DefineMethodOverride(method, baseMethod);
 
-			return (o) =>
+			return (o, dll) =>
 			{
+				var entryPtr = dll.SafeResolve(entryPointName);
 				var interopDelegate = Marshal.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
 				o.GetType().GetField(field.Name).SetValue(o, interopDelegate);
 			};
 		}
 
-		private static void ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, IntPtr entryPtr, CallingConvention nativeCall)
+		/// <summary>
+		/// create a method implementation that uses calli internally
+		/// </summary>
+		private static Action<object, IImportResolver> ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
 			var nativeParamTypes = new List<Type>();
 			var returnType = baseMethod.ReturnType;
+			if (returnType != typeof(void) && !returnType.IsPrimitive)
+				throw new InvalidOperationException("Only primitive return types are supported");
+
+			// define a field on the type to hold the entry pointer
+			var field = type.DefineField("EntryPtrField" + baseMethod.Name, typeof(IntPtr),
+				FieldAttributes.Public);
+
 			var method = type.DefineMethod(baseMethod.Name, MethodAttributes.Virtual | MethodAttributes.Public,
 				CallingConventions.HasThis, returnType, paramTypes);
 
-			if (returnType != typeof(void) && !returnType.IsPrimitive)
-				throw new InvalidOperationException("Only primitive return types are supported");
 
 			var il = method.GetILGenerator();
 			for (int i = 0; i < paramTypes.Length; i++)
@@ -142,7 +200,8 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				// arg 0 is this, so + 1
 				nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i]));
 			}
-			LoadConstant(il, entryPtr);
+			il.Emit(OpCodes.Ldarg_0);
+			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(OpCodes.Calli, nativeCall, returnType, nativeParamTypes.ToArray());
 
 			// either there's a primitive on the stack and we're expected to return that primitive,
@@ -150,6 +209,12 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			il.Emit(OpCodes.Ret);
 
 			type.DefineMethodOverride(method, baseMethod);
+
+			return (o, dll) =>
+			{
+				var entryPtr = dll.SafeResolve(entryPointName);
+				o.GetType().GetField(field.Name).SetValue(o, entryPtr);
+			};
 		}
 
 		/// <summary>
@@ -180,6 +245,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			il.Emit(OpCodes.Conv_U);
 		}
 
+		/// <summary>
+		/// emit a single parameter load with unmanaged conversions
+		/// </summary>
 		private static Type EmitParamterLoad(ILGenerator il, int idx, Type type)
 		{
 			if (type.IsGenericType)
@@ -259,6 +327,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		}
 	}
 
+	/// <summary>
+	/// mark an abstract method to be proxied by BizInvoker
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method)]
 	public class BizImportAttribute : Attribute
 	{
@@ -268,8 +339,20 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		}
 		private readonly CallingConvention _callingConvention;
 
+		/// <summary>
+		/// name of entry point; if not given, the method's name is used
+		/// </summary>
 		public string EntryPoint { get; set; }
 
+		/// <summary>
+		/// Use a slower interop that supports more argument types
+		/// </summary>
+		public bool Compatibility { get; set; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="c">unmanaged calling convention</param>
 		public BizImportAttribute(CallingConvention c)
 		{
 			_callingConvention = c;
