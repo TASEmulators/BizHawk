@@ -527,7 +527,11 @@ namespace BizHawk.Client.Common
 				do
 				{
 					index++;
+					if (index >= States.Count)
+						break;
 				} while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
+				if (index >= States.Count) break;
+
 				ret.Add(index);
 				if (States.ElementAt(index).Value.IsOnDisk)
 					saveUsed -= _expectedStateSize;
@@ -540,7 +544,8 @@ namespace BizHawk.Client.Common
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
 				index++;
-				ret.Add(index);
+				if (!ret.Contains(index))
+					ret.Add(index);
 				if (States.ElementAt(index).Value.IsOnDisk)
 					saveUsed -= _expectedStateSize;
 				else
@@ -565,7 +570,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
-				_movie.ReportProgress((double)100d / States.Count * i);
+				_movie.ReportProgress(100d / States.Count * i);
 			}
 		}
 
@@ -776,7 +781,7 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 				stateList.Add(branchHash, kvp.Value);
-				Used += (ulong)stateList[branchHash].Length;
+				// We aren't creating any new states, just adding a reference to an already-existing one; so Used doesn't need to be updated.
 			}
 		}
 
@@ -848,7 +853,6 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 				stateList.Add(branchHash, kvp.Value);
-				Used += (ulong)stateList[branchHash].Length;
 			}
 		}
 
