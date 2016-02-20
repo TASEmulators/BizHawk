@@ -667,6 +667,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
 				}
 			}
+			mm.Add(new MemoryDomain("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+				delegate(long addr)
+				{
+					var a = (uint)addr;
+					if (a >= 0x1000000)
+						throw new ArgumentOutOfRangeException();
+					return LibGPGX.gpgx_peek_m68k_bus(a);
+				},
+				delegate(long addr, byte val)
+				{
+					var a = (uint)addr;
+					if (a >= 0x1000000)
+						throw new ArgumentOutOfRangeException();
+					LibGPGX.gpgx_write_m68k_bus(a, val);
+				}, 2));
+			mm.Add(new MemoryDomain("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+				delegate(long addr)
+				{
+					var a = (uint)addr;
+					if (a >= 0x1000000)
+						throw new ArgumentOutOfRangeException();
+					return LibGPGX.gpgx_peek_s68k_bus(a);
+				},
+				delegate(long addr, byte val)
+				{
+					var a = (uint)addr;
+					if (a >= 0x1000000)
+						throw new ArgumentOutOfRangeException();
+					LibGPGX.gpgx_write_s68k_bus(a, val);
+				}, 2));
 			MemoryDomains = new MemoryDomainList(mm);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}

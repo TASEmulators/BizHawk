@@ -25,6 +25,11 @@ namespace BizHawk.Client.EmuHawk
 			SaveTASMenuItem.Enabled =
 				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
 				(CurrentTasMovie.Filename != DefaultTasProjName());
+
+			SaveTASMenuItem.Enabled =
+			SaveAsTASMenuItem.Enabled =
+				!_saveBackgroundWorker.IsBusy;
+
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)

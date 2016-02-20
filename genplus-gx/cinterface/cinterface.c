@@ -423,6 +423,36 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 	}
 }
 
+GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
+{
+	unsigned char *base = m68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		base[addr & 0xffff ^ 1] = data;
+}
+
+GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
+{
+	unsigned char *base = s68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		base[addr & 0xffff ^ 1] = data;
+}
+GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
+{
+	unsigned char *base = m68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		return base[addr & 0xffff ^ 1];
+	else
+		return 0xff;
+}
+GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
+{
+	unsigned char *base = s68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		return base[addr & 0xffff ^ 1];
+	else
+		return 0xff;
+}
+
 GPGX_EX void gpgx_get_sram(void **area, int *size)
 {
 	if (!area || !size)
