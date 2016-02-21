@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc, out length);
 
 				// feos: we shouldn't append up to 64, but momem.l prints all the regs, while it could do like D0-A6 (as Gens-Tracer does it)
-				Buffer.Append(string.Format("{0:X6}:  {1,-64}", pc, disasm));
+				Buffer.Append(string.Format("{0:X6}:  {1,-24}", pc, disasm));
 
 				foreach (var r in regs)
 				{
