@@ -84,7 +84,8 @@ namespace BizHawk.Client.EmuHawk
 		CoreComm CreateCoreComm()
 		{
 			CoreComm ret = new CoreComm(ShowMessageCoreComm, NotifyCoreComm);
-			ret.RequestGLContext = () => GlobalWin.GLManager.CreateGLContext();
+			ret.ReleaseGLContext = (o) => GlobalWin.GLManager.ReleaseGLContext(o);
+			ret.RequestGLContext = (major,minor,forward) => GlobalWin.GLManager.CreateGLContext(major,minor,forward);
 			ret.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
 			ret.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
 			return ret;

@@ -26,11 +26,17 @@ namespace BizHawk.Client.EmuHawk
 			Instance = new GLManager();
 		}
 
-		public ContextRef CreateGLContext()
+		public void ReleaseGLContext(object o)
+		{
+			ContextRef cr = (ContextRef)o;
+			cr.gl.Dispose();
+		}
+
+		public ContextRef CreateGLContext(int major_version, int minor_version, bool forward_compatible)
 		{
 			var ret = new ContextRef
 			{
-				gl = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK()
+				gl = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(major_version, minor_version, forward_compatible)
 			};
 			return ret;
 		}

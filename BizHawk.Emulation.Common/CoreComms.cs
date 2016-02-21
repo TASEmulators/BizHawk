@@ -51,7 +51,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Action<string> Notify { get; private set; }
 
-		public Func<object> RequestGLContext;
+		public Func<int,int,bool,object> RequestGLContext;
+		public Action<object> ReleaseGLContext;
 		public Action<object> ActivateGLContext;
 		public Action DeactivateGLContext; //this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
 	}

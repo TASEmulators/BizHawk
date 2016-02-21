@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			if (this.SyncSettings.UseGL && glContext == null)
 			{
-				glContext = CoreComm.RequestGLContext();
+				glContext = CoreComm.RequestGLContext(2,0,false);
 			}
 
 			ResetCounters();
@@ -322,6 +322,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				CD.Dispose();
 				Disposed = true;
 				DeactivateGL();
+				CoreComm.ReleaseGLContext(glContext);
 			}
 		}
 
