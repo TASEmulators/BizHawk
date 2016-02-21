@@ -32,7 +32,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Header = "Instructions";
 				DebuggableCore = debuggableCore;
 
+				// TODO: refactor
+				MemoryDomains = (debuggableCore as IEmulator).ServiceProvider.GetService<IMemoryDomains>();
+				Disassembler = (debuggableCore as IEmulator).ServiceProvider.GetService<IDisassemblable>();
 			}
+
+			// TODO: think about this
+			private readonly IMemoryDomains MemoryDomains;
+			private readonly IDisassemblable Disassembler;
 
 			private readonly IDebuggable DebuggableCore;
 
