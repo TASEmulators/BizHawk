@@ -26,6 +26,12 @@ namespace BizHawk.Client.Common
 		public IDebuggable DebuggableCore { get; set; }
 
 		[OptionalService]
+		public IDisassemblable DisassemblableCore { get; set; }
+
+		[OptionalService]
+		private IMemoryDomains MemoryDomains { get; set; }
+
+		[OptionalService]
 		public IInputPollable InputPollableCore { get; set; }
 
 		public Action FrameAdvanceCallback { get; set; }
@@ -64,6 +70,37 @@ namespace BizHawk.Client.Common
 		public int FrameCount()
 		{
 			return Emulator.Frame;
+		}
+
+		[LuaMethodAttributes(
+			"disassemble",
+			"Returns the disassembly object (disasm string and length int) for the given PC address. Uses System Bus domain if no domain name provided"
+		)]
+		public object Disassemble(uint pc, string name = "")
+		{
+			try
+			{
+				if (DisassemblableCore == null)
+				{
+					throw new NotImplementedException();
+				}
+
+				int l;
+				MemoryDomain domain = MemoryDomains.SystemBus;
+
+				if (!string.IsNullOrEmpty(name))
+					domain = MemoryDomains[name];
+
+				var d = DisassemblableCore.Disassemble(domain, pc, out l);
+				return new { disasm = d, length = l };
+			}
+			catch (NotImplementedException)
+			{
+				Log(string.Format(
+					"Error: {0} does not yet implement disassemble()",
+					Emulator.Attributes().CoreName));
+				return null;
+			}
 		}
 
 		// TODO: what about 64 bit registers?
