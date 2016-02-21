@@ -40,9 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			// TODO: think about this
 			private readonly IMemoryDomains MemoryDomains;
 			private readonly IDisassemblable Disassembler;
-
 			private readonly IDebuggable DebuggableCore;
-
 			private readonly StringBuilder Buffer;
 
 			private bool _enabled;
@@ -50,9 +48,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			private void TraceFromCallback()
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
-				foreach(var r in regs)
+				uint pc = (uint)regs["M68K PC"].Value;
+				var length = 0;
+				var disasm = Disassembler.Disassemble(MemoryDomains.SystemBus, pc, out length);
+
+				// feos: we shouldn't append up to 64, but momem.l prints all the regs, while it could do like D0-A6 (as Gens-Tracer does it)
+				Buffer.Append(string.Format("{0:X6}:  {1,-64}", pc, disasm));
+
+				foreach (var r in regs)
 				{
-					Buffer.Append(string.Format("{0} {1}", r.Key, r.Value.Value));
+					if (r.Key.StartsWith("M68K"))
+					{
+						Buffer.Append(string.Format("{0}:{1:X8}", r.Key, r.Value.Value).Remove(0,4));
+					}
 				}
 
 				Buffer.AppendLine();
