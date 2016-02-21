@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				if (column == 0)
 				{
 					// feos: address size must be platform dependant
-					text = string.Format("{0:X4}", DisassemblyLines[index].Address);
+					text = string.Format("{0:X}", DisassemblyLines[index].Address);
 				}
 				else if (column == 1)
 				{
@@ -184,7 +184,8 @@ namespace BizHawk.Client.EmuHawk
 				foreach (int index in indices)
 				{
 					if (blob.Length != 0) blob.AppendLine();
-					blob.Append(DisassemblyLines[index].Address)
+
+					blob.Append(string.Format("{0:X}", DisassemblyLines[index].Address))
 						.Append(" ")
 						.Append(DisassemblyLines[index].Mnemonic);
 				}

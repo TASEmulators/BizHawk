@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			string opcodeStr = MOS6502X.Disassemble(pc, out notused, (address) => _memoryDomains.SystemBus.PeekByte(address));
 
 			Tracer.Put(string.Format(
-				"{0:x4}:{1} SP:{2:x2} A:{3:x2} P:{4:x2} X:{5:x2} Y:{6:x2} ",
+				"{0:X4}: {1} SP:{2:X2} A:{3:X2} P:{4:X2} X:{5:X2} Y:{6:X2} ",
 			pc,
 			opcodeStr.PadRight(26),
 			sp,
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		}
 
-		private const string TraceHeader = "PC:OP SP_A_P_X_Y ";
+		private const string TraceHeader = "PC: OP SP_A_P_X_Y ";
 
 		private void ConnectTracer()
 		{
