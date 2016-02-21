@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			MemoryDomains = new MemoryDomainList(mm);
-			MemoryDomains.SystemBus = IsSegaCD ? s68Bus : m68Bus;
+			MemoryDomains.SystemBus = m68Bus;
 
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 		}
