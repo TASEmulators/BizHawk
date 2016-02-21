@@ -24,15 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (name.Contains("68K SR") || name.StartsWith("Z80"))
 					size = 16;
 
-				// TODO: clean me up
-				if (size == 16)
-				{
-					ret[Marshal.PtrToStringAnsi(regs[i].Name)] = (ushort)regs[i].Value;
-				}
-				else
-				{
-					ret[Marshal.PtrToStringAnsi(regs[i].Name)] = (uint)regs[i].Value;
-				}
+				ret[name] = new RegisterValue((ulong)regs[i].Value, size);
 			}
 
 			return ret;
