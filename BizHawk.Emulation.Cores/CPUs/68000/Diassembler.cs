@@ -12,9 +12,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 		public override string ToString()
 		{
-			// feos: pc is known already, raw bytes must be optional, other cores don't return them
-			//return string.Format("{0:X6}: {3,-20}  {1,-8} {2}", PC, Mnemonic, Args, RawBytes);
-			return string.Format("{0,-8} {1}", Mnemonic, Args);
+			return string.Format("{0:X6}: {3,-20}  {1,-8} {2}", PC, Mnemonic, Args, RawBytes);			
 		}
 	}
 
