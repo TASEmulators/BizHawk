@@ -60,5 +60,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizGetState(IntPtr ctx, byte[] dest);
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool BizPutState(IntPtr ctx, byte[] src);
+
+		[Flags]
+		public enum Layers : int
+		{
+			BG0 = 1,
+			BG1 = 2,
+			BG2 = 4,
+			BG3 = 8,
+			OBJ = 16
+		}
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetLayerMask(IntPtr ctx, Layers mask);
 	}
 }
