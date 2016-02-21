@@ -2,6 +2,7 @@
 using System;
 using System.Text;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -59,7 +60,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					if (r.Key.StartsWith("M68K"))
 					{
-						Buffer.Append(string.Format("{0}:{1:X8}", r.Key, r.Value.Value).Remove(0,4));
+						Buffer.Append(
+							string.Format("{0}:{1} ",
+							r.Key.Replace("M68K", string.Empty).Trim(),
+							r.Value.Value.ToHexString(r.Value.BitSize / 4)));
 					}
 				}
 

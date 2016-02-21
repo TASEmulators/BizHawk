@@ -23,8 +23,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				byte size = 32;
 				if (name.Contains("68K SR") || name.StartsWith("Z80"))
 					size = 16;
-				ret[Marshal.PtrToStringAnsi(regs[i].Name)] =
-					new RegisterValue { BitSize = size, Value = (ulong)regs[i].Value };
+
+				// TODO: clean me up
+				if (size == 16)
+				{
+					ret[Marshal.PtrToStringAnsi(regs[i].Name)] = (ushort)regs[i].Value;
+				}
+				else
+				{
+					ret[Marshal.PtrToStringAnsi(regs[i].Name)] = (uint)regs[i].Value;
+				}
 			}
 
 			return ret;
