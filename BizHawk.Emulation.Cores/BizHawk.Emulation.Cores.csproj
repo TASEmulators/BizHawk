@@ -771,37 +771,38 @@
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.ICodeDataLogger.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IDebuggable.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IDisassembler.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IDriveLight.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IEmulator.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IInputPollable.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IMemoryDomains.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.ISaveRam.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.ISettable.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IStatable.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ITraceable.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.IVideoProvider.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />

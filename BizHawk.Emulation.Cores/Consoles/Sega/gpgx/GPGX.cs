@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		)]
 	public partial class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
-	{
+    {
 		static GPGX AttachedCore = null;
 
 		DiscSystem.Disc CD;
@@ -161,6 +161,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				InitMemCallbacks();
 				KillMemCallbacks();
+
+				Tracer = new CallbackBasedTraceBuffer(this);
+				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			}
 			catch
 			{
