@@ -254,9 +254,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
-		/// <summary>
-		/// takes a legacy saveram format that we used to use for vbanext-hawk and extracts the saveram from it.  works most of the time
-		/// </summary>
 		private static byte[] LegacyFix(byte[] saveram)
 		{
 			// at one point vbanext-hawk had a special saveram format which we want to load.
@@ -284,39 +281,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				data = LegacyFix(data);
 			}
 
-			StoreSaveRamInternal(data, data.Length);
-		}
-
-		/// <summary>
-		/// like StoreSaveRam, but only uses up to length bytes of source
-		/// </summary>
-		private void StoreSaveRamInternal(byte[] data, int length)
-		{
-			int expectedlen = LibmGBA.BizGetSaveRamSize(core);
-			
-			if (expectedlen > length)
+			int len = LibmGBA.BizGetSaveRamSize(core);
+			if (len > data.Length)
 			{
-				// scenario:
-				// game has no savetype override, but autodetects to < 128K.
-				// saveram is snapshotted after autodetect and then loaded into a fresh core before autodetect
-
-				// resolution:
-				// provide fake extra bytes that won't be used anyway
-				Array.Copy(data, tempsaveram2, length);
-
-				for (int i = length; i < expectedlen; i++)
-					tempsaveram2[i] = 0xff;
-				data = tempsaveram2;
+				byte[] _tmp = new byte[len];
+				Array.Copy(data, _tmp, data.Length);
+				for (int i = data.Length; i < len; i++)
+					_tmp[i] = 0xff;
+				data = _tmp;
 			}
-			else if (expectedlen < data.Length)
+			else if (len < data.Length)
 			{
-				// scenario:
-				// game has no savetype override, but autodetects to < 128K
-				// saveram is snapshotted before autodetect and then loaded into a core after autodetect
-				// we'd never expect this to happen with just saveram, because we only Store when the core
-				// is first created.  but the saveram interface is used for savestates as well, where it can happen
-
-				// resolution: do nothing and hope the extra bytes weren't important
+				// we could continue from this, but we don't expect it
+				throw new InvalidOperationException("Saveram will be truncated!");
 			}
 			LibmGBA.BizPutSaveRam(core, data);
 		}
@@ -331,11 +308,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private void InitStates()
 		{
 			savebuff = new byte[LibmGBA.BizGetStateSize()];
+			savebuff2 = new byte[savebuff.Length + 13];
 		}
 
 		private byte[] savebuff;
-		private byte[] tempsaveram = new byte[1024 * 128]; // largest possible size
-		private byte[] tempsaveram2 = new byte[1024 * 128]; // largest possible size
+		private byte[] savebuff2;
 
 		public bool BinarySaveStatesPreferred
 		{
@@ -365,11 +342,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-
-			LibmGBA.BizGetSaveRam(core, tempsaveram);
-			int saveramsize = LibmGBA.BizGetSaveRamSize(core);
-			writer.Write(saveramsize);
-			writer.Write(tempsaveram, 0, saveramsize);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -385,20 +357,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-
-			int saveramsize = reader.ReadInt32();
-			reader.Read(tempsaveram, 0, saveramsize);
-			StoreSaveRamInternal(tempsaveram, saveramsize);
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream();
+			var ms = new MemoryStream(savebuff2, true);
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
+			if (ms.Position != savebuff2.Length)
+				throw new InvalidOperationException();
 			ms.Close();
-			return ms.ToArray(); // eww, slow
+			return savebuff2;
 		}
 
 		public int LagCount { get; set; }
