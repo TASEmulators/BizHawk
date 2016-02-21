@@ -27,16 +27,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			int notused = 0;
 			string opcodeStr = MOS6502X.Disassemble(pc, out notused, (address) => _memoryDomains.SystemBus.PeekByte(address));
 
-			Tracer.Put(string.Format(
-				"{0:X4}: {1} SP:{2:X2} A:{3:X2} P:{4:X2} X:{5:X2} Y:{6:X2} ",
-			pc,
-			opcodeStr.PadRight(26),
-			sp,
-			a,
-			p,
-			x,
-			y));
-
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = string.Format("{0:X4} {1}", pc, opcodeStr).PadRight(26),
+				RegisterInfo = string.Format(
+					"SP:{0:X2} A:{1:X2} P:{2:X2} X:{3:X2} Y:{4:X2}",
+					sp,
+					a,
+					p,
+					x,
+					y)
+			});
 		}
 
 		private const string TraceHeader = "PC: OP SP_A_P_X_Y ";

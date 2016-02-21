@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
-
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -22,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private int MaxLines { get; set; }
 
-		private readonly List<string> _instructions = new List<string>();
+		private readonly List<TraceInfo> _instructions = new List<TraceInfo>();
 		
 		private FileInfo _logFile;
 
@@ -55,7 +52,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
-			text = index < _instructions.Count ? _instructions[index] : string.Empty;
+			text = string.Empty;
+			if (index < _instructions.Count)
+			{
+				switch (column)
+				{
+					case 0:
+						text = _instructions[index].Disassembly;
+						break;
+					case 1:
+						text = _instructions[index].RegisterInfo;
+						break;
+
+				}
+			}
 		}
 
 		private void TraceLogger_Load(object sender, EventArgs e)
@@ -80,10 +90,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			// never skip instructions when tracelogging!
+			// TODO: get instructions, but don't draw on screen
 			UpdateValues();
 		}
-
 
 		public void Restart()
 		{
@@ -99,21 +108,47 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
+		// TODO: LogToFile and DumpListTODisk have a lot of repeated code
 		private void LogToFile()
 		{
-			using (var sw = new StreamWriter(_logFile.FullName, true))
+			var todo = Tracer.TakeContents();
+			if (todo.Any())
 			{
-				sw.Write(Tracer.TakeContents());
+				using (var sw = new StreamWriter(_logFile.FullName, true))
+				{
+					int pad = todo.Max(i => i.Disassembly.Length) + 4;
+
+					foreach (var instruction in todo)
+					{
+						sw.WriteLine(instruction.Disassembly.PadRight(pad)
+							+ instruction.RegisterInfo
+						);
+					}
+
+					sw.Write(Tracer.TakeContents());
+				}
+			}
+		}
+
+		private void DumpListToDisk(FileSystemInfo file)
+		{
+			using (var sw = new StreamWriter(file.FullName))
+			{
+				int pad = _instructions.Max(i => i.Disassembly.Length) + 4;
+
+				foreach (var instruction in _instructions)
+				{
+					sw.WriteLine(instruction.Disassembly.PadRight(pad)
+						+ instruction.RegisterInfo
+					);
+				}
 			}
 		}
 
 		private void LogToWindow()
 		{
-			var instructions = Tracer.TakeContents().Split('\n');
-			if (!string.IsNullOrWhiteSpace(instructions[0]))
-			{
-				_instructions.AddRange(instructions);
-			}
+			_instructions.AddRange(Tracer.TakeContents());
+			
 
 			if (_instructions.Count >= MaxLines)
 			{
@@ -190,19 +225,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void DumpListToDisk(FileSystemInfo file)
-		{
-			using (var sw = new StreamWriter(file.FullName))
-			{
-				foreach (var instruction in _instructions)
-				{
-					sw.WriteLine(instruction
-						.Replace("\r", string.Empty)
-						.Replace("\n", string.Empty));
-				}
-			}
-		}
-
 		#region Events
 
 		#region Menu Items
@@ -231,10 +253,10 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
-					if (blob.Length != 0) blob.AppendLine();
-					blob.Append(_instructions[index]
-						.Replace("\r", string.Empty)
-						.Replace("\n", string.Empty) );
+					int pad = _instructions.Max(m => m.Disassembly.Length) + 4;
+					blob.Append(_instructions[index].Disassembly.PadRight(pad))
+						.Append(_instructions[index].RegisterInfo)
+						.AppendLine();
 				}
 				Clipboard.SetDataObject(blob.ToString());
 			}

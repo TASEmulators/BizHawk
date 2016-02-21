@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
-			this.Script = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.Disasm = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.menuStrip1 = new MenuStripEx();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,6 +50,7 @@
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
+			this.Registers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -76,7 +77,8 @@
 			this.TraceView.BlazingFast = false;
 			this.TraceView.CheckBoxes = true;
 			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.Script});
+            this.Disasm,
+            this.Registers});
 			this.TraceView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TraceView.FullRowSelect = true;
 			this.TraceView.GridLines = true;
@@ -93,10 +95,10 @@
 			this.TraceView.UseCustomBackground = true;
 			this.TraceView.View = System.Windows.Forms.View.Details;
 			// 
-			// Script
+			// Disasm
 			// 
-			this.Script.Text = "Instructions";
-			this.Script.Width = 599;
+			this.Disasm.Text = "Disasm";
+			this.Disasm.Width = 239;
 			// 
 			// menuStrip1
 			// 
@@ -124,27 +126,27 @@
             this.toolStripSeparator1,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SaveLogMenuItem
 			// 
 			this.SaveLogMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveLogMenuItem.Name = "SaveLogMenuItem";
-			this.SaveLogMenuItem.Size = new System.Drawing.Size(132, 22);
+			this.SaveLogMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.SaveLogMenuItem.Text = "&Save Log";
 			this.SaveLogMenuItem.Click += new System.EventHandler(this.SaveLogMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(129, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(132, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -154,7 +156,7 @@
             this.CopyMenuItem,
             this.SelectAllMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
-			this.EditSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
 			this.EditSubMenu.Text = "Edit";
 			// 
 			// CopyMenuItem
@@ -162,7 +164,7 @@
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeyDisplayString = "";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.CopyMenuItem.Text = "&Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -171,7 +173,7 @@
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
 			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.SelectAllMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.SelectAllMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
@@ -180,13 +182,13 @@
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MaxLinesMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(58, 20);
+			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
 			this.OptionsSubMenu.Text = "&Settings";
 			// 
 			// MaxLinesMenuItem
 			// 
 			this.MaxLinesMenuItem.Name = "MaxLinesMenuItem";
-			this.MaxLinesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.MaxLinesMenuItem.Size = new System.Drawing.Size(154, 22);
 			this.MaxLinesMenuItem.Text = "&Set Max Lines...";
 			this.MaxLinesMenuItem.Click += new System.EventHandler(this.MaxLinesMenuItem_Click);
 			// 
@@ -277,6 +279,11 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
+			// Registers
+			// 
+			this.Registers.Text = "Registers";
+			this.Registers.Width = 357;
+			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -317,7 +324,7 @@
 		private System.Windows.Forms.Button ClearButton;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
 		private VirtualListView TraceView;
-		public System.Windows.Forms.ColumnHeader Script;
+		public System.Windows.Forms.ColumnHeader Disasm;
 		private System.Windows.Forms.ToolStripMenuItem MaxLinesMenuItem;
 		private System.Windows.Forms.RadioButton ToFileRadio;
 		private System.Windows.Forms.RadioButton ToWindowRadio;
@@ -326,5 +333,6 @@
 		private System.Windows.Forms.ToolStripMenuItem EditSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
+		private System.Windows.Forms.ColumnHeader Registers;
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Common.NumberExtensions;
@@ -29,7 +31,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					throw new InvalidOperationException("GetCpuFlagsAndRegisters is required");
 				}
 
-				Buffer = new StringBuilder();
 				Header = "Instructions";
 				DebuggableCore = debuggableCore;
 
@@ -42,7 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			private readonly IMemoryDomains MemoryDomains;
 			private readonly IDisassemblable Disassembler;
 			private readonly IDebuggable DebuggableCore;
-			private readonly StringBuilder Buffer;
+
+			private readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
 			private bool _enabled;
 
@@ -55,20 +57,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				// feos: we shouldn't append up to 64, but movem.l prints all the regs affected
 				// so use 32 and deal with registers shifting every now and then
-				Buffer.Append(string.Format("{0:X6}:  {1,-32}", pc, disasm));
+
+				var traceInfo = new TraceInfo
+				{
+					Disassembly = string.Format("{0:X6}:  {1,-32}", pc, disasm)
+				};
+
+				var sb = new StringBuilder();
 
 				foreach (var r in regs)
 				{
 					if (r.Key.StartsWith("M68K"))
 					{
-						Buffer.Append(
+						sb.Append(
 							string.Format("{0}:{1} ",
 							r.Key.Replace("M68K", string.Empty).Trim(),
 							r.Value.Value.ToHexString(r.Value.BitSize / 4)));
 					}
 				}
 
-				Buffer.AppendLine();
+				traceInfo.RegisterInfo = sb.ToString();
+
+				Buffer.Add(traceInfo);
 			}
 
 			public bool Enabled
@@ -92,23 +102,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			public string Header { get; set; }
 
-			public string Contents
+			public IEnumerable<TraceInfo> Contents
 			{
-				get { return Buffer.ToString(); }
+				get { return Buffer; }
 			}
 
-			public string TakeContents()
+			public IEnumerable<TraceInfo> TakeContents()
 			{
-				string s = Buffer.ToString();
+				var contents = Buffer.ToList();
 				Buffer.Clear();
-				return s;
+				return contents;
 			}
 
-			public void Put(string content)
+			public void Put(TraceInfo content)
 			{
-				if (_enabled)
+				if (Enabled)
 				{
-					Buffer.AppendLine(content);
+					Buffer.Add(content);
 				}
 			}
 

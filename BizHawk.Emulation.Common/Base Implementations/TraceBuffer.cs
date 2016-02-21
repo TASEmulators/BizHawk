@@ -1,34 +1,34 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
 	public class TraceBuffer : ITraceable
 	{
-		private readonly StringBuilder buffer;
+		private readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
 		public TraceBuffer()
 		{
-			buffer = new StringBuilder();
 			Header = "Instructions";
 		}
 
-		public string TakeContents()
+		public IEnumerable<TraceInfo> TakeContents()
 		{
-			string s = buffer.ToString();
-			buffer.Clear();
-			return s;
+			var contents = Buffer.ToList();
+			Buffer.Clear();
+			return contents;
 		}
 
-		public string Contents
+		public IEnumerable<TraceInfo> Contents
 		{
-			get { return buffer.ToString(); }
+			get { return Buffer; }
 		}
 
-		public void Put(string content)
+		public void Put(TraceInfo content)
 		{
 			if (Enabled)
 			{
-				buffer.AppendLine(content);
+				Buffer.Add(content);
 			}
 		}
 

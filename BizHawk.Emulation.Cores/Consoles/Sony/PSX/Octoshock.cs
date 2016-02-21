@@ -1325,7 +1325,12 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public void ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
 		{
-			Tracer.Put(dis);
+			// Tracer refactor TODO: fix this
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = dis,
+				RegisterInfo = "TODO"
+			});
 		}
 
 		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();

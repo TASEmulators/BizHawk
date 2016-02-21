@@ -3,6 +3,7 @@
 using System;
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.M6502
 {
@@ -551,7 +552,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		bool booltemp;
 		int tempint;
 		int lo, hi;
-		public Action<string> TraceCallback;
+		public Action<TraceInfo> TraceCallback;
 
 		void Fetch1()
 		{
@@ -563,7 +564,14 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				if (NMI)
 				{
 					if (TraceCallback != null)
-						TraceCallback("====NMI====");
+					{
+						TraceCallback(new TraceInfo
+						{
+							Disassembly = "====NMI====",
+							RegisterInfo = ""
+						});
+					}
+
 					ea = NMIVector;
 					opcode = VOP_NMI;
 					NMI = false;
@@ -574,7 +582,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 				else if (IRQ && !my_iflag)
 				{
 					if (TraceCallback != null)
-						TraceCallback("====IRQ====");
+					{
+						TraceCallback(new TraceInfo
+						{
+							Disassembly = "====IRQ====",
+							RegisterInfo = ""
+						});
+					}
 					ea = IRQVector;
 					opcode = VOP_IRQ;
 					mi = 0;

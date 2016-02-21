@@ -262,21 +262,35 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 			return (ushort)(ReadMemory(address) | (ReadMemory(highAddress) << 8));
 		}
 
-		public string State()
+		public TraceInfo State()
 		{
 			int notused;
-			string a = string.Format("{3:X2}:{0:X4}  {1:X2} {2} ", PC, ReadMemory(PC), Disassemble(PC, out notused), MPR[PC>>13]).PadRight(41);
-			string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", A, X, Y, P, S, TotalExecutedCycles);
-			string val = a + b + "   ";
-			if (FlagN) val = val + "N";
-			if (FlagV) val = val + "V";
-			if (FlagT) val = val + "T";
-			if (FlagB) val = val + "B";
-			if (FlagD) val = val + "D";
-			if (FlagI) val = val + "I";
-			if (FlagZ) val = val + "Z";
-			if (FlagC) val = val + "C";
-			return val;
+
+			return new TraceInfo
+			{
+				Disassembly = string.Format(
+					"{3:X2}:{0:X4}  {1:X2} {2} ",
+					PC,
+					ReadMemory(PC),
+					Disassemble(PC, out notused), MPR[PC >> 13]),
+				RegisterInfo = string.Format(
+					"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}    {6}{7}{8}{9}{10}{11}{12}{13}",
+					A,
+					X,
+					Y,
+					P,
+					S,
+					TotalExecutedCycles,
+					FlagN ? "N" : "",
+					FlagV ? "V" : "",
+					FlagT ? "T" : "",
+					FlagB ? "B" : "",
+					FlagD ? "D" : "",
+					FlagI ? "I" : "",
+					FlagZ ? "Z" : "",
+					FlagC ? "C" : ""
+				)
+			};
 		}
 
 		private static readonly byte[] TableNZ = 

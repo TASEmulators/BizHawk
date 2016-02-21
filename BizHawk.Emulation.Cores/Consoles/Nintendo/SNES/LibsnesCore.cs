@@ -393,7 +393,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_trace(string msg)
 		{
-			Tracer.Put(msg);
+			// TODO: get them out of the core split up and remove this hackery
+			string splitStr = "[";
+			if (!msg.Contains('['))
+			{
+				splitStr = "A:";
+			}
+
+			var split = msg.Split(new[] {splitStr }, StringSplitOptions.None);
+
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = split[0],
+				RegisterInfo = splitStr + split[1]
+			});
 		}
 
 		public SnesColors.ColorType CurrPalette { get; private set; }

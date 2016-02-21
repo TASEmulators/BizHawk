@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using System.Collections.Generic;
+
+namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// Allows the cpu to dump trace info to a trace stream
@@ -17,16 +19,19 @@
 		/// <summary>
 		/// The current log of cpu instructions
 		/// </summary>
-		string Contents { get; }
+		IEnumerable<TraceInfo> Contents { get; }
 
 		/// <summary>
 		/// Takes the current log of cpu instructions, when doing so, it will clear the contents from the buffer
 		/// </summary>
-		string TakeContents();
+		IEnumerable<TraceInfo> TakeContents();
 
-		/// <summary>
-		/// Adds contents to the log of cpu instructions
-		/// </summary>
-		void Put(string content);
+		void Put(TraceInfo content);
+	}
+
+	public class TraceInfo
+	{
+		public string Disassembly { get; set; }
+		public string RegisterInfo { get; set; }
 	}
 }

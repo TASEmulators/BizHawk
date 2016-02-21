@@ -224,7 +224,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomData = rom;
 				RomLength = RomData.Length;
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = (s) => Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
+				Cpu.Logger = (s) => Tracer.Put(new TraceInfo
+				{
+					Disassembly = string.Format("{0:X1}:{1}", SF2MapperLatch, s),
+					RegisterInfo = ""
+				});
 			}
 			else
 			{

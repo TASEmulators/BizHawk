@@ -140,12 +140,25 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private bool _nextPressed = false;
 		private bool _prevPressed = false;
 
+		private void TracerWrapper(string[] content)
+		{
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = content[0],
+				RegisterInfo = content[1]
+			});
+		}
+
 		private void FrameAdv(bool render, bool rendersound)
 		{
 			if (Tracer.Enabled)
-				_machine.Cpu.TraceCallback = (s) => Tracer.Put(s);
+			{
+				_machine.Cpu.TraceCallback = (s) => TracerWrapper(s);
+			}
 			else
+			{
 				_machine.Cpu.TraceCallback = null;
+			}
 
 			if (Controller["Next Disk"] && !_nextPressed)
 			{
