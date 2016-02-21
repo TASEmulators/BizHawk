@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
-using BizHawk.Common;
-
 using System.Runtime.InteropServices;
 
-using System.IO;
-
-using System.ComponentModel;
-
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -26,19 +15,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		singleInstance: true
 		)]
 	public partial class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
-		IInputPollable, IDebuggable, ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>, IDriveLight, ICodeDataLogger, IDisassemblable
+		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		static GPGX AttachedCore = null;
 
 		DiscSystem.Disc CD;
 		DiscSystem.DiscSectorReader DiscSectorReader;
 		byte[] romfile;
-		bool drivelight;
 
 		bool disposed = false;
 
 		LibGPGX.load_archive_cb LoadCallback = null;
-		LibGPGX.input_cb InputCallback = null;
 
 		LibGPGX.InputData input = new LibGPGX.InputData();
 
@@ -56,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[CoreConstructor("GEN")]
 		public GPGX(CoreComm comm, byte[] file, object Settings, object SyncSettings)
-			:this(comm, file, null, Settings, SyncSettings)
+			: this(comm, file, null, Settings, SyncSettings)
 		{
 		}
 
@@ -77,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				_SyncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
+				_syncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 
 				CoreComm = comm;
 				if (AttachedCore != null)
@@ -96,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 
-				switch (this._SyncSettings.ControlType)
+				switch (_syncSettings.ControlType)
 				{
 					case ControlType.None:
 					default:
@@ -131,7 +118,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this._SyncSettings.UseSixButton, system_a, system_b, this._SyncSettings.Region))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this._syncSettings.UseSixButton, system_a, system_b, this._syncSettings.Region))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -149,15 +136,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					int size = LibGPGX.gpgx_state_size(tmp, tmp.Length);
 					if (size <= 0)
 						throw new Exception("Couldn't Determine GPGX internal state size!");
-					savebuff = new byte[size];
-					savebuff2 = new byte[savebuff.Length + 13];
+					_savebuff = new byte[size];
+					_savebuff2 = new byte[_savebuff.Length + 13];
 					Console.WriteLine("GPGX Internal State Size: {0}", size);
 				}
 
 				SetControllerDefinition();
 
 				// pull the default video size from the core
-				update_video_initial();
+				UpdateVideoInitial();
 
 				SetMemoryDomains();
 
@@ -181,53 +168,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				throw;
 			}
 		}
-
-		void ICodeDataLogger.SetCDL(CodeDataLog cdl)
-		{
-			CDL = cdl;
-			if(cdl == null) LibGPGX.gpgx_set_cd_callback(null);
-			else LibGPGX.gpgx_set_cd_callback(CDCallback);
-		}
-
-		void ICodeDataLogger.NewCDL(CodeDataLog cdl)
-		{
-			cdl["MD CART"] = new byte[MemoryDomains["MD CART"].Size];
-			cdl["68K RAM"] = new byte[MemoryDomains["68K RAM"].Size];
-			cdl["Z80 RAM"] = new byte[MemoryDomains["Z80 RAM"].Size];
-
-			if (MemoryDomains.Has("SRAM"))
-				cdl["SRAM"] = new byte[MemoryDomains["SRAM"].Size];
-
-			cdl.SubType = "GEN";
-			cdl.SubVer = 0;
-		}
-
-		//not supported
-		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl) { }
-
-		CodeDataLog CDL;
-		void CDCallbackProc(int addr, LibGPGX.CDLog_AddrType addrtype, LibGPGX.CDLog_Flags flags)
-		{
-			//TODO - hard reset makes CDL go nuts.
-
-			if (CDL == null) return;
-			if (!CDL.Active) return;
-			string key;
-			switch (addrtype)
-			{
-				case LibGPGX.CDLog_AddrType.MDCART: key = "MD CART"; break;
-				case LibGPGX.CDLog_AddrType.RAM68k: key = "68K RAM"; break;
-				case LibGPGX.CDLog_AddrType.RAMZ80: key = "Z80 RAM"; break;
-				case LibGPGX.CDLog_AddrType.SRAM: key = "SRAM"; break;
-				default: throw new InvalidOperationException("Lagrangian earwax incident");
-			}
-			CDL[key][addr] |= (byte)flags;
-		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public bool DriveLightEnabled { get; private set;}
-		public bool DriveLightOn { get; private set; }
 
 		/// <summary>
 		/// core callback for file loading
@@ -352,7 +292,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				byte[] data = new byte[2048];
 				DiscSectorReader.ReadLBA_2048(lba, data, 0);
 				Marshal.Copy(data, 0, dest, 2048);
-				drivelight = true;
+				_drivelight = true;
 			}
 		}
 
@@ -398,9 +338,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return retdata;
 		}
 
-
-		#region controller
-
 		/// <summary>
 		/// size of native input struct
 		/// </summary>
@@ -408,10 +345,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		GPGXControlConverter ControlConverter;
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
-
-		void SetControllerDefinition()
+		private void SetControllerDefinition()
 		{
 			inputsize = Marshal.SizeOf(typeof(LibGPGX.InputData));
 			if (!LibGPGX.gpgx_get_control(input, inputsize))
@@ -426,325 +360,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 		}
 
-		// core callback for input
-		void input_callback()
-		{
-			InputCallbacks.Call();
-			IsLagFrame = false;
-		}
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
-
-		#endregion
-
-		// TODO: use render and rendersound
-		public void FrameAdvance(bool render, bool rendersound = true)
-		{
-			if (Controller["Reset"])
-				LibGPGX.gpgx_reset(false);
-			if (Controller["Power"])
-				LibGPGX.gpgx_reset(true);
-
-			// do we really have to get each time?  nothing has changed
-			if (!LibGPGX.gpgx_get_control(input, inputsize))
-				throw new Exception("gpgx_get_control() failed!");
-
-			ControlConverter.ScreenWidth = vwidth;
-			ControlConverter.ScreenHeight = vheight;
-			ControlConverter.Convert(Controller, input);
-
-			if (!LibGPGX.gpgx_put_control(input, inputsize))
-				throw new Exception("gpgx_put_control() failed!");
-
-			IsLagFrame = true;
-			Frame++;
-			drivelight = false;
-
-			LibGPGX.gpgx_advance();
-			update_video();
-			update_audio();
-
-			if (IsLagFrame)
-				LagCount++;
-
-			if (CD != null)
-				DriveLightOn = drivelight;
-		}
-
-		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
-
-		public string SystemId { get { return "GEN"; } }
-		public bool DeterministicEmulation { get { return true; } }
-		public string BoardName { get { return null; } }
-
-		public CoreComm CoreComm { get; private set; }
-
-		#region saveram
-
-		byte[] DisposedSaveRam = null;
-
-		public byte[] CloneSaveRam()
-		{
-			if (disposed)
-			{
-				if (DisposedSaveRam != null)
-				{
-					return (byte[])DisposedSaveRam.Clone();
-				}
-				else
-				{
-					return new byte[0];
-				}
-			}
-			else
-			{
-				int size = 0;
-				IntPtr area = IntPtr.Zero;
-				LibGPGX.gpgx_get_sram(ref area, ref size);
-				if (size <= 0 || area == IntPtr.Zero)
-					return new byte[0];
-				LibGPGX.gpgx_sram_prepread();
-
-				byte[] ret = new byte[size];
-				Marshal.Copy(area, ret, 0, size);
-				return ret;
-			}
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			if (disposed)
-			{
-				throw new ObjectDisposedException(typeof(GPGX).ToString());
-			}
-			else
-			{
-				int size = 0;
-				IntPtr area = IntPtr.Zero;
-				LibGPGX.gpgx_get_sram(ref area, ref size);
-				if (size <= 0 || area == IntPtr.Zero)
-					return;
-				if (size != data.Length)
-					throw new Exception("Unexpected saveram size");
-
-				Marshal.Copy(data, 0, area, size);
-				LibGPGX.gpgx_sram_commitwrite();
-			}
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				if (disposed)
-				{
-					return DisposedSaveRam != null;
-				}
-				else
-				{
-					int size = 0;
-					IntPtr area = IntPtr.Zero;
-					LibGPGX.gpgx_get_sram(ref area, ref size);
-					return size > 0 && area != IntPtr.Zero;
-				}
-			}
-		}
-
-		#endregion
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-			IsLagFrame = false;
-			LagCount = 0;
-		}
-
-		#region savestates
-
-		private byte[] savebuff;
-		private byte[] savebuff2;
-
-		public void SaveStateText(System.IO.TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(System.IO.TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new System.IO.BinaryReader(new System.IO.MemoryStream(state)));
-		}
-
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
-		{
-			if (!LibGPGX.gpgx_state_save(savebuff, savebuff.Length))
-				throw new Exception("gpgx_state_save() returned false");
-
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-		}
-
-		public void LoadStateBinary(System.IO.BinaryReader reader)
-		{
-			int newlen = reader.ReadInt32();
-			if (newlen != savebuff.Length)
-				throw new Exception("Unexpected state size");
-			reader.Read(savebuff, 0, savebuff.Length);
-			if (!LibGPGX.gpgx_state_load(savebuff, savebuff.Length))
-				throw new Exception("gpgx_state_load() returned false");
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-			update_video();
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var ms = new System.IO.MemoryStream(savebuff2, true);
-			var bw = new System.IO.BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return savebuff2;
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		#endregion
-
-		#region debugging tools
-
-		private IMemoryDomains MemoryDomains;
-
-		unsafe void SetMemoryDomains()
-		{
-			var mm = new List<MemoryDomain>();
-			for (int i = LibGPGX.MIN_MEM_DOMAIN; i <= LibGPGX.MAX_MEM_DOMAIN; i++)
-			{
-				IntPtr area = IntPtr.Zero;
-				int size = 0;
-				IntPtr pname = LibGPGX.gpgx_get_memdom(i, ref area, ref size);
-				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
-					continue;
-				string name = Marshal.PtrToStringAnsi(pname);
-				if (name == "VRAM")
-				{
-					// vram pokes need to go through hook which invalidates cached tiles
-					byte* p = (byte*)area;
-					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
-						delegate(long addr)
-						{
-							if (addr < 0 || addr >= 65536)
-								throw new ArgumentOutOfRangeException();
-							return p[addr ^ 1];
-						},
-						delegate(long addr, byte val)
-						{
-							if (addr < 0 || addr >= 65536)
-								throw new ArgumentOutOfRangeException();
-							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
-						},
-						byteSize: 2));
-				}
-				
-				else
-				{
-					var byteSize = name.Contains("Z80") ? 1 : 2;
-					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
-				}
-			}
-			var m68Bus = new MemoryDomain("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-				delegate (long addr)
-				{
-					var a = (uint)addr;
-					if (a >= 0x1000000)
-						throw new ArgumentOutOfRangeException();
-					return LibGPGX.gpgx_peek_m68k_bus(a);
-				},
-				delegate (long addr, byte val)
-				{
-					var a = (uint)addr;
-					if (a >= 0x1000000)
-						throw new ArgumentOutOfRangeException();
-					LibGPGX.gpgx_write_m68k_bus(a, val);
-				}, 2);
-
-			mm.Add(m68Bus);
-
-			var s68Bus = new MemoryDomain("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-				delegate (long addr)
-				{
-					var a = (uint)addr;
-					if (a >= 0x1000000)
-						throw new ArgumentOutOfRangeException();
-					return LibGPGX.gpgx_peek_s68k_bus(a);
-				},
-				delegate (long addr, byte val)
-				{
-					var a = (uint)addr;
-					if (a >= 0x1000000)
-						throw new ArgumentOutOfRangeException();
-					LibGPGX.gpgx_write_s68k_bus(a, val);
-				}, 2);
-
-			if (IsSegaCD)
-			{
-				mm.Add(s68Bus);
-			}
-
-			MemoryDomains = new MemoryDomainList(mm);
-			MemoryDomains.SystemBus = IsSegaCD ? s68Bus : m68Bus;
-
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
-		}
-
 		public bool IsSegaCD { get { return CD != null; } }
-
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			LibGPGX.RegisterInfo[] regs = new LibGPGX.RegisterInfo[LibGPGX.gpgx_getmaxnumregs()];
-
-			int n = LibGPGX.gpgx_getregs(regs);
-			if (n > regs.Length)
-				throw new InvalidOperationException("A buffer overrun has occured!");
-			var ret = new Dictionary<string, RegisterValue>();
-			for (int i = 0; i < n; i++)
-			{
-				// el hacko
-				string name = Marshal.PtrToStringAnsi(regs[i].Name);
-				byte size = 32;
-				if (name.Contains("68K SR") || name.StartsWith("Z80"))
-					size = 16;
-				ret[Marshal.PtrToStringAnsi(regs[i].Name)] =
-					new RegisterValue { BitSize = size, Value = (ulong)regs[i].Value };
-			}
-			return ret;
-		}
-
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
 		{
@@ -752,64 +368,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LibGPGX.gpgx_flush_vram(); // fully regenerate internal caches as needed
 		}
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
-		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
-
-		LibGPGX.mem_cb ExecCallback;
-		LibGPGX.mem_cb ReadCallback;
-		LibGPGX.mem_cb WriteCallback;
-		LibGPGX.CDCallback CDCallback;
-
-		void InitMemCallbacks()
-		{
-			ExecCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallExecutes(a));
-			ReadCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallReads(a));
-			WriteCallback = new LibGPGX.mem_cb(a => MemoryCallbacks.CallWrites(a));
-			_memoryCallbacks.ActiveChanged += RefreshMemCallbacks;
-		}
-
-		void RefreshMemCallbacks()
-		{
-			LibGPGX.gpgx_set_mem_callback(
-				MemoryCallbacks.HasReads ? ReadCallback : null,
-				MemoryCallbacks.HasWrites ? WriteCallback : null,
-				MemoryCallbacks.HasExecutes ? ExecCallback : null);
-		}
-
-		void KillMemCallbacks()
-		{
-			LibGPGX.gpgx_set_mem_callback(null, null, null);
-		}
-
-		#endregion
-
-		public void Dispose()
-		{
-			if (!disposed)
-			{
-				if (AttachedCore != this)
-					throw new Exception();
-				if (SaveRamModified)
-					DisposedSaveRam = CloneSaveRam();
-				KillMemCallbacks();
-				if (CD != null)
-				{
-					CD.Dispose();
-				}
-				AttachedCore = null;
-				disposed = true;
-			}
-		}
-
-		#region SoundProvider
-
 		short[] samples = new short[4096];
 		int nsamp = 0;
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 
 		public void GetSamples(out short[] samples, out int nsamp)
 		{
@@ -833,171 +393,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 		}
 
-		#endregion
-
-		#region VideoProvider
-
 		public DisplayType Region { get; private set; }
-
-		int[] vidbuff = new int[0];
-		int vwidth;
-		int vheight;
-		public int[] GetVideoBuffer() { return vidbuff; }
-		public int VirtualWidth { get { return 320; } }
-		public int VirtualHeight { get { return 224; } }
-		public int BufferWidth { get { return vwidth; } }
-		public int BufferHeight { get { return vheight; } }
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		void update_video_initial()
-		{
-			// hack: you should call update_video() here, but that gives you 256x192 on frame 0
-			// and we know that we only use GPGX to emulate genesis games that will always be 320x224 immediately afterwards
-			
-			// so instead, just assume a 320x224 size now; if that happens to be wrong, it'll be fixed soon enough.
-
-			vwidth = 320;
-			vheight = 224;
-			vidbuff = new int[vwidth * vheight];
-			for (int i = 0; i < vidbuff.Length; i++)
-				vidbuff[i] = unchecked((int)0xff000000);
-		}
-
-		unsafe void update_video()
-		{
-			int gppitch, gpwidth, gpheight;
-			IntPtr src = IntPtr.Zero;
-
-			LibGPGX.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
-
-			vwidth = gpwidth;
-			vheight = gpheight;
-
-			if (_Settings.PadScreen320 && vwidth == 256)
-				vwidth = 320;
-
-			int xpad = (vwidth - gpwidth) / 2;
-			int xpad2 = vwidth - gpwidth - xpad;
-
-			if (vidbuff.Length < vwidth * vheight)
-				vidbuff = new int[vwidth * vheight];
-
-			int rinc = (gppitch / 4) - gpwidth;
-			fixed (int* pdst_ = &vidbuff[0])
-			{
-				int* pdst = pdst_;
-				int* psrc = (int*)src;
-
-				for (int j = 0; j < gpheight; j++)
-				{
-					for(int i=0;i<xpad;i++)
-					  *pdst++ = unchecked((int)0xff000000);
-					for (int i = 0; i < gpwidth; i++)
-						*pdst++ = *psrc++;// | unchecked((int)0xff000000);
-					for (int i = 0; i < xpad2; i++)
-					  *pdst++ = unchecked((int)0xff000000);
-					psrc += rinc;
-				}
-			}
-		}
-
-		#endregion
-
-		#region Settings
-
-		GPGXSyncSettings _SyncSettings;
-		GPGXSettings _Settings;
-
-		public GPGXSettings GetSettings() { return _Settings.Clone(); }
-		public GPGXSyncSettings GetSyncSettings() { return _SyncSettings.Clone(); }
-		public bool PutSettings(GPGXSettings o)
-		{
-			_Settings = o;
-			LibGPGX.gpgx_set_draw_mask(_Settings.GetDrawMask());
-			return false;
-		}
-		public bool PutSyncSettings(GPGXSyncSettings o)
-		{
-			bool ret = GPGXSyncSettings.NeedsReboot(_SyncSettings, o);
-			_SyncSettings = o;
-			return ret;
-		}
-
-		public class GPGXSettings
-		{
-			[DisplayName("Background Layer A")]
-			[Description("True to draw BG layer A")]
-			[DefaultValue(true)]
-			public bool DrawBGA { get; set; }
-
-			[DisplayName("Background Layer B")]
-			[Description("True to draw BG layer B")]
-			[DefaultValue(true)]
-			public bool DrawBGB { get; set; }
-
-			[DisplayName("Background Layer W")]
-			[Description("True to draw BG layer W")]
-			[DefaultValue(true)]
-			public bool DrawBGW { get; set; }
-
-			[DisplayName("Pad screen to 320")]
-			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
-			[DefaultValue(false)]
-			public bool PadScreen320 { get; set; }
-
-			public GPGXSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-
-			public GPGXSettings Clone()
-			{
-				return (GPGXSettings)MemberwiseClone();
-			}
-
-			public LibGPGX.DrawMask GetDrawMask()
-			{
-				LibGPGX.DrawMask ret = 0;
-				if (DrawBGA) ret |= LibGPGX.DrawMask.BGA;
-				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
-				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
-				return ret;
-			}
-		}
-
-		public class GPGXSyncSettings
-		{
-			[DisplayName("Use Six Button Controllers")]
-			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
-			[DefaultValue(true)]
-			public bool UseSixButton { get; set; }
-
-			[DisplayName("Control Type")]
-			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
-			[DefaultValue(ControlType.Normal)]
-			public ControlType ControlType { get; set; }
-
-			[DisplayName("Autodetect Region")]
-			[Description("Sets the region of the emulated console.  Many games can run on multiple regions and will behave differently on different ones.  Some games may require a particular region.")]
-			[DefaultValue(LibGPGX.Region.Autodetect)]
-			public LibGPGX.Region Region { get; set; }
-
-			public GPGXSyncSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-
-			public GPGXSyncSettings Clone()
-			{
-				return (GPGXSyncSettings)MemberwiseClone();
-			}
-
-			public static bool NeedsReboot(GPGXSyncSettings x, GPGXSyncSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
-		}
-
-		#endregion
 	}
 }
