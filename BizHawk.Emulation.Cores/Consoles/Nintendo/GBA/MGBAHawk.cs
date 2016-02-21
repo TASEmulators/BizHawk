@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void InitStates()
 		{
-			savebuff = new byte[LibmGBA.BizGetStateSize()];
+			savebuff = new byte[LibmGBA.BizGetStateMaxSize(core)];
 			savebuff2 = new byte[savebuff.Length + 13];
 		}
 
@@ -334,9 +334,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			LibmGBA.BizGetState(core, savebuff);
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
+			int size = LibmGBA.BizGetState(core, savebuff, savebuff.Length);
+			if (size < 0)
+				throw new InvalidOperationException("Core failed to save!");
+			writer.Write(size);
+			writer.Write(savebuff, 0, size);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -347,10 +349,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length != savebuff.Length)
-				throw new InvalidOperationException("Save buffer size mismatch!");
+			if (length > savebuff.Length)
+			{
+				savebuff = new byte[length];
+				savebuff2 = new byte[length + 13];
+			}
 			reader.Read(savebuff, 0, length);
-			if (!LibmGBA.BizPutState(core, savebuff))
+			if (!LibmGBA.BizPutState(core, savebuff, length))
 				throw new InvalidOperationException("Core rejected the savestate!");
 
 			// other variables
@@ -365,8 +370,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			if (ms.Position != savebuff2.Length)
-				throw new InvalidOperationException();
 			ms.Close();
 			return savebuff2;
 		}

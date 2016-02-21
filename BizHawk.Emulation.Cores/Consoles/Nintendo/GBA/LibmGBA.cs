@@ -55,11 +55,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizPutSaveRam(IntPtr ctx, byte[] src);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern int BizGetStateSize();
+		public static extern int BizGetStateMaxSize(IntPtr ctx);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizGetState(IntPtr ctx, byte[] dest);
+		public static extern int BizGetState(IntPtr ctx, byte[] dest, int maxsize);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizPutState(IntPtr ctx, byte[] src);
+		public static extern bool BizPutState(IntPtr ctx, byte[] src, int size);
 
 		[Flags]
 		public enum Layers : int
