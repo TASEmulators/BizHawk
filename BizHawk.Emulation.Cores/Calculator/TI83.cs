@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable))]
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight))]
 	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]
