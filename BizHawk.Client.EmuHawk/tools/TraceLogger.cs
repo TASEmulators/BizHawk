@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			Tracer.Enabled = false;
+			Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
@@ -61,8 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TraceLogger_Load(object sender, EventArgs e)
 		{
 			ClearList();
-			LoggingEnabled.Checked = true;
-			Tracer.Enabled = true;
+			Tracer.Enabled = LoggingEnabled.Checked = false;
 			SetTracerBoxTitle();
 		}
 
@@ -89,8 +88,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			ClearList();
-			LoggingEnabled.Checked = true;
-			Tracer.Enabled = true;
+			Tracer.Enabled = LoggingEnabled.Checked = false;
 			SetTracerBoxTitle();
 		}
 
