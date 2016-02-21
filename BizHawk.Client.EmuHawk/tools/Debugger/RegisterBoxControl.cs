@@ -69,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (textbox.Name == register.Key)
 								{
-									textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 16);
+									textbox.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
 								}
 							});
 					}
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (label.Name == register.Key)
 								{
-									label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 16);
+									label.Text = register.Value.Value.ToHexString(register.Value.BitSize / 4);
 								}
 							});
 					}
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			int y = UIHelper.ScaleY(0);
 
 			var maxCharSize = registers.Where(r => r.Value.BitSize != 1).Max(r => r.Key.Length);
-			var width = maxCharSize * 5;
+			var width = maxCharSize * (int)this.Font.Size;
 			if (width < 20)
 			{
 				width = 20;
@@ -207,7 +207,7 @@ namespace BizHawk.Client.EmuHawk
 					});
 				}
 
-				y += UIHelper.ScaleY(25);
+				y += UIHelper.ScaleY(this.Font.Height + 8);
 			}
 
 			var flags = registers.Where(r => r.Value.BitSize == 1);

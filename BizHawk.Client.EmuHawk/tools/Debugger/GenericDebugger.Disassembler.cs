@@ -75,6 +75,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (column == 0)
 				{
+					// feos: address size must be platform dependant
 					text = string.Format("{0:X4}", DisassemblyLines[index].Address);
 				}
 				else if (column == 1)
