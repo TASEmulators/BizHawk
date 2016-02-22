@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					try
 					{
-						var result = Debuggable.MemoryCallbacks.HasReads;
+						var result = Debuggable.MemoryCallbacksAvailable();
 						return true;
 					}
 					catch (NotImplementedException)
