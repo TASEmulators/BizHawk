@@ -89,7 +89,7 @@
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(151, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.ExitMenuItem.Text = "&Close";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -111,7 +111,7 @@
 			this.StepIntoMenuItem.Enabled = false;
 			this.StepIntoMenuItem.Name = "StepIntoMenuItem";
 			this.StepIntoMenuItem.ShortcutKeyDisplayString = "F11";
-			this.StepIntoMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.StepIntoMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.StepIntoMenuItem.Text = "Step &Into";
 			this.StepIntoMenuItem.Click += new System.EventHandler(this.StepIntoMenuItem_Click);
 			// 
@@ -120,7 +120,7 @@
 			this.StepOverMenuItem.Enabled = false;
 			this.StepOverMenuItem.Name = "StepOverMenuItem";
 			this.StepOverMenuItem.ShortcutKeyDisplayString = "F10";
-			this.StepOverMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.StepOverMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.StepOverMenuItem.Text = "Step O&ver";
 			this.StepOverMenuItem.Click += new System.EventHandler(this.StepOverMenuItem_Click);
 			// 
@@ -129,20 +129,20 @@
 			this.StepOutMenuItem.Enabled = false;
 			this.StepOutMenuItem.Name = "StepOutMenuItem";
 			this.StepOutMenuItem.ShortcutKeyDisplayString = "Shift+F11";
-			this.StepOutMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.StepOutMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.StepOutMenuItem.Text = "Step Ou&t";
 			this.StepOutMenuItem.Click += new System.EventHandler(this.StepOutMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(180, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(169, 6);
 			// 
 			// RefreshMenuItem
 			// 
 			this.RefreshMenuItem.Name = "RefreshMenuItem";
 			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.RefreshMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.RefreshMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.RefreshMenuItem.Text = "Refresh";
 			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
 			// 
@@ -243,9 +243,10 @@
             this.Address,
             this.Instruction});
 			this.DisassemblerView.ContextMenuStrip = this.DisassemblerContextMenu;
-			this.DisassemblerView.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.DisassemblerView.Font = new System.Drawing.Font("Courier New", 8F);
 			this.DisassemblerView.FullRowSelect = true;
 			this.DisassemblerView.GridLines = true;
+			this.DisassemblerView.HideSelection = false;
 			this.DisassemblerView.ItemCount = 0;
 			this.DisassemblerView.Location = new System.Drawing.Point(6, 39);
 			this.DisassemblerView.Name = "DisassemblerView";
@@ -275,13 +276,13 @@
 			this.DisassemblerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddBreakpointContextMenuItem});
 			this.DisassemblerContextMenu.Name = "DisassemblerContextMenu";
-			this.DisassemblerContextMenu.Size = new System.Drawing.Size(157, 26);
+			this.DisassemblerContextMenu.Size = new System.Drawing.Size(148, 26);
 			this.DisassemblerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.DisassemblerContextMenu_Opening);
 			// 
 			// AddBreakpointContextMenuItem
 			// 
 			this.AddBreakpointContextMenuItem.Name = "AddBreakpointContextMenuItem";
-			this.AddBreakpointContextMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.AddBreakpointContextMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.AddBreakpointContextMenuItem.Text = "Add Breakpoint";
 			this.AddBreakpointContextMenuItem.Click += new System.EventHandler(this.AddBreakpointContextMenuItem_Click);
 			// 
