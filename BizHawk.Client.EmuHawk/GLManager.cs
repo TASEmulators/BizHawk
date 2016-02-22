@@ -20,10 +20,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public static GLManager Instance { get; private set; }
 
-		public static void CreateInstance()
+		Bizware.BizwareGL.Drivers.OpenTK.IGL_TK MainContext;
+
+		public static void CreateInstance(Bizware.BizwareGL.Drivers.OpenTK.IGL_TK mainContext)
 		{
 			if (Instance != null) throw new InvalidOperationException("Attempt to create more than one GLManager");
 			Instance = new GLManager();
+			Instance.MainContext = mainContext;
 		}
 
 		public void ReleaseGLContext(object o)
@@ -32,12 +35,13 @@ namespace BizHawk.Client.EmuHawk
 			cr.gl.Dispose();
 		}
 
+		//[System.Runtime.InteropServices.DllImport("opengl32.dll")]
+		//bool wglShareLists(IntPtr hglrc1, IntPtr hglrc2);
+
 		public ContextRef CreateGLContext(int major_version, int minor_version, bool forward_compatible)
 		{
-			var ret = new ContextRef
-			{
-				gl = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(major_version, minor_version, forward_compatible)
-			};
+			var gl = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(major_version, minor_version, forward_compatible);
+			var ret = new ContextRef { gl = gl };
 			return ret;
 		}
 
@@ -89,7 +93,7 @@ namespace BizHawk.Client.EmuHawk
 				if(!begun)
 					cr.gc.Begin();
 			}
-			if (cr.gl != null)
+			else if (cr.gl != null)
 			{
 				if(cr.gl is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
 					((BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)cr.gl).MakeDefaultCurrent();
