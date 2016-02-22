@@ -35,8 +35,11 @@ namespace BizHawk.Bizware.BizwareGL
 		/// draws the specified Art resource with the specified offset, with the specified size. This could be tricky if youve applied other rotate or scale transforms first.
 		/// </summary>
 		void Draw(Art art, float x, float y, float width, float height);
-		void Draw(Texture2d art, float x, float y, float width, float height);
 
+		/// <summary>
+		/// draws the specified Texture with the specified offset, with the specified size. This could be tricky if youve applied other rotate or scale transforms first.
+		/// </summary>
+		void Draw(Texture2d art, float x, float y, float width, float height);
 
 		/// <summary>
 		/// draws the specified texture2d resource.

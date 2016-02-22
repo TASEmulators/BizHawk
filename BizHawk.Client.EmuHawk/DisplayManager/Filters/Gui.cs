@@ -178,6 +178,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public Size TextureSize, VirtualTextureSize;
 		public int BackgroundColor;
 		public IGuiRenderer GuiRenderer;
+		public bool Flip;
 		public IGL GL;
 		bool nop;
 		LetterboxingLogic LL;
@@ -237,6 +238,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (state.SurfaceFormat.Size != OutputSize)
 				need = true;
 			if (FilterOption != eFilterOption.None)
+				need = true;
+			if (Flip)
 				need = true;
 
 			if (!need)
@@ -318,7 +321,13 @@ namespace BizHawk.Client.EmuHawk.Filters
 			}
 
 
-			GuiRenderer.Draw(InputTexture,LL.vx,LL.vy,LL.vw,LL.vh);
+			GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
+			if (Flip)
+			{
+				GuiRenderer.Modelview.Scale(1, -1);
+				GuiRenderer.Modelview.Translate(0, -LL.vh);
+			}
+			GuiRenderer.Draw(InputTexture,0,0,LL.vw,LL.vh);
 
 			GuiRenderer.End();
 		}

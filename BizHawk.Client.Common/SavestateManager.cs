@@ -38,18 +38,28 @@ namespace BizHawk.Client.Common
 				{
 					var vp = Global.Emulator.VideoProvider();
 					var buff = vp.GetVideoBuffer();
-
-					int out_w = vp.BufferWidth;
-					int out_h = vp.BufferHeight;
-
-					// if buffer is too big, scale down screenshot
-					if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
+					if (buff.Length == 1)
 					{
-						out_w /= 2;
-						out_h /= 2;
+						//is a hacky opengl texture ID. can't handle this now!
+						//need to discuss options
+						//1. cores must be able to provide a pixels videoprovider in addition to a texture ID, on command (not very hard overall but interface changing and work per core)
+						//2. SavestateManager must be setup with a mechanism for resolving texture IDs (even less work, but sloppy)
+						//There are additional problems with AVWriting. They depend on VideoProvider providing pixels.
 					}
-					using (new SimpleTime("Save Framebuffer"))
-						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
+					else
+					{
+						int out_w = vp.BufferWidth;
+						int out_h = vp.BufferHeight;
+
+						// if buffer is too big, scale down screenshot
+						if (!Global.Config.NoLowResLargeScreenshotWithStates && buff.Length >= Global.Config.BigScreenshotSize)
+						{
+							out_w /= 2;
+							out_h /= 2;
+						}
+						using (new SimpleTime("Save Framebuffer"))
+							bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
+					}
 				}
 
 				if (Global.MovieSession.Movie.IsActive)

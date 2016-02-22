@@ -23,6 +23,7 @@ using BizHawk.Bizware.BizwareGL;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using otkg = OpenTK.Graphics;
 
 namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 {
@@ -496,7 +497,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			return new Texture2d(this as IGL, glTexId, width, height);
+			return new Texture2d(this as IGL, glTexId.ToInt32(), width, height);
 		}
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
@@ -590,6 +591,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
 			var bmpdata = bb.LockBits();
 			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0);
+			var err = GL.GetError();
 			bb.UnlockBits(bmpdata);
 			return bb;
 		}

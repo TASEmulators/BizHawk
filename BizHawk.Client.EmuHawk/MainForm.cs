@@ -916,7 +916,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
-				bb.DiscardAlpha();
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
 			}
@@ -1895,11 +1894,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static unsafe BitmapBuffer MakeScreenshotImage()
+		private static BitmapBuffer MakeScreenshotImage()
 		{
-			var bb = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
-			bb.DiscardAlpha();
-			return bb;
+			return GlobalWin.DisplayManager.RenderVideoProvider(Global.Emulator.VideoProvider());
 		}
 
 		private void SaveSlotSelectedMessage()
