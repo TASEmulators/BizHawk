@@ -64,4 +64,11 @@ extern SController controller[4];   // 4 controllers
 /* global function definitions */
 extern void DebugMessage(int level, const char *message, ...);
 
+extern "C" {
+	EXPORT void CALL SetInputCallback(int (*inputCallback)(int i));
+	EXPORT void CALL SetRumbleCallback(void (*rumbleCallback)(int Control, int on));
+	EXPORT void CALL SetControllerPakType(int idx, int type);
+	EXPORT void CALL SetControllerConnected(int idx, int connected);
+}
+
 #endif // __PLUGIN_HPP__
