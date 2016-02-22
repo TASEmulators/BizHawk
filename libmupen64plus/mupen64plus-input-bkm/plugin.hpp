@@ -21,8 +21,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.          *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef __PLUGIN_H__
-#define __PLUGIN_H__
+#ifndef __PLUGIN_HPP__
+#define __PLUGIN_HPP__
 
 #define M64P_PLUGIN_PROTOTYPES 1
 #include "m64p_plugin.h"
@@ -64,4 +64,4 @@ extern SController controller[4];   // 4 controllers
 /* global function definitions */
 extern void DebugMessage(int level, const char *message, ...);
 
-#endif // __PLUGIN_H__
+#endif // __PLUGIN_HPP__

@@ -32,10 +32,12 @@
 #include "m64p_common.h"
 #include "m64p_config.h"
 
-#include "plugin.h"
+#include "plugin.hpp"
 #include "config.h"
 #include "version.h"
-#include "osal_dynamiclib.h"
+extern "C" {
+	#include "osal_dynamiclib.h"
+}
 
 #include <errno.h>
 

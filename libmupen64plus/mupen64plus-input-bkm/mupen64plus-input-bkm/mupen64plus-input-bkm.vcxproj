@@ -90,11 +90,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\osal_dynamiclib_win32.c" />
-    <ClCompile Include="..\plugin.c" />
+    <ClCompile Include="..\plugin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\osal_dynamiclib.h" />
-    <ClInclude Include="..\plugin.h" />
+    <ClInclude Include="..\plugin.hpp" />
     <ClInclude Include="..\version.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
