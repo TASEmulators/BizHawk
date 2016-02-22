@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 					var t = new TextBox
 					{
 						Name = register.Key,
-						Text = register.Value.Value.ToHexString(register.Value.BitSize / 16),
+						Text = register.Value.Value.ToHexString(register.Value.BitSize / 4),
 						Width = UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)),
 						Location = new Point(UIHelper.ScaleX(width + 10), y),
 						MaxLength = register.Value.BitSize / 4,
@@ -203,13 +203,13 @@ namespace BizHawk.Client.EmuHawk
 					this.Controls.Add(new Label
 					{
 						Name = register.Key,
-						Text = register.Value.Value.ToString(),
+						Text = register.Value.Value.ToHexString(register.Value.BitSize / 4),
 						Size = new Size(UIHelper.ScaleX(6 + ((register.Value.BitSize / 4) * 9)), UIHelper.ScaleY(15)),
 						Location = new Point(UIHelper.ScaleX(width + 12), y + 2)
 					});
 				}
 
-				y += UIHelper.ScaleY(this.Font.Height + 8);
+				y += UIHelper.ScaleY(this.Font.Height + (canset ? 10 : 4));
 			}
 
 			var flags = registers.Where(r => r.Value.BitSize == 1);
