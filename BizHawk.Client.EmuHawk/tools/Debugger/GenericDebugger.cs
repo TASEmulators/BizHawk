@@ -74,6 +74,7 @@ namespace BizHawk.Client.EmuHawk
 					});
 				}
 
+				PCRegisterSize = Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].BitSize / 4;
 				SetDisassemblerItemCount();
 				UpdateDisassembler();
 			}

@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class GenericDebugger
 	{
 		private readonly List<DisasmOp> DisassemblyLines = new List<DisasmOp>();
+		int PCRegisterSize = 4;
 
 		private class DisasmOp
 		{
@@ -76,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				if (column == 0)
 				{
 					// feos: address size must be platform dependant
-					text = string.Format("{0:X}", DisassemblyLines[index].Address);
+					text = string.Format("{0:X" + PCRegisterSize + "}", DisassemblyLines[index].Address);
 				}
 				else if (column == 1)
 				{
@@ -185,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (blob.Length != 0) blob.AppendLine();
 
-					blob.Append(string.Format("{0:X}", DisassemblyLines[index].Address))
+					blob.Append(string.Format("{0:X" + PCRegisterSize + "}", DisassemblyLines[index].Address))
 						.Append(" ")
 						.Append(DisassemblyLines[index].Mnemonic);
 				}
