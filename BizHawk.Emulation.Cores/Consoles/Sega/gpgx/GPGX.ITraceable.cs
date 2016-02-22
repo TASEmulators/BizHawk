@@ -64,14 +64,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				foreach (var r in regs)
 				{
-					if (r.Key.StartsWith("M68K"))
+					if (r.Key.StartsWith("M68K")) // drop Z80 regs until it has its own debugger/tracer
 					{
-						sb.Append(
-							string.Format("{0}:{1} ",
-							r.Key.Replace("M68K", string.Empty).Trim(),
-							r.Value.Value.ToHexString(r.Value.BitSize / 4)));
+						if (r.Key != "M68K SP" && r.Key != "M68K ISP") // copies of a7
+						{
+							sb.Append(
+								string.Format("{0}:{1} ",
+								r.Key.Replace("M68K", string.Empty).Trim(),
+								r.Value.Value.ToHexString(r.Value.BitSize / 4)));
+						}
 					}
 				}
+				var sr = regs["M68K SR"].Value;
+				sb.Append(
+					string.Format("{0}{1}{2}{3}{4}",
+					(sr & 16) > 0 ? "X" : "x",
+					(sr &  8) > 0 ? "N" : "n",
+					(sr &  4) > 0 ? "Z" : "z",
+					(sr &  2) > 0 ? "V" : "v",
+					(sr &  1) > 0 ? "C" : "c"));
 
 				traceInfo.RegisterInfo = sb.ToString().Trim();
 
