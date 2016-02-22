@@ -40,6 +40,8 @@ namespace BizHawk.Client.EmuHawk
 
 				_supressChangeEvents = true;
 
+				var canSetCpuRegisters = CanSetCpuRegisters;
+
 				foreach (var register in registers)
 				{
 					if (Controls.OfType<Panel>().Any(p => p.Name == "FlagPanel"))
@@ -59,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 							});
 					}
 
-					if (CanSetCpuRegisters)
+					if (canSetCpuRegisters)
 					{
 
 						Controls
