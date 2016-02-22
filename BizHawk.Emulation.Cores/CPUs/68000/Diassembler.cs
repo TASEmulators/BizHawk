@@ -89,8 +89,8 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			else if (Opcodes[op] == CMP) CMP_Disasm(info);
 			else if (Opcodes[op] == CMPM) CMPM_Disasm(info);
 			else if (Opcodes[op] == CMPA) CMPA_Disasm(info);
-
 			else if (Opcodes[op] == CMPI) CMPI_Disasm(info);
+
 			else if (Opcodes[op] == MULU) MULU_Disasm(info);
 			else if (Opcodes[op] == MULS) MULS_Disasm(info);
 			else if (Opcodes[op] == DIVU) DIVU_Disasm(info);

@@ -359,13 +359,13 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			{
 				case 1:
 					immed = (byte)ReadWord(pc); pc += 2;
-					return String.Format("${0:X}", immed);
+					return String.Format("#${0:X}", immed);
 				case 2:
 					immed = (ushort)ReadWord(pc); pc += 2;
-					return String.Format("${0:X}", immed);
+					return String.Format("#${0:X}", immed);
 				case 4:
 					immed = ReadLong(pc); pc += 4;
-					return String.Format("${0:X}", immed);
+					return String.Format("#${0:X}", immed);
 			}
 			throw new ArgumentException("Invalid size");
 		}

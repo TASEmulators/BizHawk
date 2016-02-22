@@ -319,7 +319,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int reg = op & 7;
 
 			info.Mnemonic = "btst";
-			info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+			info.Args = String.Format("#${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
 			info.Length = pc - info.PC;
 		}
 
@@ -392,7 +392,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int reg = op & 7;
 
 			info.Mnemonic = "bchg";
-			info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+			info.Args = String.Format("#${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
 			info.Length = pc - info.PC;
 		}
 
@@ -469,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int reg = op & 7;
 
 			info.Mnemonic = "bclr";
-			info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+			info.Args = String.Format("#${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
 			info.Length = pc - info.PC;
 		}
 
@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			int reg = op & 7;
 
 			info.Mnemonic = "bset";
-			info.Args = String.Format("${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
+			info.Args = String.Format("#${0:X}, {1}", bit, DisassembleValue(mode, reg, 1, ref pc));
 			info.Length = pc - info.PC;
 		}
 

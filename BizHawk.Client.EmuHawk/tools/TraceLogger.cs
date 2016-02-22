@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 			var sfd = new SaveFileDialog();
 			if (_logFile == null)
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".txt";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".log";
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 			}
 			else if (!string.IsNullOrWhiteSpace(_logFile.FullName))

@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "andi.b";
 						sbyte imm = (sbyte)ReadWord(pc); pc += 2;
-						info.Args = string.Format("${0:X}, ", imm);
+						info.Args = string.Format("#${0:X}, ", imm);
 						info.Args += DisassembleValue(dstMode, dstReg, 1, ref pc);
 						break;
 					}
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "andi.w";
 						short imm = ReadWord(pc); pc += 2;
-						info.Args = string.Format("${0:X}, ", imm);
+						info.Args = string.Format("#${0:X}, ", imm);
 						info.Args += DisassembleValue(dstMode, dstReg, 2, ref pc);
 						break;
 					}
@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "andi.l";
 						int imm = ReadLong(pc); pc += 4;
-						info.Args = string.Format("${0:X}, ", imm);
+						info.Args = string.Format("#${0:X}, ", imm);
 						info.Args += DisassembleValue(dstMode, dstReg, 4, ref pc);
 						break;
 					}
@@ -355,21 +355,21 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "eori.b";
 						sbyte immed = (sbyte)ReadWord(pc); pc += 2;
-						info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
+						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
 						break;
 					}
 				case 1: // word
 					{
 						info.Mnemonic = "eori.w";
 						short immed = ReadWord(pc); pc += 2;
-						info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
+						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
 						break;
 					}
 				case 2: // long
 					{
 						info.Mnemonic = "eori.l";
 						int immed = ReadLong(pc); pc += 4;
-						info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
+						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
 						break;
 					}
 			}
@@ -568,21 +568,21 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 					{
 						info.Mnemonic = "ori.b";
 						sbyte immed = (sbyte)ReadWord(pc); pc += 2;
-						info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
+						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 1, ref pc));
 						break;
 					}
 				case 1: // word
 					{
 						info.Mnemonic = "ori.w";
 						short immed = ReadWord(pc); pc += 2;
-						info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
+						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 2, ref pc));
 						break;
 					}
 				case 2: // long
 					{
 						info.Mnemonic = "ori.l";
 						int immed = ReadLong(pc); pc += 4;
-						info.Args = String.Format("${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
+						info.Args = String.Format("#${0:X}, {1}", immed, DisassembleValue(mode, reg, 4, ref pc));
 						break;
 					}
 			}
