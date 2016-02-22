@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			length = info.Length;
 
-			return string.Format("{0,-8} {1}", info.Mnemonic, info.Args);
+			return string.Format("{0:X4}  {1,-7} {2}", info.RawBytes.Substring(0, 4), info.Mnemonic, info.Args);
 		}
 
 		// TODO: refactor MC6800's disassembler to be a static call

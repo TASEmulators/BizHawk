@@ -66,7 +66,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					if (r.Key.StartsWith("M68K")) // drop Z80 regs until it has its own debugger/tracer
 					{
-						if (r.Key != "M68K SP" && r.Key != "M68K ISP") // copies of a7
+						if (r.Key != "M68K SP" && r.Key != "M68K ISP" && // copies of a7
+							r.Key != "M68K PC" && // already present in every line start
+							r.Key != "M68K IR") // copy of last opcode, already shown in raw bytes
 						{
 							sb.Append(
 								string.Format("{0}:{1} ",
