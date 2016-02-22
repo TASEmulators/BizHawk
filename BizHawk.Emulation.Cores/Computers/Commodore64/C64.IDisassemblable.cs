@@ -1,30 +1,76 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public partial class C64 : IDisassemblable
 	{
-		public string Cpu
+        [SaveState.DoNotSave] private IDisassemblable _selectedDisassemblable;
+
+	    private IEnumerable<IDisassemblable> GetAvailableDisassemblables()
+	    {
+	        yield return _board.Cpu;
+	        if (_board.DiskDrive != null)
+	        {
+	            yield return _board.DiskDrive;
+	        }
+	    }
+
+	    private void SetDefaultDisassemblable()
+	    {
+	        _selectedDisassemblable = GetAvailableDisassemblables().First();
+	    }
+
+	    [SaveState.DoNotSave]
+	    public string Cpu
+	    {
+	        get
+	        {
+	            if (_selectedDisassemblable == null)
+	            {
+	                SetDefaultDisassemblable();
+	            }
+	            return _selectedDisassemblable.Cpu;
+	        }
+	        set
+	        {
+	            var currentSelectedDisassemblable = _selectedDisassemblable;
+	            _selectedDisassemblable = GetAvailableDisassemblables().FirstOrDefault(d => d.Cpu == value) ?? currentSelectedDisassemblable;
+	            if (_selectedDisassemblable is IDebuggable)
+	            {
+	                _selectedDebuggable = _selectedDisassemblable as IDebuggable;
+	            }
+	        }
+	    }
+
+        [SaveState.DoNotSave]
+        public string PCRegisterName
 		{
-			get { return "6510"; } set { }
+            get
+            {
+                if (_selectedDisassemblable == null)
+                {
+                    SetDefaultDisassemblable();
+                }
+                return _selectedDisassemblable.PCRegisterName;
+            }
 		}
 
-		public string PCRegisterName
+        [SaveState.DoNotSave]
+        public IEnumerable<string> AvailableCpus
 		{
-			get { return "PC"; }
-		}
-
-		public IEnumerable<string> AvailableCpus
-		{
-			get { yield return "6510"; }
+            get { return GetAvailableDisassemblables().SelectMany(d => d.AvailableCpus); }
 		}
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			return Components.M6502.MOS6502X.Disassemble((ushort)addr, out length, (a) => m.PeekByte(a));
+            if (_selectedDisassemblable == null)
+            {
+                SetDefaultDisassemblable();
+            }
+            return _selectedDisassemblable.Disassemble(m, addr, out length);
 		}
 	}
 }

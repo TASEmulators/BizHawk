@@ -243,6 +243,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			return (ushort)(ReadMemory(address) | (ReadMemory(highAddress) << 8));
 		}
 
+        // SO pin
+	    public void SetOverflow()
+	    {
+	        FlagV = true;
+	    }
+
 		private static readonly byte[] TableNZ = 
 		{ 
 			0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

@@ -7,54 +7,54 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Vic
+	public sealed partial class Vic
 	{
-		sealed class Sprite
+		private sealed class Sprite
 		{
-			public bool collideData;
-			public bool collideSprite;
-			public int color;
-			public bool display;
-			public bool dma;
-			public bool enable;
-			public int loaded;
-			public int mc;
-			public int mcbase;
-			public bool multicolor;
-			public bool multicolorCrunch;
-			public int pointer;
-			public bool priority;
-			public bool shiftEnable;
-			public int sr;
-			public int x;
-			public bool xCrunch;
-			public bool xExpand;
-			public int y;
-			public bool yCrunch;
-			public bool yExpand;
+			public bool CollideData;
+			public bool CollideSprite;
+			public int Color;
+			public bool Display;
+			public bool Dma;
+			public bool Enable;
+			public int Loaded;
+			public int Mc;
+			public int Mcbase;
+			public bool Multicolor;
+			public bool MulticolorCrunch;
+			public int Pointer;
+			public bool Priority;
+			public bool ShiftEnable;
+			public int Sr;
+			public int X;
+			public bool XCrunch;
+			public bool XExpand;
+			public int Y;
+			public bool YCrunch;
+			public bool YExpand;
 
 			public void HardReset()
 			{
-				collideData = false;
-				collideSprite = false;
-				color = 0;
-				display = false;
-				dma = false;
-				enable = false;
-				mc = 0;
-				mcbase = 0;
-				multicolor = false;
-				multicolorCrunch = false;
-				pointer = 0;
-				priority = false;
-				shiftEnable = false;
-				sr = 0;
-				x = 0;
-				xCrunch = false;
-				xExpand = false;
-				y = 0;
-				yCrunch = false;
-				yExpand = false;
+				CollideData = false;
+				CollideSprite = false;
+				Color = 0;
+				Display = false;
+				Dma = false;
+				Enable = false;
+				Mc = 0;
+				Mcbase = 0;
+				Multicolor = false;
+				MulticolorCrunch = false;
+				Pointer = 0;
+				Priority = false;
+				ShiftEnable = false;
+				Sr = 0;
+				X = 0;
+				XCrunch = false;
+				XExpand = false;
+				Y = 0;
+				YCrunch = false;
+				YExpand = false;
 			}
 
 			public void SyncState(Serializer ser)

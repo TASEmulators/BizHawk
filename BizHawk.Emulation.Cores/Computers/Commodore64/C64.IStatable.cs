@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	sealed public partial class C64 : IStatable
+	public sealed partial class C64 : IStatable
 	{
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
@@ -31,20 +31,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
+		    using (var ms = new MemoryStream())
+		    {
+                var bw = new BinaryWriter(ms);
+                SaveStateBinary(bw);
+                bw.Flush();
+                return ms.ToArray();
+            }
+        }
 
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("core");
-			ser.Sync("frame", ref _frame);
-			ser.Sync("islag", ref _islag);
-			ser.Sync("lagcount", ref _lagcount);
-			board.SyncState(ser);
+			SaveState.SyncObject(ser, this);
 			ser.EndSection();
 		}
 	}
