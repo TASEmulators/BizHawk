@@ -154,6 +154,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         [SaveState.DoNotSave] private IMemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
 
         [SaveState.DoNotSave]
-        IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get; }
+				IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get { return _memoryCallbacks; } }
     }
 }
