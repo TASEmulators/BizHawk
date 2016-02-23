@@ -3,164 +3,182 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-#pragma warning disable 649 //adelikat: Disable dumb warnings until this file is complete
-#pragma warning disable 169 //adelikat: Disable dumb warnings until this file is complete
-#pragma warning disable 219 //adelikat: Disable dumb warnings until this file is complete
-
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-	sealed public partial class Sid
+	public sealed partial class Sid
 	{
+        /*
+            Commodore SID 6581/8580 core.
 
-		// ------------------------------------
+            Many thanks to:
+            - Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
+              http://mail.lipsia.de/~enigma/neu/6581.html
+            - Kevtris for figuring out ADSR tables
+              http://blog.kevtris.org/?p=13
+            - Mixer for a lot of useful SID info
+              http://www.sid.fi/sidwiki/doku.php?id=sid-knowledge
+            - Documentation collected by the libsidplayfp team
+              https://sourceforge.net/projects/sidplay-residfp/
+        */
 
-		public SpeexResampler resampler;
+        // ------------------------------------
 
-		static int[] syncNextTable = new int[] { 1, 2, 0 };
-		static int[] syncPrevTable = new int[] { 2, 0, 1 };
+        private int _cachedCycles;
+	    private bool _disableVoice3;
+	    private int _envelopeOutput0;
+        private int _envelopeOutput1;
+        private int _envelopeOutput2;
+        private readonly Envelope[] _envelopes;
+	    [SaveState.DoNotSave] private readonly Envelope _envelope0;
+        [SaveState.DoNotSave] private readonly Envelope _envelope1;
+        [SaveState.DoNotSave] private readonly Envelope _envelope2;
+        private readonly bool[] _filterEnable;
+	    private int _filterFrequency;
+	    private int _filterResonance;
+	    private bool _filterSelectBandPass;
+	    private bool _filterSelectLoPass;
+	    private bool _filterSelectHiPass;
+	    private int _mixer;
+        [SaveState.DoNotSave] private readonly short[] _outputBuffer;
+	    [SaveState.DoNotSave] private int _outputBufferIndex;
+        private int _potCounter;
+	    private int _potX;
+	    private int _potY;
+        private short _sample;
+	    private int _voiceOutput0;
+        private int _voiceOutput1;
+        private int _voiceOutput2;
+        private readonly Voice[] _voices;
+	    [SaveState.DoNotSave] private readonly Voice _voice0;
+        [SaveState.DoNotSave] private readonly Voice _voice1;
+        [SaveState.DoNotSave] private readonly Voice _voice2;
+        private int _volume;
 
-		int cachedCycles;
-		bool disableVoice3;
-		int[] envelopeOutput;
-		Envelope[] envelopes;
-		bool[] filterEnable;
-		int filterFrequency;
-		int filterResonance;
-		bool filterSelectBandPass;
-		bool filterSelectLoPass;
-		bool filterSelectHiPass;
-		int mixer;
-		int potCounter;
-		int potX;
-		int potY;
-		short sample;
-		int[] voiceOutput;
-		Voice[] voices;
-		int volume;
-		int[][] waveformTable;
+	    public Func<int> ReadPotX;
+		public Func<int> ReadPotY;
 
-		public Func<byte> ReadPotX;
-		public Func<byte> ReadPotY;
+	    [SaveState.DoNotSave] private readonly int _cpuCyclesNum;
+	    [SaveState.DoNotSave] private int _sampleCyclesNum;
+	    [SaveState.DoNotSave] private readonly int _sampleCyclesDen;
+	    [SaveState.DoNotSave] private readonly int _sampleRate;
 
-		public Sid(int[][] newWaveformTable, uint sampleRate, uint cyclesNum, uint cyclesDen)
-		{
-			waveformTable = newWaveformTable;
+        public Sid(int[][] newWaveformTable, int sampleRate, int cyclesNum, int cyclesDen)
+        {
+            _sampleRate = sampleRate;
+            _cpuCyclesNum = cyclesNum;
+		    _sampleCyclesDen = cyclesDen*sampleRate;
 
-			envelopes = new Envelope[3];
-			for (int i = 0; i < 3; i++)
-				envelopes[i] = new Envelope();
-			envelopeOutput = new int[3];
+            _envelopes = new Envelope[3];
+			for (var i = 0; i < 3; i++)
+				_envelopes[i] = new Envelope();
+		    _envelope0 = _envelopes[0];
+            _envelope1 = _envelopes[1];
+            _envelope2 = _envelopes[2];
 
-			voices = new Voice[3];
-			for (int i = 0; i < 3; i++)
-				voices[i] = new Voice(newWaveformTable);
-			voiceOutput = new int[3];
+            _voices = new Voice[3];
+			for (var i = 0; i < 3; i++)
+				_voices[i] = new Voice(newWaveformTable);
+		    _voice0 = _voices[0];
+            _voice1 = _voices[1];
+            _voice2 = _voices[2];
 
-			filterEnable = new bool[3];
-			for (int i = 0; i < 3; i++)
-				filterEnable[i] = false;
+            _filterEnable = new bool[3];
+			for (var i = 0; i < 3; i++)
+				_filterEnable[i] = false;
 
-			resampler = new SpeexResampler(0, cyclesNum, sampleRate * cyclesDen, cyclesNum, sampleRate * cyclesDen, null, null);
-		}
-
-		public void Dispose()
-		{
-			if (resampler != null)
-			{
-				resampler.Dispose();
-				resampler = null;
-			}
+		    _outputBuffer = new short[sampleRate];
 		}
 
 		// ------------------------------------
 
 		public void HardReset()
 		{
-			for (int i = 0; i < 3; i++)
+			for (var i = 0; i < 3; i++)
 			{
-				envelopes[i].HardReset();
-				voices[i].HardReset();
+				_envelopes[i].HardReset();
+				_voices[i].HardReset();
 			}
-			potCounter = 0;
-			potX = 0;
-			potY = 0;
+			_potCounter = 0;
+			_potX = 0;
+			_potY = 0;
 		}
 
 		// ------------------------------------
 
-		public void ExecutePhase2()
+		public void ExecutePhase()
 		{
-			cachedCycles++;
+			_cachedCycles++;
 
 			// potentiometer values refresh every 512 cycles
-			if (potCounter == 0)
+			if (_potCounter == 0)
 			{
-				potCounter = 512;
-				potX = ReadPotX();
-				potY = ReadPotY();
-				Flush(); //this is here unrelated to the pots, just to keep the buffer somewhat loaded
+				_potCounter = 512;
+				_potX = ReadPotX();
+				_potY = ReadPotY();
 			}
-			potCounter--;
+			_potCounter--;
 		}
 
 		public void Flush()
 		{
-			while (cachedCycles > 0)
-			{
+            while (_cachedCycles > 0)
+            {
+                _cachedCycles--;
+
 				// process voices and envelopes
-				voices[0].ExecutePhase2();
-				voices[1].ExecutePhase2();
-				voices[2].ExecutePhase2();
-				envelopes[0].ExecutePhase2();
-				envelopes[1].ExecutePhase2();
-				envelopes[2].ExecutePhase2();
+				_voice0.ExecutePhase2();
+				_voice1.ExecutePhase2();
+				_voice2.ExecutePhase2();
+				_envelope0.ExecutePhase2();
+				_envelope1.ExecutePhase2();
+				_envelope2.ExecutePhase2();
 
-				// process sync
-				for (int i = 0; i < 3; i++)
-					voices[i].Synchronize(voices[syncNextTable[i]], voices[syncPrevTable[i]]);
+                _voice0.Synchronize(_voice1, _voice2);
+                _voice1.Synchronize(_voice2, _voice0);
+                _voice2.Synchronize(_voice0, _voice1);
 
-				// get output
-				voiceOutput[0] = voices[0].Output(voices[2]);
-				voiceOutput[1] = voices[1].Output(voices[0]);
-				voiceOutput[2] = voices[2].Output(voices[1]);
-				envelopeOutput[0] = envelopes[0].Level;
-				envelopeOutput[1] = envelopes[1].Level;
-				envelopeOutput[2] = envelopes[2].Level;
+                // get output
+                _voiceOutput0 = _voice0.Output(_voice2);
+				_voiceOutput1 = _voice1.Output(_voice0);
+				_voiceOutput2 = _voice2.Output(_voice1);
+				_envelopeOutput0 = _envelope0.Level;
+				_envelopeOutput1 = _envelope1.Level;
+				_envelopeOutput2 = _envelope2.Level;
 
-				mixer = ((voiceOutput[0] * envelopeOutput[0]) >> 7);
-				mixer += ((voiceOutput[1] * envelopeOutput[1]) >> 7);
-				mixer += ((voiceOutput[2] * envelopeOutput[2]) >> 7);
-				mixer = (mixer * volume) >> 4;
+			    _sampleCyclesNum += _sampleCyclesDen;
+			    if (_sampleCyclesNum >= _cpuCyclesNum)
+			    {
+			        _sampleCyclesNum -= _cpuCyclesNum;
+                    _mixer = (_voiceOutput0 * _envelopeOutput0) >> 7;
+                    _mixer += (_voiceOutput1 * _envelopeOutput1) >> 7;
+                    _mixer += (_voiceOutput2 * _envelopeOutput2) >> 7;
+                    _mixer = (_mixer * _volume) >> 4;
+                    _mixer -= _volume << 8;
 
-				sample = (short)mixer;
-				resampler.EnqueueSample(sample, sample);
-				cachedCycles--;
-			}
-		}
+                    if (_mixer > 0x7FFF)
+                    {
+                        _mixer = 0x7FFF;
+                    }
+                    if (_mixer < -0x8000)
+                    {
+                        _mixer = -0x8000;
+                    }
 
-		// ----------------------------------
+                    _sample = unchecked((short)_mixer);
+                    if (_outputBufferIndex < _sampleRate)
+                    {
+                        _outputBuffer[_outputBufferIndex++] = _sample;
+                        _outputBuffer[_outputBufferIndex++] = _sample;
+                    }
+                }
+            }
+        }
 
-		public void SyncState(Serializer ser)
+        // ----------------------------------
+
+        public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
-			ser.BeginSection("env0");
-			envelopes[0].SyncState(ser);
-			ser.EndSection();
-			ser.BeginSection("wav0");
-			voices[0].SyncState(ser);
-			ser.EndSection();
-			ser.BeginSection("env1");
-			envelopes[1].SyncState(ser);
-			ser.EndSection();
-			ser.BeginSection("wav1");
-			voices[1].SyncState(ser);
-			ser.EndSection();
-			ser.BeginSection("env2");
-			envelopes[2].SyncState(ser);
-			ser.EndSection();
-			ser.BeginSection("wav2");
-			voices[2].SyncState(ser);
-			ser.EndSection();
 		}
 	}
 }

@@ -9,13 +9,12 @@ using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	// adelikat: changing settings to default object untl there are actually settings, as the ui depends on it to know if there are any settings avaialable
-	public partial class C64 : ISettable<object, C64.C64SyncSettings>
+	// adelikat: changing settings to default object until there are actually settings, as the ui depends on it to know if there are any settings avaialable
+	public partial class C64 : ISettable<C64.C64Settings, C64.C64SyncSettings>
 	{
-		public object /*C64Settings*/ GetSettings()
+		public C64Settings GetSettings()
 		{
-			//return Settings.Clone();
-			return null;
+			return Settings.Clone();
 		}
 
 		public C64SyncSettings GetSyncSettings()
@@ -23,9 +22,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return SyncSettings.Clone();
 		}
 
-		public bool PutSettings(object /*C64Settings*/ o)
+		public bool PutSettings(C64Settings o)
 		{
-			//Settings = o;
+			Settings = o;
 			return false;
 		}
 
@@ -40,6 +39,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public class C64Settings
 		{
+            [DisplayName("Border type")]
+            [Description("Select how to show the border area")]
+            [DefaultValue(BorderType.SmallProportional)]
+            public BorderType BorderType { get; set; }
+
 			public C64Settings Clone()
 			{
 				return (C64Settings)MemberwiseClone();
@@ -55,10 +59,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			[DisplayName("VIC type")]
 			[Description("Set the type of video chip to use")]
-			[DefaultValue(VicType.PAL)]
-			public VicType vicType { get; set; }
+			[DefaultValue(VicType.Pal)]
+			public VicType VicType { get; set; }
 
-			public C64SyncSettings Clone()
+            [DisplayName("SID type")]
+            [Description("Set the type of sound chip to use")]
+            [DefaultValue(SidType.OldR2)]
+            public SidType SidType { get; set; }
+
+            [DisplayName("Tape drive type")]
+            [Description("Set the type of tape drive attached")]
+            [DefaultValue(TapeDriveType.None)]
+            public TapeDriveType TapeDriveType { get; set; }
+
+            [DisplayName("Disk drive type")]
+            [Description("Set the type of disk drive attached")]
+            [DefaultValue(DiskDriveType.None)]
+            public DiskDriveType DiskDriveType { get; set; }
+
+            public C64SyncSettings Clone()
 			{
 				return (C64SyncSettings)MemberwiseClone();
 			}
@@ -71,7 +90,32 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public enum VicType
 		{
-			PAL, NTSC, NTSC_OLD, DREAN
+			Pal, Ntsc, NtscOld, Drean
 		}
+
+	    public enum CiaType
+	    {
+	        Pal, Ntsc, PalRevA, NtscRevA
+	    }
+
+	    public enum BorderType
+	    {
+	        SmallProportional, SmallFixed, Normal, Full
+	    }
+
+	    public enum SidType
+	    {
+	        OldR2, OldR3, OldR4AR, NewR5
+	    }
+
+	    public enum TapeDriveType
+	    {
+	        None, Commodore1530
+	    }
+
+	    public enum DiskDriveType
+	    {
+	        None, Commodore1541
+	    }
 	}
 }
