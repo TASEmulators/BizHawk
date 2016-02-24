@@ -190,6 +190,11 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
+		private void RunBtn_Click(object sender, EventArgs e)
+		{
+			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
 		private void StepIntoMenuItem_Click(object sender, EventArgs e)
 		{
 			if (CanStepInto)
