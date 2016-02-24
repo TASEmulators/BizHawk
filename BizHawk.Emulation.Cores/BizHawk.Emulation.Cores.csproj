@@ -817,7 +817,9 @@
     <Compile Include="Consoles\Sega\gpgx\GPGX.IStatable.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Sega\gpgx\GPGX.ITraceable.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ITraceable.cs">
+        <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IVideoProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>

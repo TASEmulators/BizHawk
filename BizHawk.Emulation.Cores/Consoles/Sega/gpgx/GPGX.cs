@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				InitMemCallbacks();
 				KillMemCallbacks();
 
-				Tracer = new CallbackBasedTraceBuffer(this);
+				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
 				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			}
 			catch
