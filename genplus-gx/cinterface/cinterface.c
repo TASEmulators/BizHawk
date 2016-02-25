@@ -57,6 +57,7 @@ void (*biz_execcb)(unsigned addr) = NULL;
 void (*biz_readcb)(unsigned addr) = NULL;
 void (*biz_writecb)(unsigned addr) = NULL;
 CDCallback biz_cdcallback = NULL;
+unsigned biz_lastpc = 0;
 
 static void update_viewport(void)
 {
@@ -628,6 +629,8 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(ISP);
 	MAKEREG(IR);
 #undef MAKEREG
+
+	(regs-6)->value = biz_lastpc; // during read/write callbacks, PC runs away due to prefetch. restore it.
 
 	// 13
 #define MAKEREG(x) regs->name = "Z80 " #x; regs->value = Z80.x.d; regs++; ret++;
