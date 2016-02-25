@@ -77,21 +77,22 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
+			_instructions.AddRange(Tracer.TakeContents());
+
 			if (ToWindowRadio.Checked)
 			{
+				TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
 				LogToWindow();
 			}
 			else
 			{
-				LogToFile();
+				DumpToDisk(_logFile);
 			}
 		}
 
 		public void FastUpdate()
 		{
-			// TODO: get instructions, but don't draw on screen
-			UpdateValues();
+			_instructions.AddRange(Tracer.TakeContents());
 		}
 
 		public void Restart()
@@ -108,33 +109,11 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		// TODO: LogToFile and DumpListTODisk have a lot of repeated code
-		private void LogToFile()
-		{
-			var todo = Tracer.TakeContents();
-			if (todo.Any())
-			{
-				using (var sw = new StreamWriter(_logFile.FullName, true))
-				{
-					int pad = todo.Max(i => i.Disassembly.Length) + 4;
-
-					foreach (var instruction in todo)
-					{
-						sw.WriteLine(instruction.Disassembly.PadRight(pad)
-							+ instruction.RegisterInfo
-						);
-					}
-
-					sw.Write(Tracer.TakeContents());
-				}
-			}
-		}
-
-		private void DumpListToDisk(FileSystemInfo file)
+		private void DumpToDisk(FileSystemInfo file)
 		{
 			using (var sw = new StreamWriter(file.FullName))
 			{
-				int pad = _instructions.Max(i => i.Disassembly.Length) + 4;
+				int pad = _instructions.Any() ? _instructions.Max(i => i.Disassembly.Length) + 4 : 0;
 
 				foreach (var instruction in _instructions)
 				{
@@ -147,9 +126,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LogToWindow()
 		{
-			_instructions.AddRange(Tracer.TakeContents());
-			
-
 			if (_instructions.Count >= MaxLines)
 			{
 				_instructions.RemoveRange(0, _instructions.Count - MaxLines);
@@ -234,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = GetFileFromUser();
 			if (file != null)
 			{
-				DumpListToDisk(file);
+				DumpToDisk(file);
 				GlobalWin.OSD.AddMessage("Log dumped to " + file.FullName);
 			}
 		}
