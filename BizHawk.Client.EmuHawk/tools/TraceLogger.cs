@@ -111,7 +111,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DumpToDisk(FileSystemInfo file)
 		{
-			using (var sw = new StreamWriter(file.FullName))
+			using (var sw = new StreamWriter(file.FullName, append: true))
 			{
 				int pad = _instructions.Any() ? _instructions.Max(i => i.Disassembly.Length) + 4 : 0;
 
@@ -210,6 +210,7 @@ namespace BizHawk.Client.EmuHawk
 			var file = GetFileFromUser();
 			if (file != null)
 			{
+				StartLogFile(file);
 				DumpToDisk(file);
 				GlobalWin.OSD.AddMessage("Log dumped to " + file.FullName);
 			}
@@ -275,6 +276,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
+
+			if (LoggingEnabled.Checked && _logFile != null)
+			{
+				StartLogFile(_logFile);
+			}
+		}
+
+		private void StartLogFile(FileInfo file)
+		{
+			using (var sw = new StreamWriter(_logFile.FullName, append: false))
+			{
+				sw.WriteLine(Tracer.Header);
+			}
 		}
 
 		private void ClearButton_Click(object sender, EventArgs e)
