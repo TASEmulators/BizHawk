@@ -291,11 +291,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ClearButton_Click(object sender, EventArgs e)
-		{
-			ClearList();
-		}
-
 		private void BrowseBox_Click(object sender, EventArgs e)
 		{
 			var file = GetFileFromUser();
@@ -342,5 +337,10 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#endregion
+
+		private void ClearMenuItem_Click(object sender, EventArgs e)
+		{
+			ClearList();
+		}
 	}
 }

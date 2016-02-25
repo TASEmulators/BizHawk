@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TraceLogger));
 			this.TracerBox = new System.Windows.Forms.GroupBox();
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
@@ -42,6 +43,7 @@
 			this.EditSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.CopyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SelectAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.MaxLinesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -49,11 +51,15 @@
 			this.FileBox = new System.Windows.Forms.TextBox();
 			this.ToFileRadio = new System.Windows.Forms.RadioButton();
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
-			this.ClearButton = new System.Windows.Forms.Button();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
+			this.TraceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.CopyContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.SelectAllContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.TraceContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TracerBox
@@ -78,6 +84,7 @@
 			this.TraceView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.Disasm,
             this.Registers});
+			this.TraceView.ContextMenuStrip = this.TraceContextMenu;
 			this.TraceView.Font = new System.Drawing.Font("Courier New", 8F);
 			this.TraceView.FullRowSelect = true;
 			this.TraceView.GridLines = true;
@@ -158,7 +165,8 @@
 			// 
 			this.EditSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CopyMenuItem,
-            this.SelectAllMenuItem});
+            this.SelectAllMenuItem,
+            this.ClearMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
 			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
 			this.EditSubMenu.Text = "Edit";
@@ -180,6 +188,13 @@
 			this.SelectAllMenuItem.Size = new System.Drawing.Size(164, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
+			// 
+			// ClearMenuItem
+			// 
+			this.ClearMenuItem.Name = "ClearMenuItem";
+			this.ClearMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.ClearMenuItem.Text = "Clear";
+			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
 			// OptionsSubMenu
 			// 
@@ -204,7 +219,6 @@
 			this.groupBox2.Controls.Add(this.FileBox);
 			this.groupBox2.Controls.Add(this.ToFileRadio);
 			this.groupBox2.Controls.Add(this.ToWindowRadio);
-			this.groupBox2.Controls.Add(this.ClearButton);
 			this.groupBox2.Controls.Add(this.LoggingEnabled);
 			this.groupBox2.Location = new System.Drawing.Point(12, 477);
 			this.groupBox2.Name = "groupBox2";
@@ -216,7 +230,7 @@
 			// BrowseBox
 			// 
 			this.BrowseBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.BrowseBox.Location = new System.Drawing.Point(477, 19);
+			this.BrowseBox.Location = new System.Drawing.Point(443, 18);
 			this.BrowseBox.Name = "BrowseBox";
 			this.BrowseBox.Size = new System.Drawing.Size(54, 23);
 			this.BrowseBox.TabIndex = 20;
@@ -229,7 +243,7 @@
 			// 
 			this.FileBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.FileBox.Location = new System.Drawing.Point(229, 20);
+			this.FileBox.Location = new System.Drawing.Point(196, 19);
 			this.FileBox.Name = "FileBox";
 			this.FileBox.ReadOnly = true;
 			this.FileBox.Size = new System.Drawing.Size(242, 20);
@@ -240,7 +254,7 @@
 			// ToFileRadio
 			// 
 			this.ToFileRadio.AutoSize = true;
-			this.ToFileRadio.Location = new System.Drawing.Point(173, 22);
+			this.ToFileRadio.Location = new System.Drawing.Point(143, 21);
 			this.ToFileRadio.Name = "ToFileRadio";
 			this.ToFileRadio.Size = new System.Drawing.Size(50, 17);
 			this.ToFileRadio.TabIndex = 10;
@@ -252,24 +266,13 @@
 			// 
 			this.ToWindowRadio.AutoSize = true;
 			this.ToWindowRadio.Checked = true;
-			this.ToWindowRadio.Location = new System.Drawing.Point(94, 22);
+			this.ToWindowRadio.Location = new System.Drawing.Point(67, 21);
 			this.ToWindowRadio.Name = "ToWindowRadio";
 			this.ToWindowRadio.Size = new System.Drawing.Size(73, 17);
 			this.ToWindowRadio.TabIndex = 5;
 			this.ToWindowRadio.TabStop = true;
 			this.ToWindowRadio.Text = "to window";
 			this.ToWindowRadio.UseVisualStyleBackColor = true;
-			// 
-			// ClearButton
-			// 
-			this.ClearButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.ClearButton.Location = new System.Drawing.Point(564, 19);
-			this.ClearButton.Name = "ClearButton";
-			this.ClearButton.Size = new System.Drawing.Size(47, 23);
-			this.ClearButton.TabIndex = 25;
-			this.ClearButton.Text = "&Clear";
-			this.ClearButton.UseVisualStyleBackColor = true;
-			this.ClearButton.Click += new System.EventHandler(this.ClearButton_Click);
 			// 
 			// LoggingEnabled
 			// 
@@ -282,6 +285,38 @@
 			this.LoggingEnabled.Text = "&Logging";
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
+			// 
+			// TraceContextMenu
+			// 
+			this.TraceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyContextMenu,
+            this.SelectAllContextMenu,
+            this.ClearContextMenu});
+			this.TraceContextMenu.Name = "TraceContextMenu";
+			this.TraceContextMenu.Size = new System.Drawing.Size(165, 92);
+			// 
+			// CopyContextMenu
+			// 
+			this.CopyContextMenu.Name = "CopyContextMenu";
+			this.CopyContextMenu.ShortcutKeyDisplayString = "Ctrl+C";
+			this.CopyContextMenu.Size = new System.Drawing.Size(164, 22);
+			this.CopyContextMenu.Text = "&Copy";
+			this.CopyContextMenu.Click += new System.EventHandler(this.CopyMenuItem_Click);
+			// 
+			// SelectAllContextMenu
+			// 
+			this.SelectAllContextMenu.Name = "SelectAllContextMenu";
+			this.SelectAllContextMenu.ShortcutKeyDisplayString = "Ctrl+A";
+			this.SelectAllContextMenu.Size = new System.Drawing.Size(164, 22);
+			this.SelectAllContextMenu.Text = "Select &All";
+			this.SelectAllContextMenu.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
+			// 
+			// ClearContextMenu
+			// 
+			this.ClearContextMenu.Name = "ClearContextMenu";
+			this.ClearContextMenu.Size = new System.Drawing.Size(164, 22);
+			this.ClearContextMenu.Text = "Clear";
+			this.ClearContextMenu.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
 			// TraceLogger
 			// 
@@ -304,6 +339,7 @@
 			this.menuStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.TraceContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -320,7 +356,6 @@
 		private System.Windows.Forms.ToolStripMenuItem ExitMenuItem;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox LoggingEnabled;
-		private System.Windows.Forms.Button ClearButton;
 		private System.Windows.Forms.ToolStripMenuItem OptionsSubMenu;
 		private VirtualListView TraceView;
 		public System.Windows.Forms.ColumnHeader Disasm;
@@ -333,5 +368,10 @@
 		private System.Windows.Forms.ToolStripMenuItem CopyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
 		private System.Windows.Forms.ColumnHeader Registers;
+		private System.Windows.Forms.ToolStripMenuItem ClearMenuItem;
+		private System.Windows.Forms.ContextMenuStrip TraceContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem CopyContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem SelectAllContextMenu;
+		private System.Windows.Forms.ToolStripMenuItem ClearContextMenu;
 	}
 }
