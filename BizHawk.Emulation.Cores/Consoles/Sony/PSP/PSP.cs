@@ -22,14 +22,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			Name = "PSP Controller",
 			BoolButtons =
 			{					
-				"Up", "Down", "Left", "Right", "Select", "Start", "L", "R", "Square", "Triangle", "Circle", "Cross", "Power"
+				"Up", "Down", "Left", "Right", "Select", "Start", "L", "R", "Square", "Triangle", "Circle", "Cross", 
+				"Menu", "Back",
+				"Power"
 			},
 			FloatControls =
 			{
-				"Stick X", "Stick Y"
+				"Left Stick X", "Left Stick Y", "Right Stick X", "Right Stick Y", "Left Trigger", "Right Trigger"
 			},
 			FloatRanges = // TODO
 			{
+				new[] {-1.0f, 0.0f, 1.0f},
+				new[] {-1.0f, 0.0f, 1.0f},
+				new[] {-1.0f, 0.0f, 1.0f},
+				new[] {-1.0f, 0.0f, 1.0f},
 				new[] {-1.0f, 0.0f, 1.0f},
 				new[] {-1.0f, 0.0f, 1.0f},
 			}
@@ -49,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		PPSSPPDll.LogCB logcallback = null;
 		Queue<string> debugmsgs = new Queue<string>();
+		PPSSPPDll.Input input = new PPSSPPDll.Input();
+
 		void LogCallbackFunc(char type, string message)
 		{
 			debugmsgs.Enqueue(string.Format("PSP: {0} {1}", type, message));
@@ -63,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		bool disposed = false;
 		static PSP attachedcore = null;
-		GCHandle vidhandle;
+		object glcontext;
 
 		public PSP(CoreComm comm, string isopath)
 		{
@@ -75,14 +83,15 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 			CoreComm = comm;
 
+			glcontext = CoreComm.RequestGLContext(3, 0, true);
+			CoreComm.ActivateGLContext(glcontext);
+
 			logcallback = new PPSSPPDll.LogCB(LogCallbackFunc);
 
-			bool good = PPSSPPDll.init(isopath, logcallback);
+			bool good = PPSSPPDll.BizInit(isopath, logcallback);
 			LogFlush();
 			if (!good)
 				throw new Exception("PPSSPP Init failed!");
-			vidhandle = GCHandle.Alloc(screenbuffer, GCHandleType.Pinned);
-			PPSSPPDll.setvidbuff(vidhandle.AddrOfPinnedObject());
 
 			CoreComm.VsyncDen = 1;
 			CoreComm.VsyncNum = 60;
@@ -97,38 +106,72 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		{
 			if (!disposed)
 			{
-				vidhandle.Free();
-				PPSSPPDll.setvidbuff(IntPtr.Zero);
-				PPSSPPDll.die();
+				PPSSPPDll.BizClose();
 				logcallback = null;
 				disposed = true;
 				LogFlush();
+
 				Console.WriteLine("PSP Core Disposed.");
 			}
 		}
 
+		private void UpdateInput()
+		{
+			PPSSPPDll.Buttons b = 0;
+			var c = Controller;
+			if (c["Up"]) b |= PPSSPPDll.Buttons.UP;
+			if (c["Down"]) b |= PPSSPPDll.Buttons.DOWN;
+			if (c["Left"]) b |= PPSSPPDll.Buttons.LEFT;
+			if (c["Right"]) b |= PPSSPPDll.Buttons.RIGHT;
+			if (c["Select"]) b |= PPSSPPDll.Buttons.SELECT;
+			if (c["Start"]) b |= PPSSPPDll.Buttons.START;
+			if (c["L"]) b |= PPSSPPDll.Buttons.LBUMPER;
+			if (c["R"]) b |= PPSSPPDll.Buttons.RBUMPER;
+			if (c["Square"]) b |= PPSSPPDll.Buttons.A;
+			if (c["Triangle"]) b |= PPSSPPDll.Buttons.B;
+			if (c["Circle"]) b |= PPSSPPDll.Buttons.X;
+			if (c["Cross"]) b |= PPSSPPDll.Buttons.Y;
+			if (c["Menu"]) b |= PPSSPPDll.Buttons.MENU;
+			if (c["Back"]) b |= PPSSPPDll.Buttons.BACK;
+
+			input.SetButtons(b);
+
+			input.LeftStickX = c.GetFloat("Left Stick X");
+			input.LeftStickY = c.GetFloat("Left Stick Y");
+			input.RightStickX = c.GetFloat("Right Stick X");
+			input.RightStickY = c.GetFloat("Right Stick Y");
+			input.LeftTrigger = c.GetFloat("Left Trigger");
+			input.RightTrigger = c.GetFloat("Right Trigger");
+		}
 
 
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			PPSSPPDll.advance();
+			Frame++;
+			UpdateInput();
+			PPSSPPDll.BizAdvance(screenbuffer, input);
+
 			// problem 1: audio can be 48khz, if a particular core parameter is set.  we're not accounting for that.
 			// problem 2: we seem to be getting approximately the right amount of output, but with
 			// a lot of jitter on the per-frame buffer size
-			nsampavail = PPSSPPDll.mixsound(audiobuffer, audiobuffer.Length / 2);
+
+			nsampavail = PPSSPPDll.MixSound(audiobuffer, audiobuffer.Length / 2);
+			//Console.WriteLine(nsampavail);
+
+			//nsampavail = PPSSPPDll.mixsound(audiobuffer, audiobuffer.Length / 2);
 			LogFlush();
 			//Console.WriteLine("Audio Service: {0}", nsampavail);
 		}
 
 		public int Frame
 		{
-			[FeatureNotImplemented]
-			get { return 0; }
+			get;
+			private set;
 		}
 
-		[FeatureNotImplemented]
 		public void ResetCounters()
 		{
+			Frame = 0;
 		}
 
 		const int screenwidth = 480;
@@ -147,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		{			
 			samples = audiobuffer;
 			nsamp = nsampavail;
+			//nsamp = 735;
 		}
 		public void DiscardSamples()
 		{
