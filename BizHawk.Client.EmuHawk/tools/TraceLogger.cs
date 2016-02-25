@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -71,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TraceLogger_Load(object sender, EventArgs e)
 		{
 			ClearList();
+			OpenLogFile.Enabled = false;
 			Tracer.Enabled = LoggingEnabled.Checked = false;
 			SetTracerBoxTitle();
 		}
@@ -280,6 +282,7 @@ namespace BizHawk.Client.EmuHawk
 			if (LoggingEnabled.Checked && _logFile != null)
 			{
 				StartLogFile(_logFile);
+				OpenLogFile.Enabled = true;
 			}
 		}
 
@@ -341,6 +344,14 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearList();
+		}
+
+		private void OpenLogFile_Click(object sender, EventArgs e)
+		{
+			if (_logFile != null)
+			{
+				Process.Start(_logFile.FullName);
+			}
 		}
 	}
 }

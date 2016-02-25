@@ -34,6 +34,10 @@
 			this.TraceView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Disasm = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Registers = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.TraceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.CopyContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.SelectAllContextMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new MenuStripEx();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.FileSubMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,19 +51,16 @@
 			this.OptionsSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.MaxLinesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.OpenLogFile = new System.Windows.Forms.Button();
 			this.BrowseBox = new System.Windows.Forms.Button();
 			this.FileBox = new System.Windows.Forms.TextBox();
 			this.ToFileRadio = new System.Windows.Forms.RadioButton();
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
-			this.TraceContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.CopyContextMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.SelectAllContextMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.ClearContextMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
+			this.TraceContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
-			this.TraceContextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// TracerBox
@@ -110,6 +111,38 @@
 			// 
 			this.Registers.Text = "Registers";
 			this.Registers.Width = 357;
+			// 
+			// TraceContextMenu
+			// 
+			this.TraceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyContextMenu,
+            this.SelectAllContextMenu,
+            this.ClearContextMenu});
+			this.TraceContextMenu.Name = "TraceContextMenu";
+			this.TraceContextMenu.Size = new System.Drawing.Size(165, 70);
+			// 
+			// CopyContextMenu
+			// 
+			this.CopyContextMenu.Name = "CopyContextMenu";
+			this.CopyContextMenu.ShortcutKeyDisplayString = "Ctrl+C";
+			this.CopyContextMenu.Size = new System.Drawing.Size(164, 22);
+			this.CopyContextMenu.Text = "&Copy";
+			this.CopyContextMenu.Click += new System.EventHandler(this.CopyMenuItem_Click);
+			// 
+			// SelectAllContextMenu
+			// 
+			this.SelectAllContextMenu.Name = "SelectAllContextMenu";
+			this.SelectAllContextMenu.ShortcutKeyDisplayString = "Ctrl+A";
+			this.SelectAllContextMenu.Size = new System.Drawing.Size(164, 22);
+			this.SelectAllContextMenu.Text = "Select &All";
+			this.SelectAllContextMenu.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
+			// 
+			// ClearContextMenu
+			// 
+			this.ClearContextMenu.Name = "ClearContextMenu";
+			this.ClearContextMenu.Size = new System.Drawing.Size(164, 22);
+			this.ClearContextMenu.Text = "Clear";
+			this.ClearContextMenu.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
 			// menuStrip1
 			// 
@@ -215,6 +248,7 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.OpenLogFile);
 			this.groupBox2.Controls.Add(this.BrowseBox);
 			this.groupBox2.Controls.Add(this.FileBox);
 			this.groupBox2.Controls.Add(this.ToFileRadio);
@@ -226,6 +260,17 @@
 			this.groupBox2.TabIndex = 3;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Control";
+			// 
+			// OpenLogFile
+			// 
+			this.OpenLogFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.OpenLogFile.Location = new System.Drawing.Point(551, 18);
+			this.OpenLogFile.Name = "OpenLogFile";
+			this.OpenLogFile.Size = new System.Drawing.Size(60, 23);
+			this.OpenLogFile.TabIndex = 21;
+			this.OpenLogFile.Text = "&Open";
+			this.OpenLogFile.UseVisualStyleBackColor = true;
+			this.OpenLogFile.Click += new System.EventHandler(this.OpenLogFile_Click);
 			// 
 			// BrowseBox
 			// 
@@ -286,38 +331,6 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
-			// TraceContextMenu
-			// 
-			this.TraceContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CopyContextMenu,
-            this.SelectAllContextMenu,
-            this.ClearContextMenu});
-			this.TraceContextMenu.Name = "TraceContextMenu";
-			this.TraceContextMenu.Size = new System.Drawing.Size(165, 92);
-			// 
-			// CopyContextMenu
-			// 
-			this.CopyContextMenu.Name = "CopyContextMenu";
-			this.CopyContextMenu.ShortcutKeyDisplayString = "Ctrl+C";
-			this.CopyContextMenu.Size = new System.Drawing.Size(164, 22);
-			this.CopyContextMenu.Text = "&Copy";
-			this.CopyContextMenu.Click += new System.EventHandler(this.CopyMenuItem_Click);
-			// 
-			// SelectAllContextMenu
-			// 
-			this.SelectAllContextMenu.Name = "SelectAllContextMenu";
-			this.SelectAllContextMenu.ShortcutKeyDisplayString = "Ctrl+A";
-			this.SelectAllContextMenu.Size = new System.Drawing.Size(164, 22);
-			this.SelectAllContextMenu.Text = "Select &All";
-			this.SelectAllContextMenu.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
-			// 
-			// ClearContextMenu
-			// 
-			this.ClearContextMenu.Name = "ClearContextMenu";
-			this.ClearContextMenu.Size = new System.Drawing.Size(164, 22);
-			this.ClearContextMenu.Text = "Clear";
-			this.ClearContextMenu.Click += new System.EventHandler(this.ClearMenuItem_Click);
-			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -335,11 +348,11 @@
 			this.Text = "Trace Logger";
 			this.Load += new System.EventHandler(this.TraceLogger_Load);
 			this.TracerBox.ResumeLayout(false);
+			this.TraceContextMenu.ResumeLayout(false);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
-			this.TraceContextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -373,5 +386,6 @@
 		private System.Windows.Forms.ToolStripMenuItem CopyContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ClearContextMenu;
+		private System.Windows.Forms.Button OpenLogFile;
 	}
 }
