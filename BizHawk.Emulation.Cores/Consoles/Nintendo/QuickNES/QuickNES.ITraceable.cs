@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			});
 		}
 
-		private const string TraceHeader = "PC: OP SP_A_P_X_Y ";
+		private const string TraceHeader = "6502: PC, opcode, registers (SP, A, P, X, Y)";
 
 		private void ConnectTracer()
 		{

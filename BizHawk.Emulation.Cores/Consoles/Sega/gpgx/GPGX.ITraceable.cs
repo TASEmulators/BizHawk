@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public GPGXTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
 				: base(debuggableCore, memoryDomains, disassembler)
 			{
-				Header = "M68K Instructions";
+				Header = "M68K: PC, machine code, mnemonic, arguments, registers (D0-D7, A0-A7, SR, USP, status flags)";
 			}
 
 			public override void TraceFromCallback()
