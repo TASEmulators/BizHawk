@@ -19,6 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		public GenericDebugger ParentDebugger { get; set; }
 
 		private bool _supressChangeEvents = false;
+		private bool _canGetCpuRegisters = false;
+		private bool _canSetCpuRegisters = false;
 
 		public RegisterBoxControl()
 		{
@@ -36,11 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			if (this.Enabled)
 			{
 				var registers = Core.GetCpuFlagsAndRegisters();
-				
-
 				_supressChangeEvents = true;
-
-				var canSetCpuRegisters = CanSetCpuRegisters;
 
 				foreach (var register in registers)
 				{
@@ -61,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 							});
 					}
 
-					if (canSetCpuRegisters)
+					if (_canSetCpuRegisters)
 					{
 
 						Controls
@@ -133,10 +131,11 @@ namespace BizHawk.Client.EmuHawk
 		public void GenerateUI()
 		{
 			this.Controls.Clear();
-			var canget = CanGetCpuRegisters;
-			var canset = CanSetCpuRegisters;
 
-			if (!canget && !canset)
+			_canGetCpuRegisters = CanGetCpuRegisters;
+			_canSetCpuRegisters = CanSetCpuRegisters;
+
+			if (!_canGetCpuRegisters && !_canSetCpuRegisters)
 			{
 				ParentDebugger.DisableRegisterBox();
 				this.Enabled = false;
@@ -162,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 					Size = new Size(UIHelper.ScaleX(width + 5), UIHelper.ScaleY(15))
 				});
 
-				if (canset)
+				if (_canSetCpuRegisters)
 				{
 					var t = new TextBox
 					{
@@ -209,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 					});
 				}
 
-				y += UIHelper.ScaleY(this.Font.Height + (canset ? 10 : 4));
+				y += UIHelper.ScaleY(this.Font.Height + (_canSetCpuRegisters ? 10 : 4));
 			}
 
 			var flags = registers.Where(r => r.Value.BitSize == 1);
@@ -236,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(UIHelper.ScaleX(40), y),
 						Dock = DockStyle.Left,
 						Size = new Size(UIHelper.ScaleX(23), UIHelper.ScaleY(23)),
-						Enabled = canset
+						Enabled = _canSetCpuRegisters
 					};
 
 					c.CheckedChanged += (o, e) =>
