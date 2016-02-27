@@ -47,6 +47,7 @@
 extern int cinterface_render_bga;
 extern int cinterface_render_bgb;
 extern int cinterface_render_bgw;
+extern int cinterface_render_obj;
 
 /*** NTSC Filters ***/
 extern md_ntsc_t *md_ntsc;
@@ -415,6 +416,7 @@ INLINE void WRITE_LONG(void *address, uint32 data)
 #endif /* ALT_RENDERER */
 
 #define DRAW_SPRITE_TILE(WIDTH,ATTR,TABLE)  \
+  if (!cinterface_render_obj) return; \
   for (i=0;i<WIDTH;i++) \
   { \
     temp = *src++; \
@@ -427,6 +429,7 @@ INLINE void WRITE_LONG(void *address, uint32 data)
   }
 
 #define DRAW_SPRITE_TILE_ACCURATE(WIDTH,ATTR,TABLE)  \
+  if (!cinterface_render_obj) return; \
   for (i=0;i<WIDTH;i++) \
   { \
     temp = *src++; \
@@ -1534,30 +1537,30 @@ void render_bg_m5(int line)
   uint32 *nt;
   if (cinterface_render_bgb)
   {
-  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-  /* Pattern row index */
-  v_line = (v_line & 7) << 3;
-
-  if(shift)
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x10 + shift];
-
-    atbuf = nt[(index - 1) & pf_col_mask];
-    DRAW_COLUMN(atbuf, v_line)
-  }
-  else
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x20];
-  }
-
-  for(column = 0; column < end; column++, index++)
-  {
-    atbuf = nt[index & pf_col_mask];
-    DRAW_COLUMN(atbuf, v_line)
-  }
+    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+    /* Pattern row index */
+    v_line = (v_line & 7) << 3;
+    
+    if(shift)
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x10 + shift];
+    
+      atbuf = nt[(index - 1) & pf_col_mask];
+      DRAW_COLUMN(atbuf, v_line)
+    }
+    else
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x20];
+    }
+    
+    for(column = 0; column < end; column++, index++)
+    {
+      atbuf = nt[index & pf_col_mask];
+      DRAW_COLUMN(atbuf, v_line)
+    }
   }
   else
   {

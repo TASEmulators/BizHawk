@@ -37,6 +37,7 @@ static int nsamples;
 int cinterface_render_bga = 1;
 int cinterface_render_bgb = 1;
 int cinterface_render_bgw = 1;
+int cinterface_render_obj = 0;
 
 #define GPGX_EX __declspec(dllexport)
 
@@ -598,6 +599,7 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 	cinterface_render_bga = !!(mask & 1);
 	cinterface_render_bgb = !!(mask & 2);
 	cinterface_render_bgw = !!(mask & 4);
+	cinterface_render_obj = !!(mask & 8);
 }
 
 typedef struct

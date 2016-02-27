@@ -68,6 +68,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			[DeepEqualsIgnore]
 			[JsonIgnore]
+			private bool _DrawObj;
+
+			[DisplayName("Sprite Layer")]
+			[Description("True to draw sprite layer")]
+			[DefaultValue(true)]
+			public bool DrawObj { get { return _DrawObj; } set { _DrawObj = value; } }
+
+			[DeepEqualsIgnore]
+			[JsonIgnore]
 			private bool _PadScreen320;
 
 			[DisplayName("Pad screen to 320")]
@@ -125,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (DrawBGA) ret |= LibGPGX.DrawMask.BGA;
 				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
 				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
+				if (DrawObj) ret |= LibGPGX.DrawMask.Obj;
 				return ret;
 			}
 

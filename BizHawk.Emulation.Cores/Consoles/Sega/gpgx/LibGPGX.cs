@@ -333,7 +333,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			BGA = 1,
 			BGB = 2,
-			BGW = 4
+			BGW = 4,
+			Obj = 8
 		}
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
