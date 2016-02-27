@@ -2,6 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using Newtonsoft.Json;
 
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
@@ -20,9 +21,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public bool PutSettings(GPGXSettings o)
 		{
+			bool ret = GPGXSettings.NeedsReboot(_settings, o);
 			_settings = o;
 			LibGPGX.gpgx_set_draw_mask(_settings.GetDrawMask());
-			return false;
+			return ret;
 		}
 
 		public bool PutSyncSettings(GPGXSyncSettings o)
@@ -37,25 +39,75 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public class GPGXSettings
 		{
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _DrawBGA;
+
 			[DisplayName("Background Layer A")]
 			[Description("True to draw BG layer A")]
 			[DefaultValue(true)]
-			public bool DrawBGA { get; set; }
+			public bool DrawBGA { get { return _DrawBGA; } set { _DrawBGA = value; } }
+
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _DrawBGB;
 
 			[DisplayName("Background Layer B")]
 			[Description("True to draw BG layer B")]
 			[DefaultValue(true)]
-			public bool DrawBGB { get; set; }
+			public bool DrawBGB { get { return _DrawBGB; } set { _DrawBGB = value; } }
+
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _DrawBGW;
 
 			[DisplayName("Background Layer W")]
 			[Description("True to draw BG layer W")]
 			[DefaultValue(true)]
-			public bool DrawBGW { get; set; }
+			public bool DrawBGW { get { return _DrawBGW; } set { _DrawBGW = value; } }
+
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _PadScreen320;
 
 			[DisplayName("Pad screen to 320")]
 			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
 			[DefaultValue(false)]
-			public bool PadScreen320 { get; set; }
+			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
+
+			[DisplayName("Audio Filter")]
+			[DefaultValue(LibGPGX.InitSettings.FilterType.LowPass)]
+			public LibGPGX.InitSettings.FilterType Filter { get; set; }
+
+			[DisplayName("Low Pass Range")]
+			[Description("Only active when filter type is lowpass")]
+			[DefaultValue((short)-26215)]
+			public short LowPassRange { get; set; }
+
+			[DisplayName("Three band low cutoff")]
+			[Description("Only active when filter type is three band")]
+			[DefaultValue((short)880)]
+			public short LowFreq { get; set; }
+
+			[DisplayName("Three band high cutoff")]
+			[Description("Only active when filter type is three band")]
+			[DefaultValue((short)5000)]
+			public short HighFreq { get; set; }
+
+			[DisplayName("Three band low gain")]
+			[Description("Only active when filter type is three band")]
+			[DefaultValue((short)1)]
+			public short LowGain { get; set; }
+
+			[DisplayName("Three band mid gain")]
+			[Description("Only active when filter type is three band")]
+			[DefaultValue((short)1)]
+			public short MidGain { get; set; }
+
+			[DisplayName("Three band high gain")]
+			[Description("Only active when filter type is three band")]
+			[DefaultValue((short)1)]
+			public short HighGain { get; set; }
 
 			public GPGXSettings()
 			{
@@ -74,6 +126,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
 				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
 				return ret;
+			}
+
+			public static bool NeedsReboot(GPGXSettings x, GPGXSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public LibGPGX.InitSettings GetNativeSettings()
+			{
+				return new LibGPGX.InitSettings
+				{
+					Filter = Filter,
+					LowPassRange = LowPassRange,
+					LowFreq = LowFreq,
+					HighFreq = HighFreq,
+					LowGain = LowGain,
+					MidGain = MidGain,
+					HighGain = HighGain
+				};
 			}
 		}
 

@@ -483,7 +483,18 @@ GPGX_EX void gpgx_get_sram(void **area, int *size)
 	}
 }
 
-GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region)
+struct InitSettings
+{
+	uint8_t Filter;
+	int16_t LowPassRange;
+	int16_t LowFreq;
+	int16_t HighFreq;
+	int16_t LowGain;
+	int16_t MidGain;
+	int16_t HighGain;
+};
+
+GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region, struct InitSettings *settings)
 {
 	zap();
 
@@ -505,14 +516,14 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	config.fm_preamp= 100;
 	config.hq_fm = 1; /* high-quality resampling */
 	config.psgBoostNoise  = 1;
-	config.filter= 0; /* no filter */
-	config.lp_range = 0x9999; /* 0.6 in 16.16 fixed point */
-	config.low_freq = 880;
-	config.high_freq= 5000;
-	config.lg = 1.0;
-	config.mg = 1.0;
-	config.hg = 1.0;
-	config.dac_bits 	  = 14; /* MAX DEPTH */ 
+	config.filter = settings->Filter; //0; /* no filter */
+	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
+	config.low_freq = settings->LowFreq; //880;
+	config.high_freq = settings->HighFreq; //5000;
+	config.lg = settings->LowGain; //1.0;
+	config.mg = settings->MidGain; //1.0;
+	config.hg = settings->HighGain; //1.0;
+	config.dac_bits = 14; /* MAX DEPTH */ 
 	config.ym2413= 2; /* AUTO */
 	config.mono  = 0; /* STEREO output */
 
@@ -520,17 +531,17 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	config.system = 0; /* AUTO */
 	config.region_detect = region; // see loadrom.c
 	config.vdp_mode = 0; /* AUTO */
-	config.master_clock= 0; /* AUTO */
+	config.master_clock = 0; /* AUTO */
 	config.force_dtack = 0;
-	config.addr_error  = 1;
+	config.addr_error = 1;
 	config.bios = 0;
 	config.lock_on = 0;
 
 	/* video options */
 	config.overscan = 0;
 	config.gg_extra = 0;
-	config.ntsc  = 0;
-	config.render= 0;
+	config.ntsc = 0;
+	config.render = 0;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE

@@ -65,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			try
 			{
 				_syncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
+				_settings = (GPGXSettings)Settings ?? new GPGXSettings();
 
 				CoreComm = comm;
 				if (AttachedCore != null)
@@ -118,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, this._syncSettings.UseSixButton, system_a, system_b, this._syncSettings.Region))
+				if (!LibGPGX.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _settings.GetNativeSettings()))
 					throw new Exception("gpgx_init() failed");
 
 				{
@@ -154,7 +155,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (CD != null)
 					DriveLightEnabled = true;
 
-				PutSettings((GPGXSettings)Settings ?? new GPGXSettings());
+				// process the non-init settings now
+				PutSettings(_settings);
 
 				//TODO - this hits performance, we need to make it controllable
 				CDCallback = new LibGPGX.CDCallback(CDCallbackProc);
