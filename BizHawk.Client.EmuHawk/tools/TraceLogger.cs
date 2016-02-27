@@ -20,6 +20,19 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		private int MaxLines { get; set; }
 
+		[ConfigPersist]
+		private int DisasmColumnWidth { 
+			get { return this.Disasm.Width; }
+			set { this.Disasm.Width = value; }
+		}
+
+		[ConfigPersist]
+		private int RegistersColumnWidth
+		{
+			get { return this.Registers.Width; }
+			set { this.Registers.Width = value; }
+		}
+
 		private readonly List<TraceInfo> _instructions = new List<TraceInfo>();
 		
 		private FileInfo _logFile;
