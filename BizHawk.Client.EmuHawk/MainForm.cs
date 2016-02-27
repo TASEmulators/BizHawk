@@ -3801,7 +3801,14 @@ namespace BizHawk.Client.EmuHawk
 					backupFile.Delete();
 				}
 
-				File.Move(path, backup);
+				try
+				{
+					File.Move(path, backup);
+				}
+				catch
+				{
+					// Eat it, this will happen rarely and the user will rarely need the file, so the odds of simply not making the backup is very unlikely
+				}
 			}
 
 			SaveState(path, quickSlotName, false);
