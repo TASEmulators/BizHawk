@@ -32,14 +32,15 @@
 			this.MultiDiskMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.SaveRunButton = new System.Windows.Forms.Button();
 			this.CancelBtn = new System.Windows.Forms.Button();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.grpName = new System.Windows.Forms.GroupBox();
 			this.BrowseBtn = new System.Windows.Forms.Button();
 			this.NameBox = new System.Windows.Forms.TextBox();
 			this.FileSelectorPanel = new System.Windows.Forms.Panel();
 			this.AddButton = new System.Windows.Forms.Button();
 			this.SystemDropDown = new System.Windows.Forms.ComboBox();
 			this.SystemLabel = new System.Windows.Forms.Label();
-			this.groupBox3.SuspendLayout();
+			this.btnRemove = new System.Windows.Forms.Button();
+			this.grpName.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// MultiDiskMenuStrip
@@ -74,18 +75,18 @@
 			this.CancelBtn.UseVisualStyleBackColor = true;
 			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
-			// groupBox3
+			// grpName
 			// 
-			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.grpName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox3.Controls.Add(this.BrowseBtn);
-			this.groupBox3.Controls.Add(this.NameBox);
-			this.groupBox3.Location = new System.Drawing.Point(8, 28);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(486, 45);
-			this.groupBox3.TabIndex = 11;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Name";
+			this.grpName.Controls.Add(this.BrowseBtn);
+			this.grpName.Controls.Add(this.NameBox);
+			this.grpName.Location = new System.Drawing.Point(8, 28);
+			this.grpName.Name = "grpName";
+			this.grpName.Size = new System.Drawing.Size(486, 45);
+			this.grpName.TabIndex = 11;
+			this.grpName.TabStop = false;
+			this.grpName.Text = "Name";
 			// 
 			// BrowseBtn
 			// 
@@ -156,16 +157,28 @@
 			this.SystemLabel.TabIndex = 15;
 			this.SystemLabel.Text = "System:";
 			// 
+			// btnRemove
+			// 
+			this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.btnRemove.Location = new System.Drawing.Point(74, 329);
+			this.btnRemove.Name = "btnRemove";
+			this.btnRemove.Size = new System.Drawing.Size(60, 23);
+			this.btnRemove.TabIndex = 16;
+			this.btnRemove.Text = "Remove";
+			this.btnRemove.UseVisualStyleBackColor = true;
+			this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+			// 
 			// MultiDiskBundler
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(506, 364);
+			this.Controls.Add(this.btnRemove);
 			this.Controls.Add(this.SystemLabel);
 			this.Controls.Add(this.SystemDropDown);
 			this.Controls.Add(this.AddButton);
 			this.Controls.Add(this.FileSelectorPanel);
-			this.Controls.Add(this.groupBox3);
+			this.Controls.Add(this.grpName);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.SaveRunButton);
 			this.Controls.Add(this.MultiDiskMenuStrip);
@@ -175,8 +188,8 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Multi-disk Bundler";
 			this.Load += new System.EventHandler(this.MultiGameCreator_Load);
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
+			this.grpName.ResumeLayout(false);
+			this.grpName.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -187,12 +200,13 @@
 		private System.Windows.Forms.MenuStrip MultiDiskMenuStrip;
 		private System.Windows.Forms.Button SaveRunButton;
 		private System.Windows.Forms.Button CancelBtn;
-		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox grpName;
 		private System.Windows.Forms.TextBox NameBox;
 		private System.Windows.Forms.Panel FileSelectorPanel;
 		private System.Windows.Forms.Button AddButton;
 		private System.Windows.Forms.Button BrowseBtn;
 		private System.Windows.Forms.ComboBox SystemDropDown;
 		private System.Windows.Forms.Label SystemLabel;
+		private System.Windows.Forms.Button btnRemove;
 	}
 }
