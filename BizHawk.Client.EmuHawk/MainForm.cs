@@ -3801,11 +3801,6 @@ namespace BizHawk.Client.EmuHawk
 					backupFile.Delete();
 				}
 
-				//deletes are asynchronous, need to wait for it to be gone
-				//TODO - make a common utility method to replace a backup including this whole process
-				while (backupFile.Exists)
-					Thread.Sleep(10);
-
 				File.Move(path, backup);
 			}
 
