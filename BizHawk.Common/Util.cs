@@ -24,6 +24,51 @@ namespace BizHawk.Common
 			}
 		}
 
+		/// <summary>
+		/// Tries to moves `pathWant` out of the way to `pathBackup`, delaying as needed to accomodate filesystem being sucky.
+		/// `pathWant` might not be removed after all, in case it's snagged by something.
+		/// </summary>
+		public static bool TryMoveBackupFile(string pathWant, string pathBackup)
+		{
+			//If the path we want is available we dont actually have to make a backup
+			if (!File.Exists(pathWant))
+				return true;
+
+			//delete any existing backup
+			try
+			{
+				if (File.Exists(pathBackup))
+					File.Delete(pathBackup);
+			}
+			catch
+			{
+				//just give up on the whole thing in case of exceptions. pathWant will get overwritten by the caller.
+				return false;
+			}
+
+			//deletes are asynchronous, need to wait for it to be gone
+			while (File.Exists(pathBackup))
+				System.Threading.Thread.Sleep(10);
+
+			try
+			{
+				//actually move pathWant out of the way to pathBackup now that pathBackup is free
+				File.Move(pathWant, pathBackup);
+			}
+			catch
+			{
+				// Eat it, this will happen rarely and the user will rarely need the file, so the odds of simply not making the backup is very unlikely
+				return false;
+			}
+
+			//hmm these might be asynchronous too
+			//wait for the move to complete, at least enough for pathWant to be cleared up
+			while (File.Exists(pathWant))
+				System.Threading.Thread.Sleep(10);
+
+			return true;
+		}
+
 		public static bool IsPowerOfTwo(int x)
 		{
 			if (x == 0 || x == 1)

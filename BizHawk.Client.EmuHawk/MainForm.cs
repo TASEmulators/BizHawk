@@ -3790,26 +3790,9 @@ namespace BizHawk.Client.EmuHawk
 				file.Directory.Create();
 			}
 
-
 			// Make backup first
-			if (Global.Config.BackupSavestates && file.Exists)
-			{
-				var backup = path + ".bak";
-				var backupFile = new FileInfo(backup);
-				if (backupFile.Exists)
-				{
-					backupFile.Delete();
-				}
-
-				try
-				{
-					File.Move(path, backup);
-				}
-				catch
-				{
-					// Eat it, this will happen rarely and the user will rarely need the file, so the odds of simply not making the backup is very unlikely
-				}
-			}
+			if (Global.Config.BackupSavestates)
+				BizHawk.Common.Util.TryMoveBackupFile(path, path + ".bak");
 
 			SaveState(path, quickSlotName, false);
 
