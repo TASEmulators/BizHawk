@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				ThreeBand = 2
 			}
 			public FilterType Filter;
-			public short LowPassRange;
+			public ushort LowPassRange;
 			public short LowFreq;
 			public short HighFreq;
 			public short LowGain;

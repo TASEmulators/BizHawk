@@ -486,7 +486,7 @@ GPGX_EX void gpgx_get_sram(void **area, int *size)
 struct InitSettings
 {
 	uint8_t Filter;
-	int16_t LowPassRange;
+	uint16_t LowPassRange;
 	int16_t LowFreq;
 	int16_t HighFreq;
 	int16_t LowGain;

@@ -81,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			[DisplayName("Low Pass Range")]
 			[Description("Only active when filter type is lowpass")]
-			[DefaultValue((short)-26215)]
-			public short LowPassRange { get; set; }
+			[DefaultValue((ushort)39321)]
+			public ushort LowPassRange { get; set; }
 
 			[DisplayName("Three band low cutoff")]
 			[Description("Only active when filter type is three band")]
