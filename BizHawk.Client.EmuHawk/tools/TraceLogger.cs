@@ -324,7 +324,7 @@ namespace BizHawk.Client.EmuHawk
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
 				var name = PathManager.FilesystemSafeName(Global.Game);
-				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null), name) + ".txt";
+				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null), name) + ".log";
 				_logFile = new FileInfo(filename);
 				if (_logFile.Directory != null && !_logFile.Directory.Exists)
 				{
@@ -339,6 +339,12 @@ namespace BizHawk.Client.EmuHawk
 				using (_logFile.Create()) { }
 
 				FileBox.Text = _logFile.FullName;
+
+				if (LoggingEnabled.Checked && _logFile != null)
+				{
+					StartLogFile(_logFile);
+					OpenLogFile.Enabled = true;
+				}
 			}
 			else
 			{
