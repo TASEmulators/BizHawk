@@ -255,6 +255,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.GetService<ICodeDataLogger>();
 		}
 
+		public static ILinkable AsLinkable(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ILinkable>();
+		}
+
+		public static bool UsesLinkCable(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ILinkable>();
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{

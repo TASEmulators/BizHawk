@@ -2503,14 +2503,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (Global.Emulator.CoreComm.UsesLinkCable)
+				if (Global.Emulator.UsesLinkCable())
 				{
 					if (!LinkConnectStatusBarButton.Visible)
 					{
 						LinkConnectStatusBarButton.Visible = true;
 					}
 
-					LinkConnectStatusBarButton.Image = Global.Emulator.CoreComm.LinkConnected
+					LinkConnectStatusBarButton.Image = Global.Emulator.AsLinkable().LinkConnected
 						? LinkCableOn
 						: LinkCableOff;
 				}
