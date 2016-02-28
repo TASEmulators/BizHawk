@@ -1,10 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 using Jellyfish.Virtu;
-using Jellyfish.Virtu.Services;
-using System;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
@@ -33,7 +31,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			ServiceProvider = ser;
 			CoreComm = comm;
 
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer
+			{
+				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy) flags (NVTBDIZC)"
+			};
+
 			MemoryCallbacks = new MemoryCallbackSystem();
 			InputCallbacks = new InputCallbackSystem();
 
