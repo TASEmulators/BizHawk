@@ -34,6 +34,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			_lagged = true;
 
+			Cpu.Debug = Tracer.Enabled;
+
+			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+				Cpu.Logger = (s) => Tracer.Put(s);
+
 			//I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
