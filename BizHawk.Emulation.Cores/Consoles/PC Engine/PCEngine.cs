@@ -99,7 +99,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
-			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			DriveLightEnabled = true;
 			systemid = "PCECD";
@@ -299,7 +298,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);

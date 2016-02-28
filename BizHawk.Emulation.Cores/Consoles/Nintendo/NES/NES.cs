@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			
 			ser.Register<IDisassemblable>(cpu);
 
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			

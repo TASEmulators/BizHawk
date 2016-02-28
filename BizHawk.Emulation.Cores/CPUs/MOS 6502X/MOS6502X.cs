@@ -41,6 +41,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagI = true;
 		}
 
+		public string TraceHeader
+		{
+			get { return "6502: PC, opcode, registers (SP, A, P, X, Y) flags (NVTBDIZCR)"; }
+		}
+
 		public TraceInfo State(bool disassemble = true)
 		{
 			int notused;

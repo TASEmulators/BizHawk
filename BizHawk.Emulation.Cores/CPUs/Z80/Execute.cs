@@ -11952,7 +11952,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 		public string TraceHeader
 		{
-			get { return "Z80: PC, opcode, registers (AF, BC, DE, HL, IX, IY, SP, Cy Flags (CNP3H5ZS)"; }
+			get { return "Z80: PC, opcode, registers (AF, BC, DE, HL, IX, IY, SP, Cy) Flags (CNP3H5ZS)"; }
 		}
 
 		public TraceInfo State()
