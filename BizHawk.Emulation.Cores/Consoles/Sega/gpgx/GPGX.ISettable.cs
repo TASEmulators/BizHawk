@@ -118,6 +118,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue((short)1)]
 			public short HighGain { get; set; }
 
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _Backdrop;
+
+			[DisplayName("Use custom backdrop color")]
+			[Description("Filler when layers are off")]
+			[DefaultValue((bool)false)]
+			public bool Backdrop { get { return _Backdrop; } set { _Backdrop = value; } }
+
+			[DisplayName("Custom backdrop color")]
+			[Description("Magic pink (0xffff00ff) by default")]
+			[DefaultValue((uint)0xffff00ff)]
+			public uint BackdropColor { get; set; }
+
 			public GPGXSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
@@ -135,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
 				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
 				if (DrawObj) ret |= LibGPGX.DrawMask.Obj;
+				if (Backdrop) ret |= LibGPGX.DrawMask.Backdrop;
 				return ret;
 			}
 
@@ -153,7 +168,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					HighFreq = HighFreq,
 					LowGain = LowGain,
 					MidGain = MidGain,
-					HighGain = HighGain
+					HighGain = HighGain,
+					BackdropColor = BackdropColor
 				};
 			}
 		}

@@ -37,7 +37,10 @@ static int nsamples;
 int cinterface_render_bga = 1;
 int cinterface_render_bgb = 1;
 int cinterface_render_bgw = 1;
-int cinterface_render_obj = 0;
+int cinterface_render_obj = 1;
+uint8 cinterface_custom_backdrop = 0;
+uint32 cinterface_custom_backdrop_color = 0xffff00ff; // pink
+extern uint8 border;
 
 #define GPGX_EX __declspec(dllexport)
 
@@ -493,6 +496,7 @@ struct InitSettings
 	int16_t LowGain;
 	int16_t MidGain;
 	int16_t HighGain;
+	uint32_t BackdropColor;
 };
 
 GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region, struct InitSettings *settings)
@@ -553,6 +557,8 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	input.system[0] = system_a;
 	input.system[1] = system_b;
 
+	cinterface_custom_backdrop_color = settings->BackdropColor;
+
 	// apparently, the only part of config.input used is the padtype identifier,
 	// and that's used only for choosing pad type when system_md
 	{
@@ -600,6 +606,11 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 	cinterface_render_bgb = !!(mask & 2);
 	cinterface_render_bgw = !!(mask & 4);
 	cinterface_render_obj = !!(mask & 8);
+	cinterface_custom_backdrop = !!(mask & 16);
+	if (cinterface_custom_backdrop)
+		color_update_m5(0, 0);
+	else
+		color_update_m5(0x00, *(uint16 *)&cram[border << 1]);
 }
 
 typedef struct

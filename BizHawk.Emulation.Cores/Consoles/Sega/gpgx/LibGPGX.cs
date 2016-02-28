@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public short LowGain;
 			public short MidGain;
 			public short HighGain;
+			public uint BackdropColor;
 		}
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -334,7 +335,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			BGA = 1,
 			BGB = 2,
 			BGW = 4,
-			Obj = 8
+			Obj = 8,
+			Backdrop = 16
 		}
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]

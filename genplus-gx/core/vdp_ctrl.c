@@ -125,7 +125,7 @@ static const uint8 shift_table[]        = { 6, 7, 0, 8 };
 static const uint8 col_mask_table[]     = { 0x0F, 0x1F, 0x0F, 0x3F };
 static const uint16 row_mask_table[]    = { 0x0FF, 0x1FF, 0x2FF, 0x3FF };
 
-static uint8 border;          /* Border color index */
+uint8 border;          /* Border color index */
 static uint8 pending;         /* Pending write flag */
 static uint8 code;            /* Code register */
 static uint8 dma_type;        /* DMA mode */
