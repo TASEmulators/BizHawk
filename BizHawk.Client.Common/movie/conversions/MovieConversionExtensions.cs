@@ -6,6 +6,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
 {
@@ -315,6 +316,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsSG1000)
 			{
 				movie.HeaderEntries.Add("IsSGMode", "1");
+			}
+
+			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsSegaCD)
+			{
+				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
 			movie.Core = ((CoreAttributes)Attribute
