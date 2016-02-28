@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 
-using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
-
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
@@ -32,68 +28,39 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>, ICodeDataLogger
 	{
 		// Constants
-		public const int BankSize = 16384;
+		private const int BankSize = 16384;
 
 		// ROM
-		public byte[] RomData;
-		public byte RomBank0, RomBank1, RomBank2, RomBank3;
-		public byte RomBanks;
-
-		// SaveRAM
-		public byte[] SaveRAM;
-		public byte SaveRamBank;
-
-		public byte[] BiosRom;
-
-		public byte[] CloneSaveRam()
-		{
-			if (SaveRAM != null)
-				return (byte[])SaveRAM.Clone();
-			else
-				return null;
-		}
-		public void StoreSaveRam(byte[] data)
-		{
-			if (SaveRAM != null)
-				Array.Copy(data, SaveRAM, data.Length);
-		}
-
-		public bool SaveRamModified { get; private set; }
+		private byte[] RomData;
+		private byte RomBank0, RomBank1, RomBank2, RomBank3;
+		private byte RomBanks;
+		private byte[] BiosRom;
 
 		// Machine resources
-		public Z80A Cpu;
-		public byte[] SystemRam;
+		private Z80A Cpu;
+		private byte[] SystemRam;
 		public VDP Vdp;
-		public SN76489 PSG;
-		public YM2413 YM2413;
-		public SoundMixer SoundMixer;
-		public bool IsGameGear = false;
-		public bool IsSG1000 = false;
+		private SN76489 PSG;
+		private YM2413 YM2413;
+		private SoundMixer SoundMixer;
+		public bool IsGameGear { get; set; }
+		public bool IsSG1000 { get; set; }
 
-		public bool HasYM2413 = false;
+		private bool HasYM2413 = false;
 
-		int frame = 0;
-		int lagCount = 0;
-		bool lagged = true;
-		bool isLag = false;
+		private int frame = 0;
+		
 		public int Frame { get { return frame; } set { frame = value; } }
-		public int LagCount { get { return lagCount; } set { lagCount = value; } }
-		public bool IsLagFrame { get { return isLag; } set { isLag = value; } }
 
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		private byte Port01 = 0xFF;
+		private byte Port02 = 0xFF;
+		private byte Port3E = 0xAF;
+		private byte Port3F = 0xFF;
 
-		byte Port01 = 0xFF;
-		byte Port02 = 0xFF;
-		byte Port3E = 0xAF;
-		byte Port3F = 0xFF;
-
-		byte ForceStereoByte = 0xAD;
-		bool IsGame3D = false;
+		private byte ForceStereoByte = 0xAD;
+		private bool IsGame3D = false;
 
 		public DisplayType Region { get; set; }
-		public bool DeterministicEmulation { get { return true; } }
 
 		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -217,15 +184,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			//this manages the linkage between the cpu and mapper callbacks so it needs running before bootup is complete
 			((ICodeDataLogger)this).SetCDL(null);
 
+			InputCallbacks = new InputCallbackSystem();
+
 			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
-			
 		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private ITraceable Tracer { get; set; }
 
@@ -246,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return "Japan";
 		}
 
-		DisplayType DetermineDisplayType(string display, string region)
+		private DisplayType DetermineDisplayType(string display, string region)
 		{
 			if (display == "NTSC") return DisplayType.NTSC;
 			if (display == "PAL") return DisplayType.PAL;
@@ -254,32 +220,25 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return DisplayType.NTSC;
 		}
 
-		public void ResetCounters()
-		{
-			Frame = 0;
-			lagCount = 0;
-			isLag = false;
-		}
-
 		/// <summary>
 		/// The ReadMemory callback for the mapper
 		/// </summary>
-		Func<ushort, byte> ReadMemory;
+		private Func<ushort, byte> ReadMemory;
 
 		/// <summary>
 		/// The WriteMemory callback for the wrapper
 		/// </summary>
-		Action<ushort, byte> WriteMemory;
+		private Action<ushort, byte> WriteMemory;
 
 		/// <summary>
 		/// A dummy FetchMemory that simply reads the memory
 		/// </summary>
-		public byte FetchMemory_StubThunk(ushort address, bool first)
+		private byte FetchMemory_StubThunk(ushort address, bool first)
 		{
 			return ReadMemory(address);
 		}
 
-		public byte ReadPort(ushort port)
+		private byte ReadPort(ushort port)
 		{
 			port &= 0xFF;
 			if (port < 0x40) // General IO ports
@@ -322,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public void WritePort(ushort port, byte value)
+		private void WritePort(ushort port, byte value)
 		{
 			port &= 0xFF;
 			if (port < 0x40) // general IO ports
@@ -350,357 +309,23 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		private ISoundProvider ActiveSoundProvider;
+
+		private string _region;
+		private string RegionStr
 		{
-			lagged = true;
-			Frame++;
-			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-			Cpu.Debug = Tracer.Enabled;
-			if (!IsGameGear)
-				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte) 0xFF;
-
-			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-				Cpu.Logger = (s) => Tracer.Put(s);
-
-			if (IsGameGear == false)
-				Cpu.NonMaskableInterrupt = Controller["Pause"];
-
-			if (IsGame3D && Settings.Fix3D)
-				Vdp.ExecFrame((Frame & 1) == 0);
-			else 
-				Vdp.ExecFrame(render);
-
-			PSG.EndFrame(Cpu.TotalExecutedCycles);
-			if (lagged)
-			{
-				lagCount++;
-				isLag = true;
-			}
-			else
-				isLag = false;
-		}
-
-		public bool BinarySaveStatesPreferred { get { return false; } }
-		public void SaveStateBinary(BinaryWriter bw) { SyncState(Serializer.CreateBinaryWriter(bw)); }
-		public void LoadStateBinary(BinaryReader br) { SyncState(Serializer.CreateBinaryReader(br)); }
-		public void SaveStateText(TextWriter tw) { SyncState(Serializer.CreateTextWriter(tw)); }
-		public void LoadStateText(TextReader tr) { SyncState(Serializer.CreateTextReader(tr)); }
-		
-		void SyncState(Serializer ser)
-		{
-			ser.BeginSection("SMS");
-			Cpu.SyncState(ser);
-			Vdp.SyncState(ser);
-			PSG.SyncState(ser);
-			ser.Sync("RAM", ref SystemRam, false);
-			ser.Sync("RomBank0", ref RomBank0);
-			ser.Sync("RomBank1", ref RomBank1);
-			ser.Sync("RomBank2", ref RomBank2);
-			ser.Sync("RomBank3", ref RomBank3);
-			ser.Sync("Port01", ref Port01);
-			ser.Sync("Port02", ref Port02);
-			ser.Sync("Port3E", ref Port3E);
-			ser.Sync("Port3F", ref Port3F);
-
-			if (SaveRAM != null)
-			{
-				ser.Sync("SaveRAM", ref SaveRAM, false);
-				ser.Sync("SaveRamBank", ref SaveRamBank);
-			}
-			if (ExtRam != null)
-				ser.Sync("ExtRAM", ref ExtRam, true);
-			if (HasYM2413)
-				YM2413.SyncState(ser);
-
-			ser.Sync("Frame", ref frame);
-			ser.Sync("LagCount", ref lagCount);
-			ser.Sync("IsLag", ref isLag);
-
-			ser.EndSection();
-		}
-
-		byte[] stateBuffer;
-		public byte[] SaveStateBinary()
-		{
-			if (stateBuffer == null)
-			{
-				var stream = new MemoryStream();
-				var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				stateBuffer = stream.ToArray();
-				writer.Close();
-				return stateBuffer;
-			}
-			else
-			{
-				var stream = new MemoryStream(stateBuffer);
-				var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				writer.Close();
-				return stateBuffer;
-			}
-		}
-
-		public CoreComm CoreComm { get; private set; }
-
-		ISoundProvider ActiveSoundProvider;
-		public ISoundProvider SoundProvider { get { return ActiveSoundProvider; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(ActiveSoundProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
-
-		public string SystemId { get { return "SMS"; } }
-
-		public string BoardName { get { return null; } }
-
-		string region;
-		public string RegionStr
-		{
-			get { return region; }
+			get { return _region; }
 			set
 			{
 				if (value.NotIn(validRegions))
+				{
 					throw new Exception("Passed value " + value + " is not a valid region!");
-				region = value;
+				}
+
+				_region = value;
 			}
 		}
 		
-		readonly string[] validRegions = { "Export", "Japan", "Auto" };
-
-		MemoryDomainList memoryDomains;
-
-		void SetupMemoryDomains()
-		{
-			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, MemoryDomain.Endian.Little,
-				addr => SystemRam[addr],
-				(addr, value) => SystemRam[addr] = value);
-			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
-				addr => Vdp.VRAM[addr],
-				(addr, value) => Vdp.VRAM[addr] = value);
-
-			var ROMDomain = new MemoryDomain("ROM", RomData.Length, MemoryDomain.Endian.Little,
-				addr => RomData[addr],
-				(addr, value) => RomData[addr] = value);
-			
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				(addr) =>
-				{
-					if (addr < 0 || addr >= 65536)
-						throw new ArgumentOutOfRangeException();
-					return Cpu.ReadMemory((ushort)addr);
-				},
-				(addr, value) =>
-				{
-					if (addr < 0 || addr >= 65536)
-						throw new ArgumentOutOfRangeException();
-					Cpu.WriteMemory((ushort)addr, value);
-				});
-
-			domains.Add(MainMemoryDomain);
-			domains.Add(VRamDomain);
-			domains.Add(ROMDomain);
-			domains.Add(SystemBusDomain);
-
-			if (SaveRAM != null)
-			{
-				var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
-					addr => SaveRAM[addr],
-					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; });
-				domains.Add(SaveRamDomain);
-			}
-			if (ExtRam != null)
-			{
-				var ExtRamDomain = new MemoryDomain("Cart (Volatile) RAM", ExtRam.Length, MemoryDomain.Endian.Little,
-					addr => ExtRam[addr],
-					(addr, value) => { ExtRam[addr] = value; });
-				domains.Add(ExtRamDomain);
-			}
-			memoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
-		}
-
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			return new Dictionary<string, RegisterValue>
-			{
-				{ "A", Cpu.RegisterA },
-				{ "AF", Cpu.RegisterAF },
-				{ "B", Cpu.RegisterB },
-				{ "BC", Cpu.RegisterBC },
-				{ "C", Cpu.RegisterC },
-				{ "D", Cpu.RegisterD },
-				{ "DE", Cpu.RegisterDE },
-				{ "E", Cpu.RegisterE },
-				{ "F", Cpu.RegisterF },
-				{ "H", Cpu.RegisterH },
-				{ "HL", Cpu.RegisterHL },
-				{ "I", Cpu.RegisterI },
-				{ "IX", Cpu.RegisterIX },
-				{ "IY", Cpu.RegisterIY },
-				{ "L", Cpu.RegisterL },
-				{ "PC", Cpu.RegisterPC },
-				{ "R", Cpu.RegisterR },
-				{ "Shadow AF", Cpu.RegisterShadowAF },
-				{ "Shadow BC", Cpu.RegisterShadowBC },
-				{ "Shadow DE", Cpu.RegisterShadowDE },
-				{ "Shadow HL", Cpu.RegisterShadowHL },
-				{ "SP", Cpu.RegisterSP },
-				{ "Flag C", Cpu.RegisterF.Bit(0) },
-				{ "Flag N", Cpu.RegisterF.Bit(1) },
-				{ "Flag P/V", Cpu.RegisterF.Bit(2) },
-				{ "Flag 3rd", Cpu.RegisterF.Bit(3) },
-				{ "Flag H", Cpu.RegisterF.Bit(4) },
-				{ "Flag 5th", Cpu.RegisterF.Bit(5) },
-				{ "Flag Z", Cpu.RegisterF.Bit(6) },
-				{ "Flag S", Cpu.RegisterF.Bit(7) },
-			};
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			switch (register)
-			{
-				default:
-					throw new InvalidOperationException();
-				case "A":
-					Cpu.RegisterA = (byte)value;
-					break;
-				case "AF":
-					Cpu.RegisterAF = (byte)value;
-					break;
-				case "B":
-					Cpu.RegisterB = (byte)value;
-					break;
-				case "BC":
-					Cpu.RegisterBC = (byte)value;
-					break;
-				case "C":
-					Cpu.RegisterC = (byte)value;
-					break;
-				case "D":
-					Cpu.RegisterD = (byte)value;
-					break;
-				case "DE":
-					Cpu.RegisterDE = (byte)value;
-					break;
-				case "E":
-					Cpu.RegisterE = (byte)value;
-					break;
-				case "F":
-					Cpu.RegisterF = (byte)value;
-					break;
-				case "H":
-					Cpu.RegisterH = (byte)value;
-					break;
-				case "HL":
-					Cpu.RegisterHL = (byte)value;
-					break;
-				case "I":
-					Cpu.RegisterI = (byte)value;
-					break;
-				case "IX":
-					Cpu.RegisterIX = (byte)value;
-					break;
-				case "IY":
-					Cpu.RegisterIY = (byte)value;
-					break;
-				case "L":
-					Cpu.RegisterL = (byte)value;
-					break;
-				case "PC":
-					Cpu.RegisterPC = (ushort)value;
-					break;
-				case "R":
-					Cpu.RegisterR = (byte)value;
-					break;
-				case "Shadow AF":
-					Cpu.RegisterShadowAF = (byte)value;
-					break;
-				case "Shadow BC":
-					Cpu.RegisterShadowBC = (byte)value;
-					break;
-				case "Shadow DE":
-					Cpu.RegisterShadowDE = (byte)value;
-					break;
-				case "Shadow HL":
-					Cpu.RegisterShadowHL = (byte)value;
-					break;
-				case "SP":
-					Cpu.RegisterSP = (byte)value;
-					break;
-			}
-		}
-
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public void Dispose() { }
-
-		public SMSSettings GetSettings() { return Settings.Clone(); }
-		public SMSSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(SMSSettings o)
-		{
-			bool ret = SMSSettings.RebootNeeded(Settings, o);
-			Settings = o;
-			return ret;
-		}
-		public bool PutSyncSettings(SMSSyncSettings o)
-		{
-			bool ret = SMSSyncSettings.RebootNeeded(SyncSettings, o);
-			SyncSettings = o;
-			return ret;	
-		}
-
-		public SMSSettings Settings;
-		public SMSSyncSettings SyncSettings;
-
-		public class SMSSettings
-		{
-			// Game settings
-			public bool ForceStereoSeparation = false;
-			public bool SpriteLimit = false;
-			public bool Fix3D = true;
-			// GG settings
-			public bool ShowClippedRegions = false;
-			public bool HighlightActiveDisplayRegion = false;
-			// graphics settings
-			public bool DispBG = true;
-			public bool DispOBJ = true;
-
-			public SMSSettings Clone()
-			{
-				return (SMSSettings)MemberwiseClone();
-			}
-			public static bool RebootNeeded(SMSSettings x, SMSSettings y)
-			{
-				return false;
-			}
-		}
-
-		public class SMSSyncSettings
-		{
-			public bool EnableFM = true;
-			public bool AllowOverlock = false;
-			public bool UseBIOS = false;
-			public string ConsoleRegion = "Export";
-			public string DisplayType = "NTSC";
-
-			public SMSSyncSettings Clone()
-			{
-				return (SMSSyncSettings)MemberwiseClone();
-			}
-			public static bool RebootNeeded(SMSSyncSettings x, SMSSyncSettings y)
-			{
-				return
-					x.EnableFM != y.EnableFM ||
-					x.AllowOverlock != y.AllowOverlock ||
-					x.UseBIOS != y.UseBIOS ||
-					x.ConsoleRegion != y.ConsoleRegion ||
-					x.DisplayType != y.DisplayType;
-			}
-		}
+		private readonly string[] validRegions = { "Export", "Japan", "Auto" };
 	}
 }

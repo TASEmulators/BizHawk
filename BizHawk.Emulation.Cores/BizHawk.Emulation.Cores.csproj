@@ -818,7 +818,7 @@
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.ITraceable.cs">
-        <DependentUpon>GPGX.cs</DependentUpon>
+      <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IVideoProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
@@ -846,8 +846,15 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Sega\SMS\CDL_SMS.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IDebuggable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IEmulator.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IInputPollable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IMemoryDomains.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.Input.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ISaveRam.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs" />
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
