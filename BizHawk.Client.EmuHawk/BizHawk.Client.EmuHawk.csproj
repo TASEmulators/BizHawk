@@ -111,7 +111,7 @@
     </Reference>
     <Reference Include="LuaInterface, Version=2.0.4.35439, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\References\LuaInterface.dll</HintPath>
+      <HintPath>..\References\$(Platform)\LuaInterface.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
