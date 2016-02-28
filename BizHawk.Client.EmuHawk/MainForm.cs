@@ -4049,22 +4049,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void LinkConnectStatusBarButton_Click(object sender, EventArgs e)
-		{
-			// TODO: it would be cool if clicking this toggled the state
-			if (Global.Emulator.CoreComm.LinkConnected == true)
-			{
-				//Disconnect
-				//This Value:  cablediscosignal_new  Changes to False, The Core will disconnect
-
-			}
-			else if (Global.Emulator.CoreComm.LinkConnected == false)
-			{
-				//Reconnect
-
-			}
-		}
-
 		private void FeaturesMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
