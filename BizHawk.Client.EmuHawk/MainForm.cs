@@ -858,7 +858,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RebootCore()
 		{
-			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRom);
+			var ioa = OpenAdvancedSerializer.ParseWithLegacy(CurrentlyOpenRomPoopForAdvancedLoaderPleaseRefactorME);
 			if (ioa is OpenAdvanced_LibretroNoGame)
 				LoadRom("", CurrentlyOpenRomArgs);
 			else
@@ -3460,7 +3460,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					SetWindowText();
-					CurrentlyOpenRom = loaderName;
+					CurrentlyOpenRomPoopForAdvancedLoaderPleaseRefactorME = loaderName;
+					CurrentlyOpenRom = loaderName.Replace("*OpenRom*", ""); // POOP
 					HandlePlatformMenus();
 					_stateSlots.Clear();
 					UpdateCoreStatusBarButton();
@@ -3520,6 +3521,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
+		private string CurrentlyOpenRomPoopForAdvancedLoaderPleaseRefactorME = "";
 
 		private static void CommitCoreSettingsToConfig()
 		{
