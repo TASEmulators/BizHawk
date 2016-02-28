@@ -267,3 +267,4 @@
 /LuaInterface/Release-LUAPERKS
 output/BizHawk.Client.ApiHawk.dll
 output/dll/BizHawk.Client.ApiHawk.dll
+ExternalCoreProjects/Virtu/bin/*.*
