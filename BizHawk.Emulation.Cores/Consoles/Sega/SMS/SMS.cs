@@ -107,8 +107,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";
 			RomData = rom;
-			Tracer = new TraceBuffer();
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
 			if (RomData.Length % BankSize != 0)
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
 			RomBanks = (byte)(RomData.Length / BankSize);
@@ -218,7 +217,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			//this manages the linkage between the cpu and mapper callbacks so it needs running before bootup is complete
 			((ICodeDataLogger)this).SetCDL(null);
 
-			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
+			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+
+			var serviceProvider = ServiceProvider as BasicServiceProvider;
+			serviceProvider.Register<ITraceable>(Tracer);
+			serviceProvider.Register<IDisassemblable>(new Disassembler());
+			
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }

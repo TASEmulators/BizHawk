@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
@@ -13,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void MakeTrace(IntPtr data)
 		{
 			int[] s = new int[7];
-			System.Runtime.InteropServices.Marshal.Copy(data, s, 0, 7);
+			Marshal.Copy(data, s, 0, 7);
 
 			byte a = (byte)s[0];
 			byte x = (byte)s[1];

@@ -11950,6 +11950,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		// TODO, not super thrilled with the existing Z80 disassembler, lets see if we can find something decent to replace it with
 		Disassembler Disassembler = new Disassembler();
 
+		public string TraceHeader
+		{
+			get { return "Z80: PC, opcode, registers (AF, BC, DE, HL, IX, IY, SP, Cy Flags (CNP3H5ZS)"; }
+		}
+
 		public TraceInfo State()
 		{
 			ushort tempPC = RegPC.Word;

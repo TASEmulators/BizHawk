@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			this.game = game;
 			SetupMemoryDomains();
 
+			Tracer.Header = Cpu.TraceHeader;
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 			serviceProvider.Register<ITraceable>(Tracer);
