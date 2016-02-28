@@ -25,6 +25,20 @@ namespace BizHawk.Common
 		}
 
 		/// <summary>
+		/// Waits 250ms for a file to vanish. Returns whether it succeeded
+		/// </summary>
+		public static bool TryWaitForFileToVanish(string path)
+		{
+			for (int i = 0; i < 25; i++) //250ms
+			{
+				if (!File.Exists(path))
+					return true;
+				System.Threading.Thread.Sleep(10);
+			}
+			return false;
+		}
+
+		/// <summary>
 		/// Tries to moves `pathWant` out of the way to `pathBackup`, delaying as needed to accomodate filesystem being sucky.
 		/// `pathWant` might not be removed after all, in case it's snagged by something.
 		/// </summary>
@@ -47,8 +61,11 @@ namespace BizHawk.Common
 			}
 
 			//deletes are asynchronous, need to wait for it to be gone
-			while (File.Exists(pathBackup))
-				System.Threading.Thread.Sleep(10);
+			if(!TryWaitForFileToVanish(pathBackup))
+			{
+				//gave up waiting for existing backup to be gone. the whole thing's a total loss
+				return false;
+			}
 
 			try
 			{
@@ -63,10 +80,7 @@ namespace BizHawk.Common
 
 			//hmm these might be asynchronous too
 			//wait for the move to complete, at least enough for pathWant to be cleared up
-			while (File.Exists(pathWant))
-				System.Threading.Thread.Sleep(10);
-
-			return true;
+			return TryWaitForFileToVanish(pathWant);
 		}
 
 		public static bool IsPowerOfTwo(int x)
