@@ -22,6 +22,14 @@ namespace BizHawk.Emulation.Common
 		public FeatureNotImplemented() { }
 	}
 
+	/// <summary>
+	/// This represents a service that would not apply to every core, instead it is a specialized service specific to a core or group of cores
+	/// This service is merely intended to define semantics and expectations of a service
+	/// </summary>
+	public interface ISpecializedEmulatorService : IEmulatorService
+	{
+	}
+
 	[AttributeUsage(AttributeTargets.Class)]
 	public class ServiceNotApplicable : Attribute
 	{
