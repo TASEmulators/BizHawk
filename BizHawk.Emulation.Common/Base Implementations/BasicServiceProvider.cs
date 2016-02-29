@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 
 namespace BizHawk.Emulation.Common
 {
@@ -48,7 +46,10 @@ namespace BizHawk.Emulation.Common
 			where T : IEmulatorService
 		{
 			if (provider == null)
+			{
 				throw new ArgumentNullException("provider");
+			}
+
 			Services[typeof(T)] = provider;
 		}
 
@@ -62,9 +63,11 @@ namespace BizHawk.Emulation.Common
 		{
 			object service;
 			if (Services.TryGetValue(t, out service))
+			{
 				return service;
-			else
-				return null;
+			}
+
+			return null;
 		}
 
 		public bool HasService<T>()

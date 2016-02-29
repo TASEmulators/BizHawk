@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Common
 	/// Should be added to any field of an ICoreService that is not implemented.  By Convention it should also throw a NotImplementedException
 	/// Any feature that does not have this attribute is assumed to be implemented
 	/// </summary>
-	public class FeatureNotImplemented : Attribute
-	{
-		public FeatureNotImplemented() { }
-	}
+	public class FeatureNotImplemented : Attribute { }
 
 	/// <summary>
 	/// This represents a service that would not apply to every core, instead it is a specialized service specific to a core or group of cores

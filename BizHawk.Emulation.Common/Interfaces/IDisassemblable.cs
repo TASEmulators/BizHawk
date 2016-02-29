@@ -44,7 +44,10 @@ namespace BizHawk.Emulation.Common
 			set
 			{
 				if (!AvailableCpus.Contains(value))
+				{
 					throw new ArgumentException();
+				}
+
 				_cpu = value;
 			}
 		}

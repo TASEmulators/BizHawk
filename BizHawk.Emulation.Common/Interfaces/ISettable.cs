@@ -1,11 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace BizHawk.Emulation.Common
 {
+	public interface ISettable<TSettings, TSync> : IEmulatorService
+	{
+		// in addition to these methods, it's expected that the constructor or Load() method
+		// will take a Settings and SyncSettings object to set the initial state of the core
+		// (if those are null, default settings are to be used)
+
+		/// <summary>
+		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object.
+		/// VERY IMPORTANT: changes to the object returned by this function SHOULD NOT have any effect on emulation
+		/// (unless the object is later passed to PutSettings)
+		/// </summary>
+		/// <returns>a json-serializable object</returns>
+		TSettings GetSettings();
+
+		/// <summary>
+		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
+		/// should be a clone of the active in-core object.
+		/// VERY IMPORTANT: changes to the object returned by this function MUST NOT have any effect on emulation
+		/// (unless the object is later passed to PutSyncSettings)
+		/// </summary>
+		/// <returns>a json-serializable object</returns>
+		TSync GetSyncSettings();
+
+		/// <summary>
+		/// change the core settings, excepting movie settings
+		/// </summary>
+		/// <param name="o">an object of the same type as the return for GetSettings</param>
+		/// <returns>true if a core reboot will be required to make the changes effective</returns>
+		bool PutSettings(TSettings o);
+
+		/// <summary>
+		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
+		/// if it is called while recording, the core need not guarantee continued determinism
+		/// </summary>
+		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
+		/// <returns>true if a core reboot will be required to make the changes effective</returns>
+		bool PutSyncSettings(TSync o);
+	}
+
 	/// <summary>
 	/// serves as a shim between strongly typed ISettable and consumers
 	/// </summary>
@@ -62,21 +99,30 @@ namespace BizHawk.Emulation.Common
 		public object GetSettings()
 		{
 			if (!HasSettings)
+			{
 				throw new InvalidOperationException();
+			}
+
 			return gets.Invoke(emu, tmp0);
 		}
 
 		public object GetSyncSettings()
 		{
 			if (!HasSyncSettings)
+			{
 				throw new InvalidOperationException();
+			}
+
 			return (getss.Invoke(emu, tmp0));
 		}
 
 		public bool PutSettings(object o)
 		{
 			if (!HasSettings)
+			{
 				throw new InvalidOperationException();
+			}
+
 			tmp1[0] = o;
 			return (bool)puts.Invoke(emu, tmp1);
 		}
@@ -84,48 +130,14 @@ namespace BizHawk.Emulation.Common
 		public bool PutSyncSettings(object o)
 		{
 			if (!HasSyncSettings)
+			{
 				throw new InvalidOperationException();
+			}
+
 			tmp1[0] = o;
 			return (bool)putss.Invoke(emu, tmp1);
 		}
 	}
 
-	public interface ISettable<TSettings, TSync> : IEmulatorService
-	{
-		// in addition to these methods, it's expected that the constructor or Load() method
-		// will take a Settings and SyncSettings object to set the initial state of the core
-		// (if those are null, default settings are to be used)
-
-		/// <summary>
-		/// get the current core settings, excepting movie settings.  should be a clone of the active in-core object.
-		/// VERY IMPORTANT: changes to the object returned by this function SHOULD NOT have any effect on emulation
-		/// (unless the object is later passed to PutSettings)
-		/// </summary>
-		/// <returns>a json-serializable object</returns>
-		TSettings GetSettings();
-
-		/// <summary>
-		/// get the current core settings that affect movie sync.  these go in movie 2.0 files, so don't make the JSON too extravagant, please
-		/// should be a clone of the active in-core object.
-		/// VERY IMPORTANT: changes to the object returned by this function MUST NOT have any effect on emulation
-		/// (unless the object is later passed to PutSyncSettings)
-		/// </summary>
-		/// <returns>a json-serializable object</returns>
-		TSync GetSyncSettings();
-
-		/// <summary>
-		/// change the core settings, excepting movie settings
-		/// </summary>
-		/// <param name="o">an object of the same type as the return for GetSettings</param>
-		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		bool PutSettings(TSettings o);
-
-		/// <summary>
-		/// changes the movie-sync relevant settings.  THIS SHOULD NEVER BE CALLED WHILE RECORDING
-		/// if it is called while recording, the core need not guarantee continued determinism
-		/// </summary>
-		/// <param name="o">an object of the same type as the return for GetSyncSettings</param>
-		/// <returns>true if a core reboot will be required to make the changes effective</returns>
-		bool PutSyncSettings(TSync o);
-	}
+	
 }

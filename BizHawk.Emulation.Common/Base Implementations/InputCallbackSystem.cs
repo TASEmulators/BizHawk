@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Common
 
 			foreach (var action in actions)
 			{
-				this.Remove(action);
+				Remove(action);
 			}
 
 			var hasAny = this.Any();

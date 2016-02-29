@@ -39,11 +39,18 @@ namespace BizHawk.Emulation.Common
 		public RegisterValue(ulong val, byte bitSize)
 		{
 			if (bitSize == 64)
+			{
 				Value = val;
+			}
 			else if (bitSize > 64 || bitSize == 0)
+			{
 				throw new System.ArgumentOutOfRangeException("bitSize", "BitSize must be in 1..64");
+			}
 			else
+			{
 				Value = val & (1UL << bitSize) - 1;
+			}
+
 			BitSize = bitSize;
 		}
 

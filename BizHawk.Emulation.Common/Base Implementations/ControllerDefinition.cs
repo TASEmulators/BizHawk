@@ -118,10 +118,14 @@ namespace BizHawk.Emulation.Common
 
 				List<string>[] ret = new List<string>[9];
 				for (int i = 0; i < ret.Length; i++)
+				{
 					ret[i] = new List<string>();
+				}
 
 				for (int i = 0; i < list.Count; i++)
+				{
 					ret[PlayerNumber(list[i])].Add(list[i]);
+				}
 
 				return ret;
 			}
@@ -131,7 +135,10 @@ namespace BizHawk.Emulation.Common
 		{
 			int player = 0;
 			if (buttonName.Length > 3 && buttonName.StartsWith("P") && char.IsNumber(buttonName[1]))
+			{
 				player = buttonName[1] - '0';
+			}
+
 			return player;
 		}
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Common
 {
@@ -17,11 +15,11 @@ namespace BizHawk.Emulation.Common
 		private readonly List<IMemoryCallback> Writes = new List<IMemoryCallback>();
 		private readonly List<IMemoryCallback> Execs = new List<IMemoryCallback>();
 
-		bool empty = true;
+		private bool _empty = true;
 
-		private bool _hasReads = false;
-		private bool _hasWrites = false;
-		private bool _hasExecutes = false;
+		private bool _hasReads;
+		private bool _hasWrites;
+		private bool _hasExecutes;
 
 		public bool ExecuteCallbacksAvailable { get; set; }
 
@@ -42,9 +40,13 @@ namespace BizHawk.Emulation.Common
 					_hasWrites = true;
 					break;
 			}
-			if (empty)
+
+			if (_empty)
+			{
 				Changes();
-			empty = false;
+			}
+
+			_empty = false;
 		}
 
 		private static void Call(List<IMemoryCallback> cbs, uint addr)
@@ -119,9 +121,9 @@ namespace BizHawk.Emulation.Common
 			if (RemoveInternal(action) > 0)
 			{
 				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
-				if (newEmpty != empty)
+				if (newEmpty != _empty)
 					Changes();
-				empty = newEmpty;
+				_empty = newEmpty;
 			}
 		}
 
@@ -135,9 +137,9 @@ namespace BizHawk.Emulation.Common
 			if (changed)
 			{
 				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
-				if (newEmpty != empty)
+				if (newEmpty != _empty)
 					Changes();
-				empty = newEmpty;
+				_empty = newEmpty;
 			}
 
 			UpdateHasVariables();
@@ -148,9 +150,9 @@ namespace BizHawk.Emulation.Common
 			Reads.Clear();
 			Writes.Clear();
 			Execs.Clear();
-			if (!empty)
+			if (!_empty)
 				Changes();
-			empty = true;
+			_empty = true;
 
 			UpdateHasVariables();
 		}
@@ -169,21 +171,37 @@ namespace BizHawk.Emulation.Common
 		public IEnumerator<IMemoryCallback> GetEnumerator()
 		{
 			foreach (var imc in Reads)
+			{
 				yield return imc;
+			}
+
 			foreach (var imc in Writes)
+			{
 				yield return imc;
+			}
+
 			foreach (var imc in Execs)
+			{
 				yield return imc;
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			foreach (var imc in Reads)
+			{
 				yield return imc;
+			}
+
 			foreach (var imc in Writes)
+			{
 				yield return imc;
+			}
+
 			foreach (var imc in Execs)
+			{
 				yield return imc;
+			}
 		}
 	}
 
