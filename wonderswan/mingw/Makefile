@@ -1,9 +1,22 @@
 CXX = g++
-CXXFLAGS = -Wall -DLSB_FIRST -I.. -Wno-multichar -O3 -Wzero-as-null-pointer-constant -std=gnu++11 -fomit-frame-pointer -fno-exceptions
-TARGET = bizswan.dll
-LDFLAGS = -shared -static-libgcc -static-libstdc++ $(CXXFLAGS)
 RM = rm
 CP = cp
+
+MACHINE = $(shell $(CXX) -dumpmachine)
+ifneq (,$(findstring i686,$(MACHINE)))
+	ARCH = 32
+else ifneq (,$(findstring x86_64,$(MACHINE)))
+	ARCH = 64
+else
+	$(error Unknown arch)
+endif
+
+CXXFLAGS = -Wall -DLSB_FIRST -I.. -Wno-multichar -O3 -Wzero-as-null-pointer-constant -std=gnu++11 -fomit-frame-pointer -fno-exceptions -flto
+TARGET = bizswan.dll
+LDFLAGS = -shared -static-libgcc -static-libstdc++ -static $(CXXFLAGS)
+
+DEST_32 = ../../output/dll
+DEST_64 = ../../output64/dll
 
 SRCS = \
 	../eeprom.cpp \
@@ -33,4 +46,4 @@ clean:
 	$(RM) $(TARGET)
 	
 install:
-	$(CP) $(TARGET) ../../output/dll
+	$(CP) $(TARGET) $(DEST_$(ARCH))
