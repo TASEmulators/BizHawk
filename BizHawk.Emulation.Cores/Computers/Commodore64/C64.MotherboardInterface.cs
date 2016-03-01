@@ -89,6 +89,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
             return !_restorePressed && Cia1.ReadIrq() && CartPort.ReadNmi();
         }
 
+        private bool[] Input_ReadJoysticks()
+        {
+            return _joystickPressed;
+        }
+
+        private bool[] Input_ReadKeyboard()
+	    {
+	        return _keyboardPressed;
+	    }
+
         private bool Pla_ReadCharen()
 		{
 			return (Cpu.PortData & 0x04) != 0;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -38,31 +40,72 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
             return delta;
         }
 
-        public static void SyncDeltaBytes(string name, Serializer ser, int[] source, ref int[] data)
+	    private static byte[] CompressInts(int[] data)
+	    {
+	        unchecked
+	        {
+                var length = data.Length;
+                var bytes = new byte[length * 4];
+	            for (int i = 0, j = 0; i < length; i++)
+	            {
+	                var c = data[i];
+	                bytes[j++] = (byte)(c);
+                    bytes[j++] = (byte)(c >> 8);
+                    bytes[j++] = (byte)(c >> 16);
+                    bytes[j++] = (byte)(c >> 24);
+                }
+                using (var mem = new MemoryStream())
+                {
+                    using (var compressor = new DeflateStream(mem, CompressionMode.Compress))
+                    {
+                        var writer = new BinaryWriter(compressor);
+                        writer.Write(bytes.Length);
+                        writer.Write(bytes);
+                        compressor.Flush();
+                    }
+                    mem.Flush();
+                    return mem.ToArray();
+                }
+            }
+        }
+
+	    private static int[] DecompressInts(byte[] data)
+	    {
+            unchecked
+            {
+                using (var mem = new MemoryStream(data))
+                {
+                    using (var decompressor = new DeflateStream(mem, CompressionMode.Decompress))
+                    {
+                        var reader = new BinaryReader(decompressor);
+                        var length = reader.ReadInt32();
+                        var bytes = reader.ReadBytes(length);
+                        var result = new int[length >> 2];
+                        for (int i = 0, j = 0; i < length; i++)
+                        {
+                            int d = bytes[i++];
+                            d |= bytes[i++] << 8;
+                            d |= bytes[i++] << 16;
+                            d |= bytes[i] << 24;
+                            result[j++] = d;
+                        }
+                        return result;
+                    }
+                }
+            }
+	    }
+
+        public static void SyncDelta(string name, Serializer ser, int[] source, ref int[] data)
         {
             byte[] delta = null;
             if (ser.IsWriter && data != null)
             {
-                delta = GetDelta(source, data).Select(d => unchecked((byte)d)).ToArray();
+                delta = CompressInts(GetDelta(source, data));
             }
             ser.Sync(name, ref delta, false);
             if (ser.IsReader && delta != null)
             {
-                data = GetDelta(source, delta.Select(d => (int)d).ToArray());
-            }
-        }
-
-        public static void SyncDeltaInts(string name, Serializer ser, int[] source, ref int[] data)
-        {
-            int[] delta = null;
-            if (ser.IsWriter && data != null)
-            {
-                delta = GetDelta(source, data);
-            }
-            ser.Sync(name, ref delta, false);
-            if (ser.IsReader && delta != null)
-            {
-                data = GetDelta(source, delta);
+                data = GetDelta(source, DecompressInts(delta));
             }
         }
 

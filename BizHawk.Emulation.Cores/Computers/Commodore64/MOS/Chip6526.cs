@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             }
         }
 
-        public static Cia Create(C64.CiaType type, bool[] keyboard, bool[] joysticks)
+        public static Cia Create(C64.CiaType type, Func<bool[]> keyboard, Func<bool[]> joysticks)
 	    {
 	        switch (type)
 	        {

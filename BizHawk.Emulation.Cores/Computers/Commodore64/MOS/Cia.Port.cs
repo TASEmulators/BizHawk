@@ -36,37 +36,40 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         {
             [SaveState.DoNotSave] private int _ret;
             [SaveState.DoNotSave] private int _tst;
-            [SaveState.DoNotSave] private readonly bool[] _joyData;
-            [SaveState.DoNotSave] private readonly bool[] _keyData;
+            [SaveState.DoNotSave] private readonly Func<bool[]> _readJoyData;
+            [SaveState.DoNotSave] private readonly Func<bool[]> _readKeyData;
 
-            public JoystickKeyboardPort(bool[] joyData, bool[] keyData)
+            public JoystickKeyboardPort(Func<bool[]> readJoyData, Func<bool[]> readKeyData)
             {
-                _joyData = joyData;
-                _keyData = keyData;
+                _readJoyData = readJoyData;
+                _readKeyData = readKeyData;
             }
 
             private int GetJoystick1()
             {
+                var joyData = _readJoyData();
                 return 0xE0 |
-                       (_joyData[0] ? 0x00 : 0x01) |
-                       (_joyData[1] ? 0x00 : 0x02) |
-                       (_joyData[2] ? 0x00 : 0x04) |
-                       (_joyData[3] ? 0x00 : 0x08) |
-                       (_joyData[4] ? 0x00 : 0x10);
+                       (joyData[0] ? 0x00 : 0x01) |
+                       (joyData[1] ? 0x00 : 0x02) |
+                       (joyData[2] ? 0x00 : 0x04) |
+                       (joyData[3] ? 0x00 : 0x08) |
+                       (joyData[4] ? 0x00 : 0x10);
             }
 
             private int GetJoystick2()
             {
+                var joyData = _readJoyData();
                 return 0xE0 |
-                       (_joyData[5] ? 0x00 : 0x01) |
-                       (_joyData[6] ? 0x00 : 0x02) |
-                       (_joyData[7] ? 0x00 : 0x04) |
-                       (_joyData[8] ? 0x00 : 0x08) |
-                       (_joyData[9] ? 0x00 : 0x10);
+                       (joyData[5] ? 0x00 : 0x01) |
+                       (joyData[6] ? 0x00 : 0x02) |
+                       (joyData[7] ? 0x00 : 0x04) |
+                       (joyData[8] ? 0x00 : 0x08) |
+                       (joyData[9] ? 0x00 : 0x10);
             }
 
             private int GetKeyboardRows(int activeColumns)
             {
+                var keyData = _readKeyData();
                 var result = 0xFF;
                 for (var r = 0; r < 8; r++)
                 {
@@ -75,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         var i = r << 3;
                         for (var c = 0; c < 8; c++)
                         {
-                            if (_keyData[i++])
+                            if (keyData[i++])
                             {
                                 result &= ~(1 << c);
                             }
@@ -88,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             private int GetKeyboardColumns(int activeRows)
             {
+                var keyData = _readKeyData();
                 var result = 0xFF;
                 for (var c = 0; c < 8; c++)
                 {
@@ -96,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         var i = c;
                         for (var r = 0; r < 8; r++)
                         {
-                            if (_keyData[i])
+                            if (keyData[i])
                             {
                                 result &= ~(1 << r);
                             }

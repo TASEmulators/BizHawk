@@ -286,8 +286,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
             public override void SyncState(Serializer ser)
             {
-                SaveState.SyncDeltaBytes("MediaStateA", ser, _originalMediaA, ref _banksA);
-                SaveState.SyncDeltaBytes("MediaStateB", ser, _originalMediaB, ref _banksB);
+                SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
+                SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
                 base.SyncState(ser);
             }
         }

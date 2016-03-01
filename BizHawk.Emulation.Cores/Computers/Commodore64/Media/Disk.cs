@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         [SaveState.DoNotSave] public const int FluxBitsPerEntry = 32;
         [SaveState.DoNotSave] public const int FluxBitsPerTrack = 16000000 / 5;
         [SaveState.DoNotSave] public const int FluxEntriesPerTrack = FluxBitsPerTrack/FluxBitsPerEntry;
-        [SaveState.DoNotSave] private readonly List<int[]> _tracks;
+        [SaveState.DoNotSave] private int[][] _tracks;
 	    [SaveState.DoNotSave] private readonly int[] _originalMedia;
 		[SaveState.DoNotSave] public bool Valid;
 
@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         /// </summary>
 	    public Disk(int trackCapacity)
 	    {
-            _tracks = new List<int[]>(trackCapacity);
+            _tracks = new int[trackCapacity][];
             FillMissingTracks();
             _originalMedia = SerializeTracks(_tracks);
             Valid = true;
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         /// <param name="trackCapacity">Total number of tracks on the media.</param>
 	    public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, IList<int> trackLengths, int trackCapacity)
 	    {
-            _tracks = Enumerable.Repeat<int[]>(null, trackCapacity).ToList();
+            _tracks = new int[trackCapacity][];
             for (var i = 0; i < trackData.Count; i++)
             {
                 _tracks[trackNumbers[i]] = ConvertToFluxTransitions(trackDensities[i], trackData[i], 0);
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 	    private void FillMissingTracks()
 	    {
-	        for (var i = 0; i < _tracks.Count; i++)
+	        for (var i = 0; i < _tracks.Length; i++)
 	        {
 	            if (_tracks[i] == null)
 	            {
@@ -99,36 +99,44 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 	    /// <summary>
 	    /// Combine the tracks into a single bitstream.
 	    /// </summary>
-	    private int[] SerializeTracks(IEnumerable<int[]> tracks)
+	    private int[] SerializeTracks(int[][] tracks)
 	    {
-	        return tracks.SelectMany(t => t).ToArray();
+	        var trackCount = tracks.Length;
+	        var result = new int[trackCount * FluxEntriesPerTrack];
+	        for (var i = 0; i < trackCount; i++)
+	        {
+	            Array.Copy(tracks[i], 0, result, i * FluxEntriesPerTrack, FluxEntriesPerTrack);
+	        }
+	        return result;
 	    }
 
         /// <summary>
         /// Split a bitstream into tracks.
         /// </summary>
-	    private IEnumerable<int[]> DeserializeTracks(int[] data)
+	    private int[][] DeserializeTracks(int[] data)
         {
             var trackCount = data.Length/FluxEntriesPerTrack;
+            var result = new int[trackCount][];
             for (var i = 0; i < trackCount; i++)
             {
-                yield return data.Skip(i*FluxEntriesPerTrack).Take(FluxEntriesPerTrack).ToArray();
+                result[i] = new int[FluxEntriesPerTrack];
+                Array.Copy(data, i * FluxEntriesPerTrack, result[i], 0, FluxEntriesPerTrack);
             }
-	    }
+            return result;
+        }
 
         public void SyncState(Serializer ser)
         {
             if (ser.IsReader)
             {
                 var mediaState = new int[_originalMedia.Length];
-                SaveState.SyncDeltaInts("MediaState", ser, _originalMedia, ref mediaState);
-                _tracks.Clear();
-                _tracks.AddRange(DeserializeTracks(mediaState));
+                SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+                _tracks = DeserializeTracks(mediaState);
             }
             else if (ser.IsWriter)
             {
                 var mediaState = SerializeTracks(_tracks);
-                SaveState.SyncDeltaInts("MediaState", ser, _originalMedia, ref mediaState);
+                SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
             }
             SaveState.SyncObject(ser, this);
         }
