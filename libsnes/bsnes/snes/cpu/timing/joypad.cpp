@@ -13,6 +13,8 @@ void CPU::step_auto_joypad_poll() {
         input.port2->latch(1);
         input.port1->latch(0);
         input.port2->latch(0);
+		interface()->inputNotify(1);
+		interface()->inputNotify(0);
       }
 
       uint2 port0 = input.port1->data();
