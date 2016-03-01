@@ -5,7 +5,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 {
     public abstract class CassettePortDevice
     {
+        [SaveState.DoNotSave]
         public Func<bool> ReadDataOutput;
+        [SaveState.DoNotSave]
         public Func<bool> ReadMotor;
 
         public virtual void ExecutePhase2()

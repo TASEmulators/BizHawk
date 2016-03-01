@@ -4,17 +4,19 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
-	/**
-		* This class represents a tape. Only TAP-style tapes are supported for now.
-		*/
 	public class Tape
 	{
         [SaveState.DoNotSave] private readonly byte[] _tapeData;
 		[SaveState.DoNotSave] private readonly byte _version;
 	    [SaveState.DoNotSave] private readonly int _start;
         [SaveState.DoNotSave] private readonly int _end;
-		private int _pos, _cycle;
-	    private bool _data;
+
+        [SaveState.SaveWithName("Position")]
+	    private int _pos;
+        [SaveState.SaveWithName("Cycle")]
+        private int _cycle;
+        [SaveState.SaveWithName("Data")]
+        private bool _data;
 
 		public Tape(byte version, byte[] tapeData, int start, int end)
 		{
