@@ -14,9 +14,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
     {
         private sealed class Mapper000B : CartridgeDevice
         {
+            [SaveState.DoNotSave]
             private readonly int[] _rom = new int[0x4000];
 
-            public Mapper000B(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
+            public Mapper000B(IList<int> newAddresses, IList<int[]> newData)
             {
                 validCartridge = false;
 

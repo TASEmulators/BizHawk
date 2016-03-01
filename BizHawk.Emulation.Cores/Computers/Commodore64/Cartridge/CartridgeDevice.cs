@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	public abstract partial class CartridgeDevice
 	{
-		// ---------------------------------
-
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
 			var mem = new MemoryStream(crtFile);
@@ -71,13 +69,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
             switch (mapper)
 		    {
 		        case 0x0000:
-		            result = new Mapper0000(chipAddress, chipBank, chipData, game, exrom);
+		            result = new Mapper0000(chipAddress, chipData, game, exrom);
 		            break;
 		        case 0x0005:
 		            result = new Mapper0005(chipAddress, chipBank, chipData);
 		            break;
 		        case 0x000B:
-		            result = new Mapper000B(chipAddress, chipBank, chipData);
+		            result = new Mapper000B(chipAddress, chipData);
 		            break;
 		        case 0x000F:
 		            result = new Mapper000F(chipAddress, chipBank, chipData);
@@ -116,14 +114,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
                 reader.ReadByte();
 		}
 
-		// ---------------------------------
-
+        [SaveState.SaveWithName("ExRom")]
 		protected bool pinExRom;
-		protected bool pinGame;
-		protected bool pinIRQ;
-		protected bool pinNMI;
-		protected bool pinReset;
-		protected bool validCartridge;
+        [SaveState.SaveWithName("Game")]
+        protected bool pinGame;
+        [SaveState.SaveWithName("IRQ")]
+        protected bool pinIRQ;
+        [SaveState.SaveWithName("NMI")]
+        protected bool pinNMI;
+        [SaveState.SaveWithName("Reset")]
+        protected bool pinReset;
+        [SaveState.DoNotSave]
+        protected bool validCartridge;
 
 		public virtual void ExecutePhase1()
 		{
@@ -133,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
+        [SaveState.DoNotSave]
 		public bool ExRom
 		{
 			get
@@ -141,7 +144,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public bool Game
+        [SaveState.DoNotSave]
+        public bool Game
 		{
 			get
 			{
@@ -156,7 +160,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinReset = true;
 		}
 
-		public bool IRQ
+        [SaveState.DoNotSave]
+        public bool IRQ
 		{
 			get
 			{
@@ -164,7 +169,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public bool NMI
+        [SaveState.DoNotSave]
+        public bool NMI
 		{
 			get
 			{
@@ -228,7 +234,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return 0xFF;
 		}
 
-		public bool Reset
+        [SaveState.DoNotSave]
+        public bool Reset
 		{
 			get
 			{
@@ -241,7 +248,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			SaveState.SyncObject(ser, this);
 		}
 
-		public bool Valid
+        [SaveState.DoNotSave]
+        public bool Valid
 		{
 			get
 			{

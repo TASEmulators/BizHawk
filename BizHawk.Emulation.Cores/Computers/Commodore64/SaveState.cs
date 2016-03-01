@@ -19,10 +19,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	    {
             public string Name { get; set; }
 
-	        public SaveWithName()
-	        {
-	        }
-
 	        public SaveWithName(string name)
 	        {
 	            Name = name;
