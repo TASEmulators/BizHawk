@@ -1,10 +1,24 @@
 CXX = g++
-#CXXFLAGS = -Wall -I -Wno-multichar -O3
-CXXFLAGS = -Wall -Iinclude -Isrc -O3 -std=c++11 -fomit-frame-pointer -fno-exceptions
-TARGET = libgambatte.dll
-LDFLAGS = -shared -static-libgcc -static-libstdc++ $(CXXFLAGS)
 RM = rm
 CP = cp
+
+MACHINE = $(shell $(CXX) -dumpmachine)
+ifneq (,$(findstring i686,$(MACHINE)))
+	ARCH = 32
+else ifneq (,$(findstring x86_64,$(MACHINE)))
+	ARCH = 64
+else
+	$(error Unknown arch)
+endif
+
+CXXFLAGS = -Wall -Iinclude -Isrc -O3 -std=c++11 -fno-exceptions -flto
+TARGET = libgambatte.dll
+LDFLAGS_32 = -static -static-libgcc -static-libstdc++
+LDFLAGS_64 =
+LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
+
+DEST_32 = ../output/dll
+DEST_64 = ../output64/dll
 
 SRCS = \
 	src/cinterface.cpp \
@@ -49,4 +63,4 @@ clean:
 	$(RM) $(TARGET)
 	
 install:
-	$(CP) $(TARGET) ../output/dll
+	$(CP) $(TARGET) $(DEST_$(ARCH))

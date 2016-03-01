@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// combination of button flags used by the input callback
 		/// </summary>
 		[Flags]
-		public enum Buttons
+		public enum Buttons: uint
 		{
 			A = 0x01,
 			B = 0x02,
@@ -332,12 +332,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <returns></returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern bool gambatte_newstateload(IntPtr core, byte[] data, int len);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void DataFunction(IntPtr data, int length, string name);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void SectionFunction(string name);
 
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_newstatesave_ex(IntPtr core, ref TextStateFPtrs ff);

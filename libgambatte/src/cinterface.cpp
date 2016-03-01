@@ -35,15 +35,15 @@ GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelengt
 	return ret;
 }
 
-GBEXPORT long gambatte_runfor(GB *g, short *soundbuf, unsigned *samples)
+GBEXPORT int gambatte_runfor(GB *g, short *soundbuf, unsigned *samples)
 {
 	unsigned sampv = *samples;
-	long ret = g->runFor((unsigned int *) soundbuf, sampv);
+	int ret = g->runFor((unsigned int *) soundbuf, sampv);
 	*samples = sampv;
 	return ret;
 }
 
-GBEXPORT void gambatte_blitto(GB *g, unsigned long *videobuf, int pitch)
+GBEXPORT void gambatte_blitto(GB *g, unsigned int *videobuf, int pitch)
 {
 	g->blitTo((unsigned int *)videobuf, pitch);
 }
@@ -134,21 +134,21 @@ GBEXPORT int gambatte_savesavedatalength(GB *g)
 	return g->saveSavedataLength();
 }
 
-GBEXPORT long gambatte_newstatelen(GB *g)
+GBEXPORT int gambatte_newstatelen(GB *g)
 {
 	NewStateDummy dummy;
 	g->SyncState<false>(&dummy);
 	return dummy.GetLength();
 }
 
-GBEXPORT int gambatte_newstatesave(GB *g, char *data, long len)
+GBEXPORT int gambatte_newstatesave(GB *g, char *data, int len)
 {
 	NewStateExternalBuffer saver(data, len);
 	g->SyncState<false>(&saver);
 	return !saver.Overflow() && saver.GetLength() == len;
 }
 
-GBEXPORT int gambatte_newstateload(GB *g, const char *data, long len)
+GBEXPORT int gambatte_newstateload(GB *g, const char *data, int len)
 {
 	NewStateExternalBuffer loader((char *)data, len);
 	g->SyncState<true>(&loader);
