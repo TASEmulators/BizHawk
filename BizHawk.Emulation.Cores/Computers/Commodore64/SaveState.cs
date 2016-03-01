@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -14,9 +15,62 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	    {
 	    }
 
+	    public class SaveWithName : Attribute
+	    {
+            public string Name { get; set; }
+
+	        public SaveWithName()
+	        {
+	        }
+
+	        public SaveWithName(string name)
+	        {
+	            Name = name;
+	        }
+	    }
+
 		private static readonly Encoding Encoding = Encoding.Unicode;
 
-		public static void SyncObject(Serializer ser, object obj)
+        private static int[] GetDelta(IList<int> source, IList<int> data)
+        {
+            var length = Math.Min(source.Count, data.Count);
+            var delta = new int[length];
+            for (var i = 0; i < length; i++)
+            {
+                delta[i] = source[i] ^ data[i];
+            }
+            return delta;
+        }
+
+        public static void SyncDeltaBytes(string name, Serializer ser, int[] source, ref int[] data)
+        {
+            byte[] delta = null;
+            if (ser.IsWriter && data != null)
+            {
+                delta = GetDelta(source, data).Select(d => unchecked((byte)d)).ToArray();
+            }
+            ser.Sync(name, ref delta, false);
+            if (ser.IsReader && delta != null)
+            {
+                data = GetDelta(source, delta.Select(d => (int)d).ToArray());
+            }
+        }
+
+        public static void SyncDeltaInts(string name, Serializer ser, int[] source, ref int[] data)
+        {
+            int[] delta = null;
+            if (ser.IsWriter && data != null)
+            {
+                delta = GetDelta(source, data);
+            }
+            ser.Sync(name, ref delta, false);
+            if (ser.IsReader && delta != null)
+            {
+                data = GetDelta(source, delta);
+            }
+        }
+
+        public static void SyncObject(Serializer ser, object obj)
 		{
 			const BindingFlags defaultFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 		    var objType = obj.GetType();
@@ -28,6 +82,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                 {
                     continue;
                 }
+
+			    var name = member.Name;
+			    var nameAttribute = member.GetCustomAttributes(true).FirstOrDefault(a => a is SaveWithName);
+			    if (nameAttribute != null)
+			    {
+			        name = ((SaveWithName) nameAttribute).Name;
+			    }
+
 
                 object currentValue = null;
 				var fail = false;
@@ -54,34 +116,35 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                             break;
                         case "Bit":
 			                var refBit = (Bit)currentValue;
-			                ser.Sync(member.Name, ref refBit);
+			                ser.Sync(name, ref refBit);
 			                currentValue = refBit;
 			                break;
 			            case "Boolean":
 			                var refBool = (bool)currentValue;
-			                ser.Sync(member.Name, ref refBool);
+			                ser.Sync(name, ref refBool);
 			                currentValue = refBool;
 			                break;
 			            case "Boolean[]":
 			            {
 			                var tmp = (bool[])currentValue;
-			                ser.Sync(member.Name, ref tmp, false);
+			                ser.Sync(name, ref tmp, false);
 			                currentValue = tmp;
 			            }
 			                break;
 			            case "Byte":
 			                var refByte = (byte)currentValue;
-			                ser.Sync(member.Name, ref refByte);
+			                ser.Sync(name, ref refByte);
 			                currentValue = refByte;
 			                break;
 			            case "Byte[]":
 			                refByteBuffer = new ByteBuffer((byte[])currentValue);
-			                ser.Sync(member.Name, ref refByteBuffer);
-			                currentValue = refByteBuffer.Arr;
+			                ser.Sync(name, ref refByteBuffer);
+			                currentValue = refByteBuffer.Arr.Select(d => d).ToArray();
+                            refByteBuffer.Dispose();
 			                break;
 			            case "ByteBuffer":
 			                refByteBuffer = (ByteBuffer)currentValue;
-			                ser.Sync(member.Name, ref refByteBuffer);
+			                ser.Sync(name, ref refByteBuffer);
 			                currentValue = refByteBuffer;
 			                break;
 			            case "Func`1":
@@ -89,29 +152,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                             break;
 			            case "Int16":
 			                var refInt16 = (short)currentValue;
-			                ser.Sync(member.Name, ref refInt16);
+			                ser.Sync(name, ref refInt16);
 			                currentValue = refInt16;
 			                break;
 			            case "Int32":
 			                refInt32 = (int)currentValue;
-			                ser.Sync(member.Name, ref refInt32);
+			                ser.Sync(name, ref refInt32);
 			                currentValue = refInt32;
 			                break;
 			            case "Int32[]":
 			                refIntBuffer = new IntBuffer((int[])currentValue);
-			                ser.Sync(member.Name, ref refIntBuffer);
-			                currentValue = refIntBuffer.Arr;
+			                ser.Sync(name, ref refIntBuffer);
+			                currentValue = refIntBuffer.Arr.Select(d => d).ToArray();
+                            refIntBuffer.Dispose();
 			                break;
 			            case "IntBuffer":
 			                refIntBuffer = (IntBuffer)currentValue;
-			                ser.Sync(member.Name, ref refIntBuffer);
+			                ser.Sync(name, ref refIntBuffer);
 			                currentValue = refIntBuffer;
 			                break;
 			            case "Point":
 			                refPointX = ((Point)currentValue).X;
 			                refPointY = ((Point)currentValue).Y;
-			                ser.Sync(member.Name + "_X", ref refPointX);
-			                ser.Sync(member.Name + "_Y", ref refPointY);
+			                ser.Sync(name + "_X", ref refPointX);
+			                ser.Sync(name + "_Y", ref refPointY);
 			                currentValue = new Point(refPointX, refPointY);
 			                break;
 			            case "Rectangle":
@@ -119,31 +183,32 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			                refPointY = ((Rectangle)currentValue).Y;
 			                var refRectWidth = ((Rectangle)currentValue).Width;
 			                var refRectHeight = ((Rectangle)currentValue).Height;
-			                ser.Sync(member.Name + "_X", ref refPointX);
-			                ser.Sync(member.Name + "_Y", ref refPointY);
-			                ser.Sync(member.Name + "_Height", ref refRectHeight);
-			                ser.Sync(member.Name + "_Width", ref refRectWidth);
+			                ser.Sync(name + "_X", ref refPointX);
+			                ser.Sync(name + "_Y", ref refPointY);
+			                ser.Sync(name + "_Height", ref refRectHeight);
+			                ser.Sync(name + "_Width", ref refRectWidth);
 			                currentValue = new Rectangle(refPointX, refPointY, refRectWidth, refRectHeight);
 			                break;
 			            case "SByte":
 			                var refSByte = (sbyte)currentValue;
-			                ser.Sync(member.Name, ref refSByte);
+			                ser.Sync(name, ref refSByte);
 			                currentValue = refSByte;
 			                break;
 			            case "String":
 			                var refString = (string)currentValue;
 			                var refVal = new ByteBuffer(Encoding.GetBytes(refString));
-			                ser.Sync(member.Name, ref refVal);
+			                ser.Sync(name, ref refVal);
 			                currentValue = Encoding.GetString(refVal.Arr);
+                            refVal.Dispose();
 			                break;
 			            case "UInt16":
 			                var refUInt16 = (ushort)currentValue;
-			                ser.Sync(member.Name, ref refUInt16);
+			                ser.Sync(name, ref refUInt16);
 			                currentValue = refUInt16;
 			                break;
 			            case "UInt32":
 			                var refUInt32 = (uint)currentValue;
-			                ser.Sync(member.Name, ref refUInt32);
+			                ser.Sync(name, ref refUInt32);
 			                currentValue = refUInt32;
 			                break;
 			            default:
@@ -151,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			                if (t.IsEnum)
 			                {
 			                    refInt32 = (int)currentValue;
-			                    ser.Sync(member.Name, ref refInt32);
+			                    ser.Sync(name, ref refInt32);
 			                    currentValue = refInt32;
 			                }
                             else if (t.IsArray)
@@ -159,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                                 var currentValueArray = (Array) currentValue;
                                 for (var i = 0; i < currentValueArray.Length; i++)
                                 {
-                                    ser.BeginSection(string.Format("{0}_{1}", member.Name, i));
+                                    ser.BeginSection(string.Format("{0}_{1}", name, i));
                                     SyncObject(ser, currentValueArray.GetValue(i));
                                     ser.EndSection();
                                 }

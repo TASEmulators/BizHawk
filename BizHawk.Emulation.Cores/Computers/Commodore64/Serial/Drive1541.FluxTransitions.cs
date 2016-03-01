@@ -40,12 +40,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     if (_diskBitsLeft <= 0)
                     {
                         _diskByteOffset++;
-                        if (_diskByteOffset == Disk.FLUX_ENTRIES_PER_TRACK)
+                        if (_diskByteOffset == Disk.FluxEntriesPerTrack)
                         {
                             _diskByteOffset = 0;
                         }
                         _diskBits = _trackImageData[_diskByteOffset];
-                        _diskBitsLeft = Disk.FLUX_BITS_PER_ENTRY;
+                        _diskBitsLeft = Disk.FluxBitsPerEntry;
                     }
                     if ((_diskBits & 1) != 0)
                     {
