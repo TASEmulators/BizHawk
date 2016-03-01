@@ -8,18 +8,29 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
     public sealed partial class Drive1541
     {
+        [SaveState.DoNotSave]
         private const long LEHMER_RNG_PRIME = 48271;
-
+        [SaveState.SaveWithName("DiskDensityCounter")]
         private int _diskDensityCounter; // density .. 16
+        [SaveState.SaveWithName("DiskSupplementaryCounter")]
         private int _diskSupplementaryCounter; // 0 .. 16
+        [SaveState.SaveWithName("DiskFluxReversalDetected")]
         private bool _diskFluxReversalDetected;
+        [SaveState.SaveWithName("DiskBitsRemainingInDataEntry")]
         private int _diskBitsLeft;
+        [SaveState.SaveWithName("DiskDataEntryIndex")]
         private int _diskByteOffset;
+        [SaveState.SaveWithName("DiskDataEntry")]
         private int _diskBits;
+        [SaveState.SaveWithName("DiskCurrentCycle")]
         private int _diskCycle;
+        [SaveState.SaveWithName("DiskDensityConfig")]
         private int _diskDensity;
+        [SaveState.SaveWithName("PreviousCA1")]
         private bool _previousCa1;
+        [SaveState.SaveWithName("CountsBeforeRandomTransition")]
         private int _countsBeforeRandomTransition;
+        [SaveState.SaveWithName("CurrentRNG")]
         private int _rngCurrent;
 
         // Lehmer RNG

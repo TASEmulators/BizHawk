@@ -13,28 +13,49 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
     public sealed partial class Drive1541 : SerialPortDevice
     {
+        [SaveState.SaveWithName("Disk")]
         private Disk _disk;
+        [SaveState.SaveWithName("BitHistory")]
         private int _bitHistory;
+        [SaveState.SaveWithName("BitsRemainingInLatchedByte")]
         private int _bitsRemainingInLatchedByte;
+        [SaveState.SaveWithName("Sync")]
         private bool _sync;
+        [SaveState.SaveWithName("ByteReady")]
         private bool _byteReady;
-        [SaveState.DoNotSave] private readonly int _driveCpuClockNum;
+        [SaveState.SaveWithName("DriveCpuClockNumerator")]
+        private readonly int _driveCpuClockNum;
+        [SaveState.SaveWithName("TrackNumber")]
         private int _trackNumber;
+        [SaveState.SaveWithName("MotorEnabled")]
         private bool _motorEnabled;
+        [SaveState.SaveWithName("LedEnabled")]
         private bool _ledEnabled;
+        [SaveState.SaveWithName("MotorStep")]
         private int _motorStep;
+        [SaveState.DoNotSave]
         private int _via0PortBtemp;
+        [SaveState.SaveWithName("CPU")]
         private readonly MOS6502X _cpu;
+        [SaveState.SaveWithName("RAM")]
         private readonly int[] _ram;
+        [SaveState.SaveWithName("VIA0")]
         public readonly Via Via0;
+        [SaveState.SaveWithName("VIA1")]
         public readonly Via Via1;
+        [SaveState.SaveWithName("SystemCpuClockNumerator")]
         private readonly int _cpuClockNum;
+        [SaveState.SaveWithName("SystemDriveCpuRatioDifference")]
         private int _ratioDifference;
+        [SaveState.SaveWithName("DriveLightOffTime")]
         private int _driveLightOffTime;
-        [SaveState.DoNotSave] private int[] _trackImageData = new int[1];
-
+        [SaveState.DoNotSave]
+        private int[] _trackImageData = new int[1];
+        [SaveState.DoNotSave]
         public Func<int> ReadIec = () => 0xFF;
+        [SaveState.DoNotSave]
         public Action DebuggerStep;
+        [SaveState.DoNotSave]
         public readonly Chip23128 DriveRom;
 
         public Drive1541(int clockNum, int clockDen)
