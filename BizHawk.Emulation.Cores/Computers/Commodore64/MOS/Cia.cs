@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _todDen = todDen;
         }
 
-        public Cia(int todNum, int todDen, int[] keyboard, int[] joysticks) : this(todNum, todDen)
+        public Cia(int todNum, int todDen, bool[] keyboard, bool[] joysticks) : this(todNum, todDen)
         {
             _port = new JoystickKeyboardPort(joysticks, keyboard);
         }
