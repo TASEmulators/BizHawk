@@ -268,3 +268,6 @@
 output/BizHawk.Client.ApiHawk.dll
 output/dll/BizHawk.Client.ApiHawk.dll
 ExternalCoreProjects/Virtu/bin/*.*
+/psx/octoshock/bizhawk/Win32
+/psx/octoshock/bizhawk/x64
+/psx/octoshock/bizhawk/*.opendb
