@@ -102,22 +102,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				case C64.VicType.Ntsc:
                     Vic = Chip6567R8.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.Ntsc,  _keyboardPressed, _joystickPressed);
+                    Cia0 = Chip6526.Create(C64.CiaType.Ntsc,  Input_ReadKeyboard, Input_ReadJoysticks);
                     Cia1 = Chip6526.Create(C64.CiaType.Ntsc, Cia1_ReadPortA);
                     break;
 				case C64.VicType.Pal:
                     Vic = Chip6569.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.Pal, _keyboardPressed, _joystickPressed);
+                    Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
                     Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
                     break;
                 case C64.VicType.NtscOld:
                     Vic = Chip6567R56A.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.NtscRevA, _keyboardPressed, _joystickPressed);
+                    Cia0 = Chip6526.Create(C64.CiaType.NtscRevA, Input_ReadKeyboard, Input_ReadJoysticks);
                     Cia1 = Chip6526.Create(C64.CiaType.NtscRevA, Cia1_ReadPortA);
 			        break;
                 case C64.VicType.Drean:
                     Vic = Chip6572.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.Pal, _keyboardPressed, _joystickPressed);
+                    Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
                     Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
                     break;
 			}

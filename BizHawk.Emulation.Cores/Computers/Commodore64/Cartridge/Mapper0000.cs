@@ -8,15 +8,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
     {
         private sealed class Mapper0000 : CartridgeDevice
         {
+            [SaveState.DoNotSave]
             private readonly int[] _romA;
+            [SaveState.SaveWithName("RomMaskA")]
             private readonly int _romAMask;
+            [SaveState.DoNotSave]
             private readonly int[] _romB;
+            [SaveState.SaveWithName("RomMaskB")]
             private readonly int _romBMask;
 
             // standard cartridge mapper (Commodore)
             // note that this format also covers Ultimax carts
 
-            public Mapper0000(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData, bool game, bool exrom)
+            public Mapper0000(IList<int> newAddresses, IList<int[]> newData, bool game, bool exrom)
             {
                 pinGame = game;
                 pinExRom = exrom;

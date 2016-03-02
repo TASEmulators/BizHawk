@@ -10,11 +10,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
     public sealed class SerialPort : IDriveLight
     {
+        [SaveState.DoNotSave]
         public Func<bool> ReadMasterAtn = () => true;
+        [SaveState.DoNotSave]
         public Func<bool> ReadMasterClk = () => true;
+        [SaveState.DoNotSave]
         public Func<bool> ReadMasterData = () => true;
 
+        [SaveState.SaveWithName("Device")]
         private SerialPortDevice _device;
+        [SaveState.SaveWithName("Connected")]
         private bool _connected;
 
         public void HardReset()
@@ -75,7 +80,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
             _device.ReadMasterData = () => ReadMasterData();
         }
 
+        [SaveState.DoNotSave]
         public bool DriveLightEnabled { get { return true; } }
+        [SaveState.DoNotSave]
         public bool DriveLightOn { get { return ReadDeviceLight(); } }
     }
 }

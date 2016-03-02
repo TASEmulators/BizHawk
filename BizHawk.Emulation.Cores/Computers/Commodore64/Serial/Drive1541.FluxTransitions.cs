@@ -8,18 +8,29 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
     public sealed partial class Drive1541
     {
+        [SaveState.DoNotSave]
         private const long LEHMER_RNG_PRIME = 48271;
-
+        [SaveState.SaveWithName("DiskDensityCounter")]
         private int _diskDensityCounter; // density .. 16
+        [SaveState.SaveWithName("DiskSupplementaryCounter")]
         private int _diskSupplementaryCounter; // 0 .. 16
+        [SaveState.SaveWithName("DiskFluxReversalDetected")]
         private bool _diskFluxReversalDetected;
+        [SaveState.SaveWithName("DiskBitsRemainingInDataEntry")]
         private int _diskBitsLeft;
+        [SaveState.SaveWithName("DiskDataEntryIndex")]
         private int _diskByteOffset;
+        [SaveState.SaveWithName("DiskDataEntry")]
         private int _diskBits;
+        [SaveState.SaveWithName("DiskCurrentCycle")]
         private int _diskCycle;
+        [SaveState.SaveWithName("DiskDensityConfig")]
         private int _diskDensity;
+        [SaveState.SaveWithName("PreviousCA1")]
         private bool _previousCa1;
+        [SaveState.SaveWithName("CountsBeforeRandomTransition")]
         private int _countsBeforeRandomTransition;
+        [SaveState.SaveWithName("CurrentRNG")]
         private int _rngCurrent;
 
         // Lehmer RNG
@@ -40,12 +51,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     if (_diskBitsLeft <= 0)
                     {
                         _diskByteOffset++;
-                        if (_diskByteOffset == Disk.FLUX_ENTRIES_PER_TRACK)
+                        if (_diskByteOffset == Disk.FluxEntriesPerTrack)
                         {
                             _diskByteOffset = 0;
                         }
                         _diskBits = _trackImageData[_diskByteOffset];
-                        _diskBitsLeft = Disk.FLUX_BITS_PER_ENTRY;
+                        _diskBitsLeft = Disk.FluxBitsPerEntry;
                     }
                     if ((_diskBits & 1) != 0)
                     {
