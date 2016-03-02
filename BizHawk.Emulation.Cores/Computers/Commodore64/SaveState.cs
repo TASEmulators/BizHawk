@@ -97,15 +97,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
         public static void SyncDelta(string name, Serializer ser, int[] source, ref int[] data)
         {
-            byte[] delta = null;
+            int[] delta = null;
             if (ser.IsWriter && data != null)
             {
-                delta = CompressInts(GetDelta(source, data));
+                delta = GetDelta(source, data);
             }
             ser.Sync(name, ref delta, false);
             if (ser.IsReader && delta != null)
             {
-                data = GetDelta(source, DecompressInts(delta));
+                data = GetDelta(source, delta);
             }
         }
 

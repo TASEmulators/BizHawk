@@ -47,19 +47,40 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
         private int[] ConvertToFluxTransitions(int density, byte[] bytes, int fluxBitOffset)
         {
-            var paddedBytes = new byte[bytes.Length + 1];
+            var paddedLength = bytes.Length;
+            switch (density)
+            {
+                case 3:
+                    paddedLength = Math.Max(bytes.Length, 7692);
+                    break;
+                case 2:
+                    paddedLength = Math.Max(bytes.Length, 7142);
+                    break;
+                case 1:
+                    paddedLength = Math.Max(bytes.Length, 6666);
+                    break;
+                case 0:
+                    paddedLength = Math.Max(bytes.Length, 6250);
+                    break;
+            }
+
+            paddedLength++;
+            var paddedBytes = new byte[paddedLength];
             Array.Copy(bytes, paddedBytes, bytes.Length);
-            paddedBytes[paddedBytes.Length - 1] = 0x00;
+            for (var i = bytes.Length; i < paddedLength; i++)
+            {
+                paddedBytes[i] = 0xAA;
+            }
 	        var result = new int[FluxEntriesPerTrack];
-	        var length = paddedBytes.Length;
-	        var lengthBits = length*8+7;
+	        var length = paddedLength;
+	        var lengthBits = (paddedLength * 8) - 7;
             var offsets = new List<long>();
             var remainingBits = lengthBits;
 
 	        const long bitsNum = FluxEntriesPerTrack * FluxBitsPerEntry;
 	        long bitsDen = lengthBits;
 
-            for (var i = 0; i < length; i++)
+            for (var i = 0; i < paddedLength; i++)
 	        {
 	            var byteData = paddedBytes[i];
                 for (var j = 0; j < 8; j++)
@@ -70,10 +91,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                     offsets.Add(offset);
                     result[byteOffset] |= ((byteData & 0x80) != 0 ? 1 : 0) << bitOffset;
 	                byteData <<= 1;
-	            }
-
-	            remainingBits--;
-	            if (remainingBits <= 0)
+                    remainingBits--;
+                    if (remainingBits <= 0)
+                        break;
+                }
+                if (remainingBits <= 0)
                     break;
             }
 
