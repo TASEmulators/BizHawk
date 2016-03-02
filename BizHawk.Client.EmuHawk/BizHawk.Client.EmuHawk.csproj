@@ -2119,5 +2119,5 @@
   <PropertyGroup>
     <PreBuildEvent />
   </PropertyGroup>
-	<Import Project="$(SolutionDir)Build\Common.targets"/>
+  <Import Project="$(SolutionDir)Build\Common.targets" />
 </Project>
