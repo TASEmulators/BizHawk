@@ -4,6 +4,15 @@ using System.Reflection;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This service provides mechanism for the client to set sync and non-sync related settings to the core
+	/// Settings are settings that can changge during the lifetime of the core and do not affect potential movie sync
+	/// Sync Settings do not change during the lifetime of the core and affect movie sync
+	/// If available, Sync settings are stored in movie files and automatically applied when the movie is loaded
+	/// If this service is available the client can provide UI for the user to manage these settings
+	/// </summary>
+	/// <typeparam name="TSettings">The Type of the object that represent regular settings (settings that can be changed during the lifespan of a core instance</typeparam>
+	/// <typeparam name="TSync">The Type of the object that represents sync settings (settings that can not change during hte lifespan of the core and are required for movie sync</typeparam>
 	public interface ISettable<TSettings, TSync> : IEmulatorService
 	{
 		// in addition to these methods, it's expected that the constructor or Load() method

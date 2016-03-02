@@ -3,12 +3,11 @@
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// Allows the cpu to dump trace info to a trace stream
+	/// This service allows the core to dump a cpu trace to the client
+	/// If available the Trace Logger tool will be available on the client
 	/// </summary>
 	public interface ITraceable : IEmulatorService
 	{
-		// TODO: would it be faster (considering both disk and screen output) to keep the data as a List<string> directly?
-
 		bool Enabled { get; set; }
 
 		/// <summary>

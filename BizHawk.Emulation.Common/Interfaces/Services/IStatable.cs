@@ -3,7 +3,10 @@
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// Savestate handling methods
+	/// This service manages the logic of sending and receiving savestates from the core
+	/// If this service is available, client apps will expose features for making savestates and that utilize savestates (such as rewind))
+	/// If unavailable these options will not be exposed
+	/// Additionally many tools depends on savestates such as TAStudio, these will only be available if this service is implmeented
 	/// </summary>
 	public interface IStatable : IEmulatorService
 	{

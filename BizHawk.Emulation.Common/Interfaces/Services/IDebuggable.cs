@@ -2,6 +2,13 @@
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This service manages debugging capabilities from the core to the client.  Tools such as the debugger make use of this, as well as lua scripting
+	/// This service specifically maanges getting/setting cpu registers, managing breakpoints, and stepping through cpu instructions
+	/// Providing a disassembly is managed by another service, these are aspects outside of the disassembler that are essential to debugging tools
+	/// Tools like the debugger will gracefully degrade based on the availability of each component of this service,
+	/// it is expected that any of these features will throw a NotImplementedException if not implemented, and the client will manage accordingly
+	/// </summary>
 	public interface IDebuggable : IEmulatorService
 	{
 		/// <summary>

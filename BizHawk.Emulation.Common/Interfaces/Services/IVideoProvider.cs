@@ -1,5 +1,9 @@
 ﻿namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This service provides the ability to pass video output to the client
+	/// If available the client will display video output to the user
+	/// </summary>
 	public interface IVideoProvider : IEmulatorService
 	{
 		int[] GetVideoBuffer();
