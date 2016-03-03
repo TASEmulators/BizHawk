@@ -101,16 +101,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     _diskSupplementaryCounter++;
                     if ((_diskSupplementaryCounter & 0x3) == 0x2)
                     {
-                        _byteReady = false;
                         _bitsRemainingInLatchedByte--;
-                        if (_bitsRemainingInLatchedByte <= 0)
-                        {
-                            _bitsRemainingInLatchedByte = 8;
-
-                            // SOE (sync output enabled)
-                            _byteReady = Via1.Ca2;
-                        }
-
+                        _byteReady = false;
                         _bitHistory = (_bitHistory << 1) | ((_diskSupplementaryCounter & 0xC) == 0x0 ? 1 : 0);
                         _sync = false;
                         if (Via1.Cb2 && (_bitHistory & 0x3FF) == 0x3FF)
@@ -118,6 +110,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                             _sync = true;
                             _bitsRemainingInLatchedByte = 8;
                             _byteReady = false;
+                        }
+
+                        if (_bitsRemainingInLatchedByte <= 0)
+                        {
+                            _bitsRemainingInLatchedByte = 8;
+
+                            // SOE (sync output enabled)
+                            _byteReady = Via1.Ca2;
                         }
 
                         // negative transition activates SO pin on CPU
