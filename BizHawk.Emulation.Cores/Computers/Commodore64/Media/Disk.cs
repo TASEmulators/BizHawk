@@ -104,6 +104,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 	    private void FillMissingTracks()
 	    {
+            // Fill half tracks (should assist with EA "fat-track" protections)
+	        for (var i = 1; i < _tracks.Length; i += 2)
+	        {
+	            if (_tracks[i] == null && _tracks[i - 1] != null)
+	            {
+	                _tracks[i] = new int[FluxEntriesPerTrack];
+                    Array.Copy(_tracks[i - 1], _tracks[i], FluxEntriesPerTrack);
+	            }
+	        }
+
+            // Fill vacant tracks
 	        for (var i = 0; i < _tracks.Length; i++)
 	        {
 	            if (_tracks[i] == null)
