@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Execute()
 		{
-		    _vicBank = (0x3 - (Cia1.EffectivePrA & 0x3)) << 14;
+		    _vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
 
             Vic.ExecutePhase();
             Cassette.ExecutePhase();

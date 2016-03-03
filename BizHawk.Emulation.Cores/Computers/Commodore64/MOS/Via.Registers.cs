@@ -102,10 +102,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             {
                 case 0x0:
                     _ifr &= 0xE7;
+                    if (_pcrCb2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
+                    {
+                        _handshakeCb2NextClock = true;
+                    }
                     WriteRegister(addr, val);
                     break;
                 case 0x1:
                     _ifr &= 0xFC;
+                    if (_pcrCa2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
+                    {
+                        _handshakeCa2NextClock = true;
+                    }
                     WriteRegister(addr, val);
                     break;
                 case 0x4:

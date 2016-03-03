@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	    private int _lastReadVicAddress = 0x3FFF;
 	    private int _lastReadVicData = 0xFF;
 	    private int _vicBank = 0xC000;
-	    private int _tempCia1Cra;
 
 	    private bool CassPort_ReadDataOutput()
 		{
