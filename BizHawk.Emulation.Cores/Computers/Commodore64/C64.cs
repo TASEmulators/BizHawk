@@ -279,8 +279,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void InitRoms(DiskDriveType diskDriveType)
 		{
             _board.BasicRom.Flash(GetFirmware(0x2000, "Basic"));
-            _board.KernalRom.Flash(GetFirmware(0x1000, "Chargen"));
-            _board.CharRom.Flash(GetFirmware(0x2000, "Kernal"));
+            _board.KernalRom.Flash(GetFirmware(0x2000, "Kernal"));
+            _board.CharRom.Flash(GetFirmware(0x1000, "Chargen"));
 
 		    switch (diskDriveType)
 		    {
