@@ -74,7 +74,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		        case 0x0005:
 		            result = new Mapper0005(chipAddress, chipBank, chipData);
 		            break;
-		        case 0x000B:
+                case 0x000A:
+                    result = new Mapper000A(chipAddress, chipBank, chipData);
+                    break;
+                case 0x000B:
 		            result = new Mapper000B(chipAddress, chipData);
 		            break;
 		        case 0x000F:
@@ -127,11 +130,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
         [SaveState.DoNotSave]
         protected bool validCartridge;
 
-		public virtual void ExecutePhase1()
-		{
-		}
-
-		public virtual void ExecutePhase2()
+		public virtual void ExecutePhase()
 		{
 		}
 

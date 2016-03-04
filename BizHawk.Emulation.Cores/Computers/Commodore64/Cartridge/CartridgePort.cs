@@ -89,6 +89,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_connected = false;
 		}
 
+	    public void ExecutePhase()
+	    {
+	        if (_connected)
+                _cartridgeDevice.ExecutePhase();
+	    }
+
 		public void HardReset()
 		{
 			// note: this will not disconnect any attached media

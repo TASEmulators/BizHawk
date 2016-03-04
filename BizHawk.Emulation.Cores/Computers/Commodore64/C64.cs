@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	public sealed partial class C64 : IEmulator, IRegionable
 	{
 		// framework
-		public C64(CoreComm comm, GameInfo game, byte[] rom, string romextension, object settings, object syncSettings)
+		public C64(CoreComm comm, GameInfo game, byte[] rom, string extension, object settings, object syncSettings)
 		{
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
 			PutSettings((C64Settings)settings ?? new C64Settings());
@@ -30,14 +30,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
 
-		    _inputFileInfo = new InputFileInfo
-		    {
-		        Data = rom,
-		        Extension = romextension
-		    };
-
 		    CoreComm = comm;
-			Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
+		    Roms = new Dictionary<string, byte[]> { { "rom" + extension.ToUpper(), rom } };
+            Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
 			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			SetupMemoryDomains(_board.DiskDrive != null);
             _memoryCallbacks = new MemoryCallbackSystem();
@@ -62,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// internal variables
 		private int _frame;
 		[SaveState.DoNotSave] private readonly int _cyclesPerFrame;
-		[SaveState.DoNotSave] private InputFileInfo _inputFileInfo;
 	    private bool _driveLed;
 
         // bizhawk I/O
@@ -94,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// controller
 		[SaveState.DoNotSave] public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
 		[SaveState.DoNotSave] public IController Controller { get { return _board.Controller; } set { _board.Controller = value; } }
+	    [SaveState.DoNotSave] public IDictionary<string, byte[]> Roms { get; private set; }
 
         [SaveState.DoNotSave]
         private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
@@ -155,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				// check to see if cpu PC is at the BASIC warm start vector
 				if (_board.Cpu.Pc != 0 && _board.Cpu.Pc == ((_board.Ram.Peek(0x0303) << 8) | _board.Ram.Peek(0x0302)))
 				{
-					Prg.Load(_board.Pla, _inputFileInfo.Data);
+					Prg.Load(_board.Pla, _prgFile);
 					_loadPrg = false;
 				}
 			}
@@ -182,6 +177,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private Motherboard _board;
 		private bool _loadPrg;
+	    [SaveState.DoNotSave] private byte[] _prgFile;
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
@@ -194,29 +190,29 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
             // Force certain drive types to be available depending on ROM type
-		    switch (_inputFileInfo.Extension.ToUpper())
+		    foreach (var rom in Roms)
 		    {
-                case @".D64":
-                case @".G64":
-		            if (diskDriveType == DiskDriveType.None)
-		            {
-		                diskDriveType = DiskDriveType.Commodore1541;
-		            }
-		            break;
-                case @".TAP":
-		            if (tapeDriveType == TapeDriveType.None)
-		            {
-		                tapeDriveType = TapeDriveType.Commodore1530;
-		            }
-		            break;
-		    }
+                switch (Path.GetExtension(rom.Key).ToUpper())
+                {
+                    case @".D64":
+                    case @".G64":
+                        if (diskDriveType == DiskDriveType.None)
+                        {
+                            diskDriveType = DiskDriveType.Commodore1541;
+                        }
+                        break;
+                    case @".TAP":
+                        if (tapeDriveType == TapeDriveType.None)
+                        {
+                            tapeDriveType = TapeDriveType.Commodore1530;
+                        }
+                        break;
+                }
+            }
 
             _board = new Motherboard(this, initRegion, borderType, sidType, tapeDriveType, diskDriveType);
 			InitRoms(diskDriveType);
 			_board.Init();
-			InitMedia();
-
-            
 
             // configure video
             CoreComm.VsyncDen = _board.Vic.CyclesPerFrame;
@@ -225,42 +221,48 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void InitMedia()
 		{
-			switch (_inputFileInfo.Extension.ToUpper())
-			{
-                case @".D64":
-			        var d64 = D64.Read(_inputFileInfo.Data);
-			        if (d64 != null)
-			        {
-                        _board.DiskDrive.InsertMedia(d64);
-                    }
-			        break;
-                case @".G64":
-                    var g64 = G64.Read(_inputFileInfo.Data);
-                    if (g64 != null)
-                    {
-                        _board.DiskDrive.InsertMedia(g64);
-                    }
-                    break;
-                case @".CRT":
-					var cart = CartridgeDevice.Load(_inputFileInfo.Data);
-					if (cart != null)
-					{
-						_board.CartPort.Connect(cart);
-					}
-					break;
-				case @".TAP":
-					var tape = Tape.Load(_inputFileInfo.Data);
-					if (tape != null)
-					{
-                        _board.TapeDrive.Insert(tape);
-					}
-					break;
-				case @".PRG":
-					if (_inputFileInfo.Data.Length > 2)
-						_loadPrg = true;
-					break;
-			}
-		}
+		    foreach (var rom in Roms)
+		    {
+                switch (Path.GetExtension(rom.Key).ToUpper())
+                {
+                    case @".D64":
+                        var d64 = D64.Read(rom.Value);
+                        if (d64 != null)
+                        {
+                            _board.DiskDrive.InsertMedia(d64);
+                        }
+                        break;
+                    case @".G64":
+                        var g64 = G64.Read(rom.Value);
+                        if (g64 != null)
+                        {
+                            _board.DiskDrive.InsertMedia(g64);
+                        }
+                        break;
+                    case @".CRT":
+                        var cart = CartridgeDevice.Load(rom.Value);
+                        if (cart != null)
+                        {
+                            _board.CartPort.Connect(cart);
+                        }
+                        break;
+                    case @".TAP":
+                        var tape = Tape.Load(rom.Value);
+                        if (tape != null)
+                        {
+                            _board.TapeDrive.Insert(tape);
+                        }
+                        break;
+                    case @".PRG":
+                        if (rom.Value.Length > 2)
+                        {
+                            _loadPrg = true;
+                            _prgFile = rom.Value;
+                        }
+                        break;
+                }
+            }
+        }
 
 		private void InitRoms(DiskDriveType diskDriveType)
 		{
@@ -274,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
             if (diskDriveType == DiskDriveType.Commodore1541)
 		    {
-                var diskRom = GetFirmware(0x4000, "Drive1541II", "Drive1541");
+                var diskRom = GetFirmware(0x4000, "Drive1541", "Drive1541II");
                 _board.DiskDrive.DriveRom.Flash(diskRom);
             }
 		}
@@ -283,7 +285,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void HardReset()
 		{
-			_board.HardReset();
+		    InitMedia();
+            _board.HardReset();
 		}
 	}
 }

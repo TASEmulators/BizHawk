@@ -72,7 +72,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                 paddedBytes[i] = 0xAA;
             }
 	        var result = new int[FluxEntriesPerTrack];
-	        var length = paddedLength;
 	        var lengthBits = (paddedLength * 8) - 7;
             var offsets = new List<long>();
             var remainingBits = lengthBits;

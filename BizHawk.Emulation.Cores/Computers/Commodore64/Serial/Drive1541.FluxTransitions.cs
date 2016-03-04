@@ -48,15 +48,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                 // rotate disk
                 if (_motorEnabled)
                 {
-                    if (_diskBitsLeft <= 0)
+                    if (_disk == null)
                     {
-                        _diskByteOffset++;
-                        if (_diskByteOffset == Disk.FluxEntriesPerTrack)
+                        _diskBitsLeft = 1;
+                        _diskBits = 0;
+                    }
+                    else
+                    {
+                        if (_diskBitsLeft <= 0)
                         {
-                            _diskByteOffset = 0;
+                            _diskByteOffset++;
+                            if (_diskByteOffset == Disk.FluxEntriesPerTrack)
+                            {
+                                _diskByteOffset = 0;
+                            }
+                            _diskBits = _trackImageData[_diskByteOffset];
+                            _diskBitsLeft = Disk.FluxBitsPerEntry;
                         }
-                        _diskBits = _trackImageData[_diskByteOffset];
-                        _diskBitsLeft = Disk.FluxBitsPerEntry;
                     }
                     if ((_diskBits & 1) != 0)
                     {

@@ -218,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
         public void RemoveMedia()
         {
-            _trackImageData = new int[1];
+            _disk = null;
         }
 
         public int Peek(int addr)
