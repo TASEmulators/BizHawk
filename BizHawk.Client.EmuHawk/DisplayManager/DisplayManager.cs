@@ -478,6 +478,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ar_integer)
 					{
+						//ALERT COPYPASTE LAUNDROMAT
 						Vector2 VS = new Vector2(virtualWidth, virtualHeight);
 						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
 						Vector2 AR = Vector2.Divide(VS, BS);
