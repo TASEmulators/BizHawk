@@ -9,6 +9,7 @@ using BizHawk.Common.BufferExtensions;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
+using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.M68000;
 using BizHawk.Emulation.Cores.Components.Z80;
 using Native68000;

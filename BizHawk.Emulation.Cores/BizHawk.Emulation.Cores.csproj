@@ -988,6 +988,14 @@
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.cs" />
+    <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\HuC6280PSG.cs" />
+    <Compile Include="Sound\MMC5Audio.cs" />
+    <Compile Include="Sound\SN76489.cs" />
+    <Compile Include="Sound\Sunsoft5BAudio.cs" />
+    <Compile Include="Sound\VRC6Alt.cs" />
+    <Compile Include="Sound\YM2413.cs" />
+    <Compile Include="Sound\YM2612.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
@@ -9,6 +8,7 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 
+using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.DiscSystem;
 

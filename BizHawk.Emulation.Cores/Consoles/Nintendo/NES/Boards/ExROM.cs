@@ -2,7 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components;
+using BizHawk.Emulation.Cores.Components;
 
 //simplifications/approximations:
 //* "Note that no commercial games rely on this mirroring -- therefore you can take the easy way out and simply give all MMC5 games 64k PRG-RAM."

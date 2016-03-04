@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using BizHawk.Common;
+﻿using System.Collections.Generic;
 
-namespace BizHawk.Emulation.Common.Components
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
+
+namespace BizHawk.Emulation.Cores.Components
 {
 	public sealed class SN76489 : ISoundProvider
 	{

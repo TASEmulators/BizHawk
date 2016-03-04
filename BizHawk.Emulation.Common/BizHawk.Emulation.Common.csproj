@@ -138,11 +138,6 @@
     <Compile Include="Interfaces\Services\IVideoProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceInjector.cs" />
-    <Compile Include="Sound\CDAudio.cs" />
-    <Compile Include="Sound\HuC6280PSG.cs" />
-    <Compile Include="Sound\MMC5Audio.cs" />
-    <Compile Include="Sound\SN76489.cs" />
-    <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
@@ -151,9 +146,6 @@
     <Compile Include="Sound\Utilities\SoundMixer.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\Utilities\Waves.cs" />
-    <Compile Include="Sound\VRC6Alt.cs" />
-    <Compile Include="Sound\YM2413.cs" />
-    <Compile Include="Sound\YM2612.cs" />
     <Compile Include="SystemLookup.cs" />
     <Compile Include="TextState.cs" />
   </ItemGroup>

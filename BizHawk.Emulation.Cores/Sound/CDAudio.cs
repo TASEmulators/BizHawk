@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
@@ -9,7 +8,7 @@ using BizHawk.Emulation.DiscSystem;
 // I decided not to let the perfect be the enemy of the good.
 // It can always be refactored. It's at least deterministic.
 
-namespace BizHawk.Emulation.Common.Components
+namespace BizHawk.Emulation.Cores.Components
 {
 	public sealed class CDAudio : ISoundProvider
 	{

@@ -3,7 +3,7 @@
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 
-namespace BizHawk.Emulation.Common.Components
+namespace BizHawk.Emulation.Cores.Components
 {
 	/// <summary>
 	/// YM2149F variant
