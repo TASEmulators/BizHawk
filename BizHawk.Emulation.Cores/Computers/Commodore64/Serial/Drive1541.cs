@@ -177,6 +177,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         public void RemoveMedia()
         {
             _disk = null;
+            _trackImageData = null;
+            _diskBits = 0;
         }
     }
 }

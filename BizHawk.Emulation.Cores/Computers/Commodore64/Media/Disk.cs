@@ -13,12 +13,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         [SaveState.DoNotSave] private int[][] _tracks;
 	    [SaveState.DoNotSave] private readonly int[] _originalMedia;
 		[SaveState.DoNotSave] public bool Valid;
+	    [SaveState.SaveWithName("DiskIsWriteProtected")] public bool WriteProtected;
 
         /// <summary>
         /// Create a blank, unformatted disk.
         /// </summary>
 	    public Disk(int trackCapacity)
-	    {
+        {
+            WriteProtected = false;
             _tracks = new int[trackCapacity][];
             FillMissingTracks();
             _originalMedia = SerializeTracks(_tracks);
@@ -35,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         /// <param name="trackCapacity">Total number of tracks on the media.</param>
 	    public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, IList<int> trackLengths, int trackCapacity)
 	    {
+            WriteProtected = true;
             _tracks = new int[trackCapacity][];
             for (var i = 0; i < trackData.Count; i++)
             {

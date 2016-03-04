@@ -10,98 +10,100 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
-			var mem = new MemoryStream(crtFile);
-			var reader = new BinaryReader(mem);
-
-		    if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
+		    using (var mem = new MemoryStream(crtFile))
 		    {
-		        return null;
-		    }
+                var reader = new BinaryReader(mem);
 
-		    var chipAddress = new List<int>();
-		    var chipBank = new List<int>();
-		    var chipData = new List<int[]>();
-		    var chipType = new List<int>();
+                if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
+                {
+                    return null;
+                }
 
-		    var headerLength = ReadCRTInt(reader);
-		    var version = ReadCRTShort(reader);
-		    var mapper = ReadCRTShort(reader);
-		    var exrom = reader.ReadByte() != 0;
-		    var game = reader.ReadByte() != 0;
+                var chipAddress = new List<int>();
+                var chipBank = new List<int>();
+                var chipData = new List<int[]>();
+                var chipType = new List<int>();
 
-		    // reserved
-		    reader.ReadBytes(6);
+                var headerLength = ReadCRTInt(reader);
+                var version = ReadCRTShort(reader);
+                var mapper = ReadCRTShort(reader);
+                var exrom = reader.ReadByte() != 0;
+                var game = reader.ReadByte() != 0;
 
-		    // cartridge name
-		    reader.ReadBytes(0x20);
+                // reserved
+                reader.ReadBytes(6);
 
-		    // skip extra header bytes
-		    if (headerLength > 0x40)
-		    {
-		        reader.ReadBytes(headerLength - 0x40);
-		    }
+                // cartridge name
+                reader.ReadBytes(0x20);
 
-		    // read chips
-		    while (reader.PeekChar() >= 0)
-		    {
-		        if (new string(reader.ReadChars(4)) != "CHIP")
-		        {
-		            break;
-		        }
+                // skip extra header bytes
+                if (headerLength > 0x40)
+                {
+                    reader.ReadBytes(headerLength - 0x40);
+                }
 
-		        var chipLength = ReadCRTInt(reader);
-		        chipType.Add(ReadCRTShort(reader));
-		        chipBank.Add(ReadCRTShort(reader));
-		        chipAddress.Add(ReadCRTShort(reader));
-		        var chipDataLength = ReadCRTShort(reader);
-		        chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
-		        chipLength -= chipDataLength + 0x10;
-		        if (chipLength > 0)
-		            reader.ReadBytes(chipLength);
-		    }
+                // read chips
+                while (reader.PeekChar() >= 0)
+                {
+                    if (new string(reader.ReadChars(4)) != "CHIP")
+                    {
+                        break;
+                    }
 
-		    if (chipData.Count <= 0)
-		    {
-		        return null;
-		    }
+                    var chipLength = ReadCRTInt(reader);
+                    chipType.Add(ReadCRTShort(reader));
+                    chipBank.Add(ReadCRTShort(reader));
+                    chipAddress.Add(ReadCRTShort(reader));
+                    var chipDataLength = ReadCRTShort(reader);
+                    chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
+                    chipLength -= chipDataLength + 0x10;
+                    if (chipLength > 0)
+                        reader.ReadBytes(chipLength);
+                }
 
-            CartridgeDevice result;
-            switch (mapper)
-		    {
-		        case 0x0000:
-		            result = new Mapper0000(chipAddress, chipData, game, exrom);
-		            break;
-		        case 0x0005:
-		            result = new Mapper0005(chipAddress, chipBank, chipData);
-		            break;
-                case 0x000A:
-                    result = new Mapper000A(chipAddress, chipBank, chipData);
-                    break;
-                case 0x000B:
-		            result = new Mapper000B(chipAddress, chipData);
-		            break;
-		        case 0x000F:
-		            result = new Mapper000F(chipAddress, chipBank, chipData);
-		            break;
-		        case 0x0011:
-		            result = new Mapper0011(chipAddress, chipBank, chipData);
-		            break;
-		        case 0x0012:
-		            result = new Mapper0012(chipAddress, chipBank, chipData);
-		            break;
-		        case 0x0013:
-		            result = new Mapper0013(chipAddress, chipBank, chipData);
-		            break;
-		        case 0x0020:
-		            result = new Mapper0020(chipAddress, chipBank, chipData);
-		            break;
-		        default:
-		            throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
-		    }
-		    result.HardReset();
+                if (chipData.Count <= 0)
+                {
+                    return null;
+                }
 
-		    return result;
-		}
+                CartridgeDevice result;
+                switch (mapper)
+                {
+                    case 0x0000:
+                        result = new Mapper0000(chipAddress, chipData, game, exrom);
+                        break;
+                    case 0x0005:
+                        result = new Mapper0005(chipAddress, chipBank, chipData);
+                        break;
+                    case 0x000A:
+                        result = new Mapper000A(chipAddress, chipBank, chipData);
+                        break;
+                    case 0x000B:
+                        result = new Mapper000B(chipAddress, chipData);
+                        break;
+                    case 0x000F:
+                        result = new Mapper000F(chipAddress, chipBank, chipData);
+                        break;
+                    case 0x0011:
+                        result = new Mapper0011(chipAddress, chipBank, chipData);
+                        break;
+                    case 0x0012:
+                        result = new Mapper0012(chipAddress, chipBank, chipData);
+                        break;
+                    case 0x0013:
+                        result = new Mapper0013(chipAddress, chipBank, chipData);
+                        break;
+                    case 0x0020:
+                        result = new Mapper0020(chipAddress, chipBank, chipData);
+                        break;
+                    default:
+                        throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
+                }
+                result.HardReset();
+
+                return result;
+            }
+        }
 
 		private static int ReadCRTShort(BinaryReader reader)
 		{
