@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
             };
 
             _ram = new int[0x800];
-            Via0 = new Via(ViaReadClock, ViaReadData, ViaReadAtn, 8);
-            Via1 = new Via(ReadVia1PrA, ReadVia1PrB);
+            Via0 = Chip6522.Create(ViaReadClock, ViaReadData, ViaReadAtn, 8);
+            Via1 = Chip6522.Create(ReadVia1PrA, ReadVia1PrB);
 
             _cpuClockNum = clockNum;
             _driveCpuClockNum = clockDen*1000000; // 1mhz

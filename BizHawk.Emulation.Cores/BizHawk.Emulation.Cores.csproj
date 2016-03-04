@@ -228,6 +228,7 @@
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip6510.IDebuggable.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip6510.IDisassemblable.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6522.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip6581R3.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip6581R4AR.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip8580R5.cs" />

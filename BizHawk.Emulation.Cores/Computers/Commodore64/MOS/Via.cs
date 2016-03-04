@@ -122,6 +122,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         [SaveState.SaveWithName("PB6")]
         private bool _pb6;
 
+        [SaveState.SaveWithName("InterruptNextClock")]
+        private int _interruptNextClock;
+        [SaveState.SaveWithName("T1Loaded")]
+        private bool _t1CLoaded;
+        [SaveState.SaveWithName("T2Loaded")]
+        private bool _t2CLoaded;
+        [SaveState.SaveWithName("T1Delayed")]
+        private int _t1Delayed;
+        [SaveState.SaveWithName("T2Delayed")]
+        private int _t2Delayed;
+
         public Via()
         {
             _port = new DisconnectedPort();
@@ -183,10 +194,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             _resetCb2NextClock = false;
             _handshakeCa2NextClock = false;
             _handshakeCb2NextClock = false;
+            _interruptNextClock = 0;
+            _t1CLoaded = false;
+            _t2CLoaded = false;
         }
 
         public void ExecutePhase()
         {
+            // Process delayed interrupts
+            _ifr |= _interruptNextClock;
+            _interruptNextClock = 0;
+
             // Process 'pulse' and 'handshake' outputs on CA2 and CB2
 
             if (_resetCa2NextClock)
@@ -215,48 +233,70 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
             // Count timers
 
-            _t1C--;
-            if (_t1C < 0)
+            if (_t1Delayed > 0)
             {
-                switch (_acrT1Control)
+                _t1Delayed--;
+            }
+            else
+            {
+                _t1C--;
+                if (_t1C < 0)
                 {
-                    case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS:
-                        _t1C = _t1L;
-                        break;
-                    case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7:
-                        _t1C = _t1L;
-                        _prb ^= 0x80;
-                        break;
-                    default:
-                        _t1C = 0xFFFF;
-                        break;
+                    if (_t1CLoaded)
+                    {
+                        _interruptNextClock |= 0x40;
+                        _t1CLoaded = false;
+                    }
+                    switch (_acrT1Control)
+                    {
+                        case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS:
+                            _t1C = _t1L;
+                            _t1CLoaded = true;
+                            break;
+                        case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7:
+                            _t1C = _t1L;
+                            _prb ^= 0x80;
+                            _t1CLoaded = true;
+                            break;
+                    }
+                    _t1C &= 0xFFFF;
                 }
-                _ifr |= 0x40;
             }
 
-            switch (_acrT2Control)
+            if (_t2Delayed > 0)
             {
-                case ACR_T2_CONTROL_TIMED:
-                    _t2C--;
-                    if (_t2C < 0)
-                    {
-                        _ifr |= 0x20;
-                        _t2C = 0xFFFF;
-                    }
-                    break;
-                case ACR_T2_CONTROL_COUNT_ON_PB6:
-                    _pb6L = _pb6;
-                    _pb6 = (_port.ReadExternalPrb() & 0x40) != 0;
-                    if (!_pb6 && _pb6L)
-                    {
+                _t2Delayed--;
+            }
+            else
+            {
+                switch (_acrT2Control)
+                {
+                    case ACR_T2_CONTROL_TIMED:
                         _t2C--;
                         if (_t2C < 0)
                         {
-                            _ifr |= 0x20;
-                            _t2C = 0xFFFF;
+                            if (_t2CLoaded)
+                            {
+                                _interruptNextClock |= 0x20;
+                                _t2CLoaded = false;
+                            }
+                            _t2C = _t2L;
                         }
-                    }
-                    break;
+                        break;
+                    case ACR_T2_CONTROL_COUNT_ON_PB6:
+                        _pb6L = _pb6;
+                        _pb6 = (_port.ReadExternalPrb() & 0x40) != 0;
+                        if (!_pb6 && _pb6L)
+                        {
+                            _t2C--;
+                            if (_t2C < 0)
+                            {
+                                _ifr |= 0x20;
+                                _t2C = 0xFFFF;
+                            }
+                        }
+                        break;
+                }
             }
 
             // Process CA2
