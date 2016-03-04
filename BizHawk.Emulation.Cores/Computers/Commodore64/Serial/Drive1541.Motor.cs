@@ -11,18 +11,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         [SaveState.DoNotSave] private int _tempStep;
         [SaveState.DoNotSave] private int _tempPrB1;
 
-        private int _overflowFlagDelaySr;
-
-        private int ReadVia1PrA()
-        {
-            return _bitHistory & 0xFF;
-        }
-
-        private int ReadVia1PrB()
-        {
-            return (_motorStep & 0x03) | (_motorEnabled ? 0x04 : 0x00) | (_sync ? 0x00 : 0x80);
-        }
-
         private void ExecuteMotor()
         {
             _tempPrB1 = Via1.EffectivePrB;

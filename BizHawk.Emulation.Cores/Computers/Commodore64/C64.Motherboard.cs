@@ -130,6 +130,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		    switch (diskDriveType)
 		    {
 		        case C64.DiskDriveType.Commodore1541:
+                case C64.DiskDriveType.Commodore1541II:
                     DiskDrive = new Drive1541(ClockNumerator, ClockDenominator);
                     Serial.Connect(DiskDrive);
 		            break;

@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
             FillMissingTracks();
             _originalMedia = SerializeTracks(_tracks);
             Valid = true;
-	    }
+        }
 
         /// <summary>
         /// Create an expanded representation of a magnetic disk.

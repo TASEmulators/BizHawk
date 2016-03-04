@@ -261,6 +261,7 @@
     <Compile Include="Computers\Commodore64\Serial\Drive1541.IDebuggable.cs" />
     <Compile Include="Computers\Commodore64\Serial\Drive1541.IDisassemblable.cs" />
     <Compile Include="Computers\Commodore64\Serial\Drive1541.Motor.cs" />
+    <Compile Include="Computers\Commodore64\Serial\Drive1541.Registers.cs" />
     <Compile Include="Computers\Commodore64\Serial\SerialPort.cs" />
     <Compile Include="Computers\Commodore64\Serial\SerialPortDevice.cs" />
     <Compile Include="Computers\Commodore64\User\UserPort.cs" />

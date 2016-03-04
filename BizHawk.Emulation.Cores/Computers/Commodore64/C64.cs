@@ -117,7 +117,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Dispose()
 		{
-		}
+		    if (_board != null)
+		    {
+		        if (_board.TapeDrive != null)
+		        {
+		            _board.TapeDrive.RemoveMedia();
+		        }
+		        if (_board.DiskDrive != null)
+		        {
+		            _board.DiskDrive.RemoveMedia();
+		        }
+                _board = null;
+            }
+        }
 
 	    private int _frameCycles;
 
@@ -266,19 +278,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void InitRoms(DiskDriveType diskDriveType)
 		{
-			var basicRom = GetFirmware(0x2000, "Basic");
-			var charRom = GetFirmware(0x1000, "Chargen");
-			var kernalRom = GetFirmware(0x2000, "Kernal");
+            _board.BasicRom.Flash(GetFirmware(0x2000, "Basic"));
+            _board.KernalRom.Flash(GetFirmware(0x1000, "Chargen"));
+            _board.CharRom.Flash(GetFirmware(0x2000, "Kernal"));
 
-            _board.BasicRom.Flash(basicRom);
-            _board.KernalRom.Flash(kernalRom);
-            _board.CharRom.Flash(charRom);
-
-            if (diskDriveType == DiskDriveType.Commodore1541)
+		    switch (diskDriveType)
 		    {
-                var diskRom = GetFirmware(0x4000, "Drive1541", "Drive1541II");
-                _board.DiskDrive.DriveRom.Flash(diskRom);
-            }
+		        case DiskDriveType.Commodore1541:
+                    _board.DiskDrive.DriveRom.Flash(GetFirmware(0x4000, "Drive1541"));
+                    break;
+                case DiskDriveType.Commodore1541II:
+                    _board.DiskDrive.DriveRom.Flash(GetFirmware(0x4000, "Drive1541II"));
+                    break;
+		    }
 		}
 
 		// ------------------------------------

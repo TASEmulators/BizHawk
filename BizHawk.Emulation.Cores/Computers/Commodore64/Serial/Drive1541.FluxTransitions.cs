@@ -32,6 +32,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         private int _countsBeforeRandomTransition;
         [SaveState.SaveWithName("CurrentRNG")]
         private int _rngCurrent;
+        [SaveState.SaveWithName("Clocks")]
+        private int _clocks;
+        [SaveState.SaveWithName("CpuClocks")]
+        private int _cpuClocks;
 
         // Lehmer RNG
         private void AdvanceRng()
@@ -43,8 +47,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
         private void ExecuteFlux()
         {
-            for (_diskCycle = 0; _diskCycle < 16; _diskCycle++)
+            // This actually executes the main 16mhz clock
+            while (_clocks > 0)
             {
+                _clocks--;
+
                 // rotate disk
                 if (_motorEnabled)
                 {
@@ -144,7 +151,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     _diskSupplementaryCounter = 0;
                 }
 
+                _cpuClocks--;
+                if (_cpuClocks <= 0)
+                {
+                    ExecuteSystem();
+                    _cpuClocks = 16;
+                }
+
                 _diskDensityCounter++;
+                _diskCycle = (_diskCycle + 1) & 0xF;
             }
         }
     }
