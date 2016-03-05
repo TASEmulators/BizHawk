@@ -1,8 +1,9 @@
 ﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-	public sealed class CartridgePort
+	public sealed class CartridgePort : IDriveLight
 	{
 	    private CartridgeDevice _cartridgeDevice;
 	    private bool _connected;
@@ -126,5 +127,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			SaveState.SyncObject(ser, this);
 		}
+
+	    public bool DriveLightEnabled { get { return _connected && _cartridgeDevice.DriveLightEnabled; } }
+	    public bool DriveLightOn { get { return _connected && _cartridgeDevice.DriveLightOn; } }
 	}
 }

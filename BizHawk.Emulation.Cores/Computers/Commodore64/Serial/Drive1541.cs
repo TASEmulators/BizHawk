@@ -25,8 +25,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         private bool _byteReady;
         [SaveState.SaveWithName("DriveCpuClockNumerator")]
         private readonly int _driveCpuClockNum;
-        [SaveState.SaveWithName("DriveCpuClockDenominator")]
-        private readonly int _driveCpuClockDen;
         [SaveState.SaveWithName("TrackNumber")]
         private int _trackNumber;
         [SaveState.SaveWithName("MotorEnabled")]
@@ -35,8 +33,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         private bool _ledEnabled;
         [SaveState.SaveWithName("MotorStep")]
         private int _motorStep;
-        [SaveState.DoNotSave]
-        private int _via0PortBtemp;
         [SaveState.SaveWithName("CPU")]
         private readonly MOS6502X _cpu;
         [SaveState.SaveWithName("RAM")]
@@ -113,9 +109,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
             _cpu.IRQ = !(Via0.Irq && Via1.Irq); // active low IRQ line
             _cpu.ExecuteOne();
-
-            _via0PortBtemp = Via0.EffectivePrB;
-            _ledEnabled = (_via0PortBtemp & 0x08) != 0;
 
             if (_ledEnabled)
             {

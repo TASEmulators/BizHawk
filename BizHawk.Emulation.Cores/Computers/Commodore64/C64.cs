@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		)]
 	[ServiceNotApplicable(typeof(ISettable<,>))]
 	public sealed partial class C64 : IEmulator, IRegionable
-	{
+    {
 		// framework
 		public C64(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		    }
 
 			((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.Vic);
-            ((BasicServiceProvider) ServiceProvider).Register<IDriveLight>(_board.Serial);
+            ((BasicServiceProvider) ServiceProvider).Register<IDriveLight>(this);
         }
 
 		// internal variables

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-	public abstract partial class CartridgeDevice
+	public abstract partial class CartridgeDevice : IDriveLight
 	{
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
@@ -273,5 +274,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public virtual void WriteDF00(int addr, int val)
 		{
 		}
+
+	    public bool DriveLightEnabled { get; protected set; }
+	    public bool DriveLightOn { get; protected set; }
 	}
 }
