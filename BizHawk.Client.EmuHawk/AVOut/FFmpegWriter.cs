@@ -291,5 +291,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
 		}
+
+		public bool UsesAudio { get { return true; } }
+		public bool UsesVideo { get { return true; } }
 	}
 }

@@ -790,5 +790,10 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void SetFrame(int frame) { }
+
+		public bool UsesAudio { get { return true; } }
+		public bool UsesVideo { get { return true; } }
 	}
+
+
 }

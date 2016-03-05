@@ -205,6 +205,9 @@ namespace BizHawk.Client.EmuHawk
 		public void SetVideoParameters(int width, int height) { }
 		public void SetFrame(int frame) { }
 
+		public bool UsesAudio { get { return true; } }
+		public bool UsesVideo { get { return false; } }
+
 		class WavWriterVToken : IDisposable
 		{
 			public void Dispose() { }

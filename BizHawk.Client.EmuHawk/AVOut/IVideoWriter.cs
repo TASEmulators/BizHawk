@@ -19,6 +19,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		void SetDefaultVideoCodecToken();
 
+		/// <summary>
+		/// Returns whether this videowriter dumps audio
+		/// </summary>
+		bool UsesAudio { get; }
+
+		/// <summary>
+		/// Returns whether this videowriter dumps video
+		/// </summary>
+		bool UsesVideo { get; }
 
 		// why no OpenFile(IEnumerator<string>) ?
 		// different video writers may have different ideas of how and why splitting is to occur

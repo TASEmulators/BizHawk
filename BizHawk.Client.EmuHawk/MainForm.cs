@@ -2817,8 +2817,10 @@ namespace BizHawk.Client.EmuHawk
 					coreskipaudio = true;
 
 				{
-					bool render = !_throttle.skipnextframe || _currAviWriter != null;
+					bool render = !_throttle.skipnextframe;
 					bool renderSound = !coreskipaudio;
+					if (_currAviWriter != null && _currAviWriter.UsesVideo) render = true;
+					if (_currAviWriter != null && _currAviWriter.UsesAudio) renderSound = true;
 					Global.Emulator.FrameAdvance(render, renderSound);
 				}
 
