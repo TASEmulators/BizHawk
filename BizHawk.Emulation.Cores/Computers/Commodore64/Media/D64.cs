@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                     }
                 }
 
-                return new Disk(trackDatas, trackNumbers, trackDensities, trackLengths, 84);
+                return new Disk(trackDatas, trackNumbers, trackDensities, 84);
             }
         }
 	}

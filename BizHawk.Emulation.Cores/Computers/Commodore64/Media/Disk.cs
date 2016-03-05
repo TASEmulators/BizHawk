@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         /// <param name="trackDensities">Density zones for the raw bit data.</param>
         /// <param name="trackLengths">Length, in bits, of each raw bit data.</param>
         /// <param name="trackCapacity">Total number of tracks on the media.</param>
-	    public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, IList<int> trackLengths, int trackCapacity)
+	    public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, int trackCapacity)
 	    {
             WriteProtected = true;
             _tracks = new int[trackCapacity][];

@@ -205,6 +205,7 @@
     </Compile>
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
+    <Compile Include="Computers\Commodore64\C64Format.cs" />
     <Compile Include="Computers\Commodore64\C64Util.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
     <Compile Include="Computers\Commodore64\Cassette\CassettePortDevice.cs" />
     <Compile Include="Computers\Commodore64\Cassette\TapeDrive.cs" />
+    <Compile Include="Computers\Commodore64\C64FormatFinder.cs" />
     <Compile Include="Computers\Commodore64\Media\Tape.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\CartridgeDevice.cs" />

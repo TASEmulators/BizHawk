@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
             if (_ledEnabled)
             {
-                _driveLightOffTime = 1000000;
+                _driveLightOffTime = 25000;
             }
             else if (_driveLightOffTime > 0)
             {
