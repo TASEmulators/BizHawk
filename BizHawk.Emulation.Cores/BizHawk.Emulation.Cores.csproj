@@ -209,6 +209,7 @@
     <Compile Include="Computers\Commodore64\C64Util.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
@@ -217,6 +218,7 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0012.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper002B.cs" />
     <Compile Include="Computers\Commodore64\Cassette\CassettePortDevice.cs" />
     <Compile Include="Computers\Commodore64\Cassette\TapeDrive.cs" />
     <Compile Include="Computers\Commodore64\C64FormatFinder.cs" />

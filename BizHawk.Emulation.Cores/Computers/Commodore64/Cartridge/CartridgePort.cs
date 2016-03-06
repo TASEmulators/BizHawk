@@ -1,10 +1,13 @@
-﻿using BizHawk.Common;
+﻿using System;
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	public sealed class CartridgePort : IDriveLight
 	{
+	    public Func<int> ReadOpenBus; 
+
 	    private CartridgeDevice _cartridgeDevice;
 	    private bool _connected;
 
@@ -82,6 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
             _connected = true;
 		    _cartridgeDevice = newCartridgeDevice;
+		    newCartridgeDevice.ReadOpenBus = ReadOpenBus;
 		}
 
 		public void Disconnect()

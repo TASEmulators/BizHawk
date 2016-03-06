@@ -5,11 +5,11 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-    //792
-
     // Epyx Fastload. Uppermost page is always visible at DFxx.
-    // They use a capacitor that is recharged by accesses to DExx
-    // to pull down EXROM.
+    // They use a capacitor that is discharged by accesses to DExx
+    // to pull down EXROM. Also, accesses to LOROM while it is active
+    // discharge the capacitor.
+    // Thanks to VICE team for the info: http://vice-emu.sourceforge.net/vice_15.html
 
     public abstract partial class CartridgeDevice
     {
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
             [SaveState.DoNotSave]
             private readonly int[] _rom;
 
-            public Mapper000A(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
+            public Mapper000A(IList<int[]> newData)
             {
                 _rom = new int[0x2000];
                 Array.Copy(newData.First(), _rom, 0x2000);

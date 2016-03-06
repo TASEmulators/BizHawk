@@ -196,7 +196,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
         }
 
         public void Init()
-		{
+        {
+            CartPort.ReadOpenBus = ReadOpenBus;
+
             Cassette.ReadDataOutput = CassPort_ReadDataOutput;
             Cassette.ReadMotor = CassPort_ReadMotor;
 

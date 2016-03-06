@@ -172,5 +172,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_lastReadVicData = Pla.VicRead(_lastReadVicAddress);
             return _lastReadVicData;
 		}
+
+	    private int ReadOpenBus()
+	    {
+	        return _lastReadVicData;
+	    }
 	}
 }
