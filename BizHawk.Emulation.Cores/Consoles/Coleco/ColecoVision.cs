@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
-
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components;
+﻿using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
@@ -31,6 +24,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public TMS9918A VDP;
 		public SN76489 PSG;
 		public byte[] Ram = new byte[1024];
+		private readonly TraceBuffer Tracer = new TraceBuffer();
 
 		[CoreConstructor("Coleco")]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
@@ -39,7 +33,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
-			bool skipbios = this._syncSettings.SkipBiosIntro;
+			bool skipbios = _syncSettings.SkipBiosIntro;
 
 			Cpu = new Z80A();
 			Cpu.ReadMemory = ReadMemory;
@@ -61,7 +55,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			LoadRom(rom, skipbios);
 			this.game = game;
 			SetupMemoryDomains();
-			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
+
+			Tracer.Header = Cpu.TraceHeader;
+			var serviceProvider = ServiceProvider as BasicServiceProvider;
+			serviceProvider.Register<IDisassemblable>(new Disassembler());
+			serviceProvider.Register<ITraceable>(Tracer);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -70,9 +68,16 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public void FrameAdvance(bool render, bool renderSound)
 		{
+			Cpu.Debug = Tracer.Enabled;
 			Frame++;
 			_isLag = true;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
+
+			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			{
+				Cpu.Logger = (s) => Tracer.Put(s);
+			}
+
 			VDP.ExecuteFrame();
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 

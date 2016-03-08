@@ -2,6 +2,7 @@
 using System.IO;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.M6502
 {
@@ -40,27 +41,45 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			FlagI = true;
 		}
 
-		public string State(bool disassemble = true)
+		public string TraceHeader
+		{
+			get { return "6502: PC, opcode, registers (SP, A, P, X, Y) flags (NVTBDIZCR)"; }
+		}
+
+		public TraceInfo State(bool disassemble = true)
 		{
 			int notused;
-			string a = string.Format("{0:X4}  {1:X2} {2} ", PC, PeekMemory(PC), disassemble ? Disassemble(PC, out notused) : "---").PadRight(30);
-			string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", A, X, Y, P, S, TotalExecutedCycles);
-			string val = a + b + "   ";
-			if (FlagN) val = val + "N";
-			if (FlagV) val = val + "V";
-			if (FlagT) val = val + "T";
-			if (FlagB) val = val + "B";
-			if (FlagD) val = val + "D";
-			if (FlagI) val = val + "I";
-			if (FlagZ) val = val + "Z";
-			if (FlagC) val = val + "C";
-			if (!RDY) val = val + "R";
-			return val;
+
+			return new TraceInfo
+			{
+				Disassembly = string.Format(
+					"{0:X4}  {1:X2} {2} ",
+					PC,
+					PeekMemory(PC),
+					disassemble ? Disassemble(PC, out notused) : "---"),
+				RegisterInfo = string.Format(
+					"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}{13}",
+					A,
+					X,
+					Y,
+					P,
+					S,
+					TotalExecutedCycles,
+					FlagN ? "N" : "",
+					FlagV ? "V" : "",
+					FlagT ? "T" : "",
+					FlagB ? "B" : "",
+					FlagD ? "D" : "",
+					FlagI ? "I" : "",
+					FlagZ ? "Z" : "",
+					FlagC ? "C" : "",
+					!RDY ? "R" : "")
+			};
 		}
 
 		public bool AtStart { get { return opcode == VOP_Fetch1 || Microcode[opcode][mi] >= Uop.End; } }
 
-		public string TraceState()
+		public TraceInfo TraceState()
 		{
 			// only disassemble when we're at the beginning of an opcode
 			return State(AtStart);
@@ -228,6 +247,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			ushort highAddress = (ushort)((address & 0xFF00) + ((address + 1) & 0xFF));
 			return (ushort)(ReadMemory(address) | (ReadMemory(highAddress) << 8));
 		}
+
+        // SO pin
+	    public void SetOverflow()
+	    {
+	        FlagV = true;
+	    }
 
 		private static readonly byte[] TableNZ = 
 		{ 

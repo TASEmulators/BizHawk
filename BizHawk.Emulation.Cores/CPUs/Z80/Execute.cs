@@ -1,3 +1,4 @@
+using BizHawk.Emulation.Common;
 using System;
 
 namespace BizHawk.Emulation.Cores.Components.Z80
@@ -14,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		public int PendingCycles { get { return pendingCycles; } set { pendingCycles = value; } }
 
 		public bool Debug;
-		public Action<string> Logger;
+		public Action<TraceInfo> Logger;
 
 		/// <summary>
 		/// Runs the CPU for a particular number of clock cycles.
@@ -11949,22 +11950,42 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		// TODO, not super thrilled with the existing Z80 disassembler, lets see if we can find something decent to replace it with
 		Disassembler Disassembler = new Disassembler();
 
-		public string State()
+		public string TraceHeader
+		{
+			get { return "Z80: PC, opcode, registers (AF, BC, DE, HL, IX, IY, SP, Cy) Flags (CNP3H5ZS)"; }
+		}
+
+		public TraceInfo State()
 		{
 			ushort tempPC = RegPC.Word;
-			string a = string.Format("{0:X4}  {1:X2} {2} ", RegPC.Word, FetchMemoryWrapper(RegPC.Word), Disassembler.Disassemble(() => ReadMemoryWrapper(tempPC++)).PadRight(41));
-			string b = string.Format("AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7}", RegAF.Word, RegBC.Word, RegDE.Word, RegHL.Word, RegIX.Word, RegIY.Word, RegSP.Word, TotalExecutedCycles);
-			string val = a + b + "   ";
 
-			if (RegFlagC) val = val + "C";
-			if (RegFlagN) val = val + "N";
-			if (RegFlagP) val = val + "P";
-			if (RegFlag3) val = val + "3";
-			if (RegFlagH) val = val + "H";
-			if (RegFlag5) val = val + "5";
-			if (RegFlagZ) val = val + "Z";
-			if (RegFlagS) val = val + "S";
-			return val;
+			return new TraceInfo
+			{
+				Disassembly = string.Format(
+					"{0:X4}  {1:X2} {2}",
+					RegPC.Word,
+					FetchMemoryWrapper(RegPC.Word),
+					Disassembler.Disassemble(() => ReadMemoryWrapper(tempPC++))),
+				RegisterInfo = string.Format(
+					"AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7} {8}{9}{10}{11}{12}{13}{14}{15}",
+					RegAF.Word,
+					RegBC.Word,
+					RegDE.Word,
+					RegHL.Word,
+					RegIX.Word,
+					RegIY.Word,
+					RegSP.Word,
+					TotalExecutedCycles,
+					RegFlagC ? "C" : "",
+					RegFlagN ? "N" : "",
+					RegFlagP ? "P" : "",
+					RegFlag3 ? "3" : "",
+					RegFlagH ? "H" : "",
+					RegFlag5 ? "5" : "",
+					RegFlagZ ? "Z" : "",
+					RegFlagS ? "S" : ""
+					)
+			};
 		}
 	}
 }

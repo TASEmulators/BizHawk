@@ -49,6 +49,8 @@
 			this.DisassemblerView = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.Address = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.Instruction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.DisassemblerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.AddBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.StepOutBtn = new System.Windows.Forms.Button();
 			this.StepIntoBtn = new System.Windows.Forms.Button();
 			this.StepOverBtn = new System.Windows.Forms.Button();
@@ -56,8 +58,7 @@
 			this.SeekToBtn = new System.Windows.Forms.Button();
 			this.SeekToBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.CancelSeekBtn = new System.Windows.Forms.Button();
-			this.DisassemblerContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.AddBreakpointContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.RunBtn = new System.Windows.Forms.Button();
 			this.menuStrip1.SuspendLayout();
 			this.RegistersGroupBox.SuspendLayout();
 			this.BreakpointsGroupBox.SuspendLayout();
@@ -82,14 +83,14 @@
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExitMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
 			this.fileToolStripMenuItem.Text = "&File";
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(145, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(151, 22);
 			this.ExitMenuItem.Text = "&Close";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -102,7 +103,7 @@
             this.toolStripSeparator1,
             this.RefreshMenuItem});
 			this.DebugSubMenu.Name = "DebugSubMenu";
-			this.DebugSubMenu.Size = new System.Drawing.Size(54, 20);
+			this.DebugSubMenu.Size = new System.Drawing.Size(50, 20);
 			this.DebugSubMenu.Text = "&Debug";
 			this.DebugSubMenu.DropDownOpened += new System.EventHandler(this.DebugSubMenu_DropDownOpened);
 			// 
@@ -111,7 +112,7 @@
 			this.StepIntoMenuItem.Enabled = false;
 			this.StepIntoMenuItem.Name = "StepIntoMenuItem";
 			this.StepIntoMenuItem.ShortcutKeyDisplayString = "F11";
-			this.StepIntoMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.StepIntoMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.StepIntoMenuItem.Text = "Step &Into";
 			this.StepIntoMenuItem.Click += new System.EventHandler(this.StepIntoMenuItem_Click);
 			// 
@@ -120,7 +121,7 @@
 			this.StepOverMenuItem.Enabled = false;
 			this.StepOverMenuItem.Name = "StepOverMenuItem";
 			this.StepOverMenuItem.ShortcutKeyDisplayString = "F10";
-			this.StepOverMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.StepOverMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.StepOverMenuItem.Text = "Step O&ver";
 			this.StepOverMenuItem.Click += new System.EventHandler(this.StepOverMenuItem_Click);
 			// 
@@ -129,20 +130,20 @@
 			this.StepOutMenuItem.Enabled = false;
 			this.StepOutMenuItem.Name = "StepOutMenuItem";
 			this.StepOutMenuItem.ShortcutKeyDisplayString = "Shift+F11";
-			this.StepOutMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.StepOutMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.StepOutMenuItem.Text = "Step Ou&t";
 			this.StepOutMenuItem.Click += new System.EventHandler(this.StepOutMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(180, 6);
 			// 
 			// RefreshMenuItem
 			// 
 			this.RefreshMenuItem.Name = "RefreshMenuItem";
 			this.RefreshMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
-			this.RefreshMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.RefreshMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.RefreshMenuItem.Text = "Refresh";
 			this.RefreshMenuItem.Click += new System.EventHandler(this.RefreshMenuItem_Click);
 			// 
@@ -165,6 +166,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.RegisterPanel.AutoScroll = true;
 			this.RegisterPanel.Core = null;
+			this.RegisterPanel.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.RegisterPanel.Location = new System.Drawing.Point(8, 19);
 			this.RegisterPanel.Name = "RegisterPanel";
 			this.RegisterPanel.ParentDebugger = null;
@@ -242,8 +244,10 @@
             this.Address,
             this.Instruction});
 			this.DisassemblerView.ContextMenuStrip = this.DisassemblerContextMenu;
+			this.DisassemblerView.Font = new System.Drawing.Font("Courier New", 8F);
 			this.DisassemblerView.FullRowSelect = true;
 			this.DisassemblerView.GridLines = true;
+			this.DisassemblerView.HideSelection = false;
 			this.DisassemblerView.ItemCount = 0;
 			this.DisassemblerView.Location = new System.Drawing.Point(6, 39);
 			this.DisassemblerView.Name = "DisassemblerView";
@@ -267,6 +271,21 @@
 			// 
 			this.Instruction.Text = "Instruction";
 			this.Instruction.Width = 291;
+			// 
+			// DisassemblerContextMenu
+			// 
+			this.DisassemblerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AddBreakpointContextMenuItem});
+			this.DisassemblerContextMenu.Name = "DisassemblerContextMenu";
+			this.DisassemblerContextMenu.Size = new System.Drawing.Size(148, 26);
+			this.DisassemblerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.DisassemblerContextMenu_Opening);
+			// 
+			// AddBreakpointContextMenuItem
+			// 
+			this.AddBreakpointContextMenuItem.Name = "AddBreakpointContextMenuItem";
+			this.AddBreakpointContextMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.AddBreakpointContextMenuItem.Text = "Add Breakpoint";
+			this.AddBreakpointContextMenuItem.Click += new System.EventHandler(this.AddBreakpointContextMenuItem_Click);
 			// 
 			// StepOutBtn
 			// 
@@ -328,34 +347,31 @@
 			// CancelSeekBtn
 			// 
 			this.CancelSeekBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelSeekBtn.Location = new System.Drawing.Point(699, 323);
+			this.CancelSeekBtn.Location = new System.Drawing.Point(680, 323);
 			this.CancelSeekBtn.Name = "CancelSeekBtn";
-			this.CancelSeekBtn.Size = new System.Drawing.Size(56, 23);
+			this.CancelSeekBtn.Size = new System.Drawing.Size(75, 23);
 			this.CancelSeekBtn.TabIndex = 15;
 			this.CancelSeekBtn.Text = "Cancel";
 			this.CancelSeekBtn.UseVisualStyleBackColor = true;
 			this.CancelSeekBtn.Click += new System.EventHandler(this.CancelSeekBtn_Click);
 			// 
-			// DisassemblerContextMenu
+			// RunBtn
 			// 
-			this.DisassemblerContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.AddBreakpointContextMenuItem});
-			this.DisassemblerContextMenu.Name = "DisassemblerContextMenu";
-			this.DisassemblerContextMenu.Size = new System.Drawing.Size(157, 26);
-			this.DisassemblerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.DisassemblerContextMenu_Opening);
-			// 
-			// AddBreakpointContextMenuItem
-			// 
-			this.AddBreakpointContextMenuItem.Name = "AddBreakpointContextMenuItem";
-			this.AddBreakpointContextMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.AddBreakpointContextMenuItem.Text = "Add Breakpoint";
-			this.AddBreakpointContextMenuItem.Click += new System.EventHandler(this.AddBreakpointContextMenuItem_Click);
+			this.RunBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.RunBtn.Location = new System.Drawing.Point(680, 432);
+			this.RunBtn.Name = "RunBtn";
+			this.RunBtn.Size = new System.Drawing.Size(75, 23);
+			this.RunBtn.TabIndex = 16;
+			this.RunBtn.Text = "Run";
+			this.RunBtn.UseVisualStyleBackColor = true;
+			this.RunBtn.Click += new System.EventHandler(this.RunBtn_Click);
 			// 
 			// GenericDebugger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(767, 560);
+			this.Controls.Add(this.RunBtn);
 			this.Controls.Add(this.CancelSeekBtn);
 			this.Controls.Add(this.SeekToBox);
 			this.Controls.Add(this.SeekToBtn);
@@ -415,5 +431,6 @@
 		private System.Windows.Forms.ToolStripMenuItem RefreshMenuItem;
 		private System.Windows.Forms.ContextMenuStrip DisassemblerContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem AddBreakpointContextMenuItem;
+		private System.Windows.Forms.Button RunBtn;
 	}
 }

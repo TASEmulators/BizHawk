@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			if (this.SyncSettings.UseGL && glContext == null)
 			{
-				glContext = CoreComm.RequestGLContext();
+				glContext = CoreComm.RequestGLContext(2,0,false);
 			}
 
 			ResetCounters();
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		static object glContext;
+		object glContext;
 
 		void ActivateGL()
 		{
@@ -322,13 +322,21 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				CD.Dispose();
 				Disposed = true;
 				DeactivateGL();
+				CoreComm.ReleaseGLContext(glContext);
 			}
 		}
 
 		#region IVideoProvider
 
 		int[] VideoBuffer = new int[704 * 512];
-		public int[] GetVideoBuffer() { return VideoBuffer; }
+		int[] TextureIdBuffer = new int[1]; //todo
+		public int[] GetVideoBuffer() {
+			//doesn't work yet
+			//if (SyncSettings.UseGL)
+			//  return new[] { VideoBuffer[0] };
+			//else
+				return VideoBuffer;
+		}
 		public int VirtualWidth { get { return BufferWidth; } }
 		public int VirtualHeight { get { return BufferHeight; } }
 		public int BufferWidth { get; private set; }

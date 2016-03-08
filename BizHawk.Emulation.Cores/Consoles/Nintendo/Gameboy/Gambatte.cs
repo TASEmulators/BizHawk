@@ -102,7 +102,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IDisassemblable>(new GBDisassembler());
 			ServiceProvider = ser;
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer
+			{
+				Header = "Z80: PC, opcode, registers(SP, A, B, C, D, E, F, H, L, LY, CY)"
+			};
 			ser.Register<ITraceable>(Tracer);
 			InitMemoryCallbacks();
 			CoreComm = comm;

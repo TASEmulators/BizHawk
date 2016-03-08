@@ -34,9 +34,22 @@ namespace BizHawk.Common
 			f.SetDefaultValues(obj, f.DefaultValues);
 		}
 
+		private static Dictionary<Type, OpCode> IntTypes = new Dictionary<Type,OpCode>
+		{
+			{ typeof(byte), OpCodes.Conv_U1 },
+			{ typeof(sbyte), OpCodes.Conv_I1 },
+			{ typeof(ushort), OpCodes.Conv_U2 },
+			{ typeof(short), OpCodes.Conv_I2 },
+			{ typeof(uint), OpCodes.Conv_U4 },
+			{ typeof(int), OpCodes.Conv_I4 },
+			{ typeof(ulong), OpCodes.Conv_U8 },
+			{ typeof(long), OpCodes.Conv_I8 },
+			{ typeof(UIntPtr), OpCodes.Conv_U },
+			{ typeof(IntPtr), OpCodes.Conv_I },
+		};
+
 		private static DefaultValueSetter CreateSetter(Type t)
 		{
-			//var dyn = new DynamicMethod("SetDefaultValues_" + t.Name, null, new[] { t }, true);
 			var dyn = new DynamicMethod("SetDefaultValues_" + t.Name, null, new[] { typeof(object), typeof(object[]) }, false);
 			var il = dyn.GetILGenerator();
 			List<object> DefaultValues = new List<object>();
@@ -55,9 +68,7 @@ namespace BizHawk.Common
 					{
 						object value = (attr as DefaultValueAttribute).Value;
 						Type desiredType = method.GetParameters()[0].ParameterType;
-
-						if (!desiredType.IsAssignableFrom(value.GetType()))
-							throw new InvalidOperationException(string.Format("Default value assignment will fail for {0}.{1}", t.Name, prop.Name));
+						Type sourceType = value.GetType();
 
 						int idx = DefaultValues.Count;
 						DefaultValues.Add(value);
@@ -66,7 +77,21 @@ namespace BizHawk.Common
 						il.Emit(OpCodes.Ldarg_1); // arg1: array of default values
 						il.Emit(OpCodes.Ldc_I4, idx); // load index
 						il.Emit(OpCodes.Ldelem, typeof(object)); // get default value at appropriate index
-						il.Emit(OpCodes.Unbox_Any, desiredType); // cast to expected type of set method
+
+						// cast to the expected type of the set method
+						if (desiredType.IsAssignableFrom(sourceType))
+						{
+							il.Emit(OpCodes.Unbox_Any, desiredType);
+						}
+						else if (IntTypes.ContainsKey(sourceType) && IntTypes.ContainsKey(desiredType))
+						{
+							il.Emit(OpCodes.Unbox_Any, sourceType);
+							il.Emit(IntTypes[desiredType]);
+						}
+						else
+						{
+							throw new InvalidOperationException(string.Format("Default value assignment will fail for {0}.{1}", t.Name, prop.Name));
+						}
 						il.Emit(OpCodes.Callvirt, method);
 					}
 				}

@@ -73,6 +73,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			{
 				//just totally different code
 				//apply the zooming algorithm (pasted and reworked, for now)
+				//ALERT COPYPASTE LAUNDROMAT
 
 				Vector2 VS = new Vector2(virtualWidth, virtualHeight);
 				Vector2 BS = new Vector2(textureWidth, textureHeight);
@@ -144,6 +145,14 @@ namespace BizHawk.Client.EmuHawk.Filters
 				vh = (int)(heightScale * sourceHeight);
 			}
 
+			//theres only one sensible way to letterbox in case we're shrinking a dimension: "pan & scan" to the center
+			//this is unlikely to be what the user wants except in the one case of maybe shrinking off some overscan area
+			//instead, since we're more about biz than gaming, lets shrink the view to fit in the small dimension
+			if (targetWidth < vw)
+				vw = targetWidth;
+			if (targetHeight < vh)
+				vh = targetHeight;
+
 			//determine letterboxing parameters
 			vx = (targetWidth - vw) / 2;
 			vy = (targetHeight - vh) / 2;
@@ -178,6 +187,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public Size TextureSize, VirtualTextureSize;
 		public int BackgroundColor;
 		public IGuiRenderer GuiRenderer;
+		public bool Flip;
 		public IGL GL;
 		bool nop;
 		LetterboxingLogic LL;
@@ -237,6 +247,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 			if (state.SurfaceFormat.Size != OutputSize)
 				need = true;
 			if (FilterOption != eFilterOption.None)
+				need = true;
+			if (Flip)
 				need = true;
 
 			if (!need)
@@ -318,7 +330,13 @@ namespace BizHawk.Client.EmuHawk.Filters
 			}
 
 
-			GuiRenderer.Draw(InputTexture,LL.vx,LL.vy,LL.vw,LL.vh);
+			GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
+			if (Flip)
+			{
+				GuiRenderer.Modelview.Scale(1, -1);
+				GuiRenderer.Modelview.Translate(0, -LL.vh);
+			}
+			GuiRenderer.Draw(InputTexture,0,0,LL.vw,LL.vh);
 
 			GuiRenderer.End();
 		}

@@ -284,7 +284,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
 		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { [FeatureNotImplemented]get { return _inputCallbacks; } }
+		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		public ITraceable Tracer { get; private set; }
 		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
@@ -393,7 +393,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_trace(string msg)
 		{
-			Tracer.Put(msg);
+			// TODO: get them out of the core split up and remove this hackery
+			string splitStr = "[";
+			if (!msg.Contains('['))
+			{
+				splitStr = "A:";
+			}
+
+			var split = msg.Split(new[] {splitStr }, StringSplitOptions.None);
+
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = split[0],
+				RegisterInfo = splitStr + split[1]
+			});
 		}
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
@@ -488,7 +501,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// as this is implemented right now, only P1 and P2 normal controllers work
 
-			InputCallbacks.Call();
+			// port = 0, oninputpoll = 2: left port was strobed
+			// port = 1, oninputpoll = 3: right port was strobed
+			Console.WriteLine("ONINPUTPOLL: {0}", port + 2);
+
+			// InputCallbacks.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
 
 			string key = "P" + (1 + port) + " ";
@@ -526,7 +543,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_input_notify(int index)
 		{
-			IsLagFrame = false;
+			// gets called with the following numbers:
+			// 4xxx : lag frame related
+			// 0: signifies latch bit going to 0.  should be reported as oninputpoll
+			// 1: signifies latch bit going to 1.  should be reported as oninputpoll
+			if (index >= 0x4000)
+				IsLagFrame = false;
+			else
+				Console.WriteLine("ONINPUTPOLL: {0}", index);
 		}
 
 		void snes_video_refresh(int* data, int width, int height)

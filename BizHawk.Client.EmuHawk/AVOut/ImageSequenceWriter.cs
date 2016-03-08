@@ -24,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
+		public bool UsesAudio { get { return false; } }
+		public bool UsesVideo { get { return true; } }
 
 		public void OpenFile(string baseName)
 		{

@@ -12,14 +12,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, true, "0.4.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<object, MGBAHawk.SyncSettings>
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
 		IntPtr core;
 
 		[CoreConstructor("GBA")]
-		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, bool deterministic)
+		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic)
 		{
 			_syncSettings = syncSettings ?? new SyncSettings();
+			_settings = settings ?? new Settings();
 			DeterministicEmulation = deterministic;
 
 			byte[] bios = comm.CoreFileProvider.GetFirmware("GBA", "Bios", false);
@@ -150,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			nsamp = this.nsamp;
 			samples = soundbuff;
-			Console.WriteLine(nsamp);
 			DiscardSamples();
 		}
 		public void DiscardSamples()
@@ -307,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		private void InitStates()
 		{
-			savebuff = new byte[LibmGBA.BizGetStateSize()];
+			savebuff = new byte[LibmGBA.BizGetStateMaxSize(core)];
 			savebuff2 = new byte[savebuff.Length + 13];
 		}
 
@@ -334,9 +334,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			LibmGBA.BizGetState(core, savebuff);
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
+			int size = LibmGBA.BizGetState(core, savebuff, savebuff.Length);
+			if (size < 0)
+				throw new InvalidOperationException("Core failed to save!");
+			writer.Write(size);
+			writer.Write(savebuff, 0, size);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -347,10 +349,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length != savebuff.Length)
-				throw new InvalidOperationException("Save buffer size mismatch!");
+			if (length > savebuff.Length)
+			{
+				savebuff = new byte[length];
+				savebuff2 = new byte[length + 13];
+			}
 			reader.Read(savebuff, 0, length);
-			if (!LibmGBA.BizPutState(core, savebuff))
+			if (!LibmGBA.BizPutState(core, savebuff, length))
 				throw new InvalidOperationException("Core rejected the savestate!");
 
 			// other variables
@@ -365,8 +370,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			if (ms.Position != savebuff2.Length)
-				throw new InvalidOperationException();
 			ms.Close();
 			return savebuff2;
 		}
@@ -391,19 +394,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return basetime + increment;
 		}
 
-		public object GetSettings()
+		public Settings GetSettings()
 		{
-			return null;
+			return _settings.Clone();
+		}
+
+		public bool PutSettings(Settings o)
+		{
+			LibmGBA.Layers mask = 0;
+			if (o.DisplayBG0) mask |= LibmGBA.Layers.BG0;
+			if (o.DisplayBG1) mask |= LibmGBA.Layers.BG1;
+			if (o.DisplayBG2) mask |= LibmGBA.Layers.BG2;
+			if (o.DisplayBG3) mask |= LibmGBA.Layers.BG3;
+			if (o.DisplayOBJ) mask |= LibmGBA.Layers.OBJ;
+			LibmGBA.BizSetLayerMask(core, mask);
+			_settings = o;
+			return false;
+		}
+
+		private Settings _settings;
+
+		public class Settings
+		{
+			[DefaultValue(true)]
+			public bool DisplayBG0 { get; set; }
+			[DefaultValue(true)]
+			public bool DisplayBG1 { get; set; }
+			[DefaultValue(true)]
+			public bool DisplayBG2 { get; set; }
+			[DefaultValue(true)]
+			public bool DisplayBG3 { get; set; }
+			[DefaultValue(true)]
+			public bool DisplayOBJ { get; set; }
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
 		}
 
 		public SyncSettings GetSyncSettings()
 		{
 			return _syncSettings.Clone();
-		}
-
-		public bool PutSettings(object o)
-		{
-			return false;
 		}
 
 		public bool PutSyncSettings(SyncSettings o)

@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public bool PutSettings(QuickNESSettings o)
 		{
 			_settings = o;
-			LibQuickNES.qn_set_sprite_limit(Context, _settings.NumSprites);
+			QN.qn_set_sprite_limit(Context, _settings.NumSprites);
 			RecalculateCrops();
 			CalculatePalette();
 
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			private static byte[] GetDefaultColors()
 			{
-				IntPtr src = LibQuickNES.qn_get_default_colors();
+				IntPtr src = QN.qn_get_default_colors();
 				byte[] ret = new byte[1536];
 				Marshal.Copy(src, ret, 0, 1536);
 				return ret;

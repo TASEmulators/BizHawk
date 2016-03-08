@@ -356,7 +356,7 @@ namespace BizHawk.Client.EmuHawk
 		/// Then it will stuff it into the bound PresentationPanel.
 		/// ---
 		/// If the int[] is size=1, then it contains an openGL texture ID (and the size should be as specified from videoProvider)
-		/// Don't worry about the case where the frontend isnt using opengl; it isnt supported yet, and it will be my responsibility to deal with anyway
+		/// Don't worry about the case where the frontend isnt using opengl; DisplayManager deals with it
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
@@ -370,6 +370,20 @@ namespace BizHawk.Client.EmuHawk
 				
 			};
 			UpdateSourceInternal(job);
+		}
+
+		public BitmapBuffer RenderVideoProvider(IVideoProvider videoProvider)
+		{
+			var job = new JobInfo
+			{
+				videoProvider = videoProvider,
+				simulate = false,
+				chain_outsize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight),
+				offscreen = true,
+				includeOSD = false
+			};
+			UpdateSourceInternal(job);
+			return job.offscreenBB;
 		}
 
 		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider, bool includeOSD)
@@ -472,6 +486,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ar_integer)
 					{
+						//ALERT COPYPASTE LAUNDROMAT
 						Vector2 VS = new Vector2(virtualWidth, virtualHeight);
 						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
 						Vector2 AR = Vector2.Divide(VS, BS);
@@ -661,6 +676,7 @@ namespace BizHawk.Client.EmuHawk
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
+			fPresent.Flip = isGlTextureId;
 			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
 			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
 			fPresent.Padding = ClientExtraPadding;
@@ -689,7 +705,7 @@ namespace BizHawk.Client.EmuHawk
 			//begin rendering on this context
 			//should this have been done earlier?
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
-			//GraphicsControl.Begin();
+			//GraphicsControl.Begin(); //CRITICAL POINT for yabause+GL
 
 			GlobalWin.GL.BeginScene();
 
@@ -744,6 +760,7 @@ namespace BizHawk.Client.EmuHawk
 			if (job.offscreen)
 			{
 				job.offscreenBB = rtCurr.Texture2d.Resolve();
+				job.offscreenBB.DiscardAlpha();
 			}
 			else
 			{

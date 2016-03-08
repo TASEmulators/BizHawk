@@ -49,6 +49,10 @@
 			this.rbUseRaw = new System.Windows.Forms.RadioButton();
 			this.rbUseSystem = new System.Windows.Forms.RadioButton();
 			this.grpARSelection = new System.Windows.Forms.GroupBox();
+			this.txtCustomARY = new System.Windows.Forms.TextBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.txtCustomARX = new System.Windows.Forms.TextBox();
+			this.rbUseCustomRatio = new System.Windows.Forms.RadioButton();
 			this.label4 = new System.Windows.Forms.Label();
 			this.txtCustomARHeight = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
@@ -91,10 +95,6 @@
 			this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.rbUseCustomRatio = new System.Windows.Forms.RadioButton();
-			this.txtCustomARY = new System.Windows.Forms.TextBox();
-			this.label12 = new System.Windows.Forms.Label();
-			this.txtCustomARX = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
 			this.grpFinalFilter.SuspendLayout();
@@ -252,9 +252,9 @@
 			this.checkPadInteger.AutoSize = true;
 			this.checkPadInteger.Location = new System.Drawing.Point(15, 307);
 			this.checkPadInteger.Name = "checkPadInteger";
-			this.checkPadInteger.Size = new System.Drawing.Size(248, 17);
+			this.checkPadInteger.Size = new System.Drawing.Size(250, 17);
 			this.checkPadInteger.TabIndex = 9;
-			this.checkPadInteger.Text = "Stretch pixels by integers only (e.g. no 1.3333x)";
+			this.checkPadInteger.Text = "Expand pixels by integers only (e.g. no 1.3333x)";
 			this.checkPadInteger.UseVisualStyleBackColor = true;
 			this.checkPadInteger.CheckedChanged += new System.EventHandler(this.checkPadInteger_CheckedChanged);
 			// 
@@ -346,6 +346,40 @@
 			this.grpARSelection.TabIndex = 13;
 			this.grpARSelection.TabStop = false;
 			this.grpARSelection.Text = "Aspect Ratio Selection";
+			// 
+			// txtCustomARY
+			// 
+			this.txtCustomARY.Location = new System.Drawing.Point(230, 102);
+			this.txtCustomARY.Name = "txtCustomARY";
+			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARY.TabIndex = 19;
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(212, 107);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(10, 13);
+			this.label12.TabIndex = 17;
+			this.label12.Text = ":";
+			// 
+			// txtCustomARX
+			// 
+			this.txtCustomARX.Location = new System.Drawing.Point(134, 102);
+			this.txtCustomARX.Name = "txtCustomARX";
+			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
+			this.txtCustomARX.TabIndex = 18;
+			// 
+			// rbUseCustomRatio
+			// 
+			this.rbUseCustomRatio.AutoSize = true;
+			this.rbUseCustomRatio.Location = new System.Drawing.Point(26, 103);
+			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
+			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
+			this.rbUseCustomRatio.TabIndex = 16;
+			this.rbUseCustomRatio.TabStop = true;
+			this.rbUseCustomRatio.Text = "Use custom AR:";
+			this.rbUseCustomRatio.UseVisualStyleBackColor = true;
 			// 
 			// label4
 			// 
@@ -805,40 +839,6 @@
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Documentation";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-			// 
-			// rbUseCustomRatio
-			// 
-			this.rbUseCustomRatio.AutoSize = true;
-			this.rbUseCustomRatio.Location = new System.Drawing.Point(26, 103);
-			this.rbUseCustomRatio.Name = "rbUseCustomRatio";
-			this.rbUseCustomRatio.Size = new System.Drawing.Size(102, 17);
-			this.rbUseCustomRatio.TabIndex = 16;
-			this.rbUseCustomRatio.TabStop = true;
-			this.rbUseCustomRatio.Text = "Use custom AR:";
-			this.rbUseCustomRatio.UseVisualStyleBackColor = true;
-			// 
-			// txtCustomARY
-			// 
-			this.txtCustomARY.Location = new System.Drawing.Point(230, 102);
-			this.txtCustomARY.Name = "txtCustomARY";
-			this.txtCustomARY.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARY.TabIndex = 19;
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(212, 107);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(10, 13);
-			this.label12.TabIndex = 17;
-			this.label12.Text = ":";
-			// 
-			// txtCustomARX
-			// 
-			this.txtCustomARX.Location = new System.Drawing.Point(134, 102);
-			this.txtCustomARX.Name = "txtCustomARX";
-			this.txtCustomARX.Size = new System.Drawing.Size(72, 20);
-			this.txtCustomARX.TabIndex = 18;
 			// 
 			// DisplayConfigLite
 			// 

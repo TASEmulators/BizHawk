@@ -177,20 +177,28 @@ namespace Jellyfish.Virtu
 				RA, RX, RY, RP, RS, RPC, EA, CC);
 		}
 
-		public string TraceState()
+		public string[] TraceState()
 		{
-			string a = string.Format("{0:X4}  {1:X2} {2} ", RPC, _memory.Read(RPC), ReadOpcode(RPC)).PadRight(30);
-			string b = string.Format("A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}", RA, RX, RY, RP, RS, Cycles);
-			string state = a + b + "   ";
-			if (FlagN) state = state + "N";
-			if (FlagV) state = state + "V";
-			if (FlagT) state = state + "T";
-			if (FlagB) state = state + "B";
-			if (FlagD) state = state + "D";
-			if (FlagI) state = state + "I";
-			if (FlagZ) state = state + "Z";
-			if (FlagC) state = state + "C";
-			return state;
+			string[] parts = new string[2];
+			parts[0] = string.Format("{0:X4}  {1:X2} {2} ", RPC, _memory.Read(RPC), ReadOpcode(RPC));
+			parts[1] = string.Format(
+				"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5}",
+				RA,
+				RX,
+				RY,
+				RP,
+				RS,
+				Cycles,
+				FlagN ? "N" : "",
+				FlagV ? "V" : "",
+				FlagT ? "T" : "",
+				FlagB ? "B" : "",
+				FlagD ? "D" : "",
+				FlagI ? "I" : "",
+				FlagZ ? "Z" : "",
+				FlagC ? "C" : "");
+
+			return parts;
 		}
 
 		private string ReadOpcode(int pc)
@@ -3448,7 +3456,7 @@ namespace Jellyfish.Virtu
 		private Action[] _executeOpCode;
 
 		[JsonIgnore]
-		public Action<string> TraceCallback;
+		public Action<string[]> TraceCallback;
 
 		/// <summary>Carry Flag</summary>   
 		[JsonIgnore]

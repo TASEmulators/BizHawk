@@ -37,6 +37,10 @@ static int nsamples;
 int cinterface_render_bga = 1;
 int cinterface_render_bgb = 1;
 int cinterface_render_bgw = 1;
+int cinterface_render_obj = 1;
+uint8 cinterface_custom_backdrop = 0;
+uint32 cinterface_custom_backdrop_color = 0xffff00ff; // pink
+extern uint8 border;
 
 #define GPGX_EX __declspec(dllexport)
 
@@ -57,6 +61,7 @@ void (*biz_execcb)(unsigned addr) = NULL;
 void (*biz_readcb)(unsigned addr) = NULL;
 void (*biz_writecb)(unsigned addr) = NULL;
 CDCallback biz_cdcallback = NULL;
+unsigned biz_lastpc = 0;
 
 static void update_viewport(void)
 {
@@ -423,6 +428,36 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 	}
 }
 
+GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
+{
+	unsigned char *base = m68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		base[addr & 0xffff ^ 1] = data;
+}
+
+GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
+{
+	unsigned char *base = s68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		base[addr & 0xffff ^ 1] = data;
+}
+GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
+{
+	unsigned char *base = m68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		return base[addr & 0xffff ^ 1];
+	else
+		return 0xff;
+}
+GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
+{
+	unsigned char *base = s68k.memory_map[addr >> 16 & 0xff].base;
+	if (base)
+		return base[addr & 0xffff ^ 1];
+	else
+		return 0xff;
+}
+
 GPGX_EX void gpgx_get_sram(void **area, int *size)
 {
 	if (!area || !size)
@@ -452,7 +487,19 @@ GPGX_EX void gpgx_get_sram(void **area, int *size)
 	}
 }
 
-GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region)
+struct InitSettings
+{
+	uint8_t Filter;
+	uint16_t LowPassRange;
+	int16_t LowFreq;
+	int16_t HighFreq;
+	int16_t LowGain;
+	int16_t MidGain;
+	int16_t HighGain;
+	uint32_t BackdropColor;
+};
+
+GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region, struct InitSettings *settings)
 {
 	zap();
 
@@ -474,14 +521,14 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	config.fm_preamp= 100;
 	config.hq_fm = 1; /* high-quality resampling */
 	config.psgBoostNoise  = 1;
-	config.filter= 0; /* no filter */
-	config.lp_range = 0x9999; /* 0.6 in 16.16 fixed point */
-	config.low_freq = 880;
-	config.high_freq= 5000;
-	config.lg = 1.0;
-	config.mg = 1.0;
-	config.hg = 1.0;
-	config.dac_bits 	  = 14; /* MAX DEPTH */ 
+	config.filter = settings->Filter; //0; /* no filter */
+	config.lp_range = settings->LowPassRange; //0x9999; /* 0.6 in 16.16 fixed point */
+	config.low_freq = settings->LowFreq; //880;
+	config.high_freq = settings->HighFreq; //5000;
+	config.lg = settings->LowGain; //1.0;
+	config.mg = settings->MidGain; //1.0;
+	config.hg = settings->HighGain; //1.0;
+	config.dac_bits = 14; /* MAX DEPTH */ 
 	config.ym2413= 2; /* AUTO */
 	config.mono  = 0; /* STEREO output */
 
@@ -489,17 +536,17 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	config.system = 0; /* AUTO */
 	config.region_detect = region; // see loadrom.c
 	config.vdp_mode = 0; /* AUTO */
-	config.master_clock= 0; /* AUTO */
+	config.master_clock = 0; /* AUTO */
 	config.force_dtack = 0;
-	config.addr_error  = 1;
+	config.addr_error = 1;
 	config.bios = 0;
 	config.lock_on = 0;
 
 	/* video options */
 	config.overscan = 0;
 	config.gg_extra = 0;
-	config.ntsc  = 0;
-	config.render= 0;
+	config.ntsc = 0;
+	config.render = 0;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE
@@ -509,6 +556,8 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	// WAYPLAY is both ports at same time only
 	input.system[0] = system_a;
 	input.system[1] = system_b;
+
+	cinterface_custom_backdrop_color = settings->BackdropColor;
 
 	// apparently, the only part of config.input used is the padtype identifier,
 	// and that's used only for choosing pad type when system_md
@@ -556,6 +605,12 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 	cinterface_render_bga = !!(mask & 1);
 	cinterface_render_bgb = !!(mask & 2);
 	cinterface_render_bgw = !!(mask & 4);
+	cinterface_render_obj = !!(mask & 8);
+	cinterface_custom_backdrop = !!(mask & 16);
+	if (cinterface_custom_backdrop)
+		color_update_m5(0, 0);
+	else
+		color_update_m5(0x00, *(uint16 *)&cram[border << 1]);
 }
 
 typedef struct
@@ -598,6 +653,8 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	MAKEREG(ISP);
 	MAKEREG(IR);
 #undef MAKEREG
+
+	(regs-6)->value = biz_lastpc; // during read/write callbacks, PC runs away due to prefetch. restore it.
 
 	// 13
 #define MAKEREG(x) regs->name = "Z80 " #x; regs->value = Z80.x.d; regs++; ret++;

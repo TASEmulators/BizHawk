@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 
 using BizHawk.Common;
@@ -9,6 +8,7 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 
+using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.H6280;
 using BizHawk.Emulation.DiscSystem;
 
@@ -99,7 +99,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
 		{
 			CoreComm = comm;
-			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			DriveLightEnabled = true;
 			systemid = "PCECD";
@@ -224,7 +223,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				RomData = rom;
 				RomLength = RomData.Length;
 				// user request: current value of the SF2MapperLatch on the tracelogger
-				Cpu.Logger = (s) => Tracer.Put(string.Format("{0:X1}:{1}", SF2MapperLatch, s));
+				Cpu.Logger = (s) => Tracer.Put(new TraceInfo
+				{
+					Disassembly = string.Format("{0:X1}:{1}", SF2MapperLatch, s),
+					RegisterInfo = ""
+				});
 			}
 			else
 			{
@@ -295,7 +298,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			Cpu.ResetPC();
 
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			ser.Register<ITraceable>(Tracer);

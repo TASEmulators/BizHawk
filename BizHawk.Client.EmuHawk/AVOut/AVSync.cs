@@ -175,6 +175,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		protected IVideoWriter w;
 
+		public bool UsesAudio { get { return w.UsesAudio; } }
+		public bool UsesVideo { get { return w.UsesVideo; } }
+
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			w.SetVideoCodecToken(token);

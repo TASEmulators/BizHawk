@@ -142,6 +142,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FullUpdate()
 		{
 			RegisterPanel.UpdateValues();
+			UpdatePC();
 			UpdateDisassembler();
 			BreakPointControl1.UpdateValues();
 		}

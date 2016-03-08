@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IMemoryDomains AsMemoryDomains(this IEmulator core)
 		{
-			return (IMemoryDomains)core.ServiceProvider.GetService<IMemoryDomains>();
+			return core.ServiceProvider.GetService<IMemoryDomains>();
 		}
 
 		public static bool HasSaveRam(this IEmulator core)
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static ISaveRam AsSaveRam(this IEmulator core)
 		{
-			return (ISaveRam)core.ServiceProvider.GetService<ISaveRam>();
+			return core.ServiceProvider.GetService<ISaveRam>();
 		}
 
 		public static bool HasSavestates(this IEmulator core)
@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IStatable AsStatable(this IEmulator core)
 		{
-			return (IStatable)core.ServiceProvider.GetService<IStatable>();
+			return core.ServiceProvider.GetService<IStatable>();
 		}
 
 		public static bool CanPollInput(this IEmulator core)
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IInputPollable AsInputPollable(this IEmulator core)
 		{
-			return (IInputPollable)core.ServiceProvider.GetService<IInputPollable>();
+			return core.ServiceProvider.GetService<IInputPollable>();
 		}
 
 		public static bool InputCallbacksAvailable(this IEmulator core)
@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			}
 
 			// TODO: this is a pretty ugly way to handle this
-			var pollable = (IInputPollable)core.ServiceProvider.GetService<IInputPollable>();
+			var pollable = core.ServiceProvider.GetService<IInputPollable>();
 			if (pollable != null)
 			{
 				try
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IDriveLight AsDriveLight(this IEmulator core)
 		{
-			return (IDriveLight)core.ServiceProvider.GetService<IDriveLight>();
+			return core.ServiceProvider.GetService<IDriveLight>();
 		}
 
 		public static bool CanDebug(this IEmulator core)
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IDebuggable AsDebuggable(this IEmulator core)
 		{
-			return (IDebuggable)core.ServiceProvider.GetService<IDebuggable>();
+			return core.ServiceProvider.GetService<IDebuggable>();
 		}
 
 		public static bool CpuTraceAvailable(this IEmulator core)
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static ITraceable AsTracer(this IEmulator core)
 		{
-			return (ITraceable)core.ServiceProvider.GetService<ITraceable>();
+			return core.ServiceProvider.GetService<ITraceable>();
 		}
 
 		public static bool MemoryCallbacksAvailable(this IEmulator core)
@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IDisassemblable AsDissassembler(this IEmulator core)
 		{
-			return (IDisassemblable)core.ServiceProvider.GetService<IDisassemblable>();
+			return core.ServiceProvider.GetService<IDisassemblable>();
 		}
 
 		public static bool CanPoke(this MemoryDomain d)
@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static IRegionable AsRegionable(this IEmulator core)
 		{
-			return (IRegionable)core.ServiceProvider.GetService<IRegionable>();
+			return core.ServiceProvider.GetService<IRegionable>();
 		}
 
 		public static bool CanCDLog(this IEmulator core)
@@ -253,6 +253,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static ICodeDataLogger AsCodeDataLogger(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<ICodeDataLogger>();
+		}
+
+		public static ILinkable AsLinkable(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ILinkable>();
+		}
+
+		public static bool UsesLinkCable(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ILinkable>();
 		}
 
 		// TODO: a better place for these

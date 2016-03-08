@@ -1001,17 +1001,17 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 0:
 					immediate = (byte)ReadWord(pc); pc += 2;
 					info.Mnemonic = "cmpi.b";
-					info.Args = String.Format("${0:X}, {1}", immediate, DisassembleValue(mode, reg, 1, ref pc));
+					info.Args = String.Format("#${0:X}, {1}", immediate, DisassembleValue(mode, reg, 1, ref pc));
 					break;
 				case 1:
 					immediate = ReadWord(pc); pc += 2;
 					info.Mnemonic = "cmpi.w";
-					info.Args = String.Format("${0:X}, {1}", immediate, DisassembleValue(mode, reg, 2, ref pc));
+					info.Args = String.Format("#${0:X}, {1}", immediate, DisassembleValue(mode, reg, 2, ref pc));
 					break;
 				case 2:
 					immediate = ReadLong(pc); pc += 4;
 					info.Mnemonic = "cmpi.l";
-					info.Args = String.Format("${0:X}, {1}", immediate, DisassembleValue(mode, reg, 4, ref pc));
+					info.Args = String.Format("#${0:X}, {1}", immediate, DisassembleValue(mode, reg, 4, ref pc));
 					break;
 			}
 			info.Length = pc - info.PC;

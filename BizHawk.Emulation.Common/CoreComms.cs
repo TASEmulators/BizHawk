@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Common
 {
 	public class CoreComm
 	{
-		public CoreComm(Action<string> ShowMessage, Action<string> NotifyMessage)
+		public CoreComm(Action<string> showMessage, Action<string> NotifyMessage)
 		{
-			this.ShowMessage = ShowMessage;
-			this.Notify = NotifyMessage;
+			ShowMessage = showMessage;
+			Notify = NotifyMessage;
 		}
 
 		public ICoreFileProvider CoreFileProvider;
@@ -22,6 +19,7 @@ namespace BizHawk.Emulation.Common
 				return VsyncNum / (double)VsyncDen;
 			}
 		}
+
 		public int VsyncNum = 60;
 		public int VsyncDen = 1;
 
@@ -34,9 +32,6 @@ namespace BizHawk.Emulation.Common
 		// size hint to a/v out resizer.  this probably belongs in VideoProvider?  but it's somewhat different than VirtualWidth...
 		public int NominalWidth = 640;
 		public int NominalHeight = 480;
-
-		public bool LinkConnected = false;
-		public bool UsesLinkCable = false;
 
 		//I know we want to get rid of CoreComm, but while it's still here, I'll use it for this
 		public string LaunchLibretroCore;
@@ -51,7 +46,8 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Action<string> Notify { get; private set; }
 
-		public Func<object> RequestGLContext;
+		public Func<int,int,bool,object> RequestGLContext;
+		public Action<object> ReleaseGLContext;
 		public Action<object> ActivateGLContext;
 		public Action DeactivateGLContext; //this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
 	}

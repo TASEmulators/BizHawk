@@ -280,6 +280,7 @@ PerPad_struct *ctrl2;
 
 extern "C" int vdp2height;
 extern "C" int vdp2width;
+extern "C" GLuint FboTexture;
 
 /* Tells the yui to exchange front and back video buffers. This may end
    up being moved to the Video Core. */
@@ -305,19 +306,24 @@ void YuiSwapBuffers(void)
 		}
 		else
 		{
-			glReadPixels(0, 0, glwidth, glheight, GL_BGRA, GL_UNSIGNED_BYTE, glbuff);
+			#ifdef CAN_RETURN_TEXTURE_IDS
+				//simply write the FboTexture into the videobuffer for later magic detection in frontend
+				memcpy(vidbuff,&FboTexture,4);
+			#else
+				glReadPixels(0, 0, glwidth, glheight, GL_BGRA, GL_UNSIGNED_BYTE, glbuff);
 
-			u32 *src = (u32*)glbuff;
-			u32 *dst = (u32*)vidbuff;
+				u32 *src = (u32*)glbuff;
+				u32 *dst = (u32*)vidbuff;
 
-			dst += glwidth * (glheight - 1);
+				dst += glwidth * (glheight - 1);
 
-			for (int j = 0; j < glheight; j++)
-			{
-				memcpy(dst, src, glwidth * 4);
-				src += glwidth;
-				dst -= glwidth;
-			}
+				for (int j = 0; j < glheight; j++)
+				{
+					memcpy(dst, src, glwidth * 4);
+					src += glwidth;
+					dst -= glwidth;
+				}
+			#endif
 		}
 	}
 }

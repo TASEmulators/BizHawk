@@ -57,6 +57,7 @@ extern int vdp1cog;
 extern int vdp1cob;
 
 GLuint DefaultFrameBuffer;
+GLuint FboTexture, MainFbo;
 
 #ifdef HAVE_GLXGETPROCADDRESS
 void STDCALL * (*yglGetProcAddress)(const char *szProcName) = (void STDCALL *(*)(const char *))glXGetProcAddress;
@@ -562,6 +563,26 @@ int YglGLInit(int width, int height) {
 
    glBindFramebuffer(GL_FRAMEBUFFER, DefaultFrameBuffer);
    glBindTexture(GL_TEXTURE_2D,_Ygl->texture);
+
+
+		//bizhawk code: create a texture for reading from the main FBO
+		//if the alternate 'main' FBO isn't created yet, now's the time
+		if(MainFbo == 0)
+		{
+			glGenFramebuffers(1,&MainFbo);
+			glBindFramebuffer(GL_FRAMEBUFFER, MainFbo);
+			DefaultFrameBuffer = MainFbo;
+		}
+
+		//delete existing texture if we already have it
+    if( FboTexture != 0 ) glDeleteTextures(1,&FboTexture);
+		glGenTextures(1, &FboTexture);
+		glBindTexture(GL_TEXTURE_2D, FboTexture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, GlWidth, GlHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE,NULL);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FboTexture, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
    
    return 0;
 }

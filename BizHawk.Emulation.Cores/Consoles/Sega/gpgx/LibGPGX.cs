@@ -29,8 +29,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Japan_PAL = 4
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class InitSettings
+		{
+			public enum FilterType : byte
+			{
+				None = 0,
+				LowPass = 1,
+				ThreeBand = 2
+			}
+			public FilterType Filter;
+			public ushort LowPassRange;
+			public short LowFreq;
+			public short HighFreq;
+			public short LowGain;
+			public short MidGain;
+			public short HighGain;
+			public uint BackdropColor;
+		}
+
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern bool gpgx_init(string feromextension, load_archive_cb feload_archive_cb, bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region);
+		public static extern bool gpgx_init(string feromextension, load_archive_cb feload_archive_cb, bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region, [In]InitSettings settings);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_get_fps(ref int num, ref int den);
@@ -315,10 +334,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			BGA = 1,
 			BGB = 2,
-			BGW = 4
+			BGW = 4,
+			Obj = 8,
+			Backdrop = 16
 		}
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_set_draw_mask(DrawMask mask);
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_write_m68k_bus(uint addr, byte data);
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_write_s68k_bus(uint addr, byte data);
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte gpgx_peek_m68k_bus(uint addr);
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern byte gpgx_peek_s68k_bus(uint addr);
+
 	}
 }

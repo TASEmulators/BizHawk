@@ -1,11 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Globalization;
 
 using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components;
+using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.PCEngine

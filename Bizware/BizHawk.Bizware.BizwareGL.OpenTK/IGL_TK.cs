@@ -23,6 +23,7 @@ using BizHawk.Bizware.BizwareGL;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using otkg = OpenTK.Graphics;
 
 namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 {
@@ -67,12 +68,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			}
 		}
 
-		public IGL_TK()
+		public IGL_TK(int major_version, int minor_version, bool forward_compatible)
 		{
 			//make an 'offscreen context' so we can at least do things without having to create a window
 			OffscreenNativeWindow = new NativeWindow();
 			OffscreenNativeWindow.ClientSize = new sd.Size(8, 8);
-			this.GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, 2, 0, GraphicsContextFlags.Default);
+			this.GraphicsContext = new GraphicsContext(GraphicsMode.Default, OffscreenNativeWindow.WindowInfo, major_version, minor_version, forward_compatible ? GraphicsContextFlags.ForwardCompatible : GraphicsContextFlags.Default);
 			MakeDefaultCurrent();
 
 			//this is important for reasons unknown
@@ -496,7 +497,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public Texture2d WrapGLTexture2d(IntPtr glTexId, int width, int height)
 		{
-			return new Texture2d(this as IGL, glTexId, width, height);
+			return new Texture2d(this as IGL, glTexId.ToInt32(), width, height);
 		}
 
 		public void LoadTextureData(Texture2d tex, BitmapBuffer bmp)
@@ -590,6 +591,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			var bb = new BitmapBuffer(tex.IntWidth, tex.IntHeight);
 			var bmpdata = bb.LockBits();
 			GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bmpdata.Scan0);
+			var err = GL.GetError();
 			bb.UnlockBits(bmpdata);
 			return bb;
 		}

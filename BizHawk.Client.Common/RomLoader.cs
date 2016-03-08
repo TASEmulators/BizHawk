@@ -543,6 +543,18 @@ namespace BizHawk.Client.Common
 										roms,
 										(AppleII.Settings)GetCoreSettings<AppleII>());
 									break;
+								case "C64":
+									var c64Assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
+									var c64Roms = xmlGame.Assets.Select(a => a.Value);
+									nextEmulator = new C64(
+										nextComm,
+										c64Assets.FirstOrDefault(), // TODO
+										c64Roms.FirstOrDefault(),
+										".d64", // TODO
+										(C64.C64Settings)GetCoreSettings<C64>(),
+										(C64.C64SyncSettings)GetCoreSyncSettings<C64>()
+									);
+									break;
 								case "PSX":
 									var entries = xmlGame.AssetFullPaths;
 									var discs = new List<Disc>();

@@ -10,6 +10,8 @@ namespace BizHawk.Client.EmuHawk
 	public partial class GenericDebugger
 	{
 		private readonly List<DisasmOp> DisassemblyLines = new List<DisasmOp>();
+		int PCRegisterSize = 4;
+		uint currentDisassemblerAddress = 0;
 
 		private class DisasmOp
 		{
@@ -33,21 +35,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void UpdatePC()
+		{
+			currentDisassemblerAddress = (uint)PCRegister.Value;
+		}
+
 		private void UpdateDisassembler()
 		{
 			if (CanDisassemble)
 			{
 				DisassemblerView.BlazingFast = true;
-				DisassemblerView.ItemCount = 0;
-				currentDisassemblerAddress = (uint)PCRegister.Value;
 				Disassemble();
-				DisassemblerView.Refresh();
+				SetDisassemblerItemCount();
 				DisassemblerView.BlazingFast = false;
 			}
 		}
-
-		uint currentDisassemblerAddress = 0;
-
+		
 		private void Disassemble()
 		{
 			int line_count = DisassemblerView.NumberOfVisibleRows;
@@ -75,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (column == 0)
 				{
-					text = string.Format("{0:X4}", DisassemblyLines[index].Address);
+					text = string.Format("{0:X" + PCRegisterSize + "}", DisassemblyLines[index].Address);
 				}
 				else if (column == 1)
 				{
@@ -88,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (DisassemblyLines.Any() && index < DisassemblyLines.Count)
 			{
-				if (DisassemblyLines[index].Address == (uint)PCRegister.Value)
+				if (DisassemblyLines[index].Address == currentDisassemblerAddress)
 				{
 					color = Color.LightCyan;
 				}
@@ -183,7 +186,8 @@ namespace BizHawk.Client.EmuHawk
 				foreach (int index in indices)
 				{
 					if (blob.Length != 0) blob.AppendLine();
-					blob.Append(DisassemblyLines[index].Address)
+
+					blob.Append(string.Format("{0:X" + PCRegisterSize + "}", DisassemblyLines[index].Address))
 						.Append(" ")
 						.Append(DisassemblyLines[index].Mnemonic);
 				}
@@ -193,7 +197,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)
 		{
-			FullUpdate();
+			if (e.Paused)
+				FullUpdate();
 		}
 
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)

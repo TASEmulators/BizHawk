@@ -74,6 +74,7 @@ namespace BizHawk.Client.EmuHawk
 					});
 				}
 
+				PCRegisterSize = Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].BitSize / 4;
 				SetDisassemblerItemCount();
 				UpdateDisassembler();
 			}
@@ -189,6 +190,11 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
+		private void RunBtn_Click(object sender, EventArgs e)
+		{
+			GlobalWin.MainForm.UnpauseEmulator();
+		}
+
 		private void StepIntoMenuItem_Click(object sender, EventArgs e)
 		{
 			if (CanStepInto)
@@ -274,7 +280,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			CancelSeekBtn.Enabled = true;
 			var pcVal = (uint)(SeekToBox.ToRawInt() ?? 0);
-			var pcBitSize = Debuggable.GetCpuFlagsAndRegisters()["PC"].BitSize;
+			var pcBitSize = PCRegister.BitSize;
+
 			BreakPointControl1.RemoveCurrentSeek();
 			BreakPointControl1.AddSeekBreakpoint(pcVal, pcBitSize);
 			BreakPointControl1.UpdateValues();

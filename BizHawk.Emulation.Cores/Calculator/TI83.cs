@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable))]
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight))]
 	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]
@@ -53,8 +53,16 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			HardReset();
 			SetupMemoryDomains();
-			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new Disassembler());
+
+			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+
+			var serviceProvider = ServiceProvider as BasicServiceProvider;
+
+			serviceProvider.Register<ITraceable>(Tracer);
+			serviceProvider.Register<IDisassemblable>(new Disassembler());
 		}
+
+		private ITraceable Tracer { get; set; }
 
 		// hardware
 		private const ushort RamSizeMask = 0x7FFF;

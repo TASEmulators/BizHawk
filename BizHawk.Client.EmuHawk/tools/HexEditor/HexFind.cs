@@ -114,7 +114,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.KeyData == Keys.Enter)
 			{
-				GlobalWin.Tools.HexEditor.FindNext(GetFindBoxChars(), false);
+				Find_Next_Click(null, null);
+				e.Handled = true;
 			}
 		}
 
@@ -124,6 +125,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				e.Handled = true;
 				Close();
+			}
+			else if (e.KeyData == Keys.Enter)
+			{
+				Find_Next_Click(null, null);
+				e.Handled = true;
 			}
 		}
 	}

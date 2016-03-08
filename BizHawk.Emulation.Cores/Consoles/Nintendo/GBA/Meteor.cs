@@ -235,10 +235,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#endregion
 
-		void Trace(string msg)
-		{
-			Tracer.Put(msg);
-		}
+		// Tracer refactor TODO - rehook up meteor, if it is worth it
+		//void Trace(string msg)
+		//{
+		//	Tracer.Put(msg);
+		//}
 
 		private void Init()
 		{
@@ -247,7 +248,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			messagecallback = PrintMessage;
 			inputcallback = GetInput;
-			tracecallback = Trace; // don't set this callback now, only set if enabled
+
+			// Tracer refactor TODO - rehook up meteor, if it is worth it
+			//tracecallback = Trace; // don't set this callback now, only set if enabled
 			LibMeteor.libmeteor_setmessagecallback(messagecallback);
 			LibMeteor.libmeteor_setkeycallback(inputcallback);
 

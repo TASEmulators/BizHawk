@@ -47,6 +47,9 @@
 extern int cinterface_render_bga;
 extern int cinterface_render_bgb;
 extern int cinterface_render_bgw;
+extern int cinterface_render_obj;
+extern uint8 cinterface_custom_backdrop;
+extern uint32 cinterface_custom_backdrop_color;
 
 /*** NTSC Filters ***/
 extern md_ntsc_t *md_ntsc;
@@ -415,6 +418,7 @@ INLINE void WRITE_LONG(void *address, uint32 data)
 #endif /* ALT_RENDERER */
 
 #define DRAW_SPRITE_TILE(WIDTH,ATTR,TABLE)  \
+  if (!cinterface_render_obj) return; \
   for (i=0;i<WIDTH;i++) \
   { \
     temp = *src++; \
@@ -427,6 +431,7 @@ INLINE void WRITE_LONG(void *address, uint32 data)
   }
 
 #define DRAW_SPRITE_TILE_ACCURATE(WIDTH,ATTR,TABLE)  \
+  if (!cinterface_render_obj) return; \
   for (i=0;i<WIDTH;i++) \
   { \
     temp = *src++; \
@@ -1120,22 +1125,29 @@ void color_update_m5(int index, unsigned int data)
     data &= 0x49;
   }
 
-  if(reg[12] & 0x08)
+  if (index == 0 && cinterface_custom_backdrop)
   {
-    /* Mode 5 (Shadow/Normal/Highlight) */
-    pixel[0x00 | index] = pixel_lut[0][data];
-    pixel[0x40 | index] = pixel_lut[1][data];
-    pixel[0x80 | index] = pixel_lut[2][data];
+    pixel[0x00] = pixel[0x40] = pixel[0x80] = cinterface_custom_backdrop_color;
   }
   else
   {
-    /* Mode 5 (Normal) */
-    data = pixel_lut[1][data];
-
-    /* Input pixel: xxiiiiii */
-    pixel[0x00 | index] = data;
-    pixel[0x40 | index] = data;
-    pixel[0x80 | index] = data;
+    if(reg[12] & 0x08)
+    {
+      /* Mode 5 (Shadow/Normal/Highlight) */
+      pixel[0x00 | index] = pixel_lut[0][data];
+      pixel[0x40 | index] = pixel_lut[1][data];
+      pixel[0x80 | index] = pixel_lut[2][data];
+    }
+    else
+    {
+      /* Mode 5 (Normal) */
+      data = pixel_lut[1][data];
+    
+      /* Input pixel: xxiiiiii */
+      pixel[0x00 | index] = data;
+      pixel[0x40 | index] = data;
+      pixel[0x80 | index] = data;
+    }
   }
 }
 
@@ -1534,30 +1546,30 @@ void render_bg_m5(int line)
   uint32 *nt;
   if (cinterface_render_bgb)
   {
-  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-  /* Pattern row index */
-  v_line = (v_line & 7) << 3;
-
-  if(shift)
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x10 + shift];
-
-    atbuf = nt[(index - 1) & pf_col_mask];
-    DRAW_COLUMN(atbuf, v_line)
-  }
-  else
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x20];
-  }
-
-  for(column = 0; column < end; column++, index++)
-  {
-    atbuf = nt[index & pf_col_mask];
-    DRAW_COLUMN(atbuf, v_line)
-  }
+    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+    /* Pattern row index */
+    v_line = (v_line & 7) << 3;
+    
+    if(shift)
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x10 + shift];
+    
+      atbuf = nt[(index - 1) & pf_col_mask];
+      DRAW_COLUMN(atbuf, v_line)
+    }
+    else
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x20];
+    }
+    
+    for(column = 0; column < end; column++, index++)
+    {
+      atbuf = nt[index & pf_col_mask];
+      DRAW_COLUMN(atbuf, v_line)
+    }
   }
   else
   {
@@ -1704,47 +1716,47 @@ void render_bg_m5_vs(int line)
 
   if (cinterface_render_bgb)
   {
-  if(shift)
-  {
-    /* Plane B vertical scroll */
-    v_line = (line + yscroll) & pf_row_mask;
+    if(shift)
+    {
+      /* Plane B vertical scroll */
+      v_line = (line + yscroll) & pf_row_mask;
+    
+      /* Plane B name table */
+      nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+      /* Pattern row index */
+      v_line = (v_line & 7) << 3;
+    
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x10 + shift];
+    
+      atbuf = nt[(index - 1) & pf_col_mask];
+      DRAW_COLUMN(atbuf, v_line)
+    }
+    else
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x20];
+    }
 
-    /* Plane B name table */
-    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-    /* Pattern row index */
-    v_line = (v_line & 7) << 3;
-
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x10 + shift];
-
-    atbuf = nt[(index - 1) & pf_col_mask];
-    DRAW_COLUMN(atbuf, v_line)
-  }
-  else
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x20];
-  }
-
-  for(column = 0; column < end; column++, index++)
-  {
-    /* Plane B vertical scroll */
+    for(column = 0; column < end; column++, index++)
+    {
+      /* Plane B vertical scroll */
 #ifdef LSB_FIRST
-    v_line = (line + (vs[column] >> 16)) & pf_row_mask;
+      v_line = (line + (vs[column] >> 16)) & pf_row_mask;
 #else
-    v_line = (line + vs[column]) & pf_row_mask;
+      v_line = (line + vs[column]) & pf_row_mask;
 #endif
-
-    /* Plane B name table */
-    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-    /* Pattern row index */
-    v_line = (v_line & 7) << 3;
-
-    atbuf = nt[index & pf_col_mask];
-    DRAW_COLUMN(atbuf, v_line)
-  }
+    
+      /* Plane B name table */
+      nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+      /* Pattern row index */
+      v_line = (v_line & 7) << 3;
+    
+      atbuf = nt[index & pf_col_mask];
+      DRAW_COLUMN(atbuf, v_line)
+    }
   }
   else
   {
@@ -1899,30 +1911,30 @@ void render_bg_m5_im2(int line)
   uint32 *nt;
   if (cinterface_render_bgb)
   {
-  nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-  /* Pattern row index */
-  v_line = (((v_line & 7) << 1) | odd) << 3;
-
-  if(shift)
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x10 + shift];
-
-    atbuf = nt[(index - 1) & pf_col_mask];
-    DRAW_COLUMN_IM2(atbuf, v_line)
-  }
-  else
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x20];
-  }
-
-  for(column = 0; column < end; column++, index++)
-  {
-    atbuf = nt[index & pf_col_mask];
-    DRAW_COLUMN_IM2(atbuf, v_line)
-  }
+    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+    /* Pattern row index */
+    v_line = (((v_line & 7) << 1) | odd) << 3;
+    
+    if(shift)
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x10 + shift];
+    
+      atbuf = nt[(index - 1) & pf_col_mask];
+      DRAW_COLUMN_IM2(atbuf, v_line)
+    }
+    else
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x20];
+    }
+    
+    for(column = 0; column < end; column++, index++)
+    {
+      atbuf = nt[index & pf_col_mask];
+      DRAW_COLUMN_IM2(atbuf, v_line)
+    }
   }
   else
   {
@@ -2070,47 +2082,47 @@ void render_bg_m5_im2_vs(int line)
 
   if (cinterface_render_bgb)
   {
-  if(shift)
-  {
-    /* Plane B vertical scroll */
-    v_line = (line + yscroll) & pf_row_mask;
-
-    /* Plane B name table */
-    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-    /* Pattern row index */
-    v_line = (((v_line & 7) << 1) | odd) << 3;
-
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x10 + shift];
-
-    atbuf = nt[(index - 1) & pf_col_mask];
-    DRAW_COLUMN_IM2(atbuf, v_line)
-  }
-  else
-  {
-    /* Plane B line buffer */
-    dst = (uint32 *)&linebuf[0][0x20];
-  }
-
-  for(column = 0; column < end; column++, index++)
-  {
-    /* Plane B vertical scroll */
+    if(shift)
+    {
+      /* Plane B vertical scroll */
+      v_line = (line + yscroll) & pf_row_mask;
+    
+      /* Plane B name table */
+      nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+      /* Pattern row index */
+      v_line = (((v_line & 7) << 1) | odd) << 3;
+    
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x10 + shift];
+    
+      atbuf = nt[(index - 1) & pf_col_mask];
+      DRAW_COLUMN_IM2(atbuf, v_line)
+    }
+    else
+    {
+      /* Plane B line buffer */
+      dst = (uint32 *)&linebuf[0][0x20];
+    }
+    
+    for(column = 0; column < end; column++, index++)
+    {
+      /* Plane B vertical scroll */
 #ifdef LSB_FIRST
-    v_line = (line + (vs[column] >> 17)) & pf_row_mask;
+      v_line = (line + (vs[column] >> 17)) & pf_row_mask;
 #else
-    v_line = (line + (vs[column] >> 1)) & pf_row_mask;
+      v_line = (line + (vs[column] >> 1)) & pf_row_mask;
 #endif
-
-    /* Plane B name table */
-    nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
-
-    /* Pattern row index */
-    v_line = (((v_line & 7) << 1) | odd) << 3;
-
-    atbuf = nt[index & pf_col_mask];
-    DRAW_COLUMN_IM2(atbuf, v_line)
-  }
+    
+      /* Plane B name table */
+      nt = (uint32 *)&vram[ntbb + (((v_line >> 3) << pf_shift) & 0x1FC0)];
+    
+      /* Pattern row index */
+      v_line = (((v_line & 7) << 1) | odd) << 3;
+    
+      atbuf = nt[index & pf_col_mask];
+      DRAW_COLUMN_IM2(atbuf, v_line)
+    }
   }
   else
   {

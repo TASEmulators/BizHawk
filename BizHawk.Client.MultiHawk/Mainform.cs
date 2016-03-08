@@ -33,7 +33,7 @@ namespace BizHawk.Client.MultiHawk
 
 		public Mainform(string[] args)
 		{
-			GLManager.CreateInstance();
+			GLManager.CreateInstance(GlobalWin.IGL_GL);
 
 			InitializeComponent();
 			_throttle = new BizHawk.Client.EmuHawk.Throttle();
@@ -319,15 +319,16 @@ namespace BizHawk.Client.MultiHawk
 					Text = Path.GetFileNameWithoutExtension(StripArchivePath(path)),
 					Emulator = loader.LoadedEmulator,
 
-					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(),
+					GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(2,0,false),
 					GLManager = GLManager.Instance,
 					Game = loader.Game,
 					CurrentRomPath = loader.CanonicalFullPath
 				};
 
-				nextComm.RequestGLContext = () => ew.GLManager.CreateGLContext();
-				nextComm.ActivateGLContext = (gl) => ew.GLManager.Activate((GLManager.ContextRef)ew.GL);
-				nextComm.DeactivateGLContext = () => ew.GLManager.Deactivate();
+				nextComm.ReleaseGLContext = (o) => GlobalWin.GLManager.ReleaseGLContext(o);
+				nextComm.RequestGLContext = (major, minor, forward) => GlobalWin.GLManager.CreateGLContext(major, minor, forward);
+				nextComm.ActivateGLContext = (gl) => GlobalWin.GLManager.Activate((GLManager.ContextRef)gl);
+				nextComm.DeactivateGLContext = () => GlobalWin.GLManager.Deactivate();
 
 				ew.CoreComm = nextComm;
 				ew.Init();

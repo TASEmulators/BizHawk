@@ -1,4 +1,4 @@
-set PATH=%PATH%;C:\Program Files (x86)\git\bin
+set PATH=%PATH%;C:\Program Files (x86)\git\bin;C:\Program Files\git\bin
 
 if "%1"=="" (
 	SET NAME=BizHawk.zip

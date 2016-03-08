@@ -9,6 +9,7 @@ extern void (*biz_execcb)(unsigned addr);
 extern void (*biz_readcb)(unsigned addr);
 extern void (*biz_writecb)(unsigned addr);
 extern CDCallback biz_cdcallback;
+extern unsigned biz_lastpc;
 
 enum eCDLog_AddrType
 {

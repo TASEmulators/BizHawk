@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2015
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua51", "Lua\src\lua514.vcxproj", "{0A82CC4C-9A27-461C-8DB0-A65AC6393748}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaInterface", "LuaInterface\LuaInterface.csproj", "{F55CABBB-4108-4A39-94E1-581FD46DC021}"
@@ -10,12 +12,18 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
 		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 		Release-LUAPERKS|Any CPU = Release-LUAPERKS|Any CPU
 		Release-LUAPERKS|Mixed Platforms = Release-LUAPERKS|Mixed Platforms
 		Release-LUAPERKS|Win32 = Release-LUAPERKS|Win32
+		Release-LUAPERKS|x64 = Release-LUAPERKS|x64
+		Release-LUAPERKS|x86 = Release-LUAPERKS|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Debug|Any CPU.ActiveCfg = Debug|Win32
@@ -23,31 +31,47 @@ Global
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Debug|Win32.ActiveCfg = Debug|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Debug|Win32.Build.0 = Debug|Win32
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Debug|x64.ActiveCfg = Debug|x64
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Debug|x86.ActiveCfg = Debug|x64
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|Any CPU.ActiveCfg = Release|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|Mixed Platforms.ActiveCfg = Release|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|Win32.ActiveCfg = Release|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|Win32.Build.0 = Release|Win32
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|x64.ActiveCfg = Release|x64
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|x64.Build.0 = Release|x64
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release|x86.ActiveCfg = Release|x64
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|Any CPU.ActiveCfg = Release-LUAPERKS|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|Mixed Platforms.ActiveCfg = Release-LUAPERKS|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|Mixed Platforms.Build.0 = Release-LUAPERKS|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|Win32.ActiveCfg = Release-LUAPERKS|Win32
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|Win32.Build.0 = Release-LUAPERKS|Win32
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x64.ActiveCfg = Release-LUAPERKS|x64
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x64.Build.0 = Release-LUAPERKS|x64
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x86.ActiveCfg = Release-LUAPERKS|Win32
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|x64.ActiveCfg = Debug|x64
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|x86.ActiveCfg = Debug|x86
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|Win32.ActiveCfg = Release|Any CPU
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|x64.ActiveCfg = Release|x64
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|x64.Build.0 = Release|x64
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release|x86.ActiveCfg = Release|x86
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|Any CPU.ActiveCfg = Release-LUAPERKS|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|Any CPU.Build.0 = Release-LUAPERKS|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|Mixed Platforms.ActiveCfg = Release-LUAPERKS|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|Mixed Platforms.Build.0 = Release-LUAPERKS|Any CPU
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|Win32.ActiveCfg = Release-LUAPERKS|Any CPU
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x64.ActiveCfg = Release-LUAPERKS|x64
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x64.Build.0 = Release-LUAPERKS|x64
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x86.ActiveCfg = Release-LUAPERKS|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

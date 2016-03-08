@@ -86,7 +86,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static bool IsUnsigned(this string str)
 		{
-			if (str == null)
+			if (string.IsNullOrWhiteSpace(str))
 			{
 				return false;
 			}
@@ -107,7 +107,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static bool IsSigned(this string str)
 		{
-			if (str == null)
+			if (string.IsNullOrWhiteSpace(str))
 			{
 				return false;
 			}
@@ -128,7 +128,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static bool IsHex(this string str)
 		{
-			if (str == null)
+			if (string.IsNullOrWhiteSpace(str))
 			{
 				return false;
 			}
@@ -154,7 +154,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static bool IsBinary(this string str)
 		{
-			if (str == null)
+			if (string.IsNullOrWhiteSpace(str))
 			{
 				return false;
 			}
@@ -175,7 +175,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static bool IsFixedPoint(this string str)
 		{
-			if (str == null)
+			if (string.IsNullOrWhiteSpace(str))
 			{
 				return false;
 			}
@@ -197,7 +197,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static bool IsFloat(this string str)
 		{
-			if (str == null)
+			if (string.IsNullOrWhiteSpace(str))
 			{
 				return false;
 			}
@@ -220,7 +220,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static string OnlyBinary(this string raw)
 		{
-			if (raw == null)
+			if (string.IsNullOrWhiteSpace(raw))
 			{
 				return string.Empty;
 			}
@@ -243,7 +243,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static string OnlyUnsigned(this string raw)
 		{
-			if (raw == null)
+			if (string.IsNullOrWhiteSpace(raw))
 			{
 				return string.Empty;
 			}
@@ -267,7 +267,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static string OnlySigned(this string raw)
 		{
-			if (raw == null)
+			if (string.IsNullOrWhiteSpace(raw))
 			{
 				return string.Empty;
 			}
@@ -298,7 +298,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static string OnlyHex(this string raw)
 		{
-			if (raw == null)
+			if (string.IsNullOrWhiteSpace(raw))
 			{
 				return string.Empty;
 			}
@@ -322,7 +322,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static string OnlyFixedPoint(this string raw)
 		{
-			if (raw == null)
+			if (string.IsNullOrWhiteSpace(raw))
 			{
 				return string.Empty;
 			}
@@ -357,7 +357,7 @@ namespace BizHawk.Common.StringExtensions
 		/// </summary>
 		public static string OnlyFloat(this string raw)
 		{
-			if (raw == null)
+			if (string.IsNullOrWhiteSpace(raw))
 			{
 				return string.Empty;
 			}

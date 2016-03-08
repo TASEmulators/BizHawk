@@ -10,6 +10,7 @@ using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Components.ARM;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -159,13 +160,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
-		string Trace(uint addr, uint opcode)
+		TraceInfo Trace(uint addr, uint opcode)
 		{
-			return
-				string.Format("{0:x8} {1} {2}",
-				opcode,
-				(Emulation.Cores.Components.ARM.Darm.DisassembleStuff(addr, opcode) ?? "").PadRight(30),
-				regs.TraceString());
+			return new TraceInfo
+			{
+				Disassembly = string.Format("{0:X8} {1}", opcode, Darm.DisassembleStuff(addr, opcode)),
+				RegisterInfo = regs.TraceString()
+			};
 		}
 
 		void InitCallbacks()

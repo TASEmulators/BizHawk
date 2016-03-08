@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
@@ -13,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private void MakeTrace(IntPtr data)
 		{
 			int[] s = new int[7];
-			System.Runtime.InteropServices.Marshal.Copy(data, s, 0, 7);
+			Marshal.Copy(data, s, 0, 7);
 
 			byte a = (byte)s[0];
 			byte x = (byte)s[1];
@@ -27,19 +29,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			int notused = 0;
 			string opcodeStr = MOS6502X.Disassemble(pc, out notused, (address) => _memoryDomains.SystemBus.PeekByte(address));
 
-			Tracer.Put(string.Format(
-				"{0:x4}:{1} SP:{2:x2} A:{3:x2} P:{4:x2} X:{5:x2} Y:{6:x2} ",
-			pc,
-			opcodeStr.PadRight(26),
-			sp,
-			a,
-			p,
-			x,
-			y));
-
+			Tracer.Put(new TraceInfo
+			{
+				Disassembly = string.Format("{0:X4} {1}", pc, opcodeStr).PadRight(26),
+				RegisterInfo = string.Format(
+					"SP:{0:X2} A:{1:X2} P:{2:X2} X:{3:X2} Y:{4:X2}",
+					sp,
+					a,
+					p,
+					x,
+					y)
+			});
 		}
 
-		private const string TraceHeader = "PC:OP SP_A_P_X_Y ";
+		private const string TraceHeader = "6502: PC, opcode, registers (SP, A, P, X, Y)";
 
 		private void ConnectTracer()
 		{

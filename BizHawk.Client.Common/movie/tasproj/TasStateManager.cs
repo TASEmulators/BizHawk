@@ -138,7 +138,8 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (frame == 0) {
+				if (frame == 0)
+				{
 					return new KeyValuePair<int, byte[]>(0, InitialState);
 				}
 
@@ -391,7 +392,7 @@ namespace BizHawk.Client.Common
 				else
 					Used -= (ulong)BranchStates[frame][branch].Length;
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
-				
+
 				if (BranchStates[frame].Count == 0)
 					BranchStates.Remove(frame);
 			}
@@ -527,7 +528,11 @@ namespace BizHawk.Client.Common
 				do
 				{
 					index++;
+					if (index >= States.Count)
+						break;
 				} while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
+				if (index >= States.Count) break;
+
 				ret.Add(index);
 				if (States.ElementAt(index).Value.IsOnDisk)
 					saveUsed -= _expectedStateSize;
@@ -540,7 +545,8 @@ namespace BizHawk.Client.Common
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
 				index++;
-				ret.Add(index);
+				if (!ret.Contains(index))
+					ret.Add(index);
 				if (States.ElementAt(index).Value.IsOnDisk)
 					saveUsed -= _expectedStateSize;
 				else
@@ -565,7 +571,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
-				_movie.ReportProgress((double)100d / States.Count * i);
+				_movie.ReportProgress(100d / States.Count * i);
 			}
 		}
 
@@ -711,7 +717,7 @@ namespace BizHawk.Client.Common
 		{
 			StateManagerState stateToMatch;
 
-			// figure out what state we're checking
+			// Get the state instance
 			if (branchHash == -1)
 				stateToMatch = States[frame];
 			else
@@ -719,26 +725,28 @@ namespace BizHawk.Client.Common
 				if (!BranchStates[frame].ContainsKey(branchHash))
 					return -2;
 				stateToMatch = BranchStates[frame][branchHash];
-				//if (States.ContainsKey(frame) && States[frame] == stateToMatch)
-				//	return -1;
+				// Check the current branch for duplicate.
+				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
+					return -1;
 			}
 
-			// there's no state for that frame at all
-			if (!BranchStates.ContainsKey(frame))
+			// Check if there are any branch states for the given frame.
+			if (!BranchStates.ContainsKey(frame) || BranchStates[frame] == null)
 				return -2;
 
-			// find the branches whose state for that frame is the same
+			// Loop through branch states for the given frame.
 			SortedList<int, StateManagerState> stateList = BranchStates[frame];
 			for (int i = 0; i < _movie.BranchCount; i++)
 			{
+				// Don't check the branch containing the state to match.
 				if (i == _movie.BranchIndexByHash(branchHash))
 					continue;
 
-				if (stateList != null && stateList.ContainsKey(i) && stateList[i] == stateToMatch)
+				if (stateList.Values[i] == stateToMatch)
 					return i;
 			}
 
-			return -2;
+			return -2; // No match.
 		}
 
 		private Point findState(StateManagerState s)
@@ -776,7 +784,7 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 				stateList.Add(branchHash, kvp.Value);
-				Used += (ulong)stateList[branchHash].Length;
+				// We aren't creating any new states, just adding a reference to an already-existing one; so Used doesn't need to be updated.
 			}
 		}
 
@@ -790,13 +798,11 @@ namespace BizHawk.Client.Common
 				if (stateList == null)
 					continue;
 
-				if (stateHasDuplicate(kvp.Key, branchHash) == -2)
+				if (stateList.ContainsKey(branchHash))
 				{
-					if (stateList.ContainsKey(branchHash))
+					if (stateHasDuplicate(kvp.Key, branchHash) == -2)
 					{
-						if (stateList[branchHash].IsOnDisk)
-						{ }
-						else
+						if (!stateList[branchHash].IsOnDisk)
 							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
@@ -818,13 +824,11 @@ namespace BizHawk.Client.Common
 				if (stateList == null)
 					continue;
 
-				if (stateHasDuplicate(kvp.Key, branchHash) == -2)
+				if (stateList.ContainsKey(branchHash))
 				{
-					if (stateList.ContainsKey(branchHash))
+					if (stateHasDuplicate(kvp.Key, branchHash) == -2)
 					{
-						if (stateList[branchHash].IsOnDisk)
-						{ }
-						else
+						if (!stateList[branchHash].IsOnDisk)
 							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
@@ -848,7 +852,6 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 				stateList.Add(branchHash, kvp.Value);
-				Used += (ulong)stateList[branchHash].Length;
 			}
 		}
 

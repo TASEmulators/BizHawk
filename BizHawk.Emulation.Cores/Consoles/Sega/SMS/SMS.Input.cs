@@ -25,25 +25,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 		};
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get
-			{
-				if (IsGameGear)
-				{
-					return GGController;
-				}
-
-				return SmsController;
-			}
-		}
-
-		public IController Controller { get; set; }
-
-		byte ReadControls1()
+		private byte ReadControls1()
 		{
 			InputCallbacks.Call();
-			lagged = false;
+			_lagged = false;
 			byte value = 0xFF;
 
 			if (Controller["P1 Up"]) value &= 0xFE;
@@ -59,10 +44,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return value;
 		}
 
-		byte ReadControls2()
+		private byte ReadControls2()
 		{
 			InputCallbacks.Call();
-			lagged = false;
+			_lagged = false;
 			byte value = 0xFF;
 
 			if (Controller["P2 Left"]) value &= 0xFE;
@@ -74,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if ((Port3F & 0x0F) == 5)
 			{
-				if (region == "Japan")
+				if (_region == "Japan")
 				{
 					value &= 0x3F;
 				}

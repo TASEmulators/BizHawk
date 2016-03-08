@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			switch (column)
 			{
 				case 0:
-					text = string.Format("{0:X4}", Breakpoints[index].Address);
+					text = string.Format("{0:X}", Breakpoints[index].Address);
 					break;
 				case 1:
 					text = Breakpoints[index].Type.ToString();

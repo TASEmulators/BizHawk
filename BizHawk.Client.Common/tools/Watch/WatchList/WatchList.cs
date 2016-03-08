@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 		private static readonly WatchChangeCountComparer changeCountComparer = new WatchChangeCountComparer();
 		private static readonly WatchNoteComparer noteComparer = new WatchNoteComparer();
 
-		private static IMemoryDomains _memoryDomains;
+		private IMemoryDomains _memoryDomains;
 
 		private List<Watch> _watchList = new List<Watch>(0);
 		private string _currentFilename = string.Empty;
@@ -58,11 +58,7 @@ namespace BizHawk.Client.Common
 		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
 		public WatchList(IMemoryDomains core, string systemid)
 		{
-			if (_memoryDomains == null)
-			{
-				_memoryDomains = core;
-			}
-
+			_memoryDomains = core;
 			_systemid = systemid;
 		}
 

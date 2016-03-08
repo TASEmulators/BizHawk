@@ -35,6 +35,7 @@ void CPU::mmio_w2183(uint8 data) {
 void CPU::mmio_w4016(uint8 data) {
   input.port1->latch(data & 1);
   input.port2->latch(data & 1);
+  interface()->inputNotify(data & 1);
 }
 
 //JOYSER0

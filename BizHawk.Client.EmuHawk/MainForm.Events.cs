@@ -2752,6 +2752,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop_internal(object sender, DragEventArgs e)
 		{
+            _FormDragDrop_internal(sender, e);
+/*
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			var isLua = false;
 			foreach (var path in filePaths)
@@ -2852,6 +2854,7 @@ namespace BizHawk.Client.EmuHawk
 				args.OpenAdvanced = new OpenAdvanced_OpenRom { Path = filePaths[0] };
 				LoadRom(filePaths[0], args);
 			}
+ */
 		}
 
 		#endregion

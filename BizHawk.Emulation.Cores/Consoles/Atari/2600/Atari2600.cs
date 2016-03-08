@@ -29,7 +29,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			Tracer = new TraceBuffer();
 			MemoryCallbacks = new MemoryCallbackSystem();
 			InputCallbacks = new InputCallbackSystem();
 
@@ -50,7 +49,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			RebootCore();
 			SetupMemoryDomains();
 
-			
+			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(_tia);

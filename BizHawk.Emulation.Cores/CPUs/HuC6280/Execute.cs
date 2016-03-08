@@ -1,4 +1,5 @@
 using System;
+using BizHawk.Emulation.Common;
 
 // Do not modify this file directly! This is GENERATED code.
 // Please open the CpuCoreGenerator solution and make your modifications there.
@@ -8,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
     public partial class HuC6280
     {
         public bool Debug;
-        public Action<string> Logger;
+        public Action<TraceInfo> Logger;
 
         public void Execute(int cycles)
         {

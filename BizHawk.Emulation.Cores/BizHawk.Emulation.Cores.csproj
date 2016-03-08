@@ -49,7 +49,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\output\dll\</OutputPath>
     <DefineConstants>TRACE;VS2010</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -57,6 +57,44 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\output64\dll\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>..\output\dll\BizHawk.Emulation.Cores.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\output64\dll\</OutputPath>
+    <DefineConstants>TRACE;VS2010</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\BizHawk.Emulation.Cores.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EMU7800">
@@ -177,37 +215,54 @@
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0012.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0013.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0020.cs" />
-    <Compile Include="Computers\Commodore64\CassettePort\CassettePortDevice.cs" />
-    <Compile Include="Computers\Commodore64\CassettePort\Tape.cs" />
+    <Compile Include="Computers\Commodore64\Cassette\CassettePortDevice.cs" />
+    <Compile Include="Computers\Commodore64\Cassette\TapeDrive.cs" />
+    <Compile Include="Computers\Commodore64\Media\Tape.cs" />
     <Compile Include="Computers\Commodore64\InputFileInfo.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
-    <Compile Include="Computers\Commodore64\Cartridge\Cart.cs" />
-    <Compile Include="Computers\Commodore64\MOS\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\CartridgeDevice.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\CartridgePort.cs" />
+    <Compile Include="Computers\Commodore64\Cassette\CassettePort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip2114.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Chip23XX.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip23128.cs" />
     <Compile Include="Computers\Commodore64\MOS\Chip4864.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6567R56A.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6510.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6522.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6510.IDebuggable.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6510.IDisassemblable.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6581R3.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6581R4AR.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip8580R5.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.Registers.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6567R56A.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6510.cs" />
     <Compile Include="Computers\Commodore64\Media\D64.cs" />
     <Compile Include="Computers\Commodore64\Media\Disk.cs" />
     <Compile Include="Computers\Commodore64\Media\G64.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Interface.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.PortIO.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6526.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6567R8.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6572.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6581.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOS6569.cs" />
-    <Compile Include="Computers\Commodore64\MOS\MOSPLA.cs" />
-    <Compile Include="Computers\Commodore64\MOS\Port.cs" />
-    <Compile Include="Computers\Commodore64\MOS\SerialPort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6526.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6567R8.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6572.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6581R2.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip6569.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Chip90611401.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Cia.Tod.cs" />
+    <Compile Include="Computers\Commodore64\MOS\LatchedPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Envelope.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Registers.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Sid.SoundProvider.cs" />
     <Compile Include="Computers\Commodore64\MOS\Sid.Voice.cs" />
-    <Compile Include="Computers\Commodore64\MOS\UserPort.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.Port.cs" />
+    <Compile Include="Computers\Commodore64\MOS\Via.Registers.cs" />
+    <Compile Include="Computers\Commodore64\Serial\Drive1541.cs" />
+    <Compile Include="Computers\Commodore64\Serial\Drive1541.FluxTransitions.cs" />
+    <Compile Include="Computers\Commodore64\Serial\Drive1541.IDebuggable.cs" />
+    <Compile Include="Computers\Commodore64\Serial\Drive1541.IDisassemblable.cs" />
+    <Compile Include="Computers\Commodore64\Serial\Drive1541.Motor.cs" />
+    <Compile Include="Computers\Commodore64\Serial\SerialPort.cs" />
+    <Compile Include="Computers\Commodore64\Serial\SerialPortDevice.cs" />
+    <Compile Include="Computers\Commodore64\User\UserPort.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Parse.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.Registers.cs" />
@@ -217,7 +272,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.TimingBuilder.cs" />
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
-    <Compile Include="Computers\Commodore64\UserPort\UserPortDevice.cs" />
+    <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -737,7 +792,9 @@
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ITraceable.cs" />
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ITraceable.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IVideoProvider.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
@@ -768,6 +825,42 @@
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ICodeDataLogger.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IDebuggable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IDisassembler.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IDriveLight.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IEmulator.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IInputPollable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IMemoryDomains.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ISaveRam.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ISettable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IStatable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ITraceable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.IVideoProvider.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
@@ -791,8 +884,15 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Sega\SMS\CDL_SMS.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IDebuggable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IEmulator.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IInputPollable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IMemoryDomains.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.Input.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ISaveRam.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs" />
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
@@ -888,9 +988,16 @@
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.cs" />
+    <Compile Include="Sound\CDAudio.cs" />
+    <Compile Include="Sound\HuC6280PSG.cs" />
+    <Compile Include="Sound\MMC5Audio.cs" />
+    <Compile Include="Sound\SN76489.cs" />
+    <Compile Include="Sound\Sunsoft5BAudio.cs" />
+    <Compile Include="Sound\VRC6Alt.cs" />
+    <Compile Include="Sound\YM2413.cs" />
+    <Compile Include="Sound\YM2612.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Computers\Commodore64\docs\CRT.TXT" />
     <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />
     <Content Include="Consoles\Coleco\docs\CV-Tech.txt" />
     <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
@@ -933,7 +1040,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Computers\Commodore64\MOS\MOS6526-2.Registers.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />

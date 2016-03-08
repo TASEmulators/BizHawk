@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		void TRAP_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "trap";
-			info.Args = string.Format("${0:X}", op & 0xF);
+			info.Args = string.Format("#${0:X}", op & 0xF);
 		}
 
 		void TrapVector(int vector)

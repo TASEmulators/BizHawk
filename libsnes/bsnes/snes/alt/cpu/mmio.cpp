@@ -132,6 +132,7 @@ void CPU::mmio_write(unsigned addr, uint8 data) {
     case 0x4016: {
       input.port1->latch(data & 1);
       input.port2->latch(data & 1);
+	  interface()->inputNotify(data & 1); // latch notify
 			if (!status.auto_joypad_poll_enabled) { interface()->inputNotify(0x4016); }
       return;
     }
