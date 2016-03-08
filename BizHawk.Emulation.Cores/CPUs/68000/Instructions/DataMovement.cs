@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 		void MOVEQ_Disasm(DisassemblyInfo info)
 		{
 			info.Mnemonic = "moveq";
-			info.Args = String.Format("{0}, D{1}", (sbyte)op, (op >> 9) & 7);
+			info.Args = String.Format("#{0}, D{1}", (sbyte)op, (op >> 9) & 7);
 		}
 
 		void MOVEM0()
