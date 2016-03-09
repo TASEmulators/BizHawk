@@ -5,6 +5,7 @@ using MonoMac.AppKit;
 using BizHawk.Client.EmuHawk;
 using System.Windows.Forms;
 using System.Reflection;
+using BizHawk.Common;
 using BizHawk.Client.Common;
 
 namespace MonoMacWrapper
@@ -37,10 +38,13 @@ namespace MonoMacWrapper
 			BizHawk.Client.EmuHawk.HawkDialogFactory.SaveDialogClass = typeof(MacSaveFileDialog);
 			BizHawk.Client.EmuHawk.HawkDialogFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
-			GlobalWin.GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK();
-			GLManager.CreateInstance();
+			GlobalWin.IGL_GL = new BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(2,0,false);
+
+			//setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
+			GLManager.CreateInstance(GlobalWin.IGL_GL);
 			GlobalWin.GLManager = GLManager.Instance;
 			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
+			GlobalWin.GL = GlobalWin.IGL_GL;
 
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 			try

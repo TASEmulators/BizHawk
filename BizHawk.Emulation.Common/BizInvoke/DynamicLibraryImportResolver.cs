@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 		public DynamicLibraryImportResolver(string dllName)
 		{
-#if !MONO
+#if WINDOWS
 			_p = Win32.LoadLibrary(dllName);
 #else
 			// TODO: how can we read name remaps out of app.confg <dllmap> ?
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 		public IntPtr Resolve(string entryPoint)
 		{
-#if !MONO
+#if WINDOWS
 			return Win32.GetProcAddress(_p, entryPoint);
 #else
 			return Libdl.dlsym(_p, entryPoint);
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		{
 			if (_p != IntPtr.Zero)
 			{
-#if !MONO
+#if WINDOWS
 				Win32.FreeLibrary(_p);
 #else
 				Libdl.dlclose(_p);
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			Free();
 		}
 
-#if !MONO
+#if WINDOWS
 		private static class Win32
 		{
 			[DllImport("kernel32.dll")]
@@ -68,13 +68,75 @@ namespace BizHawk.Emulation.Common.BizInvoke
 #else
 		private static class Libdl
 		{
-			[DllImport("libdl.so")]
-			public static extern IntPtr dlopen(string filename, int flags);
-			[DllImport("libdl.so")]
-			public static extern IntPtr dlsym(IntPtr handle, string symbol);
-			[DllImport("libdl.so")]
-			public static extern int dlclose(IntPtr handle);
+			[DllImport("libc")] 
+			static extern int uname(IntPtr buf); 
+			static bool IsRunningOnMac(){
+				//Borrowed from a forum post somewhere. Cannot use Environment.Platform because Mono returns Unix for both OSX and Unix.
+				IntPtr buf = IntPtr.Zero; 
+				try{ 
+					buf = Marshal.AllocHGlobal(8192); 
+					// This is a hacktastic way of getting sysname from uname () 
+					if (uname(buf) == 0){ 
+						string os = Marshal.PtrToStringAnsi(buf); 
+						if (os == "Darwin")return true; 
+					} 
+				} 
+				catch { } 
+				finally{ 
+					if (buf != IntPtr.Zero) Marshal.FreeHGlobal(buf); 
+				} 
+				return false; 
+			}
+
+			public static IntPtr dlopen(string filename, int flags){
+				bool isMac = IsRunningOnMac();
+				string realFile = System.IO.Path.GetFileNameWithoutExtension(filename);
+				if (!realFile.StartsWith("lib"))
+				{
+					realFile = "lib" + realFile;
+				}
+				if (isMac)
+				{
+					realFile = realFile + ".dylib";
+				}
+				else
+				{
+					realFile = realFile + ".so";
+				}
+				realFile = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), realFile);
+				return (isMac) ? dlMac.dlopen(realFile, flags) : dlLinux.dlopen(realFile, flags);
+			}
+
+			public static IntPtr dlsym(IntPtr handle, string symbol){
+				return (IsRunningOnMac()) ? dlMac.dlsym(handle, symbol) : dlLinux.dlsym(handle, symbol);
+			}
+
+			public static int dlclose(IntPtr handle){
+				return (IsRunningOnMac()) ? dlMac.dlclose(handle) : dlLinux.dlclose(handle);
+			}
+
 			public const int RTLD_NOW = 2;
+			private static class dlMac
+			{
+				const string SystemLib = "/usr/lib/libSystem.dylib"; 
+				[DllImport(SystemLib)]
+				public static extern IntPtr dlopen(string filename, int flags);
+				[DllImport(SystemLib)]
+				public static extern IntPtr dlsym(IntPtr handle, string symbol);
+				[DllImport(SystemLib)]
+				public static extern int dlclose(IntPtr handle);
+			}
+
+			private static class dlLinux
+			{
+				const string SystemLib = "libdl.so"; 
+				[DllImport(SystemLib)]
+				public static extern IntPtr dlopen(string filename, int flags);
+				[DllImport(SystemLib)]
+				public static extern IntPtr dlsym(IntPtr handle, string symbol);
+				[DllImport(SystemLib)]
+				public static extern int dlclose(IntPtr handle);
+			}
 		}
 #endif
 	}
