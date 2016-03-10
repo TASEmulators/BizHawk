@@ -200,6 +200,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                     {
                         Array.Copy(entry.Data, sourceOffset, bytes, outputOffset + 2, 254);
                         dataRemaining -= 254;
+                        sourceOffset += 254;
                     }
                     else
                     {
@@ -207,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                         {
                             Array.Copy(entry.Data, sourceOffset, bytes, outputOffset + 2, dataRemaining);
                             bytes[outputOffset + 0] = 0;
-                            bytes[outputOffset + 1] = (byte) dataRemaining;
+                            bytes[outputOffset + 1] = (byte)(dataRemaining + 1);
                             dataRemaining = 0;
                         }
                     }
