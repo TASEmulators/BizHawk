@@ -222,6 +222,7 @@
     <Compile Include="Computers\Commodore64\Cassette\CassettePortDevice.cs" />
     <Compile Include="Computers\Commodore64\Cassette\TapeDrive.cs" />
     <Compile Include="Computers\Commodore64\C64FormatFinder.cs" />
+    <Compile Include="Computers\Commodore64\Media\DiskBuilder.cs" />
     <Compile Include="Computers\Commodore64\Media\Tape.cs" />
     <Compile Include="Computers\Commodore64\Media\PRG.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\CartridgeDevice.cs" />
