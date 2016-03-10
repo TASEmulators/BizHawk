@@ -156,17 +156,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
             _board.Execute();
 			_frameCycles++;
 
-			// load PRG file if needed
-			if (_loadPrg)
-			{
-				// check to see if cpu PC is at the BASIC warm start vector
-				if (_board.Cpu.Pc != 0 && _board.Cpu.Pc == ((_board.Ram.Peek(0x0303) << 8) | _board.Ram.Peek(0x0302)))
-				{
-					Prg.Load(_board.Pla, _prgFile);
-					_loadPrg = false;
-				}
-			}
-
 		    if (_frameCycles != _cyclesPerFrame)
 		    {
 		        return;
@@ -188,8 +177,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 		private Motherboard _board;
-		private bool _loadPrg;
-	    [SaveState.DoNotSave] private byte[] _prgFile;
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
@@ -212,10 +199,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                         if (diskDriveType == DiskDriveType.None)
                             diskDriveType = DiskDriveType.Commodore1541;
                         break;
-                    case C64Format.D71:
-                        if (diskDriveType == DiskDriveType.None)
-                            diskDriveType = DiskDriveType.Commodore1571;
-                        break;
                     case C64Format.T64:
                     case C64Format.TAP:
                         if (tapeDriveType == TapeDriveType.None)
@@ -223,6 +206,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                             tapeDriveType = TapeDriveType.Commodore1530;
                         }
                         break;
+                    case C64Format.CRT:
+                        // Nothing required.
+                        break;
+                    case C64Format.Unknown:
+                        if (rom.Length >= 0xFE00)
+                        {
+                            throw new Exception("The image format is not known, and too large to be used as a PRG.");
+                        }
+                        if (diskDriveType == DiskDriveType.None)
+                            diskDriveType = DiskDriveType.Commodore1541;
+                        break;
+                    default:
+                        throw new Exception("The image format is not yet supported by the Commodore 64 core.");
                 }
             }
 
@@ -269,11 +265,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                             _board.TapeDrive.Insert(tape);
                         }
                         break;
-                    default:
-                        if (rom.Length > 2)
+                    case C64Format.Unknown:
+                        var prgDisk = new DiskBuilder
                         {
-                            _loadPrg = true;
-                            _prgFile = rom;
+                            Entries = new List<DiskBuilder.Entry>
+                            { 
+                                new DiskBuilder.Entry
+                                {
+                                    Closed = true,
+                                    Data = rom,
+                                    Locked = false,
+                                    Name = "PRG",
+                                    RecordLength = 0,
+                                    Type = DiskBuilder.FileType.Program
+                                }
+                            }
+                        }.Build();
+                        if (prgDisk != null)
+                        {
+                            _board.DiskDrive.InsertMedia(prgDisk);
                         }
                         break;
                 }
@@ -294,9 +304,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                 case DiskDriveType.Commodore1541II:
                     _board.DiskDrive.DriveRom.Flash(GetFirmware(0x4000, "Drive1541II"));
                     break;
-                case DiskDriveType.Commodore1571:
-                    _board.DiskDrive.DriveRom.Flash(GetFirmware(0x8000, "Drive1571"));
-		            break;
 		    }
         }
 

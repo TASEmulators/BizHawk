@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public static class D64
 	{
-		private static readonly int[] densityTable =
+		private static readonly int[] DensityTable =
 		{
 			3, 3, 3, 3, 3,
 			3, 3, 3, 3, 3,
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			0, 0, 0, 0, 0
 		};
 
-		private static readonly int[] gcrDecodeTable =
+		private static readonly int[] GcrDecodeTable =
 		{
 			0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, //00xxx
 			0xFF, 0x08, 0x00, 0x01, 0xFF, 0x0C, 0x04, 0x05, //01xxx
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			0xFF, 0x09, 0x0A, 0x0B, 0xFF, 0x0D, 0x0E, 0xFF  //11xxx
 		};
 
-		private static readonly int[] gcrEncodeTable =
+		private static readonly int[] GcrEncodeTable =
 		{
 			Convert.ToByte("01010", 2), // 0
 			Convert.ToByte("01011", 2), // 1
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			Convert.ToByte("10101", 2)  // F
 		};
 
-		private static readonly int[] sectorsPerTrack =
+		private static readonly int[] SectorsPerTrack =
 		{
 			21, 21, 21, 21, 21,
 			21, 21, 21, 21, 21,
@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			17, 17, 17, 17, 17
 		};
 
-		private static readonly int[] standardTrackLengthBytes =
+		private static readonly int[] StandardTrackLengthBytes =
 		{
 			6250, 6666, 7142, 7692
 		};
@@ -116,14 +116,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                 for (var i = 0; i < count; i += 4)
                 {
                     Array.Copy(source, i, data, 0, 4);
-                    gcr[0] = gcrEncodeTable[data[0] >> 4];
-                    gcr[1] = gcrEncodeTable[data[0] & 0xF];
-                    gcr[2] = gcrEncodeTable[data[1] >> 4];
-                    gcr[3] = gcrEncodeTable[data[1] & 0xF];
-                    gcr[4] = gcrEncodeTable[data[2] >> 4];
-                    gcr[5] = gcrEncodeTable[data[2] & 0xF];
-                    gcr[6] = gcrEncodeTable[data[3] >> 4];
-                    gcr[7] = gcrEncodeTable[data[3] & 0xF];
+                    gcr[0] = GcrEncodeTable[data[0] >> 4];
+                    gcr[1] = GcrEncodeTable[data[0] & 0xF];
+                    gcr[2] = GcrEncodeTable[data[1] >> 4];
+                    gcr[3] = GcrEncodeTable[data[1] & 0xF];
+                    gcr[4] = GcrEncodeTable[data[2] >> 4];
+                    gcr[5] = GcrEncodeTable[data[2] & 0xF];
+                    gcr[6] = GcrEncodeTable[data[3] >> 4];
+                    gcr[7] = GcrEncodeTable[data[3] & 0xF];
 
                     // -------- -------- -------- -------- --------
                     // 00000111 11222223 33334444 45555566 66677777
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
                 for (var i = 0; i < trackCount; i++)
                 {
-                    var sectors = sectorsPerTrack[i];
+                    var sectors = SectorsPerTrack[i];
                     var trackLengthBits = 0;
                     using (var trackMem = new MemoryStream())
                     {
@@ -187,10 +187,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                             trackMem.Write(diskData, 0, diskData.Length);
                             trackLengthBits += bitsWritten;
                         }
-                        var density = densityTable[i];
+                        var density = DensityTable[i];
 
                         // we pad the tracks with extra gap bytes to meet MNIB standards
-                        while (trackMem.Length < standardTrackLengthBytes[density])
+                        while (trackMem.Length < StandardTrackLengthBytes[density])
                         {
                             trackMem.WriteByte(0x55);
                         }
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                         trackDatas.Add(trackMem.ToArray());
                         trackLengths.Add(trackLengthBits);
                         trackNumbers.Add(i * 2);
-                        trackDensities.Add(densityTable[i]);
+                        trackDensities.Add(DensityTable[i]);
                     }
                 }
 

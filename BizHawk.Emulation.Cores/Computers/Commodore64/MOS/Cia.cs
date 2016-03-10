@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 _prb &= 0x7F;
                 _tbPrb7NegativeNextCycle = false;
             }
-            
+
 
             switch (_taState)
             {
@@ -268,6 +268,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             {
                 CheckIrqs();
             }
+
+            if ((_cra & 0x02) != 0)
+                _ddra |= 0x40;
+            if ((_crb & 0x02) != 0)
+                _ddrb |= 0x80;
         }
 
         private void Ta_Count()
@@ -412,9 +417,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 _tbState = TimerState.LoadThenCount;
             }
 
-            if ((_cra & 0x02) != 0)
+            if ((_crb & 0x02) != 0)
             {
-                if ((_cra & 0x04) != 0)
+                if ((_crb & 0x04) != 0)
                 {
                     _tbPrb7NegativeNextCycle = true;
                     _prb |= 0x80;
@@ -423,7 +428,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 {
                     _prb ^= 0x80;
                 }
-                _ddrb |= 0x80;
             }
         }
 

@@ -108,9 +108,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         [SaveState.SaveWithName("HandshakeCb2NextClock")]
         private bool _handshakeCb2NextClock;
 
-        [SaveState.SaveWithName("ShiftRegisterCounter")]
-        private int _shiftCount;
-
         [SaveState.SaveWithName("CA1")]
         public bool Ca1;
         [SaveState.SaveWithName("CA2")]
