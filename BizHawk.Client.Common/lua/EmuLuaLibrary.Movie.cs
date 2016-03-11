@@ -187,6 +187,10 @@ namespace BizHawk.Client.Common
 		)]
 		public static void SetReadOnly(bool readOnly)
 		{
+			int x = 0;
+			x++;
+			int y = x;
+
 			Global.MovieSession.ReadOnly = readOnly;
 		}
 
