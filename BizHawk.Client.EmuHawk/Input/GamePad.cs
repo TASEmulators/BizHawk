@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 				dinput = new DirectInput();
 
 			Devices = new List<GamePad>();
-
+			/*
 			foreach (DeviceInstance device in dinput.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly))
 			{
 				Console.WriteLine("joydevice: {0} `{1}`", device.InstanceGuid, device.ProductName);
@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 				GamePad p = new GamePad(device.InstanceName, device.InstanceGuid, joystick);
 				Devices.Add(p);
 			}
+			*/
 		}
 
 		public static void UpdateAll()

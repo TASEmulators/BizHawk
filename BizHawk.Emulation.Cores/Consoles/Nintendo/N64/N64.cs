@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
 
 			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?
-				"mupen64plus-rsp-hle.dll" :
+				"mupen64plus-rsp-hle-new.dll" :
 				"mupen64plus-rsp-z64-hlevideo.dll";
 
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);

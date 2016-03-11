@@ -89,10 +89,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\nragev20\GBCart.cpp" />
+    <ClCompile Include="..\nragev20\PakIO.cpp" />
     <ClCompile Include="..\osal_dynamiclib_win32.c" />
     <ClCompile Include="..\plugin.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\nragev20\GBCart.h" />
+    <ClInclude Include="..\nragev20\PakIO.h" />
     <ClInclude Include="..\osal_dynamiclib.h" />
     <ClInclude Include="..\plugin.hpp" />
     <ClInclude Include="..\version.h" />

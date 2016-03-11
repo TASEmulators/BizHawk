@@ -56,6 +56,10 @@ typedef struct
 {
     CONTROL *control;               // pointer to CONTROL struct in Core library
 	BOOL rumbling;
+	unsigned fPakInitialized;	// Has our pak been initialized?  Used to make sure we don't try to write to a mempak that doesn't point to anything.
+
+	void *pPakData;						// Pointer to Pak Data (specific): see PakIO.h
+										// pPakData->bPakType will always be a BYTE indicating what the current pak type is
 } SController;
 
 /* global data definitions */

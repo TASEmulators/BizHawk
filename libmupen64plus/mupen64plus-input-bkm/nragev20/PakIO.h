@@ -24,29 +24,12 @@
 #ifndef _PAKIO_H_
 #define _PAKIO_H_
 
-bool InitControllerPak( const int iControl );
+bool InitTransferPak( const int iControl );
 void SaveControllerPak( const int iControl );
-BYTE ReadControllerPak( const int iControl, LPBYTE Command );
-BYTE WriteControllerPak( const int iControl, LPBYTE Command );
+BYTE ReadTransferPak( const int iControl, LPBYTE Command );
+BYTE WriteTransferPak( const int iControl, LPBYTE Command );
 void CloseControllerPak( const int iControl );
-WORD ShowMemPakContent( LPCBYTE bMemPakBinary, HWND hListWindow );
-int TranslateNotesA( LPCBYTE bNote, LPSTR Text, const int iChars );
-int TranslateNotesW( LPCBYTE bNote, LPWSTR Text, const int iChars );
-void FormatMemPak( LPBYTE aMemPak );
-bool SaveNoteFileA( LPCBYTE aMemPak, const int iNote, LPCTSTR pszFileName );
-bool InsertNoteFile( LPBYTE aMemPak, LPCTSTR pszFileName );
-bool RemoveNote( LPBYTE aMemPak, const int iNote );
 
-void TexttoHexA( LPCSTR szText, LPBYTE Data, const int nBytes );
-void HextoTextA( LPCBYTE Data, LPSTR szText, const int nBytes );
-
-#ifdef _UNICODE
-#define TranslateNotes(x,y,z) TranslateNotesW(x,y,z)
-#define ReverseNotes(x,y,z) ReverseNotesW(x,y,z)
-#else
-#define TranslateNotes(x,y,z) TranslateNotesA(x,y,z)
-#define ReverseNotes(x,y,z) ReverseNotesA(x,y,z)
-#endif
 
 
 //************Raw Data***********//
@@ -169,5 +152,12 @@ typedef struct _ADAPTOIDPAK
 	BYTE bIdentifier;
 	bool fRumblePak;
 } ADAPTOIDPAK, *LPADAPTOIDPAK;
+
+#define PAK_NONE		0
+#define PAK_MEM			1
+#define PAK_RUMBLE		2
+#define PAK_TRANSFER	3
+#define PAK_VOICE		4
+#define PAK_ADAPTOID	7
 
 #endif // #ifndef _PAKIO_H_

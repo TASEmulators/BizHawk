@@ -35,6 +35,7 @@
 #include "plugin.hpp"
 #include "config.h"
 #include "version.h"
+#include "nragev20\PakIO.h"
 extern "C" {
 	#include "osal_dynamiclib.h"
 }
@@ -295,7 +296,10 @@ void DoRawRead(int Control, unsigned char* Command)
 	case PLUGIN_NONE:
 	case PLUGIN_RAW:
 	case PLUGIN_MEMPAK:
+		break;
 	case PLUGIN_TRANSFER_PAK:
+		ReadTransferPak(Control, Command+3);
+		break;
 	default:
 		break;
 	}
@@ -315,7 +319,9 @@ void DoRawWrite(int Control, unsigned char* Command)
 	case PLUGIN_NONE:
 	case PLUGIN_RAW:
 	case PLUGIN_MEMPAK:
+		break;
 	case PLUGIN_TRANSFER_PAK:
+		WriteTransferPak(Control, Command+3);
 	default:
 		break;
 	}
@@ -441,6 +447,10 @@ EXPORT void CALL SetControllerPakType(int idx, int type)
 {
 	controller[idx].control->Plugin = type;
 	controller[idx].control->RawData = (type != PLUGIN_MEMPAK);
+	if (type == PLUGIN_TRANSFER_PAK)
+	{
+		InitTransferPak(idx);
+	}
 }
 
 /* ----------------------------------------------------------------------
