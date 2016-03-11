@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/1
 						Timer.PrescalerShift = 0;
 						Timer.Value = value;
-						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 0;
 						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x05)
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/8
 						Timer.PrescalerShift = 3;
 						Timer.Value = value;
-						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 0;
 						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x06)
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/64
 						Timer.PrescalerShift = 6;
 						Timer.Value = value;
-						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 0;
 						Timer.InterruptFlag = false;
 					}
 					else if (registerAddr == 0x07)
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						// Write to Timer/1024
 						Timer.PrescalerShift = 10;
 						Timer.Value = value;
-						Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+						Timer.PrescalerCount = 0;
 						Timer.InterruptFlag = false;
 					}
 				}
