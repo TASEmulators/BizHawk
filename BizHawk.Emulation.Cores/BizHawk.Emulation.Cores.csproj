@@ -97,6 +97,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ELFSharp">
+      <HintPath>..\References\ELFSharp.dll</HintPath>
+    </Reference>
     <Reference Include="EMU7800">
       <HintPath>..\References\EMU7800.dll</HintPath>
     </Reference>
@@ -967,6 +970,7 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="ElfRunner.cs" />
     <Compile Include="FileID.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
@@ -979,6 +983,7 @@
     <Compile Include="Libretro\LibRetro.cs" />
     <Compile Include="Libretro\LibRetroEmulator.cs" />
     <Compile Include="Libretro\LibRetroEmulator.InputCallbacks.cs" />
+    <Compile Include="MemoryBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Consoles\Sega\Genesis\Genesis.cs" />
     <Compile Include="Consoles\Sega\Genesis\GenVDP.cs" />

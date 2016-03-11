@@ -2,6 +2,9 @@
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
+using System.IO;
+using BizHawk.Emulation.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
@@ -12,12 +15,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		isReleased: true,
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/",
-		singleInstance: true
+		singleInstance: false
 		)]
 	public partial class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
     {
-		static GPGX AttachedCore = null;
+		LibGPGX Core;
+		InstanceDll Dll;
 
 		DiscSystem.Disc CD;
 		DiscSystem.DiscSectorReader DiscSectorReader;
@@ -50,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			// this can influence some things internally
+			// this can influence some things internally (autodetect romtype, etc)
 			string romextension = "GEN";
 
 			// three or six button?
@@ -64,16 +68,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
+				Dll = new InstanceDll(Path.Combine(comm.CoreFileProvider.DllPath(), LibGPGX.DllName));
+				Core = BizInvoker.GetInvoker<LibGPGX>(Dll);
+
 				_syncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)Settings ?? new GPGXSettings();
 
 				CoreComm = comm;
-				if (AttachedCore != null)
-				{
-					AttachedCore.Dispose();
-					AttachedCore = null;
-				}
-				AttachedCore = this;
 
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
@@ -119,13 +120,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 
-				if (!LibGPGX.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _settings.GetNativeSettings()))
+				if (!Core.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _settings.GetNativeSettings()))
 					throw new Exception("gpgx_init() failed");
 
 				{
 					int fpsnum = 60;
 					int fpsden = 1;
-					LibGPGX.gpgx_get_fps(ref fpsnum, ref fpsden);
+					Core.gpgx_get_fps(ref fpsnum, ref fpsden);
 					CoreComm.VsyncNum = fpsnum;
 					CoreComm.VsyncDen = fpsden;
 					Region = CoreComm.VsyncRate > 55 ? DisplayType.NTSC : DisplayType.PAL;
@@ -133,8 +134,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				// compute state size
 				{
-					byte[] tmp = new byte[LibGPGX.gpgx_state_max_size()];
-					int size = LibGPGX.gpgx_state_size(tmp, tmp.Length);
+					byte[] tmp = new byte[Core.gpgx_state_max_size()];
+					int size = Core.gpgx_state_size(tmp, tmp.Length);
 					if (size <= 0)
 						throw new Exception("Couldn't Determine GPGX internal state size!");
 					_savebuff = new byte[size];
@@ -150,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				SetMemoryDomains();
 
 				InputCallback = new LibGPGX.input_cb(input_callback);
-				LibGPGX.gpgx_set_input_callback(InputCallback);
+				Core.gpgx_set_input_callback(InputCallback);
 
 				if (CD != null)
 					DriveLightEnabled = true;
@@ -353,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private void SetControllerDefinition()
 		{
 			inputsize = Marshal.SizeOf(typeof(LibGPGX.InputData));
-			if (!LibGPGX.gpgx_get_control(input, inputsize))
+			if (!Core.gpgx_get_control(input, inputsize))
 				throw new Exception("gpgx_get_control() failed");
 
 			ControlConverter = new GPGXControlConverter(input);
@@ -369,8 +370,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
 		{
-			LibGPGX.gpgx_get_vdp_view(view);
-			LibGPGX.gpgx_flush_vram(); // fully regenerate internal caches as needed
+			Core.gpgx_get_vdp_view(view);
+			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
 		}
 
 		short[] samples = new short[4096];
@@ -391,7 +392,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		void update_audio()
 		{
 			IntPtr src = IntPtr.Zero;
-			LibGPGX.gpgx_get_audio(ref nsamp, ref src);
+			Core.gpgx_get_audio(ref nsamp, ref src);
 			if (src != IntPtr.Zero)
 			{
 				Marshal.Copy(src, samples, 0, nsamp * 2);

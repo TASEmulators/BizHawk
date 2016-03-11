@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			bool ret = GPGXSettings.NeedsReboot(_settings, o);
 			_settings = o;
-			LibGPGX.gpgx_set_draw_mask(_settings.GetDrawMask());
+			Core.gpgx_set_draw_mask(_settings.GetDrawMask());
 			return ret;
 		}
 

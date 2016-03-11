@@ -100,6 +100,7 @@
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="HawkFile.cs" />
+    <Compile Include="IImportResolver.cs" />
     <Compile Include="InstanceDll.cs" />
     <Compile Include="IPC\IPCRingBuffer.cs" />
     <Compile Include="IPC\SharedMemoryBlock.cs" />

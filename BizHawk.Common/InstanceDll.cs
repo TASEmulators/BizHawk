@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Common
 {
-	public class InstanceDll : IDisposable
+	public class InstanceDll : IDisposable, IImportResolver
 	{
 		public InstanceDll(string dllPath)
 		{
@@ -56,6 +56,11 @@ namespace BizHawk.Common
 		public IntPtr GetProcAddress(string procName)
 		{
 			return GetProcAddress(_hModule, procName);
+		}
+
+		IntPtr IImportResolver.Resolve(string entryPoint)
+		{
+			return GetProcAddress(entryPoint);
 		}
 
 		public void Dispose()

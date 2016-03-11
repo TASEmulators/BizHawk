@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			}
 
 			reader.Read(_savebuff, 0, _savebuff.Length);
-			if (!LibGPGX.gpgx_state_load(_savebuff, _savebuff.Length))
+			if (!Core.gpgx_state_load(_savebuff, _savebuff.Length))
 			{
 				throw new Exception("gpgx_state_load() returned false");
 			}
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			if (!LibGPGX.gpgx_state_save(_savebuff, _savebuff.Length))
+			if (!Core.gpgx_state_save(_savebuff, _savebuff.Length))
 				throw new Exception("gpgx_state_save() returned false");
 
 			writer.Write(_savebuff.Length);

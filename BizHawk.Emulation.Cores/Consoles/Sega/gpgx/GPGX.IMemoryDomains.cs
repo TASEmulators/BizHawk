@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				IntPtr area = IntPtr.Zero;
 				int size = 0;
-				IntPtr pname = LibGPGX.gpgx_get_memdom(i, ref area, ref size);
+				IntPtr pname = Core.gpgx_get_memdom(i, ref area, ref size);
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
+							Core.gpgx_poke_vram(((int)addr) ^ 1, val);
 						},
 						byteSize: 2));
 				}
@@ -53,14 +53,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					return LibGPGX.gpgx_peek_m68k_bus(a);
+					return Core.gpgx_peek_m68k_bus(a);
 				},
 				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					LibGPGX.gpgx_write_m68k_bus(a, val);
+					Core.gpgx_write_m68k_bus(a, val);
 				}, 2);
 
 			mm.Add(m68Bus);
@@ -71,14 +71,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					return LibGPGX.gpgx_peek_s68k_bus(a);
+					return Core.gpgx_peek_s68k_bus(a);
 				},
 				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					LibGPGX.gpgx_write_s68k_bus(a, val);
+					Core.gpgx_write_s68k_bus(a, val);
 				}, 2);
 
 			if (IsSegaCD)

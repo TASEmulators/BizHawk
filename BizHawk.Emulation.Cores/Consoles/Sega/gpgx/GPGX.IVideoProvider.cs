@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			int gppitch, gpwidth, gpheight;
 			IntPtr src = IntPtr.Zero;
 
-			LibGPGX.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
+			Core.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
 
 			vwidth = gpwidth;
 			vheight = gpheight;

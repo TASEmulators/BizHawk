@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores
 			long orig_start = loadsegs.Min(s => s.Address);
 			orig_start &= ~(Environment.SystemPageSize - 1);
 			long orig_end = loadsegs.Max(s => s.Address + s.Size);
-			_base = new MemoryBlock(UIntPtr.Zero, orig_end - orig_start);
+			_base = new MemoryBlock(0, (ulong)(orig_end - orig_start));
 			_loadoffset = (long)_base.Start - orig_start;
 
 			try
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores
 				foreach (var seg in loadsegs)
 				{
 					var data = seg.GetContents();
-					Marshal.Copy(data, 0, (IntPtr)(seg.Address + _loadoffset), data.Length);
+					Marshal.Copy(data, 0, Z.SS(seg.Address + _loadoffset), data.Length);
 				}
 				RegisterSymbols();
 				ProcessRelocations();
@@ -51,14 +51,14 @@ namespace BizHawk.Emulation.Cores
 				foreach (var sec in _elf.Sections.Where(s => s.Flags.HasFlag(SectionFlags.Allocatable)))
 				{
 					if (sec.Flags.HasFlag(SectionFlags.Executable))
-						_base.Set((UIntPtr)(sec.LoadAddress + _loadoffset), sec.Size, MemoryBlock.Protection.RX);
+						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RX);
 					else if (sec.Flags.HasFlag(SectionFlags.Writable))
-						_base.Set((UIntPtr)(sec.LoadAddress + _loadoffset), sec.Size, MemoryBlock.Protection.RW);
+						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
 				}
 
 				//FixupGOT();
 				ConnectAllClibPatches();
-				Console.WriteLine("Loaded {0}@{1:X16}", filename, (long)_base.Start);
+				Console.WriteLine("Loaded {0}@{1:X16}", filename, _base.Start);
 			}
 			catch
 			{
@@ -200,6 +200,7 @@ namespace BizHawk.Emulation.Cores
 
 
 		#region clib monkeypatches
+
 		// our clib expects a few function pointers to be defined for it
 
 		/// <summary>
@@ -222,7 +223,7 @@ namespace BizHawk.Emulation.Cores
 		/// <param name="status">desired exit code</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void Exit_D(int status);
-
+		/*
 		[CLibPatch("_ZZFree")]
 		private void FreeMem(IntPtr p, IntPtr size)
 		{
@@ -242,7 +243,7 @@ namespace BizHawk.Emulation.Cores
 			block.Set(block.Start, block.Size, MemoryBlock.Protection.RW);
 			Console.WriteLine("AllocMem: {0:X8}@{1:X16}", (long)size, (long)block.Start);
 			return p;
-		}
+		}*/
 		[CLibPatch("_ZZExit")]
 		private void Exit(int status)
 		{

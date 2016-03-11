@@ -6,41 +6,94 @@ using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores
 {
+	public static class Z
+	{
+		public static IntPtr US(ulong l)
+		{
+			if (IntPtr.Size == 8)
+				return (IntPtr)(long)l;
+			else
+				return (IntPtr)(int)l;
+		}
+
+		public static UIntPtr UU(ulong l)
+		{
+			if (UIntPtr.Size == 8)
+				return (UIntPtr)l;
+			else
+				return (UIntPtr)(uint)l;
+		}
+
+		public static IntPtr SS(long l)
+		{
+			if (IntPtr.Size == 8)
+				return (IntPtr)l;
+			else
+				return (IntPtr)(int)l;
+		}
+
+		public static UIntPtr SU(long l)
+		{
+			if (UIntPtr.Size == 8)
+				return (UIntPtr)(ulong)l;
+			else
+				return (UIntPtr)(uint)l;
+		}
+	}
+
 	public sealed class MemoryBlock : IDisposable
 	{
-		public UIntPtr Start { get; private set; }
-		public long Size { get; private set; }
-		public UIntPtr End { get; private set; }
+		/// <summary>
+		/// starting address of the memory block
+		/// </summary>
+		public ulong Start { get; private set; }
+		/// <summary>
+		/// total size of the memory block
+		/// </summary>
+		public ulong Size { get; private set; }
+		/// <summary>
+		/// ending address of the memory block; equal to start + size
+		/// </summary>
+		public ulong End { get; private set; }
 		public int PageSize { get { return Environment.SystemPageSize; } }
 
-		public MemoryBlock(long size)
-			: this(UIntPtr.Zero, size)
+		/// <summary>
+		/// allocate size bytes at any address
+		/// </summary>
+		/// <param name="size"></param>
+		public MemoryBlock(ulong size)
+			: this(0, size)
 		{
 		}
 
-		public MemoryBlock(UIntPtr start, long size)
+		/// <summary>
+		/// allocate size bytes starting at a particular address
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="size"></param>
+		public MemoryBlock(ulong start, ulong size)
 		{
 #if !MONO
-			Start = Kernel32.VirtualAlloc(start, checked((UIntPtr)size),
+			Start = (ulong)Kernel32.VirtualAlloc(Z.UU(start), Z.UU(size),
 				Kernel32.AllocationType.RESERVE | Kernel32.AllocationType.COMMIT,
 				Kernel32.MemoryProtection.NOACCESS);
-			if (Start == UIntPtr.Zero)
+			if (Start == 0)
 			{
 				throw new InvalidOperationException("VirtualAlloc() returned NULL");
 			}
-			if (start != UIntPtr.Zero)
-				End = (UIntPtr)((long)start + size);
+			if (start != 0)
+				End = start + size;
 			else
-				End = (UIntPtr)((long)Start + size);
-			Size = (long)End - (long)Start;
+				End = Start + size;
+			Size = End - Start;
 #else
-			Start = LibC.mmap(start, checked((UIntPtr)size), 0, LibC.MapType.MAP_ANONYMOUS, -1, IntPtr.Zero);
-			if (Start == UIntPtr.Zero)
+			Start = (ulong)LibC.mmap(ZC.U(start), ZC.U(size), 0, LibC.MapType.MAP_ANONYMOUS, -1, IntPtr.Zero);
+			if (Start == 0)
 			{
 				throw new InvalidOperationException("mmap() returned NULL");
 			}
-			End = (UIntPtr)((long)Start + size);
-			Size = (long)End - (long)Start;
+			End = Start + size;
+			Size = End - Start;
 #endif
 		}
 
@@ -49,12 +102,12 @@ namespace BizHawk.Emulation.Cores
 			R, RW, RX, None
 		}
 
-		public void Set(UIntPtr start, long length, Protection prot)
+		public void Set(ulong start, ulong length, Protection prot)
 		{
-			if ((ulong)start < (ulong)Start)
+			if (start < Start)
 				throw new ArgumentOutOfRangeException("start");
 
-			if ((ulong)start + (ulong)length > (ulong)End)
+			if (start + length > End)
 				throw new ArgumentOutOfRangeException("length");
 
 #if !MONO
@@ -68,7 +121,7 @@ namespace BizHawk.Emulation.Cores
 				default: throw new ArgumentOutOfRangeException("prot");
 			}
 			Kernel32.MemoryProtection old;
-			if (!Kernel32.VirtualProtect(start, (UIntPtr)length, p, out old))
+			if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(length), p, out old))
 				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
 #else
 			LibC.ProtType p;
@@ -95,14 +148,14 @@ namespace BizHawk.Emulation.Cores
 
 		private void Dispose(bool disposing)
 		{
-			if (Start != UIntPtr.Zero)
+			if (Start != 0)
 			{
 #if !MONO
-				Kernel32.VirtualFree(Start, UIntPtr.Zero, Kernel32.FreeType.RELEASE);
+				Kernel32.VirtualFree(Z.UU(Start), UIntPtr.Zero, Kernel32.FreeType.RELEASE);
 #else
-				LibC.munmap(Start, (UIntPtr)Size);
+				LibC.munmap(ZC.U(Start), (UIntPtr)Size);
 #endif
-				Start = UIntPtr.Zero;
+				Start = 0;
 			}
 		}
 

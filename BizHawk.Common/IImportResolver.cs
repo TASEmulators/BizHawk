@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BizHawk.Emulation.Common.BizInvoke
+namespace BizHawk.Common
 {
 	public interface IImportResolver
 	{

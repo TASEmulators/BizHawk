@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.BizInvoke
 {
@@ -106,7 +107,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			// hooks that will be run on the created proxy object
 			var postCreateHooks = new List<Action<object, IImportResolver>>();
 
-			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
+			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
 			foreach (var mi in baseMethods)
 			{
@@ -144,6 +145,21 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			delegateCtor.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 			var delegateInvoke = delegateType.DefineMethod("Invoke",
 				MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual, returnType, paramTypes);
+			// we have to project all of the attributes from the baseMethod to the delegateInvoke
+			// so for something like [Out], the interop engine will see it and use it
+			for (int i = 0; i < paramInfos.Length; i++)
+			{
+				var p = delegateInvoke.DefineParameter(i + 1, ParameterAttributes.None, paramInfos[i].Name);
+				foreach (var a in paramInfos[i].GetCustomAttributes(false))
+					p.SetCustomAttribute(GetAttributeBuilder(a));
+			}
+			{
+				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, baseMethod.ReturnParameter.Name);
+				foreach (var a in baseMethod.ReturnParameter.GetCustomAttributes(false))
+					p.SetCustomAttribute(GetAttributeBuilder(a));
+			}
+
+
 			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
 			var attr = new CustomAttributeBuilder(typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) }), new object[] { nativeCall });
@@ -255,8 +271,8 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			if (type.IsByRef)
 			{
 				var et = type.GetElementType();
-				if (!et.IsPrimitive)
-					throw new InvalidOperationException("Only refs of primitive types are supported!");
+				if (!et.IsPrimitive && !et.IsEnum)
+					throw new InvalidOperationException("Only refs of primitive or enum types are supported!");
 				var loc = il.DeclareLocal(type, true);
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				il.Emit(OpCodes.Dup);
@@ -267,8 +283,8 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			else if (type.IsArray)
 			{
 				var et = type.GetElementType();
-				if (!et.IsPrimitive)
-					throw new InvalidOperationException("Only arrays of primitive types are supported!");
+				if (!et.IsPrimitive && !et.IsEnum)
+					throw new InvalidOperationException("Only arrays of primitive or enum types are supported!");
 
 				// these two cases aren't too hard to add
 				if (type.GetArrayRank() > 1)
@@ -315,7 +331,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				il.MarkLabel(end);
 				return typeof(IntPtr);
 			}
-			else if (type.IsPrimitive)
+			else if (type.IsPrimitive || type.IsEnum)
 			{
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				return type;
@@ -324,6 +340,15 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			{
 				throw new InvalidOperationException("Unrecognized parameter type!");
 			}
+		}
+
+		private static CustomAttributeBuilder GetAttributeBuilder(object o)
+		{
+			// anything more clever we can do here?
+			var t = o.GetType();
+			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
+				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes), new object[0]);
+			throw new InvalidOperationException("Unknown parameter attribute " + t.Name);
 		}
 	}
 

@@ -103,7 +103,6 @@
     <Compile Include="BinaryQuickSerializer.cs" />
     <Compile Include="BizInvoke\BizInvoker.cs" />
     <Compile Include="BizInvoke\DynamicLibraryImportResolver.cs" />
-    <Compile Include="BizInvoke\IImportResolver.cs" />
     <Compile Include="CodeDataLog.cs" />
     <Compile Include="CoreAttributes.cs" />
     <Compile Include="CoreComms.cs" />
