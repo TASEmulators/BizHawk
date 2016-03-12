@@ -48,8 +48,20 @@ namespace BizHawk.Client.Common
 		)]
 		public LuaTable GetInput(int frame)
 		{
+			if (!Global.MovieSession.Movie.IsActive)
+			{
+				Log("No movie loaded");
+				return null;
+			}
+
 			var input = Lua.NewTable();
 			var adapter = Global.MovieSession.Movie.GetInputState(frame);
+
+			if (adapter == null)
+			{
+				Log("Can't get input of the last frame of the movie. Use the previous frame");
+				return null;
+			}
 
 			foreach (var button in adapter.Type.BoolButtons)
 			{
@@ -127,7 +139,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodAttributes(
 			"mode",
-			"Returns the mode of the current movie. Possible modes: PLAY, RECORD, FINISHED, INACTIVE"
+			"Returns the mode of the current movie. Possible modes: \"PLAY\", \"RECORD\", \"FINISHED\", \"INACTIVE\""
 		)]
 		public static string Mode()
 		{
@@ -173,7 +185,7 @@ namespace BizHawk.Client.Common
 				var test = new FileInfo(filename);
 				if (test.Exists)
 				{
-					Log(string.Format("File {0} already exists, will not overwrite.", filename));
+					Log(string.Format("File {0} already exists, will not overwrite", filename));
 					return;
 				}
 				Global.MovieSession.Movie.Filename = filename;
