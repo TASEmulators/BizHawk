@@ -322,7 +322,8 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				CD.Dispose();
 				Disposed = true;
 				DeactivateGL();
-				CoreComm.ReleaseGLContext(glContext);
+				if (glContext != null)
+					CoreComm.ReleaseGLContext(glContext);
 			}
 		}
 
