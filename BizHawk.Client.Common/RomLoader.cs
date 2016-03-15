@@ -544,13 +544,9 @@ namespace BizHawk.Client.Common
 										(AppleII.Settings)GetCoreSettings<AppleII>());
 									break;
 								case "C64":
-									var c64Assets = xmlGame.Assets.Select(a => Database.GetGameInfo(a.Value, a.Key));
-									var c64Roms = xmlGame.Assets.Select(a => a.Value);
 									nextEmulator = new C64(
 										nextComm,
-										c64Assets.FirstOrDefault(), // TODO
-										c64Roms.FirstOrDefault(),
-										".d64", // TODO
+                                        xmlGame.Assets.Select(a => a.Value),
 										(C64.C64Settings)GetCoreSettings<C64>(),
 										(C64.C64SyncSettings)GetCoreSyncSettings<C64>()
 									);
@@ -788,7 +784,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
 								break;
 							case "C64":
-								var c64 = new C64(nextComm, game, rom.RomData, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
+								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 								nextEmulator = c64;
 								break;
 							case "GBA":

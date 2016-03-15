@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
-using System.Windows.Forms;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
-using BizHawk.Emulation.Cores.Computers.Commodore64.Cassette;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
-using BizHawk.Emulation.Cores.Computers.Commodore64.Serial;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
@@ -21,8 +16,44 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	[ServiceNotApplicable(typeof(ISettable<,>))]
 	public sealed partial class C64 : IEmulator, IRegionable
     {
-		// framework
-		public C64(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
+        #region Internals
+
+        [SaveState.DoNotSave]
+        private readonly int _cyclesPerFrame;
+
+        [SaveState.DoNotSave]
+        public GameInfo Game;
+
+        [SaveState.DoNotSave]
+        public IEnumerable<byte[]> Roms { get; private set; }
+
+        [SaveState.DoNotSave]
+        private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
+        {
+            Name = "Commodore 64 Controller",
+            BoolButtons =
+            {
+                "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
+                "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
+                "Key Left Arrow", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Plus", "Key Minus", "Key Pound", "Key Clear/Home", "Key Insert/Delete",
+                "Key Control", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P", "Key At", "Key Asterisk", "Key Up Arrow", "Key Restore",
+                "Key Run/Stop", "Key Lck", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Colon", "Key Semicolon", "Key Equal", "Key Return",
+                "Key Commodore", "Key Left Shift", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key Slash", "Key Right Shift", "Key Cursor Up/Down", "Key Cursor Left/Right",
+                "Key Space",
+                "Key F1", "Key F3", "Key F5", "Key F7"
+            }
+        };
+
+        [SaveState.SaveWithName("Board")]
+        private Motherboard _board;
+
+        private int _frameCycles;
+
+        #endregion
+
+        #region Ctor
+
+        public C64(CoreComm comm, IEnumerable<byte[]> roms, object settings, object syncSettings)
 		{
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
 			PutSettings((C64Settings)settings ?? new C64Settings());
@@ -31,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			InputCallbacks = new InputCallbackSystem();
 
 		    CoreComm = comm;
-		    Roms = new List<byte[]> { rom };
+		    Roms = roms;
             Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
 			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			SetupMemoryDomains(_board.DiskDrive != null);
@@ -50,108 +81,101 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		            break;
 		    }
 
-			((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.Vic);
+            if (_board.Sid != null)
+            {
+                SyncSoundProvider = DCFilter.AsISyncSoundProvider(_board.Sid, 512);
+            }
+            DeterministicEmulation = true;
+
+            ((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.Vic);
             ((BasicServiceProvider) ServiceProvider).Register<IDriveLight>(this);
         }
 
-		// internal variables
-		private int _frame;
-		[SaveState.DoNotSave] private readonly int _cyclesPerFrame;
-	    private bool _driveLed;
+        #endregion
 
-        // bizhawk I/O
-        [SaveState.DoNotSave] public CoreComm CoreComm { get; private set; }
+        #region IDisposable
 
-        // game/rom specific
-        [SaveState.DoNotSave] public GameInfo Game;
-        [SaveState.DoNotSave] public string SystemId { get { return "C64"; } }
-
-        [SaveState.DoNotSave] public string BoardName { get { return null; } }
-
-		// running state
-		public bool DeterministicEmulation { get { return true; } set { ; } }
-		[SaveState.DoNotSave] public int Frame { get { return _frame; } set { _frame = value; } }
-		public void ResetCounters()
-		{
-			_frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-			_frameCycles = 0;
-		}
-
-		// audio/video
-		public void EndAsyncSound() { } //TODO
-		[SaveState.DoNotSave] public ISoundProvider SoundProvider { get { return null; } }
-		public bool StartAsyncSound() { return false; } //TODO
-		[SaveState.DoNotSave] public ISyncSoundProvider SyncSoundProvider { get { return DCFilter.AsISyncSoundProvider(_board.Sid, 512); } }
-
-		// controller
-		[SaveState.DoNotSave] public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		[SaveState.DoNotSave] public IController Controller { get { return _board.Controller; } set { _board.Controller = value; } }
-	    [SaveState.DoNotSave] public IEnumerable<byte[]> Roms { get; private set; }
-
-        [SaveState.DoNotSave]
-        private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
-		{
-			Name = "Commodore 64 Controller",
-			BoolButtons =
-			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
-				"Key Left Arrow", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Plus", "Key Minus", "Key Pound", "Key Clear/Home", "Key Insert/Delete",
-				"Key Control", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P", "Key At", "Key Asterisk", "Key Up Arrow", "Key Restore",
-				"Key Run/Stop", "Key Lck", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Colon", "Key Semicolon", "Key Equal", "Key Return", 
-				"Key Commodore", "Key Left Shift", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key Slash", "Key Right Shift", "Key Cursor Up/Down", "Key Cursor Left/Right", 
-				"Key Space", 
-				"Key F1", "Key F3", "Key F5", "Key F7"
-			}
-		};
-
-		[SaveState.DoNotSave] public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public DisplayType Region
-		{
-			get;
-			private set;
-		}
-
-		public void Dispose()
-		{
-		    if (_board != null)
-		    {
-		        if (_board.TapeDrive != null)
-		        {
-		            _board.TapeDrive.RemoveMedia();
-		        }
-		        if (_board.DiskDrive != null)
-		        {
-		            _board.DiskDrive.RemoveMedia();
-		        }
+        public void Dispose()
+        {
+            if (_board != null)
+            {
+                if (_board.TapeDrive != null)
+                {
+                    _board.TapeDrive.RemoveMedia();
+                }
+                if (_board.DiskDrive != null)
+                {
+                    _board.DiskDrive.RemoveMedia();
+                }
                 _board = null;
             }
         }
 
-	    private int _frameCycles;
+        #endregion
 
-		// process frame
-		public void FrameAdvance(bool render, bool rendersound)
-		{
-			do
-			{
-				DoCycle();
-			}
-			while (_frameCycles != 0);
-		}
+        #region IRegionable
 
-		private void DoCycle()
+        [SaveState.DoNotSave]
+        public DisplayType Region
+        {
+            get;
+            private set;
+        }
+
+        #endregion
+
+        #region IEmulator
+
+        [SaveState.DoNotSave]
+        public CoreComm CoreComm { get; private set; }
+        [SaveState.DoNotSave]
+        public string SystemId { get { return "C64"; } }
+        [SaveState.DoNotSave]
+        public string BoardName { get { return null; } }
+        [SaveState.SaveWithName("DeterministicEmulation")]
+        public bool DeterministicEmulation { get; set; }
+        [SaveState.SaveWithName("Frame")]
+        public int Frame { get; set; }
+        public bool StartAsyncSound() { return false; }
+        public void EndAsyncSound() { }
+        [SaveState.DoNotSave]
+        public ISoundProvider SoundProvider { get { return null; } }
+        [SaveState.DoNotSave]
+        public ISyncSoundProvider SyncSoundProvider { get; private set; }
+        [SaveState.DoNotSave]
+        public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
+        [SaveState.DoNotSave]
+        public IController Controller { get { return _board.Controller; } set { _board.Controller = value; } }
+        [SaveState.DoNotSave]
+        public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+        public void ResetCounters()
+        {
+            Frame = 0;
+            LagCount = 0;
+            IsLagFrame = false;
+            _frameCycles = 0;
+        }
+
+        // process frame
+        public void FrameAdvance(bool render, bool rendersound)
+        {
+            do
+            {
+                DoCycle();
+            }
+            while (_frameCycles != 0);
+        }
+
+        #endregion
+
+        private void DoCycle()
 		{
 			if (_frameCycles == 0) {
 				_board.InputRead = false;
 				_board.PollInput();
 				_board.Cpu.LagCycles = 0;
 			}
-
-		    _driveLed = _board.Serial.ReadDeviceLight();
 
             _board.Execute();
 			_frameCycles++;
@@ -167,16 +191,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		    if (IsLagFrame)
 		        LagCount++;
 		    _frameCycles -= _cyclesPerFrame;
-		    _frame++;
+		    Frame++;
 		}
-
-		private void HandleFirmwareError(string file)
-		{
-			MessageBox.Show("the C64 core is referencing a firmware file which could not be found. Please make sure it's in your configured C64 firmwares folder. The referenced filename is: " + file);
-			throw new FileNotFoundException();
-		}
-
-		private Motherboard _board;
 
 		private byte[] GetFirmware(int length, params string[] names)
 		{
@@ -306,8 +322,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
                     break;
 		    }
         }
-
-		// ------------------------------------
 
 		public void HardReset()
 		{
