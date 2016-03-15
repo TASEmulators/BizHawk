@@ -13,17 +13,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         [SaveState.DoNotSave] private int[][] _tracks;
 	    [SaveState.DoNotSave] private readonly int[] _originalMedia;
 		[SaveState.DoNotSave] public bool Valid;
+	    [SaveState.SaveWithName("DiskIsWriteProtected")] public bool WriteProtected;
 
         /// <summary>
         /// Create a blank, unformatted disk.
         /// </summary>
 	    public Disk(int trackCapacity)
-	    {
+        {
+            WriteProtected = false;
             _tracks = new int[trackCapacity][];
             FillMissingTracks();
             _originalMedia = SerializeTracks(_tracks);
             Valid = true;
-	    }
+        }
 
         /// <summary>
         /// Create an expanded representation of a magnetic disk.
@@ -33,8 +35,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
         /// <param name="trackDensities">Density zones for the raw bit data.</param>
         /// <param name="trackLengths">Length, in bits, of each raw bit data.</param>
         /// <param name="trackCapacity">Total number of tracks on the media.</param>
-	    public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, IList<int> trackLengths, int trackCapacity)
+	    public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, int trackCapacity)
 	    {
+            WriteProtected = true;
             _tracks = new int[trackCapacity][];
             for (var i = 0; i < trackData.Count; i++)
             {
@@ -72,7 +75,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
                 paddedBytes[i] = 0xAA;
             }
 	        var result = new int[FluxEntriesPerTrack];
-	        var length = paddedLength;
 	        var lengthBits = (paddedLength * 8) - 7;
             var offsets = new List<long>();
             var remainingBits = lengthBits;
@@ -104,6 +106,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 	    private void FillMissingTracks()
 	    {
+            // Fill half tracks (should assist with EA "fat-track" protections)
+	        for (var i = 1; i < _tracks.Length; i += 2)
+	        {
+	            if (_tracks[i] == null && _tracks[i - 1] != null)
+	            {
+	                _tracks[i] = new int[FluxEntriesPerTrack];
+                    Array.Copy(_tracks[i - 1], _tracks[i], FluxEntriesPerTrack);
+	            }
+	        }
+
+            // Fill vacant tracks
 	        for (var i = 0; i < _tracks.Length; i++)
 	        {
 	            if (_tracks[i] == null)

@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 	    public enum DiskDriveType
 	    {
-	        None, Commodore1541
+	        None, Commodore1541, Commodore1541II
 	    }
 	}
 }

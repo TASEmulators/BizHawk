@@ -173,6 +173,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                         _icr |= 0x80;
                     }
                     break;
+                case 0xE:
+                    var oldCra = _cra;
+                    WriteRegister(addr, val);
+                    
+                    // Toggle output begins high when timer starts.
+                    if ((_cra & 0x05) == 0x05 && (oldCra & 0x01) == 0)
+                        _prb |= 0x40;
+                    break;
+                case 0xF:
+                    var oldCrb = _crb;
+                    WriteRegister(addr, val);
+
+                    // Toggle output begins high when timer starts.
+                    if ((_crb & 0x05) == 0x05 && (oldCrb & 0x01) == 0)
+                        _prb |= 0x80;
+                    break;
                 default:
                     WriteRegister(addr, val);
                     break;

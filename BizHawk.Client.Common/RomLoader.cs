@@ -788,7 +788,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
 								break;
 							case "C64":
-								var c64 = new C64(nextComm, game, rom.RomData, rom.Extension, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
+								var c64 = new C64(nextComm, game, rom.RomData, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 								nextEmulator = c64;
 								break;
 							case "GBA":
