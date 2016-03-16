@@ -96,7 +96,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\BizHawkExternalToolUsageAttribute.cs" />
     <Compile Include="Attributes\ExternalToolAttribute.cs" />
+    <Compile Include="Classes\BizHawkExternalToolUsage.cs" />
+    <Compile Include="Classes\ClientApi.cs" />
     <Compile Include="Classes\ExternalToolManager.cs" />
     <Compile Include="Interfaces\IExternalToolForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

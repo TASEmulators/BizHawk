@@ -3492,6 +3492,7 @@ namespace BizHawk.Client.EmuHawk
 							Console.WriteLine("  {0} : {1}", f.FirmwareId, f.Hash);
 						}
 					}
+					ApiHawk.ClientApi.OnRomLoaded();
 					return true;
 				}
 				else
@@ -3502,6 +3503,7 @@ namespace BizHawk.Client.EmuHawk
 					//The ROM has been loaded by a recursive invocation of the LoadROM method.
 					if (!(Global.Emulator is NullEmulator))
 					{
+						ApiHawk.ClientApi.OnRomLoaded();
 						return true;
 					}
 
