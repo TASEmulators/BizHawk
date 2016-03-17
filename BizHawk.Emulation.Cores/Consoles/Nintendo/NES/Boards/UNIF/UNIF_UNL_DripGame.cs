@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int irqvalue;
 
 		// last ppu read in 2xxx that was a nametable read, mapped for nt mirroring to 000:7ff
-		// internally, this might be implemented without a latch (you can figure everything directly from the address)
+		// internally, this might be implemented in a different way?
 		int lastntread;
 
 		// sound hardware
