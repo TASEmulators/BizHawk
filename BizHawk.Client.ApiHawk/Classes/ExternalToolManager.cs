@@ -116,12 +116,12 @@ namespace BizHawk.Client.ApiHawk
 							item.ToolTipText = "This tool doesn't work if nothing is loaded";
 							item.Enabled = false;
 						}
-						else if(attribute2.ToolUsage == BizHawkExternalToolUsage.EmulatorSpecific && Global.Emulator.SystemId != attribute2.Parameter)
+						else if(attribute2.ToolUsage == BizHawkExternalToolUsage.EmulatorSpecific && Global.Emulator.SystemId != ClientApi.EmulatedSytemEnumToBizhawkString(attribute2.System))
 						{
 							item.ToolTipText = "This tool doesn't work for current system";
 							item.Enabled = false;
 						}
-						else if (attribute2.ToolUsage == BizHawkExternalToolUsage.GameSpecific && Global.Game.Hash != attribute2.Parameter)
+						else if (attribute2.ToolUsage == BizHawkExternalToolUsage.GameSpecific && Global.Game.Hash != attribute2.GameHash)
 						{
 							item.ToolTipText = "This tool doesn't work for current game";
 							item.Enabled = false;

@@ -97,10 +97,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\BizHawkExternalToolUsageAttribute.cs" />
-    <Compile Include="Attributes\ExternalToolAttribute.cs" />
-    <Compile Include="Classes\BizHawkExternalToolUsage.cs" />
+    <Compile Include="Attributes\BizHawkExternalToolAttribute.cs" />
+    <Compile Include="Enums\BizHawkExternalToolUsage.cs" />
     <Compile Include="Classes\ClientApi.cs" />
     <Compile Include="Classes\ExternalToolManager.cs" />
+    <Compile Include="Enums\EmulatedSystem.cs" />
     <Compile Include="Interfaces\IExternalToolForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

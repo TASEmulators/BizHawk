@@ -12,7 +12,8 @@ namespace BizHawk.Client.ApiHawk
 		#region Fields
 
 		private BizHawkExternalToolUsage _ToolUsage;
-		private string _Parameter;
+		private EmulatedSystem _System;
+		private string _GameHash;
 
 		#endregion
 
@@ -22,28 +23,66 @@ namespace BizHawk.Client.ApiHawk
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
 		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
-		/// <param name="parameter">The parameter; either emulator type or game hash depending of what you want to do</param>
-		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, string parameter)
+		/// <param name="system"><see cref="EmulatedSystem"/> that your external tool is used for</param>
+		/// <param name="gameHash">The game hash, unique game ID (see in the game database)</param>
+		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, EmulatedSystem system, string gameHash)
 		{
-			_ToolUsage = usage;
-			if(usage != BizHawkExternalToolUsage.Global && parameter.Trim() == string.Empty)
+			if (usage == BizHawkExternalToolUsage.EmulatorSpecific && system == EmulatedSystem.Null)
 			{
-				throw new InvalidOperationException("You must specify the parameter. Either emulator type or game hash depending of what you want to do");
+				throw new InvalidOperationException("A system must be set");
 			}
-			_Parameter = parameter;
+			if (usage == BizHawkExternalToolUsage.GameSpecific && gameHash.Trim() == string.Empty)
+			{
+				throw new InvalidOperationException("A game hash must be set");
+			}
+
+			_ToolUsage = usage;			
+			_System = system;
+			_GameHash = gameHash;
 		}
 
 		/// <summary>
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
+		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
+		/// <param name="system"><see cref="EmulatedSystem"/> that your external tool is used for</param>		
+		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, EmulatedSystem system)
+			:this(usage, system, string.Empty)
+		{}
+
+		/// <summary>
+		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
+		/// </summary>
 		public BizHawkExternalToolUsageAttribute()
-			:this(BizHawkExternalToolUsage.Global, string.Empty)
+			:this(BizHawkExternalToolUsage.Global, EmulatedSystem.Null, string.Empty)
 		{ }
 
 
 		#endregion
 
 		#region Properties
+
+		/// <summary>
+		/// Gets the specific system used by the exetrnal tool
+		/// </summary>
+		public EmulatedSystem System
+		{
+			get
+			{
+				return _System;
+			}
+		}
+
+		/// <summary>
+		/// Gets the specific game (hash) used by the exetrnal tool
+		/// </summary>
+		public string GameHash
+		{
+			get
+			{
+				return _GameHash;
+			}
+		}
 
 		/// <summary>
 		/// Gets the tool usage
@@ -54,18 +93,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				return _ToolUsage;
 			}
-		}
-
-		/// <summary>
-		/// Gets the parameter (Emulator or Game hash)
-		/// </summary>
-		public string Parameter
-		{
-			get
-			{
-				return _Parameter;
-			}
-		}
+		}				
 
 		#endregion
 	}
