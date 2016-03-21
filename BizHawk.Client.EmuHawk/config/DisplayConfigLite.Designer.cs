@@ -273,7 +273,7 @@
 			// rbFinalFilterBicubic
 			// 
 			this.rbFinalFilterBicubic.AutoSize = true;
-			this.rbFinalFilterBicubic.Location = new System.Drawing.Point(7, 65);
+			this.rbFinalFilterBicubic.Location = new System.Drawing.Point(6, 65);
 			this.rbFinalFilterBicubic.Name = "rbFinalFilterBicubic";
 			this.rbFinalFilterBicubic.Size = new System.Drawing.Size(142, 17);
 			this.rbFinalFilterBicubic.TabIndex = 3;
