@@ -7,21 +7,34 @@ using ELFSharp.ELF;
 using ELFSharp.ELF.Sections;
 using ELFSharp.ELF.Segments;
 using System.Reflection;
+using BizHawk.Common;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores
 {
-	public sealed class ElfRunner : IDisposable
+	public sealed class ElfRunner : IImportResolver, IDisposable
 	{
 		// TODO: a lot of things only work with our elves and aren't fully generalized
 
 		private ELF<long> _elf;
+		private byte[] _elfhash;
+
 		private MemoryBlock _base;
+		private MemoryBlock _heap;
+		private ulong _heapused;
+
 		private long _loadoffset;
 		private Dictionary<string, SymbolEntry<long>> _symdict;
 		private List<SymbolEntry<long>> _symlist;
 
-		public ElfRunner(string filename)
+		public ElfRunner(string filename, long heapsize)
 		{
+			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
+			{
+				_elfhash = Hash(fs);
+			}
+
 			// todo: hack up this baby to take Streams
 			_elf = ELFReader.Load<long>(filename);
 
@@ -30,8 +43,16 @@ namespace BizHawk.Emulation.Cores
 			long orig_start = loadsegs.Min(s => s.Address);
 			orig_start &= ~(Environment.SystemPageSize - 1);
 			long orig_end = loadsegs.Max(s => s.Address + s.Size);
-			_base = new MemoryBlock(0, (ulong)(orig_end - orig_start));
-			_loadoffset = (long)_base.Start - orig_start;
+			if (HasRelocations())
+			{
+				_base = new MemoryBlock((ulong)(orig_end - orig_start));
+				_loadoffset = (long)_base.Start - orig_start;
+			}
+			else
+			{
+				_base = new MemoryBlock((ulong)orig_start, (ulong)(orig_end - orig_start));
+				_loadoffset = 0;
+			}
 
 			try
 			{
@@ -48,17 +69,33 @@ namespace BizHawk.Emulation.Cores
 
 				_base.Set(_base.Start, _base.Size, MemoryBlock.Protection.R);
 
-				foreach (var sec in _elf.Sections.Where(s => s.Flags.HasFlag(SectionFlags.Allocatable)))
+				foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
 				{
-					if (sec.Flags.HasFlag(SectionFlags.Executable))
+					if ((sec.Flags & SectionFlags.Executable) != 0)
 						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RX);
-					else if (sec.Flags.HasFlag(SectionFlags.Writable))
+					else if ((sec.Flags & SectionFlags.Writable) != 0)
 						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
 				}
+
+				if (HasRelocations())
+				{
+					_heap = new MemoryBlock((ulong)heapsize);
+				}
+				else
+				{
+					// for nonrelocatable, create a canonical heap origin starting at the next 16MB
+					ulong heapstart = ((_base.End - 1) | 0xffffff) + 1;
+					_heap = new MemoryBlock(heapstart, (ulong)heapsize);
+				}
+				_heapused = 0;
 
 				//FixupGOT();
 				ConnectAllClibPatches();
 				Console.WriteLine("Loaded {0}@{1:X16}", filename, _base.Start);
+				foreach (var sec in _elf.Sections.Where(s => s.LoadAddress != 0))
+				{
+					Console.WriteLine("  {0}@{1:X16}, size {2}", sec.Name.PadLeft(20), sec.LoadAddress + _loadoffset, sec.Size.ToString().PadLeft(12));
+				}
 			}
 			catch
 			{
@@ -90,9 +127,15 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
+		private bool HasRelocations()
+		{
+			return _elf.Sections.Any(s => s.Name.StartsWith(".rel"));
+		}
+
 		// elfsharp does not read relocation tables, so there
 		private void ProcessRelocations()
 		{
+			// todo: amd64
 			foreach (var rel in _elf.Sections.Where(s => s.Name.StartsWith(".rel")))
 			{
 				byte[] data = rel.GetContents();
@@ -117,7 +160,7 @@ namespace BizHawk.Emulation.Cores
 			switch (rel.Type)
 			{
 				case 0: val = 0; break;
-				case 1:  val = S + A; break;
+				case 1: val = S + A; break;
 				case 2: throw new NotImplementedException();
 				case 3: throw new NotImplementedException();
 				case 4: throw new NotImplementedException();
@@ -151,22 +194,6 @@ namespace BizHawk.Emulation.Cores
 			_symlist = symbols.ToList();
 		}
 
-		public void PopulateInterface(object o)
-		{
-			var fields = o.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public)
-				.Where(fi => typeof(Delegate).IsAssignableFrom(fi.FieldType))
-				.Where(fi => fi.FieldType.GetCustomAttributes(typeof(UnmanagedFunctionPointerAttribute), false).Length > 0);
-
-			foreach (var fi in fields)
-			{
-				var sym = _symdict[fi.Name]; // TODO: allow some sort of EntryPoint attribute
-				if (sym.Type != SymbolType.Function)
-					throw new InvalidOperationException("Unexpected symbol type for alleged function!");
-				IntPtr ptr = (IntPtr)(sym.Value + _loadoffset);
-				fi.SetValue(o, Marshal.GetDelegateForFunctionPointer(ptr, fi.FieldType));
-			}
-		}
-
 		public void Dispose()
 		{
 			Dispose(true);
@@ -187,13 +214,10 @@ namespace BizHawk.Emulation.Cores
 					_base.Dispose();
 					_base = null;
 				}
-				if (_heaps != null)
+				if (_heap != null)
 				{
-					foreach (var b in _heaps.Values)
-					{
-						b.Dispose();
-					}
-					_heaps = null;
+					_heap.Dispose();
+					_heap = null;
 				}
 			}
 		}
@@ -204,57 +228,50 @@ namespace BizHawk.Emulation.Cores
 		// our clib expects a few function pointers to be defined for it
 
 		/// <summary>
-		/// heap free callback
-		/// </summary>
-		/// <param name="p">ptr</param>
-		/// <param name="size">bytesize</param>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void FreeMem_D(IntPtr p, IntPtr size);
-		/// <summary>
-		/// heap alloc callback
-		/// </summary>
-		/// <param name="size">bytesize</param>
-		/// <returns></returns>
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate IntPtr AllocMem_D(IntPtr size);
-		/// <summary>
-		/// exit() callback
+		/// abort() / other abnormal situation
 		/// </summary>
 		/// <param name="status">desired exit code</param>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate void Exit_D(int status);
-		/*
-		[CLibPatch("_ZZFree")]
-		private void FreeMem(IntPtr p, IntPtr size)
-		{
-			MemoryBlock block;
-			if (_heaps.TryGetValue(p, out block))
-			{
-				_heaps.Remove(p);
-				block.Dispose();
-			}
-		}
-		[CLibPatch("_ZZAlloc")]
-		private IntPtr AllocMem(IntPtr size)
-		{
-			var block = new MemoryBlock((long)size);
-			var p = (IntPtr)(long)block.Start;
-			_heaps[p] = block;
-			block.Set(block.Start, block.Size, MemoryBlock.Protection.RW);
-			Console.WriteLine("AllocMem: {0:X8}@{1:X16}", (long)size, (long)block.Start);
-			return p;
-		}*/
-		[CLibPatch("_ZZExit")]
-		private void Exit(int status)
-		{
-			throw new InvalidOperationException("Client code called exit()");
-		}
+		private delegate void Trap_D();
 
 		/// <summary>
-		/// list of memoryblocks that need to be cleaned up
+		/// expand heap
 		/// </summary>
-		private Dictionary<IntPtr, MemoryBlock> _heaps = new Dictionary<IntPtr, MemoryBlock>();
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr Sbrk_D(UIntPtr n);
 
+		/// <summary>
+		/// output a string
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void DebugPuts_D(string s);
+
+		[CLibPatch("_ecl_trap")]
+		private void Trap()
+		{
+			throw new InvalidOperationException("Waterbox code trapped!");
+		}
+
+		[CLibPatch("_ecl_sbrk")]
+		private IntPtr Sbrk(UIntPtr n)
+		{
+			ulong newused = _heapused + (ulong)n;
+			if (newused > _heap.Size)
+			{
+				throw new InvalidOperationException("Waterbox sbrk will fail!");
+			}
+			Console.WriteLine("Expanding waterbox heap from {0} to {1} bytes", _heapused, newused);
+			var ret = _heap.Start + _heapused;
+			_heap.Set(ret, newused - _heapused, MemoryBlock.Protection.RW);
+			_heapused = newused;
+			return Z.US(ret);
+		}
+
+		[CLibPatch("_ecl_debug_puts")]
+		private void DebugPuts(string s)
+		{
+			Console.WriteLine("Waterbox debug puts: {0}", s);
+		}
 
 		/// <summary>
 		/// list of delegates that need to not be GCed
@@ -275,7 +292,8 @@ namespace BizHawk.Emulation.Cores
 				var sym = _symdict[((CLibPatchAttribute)mi.GetCustomAttributes(typeof(CLibPatchAttribute), false)[0]).NativeName];
 				if (sym.Size != IntPtr.Size)
 					throw new InvalidOperationException("Unexpected function pointer size patching clib!");
-				Marshal.Copy(new[] { ptr }, 0, (IntPtr)(sym.Value + _loadoffset), 1);
+				IntPtr dest = Z.SS(sym.Value + _loadoffset);
+				Marshal.Copy(new[] { ptr }, 0, dest, 1);
 			}
 		}
 
@@ -290,5 +308,107 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		#endregion
+
+		public IntPtr Resolve(string entryPoint)
+		{
+			SymbolEntry<long> sym;
+			if (_symdict.TryGetValue(entryPoint, out sym))
+			{
+				return Z.SS(sym.Value + _loadoffset);
+			}
+			else
+			{
+				return IntPtr.Zero;
+			}
+		}
+
+		#region state
+
+		const ulong MAGIC = 0xb00b1e5b00b1e569;
+
+		public void SaveStateBinary(BinaryWriter bw)
+		{
+			bw.Write(MAGIC);
+			bw.Write(_elfhash);
+			bw.Write(_loadoffset);
+			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Writable) != 0))
+			{
+				var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, false);
+				bw.Write(sec.Size);
+				ms.CopyTo(bw.BaseStream);
+			}
+
+			{
+				var ms = _heap.GetStream(_heap.Start, _heapused, false);
+				bw.Write(_heapused);
+				ms.CopyTo(bw.BaseStream);
+			}
+		}
+
+		public void LoadStateBinary(BinaryReader br)
+		{
+			if (br.ReadUInt64() != MAGIC)
+				throw new InvalidOperationException("Magic not magic enough!");
+			if (!br.ReadBytes(_elfhash.Length).SequenceEqual(_elfhash))
+				throw new InvalidOperationException("Elf changed disguise!");
+			if (br.ReadInt64() != _loadoffset)
+				throw new InvalidOperationException("Trickys elves moved on you!");
+
+			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Writable) != 0))
+			{
+				var len = br.ReadInt64();
+				if (sec.Size != len)
+					throw new InvalidOperationException("Unexpected section size for " + sec.Name);
+				var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, true);
+				CopySome(br.BaseStream, ms, len);
+			}
+
+			{
+				var len = br.ReadInt64();
+				if (len > (long)_heap.Size)
+					throw new InvalidOperationException("Heap size mismatch");
+				var ms = _heap.GetStream(_heap.Start, (ulong)len, true);
+				CopySome(br.BaseStream, ms, len);
+				_heapused = (ulong)len;
+			}
+		}
+
+		#endregion
+
+		private static void CopySome(Stream src, Stream dst, long len)
+		{
+			var buff = new byte[4096];
+			while (len > 0)
+			{
+				int r = src.Read(buff, 0, (int)Math.Min(len, 4096));
+				dst.Write(buff, 0, r);
+				len -= r;
+			}
+		}
+
+		private static byte[] Hash(byte[] data)
+		{
+			using (var h = SHA1.Create())
+			{
+				return h.ComputeHash(data);
+			}
+		}
+
+		private static byte[] Hash(Stream s)
+		{
+			using (var h = SHA1.Create())
+			{
+				return h.ComputeHash(s);
+			}
+		}
+
+		private byte[] HashSection(ulong ptr, ulong len)
+		{
+			using (var h = SHA1.Create())
+			{
+				var ms = _base.GetStream(ptr, len, false);
+				return h.ComputeHash(ms);
+			}
+		}
 	}
 }

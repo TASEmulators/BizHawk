@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
     {
 		LibGPGX Core;
-		InstanceDll Dll;
+		IDisposable NativeData;
 
 		DiscSystem.Disc CD;
 		DiscSystem.DiscSectorReader DiscSectorReader;
@@ -68,8 +68,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				Dll = new InstanceDll(Path.Combine(comm.CoreFileProvider.DllPath(), LibGPGX.DllName));
-				Core = BizInvoker.GetInvoker<LibGPGX>(Dll);
+				IImportResolver iimp;
+				if (IntPtr.Size == 8) // there is no 64 bit build of gpgx right now otherwise
+				{
+					var elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 1024 * 1024 * 4);
+					NativeData = elf;
+					iimp = elf;
+				}
+				else
+				{
+					var dll = new InstanceDll(Path.Combine(comm.CoreFileProvider.DllPath(), LibGPGX.DllName));
+					NativeData = dll;
+					iimp = dll;
+				}
+				Core = BizInvoker.GetInvoker<LibGPGX>(iimp);
 
 				_syncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)Settings ?? new GPGXSettings();
@@ -133,15 +145,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				}
 
 				// compute state size
-				{
-					byte[] tmp = new byte[Core.gpgx_state_max_size()];
-					int size = Core.gpgx_state_size(tmp, tmp.Length);
-					if (size <= 0)
-						throw new Exception("Couldn't Determine GPGX internal state size!");
-					_savebuff = new byte[size];
-					_savebuff2 = new byte[_savebuff.Length + 13];
-					Console.WriteLine("GPGX Internal State Size: {0}", size);
-				}
+				InitStateBuffers();
 
 				SetControllerDefinition();
 

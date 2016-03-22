@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
+#if true
 
 		public byte[] SaveStateBinary()
 		{
@@ -75,5 +76,58 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private byte[] _savebuff;
 		private byte[] _savebuff2;
+
+		private void InitStateBuffers()
+		{
+			byte[] tmp = new byte[Core.gpgx_state_max_size()];
+			int size = Core.gpgx_state_size(tmp, tmp.Length);
+			if (size <= 0)
+				throw new Exception("Couldn't Determine GPGX internal state size!");
+			_savebuff = new byte[size];
+			_savebuff2 = new byte[_savebuff.Length + 13];
+			Console.WriteLine("GPGX Internal State Size: {0}", size);
+		}
+
+#else
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			var elf = (ElfRunner)NativeData;
+			elf.LoadStateBinary(reader);
+			// other variables
+			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
+			// any managed pointers that we sent to the core need to be resent now!
+			// TODO: sega cd won't work until we fix that!
+			Core.gpgx_set_input_callback(InputCallback);
+			RefreshMemCallbacks();
+
+			UpdateVideo();
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			var elf = (ElfRunner)NativeData;
+			elf.SaveStateBinary(writer);
+			// other variables
+			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			var ms = new MemoryStream();
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return ms.ToArray();
+		}
+
+		private void InitStateBuffers()
+		{
+		}
+#endif
 	}
 }

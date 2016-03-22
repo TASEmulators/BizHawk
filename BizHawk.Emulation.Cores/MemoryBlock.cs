@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace BizHawk.Emulation.Cores
 {
@@ -102,6 +103,17 @@ namespace BizHawk.Emulation.Cores
 			R, RW, RX, None
 		}
 
+		public Stream GetStream(ulong start, ulong length, bool writer)
+		{
+			if (start < Start)
+				throw new ArgumentOutOfRangeException("start");
+
+			if (start + length > End)
+				throw new ArgumentOutOfRangeException("length");
+
+			return new MemoryViewStream(!writer, writer, (long)start, (long)length, this);
+		}
+
 		public void Set(ulong start, ulong length, Protection prot)
 		{
 			if (start < Start)
@@ -109,6 +121,9 @@ namespace BizHawk.Emulation.Cores
 
 			if (start + length > End)
 				throw new ArgumentOutOfRangeException("length");
+
+			if (length == 0)
+				return;
 
 #if !MONO
 			Kernel32.MemoryProtection p;
@@ -163,6 +178,101 @@ namespace BizHawk.Emulation.Cores
 		{
 			Dispose(false);
 		}
+
+		private class MemoryViewStream : Stream
+		{
+			public MemoryViewStream(bool readable, bool writable, long ptr, long length, MemoryBlock owner)
+			{
+				_readable = readable;
+				_writable = writable;
+				_ptr = ptr;
+				_length = length;
+				_owner = owner;
+				_pos = 0;
+			}
+
+			private void EnsureNotDisposed()
+			{
+				if (_owner.Start == 0)
+					throw new ObjectDisposedException("MemoryBlock");
+			}
+
+			private MemoryBlock _owner;
+
+			private bool _readable;
+			private bool _writable;
+
+			private long _length;
+			private long _pos;
+			private long _ptr;
+
+			public override bool CanRead { get { return _readable; } }
+			public override bool CanSeek { get { return true; } }
+			public override bool CanWrite { get { return _writable; } }
+			public override void Flush() { }
+			public override long Length { get { return _length; } }
+
+			public override long Position
+			{ 
+				get { return _pos; } set 
+				{
+					if (value < 0 || value > _length)
+						throw new ArgumentOutOfRangeException();
+					_pos = value;
+				} 
+			}
+
+			public override int Read(byte[] buffer, int offset, int count)
+			{
+				if (!_readable)
+					throw new InvalidOperationException();
+				if (count < 0 || count > buffer.Length)
+					throw new ArgumentOutOfRangeException();
+				EnsureNotDisposed();
+				count = (int)Math.Min(count, _length - _pos);
+				Marshal.Copy(Z.SS(_ptr + _pos), buffer, 0, count);
+				_pos += count;
+				return count;
+			}
+
+			public override long Seek(long offset, SeekOrigin origin)
+			{
+				long newpos;
+				switch (origin)
+				{
+					default:
+					case SeekOrigin.Begin:
+						newpos = 0;
+						break;
+					case SeekOrigin.Current:
+						newpos = _pos + offset;
+						break;
+					case SeekOrigin.End:
+						newpos = _length + offset;
+						break;
+				}
+				Position = newpos;
+				return newpos;
+			}
+
+			public override void SetLength(long value)
+			{
+				throw new InvalidOperationException();
+			}
+
+			public override void Write(byte[] buffer, int offset, int count)
+			{
+				if (!_writable)
+					throw new InvalidOperationException();
+				if (count < 0 || count > buffer.Length)
+					throw new ArgumentOutOfRangeException();
+				EnsureNotDisposed();
+				count = (int)Math.Min(count, _length - _pos);
+				Marshal.Copy(buffer, 0, Z.SS(_ptr + _pos), count);
+				_pos += count;
+			}
+		}
+
 
 #if !MONO
 		private static class Kernel32
