@@ -18,12 +18,15 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		{
 			public Type ImplType;
 			public List<Action<object, IImportResolver>> Hooks;
+			public Action<object, IMonitor> ConnectMonitor;
 
-			public object Create(IImportResolver dll)
+			public object Create(IImportResolver dll, IMonitor monitor)
 			{
 				var ret = Activator.CreateInstance(ImplType);
 				foreach (var f in Hooks)
 					f(ret, dll);
+				if (ConnectMonitor != null)
+					ConnectMonitor(ret, monitor);
 				return ret;
 			}
 		}
@@ -61,14 +64,34 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				var baseType = typeof(T);
 				if (!Impls.TryGetValue(baseType, out impl))
 				{
-					impl = CreateProxy(baseType);
+					impl = CreateProxy(baseType, false);
 					Impls.Add(baseType, impl);
 				}
 			}
-			return (T)impl.Create(dll);
+			if (impl.ConnectMonitor != null)
+				throw new InvalidOperationException("Class was previously proxied with a monitor!");
+			return (T)impl.Create(dll, null);
 		}
 
-		private static InvokerImpl CreateProxy(Type baseType)
+		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor)
+			where T : class
+		{
+			InvokerImpl impl;
+			lock (Impls)
+			{
+				var baseType = typeof(T);
+				if (!Impls.TryGetValue(baseType, out impl))
+				{
+					impl = CreateProxy(baseType, true);
+					Impls.Add(baseType, impl);
+				}
+			}
+			if (impl.ConnectMonitor == null)
+				throw new InvalidOperationException("Class was previously proxied without a monitor!");
+			return (T)impl.Create(dll, monitor);
+		}
+
+		private static InvokerImpl CreateProxy(Type baseType, bool monitor)
 		{
 			if (baseType.IsSealed)
 				throw new InvalidOperationException("Can't proxy a sealed type");
@@ -109,28 +132,34 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
+			var monitorField = monitor ? type.DefineField("MonitorField", typeof(IMonitor), FieldAttributes.Public) : null;
+
 			foreach (var mi in baseMethods)
 			{
 				var entryPointName = mi.Attr.EntryPoint ?? mi.Info.Name;
 
 				var hook = mi.Attr.Compatibility
-					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName)
-					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName);
+					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField)
+					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField);
 
 				postCreateHooks.Add(hook);
 			}
 
-			return new InvokerImpl
+			var ret = new InvokerImpl
 			{
 				Hooks = postCreateHooks,
 				ImplType = type.CreateType()
 			};
+			if (monitor)
+				ret.ConnectMonitor = (o, m) => o.GetType().GetField(monitorField.Name).SetValue(o, m);
+
+			return ret;
 		}
 
 		/// <summary>
 		/// create a method implementation that uses GetDelegateForFunctionPointer internally
 		/// </summary>
-		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName)
+		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -172,11 +201,44 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			var method = type.DefineMethod(baseMethod.Name, MethodAttributes.Virtual | MethodAttributes.Public,
 				CallingConventions.HasThis, returnType, paramTypes);
 			var il = method.GetILGenerator();
+
+			Label exc = new Label();
+			if (monitorField != null) // monitor: enter and then begin try
+			{
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter"));
+				exc = il.BeginExceptionBlock();
+			}
+
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			for (int i = 0; i < paramTypes.Length; i++)
 				il.Emit(OpCodes.Ldarg, (short)(i + 1));
+
 			il.Emit(OpCodes.Callvirt, delegateInvoke);
+
+			if (monitorField != null) // monitor: finally exit
+			{
+				LocalBuilder loc = null;
+				if (returnType != typeof(void))
+				{
+					loc = il.DeclareLocal(returnType);
+					il.Emit(OpCodes.Stloc, loc);
+				}
+
+				il.Emit(OpCodes.Leave, exc);
+				il.BeginFinallyBlock();
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit"));
+				il.EndExceptionBlock();
+
+				if (returnType != typeof(void))
+				{
+					il.Emit(OpCodes.Ldloc, loc);
+				}
+			}
 
 			il.Emit(OpCodes.Ret);
 
@@ -193,7 +255,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		/// <summary>
 		/// create a method implementation that uses calli internally
 		/// </summary>
-		private static Action<object, IImportResolver> ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName)
+		private static Action<object, IImportResolver> ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -211,6 +273,16 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 
 			var il = method.GetILGenerator();
+
+			Label exc = new Label();
+			if (monitorField != null) // monitor: enter and then begin try
+			{
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter"));
+				exc = il.BeginExceptionBlock();
+			}
+
 			for (int i = 0; i < paramTypes.Length; i++)
 			{
 				// arg 0 is this, so + 1
@@ -219,6 +291,28 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(OpCodes.Calli, nativeCall, returnType, nativeParamTypes.ToArray());
+
+			if (monitorField != null) // monitor: finally exit
+			{
+				LocalBuilder loc = null;
+				if (returnType != typeof(void))
+				{
+					loc = il.DeclareLocal(returnType);
+					il.Emit(OpCodes.Stloc, loc);
+				}
+
+				il.Emit(OpCodes.Leave, exc);
+				il.BeginFinallyBlock();
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit"));
+				il.EndExceptionBlock();
+
+				if (returnType != typeof(void))
+				{
+					il.Emit(OpCodes.Ldloc, loc);
+				}
+			}
 
 			// either there's a primitive on the stack and we're expected to return that primitive,
 			// or there's nothing on the stack and we're expected to return nothing

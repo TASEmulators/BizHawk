@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		)]
 	public partial class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
-    {
+	{
 		LibGPGX Core;
 		IDisposable NativeData;
 

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace BizHawk.Common
 {
+	/// <summary>
+	/// interface for a dynamic link library or similar
+	/// </summary>
 	public interface IImportResolver
 	{
 		IntPtr Resolve(string entryPoint);
