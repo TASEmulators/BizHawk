@@ -20,15 +20,20 @@ namespace BizHawk.Emulation.Cores
 		private ELF<long> _elf;
 		private byte[] _elfhash;
 
+		/// <summary>
+		/// executable is loaded here
+		/// </summary>
 		private MemoryBlock _base;
-		private MemoryBlock _heap;
-		private ulong _heapused;
+		/// <summary>
+		/// standard malloc() heap
+		/// </summary>
+		private Heap _heap;
 
 		private long _loadoffset;
 		private Dictionary<string, SymbolEntry<long>> _symdict;
 		private List<SymbolEntry<long>> _symlist;
 
-		public ElfRunner(string filename, long heapsize)
+		public ElfRunner(string filename, long heapsize, long sealedheapsize)
 		{
 			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
@@ -77,17 +82,10 @@ namespace BizHawk.Emulation.Cores
 						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
 				}
 
-				if (HasRelocations())
-				{
-					_heap = new MemoryBlock((ulong)heapsize);
-				}
-				else
-				{
-					// for nonrelocatable, create a canonical heap origin starting at the next 16MB
-					ulong heapstart = ((_base.End - 1) | 0xffffff) + 1;
-					_heap = new MemoryBlock(heapstart, (ulong)heapsize);
-				}
-				_heapused = 0;
+				// if relocatable, we won't have constant pointers, so put the heap anywhere
+				// otherwise, put the heap at a canonical location aligned 1MB from the end of the elf, then incremented 16MB
+				ulong heapstart = HasRelocations() ? 0 : ((_base.End - 1) | 0xfffff) + 0x1000001;
+				_heap = new Heap(heapstart, (ulong)heapsize, "sbrk-heap");
 
 				//FixupGOT();
 				ConnectAllClibPatches();
@@ -96,11 +94,26 @@ namespace BizHawk.Emulation.Cores
 				{
 					Console.WriteLine("  {0}@{1:X16}, size {2}", sec.Name.PadLeft(20), sec.LoadAddress + _loadoffset, sec.Size.ToString().PadLeft(12));
 				}
+
+				TopSavableSymbols();
 			}
 			catch
 			{
 				_base.Dispose();
 				throw;
+			}
+		}
+
+		private void TopSavableSymbols()
+		{
+			Console.WriteLine("Top savestate symbols:");
+			foreach (var text in _symlist
+				.Where(s => s.PointedSection != null && (s.PointedSection.Flags & SectionFlags.Writable) != 0)
+				.OrderByDescending(s => s.Size)
+				.Take(30)
+				.Select(s => string.Format("{0} size {1}", s.Name, s.Size)))
+			{
+				Console.WriteLine(text);
 			}
 		}
 
@@ -255,16 +268,9 @@ namespace BizHawk.Emulation.Cores
 		[CLibPatch("_ecl_sbrk")]
 		private IntPtr Sbrk(UIntPtr n)
 		{
-			ulong newused = _heapused + (ulong)n;
-			if (newused > _heap.Size)
-			{
-				throw new InvalidOperationException("Waterbox sbrk will fail!");
-			}
-			Console.WriteLine("Expanding waterbox heap from {0} to {1} bytes", _heapused, newused);
-			var ret = _heap.Start + _heapused;
-			_heap.Set(ret, newused - _heapused, MemoryBlock.Protection.RW);
-			_heapused = newused;
-			return Z.US(ret);
+			var ret = Z.US(_heap.Allocate((ulong)n, 1));
+			Console.WriteLine("Expanding waterbox heap to {0} bytes", _heap.Used);
+			return ret;
 		}
 
 		[CLibPatch("_ecl_debug_puts")]
@@ -338,11 +344,7 @@ namespace BizHawk.Emulation.Cores
 				ms.CopyTo(bw.BaseStream);
 			}
 
-			{
-				var ms = _heap.GetStream(_heap.Start, _heapused, false);
-				bw.Write(_heapused);
-				ms.CopyTo(bw.BaseStream);
-			}
+			_heap.SaveStateBinary(bw);
 		}
 
 		public void LoadStateBinary(BinaryReader br)
@@ -363,14 +365,7 @@ namespace BizHawk.Emulation.Cores
 				CopySome(br.BaseStream, ms, len);
 			}
 
-			{
-				var len = br.ReadInt64();
-				if (len > (long)_heap.Size)
-					throw new InvalidOperationException("Heap size mismatch");
-				var ms = _heap.GetStream(_heap.Start, (ulong)len, true);
-				CopySome(br.BaseStream, ms, len);
-				_heapused = (ulong)len;
-			}
+			_heap.LoadStateBinary(br);
 		}
 
 		#endregion
@@ -408,6 +403,136 @@ namespace BizHawk.Emulation.Cores
 			{
 				var ms = _base.GetStream(ptr, len, false);
 				return h.ComputeHash(ms);
+			}
+		}
+
+		/// <summary>
+		/// a simple grow-only fixed max size heap
+		/// </summary>
+		private sealed class Heap : IDisposable
+		{
+			public MemoryBlock Memory { get; private set; }
+			/// <summary>
+			/// name, used in identifying errors
+			/// </summary>
+			public string Name { get; private set; }
+			/// <summary>
+			/// total number of bytes used
+			/// </summary>
+			public ulong Used { get; private set; }
+
+			/// <summary>
+			/// true if the heap has been sealed, preventing further changes
+			/// </summary>
+			public bool Sealed { get; private set; }
+
+			private byte[] _hash;
+
+			public Heap(ulong start, ulong size, string name)
+			{
+				Memory = new MemoryBlock(start, size);
+				Used = 0;
+				Name = name;
+			}
+
+			private void EnsureAlignment(int align)
+			{
+				if (align > 1)
+				{
+					ulong newused = ((Used - 1) | (ulong)(align - 1)) + 1;
+					if (newused > Memory.Size)
+					{
+						throw new InvalidOperationException(string.Format("Failed to meet alignment {0} on heap {1}", align, Name));
+					}
+					Used = newused;
+				}
+			}
+
+			public ulong Allocate(ulong size, int align)
+			{
+				if (Sealed)
+					throw new InvalidOperationException(string.Format("Attempt made to allocate from sealed heap {0}", Name));
+
+				EnsureAlignment(align);
+
+				ulong newused = Used + size;
+				if (newused > Memory.Size)
+				{
+					throw new InvalidOperationException(string.Format("Failed to allocate {0} bytes from heap {1}", size, Name));
+				}
+				ulong ret = Memory.Start + Used;
+				Memory.Set(ret, newused - Used, MemoryBlock.Protection.RW);
+				Used = newused;
+				return ret;
+			}
+
+			//public Stream GetStream(bool writer)
+			//{
+			//	return Memory.GetStream(Memory.Start, Used, writer);
+			//}
+
+			public void Seal()
+			{
+				if (!Sealed)
+				{
+					Memory.Set(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+					_hash = Hash(Memory.GetStream(Memory.Start, Used, false));
+					Sealed = true;
+				}
+				else
+				{
+					throw new InvalidOperationException(string.Format("Attempt to reseal heap {0}", Name));
+				}
+			}
+
+			public void SaveStateBinary(BinaryWriter bw)
+			{
+				bw.Write(Name);
+				bw.Write(Used);
+				if (!Sealed)
+				{
+					var ms = Memory.GetStream(Memory.Start, Used, false);
+					ms.CopyTo(bw.BaseStream);
+				}
+				else
+				{
+					bw.Write(_hash);
+				}
+			}
+
+			public void LoadStateBinary(BinaryReader br)
+			{
+				var name = br.ReadString();
+				if (name != Name)
+					throw new InvalidOperationException(string.Format("Name did not match for heap {0}", Name));
+				var used = br.ReadUInt64();
+				if (used > Memory.Size)
+					throw new InvalidOperationException(string.Format("Heap {0} used {1} larger than available {2}", Name, used, Memory.Size));
+				if (!Sealed)
+				{
+					Memory.Set(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
+					Memory.Set(Memory.Start, used, MemoryBlock.Protection.RW);
+					var ms = Memory.GetStream(Memory.Start, used, true);
+					CopySome(br.BaseStream, ms, (long)used);
+					Used = used;
+				}
+				else
+				{
+					var hash = br.ReadBytes(_hash.Length);
+					if (!hash.SequenceEqual(_hash))
+					{
+						throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?"));
+					}
+				}
+			}
+
+			public void Dispose()
+			{
+				if (Memory != null)
+				{
+					Memory.Dispose();
+					Memory = null;
+				}
 			}
 		}
 	}

@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				IImportResolver iimp;
 				if (IntPtr.Size == 8) // there is no 64 bit build of gpgx right now otherwise
 				{
-					var elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 1024 * 1024 * 4);
+					var elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 65536, 40 * 1024 * 1024);
 					NativeData = elf;
 					iimp = elf;
 				}
