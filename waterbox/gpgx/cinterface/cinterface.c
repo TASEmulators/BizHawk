@@ -29,8 +29,6 @@ char MS_BIOS_JP[256] = "MS_BIOS_JP";
 
 char romextension[4];
 
-static uint32_t bitmap_data_[1024 * 512];
-
 static int16 soundbuffer[4096];
 static int nsamples;
 
@@ -64,6 +62,8 @@ ECL_ENTRY void (*biz_readcb)(unsigned addr) = NULL;
 ECL_ENTRY void (*biz_writecb)(unsigned addr) = NULL;
 CDCallback biz_cdcallback = NULL;
 unsigned biz_lastpc = 0;
+
+uint8 *tempsram;
 
 static void update_viewport(void)
 {
@@ -295,23 +295,78 @@ GPGX_EX void gpgx_clear_sram(void)
 
 // a bit hacky:
 // in order to present a single memory block to the frontend,
-// we copy the bram bits next to the ebram bits
+// we copy the both the bram and the ebram to another area
 
-GPGX_EX void gpgx_sram_prepread(void)
+GPGX_EX void* gpgx_get_sram(int *size)
 {
-	if (!sram.on && cdd.loaded && scd.cartridge.id)
+	if (sram.on)
 	{
-		void *dest = scd.cartridge.area + scd.cartridge.mask + 1;
-		memcpy(dest, scd.bram, 0x2000);
+		*size = saveramsize();
+		return sram.sram;
+	}
+	else if (cdd.loaded && scd.cartridge.id)
+	{
+	    int sz = scd.cartridge.mask + 1;
+		memcpy(tempsram, scd.cartridge.area, sz);
+		memcpy(tempsram + sz, scd.bram, 0x2000);
+		*size = sz + 0x2000;
+		return tempsram;
+	}
+	else if (cdd.loaded)
+	{
+		*size = 0x2000;
+		return scd.bram;
+	}
+	else if (scd.cartridge.id)
+    {
+        *size = scd.cartridge.mask + 1;
+        return scd.cartridge.area;
+    }
+	else
+	{
+        *size = 0;
+        return NULL;
 	}
 }
 
-GPGX_EX void gpgx_sram_commitwrite(void)
+GPGX_EX int gpgx_put_sram(const uint8 *data, int size)
 {
-	if (!sram.on && cdd.loaded && scd.cartridge.id)
+	if (sram.on)
 	{
-		void *src = scd.cartridge.area + scd.cartridge.mask + 1;
-		memcpy(scd.bram, src, 0x2000);
+	    if (size != saveramsize())
+            return 0;
+	    memcpy(sram.sram, data, size);
+		return 1;
+	}
+	else if (cdd.loaded && scd.cartridge.id)
+	{
+	    int sz = scd.cartridge.mask + 1;
+	    if (size != sz + 0x2000)
+            return 0;
+        memcpy(scd.cartridge.area, data, sz);
+        memcpy(scd.bram, data + sz, 0x2000);
+		return 1;
+	}
+	else if (cdd.loaded)
+	{
+		if (size != 0x2000)
+            return 0;
+        memcpy(scd.bram, data, size);
+		return 1;
+	}
+	else if (scd.cartridge.id)
+    {
+        int sz = scd.cartridge.mask + 1;
+        if (size != sz)
+            return 0;
+        memcpy(scd.cartridge.area, data, size);
+        return 1;
+    }
+	else
+	{
+        if (size != 0)
+            return 0;
+        return 1; // "successful"?
 	}
 }
 
@@ -460,35 +515,6 @@ GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 		return 0xff;
 }
 
-GPGX_EX void gpgx_get_sram(void **area, int *size)
-{
-	if (!area || !size)
-		return;
-
-	if (sram.on)
-	{
-		*area = sram.sram;
-		*size = saveramsize();
-	}
-	else if (scd.cartridge.id)
-	{
-		*area = scd.cartridge.area;
-		*size = scd.cartridge.mask + 1 + 0x2000;
-	}
-	else if (cdd.loaded)
-	{
-		*area = scd.bram;
-		*size = 0x2000;
-	}
-	else
-	{
-		if (area)
-			*area = NULL;
-		if (size)
-			*size = 0;
-	}
-}
-
 struct InitSettings
 {
 	uint8_t Filter;
@@ -504,8 +530,7 @@ struct InitSettings
 GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region, struct InitSettings *settings)
 {
 	memset(&bitmap, 0, sizeof(bitmap));
-	memset(bitmap_data_, 0, sizeof(bitmap_data_));
-	
+
 	strncpy(romextension, feromextension, 3);
 	romextension[3] = 0;
 
@@ -514,7 +539,10 @@ GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive
 	bitmap.width = 1024;
 	bitmap.height = 512;
 	bitmap.pitch = 1024 * 4;
-	bitmap.data = (uint8_t *)bitmap_data_;
+	bitmap.data = alloc_invisible(2 * 1024 * 1024);
+	tempsram = alloc_invisible(24 * 1024);
+
+	ext.md_cart.rom = alloc_sealed(32 * 1024 * 1024);
 
 	/* sound options */
 	config.psg_preamp  = 150;
@@ -528,7 +556,7 @@ GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive
 	config.lg = settings->LowGain; //1.0;
 	config.mg = settings->MidGain; //1.0;
 	config.hg = settings->HighGain; //1.0;
-	config.dac_bits = 14; /* MAX DEPTH */ 
+	config.dac_bits = 14; /* MAX DEPTH */
 	config.ym2413= 2; /* AUTO */
 	config.mono  = 0; /* STEREO output */
 

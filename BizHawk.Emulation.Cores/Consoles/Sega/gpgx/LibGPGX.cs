@@ -57,22 +57,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_get_fps(ref int num, ref int den);
 
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract int gpgx_state_max_size();
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract int gpgx_state_size(byte[] dest, int size);
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract bool gpgx_state_save(byte[] dest, int size);
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract bool gpgx_state_load(byte[] src, int size);
-
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_get_control([Out]InputData dest, int bytes);
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_put_control([In]InputData src, int bytes);
 
 		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_get_sram(ref IntPtr area, ref int size);
+		public abstract IntPtr gpgx_get_sram(ref int size);
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract bool gpgx_put_sram(byte[] data, int size);
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_clear_sram();
@@ -84,14 +78,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		// apparently, if you use built in string marshalling, the interop will assume that
 		// the unmanaged char pointer was allocated in hglobal and try to free it that way
 		public abstract IntPtr gpgx_get_memdom(int which, ref IntPtr area, ref int size);
-
-		// call this before reading sram returned by gpgx_get_sram()
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_sram_prepread();
-
-		// call this after writing sram returned by gpgx_get_sram()
-		[BizImport(CallingConvention.Cdecl)]
-		public abstract void gpgx_sram_commitwrite();
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_reset(bool hard);

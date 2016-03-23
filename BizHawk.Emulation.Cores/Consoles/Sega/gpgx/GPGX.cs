@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		LibGPGX Core;
-		IDisposable NativeData;
+		ElfRunner Elf;
 
 		DiscSystem.Disc CD;
 		DiscSystem.DiscSectorReader DiscSectorReader;
@@ -68,20 +68,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				IImportResolver iimp;
-				if (IntPtr.Size == 8) // there is no 64 bit build of gpgx right now otherwise
-				{
-					var elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 65536, 40 * 1024 * 1024);
-					NativeData = elf;
-					iimp = elf;
-				}
-				else
-				{
-					var dll = new InstanceDll(Path.Combine(comm.CoreFileProvider.DllPath(), LibGPGX.DllName));
-					NativeData = dll;
-					iimp = dll;
-				}
-				Core = BizInvoker.GetInvoker<LibGPGX>(iimp);
+				Elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 65536, 36 * 1024 * 1024, 4 * 1024 * 1024);
+
+				Core = BizInvoker.GetInvoker<LibGPGX>(Elf);
 
 				_syncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)Settings ?? new GPGXSettings();
@@ -171,6 +160,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
 				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
+				Elf.Seal();
 			}
 			catch
 			{

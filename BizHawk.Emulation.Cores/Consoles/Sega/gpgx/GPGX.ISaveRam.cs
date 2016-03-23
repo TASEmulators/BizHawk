@@ -12,11 +12,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public byte[] CloneSaveRam()
 		{
 			int size = 0;
-			IntPtr area = IntPtr.Zero;
-			Core.gpgx_get_sram(ref area, ref size);
-			if (size <= 0 || area == IntPtr.Zero)
+			IntPtr area = Core.gpgx_get_sram(ref size);
+			if (size == 0 || area == IntPtr.Zero)
 				return new byte[0];
-			Core.gpgx_sram_prepread();
 
 			byte[] ret = new byte[size];
 			Marshal.Copy(area, ret, 0, size);
@@ -25,16 +23,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public void StoreSaveRam(byte[] data)
 		{
-			int size = 0;
-			IntPtr area = IntPtr.Zero;
-			Core.gpgx_get_sram(ref area, ref size);
-			if (size <= 0 || area == IntPtr.Zero)
-				return;
-			if (size != data.Length)
-				throw new Exception("Unexpected saveram size");
-
-			Marshal.Copy(data, 0, area, size);
-			Core.gpgx_sram_commitwrite();
+			if (!Core.gpgx_put_sram(data, data.Length))
+				throw new Exception("Core rejected saveram");
 		}
 
 		public bool SaveRamModified
@@ -42,8 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			get
 			{
 				int size = 0;
-				IntPtr area = IntPtr.Zero;
-				Core.gpgx_get_sram(ref area, ref size);
+				IntPtr area = Core.gpgx_get_sram(ref size);
 				return size > 0 && area != IntPtr.Zero;
 			}
 		}

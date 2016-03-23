@@ -89,9 +89,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			if (!disposed)
 			{
-				// KillMemCallbacks(); // not needed when not single instance
-				if (NativeData != null)
-					NativeData.Dispose();
+				if (Elf != null)
+					Elf.Dispose();
 				if (CD != null)
 					CD.Dispose();
 				disposed = true;

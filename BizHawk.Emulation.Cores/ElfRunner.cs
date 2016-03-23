@@ -29,11 +29,31 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		private Heap _heap;
 
+		/// <summary>
+		/// sealed heap (writable only during init)
+		/// </summary>
+		private Heap _sealedheap;
+
+		/// <summary>
+		/// invisible heap (not savestated, use with care)
+		/// </summary>
+		private Heap _invisibleheap;
+
 		private long _loadoffset;
 		private Dictionary<string, SymbolEntry<long>> _symdict;
 		private List<SymbolEntry<long>> _symlist;
 
-		public ElfRunner(string filename, long heapsize, long sealedheapsize)
+		private List<IDisposable> _disposeList = new List<IDisposable>();
+
+		private ulong GetHeapStart(ulong prevend)
+		{
+			// if relocatable, we won't have constant pointers, so put the heap anywhere
+			// otherwise, put the heap at a canonical location aligned 1MB from the end of the elf, then incremented 16MB
+			ulong heapstart = HasRelocations() ? 0 : ((prevend - 1) | 0xfffff) + 0x1000001;
+			return heapstart;
+		}
+
+		public ElfRunner(string filename, long heapsize, long sealedheapsize, long invisibleheapsize)
 		{
 			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
@@ -61,6 +81,7 @@ namespace BizHawk.Emulation.Cores
 
 			try
 			{
+				_disposeList.Add(_base);
 				_base.Set(_base.Start, _base.Size, MemoryBlock.Protection.RW);
 
 				foreach (var seg in loadsegs)
@@ -82,10 +103,28 @@ namespace BizHawk.Emulation.Cores
 						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
 				}
 
-				// if relocatable, we won't have constant pointers, so put the heap anywhere
-				// otherwise, put the heap at a canonical location aligned 1MB from the end of the elf, then incremented 16MB
-				ulong heapstart = HasRelocations() ? 0 : ((_base.End - 1) | 0xfffff) + 0x1000001;
-				_heap = new Heap(heapstart, (ulong)heapsize, "sbrk-heap");
+				ulong end = _base.End;
+
+				if (heapsize > 0)
+				{
+					_heap = new Heap(GetHeapStart(end), (ulong)heapsize, "sbrk-heap");
+					end = _heap.Memory.End;
+					_disposeList.Add(_heap);
+				}
+
+				if (sealedheapsize > 0)
+				{
+					_sealedheap = new Heap(GetHeapStart(end), (ulong)sealedheapsize, "sealed-heap");
+					end = _sealedheap.Memory.End;
+					_disposeList.Add(_sealedheap);
+				}
+
+				if (invisibleheapsize > 0)
+				{
+					_invisibleheap = new Heap(GetHeapStart(end), (ulong)invisibleheapsize, "invisible-heap");
+					end = _invisibleheap.Memory.End;
+					_disposeList.Add(_invisibleheap);
+				}
 
 				//FixupGOT();
 				ConnectAllClibPatches();
@@ -99,7 +138,7 @@ namespace BizHawk.Emulation.Cores
 			}
 			catch
 			{
-				_base.Dispose();
+				Dispose();
 				throw;
 			}
 		}
@@ -213,6 +252,11 @@ namespace BizHawk.Emulation.Cores
 			//GC.SuppressFinalize(this);
 		}
 
+		public void Seal()
+		{
+			_sealedheap.Seal();
+		}
+
 		//~ElfRunner()
 		//{
 		//	Dispose(false);
@@ -222,16 +266,9 @@ namespace BizHawk.Emulation.Cores
 		{
 			if (disposing)
 			{
-				if (_base != null)
-				{
-					_base.Dispose();
-					_base = null;
-				}
-				if (_heap != null)
-				{
-					_heap.Dispose();
-					_heap = null;
-				}
+				foreach (var d in _disposeList)
+					d.Dispose();
+				_disposeList.Clear();
 			}
 		}
 
@@ -259,6 +296,12 @@ namespace BizHawk.Emulation.Cores
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate void DebugPuts_D(string s);
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr SbrkSealed_D(UIntPtr n);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate IntPtr SbrkInvisible_D(UIntPtr n);
+
 		[CLibPatch("_ecl_trap")]
 		private void Trap()
 		{
@@ -268,15 +311,25 @@ namespace BizHawk.Emulation.Cores
 		[CLibPatch("_ecl_sbrk")]
 		private IntPtr Sbrk(UIntPtr n)
 		{
-			var ret = Z.US(_heap.Allocate((ulong)n, 1));
-			Console.WriteLine("Expanding waterbox heap to {0} bytes", _heap.Used);
-			return ret;
+			return Z.US(_heap.Allocate((ulong)n, 1));
 		}
 
 		[CLibPatch("_ecl_debug_puts")]
 		private void DebugPuts(string s)
 		{
 			Console.WriteLine("Waterbox debug puts: {0}", s);
+		}
+
+		[CLibPatch("_ecl_sbrk_sealed")]
+		private IntPtr SbrkSealed(UIntPtr n)
+		{
+			return Z.US(_sealedheap.Allocate((ulong)n, 16));
+		}
+
+		[CLibPatch("_ecl_sbrk_invisible")]
+		private IntPtr SbrkInvisible(UIntPtr n)
+		{
+			return Z.US(_invisibleheap.Allocate((ulong)n, 16));
 		}
 
 		/// <summary>
@@ -286,6 +339,8 @@ namespace BizHawk.Emulation.Cores
 
 		private void ConnectAllClibPatches()
 		{
+			_delegates.Clear(); // in case we're reconnecting
+
 			var methods = GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
 				.Where(mi => mi.GetCustomAttributes(typeof(CLibPatchAttribute), false).Length > 0);
 			foreach (var mi in methods)
@@ -344,7 +399,9 @@ namespace BizHawk.Emulation.Cores
 				ms.CopyTo(bw.BaseStream);
 			}
 
-			_heap.SaveStateBinary(bw);
+			if (_heap != null) _heap.SaveStateBinary(bw);
+			if (_sealedheap != null) _sealedheap.SaveStateBinary(bw);
+			bw.Write(MAGIC);
 		}
 
 		public void LoadStateBinary(BinaryReader br)
@@ -365,7 +422,14 @@ namespace BizHawk.Emulation.Cores
 				CopySome(br.BaseStream, ms, len);
 			}
 
-			_heap.LoadStateBinary(br);
+			if (_heap != null) _heap.LoadStateBinary(br);
+			if (_sealedheap != null) _sealedheap.LoadStateBinary(br);
+			if (br.ReadUInt64() != MAGIC)
+				throw new InvalidOperationException("Magic not magic enough!");
+
+			// the syscall trampolines were overwritten in loadstate (they're in .bss), and if we're cross-session,
+			// are no longer valid.  cores must similiarly resend any external pointers they gave the core.
+			ConnectAllClibPatches();
 		}
 
 		#endregion
@@ -463,6 +527,7 @@ namespace BizHawk.Emulation.Cores
 				ulong ret = Memory.Start + Used;
 				Memory.Set(ret, newused - Used, MemoryBlock.Protection.RW);
 				Used = newused;
+				Console.WriteLine("Allocated {0} bytes on {1}", size, Name);
 				return ret;
 			}
 

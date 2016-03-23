@@ -8,6 +8,19 @@ ECL_EXPORT ECL_ENTRY __attribute__((noreturn)) void (*_ecl_trap)(void); // somet
 ECL_EXPORT ECL_ENTRY void *(*_ecl_sbrk)(size_t n); // sbrk.  won't return if the request can't be satisfied
 ECL_EXPORT ECL_ENTRY void (*_ecl_debug_puts)(const char *); // low level debug write, doesn't involve STDIO
 
+ECL_EXPORT ECL_ENTRY void *(*_ecl_sbrk_sealed)(size_t n); // allocate memory; see emulibc.h
+ECL_EXPORT ECL_ENTRY void *(*_ecl_sbrk_invisible)(size_t n); // allocate memory; see emulibc.h
+
+void *alloc_sealed(size_t size)
+{
+	return _ecl_sbrk_sealed(size);
+}
+
+void *alloc_invisible(size_t size)
+{
+	return _ecl_sbrk_invisible(size);
+}
+
 void *_PDCLIB_sbrk(size_t n)
 {
 	void *ret = _ecl_sbrk(n);

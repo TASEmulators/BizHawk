@@ -35,12 +35,12 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *
  ****************************************************************************************/
- 
+
 
  /* CD compatible ROM/RAM cartridge */
-typedef struct 
+typedef struct
 {
-  uint8 area[0x810000];  /* cartridge ROM/RAM area (max. 8MB + 64KB backup) */
+  uint8 area[0x4000];    // not unioned with cartrom, so need not be a specific size for that; and we only use 16k ebram in bizhawk
   uint8 boot;            /* cartridge boot mode (0x00: boot from CD with ROM/RAM cartridge enabled, 0x40: boot from ROM cartridge with CD enabled) */
   uint8 id;              /* RAM cartridge ID (related to RAM size, 0 if disabled) */
   uint8 prot;            /* RAM cartridge write protection */

@@ -72,7 +72,7 @@ typedef struct
 /* Cartridge type */
 typedef struct
 {
-  uint8 rom[MAXROMSIZE];  /* ROM area */
+  uint8 *rom;  /* ROM area */
   uint8 *base;    /* ROM base (saved for OS/Cartridge ROM swap) */
   uint32 romsize; /* ROM size */
   uint32 mask;    /* ROM mask */
