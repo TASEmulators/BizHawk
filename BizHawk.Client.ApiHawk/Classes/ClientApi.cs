@@ -12,6 +12,7 @@ namespace BizHawk.Client.ApiHawk
 		#region Fields
 
 		private static readonly Assembly clientAssembly;
+		private static readonly object clientMainForm;
 
 		public static event EventHandler RomLoaded;
 
@@ -22,20 +23,22 @@ namespace BizHawk.Client.ApiHawk
 		static ClientApi()
 		{
 			clientAssembly = Assembly.GetEntryAssembly();
+			clientMainForm = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("MainForm").GetValue(null);
 		}
 
 		#endregion
 
 		#region Methods
 
-		/*public static void DoframeAdvance()
+		/// <summary>
+		/// THE FrameAdvance stuff
+		/// </summary>
+		public static void DoframeAdvance()
 		{
-			//StepRunLoop_Core
-			Type emuLuaLib = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
-			//clientAssembly
-			MethodInfo paddingMethod = emuLuaLib.GetMethod("FrameAdvance");
-			paddingMethod.Invoke(paddingMethod, null);
-		}*/		
+			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
+			MethodInfo method = reflectClass.GetMethod("FrameAdvance");
+			method.Invoke(clientMainForm, null);
+		}	
 
 		/// <summary>
 		/// Raise when a rom is successfully Loaded
