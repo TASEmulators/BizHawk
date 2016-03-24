@@ -51,16 +51,16 @@
 /* Master Clock (53.203424 MHz) but not enough to really care about since clocks */
 /* are not running in sync anyway. */
 #define SCD_CLOCK 50000000
-#define SCYCLES_PER_LINE 3184 
+#define SCYCLES_PER_LINE 3184
 
 /* Timer & Stopwatch clocks divider */
 #define TIMERS_SCYCLES_RATIO (384 * 4)
 
 /* CD hardware */
-typedef struct 
+typedef struct
 {
   cd_cart_t cartridge;        /* ROM/RAM Cartridge */
-  uint8 bootrom[0x20000];     /* 128K internal BOOT ROM */
+  uint8 *bootrom;     /* 128K internal BOOT ROM */
   uint8 prg_ram[0x80000];     /* 512K PRG-RAM */
   uint8 word_ram[2][0x20000]; /* 2 x 128K Word RAM (1M mode) */
   uint8 word_ram_2M[0x40000]; /* 256K Word RAM (2M mode) */

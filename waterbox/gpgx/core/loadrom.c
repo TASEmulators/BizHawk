@@ -404,13 +404,13 @@ int load_bios(void)
         switch (region_code)
         {
           case REGION_USA:
-            size = load_archive(CD_BIOS_US, scd.bootrom, sizeof(scd.bootrom), 0);
+            size = load_archive(CD_BIOS_US, scd.bootrom, 0x20000, 0);
             break;
           case REGION_EUROPE:
-            size = load_archive(CD_BIOS_EU, scd.bootrom, sizeof(scd.bootrom), 0);
+            size = load_archive(CD_BIOS_EU, scd.bootrom, 0x20000, 0);
             break;
           default:
-            size = load_archive(CD_BIOS_JP, scd.bootrom, sizeof(scd.bootrom), 0);
+            size = load_archive(CD_BIOS_JP, scd.bootrom, 0x20000, 0);
             break;
         }
 
@@ -702,7 +702,7 @@ int load_rom(const char *filename)
     scd.cartridge.boot = 0x00;
 
     /* copy ROM to BOOTROM area */
-    memcpy(scd.bootrom, cart.rom, sizeof(scd.bootrom));
+    memcpy(scd.bootrom, cart.rom, 0x20000);
 
     /* mark CD BIOS as being loaded */
     system_bios = system_bios | 0x10;

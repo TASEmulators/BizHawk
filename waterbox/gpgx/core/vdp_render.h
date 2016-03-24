@@ -84,5 +84,8 @@ extern void (*render_obj)(int line);
 extern void (*parse_satb)(int line);
 extern void (*update_bg_pattern_cache)(int index);
 
+extern uint32 *vdp_bp_lut;
+extern uint8 **vdp_lut;
+
 #endif /* _RENDER_H_ */
 

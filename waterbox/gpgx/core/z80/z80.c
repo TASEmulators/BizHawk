@@ -221,8 +221,8 @@ static UINT8 SZP[256];      /* zero, sign and parity flags */
 static UINT8 SZHV_inc[256]; /* zero, sign, half carry and overflow flags INC r8 */
 static UINT8 SZHV_dec[256]; /* zero, sign, half carry and overflow flags DEC r8 */
 
-static UINT8 SZHVC_add[2*256*256]; /* flags for ADD opcode */
-static UINT8 SZHVC_sub[2*256*256]; /* flags for SUB opcode */
+UINT8 *SZHVC_add; /* flags for ADD opcode */
+UINT8 *SZHVC_sub; /* flags for SUB opcode */
 
 static const UINT16 cc_op[0x100] = {
    4*15,10*15, 7*15, 6*15, 4*15, 4*15, 7*15, 4*15, 4*15,11*15, 7*15, 6*15, 4*15, 4*15, 7*15, 4*15,
@@ -599,7 +599,7 @@ void CDLogZ80(uint addr, uint flags)
 			//special memory maps are hard to support here.
       return;
     }
-      
+
 		//punt to 68k mapper
 		CDLog68k(addr, flags);
     return;
@@ -3444,7 +3444,7 @@ void z80_reset(void)
 }
 
 /****************************************************************************
- * Run until given cycle count 
+ * Run until given cycle count
  ****************************************************************************/
 void z80_run(unsigned int cycles)
 {
@@ -3461,7 +3461,7 @@ void z80_run(unsigned int cycles)
     R++;
     EXEC_INLINE(op,ROP());
   }
-} 
+}
 
 /****************************************************************************
  * Get all registers in given buffer

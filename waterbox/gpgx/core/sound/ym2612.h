@@ -7,7 +7,7 @@
 ** Copyright (C) 2001, 2002, 2003 Jarek Burczynski (bujar at mame dot net)
 ** Copyright (C) 1998 Tatsuyuki Satoh , MultiArcadeMachineEmulator development
 **
-** Version 1.4 (final beta) 
+** Version 1.4 (final beta)
 **
 ** Additional code & fixes by Eke-Eke for Genesis Plus GX
 **
@@ -24,5 +24,7 @@ extern void YM2612Write(unsigned int a, unsigned int v);
 extern unsigned int YM2612Read(void);
 extern int YM2612LoadContext(unsigned char *state);
 extern int YM2612SaveContext(unsigned char *state);
+
+extern INT32 *ym2612_lfo_pm_table;
 
 #endif /* _YM2612_ */

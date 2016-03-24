@@ -14,6 +14,7 @@
 #include "md_ntsc.h"
 #include "sms_ntsc.h"
 #include "eeprom_i2c.h"
+#include "vdp_render.h"
 
 char GG_ROM[256] = "GG_ROM"; // game genie rom
 char AR_ROM[256] = "AR_ROM"; // actin replay rom
@@ -510,6 +511,14 @@ GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive
 	tempsram = alloc_invisible(24 * 1024);
 
 	ext.md_cart.rom = alloc_sealed(32 * 1024 * 1024);
+	scd.bootrom = malloc(0x20000); // FIXME: this should be sealed, but that crashes. huh?
+	SZHVC_add = alloc_sealed(131072);
+    SZHVC_sub = alloc_sealed(131072);
+    ym2612_lfo_pm_table = alloc_sealed(131072);
+    vdp_bp_lut = alloc_sealed(262144);
+    vdp_lut = alloc_sealed(6 * sizeof(*vdp_lut));
+    for (int i = 0; i < 6; i++)
+        vdp_lut[i] = alloc_sealed(65536);
 
 	/* sound options */
 	config.psg_preamp  = 150;
