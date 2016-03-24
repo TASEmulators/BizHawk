@@ -560,7 +560,7 @@ static const uint32 tms_palette[16] =
 #endif
 
 /* Cached and flipped patterns */
-uint8 bg_pattern_cache[0x80000];
+uint8 *bg_pattern_cache;
 
 /* Sprite pattern name offset look-up table (Mode 5) */
 static uint8 name_lut[0x400];

@@ -211,7 +211,7 @@ typedef struct
 } vdpview_t;
 
 
-extern uint8 bg_pattern_cache[];
+extern uint8 *bg_pattern_cache;
 extern uint32 pixel[];
 
 GPGX_EX void gpgx_get_vdp_view(vdpview_t *view)
@@ -509,6 +509,7 @@ GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive
 	bitmap.pitch = 1024 * 4;
 	bitmap.data = alloc_invisible(2 * 1024 * 1024);
 	tempsram = alloc_invisible(24 * 1024);
+	bg_pattern_cache = alloc_invisible(0x80000);
 
 	ext.md_cart.rom = alloc_sealed(32 * 1024 * 1024);
 	scd.bootrom = malloc(0x20000); // FIXME: this should be sealed, but that crashes. huh?
@@ -615,6 +616,11 @@ GPGX_EX void gpgx_set_draw_mask(int mask)
 		color_update_m5(0, 0);
 	else
 		color_update_m5(0x00, *(uint16 *)&cram[border << 1]);
+}
+
+GPGX_EX void gpgx_invalidate_pattern_cache(void)
+{
+    vdp_invalidate_full_cache();
 }
 
 typedef struct

@@ -304,8 +304,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_poke_vram(int addr, byte value);
 
-		[BizImport(CallingConvention.Cdecl)]
+		/// <summary>
+		/// regenerate whatever portions of the bg pattern cache are currently dirty.
+		/// </summary>
+		[BizImport(CallingConvention.Cdecl)] // the core will handle this itself; you only need to call this when using the cache for your own purposes
 		public abstract void gpgx_flush_vram();
+
+		/// <summary>
+		/// mark the bg pattern cache as dirty
+		/// </summary>
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_invalidate_pattern_cache();
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RegisterInfo

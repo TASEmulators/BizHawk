@@ -104,5 +104,6 @@ extern int vdp_68k_irq_ack(int int_level);
 
 void write_vram_byte(int addr, uint8 val);
 void flush_vram_cache(void);
+void vdp_invalidate_full_cache(void);
 
 #endif /* _VDP_H_ */
