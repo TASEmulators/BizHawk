@@ -274,8 +274,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public int last;
 			[MarshalAs(UnmanagedType.ByValArray, SizeConst = CD_MAX_TRACKS)]
 			public readonly CDTrack[] tracks = new CDTrack[CD_MAX_TRACKS];
-			public cd_read_cb readcallback;
 		}
+
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VDPNameTable

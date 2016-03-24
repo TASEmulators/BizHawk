@@ -37,10 +37,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
-			// TODO: sega cd won't work until we fix that!
 			Core.gpgx_set_input_callback(InputCallback);
 			RefreshMemCallbacks();
-
+			Core.gpgx_set_cdd_callback(cd_callback_handle);
 			UpdateVideo();
 		}
 

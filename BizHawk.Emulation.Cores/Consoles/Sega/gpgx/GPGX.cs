@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				Elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 65536, 36 * 1024 * 1024, 4 * 1024 * 1024);
+				Elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 256 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
 
 				Core = BizInvoker.GetInvoker<LibGPGX>(Elf);
 
@@ -81,7 +81,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				this.romfile = rom;
 				this.CD = CD;
-				this.DiscSectorReader = new DiscSystem.DiscSectorReader(CD);
+				if (CD != null)
+				{
+					this.DiscSectorReader = new DiscSystem.DiscSectorReader(CD);
+					cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
+					Core.gpgx_set_cdd_callback(cd_callback_handle);
+				}
 
 				LibGPGX.INPUT_SYSTEM system_a = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
 				LibGPGX.INPUT_SYSTEM system_b = LibGPGX.INPUT_SYSTEM.SYSTEM_NONE;
@@ -303,8 +308,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			LibGPGX.CDData ret = new LibGPGX.CDData();
 			int size = Marshal.SizeOf(ret);
-
-			ret.readcallback = cd_callback_handle = new LibGPGX.cd_read_cb(CDRead);
 
 			var ses = CD.Session1;
 			int ntrack = ses.InformationTrackCount;

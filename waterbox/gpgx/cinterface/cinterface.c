@@ -57,12 +57,12 @@ static uint8_t brm_format[0x40] =
   0x52,0x41,0x4d,0x5f,0x43,0x41,0x52,0x54,0x52,0x49,0x44,0x47,0x45,0x5f,0x5f,0x5f
 };
 
-ECL_ENTRY void (*biz_execcb)(unsigned addr) = NULL;
-ECL_ENTRY void (*biz_readcb)(unsigned addr) = NULL;
-ECL_ENTRY void (*biz_writecb)(unsigned addr) = NULL;
+ECL_ENTRY void (*biz_execcb)(unsigned addr);
+ECL_ENTRY void (*biz_readcb)(unsigned addr);
+ECL_ENTRY void (*biz_writecb)(unsigned addr);
 CDCallback biz_cdcallback = NULL;
 unsigned biz_lastpc = 0;
-
+ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
 uint8 *tempsram;
 
 static void update_viewport(void)
@@ -123,44 +123,6 @@ GPGX_EX void gpgx_get_fps(int *num, int *den)
 	}
 }
 
-GPGX_EX int gpgx_state_max_size(void)
-{
-	// original state size, plus 64K sram or 16K ebram, plus 8K ibram or seeprom control structures
-	return STATE_SIZE + (64 + 8) * 1024;
-}
-
-GPGX_EX int gpgx_state_size(void *dest, int size)
-{
-	int actual = 0;
-	if (size < gpgx_state_max_size())
-		return -1;
-
-	actual = state_save((unsigned char*) dest);
-	if (actual > size)
-		// fixme!
-		return -1;
-	return actual;
-}
-
-GPGX_EX int gpgx_state_save(void *dest, int size)
-{
-	return state_save((unsigned char*) dest) == size;
-}
-
-GPGX_EX int gpgx_state_load(void *src, int size)
-{
-	if (!size)
-		return 0;
-
-	if (state_load((unsigned char *) src) == size)
-	{
-		update_viewport();
-		return 1;
-	}
-	else
-		return 0;
-}
-
 void osd_input_update(void)
 {
 }
@@ -176,6 +138,11 @@ void real_input_callback(void)
 GPGX_EX void gpgx_set_input_callback(ECL_ENTRY void (*fecb)(void))
 {
 	input_callback_cb = fecb;
+}
+
+GPGX_EX void gpgx_set_cdd_callback(ECL_ENTRY void (*cddcb)(int lba, void *dest, int audio))
+{
+    cdd_readcallback = cddcb;
 }
 
 ECL_ENTRY int (*load_archive_cb)(const char *filename, unsigned char *buffer, int maxsize);

@@ -13,6 +13,8 @@ extern ECL_ENTRY void (*biz_writecb)(unsigned addr);
 extern CDCallback biz_cdcallback;
 extern unsigned biz_lastpc;
 
+extern ECL_ENTRY void (*cdd_readcallback)(int lba, void *dest, int audio);
+
 enum eCDLog_AddrType
 {
 	eCDLog_AddrType_MDCART, eCDLog_AddrType_RAM68k, eCDLog_AddrType_RAMZ80, eCDLog_AddrType_SRAM,
