@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
-		public int DispFinalFilter = 0;
+		public int DispFinalFilter = 1; //bilinear
 		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
 		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
@@ -250,9 +250,8 @@ namespace BizHawk.Client.Common
 		public bool DisplayRerecordCount = false;
 		public bool DisplayMessages = true;
 
-		public bool DispBlurry = false; // make display look ugly
 		public bool DispFixAspectRatio = true;
-		public bool DispFixScaleInteger = true;
+		public bool DispFixScaleInteger = false;
 		public bool DispFullscreenHacks = true;
 		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
