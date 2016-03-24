@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				else
 				{
 					var byteSize = name.Contains("Z80") ? 1 : 2;
-					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, writable: true, byteSize: byteSize));
+					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size, MemoryDomain.Endian.Big, area, name != "MD CART" , byteSize));
 				}
 			}
 			var m68Bus = new MemoryDomain("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
