@@ -1066,13 +1066,16 @@ namespace BizHawk.Client.EmuHawk
 				//(this could be determined with more work; other side affects of the fullscreen mode include: corrupted taskbar, no modal boxes on top of GL control, no screenshots)
 				//At any rate, we can solve this by adding a 1px black border around the GL control
 				//Please note: It is important to do this before resizing things, otherwise momentarily a GL control without WS_BORDER will be at the magic dimensions and cause the flakeout
-				if (Global.Config.DispFullscreenHacks)
+				if (Global.Config.DispFullscreenHacks && Global.Config.DispMethod == Config.EDispMethod.OpenGL)
 				{
 					//ATTENTION: this causes the statusbar to not work well, since the backcolor is now set to black instead of SystemColors.Control.
 					//It seems that some statusbar elements composite with the backcolor. 
 					//Maybe we could add another control under the statusbar. with a different backcolor
 					Padding = new Padding(1);
 					BackColor = Color.Black;
+
+					//FUTURE WORK:
+					//re-add this padding back into the display manager (so the image will get cut off a little but, but a few more resolutions will fully fit into the screen)
 				}
 #endif
 
