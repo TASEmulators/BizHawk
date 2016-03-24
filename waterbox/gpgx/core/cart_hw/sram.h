@@ -57,8 +57,6 @@ extern unsigned int sram_read_word(unsigned int address);
 extern void sram_write_byte(unsigned int address, unsigned int data);
 extern void sram_write_word(unsigned int address, unsigned int data);
 
-extern int sram_context_save(uint8 *state);
-extern int sram_context_load(uint8 *state);
 extern int sram_get_actual_size();
 
 /* global variables */

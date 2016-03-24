@@ -82,10 +82,10 @@ void prg_ram_dma_w(unsigned int words)
 
   /* CDC buffer source address */
   uint16 src_index = cdc.dac.w & 0x3ffe;
-  
+
   /* PRG-RAM destination address*/
   uint32 dst_index = (scd.regs[0x0a>>1].w << 3) & 0x7fffe;
-  
+
   /* update DMA destination address */
   scd.regs[0x0a>>1].w += (words >> 2);
 
@@ -310,7 +310,7 @@ static unsigned int scd_read_byte(unsigned int address)
 #endif
     return data;
   }
-  
+
   /* LED status */
   if (address == 0xff8000)
   {
@@ -330,10 +330,10 @@ static unsigned int scd_read_byte(unsigned int address)
   {
     /* shifted 4-bit input (xxxx00) */
     uint8 bits = (scd.regs[0x4e>>1].w >> (((address & 6) ^ 6) << 1)) << 2;
-    
+
     /* color code */
     uint8 code = scd.regs[0x4c>>1].byte.l;
-    
+
     /* 16-bit font data (4 pixels = 16 bits) */
     uint16 data = (code >> (bits & 4)) & 0x0f;
 
@@ -411,10 +411,10 @@ static unsigned int scd_read_word(unsigned int address)
   {
     /* shifted 4-bit input (xxxx00) */
     uint8 bits = (scd.regs[0x4e>>1].w >> (((address & 6) ^ 6) << 1)) << 2;
-    
+
     /* color code */
     uint8 code = scd.regs[0x4c>>1].byte.l;
-    
+
     /* 16-bit font data (4 pixels = 16 bits) */
     uint16 data = (code >> (bits & 4)) & 0x0f;
 
@@ -539,7 +539,7 @@ static void scd_write_byte(unsigned int address, unsigned int data)
 
     case 0x01: /* RESET status */
     {
-      /* RESET bit cleared ? */      
+      /* RESET bit cleared ? */
       if (!(data & 0x01))
       {
         /* reset CD hardware */
@@ -556,7 +556,7 @@ static void scd_write_byte(unsigned int address, unsigned int data)
       if ((data ^ scd.regs[0x03 >> 1].byte.l) & 0x05)
       {
         int i;
-        
+
         /* MODE bit */
         if (data & 0x04)
         {
@@ -666,7 +666,7 @@ static void scd_write_byte(unsigned int address, unsigned int data)
 
             /* RET bit set during 1M mode ? */
             data |= ~scd.dmna & 0x01;
-            
+
             /* check if RET bit is cleared */
             if (!(data & 0x01))
             {
@@ -678,7 +678,7 @@ static void scd_write_byte(unsigned int address, unsigned int data)
               return;
             }
           }
-          
+
           /* RET bit set in 2M mode */
           if (data & 0x01)
           {
@@ -810,7 +810,7 @@ static void scd_write_word(unsigned int address, unsigned int data)
       /* only update LED status (register $00 is reserved for MAIN-CPU, use $06 instead) */
       scd.regs[0x06>>1].byte.h = data >> 8;
 
-      /* RESET bit cleared ? */      
+      /* RESET bit cleared ? */
       if (!(data & 0x01))
       {
         /* reset CD hardware */
@@ -937,7 +937,7 @@ static void scd_write_word(unsigned int address, unsigned int data)
 
             /* RET bit set during 1M mode ? */
             data |= ~scd.dmna & 0x01;
-            
+
             /* check if RET bit is cleared */
             if (!(data & 0x01))
             {
@@ -949,7 +949,7 @@ static void scd_write_word(unsigned int address, unsigned int data)
               return;
             }
           }
-          
+
           /* RET bit set in 2M mode */
           if (data & 0x01)
           {
@@ -1026,7 +1026,7 @@ static void scd_write_word(unsigned int address, unsigned int data)
 
       /* clear pending level 1 interrupt if disabled ("Batman Returns" option menu) */
       scd.pending &= ~(data & 0x02);
-      
+
       /* update IRQ level */
       s68k_update_irq((scd.pending & data) >> 1);
       return;
@@ -1046,7 +1046,7 @@ static void scd_write_word(unsigned int address, unsigned int data)
     case 0x66: /* Trace vector base address */
     {
       scd.regs[0x66>>1].w = data;
-      
+
       /* start GFX operation */
       gfx_start(data, s68k.cycles);
       return;
@@ -1071,7 +1071,7 @@ static void scd_write_word(unsigned int address, unsigned int data)
 void scd_init(void)
 {
   int i;
-  
+
   /****************************************************************/
   /*  MAIN-CPU low memory map ($000000-$7FFFFF)                   */
   /****************************************************************/
@@ -1122,7 +1122,7 @@ void scd_init(void)
     zbank_memory_map[i].read   = NULL;
     zbank_memory_map[i].write  = NULL;
   }
-  
+
   /****************************************************************/
   /*  SUB-CPU memory map ($000000-$FFFFFF)                        */
   /****************************************************************/
@@ -1148,7 +1148,7 @@ void scd_init(void)
     s68k.memory_map[i].write8  = NULL;
     s68k.memory_map[i].write16 = NULL;
   }
-  
+
   /* $0C0000-$FD0000: Unused area (Word-RAM mirrored ?) */
   for (i=0x0c; i<0xfd; i++)
   {
@@ -1193,7 +1193,7 @@ void scd_reset(int hard)
   if (hard)
   {
     int i;
-    
+
     /* Clear all ASIC registers by default */
     memset(scd.regs, 0, sizeof(scd.regs));
 
@@ -1358,300 +1358,6 @@ void scd_end_frame(unsigned int cycles)
   /* reset CPU registers polling */
   m68k.poll.cycle = 0;
   s68k.poll.cycle = 0;
-}
-
-int scd_context_save(uint8 *state)
-{
-  uint16 tmp16;
-  uint32 tmp32;
-  int bufferptr = 0;
-
-  /* internal harware */
-  save_param(scd.regs, sizeof(scd.regs));
-  save_param(&scd.cycles, sizeof(scd.cycles));
-  save_param(&scd.timer, sizeof(scd.timer));
-  save_param(&scd.pending, sizeof(scd.pending));
-  save_param(&scd.dmna, sizeof(scd.dmna));
-
-  /* GFX processor */
-  bufferptr += gfx_context_save(&state[bufferptr]);
-
-  /* CD Data controller */
-  bufferptr += cdc_context_save(&state[bufferptr]);
-
-  /* CD Drive processor */
-  bufferptr += cdd_context_save(&state[bufferptr]);
-
-  /* PCM chip */
-  bufferptr += pcm_context_save(&state[bufferptr]);
-
-  /* PRG-RAM */
-  save_param(scd.prg_ram, sizeof(scd.prg_ram));
-
-  /* Word-RAM */
-  if (scd.regs[0x03>>1].byte.l & 0x04)
-  {
-    /* 1M mode */
-    save_param(scd.word_ram, sizeof(scd.word_ram));
-  }
-  else
-  {
-    /* 2M mode */
-    save_param(scd.word_ram_2M, sizeof(scd.word_ram_2M));
-  }
-
-  /* MAIN-CPU & SUB-CPU polling */
-  save_param(&m68k.poll, sizeof(m68k.poll));
-  save_param(&s68k.poll, sizeof(s68k.poll));
-
-  /* H-INT default vector */
-  tmp16 = *(uint16 *)(m68k.memory_map[scd.cartridge.boot].base + 0x72);
-  save_param(&tmp16, 2);
-
-  /* SUB-CPU internal state */
-  save_param(&s68k.cycles, sizeof(s68k.cycles));
-  save_param(&s68k.int_level, sizeof(s68k.int_level));
-  save_param(&s68k.stopped, sizeof(s68k.stopped));
-
-  /* SUB-CPU registers */
-  tmp32 = s68k_get_reg(M68K_REG_D0);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D1);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D2);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D3);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D4);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D5);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D6);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_D7);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A0);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A1);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A2);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A3);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A4);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A5);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A6);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_A7);  save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_PC);  save_param(&tmp32, 4);
-  tmp16 = s68k_get_reg(M68K_REG_SR);  save_param(&tmp16, 2); 
-  tmp32 = s68k_get_reg(M68K_REG_USP); save_param(&tmp32, 4);
-  tmp32 = s68k_get_reg(M68K_REG_ISP); save_param(&tmp32, 4);
-
-  /* bootable MD cartridge */
-  if (scd.cartridge.boot)
-  {
-    bufferptr += md_cart_context_save(&state[bufferptr]);
-  }
-
-  save_param(scd.bram, 0x2000);
-  // we don't save scd.cartridge.id separately, so it must be non-changing!
-  if (scd.cartridge.id)
-	  save_param(scd.cartridge.area, scd.cartridge.mask + 1);
-
-  return bufferptr;
-}
-
-int scd_context_load(uint8 *state)
-{
-  int i;
-  uint16 tmp16;
-  uint32 tmp32;
-  int bufferptr = 0;
-
-  /* internal harware */
-  load_param(scd.regs, sizeof(scd.regs));
-  load_param(&scd.cycles, sizeof(scd.cycles));
-  load_param(&scd.timer, sizeof(scd.timer));
-  load_param(&scd.pending, sizeof(scd.pending));
-  load_param(&scd.dmna, sizeof(scd.dmna));
-
-  /* GFX processor */
-  bufferptr += gfx_context_load(&state[bufferptr]);
-
-  /* CD Data controller */
-  bufferptr += cdc_context_load(&state[bufferptr]);
-
-  /* CD Drive processor */
-  bufferptr += cdd_context_load(&state[bufferptr]);
-
-  /* PCM chip */
-  bufferptr += pcm_context_load(&state[bufferptr]);
-
-  /* PRG-RAM */
-  load_param(scd.prg_ram, sizeof(scd.prg_ram));
-
-  /* PRG-RAM 128k bank mapped to $020000-$03FFFF (resp. $420000-$43FFFF) */
-  m68k.memory_map[scd.cartridge.boot + 0x02].base = scd.prg_ram + ((scd.regs[0x03>>1].byte.l & 0xc0) << 11);
-  m68k.memory_map[scd.cartridge.boot + 0x03].base = m68k.memory_map[scd.cartridge.boot + 0x02].base + 0x10000;
-
-  /* Word-RAM */
-  if (scd.regs[0x03>>1].byte.l & 0x04)
-  {
-    /* 1M Mode */
-    load_param(scd.word_ram, sizeof(scd.word_ram));
-  
-    if (scd.regs[0x03>>1].byte.l & 0x01)
-    {
-      /* Word-RAM 1 assigned to MAIN-CPU */
-      for (i=scd.cartridge.boot+0x20; i<scd.cartridge.boot+0x22; i++)
-      {
-        /* Word-RAM 1 data mapped at $200000-$21FFFF */
-        m68k.memory_map[i].base = scd.word_ram[1] + ((i & 0x01) << 16);
-      }
-
-      for (i=scd.cartridge.boot+0x22; i<scd.cartridge.boot+0x24; i++)
-      {
-        /* VRAM cell image mapped at $220000-$23FFFF */
-        m68k.memory_map[i].read8   = cell_ram_1_read8;
-        m68k.memory_map[i].read16  = cell_ram_1_read16;
-        m68k.memory_map[i].write8  = cell_ram_1_write8;
-        m68k.memory_map[i].write16 = cell_ram_1_write16;
-        zbank_memory_map[i].read   = cell_ram_1_read8;
-        zbank_memory_map[i].write  = cell_ram_1_write8;
-      }
-
-      /* Word-RAM 0 assigned to SUB-CPU */
-      for (i=0x08; i<0x0c; i++)
-      {
-        /* DOT image mapped at $080000-$0BFFFF */
-        s68k.memory_map[i].read8   = dot_ram_0_read8;
-        s68k.memory_map[i].read16  = dot_ram_0_read16;
-        s68k.memory_map[i].write8  = dot_ram_0_write8;
-        s68k.memory_map[i].write16 = dot_ram_0_write16;
-      }
-
-      for (i=0x0c; i<0x0e; i++)
-      {
-        /* Word-RAM 0 data mapped at $0C0000-$0DFFFF */
-        s68k.memory_map[i].base    = scd.word_ram[0] + ((i & 0x01) << 16);
-        s68k.memory_map[i].read8   = NULL;
-        s68k.memory_map[i].read16  = NULL;
-        s68k.memory_map[i].write8  = NULL;
-        s68k.memory_map[i].write16 = NULL;
-      }
-    }
-    else
-    {
-      /* Word-RAM 0 assigned to MAIN-CPU */
-      for (i=scd.cartridge.boot+0x20; i<scd.cartridge.boot+0x22; i++)
-      {
-        /* Word-RAM 0 data mapped at $200000-$21FFFF */
-        m68k.memory_map[i].base = scd.word_ram[0] + ((i & 0x01) << 16);
-      }
-
-      for (i=scd.cartridge.boot+0x22; i<scd.cartridge.boot+0x24; i++)
-      {
-        /* VRAM cell image mapped at $220000-$23FFFF */
-        m68k.memory_map[i].read8   = cell_ram_0_read8;
-        m68k.memory_map[i].read16  = cell_ram_0_read16;
-        m68k.memory_map[i].write8  = cell_ram_0_write8;
-        m68k.memory_map[i].write16 = cell_ram_0_write16;
-        zbank_memory_map[i].read   = cell_ram_0_read8;
-        zbank_memory_map[i].write  = cell_ram_0_write8;
-      }
-
-      /* Word-RAM 1 assigned to SUB-CPU */
-      for (i=0x08; i<0x0c; i++)
-      {
-        /* DOT image mapped at $080000-$0BFFFF */
-        s68k.memory_map[i].read8   = dot_ram_1_read8;
-        s68k.memory_map[i].read16  = dot_ram_1_read16;
-        s68k.memory_map[i].write8  = dot_ram_1_write8;
-        s68k.memory_map[i].write16 = dot_ram_1_write16;
-      }
-
-      for (i=0x0c; i<0x0e; i++)
-      {
-        /* Word-RAM 1 data mapped at $0C0000-$0DFFFF */
-        s68k.memory_map[i].base    = scd.word_ram[1] + ((i & 0x01) << 16);
-        s68k.memory_map[i].read8   = NULL;
-        s68k.memory_map[i].read16  = NULL;
-        s68k.memory_map[i].write8  = NULL;
-        s68k.memory_map[i].write16 = NULL;
-      }
-    }
-  }
-  else
-  {
-    /* 2M mode */
-    load_param(scd.word_ram_2M, sizeof(scd.word_ram_2M));
-
-    for (i=scd.cartridge.boot+0x20; i<scd.cartridge.boot+0x24; i++)
-    {
-      /* MAIN-CPU: $200000-$23FFFF is mapped to 256K Word-RAM */
-      m68k.memory_map[i].base    = scd.word_ram_2M + ((i & 0x03) << 16);
-      m68k.memory_map[i].read8   = NULL;
-      m68k.memory_map[i].read16  = NULL;
-      m68k.memory_map[i].write8  = NULL;
-      m68k.memory_map[i].write16 = NULL;
-      zbank_memory_map[i].read   = NULL;
-      zbank_memory_map[i].write  = NULL;
-    }
-
-    for (i=0x08; i<0x0c; i++)
-    {
-      /* SUB-CPU: $080000-$0BFFFF is mapped to 256K Word-RAM */
-      s68k.memory_map[i].read8   = NULL;
-      s68k.memory_map[i].read16  = NULL;
-      s68k.memory_map[i].write8  = NULL;
-      s68k.memory_map[i].write16 = NULL;
-    }
-
-    for (i=0x0c; i<0x0e; i++)
-    {
-      /* SUB-CPU: $0C0000-$0DFFFF is unmapped */
-      s68k.memory_map[i].read8   = s68k_read_bus_8;
-      s68k.memory_map[i].read16  = s68k_read_bus_16;
-      s68k.memory_map[i].write8  = s68k_unused_8_w;
-      s68k.memory_map[i].write16 = s68k_unused_16_w;
-    }
-  }
-
-  /* MAIN-CPU & SUB-CPU polling */
-  load_param(&m68k.poll, sizeof(m68k.poll));
-  load_param(&s68k.poll, sizeof(s68k.poll));
-
-  /* H-INT default vector */
-  load_param(&tmp16, 2);
-  *(uint16 *)(m68k.memory_map[scd.cartridge.boot].base + 0x72) = tmp16;
-
-  /* SUB-CPU internal state */
-  load_param(&s68k.cycles, sizeof(s68k.cycles));
-  load_param(&s68k.int_level, sizeof(s68k.int_level));
-  load_param(&s68k.stopped, sizeof(s68k.stopped));
-
-  /* SUB-CPU registers */
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D0, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D1, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D2, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D3, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D4, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D5, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D6, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_D7, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A0, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A1, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A2, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A3, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A4, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A5, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A6, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_A7, tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_PC, tmp32);  
-  load_param(&tmp16, 2); s68k_set_reg(M68K_REG_SR, tmp16);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_USP,tmp32);
-  load_param(&tmp32, 4); s68k_set_reg(M68K_REG_ISP,tmp32);
-
-  /* bootable MD cartridge hardware */
-  if (scd.cartridge.boot)
-  {
-    bufferptr += md_cart_context_load(&state[bufferptr]);
-  }
-
-  load_param(scd.bram, 0x2000);
-  // we don't save scd.cartridge.id separately, so it must be non-changing!
-  if (scd.cartridge.id)
-	  load_param(scd.cartridge.area, scd.cartridge.mask + 1);
-
-  return bufferptr;
 }
 
 int scd_68k_irq_ack(int level)

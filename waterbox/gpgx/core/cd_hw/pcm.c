@@ -82,42 +82,6 @@ void pcm_reset(void)
   blip_clear(blip[1]);
 }
 
-int pcm_context_save(uint8 *state)
-{
-  uint8 tmp8;
-  int bufferptr = 0;
-
-  tmp8 = (pcm.bank - pcm.ram) >> 12;
-
-  save_param(pcm.chan, sizeof(pcm.chan));
-  save_param(pcm.out, sizeof(pcm.out));
-  save_param(&tmp8, 1);
-  save_param(&pcm.enabled, sizeof(pcm.enabled));
-  save_param(&pcm.status, sizeof(pcm.status));
-  save_param(&pcm.index, sizeof(pcm.index));
-  save_param(pcm.ram, sizeof(pcm.ram));
-
-  return bufferptr;
-}
-
-int pcm_context_load(uint8 *state)
-{
-  uint8 tmp8;
-  int bufferptr = 0;
-
-  load_param(pcm.chan, sizeof(pcm.chan));
-  load_param(pcm.out, sizeof(pcm.out));
-
-  load_param(&tmp8, 1);
-  pcm.bank = &pcm.ram[(tmp8 & 0x0f) << 12];
-
-  load_param(&pcm.enabled, sizeof(pcm.enabled));
-  load_param(&pcm.status, sizeof(pcm.status));
-  load_param(&pcm.index, sizeof(pcm.index));
-  load_param(pcm.ram, sizeof(pcm.ram));
-
-  return bufferptr;
-}
 
 void pcm_run(unsigned int length)
 {
@@ -128,7 +92,7 @@ void pcm_run(unsigned int length)
   if (pcm.enabled)
   {
     int i, j, l, r;
-  
+
     /* generate PCM samples */
     for (i=0; i<length; i++)
     {
@@ -413,10 +377,10 @@ void pcm_ram_dma_w(unsigned int words)
 
   /* CDC buffer source address */
   uint16 src_index = cdc.dac.w & 0x3ffe;
-  
+
   /* PCM-RAM destination address*/
   uint16 dst_index = (scd.regs[0x0a>>1].w << 2) & 0xffe;
-  
+
   /* update DMA destination address */
   scd.regs[0x0a>>1].w += (words >> 1);
 

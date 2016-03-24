@@ -52,8 +52,8 @@ T_SRAM sram;
  *  1B4h:   dc.l   RAM start address
  *  1B8h:   dc.l   RAM end address
  *   x 1 for BACKUP (not volatile), 0 for volatile RAM
- *   yz 10 if even address only 
- *      11 if odd address only 
+ *   yz 10 if even address only
+ *      11 if odd address only
  *      00 if both even and odd address
  *      01 others (serial EEPROM, RAM with 4-bit data bus, etc)
  *   abc 001 if SRAM
@@ -132,7 +132,7 @@ void sram_init()
       sram.start = 0x200001;
       sram.end = 0x203fff;
     }
-    else if (((rominfo.realchecksum == 0xaeaa) || (rominfo.realchecksum == 0x8dba)) && 
+    else if (((rominfo.realchecksum == 0xaeaa) || (rominfo.realchecksum == 0x8dba)) &&
              (rominfo.checksum ==  0x8104))
     {
       /* Xin Qigai Wangzi (use uncommon area) */
@@ -227,48 +227,6 @@ void sram_write_word(unsigned int address, unsigned int data)
 
 // the variables in SRAM_T are all part of "configuration", so we don't have to save those.
 // the only thing that needs to be saved is the SRAM itself and the SEEPROM struct (if applicable)
-
-int sram_context_save(uint8 *state)
-{
-	int bufferptr = 0;
-	if (!sram.on)
-		return 0;
-	save_param(sram.sram, sram_get_actual_size());
-	switch (sram.custom)
-	{
-	case 1:
-		save_param(&eeprom_i2c, sizeof(eeprom_i2c));
-		break;
-	case 2:
-		save_param(&spi_eeprom, sizeof(spi_eeprom));
-		break;
-	case 3:
-		save_param(&eeprom_93c, sizeof(eeprom_93c));
-		break;
-	}
-	return bufferptr;
-}
-
-int sram_context_load(uint8 *state)
-{
-	int bufferptr = 0;
-	if (!sram.on)
-		return 0;
-	load_param(sram.sram, sram_get_actual_size());
-	switch (sram.custom)
-	{
-	case 1:
-		load_param(&eeprom_i2c, sizeof(eeprom_i2c));
-		break;
-	case 2:
-		load_param(&spi_eeprom, sizeof(spi_eeprom));
-		break;
-	case 3:
-		load_param(&eeprom_93c, sizeof(eeprom_93c));
-		break;
-	}
-	return bufferptr;
-}
 
 int sram_get_actual_size()
 {

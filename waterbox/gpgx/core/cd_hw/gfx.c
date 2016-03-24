@@ -47,10 +47,10 @@ void word_ram_0_dma_w(unsigned int words)
 
   /* CDC buffer source address */
   uint16 src_index = cdc.dac.w & 0x3ffe;
-  
+
   /* WORD-RAM destination address*/
   uint32 dst_index = (scd.regs[0x0a>>1].w << 3) & 0x1fffe;
-  
+
   /* update DMA destination address */
   scd.regs[0x0a>>1].w += (words >> 2);
 
@@ -85,10 +85,10 @@ void word_ram_1_dma_w(unsigned int words)
 
   /* CDC buffer source address */
   uint16 src_index = cdc.dac.w & 0x3ffe;
-  
+
   /* WORD-RAM destination address*/
   uint32 dst_index = ((scd.regs[0x0a>>1].w << 3) & 0x1fffe);
-  
+
   /* update DMA destination address */
   scd.regs[0x0a>>1].w += (words >> 2);
 
@@ -123,10 +123,10 @@ void word_ram_2M_dma_w(unsigned int words)
 
   /* CDC buffer source address */
   uint16 src_index = cdc.dac.w & 0x3ffe;
-  
+
   /* WORD-RAM destination address*/
   uint32 dst_index = (scd.regs[0x0a>>1].w << 3) & 0x3fffe;
-  
+
   /* update DMA destination address */
   scd.regs[0x0a>>1].w += (words >> 2);
 
@@ -320,16 +320,16 @@ void gfx_init(void)
   /* $220000-$22FFFF corresponds to $200000-$20FFFF */
   for (i=0; i<0x4000; i++)
   {
-    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */ 
+    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */
     offset = offset | (((i >> 8) & 0x3f) << 2);   /* cell x offset (0-63) */
     offset = offset | (((i >> 3) & 0x1f) << 11);  /* cell y offset (0-31) */
     gfx.lut_offset[i] = offset;
   }
-  
+
   /* $230000-$237FFF corresponds to $210000-$217FFF */
   for (i=0x4000; i<0x6000; i++)
   {
-    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */ 
+    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */
     offset = offset | (((i >> 7) & 0x3f) << 2);   /* cell x offset (0-63) */
     offset = offset | (((i >> 3) & 0x0f) << 11);  /* cell y offset (0-15) */
     gfx.lut_offset[i] = offset;
@@ -338,7 +338,7 @@ void gfx_init(void)
   /* $238000-$23BFFF corresponds to $218000-$21BFFF */
   for (i=0x6000; i<0x7000; i++)
   {
-    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */ 
+    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */
     offset = offset | (((i >> 6) & 0x3f) << 2);   /* cell x offset (0-63) */
     offset = offset | (((i >> 3) & 0x07) << 11);  /* cell y offset (0-7) */
     gfx.lut_offset[i] = offset | 0x8000;
@@ -347,7 +347,7 @@ void gfx_init(void)
   /* $23C000-$23DFFF corresponds to $21C000-$21DFFF */
   for (i=0x7000; i<0x7800; i++)
   {
-    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */ 
+    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */
     offset = offset | (((i >> 5) & 0x3f) << 2);   /* cell x offset (0-63) */
     offset = offset | (((i >> 3) & 0x03) << 11);  /* cell y offset (0-3) */
     gfx.lut_offset[i] = offset | 0xc000;
@@ -356,7 +356,7 @@ void gfx_init(void)
   /* $23E000-$23FFFF corresponds to $21E000-$21FFFF */
   for (i=0x7800; i<0x8000; i++)
   {
-    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */ 
+    offset = (i & 0x07) << 8;                     /* cell vline (0-7) */
     offset = offset | (((i >> 5) & 0x3f) << 2);   /* cell x offset (0-63) */
     offset = offset | (((i >> 3) & 0x03) << 11);  /* cell y offset (0-3) */
     gfx.lut_offset[i] = offset | 0xe000;
@@ -391,7 +391,7 @@ void gfx_init(void)
     row = (i >> 6) & mask;
     col = (i >> 4) & mask;
 
-    if (i & 4) { col = col ^ mask; }  /* HFLIP (always first)  */ 
+    if (i & 4) { col = col ^ mask; }  /* HFLIP (always first)  */
     if (i & 2) { col = col ^ mask; row = row ^ mask; }  /* ROLL1 */
     if (i & 1) { temp = col; col = row ^ mask; row = temp; }  /* ROLL0  */
 
@@ -410,7 +410,7 @@ void gfx_init(void)
     row = (i >> 6) & 7;
     col = (i >> 3) & 7;
 
-    if (i & 4) { col = col ^ 7; }   /* HFLIP (always first) */ 
+    if (i & 4) { col = col ^ 7; }   /* HFLIP (always first) */
     if (i & 2) { col = col ^ 7; row = row ^ 7; }  /* ROLL1 */
     if (i & 1) { temp = col; col = row ^ 7; row = temp; } /* ROLL0 */
 
@@ -420,53 +420,9 @@ void gfx_init(void)
 }
 
 void gfx_reset(void)
-{ 
+{
   /* Reset cycle counter */
   gfx.cycles = 0;
-}
-
-int gfx_context_save(uint8 *state)
-{
-  uint32 tmp32;
-  int bufferptr = 0;
-
-  save_param(&gfx.cycles, sizeof(gfx.cycles));
-  save_param(&gfx.cyclesPerLine, sizeof(gfx.cyclesPerLine));
-  save_param(&gfx.dotMask, sizeof(gfx.dotMask));
-  save_param(&gfx.stampShift, sizeof(gfx.stampShift));
-  save_param(&gfx.mapShift, sizeof(gfx.mapShift));
-  save_param(&gfx.bufferOffset, sizeof(gfx.bufferOffset));
-  save_param(&gfx.bufferStart, sizeof(gfx.bufferStart));
-
-  tmp32 = (uint8 *)(gfx.tracePtr) - scd.word_ram_2M;
-  save_param(&tmp32, 4);
-
-  tmp32 = (uint8 *)(gfx.mapPtr) - scd.word_ram_2M;
-  save_param(&tmp32, 4);
-
-  return bufferptr;
-}
-
-int gfx_context_load(uint8 *state)
-{
-  uint32 tmp32;
-  int bufferptr = 0;
-
-  load_param(&gfx.cycles, sizeof(gfx.cycles));
-  load_param(&gfx.cyclesPerLine, sizeof(gfx.cyclesPerLine));
-  load_param(&gfx.dotMask, sizeof(gfx.dotMask));
-  load_param(&gfx.stampShift, sizeof(gfx.stampShift));
-  load_param(&gfx.mapShift, sizeof(gfx.mapShift));
-  load_param(&gfx.bufferOffset, sizeof(gfx.bufferOffset));
-  load_param(&gfx.bufferStart, sizeof(gfx.bufferStart));
-
-  load_param(&tmp32, 4);
-  gfx.tracePtr = (uint16 *)(scd.word_ram_2M + tmp32);
-
-  load_param(&tmp32, 4);
-  gfx.mapPtr = (uint16 *)(scd.word_ram_2M + tmp32);
-
-  return bufferptr;
 }
 
 INLINE void gfx_render(uint32 bufferIndex, uint32 width)
@@ -531,7 +487,7 @@ INLINE void gfx_render(uint32 bufferIndex, uint32 width)
         /*        s = stamp size (0=16x16, 1=32x32)              */
         /*      hrr = HFLIP & ROTATION bits                      */
         stamp_index |= gfx.lut_cell[stamp_data | ((scd.regs[0x58>>1].byte.l & 0x02) << 2 ) | ((ypos >> 8) & 0xc0) | ((xpos >> 10) & 0x30)] << 6;
-            
+
         /* pixel  offset (0-63)                              */
         /* table entry = yyyxxxhrr (9 bits)                  */
         /* with: yyy = pixel row  (0-7) = (ypos >> 11) & 7   */
@@ -602,7 +558,7 @@ void gfx_start(unsigned int base, int cycles)
   if (!(scd.regs[0x02>>1].byte.l & 0x04))
   {
     uint32 mask;
-    
+
     /* trace vector pointer */
     gfx.tracePtr = (uint16 *)(scd.word_ram_2M + ((base << 2) & 0x3fff8));
 
@@ -654,7 +610,7 @@ void gfx_start(unsigned int base, int cycles)
     gfx.cycles = cycles;
 
     /* update GFX chip timings (see AC3:Thunderhawk / Thunderstrike) */
-    gfx.cyclesPerLine = 4 * 5 * scd.regs[0x62>>1].w; 
+    gfx.cyclesPerLine = 4 * 5 * scd.regs[0x62>>1].w;
 
     /* start graphics operation */
     scd.regs[0x58>>1].byte.h = 0x80;
@@ -691,7 +647,7 @@ void gfx_update(int cycles)
 
       /* end of graphics operation */
       scd.regs[0x58>>1].byte.h = 0;
- 
+
       /* SUB-CPU idle on register $58 polling ? */
       if (s68k.stopped & (1<<0x08))
       {

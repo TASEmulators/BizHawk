@@ -66,7 +66,7 @@ typedef struct
 {
   int start;
   int end;
-} track_t; 
+} track_t;
 
 /* CD TOC */
 typedef struct
@@ -74,7 +74,7 @@ typedef struct
   int end;
   int last;
   track_t tracks[CD_MAX_TRACKS];
-} toc_t; 
+} toc_t;
 
 /* CDD hardware */
 typedef struct
@@ -91,13 +91,11 @@ typedef struct
   uint8 status;
   toc_t toc;
   int16 audio[2];
-} cdd_t; 
+} cdd_t;
 
 /* Function prototypes */
 extern void cdd_init(blip_t* left, blip_t* right);
 extern void cdd_reset(void);
-extern int cdd_context_save(uint8 *state);
-extern int cdd_context_load(uint8 *state);
 extern int cdd_load(const char *key, char *header);
 extern void cdd_unload(void);
 extern void cdd_read_data(uint8 *dst);

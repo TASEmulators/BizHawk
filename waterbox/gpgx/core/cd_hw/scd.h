@@ -82,8 +82,6 @@ extern void scd_init(void);
 extern void scd_reset(int hard);
 extern void scd_update(unsigned int cycles);
 extern void scd_end_frame(unsigned int cycles);
-extern int scd_context_load(uint8 *state);
-extern int scd_context_save(uint8 *state);
 extern int scd_68k_irq_ack(int level);
 extern void prg_ram_dma_w(unsigned int words);
 

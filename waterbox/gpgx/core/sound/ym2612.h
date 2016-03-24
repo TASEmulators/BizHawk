@@ -22,8 +22,6 @@ extern void YM2612ResetChip(void);
 extern void YM2612Update(int *buffer, int length);
 extern void YM2612Write(unsigned int a, unsigned int v);
 extern unsigned int YM2612Read(void);
-extern int YM2612LoadContext(unsigned char *state);
-extern int YM2612SaveContext(unsigned char *state);
 
 extern INT32 *ym2612_lfo_pm_table;
 

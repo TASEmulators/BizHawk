@@ -111,75 +111,6 @@ void cdc_reset(void)
   }
 }
 
-int cdc_context_save(uint8 *state)
-{
-  uint8 tmp8;
-  int bufferptr = 0;
-
-  if (cdc.dma_w == pcm_ram_dma_w)
-  {
-    tmp8 = 1;
-  }
-  else if (cdc.dma_w == prg_ram_dma_w)
-  {
-    tmp8 = 2;
-  }
-  else if (cdc.dma_w == word_ram_0_dma_w)
-  {
-    tmp8 = 3;
-  }
-  else if (cdc.dma_w == word_ram_1_dma_w)
-  {
-    tmp8 = 4;
-  }
-  else if (cdc.dma_w == word_ram_2M_dma_w)
-  {
-    tmp8 = 5;
-  }
-  else
-  {
-    tmp8 = 0;
-  }
-
-  save_param(&cdc, sizeof(cdc));
-  save_param(&tmp8, 1);
-
-  return bufferptr;
-}
-
-int cdc_context_load(uint8 *state)
-{
-  uint8 tmp8;
-  int bufferptr = 0;
-
-  load_param(&cdc, sizeof(cdc));
-  load_param(&tmp8, 1);
-
-  switch (tmp8)
-  {
-    case 1:
-      cdc.dma_w = pcm_ram_dma_w;
-      break;
-    case 2:
-      cdc.dma_w = prg_ram_dma_w;
-      break;
-    case 3:
-      cdc.dma_w = word_ram_0_dma_w;
-      break;
-    case 4:
-      cdc.dma_w = word_ram_1_dma_w;
-      break;
-    case 5:
-      cdc.dma_w = word_ram_2M_dma_w;
-      break;
-    default:
-      cdc.dma_w = 0;
-      break;
-  }
-
-  return bufferptr;
-}
-
 void cdc_dma_update(void)
 {
   /* maximal transfer length */
@@ -302,7 +233,7 @@ int cdc_decoder_update(uint32 header)
       return 1;
     }
   }
-  
+
   /* keep decoding same data block if Buffer Write is disabled */
   return 0;
 }
@@ -498,7 +429,7 @@ void cdc_reg_w(unsigned char data)
         /* set MODE bit according to CTRL1 register & clear FORM bit */
         cdc.stat[2] = cdc.ctrl[1] & BIT_MODRQ;
       }
-      else 
+      else
       {
         /* set MODE & FORM bits according to CTRL1 register */
         cdc.stat[2] = cdc.ctrl[1] & (BIT_MODRQ | BIT_FORMRQ);
@@ -517,7 +448,7 @@ void cdc_reg_w(unsigned char data)
         /* set MODE bit according to CTRL1 register & clear FORM bit */
         cdc.stat[2] = data & BIT_MODRQ;
       }
-      else 
+      else
       {
         /* set MODE & FORM bits according to CTRL1 register */
         cdc.stat[2] = data & (BIT_MODRQ | BIT_FORMRQ);
@@ -532,7 +463,7 @@ void cdc_reg_w(unsigned char data)
       cdc.pt.byte.l = data;
       scd.regs[0x04>>1].byte.l = 0x0d;
       break;
-  
+
     case 0x0d:  /* PTH */
       cdc.pt.byte.h = data;
       scd.regs[0x04>>1].byte.l = 0x0e;
@@ -620,7 +551,7 @@ unsigned char cdc_reg_r(void)
 
       /* clear pending decoder interrupt */
       cdc.ifstat |= BIT_DECI;
-      
+
 #if 0
       /* no pending data transfer end interrupt */
       if ((cdc.ifstat | BIT_DTEI) || !(cdc.ifctrl & BIT_DTEIEN))
@@ -658,7 +589,7 @@ unsigned short cdc_host_r(void)
 #ifdef LOG_CDC
     error("CDC host read 0x%04x -> 0x%04x (dbc=0x%x) (%X)\n", cdc.dac.w, data, cdc.dbc.w, s68k.pc);
 #endif
- 
+
     /* increment data address counter */
     cdc.dac.w += 2;
 

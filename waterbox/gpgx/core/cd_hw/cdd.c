@@ -194,41 +194,6 @@ void cdd_reset(void)
   cdd.audio[0] = cdd.audio[1] = 0;
 }
 
-int cdd_context_save(uint8 *state)
-{
-  int bufferptr = 0;
-
-  save_param(&cdd.cycles, sizeof(cdd.cycles));
-  save_param(&cdd.latency, sizeof(cdd.latency));
-  save_param(&cdd.index, sizeof(cdd.index));
-  save_param(&cdd.lba, sizeof(cdd.lba));
-  save_param(&cdd.scanOffset, sizeof(cdd.scanOffset));
-  save_param(&cdd.volume, sizeof(cdd.volume));
-  save_param(&cdd.status, sizeof(cdd.status));
-  save_param(&cdd.sampleOffset, sizeof(cdd.sampleOffset));
-  save_param(&cdd.sampleLba, sizeof(cdd.sampleLba));
-
-  return bufferptr;
-}
-
-int cdd_context_load(uint8 *state)
-{
-  int lba;
-  int bufferptr = 0;
-
-  load_param(&cdd.cycles, sizeof(cdd.cycles));
-  load_param(&cdd.latency, sizeof(cdd.latency));
-  load_param(&cdd.index, sizeof(cdd.index));
-  load_param(&cdd.lba, sizeof(cdd.lba));
-  load_param(&cdd.scanOffset, sizeof(cdd.scanOffset));
-  load_param(&cdd.volume, sizeof(cdd.volume));
-  load_param(&cdd.status, sizeof(cdd.status));
-  load_param(&cdd.sampleOffset, sizeof(cdd.sampleOffset));
-  load_param(&cdd.sampleLba, sizeof(cdd.sampleLba));
-
-  return bufferptr;
-}
-
 void cdd_unload(void)
 {
   cdd.loaded = 0;

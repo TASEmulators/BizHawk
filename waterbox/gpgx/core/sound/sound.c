@@ -116,7 +116,7 @@ void sound_reset(void)
 
   /* reset FM buffer pointer */
   fm_ptr = fm_buffer;
-  
+
   /* reset FM cycle counters */
   fm_cycles_start = fm_cycles_count = 0;
 }
@@ -152,7 +152,7 @@ int sound_update(unsigned int cycles)
       delta = ((*ptr++ * preamp) / 100) - l;
       l += delta;
       blip_add_delta(snd.blips[0][0], time, delta);
-      
+
       /* right channel */
       delta = ((*ptr++ * preamp) / 100) - r;
       r += delta;
@@ -172,7 +172,7 @@ int sound_update(unsigned int cycles)
       delta = ((*ptr++ * preamp) / 100) - l;
       l += delta;
       blip_add_delta_fast(snd.blips[0][0], time, delta);
-      
+
       /* right channel */
       delta = ((*ptr++ * preamp) / 100) - r;
       r += delta;
@@ -193,55 +193,13 @@ int sound_update(unsigned int cycles)
 
   /* adjust FM cycle counters for next frame */
   fm_cycles_count = fm_cycles_start = time - cycles;
-	
+
   /* end of blip buffers time frame */
   blip_end_frame(snd.blips[0][0], cycles);
   blip_end_frame(snd.blips[0][1], cycles);
 
   /* return number of available samples */
   return blip_samples_avail(snd.blips[0][0]);
-}
-
-int sound_context_save(uint8 *state)
-{
-  int bufferptr = 0;
-  
-  if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
-  {
-    bufferptr = YM2612SaveContext(state);
-  }
-  else
-  {
-    save_param(YM2413GetContextPtr(),YM2413GetContextSize());
-  }
-
-  save_param(SN76489_GetContextPtr(),SN76489_GetContextSize());
-
-  save_param(&fm_cycles_start,sizeof(fm_cycles_start));
-
-  return bufferptr;
-}
-
-int sound_context_load(uint8 *state)
-{
-  int bufferptr = 0;
-
-  if ((system_hw & SYSTEM_PBC) == SYSTEM_MD)
-  {
-    bufferptr = YM2612LoadContext(state);
-    YM2612Config(config.dac_bits);
-  }
-  else
-  {
-    load_param(YM2413GetContextPtr(),YM2413GetContextSize());
-  }
-
-  load_param(SN76489_GetContextPtr(),SN76489_GetContextSize());
-
-  load_param(&fm_cycles_start,sizeof(fm_cycles_start));
-  fm_cycles_count = fm_cycles_start;
-
-  return bufferptr;
 }
 
 void fm_reset(unsigned int cycles)
@@ -260,7 +218,7 @@ void fm_write(unsigned int cycles, unsigned int address, unsigned int data)
   {
     fm_update(cycles);
   }
-  
+
   /* write FM register */
   YM_Write(address, data);
 }

@@ -9,7 +9,6 @@
 #endif
 
 #include "shared.h"
-#include "state.h"
 #include "genesis.h"
 #include "md_ntsc.h"
 #include "sms_ntsc.h"
