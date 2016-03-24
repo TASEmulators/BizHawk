@@ -37,6 +37,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public virtual Size PresizeOutput(string channel, Size size) { return size; }
 		public virtual void SetInputFormat(string channel, SurfaceState state) { } //TODO - why a different param order than DeclareOutput?
 		public Dictionary<string, object> Parameters = new Dictionary<string, object>();
+		public bool IsNOP { get { return _IsNop; } protected set { _IsNop = value; } }
+		private Boolean _IsNop = false;
 
 		//runtime signals
 		public virtual Vector2 UntransformPoint(string channel, Vector2 point)
@@ -86,6 +88,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 		protected IOSurfaceInfo DeclareInput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default") { return DeclareIO(SurfaceDirection.Input, channel, disposition); }
 		protected IOSurfaceInfo DeclareOutput(SurfaceDisposition disposition = SurfaceDisposition.Unspecified, string channel = "default") { return DeclareIO(SurfaceDirection.Output, channel, disposition); }
 		//TODO - why a different param order than DeclareOutput?
+
+		protected RenderTarget GetTempTarget(int width, int height) { return FilterProgram.GetTempTarget(width, height); }
 
 		protected IOSurfaceInfo DeclareOutput(SurfaceState state, string channel = "default")
 		{

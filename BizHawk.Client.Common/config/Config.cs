@@ -254,6 +254,7 @@ namespace BizHawk.Client.Common
 		public bool DispFixAspectRatio = true;
 		public bool DispFixScaleInteger = true;
 		public bool DispFullscreenHacks = true;
+		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
 
 

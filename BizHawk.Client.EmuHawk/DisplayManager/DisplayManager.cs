@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
-			DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback) { Callback = callback; }
+			public DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback) { Callback = callback; }
 			Func<Size, RenderTarget> Callback;
 			RenderTarget IRenderTargetProvider.Get(Size size)
 			{
@@ -248,12 +248,19 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DispPrescale != 1)
 			{
 				Filters.PrescaleFilter fPrescale = new Filters.PrescaleFilter() { Scale = Global.Config.DispPrescale };
-				chain.AddFilter(fPrescale, "prescale");
+				chain.AddFilter(fPrescale, "user_prescale");
 			}
 
 			//add user-selected retro shader
 			if (selectedChain != null)
 				AppendRetroShaderChain(chain, "retroShader", selectedChain, selectedChainProperties);
+
+			//AutoPrescale makes no sense for a None final filter
+			if (Global.Config.DispAutoPrescale && Global.Config.DispFinalFilter != (int)Filters.FinalPresentation.eFilterOption.None)
+			{
+				var apf = new Filters.AutoPrescaleFilter();
+				chain.AddFilter(apf, "auto_prescale");
+			}
 
 			//choose final filter
 			Filters.FinalPresentation.eFilterOption finalFilter = Filters.FinalPresentation.eFilterOption.None;
@@ -672,6 +679,7 @@ namespace BizHawk.Client.EmuHawk
 			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
 			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
 			fPresent.Padding = ClientExtraPadding;
+			fPresent.AutoPrescale = Global.Config.DispAutoPrescale;
 
 			fPresent.GL = GL;
 
@@ -699,12 +707,16 @@ namespace BizHawk.Client.EmuHawk
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
 			//GraphicsControl.Begin(); //CRITICAL POINT for yabause+GL
 
+			//TODO - auto-create and age these (and dispose when old)
+			int rtCounter = 0;
+
+			CurrentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider((size) => ShaderChainFrugalizers[rtCounter++].Get(size));
+
 			GlobalWin.GL.BeginScene();
 
 			//run filter chain
 			Texture2d texCurr = null;
 			RenderTarget rtCurr = null;
-			int rtCounter = 0;
 			bool inFinalTarget = false;
 			foreach (var step in CurrentFilterProgram.Program)
 			{

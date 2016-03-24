@@ -134,8 +134,11 @@ namespace BizHawk.Client.EmuHawk.Filters
 					PS = trials[bestIndex];
 				}
 
-				vw = (int)(PS.X * oldSourceWidth);
-				vh = (int)(PS.Y * oldSourceHeight);
+				//"fix problems with gameextrapadding in >1x window scales" (other edits were made, maybe theyre whats important)
+				//vw = (int)(PS.X * oldSourceWidth);
+				//vh = (int)(PS.Y * oldSourceHeight);
+				vw = (int)(PS.X * sourceWidth);
+				vh = (int)(PS.Y * sourceHeight);
 				widthScale = PS.X;
 				heightScale = PS.Y;
 			}
@@ -186,6 +189,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 		Size OutputSize, InputSize;
 		public Size TextureSize, VirtualTextureSize;
 		public int BackgroundColor;
+		public bool AutoPrescale;
 		public IGuiRenderer GuiRenderer;
 		public bool Flip;
 		public IGL GL;
@@ -283,6 +287,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 				LL.vy += Padding.Top;
 			}
 			ContentSize = new Size(LL.vw,LL.vh);
+
+			if (InputSize == ContentSize)
+				IsNOP = true;
 		}
 
 		public Size GetContentSize() { return ContentSize; }
@@ -319,7 +326,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			GuiRenderer.Begin(OutputSize.Width, OutputSize.Height);
 			GuiRenderer.SetBlendState(GL.BlendNoneCopy);
-			
+
 			if(FilterOption != eFilterOption.None)
 				InputTexture.SetFilterLinear();
 			else
@@ -327,8 +334,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 			if (FilterOption == eFilterOption.Bicubic)
 			{
+				//this was handled earlier by another filter
 			}
-
 
 			GuiRenderer.Modelview.Translate(LL.vx, LL.vy);
 			if (Flip)
@@ -370,6 +377,61 @@ namespace BizHawk.Client.EmuHawk.Filters
 			FilterProgram.GuiRenderer.Draw(InputTexture);
 			FilterProgram.GuiRenderer.End();
 		}
+	}
+
+	public class AutoPrescaleFilter : BaseFilter
+	{
+		Size OutputSize, InputSize;
+		int XIS, YIS;
+
+		public override void Initialize()
+		{
+			DeclareInput(SurfaceDisposition.Texture);
+		}
+
+		public override void SetInputFormat(string channel, SurfaceState state)
+		{
+			//calculate integer scaling factors
+			XIS = OutputSize.Width / state.SurfaceFormat.Size.Width;
+			YIS = OutputSize.Height / state.SurfaceFormat.Size.Height;
+
+			OutputSize = state.SurfaceFormat.Size;
+
+			if (XIS <= 1 && YIS <= 1)
+			{
+				IsNOP = true;
+			}
+			else
+			{
+				OutputSize.Width *= XIS;
+				OutputSize.Height *= YIS;
+			}
+
+			var outState = new SurfaceState();
+			outState.SurfaceFormat = new SurfaceFormat(OutputSize);
+			outState.SurfaceDisposition = SurfaceDisposition.RenderTarget;
+			DeclareOutput(outState);
+		}
+
+		public override Size PresizeOutput(string channel, Size size)
+		{
+			OutputSize = size;
+			return base.PresizeOutput(channel, size);
+		}
+
+		public override Size PresizeInput(string channel, Size insize)
+		{
+			InputSize = insize;
+			return insize;
+		}
+		public override void Run()
+		{
+			FilterProgram.GuiRenderer.Begin(OutputSize); //hope this didnt change
+			FilterProgram.GuiRenderer.SetBlendState(FilterProgram.GL.BlendNoneCopy);
+			FilterProgram.GuiRenderer.Modelview.Scale(XIS,YIS);
+			FilterProgram.GuiRenderer.Draw(InputTexture);
+			FilterProgram.GuiRenderer.End();
+	  }
 	}
 
 	public class LuaLayer : BaseFilter

@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk.config
 			checkLetterbox.Checked = Global.Config.DispFixAspectRatio;
 			checkPadInteger.Checked = Global.Config.DispFixScaleInteger;
 			cbFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
+			cbAutoPrescale.Checked = Global.Config.DispAutoPrescale;
 
 			if (Global.Config.DispSpeedupFeatures == 2) rbDisplayFull.Checked = true;
 			if (Global.Config.DispSpeedupFeatures == 1) rbDisplayMinimal.Checked = true;
@@ -115,6 +116,7 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispFixAspectRatio = checkLetterbox.Checked;
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispFullscreenHacks = cbFullscreenHacks.Checked;
+			Global.Config.DispAutoPrescale = cbAutoPrescale.Checked;
 
 			Global.Config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
 			Global.Config.DispChrome_CaptionWindowed = cbCaptionWindowed.Checked;
