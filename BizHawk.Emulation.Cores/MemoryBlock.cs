@@ -45,6 +45,55 @@ namespace BizHawk.Emulation.Cores
 	public sealed class MemoryBlock : IDisposable
 	{
 		/// <summary>
+		/// system page size
+		/// </summary>
+		public static int PageSize { get; private set;} 
+
+		/// <summary>
+		/// bitshift corresponding to PageSize
+		/// </summary>
+		private static readonly int PageShift;
+		/// <summary>
+		/// bitmask corresponding to PageSize
+		/// </summary>
+		private static readonly ulong PageMask;
+
+		static MemoryBlock()
+		{
+			int p = PageSize = Environment.SystemPageSize;
+			while (p != 0)
+			{
+				p >>= 1;
+				PageShift++;
+			}
+			PageMask = (ulong)(PageSize - 1);
+		}
+		
+		/// <summary>
+		/// true if addr is aligned
+		/// </summary>
+		private static bool Aligned(ulong addr)
+		{
+			return (addr & PageMask) == 0;
+		}
+
+		/// <summary>
+		/// align address down to previous page boundary
+		/// </summary>
+		private static ulong AlignDown(ulong addr)
+		{
+			return addr & ~PageMask;
+		}
+
+		/// <summary>
+		/// align address up to next page boundary
+		/// </summary>
+		private static ulong AlignUp(ulong addr)
+		{
+			return ((addr - 1) | PageMask) + 1;
+		}
+
+		/// <summary>
 		/// starting address of the memory block
 		/// </summary>
 		public ulong Start { get; private set; }
@@ -56,7 +105,40 @@ namespace BizHawk.Emulation.Cores
 		/// ending address of the memory block; equal to start + size
 		/// </summary>
 		public ulong End { get; private set; }
-		public int PageSize { get { return Environment.SystemPageSize; } }
+
+		/// <summary>
+		/// handle returned by CreateFileMapping
+		/// </summary>
+		private IntPtr _handle;
+
+		/// <summary>
+		/// true if this is currently swapped in
+		/// </summary>
+		public bool Active { get; private set; }
+
+		/// <summary>
+		/// stores last set memory protection value for each page
+		/// </summary>
+		private readonly Protection[] _pageData;
+
+		/// <summary>
+		/// get a page index within the block
+		/// </summary>
+		private int GetPage(ulong addr)
+		{
+			if (addr < Start || addr >= End)
+				throw new ArgumentOutOfRangeException();
+
+			return (int)((addr - Start) >> PageShift);
+		}
+
+		/// <summary>
+		/// get a start address for a page index within the block
+		/// </summary>
+		private ulong GetStartAddr(int page)
+		{
+			return ((ulong)page << PageShift) + Start;
+		}
 
 		/// <summary>
 		/// allocate size bytes at any address
@@ -74,35 +156,62 @@ namespace BizHawk.Emulation.Cores
 		/// <param name="size"></param>
 		public MemoryBlock(ulong start, ulong size)
 		{
-#if !MONO
-			Start = (ulong)Kernel32.VirtualAlloc(Z.UU(start), Z.UU(size),
-				Kernel32.AllocationType.RESERVE | Kernel32.AllocationType.COMMIT,
-				Kernel32.MemoryProtection.NOACCESS);
-			if (Start == 0)
-			{
-				throw new InvalidOperationException("VirtualAlloc() returned NULL");
-			}
-			if (start != 0)
-				End = start + size;
-			else
-				End = Start + size;
-			Size = End - Start;
-#else
-			Start = (ulong)LibC.mmap(ZC.U(start), ZC.U(size), 0, LibC.MapType.MAP_ANONYMOUS, -1, IntPtr.Zero);
-			if (Start == 0)
-			{
-				throw new InvalidOperationException("mmap() returned NULL");
-			}
-			End = Start + size;
-			Size = End - Start;
-#endif
+			if (!Aligned(start))
+				throw new ArgumentOutOfRangeException();
+			if (size == 0)
+				throw new ArgumentOutOfRangeException();
+			size = AlignUp(size);
+
+			_handle = Kernel32.CreateFileMapping(Kernel32.INVALID_HANDLE_VALUE, IntPtr.Zero,
+				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit, (uint)(size >> 32), (uint)size, null);
+
+			if (_handle == IntPtr.Zero)
+				throw new InvalidOperationException("CreateFileMapping() returned NULL");
+			Start = start;
+			End = start + size;
+			Size = size;
+			_pageData = new Protection[GetPage(End - 1) + 1];
+			Activate();
 		}
 
-		public enum Protection
+		/// <summary>
+		/// activate the memory block, swapping it in at the specified address
+		/// </summary>
+		public void Activate()
 		{
-			R, RW, RX, None
+			if (Active)
+				throw new InvalidOperationException("Already active");
+			if (Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
+				0, 0, Z.UU(Size), Z.US(Start)) != Z.US(Start))
+			{
+				throw new InvalidOperationException("MapViewOfFileEx() returned NULL");
+			}
+			ProtectAll();
+			Active = true;
 		}
 
+		/// <summary>
+		/// deactivate the memory block, removing it from RAM but leaving it immediately available to swap back in
+		/// </summary>
+		public void Deactivate()
+		{
+			if (!Active)
+				throw new InvalidOperationException("Not active");
+			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
+				throw new InvalidOperationException("UnmapViewOfFile() returned NULL");
+		}
+
+		/// <summary>
+		/// Memory protection constant
+		/// </summary>
+		public enum Protection : byte
+		{
+			None, R, RW, RX
+		}
+
+		/// <summary>
+		/// Get a stream that can be used to read or write from part of the block.  Does not check for or change Protect()!
+		/// </summary>
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start)
@@ -114,18 +223,8 @@ namespace BizHawk.Emulation.Cores
 			return new MemoryViewStream(!writer, writer, (long)start, (long)length, this);
 		}
 
-		public void Set(ulong start, ulong length, Protection prot)
+		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
 		{
-			if (start < Start)
-				throw new ArgumentOutOfRangeException("start");
-
-			if (start + length > End)
-				throw new ArgumentOutOfRangeException("length");
-
-			if (length == 0)
-				return;
-
-#if !MONO
 			Kernel32.MemoryProtection p;
 			switch (prot)
 			{
@@ -135,24 +234,46 @@ namespace BizHawk.Emulation.Cores
 				case Protection.RX: p = Kernel32.MemoryProtection.EXECUTE_READ; break;
 				default: throw new ArgumentOutOfRangeException("prot");
 			}
+			return p;
+		}
+
+		/// <summary>
+		/// restore all recorded protections
+		/// </summary>
+		private void ProtectAll()
+		{
+			int ps = 0;
+			for (int i = 0; i < _pageData.Length; i++)
+			{
+				if (i == _pageData.Length - 1 || _pageData[i] != _pageData[i + 1])
+				{
+					var p = GetKernelMemoryProtectionValue(_pageData[i]);
+					ulong zstart = GetStartAddr(ps);
+					ulong zend = GetStartAddr(i + 1);
+					Kernel32.MemoryProtection old;
+					if (!Kernel32.VirtualProtect(Z.UU(zstart), Z.UU(zend - zstart), p, out old))
+						throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+				}
+			}
+		}
+
+		/// <summary>
+		/// set r/w/x protection on a portion of memory.  rounded to encompassing pages
+		/// </summary>
+		public void Protect(ulong start, ulong length, Protection prot)
+		{
+			if (length == 0)
+				return;
+			int pstart = GetPage(start);
+			int pend = GetPage(start + length - 1);
+
+			var p = GetKernelMemoryProtectionValue(prot);
+			for (int i = pstart; i <= pend; i++)
+				_pageData[i] = prot; // also store the value for later use
+
 			Kernel32.MemoryProtection old;
 			if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(length), p, out old))
 				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
-#else
-			LibC.ProtType p;
-			switch (prot)
-			{
-				case Protection.None: p = 0; break;
-				case Protection.R: p = LibC.ProtType.PROT_READ; break;
-				case Protection.RW: p = LibC.ProtType.PROT_READ | LibC.ProtType.PROT_WRITE; break;
-				case Protection.RX: p = LibC.ProtType.PROT_READ | LibC.ProtType.PROT_EXEC; break;
-				default: throw new ArgumentOutOfRangeException("prot");
-			}
-			ulong end = (ulong)start + (ulong)length;
-			ulong newstart = (ulong)start & ~((ulong)Environment.SystemPageSize - 1);
-			if (LibC.mprotect((UIntPtr)newstart, (UIntPtr)(end - newstart), p) != 0)
-				throw new InvalidOperationException("mprotect() returned -1!");
-#endif
 		}
 
 		public void Dispose()
@@ -163,14 +284,12 @@ namespace BizHawk.Emulation.Cores
 
 		private void Dispose(bool disposing)
 		{
-			if (Start != 0)
+			if (_handle != IntPtr.Zero)
 			{
-#if !MONO
-				Kernel32.VirtualFree(Z.UU(Start), UIntPtr.Zero, Kernel32.FreeType.RELEASE);
-#else
-				LibC.munmap(ZC.U(Start), (UIntPtr)Size);
-#endif
-				Start = 0;
+				if (Active)
+					Deactivate();
+				Kernel32.CloseHandle(_handle);
+				_handle = IntPtr.Zero;
 			}
 		}
 
@@ -273,8 +392,6 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-
-#if !MONO
 		private static class Kernel32
 		{
 			[DllImport("kernel32.dll", SetLastError = true)]
@@ -323,31 +440,52 @@ namespace BizHawk.Emulation.Cores
 				NOCACHE_Modifierflag = 0x200,
 				WRITECOMBINE_Modifierflag = 0x400
 			}
-		}
-#else
-		private static class LibC
-		{
-			[DllImport("libc.so")]
-			public static extern UIntPtr mmap(UIntPtr addr, UIntPtr length, ProtType prot, MapType flags, int fd, IntPtr offset);
-			[DllImport("libc.so")]
-			public static extern int munmap(UIntPtr addr, UIntPtr length);
-			[DllImport("libc.so")]
-			public static extern int mprotect(UIntPtr addr, UIntPtr length, ProtType prot);
+
+			[DllImport("kernel32.dll", SetLastError = true)]
+			public static extern IntPtr CreateFileMapping(
+				IntPtr hFile,
+				IntPtr lpFileMappingAttributes,
+				FileMapProtection flProtect,
+				uint dwMaximumSizeHigh,
+				uint dwMaximumSizeLow,
+				string lpName);
 
 			[Flags]
-			public enum ProtType : int
+			public enum FileMapProtection : uint
 			{
-				PROT_EXEC = 1,
-				PROT_WRITE = 2,
-				PROT_READ = 4
+				PageReadonly = 0x02,
+				PageReadWrite = 0x04,
+				PageWriteCopy = 0x08,
+				PageExecuteRead = 0x20,
+				PageExecuteReadWrite = 0x40,
+				SectionCommit = 0x8000000,
+				SectionImage = 0x1000000,
+				SectionNoCache = 0x10000000,
+				SectionReserve = 0x4000000,
 			}
 
+			[DllImport("kernel32.dll", SetLastError = true)]
+			public static extern bool CloseHandle(IntPtr hObject);
+
+			[DllImport("kernel32.dll", SetLastError = true)]
+			public static extern bool UnmapViewOfFile(IntPtr lpBaseAddress);
+
+			[DllImport("kernel32.dll")]
+			public static extern IntPtr MapViewOfFileEx(IntPtr hFileMappingObject,
+			   FileMapAccessType dwDesiredAccess, uint dwFileOffsetHigh, uint dwFileOffsetLow,
+			   UIntPtr dwNumberOfBytesToMap, IntPtr lpBaseAddress);
+
 			[Flags]
-			public enum MapType : int
+			public enum FileMapAccessType : uint
 			{
-				MAP_ANONYMOUS = 2
+				Copy = 0x01,
+				Write = 0x02,
+				Read = 0x04,
+				AllAccess = 0x08,
+				Execute = 0x20,
 			}
+
+			public static readonly IntPtr INVALID_HANDLE_VALUE = Z.US(0xffffffffffffffff);
 		}
-#endif
 	}
 }

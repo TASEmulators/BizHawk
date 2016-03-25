@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores
 			try
 			{
 				_disposeList.Add(_base);
-				_base.Set(_base.Start, _base.Size, MemoryBlock.Protection.RW);
+				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.RW);
 
 				foreach (var seg in loadsegs)
 				{
@@ -93,14 +93,14 @@ namespace BizHawk.Emulation.Cores
 				ProcessRelocations();
 
 
-				_base.Set(_base.Start, _base.Size, MemoryBlock.Protection.R);
+				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.R);
 
 				foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Allocatable) != 0))
 				{
 					if ((sec.Flags & SectionFlags.Executable) != 0)
-						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RX);
+						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RX);
 					else if ((sec.Flags & SectionFlags.Writable) != 0)
-						_base.Set((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
+						_base.Protect((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, MemoryBlock.Protection.RW);
 				}
 
 				ulong end = _base.End;
@@ -525,7 +525,7 @@ namespace BizHawk.Emulation.Cores
 					throw new InvalidOperationException(string.Format("Failed to allocate {0} bytes from heap {1}", size, Name));
 				}
 				ulong ret = Memory.Start + Used;
-				Memory.Set(ret, newused - Used, MemoryBlock.Protection.RW);
+				Memory.Protect(ret, newused - Used, MemoryBlock.Protection.RW);
 				Used = newused;
 				Console.WriteLine("Allocated {0} bytes on {1}", size, Name);
 				return ret;
@@ -540,7 +540,7 @@ namespace BizHawk.Emulation.Cores
 			{
 				if (!Sealed)
 				{
-					Memory.Set(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+					Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
 					_hash = Hash(Memory.GetStream(Memory.Start, Used, false));
 					Sealed = true;
 				}
@@ -575,8 +575,8 @@ namespace BizHawk.Emulation.Cores
 					throw new InvalidOperationException(string.Format("Heap {0} used {1} larger than available {2}", Name, used, Memory.Size));
 				if (!Sealed)
 				{
-					Memory.Set(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
-					Memory.Set(Memory.Start, used, MemoryBlock.Protection.RW);
+					Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
+					Memory.Protect(Memory.Start, used, MemoryBlock.Protection.RW);
 					var ms = Memory.GetStream(Memory.Start, used, true);
 					CopySome(br.BaseStream, ms, (long)used);
 					Used = used;
