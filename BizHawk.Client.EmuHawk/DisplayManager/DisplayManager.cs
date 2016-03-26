@@ -776,6 +776,7 @@ namespace BizHawk.Client.EmuHawk
 				//maybe the user wants vsync, but not vsync throttle.
 				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
 				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
+				//update 26-mar-2016: this upsets me. When fastforwarding and skipping frames, vsync should still work
 				if (Global.DisableSecondaryThrottling)
 					vsync = false;
 
