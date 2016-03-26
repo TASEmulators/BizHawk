@@ -171,7 +171,6 @@ namespace BizHawk.Emulation.Cores
 			End = start + size;
 			Size = size;
 			_pageData = new Protection[GetPage(End - 1) + 1];
-			Activate();
 		}
 
 		/// <summary>

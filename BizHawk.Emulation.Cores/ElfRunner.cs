@@ -10,10 +10,12 @@ using System.Reflection;
 using BizHawk.Common;
 using System.Security.Cryptography;
 using System.IO;
+using System.Collections.Concurrent;
+using System.Threading;
 
 namespace BizHawk.Emulation.Cores
 {
-	public sealed class ElfRunner : IImportResolver, IDisposable
+	public sealed class ElfRunner : IImportResolver, IDisposable, IMonitor
 	{
 		// TODO: a lot of things only work with our elves and aren't fully generalized
 
@@ -39,11 +41,24 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		private Heap _invisibleheap;
 
+		/// <summary>
+		/// _base.Start, or 0 if we were relocated and so don't need to be swapped
+		/// </summary>
+		private ulong _lockkey;
+
 		private long _loadoffset;
 		private Dictionary<string, SymbolEntry<long>> _symdict;
 		private List<SymbolEntry<long>> _symlist;
 
+		/// <summary>
+		/// everything to clean up at dispose time
+		/// </summary>
 		private List<IDisposable> _disposeList = new List<IDisposable>();
+
+		/// <summary>
+		/// everything to swap in for context switches
+		/// </summary>
+		private List<MemoryBlock> _memoryBlocks = new List<MemoryBlock>();
 
 		private ulong GetHeapStart(ulong prevend)
 		{
@@ -72,16 +87,21 @@ namespace BizHawk.Emulation.Cores
 			{
 				_base = new MemoryBlock((ulong)(orig_end - orig_start));
 				_loadoffset = (long)_base.Start - orig_start;
+				_lockkey = 0;
 			}
 			else
 			{
-				_base = new MemoryBlock((ulong)orig_start, (ulong)(orig_end - orig_start));
+				_lockkey = (ulong)orig_start;
+				_base = new MemoryBlock(_lockkey, (ulong)(orig_end - orig_start));
 				_loadoffset = 0;
+				Enter();
 			}
 
 			try
 			{
 				_disposeList.Add(_base);
+				_memoryBlocks.Add(_base);
+				_base.Activate();
 				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.RW);
 
 				foreach (var seg in loadsegs)
@@ -91,7 +111,6 @@ namespace BizHawk.Emulation.Cores
 				}
 				RegisterSymbols();
 				ProcessRelocations();
-
 
 				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.R);
 
@@ -108,25 +127,30 @@ namespace BizHawk.Emulation.Cores
 				if (heapsize > 0)
 				{
 					_heap = new Heap(GetHeapStart(end), (ulong)heapsize, "sbrk-heap");
+					_heap.Memory.Activate();
 					end = _heap.Memory.End;
 					_disposeList.Add(_heap);
+					_memoryBlocks.Add(_heap.Memory);
 				}
 
 				if (sealedheapsize > 0)
 				{
 					_sealedheap = new Heap(GetHeapStart(end), (ulong)sealedheapsize, "sealed-heap");
+					_sealedheap.Memory.Activate();
 					end = _sealedheap.Memory.End;
 					_disposeList.Add(_sealedheap);
+					_memoryBlocks.Add(_sealedheap.Memory);
 				}
 
 				if (invisibleheapsize > 0)
 				{
 					_invisibleheap = new Heap(GetHeapStart(end), (ulong)invisibleheapsize, "invisible-heap");
+					_invisibleheap.Memory.Activate();
 					end = _invisibleheap.Memory.End;
 					_disposeList.Add(_invisibleheap);
+					_memoryBlocks.Add(_invisibleheap.Memory);
 				}
 
-				//FixupGOT();
 				ConnectAllClibPatches();
 				Console.WriteLine("Loaded {0}@{1:X16}", filename, _base.Start);
 				foreach (var sec in _elf.Sections.Where(s => s.LoadAddress != 0))
@@ -134,16 +158,20 @@ namespace BizHawk.Emulation.Cores
 					Console.WriteLine("  {0}@{1:X16}, size {2}", sec.Name.PadLeft(20), sec.LoadAddress + _loadoffset, sec.Size.ToString().PadLeft(12));
 				}
 
-				TopSavableSymbols();
+				PrintTopSavableSymbols();
 			}
 			catch
 			{
 				Dispose();
 				throw;
 			}
+			finally
+			{
+				Exit();
+			}
 		}
 
-		private void TopSavableSymbols()
+		private void PrintTopSavableSymbols()
 		{
 			Console.WriteLine("Top savestate symbols:");
 			foreach (var text in _symlist
@@ -248,13 +276,22 @@ namespace BizHawk.Emulation.Cores
 
 		public void Dispose()
 		{
+			// we don't need to activate to dispose
 			Dispose(true);
 			//GC.SuppressFinalize(this);
 		}
 
 		public void Seal()
 		{
-			_sealedheap.Seal();
+			Enter();
+			try
+			{
+				_sealedheap.Seal();
+			}
+			finally
+			{
+				Exit();
+			}
 		}
 
 		//~ElfRunner()
@@ -269,6 +306,11 @@ namespace BizHawk.Emulation.Cores
 				foreach (var d in _disposeList)
 					d.Dispose();
 				_disposeList.Clear();
+				_memoryBlocks.Clear();
+				_base = null;
+				_heap = null;
+				_sealedheap = null;
+				_invisibleheap = null;
 			}
 		}
 
@@ -383,56 +425,135 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
+		/// <summary>
+		/// true if the IMonitor should be used for native calls
+		/// </summary>
+		public bool ShouldMonitor { get { return _lockkey != 0; } }
+
+		// any ElfRunner is assumed to conflict with any other ElfRunner at the same base address,
+		// but not any other starting address.  so don't put them too close together!
+
+		private class LockInfo
+		{
+			public object Sync;
+			public ElfRunner Loaded;
+		}
+
+		private static readonly ConcurrentDictionary<ulong, LockInfo> LockInfos = new ConcurrentDictionary<ulong, LockInfo>();
+
+		static ElfRunner()
+		{
+			LockInfos.GetOrAdd(0, new LockInfo()); // any errant attempt to lock when ShouldMonitor == false will result in NRE
+		}
+
+		/// <summary>
+		/// acquire lock and swap this into memory
+		/// </summary>
+		public void Enter()
+		{
+			var li = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
+			Monitor.Enter(li.Sync);
+			if (li.Loaded != this)
+			{
+				if (li.Loaded != null)
+					li.Loaded.DeactivateInternal();
+				li.Loaded = null;
+				ActivateInternal();
+				li.Loaded = this;
+			}
+		}
+
+		/// <summary>
+		/// release lock
+		/// </summary>
+		public void Exit()
+		{
+			var li = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
+			Monitor.Exit(li.Sync);
+		}
+
+		private void DeactivateInternal()
+		{
+			Console.WriteLine("ElfRunner DeactivateInternal {0}", GetHashCode());
+			foreach (var m in _memoryBlocks)
+				m.Deactivate();
+		}
+
+		private void ActivateInternal()
+		{
+			Console.WriteLine("ElfRunner ActivateInternal {0}", GetHashCode());
+			foreach (var m in _memoryBlocks)
+				m.Activate();
+		}
+
 		#region state
 
 		const ulong MAGIC = 0xb00b1e5b00b1e569;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			bw.Write(MAGIC);
-			bw.Write(_elfhash);
-			bw.Write(_loadoffset);
-			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Writable) != 0))
+			Enter();
+			try
 			{
-				var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, false);
-				bw.Write(sec.Size);
-				ms.CopyTo(bw.BaseStream);
-			}
+				bw.Write(MAGIC);
+				bw.Write(_elfhash);
+				bw.Write(_loadoffset);
+				foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Writable) != 0))
+				{
+					var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, false);
+					bw.Write(sec.Size);
+					ms.CopyTo(bw.BaseStream);
+				}
 
-			if (_heap != null) _heap.SaveStateBinary(bw);
-			if (_sealedheap != null) _sealedheap.SaveStateBinary(bw);
-			bw.Write(MAGIC);
+				if (_heap != null) _heap.SaveStateBinary(bw);
+				if (_sealedheap != null) _sealedheap.SaveStateBinary(bw);
+				bw.Write(MAGIC);
+			}
+			finally
+			{
+				Exit();
+			}
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			if (br.ReadUInt64() != MAGIC)
-				throw new InvalidOperationException("Magic not magic enough!");
-			if (!br.ReadBytes(_elfhash.Length).SequenceEqual(_elfhash))
-				throw new InvalidOperationException("Elf changed disguise!");
-			if (br.ReadInt64() != _loadoffset)
-				throw new InvalidOperationException("Trickys elves moved on you!");
-
-			foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Writable) != 0))
+			Enter();
+			try
 			{
-				var len = br.ReadInt64();
-				if (sec.Size != len)
-					throw new InvalidOperationException("Unexpected section size for " + sec.Name);
-				var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, true);
-				CopySome(br.BaseStream, ms, len);
+				if (br.ReadUInt64() != MAGIC)
+					throw new InvalidOperationException("Magic not magic enough!");
+				if (!br.ReadBytes(_elfhash.Length).SequenceEqual(_elfhash))
+					throw new InvalidOperationException("Elf changed disguise!");
+				if (br.ReadInt64() != _loadoffset)
+					throw new InvalidOperationException("Trickys elves moved on you!");
+
+				foreach (var sec in _elf.Sections.Where(s => (s.Flags & SectionFlags.Writable) != 0))
+				{
+					var len = br.ReadInt64();
+					if (sec.Size != len)
+						throw new InvalidOperationException("Unexpected section size for " + sec.Name);
+					var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, true);
+					CopySome(br.BaseStream, ms, len);
+				}
+
+				if (_heap != null) _heap.LoadStateBinary(br);
+				if (_sealedheap != null) _sealedheap.LoadStateBinary(br);
+				if (br.ReadUInt64() != MAGIC)
+					throw new InvalidOperationException("Magic not magic enough!");
+
+				// the syscall trampolines were overwritten in loadstate (they're in .bss), and if we're cross-session,
+				// are no longer valid.  cores must similiarly resend any external pointers they gave the core.
+				ConnectAllClibPatches();
 			}
-
-			if (_heap != null) _heap.LoadStateBinary(br);
-			if (_sealedheap != null) _sealedheap.LoadStateBinary(br);
-			if (br.ReadUInt64() != MAGIC)
-				throw new InvalidOperationException("Magic not magic enough!");
-
-			// the syscall trampolines were overwritten in loadstate (they're in .bss), and if we're cross-session,
-			// are no longer valid.  cores must similiarly resend any external pointers they gave the core.
-			ConnectAllClibPatches();
+			finally
+			{
+				Exit();
+			}
 		}
 
 		#endregion
+
+		#region utils
 
 		private static void CopySome(Stream src, Stream dst, long len)
 		{
@@ -531,11 +652,6 @@ namespace BizHawk.Emulation.Cores
 				return ret;
 			}
 
-			//public Stream GetStream(bool writer)
-			//{
-			//	return Memory.GetStream(Memory.Start, Used, writer);
-			//}
-
 			public void Seal()
 			{
 				if (!Sealed)
@@ -600,5 +716,7 @@ namespace BizHawk.Emulation.Cores
 				}
 			}
 		}
+
+		#endregion
 	}
 }
