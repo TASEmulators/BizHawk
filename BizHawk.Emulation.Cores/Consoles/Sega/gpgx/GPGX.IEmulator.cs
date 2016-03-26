@@ -33,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (Controller["Power"])
 				Core.gpgx_reset(true);
 
-			// do we really have to get each time?  nothing has changed
-			if (!Core.gpgx_get_control(input, inputsize))
-				throw new Exception("gpgx_get_control() failed!");
+			// this shouldn't be needed, as nothing has changed
+			// if (!Core.gpgx_get_control(input, inputsize))
+			//	throw new Exception("gpgx_get_control() failed!");
 
 			ControlConverter.ScreenWidth = vwidth;
 			ControlConverter.ScreenHeight = vheight;
