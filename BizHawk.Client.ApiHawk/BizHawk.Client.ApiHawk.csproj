@@ -27,6 +27,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <DocumentationFile>..\output64\dll\BizHawk.Client.ApiHawk.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -81,8 +82,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\output\dll\BizHawk.Client.ApiHawk.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -98,10 +98,12 @@
   <ItemGroup>
     <Compile Include="Attributes\BizHawkExternalToolUsageAttribute.cs" />
     <Compile Include="Attributes\BizHawkExternalToolAttribute.cs" />
+    <Compile Include="Classes\BizHawkSystemIdToCoreSystemEnumConverter.cs" />
+    <Compile Include="Classes\Joypad.cs" />
+    <Compile Include="Classes\JoypadStringToEnumConverter.cs" />
     <Compile Include="Enums\BizHawkExternalToolUsage.cs" />
     <Compile Include="Classes\ClientApi.cs" />
     <Compile Include="Classes\ExternalToolManager.cs" />
-    <Compile Include="Enums\EmulatedSystem.cs" />
     <Compile Include="Interfaces\IExternalToolForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -117,6 +119,10 @@
     <ProjectReference Include="..\BizHawk.Emulation.Common\BizHawk.Emulation.Common.csproj">
       <Project>{e1a23168-b571-411c-b360-2229e7225e0e}</Project>
       <Name>BizHawk.Emulation.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BizHawk.Emulation.Cores\BizHawk.Emulation.Cores.csproj">
+      <Project>{197d4314-8a9f-49ba-977d-54acefaeb6ba}</Project>
+      <Name>BizHawk.Emulation.Cores</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

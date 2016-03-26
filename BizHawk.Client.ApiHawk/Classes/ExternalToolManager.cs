@@ -116,7 +116,7 @@ namespace BizHawk.Client.ApiHawk
 							item.ToolTipText = "This tool doesn't work if nothing is loaded";
 							item.Enabled = false;
 						}
-						else if(attribute2.ToolUsage == BizHawkExternalToolUsage.EmulatorSpecific && Global.Emulator.SystemId != ClientApi.EmulatedSytemEnumToBizhawkString(attribute2.System))
+						else if(attribute2.ToolUsage == BizHawkExternalToolUsage.EmulatorSpecific && Global.Emulator.SystemId != ClientApi.SystemIdConverter.ConvertBack(attribute2.System))
 						{
 							item.ToolTipText = "This tool doesn't work for current system";
 							item.Enabled = false;

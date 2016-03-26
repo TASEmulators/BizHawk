@@ -12,7 +12,7 @@ namespace BizHawk.Client.ApiHawk
 		#region Fields
 
 		private BizHawkExternalToolUsage _ToolUsage;
-		private EmulatedSystem _System;
+		private CoreSystem _System;
 		private string _GameHash;
 
 		#endregion
@@ -23,11 +23,11 @@ namespace BizHawk.Client.ApiHawk
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
 		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
-		/// <param name="system"><see cref="EmulatedSystem"/> that your external tool is used for</param>
+		/// <param name="system"><see cref="CoreSystem"/> that your external tool is used for</param>
 		/// <param name="gameHash">The game hash, unique game ID (see in the game database)</param>
-		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, EmulatedSystem system, string gameHash)
+		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, CoreSystem system, string gameHash)
 		{
-			if (usage == BizHawkExternalToolUsage.EmulatorSpecific && system == EmulatedSystem.Null)
+			if (usage == BizHawkExternalToolUsage.EmulatorSpecific && system == CoreSystem.Null)
 			{
 				throw new InvalidOperationException("A system must be set");
 			}
@@ -45,8 +45,8 @@ namespace BizHawk.Client.ApiHawk
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
 		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
-		/// <param name="system"><see cref="EmulatedSystem"/> that your external tool is used for</param>		
-		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, EmulatedSystem system)
+		/// <param name="system"><see cref="CoreSystem"/> that your external tool is used for</param>		
+		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, CoreSystem system)
 			:this(usage, system, string.Empty)
 		{}
 
@@ -54,7 +54,7 @@ namespace BizHawk.Client.ApiHawk
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
 		public BizHawkExternalToolUsageAttribute()
-			:this(BizHawkExternalToolUsage.Global, EmulatedSystem.Null, string.Empty)
+			:this(BizHawkExternalToolUsage.Global, CoreSystem.Null, string.Empty)
 		{ }
 
 
@@ -65,7 +65,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <summary>
 		/// Gets the specific system used by the exetrnal tool
 		/// </summary>
-		public EmulatedSystem System
+		public CoreSystem System
 		{
 			get
 			{

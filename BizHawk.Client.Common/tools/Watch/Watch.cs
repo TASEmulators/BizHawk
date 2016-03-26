@@ -730,7 +730,7 @@ namespace BizHawk.Client.Common
 			}
 			internal set
 			{
-				if (_domain.Name == value.Name)
+				if (value != null &&_domain.Name == value.Name)
 				{
 					_domain = value;
 				}

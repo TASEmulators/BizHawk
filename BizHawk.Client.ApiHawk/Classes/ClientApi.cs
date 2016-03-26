@@ -1,5 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.PCEngine;
+using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.ApiHawk
 {
@@ -13,8 +21,12 @@ namespace BizHawk.Client.ApiHawk
 
 		private static readonly Assembly clientAssembly;
 		private static readonly object clientMainForm;
+		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
+		internal static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
 
 		public static event EventHandler RomLoaded;
+
+		private static List<Joypad> allJoypads;
 
 		#endregion
 
@@ -30,15 +42,48 @@ namespace BizHawk.Client.ApiHawk
 
 		#region Methods
 
+		#region Public
 		/// <summary>
 		/// THE FrameAdvance stuff
 		/// </summary>
-		public static void DoframeAdvance()
+		public static void DoFrameAdvance()
 		{
 			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
 			MethodInfo method = reflectClass.GetMethod("FrameAdvance");
 			method.Invoke(clientMainForm, null);
-		}	
+		}
+
+		/// <summary>
+		/// THE FrameAdvance stuff
+		/// Auto unpause emulation
+		/// </summary>
+		public static void DoFrameAdvanceAndUnpause()
+		{
+			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
+			MethodInfo method = reflectClass.GetMethod("FrameAdvance");
+			method.Invoke(clientMainForm, null);
+			method = reflectClass.GetMethod("UnpauseEmulator");
+			method.Invoke(clientMainForm, null);
+		}
+
+		/// <summary>
+		/// Gets a <see cref="Joypad"/> for specified player
+		/// </summary>
+		/// <param name="player">Player (one based) you want current inputs</param>
+		/// <returns>A <see cref="Joypad"/> populated with current inputs</returns>
+		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
+		public static Joypad GetInput(int player)
+		{
+			if (player < 1 || player > RunningSystem.MaxControllers)
+			{
+				throw new IndexOutOfRangeException(string.Format("{0} does not support {1} controller(s)", RunningSystem.DisplayName, player));
+			}
+			else
+			{
+				GetAllInputs();
+				return allJoypads[player - 1];
+			}
+		}
 
 		/// <summary>
 		/// Raise when a rom is successfully Loaded
@@ -49,7 +94,14 @@ namespace BizHawk.Client.ApiHawk
 			{
 				RomLoaded(null, EventArgs.Empty);
 			}
+
+			allJoypads = new List<Joypad>(RunningSystem.MaxControllers);
+			for (int i = 1; i <= RunningSystem.MaxControllers; i++)
+			{
+				allJoypads.Add(new Joypad(RunningSystem, i));
+			}
 		}
+
 
 		/// <summary>
 		/// Sets the extra padding added to the 'native' surface so that you can draw HUD elements in predictable placements
@@ -95,169 +147,77 @@ namespace BizHawk.Client.ApiHawk
 			SetExtraPadding(left, top, right, 0);
 		}
 
+
 		/// <summary>
-		/// Convert a specified <see cref="EmulatedSystem"/> into a <see cref="string"/> used in BizHawk internal code
+		/// Set inputs in specified <see cref="Joypad"/> to specified player
 		/// </summary>
-		/// <param name="system"><see cref="EmulatedSystem"/> to convert</param>
-		/// <returns>Emulated system as <see cref="string"/> used in BizHawk code</returns>
-		internal static string EmulatedSytemEnumToBizhawkString(EmulatedSystem system)
+		/// <param name="player">Player (one based) whom inputs must be set</param>
+		/// <param name="joypad"><see cref="Joypad"/> with inputs</param>
+		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
+		public static void SetInput(int player, Joypad joypad)
 		{
-			switch (system)
+			if (player < 1 || player > RunningSystem.MaxControllers)
 			{
-				case EmulatedSystem.AppleII:
-					return "AppleII";
-
-				case EmulatedSystem.Atari2600:
-					return "A26";
-
-				case EmulatedSystem.Atari7800:
-					return "A78";
-
-				case EmulatedSystem.ColecoVision:
-					return "Coleco";
-
-				case EmulatedSystem.Commodore64:
-					return "C64";
-
-				case EmulatedSystem.DualGameBoy:
-					return "DGB";
-
-				case EmulatedSystem.GameBoy:
-					return "GB";
-
-				case EmulatedSystem.GameBoyAdvance:
-					return "GBA";
-
-				case EmulatedSystem.Genesis:
-					return "GEN";
-
-				case EmulatedSystem.Intellivision:
-					return "INTV";
-
-				case EmulatedSystem.Libretro:
-					return "Libretro";
-
-				case EmulatedSystem.Lynx:
-					return "Lynx";
-
-				case EmulatedSystem.MasterSystem:
-					return "SMS";
-
-				case EmulatedSystem.NES:
-					return "NES";
-
-				case EmulatedSystem.Nintendo64:
-					return "N64";
-
-				case EmulatedSystem.Null:
-					return "NULL";
-
-				case EmulatedSystem.PCEngine:
-					return "PCE";
-
-				case EmulatedSystem.Playstation:
-					return "PSX";
-
-				case EmulatedSystem.PSP:
-					return "PSP";
-
-				case EmulatedSystem.Saturn:
-					return "SAT";
-
-				case EmulatedSystem.SNES:
-					return "SNES";
-
-				case EmulatedSystem.TI83:
-					return "TI83";
-
-				case EmulatedSystem.WonderSwan:
-					return "WSWAN";
-
-				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", system.ToString()));
-			}		
+				throw new IndexOutOfRangeException(string.Format("{0} does not support {1} controller(s)", RunningSystem.DisplayName, player));
+			}
+			else
+			{
+				allJoypads[player - 1] = joypad;				
+				Parallel.ForEach<JoypadButton>((IEnumerable<JoypadButton>)Enum.GetValues(typeof(JoypadButton)), button =>
+				{
+					if (joypad.Inputs.HasFlag(button))
+					{
+						//joypadAdaptor[string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem))] = true;
+						//joypadAdaptor.S
+						Global.LuaAndAdaptor.SetButton(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
+						Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+					}
+				}
+				);
+			}
 		}
 
+
 		/// <summary>
-		/// Convert a BizHawk <see cref="string"/> to <see cref="EmulatedSystem"/>
+		/// Resume the emulation
 		/// </summary>
-		/// <param name="system">BizHawk systemId to convert</param>
-		/// <returns>SytemID as <see cref="EmulatedSystem"/> enum</returns>
-		internal static EmulatedSystem BizHawkStringToEmulatedSytemEnum(string system)
+		public static void UnpauseEmulation()
 		{
-			switch(system)
+			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
+			MethodInfo method = reflectClass.GetMethod("UnpauseEmulator");
+			method.Invoke(clientMainForm, null);
+		}
+		#endregion Public
+
+		/// <summary>
+		/// Gets all current inputs for each joypad and store
+		/// them in <see cref="Joypad"/> class collection
+		/// </summary>
+		private static void GetAllInputs()
+		{
+			AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
+
+			IEnumerable<string> pressedButtons = from button in joypadAdaptor.Type.BoolButtons
+												 where joypadAdaptor[button]
+												 select button;
+
+			foreach (Joypad j in allJoypads)
 			{
-				case "AppleII":
-					return EmulatedSystem.AppleII;
+				j.ClearInputs();
+			}
 
-				case "A26":
-					return EmulatedSystem.Atari2600;
+			Parallel.ForEach<string>(pressedButtons, button =>
+			{
+				int player;
+				if (int.TryParse(button.Substring(1, 2), out player))
+				{
+					allJoypads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
+				}
+			});
 
-				case "A78":
-					return EmulatedSystem.Atari2600;
-
-				case "Coleco":
-					return EmulatedSystem.ColecoVision;
-
-				case "C64":
-					return EmulatedSystem.Commodore64;
-
-				case "DGB":
-					return EmulatedSystem.DualGameBoy;
-
-				case "GB":
-					return EmulatedSystem.GameBoy;
-
-				case "GBA":
-					return EmulatedSystem.GameBoyAdvance;
-
-				case "GEN":
-					return EmulatedSystem.Genesis;
-
-				case "INTV":
-					return EmulatedSystem.Intellivision;
-
-				case "Libretro":
-					return EmulatedSystem.Libretro;
-
-				case "Lynx":
-					return EmulatedSystem.Lynx;
-
-				case "SMS":
-					return EmulatedSystem.MasterSystem;
-
-				case "NES":
-					return EmulatedSystem.NES;
-
-				case "N64":
-					return EmulatedSystem.Nintendo64;
-
-				case "NULL":
-					return EmulatedSystem.Null;
-
-				case "PCE":
-					return EmulatedSystem.PCEngine;
-
-				case "PSX":
-					return EmulatedSystem.Playstation;
-
-				case "PSP":
-					return EmulatedSystem.PSP;
-
-				case "SAT":
-					return EmulatedSystem.Saturn;
-
-				case "SNES":
-					return EmulatedSystem.SNES;
-
-				case "TI83":
-					return EmulatedSystem.TI83;
-
-				case "WSWAN":
-					return EmulatedSystem.WonderSwan;
-
-				default:
-					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", system));
+			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
+			{
+				//joypadAdaptor.GetFloat();
 			}
 		}
 
@@ -266,13 +226,59 @@ namespace BizHawk.Client.ApiHawk
 		#region Properties
 
 		/// <summary>
-		/// Gets current emulated system id as <see cref="EmulatedSystem"/> enum
+		/// Gets current emulated system
 		/// </summary>
-		public static EmulatedSystem RunningSystem
+		public static SystemInfo RunningSystem
 		{
 			get
 			{
-				return BizHawkStringToEmulatedSytemEnum(Common.Global.Emulator.SystemId);
+				switch (Global.Emulator.SystemId)
+				{
+					case "PCE":
+						if (((PCEngine)Global.Emulator).Type == NecSystemType.TurboGrafx)
+						{
+							return SystemInfo.PCE;
+						}
+						else if (((PCEngine)Global.Emulator).Type == NecSystemType.SuperGrafx)
+						{
+							return SystemInfo.SGX;
+						}
+						else
+						{
+							return SystemInfo.PCECD;
+						}
+
+					case "SMS":
+						if (((SMS)Global.Emulator).IsSG1000)
+						{
+							return SystemInfo.SG;
+						}
+						else if (((SMS)Global.Emulator).IsGameGear)
+						{
+							return SystemInfo.GG;
+						}
+						else
+						{
+							return SystemInfo.SMS;
+						}
+
+					case "GB":
+						if (Global.Emulator is Gameboy)
+						{
+							return SystemInfo.GB;
+						}
+						else if (Global.Emulator is GBColors)
+						{
+							return SystemInfo.GBC;
+						}
+						else
+						{
+							return SystemInfo.DualGB;
+						}
+
+					default:
+						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
+				}
 			}
 		}
 

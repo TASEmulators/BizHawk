@@ -9,7 +9,7 @@
     <Lollipop Orientation="Left" Position="0.1" />
   </Class>
   <Class Name="BizHawk.Client.Common.SeparatorWatch">
-    <Position X="6" Y="19" Width="3.25" />
+    <Position X="9.25" Y="19.25" Width="3.25" />
     <TypeIdentifier />
   </Class>
   <Class Name="BizHawk.Client.Common.ByteWatch">
@@ -17,7 +17,7 @@
     <TypeIdentifier />
   </Class>
   <Class Name="BizHawk.Client.Common.WordWatch">
-    <Position X="9.5" Y="19" Width="3.25" />
+    <Position X="13.5" Y="19" Width="3.25" />
     <TypeIdentifier />
   </Class>
   <Class Name="BizHawk.Client.Common.DWordWatch">
@@ -53,7 +53,7 @@
   <Class Name="BizHawk.Client.ApiHawk.ClientApi">
     <Position X="4.75" Y="10" Width="4" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAAAAAAAAAAQAIAAAAAACAAAAAAAAACAAA=</HashCode>
+      <HashCode>CQEAAAAAgAAAQAAAAAABQAIAAAAAoGAACCAAAAAQAAA=</HashCode>
       <FileName>Classes\ClientApi.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -63,6 +63,31 @@
       <HashCode>AIAAAAAAEIAAAQAAAAAABABAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Attributes\BizHawkExternalToolUsageAttribute.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.BizHawkSystemIdToEnumConverter">
+    <Position X="10.75" Y="9.75" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\BizHawkSystemIdToCoreSystemEnumConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.JoypadStringToEnumConverter">
+    <Position X="10.75" Y="11.75" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\JoypadStringToEnumConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.Joypad">
+    <Position X="0.75" Y="6.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AQAACAAAAIAAAACBAAgAAABAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\Joypad.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.Common.SystemInfo">
+    <Position X="0.5" Y="10.25" Width="4" />
+    <TypeIdentifier />
   </Class>
   <Interface Name="BizHawk.Client.EmuHawk.IExternalToolForm">
     <Position X="4.5" Y="4.5" Width="2.75" />
@@ -98,12 +123,13 @@
       <FileName>Enums\BizHawkExternalToolUsage.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="BizHawk.Client.ApiHawk.EmulatedSystem">
-    <Position X="28.5" Y="8.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>SAACIAABQAAQCAAmAAAAAAAIAhAAAIAADAIAAIAgGAA=</HashCode>
-      <FileName>Enums\EmulatedSystem.cs</FileName>
-    </TypeIdentifier>
+  <Enum Name="BizHawk.Client.ApiHawk.JoypadButton">
+    <Position X="30.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
+  </Enum>
+  <Enum Name="BizHawk.Client.ApiHawk.CoreSystem">
+    <Position X="28.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
   </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

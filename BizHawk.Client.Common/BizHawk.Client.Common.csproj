@@ -137,6 +137,8 @@
     <Compile Include="7z\SevenZipExtractorAsynchronous.cs" />
     <Compile Include="7z\SevenZipSfx.cs" />
     <Compile Include="7z\StreamWrappers.cs" />
+    <Compile Include="Api\CoreSystem.cs" />
+    <Compile Include="Api\JoypadButton.cs" />
     <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BitmapBufferVideoProvider.cs" />
     <Compile Include="config\Binding.cs" />
