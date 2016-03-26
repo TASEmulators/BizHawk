@@ -308,6 +308,7 @@ namespace BizHawk.Client.MultiHawk
 			loader.OnLoadSyncSettings += CoreSyncSettings;
 
 			var nextComm = new CoreComm(ShowMessageCoreComm, AddMessage);
+			nextComm.CoreFileProvider = new CoreFileProvider(s => MessageBox.Show(s));
 
 			var result = loader.LoadRom(path, nextComm);
 
