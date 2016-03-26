@@ -5,6 +5,7 @@ using System.Text;
 using BizHawk.Emulation.Common;
 using System.ComponentModel;
 using BizHawk.Common;
+using System.Drawing;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -30,23 +31,58 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			[DefaultValue(true)]
 			public bool EnableSprites { get; set; }
 
+			[DisplayName("B&W Palette")]
+			[Description("Colors to display in Wonderswan (not Color) mode")]
+			public Color[] BWPalette { get; private set; }
+
 			public BizSwan.Settings GetNativeSettings()
 			{
 				var ret = new BizSwan.Settings();
 				if (EnableBG) ret.LayerMask |= BizSwan.LayerFlags.BG;
 				if (EnableFG) ret.LayerMask |= BizSwan.LayerFlags.FG;
 				if (EnableSprites) ret.LayerMask |= BizSwan.LayerFlags.Sprite;
+
+				ret.BWPalette = new uint[16];
+				for (int i = 0; i < 16; i++)
+					ret.BWPalette[i] = (uint)BWPalette[i].ToArgb() | 0xff000000;
+
+				// default color algorithm from wonderswan
+				// todo: we could give options like the gameboy cores have
+				ret.ColorPalette = new uint[4096];
+				for (int r = 0; r < 16; r++)
+				{
+					for (int g = 0; g < 16; g++)
+					{
+						for (int b = 0; b < 16; b++)
+						{
+							uint neo_r, neo_g, neo_b;
+
+							neo_r = (uint)r * 17;
+							neo_g = (uint)g * 17;
+							neo_b = (uint)b * 17;
+							ret.ColorPalette[r << 8 | g << 4 | b] = 0xff000000 | neo_r << 16 | neo_g << 8 | neo_b << 0;
+						}
+					}
+				}
+
 				return ret;
 			}
 
 			public Settings()
 			{
 				SettingsUtil.SetDefaultValues(this);
+				BWPalette = new Color[16];
+				for (int i = 0; i < 16; i++)
+				{
+					BWPalette[i] = Color.FromArgb(255, i * 17, i * 17, i * 17);
+				}
 			}
 
 			public Settings Clone()
 			{
-				return (Settings)MemberwiseClone();
+				var ret = (Settings)MemberwiseClone();
+				ret.BWPalette = (Color[])BWPalette.Clone();
+				return ret;
 			}
 		}
 

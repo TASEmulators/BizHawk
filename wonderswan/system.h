@@ -77,6 +77,8 @@ struct SyncSettings
 struct Settings
 {
 	uint32 LayerMask; // 1 = enable bg, 2 = enable fg, 4 = enable sprites
+	uint32 BWPalette[16]; // map 16 b&w shades to output colors
+	uint32 ColorPalette[4096]; // map 4096 color shades to output colors
 };
 
 namespace Debug

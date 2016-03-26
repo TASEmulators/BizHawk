@@ -29,6 +29,8 @@ public:
 	bool ExecuteLine(uint32 *surface, bool skip);
 
 	void SetLayerEnableMask(uint32 mask);
+	void SetBWPalette(const uint32 *colors);
+	void SetColorPalette(const uint32 *colors);
 
 private:
 	// TCACHE ====================================
