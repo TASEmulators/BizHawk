@@ -804,9 +804,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public void BeginControl(GLControlWrapper_SlimDX9 control)
 		{
 			_CurrentControl = control;
-			var bb = control.SwapChain.GetBackBuffer(0);
-			dev.SetRenderTarget(0, bb);
-			bb.Dispose();
+			//don't dispose this backbuffer reference, even though it's tempting to.
+			//it results in weird flashes of corruption when changing the vsync setting (unproven; it's another similar code sequence that broke it)
+			dev.SetRenderTarget(0, _CurrentControl.SwapChain.GetBackBuffer(0));
 		}
 
 		public void EndControl(GLControlWrapper_SlimDX9 control)
@@ -814,9 +814,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
-			var bb = dev.GetBackBuffer(0,0);
-			dev.SetRenderTarget(0,bb);
-			bb.Dispose();
+			//don't dispose this backbuffer reference, even though it's tempting to.
+			//it results in weird flashes of corruption when changing the vsync setting (unproven; it's another similar code sequence that broke it)
+			dev.SetRenderTarget(0, dev.GetBackBuffer(0, 0));
 
 			_CurrentControl = null;
 		}
@@ -861,9 +861,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 			if (rt == null)
 			{
-				var bb = _CurrentControl.SwapChain.GetBackBuffer(0);
-				dev.SetRenderTarget(0, bb);
-				bb.Dispose();
+				//don't dispose this backbuffer reference, even though it's tempting to.
+				//it results in weird flashes of corruption when changing the vsync setting
+				dev.SetRenderTarget(0, _CurrentControl.SwapChain.GetBackBuffer(0));
 				dev.DepthStencilSurface = null;
 				return;
 			}
