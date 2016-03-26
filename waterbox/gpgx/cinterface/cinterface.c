@@ -496,6 +496,7 @@ struct InitSettings
 
 GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive_cb)(const char *filename, unsigned char *buffer, int maxsize), int sixbutton, char system_a, char system_b, int region, struct InitSettings *settings)
 {
+    _debug_puts("Initializing GPGX native...");
 	memset(&bitmap, 0, sizeof(bitmap));
 
 	strncpy(romextension, feromextension, 3);

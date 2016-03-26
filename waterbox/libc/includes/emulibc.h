@@ -19,4 +19,7 @@ void *alloc_sealed(size_t size);
 // you are absolutely sure will not harm savestates
 void *alloc_invisible(size_t size);
 
+// send a debug string somewhere, bypassing stdio
+void _debug_puts(const char *);
+
 #endif

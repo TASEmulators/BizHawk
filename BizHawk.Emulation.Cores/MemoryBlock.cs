@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores
 		static MemoryBlock()
 		{
 			int p = PageSize = Environment.SystemPageSize;
-			while (p != 0)
+			while (p != 1)
 			{
 				p >>= 1;
 				PageShift++;
@@ -253,6 +253,7 @@ namespace BizHawk.Emulation.Cores
 					Kernel32.MemoryProtection old;
 					if (!Kernel32.VirtualProtect(Z.UU(zstart), Z.UU(zend - zstart), p, out old))
 						throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+					ps = i + 1;
 				}
 			}
 		}

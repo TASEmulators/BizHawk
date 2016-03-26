@@ -21,6 +21,11 @@ void *alloc_invisible(size_t size)
 	return _ecl_sbrk_invisible(size);
 }
 
+void _debug_puts(const char *s)
+{
+	_ecl_debug_puts(s);
+}
+
 void *_PDCLIB_sbrk(size_t n)
 {
 	void *ret = _ecl_sbrk(n);

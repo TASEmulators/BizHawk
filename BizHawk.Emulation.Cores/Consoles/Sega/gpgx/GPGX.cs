@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			try
 			{
-				Elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 256 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
+				Elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 1024 * 1024, 36 * 1024 * 1024, 3 * 1024 * 1024);
 				if (Elf.ShouldMonitor)
 					Core = BizInvoker.GetInvoker<LibGPGX>(Elf, Elf);
 				else

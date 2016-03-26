@@ -16,7 +16,7 @@ svp_t *svp = NULL;
 
 void svp_init(void)
 {
-  svp = (void *) ((char *)cart.rom + 0x200000);
+  svp = malloc(sizeof(svp_t));
   memset(svp, 0, sizeof(*svp));
 }
 
