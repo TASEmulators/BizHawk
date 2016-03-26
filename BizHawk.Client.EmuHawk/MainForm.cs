@@ -2569,7 +2569,7 @@ namespace BizHawk.Client.EmuHawk
 		private static void VsyncMessage()
 		{
 			GlobalWin.OSD.AddMessage(
-				"Display Vsync set to " + (Global.Config.VSyncThrottle ? "on" : "off")
+				"Display Vsync set to " + (Global.Config.VSync ? "on" : "off")
 			);
 		}
 
