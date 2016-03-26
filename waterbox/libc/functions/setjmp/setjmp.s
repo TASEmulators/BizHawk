@@ -34,7 +34,10 @@ setjmp:
 
 longjmp:
   movq    %rsi, %rax        /* Return value */
-
+  test    %rax, %rax
+  jnz L0
+  inc     %rax              /* if 0 was passed, send back 1 instead */
+L0:
   movq     8 (%rdi), %rbp
 
   cli
