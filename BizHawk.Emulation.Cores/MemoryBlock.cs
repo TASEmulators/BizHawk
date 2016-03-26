@@ -150,41 +150,20 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		/// <summary>
-		/// Allocates a memory block as a memory-mapped file with the given size (created immediately) which can be Activated and Deactivated only at the given address.
+		/// allocate size bytes starting at a particular address
 		/// </summary>
-		/// <param name="start">Location where this block can be Activated</param>
-		/// <param name="size">Size of the block</param>
+		/// <param name="start"></param>
+		/// <param name="size"></param>
 		public MemoryBlock(ulong start, ulong size)
 		{
-			size = 8 * 1024 * 1024 * 1024L;
 			if (!Aligned(start))
 				throw new ArgumentOutOfRangeException();
 			if (size == 0)
 				throw new ArgumentOutOfRangeException();
 			size = AlignUp(size);
 
-			//create a temporary file--the alternative is using the system pagefile(s)
-			//some systems have disabled or too-small files and many systems have a few GBs pagefile and difficulty growing it.
-			//creating a tempfile subverts the user's choice of pagefile locations, but %temp%'s location should be similarly chosen
-			//Could use this as a fallback in case creation on the pagefile fails?
-			var fname = BizHawk.Common.TempFileCleaner.GetTempFilename("MemoryBlock",null,false);
-			IntPtr fhTemp = Kernel32.CreateFile(
-				fname,
-				unchecked((int)(0x80000000 | 0x40000000 | 0x20000000)), //+RWX (protections can later be added with finer granularity)
-				3, //share RW
-				IntPtr.Zero, //security stuff
-				2, //create always
-				0x04000000, //delete on close!
-				IntPtr.Zero //template
-				);
-
-			//create FileMapping around the tempfile
-			//(again, protections can later be added with finer granularity)
-			_handle = Kernel32.CreateFileMapping(fhTemp, IntPtr.Zero,
+			_handle = Kernel32.CreateFileMapping(Kernel32.INVALID_HANDLE_VALUE, IntPtr.Zero,
 				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit, (uint)(size >> 32), (uint)size, null);
-
-			//releasing our tempfile handle, essentially yielding the handle to the FileMapping as sole owner
-			new Microsoft.Win32.SafeHandles.SafeFileHandle(fhTemp, true).Dispose();
 
 			if (_handle == IntPtr.Zero)
 				throw new InvalidOperationException("CreateFileMapping() returned NULL");
@@ -194,21 +173,17 @@ namespace BizHawk.Emulation.Cores
 			_pageData = new Protection[GetPage(End - 1) + 1];
 		}
 
-
 		/// <summary>
-		/// activate the memory block, swapping it in at the predefined address
+		/// activate the memory block, swapping it in at the specified address
 		/// </summary>
 		public void Activate()
 		{
 			if (Active)
 				throw new InvalidOperationException("Already active");
-
-			//(again, protections can later be added with finer granularity)
-			IntPtr ptr = Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
-				0, 0, Z.UU(Size), Z.US(Start));
-			if (ptr != Z.US(Start))
+			if (Kernel32.MapViewOfFileEx(_handle, Kernel32.FileMapAccessType.Read | Kernel32.FileMapAccessType.Write | Kernel32.FileMapAccessType.Execute,
+				0, 0, Z.UU(Size), Z.US(Start)) != Z.US(Start))
 			{
-				throw new InvalidOperationException("MapViewOfFileEx() returned incorrect starting address");
+				throw new InvalidOperationException("MapViewOfFileEx() returned NULL");
 			}
 			ProtectAll();
 			Active = true;
@@ -222,7 +197,7 @@ namespace BizHawk.Emulation.Cores
 			if (!Active)
 				throw new InvalidOperationException("Not active");
 			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
-				throw new InvalidOperationException("UnmapViewOfFile() returned false");
+				throw new InvalidOperationException("UnmapViewOfFile() returned NULL");
 		}
 
 		/// <summary>
@@ -464,17 +439,6 @@ namespace BizHawk.Emulation.Cores
 				NOCACHE_Modifierflag = 0x200,
 				WRITECOMBINE_Modifierflag = 0x400
 			}
-
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-			public static extern IntPtr CreateFile(
-				string fileName,
-				int desiredAccess,
-				int shareMode,
-				IntPtr securityAttributes,
-				int creationDisposition,
-				int flagsAndAttributes,
-				IntPtr templateFile);
-
 
 			[DllImport("kernel32.dll", SetLastError = true)]
 			public static extern IntPtr CreateFileMapping(
