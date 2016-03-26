@@ -270,9 +270,14 @@ namespace BizHawk.Emulation.Cores
 			for (int i = pstart; i <= pend; i++)
 				_pageData[i] = prot; // also store the value for later use
 
-			Kernel32.MemoryProtection old;
-			if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(length), p, out old))
-				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+			if (Active) // it's legal to Protect() if we're not active; the information is just saved for the next activation
+			{
+				// TODO: if using another OS's memory protection calls, they must give the same non-aligned behavior
+				// as VirtualProtect, or this must be changed
+				Kernel32.MemoryProtection old;
+				if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(length), p, out old))
+					throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+			}
 		}
 
 		public void Dispose()
