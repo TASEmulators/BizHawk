@@ -198,6 +198,7 @@ namespace BizHawk.Emulation.Cores
 				throw new InvalidOperationException("Not active");
 			if (!Kernel32.UnmapViewOfFile(Z.US(Start)))
 				throw new InvalidOperationException("UnmapViewOfFile() returned NULL");
+			Active = false;
 		}
 
 		/// <summary>
