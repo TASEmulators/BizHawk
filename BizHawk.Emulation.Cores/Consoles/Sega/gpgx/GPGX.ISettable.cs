@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			private bool _PadScreen320;
 
 			[DisplayName("Pad screen to 320")]
-			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
+			[Description("When using 1:1 aspect ratio, enable to make screen width constant (320) between game modes")]
 			[DefaultValue(false)]
 			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
 
