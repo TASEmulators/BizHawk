@@ -46,6 +46,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		public Control Control { get { return this; } }
 		public SwapChain SwapChain;
+		public Surface SwapChainBB;
 
 		public void SetVsync(bool state)
 		{
