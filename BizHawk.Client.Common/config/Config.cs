@@ -201,8 +201,16 @@ namespace BizHawk.Client.Common
 		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
 		public int MovieCompressionLevel = 2;
 
-		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
+		/// <summary>
+		/// Use vsync when presenting all 3d accelerated windows.
+		/// For the main window, if VSyncThrottle = false, this will try to use vsync without throttling to it
+		/// </summary>
 		public bool VSync = false;
+
+		/// <summary>
+		/// Tries to use an alternate vsync mechanism, for video cards that just can't do it right
+		/// </summary>
+		public bool DispAlternateVsync = false;
 
 		public static class DefaultMessageOptions
 		{

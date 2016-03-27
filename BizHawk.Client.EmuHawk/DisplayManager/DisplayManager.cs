@@ -772,11 +772,27 @@ namespace BizHawk.Client.EmuHawk
 				//apply the vsync setting (should probably try to avoid repeating this)
 				bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
 
+				//only used by alternate vsync
+				var dx9 = GlobalWin.GL as BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9;
+
+				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
+				bool alternateVsync = false;
+				if (dx9 != null)
+				{
+					alternateVsync = Global.Config.DispAlternateVsync && vsync && Global.Config.VSyncThrottle;
+					//unset normal vsync if we've chosen the alternate vsync
+					if (alternateVsync)
+						vsync = false;
+				}
+
+				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
+				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
+
 				//ok, now this is a bit undesireable.
 				//maybe the user wants vsync, but not vsync throttle.
 				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
 				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
-				//update 26-mar-2016: this upsets me. When fastforwarding and skipping frames, vsync should still work
+				//update 26-mar-2016: this upsets me. When fastforwarding and skipping frames, vsync should still work. But I'm not changing it yet
 				if (Global.DisableSecondaryThrottling)
 					vsync = false;
 
@@ -786,14 +802,22 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// Workaround for vsync not taking effect at startup (Intel graphics related?)
 						presentationPanel.GraphicsControl.SetVsync(false);
+					
 					}
 					presentationPanel.GraphicsControl.SetVsync(vsync);
 					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
 					LastVsyncSetting = vsync;
 				}
 
+				//wait for vsync to begin
+				if (alternateVsync) dx9.AlternateVsyncPass(0);
+
 				//present and conclude drawing
 				presentationPanel.GraphicsControl.SwapBuffers();
+
+				//wait for vsync to end
+				if (alternateVsync) dx9.AlternateVsyncPass(1);
+
 
 				//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 				//presentationPanel.GraphicsControl.End();

@@ -219,6 +219,7 @@ namespace BizHawk.Client.EmuHawk
 			//TODO GL - a lot of disorganized wiring-up here
 			CGC.CGCBinPath = Path.Combine(PathManager.GetDllDirectory(), "cgc.exe");
 			PresentationPanel = new PresentationPanel();
+			PresentationPanel.GraphicsControl.MainWindow = true;
 			GlobalWin.DisplayManager = new DisplayManager(PresentationPanel);
 			Controls.Add(PresentationPanel);
 			Controls.SetChildIndex(PresentationPanel, 0);

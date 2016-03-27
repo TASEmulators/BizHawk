@@ -41,6 +41,11 @@ namespace BizHawk.Bizware.BizwareGL
 			Managed.Paint += new PaintEventHandler(GraphicsControl_Paint);
 		}
 
+		/// <summary>
+		/// If this is the main window, things may be special
+		/// </summary>
+		public bool MainWindow;
+
 		void GraphicsControl_Paint(object sender, PaintEventArgs e)
 		{
 			OnPaint(e);

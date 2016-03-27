@@ -40,6 +40,8 @@ namespace BizHawk.Client.EmuHawk.config
 			cbFullscreenHacks.Checked = Global.Config.DispFullscreenHacks;
 			cbAutoPrescale.Checked = Global.Config.DispAutoPrescale;
 
+			cbAlternateVsync.Checked = Global.Config.DispAlternateVsync;
+
 			if (Global.Config.DispSpeedupFeatures == 2) rbDisplayFull.Checked = true;
 			if (Global.Config.DispSpeedupFeatures == 1) rbDisplayMinimal.Checked = true;
 			if (Global.Config.DispSpeedupFeatures == 0) rbDisplayAbsoluteZero.Checked = true;
@@ -117,6 +119,8 @@ namespace BizHawk.Client.EmuHawk.config
 			Global.Config.DispFixScaleInteger = checkPadInteger.Checked;
 			Global.Config.DispFullscreenHacks = cbFullscreenHacks.Checked;
 			Global.Config.DispAutoPrescale = cbAutoPrescale.Checked;
+			
+			Global.Config.DispAlternateVsync = cbAlternateVsync.Checked;
 
 			Global.Config.DispChrome_StatusBarWindowed = cbStatusBarWindowed.Checked;
 			Global.Config.DispChrome_CaptionWindowed = cbCaptionWindowed.Checked;
@@ -283,6 +287,21 @@ namespace BizHawk.Client.EmuHawk.config
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/Bizhawk/DisplayConfig.html");
+		}
+
+		private void label13_Click(object sender, EventArgs e)
+		{
+			cbAlternateVsync.Checked ^= true;
+		}
+
+		private void btnDefaults_Click(object sender, EventArgs e)
+		{
+			nudPrescale.Value = 1;
+			rbNone.Checked = true;
+			cbAutoPrescale.Checked = true;
+			rbFinalFilterBilinear.Checked = true;
+			checkLetterbox.Checked = true;
+			rbUseSystem.Checked = true;
 		}
 
 	}

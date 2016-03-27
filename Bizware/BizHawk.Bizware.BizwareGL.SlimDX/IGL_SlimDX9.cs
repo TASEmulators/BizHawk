@@ -53,6 +53,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			CreateRenderStates();
 		}
 
+		public void AlternateVsyncPass(int pass)
+		{
+			for (; ; )
+			{
+				var status = dev.GetRasterStatus(0);
+				if (status.InVBlank && pass == 0) return; //wait for vblank to begin
+				if (!status.InVBlank && pass == 1) return; //wait for vblank to end
+				//STOP! think you can use System.Threading.SpinWait? No, it's way too slow.
+				//(on my system, the vblank is something like 24 of 1074 scanlines @ 60hz ~= 0.35ms which is an awfully small window to nail)
+			}
+		}
+
 		private void DestroyDevice()
 		{
 			if (dev != null)
@@ -829,6 +841,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			try
 			{
 				var result = control.SwapChain.Present(Present.None);
+				//var rs = dev.GetRasterStatus(0);
 			}
 			catch(d3d9.Direct3D9Exception ex)
 			{
