@@ -31,6 +31,12 @@ namespace BizHawk.Emulation.Common
 
 		public Action<long, byte> PokeByte { get; private set; }
 
+		public void SetPeekPokeDelegates(Func<long, byte> peeker, Action<long, byte> poker)
+		{
+			PeekByte = peeker;
+			PokeByte = poker;
+		}
+
 		/// <summary>
 		/// creates a memorydomain that references a managed byte array
 		/// </summary>
@@ -62,6 +68,38 @@ namespace BizHawk.Emulation.Common
 			);
 		}
 
+		public void SetDelegatesForIntPtr(long size, Endian endian, IntPtr data, bool writable = true, int byteSize = 1)
+		{
+			Func<long, byte> peeker;
+			Action<long, byte> poker;
+			CreateDelegatesForIntPtr(size, endian, data, out peeker, out poker, writable, byteSize);
+			PeekByte = peeker;
+			PokeByte = poker;
+		}
+
+		public unsafe static void CreateDelegatesForIntPtr(long size, Endian endian, IntPtr data, out Func<long, byte> peeker, out Action<long, byte> poker, bool writable = true, int byteSize = 1)
+		{
+			byte* p = (byte*)data;
+			uint l = (uint)size;
+
+			peeker = delegate(long addr)
+				{
+					if ((uint)addr >= l)
+						throw new ArgumentOutOfRangeException();
+					return p[addr];
+				};
+
+			poker =
+				writable ?
+				delegate(long addr, byte val)
+				{
+					if ((uint)addr >= l)
+						throw new ArgumentOutOfRangeException();
+					p[addr] = val;
+				}
+				: (Action<long, byte>)null;
+		}
+
 		/// <summary>
 		/// create a memorydomain that references an unmanaged memory block
 		/// </summary>
@@ -74,29 +112,10 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentNullException("data");
 			if ((ulong)size >= 0x80000000)
 				throw new ArgumentOutOfRangeException("size");
-			byte* p = (byte*)data;
-			uint l = (uint)size;
-			return new MemoryDomain
-			(
-				name,
-				size,
-				endian,
-				delegate(long addr)
-				{
-					if ((uint)addr >= l)
-						throw new ArgumentOutOfRangeException();
-					return p[addr];
-				},
-				writable ?
-				delegate(long addr, byte val)
-				{
-					if ((uint)addr >= l)
-						throw new ArgumentOutOfRangeException();
-					p[addr] = val;
-				}
-				: (Action<long, byte>)null,
-				byteSize
-			);
+
+			var md = new MemoryDomain(name,size,endian, null, null, byteSize);
+			md.SetDelegatesForIntPtr(size, endian, data, writable, byteSize);
+			return md;
 		}
 
 		/// <summary>
