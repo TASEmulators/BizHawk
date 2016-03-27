@@ -503,7 +503,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// port = 0, oninputpoll = 2: left port was strobed
 			// port = 1, oninputpoll = 3: right port was strobed
-			Console.WriteLine("ONINPUTPOLL: {0}", port + 2);
 
 			// InputCallbacks.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
@@ -549,8 +548,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// 1: signifies latch bit going to 1.  should be reported as oninputpoll
 			if (index >= 0x4000)
 				IsLagFrame = false;
-			else
-				Console.WriteLine("ONINPUTPOLL: {0}", index);
 		}
 
 		void snes_video_refresh(int* data, int width, int height)
