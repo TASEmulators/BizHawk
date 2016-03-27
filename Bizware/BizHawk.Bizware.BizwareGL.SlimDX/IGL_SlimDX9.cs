@@ -818,7 +818,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			_CurrentControl = control;
 			//don't dispose this backbuffer reference, even though it's tempting to.
 			//it results in weird flashes of corruption when changing the vsync setting (unproven; it's another similar code sequence that broke it)
-			dev.SetRenderTarget(0, _CurrentControl.SwapChainBB);
+			dev.SetRenderTarget(0, _CurrentControl.SwapChain.GetBackBuffer(0));
 		}
 
 		public void EndControl(GLControlWrapper_SlimDX9 control)
@@ -828,8 +828,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 			//don't dispose this backbuffer reference, even though it's tempting to.
 			//it results in weird flashes of corruption when changing the vsync setting (unproven; it's another similar code sequence that broke it)
-			//do we REALLY need this?
-			//dev.SetRenderTarget(0, dev.GetBackBuffer(0, 0));
+			dev.SetRenderTarget(0, dev.GetBackBuffer(0, 0));
 
 			_CurrentControl = null;
 		}
@@ -877,33 +876,24 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			{
 				//don't dispose this backbuffer reference, even though it's tempting to.
 				//it results in weird flashes of corruption when changing the vsync setting
-				dev.SetRenderTarget(0, _CurrentControl.SwapChainBB);
+				dev.SetRenderTarget(0, _CurrentControl.SwapChain.GetBackBuffer(0));
 				dev.DepthStencilSurface = null;
 				return;
 			}
 
 			var tw = rt.Opaque as TextureWrapper;
 			//TODO - cache surface level in an RT wrapper
-			var surf = tw.Texture.GetSurfaceLevel(0);
-			dev.SetRenderTarget(0, surf);
-			surf.Dispose();
+			dev.SetRenderTarget(0, tw.Texture.GetSurfaceLevel(0));
 			dev.DepthStencilSurface = null;
-		}
-
-		void DestroyControlSwapChain(GLControlWrapper_SlimDX9 control)
-		{
-			if (control.SwapChain == null)
-				return;
-			control.SwapChainBB.Dispose();
-			control.SwapChainBB = null;
-			control.SwapChain.Dispose();
-			control.SwapChain = null;
 		}
 
 		public void RefreshControlSwapChain(GLControlWrapper_SlimDX9 control)
 		{
-			DestroyControlSwapChain(control);
-
+			if (control.SwapChain != null)
+			{
+				control.SwapChain.Dispose();
+				control.SwapChain = null;
+			}
 			ResetHandlers.Remove(control, "SwapChain");
 			
 			var pp = new PresentParameters
@@ -918,8 +908,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			};
 
 			control.SwapChain = new SwapChain(dev, pp);
-			control.SwapChainBB = control.SwapChain.GetBackBuffer(0);
-			ResetHandlers.Add(control, "SwapChain", () => DestroyControlSwapChain(control), () => RefreshControlSwapChain(control));
+			ResetHandlers.Add(control, "SwapChain", () => { control.SwapChain.Dispose(); control.SwapChain = null; }, () => RefreshControlSwapChain(control));
 		}
 
 		DeviceLostHandler ResetHandlers = new DeviceLostHandler();
