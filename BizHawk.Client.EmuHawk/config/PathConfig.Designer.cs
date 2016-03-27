@@ -42,10 +42,10 @@
 			// 
 			this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.Ok.Location = new System.Drawing.Point(616, 505);
-			this.Ok.Name = "Ok";
+			this.Ok.Name = "OK";
 			this.Ok.Size = new System.Drawing.Size(75, 23);
 			this.Ok.TabIndex = 0;
-			this.Ok.Text = "&Ok";
+			this.Ok.Text = "&OK";
 			this.Ok.UseVisualStyleBackColor = true;
 			this.Ok.Click += new System.EventHandler(this.Ok_Click);
 			// 

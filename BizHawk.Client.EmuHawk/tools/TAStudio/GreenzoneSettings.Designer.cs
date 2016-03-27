@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 1;
-			this.OkBtn.Text = "&Ok";
+			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
 			// 
