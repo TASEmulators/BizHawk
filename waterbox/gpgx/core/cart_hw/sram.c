@@ -68,7 +68,7 @@ void sram_init()
 
   /* backup RAM data is stored above cartridge ROM area, at $800000-$80FFFF (max. 64K) */
   if (cart.romsize > 0x800000) return;
-  sram.sram = cart.rom + 0x800000;
+  sram.sram = malloc(0x10000);
 
   /* initialize Backup RAM */
   memset(sram.sram, 0xFF, 0x10000);
