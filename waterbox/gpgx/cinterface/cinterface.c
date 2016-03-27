@@ -246,7 +246,7 @@ GPGX_EX void gpgx_clear_sram(void)
 		// clear and format bram
 		memset(scd.bram, 0, 0x2000);
 		brm_format[0x10] = brm_format[0x12] = brm_format[0x14] = brm_format[0x16] = 0x00;
-		brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (sizeof(scd.bram) / 64) - 3;
+		brm_format[0x11] = brm_format[0x13] = brm_format[0x15] = brm_format[0x17] = (0x2000 / 64) - 3;
 		memcpy(scd.bram + 0x2000 - 0x40, brm_format, 0x40);
 
 		if (scd.cartridge.id)
@@ -512,7 +512,6 @@ GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive
 	bg_pattern_cache = alloc_invisible(0x80000);
 
 	ext.md_cart.rom = alloc_sealed(32 * 1024 * 1024);
-	scd.bootrom = malloc(0x20000); // FIXME: this should be sealed, but that crashes. huh?
 	SZHVC_add = alloc_sealed(131072);
     SZHVC_sub = alloc_sealed(131072);
     ym2612_lfo_pm_table = alloc_sealed(131072);

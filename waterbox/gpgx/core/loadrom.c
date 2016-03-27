@@ -39,6 +39,7 @@
 
 #include <ctype.h>
 #include "shared.h"
+#include <emulibc.h>
 
 /*** ROM Information ***/
 #define ROMCONSOLE    256
@@ -400,6 +401,10 @@ int load_bios(void)
       /* check if CD BOOTROM is already loaded */
       if (!(system_bios & 0x10) || ((system_bios & 0x0c) != (region_code >> 4)))
       {
+      	// GPGX emulates the HINT vector patching by actually writing to the rom,
+      	// so we can't move this to alloc_sealed without some other changes
+	    scd.bootrom = malloc(0x20000);
+
         /* load CD BOOTROM (fixed 128KB size) */
         switch (region_code)
         {

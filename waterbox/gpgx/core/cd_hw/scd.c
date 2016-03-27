@@ -1072,6 +1072,12 @@ void scd_init(void)
 {
   int i;
 
+  scd.prg_ram = malloc(0x80000);
+  scd.word_ram[0] = malloc(0x20000);
+  scd.word_ram[1] = malloc(0x20000);
+  scd.word_ram_2M = malloc(0x40000);
+  scd.bram = malloc(0x2000);
+
   /****************************************************************/
   /*  MAIN-CPU low memory map ($000000-$7FFFFF)                   */
   /****************************************************************/
@@ -1181,10 +1187,11 @@ void scd_init(void)
   gfx_init();
 
   /* Clear RAM */
-  memset(scd.prg_ram, 0x00, sizeof(scd.prg_ram));
-  memset(scd.word_ram, 0x00, sizeof(scd.word_ram));
-  memset(scd.word_ram_2M, 0x00, sizeof(scd.word_ram_2M));
-  memset(scd.bram, 0x00, sizeof(scd.bram));
+  memset(scd.prg_ram, 0x00, 0x80000);
+  memset(scd.word_ram[0], 0x00, 0x20000);
+  memset(scd.word_ram[1], 0x00, 0x20000);
+  memset(scd.word_ram_2M, 0x00, 0x40000);
+  memset(scd.bram, 0x00, 0x2000);
 }
 
 void scd_reset(int hard)

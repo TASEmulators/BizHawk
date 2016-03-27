@@ -61,10 +61,10 @@ typedef struct
 {
   cd_cart_t cartridge;        /* ROM/RAM Cartridge */
   uint8 *bootrom;     /* 128K internal BOOT ROM */
-  uint8 prg_ram[0x80000];     /* 512K PRG-RAM */
-  uint8 word_ram[2][0x20000]; /* 2 x 128K Word RAM (1M mode) */
-  uint8 word_ram_2M[0x40000]; /* 256K Word RAM (2M mode) */
-  uint8 bram[0x2000];         /* 8K Backup RAM */
+  uint8 *prg_ram;     /* 512K PRG-RAM */
+  uint8 *word_ram[2]; /* 2 x 128K Word RAM (1M mode) */
+  uint8 *word_ram_2M; /* 256K Word RAM (2M mode) */
+  uint8 *bram;         /* 8K Backup RAM */
   reg16_t regs[0x100];        /* 256 x 16-bit ASIC registers */
   uint32 cycles;              /* Master clock counter */
   int32 stopwatch;            /* Stopwatch counter */
