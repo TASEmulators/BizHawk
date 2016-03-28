@@ -373,11 +373,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer RenderVideoProvider(IVideoProvider videoProvider)
 		{
+			//TODO - we might need to gather more Global.Config.DispXXX properties here, so they can be overridden
+			var targetSize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight);
+			var padding = CalculateCompleteContentPadding(true,true);
+			targetSize.Width += padding.Horizontal;
+			targetSize.Height += padding.Vertical;
+
 			var job = new JobInfo
 			{
 				videoProvider = videoProvider,
 				simulate = false,
-				chain_outsize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight),
+				chain_outsize = targetSize,
 				offscreen = true,
 				includeOSD = false
 			};
@@ -385,6 +391,9 @@ namespace BizHawk.Client.EmuHawk
 			return job.offscreenBB;
 		}
 
+		/// <summary>
+		/// Does the entire display process to an offscreen buffer, suitable for a 'client' screenshot.
+		/// </summary>
 		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider, bool includeOSD)
 		{
 			var job = new JobInfo
@@ -588,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
 			//no drawing actually happens. it's important not to begin drawing on a control
-			if (!job.simulate)
+			if (!job.simulate && !job.offscreen)
 			{
 				GlobalWin.GLManager.Activate(CR_GraphicsControl);
 			}
