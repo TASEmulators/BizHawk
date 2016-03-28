@@ -306,6 +306,9 @@ extern char _PDCLIB_Xdigits[];
 /* -------------------------------------------------------------------------- */
 
 #if _PDCLIB_C_VERSION >= 2011
+#ifdef __cplusplus
+#define _Static_assert static_assert
+#endif
 _Static_assert( sizeof( short ) == _PDCLIB_SHRT_BYTES, "_PDCLIB_SHRT_BYTES incorrectly defined, check _PDCLIB_config.h" );
 _Static_assert( sizeof( int ) == _PDCLIB_INT_BYTES, "_PDCLIB_INT_BYTES incorrectly defined, check _PDCLIB_config.h" );
 _Static_assert( sizeof( long ) == _PDCLIB_LONG_BYTES, "_PDCLIB_LONG_BYTES incorrectly defined, check _PDCLIB_config.h" );
@@ -365,7 +368,7 @@ typedef struct lconv              _PDCLIB_lconv_t;
 _PDCLIB_size_t _PDCLIB_mb_cur_max( void );
 
 /* wide-character EOF */
-#define _PDCLIB_WEOF ((wint_t) -1
+#define _PDCLIB_WEOF ((wint_t) -1)
 
 /* -------------------------------------------------------------------------- */
 /* stdio                                                                      */

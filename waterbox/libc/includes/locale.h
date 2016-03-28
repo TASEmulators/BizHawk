@@ -78,6 +78,9 @@ struct lconv
 /* Time formats (strftime(), wcsftime()) */
 #define LC_TIME     4
 
+/* not supported! */
+#define LC_MESSAGES 5
+
 /* The category parameter can be any of the LC_* macros to specify if the call
    to setlocale() shall affect the entire locale or only a portion thereof.
    The category locale specifies which locale should be switched to, with "C"
@@ -99,8 +102,9 @@ struct lconv * localeconv( void ) _PDCLIB_nothrow;
 #define LC_MONETARY_MASK (1 << LC_MONETARY)
 #define LC_NUMERIC_MASK  (1 << LC_NUMERIC)
 #define LC_TIME_MASK     (1 << LC_TIME)
+#define LC_MESSAGES_MASK (1 << LC_MESSAGES)
 #define LC_ALL_MASK      (LC_COLLATE_MASK | LC_CTYPE_MASK | LC_MONETARY_MASK | \
-                          LC_NUMERIC_MASK | LC_TIME_MASK)
+                          LC_NUMERIC_MASK | LC_TIME_MASK | LC_MESSAGES_MASK)
 
 
 /* POSIX locale type */

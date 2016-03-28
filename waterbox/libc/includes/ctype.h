@@ -93,6 +93,9 @@ int tolower( int c ) _PDCLIB_nothrow;
 */
 int toupper( int c ) _PDCLIB_nothrow;
 
+/* returns true for c in [0, 127] */
+int isascii(int c) _PDCLIB_nothrow;
+
 #ifdef __cplusplus
 }
 #endif

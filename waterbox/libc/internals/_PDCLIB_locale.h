@@ -16,6 +16,7 @@
 
 #define _PDCLIB_LOCALE_METHOD_TSS           't'
 #define _PDCLIB_LOCALE_METHOD_THREAD_LOCAL  'T'
+#define _PDCLIB_LOCALE_METHOD_FAKE 'F'
 
 #if !defined(_PDCLIB_LOCALE_METHOD)
     /* If undefined, no POSIX per thread locales */
@@ -49,6 +50,20 @@
     static inline void _PDCLIB_setthreadlocale( locale_t l )
     {
         _PDCLIB_locale_tls = l;
+    }
+#elif _PDCLIB_LOCALE_METHOD == _PDCLIB_LOCALE_METHOD_FAKE
+	extern locale_t _PDCLIB_locale_fake;
+    static inline locale_t _PDCLIB_threadlocale( void )
+    {
+        locale_t l = _PDCLIB_locale_fake;
+        if(l == NULL)
+            l = &_PDCLIB_global_locale;
+        return l;
+    }
+
+    static inline void _PDCLIB_setthreadlocale( locale_t l )
+    {
+        _PDCLIB_locale_fake = l;
     }
 #else
     #error Locale TSS method unspecified
