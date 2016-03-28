@@ -288,7 +288,7 @@ namespace BizHawk.Client.EmuHawk.Filters
 			}
 			ContentSize = new Size(LL.vw,LL.vh);
 
-			if (InputSize == ContentSize)
+			if (InputSize == OutputSize) //any reason we need to check vx and vy?
 				IsNOP = true;
 		}
 
