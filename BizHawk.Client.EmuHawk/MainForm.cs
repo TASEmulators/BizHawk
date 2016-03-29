@@ -2181,7 +2181,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 100;
 			}
 
-			GlobalWin.Sound.ApplyVolumeSettings();
+			//GlobalWin.Sound.ApplyVolumeSettings();
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
@@ -2193,7 +2193,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.SoundVolume = 0;
 			}
 
-			GlobalWin.Sound.ApplyVolumeSettings();
+			//GlobalWin.Sound.ApplyVolumeSettings();
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
@@ -2731,7 +2731,10 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			var genSound = false;
+			float atten = Global.Config.SoundVolume / 100.0f;
+			if (!Global.Config.SoundEnabledNormal)
+				atten = 0;
+
 			var coreskipaudio = false;
 			if (runFrame || force)
 			{
@@ -2806,11 +2809,18 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!_runloopFrameadvance)
 				{
-					genSound = true;
+					
 				}
 				else if (!Global.Config.MuteFrameAdvance)
 				{
-					genSound = true;
+					atten = 0;
+				}
+
+				if (isFastForwarding || IsTurboing || isRewinding)
+				{
+					atten *= Global.Config.SoundVolumeRWFF / 100.0f;
+					if (!Global.Config.SoundEnabledRWFF)
+						atten = 0;
 				}
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
@@ -2883,8 +2893,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateFrame = false;
 			}
 
-			bool outputSilence = !genSound || coreskipaudio;
-			GlobalWin.Sound.UpdateSound(outputSilence);
+			GlobalWin.Sound.UpdateSound(atten);
 		}
 
 		#endregion
