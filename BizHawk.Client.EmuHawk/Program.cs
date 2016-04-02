@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			Application.SetCompatibleTextRenderingDefault(false);
 
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
-		
+
 			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
 			Global.Config = ConfigService.Load<Config>(iniPath);
 			Global.Config.ResolveDefaults();
@@ -124,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//create IGL context. we do this whether or not the user has selected OpenGL, so that we can run opengl-based emulator cores
-			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(2,0,false);
+			GlobalWin.IGL_GL = new Bizware.BizwareGL.Drivers.OpenTK.IGL_TK(2, 0, false);
 
 			//setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			GLManager.CreateInstance(GlobalWin.IGL_GL);
@@ -148,6 +148,27 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 					goto REDO_DISPMETHOD;
 				}
+			}
+
+			//try creating a GUI Renderer. If that doesn't succeed. we fallback
+			//TODO - need a factory for the GUI Renderer, I hate pasting this code
+			try
+			{
+				BizHawk.Bizware.BizwareGL.IGuiRenderer Renderer;
+				if (GlobalWin.GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
+					Renderer = new BizHawk.Bizware.BizwareGL.GuiRenderer(GlobalWin.GL);
+				else if (GlobalWin.GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
+					Renderer = new BizHawk.Bizware.BizwareGL.GuiRenderer(GlobalWin.GL);
+				else
+					Renderer = new BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GlobalWin.GL);
+			}
+			catch(Exception ex)
+			{
+				var e2 = new Exception("Initialization of Display Method failed; falling back to GDI+", ex);
+				new ExceptionBox(e2).ShowDialog();
+				//fallback
+				Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+				goto REDO_DISPMETHOD;
 			}
 
 			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
