@@ -1,5 +1,5 @@
-set OUTFILE=BizHawk-Github-Release.zip
-set WORKDIR=.build-github-release
+set OUTFILE=BizHawk-Github-Master.zip
+set WORKDIR=.build-github-master
 
 set PATH=%PATH%;C:\Program Files (x86)\git\bin;C:\Program Files\git\bin
 
@@ -12,7 +12,7 @@ mkdir %WORKDIR%
 
 rem http://stackoverflow.com/questions/13750182/git-how-to-archive-from-remote-repository-directly
 cd %WORKDIR%
-git clone --depth=1 --single-branch --branch Release http://github.com/TASVideos/BizHawk.git .
+git clone --depth=1 --single-branch --branch master http://github.com/TASVideos/BizHawk.git .
 
 rem use updated build scripts
 copy /y ..\BuildAndPackage_Release.bat dist
