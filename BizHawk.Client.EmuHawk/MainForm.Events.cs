@@ -52,7 +52,6 @@ namespace BizHawk.Client.EmuHawk
 			if (SaveRAMSubMenu.Font.Bold != needBold)
 			{
 				var font = new System.Drawing.Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
-				SaveRAMSubMenu.Font.Dispose();
 				SaveRAMSubMenu.Font = font;
 			}
 		}
