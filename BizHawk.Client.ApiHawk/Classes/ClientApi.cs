@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
@@ -20,7 +20,9 @@ namespace BizHawk.Client.ApiHawk
 		#region Fields
 
 		private static readonly Assembly clientAssembly;
-		private static readonly object clientMainForm;
+		private static readonly object clientMainFormInstance;
+		private static readonly Type mainFormClass;
+
 		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 		internal static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
 
@@ -32,10 +34,14 @@ namespace BizHawk.Client.ApiHawk
 
 		#region cTor(s)
 
+		/// <summary>
+		/// Static stuff initilization
+		/// </summary>
 		static ClientApi()
 		{
 			clientAssembly = Assembly.GetEntryAssembly();
-			clientMainForm = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("MainForm").GetValue(null);
+			clientMainFormInstance = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("MainForm").GetValue(null);
+			mainFormClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
 		}
 
 		#endregion
@@ -48,9 +54,14 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		public static void DoFrameAdvance()
 		{
-			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
-			MethodInfo method = reflectClass.GetMethod("FrameAdvance");
-			method.Invoke(clientMainForm, null);
+			MethodInfo method = mainFormClass.GetMethod("FrameAdvance");
+			method.Invoke(clientMainFormInstance, null);
+
+			method = mainFormClass.GetMethod("StepRunLoop_Throttle", BindingFlags.NonPublic | BindingFlags.Instance);
+			method.Invoke(clientMainFormInstance, null);
+
+			method = mainFormClass.GetMethod("Render", BindingFlags.NonPublic | BindingFlags.Instance);
+			method.Invoke(clientMainFormInstance, null);
 		}
 
 		/// <summary>
@@ -59,11 +70,8 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		public static void DoFrameAdvanceAndUnpause()
 		{
-			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
-			MethodInfo method = reflectClass.GetMethod("FrameAdvance");
-			method.Invoke(clientMainForm, null);
-			method = reflectClass.GetMethod("UnpauseEmulator");
-			method.Invoke(clientMainForm, null);
+			DoFrameAdvance();
+			UnpauseEmulation();
 		}
 
 		/// <summary>
@@ -115,6 +123,13 @@ namespace BizHawk.Client.ApiHawk
 			Type emuLuaLib = clientAssembly.GetType("BizHawk.Client.EmuHawk.EmuHawkLuaLibrary");
 			MethodInfo paddingMethod = emuLuaLib.GetMethod("SetClientExtraPadding");
 			paddingMethod.Invoke(paddingMethod, new object[] { left, top, right, bottom });
+
+			/*FieldInfo f = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager").FieldType.GetField("ClientExtraPadding");
+			f.SetValue(clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager"), new System.Windows.Forms.Padding(left, top, right, bottom));
+			MethodInfo resize = mainFormClass.GetMethod("FrameBufferResized");
+			resize.Invoke(clientMainFormInstance, null);*/
+			/*GlobalWin.DisplayManager.ClientExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
+			GlobalWin.MainForm.FrameBufferResized();*/
 		}
 
 		/// <summary>
@@ -162,18 +177,23 @@ namespace BizHawk.Client.ApiHawk
 			}
 			else
 			{
-				allJoypads[player - 1] = joypad;				
-				Parallel.ForEach<JoypadButton>((IEnumerable<JoypadButton>)Enum.GetValues(typeof(JoypadButton)), button =>
+				if (joypad.Inputs == 0)
 				{
-					if (joypad.Inputs.HasFlag(button))
-					{
-						//joypadAdaptor[string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem))] = true;
-						//joypadAdaptor.S
-						Global.LuaAndAdaptor.SetButton(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
-						Global.ActiveController.Overrides(Global.LuaAndAdaptor);
-					}
+					AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
+					joypadAdaptor.ClearStickies();
 				}
-				);
+				else
+				{
+					Parallel.ForEach<JoypadButton>((IEnumerable<JoypadButton>)Enum.GetValues(typeof(JoypadButton)), button =>
+					{
+						if (joypad.Inputs.HasFlag(button))
+						{
+							AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
+							joypadAdaptor.SetSticky(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
+						}
+					}
+					);
+				}
 			}
 		}
 
@@ -182,10 +202,9 @@ namespace BizHawk.Client.ApiHawk
 		/// Resume the emulation
 		/// </summary>
 		public static void UnpauseEmulation()
-		{
-			Type reflectClass = clientAssembly.GetType("BizHawk.Client.EmuHawk.MainForm");
-			MethodInfo method = reflectClass.GetMethod("UnpauseEmulator");
-			method.Invoke(clientMainForm, null);
+		{			
+			MethodInfo method = mainFormClass.GetMethod("UnpauseEmulator");
+			method.Invoke(clientMainFormInstance, null);
 		}
 		#endregion Public
 
