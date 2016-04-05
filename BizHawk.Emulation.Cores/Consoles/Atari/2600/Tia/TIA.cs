@@ -273,6 +273,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private int test_count_m0;
         private int test_count_m1;
         private int test_count_b;
+        private bool do_ticks = false;
         private byte _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
@@ -413,6 +414,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             // TODO: Remove this magic number (17). It depends on the HMOVE
             if ((_hsyncCnt / 4) >= (_hmove.LateHBlankReset ? 19 : 17))
             {
+                do_ticks = false;
+                
                 // TODO: Remove this magic number
                 if ((_hsyncCnt / 4) >= 37)
                 {
@@ -559,9 +562,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         throw new Exception(); // TODO
                     _scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
                 }
-            }
-            else
+            } else
             {
+                do_ticks = true;
+            }
+            
 
 
 
@@ -619,8 +624,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Player0Cnt) ^ ((_player0.HM & 0x07) | ((~(_player0.HM & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks==true)
+                                {
                                     _player0.Tick();
+                                }
+                                
 
                                     // Increase by 1, max of 15
 
@@ -650,9 +659,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Missile0Cnt) ^ ((_player0.Missile.Hm & 0x07) | ((~(_player0.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _player0.Missile.Tick();
-
+                                }
                                     // Increase by 1, max of 15
 
 
@@ -679,9 +690,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Player1Cnt) ^ ((_player1.HM & 0x07) | ((~(_player1.HM & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _player1.Tick();
-
+                                }
                                     // Increase by 1, max of 15
                                     test_count_p1++;
                                     if (test_count_p1 < 16)
@@ -705,9 +718,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Missile1Cnt) ^ ((_player1.Missile.Hm & 0x07) | ((~(_player1.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _player1.Missile.Tick();
-
+                                }
                                     // Increase by 1, max of 15
                                     test_count_m1++;
                                     if (test_count_m1 < 16)
@@ -731,9 +746,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.BallCnt) ^ ((_ball.HM & 0x07) | ((~(_ball.HM & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _ball.Tick();
-
+                                }
                                     // Increase by 1, max of 15
                                     test_count_b++;
                                     if (test_count_b < 16)
@@ -776,7 +793,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         _hmove.DecCntEnabled = true;
                     }
                 }
-            }
+            
 
 			// Increment the hsync counter
 			_hsyncCnt++;
