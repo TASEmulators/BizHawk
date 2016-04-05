@@ -321,6 +321,69 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	}
 
 	/// <summary>
+	/// a SNES controller plugged into a NES? heresy
+	/// </summary>
+	public class ControllerSNES : INesPort
+	{
+		bool resetting = false;
+		int latchedvalue = 0;
+
+		static readonly string[] Buttons =
+		{
+			"0B", "0Y", "0Select", "0Start", "0Up", "0Down", "0Left", "0Right",
+			"0A", "0X", "0L", "0R", null, null, null, null // 4 0s at end
+		};
+
+		ControllerDefinition Definition;
+
+		public ControllerSNES()
+		{
+			Definition = new ControllerDefinition
+			{
+				BoolButtons = Buttons.Where(s => s != null).ToList()
+			};
+		}
+
+		// reset is not edge triggered; so long as it's high, the latch is continuously reloading
+		// so we need to latch in two places:
+		// 1. when OUT0 goes low, to get the last set
+		// 2. wheneven reading with OUT0 high, since new data for controller is always loading
+
+		void Latch(IController c)
+		{
+			latchedvalue = SerialUtil.Latch(Buttons, c);
+		}
+
+		public void Strobe(StrobeInfo s, IController c)
+		{
+			resetting = s.OUT0 != 0;
+			if (s.OUT0 < s.OUT0old)
+				Latch(c);
+		}
+
+		public byte Read(IController c)
+		{
+			if (resetting)
+				Latch(c);
+			byte ret = (byte)(latchedvalue & 1);
+			if (!resetting)
+				latchedvalue >>= 1; // ASR not LSR, so endless stream of 1s after data
+			return ret;
+		}
+
+		public ControllerDefinition GetDefinition()
+		{
+			return Definition;
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.Sync("restting", ref resetting);
+			ser.Sync("latchedvalue", ref latchedvalue);
+		}
+	}
+
+	/// <summary>
 	/// vaus paddle, the NES (not famicom) version
 	/// </summary>
 	public class ArkanoidNES : INesPort
