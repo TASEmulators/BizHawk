@@ -268,7 +268,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private int[] _palette;
 
-		private byte _hsyncCnt;
+        private int test_count_p0;
+        private int test_count_p1;
+        private int test_count_m0;
+        private int test_count_m1;
+        private int test_count_b;
+        private byte _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
 		private bool _vblankEnabled;
@@ -564,31 +569,44 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// On the first time, set the latches and counters
 				if (_hmove.HMoveJustStarted)
 				{
-					_hmove.Player0Latch = true;
-					_hmove.Player0Cnt = 0;
+                 
 
-					_hmove.Missile0Latch = true;
-					_hmove.Missile0Cnt = 0;
+                        _hmove.Player0Latch = true;
+                        _hmove.Player0Cnt = 0;
+                        test_count_p0 = 0;
+                        test_count_p1 = 0;
+                        test_count_m0 = 0;
+                        test_count_m1 = 0;
+                        test_count_b = 0;
 
-					_hmove.Player1Latch = true;
-					_hmove.Player1Cnt = 0;
 
-					_hmove.Missile1Latch = true;
-					_hmove.Missile1Cnt = 0;
+                        _hmove.Missile0Latch = true;
+                        _hmove.Missile0Cnt = 0;
 
-					_hmove.BallLatch = true;
-					_hmove.BallCnt = 0;
+                        _hmove.Player1Latch = true;
+                        _hmove.Player1Cnt = 0;
 
-					_hmove.HMoveCnt = 0;
+                        _hmove.Missile1Latch = true;
+                        _hmove.Missile1Cnt = 0;
 
-					_hmove.HMoveJustStarted = false;
-					_hmove.LateHBlankReset = true;
-					_hmove.DecCntEnabled = false;
+                        _hmove.BallLatch = true;
+                        _hmove.BallCnt = 0;
+
+                        _hmove.HMoveCnt = 0;
+
+                        _hmove.HMoveJustStarted = false;
+                        _hmove.LateHBlankReset = true;
+                        _hmove.DecCntEnabled = false;
+                
 				}
 
 				if (_hmove.DecCntEnabled)
 				{
-					// Actually do stuff only evey 4 pulses
+					
+                    // clock 
+                    
+                    
+                    // Actually do stuff only evey 4 pulses
 					if (_hmove.HMoveCnt == 0)
 					{
 						// If the latch is still set
@@ -601,8 +619,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 								_player0.Tick();
 
 								// Increase by 1, max of 15
-								_hmove.Player0Cnt++;
-								_hmove.Player0Cnt %= 16;
+								
+                                test_count_p0++;
+                                if (test_count_p0<16)
+                                {
+                                    _hmove.Player0Cnt++;
+                                } else
+                                {
+                                    _hmove.Player0Cnt = 0;
+                                }
+                                
+								//_hmove.Player0Cnt %= 16;
 							}
 							else
 							{
@@ -622,8 +649,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 								_player0.Missile.Tick();
 
 								// Increase by 1, max of 15
-								_hmove.Missile0Cnt++;
-								_hmove.Missile0Cnt %= 16;
+								
+
+                                test_count_m0++;
+                                if (test_count_m0 < 16)
+                                {
+                                    _hmove.Missile0Cnt++;
+                                }
+                                else
+                                {
+                                    _hmove.Missile0Cnt=0;
+                                }
+                                //_hmove.Missile0Cnt %= 16;
 							}
 							else
 							{
@@ -640,9 +677,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 								// "Clock-Stuffing"
 								_player1.Tick();
 
-								// Increase by 1, max of 15
-								_hmove.Player1Cnt++;
-								_hmove.Player1Cnt %= 16;
+                                // Increase by 1, max of 15
+                                test_count_p1++;
+                                if (test_count_p1 < 16)
+                                {
+                                    _hmove.Player1Cnt++;
+                                }
+                                else
+                                {
+                                    _hmove.Player1Cnt = 0;
+                                }
+                                //_hmove.Player1Cnt %= 16;
 							}
 							else
 							{
@@ -658,9 +703,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 								// "Clock-Stuffing"
 								_player1.Missile.Tick();
 
-								// Increase by 1, max of 15
-								_hmove.Missile1Cnt++;
-								_hmove.Missile1Cnt %= 16;
+                                // Increase by 1, max of 15
+                                test_count_m1++;
+                                if (test_count_m1 < 16)
+                                {
+                                    _hmove.Missile1Cnt++;
+                                }
+                                else
+                                {
+                                    _hmove.Missile1Cnt = 0;
+                                }
+                               // _hmove.Missile1Cnt %= 16;
 							}
 							else
 							{
@@ -676,9 +729,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 								// "Clock-Stuffing"
 								_ball.Tick();
 
-								// Increase by 1, max of 15
-								_hmove.BallCnt++;
-								_hmove.BallCnt %= 16;
+                                // Increase by 1, max of 15
+                                test_count_b++;
+                                if (test_count_b < 16)
+                                {
+                                    _hmove.BallCnt++;
+                                }
+                                else
+                                {
+                                    _hmove.BallCnt = 0;
+                                }
+                                //_hmove.BallCnt %= 16;
 							}
 							else
 							{
@@ -698,12 +759,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_hmove.HMoveCnt %= 4;
 				}
 
-				if (_hmove.HMoveDelayCnt < 6)
+				if (_hmove.HMoveDelayCnt < 5)
 				{
 					_hmove.HMoveDelayCnt++;
 				}
 
-				if (_hmove.HMoveDelayCnt == 6)
+				if (_hmove.HMoveDelayCnt == 5)
 				{
 					_hmove.HMoveDelayCnt++;
 					_hmove.HMoveCnt = 0;
@@ -921,20 +982,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (_hsyncCnt < 69)
 				{
 					_player0.HPosCnt = 0;
-					_player0.ResetCnt = 0;
+					_player0.ResetCnt = 2;
 					_player0.Reset = true;
 				}
 				else if (_hsyncCnt == 69)
 				{
-					_player0.ResetCnt = 3;
+					_player0.ResetCnt = 0;
 				}
 				else if (_hsyncCnt == 72)
 				{
-					_player0.ResetCnt = 2;
+					_player0.ResetCnt = 0;
 				}
 				else if (_hsyncCnt == 75)
 				{
-					_player0.ResetCnt = 1;
+					_player0.ResetCnt = 0;
 				}
 				else
 				{
@@ -948,20 +1009,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (_hsyncCnt < 69)
 				{
 					_player1.HPosCnt = 0;
-					_player1.ResetCnt = 0;
+					_player1.ResetCnt = 2;
 					_player1.Reset = true;
 				}
 				else if (_hsyncCnt == 69)
 				{
-					_player1.ResetCnt = 3;
+					_player1.ResetCnt = 0;
 				}
 				else if (_hsyncCnt == 72)
 				{
-					_player1.ResetCnt = 2;
+					_player1.ResetCnt = 0;
 				}
 				else if (_hsyncCnt == 75)
 				{
-					_player1.ResetCnt = 1;
+					_player1.ResetCnt = 0;
 				}
 				else
 				{
@@ -1019,12 +1080,37 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x1D) // ENAM0
 			{
-				_player0.Missile.Enabled = (value & 0x02) != 0;
-			}
+                if (_player0.Missile.Enabled)
+                {
+                    if (((value & 0x02) == 0))
+                    {
+                        _player0.Missile.Delay2 = 1;
+                    }
+                }
+
+                _player0.Missile.Enabled = (value & 0x02) != 0;
+                if (_player0.Missile.Enabled)
+                {
+                    _player0.Missile.Delay = 1;
+                }
+            }
 			else if (maskedAddr == 0x1E) // ENAM1
 			{
-				_player1.Missile.Enabled = (value & 0x02) != 0;
-			}
+                if (_player1.Missile.Enabled)
+                {
+                    if (((value & 0x02) == 0))
+                    {
+                        _player1.Missile.Delay2 = 1;
+                    }
+                }
+
+                _player1.Missile.Enabled = (value & 0x02) != 0;
+                if (_player1.Missile.Enabled)
+                {
+                    _player1.Missile.Delay = 1;
+                } 
+                
+            }
 			else if (maskedAddr == 0x1F) // ENABL
 			{
 				_ball.Enabled = (value & 0x02) != 0;
