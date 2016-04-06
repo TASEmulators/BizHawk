@@ -12,6 +12,8 @@ namespace BizHawk.Client.ApiHawk
 
 		private SystemInfo _System;
 		private JoypadButton _PressedButtons;
+		private float _AnalogX;
+		private float _AnalogY;
 		private int _Player;
 
 		#endregion
@@ -71,6 +73,38 @@ namespace BizHawk.Client.ApiHawk
 
 
 		#region Properties
+
+		/// <summary>
+		/// Gets or sets X value for Analog stick
+		/// </summary>
+		/// <remarks>The value you get will aways be rounded to 0 decimal</remarks>
+		public float AnalogX
+		{
+			get
+			{
+				return (float)Math.Round(_AnalogX, 0);
+			}
+			set
+			{
+				_AnalogX = value;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets Y value for Analog stick
+		/// </summary>
+		/// <remarks>The value you get will aways be rounded to 0 decimal</remarks>
+		public float AnalogY
+		{
+			get
+			{
+				return (float)Math.Round(_AnalogY, 0);
+			}
+			set
+			{
+				_AnalogY = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets inputs

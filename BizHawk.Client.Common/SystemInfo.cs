@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 			allSystemInfos.Add(new SystemInfo("Commodore 64", CoreSystem.Commodore64, 1));
 			allSystemInfos.Add(new SystemInfo("ColecoVision", CoreSystem.ColecoVision, 1));
 			allSystemInfos.Add(new SystemInfo("Gameboy Advance", CoreSystem.GameBoyAdvance, 1, StandardButtons | JoypadButton.L | JoypadButton.R));
-			allSystemInfos.Add(new SystemInfo("Nintendo 64", CoreSystem.Nintendo64, 4, StandardButtons ^ JoypadButton.Select | JoypadButton.Z | JoypadButton.CUp | JoypadButton.CDown | JoypadButton.CLeft | JoypadButton.CRight | JoypadButton.AnalogStick));
+			allSystemInfos.Add(new SystemInfo("Nintendo 64", CoreSystem.Nintendo64, 4, StandardButtons ^ JoypadButton.Select | JoypadButton.Z | JoypadButton.CUp | JoypadButton.CDown | JoypadButton.CLeft | JoypadButton.CRight | JoypadButton.AnalogStick | JoypadButton.L | JoypadButton.R));
 			allSystemInfos.Add(new SystemInfo("Saturn", CoreSystem.Saturn, 2, UpDownLeftRight | JoypadButton.A | JoypadButton.B | JoypadButton.C | JoypadButton.X | JoypadButton.Y | JoypadButton.Z));
 			allSystemInfos.Add(new SystemInfo("Game Boy Link", CoreSystem.DualGameBoy, 2, StandardButtons));
 			allSystemInfos.Add(new SystemInfo("WonderSwan", CoreSystem.WonderSwan, 1));
