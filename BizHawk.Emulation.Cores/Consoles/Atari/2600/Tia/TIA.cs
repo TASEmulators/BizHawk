@@ -412,7 +412,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
             // ---- Things that happen only in the drawing section ----
             // TODO: Remove this magic number (17). It depends on the HMOVE
-            if ((_hsyncCnt / 4) >= (_hmove.LateHBlankReset ? 19 : 17))
+            if ((_hsyncCnt) >= (_hmove.LateHBlankReset ? 76 : 68))
             {
                 do_ticks = false;
                 
@@ -531,16 +531,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     }
                 }
 
-                if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                if (_playField.Score && !_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
                 {
-                    if (_playField.Score)
-                    {
-                        pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
-                    }
-                    else
-                    {
-                        pixelColor = _palette[_playField.PfColor];
-                    }
+                    pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
+                }
+
+                    if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                {
+
+                    pixelColor = _palette[_playField.PfColor];
+
                 }
 
                 // Handle vblank
@@ -566,7 +566,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             {
                 do_ticks = true;
             }
-            
+
+            // if extended HBLank is active, the screen area still needs a color
+            if (_hsyncCnt >= 68 && _hsyncCnt < 76 && _hmove.LateHBlankReset)
+            {
+                int pixelColor = 0;
+
+                // Add the pixel to the scanline
+                // TODO: Remove this magic number (68)
+
+                int y = _CurrentScanLine;
+                // y >= max screen height means lag frame or game crashed, but is a legal situation.
+                // either way, there's nothing to display
+                if (y < MaxScreenHeight)
+                {
+                    int x = _hsyncCnt - 68;
+                    if (x < 0 || x > 159) // this can't happen, right?
+                        throw new Exception(); // TODO
+                    _scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
+                }
+            }
 
 
 
@@ -612,8 +631,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     if (_hmove.DecCntEnabled)
                     {
 
-                        // clock 
-
 
                         // Actually do stuff only evey 4 pulses
                         if (_hmove.HMoveCnt == 0)
@@ -653,9 +670,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
                             if (_hmove.Missile0Latch)
                             {
-                                if (_hmove.Missile0Cnt == 15)
-                                { }
-
+                               
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Missile0Cnt) ^ ((_player0.Missile.Hm & 0x07) | ((~(_player0.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
                                 {
@@ -681,7 +696,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 else
                                 {
                                     _hmove.Missile0Latch = false;
-                                    _hmove.Missile0Cnt = 0;
+                                    
                                 }
                             }
 
@@ -780,7 +795,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         _hmove.HMoveCnt++;
                         _hmove.HMoveCnt %= 4;
                     }
-
+                    // whether this is 5 or 6 needs to be investigated a bit further, but 5 seems to be correct
                     if (_hmove.HMoveDelayCnt < 5)
                     {
                         _hmove.HMoveDelayCnt++;
