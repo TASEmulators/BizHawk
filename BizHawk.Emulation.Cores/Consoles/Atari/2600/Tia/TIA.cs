@@ -273,6 +273,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private int test_count_m0;
         private int test_count_m1;
         private int test_count_b;
+
+        private byte pf0_update = 0;
+        private byte pf1_update = 0;
+        private byte pf2_update = 0;
+        private bool pf0_updater = false;
+        private bool pf1_updater = false;
+        private bool pf2_updater = false;
+        private byte pf0_delay_clock = 0;
+        private byte pf1_delay_clock = 0;
+        private byte pf2_delay_clock = 0;
+        private byte pf0_max_delay = 0;
+        private byte pf1_max_delay = 0;
+        private byte pf2_max_delay = 0;
+
         private bool do_ticks = false;
         private byte _hsyncCnt;
 		private int _capChargeStart;
@@ -401,8 +415,37 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			// Still ignoring cycles...
 
-			// Reset the RDY flag when we reach hblank
-			if (_hsyncCnt <= 0)
+            //delay latch to new playfield register
+            if (pf0_updater==true)
+            {
+                pf0_delay_clock++;
+                if (pf0_delay_clock > pf0_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(pf0_update, 8) & 0x0F) << 16));
+                    pf0_updater = false;
+                }
+            }
+            if (pf1_updater == true)
+            {
+                pf1_delay_clock++;
+                if (pf1_delay_clock > pf1_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (pf1_update << 8));
+                    pf1_updater = false;
+                }
+            }
+            if (pf2_updater == true)
+            {
+                pf2_delay_clock++;
+                if (pf2_delay_clock > pf2_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(pf2_update, 8));
+                    pf2_updater = false;
+                }
+            }
+
+            // Reset the RDY flag when we reach hblank
+            if (_hsyncCnt <= 0)
 			{
 				_core.Cpu.RDY = true;
 			}
@@ -795,7 +838,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         _hmove.HMoveCnt++;
                         _hmove.HMoveCnt %= 4;
                     }
-                    // whether this is 5 or 6 needs to be investigated a bit further, but 5 seems to be correct
+                   
                     if (_hmove.HMoveDelayCnt < 5)
                     {
                         _hmove.HMoveDelayCnt++;
@@ -980,7 +1023,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x08) // COLUPF
 			{
-				_playField.PfColor = (byte)(value & 0xFE);
+                _playField.PfColor = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x09) // COLUBK
 			{
@@ -1004,16 +1047,74 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
-			}
+                pf0_update = value;
+                pf0_updater = true;
+                pf0_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf0_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf0_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf0_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf0_max_delay = 3;
+                }
+
+                //_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
+            }
 			else if (maskedAddr == 0x0E) // PF1
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
-			}
+                pf1_update = value;
+                pf1_updater = true;
+                pf1_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf1_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf1_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf1_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf1_max_delay = 3;
+                }
+                //_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
+            }
 			else if (maskedAddr == 0x0F) // PF2
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
-			}
+                pf2_update = value;
+                pf2_updater = true;
+                pf2_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf2_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf2_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf2_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf2_max_delay = 3;
+                }
+                //_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
+            }
 			else if (maskedAddr == 0x10) // RESP0
 			{
 				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
