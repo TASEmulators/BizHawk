@@ -273,6 +273,34 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private int test_count_m0;
         private int test_count_m1;
         private int test_count_b;
+
+        private byte pf0_update = 0;
+        private byte pf1_update = 0;
+        private byte pf2_update = 0;
+        private bool pf0_updater = false;
+        private bool pf1_updater = false;
+        private bool pf2_updater = false;
+        private byte pf0_delay_clock = 0;
+        private byte pf1_delay_clock = 0;
+        private byte pf2_delay_clock = 0;
+        private byte pf0_max_delay = 0;
+        private byte pf1_max_delay = 0;
+        private byte pf2_max_delay = 0;
+
+        private int enam0_delay = 0;
+        private int enam1_delay = 0;
+        private int enamb_delay = 0;
+        private bool enam0_val = false;
+        private bool enam1_val = false;
+        private bool enamb_val = false;
+
+
+        private int prg0_delay = 0;
+        private int prg1_delay = 0;
+        private byte prg0_val = 0;
+        private byte prg1_val = 0;
+
+        private bool do_ticks = false;
         private byte _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
@@ -400,8 +428,100 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			// Still ignoring cycles...
 
-			// Reset the RDY flag when we reach hblank
-			if (_hsyncCnt <= 0)
+            //delay latch to new playfield register
+            if (pf0_updater==true)
+            {
+                pf0_delay_clock++;
+                if (pf0_delay_clock > pf0_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(pf0_update, 8) & 0x0F) << 16));
+                    pf0_updater = false;
+                }
+            }
+            if (pf1_updater == true)
+            {
+                pf1_delay_clock++;
+                if (pf1_delay_clock > pf1_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (pf1_update << 8));
+                    pf1_updater = false;
+                }
+            }
+            if (pf2_updater == true)
+            {
+                pf2_delay_clock++;
+                if (pf2_delay_clock > pf2_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(pf2_update, 8));
+                    pf2_updater = false;
+                }
+            }
+
+            //delay latch to missile enable
+            if (enam0_delay>0)
+            {
+                enam0_delay++;
+                if (enam0_delay==3)
+                {
+                    enam0_delay = 0;
+                    _player0.Missile.Enabled = enam0_val;
+                }
+                
+            }
+
+            if (enam1_delay > 0)
+            {
+                enam1_delay++;
+                if (enam1_delay == 3)
+                {
+                    enam1_delay = 0;
+                    _player1.Missile.Enabled = enam1_val;
+                }
+
+            }
+
+            // delay latch to ball enable
+            if (enamb_delay > 0)
+            {
+                enamb_delay++;
+                if (enamb_delay == 3)
+                {
+                    enamb_delay = 0;
+                    _ball.Enabled = enamb_val;
+                }
+
+            }
+
+            // delay latch to player graphics registers
+            if (prg0_delay > 0)
+            {
+                prg0_delay++;
+                if (prg0_delay == 3)
+                {
+                    prg0_delay = 0;
+                    _player0.Grp = prg0_val;
+                    _player1.Dgrp = _player1.Grp;
+                }
+
+            }
+
+            if (prg1_delay > 0)
+            {
+                prg1_delay++;
+                if (prg1_delay == 3)
+                {
+                    prg1_delay = 0;
+                    _player1.Grp = prg1_val;
+                    _player0.Dgrp = _player0.Grp;
+
+                    // TODO: Find a game that uses this functionality and test it
+                    _ball.Denabled = _ball.Enabled;
+                }
+
+            }
+
+            // Reset the RDY flag when we reach hblank
+            if (_hsyncCnt <= 0)
 			{
 				_core.Cpu.RDY = true;
 			}
@@ -411,8 +531,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
             // ---- Things that happen only in the drawing section ----
             // TODO: Remove this magic number (17). It depends on the HMOVE
-            if ((_hsyncCnt / 4) >= (_hmove.LateHBlankReset ? 19 : 17))
+            if ((_hsyncCnt) >= (_hmove.LateHBlankReset ? 76 : 68))
             {
+                do_ticks = false;
+                
                 // TODO: Remove this magic number
                 if ((_hsyncCnt / 4) >= 37)
                 {
@@ -528,16 +650,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     }
                 }
 
-                if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                if (_playField.Score && !_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
                 {
-                    if (_playField.Score)
-                    {
-                        pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
-                    }
-                    else
-                    {
-                        pixelColor = _palette[_playField.PfColor];
-                    }
+                    pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
+                }
+
+                    if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                {
+
+                    pixelColor = _palette[_playField.PfColor];
+
                 }
 
                 // Handle vblank
@@ -559,9 +681,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         throw new Exception(); // TODO
                     _scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
                 }
-            }
-            else
+            } else
             {
+                do_ticks = true;
+            }
+
+            // if extended HBLank is active, the screen area still needs a color
+            if (_hsyncCnt >= 68 && _hsyncCnt < 76 && _hmove.LateHBlankReset)
+            {
+                int pixelColor = 0;
+
+                // Add the pixel to the scanline
+                // TODO: Remove this magic number (68)
+
+                int y = _CurrentScanLine;
+                // y >= max screen height means lag frame or game crashed, but is a legal situation.
+                // either way, there's nothing to display
+                if (y < MaxScreenHeight)
+                {
+                    int x = _hsyncCnt - 68;
+                    if (x < 0 || x > 159) // this can't happen, right?
+                        throw new Exception(); // TODO
+                    _scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
+                }
+            }
 
 
 
@@ -607,8 +750,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     if (_hmove.DecCntEnabled)
                     {
 
-                        // clock 
-
 
                         // Actually do stuff only evey 4 pulses
                         if (_hmove.HMoveCnt == 0)
@@ -619,8 +760,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Player0Cnt) ^ ((_player0.HM & 0x07) | ((~(_player0.HM & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks==true)
+                                {
                                     _player0.Tick();
+                                }
+                                
 
                                     // Increase by 1, max of 15
 
@@ -644,15 +789,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
                             if (_hmove.Missile0Latch)
                             {
-                                if (_hmove.Missile0Cnt == 15)
-                                { }
-
+                               
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Missile0Cnt) ^ ((_player0.Missile.Hm & 0x07) | ((~(_player0.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _player0.Missile.Tick();
-
+                                }
                                     // Increase by 1, max of 15
 
 
@@ -670,7 +815,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 else
                                 {
                                     _hmove.Missile0Latch = false;
-                                    _hmove.Missile0Cnt = 0;
+                                    
                                 }
                             }
 
@@ -679,9 +824,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Player1Cnt) ^ ((_player1.HM & 0x07) | ((~(_player1.HM & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _player1.Tick();
-
+                                }
                                     // Increase by 1, max of 15
                                     test_count_p1++;
                                     if (test_count_p1 < 16)
@@ -705,9 +852,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.Missile1Cnt) ^ ((_player1.Missile.Hm & 0x07) | ((~(_player1.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _player1.Missile.Tick();
-
+                                }
                                     // Increase by 1, max of 15
                                     test_count_m1++;
                                     if (test_count_m1 < 16)
@@ -731,9 +880,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                                 // If the move counter still has a bit in common with the HM register
                                 if (((15 - _hmove.BallCnt) ^ ((_ball.HM & 0x07) | ((~(_ball.HM & 0x08)) & 0x08))) != 0x0F)
                                 {
-                                    // "Clock-Stuffing"
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
                                     _ball.Tick();
-
+                                }
                                     // Increase by 1, max of 15
                                     test_count_b++;
                                     if (test_count_b < 16)
@@ -763,7 +914,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         _hmove.HMoveCnt++;
                         _hmove.HMoveCnt %= 4;
                     }
-
+                   
                     if (_hmove.HMoveDelayCnt < 5)
                     {
                         _hmove.HMoveDelayCnt++;
@@ -776,7 +927,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                         _hmove.DecCntEnabled = true;
                     }
                 }
-            }
+            
 
 			// Increment the hsync counter
 			_hsyncCnt++;
@@ -948,7 +1099,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x08) // COLUPF
 			{
-				_playField.PfColor = (byte)(value & 0xFE);
+                _playField.PfColor = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x09) // COLUBK
 			{
@@ -972,80 +1123,166 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
-			}
+                pf0_update = value;
+                pf0_updater = true;
+                pf0_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf0_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf0_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf0_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf0_max_delay = 3;
+                }
+
+                //_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
+            }
 			else if (maskedAddr == 0x0E) // PF1
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
-			}
+                pf1_update = value;
+                pf1_updater = true;
+                pf1_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf1_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf1_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf1_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf1_max_delay = 3;
+                }
+                //_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
+            }
 			else if (maskedAddr == 0x0F) // PF2
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
-			}
+                pf2_update = value;
+                pf2_updater = true;
+                pf2_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf2_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf2_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf2_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf2_max_delay = 3;
+                }
+                //_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
+            }
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
-				if (_hsyncCnt < 69)
-				{
-					_player0.HPosCnt = 0;
-					_player0.ResetCnt = 2;
-					_player0.Reset = true;
-				}
-				else if (_hsyncCnt == 69)
-				{
-					_player0.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 72)
-				{
-					_player0.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 75)
-				{
-					_player0.ResetCnt = 0;
-				}
-				else
-				{
-					_player0.ResetCnt = 0;
-				}
-			}
+                // Resp depends on HMOVE
+                if (!_hmove.LateHBlankReset)
+                {
+                    if (_hsyncCnt < 69)
+                    {
+                        _player0.HPosCnt = 0;
+                        _player0.ResetCnt = 2;
+                        _player0.Reset = true;
+                    }
+                    else
+                    {
+                        _player0.ResetCnt = 0;
+                    }
+                }
+                else
+                {
+                    if (_hsyncCnt < 76)
+                    {
+                        _player0.HPosCnt = 0;
+                        _player0.ResetCnt = 1;
+                        _player0.Reset = true;
+                    }
+                    else
+                    {
+                        _player0.ResetCnt = 0;
+                    }
+                }
+            }
 			else if (maskedAddr == 0x11) // RESP1
 			{
-				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
-				// This fixes some graphic glitches with Frostbite
-				if (_hsyncCnt < 69)
-				{
-					_player1.HPosCnt = 0;
-					_player1.ResetCnt = 2;
-					_player1.Reset = true;
-				}
-				else if (_hsyncCnt == 69)
-				{
-					_player1.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 72)
-				{
-					_player1.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 75)
-				{
-					_player1.ResetCnt = 0;
-				}
-				else
-				{
-					_player1.ResetCnt = 0;
-				}
+				// RESP depends on HMOVE
+                if (!_hmove.LateHBlankReset)
+                {
+                    if (_hsyncCnt < 69)
+                    {
+                        _player1.HPosCnt = 0;
+                        _player1.ResetCnt = 2;
+                        _player1.Reset = true;
+                    } else
+                    {
+                        _player1.ResetCnt = 0;
+                    }
+                } else
+                {
+                    if (_hsyncCnt < 76)
+                    {
+                        _player1.HPosCnt = 0;
+                        _player1.ResetCnt = 1;
+                        _player1.Reset = true;
+                    }
+                    else
+                    {
+                        _player1.ResetCnt = 0;
+                    }
+                }
+					
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
-				_player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                if (!_hmove.LateHBlankReset)
+                {
+                    _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                } else
+                {
+                    _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+
             }
 			else if (maskedAddr == 0x13) // RESM1
 			{
-				_player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-			}
+                if (!_hmove.LateHBlankReset)
+                {
+                    _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                }
+                else
+                {
+                    _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+            }
 			else if (maskedAddr == 0x14) // RESBL
 			{
-				_ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                if (!_hmove.LateHBlankReset)
+                {
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 3 : 160 - 4);
+                }
+                else
+                {
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 3 : 160 - 4);
+                }
+                
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
@@ -1073,53 +1310,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
-				_player0.Grp = value;
-				_player1.Dgrp = _player1.Grp;
+                prg0_val = value;
+                prg0_delay = 1;
+                
 			}
 			else if (maskedAddr == 0x1C) // GRP1
 			{
-				_player1.Grp = value;
-				_player0.Dgrp = _player0.Grp;
-
-				// TODO: Find a game that uses this functionality and test it
-				_ball.Denabled = _ball.Enabled;
+                prg1_val = value;
+                prg1_delay = 1;
+                
 			}
 			else if (maskedAddr == 0x1D) // ENAM0
 			{
-                if (_player0.Missile.Enabled)
-                {
-                    if (((value & 0x02) == 0))
-                    {
-                        _player0.Missile.Delay2 = 1;
-                    }
-                }
-
-                _player0.Missile.Enabled = (value & 0x02) != 0;
-                if (_player0.Missile.Enabled)
-                {
-                    _player0.Missile.Delay = 1;
-                }
+                enam0_val = (value & 0x02) != 0;
+                enam0_delay = 1;
             }
 			else if (maskedAddr == 0x1E) // ENAM1
 			{
-                if (_player1.Missile.Enabled)
-                {
-                    if (((value & 0x02) == 0))
-                    {
-                        _player1.Missile.Delay2 = 1;
-                    }
-                }
-
-                _player1.Missile.Enabled = (value & 0x02) != 0;
-                if (_player1.Missile.Enabled)
-                {
-                    _player1.Missile.Delay = 1;
-                } 
-                
+                enam1_val = (value & 0x02) != 0;
+                enam1_delay = 1;
             }
 			else if (maskedAddr == 0x1F) // ENABL
 			{
-				_ball.Enabled = (value & 0x02) != 0;
+                enamb_val = (value & 0x02) != 0;
+                enamb_delay = 1;
 			}
 			else if (maskedAddr == 0x20) // HMP0
 			{
