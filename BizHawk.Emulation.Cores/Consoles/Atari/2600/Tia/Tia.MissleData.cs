@@ -7,9 +7,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private struct MissileData
         {
             public bool Enabled;
-            public bool Enabled_use;
-            public int Delay;
-            public int Delay2;
             public bool ResetToPlayer;
             public byte HPosCnt;
             public byte Size;
@@ -19,21 +16,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
             public bool Tick()
             {
-
-
                 var result = false;
-
-                Enabled_use = Enabled;
-                if (Delay2 > 0)
-                {
-                    Enabled_use = true;
-                }
-
 
                 // At hPosCnt == 0, start drawing the missile, if enabled
                 if (HPosCnt < (1 << Size))
                 {
-                    if (Enabled_use && !ResetToPlayer && Delay == 0)
+                    if (Enabled && !ResetToPlayer)
                     {
                         // Draw the missile
                         result = true;
@@ -44,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 {
                     if (HPosCnt >= 16 && HPosCnt <= (16 + (1 << Size) - 1))
                     {
-                        if (Enabled_use && !ResetToPlayer && Delay == 0)
+                        if (Enabled && !ResetToPlayer)
                         {
                             // Draw the missile
                             result = true;
@@ -56,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 {
                     if (HPosCnt >= 32 && HPosCnt <= (32 + (1 << Size) - 1))
                     {
-                        if (Enabled_use && !ResetToPlayer && Delay == 0)
+                        if (Enabled && !ResetToPlayer)
                         {
                             // Draw the missile
                             result = true;
@@ -68,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 {
                     if (HPosCnt >= 64 && HPosCnt <= (64 + (1 << Size) - 1))
                     {
-                        if (Enabled_use && !ResetToPlayer && Delay == 0)
+                        if (Enabled && !ResetToPlayer)
                         {
                             // Draw the missile
                             result = true;
@@ -81,16 +69,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
                 // Counter loops at 160 
                 HPosCnt %= 160;
-
-                if (Delay > 0)
-                {
-                    Delay--;
-                }
-
-                if (Delay2 > 0)
-                {
-                    Delay2--;
-                }
 
                 return result;
             }

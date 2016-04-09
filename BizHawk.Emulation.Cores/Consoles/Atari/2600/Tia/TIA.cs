@@ -287,6 +287,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private byte pf1_max_delay = 0;
         private byte pf2_max_delay = 0;
 
+        private int enam0_delay = 0;
+        private int enam1_delay = 0;
+        private bool enam0_val = false;
+        private bool enam1_val = false;
+
         private bool do_ticks = false;
         private byte _hsyncCnt;
 		private int _capChargeStart;
@@ -442,6 +447,29 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     _playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(pf2_update, 8));
                     pf2_updater = false;
                 }
+            }
+
+            //delay latch to missile enable
+            if (enam0_delay>0)
+            {
+                enam0_delay++;
+                if (enam0_delay==3)
+                {
+                    enam0_delay = 0;
+                    _player0.Missile.Enabled = enam0_val;
+                }
+                
+            }
+
+            if (enam1_delay > 0)
+            {
+                enam1_delay++;
+                if (enam1_delay == 3)
+                {
+                    enam1_delay = 0;
+                    _player1.Missile.Enabled = enam1_val;
+                }
+
             }
 
             // Reset the RDY flag when we reach hblank
@@ -1219,36 +1247,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x1D) // ENAM0
 			{
-                if (_player0.Missile.Enabled)
-                {
-                    if (((value & 0x02) == 0))
-                    {
-                        _player0.Missile.Delay2 = 1;
-                    }
-                }
-
-                _player0.Missile.Enabled = (value & 0x02) != 0;
-                if (_player0.Missile.Enabled)
-                {
-                    _player0.Missile.Delay = 1;
-                }
+                enam0_val = (value & 0x02) != 0;
+                enam0_delay = 1;
             }
 			else if (maskedAddr == 0x1E) // ENAM1
 			{
-                if (_player1.Missile.Enabled)
-                {
-                    if (((value & 0x02) == 0))
-                    {
-                        _player1.Missile.Delay2 = 1;
-                    }
-                }
-
-                _player1.Missile.Enabled = (value & 0x02) != 0;
-                if (_player1.Missile.Enabled)
-                {
-                    _player1.Missile.Delay = 1;
-                } 
-                
+                enam1_val = (value & 0x02) != 0;
+                enam1_delay = 1;
             }
 			else if (maskedAddr == 0x1F) // ENABL
 			{
