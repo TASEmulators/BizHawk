@@ -1178,56 +1178,62 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
-				if (_hsyncCnt < 69)
-				{
-					_player0.HPosCnt = 0;
-					_player0.ResetCnt = 2;
-					_player0.Reset = true;
-				}
-				else if (_hsyncCnt == 69)
-				{
-					_player0.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 72)
-				{
-					_player0.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 75)
-				{
-					_player0.ResetCnt = 0;
-				}
-				else
-				{
-					_player0.ResetCnt = 0;
-				}
-			}
+                // Resp depends on HMOVE
+                if (!_hmove.LateHBlankReset)
+                {
+                    if (_hsyncCnt < 69)
+                    {
+                        _player0.HPosCnt = 0;
+                        _player0.ResetCnt = 2;
+                        _player0.Reset = true;
+                    }
+                    else
+                    {
+                        _player0.ResetCnt = 0;
+                    }
+                }
+                else
+                {
+                    if (_hsyncCnt < 76)
+                    {
+                        _player0.HPosCnt = 0;
+                        _player0.ResetCnt = 1;
+                        _player0.Reset = true;
+                    }
+                    else
+                    {
+                        _player0.ResetCnt = 0;
+                    }
+                }
+            }
 			else if (maskedAddr == 0x11) // RESP1
 			{
-				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
-				// This fixes some graphic glitches with Frostbite
-				if (_hsyncCnt < 69)
-				{
-					_player1.HPosCnt = 0;
-					_player1.ResetCnt = 2;
-					_player1.Reset = true;
-				}
-				else if (_hsyncCnt == 69)
-				{
-					_player1.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 72)
-				{
-					_player1.ResetCnt = 0;
-				}
-				else if (_hsyncCnt == 75)
-				{
-					_player1.ResetCnt = 0;
-				}
-				else
-				{
-					_player1.ResetCnt = 0;
-				}
+				// RESP depends on HMOVE
+                if (!_hmove.LateHBlankReset)
+                {
+                    if (_hsyncCnt < 69)
+                    {
+                        _player1.HPosCnt = 0;
+                        _player1.ResetCnt = 2;
+                        _player1.Reset = true;
+                    } else
+                    {
+                        _player1.ResetCnt = 0;
+                    }
+                } else
+                {
+                    if (_hsyncCnt < 76)
+                    {
+                        _player1.HPosCnt = 0;
+                        _player1.ResetCnt = 1;
+                        _player1.Reset = true;
+                    }
+                    else
+                    {
+                        _player1.ResetCnt = 0;
+                    }
+                }
+					
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
