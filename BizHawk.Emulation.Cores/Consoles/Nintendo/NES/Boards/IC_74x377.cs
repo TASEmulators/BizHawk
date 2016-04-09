@@ -33,18 +33,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "COLORDREAMS-74*377":
 					AssertPrg(32, 64, 128); AssertChr(16, 32, 64, 128); AssertVram(0); AssertWram(0);
 					break;
-
 				case "AGCI-47516":
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
 					break;
-
 				case "AGCI-50282": // death race
 				case "MAPPER144":
 					bus_conflict_50282 = true;
 					bus_conflict = false;
-					SetMirrorType(Cart.pad_h, Cart.pad_v);
 					break;
-
 				default:
 					return false;
 			}
@@ -53,6 +48,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
 			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
 			return true;
 		}
