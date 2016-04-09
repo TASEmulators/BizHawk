@@ -292,6 +292,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private bool enam0_val = false;
         private bool enam1_val = false;
 
+        private int prg0_delay = 0;
+        private int prg1_delay = 0;
+        private byte prg0_val = 0;
+        private byte prg1_val = 0;
+
         private bool do_ticks = false;
         private byte _hsyncCnt;
 		private int _capChargeStart;
@@ -468,6 +473,34 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 {
                     enam1_delay = 0;
                     _player1.Missile.Enabled = enam1_val;
+                }
+
+            }
+
+            // delay latch to player graphics registers
+            if (prg0_delay > 0)
+            {
+                prg0_delay++;
+                if (prg0_delay == 3)
+                {
+                    prg0_delay = 0;
+                    _player0.Grp = prg0_val;
+                    _player1.Dgrp = _player1.Grp;
+                }
+
+            }
+
+            if (prg1_delay > 0)
+            {
+                prg1_delay++;
+                if (prg1_delay == 3)
+                {
+                    prg1_delay = 0;
+                    _player1.Grp = prg1_val;
+                    _player0.Dgrp = _player0.Grp;
+
+                    // TODO: Find a game that uses this functionality and test it
+                    _ball.Denabled = _ball.Enabled;
                 }
 
             }
@@ -1234,16 +1267,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
-				_player0.Grp = value;
-				_player1.Dgrp = _player1.Grp;
+                prg0_val = value;
+                prg0_delay = 1;
+                
 			}
 			else if (maskedAddr == 0x1C) // GRP1
 			{
-				_player1.Grp = value;
-				_player0.Dgrp = _player0.Grp;
-
-				// TODO: Find a game that uses this functionality and test it
-				_ball.Denabled = _ball.Enabled;
+                prg1_val = value;
+                prg1_delay = 1;
+                
 			}
 			else if (maskedAddr == 0x1D) // ENAM0
 			{
