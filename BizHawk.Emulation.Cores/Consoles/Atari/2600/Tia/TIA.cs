@@ -289,8 +289,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
         private int enam0_delay = 0;
         private int enam1_delay = 0;
+        private int enamb_delay = 0;
         private bool enam0_val = false;
         private bool enam1_val = false;
+        private bool enamb_val = false;
+
 
         private int prg0_delay = 0;
         private int prg1_delay = 0;
@@ -473,6 +476,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 {
                     enam1_delay = 0;
                     _player1.Missile.Enabled = enam1_val;
+                }
+
+            }
+
+            // delay latch to ball enable
+            if (enamb_delay > 0)
+            {
+                enamb_delay++;
+                if (enamb_delay == 3)
+                {
+                    enamb_delay = 0;
+                    _ball.Enabled = enamb_val;
                 }
 
             }
@@ -1237,15 +1252,37 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
-				_player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                if (!_hmove.LateHBlankReset)
+                {
+                    _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                } else
+                {
+                    _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+
             }
 			else if (maskedAddr == 0x13) // RESM1
 			{
-				_player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-			}
+                if (!_hmove.LateHBlankReset)
+                {
+                    _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                }
+                else
+                {
+                    _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+            }
 			else if (maskedAddr == 0x14) // RESBL
 			{
-				_ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                if (!_hmove.LateHBlankReset)
+                {
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                }
+                else
+                {
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+                
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
@@ -1295,7 +1332,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
 			else if (maskedAddr == 0x1F) // ENABL
 			{
-				_ball.Enabled = (value & 0x02) != 0;
+                enamb_val = (value & 0x02) != 0;
+                enamb_delay = 1;
 			}
 			else if (maskedAddr == 0x20) // HMP0
 			{
