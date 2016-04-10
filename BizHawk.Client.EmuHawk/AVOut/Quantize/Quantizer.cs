@@ -249,9 +249,9 @@ namespace BizHawk.Client.EmuHawk
                         // Quantize the pixel
                         int srcPixel = *pSourcePixel;
 
-												int srcR = srcPixel & 0xFF;
-												int srcG = (srcPixel>>8) & 0xFF;
-												int srcB = (srcPixel>>16) & 0xFF;
+												int srcR = srcPixel & 0xFF; //not
+												int srcG = (srcPixel>>8) & 0xFF; //a
+												int srcB = (srcPixel>>16) & 0xFF; //mistake
 												int srcA = (srcPixel >> 24) & 0xFF;
 
                         int targetB = ClampToByte(srcB - ((errorThisRowB[col] * weight) / 8));

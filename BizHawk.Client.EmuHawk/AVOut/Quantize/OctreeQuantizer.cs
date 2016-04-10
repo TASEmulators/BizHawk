@@ -381,9 +381,9 @@ namespace BizHawk.Client.EmuHawk
                     {
                         // Go to the next level down in the tree
                         int shift = 7 - level;
-												int r = pixel & 0xFF;
+												int b = pixel & 0xFF;
 												int g = (pixel >> 8) & 0xFF;
-												int b = (pixel >> 16) & 0xFF;
+												int r = (pixel >> 16) & 0xFF;
                         int index = ((r & mask[level]) >> (shift - 2)) |
                                     ((g & mask[level]) >> (shift - 1)) |
                                     ((b & mask[level]) >> (shift));
@@ -504,9 +504,9 @@ namespace BizHawk.Client.EmuHawk
                     if (!_leaf)
                     {
                         int shift = 7 - level;
-												int r = pixel & 0xFF;
+												int b = pixel & 0xFF;
 												int g = (pixel >> 8) & 0xFF;
-												int b = (pixel >> 16) & 0xFF;
+												int r = (pixel >> 16) & 0xFF;
                         int index = ((r & mask[level]) >> (shift - 2)) |
                                     ((g & mask[level]) >> (shift - 1)) |
                                     ((b & mask[level]) >> (shift));
@@ -530,9 +530,9 @@ namespace BizHawk.Client.EmuHawk
                 public void Increment(int pixel)
                 {
                     ++_pixelCount;
-										int r = pixel&0xFF;
+										int b = pixel&0xFF;
 										int g = (pixel>>8) & 0xFF;
-										int b = (pixel >> 16) & 0xFF;
+										int r = (pixel >> 16) & 0xFF;
 										_red += r;
 										_green += g;
 										_blue += b;
