@@ -141,31 +141,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			Bitmap bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+			using (var bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 			{
 				var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 				System.Runtime.InteropServices.Marshal.Copy(source.GetVideoBuffer(), 0, data.Scan0, bmp.Width * bmp.Height);
 				bmp.UnlockBits(data);
-			}
 
-			MemoryStream ms = new MemoryStream();
-			bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-			byte[] b = ms.GetBuffer();
-			if (!firstdone)
-			{
-				firstdone = true;
-				b[10] = (byte)(b[10] & 0x78); // no global color table
-				f.Write(b, 0, 13);
-				f.Write(GifAnimation, 0, GifAnimation.Length);
-			}
-			b[785] = Delay[0];
-			b[786] = Delay[1];
-			b[798] = (byte)(b[798] | 0x87);
-			f.Write(b, 781, 18);
-			f.Write(b, 13, 768);
-			f.Write(b, 799, (int)(ms.Length - 800));
+				using (var qBmp = new OctreeQuantizer(255, 8).Quantize(bmp))
+				{
+					MemoryStream ms = new MemoryStream();
+					qBmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
+					byte[] b = ms.GetBuffer();
+					if (!firstdone)
+					{
+						firstdone = true;
+						b[10] = (byte)(b[10] & 0x78); // no global color table
+						f.Write(b, 0, 13);
+						f.Write(GifAnimation, 0, GifAnimation.Length);
+					}
+					b[785] = Delay[0];
+					b[786] = Delay[1];
+					b[798] = (byte)(b[798] | 0x87);
+					f.Write(b, 781, 18);
+					f.Write(b, 13, 768);
+					f.Write(b, 799, (int)(ms.Length - 800));
 
-			lastbyte = b[ms.Length - 1];
+					lastbyte = b[ms.Length - 1];
+				}
+			}
 		}
 
 		public void AddSamples(short[] samples)
