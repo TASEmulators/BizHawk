@@ -23,6 +23,28 @@ namespace BizHawk.Client.EmuHawk
 	// int to long TODO: 32 bit domains have more digits than the hex editor can account for and the address covers up the 0 column
 	public partial class HexEditor : ToolFormBase, IToolFormAutoConfig
 	{
+		private class NullMemoryDomain : MemoryDomain
+		{
+			public override byte PeekByte(long addr)
+			{
+				return 0;
+			}
+
+			public override void PokeByte(long addr, byte val)
+			{
+			}
+
+			public NullMemoryDomain()
+			{
+				EndianType = Endian.Unknown;
+				Name = "Null";
+				Size = 1024;
+				Writable = true;
+				WordSize = 1;
+			}
+		}
+
+
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
@@ -47,8 +69,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private long _maxRow;
 
-		private MemoryDomain _domain = new MemoryDomain(
-			"NULL", 1024, MemoryDomain.Endian.Little, addr => 0, delegate(long a, byte v) { v = 0; });
+		private MemoryDomain _domain = new NullMemoryDomain();
 
 		private long _row;
 		private long _addr;
@@ -429,7 +450,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HexEditor_Load(object sender, EventArgs e)
 		{
-			DataSize = _domain.ByteSize;
+			DataSize = _domain.WordSize;
 			SetDataSize(DataSize);
 
 			if (RecentTables.AutoLoad)
@@ -555,9 +576,9 @@ namespace BizHawk.Client.EmuHawk
 				case 1:
 					return _domain.PeekByte(address);
 				case 2:
-					return _domain.PeekWord(address, BigEndian);
+					return _domain.PeekUshort(address, BigEndian);
 				case 4:
-					return (int)_domain.PeekDWord(address, BigEndian);
+					return (int)_domain.PeekUint(address, BigEndian);
 			}
 		}
 
@@ -1096,15 +1117,15 @@ namespace BizHawk.Client.EmuHawk
 							(byte)(_domain.PeekByte(address) + 1));
 						break;
 					case 2:
-						_domain.PokeWord(
+						_domain.PokeUshort(
 							address,
-							(ushort)(_domain.PeekWord(address, BigEndian) + 1),
+							(ushort)(_domain.PeekUshort(address, BigEndian) + 1),
 							BigEndian);
 						break;
 					case 4:
-						_domain.PokeDWord(
+						_domain.PokeUint(
 							address,
-							_domain.PeekDWord(address, BigEndian) + 1,
+							_domain.PeekUint(address, BigEndian) + 1,
 							BigEndian);
 						break;
 				}
@@ -1129,15 +1150,15 @@ namespace BizHawk.Client.EmuHawk
 							(byte)(_domain.PeekByte(address) - 1));
 						break;
 					case 2:
-						_domain.PokeWord(
+						_domain.PokeUshort(
 							address,
-							(ushort)(_domain.PeekWord(address, BigEndian) - 1),
+							(ushort)(_domain.PeekUshort(address, BigEndian) - 1),
 							BigEndian);
 						break;
 					case 4:
-						_domain.PokeDWord(
+						_domain.PokeUint(
 							address,
-							_domain.PeekDWord(address, BigEndian) - 1,
+							_domain.PeekUint(address, BigEndian) - 1,
 							BigEndian);
 						break;
 				}
@@ -2293,8 +2314,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 					for (int j = 0; j < 4; j++) 
 					{
-						ushort hi = _domain.PeekWord(((addr+(i<<3)+(j<<1)     )^0x0),bigend);
-						ushort lo = _domain.PeekWord(((addr+(i<<3)+(j<<1) + 32)^0x0),bigend);
+						ushort hi = _domain.PeekUshort(((addr+(i<<3)+(j<<1)     )^0x0),bigend);
+						ushort lo = _domain.PeekUshort(((addr+(i<<3)+(j<<1) + 32)^0x0),bigend);
 						matVals[i,j] = (int)(((hi << 16) | lo)) / 65536.0f;
 					}
 			}

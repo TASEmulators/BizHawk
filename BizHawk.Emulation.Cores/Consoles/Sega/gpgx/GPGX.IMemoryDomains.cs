@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					// vram pokes need to go through hook which invalidates cached tiles
 					byte* p = (byte*)area;
-					mm.Add(new MemoryDomain(name, size, MemoryDomain.Endian.Unknown,
+					mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Unknown,
 						delegate(long addr)
 						{
 							if (addr < 0 || addr >= 65536)
@@ -38,17 +38,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 								throw new ArgumentOutOfRangeException();
 							Core.gpgx_poke_vram(((int)addr) ^ 1, val);
 						},
-						byteSize: 2));
+						wordSize: 2));
 				}
 
 				else
 				{
-					var byteSize = name.Contains("Z80") ? 1 : 2;
+					// TODO: are the Z80 domains really Swap16 in the core?  Check this
 					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size,
-						MemoryDomain.Endian.Big, area, name != "MD CART" && name != "CD BOOT ROM", byteSize));
+						MemoryDomain.Endian.Big, area, name != "MD CART" && name != "CD BOOT ROM"));
 				}
 			}
-			var m68Bus = new MemoryDomain("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+			var m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
 				delegate (long addr)
 				{
 					var a = (uint)addr;
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			mm.Add(m68Bus);
 
-			var s68Bus = new MemoryDomain("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
+			var s68Bus = new MemoryDomainDelegate("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
 				delegate (long addr)
 				{
 					var a = (uint)addr;

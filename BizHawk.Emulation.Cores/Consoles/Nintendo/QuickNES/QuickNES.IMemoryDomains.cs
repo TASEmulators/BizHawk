@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				}
 			}
 			// add system bus
-			mm.Add(new MemoryDomain
+			mm.Add(new MemoryDomainDelegate
 			(
 				"System Bus",
 				0x10000,
@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					}
 
 					QN.qn_poke_prgbus(Context, (int)addr, val);
-				}
+				}, 1
 			));
 
 			_memoryDomains = new MemoryDomainList(mm);

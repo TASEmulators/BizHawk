@@ -458,6 +458,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		void SetupMemoryDomains()
 		{
+			/*
 			var domains = new List<MemoryDomain>(3);
 			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, MemoryDomain.Endian.Big,
 				addr => Ram[addr & 0xFFFF],
@@ -485,6 +486,8 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			domains.Add(SystemBusDomain);
 			memoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
+			*/
+			throw new NotImplementedException();
 		}
 
 		public void Dispose() { }

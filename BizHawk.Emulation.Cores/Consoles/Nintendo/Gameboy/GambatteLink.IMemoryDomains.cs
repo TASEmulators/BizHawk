@@ -16,16 +16,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			foreach (var md in L.MemoryDomains)
 			{
-				mm.Add(new MemoryDomain("L " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
+				mm.Add(new WrappedMemoryDomain("L " + md.Name, md));
 			}
 
 			foreach (var md in R.MemoryDomains)
 			{
-				mm.Add(new MemoryDomain("R " + md.Name, md.Size, md.EndianType, md.PeekByte, md.PokeByte));
+				mm.Add(new WrappedMemoryDomain("R " + md.Name, md));
 			}
 
 			_memoryDomains = new MemoryDomainList(mm);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+		}
+		
+		// todo: clean this up
+		private class WrappedMemoryDomain : MemoryDomain
+		{
+			private readonly MemoryDomain _m;
+
+			public WrappedMemoryDomain(string name, MemoryDomain m)
+			{
+				_m = m;
+
+				Name = name;
+				Size = m.Size;
+				WordSize = m.WordSize;
+				EndianType = m.EndianType;
+				Writable = m.Writable;
+			}
+
+			public override byte PeekByte(long addr)
+			{
+				return _m.PeekByte(addr);
+			}
+
+			public override void PokeByte(long addr, byte val)
+			{
+				_m.PokeByte(addr, val);
+			}
 		}
 	}
 }

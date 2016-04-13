@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				};
 			}
 
-			var md = new MemoryDomain(name, size, endian, peekByte, pokeByte, 4);
+			var md = new MemoryDomainDelegate(name, size, endian, peekByte, pokeByte, 4);
 
 			_memoryDomains.Add(md);
 		}
@@ -129,13 +129,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				api.m64p_write_memory_8((uint)addr, val);
 			};
 
-			_memoryDomains.Add(new MemoryDomain
+			_memoryDomains.Add(new MemoryDomainDelegate
 				(
-					name: "System Bus",
-					size: uint.MaxValue,
-					endian: MemoryDomain.Endian.Big,
-					peekByte: peekByte,
-					pokeByte: pokeByte
+					"System Bus",
+					uint.MaxValue,
+					 MemoryDomain.Endian.Big,
+					peekByte,
+					pokeByte, 4
 				));
 
 			MemoryDomains = new MemoryDomainList(_memoryDomains);
