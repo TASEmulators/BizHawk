@@ -45,7 +45,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public GDIRenderer()
 		{
-			SetBkMode(_hdc, BkModes.OPAQUE);
+			//zero 04-16-2016 : this can't be legal, theres no HDC yet
+			//SetBkMode(_hdc, BkModes.OPAQUE);
 		}
 
 		public void Dispose()
@@ -168,7 +169,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void PrepDrawString(IntPtr hfont, Color color)
 		{
 			SetGraphicsMode(CurrentHDC, 2); //shouldnt be necessary.. cant hurt
-			SelectObject(_hdc, hfont);
+			SelectObject(CurrentHDC, hfont);
 			SetTextColor(color);
 		}
 
@@ -299,7 +300,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		private void SetFont(Font font)
 		{
-			SelectObject(_hdc, GetCachedHFont(font));
+			SelectObject(CurrentHDC, GetCachedHFont(font));
 		}
 
 		private IntPtr GetCachedHFont(Font font)
