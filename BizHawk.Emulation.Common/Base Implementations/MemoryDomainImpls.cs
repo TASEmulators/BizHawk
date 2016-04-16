@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common
 
 		public override byte PeekByte(long addr)
 		{
-			if ((ulong)addr >= (ulong)Size)
+			if ((ulong)addr < (ulong)Size)
 				return ((byte*)Data)[addr];
 			else
 				throw new ArgumentOutOfRangeException("addr");
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (Writable)
 			{
-				if ((ulong)addr >= (ulong)Size)
+				if ((ulong)addr < (ulong)Size)
 					((byte*)Data)[addr] = val;
 				else
 					throw new ArgumentOutOfRangeException("addr");

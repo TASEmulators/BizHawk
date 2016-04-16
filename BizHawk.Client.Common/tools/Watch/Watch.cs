@@ -736,7 +736,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					throw new InvalidOperationException("You cannot set diffrent domain to a watch on the fly");
+					throw new InvalidOperationException("You cannot set a different domain to a watch on the fly");
 				}
 			}
 		}
