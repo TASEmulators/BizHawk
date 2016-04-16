@@ -331,7 +331,7 @@ namespace BizHawk.Client.EmuHawk
 					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
 					{
 						// numeric constanst are similarly hosed
-						val = Convert.ChangeType(val, prop.PropertyType);
+						val = Convert.ChangeType(val, prop.PropertyType, System.Globalization.CultureInfo.InvariantCulture);
 					}
 					prop.SetValue(tool, val, null);
 				}
@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			data.Clear();
 			foreach (var prop in props)
 			{
-				data.Add(prop.Name, prop.GetValue(tool, null));
+				data.Add(prop.Name, prop.GetValue(tool, BindingFlags.GetProperty, Type.DefaultBinder, null, System.Globalization.CultureInfo.InvariantCulture));
 			}
 		}
 
