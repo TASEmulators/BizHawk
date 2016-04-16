@@ -125,9 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				//zeromus test
-				//Gdi.PrepDrawString(NormalFont, _foreColor);
-				Gdi.PrepDrawString(RotatedFont, _foreColor);
+				Gdi.PrepDrawString(NormalFont, _foreColor);
 
 				foreach (var column in visibleColumns)
 				{
@@ -135,13 +133,9 @@ namespace BizHawk.Client.EmuHawk
 
 					if (IsHoveringOnColumnCell && column == CurrentCell.Column)
 					{
-						//zeromus test
-						//Gdi.PrepDrawString(NormalFont, SystemColors.HighlightText);
-						Gdi.PrepDrawString(RotatedFont, SystemColors.HighlightText);
+						Gdi.PrepDrawString(NormalFont, SystemColors.HighlightText);
 						Gdi.DrawString(column.Text, point);
-						//zeromus test
-						//Gdi.PrepDrawString(NormalFont, _foreColor);
-						Gdi.PrepDrawString(RotatedFont, _foreColor);
+						Gdi.PrepDrawString(NormalFont, _foreColor);
 					}
 					else
 					{
