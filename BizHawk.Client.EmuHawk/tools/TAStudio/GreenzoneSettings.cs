@@ -41,6 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			SaveCapacityNumeric.Value = Settings.DiskSaveCapacitymb < MemCapacityNumeric.Maximum ?
 				Settings.DiskSaveCapacitymb : MemCapacityNumeric.Maximum;
 
+			StateGap.Value = Settings.StateGap;
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " mb";
 			CapacityNumeric_ValueChanged(null, null);
 			SaveCapacityNumeric_ValueChanged(null, null);
@@ -60,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.Capacitymb = (int)MemCapacityNumeric.Value;
 			Settings.DiskCapacitymb = (int)DiskCapacityNumeric.Value;
 			Settings.DiskSaveCapacitymb = (int)SaveCapacityNumeric.Value;
+			Settings.StateGap = (int)StateGap.Value;
 			DialogResult = DialogResult.OK;
 			Close();
 		}

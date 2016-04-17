@@ -560,10 +560,10 @@ namespace BizHawk.Client.Common
 		{
 			List<int> noSave = ExcludeStates();
 
-			bw.Write(States.Count - noSave.Count);
+			bw.Write(States.Count / Settings.StateGap - noSave.Count);
 			for (int i = 0; i < States.Count; i++)
 			{
-				if (noSave.Contains(i))
+				if (noSave.Contains(i) || i % Settings.StateGap != 0)
 					continue;
 
 				StateAccessed(States.ElementAt(i).Key);
@@ -571,7 +571,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
-				_movie.ReportProgress(100d / States.Count * i);
+				//_movie.ReportProgress(100d / States.Count * i);
 			}
 		}
 
