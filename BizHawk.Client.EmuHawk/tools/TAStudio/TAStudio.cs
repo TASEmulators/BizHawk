@@ -494,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
-			if (TasView.AllColumns.Count() == 0 || file.Extension != TasMovie.Extension)
+			if (TasView.AllColumns.Count() == 0 || file.Extension != "." + TasMovie.Extension)
 				SetUpColumns();
 
 			if (startsFromSavestate)
