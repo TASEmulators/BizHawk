@@ -647,6 +647,7 @@ namespace BizHawk.Client.EmuHawk
 			this.SetSeekingCutoffIntervalMenuItem.Name = "SetSeekingCutoffIntervalMenuItem";
 			this.SetSeekingCutoffIntervalMenuItem.Size = new System.Drawing.Size(253, 22);
 			this.SetSeekingCutoffIntervalMenuItem.Text = "Set Seeking Cutoff Interval";
+			this.SetSeekingCutoffIntervalMenuItem.Visible = false;
 			this.SetSeekingCutoffIntervalMenuItem.Click += new System.EventHandler(this.SetSeekingCutoffIntervalMenuItem_Click);
 			// 
 			// toolStripSeparator9
@@ -1149,11 +1150,12 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.Name = "TasView";
 			this.TasView.RowCount = 0;
 			this.TasView.ScrollSpeed = 1;
+			this.TasView.SeekingCutoffInterval = 0;
 			this.TasView.Size = new System.Drawing.Size(289, 528);
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
-			this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
+			//this.TasView.SelectedIndexChanged += new System.EventHandler(this.TasView_SelectedIndexChanged);
 			this.TasView.RightMouseScrolled += new BizHawk.Client.EmuHawk.InputRoll.RightMouseScrollEventHandler(this.TasView_MouseWheel);
 			this.TasView.ColumnReordered += new BizHawk.Client.EmuHawk.InputRoll.ColumnReorderedEventHandler(this.TasView_ColumnReordered);
 			this.TasView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.TasView_CellDropped);

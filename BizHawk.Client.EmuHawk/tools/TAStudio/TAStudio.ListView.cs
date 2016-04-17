@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 				GlobalWin.MainForm.UnpauseEmulator();
 
-			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.SeekingCutoffInterval)
+			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.VisibleRows)
 				_seekBackgroundWorker.RunWorkerAsync();
 		}
 

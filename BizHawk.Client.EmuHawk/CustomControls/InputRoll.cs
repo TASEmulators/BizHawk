@@ -1646,7 +1646,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (SelectedIndexChanged != null)
 				{
-					//SelectedIndexChanged(this, new EventArgs());
+					SelectedIndexChanged(this, new EventArgs());
 				}
 			}
 		}
