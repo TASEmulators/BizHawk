@@ -373,6 +373,8 @@ namespace BizHawk.Client.EmuHawk
 				for (var i = 0; i < list.Length; i++)
 				{
 					var input = CurrentTasMovie.GetInputState(i);
+					if (input == null)
+						break;
 					_tasClipboard.Add(new TasClipboardEntry(list[i], input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
