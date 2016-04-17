@@ -142,6 +142,16 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			TextOut(CurrentHDC, point.X, point.Y, str, str.Length);
 		}
 
+		public static IntPtr CreateNormalHFont(Font font, int width)
+		{
+			LOGFONT logf = new LOGFONT();
+			font.ToLogFont(logf);
+			logf.lfWidth = width;
+			logf.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
+			var ret = CreateFontIndirect(logf);
+			return ret;
+		}
+
 		//this returns an IntPtr HFONT because .net's Font class will erase the relevant properties when using its Font.FromLogFont()
 		//note that whether this is rotated clockwise or CCW might affect how you have to position the text (right-aligned sometimes?, up or down by the height of the font?)
 		public static IntPtr CreateRotatedHFont(Font font, bool CW)

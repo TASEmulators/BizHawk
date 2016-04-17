@@ -47,13 +47,12 @@ namespace BizHawk.Client.EmuHawk
 		public bool letKeysModifySelection { get; set; }
 
 		private IntPtr RotatedFont;
-		private readonly Font NormalFont;
+		private readonly IntPtr NormalFont;
 		private Color _foreColor;
 		private Color _backColor;
 
 		public InputRoll()
 		{
-
 			UseCustomBackground = true;
 			GridLines = true;
 			CellWidthPadding = 3;
@@ -61,11 +60,11 @@ namespace BizHawk.Client.EmuHawk
 			CurrentCell = null;
 			ScrollMethod = "near";
 
-			NormalFont = new Font("Courier New", 8);  // Only support fixed width
-
+			Font CommonFont = new Font("Arial", 8, FontStyle.Bold);
+			NormalFont = GDIRenderer.CreateNormalHFont(CommonFont, 6);
 			// PrepDrawString doesn't actually set the font, so this is rather useless.
 			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
-			RotatedFont = GDIRenderer.CreateRotatedHFont(NormalFont, true);
+			RotatedFont = GDIRenderer.CreateRotatedHFont(CommonFont, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);
@@ -77,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = CreateGraphics())
 			using (var LCK = Gdi.LockGraphics(g))
 			{
-				_charSize = Gdi.MeasureString("A", NormalFont); // TODO make this a property so changing it updates other values.
+				_charSize = Gdi.MeasureString("A", CommonFont); // TODO make this a property so changing it updates other values.
 			}
 
 			UpdateCellSize();
@@ -132,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Gdi.Dispose();
 
-			NormalFont.Dispose();
+			GDIRenderer.DestroyHFont(NormalFont);
 			GDIRenderer.DestroyHFont(RotatedFont);
 
 			base.Dispose(disposing);
