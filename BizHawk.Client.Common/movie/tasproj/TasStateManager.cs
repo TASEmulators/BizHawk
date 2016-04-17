@@ -390,7 +390,7 @@ namespace BizHawk.Client.Common
 				if (BranchStates[frame][branch].IsOnDisk)
 					BranchStates[frame][branch].Dispose();
 				else
-					Used -= (ulong)BranchStates[frame][branch].Length;
+					//Used -= (ulong)BranchStates[frame][branch].Length;
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
 
 				if (BranchStates[frame].Count == 0)
@@ -653,7 +653,10 @@ namespace BizHawk.Client.Common
 		private ulong _used;
 		private ulong Used
 		{
-			get { return _used; }
+			get
+			{
+				return _used;
+			}
 			set
 			{
 				if (value > 0xf000000000000000)
@@ -747,7 +750,7 @@ namespace BizHawk.Client.Common
 
 			// Loop through branch states for the given frame.
 			SortedList<int, StateManagerState> stateList = BranchStates[frame];
-			for (int i = 0; i < _movie.BranchCount; i++)
+			for (int i = 0; i < stateList.Count(); i++)
 			{
 				// Don't check the branch containing the state to match.
 				if (i == _movie.BranchIndexByHash(branchHash))
@@ -808,7 +811,7 @@ namespace BizHawk.Client.Common
 				SortedList<int, StateManagerState> stateList = kvp.Value;
 				if (stateList == null)
 					continue;
-
+				/*
 				if (stateList.ContainsKey(branchHash))
 				{
 					if (stateHasDuplicate(kvp.Key, branchHash) == -2)
@@ -817,7 +820,7 @@ namespace BizHawk.Client.Common
 							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
-
+				*/
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);
@@ -834,7 +837,7 @@ namespace BizHawk.Client.Common
 				SortedList<int, StateManagerState> stateList = kvp.Value;
 				if (stateList == null)
 					continue;
-
+				/*
 				if (stateList.ContainsKey(branchHash))
 				{
 					if (stateHasDuplicate(kvp.Key, branchHash) == -2)
@@ -843,7 +846,7 @@ namespace BizHawk.Client.Common
 							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
-
+				*/
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);
