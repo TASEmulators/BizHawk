@@ -85,14 +85,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (_exiting)
-				{
-					CurrentTasMovie.Save();
-				}
-				else
-				{
-					_saveBackgroundWorker.RunWorkerAsync();
-				}
+				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 			}
 		}
@@ -114,16 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				CurrentTasMovie.Filename = file.FullName;
-
-				if (_exiting)
-				{
-					CurrentTasMovie.Save();
-				}
-				else
-				{
-					_saveBackgroundWorker.RunWorkerAsync();
-				}
-
+				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
 			}
