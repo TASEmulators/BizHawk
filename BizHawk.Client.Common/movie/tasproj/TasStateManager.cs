@@ -650,7 +650,18 @@ namespace BizHawk.Client.Common
 		// 4 bytes - length of savestate
 		// 0 - n savestate
 
-		private ulong Used { get; set; }
+		private ulong _used;
+		private ulong Used
+		{
+			get { return _used; }
+			set
+			{
+				if (value > 0xf000000000000000)
+					System.Diagnostics.Debug.Fail("ulong Used underfow!");
+				else
+					_used = value;
+			}
+		}
 
 		private ulong DiskUsed
 		{
