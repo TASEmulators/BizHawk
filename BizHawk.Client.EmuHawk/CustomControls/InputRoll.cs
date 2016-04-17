@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// PrepDrawString doesn't actually set the font, so this is rather useless.
 			// I'm leaving this stuff as-is so it will be a bit easier to fix up with another rendering method.
-			RotatedFont = GDIRenderer.CreateRotatedHFont(Font, true);
+			RotatedFont = GDIRenderer.CreateRotatedHFont(NormalFont, true);
 
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			SetStyle(ControlStyles.UserPaint, true);

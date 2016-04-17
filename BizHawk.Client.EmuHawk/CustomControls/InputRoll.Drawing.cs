@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int start = -VBar.Value;
 
-				Gdi.PrepDrawString(RotatedFont, _foreColor);
+				Gdi.PrepDrawString(NormalFont, _foreColor);
 
 				foreach (var column in visibleColumns)
 				{
@@ -190,11 +190,19 @@ namespace BizHawk.Client.EmuHawk
 							var point = new Point(x + strOffsetX, y + strOffsetY);
 
 							var rePrep = false;
+							if(j==1)
 							if (SelectedItems.Contains(new Cell { Column = visibleColumns[j], RowIndex = i + startRow }))
 							{
-								Gdi.PrepDrawString(NormalFont, SystemColors.HighlightText);
+								Gdi.PrepDrawString(RotatedFont, SystemColors.HighlightText);
 								rePrep = true;
 							}
+							else if (j == 1)
+							{
+								//1. not sure about this; 2. repreps may be excess, but if we render one column at a time, we do need to change back after rendering the header
+								rePrep = true;
+								Gdi.PrepDrawString(RotatedFont, _foreColor);
+							}
+
 
 
 							if (!string.IsNullOrWhiteSpace(text))

@@ -147,17 +147,15 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public static IntPtr CreateRotatedHFont(Font font, bool CW)
 		{
 			LOGFONT logf = new LOGFONT();
-			//font.ToLogFont(logf);
-			//logf.lfEscapement = CW ? 2700 : 900;
-			logf.lfFaceName = "System";
-			logf.lfEscapement = 3600 - 450;
+			font.ToLogFont(logf);
+			logf.lfEscapement = CW ? 2700 : 900;
 			logf.lfOrientation = logf.lfEscapement;
 			logf.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
 
 			//this doesnt work! .net erases the relevant propreties.. it seems?
 			//return Font.FromLogFont(logf);
 
-			var ret = CreateFontIndirect(ref logf);
+			var ret = CreateFontIndirect(logf);
 			return ret;
 		}
 
@@ -334,8 +332,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("user32.dll")]
 		private static extern IntPtr EndPaint(IntPtr hWnd, IntPtr lpPaint);
 
-		[DllImport("gdi32.dll")]
-		static extern IntPtr CreateFontIndirect([In] ref LOGFONT lplf);
+		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+		private static extern IntPtr CreateFontIndirect(
+			[In, MarshalAs(UnmanagedType.LPStruct)]LOGFONT lplf
+			);
 
 		[DllImport("gdi32.dll")]
 		private static extern int Rectangle(IntPtr hdc, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
