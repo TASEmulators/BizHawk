@@ -704,6 +704,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						TasView.SelectRow(i, _selectionDragState);
 					}
+					SetSplicer();
 				}
 			}
 

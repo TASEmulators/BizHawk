@@ -258,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					TasView.SelectRow(i, true);
 				}
-
+				SetSplicer();
 				RefreshTasView();
 			}
 		}
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				TasView.SelectRow(item.Frame, true);
 			}
-
+			SetSplicer();
 			RefreshTasView();
 		}
 
@@ -285,6 +285,8 @@ namespace BizHawk.Client.EmuHawk
 				foreach (var index in list)
 				{
 					var input = CurrentTasMovie.GetInputState(index);
+					if (input == null)
+						break;
 					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
