@@ -1276,7 +1276,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
                 if (!_hmove.LateHBlankReset)
                 {
-                    _ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 3 : 160 - 4);
                 }
                 else
                 {
