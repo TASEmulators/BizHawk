@@ -661,14 +661,13 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"text",
-			"Displays the given text on the screen at the given coordinates. Optional Foreground and background colors. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
+			"Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
 		)]
 		public void Text(
 			int x,
 			int y,
 			string message,
 			Color? forecolor = null,
-			Color? background = null,
 			string anchor = null)
 		{
 			var a = 0;
@@ -701,7 +700,7 @@ namespace BizHawk.Client.EmuHawk
 				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
-			GlobalWin.OSD.AddGUIText(message, x, y, background ?? Color.Black, forecolor ?? Color.White, a);
+			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 
 		[LuaMethodAttributes(
