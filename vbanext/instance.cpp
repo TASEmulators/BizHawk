@@ -13443,7 +13443,29 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		mem.rom = rom;
 		mem.vram = vram;
 		mem.oam = oam;
-		mem.sram = flashSaveMemory;
+		switch (cpuSaveType)
+		{
+		default:
+		case 0: // auto
+			mem.sram = flashSaveMemory;
+			mem.sram_size = 0x10000;;
+			return;
+		case 1:
+		case 4: // eeprom
+			mem.sram = eepromData;
+			mem.sram_size = eepromSize;
+			return;
+		case 2: // sram
+			mem.sram = flashSaveMemory;
+			mem.sram_size = 0x10000;
+			return;
+		case 3: // flash
+			mem.sram = flashSaveMemory;
+			mem.sram_size = flashSize;
+			return;
+		case 5: // none
+			return;
+		}
 	}
 
 	void BusWrite(u32 addr, u8 val)

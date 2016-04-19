@@ -28,9 +28,10 @@ struct MemoryAreas
 	void *palram;
 	void *vram;
 	void *oam;
-	void *sram;
 	void *rom;
 	void *mmio;
+	void *sram;
+	uint32_t sram_size;
 };
 
 #define FLASH_128K_SZ 0x20000
