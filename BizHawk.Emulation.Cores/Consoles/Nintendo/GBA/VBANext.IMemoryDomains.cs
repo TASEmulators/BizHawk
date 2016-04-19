@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
 			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, true, 4));
 			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("SRAM", 128 * 1024, l, s.sram, true, 4));
 
 			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, l,
 				delegate(long addr)

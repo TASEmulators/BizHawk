@@ -326,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 						// back on regular object serialization when needed.  so try to undo a TypeConverter
 						// operation here
 						var converter = TypeDescriptor.GetConverter(prop.PropertyType);
-						val = converter.ConvertFromString((string)val);
+						val = converter.ConvertFromString(null,System.Globalization.CultureInfo.InvariantCulture,((string)val));
 					}
 					else if (!(val is bool) && prop.PropertyType.IsPrimitive)
 					{

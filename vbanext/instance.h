@@ -28,6 +28,7 @@ struct MemoryAreas
 	void *palram;
 	void *vram;
 	void *oam;
+	void *sram;
 	void *rom;
 	void *mmio;
 };

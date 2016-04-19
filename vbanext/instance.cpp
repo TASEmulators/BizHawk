@@ -13443,6 +13443,7 @@ template<bool isReader>bool SyncBatteryRam(NewState *ns)
 		mem.rom = rom;
 		mem.vram = vram;
 		mem.oam = oam;
+		mem.sram = flashSaveMemory;
 	}
 
 	void BusWrite(u32 addr, u8 val)
