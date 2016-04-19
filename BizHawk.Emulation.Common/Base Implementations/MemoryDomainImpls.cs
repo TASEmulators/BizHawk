@@ -85,6 +85,11 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		public void SetSize(long size)
+		{
+			Size = size;
+		}
+
 		public MemoryDomainIntPtr(string name, Endian endian, IntPtr data, long size, bool writable, int wordSize)
 		{
 			Name = name;
