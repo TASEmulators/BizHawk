@@ -593,6 +593,12 @@ namespace BizHawk.Client.EmuHawk
 
 		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
+			if (job.chain_outsize.Width == 0 || job.chain_outsize.Height == 0)
+			{
+				//this has to be a NOP, because lots of stuff will malfunction on a 0-sized viewport
+				return null;
+			}
+
 			//no drawing actually happens. it's important not to begin drawing on a control
 			if (!job.simulate && !job.offscreen)
 			{
