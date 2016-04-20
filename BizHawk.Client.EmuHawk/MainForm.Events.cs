@@ -810,37 +810,31 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayFPSMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleFPS();
 		}
 
 		private void DisplayFrameCounterMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleFrameCounter();
 		}
 
 		private void DisplayLagCounterMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleLagCounter();
 		}
 
 		private void DisplayInputMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			ToggleInputDisplay();
 		}
 
 		private void DisplayRerecordsMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplayRerecordCount ^= true;
 		}
 
 		private void DisplaySubtitlesMenuItem_Click(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			Global.Config.DisplaySubtitles ^= true;
 		}
 
@@ -2672,7 +2666,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainForm_Enter(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			AutohideCursor(false);
 		}
 
@@ -2710,7 +2703,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainformMenu_Leave(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 		}
 
 		private void MainformMenu_MenuActivate(object sender, EventArgs e)
@@ -2726,7 +2718,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MainformMenu_MenuDeactivate(object sender, EventArgs e)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (!_wasPaused)
 			{
 				UnpauseEmulator();

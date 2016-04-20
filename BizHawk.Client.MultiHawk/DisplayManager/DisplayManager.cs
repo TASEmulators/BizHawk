@@ -78,9 +78,6 @@ namespace BizHawk.Client.MultiHawk
 					f.Dispose();
 		}
 
-		//dont know what to do about this yet
-		public bool NeedsToPaint { get { return true; } } // TODO
-
 		//rendering resources:
 		public IGL GL;
 		IGuiRenderer Renderer;

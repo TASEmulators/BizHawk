@@ -276,23 +276,18 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle MultiTrack":
 					Global.MovieSession.ToggleMultitrack();
-					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select All":
 					Global.MovieSession.MultiTrack.SelectAll();
-					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Select None":
 					Global.MovieSession.MultiTrack.SelectNone();
-					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Increment Player":
 					Global.MovieSession.MultiTrack.Increment();
-					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "MT Decrement Player":
 					Global.MovieSession.MultiTrack.Decrement();
-					GlobalWin.DisplayManager.NeedsToPaint = true;
 					break;
 				case "Movie Poke": 
 					ToggleModePokeMode(); 

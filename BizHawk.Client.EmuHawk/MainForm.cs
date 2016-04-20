@@ -455,10 +455,9 @@ namespace BizHawk.Client.EmuHawk
 
 			SynchChrome();
 
-			//TODO POOP
 			PresentationPanel.Control.Paint += (o, e) =>
 			{
-				GlobalWin.DisplayManager.NeedsToPaint = true;
+				//I would like to trigger a repaint here, but this isnt done yet
 			};
 		}
 
@@ -517,18 +516,10 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 				}
 
-				if (Global.Config.DisplayInput) // Input display wants to update even while paused
-				{
-					GlobalWin.DisplayManager.NeedsToPaint = true;
-				}
-
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
-				if (GlobalWin.DisplayManager.NeedsToPaint)
-				{
-					Render();
-				}
+				Render();
 
 				CheckMessages();
 
@@ -2841,7 +2832,6 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
-				GlobalWin.DisplayManager.NeedsToPaint = true;
 				Global.CheatList.Pulse();
 
 				if (!PauseAVI)
@@ -3122,7 +3112,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AvFrameAdvance()
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			if (_currAviWriter != null)
 			{
 				//TODO ZERO - this code is pretty jacked. we'll want to frugalize buffers better for speedier dumping, and we might want to rely on the GL layer for padding
@@ -3231,8 +3220,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				}
-
-				GlobalWin.DisplayManager.NeedsToPaint = true;
 			}
 		}
 
@@ -3706,8 +3693,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (fromLua)
 				Global.MovieSession.Movie.IsCountingRerecords = false;
-
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{

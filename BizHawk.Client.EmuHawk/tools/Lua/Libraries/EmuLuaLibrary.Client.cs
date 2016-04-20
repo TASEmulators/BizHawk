@@ -280,15 +280,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"paint",
-			"Causes the client UI to repaint the screen"
-		)]
-		public static void Paint()
-		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-		}
-
-		[LuaMethodAttributes(
 			"pause",
 			"Pauses the emulator"
 		)]

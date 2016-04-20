@@ -109,9 +109,6 @@ namespace BizHawk.Client.EmuHawk
 					f.Dispose();
 		}
 
-		//dont know what to do about this yet
-		public bool NeedsToPaint { get; set; }
-
 		//rendering resources:
 		public IGL GL;
 		StringRenderer TheOneFont;
@@ -830,8 +827,6 @@ namespace BizHawk.Client.EmuHawk
 
 				//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 				//presentationPanel.GraphicsControl.End();
-
-				NeedsToPaint = false; //??
 			}
 		}
 

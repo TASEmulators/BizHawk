@@ -149,7 +149,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void ClearGraphics()
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			_luaSurface.Clear();
 		}
 
@@ -219,7 +218,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawBezier(LuaTable points, Color color)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -298,7 +296,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -326,7 +323,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -358,7 +354,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -382,7 +377,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -408,7 +402,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				g.DrawLine(GetPen(color ?? DefaultForeground), x1, y1, x2, y2);
@@ -441,7 +434,6 @@ namespace BizHawk.Client.EmuHawk
 			Color? line = null,
 			Color? background = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				var bg = background ?? DefaultBackground;
@@ -462,7 +454,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawPixel(int x, int y, Color? color = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -482,8 +473,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-
 			using (var g = GetGraphics())
 			{
 				try
@@ -558,7 +547,6 @@ namespace BizHawk.Client.EmuHawk
 			string fontfamily = null,
 			string fontstyle = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -618,7 +606,6 @@ namespace BizHawk.Client.EmuHawk
 			Color? backcolor = null,
 			string fontfamily = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
