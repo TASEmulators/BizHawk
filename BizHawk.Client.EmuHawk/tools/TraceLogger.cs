@@ -102,6 +102,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				DumpToDisk(_logFile);
+				_instructions.Clear();
 			}
 		}
 
