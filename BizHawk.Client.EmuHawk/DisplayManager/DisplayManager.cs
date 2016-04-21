@@ -869,7 +869,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Locks the requested lua surface name
 		/// </summary>
-		public DisplaySurface LockLuaSurface(string name)
+		public DisplaySurface LockLuaSurface(string name, bool clear=true)
 		{
 			if (MapNameToLuaSurface.ContainsKey(name))
 				throw new InvalidOperationException("Lua surface is already locked: " + name);
@@ -898,7 +898,7 @@ namespace BizHawk.Client.EmuHawk
 			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
 			else throw new InvalidOperationException("Unknown lua surface name: " +name);
 
-			DisplaySurface ret = sdss.AllocateSurface(width, height);
+			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
 			MapNameToLuaSurface[name] = ret;
 			MapLuaSurfaceToName[ret] = name;
 			return ret;
@@ -913,8 +913,9 @@ namespace BizHawk.Client.EmuHawk
 					var surf = PeekLockedLuaSurface(kvp.Key);
 					DisplaySurface surfLocked = null;
 					if (surf == null)
-						surf = surfLocked = LockLuaSurface(kvp.Key);
-					surf.Clear();
+						surf = surfLocked = LockLuaSurface(kvp.Key,true);
+					//zero 21-apr-2016 - we shouldnt need this
+					//surf.Clear();
 					if (surfLocked != null)
 						UnlockLuaSurface(surfLocked);
 					LuaSurfaceSets[kvp.Key].SetPending(null);

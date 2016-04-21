@@ -54,14 +54,14 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"DrawNew",
-			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface."
+			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)"
 		)]
-		public void DrawNew(string name)
+		public void DrawNew(string name, bool? clear=true)
 		{
 			try
 			{
 				DrawFinish();
-				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name,clear??true);
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -69,6 +69,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodAttributes(
+			"DrawFinish",
+			"Finishes drawing to the current lua surface and causes it to get displayed."
+		)]
 		public void DrawFinish()
 		{
 			if(_luaSurface != null)
