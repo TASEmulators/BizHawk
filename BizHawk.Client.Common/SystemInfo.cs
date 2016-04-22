@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return allSystemInfos[24];
+				return allSystemInfos[25];
 			}
 		}
 
