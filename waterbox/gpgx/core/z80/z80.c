@@ -586,7 +586,7 @@ void CDLogZ80(uint addr, uint flags)
 
 	if(addr < 0x4000)
 	{
-		addr &= 0x1FFFF;
+		addr &= 0x1FFF;
 		biz_cdcallback(addr, eCDLog_AddrType_RAMZ80, flags);
 		return;
 	}
