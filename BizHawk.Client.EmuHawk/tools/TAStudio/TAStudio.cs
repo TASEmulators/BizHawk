@@ -394,7 +394,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var columnsToHide = TasView.AllColumns
-				.Where(c => c.Name == "Power" || c.Name == "Reset");
+				.Where(c =>
+					// todo: make a proper user editable list?
+					c.Name == "Power" ||
+					c.Name == "Reset" ||
+					c.Name.StartsWith("Tilt") ||
+					c.Name == "Light Sensor"
+				);
 
 			foreach (var column in columnsToHide)
 			{
