@@ -578,21 +578,22 @@ namespace BizHawk.Client.Common
 		public void Load(BinaryReader br)
 		{
 			States.Clear();
-			//if (br.BaseStream.Length > 0)
-			//{ BaseStream.Length does not return the expected value.
-			int nstates = br.ReadInt32();
-			for (int i = 0; i < nstates; i++)
+			try
 			{
-				int frame = br.ReadInt32();
-				int len = br.ReadInt32();
-				byte[] data = br.ReadBytes(len);
-				// whether we should allow state removal check here is an interesting question
-				// nothing was edited yet, so it might make sense to show the project untouched first
-				SetState(frame, data);
-				//States.Add(frame, data);
-				//Used += len;
+				int nstates = br.ReadInt32();
+				for (int i = 0; i < nstates; i++)
+				{
+					int frame = br.ReadInt32();
+					int len = br.ReadInt32();
+					byte[] data = br.ReadBytes(len);
+					// whether we should allow state removal check here is an interesting question
+					// nothing was edited yet, so it might make sense to show the project untouched first
+					SetState(frame, data);
+					//States.Add(frame, data);
+					//Used += len;
+				}
 			}
-			//}
+			catch (EndOfStreamException) { }
 		}
 
 		public void SaveBranchStates(BinaryWriter bw)
