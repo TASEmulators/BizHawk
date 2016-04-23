@@ -26,16 +26,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
+			string mainversion = VersionInfo.MAINVERSION;
+			if (IntPtr.Size == 8)
+				mainversion += " (x64)";
 			if (VersionInfo.DeveloperBuild)
 			{
 				Text = " BizHawk  (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 			else
 			{
-				Text = "Version " + VersionInfo.MAINVERSION + " (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
+				Text = "Version " + mainversion + " (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 
-			VersionLabel.Text = "Version " + VersionInfo.MAINVERSION + " " + VersionInfo.RELEASEDATE;
+			VersionLabel.Text = "Version " + mainversion + " " + VersionInfo.RELEASEDATE;
 
 			var cores = Assembly
 				.Load("BizHawk.Emulation.Cores")
