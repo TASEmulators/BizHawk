@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 			DiskSaveCapacitymb = 512;
 			Capacitymb = 512;
 			DiskCapacitymb = 512;
-			StateGap = 8;
+			StateGap = 4;
 			BranchStatesInTasproj = false;
 			EraseBranchStatesFirst = true;
 		}
@@ -57,10 +57,10 @@ namespace BizHawk.Client.Common
 		public int DiskCapacitymb { get; set; }
 
 		/// <summary>
-		/// The amount of states to skip during project saving. Use 1 to skip none
+		/// The amount of states to skip during project saving
 		/// </summary>
-		[DisplayName("Save only 1 state out of this number")]
-		[Description("The amount of states to skip during project saving. Use 1 to skip none")]
+		[DisplayName("State interval for .tasproj")]
+		[Description("The actual state gap in frames is calculated as Nth power on 2")]
 		public int StateGap { get; set; }
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace BizHawk.Client.Common
 				if (lines.Length > 3)
 					StateGap = int.Parse(lines[3]);
 				else
-					StateGap = 8;
+					StateGap = 4;
 
 				if (lines.Length > 4)
 					BranchStatesInTasproj = bool.Parse(lines[4]);

@@ -93,5 +93,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Settings.EraseBranchStatesFirst = EraseBranchStatesFirst.Checked;
 		}
+
+		private void StateGap_ValueChanged(object sender, EventArgs e)
+		{
+			NumFramesLabel.Text = ((StateGap.Value == 0) ? "frame" : (1 << (int)StateGap.Value).ToString() + " frames");
+		}
 	}
 }

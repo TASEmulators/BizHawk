@@ -530,10 +530,14 @@ namespace BizHawk.Client.Common
 					index++;
 					if (index >= States.Count)
 						break;
-				} while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
-				if (index >= States.Count) break;
+				}
+				while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
+
+				if (index >= States.Count)
+					break;
 
 				ret.Add(index);
+
 				if (States.ElementAt(index).Value.IsOnDisk)
 					saveUsed -= _expectedStateSize;
 				else
@@ -559,11 +563,13 @@ namespace BizHawk.Client.Common
 		public void Save(BinaryWriter bw)
 		{
 			List<int> noSave = ExcludeStates();
+			int stateGap = 1 << Settings.StateGap;
 
-			bw.Write(States.Count / Settings.StateGap - noSave.Count);
+			bw.Write(States.Count / stateGap - noSave.Count);
 			for (int i = 0; i < States.Count; i++)
 			{
-				if (noSave.Contains(i) || i % Settings.StateGap != 0)
+				if (noSave.Contains(i) ||
+					States.ElementAt(i).Key % stateGap != 0)
 					continue;
 
 				StateAccessed(States.ElementAt(i).Key);
