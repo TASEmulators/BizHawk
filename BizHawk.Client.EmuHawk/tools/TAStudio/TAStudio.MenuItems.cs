@@ -85,13 +85,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				_autosaveTimer.Stop();
+				MessageStatusLabel.Text = "Saving...";
+				this.Cursor = Cursors.WaitCursor;
+				Update();
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
+				_autosaveTimer.Start();
+				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
+				this.Cursor = Cursors.Default;
 			}
 		}
 
 		private void SaveAsTasMenuItem_Click(object sender, EventArgs e)
 		{
+			_autosaveTimer.Stop();
 			var filename = CurrentTasMovie.Filename;
 			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{
@@ -107,9 +115,15 @@ namespace BizHawk.Client.EmuHawk
 			if (file != null)
 			{
 				CurrentTasMovie.Filename = file.FullName;
+				MessageStatusLabel.Text = "Saving...";
+				this.Cursor = Cursors.WaitCursor;
+				Update();
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
+				_autosaveTimer.Start();
+				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
+				this.Cursor = Cursors.Default;
 			}
 		}
 
@@ -146,10 +160,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToBk2MenuItem_Click(object sender, EventArgs e)
 		{
+			_autosaveTimer.Stop();
 			var bk2 = CurrentTasMovie.ToBk2(true);
+			MessageStatusLabel.Text = "Exporting to .bk2...";
+			this.Cursor = Cursors.WaitCursor;
+			Update();
 			bk2.Save();
-			MessageStatusLabel.Text = Path.GetFileName(bk2.Filename) + " created.";
-
+			_autosaveTimer.Start();
+			MessageStatusLabel.Text = Path.GetFileName(bk2.Filename) + " exported.";
+			this.Cursor = Cursors.Default;
 		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
@@ -186,10 +205,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void showUndoHistoryToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			undoForm = new UndoHistoryForm(this);
-			undoForm.Owner = this;
-			undoForm.Show();
-			undoForm.UpdateValues();
+			_undoForm = new UndoHistoryForm(this);
+			_undoForm.Owner = this;
+			_undoForm.Show();
+			_undoForm.UpdateValues();
 		}
 
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -706,11 +725,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SetAutosaveIntervalMenuItem_Click(object sender, EventArgs e)
+		{
+			using (var prompt = new InputPrompt
+			{
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Autosave Interval in seconds",
+				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
+			})
+			{
+				DialogResult result = prompt.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					int val = int.Parse(prompt.PromptText) * 1000;
+					if (val > 0)
+					{
+						Settings.AutosaveInterval = val;
+						_autosaveTimer.Interval = val;
+					}
+				}
+			}
+		}
+
+		private void AutosaveAsBk2MenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.AutosaveAsBk2 ^= true;
+		}
+
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
 			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
 			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
+			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)

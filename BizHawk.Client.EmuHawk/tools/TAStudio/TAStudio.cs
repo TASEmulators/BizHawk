@@ -36,7 +36,8 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
-		private UndoHistoryForm undoForm;
+		private UndoHistoryForm _undoForm;
+		private Timer _autosaveTimer = new Timer();
 
 		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
 		{
@@ -66,6 +67,8 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
 				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
+				AutosaveInterval = 120000;
+				AutosaveAsBk2 = false;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -84,6 +87,8 @@ namespace BizHawk.Client.EmuHawk
             public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
 			public int SeekingCutoffInterval { get; set; }
+			public int AutosaveInterval { get; set; }
+			public bool AutosaveAsBk2 { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -146,6 +151,25 @@ namespace BizHawk.Client.EmuHawk
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
 			WantsToControlRestartMovie = true;
+
+			_autosaveTimer.Interval = Settings.AutosaveInterval;
+			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
+			_autosaveTimer.Start();
+		}
+
+		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
+		{
+			if (!CurrentTasMovie.Changes)
+				return;
+
+			if (Settings.AutosaveAsBk2)
+			{
+				ToBk2MenuItem_Click(sender, e);
+			}
+			else
+			{
+				SaveTasMenuItem_Click(sender, e);
+			}
 		}
 
 		private void InitializeSaveWorker()
@@ -705,8 +729,8 @@ namespace BizHawk.Client.EmuHawk
 			if (BookMarkControl != null)
 				BookMarkControl.UpdateValues();
 
-			if (undoForm != null && !undoForm.IsDisposed)
-				undoForm.UpdateValues();
+			if (_undoForm != null && !_undoForm.IsDisposed)
+				_undoForm.UpdateValues();
 		}
 
 		private void RefreshTasView()
@@ -861,8 +885,8 @@ namespace BizHawk.Client.EmuHawk
 				_exiting = false;
 			}
 
-			if (undoForm != null)
-				undoForm.Close();
+			if (_undoForm != null)
+				_undoForm.Close();
 		}
 
 		/// <summary>
