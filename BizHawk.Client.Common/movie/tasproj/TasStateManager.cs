@@ -81,6 +81,11 @@ namespace BizHawk.Client.Common
 			get { return (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize); }
 		}
 
+		private int _stateGap
+		{
+			get { return 1 << Settings.StateGap; }
+		}
+
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
@@ -520,9 +525,27 @@ namespace BizHawk.Client.Common
 		private List<int> ExcludeStates()
 		{
 			List<int> ret = new List<int>();
-
 			ulong saveUsed = Used + DiskUsed;
-			int index = -1;
+
+			// respect state gap no matter how small the resulting size will be
+			// still leave marker states
+			for (int i = 1; i < States.Count; i++)
+			{
+				if (_movie.Markers.IsMarker(States.ElementAt(i).Key + 1) ||
+					States.ElementAt(i).Key % _stateGap == 0)
+					continue;
+
+				ret.Add(i);
+
+				if (States.ElementAt(i).Value.IsOnDisk)
+					saveUsed -= _expectedStateSize;
+				else
+					saveUsed -= (ulong)States.ElementAt(i).Value.Length;
+			}
+
+			// if the size is still too big, exclude states form the beginning
+			// still leave marker states
+			int index = 0;
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
 				do
@@ -544,8 +567,8 @@ namespace BizHawk.Client.Common
 					saveUsed -= (ulong)States.ElementAt(index).Value.Length;
 			}
 
-			// If there are enough markers to still be over the limit, remove marker frames
-			index = -1;
+			// if there are enough markers to still be over the limit, remove marker frames
+			index = 0;
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
 				index++;
@@ -563,13 +586,11 @@ namespace BizHawk.Client.Common
 		public void Save(BinaryWriter bw)
 		{
 			List<int> noSave = ExcludeStates();
-			int stateGap = 1 << Settings.StateGap;
 
-			bw.Write(States.Count / stateGap - noSave.Count);
+			bw.Write(States.Count - noSave.Count);
 			for (int i = 0; i < States.Count; i++)
 			{
-				if (noSave.Contains(i) ||
-					States.ElementAt(i).Key % stateGap != 0)
+				if (noSave.Contains(i))
 					continue;
 
 				StateAccessed(States.ElementAt(i).Key);
