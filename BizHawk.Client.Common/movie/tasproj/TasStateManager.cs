@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				shouldCapture = frame - States.Keys.LastOrDefault(k => k < frame) >= StateFrequency;
+				shouldCapture = frame % StateFrequency == 0;
 			}
 
 			if (shouldCapture)
