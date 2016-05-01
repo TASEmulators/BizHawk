@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//sequence of ppu clocks per cpu clock: 3
 		ByteBuffer cpu_sequence;
 		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
-		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3});
+		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 
 #if VS2012
