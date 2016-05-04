@@ -12,13 +12,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", Ram.Length, MemoryDomain.Endian.Little,
-				addr => Ram[addr],
-				(addr, value) => Ram[addr] = value);
-			var VRamDomain = new MemoryDomain("Video RAM", VDP.VRAM.Length, MemoryDomain.Endian.Little,
-				addr => VDP.VRAM[addr],
-				(addr, value) => VDP.VRAM[addr] = value);
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			var MainMemoryDomain = new MemoryDomainByteArray("Main RAM", MemoryDomain.Endian.Little, Ram, true, 1);
+			var VRamDomain = new MemoryDomainByteArray("Video RAM", MemoryDomain.Endian.Little, VDP.VRAM, true, 1);
+			var SystemBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 65536)
@@ -36,7 +32,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 
 					Cpu.WriteMemory((ushort)addr, value);
-				});
+				}, 1);
 
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);

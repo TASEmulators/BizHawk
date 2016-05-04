@@ -79,7 +79,7 @@
 			this.OK.Name = "OK";
 			this.OK.Size = new System.Drawing.Size(75, 23);
 			this.OK.TabIndex = 50;
-			this.OK.Text = "&Ok";
+			this.OK.Text = "&OK";
 			this.toolTip1.SetToolTip(this.OK, "Load selected movie");
 			this.OK.UseVisualStyleBackColor = true;
 			this.OK.Click += new System.EventHandler(this.Ok_Click);

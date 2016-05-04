@@ -102,10 +102,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
             {
                 case 0x0:
                     _ifr &= 0xE7;
+                    if (_pcrCb2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCb2Control == PCR_CONTROL_PULSE_OUTPUT)
+                    {
+                        _handshakeCb2NextClock = true;
+                    }
                     WriteRegister(addr, val);
                     break;
                 case 0x1:
                     _ifr &= 0xFC;
+                    if (_pcrCa2Control == PCR_CONTROL_HANDSHAKE_OUTPUT || _pcrCa2Control == PCR_CONTROL_PULSE_OUTPUT)
+                    {
+                        _handshakeCa2NextClock = true;
+                    }
                     WriteRegister(addr, val);
                     break;
                 case 0x4:
@@ -116,9 +124,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                     _t1L = (_t1L & 0xFF) | ((val & 0xFF) << 8);
                     _ifr &= 0xBF;
                     _t1C = _t1L;
+                    _t1CLoaded = true;
+                    _t1Delayed = 1;
                     break;
                 case 0x7:
                     _t1L = (_t1L & 0xFF) | ((val & 0xFF) << 8);
+                    _ifr &= 0xBF;
                     break;
                 case 0x8:
                     _t2L = (_t2L & 0xFF00) | (val & 0xFF);
@@ -126,7 +137,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
                 case 0x9:
                     _t2L = (_t2L & 0xFF) | ((val & 0xFF) << 8);
                     _ifr &= 0xDF;
-                    _t2C = _t2L;
+                    if (_acrT2Control == ACR_T2_CONTROL_TIMED)
+                    {
+                        _t2C = _t2L;
+                        _t2CLoaded = true;
+                    }
+                    _t2Delayed = 1;
                     break;
                 case 0xA:
                     _ifr &= 0xFB;

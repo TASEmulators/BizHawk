@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncPRG();
 
 			if (NES.apu != null) // don't start up sound when in configurator
-				VRC6Sound = new VRC6Alt((uint)NES.cpuclockrate, NES.apu.ExternalQueue);
+				VRC6Sound = new VRC6Alt(NES.apu.ExternalQueue);
 
 			return true;
 		}

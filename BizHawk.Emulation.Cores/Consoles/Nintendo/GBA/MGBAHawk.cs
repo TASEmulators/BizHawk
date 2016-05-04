@@ -57,9 +57,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					LibmGBA.BizSkipBios(core);
 				}
 
+
+				CreateMemoryDomains(file.Length);
 				var ser = new BasicServiceProvider(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
-				ser.Register<IMemoryDomains>(CreateMemoryDomains(file.Length));
+				ser.Register<IMemoryDomains>(MemoryDomains);
 
 				ServiceProvider = ser;
 				CoreComm = comm;
@@ -78,6 +80,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
+		MemoryDomainList MemoryDomains;
+
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
 		public IController Controller { get; set; }
@@ -86,7 +90,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			Frame++;
 			if (Controller["Power"])
+			{
 				LibmGBA.BizReset(core);
+				//BizReset caused memorydomain pointers to change.
+				WireMemoryDomainPointers();
+			}
 
 			IsLagFrame = LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
 				RTCTime(),
@@ -168,46 +176,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram.ToPointer())[addr];}
 		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram.ToPointer())[addr] = value; }
 
-		private MemoryDomainList CreateMemoryDomains(int romsize)
+		void WireMemoryDomainPointers()
 		{
 			var s = new LibmGBA.MemoryAreas();
-			var mm = new List<MemoryDomain>();
 			LibmGBA.BizGetMemoryAreas(core, s);
 
-			var l = MemoryDomain.Endian.Little;
-			mm.Add(MemoryDomain.FromIntPtr("IWRAM", 32 * 1024, l, s.iwram, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("EWRAM", 256 * 1024, l, s.wram, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("BIOS", 16 * 1024, l, s.bios, false, 4));
-			mm.Add(MemoryDomain.FromIntPtr("PALRAM", 1024, l, s.palram, false, 4));
-			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, false, 4));
-			mm.Add(MemoryDomain.FromIntPtr("ROM", romsize, l, s.rom, false, 4));
+			_iwram.Data = s.iwram;
+			_ewram.Data = s.wram;
+			_bios.Data = s.bios;
+			_palram.Data = s.palram;
+			_vram.Data = s.vram;
+			_oam.Data = s.oam;
+			_rom.Data = s.rom;
+			_sram.Data = s.sram;
+			_sram.SetSize(s.sram_size);
 
 			// special combined ram memory domain
-			{
-				var ew = mm[1];
-				var iw = mm[0];
-				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
-					delegate(long addr)
-					{
-						if (addr < 0 || addr >= (256 + 32) * 1024)
-							throw new IndexOutOfRangeException();
-						if (addr >= 256 * 1024)
-							return PeekWRAM(s.iwram,addr & 32767);
-						else
-							return PeekWRAM(s.wram, addr);
-					},
-					delegate(long addr, byte val)
-					{
-						if (addr < 0 || addr >= (256 + 32) * 1024)
-							throw new IndexOutOfRangeException();
-						if (addr >= 256 * 1024)
-							PokeWRAM(s.iwram, addr & 32767, val);
-						else
-							PokeWRAM(s.wram, addr, val);
-					}, 4);
-				mm.Add(cr);
-			}
+
+			_cwram.Peek =
+				delegate(long addr)
+				{
+					LibmGBA.BizGetMemoryAreas(core, s);
+					if (addr < 0 || addr >= (256 + 32) * 1024)
+						throw new IndexOutOfRangeException();
+					if (addr >= 256 * 1024)
+						return PeekWRAM(s.iwram, addr & 32767);
+					else
+						return PeekWRAM(s.wram, addr);
+				};
+			_cwram.Poke =
+				delegate(long addr, byte val)
+				{
+					if (addr < 0 || addr >= (256 + 32) * 1024)
+						throw new IndexOutOfRangeException();
+					if (addr >= 256 * 1024)
+						PokeWRAM(s.iwram, addr & 32767, val);
+					else
+						PokeWRAM(s.wram, addr, val);
+				};
 
 			_gpumem = new GBAGPUMemoryAreas
 			{
@@ -216,9 +222,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				palram = s.palram,
 				vram = s.vram
 			};
+		}
 
-			return new MemoryDomainList(mm);
+		private MemoryDomainIntPtr _iwram;
+		private MemoryDomainIntPtr _ewram;
+		private MemoryDomainIntPtr _bios;
+		private MemoryDomainIntPtr _palram;
+		private MemoryDomainIntPtr _vram;
+		private MemoryDomainIntPtr _oam;
+		private MemoryDomainIntPtr _rom;
+		private MemoryDomainIntPtr _sram;
+		private MemoryDomainDelegate _cwram;
 
+		private void CreateMemoryDomains(int romsize)
+		{
+			var LE = MemoryDomain.Endian.Little;
+
+			var mm = new List<MemoryDomain>();
+			mm.Add(_iwram = new MemoryDomainIntPtr("IWRAM", LE, IntPtr.Zero, 32 * 1024, true, 4));
+			mm.Add(_ewram = new MemoryDomainIntPtr("EWRAM", LE, IntPtr.Zero, 256 * 1024, true, 4));
+			mm.Add(_bios = new MemoryDomainIntPtr("BIOS", LE, IntPtr.Zero, 16 * 1024, false, 4));
+			mm.Add(_palram = new MemoryDomainIntPtr("PALRAM", LE, IntPtr.Zero, 1024, true, 4));
+			mm.Add(_vram = new MemoryDomainIntPtr("VRAM", LE, IntPtr.Zero, 96 * 1024, true, 4));
+			mm.Add(_oam = new MemoryDomainIntPtr("OAM", LE, IntPtr.Zero, 1024, true, 4));
+			mm.Add(_rom = new MemoryDomainIntPtr("ROM", LE, IntPtr.Zero, romsize, false, 4));
+			mm.Add(_sram = new MemoryDomainIntPtr("SRAM", LE, IntPtr.Zero, 0, true, 4)); //size will be fixed in wireup
+			mm.Add(_cwram = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, LE, null, null, 4));
+
+			MemoryDomains = new MemoryDomainList(mm);
+			WireMemoryDomainPointers();
 		}
 
 		#endregion

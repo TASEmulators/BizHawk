@@ -198,6 +198,15 @@
     <Compile Include="AVOut\NutMuxer.cs" />
     <Compile Include="AVOut\NutWriter.cs" />
     <Compile Include="AVOut\ImageSequenceWriter.cs" />
+    <Compile Include="AVOut\Quantize\OctreeQuantizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AVOut\Quantize\PaletteTable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AVOut\Quantize\Quantizer.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="AVOut\SynclessRecorder.cs" />
     <Compile Include="AVOut\SynclessRecordingTools.cs">
       <SubType>Form</SubType>
@@ -1260,6 +1269,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\DisplayConfigLite.resx">
       <DependentUpon>DisplayConfigLite.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="config\FileExtensionPreferences.resx">
       <DependentUpon>FileExtensionPreferences.cs</DependentUpon>

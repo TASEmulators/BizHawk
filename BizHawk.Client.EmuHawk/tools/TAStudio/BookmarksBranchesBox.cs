@@ -162,7 +162,6 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadBranch(TasBranch branch)
 		{
 			Tastudio.CurrentTasMovie.LoadBranch(branch);
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());

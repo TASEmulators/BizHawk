@@ -503,7 +503,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// port = 0, oninputpoll = 2: left port was strobed
 			// port = 1, oninputpoll = 3: right port was strobed
-			Console.WriteLine("ONINPUTPOLL: {0}", port + 2);
 
 			// InputCallbacks.Call();
 			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
@@ -549,8 +548,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// 1: signifies latch bit going to 1.  should be reported as oninputpoll
 			if (index >= 0x4000)
 				IsLagFrame = false;
-			else
-				Console.WriteLine("ONINPUTPOLL: {0}", index);
 		}
 
 		void snes_video_refresh(int* data, int width, int height)
@@ -1079,7 +1076,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockptr = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
 
-			var md = new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
+			var md = new MemoryDomainDelegate("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					var a = FakeBusMap((int)addr);
@@ -1093,7 +1090,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					var a = FakeBusMap((int)addr);
 					if (a.HasValue)
 						blockptr[a.Value] = val;
-				}, byteSize: 2);
+				}, wordSize: 2);
 			_memoryDomains.Add(md);
 		}
 
@@ -1119,17 +1116,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				//maybe a better way to visualize it is with an empty bus and adjacent banks
 				//so, we just throw away everything above its size of 544 bytes
 				if (size != 544) throw new InvalidOperationException("oam size isnt 544 bytes.. wtf?");
-				md = new MemoryDomain(name, size, endian,
+				md = new MemoryDomainDelegate(name, size, endian,
 				   (addr) => (addr < 544) ? blockptr[addr] : (byte)0x00,
 					 (addr, value) => { if (addr < 544) blockptr[addr] = value; },
 					 byteSize);
 			}
 			else if(pow2)
-				md = new MemoryDomain(name, size, endian,
+				md = new MemoryDomainDelegate(name, size, endian,
 						(addr) => blockptr[addr & mask],
 						(addr, value) => blockptr[addr & mask] = value, byteSize);
 			else
-				md = new MemoryDomain(name, size, endian,
+				md = new MemoryDomainDelegate(name, size, endian,
 						(addr) => blockptr[addr % size],
 						(addr, value) => blockptr[addr % size] = value, byteSize);
 
@@ -1140,9 +1137,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void SetupMemoryDomains(byte[] romData, byte[] sgbRomData)
 		{
-			// remember, MainMemory must always be the same as MemoryDomains[0], else GIANT DRAGONS
-			//<zeromus> - this is stupid.
-
 			//lets just do this entirely differently for SGB
 			if (IsSGB)
 			{
@@ -1150,13 +1144,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				//You wouldnt expect a DMG game to access excess wram, but what if it tried to? maybe an oversight in bsnes?
 				MakeMemoryDomain("SGB WRAM", LibsnesApi.SNES_MEMORY.SGB_WRAM, MemoryDomain.Endian.Little);
 
-
-				var romDomain = new MemoryDomain("SGB CARTROM", romData.Length, MemoryDomain.Endian.Little,
-					(addr) => romData[addr],
-					(addr, value) => romData[addr] = value);
+				var romDomain = new MemoryDomainByteArray("SGB CARTROM", MemoryDomain.Endian.Little, romData, true, 1);
 				_memoryDomains.Add(romDomain);
 		
-
 				//the last 1 byte of this is special.. its an interrupt enable register, instead of ram. weird. maybe its actually ram and just getting specially used?
 				MakeMemoryDomain("SGB HRAM", LibsnesApi.SNES_MEMORY.SGB_HRAM, MemoryDomain.Endian.Little);
 
@@ -1164,9 +1154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				MainMemory = MakeMemoryDomain("WRAM", LibsnesApi.SNES_MEMORY.WRAM, MemoryDomain.Endian.Little);
 
-				var sgbromDomain = new MemoryDomain("SGB.SFC ROM", sgbRomData.Length, MemoryDomain.Endian.Little,
-					(addr) => sgbRomData[addr],
-					(addr, value) => sgbRomData[addr] = value);
+				var sgbromDomain = new MemoryDomainByteArray("SGB.SFC ROM", MemoryDomain.Endian.Little, sgbRomData, true, 1);
 				_memoryDomains.Add(sgbromDomain);
 			}
 			else
@@ -1183,9 +1171,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				if (!DeterministicEmulation)
 				{
-					_memoryDomains.Add(new MemoryDomain("System Bus", 0x1000000, MemoryDomain.Endian.Little,
+					_memoryDomains.Add(new MemoryDomainDelegate("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 						(addr) => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
-						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val), byteSize: 2));
+						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val), wordSize: 2));
 				}
 				else
 				{

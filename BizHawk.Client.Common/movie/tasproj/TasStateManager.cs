@@ -81,6 +81,11 @@ namespace BizHawk.Client.Common
 			get { return (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize); }
 		}
 
+		private int _stateGap
+		{
+			get { return 1 << Settings.StateGap; }
+		}
+
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
@@ -195,7 +200,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				shouldCapture = frame - States.Keys.LastOrDefault(k => k < frame) >= StateFrequency;
+				shouldCapture = frame % StateFrequency == 0;
 			}
 
 			if (shouldCapture)
@@ -390,7 +395,7 @@ namespace BizHawk.Client.Common
 				if (BranchStates[frame][branch].IsOnDisk)
 					BranchStates[frame][branch].Dispose();
 				else
-					Used -= (ulong)BranchStates[frame][branch].Length;
+					//Used -= (ulong)BranchStates[frame][branch].Length;
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
 
 				if (BranchStates[frame].Count == 0)
@@ -520,9 +525,27 @@ namespace BizHawk.Client.Common
 		private List<int> ExcludeStates()
 		{
 			List<int> ret = new List<int>();
-
 			ulong saveUsed = Used + DiskUsed;
-			int index = -1;
+
+			// respect state gap no matter how small the resulting size will be
+			// still leave marker states
+			for (int i = 1; i < States.Count; i++)
+			{
+				if (_movie.Markers.IsMarker(States.ElementAt(i).Key + 1) ||
+					States.ElementAt(i).Key % _stateGap == 0)
+					continue;
+
+				ret.Add(i);
+
+				if (States.ElementAt(i).Value.IsOnDisk)
+					saveUsed -= _expectedStateSize;
+				else
+					saveUsed -= (ulong)States.ElementAt(i).Value.Length;
+			}
+
+			// if the size is still too big, exclude states form the beginning
+			// still leave marker states
+			int index = 0;
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
 				do
@@ -530,18 +553,22 @@ namespace BizHawk.Client.Common
 					index++;
 					if (index >= States.Count)
 						break;
-				} while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
-				if (index >= States.Count) break;
+				}
+				while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
+
+				if (index >= States.Count)
+					break;
 
 				ret.Add(index);
+
 				if (States.ElementAt(index).Value.IsOnDisk)
 					saveUsed -= _expectedStateSize;
 				else
 					saveUsed -= (ulong)States.ElementAt(index).Value.Length;
 			}
 
-			// If there are enough markers to still be over the limit, remove marker frames
-			index = -1;
+			// if there are enough markers to still be over the limit, remove marker frames
+			index = 0;
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
 				index++;
@@ -571,28 +598,29 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
-				_movie.ReportProgress(100d / States.Count * i);
+				//_movie.ReportProgress(100d / States.Count * i);
 			}
 		}
 
 		public void Load(BinaryReader br)
 		{
 			States.Clear();
-			//if (br.BaseStream.Length > 0)
-			//{ BaseStream.Length does not return the expected value.
-			int nstates = br.ReadInt32();
-			for (int i = 0; i < nstates; i++)
+			try
 			{
-				int frame = br.ReadInt32();
-				int len = br.ReadInt32();
-				byte[] data = br.ReadBytes(len);
-				// whether we should allow state removal check here is an interesting question
-				// nothing was edited yet, so it might make sense to show the project untouched first
-				SetState(frame, data);
-				//States.Add(frame, data);
-				//Used += len;
+				int nstates = br.ReadInt32();
+				for (int i = 0; i < nstates; i++)
+				{
+					int frame = br.ReadInt32();
+					int len = br.ReadInt32();
+					byte[] data = br.ReadBytes(len);
+					// whether we should allow state removal check here is an interesting question
+					// nothing was edited yet, so it might make sense to show the project untouched first
+					SetState(frame, data);
+					//States.Add(frame, data);
+					//Used += len;
+				}
 			}
-			//}
+			catch (EndOfStreamException) { }
 		}
 
 		public void SaveBranchStates(BinaryWriter bw)
@@ -650,7 +678,21 @@ namespace BizHawk.Client.Common
 		// 4 bytes - length of savestate
 		// 0 - n savestate
 
-		private ulong Used { get; set; }
+		private ulong _used;
+		private ulong Used
+		{
+			get
+			{
+				return _used;
+			}
+			set
+			{
+				if (value > 0xf000000000000000)
+					System.Diagnostics.Debug.Fail("ulong Used underfow!");
+				else
+					_used = value;
+			}
+		}
 
 		private ulong DiskUsed
 		{
@@ -736,7 +778,7 @@ namespace BizHawk.Client.Common
 
 			// Loop through branch states for the given frame.
 			SortedList<int, StateManagerState> stateList = BranchStates[frame];
-			for (int i = 0; i < _movie.BranchCount; i++)
+			for (int i = 0; i < stateList.Count(); i++)
 			{
 				// Don't check the branch containing the state to match.
 				if (i == _movie.BranchIndexByHash(branchHash))
@@ -797,7 +839,7 @@ namespace BizHawk.Client.Common
 				SortedList<int, StateManagerState> stateList = kvp.Value;
 				if (stateList == null)
 					continue;
-
+				/*
 				if (stateList.ContainsKey(branchHash))
 				{
 					if (stateHasDuplicate(kvp.Key, branchHash) == -2)
@@ -806,7 +848,7 @@ namespace BizHawk.Client.Common
 							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
-
+				*/
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);
@@ -823,7 +865,7 @@ namespace BizHawk.Client.Common
 				SortedList<int, StateManagerState> stateList = kvp.Value;
 				if (stateList == null)
 					continue;
-
+				/*
 				if (stateList.ContainsKey(branchHash))
 				{
 					if (stateHasDuplicate(kvp.Key, branchHash) == -2)
@@ -832,7 +874,7 @@ namespace BizHawk.Client.Common
 							Used -= (ulong)stateList[branchHash].Length;
 					}
 				}
-
+				*/
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
 					BranchStates.Remove(kvp.Key);

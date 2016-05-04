@@ -37,5 +37,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
         {
             _tape = tape;
         }
+
+        public void RemoveMedia()
+        {
+            _tape = null;
+        }
     }
 }

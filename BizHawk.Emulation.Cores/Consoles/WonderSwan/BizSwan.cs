@@ -252,6 +252,16 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public struct Settings
 		{
 			public LayerFlags LayerMask; // 1 = show
+			/// <summary>
+			/// map bw shades to output colors, [0] = darkest, [15] = lightest
+			/// </summary>
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+			public uint[] BWPalette;
+			/// <summary>
+			/// map color shades to output colors, bits 0-3 blue, bits 4-7 green, bits 8-11 red
+			/// </summary>
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4096)]
+			public uint[] ColorPalette;
 		}
 	}
 }

@@ -881,7 +881,6 @@
 			// 
 			// FlushSaveRAMMenuItem
 			// 
-			this.FlushSaveRAMMenuItem.Font = new System.Drawing.Font("Tahoma", 8.25F);
 			this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
 			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";

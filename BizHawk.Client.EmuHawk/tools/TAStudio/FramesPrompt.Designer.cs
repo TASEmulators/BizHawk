@@ -41,7 +41,7 @@
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 1;
-			this.OkBtn.Text = "&Ok";
+			this.OkBtn.Text = "&OK";
 			this.OkBtn.UseVisualStyleBackColor = true;
 			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
 			// 
@@ -68,7 +68,7 @@
 			// 
 			// NumFramesBox
 			// 
-			this.NumFramesBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.NumFramesBox.ByteSize = BizHawk.Client.Common.WatchSize.Word;
 			this.NumFramesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.NumFramesBox.Location = new System.Drawing.Point(138, 16);
 			this.NumFramesBox.MaxLength = 5;

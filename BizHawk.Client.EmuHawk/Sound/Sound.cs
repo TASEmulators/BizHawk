@@ -67,7 +67,7 @@ namespace BizHawk.Client.EmuHawk
 
 			IsStarted = true;
 
-			ApplyVolumeSettings();
+			//ApplyVolumeSettings();
 
 			//LogUnderruns = true;
 			//_outputProvider.LogDebug = true;
@@ -86,15 +86,15 @@ namespace BizHawk.Client.EmuHawk
 			IsStarted = false;
 		}
 
-		public void ApplyVolumeSettings()
-		{
-			if (!IsStarted) return;
+		//public void ApplyVolumeSettings()
+		//{
+		//  if (!IsStarted) return;
 
-			double volume = Global.Config.SoundVolume / 100.0;
-			if (volume < 0.0) volume = 0.0;
-			if (volume > 1.0) volume = 1.0;
-			_soundOutput.ApplyVolumeSettings(volume);
-		}
+		//  double volume = Global.Config.SoundVolume / 100.0;
+		//  if (volume < 0.0) volume = 0.0;
+		//  if (volume > 1.0) volume = 1.0;
+		//  _soundOutput.ApplyVolumeSettings(volume);
+		//}
 
 		public void SetSyncInputPin(ISyncSoundProvider source)
 		{
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 			_outputProvider.OnVolatility();
 		}
 
-		public void UpdateSound(bool outputSilence)
+		public void UpdateSound(float atten)
 		{
 			if (!Global.Config.SoundEnabled || !IsStarted || _disposed)
 			{
@@ -175,11 +175,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (atten < 0) atten = 0;
+			if (atten > 1) atten = 1;
+			_soundOutput.ApplyVolumeSettings(atten);
+
 			short[] samples;
 			int samplesNeeded = _soundOutput.CalculateSamplesNeeded();
 			int samplesProvided;
 
-			if (outputSilence)
+			if (atten==0)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 				samplesProvided = samplesNeeded;

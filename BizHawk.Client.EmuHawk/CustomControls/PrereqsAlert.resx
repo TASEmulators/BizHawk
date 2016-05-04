@@ -119,6 +119,8 @@
   </resheader>
   <data name="textBox2.Text" xml:space="preserve">
     <value>We're not checking the version number of the VC 2010 runtime. Be sure you have the SP1 version installed.
-DirectX Web Update is reportedly failing for some people as part of our prereqs installer. Try installing it manually.</value>
+DirectX Web Update is reportedly failing for some people as part of our prereqs installer. Try installing it manually.
+The VC 2015 prerequisite has prerequisites of its own, so install it yourself manually at your own peril.
+</value>
   </data>
 </root>

@@ -23,8 +23,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
 			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, true, 4));
 			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom, true, 4));
+			mm.Add(MemoryDomain.FromIntPtr("SRAM", s.sram_size, l, s.sram, true, 4));
 
-			mm.Add(new MemoryDomain("System Bus", 0x10000000, l,
+			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, l,
 				delegate(long addr)
 				{
 					if (addr < 0 || addr >= 0x10000000)
@@ -41,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				var ew = mm[1];
 				var iw = mm[0];
-				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
+				MemoryDomain cr = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
 					delegate(long addr)
 					{
 						if (addr < 0 || addr >= (256 + 32) * 1024)

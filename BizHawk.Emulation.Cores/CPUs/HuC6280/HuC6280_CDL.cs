@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 	            },
 	            delegate(ushort addr)
 	            {
-	              return md.PeekWord(addr + i, false);
+	              return md.PeekUshort(addr + i, false);
 	            }
 	          );
 	          w.WriteLine("0x{0:x8}: {1}", i, dis);

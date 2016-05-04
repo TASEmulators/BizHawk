@@ -95,7 +95,6 @@ namespace BizHawk.Client.EmuHawk
 			SetMainformMovieInfo();
 
 			GlobalWin.Tools.Restart<VirtualpadTool>();
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 
 
 			if (Global.MovieSession.Movie.Hash != Global.Game.Hash)

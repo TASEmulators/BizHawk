@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.BizInvoke
 {
@@ -17,12 +18,15 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		{
 			public Type ImplType;
 			public List<Action<object, IImportResolver>> Hooks;
+			public Action<object, IMonitor> ConnectMonitor;
 
-			public object Create(IImportResolver dll)
+			public object Create(IImportResolver dll, IMonitor monitor)
 			{
 				var ret = Activator.CreateInstance(ImplType);
 				foreach (var f in Hooks)
 					f(ret, dll);
+				if (ConnectMonitor != null)
+					ConnectMonitor(ret, monitor);
 				return ret;
 			}
 		}
@@ -60,14 +64,34 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				var baseType = typeof(T);
 				if (!Impls.TryGetValue(baseType, out impl))
 				{
-					impl = CreateProxy(baseType);
+					impl = CreateProxy(baseType, false);
 					Impls.Add(baseType, impl);
 				}
 			}
-			return (T)impl.Create(dll);
+			if (impl.ConnectMonitor != null)
+				throw new InvalidOperationException("Class was previously proxied with a monitor!");
+			return (T)impl.Create(dll, null);
 		}
 
-		private static InvokerImpl CreateProxy(Type baseType)
+		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor)
+			where T : class
+		{
+			InvokerImpl impl;
+			lock (Impls)
+			{
+				var baseType = typeof(T);
+				if (!Impls.TryGetValue(baseType, out impl))
+				{
+					impl = CreateProxy(baseType, true);
+					Impls.Add(baseType, impl);
+				}
+			}
+			if (impl.ConnectMonitor == null)
+				throw new InvalidOperationException("Class was previously proxied without a monitor!");
+			return (T)impl.Create(dll, monitor);
+		}
+
+		private static InvokerImpl CreateProxy(Type baseType, bool monitor)
 		{
 			if (baseType.IsSealed)
 				throw new InvalidOperationException("Can't proxy a sealed type");
@@ -106,30 +130,36 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			// hooks that will be run on the created proxy object
 			var postCreateHooks = new List<Action<object, IImportResolver>>();
 
-			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy", TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
+			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
+
+			var monitorField = monitor ? type.DefineField("MonitorField", typeof(IMonitor), FieldAttributes.Public) : null;
 
 			foreach (var mi in baseMethods)
 			{
 				var entryPointName = mi.Attr.EntryPoint ?? mi.Info.Name;
 
 				var hook = mi.Attr.Compatibility
-					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName)
-					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName);
+					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField)
+					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField);
 
 				postCreateHooks.Add(hook);
 			}
 
-			return new InvokerImpl
+			var ret = new InvokerImpl
 			{
 				Hooks = postCreateHooks,
 				ImplType = type.CreateType()
 			};
+			if (monitor)
+				ret.ConnectMonitor = (o, m) => o.GetType().GetField(monitorField.Name).SetValue(o, m);
+
+			return ret;
 		}
 
 		/// <summary>
 		/// create a method implementation that uses GetDelegateForFunctionPointer internally
 		/// </summary>
-		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName)
+		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -144,6 +174,21 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			delegateCtor.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 			var delegateInvoke = delegateType.DefineMethod("Invoke",
 				MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual, returnType, paramTypes);
+			// we have to project all of the attributes from the baseMethod to the delegateInvoke
+			// so for something like [Out], the interop engine will see it and use it
+			for (int i = 0; i < paramInfos.Length; i++)
+			{
+				var p = delegateInvoke.DefineParameter(i + 1, ParameterAttributes.None, paramInfos[i].Name);
+				foreach (var a in paramInfos[i].GetCustomAttributes(false))
+					p.SetCustomAttribute(GetAttributeBuilder(a));
+			}
+			{
+				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, baseMethod.ReturnParameter.Name);
+				foreach (var a in baseMethod.ReturnParameter.GetCustomAttributes(false))
+					p.SetCustomAttribute(GetAttributeBuilder(a));
+			}
+
+
 			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
 			var attr = new CustomAttributeBuilder(typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) }), new object[] { nativeCall });
@@ -156,11 +201,44 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			var method = type.DefineMethod(baseMethod.Name, MethodAttributes.Virtual | MethodAttributes.Public,
 				CallingConventions.HasThis, returnType, paramTypes);
 			var il = method.GetILGenerator();
+
+			Label exc = new Label();
+			if (monitorField != null) // monitor: enter and then begin try
+			{
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter"));
+				exc = il.BeginExceptionBlock();
+			}
+
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			for (int i = 0; i < paramTypes.Length; i++)
 				il.Emit(OpCodes.Ldarg, (short)(i + 1));
+
 			il.Emit(OpCodes.Callvirt, delegateInvoke);
+
+			if (monitorField != null) // monitor: finally exit
+			{
+				LocalBuilder loc = null;
+				if (returnType != typeof(void))
+				{
+					loc = il.DeclareLocal(returnType);
+					il.Emit(OpCodes.Stloc, loc);
+				}
+
+				il.Emit(OpCodes.Leave, exc);
+				il.BeginFinallyBlock();
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit"));
+				il.EndExceptionBlock();
+
+				if (returnType != typeof(void))
+				{
+					il.Emit(OpCodes.Ldloc, loc);
+				}
+			}
 
 			il.Emit(OpCodes.Ret);
 
@@ -177,7 +255,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		/// <summary>
 		/// create a method implementation that uses calli internally
 		/// </summary>
-		private static Action<object, IImportResolver> ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName)
+		private static Action<object, IImportResolver> ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -195,6 +273,16 @@ namespace BizHawk.Emulation.Common.BizInvoke
 
 
 			var il = method.GetILGenerator();
+
+			Label exc = new Label();
+			if (monitorField != null) // monitor: enter and then begin try
+			{
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Enter"));
+				exc = il.BeginExceptionBlock();
+			}
+
 			for (int i = 0; i < paramTypes.Length; i++)
 			{
 				// arg 0 is this, so + 1
@@ -203,6 +291,28 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(OpCodes.Calli, nativeCall, returnType, nativeParamTypes.ToArray());
+
+			if (monitorField != null) // monitor: finally exit
+			{
+				LocalBuilder loc = null;
+				if (returnType != typeof(void))
+				{
+					loc = il.DeclareLocal(returnType);
+					il.Emit(OpCodes.Stloc, loc);
+				}
+
+				il.Emit(OpCodes.Leave, exc);
+				il.BeginFinallyBlock();
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, monitorField);
+				il.Emit(OpCodes.Callvirt, typeof(IMonitor).GetMethod("Exit"));
+				il.EndExceptionBlock();
+
+				if (returnType != typeof(void))
+				{
+					il.Emit(OpCodes.Ldloc, loc);
+				}
+			}
 
 			// either there's a primitive on the stack and we're expected to return that primitive,
 			// or there's nothing on the stack and we're expected to return nothing
@@ -255,8 +365,8 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			if (type.IsByRef)
 			{
 				var et = type.GetElementType();
-				if (!et.IsPrimitive)
-					throw new InvalidOperationException("Only refs of primitive types are supported!");
+				if (!et.IsPrimitive && !et.IsEnum)
+					throw new InvalidOperationException("Only refs of primitive or enum types are supported!");
 				var loc = il.DeclareLocal(type, true);
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				il.Emit(OpCodes.Dup);
@@ -267,8 +377,8 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			else if (type.IsArray)
 			{
 				var et = type.GetElementType();
-				if (!et.IsPrimitive)
-					throw new InvalidOperationException("Only arrays of primitive types are supported!");
+				if (!et.IsPrimitive && !et.IsEnum)
+					throw new InvalidOperationException("Only arrays of primitive or enum types are supported!");
 
 				// these two cases aren't too hard to add
 				if (type.GetArrayRank() > 1)
@@ -315,7 +425,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				il.MarkLabel(end);
 				return typeof(IntPtr);
 			}
-			else if (type.IsPrimitive)
+			else if (type.IsPrimitive || type.IsEnum)
 			{
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				return type;
@@ -324,6 +434,15 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			{
 				throw new InvalidOperationException("Unrecognized parameter type!");
 			}
+		}
+
+		private static CustomAttributeBuilder GetAttributeBuilder(object o)
+		{
+			// anything more clever we can do here?
+			var t = o.GetType();
+			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
+				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes), new object[0]);
+			throw new InvalidOperationException("Unknown parameter attribute " + t.Name);
 		}
 	}
 

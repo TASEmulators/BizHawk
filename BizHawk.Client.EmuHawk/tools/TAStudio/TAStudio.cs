@@ -36,7 +36,8 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
-		private UndoHistoryForm undoForm;
+		private UndoHistoryForm _undoForm;
+		private Timer _autosaveTimer = new Timer();
 
 		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
 		{
@@ -61,11 +62,13 @@ namespace BizHawk.Client.EmuHawk
 				DrawInput = true;
 				AutoPause = true;
 				FollowCursor = true;
-				ScrollSpeed = 3;
+				ScrollSpeed = 6;
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
-				SeekingCutoffInterval = 2;
+				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
+				AutosaveInterval = 120000;
+				AutosaveAsBk2 = false;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -84,6 +87,8 @@ namespace BizHawk.Client.EmuHawk
             public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
 			public int SeekingCutoffInterval { get; set; }
+			public int AutosaveInterval { get; set; }
+			public bool AutosaveAsBk2 { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -146,6 +151,25 @@ namespace BizHawk.Client.EmuHawk
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
 			WantsToControlRestartMovie = true;
+
+			_autosaveTimer.Interval = Settings.AutosaveInterval;
+			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
+			_autosaveTimer.Start();
+		}
+
+		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
+		{
+			if (!CurrentTasMovie.Changes)
+				return;
+
+			if (Settings.AutosaveAsBk2)
+			{
+				ToBk2MenuItem_Click(sender, e);
+			}
+			else
+			{
+				SaveTasMenuItem_Click(sender, e);
+			}
 		}
 
 		private void InitializeSaveWorker()
@@ -394,7 +418,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var columnsToHide = TasView.AllColumns
-				.Where(c => c.Name == "Power" || c.Name == "Reset");
+				.Where(c =>
+					// todo: make a proper user editable list?
+					c.Name == "Power" ||
+					c.Name == "Reset" ||
+					c.Name.StartsWith("Tilt") ||
+					c.Name == "Light Sensor"
+				);
 
 			foreach (var column in columnsToHide)
 			{
@@ -494,7 +524,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
-			if (TasView.AllColumns.Count() == 0 || file.Extension != TasMovie.Extension)
+			if (TasView.AllColumns.Count() == 0 || file.Extension != "." + TasMovie.Extension)
 				SetUpColumns();
 
 			if (startsFromSavestate)
@@ -699,8 +729,8 @@ namespace BizHawk.Client.EmuHawk
 			if (BookMarkControl != null)
 				BookMarkControl.UpdateValues();
 
-			if (undoForm != null && !undoForm.IsDisposed)
-				undoForm.UpdateValues();
+			if (_undoForm != null && !_undoForm.IsDisposed)
+				_undoForm.UpdateValues();
 		}
 
 		private void RefreshTasView()
@@ -855,8 +885,8 @@ namespace BizHawk.Client.EmuHawk
 				_exiting = false;
 			}
 
-			if (undoForm != null)
-				undoForm.Close();
+			if (_undoForm != null)
+				_undoForm.Close();
 		}
 
 		/// <summary>

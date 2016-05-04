@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
         {
             public static MemoryDomain Create(string name, int size, Func<int, int> peekByte, Action<int, int> pokeByte)
             {
-                return new MemoryDomain(name, size, MemoryDomain.Endian.Little, addr => unchecked((byte)peekByte((int)addr)), (addr, val) => pokeByte(unchecked((int)addr), val));
+                return new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Little, addr => unchecked((byte)peekByte((int)addr)), (addr, val) => pokeByte(unchecked((int)addr), val), 1);
             }
         }
     }

@@ -268,6 +268,8 @@ namespace MDFN_IEN_WSWAN
 	void System::PutSettings(const Settings &s)
 	{
 		gfx.SetLayerEnableMask(s.LayerMask);
+		gfx.SetBWPalette(s.BWPalette);
+		gfx.SetColorPalette(s.ColorPalette);
 	}
 
 	uint32 System::GetNECReg(int which) const

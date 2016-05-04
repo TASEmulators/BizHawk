@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static bool CanPoke(this MemoryDomain d)
 		{
-			if (d.PokeByte == null)
+			if (!d.Writable)
 			{
 				return false;
 			}

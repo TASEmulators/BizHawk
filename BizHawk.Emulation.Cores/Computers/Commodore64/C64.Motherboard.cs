@@ -130,6 +130,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		    switch (diskDriveType)
 		    {
 		        case C64.DiskDriveType.Commodore1541:
+                case C64.DiskDriveType.Commodore1541II:
                     DiskDrive = new Drive1541(ClockNumerator, ClockDenominator);
                     Serial.Connect(DiskDrive);
 		            break;
@@ -156,9 +157,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Execute()
 		{
-		    _vicBank = (0x3 - (Cia1.EffectivePrA & 0x3)) << 14;
+		    _vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
 
             Vic.ExecutePhase();
+            CartPort.ExecutePhase();
             Cassette.ExecutePhase();
             Serial.ExecutePhase();
             Sid.ExecutePhase();
@@ -190,10 +192,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cassette.HardReset();
             Serial.HardReset();
             Cpu.HardReset();
+            CartPort.HardReset();
         }
 
         public void Init()
-		{
+        {
+            CartPort.ReadOpenBus = ReadOpenBus;
+
             Cassette.ReadDataOutput = CassPort_ReadDataOutput;
             Cassette.ReadMotor = CassPort_ReadMotor;
 

@@ -53,6 +53,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			CreateRenderStates();
 		}
 
+		public void AlternateVsyncPass(int pass)
+		{
+			for (; ; )
+			{
+				var status = dev.GetRasterStatus(0);
+				if (status.InVBlank && pass == 0) return; //wait for vblank to begin
+				if (!status.InVBlank && pass == 1) return; //wait for vblank to end
+				//STOP! think you can use System.Threading.SpinWait? No, it's way too slow.
+				//(on my system, the vblank is something like 24 of 1074 scanlines @ 60hz ~= 0.35ms which is an awfully small window to nail)
+			}
+		}
+
 		private void DestroyDevice()
 		{
 			if (dev != null)
@@ -68,6 +80,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			{
 				BackBufferWidth = 8,
 				BackBufferHeight = 8,
+				BackBufferCount = 2,
 				DeviceWindowHandle = OffscreenNativeWindow.WindowInfo.Handle,
 				PresentationInterval = PresentInterval.Immediate,
 				EnableAutoDepthStencil = false
@@ -76,20 +89,27 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		void ResetDevice()
 		{
+			devBB.Dispose();
 			ResetHandlers.Reset();
-			for(;;)
+			for (; ; )
 			{
-				var pp = MakePresentParameters();
-				try
-				{
-					dev.Reset(pp);
-				}
-				catch { }
-				if (dev.TestCooperativeLevel().IsSuccess)
+				var result = dev.TestCooperativeLevel();
+				if (result.IsSuccess)
 					break;
+				if (result.Code == -2005530519) // D3DERR_DEVICENOTRESET
+				{
+					try
+					{
+						var pp = MakePresentParameters();
+						dev.Reset(pp);
+						break;
+					}
+					catch { }
+				}
 				System.Threading.Thread.Sleep(100);
 			}
 			ResetHandlers.Restore();
+			devBB = dev.GetBackBuffer(0, 0);
 		}
 
 		public void CreateDevice()
@@ -106,6 +126,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			
 			flags |= CreateFlags.FpuPreserve;
 			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
+			devBB = dev.GetBackBuffer(0, 0);
 		}
 
 		void IDisposable.Dispose()
@@ -804,19 +825,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		public void BeginControl(GLControlWrapper_SlimDX9 control)
 		{
 			_CurrentControl = control;
-			var bb = control.SwapChain.GetBackBuffer(0);
-			dev.SetRenderTarget(0, bb);
-			bb.Dispose();
-		}
 
+			//this dispose isnt strictly needed but it seems benign
+			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
+			dev.SetRenderTarget(0, surface);
+			surface.Dispose();
+		}
+		Surface devBB;
 		public void EndControl(GLControlWrapper_SlimDX9 control)
 		{
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
-			var bb = dev.GetBackBuffer(0,0);
-			dev.SetRenderTarget(0,bb);
-			bb.Dispose();
+			dev.SetRenderTarget(0, devBB);
 
 			_CurrentControl = null;
 		}
@@ -828,6 +849,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			try
 			{
 				var result = control.SwapChain.Present(Present.None);
+				//var rs = dev.GetRasterStatus(0);
 			}
 			catch(d3d9.Direct3D9Exception ex)
 			{
@@ -852,6 +874,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			var tw = new TextureWrapper() { Texture = d3dtex };
 			var tex = new Texture2d(this, tw, w, h);
 			RenderTarget rt = new RenderTarget(this, tw, tex);
+			ResetHandlers.Add(rt, "RenderTarget",
+				() =>
+				{
+					d3dtex.Dispose();
+					tw.Texture = null;
+				},
+				() =>
+				{
+					d3dtex = new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
+					tw.Texture = d3dtex;
+				}
+			);
 			return rt;
 		}
 
@@ -861,15 +895,18 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 			if (rt == null)
 			{
-				var bb = _CurrentControl.SwapChain.GetBackBuffer(0);
-				dev.SetRenderTarget(0, bb);
-				bb.Dispose();
+				//this dispose is needed for correct device resets, I have no idea why
+				//don't try caching it either
+				var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
+				dev.SetRenderTarget(0, surface);
+				surface.Dispose();
+
 				dev.DepthStencilSurface = null;
 				return;
 			}
 
+			//dispose doesn't seem necessary for reset here...
 			var tw = rt.Opaque as TextureWrapper;
-			//TODO - cache surface level in an RT wrapper
 			dev.SetRenderTarget(0, tw.Texture.GetSurfaceLevel(0));
 			dev.DepthStencilSurface = null;
 		}
@@ -887,7 +924,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			{
 				BackBufferWidth = Math.Max(8,control.ClientSize.Width),
 				BackBufferHeight = Math.Max(8, control.ClientSize.Height),
-				BackBufferCount = 2,
+				BackBufferCount = 1,
 				BackBufferFormat = Format.X8R8G8B8,
 				DeviceWindowHandle = control.Handle,
 				Windowed = true,
@@ -895,7 +932,12 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			};
 
 			control.SwapChain = new SwapChain(dev, pp);
-			ResetHandlers.Add(control, "SwapChain", () => { control.SwapChain.Dispose(); control.SwapChain = null; }, () => RefreshControlSwapChain(control));
+			ResetHandlers.Add(control, "SwapChain", () =>
+				{
+					control.SwapChain.Dispose(); 
+					control.SwapChain = null;
+				},
+				() => RefreshControlSwapChain(control));
 		}
 
 		DeviceLostHandler ResetHandlers = new DeviceLostHandler();

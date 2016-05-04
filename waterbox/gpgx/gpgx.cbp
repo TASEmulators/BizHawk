@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="gpgx" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/gpgx" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/gpgx" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="cinterface/callbacks.h" />
+		<Unit filename="cinterface/cinterface.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/areplay.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/areplay.h" />
+		<Unit filename="core/cart_hw/eeprom_93c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/eeprom_93c.h" />
+		<Unit filename="core/cart_hw/eeprom_i2c.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/eeprom_i2c.h" />
+		<Unit filename="core/cart_hw/eeprom_spi.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/eeprom_spi.h" />
+		<Unit filename="core/cart_hw/ggenie.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/ggenie.h" />
+		<Unit filename="core/cart_hw/md_cart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/md_cart.h" />
+		<Unit filename="core/cart_hw/sms_cart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/sms_cart.h" />
+		<Unit filename="core/cart_hw/sram.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/sram.h" />
+		<Unit filename="core/cart_hw/svp/ssp16.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/svp/ssp16.h" />
+		<Unit filename="core/cart_hw/svp/svp.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cart_hw/svp/svp.h" />
+		<Unit filename="core/cd_hw/cd_cart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cd_hw/cd_cart.h" />
+		<Unit filename="core/cd_hw/cdc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cd_hw/cdc.h" />
+		<Unit filename="core/cd_hw/cdd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cd_hw/cdd.h" />
+		<Unit filename="core/cd_hw/gfx.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cd_hw/gfx.h" />
+		<Unit filename="core/cd_hw/pcm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cd_hw/pcm.h" />
+		<Unit filename="core/cd_hw/scd.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/cd_hw/scd.h" />
+		<Unit filename="core/genesis.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/genesis.h" />
+		<Unit filename="core/hvc.h" />
+		<Unit filename="core/input_hw/activator.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/activator.h" />
+		<Unit filename="core/input_hw/gamepad.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/gamepad.h" />
+		<Unit filename="core/input_hw/input.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/input.h" />
+		<Unit filename="core/input_hw/lightgun.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/lightgun.h" />
+		<Unit filename="core/input_hw/mouse.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/mouse.h" />
+		<Unit filename="core/input_hw/paddle.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/paddle.h" />
+		<Unit filename="core/input_hw/sportspad.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/sportspad.h" />
+		<Unit filename="core/input_hw/teamplayer.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/teamplayer.h" />
+		<Unit filename="core/input_hw/terebi_oekaki.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/terebi_oekaki.h" />
+		<Unit filename="core/input_hw/xe_a1p.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/input_hw/xe_a1p.h" />
+		<Unit filename="core/io_ctrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/io_ctrl.h" />
+		<Unit filename="core/loadrom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/loadrom.h" />
+		<Unit filename="core/m68k/m68k.h" />
+		<Unit filename="core/m68k/m68kconf.h" />
+		<Unit filename="core/m68k/m68kcpu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/m68k/m68kcpu.h" />
+		<Unit filename="core/m68k/m68ki_cycles.h" />
+		<Unit filename="core/m68k/m68ki_instruction_jump_table.h" />
+		<Unit filename="core/m68k/m68kops.h" />
+		<Unit filename="core/m68k/s68kconf.h" />
+		<Unit filename="core/m68k/s68kcpu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/m68k/s68ki_cycles.h" />
+		<Unit filename="core/macros.h" />
+		<Unit filename="core/mem68k.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/mem68k.h" />
+		<Unit filename="core/membnk.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/membnk.h" />
+		<Unit filename="core/memz80.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/memz80.h" />
+		<Unit filename="core/ntsc/md_ntsc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/ntsc/md_ntsc.h" />
+		<Unit filename="core/ntsc/md_ntsc_config.h" />
+		<Unit filename="core/ntsc/md_ntsc_impl.h" />
+		<Unit filename="core/ntsc/sms_ntsc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/ntsc/sms_ntsc.h" />
+		<Unit filename="core/ntsc/sms_ntsc_config.h" />
+		<Unit filename="core/ntsc/sms_ntsc_impl.h" />
+		<Unit filename="core/shared.h" />
+		<Unit filename="core/sound/blip_buf.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/sound/blip_buf.h" />
+		<Unit filename="core/sound/eq.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/sound/eq.h" />
+		<Unit filename="core/sound/sn76489.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/sound/sn76489.h" />
+		<Unit filename="core/sound/sound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/sound/sound.h" />
+		<Unit filename="core/sound/ym2413.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/sound/ym2413.h" />
+		<Unit filename="core/sound/ym2612.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/sound/ym2612.h" />
+		<Unit filename="core/state.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/state.h" />
+		<Unit filename="core/system.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/system.h" />
+		<Unit filename="core/types.h" />
+		<Unit filename="core/vdp_ctrl.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/vdp_ctrl.h" />
+		<Unit filename="core/vdp_render.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/vdp_render.h" />
+		<Unit filename="core/z80/osd_cpu.h" />
+		<Unit filename="core/z80/z80.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="core/z80/z80.h" />
+		<Unit filename="util/osd.h" />
+		<Unit filename="util/scrc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="util/scrc32.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

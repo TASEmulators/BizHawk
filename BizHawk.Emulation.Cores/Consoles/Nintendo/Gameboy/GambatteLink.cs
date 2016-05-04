@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
-		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>
+		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
 		{

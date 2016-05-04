@@ -54,14 +54,14 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"DrawNew",
-			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface."
+			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)"
 		)]
-		public void DrawNew(string name)
+		public void DrawNew(string name, bool? clear=true)
 		{
 			try
 			{
 				DrawFinish();
-				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name);
+				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name,clear??true);
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -69,6 +69,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodAttributes(
+			"DrawFinish",
+			"Finishes drawing to the current lua surface and causes it to get displayed."
+		)]
 		public void DrawFinish()
 		{
 			if(_luaSurface != null)
@@ -149,7 +153,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void ClearGraphics()
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			_luaSurface.Clear();
 		}
 
@@ -219,7 +222,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawBezier(LuaTable points, Color color)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -298,7 +300,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -326,7 +327,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -358,7 +358,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -382,7 +381,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -408,7 +406,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				g.DrawLine(GetPen(color ?? DefaultForeground), x1, y1, x2, y2);
@@ -441,7 +438,6 @@ namespace BizHawk.Client.EmuHawk
 			Color? line = null,
 			Color? background = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				var bg = background ?? DefaultBackground;
@@ -462,7 +458,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawPixel(int x, int y, Color? color = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -482,8 +477,6 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
-
 			using (var g = GetGraphics())
 			{
 				try
@@ -558,7 +551,6 @@ namespace BizHawk.Client.EmuHawk
 			string fontfamily = null,
 			string fontstyle = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -618,7 +610,6 @@ namespace BizHawk.Client.EmuHawk
 			Color? backcolor = null,
 			string fontfamily = null)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			using (var g = GetGraphics())
 			{
 				try
@@ -661,14 +652,13 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"text",
-			"Displays the given text on the screen at the given coordinates. Optional Foreground and background colors. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
+			"Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
 		)]
 		public void Text(
 			int x,
 			int y,
 			string message,
 			Color? forecolor = null,
-			Color? background = null,
 			string anchor = null)
 		{
 			var a = 0;
@@ -701,7 +691,7 @@ namespace BizHawk.Client.EmuHawk
 				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
-			GlobalWin.OSD.AddGUIText(message, x, y, background ?? Color.Black, forecolor ?? Color.White, a);
+			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 
 		[LuaMethodAttributes(

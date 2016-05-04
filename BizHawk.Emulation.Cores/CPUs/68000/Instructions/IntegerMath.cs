@@ -289,9 +289,9 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 			switch (size)
 			{
-				case 0: info.Mnemonic = "addq.b"; info.Args = data + ", " + DisassembleValue(mode, reg, 1, ref pc); break;
-				case 1: info.Mnemonic = "addq.w"; info.Args = data + ", " + DisassembleValue(mode, reg, 2, ref pc); break;
-				case 2: info.Mnemonic = "addq.l"; info.Args = data + ", " + DisassembleValue(mode, reg, 4, ref pc); break;
+				case 0: info.Mnemonic = "addq.b"; info.Args = "#" + data + ", " + DisassembleValue(mode, reg, 1, ref pc); break;
+				case 1: info.Mnemonic = "addq.w"; info.Args = "#" + data + ", " + DisassembleValue(mode, reg, 2, ref pc); break;
+				case 2: info.Mnemonic = "addq.l"; info.Args = "#" + data + ", " + DisassembleValue(mode, reg, 4, ref pc); break;
 			}
 			info.Length = pc - info.PC;
 		}
@@ -613,9 +613,9 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 
 			switch (size)
 			{
-				case 0: info.Mnemonic = "subq.b"; info.Args = data + ", " + DisassembleValue(mode, reg, 1, ref pc); break;
-				case 1: info.Mnemonic = "subq.w"; info.Args = data + ", " + DisassembleValue(mode, reg, 2, ref pc); break;
-				case 2: info.Mnemonic = "subq.l"; info.Args = data + ", " + DisassembleValue(mode, reg, 4, ref pc); break;
+				case 0: info.Mnemonic = "subq.b"; info.Args = "#" + data + ", " + DisassembleValue(mode, reg, 1, ref pc); break;
+				case 1: info.Mnemonic = "subq.w"; info.Args = "#" + data + ", " + DisassembleValue(mode, reg, 2, ref pc); break;
+				case 2: info.Mnemonic = "subq.l"; info.Args = "#" + data + ", " + DisassembleValue(mode, reg, 4, ref pc); break;
 			}
 			info.Length = pc - info.PC;
 		}

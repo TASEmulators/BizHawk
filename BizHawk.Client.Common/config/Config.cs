@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
-		public int DispFinalFilter = 0;
+		public int DispFinalFilter = 1; //bilinear
 		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
 		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
@@ -205,8 +205,16 @@ namespace BizHawk.Client.Common
 		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
 		public int MovieCompressionLevel = 2;
 
-		/// <summary>use vsync.  if VSyncThrottle = false, this will try to use vsync without throttling to it</summary>
+		/// <summary>
+		/// Use vsync when presenting all 3d accelerated windows.
+		/// For the main window, if VSyncThrottle = false, this will try to use vsync without throttling to it
+		/// </summary>
 		public bool VSync = false;
+
+		/// <summary>
+		/// Tries to use an alternate vsync mechanism, for video cards that just can't do it right
+		/// </summary>
+		public bool DispAlternateVsync = false;
 
 		public static class DefaultMessageOptions
 		{
@@ -254,10 +262,10 @@ namespace BizHawk.Client.Common
 		public bool DisplayRerecordCount = false;
 		public bool DisplayMessages = true;
 
-		public bool DispBlurry = false; // make display look ugly
 		public bool DispFixAspectRatio = true;
-		public bool DispFixScaleInteger = true;
+		public bool DispFixScaleInteger = false;
 		public bool DispFullscreenHacks = true;
+		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
 
 
@@ -325,8 +333,11 @@ namespace BizHawk.Client.Common
 		public ESoundOutputMethod SoundOutputMethod = ESoundOutputMethod.OpenAL;
 #endif
 		public bool SoundEnabled = true;
+		public bool SoundEnabledNormal = true;
+		public bool SoundEnabledRWFF = true;
 		public bool MuteFrameAdvance = true;
 		public int SoundVolume = 100; // Range 0-100
+		public int SoundVolumeRWFF = 50; // Range 0-100
 		public bool SoundThrottle = false;
 		public string SoundDevice = "";
 		public int SoundBufferSizeMs = 100;

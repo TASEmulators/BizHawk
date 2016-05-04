@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// sets layers to be rendered
 		/// </summary>
 		/// <param name="core">opaque state pointer</param>
-		/// <param name="mask">layermask, 1=BG, 2=OBJ</param>
+		/// <param name="mask">layermask, 1=BG, 2=OBJ, 4=WINDOW</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gambatte_setlayers(IntPtr core, int mask);
 

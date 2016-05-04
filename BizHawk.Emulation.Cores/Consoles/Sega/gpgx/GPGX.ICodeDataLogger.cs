@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void SetCDL(CodeDataLog cdl)
 		{
 			CDL = cdl;
-			if (cdl == null) LibGPGX.gpgx_set_cd_callback(null);
-			else LibGPGX.gpgx_set_cd_callback(CDCallback);
+			if (cdl == null) Core.gpgx_set_cd_callback(null);
+			else Core.gpgx_set_cd_callback(CDCallback);
 		}
 
 		public void NewCDL(CodeDataLog cdl)

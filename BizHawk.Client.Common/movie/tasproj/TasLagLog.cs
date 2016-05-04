@@ -79,10 +79,14 @@ namespace BizHawk.Client.Common
 			LagLog.Clear();
 		}
 
-		public void RemoveFrom(int frame)
+		public bool RemoveFrom(int frame)
 		{
 			if (LagLog.Count > frame && frame >= 0)
+			{
 				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
+				return true;
+			}
+			return false;
 		}
 
 		public void RemoveHistoryAt(int frame)

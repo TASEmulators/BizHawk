@@ -94,6 +94,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (LuaException ex)
 			{
+				Console.WriteLine(ex);
 				Logger(ex.ToString());
 				if (exceptionCallback != null)
 				{

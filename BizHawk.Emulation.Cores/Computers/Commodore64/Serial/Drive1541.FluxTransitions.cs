@@ -32,6 +32,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         private int _countsBeforeRandomTransition;
         [SaveState.SaveWithName("CurrentRNG")]
         private int _rngCurrent;
+        [SaveState.SaveWithName("Clocks")]
+        private int _clocks;
+        [SaveState.SaveWithName("CpuClocks")]
+        private int _cpuClocks;
 
         // Lehmer RNG
         private void AdvanceRng()
@@ -43,20 +47,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
         private void ExecuteFlux()
         {
-            for (_diskCycle = 0; _diskCycle < 16; _diskCycle++)
+            // This actually executes the main 16mhz clock
+            while (_clocks > 0)
             {
+                _clocks--;
+
                 // rotate disk
                 if (_motorEnabled)
                 {
-                    if (_diskBitsLeft <= 0)
+                    if (_disk == null)
                     {
-                        _diskByteOffset++;
-                        if (_diskByteOffset == Disk.FluxEntriesPerTrack)
+                        _diskBitsLeft = 1;
+                        _diskBits = 0;
+                    }
+                    else
+                    {
+                        if (_diskBitsLeft <= 0)
                         {
-                            _diskByteOffset = 0;
+                            _diskByteOffset++;
+                            if (_diskByteOffset == Disk.FluxEntriesPerTrack)
+                            {
+                                _diskByteOffset = 0;
+                            }
+                            _diskBits = _trackImageData[_diskByteOffset];
+                            _diskBitsLeft = Disk.FluxBitsPerEntry;
                         }
-                        _diskBits = _trackImageData[_diskByteOffset];
-                        _diskBitsLeft = Disk.FluxBitsPerEntry;
                     }
                     if ((_diskBits & 1) != 0)
                     {
@@ -101,16 +116,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     _diskSupplementaryCounter++;
                     if ((_diskSupplementaryCounter & 0x3) == 0x2)
                     {
-                        _byteReady = false;
                         _bitsRemainingInLatchedByte--;
-                        if (_bitsRemainingInLatchedByte <= 0)
-                        {
-                            _bitsRemainingInLatchedByte = 8;
-
-                            // SOE (sync output enabled)
-                            _byteReady = Via1.Ca2;
-                        }
-
+                        _byteReady = false;
                         _bitHistory = (_bitHistory << 1) | ((_diskSupplementaryCounter & 0xC) == 0x0 ? 1 : 0);
                         _sync = false;
                         if (Via1.Cb2 && (_bitHistory & 0x3FF) == 0x3FF)
@@ -118,6 +125,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                             _sync = true;
                             _bitsRemainingInLatchedByte = 8;
                             _byteReady = false;
+                        }
+
+                        if (_bitsRemainingInLatchedByte <= 0)
+                        {
+                            _bitsRemainingInLatchedByte = 8;
+
+                            // SOE (sync output enabled)
+                            _byteReady = Via1.Ca2;
                         }
 
                         // negative transition activates SO pin on CPU
@@ -136,7 +151,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
                     _diskSupplementaryCounter = 0;
                 }
 
+                _cpuClocks--;
+                if (_cpuClocks <= 0)
+                {
+                    ExecuteSystem();
+                    _cpuClocks = 16;
+                }
+
                 _diskDensityCounter++;
+                _diskCycle = (_diskCycle + 1) & 0xF;
             }
         }
     }

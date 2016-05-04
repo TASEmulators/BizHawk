@@ -327,6 +327,8 @@ namespace BizHawk.Client.Common
 			_memoryDomains = core;
 			Parallel.ForEach<Watch>(_watchList, watch =>
 			{
+				if (watch.IsSeparator)
+					return;
 				watch.Domain = core[watch.Domain.Name];
 				watch.ResetPrevious();
 				watch.Update();

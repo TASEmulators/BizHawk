@@ -458,7 +458,7 @@
 			this.romStatusBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.romStatusBox.FormattingEnabled = true;
 			this.romStatusBox.Items.AddRange(new object[] {
-            "Ok",
+            "OK",
             "Bad Dump",
             "Hack",
             "Translation",

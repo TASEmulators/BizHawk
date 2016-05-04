@@ -53,6 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
             public Mapper0020(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
             {
+                DriveLightEnabled = true;
                 var count = newAddresses.Count;
 
                 // force ultimax mode (the cart SHOULD set this
@@ -194,6 +195,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
                 pinExRom = (val & 0x02) == 0;
                 _boardLed = (val & 0x80) != 0;
                 _internalRomState = 0;
+                DriveLightOn = _boardLed;
             }
 
             public override void Write8000(int addr, int val)
@@ -289,6 +291,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
                 SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
                 SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
                 base.SyncState(ser);
+                DriveLightOn = _boardLed;
             }
         }
     }

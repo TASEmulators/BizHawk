@@ -224,8 +224,8 @@ namespace BizHawk.Client.Common
 		/// <param name="frame">The last frame that can be valid.</param>
 		private void InvalidateAfter(int frame)
 		{
-			LagLog.RemoveFrom(frame);
-			var anyInvalidated = StateManager.Invalidate(frame + 1);
+			var anyInvalidated = LagLog.RemoveFrom(frame);
+			StateManager.Invalidate(frame + 1);
 			Changes = true; // TODO check if this actually removed anything before flagging changes
 
             if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)

@@ -84,5 +84,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
         public bool DriveLightEnabled { get { return true; } }
         [SaveState.DoNotSave]
         public bool DriveLightOn { get { return ReadDeviceLight(); } }
+        [SaveState.DoNotSave]
+        public bool IsConnected { get { return _connected; } }
     }
 }

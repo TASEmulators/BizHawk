@@ -268,7 +268,40 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private int[] _palette;
 
-		private byte _hsyncCnt;
+        private int test_count_p0;
+        private int test_count_p1;
+        private int test_count_m0;
+        private int test_count_m1;
+        private int test_count_b;
+
+        private byte pf0_update = 0;
+        private byte pf1_update = 0;
+        private byte pf2_update = 0;
+        private bool pf0_updater = false;
+        private bool pf1_updater = false;
+        private bool pf2_updater = false;
+        private byte pf0_delay_clock = 0;
+        private byte pf1_delay_clock = 0;
+        private byte pf2_delay_clock = 0;
+        private byte pf0_max_delay = 0;
+        private byte pf1_max_delay = 0;
+        private byte pf2_max_delay = 0;
+
+        private int enam0_delay = 0;
+        private int enam1_delay = 0;
+        private int enamb_delay = 0;
+        private bool enam0_val = false;
+        private bool enam1_val = false;
+        private bool enamb_val = false;
+
+
+        private int prg0_delay = 0;
+        private int prg1_delay = 0;
+        private byte prg0_val = 0;
+        private byte prg1_val = 0;
+
+        private bool do_ticks = false;
+        private byte _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
 		private bool _vblankEnabled;
@@ -395,8 +428,100 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			// Still ignoring cycles...
 
-			// Reset the RDY flag when we reach hblank
-			if (_hsyncCnt <= 0)
+            //delay latch to new playfield register
+            if (pf0_updater==true)
+            {
+                pf0_delay_clock++;
+                if (pf0_delay_clock > pf0_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(pf0_update, 8) & 0x0F) << 16));
+                    pf0_updater = false;
+                }
+            }
+            if (pf1_updater == true)
+            {
+                pf1_delay_clock++;
+                if (pf1_delay_clock > pf1_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (pf1_update << 8));
+                    pf1_updater = false;
+                }
+            }
+            if (pf2_updater == true)
+            {
+                pf2_delay_clock++;
+                if (pf2_delay_clock > pf2_max_delay)
+                {
+                    _playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(pf2_update, 8));
+                    pf2_updater = false;
+                }
+            }
+
+            //delay latch to missile enable
+            if (enam0_delay>0)
+            {
+                enam0_delay++;
+                if (enam0_delay==3)
+                {
+                    enam0_delay = 0;
+                    _player0.Missile.Enabled = enam0_val;
+                }
+                
+            }
+
+            if (enam1_delay > 0)
+            {
+                enam1_delay++;
+                if (enam1_delay == 3)
+                {
+                    enam1_delay = 0;
+                    _player1.Missile.Enabled = enam1_val;
+                }
+
+            }
+
+            // delay latch to ball enable
+            if (enamb_delay > 0)
+            {
+                enamb_delay++;
+                if (enamb_delay == 3)
+                {
+                    enamb_delay = 0;
+                    _ball.Enabled = enamb_val;
+                }
+
+            }
+
+            // delay latch to player graphics registers
+            if (prg0_delay > 0)
+            {
+                prg0_delay++;
+                if (prg0_delay == 3)
+                {
+                    prg0_delay = 0;
+                    _player0.Grp = prg0_val;
+                    _player1.Dgrp = _player1.Grp;
+                }
+
+            }
+
+            if (prg1_delay > 0)
+            {
+                prg1_delay++;
+                if (prg1_delay == 3)
+                {
+                    prg1_delay = 0;
+                    _player1.Grp = prg1_val;
+                    _player0.Dgrp = _player0.Grp;
+
+                    // TODO: Find a game that uses this functionality and test it
+                    _ball.Denabled = _ball.Enabled;
+                }
+
+            }
+
+            // Reset the RDY flag when we reach hblank
+            if (_hsyncCnt <= 0)
 			{
 				_core.Cpu.RDY = true;
 			}
@@ -404,312 +529,405 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// Assume we're on the left side of the screen for now
 			var rightSide = false;
 
-			// ---- Things that happen only in the drawing section ----
-			// TODO: Remove this magic number (17). It depends on the HMOVE
-			if ((_hsyncCnt / 4) >= (_hmove.LateHBlankReset ? 19 : 17))
-			{
-				// TODO: Remove this magic number
-				if ((_hsyncCnt / 4) >= 37)
-				{
-					rightSide = true;
-				}
+            // ---- Things that happen only in the drawing section ----
+            // TODO: Remove this magic number (17). It depends on the HMOVE
+            if ((_hsyncCnt) >= (_hmove.LateHBlankReset ? 76 : 68))
+            {
+                do_ticks = false;
+                
+                // TODO: Remove this magic number
+                if ((_hsyncCnt / 4) >= 37)
+                {
+                    rightSide = true;
+                }
 
-				// The bit number of the PF data which we want
-				int pfBit = ((_hsyncCnt / 4) - 17) % 20;
+                // The bit number of the PF data which we want
+                int pfBit = ((_hsyncCnt / 4) - 17) % 20;
 
-				// Create the mask for the bit we want
-				// Note that bits are arranged 0 1 2 3 4 .. 19
-				int pfMask = 1 << (20 - 1 - pfBit);
+                // Create the mask for the bit we want
+                // Note that bits are arranged 0 1 2 3 4 .. 19
+                int pfMask = 1 << (20 - 1 - pfBit);
 
-				// Reverse the mask if on the right and playfield is reflected
-				if (rightSide && _playField.Reflect)
-				{
-					pfMask = ReverseBits(pfMask, 20);
-				}
+                // Reverse the mask if on the right and playfield is reflected
+                if (rightSide && _playField.Reflect)
+                {
+                    pfMask = ReverseBits(pfMask, 20);
+                }
 
-				// Calculate collisions
-				byte collisions = 0x00;
+                // Calculate collisions
+                byte collisions = 0x00;
 
-				if ((_playField.Grp & pfMask) != 0)
-				{
-					collisions |= CXPF;
-				}
-
-
-				// ---- Player 0 ----
-				collisions |= _player0.Tick() ? CXP0 : (byte)0x00;
-
-				// ---- Missile 0 ----
-				collisions |= _player0.Missile.Tick() ? CXM0 : (byte)0x00;
-
-				// ---- Player 1 ----
-				collisions |= _player1.Tick() ? CXP1 : (byte)0x00;
-
-				// ---- Missile 0 ----
-				collisions |= _player1.Missile.Tick() ? CXM1 : (byte)0x00;
-
-				// ---- Ball ----
-				collisions |= _ball.Tick() ? CXBL : (byte)0x00;
+                if ((_playField.Grp & pfMask) != 0)
+                {
+                    collisions |= CXPF;
+                }
 
 
-				// Pick the pixel color from collisions
-				int pixelColor = BackColor;
-				if (_core.Settings.ShowBG)
-				{
-					pixelColor = _palette[_playField.BkColor];
-				}
+                // ---- Player 0 ----
+                collisions |= _player0.Tick() ? CXP0 : (byte)0x00;
 
-				if ((collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
-				{
-					if (_playField.Score)
-					{
-						if (!rightSide)
-						{
-							pixelColor = _palette[_player0.Color];
-						}
-						else
-						{
-							pixelColor = _palette[_player1.Color];
-						}
-					}
-					else
-					{
-						pixelColor = _palette[_playField.PfColor];
-					}
-				}
+                // ---- Missile 0 ----
+                collisions |= _player0.Missile.Tick() ? CXM0 : (byte)0x00;
 
-				if ((collisions & CXBL) != 0)
-				{
-					_ball.Collisions |= collisions;
-					if (_core.Settings.ShowBall)
-					{
-						pixelColor = _palette[_playField.PfColor];
-					}
-				}
+                // ---- Player 1 ----
+                collisions |= _player1.Tick() ? CXP1 : (byte)0x00;
 
-				if ((collisions & CXM1) != 0)
-				{
-					_player1.Missile.Collisions |= collisions;
-					if (_core.Settings.ShowMissle2)
-					{
-						pixelColor = _palette[_player1.Color];
-					}
-				}
+                // ---- Missile 0 ----
+                collisions |= _player1.Missile.Tick() ? CXM1 : (byte)0x00;
 
-				if ((collisions & CXP1) != 0)
-				{
-					_player1.Collisions |= collisions;
-					if (_core.Settings.ShowPlayer2)
-					{
-						pixelColor = _palette[_player1.Color];
-					}
-				}
+                // ---- Ball ----
+                collisions |= _ball.Tick() ? CXBL : (byte)0x00;
 
-				if ((collisions & CXM0) != 0)
-				{
-					_player0.Missile.Collisions |= collisions;
-					if (_core.Settings.ShowMissle1)
-					{
-						pixelColor = _palette[_player0.Color];
-					}
-				}
 
-				if ((collisions & CXP0) != 0)
-				{
-					_player0.Collisions |= collisions;
-					if (_core.Settings.ShowPlayer1)
-					{
-						pixelColor = _palette[_player0.Color];
-					}
-				}
+                // Pick the pixel color from collisions
+                int pixelColor = BackColor;
+                if (_core.Settings.ShowBG)
+                {
+                    pixelColor = _palette[_playField.BkColor];
+                }
 
-				if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
-				{
-					if (_playField.Score)
-					{
-						pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
-					}
-					else
-					{
-						pixelColor = _palette[_playField.PfColor];
-					}
-				}
+                if ((collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                {
+                    if (_playField.Score)
+                    {
+                        if (!rightSide)
+                        {
+                            pixelColor = _palette[_player0.Color];
+                        }
+                        else
+                        {
+                            pixelColor = _palette[_player1.Color];
+                        }
+                    }
+                    else
+                    {
+                        pixelColor = _palette[_playField.PfColor];
+                    }
+                }
 
-				// Handle vblank
-				if (_vblankEnabled)
-				{
-					pixelColor = BackColor;
-				}
+                if ((collisions & CXBL) != 0)
+                {
+                    _ball.Collisions |= collisions;
+                    if (_core.Settings.ShowBall)
+                    {
+                        pixelColor = _palette[_playField.PfColor];
+                    }
+                }
 
-				// Add the pixel to the scanline
-				// TODO: Remove this magic number (68)
+                if ((collisions & CXM1) != 0)
+                {
+                    _player1.Missile.Collisions |= collisions;
+                    if (_core.Settings.ShowMissle2)
+                    {
+                        pixelColor = _palette[_player1.Color];
+                    }
+                }
 
-				int y = _CurrentScanLine;
-				// y >= max screen height means lag frame or game crashed, but is a legal situation.
-				// either way, there's nothing to display
-				if (y < MaxScreenHeight)
-				{
-					int x = _hsyncCnt - 68;
-					if (x < 0 || x > 159) // this can't happen, right?
-						throw new Exception(); // TODO
-					_scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
-				}
-			}
+                if ((collisions & CXP1) != 0)
+                {
+                    _player1.Collisions |= collisions;
+                    if (_core.Settings.ShowPlayer2)
+                    {
+                        pixelColor = _palette[_player1.Color];
+                    }
+                }
 
-			// ---- Things that happen every time ----
+                if ((collisions & CXM0) != 0)
+                {
+                    _player0.Missile.Collisions |= collisions;
+                    if (_core.Settings.ShowMissle1)
+                    {
+                        pixelColor = _palette[_player0.Color];
+                    }
+                }
 
-			// Handle HMOVE
-			if (_hmove.HMoveEnabled)
-			{
-				// On the first time, set the latches and counters
-				if (_hmove.HMoveJustStarted)
-				{
-					_hmove.Player0Latch = true;
-					_hmove.Player0Cnt = 0;
+                if ((collisions & CXP0) != 0)
+                {
+                    _player0.Collisions |= collisions;
+                    if (_core.Settings.ShowPlayer1)
+                    {
+                        pixelColor = _palette[_player0.Color];
+                    }
+                }
 
-					_hmove.Missile0Latch = true;
-					_hmove.Missile0Cnt = 0;
+                if (_playField.Score && !_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                {
+                    pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
+                }
 
-					_hmove.Player1Latch = true;
-					_hmove.Player1Cnt = 0;
+                    if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                {
 
-					_hmove.Missile1Latch = true;
-					_hmove.Missile1Cnt = 0;
+                    pixelColor = _palette[_playField.PfColor];
 
-					_hmove.BallLatch = true;
-					_hmove.BallCnt = 0;
+                }
 
-					_hmove.HMoveCnt = 0;
+                // Handle vblank
+                if (_vblankEnabled)
+                {
+                    pixelColor = BackColor;
+                }
 
-					_hmove.HMoveJustStarted = false;
-					_hmove.LateHBlankReset = true;
-					_hmove.DecCntEnabled = false;
-				}
+                // Add the pixel to the scanline
+                // TODO: Remove this magic number (68)
 
-				if (_hmove.DecCntEnabled)
-				{
-					// Actually do stuff only evey 4 pulses
-					if (_hmove.HMoveCnt == 0)
-					{
-						// If the latch is still set
-						if (_hmove.Player0Latch)
-						{
-							// If the move counter still has a bit in common with the HM register
-							if (((15 - _hmove.Player0Cnt) ^ ((_player0.HM & 0x07) | ((~(_player0.HM & 0x08)) & 0x08))) != 0x0F)
-							{
-								// "Clock-Stuffing"
-								_player0.Tick();
+                int y = _CurrentScanLine;
+                // y >= max screen height means lag frame or game crashed, but is a legal situation.
+                // either way, there's nothing to display
+                if (y < MaxScreenHeight)
+                {
+                    int x = _hsyncCnt - 68;
+                    if (x < 0 || x > 159) // this can't happen, right?
+                        throw new Exception(); // TODO
+                    _scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
+                }
+            } else
+            {
+                do_ticks = true;
+            }
 
-								// Increase by 1, max of 15
-								_hmove.Player0Cnt++;
-								_hmove.Player0Cnt %= 16;
-							}
-							else
-							{
-								_hmove.Player0Latch = false;
-							}
-						}
+            // if extended HBLank is active, the screen area still needs a color
+            if (_hsyncCnt >= 68 && _hsyncCnt < 76 && _hmove.LateHBlankReset)
+            {
+                int pixelColor = 0;
 
-						if (_hmove.Missile0Latch)
-						{
-							if (_hmove.Missile0Cnt == 15)
-							{ }
+                // Add the pixel to the scanline
+                // TODO: Remove this magic number (68)
 
-							// If the move counter still has a bit in common with the HM register
-							if (((15 - _hmove.Missile0Cnt) ^ ((_player0.Missile.Hm & 0x07) | ((~(_player0.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
-							{
-								// "Clock-Stuffing"
-								_player0.Missile.Tick();
+                int y = _CurrentScanLine;
+                // y >= max screen height means lag frame or game crashed, but is a legal situation.
+                // either way, there's nothing to display
+                if (y < MaxScreenHeight)
+                {
+                    int x = _hsyncCnt - 68;
+                    if (x < 0 || x > 159) // this can't happen, right?
+                        throw new Exception(); // TODO
+                    _scanlinebuffer[_CurrentScanLine * ScreenWidth + x] = pixelColor;
+                }
+            }
 
-								// Increase by 1, max of 15
-								_hmove.Missile0Cnt++;
-								_hmove.Missile0Cnt %= 16;
-							}
-							else
-							{
-								_hmove.Missile0Latch = false;
-								_hmove.Missile0Cnt = 0;
-							}
-						}
 
-						if (_hmove.Player1Latch)
-						{
-							// If the move counter still has a bit in common with the HM register
-							if (((15 - _hmove.Player1Cnt) ^ ((_player1.HM & 0x07) | ((~(_player1.HM & 0x08)) & 0x08))) != 0x0F)
-							{
-								// "Clock-Stuffing"
-								_player1.Tick();
 
-								// Increase by 1, max of 15
-								_hmove.Player1Cnt++;
-								_hmove.Player1Cnt %= 16;
-							}
-							else
-							{
-								_hmove.Player1Latch = false;
-							}
-						}
+                // ---- Things that happen every time ----
 
-						if (_hmove.Missile1Latch)
-						{
-							// If the move counter still has a bit in common with the HM register
-							if (((15 - _hmove.Missile1Cnt) ^ ((_player1.Missile.Hm & 0x07) | ((~(_player1.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
-							{
-								// "Clock-Stuffing"
-								_player1.Missile.Tick();
+                // Handle HMOVE
+                if (_hmove.HMoveEnabled)
+                {
+                    // On the first time, set the latches and counters
+                    if (_hmove.HMoveJustStarted)
+                    {
 
-								// Increase by 1, max of 15
-								_hmove.Missile1Cnt++;
-								_hmove.Missile1Cnt %= 16;
-							}
-							else
-							{
-								_hmove.Missile1Latch = false;
-							}
-						}
 
-						if (_hmove.BallLatch)
-						{
-							// If the move counter still has a bit in common with the HM register
-							if (((15 - _hmove.BallCnt) ^ ((_ball.HM & 0x07) | ((~(_ball.HM & 0x08)) & 0x08))) != 0x0F)
-							{
-								// "Clock-Stuffing"
-								_ball.Tick();
+                        _hmove.Player0Latch = true;
+                        _hmove.Player0Cnt = 0;
+                        test_count_p0 = 0;
+                        test_count_p1 = 0;
+                        test_count_m0 = 0;
+                        test_count_m1 = 0;
+                        test_count_b = 0;
 
-								// Increase by 1, max of 15
-								_hmove.BallCnt++;
-								_hmove.BallCnt %= 16;
-							}
-							else
-							{
-								_hmove.BallLatch = false;
-							}
-						}
 
-						if (!_hmove.Player0Latch && !_hmove.Player1Latch && !_hmove.BallLatch && !_hmove.Missile0Latch && !_hmove.Missile1Latch)
-						{
-							_hmove.HMoveEnabled = false;
-							_hmove.DecCntEnabled = false;
-							_hmove.HMoveDelayCnt = 0;
-						}
-					}
+                        _hmove.Missile0Latch = true;
+                        _hmove.Missile0Cnt = 0;
 
-					_hmove.HMoveCnt++;
-					_hmove.HMoveCnt %= 4;
-				}
+                        _hmove.Player1Latch = true;
+                        _hmove.Player1Cnt = 0;
 
-				if (_hmove.HMoveDelayCnt < 6)
-				{
-					_hmove.HMoveDelayCnt++;
-				}
+                        _hmove.Missile1Latch = true;
+                        _hmove.Missile1Cnt = 0;
 
-				if (_hmove.HMoveDelayCnt == 6)
-				{
-					_hmove.HMoveDelayCnt++;
-					_hmove.HMoveCnt = 0;
-					_hmove.DecCntEnabled = true;
-				}
-			}
+                        _hmove.BallLatch = true;
+                        _hmove.BallCnt = 0;
+
+                        _hmove.HMoveCnt = 0;
+
+                        _hmove.HMoveJustStarted = false;
+                        _hmove.LateHBlankReset = true;
+                        _hmove.DecCntEnabled = false;
+
+                    }
+
+                    if (_hmove.DecCntEnabled)
+                    {
+
+
+                        // Actually do stuff only evey 4 pulses
+                        if (_hmove.HMoveCnt == 0)
+                        {
+                            // If the latch is still set
+                            if (_hmove.Player0Latch)
+                            {
+                                // If the move counter still has a bit in common with the HM register
+                                if (((15 - _hmove.Player0Cnt) ^ ((_player0.HM & 0x07) | ((~(_player0.HM & 0x08)) & 0x08))) != 0x0F)
+                                {
+                                // "Clock-Stuffing"
+                                if (do_ticks==true)
+                                {
+                                    _player0.Tick();
+                                }
+                                
+
+                                    // Increase by 1, max of 15
+
+                                    test_count_p0++;
+                                    if (test_count_p0 < 16)
+                                    {
+                                        _hmove.Player0Cnt++;
+                                    }
+                                    else
+                                    {
+                                        _hmove.Player0Cnt = 0;
+                                    }
+
+                                    //_hmove.Player0Cnt %= 16;
+                                }
+                                else
+                                {
+                                    _hmove.Player0Latch = false;
+                                }
+                            }
+
+                            if (_hmove.Missile0Latch)
+                            {
+                               
+                                // If the move counter still has a bit in common with the HM register
+                                if (((15 - _hmove.Missile0Cnt) ^ ((_player0.Missile.Hm & 0x07) | ((~(_player0.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
+                                {
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
+                                    _player0.Missile.Tick();
+                                }
+                                    // Increase by 1, max of 15
+
+
+                                    test_count_m0++;
+                                    if (test_count_m0 < 16)
+                                    {
+                                        _hmove.Missile0Cnt++;
+                                    }
+                                    else
+                                    {
+                                        _hmove.Missile0Cnt = 0;
+                                    }
+                                    //_hmove.Missile0Cnt %= 16;
+                                }
+                                else
+                                {
+                                    _hmove.Missile0Latch = false;
+                                    
+                                }
+                            }
+
+                            if (_hmove.Player1Latch)
+                            {
+                                // If the move counter still has a bit in common with the HM register
+                                if (((15 - _hmove.Player1Cnt) ^ ((_player1.HM & 0x07) | ((~(_player1.HM & 0x08)) & 0x08))) != 0x0F)
+                                {
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
+                                    _player1.Tick();
+                                }
+                                    // Increase by 1, max of 15
+                                    test_count_p1++;
+                                    if (test_count_p1 < 16)
+                                    {
+                                        _hmove.Player1Cnt++;
+                                    }
+                                    else
+                                    {
+                                        _hmove.Player1Cnt = 0;
+                                    }
+                                    //_hmove.Player1Cnt %= 16;
+                                }
+                                else
+                                {
+                                    _hmove.Player1Latch = false;
+                                }
+                            }
+
+                            if (_hmove.Missile1Latch)
+                            {
+                                // If the move counter still has a bit in common with the HM register
+                                if (((15 - _hmove.Missile1Cnt) ^ ((_player1.Missile.Hm & 0x07) | ((~(_player1.Missile.Hm & 0x08)) & 0x08))) != 0x0F)
+                                {
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
+                                    _player1.Missile.Tick();
+                                }
+                                    // Increase by 1, max of 15
+                                    test_count_m1++;
+                                    if (test_count_m1 < 16)
+                                    {
+                                        _hmove.Missile1Cnt++;
+                                    }
+                                    else
+                                    {
+                                        _hmove.Missile1Cnt = 0;
+                                    }
+                                    // _hmove.Missile1Cnt %= 16;
+                                }
+                                else
+                                {
+                                    _hmove.Missile1Latch = false;
+                                }
+                            }
+
+                            if (_hmove.BallLatch)
+                            {
+                                // If the move counter still has a bit in common with the HM register
+                                if (((15 - _hmove.BallCnt) ^ ((_ball.HM & 0x07) | ((~(_ball.HM & 0x08)) & 0x08))) != 0x0F)
+                                {
+                                // "Clock-Stuffing"
+                                if (do_ticks == true)
+                                {
+                                    _ball.Tick();
+                                }
+                                    // Increase by 1, max of 15
+                                    test_count_b++;
+                                    if (test_count_b < 16)
+                                    {
+                                        _hmove.BallCnt++;
+                                    }
+                                    else
+                                    {
+                                        _hmove.BallCnt = 0;
+                                    }
+                                    //_hmove.BallCnt %= 16;
+                                }
+                                else
+                                {
+                                    _hmove.BallLatch = false;
+                                }
+                            }
+
+                            if (!_hmove.Player0Latch && !_hmove.Player1Latch && !_hmove.BallLatch && !_hmove.Missile0Latch && !_hmove.Missile1Latch)
+                            {
+                                _hmove.HMoveEnabled = false;
+                                _hmove.DecCntEnabled = false;
+                                _hmove.HMoveDelayCnt = 0;
+                            }
+                        }
+
+                        _hmove.HMoveCnt++;
+                        _hmove.HMoveCnt %= 4;
+                    }
+                   
+                    if (_hmove.HMoveDelayCnt < 5)
+                    {
+                        _hmove.HMoveDelayCnt++;
+                    }
+
+                    if (_hmove.HMoveDelayCnt == 5)
+                    {
+                        _hmove.HMoveDelayCnt++;
+                        _hmove.HMoveCnt = 0;
+                        _hmove.DecCntEnabled = true;
+                    }
+                }
+            
 
 			// Increment the hsync counter
 			_hsyncCnt++;
@@ -881,7 +1099,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x08) // COLUPF
 			{
-				_playField.PfColor = (byte)(value & 0xFE);
+                _playField.PfColor = (byte)(value & 0xFE);
 			}
 			else if (maskedAddr == 0x09) // COLUBK
 			{
@@ -905,80 +1123,166 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x0D) // PF0
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
-			}
+                pf0_update = value;
+                pf0_updater = true;
+                pf0_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf0_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf0_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf0_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf0_max_delay = 3;
+                }
+
+                //_playField.Grp = (uint)((_playField.Grp & 0x0FFFF) + ((ReverseBits(value, 8) & 0x0F) << 16));
+            }
 			else if (maskedAddr == 0x0E) // PF1
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
-			}
+                pf1_update = value;
+                pf1_updater = true;
+                pf1_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf1_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf1_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf1_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf1_max_delay = 3;
+                }
+                //_playField.Grp = (uint)((_playField.Grp & 0xF00FF) + (value << 8));
+            }
 			else if (maskedAddr == 0x0F) // PF2
 			{
-				_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
-			}
+                pf2_update = value;
+                pf2_updater = true;
+                pf2_delay_clock = 0;
+                if (((_hsyncCnt / 3) & 3) == 0)
+                {
+                    pf2_max_delay = 4;
+                }
+                if (((_hsyncCnt / 3) & 3) == 1)
+                {
+                    pf2_max_delay = 5;
+                }
+                if (((_hsyncCnt / 3) & 3) == 2)
+                {
+                    pf2_max_delay = 2;
+                }
+                if (((_hsyncCnt / 3) & 3) == 3)
+                {
+                    pf2_max_delay = 3;
+                }
+                //_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
+            }
 			else if (maskedAddr == 0x10) // RESP0
 			{
-				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
-				if (_hsyncCnt < 69)
-				{
-					_player0.HPosCnt = 0;
-					_player0.ResetCnt = 0;
-					_player0.Reset = true;
-				}
-				else if (_hsyncCnt == 69)
-				{
-					_player0.ResetCnt = 3;
-				}
-				else if (_hsyncCnt == 72)
-				{
-					_player0.ResetCnt = 2;
-				}
-				else if (_hsyncCnt == 75)
-				{
-					_player0.ResetCnt = 1;
-				}
-				else
-				{
-					_player0.ResetCnt = 0;
-				}
-			}
+                // Resp depends on HMOVE
+                if (!_hmove.LateHBlankReset)
+                {
+                    if (_hsyncCnt < 69)
+                    {
+                        _player0.HPosCnt = 0;
+                        _player0.ResetCnt = 2;
+                        _player0.Reset = true;
+                    }
+                    else
+                    {
+                        _player0.ResetCnt = 0;
+                    }
+                }
+                else
+                {
+                    if (_hsyncCnt < 76)
+                    {
+                        _player0.HPosCnt = 0;
+                        _player0.ResetCnt = 1;
+                        _player0.Reset = true;
+                    }
+                    else
+                    {
+                        _player0.ResetCnt = 0;
+                    }
+                }
+            }
 			else if (maskedAddr == 0x11) // RESP1
 			{
-				// Borrowed from EMU7800. Apparently resetting between 68 and 76 has strange results. 
-				// This fixes some graphic glitches with Frostbite
-				if (_hsyncCnt < 69)
-				{
-					_player1.HPosCnt = 0;
-					_player1.ResetCnt = 0;
-					_player1.Reset = true;
-				}
-				else if (_hsyncCnt == 69)
-				{
-					_player1.ResetCnt = 3;
-				}
-				else if (_hsyncCnt == 72)
-				{
-					_player1.ResetCnt = 2;
-				}
-				else if (_hsyncCnt == 75)
-				{
-					_player1.ResetCnt = 1;
-				}
-				else
-				{
-					_player1.ResetCnt = 0;
-				}
+				// RESP depends on HMOVE
+                if (!_hmove.LateHBlankReset)
+                {
+                    if (_hsyncCnt < 69)
+                    {
+                        _player1.HPosCnt = 0;
+                        _player1.ResetCnt = 2;
+                        _player1.Reset = true;
+                    } else
+                    {
+                        _player1.ResetCnt = 0;
+                    }
+                } else
+                {
+                    if (_hsyncCnt < 76)
+                    {
+                        _player1.HPosCnt = 0;
+                        _player1.ResetCnt = 1;
+                        _player1.Reset = true;
+                    }
+                    else
+                    {
+                        _player1.ResetCnt = 0;
+                    }
+                }
+					
 			}
 			else if (maskedAddr == 0x12) // RESM0
 			{
-				_player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-			}
+                if (!_hmove.LateHBlankReset)
+                {
+                    _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                } else
+                {
+                    _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+
+            }
 			else if (maskedAddr == 0x13) // RESM1
 			{
-				_player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-			}
+                if (!_hmove.LateHBlankReset)
+                {
+                    _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                }
+                else
+                {
+                    _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                }
+            }
 			else if (maskedAddr == 0x14) // RESBL
 			{
-				_ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                if (!_hmove.LateHBlankReset)
+                {
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                }
+                else
+                {
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 3 : 160 - 4);
+                }
+                
 			}
 			else if (maskedAddr == 0x15) // AUDC0
 			{
@@ -1006,28 +1310,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if (maskedAddr == 0x1B) // GRP0
 			{
-				_player0.Grp = value;
-				_player1.Dgrp = _player1.Grp;
+                prg0_val = value;
+                prg0_delay = 1;
+                
 			}
 			else if (maskedAddr == 0x1C) // GRP1
 			{
-				_player1.Grp = value;
-				_player0.Dgrp = _player0.Grp;
-
-				// TODO: Find a game that uses this functionality and test it
-				_ball.Denabled = _ball.Enabled;
+                prg1_val = value;
+                prg1_delay = 1;
+                
 			}
 			else if (maskedAddr == 0x1D) // ENAM0
 			{
-				_player0.Missile.Enabled = (value & 0x02) != 0;
-			}
+                enam0_val = (value & 0x02) != 0;
+                enam0_delay = 1;
+            }
 			else if (maskedAddr == 0x1E) // ENAM1
 			{
-				_player1.Missile.Enabled = (value & 0x02) != 0;
-			}
+                enam1_val = (value & 0x02) != 0;
+                enam1_delay = 1;
+            }
 			else if (maskedAddr == 0x1F) // ENABL
 			{
-				_ball.Enabled = (value & 0x02) != 0;
+                enamb_val = (value & 0x02) != 0;
+                enamb_delay = 1;
 			}
 			else if (maskedAddr == 0x20) // HMP0
 			{

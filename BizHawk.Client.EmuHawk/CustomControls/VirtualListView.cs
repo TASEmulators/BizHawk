@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 	[StructLayout(LayoutKind.Sequential)]
 	internal struct NmHdr 
 	{
-		public int HwndFrom;
-		public int IdFrom;
+		public IntPtr HwndFrom;
+		public IntPtr IdFrom;
 		public int Code;
 	}
 

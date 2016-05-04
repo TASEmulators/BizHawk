@@ -20,8 +20,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_programmaticallyChangingValue = true;
 
-			SoundOnCheckBox.Checked = Global.Config.SoundEnabled;
-			MuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
+			cbEnableMaster.Checked = Global.Config.SoundEnabled;
+			cbEnableNormal.Checked = Global.Config.SoundEnabledNormal;
+			cbEnableRWFF.Checked = Global.Config.SoundEnabledRWFF;
+			cbMuteFrameAdvance.Checked = Global.Config.MuteFrameAdvance;
 #if !WINDOWS
 			rbOutputMethodDirectSound.Enabled = false;
 			rbOutputMethodXAudio2.Enabled = false;
@@ -30,8 +32,10 @@ namespace BizHawk.Client.EmuHawk
 			rbOutputMethodXAudio2.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2;
 			rbOutputMethodOpenAL.Checked = Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL;
 			BufferSizeNumeric.Value = Global.Config.SoundBufferSizeMs;
-			SoundVolBar.Value = Global.Config.SoundVolume;
-			SoundVolNumeric.Value = Global.Config.SoundVolume;
+			tbNormal.Value = Global.Config.SoundVolume;
+			nudNormal.Value = Global.Config.SoundVolume;
+			tbRWFF.Value = Global.Config.SoundVolumeRWFF;
+			nudRWFF.Value = Global.Config.SoundVolumeRWFF;
 			UpdateSoundDialog();
 
 			_programmaticallyChangingValue = false;
@@ -46,13 +50,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			var oldOutputMethod = Global.Config.SoundOutputMethod;
 			var oldDevice = Global.Config.SoundDevice;
-			Global.Config.SoundEnabled = SoundOnCheckBox.Checked;
-			Global.Config.MuteFrameAdvance = MuteFrameAdvance.Checked;
+			Global.Config.SoundEnabled = cbEnableMaster.Checked;
+			Global.Config.SoundEnabledNormal = cbEnableNormal.Checked;
+			Global.Config.SoundEnabledRWFF = cbEnableRWFF.Checked;
+			Global.Config.MuteFrameAdvance = cbMuteFrameAdvance.Checked;
 			if (rbOutputMethodDirectSound.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.DirectSound;
 			if (rbOutputMethodXAudio2.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.XAudio2;
 			if (rbOutputMethodOpenAL.Checked) Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL;
 			Global.Config.SoundBufferSizeMs = (int)BufferSizeNumeric.Value;
-			Global.Config.SoundVolume = SoundVolBar.Value;
+			Global.Config.SoundVolume = tbNormal.Value;
+			Global.Config.SoundVolumeRWFF = tbRWFF.Value;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.StopSound();
 			if (Global.Config.SoundOutputMethod != oldOutputMethod ||
@@ -101,26 +108,34 @@ namespace BizHawk.Client.EmuHawk
 
 		private void trackBar1_Scroll(object sender, EventArgs e)
 		{
-			SoundVolNumeric.Value = SoundVolBar.Value;
+			nudNormal.Value = tbNormal.Value;
+		}
+
+		private void tbRWFF_Scroll(object sender, EventArgs e)
+		{
+			nudRWFF.Value = tbRWFF.Value;
 		}
 
 		private void SoundVolNumeric_ValueChanged(object sender, EventArgs e)
 		{
-			SoundVolBar.Value = (int)SoundVolNumeric.Value;
+			tbNormal.Value = (int)nudNormal.Value;
 
 			// If the user is changing the volume, automatically turn on/off sound accordingly
 			if (!_programmaticallyChangingValue)
-				SoundOnCheckBox.Checked = SoundVolBar.Value != 0;
-		}
-
-		private void SoundOnCheckBox_CheckedChanged(object sender, EventArgs e)
-		{
-			UpdateSoundDialog();
+				cbEnableNormal.Checked = tbNormal.Value != 0;
 		}
 
 		private void UpdateSoundDialog()
 		{
-			MuteFrameAdvance.Enabled = SoundOnCheckBox.Checked;
+			cbEnableRWFF.Enabled = cbEnableNormal.Checked;
+			grpSoundVol.Enabled = cbEnableMaster.Checked;
 		}
+
+
+		private void UpdateSoundDialog(object sender, EventArgs e)
+		{
+			UpdateSoundDialog();
+		}
+
 	}
 }

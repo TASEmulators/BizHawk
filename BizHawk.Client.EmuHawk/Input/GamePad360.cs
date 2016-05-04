@@ -87,10 +87,10 @@ namespace BizHawk.Client.EmuHawk
 			var c3 = new Controller(UserIndex.Three);
 			var c4 = new Controller(UserIndex.Four);
 
-			if (c1.IsConnected) Devices.Add(new GamePad360(c1));
-			if (c2.IsConnected) Devices.Add(new GamePad360(c2));
-			if (c3.IsConnected) Devices.Add(new GamePad360(c3));
-			if (c4.IsConnected) Devices.Add(new GamePad360(c4));
+			if (c1.IsConnected) Devices.Add(new GamePad360(0,c1));
+			if (c2.IsConnected) Devices.Add(new GamePad360(1,c2));
+			if (c3.IsConnected) Devices.Add(new GamePad360(2,c3));
+			if (c4.IsConnected) Devices.Add(new GamePad360(3,c4));
 		}
 
 		public static void UpdateAll()
@@ -103,10 +103,14 @@ namespace BizHawk.Client.EmuHawk
 		// ********************************** Instance Members **********************************
 
 		readonly Controller controller;
+        uint index0;
 		XINPUT_STATE state;
 
-		GamePad360(Controller c)
+        public int PlayerNumber { get { return (int)index0 + 1; } }
+
+		GamePad360(uint index0, Controller c)
 		{
+            this.index0 = index0;
 			controller = c;
 			InitializeButtons();
 			Update();
@@ -120,7 +124,7 @@ namespace BizHawk.Client.EmuHawk
 			if (XInputGetStateExProc != null)
 			{
 				state = new XINPUT_STATE();
-				XInputGetStateExProc(0, out state);
+				XInputGetStateExProc(index0, out state);
 			}
 			else
 			{

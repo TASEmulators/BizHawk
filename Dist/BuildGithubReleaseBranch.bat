@@ -1,5 +1,5 @@
-set OUTFILE=BizHawk-Github-Master.zip
-set WORKDIR=.build-github-master
+set OUTFILE=BizHawk-Github-Release.zip
+set WORKDIR=.build-github-release
 
 set PATH=%PATH%;C:\Program Files (x86)\git\bin;C:\Program Files\git\bin
 

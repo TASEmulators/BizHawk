@@ -228,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public MemoryDomain GetDiskPeeker()
 		{
-			return new MemoryDomain("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null);
+			return new MemoryDomainDelegate("FDS Side", diskdrive.NumBytes, MemoryDomain.Endian.Little, diskdrive.PeekData, null, 1);
 		}
 
 		void SetIRQ()

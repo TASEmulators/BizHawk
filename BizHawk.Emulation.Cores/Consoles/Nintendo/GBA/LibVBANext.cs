@@ -174,6 +174,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			public IntPtr oam;
 			public IntPtr rom;
 			public IntPtr mmio;
+			public IntPtr sram;
+			public int sram_size;
 		}
 
 		// this isn't used directly at the moment.  but it could be used for something eventually...

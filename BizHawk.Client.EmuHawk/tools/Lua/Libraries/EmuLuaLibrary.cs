@@ -206,7 +206,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EmuYield()
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			_currThread.Yield(0);
 		}
 

@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x1000: //$9000
 				case 0x1001: //$9001
-					switch (value & 3)
+					switch (value & (type - 1)) // VRC2 only supports V, H, and not A, B
 					{
 						case 0: SetMirrorType(NES.NESBoardBase.EMirrorType.Vertical); break;
 						case 1: SetMirrorType(NES.NESBoardBase.EMirrorType.Horizontal); break;

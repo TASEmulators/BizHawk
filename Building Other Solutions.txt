@@ -4,8 +4,10 @@ Besides the main Bizhawk.sln, there are a number of other projects, each with it
 EMU7800: Load EMU7800/EMU7800.sln; builds as .NET 4.0.  Does file automatically copy to appropriate folder??
 
 genplus-gx: Load genplus-gx/libretro/msvc/msvc-2010.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
+waterbox: check the waterbox/ folder for instructions on the alpha waterbox builds.
 
 libgambatte: Process libgambatte/Makefile with mingw.  Use "make install" to copy to output folder.  Alternatively, there is a VC10 solution at libgambatte/libgambatte.sln, but that's not used.
+amd64: there is some sort of codegen issue with mingw.  The VC10 solution is used there.
 
 libmeteor: Probably libmeteor/libmeteor.sln, but not well checked.
 
@@ -14,8 +16,10 @@ libmupen64plus: ??
 libsnes: During development, run bizwinmake.sh. Edit it as necessary to change profiles and bitness. For making release mode dlls for committing, run bizwinmakedistro.sh. Note that 64bits libsnes doesn't work right now.
 
 quicknes: Process quicknes/mingw/Makefile with mingw.  Use "make install" top copy to output folder.  Alternatively, there is a VC10 solution at quicknes/libquicknes/libquicknes.sln, but that has audio output glitches.
+amd64: mingw only
 
 wonderswan: Load wonderswan/bizswan/bizswan.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.  Alternatively, there is a mingw Makefile at wonderswan/mingw/Makefile, but that's not used.
+amd64: mingw only
 
 yabause: Load yabause/src/libyabause/libyabause.sln; builds as VC++ (VC10).  Output dll automatically copies to appropriate folder.
 
@@ -46,3 +50,7 @@ Now you've activated the mingw-w64 on this msys install.
 It will tell you "Oh joy" you dont have a better make.exe. Thats bullshit, their make.exe is terrible. In fact youll want a new one
 ln -s /mingw/bin/mingw32-make.exe /mingw/bin/make
 Now, with the way msys sets up its paths, youll be using that make by default
+
+=========================================
+
+natt: February 2016: the environment I currently use to build all of my mingw stuff, 32 and 64 bit, but not waterbox (which is on linux) and maybe not bsnes (haven't tried in a while) is a vanilla http://msys2.github.io/ install.

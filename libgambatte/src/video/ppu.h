@@ -27,7 +27,7 @@
 
 namespace gambatte {
 
-enum { LAYER_MASK_BG = 1, LAYER_MASK_OBJ = 2 };
+enum { LAYER_MASK_BG = 1, LAYER_MASK_OBJ = 2, LAYER_MASK_WINDOW = 4 };
 
 class PPUFrameBuf {
 	uint_least32_t *buf_;

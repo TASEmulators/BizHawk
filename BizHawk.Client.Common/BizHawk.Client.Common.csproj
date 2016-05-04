@@ -110,6 +110,8 @@
     <Compile Include="..\Version\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Api\CoreSystem.cs" />
+    <Compile Include="Api\JoypadButton.cs" />
     <Compile Include="BinarySaveStates.cs" />
     <Compile Include="BitmapBufferVideoProvider.cs" />
     <Compile Include="config\Binding.cs" />

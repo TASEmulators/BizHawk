@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case Mode.New:
-					switch (MemoryDomains.First().ByteSize)
+					switch (MemoryDomains.First().WordSize)
 					{
 						default:
 						case 1:

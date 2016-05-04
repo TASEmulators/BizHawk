@@ -1,0 +1,110 @@
+﻿Credits
+=======
+
+The vast majority of PDCLib is original work by me. I felt it was the only way
+to ensure that the code was indeed free of third-party rights, and thus free to
+be released into the Public Domain.
+
+Another issue was that of coding style, quality and stability of the code, and
+the urge to really understand every miniscule part of the code as to be able to
+maintain it well once v1.0 has been released.
+
+That is not to say there are no credits to be given. To the contrary:
+
+Paul Edwards (author of the PDPCLIB), for inspirational code fragments, thanks.
+
+P.J. Plauger (author of "The Standard C Library"), for a book without which I
+would not have been able to create PDCLib at this quality, thanks.
+
+Paul Bourke (author of mathlib), for allowing me access to a complete math
+library under public domain terms so I could use it as a reference, thanks.
+
+Peter ("Candy") Bindels (netizen of osdev.org), who located a copy of Cody
+& Waite's "Software Manual for the Elementary Functions" for me and saved me
+serious cash in the process, thanks.
+
+Michael Moody, who contributed the generic implementation for <stdarg.h> to
+the Public Domain which can now be found in <_PDCLIB_config.h>, thanks.
+
+Rod Pemberton, for pointing out several flaws in early versions of PDCLib and
+giving other valuable hints, thanks.
+
+Brian Damgaard, for a very friendly exchange over the fine details of the
+Quicksort algorithm and its implementation in PDCLib, thanks.
+
+Rink Springer, for very precise bug reports including patches, and a heads-up
+on the capabilities of PDCLib when I most needed it, thanks.
+
+Everyone involved in the first, "public" attempt at PDCLib, for bearing with me
+when I restarted from scratch, thanks.
+
+Everyone bearing with me during the "stdio block", a period of many years in
+which PDCLib received not a single update because I was stuck and could not
+find the time and energy to work it out.
+
+Lennart Frid�n and Sammy Nordstr�m, who have been great pals even after I sunk
+some other project that had eaten countless hours of work between the three of
+us, thanks.
+
+My wife, daughter, and son for sharing husband and daddy with this strange
+machine, thanks.
+
+
+Style
+=====
+
+I followed a set of guidelines in creating PDCLib. If you find some piece that
+does not adhere to them, that's a bug worth reporting. I mean it. I am a bit
+obsessive when it comes to coding style. ;-)
+
+- All the stuff that is not part of the standard specification is "hidden" in
+  the _PDCLIB_* namespace - functions, variables, macros, files, directories.
+  This is to make it easier to distinguish between what the standard dictates
+  and what I added to make PDCLib work.
+
+- Any internal includes (i.e. those not specified by the standard) have their
+  header guards defined in the *including* file, for a tiny bit of compile-time
+  performance.
+
+- I always try to minimize the use of local variables. Wherever possible I used
+  parameters passed by-value directly, and deferred declaration of locals to the
+  innermost block of statements, in hopes that it might reduce memory footprint
+  when the library is compiled with a compiler that is not that great at
+  optimization.
+
+- Every function, every static data item that could possibly be shared, got its
+  own implementation file. This means the library itself is probably larger than
+  strictly necessary, and might take a couple of clock cycles longer to link,
+  but it reduces size of object files and executables.
+
+- Where possible, I tried to share functionality between similar functions (as
+  can be seen in the atoi() and strtol() function families). This means one or
+  two additional function calls, but again reduces memory footprint and eases
+  maintenance of the library.
+
+- Function arguments are named exactly as in the standard document.
+
+- The standard is taken quite literally in places. For example, the default
+  implementations of memcpy() really copies char-wise. This runs contrary to
+  earlier claims of performance, but is consistent with the *letter* of the
+  standard, and you will probably use your compiler builtins (through a platform
+  overlay) anyhow.
+
+- Every file has an Id tag, so that it is on file for *every* code file.
+
+- PDCLib code has no bias towards POSIX; indeed the absence of POSIX tidbits is
+  one of its hallmarks. However, PDCLib also has no bias *against* POSIX, and
+  when one platform abstraction is as good as another, I chose the POSIX one for
+  sheer familiarity. (This is mainly referring to naming and parameter lists of
+  OS "glue" functions.)
+
+- Identifiers are tersely named, but not cryptically abbreviated, and should be
+  intuitive enough to allow easy understanding of PDCLib inner workings.
+
+- I disagree with the notion that good code needs no comments. Code tells you
+  *how*, but not the *why*, and you have to figure out the *what* yourself. So
+  I added comments to every nontrivial piece of code explaining my motives and
+  hopefully keeping overly ambitious editors from repeating my mistakes. The
+  header files especially should be self-documenting to the point of being a
+  suitable replacement for any library reference book you might be using.
+
