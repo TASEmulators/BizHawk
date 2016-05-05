@@ -284,12 +284,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//PAL:
 		//0 15 30 45 60 -> 12 27 42 57 -> 9 24 39 54 -> 6 21 36 51 -> 3 18 33 48 -> 0
-		//sequence of ppu clocks per cpu clock: 4,3,3,3,3
+		//sequence of ppu clocks per cpu clock: 3,3,3,3,4
+        //at least it should be, but something is off with that (start up time?) so it is 3,3,3,4,3 for now
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
 		ByteBuffer cpu_sequence;
-		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3});
-		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4,3,3,3,3,4});
+		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3});
+		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{3,3,3,4,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 
 #if VS2012
@@ -301,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (cpu_stepcounter == cpu_sequence[cpu_step])
 			{
 				cpu_step++;
-				cpu_step &= 31;
+				if(cpu_step == 5) cpu_step=0;
 				cpu_stepcounter = 0;
 
 				if (sprdma_countdown > 0)
@@ -309,9 +310,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sprdma_countdown--;
 					if (sprdma_countdown == 0)
 					{
-						//its weird that this is 514.. normally itd be 512 (and people would say its wrong) or 513 (and people would say its right)
-						//but 514 passes test 4-irq_and_dma
-						cpu_deadcounter += 514;
+                        //its weird that this is 514.. normally itd be 512 (and people would say its wrong) or 513 (and people would say its right)
+                        //but 514 passes test 4-irq_and_dma
+                        // according to nesdev wiki, http://wiki.nesdev.com/w/index.php/PPU_OAM this is 513 on even cycles and 514 on odd cycles
+                        // TODO: Implement that
+                        cpu_deadcounter += 514;
 					}
 				}
 
