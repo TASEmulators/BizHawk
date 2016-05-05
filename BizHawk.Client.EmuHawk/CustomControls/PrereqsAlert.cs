@@ -11,9 +11,11 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 {
 	public partial class PrereqsAlert : Form
 	{
-		public PrereqsAlert()
+		public PrereqsAlert(bool warn_only)
 		{
 			InitializeComponent();
+			if (warn_only)
+				button1.Text = "Continue";
 		}
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
