@@ -127,6 +127,7 @@ namespace BizHawk.Client.Common
 		public DateTime? Update_LastCheckTimeUTC = null;
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
+		public bool CDLAutoSave = true, CDLAutoStart = true;
 
 		//public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 
