@@ -276,6 +276,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadBranchExternal(int slot = -1)
 		{
+			if (Tastudio.FloatEditingMode)
+				return;
+
 			if (slot != -1)
 			{
 				if (GetBranch(slot) != null)
@@ -293,6 +296,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateBranchExternal(int slot = -1)
 		{
+			if (Tastudio.FloatEditingMode)
+				return;
+
 			if (slot != -1)
 			{
 				if (GetBranch(slot) != null)
@@ -315,6 +321,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectBranchExternal(int slot)
 		{
+			if (Tastudio.FloatEditingMode)
+				return;
+
 			if (GetBranch(slot) != null)
 			{
 				BranchView.SelectRow(slot, true);

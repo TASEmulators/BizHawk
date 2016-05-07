@@ -25,6 +25,14 @@ namespace BizHawk.Client.EmuHawk
 		// SuuperW: For editing analog input
 		private string _floatEditColumn = string.Empty;
 		private int _floatEditRow = -1;
+		private int floatEditRow
+		{
+			set
+			{
+				_floatEditRow = value;
+				TasView.suspendHotkeys = FloatEditingMode;
+			}
+		}
 		private string _floatTypedValue;
 		private int _floatEditYPos = -1;
 		// Right-click dragging
@@ -84,6 +92,11 @@ namespace BizHawk.Client.EmuHawk
 		public void StopSeeking()
 		{
 			_seekBackgroundWorker.CancelAsync();
+		}
+
+		public bool FloatEditingMode
+		{
+			get { return _floatEditRow != -1; }
 		}
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
@@ -400,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_floatEditColumn != buttonName || _floatEditRow != frame)
 					{
-						_floatEditRow = -1;
+						floatEditRow = -1;
 						RefreshTasView();
 					}
 					else
@@ -486,12 +499,12 @@ namespace BizHawk.Client.EmuHawk
 						else // Double-click enters float editing mode
 						{
 							if (_floatEditColumn == buttonName && _floatEditRow == frame)
-								_floatEditRow = -1;
+								floatEditRow = -1;
 							else
 							{
 								CurrentTasMovie.ChangeLog.BeginNewBatch("Float Edit: " + frame);
 								_floatEditColumn = buttonName;
-								_floatEditRow = frame;
+								floatEditRow = frame;
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
 								_triggerAutoRestore = true;
@@ -559,7 +572,7 @@ namespace BizHawk.Client.EmuHawk
 			// Exit float editing if value was changed with cursor
 			if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
 			{
-				_floatEditRow = -1;
+				floatEditRow = -1;
 				RefreshDialog();
 			}
 			_floatPaintState = 0;
@@ -937,7 +950,7 @@ namespace BizHawk.Client.EmuHawk
 						_floatEditYPos = -1;
 						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatPaintState);
 					}
-					_floatEditRow = -1;
+					floatEditRow = -1;
 				}
 				else
 				{
