@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Common
 			_peek = peek;
 			_poke = poke;
 			Writable = poke != null;
+			WordSize = wordSize;
 		}
 	}
 
