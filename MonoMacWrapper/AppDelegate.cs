@@ -121,7 +121,7 @@ namespace MonoMacWrapper
 					MenuItemAdapter translated = new MenuItemAdapter(menuItem);
 					menuItem.CheckedChanged += HandleMenuItemCheckedChanged;
 					menuItem.EnabledChanged += HandleMenuItemEnabledChanged;
-					translated.Action = new MonoMac.ObjCRuntime.Selector("HandleMenu");
+					translated.Action = new MonoMac.ObjCRuntime.Selector("HandleMenu:");
 					translated.State = menuItem.Checked ? NSCellStateValue.On : NSCellStateValue.Off;
 					if(menuItem.Image != null) translated.Image = ImageToCocoa(menuItem.Image);
 					destMenu.AddItem(translated);
@@ -257,7 +257,7 @@ namespace MonoMacWrapper
 			public ToolStripMenuItem HostMenu { get;set; }
 		}
 		
-		[Export("HandleMenu")]
+		[Export("HandleMenu:")]
 		private void HandleMenu(MenuItemAdapter item)
 		{
 			_queuedAction = new Action(item.HostMenu.PerformClick);
