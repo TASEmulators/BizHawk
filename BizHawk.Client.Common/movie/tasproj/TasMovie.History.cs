@@ -354,13 +354,12 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = bindMarkers;
 
 			if (redoLength != length)
-				movie.InsertEmptyFrame(movie.InputLogLength, length - redoLength);
+				movie.InsertEmptyFrame(FirstFrame, length - redoLength);
+			if (undoLength != length)
+				movie.RemoveFrames(FirstFrame, movie.InputLogLength - undoLength);
 
 			for (int i = 0; i < undoLength; i++)
 				movie.SetFrame(FirstFrame + i, oldLog[i]);
-
-			if (undoLength != length)
-				movie.RemoveFrames(FirstFrame + undoLength, movie.InputLogLength);
 
 			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = bindMarkers;
@@ -373,13 +372,12 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = bindMarkers;
 
 			if (undoLength != length)
-				movie.InsertEmptyFrame(movie.InputLogLength, length - undoLength);
+				movie.InsertEmptyFrame(FirstFrame, length - undoLength);
+			if (redoLength != length)
+				movie.RemoveFrames(FirstFrame, movie.InputLogLength - redoLength);
 
 			for (int i = 0; i < redoLength; i++)
 				movie.SetFrame(FirstFrame + i, newLog[i]);
-
-			if (redoLength != length)
-				movie.RemoveFrames(FirstFrame + redoLength, movie.InputLogLength);
 
 			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = bindMarkers;
