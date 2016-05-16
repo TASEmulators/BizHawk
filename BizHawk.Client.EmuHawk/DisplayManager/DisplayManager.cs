@@ -109,9 +109,6 @@ namespace BizHawk.Client.EmuHawk
 					f.Dispose();
 		}
 
-		//dont know what to do about this yet
-		public bool NeedsToPaint { get; set; }
-
 		//rendering resources:
 		public IGL GL;
 		StringRenderer TheOneFont;
@@ -596,6 +593,12 @@ namespace BizHawk.Client.EmuHawk
 
 		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
+			if (job.chain_outsize.Width == 0 || job.chain_outsize.Height == 0)
+			{
+				//this has to be a NOP, because lots of stuff will malfunction on a 0-sized viewport
+				return null;
+			}
+
 			//no drawing actually happens. it's important not to begin drawing on a control
 			if (!job.simulate && !job.offscreen)
 			{
@@ -830,8 +833,6 @@ namespace BizHawk.Client.EmuHawk
 
 				//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 				//presentationPanel.GraphicsControl.End();
-
-				NeedsToPaint = false; //??
 			}
 		}
 
@@ -868,7 +869,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Locks the requested lua surface name
 		/// </summary>
-		public DisplaySurface LockLuaSurface(string name)
+		public DisplaySurface LockLuaSurface(string name, bool clear=true)
 		{
 			if (MapNameToLuaSurface.ContainsKey(name))
 				throw new InvalidOperationException("Lua surface is already locked: " + name);
@@ -897,7 +898,7 @@ namespace BizHawk.Client.EmuHawk
 			else if(name == "native") { width = currNativeWidth; height = currNativeHeight; }
 			else throw new InvalidOperationException("Unknown lua surface name: " +name);
 
-			DisplaySurface ret = sdss.AllocateSurface(width, height);
+			DisplaySurface ret = sdss.AllocateSurface(width, height, clear);
 			MapNameToLuaSurface[name] = ret;
 			MapLuaSurfaceToName[ret] = name;
 			return ret;
@@ -912,8 +913,9 @@ namespace BizHawk.Client.EmuHawk
 					var surf = PeekLockedLuaSurface(kvp.Key);
 					DisplaySurface surfLocked = null;
 					if (surf == null)
-						surf = surfLocked = LockLuaSurface(kvp.Key);
-					surf.Clear();
+						surf = surfLocked = LockLuaSurface(kvp.Key,true);
+					//zero 21-apr-2016 - we shouldnt need this
+					//surf.Clear();
 					if (surfLocked != null)
 						UnlockLuaSurface(surfLocked);
 					LuaSurfaceSets[kvp.Key].SetPending(null);

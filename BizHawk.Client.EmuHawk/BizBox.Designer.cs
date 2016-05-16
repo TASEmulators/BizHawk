@@ -86,7 +86,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(198, 70);
+			this.label1.Location = new System.Drawing.Point(198, 84);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(46, 13);
 			this.label1.TabIndex = 3;
@@ -95,7 +95,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(198, 85);
+			this.label2.Location = new System.Drawing.Point(198, 99);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(149, 13);
 			this.label2.TabIndex = 4;
@@ -114,17 +114,17 @@
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.Location = new System.Drawing.Point(206, 31);
+			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label4.Location = new System.Drawing.Point(207, 31);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(156, 16);
+			this.label4.Size = new System.Drawing.Size(168, 32);
 			this.label4.TabIndex = 6;
-			this.label4.Text = "A multi-Platform Emulator";
+			this.label4.Text = "\"A multi-platform emulator...\r\nfor productive people.\"";
 			// 
 			// label5
 			// 
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(198, 105);
+			this.label5.Location = new System.Drawing.Point(198, 119);
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(66, 13);
 			this.label5.TabIndex = 8;
@@ -133,7 +133,7 @@
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(198, 119);
+			this.label6.Location = new System.Drawing.Point(198, 133);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(220, 13);
 			this.label6.TabIndex = 9;
@@ -142,7 +142,7 @@
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(198, 133);
+			this.label7.Location = new System.Drawing.Point(198, 147);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(216, 13);
 			this.label7.TabIndex = 10;
@@ -151,7 +151,7 @@
 			// label27
 			// 
 			this.label27.AutoSize = true;
-			this.label27.Location = new System.Drawing.Point(198, 147);
+			this.label27.Location = new System.Drawing.Point(198, 161);
 			this.label27.Name = "label27";
 			this.label27.Size = new System.Drawing.Size(201, 13);
 			this.label27.TabIndex = 12;
@@ -160,7 +160,7 @@
 			// label37
 			// 
 			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(198, 162);
+			this.label37.Location = new System.Drawing.Point(198, 176);
 			this.label37.Name = "label37";
 			this.label37.Size = new System.Drawing.Size(96, 13);
 			this.label37.TabIndex = 13;
@@ -173,9 +173,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.CoreInfoPanel.AutoScroll = true;
 			this.CoreInfoPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.CoreInfoPanel.Location = new System.Drawing.Point(12, 180);
+			this.CoreInfoPanel.Location = new System.Drawing.Point(12, 197);
 			this.CoreInfoPanel.Name = "CoreInfoPanel";
-			this.CoreInfoPanel.Size = new System.Drawing.Size(423, 276);
+			this.CoreInfoPanel.Size = new System.Drawing.Size(423, 259);
 			this.CoreInfoPanel.TabIndex = 14;
 			// 
 			// textBox1
@@ -194,10 +194,11 @@
 			// VersionLabel
 			// 
 			this.VersionLabel.AutoSize = true;
-			this.VersionLabel.Location = new System.Drawing.Point(198, 52);
+			this.VersionLabel.Location = new System.Drawing.Point(198, 66);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(0, 13);
+			this.VersionLabel.Size = new System.Drawing.Size(104, 13);
 			this.VersionLabel.TabIndex = 7;
+			this.VersionLabel.Text = "timestamp goes here";
 			// 
 			// btnCopyHash
 			// 

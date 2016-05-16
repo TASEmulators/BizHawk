@@ -17,6 +17,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		static Program()
 		{
+			//this needs to be done before the warnings/errors show up
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 #if WINDOWS
 			//try loading libraries we know we'll need
@@ -26,12 +30,12 @@ namespace BizHawk.Client.EmuHawk
 			var vc2015 = Win32.LoadLibrary("vcruntime140.dll");
 			var vc2010 = Win32.LoadLibrary("msvcr100.dll"); //TODO - check version?
 			var vc2010p = Win32.LoadLibrary("msvcp100.dll");
-			bool fail = false;
-			fail |= d3dx9 == IntPtr.Zero;
+			bool fail = false, warn = false;
+			warn |= d3dx9 == IntPtr.Zero;
 			fail |= vc2015 == IntPtr.Zero;
 			fail |= vc2010 == IntPtr.Zero;
 			fail |= vc2010p == IntPtr.Zero;
-			if (fail)
+			if (fail || warn)
 			{
 				var sw = new System.IO.StringWriter();
 				sw.WriteLine("[ OK ] .Net 4.0 (You couldn't even get here without it)");
@@ -39,10 +43,12 @@ namespace BizHawk.Client.EmuHawk
 				sw.WriteLine("[{0}] Visual C++ 2010 SP1 Runtime", (vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero) ? "FAIL" : " OK ");
 				sw.WriteLine("[{0}] Visual C++ 2015 Runtime", (vc2015 == IntPtr.Zero) ? "FAIL" : " OK ");
 				var str = sw.ToString();
-				var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert();
+				var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail);
 				box.textBox1.Text = str;
 				box.ShowDialog();
-				System.Diagnostics.Process.GetCurrentProcess().Kill();
+				if (!fail) { }
+				else
+					System.Diagnostics.Process.GetCurrentProcess().Kill();
 			}
 
 			Win32.FreeLibrary(d3dx9);
@@ -102,8 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			BizHawk.Common.TempFileCleaner.Start();
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+
 
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
@@ -136,7 +141,20 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
 			else if (Global.Config.DispMethod == Config.EDispMethod.SlimDX9)
-				GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+			{
+				try
+				{
+					GlobalWin.GL = new Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9();
+				}
+				catch(Exception ex)
+				{
+					var e2 = new Exception("Initialization of Direct3d 9 Display Method failed; falling back to GDI+", ex);
+					new ExceptionBox(e2).ShowDialog();
+					//fallback
+					Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+					goto REDO_DISPMETHOD;
+				}
+			}
 			else
 			{
 				GlobalWin.GL = GlobalWin.IGL_GL;

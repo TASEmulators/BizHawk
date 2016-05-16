@@ -217,7 +217,7 @@ namespace M3Start {
 			
 			switch (p.xpos & 7) {
 			case 0:
-				if (p.winDrawState & WIN_DRAW_STARTED) {
+				if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) {
 					p.reg1    = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + (p.wscx >> 3 & 0x1F) + 0x1800];
 					p.nattrib = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + (p.wscx >> 3 & 0x1F) + 0x3800];
 				} else {
@@ -228,7 +228,7 @@ namespace M3Start {
 				break;
 			case 2:
 				{
-					const unsigned yoffset = (p.winDrawState & WIN_DRAW_STARTED) ? p.winYPos : p.scy + p.lyCounter.ly();
+					const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 					
 					p.reg0 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000) - ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 										+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2];
@@ -237,7 +237,7 @@ namespace M3Start {
 				break;
 			case 4:
 				{
-					const unsigned yoffset = (p.winDrawState & WIN_DRAW_STARTED) ? p.winYPos : p.scy + p.lyCounter.ly();
+					const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 					const unsigned r1 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000) - ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 											+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2 + 1];
 						
@@ -734,7 +734,7 @@ namespace M3Loop {
 		unsigned tileline;
 		unsigned tileMapXpos;
 		
-		if (p.winDrawState & WIN_DRAW_STARTED) {
+		if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) {
 			tileMapLine = p.vram + (p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + 0x1800;
 			tileMapXpos = (xpos + p.wscx) >> 3;
 			tileline    = p.winYPos & 7;
@@ -919,7 +919,7 @@ namespace M3Loop {
 			
 			p.wscx = 8 - p.xpos;
 			
-			if (p.winDrawState & WIN_DRAW_STARTED) {
+			if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) {
 				p.reg1    = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + 0x1800];
 				p.nattrib = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4 + 0x3800];
 			} else {
@@ -935,7 +935,7 @@ namespace M3Loop {
 		}
 		
 		static void f2(PPUPriv &p) {
-			const unsigned yoffset = (p.winDrawState & WIN_DRAW_STARTED) ? p.winYPos : p.scy + p.lyCounter.ly();
+			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 			
 			p.reg0 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 					- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
@@ -949,7 +949,7 @@ namespace M3Loop {
 		}
 		
 		static void f4(PPUPriv &p) {
-			const unsigned yoffset = (p.winDrawState & WIN_DRAW_STARTED) ? p.winYPos : p.scy + p.lyCounter.ly();
+			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 			const unsigned r1 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 						- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 						+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2 + 1];
@@ -1076,7 +1076,7 @@ namespace M3Loop {
 			p.attrib   = p.nattrib;
 			p.endx = p.xpos < 160 ? p.xpos + 8 : 168;
 			
-			if (p.winDrawState & WIN_DRAW_STARTED) {
+			if ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW) ) {
 				p.reg1    = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4
 							+ ((p.xpos + p.wscx) >> 3 & 0x1F) + 0x1800];
 				p.nattrib = p.vram[(p.lcdc << 4 & 0x400) + (p.winYPos & 0xF8) * 4
@@ -1102,7 +1102,7 @@ namespace M3Loop {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
 			
-			const unsigned yoffset = (p.winDrawState & WIN_DRAW_STARTED) ? p.winYPos : p.scy + p.lyCounter.ly();
+			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 			
 			p.reg0 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 					- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
@@ -1122,7 +1122,7 @@ namespace M3Loop {
 			if ((p.winDrawState & WIN_DRAW_START) && handleWinDrawStartReq(p))
 				return StartWindowDraw::f0(p);
 			
-			const unsigned yoffset = (p.winDrawState & WIN_DRAW_STARTED) ? p.winYPos : p.scy + p.lyCounter.ly();
+			const unsigned yoffset = ((p.winDrawState & WIN_DRAW_STARTED) && (p.layersMask & LAYER_MASK_WINDOW)) ? p.winYPos : p.scy + p.lyCounter.ly();
 			const unsigned r1 = p.vram[0x1000 + (p.nattrib << 10 & 0x2000)
 						- ((p.reg1 * 32 | p.lcdc << 8) & 0x1000)
 						+ p.reg1 * 16 + ((-(p.nattrib >> 6 & 1) ^ yoffset) & 7) * 2 + 1];

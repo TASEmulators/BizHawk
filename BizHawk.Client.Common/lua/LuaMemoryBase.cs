@@ -229,7 +229,7 @@ namespace BizHawk.Client.Common
 			var d = (string.IsNullOrEmpty(domain)) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (addr < d.Size)
 			{
-				var val = d.PeekDWord(addr, bigendian);
+				var val = d.PeekUint(addr, bigendian);
 				var bytes = BitConverter.GetBytes(val);
 				return BitConverter.ToSingle(bytes, 0);
 			}
@@ -252,7 +252,7 @@ namespace BizHawk.Client.Common
 					var dv = (float)value;
 					var bytes = BitConverter.GetBytes(dv);
 					var v = BitConverter.ToUInt32(bytes, 0);
-					d.PokeDWord(addr, v, bigendian);
+					d.PokeUint(addr, v, bigendian);
 				}
 				else
 				{

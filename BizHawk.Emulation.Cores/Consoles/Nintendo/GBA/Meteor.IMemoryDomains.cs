@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			AddMemoryDomain(LibMeteor.MemoryArea.rom, 32 * 1024 * 1024, "ROM");
 			// special domain for system bus
 			{
-				MemoryDomain sb = new MemoryDomain("System Bus", 1 << 28, MemoryDomain.Endian.Little,
+				MemoryDomain sb = new MemoryDomainDelegate("System Bus", 1 << 28, MemoryDomain.Endian.Little,
 					delegate(long addr)
 					{
 						if (addr < 0 || addr >= 0x10000000)
@@ -48,14 +48,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						if (addr < 0 || addr >= 0x10000000)
 							throw new IndexOutOfRangeException();
 						LibMeteor.libmeteor_writebus((uint)addr, val);
-					});
+					}, 4);
 				_domainList.Add(sb);
 			}
 			// special combined ram memory domain
 			{
 				var ew = _domainList[1];
 				var iw = _domainList[0];
-				MemoryDomain cr = new MemoryDomain("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
+				MemoryDomain cr = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, MemoryDomain.Endian.Little,
 					delegate(long addr)
 					{
 						if (addr < 0 || addr >= (256 + 32) * 1024)
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 							iw.PokeByte(addr & 32767, val);
 						else
 							ew.PokeByte(addr, val);
-					});
+					}, 4);
 				_domainList.Add(cr);
 			}
 

@@ -36,6 +36,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			checkBoxMuted.Checked = this.s.Muted;
 			cbDisplayBG.Checked = this.s.DisplayBG;
 			cbDisplayOBJ.Checked = this.s.DisplayOBJ;
+			cbDisplayWIN.Checked = this.s.DisplayWindow;
 		}
 
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
@@ -77,6 +78,11 @@ namespace BizHawk.Client.EmuHawk.config.GB
 		private void cbDisplayOBJ_CheckedChanged(object sender, EventArgs e)
 		{
 			s.DisplayOBJ = (sender as CheckBox).Checked;
+		}
+
+		private void cbDisplayWIN_CheckedChanged(object sender, EventArgs e)
+		{
+			s.DisplayWindow = (sender as CheckBox).Checked;
 		}
 	}
 }

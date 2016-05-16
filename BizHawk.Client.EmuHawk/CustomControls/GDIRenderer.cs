@@ -45,7 +45,8 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 
 		public GDIRenderer()
 		{
-			SetBkMode(_hdc, BkModes.OPAQUE);
+			//zero 04-16-2016 : this can't be legal, theres no HDC yet
+			//SetBkMode(_hdc, BkModes.OPAQUE);
 		}
 
 		public void Dispose()
@@ -141,22 +142,30 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 			TextOut(CurrentHDC, point.X, point.Y, str, str.Length);
 		}
 
+		public static IntPtr CreateNormalHFont(Font font, int width)
+		{
+			LOGFONT logf = new LOGFONT();
+			font.ToLogFont(logf);
+			logf.lfWidth = width;
+			logf.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
+			var ret = CreateFontIndirect(logf);
+			return ret;
+		}
+
 		//this returns an IntPtr HFONT because .net's Font class will erase the relevant properties when using its Font.FromLogFont()
 		//note that whether this is rotated clockwise or CCW might affect how you have to position the text (right-aligned sometimes?, up or down by the height of the font?)
 		public static IntPtr CreateRotatedHFont(Font font, bool CW)
 		{
 			LOGFONT logf = new LOGFONT();
-			//font.ToLogFont(logf);
-			//logf.lfEscapement = CW ? 2700 : 900;
-			logf.lfFaceName = "System";
-			logf.lfEscapement = 3600 - 450;
+			font.ToLogFont(logf);
+			logf.lfEscapement = CW ? 2700 : 900;
 			logf.lfOrientation = logf.lfEscapement;
 			logf.lfOutPrecision = (byte)FontPrecision.OUT_TT_ONLY_PRECIS;
 
 			//this doesnt work! .net erases the relevant propreties.. it seems?
 			//return Font.FromLogFont(logf);
 
-			var ret = CreateFontIndirect(ref logf);
+			var ret = CreateFontIndirect(logf);
 			return ret;
 		}
 
@@ -168,7 +177,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void PrepDrawString(IntPtr hfont, Color color)
 		{
 			SetGraphicsMode(CurrentHDC, 2); //shouldnt be necessary.. cant hurt
-			SelectObject(_hdc, hfont);
+			SelectObject(CurrentHDC, hfont);
 			SetTextColor(color);
 		}
 
@@ -299,7 +308,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		/// </summary>
 		private void SetFont(Font font)
 		{
-			SelectObject(_hdc, GetCachedHFont(font));
+			SelectObject(CurrentHDC, GetCachedHFont(font));
 		}
 
 		private IntPtr GetCachedHFont(Font font)
@@ -333,8 +342,10 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		[DllImport("user32.dll")]
 		private static extern IntPtr EndPaint(IntPtr hWnd, IntPtr lpPaint);
 
-		[DllImport("gdi32.dll")]
-		static extern IntPtr CreateFontIndirect([In] ref LOGFONT lplf);
+		[DllImport("gdi32.dll", CharSet = CharSet.Auto)]
+		private static extern IntPtr CreateFontIndirect(
+			[In, MarshalAs(UnmanagedType.LPStruct)]LOGFONT lplf
+			);
 
 		[DllImport("gdi32.dll")]
 		private static extern int Rectangle(IntPtr hdc, int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);

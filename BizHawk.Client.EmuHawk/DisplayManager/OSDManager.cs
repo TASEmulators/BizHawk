@@ -19,7 +19,6 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public interface IBlitter
 	{
-
 		IBlitterFont GetFontType(string fontType);
 		void DrawString(string s, IBlitterFont font, Color color, float x, float y);
 		SizeF MeasureString(string s, IBlitterFont font);
@@ -133,13 +132,11 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddMessage(string message)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
 		public void AddGUIText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			GUITextList.Add(new UIDisplay
 			{
 				Message = message,
@@ -153,7 +150,6 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearGUIText()
 		{
-			GlobalWin.DisplayManager.NeedsToPaint = true;
 			GUITextList.Clear();
 		}
 

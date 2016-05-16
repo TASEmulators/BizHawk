@@ -182,6 +182,30 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
+			//nothing to fear:
+			if (_cdl == null)
+				return true;
+
+			//try auto-saving if appropriate
+			if (Global.Config.CDLAutoSave)
+			{
+				//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
+				var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (result == DialogResult.No)
+					return true;
+
+				if (string.IsNullOrWhiteSpace(_currentFilename))
+				{
+					if (!RunSaveAs())
+						return false;
+				}
+				else
+				{
+					RunSave();
+					return true;
+				}
+			}
+
 			return true;
 		}
 
@@ -209,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 				//ok, it's all good:
 				_cdl = newCDL;
 				CodeDataLogger.SetCDL(null);
-				if (tsbLoggingActive.Checked)
+				if (tsbLoggingActive.Checked || Global.Config.CDLAutoStart)
 					CodeDataLogger.SetCDL(_cdl);
 
 				SetCurrentFilename(path);
@@ -226,6 +250,9 @@ namespace BizHawk.Client.EmuHawk
 				ClearMenuItem.Enabled =
 				DisassembleMenuItem.Enabled =
 				_cdl != null;
+
+			miAutoSave.Checked = Global.Config.CDLAutoSave;
+			miAutoStart.Checked = Global.Config.CDLAutoStart;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -239,7 +266,7 @@ namespace BizHawk.Client.EmuHawk
 			_cdl = new CodeDataLog();
 			CodeDataLogger.NewCDL(_cdl);
 
-			if (tsbLoggingActive.Checked)
+			if (tsbLoggingActive.Checked || Global.Config.CDLAutoStart)
 				CodeDataLogger.SetCDL(_cdl);
 			else CodeDataLogger.SetCDL(null);
 
@@ -283,44 +310,49 @@ namespace BizHawk.Client.EmuHawk
 			LoadFile(file.FullName);
 		}
 
-		private void SaveMenuItem_Click(object sender, EventArgs e)
+		void RunSave()
 		{
-			if (string.IsNullOrWhiteSpace(_currentFilename))
-			{
-				RunSaveAs();
-				return;
-			}
-			
+			_recent.Add(_currentFilename);
 			using (var fs = new FileStream(_currentFilename, FileMode.Create, FileAccess.Write))
 			{
 				_cdl.Save(fs);
 			}
 		}
 
-		void RunSaveAs()
+		private void SaveMenuItem_Click(object sender, EventArgs e)
 		{
 			if (_cdl == null)
 			{
 				MessageBox.Show(this, "Cannot save with no CDL loaded!", "Alert");
+				return;
 			}
-			else
-			{
-				var file = SaveFileDialog(
-					_currentFilename,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
-					"Code Data Logger Files",
-					"cdl");
 
-				if (file != null)
-				{
-					using (var fs = new FileStream(file.FullName, FileMode.Create, FileAccess.Write))
-					{
-						_cdl.Save(fs);
-						_recent.Add(file.FullName);
-						SetCurrentFilename(file.FullName);
-					}
-				}
+			if (string.IsNullOrWhiteSpace(_currentFilename))
+			{
+				RunSaveAs();
+				return;
 			}
+
+			RunSave();
+		}
+
+		/// <summary>
+		/// returns false if the operation was canceled
+		/// </summary>
+		bool RunSaveAs()
+		{
+			var file = SaveFileDialog(
+				_currentFilename,
+				PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null),
+				"Code Data Logger Files",
+				"cdl");
+
+			if (file == null)
+				return false;
+				
+			SetCurrentFilename(file.FullName);
+			RunSave();
+			return true;
 		}
 
 		private void SaveAsMenuItem_Click(object sender, EventArgs e)
@@ -401,6 +433,20 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+		{
+			if (!AskSaveChanges())
+				e.Cancel = true;
+			base.OnClosing(e);
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			if (Global.Config.CDLAutoStart)
+				NewFileLogic();
+			base.OnShown(e);
+		}
+
 		protected override void OnClosed(EventArgs e)
 		{
 			//deactivate logger
@@ -463,5 +509,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 			Clipboard.SetText(sw.ToString());
 		}
+
+		private void miAutoSave_Click(object sender, EventArgs e)
+		{
+			Global.Config.CDLAutoSave ^= true;
+		}
+
+		private void miAutoStart_Click(object sender, EventArgs e)
+		{
+			Global.Config.CDLAutoStart ^= true;
+		}
+
+
 	}
 }

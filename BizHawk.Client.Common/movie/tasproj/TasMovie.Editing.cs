@@ -266,6 +266,8 @@ namespace BizHawk.Client.Common
 			var states = inputStates.ToList();
 			for (int i = 0; i < states.Count; i++)
 			{
+				if (_log.Count <= frame + i)
+					break;
 				lg.SetSource(states[i]);
 				_log[frame + i] = lg.GenerateLogEntry();
 			}

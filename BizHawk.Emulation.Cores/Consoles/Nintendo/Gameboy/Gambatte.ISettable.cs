@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
-			public bool DisplayBG = true, DisplayOBJ = true;
+			public bool DisplayBG = true, DisplayOBJ = true, DisplayWindow = true;
 
 			/// <summary>
 			/// true to mute all audio

@@ -34,6 +34,7 @@
 			this.checkBoxMuted = new System.Windows.Forms.CheckBox();
 			this.cbDisplayBG = new System.Windows.Forms.CheckBox();
 			this.cbDisplayOBJ = new System.Windows.Forms.CheckBox();
+			this.cbDisplayWIN = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// propertyGrid1
@@ -44,7 +45,7 @@
 			this.propertyGrid1.Location = new System.Drawing.Point(3, 3);
 			this.propertyGrid1.Name = "propertyGrid1";
 			this.propertyGrid1.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-			this.propertyGrid1.Size = new System.Drawing.Size(330, 276);
+			this.propertyGrid1.Size = new System.Drawing.Size(338, 279);
 			this.propertyGrid1.TabIndex = 0;
 			this.propertyGrid1.ToolbarVisible = false;
 			this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
@@ -52,7 +53,7 @@
 			// buttonDefaults
 			// 
 			this.buttonDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonDefaults.Location = new System.Drawing.Point(258, 285);
+			this.buttonDefaults.Location = new System.Drawing.Point(266, 288);
 			this.buttonDefaults.Name = "buttonDefaults";
 			this.buttonDefaults.Size = new System.Drawing.Size(75, 23);
 			this.buttonDefaults.TabIndex = 1;
@@ -63,7 +64,7 @@
 			// buttonPalette
 			// 
 			this.buttonPalette.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.buttonPalette.Location = new System.Drawing.Point(3, 285);
+			this.buttonPalette.Location = new System.Drawing.Point(3, 288);
 			this.buttonPalette.Name = "buttonPalette";
 			this.buttonPalette.Size = new System.Drawing.Size(75, 23);
 			this.buttonPalette.TabIndex = 2;
@@ -75,11 +76,11 @@
 			// 
 			this.checkBoxMuted.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxMuted.AutoSize = true;
-			this.checkBoxMuted.Location = new System.Drawing.Point(84, 289);
+			this.checkBoxMuted.Location = new System.Drawing.Point(82, 292);
 			this.checkBoxMuted.Name = "checkBoxMuted";
-			this.checkBoxMuted.Size = new System.Drawing.Size(80, 17);
+			this.checkBoxMuted.Size = new System.Drawing.Size(50, 17);
 			this.checkBoxMuted.TabIndex = 3;
-			this.checkBoxMuted.Text = "Mute Audio";
+			this.checkBoxMuted.Text = "Mute";
 			this.checkBoxMuted.UseVisualStyleBackColor = true;
 			this.checkBoxMuted.CheckedChanged += new System.EventHandler(this.checkBoxMuted_CheckedChanged);
 			// 
@@ -87,7 +88,7 @@
 			// 
 			this.cbDisplayBG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbDisplayBG.AutoSize = true;
-			this.cbDisplayBG.Location = new System.Drawing.Point(166, 289);
+			this.cbDisplayBG.Location = new System.Drawing.Point(130, 292);
 			this.cbDisplayBG.Name = "cbDisplayBG";
 			this.cbDisplayBG.Size = new System.Drawing.Size(41, 17);
 			this.cbDisplayBG.TabIndex = 4;
@@ -99,7 +100,7 @@
 			// 
 			this.cbDisplayOBJ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cbDisplayOBJ.AutoSize = true;
-			this.cbDisplayOBJ.Location = new System.Drawing.Point(206, 289);
+			this.cbDisplayOBJ.Location = new System.Drawing.Point(171, 292);
 			this.cbDisplayOBJ.Name = "cbDisplayOBJ";
 			this.cbDisplayOBJ.Size = new System.Drawing.Size(46, 17);
 			this.cbDisplayOBJ.TabIndex = 5;
@@ -107,9 +108,22 @@
 			this.cbDisplayOBJ.UseVisualStyleBackColor = true;
 			this.cbDisplayOBJ.CheckedChanged += new System.EventHandler(this.cbDisplayOBJ_CheckedChanged);
 			// 
+			// cbDisplayWIN
+			// 
+			this.cbDisplayWIN.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.cbDisplayWIN.AutoSize = true;
+			this.cbDisplayWIN.Location = new System.Drawing.Point(218, 292);
+			this.cbDisplayWIN.Name = "cbDisplayWIN";
+			this.cbDisplayWIN.Size = new System.Drawing.Size(48, 17);
+			this.cbDisplayWIN.TabIndex = 6;
+			this.cbDisplayWIN.Text = "WIN";
+			this.cbDisplayWIN.UseVisualStyleBackColor = true;
+			this.cbDisplayWIN.CheckedChanged += new System.EventHandler(this.cbDisplayWIN_CheckedChanged);
+			// 
 			// GBPrefControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+			this.Controls.Add(this.cbDisplayWIN);
 			this.Controls.Add(this.cbDisplayOBJ);
 			this.Controls.Add(this.cbDisplayBG);
 			this.Controls.Add(this.checkBoxMuted);
@@ -117,7 +131,7 @@
 			this.Controls.Add(this.buttonDefaults);
 			this.Controls.Add(this.propertyGrid1);
 			this.Name = "GBPrefControl";
-			this.Size = new System.Drawing.Size(336, 311);
+			this.Size = new System.Drawing.Size(344, 314);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -131,5 +145,6 @@
 		private System.Windows.Forms.CheckBox checkBoxMuted;
 		private System.Windows.Forms.CheckBox cbDisplayBG;
 		private System.Windows.Forms.CheckBox cbDisplayOBJ;
+		private System.Windows.Forms.CheckBox cbDisplayWIN;
 	}
 }

@@ -30,7 +30,37 @@ namespace BizHawk.Client.ApiHawk
 					return JoypadButton.A;
 
 				case "B":
-					return JoypadButton.B;
+					return JoypadButton.B;				
+
+				case "B1":
+					return JoypadButton.B1;
+
+				case "B2":
+					return JoypadButton.B2;
+
+				case "C":
+					return JoypadButton.C;
+
+				case "C UP":
+					return JoypadButton.CUp;
+
+				case "C DOWN":
+					return JoypadButton.CDown;
+
+				case "C LEFT":
+					return JoypadButton.CLeft;
+
+				case "C RIGHT":
+					return JoypadButton.CRight;
+
+				case "X":
+					return JoypadButton.X;
+
+				case "Y":
+					return JoypadButton.Y;
+
+				case "Z":
+					return JoypadButton.Z;
 
 				case "START":
 					return JoypadButton.Start;
@@ -39,16 +69,26 @@ namespace BizHawk.Client.ApiHawk
 					return JoypadButton.Select;
 
 				case "UP":
+				case "DPAD U":
 					return JoypadButton.Up;
 
 				case "DOWN":
+				case "DPAD D":
 					return JoypadButton.Down;
 
 				case "LEFT":
+				case "DPAD L":
 					return JoypadButton.Left;
 
 				case "RIGHT":
+				case "DPAD R":
 					return JoypadButton.Right;
+
+				case "L":
+					return JoypadButton.L;
+
+				case "R":
+					return JoypadButton.R;
 
 				default:
 					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));
@@ -87,6 +127,36 @@ namespace BizHawk.Client.ApiHawk
 				case JoypadButton.B:
 					return "B";
 
+				case JoypadButton.B1:
+					return "B1";
+
+				case JoypadButton.B2:
+					return "B2";
+
+				case JoypadButton.C:
+					return "C";
+
+				case JoypadButton.CUp:
+					return "C Up";
+
+				case JoypadButton.CDown:
+					return "C Down";
+
+				case JoypadButton.CLeft:
+					return "C Left";
+
+				case JoypadButton.CRight:
+					return "C Right";
+
+				case JoypadButton.X:
+					return "X";
+
+				case JoypadButton.Y:
+					return "Y";
+
+				case JoypadButton.Z:
+					return "Z";
+
 				case JoypadButton.Start:
 					return "Start";
 
@@ -94,16 +164,50 @@ namespace BizHawk.Client.ApiHawk
 					return "Select";
 
 				case JoypadButton.Up:
-					return "Up";
+					if (((SystemInfo)parameter) == SystemInfo.N64)
+					{
+						return "Dpad U";
+					}
+					else
+					{
+						return "Up";
+					}
 
 				case JoypadButton.Down:
-					return "Down";
+					if (((SystemInfo)parameter) == SystemInfo.N64)
+					{
+						return "Dpad D";
+					}
+					else
+					{
+						return "Down";
+					}
 
 				case JoypadButton.Left:
-					return "Left";
+					if (((SystemInfo)parameter) == SystemInfo.N64)
+					{
+						return "Dpad L";
+					}
+					else
+					{
+						return "Left";
+					}
 
 				case JoypadButton.Right:
-					return "Right";					
+					if (((SystemInfo)parameter) == SystemInfo.N64)
+					{
+						return "Dpad R";
+					}
+					else
+					{
+						return "Right";
+					}
+
+				case JoypadButton.L:
+					return "L";
+
+				case JoypadButton.R:
+					return "R";
 
 				default:
 					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));

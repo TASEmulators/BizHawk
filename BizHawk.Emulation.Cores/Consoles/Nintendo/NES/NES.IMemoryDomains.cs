@@ -13,16 +13,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>();
-			var RAM = new MemoryDomain("RAM", 0x800, MemoryDomain.Endian.Little,
-				addr => ram[addr], (addr, value) => ram[addr] = value);
-			var SystemBus = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke((int)addr, value));
-			var PPUBus = new MemoryDomain("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
-				addr => ppu.ppubus_peek((int)addr), (addr, value) => ppu.ppubus_write((int)addr, value));
-			var CIRAMdomain = new MemoryDomain("CIRAM (nametables)", 0x800, MemoryDomain.Endian.Little,
-				addr => CIRAM[addr], (addr, value) => CIRAM[addr] = value);
-			var OAMdoman = new MemoryDomain("OAM", 64 * 4, MemoryDomain.Endian.Unknown,
-				addr => ppu.OAM[addr], (addr, value) => ppu.OAM[addr] = value);
+			var RAM = new MemoryDomainByteArray("RAM", MemoryDomain.Endian.Little, ram, true, 1);
+			var SystemBus = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
+				addr => PeekMemory((ushort)addr), (addr, value) => ApplySystemBusPoke((int)addr, value), 1);
+			var PPUBus = new MemoryDomainDelegate("PPU Bus", 0x4000, MemoryDomain.Endian.Little,
+				addr => ppu.ppubus_peek((int)addr), (addr, value) => ppu.ppubus_write((int)addr, value), 1);
+			var CIRAMdomain = new MemoryDomainByteArray("CIRAM (nametables)", MemoryDomain.Endian.Little, CIRAM, true, 1);
+			var OAMdoman = new MemoryDomainByteArray("OAM", MemoryDomain.Endian.Unknown, ppu.OAM, true, 1);
 
 			domains.Add(RAM);
 			domains.Add(SystemBus);
@@ -32,36 +29,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (!(Board is FDS) && Board.SaveRam != null)
 			{
-				var BatteryRam = new MemoryDomain("Battery RAM", Board.SaveRam.Length, MemoryDomain.Endian.Little,
-					addr => Board.SaveRam[addr], (addr, value) => Board.SaveRam[addr] = value);
+				var BatteryRam = new MemoryDomainByteArray("Battery RAM", MemoryDomain.Endian.Little, Board.SaveRam, true, 1);
 				domains.Add(BatteryRam);
 			}
 
 			if (Board.ROM != null)
 			{
-				var PRGROM = new MemoryDomain("PRG ROM", cart.prg_size * 1024, MemoryDomain.Endian.Little,
-					addr => Board.ROM[addr], (addr, value) => Board.ROM[addr] = value);
+				var PRGROM = new MemoryDomainByteArray("PRG ROM", MemoryDomain.Endian.Little, Board.ROM, true, 1);
 				domains.Add(PRGROM);
 			}
 
 			if (Board.VROM != null)
 			{
-				var CHRROM = new MemoryDomain("CHR VROM", cart.chr_size * 1024, MemoryDomain.Endian.Little,
-					addr => Board.VROM[addr], (addr, value) => Board.VROM[addr] = value);
+				var CHRROM = new MemoryDomainByteArray("CHR VROM", MemoryDomain.Endian.Little, Board.VROM, true, 1);
 				domains.Add(CHRROM);
 			}
 
 			if (Board.VRAM != null)
 			{
-				var VRAM = new MemoryDomain("VRAM", Board.VRAM.Length, MemoryDomain.Endian.Little,
-					addr => Board.VRAM[addr], (addr, value) => Board.VRAM[addr] = value);
+				var VRAM = new MemoryDomainByteArray("VRAM", MemoryDomain.Endian.Little, Board.VRAM, true, 1);
 				domains.Add(VRAM);
 			}
 
 			if (Board.WRAM != null)
 			{
-				var WRAM = new MemoryDomain("WRAM", Board.WRAM.Length, MemoryDomain.Endian.Little,
-					addr => Board.WRAM[addr], (addr, value) => Board.WRAM[addr] = value);
+				var WRAM = new MemoryDomainByteArray("WRAM", MemoryDomain.Endian.Little, Board.WRAM, true, 1);
 				domains.Add(WRAM);
 			}
 

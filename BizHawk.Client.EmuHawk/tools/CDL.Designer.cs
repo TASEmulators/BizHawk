@@ -38,16 +38,20 @@
 			this.AppendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.RecentSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.noneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.miAutoStart = new System.Windows.Forms.ToolStripMenuItem();
+			this.miAutoSave = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DisassembleMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.toolStrip1 = new ToolStripEx();
 			this.tsbLoggingActive = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.tsbViewUpdate = new System.Windows.Forms.ToolStripButton();
 			this.tsbViewStyle = new System.Windows.Forms.ToolStripComboBox();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.tsbExportText = new System.Windows.Forms.ToolStripButton();
 			this.lvCDL = new BizHawk.Client.EmuHawk.VirtualListView();
 			this.colAddress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colDomain = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -62,8 +66,6 @@
 			this.colFlag20 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colFlag40 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colFlag80 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.tsbExportText = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -88,6 +90,8 @@
             this.SaveAsMenuItem,
             this.AppendMenuItem,
             this.RecentSubMenu,
+            this.miAutoStart,
+            this.miAutoSave,
             this.toolStripSeparator2,
             this.ClearMenuItem,
             this.DisassembleMenuItem,
@@ -157,6 +161,19 @@
 			this.noneToolStripMenuItem.Size = new System.Drawing.Size(99, 22);
 			this.noneToolStripMenuItem.Text = "None";
 			// 
+			// miAutoStart
+			// 
+			this.miAutoStart.Name = "miAutoStart";
+			this.miAutoStart.Size = new System.Drawing.Size(193, 22);
+			this.miAutoStart.Text = "Auto-Start";
+			this.miAutoStart.Click += new System.EventHandler(this.miAutoStart_Click);
+			// 
+			// miAutoSave
+			// 
+			this.miAutoSave.Name = "miAutoSave";
+			this.miAutoSave.Size = new System.Drawing.Size(193, 22);
+			this.miAutoSave.Text = "Auto-Save";
+			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -191,6 +208,7 @@
 			// 
 			// toolStrip1
 			// 
+			this.toolStrip1.ClickThrough = true;
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbLoggingActive,
             this.toolStripSeparator3,
@@ -242,6 +260,20 @@
 			this.tsbViewStyle.Name = "tsbViewStyle";
 			this.tsbViewStyle.Size = new System.Drawing.Size(121, 25);
 			this.tsbViewStyle.SelectedIndexChanged += new System.EventHandler(this.tsbViewStyle_SelectedIndexChanged);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+			// 
+			// tsbExportText
+			// 
+			this.tsbExportText.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
+			this.tsbExportText.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tsbExportText.Name = "tsbExportText";
+			this.tsbExportText.Size = new System.Drawing.Size(87, 22);
+			this.tsbExportText.Text = "To Clipboard";
+			this.tsbExportText.Click += new System.EventHandler(this.tsbExportText_Click);
 			// 
 			// lvCDL
 			// 
@@ -333,20 +365,6 @@
 			// 
 			this.colFlag80.Text = "0x80";
 			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-			// 
-			// tsbExportText
-			// 
-			this.tsbExportText.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.LoadConfig;
-			this.tsbExportText.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbExportText.Name = "tsbExportText";
-			this.tsbExportText.Size = new System.Drawing.Size(87, 22);
-			this.tsbExportText.Text = "To Clipboard";
-			this.tsbExportText.Click += new System.EventHandler(this.tsbExportText_Click);
-			// 
 			// CDL
 			// 
 			this.AllowDrop = true;
@@ -390,7 +408,6 @@
 		private System.Windows.Forms.ToolStripMenuItem RecentSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripMenuItem noneToolStripMenuItem;
-		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton tsbLoggingActive;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripButton tsbViewUpdate;
@@ -411,6 +428,9 @@
 		private System.Windows.Forms.ColumnHeader colFlag80;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripButton tsbExportText;
+		private System.Windows.Forms.ToolStripMenuItem miAutoStart;
+		private System.Windows.Forms.ToolStripMenuItem miAutoSave;
+		private ToolStripEx toolStrip1;
 
 	}
 }

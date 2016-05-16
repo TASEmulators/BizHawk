@@ -68,7 +68,7 @@
 			// 
 			// NumFramesBox
 			// 
-			this.NumFramesBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.NumFramesBox.ByteSize = BizHawk.Client.Common.WatchSize.Word;
 			this.NumFramesBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.NumFramesBox.Location = new System.Drawing.Point(138, 16);
 			this.NumFramesBox.MaxLength = 5;

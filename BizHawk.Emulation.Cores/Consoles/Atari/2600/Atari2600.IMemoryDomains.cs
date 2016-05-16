@@ -11,50 +11,45 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			var domains = new List<MemoryDomain>
 			{
-				new MemoryDomain(
+				new MemoryDomainByteArray(
 					"Main RAM",
-					128,
 					MemoryDomain.Endian.Little,
-					addr => Ram[addr],
-					(addr, value) => Ram[addr] = value),
-				new MemoryDomain(
+					Ram, true, 1),
+				new MemoryDomainDelegate(
 					"TIA",
 					16,
 					MemoryDomain.Endian.Little,
 					addr => _tia.ReadMemory((ushort)addr, true),
-					(addr, value) => this._tia.WriteMemory((ushort)addr, value)),
-				new MemoryDomain(
+					(addr, value) => this._tia.WriteMemory((ushort)addr, value), 1),
+				new MemoryDomainDelegate(
 					"PIA",
 					1024,
 					MemoryDomain.Endian.Little,
 					addr => M6532.ReadMemory((ushort)addr, true),
-					(addr, value) => M6532.WriteMemory((ushort)addr, value)),
-				new MemoryDomain(
+					(addr, value) => M6532.WriteMemory((ushort)addr, value), 1),
+				new MemoryDomainDelegate(
 					"System Bus",
 					65536,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.PeekMemory((ushort) addr),
-					(addr, value) => _mapper.PokeMemory((ushort) addr, value)) 
+					(addr, value) => _mapper.PokeMemory((ushort) addr, value), 1) 
 			};
 
 			if (_mapper is mDPC) // TODO: also mDPCPlus
 			{
-				domains.Add(new MemoryDomain(
+				domains.Add(new MemoryDomainByteArray(
 					"DPC",
-					2048,
-					MemoryDomain.Endian.Little,
-					addr => (_mapper as mDPC).DspData[addr],
-					(addr, value) => (_mapper as mDPC).DspData[addr] = value));
+					MemoryDomain.Endian.Little,(_mapper as mDPC).DspData, true, 1));
 			}
 
 			if (_mapper.HasCartRam)
 			{
-				domains.Add(new MemoryDomain(
+				domains.Add(new MemoryDomainDelegate(
 					"Cart Ram",
 					_mapper.CartRam.Len,
 					MemoryDomain.Endian.Little,
 					addr => _mapper.CartRam[(int)addr],
-					(addr, value) => _mapper.CartRam[(int)addr] = value));
+					(addr, value) => _mapper.CartRam[(int)addr] = value, 1));
 			}
 
 			MemoryDomains = new MemoryDomainList(domains);

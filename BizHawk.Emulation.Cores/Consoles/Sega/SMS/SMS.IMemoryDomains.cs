@@ -12,18 +12,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>(3);
-			var MainMemoryDomain = new MemoryDomain("Main RAM", SystemRam.Length, MemoryDomain.Endian.Little,
-				addr => SystemRam[addr],
-				(addr, value) => SystemRam[addr] = value);
-			var VRamDomain = new MemoryDomain("Video RAM", Vdp.VRAM.Length, MemoryDomain.Endian.Little,
-				addr => Vdp.VRAM[addr],
-				(addr, value) => Vdp.VRAM[addr] = value);
+			var MainMemoryDomain = new MemoryDomainByteArray("Main RAM", MemoryDomain.Endian.Little, SystemRam, true, 1);
+			var VRamDomain = new MemoryDomainByteArray("Video RAM", MemoryDomain.Endian.Little, Vdp.VRAM, true, 1);
 
-			var ROMDomain = new MemoryDomain("ROM", RomData.Length, MemoryDomain.Endian.Little,
-				addr => RomData[addr],
-				(addr, value) => RomData[addr] = value);
+			var ROMDomain = new MemoryDomainByteArray("ROM", MemoryDomain.Endian.Little, RomData, true, 1);
 
-			var SystemBusDomain = new MemoryDomain("System Bus", 0x10000, MemoryDomain.Endian.Little,
+			var SystemBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 65536)
@@ -41,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					}
 
 					Cpu.WriteMemory((ushort)addr, value);
-				});
+				}, 1);
 
 			domains.Add(MainMemoryDomain);
 			domains.Add(VRamDomain);
@@ -50,17 +44,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (SaveRAM != null)
 			{
-				var SaveRamDomain = new MemoryDomain("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
+				var SaveRamDomain = new MemoryDomainDelegate("Save RAM", SaveRAM.Length, MemoryDomain.Endian.Little,
 					addr => SaveRAM[addr],
-					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; });
+					(addr, value) => { SaveRAM[addr] = value; SaveRamModified = true; }, 1);
 				domains.Add(SaveRamDomain);
 			}
 
 			if (ExtRam != null)
 			{
-				var ExtRamDomain = new MemoryDomain("Cart (Volatile) RAM", ExtRam.Length, MemoryDomain.Endian.Little,
-					addr => ExtRam[addr],
-					(addr, value) => { ExtRam[addr] = value; });
+				var ExtRamDomain = new MemoryDomainByteArray("Cart (Volatile) RAM", MemoryDomain.Endian.Little, ExtRam, true, 1);
 				domains.Add(ExtRamDomain);
 			}
 

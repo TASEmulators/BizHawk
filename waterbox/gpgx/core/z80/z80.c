@@ -586,7 +586,7 @@ void CDLogZ80(uint addr, uint flags)
 
 	if(addr < 0x4000)
 	{
-		addr &= 0x1FFFF;
+		addr &= 0x1FFF;
 		biz_cdcallback(addr, eCDLog_AddrType_RAMZ80, flags);
 		return;
 	}
@@ -594,9 +594,10 @@ void CDLogZ80(uint addr, uint flags)
 	if(addr >= 0x8000)
 	{
     addr = zbank | (addr & 0x7FFF);
-    if (zbank_memory_map[addr >> 16].write)
+    if (zbank_memory_map[addr >> 16].read)
     {
 			//special memory maps are hard to support here.
+			//hopefully, most carts aren't setting this CB for simple accesses to ROMs 
       return;
     }
 

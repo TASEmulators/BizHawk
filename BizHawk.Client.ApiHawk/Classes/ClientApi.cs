@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
@@ -22,6 +23,7 @@ namespace BizHawk.Client.ApiHawk
 		private static readonly Assembly clientAssembly;
 		private static readonly object clientMainFormInstance;
 		private static readonly Type mainFormClass;
+		private static readonly Array joypadButtonsArray = Enum.GetValues(typeof(JoypadButton));
 
 		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 		internal static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
@@ -120,16 +122,13 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="bottom">Bottom padding</param>
 		public static void SetExtraPadding(int left, int top, int right, int bottom)
 		{
-			Type emuLuaLib = clientAssembly.GetType("BizHawk.Client.EmuHawk.EmuHawkLuaLibrary");
-			MethodInfo paddingMethod = emuLuaLib.GetMethod("SetClientExtraPadding");
-			paddingMethod.Invoke(paddingMethod, new object[] { left, top, right, bottom });
+			FieldInfo f = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager");
+			object displayManager = f.GetValue(null);
+			f = f.FieldType.GetField("ClientExtraPadding");
+			f.SetValue(displayManager, new Padding(left, top, right, bottom));
 
-			/*FieldInfo f = clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager").FieldType.GetField("ClientExtraPadding");
-			f.SetValue(clientAssembly.GetType("BizHawk.Client.EmuHawk.GlobalWin").GetField("DisplayManager"), new System.Windows.Forms.Padding(left, top, right, bottom));
 			MethodInfo resize = mainFormClass.GetMethod("FrameBufferResized");
-			resize.Invoke(clientMainFormInstance, null);*/
-			/*GlobalWin.DisplayManager.ClientExtraPadding = new System.Windows.Forms.Padding(left, top, right, bottom);
-			GlobalWin.MainForm.FrameBufferResized();*/
+			resize.Invoke(clientMainFormInstance, null);
 		}
 
 		/// <summary>
@@ -169,6 +168,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="player">Player (one based) whom inputs must be set</param>
 		/// <param name="joypad"><see cref="Joypad"/> with inputs</param>
 		/// <exception cref="IndexOutOfRangeException">Raised when you specify a player less than 1 or greater than maximum allows (see SystemInfo class to get this information)</exception>
+		/// <remarks>Still have some strange behaviour with multiple inputs; so this feature is still in beta</remarks>
 		public static void SetInput(int player, Joypad joypad)
 		{
 			if (player < 1 || player > RunningSystem.MaxControllers)
@@ -184,16 +184,33 @@ namespace BizHawk.Client.ApiHawk
 				}
 				else
 				{
-					Parallel.ForEach<JoypadButton>((IEnumerable<JoypadButton>)Enum.GetValues(typeof(JoypadButton)), button =>
+					foreach (JoypadButton button in joypadButtonsArray)
 					{
 						if (joypad.Inputs.HasFlag(button))
 						{
 							AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
-							joypadAdaptor.SetSticky(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
+							if (RunningSystem == SystemInfo.GB)
+							{
+								joypadAdaptor.SetSticky(string.Format("{0}", JoypadConverter.ConvertBack(button, RunningSystem)), true);
+							}
+							else
+							{
+								joypadAdaptor.SetSticky(string.Format("P{0} {1}", player, JoypadConverter.ConvertBack(button, RunningSystem)), true);
+							}
 						}
 					}
-					);
 				}
+
+				//Using this break joypad usage (even in UI); have to figure out why
+				/*if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
+				{
+					AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
+					for (int i = 1; i <= RunningSystem.MaxControllers; i++)
+					{
+						joypadAdaptor.SetFloat(string.Format("P{0} X Axis", i), allJoypads[i - 1].AnalogX);
+						joypadAdaptor.SetFloat(string.Format("P{0} Y Axis", i), allJoypads[i - 1].AnalogY);
+					}
+				}*/
 			}
 		}
 
@@ -202,7 +219,7 @@ namespace BizHawk.Client.ApiHawk
 		/// Resume the emulation
 		/// </summary>
 		public static void UnpauseEmulation()
-		{			
+		{
 			MethodInfo method = mainFormClass.GetMethod("UnpauseEmulator");
 			method.Invoke(clientMainFormInstance, null);
 		}
@@ -228,15 +245,26 @@ namespace BizHawk.Client.ApiHawk
 			Parallel.ForEach<string>(pressedButtons, button =>
 			{
 				int player;
-				if (int.TryParse(button.Substring(1, 2), out player))
+				if (RunningSystem == SystemInfo.GB)
 				{
-					allJoypads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
+					allJoypads[0].AddInput(JoypadConverter.Convert(button));
+				}
+				else
+				{
+					if (int.TryParse(button.Substring(1, 2), out player))
+					{
+						allJoypads[player - 1].AddInput(JoypadConverter.Convert(button.Substring(3)));
+					}
 				}
 			});
 
 			if ((RunningSystem.AvailableButtons & JoypadButton.AnalogStick) == JoypadButton.AnalogStick)
 			{
-				//joypadAdaptor.GetFloat();
+				for (int i = 1; i <= RunningSystem.MaxControllers; i++)
+				{
+					allJoypads[i - 1].AnalogX = joypadAdaptor.GetFloat(string.Format("P{0} X Axis", i));
+					allJoypads[i - 1].AnalogY = joypadAdaptor.GetFloat(string.Format("P{0} Y Axis", i));
+				}
 			}
 		}
 

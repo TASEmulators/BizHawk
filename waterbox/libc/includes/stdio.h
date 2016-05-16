@@ -646,6 +646,9 @@ int vsprintf( char * _PDCLIB_restrict s, const char * _PDCLIB_restrict format, _
 */
 int vsscanf( const char * _PDCLIB_restrict s, const char * _PDCLIB_restrict format, _PDCLIB_va_list arg ) _PDCLIB_nothrow;
 
+int asprintf(char **strp, const char * _PDCLIB_restrict fmt, ...) _PDCLIB_nothrow;
+int vasprintf(char **strp, const char * _PDCLIB_restrict fmt, _PDCLIB_va_list arg) _PDCLIB_nothrow;
+
 /* Character input/output functions */
 
 /* Retrieve the next character from given stream.

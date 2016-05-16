@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			_disassemblerInstance.ReadWord = (a) => (short)m.PeekWord(a, m.EndianType == MemoryDomain.Endian.Big);
+			_disassemblerInstance.ReadWord = (a) => (short)m.PeekUshort(a, m.EndianType == MemoryDomain.Endian.Big);
 			_disassemblerInstance.ReadByte = (a) => (sbyte)m.PeekByte(a);
-			_disassemblerInstance.ReadLong = (a) => (int)m.PeekDWord(a, m.EndianType == MemoryDomain.Endian.Big);
+			_disassemblerInstance.ReadLong = (a) => (int)m.PeekUint(a, m.EndianType == MemoryDomain.Endian.Big);
 			var info = _disassemblerInstance.Disassemble((int)addr);
 
 			length = info.Length;

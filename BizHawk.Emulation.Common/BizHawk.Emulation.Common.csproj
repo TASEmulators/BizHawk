@@ -96,6 +96,8 @@
     <Compile Include="Base Implementations\InputCallbackSystem.cs" />
     <Compile Include="Base Implementations\MemoryCallbackSystem.cs" />
     <Compile Include="Base Implementations\MemoryDomain.cs" />
+    <Compile Include="Base Implementations\MemoryDomainImpls.cs" />
+    <Compile Include="Base Implementations\MemoryDomainList.cs" />
     <Compile Include="Base Implementations\NullController.cs" />
     <Compile Include="Base Implementations\NullEmulator.cs" />
     <Compile Include="Base Implementations\NullSound.cs" />

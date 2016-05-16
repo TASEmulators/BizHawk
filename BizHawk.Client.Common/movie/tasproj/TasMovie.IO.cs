@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// Movie should always have a state at frame 0.
-					if (!this.StartsFromSavestate)
+					if (!this.StartsFromSavestate && Global.Emulator.Frame == 0)
 						StateManager.Capture();
 				}
 

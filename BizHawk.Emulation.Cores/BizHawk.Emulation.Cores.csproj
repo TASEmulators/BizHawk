@@ -437,6 +437,9 @@
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ICodeDataLog.cs">
+			<DependentUpon>GambatteLink.cs</DependentUpon>
+		</Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
