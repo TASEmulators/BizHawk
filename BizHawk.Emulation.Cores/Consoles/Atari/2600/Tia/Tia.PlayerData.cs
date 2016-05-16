@@ -18,11 +18,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public bool Reflect;
 			public bool Delay;
 			public byte Nusiz;
-			public bool Reset;
-			public byte ResetCnt;
 			public byte Collisions;
 
-			public bool Tick()
+            // Resp commands do not trugger start signals for main copies. We need to model this
+            public bool Draw_Main;
+
+            public bool Tick()
 			{
 				var result = false;
 				if (ScanCnt < 8)
@@ -112,8 +113,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				// At counter position 0 we should initalize the scan counter. 
 				// Note that for double and quad sized players that the scan counter is not started immediately.
-				if (HPosCnt == 0 && !Reset)
-				{
+				if (HPosCnt == 0 && Draw_Main==true)
+                {
 					ScanCnt = 0;
 					if ((Nusiz & 0x07) == 0x05)
 					{
@@ -144,26 +145,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					ScanCnt = 0;
 				}
 
-				// Reset is no longer in effect
-				Reset = false;
-
 				// Increment the counter
 				HPosCnt++;
 
 				// Counter loops at 160 
 				HPosCnt %= 160;
-
-				if (ResetCnt < 4)
-				{
-					ResetCnt++;
-				}
-
-				if (ResetCnt == 4)
-				{
-					HPosCnt = 0;
-					Reset = true;
-					ResetCnt++;
-				}
 
 				return result;
 			}
@@ -181,10 +167,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("reflect", ref Reflect);
 				ser.Sync("delay", ref Delay);
 				ser.Sync("nusiz", ref Nusiz);
-				ser.Sync("reset", ref Reset);
-				ser.Sync("resetCnt", ref ResetCnt);
 				ser.Sync("collisions", ref Collisions);
-			}
+                ser.Sync("draw_main", ref Draw_Main);
+            }
 		}
 	}
 }

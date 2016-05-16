@@ -550,6 +550,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             if (_hsyncCnt <= 0)
             {
                 _core.Cpu.RDY = true;
+                _player0.Draw_Main = true;
+                _player1.Draw_Main = true;
+                _player0.Missile.Draw_Main = true;
+                _player1.Missile.Draw_Main = true;
+
             }
 
             // Assume we're on the left side of the screen for now
@@ -735,12 +740,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 
 
-            
+
 
             // Handle HMOVE
             if (_hmove.HMoveEnabled)
             {
-                
+
                 if (_hmove.DecCntEnabled)
                 {
 
@@ -827,7 +832,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     _hmove.HMoveCnt++;
                     _hmove.HMoveCnt %= 4;
 
-                    if (p0_stuff==true && _hsyncCnt%4==0)
+                    if (p0_stuff == true && _hsyncCnt % 4 == 0)
                     {
                         p0_stuff = false;
                         // "Clock-Stuffing"
@@ -966,7 +971,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 }
             }
 
-            
+
 
 
             // Increment the hsync counter
@@ -1233,86 +1238,66 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
             else if (maskedAddr == 0x10) // RESP0
             {
+                _player0.Draw_Main = false;
+                
                 // Resp depends on HMOVE
                 if (!_hmove.LateHBlankReset)
                 {
-                    if (_hsyncCnt < 68)
-                    {
-                        _player0.HPosCnt = 0;
-                        _player0.ResetCnt = 2;
-                        _player0.Reset = true;
-                    }
-                    else
-                    {
-                        _player0.ResetCnt = 0;
-                    }
+                    _player0.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 67) _player0.HPosCnt = 160 - 3;
                 }
                 else
                 {
-                    if (_hsyncCnt < 76)
-                    {
-                        _player0.HPosCnt = 0;
-                        _player0.ResetCnt = 1;
-                        _player0.Reset = true;
-                    }
-                    else
-                    {
-                        _player0.ResetCnt = 0;
-                    }
+                    _player0.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 75) _player0.HPosCnt = 160 - 3;
                 }
             }
             else if (maskedAddr == 0x11) // RESP1
             {
+                _player1.Draw_Main = false;
+                
                 // RESP depends on HMOVE
                 if (!_hmove.LateHBlankReset)
                 {
-                    if (_hsyncCnt < 68)
-                    {
-                        _player1.HPosCnt = 0;
-                        _player1.ResetCnt = 2;
-                        _player1.Reset = true;
-                    }
-                    else
-                    {
-                        _player1.ResetCnt = 0;
-                    }
+                    _player1.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 67) _player1.HPosCnt = 160 - 3;
                 }
                 else
                 {
-                    if (_hsyncCnt < 76)
-                    {
-                        _player1.HPosCnt = 0;
-                        _player1.ResetCnt = 1;
-                        _player1.Reset = true;
-                    }
-                    else
-                    {
-                        _player1.ResetCnt = 0;
-                    }
+                    _player1.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 75) _player1.HPosCnt = 160 - 3;
                 }
 
             }
             else if (maskedAddr == 0x12) // RESM0
             {
+                _player0.Missile.Draw_Main = false;
+
                 if (!_hmove.LateHBlankReset)
                 {
                     _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 67) _player0.Missile.HPosCnt = 160 - 3;
                 }
                 else
                 {
                     _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 75) _player0.Missile.HPosCnt = 160 - 3;
                 }
 
             }
             else if (maskedAddr == 0x13) // RESM1
             {
+                _player1.Missile.Draw_Main = false;
+
                 if (!_hmove.LateHBlankReset)
                 {
                     _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 67) _player1.Missile.HPosCnt = 160 - 3;
                 }
                 else
                 {
                     _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 75) _player1.Missile.HPosCnt = 160 - 3;
                 }
             }
             else if (maskedAddr == 0x14) // RESBL
@@ -1320,10 +1305,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 if (!_hmove.LateHBlankReset)
                 {
                     _ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 67) _ball.HPosCnt = 160 - 3;
                 }
                 else
                 {
-                    _ball.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 3 : 160 - 4);
+                    _ball.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
+                    if (_hsyncCnt == 75) _ball.HPosCnt = 160 - 3;
                 }
 
             }
