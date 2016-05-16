@@ -1490,7 +1490,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         // the explicit exact times in the scanline, instead of just approximately spaced
         public void GetSamples(short[] samples)
         {
-            var samples31khz = new short[_audioClocks]; // mono
+            var sample_size = _audioClocks;
+            if (sample_size == 0) sample_size = 2;
+
+            var samples31khz = new short[sample_size]; // mono
 
             int elapsedCycles = frameEndCycles - frameStartCycles;
             if (elapsedCycles == 0)
@@ -1552,6 +1555,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             ser.Sync("vsyncEnabled", ref _vsyncEnabled);
             ser.Sync("CurrentScanLine", ref _CurrentScanLine);
             ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
+            ser.Sync("AudioClocks", ref _audioClocks);
 
             ser.BeginSection("Player0");
             _player0.SyncState(ser);
