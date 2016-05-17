@@ -269,43 +269,44 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
         private int[] _palette;
 
-        private byte pf0_update = 0;
-        private byte pf1_update = 0;
-        private byte pf2_update = 0;
-        private bool pf0_updater = false;
-        private bool pf1_updater = false;
-        private bool pf2_updater = false;
-        private byte pf0_delay_clock = 0;
-        private byte pf1_delay_clock = 0;
-        private byte pf2_delay_clock = 0;
-        private byte pf0_max_delay = 0;
-        private byte pf1_max_delay = 0;
-        private byte pf2_max_delay = 0;
+        private byte pf0_update;
+        private byte pf1_update;
+        private byte pf2_update;
+        private bool pf0_updater;
+        private bool pf1_updater;
+        private bool pf2_updater;
+        private byte pf0_delay_clock;
+        private byte pf1_delay_clock;
+        private byte pf2_delay_clock;
+        private byte pf0_max_delay;
+        private byte pf1_max_delay;
+        private byte pf2_max_delay;
 
-        private int enam0_delay = 0;
-        private int enam1_delay = 0;
-        private int enamb_delay = 0;
-        private bool enam0_val = false;
-        private bool enam1_val = false;
-        private bool enamb_val = false;
+        private int enam0_delay;
+        private int enam1_delay;
+        private int enamb_delay;
+        private bool enam0_val;
+        private bool enam1_val;
+        private bool enamb_val;
 
-        private bool p0_stuff = false;
-        private bool p1_stuff = false;
-        private bool m0_stuff = false;
-        private bool m1_stuff = false;
-        private bool b_stuff = false;
+        private bool p0_stuff;
+        private bool p1_stuff;
+        private bool m0_stuff;
+        private bool m1_stuff;
+        private bool b_stuff;
 
-        private int HMP0_delay = 0;
-        private byte HMP0_val = 0;
-        private int HMP1_delay = 0;
-        private byte HMP1_val = 0;
+        private int HMP0_delay;
+        private byte HMP0_val;
+        private int HMP1_delay;
+        private byte HMP1_val;
 
-        private int prg0_delay = 0;
-        private int prg1_delay = 0;
-        private byte prg0_val = 0;
-        private byte prg1_val = 0;
+        private int prg0_delay;
+        private int prg1_delay;
+        private byte prg0_val;
+        private byte prg1_val;
 
-        private bool do_ticks = false;
+        private bool do_ticks;
+
         private byte _hsyncCnt;
         private int _capChargeStart;
         private bool _capCharging;
@@ -417,6 +418,44 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             _vsyncEnabled = false;
             _CurrentScanLine = 0;
             _audioClocks = 0;
+
+             pf0_update = 0;
+            pf1_update = 0;
+            pf2_update = 0;
+            pf0_updater = false;
+            pf1_updater = false;
+            pf2_updater = false;
+            pf0_delay_clock = 0;
+            pf1_delay_clock = 0;
+            pf2_delay_clock = 0;
+            pf0_max_delay = 0;
+            pf1_max_delay = 0;
+            pf2_max_delay = 0;
+
+            enam0_delay = 0;
+            enam1_delay = 0;
+            enamb_delay = 0;
+            enam0_val = false;
+            enam1_val = false;
+            enamb_val = false;
+
+            p0_stuff = false;
+            p1_stuff = false;
+            m0_stuff = false;
+            m1_stuff = false;
+            b_stuff = false;
+
+            HMP0_delay = 0;
+            HMP0_val = 0;
+            HMP1_delay = 0;
+            HMP1_val = 0;
+
+            prg0_delay = 0;
+            prg1_delay = 0;
+            prg0_val = 0;
+            prg1_val = 0;
+
+            do_ticks = false;
 
             _player0 = new PlayerData();
             _player1 = new PlayerData();
@@ -550,10 +589,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             if (_hsyncCnt <= 0)
             {
                 _core.Cpu.RDY = true;
-                _player0.Draw_Main = true;
-                _player1.Draw_Main = true;
-                _player0.Missile.Draw_Main = true;
-                _player1.Missile.Draw_Main = true;
 
             }
 
@@ -1237,9 +1272,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 //_playField.Grp = (uint)((_playField.Grp & 0xFFF00) + ReverseBits(value, 8));
             }
             else if (maskedAddr == 0x10) // RESP0
-            {
-                _player0.Draw_Main = false;
-                
+            {             
                 // Resp depends on HMOVE
                 if (!_hmove.LateHBlankReset)
                 {
@@ -1253,9 +1286,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 }
             }
             else if (maskedAddr == 0x11) // RESP1
-            {
-                _player1.Draw_Main = false;
-                
+            {              
                 // RESP depends on HMOVE
                 if (!_hmove.LateHBlankReset)
                 {
@@ -1271,8 +1302,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
             else if (maskedAddr == 0x12) // RESM0
             {
-                _player0.Missile.Draw_Main = false;
-
                 if (!_hmove.LateHBlankReset)
                 {
                     _player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
@@ -1287,8 +1316,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
             else if (maskedAddr == 0x13) // RESM1
             {
-                _player1.Missile.Draw_Main = false;
-
                 if (!_hmove.LateHBlankReset)
                 {
                     _player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
@@ -1490,37 +1517,36 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         // the explicit exact times in the scanline, instead of just approximately spaced
         public void GetSamples(short[] samples)
         {
-            var sample_size = _audioClocks;
-            if (sample_size == 0) sample_size = 2;
-
-            var samples31khz = new short[sample_size]; // mono
-
-            int elapsedCycles = frameEndCycles - frameStartCycles;
-            if (elapsedCycles == 0)
+            if (_audioClocks > 0)
             {
-                elapsedCycles = 1; // better than diving by zero
+                var samples31khz = new short[_audioClocks]; // mono
+
+                int elapsedCycles = frameEndCycles - frameStartCycles;
+                if (elapsedCycles == 0)
+                {
+                    elapsedCycles = 1; // better than diving by zero
+                }
+
+                int start = 0;
+                while (commands.Count > 0)
+                {
+                    var cmd = commands.Dequeue();
+                    int pos = (cmd.Time * samples31khz.Length) / elapsedCycles;
+                    pos = Math.Min(pos, samples31khz.Length); // sometimes the cpu timestamp of the write is > frameEndCycles
+                    GetSamplesImmediate(samples31khz, start, pos - start);
+                    start = pos;
+                    ApplyAudioCommand(cmd);
+                }
+
+                GetSamplesImmediate(samples31khz, start, samples31khz.Length - start);
+
+                // convert from 31khz to 44khz
+                for (var i = 0; i < samples.Length / 2; i++)
+                {
+                    samples[i * 2] = samples31khz[(int)(((double)samples31khz.Length / (double)(samples.Length / 2)) * i)];
+                    samples[(i * 2) + 1] = samples[i * 2];
+                }
             }
-
-            int start = 0;
-            while (commands.Count > 0)
-            {
-                var cmd = commands.Dequeue();
-                int pos = (cmd.Time * samples31khz.Length) / elapsedCycles;
-                pos = Math.Min(pos, samples31khz.Length); // sometimes the cpu timestamp of the write is > frameEndCycles
-                GetSamplesImmediate(samples31khz, start, pos - start);
-                start = pos;
-                ApplyAudioCommand(cmd);
-            }
-
-            GetSamplesImmediate(samples31khz, start, samples31khz.Length - start);
-
-            // convert from 31khz to 44khz
-            for (var i = 0; i < samples.Length / 2; i++)
-            {
-                samples[i * 2] = samples31khz[(int)(((double)samples31khz.Length / (double)(samples.Length / 2)) * i)];
-                samples[(i * 2) + 1] = samples[i * 2];
-            }
-
             _audioClocks = 0;
         }
 
@@ -1547,6 +1573,48 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             _ball.SyncState(ser);
             _hmove.SyncState(ser);
             ser.Sync("hsyncCnt", ref _hsyncCnt);
+
+            // add everything to the state 
+            ser.Sync("PF0_up",ref pf0_update);
+            ser.Sync("PF1_up", ref pf1_update);
+            ser.Sync("PF2_up", ref pf2_update);
+            ser.Sync("PF0_upper", ref pf0_updater);
+            ser.Sync("PF1_upper", ref pf1_updater);
+            ser.Sync("PF2_upper", ref pf2_updater);
+            ser.Sync("PF0_delay", ref pf0_delay_clock);
+            ser.Sync("PF1_delay", ref pf1_delay_clock);
+            ser.Sync("PF2_delay", ref pf2_delay_clock);
+            ser.Sync("PF0_max", ref pf0_max_delay);
+            ser.Sync("PF1_max", ref pf1_max_delay);
+            ser.Sync("PF2_max", ref pf2_max_delay);
+
+            ser.Sync("Enam0_delay", ref enam0_delay);
+            ser.Sync("Enam1_delay", ref enam1_delay);
+            ser.Sync("Enab_delay", ref enamb_delay);
+            ser.Sync("Enam0_val", ref enam0_val);
+            ser.Sync("Enam1_val", ref enam1_val);
+            ser.Sync("Enab_val", ref enamb_val);
+
+            ser.Sync("P0_stuff", ref p0_stuff);
+            ser.Sync("P1_stuff", ref p1_stuff);
+            ser.Sync("M0_stuff", ref m0_stuff);
+            ser.Sync("M1_stuf", ref m1_stuff);
+            ser.Sync("b_stuff", ref b_stuff);
+
+            ser.Sync("hmp0_delay", ref HMP0_delay);
+            ser.Sync("hmp0_val", ref HMP0_val);
+            ser.Sync("hmp1_delay", ref HMP1_delay);
+            ser.Sync("hmp1_val", ref HMP1_val);
+
+            ser.Sync("PRG0_delay", ref prg0_delay);
+            ser.Sync("PRG1_delay", ref prg1_delay);
+            ser.Sync("PRG0_val", ref prg0_val);
+            ser.Sync("PRG1_val", ref prg1_val);
+
+            ser.Sync("Ticks", ref do_ticks);
+
+
+
             // some of these things weren't in the state because they weren't needed if
             // states were always taken at frame boundaries
             ser.Sync("capChargeStart", ref _capChargeStart);
@@ -1556,6 +1624,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             ser.Sync("CurrentScanLine", ref _CurrentScanLine);
             ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
             ser.Sync("AudioClocks", ref _audioClocks);
+            ser.Sync("FrameStartCycles", ref frameStartCycles);
+            ser.Sync("FrameEndCycles", ref frameEndCycles);
 
             ser.BeginSection("Player0");
             _player0.SyncState(ser);

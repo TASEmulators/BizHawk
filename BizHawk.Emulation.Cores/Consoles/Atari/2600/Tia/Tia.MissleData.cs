@@ -14,15 +14,36 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Hm;
 			public byte Collisions;
 
-            // Resp commands do not trugger start signals for main copies. We need to model this
-            public bool Draw_Main;
+            // Resp commands do not trigger start signals for main copies. We need to model this
+            public int Draw_To;
+            public byte ScanCnt;
+            public bool ScanCntInit;
+            public int Start_Signal;
+            public int Signal_Reached;
 
-			public bool Tick()
+            public bool Tick()
 			{
 				var result = false;
 
+                if (ScanCntInit==true)
+                {
+                    if (ScanCnt < (1 << Size) && Enabled && !ResetToPlayer)
+                    {
+                        result = true;
+                        ScanCnt++;
+                        
+                    } else
+                    {
+                        ScanCntInit = false;
+                    }
+
+                }
+
+
+
+                /*
                 // At hPosCnt == 0, start drawing the missile, if enabled
-                if (HPosCnt < (1 << Size) && Draw_Main == true)
+                if (HPosCnt < (1 << Size))
 				{
 					if (Enabled && !ResetToPlayer)
 					{
@@ -65,15 +86,56 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							result = true;
 						}
 					}
-				}
+				}*/
 
-				// Increment the counter
-				HPosCnt++;
+                if (Start_Signal == 160)
+                {
+                    ScanCnt = 0;
+                    Start_Signal++;
+                    ScanCntInit = true;
+                }
+
+                if (Start_Signal == 16 && ((Number & 0x07) == 0x01 || ((Number & 0x07) == 0x03)))
+                {
+                    ScanCnt = 0;
+                    Start_Signal++;
+                    ScanCntInit = true;
+                }
+
+                if (Start_Signal == 32 && ((Number & 0x07) == 0x02 || ((Number & 0x07) == 0x03) || ((Number & 0x07) == 0x06)))
+                {
+                    ScanCnt = 0;
+                    Start_Signal++;
+                    ScanCntInit = true;
+                }
+
+                if (Start_Signal == 64 && ((Number & 0x07) == 0x04 || ((Number & 0x07) == 0x06)))
+                {
+                    ScanCnt = 0;
+                    Start_Signal++;
+                    ScanCntInit = true;
+                }
+
+                // Increment the counter
+                HPosCnt++;
 
 				// Counter loops at 160 
 				HPosCnt %= 160;
 
-				return result;
+                //our goal here is to send a start signal 4 clocks before drawing begins. The properly emulates
+                //drawing on a real TIA
+                if (HPosCnt == 156 || HPosCnt == 12 || HPosCnt == 28 || HPosCnt == 60)
+                {
+                    Start_Signal = HPosCnt;
+                    Signal_Reached = HPosCnt + 5;
+                }
+
+                if (Start_Signal < Signal_Reached)
+                {
+                    Start_Signal++;
+                }
+
+                return result;
 			}
 
 			public void SyncState(Serializer ser)
@@ -86,8 +148,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("number", ref Number);
 				ser.Sync("HM", ref Hm);
 				ser.Sync("collisions", ref Collisions);
-                ser.Sync("draw_main", ref Draw_Main);
-				ser.EndSection();
+                ser.Sync("start_signal", ref Start_Signal);
+                ser.Sync("signal_reached", ref Signal_Reached);
+                ser.Sync("draw_to", ref Draw_To);
+                ser.Sync("scanCnt", ref ScanCnt);
+                ser.Sync("scanCntInit", ref ScanCntInit);
+                ser.EndSection();
 			}
 		}
 	}
