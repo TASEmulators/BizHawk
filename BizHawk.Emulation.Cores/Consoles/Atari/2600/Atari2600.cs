@@ -45,12 +45,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				game.AddOption("m", DetectMapper(rom));
 			}
 
-            if (Rom.HashSHA1() == "3A77DB43B6583E8689435F0F14AA04B9E57BDDED")
-            {
+            if (Rom.HashSHA1() == "3A77DB43B6583E8689435F0F14AA04B9E57BDDED" ||
+                Rom.HashSHA1() == "E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620")
+            { 
                 game.RemoveOption("m");
                 game.AddOption("m", "F8_sega");
-                Console.WriteLine("here we are");
-
             }
 
             Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
