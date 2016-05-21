@@ -18,11 +18,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public bool Reflect;
 			public bool Delay;
 			public byte Nusiz;
-			public bool Reset;
-			public byte ResetCnt;
 			public byte Collisions;
 
-			public bool Tick()
+            // Resp commands do not trigger start signals for main copies. We need to model this
+            public int Start_Signal;
+            public int Signal_Reached;
+
+            public bool Tick()
 			{
 				var result = false;
 				if (ScanCnt < 8)
@@ -112,9 +114,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				// At counter position 0 we should initalize the scan counter. 
 				// Note that for double and quad sized players that the scan counter is not started immediately.
-				if (HPosCnt == 0 && !Reset)
-				{
+				if (Start_Signal==160)
+                {
 					ScanCnt = 0;
+                    Start_Signal++;
 					if ((Nusiz & 0x07) == 0x05)
 					{
 						ScanCntInit = true;
@@ -129,23 +132,23 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					}
 				}
 
-				if (HPosCnt == 16 && ((Nusiz & 0x07) == 0x01 || ((Nusiz & 0x07) == 0x03)))
+				if (Start_Signal == 16 && ((Nusiz & 0x07) == 0x01 || ((Nusiz & 0x07) == 0x03)))
 				{
 					ScanCnt = 0;
-				}
+                    Start_Signal++;
+                }
 
-				if (HPosCnt == 32 && ((Nusiz & 0x07) == 0x02 || ((Nusiz & 0x07) == 0x03) || ((Nusiz & 0x07) == 0x06)))
+				if (Start_Signal == 32 && ((Nusiz & 0x07) == 0x02 || ((Nusiz & 0x07) == 0x03) || ((Nusiz & 0x07) == 0x06)))
 				{
 					ScanCnt = 0;
-				}
+                    Start_Signal++;
+                }
 
-				if (HPosCnt == 64 && ((Nusiz & 0x07) == 0x04 || ((Nusiz & 0x07) == 0x06)))
+				if (Start_Signal == 64 && ((Nusiz & 0x07) == 0x04 || ((Nusiz & 0x07) == 0x06)))
 				{
 					ScanCnt = 0;
-				}
-
-				// Reset is no longer in effect
-				Reset = false;
+                    Start_Signal++;
+                }
 
 				// Increment the counter
 				HPosCnt++;
@@ -153,18 +156,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Counter loops at 160 
 				HPosCnt %= 160;
 
-				if (ResetCnt < 4)
-				{
-					ResetCnt++;
-				}
+                //our goal here is to send a start signal 4 clocks before drawing begins. This properly emulates
+                //drawing on a real TIA
+                if (HPosCnt==156 || HPosCnt==12 || HPosCnt==28 || HPosCnt==60)
+                {
+                    Start_Signal = HPosCnt-1;
+                    Signal_Reached = HPosCnt + 5;
+                }
 
-				if (ResetCnt == 4)
-				{
-					HPosCnt = 0;
-					Reset = true;
-					ResetCnt++;
-				}
-
+                if (Start_Signal<Signal_Reached)
+                {
+                    Start_Signal++;
+                }
 				return result;
 			}
 
@@ -181,10 +184,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("reflect", ref Reflect);
 				ser.Sync("delay", ref Delay);
 				ser.Sync("nusiz", ref Nusiz);
-				ser.Sync("reset", ref Reset);
-				ser.Sync("resetCnt", ref ResetCnt);
 				ser.Sync("collisions", ref Collisions);
-			}
+                ser.Sync("start_signal", ref Start_Signal);
+                ser.Sync("signal_reached", ref Signal_Reached);
+            }
 		}
 	}
 }

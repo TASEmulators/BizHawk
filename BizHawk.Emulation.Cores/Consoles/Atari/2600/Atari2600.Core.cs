@@ -241,8 +241,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_mapper = new mUA();
 					break;
 
-				// Homebrew mappers
-				case "3E":
+                // Special Sega Mapper which has swapped banks
+                case "F8_sega":
+                    _mapper = new mF8_sega();
+                    break;
+
+                // Homebrew mappers
+                case "3E":
 					_mapper = new m3E();
 					break;
 				case "0840":
