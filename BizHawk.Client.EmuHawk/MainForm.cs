@@ -2871,6 +2871,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+			else
+			{
+				atten = 0;
+			}
 
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
