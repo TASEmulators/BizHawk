@@ -328,6 +328,7 @@
     <Compile Include="Consoles\Atari\2600\Mappers\mF6SC.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mF8.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mF8SC.cs" />
+    <Compile Include="Consoles\Atari\2600\Mappers\mF8_sega.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mFA.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mFA2.cs" />
     <Compile Include="Consoles\Atari\2600\Mappers\mFE.cs" />
@@ -438,8 +439,8 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.ICodeDataLog.cs">
-			<DependentUpon>GambatteLink.cs</DependentUpon>
-		</Compile>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
