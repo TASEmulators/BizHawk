@@ -269,6 +269,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
         private int[] _palette;
 
+        public int bus_state;
+
         private byte pf0_update;
         private byte pf1_update;
         private byte pf2_update;
@@ -418,6 +420,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             _vsyncEnabled = false;
             _CurrentScanLine = 0;
             _audioClocks = 0;
+
+            bus_state = 0;
 
              pf0_update = 0;
             pf1_update = 0;
@@ -716,7 +720,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                     }
                 }
 
-                if (_playField.Score && !_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
+                if (_playField.Score && !_playField.Priority && ((collisions & CXPF) != 0) && _core.Settings.ShowPlayfield)
                 {
                     pixelColor = !rightSide ? _palette[_player0.Color] : _palette[_player1.Color];
                 }
@@ -1047,44 +1051,55 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         public byte ReadMemory(ushort addr, bool peek)
         {
             var maskedAddr = (ushort)(addr & 0x000F);
+            byte coll = 0;
+            int mask = 0;
+
             if (maskedAddr == 0x00) // CXM0P
             {
-                return (byte)((((_player0.Missile.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXP0) != 0) ? 0x40 : 0x00));
+                coll=(byte)((((_player0.Missile.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXP0) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x01) // CXM1P
             {
-                return (byte)((((_player1.Missile.Collisions & CXP0) != 0) ? 0x80 : 0x00) | (((_player1.Missile.Collisions & CXP1) != 0) ? 0x40 : 0x00));
+                coll = (byte)((((_player1.Missile.Collisions & CXP0) != 0) ? 0x80 : 0x00) | (((_player1.Missile.Collisions & CXP1) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x02) // CXP0FB
             {
-                return (byte)((((_player0.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player0.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                coll = (byte)((((_player0.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player0.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x03) // CXP1FB
             {
-                return (byte)((((_player1.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player1.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                coll = (byte)((((_player1.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player1.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x04) // CXM0FB
             {
-                return (byte)((((_player0.Missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                coll = (byte)((((_player0.Missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x05) // CXM1FB
             {
-                return (byte)((((_player1.Missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player1.Missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                coll = (byte)((((_player1.Missile.Collisions & CXPF) != 0) ? 0x80 : 0x00) | (((_player1.Missile.Collisions & CXBL) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x06) // CXBLPF
             {
-                return (byte)(((_ball.Collisions & CXPF) != 0) ? 0x80 : 0x00);
+                coll = (byte)(((_ball.Collisions & CXPF) != 0) ? 0x80 : 0x00);
+                mask = 0x7f;
             }
 
             if (maskedAddr == 0x07) // CXPPMM
             {
-                return (byte)((((_player0.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXM1) != 0) ? 0x40 : 0x00));
+                coll = (byte)((((_player0.Collisions & CXP1) != 0) ? 0x80 : 0x00) | (((_player0.Missile.Collisions & CXM1) != 0) ? 0x40 : 0x00));
+                mask = 0x3f;
             }
 
             if (maskedAddr == 0x08) // INPT0
@@ -1093,28 +1108,37 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 // 6105 roughly centers the paddle in Breakout
                 if (_capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= 6105)
                 {
-                    return 0x80;
+                    coll=0x80;
                 }
 
-                return 0x00;
+                coll=0x00;
+                mask = 0x7f;
             }
 
             if (maskedAddr == 0x0C) // INPT4
             {
-                return (byte)((_core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
+                coll = (byte)((_core.ReadControls1(peek) & 0x08) != 0 ? 0x80 : 0x00);
+                mask = 0x7f;
             }
 
             if (maskedAddr == 0x0D) // INPT5
             {
-                return (byte)((_core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
+                coll = (byte)((_core.ReadControls2(peek) & 0x08) != 0 ? 0x80 : 0x00);
+                mask = 0x7f;
             }
 
-            return 0x00;
+            //some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
+            // happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
+            //assigned in some other bus access, so let's go with that. 
+            coll+=(byte)(mask & bus_state);
+            bus_state = (int)coll;
+            return coll;
         }
 
         public void WriteMemory(ushort addr, byte value)
         {
             var maskedAddr = (ushort)(addr & 0x3f);
+            bus_state = value;
 
             if (maskedAddr == 0x00) // VSYNC
             {
@@ -1575,6 +1599,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             ser.Sync("hsyncCnt", ref _hsyncCnt);
 
             // add everything to the state 
+            ser.Sync("Bus_State", ref bus_state);
+
             ser.Sync("PF0_up",ref pf0_update);
             ser.Sync("PF1_up", ref pf1_update);
             ser.Sync("PF2_up", ref pf2_update);
