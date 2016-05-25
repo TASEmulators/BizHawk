@@ -1131,6 +1131,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             // happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
             //assigned in some other bus access, so let's go with that. 
             coll+=(byte)(mask & bus_state);
+
+            // this might need to be peek protected, let's just make a note of it for now
             bus_state = (int)coll;
             return coll;
         }
@@ -1138,6 +1140,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         public void WriteMemory(ushort addr, byte value)
         {
             var maskedAddr = (ushort)(addr & 0x3f);
+            // this might need to be poke protected, let's just make a note of it for now
             bus_state = value;
 
             if (maskedAddr == 0x00) // VSYNC
