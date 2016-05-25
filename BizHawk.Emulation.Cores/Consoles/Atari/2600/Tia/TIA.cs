@@ -291,6 +291,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private bool enam1_val;
         private bool enamb_val;
 
+        private int vblank_delay;
+        private byte vblank_value;
+
         private bool p0_stuff;
         private bool p1_stuff;
         private bool m0_stuff;
@@ -417,6 +420,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             _capChargeStart = 0;
             _capCharging = false;
             _vblankEnabled = false;
+            vblank_delay = 0;
+            vblank_value = 0;
             _vsyncEnabled = false;
             _CurrentScanLine = 0;
             _audioClocks = 0;
@@ -475,6 +480,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         public void Execute(int cycles)
         {
             // Still ignoring cycles...
+
+            // delay vblank latch
+            if (vblank_delay > 0)
+            {
+                vblank_delay++;
+                if (vblank_delay==3)
+                {
+                    _vblankEnabled = (vblank_value & 0x02) != 0;
+                    vblank_delay = 0;
+                }
+                
+            }
+
+
 
             //delay latch to new playfield register
             if (pf0_updater == true)
@@ -1172,7 +1191,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
             else if (maskedAddr == 0x01) // VBLANK
             {
-                _vblankEnabled = (value & 0x02) != 0;
+                vblank_delay = 1;
+                vblank_value = value;
                 _capCharging = (value & 0x80) == 0;
                 if ((value & 0x80) == 0)
                 {
@@ -1642,7 +1662,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
             ser.Sync("Ticks", ref do_ticks);
 
-
+            ser.Sync("VBlankDelay", ref vblank_delay);
+            ser.Sync("VBlankValue", ref vblank_value);
 
             // some of these things weren't in the state because they weren't needed if
             // states were always taken at frame boundaries
