@@ -54,10 +54,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if ((addr & 0x1080) == 0x0080)
 			{
-                _tia.bus_state = M6532.ReadMemory(addr, false);
                 return M6532.ReadMemory(addr, true);
 			}
-            _tia.bus_state = Rom[addr & 0x0FFF];
             return Rom[addr & 0x0FFF];
 		}
 
@@ -87,7 +85,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		internal void BasePokeMemory(ushort addr, byte value)
 		{
-            _tia.bus_state = value;
             addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
@@ -121,8 +118,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		internal byte PeekMemory(ushort addr)
 		{
-			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
-            _tia.bus_state = temp;
+			var temp = _mapper.PeekMemory((ushort)(addr & 0x1FFF));
 			return temp;
 		}
 
