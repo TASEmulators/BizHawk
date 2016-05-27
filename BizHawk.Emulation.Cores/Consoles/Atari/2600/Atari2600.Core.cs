@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
-				_tia.WriteMemory(addr, value);
+				_tia.WriteMemory(addr, value, false);
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
-				_tia.WriteMemory(addr, value);
+				_tia.WriteMemory(addr, value, true);
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
