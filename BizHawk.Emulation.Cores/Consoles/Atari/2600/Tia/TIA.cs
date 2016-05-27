@@ -1151,16 +1151,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             //assigned in some other bus access, so let's go with that. 
             coll+=(byte)(mask & bus_state);
 
-            // this might need to be peek protected, let's just make a note of it for now
-            bus_state = (int)coll;
+            if (!peek) bus_state = (int)coll;
             return coll;
         }
 
-        public void WriteMemory(ushort addr, byte value)
+        public void WriteMemory(ushort addr, byte value, bool poke)
         {
             var maskedAddr = (ushort)(addr & 0x3f);
-            // this might need to be poke protected, let's just make a note of it for now
-            bus_state = value;
+            if (!poke) bus_state = value;
 
             if (maskedAddr == 0x00) // VSYNC
             {
