@@ -32,20 +32,15 @@
 			this.OK = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label27 = new System.Windows.Forms.Label();
-			this.label37 = new System.Windows.Forms.Label();
 			this.CoreInfoPanel = new System.Windows.Forms.Panel();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.VersionLabel = new System.Windows.Forms.Label();
 			this.btnCopyHash = new System.Windows.Forms.Button();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
+			this.DateLabel = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -83,24 +78,6 @@
 			this.linkLabel1.Text = "Bizhawk Homepage";
 			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
 			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(198, 84);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(46, 13);
-			this.label1.TabIndex = 3;
-			this.label1.Text = "Authors:";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(198, 99);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(149, 13);
-			this.label2.TabIndex = 4;
-			this.label2.Text = "vecna, adelikat, zeromus, natt";
-			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
@@ -120,51 +97,6 @@
 			this.label4.Size = new System.Drawing.Size(168, 32);
 			this.label4.TabIndex = 6;
 			this.label4.Text = "\"A multi-platform emulator...\r\nfor productive people.\"";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(198, 119);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(66, 13);
-			this.label5.TabIndex = 8;
-			this.label5.Text = "Contributors:";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(198, 133);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(220, 13);
-			this.label6.TabIndex = 9;
-			this.label6.Text = "DarkKobold, Micro500, TaoTao, Rolanmen1,";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(198, 147);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(216, 13);
-			this.label7.TabIndex = 10;
-			this.label7.Text = "Deign, Brandon Evans, Pasky13, link_7777,";
-			// 
-			// label27
-			// 
-			this.label27.AutoSize = true;
-			this.label27.Location = new System.Drawing.Point(198, 161);
-			this.label27.Name = "label27";
-			this.label27.Size = new System.Drawing.Size(201, 13);
-			this.label27.TabIndex = 12;
-			this.label27.Text = "SaxxonPike, MasterofPuppets, Scepheo,";
-			// 
-			// label37
-			// 
-			this.label37.AutoSize = true;
-			this.label37.Location = new System.Drawing.Point(198, 176);
-			this.label37.Name = "label37";
-			this.label37.Size = new System.Drawing.Size(96, 13);
-			this.label37.TabIndex = 13;
-			this.label37.Text = "null_ptr, MightyMar";
 			// 
 			// CoreInfoPanel
 			// 
@@ -194,11 +126,11 @@
 			// VersionLabel
 			// 
 			this.VersionLabel.AutoSize = true;
-			this.VersionLabel.Location = new System.Drawing.Point(198, 66);
+			this.VersionLabel.Location = new System.Drawing.Point(198, 75);
 			this.VersionLabel.Name = "VersionLabel";
-			this.VersionLabel.Size = new System.Drawing.Size(104, 13);
+			this.VersionLabel.Size = new System.Drawing.Size(108, 13);
 			this.VersionLabel.TabIndex = 7;
-			this.VersionLabel.Text = "timestamp goes here";
+			this.VersionLabel.Text = "versioninfo goes here";
 			// 
 			// btnCopyHash
 			// 
@@ -225,6 +157,27 @@
 			this.linkLabel2.Text = "Commit #XXXXXXX";
 			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
 			// 
+			// linkLabel3
+			// 
+			this.linkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabel3.AutoSize = true;
+			this.linkLabel3.Location = new System.Drawing.Point(198, 112);
+			this.linkLabel3.Name = "linkLabel3";
+			this.linkLabel3.Size = new System.Drawing.Size(63, 13);
+			this.linkLabel3.TabIndex = 20;
+			this.linkLabel3.TabStop = true;
+			this.linkLabel3.Text = "Contributers";
+			this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+			// 
+			// DateLabel
+			// 
+			this.DateLabel.AutoSize = true;
+			this.DateLabel.Location = new System.Drawing.Point(198, 91);
+			this.DateLabel.Name = "DateLabel";
+			this.DateLabel.Size = new System.Drawing.Size(104, 13);
+			this.DateLabel.TabIndex = 21;
+			this.DateLabel.Text = "timestamp goes here";
+			// 
 			// BizBox
 			// 
 			this.AcceptButton = this.OK;
@@ -232,20 +185,15 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.OK;
 			this.ClientSize = new System.Drawing.Size(448, 536);
+			this.Controls.Add(this.DateLabel);
+			this.Controls.Add(this.linkLabel3);
 			this.Controls.Add(this.linkLabel2);
 			this.Controls.Add(this.btnCopyHash);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.CoreInfoPanel);
-			this.Controls.Add(this.label37);
-			this.Controls.Add(this.label27);
-			this.Controls.Add(this.label7);
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.label5);
 			this.Controls.Add(this.VersionLabel);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.label3);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.linkLabel1);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.OK);
@@ -266,19 +214,14 @@
 		private System.Windows.Forms.Button OK;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.LinkLabel linkLabel1;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label5;
-		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label7;
-		private System.Windows.Forms.Label label27;
-		private System.Windows.Forms.Label label37;
 		private System.Windows.Forms.Panel CoreInfoPanel;
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Label VersionLabel;
 		private System.Windows.Forms.Button btnCopyHash;
 		private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.LinkLabel linkLabel3;
+		private System.Windows.Forms.Label DateLabel;
 	}
 }
