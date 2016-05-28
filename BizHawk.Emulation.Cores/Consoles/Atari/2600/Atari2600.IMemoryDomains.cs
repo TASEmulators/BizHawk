@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					16,
 					MemoryDomain.Endian.Little,
 					addr => _tia.ReadMemory((ushort)addr, true),
-					(addr, value) => this._tia.WriteMemory((ushort)addr, value), 1),
+					(addr, value) => this._tia.WriteMemory((ushort)addr, value, true), 1),
 				new MemoryDomainDelegate(
 					"PIA",
 					1024,
