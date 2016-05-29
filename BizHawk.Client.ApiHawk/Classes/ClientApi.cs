@@ -4,11 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
+using BizHawk.Client.ApiHawk.Classes.Events;
+using System.IO;
 
 namespace BizHawk.Client.ApiHawk
 {
@@ -28,9 +29,30 @@ namespace BizHawk.Client.ApiHawk
 		internal static readonly BizHawkSystemIdToEnumConverter SystemIdConverter = new BizHawkSystemIdToEnumConverter();
 		internal static readonly JoypadStringToEnumConverter JoypadConverter = new JoypadStringToEnumConverter();
 
-		public static event EventHandler RomLoaded;
-
 		private static List<Joypad> allJoypads;
+
+		/// <summary>
+		/// Occurs before a quickload is done (just after user has pressed the shortcut button
+		/// or has click on the item menu)
+		/// </summary>
+		public static event BeforeQuickLoadEventHandler BeforeQuickLoad;
+		/// <summary>
+		/// Occurs before a quicksave is done (just after user has pressed the shortcut button
+		/// or has click on the item menu)
+		/// </summary>
+		public static event BeforeQuickSaveEventHandler BeforeQuickSave;
+		/// <summary>
+		/// Occurs when a ROM is succesfully loaded
+		/// </summary>
+		public static event EventHandler RomLoaded;
+		/// <summary>
+		/// Occurs when a savestate is sucessfully loaded
+		/// </summary>
+		public static event StateLoadedEventHandler StateLoaded;
+		/// <summary>
+		/// Occurs when a savestate is successfully saved
+		/// </summary>
+		public static event StateSavedEventHandler StateSaved;
 
 		#endregion
 
@@ -95,6 +117,80 @@ namespace BizHawk.Client.ApiHawk
 			}
 		}
 
+
+		/// <summary>
+		/// Load a savestate specified by its name
+		/// </summary>
+		/// <param name="name">Savetate friendly name</param>
+		public static void LoadState(string name)
+		{
+			MethodInfo method = mainFormClass.GetMethod("LoadState");
+			method.Invoke(clientMainFormInstance, new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false, false });
+		}
+
+
+		/// <summary>
+		/// Raised before a quickload is done (just after pressing shortcut button)
+		/// </summary>
+		/// <param name="sender">Object who raised the event</param>
+		/// <param name="quickSaveSlotName">Slot used for quickload</param>
+		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
+		public static void OnBeforeQuickLoad(object sender, string quickSaveSlotName, out bool eventHandled)
+		{
+			eventHandled = false;
+			if (BeforeQuickLoad != null)
+			{
+				BeforeQuickLoadEventArgs e = new BeforeQuickLoadEventArgs(quickSaveSlotName);
+				BeforeQuickLoad(sender, e);
+				eventHandled = e.Handled;
+			}
+		}
+
+
+		/// <summary>
+		/// Raised before a quicksave is done (just after pressing shortcut button)
+		/// </summary>
+		/// <param name="sender">Object who raised the event</param>
+		/// <param name="quickSaveSlotName">Slot used for quicksave</param>
+		/// <param name="eventHandled">A boolean that can be set if users want to handle save themselves; if so, BizHawk won't do anything</param>
+		public static void OnBeforeQuickSave(object sender, string quickSaveSlotName, out bool eventHandled)
+		{
+			eventHandled = false;
+			if (BeforeQuickSave != null)
+			{
+				BeforeQuickSaveEventArgs e = new BeforeQuickSaveEventArgs(quickSaveSlotName);
+				BeforeQuickSave(sender, e);
+				eventHandled = e.Handled;
+			}
+		}
+
+
+		/// <summary>
+		/// Raise when a state is loaded
+		/// </summary>
+		/// <param name="sender">Object who raised the event</param>
+		/// <param name="stateName">User friendly name for saved state</param>
+		public static void OnStateLoaded(object sender, string stateName)
+		{
+			if (StateLoaded != null)
+			{
+				StateLoaded(sender, new StateLoadedEventArgs(stateName));
+			}
+		}
+
+		/// <summary>
+		/// Raise when a state is saved
+		/// </summary>
+		/// <param name="sender">Object who raised the event</param>
+		/// <param name="stateName">User friendly name for saved state</param>
+		public static void OnStateSaved(object sender, string stateName)
+		{
+			if (StateSaved != null)
+			{
+				StateSaved(sender, new StateSavedEventArgs(stateName));
+			}
+		}
+
 		/// <summary>
 		/// Raise when a rom is successfully Loaded
 		/// </summary>
@@ -110,6 +206,17 @@ namespace BizHawk.Client.ApiHawk
 			{
 				allJoypads.Add(new Joypad(RunningSystem, i));
 			}
+		}
+
+
+		/// <summary>
+		/// Save a state with specified name
+		/// </summary>
+		/// <param name="name">Savetate friendly name</param>
+		public static void SaveState(string name)
+		{
+			MethodInfo method = mainFormClass.GetMethod("SaveState");
+			method.Invoke(clientMainFormInstance, new object[] { Path.Combine(PathManager.GetSaveStatePath(Global.Game), string.Format("{0}.{1}", name, "State")), name, false });
 		}
 
 

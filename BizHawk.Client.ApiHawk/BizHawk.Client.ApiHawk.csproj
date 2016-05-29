@@ -99,6 +99,14 @@
     <Compile Include="Attributes\BizHawkExternalToolUsageAttribute.cs" />
     <Compile Include="Attributes\BizHawkExternalToolAttribute.cs" />
     <Compile Include="Classes\BizHawkSystemIdToCoreSystemEnumConverter.cs" />
+    <Compile Include="Classes\Events\EventArgs\BeforeQuickLoadEventArgs.cs" />
+    <Compile Include="Classes\Events\EventArgs\BeforeQuickSaveEventArgs.cs" />
+    <Compile Include="Classes\Events\EventArgs\StateSavedEventArgs.cs" />
+    <Compile Include="Classes\Events\EventArgs\StateLoadedEventArgs.cs" />
+    <Compile Include="Classes\Events\EventHandlers\BeforeQuickLoadEventhandler.cs" />
+    <Compile Include="Classes\Events\EventHandlers\BeforeQuickSaveEventhandler.cs" />
+    <Compile Include="Classes\Events\EventHandlers\StateLoadedEventHandler.cs" />
+    <Compile Include="Classes\Events\EventHandlers\StateSavedEventHandler.cs" />
     <Compile Include="Classes\Joypad.cs" />
     <Compile Include="Classes\JoypadStringToEnumConverter.cs" />
     <Compile Include="Enums\BizHawkExternalToolUsage.cs" />

@@ -34,6 +34,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
+using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -3700,6 +3701,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
+				ClientApi.OnStateLoaded(this, userFriendlyStateName);
+
 				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
@@ -3728,6 +3731,13 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			bool handled;
+			ClientApi.OnBeforeQuickLoad(this, quickSlotName, out handled);
+			if (handled)
 			{
 				return;
 			}
@@ -3766,6 +3776,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SavestateManager.SaveStateFile(path, userFriendlyStateName);
 
+				ClientApi.OnStateSaved(this, userFriendlyStateName);
+
 				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
 			}
 			catch (IOException)
@@ -3782,6 +3794,13 @@ namespace BizHawk.Client.EmuHawk
 		public void SaveQuickSave(string quickSlotName)
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			bool handled;
+			ClientApi.OnBeforeQuickSave(this, quickSlotName, out handled);
+			if(handled)
 			{
 				return;
 			}

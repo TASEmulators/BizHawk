@@ -53,7 +53,7 @@
   <Class Name="BizHawk.Client.ApiHawk.ClientApi">
     <Position X="4.75" Y="10" Width="4" />
     <TypeIdentifier>
-      <HashCode>CQEAAAAAgAAAQAAAAAABQAIAAAAAoGAACCAAAAAQAAA=</HashCode>
+      <HashCode>CwEAAAAAgAMAQEAAAAAJQAoAAAEAgWAACCACAAAQAiA=</HashCode>
       <FileName>Classes\ClientApi.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -81,13 +81,41 @@
   <Class Name="BizHawk.Client.ApiHawk.Joypad">
     <Position X="0.75" Y="6.75" Width="3" />
     <TypeIdentifier>
-      <HashCode>AQAACAAAAIAAAACBAAgAAABAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AQAACAAAAIAAAACBAAgAAABAEAAAAAAAAAACGAAAAAA=</HashCode>
       <FileName>Classes\Joypad.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="BizHawk.Client.Common.SystemInfo">
-    <Position X="0.5" Y="10.25" Width="4" />
+    <Position X="0.5" Y="11" Width="4" />
     <TypeIdentifier />
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.Classes.Events.StateLoadedEventArgs">
+    <Position X="41.75" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\Events\EventArgs\StateLoadedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.Classes.Events.StateSavedEventArgs">
+    <Position X="38.25" Y="2.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\Events\EventArgs\StateSavedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.Classes.Events.BeforeQuickSaveEventArgs">
+    <Position X="38.25" Y="6.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAQAAAAACAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Classes\Events\EventArgs\BeforeQuickSaveEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BizHawk.Client.ApiHawk.Classes.Events.BeforeQuickLoadEventArgs">
+    <Position X="41.75" Y="6.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAQAAAAACAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Classes\Events\EventArgs\BeforeQuickLoadEventArgs.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Interface Name="BizHawk.Client.EmuHawk.IExternalToolForm">
     <Position X="4.5" Y="4.5" Width="2.75" />
@@ -131,5 +159,33 @@
     <Position X="28.25" Y="9.75" Width="1.5" />
     <TypeIdentifier />
   </Enum>
+  <Delegate Name="BizHawk.Client.ApiHawk.Classes.Events.StateLoadedEventHandler">
+    <Position X="41.75" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\Events\EventHandlers\StateLoadedEventHandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="BizHawk.Client.ApiHawk.Classes.Events.StateSavedEventHandler">
+    <Position X="38.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Classes\Events\EventHandlers\StateSavedEventHandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="BizHawk.Client.ApiHawk.Classes.Events.BeforeQuickSaveEventHandler">
+    <Position X="38.25" Y="5.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Classes\Events\EventHandlers\BeforeQuickSaveEventhandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
+  <Delegate Name="BizHawk.Client.ApiHawk.Classes.Events.BeforeQuickLoadEventHandler">
+    <Position X="41.75" Y="5.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Classes\Events\EventHandlers\BeforeQuickLoadEventhandler.cs</FileName>
+    </TypeIdentifier>
+  </Delegate>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
