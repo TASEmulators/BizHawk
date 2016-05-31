@@ -323,6 +323,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					Rom.HashSHA1(),
 					Rom.HashMD5(),
 					_mapper.GetType());
+
+
+            // as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
+            // some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
+            // executing a reset sequence at power on, but it's needed so let's hard code it for now
+            Cpu.S = 0xFD;
 		}
 
 		private bool _pal;
@@ -345,7 +351,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			M6532 = new M6532(this);
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
-		}
+
+            // as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
+            // some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
+            // executing a reset sequence at power on, but it's needed so let's hard code it for now
+            Cpu.S = 0xFD;
+        }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
