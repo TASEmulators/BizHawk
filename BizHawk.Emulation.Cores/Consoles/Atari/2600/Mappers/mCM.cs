@@ -287,9 +287,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
             // Attempting to read while in write mode
-            //throw new NotTestedException();
-
-            return 0;
+            throw new NotTestedException();
 		}
 
         public override byte ReadMemory(ushort addr)
