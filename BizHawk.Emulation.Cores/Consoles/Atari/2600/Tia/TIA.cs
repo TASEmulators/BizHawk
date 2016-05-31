@@ -1121,16 +1121,57 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 mask = 0x3f;
             }
 
+            // inputs 0-3 are measured by a charging capacitor, these inputs are used with the paddles and the keyboard
+            // Changing the hard coded value will change the paddle position. The range seems to be roughly 0-56000 according to values from stella
+            // 6105 roughly centers the paddle in Breakout
             if (maskedAddr == 0x08) // INPT0
             {
-                // Changing the hard coded value will change the paddle position. The range seems to be roughly 0-56000 according to values from stella
-                // 6105 roughly centers the paddle in Breakout
                 if (_capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= 6105)
                 {
                     coll=0x80;
-                }
+                } else
+                {
+                    coll = 0x00;
+                }               
+                mask = 0x7f;
+            }
 
-                coll=0x00;
+            if (maskedAddr == 0x09) // INPT1
+            {
+                if (_capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= 6105)
+                {
+                    coll = 0x80;
+                }
+                else
+                {
+                    coll = 0x00;
+                }
+                mask = 0x7f;
+            }
+
+            if (maskedAddr == 0x0A) // INPT2
+            {
+                if (_capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= 6105)
+                {
+                    coll = 0x80;
+                }
+                else
+                {
+                    coll = 0x00;
+                }
+                mask = 0x7f;
+            }
+
+            if (maskedAddr == 0x0B) // INPT3
+            {
+                if (_capCharging && _core.Cpu.TotalExecutedCycles - _capChargeStart >= 6105)
+                {
+                    coll = 0x80;
+                }
+                else
+                {
+                    coll = 0x00;
+                }
                 mask = 0x7f;
             }
 
