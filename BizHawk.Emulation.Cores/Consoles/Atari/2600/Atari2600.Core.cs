@@ -363,6 +363,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			StartFrameCond();
 			while (_tia.LineCount < _tia.NominalNumScanlines)
 				Cycle();
+            if (rendersound==false)
+                _tia._audioClocks = 0; // we need this here since the async sound provider won't check in this case
 			FinishFrameCond();
 		}
 
