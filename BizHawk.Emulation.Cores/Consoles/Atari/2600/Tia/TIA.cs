@@ -318,7 +318,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private bool _vblankEnabled;
         private bool _vsyncEnabled;
         private int _CurrentScanLine;
-        private int _audioClocks; // not savestated
+        public int _audioClocks; // not savestated
 
         private PlayerData _player0;
         private PlayerData _player1;
@@ -327,6 +327,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         private BallData _ball;
 
         public Audio[] AUD = { new Audio(), new Audio() };
+
+        // current audio register state used to sample correct positions in the scanline (clrclk 0 and 114)
+        //public byte[] current_audio_register = new byte[6];
+        public short[] _local_audio_cycles = new short[2000];
 
         public TIA(Atari2600 core, bool pal, bool secam)
         {
@@ -1030,7 +1034,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
 
 
-
+            // do the audio sampling
+            if (_hsyncCnt==36 || _hsyncCnt==148)
+            {
+                _local_audio_cycles[_audioClocks] += (short)(AUD[0].Cycle()/2);
+                _local_audio_cycles[_audioClocks] += (short)(AUD[1].Cycle()/2);
+                _audioClocks++;
+            }
 
             // Increment the hsync counter
             _hsyncCnt++;
@@ -1042,7 +1052,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
                 _hmove.LateHBlankReset = false;
                 _CurrentScanLine++;
                 LineCount++;
-                _audioClocks += 2; // TODO: increment this at the appropriate places twice per line
             }
         }
 
@@ -1429,27 +1438,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             }
             else if (maskedAddr == 0x15) // AUDC0
             {
-                WriteAudio(0, AudioRegister.AUDC, (byte)(value & 15));
+                AUD[0].AUDC= (byte)(value & 15);
             }
             else if (maskedAddr == 0x16) // AUDC1
             {
-                WriteAudio(1, AudioRegister.AUDC, (byte)(value & 15));
+                AUD[1].AUDC = (byte)(value & 15);
             }
             else if (maskedAddr == 0x17) // AUDF0
             {
-                WriteAudio(0, AudioRegister.AUDF, (byte)((value & 31) + 1));
+                AUD[0].AUDF = (byte)((value & 31) + 1);
             }
             else if (maskedAddr == 0x18) // AUDF1
             {
-                WriteAudio(1, AudioRegister.AUDF, (byte)((value & 31) + 1));
+                AUD[1].AUDF = (byte)((value & 31) + 1);
             }
             else if (maskedAddr == 0x19) // AUDV0
             {
-                WriteAudio(0, AudioRegister.AUDV, (byte)(value & 15));
+                AUD[0].AUDV = (byte)(value & 15);
             }
             else if (maskedAddr == 0x1A) // AUDV1
             {
-                WriteAudio(1, AudioRegister.AUDV, (byte)(value & 15));
+                AUD[1].AUDV = (byte)(value & 15);
             }
             else if (maskedAddr == 0x1B) // GRP0
             {
@@ -1557,16 +1566,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         #region Audio bits
 
         private enum AudioRegister : byte { AUDC, AUDF, AUDV }
-        private struct QueuedCommand
-        {
-            public int Time;
-            public byte Channel;
-            public AudioRegister Register;
-            public byte Value;
-        }
 
         private int frameStartCycles, frameEndCycles;
-        private Queue<QueuedCommand> commands = new Queue<QueuedCommand>(4096);
 
         public void BeginAudioFrame()
         {
@@ -1578,53 +1579,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             frameEndCycles = _core.Cpu.TotalExecutedCycles;
         }
 
-        private void WriteAudio(byte channel, AudioRegister register, byte value)
-        {
-            commands.Enqueue(new QueuedCommand { Channel = channel, Register = register, Value = value, Time = _core.Cpu.TotalExecutedCycles - frameStartCycles });
-        }
-
-        private void ApplyAudioCommand(QueuedCommand cmd)
-        {
-            switch (cmd.Register)
-            {
-                case AudioRegister.AUDC:
-                    AUD[cmd.Channel].AUDC = cmd.Value;
-                    break;
-                case AudioRegister.AUDF:
-                    AUD[cmd.Channel].AUDF = cmd.Value;
-                    break;
-                case AudioRegister.AUDV:
-                    AUD[cmd.Channel].AUDV = cmd.Value;
-                    break;
-            }
-        }
-
-        // TODO: more accurate would be to have audio.Cycle() occur at
-        // the explicit exact times in the scanline, instead of just approximately spaced
         public void GetSamples(short[] samples)
         {
             if (_audioClocks > 0)
             {
                 var samples31khz = new short[_audioClocks]; // mono
 
-                int elapsedCycles = frameEndCycles - frameStartCycles;
-                if (elapsedCycles == 0)
+                for (int i=0;i<_audioClocks;i++)
                 {
-                    elapsedCycles = 1; // better than diving by zero
+                    samples31khz[i] = _local_audio_cycles[i];
+                    _local_audio_cycles[i] = 0;
                 }
-
-                int start = 0;
-                while (commands.Count > 0)
-                {
-                    var cmd = commands.Dequeue();
-                    int pos = (cmd.Time * samples31khz.Length) / elapsedCycles;
-                    pos = Math.Min(pos, samples31khz.Length); // sometimes the cpu timestamp of the write is > frameEndCycles
-                    GetSamplesImmediate(samples31khz, start, pos - start);
-                    start = pos;
-                    ApplyAudioCommand(cmd);
-                }
-
-                GetSamplesImmediate(samples31khz, start, samples31khz.Length - start);
 
                 // convert from 31khz to 44khz
                 for (var i = 0; i < samples.Length / 2; i++)
@@ -1636,18 +1601,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
             _audioClocks = 0;
         }
 
-        public void GetSamplesImmediate(short[] samples, int start, int len)
-        {
-            for (var i = start; i < start + len; i++)
-            {
-                samples[i] += AUD[0].Cycle();
-                samples[i] += AUD[1].Cycle();
-            }
-        }
-
         public void DiscardSamples()
         {
-            commands.Clear();
             _audioClocks = 0;
         }
 
