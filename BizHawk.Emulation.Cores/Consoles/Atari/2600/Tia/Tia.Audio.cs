@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			/// <returns>16 bit audio sample</returns>
 			public short Cycle()
 			{
-				if (++freqcnt == AUDF)
+				if (++freqcnt >= AUDF)
 				{
 					freqcnt = 0;
 					switch (AUDC)
@@ -119,6 +119,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							if ((sr5 & 0x0f) == 0 || (sr5 & 0x0f) == 0x0f)
 							{
 								on = Run4();
+                                Run5();
 								break;
 							}
 
