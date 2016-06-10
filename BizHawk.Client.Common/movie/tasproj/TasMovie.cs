@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// This event is Raised ony when Changes is TOGGLED.
+		// This event is Raised only when Changes is TOGGLED.
 		private void OnPropertyChanged(string propertyName)
 		{
 			if (PropertyChanged != null)

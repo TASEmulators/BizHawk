@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// A simple form that prompts the user for a single line of input
+	/// A simple form that prompts the user for a single line of input.
+	/// Supports multiline messages
 	/// </summary>
 	public partial class InputPrompt : Form
 	{
@@ -24,8 +26,15 @@ namespace BizHawk.Client.EmuHawk
 
 		public string Message
 		{
-			get { return PromptLabel.Text; }
-			set { PromptLabel.Text = value ?? string.Empty; }
+			get
+			{
+				return PromptLabel.Text;
+			}
+			set
+			{
+				PromptLabel.Text = value ?? string.Empty;
+				Height += PromptLabel.Font.Height * Message.Count(x => x == '\n');
+			}
 		}
 
 		public string InitialValue

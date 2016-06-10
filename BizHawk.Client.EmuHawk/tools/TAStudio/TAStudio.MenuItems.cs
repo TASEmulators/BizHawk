@@ -89,10 +89,29 @@ namespace BizHawk.Client.EmuHawk
 				MessageStatusLabel.Text = "Saving...";
 				this.Cursor = Cursors.WaitCursor;
 				Update();
+				if (_autosaveAppendFilenamePending)
+				{
+					// temp filename
+					var ext = CurrentTasMovie.PreferredExtension;
+					CurrentTasMovie.Filename = CurrentTasMovie.Filename.Replace(ext, "backup." + ext);
+				}
 				CurrentTasMovie.Save();
-				Settings.RecentTas.Add(CurrentTasMovie.Filename);
-				_autosaveTimer.Start();
-				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
+				if (Settings.AutosaveInterval > 0)
+					_autosaveTimer.Start();
+				MessageStatusLabel.Text = CurrentTasMovie.Name + " saved.";
+				if (_autosaveAppendFilenamePending)
+				{
+					// switch back to original
+					CurrentTasMovie.Filename = CurrentTasMovie.Filename.Replace("backup.", "");
+					// we should only arrive here if changes were true
+					// and saving to a different file clears changes
+					// so assuming the original file remains unsaved, keep changes flagged
+					CurrentTasMovie.FlagChanges();
+				}
+				else
+				{
+					Settings.RecentTas.Add(CurrentTasMovie.Filename);
+				}
 				this.Cursor = Cursors.Default;
 			}
 		}
@@ -121,10 +140,12 @@ namespace BizHawk.Client.EmuHawk
 				CurrentTasMovie.Save();
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				SetTextProperty();
-				_autosaveTimer.Start();
 				MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.";
 				this.Cursor = Cursors.Default;
 			}
+			// keep insisting
+			if (Settings.AutosaveInterval > 0)
+				_autosaveTimer.Start();
 		}
 
 		private void saveSelectionToMacroToolStripMenuItem_Click(object sender, EventArgs e)
@@ -165,9 +186,15 @@ namespace BizHawk.Client.EmuHawk
 			MessageStatusLabel.Text = "Exporting to .bk2...";
 			this.Cursor = Cursors.WaitCursor;
 			Update();
+			if (_autosaveAppendFilenamePending)
+			{
+				var ext = bk2.PreferredExtension;
+				bk2.Filename = bk2.Filename.Replace(ext, "backup." + ext);
+			}
 			bk2.Save();
-			_autosaveTimer.Start();
-			MessageStatusLabel.Text = Path.GetFileName(bk2.Filename) + " exported.";
+			if (Settings.AutosaveInterval > 0)
+				_autosaveTimer.Start();
+			MessageStatusLabel.Text = bk2.Name + " exported.";
 			this.Cursor = Cursors.Default;
 		}
 
@@ -730,18 +757,19 @@ namespace BizHawk.Client.EmuHawk
 			using (var prompt = new InputPrompt
 			{
 				TextInputType = InputPrompt.InputType.Unsigned,
-				Message = "Autosave Interval in seconds",
+				Message = "Autosave Interval in seconds\nSet to 0 to disable",
 				InitialValue = (Settings.AutosaveInterval / 1000).ToString()
 			})
 			{
 				DialogResult result = prompt.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					int val = int.Parse(prompt.PromptText) * 1000;
+					uint val = uint.Parse(prompt.PromptText) * 1000;
+					Settings.AutosaveInterval = val;
 					if (val > 0)
 					{
-						Settings.AutosaveInterval = val;
-						_autosaveTimer.Interval = val;
+						_autosaveTimer.Interval = (int)val;
+						_autosaveTimer.Start();
 					}
 				}
 			}
@@ -752,12 +780,18 @@ namespace BizHawk.Client.EmuHawk
 			Settings.AutosaveAsBk2 ^= true;
 		}
 
+		private void AppendBackupToFilenameMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.AppendBackupToFilename ^= true;
+		}
+
 		private void ConfigSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
 			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
 			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
 			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
+			AppendBackupToFilenameMenuItem.Checked = Settings.AppendBackupToFilename;
 		}
 
 		private void DrawInputByDraggingMenuItem_Click(object sender, EventArgs e)

@@ -83,8 +83,10 @@ namespace BizHawk.Client.EmuHawk
 			this.SetMaxUndoLevelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetBranchCellHoverIntervalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SetSeekingCutoffIntervalMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator26 = new System.Windows.Forms.ToolStripSeparator();
 			this.setAutosaveIntervalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.AutosaveAsBk2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.AppendBackupToFilenameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			this.AutoadjustInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
@@ -608,8 +610,10 @@ namespace BizHawk.Client.EmuHawk
             this.SetMaxUndoLevelsMenuItem,
             this.SetBranchCellHoverIntervalMenuItem,
             this.SetSeekingCutoffIntervalMenuItem,
+            this.toolStripSeparator26,
             this.setAutosaveIntervalToolStripMenuItem,
             this.AutosaveAsBk2MenuItem,
+            this.AppendBackupToFilenameMenuItem,
             this.toolStripSeparator9,
             this.AutoadjustInputMenuItem,
             this.toolStripSeparator11,
@@ -654,6 +658,11 @@ namespace BizHawk.Client.EmuHawk
 			this.SetSeekingCutoffIntervalMenuItem.Visible = false;
 			this.SetSeekingCutoffIntervalMenuItem.Click += new System.EventHandler(this.SetSeekingCutoffIntervalMenuItem_Click);
 			// 
+			// toolStripSeparator26
+			// 
+			this.toolStripSeparator26.Name = "toolStripSeparator26";
+			this.toolStripSeparator26.Size = new System.Drawing.Size(250, 6);
+			// 
 			// setAutosaveIntervalToolStripMenuItem
 			// 
 			this.setAutosaveIntervalToolStripMenuItem.Name = "setAutosaveIntervalToolStripMenuItem";
@@ -667,6 +676,13 @@ namespace BizHawk.Client.EmuHawk
 			this.AutosaveAsBk2MenuItem.Size = new System.Drawing.Size(253, 22);
 			this.AutosaveAsBk2MenuItem.Text = "Autosave As Bk2";
 			this.AutosaveAsBk2MenuItem.Click += new System.EventHandler(this.AutosaveAsBk2MenuItem_Click);
+			// 
+			// AppendBackupToFilenameMenuItem
+			// 
+			this.AppendBackupToFilenameMenuItem.Name = "AppendBackupToFilenameMenuItem";
+			this.AppendBackupToFilenameMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.AppendBackupToFilenameMenuItem.Text = "Append \"backup\" to Filename";
+			this.AppendBackupToFilenameMenuItem.Click += new System.EventHandler(this.AppendBackupToFilenameMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
@@ -1170,6 +1186,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.ScrollSpeed = 1;
 			this.TasView.SeekingCutoffInterval = 0;
 			this.TasView.Size = new System.Drawing.Size(289, 528);
+			this.TasView.suspendHotkeys = false;
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);
@@ -1722,5 +1739,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem SetSeekingCutoffIntervalMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem setAutosaveIntervalToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutosaveAsBk2MenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator26;
+		private System.Windows.Forms.ToolStripMenuItem AppendBackupToFilenameMenuItem;
 	}
 }

@@ -38,6 +38,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer = new Timer();
+		private bool _autosaveAppendFilenamePending = false;
 
 		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
 		{
@@ -69,6 +70,7 @@ namespace BizHawk.Client.EmuHawk
 				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
+				AppendBackupToFilename = false;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -87,8 +89,9 @@ namespace BizHawk.Client.EmuHawk
             public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
 			public int SeekingCutoffInterval { get; set; }
-			public int AutosaveInterval { get; set; }
+			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
+			public bool AppendBackupToFilename { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -151,16 +154,18 @@ namespace BizHawk.Client.EmuHawk
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
 			WantsToControlRestartMovie = true;
-
-			_autosaveTimer.Interval = Settings.AutosaveInterval;
-			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
-			_autosaveTimer.Start();
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
 		{
-			if (!CurrentTasMovie.Changes)
+			if (CurrentTasMovie == null)
 				return;
+
+			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0)
+				return;
+
+			if (Settings.AppendBackupToFilename)
+				_autosaveAppendFilenamePending = true;
 
 			if (Settings.AutosaveAsBk2)
 			{
@@ -170,6 +175,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SaveTasMenuItem_Click(sender, e);
 			}
+
+			_autosaveAppendFilenamePending = false;
 		}
 
 		private void InitializeSaveWorker()
@@ -292,7 +299,14 @@ namespace BizHawk.Client.EmuHawk
             TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
             TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor;
             TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons;
-            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
+			TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
+
+			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
+			if (Settings.AutosaveInterval > 0)
+			{
+				_autosaveTimer.Interval = (int)Settings.AutosaveInterval;
+				_autosaveTimer.Start();
+			}
 
 			// Remembering Split container logic
 			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
