@@ -88,31 +88,31 @@
             this.sepToolStripMenuItem,
             this.clearHistoryToHereToolStripMenuItem});
 			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(211, 76);
+			this.RightClickMenu.Size = new System.Drawing.Size(209, 76);
 			// 
 			// undoHereToolStripMenuItem
 			// 
 			this.undoHereToolStripMenuItem.Name = "undoHereToolStripMenuItem";
-			this.undoHereToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.undoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.undoHereToolStripMenuItem.Text = "Undo To Selection";
 			this.undoHereToolStripMenuItem.Click += new System.EventHandler(this.undoHereToolStripMenuItem_Click);
 			// 
 			// redoHereToolStripMenuItem
 			// 
 			this.redoHereToolStripMenuItem.Name = "redoHereToolStripMenuItem";
-			this.redoHereToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.redoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.redoHereToolStripMenuItem.Text = "Redo To Selection";
 			this.redoHereToolStripMenuItem.Click += new System.EventHandler(this.redoHereToolStripMenuItem_Click);
 			// 
 			// sepToolStripMenuItem
 			// 
 			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(207, 6);
+			this.sepToolStripMenuItem.Size = new System.Drawing.Size(205, 6);
 			// 
 			// clearHistoryToHereToolStripMenuItem
 			// 
 			this.clearHistoryToHereToolStripMenuItem.Name = "clearHistoryToHereToolStripMenuItem";
-			this.clearHistoryToHereToolStripMenuItem.Size = new System.Drawing.Size(210, 22);
+			this.clearHistoryToHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.clearHistoryToHereToolStripMenuItem.Text = "Clear History To Selection";
 			this.clearHistoryToHereToolStripMenuItem.Click += new System.EventHandler(this.clearHistoryToHereToolStripMenuItem_Click);
 			// 
@@ -212,6 +212,7 @@
 			this.Controls.Add(this.HistoryView);
 			this.Name = "UndoHistoryForm";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Undo History";
 			this.RightClickMenu.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.MaxStepsNum)).EndInit();
