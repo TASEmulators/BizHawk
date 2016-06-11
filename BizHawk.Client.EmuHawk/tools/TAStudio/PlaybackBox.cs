@@ -97,6 +97,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PauseButton_Click(object sender, EventArgs e)
 		{
+			if (GlobalWin.MainForm.EmulatorPaused)
+				Tastudio.IgnoreSeekFrame = true;
 			Tastudio.TogglePause();
 		}
 

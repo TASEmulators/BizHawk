@@ -51,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool IsInMenuLoop { get; private set; }
+		public bool IgnoreSeekFrame { get; set; }
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -141,6 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeSeekWorker();
 
 			WantsToControlStopMovie = true;
+			WantsToControlRestartMovie = true;
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			BookMarkControl.Tastudio = this;
@@ -153,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
-			WantsToControlRestartMovie = true;
+			IgnoreSeekFrame = false;
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)

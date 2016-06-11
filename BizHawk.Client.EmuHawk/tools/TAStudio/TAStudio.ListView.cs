@@ -92,6 +92,11 @@ namespace BizHawk.Client.EmuHawk
 		public void StopSeeking()
 		{
 			_seekBackgroundWorker.CancelAsync();
+			if (IgnoreSeekFrame)
+			{
+				GlobalWin.MainForm.UnpauseEmulator();
+				IgnoreSeekFrame = false;
+			}
 		}
 
 		public bool FloatEditingMode
@@ -393,6 +398,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Middle)
 			{
+				if (GlobalWin.MainForm.EmulatorPaused)
+					IgnoreSeekFrame = false;
 				TogglePause();
 				return;
 			}
