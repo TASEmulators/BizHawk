@@ -135,19 +135,19 @@ namespace BizHawk.Client.Common
 					DiskCapacitymb = 512;
 
 				if (lines.Length > 3)
-					StateGap = int.Parse(lines[3]);
-				else
-					StateGap = 4;
-
-				if (lines.Length > 4)
-					BranchStatesInTasproj = bool.Parse(lines[4]);
+					BranchStatesInTasproj = bool.Parse(lines[3]);
 				else
 					BranchStatesInTasproj = false;
 
-				if (lines.Length > 5)
-					EraseBranchStatesFirst = bool.Parse(lines[5]);
+				if (lines.Length > 4)
+					EraseBranchStatesFirst = bool.Parse(lines[4]);
 				else
 					EraseBranchStatesFirst = true;
+
+				if (lines.Length > 5)
+					StateGap = int.Parse(lines[5]);
+				else
+					StateGap = 4;
 			}
 		}
 	}
