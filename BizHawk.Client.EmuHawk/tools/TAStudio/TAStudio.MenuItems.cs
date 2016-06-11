@@ -1209,5 +1209,19 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
+
+		#region Help
+
+		private void TASEditorManualOnlineMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://www.fceux.com/web/help/taseditor/");
+		}
+
+		private void ForumThreadMenuItem_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewtopic.php?t=13505");
+		}
+
+		#endregion
 	}
 }

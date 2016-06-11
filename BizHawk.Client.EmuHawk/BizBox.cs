@@ -57,7 +57,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Dock = DockStyle.Top
 				});
-
 			}
 
 			linkLabel2.Text = "Commit # " + SubWCRev.GIT_SHORTHASH;
@@ -75,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://github.com/TASVideos/BizHawk/commit/" + SubWCRev.GIT_SHORTHASH);
+			System.Diagnostics.Process.Start("https://github.com/TASVideos/BizHawk/graphs/contributors");
 		}
 	}
 }
