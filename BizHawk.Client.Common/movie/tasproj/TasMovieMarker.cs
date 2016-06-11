@@ -109,7 +109,13 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-		public new void Add(TasMovieMarker item, bool fromHistory = false)
+		// the inherited one
+		public new void Add(TasMovieMarker item)
+		{
+			Add(item, false);
+		}
+
+		public void Add(TasMovieMarker item, bool fromHistory)
 		{
 			var existingItem = this.FirstOrDefault(m => m.Frame == item.Frame);
 			if (existingItem != null)
@@ -148,7 +154,13 @@ namespace BizHawk.Client.Common
 				_movie.ChangeLog.EndBatch();
 		}
 
-		public new void Insert(int index, TasMovieMarker item, bool fromHistory = false)
+		// the inherited one
+		public new void Insert(int index, TasMovieMarker item)
+		{
+			Insert(index, item, false);
+		}
+
+		public void Insert(int index, TasMovieMarker item, bool fromHistory)
 		{
 			if (!fromHistory)
 				_movie.ChangeLog.AddMarkerChange(item);
@@ -170,7 +182,13 @@ namespace BizHawk.Client.Common
 			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
-		public new void Remove(TasMovieMarker item, bool fromHistory = false)
+		// the inherited one
+		public new void Remove(TasMovieMarker item)
+		{
+			Remove(item, false);
+		}
+
+		public void Remove(TasMovieMarker item, bool fromHistory)
 		{
 			if (item == null || item.Frame == 0) // TODO: Don't do this.
 				return;
