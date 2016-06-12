@@ -38,7 +38,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private UndoHistoryForm _undoForm;
 		private Timer _autosaveTimer = new Timer();
-		private bool _autosaveAppendFilenamePending = false;
 
 		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
 		{
@@ -71,7 +70,8 @@ namespace BizHawk.Client.EmuHawk
 				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
-				AppendBackupToFilename = false;
+				AutosaveAsBackupFile = false;
+				BackupPerFileSave = false;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -92,7 +92,8 @@ namespace BizHawk.Client.EmuHawk
 			public int SeekingCutoffInterval { get; set; }
 			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
-			public bool AppendBackupToFilename { get; set; }
+			public bool AutosaveAsBackupFile { get; set; }
+			public bool BackupPerFileSave { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -166,19 +167,20 @@ namespace BizHawk.Client.EmuHawk
 			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0)
 				return;
 
-			if (Settings.AppendBackupToFilename)
-				_autosaveAppendFilenamePending = true;
-
-			if (Settings.AutosaveAsBk2)
+			if (Settings.AutosaveAsBackupFile)
 			{
-				ToBk2MenuItem_Click(sender, e);
+				if (Settings.AutosaveAsBk2)
+					SaveBk2BackupMenuItem_Click(sender, e);
+				else
+					SaveBackupMenuItem_Click(sender, e);
 			}
 			else
 			{
-				SaveTasMenuItem_Click(sender, e);
+				if (Settings.AutosaveAsBk2)
+					ToBk2MenuItem_Click(sender, e);
+				else
+					SaveTas(sender, e);
 			}
-
-			_autosaveAppendFilenamePending = false;
 		}
 
 		private void InitializeSaveWorker()

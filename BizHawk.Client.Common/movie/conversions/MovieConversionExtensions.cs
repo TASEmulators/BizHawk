@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			return tas;
 		}
 
-		public static Bk2Movie ToBk2(this IMovie old, bool copy = false)
+		public static Bk2Movie ToBk2(this IMovie old, bool copy = false, bool backup = false)
 		{
 			var bk2 = new Bk2Movie(old.Filename.Replace(old.PreferredExtension, Bk2Movie.Extension));
 
@@ -114,7 +114,9 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			bk2.BinarySavestate = old.BinarySavestate;
 			bk2.SaveRam = old.SaveRam;
 
-			bk2.Save();
+			if (!backup)
+				bk2.Save();
+
 			return bk2;
 		}
 
