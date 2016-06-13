@@ -27,6 +27,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
         public int soam_index_prev;
         public int soam_m_index;
         public int oam_index;
+        public int read_value_aux;
+        public int soam_m_index_aux;
+        public int oam_index_aux;
         public bool is_even_cycle;
         public bool sprite_zero_in_range=false;
         public bool sprite_zero_go = false;
@@ -43,7 +46,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             public byte oam_x;
             public byte patterns_0;
             public byte patterns_1;
-            public byte index;
         }
 
         TempOAM[] t_oam = new TempOAM[64];
@@ -162,6 +164,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
                 soam_index = 0;
                 soam_m_index = 0;
+                soam_m_index_aux = 0;
+                oam_index_aux = 0;
                 oam_index = 0;
                 o_bug = 0;
                 is_even_cycle = true;
@@ -216,18 +220,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
                                 soam_index = 0;
 
                             // otherwise, scan through OAM and test if sprites are in range
-                            // if they are, they get copied to the secondary OAM
-                            // note that we scan and store 
+                            // if they are, they get copied to the secondary OAM 
                             if (ppur.status.cycle >= 64)
                             {
-                                if (oam_index == 64)
+                                if (oam_index==64)
                                 {
+                                    oam_index_aux = 0;
                                     oam_index = 0;
                                     sprite_eval_write = false;
                                 }
+
                                 if (is_even_cycle)
                                 {
-                                    read_value = OAM[oam_index * 4];
+                                    read_value = OAM[oam_index * 4+soam_m_index];
+
+                                    if (oam_index_aux>63)
+                                        oam_index_aux = 63;
+                                    
+                                    read_value_aux = OAM[oam_index_aux * 4 + soam_m_index_aux];
                                 }
                                 else if (sprite_eval_write)
                                 {
@@ -235,35 +245,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
                                     {
                                         // this code mirrors sprite overflow bug behaviour
                                         // see http://wiki.nesdev.com/w/index.php/PPU_sprite_evaluation
-                                        if (yp >= OAM[oam_index * 4 + o_bug] && yp < OAM[oam_index * 4 + o_bug] + spriteHeight && reg_2001.PPUON)
+                                        if (yp >= read_value && yp < read_value + spriteHeight && reg_2001.PPUON)
                                         {
                                             Reg2002_objoverflow = true;
                                         }
                                         else
                                         {
-                                            o_bug++;
-                                            if (o_bug == 4)
-                                                o_bug = 0;
+                                            soam_m_index++;
+                                            oam_index++;
+                                            if (soam_m_index == 4)
+                                                soam_m_index = 0;
+                                                
                                         }
 
                                     }
-
+                                    
                                     //look for sprites 
-                                    soam[soam_index * 4] = OAM[oam_index * 4];
-                                    if (yp >= read_value && yp < read_value + spriteHeight)
+                                    soam[soam_index * 4] = OAM[oam_index_aux * 4];
+                                    if (yp >= read_value_aux && yp < read_value_aux + spriteHeight && soam_m_index_aux == 0)
                                     {
                                         //a flag gets set if sprite zero is in range
-                                        if (oam_index == 0)
+                                        if (oam_index_aux == 0)
                                             sprite_zero_in_range = true;
 
-                                        soam[soam_index * 4 + 1] = OAM[oam_index * 4 + 1];
-                                        soam[soam_index * 4 + 2] = OAM[oam_index * 4 + 2];
-                                        soam[soam_index * 4 + 3] = OAM[oam_index * 4 + 3];
-                                        soam_index++;
+                                        soam_m_index_aux++;
 
+                                    } else if (soam_m_index_aux > 0 && soam_m_index_aux < 4)
+                                    {
+                                        soam[soam_index * 4 + soam_m_index_aux] = OAM[oam_index_aux * 4 + soam_m_index_aux];
+                                        soam_m_index_aux++;
+                                        if (soam_m_index_aux == 4)
+                                        {
+                                            oam_index_aux++;
+                                            soam_index++;
+                                            soam_m_index_aux = 0;                
+                                        }
+                                    } else
+                                    {
+                                        oam_index_aux++;
+                                    }
+                                        
+                                    if (soam_index<8)
+                                    {
+                                        soam_m_index = soam_m_index_aux;
+                                        oam_index = oam_index_aux;
                                     }
                                     
-                                    oam_index++;
                                     
                                 }
 
@@ -342,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									//1. is it sprite#0?
 									//2. is the bg pixel nonzero?
 									//then, it is spritehit.
-									Reg2002_objhit |= (sprite_zero_go && t_oam[s].index==0 && pixel != 0 && rasterpos < 255);
+									Reg2002_objhit |= (sprite_zero_go && s==0 && pixel != 0 && rasterpos < 255);
 
 									//priority handling, if in front of BG:
 									bool drawsprite = !(((t_oam[s].oam_attr & 0x20) != 0) && ((pixel & 3) != 0));
@@ -402,8 +429,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
                     t_oam[s].oam_ind = soam[s * 4+1];
                     t_oam[s].oam_attr = soam[s * 4+2];
                     t_oam[s].oam_x = soam[s * 4+3];
-
-                    t_oam[s].index = (byte)s;
 
                     int line = yp - t_oam[s].oam_y;
 					if ((t_oam[s].oam_attr & 0x80) != 0) //vflip
