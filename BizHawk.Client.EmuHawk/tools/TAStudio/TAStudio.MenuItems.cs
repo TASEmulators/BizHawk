@@ -747,6 +747,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			DrawInputByDraggingMenuItem.Checked = Settings.DrawInput;
 			AutopauseAtEndOfMovieMenuItem.Checked = Settings.AutoPause;
+			AutoRestoreOnMouseUpOnlyMenuItem.Checked = Settings.AutoRestoreOnMouseUpOnly;
 			EmptyNewMarkerNotesMenuItem.Checked = Settings.EmptyMarkers;
 			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
@@ -877,6 +878,11 @@ namespace BizHawk.Client.EmuHawk
 		private void AutopauseAtEndMenuItem_Click(object sender, EventArgs e)
 		{
 			Settings.AutoPause ^= true;
+		}
+
+		private void AutoRestoreOnMouseUpOnlyMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.AutoRestoreOnMouseUpOnly ^= true;
 		}
 
 		private void autoHoldToolStripMenuItem_CheckedChanged(object sender, EventArgs e)

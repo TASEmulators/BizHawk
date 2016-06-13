@@ -474,6 +474,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 						else
 							_patternPaint = false;
+
+						if (!Settings.AutoRestoreOnMouseUpOnly)
+							DoTriggeredAutoRestoreIfNeeded();
 					}
 					else
 					{
@@ -830,6 +833,12 @@ namespace BizHawk.Client.EmuHawk
 						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 						JumpToGreenzone();
 					}
+
+					if (!Settings.AutoRestoreOnMouseUpOnly)
+					{
+						_triggerAutoRestore = true;
+						DoTriggeredAutoRestoreIfNeeded();
+					}
 				}
 			}
 
@@ -851,6 +860,12 @@ namespace BizHawk.Client.EmuHawk
 						}
 						CurrentTasMovie.SetFloatState(i, _startFloatDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
 						JumpToGreenzone();
+					}
+
+					if (!Settings.AutoRestoreOnMouseUpOnly)
+					{
+						_triggerAutoRestore = true;
+						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
 			}
