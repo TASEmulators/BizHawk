@@ -650,6 +650,7 @@ namespace BizHawk.Client.EmuHawk
 							GlobalWin.MainForm.PauseOnFrame = null;
 						}
 					}
+					RefreshDialog();
 				}
 				else
 				{
@@ -1003,7 +1004,11 @@ namespace BizHawk.Client.EmuHawk
 						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
-
+			}
+			else
+			{
+				// not using StopSeeking() here, since it has special logic and should only happen when seek frame is reashed
+				CancelSeekContextMenuItem_Click(null, null);
 			}
 
 			RefreshDialog();
