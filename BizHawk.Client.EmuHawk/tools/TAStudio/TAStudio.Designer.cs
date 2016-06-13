@@ -1178,7 +1178,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TASEditorManualOnlineMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.TASEditorManualOnlineMenuItem.Name = "TASEditorManualOnlineMenuItem";
 			this.TASEditorManualOnlineMenuItem.Size = new System.Drawing.Size(214, 22);
-			this.TASEditorManualOnlineMenuItem.Text = "TASEditor Manual Online...";
+			this.TASEditorManualOnlineMenuItem.Text = "TAS Editor Manual Online...";
 			this.TASEditorManualOnlineMenuItem.Click += new System.EventHandler(this.TASEditorManualOnlineMenuItem_Click);
 			// 
 			// ForumThreadMenuItem
