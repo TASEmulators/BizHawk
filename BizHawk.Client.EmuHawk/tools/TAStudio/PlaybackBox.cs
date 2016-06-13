@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public TAStudio Tastudio { get; set; }
 
-		[Browsable(false)]
+		[Browsable(true)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool TurboSeek
 		{
@@ -28,11 +28,11 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				TurboSeekCheckbox.Checked = Global.Config.TurboSeek = value;
+				TurboSeekCheckbox.Checked = value;
 			}
 		}
 
-		[Browsable(false)]
+		[Browsable(true)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool AutoRestore
 		{
@@ -43,11 +43,11 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition = value;
+				AutoRestoreCheckbox.Checked = value;
 			}
 		}
 
-		[Browsable(false)]
+		[Browsable(true)]
 		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
 		public bool FollowCursor
 		{

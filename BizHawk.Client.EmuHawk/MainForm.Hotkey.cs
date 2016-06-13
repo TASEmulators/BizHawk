@@ -353,6 +353,15 @@ namespace BizHawk.Client.EmuHawk
 				case "Delete Branch":
 					GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
 					break;
+				case "Toggle Follow Cursor":
+					GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
+					break;
+				case "Toggle Auto-Restore":
+					GlobalWin.Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
+					break;
+				case "Toggle Turbo Seek":
+					GlobalWin.Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
+					break;
 
 				// SNES
 				case "Toggle BG 1":

@@ -1692,7 +1692,7 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem SettingsSubMenu;
 		private StatusStripEx TasStatusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel MessageStatusLabel;
-		private PlaybackBox TasPlaybackBox;
+		public PlaybackBox TasPlaybackBox;
 		private System.Windows.Forms.ToolStripStatusLabel SplicerStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem MetaSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem HeaderMenuItem;
