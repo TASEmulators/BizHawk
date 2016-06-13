@@ -5,6 +5,7 @@
 //TODO - correctly emulate PPU OFF state
 
 using BizHawk.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -19,7 +20,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public short[] xbuf = new short[256*240];
 
-		int ppu_addr_temp;
+        // values here are used in sprite evaluation
+        public bool sprite_eval_write;
+        public byte read_value;
+        public int soam_index;
+        public int soam_index_prev;
+        public int soam_m_index;
+        public int oam_index;
+        public bool is_even_cycle;
+        public bool sprite_zero_in_range=false;
+        public bool sprite_zero_go = false;
+        public int yp;
+        public int spriteHeight;
+        public int o_bug; // this is incramented when checks for sprite overflow start, mirroring a hardware bug
+        public byte[] soam = new byte[512]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
+
+        struct TempOAM
+        {
+            public byte oam_y;
+            public byte oam_ind;
+            public byte oam_attr;
+            public byte oam_x;
+            public byte patterns_0;
+            public byte patterns_1;
+            public byte index;
+        }
+
+        TempOAM[] t_oam = new TempOAM[64];
+
+        int ppu_addr_temp;
 		void Read_bgdata(ref BGDataRecord bgdata)
 		{
 			for (int i = 0; i < 8; i++)
@@ -82,14 +111,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			} //switch(cycle)
 		}
 
-		unsafe struct TempOAM
-		{
-			public fixed byte oam[4];
-			public fixed byte patterns[2];
-			public byte index;
-			public byte present;
-		}
-
 		//TODO - check flashing sirens in werewolf
 		short PaletteAdjustPixel(int pixel)
 		{
@@ -130,11 +151,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//this seems to run just before the dummy scanline begins
 			clear_2002();
 
-			TempOAM* oams = stackalloc TempOAM[128];
-			int* oamcounts = stackalloc int[2];
-			int oamslot=0;
-			int oamcount=0;
-
 			idleSynch ^= true;
 
 			//render 241 scanlines (including 1 dummy at beginning)
@@ -144,22 +160,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				ppur.status.sl = sl;
 
-				int yp = sl - 1;
+                soam_index = 0;
+                soam_m_index = 0;
+                oam_index = 0;
+                o_bug = 0;
+                is_even_cycle = true;
+                sprite_eval_write = true;
+                sprite_zero_go = false;
+                if (sprite_zero_in_range)
+                    sprite_zero_go = true;
+
+                sprite_zero_in_range = false;
+
+				yp = sl - 1;
 				ppuphase = PPUPHASE.BG;
 
 				if (NTViewCallback != null && yp == NTViewCallback.Scanline) NTViewCallback.Callback();
 				if (PPUViewCallback != null && yp == PPUViewCallback.Scanline) PPUViewCallback.Callback();
 
-				//twiddle the oam buffers
-				int scanslot = oamslot ^ 1;
-				int renderslot = oamslot;
-				oamslot ^= 1;
-
-				oamcount = oamcounts[renderslot];
-
-				//ok, we're also going to draw here.
-				//unless we're on the first dummy scanline
-				if (sl != 0)
+                //ok, we're also going to draw here.
+                //unless we're on the first dummy scanline
+                if (sl != 0)
 				{
 					//the main scanline rendering loop:
 					//32 times, we will fetch a tile and then render 8 pixels.
@@ -168,19 +189,92 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					for (int xt = 0; xt < 32; xt++)
 					{
 						int xstart = xt << 3;
-						oamcount = oamcounts[renderslot];
 						int target = yp_shift + xstart;
 						int rasterpos = xstart;
 
-						//check all the conditions that can cause things to render in these 8px
-						bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost);
+                        spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
+
+                        //check all the conditions that can cause things to render in these 8px
+                        bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost);
 						bool renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
 
 						for (int xp = 0; xp < 8; xp++, rasterpos++)
 						{
-							//process the current clock's worth of bg data fetching
-							//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
-							Read_bgdata(xp, ref bgdata[xt + 2]);
+                            //////////////////////////////////////////////////
+                            //Sprite Evaluation Start
+                            //////////////////////////////////////////////////
+                            if (ppur.status.cycle <= 63 && !is_even_cycle)
+                            {
+                                // the first 64 cycles of each scanline are used to initialize sceondary OAM 
+                                // the actual effect setting a flag that always returns 0xFF from a OAM read
+                                // this is a bit of a shortcut to save some instructions
+                                // data is read from OAM as normal but never used
+                                soam[soam_index] = 0xFF;
+                                soam_index++;
+                            }
+                            if (ppur.status.cycle == 64)
+                                soam_index = 0;
+
+                            // otherwise, scan through OAM and test if sprites are in range
+                            // if they are, they get copied to the secondary OAM
+                            // note that we scan and store 
+                            if (ppur.status.cycle >= 64)
+                            {
+                                if (oam_index == 64)
+                                {
+                                    oam_index = 0;
+                                    sprite_eval_write = false;
+                                }
+                                if (is_even_cycle)
+                                {
+                                    read_value = OAM[oam_index * 4];
+                                }
+                                else if (sprite_eval_write)
+                                {
+                                    if (soam_index >= 8)
+                                    {
+                                        // this code mirrors sprite overflow bug behaviour
+                                        // see http://wiki.nesdev.com/w/index.php/PPU_sprite_evaluation
+                                        if (yp >= OAM[oam_index * 4 + o_bug] && yp < OAM[oam_index * 4 + o_bug] + spriteHeight && reg_2001.PPUON)
+                                        {
+                                            Reg2002_objoverflow = true;
+                                        }
+                                        else
+                                        {
+                                            o_bug++;
+                                            if (o_bug == 4)
+                                                o_bug = 0;
+                                        }
+
+                                    }
+
+                                    //look for sprites 
+                                    soam[soam_index * 4] = OAM[oam_index * 4];
+                                    if (yp >= read_value && yp < read_value + spriteHeight)
+                                    {
+                                        //a flag gets set if sprite zero is in range
+                                        if (oam_index == 0)
+                                            sprite_zero_in_range = true;
+
+                                        soam[soam_index * 4 + 1] = OAM[oam_index * 4 + 1];
+                                        soam[soam_index * 4 + 2] = OAM[oam_index * 4 + 2];
+                                        soam[soam_index * 4 + 3] = OAM[oam_index * 4 + 3];
+                                        soam_index++;
+
+                                    }
+                                    
+                                    oam_index++;
+                                    
+                                }
+
+                            }
+                            //////////////////////////////////////////////////
+                            //Sprite Evaluation End
+                            //////////////////////////////////////////////////
+
+                            //process the current clock's worth of bg data fetching
+                            //this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
+                            Read_bgdata(xp, ref bgdata[xt + 2]);
 
 							//bg pos is different from raster pos due to its offsetability.
 							//so adjust for that here
@@ -219,44 +313,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							if (!nes.Settings.DispBackground)
 								pixelcolor = 0x8000; //whats this? i think its a flag to indicate a hidden background to be used by the canvas filling logic later
-
-							//look for a sprite to be drawn
-							bool havepixel = false;
-							int renderslot_shift = renderslot << 6;
-							for (int s = 0; s < oamcount; s++)
+                            
+                            //look for a sprite to be drawn
+                            bool havepixel = false;
+							for (int s = 0; s < soam_index_prev; s++)
 							{
-								TempOAM* oam = &oams[renderslot_shift + s];
-								int x = oam->oam[3];
+								int x = t_oam[s].oam_x;
 								if (rasterpos >= x && rasterpos < x + 8)
 								{
 									//build the pixel.
 									//fetch the LSB of the patterns
-									int spixel = oam->patterns[0] & 1;
-									spixel |= (oam->patterns[1] & 1) << 1;
+									int spixel = t_oam[s].patterns_0 & 1;
+									spixel |= (t_oam[s].patterns_1 & 1) << 1;
 
-									//shift down the patterns so the next pixel is in the LSB
-									oam->patterns[0] >>= 1;
-									oam->patterns[1] >>= 1;
+                                    //shift down the patterns so the next pixel is in the LSB
+                                    t_oam[s].patterns_0 >>= 1;
+                                    t_oam[s].patterns_1 >>= 1;
 
-									//bail out if we already have a pixel from a higher priority sprite.
-									//notice that we continue looping anyway, so that we can shift down the patterns
-									//transparent pixel bailout
-									if (!renderspritenow || havepixel || spixel == 0) continue;
+                                    //bail out if we already have a pixel from a higher priority sprite.
+                                    //notice that we continue looping anyway, so that we can shift down the patterns
+                                    //transparent pixel bailout
+                                    if (!renderspritenow || havepixel || spixel == 0) continue;
 
 									havepixel = true;
-
+                                    
 									//TODO - make sure we dont trigger spritehit if the edges are masked for either BG or OBJ
 									//spritehit:
 									//1. is it sprite#0?
 									//2. is the bg pixel nonzero?
 									//then, it is spritehit.
-									Reg2002_objhit |= (oam->index == 0 && pixel != 0 && rasterpos < 255);
+									Reg2002_objhit |= (sprite_zero_go && t_oam[s].index==0 && pixel != 0 && rasterpos < 255);
+
 									//priority handling, if in front of BG:
-									bool drawsprite = !(((oam->oam[2] & 0x20) != 0) && ((pixel & 3) != 0));
+									bool drawsprite = !(((t_oam[s].oam_attr & 0x20) != 0) && ((pixel & 3) != 0));
 									if (drawsprite && nes.Settings.DispSprites)
 									{
 										//bring in the palette bits and palettize
-										spixel |= (oam->oam[2] & 3) << 2;
+										spixel |= (t_oam[s].oam_attr & 3) << 2;
 										//save it for use in the framebuffer
 										pixelcolor = PALRAM[0x10 + spixel];
 									}
@@ -273,76 +366,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 					for (int xt = 0; xt < 32; xt++)
-						Read_bgdata(ref bgdata[xt + 2]);
+                        Read_bgdata(ref bgdata[xt + 2]);                                                    
 
-				//look for sprites (was supposed to run concurrent with bg rendering)
-				oamcounts[scanslot] = 0;
-				oamcount = 0;
-				int spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
-
-				int scanslot_lshift = scanslot << 6;
-
-				for (int i = 0; i < 64; i++)
-				{
-					oams[scanslot_lshift + i].present = 0;
-					int spr = i * 4;
-					if (yp >= OAM[spr] && yp < OAM[spr] + spriteHeight)
-					{
-						//if we already have maxsprites, then this new one causes an overflow,
-						//set the flag and bail out.
-						//should we set this flag anyway??
-						if (oamcount >= 8 && reg_2001.PPUON)
-						{
-							Reg2002_objoverflow = true;
-							if(!nes.Settings.AllowMoreThanEightSprites)
-								break;
-						}
-						//just copy some bytes into the internal sprite buffer
-						TempOAM* oam = &oams[scanslot_lshift + oamcount];
-						for (int j = 0; j < 4; j++)
-							oam->oam[j] = OAM[spr + j];
-						oam->present = 1;
-						//note that we stuff the oam index into [6].
-						//i need to turn this into a struct so we can have fewer magic numbers
-						oams[scanslot_lshift + oamcount].index = (byte)i;
-						oamcount++;
-					}
-				}
-				oamcounts[scanslot] = oamcount;
+                // normally only 8 sprites are allowed, but with a particular setting we can have more then that
+                soam_index_prev = soam_index;
+                if (soam_index_prev > 8 && !nes.Settings.AllowMoreThanEightSprites)
+                    soam_index_prev = 8;
 
 				ppuphase = PPUPHASE.OBJ;
 
-				//fetch sprite patterns
-				int oam_todo = oamcount;
-				if (oam_todo < 8)
-					oam_todo = 8;
-				for (int s = 0; s < oam_todo; s++)
+                spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
+
+                // if there are less then 8 evaluated sprites, we still process 8 sprites
+                int bound;
+
+                if (soam_index_prev>8)
+                {
+                    bound = soam_index_prev;
+                } else
+                {
+                    bound = 8;
+                }
+
+				for (int s = 0; s < bound; s++)
 				{
 					//if this is a real sprite sprite, then it is not above the 8 sprite limit.
 					//this is how we support the no 8 sprite limit feature.
 					//not that at some point we may need a virtual CALL_PPUREAD which just peeks and doesnt increment any counters
 					//this could be handy for the debugging tools also
 					bool realSprite = (s < 8);
-					bool junksprite = (s >= oamcount || !reg_2001.PPUON);
+					bool junksprite = (!reg_2001.PPUON);
+                    bool extra_sprite = (s >= 8);
 
-					TempOAM* oam = &oams[scanslot_lshift + s];
-					int line = yp - oam->oam[0];
-					if ((oam->oam[2] & 0x80) != 0) //vflip
+                    t_oam[s].oam_y = soam[s*4];
+                    t_oam[s].oam_ind = soam[s * 4+1];
+                    t_oam[s].oam_attr = soam[s * 4+2];
+                    t_oam[s].oam_x = soam[s * 4+3];
+
+                    t_oam[s].index = (byte)s;
+
+                    int line = yp - t_oam[s].oam_y;
+					if ((t_oam[s].oam_attr & 0x80) != 0) //vflip
 						line = spriteHeight - line - 1;
 
-					int patternNumber = oam->oam[1];
+					int patternNumber = t_oam[s].oam_ind;
 					int patternAddress;
-
-					//create deterministic dummy fetch pattern.
-					if (oam->present == 0)
-					{
-						//according to nintendulator:
-						//* On the first empty sprite slot, read the Y-coordinate of sprite #63 followed by $FF for the remaining 7 cycles
-						//* On all subsequent empty sprite slots, read $FF for all 8 reads
-						//well, we shall just read $FF and that is good enough for now to make mmc3 work
-						patternNumber = 0xFF;
-						line = 0;
-					}
 
 					//8x16 sprite handling:
 					if (reg_2000.obj_size_16)
@@ -368,60 +436,96 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (sl == 0 && ppur.status.cycle == 304)
 						{
 							runppu(1);
-							if (reg_2001.PPUON) ppur.install_latches();
+                            read_value = t_oam[s].oam_y;
+                            if (reg_2001.PPUON) ppur.install_latches();
 							runppu(1);
-							garbage_todo = 0;
+                            read_value = t_oam[s].oam_ind;
+                            garbage_todo = 0;
 						}
 						if ((sl != 0) && ppur.status.cycle == 256)
 						{
 							runppu(1);
-							//at 257: 3d world runner is ugly if we do this at 256
-							if (reg_2001.PPUON) ppur.install_h_latches();
+                            read_value = t_oam[s].oam_y;
+                            //at 257: 3d world runner is ugly if we do this at 256
+                            if (reg_2001.PPUON) ppur.install_h_latches();
 							runppu(1);
-							garbage_todo = 0;
+                            read_value = t_oam[s].oam_ind;
+                            garbage_todo = 0;
 						}
 					}
-					if (realSprite) runppu(garbage_todo);
+                    if (realSprite)
+                    {
+                        for (int i=0;i<garbage_todo;i++)
+                        {
+                            runppu(1);
+                            if (i==0)
+                            {
+                                read_value = t_oam[s].oam_y;
+                            } else
+                            {
+                                read_value = t_oam[s].oam_ind;
+                            }
+                        }                        
+                    }
+
 
 					ppubus_read(ppur.get_atread(), true); //at or nt?
-					if (realSprite) runppu(kFetchTime);
+                    if (realSprite)
+                    {
+                        runppu(1);
+                        read_value = t_oam[s].oam_attr;
+                        runppu(1);
+                        read_value = t_oam[s].oam_x;
+                    }
 
-					// TODO - fake sprites should not come through ppubus_read but rather peek it
-					// (at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
+                    // TODO - fake sprites should not come through ppubus_read but rather peek it
+                    // (at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
+                    if (junksprite)
+                    {
+                        if (realSprite)
+                        {
+                            ppubus_read(patternAddress, true);
+                            ppubus_read(patternAddress, true);
+                            runppu(kFetchTime * 2);
+                        }
+                    }
+                    else
+                    {
+                        int addr = patternAddress;
+                        t_oam[s].patterns_0 = ppubus_read(addr, true);
+                        if (realSprite)
+                        {
+                            runppu(kFetchTime);
+                            read_value = t_oam[s].oam_x;
+                        }
+                        addr += 8;
+                        t_oam[s].patterns_1 = ppubus_read(addr, true);
+                        if (realSprite)
+                        {
+                            runppu(kFetchTime);
+                            read_value = t_oam[s].oam_x;
+                        }
 
-					if (junksprite)
-					{
-						if (realSprite)
-						{
-							ppubus_read(patternAddress, true);
-							ppubus_read(patternAddress, true);
-							runppu(kFetchTime * 2);
-						}
-					}
-					else
-					{
-						int addr = patternAddress;
-						oam->patterns[0] = ppubus_read(addr, true);
-						if (realSprite) runppu(kFetchTime);
 
-						addr += 8;
-						oam->patterns[1] = ppubus_read(addr, true);
-						if (realSprite) runppu(kFetchTime);
+                        // hflip
+                        if ((t_oam[s].oam_attr & 0x40) == 0)
+                        {
+                            t_oam[s].patterns_0 = BitReverse.Byte8[t_oam[s].patterns_0];
+                            t_oam[s].patterns_1 = BitReverse.Byte8[t_oam[s].patterns_1];
+                        }
 
-						// hflip
-						if ((oam->oam[2] & 0x40) == 0)
-						{
-							oam->patterns[0] = BitReverse.Byte8[oam->patterns[0]];
-							oam->patterns[1] = BitReverse.Byte8[oam->patterns[1]];
-						}
-					}
+                    }
+
 				} // sprite pattern fetch loop
 
 				ppuphase = PPUPHASE.BG;
 
 				// fetch BG: two tiles for next line
 				for (int xt = 0; xt < 2; xt++)
-					Read_bgdata(ref bgdata[xt]);
+                {
+                    Read_bgdata(ref bgdata[xt]);
+                }
+					
 
 				// this sequence is tuned to pass 10-even_odd_timing.nes
 				runppu(kFetchTime);
