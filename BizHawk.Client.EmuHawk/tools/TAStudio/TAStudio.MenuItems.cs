@@ -242,9 +242,9 @@ namespace BizHawk.Client.EmuHawk
 			SelectBetweenMarkersMenuItem.Enabled =
 			CopyMenuItem.Enabled =
 			CutMenuItem.Enabled =
-			ClearMenuItem.Enabled =
+			ClearFramesMenuItem.Enabled =
 			DeleteFramesMenuItem.Enabled =
-			CloneMenuItem.Enabled =
+			CloneFramesMenuItem.Enabled =
 			TruncateMenuItem.Enabled =
 				TasView.AnyRowsSelected;
 			ReselectClipboardMenuItem.Enabled =
@@ -258,6 +258,31 @@ namespace BizHawk.Client.EmuHawk
 			GreenzoneICheckSeparator.Visible =
 				StateHistoryIntegrityCheckMenuItem.Visible =
 				VersionInfo.DeveloperBuild;
+
+			ClearFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clear Frames"].Bindings;
+			InsertFrameMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Insert Frame"].Bindings;
+			DeleteFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Delete Frames"].Bindings;
+			CloneFramesMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Clone Frames"].Bindings;
+		}
+
+		public void ClearFramesExternal()
+		{
+			ClearFramesMenuItem_Click(null, null);
+		}
+
+		public void InsertFrameExternal()
+		{
+			InsertFrameMenuItem_Click(null, null);
+		}
+
+		public void DeleteFramesExternal()
+		{
+			DeleteFramesMenuItem_Click(null, null);
+		}
+
+		public void CloneFramesExternal()
+		{
+			CloneFramesMenuItem_Click(null, null);
 		}
 
 		private void UndoMenuItem_Click(object sender, EventArgs e)
@@ -464,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ClearMenuItem_Click(object sender, EventArgs e)
+		private void ClearFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TasView.AnyRowsSelected)
 			{
@@ -533,7 +558,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CloneMenuItem_Click(object sender, EventArgs e)
+		private void CloneFramesMenuItem_Click(object sender, EventArgs e)
 		{
 			if (TasView.AnyRowsSelected)
 			{

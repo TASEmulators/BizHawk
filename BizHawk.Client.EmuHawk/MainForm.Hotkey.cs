@@ -362,6 +362,18 @@ namespace BizHawk.Client.EmuHawk
 				case "Toggle Turbo Seek":
 					GlobalWin.Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
 					break;
+				case "Clear Frames":
+					GlobalWin.Tools.TAStudio.ClearFramesExternal();
+					break;
+				case "Insert Frame":
+					GlobalWin.Tools.TAStudio.InsertFrameExternal();
+					break;
+				case "Delete Frames":
+					GlobalWin.Tools.TAStudio.DeleteFramesExternal();
+					break;
+				case "Clone Frames":
+					GlobalWin.Tools.TAStudio.CloneFramesExternal();
+					break;
 
 				// SNES
 				case "Toggle BG 1":

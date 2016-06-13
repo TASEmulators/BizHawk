@@ -71,10 +71,10 @@ namespace BizHawk.Client.EmuHawk
 			this.PasteInsertMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.CutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-			this.ClearMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ClearFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InsertFrameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.DeleteFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.CloneMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CloneFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.InsertNumFramesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.TruncateMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -414,10 +414,10 @@ namespace BizHawk.Client.EmuHawk
             this.PasteInsertMenuItem,
             this.CutMenuItem,
             this.toolStripSeparator8,
-            this.ClearMenuItem,
+            this.ClearFramesMenuItem,
             this.InsertFrameMenuItem,
             this.DeleteFramesMenuItem,
-            this.CloneMenuItem,
+            this.CloneFramesMenuItem,
             this.InsertNumFramesMenuItem,
             this.toolStripSeparator6,
             this.TruncateMenuItem,
@@ -550,19 +550,17 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
 			this.toolStripSeparator8.Size = new System.Drawing.Size(288, 6);
 			// 
-			// ClearMenuItem
+			// ClearFramesMenuItem
 			// 
-			this.ClearMenuItem.Name = "ClearMenuItem";
-			this.ClearMenuItem.ShortcutKeyDisplayString = "";
-			this.ClearMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.ClearMenuItem.Size = new System.Drawing.Size(291, 22);
-			this.ClearMenuItem.Text = "Clear";
-			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
+			this.ClearFramesMenuItem.Name = "ClearFramesMenuItem";
+			this.ClearFramesMenuItem.ShortcutKeyDisplayString = "";
+			this.ClearFramesMenuItem.Size = new System.Drawing.Size(291, 22);
+			this.ClearFramesMenuItem.Text = "Clear";
+			this.ClearFramesMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
 			// 
 			// InsertFrameMenuItem
 			// 
 			this.InsertFrameMenuItem.Name = "InsertFrameMenuItem";
-			this.InsertFrameMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Insert;
 			this.InsertFrameMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.InsertFrameMenuItem.Text = "&Insert";
 			this.InsertFrameMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
@@ -570,18 +568,16 @@ namespace BizHawk.Client.EmuHawk
 			// DeleteFramesMenuItem
 			// 
 			this.DeleteFramesMenuItem.Name = "DeleteFramesMenuItem";
-			this.DeleteFramesMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
 			this.DeleteFramesMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.DeleteFramesMenuItem.Text = "&Delete";
 			this.DeleteFramesMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
 			// 
-			// CloneMenuItem
+			// CloneFramesMenuItem
 			// 
-			this.CloneMenuItem.Name = "CloneMenuItem";
-			this.CloneMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
-			this.CloneMenuItem.Size = new System.Drawing.Size(291, 22);
-			this.CloneMenuItem.Text = "&Clone";
-			this.CloneMenuItem.Click += new System.EventHandler(this.CloneMenuItem_Click);
+			this.CloneFramesMenuItem.Name = "CloneFramesMenuItem";
+			this.CloneFramesMenuItem.Size = new System.Drawing.Size(291, 22);
+			this.CloneFramesMenuItem.Text = "&Clone";
+			this.CloneFramesMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
 			// 
 			// InsertNumFramesMenuItem
 			// 
@@ -1177,7 +1173,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TASEditorManualOnlineMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.TASEditorManualOnlineMenuItem.Name = "TASEditorManualOnlineMenuItem";
-			this.TASEditorManualOnlineMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.TASEditorManualOnlineMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.TASEditorManualOnlineMenuItem.Text = "TAS Editor Manual Online...";
 			this.TASEditorManualOnlineMenuItem.Click += new System.EventHandler(this.TASEditorManualOnlineMenuItem_Click);
 			// 
@@ -1185,7 +1181,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.ForumThreadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.ForumThreadMenuItem.Name = "ForumThreadMenuItem";
-			this.ForumThreadMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.ForumThreadMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.ForumThreadMenuItem.Text = "Forum Thread...";
 			this.ForumThreadMenuItem.Click += new System.EventHandler(this.ForumThreadMenuItem_Click);
 			// 
@@ -1193,19 +1189,19 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.aboutToolStripMenuItem.Enabled = false;
 			this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.aboutToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.aboutToolStripMenuItem.Text = "&About";
 			// 
 			// toolStripSeparator10
 			// 
 			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(211, 6);
+			this.toolStripSeparator10.Size = new System.Drawing.Size(214, 6);
 			// 
 			// EnableTooltipsMenuItem
 			// 
 			this.EnableTooltipsMenuItem.Enabled = false;
 			this.EnableTooltipsMenuItem.Name = "EnableTooltipsMenuItem";
-			this.EnableTooltipsMenuItem.Size = new System.Drawing.Size(214, 22);
+			this.EnableTooltipsMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.EnableTooltipsMenuItem.Text = "&Enable Tooltips";
 			// 
 			// TasView
@@ -1452,7 +1448,7 @@ namespace BizHawk.Client.EmuHawk
 			this.ClearContextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.ClearContextMenuItem.Size = new System.Drawing.Size(253, 22);
 			this.ClearContextMenuItem.Text = "Clear";
-			this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
+			this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
 			// 
 			// InsertFrameContextMenuItem
 			// 
@@ -1476,7 +1472,7 @@ namespace BizHawk.Client.EmuHawk
 			this.CloneContextMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Insert)));
 			this.CloneContextMenuItem.Size = new System.Drawing.Size(253, 22);
 			this.CloneContextMenuItem.Text = "Clone";
-			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneMenuItem_Click);
+			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
 			// 
 			// InsertNumFramesContextMenuItem
 			// 
@@ -1653,9 +1649,9 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem InsertFrameMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-		private System.Windows.Forms.ToolStripMenuItem CloneMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CloneFramesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem DeleteFramesMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem ClearMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ClearFramesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem InsertNumFramesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SelectAllMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;

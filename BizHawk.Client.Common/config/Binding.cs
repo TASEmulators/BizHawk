@@ -224,6 +224,10 @@ namespace BizHawk.Client.Common
 						Bind("TAStudio", "Toggle Follow Cursor", "Shift+F"),
 						Bind("TAStudio", "Toggle Auto-Restore", "Shift+R"),
 						Bind("TAStudio", "Toggle Turbo Seek", "Shift+S"),
+						Bind("TAStudio", "Clear Frames", "Delete"),
+						Bind("TAStudio", "Insert Frame", "Insert"),
+						Bind("TAStudio", "Delete Frames", "Ctrl+Delete"),
+						Bind("TAStudio", "Clone Frames", "Ctrl+Insert"),
 
 						Bind("SNES", "Toggle BG 1"),
 						Bind("SNES", "Toggle BG 2"),
