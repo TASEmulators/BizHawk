@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("BizHawk.Client.DiscoHawk")]
-[assembly: AssemblyDescription("http://code.google.com/p/bizhawk")]
+[assembly: AssemblyDescription("http://tasvideos.org/Bizhawk.html")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BizHawk")]
 [assembly: AssemblyProduct("BizHawk.Client.DiscoHawk")]
