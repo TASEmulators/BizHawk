@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*TYA [implied]*/ new Uop[] { Uop.Imp_TYA, Uop.End },
 			/*STA addr,Y [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*TXS [implied]*/ new Uop[] { Uop.Imp_TXS, Uop.End },
-			/*SHS* addr,Y [absolute indexed WRITE X] [unofficial] [NOT IMPLEMENTED - TRICKY, AND NO TEST]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
+			/*SHS* addr,Y [absolute indexed WRITE Y] [unofficial] */ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
 			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			/*STA addr,X [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
@@ -2298,14 +2298,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void AbsIdx_WRITE_Stage5_ERROR()
 		{
-            //rdy_freeze = !RDY;
-            //if (RDY)
-            //{
-            //alu_temp = ReadMemory((ushort)ea);
-            //throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
-            //}
             S = (byte)(X & A);
-            WriteMemory((ushort)ea, (byte)(S & opcode3));
+            WriteMemory((ushort)ea, (byte)(S & (opcode3+1)));
 
         }
 		void AbsIdx_RMW_Stage5()
@@ -2526,7 +2520,6 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				alu_temp = ReadMemory((ushort)ea);
-                // Alyosha: wish me luck!
                 S &= (byte)alu_temp;
                 X = S;
                 A = S;
@@ -2965,7 +2958,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public void ExecuteOne()
 		{
-
+            // total cycles now incraments every time a cycle is called to accurately count during RDY
             TotalExecutedCycles++;
             if (!rdy_freeze)
 			{
