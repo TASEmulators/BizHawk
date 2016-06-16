@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			cdl["WRAM"] = new byte[MemoryDomains["WRAM"].Size];
 
 			if (MemoryDomains.Has("CartRAM"))
-				cdl["CartRAM"] = new byte[MemoryDomains["WRAM"].Size];
+				cdl["CartRAM"] = new byte[MemoryDomains["CartRAM"].Size];
 
 			cdl.SubType = "GB";
 			cdl.SubVer = 0;

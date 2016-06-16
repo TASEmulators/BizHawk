@@ -166,7 +166,7 @@
 			this.linkLabel3.Size = new System.Drawing.Size(63, 13);
 			this.linkLabel3.TabIndex = 20;
 			this.linkLabel3.TabStop = true;
-			this.linkLabel3.Text = "Contributers";
+			this.linkLabel3.Text = "Contributors";
 			this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
 			// 
 			// DateLabel

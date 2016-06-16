@@ -50,6 +50,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool IsInMenuLoop { get; private set; }
+		public bool IgnoreSeekFrame { get; set; }
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -67,8 +68,11 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
 				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
+				AutoRestoreOnMouseUpOnly = true;
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
+				AutosaveAsBackupFile = false;
+				BackupPerFileSave = false;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -87,8 +91,11 @@ namespace BizHawk.Client.EmuHawk
             public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
 			public int SeekingCutoffInterval { get; set; }
-			public int AutosaveInterval { get; set; }
+			public bool AutoRestoreOnMouseUpOnly { get; set; }
+			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
+			public bool AutosaveAsBackupFile { get; set; }
+			public bool BackupPerFileSave { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }
@@ -138,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeSeekWorker();
 
 			WantsToControlStopMovie = true;
+			WantsToControlRestartMovie = true;
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			BookMarkControl.Tastudio = this;
@@ -150,25 +158,30 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
-			WantsToControlRestartMovie = true;
-
-			_autosaveTimer.Interval = Settings.AutosaveInterval;
-			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
-			_autosaveTimer.Start();
+			IgnoreSeekFrame = false;
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
 		{
-			if (!CurrentTasMovie.Changes)
+			if (CurrentTasMovie == null)
 				return;
 
-			if (Settings.AutosaveAsBk2)
+			if (!CurrentTasMovie.Changes || Settings.AutosaveInterval == 0)
+				return;
+
+			if (Settings.AutosaveAsBackupFile)
 			{
-				ToBk2MenuItem_Click(sender, e);
+				if (Settings.AutosaveAsBk2)
+					SaveBk2BackupMenuItem_Click(sender, e);
+				else
+					SaveBackupMenuItem_Click(sender, e);
 			}
 			else
 			{
-				SaveTasMenuItem_Click(sender, e);
+				if (Settings.AutosaveAsBk2)
+					ToBk2MenuItem_Click(sender, e);
+				else
+					SaveTas(sender, e);
 			}
 		}
 
@@ -292,7 +305,14 @@ namespace BizHawk.Client.EmuHawk
             TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
             TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor;
             TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons;
-            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
+			TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
+
+			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
+			if (Settings.AutosaveInterval > 0)
+			{
+				_autosaveTimer.Interval = (int)Settings.AutosaveInterval;
+				_autosaveTimer.Start();
+			}
 
 			// Remembering Split container logic
 			int defaultMainSplitDistance = MainVertialSplit.SplitterDistance;
@@ -975,8 +995,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TAStudio_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.KeyCode == Keys.F)
-				TasPlaybackBox.FollowCursor ^= true;
+			//if (e.KeyCode == Keys.F)
+			//	TasPlaybackBox.FollowCursor ^= true;
 		}
 
 		private void MainVertialSplit_SplitterMoved(object sender, SplitterEventArgs e)

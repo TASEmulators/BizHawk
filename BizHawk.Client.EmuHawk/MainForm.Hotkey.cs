@@ -14,6 +14,10 @@ namespace BizHawk.Client.EmuHawk
 
 				// General
 				case "Pause":
+					// check this here since TogglePause() has no idea who triggered it
+					// and we need to treat pause hotkey specially in tastudio
+					if (GlobalWin.MainForm.EmulatorPaused)
+						GlobalWin.Tools.TAStudio.IgnoreSeekFrame = true;
 					TogglePause();
 					break;
 				case "Toggle Throttle":
@@ -348,6 +352,27 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Delete Branch":
 					GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
+					break;
+				case "Toggle Follow Cursor":
+					GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
+					break;
+				case "Toggle Auto-Restore":
+					GlobalWin.Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
+					break;
+				case "Toggle Turbo Seek":
+					GlobalWin.Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
+					break;
+				case "Clear Frames":
+					GlobalWin.Tools.TAStudio.ClearFramesExternal();
+					break;
+				case "Insert Frame":
+					GlobalWin.Tools.TAStudio.InsertFrameExternal();
+					break;
+				case "Delete Frames":
+					GlobalWin.Tools.TAStudio.DeleteFramesExternal();
+					break;
+				case "Clone Frames":
+					GlobalWin.Tools.TAStudio.CloneFramesExternal();
 					break;
 
 				// SNES

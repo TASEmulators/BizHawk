@@ -414,24 +414,24 @@ namespace BizHawk.Client.Common
 		public void Undo(TasMovie movie)
 		{
 			if (FirstFrame == -1) // Action: Place marker
-				movie.Markers.Remove(movie.Markers.Get(LastFrame));
+				movie.Markers.Remove(movie.Markers.Get(LastFrame), true);
 			else if (LastFrame == -1) // Action: Remove marker
-				movie.Markers.Add(FirstFrame, oldMessage);
+				movie.Markers.Add(FirstFrame, oldMessage, true);
 			else // Action: Move/rename marker
 			{
-				movie.Markers.Move(LastFrame, FirstFrame);
+				movie.Markers.Move(LastFrame, FirstFrame, true);
 				movie.Markers.Get(LastFrame).Message = oldMessage;
 			}
 		}
 		public void Redo(TasMovie movie)
 		{
 			if (FirstFrame == -1) // Action: Place marker
-				movie.Markers.Add(LastFrame, oldMessage);
+				movie.Markers.Add(LastFrame, oldMessage, true);
 			else if (LastFrame == -1) // Action: Remove marker
-				movie.Markers.Remove(movie.Markers.Get(FirstFrame));
+				movie.Markers.Remove(movie.Markers.Get(FirstFrame), true);
 			else // Action: Move/rename marker
 			{
-				movie.Markers.Move(FirstFrame, LastFrame);
+				movie.Markers.Move(FirstFrame, LastFrame, true);
 				movie.Markers.Get(LastFrame).Message = newMessage;
 			}
 		}

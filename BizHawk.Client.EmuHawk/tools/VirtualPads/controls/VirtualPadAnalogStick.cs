@@ -15,6 +15,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _programmaticallyUpdatingNumerics;
 		private bool _readonly;
+		private int rangeAverageX; //for coordinate transformation when non orthogonal (like PSX for example)
+		private int rangeAverageY;
 
 		private EventHandler manualXYValueChangedEventHandler;
 		private EventHandler polarNumericChangedEventHandler;
@@ -60,6 +62,9 @@ namespace BizHawk.Client.EmuHawk
 			MaxYNumeric.Minimum = 1;
 			MaxYNumeric.Maximum = 100;
 			MaxYNumeric.Value = 100; // Note: these trigger change events that change the analog stick too
+
+			rangeAverageX = (int)((RangeX[0] + RangeX[2]) / 2);
+			rangeAverageY = (int)((RangeY[0] + RangeY[2]) / 2);
 		}
 
 		#region IVirtualPadControl Implementation
@@ -166,11 +171,12 @@ namespace BizHawk.Client.EmuHawk
 			ManualX.ValueChanged -= manualXYValueChangedEventHandler;
 			ManualY.ValueChanged -= manualXYValueChangedEventHandler;
 
-			ManualX.Value = Math.Ceiling(manualR.Value * (decimal)Math.Cos(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127);
-			ManualY.Value = Math.Ceiling(manualR.Value * (decimal)Math.Sin(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127);
+			ManualX.Value = Math.Ceiling(manualR.Value * (decimal)Math.Cos(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageX;
+			ManualY.Value = Math.Ceiling(manualR.Value * (decimal)Math.Sin(Math.PI * (double)manualTheta.Value / 180)).Clamp(-127, 127) + rangeAverageY;
 
 			AnalogStick.X = (int)ManualX.Value;
 			AnalogStick.Y = (int)ManualY.Value;
+
 			AnalogStick.HasValue = true;
 			AnalogStick.Refresh();
 
@@ -222,8 +228,8 @@ namespace BizHawk.Client.EmuHawk
 			manualR.ValueChanged -= polarNumericChangedEventHandler;
 			manualTheta.ValueChanged -= polarNumericChangedEventHandler;
 
-			manualR.Value = (decimal)Math.Sqrt(Math.Pow(AnalogStick.X, 2) + Math.Pow(AnalogStick.Y, 2));
-			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y, AnalogStick.X) * (180 / Math.PI));
+			manualR.Value = (decimal)Math.Sqrt(Math.Pow(AnalogStick.X - rangeAverageX, 2) + Math.Pow(AnalogStick.Y - rangeAverageY, 2));
+			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y - rangeAverageY, AnalogStick.X - rangeAverageX) * (180 / Math.PI));
 
 			manualR.ValueChanged += polarNumericChangedEventHandler;
 			manualTheta.ValueChanged += polarNumericChangedEventHandler;
