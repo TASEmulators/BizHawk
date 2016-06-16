@@ -730,7 +730,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					timer = timer_reload;
 					Clock();
 				}
-			}
+
+                //Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
+                if (!sample_buffer_filled && sample_length > 0)
+                    Fetch();
+            }
 
 
 			void Clock()
@@ -779,10 +783,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else out_bits_remaining--;
 
-						
-				//Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
-				if (!sample_buffer_filled && sample_length > 0)
-					Fetch();
+				
 			}
 
 			public void set_lenctr_en(bool en)
@@ -801,11 +802,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						sample_address = user_address;
 						sample_length = user_length;
-						if (out_silence)
-						{
-							timer = 0;
-							out_bits_remaining = 0;
-						}
+
 					}
 				}
 
