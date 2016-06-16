@@ -197,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*TYA [implied]*/ new Uop[] { Uop.Imp_TYA, Uop.End },
 			/*STA addr,Y [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*TXS [implied]*/ new Uop[] { Uop.Imp_TXS, Uop.End },
-			/*SHS* addr,X [absolute indexed WRITE X] [unofficial] [NOT IMPLEMENTED - TRICKY, AND NO TEST]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
+			/*SHS* addr,Y [absolute indexed WRITE X] [unofficial] [NOT IMPLEMENTED - TRICKY, AND NO TEST]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_ERROR, Uop.End },
 			/*SHY** [absolute indexed WRITE] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHY, Uop.End },
 			/*STA addr,X [absolute indexed WRITE]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_STA, Uop.End },
 			/*SHX* addr,Y [absolute indexed WRITE Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_Stage4, Uop.AbsIdx_WRITE_Stage5_SHX, Uop.End },
@@ -231,7 +231,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			/*CLV [implied]*/ new Uop[] { Uop.Imp_CLV, Uop.End },
 			/*LDA addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDA, Uop.End },
 			/*TSX [implied]*/ new Uop[] { Uop.Imp_TSX, Uop.End },
-			/*LAS* addr,X [absolute indexed READ X] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ERROR, Uop.End },
+			/*LAS* addr,Y [absolute indexed READ Y] [unofficial]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_ERROR, Uop.End },
 			/*LDY addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDY, Uop.End },
 			/*LDA addr,X* [absolute indexed READ X]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_X, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDA, Uop.End },
 			/*LDX addr,Y* [absolute indexed READ Y]*/ new Uop[] { Uop.Fetch2, Uop.AbsIdx_Stage3_Y, Uop.AbsIdx_READ_Stage4, Uop.AbsIdx_READ_Stage5_LDX, Uop.End },
@@ -940,9 +940,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				if (alu_temp.Bit(8))
+                ReadMemory((ushort)ea);
+                if (alu_temp.Bit(8))
 					ea = (ushort)(ea + 0x100);
-				ReadMemory((ushort)ea);
+				
 			}
 
 		}
@@ -1090,9 +1091,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		void IndIdx_RMW_Stage8()
 		{
 			WriteMemory((ushort)ea, (byte)alu_temp);
-
-
-		}
+        }
 		void RelBranch_Stage2_BVS()
 		{
 			branch_taken = FlagV == true;
@@ -2267,8 +2266,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-				//bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
-				if (alu_temp.Bit(8))
+                //bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
+
+                if (alu_temp.Bit(8))
 				{
 					alu_temp = ReadMemory((ushort)ea);
 					ea = (ushort)(ea + 0x100);
@@ -2298,14 +2298,16 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void AbsIdx_WRITE_Stage5_ERROR()
 		{
-			rdy_freeze = !RDY;
-			if (RDY)
-			{
-				alu_temp = ReadMemory((ushort)ea);
-				//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
-			}
+            //rdy_freeze = !RDY;
+            //if (RDY)
+            //{
+            //alu_temp = ReadMemory((ushort)ea);
+            //throw new InvalidOperationException("UNSUPPORTED OPCODE [probably SHS] PLEASE REPORT");
+            //}
+            S = (byte)(X & A);
+            WriteMemory((ushort)ea, (byte)(S & opcode3));
 
-		}
+        }
 		void AbsIdx_RMW_Stage5()
 		{
 			rdy_freeze = !RDY;
@@ -2524,8 +2526,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				alu_temp = ReadMemory((ushort)ea);
-				//throw new InvalidOperationException("UNSUPPORTED OPCODE [probably LAS] PLEASE REPORT");
-			}
+                // Alyosha: wish me luck!
+                S &= (byte)alu_temp;
+                X = S;
+                A = S;
+                P = (byte)((P & 0x7D) | TableNZ[S]);
+            }
 
 		}
 		void AbsInd_JMP_Stage4()
@@ -2959,9 +2965,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public void ExecuteOne()
 		{
-			if (!rdy_freeze)
+
+            TotalExecutedCycles++;
+            if (!rdy_freeze)
 			{
-				TotalExecutedCycles++;
+				
 
 				interrupt_pending |= Interrupted;
 			}
