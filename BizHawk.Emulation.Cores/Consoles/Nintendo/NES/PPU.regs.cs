@@ -395,7 +395,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			OAM[reg_2003] = value;
 			reg_2003++;
 		}
-		byte read_2004() { return OAM[reg_2003]; }
+		byte read_2004()
+        {
+            if (ppur.status.sl < 241)
+            {
+                if (ppur.status.cycle < 64)
+                {
+                    return 0xFF; // during this time all reads return FF
+                }
+                else if (ppur.status.cycle < 256)
+                {
+                    return read_value;
+                }
+                else if (ppur.status.cycle < 320)
+                {
+                    return read_value;
+                }
+                else
+                {
+                    return soam[0];
+                }
+            } else
+            {
+                return OAM[reg_2003];
+            }
+        }
 		byte peek_2004() { return OAM[reg_2003]; }
 
 		//SCROLL (write)
