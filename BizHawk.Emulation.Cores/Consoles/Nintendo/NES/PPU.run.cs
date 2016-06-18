@@ -136,13 +136,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppuphase = PPUPHASE.VBL;
 			ppur.status.sl = 241;
 
-			//Not sure if this is correct.  According to Matt Conte and my own tests, it is. Timing is probably off, though.
-			//NOTE:  Not having this here breaks a Super Donkey Kong game.
-			reg_2003 = 0;
+            //Not sure if this is correct.  According to Matt Conte and my own tests, it is. Timing is probably off, though.
+            //NOTE:  Not having this here breaks a Super Donkey Kong game.
+            if (reg_2001.show_obj || reg_2001.show_bg) reg_2003 = 0;
 
-			//this was repeatedly finetuned from the fceux days thrugh the old cpu core and into the new one to pass 05-nmi_timing.nes
-			//note that there is still some leniency. for instance, 4,2 will pass in addition to 3,3
-			const int delay = 6;
+            //this was repeatedly finetuned from the fceux days thrugh the old cpu core and into the new one to pass 05-nmi_timing.nes
+            //note that there is still some leniency. for instance, 4,2 will pass in addition to 3,3
+            const int delay = 6;
 			runppu(3);
 			bool nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
 			runppu(3);
