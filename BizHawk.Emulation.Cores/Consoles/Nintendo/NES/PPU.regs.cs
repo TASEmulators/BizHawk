@@ -397,25 +397,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		byte read_2004()
         {
-            if (ppur.status.sl < 241)
+            // behaviour depends on whether things are being rendered or not
+            if (reg_2001.show_bg || reg_2001.show_obj)
             {
-                if (ppur.status.cycle < 64)
+                if (ppur.status.sl < 241)
                 {
-                    return 0xFF; // during this time all reads return FF
-                }
-                else if (ppur.status.cycle < 256)
-                {
-                    return read_value;
-                }
-                else if (ppur.status.cycle < 320)
-                {
-                    return read_value;
+                    if (ppur.status.cycle < 64)
+                    {
+                        return 0xFF; // during this time all reads return FF
+                    }
+                    else if (ppur.status.cycle < 256)
+                    {
+                        return read_value;
+                    }
+                    else if (ppur.status.cycle < 320)
+                    {
+                        return read_value;
+                    }
+                    else
+                    {
+                        return soam[0];
+                    }
                 }
                 else
                 {
-                    return soam[0];
+                    return OAM[reg_2003];
                 }
-            } else
+            }
+            else
             {
                 return OAM[reg_2003];
             }
