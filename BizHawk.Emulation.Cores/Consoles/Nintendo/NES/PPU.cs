@@ -160,6 +160,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("Is_even_cycle", ref is_even_cycle);
 			ser.Sync("soam_index", ref soam_index);
 
+			ser.Sync("ppu_open_bus", ref ppu_open_bus);
+			ser.Sync("ppu_open_bus_decay_timer", ref ppu_open_bus_decay_timer, false);
 
 			ser.Sync("OAM", ref OAM, false);
 			ser.Sync("PALRAM", ref PALRAM, false);
@@ -184,6 +186,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			regs_reset();
 			ppudead = 2;
 			idleSynch = true;
+			ppu_open_bus = 0;
+			ppu_open_bus_decay_timer = new int[8];
 		}
 
 #if VS2012

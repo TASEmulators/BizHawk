@@ -346,6 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu.ExecuteOne();
 				}
 
+				ppu.ppu_open_bus_decay(0);
 				apu.RunOne();
 				Board.ClockCPU();
 				ppu.PostCpuInstructionOne();
