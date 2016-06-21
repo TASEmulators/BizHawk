@@ -157,8 +157,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             ser.Sync("Prev_soam_index", ref soam_index_prev);
             ser.Sync("Spr_Zero_Go", ref sprite_zero_go);
             ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
+			ser.Sync("Is_even_cycle", ref is_even_cycle);
+			ser.Sync("soam_index", ref soam_index);
 
-            ser.Sync("OAM", ref OAM, false);
+			ser.Sync("ppu_open_bus", ref ppu_open_bus);
+			ser.Sync("ppu_open_bus_decay_timer", ref ppu_open_bus_decay_timer, false);
+
+			ser.Sync("OAM", ref OAM, false);
 			ser.Sync("PALRAM", ref PALRAM, false);
 
 			ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);
@@ -181,6 +186,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			regs_reset();
 			ppudead = 2;
 			idleSynch = true;
+			ppu_open_bus = 0;
+			ppu_open_bus_decay_timer = new int[8];
 		}
 
 #if VS2012

@@ -317,15 +317,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
                         cpu_deadcounter += 514;
 					}
 				}
-
+				
+				if (apu.dmc_dma_countdown>0)
+				{
+					cpu.RDY = false;
+					apu.dmc_dma_countdown--;
+					if (apu.dmc_dma_countdown==0)
+					{
+						apu.RunDMCFetch();
+						cpu.RDY = true;
+					}
+						
+					if (apu.dmc_dma_countdown==0)
+					{
+						
+						
+						apu.dmc_dma_countdown = -1;
+					}
+				}
+				
 				if (cpu_deadcounter > 0)
+				{
 					cpu_deadcounter--;
-				else
+				}					
+				else 
 				{
 					cpu.IRQ = _irq_apu || Board.IRQSignal;
 					cpu.ExecuteOne();
 				}
 
+				ppu.ppu_open_bus_decay(0);
 				apu.RunOne();
 				Board.ClockCPU();
 				ppu.PostCpuInstructionOne();
