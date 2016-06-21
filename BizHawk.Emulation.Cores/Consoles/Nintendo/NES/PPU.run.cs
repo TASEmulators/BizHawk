@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									//1. is it sprite#0?
 									//2. is the bg pixel nonzero?
 									//then, it is spritehit.
-									Reg2002_objhit |= (sprite_zero_go && s==0 && pixel != 0 && rasterpos < 255);
+									Reg2002_objhit |= (sprite_zero_go && s==0 && pixel != 0 && rasterpos < 255 && reg_2001.show_bg && reg_2001.show_obj);
 
 									//priority handling, if in front of BG:
 									bool drawsprite = !(((t_oam[s].oam_attr & 0x20) != 0) && ((pixel & 3) != 0));
