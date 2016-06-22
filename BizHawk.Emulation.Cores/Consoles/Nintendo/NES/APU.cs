@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int NoiseV = 247;
 		public int DMCV = 167;
 
+		public int dmc_dma_countdown=-1;
+
 		public bool recalculate = false;
 
 		NES nes;
@@ -677,6 +679,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				out_silence = true;
 				DMC_RATE = pal ? DMC_RATE_PAL : DMC_RATE_NTSC;
 				timer_reload = DMC_RATE[0];
+				timer = timer_reload;
 				sample_buffer_filled = false;
 				out_deltacounter = 64;
 				out_bits_remaining = 0;
@@ -687,8 +690,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int timer_reload;
 
 			int timer;
-			int user_address, user_length;
-			int sample_address, sample_length, sample_buffer;
+			int user_address;
+			uint user_length, sample_length;
+			int sample_address, sample_buffer;
 			bool sample_buffer_filled;
 
 			int out_shift, out_bits_remaining, out_deltacounter;
@@ -730,7 +734,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					timer = timer_reload;
 					Clock();
 				}
-			}
+
+				//Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
+				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
+				if (!sample_buffer_filled && sample_length > 0 && timer % 2 == 1 && apu.dmc_dma_countdown==-1)
+					apu.dmc_dma_countdown = 5;
+            }
 
 
 			void Clock()
@@ -779,10 +788,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else out_bits_remaining--;
 
-						
-				//Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
-				if (!sample_buffer_filled && sample_length > 0)
-					Fetch();
+				
 			}
 
 			public void set_lenctr_en(bool en)
@@ -797,15 +803,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 				{
 					//only start playback if playback is stopped
+					//Console.Write(sample_length); Console.Write(" "); Console.Write(sample_buffer_filled); Console.Write(" "); Console.Write(apu.dmc_irq); Console.Write("\n");
 					if (sample_length == 0)
 					{
 						sample_address = user_address;
 						sample_length = user_length;
-						if (out_silence)
-						{
-							timer = 0;
-							out_bits_remaining = 0;
-						}
+						
 					}
 				}
 
@@ -840,7 +843,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						user_address = 0xC000 | (val << 6);
 						break;
 					case 3:
-						user_length = (val << 4) + 1;
+						user_length = ((uint)val << 4) + 1;
 						break;
 				}
 			}
@@ -848,10 +851,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void Fetch()
 			{
 				//TODO - cpu/apu DMC reads need to be emulated better!
-				sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
-				sample_buffer_filled = true;
-				sample_address = (ushort)(sample_address + 1);
-				sample_length--;
+				if (sample_length != 0)
+				{
+					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
+					sample_buffer_filled = true;
+					sample_address = (ushort)(sample_address + 1);
+					//Console.WriteLine(sample_length);
+					//Console.WriteLine(user_length);
+					sample_length--;
+				}
 				if (sample_length == 0)
 				{
 					if (loop_flag)
@@ -880,6 +888,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("sequence_reset_pending", ref sequence_reset_pending);
 			ser.Sync("sequencer_irq_clear_pending", ref sequencer_irq_clear_pending);
 			ser.Sync("sequencer_irq_assert", ref sequencer_irq_assert);
+
+			ser.Sync("dmc_dma_countdown", ref dmc_dma_countdown);
+			ser.Sync("toggle", ref toggle);
+
 
 			pulse[0].SyncState(ser);
 			pulse[1].SyncState(ser);
@@ -1045,6 +1057,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						triangle.set_lenctr_en((val >> 2) & 1);
 						noise.set_lenctr_en((val >> 3) & 1);
 						dmc.set_lenctr_en(val.Bit(4));
+						
 					}
 					else if (addr == 0x4017)
 					{
@@ -1153,14 +1166,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//it can change the ouput values of the pulse/triangle channels
 			//we want the changes to affect it on the *next* cycle.
 
-			if(DebugCallbackDivider != 0)
+			if (DebugCallbackDivider != 0)
 			{
-				if(DebugCallbackTimer==0)
+				if (DebugCallbackTimer == 0)
 				{
-					if(DebugCallback != null)
+					if (DebugCallback != null)
 						DebugCallback();
 					DebugCallbackTimer = DebugCallbackDivider;
-				} else DebugCallbackTimer--;
+				}
+				else DebugCallbackTimer--;
 
 			}
 		}

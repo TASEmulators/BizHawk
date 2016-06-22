@@ -32,7 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				IsConsole = false,
-				DefaultSize = new Size(420, 260),
+				DefaultSize = new Size(500, 290),
 				DisplayName = "DualShock Player" + controller,
 				Buttons = new[]
 				{
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 						MidValueSec = 128,
 						MaxValueSec = 255,
 						DisplayName = "",
-						Location = new Point(210, 120),
+						Location = new Point(260, 120),
 						Type = PadSchema.PadInputType.AnalogStick
 					}
 				}

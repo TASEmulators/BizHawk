@@ -45,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool denoteMarkersWithBGColor { get; set; }
 		public bool allowRightClickSelecton { get; set; }
 		public bool letKeysModifySelection { get; set; }
+		public bool suspendHotkeys { get; set; }
 
 		private IntPtr RotatedFont;
 		private readonly IntPtr NormalFont;
@@ -1263,93 +1264,96 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.F) // Ctrl+Shift+F
+			if (!suspendHotkeys)
 			{
-				HorizontalOrientation ^= true;
-			}
-			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
-			{
-				if (FirstVisibleRow > 0)
+				if (e.Control && !e.Alt && e.Shift && e.KeyCode == Keys.F) // Ctrl+Shift+F
 				{
-					LastVisibleRow = FirstVisibleRow;
-					Refresh();
+					HorizontalOrientation ^= true;
 				}
-			}
-			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageDown) // Page Down
-			{
-				var totalRows = LastVisibleRow - FirstVisibleRow;
-				if (totalRows <= RowCount)
+				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageUp) // Page Up
 				{
-					var final = LastVisibleRow + totalRows;
-					if (final > RowCount)
+					if (FirstVisibleRow > 0)
 					{
-						final = RowCount;
+						LastVisibleRow = FirstVisibleRow;
+						Refresh();
 					}
+				}
+				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.PageDown) // Page Down
+				{
+					var totalRows = LastVisibleRow - FirstVisibleRow;
+					if (totalRows <= RowCount)
+					{
+						var final = LastVisibleRow + totalRows;
+						if (final > RowCount)
+						{
+							final = RowCount;
+						}
 
-					LastVisibleRow = final;
-					Refresh();
-				}
-			}
-			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
-			{
-				FirstVisibleRow = 0;
-				Refresh();
-			}
-			else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
-			{
-				LastVisibleRow = RowCount;
-				Refresh();
-			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
-			{
-				if (SelectedRows.Any() && letKeysModifySelection)
-				{
-					foreach (var row in SelectedRows.ToList())
-					{
-						SelectRow(row - 1, true);
-						SelectRow(row, false);
+						LastVisibleRow = final;
+						Refresh();
 					}
 				}
-			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
-			{
-				if (SelectedRows.Any() && letKeysModifySelection)
+				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.Home) // Home
 				{
-					foreach (var row in SelectedRows.Reverse().ToList())
+					FirstVisibleRow = 0;
+					Refresh();
+				}
+				else if (!e.Control && !e.Alt && !e.Shift && e.KeyCode == Keys.End) // End
+				{
+					LastVisibleRow = RowCount;
+					Refresh();
+				}
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
+				{
+					if (SelectedRows.Any() && letKeysModifySelection)
 					{
-						SelectRow(row + 1, true);
-						SelectRow(row, false);
+						foreach (var row in SelectedRows.ToList())
+						{
+							SelectRow(row - 1, true);
+							SelectRow(row, false);
+						}
 					}
 				}
-			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
-			{
-				if (SelectedRows.Any() && letKeysModifySelection)
+				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Ctrl + Down
 				{
-					SelectRow(SelectedRows.First() - 1, true);
+					if (SelectedRows.Any() && letKeysModifySelection)
+					{
+						foreach (var row in SelectedRows.Reverse().ToList())
+						{
+							SelectRow(row + 1, true);
+							SelectRow(row, false);
+						}
+					}
 				}
-			}
-			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
-			{
-				if (SelectedRows.Any() && letKeysModifySelection)
+				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
 				{
-					SelectRow(SelectedRows.Last() + 1, true);
+					if (SelectedRows.Any() && letKeysModifySelection)
+					{
+						SelectRow(SelectedRows.First() - 1, true);
+					}
 				}
-			}
-			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
-			{
-				if (FirstVisibleRow > 0)
+				else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
 				{
-					FirstVisibleRow--;
-					Refresh();
+					if (SelectedRows.Any() && letKeysModifySelection)
+					{
+						SelectRow(SelectedRows.Last() + 1, true);
+					}
 				}
-			}
-			else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
-			{
-				if (FirstVisibleRow < RowCount - 1)
+				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Up
 				{
-					FirstVisibleRow++;
-					Refresh();
+					if (FirstVisibleRow > 0)
+					{
+						FirstVisibleRow--;
+						Refresh();
+					}
+				}
+				else if (!e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Down
+				{
+					if (FirstVisibleRow < RowCount - 1)
+					{
+						FirstVisibleRow++;
+						Refresh();
+					}
 				}
 			}
 

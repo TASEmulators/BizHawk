@@ -102,7 +102,14 @@ namespace BizHawk.Emulation.Cores
 			switch (cmd)
 			{
 				case LibRetro.RETRO_ENVIRONMENT.SET_ROTATION:
-					return false;
+					{
+						var rotation = (LibRetro.RETRO_ROTATION)(*(int*)data.ToPointer());
+						if (rotation == LibRetro.RETRO_ROTATION.ROTATION_0_CCW) environmentInfo.Rotation_CCW = 0;
+						if (rotation == LibRetro.RETRO_ROTATION.ROTATION_90_CCW) environmentInfo.Rotation_CCW = 90;
+						if (rotation == LibRetro.RETRO_ROTATION.ROTATION_180_CCW) environmentInfo.Rotation_CCW = 180;
+						if (rotation == LibRetro.RETRO_ROTATION.ROTATION_270_CCW) environmentInfo.Rotation_CCW = 270;
+						return true;
+					}
 				case LibRetro.RETRO_ENVIRONMENT.GET_OVERSCAN:
 					return false;
 				case LibRetro.RETRO_ENVIRONMENT.GET_CAN_DUPE:
@@ -274,6 +281,7 @@ namespace BizHawk.Emulation.Cores
 		class RetroEnvironmentInfo
 		{
 			public bool SupportNoGame;
+			public int Rotation_CCW;
 		}
 
 		//disposable resources
@@ -774,7 +782,7 @@ namespace BizHawk.Emulation.Cores
 		#region IVideoProvider
 
 		float dar;
-		int[] vidbuff;
+		int[] vidbuff, rawvidbuff;
 		LibRetro.RETRO_PIXEL_FORMAT pixelfmt = LibRetro.RETRO_PIXEL_FORMAT.XRGB1555;
 
 		void Blit555(short* src, int* dst, int width, int height, int pitch)
@@ -848,12 +856,26 @@ namespace BizHawk.Emulation.Cores
 		{
 			if (data == IntPtr.Zero) // dup frame
 				return;
-			if (width * height > vidbuff.Length)
+
+
+			//if (BufferWidth != width) BufferWidth = (int)width;
+			//if (BufferHeight != height) BufferHeight = (int)height;
+			//if (BufferWidth * BufferHeight != rawvidbuff.Length)
+			//  rawvidbuff = new int[BufferWidth * BufferHeight];
+
+			//if we have rotation, we might have a geometry mismatch and in any event we need a temp buffer to do the rotation from
+			//but that's a general problem, isnt it?
+			if (rawvidbuff == null || rawvidbuff.Length != width * height)
 			{
-				Console.WriteLine("Unexpected libretro video buffer overrun?");
-				return;
+				rawvidbuff = new int[width * height];
 			}
-			fixed (int* dst = &vidbuff[0])
+
+			int[] target = vidbuff;
+			if (environmentInfo.Rotation_CCW != 0)
+				target = rawvidbuff;
+			
+
+			fixed (int* dst = &target[0])
 			{
 				if (pixelfmt == LibRetro.RETRO_PIXEL_FORMAT.XRGB8888)
 					Blit888((int*)data, dst, (int)width, (int)height, (int)pitch / 4);
@@ -861,6 +883,27 @@ namespace BizHawk.Emulation.Cores
 					Blit565((short*)data, dst, (int)width, (int)height, (int)pitch / 2);
 				else
 					Blit555((short*)data, dst, (int)width, (int)height, (int)pitch / 2);
+			}
+
+			int dw = BufferWidth, dh = BufferHeight;
+			if (environmentInfo.Rotation_CCW == 0) { }
+			else if (environmentInfo.Rotation_CCW == 270)
+			{
+				for(int y=0;y<height;y++)
+					for (int x = 0; x < width; x++)
+					{
+						int dx = dw-y-1;
+						int dy = x;
+						vidbuff[dy * dw + dx] = rawvidbuff[y * width + x];
+					}
+			}
+			else if (environmentInfo.Rotation_CCW == 90)
+			{
+				throw new InvalidOperationException("PLEASE REPORT THIS BUG: CANTANKEROUS IMAGEBOUND NINJA");
+			}
+			else if (environmentInfo.Rotation_CCW == 180)
+			{
+				throw new InvalidOperationException("PLEASE REPORT THIS BUG: STAPH REGULARIZATION PROTOCOL");
 			}
 		}
 

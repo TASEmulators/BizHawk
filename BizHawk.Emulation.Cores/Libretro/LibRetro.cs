@@ -18,6 +18,14 @@ namespace BizHawk.Emulation.Cores
 	{
 		public const int RETRO_API_VERSION = 1;
 
+		public enum RETRO_ROTATION
+		{
+			ROTATION_0_CCW = 0,
+			ROTATION_90_CCW = 1,
+			ROTATION_180_CCW = 2,
+			ROTATION_270_CCW = 3,
+		}
+
 		public enum RETRO_DEVICE
 		{
 			NONE = 0,

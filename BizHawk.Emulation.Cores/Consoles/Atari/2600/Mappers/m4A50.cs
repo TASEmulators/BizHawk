@@ -170,15 +170,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				val = RomImage[(addr & 0xff) + (RomImage.Length - 256)];
 				if (((_lastData & 0xe0) == 0x60) && ((_lastAddress >= 0x1000) ||
-					(_lastAddress < 0x200)))
+					(_lastAddress < 0x200)) && !peek)
 				{
 					_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
 						((addr & 0x70) << 4);
 				}
 			}
-
-			_lastData = val;
-			_lastAddress = (ushort)(addr & 0x1fff);
+            if (!peek)
+            {
+                _lastData = val;
+                _lastAddress = (ushort)(addr & 0x1fff);
+            }
 			return val;
 		}
 
@@ -226,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			else if (addr < 0x2000 && !poke) // 256B region at 0x1f00 - 0x1fff
 			{
 				if (((_lastData & 0xe0) == 0x60) &&
-					((_lastAddress >= 0x1000) || (_lastAddress < 0x200)))
+					((_lastAddress >= 0x1000) || (_lastAddress < 0x200)) && !poke)
 				{
 					_sliceHigh = (_sliceHigh & 0xf0ff) | ((addr & 0x8) << 8) |
 									((addr & 0x70) << 4);
@@ -252,96 +254,95 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void CheckBankSwitch(ushort address, byte value)
 		{
-			if (((_lastData & 0xe0) == 0x60) && // Switch lower/middle/upper bank
-				((_lastAddress >= 0x1000) || (_lastAddress < 0x200)))
+            if (((_lastData & 0xe0) == 0x60) && // Switch lower/middle/upper bank
+                ((_lastAddress >= 0x1000) || (_lastAddress < 0x200)))
+            {
+                if ((address & 0x0f00) == 0x0c00) // Enable 256B of ROM at 0x1e00 - 0x1eff
+                {
+                    _isRomHigh = true;
+                    _sliceHigh = (address & 0xff) << 8;
+                }
+                else if ((address & 0x0f00) == 0x0d00) // Enable 256B of RAM at 0x1e00 - 0x1eff
+                {
+                    _isRomHigh = false;
+                    _sliceHigh = (address & 0x7f) << 8;
+                }
+                else if ((address & 0x0f40) == 0x0e00) // Enable 2K of ROM at 0x1000 - 0x17ff
+                {
+                    _isRomLow = true;
+                    _sliceLow = (address & 0x1f) << 11;
+                }
+                else if ((address & 0x0f40) == 0x0e40) // Enable 2K of RAM at 0x1000 - 0x17ff
+                {
+                    _isRomLow = false;
+                    _sliceLow = (address & 0xf) << 11;
+                }
+                else if ((address & 0x0f40) == 0x0f00) // Enable 1.5K of ROM at 0x1800 - 0x1dff
+                {
+                    _isRomMiddle = true;
+                    _sliceMiddle = (address & 0x1f) << 11;
+                }
+                else if ((address & 0x0f50) == 0x0f40)  // Enable 1.5K of RAM at 0x1800 - 0x1dff
+                {
+                    _isRomMiddle = false;
+                    _sliceMiddle = (address & 0xf) << 11;
+                }
+                else if ((address & 0x0f00) == 0x0400) // Toggle bit A11 of lower block address
+                {
+                    _sliceLow = _sliceLow ^ 0x800;
+                }
+                else if ((address & 0x0f00) == 0x0500) // Toggle bit A12 of lower block address
+                {
+                    _sliceLow = _sliceLow ^ 0x1000;
+                }
+                else if ((address & 0x0f00) == 0x0800) // Toggle bit A11 of middle block address
+                {
+                    _sliceMiddle = _sliceMiddle ^ 0x800;
+                }
+                else if ((address & 0x0f00) == 0x0900) // Toggle bit A12 of middle block address
+                {
+                    _sliceMiddle = _sliceMiddle ^ 0x1000;
+                }
+            }
+			// Zero-page hotspots for upper page
+			// 0xf4, 0xf6, 0xfc, 0xfe for ROM
+			// 0xf5, 0xf7, 0xfd, 0xff for RAM
+			// 0x74 - 0x7f (0x80 bytes lower)
+			if ((address & 0xf75) == 0x74) // Enable 256B of ROM at 0x1e00 - 0x1eff
 			{
-				if ((address & 0x0f00) == 0x0c00) // Enable 256B of ROM at 0x1e00 - 0x1eff
-				{
-					_isRomHigh = true;
-					_sliceHigh = (address & 0xff) << 8;
-				}
-				else if ((address & 0x0f00) == 0x0d00) // Enable 256B of RAM at 0x1e00 - 0x1eff
-				{
-					_isRomHigh = false;
-					_sliceHigh = (address & 0x7f) << 8;
-				}
-				else if ((address & 0x0f40) == 0x0e00) // Enable 2K of ROM at 0x1000 - 0x17ff
+				_isRomHigh = true;
+				_sliceHigh = value << 8;
+			}
+			else if ((address & 0xf75) == 0x75) // Enable 256B of RAM at 0x1e00 - 0x1eff
+			{
+				_isRomHigh = false;
+				_sliceHigh = (value & 0x7f) << 8;
+			}
+
+			// Zero-page hotspots for lower and middle blocks
+			// 0xf8, 0xf9, 0xfa, 0xfb
+			// 0x78, 0x79, 0x7a, 0x7b (0x80 bytes lower)
+			else if ((address & 0xf7c) == 0x78)
+			{
+				if ((value & 0xf0) == 0) // Enable 2K of ROM at 0x1000 - 0x17ff
 				{
 					_isRomLow = true;
-					_sliceLow = (address & 0x1f) << 11;
+					_sliceLow = (value & 0xf) << 11;
 				}
-				else if ((address & 0x0f40) == 0x0e40) // Enable 2K of RAM at 0x1000 - 0x17ff
+				else if ((value & 0xf0) == 0x40) // Enable 2K of RAM at 0x1000 - 0x17ff
 				{
 					_isRomLow = false;
-					_sliceLow = (address & 0xf) << 11;
+					_sliceLow = (value & 0xf) << 11;
 				}
-				else if ((address & 0x0f40) == 0x0f00) // Enable 1.5K of ROM at 0x1800 - 0x1dff
+				else if ((value & 0xf0) == 0x90) // Enable 1.5K of ROM at 0x1800 - 0x1dff
 				{
 					_isRomMiddle = true;
-					_sliceMiddle = (address & 0x1f) << 11;
+					_sliceMiddle = ((value & 0xf) | 0x10) << 11;
 				}
-				else if ((address & 0x0f50) == 0x0f40)  // Enable 1.5K of RAM at 0x1800 - 0x1dff
+				else if ((value & 0xf0) == 0xc0) // Enable 1.5K of RAM at 0x1800 - 0x1dff
 				{
 					_isRomMiddle = false;
-					_sliceMiddle = (address & 0xf) << 11;
-				}
-				else if ((address & 0x0f00) == 0x0400) // Toggle bit A11 of lower block address
-				{
-					_sliceLow = _sliceLow ^ 0x800;
-				}
-				else if ((address & 0x0f00) == 0x0500) // Toggle bit A12 of lower block address
-				{
-					_sliceLow = _sliceLow ^ 0x1000;
-				}
-				else if ((address & 0x0f00) == 0x0800) // Toggle bit A11 of middle block address
-				{
-					_sliceMiddle = _sliceMiddle ^ 0x800;
-				}
-				else if ((address & 0x0f00) == 0x0900) // Toggle bit A12 of middle block address
-				{
-					_sliceMiddle = _sliceMiddle ^ 0x1000;
-				}
-
-				// Zero-page hotspots for upper page
-				// 0xf4, 0xf6, 0xfc, 0xfe for ROM
-				// 0xf5, 0xf7, 0xfd, 0xff for RAM
-				// 0x74 - 0x7f (0x80 bytes lower)
-				if ((address & 0xf75) == 0x74) // Enable 256B of ROM at 0x1e00 - 0x1eff
-				{
-					_isRomHigh = true;
-					_sliceHigh = value << 8;
-				}
-				else if ((address & 0xf75) == 0x75) // Enable 256B of RAM at 0x1e00 - 0x1eff
-				{
-					_isRomHigh = false;
-					_sliceHigh = (value & 0x7f) << 8;
-				}
-
-				// Zero-page hotspots for lower and middle blocks
-				// 0xf8, 0xf9, 0xfa, 0xfb
-				// 0x78, 0x79, 0x7a, 0x7b (0x80 bytes lower)
-				else if ((address & 0xf7c) == 0x78)
-				{
-					if ((value & 0xf0) == 0) // Enable 2K of ROM at 0x1000 - 0x17ff
-					{
-						_isRomLow = true;
-						_sliceLow = (value & 0xf) << 11;
-					}
-					else if ((value & 0xf0) == 0x40) // Enable 2K of RAM at 0x1000 - 0x17ff
-					{
-						_isRomLow = false;
-						_sliceLow = (value & 0xf) << 11;
-					}
-					else if ((value & 0xf0) == 0x90) // Enable 1.5K of ROM at 0x1800 - 0x1dff
-					{
-						_isRomMiddle = true;
-						_sliceMiddle = ((value & 0xf) | 0x10) << 11;
-					}
-					else if ((value & 0xf0) == 0xc0) // Enable 1.5K of RAM at 0x1800 - 0x1dff
-					{
-						_isRomMiddle = false;
-						_sliceMiddle = (value & 0xf) << 11;
-					}
+					_sliceMiddle = (value & 0xf) << 11;
 				}
 			}
 		}

@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 				Directory.CreateDirectory(Path.GetDirectoryName(backupName));
 			}
 
-			Write(backupName);
+			Write(backupName, backup: true);
 		}
 
 		public virtual bool Load(bool preload)
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 			return Load(true);
 		}
 
-		protected virtual void Write(string fn)
+		protected virtual void Write(string fn, bool backup = false)
 		{
 			var file = new FileInfo(fn);
 			if (!file.Directory.Exists)
@@ -215,7 +215,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			Changes = false;
+			if (!backup)
+				Changes = false;
 		}
 
 		protected void ClearBeforeLoad()

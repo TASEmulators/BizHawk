@@ -36,10 +36,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if ((addr & 0x1080) == 0x0080)
 			{
-				return M6532.ReadMemory(addr, false);
+                _tia.bus_state = M6532.ReadMemory(addr, false);
+                return M6532.ReadMemory(addr, false);
 			}
 
-			return Rom[addr & 0x0FFF];
+            _tia.bus_state = Rom[addr & 0x0FFF];
+            return Rom[addr & 0x0FFF];
 		}
 
 		internal byte BasePeekMemory(ushort addr)
@@ -52,15 +54,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if ((addr & 0x1080) == 0x0080)
 			{
-				return M6532.ReadMemory(addr, true);
+                return M6532.ReadMemory(addr, true);
 			}
-
-			return Rom[addr & 0x0FFF];
+            return Rom[addr & 0x0FFF];
 		}
 
 		internal void BaseWriteMemory(ushort addr, byte value)
 		{
-			if (addr != LastAddress)
+            _tia.bus_state = value;
+            if (addr != LastAddress)
 			{
 				DistinctAccessCount++;
 				LastAddress = addr;
@@ -69,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
-				_tia.WriteMemory(addr, value);
+				_tia.WriteMemory(addr, value, false);
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
@@ -83,10 +85,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		internal void BasePokeMemory(ushort addr, byte value)
 		{
-			addr = (ushort)(addr & 0x1FFF);
+            addr = (ushort)(addr & 0x1FFF);
 			if ((addr & 0x1080) == 0)
 			{
-				_tia.WriteMemory(addr, value);
+				_tia.WriteMemory(addr, value, true);
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
@@ -108,6 +110,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
+            _tia.bus_state = temp;
 			MemoryCallbacks.CallReads(addr);
 
 			return temp;
@@ -115,8 +118,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		internal byte PeekMemory(ushort addr)
 		{
-			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
-
+			var temp = _mapper.PeekMemory((ushort)(addr & 0x1FFF));
 			return temp;
 		}
 
@@ -241,8 +243,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_mapper = new mUA();
 					break;
 
-				// Homebrew mappers
-				case "3E":
+                // Special Sega Mapper which has swapped banks
+                case "F8_sega":
+                    _mapper = new mF8_sega();
+                    break;
+
+                // Homebrew mappers
+                case "3E":
 					_mapper = new m3E();
 					break;
 				case "0840":
@@ -316,6 +323,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					Rom.HashSHA1(),
 					Rom.HashMD5(),
 					_mapper.GetType());
+
+
+            // as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
+            // some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
+            // executing a reset sequence at power on, but it's needed so let's hard code it for now
+            Cpu.S = 0xFD;
 		}
 
 		private bool _pal;
@@ -338,13 +351,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			M6532 = new M6532(this);
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
-		}
+
+            // as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
+            // some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
+            // executing a reset sequence at power on, but it's needed so let's hard code it for now
+            Cpu.S = 0xFD;
+        }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			StartFrameCond();
 			while (_tia.LineCount < _tia.NominalNumScanlines)
 				Cycle();
+            if (rendersound==false)
+                _tia._audioClocks = 0; // we need this here since the async sound provider won't check in this case
 			FinishFrameCond();
 		}
 

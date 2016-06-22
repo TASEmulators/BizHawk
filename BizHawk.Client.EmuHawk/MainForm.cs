@@ -34,6 +34,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
+using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2897,6 +2898,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+			else
+			{
+				atten = 0;
+			}
 
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
@@ -3724,6 +3729,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
+				ClientApi.OnStateLoaded(this, userFriendlyStateName);
+
 				if (GlobalWin.Tools.Has<LuaConsole>())
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallLoadStateEvent(userFriendlyStateName);
@@ -3752,6 +3759,13 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			bool handled;
+			ClientApi.OnBeforeQuickLoad(this, quickSlotName, out handled);
+			if (handled)
 			{
 				return;
 			}
@@ -3790,6 +3804,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SavestateManager.SaveStateFile(path, userFriendlyStateName);
 
+				ClientApi.OnStateSaved(this, userFriendlyStateName);
+
 				GlobalWin.OSD.AddMessage("Saved state: " + userFriendlyStateName);
 			}
 			catch (IOException)
@@ -3806,6 +3822,13 @@ namespace BizHawk.Client.EmuHawk
 		public void SaveQuickSave(string quickSlotName)
 		{
 			if (!Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			bool handled;
+			ClientApi.OnBeforeQuickSave(this, quickSlotName, out handled);
+			if(handled)
 			{
 				return;
 			}
@@ -4029,16 +4052,37 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp)
 		{
+			var isRewinding = false;
+
 			if (IsSlave && master.WantsToControlRewind)
 			{
 				if (Global.ClientControls["Rewind"] || PressRewind)
 				{
-					runFrame = true; // TODO: the master should be deciding this!
-					return master.Rewind();
+					if (_frameRewindTimestamp == 0)
+					{
+						isRewinding = true;
+						_frameRewindTimestamp = currentTimestamp;
+					}
+					else
+					{
+						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
+						isRewinding = timestampDeltaMs >= Global.Config.FrameProgressDelayMs;
+					}
+
+					if (isRewinding)
+					{
+						runFrame = true; // TODO: the master should be deciding this!
+						master.Rewind();
+					}
 				}
+				else
+				{
+					_frameRewindTimestamp = 0;
+				}
+
+				return isRewinding;
 			}
 
-			var isRewinding = false;
 			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
 				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
 			{

@@ -38,7 +38,8 @@ namespace BizHawk.Client.EmuHawk
 				Text = "Version " + mainversion + " (GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH + ")";
 			}
 
-			VersionLabel.Text = "Version " + mainversion + " " + VersionInfo.RELEASEDATE;
+			VersionLabel.Text = "Version " + mainversion;
+			DateLabel.Text = VersionInfo.RELEASEDATE;
 
 			var cores = Assembly
 				.Load("BizHawk.Emulation.Cores")
@@ -50,13 +51,12 @@ namespace BizHawk.Client.EmuHawk
 				.OrderByDescending(a => a.CoreName.ToLower())
 				.ToList();
 
-			foreach(var core in cores)
+			foreach (var core in cores)
 			{
 				CoreInfoPanel.Controls.Add(new BizBoxInfoControl(core)
 				{
 					Dock = DockStyle.Top
 				});
-
 			}
 
 			linkLabel2.Text = "Commit # " + SubWCRev.GIT_SHORTHASH;
@@ -70,6 +70,11 @@ namespace BizHawk.Client.EmuHawk
 		private void btnCopyHash_Click(object sender, EventArgs e)
 		{
 			System.Windows.Forms.Clipboard.SetText(SubWCRev.GIT_SHORTHASH);
+		}
+
+		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			System.Diagnostics.Process.Start("https://github.com/TASVideos/BizHawk/graphs/contributors");
 		}
 	}
 }

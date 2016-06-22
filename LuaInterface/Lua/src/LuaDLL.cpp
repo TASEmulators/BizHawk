@@ -707,16 +707,22 @@ namespace Lua511
 
 		static int luaL_loadbuffer(IntPtr luaState, String^ buff, String^ name)
 		{
-			char *cs1 = (char *) Marshal::StringToHGlobalAnsi(buff).ToPointer();
-			char *cs2 = (char *) Marshal::StringToHGlobalAnsi(name).ToPointer();
+			//zero 23-may-2016 - get rid of this GARBAGE. lua can load UTF-8, why not use that?
+			//char *cs1 = (char *) Marshal::StringToHGlobalAnsi(buff).ToPointer();
+			//char *cs2 = (char *) Marshal::StringToHGlobalAnsi(name).ToPointer();
+			////CP: fix for MBCS, changed to use cs1's length (reported by qingrui.li)
+			//int result = ::luaL_loadbuffer(toState, cs1, strlen(cs1), cs2);
+			//Marshal::FreeHGlobal(IntPtr(cs1));
+			//Marshal::FreeHGlobal(IntPtr(cs2));
 
-			//CP: fix for MBCS, changed to use cs1's length (reported by qingrui.li)
-			int result = ::luaL_loadbuffer(toState, cs1, strlen(cs1), cs2);
+			array<System::Byte> ^ _buff = System::Text::Encoding::UTF8->GetBytes(buff);
+			array<System::Byte> ^ _name = System::Text::Encoding::UTF8->GetBytes(name);
+			char* lbuff = "", *lname = nullptr;
+			pin_ptr<System::Byte> p_buff, p_name;
+			if(buff->Length != 0) { p_buff = &_buff[0]; lbuff = (char*)(System::Byte*)p_buff; }
+			if(name->Length != 0) { p_name= &_name[0]; lname = (char*)(System::Byte*)p_name; }
 
-			Marshal::FreeHGlobal(IntPtr(cs1));
-			Marshal::FreeHGlobal(IntPtr(cs2));
-
-			return result;
+			return ::luaL_loadbuffer(toState, lbuff, _buff->Length, lname);
 		}
 
 		static int luaL_loadfile(IntPtr luaState, String^ filename)
