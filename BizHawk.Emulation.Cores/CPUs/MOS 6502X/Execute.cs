@@ -2109,8 +2109,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void IncPC()
 		{
-			PC++;
-		}
+            rdy_freeze = !RDY;
+		    if (RDY)
+		    {
+		        ReadMemory(PC);
+                PC++;
+            }
+        }
 		void ZP_RMW_Stage3()
 		{
 			rdy_freeze = !RDY;
