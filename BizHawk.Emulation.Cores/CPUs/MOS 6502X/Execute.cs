@@ -534,7 +534,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		void FetchDummy()
 		{
-            DummyReadMemory(PC);
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				DummyReadMemory(PC);
+			}
 		}
 
 		public void Execute(int cycles)
@@ -2109,13 +2113,13 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void IncPC()
 		{
-            rdy_freeze = !RDY;
-		    if (RDY)
-		    {
-		        ReadMemory(PC);
-                PC++;
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				ReadMemory(PC);
+				PC++;
+			}
+		}	
 		void ZP_RMW_Stage3()
 		{
 			rdy_freeze = !RDY;
