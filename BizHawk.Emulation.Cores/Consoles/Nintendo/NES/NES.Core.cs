@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		internal INESBoard Board; //the board hardware that is currently driving things
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
+
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 		/// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
@@ -365,9 +366,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
 				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
 				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
-					return apu.ReadReg(addr);
+					return DB;
+					//return apu.ReadReg(addr);
 				case 0x4014: /*OAM DMA*/ break;
-				case 0x4015: return apu.ReadReg(addr); 
+				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xCF) + (byte)(DB&0x20)); 
 				case 0x4016:
 				case 0x4017:
 					return read_joyport(addr);
@@ -376,7 +378,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 
 			}
-			return 0xFF;
+			return DB;
 		}
 
 		public byte PeekReg(int addr)
@@ -591,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4020)
 			{
-				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical
+				ret = ReadReg(addr); //we're not rebasing the register just to keep register names canonical			
 			}
 			else if (addr < 0x6000)
 			{
@@ -614,7 +616,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			MemoryCallbacks.CallReads(addr);
 
 			DB = ret;
-
 			return ret;
 		}
 
