@@ -74,6 +74,7 @@ namespace BizHawk.Client.ApiHawk
 					return CoreSystem.Null;
 
 				case "PCE":
+				case "SGX":
 					return CoreSystem.PCEngine;
 
 				case "PSX":
