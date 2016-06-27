@@ -25,6 +25,7 @@
 #include gamedb_lynx.txt
 #include gamedb_appleII.txt
 #include gamedb_psx.txt
+#include gamedb_e_cards.txt
 
 ; ************ TI-83 ************
 
