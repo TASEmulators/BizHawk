@@ -1625,6 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
 			SMSForceStereoMenuItem.Checked = s.ForceStereoSeparation;
 			SMSSpriteLimitMenuItem.Checked = s.SpriteLimit;
+			SMSDisplayOverscanMenuItem.Checked = s.DisplayOverscan;
 			SMSFix3DGameDisplayToolStripMenuItem.Checked = s.Fix3D;
 			ShowClippedRegionsMenuItem.Checked = s.ShowClippedRegions;
 			HighlightActiveDisplayRegionMenuItem.Checked = s.HighlightActiveDisplayRegion;
@@ -1632,6 +1633,7 @@ namespace BizHawk.Client.EmuHawk
 			SMSEnableFMChipMenuItem.Visible =
 				SMSFix3DGameDisplayToolStripMenuItem.Visible =
 				SMSenableBIOSToolStripMenuItem.Visible =
+				SMSDisplayOverscanMenuItem.Visible =
 				Global.Game.System == "SMS";
 
 			SMSOverclockMenuItem.Visible =
@@ -1724,6 +1726,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((SMS)Global.Emulator).GetSettings();
 			s.SpriteLimit ^= true;
+			PutCoreSettings(s);
+		}
+
+		private void SMSDisplayOverscanMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = ((SMS)Global.Emulator).GetSettings();
+			s.DisplayOverscan ^= true;
 			PutCoreSettings(s);
 		}
 
@@ -2743,7 +2752,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FormDragDrop_internal(object sender, DragEventArgs e)
 		{
-            _FormDragDrop_internal(sender, e);
+			_FormDragDrop_internal(sender, e);
 /*
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			var isLua = false;

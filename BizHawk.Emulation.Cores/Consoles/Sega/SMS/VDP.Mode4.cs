@@ -271,6 +271,66 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				FrameBuffer[ofs++] = Palette[BackdropColor];
 		}
 
+		internal int OverscanFrameWidth, OverscanFrameHeight;
+		int overscanTop;
+		int overscanBottom;
+		int overscanLeft;
+		int overscanRight;
+
+		internal void ProcessOverscan()
+		{
+			if (Sms.Settings.DisplayOverscan == false)
+				return;
+
+			if (OverscanFrameBuffer == null)
+			{
+				if (Sms.Region == Common.DisplayType.NTSC)
+				{
+					overscanLeft = 13;
+					overscanRight = 15;
+					overscanTop = 27;
+					overscanBottom = 24;
+				}
+				else // PAL
+				{
+					overscanLeft = 13;
+					overscanRight = 15;
+					overscanTop = 48;
+					overscanBottom = 48;
+				}
+
+				OverscanFrameWidth = overscanLeft + 256 + overscanRight;
+				OverscanFrameHeight = overscanTop + 192 + overscanBottom;
+				OverscanFrameBuffer = new int[OverscanFrameHeight * OverscanFrameWidth];
+			}
+
+			// Top overscan
+			for (int y=0; y<overscanTop; y++)
+				for (int x = 0; x < OverscanFrameWidth; x++)
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+			
+			// Bottom overscan
+			for (int y = overscanTop + 192; y < OverscanFrameHeight; y++)
+				for (int x = 0; x < OverscanFrameWidth; x++)
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+
+			// Left overscan
+			for (int y = overscanTop; y < overscanTop + 192; y++)
+				for (int x = 0; x < overscanLeft; x++)
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+
+			// Right overscan
+			for (int y = overscanTop; y < overscanTop + 192; y++)
+				for (int x = overscanLeft + 256; x < OverscanFrameWidth; x++)
+					OverscanFrameBuffer[(y * OverscanFrameWidth) + x] = BackgroundColor;
+
+			// Active display area
+			for (int y = 0; y < 192; y++)
+				for (int x = 0; x < 256; x++)
+					OverscanFrameBuffer[((y + overscanTop) * OverscanFrameWidth) + overscanLeft + x] = FrameBuffer[y * 256 + x];
+		}
+
+
 		// Handles GG clipping or highlighting
 		internal void ProcessGGScreen()
 		{

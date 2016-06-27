@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public int ScanLine;
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
+		public int[] OverscanFrameBuffer = null;
 
 		public bool Mode1Bit { get { return (Registers[1] & 16) > 0; } }
 		public bool Mode2Bit { get { return (Registers[0] & 2) > 0; } }
@@ -369,7 +370,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Cpu.ExecuteCycles(IPeriod);
 
 				if (ScanLine == scanlinesPerFrame - 1)
+				{
 					ProcessGGScreen();
+					ProcessOverscan();
+				}
 			}
 		}
 
@@ -429,6 +433,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int[] GetVideoBuffer()
 		{
+			if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+			{
+				if (OverscanFrameBuffer == null)
+					ProcessOverscan();
+				return OverscanFrameBuffer;
+			}
 			if (mode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
 				return FrameBuffer;
 			return GameGearFrameBuffer;
@@ -438,6 +448,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{ 
 			get
 			{
+				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+					return OverscanFrameWidth;
 				if (mode == MasterSystem.VdpMode.SMS)
 					return 293;
 				else if (Sms.Settings.ShowClippedRegions)
@@ -451,6 +463,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			get
 			{
+				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+					return OverscanFrameWidth;
 				if (mode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
 					return 256;
 				return 160; // GameGear
@@ -461,6 +475,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			get
 			{
+				if (mode == VdpMode.SMS && Sms.Settings.DisplayOverscan)
+					return OverscanFrameHeight;
 				if (mode == VdpMode.SMS || Sms.Settings.ShowClippedRegions)
 					return FrameHeight;
 				return 144; // GameGear
