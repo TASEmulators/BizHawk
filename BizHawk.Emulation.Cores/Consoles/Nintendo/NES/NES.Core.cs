@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return DB;
 					//return apu.ReadReg(addr);
 				case 0x4014: /*OAM DMA*/ break;
-				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xCF) + (byte)(DB&0x20)); 
+				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xDF) + (byte)(DB&0x20)); 
 				case 0x4016:
 				case 0x4017:
 					return read_joyport(addr);
