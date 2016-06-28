@@ -29,6 +29,11 @@
 #include gamedb_msx1.txt
 #include gamedb_msx2.txt
 #include gamedb_goodnes.txt
+#include gamedb_neshomebrew.txt
+#include gamedb_vs.txt
+#include gamedb_user.txt
+#include gamedb_ws.txt
+#include gamedb_wsc.txt
 
 ; ************ TI-83 ************
 
@@ -41,14 +46,7 @@ D4448D09BBFDE687C04F9E3310E023AB		TI-83 v1.07	TI83		initPC=6ce
 163B7CECDD3862116DFA7F0D650D56AB	B	TI-83 v1.10	TI83		initPC=6ce
 5ACB6614E0004AAF8B9EC706D4E47DFB	B	TI-83 v1.12	TI83		initPC=6ce
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;bad PSX (not many, so collecting here for now);;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;licensed by sony... string erased:
 C94257E7	B	Looney Tunes - Sheep Raider (STATiC Dump)	PSX		dh=00000000
 829A295C	B	Monster Rancher 2 (U) (EXE Patched)	PSX		dh=00000000
-
-#include gamedb_neshomebrew.txt
-#include gamedb_vs.txt
-#include gamedb_user.txt
-#include gamedb_ws.txt
-#include gamedb_wsc.txt
