@@ -7,6 +7,15 @@ namespace BizHawk.Client.Common
 {
 	public class SubtitleList : List<Subtitle>
 	{
+		public bool ConcatMultilines { get; set; }
+		public bool AddColorTag { get; set; }
+
+		public SubtitleList()
+		{
+			ConcatMultilines = false;
+			AddColorTag = false;
+		}
+
 		public IEnumerable<Subtitle> GetSubtitles(int frame)
 		{
 			return this.Where(t => frame >= t.Frame && frame <= t.Frame + t.Duration);
@@ -15,6 +24,7 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
+			this.OrderBy(s => s.Frame).ThenBy(s => s.Y);
 			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
 			return sb.ToString();
 		}
@@ -41,7 +51,7 @@ namespace BizHawk.Client.Common
 						Y = int.Parse(subparts[3]),
 						Duration = int.Parse(subparts[4]),
 						Color = uint.Parse(subparts[5], NumberStyles.HexNumber),
-						Message = message
+						Message = message.Trim()
 					});
 
 					return true;
@@ -58,11 +68,44 @@ namespace BizHawk.Client.Common
         public string ToSubRip(double fps)
         {
             int index = 1;
+			var sb = new StringBuilder();
+			SubtitleList subs = new SubtitleList();
+			foreach (var subtitle in this)
+				subs.Add(subtitle);
 
-            var sb = new StringBuilder();
+			// absense of line wrap forces miltiline subtitle macros
+			// so we sort them just in case and optionally concat back to a single unit
+			// todo: instead of making this pretty, add the line wrap feature to subtitles
+			if (ConcatMultilines)
+			{
+				int lastframe = 0;
+				subs.OrderBy(s => s.Frame).ThenBy(s => s.Y);
 
-            foreach (var subtitle in this)
-                sb.Append(subtitle.ToSubRip(index++, fps));
+				for (int i = 0; ; i++)
+				{
+					if (i == subs.Count()) // we're modifying it
+						break;
+
+					subs[i].Message = subs[i].Message.Trim();
+
+					if (i > 0 && lastframe == subs[i].Frame)
+					{
+						subs[i].Message = subs[i - 1].Message + " " + subs[i].Message;
+						subs.Remove(subs[i - 1]);
+						i--;
+					}
+
+					lastframe = subs[i].Frame;
+				}
+			}
+			else
+			{
+				// srt stacks musltilines upwards
+				subs.OrderBy(s => s.Frame).ThenByDescending(s => s.Y);
+			}
+
+            foreach (var subtitle in subs)
+                sb.Append(subtitle.ToSubRip(index++, fps, AddColorTag));
 
             return sb.ToString();
         }
