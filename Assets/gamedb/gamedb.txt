@@ -26,6 +26,8 @@
 #include gamedb_appleII.txt
 #include gamedb_psx.txt
 #include gamedb_e_cards.txt
+#include gamedb_msx1.txt
+#include gamedb_msx2.txt
 
 ; ************ TI-83 ************
 
