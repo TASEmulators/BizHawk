@@ -294,6 +294,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{3,3,3,4,3});
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 
+		public int oam_dma_index;
+		public bool oam_dma_exec=false;
+		public ushort oam_dma_addr;
+		public byte oam_dma_byte;
+		public bool dmc_dma_exec=false;
+
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
@@ -306,49 +312,86 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if(cpu_step == 5) cpu_step=0;
 				cpu_stepcounter = 0;
 
+
+
+				///////////////////////////
+				// OAM DMA start
+				///////////////////////////
+
 				if (sprdma_countdown > 0)
 				{
 					sprdma_countdown--;
 					if (sprdma_countdown == 0)
 					{
-                        //its weird that this is 514.. normally itd be 512 (and people would say its wrong) or 513 (and people would say its right)
-                        //but 514 passes test 4-irq_and_dma
-                        // according to nesdev wiki, http://wiki.nesdev.com/w/index.php/PPU_OAM this is 513 on even cycles and 514 on odd cycles
-                        // TODO: Implement that
-                        cpu_deadcounter += 514;
+                        if (cpu.TotalExecutedCycles%2==1)
+						{
+							cpu_deadcounter = 2;
+						} else
+						{
+							cpu_deadcounter = 1;
+						}
+						oam_dma_exec = true;
+						cpu.RDY = false;
+						oam_dma_index = 0;
 					}
 				}
+
+				if (oam_dma_exec && apu.dmc_dma_countdown !=1 && apu.dmc_dma_countdown !=2)
+				{
+					if (cpu_deadcounter==0)
+					{
+						
+						if (oam_dma_index%2==0) {
+							oam_dma_byte = ReadMemory(oam_dma_addr);
+							oam_dma_addr++;
+						} else
+						{
+							WriteMemory(0x2004, oam_dma_byte);
+						}
+						oam_dma_index++;
+						if (oam_dma_index == 512) oam_dma_exec = false;
+
+					} else
+					{
+						cpu_deadcounter--;
+					}
+				}
+				/////////////////////////////
+				// OAM DMA end
+				/////////////////////////////
+
 				
+				/////////////////////////////
+				// dmc dma start
+				/////////////////////////////
+
 				if (apu.dmc_dma_countdown>0)
 				{
 					cpu.RDY = false;
+					dmc_dma_exec = true;
 					apu.dmc_dma_countdown--;
 					if (apu.dmc_dma_countdown==0)
 					{
 						apu.RunDMCFetch();
-						cpu.RDY = true;
-					}
-						
-					if (apu.dmc_dma_countdown==0)
-					{
-						
-						
+						dmc_dma_exec = false;
 						apu.dmc_dma_countdown = -1;
 					}
 				}
+
+				/////////////////////////////
+				// dmc dma end
+				/////////////////////////////
+				apu.RunOne(true);
 				
-				if (cpu_deadcounter > 0)
-				{
-					cpu_deadcounter--;
-				}					
-				else 
-				{
-					cpu.IRQ = _irq_apu || Board.IRQSignal;
-					cpu.ExecuteOne();
-				}
+				cpu.IRQ = _irq_apu || Board.IRQSignal;
+				cpu.ExecuteOne();
+				apu.RunOne(false);
+				if (!dmc_dma_exec && !oam_dma_exec && !cpu.RDY)
+					cpu.RDY = true;
+
 
 				ppu.ppu_open_bus_decay(0);
-				apu.RunOne();
+				
 				Board.ClockCPU();
 				ppu.PostCpuInstructionOne();
 			}
@@ -452,16 +495,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void Exec_OAMDma(byte val)
 		{
-			ushort addr = (ushort)(val << 8);
-			for (int i = 0; i < 256; i++)
-			{
-				byte db = ReadMemory((ushort)addr);
-				WriteMemory(0x2004, db);
-				addr++;
-			}
 			//schedule a sprite dma event for beginning 1 cycle in the future.
 			//this receives 2 because thats just the way it works out.
-			sprdma_countdown = 2;
+			oam_dma_addr = (ushort)(val << 8);
+
+			sprdma_countdown = 1;
 		}
 
 		/// <summary>
