@@ -226,5 +226,15 @@ namespace BizHawk.Client.EmuHawk
 			e.Row.Cells["Length"].Value     = 0;
 			e.Row.Cells["DispColor"].Value  = "FFFFFFFF";
 		}
+
+		private void ConcatMultilines_CheckedChanged(object sender, EventArgs e)
+		{
+			_selectedMovie.Subtitles.ConcatMultilines = ConcatMultilines.Checked;
+		}
+
+		private void AddColorTag_CheckedChanged(object sender, EventArgs e)
+		{
+			_selectedMovie.Subtitles.AddColorTag = AddColorTag.Checked;
+		}
 	}
 }

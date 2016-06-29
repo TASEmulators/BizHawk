@@ -138,13 +138,13 @@ namespace BizHawk.Client.EmuHawk
 
 			FileSelectorPanel.Controls.Add(groupBox);
 		}
+
 		private void btnRemove_Click(object sender, EventArgs e)
 		{
 			//ToDo:
 			//Make this better?
 			//We need to have i at 1 and not zero because Controls Count doesn't start at zero (sort of)
 			Int32 i = 1;
-
 			//For Each Control box we have, loop
 			foreach (Control ctrl in FileSelectorPanel.Controls)
 			{
@@ -157,11 +157,11 @@ namespace BizHawk.Client.EmuHawk
 				i++;
 			}
 		}
+
 		private void FileSelector_NameChanged(object sender, EventArgs e)
 		{
 			Recalculate();
 		}
-
 
 		private IEnumerable<MultiDiskFileSelector> FileSelectors
 		{
@@ -199,7 +199,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					throw new Exception("System Id can not be blank");
 				}
-
 				var basePath = Path.GetDirectoryName(name.Split('|').First());
 
 				if (string.IsNullOrEmpty(basePath))
@@ -310,8 +309,26 @@ namespace BizHawk.Client.EmuHawk
 		private void SystemDropDown_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			Recalculate();
+			do
+			{
+				foreach (Control ctrl in FileSelectorPanel.Controls)
+				{
+					ctrl.Dispose();
+				}
+			} while (FileSelectorPanel.Controls.Count != 0);
+
+			if (SystemDropDown.SelectedItem.ToString() == "GB")
+			{
+				AddButton.Enabled = false;
+				btnRemove.Enabled = false;
+			}
+			else
+			{
+				AddButton.Enabled = true;
+				btnRemove.Enabled = true;
+			}
+			AddButton_Click(null, null);
+			AddButton_Click(null, null);
 		}
-
-
 	}
 }

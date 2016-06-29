@@ -39,6 +39,9 @@
 			this.DispColor = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Message = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Export = new System.Windows.Forms.Button();
+			this.ConcatMultilines = new System.Windows.Forms.CheckBox();
+			this.AddColorTag = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.SubGrid)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -139,13 +142,47 @@
 			// 
 			this.Export.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.Export.Location = new System.Drawing.Point(12, 216);
-			this.Export.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.Export.Margin = new System.Windows.Forms.Padding(2);
 			this.Export.Name = "Export";
-			this.Export.Size = new System.Drawing.Size(94, 23);
+			this.Export.Size = new System.Drawing.Size(95, 23);
 			this.Export.TabIndex = 3;
 			this.Export.Text = "&Export to SubRip";
 			this.Export.UseVisualStyleBackColor = true;
 			this.Export.Click += new System.EventHandler(this.Export_Click);
+			// 
+			// ConcatMultilines
+			// 
+			this.ConcatMultilines.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.ConcatMultilines.AutoSize = true;
+			this.ConcatMultilines.Location = new System.Drawing.Point(182, 220);
+			this.ConcatMultilines.Name = "ConcatMultilines";
+			this.ConcatMultilines.Size = new System.Drawing.Size(105, 17);
+			this.ConcatMultilines.TabIndex = 4;
+			this.ConcatMultilines.Text = "Concat multilines";
+			this.ConcatMultilines.UseVisualStyleBackColor = true;
+			this.ConcatMultilines.CheckedChanged += new System.EventHandler(this.ConcatMultilines_CheckedChanged);
+			// 
+			// AddColorTag
+			// 
+			this.AddColorTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.AddColorTag.AutoSize = true;
+			this.AddColorTag.Location = new System.Drawing.Point(293, 220);
+			this.AddColorTag.Name = "AddColorTag";
+			this.AddColorTag.Size = new System.Drawing.Size(89, 17);
+			this.AddColorTag.TabIndex = 5;
+			this.AddColorTag.Text = "Add color tag";
+			this.AddColorTag.UseVisualStyleBackColor = true;
+			this.AddColorTag.CheckedChanged += new System.EventHandler(this.AddColorTag_CheckedChanged);
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(120, 221);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(56, 13);
+			this.label1.TabIndex = 6;
+			this.label1.Text = "On export:";
 			// 
 			// EditSubtitlesForm
 			// 
@@ -154,6 +191,9 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.Cancel;
 			this.ClientSize = new System.Drawing.Size(572, 251);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.AddColorTag);
+			this.Controls.Add(this.ConcatMultilines);
 			this.Controls.Add(this.Export);
 			this.Controls.Add(this.SubGrid);
 			this.Controls.Add(this.OK);
@@ -166,6 +206,7 @@
 			this.Load += new System.EventHandler(this.EditSubtitlesForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.SubGrid)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -181,5 +222,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn Length;
 		private System.Windows.Forms.DataGridViewTextBoxColumn DispColor;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Message;
+		private System.Windows.Forms.CheckBox ConcatMultilines;
+		private System.Windows.Forms.CheckBox AddColorTag;
+		private System.Windows.Forms.Label label1;
 	}
 }
