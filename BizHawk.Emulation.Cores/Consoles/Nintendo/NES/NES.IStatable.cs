@@ -61,7 +61,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("cpu_step", ref cpu_step);
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
-			ser.BeginSection("Board");
+
+			//oam related
+			ser.Sync("Oam_Dma_Index", ref oam_dma_index);
+			ser.Sync("Oam_Dma_Exec", ref oam_dma_exec);
+			ser.Sync("Oam_Dma_Addr", ref oam_dma_addr);
+			ser.Sync("Oam_Dma_Byte", ref oam_dma_byte);
+			ser.Sync("Dmc_Dma_Exec", ref dmc_dma_exec);
+
+
+		ser.BeginSection("Board");
 			Board.SyncState(ser);
 			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
