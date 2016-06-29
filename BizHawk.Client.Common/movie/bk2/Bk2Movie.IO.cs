@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 								Subtitles.AddFromString(line);
 							}
 						}
-						Subtitles.OrderBy(s => s.Frame).ThenBy(s => s.Y);
+						Subtitles = Subtitles.Sort();
 					});
 				}
 

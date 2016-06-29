@@ -24,7 +24,6 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			this.OrderBy(s => s.Frame).ThenBy(s => s.Y);
 			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
 			return sb.ToString();
 		}
@@ -65,11 +64,20 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		public new SubtitleList Sort()
+		{
+			List<Subtitle> subs = this.OrderBy(s => s.Frame).ThenBy(s => s.Y).ToList();
+			SubtitleList ret = new SubtitleList();
+			foreach (var subtitle in subs)
+				ret.Add(subtitle);
+			return ret;
+		}
+
         public string ToSubRip(double fps)
         {
             int index = 1;
 			var sb = new StringBuilder();
-			SubtitleList subs = new SubtitleList();
+			List<Subtitle> subs = new List<Subtitle>();
 			foreach (var subtitle in this)
 				subs.Add(subtitle);
 
@@ -79,7 +87,7 @@ namespace BizHawk.Client.Common
 			if (ConcatMultilines)
 			{
 				int lastframe = 0;
-				subs.OrderBy(s => s.Frame).ThenBy(s => s.Y);
+				subs = subs.OrderBy(s => s.Frame).ThenBy(s => s.Y).ToList();
 
 				for (int i = 0; ; i++)
 				{
@@ -101,7 +109,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				// srt stacks musltilines upwards
-				subs.OrderBy(s => s.Frame).ThenByDescending(s => s.Y);
+				subs = subs.OrderBy(s => s.Frame).ThenByDescending(s => s.Y).ToList();
 			}
 
             foreach (var subtitle in subs)
