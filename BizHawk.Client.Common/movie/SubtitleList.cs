@@ -24,6 +24,7 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
+			this.Sort();
 			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
 			return sb.ToString();
 		}
@@ -64,13 +65,13 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public new SubtitleList Sort()
+		public new void Sort()
 		{
-			List<Subtitle> subs = this.OrderBy(s => s.Frame).ThenBy(s => s.Y).ToList();
-			SubtitleList ret = new SubtitleList();
-			foreach (var subtitle in subs)
-				ret.Add(subtitle);
-			return ret;
+			this.Sort((x, y) =>
+			{
+				int result = x.Frame.CompareTo(y.Frame);
+				return result != 0 ? result : x.Y.CompareTo(y.Y);
+			});
 		}
 
         public string ToSubRip(double fps)
