@@ -299,6 +299,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public ushort oam_dma_addr;
 		public byte oam_dma_byte;
 		public bool dmc_dma_exec=false;
+		public bool dmc_realign;
+		public bool IRQ_delay;
+		public bool special_case_delay; // very ugly but the only option
 
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -323,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sprdma_countdown--;
 					if (sprdma_countdown == 0)
 					{
-                        if (cpu.TotalExecutedCycles%2==1)
+                        if (cpu.TotalExecutedCycles%2==0)
 						{
 							cpu_deadcounter = 2;
 						} else
@@ -333,10 +336,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						oam_dma_exec = true;
 						cpu.RDY = false;
 						oam_dma_index = 0;
+						special_case_delay = true;
 					}
 				}
 
-				if (oam_dma_exec && apu.dmc_dma_countdown !=1 && apu.dmc_dma_countdown !=2)
+				if (oam_dma_exec && apu.dmc_dma_countdown !=1 && !dmc_realign)
 				{
 					if (cpu_deadcounter==0)
 					{
@@ -355,6 +359,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						cpu_deadcounter--;
 					}
+				} else if (apu.dmc_dma_countdown==1)
+				{
+					dmc_realign = true;
+				} else if (dmc_realign)
+				{
+					dmc_realign = false;
 				}
 				/////////////////////////////
 				// OAM DMA end
@@ -382,12 +392,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// dmc dma end
 				/////////////////////////////
 				apu.RunOne(true);
-				
-				cpu.IRQ = _irq_apu || Board.IRQSignal;
-				cpu.ExecuteOne();
+
+				if (cpu.RDY && !IRQ_delay)
+				{
+					cpu.IRQ = _irq_apu || Board.IRQSignal;
+				} else if (special_case_delay || apu.dmc_dma_countdown==3)
+				{
+					cpu.IRQ = _irq_apu || Board.IRQSignal;
+					special_case_delay = false;
+				}
+					
+
+				cpu.ExecuteOne();				
 				apu.RunOne(false);
+
+				if (IRQ_delay)
+					IRQ_delay = false;
+
 				if (!dmc_dma_exec && !oam_dma_exec && !cpu.RDY)
+				{
 					cpu.RDY = true;
+					IRQ_delay = true;
+				}
+					
 
 
 				ppu.ppu_open_bus_decay(0);

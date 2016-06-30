@@ -2,7 +2,6 @@
 //ALSO - consider whether we should even be doing it: the nonlinear-mixing behaviour probably depends on those biases being there. 
 //if we have a better high-pass filter somewhere then we might could cope with the weird biases 
 //(mix higher integer precision with the non-linear mixer and then highpass filter befoure outputting s16s)
-//TODO - DMC cpu suspending - http://forums.nesdev.com/viewtopic.php?p=62690#p62690
 
 //http://wiki.nesdev.com/w/index.php/APU_Mixer_Emulation
 //http://wiki.nesdev.com/w/index.php/APU
@@ -744,9 +743,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
 				
+				
+				
+				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && delay==0)
+				{
+					// calls from write take one less cycle, but start on a write instead of a read
+					if (!apu.call_from_write)
+					{
+						if (timer%2==1)
+						{
+							delay = 3;
+						} else
+						{
+							delay = 2;
+						}
+					} else
+					{
+						if (timer % 2 == 1)
+						{
+							delay = 2;
+						}
+						else
+						{
+							delay = 3;
+						}
+					}					
+				}
+
 				// I did some tests in Visual 2A03 and there seems to be some delay betwen when a DMC is first needed and when the 
 				// process to execute the DMA starts. The details are not currently known, but it seems to be a 2 cycle delay
-				if (delay!=0)
+				if (delay != 0)
 				{
 					delay--;
 					if (delay == 0)
@@ -762,14 +788,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							apu.call_from_write = false;
 						}
 					}
-						
+
 				}
-				
-				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && timer%2==0 && delay==0)
-				{
-					delay = 2;
-					
-				}					
 			}
 
 
@@ -887,7 +907,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public void Fetch()
 			{
-				//TODO - cpu/apu DMC reads need to be emulated better!
 				if (sample_length != 0)
 				{
 					sample_buffer = apu.nes.ReadMemory((ushort)sample_address);
@@ -895,10 +914,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sample_address = (ushort)(sample_address + 1);
 					//Console.WriteLine(sample_length);
 					//Console.WriteLine(user_length);
-					//sample_length--;
-					apu.pending_length_change = 1;
+					sample_length--;
+					//apu.pending_length_change = 1;
 				}
-				if ((sample_length-1) == 0)
+				if (sample_length == 0)
 				{
 					if (loop_flag)
 					{
@@ -931,6 +950,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("toggle", ref toggle);
 			ser.Sync("sample_length_delay", ref pending_length_change);
 			ser.Sync("dmc_called_from_write", ref call_from_write);
+			ser.Sync("sequencer_tick_delay", ref seq_tick);
+			ser.Sync("seq_val_to_apply", ref seq_val);
+			ser.Sync("sequencer_irq_flag", ref sequencer_irq_flag);
+
 
 			pulse[0].SyncState(ser);
 			pulse[1].SyncState(ser);
@@ -949,9 +972,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool dmc_irq;
 		int pending_reg = -1;
 		byte pending_val = 0;
+		public int seq_tick;
+		public byte seq_val;
 
-		int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit;
-		bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_assert;
+		int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit, sequencer_irq_assert;
+		bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_flag;
 
 		public void RunDMCFetch()
 		{
@@ -976,17 +1001,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//these values (the NTSC at least) are derived from nintendulator. they are all 2 higher than the specifications, due to some shortcoming in the emulation
 		//this is probably a hint that we're doing something a little wrong but making up for it with curcuitous chaos in other ways
 		static int[][] sequencer_lut = new int[][]{
-			new int[]{7458,14914,22372,29830},
-			new int[]{7458,14914,22372,29830,37282}
+			new int[]{7457,14913,22372,29830},
+			new int[]{7458,14913,22372,29830,37282}
 		};
+
+		
+		void sequencer_write_tick(byte val)
+		{
+			if (seq_tick>0)
+			{
+				seq_tick--;
+				if (seq_tick==0)
+				{
+					sequencer_mode = (val >> 7) & 1;
+					//Console.WriteLine("apu 4017 = {0:X2}", val);
+					sequencer_irq_inhibit = (val >> 6) & 1;
+					if (sequencer_irq_inhibit == 1)
+					{
+						sequencer_irq_flag = false;
+					}
+					sequencer_reset();
+				}
+			}
+		}
 
 		void sequencer_tick()
 		{
 			sequencer_counter++;
-			if (sequence_reset_pending)
+			if (sequencer_mode==0 && sequencer_counter==29829)
 			{
-				sequencer_reset();
-				sequence_reset_pending = false;
+				if (sequencer_irq_inhibit==0)
+				{
+					sequencer_irq_assert = 2;
+					sequencer_irq_flag = true;
+				}
+					
+				HalfFrame();
+			}
+			if (sequencer_mode == 0 && sequencer_counter == 29828 && sequencer_irq_inhibit == 0)
+			{
+				//sequencer_irq_assert = 2;
+				sequencer_irq_flag = true;
+			}
+			if (sequencer_mode == 1 && sequencer_counter == 37281)
+			{
+				HalfFrame();
 			}
 			if (sequencer_lut[sequencer_mode][sequencer_step] != sequencer_counter)
 				return;
@@ -1006,18 +1065,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case 0: //4-step
 					quarter = true;
-					half = (sequencer_step == 1 || sequencer_step == 3);
+					half = sequencer_step == 1;
 					reset = sequencer_step == 3;
 					if (reset && sequencer_irq_inhibit == 0)
 					{
 						//Console.WriteLine("{0} {1,5} set irq_assert", nes.Frame, sequencer_counter);
-						sequencer_irq_assert = true;
+						//sequencer_irq_assert = 2;
+						sequencer_irq_flag = true;
 					}
 					break;
 
 				case 1: //5-step
 					quarter = sequencer_step != 3;
-					half = (sequencer_step == 1 || sequencer_step == 4);
+					half = sequencer_step == 1;
 					reset = sequencer_step == 4;
 					break;
 
@@ -1056,6 +1116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//need to study what happens to apu and stuff..
 			sequencer_irq = false;
+			sequencer_irq_flag = false;
 			_WriteReg(0x4015, 0);
 		}
 
@@ -1100,15 +1161,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (addr == 0x4017)
 					{
-						//Console.WriteLine("apu 4017 = {0:X2}", val);
-						sequencer_mode = (val >> 7) & 1;
-						sequencer_irq_inhibit = (val >> 6) & 1;
-						if (sequencer_irq_inhibit == 1)
+						if (toggle==0)
 						{
-							sequencer_irq_clear_pending = true;
+							seq_tick = 4;
+
+						} else
+						{
+							seq_tick = 3;
 						}
-						sequence_reset_pending = true;
-						break;
+						
+						seq_val = val;
 					}
 					break;
 			}
@@ -1128,7 +1190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						int tri_nonzero = triangle.IsLenCntNonZero() ? 1 : 0;
 						int pulse1_nonzero = pulse[1].IsLenCntNonZero() ? 1 : 0;
 						int pulse0_nonzero = pulse[0].IsLenCntNonZero() ? 1 : 0;
-						int ret = ((dmc_irq ? 1 : 0) << 7) | ((sequencer_irq ? 1 : 0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero << 2) | (pulse1_nonzero << 1) | (pulse0_nonzero);
+						int ret = ((dmc_irq ? 1 : 0) << 7) | ((sequencer_irq_flag ? 1 : 0) << 6) | (dmc_nonzero << 4) | (noise_nonzero << 3) | (tri_nonzero << 2) | (pulse1_nonzero << 1) | (pulse0_nonzero);
 						return (byte)ret;
 					}
 				default:
@@ -1145,7 +1207,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						byte ret = PeekReg(0x4015);
 						//Console.WriteLine("{0} {1,5} $4015 clear irq, was at {2}", nes.Frame, sequencer_counter, sequencer_irq);
-						sequencer_irq = false;
+						sequencer_irq_flag = false;
 						SyncIRQ();
 						return ret;
 					}
@@ -1184,17 +1246,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-
-				
 				EmitSample();
 
+				//handle writes
+				//notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
+				//in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
+				//the current code simply matches known behaviour
+				if (pending_reg != -1) _WriteReg(pending_reg, pending_val);
+				pending_reg = -1;
+
+				
+				sequencer_tick();
+				sequencer_write_tick(seq_val);
+
+				if (toggle==0)
+				{
+					toggle = 1;
+				} else
+				{
+					toggle = 0;
+				}
+
+				
+				if (sequencer_irq_assert>0) {
+					sequencer_irq_assert--;
+					if (sequencer_irq_assert==0)
+					{
+						sequencer_irq = true;
+					}					
+				}
+
+				
+
+				SyncIRQ();
+				nes.irq_apu = irq_pending;
+
+				if (sequencer_irq_flag == false)
+					sequencer_irq = false;
+
+				/*
 				//this (and the similar line below) is a crude hack
 				//we should be generating logic to suppress the $4015 clear when the assert signal is set instead
 				//be sure to test "apu_test" if you mess with this
-				sequencer_irq |= sequencer_irq_assert;
+				//sequencer_irq |= sequencer_irq_assert;
 
-				if (toggle == 0)
-				{
+				//if (toggle == 0)
+				//{
 					//handle sequencer irq clear signal
 					sequencer_irq_assert = false;
 					if (sequencer_irq_clear_pending)
@@ -1204,10 +1301,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sequencer_irq = false;
 						SyncIRQ();
 					}
-					//handle writes from the odd clock cycle
-					if (pending_reg != -1) _WriteReg(pending_reg, pending_val);
-					pending_reg = -1;
-
 
 					toggle = 1;
 
@@ -1215,11 +1308,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nes.irq_apu = irq_pending;
 				}
 				else toggle = 0;
-
-				
-				sequencer_tick();
-				sequencer_irq |= sequencer_irq_assert;
-				SyncIRQ();
+				*/
 
 				//since the units run concurrently, the APU frame sequencer is ran last because
 				//it can change the ouput values of the pulse/triangle channels
