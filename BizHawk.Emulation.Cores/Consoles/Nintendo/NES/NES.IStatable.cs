@@ -68,6 +68,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("Oam_Dma_Addr", ref oam_dma_addr);
 			ser.Sync("Oam_Dma_Byte", ref oam_dma_byte);
 			ser.Sync("Dmc_Dma_Exec", ref dmc_dma_exec);
+			ser.Sync("dmc_realign", ref dmc_realign);
+			ser.Sync("IRQ_delay", ref IRQ_delay);
+			ser.Sync("special_case_delay", ref special_case_delay);
 
 
 		ser.BeginSection("Board");
