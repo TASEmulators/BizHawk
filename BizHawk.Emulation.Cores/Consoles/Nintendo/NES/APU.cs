@@ -84,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//reg0
 			int duty_cnt, env_loop, env_constant, env_cnt_value;
+			public bool len_halt;
 			//reg1
 			int sweep_en, sweep_divider_cnt, sweep_negate, sweep_shiftcount;
 			bool sweep_reload;
@@ -101,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("env_loop", ref env_loop);
 				ser.Sync("env_constant", ref env_constant);
 				ser.Sync("env_cnt_value", ref env_cnt_value);
+				ser.Sync("len_halt", ref len_halt);
 
 				ser.Sync("sweep_en", ref sweep_en);
 				ser.Sync("sweep_divider_cnt", ref sweep_divider_cnt);
@@ -227,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				//env_loopdoubles as "halt length counter"
-				if (env_loop == 0 && len_cnt > 0)
+				if ((env_loop == 0 || len_halt) && len_cnt > 0)
 					len_cnt--;
 			}
 
@@ -324,6 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//reg0 (sweep)
 			int env_cnt_value, env_loop, env_constant;
+			public bool len_halt;
 
 			//reg2 (mode and period)
 			int mode_cnt, period_cnt;
@@ -383,6 +386,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("mode_cnt", ref mode_cnt);
 				ser.Sync("period_cnt", ref period_cnt);
 
+				ser.Sync("len_halt", ref len_halt);
+
 				//ser.Sync("mode_cnt", ref mode_cnt);
 				//ser.Sync("period_cnt", ref period_cnt);
 
@@ -412,6 +417,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0:
 						env_cnt_value = val & 0xF;
 						env_constant = (val >> 4) & 1;
+						//we want to delay a halt until after a length clock if they happen on the same cycle
+						if (env_loop==0 && ((val >> 5) & 1)==1)
+						{
+							len_halt = true;
+						}
 						env_loop = (val >> 5) & 1;
 						break;
 					case 1:
@@ -466,7 +476,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void clock_length_and_sweep()
 			{
 
-				if (len_cnt > 0 && env_loop == 0)
+				if (len_cnt > 0 && (env_loop == 0 || len_halt))
 					len_cnt--;
 			}
 
@@ -510,7 +520,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//reg1 (n/a)
 			//reg2/3
 			int timer_cnt, halt_flag, len_cnt;
-
+			public bool halt_2;
 			//misc..
 			int lenctr_en;
 			int linear_counter, timer, timer_cnt_reload;
@@ -1118,6 +1128,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			sequencer_irq = false;
 			sequencer_irq_flag = false;
 			_WriteReg(0x4015, 0);
+			Console.WriteLine(seq_val);
+			//for 4017, its as if the last value written gets rewritten
+			sequencer_mode = (seq_val >> 7) & 1;
+			sequencer_irq_inhibit = (seq_val >> 6) & 1;
+			if (sequencer_irq_inhibit == 1)
+			{
+				sequencer_irq_flag = false;
+			}
+			sequencer_counter = 0;
+			sequencer_step = 0;
+
+		}
+
+		public void NESHardReset()
+		{
+			// "at power on it is as if $00 was written to $4017 9-12 cycles before the reset vector"
+			// that translates to a starting value for the counter of 6
+
+			sequencer_counter = 6;
+
 		}
 
 		public void WriteReg(int addr, byte val)
@@ -1234,6 +1264,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				triangle.Run();
 				noise.Run();
 				dmc.Run();
+
+				pulse[0].len_halt = false;
+				pulse[1].len_halt = false;
+				noise.len_halt = false;
+
 			}
 			else
 			{
@@ -1252,8 +1287,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
 				//in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
 				//the current code simply matches known behaviour
-				if (pending_reg != -1) _WriteReg(pending_reg, pending_val);
-				pending_reg = -1;
+				if (pending_reg != -1)
+				{
+					if (pending_reg == 4015 || pending_reg == 4017)
+					{
+						_WriteReg(pending_reg, pending_val);
+						pending_reg = -1;
+					}
+					else if (toggle == 1)
+					{
+						_WriteReg(pending_reg, pending_val);
+						pending_reg = -1;
+					}
+				}
 
 				
 				sequencer_tick();
