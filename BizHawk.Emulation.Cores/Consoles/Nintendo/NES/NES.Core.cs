@@ -305,6 +305,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool dmc_realign;
 		public bool IRQ_delay;
 		public bool special_case_delay; // very ugly but the only option
+		public bool do_the_reread;
 
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -388,6 +389,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						apu.RunDMCFetch();
 						dmc_dma_exec = false;
 						apu.dmc_dma_countdown = -1;
+						do_the_reread = true;
 					}
 				}
 
@@ -408,6 +410,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				cpu.ExecuteOne();				
 				apu.RunOne(false);
+
+				if (ppu.double_2007_read > 0)
+					ppu.double_2007_read--;
+
+				if (do_the_reread && cpu.RDY)
+					do_the_reread = false;
 
 				if (IRQ_delay)
 					IRQ_delay = false;
@@ -432,6 +440,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 #endif
 		public byte ReadReg(int addr)
 		{
+			byte ret_spec;
 			switch (addr)
 			{
 				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
@@ -444,6 +453,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4014: /*OAM DMA*/ break;
 				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xDF) + (byte)(DB&0x20)); 
 				case 0x4016:
+					{
+						// special hardware glitch case
+						ret_spec = read_joyport(addr);
+						if (do_the_reread)
+						{
+							ret_spec = read_joyport(addr);
+							do_the_reread = false;
+						}
+						return ret_spec;	
+
+					}
 				case 0x4017:
 					return read_joyport(addr);
 				default:
