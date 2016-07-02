@@ -156,7 +156,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//if (unit == 1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
 						break;
 					case 3:
-						len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+						if (apu.len_clock_active)
+						{
+							if (len_cnt==0)
+							{
+								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F]+1;
+							}						
+						} else
+						{
+							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+						}
+
 						timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
 						timer_raw_reload_value = timer_reload_value * 2 + 2;
 						//duty_step = 0; //?just a guess?
@@ -165,6 +175,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						//allow the lenctr_en to kill the len_cnt
 						set_lenctr_en(lenctr_en);
+						
+							
+						
 
 						//serves as a useful note-on diagnostic
 						//if(unit==1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
@@ -432,7 +445,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//Console.WriteLine("noise period: {0}, vol: {1}", (val & 0xF), env_cnt_value);
 						break;
 					case 3:
-						len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+						if (apu.len_clock_active)
+						{
+							if (len_cnt == 0)
+							{
+								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F] + 1;
+							}
+						}
+						else
+						{
+							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+						}
+
 						set_lenctr_en(lenctr_en);
 						env_start_flag = 1;
 						break;
@@ -574,7 +598,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 3:
 						timer_cnt = (timer_cnt & 0xFF) | ((val & 0x7) << 8);
 						timer_cnt_reload = timer_cnt + 1;
-						len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+						if (apu.len_clock_active)
+						{
+							if (len_cnt == 0)
+							{
+								len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F] + 1;
+							}
+						}
+						else
+						{
+							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
+						}
 						halt_flag = 1;
 
 						//allow the lenctr_en to kill the len_cnt
@@ -963,6 +997,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("sequencer_tick_delay", ref seq_tick);
 			ser.Sync("seq_val_to_apply", ref seq_val);
 			ser.Sync("sequencer_irq_flag", ref sequencer_irq_flag);
+			ser.Sync("len_clock_active", ref len_clock_active);
 
 
 			pulse[0].SyncState(ser);
@@ -984,6 +1019,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		byte pending_val = 0;
 		public int seq_tick;
 		public byte seq_val;
+		public bool len_clock_active;
 
 		int sequencer_counter, sequencer_step, sequencer_mode, sequencer_irq_inhibit, sequencer_irq_assert;
 		bool sequencer_irq, sequence_reset_pending, sequencer_irq_clear_pending, sequencer_irq_flag;
@@ -1012,7 +1048,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//this is probably a hint that we're doing something a little wrong but making up for it with curcuitous chaos in other ways
 		static int[][] sequencer_lut = new int[][]{
 			new int[]{7457,14913,22372,29830},
-			new int[]{7458,14913,22372,29830,37282}
+			new int[]{7457,14913,22372,29830,37282}
 		};
 
 		
@@ -1128,7 +1164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			sequencer_irq = false;
 			sequencer_irq_flag = false;
 			_WriteReg(0x4015, 0);
-			Console.WriteLine(seq_val);
+
 			//for 4017, its as if the last value written gets rewritten
 			sequencer_mode = (seq_val >> 7) & 1;
 			sequencer_irq_inhibit = (seq_val >> 6) & 1;
@@ -1283,13 +1319,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				EmitSample();
 
+				//we need to predict if there will be a length clock here, because the sequencer ticks last, but the 
+				// timer reload shouldn't happen if length clock and write happen simultaneously
+				// I'm not sure if we can avoid this by simply processing the sequencer first
+				// but at the moment that would break everything, so this is good enough for now
+				if (sequencer_counter==14912 || 
+					(sequencer_counter == 29828 && sequencer_mode==0) ||
+					(sequencer_counter == 37280 && sequencer_mode == 1))
+				{
+					len_clock_active = true;
+				}
+
 				//handle writes
 				//notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
 				//in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
 				//the current code simply matches known behaviour
 				if (pending_reg != -1)
 				{
-					if (pending_reg == 4015 || pending_reg == 4017)
+					if (pending_reg == 0x4015 || pending_reg == 0x4017 || pending_reg==0x4003)
 					{
 						_WriteReg(pending_reg, pending_val);
 						pending_reg = -1;
@@ -1301,7 +1348,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				
+				len_clock_active = false;
+
 				sequencer_tick();
 				sequencer_write_tick(seq_val);
 
@@ -1327,38 +1375,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SyncIRQ();
 				nes.irq_apu = irq_pending;
 
-				if (sequencer_irq_flag == false)
-					sequencer_irq = false;
-
-				/*
-				//this (and the similar line below) is a crude hack
-				//we should be generating logic to suppress the $4015 clear when the assert signal is set instead
-				//be sure to test "apu_test" if you mess with this
-				//sequencer_irq |= sequencer_irq_assert;
-
-				//if (toggle == 0)
-				//{
-					//handle sequencer irq clear signal
-					sequencer_irq_assert = false;
-					if (sequencer_irq_clear_pending)
-					{
-						//Console.WriteLine("{0} {1,5} $4017 clear irq (delayed)", nes.Frame, sequencer_counter);
-						sequencer_irq_clear_pending = false;
-						sequencer_irq = false;
-						SyncIRQ();
-					}
-
-					toggle = 1;
-
-					//latch whatever irq logic we had and send to cpu
-					nes.irq_apu = irq_pending;
-				}
-				else toggle = 0;
-				*/
-
+				
 				//since the units run concurrently, the APU frame sequencer is ran last because
 				//it can change the ouput values of the pulse/triangle channels
 				//we want the changes to affect it on the *next* cycle.
+
+				if (sequencer_irq_flag == false)
+					sequencer_irq = false;
 
 				if (DebugCallbackDivider != 0)
 				{

@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
 		public byte ppu_open_bus;
+		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
 
 		public struct PPUSTATUS
@@ -354,8 +355,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//printf("%04x:$%02x, %d\n",A,V,scanline);
 			reg_2001.Value = value;
 		}
-		byte read_2001() { return ppu_open_bus; }
-		byte peek_2001() { return ppu_open_bus; }
+		byte read_2001() {return ppu_open_bus; }
+		byte peek_2001() {return ppu_open_bus; }
 
 		//PPU STATUS (read)
 		void write_2002(byte value) { }
@@ -585,10 +586,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		
 		public byte ReadReg(int addr)
 		{
+			byte ret_spec;
 			switch (addr)
 			{
 				case 0: return read_2000(); case 1: return read_2001(); case 2: return read_2002(); case 3: return read_2003();
-				case 4: return read_2004(); case 5: return read_2005(); case 6: return read_2006(); case 7: return read_2007();
+				case 4: return read_2004(); case 5: return read_2005(); case 6: return read_2006();
+
+				case 7:
+					{
+						if (double_2007_read>0)
+						{
+							double_2007_read = 0;
+							return ppu_open_bus;							
+						} else
+						{
+							ret_spec = read_2007();
+							double_2007_read = 2;
+						}
+						
+						if (nes.do_the_reread)
+						{
+							ret_spec = read_2007();
+							ret_spec = read_2007();
+							nes.do_the_reread = false;
+						}
+						return ret_spec;
+					}
 				default: throw new InvalidOperationException();
 			}
 		}
@@ -605,6 +628,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			PPUGenLatch = value;
 			ppu_open_bus = value;
+
 			switch (addr)
 			{
 				case 0: write_2000(value); break; case 1: write_2001(value); break; case 2: write_2002(value); break; case 3: write_2003(value); break;

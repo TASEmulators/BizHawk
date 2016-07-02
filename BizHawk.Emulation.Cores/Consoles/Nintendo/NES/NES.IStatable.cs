@@ -71,9 +71,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("dmc_realign", ref dmc_realign);
 			ser.Sync("IRQ_delay", ref IRQ_delay);
 			ser.Sync("special_case_delay", ref special_case_delay);
+			ser.Sync("do_the_reread", ref do_the_reread);
 
 
-		ser.BeginSection("Board");
+			ser.BeginSection("Board");
 			Board.SyncState(ser);
 			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
