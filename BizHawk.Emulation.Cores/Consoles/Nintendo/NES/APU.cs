@@ -740,7 +740,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//dmc delay per visual 2a03
 			int delay;
 
-			int timer;
+			// this timer never stops, ever, so it is convenient to use for even/odd timing used elsewhere
+			public int timer;
 			int user_address;
 			public uint user_length, sample_length;
 			int sample_address, sample_buffer;
@@ -995,7 +996,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("sequencer_irq_assert", ref sequencer_irq_assert);
 
 			ser.Sync("dmc_dma_countdown", ref dmc_dma_countdown);
-			ser.Sync("toggle", ref toggle);
 			ser.Sync("sample_length_delay", ref pending_length_change);
 			ser.Sync("dmc_called_from_write", ref call_from_write);
 			ser.Sync("sequencer_tick_delay", ref seq_tick);
@@ -1048,8 +1048,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//these figures are not valid for PAL. they must be recalculated with nintendulator's values above
-		//these values (the NTSC at least) are derived from nintendulator. they are all 2 higher than the specifications, due to some shortcoming in the emulation
-		//this is probably a hint that we're doing something a little wrong but making up for it with curcuitous chaos in other ways
 		static int[][] sequencer_lut = new int[][]{
 			new int[]{7457,14913,22371,29830},
 			new int[]{7457,14913,22371,29830,37282}
@@ -1231,13 +1229,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else if (addr == 0x4017)
 					{
-						if (toggle==0)
+						if (dmc.timer%2==0)
 						{
-							seq_tick = 4;
+							seq_tick = 3;
 
 						} else
 						{
-							seq_tick = 3;
+							seq_tick = 4;
 						}
 						
 						seq_val = val;
@@ -1291,7 +1289,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int DebugCallbackDivider;
 		public int DebugCallbackTimer;
 
-		int toggle = 0;
 		int pending_length_change;
 
 
@@ -1340,12 +1337,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//the current code simply matches known behaviour
 				if (pending_reg != -1)
 				{
-					if (pending_reg == 0x4015 || pending_reg == 0x4017 || pending_reg==0x4003)
+					if (pending_reg == 0x4015 || pending_reg == 0x4017 || pending_reg==0x4003 || pending_reg==0x4007)
 					{
 						_WriteReg(pending_reg, pending_val);
 						pending_reg = -1;
 					}
-					else if (toggle == 1)
+					else if (dmc.timer%2==0)
 					{
 						_WriteReg(pending_reg, pending_val);
 						pending_reg = -1;
@@ -1356,15 +1353,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				sequencer_tick();
 				sequencer_write_tick(seq_val);
-
-				if (toggle==0)
-				{
-					toggle = 1;
-				} else
-				{
-					toggle = 0;
-				}
-
 				
 				if (sequencer_irq_assert>0) {
 					sequencer_irq_assert--;
@@ -1372,13 +1360,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						sequencer_irq = true;
 					}					
-				}
-
-				
+				}				
 
 				SyncIRQ();
 				nes.irq_apu = irq_pending;
-
 				
 				//since the units run concurrently, the APU frame sequencer is ran last because
 				//it can change the ouput values of the pulse/triangle channels

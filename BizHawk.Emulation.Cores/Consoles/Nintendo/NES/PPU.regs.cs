@@ -501,7 +501,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//does this take 4x longer? nestopia indicates so perhaps...
 
-			int addr = ppur.get_2007access() & 0x3FFF;
+			int addr = ppur.get_2007access();
+			if (ppuphase == PPUPHASE.BG)
+			{
+				if (reg_2001.show_bg)
+				{
+					addr = ppur.get_ntread();
+				}
+			}
+
 			if ((addr & 0x3F00) == 0x3F00)
 			{
 				//handle palette. this is being done nestopia style, because i found some documentation for it (appendix 1)
@@ -519,7 +527,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
+				addr &= 0x3FFF;
+
 				ppubus_write(addr, value);
+
 			}
 
 			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
