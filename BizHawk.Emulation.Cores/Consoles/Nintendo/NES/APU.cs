@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						sweep_reload = true;
 						break;
 					case 2:
-						timer_reload_value = (timer_reload_value & ~0xFF) | val;
+						timer_reload_value = (timer_reload_value & 0x700) | val;
 						timer_raw_reload_value = timer_reload_value * 2 + 2;
 						//if (unit == 1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
 						break;
@@ -169,15 +169,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						timer_reload_value = (timer_reload_value & 0xFF) | ((val & 0x07) << 8);
 						timer_raw_reload_value = timer_reload_value * 2 + 2;
-						//duty_step = 0; //?just a guess?
-						timer_counter = timer_raw_reload_value;
+						duty_step = 0; 
 						env_start_flag = 1;
 
 						//allow the lenctr_en to kill the len_cnt
 						set_lenctr_en(lenctr_en);
-						
-							
-						
 
 						//serves as a useful note-on diagnostic
 						//if(unit==1) Console.WriteLine("{0} timer_reload_value: {1}", unit, timer_reload_value);
@@ -209,11 +205,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//this should be optimized to update only when `timer_reload_value` changes
 				int sweep_shifter = timer_reload_value >> sweep_shiftcount;
 				if (sweep_negate == 1)
-					sweep_shifter = ~sweep_shifter + unit;
+					sweep_shifter = -sweep_shifter + unit;
 				sweep_shifter += timer_reload_value;
 
 				//this sweep logic is always enabled:
-				swp_silence = (timer_reload_value < 8 || (sweep_shifter > 0x7FF && sweep_negate == 0));
+				swp_silence = (timer_reload_value < 8 || (sweep_shifter > 0x7FF)); // && sweep_negate == 0));
 
 				//does enable only block the pitch bend? does the clocking proceed?
 				if (sweep_en == 1)
@@ -251,15 +247,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (env_start_flag == 1)
 				{
 					env_start_flag = 0;
-					env_divider = (env_cnt_value + 1);
+					env_divider = env_cnt_value;
 					env_counter = 15;
 				}
 				else
 				{
-					if (env_divider != 0) env_divider--;
-					if (env_divider == 0)
+					if (env_divider != 0)
 					{
-						env_divider = (env_cnt_value + 1);
+						env_divider--;
+					} else if (env_divider == 0)
+					{
+						env_divider = env_cnt_value;
 						if (env_counter == 0)
 						{
 							if (env_loop == 1)
@@ -281,7 +279,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (timer_counter > 0) timer_counter--;
 				if (timer_counter == 0 && timer_raw_reload_value != 0)
 				{
-					duty_step = (duty_step + 1) & 7;
+					if (duty_step==7)
+					{
+						duty_step = 0;
+					} else
+					{
+						duty_step++;
+					}
 					duty_value = PULSE_DUTY[duty_cnt, duty_step] == 1;
 					//reload timer
 					timer_counter = timer_raw_reload_value;
@@ -1047,8 +1051,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//these values (the NTSC at least) are derived from nintendulator. they are all 2 higher than the specifications, due to some shortcoming in the emulation
 		//this is probably a hint that we're doing something a little wrong but making up for it with curcuitous chaos in other ways
 		static int[][] sequencer_lut = new int[][]{
-			new int[]{7457,14913,22372,29830},
-			new int[]{7457,14913,22372,29830,37282}
+			new int[]{7457,14913,22371,29830},
+			new int[]{7457,14913,22371,29830,37282}
 		};
 
 		
@@ -1422,23 +1426,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int oldmix = 0;
 
-		// http://wiki.nesdev.com/w/index.php/APU_Mixer
-		// in the end, doesn't help pass any tests, so canned
-		/*
-		static readonly int[] pulse_table;
-		static readonly int[] tnd_table;
-		static APU()
-		{
-			const double scale = 43803.0;
-			pulse_table = new int[31];
-			tnd_table = new int[203];
-			pulse_table[0] = tnd_table[0] = 0;
-			for (int i = 1; i < pulse_table.Length; i++)
-				pulse_table[i] = (int)Math.Round(scale * 95.52 / (8128.0 / i + 100.0));
-			for (int i = 1; i < tnd_table.Length; i++)
-				tnd_table[i] = (int)Math.Round(scale * 163.67 / (24329.0 / i + 100.0));
-		}
-		*/
 
 		void EmitSample()
 		{
@@ -1461,44 +1448,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!EnableDMC) s_dmc = 0;
 				*/
 
-				//const float NOISEADJUST = 0.5f;
-
-				//linear approximation
-				//float pulse_out = 0.00752f * (s_pulse0 + s_pulse1);
-				//float tnd_out = 0.00851f * s_tri + 0.00494f * /*NOISEADJUST * */ s_noise + 0.00335f * s_dmc;
-				//float output = pulse_out + tnd_out;
+				//more properly correct
+				float pulse_out, tnd_out;
+				if (s_pulse0 == 0 && s_pulse1 == 0)
+				  pulse_out = 0;
+				else pulse_out = 95.88f / ((8128.0f / (s_pulse0 + s_pulse1)) + 100.0f);
+				if (s_tri == 0 && s_noise == 0 && s_dmc == 0)
+				  tnd_out = 0;
+				else tnd_out = 159.79f / (1 / ((s_tri / 8227.0f) + (s_noise / 12241.0f /* * NOISEADJUST*/) + (s_dmc / 22638.0f)) + 100);
+				float output = pulse_out + tnd_out;
+				//output = output * 2 - 1;
 				//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-				//int mix = (int)(50000 * output);
+				int mix = (int)(20000 * output);
 
-				int mix = Square1V * s_pulse0
-					+ Square2V * s_pulse1
-					+ TriangleV * s_tri
-					+ NoiseV * s_noise
-					+ DMCV * s_dmc;
-				/*
-				int pulse_out = 376 * (s_pulse0 + s_pulse1);
-				int tnd_out = 426 * s_tri + 247 * s_noise + 167 * s_dmc;
-				int mix = pulse_out + tnd_out;
-				*/
-				//int pulse_out = pulse_table[s_pulse0 + s_pulse1];
-				//int tnd_out = tnd_table[3 * s_tri + 2 * s_noise + s_dmc];
-				//int mix = pulse_out + tnd_out;
 
 				dlist.Add(new Delta(sampleclock, mix - oldmix));
 				oldmix = mix;
 			}
-			//more properly correct
-			//float pulse_out, tnd_out;
-			//if (s_pulse0 == 0 && s_pulse1 == 0)
-			//  pulse_out = 0;
-			//else pulse_out = 95.88f / ((8128.0f / (s_pulse0 + s_pulse1)) + 100.0f);
-			//if (s_tri == 0 && s_noise == 0 && s_dmc == 0)
-			//  tnd_out = 0;
-			//else tnd_out = 159.79f / (1 / ((s_tri / 8227.0f) + (s_noise / 12241.0f * NOISEADJUST) + (s_dmc / 22638.0f)) + 100);
-			//float output = pulse_out + tnd_out;
-			//output = output * 2 - 1;
-			//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-			//int mix = (int)(20000 * output);
+			
 
 
 			sampleclock++;
