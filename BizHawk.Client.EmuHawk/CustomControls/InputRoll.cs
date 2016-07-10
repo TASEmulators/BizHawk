@@ -1428,6 +1428,38 @@ namespace BizHawk.Client.EmuHawk
 					RowScroll(this, e);
 				}
 			}
+
+			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
+			{
+				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+				// SuuperW: Hide lag frames
+				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
+				{
+					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+				}
+				newCell.RowIndex += FirstVisibleRow;
+				if (newCell.RowIndex < 0)
+					newCell.RowIndex = 0;
+
+				if (!newCell.Equals(CurrentCell))
+				{
+					CellChanged(newCell);
+
+					if (IsHoveringOnColumnCell ||
+						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
+					{
+						Refresh();
+					}
+					else if (_columnDown != null)
+					{
+						Refresh();
+					}
+				}
+				else if (_columnDown != null)  // Kind of silly feeling to have this check twice, but the only alternative I can think of has it refreshing twice when pointed column changes with column down, and speed matters
+				{
+					Refresh();
+				}
+			}
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)

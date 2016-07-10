@@ -453,6 +453,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // User changed input
 				{
+					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
@@ -523,6 +524,13 @@ namespace BizHawk.Client.EmuHawk
 							RefreshDialog();
 						}
 					}
+
+					// taseditor behavior
+					if (!wasPaused)
+						GlobalWin.MainForm.UnpauseEmulator();
+
+					if (!Settings.AutoRestoreLastPosition)
+						IgnoreSeekFrame = true;
 				}
 			}
 			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
