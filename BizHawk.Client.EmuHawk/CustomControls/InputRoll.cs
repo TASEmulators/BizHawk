@@ -1042,7 +1042,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ModifierKeys == Keys.Alt)
 					{
-						// MessageBox.Show("Alt click logic is not yet implemented");
                         // do marker drag here
 					}
 					else if (ModifierKeys == Keys.Shift)
@@ -1431,8 +1430,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
 			{
+				// copypaste from OnMouseMove()
 				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-				// SuuperW: Hide lag frames
 				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
 				{
 					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
@@ -1455,7 +1454,7 @@ namespace BizHawk.Client.EmuHawk
 						Refresh();
 					}
 				}
-				else if (_columnDown != null)  // Kind of silly feeling to have this check twice, but the only alternative I can think of has it refreshing twice when pointed column changes with column down, and speed matters
+				else if (_columnDown != null)
 				{
 					Refresh();
 				}
