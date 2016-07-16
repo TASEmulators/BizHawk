@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -338,7 +339,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl)
 		{
-			Cpu.DisassembleCDL(s, cdl, memoryDomains);
+			Cpu.DisassembleCDL(s, cdl, _memoryDomains);
 		}
 
 		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
@@ -483,6 +484,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ser.Sync("BRAM", ref BRAM, false);
 
 			ser.EndSection();
+
+			if (ser.IsReader)
+				SyncAllByteArrayDomains();
 		}
 
 		byte[] stateBuffer;
@@ -511,10 +515,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		void SetupMemoryDomains()
 		{
-			var domains = new List<MemoryDomain>(10);
-			int mainmemorymask = Ram.Length - 1;
-			var MainMemoryDomain = new MemoryDomainByteArray("Main Memory", MemoryDomain.Endian.Little, Ram, true, 1);
-			domains.Add(MainMemoryDomain);
+			var domains = new List<MemoryDomain>(2);
 
 			var SystemBusDomain = new MemoryDomainDelegate("System Bus (21 bit)", 0x200000, MemoryDomain.Endian.Little,
 				(addr) =>
@@ -548,46 +549,55 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				wordSize: 2);
 			domains.Add(CpuBusDomain);
 
-			var RomDomain = new MemoryDomainByteArray("ROM", MemoryDomain.Endian.Little, RomData, true, 1);
-			domains.Add(RomDomain);
+			SyncAllByteArrayDomains();
+
+			_memoryDomains = new MemoryDomainList(domains.Concat(_byteArrayDomains.Values).ToList());
+			_memoryDomains.SystemBus = CpuBusDomain;
+			_memoryDomains.MainMemory = _byteArrayDomains["Main Memory"];
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			_memoryDomainsInit = true;
+		}
+
+		private void SyncAllByteArrayDomains()
+		{
+			SyncByteArrayDomain("Main Memory", Ram);
+			SyncByteArrayDomain("ROM", RomData);
 
 			if (BRAM != null)
-			{
-				var BRAMMemoryDomain = new MemoryDomainByteArray("Battery RAM", MemoryDomain.Endian.Little, BRAM, true, 1);
-				domains.Add(BRAMMemoryDomain);
-			}
+				SyncByteArrayDomain("Battery RAM", BRAM);
 
 			if (TurboCD)
 			{
-				var CDRamMemoryDomain = new MemoryDomainByteArray("TurboCD RAM", MemoryDomain.Endian.Little, CDRam, true, 1);
-				domains.Add(CDRamMemoryDomain);
-
-				var AdpcmMemoryDomain = new MemoryDomainByteArray("ADPCM RAM", MemoryDomain.Endian.Little, ADPCM.RAM, true, 1);
-				domains.Add(AdpcmMemoryDomain);
-
+				SyncByteArrayDomain("TurboCD RAM", CDRam);
+				SyncByteArrayDomain("ADPCM RAM", ADPCM.RAM);
 				if (SuperRam != null)
-				{
-					var SuperRamMemoryDomain = new MemoryDomainByteArray("Super System Card RAM", MemoryDomain.Endian.Little, SuperRam, true, 1);
-					domains.Add(SuperRamMemoryDomain);
-				}
+					SyncByteArrayDomain("Super System Card RAM", SuperRam);
 			}
 
 			if (ArcadeCard)
-			{
-				var ArcadeRamMemoryDomain = new MemoryDomainByteArray("Arcade Card RAM", MemoryDomain.Endian.Little, ArcadeRam, true, 1);
-			}
+				SyncByteArrayDomain("Arcade Card RAM", ArcadeRam);
 
 			if (PopulousRAM != null)
-			{
-				var PopulusRAMDomain = new MemoryDomainByteArray("Cart Battery RAM", MemoryDomain.Endian.Little, PopulousRAM, true, 1);
-				domains.Add(PopulusRAMDomain);
-			}
-
-			memoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
+				SyncByteArrayDomain("Cart Battery RAM", PopulousRAM);
 		}
 
-		MemoryDomainList memoryDomains;
+		private void SyncByteArrayDomain(string name, byte[] data)
+		{
+			if (_memoryDomainsInit)
+			{
+				var m = _byteArrayDomains[name];
+				m.Data = data;
+			}
+			else
+			{
+				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				_byteArrayDomains.Add(name, m);
+			}
+		}
+
+		private Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string,MemoryDomainByteArray>();
+		private bool _memoryDomainsInit = false;
+		private MemoryDomainList _memoryDomains;
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
