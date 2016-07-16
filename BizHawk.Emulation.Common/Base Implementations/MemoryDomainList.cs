@@ -84,5 +84,36 @@ namespace BizHawk.Emulation.Common
 				_systemBus = value;
 			}
 		}
+
+		/// <summary>
+		/// for core use only
+		/// </summary>
+		public void MergeList(MemoryDomainList other)
+		{
+			var domains = this.ToDictionary(m => m.Name);
+			foreach (var src in other)
+			{
+				MemoryDomain dst;
+				if (domains.TryGetValue(src.Name, out dst))
+				{
+					TryMerge<MemoryDomainByteArray>(dst, src, (d, s) => d.Data = s.Data);
+					TryMerge<MemoryDomainIntPtr>(dst, src, (d, s) => d.Data = s.Data);
+					TryMerge<MemoryDomainIntPtrSwap16>(dst, src, (d, s) => d.Data = s.Data);
+					TryMerge<MemoryDomainDelegate>(dst, src, (d, s) => { d.Peek = s.Peek; d.Poke = s.Poke; });
+				}
+			}
+		}
+
+		/// <summary>
+		/// big hacks
+		/// </summary>
+		private static void TryMerge<T>(MemoryDomain dest, MemoryDomain src, Action<T, T> func)
+			where T : MemoryDomain
+		{
+			var d1 = dest as T;
+			var s1 = src as T;
+			if (d1 != null && s1 != null)
+				func(d1, s1);
+		}
 	}
 }

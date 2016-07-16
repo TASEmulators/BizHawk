@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void LoadStateText(TextReader reader)
 		{
 			SyncState(Serializer.CreateTextReader(reader));
+			SetupMemoryDomains(); // resync the memory domains
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
@@ -33,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(Serializer.CreateBinaryReader(br));
+			SetupMemoryDomains(); // resync the memory domains
 		}
 
 		public byte[] SaveStateBinary()

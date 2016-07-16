@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public partial class NES
 	{
 		private MemoryDomainList _memoryDomains;
+		private bool _memoryDomainsSetup = false;
 
 		private void SetupMemoryDomains()
 		{
@@ -67,8 +68,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				domains.Add((Board as ExROM).GetExRAM());
 			}
 
-			_memoryDomains = new MemoryDomainList(domains);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+			if (!_memoryDomainsSetup)
+			{
+				_memoryDomains = new MemoryDomainList(domains);
+				(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);
+				_memoryDomainsSetup = true;
+			}
+			else
+			{
+				var src = new MemoryDomainList(domains);
+				_memoryDomains.MergeList(src);
+			}
 		}
 	}
 }
