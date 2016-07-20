@@ -32,6 +32,20 @@ namespace MonoMacWrapper
 			_mainWinForm.Close();
 		}
 
+		public override void DidResignActive (NSNotification notification)
+		{
+			GlobalWin.IsApplicationActive = false;
+			//Note: These events that are supposed to notify us when entering or leaving the background sometimes
+			//don't fire because the run loop is hogging most of the time on the main thread which is supposed to fire them.
+			//Unfortunately, the value I could pull it from manually, NSApplication.SharedApplication.Active, is not updated either.
+			//So this works about 80% of the time, but sometimes it does not. Work-around is to click away and click back again.
+		}
+
+		public override void DidBecomeActive (NSNotification notification)
+		{
+			GlobalWin.IsApplicationActive = true;
+		}
+
 		private void StartApplication()
 		{
 			BizHawk.Client.EmuHawk.HawkDialogFactory.OpenDialogClass = typeof(MacOpenFileDialog);
@@ -55,6 +69,8 @@ namespace MonoMacWrapper
 				DoMenuExtraction();
 				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
+				//Timer assumes 60hz display. Note that timers are not very accurate, and I should really use CVDisplayLink to sync with the monitor.
+				//For the moment this is a decent solution because everything runs smoothly and I believe OpenGL has its own syncronized render thread anyway.
 				_masterTimer = NSTimer.CreateRepeatingTimer(0.01666666666667, MacRunLoop);
 				NSRunLoop.Current.AddTimer(_masterTimer, NSRunLoopMode.Common);
 			}
@@ -68,7 +84,7 @@ namespace MonoMacWrapper
 
 		private void MacRunLoop(){
 			bool runLoopVal = true;
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 1; i++)
 			{
 				runLoopVal &= _mainWinForm.RunLoopCore();
 				if(!runLoopVal) break;

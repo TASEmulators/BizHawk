@@ -705,6 +705,14 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public bool AllowInput(bool yield_alt)
 		{
+#if !WINDOWS
+			//On Windows, ActiveForm would be null if main form is not active.
+			//In Mono WinForms, ActiveForm retains the last active form when the app goes into the background.
+			//Thus we check up front if the App is active before letting everything else continue.
+			if (!GlobalWin.IsApplicationActive && !Global.Config.AcceptBackgroundInput) {
+				return false;
+			}
+#endif
 			// the main form gets input
 			if (ActiveForm == this)
 			{

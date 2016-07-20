@@ -26,5 +26,15 @@ namespace BizHawk.Client.EmuHawk
 		public static GLManager GLManager;
 
 		public static int ExitCode;
+		#if !WINDOWS
+		/// <summary>
+		/// This flag is designed specifically for non-windows platforms. 
+		/// In WinForms you can check to see if the application is active by checking if the ActiveForm is null.
+		/// In Mono, the active form does not become null if the application goes to the background, it remains
+		/// the frontmost window of the application. We need this flag to prevent input from being read in the background.
+		/// Flag is set by the native wrapper on OS X, Linux will need a wrapper if it wants to use this.
+		/// </summary>
+		public static bool IsApplicationActive = true;
+		#endif
 	}
 }
