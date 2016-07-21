@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.EmuHawk
 {
     partial class RamPoke
     {
@@ -232,7 +232,7 @@
 			this.MinimizeBox = false;
 			this.Name = "RamPoke";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Ram Poke";
+			this.Text = "RAM Poke";
 			this.Load += new System.EventHandler(this.RamPoke_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
