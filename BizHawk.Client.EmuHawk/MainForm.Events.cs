@@ -1288,8 +1288,8 @@ namespace BizHawk.Client.EmuHawk
 		private void ToolsSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			ToolBoxMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["ToolBox"].Bindings;
-			RamWatchMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Watch"].Bindings;
-			RamSearchMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Ram Search"].Bindings;
+			RamWatchMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["RAM Watch"].Bindings;
+			RamSearchMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["RAM Search"].Bindings;
 			HexEditorMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Hex Editor"].Bindings;
 			LuaConsoleMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Lua Console"].Bindings;
 			CheatsMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Cheats"].Bindings;

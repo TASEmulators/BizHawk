@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// All cores sould implement a SystemBus that represents the standard cpu bus range used for cheats for that system,
 	/// In order to have a cheat system available for the core
 	/// All domains should implement both peek and poke.  However, if something isn't developed it should throw NotImplementedException rather than silently fail
-	/// If this service is available the client will expose many RAM related tools such as the Hex Editor, Ram Search/Watch, and Cheats
+	/// If this service is available the client will expose many RAM related tools such as the Hex Editor, RAM Search/Watch, and Cheats
 	/// In addition, this is an essential service for effective lua scripting
 	/// </summary>
 	public interface IMemoryDomains : IEnumerable<MemoryDomain>, IEmulatorService

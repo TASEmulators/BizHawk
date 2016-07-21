@@ -298,10 +298,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// Tools
-				case "Ram Watch":
+				case "RAM Watch":
 					GlobalWin.Tools.LoadRamWatch(true);
 					break;
-				case "Ram Search":
+				case "RAM Search":
 					GlobalWin.Tools.Load<RamSearch>();
 					break;
 				case "Hex Editor":
@@ -326,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.Load<VirtualpadTool>();
 					break;
 
-				// Ram Search
+				// RAM Search
 				case "Do Search":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
 						GlobalWin.Tools.RamSearch.DoSearch();

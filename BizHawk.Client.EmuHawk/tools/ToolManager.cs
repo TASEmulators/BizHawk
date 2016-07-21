@@ -400,7 +400,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in beforeList)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
 					tool.UpdateValues();
 				}
@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in afterList)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
 					tool.UpdateValues();
 				}
@@ -429,7 +429,7 @@ namespace BizHawk.Client.EmuHawk
 			if (tool != null)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
 					tool.UpdateValues();
 				}
@@ -452,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, tool);
 					bool restartTool = false;
-					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for Ram Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
+					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 						restartTool = true;
 					if (tool is LuaConsole && ((LuaConsole)tool).IsRebootingCore)
 						restartTool = false;
@@ -656,7 +656,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in beforeList)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
 					tool.FastUpdate();
 				}
@@ -674,7 +674,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var tool in afterList)
 			{
 				if (!tool.IsDisposed ||
-					(tool is RamWatch && Global.Config.DisplayRamWatch)) // Ram Watch hack, on screen display should run even if Ram Watch is closed
+					(tool is RamWatch && Global.Config.DisplayRamWatch)) // RAM Watch hack, on screen display should run even if RAM Watch is closed
 				{
 					tool.FastUpdate();
 				}

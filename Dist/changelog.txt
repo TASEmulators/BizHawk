@@ -65,9 +65,9 @@
 *** Markers - adding markers updates dialog
 *** Don't ever remove marker 0
 
-**Ram Watch
-Ram Watch - fix "Display watches on Screen" feature
-Ram Watch - fixed saving of separators
+**RAM Watch
+RAM Watch - fix "Display watches on Screen" feature
+RAM Watch - fixed saving of separators
 
 **Movies
 *** Save to Disk option (intended for large movies)
@@ -76,8 +76,8 @@ Ram Watch - fixed saving of separators
 *** Save as menu item
 *** Flag for SG-1000 movies, fixes TASVideos submission parser
 
-**Ram Search
-***Fix "Exclude Ram Watch" option
+**RAM Search
+***Fix "Exclude RAM Watch" option
 ***Fix leadings zeros in the Difference and Differnet By boxes
 
 **Basic Bot
@@ -102,7 +102,7 @@ Ram Watch - fixed saving of separators
 **Streamline editing RAM Watches
 **Tidy main form context menu
 **Add more options for U+D/L+R forbid/mutex
-**Fix Ram Search, Ram Watch, Cheats recent file lists
+**Fix RAM Search, RAM Watch, Cheats recent file lists
 **Fix ffmpeg path for AV writer broken a couple of releases ago
 **Add menu command to record avi skipping av writer selection
 **Remember codec selection between program sessions
@@ -199,7 +199,7 @@ Ram Watch - fixed saving of separators
 **Fix Direct3D display method sleep/ctrl+alt+del crashes
 **Fix built-in shaders
 **Reduce shader level requirements for basic d3d display method functionality
-**Fix Ram Search/Ram Watch recent files menu
+**Fix RAM Search/RAM Watch recent files menu
 **Import PJM and PXM movies
 **Sequentially number screenshots taken in the same second without crashing after the 3rd one
 

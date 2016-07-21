@@ -358,7 +358,7 @@
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
 			this.AddToRamWatchMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(217, 22);
-			this.AddToRamWatchMenuItem.Text = "Add to Ram Watch";
+			this.AddToRamWatchMenuItem.Text = "Add to RAM Watch";
 			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
 			// FreezeAddressMenuItem
@@ -497,7 +497,7 @@
 			this.AddToRamWatchContextItem.Name = "AddToRamWatchContextItem";
 			this.AddToRamWatchContextItem.ShortcutKeyDisplayString = "Ctrl+W";
 			this.AddToRamWatchContextItem.Size = new System.Drawing.Size(206, 22);
-			this.AddToRamWatchContextItem.Text = "&Add to Ram Watch";
+			this.AddToRamWatchContextItem.Text = "&Add to RAM Watch";
 			this.AddToRamWatchContextItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
 			// UnfreezeAllContextItem
