@@ -430,7 +430,7 @@ namespace BizHawk.Client.EmuHawk
 					if (kvp.Key.Contains("A Up") || kvp.Key.Contains("A Down") ||
 					kvp.Key.Contains("A Left") || kvp.Key.Contains("A Right"))
 					{
-						continue;
+					//	continue;
 					}
 				}
 
