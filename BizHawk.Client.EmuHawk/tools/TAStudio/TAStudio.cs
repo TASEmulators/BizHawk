@@ -425,16 +425,16 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var kvp in columnNames)
 			{
 				// N64 hack for now, for fake analog
-				if (Emulator.SystemId == "N64")
-				{
-					if (kvp.Key.Contains("A Up") || kvp.Key.Contains("A Down") ||
-					kvp.Key.Contains("A Left") || kvp.Key.Contains("A Right"))
-					{
-					//	continue;
-					}
-				}
-
-				AddColumn(kvp.Key, kvp.Value, 20 * kvp.Value.Length);
+				//if (Emulator.SystemId == "N64")
+				//{
+				//	if (kvp.Key.Contains("A Up") || kvp.Key.Contains("A Down") ||
+				//	kvp.Key.Contains("A Left") || kvp.Key.Contains("A Right"))
+				//	{
+				//		continue;
+				//	}
+				//}
+				int width = kvp.Value.Length == 1 ? 20 : kvp.Value.Length * 7;
+				AddColumn(kvp.Key, kvp.Value, width);
 			}
 
 			var columnsToHide = TasView.AllColumns
@@ -443,7 +443,10 @@ namespace BizHawk.Client.EmuHawk
 					c.Name == "Power" ||
 					c.Name == "Reset" ||
 					c.Name.StartsWith("Tilt") ||
-					c.Name == "Light Sensor"
+					c.Name == "Light Sensor" ||
+					c.Name == "Open" ||
+					c.Name == "Close" ||
+					c.Name == "Disc Select"
 				);
 
 			foreach (var column in columnsToHide)
