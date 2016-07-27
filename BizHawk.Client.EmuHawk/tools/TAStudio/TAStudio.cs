@@ -433,8 +433,7 @@ namespace BizHawk.Client.EmuHawk
 				//		continue;
 				//	}
 				//}
-				int width = kvp.Value.Length == 1 ? 20 : kvp.Value.Length * 7;
-				AddColumn(kvp.Key, kvp.Value, width);
+				AddColumn(kvp.Key, kvp.Value, (kvp.Value.Length * 6) + 14);
 			}
 
 			var columnsToHide = TasView.AllColumns
