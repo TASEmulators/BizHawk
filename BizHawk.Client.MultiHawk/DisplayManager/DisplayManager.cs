@@ -365,8 +365,8 @@ namespace BizHawk.Client.MultiHawk
 				}
 				if (Global.Config.DispManagerAR == Config.EDispManagerAR.Custom)
 				{
-					vw = Global.Config.DispCustomUserARWidth;
-					vh = Global.Config.DispCustomUserARHeight;
+					//vw = Global.Config.DispCustomUserARWidth;
+					//vh = Global.Config.DispCustomUserARHeight;
 				}
 			}
 

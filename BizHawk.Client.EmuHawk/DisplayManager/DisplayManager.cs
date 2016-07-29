@@ -623,8 +623,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (Global.Config.DispManagerAR == Config.EDispManagerAR.Custom)
 				{
-					vw = Global.Config.DispCustomUserARWidth;
-					vh = Global.Config.DispCustomUserARHeight;
+					//vw = Global.Config.DispCustomUserARWidth;
+					//vh = Global.Config.DispCustomUserARHeight;
 				}
 				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
 				{
