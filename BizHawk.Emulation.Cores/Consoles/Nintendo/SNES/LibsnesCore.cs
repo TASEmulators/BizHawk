@@ -1,4 +1,4 @@
-﻿//TODO - add serializer (?)
+//TODO - add serializer (?)
 
 //http://wiki.superfamicom.org/snes/show/Backgrounds
 
@@ -394,13 +394,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		void snes_trace(string msg)
 		{
 			// TODO: get them out of the core split up and remove this hackery
-			string splitStr = "[";
-			if (!msg.Contains('['))
-			{
-				splitStr = "A:";
-			}
+			string splitStr = "A:";
 
-			var split = msg.Split(new[] {splitStr }, StringSplitOptions.None);
+			var split = msg.Split(new[] {splitStr }, 2, StringSplitOptions.None);
 
 			Tracer.Put(new TraceInfo
 			{
