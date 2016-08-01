@@ -37,6 +37,7 @@
 
 		//Necessary winform calls
 		bool Focus();
+		bool ContainsFocus { get; }
 		void Show();
 		void Close();
 		bool IsDisposed { get; }

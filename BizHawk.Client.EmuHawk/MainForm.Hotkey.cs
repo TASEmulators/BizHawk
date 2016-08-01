@@ -43,6 +43,11 @@ namespace BizHawk.Client.EmuHawk
 					TakeScreenshot();
 					break;
 				case "Screen Raw to Clipboard":
+					// Ctrl+C clash. any tool that has such acc must check this.
+					// maybe check if mainform has focus instead?
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						if (GlobalWin.Tools.Get<TAStudio>().ContainsFocus)
+							break;
 					TakeScreenshotToClipboard();
 					break;
 				case "Screen Client to Clipboard":
