@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Pause":
 					// check this here since TogglePause() has no idea who triggered it
 					// and we need to treat pause hotkey specially in tastudio
-					if (GlobalWin.MainForm.EmulatorPaused)
+					if (GlobalWin.MainForm.EmulatorPaused && GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.IgnoreSeekFrame = true;
 					TogglePause();
 					break;
