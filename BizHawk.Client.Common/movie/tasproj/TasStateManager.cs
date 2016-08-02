@@ -212,7 +212,7 @@ namespace BizHawk.Client.Common
 		private void MaybeRemoveStates()
 		{
 			// Loop, because removing a state that has a duplicate won't save any space
-			while (Used > Settings.Cap || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			while (Used + _expectedStateSize > Settings.Cap || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
 				Point shouldRemove = StateToRemove();
 				RemoveState(shouldRemove.X, shouldRemove.Y);
