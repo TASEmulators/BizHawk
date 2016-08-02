@@ -894,6 +894,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
+				// prevent nasty silent corruption
+				if (!GlobalWin.Tools.IsLoaded<TAStudio>())
+					System.Diagnostics.Debug.Fail("TAStudio does not exist!");
+
 				var tool = _tools.FirstOrDefault(x => x is TAStudio);
 				if (tool != null)
 				{
