@@ -639,6 +639,7 @@ namespace BizHawk.Client.EmuHawk
 
 			return true;
 		}
+
 		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
 		{
 			_initializing = true;
@@ -656,6 +657,7 @@ namespace BizHawk.Client.EmuHawk
 			if (AskSaveChanges())
 				LoadFile(new FileInfo(path));
 		}
+
 		private void DummyLoadMacro(string path)
 		{
 			if (!TasView.AnyRowsSelected)
@@ -682,7 +684,19 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void TastudioToStopMovie()
+		private void TastudioPlayMode()
+		{
+			CurrentTasMovie.SwitchToPlay();
+			GlobalWin.MainForm.SetMainformMovieInfo();
+		}
+
+		private void TastudioRecordMode()
+		{
+			CurrentTasMovie.SwitchToRecord();
+			GlobalWin.MainForm.SetMainformMovieInfo();
+		}
+
+		private void TastudioStopMovie()
 		{
 			Global.MovieSession.StopMovie(false);
 			GlobalWin.MainForm.SetMainformMovieInfo();
@@ -795,7 +809,8 @@ namespace BizHawk.Client.EmuHawk
 			if (frame == Emulator.Frame)
 				return;
 
-			CurrentTasMovie.SwitchToPlay();
+			_wasRecording = CurrentTasMovie.IsRecording || _wasRecording;
+			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{

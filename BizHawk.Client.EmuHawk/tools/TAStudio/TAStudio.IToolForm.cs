@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Game.Hash != CurrentTasMovie.Hash)
 				{
-					TastudioToStopMovie();
+					TastudioStopMovie();
 					TasView.AllColumns.Clear();
 					StartNewTasMovie();
 					SetUpColumns();

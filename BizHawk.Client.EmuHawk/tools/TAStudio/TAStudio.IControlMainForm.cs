@@ -45,11 +45,20 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.SelectBranchExternal(true);
 		}
 
-		public bool WantsToControlReadOnly { get { return false; } }
+		public bool WantsToControlReadOnly { get { return true; } }
 
 		public void ToggleReadOnly()
 		{
-			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
+			if (CurrentTasMovie.IsPlaying)
+			{
+				TastudioRecordMode();
+				GlobalWin.OSD.AddMessage("Tastudio: Recording mode");
+			}
+			else if (CurrentTasMovie.IsRecording)
+			{
+				TastudioPlayMode();
+				GlobalWin.OSD.AddMessage("Tastudio: Playback mode");
+			}
 		}
 
 		public bool WantsToControlStopMovie { get; private set; }

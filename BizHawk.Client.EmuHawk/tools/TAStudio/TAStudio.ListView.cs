@@ -54,6 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
+		private bool _wasRecording = false;
 
 		private void JumpToGreenzone()
 		{
@@ -92,6 +93,11 @@ namespace BizHawk.Client.EmuHawk
 		public void StopSeeking()
 		{
 			_seekBackgroundWorker.CancelAsync();
+			if (_wasRecording)
+			{
+				TastudioRecordMode();
+				_wasRecording = false;
+			}
 			if (IgnoreSeekFrame)
 			{
 				GlobalWin.MainForm.UnpauseEmulator();

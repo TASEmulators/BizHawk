@@ -23,6 +23,9 @@ namespace BizHawk.Client.Common
 			LagLog.RemoveFrom(frame);
 			LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame;
 
+			if (IsRecording)
+				StateManager.Invalidate(frame + 1);
+
 			if (frame != 0)
 				ChangeLog.SetGeneralRedo();
 		}
