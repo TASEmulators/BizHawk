@@ -937,6 +937,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToNextMarker();
 			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				if (_floatEditRow != -1)
+				{
+					_floatEditRow = -1;
+				}
+				else
+				{
+					// not using StopSeeking() here, since it has special logic and should only happen when seek frame is reached
+					CancelSeekContextMenuItem_Click(null, null);
+				}
+			}
 
 			// SuuperW: Float Editing
 			if (_floatEditRow != -1)
@@ -1033,11 +1045,6 @@ namespace BizHawk.Client.EmuHawk
 						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
-			}
-			else
-			{
-				// not using StopSeeking() here, since it has special logic and should only happen when seek frame is reashed
-				CancelSeekContextMenuItem_Click(null, null);
 			}
 
 			RefreshDialog();

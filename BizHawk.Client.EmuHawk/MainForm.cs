@@ -2687,6 +2687,8 @@ namespace BizHawk.Client.EmuHawk
 					runFrame = true;
 					_runloopFrameadvance = true;
 					_frameAdvanceTimestamp = currentTimestamp;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.IgnoreSeekFrame = false;
 				}
 				else
 				{
