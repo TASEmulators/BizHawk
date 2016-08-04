@@ -98,6 +98,9 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 			}
 
+			IgnoreSeekFrame = false; // don't unpause
+			StopSeeking();
+
 			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
 			{
 				GlobalWin.Sound.StopSound();

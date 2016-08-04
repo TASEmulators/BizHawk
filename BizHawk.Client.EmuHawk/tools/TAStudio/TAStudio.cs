@@ -910,10 +910,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			_exiting = true;
+
 			if (AskSaveChanges())
 			{
 				WantsToControlStopMovie = false;
-				GlobalWin.MainForm.StopMovie(saveChanges: false);
+				TastudioStopMovie();
 				DisengageTastudio();
 			}
 			else
