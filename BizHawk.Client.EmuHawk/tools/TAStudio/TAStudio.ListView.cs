@@ -665,6 +665,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							GlobalWin.MainForm.PauseEmulator();
 							GlobalWin.MainForm.PauseOnFrame = null;
+							StopSeeking();
 						}
 					}
 					RefreshDialog();

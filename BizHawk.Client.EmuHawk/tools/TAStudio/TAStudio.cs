@@ -647,6 +647,7 @@ namespace BizHawk.Client.EmuHawk
 				movie = CurrentTasMovie;
 			SetTasMovieCallbacks(movie as TasMovie);
 			bool result = GlobalWin.MainForm.StartNewMovie(movie, record);
+			TastudioPlayMode();
 			_initializing = false;
 
 			return result;
@@ -686,14 +687,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TastudioPlayMode()
 		{
-			CurrentTasMovie.SwitchToPlay();
-			GlobalWin.MainForm.SetMainformMovieInfo();
+			TasPlaybackBox.RecordingMode = false;
 		}
 
 		private void TastudioRecordMode()
 		{
-			CurrentTasMovie.SwitchToRecord();
-			GlobalWin.MainForm.SetMainformMovieInfo();
+			TasPlaybackBox.RecordingMode = true;
 		}
 
 		private void TastudioStopMovie()

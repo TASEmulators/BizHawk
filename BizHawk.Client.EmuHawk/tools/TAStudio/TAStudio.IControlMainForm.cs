@@ -52,12 +52,10 @@ namespace BizHawk.Client.EmuHawk
 			if (CurrentTasMovie.IsPlaying)
 			{
 				TastudioRecordMode();
-				GlobalWin.OSD.AddMessage("Tastudio: Recording mode");
 			}
 			else if (CurrentTasMovie.IsRecording)
 			{
 				TastudioPlayMode();
-				GlobalWin.OSD.AddMessage("Tastudio: Playback mode");
 			}
 		}
 
