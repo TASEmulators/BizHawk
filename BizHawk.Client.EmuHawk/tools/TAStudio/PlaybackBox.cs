@@ -68,12 +68,21 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				return Global.MovieSession.ReadOnly;
+				return Global.MovieSession.Movie.IsRecording;
 			}
 
 			set
 			{
 				RecordingModeCheckbox.Checked = value;
+				if (RecordingModeCheckbox.Checked)
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+				else
+				{
+					Global.MovieSession.Movie.SwitchToPlay();
+				}
+				GlobalWin.MainForm.SetMainformMovieInfo();
 			}
 		}
 
@@ -95,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
 				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
-				RecordingModeCheckbox.Checked = false;
+				RecordingModeCheckbox.Checked = RecordingMode;
 			}
 
 			_loading = false;
@@ -158,17 +167,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void RecordingModeCheckbox_CheckedChanged(object sender, EventArgs e)
+		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
 		{
-			if (RecordingModeCheckbox.Checked)
-			{
-				Global.MovieSession.Movie.SwitchToRecord();
-			}
-			else
-			{
-				Global.MovieSession.Movie.SwitchToPlay();
-			}
-			GlobalWin.MainForm.SetMainformMovieInfo();
+			RecordingMode ^= true;
 		}
 	}
 }

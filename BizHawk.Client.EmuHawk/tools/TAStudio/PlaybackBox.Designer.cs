@@ -71,7 +71,7 @@
 			this.RecordingModeCheckbox.TabIndex = 9;
 			this.RecordingModeCheckbox.Text = "Recording mode";
 			this.RecordingModeCheckbox.UseVisualStyleBackColor = true;
-			this.RecordingModeCheckbox.CheckedChanged += new System.EventHandler(this.RecordingModeCheckbox_CheckedChanged);
+			this.RecordingModeCheckbox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.RecordingModeCheckbox_MouseClick);
 			// 
 			// AutoRestoreCheckbox
 			// 
