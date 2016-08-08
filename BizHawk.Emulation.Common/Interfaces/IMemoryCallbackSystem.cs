@@ -75,6 +75,7 @@ namespace BizHawk.Emulation.Common
 		string Name { get; }
 		Action Callback { get; }
 		uint? Address { get; }
+		uint? AddressMask { get; }
 	}
 
 	public enum MemoryCallbackType { Read, Write, Execute }

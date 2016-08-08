@@ -10,9 +10,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public Action Callback { get; set; }
 
-		public void Add(IDebuggable core, uint address, MemoryCallbackType type)
+		public void Add(IDebuggable core, uint address, uint mask, MemoryCallbackType type)
 		{
-			Add(new Breakpoint(core, Callback, address, type));
+			Add(new Breakpoint(core, Callback, address, mask, type));
 		}
 
 		public new void Clear()
@@ -68,35 +68,38 @@ namespace BizHawk.Client.EmuHawk
 		private bool _active;
 		private readonly IDebuggable _core;
 
-		public Breakpoint(bool readOnly, IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
+		public Breakpoint(bool readOnly, IDebuggable core, Action callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
 			Type = type;
 			Callback = callBack;
 			Address = address;
+			AddressMask = mask;
 			Name = "Pause";
 
 			Active = enabled;
 			ReadOnly = readOnly;
 		}
 
-		public Breakpoint(IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
+		public Breakpoint(IDebuggable core, Action callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
 			Type = type;
 			Callback = callBack;
 			Address = address;
+			AddressMask = mask;
 			Name = "Pause";
 
 			Active = enabled;
 		}
 
-		public Breakpoint(string name, bool readOnly, IDebuggable core, Action callBack, uint address, MemoryCallbackType type, bool enabled = true)
+		public Breakpoint(string name, bool readOnly, IDebuggable core, Action callBack, uint address, uint mask, MemoryCallbackType type, bool enabled = true)
 		{
 			_core = core;
 			Type = type;
 			Callback = callBack;
 			Address = address;
+			AddressMask = mask;
 			Name = name;
 
 			Active = enabled;
@@ -105,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action Callback { get; set; }
 		public uint? Address { get; set; }
+		public uint? AddressMask { get; set; }
 		public MemoryCallbackType Type { get; set; }
 		public string Name { get; set; }
 
@@ -117,6 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			_active = true;
 			Callback = callback.Callback;
 			Address = callback.Address;
+			AddressMask = callback.AddressMask;
 			Type = callback.Type;
 			Name = callback.Name;
 
@@ -153,14 +158,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCallback()
 		{
-			_core.MemoryCallbacks.Add(new MemoryCallback(Type, Name, Callback, Address));
+			_core.MemoryCallbacks.Add(new MemoryCallback(Type, Name, Callback, Address, AddressMask));
 		}
 
 		private void RemoveCallback()
 		{
 			_core.MemoryCallbacks.Remove(Callback);
 		}
-		
+
 		public void ResetCallback()
 		{
 			if (Active)

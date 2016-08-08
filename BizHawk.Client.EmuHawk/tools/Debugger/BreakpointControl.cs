@@ -46,9 +46,12 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 					text = string.Format("{0:X}", Breakpoints[index].Address);
 					break;
 				case 1:
-					text = Breakpoints[index].Type.ToString();
+					text = string.Format("{0:X}", Breakpoints[index].AddressMask);
 					break;
 				case 2:
+					text = Breakpoints[index].Type.ToString();
+					break;
+				case 3:
 					text = Breakpoints[index].Name;
 					break;
 			}
@@ -106,6 +109,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 					if (!Breakpoints.Any(b =>
 						b.Type == callback.Type &&
 						b.Address == callback.Address &&
+						b.AddressMask == callback.AddressMask &&
 						b.Name == callback.Name &&
 						b.Callback == callback.Callback
 						))
@@ -143,9 +147,9 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			UpdateStatsLabel();
 		}
 
-		public void AddBreakpoint(uint address, MemoryCallbackType type)
+		public void AddBreakpoint(uint address, uint mask, MemoryCallbackType type)
 		{
-			Breakpoints.Add(Core, address, type);
+			Breakpoints.Add(Core, address, mask, type);
 
 			BreakpointView.ItemCount = Breakpoints.Count;
 			UpdateBreakpointRemoveButton();
@@ -158,7 +162,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 			if (b.ShowHawkDialog() == DialogResult.OK)
 			{
-				Breakpoints.Add(Core, b.Address, b.BreakType);
+				Breakpoints.Add(Core, b.Address, b.AddressMask, b.BreakType);
 			}
 
 			BreakpointView.ItemCount = Breakpoints.Count;
@@ -171,7 +175,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		public void AddSeekBreakpoint(uint pcVal, int pcBitSize)
 		{
 			var Name = SeekName + pcVal.ToHexString(pcBitSize / 4);
-			Breakpoints.Add(new Breakpoint(Name, true, Core, SeekCallback, pcVal, MemoryCallbackType.Execute));
+			Breakpoints.Add(new Breakpoint(Name, true, Core, SeekCallback, pcVal, 0xFFFFFFFF, MemoryCallbackType.Execute));
 		}
 
 		public void RemoveCurrentSeek()
@@ -284,11 +288,11 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 			if (breakpoint != null && !breakpoint.ReadOnly)
 			{
-				var b = CreateAddBreakpointDialog(BreakpointOperation.Duplicate, breakpoint.Type, breakpoint.Address);
+				var b = CreateAddBreakpointDialog(BreakpointOperation.Duplicate, breakpoint.Type, breakpoint.Address, breakpoint.AddressMask);
 
 				if (b.ShowHawkDialog() == DialogResult.OK)
 				{
-					Breakpoints.Add(new Breakpoint(Core, breakpoint.Callback, b.Address, b.BreakType, breakpoint.Active));
+					Breakpoints.Add(new Breakpoint(Core, breakpoint.Callback, b.Address, b.AddressMask, b.BreakType, breakpoint.Active));
 				}
 			}
 
@@ -303,12 +307,13 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 			if (breakpoint != null && !breakpoint.ReadOnly)
 			{
-				var b = CreateAddBreakpointDialog(BreakpointOperation.Edit, breakpoint.Type, breakpoint.Address);
+				var b = CreateAddBreakpointDialog(BreakpointOperation.Edit, breakpoint.Type, breakpoint.Address, breakpoint.AddressMask);
 
 				if (b.ShowHawkDialog() == DialogResult.OK)
 				{
 					breakpoint.Type = b.BreakType;
 					breakpoint.Address = b.Address;
+					breakpoint.AddressMask = b.AddressMask;
 					breakpoint.ResetCallback();
 				}
 			}
@@ -318,7 +323,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			UpdateStatsLabel();
 		}
 
-		private AddBreakpointDialog CreateAddBreakpointDialog(BreakpointOperation op, MemoryCallbackType? type = null, uint? address = null)
+		private AddBreakpointDialog CreateAddBreakpointDialog(BreakpointOperation op, MemoryCallbackType? type = null, uint? address = null, uint? mask = null)
 		{
 			var operation = (AddBreakpointDialog.BreakpointOperation)op;
 
@@ -336,6 +341,11 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			if (address != null)
 			{
 				b.Address = (uint)address;
+			}
+
+			if (mask != null)
+			{
+				b.AddressMask = (uint)mask;
 			}
 
 			if (!MCS.ExecuteCallbacksAvailable)

@@ -104,6 +104,11 @@ namespace BizHawk.Emulation.Common
 			{
 				get { return null; }
 			}
+
+			public uint? AddressMask
+			{
+				get { return null; }
+			}
 		}
 	}
 }
