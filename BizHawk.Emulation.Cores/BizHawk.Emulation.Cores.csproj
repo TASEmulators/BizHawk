@@ -877,10 +877,7 @@
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx32\GPGXControlConverter.cs" />
-    <Compile Include="Consoles\Sega\gpgx32\GPGXControlConverterDynamic.cs" />
-    <Compile Include="Consoles\Sega\gpgx32\GPGXDynamic.cs" />
     <Compile Include="Consoles\Sega\gpgx32\LibGPGX.cs" />
-    <Compile Include="Consoles\Sega\gpgx32\LibGPGXDynamic.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.ICodeDataLogger.cs">
