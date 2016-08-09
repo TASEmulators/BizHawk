@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 {
 	public partial class GPGX : ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
 	{

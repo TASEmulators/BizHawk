@@ -5,7 +5,7 @@ using System.Text;
 
 using BizHawk.Common.NumberExtensions;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 {
 	public partial class GPGX
 	{

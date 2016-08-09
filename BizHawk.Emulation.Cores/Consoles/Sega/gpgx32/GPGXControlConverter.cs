@@ -6,7 +6,7 @@ using System.Text;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 {
 	public class GPGXControlConverter
 	{

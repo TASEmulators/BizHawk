@@ -3,7 +3,7 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 {
 	public partial class GPGX : ICodeDataLogger
 	{

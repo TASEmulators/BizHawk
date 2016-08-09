@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 {
 	/*
 	 * how to use:

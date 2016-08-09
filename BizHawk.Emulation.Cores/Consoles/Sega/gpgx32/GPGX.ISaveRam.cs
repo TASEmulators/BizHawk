@@ -5,7 +5,7 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 {
 	public partial class GPGX : ISaveRam
 	{
