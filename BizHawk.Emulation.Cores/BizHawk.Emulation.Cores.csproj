@@ -838,6 +838,49 @@
     <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
     <Compile Include="Consoles\Sega\Genesis\Genesis.IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\GenDbgHlp.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.ICodeDataLogger.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IDebuggable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IDisassembler.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IDriveLight.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IEmulator.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IInputPollable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IMemoryDomains.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.ISaveRam.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.ISettable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IStatable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.ITraceable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGX.IVideoProvider.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx32\GPGXControlConverter.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\GPGXControlConverterDynamic.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\GPGXDynamic.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\LibGPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx32\LibGPGXDynamic.cs" />
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.ICodeDataLogger.cs">
