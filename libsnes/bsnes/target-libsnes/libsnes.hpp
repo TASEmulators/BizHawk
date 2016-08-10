@@ -149,6 +149,7 @@ bool snes_load_cartridge_super_game_boy(
 void snes_unload_cartridge(void);
 
 bool snes_get_region(void);
+char snes_get_mapper(void);
 uint8_t* snes_get_memory_data(unsigned id);
 const char* snes_get_memory_id_name(unsigned id);
 unsigned snes_get_memory_size(unsigned id);
