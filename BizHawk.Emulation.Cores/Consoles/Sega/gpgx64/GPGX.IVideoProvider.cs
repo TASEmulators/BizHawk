@@ -1,7 +1,7 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
 	public partial class GPGX : IVideoProvider
 	{
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 			int gppitch, gpwidth, gpheight;
 			IntPtr src = IntPtr.Zero;
 
-			LibGPGX.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
+			Core.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
 
 			vwidth = gpwidth;
 			vheight = gpheight;

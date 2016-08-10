@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			bool ret = GPGXSettings.NeedsReboot(_settings, o);
 			_settings = o;
-			Core.gpgx_set_draw_mask(_settings.GetDrawMask());
+			LibGPGX.gpgx_set_draw_mask(_settings.GetDrawMask());
 			return ret;
 		}
 
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			private bool _PadScreen320;
 
 			[DisplayName("Pad screen to 320")]
-			[Description("When using 1:1 aspect ratio, enable to make screen width constant (320) between game modes")]
+			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
 			[DefaultValue(false)]
 			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
 

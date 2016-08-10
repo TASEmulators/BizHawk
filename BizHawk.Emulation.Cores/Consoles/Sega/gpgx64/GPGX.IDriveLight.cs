@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
 	public partial class GPGX : IDriveLight
 	{

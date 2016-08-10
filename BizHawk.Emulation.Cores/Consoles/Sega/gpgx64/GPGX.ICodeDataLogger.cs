@@ -3,15 +3,15 @@ using System.IO;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
 	public partial class GPGX : ICodeDataLogger
 	{
 		public void SetCDL(CodeDataLog cdl)
 		{
 			CDL = cdl;
-			if (cdl == null) LibGPGX.gpgx_set_cd_callback(null);
-			else LibGPGX.gpgx_set_cd_callback(CDCallback);
+			if (cdl == null) Core.gpgx_set_cd_callback(null);
+			else Core.gpgx_set_cd_callback(CDCallback);
 		}
 
 		public void NewCDL(CodeDataLog cdl)

@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 using Newtonsoft.Json;
 
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
 	public partial class GPGX : ISettable<GPGX.GPGXSettings, GPGX.GPGXSyncSettings>
 	{
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 		{
 			bool ret = GPGXSettings.NeedsReboot(_settings, o);
 			_settings = o;
-			LibGPGX.gpgx_set_draw_mask(_settings.GetDrawMask());
+			Core.gpgx_set_draw_mask(_settings.GetDrawMask());
 			return ret;
 		}
 
@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx32
 			private bool _PadScreen320;
 
 			[DisplayName("Pad screen to 320")]
-			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
+			[Description("When using 1:1 aspect ratio, enable to make screen width constant (320) between game modes")]
 			[DefaultValue(false)]
 			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
 
