@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Common
 		{
 			for (int i = 0; i < cbs.Count; i++)
 			{
-				if (!cbs[i].Address.HasValue || cbs[i].Address == addr)
+				if (!cbs[i].Address.HasValue || cbs[i].Address == (addr & cbs[i].AddressMask))
 					cbs[i].Callback();
 			}
 		}
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryCallback : IMemoryCallback
 	{
-		public MemoryCallback(MemoryCallbackType type, string name, Action callback, uint? address)
+		public MemoryCallback(MemoryCallbackType type, string name, Action callback, uint? address, uint? mask)
 		{
 			if (type == MemoryCallbackType.Execute && !address.HasValue)
 			{
@@ -218,11 +218,13 @@ namespace BizHawk.Emulation.Common
 			Name = name;
 			Callback = callback;
 			Address = address;
+			AddressMask = (mask.HasValue ? mask : 0xFFFFFFFF);
 		}
 
 		public MemoryCallbackType Type { get; private set; }
 		public string Name { get; private set; }
 		public Action Callback { get; private set; }
 		public uint? Address { get; private set; }
+		public uint? AddressMask { get; private set; }
 	}
 }

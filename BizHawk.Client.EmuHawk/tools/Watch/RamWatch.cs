@@ -1096,7 +1096,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var watch in selected)
 				{
-					debugger.AddBreakpoint((uint)watch.Address, MemoryCallbackType.Read);
+					debugger.AddBreakpoint((uint)watch.Address, 0xFFFFFFFF, MemoryCallbackType.Read);
 				}
 			}
 		}
@@ -1111,7 +1111,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var watch in selected)
 				{
-					debugger.AddBreakpoint((uint)watch.Address, MemoryCallbackType.Write);
+					debugger.AddBreakpoint((uint)watch.Address, 0xFFFFFFFF, MemoryCallbackType.Write);
 				}
 			}
 		}

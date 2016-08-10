@@ -38,13 +38,15 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.CancelBtn = new System.Windows.Forms.Button();
 			this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.AddressMaskBox = new BizHawk.Client.EmuHawk.HexTextBox();
 			this.BreakpointTypeGroupbox.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// AddBtn
 			// 
 			this.AddBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.AddBtn.Location = new System.Drawing.Point(152, 92);
+			this.AddBtn.Location = new System.Drawing.Point(152, 115);
 			this.AddBtn.Name = "AddBtn";
 			this.AddBtn.Size = new System.Drawing.Size(60, 23);
 			this.AddBtn.TabIndex = 100;
@@ -57,10 +59,10 @@
 			this.BreakpointTypeGroupbox.Controls.Add(this.ExecuteRadio);
 			this.BreakpointTypeGroupbox.Controls.Add(this.WriteRadio);
 			this.BreakpointTypeGroupbox.Controls.Add(this.ReadRadio);
-			this.BreakpointTypeGroupbox.Location = new System.Drawing.Point(15, 31);
+			this.BreakpointTypeGroupbox.Location = new System.Drawing.Point(16, 57);
 			this.BreakpointTypeGroupbox.Name = "BreakpointTypeGroupbox";
 			this.BreakpointTypeGroupbox.Size = new System.Drawing.Size(196, 52);
-			this.BreakpointTypeGroupbox.TabIndex = 1;
+			this.BreakpointTypeGroupbox.TabIndex = 3;
 			this.BreakpointTypeGroupbox.TabStop = false;
 			// 
 			// ExecuteRadio
@@ -101,13 +103,14 @@
 			this.label1.Location = new System.Drawing.Point(12, 9);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(59, 13);
-			this.label1.TabIndex = 3;
+			this.label1.TabIndex = 4;
 			this.label1.Text = "Address 0x";
 			// 
 			// CancelBtn
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelBtn.Location = new System.Drawing.Point(83, 92);
+			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.CancelBtn.Location = new System.Drawing.Point(83, 115);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 101;
@@ -125,13 +128,34 @@
 			this.AddressBox.TabIndex = 1;
 			this.AddressBox.Text = "0";
 			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(13, 32);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(47, 13);
+			this.label2.TabIndex = 5;
+			this.label2.Text = "Mask 0x";
+			// 
+			// AddressMaskBox
+			// 
+			this.AddressMaskBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.AddressMaskBox.Location = new System.Drawing.Point(77, 31);
+			this.AddressMaskBox.Name = "AddressMaskBox";
+			this.AddressMaskBox.Nullable = false;
+			this.AddressMaskBox.Size = new System.Drawing.Size(135, 20);
+			this.AddressMaskBox.TabIndex = 2;
+			this.AddressMaskBox.Text = "FFFFFFFF";
+			// 
 			// AddBreakpointDialog
 			// 
 			this.AcceptButton = this.AddBtn;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(224, 123);
+			this.ClientSize = new System.Drawing.Size(224, 146);
+			this.Controls.Add(this.AddressMaskBox);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.AddressBox);
@@ -163,5 +187,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.Button CancelBtn;
+		private System.Windows.Forms.Label label2;
+		private HexTextBox AddressMaskBox;
 	}
 }
