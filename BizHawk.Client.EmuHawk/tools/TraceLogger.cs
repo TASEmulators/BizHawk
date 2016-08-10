@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void StartLogFile(FileInfo file)
 		{
-			using (var sw = new StreamWriter(_logFile.FullName, append: false))
+			using (var sw = new StreamWriter(file.FullName, append: false))
 			{
 				sw.WriteLine(Tracer.Header);
 			}
