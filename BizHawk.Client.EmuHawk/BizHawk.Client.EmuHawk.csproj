@@ -1758,6 +1758,8 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\Shark.ico" />
+    <None Include="images\Shark.png" />
     <None Include="images\ScrollTo.png" />
     <None Include="images\tastudio\icon_anchor_lag.png" />
     <None Include="images\tastudio\icon_anchor.png" />

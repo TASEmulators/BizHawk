@@ -934,6 +934,13 @@ namespace BizHawk.Client.EmuHawk.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Shark {
+            get {
+                object obj = ResourceManager.GetObject("Shark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap sms_icon {
             get {
                 object obj = ResourceManager.GetObject("sms_icon", resourceCulture);
