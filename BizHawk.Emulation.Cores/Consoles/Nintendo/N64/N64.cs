@@ -55,10 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
-			MemoryCallbacks = new MemoryCallbackSystem
-			{
-				ExecuteCallbacksAvailable = false
-			};
+			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
 
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -215,6 +212,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			IsVIFrame = false;
+			
+			RefreshMemoryCallbacks();
 
 			_audioProvider.RenderSound = rendersound;
 
