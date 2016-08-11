@@ -564,7 +564,7 @@ namespace BizHawk.Client.EmuHawk
 			base.Dispose(disposing);
 		}
 
-		#endregion`
+		#endregion
 
 		#region Pause
 

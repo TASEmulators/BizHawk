@@ -26,6 +26,7 @@
 
 #define READCB() if (readCB) readCB(address)
 #define WRITECB() if (writeCB) writeCB(address)
+#define EXECUTECB() if (executeCB) executeCB(PC->addr)
 
 #define READCBADDR(addr) if (readCB) readCB(addr)
 #define WRITECBADDR(addr) if (writeCB) writeCB(addr)
@@ -53,6 +54,8 @@ extern unsigned int address, word;
 extern unsigned char cpu_byte;
 extern unsigned short hword;
 extern unsigned long long dword, *rdword;
+
+extern void (*executeCB)(unsigned int);
 
 extern void (*readmem[0x10000])(void);
 extern void (*readmemb[0x10000])(void);

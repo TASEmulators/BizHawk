@@ -69,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private mupen64plusApi.MemoryCallback _readcb;
 		private mupen64plusApi.MemoryCallback _writecb;
+		private mupen64plusApi.MemoryCallback _executecb;
 
 		private void RefreshMemoryCallbacks()
 		{
@@ -93,8 +94,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				_writecb = null;
 			}
 
+			if (mcs.HasExecutes)
+			{
+				_executecb = delegate(uint addr) { mcs.CallExecutes(addr); };
+			}
+			else
+			{
+				_executecb = null;
+			}
+
 			api.setReadCallback(_readcb);
 			api.setWriteCallback(_writecb);
+			api.setExecuteCallback(_executecb);
 		}
 	}
 }

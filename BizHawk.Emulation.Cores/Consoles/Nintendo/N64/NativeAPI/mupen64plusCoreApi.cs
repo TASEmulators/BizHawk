@@ -365,6 +365,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		SetWriteCallback m64pSetWriteCallback;
 
 		/// <summary>
+		/// Sets the memory execute callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SetExecuteCallback(MemoryCallback callback);
+		SetExecuteCallback m64pSetExecuteCallback;
+
+		/// <summary>
 		/// Gets the CPU registers
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -497,6 +504,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			m64pSetReadCallback = (SetReadCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetReadCallback"), typeof(SetReadCallback));
 			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
+			m64pSetExecuteCallback = (SetExecuteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetExecuteCallback"), typeof(SetExecuteCallback));
 
 			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
 
@@ -645,6 +653,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public void setWriteCallback(MemoryCallback callback)
 		{
 			m64pSetWriteCallback(callback);
+		}
+
+		public void setExecuteCallback(MemoryCallback callback)
+		{
+			m64pSetExecuteCallback(callback);
 		}
 
 		public void getRegisters(byte[] dest)

@@ -531,6 +531,9 @@
     <Compile Include="Consoles\Nintendo\N64\N64.IStatable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.ITraceable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
@@ -899,15 +902,35 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IDebuggable.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IEmulator.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IInputPollable.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IMemoryDomains.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.Input.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.ISaveRam.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IDebuggable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IEmulator.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IInputPollable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IMemoryDomains.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.Input.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.ISaveRam.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\VDP.cs" />
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
@@ -1003,8 +1026,6 @@
     <Compile Include="Consoles\Sega\Genesis\GenVDP.Render.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.cs" />
-    <Compile Include="Consoles\Sega\SMS\VDP.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\HuC6280PSG.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
