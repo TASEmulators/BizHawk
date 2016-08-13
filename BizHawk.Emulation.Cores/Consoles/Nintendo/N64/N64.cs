@@ -140,6 +140,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			InitMemoryDomains();
 			RefreshMemoryCallbacks();
 
+			Tracer = new m64pTraceBuffer(this, MemoryDomains, this);
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
 			api.AsyncExecuteEmulator();
 
 			// Hack: Saving a state on frame 0 has been shown to not be sync stable. Advance past that frame to avoid the problem.
