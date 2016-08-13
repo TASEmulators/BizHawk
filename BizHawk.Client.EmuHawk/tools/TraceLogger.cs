@@ -33,9 +33,10 @@ namespace BizHawk.Client.EmuHawk
 			set { this.Registers.Width = value; }
 		}
 
-		private readonly List<TraceInfo> _instructions = new List<TraceInfo>();
+		private List<TraceInfo> _instructions = new List<TraceInfo>();
 		
 		private FileInfo _logFile;
+		private StreamWriter _streamWriter;
 
 		public TraceLogger()
 		{
@@ -61,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveConfigSettings()
 		{
-			Tracer.Enabled = LoggingEnabled.Checked;
+			//Tracer.Enabled = LoggingEnabled.Checked;
 		}
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
@@ -77,7 +78,6 @@ namespace BizHawk.Client.EmuHawk
 					case 1:
 						text = _instructions[index].RegisterInfo;
 						break;
-
 				}
 			}
 		}
@@ -86,35 +86,79 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearList();
 			OpenLogFile.Enabled = false;
-			Tracer.Enabled = LoggingEnabled.Checked = false;
+			//Tracer.Enabled = LoggingEnabled.Checked = false;
 			SetTracerBoxTitle();
 		}
 
-		public void UpdateValues()
+		class CallbackSink : ITraceSink
 		{
-			_instructions.AddRange(Tracer.TakeContents());
-
-			if (ToWindowRadio.Checked)
+			public void Put(TraceInfo info)
 			{
-				TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
-				LogToWindow();
+				putter(info);
 			}
-			else
+
+			public Action<TraceInfo> putter;
+		}
+
+		public void UpdateValues() { }
+
+		public void NewUpdate(ToolFormUpdateType type)
+		{
+			if (type == ToolFormUpdateType.PostFrame)
 			{
-				DumpToDisk(_logFile);
-				_instructions.Clear();
+				if (ToWindowRadio.Checked)
+					TraceView.VirtualListSize = _instructions.Count;
+				else
+				{
+					_streamWriter.Close();
+					_streamWriter = null;
+				}
+			}
+
+			if (type == ToolFormUpdateType.PreFrame)
+			{
+				if (LoggingEnabled.Checked)
+				{
+					//connect tracer to sink for next frame
+					if (ToWindowRadio.Checked)
+					{
+						//update listview with most recentr results
+						TraceView.BlazingFast = !GlobalWin.MainForm.EmulatorPaused;
+
+						Tracer.Sink = new CallbackSink()
+						{
+							putter = (info) =>
+							{
+								if (_instructions.Count >= MaxLines) { }
+								else _instructions.Add(info);
+							}
+						};
+						_instructions.Clear();
+					}
+					else
+					{
+						_streamWriter = new StreamWriter(_logFile.FullName, append: true);
+						Tracer.Sink = new CallbackSink {
+							putter = (info) =>
+							{
+								//no padding supported. core should be doing this anyway.
+								_streamWriter.WriteLine("{0}    {1}", info.Disassembly, info.RegisterInfo);
+							}
+						};
+					}
+				}
+				else Tracer.Sink = null;
 			}
 		}
 
 		public void FastUpdate()
 		{
-			_instructions.AddRange(Tracer.TakeContents());
 		}
 
 		public void Restart()
 		{
 			ClearList();
-			Tracer.Enabled = LoggingEnabled.Checked = false;
+			//Tracer.Enabled = LoggingEnabled.Checked = false;
 			SetTracerBoxTitle();
 		}
 
@@ -290,7 +334,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoggingEnabled_CheckedChanged(object sender, EventArgs e)
 		{
-			Tracer.Enabled = LoggingEnabled.Checked;
+			//Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 
 			if (LoggingEnabled.Checked && _logFile != null)

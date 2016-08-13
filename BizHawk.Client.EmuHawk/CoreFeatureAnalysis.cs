@@ -129,6 +129,8 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		private TreeNode CreateCoreTree(CoreInfo ci)
 		{
 			var ret = new TreeNode

@@ -40,6 +40,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IToolForm Implementation
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			// TODO: per frame stuff goes here

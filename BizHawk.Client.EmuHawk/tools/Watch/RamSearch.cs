@@ -261,6 +261,8 @@ namespace BizHawk.Client.EmuHawk
 			SetTotal();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		/// <summary>
 		/// This should only be called when the values of the list need an update such as after a poke or emulation occured
 		/// </summary>

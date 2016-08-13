@@ -65,6 +65,8 @@ namespace BizHawk.Client.EmuHawk
 			tsbViewStyle.SelectedIndex = 0;
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			UpdateDisplay(false);

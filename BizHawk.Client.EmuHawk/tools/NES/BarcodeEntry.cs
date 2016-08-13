@@ -25,6 +25,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region IToolForm
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 		}

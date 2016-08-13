@@ -405,6 +405,8 @@ namespace BizHawk.Client.EmuHawk
 					tool.UpdateValues();
 				}
 			}
+			foreach (var tool in _tools)
+				tool.NewUpdate(ToolFormUpdateType.PreFrame);
 		}
 
 		public void UpdateAfter()
@@ -418,6 +420,9 @@ namespace BizHawk.Client.EmuHawk
 					tool.UpdateValues();
 				}
 			}
+
+			foreach (var tool in _tools)
+				tool.NewUpdate(ToolFormUpdateType.PostFrame);
 		}
 
 		/// <summary>

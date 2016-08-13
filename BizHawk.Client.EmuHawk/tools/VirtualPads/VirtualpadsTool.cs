@@ -168,6 +168,8 @@ namespace BizHawk.Client.EmuHawk
 			CreatePads();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed)

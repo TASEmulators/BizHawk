@@ -86,6 +86,8 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 			ParentDebugger.DisableCancelSeekBtn();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			if (Enabled)

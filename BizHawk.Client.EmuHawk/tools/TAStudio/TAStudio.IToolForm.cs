@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return false; } }
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		private int lastRefresh = 0;
 		public void UpdateValues()
 		{

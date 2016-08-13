@@ -693,6 +693,8 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		/// <summary>belongs in ToolsBefore</summary>
 		public void UpdateValues()
 		{
