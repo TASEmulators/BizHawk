@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
 	public class mupen64plusApi : IDisposable
@@ -16,8 +18,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		Thread m64pEmulator;
 
-		AutoResetEvent m64pFrameComplete = new AutoResetEvent(false);
+		AutoResetEvent m64pEvent = new AutoResetEvent(false);
+		AutoResetEvent m64pContinueEvent = new AutoResetEvent(false);
 		ManualResetEvent m64pStartupComplete = new ManualResetEvent(false);
+
+		bool event_frameend = false;
+		bool event_breakpoint = false;
 
 		[DllImport("kernel32.dll")]
 		public static extern UInt32 GetLastError();
@@ -581,8 +587,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_RESET, 1, IntPtr.Zero);
 		}
 
+		public enum BreakType
+		{
+			Read, Write, Execute
+		}
+
+		public struct BreakParams
+		{
+			public BreakType _type;
+			public uint _addr;
+			public IMemoryCallbackSystem _mcs;
+		}
+
+		private BreakParams _breakparams;
+
 		public void frame_advance()
 		{
+			event_frameend = false;
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 
 			//the way we should be able to do it:
@@ -593,10 +614,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			//so here are two workaround methods.
 
 			//method 1.
-			BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
+			//BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pFrameComplete);
 
 			//method 2.
 			//BizHawk.Common.Win32ThreadHacks.HackyComWaitOne(m64pFrameComplete);
+
+			for(;;)
+			{
+				BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pEvent);
+				if (event_frameend)
+					break;
+				if (event_breakpoint)
+				{
+					switch (_breakparams._type)
+					{
+						case BreakType.Read:
+							_breakparams._mcs.CallReads(_breakparams._addr);
+							break;
+						case BreakType.Write:
+							_breakparams._mcs.CallWrites(_breakparams._addr);
+							break;
+						case BreakType.Execute:
+							_breakparams._mcs.CallExecutes(_breakparams._addr);
+							break;
+					}
+				}
+				event_breakpoint = false;
+                m64pContinueEvent.Set();
+			}
+		}
+
+		public void OnBreakpoint(BreakParams breakparams)
+		{
+			_breakparams = breakparams;
+			event_breakpoint = true; //order important
+			m64pEvent.Set(); //order important
+            BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pContinueEvent); //wait for emuhawk to finish event
 		}
 
 		public int SaveState(byte[] buffer)
@@ -753,7 +806,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			// Execute VI Callback functions
 			if (VInterrupt != null)
 				VInterrupt();
-			m64pFrameComplete.Set();
+			event_frameend = true; //order important
+			m64pEvent.Set(); //order important
 		}
 
 		private void FireRenderEvent()
@@ -764,7 +818,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		private void CompletedFrameCallback()
 		{
-			m64pFrameComplete.Set();
+			m64pEvent.Set();
 		}
 	}
 }

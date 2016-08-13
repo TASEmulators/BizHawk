@@ -68,6 +68,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 		{
 			GlobalWin.MainForm.PauseEmulator();
 			UpdateValues();
+			GlobalWin.OSD.AddMessage("Breakpoint hit");
 		}
 
 		private void SeekCallback()

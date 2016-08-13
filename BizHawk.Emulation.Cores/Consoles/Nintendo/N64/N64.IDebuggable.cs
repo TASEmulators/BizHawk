@@ -83,7 +83,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 			if (mcs.HasReads)
 			{
-				_readcb = delegate(uint addr) { mcs.CallReads(addr); };
+				_readcb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Read,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
 			}
 			else
 			{
@@ -92,7 +100,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			if (mcs.HasWrites)
 			{
-				_writecb = delegate(uint addr) { mcs.CallWrites(addr); };
+				_writecb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Write,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
 			}
 			else
 			{
@@ -101,7 +117,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			if (mcs.HasExecutes)
 			{
-				_executecb = delegate(uint addr) { mcs.CallExecutes(addr); };
+				_executecb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Execute,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
 			}
 			else
 			{
