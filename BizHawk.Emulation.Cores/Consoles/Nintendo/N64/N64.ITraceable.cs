@@ -28,9 +28,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 				var traceInfo = new TraceInfo
 				{
-					Disassembly = string.Format("{0:X}:  {1}", pc, disasm),
-					RegisterInfo = ""
+					Disassembly = string.Format("{0:X}:  {1}", pc, disasm)
 				};
+
+				var sb = new StringBuilder();
+
+				foreach (var r in regs)
+				{
+					if (r.Value.Value != 0)
+						sb.Append(
+							string.Format("{0}:{1} ",
+							r.Key.Trim(),
+							r.Value.Value.ToHexString(r.Value.BitSize / 4)));
+				}
+
+				traceInfo.RegisterInfo = sb.ToString().Trim();
 
 				Put(traceInfo);
 			}
