@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				traceInfo.RegisterInfo = sb.ToString().Trim();
 
-				Buffer.Add(traceInfo);
+				Put(traceInfo);
 			}
 		}
 	}
