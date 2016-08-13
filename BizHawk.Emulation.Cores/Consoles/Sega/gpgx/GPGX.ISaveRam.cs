@@ -11,30 +11,69 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public byte[] CloneSaveRam()
 		{
-			int size = 0;
-			IntPtr area = Core.gpgx_get_sram(ref size);
-			if (size == 0 || area == IntPtr.Zero)
-				return new byte[0];
+			if (disposed)
+			{
+				if (_disposedSaveRam != null)
+				{
+					return (byte[])_disposedSaveRam.Clone();
+				}
 
-			byte[] ret = new byte[size];
-			Marshal.Copy(area, ret, 0, size);
-			return ret;
+				return new byte[0];
+			}
+			else
+			{
+				int size = 0;
+				IntPtr area = IntPtr.Zero;
+				LibGPGX.gpgx_get_sram(ref area, ref size);
+				if (size <= 0 || area == IntPtr.Zero)
+					return new byte[0];
+				LibGPGX.gpgx_sram_prepread();
+
+				byte[] ret = new byte[size];
+				Marshal.Copy(area, ret, 0, size);
+				return ret;
+			}
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (!Core.gpgx_put_sram(data, data.Length))
-				throw new Exception("Core rejected saveram");
+			if (disposed)
+			{
+				throw new ObjectDisposedException(typeof(GPGX).ToString());
+			}
+			else
+			{
+				int size = 0;
+				IntPtr area = IntPtr.Zero;
+				LibGPGX.gpgx_get_sram(ref area, ref size);
+				if (size <= 0 || area == IntPtr.Zero)
+					return;
+				if (size != data.Length)
+					throw new Exception("Unexpected saveram size");
+
+				Marshal.Copy(data, 0, area, size);
+				LibGPGX.gpgx_sram_commitwrite();
+			}
 		}
 
 		public bool SaveRamModified
 		{
 			get
 			{
-				int size = 0;
-				IntPtr area = Core.gpgx_get_sram(ref size);
-				return size > 0 && area != IntPtr.Zero;
+				if (disposed)
+				{
+					return _disposedSaveRam != null;
+				}
+				else
+				{
+					int size = 0;
+					IntPtr area = IntPtr.Zero;
+					LibGPGX.gpgx_get_sram(ref area, ref size);
+					return size > 0 && area != IntPtr.Zero;
+				}
 			}
 		}
+
+		private byte[] _disposedSaveRam = null;
 	}
 }
