@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			public m64pTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
 				: base(debuggableCore, memoryDomains, disassembler)
 			{
-				Header = "r3400: PC, mnemonic, arguments";
+				Header = "r3400: PC, mnemonic, arguments, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status)";
 			}
 
 			public override void TraceFromCallback()
