@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Common
 		public bool NotInDatabase = true;
 		public string FirmwareHash;
 		public string ForcedCore;
+		public string LibretroCore;
 
 		Dictionary<string, string> Options = new Dictionary<string, string>();
 

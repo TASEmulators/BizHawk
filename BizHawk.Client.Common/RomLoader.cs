@@ -269,7 +269,7 @@ namespace BizHawk.Client.Common
 							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 							//game name == name of core
 							var gameName = codePathPart;
-							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
+							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro", LibretroCore = codePathPart };
 
 							//if we are allowed to run NoGame and we dont have a game, boot up the core that way
 							bool ret = retro.LoadNoGame();
@@ -289,8 +289,8 @@ namespace BizHawk.Client.Common
 
 							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 							//game name == name of core + extensionless_game_filename
-							var gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
-							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
+							var gameName = Path.GetFileNameWithoutExtension(file.Name);
+							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro", LibretroCore = codePathPart };
 
 							//if the core requires an archive file, then try passing the filename of the archive
 							//(but do we ever need to actually load the contents of the archive file into ram?)
