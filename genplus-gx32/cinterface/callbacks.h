@@ -8,6 +8,7 @@ typedef void (*CDCallback)(int32 addr, int32 addrtype, int32 flags);
 extern void (*biz_execcb)(unsigned addr);
 extern void (*biz_readcb)(unsigned addr);
 extern void (*biz_writecb)(unsigned addr);
+extern void (*biz_tracecb)(void);
 extern CDCallback biz_cdcallback;
 extern unsigned biz_lastpc;
 

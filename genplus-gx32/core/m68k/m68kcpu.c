@@ -339,6 +339,9 @@ void m68k_run(unsigned int cycles)
     /* Set the address space for reads */
     m68ki_use_data_space() /* auto-disable (see m68kcpu.h) */
 
+	if (biz_tracecb)
+		biz_tracecb();
+
 	if (biz_execcb)
 		biz_execcb(REG_PC);
 

@@ -60,6 +60,7 @@ extern void zap(void);
 void (*biz_execcb)(unsigned addr) = NULL;
 void (*biz_readcb)(unsigned addr) = NULL;
 void (*biz_writecb)(unsigned addr) = NULL;
+void (*biz_tracecb)(void) = NULL;
 CDCallback biz_cdcallback = NULL;
 unsigned biz_lastpc = 0;
 
@@ -593,6 +594,11 @@ GPGX_EX void gpgx_set_mem_callback(void (*read)(unsigned), void (*write)(unsigne
 	biz_readcb = read;
 	biz_writecb = write;
 	biz_execcb = exec;
+}
+
+GPGX_EX void gpgx_set_trace_callback(void (*trace)(void))
+{
+	biz_tracecb = trace;
 }
 
 GPGX_EX void gpgx_set_cd_callback(CDCallback cdcallback)

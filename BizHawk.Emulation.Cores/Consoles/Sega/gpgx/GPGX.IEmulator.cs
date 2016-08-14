@@ -48,6 +48,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			Frame++;
 			_drivelight = false;
 
+			if (Tracer.Enabled)
+				LibGPGX.gpgx_set_trace_callback(_tracecb);
+			else
+				LibGPGX.gpgx_set_trace_callback(null);
+
 			LibGPGX.gpgx_advance();
 			UpdateVideo();
 			update_audio();

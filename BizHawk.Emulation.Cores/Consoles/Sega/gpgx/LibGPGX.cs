@@ -155,11 +155,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void mem_cb(uint addr);
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void CDCallback(int addr, CDLog_AddrType addrtype, CDLog_Flags flags);
-
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_set_mem_callback(mem_cb read, mem_cb write, mem_cb exec);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void trace_cb();
+
+		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void gpgx_set_trace_callback(trace_cb cb);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void CDCallback(int addr, CDLog_AddrType addrtype, CDLog_Flags flags);
 
 		[DllImport("libgenplusgx.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void gpgx_set_cd_callback(CDCallback cd);

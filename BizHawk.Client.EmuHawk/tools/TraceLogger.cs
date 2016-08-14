@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (ToWindowRadio.Checked)
 					TraceView.VirtualListSize = _instructions.Count;
-				else
+				else if (_streamWriter != null)
 				{
 					_streamWriter.Close();
 					_streamWriter = null;
