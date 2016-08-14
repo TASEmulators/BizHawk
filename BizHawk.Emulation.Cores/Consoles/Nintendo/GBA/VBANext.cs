@@ -164,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			return new TraceInfo
 			{
-				Disassembly = string.Format("{0:X8} {1}", opcode, Darm.DisassembleStuff(addr, opcode)),
+				Disassembly = string.Format("{0:X8} {1}", opcode, Darm.DisassembleStuff(addr, opcode)).PadRight(26),
 				RegisterInfo = regs.TraceString()
 			};
 		}
