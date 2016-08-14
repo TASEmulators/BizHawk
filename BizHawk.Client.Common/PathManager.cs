@@ -297,17 +297,7 @@ namespace BizHawk.Client.Common
 
 		public static string RetroSaveRAMDirectory(GameInfo game)
 		{
-			var name = RemoveInvalidFileSystemChars(game.LibretroCore);
-
-			if (Global.MovieSession.Movie.IsActive)
-			{
-				name = Path.Combine(name, "movie-" + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename));
-			}
-
-			var pathEntry = Global.Config.PathEntries[game.System, "Save RAM"] ??
-							Global.Config.PathEntries[game.System, "Base"];
-
-			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
+			return SaveRamPath(game);
 		}
 
 
@@ -361,6 +351,11 @@ namespace BizHawk.Client.Common
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				name += "." + Path.GetFileNameWithoutExtension(Global.MovieSession.Movie.Filename);
+			}
+
+			if (game.System == "Libretro")
+			{
+				name += "." + game.LibretroCore;
 			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "Savestates"] ??
