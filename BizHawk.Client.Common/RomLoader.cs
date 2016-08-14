@@ -212,7 +212,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
-			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
+			int recursiveCount = 0, GameInfo alreadyParsedGameInfo = null) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 
 							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
 							//game name == name of core + extensionless_game_filename
-							var gameName = Path.GetFileNameWithoutExtension(file.Name);
+							var gameName = alreadyParsedGameInfo != null ? alreadyParsedGameInfo.Name : Path.GetFileNameWithoutExtension(file.Name);
 							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro", LibretroCore = codePathPart };
 
 							//if the core requires an archive file, then try passing the filename of the archive
@@ -740,7 +740,7 @@ namespace BizHawk.Client.Common
 								{
 									AsLibretro = true;
 									nextComm.LaunchLibretroCore = @"dll/snes9x_libretro.dll";
-									return LoadRom(path, nextComm, forceAccurateCore, recursiveCount + 1);
+									return LoadRom(path, nextComm, forceAccurateCore, recursiveCount + 1, game);
 								}
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
 								{
