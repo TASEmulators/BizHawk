@@ -420,6 +420,7 @@ void pure_interpreter(void)
      if (g_DebuggerActive) update_debugger(PC->addr);
 #endif
      EXECUTECB();
+	 TRACECB();
      PC->ops();
    }
 }

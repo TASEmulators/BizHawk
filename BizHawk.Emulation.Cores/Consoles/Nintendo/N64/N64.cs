@@ -138,10 +138,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();
+			ConnectTracer();
 			RefreshMemoryCallbacks();
-
-			Tracer = new m64pTraceBuffer(this, MemoryDomains, this);
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			api.AsyncExecuteEmulator();
 
@@ -215,8 +213,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			IsVIFrame = false;
-			
+
 			RefreshMemoryCallbacks();
+
+			if (Tracer.Enabled)
+			{
+				api.setTraceCallback(_tracecb);
+			}
+			else
+			{
+				api.setTraceCallback(null);
+			}
 
 			_audioProvider.RenderSound = rendersound;
 

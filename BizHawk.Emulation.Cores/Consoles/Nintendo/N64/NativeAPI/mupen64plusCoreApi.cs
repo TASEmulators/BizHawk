@@ -378,6 +378,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		SetExecuteCallback m64pSetExecuteCallback;
 
 		/// <summary>
+		/// Type of the trace callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback();
+
+		/// <summary>
+		/// Sets the trace callback
+		/// </summary>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void SetTraceCallback(TraceCallback callback);
+		SetTraceCallback m64pSetTraceCallback;
+
+		/// <summary>
 		/// Gets the CPU registers
 		/// </summary>
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -511,6 +524,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pSetReadCallback = (SetReadCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetReadCallback"), typeof(SetReadCallback));
 			m64pSetWriteCallback = (SetWriteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetWriteCallback"), typeof(SetWriteCallback));
 			m64pSetExecuteCallback = (SetExecuteCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetExecuteCallback"), typeof(SetExecuteCallback));
+			m64pSetTraceCallback = (SetTraceCallback)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "SetTraceCallback"), typeof(SetTraceCallback));
 
 			m64pGetRegisters = (GetRegisters)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "GetRegisters"), typeof(GetRegisters));
 
@@ -711,6 +725,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		public void setExecuteCallback(MemoryCallback callback)
 		{
 			m64pSetExecuteCallback(callback);
+		}
+
+		public void setTraceCallback(TraceCallback callback)
+		{
+			m64pSetTraceCallback(callback);
 		}
 
 		public void getRegisters(byte[] dest)
