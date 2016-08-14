@@ -141,8 +141,8 @@ namespace BizHawk.Client.EmuHawk
 						Tracer.Sink = new CallbackSink {
 							putter = (info) =>
 							{
-								//no padding supported. core should be doing this anyway.
-								_streamWriter.WriteLine("{0}    {1}", info.Disassembly, info.RegisterInfo);
+								//no padding supported. core should be doing this!
+								_streamWriter.WriteLine("{0}{1}", info.Disassembly, info.RegisterInfo);
 							}
 						};
 					}
