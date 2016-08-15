@@ -142,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 							putter = (info) =>
 							{
 								//no padding supported. core should be doing this!
-								_streamWriter.WriteLine("{0}{1}", info.Disassembly, info.RegisterInfo);
+								_streamWriter.WriteLine("{0} {1}", info.Disassembly, info.RegisterInfo);
 							}
 						};
 					}

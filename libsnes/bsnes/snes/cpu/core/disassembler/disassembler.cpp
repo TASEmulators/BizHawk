@@ -115,7 +115,7 @@ void CPUcore::disassemble_opcode(char *output, uint32 addr) {
   }
 
   pc.d = addr;
-  sprintf(s, "%.6x ", (uint32)pc.d);
+  sprintf(s, "%.6x:  ", (uint32)pc.d);
 
   uint8 op  = dreadb(pc.d); pc.w++;
   uint8 op0 = dreadb(pc.d); pc.w++;

@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		private LibGPGX.trace_cb _tracecb;
 
+		private const string TraceHeader = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
+
 		private void MakeTrace()
 		{
 			var regs = GetCpuFlagsAndRegisters();
@@ -55,8 +57,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			Tracer.Put(traceInfo);
 		}
-
-		private const string TraceHeader = "M68K: PC, machine code, mnemonic, arguments, registers (D0-D7, A0-A7, SR, USP, status flags)";
 
 		private void ConnectTracer()
 		{

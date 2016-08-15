@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			int* p = (int*)_origin;
 			for (int i = 0; i < 17; i++)
 			{
-				sb.Append(p[i].ToString("X8"));
+				sb.Append(string.Format("r{0}:{1:X8}", i, p[i]));
 				if (i != 16)
 					sb.Append(' ');
 			}

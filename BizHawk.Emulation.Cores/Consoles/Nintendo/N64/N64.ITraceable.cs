@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Tracer.Put(traceInfo);
 		}
 
-		private const string TraceHeader = "r3400: PC, mnemonic, arguments, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status)";
+		private const string TraceHeader = "r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status)";
 
 		private void ConnectTracer()
 		{

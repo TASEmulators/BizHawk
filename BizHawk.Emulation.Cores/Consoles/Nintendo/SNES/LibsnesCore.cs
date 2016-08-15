@@ -37,7 +37,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			MemoryCallbacks = new MemoryCallbackSystem();
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer
+			{
+				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
+			};
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new BizHawk.Emulation.Cores.Components.W65816.W65816_DisassemblerService());
@@ -400,7 +403,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			Tracer.Put(new TraceInfo
 			{
-				Disassembly = split[0],
+				Disassembly = split[0].PadRight(34),
 				RegisterInfo = splitStr + split[1]
 			});
 		}

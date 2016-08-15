@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public string TraceHeader
 		{
-			get { return "6502: PC, opcode, registers (SP, A, P, X, Y) flags (NVTBDIZCR)"; }
+			get { return "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)"; }
 		}
 
 		public TraceInfo State(bool disassemble = true)
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			return new TraceInfo
 			{
 				Disassembly = string.Format(
-					"{0:X4}:  {1:X2} {2} ",
+					"{0:X4}:  {1:X2}  {2} ",
 					PC,
 					PeekMemory(PC),
 					disassemble ? Disassemble(PC, out notused) : "---").PadRight(26),

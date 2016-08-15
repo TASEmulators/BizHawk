@@ -11952,7 +11952,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 		public string TraceHeader
 		{
-			get { return "Z80: PC, opcode, registers (AF, BC, DE, HL, IX, IY, SP, Cy) Flags (CNP3H5ZS)"; }
+			get { return "Z80: PC, machine code, mnemonic, operands, registers (AF, BC, DE, HL, IX, IY, SP, Cy), flags (CNP3H5ZS)"; }
 		}
 
 		public TraceInfo State()
@@ -11962,10 +11962,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			return new TraceInfo
 			{
 				Disassembly = string.Format(
-					"{0:X4}  {1:X2} {2}",
+					"{0:X4}:  {1:X2}  {2}",
 					RegPC.Word,
 					FetchMemoryWrapper(RegPC.Word),
-					Disassembler.Disassemble(() => ReadMemoryWrapper(tempPC++))),
+					Disassembler.Disassemble(() => ReadMemoryWrapper(tempPC++))).PadRight(26),
 				RegisterInfo = string.Format(
 					"AF:{0:X4} BC:{1:X4} DE:{2:X4} HL:{3:X4} IX:{4:X4} IY:{5:X4} SP:{6:X4} Cy:{7} {8}{9}{10}{11}{12}{13}{14}{15}",
 					RegAF.Word,
@@ -11976,14 +11976,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 					RegIY.Word,
 					RegSP.Word,
 					TotalExecutedCycles,
-					RegFlagC ? "C" : "",
-					RegFlagN ? "N" : "",
-					RegFlagP ? "P" : "",
-					RegFlag3 ? "3" : "",
-					RegFlagH ? "H" : "",
-					RegFlag5 ? "5" : "",
-					RegFlagZ ? "Z" : "",
-					RegFlagS ? "S" : ""
+					RegFlagC ? "C" : "c",
+					RegFlagN ? "N" : "n",
+					RegFlagP ? "P" : "p",
+					RegFlag3 ? "3" : "-",
+					RegFlagH ? "H" : "h",
+					RegFlag5 ? "5" : "-",
+					RegFlagZ ? "Z" : "z",
+					RegFlagS ? "S" : "s"
 					)
 			};
 		}
