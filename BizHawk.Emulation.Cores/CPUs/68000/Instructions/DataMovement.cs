@@ -387,57 +387,113 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			}
 		}
 
-		static string DisassembleRegisterList0(ushort registers)
+		static string DisassembleRegisterList0(uint registers)
 		{
 			var str = new StringBuilder();
 			int count = 0;
+			bool snip = false;
 			for (int i = 0; i < 8; i++)
 			{
-				if ((registers & 0x8000) != 0)
+				if ((registers & 0x8000) != 0) // current bit
 				{
-					if (count > 0) str.Append(",");
-					str.Append("D" + i);
+					if ((registers & 0x10000) != 0 && // last bit
+						(registers & 0x4000) != 0) // next bit
+					{
+						if (!snip)
+						{
+							str.Append("-");
+							snip = true;
+						}
+					}
+					else
+					{
+						if (count > 0 && !snip) str.Append(",");
+						str.Append("D" + i);
+						snip = false;
+					}
 					count++;
 				}
 				registers <<= 1;
 			}
 			for (int i = 0; i < 8; i++)
 			{
-				if ((registers & 0x8000) != 0)
+				if ((registers & 0x8000) != 0) // current bit
 				{
-					if (count > 0) str.Append(",");
-					str.Append("A" + i);
+					if ((registers & 0x10000) != 0 && // last bit
+						(registers & 0x4000) != 0) // next bit
+					{
+						if (!snip)
+						{
+							str.Append("-");
+							snip = true;
+						}
+					}
+					else
+					{
+						if (count > 0 && !snip) str.Append(",");
+						str.Append("A" + i);
+						snip = false;
+					}
 					count++;
 				}
 				registers <<= 1;
 			}
+			//str.Append(string.Format("[{0:X4}]", registers >> 16));
 			return str.ToString();
 		}
 
-		static string DisassembleRegisterList1(ushort registers)
+		static string DisassembleRegisterList1(uint registers)
 		{
 			var str = new StringBuilder();
 			int count = 0;
+			bool snip = false;
 			for (int i = 0; i < 8; i++)
 			{
-				if ((registers & 1) != 0)
+				if ((registers & 0x10000) != 0)
 				{
-					if (count > 0) str.Append(",");
-					str.Append("D" + i);
+					if ((registers & 0x8000) != 0 && // last bit
+						(registers & 0x20000) != 0) // next bit
+					{
+						if (!snip)
+						{
+							str.Append("-");
+							snip = true;
+						}
+					}
+					else
+					{
+						if (count > 0 && !snip) str.Append(",");
+						str.Append("D" + i);
+						snip = false;
+					}
 					count++;
 				}
 				registers >>= 1;
 			}
 			for (int i = 0; i < 8; i++)
 			{
-				if ((registers & 1) != 0)
+				if ((registers & 0x10000) != 0)
 				{
-					if (count > 0) str.Append(",");
-					str.Append("A" + i);
+					if ((registers & 0x8000) != 0 && // last bit
+						(registers & 0x20000) != 0) // next bit
+					{
+						if (!snip)
+						{
+							str.Append("-");
+							snip = true;
+						}
+					}
+					else
+					{
+						if (count > 0 && !snip) str.Append(",");
+						str.Append("A" + i);
+						snip = false;
+					}
 					count++;
 				}
 				registers >>= 1;
 			}
+			//str.Append(string.Format("[{0:X4}]", registers & 0xFFFF));
 			return str.ToString();
 		}
 
@@ -452,7 +508,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			string address = DisassembleAddress(mode, reg, ref pc);
 
 			info.Mnemonic = size == 0 ? "movem.w" : "movem.l";
-			info.Args = DisassembleRegisterList0(registers) + ", " + address;
+			info.Args = DisassembleRegisterList0((uint)registers) + ", " + address;
 			info.Length = pc - info.PC;
 		}
 
@@ -467,7 +523,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			string address = DisassembleAddress(mode, reg, ref pc);
 
 			info.Mnemonic = size == 0 ? "movem.w" : "movem.l";
-			info.Args = address + ", " + DisassembleRegisterList1(registers);
+			info.Args = address + ", " + DisassembleRegisterList1((uint)registers << 16);
 			info.Length = pc - info.PC;
 		}
 
