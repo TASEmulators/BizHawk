@@ -1770,11 +1770,11 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			//if(ioa is this or that) - for more complex behaviour
-			rom = ioa.SimplePath;
+			string romPath = ioa.SimplePath;
 
-			if (!LoadRom(rom, args))
+			if (!LoadRom(romPath, args))
 			{
-				Global.Config.RecentRoms.HandleLoadError(rom);
+				Global.Config.RecentRoms.HandleLoadError(romPath, rom);
 			}
 		}
 
