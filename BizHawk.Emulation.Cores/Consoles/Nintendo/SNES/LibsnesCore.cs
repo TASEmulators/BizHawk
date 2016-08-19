@@ -645,6 +645,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
+			if (!nocallbacks && Tracer.Enabled)
+				api.QUERY_set_trace_callback(tracecb);
+			else
+				api.QUERY_set_trace_callback(null);
+
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
 			if (!nocallbacks && DeterministicEmulation)
@@ -659,11 +664,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Close();
 				savestatebuff = ms.ToArray();
 			}
-
-			if (!nocallbacks && Tracer.Enabled)
-				api.QUERY_set_trace_callback(tracecb);
-			else
-				api.QUERY_set_trace_callback(null);
 
 			// speedup when sound rendering is not needed
 			if (!rendersound)
