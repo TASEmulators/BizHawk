@@ -687,7 +687,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
     break;
 
     case OP_CACHE:
-            db_printf(state, "%-16s0x%x,0x%x(%s)",
+            db_printf(state, "%-10s0x%x,0x%x(%s)",
                 r4k_str_op_name[i.IType.op],
                 i.IType.rt,
                 i.IType.imm,

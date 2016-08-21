@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			// note: the approach this code takes is highly bug-prone
+			// warning: tracer magically relies on these register names!
 			var ret = new Dictionary<string, RegisterValue>();
 			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);

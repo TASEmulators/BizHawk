@@ -40,14 +40,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			sb.Append(string.Format("HI:{0:X8}{1:X8} ", regs["HI_hi"].Value, regs["HI_lo"].Value));
 			sb.Append(string.Format("FCR0:{0:X8} ", regs["FCR0"].Value));
 			sb.Append(string.Format("FCR31:{0:X8} ", regs["FCR31"].Value));
-			// drop co-processor regs for now
+
+			for (int i = 0; i < 32; i++) // r0 is always zero
+			{
+				UInt64 val = (regs["CP1 FGR REG" + i + "_hi"].Value << 32) | regs["CP1 FGR REG" + i + "_lo"].Value;
+				sb.Append(string.Format("f{0}:{1:X16} ", i, val));
+			}
+
+			// drop MMU co-processor regs for now
 
 			traceInfo.RegisterInfo = sb.ToString().Trim();
 
 			Tracer.Put(traceInfo);
 		}
 
-		private const string TraceHeader = "r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status)";
+		private const string TraceHeader = "r3400: PC, mnemonic, operands, registers (GPRs, Load/Link Bit, MultHI, MultLO, Implementation/Revision, Control/Status, FGRs)";
 
 		private void ConnectTracer()
 		{
