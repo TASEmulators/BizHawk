@@ -31,7 +31,7 @@ void* g_ShockTraceCallbackOpaque = NULL;
 ShockCallback_Trace g_ShockTraceCallback = NULL;
 ShockCallback_Mem g_ShockMemCallback;
 eShockMemCb g_ShockMemCbType;
-const char *disasm_buf = NULL;
+char disasm_buf[128];
 
 /* TODO
 	Make sure load delays are correct.
@@ -57,7 +57,6 @@ PS_CPU::PS_CPU()
 
  memset(FastMap, 0, sizeof(FastMap));
  memset(DummyPage, 0xFF, sizeof(DummyPage));	// 0xFF to trigger an illegal instruction exception, so we'll know what's up when debugging.
- disasm_buf = (char*)malloc(100);
 
  for(uint64 a = 0x00000000; a < (1ULL << 32); a += FAST_MAP_PSIZE)
   SetFastMap(DummyPage, a, FAST_MAP_PSIZE);
@@ -577,7 +576,7 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
    if (g_ShockTraceCallback)
    {
 	//_asm int 3;
-	shock_Util_DisassembleMIPS(PC, instr, (void *)disasm_buf, sizeof(disasm_buf));
+	shock_Util_DisassembleMIPS(PC, instr, disasm_buf, ARRAY_SIZE(disasm_buf));
     g_ShockTraceCallback(NULL, PC, instr, disasm_buf);
    }
 
