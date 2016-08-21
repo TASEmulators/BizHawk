@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	public partial class Octoshock
 	{
-		public ITraceable Tracer { get { return tracer; } }
+		public TraceBuffer Tracer { get; private set; }
 
 		public static string TraceHeader = "R3000A: PC, raw bytes, mnemonic, registers (GPRs, lo, hi, sr, cause, epc)";
 
@@ -33,6 +33,13 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				Disassembly = string.Format("{0:X8}:  {1:X8}  {2}", PC, inst, dis.PadRight(20)),
 				RegisterInfo = sb.ToString().Trim()
 			});
+		}
+
+		private void ConnectTracer()
+		{
+			Tracer = new TraceBuffer() { Header = TraceHeader };
+			ServiceProvider = new BasicServiceProvider(this);
+			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 		}
 	}
 }

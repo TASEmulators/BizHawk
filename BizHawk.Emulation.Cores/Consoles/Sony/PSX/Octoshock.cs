@@ -121,10 +121,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		static Octoshock CurrOctoshockCore;
 
 		IntPtr psx;
-		TraceBuffer tracer = new TraceBuffer()
-		{
-			Header = TraceHeader
-		};
 
 		bool disposed = false;
 		public void Dispose()
@@ -250,8 +246,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		void Load(CoreComm comm, List<DiscSystem.Disc> discs, List<string> discNames, byte[] exe, object settings, object syncSettings, PSF psf)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(tracer);
+			ConnectTracer();
 			CoreComm = comm;
 			DriveLightEnabled = true;
 
@@ -699,7 +694,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRenderOptions(psx, ref ropts);
 
 			//prep tracer
-			if (tracer.Enabled)
+			if (Tracer.Enabled)
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, ShockTraceCallback);
 			else
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
