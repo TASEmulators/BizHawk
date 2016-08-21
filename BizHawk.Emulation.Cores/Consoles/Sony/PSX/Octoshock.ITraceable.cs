@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		public static string TraceHeader = "R3000A: PC, raw bytes, mnemonic, registers (GPRs, lo, hi, sr, cause, epc)";
 
+		OctoshockDll.ShockCallback_Trace trace_cb;
+
 		public void ShockTraceCallback(IntPtr opaque, uint PC, uint inst, string dis)
 		{
 			var regs = GetCpuFlagsAndRegisters();
@@ -28,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 						r.Value.Value.ToHexString(r.Value.BitSize / 4)));
 			}
 
-            Tracer.Put(new TraceInfo
+			Tracer.Put(new TraceInfo
 			{
 				Disassembly = string.Format("{0:X8}:  {1:X8}  {2}", PC, inst, dis.PadRight(20)),
 				RegisterInfo = sb.ToString().Trim()
