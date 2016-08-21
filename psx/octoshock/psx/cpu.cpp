@@ -31,6 +31,7 @@ void* g_ShockTraceCallbackOpaque = NULL;
 ShockCallback_Trace g_ShockTraceCallback = NULL;
 ShockCallback_Mem g_ShockMemCallback;
 eShockMemCb g_ShockMemCbType;
+const char *disasm_buf = NULL;
 
 /* TODO
 	Make sure load delays are correct.
@@ -56,6 +57,7 @@ PS_CPU::PS_CPU()
 
  memset(FastMap, 0, sizeof(FastMap));
  memset(DummyPage, 0xFF, sizeof(DummyPage));	// 0xFF to trigger an illegal instruction exception, so we'll know what's up when debugging.
+ disasm_buf = (char*)malloc(100);
 
  for(uint64 a = 0x00000000; a < (1ULL << 32); a += FAST_MAP_PSIZE)
   SetFastMap(DummyPage, a, FAST_MAP_PSIZE);
@@ -546,23 +548,23 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 
      switch(PC & 0xC)
      {
-      case 0x0:
-	timestamp++;
-        ICI[0x00].TV &= ~0x2;
-	ICI[0x00].Data = MDFN_de32lsb<true>(&FMP[0x0]);
-      case 0x4:
-	timestamp++;
-        ICI[0x01].TV &= ~0x2;
-	ICI[0x01].Data = MDFN_de32lsb<true>(&FMP[0x4]);
-      case 0x8:
-	timestamp++;
-        ICI[0x02].TV &= ~0x2;
-	ICI[0x02].Data = MDFN_de32lsb<true>(&FMP[0x8]);
-      case 0xC:
-	timestamp++;
-        ICI[0x03].TV &= ~0x2;
-	ICI[0x03].Data = MDFN_de32lsb<true>(&FMP[0xC]);
-	break;
+     case 0x0:
+      timestamp++;
+      ICI[0x00].TV &= ~0x2;
+	  ICI[0x00].Data = MDFN_de32lsb<true>(&FMP[0x0]);
+     case 0x4:
+	  timestamp++;
+      ICI[0x01].TV &= ~0x2;
+	  ICI[0x01].Data = MDFN_de32lsb<true>(&FMP[0x4]);
+     case 0x8:
+	  timestamp++;
+      ICI[0x02].TV &= ~0x2;
+	  ICI[0x02].Data = MDFN_de32lsb<true>(&FMP[0x8]);
+     case 0xC:
+	  timestamp++;
+      ICI[0x03].TV &= ~0x2;
+	  ICI[0x03].Data = MDFN_de32lsb<true>(&FMP[0xC]);
+      break;
      }
      instr = ICache[(PC & 0xFFC) >> 2].Data;
     }
@@ -572,6 +574,12 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
    //for(int i = 0; i < 32; i++)
    // printf("%02x : %08x\n", i, GPR[i]);
    //printf("\n");
+   if (g_ShockTraceCallback)
+   {
+	//_asm int 3;
+	shock_Util_DisassembleMIPS(PC, instr, (void *)disasm_buf, sizeof(disasm_buf));
+    g_ShockTraceCallback(NULL, PC, instr, disasm_buf);
+   }
 
    opf = instr & 0x3F;
 

@@ -984,6 +984,15 @@
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.IDebuggable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.IDisassemblable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.ITraceable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\Sony\PSX\OctoshockFIOConfig.cs" />
     <Compile Include="Consoles\Sony\PSX\PSF.cs" />
