@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) => SaveConfigSettings();
 
 			MaxLines = 10000;
-			FileSizeCap = 100;
+			FileSizeCap = 150; // make 1 frame of tracelog for n64/psx fit in
 			_splitFile = FileSizeCap != 0;
 		}
 

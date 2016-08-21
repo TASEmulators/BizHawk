@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 	{
 		public TraceBuffer Tracer { get; private set; }
 
-		public static string TraceHeader = "R3000A: PC, raw bytes, mnemonic, registers (GPRs, lo, hi, sr, cause, epc)";
+		public static string TraceHeader = "R3000A: PC, machine code, mnemonic, operands, registers (GPRs, lo, hi, sr, cause, epc)";
 
 		OctoshockDll.ShockCallback_Trace trace_cb;
 
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			Tracer.Put(new TraceInfo
 			{
-				Disassembly = string.Format("{0:X8}:  {1:X8}  {2}", PC, inst, dis.PadRight(20)),
+				Disassembly = string.Format("{0:X8}:  {1:X8}  {2}", PC, inst, dis.PadRight(30)),
 				RegisterInfo = sb.ToString().Trim()
 			});
 		}
