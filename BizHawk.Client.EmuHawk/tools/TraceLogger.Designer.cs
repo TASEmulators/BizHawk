@@ -57,6 +57,7 @@
 			this.ToFileRadio = new System.Windows.Forms.RadioButton();
 			this.ToWindowRadio = new System.Windows.Forms.RadioButton();
 			this.LoggingEnabled = new System.Windows.Forms.CheckBox();
+			this.SegmentSizeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.TracerBox.SuspendLayout();
 			this.TraceContextMenu.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -170,27 +171,27 @@
             this.toolStripSeparator1,
             this.ExitMenuItem});
 			this.FileSubMenu.Name = "FileSubMenu";
-			this.FileSubMenu.Size = new System.Drawing.Size(37, 20);
+			this.FileSubMenu.Size = new System.Drawing.Size(35, 20);
 			this.FileSubMenu.Text = "&File";
 			// 
 			// SaveLogMenuItem
 			// 
 			this.SaveLogMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveAs;
 			this.SaveLogMenuItem.Name = "SaveLogMenuItem";
-			this.SaveLogMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.SaveLogMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.SaveLogMenuItem.Text = "&Save Log";
 			this.SaveLogMenuItem.Click += new System.EventHandler(this.SaveLogMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(131, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(140, 6);
 			// 
 			// ExitMenuItem
 			// 
 			this.ExitMenuItem.Name = "ExitMenuItem";
 			this.ExitMenuItem.ShortcutKeyDisplayString = "Alt+F4";
-			this.ExitMenuItem.Size = new System.Drawing.Size(134, 22);
+			this.ExitMenuItem.Size = new System.Drawing.Size(143, 22);
 			this.ExitMenuItem.Text = "E&xit";
 			this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
 			// 
@@ -201,7 +202,7 @@
             this.SelectAllMenuItem,
             this.ClearMenuItem});
 			this.EditSubMenu.Name = "EditSubMenu";
-			this.EditSubMenu.Size = new System.Drawing.Size(39, 20);
+			this.EditSubMenu.Size = new System.Drawing.Size(37, 20);
 			this.EditSubMenu.Text = "Edit";
 			// 
 			// CopyMenuItem
@@ -209,7 +210,7 @@
 			this.CopyMenuItem.Name = "CopyMenuItem";
 			this.CopyMenuItem.ShortcutKeyDisplayString = "";
 			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.CopyMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.CopyMenuItem.Text = "&Copy";
 			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
 			// 
@@ -218,29 +219,30 @@
 			this.SelectAllMenuItem.Name = "SelectAllMenuItem";
 			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
 			this.SelectAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-			this.SelectAllMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.SelectAllMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.SelectAllMenuItem.Text = "Select &All";
 			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
 			// 
 			// ClearMenuItem
 			// 
 			this.ClearMenuItem.Name = "ClearMenuItem";
-			this.ClearMenuItem.Size = new System.Drawing.Size(164, 22);
+			this.ClearMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.ClearMenuItem.Text = "Clear";
 			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
 			// 
 			// OptionsSubMenu
 			// 
 			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MaxLinesMenuItem});
+            this.MaxLinesMenuItem,
+            this.SegmentSizeMenuItem});
 			this.OptionsSubMenu.Name = "OptionsSubMenu";
-			this.OptionsSubMenu.Size = new System.Drawing.Size(61, 20);
+			this.OptionsSubMenu.Size = new System.Drawing.Size(58, 20);
 			this.OptionsSubMenu.Text = "&Settings";
 			// 
 			// MaxLinesMenuItem
 			// 
 			this.MaxLinesMenuItem.Name = "MaxLinesMenuItem";
-			this.MaxLinesMenuItem.Size = new System.Drawing.Size(154, 22);
+			this.MaxLinesMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.MaxLinesMenuItem.Text = "&Set Max Lines...";
 			this.MaxLinesMenuItem.Click += new System.EventHandler(this.MaxLinesMenuItem_Click);
 			// 
@@ -331,6 +333,13 @@
 			this.LoggingEnabled.UseVisualStyleBackColor = true;
 			this.LoggingEnabled.CheckedChanged += new System.EventHandler(this.LoggingEnabled_CheckedChanged);
 			// 
+			// SegmentSizeMenuItem
+			// 
+			this.SegmentSizeMenuItem.Name = "SegmentSizeMenuItem";
+			this.SegmentSizeMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.SegmentSizeMenuItem.Text = "Set Segment Size...";
+			this.SegmentSizeMenuItem.Click += new System.EventHandler(this.SegmentSizeMenuItem_Click);
+			// 
 			// TraceLogger
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -387,5 +396,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SelectAllContextMenu;
 		private System.Windows.Forms.ToolStripMenuItem ClearContextMenu;
 		private System.Windows.Forms.Button OpenLogFile;
+		private System.Windows.Forms.ToolStripMenuItem SegmentSizeMenuItem;
 	}
 }

@@ -21,6 +21,9 @@ namespace BizHawk.Client.EmuHawk
 		private int MaxLines { get; set; }
 
 		[ConfigPersist]
+		private int FileSizeCap { get; set; }
+
+		[ConfigPersist]
 		private int DisasmColumnWidth { 
 			get { return this.Disasm.Width; }
 			set { this.Disasm.Width = value; }
@@ -33,16 +36,10 @@ namespace BizHawk.Client.EmuHawk
 			set { this.Registers.Width = value; }
 		}
 
-		private bool SplitFile { get; set; }
-		private int FileSizeCap { get; set; }
-
 		private FileInfo _logFile;
 		private FileInfo LogFile
 		{
-			get
-			{
-				return _logFile;
-			}
+			get { return _logFile; }
 			set
 			{
 				_logFile = value;
@@ -52,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private List<TraceInfo> _instructions = new List<TraceInfo>();
 		private StreamWriter _streamWriter;
+		private bool _splitFile;
 		private string _baseName;
 		private string _extension = ".log";
 		private int _segmentCount;
@@ -67,8 +65,8 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) => SaveConfigSettings();
 
 			MaxLines = 10000;
-			SplitFile = true;
 			FileSizeCap = 100;
+			_splitFile = FileSizeCap != 0;
 		}
 
 		public bool UpdateBefore
@@ -94,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0:
-						text = _instructions[index].Disassembly;
+						text = _instructions[index].Disassembly.TrimEnd();
 						break;
 					case 1:
 						text = _instructions[index].RegisterInfo;
@@ -151,8 +149,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							putter = (info) =>
 							{
-								if (_instructions.Count >= MaxLines) { }
-								else _instructions.Add(info);
+								if (_instructions.Count >= MaxLines)
+								{
+									_instructions.RemoveRange(0, _instructions.Count - MaxLines);
+								}
+								_instructions.Add(info);
 							}
 						};
 						_instructions.Clear();
@@ -170,7 +171,8 @@ namespace BizHawk.Client.EmuHawk
 								var data = string.Format("{0} {1}", info.Disassembly, info.RegisterInfo);
 								_streamWriter.WriteLine(data);
 								_currentSize += (ulong)data.Length;
-								CheckSplitFile();
+								if (_splitFile)
+									CheckSplitFile();
 							}
 						};
 					}
@@ -203,9 +205,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//no padding supported. core should be doing this!
 				var data = string.Format("{0} {1}", instruction.Disassembly, instruction.RegisterInfo);
-				_streamWriter.WriteLine();
+				_streamWriter.WriteLine(data);
 				_currentSize += (ulong)data.Length;
-				CheckSplitFile();
+				if (_splitFile)
+					CheckSplitFile();
 			}
 		}
 
@@ -302,6 +305,7 @@ namespace BizHawk.Client.EmuHawk
 				StartLogFile();
 				DumpToDisk();
 				GlobalWin.OSD.AddMessage("Log dumped to " + LogFile.FullName);
+				CloseFile();
 			}
 		}
 
@@ -353,6 +357,24 @@ namespace BizHawk.Client.EmuHawk
 				{
 					MaxLines = max;
 				}
+			}
+		}
+
+		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
+		{
+			var prompt = new InputPrompt
+			{
+				StartLocation = this.ChildPointToScreen(TraceView),
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Log file segment size in megabytes\nSetting 0 disables segmentation",
+				InitialValue = FileSizeCap.ToString()
+			};
+
+			var result = prompt.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				FileSizeCap = int.Parse(prompt.PromptText);
+				_splitFile = FileSizeCap != 0;
 			}
 		}
 
