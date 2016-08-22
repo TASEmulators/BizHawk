@@ -3583,6 +3583,9 @@ namespace BizHawk.Client.EmuHawk
 				StopMovie(true);
 			}
 
+			if (GlobalWin.Tools.IsLoaded<TraceLogger>())
+				GlobalWin.Tools.Get<TraceLogger>().Restart();
+
 			Global.CheatList.SaveOnClose();
 			Global.Emulator.Dispose();
 			var coreComm = CreateCoreComm();

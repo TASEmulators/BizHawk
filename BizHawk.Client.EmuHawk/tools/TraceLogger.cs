@@ -105,7 +105,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearList();
 			OpenLogFile.Enabled = false;
-			//Tracer.Enabled = LoggingEnabled.Checked = false;
+			LoggingEnabled.Checked = false;
+			Tracer.Sink = null;
 			SetTracerBoxTitle();
 		}
 
@@ -187,8 +188,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			CloseFile();
 			ClearList();
-			//Tracer.Enabled = LoggingEnabled.Checked = false;
+			LoggingEnabled.Checked = false;
+			ToFileRadio.Checked = false;
+			ToWindowRadio.Checked = true;
+			OpenLogFile.Enabled = false;
+			Tracer.Sink = null;
 			SetTracerBoxTitle();
 		}
 
@@ -466,6 +472,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseFile();
 				FileBox.Visible = false;
 				BrowseBox.Visible = false;
+				OpenLogFile.Enabled = false;
 			}
 
 			SetTracerBoxTitle();
