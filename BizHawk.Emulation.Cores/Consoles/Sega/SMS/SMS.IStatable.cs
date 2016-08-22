@@ -93,6 +93,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("IsLag", ref _isLag);
 
 			ser.EndSection();
+
+			if (ser.IsReader)
+			{
+				SyncAllByteArrayDomains();
+			}
 		}
 	}
 }
