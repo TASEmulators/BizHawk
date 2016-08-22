@@ -15,10 +15,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			var domains = new List<MemoryDomain>
 			{
-				//new MemoryDomainByteArray(
-				//	"Main RAM",
-				//	MemoryDomain.Endian.Little,
-				//	Ram, true, 1),
 				new MemoryDomainDelegate(
 					"TIA",
 					16,
@@ -39,13 +35,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => _mapper.PokeMemory((ushort) addr, value), 1) 
 			};
 
-			//if (_mapper is mDPC) // TODO: also mDPCPlus
-			//{
-			//	domains.Add(new MemoryDomainByteArray(
-			//		"DPC",
-			//		MemoryDomain.Endian.Little,(_mapper as mDPC).DspData, true, 1));
-			//}
-
 			if (_mapper.HasCartRam)
 			{
 				domains.Add(new MemoryDomainDelegate(
@@ -59,8 +48,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			SyncAllByteArrayDomains();
 
 			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
-			MemoryDomains.MainMemory = _byteArrayDomains["Main RAM"];
-
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
 
 			_memoryDomainsInit = true;
