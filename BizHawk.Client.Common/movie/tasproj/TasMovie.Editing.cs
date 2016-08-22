@@ -152,7 +152,7 @@ namespace BizHawk.Client.Common
 					ChangeLog.EndBatch();
 			}
 		}
-		public void RemoveFrames(int removeStart, int removeUpTo)
+		public void RemoveFrames(int removeStart, int removeUpTo, bool fromHistory = false)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch("Remove Frames: " + removeStart + "-" + removeUpTo, true);
 			ChangeLog.AddGeneralUndo(removeStart, InputLogLength - 1);
@@ -173,7 +173,7 @@ namespace BizHawk.Client.Common
 						if (m.Frame < removeUpTo)
 							Markers.Remove(m);
 						else
-							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart));
+							Markers.Move(m.Frame, m.Frame - (removeUpTo - removeStart), fromHistory);
 					}
 				}
 				ChangeLog.IsRecording = wasRecording;
@@ -281,13 +281,16 @@ namespace BizHawk.Client.Common
 			ChangeLog.SetGeneralRedo();
 		}
 
-		public void InsertEmptyFrame(int frame, int count = 1)
+		public void InsertEmptyFrame(int frame, int count = 1, bool fromHistory = false)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch("Insert Empty Frame: " + frame, true);
 			ChangeLog.AddGeneralUndo(frame, InputLogLength + count - 1);
 
 			var lg = LogGeneratorInstance();
 			lg.SetSource(Global.MovieSession.MovieControllerInstance());
+
+			if (frame > _log.Count())
+				frame = _log.Count();
 
 			for (int i = 0; i < count; i++)
 				_log.Insert(frame, lg.EmptyEntry);
@@ -302,7 +305,7 @@ namespace BizHawk.Client.Common
 					for (int i = firstIndex; i < Markers.Count; i++)
 					{
 						TasMovieMarker m = Markers.ElementAt(i);
-						Markers.Move(m.Frame, m.Frame + count);
+						Markers.Move(m.Frame, m.Frame + count, fromHistory);
 					}
 				}
 				ChangeLog.IsRecording = wasRecording;
