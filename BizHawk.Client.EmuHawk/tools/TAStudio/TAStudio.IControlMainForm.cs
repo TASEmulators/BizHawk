@@ -78,7 +78,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Rewind()
 		{
-			GoToPreviousFrame(); // todo: behave as normal rewind in differentiating between hitting rewind once and holding it.
+			//if (GlobalWin.MainForm.IsSeeking)
+			//{
+			//	GlobalWin.MainForm.PauseOnFrame--;
+			//	if (Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
+			//	{
+			//		GlobalWin.MainForm.PauseEmulator();
+			//		GlobalWin.MainForm.PauseOnFrame = null;
+			//		StopSeeking();
+			//	}
+			//	RefreshDialog();
+			//}
+			//else
+			//{
+				GoToPreviousFrame();
+			//}
 			return true;
 		}
 

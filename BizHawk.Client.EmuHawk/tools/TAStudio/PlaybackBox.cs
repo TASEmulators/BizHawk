@@ -117,7 +117,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			Tastudio.GoToPreviousFrame();
+			if (GlobalWin.MainForm.IsSeeking)
+			{
+				GlobalWin.MainForm.PauseOnFrame--;
+				if (Global.Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
+				{
+					GlobalWin.MainForm.PauseEmulator();
+					GlobalWin.MainForm.PauseOnFrame = null;
+					Tastudio.StopSeeking();
+				}
+				Tastudio.RefreshDialog();
+			}
+			else
+			{
+				Tastudio.GoToPreviousFrame();
+			}
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
@@ -129,7 +143,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
 		{
-			Tastudio.GoToNextFrame();
+			if (GlobalWin.MainForm.IsSeeking)
+			{
+				GlobalWin.MainForm.PauseOnFrame++;
+				Tastudio.RefreshDialog();
+			}
+			else
+			{
+				Tastudio.GoToNextFrame();
+			}
 		}
 
 		private void NextMarkerButton_Click(object sender, EventArgs e)
