@@ -56,6 +56,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.SyncState(ser);
 			ser.EndSection();
 			ser.EndSection();
+
+			if (ser.IsReader)
+			{
+				SyncAllByteArrayDomains();
+			}
 		}
 	}
 }
