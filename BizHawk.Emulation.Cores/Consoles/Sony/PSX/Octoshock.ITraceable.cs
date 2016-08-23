@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		private void ConnectTracer()
 		{
+			trace_cb = new OctoshockDll.ShockCallback_Trace(ShockTraceCallback);
 			Tracer = new TraceBuffer() { Header = TraceHeader };
 			ServiceProvider = new BasicServiceProvider(this);
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);

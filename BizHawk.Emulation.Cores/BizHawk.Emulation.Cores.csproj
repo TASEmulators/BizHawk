@@ -942,6 +942,9 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.ITraceable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>

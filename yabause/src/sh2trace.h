@@ -22,6 +22,7 @@
 #define SH2TRACE_H
 
 #include "core.h"
+#include "yui.h"
 
 extern FASTCALL u64 sh2_cycle_count(void);
 extern FASTCALL void sh2_trace_add_cycles(s32 cycles);
