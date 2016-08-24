@@ -323,6 +323,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			SetMemoryDomains();
 			InitMemCallbacks();
 
+			trace_cb = new OctoshockDll.ShockCallback_Trace(ShockTraceCallback);
+
 			//set a default framebuffer based on the first frame of emulation, to cut down on flickering or whatever
 			//this is probably quixotic, but we have to pick something
 			{

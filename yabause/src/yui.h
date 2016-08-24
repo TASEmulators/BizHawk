@@ -56,8 +56,6 @@ void YuiSwapBuffers(void);
 
 extern void (*inputcallback)(void);
 
-extern void (*tracecallback)(const char* dis, const char* regs);
-
 
 
 
