@@ -58,6 +58,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return false; } }
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			// Do nothing

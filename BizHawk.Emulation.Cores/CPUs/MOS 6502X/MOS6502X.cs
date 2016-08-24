@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public string TraceHeader
 		{
-			get { return "6502: PC, opcode, registers (SP, A, P, X, Y) flags (NVTBDIZCR)"; }
+			get { return "6502: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)"; }
 		}
 
 		public TraceInfo State(bool disassemble = true)
@@ -53,10 +53,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			return new TraceInfo
 			{
 				Disassembly = string.Format(
-					"{0:X4}  {1:X2} {2} ",
+					"{0:X4}:  {1:X2}  {2} ",
 					PC,
 					PeekMemory(PC),
-					disassemble ? Disassemble(PC, out notused) : "---"),
+					disassemble ? Disassemble(PC, out notused) : "---").PadRight(26),
 				RegisterInfo = string.Format(
 					"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}{13}",
 					A,
@@ -65,15 +65,15 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 					P,
 					S,
 					TotalExecutedCycles,
-					FlagN ? "N" : "",
-					FlagV ? "V" : "",
-					FlagT ? "T" : "",
-					FlagB ? "B" : "",
-					FlagD ? "D" : "",
-					FlagI ? "I" : "",
-					FlagZ ? "Z" : "",
-					FlagC ? "C" : "",
-					!RDY ? "R" : "")
+					FlagN ? "N" : "n",
+					FlagV ? "V" : "v",
+					FlagT ? "T" : "t",
+					FlagB ? "B" : "b",
+					FlagD ? "D" : "d",
+					FlagI ? "I" : "i",
+					FlagZ ? "Z" : "z",
+					FlagC ? "C" : "c",
+					!RDY ? "R" : "r")
 			};
 		}
 

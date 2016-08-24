@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 			Tracer = new TraceBuffer
 			{
-				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy) flags (NVTBDIZC)"
+				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)"
 			};
 
 			MemoryCallbacks = new MemoryCallbackSystem();

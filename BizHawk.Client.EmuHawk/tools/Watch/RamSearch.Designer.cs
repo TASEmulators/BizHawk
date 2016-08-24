@@ -298,7 +298,7 @@
 			this.AddToRamWatchContextMenuItem.Name = "AddToRamWatchContextMenuItem";
 			this.AddToRamWatchContextMenuItem.ShortcutKeyDisplayString = "Ctrl+R";
 			this.AddToRamWatchContextMenuItem.Size = new System.Drawing.Size(215, 22);
-			this.AddToRamWatchContextMenuItem.Text = "Add to Ram Watch";
+			this.AddToRamWatchContextMenuItem.Text = "Add to RAM Watch";
 			this.AddToRamWatchContextMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
 			// PokeContextMenuItem
@@ -708,7 +708,7 @@
 			this.AddToRamWatchMenuItem.Name = "AddToRamWatchMenuItem";
 			this.AddToRamWatchMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
 			this.AddToRamWatchMenuItem.Size = new System.Drawing.Size(219, 22);
-			this.AddToRamWatchMenuItem.Text = "&Add to Ram Watch";
+			this.AddToRamWatchMenuItem.Text = "&Add to RAM Watch";
 			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
 			// 
 			// PokeAddressMenuItem
@@ -792,7 +792,7 @@
 			// 
 			this.ExcludeRamWatchMenuItem.Name = "ExcludeRamWatchMenuItem";
 			this.ExcludeRamWatchMenuItem.Size = new System.Drawing.Size(240, 22);
-			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude Ram Search List";
+			this.ExcludeRamWatchMenuItem.Text = "Always E&xclude RAM Search List";
 			this.ExcludeRamWatchMenuItem.Click += new System.EventHandler(this.ExcludeRamWatchMenuItem_Click);
 			// 
 			// UseUndoHistoryMenuItem
@@ -1395,7 +1395,7 @@
 			this.MinimumSize = new System.Drawing.Size(290, 399);
 			this.Name = "RamSearch";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Ram Search";
+			this.Text = "RAM Search";
 			this.Activated += new System.EventHandler(this.NewRamSearch_Activated);
 			this.Load += new System.EventHandler(this.RamSearch_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);

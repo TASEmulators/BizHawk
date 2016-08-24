@@ -802,6 +802,10 @@ namespace BizHawk.Client.Common
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
+							case "GEN":
+								// discard "Genplus-gx64", auto-added due to implementing IEmulator
+								core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								break;
 						}
 
 						if (core != null)

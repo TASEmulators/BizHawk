@@ -533,6 +533,8 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		int cbscanline_emu = -4; // force refresh
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		/// <summary>
 		/// put me in ToolsBefore
 		/// </summary>

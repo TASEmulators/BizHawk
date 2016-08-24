@@ -454,12 +454,13 @@ namespace BizHawk.Client.EmuHawk
 				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
-				for (var i = 0; i < list.Length; i++)
+
+				foreach (var index in list) // copy of CopyMenuItem_Click()
 				{
-					var input = CurrentTasMovie.GetInputState(i);
+					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					_tasClipboard.Add(new TasClipboardEntry(list[i], input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());

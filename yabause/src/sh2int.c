@@ -31,23 +31,23 @@
 #include "bios.h"
 #include "yabause.h"
 
-// #define SH2_TRACE  // Uncomment to enable tracing
+#define SH2_TRACE  // Uncomment to enable tracing
 
 #ifdef SH2_TRACE
 # include "sh2trace.h"
 # define MappedMemoryWriteByte(a,v)  do { \
-    uint32_t __a = (a), __v = (v);        \
-    sh2_trace_writeb(__a, __v);           \
+    u32 __a = (a), __v = (v);        \
+    /*sh2_trace_writeb(__a, __v);*/           \
     MappedMemoryWriteByte(__a, __v);      \
 } while (0)
 # define MappedMemoryWriteWord(a,v)  do { \
-    uint32_t __a = (a), __v = (v);        \
-    sh2_trace_writew(__a, __v);           \
+    u32 __a = (a), __v = (v);        \
+    /*sh2_trace_writew(__a, __v);*/           \
     MappedMemoryWriteWord(__a, __v);      \
 } while (0)
 # define MappedMemoryWriteLong(a,v)  do { \
-    uint32_t __a = (a), __v = (v);        \
-    sh2_trace_writel(__a, __v);           \
+    u32 __a = (a), __v = (v);        \
+    /*sh2_trace_writel(__a, __v);*/           \
     MappedMemoryWriteLong(__a, __v);      \
 } while (0)
 #endif

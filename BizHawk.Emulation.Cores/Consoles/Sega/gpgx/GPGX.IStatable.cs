@@ -29,42 +29,51 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
+		public byte[] SaveStateBinary()
+		{
+			var ms = new MemoryStream(_savebuff2, true);
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return _savebuff2;
+		}
+
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			Elf.LoadStateBinary(reader);
+			int newlen = reader.ReadInt32();
+			if (newlen != _savebuff.Length)
+			{
+				throw new Exception("Unexpected state size");
+			}
+
+			reader.Read(_savebuff, 0, _savebuff.Length);
+			if (!LibGPGX.gpgx_state_load(_savebuff, _savebuff.Length))
+			{
+				throw new Exception("gpgx_state_load() returned false");
+			}
+
 			// other variables
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
-			// any managed pointers that we sent to the core need to be resent now!
-			Core.gpgx_set_input_callback(InputCallback);
-			RefreshMemCallbacks();
-			Core.gpgx_set_cdd_callback(cd_callback_handle);
-			Core.gpgx_invalidate_pattern_cache();
 			UpdateVideo();
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			Elf.SaveStateBinary(writer);
+			if (!LibGPGX.gpgx_state_save(_savebuff, _savebuff.Length))
+				throw new Exception("gpgx_state_save() returned false");
+
+			writer.Write(_savebuff.Length);
+			writer.Write(_savebuff);
 			// other variables
 			writer.Write(Frame);
 			writer.Write(LagCount);
 			writer.Write(IsLagFrame);
 		}
 
-		public byte[] SaveStateBinary()
-		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return ms.ToArray();
-		}
-
-		private void InitStateBuffers()
-		{
-		}
+		private byte[] _savebuff;
+		private byte[] _savebuff2;
 	}
 }

@@ -1068,6 +1068,8 @@ void r4300_execute(void (*startcb)(void))
 #ifdef DBG
             if (g_DebuggerActive) update_debugger(PC->addr);
 #endif
+            EXECUTECB();
+            TRACECB();
             PC->ops();
         }
 

@@ -419,6 +419,8 @@ void pure_interpreter(void)
 #ifdef DBG
      if (g_DebuggerActive) update_debugger(PC->addr);
 #endif
+     EXECUTECB();
+	 TRACECB();
      PC->ops();
    }
 }

@@ -71,7 +71,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				if (!LibVBANext.LoadRom(Core, file, (uint)file.Length, biosfile, (uint)biosfile.Length, FES))
 					throw new InvalidOperationException("LoadRom() returned false!");
 
-				Tracer = new TraceBuffer();
+				Tracer = new TraceBuffer()
+				{
+					Header = "ARM7: PC, machine code, mnemonic, operands, registers (r0-r16)"
+				};
 				ser.Register<ITraceable>(Tracer);
 
 				CoreComm.VsyncNum = 262144;
@@ -164,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			return new TraceInfo
 			{
-				Disassembly = string.Format("{0:X8} {1}", opcode, Darm.DisassembleStuff(addr, opcode)),
+				Disassembly = string.Format("{2:X8}:  {0:X8}  {1}", opcode, Darm.DisassembleStuff(addr, opcode), addr).PadRight(54),
 				RegisterInfo = regs.TraceString()
 			};
 		}

@@ -584,8 +584,12 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
+					StringFormat f = new StringFormat(StringFormat.GenericTypographic)
+					{
+						FormatFlags = StringFormatFlags.MeasureTrailingSpaces
+					};
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
-					Size sizeOfText = g.MeasureString(message, font).ToSize();
+					Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
 					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
 					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
@@ -636,8 +640,12 @@ namespace BizHawk.Client.EmuHawk
 								return;
 						}
 					}
+					StringFormat f = new StringFormat(StringFormat.GenericTypographic)
+					{
+						FormatFlags = StringFormatFlags.MeasureTrailingSpaces
+					};
 					var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
-					Size sizeOfText = g.MeasureString(message, font, 0, StringFormat.GenericTypographic).ToSize();
+					Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
 					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
 					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;

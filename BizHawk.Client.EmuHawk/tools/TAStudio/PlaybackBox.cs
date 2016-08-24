@@ -62,6 +62,30 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[Browsable(true)]
+		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		public bool RecordingMode
+		{
+			get
+			{
+				return Global.MovieSession.Movie.IsRecording;
+			}
+
+			set
+			{
+				RecordingModeCheckbox.Checked = value;
+				if (RecordingModeCheckbox.Checked)
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+				else
+				{
+					Global.MovieSession.Movie.SwitchToPlay();
+				}
+				GlobalWin.MainForm.SetMainformMovieInfo();
+			}
+		}
+
 		public PlaybackBox()
 		{
 			InitializeComponent();
@@ -80,6 +104,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
 				FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
+				RecordingModeCheckbox.Checked = RecordingMode;
 			}
 
 			_loading = false;
@@ -92,7 +117,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			Tastudio.GoToPreviousFrame();
+			if (GlobalWin.MainForm.IsSeeking)
+			{
+				GlobalWin.MainForm.PauseOnFrame--;
+				if (Global.Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
+				{
+					GlobalWin.MainForm.PauseEmulator();
+					GlobalWin.MainForm.PauseOnFrame = null;
+					Tastudio.StopSeeking();
+				}
+				Tastudio.RefreshDialog();
+			}
+			else
+			{
+				Tastudio.GoToPreviousFrame();
+			}
 		}
 
 		private void PauseButton_Click(object sender, EventArgs e)
@@ -104,7 +143,15 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
 		{
-			Tastudio.GoToNextFrame();
+			if (GlobalWin.MainForm.IsSeeking)
+			{
+				GlobalWin.MainForm.PauseOnFrame++;
+				Tastudio.RefreshDialog();
+			}
+			else
+			{
+				Tastudio.GoToNextFrame();
+			}
 		}
 
 		private void NextMarkerButton_Click(object sender, EventArgs e)
@@ -140,6 +187,11 @@ namespace BizHawk.Client.EmuHawk
 					Tastudio.RefreshDialog();
 				}
 			}
+		}
+
+		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
+		{
+			RecordingMode ^= true;
 		}
 	}
 }

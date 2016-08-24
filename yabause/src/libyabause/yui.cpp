@@ -24,6 +24,13 @@ extern "C" __declspec(dllexport) void libyabause_setinputcallback(void (*cb)(voi
 	inputcallback = cb;
 }
 
+void (*tracecallback)(const char* dis, const char* regs) = NULL;
+
+extern "C" __declspec(dllexport) void libyabause_settracecallback(void (*cb)(const char* dis, const char* regs))
+{
+	tracecallback = cb;
+}
+
 CDInterface FECD =
 {
 	2,

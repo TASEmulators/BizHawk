@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.PlaybackGroupBox = new System.Windows.Forms.GroupBox();
+			this.RecordingModeCheckbox = new System.Windows.Forms.CheckBox();
 			this.AutoRestoreCheckbox = new System.Windows.Forms.CheckBox();
 			this.TurboSeekCheckbox = new System.Windows.Forms.CheckBox();
 			this.FollowCursorCheckbox = new System.Windows.Forms.CheckBox();
@@ -45,6 +46,7 @@
 			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.PlaybackGroupBox.Controls.Add(this.RecordingModeCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.AutoRestoreCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.TurboSeekCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.FollowCursorCheckbox);
@@ -55,10 +57,21 @@
 			this.PlaybackGroupBox.Controls.Add(this.PreviousMarkerButton);
 			this.PlaybackGroupBox.Location = new System.Drawing.Point(3, 3);
 			this.PlaybackGroupBox.Name = "PlaybackGroupBox";
-			this.PlaybackGroupBox.Size = new System.Drawing.Size(198, 81);
+			this.PlaybackGroupBox.Size = new System.Drawing.Size(198, 104);
 			this.PlaybackGroupBox.TabIndex = 0;
 			this.PlaybackGroupBox.TabStop = false;
 			this.PlaybackGroupBox.Text = "Playback";
+			// 
+			// RecordingModeCheckbox
+			// 
+			this.RecordingModeCheckbox.AutoSize = true;
+			this.RecordingModeCheckbox.Location = new System.Drawing.Point(10, 85);
+			this.RecordingModeCheckbox.Name = "RecordingModeCheckbox";
+			this.RecordingModeCheckbox.Size = new System.Drawing.Size(104, 17);
+			this.RecordingModeCheckbox.TabIndex = 9;
+			this.RecordingModeCheckbox.Text = "Recording mode";
+			this.RecordingModeCheckbox.UseVisualStyleBackColor = true;
+			this.RecordingModeCheckbox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.RecordingModeCheckbox_MouseClick);
 			// 
 			// AutoRestoreCheckbox
 			// 
@@ -152,7 +165,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
 			this.Controls.Add(this.PlaybackGroupBox);
 			this.Name = "PlaybackBox";
-			this.Size = new System.Drawing.Size(204, 91);
+			this.Size = new System.Drawing.Size(204, 110);
 			this.PlaybackGroupBox.ResumeLayout(false);
 			this.PlaybackGroupBox.PerformLayout();
 			this.ResumeLayout(false);
@@ -170,5 +183,6 @@
 		private System.Windows.Forms.CheckBox AutoRestoreCheckbox;
 		private System.Windows.Forms.CheckBox TurboSeekCheckbox;
 		private System.Windows.Forms.CheckBox FollowCursorCheckbox;
+		private System.Windows.Forms.CheckBox RecordingModeCheckbox;
 	}
 }

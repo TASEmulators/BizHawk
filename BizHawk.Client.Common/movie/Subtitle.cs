@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 			return sb.ToString();
 		}
 
-        public string ToSubRip(int index, double fps)
+		public string ToSubRip(int index, double fps, bool addcolortag)
         {
             var sb = new StringBuilder();
 
@@ -83,16 +83,23 @@ namespace BizHawk.Client.Common
             // TODO: Positioning
 
             // Color tag open
-            uint rgb = (Color & 0x00FFFFFF);
-            sb.Append("<font color=\"#");
-            sb.Append(rgb.ToString("X6"));
-            sb.Append("\">");
+			if (addcolortag)
+			{
+				uint rgb = (Color & 0x00FFFFFF);
+				sb.Append("<font color=\"#");
+				sb.Append(rgb.ToString("X6"));
+				sb.Append("\">");
+			}
 
             // Message text
-            sb.Append(Message);
+            sb.Append(Message.Trim());
 
-            // Color tag close
-            sb.Append("</font>\r\n");
+            // Color tag closeaddcolortag
+			if (addcolortag)
+			{
+				sb.Append("</font>");
+			}
+			sb.Append("\r\n");
 
             // Seperator
             sb.Append("\r\n");

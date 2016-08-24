@@ -40,6 +40,7 @@
 			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.SuspendLayout();
 			// 
 			// AddBreakpointButton
@@ -67,7 +68,7 @@
 			// 
 			this.ToggleButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ToggleButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh;
-			this.ToggleButton.Location = new System.Drawing.Point(138, 387);
+			this.ToggleButton.Location = new System.Drawing.Point(311, 387);
 			this.ToggleButton.Name = "ToggleButton";
 			this.ToggleButton.Size = new System.Drawing.Size(23, 23);
 			this.ToggleButton.TabIndex = 9;
@@ -79,7 +80,7 @@
 			// 
 			this.RemoveBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.RemoveBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Delete;
-			this.RemoveBreakpointButton.Location = new System.Drawing.Point(167, 387);
+			this.RemoveBreakpointButton.Location = new System.Drawing.Point(340, 387);
 			this.RemoveBreakpointButton.Name = "RemoveBreakpointButton";
 			this.RemoveBreakpointButton.Size = new System.Drawing.Size(23, 23);
 			this.RemoveBreakpointButton.TabIndex = 7;
@@ -91,7 +92,7 @@
 			// 
 			this.DuplicateBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.DuplicateBreakpointButton.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Duplicate;
-			this.DuplicateBreakpointButton.Location = new System.Drawing.Point(109, 387);
+			this.DuplicateBreakpointButton.Location = new System.Drawing.Point(282, 387);
 			this.DuplicateBreakpointButton.Name = "DuplicateBreakpointButton";
 			this.DuplicateBreakpointButton.Size = new System.Drawing.Size(23, 23);
 			this.DuplicateBreakpointButton.TabIndex = 10;
@@ -104,7 +105,7 @@
 			this.EditBreakpointButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.EditBreakpointButton.BackgroundImage = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.EditBreakpointButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-			this.EditBreakpointButton.Location = new System.Drawing.Point(80, 387);
+			this.EditBreakpointButton.Location = new System.Drawing.Point(253, 387);
 			this.EditBreakpointButton.Name = "EditBreakpointButton";
 			this.EditBreakpointButton.Size = new System.Drawing.Size(23, 23);
 			this.EditBreakpointButton.TabIndex = 11;
@@ -115,14 +116,15 @@
 			// BreakpointView
 			// 
 			this.BreakpointView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			| System.Windows.Forms.AnchorStyles.Left) 
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.BreakpointView.BlazingFast = false;
 			this.BreakpointView.CheckBoxes = true;
 			this.BreakpointView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3});
+			this.columnHeader1,
+			this.columnHeader4,
+			this.columnHeader2,
+			this.columnHeader3});
 			this.BreakpointView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.BreakpointView.FullRowSelect = true;
 			this.BreakpointView.GridLines = true;
@@ -132,7 +134,7 @@
 			this.BreakpointView.Name = "BreakpointView";
 			this.BreakpointView.SelectAllInProgress = false;
 			this.BreakpointView.selectedItem = -1;
-			this.BreakpointView.Size = new System.Drawing.Size(193, 365);
+			this.BreakpointView.Size = new System.Drawing.Size(366, 365);
 			this.BreakpointView.TabIndex = 5;
 			this.BreakpointView.TabStop = false;
 			this.BreakpointView.UseCompatibleStateImageBehavior = false;
@@ -157,6 +159,11 @@
 			this.columnHeader3.Text = "Name";
 			this.columnHeader3.Width = 80;
 			// 
+			// columnHeader4
+			// 
+			this.columnHeader4.Text = "Mask";
+			this.columnHeader4.Width = 91;
+			// 
 			// BreakpointControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -168,7 +175,7 @@
 			this.Controls.Add(this.AddBreakpointButton);
 			this.Controls.Add(this.BreakpointView);
 			this.Name = "BreakpointControl";
-			this.Size = new System.Drawing.Size(193, 413);
+			this.Size = new System.Drawing.Size(366, 413);
 			this.Load += new System.EventHandler(this.BreakpointControl_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -188,5 +195,6 @@
 		private System.Windows.Forms.Button ToggleButton;
 		private System.Windows.Forms.Button DuplicateBreakpointButton;
 		private System.Windows.Forms.Button EditBreakpointButton;
+		private System.Windows.Forms.ColumnHeader columnHeader4;
 	}
 }

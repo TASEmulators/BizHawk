@@ -42,6 +42,8 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			foreach (var entry in PSGEntries)

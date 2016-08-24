@@ -63,6 +63,8 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			// Do nothing

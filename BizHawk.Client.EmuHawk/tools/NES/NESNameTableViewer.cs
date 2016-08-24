@@ -47,6 +47,8 @@ namespace BizHawk.Client.EmuHawk
 			Generate(true);
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			_ppu.InstallCallback1(() => Generate(), scanline);

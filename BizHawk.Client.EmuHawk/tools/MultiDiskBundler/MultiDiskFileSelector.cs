@@ -100,6 +100,8 @@ namespace BizHawk.Client.EmuHawk
 			UpdateValues();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			UseCurrentRomButton.Enabled = Global.Emulator != null // For the designer

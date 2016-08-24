@@ -45,11 +45,18 @@ namespace BizHawk.Client.EmuHawk
 			BookMarkControl.SelectBranchExternal(true);
 		}
 
-		public bool WantsToControlReadOnly { get { return false; } }
+		public bool WantsToControlReadOnly { get { return true; } }
 
 		public void ToggleReadOnly()
 		{
-			GlobalWin.OSD.AddMessage("TAStudio does not allow manual readonly toggle");
+			if (CurrentTasMovie.IsPlaying)
+			{
+				TastudioRecordMode();
+			}
+			else if (CurrentTasMovie.IsRecording)
+			{
+				TastudioPlayMode();
+			}
 		}
 
 		public bool WantsToControlStopMovie { get; private set; }
@@ -71,7 +78,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Rewind()
 		{
-			GoToPreviousFrame(); // todo: behave as normal rewind in differentiating between hitting rewind once and holding it.
+			//if (GlobalWin.MainForm.IsSeeking)
+			//{
+			//	GlobalWin.MainForm.PauseOnFrame--;
+			//	if (Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
+			//	{
+			//		GlobalWin.MainForm.PauseEmulator();
+			//		GlobalWin.MainForm.PauseOnFrame = null;
+			//		StopSeeking();
+			//	}
+			//	RefreshDialog();
+			//}
+			//else
+			//{
+				GoToPreviousFrame();
+			//}
 			return true;
 		}
 

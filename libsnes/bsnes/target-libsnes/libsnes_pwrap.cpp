@@ -60,6 +60,7 @@ enum eMessage : int32
     eMessage_QUERY_library_revision_major,
     eMessage_QUERY_library_revision_minor,
     eMessage_QUERY_get_region,
+	eMessage_QUERY_get_mapper,
     eMessage_QUERY_get_memory_size,
     eMessage_QUERY_get_memory_data, //note: this function isnt used and hasnt been tested in a while
     eMessage_QUERY_peek,
@@ -792,6 +793,10 @@ bool Handle_QUERY(eMessage msg)
             
         case eMessage_QUERY_get_region:
             WritePipe((char)snes_get_region());
+		break;
+
+	case eMessage_QUERY_get_mapper:
+		WritePipe(snes_get_mapper());
             break;
             
         case eMessage_QUERY_get_memory_size:

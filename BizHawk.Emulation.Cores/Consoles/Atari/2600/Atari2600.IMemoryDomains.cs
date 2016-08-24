@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
@@ -6,15 +8,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	public partial class Atari2600
 	{
 		internal IMemoryDomains MemoryDomains;
+		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()
 		{
 			var domains = new List<MemoryDomain>
 			{
-				new MemoryDomainByteArray(
-					"Main RAM",
-					MemoryDomain.Endian.Little,
-					Ram, true, 1),
 				new MemoryDomainDelegate(
 					"TIA",
 					16,
@@ -35,13 +35,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => _mapper.PokeMemory((ushort) addr, value), 1) 
 			};
 
-			if (_mapper is mDPC) // TODO: also mDPCPlus
-			{
-				domains.Add(new MemoryDomainByteArray(
-					"DPC",
-					MemoryDomain.Endian.Little,(_mapper as mDPC).DspData, true, 1));
-			}
-
 			if (_mapper.HasCartRam)
 			{
 				domains.Add(new MemoryDomainDelegate(
@@ -52,8 +45,36 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					(addr, value) => _mapper.CartRam[(int)addr] = value, 1));
 			}
 
-			MemoryDomains = new MemoryDomainList(domains);
+			SyncAllByteArrayDomains();
+
+			MemoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+
+			_memoryDomainsInit = true;
+		}
+
+		private void SyncAllByteArrayDomains()
+		{
+			SyncByteArrayDomain("Main RAM", Ram);
+
+			if (_mapper is mDPC)
+			{
+				SyncByteArrayDomain("DPC", (_mapper as mDPC).DspData);
+			}
+		}
+
+		private void SyncByteArrayDomain(string name, byte[] data)
+		{
+			if (_memoryDomainsInit)
+			{
+				var m = _byteArrayDomains[name];
+				m.Data = data;
+			}
+			else
+			{
+				var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
+				_byteArrayDomains.Add(name, m);
+			}
 		}
 	}
 }

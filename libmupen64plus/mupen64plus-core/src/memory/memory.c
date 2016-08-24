@@ -135,6 +135,8 @@ static int firstFrameBufferSetting;
 
 void (*readCB)(unsigned int) = NULL;
 void (*writeCB)(unsigned int) = NULL;
+void (*executeCB)(unsigned int) = NULL;
+void (*traceCB)(void) = NULL;
 
 // uncomment to output count of calls to write_rdram():
 //#define COUNT_WRITE_RDRAM_CALLS 1
@@ -4043,4 +4045,14 @@ EXPORT void CALL SetReadCallback(void (*CB)(unsigned int))
 EXPORT void CALL SetWriteCallback(void (*CB)(unsigned int))
 {
 	writeCB = CB;
+}
+
+EXPORT void CALL SetExecuteCallback(void (*CB)(unsigned int))
+{
+	executeCB = CB;
+}
+
+EXPORT void CALL SetTraceCallback(void (*CB)(unsigned int))
+{
+	traceCB = CB;
 }

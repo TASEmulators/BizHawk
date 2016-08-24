@@ -22,6 +22,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore { get { return false; } }
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		private int lastRefresh = 0;
 		public void UpdateValues()
 		{
@@ -78,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Global.Game.Hash != CurrentTasMovie.Hash)
 				{
-					TastudioToStopMovie();
+					TastudioStopMovie();
 					TasView.AllColumns.Clear();
 					StartNewTasMovie();
 					SetUpColumns();
@@ -97,6 +99,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return true;
 			}
+
+			IgnoreSeekFrame = false; // don't unpause
+			StopSeeking();
 
 			if (CurrentTasMovie != null && CurrentTasMovie.Changes)
 			{

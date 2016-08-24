@@ -2681,9 +2681,9 @@ EW_EXPORT s32 shock_GetRegisters_CPU(void* psx, ShockRegisters_CPU* buffer)
 {
 	memcpy(buffer->GPR,CPU->debug_GetGPRPtr(),32*4);
 	buffer->PC = CPU->GetRegister(PS_CPU::GSREG_PC_NEXT,NULL,0);
-  buffer->PC_NEXT = CPU->GetRegister(PS_CPU::GSREG_PC_NEXT,NULL,0);
-  buffer->IN_BD_SLOT = CPU->GetRegister(PS_CPU::GSREG_IN_BD_SLOT,NULL,0);
-  buffer->LO  = CPU->GetRegister(PS_CPU::GSREG_LO,NULL,0);
+	buffer->PC_NEXT = CPU->GetRegister(PS_CPU::GSREG_PC_NEXT,NULL,0);
+	buffer->IN_BD_SLOT = CPU->GetRegister(PS_CPU::GSREG_IN_BD_SLOT,NULL,0);
+	buffer->LO  = CPU->GetRegister(PS_CPU::GSREG_LO,NULL,0);
 	buffer->HI = CPU->GetRegister(PS_CPU::GSREG_HI,NULL,0);
 	buffer->SR = CPU->GetRegister(PS_CPU::GSREG_SR,NULL,0);
 	buffer->CAUSE = CPU->GetRegister(PS_CPU::GSREG_CAUSE,NULL,0);

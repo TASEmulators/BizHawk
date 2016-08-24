@@ -380,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 				case 2: return "(A" + reg + ")"; // (An)
 				case 3: return "(A" + reg + ")+"; // (An)+
 				case 4: return "-(A" + reg + ")"; // -(An)
-				case 5: addr = ReadWord(pc); pc += 2; return String.Format("({0},A{1})", addr, reg); // (d16,An)
+				case 5: addr = ReadWord(pc); pc += 2; return String.Format("(${0:X},A{1})", addr, reg); // (d16,An)
 				case 6: addr = ReadWord(pc); pc += 2; return DisassembleIndex("A" + reg, (short)addr); // (d8,An,Xn)
 				case 7:
 					switch (reg)

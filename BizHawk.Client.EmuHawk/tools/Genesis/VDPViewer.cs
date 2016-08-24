@@ -119,6 +119,7 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewTiles.Refresh();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
 
 		public void UpdateValues()
 		{

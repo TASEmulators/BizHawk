@@ -1042,7 +1042,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ModifierKeys == Keys.Alt)
 					{
-						// MessageBox.Show("Alt click logic is not yet implemented");
                         // do marker drag here
 					}
 					else if (ModifierKeys == Keys.Shift)
@@ -1426,6 +1425,38 @@ namespace BizHawk.Client.EmuHawk
 				if (RowScroll != null)
 				{
 					RowScroll(this, e);
+				}
+			}
+
+			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
+			{
+				// copypaste from OnMouseMove()
+				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
+				{
+					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+				}
+				newCell.RowIndex += FirstVisibleRow;
+				if (newCell.RowIndex < 0)
+					newCell.RowIndex = 0;
+
+				if (!newCell.Equals(CurrentCell))
+				{
+					CellChanged(newCell);
+
+					if (IsHoveringOnColumnCell ||
+						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
+					{
+						Refresh();
+					}
+					else if (_columnDown != null)
+					{
+						Refresh();
+					}
+				}
+				else if (_columnDown != null)
+				{
+					Refresh();
 				}
 			}
 		}

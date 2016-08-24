@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void LoadStateText(TextReader reader)
 		{
 			SyncState(Serializer.CreateTextReader(reader));
+			SetupMemoryDomains(); // resync the memory domains
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
@@ -33,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void LoadStateBinary(BinaryReader br)
 		{
 			SyncState(Serializer.CreateBinaryReader(br));
+			SetupMemoryDomains(); // resync the memory domains
 		}
 
 		public byte[] SaveStateBinary()
@@ -61,6 +63,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("cpu_step", ref cpu_step);
 			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
+
+			//oam related
+			ser.Sync("Oam_Dma_Index", ref oam_dma_index);
+			ser.Sync("Oam_Dma_Exec", ref oam_dma_exec);
+			ser.Sync("Oam_Dma_Addr", ref oam_dma_addr);
+			ser.Sync("Oam_Dma_Byte", ref oam_dma_byte);
+			ser.Sync("Dmc_Dma_Exec", ref dmc_dma_exec);
+			ser.Sync("dmc_realign", ref dmc_realign);
+			ser.Sync("IRQ_delay", ref IRQ_delay);
+			ser.Sync("special_case_delay", ref special_case_delay);
+			ser.Sync("do_the_reread", ref do_the_reread);
+
+
 			ser.BeginSection("Board");
 			Board.SyncState(ser);
 			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)

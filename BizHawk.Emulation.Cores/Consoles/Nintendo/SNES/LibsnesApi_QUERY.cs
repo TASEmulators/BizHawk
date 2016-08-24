@@ -32,6 +32,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return (SNES_REGION)brPipe.ReadByte();
 		}
 
+		public SNES_MAPPER QUERY_get_mapper()
+		{
+			WritePipeMessage(eMessage.eMessage_QUERY_get_mapper);
+			return (SNES_MAPPER)brPipe.ReadByte();
+		}
+
 		public int QUERY_get_memory_size(SNES_MEMORY id)
 		{
 			WritePipeMessage(eMessage.eMessage_QUERY_get_memory_size);

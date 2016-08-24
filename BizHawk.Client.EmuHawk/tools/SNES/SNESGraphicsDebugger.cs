@@ -133,6 +133,8 @@ namespace BizHawk.Client.EmuHawk
 			else return string.Format("@{0} ({1}K)", address.ToHexString(4), address / 1024);
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			SyncCore();

@@ -378,13 +378,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										//bring in the palette bits and palettize
 										spixel |= (t_oam[s].oam_attr & 3) << 2;
 										//save it for use in the framebuffer
-										pixelcolor = PALRAM[0x10 + spixel];
+										pixelcolor = PALRAM[0x10 + spixel];	
 									}
 								} //rasterpos in sprite range
 							} //oamcount loop
 							if (reg_2001.color_disable)
 								pixelcolor &= 0x30;
-
 							xbuf[target] = PaletteAdjustPixel(pixelcolor);
 
 							target++;
@@ -554,7 +553,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				// this sequence is tuned to pass 10-even_odd_timing.nes
 				runppu(kFetchTime);
-				bool evenOddDestiny = reg_2001.show_bg;
+				bool evenOddDestiny = (reg_2001.show_bg|| reg_2001.show_obj);
 				runppu(kFetchTime);
 
 				// After memory access 170, the PPU simply rests for 4 cycles (or the
@@ -585,6 +584,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.status.sl = 241;
 			runppu(postNMIlines * kLineTime);
 			ppur.status.sl = 0;
+			Reg2002_vblank_active = true;
 			runppu(241 * kLineTime);
 			runppu(preNMIlines * kLineTime);
 			--ppudead;

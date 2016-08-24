@@ -400,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
 				case "HVC-SNROM": // Morita Kazuo no Shougi (J)
-					AssertPrg(128, 256); AssertChr(8); AssertVram(0); AssertWram(8);
+					AssertPrg(128, 256); AssertChr(0, 8); AssertVram(0, 8); AssertWram(8);
 					break;
 				case "HVC-SNROM-03": // Dragon Quest III
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);

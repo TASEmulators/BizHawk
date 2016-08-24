@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _dropdownDontfire; // Used as a hack to get around lame .net dropdowns, there's no way to set their index without firing the selectedindexchanged event!
 
 		public const int MaxDetailedSize = 1024 * 1024; // 1mb, semi-arbituary decision, sets the size to check for and automatically switch to fast mode for the user
-		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size ram search will support (as it will crash beyond this)
+		public const int MaxSupportedSize = 1024 * 1024 * 64; // 64mb, semi-arbituary decision, sets the maximum size RAM Search will support (as it will crash beyond this)
 
 		#region Initialize, Load, and Save
 
@@ -260,6 +260,8 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.ItemCount = _searches.Count;
 			SetTotal();
 		}
+
+		public void NewUpdate(ToolFormUpdateType type) { }
 
 		/// <summary>
 		/// This should only be called when the values of the list need an update such as after a poke or emulation occured

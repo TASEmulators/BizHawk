@@ -37,7 +37,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			MemoryCallbacks = new MemoryCallbackSystem();
-			Tracer = new TraceBuffer();
+			Tracer = new TraceBuffer
+			{
+				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
+			};
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			(ServiceProvider as BasicServiceProvider).Register<IDisassemblable>(new BizHawk.Emulation.Cores.Components.W65816.W65816_DisassemblerService());
@@ -394,17 +397,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		void snes_trace(string msg)
 		{
 			// TODO: get them out of the core split up and remove this hackery
-			string splitStr = "[";
-			if (!msg.Contains('['))
-			{
-				splitStr = "A:";
-			}
+			string splitStr = "A:";
 
-			var split = msg.Split(new[] {splitStr }, StringSplitOptions.None);
+			var split = msg.Split(new[] {splitStr }, 2, StringSplitOptions.None);
 
 			Tracer.Put(new TraceInfo
 			{
-				Disassembly = split[0],
+				Disassembly = split[0].PadRight(34),
 				RegisterInfo = splitStr + split[1]
 			});
 		}
@@ -484,9 +483,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		bool LoadCurrent()
 		{
+			bool result = false;
 			if (CurrLoadParams.type == LoadParamType.Normal)
-				return api.CMD_load_cartridge_normal(CurrLoadParams.xml_data, CurrLoadParams.rom_data);
-			else return api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
+				result = api.CMD_load_cartridge_normal(CurrLoadParams.xml_data, CurrLoadParams.rom_data);
+			else result = api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
+
+			mapper = api.QUERY_get_mapper();
+
+			return result;
 		}
 
 		/// <summary>
@@ -641,6 +645,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
+			if (!nocallbacks && Tracer.Enabled)
+				api.QUERY_set_trace_callback(tracecb);
+			else
+				api.QUERY_set_trace_callback(null);
+
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
 			if (!nocallbacks && DeterministicEmulation)
@@ -655,11 +664,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Close();
 				savestatebuff = ms.ToArray();
 			}
-
-			if (!nocallbacks && Tracer.Enabled)
-				api.QUERY_set_trace_callback(tracecb);
-			else
-				api.QUERY_set_trace_callback(null);
 
 			// speedup when sound rendering is not needed
 			if (!rendersound)
@@ -1068,6 +1072,88 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return null;
 		}
 
+		private LibsnesApi.SNES_MAPPER? mapper = null;
+
+		// works for ROM, garbage for anything else
+		byte FakeBusRead(int addr)
+		{
+			addr &= 0xffffff;
+			int bank = addr >> 16;
+			int low = addr & 0xffff;
+
+			if (!mapper.HasValue)
+			{
+				return 0;
+			}
+
+			switch (mapper)
+			{
+				case LibsnesApi.SNES_MAPPER.LOROM:
+					if (low >= 0x8000)
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.EXLOROM:
+					if ((bank >= 0x40 && bank <= 0x7f) || low >= 0x8000)
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.HIROM:
+				case LibsnesApi.SNES_MAPPER.EXHIROM:
+					if ((bank >= 0x40 && bank <= 0x7f) || bank >= 0xc0 || low >= 0x8000)
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.SUPERFXROM:
+					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
+						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.SA1ROM:
+					if (bank >= 0xc0 || (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.BSCLOROM:
+					if (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf)))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.BSCHIROM:
+					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
+						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x1f) || (bank >= 0x80 && bank <= 0x9f))))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.BSXROM:
+					if ((bank >= 0x40 && bank <= 0x7f) || bank >= 0xc0 ||
+						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))) ||
+						(low >= 0x6000 && low <= 0x7fff && (bank >= 0x20 && bank <= 0x3f)))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				case LibsnesApi.SNES_MAPPER.STROM:
+					if (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x5f) || (bank >= 0x80 && bank <= 0xdf)))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+					break;
+				default:
+					throw new InvalidOperationException(string.Format("Unknown mapper: {0}", mapper));
+			}
+
+			return 0;
+		}
+
 		unsafe void MakeFakeBus()
 		{
 			int size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.WRAM);
@@ -1083,7 +1169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					if (a.HasValue)
 						return blockptr[a.Value];
 					else
-						return 0;
+						return FakeBusRead((int)addr);
 				},
 				(addr, val) =>
 				{

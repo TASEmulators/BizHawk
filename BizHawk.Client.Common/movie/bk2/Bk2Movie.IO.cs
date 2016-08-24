@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 using BizHawk.Common;
 
@@ -104,6 +105,7 @@ namespace BizHawk.Client.Common
 								Subtitles.AddFromString(line);
 							}
 						}
+						Subtitles.Sort();
 					});
 				}
 

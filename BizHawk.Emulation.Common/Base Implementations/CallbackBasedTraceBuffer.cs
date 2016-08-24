@@ -36,50 +36,34 @@ namespace BizHawk.Emulation.Common
 
 		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
-		private bool _enabled;
-
 		public abstract void TraceFromCallback();
 
-		public bool Enabled
+		public ITraceSink _sink;
+
+		public bool Enabled { get { return Sink != null; } }
+
+		public void Put(TraceInfo info) { Sink.Put(info); }
+
+		public ITraceSink Sink
 		{
 			get
 			{
-				return _enabled;
+				return _sink;
 			}
-
 			set
 			{
-				_enabled = value;
+				_sink = value;
 				DebuggableCore.MemoryCallbacks.Remove(TraceFromCallback);
 
-				if (_enabled)
+				if (_sink != null)
 				{
 					DebuggableCore.MemoryCallbacks.Add(new TracingMemoryCallback(TraceFromCallback));
 				}
 			}
 		}
 
+
 		public string Header { get; set; }
-
-		public IEnumerable<TraceInfo> Contents
-		{
-			get { return Buffer; }
-		}
-
-		public IEnumerable<TraceInfo> TakeContents()
-		{
-			var contents = Buffer.ToList();
-			Buffer.Clear();
-			return contents;
-		}
-
-		public void Put(TraceInfo content)
-		{
-			if (Enabled)
-			{
-				Buffer.Add(content);
-			}
-		}
 
 		public class TracingMemoryCallback : IMemoryCallback
 		{
@@ -101,6 +85,11 @@ namespace BizHawk.Emulation.Common
 			public Action Callback { get; private set; }
 
 			public uint? Address
+			{
+				get { return null; }
+			}
+
+			public uint? AddressMask
 			{
 				get { return null; }
 			}

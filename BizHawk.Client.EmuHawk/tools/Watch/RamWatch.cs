@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_watches.Changes)
 			{
 				GlobalWin.Sound.StopSound();
-				var result = MessageBox.Show("Save Changes?", "Ram Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
+				var result = MessageBox.Show("Save Changes?", "RAM Watch", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3);
 				GlobalWin.Sound.StartSound();
 				if (result == DialogResult.Yes)
 				{
@@ -228,6 +228,8 @@ namespace BizHawk.Client.EmuHawk
 				NewWatchList(true);
 			}
 		}
+
+		public void NewUpdate(ToolFormUpdateType type) { }
 
 		public void UpdateValues()
 		{
@@ -1096,7 +1098,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var watch in selected)
 				{
-					debugger.AddBreakpoint((uint)watch.Address, MemoryCallbackType.Read);
+					debugger.AddBreakpoint((uint)watch.Address, 0xFFFFFFFF, MemoryCallbackType.Read);
 				}
 			}
 		}
@@ -1111,7 +1113,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var watch in selected)
 				{
-					debugger.AddBreakpoint((uint)watch.Address, MemoryCallbackType.Write);
+					debugger.AddBreakpoint((uint)watch.Address, 0xFFFFFFFF, MemoryCallbackType.Write);
 				}
 			}
 		}

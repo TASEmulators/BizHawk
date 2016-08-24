@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			if (indices.Count > 0)
 			{
 				var line = DisassemblyLines[indices[0]];
-				BreakPointControl1.AddBreakpoint(line.Address, Emulation.Common.MemoryCallbackType.Execute);
+				BreakPointControl1.AddBreakpoint(line.Address, 0xFFFFFFFF, Emulation.Common.MemoryCallbackType.Execute);
 			}
 		}
 	}

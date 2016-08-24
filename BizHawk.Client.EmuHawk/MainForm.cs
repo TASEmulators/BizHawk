@@ -591,7 +591,7 @@ namespace BizHawk.Client.EmuHawk
 			base.Dispose(disposing);
 		}
 
-		#endregion`
+		#endregion
 
 		#region Pause
 
@@ -1806,11 +1806,11 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			//if(ioa is this or that) - for more complex behaviour
-			rom = ioa.SimplePath;
+			string romPath = ioa.SimplePath;
 
-			if (!LoadRom(rom, args))
+			if (!LoadRom(romPath, args))
 			{
-				Global.Config.RecentRoms.HandleLoadError(rom);
+				Global.Config.RecentRoms.HandleLoadError(romPath, rom);
 			}
 		}
 
@@ -2721,6 +2721,8 @@ namespace BizHawk.Client.EmuHawk
 					runFrame = true;
 					_runloopFrameadvance = true;
 					_frameAdvanceTimestamp = currentTimestamp;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.IgnoreSeekFrame = false;
 				}
 				else
 				{
@@ -3616,6 +3618,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopMovie(true);
 			}
+
+			if (GlobalWin.Tools.IsLoaded<TraceLogger>())
+				GlobalWin.Tools.Get<TraceLogger>().Restart();
 
 			Global.CheatList.SaveOnClose();
 			Global.Emulator.Dispose();

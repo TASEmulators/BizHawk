@@ -139,6 +139,8 @@ namespace BizHawk.Client.EmuHawk
 			bmpViewPalette.Refresh();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			unsafe

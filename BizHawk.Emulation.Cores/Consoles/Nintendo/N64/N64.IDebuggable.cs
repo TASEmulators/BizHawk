@@ -11,6 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			// note: the approach this code takes is highly bug-prone
+			// warning: tracer magically relies on these register names!
 			var ret = new Dictionary<string, RegisterValue>();
 			var data = new byte[32 * 8 + 4 + 4 + 8 + 8 + 4 + 4 + 32 * 4 + 32 * 8];
 			api.getRegisters(data);
@@ -60,7 +61,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			throw new NotImplementedException();
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			get { return _memorycallbacks; }
+		}
+
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 
 		public bool CanStep(StepType type) { return false; }
 
@@ -69,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private mupen64plusApi.MemoryCallback _readcb;
 		private mupen64plusApi.MemoryCallback _writecb;
+		private mupen64plusApi.MemoryCallback _executecb;
 
 		private void RefreshMemoryCallbacks()
 		{
@@ -77,7 +84,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
 			if (mcs.HasReads)
 			{
-				_readcb = delegate(uint addr) { mcs.CallReads(addr); };
+				_readcb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Read,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
 			}
 			else
 			{
@@ -86,15 +101,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			if (mcs.HasWrites)
 			{
-				_writecb = delegate(uint addr) { mcs.CallWrites(addr); };
+				_writecb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Write,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
 			}
 			else
 			{
 				_writecb = null;
 			}
 
+			if (mcs.HasExecutes)
+			{
+				_executecb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Execute,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
+			}
+			else
+			{
+				_executecb = null;
+			}
+
 			api.setReadCallback(_readcb);
 			api.setWriteCallback(_writecb);
+			api.setExecuteCallback(_executecb);
 		}
 	}
 }

@@ -13,6 +13,8 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			if (GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any())

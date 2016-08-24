@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Components.x86
 
 		public override string ToString()
 		{
-			return string.Format("{0:X6}  {3,-12}  {1,-8} {2}", Addr, Mnemonic, Args, RawBytes);
+			return string.Format("{0:X6}:  {3,-12}  {1,-8} {2}", Addr, Mnemonic, Args, RawBytes);
 		}
 	}
 

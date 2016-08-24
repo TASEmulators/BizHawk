@@ -29,26 +29,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			if (Controller["Reset"])
-				Core.gpgx_reset(false);
+				LibGPGX.gpgx_reset(false);
 			if (Controller["Power"])
-				Core.gpgx_reset(true);
+				LibGPGX.gpgx_reset(true);
 
-			// this shouldn't be needed, as nothing has changed
-			// if (!Core.gpgx_get_control(input, inputsize))
-			//	throw new Exception("gpgx_get_control() failed!");
+			// do we really have to get each time?  nothing has changed
+			if (!LibGPGX.gpgx_get_control(input, inputsize))
+				throw new Exception("gpgx_get_control() failed!");
 
 			ControlConverter.ScreenWidth = vwidth;
 			ControlConverter.ScreenHeight = vheight;
 			ControlConverter.Convert(Controller, input);
 
-			if (!Core.gpgx_put_control(input, inputsize))
+			if (!LibGPGX.gpgx_put_control(input, inputsize))
 				throw new Exception("gpgx_put_control() failed!");
 
 			IsLagFrame = true;
 			Frame++;
 			_drivelight = false;
 
-			Core.gpgx_advance();
+			if (Tracer.Enabled)
+				LibGPGX.gpgx_set_trace_callback(_tracecb);
+			else
+				LibGPGX.gpgx_set_trace_callback(null);
+
+			LibGPGX.gpgx_advance();
 			UpdateVideo();
 			update_audio();
 
@@ -89,10 +94,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			if (!disposed)
 			{
-				if (Elf != null)
-					Elf.Dispose();
+				if (AttachedCore != this)
+					throw new Exception();
+				if (SaveRamModified)
+					_disposedSaveRam = CloneSaveRam();
+				KillMemCallbacks();
 				if (CD != null)
+				{
 					CD.Dispose();
+				}
+				AttachedCore = null;
 				disposed = true;
 			}
 		}

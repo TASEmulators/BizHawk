@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UnSupportedConfiguration()
 		{
-			MessageBox.Show("Ram Poke does not support mixed types", "Unsupported Options", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show("RAM Poke does not support mixed types", "Unsupported Options", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			Close();
 		}
 
@@ -91,7 +91,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTitle()
 		{
-			Text = "Ram Poke - " + _watchList[0].Domain.Name;
+			Text = "RAM Poke - " + _watchList[0].Domain.Name;
 		}
 
 		private void Cancel_Click(object sender, EventArgs e)

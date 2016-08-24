@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					CurrentTasMovie.SwitchToPlay();
+					TastudioPlayMode();
 
 					int lastState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame).Key; // Simply getting the last state doesn't work if that state is the frame. [dispaly isn't saved in the state, need to emulate to frame]
 					if (lastState > Emulator.Frame)
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MaybeFollowCursor()
 		{
-			if (TasPlaybackBox.FollowCursor && !mouseButtonHeld)
+			if (TasPlaybackBox.FollowCursor)
 				SetVisibleIndex();
 		}
 	}

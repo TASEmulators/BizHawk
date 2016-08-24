@@ -54,6 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
+		private bool _wasRecording = false;
 
 		private void JumpToGreenzone()
 		{
@@ -92,6 +93,11 @@ namespace BizHawk.Client.EmuHawk
 		public void StopSeeking()
 		{
 			_seekBackgroundWorker.CancelAsync();
+			if (_wasRecording)
+			{
+				TastudioRecordMode();
+				_wasRecording = false;
+			}
 			if (IgnoreSeekFrame)
 			{
 				GlobalWin.MainForm.UnpauseEmulator();
@@ -453,6 +459,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // User changed input
 				{
+					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
@@ -523,6 +530,13 @@ namespace BizHawk.Client.EmuHawk
 							RefreshDialog();
 						}
 					}
+
+					// taseditor behavior
+					if (!wasPaused)
+						GlobalWin.MainForm.UnpauseEmulator();
+
+					if (!Settings.AutoRestoreLastPosition)
+						IgnoreSeekFrame = true;
 				}
 			}
 			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -651,6 +665,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							GlobalWin.MainForm.PauseEmulator();
 							GlobalWin.MainForm.PauseOnFrame = null;
+							StopSeeking();
 						}
 					}
 					RefreshDialog();
@@ -923,6 +938,18 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToNextMarker();
 			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				if (_floatEditRow != -1)
+				{
+					_floatEditRow = -1;
+				}
+				else
+				{
+					// not using StopSeeking() here, since it has special logic and should only happen when seek frame is reached
+					CancelSeekContextMenuItem_Click(null, null);
+				}
+			}
 
 			// SuuperW: Float Editing
 			if (_floatEditRow != -1)
@@ -1019,11 +1046,6 @@ namespace BizHawk.Client.EmuHawk
 						DoTriggeredAutoRestoreIfNeeded();
 					}
 				}
-			}
-			else
-			{
-				// not using StopSeeking() here, since it has special logic and should only happen when seek frame is reashed
-				CancelSeekContextMenuItem_Click(null, null);
 			}
 
 			RefreshDialog();

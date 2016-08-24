@@ -21,6 +21,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void FastUpdate()
 		{
 		}

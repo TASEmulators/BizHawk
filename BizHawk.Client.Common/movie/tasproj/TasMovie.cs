@@ -218,6 +218,11 @@ namespace BizHawk.Client.Common
 			_mode = Moviemode.Play;
 		}
 
+		public override void SwitchToRecord()
+		{
+			_mode = Moviemode.Record;
+		}
+
 		/// <summary>
 		/// Removes lag log and greenzone after this frame
 		/// </summary>

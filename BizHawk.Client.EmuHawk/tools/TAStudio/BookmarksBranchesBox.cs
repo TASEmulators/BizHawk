@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string BranchNumberColumnName = "BranchNumberColumn";
 		private const string FrameColumnName = "FrameColumn";
-		private const string TimeColumnName = "TimeColumn";
+		private const string UserTextColumnName = "TextColumn";
 
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
 		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
@@ -54,8 +54,8 @@ namespace BizHawk.Client.EmuHawk
 				},
 				new InputRoll.RollColumn
 				{
-					Name = TimeColumnName,
-					Text = "TimeStamp",
+					Name = UserTextColumnName,
+					Text = "UserText",
 					Width = 90
 				},
 			});
@@ -81,8 +81,9 @@ namespace BizHawk.Client.EmuHawk
 				case FrameColumnName:
 					text = GetBranch(index).Frame.ToString();
 					break;
-				case TimeColumnName:
-					text = GetBranch(index).TimeStamp.ToString(@"hh\:mm\:ss\.ff");
+				case UserTextColumnName:
+					//text = GetBranch(index).TimeStamp.ToString(@"hh\:mm\:ss\.ff");
+					text = GetBranch(index).UserText;
 					break;
 			}
 		}
@@ -165,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());
-			GlobalWin.MainForm.PauseEmulator();
+			//GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
@@ -174,7 +175,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Movie.UpdateBranch(branch, CreateBranch());
 			Tastudio.RefreshDialog();
-			//BranchView.Refresh();
 		}
 
 		private void LoadSelectedBranch()

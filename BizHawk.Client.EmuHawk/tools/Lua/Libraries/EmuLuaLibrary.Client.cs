@@ -227,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openramwatch",
-			"opens the Ram Watch dialog"
+			"opens the RAM Watch dialog"
 		)]
 		public static void OpenRamWatch()
 		{
@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"openramsearch",
-			"opens the Ram Search dialog"
+			"opens the RAM Search dialog"
 		)]
 		public static void OpenRamSearch()
 		{

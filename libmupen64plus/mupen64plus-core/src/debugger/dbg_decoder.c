@@ -283,6 +283,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
                  bool altfmt               )
 {
     char * rel;
+	char combined[32] = {0};
     InstFmt i;
 
     i.word = insn;
@@ -298,13 +299,13 @@ db_disasm_insn ( struct r4k_dis_t * state,
              * answer - never decode addu/daddu as "move"?
              */
             if (i.RType.func == OP_ADDU && i.RType.rt == 0) {
-                    db_printf(state, "%-16s%s,%s",
+                    db_printf(state, "%-10s%s,%s",
                         "move",
                         r4k_str_reg_name[i.RType.rd],
                         r4k_str_reg_name[i.RType.rs]);
                     break;
             }
-            db_printf(state, "%-16s", r4k_str_spec_name[i.RType.func]);
+            db_printf(state, "%-10s", r4k_str_spec_name[i.RType.func]);
             switch (i.RType.func) {
             case OP_SLL:
             case OP_SRL:
@@ -385,13 +386,13 @@ db_disasm_insn ( struct r4k_dis_t * state,
 
     case OP_SPECIAL2:
             if (i.RType.func == OP_MUL)
-                    db_printf(state, "%s\t%s,%s,%s",
+                    db_printf(state, "%-8s%s,%s,%s",
                             r4k_str_spec2_name[i.RType.func & 0x3],
                             r4k_str_reg_name[i.RType.rd],
                             r4k_str_reg_name[i.RType.rs],
                             r4k_str_reg_name[i.RType.rt]);
             else
-                    db_printf(state, "%s\t%s,%s",
+                    db_printf(state, "%-8s%s,%s",
                             r4k_str_spec2_name[i.RType.func & 0x3],
                             r4k_str_reg_name[i.RType.rs],
                             r4k_str_reg_name[i.RType.rt]);
@@ -399,7 +400,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
             break;
 
     case OP_BCOND:
-            db_printf(state, "%-16s%s,", r4k_str_bcond_name[i.IType.rt],
+            db_printf(state, "%-10s%s,", r4k_str_bcond_name[i.IType.rt],
                 r4k_str_reg_name[i.IType.rs]);
             goto pr_displ;
 
@@ -407,20 +408,20 @@ db_disasm_insn ( struct r4k_dis_t * state,
     case OP_BLEZL:
     case OP_BGTZ:
     case OP_BGTZL:
-            db_printf(state, "%-16s%s,", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s%s,", r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rs]);
             goto pr_displ;
 
     case OP_BEQ:
     case OP_BEQL:
             if (i.IType.rs == 0 && i.IType.rt == 0) {
-                    db_printf(state, "%-16s", "b");
+                    db_printf(state, "%-10s", "b");
                     goto pr_displ;
             }
             /* FALLTHROUGH */
     case OP_BNE:
     case OP_BNEL:
-            db_printf(state, "%-16s%s,%s,", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s%s,%s,", r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rs],
                 r4k_str_reg_name[i.IType.rt]);
     pr_displ:
@@ -432,32 +433,32 @@ db_disasm_insn ( struct r4k_dis_t * state,
             case OP_BCx:
             case OP_BCy:
 
-                    db_printf(state, "bc0%c\t",
+                    db_printf(state, "bc0%-8c",
                         "ft"[i.RType.rt & COPz_BC_TF_MASK]);
                     goto pr_displ;
 
             case OP_MT:
-                    db_printf(state, "%-16s%s,%s",
+                    db_printf(state, "%-10s%s,%s",
                         "mtc0",
                         r4k_str_reg_name[i.RType.rt],
                         r4k_str_c0_reg[i.RType.rd]);
                     break;
 
             case OP_DMT:
-                    db_printf(state, "%-16s%s,%s",
+                    db_printf(state, "%-10s%s,%s",
                         "dmtc0",
                         r4k_str_reg_name[i.RType.rt],
                         r4k_str_c0_reg[i.RType.rd]);
                     break;
 
             case OP_MF:
-                    db_printf(state, "%-16s%s,%s", "mfc0",
+                    db_printf(state, "%-10s%s,%s", "mfc0",
                         r4k_str_reg_name[i.RType.rt],
                         r4k_str_c0_reg[i.RType.rd]);
                     break;
 
             case OP_DMF:
-                    db_printf(state, "%-16s%s,%s","dmfc0",
+                    db_printf(state, "%-10s%s,%s","dmfc0",
                         r4k_str_reg_name[i.RType.rt],
                         r4k_str_c0_reg[i.RType.rd]);
                     break;
@@ -471,55 +472,64 @@ db_disasm_insn ( struct r4k_dis_t * state,
             switch (i.RType.rs) {
             case OP_BCx:
             case OP_BCy:
-                    db_printf(state, "bc1%c%s\t\t",
+                    sprintf(combined, "bc1%c%s",
                         "ft"[i.RType.rt & COPz_BC_TF_MASK],
                         (insn >> 16 & 0x1F) == 2 || (insn >> 16 & 0x1F)  == 3 ? "l" : "");
+                    db_printf(state, "%-10s", combined);
                     goto pr_displ;
 
             case OP_MT:
-                    db_printf(state, "mtc1\t\t%s,$f%d",
+				db_printf(state, "%-10s%s,$f%d",
+                        "mtc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_MF:
-                    db_printf(state, "mfc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+                        "mfc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_CT:
-                    db_printf(state, "ctc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+						"ctc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_CF:
-                    db_printf(state, "cfc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+						"cfc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_DMT:
-                    db_printf(state, "dmtc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+						"dmtc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_DMF:
-                    db_printf(state, "dmfc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+						"dmfc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_MTH:
-                    db_printf(state, "mthc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+						"mthc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
 
             case OP_MFH:
-                    db_printf(state, "mfhc1\t\t%s,$f%d",
+                    db_printf(state, "%-10s%s,$f%d",
+						"mfhc1",
                         r4k_str_reg_name[i.RType.rt],
                         i.RType.rd);
                     break;
@@ -531,24 +541,29 @@ db_disasm_insn ( struct r4k_dis_t * state,
                     i.FRType.func == 7 || i.FRType.func == 6 || i.FRType.func == 0xd || 
                     i.FRType.func == 4 || i.FRType.func == 5 || i.FRType.func == 9 )
                 {/*NEG.fmt fd, fs*/
-                    
-                    db_printf(state, "%s.%s\t\t$f%d,$f%d",
+                    sprintf(combined, "%s.%s",
                         r4k_str_cop1_name[i.FRType.func],
-                        r4k_str_fmt_name[i.FRType.fmt],
+                        r4k_str_fmt_name[i.FRType.fmt]);
+                    db_printf(state, "%-10s$f%d,$f%d",
+						combined,
                         i.FRType.fd, i.FRType.fs);
                 }
                 else if( i.FRType.func != 1 && i.FRType.func != 2 && (insn & 0x3F) && !(insn >> 6 & 0x1F) ) /* C */
                 {
-                    db_printf(state, "%s.%s\t\t$f%d,$f%d",
+                    sprintf(combined, "%s.%s",
                         r4k_str_cop1_name[i.FRType.func],
-                        r4k_str_fmt_name[i.FRType.fmt],
+                        r4k_str_fmt_name[i.FRType.fmt]);
+                    db_printf(state, "%-10s$f%d,$f%d",
+						combined,
                         i.FRType.fs, i.FRType.ft);
                 }
                 else
                 {
-                    db_printf(state, "%s.%s\t\t$f%d,$f%d,$f%d",
+                    sprintf(combined, "%s.%s",
                         r4k_str_cop1_name[i.FRType.func],
-                        r4k_str_fmt_name[i.FRType.fmt],
+                        r4k_str_fmt_name[i.FRType.fmt]);
+                    db_printf(state, "%-10s$f%d,$f%d,$f%d",
+                        combined,
                         i.FRType.fd, i.FRType.fs, i.FRType.ft);
                 }
             }
@@ -556,7 +571,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
 
     case OP_J:
     case OP_JAL:
-            db_printf(state, "%-16s", r4k_str_op_name[i.JType.op]);
+            db_printf(state, "%-10s", r4k_str_op_name[i.JType.op]);
             print_addr(state, (loc & 0xF0000000) | (i.JType.target << 2));
             break;
     
@@ -564,7 +579,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
     case OP_LWC1:
     case OP_SWC1:
     case OP_SDC1:
-            db_printf(state, "%-16s$f%d,", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s$f%d,", r4k_str_op_name[i.IType.op],
                 i.IType.rt);
             goto loadstore;
 
@@ -583,7 +598,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
     case OP_SWL:
     case OP_SWR:
     case OP_SD:
-            db_printf(state, "%-16s%s,", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s%s,", r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rt]);
     loadstore:
         
@@ -614,7 +629,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
                 {
                     /* Yes. */
                     db_printf(state, 
-                        "%-16s%s,%s,%%lo(%s)", 
+                        "%-10s%s,%s,%%lo(%s)", 
                         r4k_str_op_name[i.IType.op],
                         r4k_str_reg_name[i.IType.rt],
                         r4k_str_reg_name[i.IType.rs],
@@ -625,7 +640,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
                 }
                 else
                 {
-                    db_printf(state, "%-16s%s,%s,0x%x", r4k_str_op_name[i.IType.op],
+                    db_printf(state, "%-10s%s,%s,0x%x", r4k_str_op_name[i.IType.op],
                         r4k_str_reg_name[i.IType.rt],
                         r4k_str_reg_name[i.IType.rs],
                         i.IType.imm);
@@ -635,7 +650,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
             }
             else
             if (i.IType.rs == 0) {
-                    db_printf(state, "%-16s%s,0x%x",
+                    db_printf(state, "%-10s%s,0x%x",
                         "li",
                         r4k_str_reg_name[i.IType.rt],
                         i.IType.imm);
@@ -643,7 +658,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
             }
             /* FALLTHROUGH */
     case OP_ANDI:
-            db_printf(state, "%-16s%s,%s,0x%x", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s%s,%s,0x%x", r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rt],
                 r4k_str_reg_name[i.IType.rs],
                 i.IType.imm);
@@ -656,7 +671,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
         {
             /* Yes. */
             db_printf(state, 
-                "%-16s%s,%%hi(%s)",
+                "%-10s%s,%%hi(%s)",
                 r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rt],
                 rel
@@ -664,7 +679,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
         }
         else
         {
-            db_printf(state, "%-16s%s,0x%x", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s%s,0x%x", r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rt],
                 i.IType.imm);
         }
@@ -672,7 +687,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
     break;
 
     case OP_CACHE:
-            db_printf(state, "%-16s0x%x,0x%x(%s)",
+            db_printf(state, "%-10s0x%x,0x%x(%s)",
                 r4k_str_op_name[i.IType.op],
                 i.IType.rt,
                 i.IType.imm,
@@ -690,7 +705,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
         {
             /* Yes. */
             db_printf(state, 
-                "%-16s%s,%s,%%lo(%s)", 
+                "%-10s%s,%s,%%lo(%s)", 
                 r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rt],
                 r4k_str_reg_name[i.IType.rs],
@@ -701,7 +716,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
         }
         
             if (i.IType.rs == 0) {
-                    db_printf(state, "%-16s%s,%d", "li",
+                    db_printf(state, "%-10s%s,%d", "li",
                         r4k_str_reg_name[i.IType.rt],
                         (short)i.IType.imm);
                     break;
@@ -710,7 +725,7 @@ db_disasm_insn ( struct r4k_dis_t * state,
     
     default:
         
-            db_printf(state, "%-16s%s,%s,%d", r4k_str_op_name[i.IType.op],
+            db_printf(state, "%-10s%s,%s,%d", r4k_str_op_name[i.IType.op],
                 r4k_str_reg_name[i.IType.rt],
                 r4k_str_reg_name[i.IType.rs],
                 (short)i.IType.imm);

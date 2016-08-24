@@ -94,6 +94,8 @@ namespace BizHawk.Client.EmuHawk
 			// Nothing to do
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			Generate();

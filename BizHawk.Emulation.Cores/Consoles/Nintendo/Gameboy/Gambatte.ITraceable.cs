@@ -21,10 +21,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				Disassembly =
 					NewDisassembler
 						.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused)
-						.PadRight(30),
+						.PadRight(36),
 				RegisterInfo =
 					string.Format(
-					"SP:{2:x2} A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} LY:{13:x2} {11} Cy:{0}",
+					"A:{3:x2} B:{4:x2} C:{5:x2} D:{6:x2} E:{7:x2} F:{8:x2} H:{9:x2} L:{10:x2} LY:{13:x2} SP:{2:x2} {11} Cy:{0}",
 					s[0],
 					s[1] & 0xffff,
 					s[2] & 0xffff,

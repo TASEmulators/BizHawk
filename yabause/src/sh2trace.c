@@ -48,6 +48,8 @@ static FILE *logfile;                // Trace log file
 static u64 cycle_accum = 0;     // Global cycle accumulator
 static u64 current_cycles = 0;  // Cycle count on last call to sh2_trace()
 
+char disasmbuf[128];
+
 /*************************************************************************/
 
 FASTCALL u64 sh2_cycle_count(void)
@@ -162,7 +164,10 @@ static INLINE void HEXIT(char * const ptr, u32 val, int ndigits)
 #endif
 
 FASTCALL void sh2_trace(SH2_struct *state, u32 address)
-{
+{		
+	if (!tracecallback)
+		return;
+
     current_cycles = cycle_accum + state->cycles;
 
     if (current_cycles < trace_start) {
@@ -171,7 +176,7 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
 
     } else if (current_cycles >= trace_stop) {
 
-        /* After last instruction: close log file if it's open */
+        /* After last instruction: close log file if it's open 
         if (logfile) {
 #ifdef GZIP_LOG
             pclose(logfile);
@@ -179,7 +184,7 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
             fclose(logfile);
 #endif
             logfile = NULL;
-        }
+        }*/
 
     } else {
         u16 opcode;
@@ -194,10 +199,10 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
 #else
         char buf[100];
         /* This looks ugly, but it's faster than fprintf() in this case */
-        static char regbuf[] = "  R0: XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX\n  R8: XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX\n  PR: XXXXXXXX  SR: XXX  MAC: XXXXXXXX/XXXXXXXX  GBR: XXXXXXXX  VBR: XXXXXXXX\n";
+        static char regbuf[] = "r0:XXXXXXXX r1:XXXXXXXX r2:XXXXXXXX r3:XXXXXXXX r4:XXXXXXXX r5:XXXXXXXX r6:XXXXXXXX r7:XXXXXXXX r8:XXXXXXXX r9:XXXXXXXX r10:XXXXXXXX r11:XXXXXXXX r12:XXXXXXXX r13:XXXXXXXX r14:XXXXXXXX r15:XXXXXXXX PR:XXXXXXXX SR:XXX MAC:XXXXXXXX XXXXXXXX GBR:XXXXXXXX VBR:XXXXXXXX";
         int i;
 #endif
-
+		/*
         if (!logfile) {
             const char *filename = "sh2.log";
 #ifdef GZIP_LOG
@@ -211,7 +216,7 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
                 return;
             }
             setvbuf(logfile, NULL, _IOFBF, 65536);
-        }
+        }*/
 
         opcode = MappedMemoryReadWord(address);
 
@@ -233,9 +238,8 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
         SH2GetRegisters(state, &state->regs);
 
         SH2Disasm(address, opcode, 0, buf);
-        fprintf(logfile, "[%c] %08X: %04X  %-44s [%12llu]\n",
-                state==SSH2 ? 'S' : 'M', (int)address, (int)opcode, buf+12,
-                (unsigned long long)current_cycles);
+        sprintf(disasmbuf, "[%c] %08X:  %04X  %-26s",
+                state==SSH2 ? 'S' : 'M', (int)address, (int)opcode, buf+12);
 #ifdef ECHO_TO_STDERR
         fprintf(stderr, "[%c] %08X: %04X  %-44s [%12llu]\n",
                 state==SSH2 ? 'S' : 'M', (int)address, (int)opcode, buf+12,
@@ -243,20 +247,22 @@ FASTCALL void sh2_trace(SH2_struct *state, u32 address)
 #endif
 
         for (i = 0; i < 16; i++) {
-            HEXIT(i>=8 ? &regbuf[12+i*9] : &regbuf[6+i*9], state->regs.R[i], 8);
+            HEXIT(&regbuf[i>9 ? i*13-6 : i*12+3], state->regs.R[i], 8);
         }
-        HEXIT(&regbuf[162], state->regs.PR, 8);
-        HEXIT(&regbuf[176], state->regs.SR.all, 3);
-        HEXIT(&regbuf[186], state->regs.MACH, 8);
-        HEXIT(&regbuf[195], state->regs.MACL, 8);
-        HEXIT(&regbuf[210], state->regs.GBR, 8);
-        HEXIT(&regbuf[225], state->regs.VBR, 8);
-        fwrite(regbuf, sizeof(regbuf)-1, 1, logfile);
+        HEXIT(&regbuf[201], state->regs.PR, 8);
+        HEXIT(&regbuf[213], state->regs.SR.all, 3);
+        HEXIT(&regbuf[221], state->regs.MACH, 8);
+        HEXIT(&regbuf[230], state->regs.MACL, 8);
+        HEXIT(&regbuf[243], state->regs.GBR, 8);
+        HEXIT(&regbuf[256], state->regs.VBR, 8);
+        //fwrite(regbuf, sizeof(regbuf)-1, 1, logfile);
 #ifdef ECHO_TO_STDERR
         fwrite(regbuf, sizeof(regbuf)-1, 1, stderr);
 #endif
 
 #endif  // BINARY_LOG
+        
+		tracecallback(disasmbuf, regbuf);
 
     }  // current_cycles >= trace_start && current_cycles < trace_stop
 }

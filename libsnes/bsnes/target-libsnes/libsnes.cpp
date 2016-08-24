@@ -28,6 +28,8 @@ struct Interface : public SNES::Interface {
   uint32_t *buffer;
   uint32_t *palette;
 
+  SnesCartridge cart;
+
 	//zero 11-sep-2012
 	time_t randomSeed() { return 0; }
 
@@ -129,7 +131,8 @@ struct Interface : public SNES::Interface {
 			pallocSharedMemory(0),
 			pfreeSharedMemory(0),
 			backdropColor(-1),
-			ptrace(0)
+			ptrace(0),
+			cart(nullptr, 0)
 	{
     buffer = new uint32_t[512 * 480];
     palette = new uint32_t[16 * 32768];
@@ -470,7 +473,8 @@ bool snes_load_cartridge_normal(
 ) {
   snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
-  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : SnesCartridge(rom_data, rom_size).markup;
+  iface->cart = SnesCartridge(rom_data, rom_size);
+  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   SNES::cartridge.load(SNES::Cartridge::Mode::Normal, { xmlrom });
   SNES::system.power();
   return true;
@@ -482,7 +486,8 @@ bool snes_load_cartridge_bsx_slotted(
 ) {
   snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
-  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : SnesCartridge(rom_data, rom_size).markup;
+  iface->cart = SnesCartridge(rom_data, rom_size);
+  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   if(bsx_data) SNES::bsxflash.memory.copy(bsx_data, bsx_size);
   string xmlbsx = (bsx_xml && *bsx_xml) ? string(bsx_xml) : SnesCartridge(bsx_data, bsx_size).markup;
   SNES::cartridge.load(SNES::Cartridge::Mode::BsxSlotted, xmlrom);
@@ -496,7 +501,8 @@ bool snes_load_cartridge_bsx(
 ) {
   snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
-  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : SnesCartridge(rom_data, rom_size).markup;
+  iface->cart = SnesCartridge(rom_data, rom_size);
+  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   if(bsx_data) SNES::bsxflash.memory.copy(bsx_data, bsx_size);
   string xmlbsx = (bsx_xml && *bsx_xml) ? string(bsx_xml) : SnesCartridge(bsx_data, bsx_size).markup;
   SNES::cartridge.load(SNES::Cartridge::Mode::Bsx, xmlrom);
@@ -511,7 +517,8 @@ bool snes_load_cartridge_sufami_turbo(
 ) {
   snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
-  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : SnesCartridge(rom_data, rom_size).markup;
+  iface->cart = SnesCartridge(rom_data, rom_size);
+  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   if(sta_data) SNES::sufamiturbo.slotA.rom.copy(sta_data, sta_size);
   string xmlsta = (sta_xml && *sta_xml) ? string(sta_xml) : SnesCartridge(sta_data, sta_size).markup;
   if(stb_data) SNES::sufamiturbo.slotB.rom.copy(stb_data, stb_size);
@@ -527,7 +534,8 @@ bool snes_load_cartridge_super_game_boy(
 ) {
   snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
-  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : SnesCartridge(rom_data, rom_size).markup;
+  iface->cart = SnesCartridge(rom_data, rom_size);
+  string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
   if(dmg_data) {
     //GameBoyCartridge needs to modify dmg_data (for MMM01 emulation); so copy data
     uint8_t *data = new uint8_t[dmg_size];
@@ -547,6 +555,10 @@ void snes_unload_cartridge(void) {
 
 bool snes_get_region(void) {
   return SNES::system.region() == SNES::System::Region::NTSC ? 0 : 1;
+}
+
+char snes_get_mapper(void) {
+  return iface->cart.mapper;
 }
 
 uint8_t* snes_get_memory_data(unsigned id) {

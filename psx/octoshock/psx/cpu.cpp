@@ -31,6 +31,7 @@ void* g_ShockTraceCallbackOpaque = NULL;
 ShockCallback_Trace g_ShockTraceCallback = NULL;
 ShockCallback_Mem g_ShockMemCallback;
 eShockMemCb g_ShockMemCbType;
+char disasm_buf[128];
 
 /* TODO
 	Make sure load delays are correct.
@@ -546,23 +547,23 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
 
      switch(PC & 0xC)
      {
-      case 0x0:
-	timestamp++;
-        ICI[0x00].TV &= ~0x2;
-	ICI[0x00].Data = MDFN_de32lsb<true>(&FMP[0x0]);
-      case 0x4:
-	timestamp++;
-        ICI[0x01].TV &= ~0x2;
-	ICI[0x01].Data = MDFN_de32lsb<true>(&FMP[0x4]);
-      case 0x8:
-	timestamp++;
-        ICI[0x02].TV &= ~0x2;
-	ICI[0x02].Data = MDFN_de32lsb<true>(&FMP[0x8]);
-      case 0xC:
-	timestamp++;
-        ICI[0x03].TV &= ~0x2;
-	ICI[0x03].Data = MDFN_de32lsb<true>(&FMP[0xC]);
-	break;
+     case 0x0:
+      timestamp++;
+      ICI[0x00].TV &= ~0x2;
+	  ICI[0x00].Data = MDFN_de32lsb<true>(&FMP[0x0]);
+     case 0x4:
+	  timestamp++;
+      ICI[0x01].TV &= ~0x2;
+	  ICI[0x01].Data = MDFN_de32lsb<true>(&FMP[0x4]);
+     case 0x8:
+	  timestamp++;
+      ICI[0x02].TV &= ~0x2;
+	  ICI[0x02].Data = MDFN_de32lsb<true>(&FMP[0x8]);
+     case 0xC:
+	  timestamp++;
+      ICI[0x03].TV &= ~0x2;
+	  ICI[0x03].Data = MDFN_de32lsb<true>(&FMP[0xC]);
+      break;
      }
      instr = ICache[(PC & 0xFFC) >> 2].Data;
     }
@@ -572,6 +573,12 @@ pscpu_timestamp_t PS_CPU::RunReal(pscpu_timestamp_t timestamp_in)
    //for(int i = 0; i < 32; i++)
    // printf("%02x : %08x\n", i, GPR[i]);
    //printf("\n");
+   if (g_ShockTraceCallback)
+   {
+	//_asm int 3;
+	shock_Util_DisassembleMIPS(PC, instr, disasm_buf, ARRAY_SIZE(disasm_buf));
+    g_ShockTraceCallback(NULL, PC, instr, disasm_buf);
+   }
 
    opf = instr & 0x3F;
 

@@ -12,6 +12,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		private LibQuickNES.TraceCallback _tracecb;
 
+		private const string TraceHeader = "6502: PC, mnemonic, operands, registers (A, X, Y, P, SP)";
+
 		private void MakeTrace(IntPtr data)
 		{
 			int[] s = new int[7];
@@ -31,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			Tracer.Put(new TraceInfo
 			{
-				Disassembly = string.Format("{0:X4} {1}", pc, opcodeStr).PadRight(26),
+				Disassembly = string.Format("{0:X4}:  {1}", pc, opcodeStr).PadRight(26),
 				RegisterInfo = string.Format(
-					"SP:{0:X2} A:{1:X2} P:{2:X2} X:{3:X2} Y:{4:X2}",
+					"A:{1:X2} X:{3:X2} Y:{4:X2} P:{2:X2} SP:{0:X2}",
 					sp,
 					a,
 					p,
@@ -41,8 +43,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					y)
 			});
 		}
-
-		private const string TraceHeader = "6502: PC, opcode, registers (SP, A, P, X, Y)";
 
 		private void ConnectTracer()
 		{

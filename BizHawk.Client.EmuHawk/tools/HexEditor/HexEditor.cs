@@ -146,6 +146,8 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
+		public void NewUpdate(ToolFormUpdateType type) { }
+
 		public void UpdateValues()
 		{
 			AddressesLabel.Text = GenerateMemoryViewString(true);

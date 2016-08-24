@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Pause":
 					// check this here since TogglePause() has no idea who triggered it
 					// and we need to treat pause hotkey specially in tastudio
-					if (GlobalWin.MainForm.EmulatorPaused)
+					if (GlobalWin.MainForm.EmulatorPaused && GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.IgnoreSeekFrame = true;
 					TogglePause();
 					break;
@@ -43,6 +43,11 @@ namespace BizHawk.Client.EmuHawk
 					TakeScreenshot();
 					break;
 				case "Screen Raw to Clipboard":
+					// Ctrl+C clash. any tool that has such acc must check this.
+					// maybe check if mainform has focus instead?
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						if (GlobalWin.Tools.Get<TAStudio>().ContainsFocus)
+							break;
 					TakeScreenshotToClipboard();
 					break;
 				case "Screen Client to Clipboard":
@@ -298,10 +303,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 
 				// Tools
-				case "Ram Watch":
+				case "RAM Watch":
 					GlobalWin.Tools.LoadRamWatch(true);
 					break;
-				case "Ram Search":
+				case "RAM Search":
 					GlobalWin.Tools.Load<RamSearch>();
 					break;
 				case "Hex Editor":
@@ -326,53 +331,68 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.Load<VirtualpadTool>();
 					break;
 
-				// Ram Search
+				// RAM Search
 				case "Do Search":
-					GlobalWin.Tools.RamSearch.DoSearch();
+					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+						GlobalWin.Tools.RamSearch.DoSearch();
 					break;
 				case "New Search":
-					GlobalWin.Tools.RamSearch.NewSearch();
+					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+						GlobalWin.Tools.RamSearch.NewSearch();
 					break;
 				case "Previous Compare To":
-					GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
+					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+						GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
 					break;
 				case "Next Compare To":
-					GlobalWin.Tools.RamSearch.NextCompareTo();
+					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+						GlobalWin.Tools.RamSearch.NextCompareTo();
 					break;
 				case "Previous Operator":
-					GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
+					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+						GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
 					break;
 				case "Next Operator":
-					GlobalWin.Tools.RamSearch.NextOperator();
+					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+						GlobalWin.Tools.RamSearch.NextOperator();
 					break;
 
 				//TAStudio
 				case "Add Branch":
-					GlobalWin.Tools.TAStudio.AddBranchExternal();
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AddBranchExternal();
 					break;
 				case "Delete Branch":
-					GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
 					break;
 				case "Toggle Follow Cursor":
-					GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
 					break;
 				case "Toggle Auto-Restore":
-					GlobalWin.Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
 					break;
 				case "Toggle Turbo Seek":
-					GlobalWin.Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
 					break;
 				case "Clear Frames":
-					GlobalWin.Tools.TAStudio.ClearFramesExternal();
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.ClearFramesExternal();
 					break;
 				case "Insert Frame":
-					GlobalWin.Tools.TAStudio.InsertFrameExternal();
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.InsertFrameExternal();
 					break;
 				case "Delete Frames":
-					GlobalWin.Tools.TAStudio.DeleteFramesExternal();
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.DeleteFramesExternal();
 					break;
 				case "Clone Frames":
-					GlobalWin.Tools.TAStudio.CloneFramesExternal();
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.CloneFramesExternal();
 					break;
 
 				// SNES

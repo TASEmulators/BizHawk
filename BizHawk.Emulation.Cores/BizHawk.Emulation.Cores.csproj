@@ -531,6 +531,9 @@
     <Compile Include="Consoles\Nintendo\N64\N64.IStatable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\N64\N64.ITraceable.cs">
+      <DependentUpon>N64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\N64\N64Input.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64Settings.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
@@ -878,6 +881,46 @@
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx\LibGPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx64\GenDbgHlp.cs" />
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.cs" />
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.ICodeDataLogger.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IDebuggable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IDisassembler.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IDriveLight.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IEmulator.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IInputPollable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IMemoryDomains.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.ISaveRam.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.ISettable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IStatable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.ITraceable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.IVideoProvider.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx64\GPGXControlConverter.cs" />
+    <Compile Include="Consoles\Sega\gpgx64\LibGPGX.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
@@ -899,15 +942,38 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IDebuggable.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IEmulator.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IInputPollable.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IMemoryDomains.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.Input.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.ISaveRam.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs" />
+    <Compile Include="Consoles\Sega\Saturn\Yabause.ITraceable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.cs" />
+    <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IDebuggable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IEmulator.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IInputPollable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IMemoryDomains.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.Input.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.ISaveRam.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\SMS\VDP.cs" />
     <Compile Include="Consoles\Sega\SMS\TerebiOekaki.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.Korea.cs" />
     <Compile Include="Consoles\Sega\SMS\MemoryMap.ExtRam.cs" />
@@ -920,6 +986,15 @@
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.IDebuggable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.IDisassemblable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.ITraceable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\Sony\PSX\OctoshockFIOConfig.cs" />
@@ -1003,8 +1078,6 @@
     <Compile Include="Consoles\Sega\Genesis\GenVDP.Render.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
-    <Compile Include="Consoles\Sega\SMS\SMS.cs" />
-    <Compile Include="Consoles\Sega\SMS\VDP.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\HuC6280PSG.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />

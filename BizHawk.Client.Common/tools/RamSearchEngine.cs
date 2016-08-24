@@ -358,7 +358,7 @@ namespace BizHawk.Client.Common
 				_history.AddState(_watchList);
 			}
 
-			var removeList = indices.Select(i => _watchList[i]); // This will fail after int.MaxValue but Ram Search fails on domains that large anyway
+			var removeList = indices.Select(i => _watchList[i]); // This will fail after int.MaxValue but RAM Search fails on domains that large anyway
 			_watchList = _watchList.Except(removeList).ToList();
 		}
 

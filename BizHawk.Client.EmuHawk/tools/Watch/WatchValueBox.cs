@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.KeyChar == '.')
 			{
-				if (Text.Contains("."))
+				if (Text.Contains(".") && !SelectedText.Contains("."))
 				{
 					e.Handled = true;
 					return;
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (e.KeyChar == '-')
 			{
-				if (Text.Contains("-"))
+				if (Text.Contains("-") && !SelectedText.Contains("-"))
 				{
 					e.Handled = true;
 					return;
@@ -686,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 				case DisplayType.Float:
 					if (Text.IsFloat())
 					{
-						if (Text == "-")
+						if (Text == "-" || Text == ".")
 							return 0;
 						float val = float.Parse(Text);
 						var bytes = BitConverter.GetBytes(val);

@@ -99,7 +99,10 @@ namespace BizHawk.Emulation.Cores.Components.ARM
 				return null;
 			if (Str(d, s, false))
 				return null;
-			return Encoding.ASCII.GetString(s.total, 0, Array.IndexOf(s.total, (byte)0));
+			string[] ret = Encoding.ASCII.GetString(s.total, 0, Array.IndexOf(s.total, (byte)0))
+				.ToString()
+				.Split(new string[] {" "}, 2, StringSplitOptions.None);
+			return ret[0].PadRight(8) + ret[1];
 		}
 	}
 

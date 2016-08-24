@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			{
 				IntPtr area = IntPtr.Zero;
 				int size = 0;
-				IntPtr pname = Core.gpgx_get_memdom(i, ref area, ref size);
+				IntPtr pname = LibGPGX.gpgx_get_memdom(i, ref area, ref size);
 				if (area == IntPtr.Zero || pname == IntPtr.Zero || size == 0)
 					continue;
 				string name = Marshal.PtrToStringAnsi(pname);
@@ -26,17 +26,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					// vram pokes need to go through hook which invalidates cached tiles
 					byte* p = (byte*)area;
 					mm.Add(new MemoryDomainDelegate(name, size, MemoryDomain.Endian.Unknown,
-						delegate(long addr)
+						delegate (long addr)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
 							return p[addr ^ 1];
 						},
-						delegate(long addr, byte val)
+						delegate (long addr, byte val)
 						{
 							if (addr < 0 || addr >= 65536)
 								throw new ArgumentOutOfRangeException();
-							Core.gpgx_poke_vram(((int)addr) ^ 1, val);
+							LibGPGX.gpgx_poke_vram(((int)addr) ^ 1, val);
 						},
 						wordSize: 2));
 				}
@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				else
 				{
 					// TODO: are the Z80 domains really Swap16 in the core?  Check this
+					//var byteSize = name.Contains("Z80") ? 1 : 2;
 					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size,
 						MemoryDomain.Endian.Big, area, name != "MD CART" && name != "CD BOOT ROM"));
 				}
@@ -54,14 +55,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					return Core.gpgx_peek_m68k_bus(a);
+					return LibGPGX.gpgx_peek_m68k_bus(a);
 				},
 				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					Core.gpgx_write_m68k_bus(a, val);
+					LibGPGX.gpgx_write_m68k_bus(a, val);
 				}, 2);
 
 			mm.Add(m68Bus);
@@ -72,14 +73,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					return Core.gpgx_peek_s68k_bus(a);
+					return LibGPGX.gpgx_peek_s68k_bus(a);
 				},
 				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
-					Core.gpgx_write_s68k_bus(a, val);
+					LibGPGX.gpgx_write_s68k_bus(a, val);
 				}, 2);
 
 			if (IsSegaCD)
