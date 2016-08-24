@@ -5,6 +5,9 @@
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
+#define GPGX_EX __declspec(dllexport)
+#else
+#define GPGX_EX
 #endif
 
 #include "shared.h"
@@ -41,8 +44,6 @@ int cinterface_render_obj = 1;
 uint8 cinterface_custom_backdrop = 0;
 uint32 cinterface_custom_backdrop_color = 0xffff00ff; // pink
 extern uint8 border;
-
-#define GPGX_EX __declspec(dllexport)
 
 static int vwidth;
 static int vheight;
