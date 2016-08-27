@@ -50,7 +50,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public bool IsInMenuLoop { get; private set; }
-		public bool IgnoreSeekFrame { get; set; }
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -111,6 +110,13 @@ namespace BizHawk.Client.EmuHawk
 			get { return Global.MovieSession.Movie as TasMovie; }
 		}
 
+		/// <summary>
+		/// Separates "restore last position" logic from seeking caused by navigation.
+		/// TASEditor never kills LastPositionFrame, and it only pauses on it,
+		/// if it hasn't been greenzoned beforehand and middle mouse button was pressed
+		/// </summary>
+		public int LastPositionFrame { get; set; }
+
 		#region "Initializing"
 
 		public TAStudio()
@@ -158,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
-			IgnoreSeekFrame = false;
+			LastPositionFrame = -1;
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
@@ -795,7 +801,6 @@ namespace BizHawk.Client.EmuHawk
 				if (_autoRestorePaused.HasValue && !_autoRestorePaused.Value)
 				{
 					// this happens when we're holding the left button while unpaused - view scrolls down, new input gets drawn, seek pauses
-					IgnoreSeekFrame = true;
 					GlobalWin.MainForm.UnpauseEmulator();
 				}
 				_autoRestorePaused = null;
