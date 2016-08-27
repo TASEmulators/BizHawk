@@ -4,13 +4,13 @@ BizHawk is a multi-system emulator written in C#. BizHawk provides nice features
 
 [Here](http://tasvideos.org/Bizhawk/Features.html) is a list of features offered by bizhawk.
 
-=== Download Binaries === 
+## Download Binaries
 
 Windows users, don't forget to run the [prereq installer](http://github.com/TASVideos/BizHawk-Prereqs/releases) first!
 
 Binaries can be found on [on github](http://github.com/TASVideos/BizHawk/releases)
 
-=== Supported Systems === 
+## Supported Systems
 
  * Nintendo Entertainment System / Famicom / Famicom Disk System (NES/FDS)
  * Super Nintendo (SNES)
@@ -30,7 +30,7 @@ Binaries can be found on [on github](http://github.com/TASVideos/BizHawk/release
  * Wonderswan and Wonderswan Color 
  * Apple II
 
-=== Resources ===
+## Resources
 
 [BizHawk homepage](http://tasvideos.org/Bizhawk.html) 
 

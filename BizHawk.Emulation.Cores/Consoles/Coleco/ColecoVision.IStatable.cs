@@ -64,6 +64,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Sync("LagCount", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
 			ser.EndSection();
+
+			if (ser.IsReader)
+			{
+				SyncAllByteArrayDomains();
+			}
 		}
 
 		private byte[] _stateBuffer;

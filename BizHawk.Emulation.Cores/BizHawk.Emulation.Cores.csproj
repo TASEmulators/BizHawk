@@ -942,6 +942,9 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.ITraceable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>
@@ -983,6 +986,15 @@
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.IDebuggable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.IDisassemblable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sony\PSX\Octoshock.ITraceable.cs">
+      <DependentUpon>Octoshock.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sony\PSX\OctoshockDll.cs" />
     <Compile Include="Consoles\Sony\PSX\OctoshockFIOConfig.cs" />

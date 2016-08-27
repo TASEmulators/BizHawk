@@ -224,8 +224,8 @@ namespace MDFN_IEN_PSX
 	public:
 		void SetCPUHook(void(*cpuh)(const pscpu_timestamp_t timestamp, uint32 pc), void(*addbt)(uint32 from, uint32 to, bool exception));
 		void CheckBreakpoints(void(*callback)(bool write, uint32 address, unsigned int len), uint32 instr);
- void* debug_GetScratchRAMPtr() { return ScratchRAM.data8; }
- void* debug_GetGPRPtr() { return GPR; }
+		void* debug_GetScratchRAMPtr() { return ScratchRAM.data8; }
+		void* debug_GetGPRPtr() { return GPR; }
 
 		enum
 		{

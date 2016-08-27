@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 			InputCallbackH = new LibYabause.InputCallback(() => InputCallbacks.Call());
 			LibYabause.libyabause_setinputcallback(InputCallbackH);
+			ConnectTracer();
 			DriveLightEnabled = true;
 
 			DeactivateGL();
@@ -276,6 +277,11 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
 
 			DriveLightOn = false;
+
+			if (Tracer.Enabled)
+				LibYabause.libyabause_settracecallback(trace_cb);
+			else
+				LibYabause.libyabause_settracecallback(null);
 
 			IsLagFrame = LibYabause.libyabause_frameadvance(out w, out h, out nsamp);
 			BufferWidth = w;

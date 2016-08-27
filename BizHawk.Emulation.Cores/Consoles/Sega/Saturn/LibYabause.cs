@@ -85,6 +85,17 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public static extern void libyabause_setinputcallback(InputCallback cb);
 
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void TraceCallback(string dis, string regs);
+
+		/// <summary>
+		/// set a fcn to call every time input is read
+		/// </summary>
+		/// <param name="cb">execxutes right before the input read.  null to clear</param>
+		[DllImport("libyabause.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern void libyabause_settracecallback(TraceCallback cb);
+
+
 		/// <summary>
 		/// 
 		/// </summary>

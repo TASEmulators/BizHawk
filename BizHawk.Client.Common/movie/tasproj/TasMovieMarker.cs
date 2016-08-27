@@ -219,6 +219,8 @@ namespace BizHawk.Client.Common
 
 		public void Move(int fromFrame, int toFrame, bool fromHistory = false)
 		{
+			if (fromFrame == 0) // no thanks!
+				return;
 			TasMovieMarker m = Get(fromFrame);
 			if (m == null) // TODO: Don't do this.
 				return;

@@ -21,6 +21,9 @@ namespace BizHawk.Client.EmuHawk
 		private int MaxLines { get; set; }
 
 		[ConfigPersist]
+		private int FileSizeCap { get; set; }
+
+		[ConfigPersist]
 		private int DisasmColumnWidth { 
 			get { return this.Disasm.Width; }
 			set { this.Disasm.Width = value; }
@@ -33,10 +36,24 @@ namespace BizHawk.Client.EmuHawk
 			set { this.Registers.Width = value; }
 		}
 
-		private List<TraceInfo> _instructions = new List<TraceInfo>();
-		
 		private FileInfo _logFile;
+		private FileInfo LogFile
+		{
+			get { return _logFile; }
+			set
+			{
+				_logFile = value;
+				_baseName = Path.ChangeExtension(value.FullName, null);
+			}
+		}
+
+		private List<TraceInfo> _instructions = new List<TraceInfo>();
 		private StreamWriter _streamWriter;
+		private bool _splitFile;
+		private string _baseName;
+		private string _extension = ".log";
+		private int _segmentCount;
+		private ulong _currentSize;
 
 		public TraceLogger()
 		{
@@ -48,6 +65,8 @@ namespace BizHawk.Client.EmuHawk
 			Closing += (o, e) => SaveConfigSettings();
 
 			MaxLines = 10000;
+			FileSizeCap = 150; // make 1 frame of tracelog for n64/psx fit in
+			_splitFile = FileSizeCap != 0;
 		}
 
 		public bool UpdateBefore
@@ -73,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				switch (column)
 				{
 					case 0:
-						text = _instructions[index].Disassembly;
+						text = _instructions[index].Disassembly.TrimEnd();
 						break;
 					case 1:
 						text = _instructions[index].RegisterInfo;
@@ -86,7 +105,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ClearList();
 			OpenLogFile.Enabled = false;
-			//Tracer.Enabled = LoggingEnabled.Checked = false;
+			LoggingEnabled.Checked = false;
+			Tracer.Sink = null;
 			SetTracerBoxTitle();
 		}
 
@@ -107,11 +127,12 @@ namespace BizHawk.Client.EmuHawk
 			if (type == ToolFormUpdateType.PostFrame)
 			{
 				if (ToWindowRadio.Checked)
-					TraceView.VirtualListSize = _instructions.Count;
-				else if (_streamWriter != null)
 				{
-					_streamWriter.Close();
-					_streamWriter = null;
+					TraceView.VirtualListSize = _instructions.Count;
+				}
+				else
+				{
+					CloseFile();
 				}
 			}
 
@@ -129,20 +150,30 @@ namespace BizHawk.Client.EmuHawk
 						{
 							putter = (info) =>
 							{
-								if (_instructions.Count >= MaxLines) { }
-								else _instructions.Add(info);
+								if (_instructions.Count >= MaxLines)
+								{
+									_instructions.RemoveRange(0, _instructions.Count - MaxLines);
+								}
+								_instructions.Add(info);
 							}
 						};
 						_instructions.Clear();
 					}
 					else
 					{
-						_streamWriter = new StreamWriter(_logFile.FullName, append: true);
+						if (_streamWriter == null)
+						{
+							StartLogFile(true);
+						}
 						Tracer.Sink = new CallbackSink {
 							putter = (info) =>
 							{
 								//no padding supported. core should be doing this!
-								_streamWriter.WriteLine("{0} {1}", info.Disassembly, info.RegisterInfo);
+								var data = string.Format("{0} {1}", info.Disassembly, info.RegisterInfo);
+								_streamWriter.WriteLine(data);
+								_currentSize += (ulong)data.Length;
+								if (_splitFile)
+									CheckSplitFile();
 							}
 						};
 					}
@@ -157,8 +188,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			CloseFile();
 			ClearList();
-			//Tracer.Enabled = LoggingEnabled.Checked = false;
+			LoggingEnabled.Checked = false;
+			ToFileRadio.Checked = false;
+			ToWindowRadio.Checked = true;
+			OpenLogFile.Enabled = false;
+			Tracer.Sink = null;
 			SetTracerBoxTitle();
 		}
 
@@ -169,18 +205,16 @@ namespace BizHawk.Client.EmuHawk
 			SetTracerBoxTitle();
 		}
 
-		private void DumpToDisk(FileSystemInfo file)
+		private void DumpToDisk()
 		{
-			using (var sw = new StreamWriter(file.FullName, append: true))
+			foreach (var instruction in _instructions)
 			{
-				int pad = _instructions.Any() ? _instructions.Max(i => i.Disassembly.Length) + 4 : 0;
-
-				foreach (var instruction in _instructions)
-				{
-					sw.WriteLine(instruction.Disassembly.PadRight(pad)
-						+ instruction.RegisterInfo
-					);
-				}
+				//no padding supported. core should be doing this!
+				var data = string.Format("{0} {1}", instruction.Disassembly, instruction.RegisterInfo);
+				_streamWriter.WriteLine(data);
+				_currentSize += (ulong)data.Length;
+				if (_splitFile)
+					CheckSplitFile();
 			}
 		}
 
@@ -190,7 +224,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_instructions.RemoveRange(0, _instructions.Count - MaxLines);
 			}
-
 			TraceView.ItemCount = _instructions.Count;
 		}
 
@@ -227,24 +260,29 @@ namespace BizHawk.Client.EmuHawk
 		private void CloseFile()
 		{
 			// TODO: save the remaining instructions in CoreComm
+			if (_streamWriter != null)
+			{
+				_streamWriter.Close();
+				_streamWriter = null;
+			}
 		}
 
 		private FileInfo GetFileFromUser()
 		{
 			var sfd = new SaveFileDialog();
-			if (_logFile == null)
+			if (LogFile == null)
 			{
-				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + ".log";
+				sfd.FileName = PathManager.FilesystemSafeName(Global.Game) + _extension;
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 			}
-			else if (!string.IsNullOrWhiteSpace(_logFile.FullName))
+			else if (!string.IsNullOrWhiteSpace(LogFile.FullName))
 			{
 				sfd.FileName = PathManager.FilesystemSafeName(Global.Game);
-				sfd.InitialDirectory = Path.GetDirectoryName(_logFile.FullName);
+				sfd.InitialDirectory = Path.GetDirectoryName(LogFile.FullName);
 			}
 			else
 			{
-				sfd.FileName = Path.GetFileNameWithoutExtension(_logFile.FullName);
+				sfd.FileName = Path.GetFileNameWithoutExtension(LogFile.FullName);
 				sfd.InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
 			}
 
@@ -267,12 +305,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveLogMenuItem_Click(object sender, EventArgs e)
 		{
-			var file = GetFileFromUser();
-			if (file != null)
+			LogFile = GetFileFromUser();
+			if (LogFile != null)
 			{
-				StartLogFile(file);
-				DumpToDisk(file);
-				GlobalWin.OSD.AddMessage("Log dumped to " + file.FullName);
+				StartLogFile();
+				DumpToDisk();
+				GlobalWin.OSD.AddMessage("Log dumped to " + LogFile.FullName);
+				CloseFile();
 			}
 		}
 
@@ -290,10 +329,9 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
-					int pad = _instructions.Max(m => m.Disassembly.Length) + 4;
-					blob.Append(_instructions[index].Disassembly.PadRight(pad))
-						.Append(_instructions[index].RegisterInfo)
-						.AppendLine();
+					blob.Append(string.Format("{0} {1}\n",
+						_instructions[index].Disassembly,
+						_instructions[index].RegisterInfo));
 				}
 				Clipboard.SetDataObject(blob.ToString());
 			}
@@ -328,6 +366,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SegmentSizeMenuItem_Click(object sender, EventArgs e)
+		{
+			var prompt = new InputPrompt
+			{
+				StartLocation = this.ChildPointToScreen(TraceView),
+				TextInputType = InputPrompt.InputType.Unsigned,
+				Message = "Log file segment size in megabytes\nSetting 0 disables segmentation",
+				InitialValue = FileSizeCap.ToString()
+			};
+
+			var result = prompt.ShowHawkDialog();
+			if (result == DialogResult.OK)
+			{
+				FileSizeCap = int.Parse(prompt.PromptText);
+				_splitFile = FileSizeCap != 0;
+			}
+		}
+
 		#endregion
 
 		#region Dialog and ListView Events
@@ -337,18 +393,36 @@ namespace BizHawk.Client.EmuHawk
 			//Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 
-			if (LoggingEnabled.Checked && _logFile != null)
+			if (LoggingEnabled.Checked && LogFile != null)
 			{
-				StartLogFile(_logFile);
+				StartLogFile();
 				OpenLogFile.Enabled = true;
 			}
 		}
 
-		private void StartLogFile(FileInfo file)
+		private void StartLogFile(bool append = false)
 		{
-			using (var sw = new StreamWriter(file.FullName, append: false))
+			var data = Tracer.Header;
+			var segment = _segmentCount > 0 ? "_" + _segmentCount.ToString() : "";
+			_streamWriter = new StreamWriter(_baseName + segment + _extension, append);
+			_streamWriter.WriteLine(data);
+			if (append)
 			{
-				sw.WriteLine(Tracer.Header);
+				_currentSize += (ulong)data.Length;
+			}
+			else
+			{
+				_currentSize = (ulong)data.Length;
+			}
+		}
+
+		private void CheckSplitFile()
+		{
+			if (_currentSize / 1024 / 1024 >= (ulong)FileSizeCap)
+			{
+				_segmentCount++;
+				CloseFile();
+				StartLogFile();
 			}
 		}
 
@@ -357,8 +431,8 @@ namespace BizHawk.Client.EmuHawk
 			var file = GetFileFromUser();
 			if (file != null)
 			{
-				_logFile = file;
-				FileBox.Text = _logFile.FullName;
+				LogFile = file;
+				FileBox.Text = LogFile.FullName;
 			}
 		}
 
@@ -369,33 +443,36 @@ namespace BizHawk.Client.EmuHawk
 				FileBox.Visible = true;
 				BrowseBox.Visible = true;
 				var name = PathManager.FilesystemSafeName(Global.Game);
-				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null), name) + ".log";
-				_logFile = new FileInfo(filename);
-				if (_logFile.Directory != null && !_logFile.Directory.Exists)
+				var filename = Path.Combine(PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null), name) + _extension;
+				LogFile = new FileInfo(filename);
+				if (LogFile.Directory != null && !LogFile.Directory.Exists)
 				{
-					_logFile.Directory.Create();
+					LogFile.Directory.Create();
 				}
 
-				if (_logFile.Exists)
+				if (LogFile.Exists)
 				{
-					_logFile.Delete();
+					LogFile.Delete();
 				}
-			
-				using (_logFile.Create()) { }
 
-				FileBox.Text = _logFile.FullName;
+				using (LogFile.Create()) { }
 
-				if (LoggingEnabled.Checked && _logFile != null)
+				FileBox.Text = LogFile.FullName;
+
+				if (LoggingEnabled.Checked && LogFile != null)
 				{
-					StartLogFile(_logFile);
+					StartLogFile();
 					OpenLogFile.Enabled = true;
 				}
 			}
 			else
 			{
+				_currentSize = 0;
+				_segmentCount = 0;
 				CloseFile();
 				FileBox.Visible = false;
 				BrowseBox.Visible = false;
+				OpenLogFile.Enabled = false;
 			}
 
 			SetTracerBoxTitle();
@@ -412,9 +489,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenLogFile_Click(object sender, EventArgs e)
 		{
-			if (_logFile != null)
+			if (LogFile != null)
 			{
-				Process.Start(_logFile.FullName);
+				Process.Start(LogFile.FullName);
 			}
 		}
 	}

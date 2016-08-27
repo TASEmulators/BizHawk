@@ -6,6 +6,8 @@ using LuaInterface;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
+using BizHawk.Emulation.Cores.Nintendo.N64;
+
 namespace BizHawk.Client.Common
 {
 	[Description("A library for registering lua functions to emulator events.\n All events support multiple registered methods.\nAll registered event methods can be named and return a Guid when registered")]
@@ -131,6 +133,19 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private bool N64CoreTypeDynarec()
+		{
+			if (Emulator is N64)
+			{
+				if ((Emulator as N64).GetSyncSettings().Core == N64SyncSettings.CoreType.Dynarec)
+				{
+					Log("N64 Error: Memory callbacks are not implemented for Dynamic Recompiler core type\nUse Interpreter or Pure Interpreter\n");
+					return true;
+				}
+			}
+			return false;
+		}
+
 		private void LogMemoryCallbacksNotImplemented()
 		{
 			Log(string.Format("{0} does not implement memory callbacks", Emulator.Attributes().CoreName));
@@ -221,6 +236,9 @@ namespace BizHawk.Client.Common
 				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable() &&
 					DebuggableCore.MemoryCallbacks.ExecuteCallbacksAvailable)
 				{
+					if (N64CoreTypeDynarec())
+						return Guid.Empty.ToString();
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
 					_luaFunctions.Add(nlf);
 
@@ -249,6 +267,9 @@ namespace BizHawk.Client.Common
 			{
 				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable())
 				{
+					if (N64CoreTypeDynarec())
+						return Guid.Empty.ToString();
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
 					_luaFunctions.Add(nlf);
 
@@ -277,6 +298,9 @@ namespace BizHawk.Client.Common
 			{
 				if (DebuggableCore != null && DebuggableCore.MemoryCallbacksAvailable())
 				{
+					if (N64CoreTypeDynarec())
+						return Guid.Empty.ToString();
+
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
 					_luaFunctions.Add(nlf);
 

@@ -191,6 +191,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
+			Vdp.ProcessOverscan();
 		}
 
 		private ITraceable Tracer { get; set; }

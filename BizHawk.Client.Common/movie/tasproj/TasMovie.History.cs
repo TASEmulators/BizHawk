@@ -174,7 +174,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (Names.Count == 0)
+				if (Names.Count == 0 || UndoIndex < 0)
 					return null;
 				else
 					return Names[UndoIndex];
@@ -332,7 +332,15 @@ namespace BizHawk.Client.Common
 			LastFrame = lastFrame;
 			oldLog = new List<string>(length);
 
-			undoLength = Math.Min(lastFrame + 1, movie.InputLogLength) - firstFrame;
+			var minuend = Math.Min(lastFrame + 1, movie.InputLogLength);
+			if (firstFrame > minuend)
+				undoLength = minuend;
+			else
+				undoLength = minuend - firstFrame;
+
+			if (FirstFrame > oldLog.Count())
+				FirstFrame = oldLog.Count();
+
 			for (int i = 0; i < undoLength; i++)
 				oldLog.Add(movie.GetLogEntries()[FirstFrame + i]);
 
@@ -354,9 +362,9 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = bindMarkers;
 
 			if (redoLength != length)
-				movie.InsertEmptyFrame(FirstFrame, length - redoLength);
+				movie.InsertEmptyFrame(FirstFrame, length - redoLength, true);
 			if (undoLength != length)
-				movie.RemoveFrames(FirstFrame, movie.InputLogLength - undoLength);
+				movie.RemoveFrames(FirstFrame, movie.InputLogLength - undoLength, true);
 
 			for (int i = 0; i < undoLength; i++)
 				movie.SetFrame(FirstFrame + i, oldLog[i]);
