@@ -470,8 +470,14 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
 
-					if (wasPaused && !GlobalWin.MainForm.IsSeeking)
-						LastPositionFrame = Emulator.Frame;
+					if (Emulator.Frame > frame || CurrentTasMovie.LastValidFrame > frame)
+					{
+						if (wasPaused && !GlobalWin.MainForm.IsSeeking && !CurrentTasMovie.LastPositionStable)
+						{
+							LastPositionFrame = Emulator.Frame;
+							CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
+						}
+					}
 
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{
