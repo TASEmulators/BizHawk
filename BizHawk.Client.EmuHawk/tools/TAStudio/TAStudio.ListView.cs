@@ -670,6 +670,7 @@ namespace BizHawk.Client.EmuHawk
 				if (notch > 1)
 					notch *= 2;
 
+				// warning: tastudio rewind hotket/button logic is copypasted from here!
 				if (GlobalWin.MainForm.IsSeeking && !GlobalWin.MainForm.EmulatorPaused)
 				{
 					GlobalWin.MainForm.PauseOnFrame -= notch;

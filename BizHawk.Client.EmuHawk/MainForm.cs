@@ -607,7 +607,8 @@ namespace BizHawk.Client.EmuHawk
 		public LoadRomArgs CurrentlyOpenRomArgs;
 		public bool PauseAVI = false;
 		public bool PressFrameAdvance = false;
-		public bool PressRewind = false;
+		public bool HoldFrameAdvance = false; // necessary for tastudio > button
+		public bool PressRewind = false; // necessary for tastudio < button
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
@@ -2678,7 +2679,7 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance)
+			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
 			{
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
@@ -2890,7 +2891,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
 				UpdateToolsAfter();
-				PressRewind = false;
+				//PressRewind = false;
 			}
 
 			if (UpdateFrame)

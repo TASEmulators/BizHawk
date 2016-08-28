@@ -78,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Rewind()
 		{
+			// copypasted from TasView_MouseWheel(), just without notch logic
 			if (GlobalWin.MainForm.IsSeeking)
 			{
 				GlobalWin.MainForm.PauseOnFrame--;
