@@ -78,21 +78,23 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool Rewind()
 		{
-			//if (GlobalWin.MainForm.IsSeeking)
-			//{
-			//	GlobalWin.MainForm.PauseOnFrame--;
-			//	if (Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
-			//	{
-			//		GlobalWin.MainForm.PauseEmulator();
-			//		GlobalWin.MainForm.PauseOnFrame = null;
-			//		StopSeeking();
-			//	}
-			//	RefreshDialog();
-			//}
-			//else
-			//{
+			if (GlobalWin.MainForm.IsSeeking)
+			{
+				GlobalWin.MainForm.PauseOnFrame--;
+				// that's a weird condition here, but for whatever reason it works best
+				if (Emulator.Frame >= GlobalWin.MainForm.PauseOnFrame)
+				{
+					GlobalWin.MainForm.PauseEmulator();
+					GlobalWin.MainForm.PauseOnFrame = null;
+					StopSeeking();
+					GoToPreviousFrame();
+				}
+				RefreshDialog();
+			}
+			else
+			{
 				GoToPreviousFrame();
-			//}
+			}
 			return true;
 		}
 

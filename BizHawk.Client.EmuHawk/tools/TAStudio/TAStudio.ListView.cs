@@ -102,7 +102,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// public static Color CurrentFrame_FrameCol = Color.FromArgb(0xCFEDFC); Why?
-		public static Color CurrentFrame_InputLog = Color.FromArgb(0xB5E7F7);
+		public static Color CurrentFrame_InputLog = Color.FromArgb(0x00B5E7F7);
+		public static Color SeekFrame_InputLog = Color.FromArgb(0x70B5E7F7);
 
 		public static Color GreenZone_FrameCol = Color.FromArgb(0xDDFFDD);
         public static Color GreenZone_InputLog = Color.FromArgb(0xD2F9D3);
@@ -217,20 +218,17 @@ namespace BizHawk.Client.EmuHawk
 			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
 				color = Color.FromArgb(0x0D000000);
-			
-			if (GlobalWin.MainForm.IsSeeking &&
-				GlobalWin.MainForm.PauseOnFrame == index &&
-				columnName != CursorColumnName)
-			{
-				color = Color.FromArgb(unchecked((int)0x70B5E7F7));
-			}
 		}
 
 		private void TasView_QueryRowBkColor(int index, ref Color color)
 		{
 			TasMovieRecord record = CurrentTasMovie[index];
 
-			if (Emulator.Frame == index)
+			if (GlobalWin.MainForm.IsSeeking && GlobalWin.MainForm.PauseOnFrame == index)
+			{
+				color = CurrentFrame_InputLog;
+			}
+			else if (!GlobalWin.MainForm.IsSeeking && Emulator.Frame == index)
 			{
 				color = CurrentFrame_InputLog;
 			}

@@ -117,14 +117,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RewindButton_Click(object sender, EventArgs e)
 		{
-			if (GlobalWin.MainForm.IsSeeking)
+			if (GlobalWin.MainForm.IsSeeking && !GlobalWin.MainForm.EmulatorPaused)
 			{
 				GlobalWin.MainForm.PauseOnFrame--;
-				if (Global.Emulator.Frame == GlobalWin.MainForm.PauseOnFrame)
+				// that's a weird condition here, but for whatever reason it works best
+				if (Global.Emulator.Frame >= GlobalWin.MainForm.PauseOnFrame)
 				{
 					GlobalWin.MainForm.PauseEmulator();
 					GlobalWin.MainForm.PauseOnFrame = null;
 					Tastudio.StopSeeking();
+					Tastudio.GoToPreviousFrame();
 				}
 				Tastudio.RefreshDialog();
 			}
@@ -141,9 +143,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FrameAdvanceButton_Click(object sender, EventArgs e)
 		{
-			if (GlobalWin.MainForm.IsSeeking)
+			if (GlobalWin.MainForm.IsSeeking && !GlobalWin.MainForm.EmulatorPaused)
 			{
 				GlobalWin.MainForm.PauseOnFrame++;
+				// that's a weird condition here, but for whatever reason it works best
+				if (Global.Emulator.Frame >= GlobalWin.MainForm.PauseOnFrame)
+				{
+					GlobalWin.MainForm.PauseEmulator();
+					GlobalWin.MainForm.PauseOnFrame = null;
+					Tastudio.StopSeeking();
+					Tastudio.GoToNextFrame();
+				}
 				Tastudio.RefreshDialog();
 			}
 			else
@@ -190,6 +200,16 @@ namespace BizHawk.Client.EmuHawk
 		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
 		{
 			RecordingMode ^= true;
+		}
+
+		private void RewindButton_MouseDown(object sender, MouseEventArgs e)
+		{
+			RewindButton_Click(sender, e);
+		}
+
+		private void FrameAdvanceButton_MouseDown(object sender, MouseEventArgs e)
+		{
+			FrameAdvanceButton_Click(sender, e);
 		}
 	}
 }
