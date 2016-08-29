@@ -124,21 +124,6 @@ typedef int32 s32;
 typedef uint32 u32;
 typedef uint16 u16;
 
-enum eMessage : int32
-{
-	eMessage_NotSet,
-
-	eMessage_Shutdown,
-
-	eMessage_QUERY_serialize_size,
-	eMessage_QUERY_dequeue_message,
-	eMessage_QUERY_enable_scanline,
-	eMessage_QUERY_set_backdropColor,
-	eMessage_QUERY_peek_logical_register,
-	eMessage_QUERY_peek_cpu_regs,
-	eMessage_QUERY_set_cdl,
-};
-
 HANDLE hMapFile, hEvent;
 void* hMapFilePtr;
 static bool running = false;
@@ -154,21 +139,25 @@ void snes_video_refresh(const uint32_t *data, unsigned width, unsigned height)
 }
 
 bool audio_en = false;
+//
+// PLEASE SEARCH THE FOLLOWING IN THE OTHER SIDE OF THIS CODE TO 
+// SEE WHAT TO CHANGE IF YOU CHANGE THE FOLLOWING!
+// MAPPED_FILE_SECTION_SIZES
+// 
+static const int GENERIC_MEMORY_ACCESS = 1024 * 1024;
 static const int AUDIOBUFFER_SIZE = 44100*2;
-uint16_t audiobuffer[AUDIOBUFFER_SIZE];
+
+
+static inline unsigned short *get_audio_buffer()
+{
+	return (unsigned short *)&((char *)hMapFilePtr)[GENERIC_MEMORY_ACCESS];
+}
 int audiobuffer_idx = 0;
 
 void SIG_FlushAudio()
 {
-	int nsamples = audiobuffer_idx;
-	
-	char* buf = (char *)hMapFilePtr;
-	memcpy(buf, audiobuffer, nsamples * 2);
-	//extra just in case we had to unexpectedly flush audio and then carry on with some other process... yeah, its rickety.
-
+	snesAudioFlushManaged(audiobuffer_idx);
 	audiobuffer_idx = 0;
-
-	snesAudioFlushManaged(nsamples);
 }
 
 //this is the raw callback from the emulator internals when a new audio sample is available
@@ -180,8 +169,8 @@ void snes_audio_sample(uint16_t left, uint16_t right)
 	if(audiobuffer_idx == AUDIOBUFFER_SIZE)
 		SIG_FlushAudio();
 
-	audiobuffer[audiobuffer_idx++] = left;
-	audiobuffer[audiobuffer_idx++] = right;
+	get_audio_buffer()[audiobuffer_idx++] = left;
+	get_audio_buffer()[audiobuffer_idx++] = right;
 }
 
 void snes_input_poll(void)
@@ -223,7 +212,7 @@ public:
 };
 
 typedef const char *(__cdecl *allocSharedMemory_t)(const char *name, int size);
-static std::map<void*,SharedMemoryBlock*> memHandleTable;
+std::map<void*, SharedMemoryBlock> memHandleTable;
 
 allocSharedMemory_t AllocSharedMemoryManaged;
 SNES_EXPORT void SetAllocSharedMemory(allocSharedMemory_t f)
@@ -248,9 +237,9 @@ void* implementation_snes_allocSharedMemory(const char *memtype, size_t amt)
 
 	auto ptr = MapViewOfFile(mapfile, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
 
-	auto smb = new SharedMemoryBlock();
-	smb->memtype = memtype;
-	smb->handle = mapfile;
+	auto smb = SharedMemoryBlock();
+	smb.memtype = memtype;
+	smb.handle = mapfile;
 
 	memHandleTable[ptr] = smb;
 
@@ -268,11 +257,13 @@ void* snes_allocSharedMemory(const char* memtype, size_t amt)
 void implementation_snes_freeSharedMemory(void *ptr)
 {
 	if(!ptr) return;
-	auto smb = memHandleTable.find(ptr)->second;
+	if (memHandleTable.count(ptr) == 0)
+		return;
+	auto smb = memHandleTable[ptr];
 	UnmapViewOfFile(ptr);
-	CloseHandle(smb->handle);
+	CloseHandle(smb.handle);
 	//printf("WritePipe(eMessage_SIG_freeSharedMemory);\n");
-	snesFreeSharedMemoryManaged(smb->memtype.c_str());
+	snesFreeSharedMemoryManaged(smb.memtype.c_str());
 }
 
 void snes_freeSharedMemory(void* ptr)
@@ -321,10 +312,6 @@ static void debug_op_nmi()
 static void debug_op_irq()
 {
 	// not supported yet
-}
-
-void HandleMessage_QUERY(eMessage msg)
-{
 }
 
 SNES_EXPORT void QUERY_enable_trace(bool state)

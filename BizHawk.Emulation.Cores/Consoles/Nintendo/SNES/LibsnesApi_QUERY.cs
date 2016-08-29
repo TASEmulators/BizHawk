@@ -188,15 +188,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
         
 		public void QUERY_set_trace_callback(snes_trace_t callback)
 		{
+            this.traceCallback = callback;
 			QUERY_enable_trace(callback != null);
 
 		}
 		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
 		{
+            this.scanlineStart = scanlineStart;
 			QUERY_enable_scanline(scanlineStart != null);
 		}
 		public void QUERY_set_audio_sample(snes_audio_sample_t audio_sample)
 		{
+            this.audio_sample = audio_sample;
 			QUERY_enable_audio(audio_sample != null);
 		}
 

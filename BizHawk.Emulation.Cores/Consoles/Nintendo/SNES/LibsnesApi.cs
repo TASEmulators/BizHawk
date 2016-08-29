@@ -66,6 +66,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate void DllInit(string ipcname);
 
+        //
+        // PLEASE SEARCH THE FOLLOWING IN THE OTHER SIDE OF THIS CODE TO 
+        // SEE WHAT TO CHANGE IF YOU CHANGE THE FOLLOWING!
+        // MAPPED_FILE_SECTION_SIZES
+        // 
+
+
+        const int MAPPED_GENERIC_MEMORY_ACCESS = 1024 * 1024;
+        const int MAPPED_AUDIOBUFFER_SIZE = 44100 * 2;
+
+        const int MAPPED_FILE_SIZE = MAPPED_GENERIC_MEMORY_ACCESS + MAPPED_AUDIOBUFFER_SIZE;
 
 		public LibsnesApi(string dllPath)
 		{
@@ -74,28 +85,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			var pipeName = InstanceName;
 
-			mmf = MemoryMappedFile.CreateNew(pipeName, 1024 * 1024);
+            mmf = MemoryMappedFile.CreateNew(pipeName, MAPPED_FILE_SIZE);
 			mmva = mmf.CreateViewAccessor();
 			mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref mmvaPtr);
             
 			instanceDll = new InstanceDll(dllPath);
 			DllInit dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
 			dllinit(pipeName);
+
 			InitCMDFunctions();
 			InitSigFunctions();
 			InitBrkFunctions();
 			InitQueryFunctions();
 		}
-		~LibsnesApi()
-		{
-			// This is now needed because of Dispose being called after all the objects 
-			// That we pass to the unmanaged code are garbage collected.
-			// It will crash if we do this in Dispose()
-			instanceDll.Dispose();
-		}
 
 		public void Dispose()
-		{   
+        {
+            instanceDll.Dispose();
 			mmva.Dispose();
 			mmf.Dispose();
 			foreach (var smb in DeallocatedMemoryBlocks.Values)

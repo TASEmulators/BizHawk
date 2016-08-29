@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			if (audio_sample != null)
 			{
-				ushort* audiobuffer = ((ushort*)mmvaPtr);
+				ushort* audiobuffer = (ushort*)(&mmvaPtr[MAPPED_GENERIC_MEMORY_ACCESS]);
 				for (int i = 0; i < nsamples;)
 				{
 					ushort left = audiobuffer[i++];
@@ -124,8 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					audio_sample(left, right);
 				}
 			}
-
-			return 0;
+            return 0;
 		}
 		int snesVideoRefresh(int w, int h, bool get)
 		{
