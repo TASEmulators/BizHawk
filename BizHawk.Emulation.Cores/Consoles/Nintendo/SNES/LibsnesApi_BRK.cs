@@ -1,53 +1,62 @@
 ﻿using System;
 
 using BizHawk.Common;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	unsafe partial class LibsnesApi
 	{
-		bool Handle_BRK(eMessage msg)
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void snesScanlineStart_t(int line);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void snesHook_t(uint addr);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void snesHookWrite_t(uint addr, byte value);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesScanlineStart_t(snesScanlineStart_t f);
+		SetSnesScanlineStart_t SetSnesScanlineStart;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesHookExec_t(snesHook_t f);
+		SetSnesHookExec_t SetSnesHookExec;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesHookWrite_t(snesHookWrite_t f);
+		SetSnesHookWrite_t SetSnesHookWrite;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesHookRead_t(snesHook_t f);
+		SetSnesHookRead_t SetSnesHookRead;
+
+		void snesScanlineStart(int line)
 		{
-			switch (msg)
-			{
-				default:
-					return false;
+			scanlineStart?.Invoke(line);
+		}
+		void snesHookExec(uint addr)
+		{
+			ExecHook(addr);
+		}
+		void snesHookRead(uint addr)
+		{
+			ReadHook(addr);
+		}
+		void snesHookWrite(uint addr, byte value)
+		{
+			WriteHook(addr, value);
+		}
 
-				case eMessage.eMessage_BRK_hook_exec:
-					{
-						var addr = brPipe.ReadInt32();
-						ExecHook((uint)addr);
-						break;
-					}
-				case eMessage.eMessage_BRK_hook_read:
-					{
-						var addr = brPipe.ReadInt32();
-						ReadHook((uint)addr);
-						break;
-					}
-				case eMessage.eMessage_BRK_hook_write:
-					{
-						var addr = brPipe.ReadInt32();
-						var value = brPipe.ReadByte();
-						WriteHook((uint)addr, value);
-						break;
-					}
-
-				//not supported yet
-				case eMessage.eMessage_BRK_hook_nmi:
-					break;
-				case eMessage.eMessage_BRK_hook_irq:
-					break;
-
-				case eMessage.eMessage_BRK_scanlineStart:
-					int line = brPipe.ReadInt32();
-					if (scanlineStart != null)
-						scanlineStart(line);
-					SPECIAL_Resume();
-					break;
-
-			} //switch(msg)
-			return true;
+		void InitBrkFunctions()
+		{
+			instanceDll.Retrieve(out SetSnesScanlineStart, "SetSnesScanlineStart");
+			instanceDll.Retrieve(out SetSnesHookExec, "SetSnesHookExec");
+			instanceDll.Retrieve(out SetSnesHookWrite, "SetSnesHookWrite");
+			instanceDll.Retrieve(out SetSnesHookRead, "SetSnesHookRead");
+			SetSnesScanlineStart(Keep<snesScanlineStart_t>(snesScanlineStart));
+			SetSnesHookExec(Keep<snesHook_t>(snesHookExec));
+			SetSnesHookWrite(Keep<snesHookWrite_t>(snesHookWrite));
+			SetSnesHookRead(Keep<snesHook_t>(snesHookRead));
 		}
 	}
 }

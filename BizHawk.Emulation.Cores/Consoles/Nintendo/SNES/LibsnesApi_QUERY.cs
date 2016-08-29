@@ -3,55 +3,142 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	unsafe partial class LibsnesApi
 	{
-		public string QUERY_library_id()
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_library_id);
-			return ReadPipeString();
-		}
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate string QUERY_library_id_t();
+		public QUERY_library_id_t QUERY_library_id;
 
-		public uint QUERY_library_revision_major()
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_library_revision_major);
-			return brPipe.ReadUInt32();
-		}
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate uint QUERY_library_revision_major_t();
+		public QUERY_library_revision_major_t QUERY_library_revision_major;
 
-		public uint QUERY_library_revision_minor()
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_library_revision_minor);
-			return brPipe.ReadUInt32();
-		}
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate uint QUERY_library_revision_minor_t();
+		public QUERY_library_revision_minor_t QUERY_library_revision_minor;
 
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate sbyte QUERY_snes_get_region_t();
+		public QUERY_snes_get_region_t QUERY_snes_get_region;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int QUERY_snes_get_memory_size_t(uint which);
+		public QUERY_snes_get_memory_size_t QUERY_snes_get_memory_size;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte QUERY_peek_t(uint id, uint addr);
+		public QUERY_peek_t QUERY_peek_managed;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_poke_t(uint id, uint addr, byte val);
+		public QUERY_poke_t QUERY_poke_managed;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_snes_set_layer_enable_t(int layer, int priority, bool enable);
+		public QUERY_snes_set_layer_enable_t QUERY_snes_set_layer_enable;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_set_state_hook_exec_t(bool enable);
+		public QUERY_set_state_hook_exec_t QUERY_set_state_hook_exec;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_set_state_hook_read_t(bool state);
+		public QUERY_set_state_hook_read_t QUERY_set_state_hook_read;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_set_state_hook_write_t(bool state);
+		public QUERY_set_state_hook_write_t QUERY_set_state_hook_write;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_enable_trace_t(bool state);
+		public QUERY_enable_trace_t QUERY_enable_trace;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_enable_audio_t(bool enable);
+		public QUERY_enable_audio_t QUERY_enable_audio;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate string QUERY_get_memory_id_t(uint which);
+		public QUERY_get_memory_id_t QUERY_get_memory_id;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_enable_scanline_t(bool enable);
+		public QUERY_enable_scanline_t QUERY_enable_scanline;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate int QUERY_peek_logical_register_t(int which);
+		public QUERY_peek_logical_register_t QUERY_peek_logical_register_managed;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_set_backdropColor_t(int col);
+		public QUERY_set_backdropColor_t QUERY_set_backdropColor;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate uint QUERY_snes_serialize_size_t();
+		public QUERY_snes_serialize_size_t QUERY_snes_serialize_size;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_set_color_lut_t(IntPtr blob);
+		public QUERY_set_color_lut_t QUERY_set_color_lut;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_peek_cpu_regs_t(CpuRegs* cpuregs);
+		public QUERY_peek_cpu_regs_t QUERY_peek_cpu_regs;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate void QUERY_set_cdl_t(int i, IntPtr block, int size);
+		public QUERY_set_cdl_t managed_QUERY_set_cdl;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		public delegate byte QUERY_get_mapper_t();
+		public QUERY_get_mapper_t managed_QUERY_get_mapper;
+
+		void InitQueryFunctions()
+		{
+			instanceDll.Retrieve(out QUERY_library_id, "QUERY_library_id");
+			instanceDll.Retrieve(out QUERY_library_revision_major, "QUERY_library_revision_major");
+			instanceDll.Retrieve(out QUERY_library_revision_minor, "QUERY_library_revision_minor");
+			instanceDll.Retrieve(out QUERY_snes_get_region, "QUERY_snes_get_region");
+			instanceDll.Retrieve(out QUERY_snes_get_memory_size, "QUERY_snes_get_memory_size");
+			instanceDll.Retrieve(out QUERY_peek_managed, "QUERY_peek");
+			instanceDll.Retrieve(out QUERY_poke_managed, "QUERY_poke");
+			instanceDll.Retrieve(out QUERY_snes_set_layer_enable, "QUERY_snes_set_layer_enable");
+			instanceDll.Retrieve(out QUERY_set_state_hook_exec, "QUERY_set_state_hook_exec");
+			instanceDll.Retrieve(out QUERY_set_state_hook_read, "QUERY_set_state_hook_read");
+			instanceDll.Retrieve(out QUERY_set_state_hook_write, "QUERY_set_state_hook_write");
+			instanceDll.Retrieve(out QUERY_enable_trace, "QUERY_enable_trace");
+			instanceDll.Retrieve(out QUERY_enable_audio, "QUERY_enable_audio");
+			instanceDll.Retrieve(out QUERY_get_memory_id, "QUERY_get_memory_id");
+			instanceDll.Retrieve(out QUERY_enable_scanline, "QUERY_enable_scanline");
+			instanceDll.Retrieve(out QUERY_peek_logical_register_managed, "QUERY_peek_logical_register");
+			instanceDll.Retrieve(out QUERY_set_backdropColor, "QUERY_set_backdropColor");
+			instanceDll.Retrieve(out QUERY_snes_serialize_size, "QUERY_snes_serialize_size");
+			instanceDll.Retrieve(out QUERY_set_color_lut, "QUERY_set_color_lut");
+			instanceDll.Retrieve(out QUERY_peek_cpu_regs, "QUERY_peek_cpu_regs");
+			instanceDll.Retrieve(out managed_QUERY_set_cdl, "QUERY_set_cdl");
+			instanceDll.Retrieve(out managed_QUERY_get_mapper, "QUERY_get_mapper");
+		}
+        
 		public SNES_REGION QUERY_get_region()
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_get_region);
-			return (SNES_REGION)brPipe.ReadByte();
+			return (SNES_REGION)QUERY_snes_get_region();
 		}
 
 		public SNES_MAPPER QUERY_get_mapper()
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_get_mapper);
-			return (SNES_MAPPER)brPipe.ReadByte();
+			return (SNES_MAPPER)managed_QUERY_get_mapper();
 		}
 
 		public int QUERY_get_memory_size(SNES_MEMORY id)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_get_memory_size);
-			bwPipe.Write((int)id);
-			bwPipe.Flush();
-			return brPipe.ReadInt32();
+			return QUERY_snes_get_memory_size((uint)id);
 		}
 
 		string QUERY_MemoryNameForId(SNES_MEMORY id)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_GetMemoryIdName);
-			bwPipe.Write((uint)id);
-			bwPipe.Flush();
-			return ReadPipeString();
+			return QUERY_get_memory_id((uint)id);
 		}
 
 		public byte* QUERY_get_memory_data(SNES_MEMORY id)
@@ -63,27 +150,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public byte QUERY_peek(SNES_MEMORY id, uint addr)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_peek);
-			bwPipe.Write((uint)id);
-			bwPipe.Write(addr);
-			bwPipe.Flush();
-			return brPipe.ReadByte();
+			return QUERY_peek_managed((uint)id, addr);
 		}
 		public void QUERY_poke(SNES_MEMORY id, uint addr, byte val)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_poke);
-			bwPipe.Write((uint)id);
-			bwPipe.Write(addr);
-			bwPipe.Write(val);
-			bwPipe.Flush();
+			QUERY_poke_managed((uint)id, addr, val);
 		}
+
 
 		public int QUERY_serialize_size()
 		{
 			for (; ; )
 			{
-				WritePipeMessage(eMessage.eMessage_QUERY_serialize_size);
-				int ret = brPipe.ReadInt32();
+				int ret = (int)QUERY_snes_serialize_size();
 				if (ret > 100)
 				{
 					return ret;
@@ -94,92 +173,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		int QUERY_poll_message()
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_poll_message);
-			return brPipe.ReadInt32();
+			return -1;
 		}
 
 		public bool QUERY_HasMessage { get { return QUERY_poll_message() != -1; } }
 
-
+		/*
 		public string QUERY_DequeueMessage()
 		{
 			WritePipeMessage(eMessage.eMessage_QUERY_dequeue_message);
 			return ReadPipeString();
-		}
-
-
-		public void QUERY_set_color_lut(IntPtr colors)
-		{
-			int len = 4 * 16 * 32768;
-			byte[] buf = new byte[len];
-			Marshal.Copy(colors, buf, 0, len);
-
-			WritePipeMessage(eMessage.eMessage_QUERY_set_color_lut);
-			WritePipeBlob(buf);
-		}
-
-		public void QUERY_set_state_hook_exec(bool state)
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_state_hook_exec);
-			bwPipe.Write(state);
-		}
-
-		public void QUERY_set_state_hook_read(bool state)
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_state_hook_read);
-			bwPipe.Write(state);
-		}
-
-		public void QUERY_set_state_hook_write(bool state)
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_state_hook_write);
-			bwPipe.Write(state);
-		}
-
+		}*/
+        
+        
 		public void QUERY_set_trace_callback(snes_trace_t callback)
 		{
-			this.traceCallback = callback;
-			WritePipeMessage(eMessage.eMessage_QUERY_enable_trace);
-			bwPipe.Write(callback != null);
-			bwPipe.Flush();
+			QUERY_enable_trace(callback != null);
+
 		}
 		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
 		{
-			this.scanlineStart = scanlineStart;
-			WritePipeMessage(eMessage.eMessage_QUERY_enable_scanline);
-			bwPipe.Write(scanlineStart != null);
-			bwPipe.Flush();
+			QUERY_enable_scanline(scanlineStart != null);
 		}
 		public void QUERY_set_audio_sample(snes_audio_sample_t audio_sample)
 		{
-			this.audio_sample = audio_sample;
-			WritePipeMessage(eMessage.eMessage_QUERY_enable_audio);
-			bwPipe.Write(audio_sample != null);
-			bwPipe.Flush();
+			QUERY_enable_audio(audio_sample != null);
 		}
 
 		public void QUERY_set_layer_enable(int layer, int priority, bool enable)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_set_layer_enable);
-			bwPipe.Write(layer);
-			bwPipe.Write(priority);
-			bwPipe.Write(enable);
-			bwPipe.Flush();
+			QUERY_snes_set_layer_enable(layer, priority, enable);
 		}
 
-		public void QUERY_set_backdropColor(int backdropColor)
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_set_backdropColor);
-			bwPipe.Write(backdropColor);
-			bwPipe.Flush();
-		}
-		
 		public int QUERY_peek_logical_register(SNES_REG reg)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_peek_logical_register);
-			bwPipe.Write((int)reg);
-			bwPipe.Flush();
-			return brPipe.ReadInt32();
+			return QUERY_peek_logical_register_managed((int)reg);
 		}
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -193,46 +221,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public const int SIZEOF = 32;
 		}
 
-		public unsafe void QUERY_peek_cpu_regs(out CpuRegs ret)
-		{
-			WritePipeMessage(eMessage.eMessage_QUERY_peek_cpu_regs);
-			//bwPipe.Flush();
-			byte[] temp = new byte[CpuRegs.SIZEOF];
-			brPipe.Read(temp, 0, CpuRegs.SIZEOF);
-			fixed(CpuRegs* ptr = &ret)
-				Marshal.Copy(temp, 0, new IntPtr(ptr), CpuRegs.SIZEOF);
-		}
 
 		public void QUERY_set_cdl(CodeDataLog cdl)
 		{
-			WritePipeMessage(eMessage.eMessage_QUERY_set_cdl);
 			if (cdl == null)
 			{
-				for(int i=0;i<4*2;i++)
-					WritePipePointer(IntPtr.Zero);
+
+				for (int i = 0; i < 4 * 2; i++)
+					managed_QUERY_set_cdl(i, IntPtr.Zero, 0);
 			}
 			else
 			{
-				WritePipePointer(cdl.GetPin("CARTROM"),false);
-				bwPipe.Write(cdl["CARTROM"].Length);
-
+				managed_QUERY_set_cdl(0, cdl.GetPin("CARTROM"), cdl["CARTROM"].Length);
+                
 				if (cdl.Has("CARTRAM"))
 				{
-					WritePipePointer(cdl.GetPin("CARTRAM"), false);
-					bwPipe.Write(cdl["CARTRAM"].Length);
+					managed_QUERY_set_cdl(1, cdl.GetPin("CARTRAM"), cdl["CARTRAM"].Length);
 				}
 				else
 				{
-					WritePipePointer(IntPtr.Zero);
-					WritePipePointer(IntPtr.Zero);
+					managed_QUERY_set_cdl(1, IntPtr.Zero, 0);
 				}
-				
-				WritePipePointer(cdl.GetPin("WRAM"));
-				bwPipe.Write(cdl["WRAM"].Length);
-				
-				WritePipePointer(cdl.GetPin("APURAM"), false);
-				bwPipe.Write(cdl["APURAM"].Length);
-				bwPipe.Flush();
+
+				managed_QUERY_set_cdl(2, cdl.GetPin("WRAM"), cdl["WRAM"].Length);
+
+				managed_QUERY_set_cdl(3, cdl.GetPin("APURAM"), cdl["APURAM"].Length);
 			}
 		}
 		

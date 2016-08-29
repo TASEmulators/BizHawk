@@ -53,6 +53,12 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll")]
 		static extern bool FreeLibrary(IntPtr hModule);
 
+		public void Retrieve<T>(out T outvar, string procName) where T : class
+		{
+			System.Delegate del = Marshal.GetDelegateForFunctionPointer(GetProcAddress(procName), typeof(T));
+			outvar = del as T;
+		}
+
 		public IntPtr GetProcAddress(string procName)
 		{
 			return GetProcAddress(_hModule, procName);

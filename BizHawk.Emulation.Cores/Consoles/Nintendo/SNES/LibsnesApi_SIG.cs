@@ -1,140 +1,172 @@
 ﻿using System;
 
 using BizHawk.Common;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	unsafe partial class LibsnesApi
 	{
-		bool Handle_SIG(eMessage msg)
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate string allocSharedMemory_t(string name, int size);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate int snesVideoRefresh_t(int w, int h, bool which);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate int snesAudioFlush_t(int nsamples);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void snesInputNotify_t(int index);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void snesFreeSharedMemory_t(string name);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate short snesInputState_t(int port, int device, int index, int id);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void snesTraceCallback_t(string trace);
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate string snesPathRequest_t(int slot, string hint);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetAllocSharedMemory_t(allocSharedMemory_t f);
+		SetAllocSharedMemory_t SetAllocSharedMemory;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesVideoRefresh_t(snesVideoRefresh_t f);
+		SetSnesVideoRefresh_t SetSnesVideoRefresh;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesAudioFlush_t(snesAudioFlush_t f);
+		SetSnesAudioFlush_t SetSnesAudioFlush;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesInputNotify_t(snesInputNotify_t f);
+		SetSnesInputNotify_t SetSnesInputNotify;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesFreeSharedMemory_t(snesFreeSharedMemory_t f);
+		SetSnesFreeSharedMemory_t SetSnesFreeSharedMemory;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesInputState_t(snesInputState_t f);
+		SetSnesInputState_t SetSnesInputState;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesTraceCallback_t(snesTraceCallback_t f);
+		SetSnesTraceCallback_t SetSnesTraceCallback;
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void SetSnesPathRequest_t(snesPathRequest_t f);
+		SetSnesPathRequest_t SetSnesPathRequest;
+
+		string snesPathRequest(int slot, string hint)
 		{
-			switch (msg)
+			string ret = hint;
+			if (pathRequest != null)
+				hint = pathRequest(slot, hint);
+			return hint;
+		}
+
+		void snesTraceCallback(string trace)
+		{
+			traceCallback?.Invoke(trace);
+		}
+		short snesInputState(int port, int device, int index, int id)
+		{
+			short ret = 0;
+			if (input_state != null)
+				ret = (short)input_state(port, device, index, id);
+			return ret;
+		}
+		void InitSigFunctions()
+		{
+			instanceDll.Retrieve(out SetAllocSharedMemory, "SetAllocSharedMemory");
+			SetAllocSharedMemory(Keep<allocSharedMemory_t>(allocSharedMemory));
+
+			instanceDll.Retrieve(out SetSnesVideoRefresh, "SetSnesVideoRefresh");
+			SetSnesVideoRefresh(Keep<snesVideoRefresh_t>(snesVideoRefresh));
+
+			instanceDll.Retrieve(out SetSnesAudioFlush, "SetSnesAudioFlush");
+			SetSnesAudioFlush(Keep<snesAudioFlush_t>(snesAudioFlush));
+
+			instanceDll.Retrieve(out SetSnesInputNotify, "SetSnesInputNotify");
+			SetSnesInputNotify(Keep<snesInputNotify_t>(snesInputNotify));
+
+			instanceDll.Retrieve(out SetSnesFreeSharedMemory, "SetSnesFreeSharedMemory");
+			SetSnesFreeSharedMemory(Keep<snesFreeSharedMemory_t>(snesFreeSharedMemory));
+
+			instanceDll.Retrieve(out SetSnesInputState, "SetSnesInputState");
+			SetSnesInputState(Keep<snesInputState_t>(snesInputState));
+
+			instanceDll.Retrieve(out SetSnesPathRequest, "SetSnesPathRequest");
+			SetSnesPathRequest(Keep<snesPathRequest_t>(snesPathRequest));
+
+			instanceDll.Retrieve(out SetSnesTraceCallback, "SetSnesTraceCallback");
+			SetSnesTraceCallback(Keep<snesTraceCallback_t>(snesTraceCallback));
+		}
+		void snesFreeSharedMemory(string name)
+		{
+			var smb = SharedMemoryBlocks[name];
+			DeallocatedMemoryBlocks[name] = smb;
+			SharedMemoryBlocks.Remove(name);
+		}
+		void snesInputNotify(int index)
+		{
+			input_notify?.Invoke(index);
+		}
+		int snesAudioFlush(int nsamples)
+		{
+			if (audio_sample != null)
 			{
-				default:
-					return false;
-				case eMessage.eMessage_SIG_video_refresh:
-					{
-						int width = brPipe.ReadInt32();
-						int height = brPipe.ReadInt32();
-						bwPipe.Write(0); //offset in mapped memory buffer
-						bwPipe.Flush();
-						brPipe.ReadBoolean(); //dummy synchronization
-						if (video_refresh != null)
-						{
-							video_refresh((int*)mmvaPtr, width, height);
-						}
-						break;
-					}
-				case eMessage.eMessage_SIG_input_poll:
-					break;
-				case eMessage.eMessage_SIG_input_state:
-					{
-						int port = brPipe.ReadInt32();
-						int device = brPipe.ReadInt32();
-						int index = brPipe.ReadInt32();
-						int id = brPipe.ReadInt32();
-						ushort ret = 0;
-						if (input_state != null)
-							ret = input_state(port, device, index, id);
-						bwPipe.Write(ret);
-						bwPipe.Flush();
-						break;
-					}
-				case eMessage.eMessage_SIG_input_notify:
-					{
-						int index = brPipe.ReadInt32();
-						if (input_notify != null)
-							input_notify(index);
-						break;
-					}
-				case eMessage.eMessage_SIG_audio_flush:
-					{
-						int nsamples = brPipe.ReadInt32();
-						bwPipe.Write(0); //location to store audio buffer in
-						bwPipe.Flush();
-						brPipe.ReadInt32(); //dummy synchronization
+				ushort* audiobuffer = ((ushort*)mmvaPtr);
+				for (int i = 0; i < nsamples;)
+				{
+					ushort left = audiobuffer[i++];
+					ushort right = audiobuffer[i++];
+					audio_sample(left, right);
+				}
+			}
 
-						if (audio_sample != null)
-						{
-							ushort* audiobuffer = ((ushort*)mmvaPtr);
-							for (int i = 0; i < nsamples; )
-							{
-								ushort left = audiobuffer[i++];
-								ushort right = audiobuffer[i++];
-								audio_sample(left, right);
-							}
-						}
+			return 0;
+		}
+		int snesVideoRefresh(int w, int h, bool get)
+		{
+			if (get)
+				return 0;
+			video_refresh?.Invoke((int*)mmvaPtr, w, h);
+			return 0;
+		}
+		string allocSharedMemory(string name, int size)
+		{
 
-						bwPipe.Write(0); //dummy synchronization
-						bwPipe.Flush();
-						brPipe.ReadInt32();  //dummy synchronization
-						break;
-					}
-				case eMessage.eMessage_SIG_path_request:
-					{
-						int slot = brPipe.ReadInt32();
-						string hint = ReadPipeString();
-						string ret = hint;
-						if (pathRequest != null)
-							hint = pathRequest(slot, hint);
-						WritePipeString(hint);
-						break;
-					}
-				case eMessage.eMessage_SIG_trace_callback:
-					{
-						var trace = ReadPipeString();
-						if (traceCallback != null)
-							traceCallback(trace);
-						break;
-					}
-				case eMessage.eMessage_SIG_allocSharedMemory:
-					{
-						var name = ReadPipeString();
-						var size = brPipe.ReadInt32();
+			if (SharedMemoryBlocks.ContainsKey(name))
+			{
+				throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + name);
+			}
 
-						if (SharedMemoryBlocks.ContainsKey(name))
-						{
-							throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + name);
-						}
+			//try reusing existing block; dispose it if it exists and if the size doesnt match
+			SharedMemoryBlock smb = null;
+			if (DeallocatedMemoryBlocks.ContainsKey(name))
+			{
+				smb = DeallocatedMemoryBlocks[name];
+				DeallocatedMemoryBlocks.Remove(name);
+				if (smb.Size != size)
+				{
+					smb.Dispose();
+					smb = null;
+				}
+			}
 
-						//try reusing existing block; dispose it if it exists and if the size doesnt match
-						SharedMemoryBlock smb = null;
-						if (DeallocatedMemoryBlocks.ContainsKey(name))
-						{
-							smb = DeallocatedMemoryBlocks[name];
-							DeallocatedMemoryBlocks.Remove(name);
-							if (smb.Size != size)
-							{
-								smb.Dispose();
-								smb = null;
-							}
-						}
+			//allocate a new block if we have to
+			if (smb == null)
+			{
+				smb = new SharedMemoryBlock();
+				smb.Name = name;
+				smb.Size = size;
+				smb.BlockName = InstanceName + smb.Name;
+				smb.Allocate();
+			}
+			SharedMemoryBlocks[smb.Name] = smb;
 
-						//allocate a new block if we have to
-						if (smb == null)
-						{
-							smb = new SharedMemoryBlock();
-							smb.Name = name;
-							smb.Size = size;
-							smb.BlockName = InstanceName + smb.Name;
-							smb.Allocate();
-						}
-
-						SharedMemoryBlocks[smb.Name] = smb;
-						WritePipeString(smb.BlockName);
-						break;
-					}
-				case eMessage.eMessage_SIG_freeSharedMemory:
-					{
-						string name = ReadPipeString();
-						var smb = SharedMemoryBlocks[name];
-						DeallocatedMemoryBlocks[name] = smb;
-						SharedMemoryBlocks.Remove(name);
-						break;
-					}
-			} //switch(msg)
-			
-			return true;
+			return smb.BlockName;
 		}
 	}
 }

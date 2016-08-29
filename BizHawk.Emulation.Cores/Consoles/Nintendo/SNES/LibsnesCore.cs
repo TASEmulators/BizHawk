@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				BinaryWriter bw = new BinaryWriter(ms);
 				bw.Write(CoreSaveState());
 				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
-				// hack: write fake dummy controller info
+								// hack: write fake dummy controller info
 				bw.Write(new byte[536]);
 				bw.Close();
 				savestatebuff = ms.ToArray();
@@ -177,10 +177,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void SetCDL(CodeDataLog cdl)
 		{
-			if(currCdl != null) currCdl.Unpin();
+			if (currCdl != null) currCdl.Unpin();
 			currCdl = cdl;
-			if(currCdl != null) currCdl.Pin();
-			
+			if (currCdl != null) currCdl.Pin();
+
 			//set it no matter what. if its null, the cdl will be unhooked from libsnes internally
 			api.QUERY_set_cdl(currCdl);
 		}
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			cdl["APURAM"] = new byte[MemoryDomains["APURAM"].Size];
 
 			cdl.SubType = "SNES";
-			cdl.SubVer = 0;			
+			cdl.SubVer = 0;
 		}
 
 		public void DisassembleCDL(Stream s, CodeDataLog cdl)
@@ -245,17 +245,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CpuRegs regs;
-			api.QUERY_peek_cpu_regs(out regs);
+			api.QUERY_peek_cpu_regs(&regs);
 
-			bool fn = (regs.p & 0x80)!=0;
-			bool fv = (regs.p & 0x40)!=0;
-			bool fm = (regs.p & 0x20)!=0;
-			bool fx = (regs.p & 0x10)!=0;
-			bool fd = (regs.p & 0x08)!=0;
-			bool fi = (regs.p & 0x04)!=0;
-			bool fz = (regs.p & 0x02)!=0;
-			bool fc = (regs.p & 0x01)!=0;
-			
+			bool fn = (regs.p & 0x80) != 0;
+			bool fv = (regs.p & 0x40) != 0;
+			bool fm = (regs.p & 0x20) != 0;
+			bool fx = (regs.p & 0x10) != 0;
+			bool fd = (regs.p & 0x08) != 0;
+			bool fi = (regs.p & 0x04) != 0;
+			bool fz = (regs.p & 0x02) != 0;
+			bool fc = (regs.p & 0x01) != 0;
+
 			return new Dictionary<string, RegisterValue>
 			{
 				{ "PC", regs.pc },
@@ -398,7 +398,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// TODO: get them out of the core split up and remove this hackery
 			string splitStr = "A:";
-
+			
 			var split = msg.Split(new[] {splitStr }, 2, StringSplitOptions.None);
 
 			Tracer.Put(new TraceInfo
@@ -439,7 +439,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
-			api.SPECIAL_Resume();
 		}
 		void ExecHook(uint addr)
 		{
@@ -447,7 +446,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
-			api.SPECIAL_Resume();
 		}
 		void WriteHook(uint addr, byte val)
 		{
@@ -455,7 +453,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
-			api.SPECIAL_Resume();
 		}
 
 		LibsnesApi.snes_scanlineStart_t scanlineStart_cb;
@@ -632,16 +629,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			api.MessageCounter = 0;
-
-			if(Settings.UseRingBuffer)
-				api.BeginBufferIO();
 
 			/* if the input poll callback is called, it will set this to false
-			 * this has to be done before we save the per-frame state in deterministic
-			 * mode, because in there, the core actually advances, and might advance
-			 * through the point in time where IsLagFrame gets set to false.  makes sense?
-			 */
+				* this has to be done before we save the per-frame state in deterministic
+				* mode, because in there, the core actually advances, and might advance
+				* through the point in time where IsLagFrame gets set to false.  makes sense?
+				*/
 
 			IsLagFrame = true;
 
@@ -697,16 +690,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			timeFrameCounter++;
 			api.CMD_run();
 
-			while (api.QUERY_HasMessage)
-				Console.WriteLine(api.QUERY_DequeueMessage());
-
 			if (IsLagFrame)
 				LagCount++;
-
-			//diagnostics for IPC traffic
-			//Console.WriteLine(api.MessageCounter);
-
-			api.EndBufferIO();
 		}
 
 		void RefreshMemoryCallbacks(bool suppress)
@@ -797,7 +782,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			var ret = new byte[size];
-			Marshal.Copy((IntPtr)buf, ret, 0, size);
+			for (var i = 0; i < size; i++)
+				ret[i] = buf[i];
 			return ret;
 		}
 
@@ -815,7 +801,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (size == 0) return;
 			if (size != data.Length) throw new InvalidOperationException("Somehow, we got a mismatch between saveram size and what bsnes says the saveram size is");
 			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			Marshal.Copy(data, 0, (IntPtr)buf, size);
+			for (var i = 0; i < size; i++)
+				data[i] = buf[i];
 		}
 
 		public void ResetCounters()
@@ -846,7 +833,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				this.def = def;
 			}
 
-			WorkingDictionary<string, float> buttons = new WorkingDictionary<string,float>();
+			WorkingDictionary<string, float> buttons = new WorkingDictionary<string, float>();
 
 			/// <summary>
 			/// invalid until CopyFrom has been called
@@ -881,7 +868,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					buttons.Add(k, v);
 				}
 			}
-			
+
 			/// <summary>
 			/// this controller's definition changes to that of source
 			/// </summary>
@@ -909,7 +896,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				buttons[button] = 1.0f;
 			}
-			
+
 			public bool this[string button]
 			{
 				get { return buttons[button] != 0; }
@@ -1156,7 +1143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		unsafe void MakeFakeBus()
 		{
-			int size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.WRAM);
+			int size = (int)api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.WRAM);
 			if (size != 0x20000)
 				throw new InvalidOperationException();
 
@@ -1184,7 +1171,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// ----- Client Debugging API stuff -----
 		unsafe MemoryDomain MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian, int byteSize = 1)
 		{
-			int size = api.QUERY_get_memory_size(id);
+			int size = (int)api.QUERY_get_memory_size(id);
 			int mask = size - 1;
 			bool pow2 = Util.IsPowerOfTwo(size);
 
@@ -1196,7 +1183,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			MemoryDomain md;
 
-			if(id == LibsnesApi.SNES_MEMORY.OAM)
+			if (id == LibsnesApi.SNES_MEMORY.OAM)
 			{
 				//OAM is actually two differently sized banks of memory which arent truly considered adjacent. 
 				//maybe a better way to visualize it is with an empty bus and adjacent banks
@@ -1232,7 +1219,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				var romDomain = new MemoryDomainByteArray("SGB CARTROM", MemoryDomain.Endian.Little, romData, true, 1);
 				_memoryDomains.Add(romDomain);
-		
 				//the last 1 byte of this is special.. its an interrupt enable register, instead of ram. weird. maybe its actually ram and just getting specially used?
 				MakeMemoryDomain("SGB HRAM", LibsnesApi.SNES_MEMORY.SGB_HRAM, MemoryDomain.Endian.Little);
 

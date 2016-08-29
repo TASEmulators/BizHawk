@@ -11,6 +11,7 @@ svnrev.cs
 **/Debug/**
 **/ipch/**
 
+*.VC.db
 *.ilk
 *.tlog
 *.obj
