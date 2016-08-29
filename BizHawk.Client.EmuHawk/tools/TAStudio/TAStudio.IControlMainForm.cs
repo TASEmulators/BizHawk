@@ -79,14 +79,14 @@ namespace BizHawk.Client.EmuHawk
 		public bool Rewind()
 		{
 			// copypasted from TasView_MouseWheel(), just without notch logic
-			if (GlobalWin.MainForm.IsSeeking)
+			if (Mainform.IsSeeking)
 			{
-				GlobalWin.MainForm.PauseOnFrame--;
+				Mainform.PauseOnFrame--;
 				// that's a weird condition here, but for whatever reason it works best
-				if (Emulator.Frame >= GlobalWin.MainForm.PauseOnFrame)
+				if (Emulator.Frame >= Mainform.PauseOnFrame)
 				{
-					GlobalWin.MainForm.PauseEmulator();
-					GlobalWin.MainForm.PauseOnFrame = null;
+					Mainform.PauseEmulator();
+					Mainform.PauseOnFrame = null;
 					StopSeeking();
 					GoToPreviousFrame();
 				}

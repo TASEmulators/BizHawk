@@ -62,9 +62,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (_autoRestorePaused == null)
 				{
-					_autoRestorePaused = GlobalWin.MainForm.EmulatorPaused;
-					if (GlobalWin.MainForm.IsSeeking) // If seeking, do not shorten seek.
-						_autoRestoreFrame = GlobalWin.MainForm.PauseOnFrame;
+					_autoRestorePaused = Mainform.EmulatorPaused;
+					if (Mainform.IsSeeking) // If seeking, do not shorten seek.
+						_autoRestoreFrame = Mainform.PauseOnFrame;
 				}
 
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
@@ -77,10 +77,10 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			_seekStartFrame = Emulator.Frame;
-			GlobalWin.MainForm.PauseOnFrame = frame.Value;
-			int? diff = GlobalWin.MainForm.PauseOnFrame - _seekStartFrame;
+			Mainform.PauseOnFrame = frame.Value;
+			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
 
-			GlobalWin.MainForm.UnpauseEmulator();
+			Mainform.UnpauseEmulator();
 
 			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.VisibleRows)
 				_seekBackgroundWorker.RunWorkerAsync();
@@ -151,7 +151,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (columnName == CursorColumnName)
 			{
-				if (index == Emulator.Frame && index == GlobalWin.MainForm.PauseOnFrame)
+				if (index == Emulator.Frame && index == Mainform.PauseOnFrame)
 				{
 					bitmap = TasView.HorizontalOrientation ?
 						ts_v_arrow_green_blue :
@@ -224,11 +224,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			TasMovieRecord record = CurrentTasMovie[index];
 
-			if (GlobalWin.MainForm.IsSeeking && GlobalWin.MainForm.PauseOnFrame == index)
+			if (Mainform.IsSeeking && Mainform.PauseOnFrame == index)
 			{
 				color = CurrentFrame_InputLog;
 			}
-			else if (!GlobalWin.MainForm.IsSeeking && Emulator.Frame == index)
+			else if (!Mainform.IsSeeking && Emulator.Frame == index)
 			{
 				color = CurrentFrame_InputLog;
 			}
@@ -401,17 +401,17 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Middle)
 			{
-				if (GlobalWin.MainForm.EmulatorPaused)
+				if (Mainform.EmulatorPaused)
 				{
 					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
 					if (!record.Lagged.HasValue && LastPositionFrame > Global.Emulator.Frame)
 						StartSeeking(LastPositionFrame);
 					else
-						GlobalWin.MainForm.UnpauseEmulator();
+						Mainform.UnpauseEmulator();
 				}
 				else
 				{
-					GlobalWin.MainForm.PauseEmulator();
+					Mainform.PauseEmulator();
 				}
 				return;
 			}
@@ -466,11 +466,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else // User changed input
 				{
-					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
+					bool wasPaused = Mainform.EmulatorPaused;
 
 					if (Emulator.Frame > frame || CurrentTasMovie.LastValidFrame > frame)
 					{
-						if (wasPaused && !GlobalWin.MainForm.IsSeeking && !CurrentTasMovie.LastPositionStable)
+						if (wasPaused && !Mainform.IsSeeking && !CurrentTasMovie.LastPositionStable)
 						{
 							LastPositionFrame = Emulator.Frame;
 							CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
@@ -550,7 +550,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// taseditor behavior
 					if (!wasPaused)
-						GlobalWin.MainForm.UnpauseEmulator();
+						Mainform.UnpauseEmulator();
 				}
 			}
 			else if (e.Button == System.Windows.Forms.MouseButtons.Right)
@@ -670,15 +670,15 @@ namespace BizHawk.Client.EmuHawk
 				if (notch > 1)
 					notch *= 2;
 
-				// warning: tastudio rewind hotket/button logic is copypasted from here!
-				if (GlobalWin.MainForm.IsSeeking && !GlobalWin.MainForm.EmulatorPaused)
+				// warning: tastudio rewind hotkey/button logic is copypasted from here!
+				if (Mainform.IsSeeking && !Mainform.EmulatorPaused)
 				{
-					GlobalWin.MainForm.PauseOnFrame -= notch;
+					Mainform.PauseOnFrame -= notch;
 					// that's a weird condition here, but for whatever reason it works best
-					if (notch > 0 && Global.Emulator.Frame >= GlobalWin.MainForm.PauseOnFrame)
+					if (notch > 0 && Global.Emulator.Frame >= Mainform.PauseOnFrame)
 					{
-						GlobalWin.MainForm.PauseEmulator();
-						GlobalWin.MainForm.PauseOnFrame = null;
+						Mainform.PauseEmulator();
+						Mainform.PauseOnFrame = null;
 						StopSeeking();
 						GoToFrame(Emulator.Frame - notch);
 					}
