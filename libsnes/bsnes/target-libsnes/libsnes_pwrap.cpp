@@ -162,11 +162,13 @@ void SIG_FlushAudio()
 {
 	int nsamples = audiobuffer_idx;
 	
-	char* buf = (char *)hMapFilePtr + (snesAudioFlushManaged(nsamples));
+	char* buf = (char *)hMapFilePtr;
 	memcpy(buf, audiobuffer, nsamples * 2);
 	//extra just in case we had to unexpectedly flush audio and then carry on with some other process... yeah, its rickety.
 
 	audiobuffer_idx = 0;
+
+	snesAudioFlushManaged(nsamples);
 }
 
 //this is the raw callback from the emulator internals when a new audio sample is available
