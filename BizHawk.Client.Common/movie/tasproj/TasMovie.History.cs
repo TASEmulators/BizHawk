@@ -335,6 +335,8 @@ namespace BizHawk.Client.Common
 			var minuend = Math.Min(lastFrame + 1, movie.InputLogLength);
 			if (firstFrame > minuend)
 				undoLength = minuend;
+			else if (firstFrame == minuend)
+				undoLength = Math.Max(lastFrame + 1, movie.InputLogLength) - firstFrame;
 			else
 				undoLength = minuend - firstFrame;
 
