@@ -221,7 +221,8 @@ namespace BizHawk.Client.EmuHawk.ToolExtensions
 			}
 			else
 			{
-				var result = MessageBox.Show("Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+				// ensure topmost, not to have to minimize everything to see and use our modal window, if it somehow got covered
+				var result = MessageBox.Show(new Form(){TopMost = true},"Could not open " + path + "\nRemove from list?", "File not found", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
 				if (result == DialogResult.Yes)
 				{
 					if (encodedPath != null)
