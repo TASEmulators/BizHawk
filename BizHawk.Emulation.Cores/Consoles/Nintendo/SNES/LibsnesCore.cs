@@ -613,16 +613,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					//potentially do this twice, if we need to line double
 					if (i == 1 && !lineDouble) break;
-
+					
 					int bonus = i * vidWidth + xbonus;
-					for (int y = 0; y < height; y++)
-						for (int x = 0; x < width; x++)
-						{
-							int si = y * srcPitch + x + srcStart;
-							int di = y * vidWidth * yskip + x * xskip + bonus;
-							int rgb = data[si];
-							vidBuffer[di] = rgb;
-						}
+					int dy_incr = vidWidth * yskip;
+
+					for (int y = 0, sy = srcStart, dy = bonus; y < height; y++, dy += dy_incr, sy += srcPitch)
+						for (int x = 0, dx = dy, sx = sy; x < width; x++, dx += xskip, sx++)
+							vidBuffer[dx] = data[sx];
+
 				}
 			}
 		}
@@ -1190,9 +1188,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				//so, we just throw away everything above its size of 544 bytes
 				if (size != 544) throw new InvalidOperationException("oam size isnt 544 bytes.. wtf?");
 				md = new MemoryDomainDelegate(name, size, endian,
-				   (addr) => (addr < 544) ? blockptr[addr] : (byte)0x00,
-					 (addr, value) => { if (addr < 544) blockptr[addr] = value; },
-					 byteSize);
+					(addr) => (addr < 544) ? blockptr[addr] : (byte)0x00,
+						(addr, value) => { if (addr < 544) blockptr[addr] = value; },
+						byteSize);
 			}
 			else if(pow2)
 				md = new MemoryDomainDelegate(name, size, endian,

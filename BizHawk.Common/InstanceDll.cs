@@ -8,6 +8,10 @@ namespace BizHawk.Common
 	{
 		public InstanceDll(string dllPath)
 		{
+			// debugging symbols
+#if false
+			_hModule = LoadLibrary(dllPath);
+#else
 			//copy the dll to a temp directory
 			var path = TempFileCleaner.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dllPath)),".dll",false);
 			using (var stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None))
@@ -31,6 +35,7 @@ namespace BizHawk.Common
 			{
 				Environment.SetEnvironmentVariable("PATH", envpath, EnvironmentVariableTarget.Process);
 			}
+#endif
 		}
 
 		[Flags]

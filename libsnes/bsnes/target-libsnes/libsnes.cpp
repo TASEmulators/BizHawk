@@ -51,9 +51,9 @@ struct Interface : public SNES::Interface {
     for(unsigned y = 0; y < height; y++) {
       const uint32_t *sp = data + y * pitch;
       uint32_t *dp = buffer + y * pitch;
-      for(unsigned x = 0; x < width; x++) {
-        *dp++ = palette[*sp++];
-      }
+	  for (unsigned x = 0; x < width; x++) {
+          *dp++ = palette[*sp++];
+	  }
     }
 
     if(pvideo_refresh) pvideo_refresh(buffer, width, height);

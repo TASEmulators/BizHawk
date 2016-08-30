@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate string allocSharedMemory_t(string name, int size);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate int snesVideoRefresh_t(int w, int h, bool which);
+		delegate int snesVideoRefresh_t(int* data, int w, int h, bool which);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate int snesAudioFlush_t(int nsamples);
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -124,13 +124,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					audio_sample(left, right);
 				}
 			}
-            return 0;
+			return 0;
 		}
-		int snesVideoRefresh(int w, int h, bool get)
+		int snesVideoRefresh(int* data, int w, int h, bool get)
 		{
 			if (get)
 				return 0;
-			video_refresh?.Invoke((int*)mmvaPtr, w, h);
+			video_refresh?.Invoke(data, w, h);
 			return 0;
 		}
 		string allocSharedMemory(string name, int size)

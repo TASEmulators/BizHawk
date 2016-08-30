@@ -34,7 +34,7 @@
 #include <string>
 #include <vector>
 
-typedef int(__cdecl *snesVideoRefresh_t)(int w, int h, bool get);
+typedef int(__cdecl *snesVideoRefresh_t)(const uint32_t *data,int w, int h, bool get);
 snesVideoRefresh_t snesVideoRefreshManaged;
 
 typedef int(__cdecl *snesAudioFlush_t)(int nsamples);
@@ -130,12 +130,7 @@ static bool running = false;
 
 void snes_video_refresh(const uint32_t *data, unsigned width, unsigned height)
 {	
-	int destOfs = 
-		snesVideoRefreshManaged(width, height, true);
-	char* buf = (char*)hMapFilePtr + destOfs;
-	int bufsize = 512 * 480 * 4;
-	memcpy(buf, data, bufsize);
-	snesVideoRefreshManaged(width, height, false);
+	snesVideoRefreshManaged(data, width, height, false);
 }
 
 bool audio_en = false;
