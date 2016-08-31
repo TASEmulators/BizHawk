@@ -44,17 +44,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int mode = addr & 3;
 			int prg_high = value & 0x3F;
 			bool prg_low = value.Bit(7);
-			int prg_low_val = prg_low ? 1 : 0;
+			int prg_low_val = 0;
+			if (mode==2)
+				prg_low_val = prg_low ? 1 : 0;
 			bool mirror = value.Bit(6);
-			SetMirrorType(mirror ? EMirrorType.Horizontal : EMirrorType.Vertical);
+			SetMirrorType(!mirror ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 			switch(mode)
 			{
 				case 0:
 					prg_banks_8k[0] = (byte)((prg_high * 2 + 0) ^ prg_low_val);
 					prg_banks_8k[1] = (byte)((prg_high * 2 + 1) ^ prg_low_val);
-					prg_banks_8k[2] = (byte)((prg_high * 2 + 2) ^ prg_low_val);
-					prg_banks_8k[3] = (byte)((prg_high * 2 + 3) ^ prg_low_val);
+					prg_high = prg_high | 0x01;
+					prg_banks_8k[2] = (byte)((prg_high * 2 + 0) ^ prg_low_val);
+					prg_banks_8k[3] = (byte)((prg_high * 2 + 1) ^ prg_low_val);
 					break;
 				case 1:
 					prg_banks_8k[0] = (byte)((prg_high*2+0) ^ prg_low_val);
