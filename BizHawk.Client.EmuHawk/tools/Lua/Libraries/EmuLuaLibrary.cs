@@ -94,6 +94,14 @@ namespace BizHawk.Client.EmuHawk
 			EmulatorLuaLibrary.YieldCallback = EmuYield;
 		}
 
+		public void Restart()
+		{
+			foreach (var lib in Libraries)
+			{
+				ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, lib.Value);
+			}
+		}
+
 		public LuaDocumentation Docs { get; private set; }
 		public bool IsRunning { get; set; }
 		public EventWaitHandle LuaWait { get; private set; }

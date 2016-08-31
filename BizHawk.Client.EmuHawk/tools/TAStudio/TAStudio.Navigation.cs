@@ -43,10 +43,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame == Emulator.Frame + 1) // We are at the end of the movie and advancing one frame, therefore we are recording, simply emulate a frame
 				{
-					bool wasPaused = GlobalWin.MainForm.EmulatorPaused;
-					GlobalWin.MainForm.FrameAdvance();
+					bool wasPaused = Mainform.EmulatorPaused;
+					Mainform.FrameAdvance();
 					if (!wasPaused)
-						GlobalWin.MainForm.UnpauseEmulator();
+						Mainform.UnpauseEmulator();
 				}
 				else
 				{

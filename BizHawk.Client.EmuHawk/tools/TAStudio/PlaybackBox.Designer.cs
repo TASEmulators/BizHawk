@@ -126,7 +126,9 @@
 			this.FrameAdvanceButton.TabIndex = 3;
 			this.FrameAdvanceButton.Text = ">";
 			this.FrameAdvanceButton.UseVisualStyleBackColor = true;
-			this.FrameAdvanceButton.Click += new System.EventHandler(this.FrameAdvanceButton_Click);
+			this.FrameAdvanceButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FrameAdvanceButton_MouseDown);
+			this.FrameAdvanceButton.MouseLeave += new System.EventHandler(this.FrameAdvanceButton_MouseLeave);
+			this.FrameAdvanceButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.FrameAdvanceButton_MouseUp);
 			// 
 			// PauseButton
 			// 
@@ -148,7 +150,9 @@
 			this.RewindButton.TabIndex = 1;
 			this.RewindButton.Text = "<";
 			this.RewindButton.UseVisualStyleBackColor = true;
-			this.RewindButton.Click += new System.EventHandler(this.RewindButton_Click);
+			this.RewindButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RewindButton_MouseDown);
+			this.RewindButton.MouseLeave += new System.EventHandler(this.RewindButton_MouseLeave);
+			this.RewindButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RewindButton_MouseUp);
 			// 
 			// PreviousMarkerButton
 			// 
