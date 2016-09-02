@@ -57,9 +57,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (delay > 0)
 				{
+					
 					delay--;
-					if(delay==0)
+					if(delay==0 && irq_pending)
 						board.IRQSignal = true;
+
 				}
 			}
 		}
@@ -187,11 +189,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4002:
 					if (!pal16) break;
-					mmc3.WritePRG(0x6000, value);
+					mmc3.WritePRG(0x6001, value);
 					break;
 				case 0x4003:
 					if (!pal16) break;
-					mmc3.WritePRG(0x6001, value);
+					mmc3.WritePRG(0x6000, value);
 					break;
 
 				case 0x6000:

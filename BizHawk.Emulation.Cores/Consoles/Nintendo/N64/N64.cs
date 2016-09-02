@@ -138,8 +138,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();
-			ConnectTracer();
 			RefreshMemoryCallbacks();
+			if (_syncSettings.Core != N64SyncSettings.CoreType.Dynarec)
+				ConnectTracer();
 
 			api.AsyncExecuteEmulator();
 
@@ -216,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			RefreshMemoryCallbacks();
 
-			if (Tracer.Enabled)
+			if (Tracer != null && Tracer.Enabled)
 			{
 				api.setTraceCallback(_tracecb);
 			}

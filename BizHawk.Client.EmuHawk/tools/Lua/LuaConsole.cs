@@ -135,6 +135,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
+			// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
+			if (IsRebootingCore)
+			{
+				LuaImp.Restart();
+				return;
+			}
+
 			if (LuaImp != null && LuaImp.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
 			{
 				LuaImp.GuiLibrary.DrawFinish();

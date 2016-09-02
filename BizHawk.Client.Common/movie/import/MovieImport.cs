@@ -199,6 +199,8 @@ namespace BizHawk.Client.Common
 				errorMsg = except.ToString();
 			}
 
+			m.Filename += "." + BkmMovie.Extension;
+
 			return m;
 		}
 

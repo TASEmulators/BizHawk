@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					irq_pending = true;
 					SyncIRQ();
-				}
+				} 
 			}
 		}
 
@@ -251,6 +251,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (irq_countdown == 0)
 				{
 					ClockIRQ();
+					if (irq_mode==true)
+						irq_countdown = 12;
 				}
 			}
 		}
