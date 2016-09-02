@@ -2513,6 +2513,7 @@ FB38A1284013AB4E2480A1AADCEC9400D3A63A1D	 	Super Mario Advance 4 - Super Mario 3
 532F3307021637474B6DD37DA059CA360F612337	!	Super Mario Advance 4 - Super Mario Bros. 3 (USA, Australia) (Rev 1)	GBA		flashSize=131072;saveType=3
 B7F3D6DC014E2F0DDC996137BDEFBB8167A77E66	 	Super Mario Advance 4 - Super Mario Bros. 3 (Europe) (En,Fr,De,Es,It)	GBA		flashSize=131072;saveType=3
 69E81F41394F02D64CAD206ADB26B3CD43690770	 	Super Mario Advance 4 - Super Mario Bros. 3 (USA)	GBA		flashSize=131072;saveType=3
+DD2879329EC52BD5372F26B75297A67F1A81215A	!	Super Mario Advance 4 - Super Mario Bros. 3 (USA VC)	GBA		flashSize=131072;saveType=3
 2E5CE11A893464DC0CCE0A6B451580BA35A7E5DE	 	Super Mario Advance 4 - Super Mario Bros. 3 (Europe) (En,Fr,De,Es,It) (Rev 1)	GBA		flashSize=131072;saveType=3
 D53FBC63E08C15BFDC045B5664FE24E8E2718469	!	Super Mario Ball (Europe)	GBA		
 3BAA3735AED4CFC6C7C5A157E7EA0285AC40B1EF	 	Super Mario Ball (Japan)	GBA		
