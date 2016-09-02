@@ -1,5 +1,206 @@
 =========================================
-1.11.5 (in progress)
+1.11.7
+=========================================
+
+* NesHawk
+** Numerous accuracy improvements, passes many more accuracy tests now
+*** See [EmulatorResources/NESAccuracyTests|Accuracy Tests] for more details
+** Fix Micro Machines
+** Fix Time Lord
+** Fix Saint Seiya
+** Correctly boot all the HVC-SNROM Board ROMs now.
+** Support UNIF DripGame http://www.qmtpro.com/~nes/drip/
+** Fix shaking in Little Ninja Bros (E)
+** Support SNES controllers
+** VRC2 - only support V\H miorring - fixes wai wai world issue
+** Mapper 011 - fix mirroring on some boards
+
+* Atari 2600
+** Major core overhaul that includes many accuracy improvements, bug fixes, sound improvmeents, timing improvements, and game compatibility
+** Fixes compumate mapper
+** implement mapper m4A50
+** Add sega mapper mod
+** Pick the correct mapper for Tapper and Congo Bongo based off SHA1 hash
+
+* Saturn
+** Trace Logger support
+
+* PSX
+** Trace Logger support
+** Patch for "Fantastic Pinball Kyutenkai" lockup (not likely to affect sync but could in principle)
+
+* N64
+** Trace Logger support (Interpreter/Pure Interpreter core type only)
+** Implement memory execute callbacks (Interpreter/Pure Interpreter core type only)
+** Fix crash & memory leak when opening hex editor with the N64 core loaded
+
+* SNES
+** Fix crash when advancing after tracer was disabled
+** System Bus map has been extended to read mapped ROM space
+** Fix SNES trace logging to not lose information
+
+* SMSHawk
+** Overscan display option
+
+* Genesis
+** Improve disassembler
+** Fix bug in genesis z80 CDL that made addresses in mirrored z80 ram region crash
+** Output and input hex values in Settings
+
+* GBA
+** Add SRAM memdomain to both VBANext and mGBA
+** mGBA - fix bug where hard reset caused memorydomains to get permanently wrecked
+
+* Coleco
+** Add Venture to list of no skips
+
+* PCEHawk
+** Don't crash when loading PCE-CD and SGX games 
+** Fix PCE-CD virtual pads
+
+* Wonderswan
+** Support settings to change colors
+
+* EmuHawk
+** Make direct3d9 prereq check non-fatal and make d3d display method initialization fail non-fatal, falling back to gdi+
+** D3D display method - survive ctrl+alt+del (fix #522)
+** Fix flashes of garbage while changing vsync toggle (includes when fast-forwarding) on D3D display method
+** Fix crashes when sending fullscreen windows to other monitors sometimes
+** Fix deleting recent roms when missing
+** Fix #615 - Garbage on the screen when starting paused with d3d
+** Don't allow user to add more then 2 GB/GBC ROMs into the Bundler (#472)
+** Fix the Apple IIe being labeled as PlayStation in the title
+** Ram Tools - fix usability issues with negative numbers (#669)
+** Ram Search - fix for unhandled exception when entering . in to the specific address box
+** Allow independent sound volume control during Fast-Forward and Rewind
+** Lua
+*** Fix #595 - movie.getinput() exception, and movie.mode() confusion
+*** Remove background color parameter from gui.text() function
+*** Lua text - display trailing spaces
+*** Fix regressions in lua's support for UTF-8 strings
+*** Add gui.DrawFinish() which will let you choose when to finish drawing; and add optional argument to gui.DrawNew which when set to false lets you keep it from being cleared
+** Movie subtitles
+*** Trim trailing spaces
+*** Sort by frame and then by Y pos (to properly order multiline subs)
+*** Concat multilines (optionally) on export
+*** Option to skip color tag on export
+** Tastudio
+*** Recording mode (works with TAStudio checkbox and global ReadOnly hotkey)
+*** Autosave and backup features
+*** Option to set the gap between states to be saved to .tasproj
+*** Overhaul of seek and restore logic: navigation seeking no longer resets Restore frame
+*** Make < and > PlaybackBox buttons act identically to FrameAdvance and Rewind hotkeys
+*** Properly set input while unpaused
+*** Fix all errors related to doing actions while seeking and saving
+*** Replace Saving progressbar with hourglass cursor and status bar report
+*** Fix N64 crash that happened when capturing states
+*** Fix #515 again - TAStudio ignores ClientSettings.json
+*** Allow 2 more digits for FramesPrompt
+*** Fix #597 - Selecting a lot of frames + Copying throws an error
+*** Fix crash when pasting input beyond movie length
+*** Set SeekingCutoffInterval to VisibleRows
+*** Set ScrollSpeed to 6
+*** Fix rerecord counting
+*** Ability to load .tasproj with corrupted GreenZone
+*** Hide more columns by default (GBA, PSX)
+*** Optimize column width
+*** Ignore InputRoll hotkeys and numeric branch hotkeys during float editing mode
+*** bk2 export: stop endlessly appending extensions
+*** Stop recording marker history edits to history
+*** Unpausing with the Pause hotkey ignores seek frame
+*** Make Rewind hotkey work the same as outside TAStudio (step'n'run)
+*** "Esc" key cancels seeking
+*** Global hotkeys for AutoRestore, TurboSeek, FollowCursor, Insert/Delete/Clone/Clear
+*** Option to trigger AutoRestore on MouseDown
+*** Show user text instead of timestamp in BranchView
+*** Fix #672 - Not Showing Analog Up, Down, Left, Right for N64
+*** Don't pass Ctrl+C hotkey to MainForm
+*** Stop copying nothing on Cut command
+*** Stop seeking when movie stops
+*** Fix to how Undo/Redo works with recording frames
+** Trace Logger
+*** Log file segmentation
+*** Spacing unification for all cores
+*** Fix GB trace logger
+*** Fix logging to window and saving to file
+*** File->Save Log menu item in Trace Logger window
+*** Fix an unhandled exception when saving a log from the window
+*** Fixed the bug where if a tracelog line contains more than one "[", everything after the second [ will be mistakenly thrown out
+** Debugger
+*** Add address mask setting for breakpoints
+*** Indicate breakpoint hit
+** Code-Data Logger
+*** Add auto-start and auto-save to CDL
+*** Fix copypaste bug in GB for some games with large cartram
+*** support GB link
+** VirtualPads
+*** Fix polar coord when center is non-zero
+*** Fix automation of virtualpad analogsticks from movie playback
+
+=========================================
+1.11.6
+=========================================
+
+* Genesis
+** Disassembler support
+** Trace Logger support
+** Sprite Layer toggles, and custom backdrop color
+** Add "M68K BUS" and "S68K BUS" domains
+** Capture Sega CD flag in movie files
+** Enable low-pass filter
+
+* Atari2600
+** Double and quad size players are now correctly delayed an extra pixel.
+** Added an R to the State output to indicate when the RDY signal is false.
+** Use the RDY flag to halt the CPU instead of a loop in the TIA.
+
+* mGBA
+** Capture SRAM in savestates, ALL PREVIOUS SAVESTATES are now incompatible
+** Update to the latest mGBA
+** Layer toggle
+
+* Saturn
+** fix bug in GLManager causing yabause in opengl mode to not work unless frameadvancing
+
+* TI-83
+** Implement Trace Logger
+
+* Colecovision
+** Implement Trace Logger
+
+* EmuHawk
+** Fix ramwatch crashing bug involving core reboots and watchlist hanging on to stale emulator instances
+** Hex Editor - fix exception when pressing "Ok" on the "Go to Address" input prompt in the Hex Editor with an empty string
+** GameShark tool - layout improvements
+** Make Screenshot Raw to Clipboard and Screenshot Client to Clipboard into configurable hotkeys instead of hardcoded shortcut keys in the menu items
+** Cheats - comparison type column
+** Lua
+*** add emu.disassemble(uint pc, string name)
+*** Set file watchers on lua session autoload
+*** Better auto-complete for Sublime Text 2
+*** Call the lua loadstate callback before redrawing the screen and other updates
+** Trace Logger
+*** Capture headers in log files
+*** Separate Disassmbly and Registers in separate columns
+*** Remember column widths
+*** Add an Open button
+*** Use .log extention (allows extension based user syntax highlight)
+** Debugger
+*** Don't update when unpaused. only update PC when we really need it.
+*** Add a Run button
+*** Registers - format reg names on launch, smarter spacing.
+*** Return address in hex when copying.
+*** Fix how Seek To determines the PC register
+*** Update when maximized
+** Multi-disk bundler
+*** Fix ROM path generation
+*** Add a remove button
+** TAStudio
+*** Fix some savestate bugs
+*** Don't allow saving while saving.
+
+=========================================
+1.11.5
 =========================================
 
 *GBA

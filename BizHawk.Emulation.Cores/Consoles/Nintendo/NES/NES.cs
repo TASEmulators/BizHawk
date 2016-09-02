@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	[CoreAttributes(
 		"NesHawk",
-		"zeromus, natt, adelikat",
+		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
 		isReleased: true
 		)]

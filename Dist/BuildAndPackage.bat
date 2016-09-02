@@ -44,7 +44,7 @@ rmdir /s /q temp\lua
 rmdir /s /q temp\firmware
 
 rmdir /s /q gitsucks
-git --git-dir ../.git archive --format zip --output lua.zip master output/Lua
+git --git-dir ../.git archive --format zip --output lua.zip master Assets/Lua
 git --git-dir ../.git archive --format zip --output firmware.zip master output/Firmware
 rem Getting externaltools example from my repo
 rem I once talked about a dedicated repo for external tools, think about moving the exemple to it it it happend
@@ -54,7 +54,7 @@ rmdir /s /q  HelloWorld_BizHawkTool
 
 unzip lua.zip -d gitsucks
 rem del lua.zip
-move gitsucks\output\Lua temp
+move gitsucks\Assets\Lua temp
 unzip Firmware.zip -d gitsucks
 rem del firmware.zip
 move gitsucks\output\Firmware temp
