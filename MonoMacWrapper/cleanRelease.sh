@@ -1,12 +1,8 @@
 cd bin/Release/BizHawk.app/Contents/MonoBundle/
-rm -rf `find . -type d -name .svn`
 rm dll/libgambatte.dll 
 rm dll/libco_msvc_win32.dll 
 rm dll/libspeexdsp.dll 
 rm dll/ffmpeg.exe 
-rm 7z.dll 
-rm SlimDX.dll
-rm LuaInterface.dll 
 rm dll/ffmpeg_readme.txt 
 rm zip.exe
 rm dll/libmeteor.dll
@@ -39,7 +35,6 @@ rm dll/libvbanext.dll
 rm dll/bizswan.dll
 rm dll/d3d8.dll
 rm liblua5.1.dylib
-rm lua51.dll
 rm dll/Jabo_Direct3D8_patched.dll
 rm dll/bizlynx.dll
 rm dll/libbizsnes.dll
@@ -47,7 +42,6 @@ rm dll/libpng12.dll
 rm dll/lua51.dll
 rm dll/octoshock.dll
 rm dll/openal32.dll
-rm GongShell.dll
 rm dll/mgba.dll
 rm dll/Virtu.dll
 rm dll/gpgx.elf
