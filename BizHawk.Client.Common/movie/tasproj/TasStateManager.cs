@@ -326,7 +326,7 @@ namespace BizHawk.Client.Common
 
 			for (int i = from; i < upTo; i++)
 			{
-				if (_movie[i].Lagged == null)
+				if (_movie[i].Lagged == false)
 					return false;
 			}
 
