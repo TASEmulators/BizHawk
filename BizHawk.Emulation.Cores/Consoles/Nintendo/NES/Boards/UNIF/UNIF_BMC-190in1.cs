@@ -3,7 +3,7 @@ using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public class UNIF_BMC_190in1 : NES.NESBoardBase
+	public sealed class UNIF_BMC_190in1 : NES.NESBoardBase
 	{
 		private int _reg;
 
