@@ -73,6 +73,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESControlSettings Controls = new NESControlSettings();
 
+			public List<byte> InitialWRamStatePattern = new List<byte>
+			{
+				0, 0, 0, 0, 255, 255, 255, 255
+			};
+
 			public NESSyncSettings Clone()
 			{
 				var ret = (NESSyncSettings)MemberwiseClone();

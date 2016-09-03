@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -223,9 +222,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// apu has some specific power up bahaviour that we will emulate here
 			apu.NESHardReset();
 
-			//check fceux's PowerNES and FCEU_MemoryRand function for more information:
-			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
-			for(int i=0;i<0x800;i++) if((i&4)!=0) ram[i] = 0xFF; else ram[i] = 0x00;
+			
+			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
+			{
+				for (int i = 0; i < 0x800; i++)
+				{
+					ram[i] = SyncSettings.InitialWRamStatePattern[i % SyncSettings.InitialWRamStatePattern.Count];
+				}
+			}
+			else
+			{
+				// check fceux's PowerNES and FCEU_MemoryRand function for more information:
+				// relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
+				for (int i = 0; i < 0x800; i++)
+				{
+					if ((i & 4) != 0)
+					{
+						ram[i] = 0xFF;
+					}
+					else
+					{
+						ram[i] = 0x00;
+					}
+				}
+			}
 
 			SetupMemoryDomains();
 
