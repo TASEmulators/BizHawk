@@ -1428,8 +1428,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (CurrentCell == null)
+				return;
+
 			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
 			{
+				if (CurrentCell.Column.Name == "CursorColumn" && IsPaintDown)
+					return;
+
 				// copypaste from OnMouseMove()
 				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
 				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
