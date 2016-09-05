@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// state
 		byte reg0 = 0;
 		byte reg1 = 0xff;
-		int prg = 15;
+		int prg = 0;
 		byte security = 0;
 		bool trigger = false;
 		bool strobe = true;

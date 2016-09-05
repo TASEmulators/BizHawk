@@ -4052,7 +4052,7 @@ EXPORT void CALL SetExecuteCallback(void (*CB)(unsigned int))
 	executeCB = CB;
 }
 
-EXPORT void CALL SetTraceCallback(void (*CB)(unsigned int))
+EXPORT void CALL SetTraceCallback(void (*CB)(void))
 {
 	traceCB = CB;
 }
