@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 		public override void RecordFrame(int frame, IController source)
 		{
 			if (frame != 0)
-				ChangeLog.AddGeneralUndo(frame, frame, "Record Frame: " + frame);
+				ChangeLog.AddGeneralUndo(frame -1, frame -1, "Record Frame: " + frame);
 
 			base.RecordFrame(frame, source);
 
@@ -60,6 +60,7 @@ namespace BizHawk.Client.Common
 
 			ChangeLog.SetGeneralRedo();
 		}
+
 		public void SetFrame(int frame, string source)
 		{
 			ChangeLog.AddGeneralUndo(frame, frame, "Set Frame At: " + frame);
@@ -112,6 +113,7 @@ namespace BizHawk.Client.Common
 			if (endBatch)
 				ChangeLog.EndBatch();
 		}
+
 		public void RemoveFrames(int[] frames)
 		{
 			if (frames.Any())
@@ -152,6 +154,7 @@ namespace BizHawk.Client.Common
 					ChangeLog.EndBatch();
 			}
 		}
+
 		public void RemoveFrames(int removeStart, int removeUpTo, bool fromHistory = false)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch("Remove Frames: " + removeStart + "-" + removeUpTo, true);
@@ -216,6 +219,7 @@ namespace BizHawk.Client.Common
 			if (endBatch)
 				ChangeLog.EndBatch();
 		}
+
 		public void InsertInput(int frame, IEnumerable<string> inputLog)
 		{
 			bool endBatch = ChangeLog.BeginNewBatch("Insert Frame: " + frame, true);
@@ -245,6 +249,7 @@ namespace BizHawk.Client.Common
 			if (endBatch)
 				ChangeLog.EndBatch();
 		}
+
 		public void InsertInput(int frame, IEnumerable<IController> inputStates)
 		{
 			// ChangeLog is done in the InsertInput call.
@@ -344,6 +349,7 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator.Frame < _log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
 				this.SwitchToPlay();
 		}
+
 		public void ToggleBoolState(int frame, string buttonName)
 		{
 			if (frame >= _log.Count) // Insert blank frames up to this point
@@ -381,6 +387,7 @@ namespace BizHawk.Client.Common
 				ChangeLog.AddBoolToggle(frame, buttonName, old, "Set " + buttonName + "(" + (val ? "On" : "Off") + "): " + frame);
 			}
 		}
+
 		public void SetBoolStates(int frame, int count, string buttonName, bool val)
 		{
 			if (frame + count >= _log.Count) // Insert blank frames up to this point
@@ -432,6 +439,7 @@ namespace BizHawk.Client.Common
 				ChangeLog.AddFloatChange(frame, buttonName, old, val, "Set " + buttonName + "(" + val + "): " + frame);
 			}
 		}
+
 		public void SetFloatStates(int frame, int count, string buttonName, float val)
 		{
 			if (frame + count >= _log.Count) // Insert blank frames up to this point

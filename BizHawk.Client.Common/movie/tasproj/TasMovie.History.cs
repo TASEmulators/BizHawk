@@ -13,6 +13,7 @@ namespace BizHawk.Client.Common
 		public List<string> Names;
 		public int UndoIndex = -1;
 		int _maxSteps = 100;
+
 		public int MaxSteps
 		{
 			get { return _maxSteps; }
@@ -30,8 +31,8 @@ namespace BizHawk.Client.Common
 		}
 
 		private int _totalSteps = 0;
-
 		private bool RecordingBatch = false;
+
 		/// <summary>
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
 		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of 
@@ -39,6 +40,7 @@ namespace BizHawk.Client.Common
 		public bool IsRecording = true;
 
 		public TasMovie Movie;
+
 		public TasMovieChangeLog(TasMovie movie)
 		{
 			History = new List<List<IMovieAction>>();
@@ -60,6 +62,7 @@ namespace BizHawk.Client.Common
 			if (History.Count == 0)
 				RecordingBatch = false;
 		}
+
 		private void TruncateLog(int from)
 		{
 			History.RemoveRange(from, History.Count - from);
@@ -103,6 +106,7 @@ namespace BizHawk.Client.Common
 
 			return ret;
 		}
+
 		/// <summary>
 		/// Ends the current undo batch. Future changes will be one undo each.
 		/// If not already recording a batch, does nothing.
@@ -145,6 +149,7 @@ namespace BizHawk.Client.Common
 
 			return PreviousUndoFrame;
 		}
+
 		/// <summary>
 		/// Redoes the most recent undo, if any exist.
 		/// </summary>
@@ -194,6 +199,7 @@ namespace BizHawk.Client.Common
 				return History[UndoIndex + 1].Min(a => a.FirstFrame);
 			}
 		}
+
 		public int PreviousRedoFrame
 		{
 			get
@@ -209,6 +215,7 @@ namespace BizHawk.Client.Common
 		}
 
 		#region "Change History"
+
 		private bool AddMovieAction(string name)
 		{
 			if (UndoIndex + 1 != History.Count)
@@ -237,6 +244,7 @@ namespace BizHawk.Client.Common
 
 			return ret;
 		}
+
 		public void SetName(string name)
 		{
 			Names[Names.Count - 1] = name;
@@ -244,6 +252,7 @@ namespace BizHawk.Client.Common
 
 		// TODO: These probably aren't the best way to handle undo/redo.
 		private int lastGeneral;
+
 		public void AddGeneralUndo(int first, int last, string name = "", bool force = false)
 		{
 			if (IsRecording || force)
@@ -253,6 +262,7 @@ namespace BizHawk.Client.Common
 				lastGeneral = History.Last().Count - 1;
 			}
 		}
+
 		public void SetGeneralRedo(bool force = false)
 		{
 			if (IsRecording || force)
@@ -305,6 +315,7 @@ namespace BizHawk.Client.Common
 	}
 
 	#region "Classes"
+
 	public interface IMovieAction
 	{
 		void Undo(TasMovie movie);
@@ -331,23 +342,14 @@ namespace BizHawk.Client.Common
 			FirstFrame = firstFrame;
 			LastFrame = lastFrame;
 			oldLog = new List<string>(length);
-
-			var minuend = Math.Min(lastFrame + 1, movie.InputLogLength);
-			if (firstFrame > minuend)
-				undoLength = minuend;
-			else if (firstFrame == minuend)
-				undoLength = Math.Max(lastFrame + 1, movie.InputLogLength) - firstFrame;
-			else
-				undoLength = minuend - firstFrame;
-
-			if (FirstFrame > oldLog.Count())
-				FirstFrame = oldLog.Count();
+			undoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
 
 			for (int i = 0; i < undoLength; i++)
 				oldLog.Add(movie.GetLogEntries()[FirstFrame + i]);
 
 			bindMarkers = movie.BindMarkersToInput;
 		}
+
 		public void SetRedoLog(TasMovie movie)
 		{
 			redoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
@@ -374,6 +376,7 @@ namespace BizHawk.Client.Common
 			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = bindMarkers;
 		}
+
 		public void Redo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -433,6 +436,7 @@ namespace BizHawk.Client.Common
 				movie.Markers.Get(LastFrame).Message = oldMessage;
 			}
 		}
+
 		public void Redo(TasMovie movie)
 		{
 			if (FirstFrame == -1) // Action: Place marker
@@ -462,6 +466,7 @@ namespace BizHawk.Client.Common
 			FirstFrame = frame;
 			buttonName = button;
 		}
+
 		public MovieActionFrameEdit(int frame, string button, float oldS, float newS)
 		{
 			oldState = oldS;
@@ -483,6 +488,7 @@ namespace BizHawk.Client.Common
 
 			movie.ChangeLog.IsRecording = wasRecording;
 		}
+
 		public void Redo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -517,6 +523,7 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < endFrame - startFrame + 1; i++)
 				oldState.Add(movie.BoolIsPressed(startFrame + i, button) ? 1 : 0);
 		}
+
 		public MovieActionPaint(int startFrame, int endFrame, string button, float newS, TasMovie movie)
 		{
 			newState = newS;
@@ -548,6 +555,7 @@ namespace BizHawk.Client.Common
 
 			movie.ChangeLog.IsRecording = wasRecording;
 		}
+
 		public void Redo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -601,6 +609,7 @@ namespace BizHawk.Client.Common
 			movie.ChangeLog.IsRecording = wasRecording;
 			movie.BindMarkersToInput = bindMarkers;
 		}
+
 		public void Redo(TasMovie movie)
 		{
 			bool wasRecording = movie.ChangeLog.IsRecording;
@@ -623,5 +632,6 @@ namespace BizHawk.Client.Common
 			movie.BindMarkersToInput = bindMarkers;
 		}
 	}
+
 	#endregion
 }
