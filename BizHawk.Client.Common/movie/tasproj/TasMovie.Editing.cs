@@ -268,10 +268,15 @@ namespace BizHawk.Client.Common
 
 		public void CopyOverInput(int frame, IEnumerable<IController> inputStates)
 		{
-			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, "Copy Over Input: " + frame);
-
+			ChangeLog.BeginNewBatch("Copy Over Input: " + frame);
 			var lg = LogGeneratorInstance();
 			var states = inputStates.ToList();
+
+			if (_log.Count < states.Count + frame)
+				ExtendMovieForEdit(states.Count + frame - _log.Count);
+
+			ChangeLog.AddGeneralUndo(frame, frame + inputStates.Count() - 1, "Copy Over Input: " + frame);
+
 			for (int i = 0; i < states.Count; i++)
 			{
 				if (_log.Count <= frame + i)
@@ -280,6 +285,7 @@ namespace BizHawk.Client.Common
 				_log[frame + i] = lg.GenerateLogEntry();
 			}
 
+			ChangeLog.EndBatch();
 			Changes = true;
 			InvalidateAfter(frame);
 
