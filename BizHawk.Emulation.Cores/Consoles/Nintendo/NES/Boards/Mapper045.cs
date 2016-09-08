@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				regs[cur_reg] = value;
 				IncrementCounter();
 				Sync45();
-			}
+				}
 		}
 
 		private void Sync45()
@@ -94,37 +94,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int CHR_AND()
 		{
-			switch (regs[2] & 0x0F)
+			
+			if (regs[2]==0)
 			{
-				default:
-				case 0:
-				case 1:
-				case 2:
-				case 3:
-				case 4:
-				case 5:
-				case 6:
-				case 7:
-					return 0x00;
-				case 8:
-					return 0x01;
-				case 9:
-				case 0xA:
-				case 0xB:
-				case 0xC:
-				
-				case 0xD:
-					return 0x3F;
-				case 0xE:
-					return 0x7F;
-				case 0xF:
-					return 0xFF;
-			}
+				return 0xFF;
+			} 
+			return (0xFF >> ~((regs[2] & 0x0F)|0xF0));
 		}
 
 		private int CHR_OR()
 		{
-			int x = regs[0] | ((regs[2] >> 4) << 8);
+			int temp = regs[2] >> 4;
+			temp = temp << 8;
+
+			int x = regs[0] | (temp);
 			return x;
 		}
 
