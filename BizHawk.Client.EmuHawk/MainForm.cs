@@ -2866,11 +2866,14 @@ namespace BizHawk.Client.EmuHawk
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
 					GlobalWin.Tools.TAStudio.LastPositionFrame == Global.Emulator.Frame)
 				{
-					TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Global.Emulator.Frame];
-					if (!record.Lagged.HasValue && IsSeeking)
-						// haven't yet greenzoned the frame, hence it's after editing
-						// then we want to pause here. taseditor fasion
-						PauseEmulator();
+					if (PauseOnFrame.Value <= GlobalWin.Tools.TAStudio.LastPositionFrame)
+					{
+						TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Global.Emulator.Frame];
+						if (!record.Lagged.HasValue && IsSeeking)
+							// haven't yet greenzoned the frame, hence it's after editing
+							// then we want to pause here. taseditor fasion
+							PauseEmulator();
+					}
 				}
 
 				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
