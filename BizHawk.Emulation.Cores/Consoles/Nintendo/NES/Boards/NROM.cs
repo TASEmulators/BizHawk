@@ -69,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-FAMILYBASIC":
 					// we don't emulate the controller, so this won't work
 					AssertPrg(32); AssertChr(8); AssertWram(2, 4);
+					NES._iskeyboard = true;
 					break;
 
 				default:
