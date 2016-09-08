@@ -109,6 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveAsTas(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
+			ClearLeftMouseStates();
 			var filename = CurrentTasMovie.Filename;
 			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{

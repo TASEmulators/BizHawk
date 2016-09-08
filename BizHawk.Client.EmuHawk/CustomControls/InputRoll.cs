@@ -1016,6 +1016,38 @@ namespace BizHawk.Client.EmuHawk
 		// TODO add query callback of whether to select the cell or not
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
+			{
+				// copypaste from OnMouseMove()
+				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
+				{
+					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+				}
+				newCell.RowIndex += FirstVisibleRow;
+				if (newCell.RowIndex < 0)
+					newCell.RowIndex = 0;
+
+				if (!newCell.Equals(CurrentCell))
+				{
+					CellChanged(newCell);
+
+					if (IsHoveringOnColumnCell ||
+						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
+					{
+						Refresh();
+					}
+					else if (_columnDown != null)
+					{
+						Refresh();
+					}
+				}
+				else if (_columnDown != null)
+				{
+					Refresh();
+				}
+			}
+
 			if (e.Button == MouseButtons.Left)
 			{
 				if (IsHoveringOnColumnCell)
@@ -1430,41 +1462,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (CurrentCell == null)
 				return;
-
-			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
-			{
-				if (CurrentCell.Column.Name == "CursorColumn" && IsPaintDown)
-					return;
-
-				// copypaste from OnMouseMove()
-				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
-				{
-					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
-				}
-				newCell.RowIndex += FirstVisibleRow;
-				if (newCell.RowIndex < 0)
-					newCell.RowIndex = 0;
-
-				if (!newCell.Equals(CurrentCell))
-				{
-					CellChanged(newCell);
-
-					if (IsHoveringOnColumnCell ||
-						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
-					{
-						Refresh();
-					}
-					else if (_columnDown != null)
-					{
-						Refresh();
-					}
-				}
-				else if (_columnDown != null)
-				{
-					Refresh();
-				}
-			}
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
