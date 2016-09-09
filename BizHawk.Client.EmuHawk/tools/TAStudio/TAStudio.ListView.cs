@@ -737,7 +737,7 @@ namespace BizHawk.Client.EmuHawk
 				endVal = e.OldCell.RowIndex.Value;
 			}
 
-			if (_startCursorDrag)
+			if (_startCursorDrag && !Mainform.IsSeeking)
 			{
 				if (e.NewCell.RowIndex.HasValue)
 				{
