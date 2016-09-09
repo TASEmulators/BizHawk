@@ -94,7 +94,9 @@ namespace BizHawk.Client.EmuHawk
 				TastudioRecordMode();
 				_wasRecording = false;
 			}
-			RefreshDialog();
+
+			if (CurrentTasMovie != null)
+				RefreshDialog();
 		}
 
 		public bool FloatEditingMode

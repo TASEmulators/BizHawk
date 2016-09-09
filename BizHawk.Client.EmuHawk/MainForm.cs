@@ -2866,7 +2866,8 @@ namespace BizHawk.Client.EmuHawk
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
 					GlobalWin.Tools.TAStudio.LastPositionFrame == Global.Emulator.Frame)
 				{
-					if (PauseOnFrame.Value <= GlobalWin.Tools.TAStudio.LastPositionFrame)
+					if (PauseOnFrame.HasValue &&
+						PauseOnFrame.Value <= GlobalWin.Tools.TAStudio.LastPositionFrame)
 					{
 						TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Global.Emulator.Frame];
 						if (!record.Lagged.HasValue && IsSeeking)
