@@ -326,9 +326,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4088:
 					// write twice into virtual 64 unit buffer
-					Buffer.BlockCopy(modtable, 2, modtable, 0, 62);
-					modtable[62] = (byte)(value & 7);
-					modtable[63] = (byte)(value & 7);
+					//Buffer.BlockCopy(modtable, 2, modtable, 0, 62);
+					modtable[modtablepos] = (byte)(value & 7);
+					modtablepos++;
+					modtablepos &= 63;
+					modtable[modtablepos] = (byte)(value & 7);
+					modtablepos++;
+					modtablepos &= 63;
 					break;
 				case 0x4089:
 					switch (value & 3)
