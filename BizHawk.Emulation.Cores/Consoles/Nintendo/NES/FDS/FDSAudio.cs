@@ -146,6 +146,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int latchedoutput;
 
+		int temp_convert;//for conversion to one's complement only
+
 		Action<int> SendDiff;
 
 		public FDSAudio(Action<int> SendDiff)
@@ -248,10 +250,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 6: sweepbias -= 2; break;
 						case 7: sweepbias -= 1; break;
 					}
-					sweepbias &= 0x7f;
+
+					// we need to make this a signed integer in ONES' COMPLEMENT format
+					// C# is 2's complement, so let's do it manually
+					if (sweepbias>63)
+					{
+						temp_convert = sweepbias - 63;
+						sweepbias = (-63) + temp_convert - 1;
+					} else if (sweepbias<-63)
+					{
+						temp_convert = (-sweepbias) - 63;
+						sweepbias = 63 - temp_convert + 1;
+					}
+					//sweepbias &= 0x7f;
 					// sign extend
-					sweepbias <<= 25;
-					sweepbias >>= 25;
+					//sweepbias <<= 25;
+					//sweepbias >>= 25;
 					modtablepos &= 63;
 					CalcMod();
 				}
@@ -284,10 +298,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4080:
 					r4080_6 = (value & 0x40) != 0;
 					r4080_7 = (value & 0x80) != 0;
+					volumeclock = 0;
+					volumespd = value & 63;
 					if (r4080_7) // envelope is off, so written value gets sent to gain directly
-						volumegain = value & 63;
-					else // envelope is on; written value is speed of change
-						volumespd = value & 63;
+						volumegain = value & 63;	
 					break;
 				case 0x4082:
 					frequency &= 0xf00;
@@ -298,18 +312,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					frequency |= value << 8 & 0xf00;
 					r4083_6 = (value & 0x40) != 0;
 					r4083_7 = (value & 0x80) != 0;
+					if (r4083_7)
+						waverampos = 0;
+					if (r4083_6)
+					{
+						volumeclock = 0;
+						sweepclock = 0;
+					}
 					break;
 				case 0x4084:
 					sweepspd = value & 63;
 					r4084_6 = (value & 0x40) != 0;
 					r4084_7 = (value & 0x80) != 0;
+					sweepclock = 0;
+					if (r4084_7)
+						sweepgain = value & 63;
 					break;
 				case 0x4085:
-					//modtablepos = 0; // this doesn't happen, ever!!
 					sweepbias = value & 0x7f;
-					// sign extend
-					sweepbias <<= 25;
-					sweepbias >>= 25;
+					// we need to make this a signed integer in ONES' COMPLEMENT format
+					// C# is 2's complement, so let's do it manually
+					if ((value&0x40)==0x40)
+					{
+						sweepbias = sweepbias & 0x3f;
+						sweepbias = (-1) * (63 - sweepbias);
+					}
+
+					Console.WriteLine(value & 0x7F);
+					Console.WriteLine(sweepbias);
 					break;
 				case 0x4086:
 					modfreq &= 0xf00;
@@ -326,7 +356,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4088:
 					// write twice into virtual 64 unit buffer
-					//Buffer.BlockCopy(modtable, 2, modtable, 0, 62);
 					modtable[modtablepos] = (byte)(value & 7);
 					modtablepos++;
 					modtablepos &= 63;
