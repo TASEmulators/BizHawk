@@ -146,8 +146,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int latchedoutput;
 
-		int temp_convert;//for conversion to one's complement only
-
 		Action<int> SendDiff;
 
 		public FDSAudio(Action<int> SendDiff)
@@ -245,27 +243,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 1: sweepbias += 1; break;
 						case 2: sweepbias += 2; break;
 						case 3: sweepbias += 4; break;
-						case 4: sweepbias = 0; break;
+						case 4: sweepbias += 0; break;
 						case 5: sweepbias -= 4; break;
 						case 6: sweepbias -= 2; break;
 						case 7: sweepbias -= 1; break;
 					}
-
-					// we need to make this a signed integer in ONES' COMPLEMENT format
-					// C# is 2's complement, so let's do it manually
-					if (sweepbias>63)
-					{
-						temp_convert = sweepbias - 63;
-						sweepbias = (-63) + temp_convert - 1;
-					} else if (sweepbias<-63)
-					{
-						temp_convert = (-sweepbias) - 63;
-						sweepbias = 63 - temp_convert + 1;
-					}
-					//sweepbias &= 0x7f;
 					// sign extend
-					//sweepbias <<= 25;
-					//sweepbias >>= 25;
+					sweepbias <<= 25;
+					sweepbias >>= 25;
+
 					modtablepos &= 63;
 					CalcMod();
 				}
@@ -289,7 +275,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x4080)
 			{
 				if (waveram_writeenable)
-					// can waverampos ever be reset?
 					waveram[addr - 0x4040] = (byte)(value & 63);
 				return;
 			}
@@ -330,16 +315,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x4085:
 					sweepbias = value & 0x7f;
-					// we need to make this a signed integer in ONES' COMPLEMENT format
-					// C# is 2's complement, so let's do it manually
-					if ((value&0x40)==0x40)
-					{
-						sweepbias = sweepbias & 0x3f;
-						sweepbias = (-1) * (63 - sweepbias);
-					}
 
-					Console.WriteLine(value & 0x7F);
-					Console.WriteLine(sweepbias);
+					// sign extend
+					sweepbias <<= 25;
+					sweepbias >>= 25;
 					break;
 				case 0x4086:
 					modfreq &= 0xf00;
@@ -353,15 +332,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					r4087_7 = (value & 0x80) != 0;
 					if (r4087_7 || modfreq == 0) // when mod unit is disabled, mod output is fixed to 0, not hanging
 						modoutput = 0;
+					if (r4087_7)
+						modclock = 0;
 					break;
 				case 0x4088:
 					// write twice into virtual 64 unit buffer
-					modtable[modtablepos] = (byte)(value & 7);
-					modtablepos++;
-					modtablepos &= 63;
-					modtable[modtablepos] = (byte)(value & 7);
-					modtablepos++;
-					modtablepos &= 63;
+					if (r4087_7)
+					{
+						modtable[modtablepos] = (byte)(value & 7);
+						modtablepos++;
+						modtablepos &= 63;
+						modtable[modtablepos] = (byte)(value & 7);
+						modtablepos++;
+						modtablepos &= 63;
+					}					
 					break;
 				case 0x4089:
 					switch (value & 3)
