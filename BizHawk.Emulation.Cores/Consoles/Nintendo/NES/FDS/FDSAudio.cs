@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (latchedoutput != tmp)
 			{
-				SendDiff((tmp - latchedoutput) * 6);
+				SendDiff((tmp - latchedoutput) * 3);
 				latchedoutput = tmp;
 			}
 		}
@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 1: sweepbias += 1; break;
 						case 2: sweepbias += 2; break;
 						case 3: sweepbias += 4; break;
-						case 4: sweepbias += 0; break;
+						case 4: sweepbias = 0; break;
 						case 5: sweepbias -= 4; break;
 						case 6: sweepbias -= 2; break;
 						case 7: sweepbias -= 1; break;
