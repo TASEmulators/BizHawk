@@ -10,12 +10,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_mask, chr_mask;
 		//state
 		int prg, chr;
+
+		bool is173;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
 				case "MAPPER132":
 				case "UNIF_UNL-22211":
+					break;
+				case "MAPPER173":
+					is173 = true;
 					break;
 				default:
 					return false;
@@ -51,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadEXP(int addr)
 		{
 			if ((addr & 0x100) != 0)
-				return (byte)((NES.DB & 0xf0) | reg);
+				return (byte)((NES.DB & (is173 ? 0x01 : 0xf0)) | reg);
 			else if ((addr & 0x1000) == 0)
 				return NES.DB;
 			else
@@ -77,6 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
 			ser.Sync("prg", ref prg);
+			ser.Sync("is173", ref is173);
 		}
 
 	}
