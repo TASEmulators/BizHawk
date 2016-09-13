@@ -33,31 +33,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		byte reg
+		public byte[] reg = new byte [4];
+
+		public void sync()
 		{
-			set
-			{
-				prg = (value & 0x4) >> 2;
+
+				prg=reg[2]>>2;
 				prg &= prg_mask;
-				chr = (value & 0x3);
+				chr = (reg[2] & 0x3);
 				chr &= chr_mask;
-			}
-			get
-			{
-				return (byte)(prg << 2 | chr);
-			}
+
+
+		}
+
+		public override void WritePRG(int addr, byte value)
+		{
+			sync();
 		}
 
 		public override void WriteEXP(int addr, byte value)
 		{
-			if ((addr & 0x103) == 0x102)
-				reg = (byte)(value & 0x0f);
+			if (addr <= 0x103 && addr >= 0x100)
+				reg[addr&0x03] = (byte)(value & 0x0f);
+
 		}
 
 		public override byte ReadEXP(int addr)
 		{
+
 			if ((addr & 0x100) != 0)
-				return (byte)((NES.DB & (is173 ? 0x01 : 0xf0)) | reg);
+				return (byte)((NES.DB & (is173 ? 0x01 : 0xf0)) | reg[2]);
 			else if ((addr & 0x1000) == 0)
 				return NES.DB;
 			else
