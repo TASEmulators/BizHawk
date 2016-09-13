@@ -57,9 +57,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		void SinkMirror()
+		void SinkMirror(bool flip)
 		{
-			SetMirrorType(exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
+			if (flip)
+				SetMirrorType(exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
+			else
+				SetMirrorType(!exnmt.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);
 		}
 
 		readonly static byte[] modes = { 5, 5, 3, 1 };
@@ -91,14 +94,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// this is stupid as hell
 		public override void WritePRG(int addr, byte value)
 		{
-			Console.WriteLine("{0:x4}:{1:x2}", addr, value);
+			//Console.WriteLine("{0:x4}:{1:x2}", addr, value);
 
-			if ((addr & 0x2131) == 0x2131)
+			if ((addr & 0x2131) == 0x2131 && (exmode != value))
 			{
 				exmode = value;
 				if (!exmode.Bit(1))
 				{
-					SinkMirror();
+					SinkMirror(false);
 				}
 			}
 
@@ -108,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					case 0x0000: base.WritePRG(0x0000, value); break;
 					case 0x0001: base.WritePRG(0x0001, value); break;
-					case 0x2000: SinkMirror(); break;
+					case 0x2000: SinkMirror(true); break;
 					case 0x2001: base.WritePRG(0x2001, value); break;
 					case 0x4000: base.WritePRG(0x4000, value); break;
 					case 0x4001: base.WritePRG(0x4001, value); break;
@@ -117,11 +120,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				}
 			}
-			else if (addr >= 3000 && addr <= 0x6003)
+			else if (addr >= 0x3000 && addr <= 0x6003)
 			{
-				int offset = addr << 2 & 4;
+				int offset = addr << 2 & 0x4;
 				addr = ((((addr & 0x2) | addr >> 10) >> 1) + 2) & 0x7;
-				exchr[addr] = (exchr[addr] & 0xf0 >> offset) | ((value & 0x0f) >> offset);
+				exchr[addr] = (exchr[addr] & 0xf0 >> offset) | ((value & 0x0f) << offset);
 				// sync chr
 			}
 			else
@@ -129,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				switch (addr & 0x7003)
 				{
 					case 0x0000: exprg[0] = value; break;
-					case 0x1000: exnmt = value; SinkMirror(); break;
+					case 0x1000: exnmt = value; SinkMirror(false); break;
 					case 0x2000: exprg[1] = value; break;
 				}
 			}
