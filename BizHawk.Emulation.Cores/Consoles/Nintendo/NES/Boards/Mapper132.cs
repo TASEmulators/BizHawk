@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg, chr;
 
-		bool is173;
+		bool is172, is173;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -21,6 +21,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER132":
 				case "UNIF_UNL-22211":
+					break;
+				case "MAPPER172":
+					is172 = true;
 					break;
 				case "MAPPER173":
 					is173 = true;
@@ -35,20 +38,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		public void sync()
+		public void sync(byte value)
 		{
+			prg=reg[2]>>2;
+			prg &= prg_mask;
 
-				prg=reg[2]>>2;
-				prg &= prg_mask;
+			if (is172)
+			{
+				chr = (((value ^ reg[2]) >> 3) & 2) | (((value ^ reg[2]) >> 5) & 1);
+			}
+			else
+			{
 				chr = (reg[2] & 0x3);
-				chr &= chr_mask;
+			}
 
-
+			chr &= chr_mask;
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
-			sync();
+			sync(value);
 		}
 
 		public override void WriteEXP(int addr, byte value)
@@ -80,7 +89,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return VROM[addr + (chr << 13)];
 			}
-			else return base.ReadPPU(addr);
+
+			return base.ReadPPU(addr);
 		}
 
 		public override void SyncState(Serializer ser)
@@ -88,6 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
 			ser.Sync("prg", ref prg);
+			ser.Sync("is172", ref is172);
 			ser.Sync("is173", ref is173);
 			ser.Sync("reg", ref reg);
 		}

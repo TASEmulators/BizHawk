@@ -615,6 +615,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper120.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper132.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper136.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper142.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper143.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper147.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper150.cs" />
@@ -626,6 +627,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper177.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper178.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper180.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper183.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper186.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper188.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper193.cs" />
@@ -655,6 +657,8 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper243.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper244.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper246.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper252.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper253.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper50.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper60.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper61.cs" />
