@@ -164,6 +164,7 @@ sha1:2E0889131DA5BA9505A15B94887113F4360D98CD		Shin Samurai Spirits 2 Haoumaru J
 sha1:EB35202CC4E9C2FAC320B04F36F3A6858B8916F2		Super Bros. 8	NES		board=MAPPER048;
 sha1:F949FC16932808C426074AB1628F246B0435C52C		Flintstones, The Rescue of Dino & Hoppy (J)	NES		board=MAPPER048;
 sha1:9C801071D1AAC7B280468C38BF1B61FDE99B5FD0		Yong Zhe Dou E Long Dragon Quest VII (Ch)	NES		board=MAPPER245;
+sha1:C282206800426557E7DD66ABF70FEAB6FE9DA1B2		San Guo Zhi (Ch)	NES		board=MAPPER252;VRAM=2;BATT=true;PAD_H=1
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
