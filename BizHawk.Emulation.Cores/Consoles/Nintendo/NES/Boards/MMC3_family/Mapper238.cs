@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER238": // Nestopia suggests this board is mapper 238, I do not have any ROMs with this ines header info to confirm
 				case "UNIF_UNL-603-5052":
 					break;
+				default:
+					return false;
 			}
 
 			BaseSetup();
