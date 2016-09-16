@@ -35,6 +35,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool sprite_zero_in_range = false;
 		public bool sprite_zero_go = false;
 		public int yp;
+		public int auxtarget;
+		public int target;
 		public int spriteHeight;
 		public int o_bug; // this is incramented when checks for sprite overflow start, mirroring a hardware bug
 		public byte[] soam = new byte[512]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
@@ -63,9 +65,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// experimental
 		int pixelcolor_latch_1;
 		int pixelcolor_latch_2;
-		void pipeline(int pixelcolor, int target)
+		void pipeline(int pixelcolor, int target, int row_check)
 		{
-			if (target > 1)
+			if (row_check > 1)
 			{
 				if (reg_2001.color_disable)
 					pixelcolor_latch_2 &= 0x30;
@@ -218,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					for (int xt = 0; xt < 32; xt++)
 					{
 						int xstart = xt << 3;
-						int target = yp_shift + xstart;
+						target = yp_shift + xstart;
 						int rasterpos = xstart;
 
 						spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
@@ -330,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
 							Read_bgdata(xp, ref bgdata[xt + 2]);
 
-							renderbgnow = reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
+							renderbgnow =  reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
 							//bg pos is different from raster pos due to its offsetability.
 							//so adjust for that here
 							int bgpos = rasterpos + ppur.fh;
@@ -415,11 +417,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								  pixelcolor &= 0x30;
 							  xbuf[target] = PaletteAdjustPixel(pixelcolor);
 							  */
-							pipeline(pixelcolor, target);
+							pipeline(pixelcolor, target, xt*32+xp);
 							target++;
+							
 						} //loop across 8 pixels
 					} //loop across 32 tiles
-					pipeline(0, 256);
 				}
 				else
 					for (int xt = 0; xt < 32; xt++)
@@ -492,8 +494,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (sl == 0 && ppur.status.cycle == 304)
 						{
 							runppu(1);
-							pipeline(0, 257); //  last pipeline call option 1 of 3
-
 							read_value = t_oam[s].oam_y;
 							if (reg_2001.PPUON) ppur.install_latches();
 							runppu(1);
@@ -503,11 +503,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if ((sl != 0) && ppur.status.cycle == 256)
 						{
 							runppu(1);
-							pipeline(0, 257);  //  last pipeline call option 2 of 3
+							if (target<=61441 && target > 0)
+							{
+								pipeline(0, target,255);
+								target++;
+							}
 							read_value = t_oam[s].oam_y;
 							//at 257: 3d world runner is ugly if we do this at 256
 							if (reg_2001.PPUON) ppur.install_h_latches();
 							runppu(1);
+							if (target <= 61441 && target > 0)
+								pipeline(0, target,255);  //  last pipeline call option 2 of 3
 							read_value = t_oam[s].oam_ind;
 							garbage_todo = 0;
 						}
@@ -520,11 +526,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							
 							if (i == 0)
 							{
-								pipeline(0, 257);  //  last pipeline call option 3 of 3
+								if (target <= 61441 && target > 0)
+								{
+									pipeline(0, target,255);
+									target++;
+								}
 								read_value = t_oam[s].oam_y;
 							}
 							else
 							{
+								if (target <= 61441 && target > 0)
+									pipeline(0, target,255);  //  last pipeline call option 3 of 3
 								read_value = t_oam[s].oam_ind;
 							}
 						}
