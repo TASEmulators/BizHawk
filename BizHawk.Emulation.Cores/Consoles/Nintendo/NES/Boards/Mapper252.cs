@@ -1,4 +1,6 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -9,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private ByteBuffer creg = new ByteBuffer(8);
 
 		private int prg_bank_mask_8k, chr_bank_mask_1k;
+		private int IRQLatch, IRQClock, IRQCount;
+		private bool IRQa;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -20,10 +24,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-
+			AssertPrg(256);
+			AssertChr(128);
+			AssertVram(2);
+			AssertWram(8);
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
-
+			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
@@ -34,14 +41,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("creg", ref creg);
 		}
 
+		public override void ClockCPU()
+		{
+			if (IRQa)
+			{
+				IRQClock += 3;
+				if (IRQClock >= 341)
+				{
+					IRQClock -= 341;
+					IRQCount++;
+					if (IRQCount==0x100)
+					{
+						IRQSignal=true;
+						IRQCount = IRQLatch;
+					}					
+				}
+			}
+		}
+
+
 		public override void WritePRG(int addr, byte value)
 		{
 			WriteReg((addr + 0x8000), value);
-		}
-
-		public override void WriteWRAM(int addr, byte value)
-		{
-			WriteReg((addr + 0x6000), value);
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -70,17 +91,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						preg[1] = value;
 						break;
 
-					// TODO IRQ
-					case 0xF000: break;
-					case 0xF004: break;
-					case 0xF008: break;
+					case 0xF000: IRQSignal = false; IRQLatch &= 0xF0; IRQLatch |= value & 0xF; break;
+					case 0xF004: IRQSignal = false; IRQLatch &= 0x0F; IRQLatch |= value << 4; break;
+					case 0xF008: IRQSignal = false; IRQClock = 0; IRQCount = IRQLatch; IRQa = value.Bit(1); break;
+
 				}
 			}
-		}
-
-		public override byte ReadWRAM(int addr)
-		{
-			return ROM[addr];
 		}
 
 		public override byte ReadPRG(int addr)
@@ -118,21 +134,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (creg[x] == 6 || creg[x] == 7)
 				{
 					bank = creg[x] & 1;
+					return VRAM[(bank << 10) + (addr & 0x3FF)];
 				}
 				else
 				{
 					bank = (creg[x] & chr_bank_mask_1k) << 10;
+					return VROM[bank + (addr & 0x3FF)];
 				}
 
-				if (addr == 0x400)
-				{
-					int zzz = 0;
-				}
-
-				return VROM[bank + (addr & 0x3FF)];
 			}
 
 			return base.ReadPPU(addr);
+		}
+		
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				if (VRAM != null)
+					VRAM[addr&0x7FF] = value;
+			}
+			else
+			{
+				NES.CIRAM[ApplyMirroring(addr)] = value;
+			}
 		}
 	}
 }
