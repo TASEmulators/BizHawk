@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_mask = Cart.prg_size / 32 - 1;
 			chr_mask = Cart.chr_size / 8 - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
+			//SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
@@ -45,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (is172)
 			{
-				chr = (((value ^ reg[2]) >> 3) & 2) | (((value ^ reg[2]) >> 5) & 1);
+				chr = ((value ^ reg[2]) >> 3 & 2) | ((value ^ reg[2]) >> 5 & 1);
 			}
 			else
 			{
@@ -63,19 +64,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WriteEXP(int addr, byte value)
 		{
 			if (addr <= 0x103 && addr >= 0x100)
-				reg[addr&0x03] = (byte)(value & 0x0f);
+				reg[addr & 0x03] = value;
+					//reg[addr&0x03] = (byte)(value & 0x0f);
 
 		}
 
 		public override byte ReadEXP(int addr)
 		{
 
-			if ((addr & 0x100) != 0)
+			/*if ((addr & 0x100) != 0)
 				return (byte)((NES.DB & (is173 ? 0x01 : 0xf0)) | reg[2]);
 			else if ((addr & 0x1000) == 0)
 				return NES.DB;
 			else
 				return 0xff;
+				*/
+			if (addr==0x100)
+				return (byte)((reg[1] ^ reg[2]) | (0x40 | (is173 ? 0x01 : 0x00)));
+			else
+				return NES.DB;
 		}
 
 		public override byte ReadPRG(int addr)
