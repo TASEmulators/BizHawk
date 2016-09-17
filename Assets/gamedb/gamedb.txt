@@ -168,6 +168,7 @@ sha1:C282206800426557E7DD66ABF70FEAB6FE9DA1B2		San Guo Zhi (Ch)	NES		board=MAPPE
 sha1:E6F080CCF09C62C038D35E3BD503C4E57E716571	B	San Guo Zhi (Ch)	NES		board=MAPPER252;VRAM=2;BATT=true;PAD_H=1
 sha1:E2BFF2002F2DD0AA184D5791D008A1350C477AE0	B	San Guo Zhi (Ch)	NES		board=MAPPER252;VRAM=2;BATT=true;PAD_H=1
 sha1:B37E6002EF84C172DB413DF4B41451192ADBDC36		Shen Hua Jian Yun III (Ch)	NES		board=MAPPER253;VRAM=2;BATT=true;PAD_H=1
+sha1:CE1B236ED0EAC133A3DE5411AEF57228220885EF	G	Super Sonic 5 (1997) (Unl)	NES		board=MAPPER121
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
