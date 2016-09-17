@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizDestroy(IntPtr ctx);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern IntPtr BizCreate(byte[] bios);
+		public static extern IntPtr BizCreate(byte[] bios, byte[] data, int length, [In]OverrideInfo dbinfo);
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizReset(IntPtr ctx);
@@ -58,9 +58,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizLoad(IntPtr ctx, byte[] data, int length, [In]OverrideInfo dbinfo);
-
-		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
 			long time, short gyrox, short gyroy, short gyroz, byte luma);
 
@@ -83,11 +80,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizGetMemoryAreas(IntPtr ctx, [Out]MemoryAreas dst);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern int BizGetSaveRamSize(IntPtr ctx);
+		public static extern int BizGetSaveRam(IntPtr ctx, byte[] dest);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizGetSaveRam(IntPtr ctx, byte[] dest);
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizPutSaveRam(IntPtr ctx, byte[] src);
+		public static extern bool BizPutSaveRam(IntPtr ctx, byte[] src, int size);
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern int BizGetStateMaxSize(IntPtr ctx);

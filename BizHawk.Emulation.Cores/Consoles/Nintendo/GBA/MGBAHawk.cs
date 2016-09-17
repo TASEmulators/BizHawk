@@ -12,9 +12,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, true, "0.4.1", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
+	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable,
+		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
-		IntPtr core;
+		private IntPtr _core;
+		private byte[] _saveScratch = new byte[262144];
 
 		[CoreConstructor("GBA")]
 		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic, GameInfo game)
@@ -40,23 +42,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
 			}
-			core = LibmGBA.BizCreate(bios);
-			if (core == IntPtr.Zero)
+			_core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game));
+			if (_core == IntPtr.Zero)
 			{
-				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS?");
+				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS? and/or ROM?");
 			}
 			try
 			{
-				if (!LibmGBA.BizLoad(core, file, file.Length, GetOverrideInfo(game)))
-				{
-					throw new InvalidOperationException("BizLoad() returned FALSE!  Bad ROM?");
-				}
-
 				if (!DeterministicEmulation && _syncSettings.SkipBios)
 				{
-					LibmGBA.BizSkipBios(core);
+					LibmGBA.BizSkipBios(_core);
 				}
-
 
 				CreateMemoryDomains(file.Length);
 				var ser = new BasicServiceProvider(this);
@@ -75,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 			catch
 			{
-				LibmGBA.BizDestroy(core);
+				LibmGBA.BizDestroy(_core);
 				throw;
 			}
 		}
@@ -138,12 +134,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Frame++;
 			if (Controller["Power"])
 			{
-				LibmGBA.BizReset(core);
+				LibmGBA.BizReset(_core);
 				//BizReset caused memorydomain pointers to change.
 				WireMemoryDomainPointers();
 			}
 
-			IsLagFrame = LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
+			IsLagFrame = LibmGBA.BizAdvance(_core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
 				RTCTime(),
 				(short)Controller.GetFloat("Tilt X"),
 				(short)Controller.GetFloat("Tilt Y"),
@@ -176,10 +172,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Dispose()
 		{
-			if (core != IntPtr.Zero)
+			if (_core != IntPtr.Zero)
 			{
-				LibmGBA.BizDestroy(core);
-				core = IntPtr.Zero;
+				LibmGBA.BizDestroy(_core);
+				_core = IntPtr.Zero;
 			}
 		}
 
@@ -226,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		void WireMemoryDomainPointers()
 		{
 			var s = new LibmGBA.MemoryAreas();
-			LibmGBA.BizGetMemoryAreas(core, s);
+			LibmGBA.BizGetMemoryAreas(_core, s);
 
 			_iwram.Data = s.iwram;
 			_ewram.Data = s.wram;
@@ -243,7 +239,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Peek =
 				delegate(long addr)
 				{
-					LibmGBA.BizGetMemoryAreas(core, s);
+					LibmGBA.BizGetMemoryAreas(_core, s);
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 						throw new IndexOutOfRangeException();
 					if (addr >= 256 * 1024)
@@ -321,16 +317,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] CloneSaveRam()
 		{
-			byte[] ret = new byte[LibmGBA.BizGetSaveRamSize(core)];
-			if (ret.Length > 0)
-			{
-				LibmGBA.BizGetSaveRam(core, ret);
-				return ret;
-			}
-			else
-			{
+			int len = LibmGBA.BizGetSaveRam(_core, _saveScratch);
+			if (len == 0)
 				return null;
-			}
+
+			var ret = new byte[len];
+			Array.Copy(_saveScratch, ret, len);
+			return ret;
 		}
 
 		private static byte[] LegacyFix(byte[] saveram)
@@ -359,39 +352,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				data = LegacyFix(data);
 			}
-
-			int len = LibmGBA.BizGetSaveRamSize(core);
-			if (len > data.Length)
+			if (!LibmGBA.BizPutSaveRam(_core, data, data.Length))
 			{
-				byte[] _tmp = new byte[len];
-				Array.Copy(data, _tmp, data.Length);
-				for (int i = data.Length; i < len; i++)
-					_tmp[i] = 0xff;
-				data = _tmp;
+				throw new InvalidOperationException("BizPutSaveRam returned NULL!");
 			}
-			else if (len < data.Length)
-			{
-				// we could continue from this, but we don't expect it
-				throw new InvalidOperationException("Saveram will be truncated!");
-			}
-			LibmGBA.BizPutSaveRam(core, data);
 		}
 
 		public bool SaveRamModified
 		{
-			get { return LibmGBA.BizGetSaveRamSize(core) > 0; }
+			get
+			{
+				return LibmGBA.BizGetSaveRam(_core, _saveScratch) > 0;
+			}
 		}
 
 		#endregion
 
 		private void InitStates()
 		{
-			savebuff = new byte[LibmGBA.BizGetStateMaxSize(core)];
-			savebuff2 = new byte[savebuff.Length + 13];
+			_savebuff = new byte[LibmGBA.BizGetStateMaxSize(_core)];
+			_savebuff2 = new byte[_savebuff.Length + 13];
 		}
 
-		private byte[] savebuff;
-		private byte[] savebuff2;
+		private byte[] _savebuff;
+		private byte[] _savebuff2;
 
 		public bool BinarySaveStatesPreferred
 		{
@@ -413,11 +397,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			int size = LibmGBA.BizGetState(core, savebuff, savebuff.Length);
+			int size = LibmGBA.BizGetState(_core, _savebuff, _savebuff.Length);
 			if (size < 0)
 				throw new InvalidOperationException("Core failed to save!");
 			writer.Write(size);
-			writer.Write(savebuff, 0, size);
+			writer.Write(_savebuff, 0, size);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -428,13 +412,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length > savebuff.Length)
+			if (length > _savebuff.Length)
 			{
-				savebuff = new byte[length];
-				savebuff2 = new byte[length + 13];
+				_savebuff = new byte[length];
+				_savebuff2 = new byte[length + 13];
 			}
-			reader.Read(savebuff, 0, length);
-			if (!LibmGBA.BizPutState(core, savebuff, length))
+			reader.Read(_savebuff, 0, length);
+			if (!LibmGBA.BizPutState(_core, _savebuff, length))
 				throw new InvalidOperationException("Core rejected the savestate!");
 
 			// other variables
@@ -445,12 +429,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream(savebuff2, true);
+			var ms = new MemoryStream(_savebuff2, true);
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			ms.Close();
-			return savebuff2;
+			return _savebuff2;
 		}
 
 		public int LagCount { get; set; }
@@ -486,7 +470,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.DisplayBG2) mask |= LibmGBA.Layers.BG2;
 			if (o.DisplayBG3) mask |= LibmGBA.Layers.BG3;
 			if (o.DisplayOBJ) mask |= LibmGBA.Layers.OBJ;
-			LibmGBA.BizSetLayerMask(core, mask);
+			LibmGBA.BizSetLayerMask(_core, mask);
 			_settings = o;
 			return false;
 		}
