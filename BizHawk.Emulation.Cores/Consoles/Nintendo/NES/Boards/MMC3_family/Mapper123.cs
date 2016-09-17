@@ -22,6 +22,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("expregs", ref EXPREGS);
+		}
+
 		public override void WriteEXP(int addr, byte value)
 		{
 			if (addr >= 0x1000)
