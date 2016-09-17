@@ -148,6 +148,7 @@ sha1:081D107B5AEFFD4F59108C76FA3942506FA36B1F	G	Captain Tsubasa Vol. II - Super 
 sha1:F99E8B7C7A2174BF0B2330F5457AEE478A938C93	G	Captain Tsubasa Vol. II - Super Striker (Ch) [a1]	NES		board=MAPPER195
 sha1:9958BED493E8C5727F96937BF254AC33FA3BCF81	G	Captain Tsubasa Vol. II - Super Striker (Ch) [a2]	NES		board=MAPPER195
 sha1:B4AA3F10908DC3D6B8152F5DEB1B8543B8B46BF6	G	Captain Tsubasa Vol. II - Super Striker (Ch) [a3]	NES		board=MAPPER195
+sha1:60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558	G	Pegasus 5-in-1 (Golden Five)	NES		board=MAPPER104
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
