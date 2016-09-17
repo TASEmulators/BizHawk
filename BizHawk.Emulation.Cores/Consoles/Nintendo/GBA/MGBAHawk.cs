@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		IntPtr core;
 
 		[CoreConstructor("GBA")]
-		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic)
+		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic, GameInfo game)
 		{
 			_syncSettings = syncSettings ?? new SyncSettings();
 			_settings = settings ?? new Settings();
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 			try
 			{
-				if (!LibmGBA.BizLoad(core, file, file.Length))
+				if (!LibmGBA.BizLoad(core, file, file.Length, GetOverrideInfo(game)))
 				{
 					throw new InvalidOperationException("BizLoad() returned FALSE!  Bad ROM?");
 				}
@@ -78,6 +78,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				LibmGBA.BizDestroy(core);
 				throw;
 			}
+		}
+
+		private static LibmGBA.OverrideInfo GetOverrideInfo(GameInfo game)
+		{
+			if (!game.OptionPresent("mgbaNeedsOverrides"))
+			{
+				// the gba game db predates the mgba core in bizhawk, but was never used by the mgba core,
+				// which had its own handling for overrides
+				// to avoid possible regressions, we don't want to be overriding things that we already
+				// know work in mgba, so unless this parameter is set, we do nothing
+				return null;
+			}
+
+			var ret = new LibmGBA.OverrideInfo();
+			if (game.OptionPresent("flashSize"))
+			{
+				switch (game.GetIntValue("flashSize"))
+				{
+					case 65536: ret.Savetype = LibmGBA.SaveType.Flash512; break;
+					case 131072: ret.Savetype = LibmGBA.SaveType.Flash1m; break;
+					default: throw new InvalidOperationException("Unknown flashSize");
+				}
+			}
+			else if (game.OptionPresent("saveType"))
+			{
+				switch (game.GetIntValue("saveType"))
+				{
+					// 3 specifies either flash 512 or 1024, but in vba-over.ini, the latter will have a flashSize as well
+					case 3: ret.Savetype = LibmGBA.SaveType.Flash512; break;
+					case 4: ret.Savetype = LibmGBA.SaveType.Eeprom; break;
+					default: throw new InvalidOperationException("Unknown saveType");
+				}
+			}
+
+			if (game.GetInt("rtcEnabled", 0) == 1)
+			{
+				ret.Hardware |= LibmGBA.Hardware.Rtc;
+			}
+			if (game.GetInt("mirroringEnabled", 0) == 1)
+			{
+				throw new InvalidOperationException("Don't know what to do with mirroringEnabled!");
+			}
+			if (game.OptionPresent("idleLoop"))
+			{
+				ret.IdleLoop = (uint)game.GetHexValue("idleLoop");
+			}
+			return ret;
 		}
 
 		MemoryDomainList MemoryDomains;
