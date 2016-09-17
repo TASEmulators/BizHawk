@@ -35,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool sprite_zero_in_range = false;
 		public bool sprite_zero_go = false;
 		public int yp;
-		public int auxtarget;
 		public int target;
 		public int spriteHeight;
 		public int o_bug; // this is incramented when checks for sprite overflow start, mirroring a hardware bug
@@ -75,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				xbuf[(target - 2)] = PaletteAdjustPixel(pixelcolor_latch_2);
 			}
 
-			if (target != 0)
+			if (row_check >= 1)
 			{
 				pixelcolor_latch_2 = pixelcolor_latch_1;
 			}
@@ -503,17 +502,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if ((sl != 0) && ppur.status.cycle == 256)
 						{
 							runppu(1);
-							if (target<=61441 && target > 0)
+							if (target<=61441 && target > 0 && s==0)
 							{
-								pipeline(0, target,255);
+								pipeline(0, target,256);
 								target++;
 							}
 							read_value = t_oam[s].oam_y;
 							//at 257: 3d world runner is ugly if we do this at 256
 							if (reg_2001.PPUON) ppur.install_h_latches();
 							runppu(1);
-							if (target <= 61441 && target > 0)
-								pipeline(0, target,255);  //  last pipeline call option 2 of 3
+							if (target <= 61441 && target > 0 && s==0)
+							{
+								pipeline(0, target, 257);  //  last pipeline call option 1 of 2
+							}
+								
 							read_value = t_oam[s].oam_ind;
 							garbage_todo = 0;
 						}
@@ -526,17 +528,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							
 							if (i == 0)
 							{
-								if (target <= 61441 && target > 0)
+								if (target <= 61441 && target > 0 && s==0)
 								{
-									pipeline(0, target,255);
+									pipeline(0, target,256);
 									target++;
 								}
 								read_value = t_oam[s].oam_y;
 							}
 							else
 							{
-								if (target <= 61441 && target > 0)
-									pipeline(0, target,255);  //  last pipeline call option 3 of 3
+								if (target <= 61441 && target > 0 && s==0)
+								{
+									pipeline(0, target, 257);  //  last pipeline call option 2 of 2
+								}
 								read_value = t_oam[s].oam_ind;
 							}
 						}
