@@ -167,6 +167,7 @@ sha1:9C801071D1AAC7B280468C38BF1B61FDE99B5FD0		Yong Zhe Dou E Long Dragon Quest 
 sha1:C282206800426557E7DD66ABF70FEAB6FE9DA1B2		San Guo Zhi (Ch)	NES		board=MAPPER252;VRAM=2;BATT=true;PAD_H=1
 sha1:E6F080CCF09C62C038D35E3BD503C4E57E716571	B	San Guo Zhi (Ch)	NES		board=MAPPER252;VRAM=2;BATT=true;PAD_H=1
 sha1:E2BFF2002F2DD0AA184D5791D008A1350C477AE0	B	San Guo Zhi (Ch)	NES		board=MAPPER252;VRAM=2;BATT=true;PAD_H=1
+sha1:B37E6002EF84C172DB413DF4B41451192ADBDC36		Shen Hua Jian Yun III (Ch)	NES		board=MAPPER253;VRAM=2;BATT=true;PAD_H=1
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
