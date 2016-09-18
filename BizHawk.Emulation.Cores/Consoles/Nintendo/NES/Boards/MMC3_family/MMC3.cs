@@ -59,11 +59,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_regs_8k.Dispose();
 		}
 
-		public NES.NESBoardBase.EMirrorType MirrorType { get { return mirror == 0 ? NES.NESBoardBase.EMirrorType.Vertical : NES.NESBoardBase.EMirrorType.Horizontal; } }
+		public NES.NESBoardBase.EMirrorType MirrorType
+		{
+			get
+			{
+				switch (mirror)
+				{
+					default:
+					case 0: return NES.NESBoardBase.EMirrorType.Vertical;
+					case 1: return NES.NESBoardBase.EMirrorType.Horizontal;
+					case 2: return NES.NESBoardBase.EMirrorType.OneScreenA;
+					case 3: return NES.NESBoardBase.EMirrorType.OneScreenB;
+				}
+			}
+		}
 
 		protected NES.NESBoardBase board;
 		public MMC3(NES.NESBoardBase board, int num_prg_banks)
 		{
+			MirrorMask = 1;
 			this.board = board;
 			if (board.Cart.chips.Contains("MMC3A")) MMC3Type = EMMC3Type.MMC3A;
 			else if (board.Cart.chips.Contains("MMC3B")) MMC3Type = EMMC3Type.MMC3BSharp;
@@ -158,11 +172,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			board.SyncIRQ(irq_pending);
 		}
 
+		public byte cmd;
+
+		public int MirrorMask { get; set; }
+
 		public void WritePRG(int addr, byte value)
 		{
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000
+					cmd = value;
 					chr_mode = value.Bit(7);
 					prg_mode = value.Bit(6);
 					reg_addr = (value & 7);
@@ -173,8 +192,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Sync();
 					break;
 				case 0x2000: //$A000
-					//mirroring
-					mirror = (byte)(value & 1);
+							 //mirroring
+					mirror = (byte)(value & MirrorMask);
 					board.SetMirrorType(MirrorType);
 					break;
 				case 0x2001: //$A001
