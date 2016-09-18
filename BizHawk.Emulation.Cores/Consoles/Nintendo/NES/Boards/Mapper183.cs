@@ -1,4 +1,6 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -8,7 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private ByteBuffer prg = new ByteBuffer(4);
 		private ByteBuffer chr = new ByteBuffer(8);
 
-		private int prg_bank_mask_8k, chr_bank_mask_1k;
+		private int IRQLatch = 0;
+		private int IRQCount = 0;
+		private bool IRQMode;
+		private bool IRQa = false;
+		private bool IRQr = false;
+
+		private int prg_bank_mask_8k, chr_bank_mask_1k, IRQPre=341;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -40,9 +48,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0: SetMirrorType(EMirrorType.Vertical); break;
 				case 1: SetMirrorType(EMirrorType.Horizontal); break;
 				case 2: SetMirrorType(EMirrorType.OneScreenA); break;
-				case 3: SetMirrorType(EMirrorType.Vertical); break;
+				case 3: SetMirrorType(EMirrorType.OneScreenB); break;
 			}
 		}
+
+		public override void ClockCPU()
+		{
+			if (IRQa)
+			{
+				if (IRQMode)
+				{
+					IRQCount++;
+					if (IRQCount == 0xFF)
+					{
+						IRQSignal = true;
+						IRQCount = IRQLatch;
+					}
+				}
+				else
+				{
+					IRQPre -= 3;
+					if (IRQPre <= 0)
+					{
+						IRQPre += 341;
+						IRQCount++;
+						if (IRQCount >= 0x100)
+						{
+							IRQSignal = IRQa;
+							IRQCount = IRQLatch;
+						}
+					}
+				}
+
+			}
+		}
+
+
 
 		public override void WriteWRAM(int addr, byte value)
 		{
@@ -73,10 +114,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					case 0x9800: SetMirroring(value & 3); break;
 
 					// TODO: IRQ
-					case 0xF000: break;
-					case 0xF004: break;
-					case 0xF008: break;
-					case 0xF00C: break;
+					case 0xF000: IRQLatch = ((IRQLatch & 0xF0) | (value & 0xF)); break;
+					case 0xF004: IRQLatch = ((IRQLatch & 0x0F) | ((value & 0xF) << 4)); break;
+					case 0xF008:
+						IRQMode = value.Bit(2);
+						IRQa = value.Bit(1);//value>0 ? true:false;
+						IRQr = value.Bit(0);
+						if (IRQa)
+						{
+							IRQPre = 341;
+							IRQCount = IRQLatch;
+						}
+						IRQSignal = false;
+						break;
+					case 0xF00C:
+						IRQSignal = false;
+						IRQa = IRQr;
+						break;
+
 				}
 		}
 
@@ -94,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadWRAM(int addr)
 		{
-			return ROM[((prg[3] & prg_bank_mask_8k)) << 13 + (addr & 0x1FFF)];
+			return ROM[(((prg[3] & prg_bank_mask_8k)) << 13) + (addr & 0x1FFF)];
 		}
 
 		public override byte ReadPRG(int addr)
