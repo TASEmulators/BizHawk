@@ -10,6 +10,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private byte swap;
 		private ByteBuffer chr = new ByteBuffer(8);
 
+		private bool IRQa;
+		private int IRQCount;
+		private int IRQpre = 341;
+
 		private int prg_mask_8k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -57,15 +61,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x9000:
 						SetMirrorType(value.Bit(0) ? EMirrorType.Horizontal : EMirrorType.Vertical);
 						break;
-				case 0x9001: swap = (byte)(value & 3);
+				case 0x9001:
+						swap = (byte)(value & 3);
 						break;
 
-				// TODO: IRQ
-				case 0xF000: break;
-				case 0xF002: break;
+				case 0xF000: IRQCount = (IRQCount & 0xF0) | (value & 0x0F); break;
+				case 0xF002: IRQCount = (IRQCount & 0x0F) | (value << 4 & 0xF0); break;
 				case 0xF001:
-				case 0xF003: break;
+				case 0xF003:
+						IRQa = value.Bit(1);
+						IRQSignal = false;
+						if (NES.ppu.ppuphase !=PPU.PPUPHASE.VBL)
+							IRQCount -= 8;
+						break;
 			}
+		}
+
+		public override void ClockPPU()
+		{
+			if ((NES.ppu.ppuphase != PPU.PPUPHASE.VBL))// && IRQa)
+			{
+				IRQpre--;
+				if (IRQpre==0)
+				{
+					IRQCount++;
+					IRQpre = 341;
+					if (IRQCount == 237)
+					{
+						IRQSignal = IRQa;
+					}
+					if (IRQCount == 256)
+						IRQCount = 0;
+						
+				}
+				
+			}
+				
 		}
 
 		public override byte ReadPRG(int addr)
@@ -83,9 +114,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bank = prg0;
 				}
 			}
-
-
 			else if (addr < 0x4000)
+			{
+				bank = prg1;
+			}
+			else if (addr < 0x6000)
 			{
 				if ((swap & 3) > 0)
 				{
@@ -93,15 +126,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					bank = prg_mask_8k;
+					bank = prg_mask_8k-1;
 				}
 			}
-
-			else if (addr < 0x6000)
-			{
-				bank = prg0;
-			}
-
 			else
 			{
 				bank = prg_mask_8k;
