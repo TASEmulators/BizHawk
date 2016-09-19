@@ -20,8 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 			VRAM = new byte[2048];
-			if (Cart.chr_size == 0)
-				throw new Exception("Mapper074 carts MUST have chr rom!");
+			//if (Cart.chr_size == 0)
+			//	throw new Exception("Mapper074 carts MUST have chr rom!");
 			BaseSetup();
 			return true;
 		}
@@ -39,6 +39,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					VRAM[(addr & 0x03FF) + 0x400] = value;
 				}
+				// Ying Kiong Chuan Qi, no VROM
+				// Nestopia maps this to mapper 224, perhaps we should do the same instead of attempt to account for this scenario here
+				else
+				{
+					addr = MapCHR(addr);
+					VRAM[addr] = value;
+				}
 			}
 			else
 			{
@@ -51,19 +58,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				int bank = Get_CHRBank_1K(addr);
-			  if (bank == 0x08)
-			  {
-			    return VRAM[addr & 0x03FF];
-			  }
-			  else if (bank == 0x09)
-			  {
-			    return VRAM[(addr & 0x03FF) + 0x400];
-			  }
-			  else
-			  {
-			    addr = MapCHR(addr);
-			    return VROM[addr];
-			  }
+				if (bank == 0x08)
+				{
+					return VRAM[addr & 0x03FF];
+				}
+				else if (bank == 0x09)
+				{
+					return VRAM[(addr & 0x03FF) + 0x400];
+				}
+				else
+				{
+					addr = MapCHR(addr);
+
+					// Ying Kiong Chuan Qi, no VROM
+					// Nestopia maps this to mapper 224, perhaps we should do the same instead of attempt to account for this scenario here
+					if (VROM == null)
+					{
+						return VRAM[addr];
+					}
+
+					return VROM[addr];
+				}
 			}
 			else return base.ReadPPU(addr);
 		}
