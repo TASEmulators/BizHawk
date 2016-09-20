@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
 
 			regs[1] = 0xF;
-
+			SetMirrorType(EMirrorType.Vertical);
 			return true;
 		}
 
@@ -34,17 +34,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (addr < 0x4000) // 80000
+			if (addr < 0x2000) // 80000
 			{
 				if ((value & 8) > 0)
 				{
-					regs[0] = (byte)((value << 4 & 0x70) | (prg_bank_mask_16k & 0x0F));
+					regs[0] = (byte)((value << 4 & 0x70) | (regs[0] & 0x0F));
 					regs[1] = (byte)((value << 4 & 0x70) | 0x0F);
 				}
 			}
-			else // C000
+			else if (addr >= 0x4000) // C000
 			{
-				regs[0] = (byte)(prg_bank_mask_16k & 0x70 | (value & 0x0F));
+				regs[0] = (byte)(regs[0] & 0x70 | (value & 0x0F));
 			}
 		}
 
@@ -52,11 +52,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[((regs[0] & prg_bank_mask_16k) << 14) + (addr & 0x3FFF)];
+				return ROM[((regs[0]) << 14) + (addr & 0x3FFF)];
 			}
 			else
 			{
-				return ROM[((regs[1] & prg_bank_mask_16k) << 14) + (addr & 0x3FFF)];
+				return ROM[((regs[1]) << 14) + (addr & 0x3FFF)];
 			}
 		}
 	}
