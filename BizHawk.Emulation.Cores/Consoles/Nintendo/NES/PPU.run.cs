@@ -643,8 +643,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				clear_2002();
 			}
 			runppu(241 * kLineTime);
-			Reg2002_vblank_active = true;
 			runppu(preNMIlines * kLineTime);
+			Reg2002_vblank_active = true;
 			--ppudead;
 		}
 	}
