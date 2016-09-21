@@ -1744,6 +1744,11 @@ namespace BizHawk.Client.EmuHawk
 				_searches.Domain.CanPoke();
 		}
 
+		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+		{
+			WatchListView_SelectedIndexChanged(sender, e);
+		}
+
 		private void WatchListView_Enter(object sender, EventArgs e)
 		{
 			WatchListView.Refresh();
