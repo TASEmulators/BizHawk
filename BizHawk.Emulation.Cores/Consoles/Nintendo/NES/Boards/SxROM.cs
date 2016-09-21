@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				if (Cart.vram_size != 0)
-					return VRAM[addr & vram_mask];
+					return VRAM[Gen_CHR_Address(addr) & vram_mask];
 				else return VROM[Gen_CHR_Address(addr)];
 			}
 			else return base.ReadPPU(addr);
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				if (Cart.vram_size != 0)
-					VRAM[addr & vram_mask] = value;
+					VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
 			}
 			else base.WritePPU(addr, value);
 		}
