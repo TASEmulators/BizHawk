@@ -23,7 +23,9 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				_x = value;
+				if (value < MinX) { _x = MinX; }
+				else if (value > MaxX) { _x = MaxX; }
+				else { _x = value; }
 				SetAnalog();
 			}
 		}
@@ -37,7 +39,9 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				_y = value;
+				if (value < MinY) { _y = MinY; }
+				else if (value > MaxY) { _y = MaxY; }
+				else { _y = value; }
 				SetAnalog();
 			}
 		}
