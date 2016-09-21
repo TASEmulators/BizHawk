@@ -1729,6 +1729,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (WatchListView.SelectAllInProgress)
+			{
+				return;
+			}
+
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
 				SelectedIndices.Any();
