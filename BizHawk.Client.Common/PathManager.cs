@@ -256,7 +256,9 @@ namespace BizHawk.Client.Common
 
 		public static string FilesystemSafeName(GameInfo game)
 		{
-			var filesystemSafeName = game.Name.Replace("|", "+");
+			var filesystemSafeName = game.Name
+				.Replace("|", "+")
+				.Replace(":", " -"); // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
