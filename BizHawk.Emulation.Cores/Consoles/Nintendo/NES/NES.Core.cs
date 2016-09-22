@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						ram[i] = 0xFF;
+						ram[i] = 0x00;
 					}
 				}
 			}
