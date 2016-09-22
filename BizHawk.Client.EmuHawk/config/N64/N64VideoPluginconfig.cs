@@ -150,6 +150,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Glide64": ss.VideoPlugin = PluginType.Glide; break;
 				case "Glide64mk2": ss.VideoPlugin = PluginType.GlideMk2; break;
 				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
+				case "GLideN64": ss.VideoPlugin = PluginType.GLideN64; break;
 			}
 
 			// Jabo
@@ -431,6 +432,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case PluginType.Jabo:
 					PluginComboBox.Text = "Jabo 1.6.1";
+					break;
+				case PluginType.GLideN64:
+					PluginComboBox.Text = "GLideN64";
 					break;
 			}
 

@@ -509,7 +509,8 @@
             "Rice",
             "Glide64",
             "Glide64mk2",
-            "Jabo 1.6.1"});
+            "Jabo 1.6.1",
+            "GLideN64"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";
 			this.PluginComboBox.Size = new System.Drawing.Size(173, 21);
