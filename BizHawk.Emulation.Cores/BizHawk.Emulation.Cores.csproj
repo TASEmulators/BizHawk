@@ -510,6 +510,7 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.GLideN64.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
       <DependentUpon>N64.cs</DependentUpon>
     </Compile>
