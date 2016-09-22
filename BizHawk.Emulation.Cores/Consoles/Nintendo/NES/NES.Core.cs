@@ -245,7 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					else
 					{
-						ram[i] = 0x00;
+						ram[i] = 0xFF;
 					}
 				}
 			}
@@ -256,6 +256,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
 			cpu.P = 0x34;
 			cpu.S = 0xFD;
+
+			// some boards cannot have specific values in RAM upon initialization
+			// Let's hard code those cases here
+			// these will be defined through the gameDB exclusively for now.
+
+			if (cart.DB_GameInfo!=null)
+			{
+				// Camerica Golden 5
+				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" ||
+					cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A")
+				{
+					ram[0x701] = 0xFF;
+				}
+			}
+			
+
 		}
 
 		bool resetSignal;
