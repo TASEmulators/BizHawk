@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			{
 				UseDefaultHacks = true;
 
-				VerticalSync = false;
 				MultiSampling = 0;
 				AspectRatio = AspectRatioMode.FourThree;
 				BufferSwapMode = SwapMode.OnVIUpdateCall;
@@ -52,9 +51,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				txForce16bpp = false;
 				txSaveCache = true;
 				txPath = "";
-				fontName = "arial.ttf";
-				fontSize = 18;
-				fontColor = "B5E61D";
 				EnableBloom = false;
 				bloomThresholdLevel = 4;
 				bloomBlendMode = BlendMode.Strong;
@@ -65,11 +61,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			}
 
 			public bool UseDefaultHacks { get; set; }
-
-			[DefaultValue(false)]
-			[DisplayName("Vertical sync")]
-			[Description("If true, activate the SDL_GL_SWAP_CONTROL attribute")]
-			public bool VerticalSync { get; set; }
 
 			[DefaultValue(0)]
 			[DisplayName("Multi-sampling")]
@@ -396,21 +387,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[DisplayName("Texture Path")]
 			[Description("Path to folder with hi-res texture packs.")]
 			public string txPath { get; set; }
-
-			[DefaultValue("arial.ttf")]
-			[DisplayName("Font Name")]
-			[Description("File name of True Type Font for text messages.")]
-			public string fontName { get; set; }
-
-			[DefaultValue(18)]
-			[DisplayName("Font size")]
-			[Description("Font size.")]
-			public int fontSize { get; set; }
-
-			[DefaultValue("B5E61D")]
-			[DisplayName("Font color")]
-			[Description("Font color in RGB format.")]
-			public string fontColor { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("Enable Bloom")]
