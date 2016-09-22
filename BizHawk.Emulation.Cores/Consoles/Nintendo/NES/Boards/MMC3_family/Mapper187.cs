@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if ((addr & 0x1000) == ((MMc3_cmd & 0x80) << 5))
 			{
-				return base.Get_CHRBank_1K(addr) | 0100;
+				return base.Get_CHRBank_1K(addr) | 0x100;
 			}
 
 			return base.Get_CHRBank_1K(addr);
