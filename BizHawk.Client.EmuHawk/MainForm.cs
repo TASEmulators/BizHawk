@@ -2595,9 +2595,19 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
+		private const int WM_DEVICECHANGE = 0x0219;
+
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
+			switch (m.Msg)
+			{
+				case WM_DEVICECHANGE:
+					GamePad.Initialize();
+					GamePad360.Initialize();
+					break;
+			}
+
 			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 			if (m.Msg == 0x0112) // WM_SYSCOMMAND
 			{
