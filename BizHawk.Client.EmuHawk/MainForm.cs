@@ -3729,6 +3729,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
+				GlobalWin.OSD.ClearGUIText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
@@ -3737,7 +3738,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				SetMainformMovieInfo();
-				GlobalWin.OSD.ClearGUIText();
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
