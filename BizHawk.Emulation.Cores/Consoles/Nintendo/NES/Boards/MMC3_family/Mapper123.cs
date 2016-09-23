@@ -7,6 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private ByteBuffer EXPREGS = new ByteBuffer(8);
 
+		private byte[] sec = { 0, 3, 1, 5, 6, 7, 2, 4 };
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
@@ -56,8 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				switch ((addr + 0x8000) & 0x8001)
 				{
-					case 0x8000: break;
-					case 0x8001: break;
+					case 0x8000: base.WritePRG(0x8000, (byte)((value & 0xC0) | sec[value&7])); break;
+					case 0x8001: base.WritePRG(0x8001, value); break;
 				}
 			}
 			else
