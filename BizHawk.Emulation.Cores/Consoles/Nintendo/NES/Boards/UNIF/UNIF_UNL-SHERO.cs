@@ -21,7 +21,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			BaseSetup();
 			AutoMapperProps.Apply(this);
-
 			return true;
 		}
 
@@ -56,12 +55,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override byte ReadPPU(int addr)
 		{
 			// TODO: why doesn't this work?
-			if (addr < 0x2000 & ((reg & 0x40) > 0))
+			if (addr < 0x2000)
 			{
-				return VROM[addr];
-			}
+				if ((reg & 0x40) > 0)
+				{
+					return VRAM[addr];
+				}
+				else
+				{
+					int bank_1k = Get_CHRBank_1K(addr);
+					addr = (bank_1k << 10) | (addr & 0x3FF);
 
-			return base.ReadPPU(addr);
+					return VROM[addr];
+				}
+
+			}
+			else
+				return VRAM[addr];
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				if ((reg & 0x40) > 0)
+				{
+					VRAM[addr] = value;
+				}
+				else
+				{
+					//nothing to write to VROM
+				}
+
+			}
+			else
+				VRAM[addr] = value;	
 		}
 
 		protected override int Get_CHRBank_1K(int addr)
