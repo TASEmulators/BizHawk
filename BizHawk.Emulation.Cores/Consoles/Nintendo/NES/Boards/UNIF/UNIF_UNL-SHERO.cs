@@ -54,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
-			// TODO: why doesn't this work?
 			if (addr < 0x2000)
 			{
 				if ((reg & 0x40) > 0)
