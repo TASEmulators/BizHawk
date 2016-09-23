@@ -179,6 +179,8 @@ sha1:B37E6002EF84C172DB413DF4B41451192ADBDC36		Shen Hua Jian Yun III (Ch)	NES		b
 sha1:CE1B236ED0EAC133A3DE5411AEF57228220885EF	G	Super Sonic 5 (1997) (Unl)	NES		board=MAPPER121
 sha1:37DC34A1069B5B62BAC41DB66F47745E3A1E442B		SD Gundam Gaiden - Knight Gundam Monogatari (J) (V1.0) [b1]	NES		board=MAPPER159;
 sha1:89C57A4144E038565707A4B3B5B9505C7E4F3C70		SD Gundam Gaiden - Knight Gundam Monogatari (J) (V1.0) [T+Eng0.10_Assassin_Productions]	NES		board=MAPPER159;
+sha1:CFB4626E7794F1276ABF5DB7806FCE61EFEBFE98		Street Heroes (Sachen) [U][!]	NES		board=UNIF_UNL-SHERO;VRAM=16;
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
