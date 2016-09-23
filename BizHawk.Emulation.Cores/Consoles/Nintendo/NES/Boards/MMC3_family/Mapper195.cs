@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Nintendo.NES
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper195 : MMC3Board_Base
 	{
@@ -11,24 +13,41 @@
 				default:
 					return false;
 			}
-
+			
 			BaseSetup();
 			return true;
 		}
 
 		public override byte ReadEXP(int addr)
 		{
-			if (addr < 0x1000)
+			if (addr >= 0x1000)
 			{
-				return ROM[(2 << 0x1000) + (addr & 0xFFF)];
+				return WRAM[addr-0x1000];
 			}
 
 			return base.ReadEXP(addr);
 		}
 
-		public override void WritePRG(int addr, byte value)
+		public override void WriteEXP(int addr, byte value)
 		{
-			base.WritePRG(addr, value);
+			if (addr >= 0x1000)
+			{
+				WRAM[addr - 0x1000] = value;
+			}
+			
+			base.WriteEXP(addr, value);
+		}
+
+		public override void WriteWRAM(int addr, byte value)
+		{
+			if (!mmc3.wram_enable || mmc3.wram_write_protect) return;
+			base.WriteWRAM(addr+0x1000, value);
+		}
+
+		public override byte ReadWRAM(int addr)
+		{
+			if (!mmc3.wram_enable) return NES.DB;
+			return base.ReadWRAM(addr+0x1000);
 		}
 
 		public override byte ReadPPU(int addr)
