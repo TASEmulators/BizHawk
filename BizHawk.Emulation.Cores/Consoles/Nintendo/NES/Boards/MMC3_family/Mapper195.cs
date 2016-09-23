@@ -30,5 +30,44 @@
 		{
 			base.WritePRG(addr, value);
 		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				int bank_1k = Get_CHRBank_1K(addr);
+
+				if (bank_1k<=3)
+				{
+					return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+				}
+				else
+				{
+					addr = MapCHR(addr);
+					return VROM[addr + extra_vrom];
+				}
+			}
+			else
+				return base.ReadPPU(addr);
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				int bank_1k = Get_CHRBank_1K(addr);
+
+				if (bank_1k <= 3)
+				{
+					VRAM[(bank_1k << 10) + (addr & 0x3FF)]=value;
+				}
+				else
+				{
+					// nothing to write to VROM
+				}
+			}
+			else 
+				base.WritePPU(addr, value);
+		}
 	}
 }
