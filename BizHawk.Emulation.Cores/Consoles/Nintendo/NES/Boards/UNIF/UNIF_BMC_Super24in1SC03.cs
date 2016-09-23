@@ -47,20 +47,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.WriteEXP(addr, value);
 		}
 
-		protected override int Get_CHRBank_1K(int addr)
+		public override byte ReadPRG(int addr)
 		{
-			if (!exRegs[0].Bit(5))
-			{
-				return base.Get_CHRBank_1K(addr) | (exRegs[1] << 3);
-			}
+			int bank_8k = addr >> 13;
+			bank_8k = mmc3.prg_regs_8k[bank_8k];
 
-			return base.Get_CHRBank_1K(addr);
+			int NV= bank_8k & masko8[exRegs[0] & 7];
+			NV |= (exRegs[1] << 1);
+
+			return ROM[(NV << 13) + (addr & 0x1FFF)];
 		}
 
-		protected override int Get_PRGBank_8K(int addr)
+		public override byte ReadPPU(int addr)
 		{
-			// TODO
-			return base.Get_PRGBank_8K(addr);
+			if (addr < 0x2000)
+			{
+				int bank_1k = Get_CHRBank_1K(addr);
+
+				if ((exRegs[0] & 0x20)>0)
+				{
+					return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+				}
+				else
+				{
+					bank_1k = bank_1k | (exRegs[2] << 3);
+					return VROM[(bank_1k << 10) + (addr & 0x3FF)];
+				}
+			}
+			else
+				return base.ReadPPU(addr);
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				int bank_1k = Get_CHRBank_1K(addr);
+
+				if ((exRegs[0] & 0x20) > 0)
+				{
+					VRAM[(bank_1k << 10) + (addr & 0x3FF)]=value;
+				}
+				else
+				{
+					// dont write to VROM
+				}
+			}
+			else
+				base.WritePPU(addr, value);
 		}
 	}
 }
