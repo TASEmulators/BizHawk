@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool regs_wram_enable; // can the mapper regs be written to in 6000:7fff?
 		bool jump2 = false; // are we in special mode for the JUMP2 board?
 		bool vram = false; // is this a VRAM board?  (also set to true for JUMP2)
+		byte jump2_outer_bank; // needed to select between banks in 512K jump2 board
 
 		//regenerable state
 		IntBuffer prg_banks_16k = new IntBuffer(2);
@@ -48,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ByteBuffer regs = new ByteBuffer(8);
 		bool irq_enabled;
 		ushort irq_counter;
+		ushort irq_latch;
 		SEEPROM eprom;
 		public DatachBarcode reader;
 
@@ -58,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("regs", ref regs);
 			ser.Sync("irq_counter", ref irq_counter);
 			ser.Sync("irq_enabled", ref irq_enabled);
+			ser.Sync("irq_latch", ref irq_latch);
 			if (eprom != null)
 				eprom.SyncState(ser);
 			if (reader != null)
@@ -167,6 +170,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_bank_mask_16k = (Cart.prg_size / 16) - 1;
+
+			// for Jump2 boards, we only mask up to 256K, the outer bank is determined seperately
+			if (jump2)
+				prg_bank_mask_16k = 256 / 16 - 1;
+
 			chr_bank_mask_1k = Cart.chr_size - 1;
 			
 			SetMirrorType(EMirrorType.Vertical);
@@ -181,6 +189,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			prg_banks_16k[0] = prg_reg_16k & prg_bank_mask_16k;
 			prg_banks_16k[1] = 0xFF & prg_bank_mask_16k;
+			/*
 			if (jump2)
 			{
 				if (regs[0].Bit(0))
@@ -193,7 +202,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_banks_16k[0] &= 0x0f;
 					prg_banks_16k[1] &= 0x0f;
 				}
-			}			
+			}	
+			*/		
 		}
 
 		void WriteReg(int reg, byte value)
@@ -210,8 +220,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 6:
 				case 7:
 					regs[reg] = value;
-					if (jump2) // in jump2, chr regs are rewired to swap prg
-						SyncPRG();
+					//if (jump2) // in jump2, chr regs are rewired to swap prg
+						//SyncPRG();
 					break;
 				case 8:
 					//NES.LogLine("mapping PRG {0}", value);
@@ -229,16 +239,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0xA:
 					irq_enabled = value.Bit(0);
+					if (jump2)
+						irq_counter = irq_latch;
 					// all write acknolwedge
 					IRQSignal = false;
 					break;
 				case 0xB:
-					irq_counter &= 0xFF00;
-					irq_counter |= value;
+					if (jump2)
+					{
+						irq_latch &= 0xFF00;
+						irq_latch |= value;
+					}
+					else
+					{
+						irq_counter &= 0xFF00;
+						irq_counter |= value;
+					}
+					
 					break;
 				case 0xC:
-					irq_counter &= 0x00FF;
-					irq_counter |= (ushort)(value << 8);
+					if (jump2)
+					{
+						irq_latch &= 0x00FF;
+						irq_latch |= (ushort)(value << 8);
+					}
+					else
+					{
+						irq_counter &= 0x00FF;
+						irq_counter |= (ushort)(value << 8);
+					}
+					
 					break;
 				case 0xD:
 					if (eprom != null)
@@ -265,8 +295,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//NES.LogLine("writeprg {0:X4} = {1:X2}", addr, value);
 			if (regs_prg_enable)
 			{
-				addr &= 0xF;
-				WriteReg(addr, value);
+				if (!jump2)
+				{
+					addr &= 0xF;
+					WriteReg(addr, value);
+				} else
+				{
+					if (addr<=3)
+					{
+						jump2_outer_bank = (byte)(value & 1);
+					}
+					else
+					{
+						addr &= 0xF;
+						WriteReg(addr, value);
+					}
+				}
+				
 			}
 		}
 
@@ -298,10 +343,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (irq_enabled)
 			{
-				irq_counter--;
+				
 				if (irq_counter == 0x0000)
 				{
 					IRQSignal = true;
+					irq_counter--;
+				}
+				else
+				{
+					irq_counter--;
 				}
 			}
 			if (reader != null)
@@ -317,6 +367,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int ofs = addr & ((1 << 14) - 1);
 			bank_16k = prg_banks_16k[bank_16k];
 			addr = (bank_16k << 14) | ofs;
+			if (jump2)
+				addr = addr + (jump2_outer_bank << 18);
 			return ROM[addr];
 		}
 
