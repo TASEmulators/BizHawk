@@ -32,26 +32,139 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("exRegs", ref exRegs);
 		}
 
-		protected override int Get_CHRBank_1K(int addr)
+		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x400)
+			if (addr < 0x2000)
 			{
-				return mmc3.regs[0];
+				if (addr<0x1000)
+				{
+					if (addr<0x400)
+					{
+						if (mmc3.regs[0]<8)
+						{
+							return VRAM[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
+						} else
+						{
+							return VROM[(mmc3.regs[0] << 10) + (addr & 0x3FF)];
+						}
+					}
+					else if (addr<0x800)
+					{
+						if (exRegs[2] < 8)
+						{
+							return VRAM[(exRegs[2] << 10) + (addr & 0x3FF)];
+						}
+						else
+						{
+							return VROM[(exRegs[2] << 10) + (addr & 0x3FF)];
+						}
+					}
+					else if (addr < 0xC00)
+					{
+						if (mmc3.regs[1] < 8)
+						{
+							return VRAM[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
+						}
+						else
+						{
+							return VROM[(mmc3.regs[1] << 10) + (addr & 0x3FF)];
+						}
+					}
+					else
+					{
+						if (exRegs[3] < 8)
+						{
+							return VRAM[(exRegs[3] << 10) + (addr & 0x3FF)];
+						}
+						else
+						{
+							return VROM[(exRegs[3] << 10) + (addr & 0x3FF)];
+						}
+					}
+				}
+				else
+				{
+					int bank_1k = Get_CHRBank_1K(addr);
+					if (bank_1k < 8)
+					{
+						return VRAM[(bank_1k << 10) + (addr & 0x3FF)];
+					}
+					else
+					{
+						return VROM[(bank_1k << 10) + (addr & 0x3FF)];
+					}
+				}
 			}
-			else if (addr < 0x800)
-			{
-				return exRegs[2];
-			}
-			else if (addr < 0xC00)
-			{
-				return mmc3.regs[1];
-			}
-			else if (addr < 0x1000)
-			{
-				return exRegs[3];
-			}
+			else
+				return base.ReadPPU(addr);
+		}
 
-			return base.Get_CHRBank_1K(addr);
+		public override void WritePPU(int addr, byte value)
+		{
+			if (addr < 0x2000)
+			{
+				if (addr < 0x1000)
+				{
+					if (addr < 0x400)
+					{
+						if (mmc3.regs[0] < 8)
+						{
+							VRAM[(mmc3.regs[0] << 10) + (addr & 0x3FF)]=value;
+						}
+						else
+						{
+							// nothing
+						}
+					}
+					else if (addr < 0x800)
+					{
+						if (exRegs[2] < 8)
+						{
+							VRAM[(exRegs[2] << 10) + (addr & 0x3FF)]=value;
+						}
+						else
+						{
+							// nothing
+						}
+					}
+					else if (addr < 0xC00)
+					{
+						if (mmc3.regs[1] < 8)
+						{
+							VRAM[(mmc3.regs[1] << 10) + (addr & 0x3FF)]=value;
+						}
+						else
+						{
+							//nothing
+						}
+					}
+					else
+					{
+						if (exRegs[3] < 8)
+						{
+							VRAM[(exRegs[3] << 10) + (addr & 0x3FF)]=value;
+						}
+						else
+						{
+							// nothing
+						}
+					}
+				}
+				else
+				{
+					int bank_1k = Get_CHRBank_1K(addr);
+					if (bank_1k < 8)
+					{
+						VRAM[(bank_1k << 10) + (addr & 0x3FF)]=value;
+					}
+					else
+					{
+						// nothing
+					}
+				}
+			}
+			else
+				base.WritePPU(addr, value);
 		}
 
 		protected override int Get_PRGBank_8K(int addr)
@@ -70,15 +183,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (addr == 1)
+			if ((addr == 1) && ((mmc3.cmd & 0x8) > 0))
 			{
-				if ((mmc3.cmd & 0x8) > 0)
-				{
-					exRegs[mmc3.cmd & 3] = value;
-				}
+				exRegs[mmc3.cmd & 3] = value;
 			}
-
-			base.WritePRG(addr, value);
+			else 
+				base.WritePRG(addr, value);
 		}
 	}
 }
