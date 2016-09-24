@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//volatile state
 		public ByteBuffer chr_regs_1k = new ByteBuffer(8);
-		ByteBuffer prg_regs_8k = new ByteBuffer(4);
+		public ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		//configuration
 		public enum EMMC3Type
