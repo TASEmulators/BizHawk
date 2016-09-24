@@ -180,6 +180,7 @@ sha1:CE1B236ED0EAC133A3DE5411AEF57228220885EF	G	Super Sonic 5 (1997) (Unl)	NES		
 sha1:37DC34A1069B5B62BAC41DB66F47745E3A1E442B		SD Gundam Gaiden - Knight Gundam Monogatari (J) (V1.0) [b1]	NES		board=MAPPER159;
 sha1:89C57A4144E038565707A4B3B5B9505C7E4F3C70		SD Gundam Gaiden - Knight Gundam Monogatari (J) (V1.0) [T+Eng0.10_Assassin_Productions]	NES		board=MAPPER159;
 sha1:CFB4626E7794F1276ABF5DB7806FCE61EFEBFE98		Street Heroes (Sachen) [U][!]	NES		board=UNIF_UNL-SHERO;VRAM=16;
+sha1:56CBA51568B0F1458AA7E0DE6575D1225E40F7A1		3D Block (Unl) [a1][!]	NES		board=MAPPER219;PRG=32;CHR=0;VRAM=8;PAD_V=0;PAD_H=1
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
