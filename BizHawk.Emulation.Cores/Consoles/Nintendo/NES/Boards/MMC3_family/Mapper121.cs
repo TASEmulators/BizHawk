@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private ByteBuffer exRegs = new ByteBuffer(3);
 
-		private readonly byte[] lut = { 0x83, 0x83, 0x42, 0x00 };
+		private readonly byte[] lut = { 0x00, 0x83, 0x42, 0x00 };
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -41,30 +41,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-		protected override int Get_PRGBank_8K(int addr)
-		{
-			if (addr == 0x4000 && exRegs[0] > 0)
-			{
-				return exRegs[0] & prg_mask;
-			}
-
-			else if (addr == 0x6000 && exRegs[1] > 0)
-			{
-				return exRegs[1] & prg_mask;
-			}
-
-			else
-			{
-				return base.Get_PRGBank_8K(addr);
-			}
-		}
-
 		public override void WriteEXP(int addr, byte value)
 		{
 			if (addr >= 0x1000) // 0x5000-0x5FFF
 			{
 				exRegs[2] = lut[value & 0x3];
 			}
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			int bank_8k = addr >> 13;
+
+			if (bank_8k == 2 && exRegs[0] > 0)
+			{
+				bank_8k = exRegs[0] & prg_mask;
+			}
+			else if (bank_8k == 3 && exRegs[1] > 0) 
+			{
+				bank_8k = exRegs[1] & prg_mask;
+			}
+			else
+				bank_8k = base.Get_PRGBank_8K(addr);
+
+			bank_8k &= prg_mask;
+			addr = (bank_8k << 13) | (addr & 0x1FFF);
+			return ROM[addr];
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -88,15 +90,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						default: exRegs[0] = 0x0; exRegs[1] = 0x0; break;
 					}
 				}
-				//else
-				//{
-				//	base.WritePRG(addr, value);
-				//}
+				else if ((addr & 1)>0)
+					base.WritePRG(addr, value);
+				else //if (addr==0)
+					base.WritePRG(0, value);
 			}
-			//else
-			//{
-			//	base.WritePRG(addr, value);
-			//}
+			else
+			{
+				base.WritePRG(addr, value);
+			}
 		}
 	}
 }
