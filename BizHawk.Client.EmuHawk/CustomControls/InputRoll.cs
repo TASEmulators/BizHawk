@@ -1180,6 +1180,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentX = e.X;
 					_currentY = e.Y;
 					Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+					newCell.RowIndex += FirstVisibleRow;
 					CellChanged(newCell);
 					SelectCell(CurrentCell);
 				}
