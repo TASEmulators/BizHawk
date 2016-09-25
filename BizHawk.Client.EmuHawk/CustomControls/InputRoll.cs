@@ -2027,7 +2027,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a chane callback, and all property changes must call it, it is quicker and easier to just call this when needed
+			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a change callback, and all property changes must call it, it is quicker and easier to just call this when needed
 			public void ColumnsChanged()
 			{
 				int pos = 0;

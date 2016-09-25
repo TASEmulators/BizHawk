@@ -1176,8 +1176,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					CurrentTasMovie.FlagChanges();
+					TasView.AllColumns.ColumnsChanged();
 					RefreshTasView();
-
 				};
 
 				ColumnsSubMenu.DropDownItems.Add(item);
