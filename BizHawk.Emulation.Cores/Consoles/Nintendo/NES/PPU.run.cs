@@ -329,7 +329,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							
 							//process the current clock's worth of bg data fetching
 							//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
-							Read_bgdata(xp, ref bgdata[xt + 2]);
+							if (reg_2001.show_obj || reg_2001.show_bg)
+								Read_bgdata(xp, ref bgdata[xt + 2]);
+							else
+								runppu(1);
 
 							renderbgnow =  reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
 							//bg pos is different from raster pos due to its offsetability.
