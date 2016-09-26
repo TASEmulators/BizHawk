@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				MultiSampling = 0;
 				AspectRatio = AspectRatioMode.FourThree;
 				BufferSwapMode = SwapMode.OnVIUpdateCall;
-				UseNativeResolutionFactor = false;
+				UseNativeResolutionFactor = 0;
 				bilinearMode = bilinearFilteringMode.Standard;
 				MaxAnisotropy = false;
 				CacheSize = 500;
@@ -104,10 +104,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Swap frame buffers (0=On VI update call, 1=On VI origin change, 2=On buffer update)")]
 			public SwapMode BufferSwapMode { get; set; }
 
-			[DefaultValue(false)]
+			[DefaultValue(0)]
 			[DisplayName("Use native resolution factor")]
 			[Description("Frame buffer size is the factor of N64 native resolution.")]
-			public bool UseNativeResolutionFactor { get; set; }
+			public int UseNativeResolutionFactor { get; set; }
 
 			public enum bilinearFilteringMode
 			{

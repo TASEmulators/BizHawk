@@ -277,8 +277,6 @@
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
 			this.JaboTab = new System.Windows.Forms.TabPage();
 			this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
-			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.label71 = new System.Windows.Forms.Label();
 			this.label70 = new System.Windows.Forms.Label();
 			this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
@@ -360,7 +358,6 @@
 			this.GLideN64_DisableFBInfo = new System.Windows.Forms.CheckBox();
 			this.GLideN64_FBInfoReadDepthChunk = new System.Windows.Forms.CheckBox();
 			this.GLideN64_FBInfoReadColorChunk = new System.Windows.Forms.CheckBox();
-			this.GLideN64_UseNativeResolutionFactor = new System.Windows.Forms.CheckBox();
 			this.label76 = new System.Windows.Forms.Label();
 			this.GLideN64_BufferSwapMode = new System.Windows.Forms.ComboBox();
 			this.label75 = new System.Windows.Forms.Label();
@@ -377,6 +374,10 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.label89 = new System.Windows.Forms.Label();
+			this.GLideN64_UseNativeResolutionFactor = new System.Windows.Forms.TextBox();
+			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -3418,32 +3419,6 @@
 			this.JaboPerGameHacksGroupBox.TabStop = false;
 			this.JaboPerGameHacksGroupBox.Text = "Per game settings";
 			// 
-			// JaboResolutionHeightBox
-			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
-			this.JaboResolutionHeightBox.MaxLength = 4;
-			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
-			this.JaboResolutionHeightBox.Nullable = false;
-			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionHeightBox.TabIndex = 34;
-			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
-			// 
-			// JaboResolutionWidthBox
-			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
-			this.JaboResolutionWidthBox.MaxLength = 4;
-			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
-			this.JaboResolutionWidthBox.Nullable = false;
-			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionWidthBox.TabIndex = 33;
-			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
-			// 
 			// label71
 			// 
 			this.label71.AutoSize = true;
@@ -4369,10 +4344,11 @@
 			// 
 			// tabPage7
 			// 
+			this.tabPage7.Controls.Add(this.label89);
+			this.tabPage7.Controls.Add(this.GLideN64_UseNativeResolutionFactor);
 			this.tabPage7.Controls.Add(this.GLideN64_DisableFBInfo);
 			this.tabPage7.Controls.Add(this.GLideN64_FBInfoReadDepthChunk);
 			this.tabPage7.Controls.Add(this.GLideN64_FBInfoReadColorChunk);
-			this.tabPage7.Controls.Add(this.GLideN64_UseNativeResolutionFactor);
 			this.tabPage7.Controls.Add(this.label76);
 			this.tabPage7.Controls.Add(this.GLideN64_BufferSwapMode);
 			this.tabPage7.Controls.Add(this.label75);
@@ -4396,7 +4372,7 @@
 			// GLideN64_DisableFBInfo
 			// 
 			this.GLideN64_DisableFBInfo.AutoSize = true;
-			this.GLideN64_DisableFBInfo.Location = new System.Drawing.Point(6, 112);
+			this.GLideN64_DisableFBInfo.Location = new System.Drawing.Point(6, 115);
 			this.GLideN64_DisableFBInfo.Name = "GLideN64_DisableFBInfo";
 			this.GLideN64_DisableFBInfo.Size = new System.Drawing.Size(98, 17);
 			this.GLideN64_DisableFBInfo.TabIndex = 76;
@@ -4406,7 +4382,7 @@
 			// GLideN64_FBInfoReadDepthChunk
 			// 
 			this.GLideN64_FBInfoReadDepthChunk.AutoSize = true;
-			this.GLideN64_FBInfoReadDepthChunk.Location = new System.Drawing.Point(6, 89);
+			this.GLideN64_FBInfoReadDepthChunk.Location = new System.Drawing.Point(6, 92);
 			this.GLideN64_FBInfoReadDepthChunk.Name = "GLideN64_FBInfoReadDepthChunk";
 			this.GLideN64_FBInfoReadDepthChunk.Size = new System.Drawing.Size(155, 17);
 			this.GLideN64_FBInfoReadDepthChunk.TabIndex = 75;
@@ -4416,27 +4392,17 @@
 			// GLideN64_FBInfoReadColorChunk
 			// 
 			this.GLideN64_FBInfoReadColorChunk.AutoSize = true;
-			this.GLideN64_FBInfoReadColorChunk.Location = new System.Drawing.Point(6, 66);
+			this.GLideN64_FBInfoReadColorChunk.Location = new System.Drawing.Point(6, 69);
 			this.GLideN64_FBInfoReadColorChunk.Name = "GLideN64_FBInfoReadColorChunk";
 			this.GLideN64_FBInfoReadColorChunk.Size = new System.Drawing.Size(150, 17);
 			this.GLideN64_FBInfoReadColorChunk.TabIndex = 74;
 			this.GLideN64_FBInfoReadColorChunk.Text = "FB Info Read Color Chunk";
 			this.GLideN64_FBInfoReadColorChunk.UseVisualStyleBackColor = true;
 			// 
-			// GLideN64_UseNativeResolutionFactor
-			// 
-			this.GLideN64_UseNativeResolutionFactor.AutoSize = true;
-			this.GLideN64_UseNativeResolutionFactor.Location = new System.Drawing.Point(6, 44);
-			this.GLideN64_UseNativeResolutionFactor.Name = "GLideN64_UseNativeResolutionFactor";
-			this.GLideN64_UseNativeResolutionFactor.Size = new System.Drawing.Size(165, 17);
-			this.GLideN64_UseNativeResolutionFactor.TabIndex = 73;
-			this.GLideN64_UseNativeResolutionFactor.Text = "Use Native Resolution Factor";
-			this.GLideN64_UseNativeResolutionFactor.UseVisualStyleBackColor = true;
-			// 
 			// label76
 			// 
 			this.label76.AutoSize = true;
-			this.label76.Location = new System.Drawing.Point(3, 168);
+			this.label76.Location = new System.Drawing.Point(3, 171);
 			this.label76.Name = "label76";
 			this.label76.Size = new System.Drawing.Size(95, 13);
 			this.label76.TabIndex = 72;
@@ -4450,7 +4416,7 @@
             "On VI update call",
             "On VI origin change",
             "On buffer update"});
-			this.GLideN64_BufferSwapMode.Location = new System.Drawing.Point(134, 165);
+			this.GLideN64_BufferSwapMode.Location = new System.Drawing.Point(134, 168);
 			this.GLideN64_BufferSwapMode.Name = "GLideN64_BufferSwapMode";
 			this.GLideN64_BufferSwapMode.Size = new System.Drawing.Size(138, 21);
 			this.GLideN64_BufferSwapMode.TabIndex = 71;
@@ -4458,7 +4424,7 @@
 			// label75
 			// 
 			this.label75.AutoSize = true;
-			this.label75.Location = new System.Drawing.Point(3, 141);
+			this.label75.Location = new System.Drawing.Point(3, 144);
 			this.label75.Name = "label75";
 			this.label75.Size = new System.Drawing.Size(68, 13);
 			this.label75.TabIndex = 70;
@@ -4473,7 +4439,7 @@
             "Force 4:3",
             "Force 16:9",
             "Adjust"});
-			this.GLideN64_AspectRatio.Location = new System.Drawing.Point(134, 138);
+			this.GLideN64_AspectRatio.Location = new System.Drawing.Point(134, 141);
 			this.GLideN64_AspectRatio.Name = "GLideN64_AspectRatio";
 			this.GLideN64_AspectRatio.Size = new System.Drawing.Size(138, 21);
 			this.GLideN64_AspectRatio.TabIndex = 69;
@@ -4603,6 +4569,48 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+			// 
+			// label89
+			// 
+			this.label89.AutoSize = true;
+			this.label89.Location = new System.Drawing.Point(3, 45);
+			this.label89.Name = "label89";
+			this.label89.Size = new System.Drawing.Size(146, 13);
+			this.label89.TabIndex = 78;
+			this.label89.Text = "Use Native Resolution Factor";
+			// 
+			// GLideN64_UseNativeResolutionFactor
+			// 
+			this.GLideN64_UseNativeResolutionFactor.Location = new System.Drawing.Point(155, 42);
+			this.GLideN64_UseNativeResolutionFactor.Name = "GLideN64_UseNativeResolutionFactor";
+			this.GLideN64_UseNativeResolutionFactor.Size = new System.Drawing.Size(32, 20);
+			this.GLideN64_UseNativeResolutionFactor.TabIndex = 77;
+			// 
+			// JaboResolutionHeightBox
+			// 
+			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
+			this.JaboResolutionHeightBox.MaxLength = 4;
+			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
+			this.JaboResolutionHeightBox.Nullable = false;
+			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionHeightBox.TabIndex = 34;
+			this.JaboResolutionHeightBox.Text = "0";
+			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
+			// 
+			// JaboResolutionWidthBox
+			// 
+			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
+			this.JaboResolutionWidthBox.MaxLength = 4;
+			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
+			this.JaboResolutionWidthBox.Nullable = false;
+			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionWidthBox.TabIndex = 33;
+			this.JaboResolutionWidthBox.Text = "0";
+			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -5005,7 +5013,6 @@
 		private System.Windows.Forms.CheckBox GLideN64_DisableFBInfo;
 		private System.Windows.Forms.CheckBox GLideN64_FBInfoReadDepthChunk;
 		private System.Windows.Forms.CheckBox GLideN64_FBInfoReadColorChunk;
-		private System.Windows.Forms.CheckBox GLideN64_UseNativeResolutionFactor;
 		private System.Windows.Forms.Label label76;
 		private System.Windows.Forms.ComboBox GLideN64_BufferSwapMode;
 		private System.Windows.Forms.Label label75;
@@ -5018,5 +5025,7 @@
 		private System.Windows.Forms.CheckBox GLideN64_ForceGammaCorrection;
 		private System.Windows.Forms.Label label88;
 		private System.Windows.Forms.TextBox GLideN64_GammaCorrectionLevel;
+		private System.Windows.Forms.Label label89;
+		private System.Windows.Forms.TextBox GLideN64_UseNativeResolutionFactor;
 	}
 }
