@@ -37,6 +37,9 @@
 			this.BoardPropertiesGroupBox = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.InfoLabel = new System.Windows.Forms.Label();
+			this.label3 = new System.Windows.Forms.Label();
+			this.RamPatternOverrideBox = new BizHawk.Client.EmuHawk.HexTextBox();
+			this.label4 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.BoardPropertiesGroupBox.SuspendLayout();
 			this.SuspendLayout();
@@ -44,7 +47,7 @@
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(221, 354);
+			this.OkBtn.Location = new System.Drawing.Point(221, 423);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(67, 23);
 			this.OkBtn.TabIndex = 0;
@@ -56,7 +59,7 @@
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(294, 354);
+			this.CancelBtn.Location = new System.Drawing.Point(294, 423);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(67, 23);
 			this.CancelBtn.TabIndex = 1;
@@ -73,7 +76,7 @@
 			this.dataGridView1.Location = new System.Drawing.Point(10, 19);
 			this.dataGridView1.MultiSelect = false;
 			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(333, 203);
+			this.dataGridView1.Size = new System.Drawing.Size(333, 181);
 			this.dataGridView1.TabIndex = 9;
 			// 
 			// RegionComboBox
@@ -89,7 +92,7 @@
 			// 
 			this.HelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.HelpBtn.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
-			this.HelpBtn.Location = new System.Drawing.Point(12, 87);
+			this.HelpBtn.Location = new System.Drawing.Point(12, 177);
 			this.HelpBtn.Name = "HelpBtn";
 			this.HelpBtn.Size = new System.Drawing.Size(23, 23);
 			this.HelpBtn.TabIndex = 10;
@@ -111,9 +114,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BoardPropertiesGroupBox.Controls.Add(this.dataGridView1);
-			this.BoardPropertiesGroupBox.Location = new System.Drawing.Point(12, 113);
+			this.BoardPropertiesGroupBox.Location = new System.Drawing.Point(12, 204);
 			this.BoardPropertiesGroupBox.Name = "BoardPropertiesGroupBox";
-			this.BoardPropertiesGroupBox.Size = new System.Drawing.Size(349, 228);
+			this.BoardPropertiesGroupBox.Size = new System.Drawing.Size(349, 206);
 			this.BoardPropertiesGroupBox.TabIndex = 13;
 			this.BoardPropertiesGroupBox.TabStop = false;
 			this.BoardPropertiesGroupBox.Text = "Custom Board Properties";
@@ -129,12 +132,40 @@
 			// 
 			// InfoLabel
 			// 
+			this.InfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.InfoLabel.AutoSize = true;
-			this.InfoLabel.Location = new System.Drawing.Point(40, 92);
+			this.InfoLabel.Location = new System.Drawing.Point(41, 182);
 			this.InfoLabel.Name = "InfoLabel";
 			this.InfoLabel.Size = new System.Drawing.Size(213, 13);
 			this.InfoLabel.TabIndex = 15;
 			this.InfoLabel.Text = "The current board has no custom properties";
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(12, 92);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(133, 13);
+			this.label3.TabIndex = 16;
+			this.label3.Text = "Initial Ram pattern override";
+			// 
+			// RamPatternOverrideBox
+			// 
+			this.RamPatternOverrideBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.RamPatternOverrideBox.Location = new System.Drawing.Point(12, 108);
+			this.RamPatternOverrideBox.Name = "RamPatternOverrideBox";
+			this.RamPatternOverrideBox.Nullable = true;
+			this.RamPatternOverrideBox.Size = new System.Drawing.Size(165, 20);
+			this.RamPatternOverrideBox.TabIndex = 17;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(12, 131);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(269, 13);
+			this.label4.TabIndex = 18;
+			this.label4.Text = "Provides an override to the initial WRAM startup pattern";
 			// 
 			// NESSyncSettingsForm
 			// 
@@ -142,7 +173,10 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(373, 389);
+			this.ClientSize = new System.Drawing.Size(373, 458);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.RamPatternOverrideBox);
+			this.Controls.Add(this.label3);
 			this.Controls.Add(this.InfoLabel);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.BoardPropertiesGroupBox);
@@ -156,7 +190,6 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NES Advanced Settings";
-			this.Load += new System.EventHandler(this.NESSyncSettingsForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.BoardPropertiesGroupBox.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -175,5 +208,8 @@
 		private System.Windows.Forms.Label label1;
 		internal System.Windows.Forms.GroupBox BoardPropertiesGroupBox;
 		private System.Windows.Forms.Label InfoLabel;
+		private System.Windows.Forms.Label label3;
+		private HexTextBox RamPatternOverrideBox;
+		private System.Windows.Forms.Label label4;
 	}
 }
