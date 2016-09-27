@@ -4,3 +4,6 @@
 [submodule "libmupen64plus/GLideN64"]
 	path = libmupen64plus/GLideN64
 	url = https://github.com/TASVideos/GLideN64.git
+[submodule "libmupen64plus/mupen64plus-rsp-cxd4"]
+	path = libmupen64plus/mupen64plus-rsp-cxd4
+	url = https://github.com/TASVideos/mupen64plus-rsp-cxd4.git
