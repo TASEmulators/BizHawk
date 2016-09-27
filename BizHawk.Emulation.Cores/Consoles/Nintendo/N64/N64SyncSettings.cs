@@ -100,7 +100,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Rsp_Hle = 0,
 
 			[Description("Z64 Hle Video")]
-			Rsp_Z64_hlevideo = 1
+			Rsp_Z64_hlevideo = 1,
+
+			[Description("cxd4 LLE")]
+			Rsp_cxd4 = 2
 		}
 	}
 
