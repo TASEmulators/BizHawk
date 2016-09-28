@@ -78,14 +78,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("exRegs", ref exRegs);
-			ser.Sync("cmd", ref is_mk3);
+			ser.Sync("is_mk3", ref is_mk3);
+			ser.Sync("ptg_regs_8k", ref prg_regs_8k);
 			ser.Sync("prg_mask", ref prg_mask_8k);
 			ser.Sync("chr_mask", ref chr_mask_1k);
 		}
 
 		public void sync_prg(int i)
 		{
-
 			if ((exRegs[0] & 0x80) == 0)
 			{
 				int temp = 0;
@@ -101,8 +101,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg_regs_8k[i] = (byte)(temp & prg_mask_8k);
 				//}
 			}
-
-
 		}
 
 		public void sync_prg_2()
@@ -117,7 +115,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_regs_8k[1] = (byte)(bank+1);
 				prg_regs_8k[2] = (byte)bank;
 				prg_regs_8k[3] = (byte)(bank+1);
-
 			}
 			else
 			{
@@ -126,7 +123,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				sync_prg(2);
 				sync_prg(3);
 			}
-
 		}
 
 		public override void WriteEXP(int addr, byte value)
