@@ -534,6 +534,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					break;
 				}
+				if (Global.Config.DispSpeedupFeatures != 0)
+				{
+					Thread.Sleep(0);
+				}
 			}
 
 			Shutdown();
