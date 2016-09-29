@@ -612,7 +612,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
-		public bool UpdateFrame = false;
 
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
@@ -2729,12 +2728,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame, currentTimestamp);
-
-			if (UpdateFrame)
-			{
-				runFrame = true;
-			}
-
+			
 			float atten = Global.Config.SoundVolume / 100.0f;
 			if (!Global.Config.SoundEnabledNormal)
 				atten = 0;
@@ -2906,11 +2900,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				UpdateToolsAfter();
 				//PressRewind = false;
-			}
-
-			if (UpdateFrame)
-			{
-				UpdateFrame = false;
 			}
 
 			GlobalWin.Sound.UpdateSound(atten);
