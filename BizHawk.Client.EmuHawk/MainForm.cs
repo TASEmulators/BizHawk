@@ -2777,7 +2777,7 @@ namespace BizHawk.Client.EmuHawk
 					if (isFastForwarding || IsTurboing || isRewinding)
 					{
 						if (Global.Config.SoundEnabledRWFF)
-							atten = Global.Config.SoundVolumeRWFF / 100.0f;
+							atten *= Global.Config.SoundVolumeRWFF / 100.0f;
 						else
 							atten = 0;
 					}
