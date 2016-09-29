@@ -1337,11 +1337,11 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
-        private double _runloopLastFps;
-        private bool _runloopFrameadvance;
-        private double _runloopUpdatesPerSecond = 16.0;
-        private double _runloopFpsSmoothing = 8.0;
-        private long _runloopSecond;
+		private double _runloopLastFps;
+		private bool _runloopFrameadvance;
+		private double _runloopUpdatesPerSecond = 16.0;
+		private double _runloopFpsSmoothing = 8.0;
+		private long _runloopSecond;
 		private bool _runloopLastFf;
 		private bool _inResizeLoop;
 
@@ -2771,17 +2771,17 @@ namespace BizHawk.Client.EmuHawk
 
 				_runloopLastFps+= _runloopFpsSmoothing;
 
-                if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
-                {
-                    _runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
-                    _runloopSecond = currentTimestamp;
+				if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
+				{
+					_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
+					_runloopSecond = currentTimestamp;
 					updateFpsString = true;
 				}
 
 				if (updateFpsString)
 				{
-                    var fps_string = string.Format("{0:0} fps", _runloopLastFps);
-                    if (isRewinding)
+					var fps_string = string.Format("{0:0} fps", _runloopLastFps);
+					if (isRewinding)
 					{
 						if (IsTurboing || isFastForwarding)
 						{
@@ -3528,7 +3528,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//This shows up if there's a problem                
+					//This shows up if there's a problem
 					// TODO: put all these in a single method or something
 
 					//The ROM has been loaded by a recursive invocation of the LoadROM method.
