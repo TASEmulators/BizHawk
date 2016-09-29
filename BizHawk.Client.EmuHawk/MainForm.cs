@@ -2691,12 +2691,12 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
 			{
+				_runloopFrameadvance = true;
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
 				{
 					PauseEmulator();
 					runFrame = true;
-					_runloopFrameadvance = true;
 					_frameAdvanceTimestamp = currentTimestamp;
 				}
 				else
@@ -2804,8 +2804,8 @@ namespace BizHawk.Client.EmuHawk
 				
 				if (Global.Config.SoundEnabledNormal)
 					atten = Global.Config.SoundVolume / 100.0f;
-
-				if (_runloopFrameadvance && !Global.Config.MuteFrameAdvance)
+				
+				if (_runloopFrameadvance && Global.Config.MuteFrameAdvance)
 				{
 					atten = 0;
 				}
