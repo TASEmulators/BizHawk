@@ -1337,8 +1337,9 @@ namespace BizHawk.Client.EmuHawk
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
 		private double _runloopLastFps;
+		private double _runloopDisplayFps;
 		private bool _runloopFrameadvance;
-		private double _runloopUpdatesPerSecond = 16.0;
+		private double _runloopUpdatesPerSecond = 12.0;
 		private double _runloopFpsSmoothing = 8.0;
 		private long _runloopSecond;
 		private bool _runloopLastFf;
@@ -1405,7 +1406,7 @@ namespace BizHawk.Client.EmuHawk
 			//we need to display FPS somewhere, in this case
 			if (Global.Config.DispSpeedupFeatures == 0)
 			{
-				str = str + string.Format("({0} fps) -", _runloopLastFps);
+				str = str + string.Format("({0:0} fps) -", _runloopDisplayFps);
 			}
 
 			if (Global.Emulator.IsNull())
@@ -2762,42 +2763,7 @@ namespace BizHawk.Client.EmuHawk
 
 				_runloopLastFps+= _runloopFpsSmoothing;
 
-				if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
-				{
-					_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
-					_runloopSecond = currentTimestamp;
-					updateFpsString = true;
-				}
-
-				if (updateFpsString)
-				{
-					var fps_string = string.Format("{0:0} fps", _runloopLastFps);
-					if (isRewinding)
-					{
-						if (IsTurboing || isFastForwarding)
-						{
-							fps_string += " <<<<";
-						}
-						else
-						{
-							fps_string += " <<";
-						}
-					}
-					else if (IsTurboing)
-					{
-						fps_string += " >>>>";
-					}
-					else if (isFastForwarding)
-					{
-						fps_string += " >>";
-					}
-
-					GlobalWin.OSD.FPS = fps_string;
-
-					//need to refresh window caption in this case
-					if (Global.Config.DispSpeedupFeatures == 0)
-						SetWindowText();
-				}
+				UpdateFpsDisplay(currentTimestamp, updateFpsString, isRewinding, isFastForwarding);
 
 				CaptureRewind(suppressCaptureRewind);
 
@@ -2829,6 +2795,7 @@ namespace BizHawk.Client.EmuHawk
 
 				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
 				Global.Emulator.FrameAdvance(render, renderSound);
+
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -2893,6 +2860,48 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			GlobalWin.Sound.UpdateSound(atten);
+		}
+
+		private void UpdateFpsDisplay(long currentTimestamp, bool updateFpsString, bool isRewinding, bool isFastForwarding)
+		{
+			var timeDiff = (currentTimestamp - _runloopSecond);
+			if ( timeDiff * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
+			{
+				_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + timeDiff * _runloopFpsSmoothing));
+				_runloopSecond = currentTimestamp;
+				_runloopDisplayFps = _runloopLastFps;
+				updateFpsString = true;
+			}
+
+			if (updateFpsString)
+			{
+				var fps_string = string.Format("{0:0} fps", _runloopDisplayFps);
+				if (isRewinding)
+				{
+					if (IsTurboing || isFastForwarding)
+					{
+						fps_string += " <<<<";
+					}
+					else
+					{
+						fps_string += " <<";
+					}
+				}
+				else if (IsTurboing)
+				{
+					fps_string += " >>>>";
+				}
+				else if (isFastForwarding)
+				{
+					fps_string += " >>";
+				}
+
+				GlobalWin.OSD.FPS = fps_string;
+
+				//need to refresh window caption in this case
+				if (Global.Config.DispSpeedupFeatures == 0)
+					SetWindowText();
+			}
 		}
 
 		#endregion
