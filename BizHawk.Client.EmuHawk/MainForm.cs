@@ -2729,9 +2729,7 @@ namespace BizHawk.Client.EmuHawk
 
 			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame, currentTimestamp);
 			
-			float atten = Global.Config.SoundVolume / 100.0f;
-			if (!Global.Config.SoundEnabledNormal)
-				atten = 0;
+			float atten = 0;
 
 			var coreskipaudio = false;
 			if (runFrame || force)
@@ -2803,12 +2801,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CaptureRewind(suppressCaptureRewind);
+				
+				if (Global.Config.SoundEnabledNormal)
+					atten = Global.Config.SoundVolume / 100.0f;
 
-				if (!_runloopFrameadvance)
-				{
-					
-				}
-				else if (!Global.Config.MuteFrameAdvance)
+				if (_runloopFrameadvance && !Global.Config.MuteFrameAdvance)
 				{
 					atten = 0;
 				}
@@ -2890,10 +2887,6 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.Tools.TAStudio.StopSeeking();
 					}
 				}
-			}
-			else
-			{
-				atten = 0;
 			}
 
 			if (Global.ClientControls["Rewind"] || PressRewind)
