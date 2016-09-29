@@ -2801,22 +2801,27 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				CaptureRewind(suppressCaptureRewind);
-				
+
+				// Set volume, if enabled
 				if (Global.Config.SoundEnabledNormal)
+				{
 					atten = Global.Config.SoundVolume / 100.0f;
-				
-				if (_runloopFrameadvance && Global.Config.MuteFrameAdvance)
-				{
-					atten = 0;
-				}
 
-				if (isFastForwarding || IsTurboing || isRewinding)
-				{
-					atten *= Global.Config.SoundVolumeRWFF / 100.0f;
-					if (!Global.Config.SoundEnabledRWFF)
+					if (isFastForwarding || IsTurboing || isRewinding)
+					{
+						if (Global.Config.SoundEnabledRWFF)
+							atten *= Global.Config.SoundVolumeRWFF / 100.0f;
+						else
+							atten = 0;
+					}
+
+					// Mute if using Frame Advance/Frame Progress
+					if (_runloopFrameadvance && Global.Config.MuteFrameAdvance)
+					{
 						atten = 0;
+					}
 				}
-
+				
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
 				coreskipaudio = IsTurboing && _currAviWriter == null;
