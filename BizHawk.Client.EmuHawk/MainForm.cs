@@ -1906,6 +1906,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Render()
 		{
+			if (Global.Config.DispSpeedupFeatures == 0)
+			{
+				return;
+			}
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 			var video = Global.Emulator.VideoProvider();
 			//bool change = false;
