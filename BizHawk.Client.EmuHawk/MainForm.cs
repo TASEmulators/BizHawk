@@ -1337,10 +1337,11 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
-		private int _runloopFps;
-		private int _runloopLastFps;
-		private bool _runloopFrameadvance;
-		private long _runloopSecond;
+        private double _runloopLastFps;
+        private bool _runloopFrameadvance;
+        private double _runloopUpdatesPerSecond = 16.0;
+        private double _runloopFpsSmoothing = 8.0;
+        private long _runloopSecond;
 		private bool _runloopLastFf;
 		private bool _inResizeLoop;
 
@@ -2768,20 +2769,19 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_runloopFps++;
+				_runloopLastFps+= _runloopFpsSmoothing;
 
-				if ((double)(currentTimestamp - _runloopSecond) / Stopwatch.Frequency >= 1.0)
-				{
-					_runloopLastFps = _runloopFps;
-					_runloopSecond = currentTimestamp;
-					_runloopFps = 0;
+                if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
+                {
+                    _runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
+                    _runloopSecond = currentTimestamp;
 					updateFpsString = true;
 				}
 
 				if (updateFpsString)
 				{
-					var fps_string = _runloopLastFps + " fps";
-					if (isRewinding)
+                    var fps_string = string.Format("{0:0} fps", _runloopLastFps);
+                    if (isRewinding)
 					{
 						if (IsTurboing || isFastForwarding)
 						{
