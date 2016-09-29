@@ -534,8 +534,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					break;
 				}
-
-				Thread.Sleep(0);
 			}
 
 			Shutdown();
