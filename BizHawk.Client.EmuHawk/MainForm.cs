@@ -2731,7 +2731,6 @@ namespace BizHawk.Client.EmuHawk
 			
 			float atten = 0;
 
-			var coreskipaudio = false;
 			if (runFrame || force)
 			{
 				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
@@ -2824,19 +2823,12 @@ namespace BizHawk.Client.EmuHawk
 				
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
-				coreskipaudio = IsTurboing && _currAviWriter == null;
-
 				//why not skip audio if the user doesnt want sound
-				if (!Global.Config.SoundEnabled)
-					coreskipaudio = true;
+				bool renderSound = Global.Config.SoundEnabled || !IsTurboing;
+				renderSound |= (_currAviWriter != null && _currAviWriter.UsesAudio);
 
-				{
-					bool render = !_throttle.skipnextframe;
-					bool renderSound = !coreskipaudio;
-					if (_currAviWriter != null && _currAviWriter.UsesVideo) render = true;
-					if (_currAviWriter != null && _currAviWriter.UsesAudio) renderSound = true;
-					Global.Emulator.FrameAdvance(render, renderSound);
-				}
+				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
+				Global.Emulator.FrameAdvance(render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
