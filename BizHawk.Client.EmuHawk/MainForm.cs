@@ -1337,9 +1337,10 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
-		private int _runloopFps;
-		private int _runloopLastFps;
+		private double _runloopLastFps;
 		private bool _runloopFrameadvance;
+		private double _runloopUpdatesPerSecond = 16.0;
+		private double _runloopFpsSmoothing = 8.0;
 		private long _runloopSecond;
 		private bool _runloopLastFf;
 		private bool _inResizeLoop;
@@ -2768,19 +2769,18 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_runloopFps++;
+				_runloopLastFps+= _runloopFpsSmoothing;
 
-				if ((double)(currentTimestamp - _runloopSecond) / Stopwatch.Frequency >= 1.0)
+				if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
 				{
-					_runloopLastFps = _runloopFps;
+					_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
 					_runloopSecond = currentTimestamp;
-					_runloopFps = 0;
 					updateFpsString = true;
 				}
 
 				if (updateFpsString)
 				{
-					var fps_string = _runloopLastFps + " fps";
+					var fps_string = string.Format("{0:0} fps", _runloopLastFps);
 					if (isRewinding)
 					{
 						if (IsTurboing || isFastForwarding)
@@ -3528,7 +3528,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//This shows up if there's a problem                
+					//This shows up if there's a problem
 					// TODO: put all these in a single method or something
 
 					//The ROM has been loaded by a recursive invocation of the LoadROM method.
