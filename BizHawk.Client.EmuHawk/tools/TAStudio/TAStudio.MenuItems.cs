@@ -413,6 +413,31 @@ namespace BizHawk.Client.EmuHawk
 					RefreshDialog();
 				}
 			}
+			else
+			{
+				// copypaste from PasteInsertMenuItem_Click!
+				IDataObject data = Clipboard.GetDataObject();
+				if (data.GetDataPresent(DataFormats.StringFormat))
+				{
+					string input = (string)data.GetData(DataFormats.StringFormat);
+					if (!string.IsNullOrWhiteSpace(input))
+					{
+						string[] lines = input.Split('\n');
+						if (lines.Length > 0)
+						{
+							for (int i = 0; i < lines.Length; i++)
+							{
+								var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+								if (line == null)
+									return;
+								else
+									_tasClipboard.Add(new TasClipboardEntry(i, line));
+							}
+							PasteMenuItem_Click(sender, e); // pseudo recursion
+						}
+					}
+				}
+			}
 		}
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
@@ -440,6 +465,31 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					RefreshDialog();
+				}
+			}
+			else
+			{
+				// copypaste from PasteMenuItem_Click!
+				IDataObject data = Clipboard.GetDataObject();
+				if (data.GetDataPresent(DataFormats.StringFormat))
+				{
+					string input = (string)data.GetData(DataFormats.StringFormat);
+					if (!string.IsNullOrWhiteSpace(input))
+					{
+						string[] lines = input.Split('\n');
+						if (lines.Length > 0)
+						{
+							for (int i = 0; i < lines.Length; i++)
+							{
+								var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+								if (line == null)
+									return;
+								else
+									_tasClipboard.Add(new TasClipboardEntry(i, line));
+							}
+							PasteInsertMenuItem_Click(sender, e); // pseudo recursion
+						}
+					}
 				}
 			}
 		}
