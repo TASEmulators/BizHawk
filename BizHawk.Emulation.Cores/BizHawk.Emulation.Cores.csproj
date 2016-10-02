@@ -704,6 +704,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper254.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\MMC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\NES-QJ.cs" />
+		<Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Pocahontas.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\RexSoftSL1632.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TQROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\TLSROM.cs" />
