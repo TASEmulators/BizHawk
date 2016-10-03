@@ -31,12 +31,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (addr == 0 || addr == 1)
+			if (addr == 0)
 			{
-				exRegs[1] = value;
+				exRegs[1] = 1;
+				base.WritePRG(addr, value);
 			}
-
-			base.WritePRG(addr, value);
+			else if ((addr == 0x0001) && (exRegs[1] > 0))
+			{
+				base.WritePRG(addr, value);
+			}
+			else 
+				base.WritePRG(addr, value);
 		}
 
 		public override void WriteEXP(int addr, byte value)
@@ -51,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WriteWRAM(int addr, byte value)
 		{
-			if (addr == 0x6000)
+			if (addr == 0x0000)
 			{
 				exRegs[0] = value;
 			}
