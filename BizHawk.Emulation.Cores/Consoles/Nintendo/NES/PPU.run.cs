@@ -641,13 +641,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ppudead < 2)
 			{
 				ppur.status.sl = 241;
-				runppu(postNMIlines * kLineTime);
+				runppu(3);
+				//Reg2002_vblank_active = true;
+				runppu(3);
+				runppu(postNMIlines * kLineTime - 6);
 				ppur.status.sl = 0;
-				clear_2002();
+				//clear_2002();
 			}
 			runppu(241 * kLineTime);
 			runppu(preNMIlines * kLineTime);
-			Reg2002_vblank_active = true;
 			--ppudead;
 		}
 	}
