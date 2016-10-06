@@ -1445,7 +1445,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
 				var address = _addressHighlighted + i;
-				_domain.PokeByte(address, (byte)value);
+
+				if (address < _domain.Size)
+				{
+					_domain.PokeByte(address, (byte)value);
+				}
 			}
 
 			UpdateValues();
