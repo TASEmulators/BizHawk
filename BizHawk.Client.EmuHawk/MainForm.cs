@@ -3486,9 +3486,14 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.Config.LoadCheatFileByGame)
 					{
+						Global.CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
 						if (Global.CheatList.AttemptToLoadCheatFile())
 						{
 							GlobalWin.OSD.AddMessage("Cheats file loaded");
+						}
+						else if (Global.CheatList.Any())
+						{
+							Global.CheatList.Clear();
 						}
 					}
 
