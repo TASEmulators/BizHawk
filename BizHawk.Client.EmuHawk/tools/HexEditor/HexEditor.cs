@@ -617,6 +617,13 @@ namespace BizHawk.Client.EmuHawk
 				AddressesLabel.ForeColor = SystemColors.ControlDarkDark;
 			}
 
+			if (HighlightedAddress >= _domain.Size
+				|| (_secondaryHighlightedAddresses.Any() && _secondaryHighlightedAddresses.Max() >= _domain.Size))
+			{
+				_addressHighlighted = -1;
+				_secondaryHighlightedAddresses.Clear();
+			}
+
 			UpdateGroupBoxTitle();
 			SetHeader();
 			UpdateValues();
