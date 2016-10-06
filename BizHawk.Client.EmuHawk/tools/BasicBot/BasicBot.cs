@@ -927,7 +927,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt.TieBreak3 = TieBreaker3Value;
 					PlayBestButton.Enabled = true;
 
-					if (IsBetter(_comparisonBotAttempt, _currentBotAttempt))
+					if (_bestBotAttempt == null || IsBetter(_bestBotAttempt, _currentBotAttempt))
 					{
 						_bestBotAttempt = _currentBotAttempt;
 						UpdateBestAttempt();
