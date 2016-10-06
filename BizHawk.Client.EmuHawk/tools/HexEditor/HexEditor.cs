@@ -2264,9 +2264,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						SetHighlighted(pointedAddress);
 						_secondaryHighlightedAddresses.Clear();
 						_findStr = string.Empty;
+						SetHighlighted(pointedAddress);
 					}
 
 					MemoryViewerBox.Refresh();
