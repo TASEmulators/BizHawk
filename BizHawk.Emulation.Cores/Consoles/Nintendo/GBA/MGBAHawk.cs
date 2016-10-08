@@ -317,7 +317,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] CloneSaveRam()
 		{
-			int len = LibmGBA.BizGetSaveRam(_core, _saveScratch);
+			int len = LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length);
+			if (len == _saveScratch.Length)
+				throw new InvalidOperationException("Save buffer not long enough");
 			if (len == 0)
 				return null;
 
@@ -362,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			get
 			{
-				return LibmGBA.BizGetSaveRam(_core, _saveScratch) > 0;
+				return LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length) > 0;
 			}
 		}
 
