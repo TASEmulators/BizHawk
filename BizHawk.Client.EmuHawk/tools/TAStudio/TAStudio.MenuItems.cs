@@ -409,7 +409,25 @@ namespace BizHawk.Client.EmuHawk
 							else
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 						}
-						PasteMenuItem_Click(sender, e); // pseudo recursion
+
+						var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+						CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+							if (wasPaused)
+							{
+								DoAutoRestore();
+							}
+							else
+							{
+								Mainform.UnpauseEmulator();
+							}
+						}
+						else
+						{
+							RefreshDialog();
+						}
 					}
 				}
 			}
@@ -461,7 +479,25 @@ namespace BizHawk.Client.EmuHawk
 							else
 								_tasClipboard.Add(new TasClipboardEntry(i, line));
 						}
-						PasteInsertMenuItem_Click(sender, e); // pseudo recursion
+
+						var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+						CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+							if (wasPaused)
+							{
+								DoAutoRestore();
+							}
+							else
+							{
+								Mainform.UnpauseEmulator();
+							}
+						}
+						else
+						{
+							RefreshDialog();
+						}
 					}
 				}
 			}
