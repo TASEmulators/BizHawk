@@ -3208,8 +3208,12 @@ namespace BizHawk.Client.EmuHawk
 		private void btnClear_Click(object sender, EventArgs e)
 		{
 			//Clear old Inputs
-			
-			txtDescription.Clear();
+			DialogResult result = MessageBox.Show("Are you sure you want to clear this form?", "Clear Form", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (result == DialogResult.Yes)
+			{
+				txtDescription.Clear();
+				txtCheat.Clear();
+			}
 		}
 
 		private void GameShark_Load(object sender, EventArgs e)
