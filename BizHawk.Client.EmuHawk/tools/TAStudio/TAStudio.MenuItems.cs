@@ -363,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				_tasClipboard.Clear();
+				//_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToList();
 				var sb = new StringBuilder();
 
@@ -372,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					_tasClipboard.Add(new TasClipboardEntry(index, input));
+					//_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -431,29 +431,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (_tasClipboard.Any())
-			{
-				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-
-				CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
-				}
-				else
-				{
-					RefreshDialog();
-				}
-			}
 		}
 
 		private void PasteInsertMenuItem_Click(object sender, EventArgs e)
@@ -501,29 +478,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else if (_tasClipboard.Any())
-			{
-				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-
-				CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
-
-				if (needsToRollback)
-				{
-					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
-				}
-				else
-				{
-					RefreshDialog();
-				}
-			}
 		}
 
 		private void CutMenuItem_Click(object sender, EventArgs e)
@@ -534,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				_tasClipboard.Clear();
+				//_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
@@ -543,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					_tasClipboard.Add(new TasClipboardEntry(index, input));
+					//_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
