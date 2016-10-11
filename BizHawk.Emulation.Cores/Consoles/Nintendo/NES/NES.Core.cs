@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sprdma_countdown--;
 					if (sprdma_countdown == 0)
 					{
-						if (cpu.TotalExecutedCycles % 2 == 1)
+						if (cpu.TotalExecutedCycles % 2 == 0)
 						{
 							cpu_deadcounter = 2;
 						}
