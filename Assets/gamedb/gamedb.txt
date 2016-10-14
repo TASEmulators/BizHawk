@@ -90,6 +90,7 @@ sha1:DBD7DBAF79D2A77A09D9D4CF685CBD93281ED468	B	Chaos World (Ch)	NES		board=MAPP
 sha1:944F98A6885CA5160669BF81B9DE710CB16E312D	G	Chaos World (Ch)	NES		board=MAPPER195;VRAM=4;BATT=true;PAD_H=1
 sha1:EA6093FF3B4C7425B792223742DF5C76A657EF08	B	Columbus - Ougon no Yoake (Ch)	NES		board=MAPPER195;VRAM=2;
 sha1:B367506A7249865DEDB59AFF9B4CE593B3913F0C	G	Columbus - Ougon no Yoake (Ch)	NES		board=MAPPER195;VRAM=2;
+sha1:78EC827CEE61E009F7716ADE03361369FFCE9D12	G	Luo Ke Ren X (Sugoro Quest - Dice no Senshitachi) (Ch)	NES		board=MAPPER195;VRAM=4
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
