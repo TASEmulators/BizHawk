@@ -4,6 +4,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper195 : MMC3Board_Base
 	{
+		private int vram_bank_mask_1k;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
@@ -13,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+
+			vram_bank_mask_1k = Cart.vram_size / 1 - 1;
 			
 			BaseSetup();
 			return true;
@@ -76,9 +80,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				int bank_1k = Get_CHRBank_1K(addr);
 
-				if (bank_1k <= 3)
+				if (bank_1k <= vram_bank_mask_1k)
 				{
-					VRAM[(bank_1k << 10) + (addr & 0x3FF)]=value;
+					VRAM[(bank_1k  << 10) + (addr & 0x3FF)] = value;
 				}
 				else
 				{
