@@ -28,7 +28,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER066":
-					break;
 				case "NES-GNROM": //thunder & lightning
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
