@@ -93,7 +93,7 @@ sha1:B367506A7249865DEDB59AFF9B4CE593B3913F0C	G	Columbus - Ougon no Yoake (Ch)	N
 sha1:78EC827CEE61E009F7716ADE03361369FFCE9D12	G	Luo Ke Ren X (Sugoro Quest - Dice no Senshitachi) (Ch)	NES		board=MAPPER195;VRAM=4
 sha1:568BF236FB3085B8BD522FBD2C18C7831E3A2DD1	G	Q Boy (Sachen)	NES		board=SACHEN-8259A;VRAM=8
 sha1:2FA9EF6B8E5C7E1D215F4FF69C6275BDE00DDE76	O	Sugoro Quest - Dice no Senshitachi (Ch) [o1]	NES		board=MAPPER191
-
+sha1:0C7CA363EA26632E1A61C7F40E0FE8E8538ED76A	G	Wei Luo Chuan Qi (Ch)	NES		board=MAPPER192
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
