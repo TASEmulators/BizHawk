@@ -101,6 +101,7 @@ sha1:16EF1034DB88AD96DDC19C3A84B9E0FDEE466CD4	B	Young Chivalry (Ch)	NES		board=M
 sha1:3F85C45797E8AA0F161A4BD350BFF5777B3A19A8	G	Zu Qiu Xiao Jiang (Ch)	NES		board=MAPPER195
 sha1:A43A2203F4F7E0FE729CE520FBD75A05206AC9F2	G	Zu Qiu Xiao Jiang (Ch)	NES		board=MAPPER195;VRAM=2
 sha1:4692A622AF6A3D79514BF3E5FB4E9FBE6C6080FC	G	150-in-1 [a1]	NES		board=MAPPER235
+sha1:83264E3F8807998D09E9FBA19B13BBEA7C888D88	O	Bakushou!! Jinsei Gekijou 3 (J) [o1]	NES		board=TAITO-TC0190FMC+PAL16R4;WRAM=0
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
