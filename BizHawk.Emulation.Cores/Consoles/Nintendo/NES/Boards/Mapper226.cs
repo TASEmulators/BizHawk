@@ -17,12 +17,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
+			int prg_mask_hack = 1;
 			switch (Cart.board_type)
 			{
 				case "MAPPER226":
 					break;
 				case "UNIF_BMC-42in1ResetSwitch":
 					resetSwitchMode = true;
+					prg_mask_hack = 2;
 					break;
 				default:
 					return false;
@@ -30,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_page = 0;
 			prg_mode = false;
 
-			prg_mask_32k = (Cart.prg_size / 2) / 32 - 1;
-			prg_mask_16k = (Cart.prg_size / 2) / 16 - 1;
+			prg_mask_32k = (Cart.prg_size / prg_mask_hack) / 32 - 1;
+			prg_mask_16k = (Cart.prg_size / prg_mask_hack) / 16 - 1;
 
 			return true;
 		}
