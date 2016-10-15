@@ -104,7 +104,7 @@ sha1:4692A622AF6A3D79514BF3E5FB4E9FBE6C6080FC	G	150-in-1 [a1]	NES		board=MAPPER2
 sha1:83264E3F8807998D09E9FBA19B13BBEA7C888D88	O	Bakushou!! Jinsei Gekijou 3 (J) [o1]	NES		board=TAITO-TC0190FMC+PAL16R4;WRAM=0
 sha1:E79FC613112CC5AB0FC8B1150E182670FB042F4A	G	Contra Fighter (Unl)	NES		board=MAPPER238
 sha1:2C512DE4079AF45D7B9218E40BB68E308ABE288C	B	Magic Johnson's Fast Break (U)	NES		board=MAPPER001;PRG=64;CHR=128
-
+sha1:D2BE67170DDED1E1108EED2D4D8CA9D9CEE9F9E2	G	Super Mario Bros 2 (Lost LEvels) (Unl)	NES		board=MAPPER040;WRAM=0;PAD_H=1;PAD_V=0
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
