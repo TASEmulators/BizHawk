@@ -86,6 +86,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			chr_bank_mask_1k = Cart.chr_size - 1;
 
+			// Junk support
+			if (Cart.chr_size == 2040)
+			{
+				chr_bank_mask_1k = 2047;
+			}
+
 			InitValues();
 
 			return true;
