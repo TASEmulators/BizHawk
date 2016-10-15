@@ -105,6 +105,8 @@ sha1:83264E3F8807998D09E9FBA19B13BBEA7C888D88	O	Bakushou!! Jinsei Gekijou 3 (J) 
 sha1:E79FC613112CC5AB0FC8B1150E182670FB042F4A	G	Contra Fighter (Unl)	NES		board=MAPPER238
 sha1:2C512DE4079AF45D7B9218E40BB68E308ABE288C	B	Magic Johnson's Fast Break (U)	NES		board=MAPPER001;PRG=64;CHR=128
 sha1:D2BE67170DDED1E1108EED2D4D8CA9D9CEE9F9E2	G	Super Mario Bros 2 (Lost LEvels) (Unl)	NES		board=MAPPER040;WRAM=0;PAD_H=1;PAD_V=0
+sha1:77D5D7A162B61DEFC6B66B6A39B8D51E124AC534	B	Tagin' Dragon (Bunch) [b]	NES		board=COLORDREAMS-74*377;CHR=16;PRG=32;WRAM=0
+sha1:2028940CF7C757A3A7931A741D5EC79C3554D38C	O	Wally Bear and the No Gang (AVE) [o]	NES		board=AVE-NINA-07;WRAM=0
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
