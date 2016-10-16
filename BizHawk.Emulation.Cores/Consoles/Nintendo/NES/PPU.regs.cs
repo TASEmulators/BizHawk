@@ -340,11 +340,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active) && !Reg2002_vblank_clear_pending)
 			{
 				//if we just unleashed the vblank interrupt then activate it now
-				if (ppudead<=1)
-					NMI_PendingInstructions = 2;
+				NMI_PendingInstructions = 2;
 			}
-			if (ppudead<=1)
-				reg_2000.Value = value;
+			reg_2000.Value = value;
 
 
 		}

@@ -638,18 +638,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//register before around a full frame, but no games
 			//should write to those regs during that time, it needs
 			//to wait for vblank
-			if (ppudead < 2)
-			{
-				ppur.status.sl = 241;
-				runppu(3);
-				//Reg2002_vblank_active = true;
-				runppu(3);
-				runppu(postNMIlines * kLineTime - 6);
-				ppur.status.sl = 0;
-				//clear_2002();
-			}
-			runppu(241 * kLineTime);
-			runppu(preNMIlines * kLineTime);
+			
+			runppu(241 * kLineTime-7*3);
+			//runppu(preNMIlines * kLineTime);
 			--ppudead;
 		}
 	}
