@@ -263,9 +263,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cart.DB_GameInfo!=null)
 			{
-				// Camerica Golden 5
-				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" ||
-					cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A")
+				
+				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
+					|| cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
+					|| cart.DB_GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
+					)
 				{
 					ram[0x701] = 0xFF;
 				}
