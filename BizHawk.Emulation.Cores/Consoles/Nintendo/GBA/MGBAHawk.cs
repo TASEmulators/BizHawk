@@ -42,18 +42,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
 			}
-			_core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game));
+			var skipBios = !DeterministicEmulation && _syncSettings.SkipBios;
+
+			_core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game), skipBios);
 			if (_core == IntPtr.Zero)
 			{
 				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS? and/or ROM?");
 			}
 			try
 			{
-				if (!DeterministicEmulation && _syncSettings.SkipBios)
-				{
-					LibmGBA.BizSkipBios(_core);
-				}
-
 				CreateMemoryDomains(file.Length);
 				var ser = new BasicServiceProvider(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
