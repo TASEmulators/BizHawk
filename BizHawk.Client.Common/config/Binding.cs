@@ -221,6 +221,7 @@ namespace BizHawk.Client.Common
 
 						Bind("TAStudio", "Add Branch", "Alt+Insert"),
 						Bind("TAStudio", "Delete Branch", "Alt+Delete"),
+						Bind("TAStudio", "Show Cursor"),
 						Bind("TAStudio", "Toggle Follow Cursor", "Shift+F"),
 						Bind("TAStudio", "Toggle Auto-Restore", "Shift+R"),
 						Bind("TAStudio", "Toggle Turbo Seek", "Shift+S"),

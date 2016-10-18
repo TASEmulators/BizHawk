@@ -73,6 +73,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public NESControlSettings Controls = new NESControlSettings();
 
+			public List<byte> InitialWRamStatePattern = null;
+
 			public NESSyncSettings Clone()
 			{
 				var ret = (NESSyncSettings)MemberwiseClone();
@@ -85,7 +87,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return !(Util.DictionaryEqual(x.BoardProperties, y.BoardProperties) &&
 					x.RegionOverride == y.RegionOverride &&
-					!NESControlSettings.NeedsReboot(x.Controls, y.Controls));
+					!NESControlSettings.NeedsReboot(x.Controls, y.Controls) &&
+					((x.InitialWRamStatePattern ?? new List<byte>()).SequenceEqual(y.InitialWRamStatePattern ?? new List<byte>())));
 			}
 		}
 

@@ -185,8 +185,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void Reset()
 		{
 			regs_reset();
-			ppudead = 2;
-			idleSynch = true;
+			ppudead = 1;
+			idleSynch = false;
 			ppu_open_bus = 0;
 			ppu_open_bus_decay_timer = new int[8];
 		}

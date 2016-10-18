@@ -127,6 +127,7 @@ void add_interupt_event(int type, unsigned int delay)
    
     if (get_event(type)) {
         DebugMessage(M64MSG_WARNING, "two events of type 0x%x in interrupt queue", type);
+		return;
     }
    
     if (q == NULL)

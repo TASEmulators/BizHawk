@@ -60,6 +60,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				case PluginType.Jabo:
 					videoplugin = "mupen64plus-video-jabo.dll";
 					break;
+				case PluginType.GLideN64:
+					videoplugin = "mupen64plus-video-GLideN64.dll";
+					break;
 			}
 
 			GfxDll = core.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_GFX,

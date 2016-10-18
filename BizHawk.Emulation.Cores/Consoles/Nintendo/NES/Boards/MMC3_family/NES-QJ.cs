@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//analyze board type
 			switch (Cart.board_type)
 			{
+				case "MAPPER047": // Junk roms
+					break;
 				case "NES-QJ": //super spike v'ball / nintendo world cup
 					AssertPrg(256); AssertChr(256); AssertVram(0); AssertWram(0);
 					AssertBattery(false);

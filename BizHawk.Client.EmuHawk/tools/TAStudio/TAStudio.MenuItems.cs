@@ -109,6 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveAsTas(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
+			ClearLeftMouseStates();
 			var filename = CurrentTasMovie.Filename;
 			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 			{
@@ -362,7 +363,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				_tasClipboard.Clear();
+				//_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToList();
 				var sb = new StringBuilder();
 
@@ -371,7 +372,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					_tasClipboard.Add(new TasClipboardEntry(index, input));
+					//_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -389,27 +390,45 @@ namespace BizHawk.Client.EmuHawk
 
 			var wasPaused = Mainform.EmulatorPaused;
 
-			if (_tasClipboard.Any())
+			// copypaste from PasteInsertMenuItem_Click!
+			IDataObject data = Clipboard.GetDataObject();
+			if (data.GetDataPresent(DataFormats.StringFormat))
 			{
-				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-
-				CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
-
-				if (needsToRollback)
+				string input = (string)data.GetData(DataFormats.StringFormat);
+				if (!string.IsNullOrWhiteSpace(input))
 				{
-					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-					if (wasPaused)
+					string[] lines = input.Split('\n');
+					if (lines.Length > 0)
 					{
-						DoAutoRestore();
+						_tasClipboard.Clear();
+						for (int i = 0; i < lines.Length; i++)
+						{
+							var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+							if (line == null)
+								return;
+							else
+								_tasClipboard.Add(new TasClipboardEntry(i, line));
+						}
+
+						var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+						CurrentTasMovie.CopyOverInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+							if (wasPaused)
+							{
+								DoAutoRestore();
+							}
+							else
+							{
+								Mainform.UnpauseEmulator();
+							}
+						}
+						else
+						{
+							RefreshDialog();
+						}
 					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
-				}
-				else
-				{
-					RefreshDialog();
 				}
 			}
 		}
@@ -418,27 +437,45 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var wasPaused = Mainform.EmulatorPaused;
 
-			if (_tasClipboard.Any())
+			// copypaste from PasteMenuItem_Click!
+			IDataObject data = Clipboard.GetDataObject();
+			if (data.GetDataPresent(DataFormats.StringFormat))
 			{
-				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
-
-				CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
-
-				if (needsToRollback)
+				string input = (string)data.GetData(DataFormats.StringFormat);
+				if (!string.IsNullOrWhiteSpace(input))
 				{
-					GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-					if (wasPaused)
+					string[] lines = input.Split('\n');
+					if (lines.Length > 0)
 					{
-						DoAutoRestore();
+						_tasClipboard.Clear();
+						for (int i = 0; i < lines.Length; i++)
+						{
+							var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
+							if (line == null)
+								return;
+							else
+								_tasClipboard.Add(new TasClipboardEntry(i, line));
+						}
+
+						var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+						CurrentTasMovie.InsertInput(TasView.FirstSelectedIndex.Value, _tasClipboard.Select(x => x.ControllerState));
+						if (needsToRollback)
+						{
+							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
+							if (wasPaused)
+							{
+								DoAutoRestore();
+							}
+							else
+							{
+								Mainform.UnpauseEmulator();
+							}
+						}
+						else
+						{
+							RefreshDialog();
+						}
 					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
-				}
-				else
-				{
-					RefreshDialog();
 				}
 			}
 		}
@@ -451,7 +488,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				_tasClipboard.Clear();
+				//_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
@@ -460,7 +497,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					_tasClipboard.Add(new TasClipboardEntry(index, input));
+					//_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -1175,8 +1212,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					CurrentTasMovie.FlagChanges();
+					TasView.AllColumns.ColumnsChanged();
 					RefreshTasView();
-
 				};
 
 				ColumnsSubMenu.DropDownItems.Add(item);

@@ -28,7 +28,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
-			if (addr > 0x2000) return base.ReadPPU(addr);
+			if (addr >= 0x2000)
+			{
+				return base.ReadPPU(addr);
+			}
+
 			int bank_1k = Get_CHRBank_1K(addr);
 			if (bank_1k.Bit(7))
 			{
@@ -40,7 +44,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePPU(int addr, byte value)
 		{
-			if (addr > 0x2000) base.WritePPU(addr,value);
+			if (addr >= 0x2000)
+			{
+				base.WritePPU(addr, value);
+				return;
+			}
+
 			int bank_1k = Get_CHRBank_1K(addr);
 			if (bank_1k.Bit(7))
 			{

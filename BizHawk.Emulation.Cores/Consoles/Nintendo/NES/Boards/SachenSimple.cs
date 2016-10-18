@@ -39,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ExpWrite = SA009_Write;
 					break;
 				case "MAPPER149":
+				case "UNIF_UNL-SA-0036":
 					PrgWrite = SA72007_Write;
 					break;
 				case "MAPPER148":

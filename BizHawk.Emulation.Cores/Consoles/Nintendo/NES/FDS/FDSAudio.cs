@@ -191,7 +191,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (latchedoutput != tmp)
 			{
-				SendDiff((tmp - latchedoutput) * 6);
+				SendDiff((tmp - latchedoutput) * 3);
 				latchedoutput = tmp;
 			}
 		}
@@ -248,10 +248,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						case 6: sweepbias -= 2; break;
 						case 7: sweepbias -= 1; break;
 					}
-					sweepbias &= 0x7f;
 					// sign extend
 					sweepbias <<= 25;
 					sweepbias >>= 25;
+
 					modtablepos &= 63;
 					CalcMod();
 				}
@@ -275,7 +275,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x4080)
 			{
 				if (waveram_writeenable)
-					// can waverampos ever be reset?
 					waveram[addr - 0x4040] = (byte)(value & 63);
 				return;
 			}
@@ -284,10 +283,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4080:
 					r4080_6 = (value & 0x40) != 0;
 					r4080_7 = (value & 0x80) != 0;
+					volumeclock = 0;
+					volumespd = value & 63;
 					if (r4080_7) // envelope is off, so written value gets sent to gain directly
-						volumegain = value & 63;
-					else // envelope is on; written value is speed of change
-						volumespd = value & 63;
+						volumegain = value & 63;	
 					break;
 				case 0x4082:
 					frequency &= 0xf00;
@@ -298,15 +297,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					frequency |= value << 8 & 0xf00;
 					r4083_6 = (value & 0x40) != 0;
 					r4083_7 = (value & 0x80) != 0;
+					if (r4083_7)
+						waverampos = 0;
+					if (r4083_6)
+					{
+						volumeclock = 0;
+						sweepclock = 0;
+					}
 					break;
 				case 0x4084:
 					sweepspd = value & 63;
 					r4084_6 = (value & 0x40) != 0;
 					r4084_7 = (value & 0x80) != 0;
+					sweepclock = 0;
+					if (r4084_7)
+						sweepgain = value & 63;
 					break;
 				case 0x4085:
-					//modtablepos = 0; // this doesn't happen, ever!!
 					sweepbias = value & 0x7f;
+
 					// sign extend
 					sweepbias <<= 25;
 					sweepbias >>= 25;
@@ -323,12 +332,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					r4087_7 = (value & 0x80) != 0;
 					if (r4087_7 || modfreq == 0) // when mod unit is disabled, mod output is fixed to 0, not hanging
 						modoutput = 0;
+					if (r4087_7)
+						modclock = 0;
 					break;
 				case 0x4088:
 					// write twice into virtual 64 unit buffer
-					Buffer.BlockCopy(modtable, 2, modtable, 0, 62);
-					modtable[62] = (byte)(value & 7);
-					modtable[63] = (byte)(value & 7);
+					if (r4087_7)
+					{
+						modtable[modtablepos] = (byte)(value & 7);
+						modtablepos++;
+						modtablepos &= 63;
+						modtable[modtablepos] = (byte)(value & 7);
+						modtablepos++;
+						modtablepos &= 63;
+					}					
 					break;
 				case 0x4089:
 					switch (value & 3)

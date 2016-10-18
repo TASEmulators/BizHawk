@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -27,14 +26,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int sprdma_countdown;
 
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
-		/// <summary>clock speed of the main cpu in hz</summary>
+					   /// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
 
 		//irq state management
 		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
 
 		//user configuration 
-		int[] palette_compiled = new int[64*8];
+		int[] palette_compiled = new int[64 * 8];
+
+		//variable to change controller read/write behaviour when keyboard is attached
+		public bool _iskeyboard = false;
 
 		// new input system
 		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
@@ -158,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
-			
+
 			// wire controllers
 			// todo: allow changing this
 			ControllerDeck = ControllerSettings.Instantiate(ppu.LightGunCallback);
@@ -223,9 +225,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// apu has some specific power up bahaviour that we will emulate here
 			apu.NESHardReset();
 
-			//check fceux's PowerNES and FCEU_MemoryRand function for more information:
-			//relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
-			for(int i=0;i<0x800;i++) if((i&4)!=0) ram[i] = 0xFF; else ram[i] = 0x00;
+
+			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
+			{
+				for (int i = 0; i < 0x800; i++)
+				{
+					ram[i] = SyncSettings.InitialWRamStatePattern[i % SyncSettings.InitialWRamStatePattern.Count];
+				}
+			}
+			else
+			{
+				// check fceux's PowerNES and FCEU_MemoryRand function for more information:
+				// relevant games: Cybernoid; Minna no Taabou no Nakayoshi Daisakusen; Huang Di; and maybe mechanized attack
+				for (int i = 0; i < 0x800; i++)
+				{
+					if ((i & 4) != 0)
+					{
+						ram[i] = 0xFF;
+					}
+					else
+					{
+						ram[i] = 0x00;
+					}
+				}
+			}
 
 			SetupMemoryDomains();
 
@@ -233,6 +256,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
 			cpu.P = 0x34;
 			cpu.S = 0xFD;
+
+			// some boards cannot have specific values in RAM upon initialization
+			// Let's hard code those cases here
+			// these will be defined through the gameDB exclusively for now.
+
+			if (cart.DB_GameInfo!=null)
+			{
+				
+				if (cart.DB_GameInfo.Hash == "60FC5FA5B5ACCAF3AEFEBA73FC8BFFD3C4DAE558" // Camerica Golden 5
+					|| cart.DB_GameInfo.Hash == "BAD382331C30B22A908DA4BFF2759C25113CC26A" // Camerica Golden 5
+					|| cart.DB_GameInfo.Hash == "40409FEC8249EFDB772E6FFB2DCD41860C6CCA23" // Camerica Pegasus 4-in-1
+					)
+				{
+					ram[0x701] = 0xFF;
+				}
+			}
+			
+
 		}
 
 		bool resetSignal;
@@ -260,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Frame++;
 
 			//if (resetSignal)
-				//Controller.UnpressButton("Reset");   TODO fix this
+			//Controller.UnpressButton("Reset");   TODO fix this
 			resetSignal = Controller["Reset"];
 			hardResetSignal = Controller["Power"];
 
@@ -289,19 +330,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//PAL:
 		//0 15 30 45 60 -> 12 27 42 57 -> 9 24 39 54 -> 6 21 36 51 -> 3 18 33 48 -> 0
 		//sequence of ppu clocks per cpu clock: 3,3,3,3,4
-        //at least it should be, but something is off with that (start up time?) so it is 3,3,3,4,3 for now
+		//at least it should be, but something is off with that (start up time?) so it is 3,3,3,4,3 for now
 		//NTSC:
 		//sequence of ppu clocks per cpu clock: 3
 		ByteBuffer cpu_sequence;
-		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[]{3,3,3,3,3});
-		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[]{3,3,3,4,3});
+		static ByteBuffer cpu_sequence_NTSC = new ByteBuffer(new byte[] { 3, 3, 3, 3, 3 });
+		static ByteBuffer cpu_sequence_PAL = new ByteBuffer(new byte[] { 3, 3, 3, 4, 3 });
 		public int cpu_step, cpu_stepcounter, cpu_deadcounter;
 
 		public int oam_dma_index;
-		public bool oam_dma_exec=false;
+		public bool oam_dma_exec = false;
 		public ushort oam_dma_addr;
 		public byte oam_dma_byte;
-		public bool dmc_dma_exec=false;
+		public bool dmc_dma_exec = false;
 		public bool dmc_realign;
 		public bool IRQ_delay;
 		public bool special_case_delay; // very ugly but the only option
@@ -316,7 +357,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (cpu_stepcounter == cpu_sequence[cpu_step])
 			{
 				cpu_step++;
-				if(cpu_step == 5) cpu_step=0;
+				if (cpu_step == 5) cpu_step = 0;
 				cpu_stepcounter = 0;
 
 
@@ -330,10 +371,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					sprdma_countdown--;
 					if (sprdma_countdown == 0)
 					{
-                        if (cpu.TotalExecutedCycles%2==0)
+						if (cpu.TotalExecutedCycles % 2 == 0)
 						{
 							cpu_deadcounter = 2;
-						} else
+						}
+						else
 						{
 							cpu_deadcounter = 1;
 						}
@@ -344,29 +386,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				if (oam_dma_exec && apu.dmc_dma_countdown !=1 && !dmc_realign)
+				if (oam_dma_exec && apu.dmc_dma_countdown != 1 && !dmc_realign)
 				{
-					if (cpu_deadcounter==0)
+					if (cpu_deadcounter == 0)
 					{
-						
-						if (oam_dma_index%2==0) {
+
+						if (oam_dma_index % 2 == 0)
+						{
 							oam_dma_byte = ReadMemory(oam_dma_addr);
 							oam_dma_addr++;
-						} else
+						}
+						else
 						{
 							WriteMemory(0x2004, oam_dma_byte);
 						}
 						oam_dma_index++;
 						if (oam_dma_index == 512) oam_dma_exec = false;
 
-					} else
+					}
+					else
 					{
 						cpu_deadcounter--;
 					}
-				} else if (apu.dmc_dma_countdown==1)
+				}
+				else if (apu.dmc_dma_countdown == 1)
 				{
 					dmc_realign = true;
-				} else if (dmc_realign)
+				}
+				else if (dmc_realign)
 				{
 					dmc_realign = false;
 				}
@@ -374,17 +421,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// OAM DMA end
 				/////////////////////////////
 
-				
+
 				/////////////////////////////
 				// dmc dma start
 				/////////////////////////////
 
-				if (apu.dmc_dma_countdown>0)
+				if (apu.dmc_dma_countdown > 0)
 				{
 					cpu.RDY = false;
 					dmc_dma_exec = true;
 					apu.dmc_dma_countdown--;
-					if (apu.dmc_dma_countdown==0)
+					if (apu.dmc_dma_countdown == 0)
 					{
 						apu.RunDMCFetch();
 						dmc_dma_exec = false;
@@ -401,14 +448,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (cpu.RDY && !IRQ_delay)
 				{
 					cpu.IRQ = _irq_apu || Board.IRQSignal;
-				} else if (special_case_delay || apu.dmc_dma_countdown==3)
+				}
+				else if (special_case_delay || apu.dmc_dma_countdown == 3)
 				{
 					cpu.IRQ = _irq_apu || Board.IRQSignal;
 					special_case_delay = false;
 				}
-					
 
-				cpu.ExecuteOne();				
+
+				cpu.ExecuteOne();
 				apu.RunOne(false);
 
 				if (ppu.double_2007_read > 0)
@@ -425,11 +473,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu.RDY = true;
 					IRQ_delay = true;
 				}
-					
+
 
 
 				ppu.ppu_open_bus_decay(0);
-				
+
 				Board.ClockCPU();
 				ppu.PostCpuInstructionOne();
 			}
@@ -443,15 +491,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret_spec;
 			switch (addr)
 			{
-				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
-				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
-				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
-				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
-				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+				case 0x4000:
+				case 0x4001:
+				case 0x4002:
+				case 0x4003:
+				case 0x4004:
+				case 0x4005:
+				case 0x4006:
+				case 0x4007:
+				case 0x4008:
+				case 0x4009:
+				case 0x400A:
+				case 0x400B:
+				case 0x400C:
+				case 0x400D:
+				case 0x400E:
+				case 0x400F:
+				case 0x4010:
+				case 0x4011:
+				case 0x4012:
+				case 0x4013:
 					return DB;
-					//return apu.ReadReg(addr);
+				//return apu.ReadReg(addr);
 				case 0x4014: /*OAM DMA*/ break;
-				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xDF) + (byte)(DB&0x20)); 
+				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xDF) + (byte)(DB & 0x20));
 				case 0x4016:
 					{
 						// special hardware glitch case
@@ -461,11 +524,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
 						}
-						return ret_spec;	
+						return ret_spec;
 
 					}
 				case 0x4017:
-					return read_joyport(addr);
+					{
+						if (_iskeyboard)
+						{
+							// eventually this will be the keyboard function, but for now it is a place holder (no keys pressed)
+							return 0x1E;
+						}
+						else
+						{
+							return read_joyport(addr);
+						}
+					}
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
 					break;
@@ -478,14 +551,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (addr)
 			{
-				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
-				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
-				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
-				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
-				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+				case 0x4000:
+				case 0x4001:
+				case 0x4002:
+				case 0x4003:
+				case 0x4004:
+				case 0x4005:
+				case 0x4006:
+				case 0x4007:
+				case 0x4008:
+				case 0x4009:
+				case 0x400A:
+				case 0x400B:
+				case 0x400C:
+				case 0x400D:
+				case 0x400E:
+				case 0x400F:
+				case 0x4010:
+				case 0x4011:
+				case 0x4012:
+				case 0x4013:
 					return apu.PeekReg(addr);
 				case 0x4014: /*OAM DMA*/ break;
-				case 0x4015: return apu.PeekReg(addr); 
+				case 0x4015: return apu.PeekReg(addr);
 				case 0x4016:
 				case 0x4017:
 					return peek_joyport(addr);
@@ -501,17 +589,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (addr)
 			{
-				case 0x4000: case 0x4001: case 0x4002: case 0x4003:
-				case 0x4004: case 0x4005: case 0x4006: case 0x4007:
-				case 0x4008: case 0x4009: case 0x400A: case 0x400B:
-				case 0x400C: case 0x400D: case 0x400E: case 0x400F:
-				case 0x4010: case 0x4011: case 0x4012: case 0x4013:
+				case 0x4000:
+				case 0x4001:
+				case 0x4002:
+				case 0x4003:
+				case 0x4004:
+				case 0x4005:
+				case 0x4006:
+				case 0x4007:
+				case 0x4008:
+				case 0x4009:
+				case 0x400A:
+				case 0x400B:
+				case 0x400C:
+				case 0x400D:
+				case 0x400E:
+				case 0x400F:
+				case 0x4010:
+				case 0x4011:
+				case 0x4012:
+				case 0x4013:
 					apu.WriteReg(addr, val);
 					break;
 				case 0x4014: Exec_OAMDma(val); break;
 				case 0x4015: apu.WriteReg(addr, val); break;
 				case 0x4016:
-					write_joyport(val);
+					if (_iskeyboard)
+					{
+						// eventually keyboard emulation will go here
+					}
+					else
+					{
+						write_joyport(val);
+					}
 					break;
 				case 0x4017: apu.WriteReg(addr, val); break;
 				default:
@@ -531,10 +641,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			InputCallbacks.Call();
 			lagged = false;
-				byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
-				ret &= 0x1f;
-				ret |= (byte)(0xe0 & DB);
-				return ret;
+			byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			ret &= 0x1f;
+			ret |= (byte)(0xe0 & DB);
+			return ret;
 		}
 
 		byte peek_joyport(int addr)
@@ -662,7 +772,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte ReadMemory(ushort addr)
 		{
 			byte ret;
-			
+
 			if (addr >= 0x8000)
 			{
 				ret = Board.ReadPRG(addr - 0x8000); //easy optimization, since rom reads are so common, move this up (reordering the rest of these elseifs is not easy)
@@ -691,7 +801,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ret = Board.ReadWRAM(addr - 0x6000);
 			}
-			
+
 			//handle breakpoints and stuff.
 			//the idea is that each core can implement its own watch class on an address which will track all the different kinds of monitors and breakpoints and etc.
 			//but since freeze is a common case, it was implemented through its own mechanisms
@@ -735,7 +845,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				Board.WriteReg2xxx(addr,value);
+				Board.WriteReg2xxx(addr, value);
 			}
 			else if (addr < 0x4020)
 			{

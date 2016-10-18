@@ -255,12 +255,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0020:
 					timerlatch &= 0xff00;
 					timerlatch |= value;
-					timerirq = false;
+					//timerirq = false;
 					break;
 				case 0x0021:
 					timerlatch &= 0x00ff;
 					timerlatch |= value << 8;
-					timerirq = false;
+					//timerirq = false;
 					break;
 				case 0x0022:
 					timerreg = (byte)(value & 3);
@@ -344,14 +344,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCPU()
 		{
-			if ((timerreg & 2) != 0 && timervalue > 0)
+			if ((timerreg & 2) != 0)// && timervalue > 0)
 			{
-				timervalue--;
+				if (timervalue!=0)
+				{
+					timervalue--;
+				}
 				if (timervalue == 0)
 				{
+
+					/*
 					if ((timerreg & 1) != 0)
 					{
 						timervalue = timerlatch;
+						//timervalue = 0xFFFF;
 					}
 					else
 					{
@@ -359,6 +365,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						timervalue = 0;
 						timerlatch = 0;
 					}
+					*/
+					timervalue = timerlatch;
 					timerirq = true;
 				}
 			}

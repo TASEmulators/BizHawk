@@ -362,6 +362,13 @@ namespace BizHawk.Client.EmuHawk
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
 					break;
+				case "Show Cursor":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.SetVisibleIndex();
+						GlobalWin.Tools.TAStudio.RefreshDialog();
+					}
+					break;
 				case "Toggle Follow Cursor":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;

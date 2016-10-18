@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -51,18 +52,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					prg[1] = value & prg_bank_mask_8k;
 					break;
 				case 0x7000:
-				case 0x7001:
+				//case 0x7001:
 					// this is of course sort of VRC like... except it doesn't work right
-					irq_time = (256 - value) * 113;
+					irq_time = value;
 					IRQSignal = false;
-					irq_counting = false;
+					irq_counting = true;
+					if (value == 0)
+						irq_counting = false;
 					Console.WriteLine("IRQ Set\\Ack: SL {0} val {1}", NES.ppu.ppur.status.sl, value);
 					break;
-				case 0x7002:
-					irq_counting = true;
-					Console.WriteLine("IRQ GO: SL {0} val {1}", NES.ppu.ppur.status.sl, value);
-					break;
+				//case 0x7002:
+				//irq_counting = true;
+				//Console.WriteLine("IRQ GO: SL {0} val {1}", NES.ppu.ppur.status.sl, value);
+				//break;
+				case 0x1000: SetMirrorType(!value.Bit(0) ? EMirrorType.Vertical : EMirrorType.Horizontal);break;
+				case 0x3000: chr[0] = value & chr_bank_mask_1k; ; break;
+				case 0x3002: chr[1] = value & chr_bank_mask_1k; ; break;
+				case 0x4000: chr[2] = value & chr_bank_mask_1k; ; break;
+				case 0x4002: chr[3] = value & chr_bank_mask_1k; ; break;
+				case 0x5000: chr[4] = value & chr_bank_mask_1k; ; break;
+				case 0x5002: chr[5] = value & chr_bank_mask_1k; ; break;
+				case 0x6000: chr[6] = value & chr_bank_mask_1k; ; break;
+				case 0x6002: chr[7] = value & chr_bank_mask_1k; ; break;
+
+
 			}
+			/*
 			if (addr >= 0x3000 && addr < 0x7000)	
 			{
 				int b = (addr >> 11) - 6;
@@ -72,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					chr[b] = (chr[b] & 0x0f | value << 4) & chr_bank_mask_1k;
 				else
 					chr[b] = (chr[b] & 0xf0 | value & 0x0f) & chr_bank_mask_1k;
-			}
+			}*/
 		}
 
 		public override byte ReadPRG(int addr)
@@ -92,11 +107,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (irq_counting)
 			{
-				irq_time--;
-				if (irq_time == 0)
+				irq_time++;
+				if (irq_time >= 240)
 				{
-					irq_counting = false;
+					//irq_counting = false;
 					IRQSignal = true;
+					//irq_time = 0;
 					Console.WriteLine("IRQ TRIG: SL {0}", NES.ppu.ppur.status.sl);
 				}
 			}

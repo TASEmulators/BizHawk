@@ -82,6 +82,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int extra_vrom;
 		int latch6k_value;
 
+		bool isPirate = false;
+
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -107,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncPRG();
 			SyncCHR();
 			SyncIRQ();
+			ser.Sync("isPirate", ref isPirate);
 		}
 
 		void SyncPRG()
@@ -174,6 +177,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					remap = AddrA3A2_A1A0;
 					Cart.wram_size = 8;
 					break;
+				case "UNIF_UNL-T-230":
+					isPirate = true;
+					goto case "MAPPER023";
 				case "MAPPER027":
 					//not exactly the same implementation as FCEUX, but we're taking functionality from it step by step as we discover and document it
 					//world hero (unl) is m027 and depends on the extrabig_chr functionality to have correct graphics.
@@ -266,12 +272,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x2000)
+			if (addr < 0x2000 && VROM != null)
 			{
 				int bank_1k = addr >> 10;
 				int ofs = addr & ((1 << 10) - 1);
 				bank_1k = chr_banks_1k[bank_1k];
 				addr = (bank_1k << 10) | ofs;
+
 				return VROM[addr + extra_vrom];
 			}
 			else return base.ReadPPU(addr);
@@ -296,8 +303,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0001:
 				case 0x0002:
 				case 0x0003:
-					prg_bank_reg_8k[0] = value & prg_reg_mask_8k;
-					SyncPRG();
+					if (!isPirate)
+					{
+						prg_bank_reg_8k[0] = value & prg_reg_mask_8k;
+						SyncPRG();
+					}
 					break;
 
 				case 0x1000: //$9000
@@ -322,7 +332,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x2001: //$A001
 				case 0x2002: //$A002
 				case 0x2003: //$A003
-					prg_bank_reg_8k[1] = value & prg_reg_mask_8k;
+					if (!isPirate)
+					{
+						prg_bank_reg_8k[1] = value & prg_reg_mask_8k;
+					}
+					else
+					{
+						prg_bank_reg_8k[0] = (value & 0x1F) << 1;
+						prg_bank_reg_8k[1] = ((value & 0x1F) << 1) | 1;
+					}
 					SyncPRG();
 					break;
 

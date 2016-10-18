@@ -1140,6 +1140,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (WatchListView.SelectAllInProgress)
+			{
+				return;
+			}
+
 			PokeAddressToolBarItem.Enabled =
 				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any() &&

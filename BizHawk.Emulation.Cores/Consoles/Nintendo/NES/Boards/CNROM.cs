@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER185":
 				case "HVC-CNROM+SECURITY":
+				case "HVC-CNROM-256K-01":
 					copyprotection = true;
 					bus_conflict = true;
 					AssertPrg(16, 32); AssertChr(8);

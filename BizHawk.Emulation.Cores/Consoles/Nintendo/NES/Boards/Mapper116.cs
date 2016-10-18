@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			vrc2.Configure(origin);
 			//not exactly the same as fceu-mm. is it important?
 			for(int i=0;i<16;i++)
-				vrc2.chr_bank_reg_1k[i] = 0x0F;
+				vrc2.chr_bank_reg_1k[i] = 0xFF;
 			vrc2.SyncCHR();
 
 			mmc3 = new MMC3_CustomBoard(this);
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void WriteModeControl(int addr, byte value)
 		{
-			if ((addr & 0x4100) != 0x4100) return;
+			if (((addr & 0x4100) != 0x4100) || addr>=0x4200)  return;
 			mode = value & 3;
 			bool chr_base = value.Bit(2);
 
@@ -233,7 +233,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockPPU()
 		{
-			mmc3.ClockPPU();
+			switch (mode)
+			{
+				case 0: break;
+				case 1: mmc3.ClockPPU(); break;
+				case 2:
+				case 3: mmc1.ClockPPU(); break;
+
+			}
 		}
 	}
 }

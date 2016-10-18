@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				if (Cart.vram_size != 0)
-					return VRAM[addr & vram_mask];
+					return VRAM[Gen_CHR_Address(addr) & vram_mask];
 				else return VROM[Gen_CHR_Address(addr)];
 			}
 			else return base.ReadPPU(addr);
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				if (Cart.vram_size != 0)
-					VRAM[addr & vram_mask] = value;
+					VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
 			}
 			else base.WritePPU(addr, value);
 		}
@@ -427,6 +427,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			prg_mask = (Cart.prg_size / 16) - 1;
 			vram_mask = (Cart.vram_size*1024) - 1;
 			chr_mask = (Cart.chr_size / 8 * 2) - 1;
+			//Chip n Dale (PC10) has a nonstandard chr size, which makes the mask nonsense
+			// let's put in a special case to deal with it
+			if (Cart.chr_size==136)
+			{
+				chr_mask = (128 / 8 * 2) - 1;
+			}
+
+
 			if (!disablemirror)
 				SetMirrorType(mmc1.mirror);
 			ppuclock = pputimeout;

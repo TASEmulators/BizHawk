@@ -1373,9 +1373,10 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
-		private int _runloopFps;
-		private int _runloopLastFps;
+		private double _runloopLastFps;
 		private bool _runloopFrameadvance;
+		private double _runloopUpdatesPerSecond = 16.0;
+		private double _runloopFpsSmoothing = 8.0;
 		private long _runloopSecond;
 		private bool _runloopLastFf;
 		private bool _inResizeLoop;
@@ -2629,9 +2630,21 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
+		private const int WM_DEVICECHANGE = 0x0219;
+
 		// Alt key hacks
 		protected override void WndProc(ref Message m)
 		{
+#if WINDOWS
+			switch (m.Msg)
+			{
+				case WM_DEVICECHANGE:
+					GamePad.Initialize();
+					GamePad360.Initialize();
+					break;
+			}
+#endif
+
 			// this is necessary to trap plain alt keypresses so that only our hotkey system gets them
 			if (m.Msg == 0x0112) // WM_SYSCOMMAND
 			{
@@ -2792,19 +2805,18 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_runloopFps++;
+				_runloopLastFps+= _runloopFpsSmoothing;
 
-				if ((double)(currentTimestamp - _runloopSecond) / Stopwatch.Frequency >= 1.0)
+				if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
 				{
-					_runloopLastFps = _runloopFps;
+					_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
 					_runloopSecond = currentTimestamp;
-					_runloopFps = 0;
 					updateFpsString = true;
 				}
 
 				if (updateFpsString)
 				{
-					var fps_string = _runloopLastFps + " fps";
+					var fps_string = string.Format("{0:0} fps", _runloopLastFps);
 					if (isRewinding)
 					{
 						if (IsTurboing || isFastForwarding)
@@ -2900,11 +2912,15 @@ namespace BizHawk.Client.EmuHawk
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
 					GlobalWin.Tools.TAStudio.LastPositionFrame == Global.Emulator.Frame)
 				{
-					TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Global.Emulator.Frame];
-					if (!record.Lagged.HasValue && IsSeeking)
-						// haven't yet greenzoned the frame, hence it's after editing
-						// then we want to pause here. taseditor fasion
-						PauseEmulator();
+					if (PauseOnFrame.HasValue &&
+						PauseOnFrame.Value <= GlobalWin.Tools.TAStudio.LastPositionFrame)
+					{
+						TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Global.Emulator.Frame];
+						if (!record.Lagged.HasValue && IsSeeking)
+							// haven't yet greenzoned the frame, hence it's after editing
+							// then we want to pause here. taseditor fasion
+							PauseEmulator();
+					}
 				}
 
 				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
@@ -3508,9 +3524,14 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.Config.LoadCheatFileByGame)
 					{
+						Global.CheatList.SetDefaultFileName(ToolManager.GenerateDefaultCheatFilename());
 						if (Global.CheatList.AttemptToLoadCheatFile())
 						{
 							GlobalWin.OSD.AddMessage("Cheats file loaded");
+						}
+						else if (Global.CheatList.Any())
+						{
+							Global.CheatList.Clear();
 						}
 					}
 
@@ -3550,7 +3571,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//This shows up if there's a problem                
+					//This shows up if there's a problem
 					// TODO: put all these in a single method or something
 
 					//The ROM has been loaded by a recursive invocation of the LoadROM method.
@@ -3751,6 +3772,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SavestateManager.LoadStateFile(path, userFriendlyStateName))
 			{
+				GlobalWin.OSD.ClearGUIText();
 				ClientApi.OnStateLoaded(this, userFriendlyStateName);
 
 				if (GlobalWin.Tools.Has<LuaConsole>())
@@ -3759,7 +3781,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				SetMainformMovieInfo();
-				GlobalWin.OSD.ClearGUIText();
 				GlobalWin.Tools.UpdateToolsBefore(fromLua);
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();

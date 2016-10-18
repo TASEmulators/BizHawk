@@ -16,16 +16,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizDestroy(IntPtr ctx);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern IntPtr BizCreate(byte[] bios);
+		public static extern IntPtr BizCreate(byte[] bios, byte[] data, int length, [In]OverrideInfo dbinfo, bool skipBios);
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizReset(IntPtr ctx);
 
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizSkipBios(IntPtr ctx);
+		public enum SaveType : int
+		{
+			Autodetect = -1,
+			ForceNone = 0,
+			Sram = 1,
+			Flash512 = 2,
+			Flash1m = 3,
+			Eeprom = 4
+		}
 
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizLoad(IntPtr ctx, byte[] data, int length);
+		[Flags]
+		public enum Hardware : int
+		{
+			None = 0,
+			Rtc = 1,
+			Rumble = 2,
+			LightSensor = 4,
+			Gyro = 8,
+			Tilt = 16,
+			GbPlayer = 32,
+			GbPlayerDetect = 64,
+			NoOverride = 0x8000 // can probably ignore this
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class OverrideInfo
+		{
+			public SaveType Savetype;
+			public Hardware Hardware;
+			public uint IdleLoop = IDLE_LOOP_NONE;
+			public const uint IDLE_LOOP_NONE = unchecked((uint)0xffffffff);
+		}
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
@@ -50,11 +77,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern void BizGetMemoryAreas(IntPtr ctx, [Out]MemoryAreas dst);
 
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern int BizGetSaveRamSize(IntPtr ctx);
+		public static extern int BizGetSaveRam(IntPtr ctx, byte[] dest, int maxsize);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizGetSaveRam(IntPtr ctx, byte[] dest);
-		[DllImport(dll, CallingConvention = cc)]
-		public static extern void BizPutSaveRam(IntPtr ctx, byte[] src);
+		public static extern bool BizPutSaveRam(IntPtr ctx, byte[] src, int size);
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern int BizGetStateMaxSize(IntPtr ctx);

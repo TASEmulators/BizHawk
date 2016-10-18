@@ -464,7 +464,7 @@ namespace BizHawk.Client.EmuHawk
 				column.Visible = false;
 			}
 
-			TasView.AllColumns.ColumnsChanged();			
+			TasView.AllColumns.ColumnsChanged();
 
 			// Patterns
 			int bStart = 0;

@@ -459,7 +459,8 @@ namespace BizHawk.Client.EmuHawk
 			int lastRow = -1;
 			foreach (Cell cell in SelectedItems)
 			{
-				if (cell.RowIndex > _lastVisibleRow || cell.RowIndex < FirstVisibleRow)
+				if (cell.RowIndex > _lastVisibleRow || cell.RowIndex < FirstVisibleRow ||
+						!VisibleColumns.Contains(cell.Column))
 					continue;
 
 				Cell relativeCell = new Cell
@@ -540,7 +541,7 @@ namespace BizHawk.Client.EmuHawk
 			int range = Math.Min(LastVisibleRow, RowCount - 1) - startIndex + 1;
 			int lastVisible = LastVisibleColumnIndex;
 			int firstVisibleColumn = FirstVisibleColumn;
-            if (HorizontalOrientation)
+			if (HorizontalOrientation)
 			{
 				for (int i = 0, f = 0; f < range; i++, f++)
 				{

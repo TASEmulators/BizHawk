@@ -1016,6 +1016,38 @@ namespace BizHawk.Client.EmuHawk
 		// TODO add query callback of whether to select the cell or not
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
+			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
+			{
+				// copypaste from OnMouseMove()
+				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
+				{
+					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
+				}
+				newCell.RowIndex += FirstVisibleRow;
+				if (newCell.RowIndex < 0)
+					newCell.RowIndex = 0;
+
+				if (!newCell.Equals(CurrentCell))
+				{
+					CellChanged(newCell);
+
+					if (IsHoveringOnColumnCell ||
+						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
+					{
+						Refresh();
+					}
+					else if (_columnDown != null)
+					{
+						Refresh();
+					}
+				}
+				else if (_columnDown != null)
+				{
+					Refresh();
+				}
+			}
+
 			if (e.Button == MouseButtons.Left)
 			{
 				if (IsHoveringOnColumnCell)
@@ -1148,6 +1180,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentX = e.X;
 					_currentY = e.Y;
 					Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
+					newCell.RowIndex += FirstVisibleRow;
 					CellChanged(newCell);
 					SelectCell(CurrentCell);
 				}
@@ -1428,37 +1461,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!GlobalWin.MainForm.EmulatorPaused && _currentX.HasValue)
-			{
-				// copypaste from OnMouseMove()
-				Cell newCell = CalculatePointedCell(_currentX.Value, _currentY.Value);
-				if (QueryFrameLag != null && newCell.RowIndex.HasValue)
-				{
-					newCell.RowIndex += CountLagFramesDisplay(newCell.RowIndex.Value);
-				}
-				newCell.RowIndex += FirstVisibleRow;
-				if (newCell.RowIndex < 0)
-					newCell.RowIndex = 0;
-
-				if (!newCell.Equals(CurrentCell))
-				{
-					CellChanged(newCell);
-
-					if (IsHoveringOnColumnCell ||
-						(WasHoveringOnColumnCell && !IsHoveringOnColumnCell))
-					{
-						Refresh();
-					}
-					else if (_columnDown != null)
-					{
-						Refresh();
-					}
-				}
-				else if (_columnDown != null)
-				{
-					Refresh();
-				}
-			}
+			if (CurrentCell == null)
+				return;
 		}
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
@@ -2023,7 +2027,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a chane callback, and all property changes must call it, it is quicker and easier to just call this when needed
+			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a change callback, and all property changes must call it, it is quicker and easier to just call this when needed
 			public void ColumnsChanged()
 			{
 				int pos = 0;

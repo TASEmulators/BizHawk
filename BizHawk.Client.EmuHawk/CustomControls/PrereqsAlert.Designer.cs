@@ -85,10 +85,10 @@
 			this.linkLabel2.AutoSize = true;
 			this.linkLabel2.Location = new System.Drawing.Point(21, 261);
 			this.linkLabel2.Name = "linkLabel2";
-			this.linkLabel2.Size = new System.Drawing.Size(150, 13);
+			this.linkLabel2.Size = new System.Drawing.Size(283, 13);
 			this.linkLabel2.TabIndex = 4;
 			this.linkLabel2.TabStop = true;
-			this.linkLabel2.Text = "http://sf.net/projects/bizhawk";
+			this.linkLabel2.Text = "https://github.com/TASVideos/BizHawk-Prereqs/releases";
 			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
 			// 
 			// button1

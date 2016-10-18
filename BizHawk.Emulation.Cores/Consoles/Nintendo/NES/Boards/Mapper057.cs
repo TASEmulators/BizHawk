@@ -5,54 +5,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper057 : NES.NESBoardBase
 	{
-		/*
-		Here are Disch's original notes:  
-		========================
-		=  Mapper 057          =
-		========================
-
-		Example Games:
-		--------------------------
-		GK 47-in-1
-		6-in-1 (SuperGK)
-
-
-		Registers:
-		---------------------------
-
-		Range,Mask:   $8000-FFFF, $8800
-
-		$8000:  [.H.. .AAA]
-		H = High bit of CHR reg (bit 4)
-		A = Low 3 bits of CHR Reg (OR with 'B' bits)
-
-		$8800:  [PPPO MBBB]
-		P = PRG Reg
-		O = PRG Mode
-		M = Mirroring (0=Vert, 1=Horz)
-		B = Low 3 bits of CHR Reg (OR with 'A' bits)
-
-
-		CHR Setup:
-		---------------------------
-		'A' and 'B' bits combine with an OR to get the low 3 bits of the desired page, and the 'H' bit is the high
-		bit.  This 4-bit value selects an 8k page @ $0000
-
-
-		PRG Setup:
-		---------------------------
-
-					  $8000   $A000   $C000   $E000  
-					+---------------+---------------+
-		PRG Mode 0: |     $8800     |     $8800     |
-					+-------------------------------+
-		PRG Mode 1: |            <$8800>            |
-					+-------------------------------+
-		*/
+		// http://wiki.nesdev.com/w/index.php/INES_Mapper_057
 
 		bool prg_mode = false;
 		int chr_reg_low_0, chr_reg_low_1, chr_reg;
 		int prg_reg;
+
+		[MapperProp]
+		public int Mapper57_DipSwitch = 0;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -65,6 +25,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(EMirrorType.Horizontal);
+
+			AutoMapperProps.Apply(this);
 
 			return true;
 		}
@@ -94,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				prg_mode = value.Bit(4);
 				chr_reg_low_1 = (value & 0x07);
 
-				if (addr.Bit(3))
+				if (value.Bit(3))
 				{
 					SetMirrorType(EMirrorType.Horizontal);
 				}
@@ -129,6 +91,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return VROM[(chr_reg * 0x2000) + addr];
 			}
 			return base.ReadPPU(addr);
+		}
+
+		public override byte ReadWRAM(int addr)
+		{
+			return (byte)(Mapper57_DipSwitch & 3);
 		}
 	}
 }

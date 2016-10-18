@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 			get
 			{
 				string diff = string.Empty;
-				byte diffVal = Convert.ToByte(_value - _previous);
+				int diffVal = _value - _previous;
 				if (diffVal > 0)
 				{
 					diff = "+";
@@ -242,7 +242,7 @@ namespace BizHawk.Client.Common
 					diff = "-";
 				}
 
-				return string.Format("{0}{1}", diff, FormatValue(diffVal));
+				return string.Format("{0}{1}", diff, FormatValue((byte)Math.Abs(diffVal)));
 			}
 		}
 

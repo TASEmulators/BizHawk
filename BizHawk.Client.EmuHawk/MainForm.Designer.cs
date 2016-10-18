@@ -3135,7 +3135,7 @@
 			this.RebootStatusBarIcon.RightToLeft = System.Windows.Forms.RightToLeft.No;
 			this.RebootStatusBarIcon.Size = new System.Drawing.Size(16, 17);
 			this.RebootStatusBarIcon.Text = "Reboot";
-			this.RebootStatusBarIcon.ToolTipText = "A reboot of the core is needed for a setting change to take affect";
+			this.RebootStatusBarIcon.ToolTipText = "A reboot of the core is needed for a setting change to take effect";
 			this.RebootStatusBarIcon.Click += new System.EventHandler(this.PowerMenuItem_Click);
 			// 
 			// AVIStatusLabel

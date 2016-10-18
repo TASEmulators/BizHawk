@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetTracerBoxTitle()
 		{
-			if (Tracer.Enabled)
+			if (LoggingEnabled.Checked)
 			{
 				if (ToFileRadio.Checked)
 				{
@@ -393,10 +393,17 @@ namespace BizHawk.Client.EmuHawk
 			//Tracer.Enabled = LoggingEnabled.Checked;
 			SetTracerBoxTitle();
 
-			if (LoggingEnabled.Checked && LogFile != null)
+			if (LogFile != null && ToFileRadio.Checked)
 			{
-				StartLogFile();
 				OpenLogFile.Enabled = true;
+				if (LoggingEnabled.Checked)
+				{
+					StartLogFile();
+				}
+				else
+				{
+					CloseFile();
+				}
 			}
 		}
 
@@ -433,6 +440,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LogFile = file;
 				FileBox.Text = LogFile.FullName;
+				_segmentCount = 0;
 			}
 		}
 
@@ -450,12 +458,14 @@ namespace BizHawk.Client.EmuHawk
 					LogFile.Directory.Create();
 				}
 
-				if (LogFile.Exists)
-				{
-					LogFile.Delete();
-				}
+				// never delete, especially from ticking checkboxes
+				// append = false is enough, and even that only happens when actually enabling logging
+				//if (LogFile.Exists)
+				//{
+				//	LogFile.Delete();
+				//}
 
-				using (LogFile.Create()) { }
+				//using (LogFile.Create()) { } // created automatically
 
 				FileBox.Text = LogFile.FullName;
 

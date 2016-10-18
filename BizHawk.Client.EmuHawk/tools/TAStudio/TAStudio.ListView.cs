@@ -94,6 +94,9 @@ namespace BizHawk.Client.EmuHawk
 				TastudioRecordMode();
 				_wasRecording = false;
 			}
+
+			if (CurrentTasMovie != null)
+				RefreshDialog();
 		}
 
 		public bool FloatEditingMode
@@ -245,14 +248,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.WasLagged.HasValue)
 			{
-				if (!record.HasState && TasView.denoteStatesWithBGColor)
-					color = record.WasLagged.Value ?
-						LagZone_InputLog_Invalidated :
-						GreenZone_InputLog_Invalidated;
-				else
-					color = record.WasLagged.Value ?
-						LagZone_InputLog_Stated :
-						GreenZone_InputLog_Stated;
+				color = record.WasLagged.Value ?
+					LagZone_InputLog_Invalidated :
+					GreenZone_InputLog_Invalidated;
 			}
 			else
 			{
@@ -742,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 				endVal = e.OldCell.RowIndex.Value;
 			}
 
-			if (_startCursorDrag)
+			if (_startCursorDrag && !Mainform.IsSeeking)
 			{
 				if (e.NewCell.RowIndex.HasValue)
 				{

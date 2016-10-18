@@ -799,7 +799,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// calls from write take one less cycle, but start on a write instead of a read
 					if (!apu.call_from_write)
 					{
-						if (timer%2==1)
+						if (timer % 2 == 1)
 						{
 							delay = 3;
 						} else

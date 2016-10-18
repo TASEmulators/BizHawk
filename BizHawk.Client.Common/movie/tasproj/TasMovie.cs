@@ -585,6 +585,8 @@ namespace BizHawk.Client.Common
 		{
 			int index = Branches.IndexOf(old);
 			newBranch.UniqueIdentifier = old.UniqueIdentifier;
+			if (newBranch.UserText == "")
+				newBranch.UserText = old.UserText;
 			Branches[index] = newBranch;
 			TasStateManager.UpdateBranch(index);
 			Changes = true;
