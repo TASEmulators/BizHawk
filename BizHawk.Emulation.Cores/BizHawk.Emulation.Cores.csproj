@@ -691,6 +691,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper195_CW.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper196.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper197.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper198.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper199.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper205.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper208.cs" />
