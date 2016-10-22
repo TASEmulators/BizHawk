@@ -396,11 +396,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			int size = LibmGBA.BizGetState(_core, _savebuff, _savebuff.Length);
-			if (size < 0)
+			if (!LibmGBA.BizGetState(_core, _savebuff, _savebuff.Length))
 				throw new InvalidOperationException("Core failed to save!");
-			writer.Write(size);
-			writer.Write(_savebuff, 0, size);
+			writer.Write(_savebuff.Length);
+			writer.Write(_savebuff, 0, _savebuff.Length);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -411,10 +410,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length > _savebuff.Length)
+			if (length != _savebuff.Length)
 			{
-				_savebuff = new byte[length];
-				_savebuff2 = new byte[length + 13];
+				throw new InvalidOperationException("Unexpected state size!");
 			}
 			reader.Read(_savebuff, 0, length);
 			if (!LibmGBA.BizPutState(_core, _savebuff, length))

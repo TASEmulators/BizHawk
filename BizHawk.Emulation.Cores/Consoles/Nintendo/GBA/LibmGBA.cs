@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern int BizGetStateMaxSize(IntPtr ctx);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern int BizGetState(IntPtr ctx, byte[] dest, int maxsize);
+		public static extern bool BizGetState(IntPtr ctx, byte[] dest, int size);
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern bool BizPutState(IntPtr ctx, byte[] src, int size);
 
