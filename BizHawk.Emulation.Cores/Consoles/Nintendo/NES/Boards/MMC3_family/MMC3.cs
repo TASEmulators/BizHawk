@@ -291,22 +291,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public virtual void AddressPPU(int addr)
 		{
-			int a12 = (addr >> 12) & 1;
-			bool rising_edge = (a12 == 1 && a12_old == 0);
-			if (rising_edge)
+			// see https://forums.nesdev.com/viewtopic.php?f=3&t=11361&start=60
+			// apparently mmc3 can't see internal pattern tables
+			// fixes Recca
+			if (addr<0x3F00)
 			{
-				if (separator_counter > 0)
+				int a12 = (addr >> 12) & 1;
+				bool rising_edge = (a12 == 1 && a12_old == 0);
+				if (rising_edge)
 				{
-					separator_counter = 15;
+					if (separator_counter > 0)
+					{
+						separator_counter = 15;
+					}
+					else
+					{
+						separator_counter = 15;
+						irq_countdown = 6;
+					}
 				}
-				else
-				{
-					separator_counter = 15;
-					irq_countdown = 6;
-				}
-			}
 
-			a12_old = a12;
+				a12_old = a12;
+			}
+			
 		}
 	}
 

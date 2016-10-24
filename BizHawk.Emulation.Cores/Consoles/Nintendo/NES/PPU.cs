@@ -79,18 +79,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//when the ppu issues a write it goes through here and into the game board
 		public void ppubus_write(int addr, byte value)
 		{
-			nes.Board.AddressPPU(addr);
+			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+				nes.Board.AddressPPU(addr);
+
 			nes.Board.WritePPU(addr, value);
 		}
 
 		//when the ppu issues a read it goes through here and into the game board
-		public byte ppubus_read(int addr, bool ppu)
+		public byte ppubus_read(int addr, bool ppu, bool addr_ppu)
 		{
 			//hardware doesnt touch the bus when the PPU is disabled
 			if (!reg_2001.PPUON && ppu)
 				return 0xFF;
 
-			nes.Board.AddressPPU(addr);
+			if (addr_ppu)
+				nes.Board.AddressPPU(addr);
+
 			return nes.Board.ReadPPU(addr);
 		}
 
