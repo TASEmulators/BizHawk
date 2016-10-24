@@ -58,6 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
 		public byte ppu_open_bus;
+		public bool s_latch_clear;
+		public bool d_latch_clear;
 		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
 
@@ -173,6 +175,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				_fv = _v = _h = _vt = _ht = 0;
 				fh = 0;
+				ppu.d_latch_clear = true;
+				ppu.s_latch_clear = true;
 			}
 
 			public void increment_hsc()
@@ -365,7 +369,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//once we thought we clear latches here, but that caused midframe glitches.
 			//i think we should only reset the state machine for 2005/2006
 			//ppur.clear_latches();
-
 			byte ret = peek_2002();
 
 			vtoggle = false;
@@ -468,30 +471,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//VRAM address register (write)
 		void write_2006(byte value)
 		{
-			if (!vtoggle)
-			{
-				ppur._vt &= 0x07;
-				ppur._vt |= (value & 0x3) << 3;
-				ppur._h = (value >> 2) & 1;
-				ppur._v = (value >> 3) & 1;
-				ppur._fv = (value >> 4) & 3;
-				//nes.LogLine("addr wrote fv = {0}", ppur._fv);
-			}
-			else
-			{
-				ppur._vt &= 0x18;
-				ppur._vt |= (value >> 5);
-				ppur._ht = value & 31;
-				ppur.install_latches();
-				//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+			//if (d_latch_clear)
+			//{
+				if (!vtoggle)
+				{
+					ppur._vt &= 0x07;
+					ppur._vt |= (value & 0x3) << 3;
+					ppur._h = (value >> 2) & 1;
+					ppur._v = (value >> 3) & 1;
+					ppur._fv = (value >> 4) & 3;
+					//nes.LogLine("addr wrote fv = {0}", ppur._fv);
+				}
+				else
+				{
+					ppur._vt &= 0x18;
+					ppur._vt |= (value >> 5);
+					ppur._ht = value & 31;
+					ppur.install_latches();
+					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+					d_latch_clear = false;
+					//normally the address isnt observed by the board till it gets clocked by a read or write.
+					//but maybe thats just because a ppu read/write shoves it on the address bus
+					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
+					//ONLY if the ppu is not rendering
+					if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+						nes.Board.AddressPPU(ppur.get_2007access());
+				}
 
-				//normally the address isnt observed by the board till it gets clocked by a read or write.
-				//but maybe thats just because a ppu read/write shoves it on the address bus
-				//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
-				nes.Board.AddressPPU(ppur.get_2007access());
-			}
-
-			vtoggle ^= true;
+				vtoggle ^= true;
+			//}
+			
 		}
 		byte read_2006() { return ppu_open_bus; }
 		byte peek_2006() { return ppu_open_bus; }
@@ -536,7 +545,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			nes.Board.AddressPPU(ppur.get_2007access()); 
+			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+				nes.Board.AddressPPU(ppur.get_2007access()); 
 		}
 		byte read_2007()
 		{
@@ -546,7 +556,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = VRAMBuffer;
 
 			//in any case, we read from the ppu bus
-			VRAMBuffer = ppubus_read(addr,false);
+			VRAMBuffer = ppubus_read(addr, false, false);
 
 			//but reads from the palette are implemented in the PPU and return immediately
 			if ((addr & 0x3F00) == 0x3F00)
@@ -559,7 +569,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			nes.Board.AddressPPU(ppur.get_2007access());
+			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+				nes.Board.AddressPPU(ppur.get_2007access());
 
 			// update open bus here
 			ppu_open_bus = ret;

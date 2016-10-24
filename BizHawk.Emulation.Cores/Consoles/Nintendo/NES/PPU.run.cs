@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case 0:
 					ppu_addr_temp = ppur.get_ntread();
-					bgdata.nt = ppubus_read(ppu_addr_temp, true);
+					bgdata.nt = ppubus_read(ppu_addr_temp, true, true);
 					runppu(1);
 					break;
 				case 1:
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 2:
 					{
 						ppu_addr_temp = ppur.get_atread();
-						byte at = ppubus_read(ppu_addr_temp, true);
+						byte at = ppubus_read(ppu_addr_temp, true, true);
 
 						//modify at to get appropriate palette shift
 						if ((ppur.vt & 2) != 0) at >>= 4;
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 4:
 					ppu_addr_temp = ppur.get_ptread(bgdata.nt);
-					bgdata.pt_0 = ppubus_read(ppu_addr_temp, true);
+					bgdata.pt_0 = ppubus_read(ppu_addr_temp, true, true);
 					runppu(1);
 					break;
 				case 5:
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 6:
 					ppu_addr_temp |= 8;
-					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true);
+					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
 					runppu(1);
 					break;
 				case 7:
@@ -490,7 +490,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					//garbage nametable fetches + scroll resets
 					int garbage_todo = 2;
-					ppubus_read(ppur.get_ntread(), true);
+					ppubus_read(ppur.get_ntread(), true, true);
 					if (reg_2001.PPUON)
 					{
 						if (sl == 0 && ppur.status.cycle == 304)
@@ -550,7 +550,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 
 
-					ppubus_read(ppur.get_atread(), true); //at or nt?
+					ppubus_read(ppur.get_atread(), true, true); //at or nt?
 					if (realSprite)
 					{
 						runppu(1);
@@ -565,22 +565,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (realSprite)
 						{
-							ppubus_read(patternAddress, true);
-							ppubus_read(patternAddress, true);
+							ppubus_read(patternAddress, true, false);
+							ppubus_read(patternAddress, true, false);
 							runppu(kFetchTime * 2);
 						}
 					}
 					else
 					{
 						int addr = patternAddress;
-						t_oam[s].patterns_0 = ppubus_read(addr, true);
+						t_oam[s].patterns_0 = ppubus_read(addr, true, true);
 						if (realSprite)
 						{
 							runppu(kFetchTime);
 							read_value = t_oam[s].oam_x;
 						}
 						addr += 8;
-						t_oam[s].patterns_1 = ppubus_read(addr, true);
+						t_oam[s].patterns_1 = ppubus_read(addr, true, true);
 						if (realSprite)
 						{
 							runppu(kFetchTime);
