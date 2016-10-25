@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private int _reg1, _reg2;
 
+		private int prg_mask_16k, chr_mask_8k;
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
@@ -18,6 +20,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
+
+			prg_mask_16k = Cart.prg_size / 16 - 1;
+			chr_mask_8k = Cart.chr_size / 8 - 1;
 
 			return true;
 		}
@@ -42,17 +47,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x4000)
 			{
-				return ROM[(_reg2 * 0x4000) + (addr & 0x3FFF)];
+				return ROM[((_reg2 & prg_mask_16k) * 0x4000) + (addr & 0x3FFF)];
 			}
 
-			return ROM[(_reg1 * 0x4000) + (addr & 0x3FFF)];
+			return ROM[((_reg1 & prg_mask_16k) * 0x4000) + (addr & 0x3FFF)];
 		}
 
 		public override byte ReadPPU(int addr)
 		{
 			if (addr < 0x2000)
 			{
-				return VROM[(_reg2 * 0x2000) + (addr & 0x1FFF)];
+				return VROM[((_reg2 & chr_mask_8k) * 0x2000) + (addr & 0x1FFF)];
 			}
 
 			return base.ReadPPU(addr);
