@@ -65,7 +65,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				SetPalette(Palettes.palette_2c04_B);
 				Console.WriteLine(palette_compiled[0]);
 				Console.WriteLine(Palettes.QuickNESPalette[0, 0]);
-				Console.WriteLine(Palettes.palette_2c04[0, 0]);
 			}
 
 			
