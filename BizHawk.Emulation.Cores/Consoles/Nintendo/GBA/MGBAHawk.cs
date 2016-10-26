@@ -386,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
+		private void StartSaveStateBinaryInternal()
 		{
 			IntPtr p = IntPtr.Zero;
 			int size = 0;
@@ -398,6 +398,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				_savebuff2 = new byte[size + 13];
 			}
 			LibmGBA.BizFinishGetState(p, _savebuff, size);
+		}
+
+		private void FinishSaveStateBinaryInternal(BinaryWriter writer)
+		{
 			writer.Write(_savebuff.Length);
 			writer.Write(_savebuff, 0, _savebuff.Length);
 
@@ -405,6 +409,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			StartSaveStateBinaryInternal();
+			FinishSaveStateBinaryInternal(writer);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -427,9 +437,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] SaveStateBinary()
 		{
+			StartSaveStateBinaryInternal();
 			var ms = new MemoryStream(_savebuff2, true);
 			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
+			FinishSaveStateBinaryInternal(bw);
 			bw.Flush();
 			ms.Close();
 			return _savebuff2;

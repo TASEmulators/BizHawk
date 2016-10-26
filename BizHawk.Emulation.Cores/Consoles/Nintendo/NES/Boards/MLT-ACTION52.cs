@@ -98,6 +98,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
+			AssertPrg(256, 1536);
+
 			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
 			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
 			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
@@ -199,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (prg_mode == false)
 			{
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
-				return ROM[(bank * 0x8000) + addr + chip_offset];
+				return ROM[(bank * 0x8000) + addr];
 			}
 			else
 			{
