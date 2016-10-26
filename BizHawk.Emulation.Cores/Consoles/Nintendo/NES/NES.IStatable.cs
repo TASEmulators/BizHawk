@@ -76,8 +76,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("special_case_delay", ref special_case_delay);
 			ser.Sync("do_the_reread", ref do_the_reread);
 
+			//VS related
+			ser.Sync("VS", ref _isVS);
+			ser.Sync("VS_CHR", ref VS_chr_reg);
+			ser.Sync("VS_PRG", ref VS_prg_reg);
+			ser.Sync("VS_DIPS", ref VS_dips, false);
+			ser.Sync("VS_Service", ref VS_service);
+			ser.Sync("VS_Coin", ref VS_coin_inserted);
+			ser.Sync("VS_ROM_Control", ref VS_ROM_control);
 
-			ser.BeginSection("Board");
+		ser.BeginSection("Board");
 			Board.SyncState(ser);
 			if (Board is NESBoardBase && !((NESBoardBase)Board).SyncStateFlag)
 				throw new InvalidOperationException("the current NES mapper didnt call base.SyncState");
