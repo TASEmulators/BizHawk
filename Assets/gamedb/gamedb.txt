@@ -213,6 +213,7 @@ sha1:E8BB03BA4ABED34FF451A1D086352719BAC6564F		San Guo Zhi 2 (Ch) [T+Chi2.3]	NES
 sha1:8996AEA69D459AC181F1B3F4EF56DEA20FFF0A40		Silva Saga (J) [T+ChS]	NES		board=MAPPER199;VRAM=8
 sha1:3F85C45797E8AA0F161A4BD350BFF5777B3A19A8		Zu Qiu Xiao Jiang (Ch) [f1]	NES		board=MAPPER195;VRAM=4
 sha1:A43A2203F4F7E0FE729CE520FBD75A05206AC9F2		Zu Qiu Xiao Jiang (Ch)	NES		board=MAPPER195;VRAM=4
+sha1:A2F36A9CA3914F1C9184A85E914D7A163DAA135B	B	46-in-1 (D1038) [p1][b1]	NES		board=MAPPER060
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
