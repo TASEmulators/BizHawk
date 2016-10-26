@@ -181,6 +181,10 @@ sha1:3D49A357362160B16F03CC4BE7D8EAFB7108708D	T	Tenchi wo Kurau II - Shokatsu Ko
 sha1:7FB334A7375E17EA157415193DEE4FACC4EC2B34	T	Tenchi wo Kurau II - Shokatsu Koumei Den (J) [T+Chi(Simp)]	NES		board=MAPPER198
 sha1:D8684D302F17843031151DE38D609646CAE4753C	O	Don Doko Don 2 (J) [o1]	NES		board=MAPPER048
 sha1:12DDD9EDB8894C200C9D89B9EE5673F1202ABA19		Falsion (FDS Conversion, Whirlwind Manu) (Unl)	NES		board=MAPPER108;WRAM=0
+sha1:D6E9F3722CFA26CBC582649F197D780809F575CA	O	Family Circuit '91 (J) [o1]	NES		board=MAPPER210;PAD_V=1;PAD_H=0
+sha1:387E7B477F5A61A165A41CD2BFE8A467B3816323	O	Family Circuit '91 (J) [o2]	NES		board=MAPPER210;PAD_V=1;PAD_H=0
+sha1:68ADA89BC7539679871AD14C5C1FFADF04D71280	O	Family Circuit '91 (J) [o3]	NES		board=MAPPER210;PAD_V=1;PAD_H=0
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
