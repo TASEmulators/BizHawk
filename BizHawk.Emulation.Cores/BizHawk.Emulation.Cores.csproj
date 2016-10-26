@@ -780,6 +780,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
+		<Compile Include="Consoles\Nintendo\NES\Boards\VS_M99.cs" />
     <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
