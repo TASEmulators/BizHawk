@@ -60,11 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
 			if (_isVS)
 			{
-				Console.WriteLine(palette_compiled[0]);
-				//Settings.Palette = (byte[,])Palettes.palette_2c04.Clone();
-				SetPalette(Palettes.palette_2c04_B);
-				Console.WriteLine(palette_compiled[0]);
-				Console.WriteLine(Palettes.QuickNESPalette[0, 0]);
+				VS_pick_palette();
 			}
 
 			
