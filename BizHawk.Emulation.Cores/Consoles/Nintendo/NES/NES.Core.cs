@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool _iskeyboard = false;
 		//variable set when VS system games are running
 		public bool _isVS = false;
+		//some VS games have a ppu that switches 2000 and 2001, so keep trcak of that
+		public bool _isVS2c05 = false;
 		//since prg reg for VS System is set in the controller regs, it is convenient to have it here
 		//instead of in the board
 		public byte VS_chr_reg;
@@ -917,6 +919,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (cart.DB_GameInfo.Hash == "C145803B5FEE71172A890606A44C6D5DF6D2FA8F" // VS Star Luster
 				|| cart.DB_GameInfo.Hash == "E0572DA111D05BF622EC137DF8A658F7B0687DDF" // VS Battle City
+				|| cart.DB_GameInfo.Hash == "D232F7BE509E3B745D9E9803DA945C3FABA37A70" // VS Ninja Jajamurru Kun
+
 
 			)
 				SetPalette(Palettes.palette_2c03_2c05);

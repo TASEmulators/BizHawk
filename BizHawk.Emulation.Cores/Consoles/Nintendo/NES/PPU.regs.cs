@@ -611,9 +611,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret_spec;
 			switch (addr)
 			{
-				case 0: return read_2000(); case 1: return read_2001(); case 2: return read_2002(); case 3: return read_2003();
-				case 4: return read_2004(); case 5: return read_2005(); case 6: return read_2006();
-
+				case 0:
+					{
+						if (nes._isVS2c05)
+							return read_2001();
+						else
+							return read_2000();
+					}
+				case 1:
+					{
+						if (nes._isVS2c05)
+							return read_2000();
+						else
+							return read_2001();
+					}
+				case 2: return read_2002();
+				case 3: return read_2003();
+				case 4: return read_2004();
+				case 5: return read_2005();
+				case 6: return read_2006();
 				case 7:
 					{
 						if (double_2007_read>0)
@@ -653,8 +669,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (addr)
 			{
-				case 0: write_2000(value); break; case 1: write_2001(value); break; case 2: write_2002(value); break; case 3: write_2003(value); break;
-				case 4: write_2004(value); break; case 5: write_2005(value); break; case 6: write_2006(value); break; case 7: write_2007(value); break;
+				case 0:
+					if (nes._isVS2c05)
+						write_2001(value);
+					else
+						write_2000(value);
+					break;
+				case 1:
+					if (nes._isVS2c05)
+						write_2000(value);
+					else
+						write_2001(value);
+					break;
+				case 2: write_2002(value); break;
+				case 3: write_2003(value); break;
+				case 4: write_2004(value); break;
+				case 5: write_2005(value); break;
+				case 6: write_2006(value); break;
+				case 7: write_2007(value); break;
 				default: throw new InvalidOperationException();
 			}
 		}
