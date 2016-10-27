@@ -47,6 +47,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
+			if (Cart.DB_GameInfo.Hash == "D232F7BE509E3B745D9E9803DA945C3FABA37A70")
+				NES._isVS2c05 = true;
+
 			prg_byte_mask = Cart.prg_size * 1024 - 1;
 			chr_mask = (Cart.chr_size / 8) - 1;
 
