@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//VS related
 			ser.Sync("VS", ref _isVS);
+			ser.Sync("VS_2c05", ref _isVS2c05);
 			ser.Sync("VS_CHR", ref VS_chr_reg);
 			ser.Sync("VS_PRG", ref VS_prg_reg);
 			ser.Sync("VS_DIPS", ref VS_dips, false);
