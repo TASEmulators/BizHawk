@@ -581,7 +581,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"8BA9B8629AE755FB1A41E2FCB608F0FFB54B2902",  // Mortal Kombat III Turbo - 18 People (NT-851) (Ch) [!]
 			"F9E1C94C16AE4196BC8814AB2A32F6156AE46C82",  // NEStronome by Ernesto Borio (2009) (PD)
 			"B0F9A7BDE0A4AEAD2847679662D68F2471875EEB",  // Parasol Stars - The Story of Bubble Bobble 3 (E) [t1]
-			"004B1CCEBA54E4192EE8789B9A6AD131E56DD241"   // rNES_demo by Ernesto Borio (2009) (PD)
+			"004B1CCEBA54E4192EE8789B9A6AD131E56DD241",  // rNES_demo by Ernesto Borio (2009) (PD)
+			"986F02624DB41425D89D8C8632F77F2FFC860D04"   // Radac Tailor-Made (J) (Sample)
 		};
 
 		#endregion

@@ -188,6 +188,7 @@ sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C	B	Mississippi Satsujin Jiken (J) [
 sha1:C1F7AD0A347078B9213B2748D4ADFF33305A6647	O	Mississippi Satsujin Jiken (J) [h2][o1]	NES		board=MAPPER066
 sha1:4BBD4C55C37F531031177DE51F007B10418AD760	O	Pyramid (AVE) (PRG1) [o1]	NES		board=MAPPER000
 sha1:BAF860940369C54B3FF547DA7E759515015B1131	O	Pyramid (AVE) (PRG1) [o2]	NES		board=MAPPER000
+sha1:2B34E0F405629055E4FF2B2B1C0EBE015D866344	H	Rabbi Harrel Groberklotz (Gumshoe Hack)	NES		board=MAPPER066;WRAM=0
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
