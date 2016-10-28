@@ -762,6 +762,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-Ghostbusters63in1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-GS-2004.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-GS-2013.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-NTD-03.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-T-262.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-WS.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMCFK23C.cs" />
