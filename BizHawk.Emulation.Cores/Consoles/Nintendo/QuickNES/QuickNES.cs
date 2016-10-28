@@ -582,7 +582,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"F9E1C94C16AE4196BC8814AB2A32F6156AE46C82",  // NEStronome by Ernesto Borio (2009) (PD)
 			"B0F9A7BDE0A4AEAD2847679662D68F2471875EEB",  // Parasol Stars - The Story of Bubble Bobble 3 (E) [t1]
 			"004B1CCEBA54E4192EE8789B9A6AD131E56DD241",  // rNES_demo by Ernesto Borio (2009) (PD)
-			"986F02624DB41425D89D8C8632F77F2FFC860D04"   // Radac Tailor-Made (J) (Sample)
+			"986F02624DB41425D89D8C8632F77F2FFC860D04",  // Radac Tailor-Made (J) (Sample)
+			"BC1734BEE472D34F489A6F5F2530A019F28055B7"   // 800-in-1 [p1][b1]
 		};
 
 		#endregion

@@ -196,7 +196,8 @@ sha1:43E3ED6480E7BF32FFAF1AEBC7F534E0A9B775E6	T	Super Mario Bros 2 (Lost Levels)
 sha1:F32E366828DCA94A612DD39613858DD8E26FA2DC	T	Thunder & Lightning (U) [t1]	NES		board=MAPPER066;WRAM=0
 sha1:8554112E83B5978F5D4EC6E4551F390D5F698E00	B	U-Force Power Games (U) (Prototype2) (Defaced by NA) [b1]	NES		board=NES-GNROM;WRAM=0
 sha1:A6A0A3DC8438558FA5DA3AF8D3349AA8CF080404		Xi You Ji Hou Zhuan (Ch)	NES		board=MAPPER162
-
+sha1:BC1734BEE472D34F489A6F5F2530A019F28055B7	B	800-in-1 [p1][b1]	NES		board=MAPPER236
+sha1:BC1734BEE472D34F489A6F5F2530A019F28055B7	G	800-in-1 [p1][U]	NES		board=MAPPER236;VRAM=8
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
