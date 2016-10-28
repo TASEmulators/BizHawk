@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//variable set when VS system games are running
 		public bool _isVS = false;
 		//some VS games have a ppu that switches 2000 and 2001, so keep trcak of that
-		public bool _isVS2c05 = false;
+		public byte _isVS2c05 = 0;
 		//since prg reg for VS System is set in the controller regs, it is convenient to have it here
 		//instead of in the board
 		public byte VS_chr_reg;
@@ -920,7 +920,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (cart.DB_GameInfo.Hash == "C145803B5FEE71172A890606A44C6D5DF6D2FA8F" // VS Star Luster
 				|| cart.DB_GameInfo.Hash == "E0572DA111D05BF622EC137DF8A658F7B0687DDF" // VS Battle City
 				|| cart.DB_GameInfo.Hash == "D232F7BE509E3B745D9E9803DA945C3FABA37A70" // VS Ninja Jajamurru Kun
-
+				|| cart.DB_GameInfo.Hash == "CAE9CB4C0452C56BED58AEACCEACE8A3107F843A" // mighty bomb jack
 
 			)
 				SetPalette(Palettes.palette_2c03_2c05);
@@ -931,8 +931,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			)
 				SetPalette(Palettes.palette_2c04_001);
 
-			if (cart.DB_GameInfo.Hash == "CAE9CB4C0452C56BED58AEACCEACE8A3107F843A" // VS Mighty Bomb Jack (J)
-				|| cart.DB_GameInfo.Hash == "4E38B4C231C44BB1408AC6C6F941A136DD33D0EB" // VS Platoon
+			if (cart.DB_GameInfo.Hash == "4E38B4C231C44BB1408AC6C6F941A136DD33D0EB" // VS Platoon
 				|| cart.DB_GameInfo.Hash == "F8A0F2C5A4B7212CB35F53EA7193B3DD85D6E1CD" // VS Mach Rider
 				|| cart.DB_GameInfo.Hash == "F8ED6FAFA057DBEEB0398EECCC9DE91747D479AD" // VS Mach Rider [b1]
 
