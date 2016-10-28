@@ -47,8 +47,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			if (Cart.DB_GameInfo.Hash == "D232F7BE509E3B745D9E9803DA945C3FABA37A70")
-				NES._isVS2c05 = true;
+			if (Cart.DB_GameInfo.Hash == "D232F7BE509E3B745D9E9803DA945C3FABA37A70") // ninja kun
+				NES._isVS2c05 = 1;
+			if (Cart.DB_GameInfo.Hash == "CAE9CB4C0452C56BED58AEACCEACE8A3107F843A") // mighty bomb jack
+				NES._isVS2c05 = 2;
 
 			prg_byte_mask = Cart.prg_size * 1024 - 1;
 			chr_mask = (Cart.chr_size / 8) - 1;
