@@ -751,6 +751,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF-DREAMTECH01.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-12-IN-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-190in1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-64in1-NR.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-8157.cs" />
@@ -780,7 +781,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
-		<Compile Include="Consoles\Nintendo\NES\Boards\VS_M99.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VS_M99.cs" />
     <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
