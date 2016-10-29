@@ -51,6 +51,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				NES._isVS2c05 = 1;
 			if (Cart.DB_GameInfo.Hash == "CAE9CB4C0452C56BED58AEACCEACE8A3107F843A") // mighty bomb jack
 				NES._isVS2c05 = 2;
+			if (Cart.DB_GameInfo.Hash == "21674A6571F0D4C812B9C30092C0C5ABED0C92E1") // Gumshoe
+				NES._isVS2c05 = 3;
+			
 
 			prg_byte_mask = Cart.prg_size * 1024 - 1;
 			chr_mask = (Cart.chr_size / 8) - 1;
@@ -143,9 +146,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPRG(int addr)
 		{
-			if (Cart.prg_size==40)
+			if (Cart.prg_size==48)
 			{
-				return ROM[(addr & 0x1FFF) + (NES.VS_prg_reg << 13)];
+				if (addr<0x2000)
+				{
+					return ROM[(addr & 0x1FFF) + ((NES.VS_prg_reg*4) << 13)];
+				} else
+					return ROM[addr];	
 			}
 			else
 			{
