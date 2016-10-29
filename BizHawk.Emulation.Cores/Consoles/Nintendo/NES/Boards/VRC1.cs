@@ -122,7 +122,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 				{
-					Console.WriteLine(addr);
 					addr = addr - 0x2000;
 					if (addr < 0x800)
 					{
