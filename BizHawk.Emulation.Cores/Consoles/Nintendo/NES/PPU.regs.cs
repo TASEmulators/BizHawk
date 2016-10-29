@@ -397,6 +397,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				
 			}
+			if (nes._isVS2c05 == 3)
+			{
+				return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1C));
+			}
+
 			return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (ppu_open_bus & 0x1F));
 		}
 
