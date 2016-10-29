@@ -248,7 +248,7 @@ namespace BizHawk.Client.EmuHawk
 				this.Invoke(() => this.SavingProgressBar.Visible = true);
 				for ( ; ; )
 				{
-					if (_seekBackgroundWorker.CancellationPending)
+					if (_seekBackgroundWorker.CancellationPending || !this.IsHandleCreated)
 					{
 						e.Cancel = true;
 						break;
