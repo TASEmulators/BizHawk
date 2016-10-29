@@ -929,7 +929,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (cart.DB_GameInfo.Hash == "1A4EC64E576BAD64DAF320AEED0BE1B8B50D21DF" // VS Pinball
 				|| cart.DB_GameInfo.Hash == "E0572DA111D05BF622EC137DF8A658F7B0687DDF" // VS Battle City
 				|| cart.DB_GameInfo.Hash == "B7FD645A523E57864024369BA7201D851842CC5A" // VS Battle City [p2]
-		
+				|| cart.DB_GameInfo.Hash == "B0D1852782B4E9A9CCC2BA24CD40B170C38B940F" // VS Gradius
+				|| cart.DB_GameInfo.Hash == "0C0E33BE229E36229EFA12912285A3ED2858D9F9" // VS Gradius [b1]
+
 			)
 				SetPalette(Palettes.palette_2c04_001);
 
@@ -947,7 +949,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cart.DB_GameInfo.Hash == "1CF6AA8625AD1558E1F1AAF2E1710D5A09A2CED0" // VS Excite Bike (US)
 				|| cart.DB_GameInfo.Hash == "BBB0AF27B313D7C838A38FB772A6FE8AFBAFBB95" // VS Soccer (US)
-				
+				|| cart.DB_GameInfo.Hash == "730AFCD33209469D4F2B2B0ABBF86A22AA052609" // VS Goonies
+				|| cart.DB_GameInfo.Hash == "B73D62711B55F5B1065AC6F352A4F6AECD91A731" // VS Goonies [b1]
+				|| cart.DB_GameInfo.Hash == "C5534A442BE65436B3FCB8A2ED0129354ED42DF1" // VS Goonies [b2]
+				|| cart.DB_GameInfo.Hash == "726E10E484FCEFA32EDD531AFE4EEBB9F9F8C536" // VS Goonies [o1]
 
 
 			)
@@ -955,6 +960,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (cart.DB_GameInfo.Hash == "B21AA940728ED80C72EE23C251C96E42CC84B2D6" // VS Super Mario Bros
 				|| cart.DB_GameInfo.Hash == "9F1943AADE4233285589CEA5BDC96B5380D49337" // VS Ice Climber (USA)
+				|| cart.DB_GameInfo.Hash == "15BECCD6CA1D165B23531CF5CFAC35C327328335" // VS Ice Climber (USA) [o1]
+
 				|| cart.DB_GameInfo.Hash == "8885F4F00C0B73C156179BCEABA5381487DBEAAD" // VS Spy Vs. Spy (J)[!]
 				|| cart.DB_GameInfo.Hash == "56FB1AAABA3B8C05452B2D5B8F232FAFB64AC70D" // VS Excite Bike (US) [a1]
 				|| cart.DB_GameInfo.Hash == "7FD66E0A4CC0E404F404D8164FA221EE2ACB7A38" // VS Clu Clu Land
