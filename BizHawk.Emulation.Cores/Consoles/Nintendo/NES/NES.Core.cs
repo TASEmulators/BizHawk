@@ -192,6 +192,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					for (int i = 0; i < b.NumSides; i++)
 						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
 				}
+
+				if (_isVS)
+				{
+					ControllerDefinition.BoolButtons.Add("Insert Coin P1");
+					ControllerDefinition.BoolButtons.Add("Insert Coin P2");
+					ControllerDefinition.BoolButtons.Add("Service Switch");
+				}
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
@@ -325,6 +332,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				for (int i = 0; i < b.NumSides; i++)
 					if (Controller["FDS Insert " + i])
 						b.InsertSide(i);
+			}
+
+			if (_isVS)
+			{
+				if (controller["Service Switch"])
+					VS_service = 1;
+				else
+					VS_service = 0;
+
+				if (controller["Insert Coin P1"])
+					VS_coin_inserted |= 1;
+				else
+					VS_coin_inserted &= 2;
+
+				if (controller["Insert Coin P2"])
+					VS_coin_inserted |= 2;
+				else
+					VS_coin_inserted &= 1;
 			}
 
 			ppu.FrameAdvance();
