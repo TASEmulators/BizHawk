@@ -41,6 +41,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER075":
 					break;
+				case "MAPPER075VS":
+					NES._isVS = true;
+					break;
 				case "KONAMI-VRC-1":
 				case "JALECO-JF-20":
 				case "JALECO-JF-22":
