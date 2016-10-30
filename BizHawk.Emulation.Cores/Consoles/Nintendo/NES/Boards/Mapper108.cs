@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Meikyuu Jiin Dababa (FDS Conversion)
 	public sealed class Mapper108 : NES.NESBoardBase
 	{
-		int prg;
+		private int prg;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -21,13 +21,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			Cart.vram_size = 8;
 			AssertWram(0);
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
 			return true;
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (addr == 0xfff)
+			if (addr < 0xFFF
+				|| addr >= 0x7000) // hack ported from FCEUX to support Bubble Bobble (FDS Conversion, Kaiser Hacked) (Unl) [p1][!]
+			{
 				prg = value & 15;
+			}
 		}
 
 		public override byte ReadPRG(int addr)
