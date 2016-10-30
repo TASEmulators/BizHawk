@@ -1444,6 +1444,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.Enabled = Global.Emulator.BoardName == "FDS";
 
+			VSControlsMenuItem.Enabled = (Global.Emulator is NES) && (Global.Emulator as NES).IsVS;
+			
+
 			NESSoundChannelsMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NESSoundConfig>();
 			MovieSettingsMenuItem.Enabled = Global.Emulator is NES && !Global.MovieSession.Movie.IsActive;
 
@@ -1513,6 +1516,42 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.ClickyVirtualPadController.Click("FDS Eject");
 				GlobalWin.OSD.AddMessage("FDS disk ejected.");
+			}
+		}
+
+		private void VSInsertCoinP1MenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is NES && (Global.Emulator as NES).IsVS)
+			{
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Insert Coin P1");
+					GlobalWin.OSD.AddMessage("P1 Coin Inserted");
+				}
+			}
+		}
+
+		private void VSInsertCoinP2MenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is NES && (Global.Emulator as NES).IsVS)
+			{
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Insert Coin P2");
+					GlobalWin.OSD.AddMessage("P2 Coin Inserted");
+				}
+			}
+		}
+
+		private void VSServiceSwitchMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Global.Emulator is NES && (Global.Emulator as NES).IsVS)
+			{
+				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
+				{
+					Global.ClickyVirtualPadController.Click("Service Switch");
+					GlobalWin.OSD.AddMessage("Service Switch Pressed");
+				}
 			}
 		}
 

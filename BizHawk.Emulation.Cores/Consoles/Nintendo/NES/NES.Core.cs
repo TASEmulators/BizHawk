@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//variable to change controller read/write behaviour when keyboard is attached
 		public bool _iskeyboard = false;
 		//variable set when VS system games are running
-		public bool _isVS = false;
+		internal bool _isVS = false;
 		//some VS games have a ppu that switches 2000 and 2001, so keep trcak of that
 		public byte _isVS2c05 = 0;
 		//since prg reg for VS System is set in the controller regs, it is convenient to have it here

@@ -115,6 +115,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public bool IsVS
+		{
+			get { return _isVS; }
+		}
+
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)
 		{
 			if (domain == NESWatch.EDomain.Sysbus)
