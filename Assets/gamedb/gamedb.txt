@@ -198,6 +198,7 @@ sha1:8554112E83B5978F5D4EC6E4551F390D5F698E00	B	U-Force Power Games (U) (Prototy
 sha1:A6A0A3DC8438558FA5DA3AF8D3349AA8CF080404		Xi You Ji Hou Zhuan (Ch)	NES		board=MAPPER162
 sha1:BC1734BEE472D34F489A6F5F2530A019F28055B7	B	800-in-1 [p1][b1]	NES		board=MAPPER236
 sha1:BC1734BEE472D34F489A6F5F2530A019F28055B7	G	800-in-1 [p1][U]	NES		board=MAPPER236;VRAM=8
+sha1:BD167D1BCC9A008D04136EB91396EBEBCAC976E2	B	R.B.I. Baseball (Tengen) [b]	NES		board=TENGEN-800002;WRAM=0;PAD_H=1;PAD_V=0
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
