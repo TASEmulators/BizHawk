@@ -18,7 +18,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//configure
 			switch (Cart.board_type)
 			{
-				case "MAPPER176":
+				// http://wiki.nesdev.com/w/index.php/INES_Mapper_176
+				// Mapper 176 was originally used for some Waixing boards, but goodNES 3.23 seems to go with CaH4e3's opinion that this mapper is FK23C
+				// We will default 176 to FK23C, and use this board to support the tradional Waixing boards.  These ROMs will have to be specifically set to this board by the Game Database
+				// case "MAPPER176":
+				case "WAIXINGMAPPER176":
 					break;
 				default:
 					return false;
