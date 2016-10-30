@@ -28,6 +28,7 @@
 #include gamedb_e_cards.txt
 #include gamedb_msx1.txt
 #include gamedb_msx2.txt
+#include gamedb_vs.txt
 
 ; ************ NES / Famicom ************
 
@@ -224,6 +225,7 @@ sha1:E8BDD327FA96576F501914BDF455C477EC2A20B4	B	AV Mahjongg (Hacker) [b1]	NES		b
 sha1:E816367A8CAC2AC470CEEBA8C8DC00CEC8C7009E	T	AV Mahjongg (Hacker) [T+Chi][a1]	NES		board=MAPPER066;WRAM=0;PAD_H=0;PAD_V=1
 
 
+
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
@@ -316,8 +318,6 @@ EDD7A45A7F27E396B6D686F1861642D509863132		Datach SD Gundam Gundam Wars	NES		boar
 6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach Crayon Shin Chan Ora to Poi Poi	NES		board=MAPPER157
 1218C891DEE878C18D31D38D07CAD5FB06B3B2CE		Datach Yuu Yuu akusho Baktutou	NES		board=MAPPER157
   
-
-
 #include gamedb_goodnes.txt
 
 

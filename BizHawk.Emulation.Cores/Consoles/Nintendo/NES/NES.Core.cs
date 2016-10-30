@@ -939,9 +939,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.
-		public void PickVSPalette(GameInfo game)
+		public void PickVSPalette(CartInfo cart)
 		{
-			switch (game.OptionValue("palette"))
+			switch (cart.palette)
 			{
 				case "2C05": SetPalette(Palettes.palette_2c03_2c05); break;
 				case "2C04-1": SetPalette(Palettes.palette_2c04_001); break;

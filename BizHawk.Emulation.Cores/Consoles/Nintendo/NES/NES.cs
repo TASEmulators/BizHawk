@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// TODO: What if settings are later loaded?
 			if (_isVS)
 			{
-				PickVSPalette(game);
+				PickVSPalette(cart);
 			}
 
 			
