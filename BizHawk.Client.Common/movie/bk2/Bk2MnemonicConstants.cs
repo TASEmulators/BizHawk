@@ -116,8 +116,9 @@ namespace BizHawk.Client.Common
 						{ "FDS Eject", 'E' },
 						{ "FDS Insert 0", '0' },
 						{ "FDS Insert 1", '1' },
-						{ "VS Coin 1", 'c' },
-						{ "VS Coin 2", 'C' },
+						{ "Insert Coin P1", 'c' },
+						{ "Insert Coin P2", 'C' },
+						{ "Service Switch", 'w' },
 
 						{ "PP1", '1' },
 						{ "PP2", '2' },
