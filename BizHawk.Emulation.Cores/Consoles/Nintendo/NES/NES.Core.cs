@@ -938,64 +938,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			MemoryCallbacks.CallWrites(addr);
 		}
 
-		//the palette for each VS game needs to be chosen explicitly since there are 6 different ones.
-		//let's do it here where it's easy to keep track of
-		public void VS_pick_palette()
+		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.
+		public void PickVSPalette(GameInfo game)
 		{
-			if (cart.DB_GameInfo.Hash == "C145803B5FEE71172A890606A44C6D5DF6D2FA8F" // VS Star Luster
-				|| cart.DB_GameInfo.Hash == "D232F7BE509E3B745D9E9803DA945C3FABA37A70" // VS Ninja Jajamurru Kun
-				|| cart.DB_GameInfo.Hash == "CAE9CB4C0452C56BED58AEACCEACE8A3107F843A" // mighty bomb jack
-				|| cart.DB_GameInfo.Hash == "F08357458FF1DBFEBE152CAE100ACEF62F84774B" // VS Stroke and Match [!] (J)
-				|| cart.DB_GameInfo.Hash == "21674A6571F0D4C812B9C30092C0C5ABED0C92E1" // VS gumshoe
-
-			)
-				SetPalette(Palettes.palette_2c03_2c05);
-
-			if (cart.DB_GameInfo.Hash == "1A4EC64E576BAD64DAF320AEED0BE1B8B50D21DF" // VS Pinball
-				|| cart.DB_GameInfo.Hash == "E0572DA111D05BF622EC137DF8A658F7B0687DDF" // VS Battle City
-				|| cart.DB_GameInfo.Hash == "B7FD645A523E57864024369BA7201D851842CC5A" // VS Battle City [p2]
-				|| cart.DB_GameInfo.Hash == "B0D1852782B4E9A9CCC2BA24CD40B170C38B940F" // VS Gradius
-				|| cart.DB_GameInfo.Hash == "0C0E33BE229E36229EFA12912285A3ED2858D9F9" // VS Gradius [b1]
-
-			)
-				SetPalette(Palettes.palette_2c04_001);
-
-			if (cart.DB_GameInfo.Hash == "4E38B4C231C44BB1408AC6C6F941A136DD33D0EB" // VS Platoon
-				|| cart.DB_GameInfo.Hash == "F8A0F2C5A4B7212CB35F53EA7193B3DD85D6E1CD" // VS Mach Rider
-				|| cart.DB_GameInfo.Hash == "F8ED6FAFA057DBEEB0398EECCC9DE91747D479AD" // VS Mach Rider [b1]
-				|| cart.DB_GameInfo.Hash == "CDE1ECAF212A9F5A5A49F904F87951EDA15D54DD" // VS Stroke and Match Golf (Ladies)
-				|| cart.DB_GameInfo.Hash == "E0F7BDBD2C96B14D4B8D2146A900AAAD17F9E3B1" // VS Stroke and Match Golf (Mens)
-				|| cart.DB_GameInfo.Hash == "136DB00766AF39AF9E4FAB7306A3346C2F062446" // VS Stroke and Match Golf [a1][b1]
-				|| cart.DB_GameInfo.Hash == "FBA72452977AE8602B628B39AC4A5A7A6FD0F92F" // VS Stroke and Match Golf [a1][b2]
-				
-
-			)
-				SetPalette(Palettes.palette_2c04_002);
-
-			if (cart.DB_GameInfo.Hash == "1CF6AA8625AD1558E1F1AAF2E1710D5A09A2CED0" // VS Excite Bike (US)
-				|| cart.DB_GameInfo.Hash == "BBB0AF27B313D7C838A38FB772A6FE8AFBAFBB95" // VS Soccer (US)
-				|| cart.DB_GameInfo.Hash == "730AFCD33209469D4F2B2B0ABBF86A22AA052609" // VS Goonies
-				|| cart.DB_GameInfo.Hash == "B73D62711B55F5B1065AC6F352A4F6AECD91A731" // VS Goonies [b1]
-				|| cart.DB_GameInfo.Hash == "C5534A442BE65436B3FCB8A2ED0129354ED42DF1" // VS Goonies [b2]
-				|| cart.DB_GameInfo.Hash == "726E10E484FCEFA32EDD531AFE4EEBB9F9F8C536" // VS Goonies [o1]
-
-
-			)
-				SetPalette(Palettes.palette_2c04_003);
-
-			if (cart.DB_GameInfo.Hash == "B21AA940728ED80C72EE23C251C96E42CC84B2D6" // VS Super Mario Bros
-				|| cart.DB_GameInfo.Hash == "9F1943AADE4233285589CEA5BDC96B5380D49337" // VS Ice Climber (USA)
-				|| cart.DB_GameInfo.Hash == "15BECCD6CA1D165B23531CF5CFAC35C327328335" // VS Ice Climber (USA) [o1]
-
-				|| cart.DB_GameInfo.Hash == "8885F4F00C0B73C156179BCEABA5381487DBEAAD" // VS Spy Vs. Spy (J)[!]
-				|| cart.DB_GameInfo.Hash == "56FB1AAABA3B8C05452B2D5B8F232FAFB64AC70D" // VS Excite Bike (US) [a1]
-				|| cart.DB_GameInfo.Hash == "7FD66E0A4CC0E404F404D8164FA221EE2ACB7A38" // VS Clu Clu Land
-				
-
-
-			)
-				SetPalette(Palettes.palette_2c04_004);
-
+			switch (game.OptionValue("palette"))
+			{
+				case "2C05": SetPalette(Palettes.palette_2c03_2c05); break;
+				case "2C04-1": SetPalette(Palettes.palette_2c04_001); break;
+				case "2C04-2": SetPalette(Palettes.palette_2c04_002); break;
+				case "2C04-3": SetPalette(Palettes.palette_2c04_003); break;
+				case "2C04-4": SetPalette(Palettes.palette_2c04_004); break;
+			}
 		}
 
 	}

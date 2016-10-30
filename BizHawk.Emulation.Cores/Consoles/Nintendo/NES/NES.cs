@@ -58,9 +58,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
 			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
+			// TODO: What if settings are later loaded?
 			if (_isVS)
 			{
-				VS_pick_palette();
+				PickVSPalette(game);
 			}
 
 			
