@@ -32,7 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_4k", ref chr_banks_4k);
-			ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
+			if (NES.IsVS)
+				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 			for (int i = 0; i < 2; i++) ser.Sync("chr_regs_4k_" + i, ref chr_regs_4k[i]);
 
 			if (ser.IsReader)
