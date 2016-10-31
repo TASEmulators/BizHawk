@@ -35,8 +35,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//user configuration 
 		int[] palette_compiled = new int[64 * 8];
 
-		//variable to change controller read/write behaviour when keyboard is attached
-		public bool _iskeyboard = false;
 		//variable set when VS system games are running
 		internal bool _isVS = false;
 		//some VS games have a ppu that switches 2000 and 2001, so keep trcak of that
@@ -577,12 +575,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				case 0x4017:
 					{
-						if (_iskeyboard)
-						{
-							// eventually this will be the keyboard function, but for now it is a place holder (no keys pressed)
-							return 0x1E;
-						}
-						else if (_isVS)
+						if (_isVS)
 						{
 							byte ret = 0;
 							// for whatever reason, in VS left and right controller have swapped regs
@@ -674,11 +667,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4014: Exec_OAMDma(val); break;
 				case 0x4015: apu.WriteReg(addr, val); break;
 				case 0x4016:
-					if (_iskeyboard)
-					{
-						// eventually keyboard emulation will go here
-					}
-					else if (_isVS)
+					if (_isVS)
 					{
 						write_joyport(val);
 						VS_chr_reg = (byte)((val & 0x4)>>2);
