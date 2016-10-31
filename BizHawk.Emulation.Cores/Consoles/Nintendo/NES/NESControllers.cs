@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (Right is FourScore)
 				(Right as FourScore).RightPort = true;
 			if (Left is IZapper)
-				(Left as Zapper).PPUCallback = PPUCallback;
+				(Left as IZapper).PPUCallback = PPUCallback;
 			if (Right is IZapper)
 				(Right as IZapper).PPUCallback = PPUCallback;
 		}
