@@ -153,10 +153,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				(Left as FourScore).RightPort = false;
 			if (Right is FourScore)
 				(Right as FourScore).RightPort = true;
-			if (Left is Zapper)
+			if (Left is IZapper)
 				(Left as Zapper).PPUCallback = PPUCallback;
-			if (Right is Zapper)
-				(Right as Zapper).PPUCallback = PPUCallback;
+			if (Right is IZapper)
+				(Right as IZapper).PPUCallback = PPUCallback;
 		}
 
 		public void Strobe(StrobeInfo s, IController c)
@@ -544,12 +544,68 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 	}
 
-	public class Zapper : INesPort, IFamicomExpansion
+	// Dummy interface to indicate zapper behavior, used as a means of type checking for zapper functionality
+	public interface IZapper
+	{
+		Func<int, int, bool> PPUCallback { get; set; }
+	}
+
+	public class Zapper : INesPort, IFamicomExpansion, IZapper
 	{
 		/// <summary>
 		/// returns true if light was detected at the ppu coordinates specified
 		/// </summary>
-		public Func<int, int, bool> PPUCallback;
+		public Func<int, int, bool> PPUCallback { get; set; }
+
+		static ControllerDefinition Definition = new ControllerDefinition
+		{
+			BoolButtons = { "0Fire" },
+			FloatControls = { "0Zapper X", "0Zapper Y" },
+			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
+		};
+
+		public void Strobe(StrobeInfo s, IController c)
+		{
+		}
+
+		// NES controller port interface
+		public byte Read(IController c)
+		{
+			byte ret = 0;
+			if (c["0Fire"])
+				ret |= 0x10;
+			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
+				ret |= 0x08;
+			return ret;
+		}
+
+		public ControllerDefinition GetDefinition()
+		{
+			return Definition;
+		}
+
+		public void SyncState(Serializer ser)
+		{
+		}
+
+		// famicom expansion hookups
+		public byte ReadA(IController c)
+		{
+			return 0;
+		}
+
+		public byte ReadB(IController c)
+		{
+			return Read(c);
+		}
+	}
+
+	public class VSZapper : INesPort, IZapper
+	{
+		/// <summary>
+		/// returns true if light was detected at the ppu coordinates specified
+		/// </summary
+		public Func<int, int, bool> PPUCallback { get; set; }
 
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
