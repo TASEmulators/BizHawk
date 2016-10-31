@@ -26,6 +26,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg;
 
+		[MapperProp]
+		public byte Dip_Switch_1;
+		[MapperProp]
+		public byte Dip_Switch_2;
+		[MapperProp]
+		public byte Dip_Switch_3;
+		[MapperProp]
+		public byte Dip_Switch_4;
+		[MapperProp]
+		public byte Dip_Switch_5;
+		[MapperProp]
+		public byte Dip_Switch_6;
+		[MapperProp]
+		public byte Dip_Switch_7;
+		[MapperProp]
+		public byte Dip_Switch_8;
+
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		byte[] CIRAM_VS = new byte[0x800];
@@ -63,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
 				case "NES-UNROM_VS":
+					AutoMapperProps.Apply(this);
 					NES._isVS = true;
 					break;
 				default:
@@ -145,7 +163,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prg", ref prg);
 
 			if (NES.IsVS)
+			{
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
+				ser.Sync("Dip_1", ref Dip_Switch_1);
+				ser.Sync("Dip_2", ref Dip_Switch_2);
+				ser.Sync("Dip_3", ref Dip_Switch_3);
+				ser.Sync("Dip_4", ref Dip_Switch_4);
+				ser.Sync("Dip_5", ref Dip_Switch_5);
+				ser.Sync("Dip_6", ref Dip_Switch_6);
+				ser.Sync("Dip_7", ref Dip_Switch_7);
+				ser.Sync("Dip_8", ref Dip_Switch_8);
+			}	
 		}
 	}
 }

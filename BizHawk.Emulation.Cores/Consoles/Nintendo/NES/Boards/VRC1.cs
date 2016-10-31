@@ -16,6 +16,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		IntBuffer chr_banks_4k = new IntBuffer(2);
 		int[] chr_regs_4k = new int[2];
 
+		[MapperProp]
+		public byte Dip_Switch_1;
+		[MapperProp]
+		public byte Dip_Switch_2;
+		[MapperProp]
+		public byte Dip_Switch_3;
+		[MapperProp]
+		public byte Dip_Switch_4;
+		[MapperProp]
+		public byte Dip_Switch_5;
+		[MapperProp]
+		public byte Dip_Switch_6;
+		[MapperProp]
+		public byte Dip_Switch_7;
+		[MapperProp]
+		public byte Dip_Switch_8;
+
 		//the VS actually does have 2 KB of nametable address space
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		byte[] CIRAM_VS = new byte[0x800];
@@ -33,7 +50,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_4k", ref chr_banks_4k);
 			if (NES.IsVS)
+			{
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
+				ser.Sync("Dip_1", ref Dip_Switch_1);
+				ser.Sync("Dip_2", ref Dip_Switch_2);
+				ser.Sync("Dip_3", ref Dip_Switch_3);
+				ser.Sync("Dip_4", ref Dip_Switch_4);
+				ser.Sync("Dip_5", ref Dip_Switch_5);
+				ser.Sync("Dip_6", ref Dip_Switch_6);
+				ser.Sync("Dip_7", ref Dip_Switch_7);
+				ser.Sync("Dip_8", ref Dip_Switch_8);
+			}
+				
 			for (int i = 0; i < 2; i++) ser.Sync("chr_regs_4k_" + i, ref chr_regs_4k[i]);
 
 			if (ser.IsReader)
@@ -50,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case "MAPPER075VS":
 					NES._isVS = true;
+					AutoMapperProps.Apply(this);
 					break;
 				case "KONAMI-VRC-1":
 				case "JALECO-JF-20":
