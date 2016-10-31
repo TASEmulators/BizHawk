@@ -881,13 +881,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			active = s.OUT2 != 0;
 			column = s.OUT1;
-			if (s.OUT1 > s.OUT1old)
+			if (s.OUT1 < s.OUT1old)
 			{
 				row++;
 				if (row == 10)
 					row = 0;
 			}
-			if (s.OUT0 != 0) // should this be edge triggered?
+			if (s.OUT0 != 0)
 				row = 0;
 		}
 
