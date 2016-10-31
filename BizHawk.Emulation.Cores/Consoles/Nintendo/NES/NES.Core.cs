@@ -949,6 +949,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "2C04-3": SetPalette(Palettes.palette_2c04_003); break;
 				case "2C04-4": SetPalette(Palettes.palette_2c04_004); break;
 			}
+
+			//since this will run for every VS game, let's get security setting too
+			_isVS2c05 = cart.vs_security;
 		}
 
 	}

@@ -456,6 +456,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public List<string> chips = new List<string>();
 
 			public string palette; // Palette override for VS system
+			public byte vs_security; // for VS system games that do a ppu dheck
 
 			public override string ToString()
 			{
@@ -571,6 +572,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if(dict.ContainsKey("palette"))
 			{
 				cart.palette = dict["palette"];
+			}
+
+			if (dict.ContainsKey("vs_security"))
+			{
+				cart.vs_security = byte.Parse(dict["vs_security"]);
 			}
 
 			return cart;
