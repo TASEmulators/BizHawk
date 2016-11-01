@@ -130,14 +130,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[(bank << 13) + (addr & 0x1FFF)];
 		}
 
-		public override void ClockPPU()
+		public override void ClockCPU()
 		{
 			IrqHook(1);
 		}
 
 		private void IrqHook(int a)
 		{
-			if ((NES.ppu.ppuphase != PPU.PPUPHASE.VBL) && IRQa)
+			if (IRQa)
 			{
 				IRQCount += a;
 				if (IRQCount > 0x10000)
