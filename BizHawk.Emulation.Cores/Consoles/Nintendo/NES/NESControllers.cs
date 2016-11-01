@@ -607,6 +607,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// </summary
 		public Func<int, int, bool> PPUCallback { get; set; }
 
+		bool resetting = false;
+		uint latchedvalue = 0;
+
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
 			BoolButtons = { "0Fire" },
@@ -614,18 +617,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			FloatRanges = { new[] { 0.0f, 128.0f, 255.0f }, new[] { 0.0f, 120.0f, 239.0f } }
 		};
 
+		void Latch(IController c)
+		{
+			byte ret = 0;
+			if (c["0Fire"])
+				ret |= 0x80;
+			if (PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
+				ret |= 0x40;
+
+			ret |= 0x10; // always 1
+			latchedvalue = ret;
+			latchedvalue |= 0xFFFFFF00;
+		}
+
 		public void Strobe(StrobeInfo s, IController c)
 		{
+			resetting = s.OUT0 != 0;
+			if (s.OUT0 < s.OUT0old)
+				Latch(c);
 		}
 
 		// NES controller port interface
 		public byte Read(IController c)
 		{
-			byte ret = 0;
-			if (c["0Fire"])
-				ret |= 0x10;
-			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
-				ret |= 0x08;
+			if (resetting)
+				Latch(c);
+			byte ret = (byte)(latchedvalue & 1);
+			if (!resetting)
+				latchedvalue >>= 1; // ASR not LSR, so endless stream of 1s after data
 			return ret;
 		}
 
@@ -636,6 +655,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
+			ser.Sync("restting", ref resetting);
+			ser.Sync("latchedvalue", ref latchedvalue);
 		}
 
 		// famicom expansion hookups
