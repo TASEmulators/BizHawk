@@ -20,6 +20,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
 			prg_bank_mask_8k = Cart.prg_size / 8 - 1;
 			return true;
 		}
@@ -38,12 +40,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public override void WritePRG(int addr, byte value)
+		{
+			if ((addr >= 0x4000) && (addr < 0x6000))
+				WRAM[addr - 0x4000] = value;
+			else
+				base.WritePRG(addr, value);
+		}
+
 		public override byte ReadPRG(int addr)
 		{
 			int bank = 0;
 			if (addr < 0x2000) { bank = prg_bank_mask_8k - 3; }
 			else if (addr < 0x4000) { bank = prg_bank_mask_8k - 2; }
-			else if (addr < 0x6000) { bank = prg_bank_mask_8k - 1; }
+			// for some reason WRAM is mapped to here.
+			else if (addr < 0x6000)
+			{
+				return WRAM[addr - 0x4000];
+			}
 			else { bank = prg_bank_mask_8k; }
 
 			bank &= prg_bank_mask_8k;
