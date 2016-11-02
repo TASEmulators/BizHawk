@@ -264,6 +264,7 @@ sha1:A2F36A9CA3914F1C9184A85E914D7A163DAA135B	B	46-in-1 (D1038) [p1][b1]	NES		bo
 sha1:C403AA673405583FD18A0DA5E3E6275786E04128	B	65-in-1 (NT766) [p1][b1]	NES		board=MAPPER060
 sha1:7E46FBE4713E9391293521CF2B852C80DBEBCD7F	B	74-in-1 (NT886) [p1][b1]	NES		board=MAPPER060
 sha1:81D72ACD08A6255AE44639D40D6D90C1EFCF61AF	B	77-in-1 (NT141) [p1][b1]	NES		board=MAPPER060
+sha1:1C3771B7F116F439D684D04DF792570271C93F86		75 Bingo (Sachen-English) [U]	NES		board=Sachen_CNROM
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
