@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER066":
-					AssertPrg(32, 64, 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					AssertPrg(32, 64, 128); AssertChr(8, 16, 32, 64); AssertVram(0); AssertWram(0,8);
 					break;
 				case "NES-GNROM": // Thunder & Lightning 128 prg
 								  // THere are no known with 64 prg
