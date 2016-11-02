@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int[] prg_bank_reg_8k = new int[2];
 		public int[] chr_bank_reg_1k = new int[16];
 		bool prg_mode;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
+		public byte[] prg_banks_8k = new byte[4];
 		public IntBuffer chr_banks_1k = new IntBuffer(8);
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
@@ -89,7 +89,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void Dispose()
 		{
 			base.Dispose();
-			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
 		}
 
@@ -108,10 +107,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("extra_vrom", ref extra_vrom);
 			if (latch6k_exists)
 				ser.Sync("latch6k_value", ref latch6k_value);
-			SyncPRG();
+			//SyncPRG();
+			ser.Sync("prg_banks", ref prg_banks_8k, false);
 			SyncCHR();
 			SyncIRQ();
 			ser.Sync("isPirate", ref isPirate);
+			ser.Sync("isBMC", ref _isBMC);
 		}
 
 		void SyncPRG()
