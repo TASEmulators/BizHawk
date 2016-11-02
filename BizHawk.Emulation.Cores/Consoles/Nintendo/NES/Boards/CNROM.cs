@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_byte_mask, chr_mask;
 		bool copyprotection = false;
 		bool bus_conflict;
+		bool seicross;
 
 		//state
 		int chr;
@@ -86,6 +87,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
+			if (Cart.sha1 == "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D")
+				seicross = true;
+
 			return true;
 		}
 
@@ -98,16 +102,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (copyprotection)
 			{
-				if ((value & 0x0F) > 0 && (value != 0x13))
+				if (seicross)
 				{
-					chr_enabled = true;
-					Console.WriteLine("chr enabled");
+					if (value != 0x21)
+					{
+						chr_enabled = true;
+						Console.WriteLine("chr enabled");
+					}
+					else
+					{
+						chr_enabled = false;
+						Console.WriteLine("chr disabled");
+					}
 				}
 				else
 				{
-					chr_enabled = false;
-					Console.WriteLine("chr disabled");
+					if ((value & 0x0F) > 0 && (value != 0x13))
+					{
+						chr_enabled = true;
+						Console.WriteLine("chr enabled");
+					}
+					else
+					{
+						chr_enabled = false;
+						Console.WriteLine("chr disabled");
+					}
 				}
+				
 			}
 		}
 
@@ -131,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
+			ser.Sync("seicross", ref seicross);
 			ser.Sync("chr_enabled", ref chr_enabled);
 		}
 
