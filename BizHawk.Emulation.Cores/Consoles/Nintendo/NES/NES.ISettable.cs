@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -90,6 +91,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					!NESControlSettings.NeedsReboot(x.Controls, y.Controls) &&
 					((x.InitialWRamStatePattern ?? new List<byte>()).SequenceEqual(y.InitialWRamStatePattern ?? new List<byte>())));
 			}
+
+			public class VSDipswitchSettings
+			{
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_1 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_2 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_3 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_4 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_5 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_6 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_7 { get; set; }
+
+				[DisplayName("TODO: Something user frinedly here")]
+				public bool Dip_Switch_8 { get; set; }
+			}
+
+			public VSDipswitchSettings VSDipswitches = new VSDipswitchSettings();
 		}
 
 		public class NESSettings
