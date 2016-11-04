@@ -280,15 +280,18 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		void WriteRegister(int reg, byte data)
 		{
 			Registers[reg] = data;
+
 			switch (reg)
 			{
 				case 0: // Mode Control Register 1
 					CheckVideoMode();
 					Cpu.Interrupt = (EnableLineInterrupts && HIntPending);
+					Cpu.Interrupt |= (EnableFrameInterrupts && VIntPending);
 					break;
 				case 1: // Mode Control Register 2
 					CheckVideoMode();
 					Cpu.Interrupt = (EnableFrameInterrupts && VIntPending);
+					Cpu.Interrupt |= (EnableLineInterrupts && HIntPending);
 					break;
 				case 2: // Name Table Base Address
 					NameTableBase = CalcNameTableBase();
@@ -308,6 +311,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					SpritePatternGeneratorBase = (Registers[6] << 11) & 0x3800;
 					break;
 			}
+
 		}
 
 		static readonly byte[] pow2 = { 1, 2, 4, 8, 16, 32, 64, 128 };
@@ -336,7 +340,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			if (VIntPending && EnableFrameInterrupts)
+			{
 				Cpu.Interrupt = true;
+			}
+				
 		}
 
 		void ProcessLineInterrupt()
@@ -347,7 +354,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					HIntPending = true;
 					if (EnableLineInterrupts)
+					{;
 						Cpu.Interrupt = true;
+					}
 					lineIntLinesRemaining = Registers[0x0A];
 				}
 				return;
