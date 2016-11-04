@@ -782,6 +782,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-KOF97.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-KS7012.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-KS7013B.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-LH10.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-SHERO.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-TF1201.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL_DripGame.cs" />
