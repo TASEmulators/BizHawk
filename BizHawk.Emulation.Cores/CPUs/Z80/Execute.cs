@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		private int pendingCycles;
 		public int PendingCycles { get { return pendingCycles; } set { pendingCycles = value; } }
 
+		private int EI_pending;
+
 		public bool Debug;
 		public Action<TraceInfo> Logger;
 
@@ -35,7 +37,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			while (pendingCycles > 0)
 			{
 				Interruptable = true;
-
+				//if (interrupt == true)
+					//Console.WriteLine(totalExecutedCycles);
 				if (halted)
 				{
 
@@ -6629,7 +6632,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xFB: // EI
-									IFF1 = IFF2 = true;
+									EI_pending = 2;
 									Interruptable = false;
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -8011,7 +8014,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0xFB: // EI
-							IFF1 = IFF2 = true;
+							EI_pending = 2;
 							Interruptable = false;
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
@@ -11857,7 +11860,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xFB: // EI
-									IFF1 = IFF2 = true;
+									EI_pending = 2;
 									Interruptable = false;
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -11943,6 +11946,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 					}
 					IRQCallback();
+				}
+
+				//EI (enable interrupts) actually takes effect after the NEXT instruction
+				if (EI_pending > 0)
+				{
+					EI_pending--;
+					if (EI_pending == 0)
+					{
+						IFF1 = IFF2 = true;
+					}
 				}
 			}
 		}

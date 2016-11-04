@@ -132,6 +132,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			ser.Sync("Halted", ref halted);
 			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
 			ser.Sync("PendingCycles", ref pendingCycles);
+			ser.Sync("EI_pending", ref EI_pending);
 			ser.EndSection();
 		}
 	}
