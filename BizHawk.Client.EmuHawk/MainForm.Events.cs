@@ -1510,6 +1510,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<NESSoundConfig>();
 		}
 
+		private void VSSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new NESVSSettings().ShowHawkDialog();
+		}
+
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
 			if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)

@@ -422,6 +422,7 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.VSSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -2090,6 +2091,7 @@
             this.NesControllerSettingsMenuItem,
             this.NESGraphicSettingsMenuItem,
             this.NESSoundChannelsMenuItem,
+            this.VSSettingsMenuItem,
             this.MovieSettingsMenuItem,
             this.toolStripSeparator22,
             this.FDSControlsMenuItem,
@@ -2210,7 +2212,7 @@
 			// FdsEjectDiskMenuItem
 			// 
 			this.FdsEjectDiskMenuItem.Name = "FdsEjectDiskMenuItem";
-			this.FdsEjectDiskMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FdsEjectDiskMenuItem.Size = new System.Drawing.Size(124, 22);
 			this.FdsEjectDiskMenuItem.Text = "&Eject Disk";
 			this.FdsEjectDiskMenuItem.Click += new System.EventHandler(this.FdsEjectDiskMenuItem_Click);
 			// 
@@ -2227,21 +2229,21 @@
 			// VSInsertCoinP1MenuItem
 			// 
 			this.VSInsertCoinP1MenuItem.Name = "VSInsertCoinP1MenuItem";
-			this.VSInsertCoinP1MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.VSInsertCoinP1MenuItem.Size = new System.Drawing.Size(149, 22);
 			this.VSInsertCoinP1MenuItem.Text = "Insert Coin P1";
 			this.VSInsertCoinP1MenuItem.Click += new System.EventHandler(this.VSInsertCoinP1MenuItem_Click);
 			// 
 			// VSInsertCoinP2MenuItem
 			// 
 			this.VSInsertCoinP2MenuItem.Name = "VSInsertCoinP2MenuItem";
-			this.VSInsertCoinP2MenuItem.Size = new System.Drawing.Size(152, 22);
+			this.VSInsertCoinP2MenuItem.Size = new System.Drawing.Size(149, 22);
 			this.VSInsertCoinP2MenuItem.Text = "Insert Coin P2";
 			this.VSInsertCoinP2MenuItem.Click += new System.EventHandler(this.VSInsertCoinP2MenuItem_Click);
 			// 
 			// VSServiceSwitchMenuItem
 			// 
 			this.VSServiceSwitchMenuItem.Name = "VSServiceSwitchMenuItem";
-			this.VSServiceSwitchMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.VSServiceSwitchMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.VSServiceSwitchMenuItem.Text = "Service Switch";
 			this.VSServiceSwitchMenuItem.Click += new System.EventHandler(this.VSServiceSwitchMenuItem_Click);
 			// 
@@ -3733,6 +3735,13 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
 			// 
+			// VSSettingsMenuItem
+			// 
+			this.VSSettingsMenuItem.Name = "VSSettingsMenuItem";
+			this.VSSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.VSSettingsMenuItem.Text = "VS Settings...";
+			this.VSSettingsMenuItem.Click += new System.EventHandler(this.VSSettingsMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4166,5 +4175,6 @@
 		private System.Windows.Forms.ToolStripMenuItem VSInsertCoinP1MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VSInsertCoinP2MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VSServiceSwitchMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem VSSettingsMenuItem;
 	}
 }
