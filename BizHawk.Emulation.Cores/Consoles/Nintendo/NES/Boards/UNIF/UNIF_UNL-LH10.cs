@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "UNIF_UNL-LH10":
-					NES._isVS = true;
+					//NES._isVS = true;
 					break;
 				default:
 					return false;
@@ -43,15 +43,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			addr += 0x8000;
-			if (addr < 0xC000 || addr >= 0xE000)
+			if (addr>=0x4000 && addr<0x6000)
 			{
-				switch (addr & 0xE001)
-				{
-					case 0x8000: cmd = value & 7; break;
-					case 0x8001: reg[cmd] = value; break;
-				}
+				WRAM[addr - 0x4000] = value;
+				return;
 			}
+
+
+			addr += 0x8000;
+			switch (addr & 0xE001)
+			{
+				case 0x8000: cmd = value & 7; break;
+				case 0x8001: reg[cmd] = value; break;
+			}
+
+
 		}
 
 		public override byte ReadWRAM(int addr)
@@ -72,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x6000)
 			{
-				bank = 4;
+				return WRAM[addr - 0x4000];
 			}
 			else
 			{
