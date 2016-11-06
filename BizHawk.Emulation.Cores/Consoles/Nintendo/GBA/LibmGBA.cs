@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern int BizGetSaveRam(IntPtr ctx, byte[] dest, int maxsize);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizPutSaveRam(IntPtr ctx, byte[] src, int size);
+		public static extern void BizPutSaveRam(IntPtr ctx, byte[] src, int size);
 
 		/// <summary>
 		/// start a savestate operation

@@ -211,8 +211,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram.ToPointer())[addr];}
-		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram.ToPointer())[addr] = value; }
+		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram)[addr];}
+		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram)[addr] = value; }
 
 		void WireMemoryDomainPointers()
 		{
@@ -234,7 +234,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Peek =
 				delegate(long addr)
 				{
-					LibmGBA.BizGetMemoryAreas(_core, s);
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 						throw new IndexOutOfRangeException();
 					if (addr >= 256 * 1024)
@@ -349,10 +348,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				data = LegacyFix(data);
 			}
-			if (!LibmGBA.BizPutSaveRam(_core, data, data.Length))
-			{
-				throw new InvalidOperationException("BizPutSaveRam returned NULL!");
-			}
+			LibmGBA.BizPutSaveRam(_core, data, data.Length);
 		}
 
 		public bool SaveRamModified
