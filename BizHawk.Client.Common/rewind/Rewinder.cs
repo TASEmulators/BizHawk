@@ -214,12 +214,12 @@ namespace BizHawk.Client.Common
 		{
 			if (RewindActive != enabled)
 			{
-				DoMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
+				//DoMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
 			}
 
 			if (_rewindFrequency != frequency && enabled)
 			{
-				DoMessage("Rewind frequency set to " + frequency);
+				//DoMessage("Rewind frequency set to " + frequency);
 			}
 
 			RewindActive = enabled;
