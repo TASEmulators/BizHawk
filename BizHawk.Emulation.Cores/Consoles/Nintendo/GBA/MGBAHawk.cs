@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CoreAttributes("mGBA", "endrift", true, true, "0.4.1", "https://mgba.io/", false)]
+	[CoreAttributes("mGBA", "endrift", true, true, "0.5.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
