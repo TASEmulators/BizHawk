@@ -231,16 +231,16 @@ a938a8e3bae6c6e91c1720d57ee344534a69ec57	G	295-in-1 [p1][!]	NES
 8051b4692d5eaa0503d2de61041bb0a8dc89088c	U	2D Escape (Ch) (Wxn)	NES
 2c1057210bcd8967ee64e2190448d697f0857198	H	2DDK's Battlesity (Battle City Hack)	NES
 e86ca6b03af7ece25128dceb84cdc00bf2d5d4a5	H	2DDK's Blaster Master (Hack)	NES
-75b6cc94a952875c936dabfbb6157f9a11c5ac49	G	3-D Battles of World Runner, The (U) [!]	NES
-311a76bb96d49d48aa3c5ddf7167f6e1a8cc37eb	B	3-D Battles of World Runner, The (U) [b1]	NES
-129700fe836e98861ffebccf7d4e77df09d46cf1	B	3-D Battles of World Runner, The (U) [b2]	NES
-1b06fca4312e3b20a011a172f8bc72a7cba4e921	B	3-D Battles of World Runner, The (U) [b3]	NES
-d98856a45654fb5d5634690753d96387ff7cae1f	B	3-D Battles of World Runner, The (U) [b4]	NES
-eb2ba063d85d46a4a2aeebabc6edeeb5c71c504c	B	3-D Battles of World Runner, The (U) [hM34][b1]	NES
-1a6321b865e133962a0ea61932772bc6e3c5c054	B	3-D Battles of World Runner, The (U) [o1]	NES
-baaa56ceed747aa717f0408f382bb713810599d6	B	3-D Battles of World Runner, The (U) [o2]	NES
-c57678c8e84393a5956d2ddf32d8312c07e5ed6c	T	3-D Battles of World Runner, The (U) [T+Rus_Altman]	NES
-0fd3ee62e4729fb2518a7f08c260b0ab04ee38a4	C	3-D Battles of World Runner, The (U) [t1]	NES
+75b6cc94a952875c936dabfbb6157f9a11c5ac49	G	3-D Battles of World Runner, The (U) [!]	NES				NesHawk
+311a76bb96d49d48aa3c5ddf7167f6e1a8cc37eb	B	3-D Battles of World Runner, The (U) [b1]	NES				NesHawk
+129700fe836e98861ffebccf7d4e77df09d46cf1	B	3-D Battles of World Runner, The (U) [b2]	NES				NesHawk
+1b06fca4312e3b20a011a172f8bc72a7cba4e921	B	3-D Battles of World Runner, The (U) [b3]	NES				NesHawk
+d98856a45654fb5d5634690753d96387ff7cae1f	B	3-D Battles of World Runner, The (U) [b4]	NES				NesHawk
+eb2ba063d85d46a4a2aeebabc6edeeb5c71c504c	B	3-D Battles of World Runner, The (U) [hM34][b1]	NES				NesHawk
+1a6321b865e133962a0ea61932772bc6e3c5c054	B	3-D Battles of World Runner, The (U) [o1]	NES				NesHawk
+baaa56ceed747aa717f0408f382bb713810599d6	B	3-D Battles of World Runner, The (U) [o2]	NES				NesHawk
+c57678c8e84393a5956d2ddf32d8312c07e5ed6c	T	3-D Battles of World Runner, The (U) [T+Rus_Altman]	NES				NesHawk
+0fd3ee62e4729fb2518a7f08c260b0ab04ee38a4	C	3-D Battles of World Runner, The (U) [t1]	NES				NesHawk
 0af0a3c0f48fb6a3b064b16194dbff0f06f636d5	G	3-in-1 (8096 PCB) [p1][!]	NES
 18376bf995aa0810088e624b20320fa5fff20c10	G	3-in-1 (BN096) [p1][!]	NES
 aba358806b9a4c632c0af976052dc65d9dc473b2	B	3-in-1 (ES-Q800C PCB) [p1]	NES
@@ -976,26 +976,26 @@ c499dcdd0900562c7bb6c29482d9dd3ca9e16ef5	B	Akka-Pong (Arkanoid Hack) [b1]	NES
 9ea8890e72fe2765c82c7d7fc2d69ab3d8466b73	B	Akuma no Shoutaijou (J) [b1]	NES
 f031f3b331626facfbd8648c7faabaa34ea34c23	G	Akuma-kun - Makai no Wana (J) [!]	NES
 acaac14a4ec2d0f33119f6a11bbb3ddabf34130f	C	Akuma-kun - Makai no Wana (J) [t1]	NES
-96640add66de8df4b5d273860619f70349dcf16d	U	Akumajou Densetsu (J) (VC)	NES
-a0f3b31d4e3b0d2ca2e8a34f91f14ad99a5ad11f	G	Akumajou Densetsu (J) [!]	NES
-8e154f335ce5d6380ff895d624e90976b77e800c	B	Akumajou Densetsu (J) [b1]	NES
-e4db0a7696afce1eefa1433acb5c93b945105f79	H	Akumajou Densetsu (J) [hM16]	NES
-1f6aae4539abd6366c499de1348f756513847d9b	B	Akumajou Densetsu (J) [hM16][o1]	NES
-59159ba08da08f51bb4a880486fc1b1606c0d600	B	Akumajou Densetsu (J) [o1]	NES
-8dba993cebea419c2c5e40217444b89fdf0ff41e	B	Akumajou Densetsu (J) [o1][t1]	NES
-eb107c78f9723f9da18f32259060d9cc0201328c	B	Akumajou Densetsu (J) [o2]	NES
-323b0c96cc0a4ba93331a3f588a8b98b4ace5370	B	Akumajou Densetsu (J) [o3]	NES
-e0ddab97a684073c9451dd2666c6b14b59427b26	T	Akumajou Densetsu (J) [T+Bra67%_GTP]	NES
-eca6f2a2b81fae9d1dc1f25e6bd75ba0ac04c884	T	Akumajou Densetsu (J) [T+Eng1.0_Vice Translations]	NES
-656b7cad704141c7efc3617a5f879f0703fc7765	T	Akumajou Densetsu (J) [T+Eng100%_David Mullen,Duke Serkol]	NES
-ed7b49b84c8ca633d605290a45248d601fd59d04	T	Akumajou Densetsu (J) [T+Fre100%_Generation IX]	NES
-ef66aa941c9018420153db3dedf2a4ac88943e6f	T	Akumajou Densetsu (J) [T+RusBeta_Cool-Spot]	NES
-fa945688c163f7c5466c2128489346775f224fb5	T	Akumajou Densetsu (J) [T-Eng0.99_Vice Translations]	NES
-34e42f7a06054e63cb47fce53b5d5446bc55bbe8	T	Akumajou Densetsu (J) [T-Eng]	NES
-348f37bb3fff8b076958b09aa33922e9e2de2c2c	C	Akumajou Densetsu (J) [t1]	NES
-cd86007580c804cad34b89bb302af5ca2e70fbf7	T	Akumajou Densetsu (J) [t1][T+Rus_Cool-Spot]	NES
-11bd155470a9e018f77230055196eb4559af477a	C	Akumajou Densetsu (J) [t2]	NES
-7755325b7bd92de8fa25a8518df1685037937957	C	Akumajou Densetsu (J) [t3]	NES
+96640add66de8df4b5d273860619f70349dcf16d	U	Akumajou Densetsu (J) (VC)	NES				NesHawk
+a0f3b31d4e3b0d2ca2e8a34f91f14ad99a5ad11f	G	Akumajou Densetsu (J) [!]	NES				NesHawk
+8e154f335ce5d6380ff895d624e90976b77e800c	B	Akumajou Densetsu (J) [b1]	NES				NesHawk
+e4db0a7696afce1eefa1433acb5c93b945105f79	H	Akumajou Densetsu (J) [hM16]	NES				NesHawk
+1f6aae4539abd6366c499de1348f756513847d9b	B	Akumajou Densetsu (J) [hM16][o1]	NES				NesHawk
+59159ba08da08f51bb4a880486fc1b1606c0d600	B	Akumajou Densetsu (J) [o1]	NES				NesHawk
+8dba993cebea419c2c5e40217444b89fdf0ff41e	B	Akumajou Densetsu (J) [o1][t1]	NES				NesHawk
+eb107c78f9723f9da18f32259060d9cc0201328c	B	Akumajou Densetsu (J) [o2]	NES				NesHawk
+323b0c96cc0a4ba93331a3f588a8b98b4ace5370	B	Akumajou Densetsu (J) [o3]	NES				NesHawk
+e0ddab97a684073c9451dd2666c6b14b59427b26	T	Akumajou Densetsu (J) [T+Bra67%_GTP]	NES				NesHawk
+eca6f2a2b81fae9d1dc1f25e6bd75ba0ac04c884	T	Akumajou Densetsu (J) [T+Eng1.0_Vice Translations]	NES				NesHawk
+656b7cad704141c7efc3617a5f879f0703fc7765	T	Akumajou Densetsu (J) [T+Eng100%_David Mullen,Duke Serkol]	NES				NesHawk
+ed7b49b84c8ca633d605290a45248d601fd59d04	T	Akumajou Densetsu (J) [T+Fre100%_Generation IX]	NES				NesHawk
+ef66aa941c9018420153db3dedf2a4ac88943e6f	T	Akumajou Densetsu (J) [T+RusBeta_Cool-Spot]	NES				NesHawk
+fa945688c163f7c5466c2128489346775f224fb5	T	Akumajou Densetsu (J) [T-Eng0.99_Vice Translations]	NES				NesHawk
+34e42f7a06054e63cb47fce53b5d5446bc55bbe8	T	Akumajou Densetsu (J) [T-Eng]	NES				NesHawk
+348f37bb3fff8b076958b09aa33922e9e2de2c2c	C	Akumajou Densetsu (J) [t1]	NES				NesHawk
+cd86007580c804cad34b89bb302af5ca2e70fbf7	T	Akumajou Densetsu (J) [t1][T+Rus_Cool-Spot]	NES				NesHawk
+11bd155470a9e018f77230055196eb4559af477a	C	Akumajou Densetsu (J) [t2]	NES				NesHawk
+7755325b7bd92de8fa25a8518df1685037937957	C	Akumajou Densetsu (J) [t3]	NES				NesHawk
 a508181208cb3777c322d7307fd33496e6586fee	G	Akumajou Dracula (J) [!]	NES
 e039309b19a6aaa9ba0caa465e1626dc3b641e49	B	Akumajou Dracula (J) [b1]	NES
 560aca61633dff36193831c13fab8d4c60b718cf	B	Akumajou Dracula (J) [b2]	NES
@@ -2981,12 +2981,12 @@ f899db4cd4c06071e6d2fb10a4a6acce1cc64048	B	Caesars Palace (U) [b1]	NES
 cd42afd259061e300cbbd94a696ec627d1f058f8	B	Caffeine Bros (SMB1 Hack) [o1]	NES
 936aee3b1d22287daf5c7051d8141280d84e8e3b	H	Caffeine Bros (SMB1 Hack)	NES
 cfc380c0fa8401fb9bb1bf260b6e33b352101720	U	Calculator (Unl)	NES
-a4670ee7dfdf69f55b3d17f36e38783fb8261121	G	California Games (E) [!]	NES
-ed0ec77caf7ae0ace254266af054ec3cedd0c81c	G	California Games (U) [!]	NES
-c70ee142245ab219da7ba49f1d2fd4554969c7f3	B	California Games (U) [b1]	NES
-a10db0bacca141c2250268dd39f4b5c1271f82bd	B	California Games (U) [b2]	NES
-4161a7f357a4ec1cc6091a5598c2d48c3136e1c3	B	California Games (U) [o1]	NES
-70f29027fd4936ed1d3215e7ea49c30e5df61938	B	California Games (U) [o2]	NES
+a4670ee7dfdf69f55b3d17f36e38783fb8261121	G	California Games (E) [!]	NES				NesHawk
+ed0ec77caf7ae0ace254266af054ec3cedd0c81c	G	California Games (U) [!]	NES				NesHawk
+c70ee142245ab219da7ba49f1d2fd4554969c7f3	B	California Games (U) [b1]	NES				NesHawk
+a10db0bacca141c2250268dd39f4b5c1271f82bd	B	California Games (U) [b2]	NES				NesHawk
+4161a7f357a4ec1cc6091a5598c2d48c3136e1c3	B	California Games (U) [o1]	NES				NesHawk
+70f29027fd4936ed1d3215e7ea49c30e5df61938	B	California Games (U) [o2]	NES				NesHawk
 bf97dd2e43f0ec9690a15ad3d42060d9490ccad1	G	California Raisins, The - The Grape Escape (U) (Prototype) [!]	NES
 6bfc9e046ddc1be1f8b4b1e5372b4eabe04e3b87	U	California Raisins, The - The Grape Escape (U) (Prototype) [a1]	NES
 d9bdd7c3ee390da28d10f81dc58088802d8aa8c0	H	Canadian Baseball Stars (Baseball Stars Hack)	NES
@@ -3630,43 +3630,43 @@ bed993c9a1e267f92b7a329f91ee7b9e3414a94f	H	Castlevania II - Unknown (CV2 Hack)	N
 904764858895a171e0dd2918a1331dfaacdb4425	H	Castlevania II - Vengence of Hell (CV2 Hack)	NES
 2856b8434daa9e921a078e6b2ff304f69d08a500	H	Castlevania II - Vengence on Hell V1.0d (CV2 Hack)	NES
 c1b9135c0841c22454a69ddeab059bff8d25c103	H	Castlevania II SRAM Fix (CV2 Hack)	NES
-6f62810d7f5ada5ef9e5f4302f077a5dae0f3ffe	H	Castlevania III - Cadence of Agony by Dr. Mario+Optomon v20091228 (Hack)	NES
-0239fe077f4ee713064c6f57a9368410214a7339	U	Castlevania III - Dracula's Curse (E) (VC)	NES
-5f8ff33e76633c1ad8875cfeeeb10f16bf50095c	G	Castlevania III - Dracula's Curse (E) [!]	NES
-99a354bc42dbeac1eb25f1f4b33b9eda77572de7	T	Castlevania III - Dracula's Curse (E) [T+Spa080_Toruzz]	NES
-d063ef1037120d756e457e8999da407f2a56f246	T	Castlevania III - Dracula's Curse (E) [T-Spa]	NES
-e51996a2919b28996958d58979ef5ddbe950fa14	U	Castlevania III - Dracula's Curse (KC)	NES
-5991e5c22fae5d6acf3e1110ae32f23648841114	U	Castlevania III - Dracula's Curse (U) (VC)	NES
-f91281d5d9cc26bcf6fb4de2f5be086bc633d49b	G	Castlevania III - Dracula's Curse (U) [!]	NES
-1152c4c25d1112843a98965fa9ad7b726bf1980d	B	Castlevania III - Dracula's Curse (U) [b1]	NES
-b36db6844eb6bd0aa9421d5747877831074755b4	B	Castlevania III - Dracula's Curse (U) [b1][o1]	NES
-8be53ebe9e8fb67fb5fad630caca5941f09fc79c	B	Castlevania III - Dracula's Curse (U) [b2]	NES
-7788d8e8d56e1312f91c6f87ac07513673b254eb	B	Castlevania III - Dracula's Curse (U) [b2][o1]	NES
-ec49efcfd913efb3d9a869ec4c12f8982484ddd3	B	Castlevania III - Dracula's Curse (U) [b3]	NES
-6956c9b35bdf6b7249bc69193e8da54887a95774	B	Castlevania III - Dracula's Curse (U) [b3][o1]	NES
-5c82073e4dc3edf3b95e8f5e4e382493edba00c2	B	Castlevania III - Dracula's Curse (U) [b4]	NES
-9a03b8fd6c0ced0f55f422420f1e55b4de9f8631	B	Castlevania III - Dracula's Curse (U) [b5]	NES
-cf3b427f49b2879884bfe5cc813a04949509594d	B	Castlevania III - Dracula's Curse (U) [b6]	NES
-ca4e667d678e2939f57579bd23a6ae81ac74c9b6	H	Castlevania III - Dracula's Curse (U) [f1] (All Bugs by Dragonsbrethren v1.0)	NES
-2379213cb20a3f857468da3d91ec176313459a6c	B	Castlevania III - Dracula's Curse (U) [o1]	NES
-678e39261ca24e93c41f80cf9640c90d5d831d61	B	Castlevania III - Dracula's Curse (U) [o2]	NES
-9f69a5f3a630255d29321af46ce9f4bfe0b3c2c6	B	Castlevania III - Dracula's Curse (U) [o3]	NES
-a0f1871d42450ccc6ee0dd283c9c6cbbd01c08d1	B	Castlevania III - Dracula's Curse (U) [o4]	NES
-c7b6d1bf5b258f11190c9ea504ae663508796102	B	Castlevania III - Dracula's Curse (U) [o5]	NES
-4aa5e013e0d8a975baf52a95c71a580529c6f28b	B	Castlevania III - Dracula's Curse (U) [o6]	NES
-c1d89f340d7d99f415d1ae451cb4877fabb2bb3f	B	Castlevania III - Dracula's Curse (U) [o7]	NES
-0568cb7153f9a8a1b33be20645aa3c3bd6b00509	T	Castlevania III - Dracula's Curse (U) [T+Bra100%_BRGames]	NES
-823c70bd92332717386232a607ea54372f40fa5c	B	Castlevania III - Dracula's Curse (U) [T+Bra100%_BRGames][b1]	NES
-4d33489cbd536de8665cd6faf22070e89fce0e90	T	Castlevania III - Dracula's Curse (U) [T+Bra100%_Odin Games]	NES
-6d58bb30edb28ba387976f2c1062df92a4f2312f	T	Castlevania III - Dracula's Curse (U) [T+Rus_IfritZ]	NES
-7b880f218a41c91cb527e2aad912898938a0d695	T	Castlevania III - Dracula's Curse (U) [T+Spa1.0_eduardo_a2j]	NES
-3b66f98ab159939430c14fa029421896ab3209f8	B	Castlevania III - Dracula's Curse (U) [T+Spa1.0_eduardo_a2j][o1]	NES
-b94084610ca9381d383365471679a80c7d7bdf1e	T	Castlevania III - Dracula's Curse (U) [T+Spa1.0_Toruzz]	NES
-fcc1cbacefe6898dd44ba198e710e9c05aa5af74	T	Castlevania III - Dracula's Curse (U) [T+Spa_PaladinKnights]	NES
-24ffb8d973d1ab8d4ec4ebec5fcd4871c6e36346	T	Castlevania III - Dracula's Curse (U) [T-Spa0.82_Toruzz]	NES
-ced0a2645eae8da329f457e64f961a455849615c	H	Castlevania III - Dracula's Curse - Uncensored Edition by Dragonsbrethren (v1.0) (Hack)	NES
-e7c4d2b863cf116aa6bcf0e6db7c12d0b3693622	H	Castlevania III - Dracula's Curse with Menu by evgeny (Hack)	NES
-5dca220a2faac4633f5dc2fcbe3bae2875525e2a	H	Castlevania III Rebalanced (Hack)	NES
+6f62810d7f5ada5ef9e5f4302f077a5dae0f3ffe	H	Castlevania III - Cadence of Agony by Dr. Mario+Optomon v20091228 (Hack)	NES				NesHawk
+0239fe077f4ee713064c6f57a9368410214a7339	U	Castlevania III - Dracula's Curse (E) (VC)	NES				NesHawk
+5f8ff33e76633c1ad8875cfeeeb10f16bf50095c	G	Castlevania III - Dracula's Curse (E) [!]	NES				NesHawk
+99a354bc42dbeac1eb25f1f4b33b9eda77572de7	T	Castlevania III - Dracula's Curse (E) [T+Spa080_Toruzz]	NES				NesHawk
+d063ef1037120d756e457e8999da407f2a56f246	T	Castlevania III - Dracula's Curse (E) [T-Spa]	NES				NesHawk
+e51996a2919b28996958d58979ef5ddbe950fa14	U	Castlevania III - Dracula's Curse (KC)	NES				NesHawk
+5991e5c22fae5d6acf3e1110ae32f23648841114	U	Castlevania III - Dracula's Curse (U) (VC)	NES				NesHawk
+f91281d5d9cc26bcf6fb4de2f5be086bc633d49b	G	Castlevania III - Dracula's Curse (U) [!]	NES				NesHawk
+1152c4c25d1112843a98965fa9ad7b726bf1980d	B	Castlevania III - Dracula's Curse (U) [b1]	NES				NesHawk
+b36db6844eb6bd0aa9421d5747877831074755b4	B	Castlevania III - Dracula's Curse (U) [b1][o1]	NES				NesHawk
+8be53ebe9e8fb67fb5fad630caca5941f09fc79c	B	Castlevania III - Dracula's Curse (U) [b2]	NES				NesHawk
+7788d8e8d56e1312f91c6f87ac07513673b254eb	B	Castlevania III - Dracula's Curse (U) [b2][o1]	NES				NesHawk
+ec49efcfd913efb3d9a869ec4c12f8982484ddd3	B	Castlevania III - Dracula's Curse (U) [b3]	NES				NesHawk
+6956c9b35bdf6b7249bc69193e8da54887a95774	B	Castlevania III - Dracula's Curse (U) [b3][o1]	NES				NesHawk
+5c82073e4dc3edf3b95e8f5e4e382493edba00c2	B	Castlevania III - Dracula's Curse (U) [b4]	NES				NesHawk
+9a03b8fd6c0ced0f55f422420f1e55b4de9f8631	B	Castlevania III - Dracula's Curse (U) [b5]	NES				NesHawk
+cf3b427f49b2879884bfe5cc813a04949509594d	B	Castlevania III - Dracula's Curse (U) [b6]	NES				NesHawk
+ca4e667d678e2939f57579bd23a6ae81ac74c9b6	H	Castlevania III - Dracula's Curse (U) [f1] (All Bugs by Dragonsbrethren v1.0)	NES				NesHawk
+2379213cb20a3f857468da3d91ec176313459a6c	B	Castlevania III - Dracula's Curse (U) [o1]	NES				NesHawk
+678e39261ca24e93c41f80cf9640c90d5d831d61	B	Castlevania III - Dracula's Curse (U) [o2]	NES				NesHawk
+9f69a5f3a630255d29321af46ce9f4bfe0b3c2c6	B	Castlevania III - Dracula's Curse (U) [o3]	NES				NesHawk
+a0f1871d42450ccc6ee0dd283c9c6cbbd01c08d1	B	Castlevania III - Dracula's Curse (U) [o4]	NES				NesHawk
+c7b6d1bf5b258f11190c9ea504ae663508796102	B	Castlevania III - Dracula's Curse (U) [o5]	NES				NesHawk
+4aa5e013e0d8a975baf52a95c71a580529c6f28b	B	Castlevania III - Dracula's Curse (U) [o6]	NES				NesHawk
+c1d89f340d7d99f415d1ae451cb4877fabb2bb3f	B	Castlevania III - Dracula's Curse (U) [o7]	NES				NesHawk
+0568cb7153f9a8a1b33be20645aa3c3bd6b00509	T	Castlevania III - Dracula's Curse (U) [T+Bra100%_BRGames]	NES				NesHawk
+823c70bd92332717386232a607ea54372f40fa5c	B	Castlevania III - Dracula's Curse (U) [T+Bra100%_BRGames][b1]	NES				NesHawk
+4d33489cbd536de8665cd6faf22070e89fce0e90	T	Castlevania III - Dracula's Curse (U) [T+Bra100%_Odin Games]	NES				NesHawk
+6d58bb30edb28ba387976f2c1062df92a4f2312f	T	Castlevania III - Dracula's Curse (U) [T+Rus_IfritZ]	NES				NesHawk
+7b880f218a41c91cb527e2aad912898938a0d695	T	Castlevania III - Dracula's Curse (U) [T+Spa1.0_eduardo_a2j]	NES				NesHawk
+3b66f98ab159939430c14fa029421896ab3209f8	B	Castlevania III - Dracula's Curse (U) [T+Spa1.0_eduardo_a2j][o1]	NES				NesHawk
+b94084610ca9381d383365471679a80c7d7bdf1e	T	Castlevania III - Dracula's Curse (U) [T+Spa1.0_Toruzz]	NES				NesHawk
+fcc1cbacefe6898dd44ba198e710e9c05aa5af74	T	Castlevania III - Dracula's Curse (U) [T+Spa_PaladinKnights]	NES				NesHawk
+24ffb8d973d1ab8d4ec4ebec5fcd4871c6e36346	T	Castlevania III - Dracula's Curse (U) [T-Spa0.82_Toruzz]	NES				NesHawk
+ced0a2645eae8da329f457e64f961a455849615c	H	Castlevania III - Dracula's Curse - Uncensored Edition by Dragonsbrethren (v1.0) (Hack)	NES				NesHawk
+e7c4d2b863cf116aa6bcf0e6db7c12d0b3693622	H	Castlevania III - Dracula's Curse with Menu by evgeny (Hack)	NES				NesHawk
+5dca220a2faac4633f5dc2fcbe3bae2875525e2a	H	Castlevania III Rebalanced (Hack)	NES				NesHawk
 b6d87891167b609117dac44cc9b865579b910559	H	Castlevania Overflow Darkness (Eng) (Hack)	NES
 c83c16420e74106e961c870d20fae2f59d9795a3	H	Castlevania Overflow Darkness (Lat) (Hack)	NES
 45806361fdeeeb7fb50b04cda1d8e4658e8a03a9	B	Castlevania Resurrection (Akumajou Densetsu Hack) [o1]	NES
@@ -7660,11 +7660,11 @@ c8fb072dde5c289f75d7cd33f6e6a150a54366d8	T	Ghosts 'N Goblins (U) [T+Spa_Tanero]	
 d4da98a705695d4e0efb16dad82b657621b71539	G	Gimmi a Break - Shijou Saikyou no Quiz Ou Ketteisen (J) [!]	NES
 4d74c2dafa839b5376d0a669b9ef66417146270a	B	Gimmi a Break - Shijou Saikyou no Quiz Ou Ketteisen (J) [o1]	NES
 b40a3b9b60f6376d599da553717bbf05ff2c48a5	G	Gimmi a Break - Shijou Saikyou no Quiz Ou Ketteisen 2 (J) [!]	NES
-835fee060b15700163a1f8ad9716a163bf79c8fd	G	Gimmick! (J) [!]	NES
-6b75e9b6ddf12b3f128c9fe20d1be7a974bd32e3	B	Gimmick! (J) [b1]	NES
-b826173283a62c7b8f735dd0b7ca76f51e4a24d7	C	Gimmick! (J) [t1]	NES
-b718be96516c03e119d3e09db0d3fd7867b111da	C	Gimmick! (J) [t2]	NES
-870ce485fe94ff5665d2fb1f567af14cceb37b7c	C	Gimmick! (J) [t3]	NES
+835fee060b15700163a1f8ad9716a163bf79c8fd	G	Gimmick! (J) [!]	NES				NesHawk
+6b75e9b6ddf12b3f128c9fe20d1be7a974bd32e3	B	Gimmick! (J) [b1]	NES				NesHawk
+b826173283a62c7b8f735dd0b7ca76f51e4a24d7	C	Gimmick! (J) [t1]	NES				NesHawk
+b718be96516c03e119d3e09db0d3fd7867b111da	C	Gimmick! (J) [t2]	NES				NesHawk
+870ce485fe94ff5665d2fb1f567af14cceb37b7c	C	Gimmick! (J) [t3]	NES				NesHawk
 5ef6bd297a1b852d642ae7fc8ed58c6dd900440d	G	Ginga Eiyuu Densetsu (J) [!]	NES
 2f32aafe03a135524bd8c4b7db01372f2936737f	B	Ginga Eiyuu Densetsu (J) [b1]	NES
 846e3fa6f21a0b11a09f6ee8c85d2f596b7b032b	G	Ginga no Sannin (J) [!]	NES
@@ -12465,7 +12465,7 @@ c958707a0a19f621061d4c60b5d7fdcfe28394df	T	Mouryou Senki Madara (J) [T+Eng1.0_Gi
 1d5617b8abdad7433abb5c0c24348c0ac489e78c	U	Mouser by Tony Young (Beta 1.0) (PD)	NES
 c91e331d5d07f10385f50ca9676442ed4929085a	H	Mowgli Gets a Woody (Jungle Book Hack)	NES
 e9ebfd1a44a8b62ab774e421770f0caee34c34d4	U	Mr Brownstone by Snowbro (PD)	NES
-7371801fd9dd3888cfea99faa0920aa9863998df	G	Mr. Gimmick (E) [!]	NES
+7371801fd9dd3888cfea99faa0920aa9863998df	G	Mr. Gimmick (E) [!]	NES				NesHawk
 363c095b7d6b0b035365d55bbcd822c911adecf2	H	Mr. Happyface (Ms. Pac-Man Hack) [a1]	NES
 141991d10b5c2424d44bc2e8dfd62cd528e710ae	H	Mr. Happyface (Ms. Pac-Man Hack)	NES
 b5bf9531fe5900dc946e92114f7983088bfe232f	H	Mr. Men (Dig Dug II Hack)	NES
