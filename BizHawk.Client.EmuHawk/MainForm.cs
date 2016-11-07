@@ -1463,7 +1463,7 @@ namespace BizHawk.Client.EmuHawk
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = string.Empty;
 
-			if (Global.Emulator == null)
+			if (Global.Emulator.IsNull())
 			{
 				return;
 			}
