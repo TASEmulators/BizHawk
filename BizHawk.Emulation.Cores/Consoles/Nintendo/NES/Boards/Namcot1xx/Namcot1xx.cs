@@ -104,6 +104,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 		protected int prg_mask, chr_byte_mask;
 
+		//the VS actually does have 2 KB of nametable address space
+		//let's make the extra space here, instead of in the main NES to avoid confusion
+		byte[] CIRAM_VS = new byte[0x800];
+
+
 		public override void Dispose()
 		{
 			if(mapper != null)
@@ -113,6 +118,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			if (NES._isVS)
+				ser.Sync("CIRAM_VS", ref CIRAM_VS, false);
+
 			mapper.SyncState(ser);
 		}
 
@@ -145,8 +153,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else return VRAM[addr];
 			}
-			else return base.ReadPPU(addr);
-		}
+			else
+			{
+				if (NES._isVS)
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}
+				else
+					return base.ReadPPU(addr);
+			}
+			}
 
 		public override void WritePPU(int addr, byte value)
 		{
@@ -156,7 +180,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = MapCHR(addr);
 				VRAM[addr] = value;
 			}
-			base.WritePPU(addr, value);
+			else if (NES._isVS)
+			{
+				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+				addr &= 0x2FFF;
+
+
+				addr = addr - 0x2000;
+				if (addr < 0x800)
+				{
+					NES.CIRAM[addr] = value;
+				}
+				else
+				{
+					CIRAM_VS[addr - 0x800] = value;
+				}
+			}
+			else
+				base.WritePPU(addr, value);
 		}
 
 
@@ -173,6 +214,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[addr];
 		}
 
+		// the one VS system game that uses mapper 206 (Super Xevious) has security hardware in the EXP memory region
+		// I don't know the details, but it's obvious at least what values it expects to read from where
+		public override byte ReadEXP(int addr)
+		{
+			if (!NES._isVS)
+				return base.ReadEXP(addr);
+			else
+			{
+				addr += 0x4000;
+				if (addr == 0x54FF)
+					return 0x05;
+				else if (addr == 0x5678)
+				{
+					if (NES.cpu.X == 0x0C)
+						return 0;
+					else
+						return 1;
+				}
+					
+				else if (addr == 0x578F)
+				{
+					if (NES.cpu.X == 0x0C)
+						return 0xD1;
+					else
+						return 0x89;
+				}
+				else if (addr == 0x5567)
+				{
+					if (NES.cpu.X == 0x0C)
+						return 0x3E;
+					else
+						return 0x37;
+				}
+					
+				else
+					return base.ReadEXP(addr - 0x4000);
+			}
+		}
+
 		protected virtual void BaseSetup()
 		{
 			int num_prg_banks = Cart.prg_size / 8;
@@ -182,7 +262,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_byte_mask = (num_chr_banks*1024) - 1;
 
 			mapper = new Namcot108Chip(this);
-			SetMirrorType(EMirrorType.Vertical);
+			if (!NES._isVS)
+				SetMirrorType(EMirrorType.Vertical);
 		}
 
 	}
