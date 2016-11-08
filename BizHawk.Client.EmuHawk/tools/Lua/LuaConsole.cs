@@ -63,6 +63,7 @@ namespace BizHawk.Client.EmuHawk
 					SaveColumnInfo(LuaListView, Settings.Columns);
 					CloseLua();
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
+					LuaImp.GuiLibrary.DrawFinish();
 				}
 				else
 				{
