@@ -151,6 +151,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"Reset",
 				"Select",
 				"Pause",
+				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+				"Right Difficulty",
 				// ports
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger", "P1 Trigger 2",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Trigger", "P2 Trigger 2"
@@ -225,6 +227,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
 			s.RaiseInput(0, MachineInput.Select, c["Select"]);
 			s.RaiseInput(0, MachineInput.Color, c["Pause"]);
+			s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]);
+			s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]);
 		}
 		static void ConvertDirections(IController c, InputState s, int p)
 		{
