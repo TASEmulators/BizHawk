@@ -940,7 +940,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			//since this will run for every VS game, let's get security setting too
-			_isVS2c05 = cart.vs_security;
+			//values below 16 are for the 2c05 PPU
+			//values 16,32,48 are for Namco games and dealt with in mapper 206
+			_isVS2c05 = (byte)(cart.vs_security & 15);
 		}
 
 	}
