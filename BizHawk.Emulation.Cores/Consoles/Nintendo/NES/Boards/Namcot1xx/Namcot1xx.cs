@@ -276,9 +276,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					return NES.DB;
 				}
+				else if (Cart.vs_security == 48)
+				{
+					if (addr == 0x1E00)
+					{
+						tko_security = 0;
+						return 0xAA; //not used??
+					}
+					if (addr == 0x1E01)
+					{
+						if (tko_security==4)
+						{
+							return 0xB4;
+						}
+						if (tko_security == 9)
+						{
+							return 0x6F;
+						}
+						tko_security++;
+						return NES.DB;
+					}
+					return NES.DB;
+				}
 				else
 				{
-					return 0;
+					return NES.DB;
 				}
 			}
 		}
