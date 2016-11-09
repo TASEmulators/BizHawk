@@ -46,6 +46,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			prg_banks_8k.Dispose();
+			chr_banks_8k.Dispose();
+			base.Dispose();
+		}
+
 		static readonly EMirrorType[] kMirrorTypes = {EMirrorType.Vertical,EMirrorType.Horizontal,EMirrorType.OneScreenA,EMirrorType.OneScreenB};
 		void SyncMirror()
 		{

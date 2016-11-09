@@ -32,6 +32,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			SyncIRQ();
 		}
 
+		public override void Dispose()
+		{
+			prg_banks_16k.Dispose();
+			chr_banks_2k.Dispose();
+			base.Dispose();
+		}
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)

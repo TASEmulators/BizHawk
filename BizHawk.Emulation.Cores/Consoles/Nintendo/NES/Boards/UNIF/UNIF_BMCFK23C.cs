@@ -15,7 +15,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_mask_8k, chr_mask_1k;
 
-
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
@@ -67,6 +66,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			UpdatePrg_2();
 
 			return true;
+		}
+
+		public override void Dispose()
+		{
+			exRegs.Dispose();
+			chr_regs_1k.Dispose();
+			prg_regs_8k.Dispose();
+			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
