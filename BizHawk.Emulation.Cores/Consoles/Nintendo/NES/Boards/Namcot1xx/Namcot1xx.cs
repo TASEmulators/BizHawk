@@ -108,6 +108,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//let's make the extra space here, instead of in the main NES to avoid confusion
 		byte[] CIRAM_VS = new byte[0x800];
 
+		// security reading index for tko boxing
+		int tko_security = 0;
+		static byte[] TKO = new byte[] { 0xFF, 0xBF, 0xB7, 0x97, 0x97, 0x17, 0x57, 0x4F, 0x6F, 0x6B, 0xEB, 0xA9, 0xB1, 0x90, 0x94, 0x14,
+										 0x56, 0x4E, 0x6F, 0x6B, 0xEB, 0xA9, 0xB1, 0x90, 0xD4, 0x5C, 0x3E, 0x26, 0x87, 0x83, 0x13, 0x51};
 
 		public override void Dispose()
 		{
@@ -121,6 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES._isVS)
 				ser.Sync("CIRAM_VS", ref CIRAM_VS, false);
 
+			ser.Sync("tko security", ref tko_security);
 			mapper.SyncState(ser);
 		}
 
@@ -214,42 +219,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[addr];
 		}
 
-		// the one VS system game that uses mapper 206 (Super Xevious) has security hardware in the EXP memory region
-		// I don't know the details, but it's obvious at least what values it expects to read from where
+		// there are 3 namco games which each use their own ICs for security in different ways
+		// for convenience they are assigned in the VS_security setting
+		// 16 = Super Xevious
+		// 32 = TKO Boxing
+		// 48 = RBI Baseball
 		public override byte ReadEXP(int addr)
 		{
 			if (!NES._isVS)
 				return base.ReadEXP(addr);
 			else
 			{
-				addr += 0x4000;
-				if (addr == 0x54FF)
-					return 0x05;
-				else if (addr == 0x5678)
+
+				if (Cart.vs_security == 16)
 				{
-					if (NES.cpu.X == 0x0C)
-						return 0;
+					addr += 0x4000;
+					if (addr == 0x54FF)
+						return 0x05;
+					else if (addr == 0x5678)
+					{
+						if (NES.cpu.X == 0x0C)
+							return 0;
+						else
+							return 1;
+					}
+
+					else if (addr == 0x578F)
+					{
+						if (NES.cpu.X == 0x0C)
+							return 0xD1;
+						else
+							return 0x89;
+					}
+					else if (addr == 0x5567)
+					{
+						if (NES.cpu.X == 0x0C)
+							return 0x3E;
+						else
+							return 0x37;
+					}
+
 					else
-						return 1;
+						return base.ReadEXP(addr - 0x4000);
 				}
-					
-				else if (addr == 0x578F)
+				else if (Cart.vs_security==32)
 				{
-					if (NES.cpu.X == 0x0C)
-						return 0xD1;
-					else
-						return 0x89;
+					if (addr==0x1E00)
+					{
+						tko_security = 0;
+						return 0xAA; //not used??
+					}
+					if (addr == 0x1E01)
+					{
+						tko_security++;
+						return TKO[tko_security - 1];
+					}
+					return NES.DB;
 				}
-				else if (addr == 0x5567)
-				{
-					if (NES.cpu.X == 0x0C)
-						return 0x3E;
-					else
-						return 0x37;
-				}
-					
 				else
-					return base.ReadEXP(addr - 0x4000);
+				{
+					return 0;
+				}
 			}
 		}
 
