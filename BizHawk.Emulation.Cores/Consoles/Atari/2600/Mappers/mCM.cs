@@ -200,12 +200,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_disableRam = true;
 			_writeMode = true;
 			_column = 0;
-            _func_key = false;
-            _shift_key = false;
+			_func_key = false;
+			_shift_key = false;
 
 			base.HardReset();
-
-
 		}
 
 		public override void SyncState(Serializer ser)
@@ -221,8 +219,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
             base.SyncState(ser);
 		}
-
-
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -294,7 +290,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         {
             return ReadMem(addr, false);
         }
-
 
         public override byte PeekMemory(ushort addr)
 		{
