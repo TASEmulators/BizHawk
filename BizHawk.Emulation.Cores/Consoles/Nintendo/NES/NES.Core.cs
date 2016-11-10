@@ -554,8 +554,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (_isVS)
 					{
 						byte ret = 0;
-						// for whatever reason, in VS left and right controller have swapped regs
-						ret = read_joyport(0x4017);
+						ret = read_joyport(0x4016);
 						ret &= 1;
 						ret = (byte)(ret | (VS_service << 2) | (VS_dips[0] << 3) | (VS_dips[1] << 4) | (VS_coin_inserted << 5) | (VS_ROM_control<<7));
 
@@ -578,8 +577,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (_isVS)
 						{
 							byte ret = 0;
-							// for whatever reason, in VS left and right controller have swapped regs
-							ret = read_joyport(0x4016);
+							ret = read_joyport(0x4017);
 							ret &= 1;
 
 							ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
@@ -701,7 +699,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			InputCallbacks.Call();
 			lagged = false;
-			byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			byte ret = 0;
+			if (_isVS)
+			{
+				// for whatever reason, in VS left and right controller have swapped regs
+				ret = addr == 0x4017 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			}
+			else
+			{
+				ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			}
+			
 			ret &= 0x1f;
 			ret |= (byte)(0xe0 & DB);
 			return ret;
