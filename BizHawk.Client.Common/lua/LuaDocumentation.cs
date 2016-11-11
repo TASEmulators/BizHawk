@@ -214,6 +214,7 @@ __Types and notation__
 										 .Replace("LuaInterface", string.Empty)
 										 .Replace("Object[]", "object[] ")
 										 .Replace("Object", "object ")
+										 .Replace("Nullable`1[Boolean]", "bool? ")
 										 .Replace("Boolean[]", "bool[] ")
 										 .Replace("Boolean", "bool ")
 										 .Replace("String", "string ")
