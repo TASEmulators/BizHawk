@@ -16,8 +16,8 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnClick(EventArgs e)
 		{
-			DoLuaClick(this, e);
 			base.OnClick(e);
+			DoLuaClick(this, e);
 		}
 	}
 }
