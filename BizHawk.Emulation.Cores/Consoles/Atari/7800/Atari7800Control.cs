@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
-				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-				"Right Difficulty",
+				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+				"Toggle Right Difficulty",
 				// ports
 				"P1 Keypad1", "P1 Keypad2", "P1 Keypad3", 
 				"P1 Keypad4", "P1 Keypad5", "P1 Keypad6", 
@@ -103,8 +103,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
-				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-				"Right Difficulty",
+				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+				"Toggle Right Difficulty",
 				// ports
 				"P1 Trigger",
 				"P2 Trigger"
@@ -132,8 +132,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
-				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-				"Right Difficulty",
+				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+				"Toggle Right Difficulty",
 				// ports
 				// NB: as referenced by the emu, p1t2 = p1t2, p1t3 = p2t2, p2t2 = p3t2, p2t3 = p4t2
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger", "P1 Trigger 2", "P1 Trigger 3",
@@ -151,8 +151,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"Reset",
 				"Select",
 				"Pause",
-				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-				"Right Difficulty",
+				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+				"Toggle Right Difficulty",
 				// ports
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger", "P1 Trigger 2",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Trigger", "P2 Trigger 2"
@@ -219,16 +219,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
 			s.RaiseInput(0, MachineInput.Select, c["Select"]);
 			s.RaiseInput(0, MachineInput.Color, c["BW"]);
-			if (c["Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]); }
-			if (c["Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]); }
+			if (c["Toggle Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Toggle Left Difficulty"]); }
+			if (c["Toggle Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Toggle Right Difficulty"]); }
 		}
 		static void ConvertConsoleButtons7800(IController c, InputState s)
 		{
 			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
 			s.RaiseInput(0, MachineInput.Select, c["Select"]);
 			s.RaiseInput(0, MachineInput.Color, c["Pause"]);
-			if (c["Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]); }
-			if (c["Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]); }
+			if (c["Toggle Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Toggle Left Difficulty"]); }
+			if (c["Toggle Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Toggle Right Difficulty"]); }
 		}
 		static void ConvertDirections(IController c, InputState s, int p)
 		{
