@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
@@ -9,25 +10,28 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		private ushort[] Register = new ushort[64];
 		private ushort ColorSP = 0x0028;
 
+		public byte[] mobs = new byte[8];
+		public byte[] y_mobs = new byte[8];
+
 		public int TotalExecutedCycles;
 		public int PendingCycles;
 
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
 
-		public int[] FrameBuffer = new int[159 * 96];
+		public int[] BGBuffer = new int[159 * 96];
+		public int[] FrameBuffer = new int[159 * 192];
 
 		public int[] GetVideoBuffer()
 		{
-			Background();
-			Mobs();
+			
 			return FrameBuffer; 
 		}
 
 		public int VirtualWidth { get { return 159; } }
 		public int BufferWidth { get { return 159; } }
 		public int VirtualHeight { get { return 192; } }
-		public int BufferHeight { get { return 96; } }
+		public int BufferHeight { get { return 192; } }
 		public int BackgroundColor { get { return 0; } }
 		
 		public void Reset()
@@ -304,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 											color = 3;
 										}
 									}
-									FrameBuffer[pixel] = ColorToRGBA(colors[color]);
+									BGBuffer[pixel] = ColorToRGBA(colors[color]);
 								}
 							}
 							continue;
@@ -348,22 +352,234 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							if ((row & 0x1) != 0)
 							{
 								// The pixels go right as the bits get less significant.
-								FrameBuffer[pixel] = ColorToRGBA(fg);
+								BGBuffer[pixel] = ColorToRGBA(fg);
 							}
 							else
 							{
-								FrameBuffer[pixel] = ColorToRGBA(bg);
+								BGBuffer[pixel] = ColorToRGBA(bg);
 							}
 							row >>= 1;
 						}
 					}
 				}
 			}
+
+			// now that we have the cards in BGbuffer, we can double vertical resolution to get Frame buffer
+			for (int j=0;j<96;j++)
+			{
+				for (int i = 0; i < 159; i++)
+				{
+					FrameBuffer[(j * 2) * 159 + i] = BGBuffer[j * 159 + i];
+					FrameBuffer[(j * 2+1) * 159 + i] = BGBuffer[j * 159 + i];
+				}
+			}
+			
 		}
+
+		// see for more details: http://spatula-city.org/~im14u2c/intv/jzintv-1.0-beta3/doc/programming/stic.txt
+		/*
+		The STIC provides 3 registers for controlling each MOB, and a 4th register
+		for reading its collision (or "interaction") status.  The registers are 
+		laid out as follows:
+
+		   X Register:    Address = $0000 + MOB #
+
+			  13   12   11   10    9    8    7    6    5    4    3    2    1    0
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+			| ?? | ?? | ?? | X  |VISB|INTR|            X Coordinate               |
+			|    |    |    |SIZE|    |    |             (0 to 255)                |
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+		   Y Register:    Address = $0008 + MOB #
+
+			  13   12   11   10    9    8    7    6    5    4    3    2    1    0
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+			| ?? | ?? | Y  | X  | Y  | Y  |YRES|          Y Coordinate            |
+			|    |    |FLIP|FLIP|SIZ4|SIZ2|    |           (0 to 127)             |
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+		   A Register:    Address = $0010 + MOB #
+
+			  13   12   11   10    9    8    7    6    5    4    3    2    1    0
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+			|PRIO| FG |GRAM|      GRAM/GROM Card # (0 to 255)      |   FG Color   |
+			|    |bit3|GROM|     (bits 9, 10 ignored for GRAM)     |   Bits 0-2   |
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+
+		   C Register:    Address = $0018 + MOB #
+
+			  13   12   11   10    9    8    7    6    5    4    3    2    1    0
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+			| ?? | ?? | ?? | ?? |COLL|COLL|COLL|COLL|COLL|COLL|COLL|COLL|COLL|COLL|
+			|    |    |    |    |BORD| BG |MOB7|MOB6|MOB5|MOB4|MOB3|MOB2|MOB1|MOB0|
+			+----+----+----+----+----+----+----+----+----+----+----+----+----+----+
+		 */
+
 
 		public void Mobs()
 		{
-			// TODO
+			// fill the frame buffer with graphics for each of the 8 mobs
+
+			ushort x;
+			ushort y;
+			ushort attr;
+			byte row;
+			for (int i = 0; i < 8; i++)
+			{
+				x = Register[i];
+				y = Register[i + 8];
+				attr = Register[i + 16];
+
+				byte card = (byte)(attr >> 3);
+				bool gram = attr.Bit(11);
+				byte loc_color = (byte)(attr & 3);
+				bool color_3 = attr.Bit(12);
+				if (color_3)
+					loc_color += 4;
+
+				byte loc_x = (byte)(x & 0xFF);
+				byte loc_y = (byte)(y & 0x7F);
+				bool vis = x.Bit(9);
+				bool x_flip = y.Bit(10);
+				bool y_flip = y.Bit(11);
+				bool yres = y.Bit(7);
+				bool ysiz2 = y.Bit(8);
+				bool ysiz4 = y.Bit(9);
+
+				// setting yres implicitly uses an even card first
+				if (yres)
+					card &= 0xFE;
+
+				// in GRAM mode only take the first 6 bits of the card number
+				if (gram)
+					card &= 0x3F;
+
+				
+
+				//pull the data from the card into the mobs array		
+				for (int j=0;j<8;j++)
+				{
+					if (gram)
+					{
+						row = (byte)ReadMemory((ushort)(0x3800 + 8 * card + j));
+					}
+					else
+					{
+						row = (byte)ReadMemory((ushort)(0x3000 + 8 * card + j));
+					}
+
+					mobs[j] = row;
+				}
+
+				// assign the y_mob, used to double vertical resolution
+				if (yres)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						if (gram)
+						{
+							row = (byte)ReadMemory((ushort)(0x3800 + 8 * (card + 1) + j));
+						}
+						else
+						{
+							row = (byte)ReadMemory((ushort)(0x3000 + 8 * (card + 1) + j));
+						}
+
+						y_mobs[j] = row;
+					}
+				}
+
+				//flip mobs accordingly
+				if (x_flip)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						byte temp_0 = (byte)((mobs[j] & 1) << 7);
+						byte temp_1 = (byte)((mobs[j] & 2) << 5);
+						byte temp_2 = (byte)((mobs[j] & 4) << 3);
+						byte temp_3 = (byte)((mobs[j] & 8) << 1);
+						byte temp_4 = (byte)((mobs[j] & 16) >> 1);
+						byte temp_5 = (byte)((mobs[j] & 32) >> 3);
+						byte temp_6 = (byte)((mobs[j] & 64) >> 5);
+						byte temp_7 = (byte)((mobs[j] & 128) >> 7);
+
+						mobs[j] = (byte)(temp_0 + temp_1 + temp_2 + temp_3 + temp_4 + temp_5 + temp_6 + temp_7);
+					}
+					if (yres)
+					{
+						for (int j = 0; j < 8; j++)
+						{
+							byte temp_0 = (byte)((y_mobs[j] & 1) << 7);
+							byte temp_1 = (byte)((y_mobs[j] & 2) << 5);
+							byte temp_2 = (byte)((y_mobs[j] & 4) << 3);
+							byte temp_3 = (byte)((y_mobs[j] & 8) << 1);
+							byte temp_4 = (byte)((y_mobs[j] & 16) >> 1);
+							byte temp_5 = (byte)((y_mobs[j] & 32) >> 3);
+							byte temp_6 = (byte)((y_mobs[j] & 64) >> 5);
+							byte temp_7 = (byte)((y_mobs[j] & 128) >> 7);
+
+							y_mobs[j] = (byte)(temp_0 + temp_1 + temp_2 + temp_3 + temp_4 + temp_5 + temp_6 + temp_7);
+						}
+					}
+				}
+
+				if (y_flip)
+				{
+					byte temp_0 = mobs[0];
+					byte temp_1 = mobs[1];
+					byte temp_2 = mobs[2];
+					byte temp_3 = mobs[3];
+
+					mobs[0] = mobs[7];
+					mobs[1] = mobs[6];
+					mobs[2] = mobs[5];
+					mobs[3] = mobs[4];
+					mobs[4] = temp_3;
+					mobs[5] = temp_2;
+					mobs[6] = temp_1;
+					mobs[7] = temp_0;
+				}
+
+				//TODO:stretch
+
+				//TODO:collision
+
+				//TODO:pixel priority
+
+				//draw the mob
+				//we already have the BG at this point, so for now let's assume mobs have priority for testing
+
+				for (int j = 0; j < 8; j++)
+				{
+					for (int k = 0; k < 8; k++)
+					{
+						bool pixel = mobs[j].Bit(7 - k);
+
+						if ((loc_x + k) < 159 && (loc_y + j) < 192 && pixel && vis)
+						{
+							FrameBuffer[(loc_y + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+						}
+					}
+				}
+
+				if (yres)
+				{
+					for (int j = 0; j < 8; j++)
+					{
+						for (int k = 0; k < 8; k++)
+						{
+							bool pixel = y_mobs[j].Bit(7 - k);
+
+							if ((loc_x + k) < 159 && (loc_y+8 + j) < 192 && pixel && vis)
+							{
+								FrameBuffer[(loc_y+8 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+							}
+						}
+					}
+				}
+			}
 		}
+
+
 	}
 }
