@@ -555,9 +555,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						bool pixel = mobs[j].Bit(7 - k);
 
-						if ((loc_x + k) < 159 && (loc_y + j) < 192 && pixel && vis)
+						if ((loc_x + k) < 159 && (loc_y*2 + j) < 192 && pixel && vis)
 						{
-							FrameBuffer[(loc_y + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+							FrameBuffer[(loc_y*2 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
 						}
 					}
 				}
@@ -570,9 +570,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							bool pixel = y_mobs[j].Bit(7 - k);
 
-							if ((loc_x + k) < 159 && (loc_y+8 + j) < 192 && pixel && vis)
+							if ((loc_x + k) < 159 && ((loc_y+4)*2 + j) < 192 && pixel && vis)
 							{
-								FrameBuffer[(loc_y+8 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+								FrameBuffer[((loc_y+4)*2 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
 							}
 						}
 					}
