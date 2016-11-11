@@ -940,11 +940,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (cart.palette)
 			{
-				case "2C05": SetPalette(Palettes.palette_2c03_2c05); break;
-				case "2C04-1": SetPalette(Palettes.palette_2c04_001); break;
-				case "2C04-2": SetPalette(Palettes.palette_2c04_002); break;
-				case "2C04-3": SetPalette(Palettes.palette_2c04_003); break;
-				case "2C04-4": SetPalette(Palettes.palette_2c04_004); break;
+				case "2C05": SetPalette(Palettes.palette_2c03_2c05); ppu.CurrentLuma = PPU.PaletteLuma2C03; break;
+				case "2C04-1": SetPalette(Palettes.palette_2c04_001); ppu.CurrentLuma = PPU.PaletteLuma2C04_1; break;
+				case "2C04-2": SetPalette(Palettes.palette_2c04_002); ppu.CurrentLuma = PPU.PaletteLuma2C04_2; break;
+				case "2C04-3": SetPalette(Palettes.palette_2c04_003); ppu.CurrentLuma = PPU.PaletteLuma2C04_3; break;
+				case "2C04-4": SetPalette(Palettes.palette_2c04_004); ppu.CurrentLuma = PPU.PaletteLuma2C04_4; break;
 			}
 
 			//since this will run for every VS game, let's get security setting too
