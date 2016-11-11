@@ -8,6 +8,10 @@ namespace BizHawk.Common
 	{
 		public InstanceDll(string dllPath)
 		{
+			// debugging symbols
+#if false
+			_hModule = LoadLibrary(dllPath);
+#else
 			//copy the dll to a temp directory
 			var path = TempFileCleaner.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dllPath)),".dll",false);
 			using (var stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None))
@@ -31,6 +35,7 @@ namespace BizHawk.Common
 			{
 				Environment.SetEnvironmentVariable("PATH", envpath, EnvironmentVariableTarget.Process);
 			}
+#endif
 		}
 
 		[Flags]
@@ -52,6 +57,12 @@ namespace BizHawk.Common
 		static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 		[DllImport("kernel32.dll")]
 		static extern bool FreeLibrary(IntPtr hModule);
+
+		public void Retrieve<T>(out T outvar, string procName) where T : class
+		{
+			System.Delegate del = Marshal.GetDelegateForFunctionPointer(GetProcAddress(procName), typeof(T));
+			outvar = del as T;
+		}
 
 		public IntPtr GetProcAddress(string procName)
 		{
