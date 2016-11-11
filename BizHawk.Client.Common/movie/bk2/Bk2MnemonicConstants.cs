@@ -104,7 +104,10 @@ namespace BizHawk.Client.Common
 				{ "Triangle", 'T' },
 				{ "Circle", 'O' },
 				{ "Cross", 'X' },
-				{ "Square", 'Q' }
+				{ "Square", 'Q' },
+
+				{ "Left Difficulty", 'l' },
+				{ "Right Difficulty", 'r' }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>

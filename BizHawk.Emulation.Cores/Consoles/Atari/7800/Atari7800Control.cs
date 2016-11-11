@@ -219,16 +219,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
 			s.RaiseInput(0, MachineInput.Select, c["Select"]);
 			s.RaiseInput(0, MachineInput.Color, c["BW"]);
-			s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]);
-			s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]);
+			if (c["Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]); }
+			if (c["Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]); }
 		}
 		static void ConvertConsoleButtons7800(IController c, InputState s)
 		{
 			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
 			s.RaiseInput(0, MachineInput.Select, c["Select"]);
 			s.RaiseInput(0, MachineInput.Color, c["Pause"]);
-			s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]);
-			s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]);
+			if (c["Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Left Difficulty"]); }
+			if (c["Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Right Difficulty"]); }
 		}
 		static void ConvertDirections(IController c, InputState s, int p)
 		{
@@ -246,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		static void ConvertJoystick(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			ConvertDirections(c, s, 0);
 			ConvertDirections(c, s, 1);
@@ -255,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 		static void ConvertPaddles(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			for (int i = 0; i < 4; i++)
 			{
@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 		static void ConvertKeypad(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			for (int i = 0; i < 4; i++)
 			{
@@ -294,7 +294,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		};
 		static void ConvertDriving(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			ConvertTrigger(c, s, 0);
 			ConvertTrigger(c, s, 1);
@@ -303,7 +303,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 		static void ConvertBoosterGrip(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			ConvertDirections(c, s, 0);
 			ConvertDirections(c, s, 1);
@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 		static void ConvertProLineJoystick(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons7800(c, s);
 			ConvertDirections(c, s, 0);
 			ConvertDirections(c, s, 1);
@@ -328,7 +328,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		}
 		static void ConvertLightgun(IController c, InputState s)
 		{
-			s.ClearAllInput();
+			s.ClearControllerInput();
 			ConvertConsoleButtons7800(c, s);
 			ConvertTrigger(c, s, 0);
 			ConvertTrigger(c, s, 1);
