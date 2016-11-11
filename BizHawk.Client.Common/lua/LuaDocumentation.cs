@@ -24,6 +24,26 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine();
 
+			sb.AppendLine(@"All type names represent the standard .NET types of the same name. Except for func which represents a lua function and table which represents a lua table. For more information on .NET types can be found in MSDN documentation.
+
+__Types and notation__
+* ? (question mark)
+** A question mark next to a value indicates that it is a Nullable type (only applies to types that are not normally nullable)
+* [[]] (brackets)
+** Brackets around a parameter indicate that the parameter is optional. optional parameters have an equals sign followed by the value that will be used if no value is supplied.
+** Brackets after a parameter type indicate it is an array
+* null
+** null is equivalent to the lua nil
+* Color
+** This is a .NET System.Drawing.Color struct. The value passed from lua is any value acceptable in the Color constructor. This means either a string with the color name such as ""red"", or a 0xAARRGGBB integer value.  Unless specified, this is not a nullable value
+* object
+** A System.Object, literally anything qualifies for this parameter. However, the context of particular function may suggest a narrower range of useful values.
+* luaf
+** A Lua function. Note that these are always parameters, and never return values of a call
+* table
+** A standard Lua table
+");
+
 			foreach (var library in this.Select(x => new { Name = x.Library, Description = x.LibraryDescription }).Distinct())
 			{
 				sb
