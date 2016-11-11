@@ -38,6 +38,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			if (Tracer.Enabled)
+				_cpu.TraceCallback = (s) => Tracer.Put(s);
+			else
+				_cpu.TraceCallback = null;
+
 			Frame++;
 			// read the controller state here for now
 			get_controller_state();
