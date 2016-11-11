@@ -207,34 +207,7 @@ __Types and notation__
 					list.Append('(');
 					for (var i = 0; i < parameters.Length; i++)
 					{
-						var p =
-							parameters[i].ToString().Replace("System", string.Empty)
-										 .Replace(" ", string.Empty)
-										 .Replace(".", string.Empty)
-										 .Replace("LuaInterface", string.Empty)
-										 .Replace("Object[]", "object[] ")
-										 .Replace("Object", "object ")
-										 .Replace("Nullable`1[Boolean]", "bool? ")
-										 .Replace("Boolean[]", "bool[] ")
-										 .Replace("Boolean", "bool ")
-										 .Replace("String", "string ")
-										 .Replace("LuaTable", "table ")
-										 .Replace("LuaFunction", "func ")
-										 .Replace("Nullable`1[Int32]", "int? ")
-										 .Replace("Nullable`1[UInt32]", "uint? ")
-										 .Replace("Byte", "byte ")
-										 .Replace("Int16", "short ")
-										 .Replace("Int32", "int ")
-										 .Replace("Int64", "long ")
-										 .Replace("Ushort", "ushort ")
-										 .Replace("Ulong", "ulong ")
-										 .Replace("UInt32", "uint ")
-										 .Replace("UInt64", "ulong ")
-										 .Replace("Double", "double ")
-										 .Replace("Uint", "uint ")
-										 .Replace("Nullable`1[DrawingColor]", "Color? ")
-										 .Replace("DrawingColor", "Color ");
-
+						var p = TypeCleanup(parameters[i].ToString());
 						if (parameters[i].IsOptional)
 						{
 							var def = parameters[i].DefaultValue != null ? parameters[i].DefaultValue.ToString() : "null";
@@ -259,17 +232,44 @@ __Types and notation__
 			}
 		}
 
+		private string TypeCleanup(string str)
+		{
+			return str
+				.Replace("System", string.Empty)
+				.Replace(" ", string.Empty)
+				.Replace(".", string.Empty)
+				.Replace("LuaInterface", string.Empty)
+				.Replace("Object[]", "object[] ")
+				.Replace("Object", "object ")
+				.Replace("Nullable`1[Boolean]", "bool? ")
+				.Replace("Boolean[]", "bool[] ")
+				.Replace("Boolean", "bool ")
+				.Replace("String", "string ")
+				.Replace("LuaTable", "table ")
+				.Replace("LuaFunction", "func ")
+				.Replace("Nullable`1[Int32]", "int? ")
+				.Replace("Nullable`1[UInt32]", "uint? ")
+				.Replace("Byte", "byte ")
+				.Replace("Int16", "short ")
+				.Replace("Int32", "int ")
+				.Replace("Int64", "long ")
+				.Replace("Ushort", "ushort ")
+				.Replace("Ulong", "ulong ")
+				.Replace("UInt32", "uint ")
+				.Replace("UInt64", "ulong ")
+				.Replace("Double", "double ")
+				.Replace("Uint", "uint ")
+				.Replace("Nullable`1[DrawingColor]", "Color? ")
+				.Replace("DrawingColor", "Color ")
+				.ToLower();
+		}
+
 		public string ReturnType
 		{
 			get
 			{
 				var returnType = _method.ReturnType.ToString();
-
-				return returnType
-					.Replace("System.", string.Empty)
-					.Replace("LuaInterface.", string.Empty)
-					.ToLower()
-					.Trim();
+				return TypeCleanup(returnType).Trim();
 			}
 		}
 	}
