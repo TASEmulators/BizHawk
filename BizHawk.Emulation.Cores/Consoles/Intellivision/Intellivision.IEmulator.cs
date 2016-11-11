@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				if (Controller.IsPressed(IntellivisionController.BoolButtons[i]))
 				{
-					result |= HandControllerButtons[i];
+					result |= HandControllerButtons[i-31];
 				}
 			}
 
