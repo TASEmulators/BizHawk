@@ -261,20 +261,20 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x025:
 				case 0x026:
 				case 0x027:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //dest_value = Register[dest];
-                    //ones = (dest_value ^ 0xFFFF);
-                    //result = ones + 1;
-                    //Calc_FlagC(result);
-                    //Calc_FlagO_Add(ones, 1, result);
-                    //result &= 0xFFFF;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 6;
-                    //Interruptible = true;
-                    //break;
+					// ------------------------NEEDS TESTING---------------------------
+					dest = (byte)(opcode & 0x7);
+                    dest_value = Register[dest];
+                    var ones = (dest_value ^ 0xFFFF);
+                    result = ones + 1;
+                    Calc_FlagC(result);
+                    Calc_FlagO_Add(ones, 1, result);
+                    result &= 0xFFFF;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 6;
+                    Interruptible = true;
+                    break;
 				// ADCR
 				case 0x028:
 				case 0x029:
@@ -284,20 +284,20 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x02D:
 				case 0x02E:
 				case 0x02F:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //dest_value = Register[dest];
-                    //carry = FlagC ? 1 : 0;
-                    //result = dest_value + carry;
-                    //Calc_FlagC(result);
-                    //Calc_FlagO_Add(dest_value, carry, result);
-                    //result &= 0xFFFF;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 6;
-                    //Interruptible = true;
-                    //break;
+					// ------------------------NEEDS TESTING---------------------------
+					dest = (byte)(opcode & 0x7);
+                    dest_value = Register[dest];
+                    var carry = FlagC ? 1 : 0;
+                    result = dest_value + carry;
+                    Calc_FlagC(result);
+                    Calc_FlagO_Add(dest_value, carry, result);
+                    result &= 0xFFFF;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 6;
+                    Interruptible = true;
+                    break;
 				// GSWD
 				case 0x030:
 				case 0x031:
@@ -1655,18 +1655,18 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x385:
 				case 0x386:
 				case 0x387:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //addr = ReadMemory(RegisterPC++);
-                    //dest_value = Register[dest];
-                    //addr_read = ReadMemory(addr);
-                    //result = dest_value & addr_read;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 10;
-                    //Interruptible = true;
-                    //break;
+					// ------------------------NEEDS TESTING---------------------------
+					dest = (byte)(opcode & 0x7);
+                    addr = ReadMemory(RegisterPC++);
+                    dest_value = Register[dest];
+                    addr_read = ReadMemory(addr);
+                    result = dest_value & addr_read;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 10;
+                    Interruptible = true;
+                    break;
 				// AND@
 				case 0x388:
 				case 0x389:
