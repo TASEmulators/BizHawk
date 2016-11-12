@@ -972,22 +972,48 @@ namespace BizHawk.Client.EmuHawk
 
 				Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
 					[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
-				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
+				
 				float rMax = range.Max;
 				float rMin = range.Min;
+				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
 				if (rMax < rMin)
 				{
 					rMax = range.Min;
 					rMin = range.Max;
 				}
+
+				// feos: typing past max digits overwrites existing value, not touching the sign
+				// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
+				// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
+				int maxDigits = range.MaxDigits();
+				int curDigits = _floatTypedValue.Length;
+				string curMinus;
+				if (_floatTypedValue.StartsWith("-"))
+				{
+					curDigits -= 1;
+					curMinus = "-";
+				}
+				else
+				{
+					curMinus = "";
+				}
+
 				if (e.KeyCode == Keys.Right)
 					value = rMax;
 				else if (e.KeyCode == Keys.Left)
 					value = rMin;
 				else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
+				{
+					if (curDigits >= maxDigits)
+						_floatTypedValue = curMinus;
 					_floatTypedValue += e.KeyCode - Keys.D0;
+				}
 				else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+				{
+					if (curDigits >= maxDigits)
+						_floatTypedValue = curMinus;
 					_floatTypedValue += e.KeyCode - Keys.NumPad0;
+				}
 				else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
 				{
 					if (_floatTypedValue.StartsWith("-"))
