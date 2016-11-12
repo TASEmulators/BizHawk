@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				int cycles = _cpu.Execute();
 				_stic.Execute(cycles);
 				Connect();
-				_cpu.LogData();
+				//_cpu.LogData();
 			}
 
 			_stic.Background();
