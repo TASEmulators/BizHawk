@@ -407,6 +407,9 @@
     <Compile Include="Consoles\Intellivision\Intellivision.IEmulator.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Intellivision\Intellivision.IMemoryDomains.cs">
+        <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.MemoryMap.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>

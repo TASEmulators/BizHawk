@@ -55,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			Tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+
+			SetupMemoryDomains();
 		}
 
 		private ITraceable Tracer { get; set; }
