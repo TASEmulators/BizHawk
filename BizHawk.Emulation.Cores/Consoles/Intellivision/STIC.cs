@@ -422,8 +422,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void Mobs()
 		{
-			// fill the frame buffer with graphics for each of the 8 mobs
-			
 			ushort x;
 			ushort y;
 			ushort attr;
@@ -458,8 +456,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				// in GRAM mode only take the first 6 bits of the card number
 				if (gram)
 					card &= 0x3F;
-
-				
 
 				//pull the data from the card into the mobs array		
 				for (int j=0;j<8;j++)
@@ -594,7 +590,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			
 			// by now we have collision information for all 8 mobs and the BG
 			// so we can store data in the collision registers here
-			/*
+			
 			for (int i = 0;i<159;i++)
 			{
 				for (int j=0;j<192;j++)
@@ -605,27 +601,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							if (k!=m) // mobs never self interact
 							{
-								//Register[k + 24] |= (ushort)((Collision[i, j].Bit(k) && Collision[i, j].Bit(m)) ? 1<<m : 0);
+								Register[k + 24] |= (ushort)((Collision[i, j].Bit(k) && Collision[i, j].Bit(m)) ? 1<<m : 0);
 							}
 						}
 					}
+					// after we check for collision, we can clear that value for the next frame.
+					Collision[i, j] = 0;
 				}
 			}
-			*/
-			/*
-			Console.WriteLine("Collision");
-			for (int i=24;i<32;i++)
-			{
-				Console.WriteLine(i);
-				for (int j=0;j<10;j++)
-				{
-					Console.Write(Register[i].Bit(9-j));
-					Console.Write(" ");
-				}
-				Console.Write('\n');
-			}
-			*/
-
 
 		}
 		// end of Mobs function, we now have collision and graphics data for the mobs
