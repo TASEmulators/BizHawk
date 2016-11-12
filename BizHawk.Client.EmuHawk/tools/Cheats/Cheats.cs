@@ -177,16 +177,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddCheat()
 		{
-			Global.CheatList.Add(CheatEditor.Cheat);
+			Global.CheatList.Add(CheatEditor.GetCheat());
 			UpdateDialog();
 			UpdateMessageLabel();
 		}
 
 		private void EditCheat()
 		{
-			Global.CheatList.Exchange(CheatEditor.OriginalCheat, CheatEditor.Cheat);
-			UpdateDialog();
-			UpdateMessageLabel();
+			var newCheat = CheatEditor.GetCheat();
+
+			if (!newCheat.IsSeparator) // If a separator comes from the cheat editor something must have been invalid
+			{
+				Global.CheatList.Exchange(CheatEditor.OriginalCheat, newCheat);
+				UpdateDialog();
+				UpdateMessageLabel();
+			}
 		}
 
 		public void SaveConfigSettings()
