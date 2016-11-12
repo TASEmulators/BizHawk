@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		{
 			get
 			{
-				return "TODO";
+				return "CP1610: PC, machine code, mnemonic, operands, flags (SCZOID)";
 			}
 		}
 
@@ -109,5 +109,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			// Log.WriteLine("MSYNC = {0}", MSync);
 			Log.Flush();
 		}
+
+		
 	}
 }

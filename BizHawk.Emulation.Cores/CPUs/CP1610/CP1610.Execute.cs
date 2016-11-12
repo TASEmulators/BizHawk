@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Components.CP1610
 {
@@ -12,6 +13,31 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			+ " pin to anything else.";
 		private const string UNEXPECTED_BEXT = "BEXT is an unexpected behavior; Intellivision not connected to the External"
 			+ " Branch Condition Address pins (EBCA0-EBCA3).";
+
+		public int opcode;
+
+		public TraceInfo CP1610State(bool disassemble = true)
+		{
+			int notused;
+
+			return new TraceInfo
+			{
+				Disassembly = string.Format(
+					"{0:X4}:  {1:X2}  {2} ",
+					RegisterPC,
+					opcode,
+					disassemble ? Disassemble(RegisterPC, out notused) : "---").PadRight(26),
+				RegisterInfo = string.Format(
+					"Cy:{0} {1}{2}{3}{4}{5}{6}",
+					TotalExecutedCycles,
+					FlagS ? "S" : "s",
+					FlagC ? "C" : "c",
+					FlagZ ? "Z" : "z",
+					FlagO ? "O" : "o",
+					FlagI ? "I" : "i",
+					FlagD ? "D" : "d")
+			};
+		}
 
 		private void Calc_FlagC(int result)
 		{
@@ -139,7 +165,10 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			//int ones, carry;
 			bool branch = false;
 			bool FlagD_prev = FlagD;
-			int opcode = ReadMemory(RegisterPC++) & 0x3FF;
+			opcode = ReadMemory(RegisterPC++) & 0x3FF;
+
+			if (TraceCallback != null)
+				TraceCallback(CP1610State());
 			switch (opcode)
 			{
 				case 0x000: // HLT
@@ -1464,22 +1493,22 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x305:
 				case 0x306:
 				case 0x307:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //addr = ReadMemory(RegisterPC++);
-                    //dest_value = Register[dest];
-                    //addr_read = ReadMemory(addr);
-                    //twos = (0xFFFF ^ addr_read) + 1;
-                    //result = dest_value + twos;
-                    //Calc_FlagC(result);
-                    //Calc_FlagO_Add(dest_value, addr_read, result);
-                    //result &= 0xFFFF;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 10;
-                    //Interruptible = true;
-                    //break;
+					// -------------------------------needs testing-------------------------------
+                    dest = (byte)(opcode & 0x7);
+                    addr = ReadMemory(RegisterPC++);
+                    dest_value = Register[dest];
+                    addr_read = ReadMemory(addr);
+                    twos = (0xFFFF ^ addr_read) + 1;
+                    result = dest_value + twos;
+                    Calc_FlagC(result);
+                    Calc_FlagO_Add(dest_value, addr_read, result);
+                    result &= 0xFFFF;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 10;
+                    Interruptible = true;
+                    break;
 				// SUB@
 				case 0x308:
 				case 0x309:
