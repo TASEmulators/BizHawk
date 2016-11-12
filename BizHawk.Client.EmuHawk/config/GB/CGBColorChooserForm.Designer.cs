@@ -185,7 +185,8 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "CGBColorChooserForm";
-			this.Text = "Gameboy Color Palette Config";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Game Boy Color Palette Config";
 			this.Load += new System.EventHandler(this.CGBColorChooserForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
