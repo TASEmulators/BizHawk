@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public int[] BGBuffer = new int[159 * 96];
 		public int[] FrameBuffer = new int[159 * 192];
+		public ushort[,] Collision = new ushort[167,210];
 
 		public int[] GetVideoBuffer()
 		{
@@ -353,6 +354,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								// The pixels go right as the bits get less significant.
 								BGBuffer[pixel] = ColorToRGBA(fg);
+								// also if the pixel is on set it in the collision matrix
+								Collision[card_col * 8 + pict_col , (card_row * 8 + pict_row) * 2] = 1<<8;
+								Collision[card_col * 8 + pict_col , (card_row * 8 + pict_row) * 2+1] = 1<<8;
 							}
 							else
 							{
@@ -419,7 +423,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void Mobs()
 		{
 			// fill the frame buffer with graphics for each of the 8 mobs
-
+			
 			ushort x;
 			ushort y;
 			ushort attr;
@@ -445,6 +449,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				bool yres = y.Bit(7);
 				bool ysiz2 = y.Bit(8);
 				bool ysiz4 = y.Bit(9);
+				bool intr = x.Bit(8);
 
 				// setting yres implicitly uses an even card first
 				if (yres)
@@ -542,11 +547,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 				//TODO:stretch
 
-				//TODO:collision
-
 				//TODO:pixel priority
 
-				//draw the mob
+				//draw the mob and check for collision
 				//we already have the BG at this point, so for now let's assume mobs have priority for testing
 
 				for (int j = 0; j < 8; j++)
@@ -555,9 +558,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						bool pixel = mobs[j].Bit(7 - k);
 
-						if ((loc_x + k) < 159 && (loc_y*2 + j) < 192 && pixel && vis)
+						if ((loc_x + k) < 159 && (loc_y*2 + j) < 192 && pixel)
 						{
-							FrameBuffer[(loc_y*2 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+							if (vis)
+								FrameBuffer[(loc_y*2 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+
+							//a MOB does not need to be visible for it to be interracting
+							if (intr)
+								Collision[loc_x + k, loc_y * 2 + j] |= (ushort)(1 << i);
 						}
 					}
 				}
@@ -570,16 +578,57 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							bool pixel = y_mobs[j].Bit(7 - k);
 
-							if ((loc_x + k) < 159 && ((loc_y+4)*2 + j) < 192 && pixel && vis)
+							if ((loc_x + k) < 159 && ((loc_y+4)*2 + j) < 192 && pixel)
 							{
-								FrameBuffer[((loc_y+4)*2 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+								if (vis)
+									FrameBuffer[((loc_y+4)*2 + j) * 159 + loc_x + k] = ColorToRGBA(loc_color);
+								
+								//a MOB does not need to be visible for it to be interracting
+								if (intr)
+									Collision[loc_x + k, (loc_y+4) * 2 + j] |= (ushort)(1 << i);
 							}
 						}
 					}
 				}
 			}
-		}
+			
+			// by now we have collision information for all 8 mobs and the BG
+			// so we can store data in the collision registers here
+			/*
+			for (int i = 0;i<159;i++)
+			{
+				for (int j=0;j<192;j++)
+				{
+					for (int k=0;k<8;k++)
+					{
+						for (int m=0;m<9;m++)
+						{
+							if (k!=m) // mobs never self interact
+							{
+								//Register[k + 24] |= (ushort)((Collision[i, j].Bit(k) && Collision[i, j].Bit(m)) ? 1<<m : 0);
+							}
+						}
+					}
+				}
+			}
+			*/
+			/*
+			Console.WriteLine("Collision");
+			for (int i=24;i<32;i++)
+			{
+				Console.WriteLine(i);
+				for (int j=0;j<10;j++)
+				{
+					Console.Write(Register[i].Bit(9-j));
+					Console.Write(" ");
+				}
+				Console.Write('\n');
+			}
+			*/
 
+
+		}
+		// end of Mobs function, we now have collision and graphics data for the mobs
 
 	}
 }
