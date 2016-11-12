@@ -72,6 +72,7 @@ namespace BizHawk.Client.EmuHawk
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
+				SingleClickFloatEdit = false;
                 // default to taseditor fashion
                 denoteStatesWithIcons = false;
                 denoteStatesWithBGColor = true;
@@ -95,6 +96,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
+			public bool SingleClickFloatEdit { get; set; }
 
             public bool denoteStatesWithIcons { get; set; }
             public bool denoteStatesWithBGColor { get; set; }

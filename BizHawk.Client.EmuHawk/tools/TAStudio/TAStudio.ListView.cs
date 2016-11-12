@@ -523,7 +523,7 @@ namespace BizHawk.Client.EmuHawk
 							_patternPaint = false;
 
 
-						if (e.Clicks != 2)
+						if (e.Clicks != 2 && !Settings.SingleClickFloatEdit)
 						{
 							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Float " + buttonName + " from frame " + frame);
 							_startFloatDrawColumn = buttonName;
@@ -609,6 +609,9 @@ namespace BizHawk.Client.EmuHawk
 			if (_floatEditRow != -1 && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
 			{
 				floatEditRow = -1;
+				_triggerAutoRestore = true;
+				JumpToGreenzone();
+				DoTriggeredAutoRestoreIfNeeded();
 				RefreshDialog();
 			}
 			_floatPaintState = 0;
@@ -931,6 +934,7 @@ namespace BizHawk.Client.EmuHawk
 				value = rMin;
 
 			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+			_floatTypedValue = value.ToString();
 
 			RefreshDialog();
 		}
@@ -949,18 +953,6 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
 			{
 				GoToNextMarker();
-			}
-			else if (e.KeyCode == Keys.Escape)
-			{
-				if (_floatEditRow != -1)
-				{
-					_floatEditRow = -1;
-				}
-				else
-				{
-					// not using StopSeeking() here, since it has special logic and should only happen when seek frame is reached
-					CancelSeekContextMenuItem_Click(null, null);
-				}
 			}
 
 			// SuuperW: Float Editing
@@ -1030,6 +1022,14 @@ namespace BizHawk.Client.EmuHawk
 						value = 0f;
 					else
 						value = Convert.ToSingle(_floatTypedValue);
+				}
+				else if (e.KeyCode == Keys.Enter)
+				{
+					if (_floatEditYPos != -1)
+					{
+						_floatEditYPos = -1;
+					}
+					floatEditRow = -1;
 				}
 				else if (e.KeyCode == Keys.Escape)
 				{
