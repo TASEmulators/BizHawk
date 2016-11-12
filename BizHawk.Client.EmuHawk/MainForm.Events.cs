@@ -2,8 +2,6 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Reflection;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -13,6 +11,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
@@ -946,17 +945,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
-			SnesWithSnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
-
-			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
-
-			SnesWithSnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
-		}
-
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
 		{
 			var controller = new ControllerConfig(Global.Emulator.ControllerDefinition);
@@ -1180,11 +1168,66 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SnesWithSnes9xMenuItem_Click(object sender, EventArgs e)
+		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
+			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
+		}
+
+		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			Coresnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
+			Coresnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
+
+			var sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+			CorebsnesPerformanceMenuItem.Checked = sss.Profile == "Performance";
+			CorebsnesCompatibilityMenuItem.Checked = sss.Profile == "Compatibility";
+		}
+
+		private void CorebsnesPerformanceMenuItem_Click(object sender, EventArgs e)
+		{
+			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+			if (sss == null)
+			{
+				sss = new LibsnesCore.SnesSyncSettings();
+			}
+
+			string orig = sss.Profile;
+
+			sss.Profile = "Performance";
+			Global.Config.PutCoreSyncSettings<LibsnesCore>(sss);
+
+			if (Global.Emulator is LibsnesCore && orig != sss.Profile)
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void CorebsnesCompatibilityMenuItem_Click(object sender, EventArgs e)
+		{
+			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+			if (sss == null)
+			{
+				sss = new LibsnesCore.SnesSyncSettings();
+			}
+
+			string orig = sss.Profile;
+
+			sss.Profile = "Compatibility";
+			Global.Config.PutCoreSyncSettings<LibsnesCore>(sss);
+
+			if (Global.Emulator is LibsnesCore && orig != sss.Profile)
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void Coresnes9xMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.SNES_InSnes9x ^= true;
 
-			if (!Global.Emulator.IsNull())
+			if (Global.Emulator is Snes9x || Global.Emulator is LibsnesCore)
 			{
 				FlagNeedsReboot();
 			}

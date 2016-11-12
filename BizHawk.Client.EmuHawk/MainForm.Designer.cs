@@ -185,7 +185,10 @@
 			this.CoresSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NesInQuickNESMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.SnesWithSnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CoreSNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.CorebsnesPerformanceMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CorebsnesCompatibilityMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.Coresnes9xMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.gBAWithMGBAToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.N64VideoPluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -233,6 +236,7 @@
 			this.NesControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESGraphicSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.NESSoundChannelsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.VSSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MovieSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator22 = new System.Windows.Forms.ToolStripSeparator();
 			this.FDSControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -422,7 +426,7 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.VSSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.CorebsnesAccuracyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1777,7 +1781,7 @@
 			this.CoresSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBInSGBMenuItem,
             this.NesInQuickNESMenuItem,
-            this.SnesWithSnes9xMenuItem,
+            this.CoreSNESSubMenu,
             this.gBAWithMGBAToolStripMenuItem,
             this.toolStripSeparator8,
             this.N64VideoPluginSettingsMenuItem,
@@ -1801,12 +1805,38 @@
 			this.NesInQuickNESMenuItem.Text = "NES with QuickNES";
 			this.NesInQuickNESMenuItem.Click += new System.EventHandler(this.NesInQuickNESMenuItem_Click);
 			// 
-			// SnesWithSnes9xMenuItem
+			// CoreSNESSubMenu
 			// 
-			this.SnesWithSnes9xMenuItem.Name = "SnesWithSnes9xMenuItem";
-			this.SnesWithSnes9xMenuItem.Size = new System.Drawing.Size(210, 22);
-			this.SnesWithSnes9xMenuItem.Text = "SNES with Snes9x";
-			this.SnesWithSnes9xMenuItem.Click += new System.EventHandler(this.SnesWithSnes9xMenuItem_Click);
+			this.CoreSNESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CorebsnesPerformanceMenuItem,
+            this.CorebsnesCompatibilityMenuItem,
+            this.CorebsnesAccuracyMenuItem,
+            this.Coresnes9xMenuItem});
+			this.CoreSNESSubMenu.Name = "CoreSNESSubMenu";
+			this.CoreSNESSubMenu.Size = new System.Drawing.Size(210, 22);
+			this.CoreSNESSubMenu.Text = "SNES";
+			this.CoreSNESSubMenu.DropDownOpened += new System.EventHandler(this.CoreSNESSubMenu_DropDownOpened);
+			// 
+			// CorebsnesPerformanceMenuItem
+			// 
+			this.CorebsnesPerformanceMenuItem.Name = "CorebsnesPerformanceMenuItem";
+			this.CorebsnesPerformanceMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.CorebsnesPerformanceMenuItem.Text = "bsnes performance";
+			this.CorebsnesPerformanceMenuItem.Click += new System.EventHandler(this.CorebsnesPerformanceMenuItem_Click);
+			// 
+			// CorebsnesCompatibilityMenuItem
+			// 
+			this.CorebsnesCompatibilityMenuItem.Name = "CorebsnesCompatibilityMenuItem";
+			this.CorebsnesCompatibilityMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.CorebsnesCompatibilityMenuItem.Text = "bsnes compatibility";
+			this.CorebsnesCompatibilityMenuItem.Click += new System.EventHandler(this.CorebsnesCompatibilityMenuItem_Click);
+			// 
+			// Coresnes9xMenuItem
+			// 
+			this.Coresnes9xMenuItem.Name = "Coresnes9xMenuItem";
+			this.Coresnes9xMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.Coresnes9xMenuItem.Text = "Snes9x";
+			this.Coresnes9xMenuItem.Click += new System.EventHandler(this.Coresnes9xMenuItem_Click);
 			// 
 			// gBAWithMGBAToolStripMenuItem
 			// 
@@ -2187,6 +2217,13 @@
 			this.NESSoundChannelsMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.NESSoundChannelsMenuItem.Text = "Sound Channels...";
 			this.NESSoundChannelsMenuItem.Click += new System.EventHandler(this.NESSoundChannelsMenuItem_Click);
+			// 
+			// VSSettingsMenuItem
+			// 
+			this.VSSettingsMenuItem.Name = "VSSettingsMenuItem";
+			this.VSSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.VSSettingsMenuItem.Text = "VS Settings...";
+			this.VSSettingsMenuItem.Click += new System.EventHandler(this.VSSettingsMenuItem_Click);
 			// 
 			// MovieSettingsMenuItem
 			// 
@@ -3735,12 +3772,12 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
 			// 
-			// VSSettingsMenuItem
+			// CorebsnesAccuracyMenuItem
 			// 
-			this.VSSettingsMenuItem.Name = "VSSettingsMenuItem";
-			this.VSSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.VSSettingsMenuItem.Text = "VS Settings...";
-			this.VSSettingsMenuItem.Click += new System.EventHandler(this.VSSettingsMenuItem_Click);
+			this.CorebsnesAccuracyMenuItem.Enabled = false;
+			this.CorebsnesAccuracyMenuItem.Name = "CorebsnesAccuracyMenuItem";
+			this.CorebsnesAccuracyMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.CorebsnesAccuracyMenuItem.Text = "bsnes accuracy";
 			// 
 			// MainForm
 			// 
@@ -4107,7 +4144,6 @@
 		private System.Windows.Forms.ToolStripMenuItem MovieEndStopMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPauseMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotClientClipboardMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesWithSnes9xMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MupenStyleLagMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator33;
 		private System.Windows.Forms.ToolStripMenuItem GBAcoresettingsToolStripMenuItem1;
@@ -4176,5 +4212,10 @@
 		private System.Windows.Forms.ToolStripMenuItem VSInsertCoinP2MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VSServiceSwitchMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VSSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CoreSNESSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem CorebsnesPerformanceMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CorebsnesCompatibilityMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem Coresnes9xMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem CorebsnesAccuracyMenuItem;
 	}
 }
