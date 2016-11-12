@@ -239,6 +239,28 @@ namespace BizHawk.Client.Common
 			return line;
 		}
 
+		private static IController EmptyLmsvFrame(string line)
+		{
+			var emptyController = new SimpleController { Type = new ControllerDefinition { Name = "SNES Controller" } };
+			emptyController["Reset"] = false;
+			emptyController["Power"] = false;
+
+			string[] buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" };
+			string[] sections = line.Split('|');
+			for (int section = 2; section < sections.Length - 1; section++)
+			{
+				int player = section - 1; // We start with 1
+				string prefix = "P" + player + " "; // "P1"
+
+				for (int button = 0; button < buttons.Length; button++)
+				{
+					emptyController[prefix + buttons[button]] = false;
+				}
+			}
+
+			return emptyController;
+		}
+
 		// Import a frame from a text-based format.
 		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform,
 			ref string warningMsg)
@@ -1212,6 +1234,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
+
 					int lineNum = 0;
 					using (StringReader reader = new StringReader(input))
 					{
@@ -1223,6 +1246,20 @@ namespace BizHawk.Client.Common
 							{
 								continue;
 							}
+
+							// Insert an empty frame in lsmv snes movies
+							// https://github.com/TASVideos/BizHawk/issues/721
+							// Both emulators send the input to bsnes core at the same V interval, but:
+							// lsnes' frame boundary occurs at V = 241, after which the input is read;
+							// BizHawk's frame boundary is just before automatic polling;
+							// This isn't a great place to add this logic but this code is a mess
+							if (lineNum == 1 && platform == "SNES")
+							{
+								// Note that this logic assumes the first non-empty log entry is a valid input log entry
+								// and that it is NOT a subframe input entry.  It seems safe to assume subframe input would not be on the first line
+								m.AppendFrame(EmptyLmsvFrame(line)); //line is needed to parse pipes and know the controller configuration
+							}
+
 							m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
 							if (errorMsg != "")
 							{
