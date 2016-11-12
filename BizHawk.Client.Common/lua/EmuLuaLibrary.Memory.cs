@@ -15,26 +15,13 @@ namespace BizHawk.Client.Common
 		public MemoryLuaLibrary(Lua lua)
 			: base(lua)
 		{
-			if (MemoryDomainCore != null)
-			{
-				if (MemoryDomainCore.HasSystemBus)
-				{
-					_currentMemoryDomain = MemoryDomainCore.SystemBus;
-				}
-				else
-				{
-					_currentMemoryDomain = MemoryDomainCore.MainMemory;
-				}
-			}
+			
 		}
 
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback)
 		{
-			if (MemoryDomainCore != null)
-			{
-				_currentMemoryDomain = MemoryDomainCore.MainMemory;
-			}
+			
 		}
 
 		public override string Name { get { return "memory"; } }
@@ -47,7 +34,14 @@ namespace BizHawk.Client.Common
 				{
 					if (_currentMemoryDomain == null)
 					{
-						_currentMemoryDomain = MemoryDomainCore.MainMemory;
+						if (MemoryDomainCore.HasSystemBus)
+						{
+							_currentMemoryDomain = MemoryDomainCore.SystemBus;
+						}
+						else
+						{
+							_currentMemoryDomain = MemoryDomainCore.MainMemory;
+						}
 					}
 
 					return _currentMemoryDomain;
