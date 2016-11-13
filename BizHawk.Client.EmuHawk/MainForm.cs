@@ -1385,18 +1385,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private methods
 
-		private static string DisplayNameForSystem(string system)
-		{
-			var str = Global.SystemInfo.DisplayName;
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
-
-			return str;
-		}
-
 		private void SetWindowText()
 		{
 			string str = string.Empty;
@@ -1413,6 +1401,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				str = str + string.Format("({0:0} fps) -", _runloopDisplayFps);
 			}
+
+			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
+				str += VersionInfo.CustomBuildString + " ";
 
 			if (Global.Emulator.IsNull())
 			{
