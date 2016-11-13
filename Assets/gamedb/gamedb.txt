@@ -7,7 +7,7 @@
 ;h - hack
 ;u - unknown
 
-;Hash	Status	Name	System ID	Notes	MetaData	Configurations
+;Hash	Status	Name	System ID	Notes	MetaData	Configurations	CoreForce[neshawk|quicknes]
 
 #include gamedb_sega_sms.txt
 #include gamedb_sega_sg1000.txt
@@ -323,7 +323,11 @@ EDD7A45A7F27E396B6D686F1861642D509863132		Datach SD Gundam Gundam Wars	NES		boar
 74218AAE93E4FEBFB2284BCF15811453418A2029		Datach Yuu Yuu Hakusho Bakutou Ankoku Bujutsu Kai	NES		board=MAPPER157
 6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach Crayon Shin Chan Ora to Poi Poi	NES		board=MAPPER157
 1218C891DEE878C18D31D38D07CAD5FB06B3B2CE		Datach Yuu Yuu akusho Baktutou	NES		board=MAPPER157
-  
+
+; ArcadePit hacks
+; Why does this one need NesHawk?
+sha1:90acbbdfad1465032dfff77175320bab8aa4adb7	H	Mike Tyson's Punch-Out!! [Buck Edit] (USA)	NES				NesHawk
+
 #include gamedb_goodnes.txt
 
 
