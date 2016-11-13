@@ -67,6 +67,9 @@ upx -d temp\dll\*.dll
 upx -d temp\dll\*.exe
 upx -d temp\*.exe
 
+rem dont need docs xml for assemblies and whatnot
+del temp\dll\*.xml
+
 cd temp
 
 rem Patch up working dir with a few other things we want
@@ -74,6 +77,12 @@ mkdir ExternalTools
 copy ..\HelloWorld_BizHawkTool.dll ExternalTools
 copy ..\HelloWorld_BizHawkTool.zip ExternalTools
 mkdir Firmware
+
+rem compress nescart 7z
+cd gamedb
+..\..\7za a -t7z -mx9 NesCarts.7z NesCarts.xml
+del NesCarts.xml
+cd ..
 
 rem Build the final zip
 ..\zip.exe -X -9 -r ..\%NAME% . -i \*
