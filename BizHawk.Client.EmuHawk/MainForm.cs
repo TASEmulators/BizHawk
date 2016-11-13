@@ -4152,5 +4152,10 @@ namespace BizHawk.Client.EmuHawk
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
 		}
+
+		private void allowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.CoreForcingViaGameDB ^= true;
+		}
 	}
 }
