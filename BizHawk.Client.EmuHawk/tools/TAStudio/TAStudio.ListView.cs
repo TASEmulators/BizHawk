@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
 		{
 			// For float editing
-			int increment = (_floatEditYPos - e.Y) / 3;
+			int increment = (_floatEditYPos - e.Y) / 4;
 			if (_floatEditYPos == -1)
 				return;
 
@@ -936,6 +936,9 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
 			_floatTypedValue = value.ToString();
 
+			_triggerAutoRestore = true;
+			JumpToGreenzone();
+			DoTriggeredAutoRestoreIfNeeded();
 			RefreshDialog();
 		}
 
