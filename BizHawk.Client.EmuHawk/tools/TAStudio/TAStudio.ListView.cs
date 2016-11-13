@@ -17,6 +17,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _startFloatDrawColumn = string.Empty;
 		private bool _boolPaintState;
 		private float _floatPaintState;
+		private float _floatBackupState;
 		private bool _patternPaint = false;
 		private bool _startCursorDrag;
 		private bool _startSelectionDrag;
@@ -539,6 +540,7 @@ namespace BizHawk.Client.EmuHawk
 								floatEditRow = frame;
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
+								_floatBackupState = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
 								_triggerAutoRestore = true;
 								JumpToGreenzone();
 							}
@@ -699,7 +701,8 @@ namespace BizHawk.Client.EmuHawk
 				var buttonName = TasView.CurrentCell.Column.Name;
 
 				if (TasView.CurrentCell.RowIndex.HasValue &&
-					buttonName == FrameColumnName)
+					buttonName == FrameColumnName &&
+					_floatEditRow == -1)
 				{
 					if (Settings.EmptyMarkers)
 					{
@@ -1036,10 +1039,16 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.KeyCode == Keys.Escape)
 				{
-					if (_floatEditYPos != -1) // Cancel change from dragging cursor
+					if (_floatEditYPos != -1)
 					{
 						_floatEditYPos = -1;
-						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatPaintState);
+					}
+					if (_floatBackupState != _floatPaintState)
+					{
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatBackupState);
+						_triggerAutoRestore = true;
+						JumpToGreenzone();
+						DoTriggeredAutoRestoreIfNeeded();
 					}
 					floatEditRow = -1;
 				}
