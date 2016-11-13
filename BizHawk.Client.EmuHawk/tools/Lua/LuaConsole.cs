@@ -1311,6 +1311,12 @@ namespace BizHawk.Client.EmuHawk
 				// TODO: Maybe make these try-catches more general
 				if (!string.IsNullOrWhiteSpace(InputBox.Text))
 				{
+					if (InputBox.Text.Contains("emu.frameadvance("))
+					{
+						ConsoleLog("emu.frameadvance() can not be called from the console");
+						return;
+					}
+
 					LuaSandbox.Sandbox(null, () =>
 					{
 						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
