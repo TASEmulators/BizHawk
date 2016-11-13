@@ -1309,7 +1309,7 @@ namespace BizHawk.Client.EmuHawk
 				string consoleBeforeCall = OutputBox.Text;
 
 				// TODO: Maybe make these try-catches more general
-				if (InputBox.Text != "")
+				if (!string.IsNullOrWhiteSpace(InputBox.Text))
 				{
 					LuaSandbox.Sandbox(null, () =>
 					{
