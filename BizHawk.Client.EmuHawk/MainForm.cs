@@ -134,9 +134,12 @@ namespace BizHawk.Client.EmuHawk
 			// we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				using (var NesCartFile =
-						new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
+				string xmlPath = Path.Combine( PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml" );
+				string x7zPath = Path.Combine( PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z" );
+				bool loadXml = File.Exists( xmlPath );
+				using (var NesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath))
 				{
+					if (!loadXml) { NesCartFile.BindFirst(); }
 					return NesCartFile
 						.GetStream()
 						.ReadAllBytes();
