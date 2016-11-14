@@ -401,11 +401,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			EngageTastudio();
-
-			if (!TasView.AllColumns.Any()) // If a project with column settings has already been loaded we don't need to do this
-			{
-				SetUpColumns();
-			}
+			SetUpColumns();
 			return true;
 		}
 
@@ -425,7 +421,6 @@ namespace BizHawk.Client.EmuHawk
 		private void GetClientSettingsOnLoad(string settingsJson)
 		{
 			TasView.LoadSettingsSerialized(settingsJson);
-			SetUpToolStripColumns();
 		}
 
 		private void SetUpColumns()
