@@ -432,15 +432,6 @@ namespace BizHawk.Client.EmuHawk
 			var columnNames = GenerateColumnNames();
 			foreach (var kvp in columnNames)
 			{
-				// N64 hack for now, for fake analog
-				//if (Emulator.SystemId == "N64")
-				//{
-				//	if (kvp.Key.Contains("A Up") || kvp.Key.Contains("A Down") ||
-				//	kvp.Key.Contains("A Left") || kvp.Key.Contains("A Right"))
-				//	{
-				//		continue;
-				//	}
-				//}
 				AddColumn(kvp.Key, kvp.Value, (kvp.Value.Length * 6) + 14);
 			}
 
@@ -481,6 +472,7 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = bStart; i < BoolPatterns.Length - 2; i++)
 				BoolPatterns[i] = new AutoPatternBool(1, 1);
+
 			BoolPatterns[BoolPatterns.Length - 2] = new AutoPatternBool(1, 0);
 			BoolPatterns[BoolPatterns.Length - 1] = new AutoPatternBool(
 				Global.Config.AutofireOn, Global.Config.AutofireOff);
@@ -554,13 +546,15 @@ namespace BizHawk.Client.EmuHawk
 
 			Settings.RecentTas.Add(newMovie.Filename); // only add if it did load
 
-			if (TasView.AllColumns.Count() == 0 || file.Extension != "." + TasMovie.Extension)
-				SetUpColumns();
-
 			if (startsFromSavestate)
 				GoToFrame(0);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
+
+			if (TasView.AllColumns.Count() == 0 || file.Extension != "." + TasMovie.Extension)
+				SetUpColumns();
+			else
+				SetUpToolStripColumns();
 
 			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
