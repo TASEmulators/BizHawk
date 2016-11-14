@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 
-			if (TasView.AllColumns.Count() == 0 || file.Extension != "." + TasMovie.Extension)
+			if (TasView.AllColumns.Count == 0 || file.Extension != "." + TasMovie.Extension)
 				SetUpColumns();
 			else
 				SetUpToolStripColumns();
