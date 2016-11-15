@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					"{0:X4}:  {1:X2}  {2} ",
 					RegisterPC,
 					opcode,
-					disassemble ? Disassemble(RegisterPC, out notused) : "---").PadRight(26),
+					disassemble ? Disassemble((ushort)(RegisterPC-1), out notused) : "---").PadRight(26),
 				RegisterInfo = string.Format(
 					"Cy:{0} {1}{2}{3}{4}{5}{6}",
 					TotalExecutedCycles,
