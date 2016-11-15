@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class STIC : IVideoProvider
 	{
-		private bool Sr1, Sr2, Sst, Fgbg = false;
+		public bool Sr1, Sr2, Sst, Fgbg = false;
 		private ushort[] Register = new ushort[64];
 		private ushort ColorSP = 0x0028;
 
@@ -169,24 +169,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					break;
 			}
 			return false;
-		}
-
-		public void Execute(int cycles)
-		{
-			PendingCycles -= cycles;
-			TotalExecutedCycles += cycles;
-			if (PendingCycles <= 0)
-			{
-				Sr1 = !Sr1;
-				if (Sr1)
-				{
-					PendingCycles = 14934 - 3791;
-				}
-				else
-				{
-					PendingCycles += 3791;
-				}
-			}
 		}
 
 		public int ColorToRGBA(int color)
@@ -383,14 +365,26 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int x_delay = Register[0x30];
 			int y_delay = Register[0x31];
 
+			int x_border = (Register[0x32] & 0x0001) * 8;
+			int y_border = ((Register[0x32] >> 1) & 0x0001) * 8;
+
 			for (int j=0;j<96;j++)
 			{
 				for (int i = 0; i < 159; i++)
 				{
 					if (i >= x_delay && j >= y_delay)
 					{
-						FrameBuffer[(j * 2) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
-						FrameBuffer[(j * 2 + 1) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
+						if (i - x_delay >= x_border && j - y_delay >= y_border)
+						{
+							FrameBuffer[(j * 2) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
+							FrameBuffer[(j * 2 + 1) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
+						} else
+						{
+							FrameBuffer[(j * 2) * 159 + i] = ColorToRGBA(Register[0x2C]);
+							FrameBuffer[(j * 2 + 1) * 159 + i] = ColorToRGBA(Register[0x2C]);
+							Collision[i + 8, j * 2 + 16] |= 1 << 9;
+							Collision[i + 8, j * 2 + 16 + 1] |= 1 << 9;
+						}
 					}
 					else
 					{
@@ -581,14 +575,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						bool pixel = mobs[j].Bit(7 - k);
 
-						if ((loc_x + k) < (167-x_delay) && (loc_y*2 + j) < (208-y_delay*2) && pixel && (loc_x + k ) >= (8 - x_delay) && (loc_y * 2 + j) >= (16 - y_delay*2))
+						if ((loc_x + k) < (167 - x_delay) && (loc_y * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k) >= (8 - x_delay) && (loc_y * 2 + j) >= (16 - y_delay * 2))
 						{
-							if (vis)
-								FrameBuffer[(loc_y * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k - (8 - x_delay)] = ColorToRGBA(loc_color);
-
-							//a MOB does not need to be visible for it to be interracting
-							if (intr)
-								Collision[loc_x + k, loc_y * 2 + j] |= (ushort)(1 << i);
+							FrameBuffer[(loc_y * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k - (8 - x_delay)] = ColorToRGBA(loc_color);
+						}
+						//a MOB does not need to be visible for it to be interracting
+						//special case: a mob with x position 0 is counted as off
+						if (intr && pixel && (loc_x + k) < 167 && (loc_y * 2 + j) < 210 && loc_x != 0)
+						{ 
+							Collision[loc_x + k, loc_y * 2 + j] |= (ushort)(1 << i);
 						}
 					}
 				}
@@ -601,30 +596,31 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							bool pixel = y_mobs[j].Bit(7 - k);
 
-							if ((loc_x + k) < (167-x_delay) && ((loc_y + 4) * 2 + j) < (208-y_delay*2) && pixel && (loc_x + k) >= (8 - x_delay) && ((loc_y + 4) * 2 + j) >= (16 - y_delay * 2))
+							if ((loc_x + k) < (167 - x_delay) && ((loc_y + 4) * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k) >= (8 - x_delay) && ((loc_y + 4) * 2 + j) >= (16 - y_delay * 2))
 							{
-								if (vis)
-									FrameBuffer[((loc_y + 4) * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k - (8 - x_delay)] = ColorToRGBA(loc_color);
-								
-								//a MOB does not need to be visible for it to be interracting
-								if (intr)
-									Collision[loc_x + k, (loc_y+4) * 2 + j] |= (ushort)(1 << i);
+								FrameBuffer[((loc_y + 4) * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k - (8 - x_delay)] = ColorToRGBA(loc_color);
 							}
+							//a MOB does not need to be visible for it to be interracting
+							//special case: a mob with x position 0 is counted as off
+							if (intr && pixel && (loc_x + k) < 167 && ((loc_y + 4) * 2 + j) < 210 && loc_x != 0)
+							{
+								Collision[loc_x + k, (loc_y + 4) * 2 + j] |= (ushort)(1 << i);
+							}
+							
 						}
 					}
 				}
 			}
-			
+
 			// by now we have collision information for all 8 mobs and the BG
 			// so we can store data in the collision registers here
-			
 			for (int i = 0;i<159;i++)
 			{
 				for (int j=0;j<192;j++)
 				{
 					for (int k=0;k<8;k++)
 					{
-						for (int m=0;m<9;m++)
+						for (int m=0;m<10;m++)
 						{
 							if (k!=m) // mobs never self interact
 							{

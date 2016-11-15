@@ -47,17 +47,26 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			// read the controller state here for now
 			get_controller_state();
 			//_stic.Mobs();
-			_cpu.AddPendingCycles(14934);
+			_cpu.AddPendingCycles(3791);
+			_stic.Sr1 = true;
+
 			while (_cpu.GetPendingCycles() > 0)
 			{
 				int cycles = _cpu.Execute();
-				_stic.Execute(cycles);
 				Connect();
-				//_cpu.LogData();
 			}
 
+			_cpu.AddPendingCycles(14934 - 3791 - _cpu.GetPendingCycles());
+			_stic.Sr1 = false;
 			_stic.Background();
 			_stic.Mobs();
+
+			while (_cpu.GetPendingCycles() > 0)
+			{
+				int cycles = _cpu.Execute();
+				Connect();
+			}
+
 		}
 
 		public int Frame { get; private set; }
