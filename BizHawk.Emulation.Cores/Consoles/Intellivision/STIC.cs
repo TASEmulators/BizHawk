@@ -446,8 +446,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int x_delay = Register[0x30];
 			int y_delay = Register[0x31];
 
-
-			for (int i = 0; i < 8; i++)
+			// we go from 7 to zero because visibility of lower numbered MOBs have higher priority 
+			for (int i = 7; i >= 0 ; i--)
 			{
 				x = Register[i];
 				y = Register[i + 8];
@@ -551,15 +551,43 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					byte temp_1 = mobs[1];
 					byte temp_2 = mobs[2];
 					byte temp_3 = mobs[3];
+					byte temp_4 = mobs[4];
+					byte temp_5 = mobs[5];
+					byte temp_6 = mobs[6];
+					byte temp_7 = mobs[7];
 
-					mobs[0] = mobs[7];
-					mobs[1] = mobs[6];
-					mobs[2] = mobs[5];
-					mobs[3] = mobs[4];
-					mobs[4] = temp_3;
-					mobs[5] = temp_2;
-					mobs[6] = temp_1;
-					mobs[7] = temp_0;
+
+					if (!yres)
+					{
+						mobs[0] = mobs[7];
+						mobs[1] = mobs[6];
+						mobs[2] = mobs[5];
+						mobs[3] = mobs[4];
+						mobs[4] = temp_3;
+						mobs[5] = temp_2;
+						mobs[6] = temp_1;
+						mobs[7] = temp_0;
+					}
+					else
+					{
+						mobs[0] = y_mobs[7];
+						mobs[1] = y_mobs[6];
+						mobs[2] = y_mobs[5];
+						mobs[3] = y_mobs[4];
+						mobs[4] = y_mobs[3];
+						mobs[5] = y_mobs[2];
+						mobs[6] = y_mobs[1];
+						mobs[7] = y_mobs[0];
+
+						y_mobs[0] = temp_7;
+						y_mobs[1] = temp_6;
+						y_mobs[2] = temp_5;
+						y_mobs[3] = temp_4;
+						y_mobs[4] = temp_3;
+						y_mobs[5] = temp_2;
+						y_mobs[6] = temp_1;
+						y_mobs[7] = temp_0;
+					}
 				}
 
 				//TODO:stretch
