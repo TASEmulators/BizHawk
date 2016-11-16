@@ -469,6 +469,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				bool ysiz2 = y.Bit(8);
 				bool ysiz4 = y.Bit(9);
 				bool intr = x.Bit(8);
+				ushort x_size = x.Bit(10) ? (ushort)2 : (ushort)1;
+
 
 				// setting yres implicitly uses an even card first
 				if (yres)
@@ -590,9 +592,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 				}
 
-				//TODO:stretch
-
 				//TODO:pixel priority
+
+				//y-stretching
 
 				//draw the mob and check for collision
 				//we already have the BG at this point, so for now let's assume mobs have priority for testing
@@ -603,15 +605,29 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						bool pixel = mobs[j].Bit(7 - k);
 
-						if ((loc_x + k) < (167 - x_delay) && (loc_y * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k) >= (8 - x_delay) && (loc_y * 2 + j) >= (16 - y_delay * 2))
+						if ((loc_x + k * x_size) < (167 - x_delay) && (loc_y * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k * x_size) >= (8 - x_delay) && (loc_y * 2 + j) >= (16 - y_delay * 2))
 						{
-							FrameBuffer[(loc_y * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k - (8 - x_delay)] = ColorToRGBA(loc_color);
+							FrameBuffer[(loc_y * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k * x_size - (8 - x_delay)] = ColorToRGBA(loc_color);
 						}
 						//a MOB does not need to be visible for it to be interracting
 						//special case: a mob with x position 0 is counted as off
-						if (intr && pixel && (loc_x + k) < 167 && (loc_y * 2 + j) < 210 && loc_x != 0)
+						if (intr && pixel && (loc_x + k * x_size) < 167 && (loc_y * 2 + j) < 210 && loc_x != 0)
 						{ 
-							Collision[loc_x + k, loc_y * 2 + j] |= (ushort)(1 << i);
+							Collision[loc_x + k * x_size, loc_y * 2 + j] |= (ushort)(1 << i);
+						}
+
+						if (x_size == 2)
+						{
+							if ((loc_x + k * x_size + 1) < (167 - x_delay) && (loc_y * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k * x_size + 1) >= (8 - x_delay) && (loc_y * 2 + j) >= (16 - y_delay * 2))
+							{
+								FrameBuffer[(loc_y * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k * x_size + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
+							}
+							//a MOB does not need to be visible for it to be interracting
+							//special case: a mob with x position 0 is counted as off
+							if (intr && pixel && (loc_x + k * x_size + 1) < 167 && (loc_y * 2 + j) < 210 && loc_x != 0)
+							{
+								Collision[loc_x + k * x_size + 1, loc_y * 2 + j] |= (ushort)(1 << i);
+							}
 						}
 					}
 				}
@@ -624,17 +640,31 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							bool pixel = y_mobs[j].Bit(7 - k);
 
-							if ((loc_x + k) < (167 - x_delay) && ((loc_y + 4) * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k) >= (8 - x_delay) && ((loc_y + 4) * 2 + j) >= (16 - y_delay * 2))
+							if ((loc_x + k * x_size) < (167 - x_delay) && ((loc_y + 4) * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k * x_size) >= (8 - x_delay) && ((loc_y + 4) * 2 + j) >= (16 - y_delay * 2))
 							{
-								FrameBuffer[((loc_y + 4) * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k - (8 - x_delay)] = ColorToRGBA(loc_color);
+								FrameBuffer[((loc_y + 4) * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k * x_size - (8 - x_delay)] = ColorToRGBA(loc_color);
 							}
 							//a MOB does not need to be visible for it to be interracting
 							//special case: a mob with x position 0 is counted as off
-							if (intr && pixel && (loc_x + k) < 167 && ((loc_y + 4) * 2 + j) < 210 && loc_x != 0)
+							if (intr && pixel && (loc_x + k * x_size) < 167 && ((loc_y + 4) * 2 + j) < 210 && loc_x != 0)
 							{
-								Collision[loc_x + k, (loc_y + 4) * 2 + j] |= (ushort)(1 << i);
+								Collision[loc_x + k * x_size, (loc_y + 4) * 2 + j] |= (ushort)(1 << i);
 							}
 							
+							if (x_size==2)
+							{
+								if ((loc_x + k * x_size + 1) < (167 - x_delay) && ((loc_y + 4) * 2 + j) < (208 - y_delay * 2) && pixel && vis && (loc_x + k * x_size + 1) >= (8 - x_delay) && ((loc_y + 4) * 2 + j) >= (16 - y_delay * 2))
+								{
+									FrameBuffer[((loc_y + 4) * 2 + j - (16 - y_delay * 2)) * 159 + loc_x + k * x_size + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
+								}
+								//a MOB does not need to be visible for it to be interracting
+								//special case: a mob with x position 0 is counted as off
+								if (intr && pixel && (loc_x + k * x_size + 1) < 167 && ((loc_y + 4) * 2 + j) < 210 && loc_x != 0)
+								{
+									Collision[loc_x + k * x_size + 1, (loc_y + 4) * 2 + j] |= (ushort)(1 << i);
+								}
+							}
+
 						}
 					}
 				}
