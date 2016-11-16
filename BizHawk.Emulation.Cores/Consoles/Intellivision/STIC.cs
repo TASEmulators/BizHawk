@@ -374,7 +374,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				{
 					if (i >= x_delay && j >= y_delay)
 					{
-						if (i - x_delay >= x_border && j - y_delay >= y_border)
+						if (i >= x_border && j >= y_border)
 						{
 							FrameBuffer[(j * 2) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
 							FrameBuffer[(j * 2 + 1) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
@@ -618,18 +618,21 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				for (int j=0;j<192;j++)
 				{
-					for (int k=0;k<8;k++)
+					if (Collision[i, j] != 0)
 					{
-						for (int m=0;m<10;m++)
+						for (int k = 0; k < 8; k++)
 						{
-							if (k!=m) // mobs never self interact
+							for (int m = 0; m < 10; m++)
 							{
-								Register[k + 24] |= (ushort)((Collision[i, j].Bit(k) && Collision[i, j].Bit(m)) ? 1<<m : 0);
+								if (k != m) // mobs never self interact
+								{
+									Register[k + 24] |= (ushort)((Collision[i, j].Bit(k) && Collision[i, j].Bit(m)) ? 1 << m : 0);
+								}
 							}
 						}
+						// after we check for collision, we can clear that value for the next frame.
+						Collision[i, j] = 0;
 					}
-					// after we check for collision, we can clear that value for the next frame.
-					Collision[i, j] = 0;
 				}
 			}
 
