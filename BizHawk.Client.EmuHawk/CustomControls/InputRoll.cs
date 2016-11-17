@@ -614,6 +614,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var rollSettings = settings as InputRollSettings;
 				_columns = rollSettings.Columns;
+				_columns.ChangedCallback = ColumnChangedCallback;
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
 				LagFramesToHide = rollSettings.LagFramesToHide;
 				HideWasLagFrames = rollSettings.HideWasLagFrames;
@@ -2017,10 +2018,11 @@ namespace BizHawk.Client.EmuHawk
 
 			private void DoChangeCallback()
 			{
-				if (ChangedCallback != null)
-				{
+				// no check will make it crash for user too, not sure which way of alarm we prefer. no alarm at all will cause all sorts of subtle bugs
+				if (ChangedCallback == null)
+					System.Diagnostics.Debug.Fail("ColumnChangedCallback has died!");
+				else
 					ChangedCallback();
-				}
 			}
 
 			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a change callback, and all property changes must call it, it is quicker and easier to just call this when needed
