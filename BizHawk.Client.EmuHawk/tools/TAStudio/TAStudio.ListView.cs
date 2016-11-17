@@ -564,7 +564,11 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_rightClickInput = new string[TasView.SelectedRows.Count()];
 						_rightClickFrame = TasView.FirstSelectedIndex.Value;
-						CurrentTasMovie.GetLogEntries().CopyTo(_rightClickFrame, _rightClickInput, 0, TasView.SelectedRows.Count());
+						try
+						{
+							CurrentTasMovie.GetLogEntries().CopyTo(_rightClickFrame, _rightClickInput, 0, TasView.SelectedRows.Count());
+						}
+						catch { }
 						if (_rightClickControl && _rightClickShift)
 							_rightClickFrame += _rightClickInput.Length;
 					}
