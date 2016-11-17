@@ -382,8 +382,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							FrameBuffer[(j * 2) * 159 + i] = ColorToRGBA(Register[0x2C]);
 							FrameBuffer[(j * 2 + 1) * 159 + i] = ColorToRGBA(Register[0x2C]);
-							Collision[i + 8, j * 2 + 16] |= 1 << 9;
-							Collision[i + 8, j * 2 + 16 + 1] |= 1 << 9;
 						}
 					}
 					else
@@ -393,6 +391,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 				}
 			}
+
 			
 		}
 
@@ -686,11 +685,25 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			// by now we have collision information for all 8 mobs and the BG
 			// so we can store data in the collision registers here
-			for (int i = 0;i<159;i++)
+			int x_border = Register[0x32].Bit(0) ? 16 : 8;
+			int y_border = Register[0x32].Bit(1) ? 32 : 16;
+
+			for (int i = 0;i<167;i++)
 			{
-				for (int j=0;j<192;j++)
+				for (int j=0;j<210;j++)
 				{
-					if (Collision[i, j] != 0)
+					//while we are here we can set collision detection bits for the border region
+					if (i<x_border || i==166)
+					{
+						Collision[i, j] |= (1 << 9);
+					}
+					if (j < y_border || j >= 208)
+					{
+						Collision[i, j] |= (1 << 9);
+					}
+
+					// the extra condition here is to ignore only border collsion bit set
+					if (Collision[i, j] != 0 && Collision[i,j] != (1<<9)) 
 					{
 						for (int k = 0; k < 8; k++)
 						{
