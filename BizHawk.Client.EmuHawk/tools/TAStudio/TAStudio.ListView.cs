@@ -180,9 +180,9 @@ namespace BizHawk.Client.EmuHawk
 				offsetX = -3;
 				offsetY = 1;
 
-                if (CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithIcons)
+				if (CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithIcons)
                     bitmap = icon_marker;
-                else if (record.HasState && TasView.denoteStatesWithIcons)
+				else if (record.HasState && Settings.DenoteStatesWithIcons)
 				{
                     if (record.Lagged.HasValue && record.Lagged.Value)
                         bitmap = icon_anchor_lag;
@@ -209,7 +209,7 @@ namespace BizHawk.Client.EmuHawk
             
 			if (columnName == FrameColumnName)
 			{
-				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && TasView.denoteMarkersWithBGColor)
+				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
 					color = Marker_FrameCol;
                 else
                     color = Color.FromArgb(0x60FFFFFF);
@@ -238,7 +238,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (record.Lagged.HasValue)
 			{
-				if (!record.HasState && TasView.denoteStatesWithBGColor)
+				if (!record.HasState && Settings.DenoteStatesWithBGColor)
                     color = record.Lagged.Value ?
                         LagZone_InputLog :
                         GreenZone_InputLog;

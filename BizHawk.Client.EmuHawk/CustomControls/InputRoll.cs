@@ -39,10 +39,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool HideWasLagFrames { get; set; }
 		private byte[] lagFrames = new byte[100]; // Large enough value that it shouldn't ever need resizing.
 
-		public bool denoteStatesWithIcons { get; set; }
-		public bool denoteStatesWithBGColor { get; set; }
-		public bool denoteMarkersWithIcons { get; set; }
-		public bool denoteMarkersWithBGColor { get; set; }
 		public bool allowRightClickSelecton { get; set; }
 		public bool letKeysModifySelection { get; set; }
 		public bool suspendHotkeys { get; set; }

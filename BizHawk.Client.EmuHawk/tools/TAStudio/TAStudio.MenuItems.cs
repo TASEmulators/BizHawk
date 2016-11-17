@@ -1040,10 +1040,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void iconsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			denoteStatesWithIconsToolStripMenuItem.Checked = Settings.denoteStatesWithIcons;
-			denoteStatesWithBGColorToolStripMenuItem.Checked = Settings.denoteStatesWithBGColor;
-			denoteMarkersWithIconsToolStripMenuItem.Checked = Settings.denoteMarkersWithIcons;
-			denoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.denoteMarkersWithBGColor;
+			DenoteStatesWithIconsToolStripMenuItem.Checked = Settings.DenoteStatesWithIcons;
+			DenoteStatesWithBGColorToolStripMenuItem.Checked = Settings.DenoteStatesWithBGColor;
+			DenoteMarkersWithIconsToolStripMenuItem.Checked = Settings.DenoteMarkersWithIcons;
+			DenoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.DenoteMarkersWithBGColor;
 		}
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1106,27 +1106,27 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
         }
 
-        private void denoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons = denoteStatesWithIconsToolStripMenuItem.Checked;
+            Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor = denoteStatesWithBGColorToolStripMenuItem.Checked;
+            Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons = denoteMarkersWithIconsToolStripMenuItem.Checked;
+            Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor = denoteMarkersWithBGColorToolStripMenuItem.Checked;
+            Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
             RefreshDialog();
         }
 

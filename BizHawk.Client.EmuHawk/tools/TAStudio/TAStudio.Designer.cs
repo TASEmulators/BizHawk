@@ -133,10 +133,10 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.hideWasLagFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.iconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteStatesWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteStatesWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteMarkersWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteMarkersWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteStatesWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteStatesWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteMarkersWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteMarkersWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
 			this.followCursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1044,46 +1044,46 @@ namespace BizHawk.Client.EmuHawk
 			// iconsToolStripMenuItem
 			// 
 			this.iconsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.denoteStatesWithIconsToolStripMenuItem,
-            this.denoteStatesWithBGColorToolStripMenuItem,
-            this.denoteMarkersWithIconsToolStripMenuItem,
-            this.denoteMarkersWithBGColorToolStripMenuItem});
+            this.DenoteStatesWithIconsToolStripMenuItem,
+            this.DenoteStatesWithBGColorToolStripMenuItem,
+            this.DenoteMarkersWithIconsToolStripMenuItem,
+            this.DenoteMarkersWithBGColorToolStripMenuItem});
 			this.iconsToolStripMenuItem.Name = "iconsToolStripMenuItem";
 			this.iconsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.iconsToolStripMenuItem.Text = "Icons";
 			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.iconsToolStripMenuItem_DropDownOpened);
 			// 
-			// denoteStatesWithIconsToolStripMenuItem
+			// DenoteStatesWithIconsToolStripMenuItem
 			// 
-			this.denoteStatesWithIconsToolStripMenuItem.CheckOnClick = true;
-			this.denoteStatesWithIconsToolStripMenuItem.Name = "denoteStatesWithIconsToolStripMenuItem";
-			this.denoteStatesWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteStatesWithIconsToolStripMenuItem.Text = "Denote States With Icons";
-			this.denoteStatesWithIconsToolStripMenuItem.Click += new System.EventHandler(this.denoteStatesWithIconsToolStripMenuItem_Click);
+			this.DenoteStatesWithIconsToolStripMenuItem.CheckOnClick = true;
+			this.DenoteStatesWithIconsToolStripMenuItem.Name = "DenoteStatesWithIconsToolStripMenuItem";
+			this.DenoteStatesWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteStatesWithIconsToolStripMenuItem.Text = "Denote States With Icons";
+			this.DenoteStatesWithIconsToolStripMenuItem.Click += new System.EventHandler(this.DenoteStatesWithIconsToolStripMenuItem_Click);
 			// 
-			// denoteStatesWithBGColorToolStripMenuItem
+			// DenoteStatesWithBGColorToolStripMenuItem
 			// 
-			this.denoteStatesWithBGColorToolStripMenuItem.CheckOnClick = true;
-			this.denoteStatesWithBGColorToolStripMenuItem.Name = "denoteStatesWithBGColorToolStripMenuItem";
-			this.denoteStatesWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteStatesWithBGColorToolStripMenuItem.Text = "Denote States With BG Color";
-			this.denoteStatesWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.denoteStatesWithBGColorToolStripMenuItem_Click);
+			this.DenoteStatesWithBGColorToolStripMenuItem.CheckOnClick = true;
+			this.DenoteStatesWithBGColorToolStripMenuItem.Name = "DenoteStatesWithBGColorToolStripMenuItem";
+			this.DenoteStatesWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteStatesWithBGColorToolStripMenuItem.Text = "Denote States With BG Color";
+			this.DenoteStatesWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.DenoteStatesWithBGColorToolStripMenuItem_Click);
 			// 
-			// denoteMarkersWithIconsToolStripMenuItem
+			// DenoteMarkersWithIconsToolStripMenuItem
 			// 
-			this.denoteMarkersWithIconsToolStripMenuItem.CheckOnClick = true;
-			this.denoteMarkersWithIconsToolStripMenuItem.Name = "denoteMarkersWithIconsToolStripMenuItem";
-			this.denoteMarkersWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteMarkersWithIconsToolStripMenuItem.Text = "Denote Markers With Icons";
-			this.denoteMarkersWithIconsToolStripMenuItem.Click += new System.EventHandler(this.denoteMarkersWithIconsToolStripMenuItem_Click);
+			this.DenoteMarkersWithIconsToolStripMenuItem.CheckOnClick = true;
+			this.DenoteMarkersWithIconsToolStripMenuItem.Name = "DenoteMarkersWithIconsToolStripMenuItem";
+			this.DenoteMarkersWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteMarkersWithIconsToolStripMenuItem.Text = "Denote Markers With Icons";
+			this.DenoteMarkersWithIconsToolStripMenuItem.Click += new System.EventHandler(this.DenoteMarkersWithIconsToolStripMenuItem_Click);
 			// 
-			// denoteMarkersWithBGColorToolStripMenuItem
+			// DenoteMarkersWithBGColorToolStripMenuItem
 			// 
-			this.denoteMarkersWithBGColorToolStripMenuItem.CheckOnClick = true;
-			this.denoteMarkersWithBGColorToolStripMenuItem.Name = "denoteMarkersWithBGColorToolStripMenuItem";
-			this.denoteMarkersWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteMarkersWithBGColorToolStripMenuItem.Text = "Denote Markers With BG Color";
-			this.denoteMarkersWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.denoteMarkersWithBGColorToolStripMenuItem_Click);
+			this.DenoteMarkersWithBGColorToolStripMenuItem.CheckOnClick = true;
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Name = "DenoteMarkersWithBGColorToolStripMenuItem";
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Text = "Denote Markers With BG Color";
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.DenoteMarkersWithBGColorToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator23
 			// 
@@ -1233,10 +1233,6 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TasView.CellHeightPadding = 0;
-			this.TasView.denoteMarkersWithBGColor = false;
-			this.TasView.denoteMarkersWithIcons = false;
-			this.TasView.denoteStatesWithBGColor = false;
-			this.TasView.denoteStatesWithIcons = false;
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;
@@ -1791,10 +1787,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.SplitContainer MainVertialSplit;
 		private System.Windows.Forms.ToolStripMenuItem StartANewProjectFromSaveRamMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteStatesWithIconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteStatesWithBGColorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteMarkersWithIconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteMarkersWithBGColorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteStatesWithIconsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteStatesWithBGColorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteMarkersWithIconsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteMarkersWithBGColorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewFromSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewFromNowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewFromCurrentSaveRamMenuItem;

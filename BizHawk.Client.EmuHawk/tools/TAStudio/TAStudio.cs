@@ -74,10 +74,10 @@ namespace BizHawk.Client.EmuHawk
 				BackupPerFileSave = false;
 				SingleClickFloatEdit = false;
                 // default to taseditor fashion
-                denoteStatesWithIcons = false;
-                denoteStatesWithBGColor = true;
-                denoteMarkersWithIcons = false;
-                denoteMarkersWithBGColor = true;
+                DenoteStatesWithIcons = false;
+                DenoteStatesWithBGColor = true;
+                DenoteMarkersWithIcons = false;
+                DenoteMarkersWithBGColor = true;
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -97,12 +97,10 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
 			public bool SingleClickFloatEdit { get; set; }
-
-            public bool denoteStatesWithIcons { get; set; }
-            public bool denoteStatesWithBGColor { get; set; }
-            public bool denoteMarkersWithIcons { get; set; }
-            public bool denoteMarkersWithBGColor { get; set; }
-
+            public bool DenoteStatesWithIcons { get; set; }
+            public bool DenoteStatesWithBGColor { get; set; }
+            public bool DenoteMarkersWithIcons { get; set; }
+            public bool DenoteMarkersWithBGColor { get; set; }
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
 		}
@@ -314,11 +312,6 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod;
 			TasView.SeekingCutoffInterval = Settings.SeekingCutoffInterval;
 			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
-
-            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons;
-            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor;
-            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons;
-			TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor;
 
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
 			if (Settings.AutosaveInterval > 0)
