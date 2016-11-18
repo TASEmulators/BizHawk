@@ -346,10 +346,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								// also if the pixel is on set it in the collision matrix
 								// note that the collision field is attached to the lower right corner of the BG
 								// so we add 8 to x and 16 to y here
-								if ((card_col * 8 + pict_col + 8) < 167)
+								if ((card_col * 8 + (7-pict_col) + 8) < 167)
 								{
-									Collision[card_col * 8 + pict_col + 8, (card_row * 8 + pict_row) * 2 + 16] = 1 << 8;
-									Collision[card_col * 8 + pict_col + 8, (card_row * 8 + pict_row) * 2 + 16 + 1] = 1 << 8;
+									Collision[card_col * 8 + (7-pict_col) + 8, (card_row * 8 + pict_row) * 2 + 16] = 1 << 8;
+									Collision[card_col * 8 + (7-pict_col) + 8, (card_row * 8 + pict_row) * 2 + 16 + 1] = 1 << 8;
 								}
 							}
 							else
@@ -382,16 +382,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							FrameBuffer[(j * 2) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
 							FrameBuffer[(j * 2 + 1) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
-						} else
-						{
-							FrameBuffer[(j * 2) * 159 + i] = ColorToRGBA(Register[0x2C]);
-							FrameBuffer[(j * 2 + 1) * 159 + i] = ColorToRGBA(Register[0x2C]);
-						}
-					}
-					else
-					{
-						FrameBuffer[(j * 2) * 159 + i] = ColorToRGBA(Register[0x2C]);
-						FrameBuffer[(j * 2 + 1) * 159 + i] = ColorToRGBA(Register[0x2C]);
+						} 
 					}
 				}
 			}
@@ -598,8 +589,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 				}
 
-				//TODO:pixel priority
-
 				//draw the mob and check for collision
 				//we already have the BG at this point, so for now let's assume mobs have priority for testing
 
@@ -617,7 +606,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 							if ((cur_x) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 							{
-								FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x - (8 - x_delay)] = ColorToRGBA(loc_color);
+								if (!(priority && (Collision[cur_x, loc_y * 2 + cur_y]&0x100)>0))
+									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x - (8 - x_delay)] = ColorToRGBA(loc_color);
 							}
 							//a MOB does not need to be visible for it to be interracting
 							//special case: a mob with x position 0 is counted as off
@@ -630,7 +620,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								if ((cur_x + 1) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 								{
-									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
+									if (!(priority && (Collision[cur_x + 1, loc_y * 2 + cur_y] & 0x100) > 0))
+										FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
@@ -659,7 +650,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 								if ((cur_x) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 								{
-									FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x - (8 - x_delay)] = ColorToRGBA(loc_color);
+									if (!(priority && (Collision[cur_x, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
+										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x - (8 - x_delay)] = ColorToRGBA(loc_color);
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
@@ -672,7 +664,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								{
 									if ((cur_x + 1) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 									{
-										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
+										if (!(priority && (Collision[cur_x + 1, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
+											FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
 									}
 									//a MOB does not need to be visible for it to be interracting
 									//special case: a mob with x position 0 is counted as off
@@ -692,11 +685,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int x_border = Register[0x32].Bit(0) ? 16 : 8;
 			int y_border = Register[0x32].Bit(1) ? 32 : 16;
 
-			for (int i = 0;i<167;i++)
+			int x_border_2 = Register[0x32].Bit(0) ? 8 : 0;
+			int y_border_2 = Register[0x32].Bit(1) ? 16 : 0;
+
+			for (int i = 0; i < 167; i++)
 			{
-				for (int j=0;j<210;j++)
+				for (int j = 0; j < 210; j++)
 				{
-					//while we are here we can set collision detection bits for the border region
+					// while we are here we can set collision detection bits for the border region
 					if (i<x_border || i==166)
 					{
 						Collision[i, j] |= (1 << 9);
@@ -706,8 +702,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						Collision[i, j] |= (1 << 9);
 					}
 
+					// and also make sure the border region is all the border color
+					if ((i-x_delay)>=0 && (i-x_delay)<159 && (j-y_delay*2)>=0 && (j-y_delay*2)<192)
+					{
+						if ((i-x_delay) < x_border_2)
+							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C]);
+
+						if ((j - y_delay*2) < y_border_2)
+							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C]);
+					}
+
 					// the extra condition here is to ignore only border collsion bit set
-					if (Collision[i, j] != 0 && Collision[i,j] != (1<<9)) 
+					if (Collision[i, j] != 0 && Collision[i,j] != (1<<9) && Collision[i,j] != (1<<8)) 
 					{
 						for (int k = 0; k < 8; k++)
 						{
@@ -719,9 +725,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								}
 							}
 						}
-						// after we check for collision, we can clear that value for the next frame.
-						Collision[i, j] = 0;
 					}
+					// after we check for collision, we can clear that value for the next frame.
+					Collision[i, j] = 0;
 				}
 			}
 
