@@ -1241,6 +1241,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			ColumnsSubMenu.DropDownItems.Add(defaults);
+			TasView.AllColumns.ColumnsChanged();
 		}
 
 		#endregion

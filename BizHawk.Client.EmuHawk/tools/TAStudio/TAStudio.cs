@@ -394,7 +394,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			EngageTastudio();
-			SetUpColumns();
 			return true;
 		}
 
@@ -580,7 +579,7 @@ namespace BizHawk.Client.EmuHawk
 				TasView.DeselectAll();
 				BookMarkControl.Restart();
 				MarkerControl.Restart();
-
+				SetUpColumns();
 				RefreshDialog();
 			}
 		}
