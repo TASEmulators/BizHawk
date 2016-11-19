@@ -41,8 +41,10 @@ namespace BizHawk.Client.Common
 			{
 				return string.Empty;
 			}
-
-			string neutral = _source.Type.FloatRanges[0].Mid.ToString().PadLeft(5, ' ') + ',';
+			
+			string neutral = "    0,";
+			if (_source.Type.FloatRanges.Count > 0)
+				neutral = _source.Type.FloatRanges[0].Mid.ToString().PadLeft(5, ' ') + ',';
 			return le
 				.Replace(".", " ")
 				.Replace("|", "")
