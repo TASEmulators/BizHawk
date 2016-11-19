@@ -29,6 +29,7 @@ extern breakpoint g_Breakpoints[];
 
 int add_breakpoint( uint32 address );
 int add_breakpoint_struct(breakpoint* newbp);
+int get_breakpoint_struct(int bpt, breakpoint* copy);
 void remove_breakpoint_by_address( uint32 address );
 void remove_breakpoint_by_num( int bpt );
 void enable_breakpoint( int breakpoint );

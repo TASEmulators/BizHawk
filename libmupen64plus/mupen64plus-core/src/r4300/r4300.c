@@ -73,7 +73,7 @@ int rounding_mode = 0x33F, trunc_mode = 0xF3F, round_mode = 0x33F,
 // Cached interpreter functions (and fallback for dynarec).
 // -----------------------------------------------------------
 #ifdef DBG
-#define UPDATE_DEBUGGER() if (g_DebuggerActive) update_debugger(PC->addr)
+#define UPDATE_DEBUGGER() if (g_DebuggerActive) update_debugger(PC->addr, -1)
 #else
 #define UPDATE_DEBUGGER() do { } while(0)
 #endif
@@ -1066,9 +1066,8 @@ void r4300_execute(void (*startcb)(void))
             CoreCompareCallback();
 #endif
 #ifdef DBG
-            if (g_DebuggerActive) update_debugger(PC->addr);
+            if (g_DebuggerActive) update_debugger(PC->addr, -1);
 #endif
-            EXECUTECB();
             TRACECB();
             PC->ops();
         }

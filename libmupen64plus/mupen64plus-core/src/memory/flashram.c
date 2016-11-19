@@ -181,17 +181,12 @@ void dma_read_flashram(void)
     switch (flashram_info.mode)
     {
     case STATUS_MODE:
-		WRITECBADDR(0x80000000 | (pi_register.pi_dram_addr_reg/4));
-		WRITECBADDR(0x80000000 | (pi_register.pi_dram_addr_reg/4+1));
-
         rdram[pi_register.pi_dram_addr_reg/4] = (unsigned int)(flashram_info.status >> 32);
         rdram[pi_register.pi_dram_addr_reg/4+1] = (unsigned int)(flashram_info.status);
         break;
     case READ_MODE:
         for (i=0; i<(pi_register.pi_wr_len_reg & 0x0FFFFFF)+1; i++)
         {
-			READCBADDR(0x80000000 | ((pi_register.pi_dram_addr_reg+i)^S8));
-
             ((unsigned char*)rdram)[(pi_register.pi_dram_addr_reg+i)^S8]=
                 flashram[(((pi_register.pi_cart_addr_reg-0x08000000)&0xFFFF)*2+i)^S8];
         }
