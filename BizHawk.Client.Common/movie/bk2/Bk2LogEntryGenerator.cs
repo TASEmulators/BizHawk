@@ -42,10 +42,11 @@ namespace BizHawk.Client.Common
 				return string.Empty;
 			}
 
+			string neutral = _source.Type.FloatRanges[0].Mid.ToString().PadLeft(5, ' ') + ',';
 			return le
 				.Replace(".", " ")
 				.Replace("|", "")
-				.Replace("    0,", "      "); //zero 04-aug-2015 - changed from a 2-dimensional type string to support emptying out the one-dimensional PSX disc select control
+				.Replace(neutral, "      "); //zero 04-aug-2015 - changed from a 2-dimensional type string to support emptying out the one-dimensional PSX disc select control
 		}
 
 		public bool IsEmpty

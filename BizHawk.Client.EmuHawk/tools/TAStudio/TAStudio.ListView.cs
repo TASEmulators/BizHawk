@@ -292,7 +292,17 @@ namespace BizHawk.Client.EmuHawk
 					if (index == _floatEditRow && columnName == _floatEditColumn)
 						text = _floatTypedValue;
 					else if (index < CurrentTasMovie.InputLogLength)
+					{
 						text = CurrentTasMovie.DisplayValue(index, columnName);
+						if (column.Type == InputRoll.RollColumn.InputType.Float)
+						{
+							// feos: this could be cashed, but I don't notice any slowdown this way either
+							Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
+								[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(columnName)];
+							if (text == range.Mid.ToString())
+								text = "";
+						}
+					}
 				}
 			}
 			catch (Exception ex)

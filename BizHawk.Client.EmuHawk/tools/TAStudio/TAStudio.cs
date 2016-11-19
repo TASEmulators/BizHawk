@@ -422,9 +422,23 @@ namespace BizHawk.Client.EmuHawk
 			AddColumn(FrameColumnName, "Frame#", 68);
 
 			var columnNames = GenerateColumnNames();
+			InputRoll.RollColumn.InputType type;
+			int digits = 1;
 			foreach (var kvp in columnNames)
 			{
-				AddColumn(kvp.Key, kvp.Value, (kvp.Value.Length * 6) + 14);
+				if (Global.MovieSession.MovieControllerAdapter.Type.FloatControls.Contains(kvp.Key))
+				{
+					Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
+						[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(kvp.Key)];
+					type = InputRoll.RollColumn.InputType.Float;
+					digits = Math.Max(kvp.Value.Length, range.MaxDigits());
+				}
+				else
+				{
+					type = InputRoll.RollColumn.InputType.Boolean;
+					digits = kvp.Value.Length;
+				}
+				AddColumn(kvp.Key, kvp.Value, (digits * 6) + 14, type);
 			}
 
 			var columnsToHide = TasView.AllColumns
@@ -478,7 +492,7 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 		}
 
-		public void AddColumn(string columnName, string columnText, int columnWidth)
+		public void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
 		{
 			if (TasView.AllColumns[columnName] == null)
 			{
@@ -486,7 +500,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Name = columnName,
 					Text = columnText,
-					Width = columnWidth
+					Width = columnWidth,
+					Type = columnType
 				};
 
 				TasView.AllColumns.Add(column);
