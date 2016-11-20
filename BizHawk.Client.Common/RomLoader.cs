@@ -750,7 +750,7 @@ namespace BizHawk.Client.Common
 									if(Global.Config.NES_InQuickNES) preference = "quicknes";
 
 									//if user has saw fit to override in gamedb, apply that
-									if(Global.Config.CoreForcingViaGameDB)
+									if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
 										preference = game.ForcedCore;
 
 									//but only neshawk is accurate
