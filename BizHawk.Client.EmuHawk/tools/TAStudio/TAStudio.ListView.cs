@@ -994,6 +994,198 @@ namespace BizHawk.Client.EmuHawk
 			SetSplicer();
 		}
 
+		public void AnalogIncrementByOne()
+		{
+			if (FloatEditingMode)
+				EditAnalogProgrammatically(new KeyEventArgs(Keys.Up));
+		}
+
+		public void AnalogDecrementByOne()
+		{
+			if (FloatEditingMode)
+				EditAnalogProgrammatically(new KeyEventArgs(Keys.Down));
+		}
+
+		public void AnalogIncrementByTen()
+		{
+			if (FloatEditingMode)
+				EditAnalogProgrammatically(new KeyEventArgs(Keys.Up | Keys.Shift));
+		}
+
+		public void AnalogDecrementByTen()
+		{
+			if (FloatEditingMode)
+				EditAnalogProgrammatically(new KeyEventArgs(Keys.Down | Keys.Shift));
+		}
+
+		public void AnalogMax()
+		{
+			if (FloatEditingMode)
+				EditAnalogProgrammatically(new KeyEventArgs(Keys.Right));
+		}
+
+		public void AnalogMin()
+		{
+			if (FloatEditingMode)
+				EditAnalogProgrammatically(new KeyEventArgs(Keys.Left));
+		}
+
+		public void EditAnalogProgrammatically(KeyEventArgs e)
+		{
+			if (!FloatEditingMode)
+				return;
+
+			float value = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
+			float prev = value;
+			string prevTyped = _floatTypedValue;
+
+			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
+				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+
+			float rMax = range.Max;
+			float rMin = range.Min;
+			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
+			if (rMax < rMin)
+			{
+				rMax = range.Min;
+				rMin = range.Max;
+			}
+
+			// feos: typing past max digits overwrites existing value, not touching the sign
+			// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
+			// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
+			int maxDigits = range.MaxDigits();
+			int curDigits = _floatTypedValue.Length;
+			string curMinus;
+			if (_floatTypedValue.StartsWith("-"))
+			{
+				curDigits -= 1;
+				curMinus = "-";
+			}
+			else
+			{
+				curMinus = "";
+			}
+
+			if (e.KeyCode == Keys.Right)
+			{
+				value = rMax;
+				_floatTypedValue = value.ToString();
+			}
+			else if (e.KeyCode == Keys.Left)
+			{
+				value = rMin;
+				_floatTypedValue = value.ToString();
+			}
+			else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
+			{
+				if (curDigits >= maxDigits)
+					_floatTypedValue = curMinus;
+				_floatTypedValue += e.KeyCode - Keys.D0;
+			}
+			else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+			{
+				if (curDigits >= maxDigits)
+					_floatTypedValue = curMinus;
+				_floatTypedValue += e.KeyCode - Keys.NumPad0;
+			}
+			else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
+			{
+				if (_floatTypedValue.StartsWith("-"))
+					_floatTypedValue = _floatTypedValue.Substring(1);
+				else
+					_floatTypedValue = "-" + _floatTypedValue;
+			}
+			else if (e.KeyCode == Keys.Back)
+			{
+				if (_floatTypedValue == "") // Very first key press is backspace?
+					_floatTypedValue = value.ToString();
+				_floatTypedValue = _floatTypedValue.Substring(0, _floatTypedValue.Length - 1);
+				if (_floatTypedValue == "" || _floatTypedValue == "-")
+					value = 0f;
+				else
+					value = Convert.ToSingle(_floatTypedValue);
+			}
+			else if (e.KeyCode == Keys.Enter)
+			{
+				if (_floatEditYPos != -1)
+				{
+					_floatEditYPos = -1;
+				}
+				floatEditRow = -1;
+			}
+			else if (e.KeyCode == Keys.Escape)
+			{
+				if (_floatEditYPos != -1)
+				{
+					_floatEditYPos = -1;
+				}
+				if (_floatBackupState != _floatPaintState)
+				{
+					CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatBackupState);
+					_triggerAutoRestore = true;
+					JumpToGreenzone();
+					DoTriggeredAutoRestoreIfNeeded();
+				}
+				floatEditRow = -1;
+			}
+			else
+			{
+				float changeBy = 0;
+				if (e.KeyCode == Keys.Up)
+					changeBy = 1; // We're assuming for now that ALL float controls should contain integers.
+				else if (e.KeyCode == Keys.Down)
+					changeBy = -1;
+				if (Control.ModifierKeys == Keys.Shift)
+					changeBy *= 10;
+				value += changeBy;
+				if (changeBy != 0)
+					_floatTypedValue = value.ToString();
+			}
+
+			if (!FloatEditingMode)
+				CurrentTasMovie.ChangeLog.EndBatch();
+			else
+			{
+				if (_floatTypedValue == "")
+				{
+					if (prevTyped != "")
+					{
+						value = 0f;
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+					}
+				}
+				else
+				{
+					if (float.TryParse(_floatTypedValue, out value)) // String "-" can't be parsed.
+					{
+						if (value > rMax)
+							value = rMax;
+						else if (value < rMin)
+							value = rMin;
+						_floatTypedValue = value.ToString();
+						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+					}
+				}
+
+				if (_extraFloatRows.Any())
+				{
+					foreach (int row in _extraFloatRows)
+					{
+						CurrentTasMovie.SetFloatState(row, _floatEditColumn, value);
+					}
+				}
+
+				if (value != prev) // Auto-restore
+				{
+					_triggerAutoRestore = true;
+					JumpToGreenzone();
+					DoTriggeredAutoRestoreIfNeeded();
+				}
+			}
+			RefreshDialog();
+		}
+
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
@@ -1005,158 +1197,10 @@ namespace BizHawk.Client.EmuHawk
 				GoToNextMarker();
 			}
 
-			// SuuperW: Float Editing
-			if (FloatEditingMode)
-			{
-				float value = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
-				float prev = value;
-				string prevTyped = _floatTypedValue;
-
-				Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-					[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
-				
-				float rMax = range.Max;
-				float rMin = range.Min;
-				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed ControllerDefinition.cs, but I'll put a quick fix here anyway.
-				if (rMax < rMin)
-				{
-					rMax = range.Min;
-					rMin = range.Max;
-				}
-
-				// feos: typing past max digits overwrites existing value, not touching the sign
-				// but doesn't handle situations where the range is like -50 through 100, where minimum is negative and has less digits
-				// it just uses 3 as maxDigits there too, leaving room for typing impossible values (that are still ignored by the game and then clamped)
-				int maxDigits = range.MaxDigits();
-				int curDigits = _floatTypedValue.Length;
-				string curMinus;
-				if (_floatTypedValue.StartsWith("-"))
-				{
-					curDigits -= 1;
-					curMinus = "-";
-				}
-				else
-				{
-					curMinus = "";
-				}
-
-				if (e.KeyCode == Keys.Right)
-				{
-					value = rMax;
-					_floatTypedValue = value.ToString();
-				}
-				else if (e.KeyCode == Keys.Left)
-				{
-					value = rMin;
-					_floatTypedValue = value.ToString();
-				}
-				else if (e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9)
-				{
-					if (curDigits >= maxDigits)
-						_floatTypedValue = curMinus;
-					_floatTypedValue += e.KeyCode - Keys.D0;
-				}
-				else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
-				{
-					if (curDigits >= maxDigits)
-						_floatTypedValue = curMinus;
-					_floatTypedValue += e.KeyCode - Keys.NumPad0;
-				}
-				else if (e.KeyCode == Keys.OemMinus || e.KeyCode == Keys.Subtract)
-				{
-					if (_floatTypedValue.StartsWith("-"))
-						_floatTypedValue = _floatTypedValue.Substring(1);
-					else
-						_floatTypedValue = "-" + _floatTypedValue;
-				}
-				else if (e.KeyCode == Keys.Back)
-				{
-					if (_floatTypedValue == "") // Very first key press is backspace?
-						_floatTypedValue = value.ToString();
-					_floatTypedValue = _floatTypedValue.Substring(0, _floatTypedValue.Length - 1);
-					if (_floatTypedValue == "" || _floatTypedValue == "-")
-						value = 0f;
-					else
-						value = Convert.ToSingle(_floatTypedValue);
-				}
-				else if (e.KeyCode == Keys.Enter)
-				{
-					if (_floatEditYPos != -1)
-					{
-						_floatEditYPos = -1;
-					}
-					floatEditRow = -1;
-				}
-				else if (e.KeyCode == Keys.Escape)
-				{
-					if (_floatEditYPos != -1)
-					{
-						_floatEditYPos = -1;
-					}
-					if (_floatBackupState != _floatPaintState)
-					{
-						CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatBackupState);
-						_triggerAutoRestore = true;
-						JumpToGreenzone();
-						DoTriggeredAutoRestoreIfNeeded();
-					}
-					floatEditRow = -1;
-				}
-				else
-				{
-					float changeBy = 0;
-					if (e.KeyCode == Keys.Up)
-						changeBy = 1; // We're assuming for now that ALL float controls should contain integers.
-					else if (e.KeyCode == Keys.Down)
-						changeBy = -1;
-					if (e.Shift)
-						changeBy *= 10;
-					value += changeBy;
-					if (changeBy != 0)
-						_floatTypedValue = value.ToString();
-				}
-
-				if (!FloatEditingMode)
-					CurrentTasMovie.ChangeLog.EndBatch();
-				else
-				{
-					if (_floatTypedValue == "")
-					{
-						if (prevTyped != "")
-						{
-							value = 0f;
-							CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
-						}
-					}
-					else
-					{
-						if (float.TryParse(_floatTypedValue, out value)) // String "-" can't be parsed.
-						{
-							if (value > rMax)
-								value = rMax;
-							else if (value < rMin)
-								value = rMin;
-							_floatTypedValue = value.ToString();
-							CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
-						}
-					}
-
-					if (_extraFloatRows.Any())
-					{
-						foreach (int row in _extraFloatRows)
-						{
-							CurrentTasMovie.SetFloatState(row, _floatEditColumn, value);
-						}
-					}
-
-					if (value != prev) // Auto-restore
-					{
-						_triggerAutoRestore = true;
-						JumpToGreenzone();
-						DoTriggeredAutoRestoreIfNeeded();
-					}
-				}
-			}
+			if (FloatEditingMode &&
+				e.KeyCode != Keys.Right && e.KeyCode != Keys.Left &&
+				e.KeyCode != Keys.Up && e.KeyCode != Keys.Down)
+				EditAnalogProgrammatically(e);
 
 			RefreshDialog();
 		}

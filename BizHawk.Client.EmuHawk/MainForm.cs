@@ -695,7 +695,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if(yield_alt) return false;
 				var ts = ActiveForm as TAStudio;
-				if(ts.IsInMenuLoop)
+				if(ts.IsInMenuLoop || ts.FloatEditingMode)
 					return false;
 			}
 
