@@ -397,19 +397,19 @@ namespace BizHawk.Client.EmuHawk
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.CloneFramesExternal();
 					break;
-				case "Analog Increment By One":
+				case "Analog Increment":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.AnalogIncrementByOne();
 					break;
-				case "Analog Decrement By One":
+				case "Analog Decrement":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.AnalogDecrementByOne();
 					break;
-				case "Analog Increment By Ten":
+				case "Analog Incr. by 10":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.AnalogIncrementByTen();
 					break;
-				case "Analog Decrement By Ten":
+				case "Analog Decr. by 10":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.AnalogDecrementByTen();
 					break;
