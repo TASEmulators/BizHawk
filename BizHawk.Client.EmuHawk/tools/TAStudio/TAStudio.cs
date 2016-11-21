@@ -115,17 +115,12 @@ namespace BizHawk.Client.EmuHawk
 			get { return GlobalWin.MainForm; }
 		}
 
-		public int LastPositionFrame
-		{
-			get
-			{
-				return CurrentTasMovie.LastPositionFrame;
-			}
-			set
-			{
-				CurrentTasMovie.LastPositionFrame = value;
-			}
-		}
+		/// <summary>
+		/// Separates "restore last position" logic from seeking caused by navigation.
+		/// TASEditor never kills LastPositionFrame, and it only pauses on it,
+		/// if it hasn't been greenzoned beforehand and middle mouse button was pressed.
+		/// </summary>
+		public int LastPositionFrame { get; set; }
 
 		#region "Initializing"
 
@@ -174,6 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.PointedCellChanged += TasView_PointedCellChanged;
 			TasView.MultiSelect = true;
 			TasView.MaxCharactersInHorizontal = 1;
+			LastPositionFrame = -1;
 		}
 
 		private void AutosaveTimerEventProcessor(object sender, EventArgs e)
