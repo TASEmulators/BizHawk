@@ -56,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
-		private int? _autoRestoreFrame; // The frame auto-restore will restore to, if set
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
 		private bool _wasRecording = false;
@@ -71,13 +70,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
 			{
-				if (_autoRestorePaused == null)
-				{
-					_autoRestorePaused = Mainform.EmulatorPaused;
-					if (Mainform.IsSeeking) // If seeking, do not shorten seek.
-						_autoRestoreFrame = Mainform.PauseOnFrame;
-				}
-
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
 			}
 		}
@@ -105,7 +97,7 @@ namespace BizHawk.Client.EmuHawk
 				TastudioRecordMode();
 				_wasRecording = false;
 			}
-
+			Mainform.PauseOnFrame = null;
 			if (CurrentTasMovie != null)
 				RefreshDialog();
 		}
@@ -493,15 +485,6 @@ namespace BizHawk.Client.EmuHawk
 				else // User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
-
-					if (Emulator.Frame > frame || CurrentTasMovie.LastValidFrame > frame)
-					{
-						if (wasPaused && !Mainform.IsSeeking && !CurrentTasMovie.LastPositionStable)
-						{
-							LastPositionFrame = Emulator.Frame;
-							CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
-						}
-					}
 
 					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
 					{

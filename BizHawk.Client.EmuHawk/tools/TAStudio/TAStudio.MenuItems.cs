@@ -415,14 +415,7 @@ namespace BizHawk.Client.EmuHawk
 						if (needsToRollback)
 						{
 							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							if (wasPaused)
-							{
-								DoAutoRestore();
-							}
-							else
-							{
-								Mainform.UnpauseEmulator();
-							}
+							DoAutoRestore();
 						}
 						else
 						{
@@ -462,14 +455,7 @@ namespace BizHawk.Client.EmuHawk
 						if (needsToRollback)
 						{
 							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							if (wasPaused)
-							{
-								DoAutoRestore();
-							}
-							else
-							{
-								Mainform.UnpauseEmulator();
-							}
+							DoAutoRestore();
 						}
 						else
 						{
@@ -511,14 +497,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -545,14 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -580,14 +552,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -614,14 +579,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -641,14 +599,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				if (wasPaused)
-				{
-					DoAutoRestore();
-				}
-				else
-				{
-					Mainform.UnpauseEmulator();
-				}
+				DoAutoRestore();
 			}
 			else
 			{
@@ -672,14 +623,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				if (wasPaused)
-				{
-					DoAutoRestore();
-				}
-				else
-				{
-					Mainform.UnpauseEmulator();
-				}
+				DoAutoRestore();
 			}
 			else
 			{

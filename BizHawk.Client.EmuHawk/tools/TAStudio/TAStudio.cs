@@ -792,11 +792,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DoAutoRestore()
 		{
-			if (Settings.AutoRestoreLastPosition && _autoRestoreFrame.HasValue)
+			if (Settings.AutoRestoreLastPosition && LastPositionFrame != -1)
 			{
-				if (_autoRestoreFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
+				if (LastPositionFrame > Emulator.Frame) // Don't unpause if we are already on the desired frame, else runaway seek
 				{
-					StartSeeking(_autoRestoreFrame);
+					StartSeeking(LastPositionFrame);
 				}
 			}
 			else
@@ -808,7 +808,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				_autoRestorePaused = null;
 			}
-			_autoRestoreFrame = null;
+			//_autoRestoreFrame = null;
 		}
 
 		private void StartAtNearestFrameAndEmulate(int frame)
