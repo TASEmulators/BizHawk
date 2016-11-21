@@ -56,6 +56,7 @@ namespace BizHawk.Client.Common
 
 			BindMarkersToInput = true;
 			CurrentBranch = -1;
+			LastPositionFrame = -1;
 		}
 
 		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
@@ -78,6 +79,7 @@ namespace BizHawk.Client.Common
 
 			BindMarkersToInput = true;
 			CurrentBranch = -1;
+			LastPositionFrame = -1;
 		}
 
 		public TasLagLog TasLagLog { get { return LagLog; } }
@@ -85,10 +87,22 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList Markers { get; set; }
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
-		public bool LastPositionStable = true;
 		public string NewBranchText = "";
 		public int CurrentBranch { get; set; }
 		public int BranchCount { get { return Branches.Count; } }
+
+		/// <summary>
+		/// Separates "restore last position" logic from seeking caused by navigation.
+		/// TASEditor never kills LastPositionFrame, and it only pauses on it,
+		/// if it hasn't been greenzoned beforehand and middle mouse button was pressed.
+		/// </summary>
+		public int LastPositionFrame { get; set; }
+
+		/// <summary>
+		/// If user emulated a new frame, current edited segment may change
+		/// TASEditor lets LastPositionFrame be changed then
+		/// </summary>
+		public bool LastPositionStable = true;
 
 		public TasBranch GetBranch(int index)
 		{
@@ -313,7 +327,6 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Emulator.Frame > LastValidFrame)
 			{
-				// emulated a new frame, current editing segment may change now. taseditor logic
 				LastPositionStable = false;
 			}
 
