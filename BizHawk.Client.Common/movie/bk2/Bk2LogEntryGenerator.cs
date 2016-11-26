@@ -36,19 +36,7 @@ namespace BizHawk.Client.Common
 
 		public string GenerateInputDisplay()
 		{
-			var le = GenerateLogEntry();
-			if (le == EmptyEntry)
-			{
-				return string.Empty;
-			}
-			
-			string neutral = "    0,";
-			if (_source.Type.FloatRanges.Count > 0)
-				neutral = _source.Type.FloatRanges[0].Mid.ToString().PadLeft(5, ' ') + ',';
-			return le
-				.Replace(".", " ")
-				.Replace("|", "")
-				.Replace(neutral, "      "); //zero 04-aug-2015 - changed from a 2-dimensional type string to support emptying out the one-dimensional PSX disc select control
+			return CreateLogEntry(forInputDisplay: true);
 		}
 
 		public bool IsEmpty
@@ -114,10 +102,12 @@ namespace BizHawk.Client.Common
 			return dict;
 		}
 
-		private string CreateLogEntry(bool createEmpty = false)
+		private string CreateLogEntry(bool createEmpty = false, bool forInputDisplay = false)
 		{
 			var sb = new StringBuilder();
-			sb.Append('|');
+
+			if (!forInputDisplay)
+				sb.Append('|');
 
 			foreach (var group in _source.Type.ControlsOrdered)
 			{
@@ -127,15 +117,23 @@ namespace BizHawk.Client.Common
 					{
 						if (_source.Type.FloatControls.Contains(button))
 						{
+							int val;
+							int i = _source.Type.FloatControls.IndexOf(button);
+							int mid = (int)_source.Type.FloatRanges[i].Mid;
+
 							if (createEmpty)
 							{
-								sb.Append("    0,");
+								val = mid;
 							}
 							else
 							{
-								var val = (int)_source.GetFloat(button);
-								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
+								val = (int)_source.GetFloat(button);
 							}
+
+							if (forInputDisplay && val == mid)
+								sb.Append("      ");
+							else
+								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 						}
 						else if (_source.Type.BoolButtons.Contains(button))
 						{
@@ -145,12 +143,13 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
+								sb.Append(_source.IsPressed(button) ? Mnemonics[button] : forInputDisplay ? ' ' : '.');
 							}
 						}
 					}
 
-					sb.Append('|');
+					if (!forInputDisplay)
+						sb.Append('|');
 				}
 			}
 

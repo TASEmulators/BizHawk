@@ -245,7 +245,11 @@ namespace BizHawk.Client.Common
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name) { return 0.0F; } // Floats don't make sense in sticky land
+		public float GetFloat(string name)
+		{
+			int i = Source.Type.FloatControls.IndexOf(name);
+			return Source.Type.FloatRanges[i].Mid; // Floats don't make sense in sticky land
+		}
 
 		public ISticky Source { get; set; }
 		public ISticky SourceStickyOr { get; set; }
