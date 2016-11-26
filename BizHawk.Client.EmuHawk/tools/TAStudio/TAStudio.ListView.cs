@@ -79,6 +79,9 @@ namespace BizHawk.Client.EmuHawk
 			if (!frame.HasValue)
 				return;
 
+			if (Mainform.PauseOnFrame != null)
+				StopSeeking();
+
 			_seekStartFrame = Emulator.Frame;
 			Mainform.PauseOnFrame = frame.Value;
 			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
