@@ -552,7 +552,7 @@ namespace BizHawk.Client.EmuHawk
 								_floatEditYPos = e.Y;
 								_floatBackupState = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
 								_triggerAutoRestore = true;
-								JumpToGreenzone();
+								//JumpToGreenzone(); // not changing anything yet!
 							}
 							RefreshDialog();
 						}
