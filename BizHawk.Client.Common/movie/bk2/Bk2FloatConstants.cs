@@ -44,7 +44,8 @@ namespace BizHawk.Client.Common
 				{ "LStick X", "lsX" },
 				{ "LStick Y", "lsY" },
 				{ "RStick X", "rsX" },
-				{ "RStick Y", "rsY" }
+				{ "RStick Y", "rsY" },
+				{ "Disc Select", "Disc" }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, string>> SystemOverrides = new Dictionary<string, Dictionary<string, string>>
