@@ -551,7 +551,7 @@ namespace BizHawk.Client.EmuHawk
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
 								_floatBackupState = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
-								_triggerAutoRestore = true;
+								_triggerAutoRestore = false;
 								//JumpToGreenzone(); // not changing anything yet!
 							}
 							RefreshDialog();
@@ -1106,7 +1106,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_floatBackupState != _floatPaintState)
 				{
 					CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, _floatBackupState);
-					_triggerAutoRestore = true;
+					_triggerAutoRestore = Emulator.Frame > _floatEditRow;
 					JumpToGreenzone();
 					DoTriggeredAutoRestoreIfNeeded();
 				}
@@ -1161,7 +1161,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value != prev) // Auto-restore
 				{
-					_triggerAutoRestore = true;
+					_triggerAutoRestore = Emulator.Frame > _floatEditRow;
 					JumpToGreenzone();
 					DoTriggeredAutoRestoreIfNeeded();
 				}
