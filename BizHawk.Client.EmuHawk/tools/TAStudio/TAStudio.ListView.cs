@@ -72,6 +72,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
 			}
+			else
+			{
+				_triggerAutoRestore = false;
+			}
 		}
 
 		private void StartSeeking(int? frame)
@@ -554,8 +558,6 @@ namespace BizHawk.Client.EmuHawk
 								_floatTypedValue = "";
 								_floatEditYPos = e.Y;
 								_floatBackupState = CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn);
-								_triggerAutoRestore = false;
-								//JumpToGreenzone(); // not changing anything yet!
 							}
 							RefreshDialog();
 						}
