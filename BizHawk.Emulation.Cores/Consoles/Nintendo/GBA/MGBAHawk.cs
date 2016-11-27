@@ -476,6 +476,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.DisplayBG3) mask |= LibmGBA.Layers.BG3;
 			if (o.DisplayOBJ) mask |= LibmGBA.Layers.OBJ;
 			LibmGBA.BizSetLayerMask(_core, mask);
+
+			LibmGBA.Sounds smask = 0;
+			if (o.PlayCh0) smask |= LibmGBA.Sounds.CH0;
+			if (o.PlayCh1) smask |= LibmGBA.Sounds.CH1;
+			if (o.PlayCh2) smask |= LibmGBA.Sounds.CH2;
+			if (o.PlayCh3) smask |= LibmGBA.Sounds.CH3;
+			if (o.PlayChA) smask |= LibmGBA.Sounds.CHA;
+			if (o.PlayChB) smask |= LibmGBA.Sounds.CHB;
+			LibmGBA.BizSetSoundMask(_core, smask);
+
 			_settings = o;
 			return false;
 		}
@@ -494,6 +504,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			public bool DisplayBG3 { get; set; }
 			[DefaultValue(true)]
 			public bool DisplayOBJ { get; set; }
+
+			[DefaultValue(true)]
+			public bool PlayCh0 { get; set; }
+			[DefaultValue(true)]
+			public bool PlayCh1 { get; set; }
+			[DefaultValue(true)]
+			public bool PlayCh2 { get; set; }
+			[DefaultValue(true)]
+			public bool PlayCh3 { get; set; }
+			[DefaultValue(true)]
+			public bool PlayChA { get; set; }
+			[DefaultValue(true)]
+			public bool PlayChB { get; set; }
 
 			public Settings Clone()
 			{
