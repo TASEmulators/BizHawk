@@ -324,6 +324,9 @@ EDD7A45A7F27E396B6D686F1861642D509863132		Datach SD Gundam Gundam Wars	NES		boar
 6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach Crayon Shin Chan Ora to Poi Poi	NES		board=MAPPER157
 1218C891DEE878C18D31D38D07CAD5FB06B3B2CE		Datach Yuu Yuu akusho Baktutou	NES		board=MAPPER157
 
+;testrom
+sha1:E925A172C29DD46BA385D526F3C317DB039FA2BF		mmc1_a12	NES		board=NES-SNROM
+
 ; ArcadePit hacks
 ; Why does this one need NesHawk?
 sha1:90acbbdfad1465032dfff77175320bab8aa4adb7	H	Mike Tyson's Punch-Out!! [Buck Edit] (USA)	NES				NesHawk
