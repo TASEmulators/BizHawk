@@ -256,7 +256,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		//for snrom wram disable
 		public bool _is_snrom;
-		public bool wram_enable = true;
 		public bool chr_wram_enable = true;
 
 		//state
@@ -279,18 +278,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				mmc1.Write(addr, value);
 				if (!disablemirror)
 					SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
-
-				if (_is_snrom)
-				{
-					if (addr>0x2000 && addr<0x6000)
-					{
-						
-						if ((value & 0x10) == 0)
-							wram_enable = true;
-						else
-							wram_enable = false;
-					}
-				}
 			}
 
 			
@@ -300,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (_is_snrom)
 			{
-				if (wram_enable && !mmc1.wram_disable && chr_wram_enable)
+				if (!mmc1.wram_disable && chr_wram_enable)
 					return base.ReadWRAM(addr);	
 				else
 					return NES.DB;	
@@ -327,17 +314,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
+			
+
 			if (addr < 0x2000)
 			{
-				// WRAM enable is tied to ppu a12
-				if (addr.Bit(12))
-					chr_wram_enable = false;
-				else
-					chr_wram_enable = true;
+				if (_is_snrom)
+				{
+					// WRAM enable is tied to ppu a12
+					if (Gen_CHR_Address(addr).Bit(16))
+						chr_wram_enable = false;
+					else
+						chr_wram_enable = true;
+				}
+
+				addr = Gen_CHR_Address(addr);
 
 				if (Cart.vram_size != 0)
-					return VRAM[Gen_CHR_Address(addr) & vram_mask];
-				else return VROM[Gen_CHR_Address(addr)];
+					return VRAM[addr & vram_mask];
+				else return VROM[addr];
 			}
 			else
 			{
@@ -355,11 +349,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else
 					return base.ReadPPU(addr);
+					
 			}
-			}
+		}
 
 		public override void WritePPU(int addr, byte value)
 		{
+			
 
 			if (NES._isVS)
 			{
@@ -383,11 +379,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x2000)
 			{
-				// WRAM enable is tied to ppu a12
-				if (addr.Bit(12))
-					chr_wram_enable = false;
-				else
-					chr_wram_enable = true;
+				if (_is_snrom)
+				{
+					// WRAM enable is tied to ppu a12
+					if (Gen_CHR_Address(addr).Bit(16))
+						chr_wram_enable = false;
+					else
+						chr_wram_enable = true;
+				}
 
 				if (Cart.vram_size != 0)
 					VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
@@ -400,7 +399,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
 			ser.Sync("ppuclock", ref ppuclock);
-			ser.Sync("wram enable", ref wram_enable);
 			ser.Sync("chr wram enable", ref chr_wram_enable);
 			if (NES._isVS)
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
