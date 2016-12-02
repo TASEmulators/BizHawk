@@ -352,7 +352,6 @@ C94257E7	B	Looney Tunes - Sheep Raider (STATiC Dump)	PSX		dh=00000000
 829A295C	B	Monster Rancher 2 (U) (EXE Patched)	PSX		dh=00000000
 
 #include gamedb_neshomebrew.txt
-#include gamedb_vs.txt
 #include gamedb_user.txt
 #include gamedb_ws.txt
 #include gamedb_wsc.txt
