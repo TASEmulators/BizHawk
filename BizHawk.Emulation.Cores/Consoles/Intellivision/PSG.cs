@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class PSG
 	{
-		private ushort[] Register = new ushort[16];
+		public ushort[] Register = new ushort[16];
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;

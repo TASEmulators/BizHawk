@@ -15,12 +15,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		private int prg_mask_8k, chr_mask_1k;
 
-
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			switch (Cart.board_type)
 			{
 				case "UNIF_BMC-FK23C":
+				case "MAPPER176":
+					// http://wiki.nesdev.com/w/index.php/INES_Mapper_176
+					// Mapper 176 was originally used for some Waixing boards, but goodNES 3.23 seems to go with CaH4e3's opinion that this mapper is FK23C
+					// We will default 176 to FK23C, and route traditional Waixing boards to WAIXINGMAPPER176 via the Game Database
 					break;
 				default:
 					return false;
@@ -63,6 +66,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			UpdatePrg_2();
 
 			return true;
+		}
+
+		public override void Dispose()
+		{
+			exRegs.Dispose();
+			chr_regs_1k.Dispose();
+			prg_regs_8k.Dispose();
+			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)

@@ -7,6 +7,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// http://wiki.nesdev.com/w/index.php/INES_Mapper_243
 
 		int reg_addr;
+		bool var_a;
 		ByteBuffer regs = new ByteBuffer(8);
 		int chr_bank_mask_8k, prg_bank_mask_32k;
 
@@ -15,7 +16,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER243":
+					break;
 				case "UNIF_UNL-Sachen-74LS374N":
+					var_a = true;
 					break;
 				default:
 					return false;
@@ -23,6 +26,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
 			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
 			return true;
+		}
+
+		public override void Dispose()
+		{
+			regs.Dispose();
+			base.Dispose();
 		}
 
 		public override void SyncState(Serializer ser)
@@ -40,55 +49,114 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					reg_addr = value & 0x07;
 					break;
 				case 0x0001:
-					switch (reg_addr)
+					if (var_a)
 					{
-						case 2:
-							regs[2] = (byte)(value & 0x01);
-							break;
-						case 4:
-							regs[4] = (byte)(value & 0x01);
-							break;
-						case 5:
-							regs[5] = (byte)(value & 0x07);
-							break;
-						case 6:
-							regs[6] = (byte)(value & 0x03);
-							break;
-						case 7:
-							int mirror = (value >> 1) & 0x03;
-							switch (mirror)
-							{
-								case 0:
-									SetMirrorType(EMirrorType.Horizontal);
-									break;
-								case 1:
-									SetMirrorType(EMirrorType.Vertical);
-									break;
-								case 2:
-									SetMirroring(0, 1, 1, 1);
-									break;
-								case 3:
-									SetMirrorType(EMirrorType.OneScreenB);
-									break;
-							}
-							break;
+						switch (reg_addr)
+						{
+							case 0:
+								// set prg bank to 0
+								regs[5] = 0;
+								// set chr bank to 3
+								regs[2] = 0;
+								regs[4] = 3;
+								regs[6] = 0;
+								break;
+							case 2:
+								regs[2] = (byte)(value & 0x01);
+								break;
+							case 4:
+								regs[4] = (byte)(value & 0x01);
+								break;
+							case 5:
+								regs[5] = (byte)(value & 0x07);
+								break;
+							case 6:
+								regs[6] = (byte)(value & 0x03);
+								break;
+							case 7:
+								int mirror = value & 1;
+								switch (mirror)
+								{
+									case 0:
+										SetMirrorType(EMirrorType.Horizontal);
+										break;
+									case 1:
+										SetMirrorType(EMirrorType.Vertical);
+										break;
+								}
+								break;
+						}
+						break;
 					}
-					break;
+					else
+					{
+						switch (reg_addr)
+						{
+							case 2:
+								regs[2] = (byte)(value & 0x01);
+								regs[5] = (byte)(value & 0x01);
+								break;
+							case 4:
+								regs[4] = (byte)(value & 0x01);
+								break;
+							case 5:
+								regs[5] = (byte)(value & 0x07);
+								break;
+							case 6:
+								regs[6] = (byte)(value & 0x03);
+								break;
+							case 7:
+								int mirror = (value >> 1) & 0x03;
+								switch (mirror)
+								{
+									case 0:
+										SetMirrorType(EMirrorType.Horizontal);
+										break;
+									case 1:
+										SetMirrorType(EMirrorType.Vertical);
+										break;
+									case 2:
+										SetMirroring(0, 1, 1, 1);
+										break;
+									case 3:
+										SetMirrorType(EMirrorType.OneScreenA);
+										break;
+								}
+								break;
+						}
+						break;
+					}
 			}
 		}
 
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x2000)
+			if (var_a)
 			{
-				int chr_bank = regs[4] << 2 | (regs[6]) | (regs[2] << 3);
+				if (addr < 0x2000)
+				{
+					int chr_bank = regs[4] | (regs[6] << 1) | (regs[2] << 3);
 
-				return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
+					return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
+				}
+				else
+				{
+					return base.ReadPPU(addr);
+				}
 			}
 			else
 			{
-				return base.ReadPPU(addr);
-			}
+				if (addr < 0x2000)
+				{
+					int chr_bank = (regs[4] << 2) | (regs[6]) | (regs[2] << 3);
+
+					return VROM[((chr_bank & chr_bank_mask_8k) * 0x2000) + addr];
+				}
+				else
+				{
+					return base.ReadPPU(addr);
+				}
+			}		
 		}
 
 		public override byte ReadPRG(int addr)

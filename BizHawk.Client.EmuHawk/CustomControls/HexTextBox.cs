@@ -129,6 +129,8 @@ namespace BizHawk.Client.EmuHawk
 			if (string.IsNullOrWhiteSpace(Text))
 			{
 				ResetText();
+				SelectAll();
+				return;
 			}
 
 			base.OnTextChanged(e);
@@ -252,6 +254,8 @@ namespace BizHawk.Client.EmuHawk
 			if (string.IsNullOrWhiteSpace(Text) || !Text.IsHex())
 			{
 				ResetText();
+				SelectAll();
+				return;
 			}
 
 			base.OnTextChanged(e);

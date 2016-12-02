@@ -201,6 +201,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_superChargerImage.Dispose();
 			_imageOffsets.Dispose();
 			_loadedImages.Dispose();
+			_header.Dispose();
 			base.Dispose();
 		}
 

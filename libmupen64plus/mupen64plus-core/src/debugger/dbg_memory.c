@@ -316,7 +316,12 @@ void write_memory_64_unaligned(uint32 addr, uint64 value)
 }
 
 uint32 read_memory_32(uint32 addr){
-  const uint32 addrlow = (addr & 0xFFFF);
+  uint32 addrlow;
+  if (addr >= 0x7f000000 && addr < 0x80000000 && isGoldeneyeRom)
+  {
+    addr = virtual_to_physical_address(addr, 2);
+  }
+  addrlow = (addr & 0xFFFF);
 
   switch(get_memory_type(addr))
     {

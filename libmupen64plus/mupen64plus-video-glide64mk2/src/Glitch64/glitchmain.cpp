@@ -199,8 +199,8 @@ struct texbuf_t {
 static texbuf_t texbufs[NB_TEXBUFS];
 static int texbuf_i;
 
-unsigned short frameBuffer[2048*2048];
-unsigned short depthBuffer[2048*2048];
+unsigned short *frameBuffer = NULL;
+unsigned short *depthBuffer = NULL;
 
 //#define VOODOO1
 
@@ -497,6 +497,9 @@ grSstWinOpen(
   // ZIGGY viewport_offset is WIN32 specific, with SDL just set it to zero
   viewport_offset = 0; //-10 //-20;
 
+  frameBuffer = (unsigned short *)_aligned_malloc(height*width*4, 256);
+  depthBuffer = (unsigned short *)_aligned_malloc(height*width*2, 256);
+
   // ZIGGY not sure, but it might be better to let the system choose
   CoreVideo_GL_SetAttribute(M64P_GL_DOUBLEBUFFER, 1);
   CoreVideo_GL_SetAttribute(M64P_GL_SWAP_CONTROL, vsync);
@@ -742,6 +745,12 @@ grSstWinClose( GrContext_t context )
     tmu_usage[i].max = 0;
     invtex[i] = 0;
   }
+
+  if (frameBuffer)
+    _aligned_free(frameBuffer);
+  if (depthBuffer)
+	_aligned_free(depthBuffer);
+  frameBuffer = depthBuffer = NULL;
 
   free_combiners();
 #ifndef WIN32

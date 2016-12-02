@@ -309,53 +309,50 @@ namespace BizHawk.Client.EmuHawk
 			get { return _cheat; }
 		}
 
-		public Cheat Cheat
+		public Cheat GetCheat()
 		{
-			get
+			Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
+			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
+			var address = AddressBox.ToRawInt().Value;				
+			if (address < domain.Size)
 			{
-				Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
-				var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
-				var address = AddressBox.ToRawInt().Value;				
-				if (address < domain.Size)
+				var watch = Watch.GenerateWatch(
+					MemoryDomains[DomainDropDown.SelectedItem.ToString()],
+					AddressBox.ToRawInt().Value,
+					GetCurrentSize(),
+					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
+					BigEndianCheckBox.Checked,
+					NameBox.Text
+				);
+
+				switch (CompareTypeDropDown.SelectedItem.ToString())
 				{
-					var watch = Watch.GenerateWatch(
-						MemoryDomains[DomainDropDown.SelectedItem.ToString()],
-						AddressBox.ToRawInt().Value,
-						GetCurrentSize(),
-						Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
-						BigEndianCheckBox.Checked,
-                        NameBox.Text
-						);
+					case "": comparisonType = Cheat.COMPARISONTYPE.NONE; break;
+					case "=": comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
+					case ">": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN; break;
+					case ">=": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
+					case "<": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN; break;
+					case "<=": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL; break;
+					case "!=": comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL; break;
+					default: comparisonType = Cheat.COMPARISONTYPE.NONE; break;
+				}
 
-					switch (CompareTypeDropDown.SelectedItem.ToString())
-					{
-						case "": comparisonType = Cheat.COMPARISONTYPE.NONE; break;
-						case "=": comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
-						case ">": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN; break;
-						case ">=": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
-						case "<": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN; break;
-						case "<=": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL; break;
-						case "!=": comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL; break;
-						default: comparisonType = Cheat.COMPARISONTYPE.NONE; break;
-					}
-
-					int? c = CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value;
+				int? c = CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value;
 
 
-					return new Cheat(
-						watch,
-						ValueBox.ToRawInt().Value,
-						CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value,
-						true,
-						comparisonType
-					);
+				return new Cheat(
+					watch,
+					ValueBox.ToRawInt().Value,
+					CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value,
+					true,
+					comparisonType
+				);
 					
-				}
-				else
-				{
-					MessageBox.Show(address.ToString() + " is not a valid address for the domain " + domain.Name, "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-					return Cheat.Separator;
-				}
+			}
+			else
+			{
+				MessageBox.Show(address.ToString() + " is not a valid address for the domain " + domain.Name, "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return Cheat.Separator;
 			}
 		}
 

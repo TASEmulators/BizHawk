@@ -50,6 +50,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
 			ser.Sync("frameStartPending", ref _frameStartPending);
+			ser.Sync("leftDifficultySwitchPressed", ref _leftDifficultySwitchPressed);
+			ser.Sync("rightDifficultySwitchPressed", ref _rightDifficultySwitchPressed);
+			ser.Sync("leftDifficultySwitchHeld", ref _leftDifficultySwitchHeld);
+			ser.Sync("rightDifficultySwitchHeld", ref _rightDifficultySwitchHeld);
+
 			_tia.SyncState(ser);
 			M6532.SyncState(ser);
 			ser.BeginSection("Mapper");

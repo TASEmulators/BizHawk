@@ -10,26 +10,18 @@ namespace BizHawk.Client.Common
 	[Description("These functions behavior identically to the mainmemory functions but the user can set the memory domain to read and write from. The default domain is main memory. Use getcurrentmemorydomain(), and usememorydomain() to control which domain is used. Each core has its own set of valid memory domains. Use getmemorydomainlist() to get a list of memory domains for the current core loaded.")]
 	public sealed class MemoryLuaLibrary : LuaMemoryBase
 	{
-		//private int _currentMemoryDomain; // Main memory by default probably (index 0 is currently always main memory but may never be)
-
 		private MemoryDomain _currentMemoryDomain;
 
 		public MemoryLuaLibrary(Lua lua)
 			: base(lua)
 		{
-			if (MemoryDomainCore != null)
-			{
-				_currentMemoryDomain = MemoryDomainCore.MainMemory;
-			}
+			
 		}
 
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback)
 		{
-			if (MemoryDomainCore != null)
-			{
-				_currentMemoryDomain = MemoryDomainCore.MainMemory;
-			}
+			
 		}
 
 		public override string Name { get { return "memory"; } }
@@ -42,7 +34,14 @@ namespace BizHawk.Client.Common
 				{
 					if (_currentMemoryDomain == null)
 					{
-						_currentMemoryDomain = MemoryDomainCore.MainMemory;
+						if (MemoryDomainCore.HasSystemBus)
+						{
+							_currentMemoryDomain = MemoryDomainCore.SystemBus;
+						}
+						else
+						{
+							_currentMemoryDomain = MemoryDomainCore.MainMemory;
+						}
 					}
 
 					return _currentMemoryDomain;

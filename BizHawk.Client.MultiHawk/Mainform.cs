@@ -65,43 +65,46 @@ namespace BizHawk.Client.MultiHawk
 			// we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				using (var NesCartFile =
-						new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
+				string xmlPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml");
+				string x7zPath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z");
+				bool loadXml = File.Exists(xmlPath);
+				using (var NesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath))
 				{
+					if (!loadXml) { NesCartFile.BindFirst(); }
 					return NesCartFile
 						.GetStream()
 						.ReadAllBytes();
-				}
-			};
+				};
 
-			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
+				Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
-			Input.Initialize(this.Handle);
-			InitControls();
+				Input.Initialize(this.Handle);
+				InitControls();
 
-			// TODO
-			//CoreFileProvider.SyncCoreCommInputSignals();
+				// TODO
+				//CoreFileProvider.SyncCoreCommInputSignals();
 
-			Global.ActiveController = new Controller(NullEmulator.NullController);
-			Global.AutoFireController = Global.AutofireNullControls;
-			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+				Global.ActiveController = new Controller(NullEmulator.NullController);
+				Global.AutoFireController = Global.AutofireNullControls;
+				Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 
-			Closing += (o, e) =>
-			{
-				Global.MovieSession.Movie.Stop();
-
-				foreach (var ew in EmulatorWindows.ToList())
+				Closing += (o, e) =>
 				{
-					ew.ShutDown();
+					Global.MovieSession.Movie.Stop();
+
+					foreach (var ew in EmulatorWindows.ToList())
+					{
+						ew.ShutDown();
+					}
+
+					SaveConfig();
+				};
+
+				if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
+				{
+					Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 				}
-
-				SaveConfig();
 			};
-
-			if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
-			{
-				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
-			}
 		}
 
 		private static bool StateErrorAskUser(string title, string message)

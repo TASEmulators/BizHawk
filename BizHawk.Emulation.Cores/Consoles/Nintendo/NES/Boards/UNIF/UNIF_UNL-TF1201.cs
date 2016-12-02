@@ -31,6 +31,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			chr.Dispose();
+			base.Dispose();
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
@@ -38,6 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prg1", ref prg1);
 			ser.Sync("swap", ref swap);
 			ser.Sync("chr", ref chr);
+			ser.Sync("IRQa", ref IRQa);
+			ser.Sync("IRQCount", ref IRQCount);
+			ser.Sync("IRQpre", ref IRQpre);
 		}
 
 		public override void WritePRG(int addr, byte value)
@@ -92,11 +101,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 					if (IRQCount == 256)
 						IRQCount = 0;
-						
 				}
-				
 			}
-				
 		}
 
 		public override byte ReadPRG(int addr)

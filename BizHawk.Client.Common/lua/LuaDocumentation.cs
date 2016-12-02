@@ -24,6 +24,26 @@ namespace BizHawk.Client.Common
 				.AppendLine()
 				.AppendLine();
 
+			sb.AppendLine(@"All type names represent the standard .NET types of the same name. Except for func which represents a lua function and table which represents a lua table. For more information on .NET types can be found in MSDN documentation.
+
+__Types and notation__
+* ? (question mark)
+** A question mark next to a value indicates that it is a Nullable type (only applies to types that are not normally nullable)
+* [[]] (brackets)
+** Brackets around a parameter indicate that the parameter is optional. optional parameters have an equals sign followed by the value that will be used if no value is supplied.
+** Brackets after a parameter type indicate it is an array
+* null
+** null is equivalent to the lua nil
+* Color
+** This is a .NET System.Drawing.Color struct. The value passed from lua is any value acceptable in the Color constructor. This means either a string with the color name such as ""red"", or a 0xAARRGGBB integer value.  Unless specified, this is not a nullable value
+* object
+** A System.Object, literally anything qualifies for this parameter. However, the context of particular function may suggest a narrower range of useful values.
+* luaf
+** A Lua function. Note that these are always parameters, and never return values of a call
+* table
+** A standard Lua table
+");
+
 			foreach (var library in this.Select(x => new { Name = x.Library, Description = x.LibraryDescription }).Distinct())
 			{
 				sb
@@ -187,33 +207,7 @@ namespace BizHawk.Client.Common
 					list.Append('(');
 					for (var i = 0; i < parameters.Length; i++)
 					{
-						var p =
-							parameters[i].ToString().Replace("System", string.Empty)
-										 .Replace(" ", string.Empty)
-										 .Replace(".", string.Empty)
-										 .Replace("LuaInterface", string.Empty)
-										 .Replace("Object[]", "object[] ")
-										 .Replace("Object", "object ")
-										 .Replace("Boolean[]", "bool[] ")
-										 .Replace("Boolean", "bool ")
-										 .Replace("String", "string ")
-										 .Replace("LuaTable", "table ")
-										 .Replace("LuaFunction", "func ")
-										 .Replace("Nullable`1[Int32]", "int? ")
-										 .Replace("Nullable`1[UInt32]", "uint? ")
-										 .Replace("Byte", "byte ")
-										 .Replace("Int16", "short ")
-										 .Replace("Int32", "int ")
-										 .Replace("Int64", "long ")
-										 .Replace("Ushort", "ushort ")
-										 .Replace("Ulong", "ulong ")
-										 .Replace("UInt32", "uint ")
-										 .Replace("UInt64", "ulong ")
-										 .Replace("Double", "double ")
-										 .Replace("Uint", "uint ")
-										 .Replace("Nullable`1[DrawingColor]", "Color? ")
-										 .Replace("DrawingColor", "Color ");
-
+						var p = TypeCleanup(parameters[i].ToString());
 						if (parameters[i].IsOptional)
 						{
 							var def = parameters[i].DefaultValue != null ? parameters[i].DefaultValue.ToString() : "null";
@@ -238,17 +232,44 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		private string TypeCleanup(string str)
+		{
+			return str
+				.Replace("System", string.Empty)
+				.Replace(" ", string.Empty)
+				.Replace(".", string.Empty)
+				.Replace("LuaInterface", string.Empty)
+				.Replace("Object[]", "object[] ")
+				.Replace("Object", "object ")
+				.Replace("Nullable`1[Boolean]", "bool? ")
+				.Replace("Boolean[]", "bool[] ")
+				.Replace("Boolean", "bool ")
+				.Replace("String", "string ")
+				.Replace("LuaTable", "table ")
+				.Replace("LuaFunction", "func ")
+				.Replace("Nullable`1[Int32]", "int? ")
+				.Replace("Nullable`1[UInt32]", "uint? ")
+				.Replace("Byte", "byte ")
+				.Replace("Int16", "short ")
+				.Replace("Int32", "int ")
+				.Replace("Int64", "long ")
+				.Replace("Ushort", "ushort ")
+				.Replace("Ulong", "ulong ")
+				.Replace("UInt32", "uint ")
+				.Replace("UInt64", "ulong ")
+				.Replace("Double", "double ")
+				.Replace("Uint", "uint ")
+				.Replace("Nullable`1[DrawingColor]", "Color? ")
+				.Replace("DrawingColor", "Color ")
+				.ToLower();
+		}
+
 		public string ReturnType
 		{
 			get
 			{
 				var returnType = _method.ReturnType.ToString();
-
-				return returnType
-					.Replace("System.", string.Empty)
-					.Replace("LuaInterface.", string.Empty)
-					.ToLower()
-					.Trim();
+				return TypeCleanup(returnType).Trim();
 			}
 		}
 	}

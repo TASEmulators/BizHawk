@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Globalization;
+using System.IO;
 
 using LuaInterface;
 
@@ -358,6 +357,12 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
+			if (!File.Exists(path))
+			{
+				Log("File not found: " + path);
+				return;
+			}
+
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -381,6 +386,12 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
+			if (!File.Exists(path))
+			{
+				Log("File not found: " + path);
+				return;
+			}
+
 			using (var g = GetGraphics())
 			{
 				Image img;

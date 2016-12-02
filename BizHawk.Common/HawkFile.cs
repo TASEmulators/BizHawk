@@ -189,7 +189,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// these extensions won't even be tried as archives (removes spurious archive detects since some of the signatures are pretty damn weak)
 		/// </summary>
-		public string[] NonArchiveExtensions = { };
+		public string[] NonArchiveExtensions = { "smc", "sfc" };
 
 		/// <summary>
 		/// Parses the given filename to create an un-opened HawkFile with some information available about its path constitution

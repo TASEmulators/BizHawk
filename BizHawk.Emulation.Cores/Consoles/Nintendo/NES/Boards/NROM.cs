@@ -19,6 +19,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER000":
 					break;
+				case "MAPPER000_VS":
+					// I thibnk this is only for bad/pirated dumps of VS games.
+					// No VS game used mapper zero but some were changed to use noraml CHR mapping I think
+					NES._isVS = true;
+					break;
 				case "BANDAI-NROM-128":
 				case "BANDAI-NROM-256":
 				case "HVC-HROM": //Donkey Kong Jr. (J)
@@ -69,7 +74,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "HVC-FAMILYBASIC":
 					// we don't emulate the controller, so this won't work
 					AssertPrg(32); AssertChr(8); AssertWram(2, 4);
-					NES._iskeyboard = true;
 					break;
 
 				default:

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Emulation.Cores.Components.CP1610
 {
 	public sealed partial class CP1610
@@ -13,6 +15,16 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		private readonly ushort[] Register = new ushort[8];
 		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
+
+		public string TraceHeader
+		{
+			get
+			{
+				return "CP1610: PC, machine code, mnemonic, operands, flags (SCZOID)";
+			}
+		}
+
+		public Action<TraceInfo> TraceCallback;
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;
@@ -97,5 +109,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			// Log.WriteLine("MSYNC = {0}", MSync);
 			Log.Flush();
 		}
+
+		
 	}
 }

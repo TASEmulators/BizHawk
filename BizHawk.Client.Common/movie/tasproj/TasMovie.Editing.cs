@@ -125,7 +125,8 @@ namespace BizHawk.Client.Common
 
 				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
 				{
-					_log.RemoveAt(frame);
+					if (frame < _log.Count)
+						_log.RemoveAt(frame);
 					if (BindMarkersToInput) // TODO: This is slow, is there a better way to do it?
 					{
 						bool wasRecording = ChangeLog.IsRecording;

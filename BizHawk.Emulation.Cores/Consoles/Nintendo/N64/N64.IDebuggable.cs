@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			for (int i = 0; i < 32; i++)
 			{
 				var reg = BitConverter.ToInt64(data, i * 8);
-				ret.Add("REG" + i + "_lo", (int)(reg));
-				ret.Add("REG" + i + "_hi", (int)(reg >> 32));
+				ret.Add(GPRnames[i] + "_lo", (int)(reg));
+				ret.Add(GPRnames[i] + "_hi", (int)(reg >> 32));
 			}
 
 			var PC = BitConverter.ToUInt32(data, 32 * 8);
@@ -54,6 +54,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			return ret;
 		}
+
+		public string[] GPRnames = new string[32]
+		{
+			"r0",
+			"at",
+			"v0", "v1",
+			"a0", "a1", "a2", "a3",
+			"t0", "t1", "t2", "t3", "t4", "t5", "t6", "t7",
+			"s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7",
+			"t8", "t9",
+			"k0", "k1",
+			"gp",
+			"sp",
+			"s8",
+			"ra"
+		};
 
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value)

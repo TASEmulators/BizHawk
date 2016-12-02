@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public class Mapper212 : NES.NESBoardBase
 	{
 		private int _reg;
+		private int prg_bank_mask_32k, prg_bank_mask_16k, chr_bank_mask_8k;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -22,6 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
+			chr_bank_mask_8k = Cart.chr_size / 8 - 1;
+			prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+			prg_bank_mask_32k = Cart.prg_size / 32 - 1;
 
 			_reg = 65535;
 
@@ -50,11 +55,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if ((_reg & 0x4000) > 0)
 			{
 				int bank = (_reg >> 1) & 3;
+				bank &= prg_bank_mask_32k;
 				ret = ROM[(bank * 0x8000) + (addr & 0x7FFF)];
 			}
 			else
 			{
 				int bank = _reg & 7;
+				bank &= prg_bank_mask_16k;
 				ret = ROM[(bank * 0x4000) + (addr & 0x3FFF)];
 			}
 			
@@ -71,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (addr < 0x2000)
 			{
 				int bank = _reg & 7;
+				bank &= chr_bank_mask_8k;
 				return VROM[(bank * 0x2000) + (addr & 0x1FFF)];
 			}
 

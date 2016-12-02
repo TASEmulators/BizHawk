@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void Dispose()
 		{
 			prg_banks_16k.Dispose();
+			chr_banks_8k.Dispose();
 			base.Dispose();
 		}
 

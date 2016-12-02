@@ -37,8 +37,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public bool PutSyncSettings(A2600SyncSettings o)
 		{
+			bool ret = A2600SyncSettings.NeedsReboot(SyncSettings, o);
 			SyncSettings = o;
-			return false;
+			return ret;
 		}
 
 		internal A2600Settings Settings { get; private set; }
@@ -179,6 +180,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public A2600SyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public static bool NeedsReboot(A2600SyncSettings x, A2600SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
 			}
 		}
 	}

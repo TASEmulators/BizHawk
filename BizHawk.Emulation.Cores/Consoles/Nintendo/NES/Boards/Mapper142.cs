@@ -28,6 +28,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			reg.Dispose();
+			base.Dispose();
+		}
+
 		public override byte ReadWRAM(int addr)
 		{
 			return ROM[(reg[4] << 13) + (addr & 0x1FFF)];		

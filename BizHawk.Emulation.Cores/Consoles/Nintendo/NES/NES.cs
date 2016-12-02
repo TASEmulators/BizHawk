@@ -57,6 +57,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
+			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
+			// TODO: What if settings are later loaded?
+			if (_isVS)
+			{
+				PickVSPalette(cart);
+			}
+
 			
 			ser.Register<IDisassemblable>(cpu);
 
@@ -107,6 +114,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return false;
 			}
+		}
+
+		public bool IsVS
+		{
+			get { return _isVS; }
 		}
 
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)

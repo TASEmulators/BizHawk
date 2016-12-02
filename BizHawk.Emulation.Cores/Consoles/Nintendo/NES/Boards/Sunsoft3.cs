@@ -19,6 +19,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool irq_asserted;
 		int clock_counter;
 
+		//the VS actually does have 2 KB of nametable address space
+		//let's make the extra space here, instead of in the main NES to avoid confusion
+		byte[] CIRAM_VS = new byte[0x800];
+
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
@@ -29,6 +34,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("irq_enable", ref irq_enable);
 			ser.Sync("irq_asserted", ref irq_asserted);
 			ser.Sync("clock_counter", ref clock_counter);
+
+			if (NES.IsVS)
+			{
+				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
+			}
+
 			SyncIRQ();
 		}
 
@@ -36,6 +47,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER067VS":
+					NES._isVS = true;
+					//update the state of the dip switches
+					//this is only done at power on
+					NES.VS_dips[0] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_1 ? 1 : 0);
+					NES.VS_dips[1] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_2 ? 1 : 0);
+					NES.VS_dips[2] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_3 ? 1 : 0);
+					NES.VS_dips[3] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_4 ? 1 : 0);
+					NES.VS_dips[4] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_5 ? 1 : 0);
+					NES.VS_dips[5] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_6 ? 1 : 0);
+					NES.VS_dips[6] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_7 ? 1 : 0);
+					NES.VS_dips[7] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_8 ? 1 : 0);
+					break;
 				case "MAPPER067":
 					break;
 				case "SUNSOFT-3":
@@ -139,7 +163,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = ApplyMemoryMap(11, chr_banks_2k, addr);
 				return base.ReadPPUChr(addr);
 			}
-			else return base.ReadPPU(addr);
+			else
+			{
+				if (NES._isVS)
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}
+				else
+					return base.ReadPPU(addr);
+			}
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			if (NES._isVS)
+			{
+				if (addr < 0x2000)
+				{
+					addr = ApplyMemoryMap(11, chr_banks_2k, addr);
+					if (VRAM != null)
+						VRAM[addr] = value;
+				}
+				else
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						NES.CIRAM[addr] = value;
+					}
+					else
+					{
+						CIRAM_VS[addr - 0x800] = value;
+					}
+				}
+			}
+			else
+				base.WritePPU(addr, value);
 		}
 
 		/*

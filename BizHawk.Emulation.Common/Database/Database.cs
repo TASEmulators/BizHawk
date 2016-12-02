@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Common
 		public string Hash { get; set; }
 		public string Region { get; set; }
 		public RomStatus Status { get; set; }
+		public string ForcedCore { get; set; }
 	}
 
 	public static class Database
@@ -192,6 +193,7 @@ namespace BizHawk.Emulation.Common
 						game.System = items[3];
 						game.MetaData = items.Length >= 6 ? items[5] : null;
 						game.Region = items.Length >= 7 ? items[6] : string.Empty;
+						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : string.Empty;
 
 						if (db.ContainsKey(game.Hash))
 						{

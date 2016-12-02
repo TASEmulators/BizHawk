@@ -97,6 +97,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DrawInputByDraggingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.applyPatternToPaintedInputToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.onlyOnAutoFireColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SingleClickFloatEditMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.UseInputKeysItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.BindMarkersToInputMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -132,10 +133,10 @@ namespace BizHawk.Client.EmuHawk
 			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.hideWasLagFramesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.iconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteStatesWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteStatesWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteMarkersWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.denoteMarkersWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteStatesWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteStatesWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteMarkersWithIconsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.DenoteMarkersWithBGColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
 			this.followCursorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.alwaysScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -638,6 +639,7 @@ namespace BizHawk.Client.EmuHawk
             this.DrawInputByDraggingMenuItem,
             this.applyPatternToPaintedInputToolStripMenuItem,
             this.onlyOnAutoFireColumnsToolStripMenuItem,
+            this.SingleClickFloatEditMenuItem,
             this.UseInputKeysItem,
             this.toolStripSeparator4,
             this.BindMarkersToInputMenuItem,
@@ -657,21 +659,21 @@ namespace BizHawk.Client.EmuHawk
 			// SetMaxUndoLevelsMenuItem
 			// 
 			this.SetMaxUndoLevelsMenuItem.Name = "SetMaxUndoLevelsMenuItem";
-			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.SetMaxUndoLevelsMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.SetMaxUndoLevelsMenuItem.Text = "Set max Undo Levels";
 			this.SetMaxUndoLevelsMenuItem.Click += new System.EventHandler(this.SetMaxUndoLevelsMenuItem_Click);
 			// 
 			// SetBranchCellHoverIntervalMenuItem
 			// 
 			this.SetBranchCellHoverIntervalMenuItem.Name = "SetBranchCellHoverIntervalMenuItem";
-			this.SetBranchCellHoverIntervalMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.SetBranchCellHoverIntervalMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.SetBranchCellHoverIntervalMenuItem.Text = "Set Branch Cell Hover Interval";
 			this.SetBranchCellHoverIntervalMenuItem.Click += new System.EventHandler(this.SetBranchCellHoverIntervalMenuItem_Click);
 			// 
 			// SetSeekingCutoffIntervalMenuItem
 			// 
 			this.SetSeekingCutoffIntervalMenuItem.Name = "SetSeekingCutoffIntervalMenuItem";
-			this.SetSeekingCutoffIntervalMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.SetSeekingCutoffIntervalMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.SetSeekingCutoffIntervalMenuItem.Text = "Set Seeking Cutoff Interval";
 			this.SetSeekingCutoffIntervalMenuItem.Visible = false;
 			this.SetSeekingCutoffIntervalMenuItem.Click += new System.EventHandler(this.SetSeekingCutoffIntervalMenuItem_Click);
@@ -679,7 +681,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator26
 			// 
 			this.toolStripSeparator26.Name = "toolStripSeparator26";
-			this.toolStripSeparator26.Size = new System.Drawing.Size(250, 6);
+			this.toolStripSeparator26.Size = new System.Drawing.Size(252, 6);
 			// 
 			// autosaveToolStripMenuItem
 			// 
@@ -688,7 +690,7 @@ namespace BizHawk.Client.EmuHawk
             this.AutosaveAsBk2MenuItem,
             this.AutosaveAsBackupFileMenuItem});
 			this.autosaveToolStripMenuItem.Name = "autosaveToolStripMenuItem";
-			this.autosaveToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.autosaveToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.autosaveToolStripMenuItem.Text = "Autosave";
 			// 
 			// SetAutosaveIntervalMenuItem
@@ -715,19 +717,19 @@ namespace BizHawk.Client.EmuHawk
 			// BackupPerFileSaveMenuItem
 			// 
 			this.BackupPerFileSaveMenuItem.Name = "BackupPerFileSaveMenuItem";
-			this.BackupPerFileSaveMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.BackupPerFileSaveMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.BackupPerFileSaveMenuItem.Text = "Backup Per File Save";
 			this.BackupPerFileSaveMenuItem.Click += new System.EventHandler(this.BackupPerFileSaveMenuItem_Click);
 			// 
 			// toolStripSeparator9
 			// 
 			this.toolStripSeparator9.Name = "toolStripSeparator9";
-			this.toolStripSeparator9.Size = new System.Drawing.Size(250, 6);
+			this.toolStripSeparator9.Size = new System.Drawing.Size(252, 6);
 			// 
 			// AutoRestoreOnMouseUpOnlyMenuItem
 			// 
 			this.AutoRestoreOnMouseUpOnlyMenuItem.Name = "AutoRestoreOnMouseUpOnlyMenuItem";
-			this.AutoRestoreOnMouseUpOnlyMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.AutoRestoreOnMouseUpOnlyMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.AutoRestoreOnMouseUpOnlyMenuItem.Text = "Auto-restore on Mouse Up only";
 			this.AutoRestoreOnMouseUpOnlyMenuItem.Click += new System.EventHandler(this.AutoRestoreOnMouseUpOnlyMenuItem_Click);
 			// 
@@ -735,13 +737,13 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.AutoadjustInputMenuItem.CheckOnClick = true;
 			this.AutoadjustInputMenuItem.Name = "AutoadjustInputMenuItem";
-			this.AutoadjustInputMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.AutoadjustInputMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.AutoadjustInputMenuItem.Text = "Auto-adjust Input according to Lag";
 			// 
 			// DrawInputByDraggingMenuItem
 			// 
 			this.DrawInputByDraggingMenuItem.Name = "DrawInputByDraggingMenuItem";
-			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.DrawInputByDraggingMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.DrawInputByDraggingMenuItem.Text = "Draw Input by dragging";
 			this.DrawInputByDraggingMenuItem.Click += new System.EventHandler(this.DrawInputByDraggingMenuItem_Click);
 			// 
@@ -749,7 +751,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.applyPatternToPaintedInputToolStripMenuItem.CheckOnClick = true;
 			this.applyPatternToPaintedInputToolStripMenuItem.Name = "applyPatternToPaintedInputToolStripMenuItem";
-			this.applyPatternToPaintedInputToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.applyPatternToPaintedInputToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.applyPatternToPaintedInputToolStripMenuItem.Text = "Apply Pattern to painted input";
 			this.applyPatternToPaintedInputToolStripMenuItem.CheckedChanged += new System.EventHandler(this.applyPatternToPaintedInputToolStripMenuItem_CheckedChanged);
 			// 
@@ -760,20 +762,28 @@ namespace BizHawk.Client.EmuHawk
 			this.onlyOnAutoFireColumnsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Enabled = false;
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Name = "onlyOnAutoFireColumnsToolStripMenuItem";
-			this.onlyOnAutoFireColumnsToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.onlyOnAutoFireColumnsToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.onlyOnAutoFireColumnsToolStripMenuItem.Text = "Only on Auto-Fire columns";
+			// 
+			// SingleClickFloatEditMenuItem
+			// 
+			this.SingleClickFloatEditMenuItem.Enabled = false;
+			this.SingleClickFloatEditMenuItem.Name = "SingleClickFloatEditMenuItem";
+			this.SingleClickFloatEditMenuItem.Size = new System.Drawing.Size(255, 22);
+			this.SingleClickFloatEditMenuItem.Text = "Enter Float Edit mode by single click";
+			this.SingleClickFloatEditMenuItem.Click += new System.EventHandler(this.SingleClickFloatEditMenuItem_Click);
 			// 
 			// UseInputKeysItem
 			// 
 			this.UseInputKeysItem.Enabled = false;
 			this.UseInputKeysItem.Name = "UseInputKeysItem";
-			this.UseInputKeysItem.Size = new System.Drawing.Size(253, 22);
+			this.UseInputKeysItem.Size = new System.Drawing.Size(255, 22);
 			this.UseInputKeysItem.Text = "Use Input keys for Column Set";
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(250, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(252, 6);
 			// 
 			// BindMarkersToInputMenuItem
 			// 
@@ -781,52 +791,52 @@ namespace BizHawk.Client.EmuHawk
 			this.BindMarkersToInputMenuItem.CheckOnClick = true;
 			this.BindMarkersToInputMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.BindMarkersToInputMenuItem.Name = "BindMarkersToInputMenuItem";
-			this.BindMarkersToInputMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.BindMarkersToInputMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.BindMarkersToInputMenuItem.Text = "Bind Markers to Input";
 			this.BindMarkersToInputMenuItem.Click += new System.EventHandler(this.BindMarkersToInputMenuItem_Click);
 			// 
 			// EmptyNewMarkerNotesMenuItem
 			// 
 			this.EmptyNewMarkerNotesMenuItem.Name = "EmptyNewMarkerNotesMenuItem";
-			this.EmptyNewMarkerNotesMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.EmptyNewMarkerNotesMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.EmptyNewMarkerNotesMenuItem.Text = "Empty new Marker Notes";
 			this.EmptyNewMarkerNotesMenuItem.Click += new System.EventHandler(this.EmptyNewMarkerNotesMenuItem_Click);
 			// 
 			// toolStripSeparator13
 			// 
 			this.toolStripSeparator13.Name = "toolStripSeparator13";
-			this.toolStripSeparator13.Size = new System.Drawing.Size(250, 6);
+			this.toolStripSeparator13.Size = new System.Drawing.Size(252, 6);
 			// 
 			// BranchesRestoreEntireMovieMenuItem
 			// 
 			this.BranchesRestoreEntireMovieMenuItem.Enabled = false;
 			this.BranchesRestoreEntireMovieMenuItem.Name = "BranchesRestoreEntireMovieMenuItem";
-			this.BranchesRestoreEntireMovieMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.BranchesRestoreEntireMovieMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.BranchesRestoreEntireMovieMenuItem.Text = "Branches restore entire Movie";
 			// 
 			// OsdInBranchScreenshotsMenuItem
 			// 
 			this.OsdInBranchScreenshotsMenuItem.Enabled = false;
 			this.OsdInBranchScreenshotsMenuItem.Name = "OsdInBranchScreenshotsMenuItem";
-			this.OsdInBranchScreenshotsMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.OsdInBranchScreenshotsMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.OsdInBranchScreenshotsMenuItem.Text = "OSD in Branch screenshots";
 			// 
 			// toolStripSeparator14
 			// 
 			this.toolStripSeparator14.Name = "toolStripSeparator14";
-			this.toolStripSeparator14.Size = new System.Drawing.Size(250, 6);
+			this.toolStripSeparator14.Size = new System.Drawing.Size(252, 6);
 			// 
 			// AutopauseAtEndOfMovieMenuItem
 			// 
 			this.AutopauseAtEndOfMovieMenuItem.Name = "AutopauseAtEndOfMovieMenuItem";
-			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.AutopauseAtEndOfMovieMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.AutopauseAtEndOfMovieMenuItem.Text = "Autopause at end of Movie";
 			this.AutopauseAtEndOfMovieMenuItem.Click += new System.EventHandler(this.AutopauseAtEndMenuItem_Click);
 			// 
 			// sepToolStripMenuItem
 			// 
 			this.sepToolStripMenuItem.Name = "sepToolStripMenuItem";
-			this.sepToolStripMenuItem.Size = new System.Drawing.Size(250, 6);
+			this.sepToolStripMenuItem.Size = new System.Drawing.Size(252, 6);
 			// 
 			// autoHoldFireToolStripMenuItem
 			// 
@@ -839,7 +849,7 @@ namespace BizHawk.Client.EmuHawk
             this.setpToolStripMenuItem,
             this.setCustomsToolStripMenuItem});
 			this.autoHoldFireToolStripMenuItem.Name = "autoHoldFireToolStripMenuItem";
-			this.autoHoldFireToolStripMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.autoHoldFireToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.autoHoldFireToolStripMenuItem.Text = "Auto Hold/Fire";
 			// 
 			// keepSetPatternsToolStripMenuItem
@@ -1034,46 +1044,46 @@ namespace BizHawk.Client.EmuHawk
 			// iconsToolStripMenuItem
 			// 
 			this.iconsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.denoteStatesWithIconsToolStripMenuItem,
-            this.denoteStatesWithBGColorToolStripMenuItem,
-            this.denoteMarkersWithIconsToolStripMenuItem,
-            this.denoteMarkersWithBGColorToolStripMenuItem});
+            this.DenoteStatesWithIconsToolStripMenuItem,
+            this.DenoteStatesWithBGColorToolStripMenuItem,
+            this.DenoteMarkersWithIconsToolStripMenuItem,
+            this.DenoteMarkersWithBGColorToolStripMenuItem});
 			this.iconsToolStripMenuItem.Name = "iconsToolStripMenuItem";
 			this.iconsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.iconsToolStripMenuItem.Text = "Icons";
 			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.iconsToolStripMenuItem_DropDownOpened);
 			// 
-			// denoteStatesWithIconsToolStripMenuItem
+			// DenoteStatesWithIconsToolStripMenuItem
 			// 
-			this.denoteStatesWithIconsToolStripMenuItem.CheckOnClick = true;
-			this.denoteStatesWithIconsToolStripMenuItem.Name = "denoteStatesWithIconsToolStripMenuItem";
-			this.denoteStatesWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteStatesWithIconsToolStripMenuItem.Text = "Denote States With Icons";
-			this.denoteStatesWithIconsToolStripMenuItem.Click += new System.EventHandler(this.denoteStatesWithIconsToolStripMenuItem_Click);
+			this.DenoteStatesWithIconsToolStripMenuItem.CheckOnClick = true;
+			this.DenoteStatesWithIconsToolStripMenuItem.Name = "DenoteStatesWithIconsToolStripMenuItem";
+			this.DenoteStatesWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteStatesWithIconsToolStripMenuItem.Text = "Denote States With Icons";
+			this.DenoteStatesWithIconsToolStripMenuItem.Click += new System.EventHandler(this.DenoteStatesWithIconsToolStripMenuItem_Click);
 			// 
-			// denoteStatesWithBGColorToolStripMenuItem
+			// DenoteStatesWithBGColorToolStripMenuItem
 			// 
-			this.denoteStatesWithBGColorToolStripMenuItem.CheckOnClick = true;
-			this.denoteStatesWithBGColorToolStripMenuItem.Name = "denoteStatesWithBGColorToolStripMenuItem";
-			this.denoteStatesWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteStatesWithBGColorToolStripMenuItem.Text = "Denote States With BG Color";
-			this.denoteStatesWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.denoteStatesWithBGColorToolStripMenuItem_Click);
+			this.DenoteStatesWithBGColorToolStripMenuItem.CheckOnClick = true;
+			this.DenoteStatesWithBGColorToolStripMenuItem.Name = "DenoteStatesWithBGColorToolStripMenuItem";
+			this.DenoteStatesWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteStatesWithBGColorToolStripMenuItem.Text = "Denote States With BG Color";
+			this.DenoteStatesWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.DenoteStatesWithBGColorToolStripMenuItem_Click);
 			// 
-			// denoteMarkersWithIconsToolStripMenuItem
+			// DenoteMarkersWithIconsToolStripMenuItem
 			// 
-			this.denoteMarkersWithIconsToolStripMenuItem.CheckOnClick = true;
-			this.denoteMarkersWithIconsToolStripMenuItem.Name = "denoteMarkersWithIconsToolStripMenuItem";
-			this.denoteMarkersWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteMarkersWithIconsToolStripMenuItem.Text = "Denote Markers With Icons";
-			this.denoteMarkersWithIconsToolStripMenuItem.Click += new System.EventHandler(this.denoteMarkersWithIconsToolStripMenuItem_Click);
+			this.DenoteMarkersWithIconsToolStripMenuItem.CheckOnClick = true;
+			this.DenoteMarkersWithIconsToolStripMenuItem.Name = "DenoteMarkersWithIconsToolStripMenuItem";
+			this.DenoteMarkersWithIconsToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteMarkersWithIconsToolStripMenuItem.Text = "Denote Markers With Icons";
+			this.DenoteMarkersWithIconsToolStripMenuItem.Click += new System.EventHandler(this.DenoteMarkersWithIconsToolStripMenuItem_Click);
 			// 
-			// denoteMarkersWithBGColorToolStripMenuItem
+			// DenoteMarkersWithBGColorToolStripMenuItem
 			// 
-			this.denoteMarkersWithBGColorToolStripMenuItem.CheckOnClick = true;
-			this.denoteMarkersWithBGColorToolStripMenuItem.Name = "denoteMarkersWithBGColorToolStripMenuItem";
-			this.denoteMarkersWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-			this.denoteMarkersWithBGColorToolStripMenuItem.Text = "Denote Markers With BG Color";
-			this.denoteMarkersWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.denoteMarkersWithBGColorToolStripMenuItem_Click);
+			this.DenoteMarkersWithBGColorToolStripMenuItem.CheckOnClick = true;
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Name = "DenoteMarkersWithBGColorToolStripMenuItem";
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Text = "Denote Markers With BG Color";
+			this.DenoteMarkersWithBGColorToolStripMenuItem.Click += new System.EventHandler(this.DenoteMarkersWithBGColorToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator23
 			// 
@@ -1223,10 +1233,6 @@ namespace BizHawk.Client.EmuHawk
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.TasView.CellHeightPadding = 0;
-			this.TasView.denoteMarkersWithBGColor = false;
-			this.TasView.denoteMarkersWithIcons = false;
-			this.TasView.denoteStatesWithBGColor = false;
-			this.TasView.denoteStatesWithIcons = false;
 			this.TasView.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.TasView.FullRowSelect = true;
 			this.TasView.HideWasLagFrames = false;
@@ -1781,10 +1787,10 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.SplitContainer MainVertialSplit;
 		private System.Windows.Forms.ToolStripMenuItem StartANewProjectFromSaveRamMenuItem;
         private System.Windows.Forms.ToolStripMenuItem iconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteStatesWithIconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteStatesWithBGColorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteMarkersWithIconsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem denoteMarkersWithBGColorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteStatesWithIconsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteStatesWithBGColorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteMarkersWithIconsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DenoteMarkersWithBGColorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewFromSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NewFromNowMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem NewFromCurrentSaveRamMenuItem;
@@ -1802,5 +1808,6 @@ namespace BizHawk.Client.EmuHawk
 		private System.Windows.Forms.ToolStripMenuItem SaveBackupMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SaveBk2BackupMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AutoRestoreOnMouseUpOnlyMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SingleClickFloatEditMenuItem;
 	}
 }
