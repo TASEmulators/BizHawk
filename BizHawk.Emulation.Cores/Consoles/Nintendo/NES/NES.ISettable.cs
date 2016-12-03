@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IStatable
+	public partial class NES : ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		public NESSettings GetSettings()
 		{
