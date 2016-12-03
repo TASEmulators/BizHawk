@@ -1074,5 +1074,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			base.GenericDragEnter(sender, e);
 		}
+
+		private void TasPlaybackBox_Load(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
