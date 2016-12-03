@@ -2366,6 +2366,15 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Intv
+
+		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new IntvControllerSettings().ShowDialog();
+		}
+
+		#endregion
+
 		#region Help
 
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
