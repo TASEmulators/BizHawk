@@ -149,7 +149,7 @@ namespace BizHawk.Client.EmuHawk
 			return new TasBranch
 			{
 				Frame = Tastudio.Emulator.Frame,
-				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
+				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
 				InputLog = Movie.InputLog.Clone(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				LagLog = Movie.TasLagLog.Clone(),

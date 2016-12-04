@@ -716,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 
 					lastState = Emulator.Frame;
 				}
-			} while (Global.Emulator.Frame < goToFrame);
+			} while (Emulator.Frame < goToFrame);
 
 			MessageBox.Show("Integrity Check passed");
 		}
@@ -1100,7 +1100,7 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
 				.Where(x => x.Name != "FrameColumn");
 
-			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Global.Emulator.ControllerDefinition.PlayerCount + 1];
+			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
 			for (int i = 1; i < playerMenus.Length; i++)
 			{

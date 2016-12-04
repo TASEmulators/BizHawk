@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					}
 
-					int diff = Global.Emulator.Frame - _seekStartFrame.Value;
+					int diff = Emulator.Frame - _seekStartFrame.Value;
 					int unit = Mainform.PauseOnFrame.Value - _seekStartFrame.Value;
 					double progress = 0;
 
@@ -785,7 +785,7 @@ namespace BizHawk.Client.EmuHawk
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
-			lastRefresh = Global.Emulator.Frame;
+			lastRefresh = Emulator.Frame;
 		}
 
 		private void DoAutoRestore()
@@ -988,12 +988,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (lagLog.WasLagged.Value && !isLag)
 				{ // Deleting this frame requires rewinding a frame.
-					CurrentTasMovie.ChangeLog.AddInputBind(Global.Emulator.Frame - 1, true, "Bind Input; Delete " + (Global.Emulator.Frame - 1));
+					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, true, "Bind Input; Delete " + (Emulator.Frame - 1));
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
-					CurrentTasMovie.RemoveFrame(Global.Emulator.Frame - 1);
-					CurrentTasMovie.RemoveLagHistory(Global.Emulator.Frame); // Removes from WasLag
+					CurrentTasMovie.RemoveFrame(Emulator.Frame - 1);
+					CurrentTasMovie.RemoveLagHistory(Emulator.Frame); // Removes from WasLag
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					GoToFrame(Emulator.Frame - 1);
@@ -1001,12 +1001,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (!lagLog.WasLagged.Value && isLag)
 				{ // (it shouldn't need to rewind, since the inserted input wasn't polled)
-					CurrentTasMovie.ChangeLog.AddInputBind(Global.Emulator.Frame - 1, false, "Bind Input; Insert " + (Global.Emulator.Frame - 1));
+					CurrentTasMovie.ChangeLog.AddInputBind(Emulator.Frame - 1, false, "Bind Input; Insert " + (Emulator.Frame - 1));
 					bool wasRecording = CurrentTasMovie.ChangeLog.IsRecording;
 					CurrentTasMovie.ChangeLog.IsRecording = false;
 
-					CurrentTasMovie.InsertInput(Global.Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
-					CurrentTasMovie.InsertLagHistory(Global.Emulator.Frame, true);
+					CurrentTasMovie.InsertInput(Emulator.Frame - 1, CurrentTasMovie.GetInputLogEntry(Emulator.Frame - 2));
+					CurrentTasMovie.InsertLagHistory(Emulator.Frame, true);
 
 					CurrentTasMovie.ChangeLog.IsRecording = wasRecording;
 					return true;

@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MaybeFollowCursor();
 
-			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
+			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
 
 			RefreshDialog(refreshNeeded);

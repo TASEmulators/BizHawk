@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void JumpToGreenzone()
 		{
-			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
+			if (Emulator.Frame > CurrentTasMovie.LastValidFrame)
 			{
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
 			}
@@ -209,8 +209,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
 					color = Marker_FrameCol;
-                else
-                    color = Color.FromArgb(0x60FFFFFF);
+				else
+					color = Color.FromArgb(0x60FFFFFF);
 			}
 			else if (FloatEditingMode &&
 				(index == _floatEditRow || _extraFloatRows.Contains(index)) &&
@@ -219,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				color = AnalogEdit_Col;
 			}
 
-			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
+			int player = Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
 				color = Color.FromArgb(0x0D000000);
 		}
@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Mainform.EmulatorPaused)
 				{
 					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
-					if (!record.Lagged.HasValue && LastPositionFrame > Global.Emulator.Frame)
+					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
 						StartSeeking(LastPositionFrame);
 					else
 						Mainform.UnpauseEmulator();
@@ -703,7 +703,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Mainform.PauseOnFrame -= notch;
 					// that's a weird condition here, but for whatever reason it works best
-					if (notch > 0 && Global.Emulator.Frame >= Mainform.PauseOnFrame)
+					if (notch > 0 && Emulator.Frame >= Mainform.PauseOnFrame)
 					{
 						Mainform.PauseEmulator();
 						Mainform.PauseOnFrame = null;
