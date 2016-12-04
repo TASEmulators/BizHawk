@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					if (Global.Emulator.CanPollInput())
+					if (Emulator.CanPollInput())
 					{
 						ToggleLagCounter();
 					}
