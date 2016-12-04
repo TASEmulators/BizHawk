@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
@@ -11,6 +12,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("PSG");
+
+			// TODO
+
+			ser.EndSection();
+		}
 
 		public ushort? ReadPSG(ushort addr)
 		{

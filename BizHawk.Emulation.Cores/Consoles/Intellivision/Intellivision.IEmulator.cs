@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			else
 				_cpu.TraceCallback = null;
 
-			Frame++;
+			_frame++;
 			// read the controller state here for now
 			get_controller_state();
 			//_stic.Mobs();
@@ -69,7 +69,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		}
 
-		public int Frame { get; private set; }
+		private int _frame;
+		public int Frame { get { return _frame; } }
 
 		public string SystemId
 		{
@@ -83,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void ResetCounters()
 		{
-			Frame = 0;
+			_frame = 0;
 		}
 
 		public CoreComm CoreComm { get; private set; }

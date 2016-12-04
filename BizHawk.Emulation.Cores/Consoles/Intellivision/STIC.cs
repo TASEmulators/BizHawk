@@ -1,6 +1,8 @@
 ﻿using System;
-using BizHawk.Emulation.Common;
+
+using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
@@ -22,6 +24,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int[] BGBuffer = new int[159 * 96];
 		public int[] FrameBuffer = new int[159 * 192];
 		public ushort[,] Collision = new ushort[167,210];
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("STIC");
+
+			// TODO
+
+			ser.EndSection();
+		}
 
 		public int[] GetVideoBuffer()
 		{

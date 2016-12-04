@@ -1,5 +1,7 @@
-﻿using BizHawk.Emulation.Common;
-using System;
+﻿using System;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.CP1610
 {
@@ -45,6 +47,15 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					Register[6],
 					Register[7])
 			};
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("CP1610");
+
+			// TODO
+
+			ser.EndSection();
 		}
 
 		private void Calc_FlagC(int result)

@@ -1,8 +1,19 @@
-﻿namespace BizHawk.Emulation.Cores.Intellivision
+﻿using BizHawk.Common;
+
+namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Cartridge : ICart
 	{
 		private ushort[] Data = new ushort[56320];
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Cart");
+
+			// TODO
+
+			ser.EndSection();
+		}
 
 		public int Parse(byte[] Rom)
 		{
