@@ -53,6 +53,10 @@ namespace BizHawk.Client.EmuHawk
 				var font = new System.Drawing.Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
 				SaveRAMSubMenu.Font = font;
 			}
+
+			AVSubMenu.Enabled =
+			ScreenshotSubMenu.Enabled =
+				Global.Emulator.HasVideoProvider();
 		}
 
 		private void RecentRomMenuItem_DropDownOpened(object sender, EventArgs e)

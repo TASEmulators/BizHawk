@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.AsVideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
@@ -1895,7 +1895,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static BitmapBuffer MakeScreenshotImage()
 		{
-			return GlobalWin.DisplayManager.RenderVideoProvider(Global.Emulator.VideoProvider());
+			return GlobalWin.DisplayManager.RenderVideoProvider(Global.Emulator.AsVideoProvider());
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -2263,7 +2263,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), true);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.AsVideoProvider(), true);
 			bb.DiscardAlpha();
 			return bb;
 		}
@@ -2984,7 +2984,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					aw.SetVideoParameters(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
+					var videoProvider = Global.Emulator.AsVideoProvider();
+					aw.SetVideoParameters(videoProvider.BufferWidth, videoProvider.BufferHeight);
 				}
 
 				aw.SetAudioParameters(44100, 2, 16);
@@ -3161,7 +3162,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
+								var videoProvider = Global.Emulator.AsVideoProvider();
+								bbin = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
 							}
 
 							bbin.DiscardAlpha();
@@ -3172,7 +3174,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (_avwriterpad)
 								{
-									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider().BackgroundColor));
+									g.Clear(Color.FromArgb(Global.Emulator.AsVideoProvider().BackgroundColor));
 									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
 								}
 								else
@@ -3200,7 +3202,7 @@ namespace BizHawk.Client.EmuHawk
 							disposableOutput = (IDisposable)output;
 						}
 						else
-							output = Global.Emulator.VideoProvider();
+							output = Global.Emulator.AsVideoProvider();
 					}
 
 					_currAviWriter.SetFrame(Global.Emulator.Frame);
