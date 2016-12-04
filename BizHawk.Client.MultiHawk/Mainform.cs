@@ -184,7 +184,7 @@ namespace BizHawk.Client.MultiHawk
 			ConfigService.Save(PathManager.DefaultIniPath, Global.Config);
 		}
 
-		private static void InitControls()
+		private void InitControls()
 		{
 			var controls = new Controller(
 				new ControllerDefinition
