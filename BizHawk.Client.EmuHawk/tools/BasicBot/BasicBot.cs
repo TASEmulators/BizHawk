@@ -916,7 +916,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_isBotting)
 			{
-				if (Global.Emulator.Frame >= _targetFrame)
+				if (Emulator.Frame >= _targetFrame)
 				{
 					Attempts++;
 					Frames += FrameLength;
@@ -1075,7 +1075,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
 			_dontUpdateValues = false;
 
-			_targetFrame = Global.Emulator.Frame + (int)FrameLengthNumeric.Value;
+			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 
 			GlobalWin.MainForm.UnpauseEmulator();
 			if (Settings.TurboWhenBotting)
