@@ -104,8 +104,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			UseCurrentRomButton.Enabled = Global.Emulator != null // For the designer
-				&& !string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom)
+			UseCurrentRomButton.Enabled =
+				!string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom)
 				&& !GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
 		}
 
