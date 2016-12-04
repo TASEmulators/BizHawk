@@ -112,9 +112,9 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// hack: some IMovies eat the framebuffer, so don't bother with them
 						movieToRecord.SavestateFramebuffer = new int[0];
-						if (movieToRecord.SavestateFramebuffer != null)
+						if (movieToRecord.SavestateFramebuffer != null && Global.Emulator.HasVideoProvider())
 						{
-							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider().GetVideoBuffer().Clone();
+							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.AsVideoProvider().GetVideoBuffer().Clone();
 						}
 					}
 				}
