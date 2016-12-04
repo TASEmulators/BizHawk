@@ -204,12 +204,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		// x and y are both assumed to be in [-127, 127]
 		// x increases from left to right
-		// y increases from bottom to top
+		// y increases from top to bottom
 		private static byte CalcDirection(int x, int y)
 		{
-			y = -y;
-			// deadzone: if we're less than ? units from the origin,
-			// return no direction
+			y = -y; // vflip to match the arrangement of FloatControllerButtons
+
+			// deadzone: if we're less than ? units from the origin, return no direction
 			if (x * x + y * y < Deadzone * Deadzone)
 			{
 				return 0; // nothing pressed
