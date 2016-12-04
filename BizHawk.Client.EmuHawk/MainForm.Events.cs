@@ -495,7 +495,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			new RecordMovie().ShowDialog();
+			new RecordMovie(Emulator).ShowDialog();
 		}
 
 		private void PlayMovieMenuItem_Click(object sender, EventArgs e)
