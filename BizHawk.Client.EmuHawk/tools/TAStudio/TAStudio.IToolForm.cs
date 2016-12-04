@@ -14,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IStatable StatableEmulator { get; private set; }
 
+		[RequiredService]
+		public IVideoProvider VideoProvider { get; private set; }
+
 		[OptionalService]
 		public ISaveRam SaveRamEmulator { get; private set; }
 

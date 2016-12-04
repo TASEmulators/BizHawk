@@ -129,26 +129,6 @@ namespace BizHawk.Client.EmuHawk
 			Settings = new TAStudioSettings();
 			InitializeComponent();
 
-			if (Global.Emulator != null)
-			{
-				// Set the screenshot to "1x" resolution of the core
-				// cores like n64 and psx are going to still have sizes too big for the control, so cap them
-				int width = Global.Emulator.VideoProvider().BufferWidth;
-				int height = Global.Emulator.VideoProvider().BufferHeight;
-				if (width > 320)
-				{
-					double ratio = 320.0 / (double)width;
-					width = 320;
-					height = (int)((double)(height) * ratio);
-				}
-				ScreenshotControl.DrawingHeight = height;
-				ScreenshotControl.Size = new Size(width, ScreenshotControl.DrawingHeight + ScreenshotControl.UserPadding);
-			}
-
-			ScreenshotControl.Visible = false;
-			Controls.Add(ScreenshotControl);
-			ScreenshotControl.BringToFront();
-
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;
 
@@ -290,6 +270,24 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.Cancel;
 				return;
 			}
+
+			// Set the screenshot to "1x" resolution of the core
+			// cores like n64 and psx are going to still have sizes too big for the control, so cap them
+			int width = VideoProvider.BufferWidth;
+			int height = VideoProvider.BufferHeight;
+			if (width > 320)
+			{
+				double ratio = 320.0 / (double)width;
+				width = 320;
+				height = (int)((double)(height) * ratio);
+			}
+			ScreenshotControl.DrawingHeight = height;
+			ScreenshotControl.Size = new Size(width, ScreenshotControl.DrawingHeight + ScreenshotControl.UserPadding);
+
+
+			ScreenshotControl.Visible = false;
+			Controls.Add(ScreenshotControl);
+			ScreenshotControl.BringToFront();
 
 			SetColumnsFromCurrentStickies();
 
