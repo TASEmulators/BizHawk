@@ -405,7 +405,7 @@
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.ISettable.cs">
-        <DependentUpon>Intellivision.cs</DependentUpon>
+      <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Controllers\IntellivisionControllers.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
@@ -416,7 +416,7 @@
       <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.IStatable.cs">
-        <DependentUpon>Intellivision.cs</DependentUpon>
+      <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.MemoryMap.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
@@ -807,7 +807,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VS_M99.cs" />
-    <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSInspector.cs" />
