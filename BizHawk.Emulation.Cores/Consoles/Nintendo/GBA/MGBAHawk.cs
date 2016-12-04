@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
+				PutSettings(_settings);
 			}
 			catch
 			{
@@ -494,27 +495,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public class Settings
 		{
+			[DisplayName("Display BG Layer 0")]
 			[DefaultValue(true)]
 			public bool DisplayBG0 { get; set; }
+			[DisplayName("Display BG Layer 1")]
 			[DefaultValue(true)]
 			public bool DisplayBG1 { get; set; }
+			[DisplayName("Display BG Layer 2")]
 			[DefaultValue(true)]
 			public bool DisplayBG2 { get; set; }
+			[DisplayName("Display BG Layer 3")]
 			[DefaultValue(true)]
 			public bool DisplayBG3 { get; set; }
+			[DisplayName("Display Sprite Layer")]
 			[DefaultValue(true)]
 			public bool DisplayOBJ { get; set; }
 
+			[DisplayName("Play Square 1")]
 			[DefaultValue(true)]
 			public bool PlayCh0 { get; set; }
+			[DisplayName("Play Square 2")]
 			[DefaultValue(true)]
 			public bool PlayCh1 { get; set; }
+			[DisplayName("Play Wave")]
 			[DefaultValue(true)]
 			public bool PlayCh2 { get; set; }
+			[DisplayName("Play Noise")]
 			[DefaultValue(true)]
 			public bool PlayCh3 { get; set; }
+			[DisplayName("Play Direct Sound A")]
 			[DefaultValue(true)]
 			public bool PlayChA { get; set; }
+			[DisplayName("Play Direct Sound B")]
 			[DefaultValue(true)]
 			public bool PlayChB { get; set; }
 
