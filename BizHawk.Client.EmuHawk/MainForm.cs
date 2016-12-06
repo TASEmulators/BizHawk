@@ -527,40 +527,40 @@ namespace BizHawk.Client.EmuHawk
 
 			// handle events and dispatch as a hotkey action, or a hotkey button, or an input button
 			ProcessInput();
-				Global.ClientControls.LatchFromPhysical(HotkeyCoalescer);
+			Global.ClientControls.LatchFromPhysical(HotkeyCoalescer);
 
-				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
+			Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
-				Global.ActiveController.ApplyAxisConstraints(
-					(Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
+			Global.ActiveController.ApplyAxisConstraints(
+				(Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
-				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
-				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
+			Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
+			Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
-				if (Global.ClientControls["Autohold"])
-				{
-					Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
-				}
-				else if (Global.ClientControls["Autofire"])
-				{
-					Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
-				}
+			if (Global.ClientControls["Autohold"])
+			{
+				Global.StickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+				Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.AutoFireController.PressedButtons);
+			}
+			else if (Global.ClientControls["Autofire"])
+			{
+				Global.AutofireStickyXORAdapter.MassToggleStickyState(Global.ActiveController.PressedButtons);
+			}
 
-				// autohold/autofire must not be affected by the following inputs
-				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+			// autohold/autofire must not be affected by the following inputs
+			Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
-				if (GlobalWin.Tools.Has<LuaConsole>())
-				{
-					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
-				}
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				GlobalWin.Tools.LuaConsole.ResumeScripts(false);
+			}
 
-				StepRunLoop_Core();
-				StepRunLoop_Throttle();
+			StepRunLoop_Core();
+			StepRunLoop_Throttle();
 
-				Render();
+			Render();
 
-				CheckMessages();
+			CheckMessages();
 
 			if (_exitRequestPending)
 			{
@@ -568,13 +568,12 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				_exit = true;
 			}
+			if (Global.Config.DispSpeedupFeatures != 0)
+			{
+				Thread.Sleep(0);
+			}
 
 			return true;
-				if (Global.Config.DispSpeedupFeatures != 0)
-				{
-					Thread.Sleep(0);
-				}
-			}
 		}
 
 		/// <summary>

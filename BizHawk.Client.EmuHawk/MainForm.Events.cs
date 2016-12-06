@@ -341,8 +341,7 @@ namespace BizHawk.Client.EmuHawk
 			//-----------------
 			//CLONE OF CODE FROM OpenRom (mostly)
 			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetRomsPath (Global.Emulator.SystemId);
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+			ofd.InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId);
 			ofd.RestoreDirectory = false;
 			ofd.FilterIndex = _lastOpenRomFilter;
 			ofd.Title = "Open Advanced";
@@ -514,8 +513,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ImportMovieMenuItem_Click(object sender, EventArgs e)
 		{
 			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+			ofd.InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId);
 			ofd.Filter = FormatFilter(
 					"Movie Files", "*.fm2;*.mc2;*.mcm;*.mmv;*.gmv;*.vbm;*.lsmv;*.fcm;*.fmv;*.vmv;*.nmv;*.smv;*.ymv;*.zmv;*.bkm;*.pjm;*.pxm",
 					"FCEUX", "*.fm2",
@@ -1564,7 +1562,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES && (Emulator as NES).IsVS)
 			{
-				new NESVSSettings().ShowHawkDialog();
+				new NESVSSettings().ShowDialog(this);
 			}
 		}
 
@@ -1891,8 +1889,7 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
 			var ofd = HawkDialogFactory.CreateOpenFileDialog();
-			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
-				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
+			ofd.InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId);
 			ofd.RestoreDirectory = true;
 
 			if (ofd.ShowDialog() == DialogResult.OK)
