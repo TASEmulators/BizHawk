@@ -2,19 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
-using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Calculators;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
-
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
-using System.Reflection;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -69,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				if (t == typeof(GBGameGenie)) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
 					continue;
-				if (!BizHawk.Emulation.Common.ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
 					continue;
 
 				var instance = Activator.CreateInstance(t);
