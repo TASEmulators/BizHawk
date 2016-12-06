@@ -228,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CurrentButton_Click(object sender, EventArgs e)
 		{
-			PlaceNum.Value = Global.Emulator.Frame;
+			PlaceNum.Value = Emulator.Frame;
 		}
 
 		private void PlaceZoneButton_Click(object sender, EventArgs e)
@@ -240,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (!(CurrentMovie is TasMovie))
 			{
-				selectedZone.Start = Global.Emulator.Frame;
+				selectedZone.Start = Emulator.Frame;
 			}
 
 			selectedZone.PlaceZone(CurrentMovie);
