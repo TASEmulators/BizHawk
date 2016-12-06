@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		private int pendingCycles;
 		public int PendingCycles { get { return pendingCycles; } set { pendingCycles = value; } }
 
+		private int EI_pending;
+
 		public bool Debug;
 		public Action<TraceInfo> Logger;
 
@@ -35,7 +37,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			while (pendingCycles > 0)
 			{
 				Interruptable = true;
-
+				//if (interrupt == true)
+					//Console.WriteLine(totalExecutedCycles);
 				if (halted)
 				{
 
@@ -2814,15 +2817,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x24: // INC IXH
 									RegAF.Low = (byte)(TableInc[++RegIX.High] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x25: // DEC IXH
 									RegAF.Low = (byte)(TableDec[--RegIX.High] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x26: // LD IXH, n
 									RegIX.High = FetchMemoryWrapper(RegPC.Word++);
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0x27: // DAA
 									RegAF.Word = TableDaa[RegAF.Word];
@@ -2862,15 +2865,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x2C: // INC IXL
 									RegAF.Low = (byte)(TableInc[++RegIX.Low] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x2D: // DEC IXL
 									RegAF.Low = (byte)(TableDec[--RegIX.Low] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x2E: // LD IXL, n
 									RegIX.Low = FetchMemoryWrapper(RegPC.Word++);
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0x2F: // CPL
 									RegAF.High ^= 0xFF; RegFlagH = true; RegFlagN = true; RegFlag3 = (RegAF.High & 0x08) != 0; RegFlag5 = (RegAF.High & 0x20) != 0;
@@ -2983,11 +2986,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x44: // LD B, IXH
 									RegBC.High = RegIX.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x45: // LD B, IXL
 									RegBC.High = RegIX.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x46: // LD B, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3015,11 +3018,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x4C: // LD C, IXH
 									RegBC.Low = RegIX.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x4D: // LD C, IXL
 									RegBC.Low = RegIX.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x4E: // LD C, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3047,11 +3050,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x54: // LD D, IXH
 									RegDE.High = RegIX.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x55: // LD D, IXL
 									RegDE.High = RegIX.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x56: // LD D, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3079,11 +3082,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x5C: // LD E, IXH
 									RegDE.Low = RegIX.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x5D: // LD E, IXL
 									RegDE.Low = RegIX.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x5E: // LD E, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3096,26 +3099,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x60: // LD IXH, B
 									RegIX.High = RegBC.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x61: // LD IXH, C
 									RegIX.High = RegBC.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x62: // LD IXH, D
 									RegIX.High = RegDE.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x63: // LD IXH, E
 									RegIX.High = RegDE.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x64: // LD IXH, IXH
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x65: // LD IXH, IXL
 									RegIX.High = RegIX.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x66: // LD H, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3124,30 +3127,30 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x67: // LD IXH, A
 									RegIX.High = RegAF.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x68: // LD IXL, B
 									RegIX.Low = RegBC.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x69: // LD IXL, C
 									RegIX.Low = RegBC.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6A: // LD IXL, D
 									RegIX.Low = RegDE.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6B: // LD IXL, E
 									RegIX.Low = RegDE.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6C: // LD IXL, IXH
 									RegIX.Low = RegIX.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6D: // LD IXL, IXL
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6E: // LD L, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3156,7 +3159,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x6F: // LD IXL, A
 									RegIX.Low = RegAF.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x70: // LD (IX+d), B
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3215,11 +3218,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x7C: // LD A, IXH
 									RegAF.High = RegIX.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x7D: // LD A, IXL
 									RegAF.High = RegIX.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x7E: // LD A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3247,16 +3250,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x84: // ADD A, IXH
 									RegAF.Word = TableALU[0, RegAF.High, RegIX.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x85: // ADD A, IXL
 									RegAF.Word = TableALU[0, RegAF.High, RegIX.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x86: // ADD A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
 									RegAF.Word = TableALU[0, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
-									totalExecutedCycles += 16; pendingCycles -= 16;
+									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x87: // ADD A, A
 									RegAF.Word = TableALU[0, RegAF.High, RegAF.High, 0];
@@ -3280,11 +3283,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x8C: // ADC A, IXH
 									RegAF.Word = TableALU[1, RegAF.High, RegIX.High, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x8D: // ADC A, IXL
 									RegAF.Word = TableALU[1, RegAF.High, RegIX.Low, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x8E: // ADC A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3313,11 +3316,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x94: // SUB IXH
 									RegAF.Word = TableALU[2, RegAF.High, RegIX.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x95: // SUB IXL
 									RegAF.Word = TableALU[2, RegAF.High, RegIX.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x96: // SUB (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3346,11 +3349,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x9C: // SBC A, IXH
 									RegAF.Word = TableALU[3, RegAF.High, RegIX.High, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x9D: // SBC A, IXL
 									RegAF.Word = TableALU[3, RegAF.High, RegIX.Low, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x9E: // SBC A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3379,11 +3382,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xA4: // AND IXH
 									RegAF.Word = TableALU[4, RegAF.High, RegIX.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xA5: // AND IXL
 									RegAF.Word = TableALU[4, RegAF.High, RegIX.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xA6: // AND (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3412,11 +3415,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xAC: // XOR IXH
 									RegAF.Word = TableALU[5, RegAF.High, RegIX.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xAD: // XOR IXL
 									RegAF.Word = TableALU[5, RegAF.High, RegIX.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xAE: // XOR (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3445,11 +3448,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xB4: // OR IXH
 									RegAF.Word = TableALU[6, RegAF.High, RegIX.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xB5: // OR IXL
 									RegAF.Word = TableALU[6, RegAF.High, RegIX.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xB6: // OR (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -3478,11 +3481,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xBC: // CP IXH
 									RegAF.Word = TableALU[7, RegAF.High, RegIX.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xBD: // CP IXL
 									RegAF.Word = TableALU[7, RegAF.High, RegIX.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xBE: // CP (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -6629,7 +6632,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xFB: // EI
-									IFF1 = IFF2 = true;
+									EI_pending = 2;
 									Interruptable = false;
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -6699,9 +6702,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							RegHL.Low = TBL; RegHL.High = TBH;
 							totalExecutedCycles += 19; pendingCycles -= 19;
 							break;
-						case 0xE4: // CALL C, nn
+						case 0xE4: // CALL PO, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
-							if (RegFlagC)
+							if (!RegFlagP)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
 								RegPC.Word = TUS;
@@ -7203,7 +7206,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
 									WriteMemoryWrapper(TUS++, RegHL.Low);
 									WriteMemoryWrapper(TUS, RegHL.High);
-									totalExecutedCycles += 16; pendingCycles -= 16;
+									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
 								case 0x64: // NEG
 									RegAF.Word = TableNeg[RegAF.Word];
@@ -7262,7 +7265,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 								case 0x6B: // LD HL, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
 									RegHL.Low = ReadMemoryWrapper(TUS++); RegHL.High = ReadMemoryWrapper(TUS);
-									totalExecutedCycles += 16; pendingCycles -= 16;
+									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
 								case 0x6C: // NEG
 									RegAF.Word = TableNeg[RegAF.Word];
@@ -8011,7 +8014,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0xFB: // EI
-							IFF1 = IFF2 = true;
+							EI_pending = 2;
 							Interruptable = false;
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
@@ -8210,15 +8213,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x24: // INC IYH
 									RegAF.Low = (byte)(TableInc[++RegIY.High] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x25: // DEC IYH
 									RegAF.Low = (byte)(TableDec[--RegIY.High] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x26: // LD IYH, n
 									RegIY.High = FetchMemoryWrapper(RegPC.Word++);
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0x27: // DAA
 									RegAF.Word = TableDaa[RegAF.Word];
@@ -8258,15 +8261,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x2C: // INC IYL
 									RegAF.Low = (byte)(TableInc[++RegIY.Low] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x2D: // DEC IYL
 									RegAF.Low = (byte)(TableDec[--RegIY.Low] | (RegAF.Low & 1));
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x2E: // LD IYL, n
 									RegIY.Low = FetchMemoryWrapper(RegPC.Word++);
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 11; pendingCycles -= 11;
 									break;
 								case 0x2F: // CPL
 									RegAF.High ^= 0xFF; RegFlagH = true; RegFlagN = true; RegFlag3 = (RegAF.High & 0x08) != 0; RegFlag5 = (RegAF.High & 0x20) != 0;
@@ -8379,11 +8382,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x44: // LD B, IYH
 									RegBC.High = RegIY.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x45: // LD B, IYL
 									RegBC.High = RegIY.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x46: // LD B, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8411,11 +8414,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x4C: // LD C, IYH
 									RegBC.Low = RegIY.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x4D: // LD C, IYL
 									RegBC.Low = RegIY.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x4E: // LD C, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8443,11 +8446,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x54: // LD D, IYH
 									RegDE.High = RegIY.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x55: // LD D, IYL
 									RegDE.High = RegIY.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x56: // LD D, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8475,11 +8478,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x5C: // LD E, IYH
 									RegDE.Low = RegIY.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x5D: // LD E, IYL
 									RegDE.Low = RegIY.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x5E: // LD E, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8492,26 +8495,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x60: // LD IYH, B
 									RegIY.High = RegBC.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x61: // LD IYH, C
 									RegIY.High = RegBC.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x62: // LD IYH, D
 									RegIY.High = RegDE.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x63: // LD IYH, E
 									RegIY.High = RegDE.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x64: // LD IYH, IYH
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x65: // LD IYH, IYL
 									RegIY.High = RegIY.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x66: // LD H, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8520,30 +8523,30 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x67: // LD IYH, A
 									RegIY.High = RegAF.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x68: // LD IYL, B
 									RegIY.Low = RegBC.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x69: // LD IYL, C
 									RegIY.Low = RegBC.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6A: // LD IYL, D
 									RegIY.Low = RegDE.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6B: // LD IYL, E
 									RegIY.Low = RegDE.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6C: // LD IYL, IYH
 									RegIY.Low = RegIY.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6D: // LD IYL, IYL
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6E: // LD L, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8552,7 +8555,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x6F: // LD IYL, A
 									RegIY.Low = RegAF.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x70: // LD (IY+d), B
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8611,11 +8614,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x7C: // LD A, IYH
 									RegAF.High = RegIY.High;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x7D: // LD A, IYL
 									RegAF.High = RegIY.Low;
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x7E: // LD A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8643,16 +8646,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x84: // ADD A, IYH
 									RegAF.Word = TableALU[0, RegAF.High, RegIY.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x85: // ADD A, IYL
 									RegAF.Word = TableALU[0, RegAF.High, RegIY.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x86: // ADD A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
 									RegAF.Word = TableALU[0, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
-									totalExecutedCycles += 16; pendingCycles -= 16;
+									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x87: // ADD A, A
 									RegAF.Word = TableALU[0, RegAF.High, RegAF.High, 0];
@@ -8676,11 +8679,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x8C: // ADC A, IYH
 									RegAF.Word = TableALU[1, RegAF.High, RegIY.High, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x8D: // ADC A, IYL
 									RegAF.Word = TableALU[1, RegAF.High, RegIY.Low, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x8E: // ADC A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8709,11 +8712,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x94: // SUB IYH
 									RegAF.Word = TableALU[2, RegAF.High, RegIY.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x95: // SUB IYL
 									RegAF.Word = TableALU[2, RegAF.High, RegIY.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x96: // SUB (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8742,11 +8745,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x9C: // SBC A, IYH
 									RegAF.Word = TableALU[3, RegAF.High, RegIY.High, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x9D: // SBC A, IYL
 									RegAF.Word = TableALU[3, RegAF.High, RegIY.Low, RegFlagC ? 1 : 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x9E: // SBC A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8775,11 +8778,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xA4: // AND IYH
 									RegAF.Word = TableALU[4, RegAF.High, RegIY.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xA5: // AND IYL
 									RegAF.Word = TableALU[4, RegAF.High, RegIY.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xA6: // AND (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8808,11 +8811,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xAC: // XOR IYH
 									RegAF.Word = TableALU[5, RegAF.High, RegIY.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xAD: // XOR IYL
 									RegAF.Word = TableALU[5, RegAF.High, RegIY.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xAE: // XOR (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8841,11 +8844,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xB4: // OR IYH
 									RegAF.Word = TableALU[6, RegAF.High, RegIY.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xB5: // OR IYL
 									RegAF.Word = TableALU[6, RegAF.High, RegIY.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xB6: // OR (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -8874,11 +8877,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xBC: // CP IYH
 									RegAF.Word = TableALU[7, RegAF.High, RegIY.High, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xBD: // CP IYL
 									RegAF.Word = TableALU[7, RegAF.High, RegIY.Low, 0];
-									totalExecutedCycles += 9; pendingCycles -= 9;
+									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xBE: // CP (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
@@ -11857,7 +11860,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xFB: // EI
-									IFF1 = IFF2 = true;
+									EI_pending = 2;
 									Interruptable = false;
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
@@ -11943,6 +11946,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 					}
 					IRQCallback();
+				}
+
+				//EI (enable interrupts) actually takes effect after the NEXT instruction
+				if (EI_pending > 0)
+				{
+					EI_pending--;
+					if (EI_pending == 0)
+					{
+						IFF1 = IFF2 = true;
+					}
 				}
 			}
 		}

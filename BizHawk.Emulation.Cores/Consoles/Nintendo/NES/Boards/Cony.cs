@@ -40,6 +40,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public override void Dispose()
+		{
+			prg_regs.Dispose();
+			low.Dispose();
+			chr_regs.Dispose();
+			base.Dispose();
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

@@ -28,7 +28,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER066":
-				case "NES-GNROM": //thunder & lightning
+					AssertPrg(32, 64, 128); AssertChr(8, 16, 32, 64); AssertVram(0); AssertWram(0,8);
+					break;
+				case "NES-GNROM": // Thunder & Lightning 128 prg
+								  // THere are no known with 64 prg
+								  // U-Force Power Games (U) (Prototype) uses 32 prg
+					AssertPrg(32, 128); AssertChr(8, 16, 32); AssertVram(0); AssertWram(0);
+					break;
 				case "BANDAI-GNROM":
 				case "HVC-GNROM":
 				case "NES-MHROM": //Super Mario Bros. / Duck Hunt

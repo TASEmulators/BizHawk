@@ -44,6 +44,23 @@ namespace BizHawk.Common.ReflectionExtensions
 		}
 
 		/// <summary>
+		/// Returns the DisplayName attribute value if it exists, else the name of the class
+		/// </summary>
+		public static string DisplayName(this Type type)
+		{
+			var displayName = (DisplayNameAttribute)type
+				.GetCustomAttributes(typeof(DisplayNameAttribute), false)
+				.FirstOrDefault();
+
+			if (displayName != null)
+			{
+				return displayName.DisplayName;
+			}
+
+			return type.Name;
+		}
+
+		/// <summary>
 		/// Gets the description attribute from a type
 		/// </summary>
 		/// <returns></returns>

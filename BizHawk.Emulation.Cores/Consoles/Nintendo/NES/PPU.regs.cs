@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
-		public byte ppu_open_bus;
+		public byte ppu_open_bus=0;
 		public bool s_latch_clear;
 		public bool d_latch_clear;
 		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
@@ -382,6 +382,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		byte peek_2002()
 		{
+			//I'm not happy with this, but apparently this is how mighty bobm jack VS works.
+			//quite strange that is makes the sprite hit flag go high like this
+			if (nes._isVS2c05==2)
+			{
+				if (nes.Frame<4)
+				{
+
+					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (1 << 5) | (0x1D));
+				}
+				else
+				{
+					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1D));
+				}
+				
+			}
+			if (nes._isVS2c05 == 3)
+			{
+				return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1C));
+			}
+			if (nes._isVS2c05 == 4)
+			{
+				return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1B));
+			}
+
 			return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (ppu_open_bus & 0x1F));
 		}
 
@@ -611,9 +635,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret_spec;
 			switch (addr)
 			{
-				case 0: return read_2000(); case 1: return read_2001(); case 2: return read_2002(); case 3: return read_2003();
-				case 4: return read_2004(); case 5: return read_2005(); case 6: return read_2006();
-
+				case 0:
+					{
+						if (nes._isVS2c05>0)
+							return read_2001();
+						else
+							return read_2000();
+					}
+				case 1:
+					{
+						if (nes._isVS2c05>0)
+							return read_2000();
+						else
+							return read_2001();
+					}
+				case 2: return read_2002();
+				case 3: return read_2003();
+				case 4: return read_2004();
+				case 5: return read_2005();
+				case 6: return read_2006();
 				case 7:
 					{
 						if (double_2007_read>0)
@@ -653,8 +693,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (addr)
 			{
-				case 0: write_2000(value); break; case 1: write_2001(value); break; case 2: write_2002(value); break; case 3: write_2003(value); break;
-				case 4: write_2004(value); break; case 5: write_2005(value); break; case 6: write_2006(value); break; case 7: write_2007(value); break;
+				case 0:
+					if (nes._isVS2c05>0)
+						write_2001(value);
+					else
+						write_2000(value);
+					break;
+				case 1:
+					if (nes._isVS2c05>0)
+						write_2000(value);
+					else
+						write_2001(value);
+					break;
+				case 2: write_2002(value); break;
+				case 3: write_2003(value); break;
+				case 4: write_2004(value); break;
+				case 5: write_2005(value); break;
+				case 6: write_2006(value); break;
+				case 7: write_2007(value); break;
 				default: throw new InvalidOperationException();
 			}
 		}

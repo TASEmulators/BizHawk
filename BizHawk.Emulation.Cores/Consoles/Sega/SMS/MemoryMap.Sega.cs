@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Sega.MasterSystem
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public partial class SMS
 	{
@@ -41,7 +43,7 @@
 					{
 						case 0: ret = RomData[(RomBank2 * BankSize) + (address & BankSizeMask)]; break;
 						case 1: if (SaveRAM != null) ret = SaveRAM[(address & BankSizeMask) % SaveRAM.Length]; break;
-						case 2: if (SaveRAM != null) ret = SaveRAM[(BankSize + (address & BankSizeMask)) & BankSizeMask]; break;
+						case 2: if (SaveRAM != null) ret = SaveRAM[(BankSize + (address & BankSizeMask)) % SaveRAM.Length]; break;
 						default:
 							ret = SystemRam[address & RamSizeMask];
 							break;
@@ -105,7 +107,7 @@
 					switch (SaveRamBank)
 					{
 						case 1: SaveRAM[(address & BankSizeMask) % SaveRAM.Length] = value; return;
-						case 2: SaveRAM[(BankSize + (address & BankSizeMask)) & BankSizeMask] = value; return;
+						case 2: SaveRAM[(BankSize + (address & BankSizeMask)) % SaveRAM.Length] = value; return;
 					}
 				}
 				else System.Console.WriteLine("Game attempt to use SRAM but SRAM not present");
@@ -119,6 +121,7 @@
 						SaveRamBank = (byte)((value & 4) == 0 ? 1 : 2); // SaveRAM selected
 					else
 						SaveRamBank = 0; // ROM bank selected
+
 				}
 				else if (address == 0xFFFD) RomBank0 = (byte)(value % RomBanks);
 				else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);

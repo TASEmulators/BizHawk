@@ -216,11 +216,15 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_watches != null && !string.IsNullOrWhiteSpace(_watches.CurrentFileName))
+			if (_watches != null
+				&& !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
+				&& _watches.All(w => _memoryDomains.Contains(w.Domain)))
 			{
 				_watches.RefreshDomains(_memoryDomains);
 				_watches.Reload();
 				UpdateStatusBar();
+
+				
 			}
 			else
 			{

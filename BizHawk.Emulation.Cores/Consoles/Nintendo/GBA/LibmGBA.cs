@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern int BizGetSaveRam(IntPtr ctx, byte[] dest, int maxsize);
 		[DllImport(dll, CallingConvention = cc)]
-		public static extern bool BizPutSaveRam(IntPtr ctx, byte[] src, int size);
+		public static extern void BizPutSaveRam(IntPtr ctx, byte[] src, int size);
 
 		/// <summary>
 		/// start a savestate operation
@@ -115,5 +115,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizSetLayerMask(IntPtr ctx, Layers mask);
+
+		[Flags]
+		public enum Sounds : int
+		{
+			CH0 = 1,
+			CH1 = 2,
+			CH2 = 4,
+			CH3 = 8,
+			CHA = 16,
+			CHB = 32
+		}
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetSoundMask(IntPtr ctx, Sounds mask);
 	}
 }

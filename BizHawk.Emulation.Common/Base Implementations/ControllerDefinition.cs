@@ -65,6 +65,16 @@ namespace BizHawk.Emulation.Common
 
 				return new FloatRange(f[0], f[1], f[2]);
 			}
+
+			/// <summary>
+			/// Gets maximum decimal digits analog input can occupy. Discards negative sign and possible fractional part (analog devices don't use floats anyway).
+			/// </summary>
+			public int MaxDigits()
+			{
+				return Math.Max(
+					Math.Abs((int)Min).ToString().Length,
+					Math.Abs((int)Max).ToString().Length);
+			}
 		}
 
 		public enum AxisConstraintType

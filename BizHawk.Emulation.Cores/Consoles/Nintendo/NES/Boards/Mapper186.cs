@@ -20,6 +20,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			_SRAM.Dispose();
+			regs.Dispose();
+			base.Dispose();
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("SRAM", ref _SRAM);

@@ -148,8 +148,8 @@ namespace BizHawk.Client.EmuHawk
 			// TODO: don't use Global.Emulator
 			return new TasBranch
 			{
-				Frame = Global.Emulator.Frame,
-				CoreData = (byte[])((Global.Emulator as IStatable).SaveStateBinary().Clone()),
+				Frame = Tastudio.Emulator.Frame,
+				CoreData = (byte[])(Tastudio.StatableEmulator.SaveStateBinary().Clone()),
 				InputLog = Movie.InputLog.Clone(),
 				OSDFrameBuffer = GlobalWin.MainForm.CaptureOSD(),
 				LagLog = Movie.TasLagLog.Clone(),
@@ -165,7 +165,7 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.CurrentTasMovie.LoadBranch(branch);
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
-			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Global.Emulator.VideoProvider());
+			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
 			//GlobalWin.MainForm.PauseEmulator();
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();

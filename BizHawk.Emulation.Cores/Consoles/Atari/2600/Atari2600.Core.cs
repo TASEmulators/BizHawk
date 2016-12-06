@@ -26,6 +26,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private bool _frameStartPending = true;
 
+		private bool _leftDifficultySwitchPressed = false;
+		private bool _rightDifficultySwitchPressed = false;
+
+		private bool _leftDifficultySwitchHeld = false;
+		private bool _rightDifficultySwitchHeld = false;
+
+
 		internal byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
@@ -390,6 +397,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					HardReset();
 				}
 
+				if (Controller["Toggle Left Difficulty"] && !_leftDifficultySwitchHeld)
+				{
+					_leftDifficultySwitchPressed ^= true;
+					_leftDifficultySwitchHeld = true;
+				}
+				else if (!Controller["Toggle Left Difficulty"])
+				{
+					_leftDifficultySwitchHeld = false;
+				}
+
+				if (Controller["Toggle Right Difficulty"] && !_rightDifficultySwitchHeld)
+				{
+					_rightDifficultySwitchPressed ^= true;
+					_rightDifficultySwitchHeld = true;
+				}
+				else if (!Controller["Toggle Right Difficulty"])
+				{
+					_rightDifficultySwitchHeld = false;
+				}
+
 				_tia.BeginAudioFrame();
 				_frameStartPending = false;
 			}
@@ -468,8 +495,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (reset) { value &= 0xFE; }
 			if (select) { value &= 0xFD; }
 			if (SyncSettings.BW) { value &= 0xF7; }
-			if (SyncSettings.LeftDifficulty) { value &= 0xBF; }
-			if (SyncSettings.RightDifficulty) { value &= 0x7F; }
+			if (_leftDifficultySwitchPressed)
+			{
+				value &= 0xBF;
+			}
+
+			if (_rightDifficultySwitchPressed)
+			{
+				value &= 0x7F;
+			}
 
 			if (!peek)
 			{

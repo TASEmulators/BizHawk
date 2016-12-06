@@ -10,7 +10,7 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CoreAttributes("mGBA", "endrift", true, true, "0.4.1", "https://mgba.io/", false)]
+	[CoreAttributes("mGBA", "endrift", true, true, "0.5.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
+				PutSettings(_settings);
 			}
 			catch
 			{
@@ -211,8 +212,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram.ToPointer())[addr];}
-		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram.ToPointer())[addr] = value; }
+		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram)[addr];}
+		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram)[addr] = value; }
 
 		void WireMemoryDomainPointers()
 		{
@@ -234,7 +235,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Peek =
 				delegate(long addr)
 				{
-					LibmGBA.BizGetMemoryAreas(_core, s);
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 						throw new IndexOutOfRangeException();
 					if (addr >= 256 * 1024)
@@ -349,10 +349,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				data = LegacyFix(data);
 			}
-			if (!LibmGBA.BizPutSaveRam(_core, data, data.Length))
-			{
-				throw new InvalidOperationException("BizPutSaveRam returned NULL!");
-			}
+			LibmGBA.BizPutSaveRam(_core, data, data.Length);
 		}
 
 		public bool SaveRamModified
@@ -480,6 +477,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.DisplayBG3) mask |= LibmGBA.Layers.BG3;
 			if (o.DisplayOBJ) mask |= LibmGBA.Layers.OBJ;
 			LibmGBA.BizSetLayerMask(_core, mask);
+
+			LibmGBA.Sounds smask = 0;
+			if (o.PlayCh0) smask |= LibmGBA.Sounds.CH0;
+			if (o.PlayCh1) smask |= LibmGBA.Sounds.CH1;
+			if (o.PlayCh2) smask |= LibmGBA.Sounds.CH2;
+			if (o.PlayCh3) smask |= LibmGBA.Sounds.CH3;
+			if (o.PlayChA) smask |= LibmGBA.Sounds.CHA;
+			if (o.PlayChB) smask |= LibmGBA.Sounds.CHB;
+			LibmGBA.BizSetSoundMask(_core, smask);
+
 			_settings = o;
 			return false;
 		}
@@ -488,16 +495,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public class Settings
 		{
+			[DisplayName("Display BG Layer 0")]
 			[DefaultValue(true)]
 			public bool DisplayBG0 { get; set; }
+			[DisplayName("Display BG Layer 1")]
 			[DefaultValue(true)]
 			public bool DisplayBG1 { get; set; }
+			[DisplayName("Display BG Layer 2")]
 			[DefaultValue(true)]
 			public bool DisplayBG2 { get; set; }
+			[DisplayName("Display BG Layer 3")]
 			[DefaultValue(true)]
 			public bool DisplayBG3 { get; set; }
+			[DisplayName("Display Sprite Layer")]
 			[DefaultValue(true)]
 			public bool DisplayOBJ { get; set; }
+
+			[DisplayName("Play Square 1")]
+			[DefaultValue(true)]
+			public bool PlayCh0 { get; set; }
+			[DisplayName("Play Square 2")]
+			[DefaultValue(true)]
+			public bool PlayCh1 { get; set; }
+			[DisplayName("Play Wave")]
+			[DefaultValue(true)]
+			public bool PlayCh2 { get; set; }
+			[DisplayName("Play Noise")]
+			[DefaultValue(true)]
+			public bool PlayCh3 { get; set; }
+			[DisplayName("Play Direct Sound A")]
+			[DefaultValue(true)]
+			public bool PlayChA { get; set; }
+			[DisplayName("Play Direct Sound B")]
+			[DefaultValue(true)]
+			public bool PlayChB { get; set; }
 
 			public Settings Clone()
 			{

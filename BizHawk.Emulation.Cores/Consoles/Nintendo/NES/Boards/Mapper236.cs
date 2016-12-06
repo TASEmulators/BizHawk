@@ -21,10 +21,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.board_type)
 			{
-				//case "MAPPER236": // Nestopia classifies both boards as MAPPER236, but I have yet to a see a ROM iwth this iNES header, and how would we determine which one it was?
+				
 				case "UNIF_BMC-70in1":
 					isLargeBanks = false;
 					break;
+				case "MAPPER236":
 				case "UNIF_BMC-70in1B":
 					isLargeBanks = true;
 					break;

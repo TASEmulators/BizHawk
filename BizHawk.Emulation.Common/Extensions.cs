@@ -18,6 +18,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core == null || core is NullEmulator;
 		}
 
+		public static bool HasVideoProvider(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IVideoProvider>();
+		}
+
+		public static IVideoProvider AsVideoProvider(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<IVideoProvider>();
+		}
+
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
 			if (core == null)

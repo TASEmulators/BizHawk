@@ -13,14 +13,18 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
+	// TODO - Allow relative paths in record textbox
 	public partial class RecordMovie : Form
 	{
-		// TODO - Allow relative paths in record textbox
-		public RecordMovie()
+		private IEmulator Emulator;
+
+		public RecordMovie(IEmulator core)
 		{
 			InitializeComponent();
 
-			if (!Global.Emulator.HasSavestates())
+			Emulator = core;
+
+			if (!Emulator.HasSavestates())
 			{
 				StartFromCombo.Items.Remove(
 					StartFromCombo.Items
@@ -29,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 							.ToLower() == "now"));
 			}
 
-			if (!Global.Emulator.HasSaveRam())
+			if (!Emulator.HasSaveRam())
 			{
 				StartFromCombo.Items.Remove(
 					StartFromCombo.Items
@@ -88,9 +92,9 @@ namespace BizHawk.Client.EmuHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				if (StartFromCombo.SelectedItem.ToString() == "Now" && Global.Emulator.HasSavestates())
+				if (StartFromCombo.SelectedItem.ToString() == "Now" && Emulator.HasSavestates())
 				{
-					var core = Global.Emulator.AsStatable();
+					var core = Emulator.AsStatable();
 
 					movieToRecord.StartsFromSavestate = true;
 					movieToRecord.StartsFromSaveRam = false;
@@ -112,15 +116,15 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// hack: some IMovies eat the framebuffer, so don't bother with them
 						movieToRecord.SavestateFramebuffer = new int[0];
-						if (movieToRecord.SavestateFramebuffer != null)
+						if (movieToRecord.SavestateFramebuffer != null && Emulator.HasVideoProvider())
 						{
-							movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider().GetVideoBuffer().Clone();
+							movieToRecord.SavestateFramebuffer = (int[])Emulator.AsVideoProvider().GetVideoBuffer().Clone();
 						}
 					}
 				}
-				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && Global.Emulator.HasSaveRam())
+				else if (StartFromCombo.SelectedItem.ToString() == "SaveRam"  && Emulator.HasSaveRam())
 				{
-					var core = Global.Emulator.AsSaveRam();
+					var core = Emulator.AsSaveRam();
 					movieToRecord.StartsFromSavestate = false;
 					movieToRecord.StartsFromSaveRam = true;
 					movieToRecord.SaveRam = core.CloneSaveRam();

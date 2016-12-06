@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -15,6 +16,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		IntBuffer chr_banks_4k = new IntBuffer(2);
 		int[] chr_regs_4k = new int[2];
 
+		//the VS actually does have 2 KB of nametable address space
+		//let's make the extra space here, instead of in the main NES to avoid confusion
+		byte[] CIRAM_VS = new byte[0x800];
+
 		public override void Dispose()
 		{
 			base.Dispose();
@@ -27,6 +32,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("prg_banks_8k", ref prg_banks_8k);
 			ser.Sync("chr_banks_4k", ref chr_banks_4k);
+			if (NES.IsVS)
+			{
+				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
+			}
+				
 			for (int i = 0; i < 2; i++) ser.Sync("chr_regs_4k_" + i, ref chr_regs_4k[i]);
 
 			if (ser.IsReader)
@@ -40,6 +50,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER075":
+					break;
+				case "MAPPER075VS":
+					NES._isVS = true;
+					//update the state of the dip switches
+					//this is only done at power on
+					NES.VS_dips[0] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_1 ? 1 : 0);
+					NES.VS_dips[1] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_2 ? 1 : 0);
+					NES.VS_dips[2] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_3 ? 1 : 0);
+					NES.VS_dips[3] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_4 ? 1 : 0);
+					NES.VS_dips[4] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_5 ? 1 : 0);
+					NES.VS_dips[5] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_6 ? 1 : 0);
+					NES.VS_dips[6] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_7 ? 1 : 0);
+					NES.VS_dips[7] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_8 ? 1 : 0);
 					break;
 				case "KONAMI-VRC-1":
 				case "JALECO-JF-20":
@@ -79,7 +102,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = (bank_4k << 12) | ofs;
 				return VROM[addr];
 			}
-			else return base.ReadPPU(addr);
+			else
+			{
+				if (NES._isVS)
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}			
+				else
+					return base.ReadPPU(addr);
+			}
+			
+		}
+
+		public override void WritePPU(int addr, byte value)
+		{
+			// The game VS Goonies apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+			addr &= 0x2FFF;
+
+			if (NES._isVS)
+			{
+				if (addr < 0x2000)
+				{
+					if (VRAM != null)
+						VRAM[addr] = value;
+				}
+				else
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						NES.CIRAM[addr] = value;
+					}
+					else
+					{
+						CIRAM_VS[addr - 0x800] = value;
+					}
+				}
+			}
+			else
+				base.WritePPU(addr, value);
 		}
 
 		void SyncCHR()

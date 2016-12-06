@@ -173,6 +173,11 @@ namespace BizHawk.Client.EmuHawk
             0,
             0,
             0});
+			this.DiskCapacityNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			this.DiskCapacityNumeric.Name = "DiskCapacityNumeric";
 			this.DiskCapacityNumeric.Size = new System.Drawing.Size(55, 20);
 			this.DiskCapacityNumeric.TabIndex = 3;

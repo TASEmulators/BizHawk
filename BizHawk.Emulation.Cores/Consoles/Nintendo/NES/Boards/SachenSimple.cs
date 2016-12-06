@@ -49,8 +49,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default:
 					return false;
 			}
-			AssertPrg(16, 32, 64);
-			AssertChr(8, 16, 32, 64);
+
+			// adelikat: Jaau Kong 2-in-1 is 128 prg and 128 chr.  Don't know if that's a valid configuration, but the game works
+			AssertPrg(16, 32, 64, 128);
+			AssertChr(8, 16, 32, 64, 128);
 			AssertVram(0);
 			Cart.wram_size = 0;
 			prg_mask = Cart.prg_size / 32 - 1;

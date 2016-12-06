@@ -401,10 +401,21 @@
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
+    <Compile Include="Consoles\Intellivision\Controllers\IntellivisionControllerDeck.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
+    <Compile Include="Consoles\Intellivision\Intellivision.ISettable.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Controllers\IntellivisionControllers.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.IEmulator.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Intellivision.IMemoryDomains.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Intellivision.IStatable.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.MemoryMap.cs">
@@ -597,6 +608,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper029.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper030.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper034.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper035.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper036.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
@@ -612,10 +624,12 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper091.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper101.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper103.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper106.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper107.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper108.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper116.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper120.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper125.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper132.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper136.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper142.cs" />
@@ -623,8 +637,10 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper147.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper150.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper156.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper162.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper164.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper168.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper170.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper175.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper176.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper177.cs" />
@@ -643,6 +659,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper213.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper214.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper218.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper220.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper221.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper222.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper225.cs" />
@@ -751,8 +768,10 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF-DREAMTECH01.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-12-IN-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-190in1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-64in1-NR.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-810544-C-A1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-8157.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-A65AS.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-BS-5.cs" />
@@ -760,14 +779,21 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-Ghostbusters63in1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-GS-2004.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-GS-2013.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-NTD-03.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-T-262.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-WS.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMCFK23C.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BTL-Mario1-MALEE2.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-43272.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-AC08.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-AX5705.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-BB.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-CC-21.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-EDU2000.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-KOF97.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-KS7012.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-KS7013B.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-LH10.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-SHERO.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL-TF1201.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL_DripGame.cs" />
@@ -780,7 +806,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC3.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
-    <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\VS_M99.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSInspector.cs" />

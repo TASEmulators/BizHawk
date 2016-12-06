@@ -401,7 +401,7 @@ namespace BizHawk.Client.EmuHawk
 					if (lines.Length > 0)
 					{
 						_tasClipboard.Clear();
-						for (int i = 0; i < lines.Length; i++)
+						for (int i = 0; i < lines.Length - 1; i++)
 						{
 							var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
 							if (line == null)
@@ -415,14 +415,7 @@ namespace BizHawk.Client.EmuHawk
 						if (needsToRollback)
 						{
 							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							if (wasPaused)
-							{
-								DoAutoRestore();
-							}
-							else
-							{
-								Mainform.UnpauseEmulator();
-							}
+							DoAutoRestore();
 						}
 						else
 						{
@@ -448,7 +441,7 @@ namespace BizHawk.Client.EmuHawk
 					if (lines.Length > 0)
 					{
 						_tasClipboard.Clear();
-						for (int i = 0; i < lines.Length; i++)
+						for (int i = 0; i < lines.Length - 1; i++)
 						{
 							var line = TasClipboardEntry.SetFromMnemonicStr(lines[i]);
 							if (line == null)
@@ -462,14 +455,7 @@ namespace BizHawk.Client.EmuHawk
 						if (needsToRollback)
 						{
 							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							if (wasPaused)
-							{
-								DoAutoRestore();
-							}
-							else
-							{
-								Mainform.UnpauseEmulator();
-							}
+							DoAutoRestore();
 						}
 						else
 						{
@@ -511,14 +497,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -545,14 +524,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -580,14 +552,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -614,14 +579,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -641,14 +599,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				if (wasPaused)
-				{
-					DoAutoRestore();
-				}
-				else
-				{
-					Mainform.UnpauseEmulator();
-				}
+				DoAutoRestore();
 			}
 			else
 			{
@@ -672,14 +623,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				if (wasPaused)
-				{
-					DoAutoRestore();
-				}
-				else
-				{
-					Mainform.UnpauseEmulator();
-				}
+				DoAutoRestore();
 			}
 			else
 			{
@@ -772,7 +716,7 @@ namespace BizHawk.Client.EmuHawk
 
 					lastState = Emulator.Frame;
 				}
-			} while (Global.Emulator.Frame < goToFrame);
+			} while (Emulator.Frame < goToFrame);
 
 			MessageBox.Show("Integrity Check passed");
 		}
@@ -790,6 +734,7 @@ namespace BizHawk.Client.EmuHawk
 			AutosaveAsBk2MenuItem.Checked = Settings.AutosaveAsBk2;
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
 			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
+			SingleClickFloatEditMenuItem.Checked = Settings.SingleClickFloatEdit;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
@@ -901,6 +846,11 @@ namespace BizHawk.Client.EmuHawk
 		private void applyPatternToPaintedInputToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
 		{
 			onlyOnAutoFireColumnsToolStripMenuItem.Enabled = applyPatternToPaintedInputToolStripMenuItem.Checked;
+		}
+
+		private void SingleClickFloatEditMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.SingleClickFloatEdit ^= true;
 		}
 
 		private void BindMarkersToInputMenuItem_Click(object sender, EventArgs e)
@@ -1034,10 +984,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void iconsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			denoteStatesWithIconsToolStripMenuItem.Checked = Settings.denoteStatesWithIcons;
-			denoteStatesWithBGColorToolStripMenuItem.Checked = Settings.denoteStatesWithBGColor;
-			denoteMarkersWithIconsToolStripMenuItem.Checked = Settings.denoteMarkersWithIcons;
-			denoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.denoteMarkersWithBGColor;
+			DenoteStatesWithIconsToolStripMenuItem.Checked = Settings.DenoteStatesWithIcons;
+			DenoteStatesWithBGColorToolStripMenuItem.Checked = Settings.DenoteStatesWithBGColor;
+			DenoteMarkersWithIconsToolStripMenuItem.Checked = Settings.DenoteMarkersWithIcons;
+			DenoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.DenoteMarkersWithBGColor;
 		}
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1100,27 +1050,27 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
         }
 
-        private void denoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons = denoteStatesWithIconsToolStripMenuItem.Checked;
+            Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor = denoteStatesWithBGColorToolStripMenuItem.Checked;
+            Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons = denoteMarkersWithIconsToolStripMenuItem.Checked;
+            Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor = denoteMarkersWithBGColorToolStripMenuItem.Checked;
+            Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
@@ -1150,7 +1100,7 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
 				.Where(x => x.Name != "FrameColumn");
 
-			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Global.Emulator.ControllerDefinition.PlayerCount + 1];
+			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
@@ -1235,6 +1185,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			ColumnsSubMenu.DropDownItems.Add(defaults);
+			TasView.AllColumns.ColumnsChanged();
 		}
 
 		#endregion

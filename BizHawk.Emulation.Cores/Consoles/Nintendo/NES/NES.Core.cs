@@ -35,8 +35,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//user configuration 
 		int[] palette_compiled = new int[64 * 8];
 
-		//variable to change controller read/write behaviour when keyboard is attached
-		public bool _iskeyboard = false;
+		//variable set when VS system games are running
+		internal bool _isVS = false;
+		//some VS games have a ppu that switches 2000 and 2001, so keep trcak of that
+		public byte _isVS2c05 = 0;
+		//since prg reg for VS System is set in the controller regs, it is convenient to have it here
+		//instead of in the board
+		public byte VS_chr_reg;
+		public byte VS_prg_reg;
+		//various VS controls
+		public byte[] VS_dips = new byte[8];
+		public byte VS_service = 0;
+		public byte VS_coin_inserted=0;
+		public byte VS_ROM_control;
 
 		// new input system
 		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
@@ -179,6 +190,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					for (int i = 0; i < b.NumSides; i++)
 						ControllerDefinition.BoolButtons.Add("FDS Insert " + i);
 				}
+
+				if (_isVS)
+				{
+					ControllerDefinition.BoolButtons.Add("Insert Coin P1");
+					ControllerDefinition.BoolButtons.Add("Insert Coin P2");
+					ControllerDefinition.BoolButtons.Add("Service Switch");
+				}
 			}
 
 			// don't replace the magicSoundProvider on reset, as it's not needed
@@ -272,7 +290,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ram[0x701] = 0xFF;
 				}
 			}
-			
 
 		}
 
@@ -313,6 +330,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				for (int i = 0; i < b.NumSides; i++)
 					if (Controller["FDS Insert " + i])
 						b.InsertSide(i);
+			}
+
+			if (_isVS)
+			{
+				if (controller["Service Switch"])
+					VS_service = 1;
+				else
+					VS_service = 0;
+
+				if (controller["Insert Coin P1"])
+					VS_coin_inserted |= 1;
+				else
+					VS_coin_inserted &= 2;
+
+				if (controller["Insert Coin P2"])
+					VS_coin_inserted |= 2;
+				else
+					VS_coin_inserted &= 1;
 			}
 
 			ppu.FrameAdvance();
@@ -516,6 +551,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4014: /*OAM DMA*/ break;
 				case 0x4015: return (byte)((byte)(apu.ReadReg(addr) & 0xDF) + (byte)(DB & 0x20));
 				case 0x4016:
+					if (_isVS)
+					{
+						byte ret = 0;
+						ret = read_joyport(0x4016);
+						ret &= 1;
+						ret = (byte)(ret | (VS_service << 2) | (VS_dips[0] << 3) | (VS_dips[1] << 4) | (VS_coin_inserted << 5) | (VS_ROM_control<<7));
+
+						return ret;
+					}
+					else
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
@@ -529,10 +574,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				case 0x4017:
 					{
-						if (_iskeyboard)
+						if (_isVS)
 						{
-							// eventually this will be the keyboard function, but for now it is a place holder (no keys pressed)
-							return 0x1E;
+							byte ret = 0;
+							ret = read_joyport(0x4017);
+							ret &= 1;
+
+							ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
+
+							return ret;
+
 						}
 						else
 						{
@@ -614,9 +665,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x4014: Exec_OAMDma(val); break;
 				case 0x4015: apu.WriteReg(addr, val); break;
 				case 0x4016:
-					if (_iskeyboard)
+					if (_isVS)
 					{
-						// eventually keyboard emulation will go here
+						write_joyport(val);
+						VS_chr_reg = (byte)((val & 0x4)>>2);
+
+						//TODO: does other stuff for dual system
+
+						//this is actually different then assignment
+						VS_prg_reg = (byte)((val & 0x4)>>2);
+
 					}
 					else
 					{
@@ -641,7 +699,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			InputCallbacks.Call();
 			lagged = false;
-			byte ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			byte ret = 0;
+			if (_isVS)
+			{
+				// for whatever reason, in VS left and right controller have swapped regs
+				ret = addr == 0x4017 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			}
+			else
+			{
+				ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+			}
+			
 			ret &= 0x1f;
 			ret |= (byte)(0xe0 & DB);
 			return ret;
@@ -666,7 +734,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// Sets the provided palette as current.
 		/// Applies the current deemph settings if needed to expand a 64-entry palette to 512
 		/// </summary>
-		private void SetPalette(byte[,] pal)
+		public void SetPalette(byte[,] pal)
 		{
 			int nColors = pal.GetLength(0);
 			int nElems = pal.GetLength(1);
@@ -865,6 +933,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			MemoryCallbacks.CallWrites(addr);
+		}
+
+		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.
+		public void PickVSPalette(CartInfo cart)
+		{
+			switch (cart.palette)
+			{
+				case "2C05": SetPalette(Palettes.palette_2c03_2c05); ppu.CurrentLuma = PPU.PaletteLuma2C03; break;
+				case "2C04-1": SetPalette(Palettes.palette_2c04_001); ppu.CurrentLuma = PPU.PaletteLuma2C04_1; break;
+				case "2C04-2": SetPalette(Palettes.palette_2c04_002); ppu.CurrentLuma = PPU.PaletteLuma2C04_2; break;
+				case "2C04-3": SetPalette(Palettes.palette_2c04_003); ppu.CurrentLuma = PPU.PaletteLuma2C04_3; break;
+				case "2C04-4": SetPalette(Palettes.palette_2c04_004); ppu.CurrentLuma = PPU.PaletteLuma2C04_4; break;
+			}
+
+			//since this will run for every VS game, let's get security setting too
+			//values below 16 are for the 2c05 PPU
+			//values 16,32,48 are for Namco games and dealt with in mapper 206
+			_isVS2c05 = (byte)(cart.vs_security & 15);
 		}
 
 	}

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	
 	[SchemaAttributes("GB")]
 	public class GBSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			yield return StandardController();
 			yield return ConsoleButtons();

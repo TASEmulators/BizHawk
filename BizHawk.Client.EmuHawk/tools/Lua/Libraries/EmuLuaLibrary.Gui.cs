@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Globalization;
+using System.IO;
 
 using LuaInterface;
 
@@ -124,8 +123,8 @@ namespace BizHawk.Client.EmuHawk
 			var g = _luaSurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _luaSurface.GetGraphics();
 
 			//we don't like CoreComm, right? Someone should find a different way to do this then.
-			var tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-			var ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
+			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
@@ -358,6 +357,12 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
+			if (!File.Exists(path))
+			{
+				Log("File not found: " + path);
+				return;
+			}
+
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -381,6 +386,12 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
+			if (!File.Exists(path))
+			{
+				Log("File not found: " + path);
+				return;
+			}
+
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -695,8 +706,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+				x -= Emulator.CoreComm.ScreenLogicalOffsetX;
+				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
 			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);

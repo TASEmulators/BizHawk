@@ -143,9 +143,12 @@ namespace BizHawk.Client.EmuHawk
 			// we could background thread this later instead if we wanted to be real clever
 			NES.BootGodDB.GetDatabaseBytes = () =>
 			{
-				using (var NesCartFile =
-						new HawkFile(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z")).BindFirst())
+				string xmlPath = Path.Combine( PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.xml" );
+				string x7zPath = Path.Combine( PathManager.GetExeDirectoryAbsolute(), "gamedb", "NesCarts.7z" );
+				bool loadXml = File.Exists( xmlPath );
+				using (var NesCartFile = new HawkFile(loadXml ? xmlPath : x7zPath))
 				{
+					if (!loadXml) { NesCartFile.BindFirst(); }
 					return NesCartFile
 						.GetStream()
 						.ReadAllBytes();
@@ -301,7 +304,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var comm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
-			Global.Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
+			Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = new Controller(NullEmulator.NullController);
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
@@ -529,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.ActiveController.LatchFromPhysical(Global.ControllerInputCoalescer);
 
 				Global.ActiveController.ApplyAxisConstraints(
-					(Global.Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
+					(Emulator is N64 && Global.Config.N64UseCircularAnalogConstraint) ? "Natural Circle" : null);
 
 				Global.ActiveController.OR_FromLogical(Global.ClickyVirtualPadController);
 				Global.AutoFireController.LatchFromPhysical(Global.ControllerInputCoalescer);
@@ -567,6 +570,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return true;
+				if (Global.Config.DispSpeedupFeatures != 0)
+				{
+					Thread.Sleep(0);
+				}
+			}
 		}
 
 		/// <summary>
@@ -639,7 +647,6 @@ namespace BizHawk.Client.EmuHawk
 		public bool FastForward = false;
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
-		public bool UpdateFrame = false;
 
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
@@ -748,7 +755,13 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-
+		// TODO: make this an actual property, set it when loading a Rom, and pass it dialogs, etc
+		// This is a quick hack to reduce the dependency on Global.Emulator
+		public IEmulator Emulator
+		{
+			get { return Global.Emulator; }
+			set { Global.Emulator = value; }
+		}
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -865,7 +878,7 @@ namespace BizHawk.Client.EmuHawk
 			// also handle floats
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
 			{
-				var video = Global.Emulator.VideoProvider();
+				var video = Emulator.VideoProvider();
 				// hackish
 				if (o.Item1 == "WMouse X")
 				{
@@ -943,7 +956,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), Global.Config.Screenshot_CaptureOSD))
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Emulator.AsVideoProvider(), Global.Config.Screenshot_CaptureOSD))
 			{
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
@@ -994,7 +1007,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			/*
 			using (var fs = new FileStream(path + "_test.bmp", FileMode.OpenOrCreate, FileAccess.Write))
-				QuickBmpFile.Save(Global.Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
+				QuickBmpFile.Save(Emulator.VideoProvider(), fs, r.Next(50, 500), r.Next(50, 500));
 			*/
 			GlobalWin.OSD.AddMessage(fi.Name + " saved.");
 		}
@@ -1005,8 +1018,8 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				var video = Global.Emulator.VideoProvider();
-				int zoom = Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
+				var video = Emulator.VideoProvider();
+				int zoom = Global.Config.TargetZoomFactors[Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
 				int borderWidth = Size.Width - PresentationPanel.Control.Size.Width;
@@ -1211,13 +1224,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static LibsnesCore AsSNES { get { return Global.Emulator as LibsnesCore; } }
+		private LibsnesCore AsSNES { get { return Emulator as LibsnesCore; } }
 
 		// TODO: Clean Me!
 
 		public void SNES_ToggleBG1(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1234,7 +1247,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG2(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1251,7 +1264,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG3(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1268,7 +1281,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleBG4(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1285,7 +1298,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleObj1(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1302,7 +1315,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleObj2(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1318,7 +1331,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleOBJ3(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1335,7 +1348,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SNES_ToggleOBJ4(bool? setto = null)
 		{
-			if (!(Global.Emulator is LibsnesCore)) return;
+			if (!(Emulator is LibsnesCore)) return;
 			var s = AsSNES.GetSettings();
 			if (setto.HasValue)
 			{
@@ -1374,8 +1387,9 @@ namespace BizHawk.Client.EmuHawk
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
 		private double _runloopLastFps;
+		private double _runloopDisplayFps;
 		private bool _runloopFrameadvance;
-		private double _runloopUpdatesPerSecond = 16.0;
+		private double _runloopUpdatesPerSecond = 12.0;
 		private double _runloopFpsSmoothing = 8.0;
 		private long _runloopSecond;
 		private bool _runloopLastFf;
@@ -1416,18 +1430,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Private methods
 
-		private static string DisplayNameForSystem(string system)
-		{
-			var str = Global.SystemInfo.DisplayName;
-
-			if (VersionInfo.DeveloperBuild)
-			{
-				str += " (interim)";
-			}
-
-			return str;
-		}
-
 		private void SetWindowText()
 		{
 			string str = string.Empty;
@@ -1442,10 +1444,13 @@ namespace BizHawk.Client.EmuHawk
 			//we need to display FPS somewhere, in this case
 			if (Global.Config.DispSpeedupFeatures == 0)
 			{
-				str = str + string.Format("({0} fps) -", _runloopLastFps);
+				str = str + string.Format("({0:0} fps) -", _runloopDisplayFps);
 			}
 
-			if (Global.Emulator.IsNull())
+			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
+				str += VersionInfo.CustomBuildString + " ";
+
+			if (Emulator.IsNull())
 			{
 				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 			}
@@ -1499,7 +1504,7 @@ namespace BizHawk.Client.EmuHawk
 			DumpStatusButton.Image = Properties.Resources.Blank;
 			DumpStatusButton.ToolTipText = string.Empty;
 
-			if (Global.Emulator == null)
+			if (Emulator.IsNull())
 			{
 				return;
 			}
@@ -1551,17 +1556,17 @@ namespace BizHawk.Client.EmuHawk
 				annotation = "Verified good dump";
 			}
 
-			if (!string.IsNullOrEmpty(Global.Emulator.CoreComm.RomStatusAnnotation))
+			if (!string.IsNullOrEmpty(Emulator.CoreComm.RomStatusAnnotation))
 			{
-				annotation = Global.Emulator.CoreComm.RomStatusAnnotation;
+				annotation = Emulator.CoreComm.RomStatusAnnotation;
 			}
 
 			DumpStatusButton.ToolTipText = annotation;
 		}
 
-		private static void LoadSaveRam()
+		private void LoadSaveRam()
 		{
-			if (Global.Emulator.HasSaveRam())
+			if (Emulator.HasSaveRam())
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
@@ -1569,13 +1574,13 @@ namespace BizHawk.Client.EmuHawk
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
 					// GBA vba-next core will try to eat anything, regardless of size
-					if (Global.Emulator is GBA || Global.Emulator is VBANext || Global.Emulator is MGBAHawk)
+					if (Emulator is GBA || Emulator is VBANext || Emulator is MGBAHawk)
 					{
 						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 					}
 					else
 					{
-						var oldram = Global.Emulator.AsSaveRam().CloneSaveRam();
+						var oldram = Emulator.AsSaveRam().CloneSaveRam();
 						if (oldram == null)
 						{
 							// we're eating this one now.  the possible negative consequence is that a user could lose
@@ -1592,7 +1597,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					Global.Emulator.AsSaveRam().StoreSaveRam(sram);
+					Emulator.AsSaveRam().StoreSaveRam(sram);
 				}
 				catch (IOException)
 				{
@@ -1601,9 +1606,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void SaveRam()
+		private void SaveRam()
 		{
-			if (Global.Emulator.HasSaveRam())
+			if (Emulator.HasSaveRam())
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
 				var f = new FileInfo(path);
@@ -1626,7 +1631,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
-				var saveram = Global.Emulator.AsSaveRam().CloneSaveRam();
+				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 
 				writer.Write(saveram, 0, saveram.Length);
 				writer.Close();
@@ -1643,8 +1648,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Global.Emulator.EndAsyncSound();
-				GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
+				Emulator.EndAsyncSound();
+				GlobalWin.Sound.SetSyncInputPin(Emulator.SyncSoundProvider);
 			}
 		}
 
@@ -1655,7 +1660,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//New Code
 				//We use SystemID as that has the system we are playing on.
-				system = Global.Emulator.SystemId;
+				system = Emulator.SystemId;
 				//Old Code below.
 				//system = Global.Game.System;
 
@@ -1678,6 +1683,7 @@ namespace BizHawk.Client.EmuHawk
 			wonderSwanToolStripMenuItem.Visible = false;
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
+			IntvSubMenu.Visible = false;
 
 			switch (system)
 			{
@@ -1723,9 +1729,9 @@ namespace BizHawk.Client.EmuHawk
 				case "SNES":
 				case "SGB":
 					// TODO: fix SNES9x here
-					if (Global.Emulator is LibsnesCore)
+					if (Emulator is LibsnesCore)
 					{
-						if ((Global.Emulator as LibsnesCore).IsSGB)
+						if ((Emulator as LibsnesCore).IsSGB)
 						{
 							SNESSubMenu.Text = "&SGB";
 						}
@@ -1761,10 +1767,13 @@ namespace BizHawk.Client.EmuHawk
 				case "C64":
 					C64SubMenu.Visible = true;
 					break;
+				case "INTV":
+					IntvSubMenu.Visible = true;
+					break;
 			}
 		}
 
-		private static void InitControls()
+		private void InitControls()
 		{
 			var controls = new Controller(
 				new ControllerDefinition
@@ -1779,7 +1788,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Global.ClientControls = controls;
-			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Global.Emulator);
+			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Emulator);
 
 		}
 
@@ -1868,7 +1877,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
-			_throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
+			_throttle.SetCoreFps(Emulator.CoreComm.VsyncRate);
 			_throttle.signal_paused = EmulatorPaused;
 			_throttle.signal_unthrottle = _unthrottled || turbo;
 			//zero 26-mar-2016 - vsync and vsync throttle here both is odd, but see comments elsewhere about triple buffering
@@ -1929,9 +1938,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static BitmapBuffer MakeScreenshotImage()
+		private BitmapBuffer MakeScreenshotImage()
 		{
-			return GlobalWin.DisplayManager.RenderVideoProvider(Global.Emulator.VideoProvider());
+			return GlobalWin.DisplayManager.RenderVideoProvider(Emulator.AsVideoProvider());
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -1944,8 +1953,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Render()
 		{
+			if (Global.Config.DispSpeedupFeatures == 0)
+			{
+				return;
+			}
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
-			var video = Global.Emulator.VideoProvider();
+			var video = Emulator.VideoProvider();
 			//bool change = false;
 			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
@@ -2002,7 +2015,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;*.int;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2061,7 +2074,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ofd = HawkDialogFactory.CreateOpenFileDialog();
 			ofd.InitialDirectory = PathManager.GetRomsPath(Global.Emulator.SystemId);
-			ofd.Filter = RomFilter;
+			ofd.InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId);
 			ofd.RestoreDirectory = false;
 			ofd.FilterIndex = _lastOpenRomFilter;
 
@@ -2120,7 +2133,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSettings(object o)
 		{
-			var settable = new SettingsAdapter(Global.Emulator);
+			var settable = new SettingsAdapter(Emulator);
 			if (settable.HasSettings && settable.PutSettings(o))
 			{
 				FlagNeedsReboot();
@@ -2132,7 +2145,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void PutCoreSyncSettings(object o)
 		{
-			var settable = new SettingsAdapter(Global.Emulator);
+			var settable = new SettingsAdapter(Emulator);
 			if (Global.MovieSession.Movie.IsActive)
 			{
 				GlobalWin.OSD.AddMessage("Attempt to change sync-relevant settings while recording BLOCKED.");
@@ -2225,10 +2238,10 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Volume " + Global.Config.SoundVolume);
 		}
 
-		private static void SoftReset()
+		private void SoftReset()
 		{
 			// is it enough to run this for one frame? maybe..
-			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
+			if (Emulator.ControllerDefinition.BoolButtons.Contains("Reset"))
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -2238,10 +2251,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private static void HardReset()
+		private void HardReset()
 		{
 			// is it enough to run this for one frame? maybe..
-			if (Global.Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
+			if (Emulator.ControllerDefinition.BoolButtons.Contains("Power"))
 			{
 				if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 				{
@@ -2288,67 +2301,67 @@ namespace BizHawk.Client.EmuHawk
 				Slot7StatusButton.Visible =
 				Slot8StatusButton.Visible =
 				Slot9StatusButton.Visible =
-				Global.Emulator.HasSavestates();
+				Emulator.HasSavestates();
 		}
 
 		public BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Global.Emulator.VideoProvider(), true);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(Emulator.AsVideoProvider(), true);
 			bb.DiscardAlpha();
 			return bb;
 		}
 
 		private void IncreaseWindowSize()
 		{
-			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
+			switch (Global.Config.TargetZoomFactors[Emulator.SystemId])
 			{
 				case 1:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 2;
 					break;
 				case 2:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 3;
 					break;
 				case 3:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 4;
 					break;
 				case 4:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 5;
 					break;
 				case 5:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 10;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 10;
 					break;
 				case 10:
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Global.Emulator.SystemId] + "x");
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Emulator.SystemId] + "x");
 			FrameBufferResized();
 		}
 
 		private void DecreaseWindowSize()
 		{
-			switch (Global.Config.TargetZoomFactors[Global.Emulator.SystemId])
+			switch (Global.Config.TargetZoomFactors[Emulator.SystemId])
 			{
 				case 1:
 					return;
 				case 2:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 1;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 1;
 					break;
 				case 3:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 2;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 2;
 					break;
 				case 4:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 3;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 3;
 					break;
 				case 5:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 4;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 4;
 					break;
 				case 10:
-					Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = 5;
+					Global.Config.TargetZoomFactors[Emulator.SystemId] = 5;
 					return;
 			}
 
-			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Global.Emulator.SystemId] + "x");
+			GlobalWin.OSD.AddMessage("Screensize set to " + Global.Config.TargetZoomFactors[Emulator.SystemId] + "x");
 			FrameBufferResized();
 		}
 
@@ -2515,7 +2528,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (MainStatusBar.Visible)
 			{
-				var hasDriveLight = Global.Emulator.HasDriveLight() && Global.Emulator.AsDriveLight().DriveLightEnabled;
+				var hasDriveLight = Emulator.HasDriveLight() && Emulator.AsDriveLight().DriveLightEnabled;
 
 				if (hasDriveLight)
 				{
@@ -2524,7 +2537,7 @@ namespace BizHawk.Client.EmuHawk
 						LedLightStatusLabel.Visible = true;
 					}
 
-					LedLightStatusLabel.Image = Global.Emulator.AsDriveLight().DriveLightOn
+					LedLightStatusLabel.Image = Emulator.AsDriveLight().DriveLightOn
 						? StatusBarDiskLightOnImage
 						: StatusBarDiskLightOffImage;
 				}
@@ -2536,14 +2549,14 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (Global.Emulator.UsesLinkCable())
+				if (Emulator.UsesLinkCable())
 				{
 					if (!LinkConnectStatusBarButton.Visible)
 					{
 						LinkConnectStatusBarButton.Visible = true;
 					}
 
-					LinkConnectStatusBarButton.Image = Global.Emulator.AsLinkable().LinkConnected
+					LinkConnectStatusBarButton.Image = Emulator.AsLinkable().LinkConnected
 						? LinkCableOn
 						: LinkCableOff;
 				}
@@ -2619,7 +2632,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			FDSControlsMenuItem.DropDownItems.Add(name, null, delegate
 			{
-				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(button))
+				if (Emulator.ControllerDefinition.BoolButtons.Contains(button))
 				{
 					if (!Global.MovieSession.Movie.IsPlaying || Global.MovieSession.Movie.IsFinished)
 					{
@@ -2665,17 +2678,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateCoreStatusBarButton()
 		{
-			if (Global.Emulator.IsNull())
+			if (Emulator.IsNull())
 			{
 				CoreNameStatusBarButton.Visible = false;
 				return;
 			}
 
 			CoreNameStatusBarButton.Visible = true;
-			var attributes = Global.Emulator.Attributes();
+			var attributes = Emulator.Attributes();
 
-			CoreNameStatusBarButton.Text = Global.Emulator.DisplayName();
-			CoreNameStatusBarButton.Image = Global.Emulator.Icon();
+			CoreNameStatusBarButton.Text = Emulator.DisplayName();
+			CoreNameStatusBarButton.Image = Emulator.Icon();
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
 		}
 
@@ -2702,9 +2715,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get
 			{
-				if (Global.Emulator.CanPollInput())
+				if (Emulator.CanPollInput())
 				{
-					return Global.Emulator.AsInputPollable().IsLagFrame;
+					return Emulator.AsInputPollable().IsLagFrame;
 				}
 
 				return false;
@@ -2721,19 +2734,19 @@ namespace BizHawk.Client.EmuHawk
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Global.Config.FrameProgressDelayMs;
 
-			if (Global.Config.SkipLagFrame && IsLagFrame && frameProgressTimeElapsed && Global.Emulator.Frame > 0)
+			if (Global.Config.SkipLagFrame && IsLagFrame && frameProgressTimeElapsed && Emulator.Frame > 0)
 			{
 				runFrame = true;
 			}
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
 			{
+				_runloopFrameadvance = true;
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
 				{
 					PauseEmulator();
 					runFrame = true;
-					_runloopFrameadvance = true;
 					_frameAdvanceTimestamp = currentTimestamp;
 				}
 				else
@@ -2765,17 +2778,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame, currentTimestamp);
+			
+			float atten = 0;
 
-			if (UpdateFrame)
-			{
-				runFrame = true;
-			}
-
-			float atten = Global.Config.SoundVolume / 100.0f;
-			if (!Global.Config.SoundEnabledNormal)
-				atten = 0;
-
-			var coreskipaudio = false;
 			if (runFrame || force)
 			{
 				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
@@ -2807,76 +2812,39 @@ namespace BizHawk.Client.EmuHawk
 
 				_runloopLastFps+= _runloopFpsSmoothing;
 
-				if ((currentTimestamp - _runloopSecond) * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
-				{
-					_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + (currentTimestamp - _runloopSecond) * _runloopFpsSmoothing));
-					_runloopSecond = currentTimestamp;
-					updateFpsString = true;
-				}
-
-				if (updateFpsString)
-				{
-					var fps_string = string.Format("{0:0} fps", _runloopLastFps);
-					if (isRewinding)
-					{
-						if (IsTurboing || isFastForwarding)
-						{
-							fps_string += " <<<<";
-						}
-						else
-						{
-							fps_string += " <<";
-						}
-					}
-					else if (IsTurboing)
-					{
-						fps_string += " >>>>";
-					}
-					else if (isFastForwarding)
-					{
-						fps_string += " >>";
-					}
-
-					GlobalWin.OSD.FPS = fps_string;
-
-					//need to refresh window caption in this case
-					if (Global.Config.DispSpeedupFeatures == 0)
-						SetWindowText();
-				}
+				UpdateFpsDisplay(currentTimestamp, updateFpsString, isRewinding, isFastForwarding);
 
 				CaptureRewind(suppressCaptureRewind);
 
-				if (!_runloopFrameadvance)
+				// Set volume, if enabled
+				if (Global.Config.SoundEnabledNormal)
 				{
-					
-				}
-				else if (!Global.Config.MuteFrameAdvance)
-				{
-					atten = 0;
-				}
+					atten = Global.Config.SoundVolume / 100.0f;
 
-				if (isFastForwarding || IsTurboing || isRewinding)
-				{
-					atten *= Global.Config.SoundVolumeRWFF / 100.0f;
-					if (!Global.Config.SoundEnabledRWFF)
+					if (isFastForwarding || IsTurboing || isRewinding)
+					{
+						if (Global.Config.SoundEnabledRWFF)
+							atten *= Global.Config.SoundVolumeRWFF / 100.0f;
+						else
+							atten = 0;
+					}
+
+					// Mute if using Frame Advance/Frame Progress
+					if (_runloopFrameadvance && Global.Config.MuteFrameAdvance)
+					{
 						atten = 0;
+					}
 				}
-
+				
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
-				coreskipaudio = IsTurboing && _currAviWriter == null;
-
 				//why not skip audio if the user doesnt want sound
-				if (!Global.Config.SoundEnabled)
-					coreskipaudio = true;
+				bool renderSound = Global.Config.SoundEnabled || !IsTurboing;
+				renderSound |= (_currAviWriter != null && _currAviWriter.UsesAudio);
 
-				{
-					bool render = !_throttle.skipnextframe;
-					bool renderSound = !coreskipaudio;
-					if (_currAviWriter != null && _currAviWriter.UsesVideo) render = true;
-					if (_currAviWriter != null && _currAviWriter.UsesAudio) renderSound = true;
-					Global.Emulator.FrameAdvance(render, renderSound);
-				}
+				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
+				Emulator.FrameAdvance(render, renderSound);
+
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -2910,12 +2878,12 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
-					GlobalWin.Tools.TAStudio.LastPositionFrame == Global.Emulator.Frame)
+					GlobalWin.Tools.TAStudio.LastPositionFrame == Emulator.Frame)
 				{
 					if (PauseOnFrame.HasValue &&
 						PauseOnFrame.Value <= GlobalWin.Tools.TAStudio.LastPositionFrame)
 					{
-						TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Global.Emulator.Frame];
+						TasMovieRecord record = (Global.MovieSession.Movie as TasMovie)[Emulator.Frame];
 						if (!record.Lagged.HasValue && IsSeeking)
 							// haven't yet greenzoned the frame, hence it's after editing
 							// then we want to pause here. taseditor fasion
@@ -2923,7 +2891,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (IsSeeking && Global.Emulator.Frame == PauseOnFrame.Value)
+				if (IsSeeking && Emulator.Frame == PauseOnFrame.Value)
 				{
 					PauseEmulator();
 					PauseOnFrame = null;
@@ -2933,10 +2901,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
-			else
-			{
-				atten = 0;
-			}
 
 			if (Global.ClientControls["Rewind"] || PressRewind)
 			{
@@ -2944,12 +2908,49 @@ namespace BizHawk.Client.EmuHawk
 				//PressRewind = false;
 			}
 
-			if (UpdateFrame)
+			GlobalWin.Sound.UpdateSound(atten);
+		}
+
+		private void UpdateFpsDisplay(long currentTimestamp, bool updateFpsString, bool isRewinding, bool isFastForwarding)
+		{
+			var timeDiff = (currentTimestamp - _runloopSecond);
+			if ( timeDiff * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
 			{
-				UpdateFrame = false;
+				_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + timeDiff * _runloopFpsSmoothing));
+				_runloopSecond = currentTimestamp;
+				_runloopDisplayFps = _runloopLastFps;
+				updateFpsString = true;
 			}
 
-			GlobalWin.Sound.UpdateSound(atten);
+			if (updateFpsString)
+			{
+				var fps_string = string.Format("{0:0} fps", _runloopDisplayFps);
+				if (isRewinding)
+				{
+					if (IsTurboing || isFastForwarding)
+					{
+						fps_string += " <<<<";
+					}
+					else
+					{
+						fps_string += " <<";
+					}
+				}
+				else if (IsTurboing)
+				{
+					fps_string += " >>>>";
+				}
+				else if (isFastForwarding)
+				{
+					fps_string += " >>";
+				}
+
+				GlobalWin.OSD.FPS = fps_string;
+
+				//need to refresh window caption in this case
+				if (Global.Config.DispSpeedupFeatures == 0)
+					SetWindowText();
+			}
 		}
 
 		#endregion
@@ -3021,14 +3022,15 @@ namespace BizHawk.Client.EmuHawk
 					aw = new AudioStretcher(aw);
 				}
 
-				aw.SetMovieParameters(Global.Emulator.CoreComm.VsyncNum, Global.Emulator.CoreComm.VsyncDen);
+				aw.SetMovieParameters(Emulator.CoreComm.VsyncNum, Emulator.CoreComm.VsyncDen);
 				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 				{
 					aw.SetVideoParameters(_avwriterResizew, _avwriterResizeh);
 				}
 				else
 				{
-					aw.SetVideoParameters(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight);
+					var videoProvider = Emulator.AsVideoProvider();
+					aw.SetVideoParameters(videoProvider.BufferWidth, videoProvider.BufferHeight);
 				}
 
 				aw.SetAudioParameters(44100, 2, 16);
@@ -3123,13 +3125,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_dumpaudiosync)
 			{
-				Global.Emulator.EndAsyncSound();
+				Emulator.EndAsyncSound();
 			}
 			else
 			{
-				_aviSoundInput = !Global.Emulator.StartAsyncSound()
-					? new MetaspuAsync(Global.Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
-					: Global.Emulator.SoundProvider;
+				_aviSoundInput = !Emulator.StartAsyncSound()
+					? new MetaspuAsync(Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
+					: Emulator.SoundProvider;
 			}
 			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
 			RewireSound();
@@ -3186,7 +3188,7 @@ namespace BizHawk.Client.EmuHawk
 					//is this the best time to handle this? or deeper inside?
 					if (_currAviWriterFrameList != null)
 					{
-						if (!_currAviWriterFrameList.Contains(Global.Emulator.Frame))
+						if (!_currAviWriterFrameList.Contains(Emulator.Frame))
 							goto HANDLE_AUTODUMP;
 					}
 
@@ -3205,7 +3207,8 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								bbin = new BitmapBuffer(Global.Emulator.VideoProvider().BufferWidth, Global.Emulator.VideoProvider().BufferHeight, Global.Emulator.VideoProvider().GetVideoBuffer());
+								var videoProvider = Emulator.AsVideoProvider();
+								bbin = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
 							}
 
 							bbin.DiscardAlpha();
@@ -3216,7 +3219,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (_avwriterpad)
 								{
-									g.Clear(Color.FromArgb(Global.Emulator.VideoProvider().BackgroundColor));
+									g.Clear(Color.FromArgb(Emulator.AsVideoProvider().BackgroundColor));
 									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
 								}
 								else
@@ -3244,16 +3247,16 @@ namespace BizHawk.Client.EmuHawk
 							disposableOutput = (IDisposable)output;
 						}
 						else
-							output = Global.Emulator.VideoProvider();
+							output = Emulator.AsVideoProvider();
 					}
 
-					_currAviWriter.SetFrame(Global.Emulator.Frame);
+					_currAviWriter.SetFrame(Emulator.Frame);
 
 					short[] samp;
 					int nsamp;
 					if (_dumpaudiosync)
 					{
-						(_currAviWriter as VideoStretcher).DumpAV(output, Global.Emulator.SyncSoundProvider, out samp, out nsamp);
+						(_currAviWriter as VideoStretcher).DumpAV(output, Emulator.SyncSoundProvider, out samp, out nsamp);
 					}
 					else
 					{
@@ -3453,12 +3456,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (result)
 				{
-					Global.Emulator = loader.LoadedEmulator;
+					Emulator = loader.LoadedEmulator;
 					Global.Game = loader.Game;
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-					if (Global.Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
 						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
@@ -3488,18 +3491,18 @@ namespace BizHawk.Client.EmuHawk
 
 					Global.Rewinder.ResetRewindBuffer();
 
-					if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
+					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
 					{
-						Global.Emulator.CoreComm.RomStatusDetails = string.Format(
+						Emulator.CoreComm.RomStatusDetails = string.Format(
 							"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\n",
 							loader.Game.Name,
 							loader.Rom.RomData.HashSHA1(),
 							loader.Rom.RomData.HashMD5());
 					}
 
-					if (Global.Emulator.BoardName != null)
+					if (Emulator.BoardName != null)
 					{
-						Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
+						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.BoardName);
 					}
 
 					// restarts the lua console if a different rom is loaded.
@@ -3575,7 +3578,7 @@ namespace BizHawk.Client.EmuHawk
 					// TODO: put all these in a single method or something
 
 					//The ROM has been loaded by a recursive invocation of the LoadROM method.
-					if (!(Global.Emulator is NullEmulator))
+					if (!(Emulator is NullEmulator))
 					{
 						ApiHawk.ClientApi.OnRomLoaded();
 						return true;
@@ -3602,11 +3605,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private string CurrentlyOpenRomPoopForAdvancedLoaderPleaseRefactorME = "";
 
-		private static void CommitCoreSettingsToConfig()
+		private void CommitCoreSettingsToConfig()
 		{
 			// save settings object
-			var t = Global.Emulator.GetType();
-			var settable = new SettingsAdapter(Global.Emulator);
+			var t = Emulator.GetType();
+			var settable = new SettingsAdapter(Emulator);
 
 			if (settable.HasSettings)
 			{
@@ -3636,7 +3639,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("SRAM cleared.");
 				}
 			}
-			else if (Global.Emulator.HasSaveRam() && Global.Emulator.AsSaveRam().SaveRamModified)
+			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
 			{
 				SaveRam();
 			}
@@ -3653,10 +3656,10 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.Get<TraceLogger>().Restart();
 
 			Global.CheatList.SaveOnClose();
-			Global.Emulator.Dispose();
+			Emulator.Dispose();
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-			Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = new Controller(NullEmulator.NullController);
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
@@ -3675,7 +3678,7 @@ namespace BizHawk.Client.EmuHawk
 				CloseGame(clearSram);
 				var coreComm = CreateCoreComm();
 				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
-				Global.Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
+				Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
 				Global.Game = GameInfo.NullInstance;
 
 				GlobalWin.Tools.Restart();
@@ -3753,7 +3756,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadState(string path, string userFriendlyStateName, bool fromLua = false, bool supressOSD = false) // Move to client.common
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -3801,7 +3804,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadQuickSave(string quickSlotName, bool fromLua = false, bool supressOSD = false)
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -3832,7 +3835,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SaveState(string path, string userFriendlyStateName, bool fromLua)
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -3864,7 +3867,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: should backup logic be stuffed in into Client.Common.SaveStateManager?
 		public void SaveQuickSave(string quickSlotName)
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -3904,7 +3907,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveStateAs()
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -3939,7 +3942,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadStateAs()
 		{
-			if (!Global.Emulator.HasSavestates())
+			if (!Emulator.HasSavestates())
 			{
 				return;
 			}
@@ -3971,7 +3974,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SelectSlot(int slot)
 		{
-			if (Global.Emulator.HasSavestates())
+			if (Emulator.HasSavestates())
 			{
 				if (IsSlave && master.WantsToControlSavestates)
 				{
@@ -3987,7 +3990,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PreviousSlot()
 		{
-			if (Global.Emulator.HasSavestates())
+			if (Emulator.HasSavestates())
 			{
 				if (IsSlave && master.WantsToControlSavestates)
 				{
@@ -4015,7 +4018,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NextSlot()
 		{
-			if (Global.Emulator.HasSavestates())
+			if (Emulator.HasSavestates())
 			{
 				if (IsSlave && master.WantsToControlSavestates)
 				{
@@ -4197,6 +4200,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
 			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
+		}
+
+		private void allowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.CoreForcingViaGameDB ^= true;
 		}
 	}
 }

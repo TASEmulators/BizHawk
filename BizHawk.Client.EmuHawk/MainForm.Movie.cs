@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				var tasmovie = (movie as TasMovie);
 				if (tasmovie != null)
 					tasmovie.TasStateManager.MountWriteAccess();
-				Global.MovieSession.QueueNewMovie(movie, record, Global.Emulator);
+				Global.MovieSession.QueueNewMovie(movie, record, Emulator);
 			}
 			catch (MoviePlatformMismatchException ex)
 			{
@@ -63,31 +63,33 @@ namespace BizHawk.Client.EmuHawk
 
 			Global.Config.RecentMovies.Add(movie.Filename);
 
-			if (Global.Emulator.HasSavestates() && movie.StartsFromSavestate)
+			if (Emulator.HasSavestates() && movie.StartsFromSavestate)
 			{
 				if (movie.TextSavestate != null)
 				{
-					Global.Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
+					Emulator.AsStatable().LoadStateText(new StringReader(movie.TextSavestate));
 				}
 				else
 				{
-					Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
+					Emulator.AsStatable().LoadStateBinary(new BinaryReader(new MemoryStream(movie.BinarySavestate, false)));
 				}
-				if (movie.SavestateFramebuffer != null)
+
+				if (movie.SavestateFramebuffer != null && Emulator.HasVideoProvider())
 				{
 					var b1 = movie.SavestateFramebuffer;
-					var b2 = Global.Emulator.VideoProvider().GetVideoBuffer();
+					var b2 = Emulator.AsVideoProvider().GetVideoBuffer();
 					int len = Math.Min(b1.Length, b2.Length);
 					for (int i = 0; i < len; i++)
 					{
 						b2[i] = b1[i];
 					}
 				}
-				Global.Emulator.ResetCounters();
+
+				Emulator.ResetCounters();
 			}
-			else if (Global.Emulator.HasSaveRam() && movie.StartsFromSaveRam)
+			else if (Emulator.HasSaveRam() && movie.StartsFromSaveRam)
 			{
-				Global.Emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
+				Emulator.AsSaveRam().StoreSaveRam(movie.SaveRam);
 			}
 
 			Global.MovieSession.RunQueuedMovie(record);

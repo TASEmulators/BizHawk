@@ -31,6 +31,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			prg.Dispose();
+			chrlo.Dispose();
+			chrhi.Dispose();
+			base.Dispose();
+		}
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
@@ -148,9 +156,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 
-
 			return base.ReadPPU(addr);
 		}
+
 		public override void WritePPU(int addr, byte value)
 		{
 			if (addr < 0x2000)

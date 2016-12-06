@@ -744,16 +744,29 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "NES":
-								if (!Global.Config.NES_InQuickNES || forceAccurateCore)
 								{
-									core = CoreInventory.Instance["NES", "NesHawk"];
-								}
-								else
-								{
-									core = CoreInventory.Instance["NES", "QuickNes"];
-								}
+									//apply main spur-of-the-moment switcheroo as lowest priority
+									string preference = "neshawk";
+									if(Global.Config.NES_InQuickNES) preference = "quicknes";
 
+									//if user has saw fit to override in gamedb, apply that
+									if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
+										preference = game.ForcedCore;
+
+									//but only neshawk is accurate
+									if (forceAccurateCore) preference = "neshawk";
+
+									if (preference == "neshawk")
+									{
+										core = CoreInventory.Instance["NES", "NesHawk"];
+									}
+									else
+									{
+										core = CoreInventory.Instance["NES", "QuickNes"];
+									}
+								}
 								break;
+
 							case "GB":
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
