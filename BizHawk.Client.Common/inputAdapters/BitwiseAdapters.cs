@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -55,20 +51,24 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 		public IController SourceOr { get; set; }
-		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+
+		public ControllerDefinition Type
+		{
+			get { return Source.Type; }
+			set { throw new InvalidOperationException(); }
+		}
 
 		public bool this[string button]
 		{
 			get
 			{
-				return (Source != null ? Source[button] : false) |
-					(SourceOr != null ? SourceOr[button] : false);
+				return (Source != null ? Source[button] : false)
+					| (SourceOr != null ? SourceOr[button] : false);
 			}
 			set
 			{
 				throw new InvalidOperationException();
 			}
 		}
-
 	}
 }
