@@ -1185,7 +1185,12 @@ namespace BizHawk.Client.EmuHawk
 			Coresnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
 			Coresnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
 
-			var sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>();
+			if (sss == null)
+			{
+				sss = new LibsnesCore.SnesSyncSettings();
+			}
+
 			CorebsnesPerformanceMenuItem.Checked = sss.Profile == "Performance";
 			CorebsnesCompatibilityMenuItem.Checked = sss.Profile == "Compatibility";
 		}
