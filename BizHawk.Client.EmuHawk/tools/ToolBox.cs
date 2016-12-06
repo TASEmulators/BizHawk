@@ -12,6 +12,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ToolBox : Form, IToolForm
 	{
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
 		public ToolBox()
 		{
 			InitializeComponent();
@@ -61,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				if (t == typeof(GBGameGenie)) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
 					continue;
-				if (!ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				if (!ServiceInjector.IsAvailable(Emulator.ServiceProvider, t))
 					continue;
 
 				var instance = Activator.CreateInstance(t);
