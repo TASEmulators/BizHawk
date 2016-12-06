@@ -28,10 +28,6 @@ namespace BizHawk.Client.EmuHawk
 		private Bk2ControllerAdapter controller;
 		private Bk2ControllerAdapter targetController;
 
-		public MovieZone()
-		{
-		}
-
 		public MovieZone(IMovie movie, int start, int length, string key = "")
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
@@ -54,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Get a IController that only contains buttons in key.
 			string[] keys = key.Split('|');
-			ControllerDefinition d = new ControllerDefinition();
+			var d = new ControllerDefinition();
 			for (int i = 0; i < keys.Length; i++)
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(keys[i]))
@@ -178,7 +174,9 @@ namespace BizHawk.Client.EmuHawk
 
 					// Or do this, if TAStudio has to be open.
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						(GlobalWin.Tools.Get<TAStudio>() as TAStudio).GoToFrame(Start);
+					}
 
 					GlobalWin.Tools.UpdateBefore();
 					GlobalWin.Tools.UpdateAfter();
