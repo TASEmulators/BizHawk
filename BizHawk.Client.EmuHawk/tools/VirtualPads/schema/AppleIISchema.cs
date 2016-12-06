@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("AppleII")]
 	public class AppleIISchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			yield return Keyboard();
 			yield return DiskSelection();
