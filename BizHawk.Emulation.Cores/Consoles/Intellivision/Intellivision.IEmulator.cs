@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			else
 				_cpu.TraceCallback = null;
 
-			Frame++;
+			_frame++;
 			// read the controller state here for now
 			get_controller_state();
 
