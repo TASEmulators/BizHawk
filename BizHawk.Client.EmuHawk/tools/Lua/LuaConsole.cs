@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -15,6 +16,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig
 	{
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
 		private readonly LuaFileList _luaList;
 		private bool _sortReverse;
 		private string _lastColumnSorted;
@@ -139,7 +143,7 @@ namespace BizHawk.Client.EmuHawk
 			// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
 			if (IsRebootingCore)
 			{
-				LuaImp.Restart();
+				LuaImp.Restart(Emulator.ServiceProvider);
 				return;
 			}
 
@@ -164,7 +168,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 			}
 
-			LuaImp = new EmuLuaLibrary(this);
+			LuaImp = new EmuLuaLibrary(this, Emulator.ServiceProvider);
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 
 			foreach (var file in runningScripts)

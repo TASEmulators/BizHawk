@@ -145,7 +145,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private TasBranch CreateBranch()
 		{
-			// TODO: don't use Global.Emulator
 			return new TasBranch
 			{
 				Frame = Tastudio.Emulator.Frame,
