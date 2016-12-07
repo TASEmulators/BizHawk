@@ -282,6 +282,27 @@ namespace BizHawk.Client.Common
 						{ "L", 'L' },
 						{ "R", 'R' }
 					}
+				},
+				{
+					"INTV",
+					new Dictionary<string, char>
+					{
+						{ "Clear", 'C' },
+						{ "Enter", 'E' },
+						{ "Top", 'T' },
+						{ "NNE", 'n' },
+						{ "NE", '/' },
+						{ "ENE", 'e' },
+						{ "ESE", 'e' },
+						{ "SE", '\\' },
+						{ "SSE", 's' },
+						{ "SSW", 's' },
+						{ "SW", '/' },
+						{ "WSW", 'w' },
+						{ "WNW", 'w' },
+						{ "NW", '\\' },
+						{ "NNW", 'n' }
+					}
 				}
 			};
 	}
