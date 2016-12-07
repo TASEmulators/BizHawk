@@ -36,7 +36,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			ser.BeginSection("PSG");
 
-			// TODO
+			ser.Sync("Register", ref Register, false);
+			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
+			ser.Sync("Pending Cycles", ref PendingCycles);
 
 			ser.EndSection();
 		}
