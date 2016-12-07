@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam))]
-	public sealed partial class Intellivision : IEmulator, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
+	public sealed partial class Intellivision : IEmulator, IStatable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
