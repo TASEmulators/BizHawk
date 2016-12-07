@@ -722,8 +722,21 @@ namespace BizHawk.Client.EmuHawk
 		public IEmulator Emulator
 		{
 			get { return Global.Emulator; }
-			set { Global.Emulator = value; }
+			set
+			{
+				Global.Emulator = value;
+				if (Global.Emulator.HasVideoProvider())
+				{
+					_currentVideoProvider = Global.Emulator.AsVideoProvider();
+				}
+				else
+				{
+					_currentVideoProvider = NullVideo.Instance;
+				}
+			}
 		}
+
+		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -840,19 +853,18 @@ namespace BizHawk.Client.EmuHawk
 			// also handle floats
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
 			{
-				var video = Emulator.VideoProvider();
 				// hackish
 				if (o.Item1 == "WMouse X")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
-					float x = P.X / (float)video.BufferWidth;
+					float x = P.X / (float)_currentVideoProvider.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
 
 				if (o.Item1 == "WMouse Y")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
-					float y = P.Y / (float)video.BufferHeight;
+					float y = P.Y / (float)_currentVideoProvider.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
 
@@ -918,7 +930,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Emulator.AsVideoProvider(), Global.Config.Screenshot_CaptureOSD))
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, Global.Config.Screenshot_CaptureOSD))
 			{
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
@@ -979,7 +991,6 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				var video = Emulator.VideoProvider();
 				int zoom = Global.Config.TargetZoomFactors[Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
@@ -990,7 +1001,7 @@ namespace BizHawk.Client.EmuHawk
 				Size lastComputedSize = new Size(1, 1);
 				for (; zoom >= 1; zoom--)
 				{
-					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(video, zoom);
+					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(_currentVideoProvider, zoom);
 					if ((((lastComputedSize.Width) + borderWidth) < area.Width)
 						&& (((lastComputedSize.Height) + borderHeight) < area.Height))
 					{
@@ -1901,7 +1912,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer MakeScreenshotImage()
 		{
-			return GlobalWin.DisplayManager.RenderVideoProvider(Emulator.AsVideoProvider());
+			return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -1919,7 +1930,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
-			var video = Emulator.VideoProvider();
+			var video = _currentVideoProvider;
 			//bool change = false;
 			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
@@ -2269,7 +2280,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Emulator.AsVideoProvider(), true);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, true);
 			bb.DiscardAlpha();
 			return bb;
 		}
@@ -2990,8 +3001,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var videoProvider = Emulator.AsVideoProvider();
-					aw.SetVideoParameters(videoProvider.BufferWidth, videoProvider.BufferHeight);
+					aw.SetVideoParameters(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight);
 				}
 
 				aw.SetAudioParameters(44100, 2, 16);
@@ -3168,8 +3178,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								var videoProvider = Emulator.AsVideoProvider();
-								bbin = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
+								bbin = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
 							}
 
 							bbin.DiscardAlpha();
@@ -3180,7 +3189,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (_avwriterpad)
 								{
-									g.Clear(Color.FromArgb(Emulator.AsVideoProvider().BackgroundColor));
+									g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
 									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
 								}
 								else
@@ -3208,7 +3217,7 @@ namespace BizHawk.Client.EmuHawk
 							disposableOutput = (IDisposable)output;
 						}
 						else
-							output = Emulator.AsVideoProvider();
+							output = _currentVideoProvider;
 					}
 
 					_currAviWriter.SetFrame(Emulator.Frame);

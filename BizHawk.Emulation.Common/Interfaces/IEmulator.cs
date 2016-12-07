@@ -77,13 +77,4 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		CoreComm CoreComm { get; }
 	}
-
-	public static class VideoProviderGlue
-	{
-		// todo: this will go away
-		public static IVideoProvider VideoProvider(this IEmulator emu)
-		{
-			return emu.ServiceProvider.GetService<IVideoProvider>();
-		}
-	}
 }
