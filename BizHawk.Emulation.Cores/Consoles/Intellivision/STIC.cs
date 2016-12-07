@@ -29,7 +29,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			ser.BeginSection("STIC");
 
-			// TODO
+			ser.Sync("Sr1", ref Sr1);
+			ser.Sync("Sr2", ref Sr2);
+			ser.Sync("Sst", ref Sst);
+			ser.Sync("Fgbg", ref Fgbg);
+			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
+			ser.Sync("Pending Cycles", ref PendingCycles);
+			ser.Sync("Registers", ref Register, false);
 
 			ser.EndSection();
 		}
