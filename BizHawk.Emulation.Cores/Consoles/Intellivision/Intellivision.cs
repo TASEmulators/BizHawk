@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: false
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam))]
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public sealed partial class Intellivision : IEmulator, IStatable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
