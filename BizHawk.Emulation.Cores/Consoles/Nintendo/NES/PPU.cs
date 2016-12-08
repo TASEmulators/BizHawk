@@ -119,9 +119,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						goto loopout;
 
 					short s = xbuf[j * 256 + i];
-					
-					if ((s & 0x8000)==0)
-						sum += _currentLuma[s];
+
+					short palcolor = (short)(s & 0x3F);
+					short intensity = (short)((s >> 6) & 0x7);
+					sum += _currentLuma[palcolor];
 				}
 			}
 			loopout:
