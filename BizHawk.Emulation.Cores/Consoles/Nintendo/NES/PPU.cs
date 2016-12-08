@@ -119,7 +119,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						goto loopout;
 
 					short s = xbuf[j * 256 + i];
-					sum += _currentLuma[s];
+					
+					if ((s & 0x8000)==0)
+						sum += _currentLuma[s];
 				}
 			}
 			loopout:
