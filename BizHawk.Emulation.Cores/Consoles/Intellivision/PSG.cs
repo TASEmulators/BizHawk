@@ -1,12 +1,24 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using System;
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public sealed class PSG
+	public sealed class PSG : ISoundProvider
 	{
 		public ushort[] Register = new ushort[16];
+
+		public int MaxVolume { get; set; }
+
+		public void DiscardSamples()
+		{
+			
+		}
+
+		public void GetSamples(short[] samples)
+		{
+		}
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;

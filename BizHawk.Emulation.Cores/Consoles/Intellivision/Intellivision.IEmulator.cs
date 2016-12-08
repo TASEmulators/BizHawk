@@ -7,16 +7,16 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		[FeatureNotImplemented]
+		private DCFilter _dcfilter;
+
 		public ISoundProvider SoundProvider
 		{
-			get { return NullSound.SilenceProvider; }
+			get { return _dcfilter; }
 		}
 
-		[FeatureNotImplemented]
 		public ISyncSoundProvider SyncSoundProvider
 		{
-			get { return new FakeSyncSound(NullSound.SilenceProvider, 735); }
+			get { return new FakeSyncSound(_dcfilter, 735); }
 		}
 
 		public bool StartAsyncSound()

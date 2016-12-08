@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
 			SetupMemoryDomains();
+
+			_dcfilter = DCFilter.AsISoundProvider(_psg, 256); // not sure how the 256 will change for intellivision I just copied it from Atari for now
 		}
 
 		public IntellivisionControllerDeck ControllerDeck { get; private set; }
