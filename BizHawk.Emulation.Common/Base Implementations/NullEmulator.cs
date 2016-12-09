@@ -7,6 +7,8 @@ using System.ComponentModel;
 namespace BizHawk.Emulation.Common
 {
 	[CoreAttributes("NullHawk", "", false, true)]
+	[ServiceNotApplicable(typeof(IStatable), typeof(ISaveRam), typeof(IDriveLight), typeof(ICodeDataLogger), typeof(IMemoryDomains),
+		typeof(IDebuggable), typeof(IDisassemblable), typeof(IInputPollable), typeof(IRegionable), typeof(ITraceable))]
 	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, IAsyncSoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
 	{
 		public NullEmulator(CoreComm comm, object settings)
