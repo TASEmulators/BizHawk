@@ -148,8 +148,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nes.apu.sampleclock = 0;
 			}
 
-			public int MaxVolume { get; set; }
-
 			public void Dispose()
 			{
 				if (blip != null)

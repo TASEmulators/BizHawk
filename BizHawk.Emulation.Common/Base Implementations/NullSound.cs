@@ -6,6 +6,5 @@
 
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
-		public int MaxVolume { get; set; }
 	}
 }

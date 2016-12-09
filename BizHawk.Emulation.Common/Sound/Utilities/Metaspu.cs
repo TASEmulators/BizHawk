@@ -30,8 +30,6 @@ namespace BizHawk.Emulation.Common
 			input.DiscardSamples();
 			buffer.clear();
 		}
-
-		public int MaxVolume { get; set; }
 	}
 
 	public class MetaspuSoundProvider : ISoundProvider
@@ -64,8 +62,6 @@ namespace BizHawk.Emulation.Common
 		{
 			buffer.clear();
 		}
-
-		public int MaxVolume { get; set; }
 	}
 
 	public interface ISynchronizingAudioBuffer

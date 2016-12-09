@@ -371,8 +371,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
         /// </summary>
         public Action<int> FrameEndCallBack { get; set; }
 
-        public int MaxVolume { get; set; }
-
         public int VirtualWidth
         {
             // TODO: PAL?

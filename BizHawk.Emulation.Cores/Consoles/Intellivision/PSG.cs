@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public ushort[] Register = new ushort[16];
 
-		public int MaxVolume { get; set; }
-
 		public void DiscardSamples()
 		{
 			
