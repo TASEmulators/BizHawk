@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	public sealed class ADPCM : ISoundProvider
+	public sealed class ADPCM : IMixedSoundProvider
 	{
 		ScsiCDBus SCSI;
 		PCEngine pce;

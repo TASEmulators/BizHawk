@@ -115,12 +115,6 @@ namespace BizHawk.Emulation.Common
 			input.DiscardSamples();
 		}
 
-		int ISoundProvider.MaxVolume
-		{
-			get { return input.MaxVolume; }
-			set { input.MaxVolume = value; }
-		}
-
 		void ISyncSoundProvider.GetSamples(out short[] samples, out int nsamp)
 		{
 			short[] sampin;

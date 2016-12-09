@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Common.Components
 	// TODO: Seriously, I think we need better resampling code.
 	// TODO: Experiment with low-pass filters, etc.
 
-	public sealed class YM2612 : ISoundProvider
+	public sealed class YM2612 : IMixedSoundProvider
 	{
 		public readonly Channel[] Channels = { new Channel(), new Channel(), new Channel(), new Channel(), new Channel(), new Channel() };
 
