@@ -15,13 +15,13 @@
 	/// </summary>
 	public class FakeSyncSound : ISyncSoundProvider
 	{
-		private readonly ISoundProvider source;
+		private readonly IAsyncSoundProvider source;
 		private readonly int spf;
 
 		/// <summary>
 		/// </summary>
 		/// <param name="spf">number of sample pairs to request and provide on each GetSamples() call</param>
-		public FakeSyncSound(ISoundProvider source, int spf)
+		public FakeSyncSound(IAsyncSoundProvider source, int spf)
 		{
 			this.source = source;
 			this.spf = spf;

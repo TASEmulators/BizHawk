@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public string SystemId { get { return "Coleco"; } }
 		public GameInfo game;
 		public CoreComm CoreComm { get; private set; }
-		public ISoundProvider SoundProvider { get { return PSG; } }
+		public IAsyncSoundProvider SoundProvider { get { return PSG; } }
 
 		public string BoardName { get { return null; } }
 

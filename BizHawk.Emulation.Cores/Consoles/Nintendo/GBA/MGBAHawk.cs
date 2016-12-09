@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			nsamp = 0;
 		}
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
+		public IAsyncSoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

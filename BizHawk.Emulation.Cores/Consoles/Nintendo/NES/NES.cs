@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		MyVideoProvider videoProvider;
-		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
+		public IAsyncSoundProvider SoundProvider { get { return magicSoundProvider; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return magicSoundProvider; } }
 		public bool StartAsyncSound() { return true; }
 		public void EndAsyncSound() { }

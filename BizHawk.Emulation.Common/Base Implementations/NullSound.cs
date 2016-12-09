@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public class NullSound : ISoundProvider
+	public class NullSound : IAsyncSoundProvider
 	{
 		public static readonly NullSound SilenceProvider = new NullSound();
 

@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		#region ISyncSoundProvider
 
 		private short[] _sbuff = new short[2048];
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

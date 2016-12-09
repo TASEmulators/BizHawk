@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _disposed;
 		private ISoundOutput _soundOutput;
 		private ISyncSoundProvider _syncSoundProvider;
-		private ISoundProvider _asyncSoundProvider;
+		private IAsyncSoundProvider _asyncSoundProvider;
 		private SoundOutputProvider _outputProvider;
 		private readonly BufferedAsync _semiSync = new BufferedAsync();
 
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SetAsyncInputPin(ISoundProvider source)
+		public void SetAsyncInputPin(IAsyncSoundProvider source)
 		{
 			if (_syncSoundProvider != null)
 			{

@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public sealed class PSG : ISoundProvider
+	public sealed class PSG : IAsyncSoundProvider
 	{
 		public ushort[] Register = new ushort[16];
 

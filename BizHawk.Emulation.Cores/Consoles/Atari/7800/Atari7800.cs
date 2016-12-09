@@ -209,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 
 		MyAVProvider avProvider = new MyAVProvider();
 

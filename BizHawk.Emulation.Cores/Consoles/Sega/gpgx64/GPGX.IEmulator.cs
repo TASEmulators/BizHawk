@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 
 		public ISyncSoundProvider SyncSoundProvider
 		{

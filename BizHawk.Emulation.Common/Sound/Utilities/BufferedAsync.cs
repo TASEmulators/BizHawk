@@ -28,9 +28,9 @@ namespace BizHawk.Emulation.Common
 	 *       that and then bypass the BufferedAsync.
 	 */
 
-	public sealed class BufferedAsync : ISoundProvider
+	public sealed class BufferedAsync : IAsyncSoundProvider
 	{
-		public ISoundProvider BaseSoundProvider;
+		public IAsyncSoundProvider BaseSoundProvider;
 
 		readonly Queue<short> buffer = new Queue<short>(4096);
 

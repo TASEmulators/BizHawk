@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private DCFilter _dcfilter;
 
-		public ISoundProvider SoundProvider
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return _dcfilter; }
 		}

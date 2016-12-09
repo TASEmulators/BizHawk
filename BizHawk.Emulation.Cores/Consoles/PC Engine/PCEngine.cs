@@ -406,8 +406,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public CoreComm CoreComm { get; private set; }
 
-		ISoundProvider soundProvider;
-		public ISoundProvider SoundProvider
+		IAsyncSoundProvider soundProvider;
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return soundProvider; }
 		}

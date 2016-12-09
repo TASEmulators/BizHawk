@@ -7,7 +7,7 @@ using System.Numerics;
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
     // Emulates the TIA
-    public partial class TIA : IVideoProvider, ISoundProvider
+    public partial class TIA : IVideoProvider, IAsyncSoundProvider
     {
 
         #region palette

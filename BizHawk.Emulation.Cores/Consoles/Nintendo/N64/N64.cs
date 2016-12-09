@@ -268,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public DisplayType Region { get { return _display_type; } }
 
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 
 		public ISyncSoundProvider SyncSoundProvider { get { return _audioProvider.Resampler; } }
 

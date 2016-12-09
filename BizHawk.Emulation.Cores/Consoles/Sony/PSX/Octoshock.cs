@@ -861,7 +861,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
+		public IAsyncSoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

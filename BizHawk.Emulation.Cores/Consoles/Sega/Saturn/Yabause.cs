@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		}
 
 		public void DiscardSamples() { }
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

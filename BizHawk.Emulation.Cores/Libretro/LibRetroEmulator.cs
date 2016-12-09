@@ -737,7 +737,7 @@ namespace BizHawk.Emulation.Cores
 
 		#region ISoundProvider
 
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

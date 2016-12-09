@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Sound provider for async operation.  this is optional, and is only required after StartAsyncSound() is called and returns true
 		/// </summary>
-		ISoundProvider SoundProvider { get; }
+		IAsyncSoundProvider SoundProvider { get; }
 		
 		/// <summary>
 		/// sound provider for sync operation.  this is manditory

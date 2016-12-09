@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public interface ISoundProvider
+	public interface IAsyncSoundProvider
 	{
 		void GetSamples(short[] samples);
 		void DiscardSamples();

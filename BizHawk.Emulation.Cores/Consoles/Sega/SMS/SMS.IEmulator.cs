@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return ActiveSoundProvider; }
 		}

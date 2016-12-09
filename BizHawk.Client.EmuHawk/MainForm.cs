@@ -1345,7 +1345,7 @@ namespace BizHawk.Client.EmuHawk
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
 		private HashSet<int> _currAviWriterFrameList;
-		private ISoundProvider _aviSoundInput;
+		private IAsyncSoundProvider _aviSoundInput;
 		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
 		private int _avwriterResizew;

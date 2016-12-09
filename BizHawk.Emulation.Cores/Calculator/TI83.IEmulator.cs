@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return NullSound.SilenceProvider; }
 		}

@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// uses Metaspu to have an ISyncSoundProvider input to a ISoundProvider
 	/// </summary>
-	public class MetaspuAsync : ISoundProvider
+	public class MetaspuAsync : IAsyncSoundProvider
 	{
 		private readonly ISynchronizingAudioBuffer buffer;
 		private readonly ISyncSoundProvider input;
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	public class MetaspuSoundProvider : ISoundProvider
+	public class MetaspuSoundProvider : IAsyncSoundProvider
 	{
 		public ISynchronizingAudioBuffer buffer;
 		public MetaspuSoundProvider(ESynchMethod method)
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		private readonly short[] pullBuffer = new short[1470];
-		public void PullSamples(ISoundProvider source)
+		public void PullSamples(IAsyncSoundProvider source)
 		{
 			Array.Clear(pullBuffer, 0, 1470);
 			source.GetSamples(pullBuffer);

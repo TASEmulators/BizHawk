@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// implements a DC block filter on top of an ISoundProvider.  rather simple.
 	/// </summary>
-	sealed public class DCFilter : ISoundProvider, ISyncSoundProvider
+	sealed public class DCFilter : IAsyncSoundProvider, ISyncSoundProvider
 	{
 		/*
 		 * A note about accuracy:
@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 		 * Analog output hardware ALWAYS has dc blocking caps.
 		 */
 
-		ISoundProvider input;
+		IAsyncSoundProvider input;
 		ISyncSoundProvider syncinput;
 
 		int latchL = 0;
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Common
 
 		int depth;
 
-		public static DCFilter AsISoundProvider(ISoundProvider input, int filterwidth)
+		public static DCFilter AsISoundProvider(IAsyncSoundProvider input, int filterwidth)
 		{
 			if (input == null)
 				throw new ArgumentNullException();
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Common
 			return new DCFilter(null, null, filterwidth);
 		}
 
-		DCFilter(ISoundProvider input, ISyncSoundProvider syncinput, int filterwidth)
+		DCFilter(IAsyncSoundProvider input, ISyncSoundProvider syncinput, int filterwidth)
 		{
 			if (filterwidth < 8 || filterwidth > 65536)
 				throw new ArgumentOutOfRangeException();
@@ -104,13 +104,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		void ISoundProvider.GetSamples(short[] samples)
+		void IAsyncSoundProvider.GetSamples(short[] samples)
 		{
 			input.GetSamples(samples);
 			PushThroughSamples(samples, samples.Length);
 		}
 
-		void ISoundProvider.DiscardSamples()
+		void IAsyncSoundProvider.DiscardSamples()
 		{
 			input.DiscardSamples();
 		}

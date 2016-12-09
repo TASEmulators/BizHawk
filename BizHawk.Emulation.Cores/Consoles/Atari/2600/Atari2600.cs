@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public CoreComm CoreComm { get; private set; }
 
-		public ISoundProvider SoundProvider { get { return _dcfilter; } }
+		public IAsyncSoundProvider SoundProvider { get { return _dcfilter; } }
 
 		// todo: make this not so ugly
 		public ISyncSoundProvider SyncSoundProvider

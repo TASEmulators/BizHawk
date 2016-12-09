@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public CoreComm CoreComm { get; private set; }
 
-		public ISoundProvider SoundProvider
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return SoundMixer; }
 		}

@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		[FeatureNotImplemented]
-		public ISoundProvider SoundProvider
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return null; }
 		}

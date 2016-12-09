@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
-    public sealed partial class Sid : ISoundProvider, ISyncSoundProvider
+    public sealed partial class Sid : IAsyncSoundProvider, ISyncSoundProvider
     {
         public int MaxVolume
         {

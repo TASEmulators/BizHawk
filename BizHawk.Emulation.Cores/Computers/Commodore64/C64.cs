@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
         public bool StartAsyncSound() { return false; }
         public void EndAsyncSound() { }
         [SaveState.DoNotSave]
-        public ISoundProvider SoundProvider { get { return null; } }
+        public IAsyncSoundProvider SoundProvider { get { return null; } }
         [SaveState.DoNotSave]
         public ISyncSoundProvider SyncSoundProvider { get; private set; }
         [SaveState.DoNotSave]

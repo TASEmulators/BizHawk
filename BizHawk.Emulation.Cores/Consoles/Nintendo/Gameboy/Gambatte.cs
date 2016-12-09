@@ -569,7 +569,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region ISoundProvider
 
-		public ISoundProvider SoundProvider { get { return null; } }
+		public IAsyncSoundProvider SoundProvider { get { return null; } }
 		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
 		public bool StartAsyncSound() { return false; }
 		public void EndAsyncSound() { }

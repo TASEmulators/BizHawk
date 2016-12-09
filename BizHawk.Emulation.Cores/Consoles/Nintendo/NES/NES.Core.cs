@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			magicSoundProvider = null;
 		}
 
-		class MagicSoundProvider : ISoundProvider, ISyncSoundProvider, IDisposable
+		class MagicSoundProvider : IAsyncSoundProvider, ISyncSoundProvider, IDisposable
 		{
 			BlipBuffer blip;
 			NES nes;

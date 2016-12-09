@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private long _soundRemainder; // audio timekeeping for video dumping
 
-		public void DumpAV(IVideoProvider v, ISoundProvider s, out short[] samples, out int samplesprovided)
+		public void DumpAV(IVideoProvider v, IAsyncSoundProvider s, out short[] samples, out int samplesprovided)
 		{
 			if (!aset || !vset)
 				throw new InvalidOperationException("Must set params first!");
