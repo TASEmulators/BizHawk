@@ -3,14 +3,10 @@
 	public interface ISyncSoundProvider
 	{
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="samples"></param>
 		/// <param name="nsamp">number of sample PAIRS available</param>
 		void GetSamples(out short[] samples, out int nsamp);
-		/// <summary>
-		/// 
-		/// </summary>
+
 		void DiscardSamples();
 	}
 
@@ -21,10 +17,9 @@
 	{
 		private readonly ISoundProvider source;
 		private readonly int spf;
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="source"></param>
 		/// <param name="spf">number of sample pairs to request and provide on each GetSamples() call</param>
 		public FakeSyncSound(ISoundProvider source, int spf)
 		{
