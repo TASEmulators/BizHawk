@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ISyncSoundProvider SyncSoundProvider
 		{
-			get { return new FakeSyncSound(_dcfilter, 3733); }
+			get { return new FakeSyncSound(_dcfilter, 735); }
 		}
 
 		public bool StartAsyncSound()
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			while (_cpu.GetPendingCycles() > 0)
 			{
 				int cycles = _cpu.Execute();
-				_psg.generate_sound(cycles);
+				//_psg.generate_sound(cycles);
 				Connect();
 			}
 

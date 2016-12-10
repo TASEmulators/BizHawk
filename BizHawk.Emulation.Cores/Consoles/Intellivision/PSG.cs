@@ -11,11 +11,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void Reset()
 		{
-			// reset audio if needed later
+			sq_per_A = sq_per_B = sq_per_C = 0x1000;
+			noise_per = 64;
+			env_per = 0x20000;
 		}
 
 		public void DiscardSamples()
 		{
+			
 			sample_count = 0;
 
 			for (int i = 0; i < 3733; i++)
@@ -28,7 +31,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			for (int i = 0; i < samples.Length / 2; i++)
 			{
-				samples[i * 2] = audio_samples[i];
+				//smooth out audio sample by averging
+				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(3.7904 * i)]);
+				
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
 
@@ -47,7 +52,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int PendingCycles;
 
 		public int psg_clock;
-		public int psg_noise;
 
 		public int sq_per_A, sq_per_B, sq_per_C;
 		public int clock_A, clock_B, clock_C;
@@ -76,6 +80,19 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
 			ser.Sync("Pending Cycles", ref PendingCycles);
 
+			ser.Sync("sample_count", ref sample_count);
+			ser.Sync("psg_clock", ref psg_clock);
+			ser.Sync("clock_A", ref clock_A);
+			ser.Sync("clock_B", ref clock_B);
+			ser.Sync("clock_C", ref clock_C);
+			ser.Sync("noise clock", ref noise_clock);
+			ser.Sync("A_up", ref A_up);
+			ser.Sync("B_up", ref B_up);
+			ser.Sync("C_up", ref C_up);
+			ser.Sync("noise", ref noise);
+
+			sync_psg_state();
+
 			ser.EndSection();
 		}
 
@@ -88,102 +105,83 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return null;
 		}
 
+		public void sync_psg_state()
+		{
+
+			sq_per_A = (Register[0] & 0xFF) | (((Register[4] & 0xF) << 8));
+			if (sq_per_A == 0)
+				sq_per_A = 0x1000;
+			//else
+				//sq_per_A *= 2;
+			//clock_A = 0;
+
+			sq_per_B = (Register[1] & 0xFF) | (((Register[5] & 0xF) << 8));
+			if (sq_per_B == 0)
+				sq_per_B = 0x1000;
+			//else
+				//sq_per_B *= 2;
+			//clock_B = 0;
+
+			sq_per_C = (Register[2] & 0xFF) | (((Register[6] & 0xF) << 8));
+			if (sq_per_C == 0)
+				sq_per_C = 0x1000;
+			//else
+				//sq_per_C *= 2;
+			//clock_C = 0;
+
+			env_per = (Register[3] & 0xFF) | (((Register[7] & 0xFF) << 8));
+			if (env_per == 0)
+				env_per = 0x20000;
+			else
+				env_per *= 2;
+
+			A_on = Register[8].Bit(0);
+			B_on = Register[8].Bit(1);
+			C_on = Register[8].Bit(2);
+			A_noise = Register[8].Bit(3);
+			B_noise = Register[8].Bit(4);
+			C_noise = Register[8].Bit(5);
+
+			noise_per = Register[9] & 0x1F;
+			if (noise_per == 0)
+			{
+				noise_per = 64;
+			}
+			else
+			{
+				noise_per *= 2;
+			}
+
+			var shape_select = Register[10] & 0xF;
+
+			if (shape_select < 4)
+				env_shape = 0;
+			else if (shape_select < 8)
+				env_shape = 1;
+			else
+				env_shape = 2 + (shape_select - 8);
+
+			vol_A = Register[11] & 0xF;
+			env_vol_A = (Register[11] >> 4) & 0x3;
+
+			vol_B = Register[12] & 0xF;
+			env_vol_B = (Register[12] >> 4) & 0x3;
+
+
+			vol_C = Register[13] & 0xF;
+			env_vol_C = (Register[13] >> 4) & 0x3;
+
+		}
+
 		public bool WritePSG(ushort addr, ushort value)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
 				Register[addr - 0x01F0] = value;
-				var reg = addr - 0x01F0;
-				if (reg==0 || reg==4)
-				{
-					sq_per_A = (Register[0] & 0xFF) | (((Register[4] & 0xF) << 8));
-					if (sq_per_A == 0)
-						sq_per_A = 0x1000;
-					else
-						sq_per_A *= 2;
-					//clock_A = 0;
-				}
-				if (reg == 1 || reg == 5)
-				{
-					sq_per_B = (Register[1] & 0xFF) | (((Register[5] & 0xF) << 8));
-					if (sq_per_B == 0)
-						sq_per_B = 0x1000;
-					else
-						sq_per_B *= 2;
-					//clock_B = 0;
-				}
-				if (reg == 2 || reg == 6)
-				{
-					sq_per_C = (Register[2] & 0xFF) | (((Register[6] & 0xF) << 8));
-					if (sq_per_C == 0)
-						sq_per_C = 0x1000;
-					else
-						sq_per_C *= 2;
-					//clock_C = 0;
-				}
-				if (reg == 3 || reg == 7)
-				{
-					env_per = (Register[3] & 0xFF) | (((Register[7] & 0xFF) << 8));
-					if (env_per == 0)
-						env_per = 0x20000;
-					else
-						env_per *= 2;
-				}
-
-				if (reg==8)
-				{
-					A_on = Register[8].Bit(0);
-					B_on = Register[8].Bit(1);
-					C_on = Register[8].Bit(2);
-					A_noise = Register[8].Bit(3);
-					B_noise = Register[8].Bit(4);
-					C_noise = Register[8].Bit(5);
-				}
-
-				if (reg==9)
-				{
-					noise_per = Register[9] & 0x1F;
-					if (noise_per==0)
-					{
-						noise_per = 64;
-					} else
-					{
-						noise_per *= 2;
-					}
-				}
-
-				if (reg==10)
-				{
-					//writing to register 10 resets the envelope
+				if (addr - 0x01F0 == 10)
 					env_clock = 0;
 
-					var shape_select = Register[10] & 0xF;
-
-					if (shape_select < 4)
-						env_shape = 0;
-					else if (shape_select < 8)
-						env_shape = 1;
-					else
-						env_shape = 2 + (shape_select - 8);
-				}
-
-				if (reg==11)
-				{
-					vol_A = Register[11] & 0xF;
-					env_vol_A = (Register[11] >> 4) & 0x3;
-				}
-
-				if (reg == 12)
-				{
-					vol_B = Register[12] & 0xF;
-					env_vol_B = (Register[12] >> 4) & 0x3;
-				}
-
-				if (reg == 13)
-				{
-					vol_C = Register[13] & 0xF;
-					env_vol_C = (Register[13] >> 4) & 0x3;
-				}
+				sync_psg_state();
 
 				return true;
 			}
@@ -204,9 +202,22 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				if (psg_clock==4)
 				{
 					psg_clock = 0;
-					clock_A++;
-					clock_B++;
-					clock_C++;
+
+					if (vol_A!=0)
+						clock_A++;
+					else if (env_vol_A!=0)
+						clock_A++;
+
+					if (vol_B != 0)
+						clock_B++;
+					else if (env_vol_B != 0)
+						clock_B++;
+
+					if (vol_C != 0)
+						clock_C++;
+					else if (env_vol_C != 0)
+						clock_C++;
+
 					env_clock++;
 					noise_clock++;
 
@@ -217,19 +228,19 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						noise_clock = 0;
 					}
 
-					if (clock_A >= sq_per_A/2)
+					if (clock_A >= sq_per_A)
 					{
 						A_up = !A_up;
 						clock_A = 0;
 					}
 
-					if (clock_B >= sq_per_B/2)
+					if (clock_B >= sq_per_B)
 					{
 						B_up = !B_up;
 						clock_B = 0;
 					}
 
-					if (clock_C >= sq_per_C/2)
+					if (clock_C >= sq_per_C)
 					{
 						C_up = !C_up;
 						clock_C = 0;
