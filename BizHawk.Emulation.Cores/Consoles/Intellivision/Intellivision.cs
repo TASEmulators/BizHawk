@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_stic);
 
 			_psg = new PSG();
+			_psg.Reset();
 			_psg.ReadMemory = ReadMemory;
 			_psg.WriteMemory = WriteMemory;
 

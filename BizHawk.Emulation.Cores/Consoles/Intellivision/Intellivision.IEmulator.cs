@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ISyncSoundProvider SyncSoundProvider
 		{
-			get { return new FakeSyncSound(_dcfilter, 735); }
+			get { return new FakeSyncSound(_dcfilter, 3733); }
 		}
 
 		public bool StartAsyncSound()
@@ -42,6 +42,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				_cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
 				_cpu.TraceCallback = null;
+
+			//reset the count of audio samples
+			_psg.sample_count = 0;
 
 			_frame++;
 			// read the controller state here for now

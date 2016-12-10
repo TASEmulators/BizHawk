@@ -9,14 +9,39 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public ushort[] Register = new ushort[16];
 
+		public void Reset()
+		{
+			// reset audio if needed later
+		}
+
 		public void DiscardSamples()
 		{
-			
+			sample_count = 0;
+
+			for (int i = 0; i < 3733; i++)
+			{
+				audio_samples[i] = 0;
+			}
 		}
 
 		public void GetSamples(short[] samples)
 		{
+			for (int i = 0; i < samples.Length / 2; i++)
+			{
+				samples[i * 2] = audio_samples[i];
+				samples[(i * 2) + 1] = samples[i * 2];
+			}
+
+
 		}
+
+		// There is one audio clock for every 4 cpu clocks, and ~15000 cycles per frame
+		public short[] audio_samples = new short[4000];
+
+		public static int[] volume_table = new int[16] {0x0000, 0x0055, 0x0079, 0x00AB, 0x00F1, 0x0155, 0x01E3, 0x02AA,
+0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA};
+
+		public int sample_count;
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;
@@ -36,6 +61,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int env_shape;
 		public int env_vol_A, env_vol_B, env_vol_C;
 
+		public int noise_clock;
 		public int noise_per;
 		public int noise=0x1FFF;
 
@@ -67,7 +93,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
 				Register[addr - 0x01F0] = value;
-				
 				var reg = addr - 0x01F0;
 				if (reg==0 || reg==4)
 				{
@@ -118,6 +143,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				if (reg==9)
 				{
 					noise_per = Register[9] & 0x1F;
+					if (noise_per==0)
+					{
+						noise_per = 64;
+					} else
+					{
+						noise_per *= 2;
+					}
 				}
 
 				if (reg==10)
@@ -169,8 +201,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				psg_clock++;
 
-
-
 				if (psg_clock==4)
 				{
 					psg_clock = 0;
@@ -178,32 +208,68 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					clock_B++;
 					clock_C++;
 					env_clock++;
+					noise_clock++;
 
 					//clock noise
-					noise = (noise >> 1) ^ (noise.Bit(0) ? 0x14000 : 0);
+					if (noise_clock >= noise_per)
+					{
+						noise = (noise >> 1) ^ (noise.Bit(0) ? 0x10004 : 0);
+						noise_clock = 0;
+					}
 
-					if (clock_A == sq_per_A)
+					if (clock_A >= sq_per_A/2)
 					{
 						A_up = !A_up;
 						clock_A = 0;
 					}
 
-					if (clock_B == sq_per_B)
+					if (clock_B >= sq_per_B/2)
 					{
 						B_up = !B_up;
 						clock_B = 0;
 					}
 
-					if (clock_C == sq_per_C)
+					if (clock_C >= sq_per_C/2)
 					{
 						C_up = !C_up;
 						clock_C = 0;
 					}
 
 
-					sound_out_A = (noise.Bit(0) & A_noise) & (A_on & A_up);
-					sound_out_B = (noise.Bit(0) & B_noise) & (B_on & B_up);
-					sound_out_C = (noise.Bit(0) & C_noise) & (C_on & C_up);
+					sound_out_A = (noise.Bit(0) | A_noise) & (A_on | A_up);
+					sound_out_B = (noise.Bit(0) | B_noise) & (B_on | B_up);
+					sound_out_C = (noise.Bit(0) | C_noise) & (C_on | C_up);
+
+					//now calculate the volume of each channel and add them together
+
+					if (env_vol_A == 0)
+					{
+						audio_samples[sample_count] = (short)(sound_out_A ? volume_table[vol_A] : 0);
+					}
+					else
+					{
+						//Console.Write(env_vol_A); Console.Write("A"); Console.Write('\n');
+					}
+
+					if (env_vol_B == 0)
+					{
+						audio_samples[sample_count] += (short)(sound_out_B ? volume_table[vol_B] : 0);
+					}
+					else
+					{
+						//Console.Write(env_vol_B); Console.Write("B"); Console.Write('\n');
+					}
+
+					if (env_vol_C == 0)
+					{
+						audio_samples[sample_count] += (short)(sound_out_C ? volume_table[vol_C] : 0);
+					}
+					else
+					{
+						//Console.Write(env_vol_C); Console.Write("C"); Console.Write('\n');
+					}
+
+					sample_count++;
 
 				}
 
