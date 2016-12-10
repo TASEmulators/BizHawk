@@ -115,10 +115,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void get_controller_state()
 		{
 			ushort port1 = ControllerDeck.ReadPort1(Controller);
-			_psg.Register[14] = (ushort)(0xFF - port1);
+			_psg.Register[15] = (ushort)(0xFF - port1);
 
 			ushort port2 = ControllerDeck.ReadPort2(Controller);
-			_psg.Register[15] = (ushort)(0xFF - port2);
+			_psg.Register[14] = (ushort)(0xFF - port2);
 		}
 	}
 }
