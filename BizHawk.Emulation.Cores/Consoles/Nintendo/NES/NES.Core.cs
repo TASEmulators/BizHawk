@@ -79,9 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			magicSoundProvider = null;
 		}
 
-		// Sound refactor todo: do we want to support async?
-		class MagicSoundProvider
-			: ISoundProvider, IDisposable
+		class MagicSoundProvider : ISoundProvider, IDisposable
 		{
 			BlipBuffer blip;
 			NES nes;

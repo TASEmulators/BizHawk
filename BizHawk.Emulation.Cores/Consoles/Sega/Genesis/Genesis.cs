@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public CoreComm CoreComm { get; private set; }
 
-		// Sound refactor todo: Implement ISoundProvider
+		// TODO: Implement ISoundProvider
 		/*
 		public IAsyncSoundProvider SoundProvider
 		{
