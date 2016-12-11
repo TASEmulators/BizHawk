@@ -16,13 +16,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		// ROM
 		public byte[] RomData;
 		public int RomLength;
-
 		public byte[] BiosRom;
 
 		// Machine
 		public Z80A Cpu;
 		public TMS9918A VDP;
-		public SN76489 PSG;
+		
 		public byte[] Ram = new byte[1024];
 		private readonly TraceBuffer Tracer = new TraceBuffer();
 
@@ -167,12 +166,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public string SystemId { get { return "Coleco"; } }
 		public GameInfo game;
 		public CoreComm CoreComm { get; private set; }
-		public IAsyncSoundProvider SoundProvider { get { return PSG; } }
-
 		public string BoardName { get { return null; } }
-
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(SoundProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
 	}
 }

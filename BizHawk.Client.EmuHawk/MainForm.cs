@@ -733,10 +733,23 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_currentVideoProvider = NullVideo.Instance;
 				}
+
+				if (Global.Emulator.HasSoundProvider())
+				{
+					_currentSoundProvider = Global.Emulator.AsSoundProvider();
+				}
+				else
+				{
+					// Set the samples per frame based on VSync rate (which is 60 unless the core states otherwise)
+					// Use 44.1 khz because we like to do that
+					_currentSoundProvider = new NullSound((int)(44100 / Global.Emulator.CoreComm.VsyncRate));
+				}
 			}
 		}
 
 		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
+
+		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -1345,7 +1358,10 @@ namespace BizHawk.Client.EmuHawk
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
 		private HashSet<int> _currAviWriterFrameList;
-		private IAsyncSoundProvider _aviSoundInput;
+
+		// Sound refator TODO: we can enforce async mode here with a property that gets/sets this but does an async check
+		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
+
 		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
 		private int _avwriterResizew;
@@ -1620,8 +1636,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Emulator.EndAsyncSound();
-				GlobalWin.Sound.SetSyncInputPin(Emulator.SyncSoundProvider);
+				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
 			}
 		}
 
@@ -3096,13 +3111,14 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_dumpaudiosync)
 			{
-				Emulator.EndAsyncSound();
+				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
 			}
 			else
 			{
-				_aviSoundInput = !Emulator.StartAsyncSound()
-					? new MetaspuAsync(Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
-					: Emulator.SoundProvider;
+				_aviSoundInputAsync = _currentSoundProvider.CanProvideAsync
+					? _currentSoundProvider
+					: new MetaspuAsync(_currentSoundProvider, ESynchMethod.ESynchMethod_V);
+					
 			}
 			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
 			RewireSound();
@@ -3123,7 +3139,7 @@ namespace BizHawk.Client.EmuHawk
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = string.Empty;
 			AVIStatusLabel.Visible = false;
-			_aviSoundInput = null;
+			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
 			RewireSound();
 		}
@@ -3144,7 +3160,7 @@ namespace BizHawk.Client.EmuHawk
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = string.Empty;
 			AVIStatusLabel.Visible = false;
-			_aviSoundInput = null;
+			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
 			RewireSound();
 		}
@@ -3226,11 +3242,11 @@ namespace BizHawk.Client.EmuHawk
 					int nsamp;
 					if (_dumpaudiosync)
 					{
-						(_currAviWriter as VideoStretcher).DumpAV(output, Emulator.SyncSoundProvider, out samp, out nsamp);
+						(_currAviWriter as VideoStretcher).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
 					}
 					else
 					{
-						(_currAviWriter as AudioStretcher).DumpAV(output, _aviSoundInput, out samp, out nsamp);
+						(_currAviWriter as AudioStretcher).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
 					}
 
 					if (disposableOutput != null)
@@ -3238,7 +3254,7 @@ namespace BizHawk.Client.EmuHawk
 						disposableOutput.Dispose();
 					}
 
-					_dumpProxy.buffer.enqueue_samples(samp, nsamp);
+					_dumpProxy.Buffer.enqueue_samples(samp, nsamp);
 				}
 				catch (Exception e)
 				{

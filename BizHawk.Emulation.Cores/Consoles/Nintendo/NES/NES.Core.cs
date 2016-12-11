@@ -79,7 +79,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			magicSoundProvider = null;
 		}
 
-		class MagicSoundProvider : IAsyncSoundProvider, ISyncSoundProvider, IDisposable
+		// Sound refactor todo: do we want to support async?
+		class MagicSoundProvider
+			: ISoundProvider, IDisposable
 		{
 			BlipBuffer blip;
 			NES nes;
@@ -99,30 +101,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//output = new Sound.Utilities.DCFilter(actualMetaspu);
 			}
 
-			public void GetSamples(short[] samples)
+			public bool CanProvideAsync
 			{
-				//Console.WriteLine("Sync: {0}", nes.apu.dlist.Count);
-				int nsamp = samples.Length / 2;
-				if (nsamp > blipbuffsize) // oh well.
-					nsamp = blipbuffsize;
-				uint targetclock = (uint)blip.ClocksNeeded(nsamp);
-				uint actualclock = nes.apu.sampleclock;
-				foreach (var d in nes.apu.dlist)
-					blip.AddDelta(d.time * targetclock / actualclock, d.value);
-				nes.apu.dlist.Clear();
-				blip.EndFrame(targetclock);
-				nes.apu.sampleclock = 0;
-
-				blip.ReadSamples(samples, nsamp, true);
-				// duplicate to stereo
-				for (int i = 0; i < nsamp * 2; i += 2)
-					samples[i + 1] = samples[i];
-
-				//mix in the cart's extra sound circuit
-				nes.Board.ApplyCustomAudio(samples);
+				get { return false; }
 			}
 
-			public void GetSamples(out short[] samples, out int nsamp)
+			public SyncSoundMode SyncMode
+			{
+				get { return SyncSoundMode.Sync; }
+			}
+
+			public void SetSyncMode(SyncSoundMode mode)
+			{
+				if (mode != SyncSoundMode.Sync)
+				{
+					throw new NotSupportedException("Only sync mode is supported");
+				}
+			}
+
+			public void GetSamplesAsync(short[] samples)
+			{
+				throw new NotSupportedException("Async not supported");
+			}
+
+			public void GetSamplesSync(out short[] samples, out int nsamp)
 			{
 				//Console.WriteLine("ASync: {0}", nes.apu.dlist.Count);
 				foreach (var d in nes.apu.dlist)

@@ -13,24 +13,6 @@ namespace BizHawk.Emulation.Common
 		IEmulatorServiceProvider ServiceProvider { get; }
 
 		/// <summary>
-		/// Sound provider for async operation.  this is optional, and is only required after StartAsyncSound() is called and returns true
-		/// </summary>
-		IAsyncSoundProvider SoundProvider { get; }
-		
-		/// <summary>
-		/// sound provider for sync operation.  this is manditory
-		/// </summary>
-		ISyncSoundProvider SyncSoundProvider { get; }
-		
-		/// <summary>start async operation.  (on construct, sync operation is assumed).</summary>
-		/// <returns>false if core doesn't support async sound; SyncSoundProvider will continue to be used in that case</returns>
-		bool StartAsyncSound();
-		/// <summary>
-		/// end async operation, returning to sync operation.  after this, all sound requests will go to the SyncSoundProvider
-		/// </summary>
-		void EndAsyncSound();
-
-		/// <summary>
 		/// Defines all the possible inputs and types that the core can receive
 		/// </summary>
 		ControllerDefinition ControllerDefinition { get; }

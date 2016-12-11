@@ -310,11 +310,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_pal = DetectPal(_game, Rom);
 			}
 
-			_tia = new TIA(this, _pal, Settings.SECAMColors);
+			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
+			_tia = new TIA(this, _pal, Settings.SECAMColors, CoreComm.VsyncRate > 55.0 ? 735 : 882);
 			_tia.GetFrameRate(out CoreComm.VsyncNum, out CoreComm.VsyncDen);
 
-			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
-			_dcfilter = DCFilter.AsISoundProvider(_tia, 256);
+			_dcfilter = new DCFilter(_tia, 256);
 
 			M6532 = new M6532(this);
 

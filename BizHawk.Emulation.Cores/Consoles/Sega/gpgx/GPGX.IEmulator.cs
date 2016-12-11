@@ -7,20 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public IAsyncSoundProvider SoundProvider { get { return null; } }
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return this; }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return false;
-		}
-
-		public void EndAsyncSound() { }
-
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		public IController Controller { get; set; }

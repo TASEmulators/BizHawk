@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		singleInstance: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public partial class GBA : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
+	public partial class GBA : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable
 	{
 		[CoreConstructor("GBA")]
 		public GBA(CoreComm comm, byte[] file)
@@ -293,12 +293,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		short[] soundbuffer;
 		GCHandle soundhandle;
 
-		public IAsyncSoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			uint nbytes = LibMeteor.libmeteor_emptysound();
 			samples = soundbuffer;
@@ -311,6 +306,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void DiscardSamples()
 		{
 			LibMeteor.libmeteor_emptysound();
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		#endregion

@@ -5,7 +5,8 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public sealed class PSG : IAsyncSoundProvider
+	// Sound refactor todo: Implement ISoundProvider, and register _psg in the Intellivision core
+	public sealed class PSG
 	{
 		public ushort[] Register = new ushort[16];
 

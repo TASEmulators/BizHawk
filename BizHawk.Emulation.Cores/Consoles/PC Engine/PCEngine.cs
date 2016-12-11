@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public HuC6280PSG PSG;
 		public CDAudio CDAudio;
 		public SoundMixer SoundMixer;
-		public MetaspuSoundProvider SoundSynchronizer;
+		//public MetaspuSoundProvider SoundSynchronizer;
 
 		bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
 		bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ReadMemory21 = ReadMemory;
 				Cpu.WriteMemory21 = WriteMemory;
 				Cpu.WriteVDC = VDC1.WriteVDC;
-				soundProvider = PSG;
+				soundProvider = new FakeSyncSound(PSG, 735);
 				CDAudio = new CDAudio(null, 0);
 			}
 
@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ReadMemory21 = ReadMemorySGX;
 				Cpu.WriteMemory21 = WriteMemorySGX;
 				Cpu.WriteVDC = VDC1.WriteVDC;
-				soundProvider = PSG;
+				soundProvider = new FakeSyncSound(PSG, 735);
 				CDAudio = new CDAudio(null, 0);
 			}
 
@@ -199,8 +199,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				SetCDAudioCallback();
 				PSG.MaxVolume = short.MaxValue * 3 / 4;
 				SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM);
-				SoundSynchronizer = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
-				soundProvider = SoundSynchronizer;
+				soundProvider = new FakeSyncSound(SoundMixer, 735);
 				Cpu.ThinkAction = (cycles) => { SCSI.Think(); ADPCM.Think(cycles); };
 			}
 
@@ -305,6 +304,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
+			ser.Register<ISoundProvider>(soundProvider);
 			SetupMemoryDomains();
 		}
 
@@ -384,8 +384,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				VDC1.ExecFrame(render);
 
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
-			if (TurboCD)
-				SoundSynchronizer.PullSamples(SoundMixer);
 
 			if (lagged)
 			{
@@ -406,14 +404,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public CoreComm CoreComm { get; private set; }
 
-		IAsyncSoundProvider soundProvider;
-		public IAsyncSoundProvider SoundProvider
-		{
-			get { return soundProvider; }
-		}
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(soundProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
+		private ISoundProvider soundProvider;
 
 		public string SystemId { get { return systemid; } }
 		public string Region { get; set; }

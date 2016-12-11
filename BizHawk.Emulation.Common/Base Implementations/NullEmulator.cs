@@ -9,10 +9,11 @@ namespace BizHawk.Emulation.Common
 	[CoreAttributes("NullHawk", "", false, true)]
 	[ServiceNotApplicable(typeof(IStatable), typeof(ISaveRam), typeof(IDriveLight), typeof(ICodeDataLogger), typeof(IMemoryDomains),
 		typeof(IDebuggable), typeof(IDisassemblable), typeof(IInputPollable), typeof(IRegionable), typeof(ITraceable))]
-	public class NullEmulator : IEmulator, IVideoProvider, ISyncSoundProvider, IAsyncSoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
+	public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
 	{
 		public NullEmulator(CoreComm comm, object settings)
 		{
+			SyncMode = SyncSoundMode.Sync;
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			_settings = (NullEmulatorSettings)settings ?? new NullEmulatorSettings();
@@ -34,10 +35,6 @@ namespace BizHawk.Emulation.Common
 		private readonly int[] frameBuffer = new int[256 * 192];
 		private readonly Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }
-		public IAsyncSoundProvider SoundProvider { get { return this; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
 
 		public void ResetCounters()
 		{
@@ -94,8 +91,15 @@ namespace BizHawk.Emulation.Common
 
 		private short[] sampbuff = new short[735 * 2];
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		#region ISoundProvider
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
+			if (SyncMode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Attempt to call a Sync method in async mode");
+			}
+
 			nsamp = 735;
 			samples = sampbuff;
 			if (!_settings.SnowyDisplay)
@@ -108,19 +112,32 @@ namespace BizHawk.Emulation.Common
 		{
 		}
 
-		public void GetSamples(short[] samples)
+		public void GetSamplesAsync(short[] samples)
 		{
+			if (SyncMode != SyncSoundMode.Async)
+			{
+				throw new InvalidOperationException("Attempt to call an Async method in sync mode");
+			}
+
 			if (!_settings.SnowyDisplay)
 				return;
 			if (xmas)
 				pleg.Generate(samples);
 		}
 
-		public int MaxVolume
+		public bool CanProvideAsync
 		{
-			get;
-			set;
+			get { return true; }
 		}
+
+		public SyncSoundMode SyncMode { get; private set; }
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			SyncMode = mode;
+		}
+
+		#endregion
 
 		private NullEmulatorSettings _settings;
 

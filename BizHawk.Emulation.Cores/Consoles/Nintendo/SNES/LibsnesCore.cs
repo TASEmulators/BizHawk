@@ -84,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// start up audio resampler
 			InitAudio();
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
 
 			//strip header
 			if (romData != null)
@@ -1300,10 +1301,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			resampler.EnqueueSample((short)left, (short)right);
 		}
 
-		public IAsyncSoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 
 		#endregion audio stuff
 

@@ -3,23 +3,9 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
-	public partial class GPGX : IEmulator
+	public partial class GPGX : IEmulator, ISoundProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public IAsyncSoundProvider SoundProvider { get { return null; } }
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return this; }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return false;
-		}
-
-		public void EndAsyncSound() { }
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 

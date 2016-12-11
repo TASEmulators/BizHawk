@@ -33,6 +33,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.GetService<IVideoProvider>();
 		}
 
+		public static bool HasSoundProvider(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ISoundProvider>();
+		}
+
+		public static ISoundProvider AsSoundProvider(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ISoundProvider>();
+		}
+
 		public static bool HasMemoryDomains(this IEmulator core)
 		{
 			if (core == null)

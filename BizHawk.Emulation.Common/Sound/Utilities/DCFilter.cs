@@ -5,24 +5,18 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// implements a DC block filter on top of an ISoundProvider.  rather simple.
 	/// </summary>
-	sealed public class DCFilter : IAsyncSoundProvider, ISyncSoundProvider
+	sealed public class DCFilter : ISoundProvider
 	{
-		/*
-		 * A note about accuracy:
-		 * 
-		 * DCFilter can be added to the final output of any console, and this change will be faithful to the original hardware.
-		 * Analog output hardware ALWAYS has dc blocking caps.
-		 */
+		private ISoundProvider _soundProvider;
 
-		IAsyncSoundProvider input;
-		ISyncSoundProvider syncinput;
+		private int latchL = 0;
+		private int latchR = 0;
+		private int accumL = 0;
+		private int accumR = 0;
 
-		int latchL = 0;
-		int latchR = 0;
-		int accumL = 0;
-		int accumR = 0;
+		private int depth;
 
-		static int DepthFromFilterwidth(int filterwidth)
+		private static int DepthFromFilterwidth(int filterwidth)
 		{
 			int ret = -2;
 			while (filterwidth > 0)
@@ -33,34 +27,34 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
-		int depth;
-
-		public static DCFilter AsISoundProvider(IAsyncSoundProvider input, int filterwidth)
+		public DCFilter(ISoundProvider input, int filterwidth)
 		{
 			if (input == null)
+			{
 				throw new ArgumentNullException();
-			return new DCFilter(input, null, filterwidth);
+			}
+
+			if (filterwidth < 8 || filterwidth > 65536)
+			{
+				throw new ArgumentOutOfRangeException();
+			}
+
+			depth = DepthFromFilterwidth(filterwidth);
+
+			_soundProvider = input;
 		}
 
-		public static DCFilter AsISyncSoundProvider(ISyncSoundProvider syncinput, int filterwidth)
-		{
-			if (syncinput == null)
-				throw new ArgumentNullException();
-			return new DCFilter(null, syncinput, filterwidth);
-		}
-
-		public static DCFilter DetatchedMode(int filterwidth)
-		{
-			return new DCFilter(null, null, filterwidth);
-		}
-
-		DCFilter(IAsyncSoundProvider input, ISyncSoundProvider syncinput, int filterwidth)
+		// Detached mode
+		public DCFilter(int filterwidth)
 		{
 			if (filterwidth < 8 || filterwidth > 65536)
+			{
 				throw new ArgumentOutOfRangeException();
-			this.input = input;
-			this.syncinput = syncinput;
+			}
+
 			depth = DepthFromFilterwidth(filterwidth);
+
+			_soundProvider = null;
 		}
 
 		/// <summary>
@@ -104,31 +98,43 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		void IAsyncSoundProvider.GetSamples(short[] samples)
+		public void GetSamplesAsync(short[] samples)
 		{
-			input.GetSamples(samples);
+			_soundProvider.GetSamplesAsync(samples);
 			PushThroughSamples(samples, samples.Length);
 		}
 
-		void IAsyncSoundProvider.DiscardSamples()
+		public void DiscardSamples()
 		{
-			input.DiscardSamples();
+			_soundProvider.DiscardSamples();
 		}
 
-		void ISyncSoundProvider.GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			short[] sampin;
 			int nsampin;
-			syncinput.GetSamples(out sampin, out nsampin);
+
+			_soundProvider.GetSamplesSync(out sampin, out nsampin);
+
 			short[] ret = new short[nsampin * 2];
 			PushThroughSamples(sampin, ret, nsampin * 2);
 			samples = ret;
 			nsamp = nsampin;
 		}
 
-		void ISyncSoundProvider.DiscardSamples()
+		public SyncSoundMode SyncMode
 		{
-			syncinput.DiscardSamples();
+			get { return _soundProvider.SyncMode; }
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return _soundProvider.CanProvideAsync; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			_soundProvider.SetSyncMode(mode);
 		}
 	}
 }

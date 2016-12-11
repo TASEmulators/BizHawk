@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, true, "0.5.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable,
+	public class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
 		private IntPtr _core;
@@ -192,9 +192,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#endregion
 
 		#region ISoundProvider
+
 		private readonly short[] soundbuff = new short[2048];
 		private int nsamp;
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = this.nsamp;
 			samples = soundbuff;
@@ -204,10 +205,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			nsamp = 0;
 		}
-		public IAsyncSoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
 		#endregion
 
 		#region IMemoryDomains

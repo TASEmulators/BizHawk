@@ -123,8 +123,8 @@
     <Compile Include="Interfaces\IInputCallbackSystem.cs" />
     <Compile Include="Interfaces\IMemoryCallbackSystem.cs" />
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
-    <Compile Include="Interfaces\ISoundProvider.cs" />
-    <Compile Include="Interfaces\ISyncSoundProvider.cs" />
+    <Compile Include="Interfaces\Services\ISoundProvider.cs" />
+    <Compile Include="Interfaces\IAsyncSoundProvider.cs" />
     <Compile Include="Interfaces\Services\ICodeDataLogger.cs" />
     <Compile Include="Interfaces\Services\IDebuggable.cs" />
     <Compile Include="Interfaces\Services\IDisassemblable.cs" />

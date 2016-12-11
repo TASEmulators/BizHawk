@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: true
 		)]
-	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable
+	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -861,12 +861,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
-		public IAsyncSoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = sbuff;
 			nsamp = sbuffcontains;
@@ -875,6 +870,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void DiscardSamples()
 		{
 			sbuffcontains = 0;
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		#endregion

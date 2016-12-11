@@ -7,28 +7,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		private DCFilter _dcfilter;
-
-		public IAsyncSoundProvider SoundProvider
-		{
-			get { return _dcfilter; }
-		}
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return new FakeSyncSound(_dcfilter, 735); }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return true;
-		}
-
-		public void EndAsyncSound()
-		{
-
-		}
-
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return ControllerDeck.Definition; }

@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedUrl: "http://yabause.org",
 		singleInstance: true
 		)]
-	public partial class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
+	public partial class Yabause : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable,
 		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
@@ -354,20 +354,39 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		#region ISyncSoundProvider
 
-		short[] SoundBuffer = new short[44100 * 2];
-		int SoundNSamp = 0;
+		private short[] SoundBuffer = new short[44100 * 2];
+		private int SoundNSamp = 0;
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = SoundNSamp;
 			samples = SoundBuffer;
 		}
 
 		public void DiscardSamples() { }
-		public IAsyncSoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
 
 		#endregion
 
