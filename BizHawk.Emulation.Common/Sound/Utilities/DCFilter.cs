@@ -9,12 +9,12 @@ namespace BizHawk.Emulation.Common
 	{
 		private ISoundProvider _soundProvider;
 
-		private int latchL = 0;
-		private int latchR = 0;
-		private int accumL = 0;
-		private int accumR = 0;
+		private int _latchL = 0;
+		private int _latchR = 0;
+		private int _accumL = 0;
+		private int _accumR = 0;
 
-		private int depth;
+		private readonly int _depth;
 
 		private static int DepthFromFilterwidth(int filterwidth)
 		{
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentOutOfRangeException();
 			}
 
-			depth = DepthFromFilterwidth(filterwidth);
+			_depth = DepthFromFilterwidth(filterwidth);
 
 			_soundProvider = input;
 		}
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Common
 				throw new ArgumentOutOfRangeException();
 			}
 
-			depth = DepthFromFilterwidth(filterwidth);
+			_depth = DepthFromFilterwidth(filterwidth);
 
 			_soundProvider = null;
 		}
@@ -73,15 +73,15 @@ namespace BizHawk.Emulation.Common
 			{
 				int L = samplesin[i] << 12;
 				int R = samplesin[i + 1] << 12;
-				accumL -= accumL >> depth;
-				accumR -= accumR >> depth;
-				accumL += L - latchL;
-				accumR += R - latchR;
-				latchL = L;
-				latchR = R;
+				_accumL -= _accumL >> _depth;
+				_accumR -= _accumR >> _depth;
+				_accumL += L - _latchL;
+				_accumR += R - _latchR;
+				_latchL = L;
+				_latchR = R;
 
-				int bigL = accumL >> 12;
-				int bigR = accumR >> 12;
+				int bigL = _accumL >> 12;
+				int bigR = _accumR >> 12;
 				// check for clipping
 				if (bigL > 32767)
 					samplesout[i] = 32767;
