@@ -1625,9 +1625,15 @@ namespace BizHawk.Client.EmuHawk
 				// note that the avi dumper has already rewired the emulator itself in this case.
 				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
 			}
+			else if (Global.Config.SoundThrottle)
+			{
+				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
+				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
+			}
 			else
 			{
-				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
+				_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
+				GlobalWin.Sound.SetAsyncInputPin(_currentSoundProvider);
 			}
 		}
 
@@ -3106,10 +3112,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_aviSoundInputAsync = _currentSoundProvider.CanProvideAsync
-					? _currentSoundProvider
-					: new MetaspuAsync(_currentSoundProvider, ESynchMethod.ESynchMethod_V);
-					
+				if (_currentSoundProvider.CanProvideAsync)
+				{
+					_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
+					_aviSoundInputAsync = _currentSoundProvider;
+				}
+				else
+				{
+					_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
+					_aviSoundInputAsync = new MetaspuAsync(_currentSoundProvider, ESynchMethod.ESynchMethod_V);
+				}					
 			}
 			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
 			RewireSound();
