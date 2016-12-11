@@ -734,16 +734,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentVideoProvider = NullVideo.Instance;
 				}
 
-				if (Global.Emulator.HasSoundProvider())
-				{
-					_currentSoundProvider = Global.Emulator.AsSoundProvider();
-				}
-				else
-				{
-					// Set the samples per frame based on VSync rate (which is 60 unless the core states otherwise)
-					// Use 44.1 khz because we like to do that
-					_currentSoundProvider = new NullSound((int)(44100 / Global.Emulator.CoreComm.VsyncRate));
-				}
+				_currentSoundProvider = Global.Emulator.AsSoundProviderOrDefault();
 			}
 		}
 

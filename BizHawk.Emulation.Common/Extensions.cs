@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using BizHawk.Common.ReflectionExtensions;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Common.IEmulatorExtensions
 {
@@ -46,6 +47,19 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static ISoundProvider AsSoundProvider(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<ISoundProvider>();
+		}
+
+		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new ConditionalWeakTable<IEmulator, ISoundProvider>();
+
+		/// <summary>
+		/// returns the core's SoundProvider, or a suitable dummy provider
+		/// </summary>
+		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
+		{
+			var ret = core.ServiceProvider.GetService<ISoundProvider>();
+			if (ret == null)
+				ret = CachedNullSoundProviders.GetValue(core, e => new NullSound(e.CoreComm.VsyncNum, e.CoreComm.VsyncDen));
+			return ret;
 		}
 
 		public static bool HasMemoryDomains(this IEmulator core)

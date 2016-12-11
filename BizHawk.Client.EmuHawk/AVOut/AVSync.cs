@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			// Sound refactor TODO: we could try set it here, but we want the client to be responsible for mode switching? There may be non-trivial complications with when to switch modes that we don't want this object worrying about
 			if (asyncSoundProvider.SyncMode != SyncSoundMode.Async)
 			{
-				throw new InvalidOperationException("Only sync mode is supported, set sync mode before passing in the sound provider");
+				throw new InvalidOperationException("Only async mode is supported, set async mode before passing in the sound provider");
 			}
 
 			if (!aset || !vset)
