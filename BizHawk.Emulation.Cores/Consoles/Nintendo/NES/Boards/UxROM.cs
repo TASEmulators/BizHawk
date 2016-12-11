@@ -37,6 +37,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER0002-00":
+					Cart.vram_size = 8;
+					//no assertions here, since the only variations will be stuff unambiguously specified by iNES 2.0
+					break;
+
 				case "MAPPER002":
 					AssertChr(0); Cart.vram_size = 8;
 					break;
