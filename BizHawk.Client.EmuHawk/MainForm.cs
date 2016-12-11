@@ -1625,7 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 				// note that the avi dumper has already rewired the emulator itself in this case.
 				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
 			}
-			else if (Global.Config.SoundThrottle)
+			else if (Global.Config.SoundThrottle || !_currentSoundProvider.CanProvideAsync)
 			{
 				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
 				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
