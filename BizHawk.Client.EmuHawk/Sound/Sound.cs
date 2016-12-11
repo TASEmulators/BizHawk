@@ -148,9 +148,6 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.Config.SoundEnabled || !IsStarted || _disposed)
 			{
 				if (_soundProvider != null) _soundProvider.DiscardSamples();
-				// Sound refactor TODO: delete me
-				//if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
-				//if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
 				if (_outputProvider != null) _outputProvider.DiscardSamples();
 				return;
 			}
@@ -169,13 +166,9 @@ namespace BizHawk.Client.EmuHawk
 				samplesProvided = samplesNeeded;
 
 				if (_soundProvider != null) _soundProvider.DiscardSamples();
-				// Sound refactor TODO: delete me
-				//if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
-				//if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
 				if (_outputProvider != null) _outputProvider.DiscardSamples();
 			}
 			else if ( _soundProvider.SyncMode == SyncSoundMode.Sync)
-			//else if (_syncSoundProvider != null) // Sound refactor TODO: delete me
 			{
 				if (Global.Config.SoundThrottle)
 				{
@@ -197,7 +190,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			else if (_soundProvider != null && _soundProvider.SyncMode == SyncSoundMode.Sync)
-			//else if (_asyncSoundProvider != null) // Sound refactor TODO: delete me
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
