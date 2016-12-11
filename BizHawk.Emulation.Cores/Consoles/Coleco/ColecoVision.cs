@@ -44,6 +44,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			VDP = new TMS9918A(Cpu);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			PSG = new SN76489();
+			_fakeSyncSound = new FakeSyncSound(PSG, 735);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
 			BiosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
