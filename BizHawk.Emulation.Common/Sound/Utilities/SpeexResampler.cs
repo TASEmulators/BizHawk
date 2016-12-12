@@ -400,8 +400,17 @@ namespace BizHawk.Emulation.Common
 
 		public void Dispose()
 		{
-			LibSpeexDSP.speex_resampler_destroy(st);
-			st = IntPtr.Zero;
+			if (st != IntPtr.Zero)
+			{
+				LibSpeexDSP.speex_resampler_destroy(st);
+				st = IntPtr.Zero;
+				GC.SuppressFinalize(this);
+			}
+		}
+
+		~SpeexResampler()
+		{
+			Dispose();
 		}
 
 		void InternalDrain(short[] buf, int nsamp)
