@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="Build">
-    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(MSBuildProjectDirectory)\subwcrev.bat&quot; $(MSBuildProjectDirectory)" />
-  </Target>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -67,10 +64,10 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>"$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <Target Name="Build">
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="&quot;$(ProjectDir)..\Build\BizHawk.Build.Tool.exe&quot; GIT_REV --wc &quot;$(ProjectDir)..&quot; --template &quot;$(ProjectDir)svnrev_template&quot; --out &quot;$(ProjectDir)svnrev.cs&quot;" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
