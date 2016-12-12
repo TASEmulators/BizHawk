@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			var lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			targetController = new Bk2ControllerAdapter();
-			targetController.Type = Global.Emulator.ControllerDefinition;
+			targetController.Definition = Global.Emulator.ControllerDefinition;
 			targetController.LatchFromSource(targetController); // Reference and create all buttons
 
 			if (key == "")
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			controller = new Bk2ControllerAdapter { Type = d };
+			controller = new Bk2ControllerAdapter { Definition = d };
 			var logGenerator = new Bk2LogEntryGenerator("");
 			logGenerator.SetSource(controller);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
@@ -104,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			var newController = new Bk2ControllerAdapter { Type = d };
+			var newController = new Bk2ControllerAdapter { Definition = d };
 			var logGenerator = new Bk2LogEntryGenerator("");
 
 			logGenerator.SetSource(newController);
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 
 			// Adapters
 			targetController = new Bk2ControllerAdapter();
-			targetController.Type = Global.Emulator.ControllerDefinition;
+			targetController.Definition = Global.Emulator.ControllerDefinition;
 			targetController.LatchFromSource(targetController); // Reference and create all buttons
 			string[] keys = _inputKey.Split('|');
 			ControllerDefinition d = new ControllerDefinition();
@@ -268,19 +268,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			controller = new Bk2ControllerAdapter { Type = d };
+			controller = new Bk2ControllerAdapter { Definition = d };
 		}
 
 		#region Custom Latch
 
 		private void LatchFromSourceButtons(Bk2ControllerAdapter latching, IController source)
 		{
-			foreach (string button in source.Type.BoolButtons)
+			foreach (string button in source.Definition.BoolButtons)
 			{
 				latching[button] = source.IsPressed(button);
 			}
 
-			foreach (string name in source.Type.FloatControls)
+			foreach (string name in source.Definition.FloatControls)
 			{
 				latching.SetFloat(name, source.GetFloat(name));
 			}
@@ -288,16 +288,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ORLatchFromSource(Bk2ControllerAdapter latching, IController source)
 		{
-			foreach (string button in latching.Type.BoolButtons)
+			foreach (string button in latching.Definition.BoolButtons)
 			{
 				latching[button] |= source.IsPressed(button);
 			}
 
-			foreach (string name in latching.Type.FloatControls)
+			foreach (string name in latching.Definition.FloatControls)
 			{
 				float sFloat = source.GetFloat(name);
-				int indexRange = source.Type.FloatControls.IndexOf(name);
-				if (sFloat == source.Type.FloatRanges[indexRange].Mid)
+				int indexRange = source.Definition.FloatControls.IndexOf(name);
+				if (sFloat == source.Definition.FloatRanges[indexRange].Mid)
 				{
 					latching.SetFloat(name, sFloat);
 				}

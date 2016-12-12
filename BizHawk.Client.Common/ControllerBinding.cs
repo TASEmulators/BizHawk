@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Type { get { return _type; } }
+		public ControllerDefinition Definition { get { return _type; } }
 
 		/// <summary>don't do this</summary>
 		public void ForceType(ControllerDefinition newtype) { _type = newtype; }
@@ -165,9 +165,9 @@ namespace BizHawk.Client.Common
 		{
 			// change: or from each button that the other input controller has
 			// foreach (string button in type.BoolButtons)
-			if (controller.Type != null)
+			if (controller.Definition != null)
 			{
-				foreach (var button in controller.Type.BoolButtons)
+				foreach (var button in controller.Definition.BoolButtons)
 				{
 					if (controller.IsPressed(button))
 					{
@@ -259,7 +259,7 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
-		public ControllerDefinition Type { get { return _type; } }
+		public ControllerDefinition Definition { get { return _type; } }
 		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{

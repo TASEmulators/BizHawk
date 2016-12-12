@@ -903,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 					var lg = Global.MovieSession.MovieControllerInstance();
 					lg.SetControllersAsMnemonic(logEntry);
 
-					foreach (var button in lg.Type.BoolButtons)
+					foreach (var button in lg.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
 						Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));

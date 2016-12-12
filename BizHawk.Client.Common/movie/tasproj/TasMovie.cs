@@ -268,14 +268,14 @@ namespace BizHawk.Client.Common
 
 		public string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
-			if (adapter.Type.BoolButtons.Contains(buttonName))
+			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName) ?
 					Mnemonics[buttonName].ToString() :
 					string.Empty;
 			}
 
-			if (adapter.Type.FloatControls.Contains(buttonName))
+			if (adapter.Definition.FloatControls.Contains(buttonName))
 			{
 				return adapter.GetFloat(buttonName).ToString();
 			}

@@ -2,7 +2,7 @@
 {
 	public class NullController : IController
 	{
-		public ControllerDefinition Type { get { return null; } }
+		public ControllerDefinition Definition { get { return null; } }
 		public bool this[string button] { get { return false; } }
 		public bool IsPressed(string button) { return false; }
 		public float GetFloat(string name) { return 0f; }

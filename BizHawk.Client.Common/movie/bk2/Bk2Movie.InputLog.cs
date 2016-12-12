@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 		private string ConvertLogEntryFromFile(string line, string logKey)
 		{
 			var adapter = new Bk2LogEntryGenerator(logKey).MovieControllerAdapter;
-			adapter.Type = Global.MovieSession.MovieControllerAdapter.Type;
+			adapter.Definition = Global.MovieSession.MovieControllerAdapter.Definition;
 			adapter.SetControllersAsMnemonic(line);
 
 			var lg = LogGeneratorInstance();

@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 		public IController SourceAnd { get; set; }
-		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		public ControllerDefinition Definition { get { return Source.Definition; } set { throw new InvalidOperationException(); } }
 
 		public bool this[string button]
 		{
@@ -52,9 +52,9 @@ namespace BizHawk.Client.Common
 		public IController Source { get; set; }
 		public IController SourceOr { get; set; }
 
-		public ControllerDefinition Type
+		public ControllerDefinition Definition
 		{
-			get { return Source.Type; }
+			get { return Source.Definition; }
 			set { throw new InvalidOperationException(); }
 		}
 

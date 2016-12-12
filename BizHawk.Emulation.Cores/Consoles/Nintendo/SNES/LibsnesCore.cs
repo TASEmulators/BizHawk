@@ -862,7 +862,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// invalid until CopyFrom has been called
 			/// </summary>
-			public ControllerDefinition Type
+			public ControllerDefinition Definition
 			{
 				get { return def; }
 			}
@@ -899,7 +899,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <param name="source"></param>
 			public void CopyFrom(IController source)
 			{
-				this.def = source.Type;
+				this.def = source.Definition;
 				buttons.Clear();
 				foreach (var k in def.BoolButtons)
 					buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);

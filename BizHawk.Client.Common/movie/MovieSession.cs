@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 		public IMovieController MovieControllerInstance()
 		{
 			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
-			adapter.Type = MovieControllerAdapter.Type;
+			adapter.Definition = MovieControllerAdapter.Definition;
 			return adapter;
 		}
 

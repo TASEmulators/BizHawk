@@ -424,10 +424,10 @@ namespace BizHawk.Client.EmuHawk
 			int digits = 1;
 			foreach (var kvp in columnNames)
 			{
-				if (Global.MovieSession.MovieControllerAdapter.Type.FloatControls.Contains(kvp.Key))
+				if (Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.Contains(kvp.Key))
 				{
-					Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-						[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(kvp.Key)];
+					Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+						[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(kvp.Key)];
 					type = InputRoll.RollColumn.InputType.Float;
 					digits = Math.Max(kvp.Value.Length, range.MaxDigits());
 				}

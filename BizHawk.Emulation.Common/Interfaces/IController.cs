@@ -2,7 +2,10 @@
 {
 	public interface IController
 	{
-		ControllerDefinition Type { get; }
+		/// <summary>
+		/// Defines the controller schema, including all currently available buttons and their types
+		/// </summary>
+		ControllerDefinition Definition { get; }
 
 		// TODO - it is obnoxious for this to be here. must be removed.
 		bool this[string button] { get; }

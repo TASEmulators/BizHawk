@@ -14,7 +14,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class ClickyVirtualPadController : IController
 	{
-		public ControllerDefinition Type { get; set; }
+		public ControllerDefinition Definition { get; set; }
 
 		public bool this[string button]
 		{
@@ -86,9 +86,9 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class UD_LR_ControllerAdapter : IController
 	{
-		public ControllerDefinition Type
+		public ControllerDefinition Definition
 		{
-			get { return Source.Type; }
+			get { return Source.Definition; }
 		}
 
 		public bool this[string button]
@@ -185,7 +185,7 @@ namespace BizHawk.Client.Common
 
 	public class SimpleController : IController
 	{
-		public ControllerDefinition Type { get; set; }
+		public ControllerDefinition Definition { get; set; }
 
 		protected WorkingDictionary<string, bool> Buttons = new WorkingDictionary<string, bool>();
 		protected WorkingDictionary<string, float> Floats = new WorkingDictionary<string, float>();
@@ -219,7 +219,7 @@ namespace BizHawk.Client.Common
 
 		public virtual void LatchFrom(IController source)
 		{
-			foreach (var button in source.Type.BoolButtons)
+			foreach (var button in source.Definition.BoolButtons)
 			{
 				Buttons[button] = source[button];
 			}
@@ -246,13 +246,13 @@ namespace BizHawk.Client.Common
 		// this works in the code because SourceOr is the autofire controller
 		public float GetFloat(string name)
 		{
-			int i = Source.Type.FloatControls.IndexOf(name);
-			return Source.Type.FloatRanges[i].Mid; // Floats don't make sense in sticky land
+			int i = Source.Definition.FloatControls.IndexOf(name);
+			return Source.Definition.FloatRanges[i].Mid; // Floats don't make sense in sticky land
 		}
 
 		public ISticky Source { get; set; }
 		public ISticky SourceStickyOr { get; set; }
-		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
+		public ControllerDefinition Definition { get { return Source.Definition; } set { throw new InvalidOperationException(); } }
 
 		public bool this[string button]
 		{
@@ -280,9 +280,9 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		public ControllerDefinition Type
+		public ControllerDefinition Definition
 		{
-			get { return Source.Type; }
+			get { return Source.Definition; }
 			set { throw new InvalidOperationException(); }
 		}
 
@@ -440,9 +440,9 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		public ControllerDefinition Type
+		public ControllerDefinition Definition
 		{
-			get { return Source.Type; }
+			get { return Source.Definition; }
 		}
 
 		public bool Locked { get; set; } // Pretty much a hack, 
@@ -598,9 +598,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Type
+		public ControllerDefinition Definition
 		{
-			get { return Curr.Type; }
+			get { return Curr.Definition; }
 		}
 
 		public bool this[string button]
@@ -654,7 +654,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Type { get; set; }
+		public ControllerDefinition Definition { get; set; }
 
 		public IEnumerable<string> Overrides
 		{
