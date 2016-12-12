@@ -34,6 +34,17 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.GetService<IVideoProvider>();
 		}
 
+		/// <summary>
+		/// Returns the core's VideoProvider, or a suitable dummy provider
+		/// </summary>
+		/// <param name="core"></param>
+		/// <returns></returns>
+		public static IVideoProvider AsVideoProviderOrDefault(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<IVideoProvider>()
+				?? NullVideo.Instance;
+		}
+
 		public static bool HasSoundProvider(this IEmulator core)
 		{
 			if (core == null)

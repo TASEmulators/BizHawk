@@ -726,15 +726,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				Global.Emulator = value;
-				if (Global.Emulator.HasVideoProvider())
-				{
-					_currentVideoProvider = Global.Emulator.AsVideoProvider();
-				}
-				else
-				{
-					_currentVideoProvider = NullVideo.Instance;
-				}
-
+				_currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
 				_currentSoundProvider = Global.Emulator.AsSoundProviderOrDefault();
 			}
 		}
