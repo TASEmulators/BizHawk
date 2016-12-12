@@ -35,6 +35,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Emulation.Common.Base_Implementations;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1353,7 +1354,7 @@ namespace BizHawk.Client.EmuHawk
 		// Sound refator TODO: we can enforce async mode here with a property that gets/sets this but does an async check
 		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
 
-		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
+		private SimpleSyncSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
 		private int _avwriterResizew;
 		private int _avwriterResizeh;
@@ -1623,7 +1624,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// we're video dumping, so async mode only and use the DumpProxy.
 				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
+				GlobalWin.Sound.SetSyncInputPin(_dumpProxy);
 			}
 			else if (Global.Config.SoundThrottle || !_currentSoundProvider.CanProvideAsync)
 			{
@@ -3123,7 +3124,7 @@ namespace BizHawk.Client.EmuHawk
 					_aviSoundInputAsync = new MetaspuAsync(_currentSoundProvider, ESynchMethod.ESynchMethod_V);
 				}					
 			}
-			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+			_dumpProxy = new SimpleSyncSoundProvider();
 			RewireSound();
 		}
 
@@ -3257,7 +3258,7 @@ namespace BizHawk.Client.EmuHawk
 						disposableOutput.Dispose();
 					}
 
-					_dumpProxy.Buffer.enqueue_samples(samp, nsamp);
+					_dumpProxy.PutSamples(samp, nsamp);
 				}
 				catch (Exception e)
 				{
