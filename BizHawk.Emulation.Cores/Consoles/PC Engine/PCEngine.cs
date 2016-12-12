@@ -100,40 +100,39 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		// ROM
-		public byte[] RomData;
-		public int RomLength;
-		Disc disc;
+		private byte[] RomData;
+		private int RomLength;
+		private Disc disc;
 
 		// Machine
 		public NecSystemType Type;
-		public HuC6280 Cpu;
+		internal HuC6280 Cpu;
 		public VDC VDC1, VDC2;
 		public VCE VCE;
-		public VPC VPC;
-		public ScsiCDBus SCSI;
-		public ADPCM ADPCM;
+		private VPC VPC;
+		private ScsiCDBus SCSI;
+		private ADPCM ADPCM;
 
 		public HuC6280PSG PSG;
-		public CDAudio CDAudio;
-		public SoundMixer SoundMixer;
-		//public MetaspuSoundProvider SoundSynchronizer;
+		internal CDAudio CDAudio;
+		private SoundMixer SoundMixer;
 
-		bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
-		bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
-		bool TurboCD { get { return Type == NecSystemType.TurboCD; } }
+		private bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
+		private bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
+		private bool TurboCD { get { return Type == NecSystemType.TurboCD; } }
 
 		// BRAM
-		bool BramEnabled = false;
-		bool BramLocked = true;
-		byte[] BRAM;
+		private bool BramEnabled = false;
+		private bool BramLocked = true;
+		private byte[] BRAM;
 
 		// Memory system
-		public byte[] Ram;       // PCE= 8K base ram, SGX= 64k base ram
-		public byte[] CDRam;     // TurboCD extra 64k of ram
-		public byte[] SuperRam;  // Super System Card 192K of additional RAM
-		public byte[] ArcadeRam; // Arcade Card 2048K of additional RAM
+		private byte[] Ram;       // PCE= 8K base ram, SGX= 64k base ram
+		private byte[] CDRam;     // TurboCD extra 64k of ram
+		private byte[] SuperRam;  // Super System Card 192K of additional RAM
+		private byte[] ArcadeRam; // Arcade Card 2048K of additional RAM
 
-		bool ForceSpriteLimit;
+		private bool ForceSpriteLimit;
 
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
@@ -324,6 +323,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private ISoundProvider soundProvider;
 
-		public string Region { get; set; }
+		private string Region { get; set; }
 	}
 }
