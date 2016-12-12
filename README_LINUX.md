@@ -18,17 +18,13 @@ This one is curious. There is either a resource incompatibility in Mono, or my M
 
 ### DiscoHawk.exe
 
-    Unhandled Exception:
-    System.TypeInitializationException: The type initializer for 'BizHawk.Client.DiscoHawk.Program' threw an exception. ---> System.EntryPointNotFoundException: SetDllDirectory
-
-Trying to call a Windows native function is like trying to cut water...
+Runs, outputs the main window, but have not been tested.
 
 ### MultiHawk.exe
 
-    Unhandled Exception:
-    System.TypeInitializationException: The type initializer for 'BizHawk.Client.MultiHawk.Program' threw an exception. ---> System.EntryPointNotFoundException: SetDllDirectory
+    System.NullReferenceException: Object reference not set to an instance of an object at BizHawk.Client.MultiHawk.Mainform.ProgramRunLoop() [0x0000f]
 
-Same as DiscoHawk.
+A bug that needs to be tracked...
 
 
 ## Installation
