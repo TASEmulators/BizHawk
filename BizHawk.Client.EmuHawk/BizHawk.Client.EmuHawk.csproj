@@ -123,7 +123,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="SlimDX, Version=4.0.10.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\$(Platform)\SlimDX.dll</HintPath>
@@ -622,7 +622,7 @@
     </Compile>
     <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
-    <Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\GamePad360.cs" />
     <Compile Include="Input\Input.cs" />
     <Compile Include="IControlMainform.cs" />
@@ -649,7 +649,7 @@
     <Compile Include="movie\EditCommentsForm.Designer.cs">
       <DependentUpon>EditCommentsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Input\Keyboard.cs" Condition=" '$(OS)' == 'Windows_NT' " />
+    <Compile Include="Input\Keyboard.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
