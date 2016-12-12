@@ -1,6 +1,5 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	
 	public interface IController
 	{
 		ControllerDefinition Type { get; }
