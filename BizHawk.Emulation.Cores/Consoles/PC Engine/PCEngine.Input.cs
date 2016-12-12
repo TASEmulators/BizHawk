@@ -41,9 +41,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return PCEngineController; } }
-		public IController Controller { get; set; }
-
 		int SelectedController;
 		byte InputByte;
 
@@ -70,7 +67,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int player = SelectedController + 1;
 			if (player < 6)
 			{
-				lagged = false;
+				_lagged = false;
 				if (SEL == false) // return buttons
 				{
 					if (Controller["P" + player + " B1"]) value &= 0xFE;
