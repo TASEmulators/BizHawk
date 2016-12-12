@@ -5,22 +5,31 @@ namespace BizHawk.Emulation.Common
 	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>
+		/// The intended mechanism to get services from a core
 		/// Retrieves an IEmulatorService from the core, 
 		/// if the core does not have the type specified, it will return null
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
 		IEmulatorServiceProvider ServiceProvider { get; }
 
 		/// <summary>
 		/// Defines all the possible inputs and types that the core can receive
+		/// By design this should not change during the lifetime of the instance of the core
+		/// To change the definition, a new instance should be created
 		/// </summary>
 		ControllerDefinition ControllerDefinition { get; }
+
+		/// <summary>
+		/// Provides controller instance information to the core, such as what buttons are currently pressed
+		/// Note that the client is responsible for setting this property and updating its state
+		/// </summary>
 		IController Controller { get; set; }
 
 		/// <summary>
-		// note that (some?) cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
-		// please do this, even when rendersound = false
+		/// Runs the emulator core for 1 frame
+		/// note that (some?) cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
+		/// please do this, even when rendersound = false
+		/// <param name="render">Whether or not to render video, cores will pass false here in cases such as frame skipping</param>
+		/// <param name="rendersound">Whether or not to render audio, cores will pass here false here in cases such as fast forwarding where bypassing sound may improve speed</param>
 		/// </summary>
 		void FrameAdvance(bool render, bool rendersound = true);
 
@@ -30,7 +39,7 @@ namespace BizHawk.Emulation.Common
 		int Frame { get; }
 
 		/// <summary>
-		/// The unique Id of the given core, for instance "NES"
+		/// The unique Id of the platform currently being emulated, for instance "NES"
 		/// </summary>
 		string SystemId { get; }
 
@@ -57,6 +66,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// the corecomm module in use by this core.
 		/// </summary>
+		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" /> 
 		CoreComm CoreComm { get; }
 	}
 }
