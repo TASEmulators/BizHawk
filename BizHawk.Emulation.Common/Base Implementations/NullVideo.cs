@@ -16,9 +16,11 @@
 
 		public int BackgroundColor { get { return 0; } }
 
+		private static NullVideo _nullVideo = new NullVideo();
+
 		public static NullVideo Instance
 		{
-			get { return new NullVideo(); }
+			get { return _nullVideo; }
 		}
 	}
 }
