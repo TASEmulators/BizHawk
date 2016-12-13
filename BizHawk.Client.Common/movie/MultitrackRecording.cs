@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 		public int PlayerSource { get; set; }
 		public int PlayerTargetMask { get; set; }
 
-		public ControllerDefinition Type { get { return Source.Type; } }
+		public ControllerDefinition Definition { get { return Source.Definition; } }
 
 		public bool this[string button]
 		{

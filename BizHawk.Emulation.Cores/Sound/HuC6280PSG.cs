@@ -10,7 +10,8 @@ namespace BizHawk.Emulation.Cores.Components
 	// Emulates PSG audio unit of a PC Engine / Turbografx-16 / SuperGrafx.
 	// It is embedded on the CPU and doesn't have its own part number. None the less, it is emulated separately from the 6280 CPU.
 
-	public sealed class HuC6280PSG : ISoundProvider
+	// Sound refactor TODO: IMixedSoundProvider must inherit ISoundProvider
+	public sealed class HuC6280PSG : IMixedSoundProvider
 	{
 		public class PSGChannel
 		{
@@ -144,6 +145,7 @@ namespace BizHawk.Emulation.Cores.Components
 		}
 
 		public void DiscardSamples() { }
+
 		public void GetSamples(short[] samples)
 		{
 			int elapsedCycles = (int)(frameStopTime - frameStartTime);

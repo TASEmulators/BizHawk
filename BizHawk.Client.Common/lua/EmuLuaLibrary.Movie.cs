@@ -63,12 +63,12 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			foreach (var button in adapter.Type.BoolButtons)
+			foreach (var button in adapter.Definition.BoolButtons)
 			{
 				input[button] = adapter[button];
 			}
 
-			foreach (var button in adapter.Type.FloatControls)
+			foreach (var button in adapter.Definition.FloatControls)
 			{
 				input[button] = adapter[button];
 			}

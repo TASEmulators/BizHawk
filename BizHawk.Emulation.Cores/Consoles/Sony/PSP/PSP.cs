@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
 
@@ -15,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		isReleased: false,
 		singleInstance: true
 		)]
-	public class PSP : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class PSP : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{
@@ -41,10 +38,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		};
 
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 		public ControllerDefinition ControllerDefinition { get { return PSPController; } }
 		public IController Controller { get; set; }
 		public bool DeterministicEmulation { get { return true; } }
@@ -186,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 
 		readonly short[] audiobuffer = new short[2048 * 2];
 		int nsampavail = 0;
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{			
 			samples = audiobuffer;
 			nsamp = nsampavail;
@@ -194,6 +187,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		}
 		public void DiscardSamples()
 		{
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 	}
 }

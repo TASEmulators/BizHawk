@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 
 		private Bk2ControllerDefinition _type = new Bk2ControllerDefinition();
 
-		public ControllerDefinition Type
+		public ControllerDefinition Definition
 		{
 			get
 			{
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchPlayerFromSource(IController playerSource, int playerNum)
 		{
-			foreach (var button in playerSource.Type.BoolButtons)
+			foreach (var button in playerSource.Definition.BoolButtons)
 			{
 				var bnp = ButtonNameParser.Parse(button);
 				if (bnp == null)
@@ -107,7 +107,7 @@ namespace BizHawk.Client.Common
 				MyBoolButtons[button] = val;
 			}
 
-			foreach (var button in Type.FloatControls)
+			foreach (var button in Definition.FloatControls)
 			{
 				var bnp = ButtonNameParser.Parse(button);
 				if (bnp == null)
@@ -131,12 +131,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromSource(IController source)
 		{
-			foreach (var button in Type.BoolButtons)
+			foreach (var button in Definition.BoolButtons)
 			{
 				MyBoolButtons[button] = source.IsPressed(button);
 			}
 
-			foreach (var name in Type.FloatControls)
+			foreach (var name in Definition.FloatControls)
 			{
 				MyFloatControls[name] = source.GetFloat(name);
 			}
@@ -151,7 +151,7 @@ namespace BizHawk.Client.Common
 			{
 				var def = Global.Emulator.ControllerDefinition;
 				var trimmed = mnemonic.Replace("|", "");
-				var buttons = Type.ControlsOrdered.SelectMany(x => x).ToList();
+				var buttons = Definition.ControlsOrdered.SelectMany(x => x).ToList();
 				var iterator = 0;
 
 				foreach (var key in buttons)

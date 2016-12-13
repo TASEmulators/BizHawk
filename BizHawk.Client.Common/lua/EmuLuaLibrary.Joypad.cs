@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		{
 			var buttons = Lua.NewTable();
 			var adaptor = Global.AutofireStickyXORAdapter;
-			foreach (var button in adaptor.Source.Type.BoolButtons)
+			foreach (var button in adaptor.Source.Definition.BoolButtons)
 			{
 				if (!controller.HasValue)
 				{
@@ -33,7 +33,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			foreach (var button in adaptor.Source.Type.FloatControls)
+			foreach (var button in adaptor.Source.Definition.FloatControls)
 			{
 				if (controller == null)
 				{
@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		public LuaTable GetImmediate()
 		{
 			var buttons = Lua.NewTable();
-			foreach (var button in Global.ActiveController.Type.BoolButtons)
+			foreach (var button in Global.ActiveController.Definition.BoolButtons)
 			{
 				buttons[button] = Global.ActiveController[button];
 			}
@@ -78,12 +78,12 @@ namespace BizHawk.Client.Common
 				var lg = Global.MovieSession.MovieControllerInstance();
 				lg.SetControllersAsMnemonic(inputLogEntry);
 
-				foreach (var button in lg.Type.BoolButtons)
+				foreach (var button in lg.Definition.BoolButtons)
 				{
 					Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
 				}
 
-				foreach (var floatButton in lg.Type.FloatControls)
+				foreach (var floatButton in lg.Definition.FloatControls)
 				{
 					Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
 				}

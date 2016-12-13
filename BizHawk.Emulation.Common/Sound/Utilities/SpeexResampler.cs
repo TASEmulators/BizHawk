@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// junk wrapper around LibSpeexDSP.  quite inefficient.  will be replaced
 	/// </summary>
-	public class SpeexResampler : IDisposable, ISyncSoundProvider
+	public class SpeexResampler : IDisposable, ISoundProvider
 	{
 		static class LibSpeexDSP
 		{
@@ -252,7 +252,6 @@ namespace BizHawk.Emulation.Common
 #endif
 		}
 
-
 		/// <summary>
 		/// opaque pointer to state
 		/// </summary>
@@ -268,12 +267,12 @@ namespace BizHawk.Emulation.Common
 
 		private short[] outbuf;
 
-		// for ISyncSoundProvider
+		// for sync
 		private short[] outbuf2 = new short[16];
 		private int outbuf2pos = 0;
 
 		// to accept an ISyncSoundProvder input
-		private readonly ISyncSoundProvider input;
+		private readonly ISoundProvider input;
 
 		/// <summary>
 		/// in buffer position in samples (not sample pairs)
@@ -314,7 +313,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
 		/// <param name="drainer">function which accepts output as produced. if null, act as an ISyncSoundProvider</param>
 		/// <param name="input">source to take input from when output is requested. if null, no autofetching</param>
-		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISyncSoundProvider input = null)
+		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
 #if WINDOWS
 			if (drainer != null && input != null)
@@ -444,9 +443,18 @@ namespace BizHawk.Emulation.Common
 		public void Dispose()
 		{
 #if WINDOWS
-			LibSpeexDSP.speex_resampler_destroy(st);
+			if (st != IntPtr.Zero)
+			{
+				LibSpeexDSP.speex_resampler_destroy(st);
+				st = IntPtr.Zero;
+				GC.SuppressFinalize(this);
+			}
 #endif
-			st = IntPtr.Zero;
+		}
+
+		~SpeexResampler()
+		{
+			Dispose();
 		}
 
 		void InternalDrain(short[] buf, int nsamp)
@@ -461,13 +469,13 @@ namespace BizHawk.Emulation.Common
 			outbuf2pos += nsamp * 2;
 		}
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			if (input != null)
 			{
 				short[] sampin;
 				int nsampin;
-				input.GetSamples(out sampin, out nsampin);
+				input.GetSamplesSync(out sampin, out nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
 			Flush();
@@ -479,6 +487,29 @@ namespace BizHawk.Emulation.Common
 		public void DiscardSamples()
 		{
 			outbuf2pos = 0;
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
 		}
 	}
 }

@@ -35,6 +35,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Emulation.Common.Base_Implementations;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -759,8 +760,17 @@ namespace BizHawk.Client.EmuHawk
 		public IEmulator Emulator
 		{
 			get { return Global.Emulator; }
-			set { Global.Emulator = value; }
+			set
+			{
+				Global.Emulator = value;
+				_currentVideoProvider = Global.Emulator.AsVideoProviderOrDefault();
+				_currentSoundProvider = Global.Emulator.AsSoundProviderOrDefault();
+			}
 		}
+
+		private IVideoProvider _currentVideoProvider = NullVideo.Instance;
+
+		private ISoundProvider _currentSoundProvider = new NullSound(44100 / 60); // Reasonable default until we have a core instance
 
 		protected override void OnActivated(EventArgs e)
 		{
@@ -877,19 +887,18 @@ namespace BizHawk.Client.EmuHawk
 			// also handle floats
 			conInput.AcceptNewFloats(Input.Instance.GetFloats().Select(o =>
 			{
-				var video = Emulator.VideoProvider();
 				// hackish
 				if (o.Item1 == "WMouse X")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point((int)o.Item2, 0));
-					float x = P.X / (float)video.BufferWidth;
+					float x = P.X / (float)_currentVideoProvider.BufferWidth;
 					return new Tuple<string, float>("WMouse X", x * 20000 - 10000);
 				}
 
 				if (o.Item1 == "WMouse Y")
 				{
 					var P = GlobalWin.DisplayManager.UntransformPoint(new Point(0, (int)o.Item2));
-					float y = P.Y / (float)video.BufferHeight;
+					float y = P.Y / (float)_currentVideoProvider.BufferHeight;
 					return new Tuple<string, float>("WMouse Y", y * 20000 - 10000);
 				}
 
@@ -955,7 +964,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void TakeScreenshotClientToClipboard()
 		{
-			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(Emulator.AsVideoProvider(), Global.Config.Screenshot_CaptureOSD))
+			using (var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, Global.Config.Screenshot_CaptureOSD))
 			{
 				using (var img = bb.ToSysdrawingBitmap())
 					Clipboard.SetImage(img);
@@ -1017,7 +1026,6 @@ namespace BizHawk.Client.EmuHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				var video = Emulator.VideoProvider();
 				int zoom = Global.Config.TargetZoomFactors[Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
@@ -1028,7 +1036,7 @@ namespace BizHawk.Client.EmuHawk
 				Size lastComputedSize = new Size(1, 1);
 				for (; zoom >= 1; zoom--)
 				{
-					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(video, zoom);
+					lastComputedSize = GlobalWin.DisplayManager.CalculateClientSize(_currentVideoProvider, zoom);
 					if ((((lastComputedSize.Width) + borderWidth) < area.Width)
 						&& (((lastComputedSize.Height) + borderHeight) < area.Height))
 					{
@@ -1372,8 +1380,11 @@ namespace BizHawk.Client.EmuHawk
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
 		private HashSet<int> _currAviWriterFrameList;
-		private ISoundProvider _aviSoundInput;
-		private MetaspuSoundProvider _dumpProxy; // an audio proxy used for dumping
+
+		// Sound refator TODO: we can enforce async mode here with a property that gets/sets this but does an async check
+		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
+
+		private SimpleSyncSoundProvider _dumpProxy; // an audio proxy used for dumping
 		private bool _dumpaudiosync; // set true to for experimental AV dumping
 		private int _avwriterResizew;
 		private int _avwriterResizeh;
@@ -1643,12 +1654,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// we're video dumping, so async mode only and use the DumpProxy.
 				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWin.Sound.SetAsyncInputPin(_dumpProxy);
+				GlobalWin.Sound.SetSyncInputPin(_dumpProxy);
+			}
+			else if (Global.Config.SoundThrottle || !_currentSoundProvider.CanProvideAsync)
+			{
+				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
+				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
 			}
 			else
 			{
-				Emulator.EndAsyncSound();
-				GlobalWin.Sound.SetSyncInputPin(Emulator.SyncSoundProvider);
+				_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
+				GlobalWin.Sound.SetAsyncInputPin(_currentSoundProvider);
 			}
 		}
 
@@ -1939,7 +1955,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private BitmapBuffer MakeScreenshotImage()
 		{
-			return GlobalWin.DisplayManager.RenderVideoProvider(Emulator.AsVideoProvider());
+			return GlobalWin.DisplayManager.RenderVideoProvider(_currentVideoProvider);
 		}
 
 		private void SaveSlotSelectedMessage()
@@ -1957,7 +1973,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			//private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
-			var video = Emulator.VideoProvider();
+			var video = _currentVideoProvider;
 			//bool change = false;
 			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
@@ -2305,7 +2321,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public BitmapBuffer CaptureOSD()
 		{
-			var bb = GlobalWin.DisplayManager.RenderOffscreen(Emulator.AsVideoProvider(), true);
+			var bb = GlobalWin.DisplayManager.RenderOffscreen(_currentVideoProvider, true);
 			bb.DiscardAlpha();
 			return bb;
 		}
@@ -3028,8 +3044,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					var videoProvider = Emulator.AsVideoProvider();
-					aw.SetVideoParameters(videoProvider.BufferWidth, videoProvider.BufferHeight);
+					aw.SetVideoParameters(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight);
 				}
 
 				aw.SetAudioParameters(44100, 2, 16);
@@ -3124,15 +3139,22 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_dumpaudiosync)
 			{
-				Emulator.EndAsyncSound();
+				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
 			}
 			else
 			{
-				_aviSoundInput = !Emulator.StartAsyncSound()
-					? new MetaspuAsync(Emulator.SyncSoundProvider, ESynchMethod.ESynchMethod_V)
-					: Emulator.SoundProvider;
+				if (_currentSoundProvider.CanProvideAsync)
+				{
+					_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
+					_aviSoundInputAsync = _currentSoundProvider;
+				}
+				else
+				{
+					_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
+					_aviSoundInputAsync = new MetaspuAsync(_currentSoundProvider, ESynchMethod.ESynchMethod_V);
+				}					
 			}
-			_dumpProxy = new MetaspuSoundProvider(ESynchMethod.ESynchMethod_V);
+			_dumpProxy = new SimpleSyncSoundProvider();
 			RewireSound();
 		}
 
@@ -3151,7 +3173,7 @@ namespace BizHawk.Client.EmuHawk
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = string.Empty;
 			AVIStatusLabel.Visible = false;
-			_aviSoundInput = null;
+			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
 			RewireSound();
 		}
@@ -3172,7 +3194,7 @@ namespace BizHawk.Client.EmuHawk
 			AVIStatusLabel.Image = Properties.Resources.Blank;
 			AVIStatusLabel.ToolTipText = string.Empty;
 			AVIStatusLabel.Visible = false;
-			_aviSoundInput = null;
+			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
 			RewireSound();
 		}
@@ -3206,8 +3228,7 @@ namespace BizHawk.Client.EmuHawk
 							}
 							else
 							{
-								var videoProvider = Emulator.AsVideoProvider();
-								bbin = new BitmapBuffer(videoProvider.BufferWidth, videoProvider.BufferHeight, videoProvider.GetVideoBuffer());
+								bbin = new BitmapBuffer(_currentVideoProvider.BufferWidth, _currentVideoProvider.BufferHeight, _currentVideoProvider.GetVideoBuffer());
 							}
 
 							bbin.DiscardAlpha();
@@ -3218,7 +3239,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								if (_avwriterpad)
 								{
-									g.Clear(Color.FromArgb(Emulator.AsVideoProvider().BackgroundColor));
+									g.Clear(Color.FromArgb(_currentVideoProvider.BackgroundColor));
 									g.DrawImageUnscaled(bmpin, (bmpout.Width - bmpin.Width) / 2, (bmpout.Height - bmpin.Height) / 2);
 								}
 								else
@@ -3246,7 +3267,7 @@ namespace BizHawk.Client.EmuHawk
 							disposableOutput = (IDisposable)output;
 						}
 						else
-							output = Emulator.AsVideoProvider();
+							output = _currentVideoProvider;
 					}
 
 					_currAviWriter.SetFrame(Emulator.Frame);
@@ -3255,11 +3276,11 @@ namespace BizHawk.Client.EmuHawk
 					int nsamp;
 					if (_dumpaudiosync)
 					{
-						(_currAviWriter as VideoStretcher).DumpAV(output, Emulator.SyncSoundProvider, out samp, out nsamp);
+						(_currAviWriter as VideoStretcher).DumpAV(output, _currentSoundProvider, out samp, out nsamp);
 					}
 					else
 					{
-						(_currAviWriter as AudioStretcher).DumpAV(output, _aviSoundInput, out samp, out nsamp);
+						(_currAviWriter as AudioStretcher).DumpAV(output, _aviSoundInputAsync, out samp, out nsamp);
 					}
 
 					if (disposableOutput != null)
@@ -3267,7 +3288,7 @@ namespace BizHawk.Client.EmuHawk
 						disposableOutput.Dispose();
 					}
 
-					_dumpProxy.buffer.enqueue_samples(samp, nsamp);
+					_dumpProxy.PutSamples(samp, nsamp);
 				}
 				catch (Exception e)
 				{

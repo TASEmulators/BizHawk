@@ -1121,7 +1121,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void RecordMovieMenuItem_Click(object sender, EventArgs e)
 		{
-			new RecordMovie().ShowDialog();
+			new RecordMovie(Emulator).ShowDialog();
 			UpdateMainText();
 			UpdateAfterFrameChanged();
 		}

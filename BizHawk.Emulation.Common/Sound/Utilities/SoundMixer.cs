@@ -2,23 +2,30 @@
 
 namespace BizHawk.Emulation.Common
 {
-	// This is a straightforward class to mix/chain multiple ISoundProvider sources.
-
-	public sealed class SoundMixer : ISoundProvider
+	/// <summary>
+	/// An interface that extends a sound provider to provide mixing capabilities through the SoundMixer class
+	/// </summary>
+	public interface IMixedSoundProvider : IAsyncSoundProvider
 	{
-		private readonly List<ISoundProvider> SoundProviders;
+		int MaxVolume { get; set; }
+	}
 
-		public SoundMixer(params ISoundProvider[] soundProviders)
+	// This is a straightforward class to mix/chain multiple ISoundProvider sources.
+	public sealed class SoundMixer : IAsyncSoundProvider
+	{
+		private readonly List<IMixedSoundProvider> SoundProviders;
+
+		public SoundMixer(params IMixedSoundProvider[] soundProviders)
 		{
-			SoundProviders = new List<ISoundProvider>(soundProviders);
+			SoundProviders = new List<IMixedSoundProvider>(soundProviders);
 		}
 
-		public void AddSource(ISoundProvider source)
+		public void AddSource(IMixedSoundProvider source)
 		{
 			SoundProviders.Add(source);
 		}
 
-		public void DisableSource(ISoundProvider source)
+		public void DisableSource(IMixedSoundProvider source)
 		{
 			SoundProviders.Remove(source);
 		}
@@ -26,13 +33,17 @@ namespace BizHawk.Emulation.Common
 		public void DiscardSamples()
 		{
 			foreach (var soundSource in SoundProviders)
+			{
 				soundSource.DiscardSamples();
+			}
 		}
 
 		public void GetSamples(short[] samples)
 		{
 			foreach (var soundSource in SoundProviders)
+			{
 				soundSource.GetSamples(samples);
+			}
 		}
 
 		// Splits the volume space equally between available sources.
@@ -44,8 +55,5 @@ namespace BizHawk.Emulation.Common
 				source.MaxVolume = eachVolume;
 			}
 		}
-
-		// Not actually supported on mixer.
-		public int MaxVolume { get; set; }
 	}
 }

@@ -1191,6 +1191,7 @@
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
@@ -1782,6 +1783,16 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\WSW.png" />
+    <None Include="images\WNW.png" />
+    <None Include="images\SW.png" />
+    <None Include="images\SSW.png" />
+    <None Include="images\SSE.png" />
+    <None Include="images\SE.png" />
+    <None Include="images\NW.png" />
+    <None Include="images\NNW.png" />
+    <None Include="images\NNE.png" />
+    <None Include="images\NE.png" />
     <None Include="images\Shark.ico" />
     <None Include="images\Shark.png" />
     <None Include="images\ScrollTo.png" />
@@ -2096,6 +2107,8 @@
     <None Include="images\cdlogger.ico" />
     <None Include="images\AddEdit.png" />
     <None Include="images\JumpTo.png" />
+    <None Include="images\ENE.png" />
+    <None Include="images\ESE.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

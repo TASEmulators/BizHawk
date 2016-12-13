@@ -1156,7 +1156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				this.remaps = remaps;
 			}
 
-			public ControllerDefinition Type { get { throw new NotImplementedException(); } }
+			public ControllerDefinition Definition { get { throw new NotImplementedException(); } }
 
 			public bool this[string button] { get { return IsPressed(button); } }
 

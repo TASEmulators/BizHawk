@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
-using Newtonsoft.Json;
-
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
@@ -24,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IInputPollable,
+	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		static readonly LibQuickNES QN;
@@ -329,52 +322,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if (Context == IntPtr.Zero)
 				throw new ObjectDisposedException(GetType().Name);
 		}
-
-		#region SoundProvider
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		void InitAudio()
-		{
-			LibQuickNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
-		}
-
-		void DrainAudio()
-		{
-			NumSamples = QN.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
-			unsafe
-			{
-				fixed (short* _src = &MonoBuff[0], _dst = &StereoBuff[0])
-				{
-					short* src = _src;
-					short* dst = _dst;
-					for (int i = 0; i < NumSamples; i++)
-					{
-						*dst++ = *src;
-						*dst++ = *src++;
-					}
-				}
-			}
-		}
-
-		short[] MonoBuff = new short[1024];
-		short[] StereoBuff = new short[2048];
-		int NumSamples = 0;
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = StereoBuff;
-			nsamp = NumSamples;
-		}
-
-		public void DiscardSamples()
-		{
-		}
-
-		#endregion
 
 		#region Blacklist
 

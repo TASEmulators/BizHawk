@@ -65,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(_tia);
+			ser.Register<ISoundProvider>(_dcfilter);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -79,17 +80,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public string BoardName { get { return _mapper.GetType().Name; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public ISoundProvider SoundProvider { get { return _dcfilter; } }
-
-		// todo: make this not so ugly
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get
-			{
-				return new FakeSyncSound(_dcfilter, CoreComm.VsyncRate > 55.0 ? 735 : 882);
-			}
-		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
@@ -122,10 +112,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Status = RomStatus.Unknown
 			};
 		}
-
-		public bool StartAsyncSound() { return true; }
-
-		public void EndAsyncSound() { }
 
 		public void ResetCounters()
 		{

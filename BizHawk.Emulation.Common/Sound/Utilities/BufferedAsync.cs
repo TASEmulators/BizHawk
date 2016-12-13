@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
@@ -27,10 +28,24 @@ namespace BizHawk.Emulation.Common
 	 * TODO: For systems that _really_ don't need BufferedAsync (pce not turbocd, sms), make a way to signal
 	 *       that and then bypass the BufferedAsync.
 	 */
-
 	public sealed class BufferedAsync : ISoundProvider
 	{
-		public ISoundProvider BaseSoundProvider;
+		private ISoundProvider _baseSoundProvider;
+
+		public void SetAsyncSoundProvider(ISoundProvider provider)
+		{
+			if (provider.SyncMode != SyncSoundMode.Async)
+			{
+				throw new InvalidOperationException("a sound provider in async mode is required");
+			}
+
+			_baseSoundProvider = provider;
+		}
+
+		public void ClearSoundProvider()
+		{
+			_baseSoundProvider = null;
+		}
 
 		readonly Queue<short> buffer = new Queue<short>(4096);
 
@@ -50,13 +65,11 @@ namespace BizHawk.Emulation.Common
 
 		public void DiscardSamples()
 		{
-			if (BaseSoundProvider != null)
-				BaseSoundProvider.DiscardSamples();
+			if (_baseSoundProvider != null)
+				_baseSoundProvider.DiscardSamples();
 		}
 
-		public int MaxVolume { get; set; }
-
-		public void GetSamples(short[] samples)
+		public void GetSamplesAsync(short[] samples)
 		{
 			int samplesToGenerate = SamplesInOneFrame;
 			if (buffer.Count > samples.Length + MaxExcessSamples)
@@ -68,7 +81,7 @@ namespace BizHawk.Emulation.Common
 
 			var mySamples = new short[samplesToGenerate];
 
-			BaseSoundProvider.GetSamples(mySamples);
+			_baseSoundProvider.GetSamplesAsync(mySamples);
 
 			foreach (short s in mySamples)
 			{
@@ -79,6 +92,29 @@ namespace BizHawk.Emulation.Common
 			{
 				samples[i] = buffer.Dequeue();
 			}
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return true; }
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Async; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 	}
 }

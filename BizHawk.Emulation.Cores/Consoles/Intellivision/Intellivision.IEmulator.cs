@@ -7,28 +7,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		[FeatureNotImplemented]
-		public ISoundProvider SoundProvider
-		{
-			get { return NullSound.SilenceProvider; }
-		}
-
-		[FeatureNotImplemented]
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return new FakeSyncSound(NullSound.SilenceProvider, 735); }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return true;
-		}
-
-		public void EndAsyncSound()
-		{
-
-		}
-
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return ControllerDeck.Definition; }
@@ -42,6 +20,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				_cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
 				_cpu.TraceCallback = null;
+
+			//reset the count of audio samples
+			_psg.sample_count = 0;
 
 			_frame++;
 			// read the controller state here for now
@@ -67,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			while (_cpu.GetPendingCycles() > 0)
 			{
 				int cycles = _cpu.Execute();
-				_psg.generate_sound(cycles);
+				//_psg.generate_sound(cycles);
 				Connect();
 			}
 

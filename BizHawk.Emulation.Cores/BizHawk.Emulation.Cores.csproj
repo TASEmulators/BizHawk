@@ -160,9 +160,6 @@
     </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\AppleII\AppleII.cs" />
-    <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs">
-      <DependentUpon>AppleII.cs</DependentUpon>
-    </Compile>
     <Compile Include="Computers\AppleII\AppleII.IDebuggable.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
@@ -179,6 +176,9 @@
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.ISettable.cs">
+      <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\AppleII\AppleII.ISoundProvider.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.IStatable.cs">
@@ -375,6 +375,9 @@
     <Compile Include="Consoles\Atari\lynx\Lynx.ISaveRam.cs">
       <DependentUpon>Lynx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.ISoundProvider.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\lynx\Lynx.IStatable.cs">
       <DependentUpon>Lynx.cs</DependentUpon>
     </Compile>
@@ -395,6 +398,9 @@
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.IStatable.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.ISoundProvider.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Coleco\Input.cs" />
@@ -437,6 +443,9 @@
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISettable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISoundProvider.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IStatable.cs">
@@ -512,6 +521,9 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.ISettings.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.ISoundProvider.cs">
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IStatable.cs">
@@ -871,6 +883,9 @@
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISettable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISoundProvider.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
@@ -895,8 +910,34 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.ArcadeCard.cs" />
-    <Compile Include="Consoles\PC Engine\PCEngine.CDLMapping.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.ICodeDataLogger.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IDebuggable.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IDriveLight.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IEmulator.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IInputPollable.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IMemoryDomains.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.ISaveRam.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.ISettable.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IStatable.cs">
+        <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
@@ -905,6 +946,9 @@
     <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
     <Compile Include="Consoles\Sega\Genesis\Genesis.IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.ISoundProvider.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.ICodeDataLogger.cs">
@@ -932,6 +976,9 @@
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.ISettable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ISoundProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IStatable.cs">
@@ -1031,6 +1078,9 @@
     <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.ISoundProvider.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
@@ -1072,6 +1122,9 @@
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISoundProvider.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.IStatable.cs">

@@ -15,8 +15,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _disposed;
 		private ISoundOutput _soundOutput;
-		private ISyncSoundProvider _syncSoundProvider;
-		private ISoundProvider _asyncSoundProvider;
+
+		private ISoundProvider _soundProvider;
+
 		private SoundOutputProvider _outputProvider;
 		private readonly BufferedAsync _semiSync = new BufferedAsync();
 
@@ -61,16 +62,11 @@ namespace BizHawk.Client.EmuHawk
 
 			_outputProvider = new SoundOutputProvider();
 			_outputProvider.MaxSamplesDeficit = _soundOutput.MaxSamplesDeficit;
-			_outputProvider.BaseSoundProvider = _syncSoundProvider;
+			_outputProvider.BaseSoundProvider = _soundProvider;
 
 			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_soundOutput.MaxSamplesDeficit));
 
 			IsStarted = true;
-
-			//ApplyVolumeSettings();
-
-			//LogUnderruns = true;
-			//_outputProvider.LogDebug = true;
 		}
 
 		public void StopSound()
@@ -86,46 +82,40 @@ namespace BizHawk.Client.EmuHawk
 			IsStarted = false;
 		}
 
-		//public void ApplyVolumeSettings()
-		//{
-		//  if (!IsStarted) return;
-
-		//  double volume = Global.Config.SoundVolume / 100.0;
-		//  if (volume < 0.0) volume = 0.0;
-		//  if (volume > 1.0) volume = 1.0;
-		//  _soundOutput.ApplyVolumeSettings(volume);
-		//}
-
-		public void SetSyncInputPin(ISyncSoundProvider source)
+		// Sound refactor TODO: combine these methods, and check the SyncMode for behavior
+		/// <summary>
+		/// attach a new input pin, of the `sync` variety
+		/// </summary>
+		public void SetSyncInputPin(ISoundProvider source)
 		{
-			if (_asyncSoundProvider != null)
-			{
-				_asyncSoundProvider.DiscardSamples();
-				_asyncSoundProvider = null;
-			}
+			if (source.SyncMode != SyncSoundMode.Sync)
+				throw new InvalidOperationException("SetSyncInputPin() must be called with a sync input");
+
 			_semiSync.DiscardSamples();
-			_semiSync.BaseSoundProvider = null;
-			_syncSoundProvider = source;
+			_semiSync.ClearSoundProvider();
+			_soundProvider = source;
 			if (_outputProvider != null)
 			{
 				_outputProvider.BaseSoundProvider = source;
 			}
 		}
 
+		/// <summary>
+		/// attach a new input pin, of the `async` variety
+		/// </summary>
 		public void SetAsyncInputPin(ISoundProvider source)
 		{
-			if (_syncSoundProvider != null)
-			{
-				_syncSoundProvider.DiscardSamples();
-				_syncSoundProvider = null;
-			}
+			if (source.SyncMode != SyncSoundMode.Async)
+				throw new InvalidOperationException("SetAsyncInputPin() must be called with a async input");
+
 			if (_outputProvider != null)
 			{
 				_outputProvider.DiscardSamples();
 				_outputProvider.BaseSoundProvider = null;
 			}
-			_asyncSoundProvider = source;
-			_semiSync.BaseSoundProvider = source;
+
+			_soundProvider = source;
+			_semiSync.SetAsyncSoundProvider(source);
 			_semiSync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
 		}
 
@@ -169,8 +159,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!Global.Config.SoundEnabled || !IsStarted || _disposed)
 			{
-				if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
-				if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
+				if (_soundProvider != null) _soundProvider.DiscardSamples();
 				if (_outputProvider != null) _outputProvider.DiscardSamples();
 				return;
 			}
@@ -183,20 +172,19 @@ namespace BizHawk.Client.EmuHawk
 			int samplesNeeded = _soundOutput.CalculateSamplesNeeded();
 			int samplesProvided;
 
-			if (atten==0)
+			if (atten == 0)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 				samplesProvided = samplesNeeded;
 
-				if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
-				if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
+				if (_soundProvider != null) _soundProvider.DiscardSamples();
 				if (_outputProvider != null) _outputProvider.DiscardSamples();
 			}
-			else if (_syncSoundProvider != null)
+			else if (_soundProvider.SyncMode == SyncSoundMode.Sync)
 			{
 				if (Global.Config.SoundThrottle)
 				{
-					_syncSoundProvider.GetSamples(out samples, out samplesProvided);
+					_soundProvider.GetSamplesSync(out samples, out samplesProvided);
 
 					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
 					{
@@ -213,11 +201,11 @@ namespace BizHawk.Client.EmuHawk
 					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
 				}
 			}
-			else if (_asyncSoundProvider != null)
+			else if (_soundProvider != null && _soundProvider.SyncMode == SyncSoundMode.Sync)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
-				_semiSync.GetSamples(samples);
+				_semiSync.GetSamplesAsync(samples);
 
 				samplesProvided = samplesNeeded;
 			}

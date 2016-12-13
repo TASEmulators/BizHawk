@@ -29,7 +29,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			ser.BeginSection("STIC");
 
-			// TODO
+			ser.Sync("Sr1", ref Sr1);
+			ser.Sync("Sr2", ref Sr2);
+			ser.Sync("Sst", ref Sst);
+			ser.Sync("Fgbg", ref Fgbg);
+			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
+			ser.Sync("Pending Cycles", ref PendingCycles);
+			ser.Sync("Registers", ref Register, false);
 
 			ser.EndSection();
 		}
@@ -462,10 +468,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 				byte card = (byte)(attr >> 3);
 				bool gram = attr.Bit(11);
-				byte loc_color = (byte)(attr & 3);
+				byte loc_color = (byte)(attr & 7);
 				bool color_3 = attr.Bit(12);
-				if (color_3)
-					loc_color += 4;
+				if (color_3 && gram)
+					loc_color += 8;
 
 				bool priority = attr.Bit(13);
 				byte loc_x = (byte)(x & 0xFF);

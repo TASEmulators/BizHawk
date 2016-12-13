@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Common
 			public static extern void blip_delete(IntPtr context);
 		}
 
-		IntPtr context;
+		private IntPtr context;
 
 		public BlipBuffer(int sample_count)
 		{
@@ -83,10 +83,19 @@ namespace BizHawk.Emulation.Common
 				throw new Exception("blip_new returned NULL!");
 		}
 
+		~BlipBuffer()
+		{
+			Dispose();
+		}
+
 		public void Dispose()
 		{
-			BlipBufDll.blip_delete(context);
-			context = IntPtr.Zero;
+			if (context != IntPtr.Zero)
+			{
+				BlipBufDll.blip_delete(context);
+				context = IntPtr.Zero;
+				GC.SuppressFinalize(this);
+			}
 		}
 
 		public void SetRates(double clock_rate, double sample_rate)

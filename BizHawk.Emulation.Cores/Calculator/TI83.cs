@@ -1,10 +1,5 @@
 using System;
 using System.Globalization;
-using System.IO;
-using System.Collections.Generic;
-
-using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80;
@@ -19,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		isPorted: false,
 		isReleased: true
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight))]
+	[ServiceNotApplicable(typeof(ISoundProvider), typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight))]
 	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]

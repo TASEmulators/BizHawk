@@ -20,7 +20,7 @@ namespace BizHawk.Client.MultiHawk
 		public void RewireInputChain()
 		{
 			Global.ControllerInputCoalescer.Clear();
-			Global.ControllerInputCoalescer.Type = Global.ActiveController.Type;
+			Global.ControllerInputCoalescer.Definition = Global.ActiveController.Definition;
 
 			// TODO?
 			//Global.UD_LR_ControllerAdapter.Source = Global.ActiveController.Or(Global.AutoFireController);
@@ -42,7 +42,7 @@ namespace BizHawk.Client.MultiHawk
 				window.Emulator.Controller = Global.ControllerOutput;
 			}
 
-			Global.MovieSession.MovieControllerAdapter.Type = Global.MovieInputSourceAdapter.Type;
+			Global.MovieSession.MovieControllerAdapter.Definition = Global.MovieInputSourceAdapter.Definition;
 
 			// connect the movie session before MovieOutputHardpoint if it is doing anything
 			// otherwise connect the MovieInputSourceAdapter to it, effectively bypassing the movie session
@@ -67,7 +67,7 @@ namespace BizHawk.Client.MultiHawk
 			// allow propogating controls that are in the current controller definition but not in the prebaked one
 			// these two lines shouldn't be required anymore under the new system?
 			Global.ActiveController.ForceType(new ControllerDefinition(def));
-			Global.ClickyVirtualPadController.Type = new ControllerDefinition(def);
+			Global.ClickyVirtualPadController.Definition = new ControllerDefinition(def);
 			RewireInputChain();
 		}
 

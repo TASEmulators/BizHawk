@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: false
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam))]
-	public sealed partial class Intellivision : IEmulator, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
+	public sealed partial class Intellivision : IEmulator, IStatable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_stic);
 
 			_psg = new PSG();
+			_psg.Reset();
 			_psg.ReadMemory = ReadMemory;
 			_psg.WriteMemory = WriteMemory;
 
@@ -112,10 +113,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void get_controller_state()
 		{
 			ushort port1 = ControllerDeck.ReadPort1(Controller);
-			_psg.Register[14] = (ushort)(0xFF - port1);
+			_psg.Register[15] = (ushort)(0xFF - port1);
 
 			ushort port2 = ControllerDeck.ReadPort2(Controller);
-			_psg.Register[15] = (ushort)(0xFF - port2);
+			_psg.Register[14] = (ushort)(0xFF - port2);
 		}
 	}
 }

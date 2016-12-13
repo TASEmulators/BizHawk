@@ -473,32 +473,42 @@ namespace BizHawk.Client.EmuHawk
 			using(var ofd = new OpenFileDialog())
 			{
 				ofd.Multiselect = true;
-				if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+				if (ofd.ShowDialog() != DialogResult.OK)
+				{
 					return;
+				}
+
 				RunImportJob(ofd.FileNames);
 			}
 		}
 
-		bool RunImportJobSingle(string basepath, string f, ref string errors)
+		private bool RunImportJobSingle(string basepath, string f, ref string errors)
 		{
 			try
 			{
 				var fi = new FileInfo(f);
-				if (!fi.Exists) return false;
+				if (!fi.Exists)
+				{
+					return false;
+				}
 
 				string target = Path.Combine(basepath, fi.Name);
 				if (new FileInfo(target).Exists)
 				{
-					//compare the files, if theyre the same. dont do anything
+					// compare the files, if theyre the same. dont do anything
 					if (File.ReadAllBytes(target).SequenceEqual(File.ReadAllBytes(f)))
+					{
 						return false;
-					//hmm theyre different. import but rename it
+					}
+
+					// hmm theyre different. import but rename it
 					string dir = Path.GetDirectoryName(target);
 					string ext = Path.GetExtension(target);
 					string name = Path.GetFileNameWithoutExtension(target);
 					name += " (variant)";
 					target = Path.Combine(dir, name) + ext;
 				}
+
 				Directory.CreateDirectory(Path.GetDirectoryName(target));
 				fi.CopyTo(target, false);
 				return true;
@@ -511,7 +521,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void RunImportJob(IEnumerable<string> files)
+		private void RunImportJob(IEnumerable<string> files)
 		{
 			bool didSomething = false;
 			var basepath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
@@ -523,9 +533,8 @@ namespace BizHawk.Client.EmuHawk
 					if (hf.IsArchive)
 					{
 						//blech. the worst extraction code in the universe.
-						string extractpath = System.IO.Path.GetTempFileName() + ".dir";
-						DirectoryInfo di = null;
-						di = System.IO.Directory.CreateDirectory(extractpath);
+						string extractpath = Path.GetTempFileName() + ".dir";
+						DirectoryInfo di = Directory.CreateDirectory(extractpath);
 
 						try
 						{
@@ -549,23 +558,31 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 					else
+					{
 						didSomething |= RunImportJobSingle(basepath, f, ref errors);
+					}
 				}
 			}
 
-			if (errors != "")
-				System.Windows.Forms.MessageBox.Show(errors, "Error importing these files");
+			if (!string.IsNullOrEmpty(errors))
+			{
+				MessageBox.Show(errors, "Error importing these files");
+			}
 
-			if (didSomething) DoScan();
+			if (didSomething)
+			{
+				DoScan();
+			}
 		}
 
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			if (keyData == Keys.Escape)
 			{
-				this.Close();
+				Close();
 				return true;
 			}
+
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 

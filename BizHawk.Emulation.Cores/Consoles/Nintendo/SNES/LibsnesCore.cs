@@ -84,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			// start up audio resampler
 			InitAudio();
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
 
 			//strip header
 			if (romData != null)
@@ -861,7 +862,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <summary>
 			/// invalid until CopyFrom has been called
 			/// </summary>
-			public ControllerDefinition Type
+			public ControllerDefinition Definition
 			{
 				get { return def; }
 			}
@@ -898,7 +899,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// <param name="source"></param>
 			public void CopyFrom(IController source)
 			{
-				this.def = source.Type;
+				this.def = source.Definition;
 				buttons.Clear();
 				foreach (var k in def.BoolButtons)
 					buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);
@@ -1300,10 +1301,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			resampler.EnqueueSample((short)left, (short)right);
 		}
 
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 
 		#endregion audio stuff
 

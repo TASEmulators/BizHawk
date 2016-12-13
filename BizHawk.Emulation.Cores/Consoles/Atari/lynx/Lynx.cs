@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
-	public partial class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable
+	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr Core;
 
@@ -189,28 +189,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			if (Controller["Option 2"]) ret |= LibLynx.Buttons.Option_2;
 
 			return ret;
-		}
-
-		#endregion
-
-		#region SoundProvider
-
-		short[] soundbuff = new short[2048];
-		int numsamp;
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = soundbuff;
-			nsamp = numsamp;
-		}
-
-		public void DiscardSamples()
-		{
 		}
 
 		#endregion

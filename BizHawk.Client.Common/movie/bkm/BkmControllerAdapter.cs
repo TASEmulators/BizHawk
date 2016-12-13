@@ -28,14 +28,14 @@ namespace BizHawk.Client.Common
 
 		#region IMovieController Implementation
 
-		public ControllerDefinition Type { get; set; }
+		public ControllerDefinition Definition { get; set; }
 
 		/// <summary>
 		/// latches one player from the source
 		/// </summary>
 		public void LatchPlayerFromSource(IController playerSource, int playerNum)
 		{
-			foreach (var button in playerSource.Type.BoolButtons)
+			foreach (var button in playerSource.Definition.BoolButtons)
 			{
 				var bnp = ButtonNameParser.Parse(button);
 				if (bnp == null)
@@ -58,12 +58,12 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LatchFromSource(IController source)
 		{
-			foreach (var button in Type.BoolButtons)
+			foreach (var button in Definition.BoolButtons)
 			{
 				MyBoolButtons[button] = source[button];
 			}
 
-			foreach (var name in Type.FloatControls)
+			foreach (var name in Definition.FloatControls)
 			{
 				MyFloatControls[name] = source.GetFloat(name);
 			}
@@ -258,7 +258,7 @@ namespace BizHawk.Client.Common
 
 		private bool IsGenesis6Button()
 		{
-			return this.Type.BoolButtons.Contains("P1 X");
+			return this.Definition.BoolButtons.Contains("P1 X");
 		}
 
 		private void Force(string button, bool state)
@@ -271,7 +271,7 @@ namespace BizHawk.Client.Common
 			MyFloatControls[name] = state;
 		}
 
-		private string ControlType { get { return Type.Name; } }
+		private string ControlType { get { return Definition.Name; } }
 
 		private void SetGBAControllersAsMnemonic(string mnemonic)
 		{

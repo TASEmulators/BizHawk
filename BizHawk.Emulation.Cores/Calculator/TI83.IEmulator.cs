@@ -6,23 +6,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider
-		{
-			get { return NullSound.SilenceProvider; }
-		}
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return new FakeSyncSound(NullSound.SilenceProvider, 735); }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return true;
-		}
-
-		public void EndAsyncSound() { }
-
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return TI83Controller; }

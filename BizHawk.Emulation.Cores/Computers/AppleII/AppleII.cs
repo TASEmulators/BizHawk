@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable))]
-	public partial class AppleII : IEmulator, IDriveLight
+	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
 		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, Settings settings)
 			: this(comm, gameInfoSet.First(), romSet.First(), settings)

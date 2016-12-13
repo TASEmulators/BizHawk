@@ -6,27 +6,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		[FeatureNotImplemented]
-		public ISoundProvider SoundProvider
-		{
-			get { return null; }
-		}
-
-		[FeatureNotImplemented]
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return this; }
-		}
-
-		[FeatureNotImplemented]
-		public bool StartAsyncSound()
-		{
-			return false;
-		}
-
-		[FeatureNotImplemented]
-		public void EndAsyncSound() { }
-
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return AppleIIController; }
@@ -36,9 +15,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public int Frame { get; set; }
 
-		public string SystemId { get { return "AppleII"; } }
+		public string SystemId
+		{
+			get { return "AppleII"; }
+		}
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation
+		{
+			get { return true; }
+		}
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{

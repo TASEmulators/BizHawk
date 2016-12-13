@@ -13,12 +13,16 @@ namespace BizHawk.Client.MultiHawk
 {
 	public partial class RecordMovie : Form
 	{
+		private IEmulator Emulator;
+
 		// TODO - Allow relative paths in record textbox
-		public RecordMovie()
+		public RecordMovie(IEmulator core)
 		{
 			InitializeComponent();
 
-			if (!Global.Emulator.HasSavestates())
+			Emulator = core;
+
+			if (!Emulator.HasSavestates())
 			{
 				StartFromCombo.Items.Remove(
 					StartFromCombo.Items
@@ -77,9 +81,9 @@ namespace BizHawk.Client.MultiHawk
 					Directory.CreateDirectory(fileInfo.DirectoryName);
 				}
 
-				//if (StartFromCombo.SelectedItem.ToString() == "Now" && Global.Emulator.HasSavestates())
+				//if (StartFromCombo.SelectedItem.ToString() == "Now" && Emulator.HasSavestates())
 				//{
-				//	var core = Global.Emulator.AsStatable();
+				//	var core = Emulator.AsStatable();
 
 				//	movieToRecord.StartsFromSavestate = true;
 
@@ -103,7 +107,7 @@ namespace BizHawk.Client.MultiHawk
 				//		if (movieToRecord.SavestateFramebuffer != null)
 				//		{
 
-				//			movieToRecord.SavestateFramebuffer = (int[])Global.Emulator.VideoProvider().GetVideoBuffer().Clone();
+				//			movieToRecord.SavestateFramebuffer = (int[])Emulator.VideoProvider().GetVideoBuffer().Clone();
 				//		}
 				//	}
 				//}

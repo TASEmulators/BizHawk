@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _wasRecording = false;
 
 		private Emulation.Common.ControllerDefinition controllerType
-		{ get { return Global.MovieSession.MovieControllerAdapter.Type; } }
+		{ get { return Global.MovieSession.MovieControllerAdapter.Definition; } }
 
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
@@ -297,8 +297,8 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == InputRoll.RollColumn.InputType.Float)
 						{
 							// feos: this could be cashed, but I don't notice any slowdown this way either
-							Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-								[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(columnName)];
+							Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+								[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(columnName)];
 							if (text == range.Mid.ToString())
 								text = "";
 						}
@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 
-					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
 
@@ -952,8 +952,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			float value = _floatPaintState + increment;
-			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
 			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
 			// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
 			float rMax = range.Max;
@@ -1027,8 +1027,8 @@ namespace BizHawk.Client.EmuHawk
 			float prev = value;
 			string prevTyped = _floatTypedValue;
 
-			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
 
 			float rMax = range.Max;
 			float rMin = range.Min;

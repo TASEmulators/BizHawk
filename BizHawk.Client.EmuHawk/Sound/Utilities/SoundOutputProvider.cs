@@ -54,7 +54,21 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxSamplesDeficit { get; set; }
 
-		public ISyncSoundProvider BaseSoundProvider { get; set; }
+		// Sound Refactor TODO: is this sync mode check necessary?
+		private ISoundProvider _baseSoundProvider;
+		public ISoundProvider BaseSoundProvider
+		{
+			get { return _baseSoundProvider;  }
+			set
+			{
+				if (value != null && value.SyncMode != SyncSoundMode.Sync)
+				{
+					throw new InvalidOperationException("Sync mode is required");
+				}
+
+				_baseSoundProvider = value;
+			}
+		}
 
 		public void DiscardSamples()
 		{
@@ -164,7 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			short[] samples;
 			int count;
 
-			BaseSoundProvider.GetSamples(out samples, out count);
+			BaseSoundProvider.GetSamplesSync(out samples, out count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)
