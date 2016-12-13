@@ -68,6 +68,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return Sr2;
 		}
 
+		public void ToggleSr2()
+		{
+			Sr2 = !Sr2;
+		}
+
 		public void SetSst(bool value)
 		{
 			Sst = value;
@@ -277,10 +282,25 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							// Colored Squares Mode.
 							int[] colors = new int[4];
+							int[] square_col = new int[4];
 							colors[0] = fg;
 							colors[1] = (card >> 3) & 0x0007;
 							colors[2] = (card >> 6) & 0x0007;
 							colors[3] = ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
+
+							for (int z=0;z<4;z++)
+							{
+								if (colors[z]==7)
+								{
+									colors[z] = ReadMemory(ColorSP) & 0x000F;
+									square_col[z] = 0;
+								}
+								else
+								{
+									square_col[z] = 1;
+								}
+							}
+
 							for (int squares_row = 0; squares_row < 8; squares_row++)
 							{
 								for (int squares_col = 0; squares_col < 8; squares_col++)
@@ -316,6 +336,16 @@ namespace BizHawk.Emulation.Cores.Intellivision
 										}
 									}
 									BGBuffer[pixel] = ColorToRGBA(colors[color]);
+
+									// also if the pixel is on set it in the collision matrix
+									// note that the collision field is attached to the lower right corner of the BG
+									// so we add 8 to x and 16 to y here
+									// also notice the extra condition attached to colored squares mode
+									if ((card_col * 8 + (7 - squares_col) + 8) < 167 && square_col[color]==1)
+									{
+										Collision[card_col * 8 + (7 - squares_col) + 8, (card_row * 8 + squares_row) * 2 + 16] = 1 << 8;
+										Collision[card_col * 8 + (7 - squares_col) + 8, (card_row * 8 + squares_row) * 2 + 16 + 1] = 1 << 8;
+									}
 								}
 							}
 							continue;
