@@ -159,6 +159,14 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				TotalExecutedCycles += cycles;
 				return cycles;
 			}
+
+			// This simulates the Halting caused by the STIC during visible frame using SR2
+			if (BusRq && Interruptible) {// && !IntRM && !Interrupted) {
+				PendingCycles--;
+				return 1;
+			}
+
+
 			if (Logging)
 			{
 				int addrToAdvance;
