@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public void SetBusRq(bool value)
 		{
-			BusRq = value;
+			BusRq = !value;
 		}
 
 		public int GetPendingCycles()
