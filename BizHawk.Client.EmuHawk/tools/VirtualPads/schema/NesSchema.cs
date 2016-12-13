@@ -16,9 +16,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (core is NES)
 			{
-				var ss = (core as NES).GetSyncSettings();
+				var nes = core as NES;
+				var ss = nes.GetSyncSettings();
 
-				var isFds = core.BoardName == "FDS";
+				var isFds = nes.IsFDS;
 				if (ss.Controls.Famicom)
 				{
 					yield return StandardController(1);

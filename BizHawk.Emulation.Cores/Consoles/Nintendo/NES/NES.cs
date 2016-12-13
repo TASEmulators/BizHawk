@@ -122,6 +122,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			get { return _isVS; }
 		}
 
+		public bool IsFDS
+		{
+			get { return Board is FDS; }
+		}
+
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)
 		{
 			if (domain == NESWatch.EDomain.Sysbus)
