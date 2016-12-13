@@ -2,6 +2,12 @@
 {
 	public enum SyncSoundMode { Sync, Async };
 
+	/// <summary>
+	/// This service provides the ability to output sound from the client,
+	/// If available the client will provide sound ouput
+	/// If unavailable the client will fallback to a default sound implementation
+	/// that generates empty samples (silence)
+	/// </summary>
 	public interface ISoundProvider : IEmulatorService
 	{
 		/// <summary>

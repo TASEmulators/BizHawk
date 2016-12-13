@@ -3,7 +3,8 @@
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// This service manages the communication from the core to the Code/Data logging tool
+	/// This service manages the communication from the core to the Code/Data logging tool,
+	/// If available then the Code/Data logging tool will be exposed in the client
 	/// </summary>
 	public interface ICodeDataLogger : IEmulatorService
 	{
