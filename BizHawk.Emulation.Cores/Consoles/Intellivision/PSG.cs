@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	// Sound refactor todo: Implement ISoundProvider, and register _psg in the Intellivision core
-	public sealed class PSG
+	public sealed class PSG : ISoundProvider
 	{
 		public ushort[] Register = new ushort[16];
 
@@ -28,6 +28,37 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				audio_samples[i] = 0;
 			}
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async is not available");
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Only Sync mode is supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			short[] ret = new short[735 * 2];
+			GetSamples(ret);
+			samples = ret;
+			nsamp = 735;
 		}
 
 		public void GetSamples(short[] samples)

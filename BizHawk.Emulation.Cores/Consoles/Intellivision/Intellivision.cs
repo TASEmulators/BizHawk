@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_psg.Reset();
 			_psg.ReadMemory = ReadMemory;
 			_psg.WriteMemory = WriteMemory;
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_psg);
 
 			Connect();
 
