@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 				if (_soundProvider != null) _soundProvider.DiscardSamples();
 				if (_outputProvider != null) _outputProvider.DiscardSamples();
 			}
-			else if (_soundProvider.SyncMode == SyncSoundMode.Sync)
+			else if (_soundProvider != null && _soundProvider.SyncMode == SyncSoundMode.Sync)
 			{
 				if (Global.Config.SoundThrottle)
 				{
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
 				}
 			}
-			else if (_soundProvider != null && _soundProvider.SyncMode == SyncSoundMode.Sync)
+			else if (_soundProvider != null && _soundProvider.SyncMode == SyncSoundMode.Async)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
