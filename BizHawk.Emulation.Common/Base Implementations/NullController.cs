@@ -1,5 +1,10 @@
 ﻿namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// A empty implementation of IController that represents the lack of
+	/// a controller interface
+	/// </summary>
+	/// <seealso cref="IController" />
 	public class NullController : IController
 	{
 		public ControllerDefinition Definition { get { return null; } }

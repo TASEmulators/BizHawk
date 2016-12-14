@@ -2,6 +2,11 @@
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// A default and empty implementation of ISoundProvider
+	/// that simply outputs "silence"
+	/// </summary>
+	/// <seealso cref="ISoundProvider" />
 	public class NullSound : ISoundProvider
 	{
 		private readonly long _spfNumerator;

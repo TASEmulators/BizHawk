@@ -2,6 +2,10 @@
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This interface is for legacy sound implementations in some older cores
+	/// This needs to go away, but is provided here, for now
+	/// </summary>
 	public interface IAsyncSoundProvider
 	{
 		void GetSamples(short[] samples);
