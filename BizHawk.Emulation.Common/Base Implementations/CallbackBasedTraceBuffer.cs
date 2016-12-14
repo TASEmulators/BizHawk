@@ -48,11 +48,17 @@ namespace BizHawk.Emulation.Common
 
 		public abstract void TraceFromCallback();
 
-		public ITraceSink _sink;
+		private ITraceSink _sink;
 
-		public bool Enabled { get { return Sink != null; } }
+		public bool Enabled
+		{
+			get { return Sink != null; }
+		}
 
-		public void Put(TraceInfo info) { Sink.Put(info); }
+		public void Put(TraceInfo info)
+		{
+			Sink.Put(info);
+		}
 
 		public ITraceSink Sink
 		{
@@ -71,7 +77,6 @@ namespace BizHawk.Emulation.Common
 				}
 			}
 		}
-
 
 		public string Header { get; set; }
 
