@@ -52,8 +52,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var prev = Markers.PreviousOrCurrent(Emulator.Frame);//Temp fix
+			var prev = Markers.PreviousOrCurrent(0);
 
+			if (this.Emulator!=null) //Temp fix
+				prev = Markers.PreviousOrCurrent(Emulator.Frame);
+				
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
 				color = TAStudio.Marker_FrameCol;
