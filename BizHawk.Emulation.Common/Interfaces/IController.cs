@@ -7,12 +7,14 @@
 		/// </summary>
 		ControllerDefinition Definition { get; }
 
-		// TODO - it is obnoxious for this to be here. must be removed.
-		bool this[string button] { get; }
-		
-		// TODO - this can stay but it needs to be changed to go through the float
+		/// <summary>
+		/// Returns the current state of a boolean control
+		/// </summary>
 		bool IsPressed(string button);
 
+		/// <summary>
+		/// Returns the state of a float control
+		/// </summary>
 		float GetFloat(string name);
 	}
 }

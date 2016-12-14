@@ -11,40 +11,20 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class OverrideAdaptor : IController
 	{
+		public ControllerDefinition Definition { get; private set; }
+
 		private readonly Dictionary<string, bool> _overrides = new Dictionary<string, bool>();
 		private readonly Dictionary<string, float> _floatOverrides = new Dictionary<string, float>();
 		private readonly List<string> _inverses = new List<string>();
 
-		public ControllerDefinition Definition { get; set; }
-
-		public bool this[string button]
-		{
-			get
-			{
-				if (_overrides.ContainsKey(button))
-				{
-					return _overrides[button];
-				}
-
-				throw new InvalidOperationException();
-			}
-
-			set
-			{
-				if (_overrides.ContainsKey(button))
-				{
-					_overrides[button] = value;
-				}
-				else
-				{
-					_overrides.Add(button, value);
-				}
-			}
-		}
-
 		public bool IsPressed(string button)
 		{
-			return this[button];
+			if (_overrides.ContainsKey(button))
+			{
+				return _overrides[button];
+			}
+
+			throw new InvalidOperationException();
 		}
 
 		public float GetFloat(string name)
@@ -104,7 +84,15 @@ namespace BizHawk.Client.Common
 
 		public void SetButton(string button, bool value)
 		{
-			this[button] = value;
+			if (_overrides.ContainsKey(button))
+			{
+				_overrides[button] = value;
+			}
+			else
+			{
+				_overrides.Add(button, value);
+			}
+
 			_inverses.Remove(button);
 		}
 

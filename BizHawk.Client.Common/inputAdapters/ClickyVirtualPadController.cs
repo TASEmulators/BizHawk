@@ -12,11 +12,6 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition { get; set; }
 
-		public bool this[string button]
-		{
-			get { return IsPressed(button); }
-		}
-
 		public bool IsPressed(string button)
 		{
 			return _pressed.Contains(button);

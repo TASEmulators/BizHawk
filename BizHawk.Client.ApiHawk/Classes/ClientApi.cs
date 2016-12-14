@@ -341,7 +341,7 @@ namespace BizHawk.Client.ApiHawk
 			AutoFireStickyXorAdapter joypadAdaptor = Global.AutofireStickyXORAdapter;
 
 			IEnumerable<string> pressedButtons = from button in joypadAdaptor.Definition.BoolButtons
-												 where joypadAdaptor[button]
+												 where joypadAdaptor.IsPressed(button)
 												 select button;
 
 			foreach (Joypad j in allJoypads)

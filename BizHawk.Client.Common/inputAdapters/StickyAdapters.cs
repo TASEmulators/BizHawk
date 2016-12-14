@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using BizHawk.Common;
@@ -18,9 +17,15 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class StickyOrAdapter : IController
 	{
+		public ControllerDefinition Definition
+		{
+			get { return Source.Definition; }
+		}
+
 		public bool IsPressed(string button)
 		{
-			return this[button];
+			return Source.StickyIsInEffect(button)
+				|| SourceStickyOr.StickyIsInEffect(button);
 		}
 
 		// pass floats solely from the original source
@@ -33,56 +38,34 @@ namespace BizHawk.Client.Common
 
 		public ISticky Source { get; set; }
 		public ISticky SourceStickyOr { get; set; }
-		public ControllerDefinition Definition { get { return Source.Definition; } set { throw new InvalidOperationException(); } }
-
-		public bool this[string button]
-		{
-			get
-			{
-				return Source.StickyIsInEffect(button) ||
-					SourceStickyOr.StickyIsInEffect(button);
-			}
-
-			set
-			{
-				throw new InvalidOperationException();
-			}
-		}
 	}
 
 	public class StickyXorAdapter : ISticky, IController
 	{
-		protected HashSet<string> stickySet = new HashSet<string>();
+		/// <summary>
+		/// Determines if a sticky is current mashing the button itself,
+		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
+		/// </summary>
+		public bool StickyIsInEffect(string button)
+		{
+			if (IsSticky(button))
+			{
+				return !Source.IsPressed(button);
+			}
 
-		public IController Source { get; set; }
+			return false;
+		}
 
 		public ControllerDefinition Definition
 		{
 			get { return Source.Definition; }
-			set { throw new InvalidOperationException(); }
 		}
-
-		public bool Locked { get; set; } // Pretty much a hack, 
 
 		public bool IsPressed(string button)
 		{
-			return this[button];
-		}
-
-		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
-		// otherwise, the source is passed thru.
-		protected readonly WorkingDictionary<string, float?> _floatSet = new WorkingDictionary<string, float?>();
-
-		public void SetFloat(string name, float? value)
-		{
-			if (value.HasValue)
-			{
-				_floatSet[name] = value;
-			}
-			else
-			{
-				_floatSet.Remove(name);
-			}
+			var source = Source.IsPressed(button);
+			source ^= stickySet.Contains(button);
+			return source;
 		}
 
 		public float GetFloat(string name)
@@ -102,38 +85,33 @@ namespace BizHawk.Client.Common
 			return Source.GetFloat(name);
 		}
 
+		public IController Source { get; set; }
+
+		public bool Locked { get; set; } // Pretty much a hack, 
+
+		private List<string> _justPressed = new List<string>();
+
+		protected readonly HashSet<string> stickySet = new HashSet<string>();
+
+		// if SetFloat() is called (typically virtual pads), then that float will entirely override the Source input
+		// otherwise, the source is passed thru.
+		protected readonly WorkingDictionary<string, float?> _floatSet = new WorkingDictionary<string, float?>();
+
+		public void SetFloat(string name, float? value)
+		{
+			if (value.HasValue)
+			{
+				_floatSet[name] = value;
+			}
+			else
+			{
+				_floatSet.Remove(name);
+			}
+		}
+
 		public void ClearStickyFloats()
 		{
 			_floatSet.Clear();
-		}
-
-		public bool this[string button]
-		{
-			get
-			{
-				var source = Source[button];
-				source ^= stickySet.Contains(button);
-				return source;
-			}
-
-			set
-			{
-				throw new InvalidOperationException();
-			}
-		}
-
-		/// <summary>
-		/// Determines if a sticky is current mashing the button itself,
-		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
-		/// </summary>
-		public bool StickyIsInEffect(string button)
-		{
-			if (IsSticky(button))
-			{
-				return !Source.IsPressed(button);
-			}
-
-			return false;
 		}
 
 		public void SetSticky(string button, bool isSticky)
@@ -189,16 +167,62 @@ namespace BizHawk.Client.Common
 
 			_justPressed = buttons;
 		}
-
-		private List<string> _justPressed = new List<string>();
 	}
 
 	public class AutoFireStickyXorAdapter : ISticky, IController
 	{
+		/// <summary>
+		/// Determines if a sticky is current mashing the button itself,
+		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
+		/// </summary>
+		public bool StickyIsInEffect(string button)
+		{
+			if (IsSticky(button))
+			{
+				return !Source.IsPressed(button);
+			}
+
+			return false;
+		}
+
+		public ControllerDefinition Definition
+		{
+			get { return Source.Definition; }
+		}
+
+		public bool IsPressed(string button)
+		{
+			var source = Source.IsPressed(button);
+			bool patternValue = false;
+			if (_boolPatterns.ContainsKey(button))
+			{ // I can't figure a way to determine right here if it should Peek or Get.
+				patternValue = _boolPatterns[button].PeekNextValue();
+			}
+			source ^= patternValue;
+
+			return source;
+		}
+
+		public float GetFloat(string name)
+		{
+			if (_floatPatterns.ContainsKey(name))
+			{
+				return _floatPatterns[name].PeekNextValue();
+			}
+
+			if (Source == null)
+			{
+				return 0;
+			}
+
+			return Source.GetFloat(name);
+		}
+
 		// TODO: Change the AutoHold adapter to be one of these, with an 'Off' value of 0?
 		// Probably would have slightly lower performance, but it seems weird to have such a similar class that is only used once.
 		private int On;
 		private int Off;
+
 		public void SetOnOffPatternFromConfig()
 		{
 			On = Global.Config.AutofireOn < 1 ? 0 : Global.Config.AutofireOn;
@@ -215,17 +239,7 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
-
 		public bool Locked { get; set; } // Pretty much a hack, 
-
-		public bool IsPressed(string button)
-		{
-			return this[button];
-		}
 
 		public void SetFloat(string name, float? value, AutoPatternFloat pattern = null)
 		{
@@ -241,50 +255,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public float GetFloat(string name)
-		{
-			if (_floatPatterns.ContainsKey(name))
-				return _floatPatterns[name].PeekNextValue();
-
-			if (Source == null)
-				return 0;
-
-			return Source.GetFloat(name);
-		}
-
 		public void ClearStickyFloats()
 		{
 			_floatPatterns.Clear();
-		}
-
-		public bool this[string button]
-		{
-			get
-			{
-				var source = Source[button];
-				bool patternValue = false;
-				if (_boolPatterns.ContainsKey(button))
-				{ // I can't figure a way to determine right here if it should Peek or Get.
-					patternValue = _boolPatterns[button].PeekNextValue();
-				}
-				source ^= patternValue;
-
-				return source;
-			}
-		}
-
-		/// <summary>
-		/// Determines if a sticky is current mashing the button itself,
-		/// If sticky is not set then false, if set, it returns true if the Source is not pressed, else false
-		/// </summary>
-		public bool StickyIsInEffect(string button)
-		{
-			if (IsSticky(button))
-			{
-				return !Source.IsPressed(button);
-			}
-
-			return false;
 		}
 
 		public void SetSticky(string button, bool isSticky, AutoPatternBool pattern = null)
@@ -335,6 +308,7 @@ namespace BizHawk.Client.Common
 		}
 
 		private List<string> _justPressed = new List<string>();
+
 		public void MassToggleStickyState(List<string> buttons)
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))

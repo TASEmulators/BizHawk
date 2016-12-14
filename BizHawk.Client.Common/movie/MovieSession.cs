@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 					// Movie may go into finished mode as a result from latching
 					if (!Movie.IsFinished)
 					{
-						if (Global.ClientControls["Scrub Input"])
+						if (Global.ClientControls.IsPressed("Scrub Input"))
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							ClearFrame();

@@ -11,30 +11,14 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class UD_LR_ControllerAdapter : IController
 	{
-		private HashSet<string> Unpresses = new HashSet<string>();
-
 		public ControllerDefinition Definition
 		{
 			get { return Source.Definition; }
 		}
 
-		public bool this[string button]
-		{
-			get { return IsPressed(button); }
-		}
-
-		public IController Source { get; set; }
-
-		// The float format implies no U+D and no L+R no matter what, so just passthru
-		public float GetFloat(string name)
-		{
-			return Source.GetFloat(name);
-		}
-
 		public bool IsPressed(string button)
 		{
 			bool PriorityUD_LR = !Global.Config.AllowUD_LR && !Global.Config.ForbidUD_LR; // implied by neither of the others being set (left as non-enum for back-compatibility)
-
 
 			if (Global.Config.AllowUD_LR)
 			{
@@ -165,5 +149,15 @@ namespace BizHawk.Client.Common
 
 			return Source.IsPressed(button);
 		}
+
+		// The float format implies no U+D and no L+R no matter what, so just passthru
+		public float GetFloat(string name)
+		{
+			return Source.GetFloat(name);
+		}
+
+		private readonly HashSet<string> Unpresses = new HashSet<string>();
+
+		public IController Source { get; set; }
 	}
 }
