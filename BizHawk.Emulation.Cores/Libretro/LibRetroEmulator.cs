@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Cores
 		private bool GetButton(uint pnum, string type, string button)
 		{
 			string key = string.Format("P{0} {1} {2}", pnum, type, button);
-			bool b = Controller[key];
+			bool b = Controller.IsPressed(key);
 			if (b == true)
 			{
 				return true; //debugging placeholder

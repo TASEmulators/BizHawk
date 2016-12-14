@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in source.Definition.BoolButtons)
 			{
-				Buttons[button] = source[button];
+				Buttons[button] = source.IsPressed(button);
 			}
 		}
 

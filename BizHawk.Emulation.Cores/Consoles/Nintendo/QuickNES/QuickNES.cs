@@ -165,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			int ret = 0;
 			foreach (var b in buttons)
 			{
-				if (Controller[b.Name])
+				if (Controller.IsPressed(b.Name))
 					ret |= b.Mask;
 			}
 			return ret;
@@ -190,9 +190,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			CheckDisposed();
 			using (FP.Save())
 			{
-				if (Controller["Power"])
+				if (Controller.IsPressed("Power"))
 					QN.qn_reset(Context, true);
-				if (Controller["Reset"])
+				if (Controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
 				int j1, j2;

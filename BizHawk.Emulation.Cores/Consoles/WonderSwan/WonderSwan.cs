@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			Frame++;
 			IsLagFrame = true;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				BizSwan.bizswan_reset(Core);
 
 			bool rotate = false;

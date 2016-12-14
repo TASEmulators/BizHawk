@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var button in adapter.Definition.BoolButtons)
 			{
-				input[button] = adapter[button];
+				input[button] = adapter.IsPressed(button);
 			}
 
 			foreach (var button in adapter.Definition.FloatControls)

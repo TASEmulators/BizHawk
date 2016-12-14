@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		{
 			_frame++;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
 				// it seems that theMachine.Reset() doesn't clear ram, etc
 				// this should leave hsram intact but clear most other things

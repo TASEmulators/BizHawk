@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var val = playerSource[button];
+				var val = playerSource.IsPressed(button);
 				MyBoolButtons[button] = val;
 			}
 

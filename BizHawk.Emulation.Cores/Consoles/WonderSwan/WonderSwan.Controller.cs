@@ -47,31 +47,32 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		BizSwan.Buttons GetButtons()
 		{
 			BizSwan.Buttons ret = 0;
-			if (Controller["P1 X1"]) ret |= BizSwan.Buttons.X1;
-			if (Controller["P1 X2"]) ret |= BizSwan.Buttons.X2;
-			if (Controller["P1 X3"]) ret |= BizSwan.Buttons.X3;
-			if (Controller["P1 X4"]) ret |= BizSwan.Buttons.X4;
-			if (Controller["P1 Y1"]) ret |= BizSwan.Buttons.Y1;
-			if (Controller["P1 Y2"]) ret |= BizSwan.Buttons.Y2;
-			if (Controller["P1 Y3"]) ret |= BizSwan.Buttons.Y3;
-			if (Controller["P1 Y4"]) ret |= BizSwan.Buttons.Y4;
-			if (Controller["P1 Start"]) ret |= BizSwan.Buttons.Start;
-			if (Controller["P1 B"]) ret |= BizSwan.Buttons.B;
-			if (Controller["P1 A"]) ret |= BizSwan.Buttons.A;
+			if (Controller.IsPressed("P1 X1")) ret |= BizSwan.Buttons.X1;
+			if (Controller.IsPressed("P1 X2")) ret |= BizSwan.Buttons.X2;
+			if (Controller.IsPressed("P1 X3")) ret |= BizSwan.Buttons.X3;
+			if (Controller.IsPressed("P1 X4")) ret |= BizSwan.Buttons.X4;
+			if (Controller.IsPressed("P1 Y1")) ret |= BizSwan.Buttons.Y1;
+			if (Controller.IsPressed("P1 Y2")) ret |= BizSwan.Buttons.Y2;
+			if (Controller.IsPressed("P1 Y3")) ret |= BizSwan.Buttons.Y3;
+			if (Controller.IsPressed("P1 Y4")) ret |= BizSwan.Buttons.Y4;
+			if (Controller.IsPressed("P1 Start")) ret |= BizSwan.Buttons.Start;
+			if (Controller.IsPressed("P1 B")) ret |= BizSwan.Buttons.B;
+			if (Controller.IsPressed("P1 A")) ret |= BizSwan.Buttons.A;
 
-			if (Controller["P2 X1"]) ret |= BizSwan.Buttons.R_X1;
-			if (Controller["P2 X2"]) ret |= BizSwan.Buttons.R_X2;
-			if (Controller["P2 X3"]) ret |= BizSwan.Buttons.R_X3;
-			if (Controller["P2 X4"]) ret |= BizSwan.Buttons.R_X4;
-			if (Controller["P2 Y1"]) ret |= BizSwan.Buttons.R_Y1;
-			if (Controller["P2 Y2"]) ret |= BizSwan.Buttons.R_Y2;
-			if (Controller["P2 Y3"]) ret |= BizSwan.Buttons.R_Y3;
-			if (Controller["P2 Y4"]) ret |= BizSwan.Buttons.R_Y4;
-			if (Controller["P2 Start"]) ret |= BizSwan.Buttons.R_Start;
-			if (Controller["P2 B"]) ret |= BizSwan.Buttons.R_B;
-			if (Controller["P2 A"]) ret |= BizSwan.Buttons.R_A;
+			if (Controller.IsPressed("P2 X1")) ret |= BizSwan.Buttons.R_X1;
+			if (Controller.IsPressed("P2 X2")) ret |= BizSwan.Buttons.R_X2;
+			if (Controller.IsPressed("P2 X3")) ret |= BizSwan.Buttons.R_X3;
+			if (Controller.IsPressed("P2 X4")) ret |= BizSwan.Buttons.R_X4;
+			if (Controller.IsPressed("P2 Y1")) ret |= BizSwan.Buttons.R_Y1;
+			if (Controller.IsPressed("P2 Y2")) ret |= BizSwan.Buttons.R_Y2;
+			if (Controller.IsPressed("P2 Y3")) ret |= BizSwan.Buttons.R_Y3;
+			if (Controller.IsPressed("P2 Y4")) ret |= BizSwan.Buttons.R_Y4;
+			if (Controller.IsPressed("P2 Start")) ret |= BizSwan.Buttons.R_Start;
+			if (Controller.IsPressed("P2 B")) ret |= BizSwan.Buttons.R_B;
+			if (Controller.IsPressed("P2 A")) ret |= BizSwan.Buttons.R_A;
 
-			if (Controller["Rotate"]) ret |= BizSwan.Buttons.Rotate;
+			if (Controller.IsPressed("Rotate")) ret |= BizSwan.Buttons.Rotate;
+
 			return ret;
 		}
 

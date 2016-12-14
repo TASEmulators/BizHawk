@@ -267,27 +267,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			// update our local copy of the controller data
 			CurrentButtons = 0;
 
-			if (Controller["Up"])
+			if (Controller.IsPressed("Up"))
 				CurrentButtons |= LibGambatte.Buttons.UP;
-			if (Controller["Down"])
+			if (Controller.IsPressed("Down"))
 				CurrentButtons |= LibGambatte.Buttons.DOWN;
-			if (Controller["Left"])
+			if (Controller.IsPressed("Left"))
 				CurrentButtons |= LibGambatte.Buttons.LEFT;
-			if (Controller["Right"])
+			if (Controller.IsPressed("Right"))
 				CurrentButtons |= LibGambatte.Buttons.RIGHT;
-			if (Controller["A"])
+			if (Controller.IsPressed("A"))
 				CurrentButtons |= LibGambatte.Buttons.A;
-			if (Controller["B"])
+			if (Controller.IsPressed("B"))
 				CurrentButtons |= LibGambatte.Buttons.B;
-			if (Controller["Select"])
+			if (Controller.IsPressed("Select"))
 				CurrentButtons |= LibGambatte.Buttons.SELECT;
-			if (Controller["Start"])
+			if (Controller.IsPressed("Start"))
 				CurrentButtons |= LibGambatte.Buttons.START;
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
 			if (Tracer.Enabled)

@@ -532,7 +532,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					default: return 0;
 				}
 
-				return (ushort)(Controller[key] ? 1 : 0);
+				return (ushort)(Controller.IsPressed(key) ? 1 : 0);
 			}
 
 			return 0;
@@ -672,10 +672,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			else
 				api.QUERY_set_audio_sample(soundcb);
 
-			bool resetSignal = Controller["Reset"];
+			bool resetSignal = Controller.IsPressed("Reset");
 			if (resetSignal) api.CMD_reset();
 
-			bool powerSignal = Controller["Power"];
+			bool powerSignal = Controller.IsPressed("Power");
 			if (powerSignal) api.CMD_power();
 
 			//too many messages

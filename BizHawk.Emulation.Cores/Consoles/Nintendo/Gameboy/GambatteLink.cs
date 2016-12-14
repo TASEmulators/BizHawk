@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			foreach (var s in DualGbController.BoolButtons)
 			{
-				if (Controller[s])
+				if (Controller.IsPressed(s))
 				{
 					if (s.Contains("P1 "))
 						LCont.Set(s.Replace("P1 ", ""));
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						RCont.Set(s.Replace("P2 ", ""));
 				}
 			}
-			bool cablediscosignal_new = Controller["Toggle Cable"];
+			bool cablediscosignal_new = Controller.IsPressed("Toggle Cable");
 			if (cablediscosignal_new && !cablediscosignal)
 			{
 				cableconnected ^= true;

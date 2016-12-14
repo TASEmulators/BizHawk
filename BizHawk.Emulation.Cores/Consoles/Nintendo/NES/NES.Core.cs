@@ -317,32 +317,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//if (resetSignal)
 			//Controller.UnpressButton("Reset");   TODO fix this
-			resetSignal = Controller["Reset"];
-			hardResetSignal = Controller["Power"];
+			resetSignal = Controller.IsPressed("Reset");
+			hardResetSignal = Controller.IsPressed("Power");
 
 			if (Board is FDS)
 			{
 				var b = Board as FDS;
-				if (Controller["FDS Eject"])
+				if (Controller.IsPressed("FDS Eject"))
 					b.Eject();
 				for (int i = 0; i < b.NumSides; i++)
-					if (Controller["FDS Insert " + i])
+					if (Controller.IsPressed("FDS Insert " + i))
 						b.InsertSide(i);
 			}
 
 			if (_isVS)
 			{
-				if (controller["Service Switch"])
+				if (controller.IsPressed("Service Switch"))
 					VS_service = 1;
 				else
 					VS_service = 0;
 
-				if (controller["Insert Coin P1"])
+				if (controller.IsPressed("Insert Coin P1"))
 					VS_coin_inserted |= 1;
 				else
 					VS_coin_inserted &= 2;
 
-				if (controller["Insert Coin P2"])
+				if (controller.IsPressed("Insert Coin P2"))
 					VS_coin_inserted |= 2;
 				else
 					VS_coin_inserted &= 1;

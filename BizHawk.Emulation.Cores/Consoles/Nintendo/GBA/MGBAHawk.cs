@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
 				LibmGBA.BizReset(_core);
 				//BizReset caused memorydomain pointers to change.

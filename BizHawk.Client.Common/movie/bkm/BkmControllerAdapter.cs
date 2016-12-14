@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var val = playerSource[button];
+				var val = playerSource.IsPressed(button);
 				MyBoolButtons[button] = val;
 			}
 		}
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				MyBoolButtons[button] = source[button];
+				MyBoolButtons[button] = source.IsPressed(button);
 			}
 
 			foreach (var name in Definition.FloatControls)

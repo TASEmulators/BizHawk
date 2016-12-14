@@ -128,8 +128,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
+			{
 				LibLynx.Reset(Core);
+			}
 
 			int samples = soundbuff.Length;
 			IsLagFrame = LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
@@ -178,15 +180,15 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		LibLynx.Buttons GetButtons()
 		{
 			LibLynx.Buttons ret = 0;
-			if (Controller["A"]) ret |= LibLynx.Buttons.A;
-			if (Controller["B"]) ret |= LibLynx.Buttons.B;
-			if (Controller["Up"]) ret |= LibLynx.Buttons.Up;
-			if (Controller["Down"]) ret |= LibLynx.Buttons.Down;
-			if (Controller["Left"]) ret |= LibLynx.Buttons.Left;
-			if (Controller["Right"]) ret |= LibLynx.Buttons.Right;
-			if (Controller["Pause"]) ret |= LibLynx.Buttons.Pause;
-			if (Controller["Option 1"]) ret |= LibLynx.Buttons.Option_1;
-			if (Controller["Option 2"]) ret |= LibLynx.Buttons.Option_2;
+			if (Controller.IsPressed("A")) ret |= LibLynx.Buttons.A;
+			if (Controller.IsPressed("B")) ret |= LibLynx.Buttons.B;
+			if (Controller.IsPressed("Up")) ret |= LibLynx.Buttons.Up;
+			if (Controller.IsPressed("Down")) ret |= LibLynx.Buttons.Down;
+			if (Controller.IsPressed("Left")) ret |= LibLynx.Buttons.Left;
+			if (Controller.IsPressed("Right")) ret |= LibLynx.Buttons.Right;
+			if (Controller.IsPressed("Pause")) ret |= LibLynx.Buttons.Pause;
+			if (Controller.IsPressed("Option 1")) ret |= LibLynx.Buttons.Option_1;
+			if (Controller.IsPressed("Option 2")) ret |= LibLynx.Buttons.Option_2;
 
 			return ret;
 		}
