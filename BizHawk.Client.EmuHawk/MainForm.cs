@@ -1625,8 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
-				GlobalWin.Sound.SetAsyncInputPin(_currentSoundProvider);
+				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
 			}
 		}
 
