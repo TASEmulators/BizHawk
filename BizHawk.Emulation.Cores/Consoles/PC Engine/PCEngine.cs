@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void Init(GameInfo game, byte[] rom)
 		{
-			Controller = NullController.GetNullController();
+			Controller = NullController.Instance;
 			Cpu = new HuC6280(MemoryCallbacks);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);

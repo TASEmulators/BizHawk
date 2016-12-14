@@ -102,7 +102,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				HasYM2413 = true;
 
 			if (Controller == null)
-				Controller = NullController.GetNullController();
+			{
+				Controller = NullController.Instance;
+			}
 
 			Cpu = new Z80A();
 			Cpu.RegisterSP = 0xDFF0;
