@@ -100,6 +100,7 @@ namespace BizHawk.Emulation.Common
 		public ControllerDefinition(ControllerDefinition source)
 			: this()
 		{
+			CategoryLabels = source.CategoryLabels;
 			Name = source.Name;
 			BoolButtons.AddRange(source.BoolButtons);
 			FloatControls.AddRange(source.FloatControls);
