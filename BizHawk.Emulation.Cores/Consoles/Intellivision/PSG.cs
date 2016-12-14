@@ -66,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			for (int i = 0; i < samples.Length / 2; i++)
 			{
 				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(3.7904 * i)]);
+				//samples[i * 2] = (short)(audio_samples[(int)Math.Floor(4.0 * i)]);
 				//samples[i * 2] = (short)(audio_samples[i*5]);
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
@@ -138,10 +139,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
-				if (addr != 0x01FA)
-					return (ushort)(Register[addr - 0x01F0]);
-				else
-					return 0;
+				return (ushort)(Register[addr - 0x01F0]);
 			}
 			return null;
 		}
@@ -152,29 +150,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			sq_per_A = (Register[0] & 0xFF) | (((Register[4] & 0xF) << 8));
 			if (sq_per_A == 0)
 				sq_per_A = 0x1000;
-			//else
-				//sq_per_A *= 2;
-			//clock_A = 0;
 
 			sq_per_B = (Register[1] & 0xFF) | (((Register[5] & 0xF) << 8));
 			if (sq_per_B == 0)
 				sq_per_B = 0x1000;
-			//else
-				//sq_per_B *= 2;
-			//clock_B = 0;
 
 			sq_per_C = (Register[2] & 0xFF) | (((Register[6] & 0xF) << 8));
 			if (sq_per_C == 0)
 				sq_per_C = 0x1000;
-			//else
-				//sq_per_C *= 2;
-			//clock_C = 0;
 
 			env_per = (Register[3] & 0xFF) | (((Register[7] & 0xFF) << 8));
 			if (env_per == 0)
 				env_per = 0x20000;
-
-			//env_per *= 2;
 
 			A_on = Register[8].Bit(0);
 			B_on = Register[8].Bit(1);
@@ -206,7 +193,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			vol_C = Register[13] & 0xF;
 			env_vol_C = (Register[13] >> 4) & 0x3;
-
 		}
 
 		public bool WritePSG(ushort addr, ushort value)
@@ -217,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 				value &= 0xFF;
 
-				if (reg == 4 || reg == 5 || reg == 6)
+				if (reg == 4 || reg == 5 || reg == 6 || reg == 10)
 					value &= 0xF;
 
 				if (reg == 9)
@@ -233,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				if (reg == 10)
 				{
 					env_clock = env_per;
-					
+
 					if (env_shape == 0 || env_shape == 2 || env_shape == 3 || env_shape == 4 || env_shape == 5)
 					{
 						env_E = 15;
@@ -243,8 +229,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						env_E = 0;
 						E_up_down = 1;
-					}
-					
+					}					
 				}
 				/*
 				if (reg == 0 || reg == 4)
@@ -331,7 +316,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								env_E = 0;
 							}
-
 						}
 					}
 
@@ -393,13 +377,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							shift_C = 0;
 						audio_samples[sample_count] += (short)(sound_out_C ? (volume_table[env_E] >> shift_C) : 0);
 					}
-
 					sample_count++;
-
 				}
-
-				
-
 			}
 
 		}
