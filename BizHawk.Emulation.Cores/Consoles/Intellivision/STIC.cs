@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.Sync("Sst", ref Sst);
 			ser.Sync("Fgbg", ref Fgbg);
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
-			ser.Sync("Pending Cycles", ref PendingCycles);
+			ser.Sync("Pending_Cycles", ref PendingCycles);
 			ser.Sync("Registers", ref Register, false);
 
 			ser.EndSection();

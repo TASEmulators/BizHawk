@@ -114,15 +114,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			ser.Sync("Register", ref Register, false);
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
-			ser.Sync("Pending Cycles", ref PendingCycles);
+			ser.Sync("Pending_Cycles", ref PendingCycles);
 
 			ser.Sync("sample_count", ref sample_count);
 			ser.Sync("psg_clock", ref psg_clock);
 			ser.Sync("clock_A", ref clock_A);
 			ser.Sync("clock_B", ref clock_B);
 			ser.Sync("clock_C", ref clock_C);
-			ser.Sync("noise clock", ref noise_clock);
-			ser.Sync("noise clock", ref env_clock);
+			ser.Sync("noise_clock", ref noise_clock);
+			ser.Sync("env_clock", ref env_clock);
 			ser.Sync("A_up", ref A_up);
 			ser.Sync("B_up", ref B_up);
 			ser.Sync("C_up", ref C_up);
