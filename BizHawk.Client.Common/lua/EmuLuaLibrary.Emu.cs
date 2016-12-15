@@ -34,6 +34,9 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		public IInputPollable InputPollableCore { get; set; }
 
+		[OptionalService]
+		public IRegionable RegionableCore { get; set; }
+
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
@@ -364,13 +367,9 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetDisplayType()
 		{
-			if (Global.Game != null)
+			if (RegionableCore != null)
 			{
-				var displaytype = Emulator.GetType().GetProperty("DisplayType");
-				if (displaytype != null)
-				{
-					return displaytype.GetValue(Emulator, null).ToString();
-				}
+				return RegionableCore.Region.ToString();
 			}
 
 			return string.Empty;
