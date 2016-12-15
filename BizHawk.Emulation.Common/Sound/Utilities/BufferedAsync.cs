@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Common
 	 * TODO: For systems that _really_ don't need BufferedAsync (pce not turbocd, sms), make a way to signal
 	 *       that and then bypass the BufferedAsync.
 	 */
-	public sealed class BufferedAsync : ISoundProvider
+	public sealed class BufferedAsync : ISoundProvider, IBufferedSoundProvider
 	{
 		public ISoundProvider BaseSoundProvider { get; set; }
 

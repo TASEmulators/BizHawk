@@ -15,10 +15,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool _disposed;
 		private readonly ISoundOutput _outputDevice;
-		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider();
-		private readonly BufferedAsync _bufferedAsync = new BufferedAsync();
-		private ISoundProvider _sourceProvider;
-		private SyncSoundMode _syncMode;
+		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(); // Buffer for Sync sources
+		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
+		private IBufferedSoundProvider _bufferedProvider; // One of the preceding buffers, or null if no source is set
 
 		public Sound(IntPtr mainWindowHandle)
 		{
@@ -71,8 +70,7 @@ namespace BizHawk.Client.EmuHawk
 
 			_outputDevice.StopSound();
 
-			_outputProvider.DiscardSamples();
-			_bufferedAsync.DiscardSamples();
+			if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
 
 			Global.SoundMaxBufferDeficitMs = 0;
 
@@ -86,28 +84,27 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetInputPin(ISoundProvider source)
 		{
-			_outputProvider.DiscardSamples();
-			_outputProvider.BaseSoundProvider = null;
-
-			_bufferedAsync.DiscardSamples();
-			_bufferedAsync.BaseSoundProvider = null;
-
-			_sourceProvider = source;
-			if (_sourceProvider == null)
+			if (_bufferedProvider != null)
 			{
-				return;
+				_bufferedProvider.BaseSoundProvider = null;
+				_bufferedProvider.DiscardSamples();
+				_bufferedProvider = null;
 			}
 
-			_syncMode = _sourceProvider.SyncMode;
-			if (_syncMode == SyncSoundMode.Sync)
+			if (source == null) return;
+
+			if (source.SyncMode == SyncSoundMode.Sync)
 			{
-				_outputProvider.BaseSoundProvider = _sourceProvider;
+				_bufferedProvider = _outputProvider;
 			}
-			else
+			else if (source.SyncMode == SyncSoundMode.Async)
 			{
-				_bufferedAsync.BaseSoundProvider = _sourceProvider;
 				_bufferedAsync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
+				_bufferedProvider = _bufferedAsync;
 			}
+			else throw new InvalidOperationException("Unsupported sync mode.");
+
+			_bufferedProvider.BaseSoundProvider = source;
 		}
 
 		public bool LogUnderruns { get; set; }
@@ -148,16 +145,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateSound(float atten)
 		{
-			if (!Global.Config.SoundEnabled || !IsStarted || _sourceProvider == null || _disposed)
+			if (!Global.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
-				if (_sourceProvider != null) _sourceProvider.DiscardSamples();
-				_outputProvider.DiscardSamples();
+				if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
 				return;
-			}
-
-			if (_sourceProvider.SyncMode != _syncMode)
-			{
-				throw new Exception("Sync mode changed unexpectedly.");
 			}
 
 			if (atten < 0) atten = 0;
@@ -173,14 +164,13 @@ namespace BizHawk.Client.EmuHawk
 				samples = new short[samplesNeeded * ChannelCount];
 				samplesProvided = samplesNeeded;
 
-				_sourceProvider.DiscardSamples();
-				_outputProvider.DiscardSamples();
+				_bufferedProvider.DiscardSamples();
 			}
-			else if (_syncMode == SyncSoundMode.Sync)
+			else if (_bufferedProvider == _outputProvider)
 			{
 				if (Global.Config.SoundThrottle)
 				{
-					_sourceProvider.GetSamplesSync(out samples, out samplesProvided);
+					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out samplesProvided);
 
 					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
 					{
@@ -197,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
 				}
 			}
-			else if (_syncMode == SyncSoundMode.Async)
+			else if (_bufferedProvider == _bufferedAsync)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
@@ -222,15 +212,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return samples * 1000.0 / SampleRate;
 		}
-	}
-
-	public interface ISoundOutput : IDisposable
-	{
-		void StartSound();
-		void StopSound();
-		void ApplyVolumeSettings(double volume);
-		int MaxSamplesDeficit { get; }
-		int CalculateSamplesNeeded();
-		void WriteSamples(short[] samples, int sampleCount);
 	}
 }

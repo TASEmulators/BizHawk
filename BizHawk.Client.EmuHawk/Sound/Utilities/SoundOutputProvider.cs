@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	// perform a "soft" correction by resampling it to hopefully get back inside our
 	// window shortly. If it ends up going too low or too high, we will perform a
 	// "hard" correction by generating silence or discarding samples.
-	public class SoundOutputProvider
+	public class SoundOutputProvider : IBufferedSoundProvider
 	{
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;

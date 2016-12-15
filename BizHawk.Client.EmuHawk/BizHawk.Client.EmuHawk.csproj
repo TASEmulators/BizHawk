@@ -717,6 +717,7 @@
     <Compile Include="RomStatusPicker.Designer.cs">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sound\Interfaces\ISoundOutput.cs" />
     <Compile Include="Sound\Output\DirectSoundSoundOutput.cs" />
     <Compile Include="Sound\Output\DummySoundOutput.cs" />
     <Compile Include="Sound\Output\OpenALSoundOutput.cs" />

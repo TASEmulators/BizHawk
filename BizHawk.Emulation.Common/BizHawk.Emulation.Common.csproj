@@ -117,6 +117,7 @@
     <Compile Include="EmulationExceptions.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Interfaces\IBufferedSoundProvider.cs" />
     <Compile Include="Interfaces\IController.cs" />
     <Compile Include="Interfaces\ICoreFileProvider.cs" />
     <Compile Include="Interfaces\IEmulator.cs" />
