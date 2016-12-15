@@ -30,28 +30,13 @@ namespace BizHawk.Emulation.Common
 	 */
 	public sealed class BufferedAsync : ISoundProvider
 	{
-		private ISoundProvider _baseSoundProvider;
+		public ISoundProvider BaseSoundProvider { get; set; }
 
-		public void SetAsyncSoundProvider(ISoundProvider provider)
-		{
-			if (provider.SyncMode != SyncSoundMode.Async)
-			{
-				throw new InvalidOperationException("a sound provider in async mode is required");
-			}
-
-			_baseSoundProvider = provider;
-		}
-
-		public void ClearSoundProvider()
-		{
-			_baseSoundProvider = null;
-		}
-
-		readonly Queue<short> buffer = new Queue<short>(4096);
+		private readonly Queue<short> buffer = new Queue<short>(MaxExcessSamples);
 
 		private int SamplesInOneFrame = 1470;
 		private int TargetExtraSamples = 882;
-		const int MaxExcessSamples = 4096;
+		private const int MaxExcessSamples = 4096;
 
 		/// <summary>
 		/// recalculates some internal parameters based on the IEmulator's framerate
@@ -65,8 +50,10 @@ namespace BizHawk.Emulation.Common
 
 		public void DiscardSamples()
 		{
-			if (_baseSoundProvider != null)
-				_baseSoundProvider.DiscardSamples();
+			buffer.Clear();
+
+			if (BaseSoundProvider != null)
+				BaseSoundProvider.DiscardSamples();
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -81,7 +68,11 @@ namespace BizHawk.Emulation.Common
 
 			var mySamples = new short[samplesToGenerate];
 
-			_baseSoundProvider.GetSamplesAsync(mySamples);
+			if (BaseSoundProvider.SyncMode != SyncSoundMode.Async)
+			{
+				throw new InvalidOperationException("Base sound provider must be in async mode.");
+			}
+			BaseSoundProvider.GetSamplesAsync(mySamples);
 
 			foreach (short s in mySamples)
 			{
@@ -108,13 +99,13 @@ namespace BizHawk.Emulation.Common
 		{
 			if (mode != SyncSoundMode.Async)
 			{
-				throw new NotSupportedException("Async mode is not supported.");
+				throw new NotSupportedException("Sync mode is not supported.");
 			}
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			throw new InvalidOperationException("Async mode is not supported.");
+			throw new InvalidOperationException("Sync mode is not supported.");
 		}
 	}
 }

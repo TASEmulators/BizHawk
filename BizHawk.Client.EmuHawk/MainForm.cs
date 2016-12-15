@@ -1616,17 +1616,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// we're video dumping, so async mode only and use the DumpProxy.
 				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWin.Sound.SetSyncInputPin(_dumpProxy);
-			}
-			else if (Global.Config.SoundThrottle || !_currentSoundProvider.CanProvideAsync)
-			{
-				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
-				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
+				GlobalWin.Sound.SetInputPin(_dumpProxy);
 			}
 			else
 			{
-				_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
-				GlobalWin.Sound.SetAsyncInputPin(_currentSoundProvider);
+				bool useAsyncMode = _currentSoundProvider.CanProvideAsync && !Global.Config.SoundThrottle;
+				_currentSoundProvider.SetSyncMode(useAsyncMode ? SyncSoundMode.Async : SyncSoundMode.Sync);
+				GlobalWin.Sound.SetInputPin(_currentSoundProvider);
 			}
 		}
 
