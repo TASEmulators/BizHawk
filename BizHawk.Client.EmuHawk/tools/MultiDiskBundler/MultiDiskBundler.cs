@@ -120,26 +120,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddButton_Click(object sender, EventArgs e)
 		{
-			int start = 5 + (FileSelectorPanel.Controls.Count * 43);
+			int start = 3 + (FileSelectorPanel.Controls.Count * 43);
 
 			var groupBox = new GroupBox
 			{
 				Text = "",
-				Location = new Point(5, start),
-				Size = new Size(435, 38),
+				Location = UIHelper.Scale(new Point(6, start)),
+				Size = new Size(FileSelectorPanel.ClientSize.Width - UIHelper.ScaleX(12), UIHelper.ScaleY(41)),
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
 			var mdf = new MultiDiskFileSelector
 			{
-				Location = new Point(5, 8),
+				Location = UIHelper.Scale(new Point(7, 12)),
+				Width = groupBox.ClientSize.Width - UIHelper.ScaleX(13),
 				Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top
 			};
 
 			mdf.NameChanged += FileSelector_NameChanged;
 
 			groupBox.Controls.Add(mdf);
-			//grpMulti.Controls.Add(mdf);
 
 			FileSelectorPanel.Controls.Add(groupBox);
 		}
