@@ -14,29 +14,27 @@ namespace BizHawk.Client.EmuHawk
 		public const int BlockAlign = BytesPerSample * ChannelCount;
 
 		private bool _disposed;
-		private ISoundOutput _soundOutput;
-
+		private readonly ISoundOutput _outputDevice;
+		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider();
+		private readonly BufferedAsync _bufferedAsync = new BufferedAsync();
 		private ISoundProvider _sourceProvider;
 		private SyncSoundMode _syncMode;
-
-		private SoundOutputProvider _outputProvider = new SoundOutputProvider();
-		private readonly BufferedAsync _semiSync = new BufferedAsync();
 
 		public Sound(IntPtr mainWindowHandle)
 		{
 #if WINDOWS
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
-				_soundOutput = new DirectSoundSoundOutput(this, mainWindowHandle);
+				_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
 
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
-				_soundOutput = new XAudio2SoundOutput(this);
+				_outputDevice = new XAudio2SoundOutput(this);
 #endif
 
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
-				_soundOutput = new OpenALSoundOutput(this);
+				_outputDevice = new OpenALSoundOutput(this);
 
-			if (_soundOutput == null)
-				_soundOutput = new DummySoundOutput(this);
+			if (_outputDevice == null)
+				_outputDevice = new DummySoundOutput(this);
 		}
 
 		public void Dispose()
@@ -45,8 +43,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopSound();
 
-			_soundOutput.Dispose();
-			_soundOutput = null;
+			_outputDevice.Dispose();
 
 			_disposed = true;
 		}
@@ -59,11 +56,11 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.Config.SoundEnabled) return;
 			if (IsStarted) return;
 
-			_soundOutput.StartSound();
+			_outputDevice.StartSound();
 
-			_outputProvider.MaxSamplesDeficit = _soundOutput.MaxSamplesDeficit;
+			_outputProvider.MaxSamplesDeficit = _outputDevice.MaxSamplesDeficit;
 
-			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_soundOutput.MaxSamplesDeficit));
+			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_outputDevice.MaxSamplesDeficit));
 
 			IsStarted = true;
 		}
@@ -72,10 +69,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!IsStarted) return;
 
-			_soundOutput.StopSound();
+			_outputDevice.StopSound();
 
 			_outputProvider.DiscardSamples();
-			_semiSync.DiscardSamples();
+			_bufferedAsync.DiscardSamples();
 
 			Global.SoundMaxBufferDeficitMs = 0;
 
@@ -92,8 +89,8 @@ namespace BizHawk.Client.EmuHawk
 			_outputProvider.DiscardSamples();
 			_outputProvider.BaseSoundProvider = null;
 
-			_semiSync.DiscardSamples();
-			_semiSync.BaseSoundProvider = null;
+			_bufferedAsync.DiscardSamples();
+			_bufferedAsync.BaseSoundProvider = null;
 
 			_sourceProvider = source;
 			if (_sourceProvider == null)
@@ -108,8 +105,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				_semiSync.BaseSoundProvider = _sourceProvider;
-				_semiSync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
+				_bufferedAsync.BaseSoundProvider = _sourceProvider;
+				_bufferedAsync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
 			}
 		}
 
@@ -136,7 +133,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				int samplesPerFrame = (int)Math.Round(SampleRate / Global.Emulator.CoreComm.VsyncRate);
 				int silenceSamples = Math.Max(samplesNeeded - (SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
-				_soundOutput.WriteSamples(new short[silenceSamples * 2], silenceSamples);
+				_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
 				samplesNeeded -= silenceSamples;
 			}
 		}
@@ -165,10 +162,10 @@ namespace BizHawk.Client.EmuHawk
 
 			if (atten < 0) atten = 0;
 			if (atten > 1) atten = 1;
-			_soundOutput.ApplyVolumeSettings(atten);
+			_outputDevice.ApplyVolumeSettings(atten);
 
 			short[] samples;
-			int samplesNeeded = _soundOutput.CalculateSamplesNeeded();
+			int samplesNeeded = _outputDevice.CalculateSamplesNeeded();
 			int samplesProvided;
 
 			if (atten == 0)
@@ -188,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
 					{
 						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
-						samplesNeeded = _soundOutput.CalculateSamplesNeeded();
+						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
 					}
 				}
 				else
@@ -204,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
-				_semiSync.GetSamplesAsync(samples);
+				_bufferedAsync.GetSamplesAsync(samples);
 
 				samplesProvided = samplesNeeded;
 			}
@@ -213,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_soundOutput.WriteSamples(samples, samplesProvided);
+			_outputDevice.WriteSamples(samples, samplesProvided);
 		}
 
 		public static int MillisecondsToSamples(int milliseconds)
