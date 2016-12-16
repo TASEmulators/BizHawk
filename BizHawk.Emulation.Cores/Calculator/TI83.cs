@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			if (game["initPC"])
 			{
-				startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);
+				_startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);
 			}
 
 			HardReset();
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 		}
 
-		private ITraceable Tracer { get; set; }
+		private readonly ITraceable Tracer;
 
 		// hardware
 		private const ushort RamSizeMask = 0x7FFF;
@@ -80,10 +80,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private int _frame;
 
 		// configuration
-		private ushort startPC;
+		private ushort _startPC;
 
 		// Link Cable
-		public TI83LinkPort LinkPort { get; set; }
+		public TI83LinkPort LinkPort { get; private set; }
 
 		internal bool LinkActive;
 		internal int LinkOutput, LinkInput;
@@ -306,7 +306,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 
 			return (byte)ret;
-
 		}
 
 		private byte ReadDispData()
@@ -384,9 +383,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private void WriteDispCtrl(byte value)
 		{
 			if (value <= 1)
+			{
 				_displayMode = value;
+			}
 			else if (value >= 4 && value <= 7)
+			{
 				_displayMove = value - 4;
+			}
 			else if ((value & 0xC0) == 0x40)
 			{
 				//hardware scroll
@@ -434,7 +437,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_ram = new byte[0x8000];
 			for (int i = 0; i < 0x8000; i++)
 				_ram[i] = 0xFF;
-			Cpu.RegisterPC = startPC;
+			Cpu.RegisterPC = _startPC;
 
 			Cpu.IFF1 = false;
 			Cpu.IFF2 = false;
