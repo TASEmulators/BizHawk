@@ -245,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 			endticks = GetCurTime();
 
 			// calculate time since last frame
-			ulong diffticks = endticks - beginticks;
+			ulong diffticks = Math.Max(endticks - beginticks, 1);
 			float diff = (float)diffticks / afsfreq;
 
 			// calculate time since last frame not including throttle sleep time
