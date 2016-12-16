@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		CodeDataLog currCdl;
+		ICodeDataLog currCdl;
 
-		public void SetCDL(CodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl)
 		{
 			if(currCdl != null) currCdl.Unpin();
 			currCdl = cdl;
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_cdl(currCdl);
 		}
 
-		public void NewCDL(CodeDataLog cdl)
+		public void NewCDL(ICodeDataLog cdl)
 		{
 			cdl["CARTROM"] = new byte[MemoryDomains["CARTROM"].Size];
 
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			cdl.SubVer = 0;			
 		}
 
-		public void DisassembleCDL(Stream s, CodeDataLog cdl)
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 		{
 			//not supported yet
 		}
