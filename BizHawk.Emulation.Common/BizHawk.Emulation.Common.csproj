@@ -126,7 +126,6 @@
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
     <Compile Include="Interfaces\Services\ICreateGameDBEntries.cs" />
     <Compile Include="Interfaces\Services\ISoundProvider.cs" />
-    <Compile Include="Interfaces\IAsyncSoundProvider.cs" />
     <Compile Include="Interfaces\Services\ICodeDataLogger.cs" />
     <Compile Include="Interfaces\Services\IDebuggable.cs" />
     <Compile Include="Interfaces\Services\IDisassemblable.cs" />
@@ -147,7 +146,6 @@
     <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
-    <Compile Include="Sound\Utilities\SoundMixer.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\Utilities\Waves.cs" />
     <Compile Include="SystemLookup.cs" />

@@ -58,64 +58,6 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	// An async sound provider
-	// Sound refactor TODO: can this be combined with the other Metaspu?
-	public class MetaspuSoundProvider : ISoundProvider
-	{
-		public MetaspuSoundProvider(ESynchMethod method)
-		{
-			Buffer = Metaspu.metaspu_construct(method);
-		}
-
-		public ISynchronizingAudioBuffer Buffer { get; set; }
-		private readonly short[] pullBuffer = new short[1470];
-
-		public MetaspuSoundProvider()
-			: this(ESynchMethod.ESynchMethod_V)
-		{
-		}
-
-		public void PullSamples(IAsyncSoundProvider source)
-		{
-			Array.Clear(pullBuffer, 0, 1470);
-			source.GetSamples(pullBuffer);
-			Buffer.enqueue_samples(pullBuffer, 735);
-		}
-
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
-
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Async; }
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Only Async mode is supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			throw new InvalidOperationException("Sync mode is not supported.");
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			Buffer.output_samples(samples, samples.Length / 2);
-		}
-
-		public void DiscardSamples()
-		{
-			Buffer.clear();
-		}
-	}
-
 	public interface ISynchronizingAudioBuffer
 	{
 		void enqueue_samples(short[] buf, int samples_provided);
