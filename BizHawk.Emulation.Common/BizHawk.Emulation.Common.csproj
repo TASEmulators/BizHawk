@@ -117,7 +117,6 @@
     <Compile Include="EmulationExceptions.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="Interfaces\IBufferedSoundProvider.cs" />
     <Compile Include="Interfaces\IController.cs" />
     <Compile Include="Interfaces\ICoreFileProvider.cs" />
     <Compile Include="Interfaces\IEmulator.cs" />
@@ -145,7 +144,6 @@
     <Compile Include="ServiceAttributes.cs" />
     <Compile Include="ServiceInjector.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />
-    <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
