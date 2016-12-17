@@ -1,0 +1,3 @@
+; NOTE: games not in this database will default to mapper 0
+
+sha1:7E44A63186C66A80DF20DF26036F48E5A309256F		Pac Man	INTV		board=5
