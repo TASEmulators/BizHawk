@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		private ushort[] Data = new ushort[56320];
 
+		private ushort[] Cart_Ram = new ushort[0x400];
+
 		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
 		private int mapper = 0; 
@@ -18,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.BeginSection("Cart");
 
 			ser.Sync("mapper", ref mapper);
+			ser.Sync("Cart_Ram", ref Cart_Ram, false);
 
 			ser.EndSection();
 		}
@@ -88,6 +91,63 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						return Data[addr - 0xC000];
 					}
 					break;
+
+				case 1:
+					if (addr >= 0x5000 && addr < 0x6FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+					else if (addr >= 0xD000 && addr < 0xFFFF)
+					{
+						return Data[addr - 0xB000];
+					}
+					break;
+
+				case 2:
+					if (addr >= 0x5000 && addr < 0x6FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+					else if (addr >= 0x9000 && addr < 0xBFFF)
+					{
+						return Data[addr - 0x7000];
+					}
+					else if (addr >= 0xD000 && addr < 0xDFFF)
+					{
+						return Data[addr - 0x8000];
+					}
+					break;
+
+				case 3:
+					if (addr >= 0x5000 && addr < 0x6FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+					else if (addr >= 0x9000 && addr < 0xAFFF)
+					{
+						return Data[addr - 0x7000];
+					}
+					else if (addr >= 0xD000 && addr < 0xDFFF)
+					{
+						return Data[addr - 0x9000];
+					}
+					else if (addr >= 0xF000 && addr < 0xFFFF)
+					{
+						return Data[addr - 0xA000];
+					}
+					break;
+
+				case 4:
+					if (addr >= 0x5000 && addr < 0x6FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+					else if (addr >= 0xD000 && addr < 0xD3FF)
+					{
+						return Cart_Ram[addr - 0xD000];
+					}
+					break;
+
 				case 5:
 					if (addr >= 0x5000 && addr < 0x7FFF)
 					{
@@ -98,6 +158,54 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						return Data[addr - 0x6000];
 					}
 					break;
+
+				case 6:
+					if (addr >= 0x6000 && addr < 0x7FFF)
+					{
+						return Data[addr - 0x6000];
+					}
+					break;
+
+				case 7:
+					if (addr >= 0x4800 && addr < 0x67FF)
+					{
+						return Data[addr - 0x4800];
+					}
+					break;
+
+				case 8:
+					if (addr >= 0x5000 && addr < 0x5FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+					else if (addr >= 0x7000 && addr < 0x7FFF)
+					{
+						return Data[addr - 0x6000];
+					}
+					break;
+
+				case 9:
+					if (addr >= 0x5000 && addr < 0x6FFF)
+					{
+						return Data[addr - 0x5000];
+					}
+					else if (addr >= 0x9000 && addr < 0xAFFF)
+					{
+						return Data[addr - 0x7000];
+					}
+					else if (addr >= 0xD000 && addr < 0xDFFF)
+					{
+						return Data[addr - 0x9000];
+					}
+					else if (addr >= 0xF000 && addr < 0xFFFF)
+					{
+						return Data[addr - 0xA000];
+					}
+					else if (addr >= 0x8800 && addr < 0x8FFF)
+					{
+						return Cart_Ram[addr - 0x8800];
+					}
+					break;
 			}
 
 
@@ -106,6 +214,23 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool WriteCart(ushort addr, ushort value)
 		{
+			switch (mapper)
+			{
+				case 4:
+					if (addr >= 0xD000 && addr < 0xD3FF)
+					{
+						Cart_Ram[addr - 0xD000] = value;
+						return true;
+					}
+					break;
+				case 9:
+					if (addr >= 0x8800 && addr < 0x8FFF)
+					{
+						Cart_Ram[addr - 0x8800] = value;
+						return true;
+					}
+					break;
+			}
 			return false;
 		}
 		/*
