@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		private ushort[] Data = new ushort[56320];
 
-		private ushort[] Cart_Ram = new ushort[0x400];
+		private ushort[] Cart_Ram = new ushort[0x800];
 
 		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
