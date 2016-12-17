@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition ControllerDefinition
 		{
-			get { return NullController; }
+			get { return NullController.Instance.Definition; }
 		}
 
 		public IController Controller { get; set; }
@@ -204,8 +204,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		#endregion
-
-		public static readonly ControllerDefinition NullController = new ControllerDefinition { Name = "Null Controller" };
 
 		private readonly int[] FrameBuffer = new int[256 * 192];
 		private readonly short[] SampleBuffer = new short[735 * 2];

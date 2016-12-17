@@ -7,9 +7,14 @@
 	/// <seealso cref="IController" />
 	public class NullController : IController
 	{
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		{
+			Name = "Null Controller"
+		};
+
 		public ControllerDefinition Definition
 		{
-			get { return null; }
+			get { return _definition; }
 		}
 
 		public bool this[string button]
