@@ -286,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							colors[0] = fg;
 							colors[1] = (card >> 3) & 0x0007;
 							colors[2] = (card >> 6) & 0x0007;
-							colors[3] = ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
+							colors[3] = ((card >> 10) & 0x0004) | ((card >> 9) & 0x0003);
 
 							for (int z=0;z<4;z++)
 							{
@@ -341,10 +341,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 									// note that the collision field is attached to the lower right corner of the BG
 									// so we add 8 to x and 16 to y here
 									// also notice the extra condition attached to colored squares mode
-									if ((card_col * 8 + (7 - squares_col) + 8) < 167 && square_col[color]==1)
+									if ((card_col * 8 + squares_col + 8) < 167 && square_col[color]==1)
 									{
-										Collision[card_col * 8 + (7 - squares_col) + 8, (card_row * 8 + squares_row) * 2 + 16] = 1 << 8;
-										Collision[card_col * 8 + (7 - squares_col) + 8, (card_row * 8 + squares_row) * 2 + 16 + 1] = 1 << 8;
+										Collision[card_col * 8 + squares_col + 8, (card_row * 8 + squares_row) * 2 + 16] = 1 << 8;
+										Collision[card_col * 8 + squares_col + 8, (card_row * 8 + squares_row) * 2 + 16 + 1] = 1 << 8;
 									}
 								}
 							}
