@@ -172,7 +172,12 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out samplesProvided);
 
-					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
+					if (Global.DisableSecondaryThrottling && samplesProvided > samplesNeeded)
+					{
+						return;
+					}
+
+					while (samplesProvided > samplesNeeded)
 					{
 						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
 						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
