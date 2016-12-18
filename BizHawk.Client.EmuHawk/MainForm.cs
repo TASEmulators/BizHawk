@@ -2765,13 +2765,13 @@ namespace BizHawk.Client.EmuHawk
 			if (runFrame || force)
 			{
 				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
-				var isFastFowardingOrRewinding = isFastForwarding || isRewinding;
+				var isFastForwardingOrRewinding = isFastForwarding || isRewinding;
 
-				if (isFastFowardingOrRewinding != _lastFastForwardingOrRewinding)
+				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
 				{
 					InitializeFpsData();
 				}
-				_lastFastForwardingOrRewinding = isFastFowardingOrRewinding;
+				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
 				// client input-related duties
 				GlobalWin.OSD.ClearGUIText();
@@ -2807,7 +2807,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					atten = Global.Config.SoundVolume / 100.0f;
 
-					if (isFastFowardingOrRewinding)
+					if (isFastForwardingOrRewinding)
 					{
 						if (Global.Config.SoundEnabledRWFF)
 							atten *= Global.Config.SoundVolumeRWFF / 100.0f;
