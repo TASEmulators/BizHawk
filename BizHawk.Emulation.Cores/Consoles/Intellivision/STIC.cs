@@ -56,6 +56,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			Sr1 = true;
 			Sr2 = true;
+
+			for (int i=0;i<64;i++)
+			{
+				Register[i] = register_mask(i, 0);
+			}
 		}
 
 		public bool GetSr1()
@@ -76,6 +81,54 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void SetSst(bool value)
 		{
 			Sst = value;
+		}
+
+		// mask off appropriate STIC bits
+		private ushort register_mask(int reg, ushort value)
+		{
+			
+			if (reg < 8)
+			{
+				return (ushort)((value & 0x7FF) | 0x3800);
+			}
+			else if (reg < 16)
+			{
+				return (ushort)((value & 0xFFF) | 0x3000);
+			}
+			else if (reg < 24)
+			{
+				return (ushort)(value & 0x3FFF);
+			}
+			else if (reg < 32)
+			{
+				return (ushort)((value & 0x3FF) | 0x3C00);
+			}
+			else if (reg < 40)
+			{
+				return (ushort)(0x3FFF);
+			}
+			else if (reg < 45)
+			{
+				return (ushort)((value & 0xF) | 0x3FF0);
+			}
+			else if (reg < 48)
+			{
+				return (ushort)(0x3FFF);
+			}
+			else if (reg < 51)
+			{
+				if (reg==50)
+				{
+					return (ushort)((value & 0x3) | 0x3FFC);
+				}
+				else 
+					return (ushort)((value & 0x7) | 0x3FF8);
+			}
+			else if (reg < 64)
+			{
+				return (ushort)(0x3FFF);
+			}
+			return value;
 		}
 
 		public ushort? ReadSTIC(ushort addr)
@@ -144,7 +197,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							Fgbg = true;
 						}
-						Register[addr] = value;
+
+						//Console.WriteLine(value);
+						//Console.WriteLine(addr);
+						Register[addr] = register_mask(addr,value);
 						return true;
 					}
 					else if (addr <= 0x007F)
@@ -161,7 +217,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							Fgbg = true;
 						}
-						Register[addr - 0x4000] = value;
+						Register[addr - 0x4000] = register_mask(addr - 0x4000, value);
 						return true;
 					}
 					break;
@@ -173,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							Fgbg = true;
 						}
-						Register[addr & 0x003F] = value;
+						Register[addr & 0x003F] = register_mask(addr & 0x003F, value);
 						return true;
 					}
 					break;
@@ -185,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							Fgbg = true;
 						}
-						Register[addr - 0xC000] = value;
+						Register[addr - 0xC000] = register_mask(addr - 0xC000, value);
 						return true;
 					}
 					break;
@@ -413,8 +469,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			// there is a trick here in that we move the displayed area of the screen relative to the BG buffer
 			// this is done using the delay registers
 
-			int x_delay = Register[0x30];
-			int y_delay = Register[0x31];
+			int x_delay = Register[0x30] & 0x7;
+			int y_delay = Register[0x31] & 0x7;
 
 			int x_border = (Register[0x32] & 0x0001) * 8;
 			int y_border = ((Register[0x32] >> 1) & 0x0001) * 8;
@@ -484,8 +540,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ushort attr;
 			byte row;
 
-			int x_delay = Register[0x30];
-			int y_delay = Register[0x31];
+			int x_delay = Register[0x30] & 0x7;
+			int y_delay = Register[0x31] & 0x7;
 
 			int cur_x, cur_y;
 
@@ -514,6 +570,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				ushort ysiz4 = y.Bit(9) ? (ushort)4 : (ushort)1;
 				bool intr = x.Bit(8);
 				ushort x_size = x.Bit(10) ? (ushort)2 : (ushort)1;
+
+				//Console.WriteLine(intr);
 
 				ushort y_size = (ushort)(ysiz2 * ysiz4);
 				// setting yres implicitly uses an even card first
@@ -729,8 +787,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			// by now we have collision information for all 8 mobs and the BG
 			// so we can store data in the collision registers here
-			int x_border = Register[0x32].Bit(0) ? 16 : 8;
-			int y_border = Register[0x32].Bit(1) ? 32 : 16;
+			int x_border = Register[0x32].Bit(0) ? 16-x_delay : 8-x_delay;
+			int y_border = Register[0x32].Bit(1) ? 32-y_delay*2 : 16-y_delay*2;
 
 			int x_border_2 = Register[0x32].Bit(0) ? 8 : 0;
 			int y_border_2 = Register[0x32].Bit(1) ? 16 : 0;
@@ -740,11 +798,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				for (int j = 0; j < 210; j++)
 				{
 					// while we are here we can set collision detection bits for the border region
-					if (i<x_border || i==166)
+					if (i == x_border || i == (165-x_delay))
 					{
 						Collision[i, j] |= (1 << 9);
 					}
-					if (j < y_border || j >= 208)
+					if ((j == y_border || j == y_border-1) || (j == (207-y_delay*2) ||  j == (207 - y_delay * 2+1)))
 					{
 						Collision[i, j] |= (1 << 9);
 					}
@@ -753,10 +811,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					if ((i-x_delay)>=0 && (i-x_delay)<159 && (j-y_delay*2)>=0 && (j-y_delay*2)<192)
 					{
 						if ((i-x_delay) < x_border_2)
-							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C]);
+							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C] & 0xF);
 
 						if ((j - y_delay*2) < y_border_2)
-							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C]);
+							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C] & 0xF);
 					}
 
 					// the extra condition here is to ignore only border collsion bit set
@@ -776,6 +834,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					// after we check for collision, we can clear that value for the next frame.
 					Collision[i, j] = 0;
 				}
+			}
+
+			for (int z=0;z<8;z++)
+			{
+				//Console.WriteLine(z);
+				//Console.WriteLine(Register[z + 24]);
+				
 			}
 
 		}
