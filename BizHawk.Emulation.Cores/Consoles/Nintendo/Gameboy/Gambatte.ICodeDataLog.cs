@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	partial class Gameboy
 	{
-		void ICodeDataLogger.SetCDL(CodeDataLog cdl)
+		void ICodeDataLogger.SetCDL(ICodeDataLog cdl)
 		{
 			CDL = cdl;
 			if(cdl == null)
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_setcdcallback(GambatteState, CDCallback);
 		}
 
-		void ICodeDataLogger.NewCDL(CodeDataLog cdl)
+		void ICodeDataLogger.NewCDL(ICodeDataLog cdl)
 		{
 			cdl["ROM"] = new byte[MemoryDomains["ROM"].Size];
 
@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		//not supported
-		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl) { }
+		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl) { }
 
-		CodeDataLog CDL;
+		ICodeDataLog CDL;
 		LibGambatte.CDCallback CDCallback;
 		void CDCallbackProc(int addr, LibGambatte.CDLog_AddrType addrtype, LibGambatte.CDLog_Flags flags)
 		{

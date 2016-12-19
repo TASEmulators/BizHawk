@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Common
+﻿using BizHawk.Emulation.Common;
+
+namespace BizHawk.Client.EmuHawk
 {
 	public interface IBufferedSoundProvider
 	{

@@ -29,6 +29,7 @@
 #include gamedb_msx1.txt
 #include gamedb_msx2.txt
 #include gamedb_vs.txt
+#include gamedb_intv.txt
 
 ; ************ NES / Famicom ************
 
