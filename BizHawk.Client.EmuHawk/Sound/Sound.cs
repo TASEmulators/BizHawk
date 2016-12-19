@@ -109,38 +109,19 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool LogUnderruns { get; set; }
 
-		private bool InitializeBufferWithSilence
-		{
-			get { return true; }
-		}
-
-		private bool RecoverFromUnderrunsWithSilence
-		{
-			get { return true; }
-		}
-
-		private int SilenceLeaveRoomForFrameCount
-		{
-			get { return Global.Config.SoundThrottle ? 1 : 2; } // Why 2? I don't know, but it seems to work well with the clock throttle's behavior.
-		}
-
 		internal void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded)
 		{
-			if ((!isUnderrun && InitializeBufferWithSilence) || (isUnderrun && RecoverFromUnderrunsWithSilence))
+			// Fill device buffer with silence but leave enough room for one frame
+			int samplesPerFrame = (int)Math.Round(SampleRate / Global.Emulator.CoreComm.VsyncRate);
+			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
+			_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
+			samplesNeeded -= silenceSamples;
+
+			if (isUnderrun)
 			{
-				int samplesPerFrame = (int)Math.Round(SampleRate / Global.Emulator.CoreComm.VsyncRate);
-				int silenceSamples = Math.Max(samplesNeeded - (SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
-				_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
-				samplesNeeded -= silenceSamples;
+				if (LogUnderruns) Console.WriteLine("Sound underrun detected!");
+				_outputProvider.OnVolatility();
 			}
-		}
-
-		internal void OnUnderrun()
-		{
-			if (!IsStarted) return;
-
-			if (LogUnderruns) Console.WriteLine("Sound underrun detected!");
-			_outputProvider.OnVolatility();
 		}
 
 		public void UpdateSound(float atten)

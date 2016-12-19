@@ -129,11 +129,7 @@ namespace BizHawk.Client.EmuHawk
 				int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
 				cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(Sound.SampleRate * Sound.BlockAlign))) / bufferSizeSeconds);
 				_filledBufferSizeBytes -= cursorDelta;
-				if (_filledBufferSizeBytes < 0)
-				{
-					_sound.OnUnderrun();
-					detectedUnderrun = true;
-				}
+				detectedUnderrun = _filledBufferSizeBytes < 0;
 			}
 			if (isInitializing || detectedUnderrun)
 			{
