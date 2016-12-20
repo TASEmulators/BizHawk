@@ -83,8 +83,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
             if (_board.Sid != null)
             {
-                SyncSoundProvider = DCFilter.AsISyncSoundProvider(_board.Sid, 512);
-            }
+				_soundProvider = new DCFilter(_board.Sid, 512);
+				((BasicServiceProvider)ServiceProvider).Register<ISoundProvider>(_soundProvider);
+			}
+
             DeterministicEmulation = true;
 
             ((BasicServiceProvider) ServiceProvider).Register<IVideoProvider>(_board.Vic);
@@ -136,13 +138,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
         public bool DeterministicEmulation { get; set; }
         [SaveState.SaveWithName("Frame")]
         public int Frame { get; set; }
-        public bool StartAsyncSound() { return false; }
-        public void EndAsyncSound() { }
-        [SaveState.DoNotSave]
-        public ISoundProvider SoundProvider { get { return null; } }
-        [SaveState.DoNotSave]
-        public ISyncSoundProvider SyncSoundProvider { get; private set; }
-        [SaveState.DoNotSave]
+
+		[SaveState.DoNotSave]
         public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
         [SaveState.DoNotSave]
         public IController Controller { get { return _board.Controller; } set { _board.Controller = value; } }
@@ -167,9 +164,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
             while (_frameCycles != 0);
         }
 
-        #endregion
+		#endregion
 
-        private void DoCycle()
+		#region ISoundProvider
+
+		[SaveState.DoNotSave]
+		public ISoundProvider _soundProvider { get; private set; }
+
+		#endregion
+
+		private void DoCycle()
 		{
 			if (_frameCycles == 0) {
 				_board.InputRead = false;

@@ -617,6 +617,13 @@ namespace BizHawk.Client.EmuHawk
 				AddressesLabel.ForeColor = SystemColors.ControlDarkDark;
 			}
 
+			if (HighlightedAddress >= _domain.Size
+				|| (_secondaryHighlightedAddresses.Any() && _secondaryHighlightedAddresses.Max() >= _domain.Size))
+			{
+				_addressHighlighted = -1;
+				_secondaryHighlightedAddresses.Clear();
+			}
+
 			UpdateGroupBoxTitle();
 			SetHeader();
 			UpdateValues();
@@ -1445,7 +1452,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var value = int.Parse(hex.Substring(i * 2, 2), NumberStyles.HexNumber);
 				var address = _addressHighlighted + i;
-				_domain.PokeByte(address, (byte)value);
+
+				if (address < _domain.Size)
+				{
+					_domain.PokeByte(address, (byte)value);
+				}
 			}
 
 			UpdateValues();
@@ -2264,9 +2275,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						SetHighlighted(pointedAddress);
 						_secondaryHighlightedAddresses.Clear();
 						_findStr = string.Empty;
+						SetHighlighted(pointedAddress);
 					}
 
 					MemoryViewerBox.Refresh();

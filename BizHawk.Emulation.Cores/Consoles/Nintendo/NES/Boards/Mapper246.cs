@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
-		void SyncMap()
+		private void SyncMap()
 		{
 			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
 			ApplyMemoryMapMask(chr_bank_mask_2k, chr_banks_2k);

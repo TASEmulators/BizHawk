@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Globalization;
+using System.IO;
 
 using LuaInterface;
 
@@ -124,8 +123,8 @@ namespace BizHawk.Client.EmuHawk
 			var g = _luaSurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _luaSurface.GetGraphics();
 
 			//we don't like CoreComm, right? Someone should find a different way to do this then.
-			var tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-			var ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
+			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
@@ -194,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"defaultPixelFont",
-			"Sets the default font to use in gui.pixelText(), \"gens\" by default"
+			"Sets the default font to use in gui.pixelText(). Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), \"gens\" is used by default"
 		)]
 		public void SetDefaultTextBackground(string fontfamily)
 		{
@@ -358,6 +357,12 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
+			if (!File.Exists(path))
+			{
+				Log("File not found: " + path);
+				return;
+			}
+
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -381,6 +386,12 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
+			if (!File.Exists(path))
+			{
+				Log("File not found: " + path);
+				return;
+			}
+
 			using (var g = GetGraphics())
 			{
 				Image img;
@@ -604,7 +615,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"pixelText",
-			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class. The fontsize default is 12. The default font style. Font style options are regular, bold, italic, strikethrough, underline"
+			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulaors they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()"
 		)]
 		public void DrawText(
 			int x,
@@ -695,8 +706,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+				x -= Emulator.CoreComm.ScreenLogicalOffsetX;
+				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
 			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);

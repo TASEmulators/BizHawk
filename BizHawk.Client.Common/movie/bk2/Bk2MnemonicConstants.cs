@@ -104,7 +104,13 @@ namespace BizHawk.Client.Common
 				{ "Triangle", 'T' },
 				{ "Circle", 'O' },
 				{ "Cross", 'X' },
-				{ "Square", 'Q' }
+				{ "Square", 'Q' },
+
+				{ "Toggle Left Difficulty", 'l' },
+				{ "Toggle Right Difficulty", 'r' },
+
+				{ "Open", 'O' },
+				{ "Close", 'C' }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -116,8 +122,9 @@ namespace BizHawk.Client.Common
 						{ "FDS Eject", 'E' },
 						{ "FDS Insert 0", '0' },
 						{ "FDS Insert 1", '1' },
-						{ "VS Coin 1", 'c' },
-						{ "VS Coin 2", 'C' },
+						{ "Insert Coin P1", 'c' },
+						{ "Insert Coin P2", 'C' },
+						{ "Service Switch", 'w' },
 
 						{ "PP1", '1' },
 						{ "PP2", '2' },
@@ -274,6 +281,27 @@ namespace BizHawk.Client.Common
 						{ "Black Apple", 'b' },
 						{ "L", 'L' },
 						{ "R", 'R' }
+					}
+				},
+				{
+					"INTV",
+					new Dictionary<string, char>
+					{
+						{ "Clear", 'C' },
+						{ "Enter", 'E' },
+						{ "Top", 'T' },
+						{ "NNE", 'n' },
+						{ "NE", '/' },
+						{ "ENE", 'e' },
+						{ "ESE", 'e' },
+						{ "SE", '\\' },
+						{ "SSE", 's' },
+						{ "SSW", 's' },
+						{ "SW", '/' },
+						{ "WSW", 'w' },
+						{ "WNW", 'w' },
+						{ "NW", '\\' },
+						{ "NNW", 'n' }
 					}
 				}
 			};

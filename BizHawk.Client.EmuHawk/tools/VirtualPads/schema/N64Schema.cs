@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("N64")]
 	public class N64Schema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var ss = ((N64)Global.Emulator).GetSyncSettings();
+			var ss = ((N64)core).GetSyncSettings();
 			for (var i = 0; i < 4; i++)
 			{
 				if (ss.Controllers[i].IsConnected)

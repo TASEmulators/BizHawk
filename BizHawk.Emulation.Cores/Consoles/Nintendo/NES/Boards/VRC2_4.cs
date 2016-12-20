@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int[] prg_bank_reg_8k = new int[2];
 		public int[] chr_bank_reg_1k = new int[16];
 		bool prg_mode;
-		ByteBuffer prg_banks_8k = new ByteBuffer(4);
+		public byte[] prg_banks_8k = new byte[4];
 		public IntBuffer chr_banks_1k = new IntBuffer(8);
 		bool irq_mode;
 		bool irq_enabled, irq_pending, irq_autoen;
@@ -82,10 +82,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int extra_vrom;
 		int latch6k_value;
 
+		bool isPirate = false;
+		// needed for 2-in-1 - Yuu Yuu + Dragonball Z [p1][!]
+		bool _isBMC = false;
+
 		public override void Dispose()
 		{
 			base.Dispose();
-			prg_banks_8k.Dispose();
 			chr_banks_1k.Dispose();
 		}
 
@@ -104,26 +107,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("extra_vrom", ref extra_vrom);
 			if (latch6k_exists)
 				ser.Sync("latch6k_value", ref latch6k_value);
-			SyncPRG();
+			//SyncPRG();
+			ser.Sync("prg_banks", ref prg_banks_8k, false);
 			SyncCHR();
 			SyncIRQ();
+			ser.Sync("isPirate", ref isPirate);
+			ser.Sync("isBMC", ref _isBMC);
 		}
 
 		void SyncPRG()
 		{
-			if (prg_mode)
+			if (!_isBMC)
 			{
-				prg_banks_8k[0] = 0xFE;
-				prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
-				prg_banks_8k[2] = (byte)(prg_bank_reg_8k[0]);
-				prg_banks_8k[3] = 0xFF;
-			}
-			else
-			{
-				prg_banks_8k[0] = (byte)(prg_bank_reg_8k[0]);
-				prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
-				prg_banks_8k[2] = 0xFE;
-				prg_banks_8k[3] = 0xFF;
+				if (prg_mode)
+				{
+					prg_banks_8k[0] = 0xFE;
+					prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
+					prg_banks_8k[2] = (byte)(prg_bank_reg_8k[0]);
+					prg_banks_8k[3] = 0xFF;
+				}
+				else
+				{
+					prg_banks_8k[0] = (byte)(prg_bank_reg_8k[0]);
+					prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
+					prg_banks_8k[2] = 0xFE;
+					prg_banks_8k[3] = 0xFF;
+				}
 			}
 		}
 
@@ -169,11 +178,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					remap = AddrA0A1_A2A3;
 					Cart.wram_size = 8;
 					break;
+				case "MAPPER023_BMC":
+					type = 4;
+					remap = AddrA0A1_A2A3;
+					Cart.wram_size = 8;
+					_isBMC = true;
+					prg_banks_8k[0] = (byte)(prg_bank_reg_8k[0]);
+					prg_banks_8k[1] = (byte)(prg_bank_reg_8k[1]);
+					prg_banks_8k[2] = 0xFE;
+					prg_banks_8k[3] = 0xFF;
+					break;
 				case "MAPPER025":
 					type = 4;
 					remap = AddrA3A2_A1A0;
 					Cart.wram_size = 8;
 					break;
+				case "UNIF_UNL-T-230":
+					isPirate = true;
+					goto case "MAPPER023";
 				case "MAPPER027":
 					//not exactly the same implementation as FCEUX, but we're taking functionality from it step by step as we discover and document it
 					//world hero (unl) is m027 and depends on the extrabig_chr functionality to have correct graphics.
@@ -266,12 +288,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
-			if (addr < 0x2000)
+			if (addr < 0x2000 && VROM != null)
 			{
 				int bank_1k = addr >> 10;
 				int ofs = addr & ((1 << 10) - 1);
 				bank_1k = chr_banks_1k[bank_1k];
 				addr = (bank_1k << 10) | ofs;
+
 				return VROM[addr + extra_vrom];
 			}
 			else return base.ReadPPU(addr);
@@ -286,6 +309,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if ((addr & 1) == 1 && extrabig_chr)
 				chr_value = value & 0x1F;
 
+			// special instructions for BMC 2 in 1
+			if (_isBMC)
+			{
+				if (addr < 0x1000)
+				{
+					prg_banks_8k[prg_mode?1:0] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
+					return;
+				}
+				else if (addr >= 0x2000 && addr < 0x3000)
+				{
+					prg_banks_8k[1] = (byte)((prg_banks_8k[0] & 0x20) | (value & 0x1F));
+					return;
+				}
+				else if (addr >= 0x3000 && addr < 0x7000)
+				{
+					value = (byte)(value << 2 & 0x20);
+
+					prg_banks_8k[0] = (byte)(value | (prg_banks_8k[0] & 0x1F));
+					prg_banks_8k[1] = (byte)(value | (prg_banks_8k[1] & 0x1F));
+					prg_banks_8k[2] = (byte)(value | (prg_banks_8k[2] & 0x1F));
+					prg_banks_8k[3] = (byte)(value | (prg_banks_8k[3] & 0x1F));
+					return;
+				}
+			}
+
 			switch (addr)
 			{
 				default:
@@ -296,8 +344,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0001:
 				case 0x0002:
 				case 0x0003:
-					prg_bank_reg_8k[0] = value & prg_reg_mask_8k;
-					SyncPRG();
+					if (!isPirate)
+					{
+						prg_bank_reg_8k[0] = value & prg_reg_mask_8k;
+						SyncPRG();
+					}
 					break;
 
 				case 0x1000: //$9000
@@ -322,7 +373,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x2001: //$A001
 				case 0x2002: //$A002
 				case 0x2003: //$A003
-					prg_bank_reg_8k[1] = value & prg_reg_mask_8k;
+					if (!isPirate)
+					{
+						prg_bank_reg_8k[1] = value & prg_reg_mask_8k;
+					}
+					else
+					{
+						prg_bank_reg_8k[0] = (value & 0x1F) << 1;
+						prg_bank_reg_8k[1] = ((value & 0x1F) << 1) | 1;
+					}
 					SyncPRG();
 					break;
 

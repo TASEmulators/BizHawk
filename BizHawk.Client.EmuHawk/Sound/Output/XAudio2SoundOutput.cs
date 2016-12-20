@@ -102,10 +102,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			bool isInitializing = _runningSamplesQueued == 0;
 			bool detectedUnderrun = !isInitializing && _sourceVoice.State.BuffersQueued == 0;
-			if (detectedUnderrun)
-			{
-				_sound.OnUnderrun();
-			}
 			long samplesAwaitingPlayback = _runningSamplesQueued - _sourceVoice.State.SamplesPlayed;
 			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)

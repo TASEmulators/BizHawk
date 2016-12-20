@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
 	public sealed partial class SMS : ICodeDataLogger
 	{
-		public void SetCDL(CodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl)
 		{
 			CDL = cdl;
 			if (cdl == null)
@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public void NewCDL(CodeDataLog cdl)
+		public void NewCDL(ICodeDataLog cdl)
 		{
 			cdl["ROM"] = new byte[MemoryDomains["ROM"].Size];
 			cdl["Main RAM"] = new byte[MemoryDomains["Main RAM"].Size];
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		}
 
 		[FeatureNotImplemented]
-		public void DisassembleCDL(Stream s, CodeDataLog cdl)
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 		{
 
 		}
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private delegate CDLog_MapResults MapMemoryDelegate(ushort addr, bool write);
 		private MapMemoryDelegate MapMemory;
-		private CodeDataLog CDL;
+		private ICodeDataLog CDL;
 
 		private void RunCDL(ushort address, CDLog_Flags flags)
 		{

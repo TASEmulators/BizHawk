@@ -277,8 +277,6 @@
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
 			this.JaboTab = new System.Windows.Forms.TabPage();
 			this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
-			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.label71 = new System.Windows.Forms.Label();
 			this.label70 = new System.Windows.Forms.Label();
 			this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
@@ -307,9 +305,79 @@
 			this.label57 = new System.Windows.Forms.Label();
 			this.JaboAnisotropicFilteringLevelDropdown = new System.Windows.Forms.ComboBox();
 			this.label51 = new System.Windows.Forms.Label();
+			this.GLideN64Tab = new System.Windows.Forms.TabPage();
+			this.tabControl3 = new System.Windows.Forms.TabControl();
+			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.label88 = new System.Windows.Forms.Label();
+			this.GLideN64_GammaCorrectionLevel = new System.Windows.Forms.TextBox();
+			this.GLideN64_ForceGammaCorrection = new System.Windows.Forms.CheckBox();
+			this.label81 = new System.Windows.Forms.Label();
+			this.GLideN64_MultiSampling = new System.Windows.Forms.ComboBox();
+			this.label80 = new System.Windows.Forms.Label();
+			this.GLideN64_blurStrength = new System.Windows.Forms.ComboBox();
+			this.label79 = new System.Windows.Forms.Label();
+			this.GLideN64_blurAmount = new System.Windows.Forms.ComboBox();
+			this.label78 = new System.Windows.Forms.Label();
+			this.GLideN64_bloomBlendMode = new System.Windows.Forms.ComboBox();
+			this.label77 = new System.Windows.Forms.Label();
+			this.GLideN64_bloomThresholdLevel = new System.Windows.Forms.ComboBox();
+			this.GLideN64_EnableBloom = new System.Windows.Forms.CheckBox();
+			this.GLideN64_FragmentDepthWrite = new System.Windows.Forms.CheckBox();
+			this.GLideN64_LegacyBlending = new System.Windows.Forms.CheckBox();
+			this.GLideN64_NativeResTexrects = new System.Windows.Forms.CheckBox();
+			this.label82 = new System.Windows.Forms.Label();
+			this.GLideN64_CorrectTexrectCoords = new System.Windows.Forms.ComboBox();
+			this.GLideN64_ShadersStorage = new System.Windows.Forms.CheckBox();
+			this.GLideN64_HWLighting = new System.Windows.Forms.CheckBox();
+			this.GLideN64_EnableNoise = new System.Windows.Forms.CheckBox();
+			this.GLideN64_EnableLOD = new System.Windows.Forms.CheckBox();
+			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.label87 = new System.Windows.Forms.Label();
+			this.GLideN64_txPath = new System.Windows.Forms.TextBox();
+			this.GLideN64_txSaveCache = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txCacheCompression = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txForce16bpp = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txDump = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txHresAltCRC = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txHiresFullAlphaChannel = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txHiresEnable = new System.Windows.Forms.CheckBox();
+			this.label86 = new System.Windows.Forms.Label();
+			this.GLideN64_txCacheSize = new System.Windows.Forms.TextBox();
+			this.GLideN64_txFilterIgnoreBG = new System.Windows.Forms.CheckBox();
+			this.GLideN64_txDeposterize = new System.Windows.Forms.CheckBox();
+			this.label85 = new System.Windows.Forms.Label();
+			this.GLideN64_txEnhancementMode = new System.Windows.Forms.ComboBox();
+			this.label84 = new System.Windows.Forms.Label();
+			this.GLideN64_txFilterMode = new System.Windows.Forms.ComboBox();
+			this.label83 = new System.Windows.Forms.Label();
+			this.GLideN64_CacheSize = new System.Windows.Forms.TextBox();
+			this.label72 = new System.Windows.Forms.Label();
+			this.GLideN64_bilinearMode = new System.Windows.Forms.ComboBox();
+			this.GLideN64_MaxAnisotropy = new System.Windows.Forms.CheckBox();
+			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.GLideN64_DisableFBInfo = new System.Windows.Forms.CheckBox();
+			this.GLideN64_FBInfoReadDepthChunk = new System.Windows.Forms.CheckBox();
+			this.GLideN64_FBInfoReadColorChunk = new System.Windows.Forms.CheckBox();
+			this.label76 = new System.Windows.Forms.Label();
+			this.GLideN64_BufferSwapMode = new System.Windows.Forms.ComboBox();
+			this.label75 = new System.Windows.Forms.Label();
+			this.GLideN64_AspectRatio = new System.Windows.Forms.ComboBox();
+			this.GLideN64_EnableN64DepthCompare = new System.Windows.Forms.CheckBox();
+			this.label74 = new System.Windows.Forms.Label();
+			this.GLideN64_EnableCopyColorToRDRAM = new System.Windows.Forms.ComboBox();
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM = new System.Windows.Forms.CheckBox();
+			this.GLideN64_EnableCopyColorFromRDRAM = new System.Windows.Forms.CheckBox();
+			this.label73 = new System.Windows.Forms.Label();
+			this.GLideN64_EnableCopyDepthToRDRAM = new System.Windows.Forms.ComboBox();
+			this.GLideN64_EnableFBEmulation = new System.Windows.Forms.CheckBox();
+			this.GLideN64_UseDefaultHacks = new System.Windows.Forms.CheckBox();
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.label89 = new System.Windows.Forms.Label();
+			this.GLideN64_UseNativeResolutionFactor = new System.Windows.Forms.TextBox();
+			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -333,6 +401,11 @@
 			this.JaboTab.SuspendLayout();
 			this.JaboPerGameHacksGroupBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.JaboBrightnessBox)).BeginInit();
+			this.GLideN64Tab.SuspendLayout();
+			this.tabControl3.SuspendLayout();
+			this.tabPage5.SuspendLayout();
+			this.tabPage6.SuspendLayout();
+			this.tabPage7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// N64plugintabcontrol
@@ -345,6 +418,7 @@
 			this.N64plugintabcontrol.Controls.Add(this.Glide64TabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64mk2TabPage);
 			this.N64plugintabcontrol.Controls.Add(this.JaboTab);
+			this.N64plugintabcontrol.Controls.Add(this.GLideN64Tab);
 			this.N64plugintabcontrol.Location = new System.Drawing.Point(-2, -2);
 			this.N64plugintabcontrol.Name = "N64plugintabcontrol";
 			this.N64plugintabcontrol.SelectedIndex = 0;
@@ -509,7 +583,8 @@
             "Rice",
             "Glide64",
             "Glide64mk2",
-            "Jabo 1.6.1"});
+            "Jabo 1.6.1",
+            "GLideN64"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";
 			this.PluginComboBox.Size = new System.Drawing.Size(173, 21);
@@ -3344,32 +3419,6 @@
 			this.JaboPerGameHacksGroupBox.TabStop = false;
 			this.JaboPerGameHacksGroupBox.Text = "Per game settings";
 			// 
-			// JaboResolutionHeightBox
-			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
-			this.JaboResolutionHeightBox.MaxLength = 4;
-			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
-			this.JaboResolutionHeightBox.Nullable = false;
-			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionHeightBox.TabIndex = 34;
-			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
-			// 
-			// JaboResolutionWidthBox
-			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
-			this.JaboResolutionWidthBox.MaxLength = 4;
-			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
-			this.JaboResolutionWidthBox.Nullable = false;
-			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionWidthBox.TabIndex = 33;
-			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
-			// 
 			// label71
 			// 
 			this.label71.AutoSize = true;
@@ -3642,6 +3691,854 @@
 			this.label51.TabIndex = 5;
 			this.label51.Text = "Anisotropic filtering level";
 			// 
+			// GLideN64Tab
+			// 
+			this.GLideN64Tab.Controls.Add(this.tabControl3);
+			this.GLideN64Tab.Location = new System.Drawing.Point(4, 22);
+			this.GLideN64Tab.Name = "GLideN64Tab";
+			this.GLideN64Tab.Padding = new System.Windows.Forms.Padding(3);
+			this.GLideN64Tab.Size = new System.Drawing.Size(572, 343);
+			this.GLideN64Tab.TabIndex = 8;
+			this.GLideN64Tab.Text = "GLideN64";
+			this.GLideN64Tab.UseVisualStyleBackColor = true;
+			// 
+			// tabControl3
+			// 
+			this.tabControl3.Controls.Add(this.tabPage5);
+			this.tabControl3.Controls.Add(this.tabPage6);
+			this.tabControl3.Controls.Add(this.tabPage7);
+			this.tabControl3.Location = new System.Drawing.Point(0, 3);
+			this.tabControl3.Name = "tabControl3";
+			this.tabControl3.SelectedIndex = 0;
+			this.tabControl3.Size = new System.Drawing.Size(572, 336);
+			this.tabControl3.TabIndex = 2;
+			// 
+			// tabPage5
+			// 
+			this.tabPage5.Controls.Add(this.label88);
+			this.tabPage5.Controls.Add(this.GLideN64_GammaCorrectionLevel);
+			this.tabPage5.Controls.Add(this.GLideN64_ForceGammaCorrection);
+			this.tabPage5.Controls.Add(this.label81);
+			this.tabPage5.Controls.Add(this.GLideN64_MultiSampling);
+			this.tabPage5.Controls.Add(this.label80);
+			this.tabPage5.Controls.Add(this.GLideN64_blurStrength);
+			this.tabPage5.Controls.Add(this.label79);
+			this.tabPage5.Controls.Add(this.GLideN64_blurAmount);
+			this.tabPage5.Controls.Add(this.label78);
+			this.tabPage5.Controls.Add(this.GLideN64_bloomBlendMode);
+			this.tabPage5.Controls.Add(this.label77);
+			this.tabPage5.Controls.Add(this.GLideN64_bloomThresholdLevel);
+			this.tabPage5.Controls.Add(this.GLideN64_EnableBloom);
+			this.tabPage5.Controls.Add(this.GLideN64_FragmentDepthWrite);
+			this.tabPage5.Controls.Add(this.GLideN64_LegacyBlending);
+			this.tabPage5.Controls.Add(this.GLideN64_NativeResTexrects);
+			this.tabPage5.Controls.Add(this.label82);
+			this.tabPage5.Controls.Add(this.GLideN64_CorrectTexrectCoords);
+			this.tabPage5.Controls.Add(this.GLideN64_ShadersStorage);
+			this.tabPage5.Controls.Add(this.GLideN64_HWLighting);
+			this.tabPage5.Controls.Add(this.GLideN64_EnableNoise);
+			this.tabPage5.Controls.Add(this.GLideN64_EnableLOD);
+			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Name = "tabPage5";
+			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage5.Size = new System.Drawing.Size(564, 310);
+			this.tabPage5.TabIndex = 0;
+			this.tabPage5.Text = "General";
+			this.tabPage5.UseVisualStyleBackColor = true;
+			// 
+			// label88
+			// 
+			this.label88.AutoSize = true;
+			this.label88.Location = new System.Drawing.Point(306, 187);
+			this.label88.Name = "label88";
+			this.label88.Size = new System.Drawing.Size(123, 13);
+			this.label88.TabIndex = 78;
+			this.label88.Text = "Gamma Correction Level";
+			// 
+			// GLideN64_GammaCorrectionLevel
+			// 
+			this.GLideN64_GammaCorrectionLevel.Location = new System.Drawing.Point(435, 184);
+			this.GLideN64_GammaCorrectionLevel.Name = "GLideN64_GammaCorrectionLevel";
+			this.GLideN64_GammaCorrectionLevel.Size = new System.Drawing.Size(78, 20);
+			this.GLideN64_GammaCorrectionLevel.TabIndex = 77;
+			// 
+			// GLideN64_ForceGammaCorrection
+			// 
+			this.GLideN64_ForceGammaCorrection.AutoSize = true;
+			this.GLideN64_ForceGammaCorrection.Location = new System.Drawing.Point(309, 161);
+			this.GLideN64_ForceGammaCorrection.Name = "GLideN64_ForceGammaCorrection";
+			this.GLideN64_ForceGammaCorrection.Size = new System.Drawing.Size(143, 17);
+			this.GLideN64_ForceGammaCorrection.TabIndex = 70;
+			this.GLideN64_ForceGammaCorrection.Text = "Force Gamma Correction";
+			this.GLideN64_ForceGammaCorrection.UseVisualStyleBackColor = true;
+			// 
+			// label81
+			// 
+			this.label81.AutoSize = true;
+			this.label81.Location = new System.Drawing.Point(3, 210);
+			this.label81.Name = "label81";
+			this.label81.Size = new System.Drawing.Size(75, 13);
+			this.label81.TabIndex = 69;
+			this.label81.Text = "MultiSampling:";
+			// 
+			// GLideN64_MultiSampling
+			// 
+			this.GLideN64_MultiSampling.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_MultiSampling.FormattingEnabled = true;
+			this.GLideN64_MultiSampling.Items.AddRange(new object[] {
+            "0",
+            "2",
+            "4",
+            "8",
+            "16"});
+			this.GLideN64_MultiSampling.Location = new System.Drawing.Point(128, 207);
+			this.GLideN64_MultiSampling.Name = "GLideN64_MultiSampling";
+			this.GLideN64_MultiSampling.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_MultiSampling.TabIndex = 68;
+			// 
+			// label80
+			// 
+			this.label80.AutoSize = true;
+			this.label80.Location = new System.Drawing.Point(306, 122);
+			this.label80.Name = "label80";
+			this.label80.Size = new System.Drawing.Size(71, 13);
+			this.label80.TabIndex = 67;
+			this.label80.Text = "Blur Strength:";
+			// 
+			// GLideN64_blurStrength
+			// 
+			this.GLideN64_blurStrength.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_blurStrength.FormattingEnabled = true;
+			this.GLideN64_blurStrength.Items.AddRange(new object[] {
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            "32",
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "43",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59",
+            "60",
+            "61",
+            "62",
+            "63",
+            "64",
+            "65",
+            "66",
+            "67",
+            "68",
+            "69",
+            "70",
+            "71",
+            "72",
+            "73",
+            "74",
+            "75",
+            "76",
+            "77",
+            "78",
+            "79",
+            "80",
+            "81",
+            "82",
+            "83",
+            "84",
+            "85",
+            "86",
+            "87",
+            "88",
+            "89",
+            "90",
+            "91",
+            "92",
+            "93",
+            "94",
+            "95",
+            "96",
+            "97",
+            "98",
+            "99",
+            "100"});
+			this.GLideN64_blurStrength.Location = new System.Drawing.Point(430, 119);
+			this.GLideN64_blurStrength.Name = "GLideN64_blurStrength";
+			this.GLideN64_blurStrength.Size = new System.Drawing.Size(60, 21);
+			this.GLideN64_blurStrength.TabIndex = 66;
+			// 
+			// label79
+			// 
+			this.label79.AutoSize = true;
+			this.label79.Location = new System.Drawing.Point(306, 95);
+			this.label79.Name = "label79";
+			this.label79.Size = new System.Drawing.Size(67, 13);
+			this.label79.TabIndex = 65;
+			this.label79.Text = "Blur Amount:";
+			// 
+			// GLideN64_blurAmount
+			// 
+			this.GLideN64_blurAmount.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_blurAmount.FormattingEnabled = true;
+			this.GLideN64_blurAmount.Items.AddRange(new object[] {
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"});
+			this.GLideN64_blurAmount.Location = new System.Drawing.Point(430, 92);
+			this.GLideN64_blurAmount.Name = "GLideN64_blurAmount";
+			this.GLideN64_blurAmount.Size = new System.Drawing.Size(60, 21);
+			this.GLideN64_blurAmount.TabIndex = 64;
+			// 
+			// label78
+			// 
+			this.label78.AutoSize = true;
+			this.label78.Location = new System.Drawing.Point(306, 68);
+			this.label78.Name = "label78";
+			this.label78.Size = new System.Drawing.Size(99, 13);
+			this.label78.TabIndex = 63;
+			this.label78.Text = "Bloom Blend Mode:";
+			// 
+			// GLideN64_bloomBlendMode
+			// 
+			this.GLideN64_bloomBlendMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_bloomBlendMode.FormattingEnabled = true;
+			this.GLideN64_bloomBlendMode.Items.AddRange(new object[] {
+            "Strong",
+            "Mild",
+            "Light"});
+			this.GLideN64_bloomBlendMode.Location = new System.Drawing.Point(430, 65);
+			this.GLideN64_bloomBlendMode.Name = "GLideN64_bloomBlendMode";
+			this.GLideN64_bloomBlendMode.Size = new System.Drawing.Size(128, 21);
+			this.GLideN64_bloomBlendMode.TabIndex = 62;
+			// 
+			// label77
+			// 
+			this.label77.AutoSize = true;
+			this.label77.Location = new System.Drawing.Point(306, 41);
+			this.label77.Name = "label77";
+			this.label77.Size = new System.Drawing.Size(118, 13);
+			this.label77.TabIndex = 61;
+			this.label77.Text = "Bloom Threshold Level:";
+			// 
+			// GLideN64_bloomThresholdLevel
+			// 
+			this.GLideN64_bloomThresholdLevel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_bloomThresholdLevel.FormattingEnabled = true;
+			this.GLideN64_bloomThresholdLevel.Items.AddRange(new object[] {
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"});
+			this.GLideN64_bloomThresholdLevel.Location = new System.Drawing.Point(430, 38);
+			this.GLideN64_bloomThresholdLevel.Name = "GLideN64_bloomThresholdLevel";
+			this.GLideN64_bloomThresholdLevel.Size = new System.Drawing.Size(60, 21);
+			this.GLideN64_bloomThresholdLevel.TabIndex = 60;
+			// 
+			// GLideN64_EnableBloom
+			// 
+			this.GLideN64_EnableBloom.AutoSize = true;
+			this.GLideN64_EnableBloom.Location = new System.Drawing.Point(309, 19);
+			this.GLideN64_EnableBloom.Name = "GLideN64_EnableBloom";
+			this.GLideN64_EnableBloom.Size = new System.Drawing.Size(91, 17);
+			this.GLideN64_EnableBloom.TabIndex = 59;
+			this.GLideN64_EnableBloom.Text = "Enable Bloom";
+			this.GLideN64_EnableBloom.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_FragmentDepthWrite
+			// 
+			this.GLideN64_FragmentDepthWrite.AutoSize = true;
+			this.GLideN64_FragmentDepthWrite.Location = new System.Drawing.Point(6, 184);
+			this.GLideN64_FragmentDepthWrite.Name = "GLideN64_FragmentDepthWrite";
+			this.GLideN64_FragmentDepthWrite.Size = new System.Drawing.Size(130, 17);
+			this.GLideN64_FragmentDepthWrite.TabIndex = 58;
+			this.GLideN64_FragmentDepthWrite.Text = "Fragment Depth Write";
+			this.GLideN64_FragmentDepthWrite.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_LegacyBlending
+			// 
+			this.GLideN64_LegacyBlending.AutoSize = true;
+			this.GLideN64_LegacyBlending.Location = new System.Drawing.Point(6, 161);
+			this.GLideN64_LegacyBlending.Name = "GLideN64_LegacyBlending";
+			this.GLideN64_LegacyBlending.Size = new System.Drawing.Size(105, 17);
+			this.GLideN64_LegacyBlending.TabIndex = 57;
+			this.GLideN64_LegacyBlending.Text = "Legacy Blending";
+			this.GLideN64_LegacyBlending.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_NativeResTexrects
+			// 
+			this.GLideN64_NativeResTexrects.AutoSize = true;
+			this.GLideN64_NativeResTexrects.Location = new System.Drawing.Point(6, 138);
+			this.GLideN64_NativeResTexrects.Name = "GLideN64_NativeResTexrects";
+			this.GLideN64_NativeResTexrects.Size = new System.Drawing.Size(123, 17);
+			this.GLideN64_NativeResTexrects.TabIndex = 56;
+			this.GLideN64_NativeResTexrects.Text = "Native Res Texrects";
+			this.GLideN64_NativeResTexrects.UseVisualStyleBackColor = true;
+			// 
+			// label82
+			// 
+			this.label82.AutoSize = true;
+			this.label82.Location = new System.Drawing.Point(3, 114);
+			this.label82.Name = "label82";
+			this.label82.Size = new System.Drawing.Size(119, 13);
+			this.label82.TabIndex = 55;
+			this.label82.Text = "Correct Texrect Coords:";
+			// 
+			// GLideN64_CorrectTexrectCoords
+			// 
+			this.GLideN64_CorrectTexrectCoords.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_CorrectTexrectCoords.FormattingEnabled = true;
+			this.GLideN64_CorrectTexrectCoords.Items.AddRange(new object[] {
+            "Off",
+            "Auto",
+            "Force"});
+			this.GLideN64_CorrectTexrectCoords.Location = new System.Drawing.Point(128, 111);
+			this.GLideN64_CorrectTexrectCoords.Name = "GLideN64_CorrectTexrectCoords";
+			this.GLideN64_CorrectTexrectCoords.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_CorrectTexrectCoords.TabIndex = 54;
+			// 
+			// GLideN64_ShadersStorage
+			// 
+			this.GLideN64_ShadersStorage.AutoSize = true;
+			this.GLideN64_ShadersStorage.Location = new System.Drawing.Point(6, 88);
+			this.GLideN64_ShadersStorage.Name = "GLideN64_ShadersStorage";
+			this.GLideN64_ShadersStorage.Size = new System.Drawing.Size(103, 17);
+			this.GLideN64_ShadersStorage.TabIndex = 53;
+			this.GLideN64_ShadersStorage.Text = "Shaders storage";
+			this.GLideN64_ShadersStorage.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_HWLighting
+			// 
+			this.GLideN64_HWLighting.AutoSize = true;
+			this.GLideN64_HWLighting.Location = new System.Drawing.Point(6, 65);
+			this.GLideN64_HWLighting.Name = "GLideN64_HWLighting";
+			this.GLideN64_HWLighting.Size = new System.Drawing.Size(85, 17);
+			this.GLideN64_HWLighting.TabIndex = 52;
+			this.GLideN64_HWLighting.Text = "HW Lighting";
+			this.GLideN64_HWLighting.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_EnableNoise
+			// 
+			this.GLideN64_EnableNoise.AutoSize = true;
+			this.GLideN64_EnableNoise.Location = new System.Drawing.Point(6, 42);
+			this.GLideN64_EnableNoise.Name = "GLideN64_EnableNoise";
+			this.GLideN64_EnableNoise.Size = new System.Drawing.Size(126, 17);
+			this.GLideN64_EnableNoise.TabIndex = 25;
+			this.GLideN64_EnableNoise.Text = "Color noise emulation";
+			this.GLideN64_EnableNoise.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_EnableLOD
+			// 
+			this.GLideN64_EnableLOD.AutoSize = true;
+			this.GLideN64_EnableLOD.Location = new System.Drawing.Point(6, 19);
+			this.GLideN64_EnableLOD.Name = "GLideN64_EnableLOD";
+			this.GLideN64_EnableLOD.Size = new System.Drawing.Size(97, 17);
+			this.GLideN64_EnableLOD.TabIndex = 21;
+			this.GLideN64_EnableLOD.Text = "LOD Emulation";
+			this.GLideN64_EnableLOD.UseVisualStyleBackColor = true;
+			// 
+			// tabPage6
+			// 
+			this.tabPage6.Controls.Add(this.label87);
+			this.tabPage6.Controls.Add(this.GLideN64_txPath);
+			this.tabPage6.Controls.Add(this.GLideN64_txSaveCache);
+			this.tabPage6.Controls.Add(this.GLideN64_txCacheCompression);
+			this.tabPage6.Controls.Add(this.GLideN64_txForce16bpp);
+			this.tabPage6.Controls.Add(this.GLideN64_txDump);
+			this.tabPage6.Controls.Add(this.GLideN64_txHresAltCRC);
+			this.tabPage6.Controls.Add(this.GLideN64_txHiresFullAlphaChannel);
+			this.tabPage6.Controls.Add(this.GLideN64_txHiresEnable);
+			this.tabPage6.Controls.Add(this.label86);
+			this.tabPage6.Controls.Add(this.GLideN64_txCacheSize);
+			this.tabPage6.Controls.Add(this.GLideN64_txFilterIgnoreBG);
+			this.tabPage6.Controls.Add(this.GLideN64_txDeposterize);
+			this.tabPage6.Controls.Add(this.label85);
+			this.tabPage6.Controls.Add(this.GLideN64_txEnhancementMode);
+			this.tabPage6.Controls.Add(this.label84);
+			this.tabPage6.Controls.Add(this.GLideN64_txFilterMode);
+			this.tabPage6.Controls.Add(this.label83);
+			this.tabPage6.Controls.Add(this.GLideN64_CacheSize);
+			this.tabPage6.Controls.Add(this.label72);
+			this.tabPage6.Controls.Add(this.GLideN64_bilinearMode);
+			this.tabPage6.Controls.Add(this.GLideN64_MaxAnisotropy);
+			this.tabPage6.Location = new System.Drawing.Point(4, 22);
+			this.tabPage6.Name = "tabPage6";
+			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage6.Size = new System.Drawing.Size(564, 310);
+			this.tabPage6.TabIndex = 1;
+			this.tabPage6.Text = "Texture settings";
+			this.tabPage6.UseVisualStyleBackColor = true;
+			// 
+			// label87
+			// 
+			this.label87.AutoSize = true;
+			this.label87.Location = new System.Drawing.Point(3, 232);
+			this.label87.Name = "label87";
+			this.label87.Size = new System.Drawing.Size(70, 13);
+			this.label87.TabIndex = 76;
+			this.label87.Text = "Texture path:";
+			// 
+			// GLideN64_txPath
+			// 
+			this.GLideN64_txPath.Location = new System.Drawing.Point(123, 229);
+			this.GLideN64_txPath.Name = "GLideN64_txPath";
+			this.GLideN64_txPath.Size = new System.Drawing.Size(78, 20);
+			this.GLideN64_txPath.TabIndex = 75;
+			// 
+			// GLideN64_txSaveCache
+			// 
+			this.GLideN64_txSaveCache.AutoSize = true;
+			this.GLideN64_txSaveCache.Location = new System.Drawing.Point(328, 157);
+			this.GLideN64_txSaveCache.Name = "GLideN64_txSaveCache";
+			this.GLideN64_txSaveCache.Size = new System.Drawing.Size(119, 17);
+			this.GLideN64_txSaveCache.TabIndex = 74;
+			this.GLideN64_txSaveCache.Text = "Save texture cache";
+			this.GLideN64_txSaveCache.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txCacheCompression
+			// 
+			this.GLideN64_txCacheCompression.AutoSize = true;
+			this.GLideN64_txCacheCompression.Location = new System.Drawing.Point(328, 134);
+			this.GLideN64_txCacheCompression.Name = "GLideN64_txCacheCompression";
+			this.GLideN64_txCacheCompression.Size = new System.Drawing.Size(159, 17);
+			this.GLideN64_txCacheCompression.TabIndex = 73;
+			this.GLideN64_txCacheCompression.Text = "Texture Cache Compression";
+			this.GLideN64_txCacheCompression.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txForce16bpp
+			// 
+			this.GLideN64_txForce16bpp.AutoSize = true;
+			this.GLideN64_txForce16bpp.Location = new System.Drawing.Point(328, 111);
+			this.GLideN64_txForce16bpp.Name = "GLideN64_txForce16bpp";
+			this.GLideN64_txForce16bpp.Size = new System.Drawing.Size(125, 17);
+			this.GLideN64_txForce16bpp.TabIndex = 72;
+			this.GLideN64_txForce16bpp.Text = "Texture Force 16bpp";
+			this.GLideN64_txForce16bpp.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txDump
+			// 
+			this.GLideN64_txDump.AutoSize = true;
+			this.GLideN64_txDump.Location = new System.Drawing.Point(328, 88);
+			this.GLideN64_txDump.Name = "GLideN64_txDump";
+			this.GLideN64_txDump.Size = new System.Drawing.Size(91, 17);
+			this.GLideN64_txDump.TabIndex = 71;
+			this.GLideN64_txDump.Text = "Texture dump";
+			this.GLideN64_txDump.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txHresAltCRC
+			// 
+			this.GLideN64_txHresAltCRC.AutoSize = true;
+			this.GLideN64_txHresAltCRC.Location = new System.Drawing.Point(328, 65);
+			this.GLideN64_txHresAltCRC.Name = "GLideN64_txHresAltCRC";
+			this.GLideN64_txHresAltCRC.Size = new System.Drawing.Size(88, 17);
+			this.GLideN64_txHresAltCRC.TabIndex = 70;
+			this.GLideN64_txHresAltCRC.Text = "Hres Alt CRC";
+			this.GLideN64_txHresAltCRC.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txHiresFullAlphaChannel
+			// 
+			this.GLideN64_txHiresFullAlphaChannel.AutoSize = true;
+			this.GLideN64_txHiresFullAlphaChannel.Location = new System.Drawing.Point(328, 42);
+			this.GLideN64_txHiresFullAlphaChannel.Name = "GLideN64_txHiresFullAlphaChannel";
+			this.GLideN64_txHiresFullAlphaChannel.Size = new System.Drawing.Size(141, 17);
+			this.GLideN64_txHiresFullAlphaChannel.TabIndex = 69;
+			this.GLideN64_txHiresFullAlphaChannel.Text = "Hires Full Alpha Channel";
+			this.GLideN64_txHiresFullAlphaChannel.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txHiresEnable
+			// 
+			this.GLideN64_txHiresEnable.AutoSize = true;
+			this.GLideN64_txHiresEnable.Location = new System.Drawing.Point(328, 19);
+			this.GLideN64_txHiresEnable.Name = "GLideN64_txHiresEnable";
+			this.GLideN64_txHiresEnable.Size = new System.Drawing.Size(94, 17);
+			this.GLideN64_txHiresEnable.TabIndex = 68;
+			this.GLideN64_txHiresEnable.Text = "Hires Textures";
+			this.GLideN64_txHiresEnable.UseVisualStyleBackColor = true;
+			// 
+			// label86
+			// 
+			this.label86.AutoSize = true;
+			this.label86.Location = new System.Drawing.Point(3, 198);
+			this.label86.Name = "label86";
+			this.label86.Size = new System.Drawing.Size(98, 13);
+			this.label86.TabIndex = 67;
+			this.label86.Text = "Filtered cache size:";
+			// 
+			// GLideN64_txCacheSize
+			// 
+			this.GLideN64_txCacheSize.Location = new System.Drawing.Point(123, 195);
+			this.GLideN64_txCacheSize.Name = "GLideN64_txCacheSize";
+			this.GLideN64_txCacheSize.Size = new System.Drawing.Size(78, 20);
+			this.GLideN64_txCacheSize.TabIndex = 66;
+			// 
+			// GLideN64_txFilterIgnoreBG
+			// 
+			this.GLideN64_txFilterIgnoreBG.AutoSize = true;
+			this.GLideN64_txFilterIgnoreBG.Location = new System.Drawing.Point(6, 172);
+			this.GLideN64_txFilterIgnoreBG.Name = "GLideN64_txFilterIgnoreBG";
+			this.GLideN64_txFilterIgnoreBG.Size = new System.Drawing.Size(99, 17);
+			this.GLideN64_txFilterIgnoreBG.TabIndex = 65;
+			this.GLideN64_txFilterIgnoreBG.Text = "Filter Ignore BG";
+			this.GLideN64_txFilterIgnoreBG.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_txDeposterize
+			// 
+			this.GLideN64_txDeposterize.AutoSize = true;
+			this.GLideN64_txDeposterize.Location = new System.Drawing.Point(6, 149);
+			this.GLideN64_txDeposterize.Name = "GLideN64_txDeposterize";
+			this.GLideN64_txDeposterize.Size = new System.Drawing.Size(82, 17);
+			this.GLideN64_txDeposterize.TabIndex = 64;
+			this.GLideN64_txDeposterize.Text = "Deposterize";
+			this.GLideN64_txDeposterize.UseVisualStyleBackColor = true;
+			// 
+			// label85
+			// 
+			this.label85.AutoSize = true;
+			this.label85.Location = new System.Drawing.Point(3, 125);
+			this.label85.Name = "label85";
+			this.label85.Size = new System.Drawing.Size(114, 13);
+			this.label85.TabIndex = 63;
+			this.label85.Text = "Texture enhancement:";
+			// 
+			// GLideN64_txEnhancementMode
+			// 
+			this.GLideN64_txEnhancementMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_txEnhancementMode.FormattingEnabled = true;
+			this.GLideN64_txEnhancementMode.Items.AddRange(new object[] {
+            "None",
+            "Store as is",
+            "X2",
+            "X2SAI",
+            "HQ2X",
+            "HQ2XS",
+            "LQ2X",
+            "LQ2XS",
+            "HQ4X",
+            "2xBRZ",
+            "3xBRZ",
+            "4xBRZ",
+            "5xBRZ",
+            "6xBRZ"});
+			this.GLideN64_txEnhancementMode.Location = new System.Drawing.Point(123, 122);
+			this.GLideN64_txEnhancementMode.Name = "GLideN64_txEnhancementMode";
+			this.GLideN64_txEnhancementMode.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_txEnhancementMode.TabIndex = 62;
+			// 
+			// label84
+			// 
+			this.label84.AutoSize = true;
+			this.label84.Location = new System.Drawing.Point(3, 98);
+			this.label84.Name = "label84";
+			this.label84.Size = new System.Drawing.Size(68, 13);
+			this.label84.TabIndex = 61;
+			this.label84.Text = "Texture filter:";
+			// 
+			// GLideN64_txFilterMode
+			// 
+			this.GLideN64_txFilterMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_txFilterMode.FormattingEnabled = true;
+			this.GLideN64_txFilterMode.Items.AddRange(new object[] {
+            "None",
+            "Smooth filtering 1",
+            "Smooth filtering 2",
+            "Smooth filtering 3",
+            "Smooth filtering 4",
+            "Sharp filtering 1",
+            "Sharp filtering 2"});
+			this.GLideN64_txFilterMode.Location = new System.Drawing.Point(123, 95);
+			this.GLideN64_txFilterMode.Name = "GLideN64_txFilterMode";
+			this.GLideN64_txFilterMode.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_txFilterMode.TabIndex = 60;
+			// 
+			// label83
+			// 
+			this.label83.AutoSize = true;
+			this.label83.Location = new System.Drawing.Point(3, 72);
+			this.label83.Name = "label83";
+			this.label83.Size = new System.Drawing.Size(62, 13);
+			this.label83.TabIndex = 59;
+			this.label83.Text = "Cache size:";
+			// 
+			// GLideN64_CacheSize
+			// 
+			this.GLideN64_CacheSize.Location = new System.Drawing.Point(123, 69);
+			this.GLideN64_CacheSize.Name = "GLideN64_CacheSize";
+			this.GLideN64_CacheSize.Size = new System.Drawing.Size(78, 20);
+			this.GLideN64_CacheSize.TabIndex = 58;
+			// 
+			// label72
+			// 
+			this.label72.AutoSize = true;
+			this.label72.Location = new System.Drawing.Point(3, 45);
+			this.label72.Name = "label72";
+			this.label72.Size = new System.Drawing.Size(83, 13);
+			this.label72.TabIndex = 57;
+			this.label72.Text = "Bilinear Filtering:";
+			// 
+			// GLideN64_bilinearMode
+			// 
+			this.GLideN64_bilinearMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_bilinearMode.FormattingEnabled = true;
+			this.GLideN64_bilinearMode.Items.AddRange(new object[] {
+            "N64 3point",
+            "Standard"});
+			this.GLideN64_bilinearMode.Location = new System.Drawing.Point(123, 42);
+			this.GLideN64_bilinearMode.Name = "GLideN64_bilinearMode";
+			this.GLideN64_bilinearMode.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_bilinearMode.TabIndex = 56;
+			// 
+			// GLideN64_MaxAnisotropy
+			// 
+			this.GLideN64_MaxAnisotropy.AutoSize = true;
+			this.GLideN64_MaxAnisotropy.Location = new System.Drawing.Point(6, 19);
+			this.GLideN64_MaxAnisotropy.Name = "GLideN64_MaxAnisotropy";
+			this.GLideN64_MaxAnisotropy.Size = new System.Drawing.Size(98, 17);
+			this.GLideN64_MaxAnisotropy.TabIndex = 3;
+			this.GLideN64_MaxAnisotropy.Text = "Max Anisotropy";
+			this.GLideN64_MaxAnisotropy.UseVisualStyleBackColor = true;
+			// 
+			// tabPage7
+			// 
+			this.tabPage7.Controls.Add(this.label89);
+			this.tabPage7.Controls.Add(this.GLideN64_UseNativeResolutionFactor);
+			this.tabPage7.Controls.Add(this.GLideN64_DisableFBInfo);
+			this.tabPage7.Controls.Add(this.GLideN64_FBInfoReadDepthChunk);
+			this.tabPage7.Controls.Add(this.GLideN64_FBInfoReadColorChunk);
+			this.tabPage7.Controls.Add(this.label76);
+			this.tabPage7.Controls.Add(this.GLideN64_BufferSwapMode);
+			this.tabPage7.Controls.Add(this.label75);
+			this.tabPage7.Controls.Add(this.GLideN64_AspectRatio);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableN64DepthCompare);
+			this.tabPage7.Controls.Add(this.label74);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableCopyColorToRDRAM);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableCopyAuxiliaryToRDRAM);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableCopyColorFromRDRAM);
+			this.tabPage7.Controls.Add(this.label73);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableCopyDepthToRDRAM);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableFBEmulation);
+			this.tabPage7.Controls.Add(this.GLideN64_UseDefaultHacks);
+			this.tabPage7.Location = new System.Drawing.Point(4, 22);
+			this.tabPage7.Name = "tabPage7";
+			this.tabPage7.Size = new System.Drawing.Size(564, 310);
+			this.tabPage7.TabIndex = 2;
+			this.tabPage7.Text = "Frame buffer settings";
+			this.tabPage7.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_DisableFBInfo
+			// 
+			this.GLideN64_DisableFBInfo.AutoSize = true;
+			this.GLideN64_DisableFBInfo.Location = new System.Drawing.Point(6, 115);
+			this.GLideN64_DisableFBInfo.Name = "GLideN64_DisableFBInfo";
+			this.GLideN64_DisableFBInfo.Size = new System.Drawing.Size(98, 17);
+			this.GLideN64_DisableFBInfo.TabIndex = 76;
+			this.GLideN64_DisableFBInfo.Text = "Disable FB Info";
+			this.GLideN64_DisableFBInfo.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_FBInfoReadDepthChunk
+			// 
+			this.GLideN64_FBInfoReadDepthChunk.AutoSize = true;
+			this.GLideN64_FBInfoReadDepthChunk.Location = new System.Drawing.Point(6, 92);
+			this.GLideN64_FBInfoReadDepthChunk.Name = "GLideN64_FBInfoReadDepthChunk";
+			this.GLideN64_FBInfoReadDepthChunk.Size = new System.Drawing.Size(155, 17);
+			this.GLideN64_FBInfoReadDepthChunk.TabIndex = 75;
+			this.GLideN64_FBInfoReadDepthChunk.Text = "FB Info Read Depth Chunk";
+			this.GLideN64_FBInfoReadDepthChunk.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_FBInfoReadColorChunk
+			// 
+			this.GLideN64_FBInfoReadColorChunk.AutoSize = true;
+			this.GLideN64_FBInfoReadColorChunk.Location = new System.Drawing.Point(6, 69);
+			this.GLideN64_FBInfoReadColorChunk.Name = "GLideN64_FBInfoReadColorChunk";
+			this.GLideN64_FBInfoReadColorChunk.Size = new System.Drawing.Size(150, 17);
+			this.GLideN64_FBInfoReadColorChunk.TabIndex = 74;
+			this.GLideN64_FBInfoReadColorChunk.Text = "FB Info Read Color Chunk";
+			this.GLideN64_FBInfoReadColorChunk.UseVisualStyleBackColor = true;
+			// 
+			// label76
+			// 
+			this.label76.AutoSize = true;
+			this.label76.Location = new System.Drawing.Point(3, 171);
+			this.label76.Name = "label76";
+			this.label76.Size = new System.Drawing.Size(95, 13);
+			this.label76.TabIndex = 72;
+			this.label76.Text = "Buffer Swap Mode";
+			// 
+			// GLideN64_BufferSwapMode
+			// 
+			this.GLideN64_BufferSwapMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_BufferSwapMode.FormattingEnabled = true;
+			this.GLideN64_BufferSwapMode.Items.AddRange(new object[] {
+            "On VI update call",
+            "On VI origin change",
+            "On buffer update"});
+			this.GLideN64_BufferSwapMode.Location = new System.Drawing.Point(134, 168);
+			this.GLideN64_BufferSwapMode.Name = "GLideN64_BufferSwapMode";
+			this.GLideN64_BufferSwapMode.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_BufferSwapMode.TabIndex = 71;
+			// 
+			// label75
+			// 
+			this.label75.AutoSize = true;
+			this.label75.Location = new System.Drawing.Point(3, 144);
+			this.label75.Name = "label75";
+			this.label75.Size = new System.Drawing.Size(68, 13);
+			this.label75.TabIndex = 70;
+			this.label75.Text = "Aspect Ratio";
+			// 
+			// GLideN64_AspectRatio
+			// 
+			this.GLideN64_AspectRatio.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_AspectRatio.FormattingEnabled = true;
+			this.GLideN64_AspectRatio.Items.AddRange(new object[] {
+            "Stretch",
+            "Force 4:3",
+            "Force 16:9",
+            "Adjust"});
+			this.GLideN64_AspectRatio.Location = new System.Drawing.Point(134, 141);
+			this.GLideN64_AspectRatio.Name = "GLideN64_AspectRatio";
+			this.GLideN64_AspectRatio.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_AspectRatio.TabIndex = 69;
+			// 
+			// GLideN64_EnableN64DepthCompare
+			// 
+			this.GLideN64_EnableN64DepthCompare.AutoSize = true;
+			this.GLideN64_EnableN64DepthCompare.Location = new System.Drawing.Point(293, 142);
+			this.GLideN64_EnableN64DepthCompare.Name = "GLideN64_EnableN64DepthCompare";
+			this.GLideN64_EnableN64DepthCompare.Size = new System.Drawing.Size(123, 17);
+			this.GLideN64_EnableN64DepthCompare.TabIndex = 68;
+			this.GLideN64_EnableN64DepthCompare.Text = "N64 Depth Compare";
+			this.GLideN64_EnableN64DepthCompare.UseVisualStyleBackColor = true;
+			// 
+			// label74
+			// 
+			this.label74.AutoSize = true;
+			this.label74.Location = new System.Drawing.Point(290, 118);
+			this.label74.Name = "label74";
+			this.label74.Size = new System.Drawing.Size(120, 13);
+			this.label74.TabIndex = 67;
+			this.label74.Text = "Copy Color To RDRAM:";
+			// 
+			// GLideN64_EnableCopyColorToRDRAM
+			// 
+			this.GLideN64_EnableCopyColorToRDRAM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_EnableCopyColorToRDRAM.FormattingEnabled = true;
+			this.GLideN64_EnableCopyColorToRDRAM.Items.AddRange(new object[] {
+            "Do not copy",
+            "Copy in sync mode",
+            "Copy in async mode"});
+			this.GLideN64_EnableCopyColorToRDRAM.Location = new System.Drawing.Point(421, 115);
+			this.GLideN64_EnableCopyColorToRDRAM.Name = "GLideN64_EnableCopyColorToRDRAM";
+			this.GLideN64_EnableCopyColorToRDRAM.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_EnableCopyColorToRDRAM.TabIndex = 66;
+			// 
+			// GLideN64_EnableCopyAuxiliaryToRDRAM
+			// 
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.AutoSize = true;
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.Location = new System.Drawing.Point(293, 92);
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.Name = "GLideN64_EnableCopyAuxiliaryToRDRAM";
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.Size = new System.Drawing.Size(150, 17);
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.TabIndex = 65;
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.Text = "Copy Auxiliary To RDRAM";
+			this.GLideN64_EnableCopyAuxiliaryToRDRAM.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_EnableCopyColorFromRDRAM
+			// 
+			this.GLideN64_EnableCopyColorFromRDRAM.AutoSize = true;
+			this.GLideN64_EnableCopyColorFromRDRAM.Location = new System.Drawing.Point(293, 69);
+			this.GLideN64_EnableCopyColorFromRDRAM.Name = "GLideN64_EnableCopyColorFromRDRAM";
+			this.GLideN64_EnableCopyColorFromRDRAM.Size = new System.Drawing.Size(146, 17);
+			this.GLideN64_EnableCopyColorFromRDRAM.TabIndex = 64;
+			this.GLideN64_EnableCopyColorFromRDRAM.Text = "Copy Color From RDRAM";
+			this.GLideN64_EnableCopyColorFromRDRAM.UseVisualStyleBackColor = true;
+			// 
+			// label73
+			// 
+			this.label73.AutoSize = true;
+			this.label73.Location = new System.Drawing.Point(290, 45);
+			this.label73.Name = "label73";
+			this.label73.Size = new System.Drawing.Size(125, 13);
+			this.label73.TabIndex = 63;
+			this.label73.Text = "Copy Depth To RDRAM:";
+			// 
+			// GLideN64_EnableCopyDepthToRDRAM
+			// 
+			this.GLideN64_EnableCopyDepthToRDRAM.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.GLideN64_EnableCopyDepthToRDRAM.FormattingEnabled = true;
+			this.GLideN64_EnableCopyDepthToRDRAM.Items.AddRange(new object[] {
+            "Do not copy",
+            "Copy from video memory",
+            "Use software render"});
+			this.GLideN64_EnableCopyDepthToRDRAM.Location = new System.Drawing.Point(421, 42);
+			this.GLideN64_EnableCopyDepthToRDRAM.Name = "GLideN64_EnableCopyDepthToRDRAM";
+			this.GLideN64_EnableCopyDepthToRDRAM.Size = new System.Drawing.Size(138, 21);
+			this.GLideN64_EnableCopyDepthToRDRAM.TabIndex = 62;
+			// 
+			// GLideN64_EnableFBEmulation
+			// 
+			this.GLideN64_EnableFBEmulation.AutoSize = true;
+			this.GLideN64_EnableFBEmulation.Location = new System.Drawing.Point(6, 19);
+			this.GLideN64_EnableFBEmulation.Name = "GLideN64_EnableFBEmulation";
+			this.GLideN64_EnableFBEmulation.Size = new System.Drawing.Size(124, 17);
+			this.GLideN64_EnableFBEmulation.TabIndex = 61;
+			this.GLideN64_EnableFBEmulation.Text = "Enable FB Emulation";
+			this.GLideN64_EnableFBEmulation.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_UseDefaultHacks
+			// 
+			this.GLideN64_UseDefaultHacks.AutoSize = true;
+			this.GLideN64_UseDefaultHacks.Location = new System.Drawing.Point(293, 19);
+			this.GLideN64_UseDefaultHacks.Name = "GLideN64_UseDefaultHacks";
+			this.GLideN64_UseDefaultHacks.Size = new System.Drawing.Size(165, 17);
+			this.GLideN64_UseDefaultHacks.TabIndex = 3;
+			this.GLideN64_UseDefaultHacks.Text = "Use defaults for current game";
+			this.GLideN64_UseDefaultHacks.UseVisualStyleBackColor = true;
+			this.GLideN64_UseDefaultHacks.CheckedChanged += new System.EventHandler(this.GLideN64_UseDefaultHacks_CheckedChanged);
+			// 
 			// SaveButton
 			// 
 			this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -3672,6 +4569,48 @@
 			this.toolTip1.IsBalloon = true;
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+			// 
+			// label89
+			// 
+			this.label89.AutoSize = true;
+			this.label89.Location = new System.Drawing.Point(3, 45);
+			this.label89.Name = "label89";
+			this.label89.Size = new System.Drawing.Size(146, 13);
+			this.label89.TabIndex = 78;
+			this.label89.Text = "Use Native Resolution Factor";
+			// 
+			// GLideN64_UseNativeResolutionFactor
+			// 
+			this.GLideN64_UseNativeResolutionFactor.Location = new System.Drawing.Point(155, 42);
+			this.GLideN64_UseNativeResolutionFactor.Name = "GLideN64_UseNativeResolutionFactor";
+			this.GLideN64_UseNativeResolutionFactor.Size = new System.Drawing.Size(32, 20);
+			this.GLideN64_UseNativeResolutionFactor.TabIndex = 77;
+			// 
+			// JaboResolutionHeightBox
+			// 
+			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
+			this.JaboResolutionHeightBox.MaxLength = 4;
+			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
+			this.JaboResolutionHeightBox.Nullable = false;
+			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionHeightBox.TabIndex = 34;
+			this.JaboResolutionHeightBox.Text = "0";
+			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
+			// 
+			// JaboResolutionWidthBox
+			// 
+			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
+			this.JaboResolutionWidthBox.MaxLength = 4;
+			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
+			this.JaboResolutionWidthBox.Nullable = false;
+			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
+			this.JaboResolutionWidthBox.TabIndex = 33;
+			this.JaboResolutionWidthBox.Text = "0";
+			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -3726,6 +4665,14 @@
 			this.JaboPerGameHacksGroupBox.ResumeLayout(false);
 			this.JaboPerGameHacksGroupBox.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.JaboBrightnessBox)).EndInit();
+			this.GLideN64Tab.ResumeLayout(false);
+			this.tabControl3.ResumeLayout(false);
+			this.tabPage5.ResumeLayout(false);
+			this.tabPage5.PerformLayout();
+			this.tabPage6.ResumeLayout(false);
+			this.tabPage6.PerformLayout();
+			this.tabPage7.ResumeLayout(false);
+			this.tabPage7.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -4012,5 +4959,73 @@
 		private System.Windows.Forms.Label LabelVideoResolutionX;
 		private System.Windows.Forms.TextBox VideoResolutionYTextBox;
 		private System.Windows.Forms.TextBox VideoResolutionXTextBox;
+		private System.Windows.Forms.TabPage GLideN64Tab;
+		private System.Windows.Forms.TabControl tabControl3;
+		private System.Windows.Forms.TabPage tabPage5;
+		private System.Windows.Forms.CheckBox GLideN64_ShadersStorage;
+		private System.Windows.Forms.CheckBox GLideN64_HWLighting;
+		private System.Windows.Forms.CheckBox GLideN64_EnableNoise;
+		private System.Windows.Forms.CheckBox GLideN64_EnableLOD;
+		private System.Windows.Forms.TabPage tabPage6;
+		private System.Windows.Forms.CheckBox GLideN64_MaxAnisotropy;
+		private System.Windows.Forms.TabPage tabPage7;
+		private System.Windows.Forms.CheckBox GLideN64_UseDefaultHacks;
+		private System.Windows.Forms.CheckBox GLideN64_FragmentDepthWrite;
+		private System.Windows.Forms.CheckBox GLideN64_LegacyBlending;
+		private System.Windows.Forms.CheckBox GLideN64_NativeResTexrects;
+		private System.Windows.Forms.Label label82;
+		private System.Windows.Forms.ComboBox GLideN64_CorrectTexrectCoords;
+		private System.Windows.Forms.CheckBox GLideN64_txSaveCache;
+		private System.Windows.Forms.CheckBox GLideN64_txCacheCompression;
+		private System.Windows.Forms.CheckBox GLideN64_txForce16bpp;
+		private System.Windows.Forms.CheckBox GLideN64_txDump;
+		private System.Windows.Forms.CheckBox GLideN64_txHresAltCRC;
+		private System.Windows.Forms.CheckBox GLideN64_txHiresFullAlphaChannel;
+		private System.Windows.Forms.CheckBox GLideN64_txHiresEnable;
+		private System.Windows.Forms.Label label86;
+		private System.Windows.Forms.TextBox GLideN64_txCacheSize;
+		private System.Windows.Forms.CheckBox GLideN64_txFilterIgnoreBG;
+		private System.Windows.Forms.CheckBox GLideN64_txDeposterize;
+		private System.Windows.Forms.Label label85;
+		private System.Windows.Forms.ComboBox GLideN64_txEnhancementMode;
+		private System.Windows.Forms.Label label84;
+		private System.Windows.Forms.ComboBox GLideN64_txFilterMode;
+		private System.Windows.Forms.Label label83;
+		private System.Windows.Forms.TextBox GLideN64_CacheSize;
+		private System.Windows.Forms.Label label72;
+		private System.Windows.Forms.ComboBox GLideN64_bilinearMode;
+		private System.Windows.Forms.CheckBox GLideN64_EnableCopyAuxiliaryToRDRAM;
+		private System.Windows.Forms.CheckBox GLideN64_EnableCopyColorFromRDRAM;
+		private System.Windows.Forms.Label label73;
+		private System.Windows.Forms.ComboBox GLideN64_EnableCopyDepthToRDRAM;
+		private System.Windows.Forms.CheckBox GLideN64_EnableFBEmulation;
+		private System.Windows.Forms.Label label81;
+		private System.Windows.Forms.ComboBox GLideN64_MultiSampling;
+		private System.Windows.Forms.Label label80;
+		private System.Windows.Forms.ComboBox GLideN64_blurStrength;
+		private System.Windows.Forms.Label label79;
+		private System.Windows.Forms.ComboBox GLideN64_blurAmount;
+		private System.Windows.Forms.Label label78;
+		private System.Windows.Forms.ComboBox GLideN64_bloomBlendMode;
+		private System.Windows.Forms.Label label77;
+		private System.Windows.Forms.ComboBox GLideN64_bloomThresholdLevel;
+		private System.Windows.Forms.CheckBox GLideN64_EnableBloom;
+		private System.Windows.Forms.CheckBox GLideN64_DisableFBInfo;
+		private System.Windows.Forms.CheckBox GLideN64_FBInfoReadDepthChunk;
+		private System.Windows.Forms.CheckBox GLideN64_FBInfoReadColorChunk;
+		private System.Windows.Forms.Label label76;
+		private System.Windows.Forms.ComboBox GLideN64_BufferSwapMode;
+		private System.Windows.Forms.Label label75;
+		private System.Windows.Forms.ComboBox GLideN64_AspectRatio;
+		private System.Windows.Forms.CheckBox GLideN64_EnableN64DepthCompare;
+		private System.Windows.Forms.Label label74;
+		private System.Windows.Forms.ComboBox GLideN64_EnableCopyColorToRDRAM;
+		private System.Windows.Forms.Label label87;
+		private System.Windows.Forms.TextBox GLideN64_txPath;
+		private System.Windows.Forms.CheckBox GLideN64_ForceGammaCorrection;
+		private System.Windows.Forms.Label label88;
+		private System.Windows.Forms.TextBox GLideN64_GammaCorrectionLevel;
+		private System.Windows.Forms.Label label89;
+		private System.Windows.Forms.TextBox GLideN64_UseNativeResolutionFactor;
 	}
 }

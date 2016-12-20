@@ -589,6 +589,8 @@ namespace BizHawk.Client.EmuHawk
 			if (string.IsNullOrWhiteSpace(Text))
 			{
 				ResetText();
+				SelectAll();
+				return;
 			}
 
 			switch (_type)

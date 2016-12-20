@@ -1,0 +1,505 @@
+﻿using System;
+using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+
+namespace BizHawk.Emulation.Cores.Nintendo.NES
+{
+	// Mapper 83 seems to be a hacky mess that represents 3 different Cony cartridges
+	// http://problemkaputt.de/everynes.htm#mapper83cony
+	public class ConyA : NES.NESBoardBase
+	{
+		private ByteBuffer prg_regs = new ByteBuffer(4);
+		private ByteBuffer low = new ByteBuffer(4); // some kind of security feature?
+		private ByteBuffer chr_regs = new ByteBuffer(8);
+
+		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
+		private int IRQCount;
+		private bool IRQa;
+		private byte bank, mode;
+		private bool is_2k_bank, is_not_2k_bank;
+
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			switch (Cart.board_type)
+			{
+				case "MAPPER083":
+					if (Cart.prg_size == 128)
+					{
+						prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+						chr_bank_mask_2k = 127;
+						//prg_regs[0] = 0xC;
+						//prg_regs[1] = 0xB;
+						//prg_regs[2] = 0xE;
+						//prg_regs[3] = 0xF;
+						return true;
+					}
+					return false;
+				default:
+					return false;
+			}
+		}
+
+		public override void Dispose()
+		{
+			prg_regs.Dispose();
+			low.Dispose();
+			chr_regs.Dispose();
+			base.Dispose();
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg_regs", ref prg_regs);
+			ser.Sync("chr_regs", ref chr_regs);
+			ser.Sync("IRQCount", ref IRQCount);
+			ser.Sync("IRQa", ref IRQa);
+			ser.Sync("bank", ref bank);
+			ser.Sync("mode", ref mode);
+			ser.Sync("is_2k_bank", ref is_2k_bank);
+			ser.Sync("is_not_2k_bank", ref is_not_2k_bank);
+		}
+
+		public void Mirroring()
+		{
+			switch (mode & 3)
+			{
+				case 0: SetMirrorType(EMirrorType.Vertical); break;
+				case 1: SetMirrorType(EMirrorType.Horizontal); break;
+				case 2: SetMirrorType(EMirrorType.OneScreenA); break;
+				case 3: SetMirrorType(EMirrorType.OneScreenB); break;
+			}
+		}
+		public override void WritePRG(int addr, byte value)
+		{
+			switch (addr)
+			{
+				case 0x0000: is_2k_bank = true; bank = value; mode |= 0x40; break;
+				case 0x3000:
+				case 0x30FF:
+				case 0x31FF:
+					bank = value;
+					mode |= 0x40;
+					break;
+
+				case 0x0100: mode = (byte)(value | (mode & 0x40)); break;
+
+				case 0x0300: prg_regs[0] = value; mode &= 0xBF; break;
+				case 0x0301: prg_regs[1] = value; mode &= 0xBF; break;
+				case 0x0302: prg_regs[2] = value; mode &= 0xBF; break;
+
+				// used in 1k CHR bank switching
+				case 0x0312: chr_regs[2] = value; is_not_2k_bank = true; break;
+				case 0x0313: chr_regs[3] = value; is_not_2k_bank = true; break;
+				case 0x0314: chr_regs[4] = value; is_not_2k_bank = true; break;
+				case 0x0315: chr_regs[5] = value; is_not_2k_bank = true; break;
+
+				// used in 1k and 2k CHR bank switching
+				case 0x0310: chr_regs[0] = value; break;
+				case 0x0311: chr_regs[1] = value; break;
+				case 0x0316: chr_regs[6] = value; break;
+				case 0x0317: chr_regs[7] = value; break;
+
+				case 0x0200:
+					IRQCount &= 0xFF00; IRQCount |= value;
+					IRQSignal = false;
+					break;
+				case 0x0201:
+					IRQCount &= 0xFF;
+					IRQCount |= value << 8;
+					IRQa = mode.Bit(7);
+					break;
+			}
+
+			Mirroring();
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				if (is_2k_bank && !is_not_2k_bank)
+				{
+					int index = (addr >> 11) & 0x3;
+					int bank = chr_regs[index];
+
+					// indexes are numbered oddly for different bank switching schemes
+					if (index == 2)
+						bank = chr_regs[6];
+					if (index == 3)
+						bank = chr_regs[7];
+
+					bank &= chr_bank_mask_2k;
+					return VROM[(bank << 11) + (addr & 0x7FF)];
+				}
+				else
+				{
+					int index = (addr >> 10) & 0x7;
+					int bank = chr_regs[index];
+					bank |= ((bank & 0x30) << 4);
+					bank &= 0xFF;
+					return VROM[(bank << 10) + (addr & 0x3FF)];
+				}
+
+			}
+
+			return base.ReadPPU(addr);
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			if ((mode & 0x40) > 0)
+			{
+				if (addr < 0x4000)
+				{
+					return ROM[(((bank & 0x7) & 0x3F) << 14) + (addr & 0x3FFF)];
+				}
+				return ROM[((((bank & 0x7) & 0x30) | 0x7) << 14) + (addr & 0x3FFF)];
+			}
+			else
+			{
+				int index = (addr >> 13) & 0x3;
+				int bank = prg_regs[index];
+				// last bank is fixed
+				if (index == 3)
+					bank = prg_bank_mask_8k;
+
+				return ROM[(bank << 13) + (addr & 0x1FFF)];
+
+
+			}
+
+		}
+
+		public override void ClockCPU()
+		{
+			if (IRQa)
+			{
+				IRQCount--;
+				if (IRQCount == 0)
+				{
+					IRQCount = 0xFFFF;
+					IRQSignal = true;
+					IRQa = false;
+				}
+			}
+		}
+
+		public override void WriteEXP(int addr, byte value)
+		{
+			if (addr >= 0x1100 && addr <= 0x1103)
+				low[addr & 0x3] = value;
+			else
+				base.WriteEXP(addr, value);
+		}
+
+		public override byte ReadEXP(int addr)
+		{
+			if (addr == 0x1000)
+				return (byte)((NES.DB & 0xFC) | 0);
+			else if (addr >= 0x1100 && addr <= 0x1103)
+				return low[addr & 0x3];
+			else
+				return base.ReadEXP(addr);
+
+		}
+	}
+
+	public class ConyB : NES.NESBoardBase
+	{
+		private ByteBuffer prg_regs = new ByteBuffer(4);
+		private ByteBuffer low = new ByteBuffer(4); // some kind of security feature?
+		private ByteBuffer chr_regs = new ByteBuffer(8);
+
+		private int prg_bank_mask_16k, prg_bank_mask_8k, chr_bank_mask_2k;
+		private int IRQCount;
+		private bool IRQa;
+		private byte bank, mode;
+		private bool is_2k_bank, is_not_2k_bank;
+
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			switch (Cart.board_type)
+			{
+				case "MAPPER083":
+					if (Cart.prg_size == 256)
+					{
+						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+						prg_bank_mask_8k = Cart.prg_size / 8 - 1;
+						chr_bank_mask_2k = Cart.prg_size / 2 - 1;
+
+						//prg_regs[1] = (byte)prg_bank_mask_16k;
+						//is_2k_bank = true;
+						return true;
+					}
+					return false;
+				default:
+					return false;
+			}
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("prg_regs", ref prg_regs);
+			ser.Sync("chr_regs", ref chr_regs);
+			ser.Sync("IRQCount", ref IRQCount);
+			ser.Sync("IRQa", ref IRQa);
+			ser.Sync("bank", ref bank);
+			ser.Sync("mode", ref mode);
+			ser.Sync("is_2k_bank", ref is_2k_bank);
+			ser.Sync("is_not_2k_bank", ref is_not_2k_bank);
+		}
+
+		public void Mirroring()
+		{
+			switch (mode & 3)
+			{
+				case 0: SetMirrorType(EMirrorType.Vertical); break;
+				case 1: SetMirrorType(EMirrorType.Horizontal); break;
+				case 2: SetMirrorType(EMirrorType.OneScreenA); break;
+				case 3: SetMirrorType(EMirrorType.OneScreenB); break;
+			}
+		}
+		public override void WritePRG(int addr, byte value)
+		{
+			switch (addr)
+			{
+				case 0x0000: is_2k_bank = true; bank = value; mode |= 0x40; break;
+				case 0x3000:  
+				case 0x30FF: 
+				case 0x31FF:
+					bank = value;
+					mode |= 0x40;
+					break;
+
+				case 0x0100: mode = (byte)(value | (mode & 0x40)); break;
+
+				case 0x0300: prg_regs[0] = value; mode &= 0xBF; break;
+				case 0x0301: prg_regs[1] = value; mode &= 0xBF; break;
+				case 0x0302: prg_regs[2] = value; mode &= 0xBF; break;
+
+				// used in 1k CHR bank switching
+				case 0x0312: chr_regs[2] = value; is_not_2k_bank = true; break;
+				case 0x0313: chr_regs[3] = value; is_not_2k_bank = true; break;
+				case 0x0314: chr_regs[4] = value; is_not_2k_bank = true; break;
+				case 0x0315: chr_regs[5] = value; is_not_2k_bank = true; break;
+
+				// used in 1k and 2k CHR bank switching
+				case 0x0310: chr_regs[0] = value; break;
+				case 0x0311: chr_regs[1] = value; break;
+				case 0x0316: chr_regs[6] = value; break;
+				case 0x0317: chr_regs[7] = value; break;
+
+				case 0x0200:
+					IRQCount &= 0xFF00; IRQCount |= value; 
+					IRQSignal = false;
+					break;
+				case 0x0201:
+					IRQCount &= 0xFF;
+					IRQCount |= value << 8;
+					IRQa = mode.Bit(7);
+					break;
+			}
+
+			Mirroring();
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				if (is_2k_bank && !is_not_2k_bank)
+				{
+					int index = (addr >> 11) & 0x3;
+					int bank = chr_regs[index];
+
+					// indexes are numbered oddly for different bank switching schemes
+					if (index == 2)
+						bank = chr_regs[6];
+					if (index == 3)
+						bank = chr_regs[7];
+
+					return VROM[(bank << 11) + (addr & 0x7FF)];
+				} else
+				{
+					int index = (addr >> 10) & 0x7;
+					int bank = chr_regs[index];
+					bank |= ((bank & 0x30) << 4);
+					return VROM[(bank << 10) + (addr & 0x3FF)];
+				}
+				
+			}
+
+			return base.ReadPPU(addr);
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			if ((mode & 0x40)>0)
+			{
+				if (addr < 0x4000)
+				{
+					return ROM[((bank&0x3F) << 14) + (addr & 0x3FFF)];
+				}
+
+				return ROM[(((bank & 0x30) | 0xF) << 14) + (addr & 0x3FFF)];
+			} else
+			{
+				int index = (addr >> 13) & 0x3;
+				int bank = prg_regs[index];
+
+				// last bank is fixed
+				if (index == 3)
+					bank = prg_bank_mask_8k;
+
+				return ROM[(bank << 13) + (addr & 0x1FFF)];
+
+
+			}
+			
+		}
+
+		public override void ClockCPU()
+		{
+			if (IRQa)
+			{
+				IRQCount--;
+				if (IRQCount==0)
+				{
+					IRQCount = 0xFFFF;
+					IRQSignal = true;
+					IRQa = false;
+				}
+			}
+		}
+
+		public override void WriteEXP(int addr, byte value)
+		{
+			if (addr >= 0x1100 && addr <= 0x1103)
+				low[addr & 0x3] = value;
+			else
+				base.WriteEXP(addr, value);
+		}
+
+		public override byte ReadEXP(int addr)
+		{
+			if (addr == 0x1000)
+				return (byte)((NES.DB & 0xFC) | 0);
+			else if (addr >= 0x1100 && addr <= 0x1103)
+				return low[addr & 0x3];
+			else
+				return base.ReadEXP(addr);
+
+		}
+	}
+
+	
+
+	public class ConyC : NES.NESBoardBase
+	{
+		private ByteBuffer prg_regs = new ByteBuffer(2);
+		private ByteBuffer chr_regs = new ByteBuffer(8);
+
+		private int prg_bank_mask_16k;
+		private int IRQCount;
+		private bool IRQa, IRQ_enable;
+
+		public override bool Configure(NES.EDetectionOrigin origin)
+		{
+			switch (Cart.board_type)
+			{
+				case "MAPPER083":
+					// We need one of the Cony boards to throw an error on an unexpected cart size, so we picked this one
+					if (Cart.prg_size != 128 && Cart.prg_size != 256 && Cart.prg_size != 1024)
+					{
+						throw new InvalidOperationException("Unexpected prg size of " + Cart.prg_size + " for Mapper 83");
+					}
+
+					if (Cart.prg_size == 1024)
+					{
+						prg_bank_mask_16k = Cart.prg_size / 16 - 1;
+
+						prg_regs[1] = (byte)prg_bank_mask_16k;
+						return true;
+					}
+					return false;
+				default:
+					return false;
+			}
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			base.SyncState(ser);
+			ser.Sync("chr_regs", ref chr_regs);
+			ser.Sync("prg_regs", ref prg_regs);
+		}
+
+		public override void WritePRG(int addr, byte value)
+		{
+			if (addr == 0)
+			{
+				prg_regs[0] = (byte)(value & prg_bank_mask_16k);
+			}
+
+			else if (addr >= 0x310 && addr < 0x318)
+			{
+				chr_regs[addr & 0x7] = value;
+			}
+
+			else if (addr == 0x200)
+			{
+				IRQCount &= 0xFF00; IRQCount |= value; ;
+				IRQSignal = false;
+			}
+
+			else if (addr == 0x201)
+			{
+				IRQCount &= 0xFF;
+				IRQCount |= value << 8;
+				IRQa = true;
+			}
+			else if (addr == 0x0100)
+			{
+				IRQ_enable = value.Bit(7);
+			}
+		}
+
+		public override byte ReadPPU(int addr)
+		{
+			if (addr < 0x2000)
+			{
+				int index = (addr >> 10) & 0x7;
+				int bank = chr_regs[index];
+				return VROM[(bank << 10) + (addr & 0x3FF)];
+			}
+
+			return base.ReadPPU(addr);
+		}
+
+		public override byte ReadPRG(int addr)
+		{
+			if (addr < 0x4000)
+			{
+				return ROM[(prg_regs[0] << 14) + (addr & 0x3FFF)];
+			}
+
+			return ROM[(prg_regs[1] << 14) + (addr & 0x3FFF)];
+		}
+
+		public override void ClockCPU()
+		{
+			if (IRQa)
+			{
+				IRQCount--;
+				if (IRQCount == 0)
+				{
+					IRQCount = 0xFFFF;
+					IRQSignal = IRQ_enable;
+				}
+			}
+		}
+	}
+}

@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 		public IMovieController MovieControllerInstance()
 		{
 			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
-			adapter.Type = MovieControllerAdapter.Type;
+			adapter.Definition = MovieControllerAdapter.Definition;
 			return adapter;
 		}
 
@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 					// Movie may go into finished mode as a result from latching
 					if (!Movie.IsFinished)
 					{
-						if (Global.ClientControls["Scrub Input"])
+						if (Global.ClientControls.IsPressed("Scrub Input"))
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							ClearFrame();

@@ -222,10 +222,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BranchView.CellHeightPadding = 0;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
-			this.BranchView.denoteMarkersWithBGColor = false;
-			this.BranchView.denoteMarkersWithIcons = false;
-			this.BranchView.denoteStatesWithBGColor = false;
-			this.BranchView.denoteStatesWithIcons = false;
 			this.BranchView.allowRightClickSelecton = true;
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;

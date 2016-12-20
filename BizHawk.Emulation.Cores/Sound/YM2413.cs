@@ -7,10 +7,11 @@
 using System;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Common.Components
 {
-	public sealed class YM2413 : ISoundProvider
+	public sealed class YM2413 : IMixedSoundProvider
 	{
 		public byte DetectionValue;
 		public byte RegisterLatch;

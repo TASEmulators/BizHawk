@@ -130,10 +130,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_audioProvider = new N64Audio(api);
 			_inputProvider = new N64Input(this.AsInputPollable(), api, comm, this._syncSettings.Controllers);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_audioProvider.Resampler);
 
-			string rsp = _syncSettings.Rsp == N64SyncSettings.RspType.Rsp_Hle ?
-				"mupen64plus-rsp-hle-new.dll" :
-				"mupen64plus-rsp-z64-hlevideo.dll";
+			string rsp;
+			switch (_syncSettings.Rsp)
+			{
+				default:
+				case N64SyncSettings.RspType.Rsp_Hle:
+					rsp = "mupen64plus-rsp-hle.dll";
+					break;
+				case N64SyncSettings.RspType.Rsp_Z64_hlevideo:
+					rsp = "mupen64plus-rsp-z64-hlevideo.dll";
+					break;
+				case N64SyncSettings.RspType.Rsp_cxd4:
+					rsp = "mupen64plus-rsp-cxd4.dll";
+					break;
+			}
 
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
@@ -228,12 +240,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			_audioProvider.RenderSound = rendersound;
 
-			if (Controller["Reset"])
+			if (Controller.IsPressed("Reset"))
 			{
 				api.soft_reset();
 			}
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
 				api.hard_reset();
 			}
@@ -256,14 +268,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public CoreComm CoreComm { get; private set; }
 
 		public DisplayType Region { get { return _display_type; } }
-
-		public ISoundProvider SoundProvider { get { return null; } }
-
-		public ISyncSoundProvider SyncSoundProvider { get { return _audioProvider.Resampler; } }
-
-		public bool StartAsyncSound() { return false; }
-
-		public void EndAsyncSound() { }
 
 		public ControllerDefinition ControllerDefinition
 		{

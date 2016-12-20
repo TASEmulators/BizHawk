@@ -65,6 +65,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPRG(int addr)
 		{
+			if (Cart.prg_size ==  16)
+			{
+				return ROM[(addr & 0x3FFF) | prg << 15];
+			}
+
 			return ROM[addr | prg << 15];
 		}
 

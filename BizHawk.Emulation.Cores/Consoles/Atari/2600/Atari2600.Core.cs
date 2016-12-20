@@ -26,6 +26,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private bool _frameStartPending = true;
 
+		private bool _leftDifficultySwitchPressed = false;
+		private bool _rightDifficultySwitchPressed = false;
+
+		private bool _leftDifficultySwitchHeld = false;
+		private bool _rightDifficultySwitchHeld = false;
+
+
 		internal byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
@@ -303,11 +310,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_pal = DetectPal(_game, Rom);
 			}
 
-			_tia = new TIA(this, _pal, Settings.SECAMColors);
+			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
+			_tia = new TIA(this, _pal, Settings.SECAMColors, CoreComm.VsyncRate > 55.0 ? 735 : 882);
 			_tia.GetFrameRate(out CoreComm.VsyncNum, out CoreComm.VsyncDen);
 
-			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
-			_dcfilter = DCFilter.AsISoundProvider(_tia, 256);
+			_dcfilter = new DCFilter(_tia, 256);
 
 			M6532 = new M6532(this);
 
@@ -385,9 +392,29 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_frame++;
 				_islag = true;
 
-				if (Controller["Power"])
+				if (Controller.IsPressed("Power"))
 				{
 					HardReset();
+				}
+
+				if (Controller.IsPressed("Toggle Left Difficulty") && !_leftDifficultySwitchHeld)
+				{
+					_leftDifficultySwitchPressed ^= true;
+					_leftDifficultySwitchHeld = true;
+				}
+				else if (!Controller.IsPressed("Toggle Left Difficulty"))
+				{
+					_leftDifficultySwitchHeld = false;
+				}
+
+				if (Controller.IsPressed("Toggle Right Difficulty") && !_rightDifficultySwitchHeld)
+				{
+					_rightDifficultySwitchPressed ^= true;
+					_rightDifficultySwitchHeld = true;
+				}
+				else if (!Controller.IsPressed("Toggle Right Difficulty"))
+				{
+					_rightDifficultySwitchHeld = false;
 				}
 
 				_tia.BeginAudioFrame();
@@ -426,11 +453,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			InputCallbacks.Call();
 			byte value = 0xFF;
 
-			if (Controller["P1 Up"]) { value &= 0xEF; }
-			if (Controller["P1 Down"]) { value &= 0xDF; }
-			if (Controller["P1 Left"]) { value &= 0xBF; }
-			if (Controller["P1 Right"]) { value &= 0x7F; }
-			if (Controller["P1 Button"]) { value &= 0xF7; }
+			if (Controller.IsPressed("P1 Up")) { value &= 0xEF; }
+			if (Controller.IsPressed("P1 Down")) { value &= 0xDF; }
+			if (Controller.IsPressed("P1 Left")) { value &= 0xBF; }
+			if (Controller.IsPressed("P1 Right")) { value &= 0x7F; }
+			if (Controller.IsPressed("P1 Button")) { value &= 0xF7; }
 
 			if (!peek)
 			{
@@ -445,11 +472,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			InputCallbacks.Call();
 			byte value = 0xFF;
 
-			if (Controller["P2 Up"]) { value &= 0xEF; }
-			if (Controller["P2 Down"]) { value &= 0xDF; }
-			if (Controller["P2 Left"]) { value &= 0xBF; }
-			if (Controller["P2 Right"]) { value &= 0x7F; }
-			if (Controller["P2 Button"]) { value &= 0xF7; }
+			if (Controller.IsPressed("P2 Up")) { value &= 0xEF; }
+			if (Controller.IsPressed("P2 Down")) { value &= 0xDF; }
+			if (Controller.IsPressed("P2 Left")) { value &= 0xBF; }
+			if (Controller.IsPressed("P2 Right")) { value &= 0x7F; }
+			if (Controller.IsPressed("P2 Button")) { value &= 0xF7; }
 
 			if (!peek)
 			{
@@ -462,14 +489,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte ReadConsoleSwitches(bool peek)
 		{
 			byte value = 0xFF;
-			bool select = Controller["Select"];
-			bool reset = Controller["Reset"];
+			bool select = Controller.IsPressed("Select");
+			bool reset = Controller.IsPressed("Reset");
 
 			if (reset) { value &= 0xFE; }
 			if (select) { value &= 0xFD; }
 			if (SyncSettings.BW) { value &= 0xF7; }
-			if (SyncSettings.LeftDifficulty) { value &= 0xBF; }
-			if (SyncSettings.RightDifficulty) { value &= 0x7F; }
+			if (_leftDifficultySwitchPressed)
+			{
+				value &= 0xBF;
+			}
+
+			if (_rightDifficultySwitchPressed)
+			{
+				value &= 0x7F;
+			}
 
 			if (!peek)
 			{

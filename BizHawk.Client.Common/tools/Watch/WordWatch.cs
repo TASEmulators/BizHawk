@@ -245,7 +245,18 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return FormatValue((ushort)(_previous - _value));
+				string diff = string.Empty;
+				int diffVal = _value - _previous;
+				if (diffVal > 0)
+				{
+					diff = "+";
+				}
+				else if (diffVal < 0)
+				{
+					diff = "-";
+				}
+
+				return string.Format("{0}{1}", diff, FormatValue((ushort)Math.Abs(diffVal)));
 			}
 		}
 

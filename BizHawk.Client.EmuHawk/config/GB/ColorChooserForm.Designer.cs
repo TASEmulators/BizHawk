@@ -319,7 +319,7 @@
 			this.MinimumSize = new System.Drawing.Size(310, 264);
 			this.Name = "ColorChooserForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Gameboy Palette Config";
+			this.Text = "Game Boy Palette Config";
 			this.Load += new System.EventHandler(this.ColorChooserForm_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragEnter);

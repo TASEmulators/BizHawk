@@ -41,9 +41,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return PCEngineController; } }
-		public IController Controller { get; set; }
-
 		int SelectedController;
 		byte InputByte;
 
@@ -70,21 +67,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int player = SelectedController + 1;
 			if (player < 6)
 			{
-				lagged = false;
+				_lagged = false;
 				if (SEL == false) // return buttons
 				{
-					if (Controller["P" + player + " B1"]) value &= 0xFE;
-					if (Controller["P" + player + " B2"]) value &= 0xFD;
-					if (Controller["P" + player + " Select"]) value &= 0xFB;
-					if (Controller["P" + player + " Run"]) value &= 0xF7;
+					if (Controller.IsPressed("P" + player + " B1")) value &= 0xFE;
+					if (Controller.IsPressed("P" + player + " B2")) value &= 0xFD;
+					if (Controller.IsPressed("P" + player + " Select")) value &= 0xFB;
+					if (Controller.IsPressed("P" + player + " Run")) value &= 0xF7;
 				}
 				else
 				{
 					//return directions
-					if (Controller["P" + player + " Up"]) value &= 0xFE;
-					if (Controller["P" + player + " Right"]) value &= 0xFD;
-					if (Controller["P" + player + " Down"]) value &= 0xFB;
-					if (Controller["P" + player + " Left"]) value &= 0xF7;
+					if (Controller.IsPressed("P" + player + " Up")) value &= 0xFE;
+					if (Controller.IsPressed("P" + player + " Right")) value &= 0xFD;
+					if (Controller.IsPressed("P" + player + " Down")) value &= 0xFB;
+					if (Controller.IsPressed("P" + player + " Left")) value &= 0xF7;
 				}
 			}
 

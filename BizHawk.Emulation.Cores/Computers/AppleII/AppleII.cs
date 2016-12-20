@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable))]
-	public partial class AppleII : IEmulator, IDriveLight
+	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
 		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, Settings settings)
 			: this(comm, gameInfoSet.First(), romSet.First(), settings)
@@ -162,28 +162,28 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_machine.Cpu.TraceCallback = null;
 			}
 
-			if (Controller["Next Disk"] && !_nextPressed)
+			if (Controller.IsPressed("Next Disk") && !_nextPressed)
 			{
 				_nextPressed = true;
 				IncrementDisk();
 			}
-			else if (Controller["Previous Disk"] && !_prevPressed)
+			else if (Controller.IsPressed("Previous Disk") && !_prevPressed)
 			{
 				_prevPressed = true;
 				DecrementDisk();
 			}
 
-			if (!Controller["Next Disk"])
+			if (!Controller.IsPressed("Next Disk"))
 			{
 				_nextPressed = false;
 			}
 
-			if (!Controller["Previous Disk"])
+			if (!Controller.IsPressed("Previous Disk"))
 			{
 				_prevPressed = false;
 			}
 
-			_machine.BizFrameAdvance(RealButtons.Where(b => Controller[b]));
+			_machine.BizFrameAdvance(RealButtons.Where(b => Controller.IsPressed(b)));
 			if (IsLagFrame)
 			{
 				LagCount++;

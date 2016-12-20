@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// A memory region and the functionality to read/write from it
+	/// as required by the IMemoryDomains service.
+	/// </summary>
+	/// <seealso cref="IMemoryDomains" />
 	public abstract class MemoryDomain
 	{
 		public enum Endian { Big, Little, Unknown }
@@ -26,11 +28,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// creates a memorydomain that references a managed byte array
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="endian"></param>
-		/// <param name="data"></param>
 		/// <param name="writable">if false, writes will be ignored</param>
-		/// <returns></returns>
 		[Obsolete]
 		public static MemoryDomain FromByteArray(string name, Endian endian, byte[] data, bool writable = true, int wordSize = 1)
 		{
@@ -42,7 +40,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
-		/// <returns></returns>
 		[Obsolete]
 		public unsafe static MemoryDomain FromIntPtr(string name, long size, Endian endian, IntPtr data, bool writable = true, int wordSize = 1)
 		{
@@ -54,7 +51,6 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
-		/// <returns></returns>
 		[Obsolete]
 		public unsafe static MemoryDomain FromIntPtrSwap16(string name, long size, Endian endian, IntPtr data, bool writable = true)
 		{

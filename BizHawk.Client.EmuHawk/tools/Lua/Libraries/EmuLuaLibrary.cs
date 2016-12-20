@@ -44,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			get { return (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)]; }
 		}
 
-		public EmuLuaLibrary(LuaConsole passed)
+		public EmuLuaLibrary(LuaConsole passed, IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
 			LuaWait = new AutoResetEvent(false);
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
 				.ToList();
 
 			libs.AddRange(
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
 			);
 
 			foreach (var lib in libs)
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
-					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, instance);
+					ServiceInjector.UpdateServices(serviceProvider, instance);
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -94,11 +94,11 @@ namespace BizHawk.Client.EmuHawk
 			EmulatorLuaLibrary.YieldCallback = EmuYield;
 		}
 
-		public void Restart()
+		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			foreach (var lib in Libraries)
 			{
-				ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, lib.Value);
+				ServiceInjector.UpdateServices(newServiceProvider, lib.Value);
 			}
 		}
 
@@ -145,6 +145,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Close()
 		{
 			FormsLibrary.DestroyAll();
+			_lua.Close();
 			_lua = new Lua();
 			GuiLibrary.Dispose();
 		}

@@ -708,12 +708,12 @@ namespace BizHawk.Client.EmuHawk
 			TieBreaker1Address = botData.TieBreaker1;
 			TieBreaker2Address = botData.TieBreaker2;
 			TieBreaker3Address = botData.TieBreaker3;
-            try
-            {
-                MainComparisonType = botData.ComparisonTypeMain;
-                Tie1ComparisonType = botData.ComparisonTypeTie1;
-                Tie2ComparisonType = botData.ComparisonTypeTie2;
-                Tie3ComparisonType = botData.ComparisonTypeTie3;
+			try
+			{
+				MainComparisonType = botData.ComparisonTypeMain;
+				Tie1ComparisonType = botData.ComparisonTypeTie1;
+				Tie2ComparisonType = botData.ComparisonTypeTie2;
+				Tie3ComparisonType = botData.ComparisonTypeTie3;
 
 				MainBestRadio.Checked = botData.MainCompareToBest;
 				TieBreak1BestRadio.Checked = botData.TieBreaker1CompareToBest;
@@ -729,12 +729,12 @@ namespace BizHawk.Client.EmuHawk
 				TieBreak2Numeric.Value = botData.TieBreaker2CompareToValue;
 				TieBreak3Numeric.Value = botData.TieBreaker3CompareToValue;
 			}
-            catch
-            {
-                MainComparisonType = 0;
-                Tie1ComparisonType = 0;
-                Tie2ComparisonType = 0;
-                Tie3ComparisonType = 0;
+			catch
+			{
+				MainComparisonType = 0;
+				Tie1ComparisonType = 0;
+				Tie2ComparisonType = 0;
+				Tie3ComparisonType = 0;
 
 				MainBestRadio.Checked = true;
 				TieBreak1BestRadio.Checked = true;
@@ -774,6 +774,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.RecentBotFiles.Add(CurrentFileName);
 			MessageLabel.Text = Path.GetFileNameWithoutExtension(path) + " loaded";
 
+			AssessRunButtonStatus();
 			return true;
 		}
 
@@ -902,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 					var lg = Global.MovieSession.MovieControllerInstance();
 					lg.SetControllersAsMnemonic(logEntry);
 
-					foreach (var button in lg.Type.BoolButtons)
+					foreach (var button in lg.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
 						Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
@@ -915,7 +916,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_isBotting)
 			{
-				if (Global.Emulator.Frame >= _targetFrame)
+				if (Emulator.Frame >= _targetFrame)
 				{
 					Attempts++;
 					Frames += FrameLength;
@@ -926,7 +927,7 @@ namespace BizHawk.Client.EmuHawk
 					_currentBotAttempt.TieBreak3 = TieBreaker3Value;
 					PlayBestButton.Enabled = true;
 
-					if (IsBetter(_comparisonBotAttempt, _currentBotAttempt))
+					if (_bestBotAttempt == null || IsBetter(_bestBotAttempt, _currentBotAttempt))
 					{
 						_bestBotAttempt = _currentBotAttempt;
 						UpdateBestAttempt();
@@ -1074,7 +1075,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
 			_dontUpdateValues = false;
 
-			_targetFrame = Global.Emulator.Frame + (int)FrameLengthNumeric.Value;
+			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 
 			GlobalWin.MainForm.UnpauseEmulator();
 			if (Settings.TurboWhenBotting)

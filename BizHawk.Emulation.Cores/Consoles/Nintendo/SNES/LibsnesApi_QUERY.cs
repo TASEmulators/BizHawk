@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public byte* QUERY_get_memory_data(SNES_MEMORY id)
 		{
 			string name = QUERY_MemoryNameForId(id);
+			if (!SharedMemoryBlocks.ContainsKey(name)) return null;
 			var smb = SharedMemoryBlocks[name];
 			return (byte*)smb.Ptr;
 		}
@@ -203,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Marshal.Copy(temp, 0, new IntPtr(ptr), CpuRegs.SIZEOF);
 		}
 
-		public void QUERY_set_cdl(CodeDataLog cdl)
+		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
 			WritePipeMessage(eMessage.eMessage_QUERY_set_cdl);
 			if (cdl == null)

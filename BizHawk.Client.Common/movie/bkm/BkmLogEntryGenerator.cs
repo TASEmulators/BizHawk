@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		public void SetSource(IController source)
 		{
 			_source = source;
-			_controlType = source.Type.Name;
+			_controlType = source.Definition.Name;
 		}
 
 		public string GenerateLogEntry()

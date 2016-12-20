@@ -26,6 +26,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//state
 		int prg;
 
+		//the VS actually does have 2 KB of nametable address space
+		//let's make the extra space here, instead of in the main NES to avoid confusion
+		byte[] CIRAM_VS = new byte[0x800];
+
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
 			adjust_prg = (x) => x;
@@ -33,6 +37,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//configure
 			switch (Cart.board_type)
 			{
+				case "MAPPER0002-00":
+					//probably a mistake. 
+					//but (for chrram): "Use of $00 with no CHR ROM implies that the game is wired to map nametable memory in CHR space. The value $00 MUST NOT be used if a mapper isn't defined to allow this. "
+					//well, i'm not going to do that now. we'll save it for when it's needed
+					//"it's only mapper 218 and no other mappers"
+					//so, dont assume this
+					//Cart.vram_size = 8;
+					break;
+
 				case "MAPPER002":
 					AssertChr(0); Cart.vram_size = 8;
 					break;
@@ -58,7 +71,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "JALECO-JF-18":
 					AssertPrg(256); AssertChr(0); AssertVram(8); AssertWram(0);
 					break;
-
+				case "NES-UNROM_VS":
+					//update the state of the dip switches
+					//this is only done at power on
+					NES.VS_dips[0] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_1 ? 1 : 0);
+					NES.VS_dips[1] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_2 ? 1 : 0);
+					NES.VS_dips[2] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_3 ? 1 : 0);
+					NES.VS_dips[3] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_4 ? 1 : 0);
+					NES.VS_dips[4] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_5 ? 1 : 0);
+					NES.VS_dips[5] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_6 ? 1 : 0);
+					NES.VS_dips[6] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_7 ? 1 : 0);
+					NES.VS_dips[7] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_8 ? 1 : 0);
+					NES._isVS = true;
+					break;
 				default:
 					return false;
 			}
@@ -88,7 +113,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				return VRAM[addr & vram_byte_mask];
 			}
-			else return base.ReadPPU(addr);
+			else
+			{
+				if (NES._isVS)
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}
+				else
+					return base.ReadPPU(addr);
+			}
 		}
 
 		public override void WritePPU(int addr, byte value)
@@ -97,13 +138,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				VRAM[addr & vram_byte_mask] = value;
 			}
-			else base.WritePPU(addr,value);
+			else if (NES._isVS)
+			{
+				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+				addr &= 0x2FFF;
+
+
+				addr = addr - 0x2000;
+				if (addr < 0x800)
+				{
+					NES.CIRAM[addr] = value;
+				}
+				else
+				{
+					CIRAM_VS[addr - 0x800] = value;
+				}
+			}
+			else
+				base.WritePPU(addr,value);
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			ser.Sync("prg", ref prg);
+
+			if (NES.IsVS)
+			{
+				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
+			}	
 		}
 	}
 }

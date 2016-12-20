@@ -268,14 +268,14 @@ namespace BizHawk.Client.Common
 
 		public string CreateDisplayValueForButton(IController adapter, string buttonName)
 		{
-			if (adapter.Type.BoolButtons.Contains(buttonName))
+			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
 				return adapter.IsPressed(buttonName) ?
 					Mnemonics[buttonName].ToString() :
 					string.Empty;
 			}
 
-			if (adapter.Type.FloatControls.Contains(buttonName))
+			if (adapter.Definition.FloatControls.Contains(buttonName))
 			{
 				return adapter.GetFloat(buttonName).ToString();
 			}
@@ -585,6 +585,8 @@ namespace BizHawk.Client.Common
 		{
 			int index = Branches.IndexOf(old);
 			newBranch.UniqueIdentifier = old.UniqueIdentifier;
+			if (newBranch.UserText == "")
+				newBranch.UserText = old.UserText;
 			Branches[index] = newBranch;
 			TasStateManager.UpdateBranch(index);
 			Changes = true;

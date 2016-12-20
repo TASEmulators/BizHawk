@@ -57,7 +57,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
-		public byte ppu_open_bus;
+		public byte ppu_open_bus=0;
+		public bool s_latch_clear;
+		public bool d_latch_clear;
 		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
 
@@ -173,6 +175,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				_fv = _v = _h = _vt = _ht = 0;
 				fh = 0;
+				ppu.d_latch_clear = true;
+				ppu.s_latch_clear = true;
 			}
 
 			public void increment_hsc()
@@ -340,11 +344,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active) && !Reg2002_vblank_clear_pending)
 			{
 				//if we just unleashed the vblank interrupt then activate it now
-				if (ppudead<=1)
-					NMI_PendingInstructions = 2;
+				NMI_PendingInstructions = 2;
 			}
-			if (ppudead<=1)
-				reg_2000.Value = value;
+			reg_2000.Value = value;
 
 
 		}
@@ -367,7 +369,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//once we thought we clear latches here, but that caused midframe glitches.
 			//i think we should only reset the state machine for 2005/2006
 			//ppur.clear_latches();
-
 			byte ret = peek_2002();
 
 			vtoggle = false;
@@ -381,6 +382,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		byte peek_2002()
 		{
+			//I'm not happy with this, but apparently this is how mighty bobm jack VS works.
+			//quite strange that is makes the sprite hit flag go high like this
+			if (nes._isVS2c05==2)
+			{
+				if (nes.Frame<4)
+				{
+
+					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (1 << 5) | (0x1D));
+				}
+				else
+				{
+					return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1D));
+				}
+				
+			}
+			if (nes._isVS2c05 == 3)
+			{
+				return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1C));
+			}
+			if (nes._isVS2c05 == 4)
+			{
+				return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (0x1B));
+			}
+
 			return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (ppu_open_bus & 0x1F));
 		}
 
@@ -470,30 +495,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//VRAM address register (write)
 		void write_2006(byte value)
 		{
-			if (!vtoggle)
-			{
-				ppur._vt &= 0x07;
-				ppur._vt |= (value & 0x3) << 3;
-				ppur._h = (value >> 2) & 1;
-				ppur._v = (value >> 3) & 1;
-				ppur._fv = (value >> 4) & 3;
-				//nes.LogLine("addr wrote fv = {0}", ppur._fv);
-			}
-			else
-			{
-				ppur._vt &= 0x18;
-				ppur._vt |= (value >> 5);
-				ppur._ht = value & 31;
-				ppur.install_latches();
-				//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+			//if (d_latch_clear)
+			//{
+				if (!vtoggle)
+				{
+					ppur._vt &= 0x07;
+					ppur._vt |= (value & 0x3) << 3;
+					ppur._h = (value >> 2) & 1;
+					ppur._v = (value >> 3) & 1;
+					ppur._fv = (value >> 4) & 3;
+					//nes.LogLine("addr wrote fv = {0}", ppur._fv);
+				}
+				else
+				{
+					ppur._vt &= 0x18;
+					ppur._vt |= (value >> 5);
+					ppur._ht = value & 31;
+					ppur.install_latches();
+					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+					d_latch_clear = false;
+					//normally the address isnt observed by the board till it gets clocked by a read or write.
+					//but maybe thats just because a ppu read/write shoves it on the address bus
+					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
+					//ONLY if the ppu is not rendering
+					if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+						nes.Board.AddressPPU(ppur.get_2007access());
+				}
 
-				//normally the address isnt observed by the board till it gets clocked by a read or write.
-				//but maybe thats just because a ppu read/write shoves it on the address bus
-				//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
-				nes.Board.AddressPPU(ppur.get_2007access());
-			}
-
-			vtoggle ^= true;
+				vtoggle ^= true;
+			//}
+			
 		}
 		byte read_2006() { return ppu_open_bus; }
 		byte peek_2006() { return ppu_open_bus; }
@@ -538,7 +569,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			nes.Board.AddressPPU(ppur.get_2007access()); 
+			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+				nes.Board.AddressPPU(ppur.get_2007access()); 
 		}
 		byte read_2007()
 		{
@@ -548,7 +580,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = VRAMBuffer;
 
 			//in any case, we read from the ppu bus
-			VRAMBuffer = ppubus_read(addr,false);
+			VRAMBuffer = ppubus_read(addr, false, false);
 
 			//but reads from the palette are implemented in the PPU and return immediately
 			if ((addr & 0x3F00) == 0x3F00)
@@ -561,7 +593,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			nes.Board.AddressPPU(ppur.get_2007access());
+			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+				nes.Board.AddressPPU(ppur.get_2007access());
 
 			// update open bus here
 			ppu_open_bus = ret;
@@ -602,9 +635,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret_spec;
 			switch (addr)
 			{
-				case 0: return read_2000(); case 1: return read_2001(); case 2: return read_2002(); case 3: return read_2003();
-				case 4: return read_2004(); case 5: return read_2005(); case 6: return read_2006();
-
+				case 0:
+					{
+						if (nes._isVS2c05>0)
+							return read_2001();
+						else
+							return read_2000();
+					}
+				case 1:
+					{
+						if (nes._isVS2c05>0)
+							return read_2000();
+						else
+							return read_2001();
+					}
+				case 2: return read_2002();
+				case 3: return read_2003();
+				case 4: return read_2004();
+				case 5: return read_2005();
+				case 6: return read_2006();
 				case 7:
 					{
 						if (double_2007_read>0)
@@ -644,8 +693,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			switch (addr)
 			{
-				case 0: write_2000(value); break; case 1: write_2001(value); break; case 2: write_2002(value); break; case 3: write_2003(value); break;
-				case 4: write_2004(value); break; case 5: write_2005(value); break; case 6: write_2006(value); break; case 7: write_2007(value); break;
+				case 0:
+					if (nes._isVS2c05>0)
+						write_2001(value);
+					else
+						write_2000(value);
+					break;
+				case 1:
+					if (nes._isVS2c05>0)
+						write_2000(value);
+					else
+						write_2001(value);
+					break;
+				case 2: write_2002(value); break;
+				case 3: write_2003(value); break;
+				case 4: write_2004(value); break;
+				case 5: write_2005(value); break;
+				case 6: write_2006(value); break;
+				case 7: write_2007(value); break;
 				default: throw new InvalidOperationException();
 			}
 		}

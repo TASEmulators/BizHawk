@@ -10,7 +10,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Components
 {
-	public sealed class CDAudio : ISoundProvider
+	public sealed class CDAudio : IMixedSoundProvider
 	{
 		public const byte CDAudioMode_Stopped = 0;
 		public const byte CDAudioMode_Playing = 1;
@@ -71,6 +71,10 @@ namespace BizHawk.Emulation.Cores.Components
 		{
 			var track = Disc.Session1.SeekTrack(lba);
 			if (track == null) return;
+			// returning Leadout means no sound is playing
+			// and since we don't have any information about where leadout ends
+			// return in this case as well to avoid track.Number+1 below
+			if (track == Disc.Session1.LeadoutTrack) return;
 
 			PlayingTrack = track.Number;
 			StartLBA = lba;

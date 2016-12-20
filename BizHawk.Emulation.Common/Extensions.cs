@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using BizHawk.Common.ReflectionExtensions;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Common.IEmulatorExtensions
 {
@@ -16,6 +17,60 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static bool IsNull(this IEmulator core)
 		{
 			return core == null || core is NullEmulator;
+		}
+
+		public static bool HasVideoProvider(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IVideoProvider>();
+		}
+
+		public static IVideoProvider AsVideoProvider(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<IVideoProvider>();
+		}
+
+		/// <summary>
+		/// Returns the core's VideoProvider, or a suitable dummy provider
+		/// </summary>
+		/// <param name="core"></param>
+		/// <returns></returns>
+		public static IVideoProvider AsVideoProviderOrDefault(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<IVideoProvider>()
+				?? NullVideo.Instance;
+		}
+
+		public static bool HasSoundProvider(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ISoundProvider>();
+		}
+
+		public static ISoundProvider AsSoundProvider(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ISoundProvider>();
+		}
+
+		private static readonly ConditionalWeakTable<IEmulator, ISoundProvider> CachedNullSoundProviders = new ConditionalWeakTable<IEmulator, ISoundProvider>();
+
+		/// <summary>
+		/// returns the core's SoundProvider, or a suitable dummy provider
+		/// </summary>
+		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
+		{
+			var ret = core.ServiceProvider.GetService<ISoundProvider>();
+			if (ret == null)
+				ret = CachedNullSoundProviders.GetValue(core, e => new NullSound(e.CoreComm.VsyncNum, e.CoreComm.VsyncDen));
+			return ret;
 		}
 
 		public static bool HasMemoryDomains(this IEmulator core)
@@ -268,6 +323,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			}
 
 			return core.ServiceProvider.HasService<ILinkable>();
+		}
+
+		public static bool CanGenerateGameDBEntries(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ICreateGameDBEntries>();
+		}
+
+		public static ICreateGameDBEntries AsGameDBEntryGenerator(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ICreateGameDBEntries>();
 		}
 
 		// TODO: a better place for these

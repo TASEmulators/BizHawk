@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 
 using LuaInterface;
+
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
@@ -22,10 +22,16 @@ namespace BizHawk.Client.Common
 
 		[OptionalService]
 		private NES _neshawk { get; set; }
+
 		[OptionalService]
 		private QuickNES _quicknes { get; set; }
 
+		[OptionalService]
+		private IMemoryDomains _memoryDomains { get; set; }
+
 		private bool NESAvailable { get { return _neshawk != null || _quicknes != null; } }
+
+		private bool HasMemoryDOmains {  get { return _memoryDomains != null; } }
 
 		public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
@@ -38,11 +44,11 @@ namespace BizHawk.Client.Common
 		)]
 		public void AddGameGenie(string code)
 		{
-			if (NESAvailable)
+			if (NESAvailable && HasMemoryDOmains)
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				var watch = Watch.GenerateWatch(
-					Global.Emulator.AsMemoryDomains()["System Bus"],
+					_memoryDomains["System Bus"],
 					decoder.Address,
 					WatchSize.Byte,
 					DisplayType.Hex,

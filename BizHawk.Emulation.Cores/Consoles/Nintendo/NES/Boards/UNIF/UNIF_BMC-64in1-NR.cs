@@ -25,6 +25,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			regs.Dispose();
+			base.Dispose();
+		}
+
 		public override void WriteEXP(int addr, byte value)
 		{
 			if (addr >= 0x1000 && addr <= 0x1003)

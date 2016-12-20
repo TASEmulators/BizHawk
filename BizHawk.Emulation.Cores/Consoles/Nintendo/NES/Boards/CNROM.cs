@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int prg_byte_mask, chr_mask;
 		bool copyprotection = false;
 		bool bus_conflict;
+		bool seicross;
 
 		//state
 		int chr;
@@ -30,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				case "MAPPER185":
 				case "HVC-CNROM+SECURITY":
+				case "HVC-CNROM-256K-01":
 					copyprotection = true;
 					bus_conflict = true;
 					AssertPrg(16, 32); AssertChr(8);
@@ -42,7 +44,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bus_conflict = false;
 					AssertPrg(8, 16, 32);
 					break;
-
+				case "Sachen_CNROM":
+					bus_conflict = false;
+					AssertPrg(16, 32);
+					break;
 				case "NES-CNROM": //adventure island
 				case "UNIF_NES-CNROM": // some of these should be bus_conflict = false because UNIF is bad
 				case "HVC-CNROM":
@@ -85,6 +90,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_mask = (Cart.chr_size / 8) - 1;
 			SetMirrorType(Cart.pad_h, Cart.pad_v);
 
+			if (Cart.sha1 == "sha1:4C9C05FAD6F6F33A92A27C2EDC1E7DE12D7F216D")
+				seicross = true;
+
 			return true;
 		}
 
@@ -97,16 +105,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (copyprotection)
 			{
-				if ((value & 0x0F) > 0 && (value != 0x13))
+				if (seicross)
 				{
-					chr_enabled = true;
-					Console.WriteLine("chr enabled");
+					if (value != 0x21)
+					{
+						chr_enabled = true;
+						Console.WriteLine("chr enabled");
+					}
+					else
+					{
+						chr_enabled = false;
+						Console.WriteLine("chr disabled");
+					}
 				}
 				else
 				{
-					chr_enabled = false;
-					Console.WriteLine("chr disabled");
+					if ((value & 0x0F) > 0 && (value != 0x13))
+					{
+						chr_enabled = true;
+						Console.WriteLine("chr enabled");
+					}
+					else
+					{
+						chr_enabled = false;
+						Console.WriteLine("chr disabled");
+					}
 				}
+				
 			}
 		}
 
@@ -130,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
+			ser.Sync("seicross", ref seicross);
 			ser.Sync("chr_enabled", ref chr_enabled);
 		}
 

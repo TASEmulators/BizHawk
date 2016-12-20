@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, IRegionable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
+	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable,
+		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
 		private int _frame;
@@ -37,6 +38,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
 
+			_leftDifficultySwitchPressed = SyncSettings.LeftDifficulty;
+			_rightDifficultySwitchPressed = SyncSettings.RightDifficulty;
+
 			Rom = rom;
 			_game = game;
 
@@ -45,16 +49,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				game.AddOption("m", DetectMapper(rom));
 			}
 
-            if (Rom.HashSHA1() == "3A77DB43B6583E8689435F0F14AA04B9E57BDDED" ||
-                Rom.HashSHA1() == "E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620")
-            { 
-                game.RemoveOption("m");
-                game.AddOption("m", "F8_sega");
-            }
+			if (Rom.HashSHA1() == "3A77DB43B6583E8689435F0F14AA04B9E57BDDED" ||
+				Rom.HashSHA1() == "E986E1818E747BEB9B33CE4DFF1CDC6B55BDB620")
+			{
+				game.RemoveOption("m");
+				game.AddOption("m", "F8_sega");
+			}
 
-            Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
-            Console.WriteLine(Rom.HashSHA1());
-            RebootCore();
+			Console.WriteLine("Game uses mapper " + game.GetOptionsDict()["m"]);
+			Console.WriteLine(Rom.HashSHA1());
+			RebootCore();
 			SetupMemoryDomains();
 
 			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
@@ -62,6 +66,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(_tia);
+			ser.Register<ISoundProvider>(_dcfilter);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -76,17 +81,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public string BoardName { get { return _mapper.GetType().Name; } }
 
 		public CoreComm CoreComm { get; private set; }
-
-		public ISoundProvider SoundProvider { get { return _dcfilter; } }
-
-		// todo: make this not so ugly
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get
-			{
-				return new FakeSyncSound(_dcfilter, CoreComm.VsyncRate > 55.0 ? 735 : 882);
-			}
-		}
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
@@ -103,10 +97,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
-				"Reset", "Select", "Power"
+				"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
 			}
 		};
 
+		// ICreateGameDBEntries
 		public CompactGameInfo GenerateGameDbEntry()
 		{
 			return new CompactGameInfo
@@ -119,10 +114,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Status = RomStatus.Unknown
 			};
 		}
-
-		public bool StartAsyncSound() { return true; }
-
-		public void EndAsyncSound() { }
 
 		public void ResetCounters()
 		{

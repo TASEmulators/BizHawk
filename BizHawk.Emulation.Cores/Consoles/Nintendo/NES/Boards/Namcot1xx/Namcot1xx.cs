@@ -104,6 +104,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//configuration
 		protected int prg_mask, chr_byte_mask;
 
+		//the VS actually does have 2 KB of nametable address space
+		//let's make the extra space here, instead of in the main NES to avoid confusion
+		byte[] CIRAM_VS = new byte[0x800];
+
+		// security reading index for tko boxing
+		int tko_security = 0;
+		static byte[] TKO = new byte[] { 0xFF, 0xBF, 0xB7, 0x97, 0x97, 0x17, 0x57, 0x4F, 0x6F, 0x6B, 0xEB, 0xA9, 0xB1, 0x90, 0x94, 0x14,
+										 0x56, 0x4E, 0x6F, 0x6B, 0xEB, 0xA9, 0xB1, 0x90, 0xD4, 0x5C, 0x3E, 0x26, 0x87, 0x83, 0x13, 0x51};
+
 		public override void Dispose()
 		{
 			if(mapper != null)
@@ -113,6 +122,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
+			if (NES._isVS)
+				ser.Sync("CIRAM_VS", ref CIRAM_VS, false);
+
+			ser.Sync("tko_security", ref tko_security);
 			mapper.SyncState(ser);
 		}
 
@@ -145,8 +158,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				else return VRAM[addr];
 			}
-			else return base.ReadPPU(addr);
-		}
+			else
+			{
+				if (NES._isVS)
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}
+				else
+					return base.ReadPPU(addr);
+			}
+			}
 
 		public override void WritePPU(int addr, byte value)
 		{
@@ -156,7 +185,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				addr = MapCHR(addr);
 				VRAM[addr] = value;
 			}
-			base.WritePPU(addr, value);
+			else if (NES._isVS)
+			{
+				// The game VS Castlevania apparently scans for more CIRAM then actually exists, so we have to mask out nonsensical values 
+				addr &= 0x2FFF;
+
+
+				addr = addr - 0x2000;
+				if (addr < 0x800)
+				{
+					NES.CIRAM[addr] = value;
+				}
+				else
+				{
+					CIRAM_VS[addr - 0x800] = value;
+				}
+			}
+			else
+				base.WritePPU(addr, value);
 		}
 
 
@@ -173,6 +219,92 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ROM[addr];
 		}
 
+		// there are 3 namco games which each use their own ICs for security in different ways
+		// for convenience they are assigned in the VS_security setting
+		// 16 = Super Xevious
+		// 32 = TKO Boxing
+		// 48 = RBI Baseball
+		public override byte ReadEXP(int addr)
+		{
+			if (!NES._isVS)
+				return base.ReadEXP(addr);
+			else
+			{
+
+				if (Cart.vs_security == 16)
+				{
+					addr += 0x4000;
+					if (addr == 0x54FF)
+						return 0x05;
+					else if (addr == 0x5678)
+					{
+						if (NES.cpu.X == 0x0C)
+							return 0;
+						else
+							return 1;
+					}
+
+					else if (addr == 0x578F)
+					{
+						if (NES.cpu.X == 0x0C)
+							return 0xD1;
+						else
+							return 0x89;
+					}
+					else if (addr == 0x5567)
+					{
+						if (NES.cpu.X == 0x0C)
+							return 0x3E;
+						else
+							return 0x37;
+					}
+
+					else
+						return base.ReadEXP(addr - 0x4000);
+				}
+				else if (Cart.vs_security==32)
+				{
+					if (addr==0x1E00)
+					{
+						tko_security = 0;
+						return 0xAA; //not used??
+					}
+					if (addr == 0x1E01)
+					{
+						tko_security++;
+						return TKO[tko_security - 1];
+					}
+					return NES.DB;
+				}
+				else if (Cart.vs_security == 48)
+				{
+					if (addr == 0x1E00)
+					{
+						tko_security = 0;
+						return 0xAA; //not used??
+					}
+					if (addr == 0x1E01)
+					{
+						if (tko_security==4)
+						{
+							return 0xB4;
+						}
+						if (tko_security == 9)
+						{
+							return 0x6F;
+						}
+						tko_security++;
+						return NES.DB;
+					}
+					return NES.DB;
+				}
+				else
+				{
+					return NES.DB;
+				}
+			}
+		}
+
 		protected virtual void BaseSetup()
 		{
 			int num_prg_banks = Cart.prg_size / 8;
@@ -182,7 +314,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_byte_mask = (num_chr_banks*1024) - 1;
 
 			mapper = new Namcot108Chip(this);
-			SetMirrorType(EMirrorType.Vertical);
+			if (!NES._isVS)
+				SetMirrorType(EMirrorType.Vertical);
 		}
 
 	}

@@ -40,6 +40,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public DebugCallback NTViewCallback;
 		public DebugCallback PPUViewCallback;
 
+		// luminance of each palette value for lightgun calculations
+		// this is all 101% guesses, and most certainly various levels of wrong
+		public static readonly int[] PaletteLumaNES =
+		{
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 0, 0,
+			32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 0, 0,
+			48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 0, 0
+		};
+
+		public static readonly int[] PaletteLuma2C03 =
+		{
+			27, 9, 3, 22, 9, 11, 16, 20, 18, 14, 19, 25, 14, 0, 0, 0, 
+			45, 23, 17, 12, 14, 16, 13, 30, 27, 27, 25, 34, 28, 0, 0, 0, 
+			63, 42, 37, 35, 18, 37, 39, 45, 50, 44, 45, 52, 49, 0, 0, 0, 
+			63, 52, 48, 50, 43, 48, 54, 59, 60, 55, 54, 52, 50, 0, 0, 0, 
+		};
+
+		public static readonly int[] PaletteLuma2C04_1 =
+		{
+			48, 35, 13, 37, 28, 14, 18, 16, 63, 27, 45, 11, 9, 50, 18, 63, 
+			42, 45, 12, 44, 50, 48, 54, 17, 52, 52, 0, 3, 54, 36, 18, 9, 
+			1, 52, 50, 45, 49, 14, 34, 14, 0, 20, 43, 16, 12, 3, 39, 0, 
+			0, 27, 45, 19, 55, 22, 58, 30, 12, 23, 25, 9, 60, 37, 27, 54, 
+		};
+
+		public static readonly int[] PaletteLuma2C04_2 =
+		{
+			0, 45, 27, 55, 54, 37, 28, 52, 13, 12, 60, 43, 63, 35, 50, 25, 
+			12, 42, 16, 54, 34, 44, 3, 37, 18, 18, 1, 52, 48, 18, 0, 22, 
+			9, 54, 39, 50, 23, 12, 45, 3, 14, 52, 27, 14, 17, 0, 50, 63, 
+			45, 9, 45, 30, 14, 9, 16, 27, 0, 49, 20, 58, 48, 11, 19, 36, 
+		};
+
+		public static readonly int[] PaletteLuma2C04_3 =
+		{
+			14, 37, 54, 45, 25, 63, 52, 14, 9, 0, 54, 18, 16, 54, 45, 50, 
+			37, 28, 11, 17, 27, 27, 30, 34, 27, 22, 0, 3, 13, 16, 43, 48, 
+			35, 12, 1, 58, 9, 45, 39, 63, 44, 9, 42, 18, 23, 36, 0, 12, 
+			49, 3, 55, 50, 20, 45, 50, 18, 19, 0, 48, 60, 12, 52, 52, 14, 
+		};
+
+		public static readonly int[] PaletteLuma2C04_4 =
+		{
+			27, 22, 28, 50, 0, 48, 9, 30, 45, 12, 45, 1, 54, 58, 25, 55, 
+			37, 3, 17, 43, 0, 18, 16, 39, 45, 34, 37, 27, 9, 0, 54, 42, 
+			11, 19, 20, 3, 12, 14, 27, 16, 14, 54, 23, 12, 9, 60, 36, 18, 
+			50, 63, 18, 13, 52, 52, 63, 50, 0, 45, 35, 52, 44, 48, 49, 14, 
+		};
+
+		private int[] _currentLuma = PaletteLumaNES;
+
+		public int[] CurrentLuma { get { return _currentLuma; } set { _currentLuma = value; } }
+
 		// true = light sensed
 		public bool LightGunCallback(int x, int y)
 		{
@@ -65,10 +119,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						goto loopout;
 
 					short s = xbuf[j * 256 + i];
-					int lum = s & 0x30;
-					if ((s & 0x0f) >= 0x0e)
-						lum = 0;
-					sum += lum;
+
+					short palcolor = (short)(s & 0x3F);
+					short intensity = (short)((s >> 6) & 0x7);
+					sum += _currentLuma[palcolor];
 				}
 			}
 			loopout:
@@ -79,18 +133,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//when the ppu issues a write it goes through here and into the game board
 		public void ppubus_write(int addr, byte value)
 		{
-			nes.Board.AddressPPU(addr);
+			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+				nes.Board.AddressPPU(addr);
+
 			nes.Board.WritePPU(addr, value);
 		}
 
 		//when the ppu issues a read it goes through here and into the game board
-		public byte ppubus_read(int addr, bool ppu)
+		public byte ppubus_read(int addr, bool ppu, bool addr_ppu)
 		{
 			//hardware doesnt touch the bus when the PPU is disabled
 			if (!reg_2001.PPUON && ppu)
 				return 0xFF;
 
-			nes.Board.AddressPPU(addr);
+			if (addr_ppu)
+				nes.Board.AddressPPU(addr);
+
 			return nes.Board.ReadPPU(addr);
 		}
 
@@ -185,8 +243,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void Reset()
 		{
 			regs_reset();
-			ppudead = 2;
-			idleSynch = true;
+			ppudead = 1;
+			idleSynch = false;
 			ppu_open_bus = 0;
 			ppu_open_bus_decay_timer = new int[8];
 		}

@@ -221,6 +221,7 @@ namespace BizHawk.Client.Common
 
 						Bind("TAStudio", "Add Branch", "Alt+Insert"),
 						Bind("TAStudio", "Delete Branch", "Alt+Delete"),
+						Bind("TAStudio", "Show Cursor"),
 						Bind("TAStudio", "Toggle Follow Cursor", "Shift+F"),
 						Bind("TAStudio", "Toggle Auto-Restore", "Shift+R"),
 						Bind("TAStudio", "Toggle Turbo Seek", "Shift+S"),
@@ -228,6 +229,12 @@ namespace BizHawk.Client.Common
 						Bind("TAStudio", "Insert Frame", "Insert"),
 						Bind("TAStudio", "Delete Frames", "Ctrl+Delete"),
 						Bind("TAStudio", "Clone Frames", "Ctrl+Insert"),
+						Bind("TAStudio", "Analog Increment", "UpArrow"),
+						Bind("TAStudio", "Analog Decrement", "DownArrow"),
+						Bind("TAStudio", "Analog Incr. by 10", "Shift+UpArrow"),
+						Bind("TAStudio", "Analog Decr. by 10", "Shift+DownArrow"),
+						Bind("TAStudio", "Analog Maximum", "RightArrow"),
+						Bind("TAStudio", "Analog Minimum", "LeftArrow"),
 
 						Bind("SNES", "Toggle BG 1"),
 						Bind("SNES", "Toggle BG 2"),

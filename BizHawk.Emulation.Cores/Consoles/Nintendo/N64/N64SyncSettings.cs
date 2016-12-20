@@ -28,6 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			GlidePlugin = new N64GlidePluginSettings();
 			Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
 			JaboPlugin = new N64JaboPluginSettings();
+			GLideN64Plugin = new N64GLideN64PluginSettings();
 		}
 
 		public CoreType Core { get; set; }
@@ -42,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64GlidePluginSettings GlidePlugin { get; private set; }
 		public N64Glide64mk2PluginSettings Glide64mk2Plugin { get; private set; }
 		public N64JaboPluginSettings JaboPlugin { get; private set; }
+		public N64GLideN64PluginSettings GLideN64Plugin { get; private set; }
 
 		public N64SyncSettings Clone()
 		{
@@ -55,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
 				JaboPlugin = JaboPlugin.Clone(),
+				GLideN64Plugin = GLideN64Plugin.Clone(),
 				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
 		}
@@ -71,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				case PluginType.GlideMk2: ips = Glide64mk2Plugin.Clone(); break;
 				case PluginType.Rice: ips = RicePlugin.Clone(); break;
 				case PluginType.Jabo: ips = JaboPlugin.Clone(); break;
+				case PluginType.GLideN64: ips = GLideN64Plugin.Clone(); break;
 			}
 
 			ips.FillPerGameHacks(game);
@@ -96,7 +100,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			Rsp_Hle = 0,
 
 			[Description("Z64 Hle Video")]
-			Rsp_Z64_hlevideo = 1
+			Rsp_Z64_hlevideo = 1,
+
+			[Description("cxd4 LLE")]
+			Rsp_cxd4 = 2
 		}
 	}
 
@@ -112,7 +119,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		GlideMk2,
 
 		[Description("Jabo")]
-		Jabo
+		Jabo,
+
+		[Description("GLideN64")]
+		GLideN64
 	}
 
 	public interface IPluginSettings

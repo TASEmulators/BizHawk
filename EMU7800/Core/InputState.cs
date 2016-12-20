@@ -227,6 +227,15 @@ namespace EMU7800.Core
             ClearRightJackInput();
         }
 
+		// For Bizhawk
+		// Emu7800's client does not call Clear input every frame so console switches behave like switches
+		// Bizhawk needs to call a clear input function every frame, if we put switches in there, they would behave like buttons
+		public void ClearControllerInput()
+		{
+			ClearLeftJackInput();
+			ClearRightJackInput();
+		}
+
         public void ClearInputByPlayer(int playerNo)
         {
             _nextInputState[OhmsIndex + (playerNo & 3)] = 0;

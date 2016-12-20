@@ -193,7 +193,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < 0x2000)
 			{
-				addr |= (chr_bank_8k << 13);
+				addr |= ((chr_bank_8k & chr_bank_mask_8k) << 13);
 				return VROM[addr];
 			}
 			else

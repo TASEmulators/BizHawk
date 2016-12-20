@@ -92,7 +92,7 @@ namespace BizHawk.Client.MultiHawk
 							if (Global.MovieSession.Movie.IsActive)
 							{
 								var result = MessageBox.Show(
-									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
+									"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
 									"Fatal error: " + e.GetType().Name,
 									MessageBoxButtons.YesNo,
 									MessageBoxIcon.Exclamation

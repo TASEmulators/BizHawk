@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					if (Global.Emulator.CanPollInput())
+					if (Emulator.CanPollInput())
 					{
 						ToggleLagCounter();
 					}
@@ -362,6 +362,13 @@ namespace BizHawk.Client.EmuHawk
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
 					break;
+				case "Show Cursor":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
+						GlobalWin.Tools.TAStudio.SetVisibleIndex();
+						GlobalWin.Tools.TAStudio.RefreshDialog();
+					}
+					break;
 				case "Toggle Follow Cursor":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
@@ -389,6 +396,30 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.CloneFramesExternal();
+					break;
+				case "Analog Increment":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogIncrementByOne();
+					break;
+				case "Analog Decrement":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogDecrementByOne();
+					break;
+				case "Analog Incr. by 10":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogIncrementByTen();
+					break;
+				case "Analog Decr. by 10":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogDecrementByTen();
+					break;
+				case "Analog Maximum":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogMax();
+					break;
+				case "Analog Minimum":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogMin();
 					break;
 
 				// SNES

@@ -367,6 +367,12 @@
     <Compile Include="config\InputWidget.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="config\INTV\IntvControllerSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\INTV\IntvControllerSettings.Designer.cs">
+      <DependentUpon>IntvControllerSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\MessageConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -421,6 +427,12 @@
     </Compile>
     <Compile Include="config\NES\NESSyncSettingsForm.Designer.cs">
       <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\NES\NESVSSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\NES\NESVSSettings.Designer.cs">
+      <DependentUpon>NESVSSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="config\NES\QuickNesConfig.cs">
       <SubType>Form</SubType>
@@ -705,11 +717,14 @@
     <Compile Include="RomStatusPicker.Designer.cs">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sound\Interfaces\IBufferedSoundProvider.cs" />
+    <Compile Include="Sound\Interfaces\ISoundOutput.cs" />
     <Compile Include="Sound\Output\DirectSoundSoundOutput.cs" />
     <Compile Include="Sound\Output\DummySoundOutput.cs" />
     <Compile Include="Sound\Output\OpenALSoundOutput.cs" />
     <Compile Include="Sound\Output\XAudio2SoundOutput.cs" />
     <Compile Include="Sound\Sound.cs" />
+    <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
@@ -1178,6 +1193,7 @@
     <Compile Include="tools\VirtualPads\schema\GBASchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
@@ -1309,6 +1325,9 @@
     <EmbeddedResource Include="config\InputCompositeWidget.resx">
       <DependentUpon>InputCompositeWidget.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="config\INTV\IntvControllerSettings.resx">
+      <DependentUpon>IntvControllerSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="config\N64\N64ControllerSettingControl.resx">
       <DependentUpon>N64ControllerSettingControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1332,6 +1351,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NESSyncSettingsForm.resx">
       <DependentUpon>NESSyncSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\NES\NESVSSettings.resx">
+      <DependentUpon>NESVSSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\QuickNesConfig.resx">
       <DependentUpon>QuickNesConfig.cs</DependentUpon>
@@ -1758,6 +1780,16 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="images\WSW.png" />
+    <None Include="images\WNW.png" />
+    <None Include="images\SW.png" />
+    <None Include="images\SSW.png" />
+    <None Include="images\SSE.png" />
+    <None Include="images\SE.png" />
+    <None Include="images\NW.png" />
+    <None Include="images\NNW.png" />
+    <None Include="images\NNE.png" />
+    <None Include="images\NE.png" />
     <None Include="images\Shark.ico" />
     <None Include="images\Shark.png" />
     <None Include="images\ScrollTo.png" />
@@ -2072,6 +2104,8 @@
     <None Include="images\cdlogger.ico" />
     <None Include="images\AddEdit.png" />
     <None Include="images\JumpTo.png" />
+    <None Include="images\ENE.png" />
+    <None Include="images\ESE.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

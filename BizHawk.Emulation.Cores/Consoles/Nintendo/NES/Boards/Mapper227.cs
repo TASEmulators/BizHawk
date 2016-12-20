@@ -36,6 +36,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			prg_banks_16k.Dispose();
+			base.Dispose();
+		}
+
 		public override byte ReadPRG(int addr)
 		{
 			int bank_16k = addr >> 14;

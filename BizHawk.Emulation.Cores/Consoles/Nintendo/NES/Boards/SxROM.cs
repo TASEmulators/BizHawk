@@ -1,5 +1,6 @@
 using System;
 using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -71,7 +72,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			A, B1, B2, B3
 		}
 
-
 		//register 0:
 		public int chr_mode;
 		public int prg_mode;
@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int chr_0, chr_1;
 
 		//register 3:
-		int wram_disable;
+		public bool wram_disable;
 		int prg;
 
 		//regenerable state
@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 3: //E000-FFFF
 					prg = value & 0xF;
-					wram_disable = (value >> 4) & 1;
+					wram_disable = value.Bit(4) ? true : false;
 					break;
 			}
 			//board.NES.LogLine("mapping.. chr_mode={0}, chr={1},{2}", chr_mode, chr_0, chr_1);
@@ -249,6 +249,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		const int pputimeout = 4; // i don't know if this is right, but anything lower will not boot Bill & Ted
 		bool disablemirror = false; // mapper 171: mmc1 without mirroring control
 
+
+		//the VS actually does have 2 KB of nametable address space
+		//let's make the extra space here, instead of in the main NES to avoid confusion
+		byte[] CIRAM_VS = new byte[0x800];
+
+		//for snrom wram disable
+		public bool _is_snrom;
+		public bool chr_wram_enable = true;
+
 		//state
 		public MMC1 mmc1;
 		/// <summary>number of cycles since last WritePRG()</summary>
@@ -270,6 +279,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (!disablemirror)
 					SetMirrorType(mmc1.mirror); //often redundant, but gets the job done
 			}
+
+			
+		}
+
+		public override byte ReadWRAM(int addr)
+		{
+			if (_is_snrom)
+			{
+				if (!mmc1.wram_disable && chr_wram_enable)
+					return base.ReadWRAM(addr);	
+				else
+					return NES.DB;	
+			}
+			else
+			{
+				return base.ReadWRAM(addr);
+			}	
 		}
 
 		public override byte ReadPRG(int addr)
@@ -288,21 +314,82 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override byte ReadPPU(int addr)
 		{
+			
+
 			if (addr < 0x2000)
 			{
+				if (_is_snrom)
+				{
+					// WRAM enable is tied to ppu a12
+					if (Gen_CHR_Address(addr).Bit(16))
+						chr_wram_enable = false;
+					else
+						chr_wram_enable = true;
+				}
+
+				addr = Gen_CHR_Address(addr);
+
 				if (Cart.vram_size != 0)
 					return VRAM[addr & vram_mask];
-				else return VROM[Gen_CHR_Address(addr)];
+				else return VROM[addr];
 			}
-			else return base.ReadPPU(addr);
+			else
+			{
+				if (NES._isVS)
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						return NES.CIRAM[addr];
+					}
+					else
+					{
+						return CIRAM_VS[addr - 0x800];
+					}
+				}
+				else
+					return base.ReadPPU(addr);
+					
+			}
 		}
 
 		public override void WritePPU(int addr, byte value)
 		{
-			if (addr < 0x2000)
+			
+
+			if (NES._isVS)
 			{
+				if (addr < 0x2000)
+				{
+					if (VRAM != null)
+						VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
+				}
+				else
+				{
+					addr = addr - 0x2000;
+					if (addr < 0x800)
+					{
+						NES.CIRAM[addr] = value;
+					}
+					else
+					{
+						CIRAM_VS[addr - 0x800] = value;
+					}
+				}
+			}
+			else if (addr < 0x2000)
+			{
+				if (_is_snrom)
+				{
+					// WRAM enable is tied to ppu a12
+					if (Gen_CHR_Address(addr).Bit(16))
+						chr_wram_enable = false;
+					else
+						chr_wram_enable = true;
+				}
+
 				if (Cart.vram_size != 0)
-					VRAM[addr & vram_mask] = value;
+					VRAM[Gen_CHR_Address(addr) & vram_mask] = value;
 			}
 			else base.WritePPU(addr, value);
 		}
@@ -312,6 +399,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
 			ser.Sync("ppuclock", ref ppuclock);
+			ser.Sync("chr_wram_enable", ref chr_wram_enable);
+			if (NES._isVS)
+				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}
 	
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -319,6 +409,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (Cart.board_type)
 			{
 				case "MAPPER116_HACKY":
+					break;
+				case "MAPPER001_VS":
+					// VS mapper MMC1
+					NES._isVS = true;
+					//update the state of the dip switches
+					//this is only done at power on
+					NES.VS_dips[0] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_1 ? 1 : 0);
+					NES.VS_dips[1] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_2 ? 1 : 0);
+					NES.VS_dips[2] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_3 ? 1 : 0);
+					NES.VS_dips[3] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_4 ? 1 : 0);
+					NES.VS_dips[4] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_5 ? 1 : 0);
+					NES.VS_dips[5] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_6 ? 1 : 0);
+					NES.VS_dips[6] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_7 ? 1 : 0);
+					NES.VS_dips[7] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_8 ? 1 : 0);
 					break;
 				case "MAPPER001":
 					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
@@ -406,6 +510,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
 					break;
 				case "NES-SNROM": //dragon warrior 2
+					_is_snrom = true;
+					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
+					break;
 				case "VIRGIN-SNROM":
 				case "NES-SNWEPROM": // final fantasy 2 (proto)
 					AssertPrg(128, 256); AssertChr(0); AssertVram(8); AssertWram(8);
@@ -445,7 +552,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.Dispose();
 			if(mmc1 != null) mmc1.Dispose();
 		}
-
 	} //class SxROM
 
 

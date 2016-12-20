@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
-		public int DispFinalFilter = 1; //bilinear
+		public int DispFinalFilter = 0; //None
 		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
 		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
@@ -513,6 +513,7 @@ namespace BizHawk.Client.Common
 		public bool NES_InQuickNES = true;
 		public bool SNES_InSnes9x = false;
 		public bool GBA_UsemGBA = false;
+		public bool CoreForcingViaGameDB = true;
 		public string LibretroCore;
 	}
 

@@ -57,12 +57,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			PutSettings((NESSettings)Settings ?? new NESSettings());
 
+			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
+			// TODO: What if settings are later loaded?
+			if (_isVS)
+			{
+				PickVSPalette(cart);
+			}
+
 			
 			ser.Register<IDisassemblable>(cpu);
 
 			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
+			ser.Register<ISoundProvider>(magicSoundProvider);
 			
 			if (Board is BANDAI_FCG_1)
 			{
@@ -107,6 +115,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				return false;
 			}
+		}
+
+		public bool IsVS
+		{
+			get { return _isVS; }
+		}
+
+		public bool IsFDS
+		{
+			get { return Board is FDS; }
 		}
 
 		NESWatch GetWatch(NESWatch.EDomain domain, int address)
@@ -322,10 +340,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		MyVideoProvider videoProvider;
-		public ISoundProvider SoundProvider { get { return magicSoundProvider; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return magicSoundProvider; } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
 
 		[Obsolete] // with the changes to both nes and quicknes cores, nothing uses this anymore
 		public static readonly ControllerDefinition NESController =

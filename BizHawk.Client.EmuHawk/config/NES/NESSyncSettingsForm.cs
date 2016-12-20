@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
-
+using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class NESSyncSettingsForm : Form
@@ -39,6 +39,17 @@ namespace BizHawk.Client.EmuHawk
 
 			RegionComboBox.Items.AddRange(Enum.GetNames(typeof(NES.NESSyncSettings.Region)));
 			RegionComboBox.SelectedItem = Enum.GetName(typeof(NES.NESSyncSettings.Region), SyncSettings.RegionOverride);
+
+			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
+			{
+				var sb = new StringBuilder();
+				foreach (var b in SyncSettings.InitialWRamStatePattern)
+				{
+					sb.Append(b.ToHexString(2));
+				}
+
+				RamPatternOverrideBox.Text = sb.ToString();
+			}
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)
@@ -56,8 +67,23 @@ namespace BizHawk.Client.EmuHawk
 				typeof(NES.NESSyncSettings.Region),
 				(string)RegionComboBox.SelectedItem);
 
+			List<byte> oldRam = SyncSettings.InitialWRamStatePattern != null ? SyncSettings.InitialWRamStatePattern.ToList() : new List<byte>();
+
+			if (!string.IsNullOrWhiteSpace(RamPatternOverrideBox.Text))
+			{
+				SyncSettings.InitialWRamStatePattern = Enumerable.Range(0, RamPatternOverrideBox.Text.Length)
+					 .Where(x => x % 2 == 0)
+					 .Select(x => Convert.ToByte(RamPatternOverrideBox.Text.Substring(x, 2), 16))
+					 .ToList();
+			}
+			else
+			{
+				SyncSettings.InitialWRamStatePattern = null;
+			}
+
 			bool changed = (DTDB != null && DTDB.WasModified) ||
-				old != SyncSettings.RegionOverride;
+				old != SyncSettings.RegionOverride ||
+				!(oldRam.SequenceEqual(SyncSettings.InitialWRamStatePattern ?? new List<byte>()));
 
 			DialogResult = DialogResult.OK;
 			if (changed)
@@ -74,11 +100,6 @@ namespace BizHawk.Client.EmuHawk
 				"Help",
 				MessageBoxButtons.OK,
 				MessageBoxIcon.Information);
-		}
-
-		private void NESSyncSettingsForm_Load(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

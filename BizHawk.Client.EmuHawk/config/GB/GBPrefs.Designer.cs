@@ -79,7 +79,8 @@
 			this.Controls.Add(this.gbPrefControl1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "GBPrefs";
-			this.Text = "Gameboy Settings";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "Game Boy Settings";
 			this.ResumeLayout(false);
 
 		}

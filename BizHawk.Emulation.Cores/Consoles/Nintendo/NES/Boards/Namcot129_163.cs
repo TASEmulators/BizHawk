@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// to further complicate matters, some 210 roms write to both sets of NT regs so that they
 	// will work emulated either way.  but some don't, and must be emulated differently
 
-	// what we have here should work for everthing that's actually a 129 or 163,
+	// what we have here should work for everything that's actually a 129 or 163,
 	// and some of the 175/340 (mapper 210)
 	[NES.INESBoardImplPriority]
 	public sealed class Namcot129_163 : NES.NESBoardBase
@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			chr_bank_mask_1k = Cart.chr_size / 1 - 1;
 
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
+			prg_banks_8k[2] = (byte)(0xFF & prg_bank_mask_8k)-1;
 			chr_banks_1k[8] = chr_banks_1k[10] = 0xFF;
 			chr_banks_1k[9] = chr_banks_1k[11] = 0xFF;
 
@@ -243,6 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				//irq_counter = 0;
 				TriggerIRQ();
+				//irq_enabled = false;
 			}
 			else irq_counter++;
 		}

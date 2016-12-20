@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Common;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -23,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedUrl: "http://gambatte.sourceforge.net/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IDriveLight))]
-	public partial class Gameboy : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
+	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
 		/// <summary>
@@ -273,27 +267,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			// update our local copy of the controller data
 			CurrentButtons = 0;
 
-			if (Controller["Up"])
+			if (Controller.IsPressed("Up"))
 				CurrentButtons |= LibGambatte.Buttons.UP;
-			if (Controller["Down"])
+			if (Controller.IsPressed("Down"))
 				CurrentButtons |= LibGambatte.Buttons.DOWN;
-			if (Controller["Left"])
+			if (Controller.IsPressed("Left"))
 				CurrentButtons |= LibGambatte.Buttons.LEFT;
-			if (Controller["Right"])
+			if (Controller.IsPressed("Right"))
 				CurrentButtons |= LibGambatte.Buttons.RIGHT;
-			if (Controller["A"])
+			if (Controller.IsPressed("A"))
 				CurrentButtons |= LibGambatte.Buttons.A;
-			if (Controller["B"])
+			if (Controller.IsPressed("B"))
 				CurrentButtons |= LibGambatte.Buttons.B;
-			if (Controller["Select"])
+			if (Controller.IsPressed("Select"))
 				CurrentButtons |= LibGambatte.Buttons.SELECT;
-			if (Controller["Start"])
+			if (Controller.IsPressed("Start"))
 				CurrentButtons |= LibGambatte.Buttons.START;
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 
 			if (Tracer.Enabled)
@@ -564,104 +558,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			int[] lut = GBColors.GetLut(type);
 			LibGambatte.gambatte_setcgbpalette(GambatteState, lut);
 		}
-
-		#endregion
-
-		#region ISoundProvider
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		/// <summary>
-		/// sample pairs before resampling
-		/// </summary>
-		short[] soundbuff = new short[(35112 + 2064) * 2];
-
-		int soundoutbuffcontains = 0;
-
-		short[] soundoutbuff = new short[2048];
-
-		int latchL = 0;
-		int latchR = 0;
-
-		BlipBuffer blipL, blipR;
-		uint blipAccumulate;
-
-		private void ProcessSound(int nsamp)
-		{
-			for (uint i = 0; i < nsamp; i++)
-			{
-				int curr = soundbuff[i * 2];
-
-				if (curr != latchL)
-				{
-					int diff = latchL - curr;
-					latchL = curr;
-					blipL.AddDelta(blipAccumulate, diff);
-				}
-				curr = soundbuff[i * 2 + 1];
-
-				if (curr != latchR)
-				{
-					int diff = latchR - curr;
-					latchR = curr;
-					blipR.AddDelta(blipAccumulate, diff);
-				}
-
-				blipAccumulate++;
-			}
-		}
-
-		private void ProcessSoundEnd()
-		{
-			blipL.EndFrame(blipAccumulate);
-			blipR.EndFrame(blipAccumulate);
-			blipAccumulate = 0;
-
-			soundoutbuffcontains = blipL.SamplesAvailable();
-			if (soundoutbuffcontains != blipR.SamplesAvailable())
-				throw new InvalidOperationException("Audio processing error");
-
-			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
-			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
-		}
-
-		void InitSound()
-		{
-			blipL = new BlipBuffer(1024);
-			blipL.SetRates(TICKSPERSECOND, 44100);
-			blipR = new BlipBuffer(1024);
-			blipR.SetRates(TICKSPERSECOND, 44100);
-		}
-
-		void DisposeSound()
-		{
-			if (blipL != null)
-			{
-				blipL.Dispose();
-				blipL = null;
-			}
-			if (blipR != null)
-			{
-				blipR.Dispose();
-				blipR = null;
-			}
-		}
-
-		public void DiscardSamples()
-		{
-			soundoutbuffcontains = 0;
-		}
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = soundoutbuff;
-			nsamp = soundoutbuffcontains;
-		}
-
-		public bool Muted { get { return _settings.Muted; } }
 
 		#endregion
 	}

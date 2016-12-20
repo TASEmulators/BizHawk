@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This is a generic implementation of IMemoryCallbackSystem
+	/// that can be used by used by any core
+	/// </summary>
+	/// <seealso cref="IMemoryCallbackSystem" />
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
 		public MemoryCallbackSystem()

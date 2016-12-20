@@ -18,11 +18,14 @@ namespace BizHawk.Client.EmuHawk
 
 				if (frame <= Emulator.Frame)
 				{
+					if ((Mainform.EmulatorPaused || !Mainform.IsSeeking) &&
+						!CurrentTasMovie.LastPositionStable)
+					{
+						LastPositionFrame = Emulator.Frame;
+						CurrentTasMovie.LastPositionStable = true; // until new frame is emulated
+					}
 					GoToFrame(frame);
 				}
-
-				if (!_autoRestoreFrame.HasValue || _autoRestoreFrame.Value < restoreFrame)
-					_autoRestoreFrame = restoreFrame;
 			}
 		}
 

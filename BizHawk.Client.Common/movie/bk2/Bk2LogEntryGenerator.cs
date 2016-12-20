@@ -36,16 +36,7 @@ namespace BizHawk.Client.Common
 
 		public string GenerateInputDisplay()
 		{
-			var le = GenerateLogEntry();
-			if (le == EmptyEntry)
-			{
-				return string.Empty;
-			}
-
-			return le
-				.Replace(".", " ")
-				.Replace("|", "")
-				.Replace("    0,", "      "); //zero 04-aug-2015 - changed from a 2-dimensional type string to support emptying out the one-dimensional PSX disc select control
+			return CreateLogEntry(forInputDisplay: true);
 		}
 
 		public bool IsEmpty
@@ -76,7 +67,7 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 			sb.Append("LogKey:");
 
-			foreach (var group in _source.Type.ControlsOrdered.Where(c => c.Any()))
+			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
 			{
 				sb.Append("#");
 				foreach (var button in group)
@@ -93,15 +84,15 @@ namespace BizHawk.Client.Common
 		public Dictionary<string, string> Map()
 		{
 			var dict = new Dictionary<string, string>();
-			foreach (var group in _source.Type.ControlsOrdered.Where(c => c.Any()))
+			foreach (var group in _source.Definition.ControlsOrdered.Where(c => c.Any()))
 			{
 				foreach (var button in group)
 				{
-					if (_source.Type.BoolButtons.Contains(button))
+					if (_source.Definition.BoolButtons.Contains(button))
 					{
 						dict.Add(button, Mnemonics[button].ToString());
 					}
-					else if (_source.Type.FloatControls.Contains(button))
+					else if (_source.Definition.FloatControls.Contains(button))
 					{
 						dict.Add(button, FloatLookup[button]);
 					}
@@ -111,30 +102,40 @@ namespace BizHawk.Client.Common
 			return dict;
 		}
 
-		private string CreateLogEntry(bool createEmpty = false)
+		private string CreateLogEntry(bool createEmpty = false, bool forInputDisplay = false)
 		{
 			var sb = new StringBuilder();
-			sb.Append('|');
 
-			foreach (var group in _source.Type.ControlsOrdered)
+			if (!forInputDisplay)
+				sb.Append('|');
+
+			foreach (var group in _source.Definition.ControlsOrdered)
 			{
 				if (group.Any())
 				{
 					foreach (var button in group)
 					{
-						if (_source.Type.FloatControls.Contains(button))
+						if (_source.Definition.FloatControls.Contains(button))
 						{
+							int val;
+							int i = _source.Definition.FloatControls.IndexOf(button);
+							int mid = (int)_source.Definition.FloatRanges[i].Mid;
+
 							if (createEmpty)
 							{
-								sb.Append("    0,");
+								val = mid;
 							}
 							else
 							{
-								var val = (int)_source.GetFloat(button);
-								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
+								val = (int)_source.GetFloat(button);
 							}
+
+							if (forInputDisplay && val == mid)
+								sb.Append("      ");
+							else
+								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
 						}
-						else if (_source.Type.BoolButtons.Contains(button))
+						else if (_source.Definition.BoolButtons.Contains(button))
 						{
 							if (createEmpty)
 							{
@@ -142,12 +143,13 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								sb.Append(_source.IsPressed(button) ? Mnemonics[button] : '.');
+								sb.Append(_source.IsPressed(button) ? Mnemonics[button] : forInputDisplay ? ' ' : '.');
 							}
 						}
 					}
 
-					sb.Append('|');
+					if (!forInputDisplay)
+						sb.Append('|');
 				}
 			}
 

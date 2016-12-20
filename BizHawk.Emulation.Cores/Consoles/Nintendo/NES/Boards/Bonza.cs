@@ -3,6 +3,10 @@
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// Bonza (R)
+	// Bonza is some kind of gambling game requiring an outside interface of some kind
+	// this is not implemented
+
+
 	// Magic Jewelry 2 (Unl)
 	public class Bonza : NES.NESBoardBase
 	{
@@ -55,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// Magic Jewelry has no VROM and does not write chr regs
 			if (addr < 0x2000 && VROM != null)
 			{
-				return VROM[(_chrReg * 2000) + (addr & 0x1FFF)];
+				return VROM[(_chrReg * 0x2000) + (addr & 0x1FFF)];
 			}
 
 			return base.ReadPPU(addr);

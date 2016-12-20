@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using System.IO;
-
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using Newtonsoft.Json;
-using System.ComponentModel;
-using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.ARM;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("VBA-Next", "many authors", true, true, "cd508312a29ed8c29dacac1b11c2dce56c338a54", "https://github.com/libretro/vba-next")]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public partial class VBANext : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable,
+	public partial class VBANext : IEmulator, IVideoProvider, ISoundProvider, IInputPollable,
 		IGBAGPUViewable, ISaveRam, IStatable, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
 		IntPtr Core;
@@ -107,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			Frame++;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibVBANext.Reset(Core);
 
 			SyncTraceCallback();
@@ -219,32 +212,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.Buttons ret = 0;
 			foreach (string s in Enum.GetNames(typeof(LibVBANext.Buttons)))
 			{
-				if (c[s])
+				if (c.IsPressed(s))
+				{
 					ret |= (LibVBANext.Buttons)Enum.Parse(typeof(LibVBANext.Buttons), s);
+				}
 			}
 			return ret;
-		}
-
-		#endregion
-
-		#region SoundProvider
-
-		short[] soundbuff = new short[2048];
-		int numsamp;
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = soundbuff;
-			nsamp = numsamp;
-		}
-
-		public void DiscardSamples()
-		{
 		}
 
 		#endregion

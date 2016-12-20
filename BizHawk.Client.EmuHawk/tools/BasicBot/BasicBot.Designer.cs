@@ -691,6 +691,7 @@
 			// 
 			// MainOperator
 			// 
+			this.MainOperator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.MainOperator.FormattingEnabled = true;
 			this.MainOperator.Items.AddRange(new object[] {
             ">",
@@ -778,6 +779,7 @@
 			// 
 			// Tiebreak1Operator
 			// 
+			this.Tiebreak1Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Tiebreak1Operator.FormattingEnabled = true;
 			this.Tiebreak1Operator.Items.AddRange(new object[] {
             ">",
@@ -867,6 +869,7 @@
 			// 
 			// Tiebreak2Operator
 			// 
+			this.Tiebreak2Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Tiebreak2Operator.FormattingEnabled = true;
 			this.Tiebreak2Operator.Items.AddRange(new object[] {
             ">",
@@ -1020,6 +1023,7 @@
 			// 
 			// Tiebreak3Operator
 			// 
+			this.Tiebreak3Operator.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.Tiebreak3Operator.FormattingEnabled = true;
 			this.Tiebreak3Operator.Items.AddRange(new object[] {
             ">",

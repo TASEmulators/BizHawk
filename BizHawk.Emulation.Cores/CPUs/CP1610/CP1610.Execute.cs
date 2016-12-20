@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.CP1610
 {
@@ -12,6 +13,39 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			+ " pin to anything else.";
 		private const string UNEXPECTED_BEXT = "BEXT is an unexpected behavior; Intellivision not connected to the External"
 			+ " Branch Condition Address pins (EBCA0-EBCA3).";
+
+		public int opcode;
+
+		public TraceInfo CP1610State(bool disassemble = true)
+		{
+			int notused;
+
+			return new TraceInfo
+			{
+				Disassembly = string.Format(
+					"{0:X4}:  {1:X2}  {2} ",
+					RegisterPC,
+					opcode,
+					disassemble ? Disassemble((ushort)(RegisterPC-1), out notused) : "---").PadRight(26),
+				RegisterInfo = string.Format(
+					"Cy:{0} {1}{2}{3}{4}{5}{6} R0:{7:X4} R1:{8:X4} R2:{9:X4} R3:{10:X4} R4:{11:X4} R5:{12:X4} R6:{13:X4} R7:{14:X4}",
+					TotalExecutedCycles,
+					FlagS ? "S" : "s",
+					FlagC ? "C" : "c",
+					FlagZ ? "Z" : "z",
+					FlagO ? "O" : "o",
+					FlagI ? "I" : "i",
+					FlagD ? "D" : "d",
+					Register[0],
+					Register[1],
+					Register[2],
+					Register[3],
+					Register[4],
+					Register[5],
+					Register[6],
+					Register[7])
+			};
+		}	
 
 		private void Calc_FlagC(int result)
 		{
@@ -125,6 +159,14 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				TotalExecutedCycles += cycles;
 				return cycles;
 			}
+
+			// This simulates the Halting caused by the STIC during visible frame using SR2
+			if (BusRq && Interruptible) {// && !IntRM && !Interrupted) {
+				PendingCycles--;
+				return 1;
+			}
+
+
 			if (Logging)
 			{
 				int addrToAdvance;
@@ -139,7 +181,10 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			//int ones, carry;
 			bool branch = false;
 			bool FlagD_prev = FlagD;
-			int opcode = ReadMemory(RegisterPC++) & 0x3FF;
+			opcode = ReadMemory(RegisterPC++) & 0x3FF;
+
+			if (TraceCallback != null)
+				TraceCallback(CP1610State());
 			switch (opcode)
 			{
 				case 0x000: // HLT
@@ -261,20 +306,20 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x025:
 				case 0x026:
 				case 0x027:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //dest_value = Register[dest];
-                    //ones = (dest_value ^ 0xFFFF);
-                    //result = ones + 1;
-                    //Calc_FlagC(result);
-                    //Calc_FlagO_Add(ones, 1, result);
-                    //result &= 0xFFFF;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 6;
-                    //Interruptible = true;
-                    //break;
+					// ------------------------NEEDS TESTING---------------------------
+					dest = (byte)(opcode & 0x7);
+                    dest_value = Register[dest];
+                    var ones = (dest_value ^ 0xFFFF);
+                    result = ones + 1;
+                    Calc_FlagC(result);
+                    Calc_FlagO_Add(ones, 1, result);
+                    result &= 0xFFFF;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 6;
+                    Interruptible = true;
+                    break;
 				// ADCR
 				case 0x028:
 				case 0x029:
@@ -284,20 +329,20 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x02D:
 				case 0x02E:
 				case 0x02F:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //dest_value = Register[dest];
-                    //carry = FlagC ? 1 : 0;
-                    //result = dest_value + carry;
-                    //Calc_FlagC(result);
-                    //Calc_FlagO_Add(dest_value, carry, result);
-                    //result &= 0xFFFF;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 6;
-                    //Interruptible = true;
-                    //break;
+					// ------------------------NEEDS TESTING---------------------------
+					dest = (byte)(opcode & 0x7);
+                    dest_value = Register[dest];
+                    var carry = FlagC ? 1 : 0;
+                    result = dest_value + carry;
+                    Calc_FlagC(result);
+                    Calc_FlagO_Add(dest_value, carry, result);
+                    result &= 0xFFFF;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 6;
+                    Interruptible = true;
+                    break;
 				// GSWD
 				case 0x030:
 				case 0x031:
@@ -1464,22 +1509,22 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x305:
 				case 0x306:
 				case 0x307:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //addr = ReadMemory(RegisterPC++);
-                    //dest_value = Register[dest];
-                    //addr_read = ReadMemory(addr);
-                    //twos = (0xFFFF ^ addr_read) + 1;
-                    //result = dest_value + twos;
-                    //Calc_FlagC(result);
-                    //Calc_FlagO_Add(dest_value, addr_read, result);
-                    //result &= 0xFFFF;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 10;
-                    //Interruptible = true;
-                    //break;
+					// -------------------------------needs testing-------------------------------
+                    dest = (byte)(opcode & 0x7);
+                    addr = ReadMemory(RegisterPC++);
+                    dest_value = Register[dest];
+                    addr_read = ReadMemory(addr);
+                    twos = (0xFFFF ^ addr_read) + 1;
+                    result = dest_value + twos;
+                    Calc_FlagC(result);
+                    Calc_FlagO_Add(dest_value, addr_read, result);
+                    result &= 0xFFFF;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 10;
+                    Interruptible = true;
+                    break;
 				// SUB@
 				case 0x308:
 				case 0x309:
@@ -1655,18 +1700,18 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x385:
 				case 0x386:
 				case 0x387:
-					throw new NotImplementedException();
-                    //dest = (byte)(opcode & 0x7);
-                    //addr = ReadMemory(RegisterPC++);
-                    //dest_value = Register[dest];
-                    //addr_read = ReadMemory(addr);
-                    //result = dest_value & addr_read;
-                    //Calc_FlagS(result);
-                    //Calc_FlagZ(result);
-                    //Register[dest] = (ushort)result;
-                    //cycles = 10;
-                    //Interruptible = true;
-                    //break;
+					// ------------------------NEEDS TESTING---------------------------
+					dest = (byte)(opcode & 0x7);
+                    addr = ReadMemory(RegisterPC++);
+                    dest_value = Register[dest];
+                    addr_read = ReadMemory(addr);
+                    result = dest_value & addr_read;
+                    Calc_FlagS(result);
+                    Calc_FlagZ(result);
+                    Register[dest] = (ushort)result;
+                    cycles = 10;
+                    Interruptible = true;
+                    break;
 				// AND@
 				case 0x388:
 				case 0x389:

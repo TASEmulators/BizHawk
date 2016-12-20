@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.Emulation.Common;
+using System.Text;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 {
@@ -191,6 +192,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate m64p_error ConfigSetParameter(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, ref int ParamValue);
 		ConfigSetParameter m64pConfigSetParameter;
+
+		/// <summary>
+		/// Sets a parameter in the global config system
+		/// </summary>
+		/// <param name="ConfigSectionHandle">The handle of the section to access</param>
+		/// <param name="ParamName">The name of the parameter to set</param>
+		/// <param name="ParamType">The type of the parameter</param>
+		/// <param name="ParamValue">A pointer to the value to use for the parameter (must be a string)</param>
+		/// <returns></returns>
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate m64p_error ConfigSetParameterStr(IntPtr ConfigSectionHandle, string ParamName, m64p_type ParamType, StringBuilder ParamValue);
+		ConfigSetParameterStr m64pConfigSetParameterStr;
 
 		/// <summary>
 		/// Saves the mupen64plus state to the provided buffer
@@ -513,6 +526,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			m64pCoreDetachPlugin = (CoreDetachPlugin)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "CoreDetachPlugin"), typeof(CoreDetachPlugin));
 			m64pConfigOpenSection = (ConfigOpenSection)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigOpenSection"), typeof(ConfigOpenSection));
 			m64pConfigSetParameter = (ConfigSetParameter)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameter));
+			m64pConfigSetParameterStr = (ConfigSetParameterStr)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "ConfigSetParameter"), typeof(ConfigSetParameterStr));
 			m64pCoreSaveState = (savestates_save_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_save_bkm"), typeof(savestates_save_bkm));
 			m64pCoreLoadState = (savestates_load_bkm)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "savestates_load_bkm"), typeof(savestates_load_bkm));
 			m64pDebugMemGetPointer = (DebugMemGetPointer)Marshal.GetDelegateForFunctionPointer(GetProcAddress(CoreDll, "DebugMemGetPointer"), typeof(DebugMemGetPointer));
@@ -557,6 +571,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			{
 				m64pConfigOpenSection("Video-Jabo", ref video_plugin_section);
 			}
+			else if (video_settings.Plugin == PluginType.GLideN64)
+			{
+				m64pConfigOpenSection("Video-GLideN64", ref video_plugin_section);
+			}
 			else
 			{
 				return;
@@ -564,20 +582,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			foreach (string Parameter in video_settings.Parameters.Keys)
 			{
-				int value = 0;
-				if (video_settings.Parameters[Parameter].GetType() == typeof(int))
+				if (video_settings.Parameters[Parameter].GetType() == typeof(string))
 				{
-					value = (int)video_settings.Parameters[Parameter];
+					string value = ((string)video_settings.Parameters[Parameter]);
+					StringBuilder sb = new StringBuilder(value);
+					m64pConfigSetParameterStr(video_plugin_section, Parameter, m64p_type.M64TYPE_STRING, sb);
 				}
-				else if (video_settings.Parameters[Parameter].GetType() == typeof(bool))
+				else
 				{
-					value = (bool)video_settings.Parameters[Parameter] ? 1 : 0;
+					int value = 0;
+
+					if (video_settings.Parameters[Parameter].GetType() == typeof(int))
+					{
+						value = (int)video_settings.Parameters[Parameter];
+					}
+					else if (video_settings.Parameters[Parameter].GetType() == typeof(bool))
+					{
+						value = (bool)video_settings.Parameters[Parameter] ? 1 : 0;
+					}
+					else if (video_settings.Parameters[Parameter] is Enum)
+					{
+						value = (int)video_settings.Parameters[Parameter];
+					}
+					m64pConfigSetParameter(video_plugin_section, Parameter, m64p_type.M64TYPE_INT, ref value);
 				}
-				else if (video_settings.Parameters[Parameter] is Enum)
-				{
-					value = (int)video_settings.Parameters[Parameter];
-				}
-				m64pConfigSetParameter(video_plugin_section, Parameter, m64p_type.M64TYPE_INT, ref value);
 			}
 		}
 

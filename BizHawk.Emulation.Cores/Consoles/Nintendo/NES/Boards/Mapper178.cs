@@ -31,6 +31,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return true;
 		}
 
+		public override void Dispose()
+		{
+			prg_banks_32k.Dispose();
+			base.Dispose();
+		}
+
 		public override void WriteEXP(int addr, byte value)
 		{
 			switch (addr)

@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		isPorted: true,
 		isReleased: true
 		)]
-	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable
+	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable
 	{
 		public string SystemId { get { return "PSX"; } }
 
@@ -435,27 +435,27 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				uint buttons = 0;
 				string pstring = "P" + fioCfg.PlayerAssignments[slot] + " ";
 
-				if (Controller[pstring + "Select"]) buttons |= 1;
-				if (Controller[pstring + "Start"]) buttons |= 8;
-				if (Controller[pstring + "Up"]) buttons |= 16;
-				if (Controller[pstring + "Right"]) buttons |= 32;
-				if (Controller[pstring + "Down"]) buttons |= 64;
-				if (Controller[pstring + "Left"]) buttons |= 128;
-				if (Controller[pstring + "L2"]) buttons |= 256;
-				if (Controller[pstring + "R2"]) buttons |= 512;
-				if (Controller[pstring + "L1"]) buttons |= 1024;
-				if (Controller[pstring + "R1"]) buttons |= 2048;
-				if (Controller[pstring + "Triangle"]) buttons |= 4096;
-				if (Controller[pstring + "Circle"]) buttons |= 8192;
-				if (Controller[pstring + "Cross"]) buttons |= 16384;
-				if (Controller[pstring + "Square"]) buttons |= 32768;
+				if (Controller.IsPressed(pstring + "Select")) buttons |= 1;
+				if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
+				if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
+				if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
+				if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
+				if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
+				if (Controller.IsPressed(pstring + "L2")) buttons |= 256;
+				if (Controller.IsPressed(pstring + "R2")) buttons |= 512;
+				if (Controller.IsPressed(pstring + "L1")) buttons |= 1024;
+				if (Controller.IsPressed(pstring + "R1")) buttons |= 2048;
+				if (Controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
+				if (Controller.IsPressed(pstring + "Circle")) buttons |= 8192;
+				if (Controller.IsPressed(pstring + "Cross")) buttons |= 16384;
+				if (Controller.IsPressed(pstring + "Square")) buttons |= 32768;
 
 				byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
 				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
 				{
-					if (Controller[pstring + "L3"]) buttons |= 2;
-					if (Controller[pstring + "R3"]) buttons |= 4;
-					if (Controller[pstring + "MODE"]) buttons |= 65536;
+					if (Controller.IsPressed(pstring + "L3")) buttons |= 2;
+					if (Controller.IsPressed(pstring + "R3")) buttons |= 4;
+					if (Controller.IsPressed(pstring + "MODE")) buttons |= 65536;
 
 					left_x = (byte)Controller.GetFloat(pstring + "LStick X");
 					left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
@@ -612,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//if tray open is requested, and valid, apply it
 			//in the first frame, go ahead and open it up so we have a chance to put a disc in it
-			if (Controller["Open"] && !CurrentTrayOpen || Frame == 0)
+			if (Controller.IsPressed("Open") && !CurrentTrayOpen || Frame == 0)
 			{
 				OctoshockDll.shock_OpenTray(psx);
 				CurrentTrayOpen = true;
@@ -648,14 +648,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//if tray close is requested, and valid, apply it.
-			if (Controller["Close"] && CurrentTrayOpen)
+			if (Controller.IsPressed("Close") && CurrentTrayOpen)
 			{
 				OctoshockDll.shock_CloseTray(psx);
 				CurrentTrayOpen = false;
 			}
 
 			//if frame is 0 and user has made no preference, close the tray
-			if (!Controller["Close"] && !Controller["Open"] && Frame == 0 && CurrentTrayOpen)
+			if (!Controller.IsPressed("Close") && !Controller.IsPressed("Open") && Frame == 0 && CurrentTrayOpen)
 			{
 				OctoshockDll.shock_CloseTray(psx);
 				CurrentTrayOpen = false;
@@ -700,7 +700,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
 
 			//apply soft reset if needed
-			if (Controller["Reset"])
+			if (Controller.IsPressed("Reset"))
 				OctoshockDll.shock_SoftReset(psx);
 
 			//------------------------
@@ -861,12 +861,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private short[] sbuff = new short[1611 * 2]; //need this for pal
 		private int sbuffcontains = 0;
 
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = sbuff;
 			nsamp = sbuffcontains;
@@ -875,6 +870,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void DiscardSamples()
 		{
 			sbuffcontains = 0;
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		#endregion

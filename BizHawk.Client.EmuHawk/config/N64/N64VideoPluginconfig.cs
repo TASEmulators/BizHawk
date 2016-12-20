@@ -150,6 +150,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Glide64": ss.VideoPlugin = PluginType.Glide; break;
 				case "Glide64mk2": ss.VideoPlugin = PluginType.GlideMk2; break;
 				case "Jabo 1.6.1": ss.VideoPlugin = PluginType.Jabo; break;
+				case "GLideN64": ss.VideoPlugin = PluginType.GLideN64; break;
 			}
 
 			// Jabo
@@ -397,6 +398,92 @@ namespace BizHawk.Client.EmuHawk
 			ss.Glide64mk2Plugin.read_back_to_screen = Glide64mk2_read_back_to_screen.SelectedIndex;
 			ss.Glide64mk2Plugin.fast_crc = Glide64mk2_fast_crc.Checked;
 
+			ss.GLideN64Plugin.UseDefaultHacks = GLideN64_UseDefaultHacks.Checked;
+
+			switch (GLideN64_MultiSampling.SelectedIndex)
+			{
+				case 0: ss.GLideN64Plugin.MultiSampling = 0; break;
+				case 1: ss.GLideN64Plugin.MultiSampling = 2; break;
+				case 2: ss.GLideN64Plugin.MultiSampling = 4; break;
+				case 3: ss.GLideN64Plugin.MultiSampling = 8; break;
+				case 4: ss.GLideN64Plugin.MultiSampling = 16; break;
+				default: ss.GLideN64Plugin.MultiSampling = 0; break;
+			}
+			ss.GLideN64Plugin.AspectRatio = GLideN64_AspectRatio.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.AspectRatioMode>();
+			ss.GLideN64Plugin.BufferSwapMode = GLideN64_BufferSwapMode.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.SwapMode>();
+			if (GLideN64_UseNativeResolutionFactor.Text.IsSigned())
+				ss.GLideN64Plugin.UseNativeResolutionFactor = int.Parse(GLideN64_UseNativeResolutionFactor.Text);
+			else
+				ss.GLideN64Plugin.UseNativeResolutionFactor = 0;
+			ss.GLideN64Plugin.bilinearMode = GLideN64_bilinearMode.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>();
+			ss.GLideN64Plugin.MaxAnisotropy = GLideN64_MaxAnisotropy.Checked;
+			if (GLideN64_CacheSize.Text.IsSigned())
+				ss.GLideN64Plugin.CacheSize = int.Parse(GLideN64_CacheSize.Text);
+			else
+				ss.GLideN64Plugin.CacheSize = 500;
+			ss.GLideN64Plugin.EnableNoise = GLideN64_EnableNoise.Checked;
+			ss.GLideN64Plugin.EnableLOD = GLideN64_EnableLOD.Checked;
+			ss.GLideN64Plugin.EnableHWLighting = GLideN64_HWLighting.Checked;
+			ss.GLideN64Plugin.EnableShadersStorage = GLideN64_ShadersStorage.Checked;
+			ss.GLideN64Plugin.CorrectTexrectCoords = GLideN64_CorrectTexrectCoords.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.TexrectCoordsMode>();
+			ss.GLideN64Plugin.EnableNativeResTexrects = GLideN64_NativeResTexrects.Checked;
+			ss.GLideN64Plugin.EnableLegacyBlending = GLideN64_LegacyBlending.Checked;
+			ss.GLideN64Plugin.EnableFragmentDepthWrite = GLideN64_FragmentDepthWrite.Checked;
+			ss.GLideN64Plugin.EnableFBEmulation = GLideN64_EnableFBEmulation.Checked;
+			ss.GLideN64Plugin.DisableFBInfo = GLideN64_DisableFBInfo.Checked;
+			ss.GLideN64Plugin.FBInfoReadColorChunk = GLideN64_FBInfoReadColorChunk.Checked;
+			ss.GLideN64Plugin.FBInfoReadDepthChunk = GLideN64_FBInfoReadDepthChunk.Checked;
+			ss.GLideN64Plugin.txFilterMode = GLideN64_txFilterMode.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.TextureFilterMode>();
+			ss.GLideN64Plugin.txEnhancementMode = GLideN64_txEnhancementMode.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.TextureEnhancementMode>();
+			ss.GLideN64Plugin.txDeposterize = GLideN64_txDeposterize.Checked;
+			ss.GLideN64Plugin.txFilterIgnoreBG = GLideN64_txFilterIgnoreBG.Checked;
+			if (GLideN64_txCacheSize.Text.IsSigned())
+				ss.GLideN64Plugin.txCacheSize = int.Parse(GLideN64_txCacheSize.Text);
+			else
+				ss.GLideN64Plugin.txCacheSize = 100;
+			ss.GLideN64Plugin.txHiresEnable = GLideN64_txHiresEnable.Checked;
+			ss.GLideN64Plugin.txHiresFullAlphaChannel = GLideN64_txHiresFullAlphaChannel.Checked;
+			ss.GLideN64Plugin.txHresAltCRC = GLideN64_txHresAltCRC.Checked;
+			ss.GLideN64Plugin.txDump = GLideN64_txDump.Checked;
+			ss.GLideN64Plugin.txCacheCompression = GLideN64_txCacheCompression.Checked;
+			ss.GLideN64Plugin.txForce16bpp = GLideN64_txForce16bpp.Checked;
+			ss.GLideN64Plugin.txSaveCache = GLideN64_txSaveCache.Checked;
+			ss.GLideN64Plugin.txPath = GLideN64_txPath.Text;
+			ss.GLideN64Plugin.EnableBloom = GLideN64_EnableBloom.Checked;
+			ss.GLideN64Plugin.bloomThresholdLevel = GLideN64_bloomThresholdLevel.SelectedIndex + 2;
+			ss.GLideN64Plugin.bloomBlendMode = GLideN64_bloomBlendMode.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.BlendMode>();
+			ss.GLideN64Plugin.blurAmount = GLideN64_blurAmount.SelectedIndex + 2;
+			ss.GLideN64Plugin.blurStrength = GLideN64_blurStrength.SelectedIndex + 10;
+			ss.GLideN64Plugin.ForceGammaCorrection = GLideN64_ForceGammaCorrection.Checked;
+			if (GLideN64_GammaCorrectionLevel.Text.IsFloat())
+				ss.GLideN64Plugin.GammaCorrectionLevel = float.Parse(GLideN64_GammaCorrectionLevel.Text);
+			else
+				ss.GLideN64Plugin.GammaCorrectionLevel = 2.0f;
+
+			ss.GLideN64Plugin.EnableN64DepthCompare = GLideN64_EnableN64DepthCompare.Checked;
+			ss.GLideN64Plugin.EnableCopyColorToRDRAM = GLideN64_EnableCopyColorToRDRAM.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.CopyColorToRDRAMMode>();
+			ss.GLideN64Plugin.EnableCopyDepthToRDRAM = GLideN64_EnableCopyDepthToRDRAM.SelectedItem
+				.ToString()
+				.GetEnumFromDescription<N64SyncSettings.N64GLideN64PluginSettings.CopyDepthToRDRAMMode>();
+			ss.GLideN64Plugin.EnableCopyColorFromRDRAM = GLideN64_EnableCopyColorFromRDRAM.Checked;
+			ss.GLideN64Plugin.EnableCopyAuxiliaryToRDRAM = GLideN64_EnableCopyAuxiliaryToRDRAM.Checked;
+
 
 			ss.Core = CoreTypeDropdown.SelectedItem
 				.ToString()
@@ -431,6 +518,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case PluginType.Jabo:
 					PluginComboBox.Text = "Jabo 1.6.1";
+					break;
+				case PluginType.GLideN64:
+					PluginComboBox.Text = "GLideN64";
 					break;
 			}
 
@@ -672,6 +762,76 @@ namespace BizHawk.Client.EmuHawk
 				Glide64mk2_read_back_to_screen.SelectedIndex = ss.Glide64mk2Plugin.read_back_to_screen;
 				Glide64mk2_fast_crc.Checked = ss.Glide64mk2Plugin.fast_crc;
 			}
+
+			// GLideN64
+			GLideN64_UseDefaultHacks.Checked = ss.GLideN64Plugin.UseDefaultHacks;
+
+			switch (ss.GLideN64Plugin.MultiSampling)
+			{
+				case 0: GLideN64_MultiSampling.SelectedIndex = 0; break;
+				case 2: GLideN64_MultiSampling.SelectedIndex = 1; break;
+				case 4: GLideN64_MultiSampling.SelectedIndex = 2; break;
+				case 8: GLideN64_MultiSampling.SelectedIndex = 3; break;
+				case 16: GLideN64_MultiSampling.SelectedIndex = 4; break;
+				default: GLideN64_MultiSampling.SelectedIndex = 0; break;
+			}
+			GLideN64_AspectRatio
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.AspectRatioMode>(ss.GLideN64Plugin.AspectRatio);
+			GLideN64_BufferSwapMode
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.SwapMode>(ss.GLideN64Plugin.BufferSwapMode);
+			GLideN64_UseNativeResolutionFactor.Text = ss.GLideN64Plugin.UseNativeResolutionFactor.ToString();
+			GLideN64_bilinearMode
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>(ss.GLideN64Plugin.bilinearMode);
+			GLideN64_MaxAnisotropy.Checked = ss.GLideN64Plugin.MaxAnisotropy;
+			GLideN64_CacheSize.Text = ss.GLideN64Plugin.CacheSize.ToString();
+			GLideN64_EnableNoise.Checked = ss.GLideN64Plugin.EnableNoise;
+			GLideN64_EnableLOD.Checked = ss.GLideN64Plugin.EnableLOD;
+			GLideN64_HWLighting.Checked = ss.GLideN64Plugin.EnableHWLighting;
+			GLideN64_ShadersStorage.Checked = ss.GLideN64Plugin.EnableShadersStorage;
+			GLideN64_CorrectTexrectCoords
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.TexrectCoordsMode>(ss.GLideN64Plugin.CorrectTexrectCoords);
+			GLideN64_NativeResTexrects.Checked = ss.GLideN64Plugin.EnableNativeResTexrects;
+			GLideN64_LegacyBlending.Checked = ss.GLideN64Plugin.EnableLegacyBlending;
+			GLideN64_FragmentDepthWrite.Checked = ss.GLideN64Plugin.EnableFragmentDepthWrite;
+			GLideN64_EnableFBEmulation.Checked = ss.GLideN64Plugin.EnableFBEmulation;
+			GLideN64_DisableFBInfo.Checked = ss.GLideN64Plugin.DisableFBInfo;
+			GLideN64_FBInfoReadColorChunk.Checked = ss.GLideN64Plugin.FBInfoReadColorChunk;
+			GLideN64_FBInfoReadDepthChunk.Checked = ss.GLideN64Plugin.FBInfoReadDepthChunk;
+			GLideN64_txFilterMode
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.TextureFilterMode>(ss.GLideN64Plugin.txFilterMode);
+			GLideN64_txEnhancementMode
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.TextureEnhancementMode>(ss.GLideN64Plugin.txEnhancementMode);
+			GLideN64_txDeposterize.Checked = ss.GLideN64Plugin.txDeposterize;
+			GLideN64_txFilterIgnoreBG.Checked = ss.GLideN64Plugin.txFilterIgnoreBG;
+			GLideN64_txCacheSize.Text = ss.GLideN64Plugin.txCacheSize.ToString();
+			GLideN64_txHiresEnable.Checked = ss.GLideN64Plugin.txHiresEnable;
+			GLideN64_txHiresFullAlphaChannel.Checked = ss.GLideN64Plugin.txHiresFullAlphaChannel;
+			GLideN64_txHresAltCRC.Checked = ss.GLideN64Plugin.txHresAltCRC;
+			GLideN64_txDump.Checked = ss.GLideN64Plugin.txDump;
+			GLideN64_txCacheCompression.Checked = ss.GLideN64Plugin.txCacheCompression;
+			GLideN64_txForce16bpp.Checked = ss.GLideN64Plugin.txForce16bpp;
+			GLideN64_txSaveCache.Checked = ss.GLideN64Plugin.txSaveCache;
+			GLideN64_txPath.Text = ss.GLideN64Plugin.txPath;
+			GLideN64_EnableBloom.Checked = ss.GLideN64Plugin.EnableBloom;
+			GLideN64_bloomThresholdLevel.SelectedIndex = ss.GLideN64Plugin.bloomThresholdLevel - 2;
+			GLideN64_bloomBlendMode
+				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.BlendMode>(ss.GLideN64Plugin.bloomBlendMode);
+			GLideN64_blurAmount.SelectedIndex = ss.GLideN64Plugin.blurAmount - 2;
+			GLideN64_blurStrength.SelectedIndex = ss.GLideN64Plugin.blurStrength - 10;
+			GLideN64_ForceGammaCorrection.Checked = ss.GLideN64Plugin.ForceGammaCorrection;
+			GLideN64_GammaCorrectionLevel.Text = ss.GLideN64Plugin.GammaCorrectionLevel.ToString();
+
+			UpdateGLideN64HacksSection();
+			if (!ss.GLideN64Plugin.UseDefaultHacks)
+			{
+				GLideN64_EnableN64DepthCompare.Checked = ss.GLideN64Plugin.EnableN64DepthCompare;
+				GLideN64_EnableCopyColorToRDRAM
+					.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.CopyColorToRDRAMMode>(ss.GLideN64Plugin.EnableCopyColorToRDRAM);
+				GLideN64_EnableCopyDepthToRDRAM
+					.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.CopyDepthToRDRAMMode>(ss.GLideN64Plugin.EnableCopyDepthToRDRAM);
+				GLideN64_EnableCopyColorFromRDRAM.Checked = ss.GLideN64Plugin.EnableCopyColorFromRDRAM;
+				GLideN64_EnableCopyAuxiliaryToRDRAM.Checked = ss.GLideN64Plugin.EnableCopyAuxiliaryToRDRAM;
+			}
 		}
 		
 		private void RiceAnisotropicFiltering_TB_Scroll_1(object sender, EventArgs e)
@@ -733,6 +893,25 @@ namespace BizHawk.Client.EmuHawk
 				ToggleGlide64mk2HackCheckboxEnable(true);
 			}
 		}
+
+		private void UpdateGLideN64HacksSection()
+		{
+			if (GLideN64_UseDefaultHacks.Checked)
+			{
+				GLideN64_EnableN64DepthCompare.Checked = Global.Game.GetBool("GLideN64_N64DepthCompare", false);
+				GLideN64_EnableCopyColorToRDRAM.SelectedItem = ((N64SyncSettings.N64GLideN64PluginSettings.CopyColorToRDRAMMode)GetIntFromDB("GLideN64_CopyColorToRDRAM", (int)N64SyncSettings.N64GLideN64PluginSettings.CopyColorToRDRAMMode.AsyncMode)).GetDescription();
+				GLideN64_EnableCopyDepthToRDRAM.SelectedItem = ((N64SyncSettings.N64GLideN64PluginSettings.CopyDepthToRDRAMMode)GetIntFromDB("GLideN64_CopyDepthToRDRAM", (int)N64SyncSettings.N64GLideN64PluginSettings.CopyDepthToRDRAMMode.DoNotCopy)).GetDescription();
+				GLideN64_EnableCopyColorFromRDRAM.Checked = Global.Game.GetBool("GLideN64_CopyColorFromRDRAM", false);
+				GLideN64_EnableCopyAuxiliaryToRDRAM.Checked = Global.Game.GetBool("GLideN64_CopyAuxiliaryToRDRAM", false);
+
+				ToggleGLideN64HackCheckboxEnable(false);
+			}
+			else
+			{
+				ToggleGLideN64HackCheckboxEnable(true);
+			}
+		}
+
 
 		private void UpdateGlideHacksSection()
 		{
@@ -944,6 +1123,15 @@ namespace BizHawk.Client.EmuHawk
 			Glide64mk2_fast_crc.Enabled = val;
 		}
 
+		public void ToggleGLideN64HackCheckboxEnable(bool val)
+		{
+			GLideN64_EnableN64DepthCompare.Enabled = val;
+			GLideN64_EnableCopyColorToRDRAM.Enabled = val;
+			GLideN64_EnableCopyDepthToRDRAM.Enabled = val;
+			GLideN64_EnableCopyColorFromRDRAM.Enabled = val;
+			GLideN64_EnableCopyAuxiliaryToRDRAM.Enabled = val;
+		}
+
 		private void GlideUseDefaultHacks1_CheckedChanged(object sender, EventArgs e)
 		{
 			GlideUseDefaultHacks2.Checked = GlideUseDefaultHacks1.Checked;
@@ -966,6 +1154,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Glide64mk2_UseDefaultHacks1.Checked = Glide64mk2_UseDefaultHacks2.Checked;
 			UpdateGlide64mk2HacksSection();
+		}
+
+		private void GLideN64_UseDefaultHacks_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateGLideN64HacksSection();
 		}
 
 		private void PluginComboBox_SelectedIndexChanged(object sender, EventArgs e)

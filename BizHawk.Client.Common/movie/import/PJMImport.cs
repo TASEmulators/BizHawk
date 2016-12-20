@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common
 					info.player2Type,
 					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None
 				};
-			controllers.Type = Octoshock.CreateControllerDefinition(settings);
+			controllers.Definition = Octoshock.CreateControllerDefinition(settings);
 
 			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
 									"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 					info.player2Type,
 					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None
 				};
-			controllers.Type = Octoshock.CreateControllerDefinition(settings);
+			controllers.Definition = Octoshock.CreateControllerDefinition(settings);
 
 			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
 			                     "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};

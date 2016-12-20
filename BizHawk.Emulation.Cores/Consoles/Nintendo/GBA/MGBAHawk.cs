@@ -10,14 +10,16 @@ using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
-	[CoreAttributes("mGBA", "endrift", true, true, "0.4.0", "https://mgba.io/", false)]
+	[CoreAttributes("mGBA", "endrift", true, true, "0.5.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable, ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
+	public class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
+		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
-		IntPtr core;
+		private IntPtr _core;
+		private byte[] _saveScratch = new byte[262144];
 
 		[CoreConstructor("GBA")]
-		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic)
+		public MGBAHawk(byte[] file, CoreComm comm, SyncSettings syncSettings, Settings settings, bool deterministic, GameInfo game)
 		{
 			_syncSettings = syncSettings ?? new SyncSettings();
 			_settings = settings ?? new Settings();
@@ -40,24 +42,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				throw new InvalidOperationException("BIOS must be exactly 16384 bytes!");
 			}
-			core = LibmGBA.BizCreate(bios);
-			if (core == IntPtr.Zero)
+			var skipBios = !DeterministicEmulation && _syncSettings.SkipBios;
+
+			_core = LibmGBA.BizCreate(bios, file, file.Length, GetOverrideInfo(game), skipBios);
+			if (_core == IntPtr.Zero)
 			{
-				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS?");
+				throw new InvalidOperationException("BizCreate() returned NULL!  Bad BIOS? and/or ROM?");
 			}
 			try
 			{
-				if (!LibmGBA.BizLoad(core, file, file.Length))
-				{
-					throw new InvalidOperationException("BizLoad() returned FALSE!  Bad ROM?");
-				}
-
-				if (!DeterministicEmulation && _syncSettings.SkipBios)
-				{
-					LibmGBA.BizSkipBios(core);
-				}
-
-
 				CreateMemoryDomains(file.Length);
 				var ser = new BasicServiceProvider(this);
 				ser.Register<IDisassemblable>(new ArmV4Disassembler());
@@ -70,14 +63,60 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
-
-				InitStates();
+				PutSettings(_settings);
 			}
 			catch
 			{
-				LibmGBA.BizDestroy(core);
+				LibmGBA.BizDestroy(_core);
 				throw;
 			}
+		}
+
+		private static LibmGBA.OverrideInfo GetOverrideInfo(GameInfo game)
+		{
+			if (!game.OptionPresent("mgbaNeedsOverrides"))
+			{
+				// the gba game db predates the mgba core in bizhawk, but was never used by the mgba core,
+				// which had its own handling for overrides
+				// to avoid possible regressions, we don't want to be overriding things that we already
+				// know work in mgba, so unless this parameter is set, we do nothing
+				return null;
+			}
+
+			var ret = new LibmGBA.OverrideInfo();
+			if (game.OptionPresent("flashSize"))
+			{
+				switch (game.GetIntValue("flashSize"))
+				{
+					case 65536: ret.Savetype = LibmGBA.SaveType.Flash512; break;
+					case 131072: ret.Savetype = LibmGBA.SaveType.Flash1m; break;
+					default: throw new InvalidOperationException("Unknown flashSize");
+				}
+			}
+			else if (game.OptionPresent("saveType"))
+			{
+				switch (game.GetIntValue("saveType"))
+				{
+					// 3 specifies either flash 512 or 1024, but in vba-over.ini, the latter will have a flashSize as well
+					case 3: ret.Savetype = LibmGBA.SaveType.Flash512; break;
+					case 4: ret.Savetype = LibmGBA.SaveType.Eeprom; break;
+					default: throw new InvalidOperationException("Unknown saveType");
+				}
+			}
+
+			if (game.GetInt("rtcEnabled", 0) == 1)
+			{
+				ret.Hardware |= LibmGBA.Hardware.Rtc;
+			}
+			if (game.GetInt("mirroringEnabled", 0) == 1)
+			{
+				throw new InvalidOperationException("Don't know what to do with mirroringEnabled!");
+			}
+			if (game.OptionPresent("idleLoop"))
+			{
+				ret.IdleLoop = (uint)game.GetHexValue("idleLoop");
+			}
+			return ret;
 		}
 
 		MemoryDomainList MemoryDomains;
@@ -89,14 +128,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
-				LibmGBA.BizReset(core);
+				LibmGBA.BizReset(_core);
 				//BizReset caused memorydomain pointers to change.
 				WireMemoryDomainPointers();
 			}
 
-			IsLagFrame = LibmGBA.BizAdvance(core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
+			IsLagFrame = LibmGBA.BizAdvance(_core, VBANext.GetButtons(Controller), videobuff, ref nsamp, soundbuff,
 				RTCTime(),
 				(short)Controller.GetFloat("Tilt X"),
 				(short)Controller.GetFloat("Tilt Y"),
@@ -129,10 +168,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void Dispose()
 		{
-			if (core != IntPtr.Zero)
+			if (_core != IntPtr.Zero)
 			{
-				LibmGBA.BizDestroy(core);
-				core = IntPtr.Zero;
+				LibmGBA.BizDestroy(_core);
+				_core = IntPtr.Zero;
 			}
 		}
 
@@ -153,9 +192,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#endregion
 
 		#region ISoundProvider
+
 		private readonly short[] soundbuff = new short[2048];
 		private int nsamp;
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = this.nsamp;
 			samples = soundbuff;
@@ -165,21 +205,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			nsamp = 0;
 		}
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
 		#endregion
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram.ToPointer())[addr];}
-		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram.ToPointer())[addr] = value; }
+		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram)[addr];}
+		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram)[addr] = value; }
 
 		void WireMemoryDomainPointers()
 		{
 			var s = new LibmGBA.MemoryAreas();
-			LibmGBA.BizGetMemoryAreas(core, s);
+			LibmGBA.BizGetMemoryAreas(_core, s);
 
 			_iwram.Data = s.iwram;
 			_ewram.Data = s.wram;
@@ -196,7 +256,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			_cwram.Peek =
 				delegate(long addr)
 				{
-					LibmGBA.BizGetMemoryAreas(core, s);
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 						throw new IndexOutOfRangeException();
 					if (addr >= 256 * 1024)
@@ -274,16 +333,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] CloneSaveRam()
 		{
-			byte[] ret = new byte[LibmGBA.BizGetSaveRamSize(core)];
-			if (ret.Length > 0)
-			{
-				LibmGBA.BizGetSaveRam(core, ret);
-				return ret;
-			}
-			else
-			{
+			int len = LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length);
+			if (len == _saveScratch.Length)
+				throw new InvalidOperationException("Save buffer not long enough");
+			if (len == 0)
 				return null;
-			}
+
+			var ret = new byte[len];
+			Array.Copy(_saveScratch, ret, len);
+			return ret;
 		}
 
 		private static byte[] LegacyFix(byte[] saveram)
@@ -312,39 +370,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			{
 				data = LegacyFix(data);
 			}
-
-			int len = LibmGBA.BizGetSaveRamSize(core);
-			if (len > data.Length)
-			{
-				byte[] _tmp = new byte[len];
-				Array.Copy(data, _tmp, data.Length);
-				for (int i = data.Length; i < len; i++)
-					_tmp[i] = 0xff;
-				data = _tmp;
-			}
-			else if (len < data.Length)
-			{
-				// we could continue from this, but we don't expect it
-				throw new InvalidOperationException("Saveram will be truncated!");
-			}
-			LibmGBA.BizPutSaveRam(core, data);
+			LibmGBA.BizPutSaveRam(_core, data, data.Length);
 		}
 
 		public bool SaveRamModified
 		{
-			get { return LibmGBA.BizGetSaveRamSize(core) > 0; }
+			get
+			{
+				return LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length) > 0;
+			}
 		}
 
 		#endregion
 
-		private void InitStates()
-		{
-			savebuff = new byte[LibmGBA.BizGetStateMaxSize(core)];
-			savebuff2 = new byte[savebuff.Length + 13];
-		}
-
-		private byte[] savebuff;
-		private byte[] savebuff2;
+		private byte[] _savebuff = new byte[0];
+		private byte[] _savebuff2 = new byte[13];
 
 		public bool BinarySaveStatesPreferred
 		{
@@ -364,13 +404,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
+		private void StartSaveStateBinaryInternal()
 		{
-			int size = LibmGBA.BizGetState(core, savebuff, savebuff.Length);
-			if (size < 0)
+			IntPtr p = IntPtr.Zero;
+			int size = 0;
+			if (!LibmGBA.BizStartGetState(_core, ref p, ref size))
 				throw new InvalidOperationException("Core failed to save!");
-			writer.Write(size);
-			writer.Write(savebuff, 0, size);
+			if (size != _savebuff.Length)
+			{
+				_savebuff = new byte[size];
+				_savebuff2 = new byte[size + 13];
+			}
+			LibmGBA.BizFinishGetState(p, _savebuff, size);
+		}
+
+		private void FinishSaveStateBinaryInternal(BinaryWriter writer)
+		{
+			writer.Write(_savebuff.Length);
+			writer.Write(_savebuff, 0, _savebuff.Length);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -378,16 +429,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			writer.Write(Frame);
 		}
 
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			StartSaveStateBinaryInternal();
+			FinishSaveStateBinaryInternal(writer);
+		}
+
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length > savebuff.Length)
+			if (length != _savebuff.Length)
 			{
-				savebuff = new byte[length];
-				savebuff2 = new byte[length + 13];
+				_savebuff = new byte[length];
+				_savebuff2 = new byte[length + 13];
 			}
-			reader.Read(savebuff, 0, length);
-			if (!LibmGBA.BizPutState(core, savebuff, length))
+			reader.Read(_savebuff, 0, length);
+			if (!LibmGBA.BizPutState(_core, _savebuff, length))
 				throw new InvalidOperationException("Core rejected the savestate!");
 
 			// other variables
@@ -398,12 +455,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream(savebuff2, true);
+			StartSaveStateBinaryInternal();
+			var ms = new MemoryStream(_savebuff2, true);
 			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
+			FinishSaveStateBinaryInternal(bw);
 			bw.Flush();
 			ms.Close();
-			return savebuff2;
+			return _savebuff2;
 		}
 
 		public int LagCount { get; set; }
@@ -439,7 +497,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.DisplayBG2) mask |= LibmGBA.Layers.BG2;
 			if (o.DisplayBG3) mask |= LibmGBA.Layers.BG3;
 			if (o.DisplayOBJ) mask |= LibmGBA.Layers.OBJ;
-			LibmGBA.BizSetLayerMask(core, mask);
+			LibmGBA.BizSetLayerMask(_core, mask);
+
+			LibmGBA.Sounds smask = 0;
+			if (o.PlayCh0) smask |= LibmGBA.Sounds.CH0;
+			if (o.PlayCh1) smask |= LibmGBA.Sounds.CH1;
+			if (o.PlayCh2) smask |= LibmGBA.Sounds.CH2;
+			if (o.PlayCh3) smask |= LibmGBA.Sounds.CH3;
+			if (o.PlayChA) smask |= LibmGBA.Sounds.CHA;
+			if (o.PlayChB) smask |= LibmGBA.Sounds.CHB;
+			LibmGBA.BizSetSoundMask(_core, smask);
+
 			_settings = o;
 			return false;
 		}
@@ -448,16 +516,40 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public class Settings
 		{
+			[DisplayName("Display BG Layer 0")]
 			[DefaultValue(true)]
 			public bool DisplayBG0 { get; set; }
+			[DisplayName("Display BG Layer 1")]
 			[DefaultValue(true)]
 			public bool DisplayBG1 { get; set; }
+			[DisplayName("Display BG Layer 2")]
 			[DefaultValue(true)]
 			public bool DisplayBG2 { get; set; }
+			[DisplayName("Display BG Layer 3")]
 			[DefaultValue(true)]
 			public bool DisplayBG3 { get; set; }
+			[DisplayName("Display Sprite Layer")]
 			[DefaultValue(true)]
 			public bool DisplayOBJ { get; set; }
+
+			[DisplayName("Play Square 1")]
+			[DefaultValue(true)]
+			public bool PlayCh0 { get; set; }
+			[DisplayName("Play Square 2")]
+			[DefaultValue(true)]
+			public bool PlayCh1 { get; set; }
+			[DisplayName("Play Wave")]
+			[DefaultValue(true)]
+			public bool PlayCh2 { get; set; }
+			[DisplayName("Play Noise")]
+			[DefaultValue(true)]
+			public bool PlayCh3 { get; set; }
+			[DisplayName("Play Direct Sound A")]
+			[DefaultValue(true)]
+			public bool PlayChA { get; set; }
+			[DisplayName("Play Direct Sound B")]
+			[DefaultValue(true)]
+			public bool PlayChB { get; set; }
 
 			public Settings Clone()
 			{

@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -18,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class GambatteLink : IEmulator, IVideoProvider, ISyncSoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
+	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
 		IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
 		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
@@ -89,11 +83,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
 		public static readonly ControllerDefinition DualGbController = new ControllerDefinition
 		{
 			Name = "Dual Gameboy Controller",
@@ -115,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			foreach (var s in DualGbController.BoolButtons)
 			{
-				if (Controller[s])
+				if (Controller.IsPressed(s))
 				{
 					if (s.Contains("P1 "))
 						LCont.Set(s.Replace("P1 ", ""));
@@ -123,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						RCont.Set(s.Replace("P2 ", ""));
 				}
 			}
-			bool cablediscosignal_new = Controller["Toggle Cable"];
+			bool cablediscosignal_new = Controller.IsPressed("Toggle Cable");
 			if (cablediscosignal_new && !cablediscosignal)
 			{
 				cableconnected ^= true;
@@ -327,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			SampleBufferContains = count;
 		}
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = SampleBufferContains;
 			samples = SampleBuffer;
@@ -336,6 +325,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public void DiscardSamples()
 		{
 			SampleBufferContains = 0;
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		#endregion

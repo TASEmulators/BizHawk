@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Intellivision
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed partial class Intellivision
 	{
@@ -7,8 +9,8 @@
 		private byte[] ScratchpadRam = new byte[240];
 		private ushort[] SystemRam = new ushort[352];
 		private ushort[] ExecutiveRom = new ushort[4096]; // TODO: Intellivision II support?
-		private byte[] GraphicsRom = new byte[2048];
-		private byte[] GraphicsRam = new byte[512];
+		public byte[] GraphicsRom = new byte[2048];
+		public byte[] GraphicsRam = new byte[512];
 
 		public ushort ReadMemory(ushort addr)
 		{
@@ -37,6 +39,18 @@
 					else if (addr <= 0x01FF)
 					{
 						// PSG.
+
+						//controllers
+						if (addr==0x01FE)
+						{
+							//Console.WriteLine("reading controller");
+							return _psg.Register[14];
+						}
+						if (addr == 0x01FF)
+						{
+							//Console.WriteLine("reading controller");
+							return _psg.Register[15];
+						}
 						break;
 					}
 					else if (addr <= 0x035F)

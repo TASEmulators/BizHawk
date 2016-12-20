@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 {
 	[CoreAttributes("Cygne/Mednafen", "Dox", true, true, "0.9.36.5", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public partial class WonderSwan : IEmulator, IVideoProvider, ISyncSoundProvider,
+	public partial class WonderSwan : IEmulator, IVideoProvider, ISoundProvider,
 		IInputPollable, IDebuggable
 	{
 		[CoreConstructor("WSWAN")]
@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			Frame++;
 			IsLagFrame = true;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				BizSwan.bizswan_reset(Core);
 
 			bool rotate = false;
@@ -213,29 +213,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		#endregion
-
-		#region ISoundProvider
-
-		private short[] sbuff = new short[1536];
-		private int sbuffcontains = 0;
-
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = sbuff;
-			nsamp = sbuffcontains;
-		}
-
-		public void DiscardSamples()
-		{
-			sbuffcontains = 0;
-		}
 
 		#endregion
 	}

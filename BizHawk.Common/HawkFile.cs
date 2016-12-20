@@ -189,7 +189,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// these extensions won't even be tried as archives (removes spurious archive detects since some of the signatures are pretty damn weak)
 		/// </summary>
-		public string[] NonArchiveExtensions = { };
+		public string[] NonArchiveExtensions = { ".smc", ".sfc", ".dll" };
 
 		/// <summary>
 		/// Parses the given filename to create an un-opened HawkFile with some information available about its path constitution
@@ -452,7 +452,8 @@ namespace BizHawk.Common
 
 			int offset;
 			bool isExecutable;
-			if (NonArchiveExtensions.Any(ext => Path.GetExtension(path).Substring(1).ToLower() == ext.ToLower()))
+
+			if (NonArchiveExtensions.Any(ext => Path.GetExtension(path).ToLower() == ext.ToLower()))
 			{
 				return;
 			}

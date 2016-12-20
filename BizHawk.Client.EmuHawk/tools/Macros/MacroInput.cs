@@ -15,8 +15,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
-		// Zones
-		List<MovieZone> zones = new List<MovieZone>();
+
+		private readonly List<MovieZone> _zones = new List<MovieZone>();
+		private readonly List<int> _unsavedZones = new List<int>();
+		private bool _selecting = false;
+
 		private IMovie CurrentMovie
 		{
 			get { return Global.MovieSession.Movie; }
@@ -39,8 +42,8 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.MovieSession.Movie.IsActive && !GlobalWin.Tools.IsLoaded<TAStudio>())
 			{
 				MessageBox.Show("In order to use this tool you must be recording a movie.");
-				this.Close();
-				this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+				Close();
+				DialogResult = DialogResult.Cancel;
 				return;
 			}
 
@@ -48,10 +51,12 @@ namespace BizHawk.Client.EmuHawk
 			OverlayBox.Enabled = CurrentMovie is TasMovie;
 			PlaceNum.Enabled = CurrentMovie is TasMovie;
 
-			MovieZone main = new MovieZone(CurrentMovie, 0, CurrentMovie.InputLogLength);
-			main.Name = "Entire Movie";
+			var main = new MovieZone(CurrentMovie, 0, CurrentMovie.InputLogLength)
+			{
+				Name = "Entire Movie"
+			};
 
-			zones.Add(main);
+			_zones.Add(main);
 			ZonesList.Items.Add(main.Name + " - length: " + main.Length);
 			ZonesList.Items[0] += " [Zones don't change!]";
 
@@ -63,18 +68,24 @@ namespace BizHawk.Client.EmuHawk
 		private void MacroInputTool_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			if (_initializing)
+			{
 				return;
+			}
 
 			if (!AskSaveChanges())
+			{
 				e.Cancel = true;
+			}
 		}
 
 		public void Restart()
 		{
 			if (_initializing)
+			{
 				return;
+			}
 
-			zones.Clear();
+			_zones.Clear();
 			ZonesList.Items.Clear();
 
 			MacroInputTool_Load(null, null);
@@ -87,10 +98,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 
 		}
+
 		public void FastUpdate()
 		{
 
 		}
+
 		public bool UpdateBefore
 		{
 			get { return true; }
@@ -98,19 +111,27 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool AskSaveChanges()
 		{
-			if (unsavedZones.Count == 0 || IsDisposed)
+			if (_unsavedZones.Count == 0 || IsDisposed)
+			{
 				return true;
+			}
 			else
 			{
 				DialogResult result = MessageBox.Show("You have unsaved macro(s). Do you wish to save them?", "Save?", MessageBoxButtons.YesNoCancel);
 				if (result == DialogResult.Cancel)
+				{
 					return false;
+				}
 				else if (result == DialogResult.No)
+				{
 					return true;
+				}
 			}
 
-			for (int i = 0; i < unsavedZones.Count; i++)
-				SaveMacroAs(zones[unsavedZones[i]]);
+			for (int i = 0; i < _unsavedZones.Count; i++)
+			{
+				SaveMacroAs(_zones[_unsavedZones[i]]);
+			}
 
 			return true;
 		}
@@ -120,7 +141,6 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		List<int> unsavedZones = new List<int>();
 		private void SetZoneButton_Click(object sender, EventArgs e)
 		{
 			if (StartNum.Value >= CurrentMovie.InputLogLength || EndNum.Value >= CurrentMovie.InputLogLength)
@@ -129,12 +149,12 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			MovieZone newZone = new MovieZone(CurrentMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value + 1));
-			newZone.Name = "Zone " + zones.Count;
-			zones.Add(newZone);
+			var newZone = new MovieZone(CurrentMovie, (int)StartNum.Value, (int)(EndNum.Value - StartNum.Value + 1));
+			newZone.Name = "Zone " + _zones.Count;
+			_zones.Add(newZone);
 			ZonesList.Items.Add(newZone.Name + " - length: " + newZone.Length);
 
-			unsavedZones.Add(ZonesList.Items.Count - 1);
+			_unsavedZones.Add(ZonesList.Items.Count - 1);
 		}
 
 		private MovieZone selectedZone
@@ -142,15 +162,20 @@ namespace BizHawk.Client.EmuHawk
 			get
 			{
 				if (ZonesList.SelectedIndex == -1)
+				{
 					return null;
-				return zones[ZonesList.SelectedIndex];
+				}
+
+				return _zones[ZonesList.SelectedIndex];
 			}
 		}
-		private bool _selecting = false;
+
 		private void ZonesList_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (selectedZone == null)
+			{
 				return;
+			}
 
 			_selecting = true;
 			PlaceNum.Value = selectedZone.Start;
@@ -163,50 +188,66 @@ namespace BizHawk.Client.EmuHawk
 		private void NameTextbox_TextChanged(object sender, EventArgs e)
 		{
 			if (selectedZone == null || _selecting)
+			{
 				return;
+			}
 
 			selectedZone.Name = NameTextbox.Text;
 			ZonesList.Items[ZonesList.SelectedIndex] = selectedZone.Name + " - length: " + selectedZone.Length;
 		}
+
 		private void PlaceNum_ValueChanged(object sender, EventArgs e)
 		{
 			if (selectedZone == null || _selecting)
+			{
 				return;
+			}
 
 			selectedZone.Start = (int)PlaceNum.Value;
 		}
+
 		private void ReplaceBox_CheckedChanged(object sender, EventArgs e)
 		{
 			if (selectedZone == null || _selecting)
+			{
 				return;
+			}
 
 			selectedZone.Replace = ReplaceBox.Checked;
 		}
+
 		private void OverlayBox_CheckedChanged(object sender, EventArgs e)
 		{
 			if (selectedZone == null || _selecting)
+			{
 				return;
+			}
 
 			selectedZone.Overlay = OverlayBox.Checked;
 		}
+
 		private void CurrentButton_Click(object sender, EventArgs e)
 		{
-			PlaceNum.Value = Global.Emulator.Frame;
+			PlaceNum.Value = Emulator.Frame;
 		}
 
 		private void PlaceZoneButton_Click(object sender, EventArgs e)
 		{
 			if (selectedZone == null)
+			{
 				return;
+			}
 
 			if (!(CurrentMovie is TasMovie))
 			{
-				selectedZone.Start = Global.Emulator.Frame;
+				selectedZone.Start = Emulator.Frame;
 			}
+
 			selectedZone.PlaceZone(CurrentMovie);
 		}
 
-		#region "Menu Items"
+		#region Menu Items
+
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (selectedZone == null)
@@ -216,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			if (SaveMacroAs(selectedZone))
-				unsavedZones.Remove(ZonesList.SelectedIndex);
+				_unsavedZones.Remove(ZonesList.SelectedIndex);
 		}
 
 		private void loadMacroToolStripMenuItem_Click(object sender, EventArgs e)
@@ -224,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 			MovieZone loadZone = LoadMacro();
 			if (loadZone != null)
 			{
-				zones.Add(loadZone);
+				_zones.Add(loadZone);
 				ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
 
 				// Options only for TasMovie
@@ -242,10 +283,11 @@ namespace BizHawk.Client.EmuHawk
 			RecentToolStripMenuItem.DropDownItems.AddRange(
 				Global.Config.RecentMacros.RecentMenu(DummyLoadMacro, true));
 		}
+
 		private void DummyLoadMacro(string path)
 		{
 			MovieZone loadZone = new MovieZone(path);
-			zones.Add(loadZone);
+			_zones.Add(loadZone);
 			ZonesList.Items.Add(loadZone.Name + " - length: " + loadZone.Length);
 		}
 
@@ -255,11 +297,18 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.PathEntries["Global", "Macros"].Path,
 				Global.Game.Name), null);
 		}
+
 		#endregion
 
 		public static bool SaveMacroAs(MovieZone macro)
 		{
-			SaveFileDialog dialog = new SaveFileDialog();
+			var dialog = new SaveFileDialog
+			{
+				InitialDirectory = SuggestedFolder(),
+				FileName = macro.Name,
+				Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*"
+			};
+
 			// Create directory?
 			bool create = false;
 			if (!Directory.Exists(SuggestedFolder()))
@@ -267,15 +316,15 @@ namespace BizHawk.Client.EmuHawk
 				Directory.CreateDirectory(SuggestedFolder());
 				create = true;
 			}
-			dialog.InitialDirectory = SuggestedFolder();
-			dialog.FileName = macro.Name;
-			dialog.Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*";
 
 			DialogResult result = dialog.ShowHawkDialog();
 			if (result != DialogResult.OK)
 			{
 				if (create)
+				{
 					Directory.Delete(dialog.InitialDirectory);
+				}
+
 				return false;
 			}
 
@@ -284,21 +333,23 @@ namespace BizHawk.Client.EmuHawk
 
 			return true;
 		}
+
 		public static MovieZone LoadMacro()
 		{
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.InitialDirectory = SuggestedFolder();
-			dialog.Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*";
-
+			var dialog = new OpenFileDialog
+			{
+				InitialDirectory = SuggestedFolder(),
+				Filter = "Movie Macros (*.bk2m)|*.bk2m|All Files|*.*"
+			};
+			
 			DialogResult result = dialog.ShowHawkDialog();
 			if (result != DialogResult.OK)
+			{
 				return null;
+			}
 
-			MovieZone ret = new MovieZone(dialog.FileName);
-			if (ret != null)
-				Global.Config.RecentMacros.Add(dialog.FileName);
-
-			return ret;
+			Global.Config.RecentMacros.Add(dialog.FileName);
+			return new MovieZone(dialog.FileName);
 		}
 	}
 }

@@ -1729,6 +1729,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			if (WatchListView.SelectAllInProgress)
+			{
+				return;
+			}
+
 			RemoveToolBarItem.Enabled =
 				AddToRamWatchToolBarItem.Enabled =
 				SelectedIndices.Any();
@@ -1737,6 +1742,11 @@ namespace BizHawk.Client.EmuHawk
 				FreezeAddressToolBarItem.Enabled =
 				SelectedIndices.Any() &&
 				_searches.Domain.CanPoke();
+		}
+
+		private void WatchListView_VirtualItemsSelectionRangeChanged(object sender, ListViewVirtualItemsSelectionRangeChangedEventArgs e)
+		{
+			WatchListView_SelectedIndexChanged(sender, e);
 		}
 
 		private void WatchListView_Enter(object sender, EventArgs e)

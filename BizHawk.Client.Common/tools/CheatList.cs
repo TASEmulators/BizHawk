@@ -707,6 +707,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SetDefaultFileName(string defaultFileName)
+		{
+			_defaultFileName = defaultFileName;
+		}
+
 		private void CheatChanged(object sender)
 		{
 			if (Changed != null)

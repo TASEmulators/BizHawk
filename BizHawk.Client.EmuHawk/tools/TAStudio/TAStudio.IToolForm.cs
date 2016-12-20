@@ -14,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IStatable StatableEmulator { get; private set; }
 
+		[RequiredService]
+		public IVideoProvider VideoProvider { get; private set; }
+
 		[OptionalService]
 		public ISaveRam SaveRamEmulator { get; private set; }
 
@@ -46,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MaybeFollowCursor();
 
-			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
+			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
 
 			RefreshDialog(refreshNeeded);

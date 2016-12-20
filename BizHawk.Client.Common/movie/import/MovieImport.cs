@@ -239,6 +239,28 @@ namespace BizHawk.Client.Common
 			return line;
 		}
 
+		private static IController EmptyLmsvFrame(string line)
+		{
+			var emptyController = new SimpleController { Definition = new ControllerDefinition { Name = "SNES Controller" } };
+			emptyController["Reset"] = false;
+			emptyController["Power"] = false;
+
+			string[] buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" };
+			string[] sections = line.Split('|');
+			for (int section = 2; section < sections.Length - 1; section++)
+			{
+				int player = section - 1; // We start with 1
+				string prefix = "P" + player + " "; // "P1"
+
+				for (int button = 0; button < buttons.Length; button++)
+				{
+					emptyController[prefix + buttons[button]] = false;
+				}
+			}
+
+			return emptyController;
+		}
+
 		// Import a frame from a text-based format.
 		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform,
 			ref string warningMsg)
@@ -272,7 +294,7 @@ namespace BizHawk.Client.Common
 					controller = "Saturn Controller";
 					break;
 			}
-			var controllers = new SimpleController { Type = new ControllerDefinition { Name = controller } };
+			var controllers = new SimpleController { Definition = new ControllerDefinition { Name = controller } };
 			// Split up the sections of the frame.
 			string[] sections = line.Split('|');
 			if (ext == ".FM2" && sections.Length >= 2 && sections[1].Length != 0)
@@ -351,14 +373,14 @@ namespace BizHawk.Client.Common
 				int player = section + player_offset;
 				string prefix = "P" + (player) + " ";
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
-				if (controllers.Type.Name == "Gameboy Controller")
+				if (controllers.Definition.Name == "Gameboy Controller")
 				{
 					prefix = "";
 				}
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
-					player <= BkmMnemonicConstants.PLAYERS[controllers.Type.Name]
+					player <= BkmMnemonicConstants.PLAYERS[controllers.Definition.Name]
 				)
 				{
 					for (int button = 0; button < buttons.Length; button++)
@@ -702,7 +724,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.AUTHOR] = author;
 			// Advance to first byte of input data.
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = "NES Controller" } };
 			string[] buttons = { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" };
 			bool fds = false;
 			bool fourscore = false;
@@ -933,7 +955,7 @@ namespace BizHawk.Client.Common
 			*/
 			m.Header[HeaderKeys.PAL] = "False";
 			// 090 frame data begins here
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = "NES Controller" } };
 			/*
 			 * 01 Right
 			 * 02 Left
@@ -1020,14 +1042,14 @@ namespace BizHawk.Client.Common
 			string player1Config = r.ReadStringFixedAscii(1);
 			// 015 ASCII-encoded controller config for player 2. '3' or '6'.
 			string player2Config = r.ReadStringFixedAscii(1);
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition() };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition() };
 			if (player1Config == "6" || player2Config == "6")
 			{
-				controllers.Type.Name = "GPGX Genesis Controller";
+				controllers.Definition.Name = "GPGX Genesis Controller";
 			}
 			else
 			{
-				controllers.Type.Name = "GPGX 3-Button Controller";
+				controllers.Definition.Name = "GPGX 3-Button Controller";
 			}
 			// 016 special flags (Version A and up only)
 			byte flags = r.ReadByte();
@@ -1212,6 +1234,7 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string input = Encoding.UTF8.GetString(stream.ReadAllBytes());
+
 					int lineNum = 0;
 					using (StringReader reader = new StringReader(input))
 					{
@@ -1223,6 +1246,20 @@ namespace BizHawk.Client.Common
 							{
 								continue;
 							}
+
+							// Insert an empty frame in lsmv snes movies
+							// https://github.com/TASVideos/BizHawk/issues/721
+							// Both emulators send the input to bsnes core at the same V interval, but:
+							// lsnes' frame boundary occurs at V = 241, after which the input is read;
+							// BizHawk's frame boundary is just before automatic polling;
+							// This isn't a great place to add this logic but this code is a mess
+							if (lineNum == 1 && platform == "SNES")
+							{
+								// Note that this logic assumes the first non-empty log entry is a valid input log entry
+								// and that it is NOT a subframe input entry.  It seems safe to assume subframe input would not be on the first line
+								m.AppendFrame(EmptyLmsvFrame(line)); //line is needed to parse pipes and know the controller configuration
+							}
+
 							m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
 							if (errorMsg != "")
 							{
@@ -1437,7 +1474,7 @@ namespace BizHawk.Client.Common
 			r.ReadBytes(103);
 			// TODO: Verify if NTSC/"PAL" mode used for the movie can be detected or not.
 			// 100 variable   Input data
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = name + " Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = name + " Controller" } };
 			int bytes = 256;
 			// The input stream consists of 1 byte for power-on and reset, and then X bytes per each input port per frame.
 			if (platform == "nes")
@@ -1558,7 +1595,7 @@ namespace BizHawk.Client.Common
 			// 00e4-00f3: binary: rom MD5 digest
 			byte[] md5 = r.ReadBytes(16);
 			m.Header[MD5] = string.Format("{0:x8}", md5.BytesToHexString().ToLower());
-			var controllers = new SimpleController { Type = new ControllerDefinition { Name = "SMS Controller" } };
+			var controllers = new SimpleController { Definition = new ControllerDefinition { Name = "SMS Controller" } };
 			/*
 			 76543210
 			 * bit 0 (0x01): up
@@ -1783,7 +1820,7 @@ namespace BizHawk.Client.Common
 			// ... 4-byte little-endian unsigned int: length of controller data in bytes
 			uint length = r.ReadUInt32();
 			// ... (variable) controller data
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = "NES Controller" } };
 			/*
 			 Standard controllers store data in the following format:
 			 * 01: A
@@ -1886,7 +1923,7 @@ namespace BizHawk.Client.Common
 			 * bit 4: controller 5 in use
 			 * other: reserved, set to 0
 			*/
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "SNES Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = "SNES Controller" } };
 			bool[] controllersUsed = new bool[5];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 			{
@@ -2072,7 +2109,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					if (player <= BkmMnemonicConstants.PLAYERS[controllers.Type.Name])
+					if (player <= BkmMnemonicConstants.PLAYERS[controllers.Definition.Name])
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
@@ -2297,14 +2334,14 @@ namespace BizHawk.Client.Common
 			string movieDescription = NullTerminated(r.ReadStringFixedAscii(128));
 			m.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition() };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition() };
 			if (platform != "GBA")
 			{
-				controllers.Type.Name = "Gameboy Controller";
+				controllers.Definition.Name = "Gameboy Controller";
 			}
 			else
 			{
-				controllers.Type.Name = "GBA Controller";
+				controllers.Definition.Name = "GBA Controller";
 			}
 			/*
 			 * 01 00 A
@@ -2475,7 +2512,7 @@ namespace BizHawk.Client.Common
 				return m;
 			}
 			r.BaseStream.Position = firstFrameOffset;
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "NES Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = "NES Controller" } };
 			/*
 			 * 01 A
 			 * 02 B
@@ -2712,7 +2749,7 @@ namespace BizHawk.Client.Common
 			uint savestateSize = (uint)((r.ReadByte() | (r.ReadByte() << 8) | (r.ReadByte() << 16)) & 0x7FFFFF);
 			// Next follows a ZST format savestate.
 			r.ReadBytes((int)savestateSize);
-			SimpleController controllers = new SimpleController { Type = new ControllerDefinition { Name = "SNES Controller" } };
+			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition { Name = "SNES Controller" } };
 			/*
 			 * bit 11: A
 			 * bit 10: X
@@ -2866,7 +2903,7 @@ namespace BizHawk.Client.Common
 								}
 							}
 							leftOver = !leftOver;
-							if (player <= BkmMnemonicConstants.PLAYERS[controllers.Type.Name])
+							if (player <= BkmMnemonicConstants.PLAYERS[controllers.Definition.Name])
 							{
 								if (player != 2 || !superScope)
 								{

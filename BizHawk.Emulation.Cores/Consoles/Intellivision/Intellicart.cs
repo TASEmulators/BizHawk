@@ -1,9 +1,19 @@
 ﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Intellicart : ICart
 	{
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Cart");
+
+			// TODO
+
+			ser.EndSection();
+		}
+
 		private ushort[] Data = new ushort[65536];
 		private bool[][] MemoryAttributes = new bool[32][];
 		private ushort[][] FineAddresses = new ushort[32][];

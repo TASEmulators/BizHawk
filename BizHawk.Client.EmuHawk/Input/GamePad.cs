@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using SlimDX;
 using SlimDX.DirectInput;
@@ -43,7 +44,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void UpdateAll()
 		{
-			foreach (var device in Devices)
+			foreach (var device in Devices.ToList())
 				device.Update();
 		}
 

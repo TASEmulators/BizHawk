@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 		portedUrl: "https://code.google.com/p/genplus-gx/",
 		singleInstance: false
 		)]
-	public partial class GPGX : IEmulator, ISyncSoundProvider, IVideoProvider, ISaveRam, IStatable, IRegionable,
+	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
 		LibGPGX Core;
@@ -372,31 +372,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 		{
 			Core.gpgx_get_vdp_view(view);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
-		}
-
-		short[] samples = new short[4096];
-		int nsamp = 0;
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			nsamp = this.nsamp;
-			samples = this.samples;
-			this.nsamp = 0;
-		}
-
-		public void DiscardSamples()
-		{
-			this.nsamp = 0;
-		}
-
-		void update_audio()
-		{
-			IntPtr src = IntPtr.Zero;
-			Core.gpgx_get_audio(ref nsamp, ref src);
-			if (src != IntPtr.Zero)
-			{
-				Marshal.Copy(src, samples, 0, nsamp * 2);
-			}
 		}
 
 		public DisplayType Region { get; private set; }

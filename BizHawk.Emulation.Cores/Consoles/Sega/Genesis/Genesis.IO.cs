@@ -112,19 +112,19 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 			data &= 0xC0;
 			if ((data & 0x40) != 0) // TH high
 			{
-				if (Controller["P1 Up"] == false) data |= 0x01;
-				if (Controller["P1 Down"] == false) data |= 0x02;
-				if (Controller["P1 Left"] == false) data |= 0x04;
-				if (Controller["P1 Right"] == false) data |= 0x08;
-				if (Controller["P1 B"] == false) data |= 0x10;
-				if (Controller["P1 C"] == false) data |= 0x20;
+				if (Controller.IsPressed("P1 Up") == false) data |= 0x01;
+				if (Controller.IsPressed("P1 Down") == false) data |= 0x02;
+				if (Controller.IsPressed("P1 Left") == false) data |= 0x04;
+				if (Controller.IsPressed("P1 Right") == false) data |= 0x08;
+				if (Controller.IsPressed("P1 B") == false) data |= 0x10;
+				if (Controller.IsPressed("P1 C") == false) data |= 0x20;
 			}
 			else
 			{ // TH low
-				if (Controller["P1 Up"] == false) data |= 0x01;
-				if (Controller["P1 Down"] == false) data |= 0x02;
-				if (Controller["P1 A"] == false) data |= 0x10;
-				if (Controller["P1 Start"] == false) data |= 0x20;
+				if (Controller.IsPressed("P1 Up") == false) data |= 0x01;
+				if (Controller.IsPressed("P1 Down") == false) data |= 0x02;
+				if (Controller.IsPressed("P1 A") == false) data |= 0x10;
+				if (Controller.IsPressed("P1 Start") == false) data |= 0x20;
 			}
 
 		}

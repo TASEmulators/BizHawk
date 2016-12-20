@@ -204,6 +204,32 @@ void cheat_apply_cheats(int entry)
     int skip;
     int execute_next;
 
+    // If game is DK64, apply bone displacement fix
+    if (strncmp((char *)ROM_HEADER.Name, "DONKEY KONG 64", 14) == 0 && entry == ENTRY_VI) {
+        if (sl(ROM_HEADER.CRC1) == 0xEC58EABF && sl(ROM_HEADER.CRC2) == 0xAD7C7169) {
+            // DK64 USA
+            execute_cheat(0x8161963C, 0x0000, NULL);
+            execute_cheat(0x8161963E, 0x0000, NULL);
+        } else if (sl(ROM_HEADER.CRC1) == 0x11936D8C && sl(ROM_HEADER.CRC2) == 0x6F2C4B43) {
+            // DK64 PAL
+            execute_cheat(0x816128EC, 0x0000, NULL);
+            execute_cheat(0x816128EE, 0x0000, NULL);
+        } else if (sl(ROM_HEADER.CRC1) == 0x053C89A7 && sl(ROM_HEADER.CRC2) == 0xA5064302) {
+            // DK64 Japan
+            execute_cheat(0x816170AC, 0x0000, NULL);
+            execute_cheat(0x816170AE, 0x0000, NULL);
+        }
+    }
+
+    // If game is DK64 Kiosk, apply bone displacement fix
+    if (strncmp((char *)ROM_HEADER.Name, "D K DISPLAY", 11) == 0 && entry == ENTRY_VI) {
+        if (sl(ROM_HEADER.CRC1) == 0x0DD4ABAB && sl(ROM_HEADER.CRC2) == 0xB5A2A91E) {
+            // DK64 Kiosk
+            execute_cheat(0x815AFB1C, 0x0000, NULL);
+            execute_cheat(0x815AFB1E, 0x0000, NULL);
+        }
+    }
+
     // If game is Zelda OOT, apply subscreen delay fix
     if (strncmp((char *)ROM_HEADER.Name, "THE LEGEND OF ZELDA", 19) == 0 && entry == ENTRY_VI) {
         if (sl(ROM_HEADER.CRC1) == 0xEC7011B7 && sl(ROM_HEADER.CRC2) == 0x7616D72B) {

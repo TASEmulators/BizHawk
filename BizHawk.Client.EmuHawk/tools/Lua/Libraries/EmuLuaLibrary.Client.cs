@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
+
 		[RequiredService]
 		public IVideoProvider VideoProvider { get; set; }
 
@@ -155,9 +156,9 @@ namespace BizHawk.Client.EmuHawk
 			"getwindowsize",
 			"Gets the main window's size Possible values are 1, 2, 3, 4, 5, and 10"
 		)]
-		public static int GetWindowSize()
+		public int GetWindowSize()
 		{
-			return Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
+			return Global.Config.TargetZoomFactors[Emulator.SystemId];
 		}
 
 		[LuaMethodAttributes(
@@ -378,7 +379,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = size;
+				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
 				GlobalWin.MainForm.FrameBufferResized();
 				GlobalWin.OSD.AddMessage("Window size set to " + size + "x");
 			}

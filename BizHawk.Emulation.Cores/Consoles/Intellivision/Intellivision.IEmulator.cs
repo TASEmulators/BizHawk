@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
@@ -6,49 +7,79 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		[FeatureNotImplemented]
-		public ISoundProvider SoundProvider
-		{
-			get { return NullSound.SilenceProvider; }
-		}
-
-		[FeatureNotImplemented]
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return new FakeSyncSound(NullSound.SilenceProvider, 735); }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return true;
-		}
-
-		public void EndAsyncSound()
-		{
-
-		}
-
 		public ControllerDefinition ControllerDefinition
 		{
-			get { return IntellivisionController; }
+			get { return ControllerDeck.Definition; }
 		}
 
 		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			Frame++;
-			_cpu.AddPendingCycles(14934);
+			if (Tracer.Enabled)
+				_cpu.TraceCallback = (s) => Tracer.Put(s);
+			else
+				_cpu.TraceCallback = null;
+
+			//reset the count of audio samples
+			_psg.sample_count = 0;
+
+			_frame++;
+			// read the controller state here for now
+			get_controller_state();
+
+			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
+			int delay_cycles = 0; 
+			int delay_timer = -1;
+			
+			_cpu.AddPendingCycles(14934 - 3791 - _cpu.GetPendingCycles());
+			_stic.Sr1 = true;
+
 			while (_cpu.GetPendingCycles() > 0)
 			{
 				int cycles = _cpu.Execute();
-				_stic.Execute(cycles);
+				_psg.generate_sound(cycles);
+
+				if (delay_cycles>=0)
+					delay_cycles += cycles;
+
+				if (delay_timer>0)
+				{
+					delay_timer -= cycles;
+					if (delay_timer<=0)
+					{
+						_stic.ToggleSr2();
+						delay_cycles = 0;
+					}
+				}
+
+				if (delay_cycles>=800)
+				{
+					delay_cycles = -1;
+					delay_timer = 110;
+					_stic.ToggleSr2();
+				}
+
 				Connect();
-				_cpu.LogData();
 			}
+
+			_stic.Background();
+			_stic.Mobs();
+
+			_stic.Sr1 = false;
+			_cpu.AddPendingCycles(3791 - _cpu.GetPendingCycles());
+
+			while (_cpu.GetPendingCycles() > 0)
+			{
+				int cycles = _cpu.Execute();
+				//_psg.generate_sound(cycles);
+				Connect();
+			}
+
 		}
 
-		public int Frame { get; private set; }
+		private int _frame;
+		public int Frame { get { return _frame; } }
 
 		public string SystemId
 		{
@@ -62,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void ResetCounters()
 		{
-			Frame = 0;
+			_frame = 0;
 		}
 
 		public CoreComm CoreComm { get; private set; }

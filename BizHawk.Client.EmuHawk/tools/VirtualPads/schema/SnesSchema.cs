@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("SNES")]
 	public class SnesSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			for (var i = 0; i < Global.Emulator.ControllerDefinition.PlayerCount; i++)
+			for (var i = 0; i < core.ControllerDefinition.PlayerCount; i++)
 			{
 				yield return StandardController(i + 1);
 			}
