@@ -2765,7 +2765,7 @@ namespace BizHawk.Client.EmuHawk
 			if (runFrame || force)
 			{
 				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
-				var isFastForwardingOrRewinding = isFastForwarding || isRewinding;
+				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;
 
 				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
 				{
@@ -2825,8 +2825,9 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
 				//why not skip audio if the user doesnt want sound
-				bool renderSound = Global.Config.SoundEnabled || !IsTurboing;
+				bool renderSound = Global.Config.SoundEnabled && !IsTurboing;
 				renderSound |= (_currAviWriter != null && _currAviWriter.UsesAudio);
+				if (!renderSound) atten = 0;
 
 				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
 				Emulator.FrameAdvance(render, renderSound);
