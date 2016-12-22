@@ -366,7 +366,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				//A Watch needs to be generated so we can make a cheat out of that.  This is due to how the Cheat engine works.
 				//System Bus Domain, The Address to Watch, Byte size (Byte), Hex Display, Description.  Not Big Endian.
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 				//Take Watch, Add our Value we want, and it should be active when addded?
 				if (RAMCompare == null)
 				{
@@ -2429,17 +2429,17 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (byteSize == 8)
 			{
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 			}
 			else if (byteSize == 16)
 			{
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 			}
 			else if (byteSize == 32)
 			{
-				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.DWord, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+				var watch = Watch.GenerateWatch(MemoryDomains["System Bus"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 				Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 			}
 		}
@@ -2490,7 +2490,7 @@ namespace BizHawk.Client.EmuHawk
 				address = add.ToString("X6");
 				value = val.ToString("X4");
 				//Game Geneie, modifies the "ROM" which is why it says, "MD CART"
-				var watch = Watch.GenerateWatch(MemoryDomains["MD CART"], long.Parse(address, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, true, txtDescription.Text);
+				var watch = Watch.GenerateWatch(MemoryDomains["MD CART"], long.Parse(address, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, true, txtDescription.Text);
 				//Add Cheat
 				Global.CheatList.Add(new Cheat(watch, val));
 			}
@@ -2912,14 +2912,14 @@ namespace BizHawk.Client.EmuHawk
 				if (byteSize == 8)
 				{
 					//We have a Byte sized value
-					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
 				if (byteSize == 16)
 				{
 					//We have a Word (Double Byte) sized Value
-					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, false, txtDescription.Text);
+					var watch = Watch.GenerateWatch(MemoryDomains["MainRAM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, false, txtDescription.Text);
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
@@ -2988,14 +2988,14 @@ namespace BizHawk.Client.EmuHawk
 				if (byteSize == 8)
 				{
 					//We have a Byte sized value
-					var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, true, txtDescription.Text);
+					var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, true, txtDescription.Text);
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
 				if (byteSize == 16)
 				{
 					//We have a Word (Double Byte) sized Value
-					var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Client.Common.DisplayType.Hex, true, txtDescription.Text);
+					var watch = Watch.GenerateWatch(MemoryDomains["Work Ram High"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Word, Client.Common.DisplayType.Hex, true, txtDescription.Text);
 					//Take Watch, Add our Value we want, and it should be active when addded?
 					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 				}
