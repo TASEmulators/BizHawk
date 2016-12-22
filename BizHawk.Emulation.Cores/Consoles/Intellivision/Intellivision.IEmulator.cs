@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
 			int delay_cycles = 0; 
 			int delay_timer = -1;
-			
-			_cpu.AddPendingCycles(14934 - 3791 - _cpu.GetPendingCycles());
+
+			_cpu.PendingCycles = (14934 - 3791 + _cpu.GetPendingCycles());
 			_stic.Sr1 = true;
 
 			while (_cpu.GetPendingCycles() > 0)
@@ -67,7 +67,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_stic.Mobs();
 
 			_stic.Sr1 = false;
-			_cpu.AddPendingCycles(3791 - _cpu.GetPendingCycles());
+
+			_cpu.PendingCycles = (3791 + _cpu.GetPendingCycles());
 
 			while (_cpu.GetPendingCycles() > 0)
 			{
