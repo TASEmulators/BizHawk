@@ -163,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			// This simulates the Halting caused by the STIC during visible frame using SR2
 			if (BusRq && Interruptible) {// && !IntRM && !Interrupted) {
 				PendingCycles--;
+				TotalExecutedCycles++;
 				return 1;
 			}
 
