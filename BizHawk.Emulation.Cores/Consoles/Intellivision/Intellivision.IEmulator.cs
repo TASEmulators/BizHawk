@@ -40,10 +40,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				int cycles = _cpu.Execute();
 				_psg.generate_sound(cycles);
 
-				if (delay_cycles>=0)
+				if (delay_cycles>=0 && _stic.active_display)
 					delay_cycles += cycles;
 
-				if (delay_timer>0)
+				if (delay_timer> 0 && _stic.active_display)
 				{
 					delay_timer -= cycles;
 					if (delay_timer<=0)
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 				}
 
-				if (delay_cycles>=800)
+				if (delay_cycles>= 800 && _stic.active_display)
 				{
 					delay_cycles = -1;
 					delay_timer = 110;
@@ -63,12 +63,20 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				Connect();
 			}
 
-			_stic.Background();
-			_stic.Mobs();
+			// set up VBlank variables
+			_stic.in_vb_1 = true;
+			_stic.in_vb_2 = true;
 
+			if (_stic.active_display)
+			{
+				_stic.Background();
+				_stic.Mobs();
+			}
+
+			_stic.active_display = false;
 			_stic.Sr1 = false;
 
-			_cpu.PendingCycles = (3791 + _cpu.GetPendingCycles());
+			_cpu.PendingCycles = (2900 + _cpu.GetPendingCycles());
 
 			while (_cpu.GetPendingCycles() > 0)
 			{
@@ -76,6 +84,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				//_psg.generate_sound(cycles);
 				Connect();
 			}
+
+			// vblank phase 2
+			_cpu.PendingCycles = (891 + _cpu.GetPendingCycles());
+			_stic.in_vb_1 = false;
+
+			while (_cpu.GetPendingCycles() > 0)
+			{
+				int cycles = _cpu.Execute();
+				//_psg.generate_sound(cycles);
+				Connect();
+			}
+			_stic.in_vb_2 = false;
 
 		}
 

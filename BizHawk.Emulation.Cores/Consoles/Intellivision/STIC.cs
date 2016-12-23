@@ -9,6 +9,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	public sealed class STIC : IVideoProvider
 	{
 		public bool Sr1, Sr2, Sst, Fgbg = false;
+		public bool active_display, in_vb_1, in_vb_2 = false;
 		private ushort[] Register = new ushort[64];
 		private ushort ColorSP = 0x0028;
 
@@ -32,6 +33,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.Sync("Sr1", ref Sr1);
 			ser.Sync("Sr2", ref Sr2);
 			ser.Sync("Sst", ref Sst);
+			ser.Sync("active_display", ref active_display);
+			ser.Sync("in_vb_1", ref in_vb_1);
+			ser.Sync("in_vb_2", ref in_vb_2);
 			ser.Sync("Fgbg", ref Fgbg);
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
 			ser.Sync("Pending_Cycles", ref PendingCycles);
@@ -138,46 +142,56 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case 0x0000:
 					if (addr <= 0x003F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0x0021)
-						{
-							Fgbg = false;
+						if (in_vb_1 | !active_display)
+						{ 
+							if (addr == 0x0021)
+							{
+								Fgbg = false;
+							}
+							return Register[addr];
 						}
-						return Register[addr];
 					}
 					else if (addr <= 0x007F)
 					{
-						// TODO: OK only during VBlank Period 2.
-						return Register[addr - 0x0040];
+						if (in_vb_2 | !active_display)
+						{
+							return Register[addr - 0x0040];
+						}
 					}
 					break;
 				case 0x4000:
 					if (addr <= 0x403F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0x4021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = false;
+							if (addr == 0x4021)
+							{
+								Fgbg = false;
+							}
 						}
 					}
 					break;
 				case 0x8000:
 					if (addr <= 0x803F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0x8021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = false;
+							if (addr == 0x8021)
+							{
+								Fgbg = false;
+							}
 						}
 					}
 					break;
 				case 0xC000:
 					if (addr <= 0xC03F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0xC021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = false;
+							if (addr == 0xC021)
+							{
+								Fgbg = false;
+							}
 						}
 					}
 					break;
@@ -192,57 +206,73 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case 0x0000:
 					if (addr <= 0x003F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0x0021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = true;
+							if (addr == 0x0021)
+							{
+								Fgbg = true;
+							}
+							if (addr == 0x0020)
+							{
+								active_display = true;
+							}
+							Register[addr] = register_mask(addr, value);
+							return true;
 						}
-
-						//Console.WriteLine(value);
-						//Console.WriteLine(addr);
-						Register[addr] = register_mask(addr,value);
-						return true;
-					}
-					else if (addr <= 0x007F)
-					{
-						// Read-only STIC.
-						break;
 					}
 					break;
 				case 0x4000:
 					if (addr <= 0x403F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0x4021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = true;
+							if (addr == 0x4021)
+							{
+								Fgbg = true;
+							}
+							if (addr == 0x4020)
+							{
+								active_display = true;
+							}
+							Register[addr - 0x4000] = register_mask(addr - 0x4000, value);
+							return true;
 						}
-						Register[addr - 0x4000] = register_mask(addr - 0x4000, value);
-						return true;
 					}
 					break;
 				case 0x8000:
 					if (addr <= 0x803F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0x8021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = true;
+							if (addr == 0x8021)
+							{
+								Fgbg = true;
+							}
+							if (addr == 0x8020)
+							{
+								active_display = true;
+							}
+							Register[addr & 0x003F] = register_mask(addr & 0x003F, value);
+							return true;
 						}
-						Register[addr & 0x003F] = register_mask(addr & 0x003F, value);
-						return true;
 					}
 					break;
 				case 0xC000:
 					if (addr <= 0xC03F)
 					{
-						// TODO: OK only during VBlank Period 1.
-						if (addr == 0xC021)
+						if (in_vb_1 | !active_display)
 						{
-							Fgbg = true;
+							if (addr == 0xC021)
+							{
+								Fgbg = true;
+							}
+							if (addr == 0xC020)
+							{
+								active_display = true;
+							}
+							Register[addr - 0xC000] = register_mask(addr - 0xC000, value);
+							return true;
 						}
-						Register[addr - 0xC000] = register_mask(addr - 0xC000, value);
-						return true;
 					}
 					break;
 			}
@@ -310,7 +340,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					int card_num = card >> 3;
 					int fg = card & 0x0007;
 					int bg;
-		
 					if (Fgbg)
 					{
 						bg = ((card >> 9) & 0x0008) | ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
@@ -348,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								if (colors[z]==7)
 								{
-									colors[z] = ReadMemory(ColorSP) & 0x000F;
+									colors[z] = Register[ColorSP] & 0x000F;
 									square_col[z] = 0;
 								}
 								else
@@ -417,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 									ColorSP = 0x0028;
 								}
 							}
-							bg = ReadMemory(ColorSP) & 0x000F;
+							bg = Register[ColorSP] & 0x000F;
 						}
 					}
 					for (int pict_row = 0; pict_row < 8; pict_row++)
@@ -834,13 +863,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					// after we check for collision, we can clear that value for the next frame.
 					Collision[i, j] = 0;
 				}
-			}
-
-			for (int z=0;z<8;z++)
-			{
-				//Console.WriteLine(z);
-				//Console.WriteLine(Register[z + 24]);
-				
 			}
 
 		}
