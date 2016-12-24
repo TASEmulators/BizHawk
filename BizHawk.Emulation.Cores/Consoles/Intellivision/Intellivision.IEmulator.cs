@@ -30,13 +30,16 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			get_controller_state();
 
 			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
-			int delay_cycles = 600; 
+			int delay_cycles = 700; 
 			int delay_timer = -1;
 
 			_cpu.PendingCycles = (14934 - 3791 + _cpu.GetPendingCycles());
 			_stic.Sr1 = true;
 
 			bool active_display = _stic.active_display;
+
+			//also at the start of every frame the color stack is reset
+			_stic.ColorSP = 0x0028;
 
 			while (_cpu.GetPendingCycles() > 0)
 			{

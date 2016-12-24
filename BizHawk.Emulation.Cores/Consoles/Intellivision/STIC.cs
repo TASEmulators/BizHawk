@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public bool Sr1, Sr2, Sst, Fgbg = false;
 		public bool active_display, in_vb_1, in_vb_2 = false;
 		private ushort[] Register = new ushort[64];
-		private ushort ColorSP = 0x0028;
+		public ushort ColorSP = 0x0028;
 
 		public byte[] mobs = new byte[8];
 		public byte[] y_mobs = new byte[8];
@@ -324,9 +324,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			// here we will also need to apply the 'delay' register values.
 			// this shifts the background portion of the screen relative to the mobs
 
-			//also at the start of every frame the color stack is reset
-			ColorSP = 0x0028;
-			
 			// The background is a 20x12 grid of "cards".
 			for (int card_row = input_row; card_row < (input_row+1); card_row++)
 			{
