@@ -310,7 +310,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x026:
 				case 0x027:
 					// ------------------------NEEDS TESTING---------------------------
-					Console.WriteLine("here");
 					dest = (byte)(opcode & 0x7);
                     dest_value = Register[dest];
                     var ones = (dest_value ^ 0xFFFF);
