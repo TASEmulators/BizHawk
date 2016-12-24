@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		{
 			bool op1_neg = ((op1 & 0x8000) != 0);
 			bool op2_neg = ((op2 & 0x8000) != 0);
-			bool result_neg = ((op1 & 0x8000) != 0);
+			bool result_neg = ((result & 0x8000) != 0);
 			FlagO = (
 				(op1_neg && op2_neg && !result_neg) ||
 				(!op1_neg && !op2_neg && result_neg)
@@ -189,7 +189,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			switch (opcode)
 			{
 				case 0x000: // HLT
-					throw new ArgumentException(UNEXPECTED_HLT);
+							//throw new ArgumentException(UNEXPECTED_HLT);
+					cycles = 4;
+					break;
 				case 0x001: // SDBD
 					FlagD = true;
 					cycles = 4;
@@ -308,6 +310,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x026:
 				case 0x027:
 					// ------------------------NEEDS TESTING---------------------------
+					Console.WriteLine("here");
 					dest = (byte)(opcode & 0x7);
                     dest_value = Register[dest];
                     var ones = (dest_value ^ 0xFFFF);
@@ -856,7 +859,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ src_value) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, src_value, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -936,7 +939,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ src_value) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, src_value, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1165,7 +1168,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					// BEXT
 					if (ext != 0)
 					{
-						throw new ArgumentException(UNEXPECTED_BEXT);
+						//throw new ArgumentException(UNEXPECTED_BEXT);
+						cycles = 4;
 					}
 					else
 					{
@@ -1518,8 +1522,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
                     twos = (0xFFFF ^ addr_read) + 1;
                     result = dest_value + twos;
                     Calc_FlagC(result);
-                    Calc_FlagO_Add(dest_value, addr_read, result);
-                    result &= 0xFFFF;
+					Calc_FlagO_Add(dest_value, twos, result);
+					result &= 0xFFFF;
                     Calc_FlagS(result);
                     Calc_FlagZ(result);
                     Register[dest] = (ushort)result;
@@ -1591,7 +1595,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ mem_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, mem_read, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1614,7 +1618,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ addr_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, addr_read, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1686,7 +1690,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ mem_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, mem_read, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
