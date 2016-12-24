@@ -25,11 +25,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_psg.sample_count = 0;
 
 			_frame++;
+			stic_row = -1;
 			// read the controller state here for now
 			get_controller_state();
 
 			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
-			int delay_cycles = 0; 
+			int delay_cycles = 600; 
 			int delay_timer = -1;
 
 			_cpu.PendingCycles = (14934 - 3791 + _cpu.GetPendingCycles());
@@ -53,13 +54,19 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 				}
 
-				if (delay_cycles>= 800 && _stic.active_display)
+				if (delay_cycles>= 750 && _stic.active_display)
 				{
 					delay_cycles = -1;
 					delay_timer = 110;
 					_stic.ToggleSr2();
+					if (stic_row >= 0)
+					{
+						_stic.in_vb_2 = true;
+						_stic.Background(stic_row);
+						_stic.in_vb_2 = false;
+					}					
+					stic_row++;
 				}
-
 				Connect();
 			}
 
@@ -69,7 +76,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			if (_stic.active_display)
 			{
-				_stic.Background();
 				_stic.Mobs();
 			}
 
@@ -100,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		}
 
 		private int _frame;
+		private int stic_row;
 		public int Frame { get { return _frame; } }
 
 		public string SystemId

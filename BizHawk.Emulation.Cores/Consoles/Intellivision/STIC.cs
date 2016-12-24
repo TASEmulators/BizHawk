@@ -319,7 +319,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			throw new ArgumentException("Specified color does not exist.");
 		}
 
-		public void Background()
+		public void Background(int input_row)
 		{
 			// here we will also need to apply the 'delay' register values.
 			// this shifts the background portion of the screen relative to the mobs
@@ -328,7 +328,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ColorSP = 0x0028;
 			
 			// The background is a 20x12 grid of "cards".
-			for (int card_row = 0; card_row < 12; card_row++)
+			for (int card_row = input_row; card_row < (input_row+1); card_row++)
 			{
 				for (int card_col = 0; card_col < 20; card_col++)
 				{
