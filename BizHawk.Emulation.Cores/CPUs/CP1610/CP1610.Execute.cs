@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			{
 				Disassembly = string.Format(
 					"{0:X4}:  {1:X2}  {2} ",
-					RegisterPC,
+					RegisterPC-1,
 					opcode,
 					disassemble ? Disassemble((ushort)(RegisterPC-1), out notused) : "---").PadRight(26),
 				RegisterInfo = string.Format(
