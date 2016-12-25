@@ -93,7 +93,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			else
 			{
 				// Double Byte Data.
-				value = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+				value = (ushort)(ReadMemory(Register[mem]) & 0xFF);
+				if (mem >= 4)
+					Register[mem]++;
 				value |= (ushort)(ReadMemory(Register[mem]) << 8);
 			}
 			// Auto-increment the memory register if it does so on write.
