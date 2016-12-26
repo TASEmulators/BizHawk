@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.Sync("Pending_Cycles", ref PendingCycles);
 			ser.Sync("Registers", ref Register, false);
 
+			Update_Border();
+
 			ser.EndSection();
 		}
 
@@ -86,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			for (int i=0;i<64;i++)
 			{
-				Register[i] = register_mask(i, 0);
+				write_reg(i, 0);
 			}
 		}
 
@@ -110,54 +112,66 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			Sst = value;
 		}
 
-		// mask off appropriate STIC bits
-		private ushort register_mask(int reg, ushort value)
+		// mask off appropriate STIC bits and write to register
+		private void write_reg(int reg, ushort value)
 		{
 			
-			if (reg < 8)
+			if (reg < 0x8)
 			{
-				return (ushort)((value & 0x7FF) | 0x3800);
+				value = (ushort)((value & 0x7FF) | 0x3800);
 			}
-			else if (reg < 16)
+			else if (reg < 0x10)
 			{
-				return (ushort)((value & 0xFFF) | 0x3000);
+				value = (ushort)((value & 0xFFF) | 0x3000);
 			}
-			else if (reg < 24)
+			else if (reg < 0x18)
 			{
-				return (ushort)(value & 0x3FFF);
+				value = (ushort)(value & 0x3FFF);
 			}
-			else if (reg < 32)
+			else if (reg < 0x20)
 			{
-				return (ushort)((value & 0x3FF) | 0x3C00);
+				value = (ushort)((value & 0x3FF) | 0x3C00);
 			}
-			else if (reg < 40)
+			else if (reg < 0x28)
 			{
-				return (ushort)(0x3FFF);
+				value = (ushort)(0x3FFF);
 			}
-			else if (reg < 45)
+			else if (reg < 0x2D)
 			{
-				if (reg==0x2C)
-					Update_Border();
-				return (ushort)((value & 0xF) | 0x3FF0);
+				value = (ushort)((value & 0xF) | 0x3FF0);
 			}
-			else if (reg < 48)
+			else if (reg < 0x30)
 			{
-				return (ushort)(0x3FFF);
+				value = (ushort)(0x3FFF);
 			}
-			else if (reg < 51)
+			else if (reg < 0x33)
 			{
-				if (reg==50)
+				if (reg==0x32)
 				{
-					return (ushort)((value & 0x3) | 0x3FFC);
+					value = (ushort)((value & 0x3) | 0x3FFC);
 				}
-				else 
-					return (ushort)((value & 0x7) | 0x3FF8);
+				else
+					value = (ushort)((value & 0x7) | 0x3FF8);
 			}
-			else if (reg < 64)
+			else if (reg < 0x40)
 			{
-				return (ushort)(0x3FFF);
+				value = (ushort)(0x3FFF);
 			}
-			return value;
+			Register[reg] = value;
+
+			if (reg==0x21)
+			{
+				Fgbg = true;
+			}
+			if (reg==0x20)
+			{
+				active_display = true;
+			}
+
+			if (reg==0x2C)
+			{
+				Update_Border();
+			}
 		}
 
 		public ushort? ReadSTIC(ushort addr)
@@ -233,15 +247,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						if (in_vb_1 | !active_display)
 						{
-							if (addr == 0x0021)
-							{
-								Fgbg = true;
-							}
-							if (addr == 0x0020)
-							{
-								active_display = true;
-							}
-							Register[addr] = register_mask(addr, value);
+							write_reg(addr, value);
 							return true;
 						}
 					}
@@ -251,15 +257,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						if (in_vb_1 | !active_display)
 						{
-							if (addr == 0x4021)
-							{
-								Fgbg = true;
-							}
-							if (addr == 0x4020)
-							{
-								active_display = true;
-							}
-							Register[addr - 0x4000] = register_mask(addr - 0x4000, value);
+							write_reg(addr-0x4000, value);
 							return true;
 						}
 					}
@@ -269,15 +267,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						if (in_vb_1 | !active_display)
 						{
-							if (addr == 0x8021)
-							{
-								Fgbg = true;
-							}
-							if (addr == 0x8020)
-							{
-								active_display = true;
-							}
-							Register[addr & 0x003F] = register_mask(addr & 0x003F, value);
+							write_reg(addr-0x8000, value);
 							return true;
 						}
 					}
@@ -287,15 +277,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						if (in_vb_1 | !active_display)
 						{
-							if (addr == 0xC021)
-							{
-								Fgbg = true;
-							}
-							if (addr == 0xC020)
-							{
-								active_display = true;
-							}
-							Register[addr - 0xC000] = register_mask(addr - 0xC000, value);
+							write_reg(addr-0xC000, value);
 							return true;
 						}
 					}
