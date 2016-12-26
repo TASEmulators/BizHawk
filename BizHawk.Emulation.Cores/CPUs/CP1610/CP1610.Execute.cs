@@ -191,9 +191,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			switch (opcode)
 			{
 				case 0x000: // HLT
-							//throw new ArgumentException(UNEXPECTED_HLT);
-					cycles = 4;
-					break;
+					throw new ArgumentException(UNEXPECTED_HLT);
 				case 0x001: // SDBD
 					FlagD = true;
 					cycles = 4;
@@ -311,7 +309,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x025:
 				case 0x026:
 				case 0x027:
-					// ------------------------NEEDS TESTING---------------------------
 					dest = (byte)(opcode & 0x7);
                     dest_value = Register[dest];
                     var ones = (dest_value ^ 0xFFFF);
@@ -334,7 +331,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x02D:
 				case 0x02E:
 				case 0x02F:
-					// ------------------------NEEDS TESTING---------------------------
 					dest = (byte)(opcode & 0x7);
                     dest_value = Register[dest];
                     var carry = FlagC ? 1 : 0;
@@ -1169,8 +1165,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					// BEXT
 					if (ext != 0)
 					{
-						//throw new ArgumentException(UNEXPECTED_BEXT);
-						cycles = 4;
+						throw new ArgumentException(UNEXPECTED_BEXT);
 					}
 					else
 					{
@@ -1515,7 +1510,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x305:
 				case 0x306:
 				case 0x307:
-					// -------------------------------needs testing-------------------------------
                     dest = (byte)(opcode & 0x7);
                     addr = ReadMemory(RegisterPC++);
                     dest_value = Register[dest];
@@ -1706,7 +1700,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x385:
 				case 0x386:
 				case 0x387:
-					// ------------------------NEEDS TESTING---------------------------
 					dest = (byte)(opcode & 0x7);
                     addr = ReadMemory(RegisterPC++);
                     dest_value = Register[dest];
