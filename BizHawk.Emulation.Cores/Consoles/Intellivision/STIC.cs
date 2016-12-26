@@ -22,8 +22,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
 
+		private static int BORDER_OFFSET=176*8;
+
 		public int[] BGBuffer = new int[159 * 96];
-		public int[] FrameBuffer = new int[159 * 192];
+		public int[] FrameBuffer = new int[176 * 208];
 		public ushort[,] Collision = new ushort[167,210];
 
 		public void SyncState(Serializer ser)
@@ -50,10 +52,31 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return FrameBuffer; 
 		}
 
-		public int VirtualWidth { get { return 159; } }
-		public int BufferWidth { get { return 159; } }
-		public int VirtualHeight { get { return 192; } }
-		public int BufferHeight { get { return 192; } }
+		// gets called when a new border color is chosen
+		public void Update_Border()
+		{
+			for (int i=0;i<176;i++)
+			{
+				for (int j=0;j<8;j++)
+				{
+					FrameBuffer[i + j * 176]= ColorToRGBA(Register[0x2C] & 0xF);
+					FrameBuffer[i + j * 176 + 176*200] = ColorToRGBA(Register[0x2C] & 0xF);
+				}
+			}
+			for (int j=8;j<(208-8);j++)
+			{
+				for (int i=0;i<8;i++)
+				{
+					FrameBuffer[i + j * 176] = ColorToRGBA(Register[0x2C] & 0xF);
+					FrameBuffer[i + 168 + j * 176] = ColorToRGBA(Register[0x2C] & 0xF);
+				}
+			}
+		}
+
+		public int VirtualWidth { get { return 176; } }
+		public int BufferWidth { get { return 176; } }
+		public int VirtualHeight { get { return 208; } }
+		public int BufferHeight { get { return 208; } }
 		public int BackgroundColor { get { return 0; } }
 		
 		public void Reset()
@@ -113,6 +136,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 			else if (reg < 45)
 			{
+				if (reg==0x2C)
+					Update_Border();
 				return (ushort)((value & 0xF) | 0x3FF0);
 			}
 			else if (reg < 48)
@@ -509,8 +534,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						if (i >= x_border && j >= y_border)
 						{
-							FrameBuffer[(j * 2) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
-							FrameBuffer[(j * 2 + 1) * 159 + i] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
+							FrameBuffer[(j * 2) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
+							FrameBuffer[(j * 2 + 1) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
 						} 
 					}
 				}
@@ -596,8 +621,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				ushort ysiz4 = y.Bit(9) ? (ushort)4 : (ushort)1;
 				bool intr = x.Bit(8);
 				ushort x_size = x.Bit(10) ? (ushort)2 : (ushort)1;
-
-				//Console.WriteLine(intr);
 
 				ushort y_size = (ushort)(ysiz2 * ysiz4);
 				// setting yres implicitly uses an even card first
@@ -738,7 +761,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							if ((cur_x) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 							{
 								if (!(priority && (Collision[cur_x, loc_y * 2 + cur_y]&0x100)>0))
-									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x - (8 - x_delay)] = ColorToRGBA(loc_color);
+									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
 							}
 							//a MOB does not need to be visible for it to be interracting
 							//special case: a mob with x position 0 is counted as off
@@ -752,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								if ((cur_x + 1) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 								{
 									if (!(priority && (Collision[cur_x + 1, loc_y * 2 + cur_y] & 0x100) > 0))
-										FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
+										FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) + 1 - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
@@ -782,7 +805,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								if ((cur_x) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 								{
 									if (!(priority && (Collision[cur_x, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
-										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x - (8 - x_delay)] = ColorToRGBA(loc_color);
+										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
@@ -796,7 +819,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 									if ((cur_x + 1) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 									{
 										if (!(priority && (Collision[cur_x + 1, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
-											FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 159 + cur_x + 1 - (8 - x_delay)] = ColorToRGBA(loc_color);
+											FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) + 1 - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
 									}
 									//a MOB does not need to be visible for it to be interracting
 									//special case: a mob with x position 0 is counted as off
@@ -834,13 +857,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 
 					// and also make sure the border region is all the border color
-					if ((i-x_delay)>=0 && (i-x_delay)<159 && (j-y_delay*2)>=0 && (j-y_delay*2)<192)
+					if ((i-x_delay)>=0 && (i-x_delay)<=159 && (j-y_delay*2)>=0 && (j-y_delay*2)<192)
 					{
 						if ((i-x_delay) < x_border_2)
-							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C] & 0xF);
+							FrameBuffer[(j - y_delay*2) * 176 + ((i + 8) - x_delay) + BORDER_OFFSET] = ColorToRGBA(Register[0x2C] & 0xF);
 
 						if ((j - y_delay*2) < y_border_2)
-							FrameBuffer[(j - y_delay*2) * 159 + (i - x_delay)] = ColorToRGBA(Register[0x2C] & 0xF);
+							FrameBuffer[(j - y_delay*2) * 176 + ((i + 8) - x_delay) + BORDER_OFFSET] = ColorToRGBA(Register[0x2C] & 0xF);
+
+						if ((i-x_delay)==159)
+						{
+							FrameBuffer[(j - y_delay*2) * 176 + ((i + 8) - x_delay) + BORDER_OFFSET] = ColorToRGBA(Register[0x2C] & 0xF);
+						}
 					}
 
 					// the extra condition here is to ignore only border collsion bit set
