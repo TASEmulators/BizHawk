@@ -446,6 +446,38 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"setdropdownitems",
+			"Sets the items for a given dropdown box"
+		)]
+		public void SetDropdownItems(
+			int handle,
+			LuaTable items)
+		{
+			try {
+				var ptr = new IntPtr(handle);
+				foreach (var form in _luaForms) {
+					if (form.Handle == ptr) {
+						return;
+					}
+
+					foreach (Control control in form.Controls) {
+						if (control.Handle == ptr) {
+							if (control is LuaDropDown) {
+								var dropdownItems = items.Values.Cast<string>().ToList();
+								dropdownItems.Sort();
+								(control as LuaDropDown).SetItems(dropdownItems);
+							}
+
+							return;
+						}
+					}
+				}
+			} catch (Exception ex) {
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
 			"setlocation",
 			"Sets the location of a control or form by passing in the handle of the created object"
 		)]
