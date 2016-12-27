@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public int[] BGBuffer = new int[159 * 96];
 		public int[] FrameBuffer = new int[176 * 208];
-		public ushort[,] Collision = new ushort[167,210];
+		public ushort[,] Collision = new ushort[168,210];
 
 		public void SyncState(Serializer ser)
 		{
@@ -481,17 +481,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int x_border = (Register[0x32] & 0x0001) * 8;
 			int y_border = ((Register[0x32] >> 1) & 0x0001) * 8;
 
+			int min_x = x_border == 0 ? x_delay : x_border;
+			int min_y = y_border == 0 ? y_delay : y_border;
+
 			for (int j=0;j<96;j++)
 			{
 				for (int i = 0; i < 159; i++)
 				{
-					if (i >= x_delay && j >= y_delay)
+					if (i >= min_x && j >= min_y)
 					{
-						if (i >= x_border && j >= y_border)
-						{
-							FrameBuffer[(j * 2) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
-							FrameBuffer[(j * 2 + 1) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
-						} 
+						FrameBuffer[(j * 2) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
+						FrameBuffer[(j * 2 + 1) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
 					}
 				}
 			}
@@ -699,8 +699,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				}
 
 				//draw the mob and check for collision
-				//we already have the BG at this point, so for now let's assume mobs have priority for testing
-
 				for (int j = 0; j < 8; j++)
 				{
 					for (int k = 0; k < 8; k++)
@@ -720,7 +718,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							}
 							//a MOB does not need to be visible for it to be interracting
 							//special case: a mob with x position 0 is counted as off
-							if (intr && pixel && (cur_x) < 167 && (loc_y * 2 + cur_y) < 210 && loc_x != 0)
+							if (intr && pixel && (cur_x) <= 167 && (loc_y * 2 + cur_y) < 210 && loc_x != 0)
 							{
 								Collision[cur_x, loc_y * 2 + cur_y] |= (ushort)(1 << i);
 							}
@@ -734,7 +732,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
-								if (intr && pixel && (cur_x + 1) < 167 && (loc_y * 2 + cur_y) < 210 && loc_x != 0)
+								if (intr && pixel && (cur_x + 1) <= 167 && (loc_y * 2 + cur_y) < 210 && loc_x != 0)
 								{
 									Collision[cur_x + 1, loc_y * 2 + cur_y] |= (ushort)(1 << i);
 								}
@@ -743,7 +741,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 				}
 
-				//
+				// Now repeat the process if the mob is double sized
 				if (yres>1)
 				{
 					for (int j = 0; j < 8; j++)
@@ -764,7 +762,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
-								if (intr && pixel && (cur_x) < 167 && ((loc_y + 4 * y_size) * 2 + cur_y) < 210 && loc_x != 0)
+								if (intr && pixel && (cur_x) <= 167 && ((loc_y + 4 * y_size) * 2 + cur_y) < 210 && loc_x != 0)
 								{
 									Collision[cur_x, (loc_y + 4 * y_size) * 2 + cur_y] |= (ushort)(1 << i);
 								}
@@ -778,7 +776,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 									}
 									//a MOB does not need to be visible for it to be interracting
 									//special case: a mob with x position 0 is counted as off
-									if (intr && pixel && (cur_x + 1) < 167 && ((loc_y + 4 * y_size) * 2 + cur_y) < 210 && loc_x != 0)
+									if (intr && pixel && (cur_x + 1) <= 167 && ((loc_y + 4 * y_size) * 2 + cur_y) < 210 && loc_x != 0)
 									{
 										Collision[cur_x + 1, (loc_y + 4 * y_size) * 2 + cur_y] |= (ushort)(1 << i);
 									}
@@ -791,22 +789,22 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			// by now we have collision information for all 8 mobs and the BG
 			// so we can store data in the collision registers here
-			int x_border = Register[0x32].Bit(0) ? 16-x_delay : 8-x_delay;
-			int y_border = Register[0x32].Bit(1) ? 32-y_delay*2 : 16-y_delay*2;
+			int x_border = Register[0x32].Bit(0) ? 15-x_delay : 7-x_delay;
+			int y_border = Register[0x32].Bit(1) ? 30-y_delay*2 : 14-y_delay*2;
 
 			int x_border_2 = Register[0x32].Bit(0) ? 8 : 0;
 			int y_border_2 = Register[0x32].Bit(1) ? 16 : 0;
 
-			for (int i = 0; i < 167; i++)
+			for (int i = 0; i < 168; i++)
 			{
 				for (int j = 0; j < 210; j++)
 				{
 					// while we are here we can set collision detection bits for the border region
-					if (i == x_border || i == (165-x_delay))
+					if (i == x_border || i == (167-x_delay))
 					{
 						Collision[i, j] |= (1 << 9);
 					}
-					if ((j == y_border || j == y_border-1) || (j == (207-y_delay*2) ||  j == (207 - y_delay * 2+1)))
+					if (j == y_border || j == y_border+1 || j == (208-y_delay*2) ||  j == (208 - y_delay * 2+1))
 					{
 						Collision[i, j] |= (1 << 9);
 					}
@@ -826,7 +824,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						}
 					}
 
-					// the extra condition here is to ignore only border collsion bit set
+					// the extra condition here is to ignore only border/BG collsion bit set
 					if (Collision[i, j] != 0 && Collision[i,j] != (1<<9) && Collision[i,j] != (1<<8)) 
 					{
 						for (int k = 0; k < 8; k++)
