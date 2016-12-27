@@ -43,12 +43,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						//controllers
 						if (addr==0x01FE)
 						{
-							//Console.WriteLine("reading controller");
-							return _psg.Register[14];
+							islag = false;
+							return _psg.Register[14];			
 						}
 						if (addr == 0x01FF)
 						{
-							//Console.WriteLine("reading controller");
+							islag = false;
 							return _psg.Register[15];
 						}
 						break;

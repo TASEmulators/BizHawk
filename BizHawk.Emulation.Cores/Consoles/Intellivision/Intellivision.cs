@@ -73,14 +73,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public int LagCount
 		{
-			get {return 0;}
+			get {return lagcount;}
 
 			set{}
 		}
 
 		public bool IsLagFrame
 		{
-			get {return false;}
+			get {return islag;}
 
 			set {}
 		}
