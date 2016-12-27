@@ -179,58 +179,43 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F)
+					if (addr <= 0x003F && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
-						{ 
-							if (addr == 0x0021)
-							{
-								Fgbg = false;
-							}
-							return Register[addr];
-						}
-					}
-					else if (addr <= 0x007F)
-					{
-						if (in_vb_2 | !active_display)
+						if (addr == 0x0021)
 						{
-							return Register[addr - 0x0040];
+							Fgbg = false;
 						}
+						return Register[addr];
+					}
+					else if (addr>= 0x0040 && addr <= 0x007F && (in_vb_2 | !active_display))
+					{
+						return Register[addr - 0x0040];
 					}
 					break;
 				case 0x4000:
-					if (addr <= 0x403F)
+					if ((addr <= 0x403F) && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
+						if (addr == 0x4021)
 						{
-							if (addr == 0x4021)
-							{
-								Fgbg = false;
-							}
+							Fgbg = false;
 						}
 					}
 					break;
 				case 0x8000:
-					if (addr <= 0x803F)
+					if ((addr <= 0x803F) && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
+						if (addr == 0x8021)
 						{
-							if (addr == 0x8021)
-							{
-								Fgbg = false;
-							}
+							Fgbg = false;
 						}
 					}
 					break;
 				case 0xC000:
-					if (addr <= 0xC03F)
+					if ((addr <= 0xC03F) && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
+						if (addr == 0xC021)
 						{
-							if (addr == 0xC021)
-							{
-								Fgbg = false;
-							}
+							Fgbg = false;
 						}
 					}
 					break;
@@ -243,43 +228,31 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
-					if (addr <= 0x003F)
+					if (addr <= 0x003F && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
-						{
-							write_reg(addr, value);
-							return true;
-						}
+						write_reg(addr, value);
+						return true;
 					}
 					break;
 				case 0x4000:
-					if (addr <= 0x403F)
+					if (addr <= 0x403F && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
-						{
-							write_reg(addr-0x4000, value);
-							return true;
-						}
+						write_reg(addr-0x4000, value);
+						return true;
 					}
 					break;
 				case 0x8000:
-					if (addr <= 0x803F)
+					if (addr <= 0x803F && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
-						{
-							write_reg(addr-0x8000, value);
-							return true;
-						}
+						write_reg(addr-0x8000, value);
+						return true;
 					}
 					break;
 				case 0xC000:
-					if (addr <= 0xC03F)
+					if (addr <= 0xC03F && (in_vb_1 | !active_display))
 					{
-						if (in_vb_1 | !active_display)
-						{
-							write_reg(addr-0xC000, value);
-							return true;
-						}
+						write_reg(addr-0xC000, value);
+						return true;
 					}
 					break;
 			}

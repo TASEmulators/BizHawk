@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	// Sound refactor todo: Implement ISoundProvider, and register _psg in the Intellivision core
 	public sealed class PSG : ISoundProvider
 	{
 		public ushort[] Register = new ushort[16];
@@ -66,19 +65,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			for (int i = 0; i < samples.Length / 2; i++)
 			{
 				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(3.7904 * i)]);
-				//samples[i * 2] = (short)(audio_samples[(int)Math.Floor(4.0 * i)]);
-				//samples[i * 2] = (short)(audio_samples[i*5]);
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
-
-
 		}
 
 		// There is one audio clock for every 4 cpu clocks, and ~15000 cycles per frame
 		public short[] audio_samples = new short[4000];
 
 		public static int[] volume_table = new int[16] {0x0000, 0x0055, 0x0079, 0x00AB, 0x00F1, 0x0155, 0x01E3, 0x02AA,
-0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA};
+		0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA};
 
 		public int sample_count;
 
@@ -231,14 +226,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						E_up_down = 1;
 					}					
 				}
-				/*
-				if (reg == 0 || reg == 4)
-					clock_A = sq_per_A;
-				if (reg == 1 || reg == 5)
-					clock_A = sq_per_A;
-				if (reg == 2 || reg == 6)
-					clock_A = sq_per_A;
-					*/
 				return true;
 			}
 			return false;
@@ -299,12 +286,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								if (env_E == 16)
 								{
-									env_E = 14;
+									env_E = 15;
 									E_up_down = -1;
 								}
 								else
 								{
-									env_E = 1;
+									env_E = 0;
 									E_up_down = 1;
 								}
 							}
