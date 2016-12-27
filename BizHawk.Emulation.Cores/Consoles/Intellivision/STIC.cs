@@ -348,7 +348,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							colors[0] = fg;
 							colors[1] = (card >> 3) & 0x0007;
 							colors[2] = (card >> 6) & 0x0007;
-							colors[3] = ((card >> 10) & 0x0004) | ((card >> 9) & 0x0003);
+							colors[3] = ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
 
 							for (int z=0;z<4;z++)
 							{
