@@ -302,9 +302,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void Background(int input_row)
 		{
 			// here we will also need to apply the 'delay' register values.
-			// this shifts the background portion of the screen relative to the mobs
-
+			// this shifts the displayed portion of the screen relative to the BG
 			// The background is a 20x12 grid of "cards".
+
+			int bg=0;
 			for (int card_row = input_row; card_row < (input_row+1); card_row++)
 			{
 				for (int card_col = 0; card_col < 20; card_col++)
@@ -316,7 +317,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					bool gram = ((card & 0x0800) != 0);
 					int card_num = card >> 3;
 					int fg = card & 0x0007;
-					int bg;
 					if (Fgbg)
 					{
 						bg = ((card >> 9) & 0x0008) | ((card >> 11) & 0x0004) | ((card >> 9) & 0x0003);
@@ -484,7 +484,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int min_x = x_border == 0 ? x_delay : x_border;
 			int min_y = y_border == 0 ? y_delay : y_border;
 
-			for (int j=0;j<96;j++)
+			for (int j=input_row*8;j < (input_row * 8)+8; j++)
 			{
 				for (int i = 0; i < 159; i++)
 				{
@@ -492,7 +492,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						FrameBuffer[(j * 2) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
 						FrameBuffer[(j * 2 + 1) * 176 + (i+8) + BORDER_OFFSET] = BGBuffer[(j - y_delay) * 159 + i - x_delay];
-					}
+					} else
+					{
+						FrameBuffer[(j * 2) * 176 + (i + 8) + BORDER_OFFSET] = ColorToRGBA(bg);
+						FrameBuffer[(j * 2 + 1) * 176 + (i + 8) + BORDER_OFFSET] = ColorToRGBA(bg);
+					} 
 				}
 			}
 
