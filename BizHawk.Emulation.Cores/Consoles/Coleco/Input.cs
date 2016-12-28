@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (InputPortSelection == InputPortMode.Right)
 			{
-				byte retval = 0;
+				byte retval = 0xF;
 
 				//                                   0x00;
 				if (Controller.IsPressed("P1 Key 8")) retval = 0x01;
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (InputPortSelection == InputPortMode.Right)
 			{
-				byte retval = 0;
+				byte retval = 0xF;
 
 				//                                   0x00;
 				if (Controller.IsPressed("P2 Key8")) retval = 0x01;
