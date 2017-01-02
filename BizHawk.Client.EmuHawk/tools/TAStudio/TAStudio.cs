@@ -353,6 +353,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool InitializeOnLoad()
 		{
+			Mainform.PauseOnFrame = null;
+			Mainform.PauseEmulator();
+
 			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
@@ -371,7 +374,12 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 2: A tasproj is already active
 			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 			{
-				// Nothing to do
+				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
+				if (!result)
+				{
+					TasView.AllColumns.Clear();
+					StartNewTasMovie();
+				}
 			}
 
 			// Start Scenario 3: No movie, but user wants to autload their last project
@@ -508,11 +516,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageTastudio()
 		{
-			Mainform.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			SetTasMovieCallbacks();
 			SetTextProperty();
-			Mainform.PauseEmulator();
 			Mainform.RelinquishControl(this);
 			_originalEndAction = Global.Config.MovieEndAction;
 			Mainform.ClearRewindData();
@@ -534,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
 		}
 
-		private bool LoadFile(FileInfo file, bool startsFromSavestate = false)
+		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)
 		{
 			if (!file.Exists)
 			{
@@ -553,6 +559,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (startsFromSavestate)
 				GoToFrame(0);
+			else if (gotoFrame > 0)
+				GoToFrame(gotoFrame);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 
