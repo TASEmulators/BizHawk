@@ -43,9 +43,9 @@
 			// 
 			// PlaybackGroupBox
 			// 
-			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			| System.Windows.Forms.AnchorStyles.Left)
+			| System.Windows.Forms.AnchorStyles.Right)));
 			this.PlaybackGroupBox.Controls.Add(this.RecordingModeCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.AutoRestoreCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.TurboSeekCheckbox);
