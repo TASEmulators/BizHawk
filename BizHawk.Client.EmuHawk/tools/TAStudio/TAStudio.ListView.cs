@@ -721,6 +721,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
+			if (TasView.CurrentCell.Column == null)
+				return;
+
 			if (e.Button == MouseButtons.Left)
 			{
 				var buttonName = TasView.CurrentCell.Column.Name;
