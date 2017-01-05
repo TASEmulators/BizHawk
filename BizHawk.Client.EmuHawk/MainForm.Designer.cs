@@ -350,6 +350,8 @@
 			this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.C64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -429,8 +431,6 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1959,20 +1959,20 @@
 			// 
 			this.ToolBoxMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.ToolBox;
 			this.ToolBoxMenuItem.Name = "ToolBoxMenuItem";
-			this.ToolBoxMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.ToolBoxMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.ToolBoxMenuItem.Text = "&Tool Box";
 			this.ToolBoxMenuItem.Click += new System.EventHandler(this.ToolBoxMenuItem_Click);
 			// 
 			// toolStripSeparator12
 			// 
 			this.toolStripSeparator12.Name = "toolStripSeparator12";
-			this.toolStripSeparator12.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator12.Size = new System.Drawing.Size(188, 6);
 			// 
 			// RamWatchMenuItem
 			// 
 			this.RamWatchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.watch;
 			this.RamWatchMenuItem.Name = "RamWatchMenuItem";
-			this.RamWatchMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.RamWatchMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.RamWatchMenuItem.Text = "RAM &Watch";
 			this.RamWatchMenuItem.Click += new System.EventHandler(this.RamWatchMenuItem_Click);
 			// 
@@ -1980,7 +1980,7 @@
 			// 
 			this.RamSearchMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.search;
 			this.RamSearchMenuItem.Name = "RamSearchMenuItem";
-			this.RamSearchMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.RamSearchMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.RamSearchMenuItem.Text = "RAM &Search";
 			this.RamSearchMenuItem.Click += new System.EventHandler(this.RamSearchMenuItem_Click);
 			// 
@@ -1988,7 +1988,7 @@
 			// 
 			this.LuaConsoleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Lua;
 			this.LuaConsoleMenuItem.Name = "LuaConsoleMenuItem";
-			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.LuaConsoleMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.LuaConsoleMenuItem.Text = "Lua Console";
 			this.LuaConsoleMenuItem.Click += new System.EventHandler(this.LuaConsoleMenuItem_Click);
 			// 
@@ -1996,7 +1996,7 @@
 			// 
 			this.TAStudioMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.TAStudioMenuItem.Name = "TAStudioMenuItem";
-			this.TAStudioMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.TAStudioMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.TAStudioMenuItem.Text = "&TAStudio";
 			this.TAStudioMenuItem.Click += new System.EventHandler(this.TAStudioMenuItem_Click);
 			// 
@@ -2004,7 +2004,7 @@
 			// 
 			this.HexEditorMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.poke;
 			this.HexEditorMenuItem.Name = "HexEditorMenuItem";
-			this.HexEditorMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.HexEditorMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.HexEditorMenuItem.Text = "&Hex Editor";
 			this.HexEditorMenuItem.Click += new System.EventHandler(this.HexEditorMenuItem_Click);
 			// 
@@ -2012,7 +2012,7 @@
 			// 
 			this.TraceLoggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.pencil;
 			this.TraceLoggerMenuItem.Name = "TraceLoggerMenuItem";
-			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.TraceLoggerMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.TraceLoggerMenuItem.Text = "Trace &Logger";
 			this.TraceLoggerMenuItem.Click += new System.EventHandler(this.TraceLoggerMenuItem_Click);
 			// 
@@ -2020,7 +2020,7 @@
 			// 
 			this.DebuggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Bug;
 			this.DebuggerMenuItem.Name = "DebuggerMenuItem";
-			this.DebuggerMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.DebuggerMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.DebuggerMenuItem.Text = "&Debugger";
 			this.DebuggerMenuItem.Click += new System.EventHandler(this.DebuggerMenuItem_Click);
 			// 
@@ -2028,14 +2028,14 @@
 			// 
 			this.CodeDataLoggerMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.cdlogger;
 			this.CodeDataLoggerMenuItem.Name = "CodeDataLoggerMenuItem";
-			this.CodeDataLoggerMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.CodeDataLoggerMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.CodeDataLoggerMenuItem.Text = "Code-Data Logger";
 			this.CodeDataLoggerMenuItem.Click += new System.EventHandler(this.CodeDataLoggerMenuItem_Click);
 			// 
 			// MacroToolMenuItem
 			// 
 			this.MacroToolMenuItem.Name = "MacroToolMenuItem";
-			this.MacroToolMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.MacroToolMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.MacroToolMenuItem.Text = "&Macro Tool";
 			this.MacroToolMenuItem.Click += new System.EventHandler(this.MacroToolMenuItem_Click);
 			// 
@@ -2043,27 +2043,27 @@
 			// 
 			this.VirtualPadMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
 			this.VirtualPadMenuItem.Name = "VirtualPadMenuItem";
-			this.VirtualPadMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.VirtualPadMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.VirtualPadMenuItem.Text = "Virtual Pad";
 			this.VirtualPadMenuItem.Click += new System.EventHandler(this.VirtualPadMenuItem_Click);
 			// 
 			// BasicBotMenuItem
 			// 
 			this.BasicBotMenuItem.Name = "BasicBotMenuItem";
-			this.BasicBotMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.BasicBotMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.BasicBotMenuItem.Text = "Basic Bot";
 			this.BasicBotMenuItem.Click += new System.EventHandler(this.BasicBotMenuItem_Click);
 			// 
 			// toolStripSeparator11
 			// 
 			this.toolStripSeparator11.Name = "toolStripSeparator11";
-			this.toolStripSeparator11.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator11.Size = new System.Drawing.Size(188, 6);
 			// 
 			// CheatsMenuItem
 			// 
 			this.CheatsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Freeze;
 			this.CheatsMenuItem.Name = "CheatsMenuItem";
-			this.CheatsMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.CheatsMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.CheatsMenuItem.Text = "Cheats";
 			this.CheatsMenuItem.Click += new System.EventHandler(this.CheatsMenuItem_Click);
 			// 
@@ -2071,20 +2071,20 @@
 			// 
 			this.gameSharkConverterToolStripMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Shark;
 			this.gameSharkConverterToolStripMenuItem.Name = "gameSharkConverterToolStripMenuItem";
-			this.gameSharkConverterToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
-			this.gameSharkConverterToolStripMenuItem.Text = "GameShark Converter";
+			this.gameSharkConverterToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.gameSharkConverterToolStripMenuItem.Text = "Cheat Code Converter";
 			this.gameSharkConverterToolStripMenuItem.Click += new System.EventHandler(this.gameSharkConverterToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator29
 			// 
 			this.toolStripSeparator29.Name = "toolStripSeparator29";
-			this.toolStripSeparator29.Size = new System.Drawing.Size(186, 6);
+			this.toolStripSeparator29.Size = new System.Drawing.Size(188, 6);
 			// 
 			// MultiDiskBundlerFileMenuItem
 			// 
 			this.MultiDiskBundlerFileMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.SaveConfig;
 			this.MultiDiskBundlerFileMenuItem.Name = "MultiDiskBundlerFileMenuItem";
-			this.MultiDiskBundlerFileMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.MultiDiskBundlerFileMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.MultiDiskBundlerFileMenuItem.Text = "Multi-disk Bundler";
 			this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.CreateMultigameFileMenuItem_Click);
 			// 
@@ -2093,7 +2093,7 @@
 			this.externalToolToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dummyExternalTool});
 			this.externalToolToolStripMenuItem.Name = "externalToolToolStripMenuItem";
-			this.externalToolToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.externalToolToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.externalToolToolStripMenuItem.Text = "External Tool";
 			this.externalToolToolStripMenuItem.DropDownOpening += new System.EventHandler(this.ExternalToolToolStripMenuItem_DropDownOpening);
 			// 
@@ -2106,7 +2106,7 @@
 			// batchRunnerToolStripMenuItem
 			// 
 			this.batchRunnerToolStripMenuItem.Name = "batchRunnerToolStripMenuItem";
-			this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(189, 22);
+			this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
 			this.batchRunnerToolStripMenuItem.Text = "Batch Runner";
 			this.batchRunnerToolStripMenuItem.Visible = false;
 			this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.batchRunnerToolStripMenuItem_Click);
@@ -2117,7 +2117,7 @@
             this.AutoHawkMenuItem,
             this.NewHexEditorMenuItem});
 			this.ExperimentalToolsSubMenu.Name = "ExperimentalToolsSubMenu";
-			this.ExperimentalToolsSubMenu.Size = new System.Drawing.Size(189, 22);
+			this.ExperimentalToolsSubMenu.Size = new System.Drawing.Size(191, 22);
 			this.ExperimentalToolsSubMenu.Text = "Experimental Tools";
 			this.ExperimentalToolsSubMenu.DropDownOpened += new System.EventHandler(this.ExperimentalToolsSubMenu_DropDownOpened);
 			// 
@@ -3109,6 +3109,22 @@
 			this.C64SettingsMenuItem.Text = "&Settings...";
 			this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
 			// 
+			// IntvSubMenu
+			// 
+			this.IntvSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.IntVControllerSettingsMenuItem});
+			this.IntvSubMenu.Name = "IntvSubMenu";
+			this.IntvSubMenu.Size = new System.Drawing.Size(39, 19);
+			this.IntvSubMenu.Text = "&Intv";
+			// 
+			// IntVControllerSettingsMenuItem
+			// 
+			this.IntVControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.IntVControllerSettingsMenuItem.Name = "IntVControllerSettingsMenuItem";
+			this.IntVControllerSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
+			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
+			// 
 			// HelpSubMenu
 			// 
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3797,22 +3813,6 @@
 			this.timerMouseIdle.Enabled = true;
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
-			// 
-			// IntvSubMenu
-			// 
-			this.IntvSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.IntVControllerSettingsMenuItem});
-			this.IntvSubMenu.Name = "IntvSubMenu";
-			this.IntvSubMenu.Size = new System.Drawing.Size(39, 19);
-			this.IntvSubMenu.Text = "&Intv";
-			// 
-			// IntVControllerSettingsMenuItem
-			// 
-			this.IntVControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
-			this.IntVControllerSettingsMenuItem.Name = "IntVControllerSettingsMenuItem";
-			this.IntVControllerSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
-			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
-			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
 			// 
 			// MainForm
 			// 
