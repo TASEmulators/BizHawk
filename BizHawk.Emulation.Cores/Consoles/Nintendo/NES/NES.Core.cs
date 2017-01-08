@@ -49,6 +49,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte VS_coin_inserted=0;
 		public byte VS_ROM_control;
 
+		// cheat addr index tracker
+		// disables all cheats each frame
+		public int[] cheat_indexes = new int[500];
+		public int num_cheats;
+
 		// new input system
 		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
 		IControllerDeck ControllerDeck;
@@ -295,6 +300,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
+			
+
 			if (Tracer.Enabled)
 				cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
@@ -358,6 +365,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				islag = false;
 
 			videoProvider.FillFrameBuffer();
+
+			//turn off all cheats
+			for (int d=0;d<num_cheats;d++)
+			{
+				RemoveGameGenie(cheat_indexes[d]);
+			}
+			num_cheats = 0;
 		}
 
 		//PAL:
@@ -887,6 +901,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < sysbus_watch.Length)
 			{
+				cheat_indexes[num_cheats] = addr;
+				num_cheats++;
 				GetWatch(NESWatch.EDomain.Sysbus, addr).SetGameGenie(compare, value);
 			}
 		}
