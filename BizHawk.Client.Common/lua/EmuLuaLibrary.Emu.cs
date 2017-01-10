@@ -189,6 +189,31 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
+			"totalexecutedcycles",
+			"gets the total number of executed cpu cycles"
+		)]
+		public int TotalExecutedycles()
+		{
+			try
+			{
+				if (DebuggableCore == null)
+				{
+					throw new NotImplementedException();
+				}
+
+				return DebuggableCore.TotalExecutedCycles;
+			}
+			catch (NotImplementedException)
+			{
+				Log(string.Format(
+					"Error: {0} does not yet implement totalexecutedcycles()",
+					Emulator.Attributes().CoreName));
+
+				return 0;
+			}
+		}
+
+		[LuaMethodAttributes(
 			"getsystemid",
 			"Returns the ID string of the current core loaded. Note: No ROM loaded will return the string NULL"
 		)]

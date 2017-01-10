@@ -64,5 +64,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		public int TotalExecutedCycles
+		{
+			get { return (int)theMachine.CPU.Clock; }
+		}
 	}
 }

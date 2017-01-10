@@ -36,6 +36,12 @@ namespace BizHawk.Emulation.Common
 		/// Advances the core based on the given Step type
 		/// </summary>
 		void Step(StepType type);
+
+		/// <summary>
+		/// Total number of cpu cycles since the beginning of the core's lifecycle
+		/// Note that the cpu in this case is the "main" cpu, for some cores that may be somewhat subjective
+		/// </summary>
+		int TotalExecutedCycles { get; } // TODO: this should probably be a long, but most cores were using int, oh well
 	}
 
 	public class RegisterValue

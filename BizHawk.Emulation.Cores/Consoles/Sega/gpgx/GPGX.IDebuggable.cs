@@ -46,6 +46,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
 
 		private LibGPGX.mem_cb ExecCallback;

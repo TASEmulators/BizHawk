@@ -304,6 +304,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			throw new NotImplementedException();
 		}
 
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
 			public MyScanlineHookManager(LibsnesCore core)

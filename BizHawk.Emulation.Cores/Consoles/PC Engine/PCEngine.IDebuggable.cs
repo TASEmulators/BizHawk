@@ -39,5 +39,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		public int TotalExecutedCycles
+		{
+			get { return (int)Cpu.TotalExecutedCycles; }
+		}
 	}
 }
