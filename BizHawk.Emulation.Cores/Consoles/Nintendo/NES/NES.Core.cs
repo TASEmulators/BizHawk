@@ -578,7 +578,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ret_spec = read_joyport(addr);
 						if (do_the_reread && ppu.region==PPU.Region.NTSC)
 						{
-							Console.WriteLine("collision 1");
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
 						}
@@ -603,7 +602,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						ret_spec = read_joyport(addr);
 						if (do_the_reread && ppu.region == PPU.Region.NTSC)
 						{
-							Console.WriteLine("collision 2");
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
 						}
