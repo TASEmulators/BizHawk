@@ -576,8 +576,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
-						if (do_the_reread)
+						if (do_the_reread && ppu.region==PPU.Region.NTSC)
 						{
+							Console.WriteLine("collision 1");
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
 						}
@@ -585,22 +586,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					}
 				case 0x4017:
+					if (_isVS)
 					{
-						if (_isVS)
+						byte ret = 0;
+						ret = read_joyport(0x4017);
+						ret &= 1;
+
+						ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
+
+						return ret;
+
+					}
+					else
+					{
+						// special hardware glitch case
+						ret_spec = read_joyport(addr);
+						if (do_the_reread && ppu.region == PPU.Region.NTSC)
 						{
-							byte ret = 0;
-							ret = read_joyport(0x4017);
-							ret &= 1;
-
-							ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
-
-							return ret;
-
+							Console.WriteLine("collision 2");
+							ret_spec = read_joyport(addr);
+							do_the_reread = false;
 						}
-						else
-						{
-							return read_joyport(addr);
-						}
+						return ret_spec;
 					}
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
