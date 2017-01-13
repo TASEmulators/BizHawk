@@ -140,7 +140,6 @@ namespace BizHawk.Client.EmuHawk
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			BookMarkControl.Tastudio = this;
-			MarkerControl.Emulator = this.Emulator;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryRowBkColor += TasView_QueryRowBkColor;

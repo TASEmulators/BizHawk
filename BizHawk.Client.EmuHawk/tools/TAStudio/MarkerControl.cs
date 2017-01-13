@@ -16,7 +16,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MarkerControl : UserControl
 	{
 		public TAStudio Tastudio { get; set; }
-		public IEmulator Emulator { get; set; }
 		public TasMovieMarkerList Markers { get { return Tastudio.CurrentTasMovie.Markers; } }
 
 		public MarkerControl()
@@ -52,10 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var prev = Markers.PreviousOrCurrent(0);
-
-			if (this.Emulator!=null) //Temp fix
-				prev = Markers.PreviousOrCurrent(Emulator.Frame);
+			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
 				
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
@@ -164,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddMarker(bool editText = false, int? frame = null)
 		{
 			// feos: we specify the selected frame if we call this from TasView, otherwise marker should be added to the emulated frame
-			var markerFrame = frame ?? Emulator.Frame;
+			var markerFrame = frame ?? Tastudio.Emulator.Frame;
 
 			if (editText)
 			{
