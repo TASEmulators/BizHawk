@@ -60,8 +60,6 @@ function main()
 	backy    = camy
 	Xspd     = Xpos-XposLast
 	Yspd     = Ypos-YposLast
-	XposLast = Xpos
-	YposLast = Ypos
 	facing   = AND(rb(GolBase+0x48),2) -- object flag 1
 	
 	Background()
@@ -71,9 +69,6 @@ function main()
 	HUD()
 	RoomTime()
 	Input()
-	
-	rndlast = rnd1
-	workinglast = working
 end
 
 function RoomTime()
@@ -440,6 +435,11 @@ event.onframeend(function()
 	end
 	
 	emu.setlagcount(lagcount)
+	
+	rndlast = rnd1
+	workinglast = working
+	XposLast = Xpos
+	YposLast = Ypos
 end)
 
 while true do
