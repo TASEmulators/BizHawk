@@ -55,7 +55,8 @@ namespace BizHawk.Client.EmuHawk
 				
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
-				color = TAStudio.Marker_FrameCol;
+				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
+				color = TAStudio.CurrentFrame_InputLog;
 			}
 			else if (index < Markers.Count)
 			{
@@ -174,7 +175,11 @@ namespace BizHawk.Client.EmuHawk
 						Markers.PreviousOrCurrent(markerFrame).Message :
 						""
 				};
-				var result = i.ShowHawkDialog();
+
+				var point = Cursor.Position;
+				point.Offset(i.Width / -2, i.Height / -2);
+
+				var result = i.ShowHawkDialog(position: point);
 				if (result == DialogResult.OK)
 				{
 					Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
@@ -189,9 +194,10 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker)
+		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
 		{
 			var markerFrame = marker.Frame;
+			var point = default(Point);
 			InputPrompt i = new InputPrompt
 			{
 				Text = "Marker for frame " + markerFrame,
@@ -203,7 +209,12 @@ namespace BizHawk.Client.EmuHawk
 					""
 			};
 
-			var result = i.ShowHawkDialog();
+			if (followCursor)
+			{
+				point = Cursor.Position;
+				point.Offset(i.Width / -2, i.Height / -2);
+			}
+			var result = i.ShowHawkDialog(position: point);
 
 			if (result == DialogResult.OK)
 			{

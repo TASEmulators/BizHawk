@@ -726,21 +726,28 @@ namespace BizHawk.Client.EmuHawk
 
 			if (e.Button == MouseButtons.Left)
 			{
-				var buttonName = TasView.CurrentCell.Column.Name;
-
 				if (TasView.CurrentCell.RowIndex.HasValue &&
-					buttonName == FrameColumnName &&
+					TasView.CurrentCell.Column.Name == FrameColumnName &&
 					!FloatEditingMode)
 				{
-					if (Settings.EmptyMarkers)
+					var existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == TasView.CurrentCell.RowIndex.Value);
+
+					if (existingMarker != null)
 					{
-						CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
-						RefreshDialog();
+						MarkerControl.EditMarkerPopUp(existingMarker, true);
 					}
 					else
 					{
-						ClearLeftMouseStates();
-						MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
+						if (Settings.EmptyMarkers)
+						{
+							CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
+							RefreshDialog();
+						}
+						else
+						{
+							ClearLeftMouseStates();
+							MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
+						}
 					}
 				}
 			}
