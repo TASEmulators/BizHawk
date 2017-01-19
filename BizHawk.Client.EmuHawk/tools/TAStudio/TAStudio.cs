@@ -626,12 +626,12 @@ namespace BizHawk.Client.EmuHawk
 					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 					if (result1 == DialogResult.OK)
 					{
+						StartNewMovieWrapper(false, movie);
 						ConvertCurrentMovieToTasproj();
+						SetUpColumns();
+						return true;
 					}
-					else
-					{
-						return false;
-					}
+					return false;
 				}
 				else 
 				{

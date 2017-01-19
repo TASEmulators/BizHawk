@@ -61,15 +61,21 @@ namespace BizHawk.Client.EmuHawk
 					filename = string.Empty;
 				}
 
-				var file = OpenFileDialog(
-					filename,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-					"Tas Project Files",
-					"tasproj");
-
-				if (file != null)
+				// need to be fancy here, so call the ofd constructor directly instead of helper
+				var all = "*." + string.Join(";*.", MovieService.MovieExtensions.Reverse());
+				var ofd = new OpenFileDialog
 				{
-					LoadFile(file);
+					FileName = filename,
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					Filter = string.Format(
+						"All Available Files ({0})|{0}|TAS Project Files (*.{1})|*.{1}|Movie Files (*.{2})|*.{2}|All Files|*.*",
+						all, TasMovie.Extension, MovieService.DefaultExtension)
+				};
+
+				var result = ofd.ShowHawkDialog();
+				if (result == DialogResult.OK)
+				{
+					LoadFile(new FileInfo(ofd.FileName));
 				}
 			}
 		}
