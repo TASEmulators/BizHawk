@@ -22,13 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: UI flow that conveniently allows to start from savestate
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
-
-		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
-
 		private BackgroundWorker _saveBackgroundWorker;
 		private BackgroundWorker _seekBackgroundWorker;
-
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
+		private UndoHistoryForm _undoForm;
+		private Timer _autosaveTimer = new Timer();
+		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private Dictionary<string, string> GenerateColumnNames()
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
@@ -36,20 +35,28 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
-		private UndoHistoryForm _undoForm;
-		private Timer _autosaveTimer = new Timer();
-
-		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
-		{
-			Size = new Size(256, 240),
-		};
+		public bool IsInMenuLoop { get; private set; }
 
 		public string statesPath
 		{
 			get { return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); }
 		}
 
-		public bool IsInMenuLoop { get; private set; }
+		public TasMovie CurrentTasMovie
+		{
+			get { return Global.MovieSession.Movie as TasMovie; }
+		}
+
+		public MainForm Mainform
+		{
+			get { return GlobalWin.MainForm; }
+		}
+
+		/// <summary>
+		/// Separates "restore last position" logic from seeking caused by navigation.
+		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
+		/// </summary>
+		public int LastPositionFrame { get; set; }
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -104,23 +111,6 @@ namespace BizHawk.Client.EmuHawk
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
 		}
-
-		public TasMovie CurrentTasMovie
-		{
-			get { return Global.MovieSession.Movie as TasMovie; }
-		}
-
-		public MainForm Mainform
-		{
-			get { return GlobalWin.MainForm; }
-		}
-
-		/// <summary>
-		/// Separates "restore last position" logic from seeking caused by navigation.
-		/// TASEditor never kills LastPositionFrame, and it only pauses on it,
-		/// if it hasn't been greenzoned beforehand and middle mouse button was pressed.
-		/// </summary>
-		public int LastPositionFrame { get; set; }
 
 		#region "Initializing"
 
@@ -269,24 +259,6 @@ namespace BizHawk.Client.EmuHawk
 				DialogResult = DialogResult.Cancel;
 				return;
 			}
-
-			// Set the screenshot to "1x" resolution of the core
-			// cores like n64 and psx are going to still have sizes too big for the control, so cap them
-			int width = VideoProvider.BufferWidth;
-			int height = VideoProvider.BufferHeight;
-			if (width > 320)
-			{
-				double ratio = 320.0 / (double)width;
-				width = 320;
-				height = (int)((double)(height) * ratio);
-			}
-			ScreenshotControl.DrawingHeight = height;
-			ScreenshotControl.Size = new Size(width, ScreenshotControl.DrawingHeight + ScreenshotControl.UserPadding);
-
-
-			ScreenshotControl.Visible = false;
-			Controls.Add(ScreenshotControl);
-			ScreenshotControl.BringToFront();
 
 			SetColumnsFromCurrentStickies();
 

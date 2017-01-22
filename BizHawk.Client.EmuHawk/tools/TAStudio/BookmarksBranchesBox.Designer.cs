@@ -45,6 +45,7 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.RemoveBranchContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.ScreenshotTooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.BranchView = new BizHawk.Client.EmuHawk.InputRoll();
 			this.BookmarksBranchesGroupBox.SuspendLayout();
 			this.BranchesContextMenu.SuspendLayout();
@@ -212,29 +213,45 @@
 			this.RemoveBranchContextMenuItem.Text = "Remove";
 			this.RemoveBranchContextMenuItem.Click += new System.EventHandler(this.RemoveBranchToolStripMenuItem_Click);
 			// 
+			// ScreenshotTooltip
+			// 
+			this.ScreenshotTooltip.AutomaticDelay = 0;
+			this.ScreenshotTooltip.AutoPopDelay = 34952;
+			this.ScreenshotTooltip.BackColor = System.Drawing.SystemColors.Control;
+			this.ScreenshotTooltip.InitialDelay = 0;
+			this.ScreenshotTooltip.OwnerDraw = true;
+			this.ScreenshotTooltip.ReshowDelay = 0;
+			this.ScreenshotTooltip.ShowAlways = true;
+			this.ScreenshotTooltip.UseAnimation = false;
+			this.ScreenshotTooltip.UseFading = false;
+			this.ScreenshotTooltip.Draw += new System.Windows.Forms.DrawToolTipEventHandler(this.Screenshot_Draw);
+			this.ScreenshotTooltip.Popup += new System.Windows.Forms.PopupEventHandler(this.Screenshot_Popup);
+			// 
 			// BranchView
 			// 
 			this.BranchView.AllowColumnReorder = false;
 			this.BranchView.AllowColumnResize = false;
+			this.BranchView.allowRightClickSelecton = true;
 			this.BranchView.AlwaysScroll = false;
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.BranchView.CellHeightPadding = 0;
 			this.BranchView.ContextMenuStrip = this.BranchesContextMenu;
-			this.BranchView.allowRightClickSelecton = true;
 			this.BranchView.FullRowSelect = true;
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
-			this.BranchView.HoverInterval = 1;
 			this.BranchView.LagFramesToHide = 0;
+			this.BranchView.letKeysModifySelection = false;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
 			this.BranchView.MaxCharactersInHorizontal = 1;
 			this.BranchView.MultiSelect = false;
 			this.BranchView.Name = "BranchView";
 			this.BranchView.RowCount = 0;
 			this.BranchView.ScrollSpeed = 13;
+			this.BranchView.SeekingCutoffInterval = 0;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
+			this.BranchView.suspendHotkeys = false;
 			this.BranchView.TabIndex = 0;
 			this.BranchView.CellHovered += new BizHawk.Client.EmuHawk.InputRoll.HoverEventHandler(this.BranchView_CellHovered);
 			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);
@@ -275,5 +292,6 @@
 		private System.Windows.Forms.Button LoadBranchButton;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolTip ScreenshotTooltip;
 	}
 }
