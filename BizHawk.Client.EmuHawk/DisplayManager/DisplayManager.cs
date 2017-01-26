@@ -333,7 +333,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		/// <summary>
-		/// Using the current filter program, turn a emulator screen space coordinat to a window coordinate (suitable for lua layer drawing)
+		/// Using the current filter program, turn a emulator screen space coordinate to a window coordinate (suitable for lua layer drawing)
 		/// </summary>
 		public Point TransformPoint(Point p)
 		{
