@@ -105,16 +105,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						at &= 0x03;
 						at <<= 2;
 						bgdata.at = at;
-
-						//horizontal scroll clocked at cycle 3 and then
-						//vertical scroll at 251
 						runppu(1);
-						if (reg_2001.PPUON)
-						{
-							ppur.increment_hsc();
-							if (ppur.status.cycle == 251)
-								ppur.increment_vs();
-						}
+						
 						break;
 					}
 				case 3:
@@ -132,9 +124,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ppu_addr_temp |= 8;
 					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
 					runppu(1);
+
+					//horizontal scroll clocked at cycle 3 and then
+					//vertical scroll at 255
+					if (reg_2001.PPUON)
+					{
+						ppur.increment_hsc();
+						if (ppur.status.cycle == 255)
+							ppur.increment_vs();
+					}
 					break;
 				case 7:
+					
 					runppu(1);
+					
 					break;
 			} //switch(cycle)
 		}
@@ -638,10 +641,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//register before around a full frame, but no games
 			//should write to those regs during that time, it needs
 			//to wait for vblank
+			/*
+			if (ppudead < 2)
+			{
+				ppur.status.sl = 241;
+				runppu(1);
+				Reg2002_vblank_active = true;
+				runppu(5);
+				runppu(postNMIlines * kLineTime - 6);
+				ppur.status.sl = 0;
+				clear_2002();
+			}
 			
+			if (ppudead==2)
+			{
+			*/
 			runppu(241 * kLineTime-7*3);
-			//runppu(preNMIlines * kLineTime);
-			--ppudead;
+			/*
+			} else
+			{
+				runppu(241 * kLineTime);
+				runppu(preNMIlines * kLineTime);
+				idleSynch ^= true;
+			}
+			*/
+
+			ppudead--;
 		}
 	}
 }

@@ -58,8 +58,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
 		public byte ppu_open_bus=0;
-		public bool s_latch_clear;
-		public bool d_latch_clear;
 		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
 
@@ -169,14 +167,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				ht = _ht;
 				h = _h;
-			}
-
-			public void clear_latches()
-			{
-				_fv = _v = _h = _vt = _ht = 0;
-				fh = 0;
-				ppu.d_latch_clear = true;
-				ppu.s_latch_clear = true;
 			}
 
 			public void increment_hsc()
@@ -344,9 +334,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (!reg_2000.vblank_nmi_gen & ((value & 0x80) != 0) && (Reg2002_vblank_active) && !Reg2002_vblank_clear_pending)
 			{
 				//if we just unleashed the vblank interrupt then activate it now
-				NMI_PendingInstructions = 2;
+				//if (ppudead != 1)
+					NMI_PendingInstructions = 2;
+
+				//NMI_PendingInstructions = 2;
 			}
-			reg_2000.Value = value;
+			//reg_2000.Value = value;
+			//if (ppudead != 1)
+				reg_2000.Value = value;
 
 
 		}
@@ -366,11 +361,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void write_2002(byte value) { }
 		byte read_2002()
 		{
-			//once we thought we clear latches here, but that caused midframe glitches.
-			//i think we should only reset the state machine for 2005/2006
-			//ppur.clear_latches();
 			byte ret = peek_2002();
 
+			// reading from $2002 resets the destination for $2005 and $2006 writes
 			vtoggle = false;
 			Reg2002_vblank_active = 0;
 			Reg2002_vblank_active_pending = false;
@@ -477,7 +470,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (!vtoggle)
 			{
-				ppur._ht= value >> 3;
+				ppur._ht = value >> 3;
 				ppur.fh = value & 7;
 				//nes.LogLine("scroll wrote ht = {0} and fh = {1}", ppur._ht, ppur.fh);
 			}
@@ -495,36 +488,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//VRAM address register (write)
 		void write_2006(byte value)
 		{
-			//if (d_latch_clear)
-			//{
-				if (!vtoggle)
-				{
-					ppur._vt &= 0x07;
-					ppur._vt |= (value & 0x3) << 3;
-					ppur._h = (value >> 2) & 1;
-					ppur._v = (value >> 3) & 1;
-					ppur._fv = (value >> 4) & 3;
-					//nes.LogLine("addr wrote fv = {0}", ppur._fv);
-				}
-				else
-				{
-					ppur._vt &= 0x18;
-					ppur._vt |= (value >> 5);
-					ppur._ht = value & 31;
-					ppur.install_latches();
-					//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
-					d_latch_clear = false;
-					//normally the address isnt observed by the board till it gets clocked by a read or write.
-					//but maybe thats just because a ppu read/write shoves it on the address bus
-					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
-					//ONLY if the ppu is not rendering
-					if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
-						nes.Board.AddressPPU(ppur.get_2007access());
-				}
+			if (!vtoggle)
+			{
+				ppur._vt &= 0x07;
+				ppur._vt |= (value & 0x3) << 3;
+				ppur._h = (value >> 2) & 1;
+				ppur._v = (value >> 3) & 1;
+				ppur._fv = (value >> 4) & 3;
+				//nes.LogLine("addr wrote fv = {0}", ppur._fv);
+			}
+			else
+			{
+				ppur._vt &= 0x18;
+				ppur._vt |= (value >> 5);
+				ppur._ht = value & 31;
+				ppur.install_latches();
+				//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
+				//normally the address isnt observed by the board till it gets clocked by a read or write.
+				//but maybe thats just because a ppu read/write shoves it on the address bus
+				//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
+				//ONLY if the ppu is not rendering
+				if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+					nes.Board.AddressPPU(ppur.get_2007access());
+			}
 
-				vtoggle ^= true;
-			//}
-			
+			vtoggle ^= true;
+
 		}
 		byte read_2006() { return ppu_open_bus; }
 		byte peek_2006() { return ppu_open_bus; }
