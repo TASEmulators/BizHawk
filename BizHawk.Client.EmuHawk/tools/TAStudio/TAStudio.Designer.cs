@@ -1299,7 +1299,6 @@ namespace BizHawk.Client.EmuHawk
 			this.SplicerStatusLabel.Name = "SplicerStatusLabel";
 			this.SplicerStatusLabel.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
 			this.SplicerStatusLabel.Size = new System.Drawing.Size(163, 17);
-			this.SplicerStatusLabel.Text = "0 selected, clipboard: empty";
 			// 
 			// TasPlaybackBox
 			// 

@@ -497,6 +497,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			Mainform.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
+			SetSplicer();
 		}
 
 		#endregion
@@ -852,23 +853,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSplicer()
 		{
-			// TODO: columns selected
-			// TODO: clipboard
-			var list = TasView.SelectedRows;
-			string message = "Selected: ";
-
-			if (list.Any())
-			{
-				message += list.Count() + " rows 0 col, Clipboard: ";
-			}
-			else
-			{
-				message += list.Count() + " none, Clipboard: ";
-			}
-
-			message += _tasClipboard.Any() ? _tasClipboard.Count + " rows 0 col" : "empty";
-
-			SplicerStatusLabel.Text = message;
+			// TODO: columns selected?
+			SplicerStatusLabel.Text =
+				"Selected: " + TasView.SelectedRows.Count() + " frame" +
+				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
+				", Clipboard: " + (_tasClipboard.Any() ? _tasClipboard.Count + " frame" +
+				(_tasClipboard.Count == 1 ? "" : "s") : "empty");
 		}
 
 		private void UpdateChangesIndicator()

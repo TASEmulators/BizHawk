@@ -369,8 +369,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				//_tasClipboard.Clear();
-				var list = TasView.SelectedRows.ToList();
+				_tasClipboard.Clear();
+				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
 				foreach (var index in list)
@@ -378,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					//_tasClipboard.Add(new TasClipboardEntry(index, input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -480,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				//_tasClipboard.Clear();
+				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
@@ -489,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					//_tasClipboard.Add(new TasClipboardEntry(index, input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
