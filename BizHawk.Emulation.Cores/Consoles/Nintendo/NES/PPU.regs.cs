@@ -1,9 +1,4 @@
-﻿//TODO - better sprite hit handling (be sure to test world runner)
-//http://nesdev.parodius.com/bbs/viewtopic.php?t=626
-
-//TODO - Reg2002_objoverflow is not working in the dummy reads test.. why are we setting it when nintendulator doesnt>
-
-//blargg: Reading from $2007 when the VRAM address is $3fxx will fill the internal read buffer with the contents at VRAM address $3fxx, in addition to reading the palette RAM. 
+﻿//blargg: Reading from $2007 when the VRAM address is $3fxx will fill the internal read buffer with the contents at VRAM address $3fxx, in addition to reading the palette RAM. 
 
 				//static const byte powerUpPalette[] =
 				//{
@@ -326,7 +321,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			vtoggle = false;
 			VRAMBuffer = 0;
 		}
-		//---------------------
 
 		//PPU CONTROL (write)
 		void write_2000(byte value)
@@ -336,10 +330,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//if we just unleashed the vblank interrupt then activate it now
 				//if (ppudead != 1)
 					NMI_PendingInstructions = 2;
-
-				//NMI_PendingInstructions = 2;
 			}
-			//reg_2000.Value = value;
 			//if (ppudead != 1)
 				reg_2000.Value = value;
 
@@ -617,7 +608,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return ret;
 		}
-		//--------
 		
 		public byte ReadReg(int addr)
 		{
@@ -703,7 +693,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default: throw new InvalidOperationException();
 			}
 		}
-		
 		
 		public void ppu_open_bus_decay(byte action)
 		{

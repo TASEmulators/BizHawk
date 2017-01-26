@@ -300,8 +300,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool hardResetSignal;
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			
-
 			if (Tracer.Enabled)
 				cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
@@ -394,6 +392,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool IRQ_delay;
 		public bool special_case_delay; // very ugly but the only option
 		public bool do_the_reread;
+		public byte DB; //old data bus values from previous reads
+
 
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -406,8 +406,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cpu_step++;
 				if (cpu_step == 5) cpu_step = 0;
 				cpu_stepcounter = 0;
-
-
 
 				///////////////////////////
 				// OAM DMA start
@@ -502,7 +500,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					special_case_delay = false;
 				}
 
-
 				cpu.ExecuteOne();
 				apu.RunOne(false);
 
@@ -520,8 +517,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu.RDY = true;
 					IRQ_delay = true;
 				}
-
-
 
 				ppu.ppu_open_bus_decay(0);
 
@@ -845,9 +840,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			return ret;
 		}
-
-		//old data bus values from previous reads
-		public byte DB;
 
 		public void ExecFetch(ushort addr)
 		{
