@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int yp;
 		public int target;
 		public int spriteHeight;
-		public int o_bug; // this is incramented when checks for sprite overflow start, mirroring a hardware bug
 		public byte[] soam = new byte[512]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
 		public bool reg_2001_color_disable_latch; // the value used here is taken 
 
@@ -196,7 +195,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				soam_m_index_aux = 0;
 				oam_index_aux = 0;
 				oam_index = 0;
-				o_bug = 0;
 				is_even_cycle = true;
 				sprite_eval_write = true;
 				sprite_zero_go = false;
@@ -254,12 +252,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								if (oam_index == 64)
 								{
-									oam_index_aux = 0;
-									oam_index = 0;
 									sprite_eval_write = false;
 								}
 
-								if (is_even_cycle)
+								if (is_even_cycle && oam_index<64)
 								{
 									read_value = OAM[oam_index * 4 + soam_m_index];
 
@@ -322,14 +318,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										oam_index = oam_index_aux;
 									}
 
-
 								}
 
 							}
+
+
+
 							//////////////////////////////////////////////////
 							//Sprite Evaluation End
 							//////////////////////////////////////////////////
-							
+
 							//process the current clock's worth of bg data fetching
 							//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
 							if (reg_2001.show_obj || reg_2001.show_bg)
@@ -433,7 +431,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						Read_bgdata(ref bgdata[xt + 2]);
 
 				// normally only 8 sprites are allowed, but with a particular setting we can have more then that
+				// this extra bit is here because the actual loop doesn't have enough time to scann all sprites if there are more then 8
+				if (nes.Settings.AllowMoreThanEightSprites)
+				{
+					while (oam_index_aux < 64)
+					{
+						//look for sprites 
+						soam[soam_index * 4] = OAM[oam_index_aux * 4];
+						read_value_aux = OAM[oam_index_aux * 4];
+						if (yp >= read_value_aux && yp < read_value_aux + spriteHeight)
+						{
+							soam[soam_index * 4 + 1] = OAM[oam_index_aux * 4 + 1];
+							soam[soam_index * 4 + 2] = OAM[oam_index_aux * 4 + 2];
+							soam[soam_index * 4 + 3] = OAM[oam_index_aux * 4 + 3];
+							soam_index++;
+							oam_index_aux++;
+						}
+						else
+						{
+							oam_index_aux++;
+						}
+					}
+				}
+
 				soam_index_prev = soam_index;
+
 				if (soam_index_prev > 8 && !nes.Settings.AllowMoreThanEightSprites)
 					soam_index_prev = 8;
 
@@ -453,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					bound = 8;
 				}
 
-				for (int s = 0; s < bound; s++)
+				for (int s = 0; s < 8; s++)
 				{
 					//if this is a real sprite sprite, then it is not above the 8 sprite limit.
 					//this is how we support the no 8 sprite limit feature.
@@ -461,7 +483,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//this could be handy for the debugging tools also
 					bool realSprite = (s < 8);
 					bool junksprite = (!reg_2001.PPUON);
-					bool extra_sprite = (s >= 8);
 
 					t_oam[s].oam_y = soam[s * 4];
 					t_oam[s].oam_ind = soam[s * 4 + 1];
@@ -493,7 +514,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					//garbage nametable fetches + scroll resets
 					int garbage_todo = 2;
+
 					ppubus_read(ppur.get_ntread(), true, true);
+
 					if (reg_2001.PPUON)
 					{
 						if (sl == 0 && ppur.status.cycle == 304)
@@ -526,6 +549,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							garbage_todo = 0;
 						}
 					}
+
 					if (realSprite)
 					{
 						for (int i = 0; i < garbage_todo; i++)
@@ -601,6 +625,85 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 
 				} // sprite pattern fetch loop
+
+				//now do the same for extra sprites, but without any cycles run
+				if (bound>8)
+				{
+					for (int s = 8; s < bound; s++)
+					{
+						bool junksprite = (!reg_2001.PPUON);
+
+						t_oam[s].oam_y = soam[s * 4];
+						t_oam[s].oam_ind = soam[s * 4 + 1];
+						t_oam[s].oam_attr = soam[s * 4 + 2];
+						t_oam[s].oam_x = soam[s * 4 + 3];
+
+						int line = yp - t_oam[s].oam_y;
+						if ((t_oam[s].oam_attr & 0x80) != 0) //vflip
+							line = spriteHeight - line - 1;
+
+						int patternNumber = t_oam[s].oam_ind;
+						int patternAddress;
+
+						//8x16 sprite handling:
+						if (reg_2000.obj_size_16)
+						{
+							int bank = (patternNumber & 1) << 12;
+							patternNumber = patternNumber & ~1;
+							patternNumber |= (line >> 3) & 1;
+							patternAddress = (patternNumber << 4) | bank;
+						}
+						else
+							patternAddress = (patternNumber << 4) | (reg_2000.obj_pattern_hi << 12);
+
+						//offset into the pattern for the current line.
+						//tricky: tall sprites have already had lines>8 taken care of by getting a new pattern number above.
+						//so we just need the line offset for the second pattern
+						patternAddress += line & 7;
+
+						//garbage nametable fetches + scroll resets
+						int garbage_todo = 2;
+
+						ppubus_read(ppur.get_ntread(), true, false);
+
+
+						for (int i = 0; i < garbage_todo; i++)
+						{
+							if (i == 0)
+							{
+								read_value = t_oam[s].oam_y;
+							}
+							else
+							{
+								read_value = t_oam[s].oam_ind;
+							}
+						}
+
+						ppubus_read(ppur.get_atread(), true, false); //at or nt?
+
+						read_value = t_oam[s].oam_attr;
+						read_value = t_oam[s].oam_x;
+
+						int addr = patternAddress;
+						t_oam[s].patterns_0 = ppubus_read(addr, true, false);
+
+						read_value = t_oam[s].oam_x;
+
+						addr += 8;
+						t_oam[s].patterns_1 = ppubus_read(addr, true, false);
+
+						read_value = t_oam[s].oam_x;
+
+						// hflip
+						if ((t_oam[s].oam_attr & 0x40) == 0)
+						{
+							t_oam[s].patterns_0 = BitReverse.Byte8[t_oam[s].patterns_0];
+							t_oam[s].patterns_1 = BitReverse.Byte8[t_oam[s].patterns_1];
+						}
+
+					} // sprite pattern fetch loop
+
+				}
 
 				ppuphase = PPUPHASE.BG;
 
