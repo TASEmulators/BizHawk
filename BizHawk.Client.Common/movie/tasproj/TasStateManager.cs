@@ -773,7 +773,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// Check if there are any branch states for the given frame.
-			if (!BranchStates.ContainsKey(frame) || BranchStates[frame] == null)
+			if (!BranchStates.ContainsKey(frame) || BranchStates[frame] == null || branchHash == -1)
 				return -2;
 
 			// Loop through branch states for the given frame.
