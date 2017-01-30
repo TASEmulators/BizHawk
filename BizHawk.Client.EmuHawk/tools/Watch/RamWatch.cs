@@ -218,13 +218,13 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null
 				&& !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
-				&& _watches.All(w => _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name)))
+				&& _watches.All(w => _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
+				&& (Global.Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed))
+				)
 			{
 				_watches.RefreshDomains(_memoryDomains);
 				_watches.Reload();
 				UpdateStatusBar();
-
-				
 			}
 			else
 			{
