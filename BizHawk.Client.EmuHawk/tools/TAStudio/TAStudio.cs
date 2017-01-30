@@ -327,6 +327,38 @@ namespace BizHawk.Client.EmuHawk
 			Mainform.PauseOnFrame = null;
 			Mainform.PauseEmulator();
 
+			// Start Scenario 0: bsnes in performance mode (copied from RecordMovieMenuItem_Click())
+			if (Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore)
+			{
+				var snes = (BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore)Emulator;
+				if (snes.CurrentProfile == "Performance")
+				{
+					var box = new CustomControls.MsgBox(
+						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
+						"Stability Warning",
+						MessageBoxIcon.Warning);
+
+					box.SetButtons(
+						new[] { "Switch", "Cancel" },
+						new[] { DialogResult.Yes, DialogResult.Cancel });
+
+					box.MaximumSize = new Size(450, 350);
+					box.SetMessageToAutoSize();
+					var result = box.ShowDialog();
+
+					if (result == DialogResult.Yes)
+					{
+						var ss = snes.GetSyncSettings();
+						ss.Profile = "Compatibility";
+						snes.PutSyncSettings(ss);
+					}
+					else if (result == DialogResult.Cancel)
+					{
+						return false;
+					}
+				}
+			}
+			
 			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
