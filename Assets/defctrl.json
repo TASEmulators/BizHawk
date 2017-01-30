@@ -238,14 +238,14 @@
       "P4 R": ""
     },
     "Nintento 64 Controller": {
-      "P1 A Up": "UpArrow, J1 DpadUp, X1 LStickUp",
-      "P1 A Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
-      "P1 A Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
-      "P1 A Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
-      "P1 DPad U": "",
-      "P1 DPad D": "",
-      "P1 DPad L": "",
-      "P1 DPad R": "",
+      "P1 A Up": "UpArrow, J1 POV1U",
+      "P1 A Down": "DownArrow, J1 POV1D",
+      "P1 A Left": "LeftArrow, J1 POV1L",
+      "P1 A Right": "RightArrow, J1 POV1R",
+      "P1 DPad U": "X1 DpadUp",
+      "P1 DPad D": "X1 DpadDown",
+      "P1 DPad L": "X1 DpadLeft",
+      "P1 DPad R": "X1 DpadRight",
       "P1 Start": "Return, J1 B10, X1 Start",
       "P1 Z": "D, J1 B3, X1 B",
       "P1 B": "S, J1 B1, X1 X",
@@ -1192,12 +1192,12 @@
     },
     "Nintento 64 Controller": {
       "P1 X Axis": {
-        "Value": "J1 X",
+        "Value": "X1 LeftThumbX",
         "Mult": 1.0,
         "Deadzone": 0.1
       },
       "P1 Y Axis": {
-        "Value": "J1 Y",
+        "Value": "X1 LeftThumbY",
         "Mult": 1.0,
         "Deadzone": 0.1
       },
