@@ -218,7 +218,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_watches != null
 				&& !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
-				&& _watches.All(w => _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
+				&& _watches.All(w => w.Domain == null || _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
 				&& (Global.Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed))
 				)
 			{
