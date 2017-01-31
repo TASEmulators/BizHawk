@@ -29,6 +29,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				TIATables.NTSCPalette[i] |= unchecked((int)0xff000000);
 			for (int i = 0; i < TIATables.PALPalette.Length; i++)
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
+			for (int i = 0; i < MariaTables.NTSCPalette.Length; i++)
+				MariaTables.NTSCPalette[i] |= unchecked((int)0xff000000);
+			for (int i = 0; i < MariaTables.PALPalette.Length; i++)
+				MariaTables.PALPalette[i] |= unchecked((int)0xff000000);
 		}
 
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
@@ -229,10 +233,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					samplerate = newsamplerate;
 					dcfilter = new DCFilter(256);
 				}
-				if (g.MachineType == MachineType.A7800PAL || g.MachineType == MachineType.A2600PAL)
+				if (g.MachineType == MachineType.A2600PAL)
 					palette = TIATables.PALPalette;
-				else
+				else if (g.MachineType == MachineType.A7800PAL)
+					palette = MariaTables.PALPalette;
+				else if (g.MachineType == MachineType.A2600NTSC)
 					palette = TIATables.NTSCPalette;
+				else
+					palette = MariaTables.NTSCPalette;
 			}
 
 			uint samplerate;
