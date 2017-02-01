@@ -29,6 +29,7 @@ namespace MonoMacWrapper
 
 		public override void WillTerminate (NSNotification notification)
 		{
+			//Doesn't seem to be called anymore, so I override the quit option myself.
 			_mainWinForm.Close();
 		}
 
@@ -67,6 +68,9 @@ namespace MonoMacWrapper
 				var title = _mainWinForm.Text;
 				_mainWinForm.Show();
 				DoMenuExtraction();
+				var appMenuItems = NSApplication.SharedApplication.MainMenu.ItemAt(0).Submenu.ItemArray();
+				appMenuItems[appMenuItems.Length-1].Action = new MonoMac.ObjCRuntime.Selector("OnAppQuit");
+
 				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
 				//Timer assumes 60hz display. Note that timers are not very accurate, and I should really use CVDisplayLink to sync with the monitor.
@@ -277,6 +281,12 @@ namespace MonoMacWrapper
 		private void HandleMenu(MenuItemAdapter item)
 		{
 			_queuedAction = new Action(item.HostMenu.PerformClick);
+		}
+
+		[Export("OnAppQuit")]
+		private void OnQuit ()
+		{
+			_mainWinForm.Close();
 		}
 	}
 }
