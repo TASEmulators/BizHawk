@@ -541,7 +541,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.Movie.Save();
 			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
 			Global.MovieSession.Movie.Save();
-			Global.MovieSession.Movie.SwitchToRecord();
+			Global.MovieSession.Movie.SwitchToPlay();
 			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
 		}
 
@@ -631,8 +631,8 @@ namespace BizHawk.Client.EmuHawk
 					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 					if (result1 == DialogResult.OK)
 					{
-						StartNewMovieWrapper(false, movie);
 						ConvertCurrentMovieToTasproj();
+						StartNewMovieWrapper(false, movie);
 						SetUpColumns();
 						return true;
 					}
