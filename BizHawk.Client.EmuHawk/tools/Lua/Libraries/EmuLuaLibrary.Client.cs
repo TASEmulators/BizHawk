@@ -77,26 +77,23 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferheight",
-			"Gets the visible height of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
+			"Gets the visible height of the emu display surface (the core video output). This excludes the gameExtraPadding you've set."
 		)]
 		public int BufferHeight()
 		{
-			var height = VideoProvider.BufferHeight;
-			var point = new System.Drawing.Point(0, height);
-
-			return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
+			return VideoProvider.BufferHeight;
+			//memento of original behaviour from scepheo's commit -- why?
+			//var point = new System.Drawing.Point(0, height);
+			//return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
 		}
 
 		[LuaMethodAttributes(
 			"bufferwidth",
-			"Gets the visible width of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
+			"Gets the visible width of the emu display surface (the core video output). This excludes the gameExtraPadding you've set."
 		)]
 		public int BufferWidth()
 		{
-			var width = VideoProvider.BufferWidth;
-			var point = new System.Drawing.Point(width, 0);
-
-			return GlobalWin.DisplayManager.TransformPoint(point).X - BorderWidth();
+			return VideoProvider.BufferWidth;
 		}
 
 		[LuaMethodAttributes(

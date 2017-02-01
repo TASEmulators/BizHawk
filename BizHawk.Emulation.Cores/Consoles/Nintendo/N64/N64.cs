@@ -240,12 +240,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			_audioProvider.RenderSound = rendersound;
 
-			if (Controller["Reset"])
+			if (Controller.IsPressed("Reset"))
 			{
 				api.soft_reset();
 			}
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
 				api.hard_reset();
 			}

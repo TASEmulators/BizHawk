@@ -37,8 +37,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region IController Implementation
-
+		// TODO: get rid of this, add a SetBool() method or something for the set access, replace get wtih IsPressed
 		public bool this[string button]
 		{
 			get
@@ -54,6 +53,8 @@ namespace BizHawk.Client.Common
 				}
 			}
 		}
+
+		#region IController Implementation
 
 		public bool IsPressed(string button)
 		{
@@ -103,7 +104,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var val = playerSource[button];
+				var val = playerSource.IsPressed(button);
 				MyBoolButtons[button] = val;
 			}
 

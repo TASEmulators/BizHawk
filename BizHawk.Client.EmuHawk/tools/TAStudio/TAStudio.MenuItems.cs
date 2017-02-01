@@ -61,15 +61,21 @@ namespace BizHawk.Client.EmuHawk
 					filename = string.Empty;
 				}
 
-				var file = OpenFileDialog(
-					filename,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-					"Tas Project Files",
-					"tasproj");
-
-				if (file != null)
+				// need to be fancy here, so call the ofd constructor directly instead of helper
+				var all = "*." + string.Join(";*.", MovieService.MovieExtensions.Reverse());
+				var ofd = new OpenFileDialog
 				{
-					LoadFile(file);
+					FileName = filename,
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					Filter = string.Format(
+						"All Available Files ({0})|{0}|TAS Project Files (*.{1})|*.{1}|Movie Files (*.{2})|*.{2}|All Files|*.*",
+						all, TasMovie.Extension, MovieService.DefaultExtension)
+				};
+
+				var result = ofd.ShowHawkDialog();
+				if (result == DialogResult.OK)
+				{
+					LoadFile(new FileInfo(ofd.FileName));
 				}
 			}
 		}
@@ -363,8 +369,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				//_tasClipboard.Clear();
-				var list = TasView.SelectedRows.ToList();
+				_tasClipboard.Clear();
+				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
 				foreach (var index in list)
@@ -372,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					//_tasClipboard.Add(new TasClipboardEntry(index, input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -474,7 +480,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				//_tasClipboard.Clear();
+				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
@@ -483,7 +489,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					//_tasClipboard.Add(new TasClipboardEntry(index, input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());

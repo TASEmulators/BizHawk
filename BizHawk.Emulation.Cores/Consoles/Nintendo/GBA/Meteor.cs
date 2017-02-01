@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			Frame++;
 			IsLagFrame = true;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibMeteor.libmeteor_hardreset();
 			// due to the design of the tracing api, we have to poll whether it's active each frame
 			LibMeteor.libmeteor_settracecallback(Tracer.Enabled ? tracecallback : null);
@@ -143,16 +143,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			// libmeteor bitflips everything itself, so 0 == off, 1 == on
 			IsLagFrame = false;
 			LibMeteor.Buttons ret = 0;
-			if (Controller["Up"]) ret |= LibMeteor.Buttons.BTN_UP;
-			if (Controller["Down"]) ret |= LibMeteor.Buttons.BTN_DOWN;
-			if (Controller["Left"]) ret |= LibMeteor.Buttons.BTN_LEFT;
-			if (Controller["Right"]) ret |= LibMeteor.Buttons.BTN_RIGHT;
-			if (Controller["Select"]) ret |= LibMeteor.Buttons.BTN_SELECT;
-			if (Controller["Start"]) ret |= LibMeteor.Buttons.BTN_START;
-			if (Controller["B"]) ret |= LibMeteor.Buttons.BTN_B;
-			if (Controller["A"]) ret |= LibMeteor.Buttons.BTN_A;
-			if (Controller["L"]) ret |= LibMeteor.Buttons.BTN_L;
-			if (Controller["R"]) ret |= LibMeteor.Buttons.BTN_R;
+			if (Controller.IsPressed("Up")) ret |= LibMeteor.Buttons.BTN_UP;
+			if (Controller.IsPressed("Down")) ret |= LibMeteor.Buttons.BTN_DOWN;
+			if (Controller.IsPressed("Left")) ret |= LibMeteor.Buttons.BTN_LEFT;
+			if (Controller.IsPressed("Right")) ret |= LibMeteor.Buttons.BTN_RIGHT;
+			if (Controller.IsPressed("Select")) ret |= LibMeteor.Buttons.BTN_SELECT;
+			if (Controller.IsPressed("Start")) ret |= LibMeteor.Buttons.BTN_START;
+			if (Controller.IsPressed("B")) ret |= LibMeteor.Buttons.BTN_B;
+			if (Controller.IsPressed("A")) ret |= LibMeteor.Buttons.BTN_A;
+			if (Controller.IsPressed("L")) ret |= LibMeteor.Buttons.BTN_L;
+			if (Controller.IsPressed("R")) ret |= LibMeteor.Buttons.BTN_R;
 			return ret;
 		}
 

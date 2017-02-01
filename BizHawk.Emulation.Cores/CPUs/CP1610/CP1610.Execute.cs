@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			{
 				Disassembly = string.Format(
 					"{0:X4}:  {1:X2}  {2} ",
-					RegisterPC,
+					RegisterPC-1,
 					opcode,
 					disassemble ? Disassemble((ushort)(RegisterPC-1), out notused) : "---").PadRight(26),
 				RegisterInfo = string.Format(
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		{
 			bool op1_neg = ((op1 & 0x8000) != 0);
 			bool op2_neg = ((op2 & 0x8000) != 0);
-			bool result_neg = ((op1 & 0x8000) != 0);
+			bool result_neg = ((result & 0x8000) != 0);
 			FlagO = (
 				(op1_neg && op2_neg && !result_neg) ||
 				(!op1_neg && !op2_neg && result_neg)
@@ -93,7 +93,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			else
 			{
 				// Double Byte Data.
-				value = (ushort)(ReadMemory(Register[mem]++) & 0xFF);
+				value = (ushort)(ReadMemory(Register[mem]) & 0xFF);
+				if (mem >= 4)
+					Register[mem]++;
 				value |= (ushort)(ReadMemory(Register[mem]) << 8);
 			}
 			// Auto-increment the memory register if it does so on write.
@@ -159,6 +161,15 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				TotalExecutedCycles += cycles;
 				return cycles;
 			}
+
+			// This simulates the Halting caused by the STIC during visible frame using SR2
+			if (BusRq && Interruptible) {// && !IntRM && !Interrupted) {
+				PendingCycles--;
+				TotalExecutedCycles++;
+				return 1;
+			}
+
+
 			if (Logging)
 			{
 				int addrToAdvance;
@@ -298,7 +309,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x025:
 				case 0x026:
 				case 0x027:
-					// ------------------------NEEDS TESTING---------------------------
 					dest = (byte)(opcode & 0x7);
                     dest_value = Register[dest];
                     var ones = (dest_value ^ 0xFFFF);
@@ -321,7 +331,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x02D:
 				case 0x02E:
 				case 0x02F:
-					// ------------------------NEEDS TESTING---------------------------
 					dest = (byte)(opcode & 0x7);
                     dest_value = Register[dest];
                     var carry = FlagC ? 1 : 0;
@@ -847,7 +856,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ src_value) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, src_value, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -927,7 +936,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ src_value) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, src_value, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1501,7 +1510,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x305:
 				case 0x306:
 				case 0x307:
-					// -------------------------------needs testing-------------------------------
                     dest = (byte)(opcode & 0x7);
                     addr = ReadMemory(RegisterPC++);
                     dest_value = Register[dest];
@@ -1509,8 +1517,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
                     twos = (0xFFFF ^ addr_read) + 1;
                     result = dest_value + twos;
                     Calc_FlagC(result);
-                    Calc_FlagO_Add(dest_value, addr_read, result);
-                    result &= 0xFFFF;
+					Calc_FlagO_Add(dest_value, twos, result);
+					result &= 0xFFFF;
                     Calc_FlagS(result);
                     Calc_FlagZ(result);
                     Register[dest] = (ushort)result;
@@ -1582,7 +1590,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ mem_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, mem_read, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1605,7 +1613,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ addr_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, addr_read, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1677,7 +1685,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					twos = (0xFFFF ^ mem_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
-					Calc_FlagO_Add(dest_value, mem_read, result);
+					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
 					Calc_FlagS(result);
 					Calc_FlagZ(result);
@@ -1692,7 +1700,6 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x385:
 				case 0x386:
 				case 0x387:
-					// ------------------------NEEDS TESTING---------------------------
 					dest = (byte)(opcode & 0x7);
                     addr = ReadMemory(RegisterPC++);
                     dest_value = Register[dest];

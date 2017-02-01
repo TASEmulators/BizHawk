@@ -22,10 +22,10 @@
 			}
 			if (address == 0xA000)
 			{
-				if (Controller["P1 Left"]) xCoord++;
-				if (Controller["P1 Right"]) xCoord++;
-				if (Controller["P1 Up"]) yCoord--;
-				if (Controller["P1 Down"]) yCoord++;
+				if (Controller.IsPressed("P1 Left")) xCoord++;
+				if (Controller.IsPressed("P1 Right")) xCoord++;
+				if (Controller.IsPressed("P1 Up")) yCoord--;
+				if (Controller.IsPressed("P1 Down")) yCoord++;
 				return 0;
 
 				//if (!Controller["P1 B1"]) return 0;

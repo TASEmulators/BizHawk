@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isReleased: false
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public sealed partial class Intellivision : IEmulator, IStatable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
+	public sealed partial class Intellivision : IEmulator, IStatable, IInputPollable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
@@ -52,6 +52,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_psg.Reset();
 			_psg.ReadMemory = ReadMemory;
 			_psg.WriteMemory = WriteMemory;
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_psg);
 
 			Connect();
 
@@ -69,6 +70,27 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public IntellivisionControllerDeck ControllerDeck { get; private set; }
 
 		private ITraceable Tracer { get; set; }
+
+		public int LagCount
+		{
+			get {return lagcount;}
+
+			set{}
+		}
+
+		public bool IsLagFrame
+		{
+			get {return islag;}
+
+			set {}
+		}
+
+		public IInputCallbackSystem InputCallbacks
+		{
+			get { return _inputCallbacks; }
+		}
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
 		private byte[] _rom;
 		private GameInfo _gameInfo;
@@ -112,6 +134,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void get_controller_state()
 		{
+			InputCallbacks.Call();
+
 			ushort port1 = ControllerDeck.ReadPort1(Controller);
 			_psg.Register[15] = (ushort)(0xFF - port1);
 

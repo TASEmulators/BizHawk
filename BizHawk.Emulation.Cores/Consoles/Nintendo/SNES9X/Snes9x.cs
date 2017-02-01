@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public ControllerDefinition ControllerDefinition
 		{
-			get { return NullEmulator.NullController; }
+			get { return NullController.Instance.Definition; }
 		}
 
 		public IController Controller { get; set; }

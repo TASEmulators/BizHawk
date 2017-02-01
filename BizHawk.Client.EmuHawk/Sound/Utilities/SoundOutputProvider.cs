@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	// perform a "soft" correction by resampling it to hopefully get back inside our
 	// window shortly. If it ends up going too low or too high, we will perform a
 	// "hard" correction by generating silence or discarding samples.
-	public class SoundOutputProvider
+	public class SoundOutputProvider : IBufferedSoundProvider
 	{
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;
@@ -54,21 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxSamplesDeficit { get; set; }
 
-		// Sound Refactor TODO: is this sync mode check necessary?
-		private ISoundProvider _baseSoundProvider;
-		public ISoundProvider BaseSoundProvider
-		{
-			get { return _baseSoundProvider;  }
-			set
-			{
-				if (value != null && value.SyncMode != SyncSoundMode.Sync)
-				{
-					throw new InvalidOperationException("Sync mode is required");
-				}
-
-				_baseSoundProvider = value;
-			}
-		}
+		public ISoundProvider BaseSoundProvider { get; set; }
 
 		public void DiscardSamples()
 		{
@@ -178,6 +164,10 @@ namespace BizHawk.Client.EmuHawk
 			short[] samples;
 			int count;
 
+			if (BaseSoundProvider.SyncMode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Base sound provider must be in sync mode.");
+			}
 			BaseSoundProvider.GetSamplesSync(out samples, out count);
 
 			bool correctedEmptyFrame = false;

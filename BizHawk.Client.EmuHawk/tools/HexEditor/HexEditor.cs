@@ -301,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 			long startByte;
 			if (_addressHighlighted == -1)
 			{
-				startByte = _domain.Size - DataSize;
+				startByte = _domain.Size - DataSize - numByte;
 			}
 			else
 			{

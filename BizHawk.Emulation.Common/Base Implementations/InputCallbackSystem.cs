@@ -4,6 +4,11 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This is a generic implementation of IInputCallbackSystem that can be used
+	/// by any core
+	/// </summary>
+	/// <seealso cref="IInputCallbackSystem" />
 	public class InputCallbackSystem : List<Action>, IInputCallbackSystem
 	{
 		public void Call()

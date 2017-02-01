@@ -325,6 +325,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.HasService<ILinkable>();
 		}
 
+		public static bool CanGenerateGameDBEntries(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<ICreateGameDBEntries>();
+		}
+
+		public static ICreateGameDBEntries AsGameDBEntryGenerator(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<ICreateGameDBEntries>();
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{

@@ -543,7 +543,9 @@ namespace BizHawk.Client.Common
 			StateManager.SetState(branch.Frame, branch.CoreData);
 
 			//ChangeLog = branch.ChangeLog;
-			Markers = branch.Markers;
+			if (BindMarkersToInput) // pretty critical not to erase them
+				Markers = branch.Markers;
+
 			Changes = true;
 		}
 

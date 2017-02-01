@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			ser.Sync("Interruptible", ref Interruptible);
 			ser.Sync("Interrupted", ref Interrupted);
 			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
-			ser.Sync("Pending Cycles", ref PendingCycles);
+			ser.Sync("Pending_Cycles", ref PendingCycles);
 
 
 			ser.EndSection();
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public void SetBusRq(bool value)
 		{
-			BusRq = value;
+			BusRq = !value;
 		}
 
 		public int GetPendingCycles()

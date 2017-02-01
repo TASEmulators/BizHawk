@@ -911,32 +911,32 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.ArcadeCard.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.ICodeDataLogger.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.IDebuggable.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.IDriveLight.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.IEmulator.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.IInputPollable.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.IMemoryDomains.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.ISaveRam.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.ISettable.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.IStatable.cs">
-        <DependentUpon>PCEngine.cs</DependentUpon>
+      <DependentUpon>PCEngine.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
@@ -1194,8 +1194,10 @@
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\HuC6280PSG.cs" />
+    <Compile Include="Sound\IAsyncSoundProvider.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
     <Compile Include="Sound\SN76489.cs" />
+    <Compile Include="Sound\SoundMixer.cs" />
     <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\VRC6Alt.cs" />
     <Compile Include="Sound\YM2413.cs" />

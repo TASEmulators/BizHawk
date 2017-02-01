@@ -115,6 +115,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Reboot Core":
 					RebootCore();
 					break;
+				case "Toggle Skip Lag Frame":
+					Global.Config.SkipLagFrame ^= true;
+					GlobalWin.OSD.AddMessage("Skip Lag Frames toggled " + (Global.Config.SkipLagFrame ? "On" : "Off"));
+					break;
 
 				// Save States
 				case "Save State 0": 

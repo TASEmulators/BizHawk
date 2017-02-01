@@ -524,20 +524,28 @@ namespace BizHawk.Client.Common
 			_history.Clear();
 		}
 
-		public void Undo()
+		public int Undo()
 		{
+			int origCount = _watchList.Count;
 			if (_keepHistory)
 			{
 				_watchList = _history.Undo().ToList();
+				return _watchList.Count - origCount;
 			}
+
+			return _watchList.Count;
 		}
 
-		public void Redo()
+		public int Redo()
 		{
+			int origCount = _watchList.Count;
 			if (_keepHistory)
 			{
 				_watchList = _history.Redo().ToList();
+				return origCount - _watchList.Count;
 			}
+
+			return _watchList.Count;
 		}
 
 		#endregion

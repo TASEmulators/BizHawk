@@ -22,13 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: UI flow that conveniently allows to start from savestate
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
-
-		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
-
 		private BackgroundWorker _saveBackgroundWorker;
 		private BackgroundWorker _seekBackgroundWorker;
-
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
+		private UndoHistoryForm _undoForm;
+		private Timer _autosaveTimer = new Timer();
+		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private Dictionary<string, string> GenerateColumnNames()
 		{
 			var lg = Global.MovieSession.LogGeneratorInstance();
@@ -36,20 +35,28 @@ namespace BizHawk.Client.EmuHawk
 			return (lg as Bk2LogEntryGenerator).Map();
 		}
 
-		private UndoHistoryForm _undoForm;
-		private Timer _autosaveTimer = new Timer();
-
-		public ScreenshotPopupControl ScreenshotControl = new ScreenshotPopupControl
-		{
-			Size = new Size(256, 240),
-		};
+		public bool IsInMenuLoop { get; private set; }
 
 		public string statesPath
 		{
 			get { return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); }
 		}
 
-		public bool IsInMenuLoop { get; private set; }
+		public TasMovie CurrentTasMovie
+		{
+			get { return Global.MovieSession.Movie as TasMovie; }
+		}
+
+		public MainForm Mainform
+		{
+			get { return GlobalWin.MainForm; }
+		}
+
+		/// <summary>
+		/// Separates "restore last position" logic from seeking caused by navigation.
+		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
+		/// </summary>
+		public int LastPositionFrame { get; set; }
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -105,23 +112,6 @@ namespace BizHawk.Client.EmuHawk
 			public int BranchMarkerSplitDistance { get; set; }
 		}
 
-		public TasMovie CurrentTasMovie
-		{
-			get { return Global.MovieSession.Movie as TasMovie; }
-		}
-
-		public MainForm Mainform
-		{
-			get { return GlobalWin.MainForm; }
-		}
-
-		/// <summary>
-		/// Separates "restore last position" logic from seeking caused by navigation.
-		/// TASEditor never kills LastPositionFrame, and it only pauses on it,
-		/// if it hasn't been greenzoned beforehand and middle mouse button was pressed.
-		/// </summary>
-		public int LastPositionFrame { get; set; }
-
 		#region "Initializing"
 
 		public TAStudio()
@@ -140,7 +130,6 @@ namespace BizHawk.Client.EmuHawk
 			TasPlaybackBox.Tastudio = this;
 			MarkerControl.Tastudio = this;
 			BookMarkControl.Tastudio = this;
-			MarkerControl.Emulator = this.Emulator;
 			TasView.QueryItemText += TasView_QueryItemText;
 			TasView.QueryItemBkColor += TasView_QueryItemBkColor;
 			TasView.QueryRowBkColor += TasView_QueryRowBkColor;
@@ -271,24 +260,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// Set the screenshot to "1x" resolution of the core
-			// cores like n64 and psx are going to still have sizes too big for the control, so cap them
-			int width = VideoProvider.BufferWidth;
-			int height = VideoProvider.BufferHeight;
-			if (width > 320)
-			{
-				double ratio = 320.0 / (double)width;
-				width = 320;
-				height = (int)((double)(height) * ratio);
-			}
-			ScreenshotControl.DrawingHeight = height;
-			ScreenshotControl.Size = new Size(width, ScreenshotControl.DrawingHeight + ScreenshotControl.UserPadding);
-
-
-			ScreenshotControl.Visible = false;
-			Controls.Add(ScreenshotControl);
-			ScreenshotControl.BringToFront();
-
 			SetColumnsFromCurrentStickies();
 
 			if (VersionInfo.DeveloperBuild)
@@ -353,6 +324,41 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool InitializeOnLoad()
 		{
+			Mainform.PauseOnFrame = null;
+			Mainform.PauseEmulator();
+
+			// Start Scenario 0: bsnes in performance mode (copied from RecordMovieMenuItem_Click())
+			if (Emulator is BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore)
+			{
+				var snes = (BizHawk.Emulation.Cores.Nintendo.SNES.LibsnesCore)Emulator;
+				if (snes.CurrentProfile == "Performance")
+				{
+					var box = new CustomControls.MsgBox(
+						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
+						"Stability Warning",
+						MessageBoxIcon.Warning);
+
+					box.SetButtons(
+						new[] { "Switch", "Cancel" },
+						new[] { DialogResult.Yes, DialogResult.Cancel });
+
+					box.MaximumSize = new Size(450, 350);
+					box.SetMessageToAutoSize();
+					var result = box.ShowDialog();
+
+					if (result == DialogResult.Yes)
+					{
+						var ss = snes.GetSyncSettings();
+						ss.Profile = "Compatibility";
+						snes.PutSyncSettings(ss);
+					}
+					else if (result == DialogResult.Cancel)
+					{
+						return false;
+					}
+				}
+			}
+			
 			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
@@ -361,6 +367,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					ConvertCurrentMovieToTasproj();
 					StartNewMovieWrapper(false);
+					SetUpColumns();
 				}
 				else
 				{
@@ -371,7 +378,12 @@ namespace BizHawk.Client.EmuHawk
 			// Start Scenario 2: A tasproj is already active
 			else if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 			{
-				// Nothing to do
+				bool result = LoadFile(new FileInfo(CurrentTasMovie.Filename), gotoFrame: Emulator.Frame);
+				if (!result)
+				{
+					TasView.AllColumns.Clear();
+					StartNewTasMovie();
+				}
 			}
 
 			// Start Scenario 3: No movie, but user wants to autload their last project
@@ -508,17 +520,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EngageTastudio()
 		{
-			Mainform.PauseOnFrame = null;
 			GlobalWin.OSD.AddMessage("TAStudio engaged");
 			SetTasMovieCallbacks();
 			SetTextProperty();
-			Mainform.PauseEmulator();
 			Mainform.RelinquishControl(this);
 			_originalEndAction = Global.Config.MovieEndAction;
 			Mainform.ClearRewindData();
 			Global.Config.MovieEndAction = MovieEndAction.Record;
 			Mainform.SetMainformMovieInfo();
 			Global.MovieSession.ReadOnly = true;
+			SetSplicer();
 		}
 
 		#endregion
@@ -534,7 +545,7 @@ namespace BizHawk.Client.EmuHawk
 			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
 		}
 
-		private bool LoadFile(FileInfo file, bool startsFromSavestate = false)
+		private bool LoadFile(FileInfo file, bool startsFromSavestate = false, int gotoFrame = 0)
 		{
 			if (!file.Exists)
 			{
@@ -553,6 +564,8 @@ namespace BizHawk.Client.EmuHawk
 
 			if (startsFromSavestate)
 				GoToFrame(0);
+			else if (gotoFrame > 0)
+				GoToFrame(gotoFrame);
 			else
 				GoToFrame(CurrentTasMovie.Session.CurrentFrame);
 
@@ -618,12 +631,12 @@ namespace BizHawk.Client.EmuHawk
 					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 					if (result1 == DialogResult.OK)
 					{
+						StartNewMovieWrapper(false, movie);
 						ConvertCurrentMovieToTasproj();
+						SetUpColumns();
+						return true;
 					}
-					else
-					{
-						return false;
-					}
+					return false;
 				}
 				else 
 				{
@@ -872,23 +885,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetSplicer()
 		{
-			// TODO: columns selected
-			// TODO: clipboard
-			var list = TasView.SelectedRows;
-			string message = "Selected: ";
-
-			if (list.Any())
-			{
-				message += list.Count() + " rows 0 col, Clipboard: ";
-			}
-			else
-			{
-				message += list.Count() + " none, Clipboard: ";
-			}
-
-			message += _tasClipboard.Any() ? _tasClipboard.Count + " rows 0 col" : "empty";
-
-			SplicerStatusLabel.Text = message;
+			// TODO: columns selected?
+			SplicerStatusLabel.Text =
+				"Selected: " + TasView.SelectedRows.Count() + " frame" +
+				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
+				", Clipboard: " + (_tasClipboard.Any() ? _tasClipboard.Count + " frame" +
+				(_tasClipboard.Count == 1 ? "" : "s") : "empty");
 		}
 
 		private void UpdateChangesIndicator()

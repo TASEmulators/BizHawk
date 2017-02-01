@@ -107,7 +107,7 @@
     <Compile Include="BinaryQuickSerializer.cs" />
     <Compile Include="BizInvoke\BizInvoker.cs" />
     <Compile Include="BizInvoke\DynamicLibraryImportResolver.cs" />
-    <Compile Include="CodeDataLog.cs" />
+    <Compile Include="Base Implementations\CodeDataLog.cs" />
     <Compile Include="CoreAttributes.cs" />
     <Compile Include="CoreComms.cs" />
     <Compile Include="Database\CRC32.cs" />
@@ -124,8 +124,8 @@
     <Compile Include="Interfaces\IInputCallbackSystem.cs" />
     <Compile Include="Interfaces\IMemoryCallbackSystem.cs" />
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
+    <Compile Include="Interfaces\Services\ICreateGameDBEntries.cs" />
     <Compile Include="Interfaces\Services\ISoundProvider.cs" />
-    <Compile Include="Interfaces\IAsyncSoundProvider.cs" />
     <Compile Include="Interfaces\Services\ICodeDataLogger.cs" />
     <Compile Include="Interfaces\Services\IDebuggable.cs" />
     <Compile Include="Interfaces\Services\IDisassemblable.cs" />
@@ -143,11 +143,9 @@
     <Compile Include="ServiceAttributes.cs" />
     <Compile Include="ServiceInjector.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />
-    <Compile Include="Sound\Utilities\BufferedAsync.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
     <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
-    <Compile Include="Sound\Utilities\SoundMixer.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\Utilities\Waves.cs" />
     <Compile Include="SystemLookup.cs" />

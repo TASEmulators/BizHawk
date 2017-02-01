@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES._isVS)
 				ser.Sync("CIRAM_VS", ref CIRAM_VS, false);
 
-			ser.Sync("tko security", ref tko_security);
+			ser.Sync("tko_security", ref tko_security);
 			mapper.SyncState(ser);
 		}
 

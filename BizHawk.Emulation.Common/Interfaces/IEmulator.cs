@@ -2,6 +2,11 @@
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This service defines a core as a core. It is the primary service
+	/// and the absolute minimum requirement to have a functional core in BizHawk
+	/// a client can not operate without this minimum requirement
+	/// </summary>
 	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>

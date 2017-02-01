@@ -82,6 +82,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
             }
         }
 
+		int IDebuggable.TotalExecutedCycles
+		{
+			get { return _cpu.TotalExecutedCycles; }
+		}
+
         private void StepInto()
         {
             while (_cpu.AtInstructionStart())

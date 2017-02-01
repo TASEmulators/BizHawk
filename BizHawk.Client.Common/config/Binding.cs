@@ -152,6 +152,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Exit Program"),
 						Bind("General", "Screen Raw to Clipboard", "Ctrl+C"),
 						Bind("General", "Screen Client to Clipboard", "Ctrl+Shift+C"),
+						Bind("General", "Toggle Skip Lag Frame"),
 
 						Bind("Save States", "Save State 0", "Shift+F10"),
 						Bind("Save States", "Save State 1", "Shift+F1"),

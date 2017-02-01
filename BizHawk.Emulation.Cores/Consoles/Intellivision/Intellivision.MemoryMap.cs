@@ -43,12 +43,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						//controllers
 						if (addr==0x01FE)
 						{
-							//Console.WriteLine("reading controller");
-							return _psg.Register[14];
+							islag = false;
+							return _psg.Register[14];			
 						}
 						if (addr == 0x01FF)
 						{
-							//Console.WriteLine("reading controller");
+							islag = false;
 							return _psg.Register[15];
 						}
 						break;
@@ -74,28 +74,38 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case 0x3000:
 					if (addr <= 0x37FF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						core = (byte)(GraphicsRom[addr - 0x3000] & 0x00FF);
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							core = (byte)(GraphicsRom[addr - 0x3000] & 0x00FF);
+						}
 					}
 					else if (addr <= 0x39FF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						core = (byte)(GraphicsRam[addr - 0x3800] & 0x00FF);
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							core = (byte)(GraphicsRam[addr - 0x3800] & 0x00FF);
+						}
 					}
 					else if (addr <= 0x3BFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						core = (byte)(GraphicsRam[addr - 0x3A00] & 0x00FF);
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							core = (byte)(GraphicsRam[addr - 0x3A00] & 0x00FF);
+						}
 					}
 					else if (addr <= 0x3DFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						core = (byte)(GraphicsRam[addr - 0x3C00] & 0x00FF);
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							core = (byte)(GraphicsRam[addr - 0x3C00] & 0x00FF);
+						}
 					}
 					else
 					{
-						// TODO: OK only during VBlank Period 2.
-						core = (byte)(GraphicsRam[addr - 0x3E00] & 0x00FF);
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							core = (byte)(GraphicsRam[addr - 0x3E00] & 0x00FF);
+						}
 					}
 					break;
 				case 0x7000:
@@ -252,27 +262,39 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					else if (addr <= 0x39FF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0x3800] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0x3800] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0x3BFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0x3A00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0x3A00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0x3DFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0x3C00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0x3C00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0x3E00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0x3E00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 				case 0x7000:
 					if (addr <= 0x77FF)
@@ -282,27 +304,39 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					else if (addr <= 0x79FF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0x7BFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0x7DFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 				case 0x9000:
 				case 0xA000:
@@ -314,27 +348,40 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					else if (addr <= 0xB9FF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xB800] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xB800] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
+
 					}
 					else if (addr <= 0xBBFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xBA00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xBA00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0xBDFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xBC00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xBC00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xBE00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xBE00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 				case 0xF000:
 					if (addr <= 0xF7FF)
@@ -344,27 +391,39 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					else if (addr <= 0xF9FF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xF800] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xF800] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0xFBFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xFA00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xFA00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else if (addr <= 0xFDFF)
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xFC00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xFC00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 					else
 					{
-						// TODO: OK only during VBlank Period 2.
-						GraphicsRam[addr - 0xFE00] = (byte)(value & 0x00FF);
-						return true;
+						if (_stic.in_vb_2 | !_stic.active_display)
+						{
+							GraphicsRam[addr - 0xFE00] = (byte)(value & 0x00FF);
+							return true;
+						}
+						return false;
 					}
 			}
 

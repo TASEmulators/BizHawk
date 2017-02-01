@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (IsGameGear == false)
 			{
-				Cpu.NonMaskableInterrupt = Controller["Pause"];
+				Cpu.NonMaskableInterrupt = Controller.IsPressed("Pause");
 			}
 
 			if (IsGame3D && Settings.Fix3D)

@@ -1,17 +1,20 @@
 ﻿﻿using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using BizHawk.Emulation.Common;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Common
 {
-	public class CodeDataLog : Dictionary<string, byte[]>
+	/// <summary>
+	/// The base implementation of ICodeDataLog
+	/// </summary>
+	/// <seealso cref="ICodeDataLogger" /> 
+	/// <seealso cref="ICodeDataLog" /> 
+	public class CodeDataLog : Dictionary<string, byte[]>, ICodeDataLog
 	{
 		public CodeDataLog()
 		{
+			Active = true;
 		}
 
 		/// <summary>
@@ -20,9 +23,14 @@ namespace BizHawk.Emulation.Common
 		public void Pin()
 		{
 			if (Pins.Count != 0)
+			{
 				throw new InvalidOperationException("incremental astrological examination");
+			}
+
 			foreach (var kvp in this)
+			{
 				Pins[kvp.Key] = GCHandle.Alloc(kvp.Value, GCHandleType.Pinned);
+			}
 		}
 
 		/// <summary>
@@ -31,7 +39,10 @@ namespace BizHawk.Emulation.Common
 		public void Unpin()
 		{
 			foreach (var pin in Pins.Values)
+			{
 				pin.Free();
+			}
+
 			Pins.Clear();
 		}
 
@@ -46,49 +57,67 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Pinned managed arrays
 		/// </summary>
-		Dictionary<string, GCHandle> Pins = new Dictionary<string, GCHandle>();
+		private readonly Dictionary<string, GCHandle> Pins = new Dictionary<string, GCHandle>();
 
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
 		/// </summary>
-		public bool Has(string blockname) { return ContainsKey(blockname); }
+		public bool Has(string blockname)
+		{
+			return ContainsKey(blockname);
+		}
 
 		/// <summary>
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core
 		/// </summary>
-		public bool Active = true;
+		public bool Active { get; set; }
 
-		public string SubType;
-		public int SubVer;
+		public string SubType { get; set; }
+		public int SubVer { get; set; }
 
 		/// <summary>
 		/// Tests whether the other CodeDataLog is structurally identical
 		/// </summary>
-		public bool Check(CodeDataLog other)
+		public bool Check(ICodeDataLog other)
 		{
 			if (SubType != other.SubType)
+			{
 				return false;
-			if (SubVer != other.SubVer)
-				return false;
+			}
 
-			if (this.Count != other.Count)
+			if (SubVer != other.SubVer)
+			{
 				return false;
+			}
+
+			if (Count != other.Count)
+			{
+				return false;
+			}
+
 			foreach (var kvp in this)
 			{
 				if (!other.ContainsKey(kvp.Key))
+				{
 					return false;
+				}
+
 				var oval = other[kvp.Key];
 				if (oval.Length != kvp.Value.Length)
+				{
 					return false;
+				}
 			}
 
 			return true;
 		}
 
-		public void LogicalOrFrom(CodeDataLog other)
+		public void LogicalOrFrom(ICodeDataLog other)
 		{
-			if (this.Count != other.Count)
+			if (Count != other.Count)
+			{
 				throw new InvalidDataException("Dictionaries must have the same number of keys!");
+			}
 
 			foreach (var kvp in other)
 			{
@@ -96,17 +125,23 @@ namespace BizHawk.Emulation.Common
 				byte[] todata = this[kvp.Key];
 
 				if (fromdata.Length != todata.Length)
+				{
 					throw new InvalidDataException("Memory regions must be the same size!");
+				}
 
 				for (int i = 0; i < todata.Length; i++)
+				{
 					todata[i] |= fromdata[i];
+				}
 			}
 		}
 
 		public void ClearData()
 		{
 			foreach (byte[] data in Values)
+			{
 				Array.Clear(data, 0, data.Length);
+			}
 		}
 
 		public void Save(Stream s)
@@ -114,7 +149,7 @@ namespace BizHawk.Emulation.Common
 			_Save(s, true);
 		}
 		
-		Dictionary<string, long> _Save(Stream s, bool forReal)
+		private Dictionary<string, long> _Save(Stream s, bool forReal)
 		{
 			var ret = new Dictionary<string, long>();
 			var w = new BinaryWriter(s);
@@ -142,6 +177,7 @@ namespace BizHawk.Emulation.Common
 					addr += kvp.Value.Length;
 				}
 			}
+
 			w.Flush();
 			return ret;
 		}
@@ -156,11 +192,17 @@ namespace BizHawk.Emulation.Common
 			var br = new BinaryReader(s);
 			string id = br.ReadString();
 			if (id == "BIZHAWK-CDL-1")
+			{
 				SubType = "PCE";
+			}
 			else if (id == "BIZHAWK-CDL-2")
+			{
 				SubType = br.ReadString().TrimEnd(' ');
+			}
 			else
+			{
 				throw new InvalidDataException("File is not a Bizhawk CDL file!");
+			}
 
 			int count = br.ReadInt32();
 			for (int i = 0; i < count; i++)

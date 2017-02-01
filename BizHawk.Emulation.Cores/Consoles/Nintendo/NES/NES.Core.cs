@@ -49,6 +49,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte VS_coin_inserted=0;
 		public byte VS_ROM_control;
 
+		// cheat addr index tracker
+		// disables all cheats each frame
+		public int[] cheat_indexes = new int[500];
+		public int num_cheats;
+
 		// new input system
 		NESControlSettings ControllerSettings; // this is stored internally so that a new change of settings won't replace
 		IControllerDeck ControllerDeck;
@@ -317,32 +322,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//if (resetSignal)
 			//Controller.UnpressButton("Reset");   TODO fix this
-			resetSignal = Controller["Reset"];
-			hardResetSignal = Controller["Power"];
+			resetSignal = Controller.IsPressed("Reset");
+			hardResetSignal = Controller.IsPressed("Power");
 
 			if (Board is FDS)
 			{
 				var b = Board as FDS;
-				if (Controller["FDS Eject"])
+				if (Controller.IsPressed("FDS Eject"))
 					b.Eject();
 				for (int i = 0; i < b.NumSides; i++)
-					if (Controller["FDS Insert " + i])
+					if (Controller.IsPressed("FDS Insert " + i))
 						b.InsertSide(i);
 			}
 
 			if (_isVS)
 			{
-				if (controller["Service Switch"])
+				if (controller.IsPressed("Service Switch"))
 					VS_service = 1;
 				else
 					VS_service = 0;
 
-				if (controller["Insert Coin P1"])
+				if (controller.IsPressed("Insert Coin P1"))
 					VS_coin_inserted |= 1;
 				else
 					VS_coin_inserted &= 2;
 
-				if (controller["Insert Coin P2"])
+				if (controller.IsPressed("Insert Coin P2"))
 					VS_coin_inserted |= 2;
 				else
 					VS_coin_inserted &= 1;
@@ -358,6 +363,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				islag = false;
 
 			videoProvider.FillFrameBuffer();
+
+			//turn off all cheats
+			for (int d=0;d<num_cheats;d++)
+			{
+				RemoveGameGenie(cheat_indexes[d]);
+			}
+			num_cheats = 0;
 		}
 
 		//PAL:
@@ -380,6 +392,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool IRQ_delay;
 		public bool special_case_delay; // very ugly but the only option
 		public bool do_the_reread;
+		public byte DB; //old data bus values from previous reads
+
 
 #if VS2012
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -392,8 +406,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				cpu_step++;
 				if (cpu_step == 5) cpu_step = 0;
 				cpu_stepcounter = 0;
-
-
 
 				///////////////////////////
 				// OAM DMA start
@@ -488,7 +500,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					special_case_delay = false;
 				}
 
-
 				cpu.ExecuteOne();
 				apu.RunOne(false);
 
@@ -506,8 +517,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu.RDY = true;
 					IRQ_delay = true;
 				}
-
-
 
 				ppu.ppu_open_bus_decay(0);
 
@@ -562,7 +571,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						// special hardware glitch case
 						ret_spec = read_joyport(addr);
-						if (do_the_reread)
+						if (do_the_reread && ppu.region==PPU.Region.NTSC)
 						{
 							ret_spec = read_joyport(addr);
 							do_the_reread = false;
@@ -571,22 +580,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					}
 				case 0x4017:
+					if (_isVS)
 					{
-						if (_isVS)
+						byte ret = 0;
+						ret = read_joyport(0x4017);
+						ret &= 1;
+
+						ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
+
+						return ret;
+
+					}
+					else
+					{
+						// special hardware glitch case
+						ret_spec = read_joyport(addr);
+						if (do_the_reread && ppu.region == PPU.Region.NTSC)
 						{
-							byte ret = 0;
-							ret = read_joyport(0x4017);
-							ret &= 1;
-
-							ret = (byte)(ret | (VS_dips[2] << 2) | (VS_dips[3] << 3) | (VS_dips[4] << 4) | (VS_dips[5] << 5) | (VS_dips[6] << 6) | (VS_dips[7] << 7));
-
-							return ret;
-
+							ret_spec = read_joyport(addr);
+							do_the_reread = false;
 						}
-						else
-						{
-							return read_joyport(addr);
-						}
+						return ret_spec;
 					}
 				default:
 					//Console.WriteLine("read register: {0:x4}", addr);
@@ -827,9 +841,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return ret;
 		}
 
-		//old data bus values from previous reads
-		public byte DB;
-
 		public void ExecFetch(ushort addr)
 		{
 			MemoryCallbacks.CallExecutes(addr);
@@ -887,6 +898,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if (addr < sysbus_watch.Length)
 			{
+				cheat_indexes[num_cheats] = addr;
+				num_cheats++;
 				GetWatch(NESWatch.EDomain.Sysbus, addr).SetGameGenie(compare, value);
 			}
 		}

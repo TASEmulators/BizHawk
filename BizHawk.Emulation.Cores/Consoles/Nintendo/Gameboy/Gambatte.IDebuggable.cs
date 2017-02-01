@@ -42,6 +42,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		public IMemoryCallbackSystem MemoryCallbacks
 		{
 			get { return _memorycallbacks; }

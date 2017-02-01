@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			int ret = 0;
 			foreach (var b in buttons)
 			{
-				if (Controller[b.Name])
+				if (Controller.IsPressed(b.Name))
 					ret |= b.Mask;
 			}
 			return ret;
@@ -200,9 +200,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			if(true)
 #endif
 			{
-				if (Controller["Power"])
+				if (Controller.IsPressed("Power"))
 					QN.qn_reset(Context, true);
-				if (Controller["Reset"])
+				if (Controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
 				int j1, j2;
@@ -383,6 +383,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"F49F55748D8F1139F26289C3D390A138AF627195", // CPUtime (PD)
 			"A31B7F4BE478353442EED59EAAA71743A5C26C9D", // Crisis Force (J) [hM04]
 			"D9A6384293002315B8663F8C5CD2CC9BB273BFB2", // Crisis Force (J) [hM04][b2]
+			"DF3B2EC1EE818DA7C57672A82E76D9591C9D9DC1", // Cybernoid - The Fighting Machine
 			"819C27583EA289301649BA3157709EB7C0E35800", // Demo 1 by zgh4000 (2006-03) (PD)
 			"9EEA0CC3189B6A985C25D86B40D91CB6AFD87F89", // Demo 2 by zgh4000 (2006-03) (PD)
 			"FF944D6D5A187834D4F796CD1C9FC91EA7BFADAC", // Demo 3 by zgh4000 (2006-07-26) (PD)

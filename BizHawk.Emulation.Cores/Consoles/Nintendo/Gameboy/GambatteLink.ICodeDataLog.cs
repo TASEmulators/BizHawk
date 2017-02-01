@@ -8,17 +8,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	partial class GambatteLink
 	{
-		void ICodeDataLogger.SetCDL(CodeDataLog cdl)
+		void ICodeDataLogger.SetCDL(ICodeDataLog cdl)
 		{
 			((ICodeDataLogger)L).SetCDL(cdl);
 		}
 
-		void ICodeDataLogger.NewCDL(CodeDataLog cdl)
+		void ICodeDataLogger.NewCDL(ICodeDataLog cdl)
 		{
 			((ICodeDataLogger)L).NewCDL(cdl);
 		}
 
-		void ICodeDataLogger.DisassembleCDL(Stream s, CodeDataLog cdl) { ((ICodeDataLogger)L).DisassembleCDL(s, cdl); }
+		void ICodeDataLogger.DisassembleCDL(Stream s, ICodeDataLog cdl) { ((ICodeDataLogger)L).DisassembleCDL(s, cdl); }
 
 	}
 }

@@ -1,6 +1,10 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	// A default IVideoProvider implementation that simply returns a black screen
+	/// <summary>
+	/// A default IVideoProvider that simply returns
+	/// a black screen at an arbitruary size
+	/// </summary>
+	/// <seealso cref="IVideoProvider" />
 	public class NullVideo : IVideoProvider
 	{
 		public int[] GetVideoBuffer()

@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, IRegionable, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
+	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable,
+		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
 		private int _frame;
@@ -100,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		};
 
+		// ICreateGameDBEntries
 		public CompactGameInfo GenerateGameDbEntry()
 		{
 			return new CompactGameInfo

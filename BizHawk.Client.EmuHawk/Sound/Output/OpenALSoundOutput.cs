@@ -81,7 +81,6 @@ namespace BizHawk.Client.EmuHawk
 			bool detectedUnderrun = sourceState == ALSourceState.Stopped;
 			if (detectedUnderrun)
 			{
-				_sound.OnUnderrun();
 				// SampleOffset should reset to 0 when stopped; update the queued sample count to match
 				UnqueueProcessedBuffers();
 				currentSamplesPlayed = 0;

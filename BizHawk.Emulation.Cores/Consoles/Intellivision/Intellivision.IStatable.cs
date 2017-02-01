@@ -50,14 +50,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.BeginSection("Intellivision");
 			ser.Sync("version", ref version);
 			ser.Sync("Frame", ref _frame);
+			ser.Sync("stic_row", ref stic_row);
 
 			ser.Sync("ScratchpadRam", ref ScratchpadRam, false);
 			ser.Sync("SystemRam", ref SystemRam, false);
 			ser.Sync("ExecutiveRom", ref ExecutiveRom, false);
 			ser.Sync("GraphicsRom", ref GraphicsRom, false);
 			ser.Sync("GraphicsRam", ref GraphicsRam, false);
-
-
+			ser.Sync("islag", ref islag);
+			ser.Sync("lagcount", ref lagcount);
 
 			_cpu.SyncState(ser);
 			_stic.SyncState(ser);

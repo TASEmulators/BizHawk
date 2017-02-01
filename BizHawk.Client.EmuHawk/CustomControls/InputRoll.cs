@@ -1152,19 +1152,14 @@ namespace BizHawk.Client.EmuHawk
 						var hadIndex = SelectedItems.Any();
 						SelectedItems.Clear();
 						SelectCell(CurrentCell);
-
-						// In this case the SelectCell did not invoke the change event since there was nothing to select
-						// But we went from selected to unselected, that is a change, so catch it here
-						if (hadIndex && CurrentCell.RowIndex.HasValue && CurrentCell.RowIndex > RowCount)
-						{
-							if (SelectedIndexChanged != null)
-							{
-								SelectedIndexChanged(this, new EventArgs());
-							}
-						}
 					}
 
 					Refresh();
+
+					if (SelectedIndexChanged != null)
+					{
+						SelectedIndexChanged(this, new EventArgs());
+					}
 				}
 			}
 
@@ -1678,11 +1673,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						SelectedItems.Add(CurrentCell);
 					}
-				}
-
-				if (SelectedIndexChanged != null)
-				{
-					SelectedIndexChanged(this, new EventArgs());
 				}
 			}
 		}

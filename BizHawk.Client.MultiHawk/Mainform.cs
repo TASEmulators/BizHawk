@@ -84,7 +84,7 @@ namespace BizHawk.Client.MultiHawk
 				// TODO
 				//CoreFileProvider.SyncCoreCommInputSignals();
 
-				Global.ActiveController = new Controller(NullEmulator.NullController);
+				Global.ActiveController = new Controller(NullController.Instance.Definition);
 				Global.AutoFireController = Global.AutofireNullControls;
 				Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 
@@ -199,7 +199,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 			Global.ClientControls = controls;
-			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Emulator);
+			Global.AutofireNullControls = new AutofireController(NullController.Instance.Definition, Emulator);
 		}
 
 		private void OpenRomMenuItem_Click(object sender, EventArgs e)

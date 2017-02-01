@@ -306,7 +306,7 @@ namespace BizHawk.Client.EmuHawk
 			var comm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
 			Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
-			Global.ActiveController = new Controller(NullEmulator.NullController);
+			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = Global.AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 			try { GlobalWin.Sound = new Sound(Handle); }
@@ -503,6 +503,8 @@ namespace BizHawk.Client.EmuHawk
 			Activate();
 			BringToFront();
 
+			InitializeFpsData();
+
 			for (; ; )
 			{
 				if (RunLoopCore())
@@ -613,6 +615,11 @@ namespace BizHawk.Client.EmuHawk
 
 			private set
 			{
+				if (_emulatorPaused && !value) // Unpausing
+				{
+					InitializeFpsData();
+				}
+
 				_emulatorPaused = value;
 				if (OnPauseChanged != null)
 				{
@@ -1396,14 +1403,15 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
-		private double _runloopLastFps;
-		private double _runloopDisplayFps;
 		private bool _runloopFrameadvance;
-		private double _runloopUpdatesPerSecond = 12.0;
-		private double _runloopFpsSmoothing = 8.0;
-		private long _runloopSecond;
-		private bool _runloopLastFf;
+		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
+
+		private readonly double _fpsUpdatesPerSecond = 12.0;
+		private readonly double _fpsSmoothing = 8.0;
+		private double _lastFps;
+		private int _framesSinceLastFpsUpdate;
+		private long _timestampLastFpsUpdate;
 
 		private readonly Throttle _throttle;
 		private bool _unthrottled;
@@ -1454,7 +1462,7 @@ namespace BizHawk.Client.EmuHawk
 			//we need to display FPS somewhere, in this case
 			if (Global.Config.DispSpeedupFeatures == 0)
 			{
-				str = str + string.Format("({0:0} fps) -", _runloopDisplayFps);
+				str = str + string.Format("({0:0} fps) -", _lastFps);
 			}
 
 			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
@@ -1654,17 +1662,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// we're video dumping, so async mode only and use the DumpProxy.
 				// note that the avi dumper has already rewired the emulator itself in this case.
-				GlobalWin.Sound.SetSyncInputPin(_dumpProxy);
-			}
-			else if (Global.Config.SoundThrottle || !_currentSoundProvider.CanProvideAsync)
-			{
-				_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
-				GlobalWin.Sound.SetSyncInputPin(_currentSoundProvider);
+				GlobalWin.Sound.SetInputPin(_dumpProxy);
 			}
 			else
 			{
-				_currentSoundProvider.SetSyncMode(SyncSoundMode.Async);
-				GlobalWin.Sound.SetAsyncInputPin(_currentSoundProvider);
+				bool useAsyncMode = _currentSoundProvider.CanProvideAsync && !Global.Config.SoundThrottle;
+				_currentSoundProvider.SetSyncMode(useAsyncMode ? SyncSoundMode.Async : SyncSoundMode.Sync);
+				GlobalWin.Sound.SetInputPin(_currentSoundProvider);
 			}
 		}
 
@@ -1803,7 +1807,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Global.ClientControls = controls;
-			Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Emulator);
+			Global.AutofireNullControls = new AutofireController(NullController.Instance.Definition, Emulator);
 
 		}
 
@@ -2799,8 +2803,13 @@ namespace BizHawk.Client.EmuHawk
 			if (runFrame || force)
 			{
 				var isFastForwarding = Global.ClientControls["Fast Forward"] || IsTurboing;
-				var updateFpsString = _runloopLastFf != isFastForwarding;
-				_runloopLastFf = isFastForwarding;
+				var isFastForwardingOrRewinding = isFastForwarding || isRewinding || _unthrottled;
+
+				if (isFastForwardingOrRewinding != _lastFastForwardingOrRewinding)
+				{
+					InitializeFpsData();
+				}
+				_lastFastForwardingOrRewinding = isFastForwardingOrRewinding;
 
 				// client input-related duties
 				GlobalWin.OSD.ClearGUIText();
@@ -2825,9 +2834,9 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.UpdateToolsBefore();
 				}
 
-				_runloopLastFps+= _runloopFpsSmoothing;
+				_framesSinceLastFpsUpdate++;
 
-				UpdateFpsDisplay(currentTimestamp, updateFpsString, isRewinding, isFastForwarding);
+				UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
 
 				CaptureRewind(suppressCaptureRewind);
 
@@ -2836,7 +2845,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					atten = Global.Config.SoundVolume / 100.0f;
 
-					if (isFastForwarding || IsTurboing || isRewinding)
+					if (isFastForwardingOrRewinding)
 					{
 						if (Global.Config.SoundEnabledRWFF)
 							atten *= Global.Config.SoundVolumeRWFF / 100.0f;
@@ -2854,8 +2863,9 @@ namespace BizHawk.Client.EmuHawk
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
 				//why not skip audio if the user doesnt want sound
-				bool renderSound = Global.Config.SoundEnabled || !IsTurboing;
+				bool renderSound = Global.Config.SoundEnabled && !IsTurboing;
 				renderSound |= (_currAviWriter != null && _currAviWriter.UsesAudio);
+				if (!renderSound) atten = 0;
 
 				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
 				Emulator.FrameAdvance(render, renderSound);
@@ -2926,46 +2936,52 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Sound.UpdateSound(atten);
 		}
 
-		private void UpdateFpsDisplay(long currentTimestamp, bool updateFpsString, bool isRewinding, bool isFastForwarding)
+		private void UpdateFpsDisplay(long currentTimestamp, bool isRewinding, bool isFastForwarding)
 		{
-			var timeDiff = (currentTimestamp - _runloopSecond);
-			if ( timeDiff * _runloopUpdatesPerSecond >= Stopwatch.Frequency)
+			double elapsedSeconds = (currentTimestamp - _timestampLastFpsUpdate) / (double)Stopwatch.Frequency;
+
+			if (elapsedSeconds < 1.0 / _fpsUpdatesPerSecond)
 			{
-				_runloopLastFps = Stopwatch.Frequency * (_runloopLastFps / (Stopwatch.Frequency + timeDiff * _runloopFpsSmoothing));
-				_runloopSecond = currentTimestamp;
-				_runloopDisplayFps = _runloopLastFps;
-				updateFpsString = true;
+				return;
 			}
 
-			if (updateFpsString)
+			if (_lastFps == 0) // Initial calculation
 			{
-				var fps_string = string.Format("{0:0} fps", _runloopDisplayFps);
-				if (isRewinding)
-				{
-					if (IsTurboing || isFastForwarding)
-					{
-						fps_string += " <<<<";
-					}
-					else
-					{
-						fps_string += " <<";
-					}
-				}
-				else if (IsTurboing)
-				{
-					fps_string += " >>>>";
-				}
-				else if (isFastForwarding)
-				{
-					fps_string += " >>";
-				}
-
-				GlobalWin.OSD.FPS = fps_string;
-
-				//need to refresh window caption in this case
-				if (Global.Config.DispSpeedupFeatures == 0)
-					SetWindowText();
+				_lastFps = (_framesSinceLastFpsUpdate - 1) / elapsedSeconds;
 			}
+			else
+			{
+				_lastFps = (_lastFps + (_framesSinceLastFpsUpdate * _fpsSmoothing)) / (1.0 + (elapsedSeconds * _fpsSmoothing));
+			}
+			_framesSinceLastFpsUpdate = 0;
+			_timestampLastFpsUpdate = currentTimestamp;
+
+			var fps_string = string.Format("{0:0} fps", _lastFps);
+			if (isRewinding)
+			{
+				fps_string += IsTurboing || isFastForwarding ?
+					" <<<<" :
+					" <<";
+			}
+			else if (isFastForwarding)
+			{
+				fps_string += IsTurboing ?
+					" >>>>" :
+					" >>";
+			}
+
+			GlobalWin.OSD.FPS = fps_string;
+
+			//need to refresh window caption in this case
+			if (Global.Config.DispSpeedupFeatures == 0)
+				SetWindowText();
+		}
+
+		private void InitializeFpsData()
+		{
+			_lastFps = 0;
+			_timestampLastFpsUpdate = Stopwatch.GetTimestamp();
+			_framesSinceLastFpsUpdate = 0;
 		}
 
 		#endregion
@@ -3680,7 +3696,7 @@ namespace BizHawk.Client.EmuHawk
 			var coreComm = CreateCoreComm();
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
-			Global.ActiveController = new Controller(NullEmulator.NullController);
+			Global.ActiveController = new Controller(NullController.Instance.Definition);
 			Global.AutoFireController = Global.AutofireNullControls;
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;

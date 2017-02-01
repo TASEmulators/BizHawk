@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		CodeDataLog currCdl;
+		ICodeDataLog currCdl;
 
-		public void SetCDL(CodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl)
 		{
 			if(currCdl != null) currCdl.Unpin();
 			currCdl = cdl;
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_cdl(currCdl);
 		}
 
-		public void NewCDL(CodeDataLog cdl)
+		public void NewCDL(ICodeDataLog cdl)
 		{
 			cdl["CARTROM"] = new byte[MemoryDomains["CARTROM"].Size];
 
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			cdl.SubVer = 0;			
 		}
 
-		public void DisassembleCDL(Stream s, CodeDataLog cdl)
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 		{
 			//not supported yet
 		}
@@ -302,6 +302,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void SetCpuRegister(string register, int value)
 		{
 			throw new NotImplementedException();
+		}
+
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles
+		{
+			get { throw new NotImplementedException(); }
 		}
 
 		public class MyScanlineHookManager : ScanlineHookManager
@@ -532,7 +538,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					default: return 0;
 				}
 
-				return (ushort)(Controller[key] ? 1 : 0);
+				return (ushort)(Controller.IsPressed(key) ? 1 : 0);
 			}
 
 			return 0;
@@ -672,10 +678,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			else
 				api.QUERY_set_audio_sample(soundcb);
 
-			bool resetSignal = Controller["Reset"];
+			bool resetSignal = Controller.IsPressed("Reset");
 			if (resetSignal) api.CMD_reset();
 
-			bool powerSignal = Controller["Power"];
+			bool powerSignal = Controller.IsPressed("Power");
 			if (powerSignal) api.CMD_power();
 
 			//too many messages

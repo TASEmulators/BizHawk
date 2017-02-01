@@ -9,10 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		#region IController Implementation
 
-		public bool this[string button]
-		{
-			get { return MyBoolButtons[button]; }
-		}
+		public ControllerDefinition Definition { get; set; }
 
 		public bool IsPressed(string button)
 		{
@@ -27,8 +24,6 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region IMovieController Implementation
-
-		public ControllerDefinition Definition { get; set; }
 
 		/// <summary>
 		/// latches one player from the source
@@ -48,7 +43,7 @@ namespace BizHawk.Client.Common
 					continue;
 				}
 
-				var val = playerSource[button];
+				var val = playerSource.IsPressed(button);
 				MyBoolButtons[button] = val;
 			}
 		}
@@ -60,7 +55,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				MyBoolButtons[button] = source[button];
+				MyBoolButtons[button] = source.IsPressed(button);
 			}
 
 			foreach (var name in Definition.FloatControls)

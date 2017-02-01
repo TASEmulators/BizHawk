@@ -216,32 +216,32 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		static void ConvertConsoleButtons(IController c, InputState s)
 		{
-			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
-			s.RaiseInput(0, MachineInput.Select, c["Select"]);
-			s.RaiseInput(0, MachineInput.Color, c["BW"]);
-			if (c["Toggle Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Toggle Left Difficulty"]); }
-			if (c["Toggle Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Toggle Right Difficulty"]); }
+			s.RaiseInput(0, MachineInput.Reset, c.IsPressed("Reset"));
+			s.RaiseInput(0, MachineInput.Select, c.IsPressed("Select"));
+			s.RaiseInput(0, MachineInput.Color, c.IsPressed("BW"));
+			if (c.IsPressed("Toggle Left Difficulty")) { s.RaiseInput(0, MachineInput.LeftDifficulty, c.IsPressed("Toggle Left Difficulty")); }
+			if (c.IsPressed("Toggle Right Difficulty")) { s.RaiseInput(0, MachineInput.RightDifficulty, c.IsPressed("Toggle Right Difficulty")); }
 		}
 		static void ConvertConsoleButtons7800(IController c, InputState s)
 		{
-			s.RaiseInput(0, MachineInput.Reset, c["Reset"]);
-			s.RaiseInput(0, MachineInput.Select, c["Select"]);
-			s.RaiseInput(0, MachineInput.Color, c["Pause"]);
-			if (c["Toggle Left Difficulty"]) { s.RaiseInput(0, MachineInput.LeftDifficulty, c["Toggle Left Difficulty"]); }
-			if (c["Toggle Right Difficulty"]) { s.RaiseInput(0, MachineInput.RightDifficulty, c["Toggle Right Difficulty"]); }
+			s.RaiseInput(0, MachineInput.Reset, c.IsPressed("Reset"));
+			s.RaiseInput(0, MachineInput.Select, c.IsPressed("Select"));
+			s.RaiseInput(0, MachineInput.Color, c.IsPressed("Pause"));
+			if (c.IsPressed("Toggle Left Difficulty")) { s.RaiseInput(0, MachineInput.LeftDifficulty, c.IsPressed("Toggle Left Difficulty")); }
+			if (c.IsPressed("Toggle Right Difficulty")) { s.RaiseInput(0, MachineInput.RightDifficulty, c.IsPressed("Toggle Right Difficulty")); }
 		}
 		static void ConvertDirections(IController c, InputState s, int p)
 		{
 			string ps = string.Format("P{0} ", p + 1);
-			s.RaiseInput(p, MachineInput.Up, c[ps + "Up"]);
-			s.RaiseInput(p, MachineInput.Down, c[ps + "Down"]);
-			s.RaiseInput(p, MachineInput.Left, c[ps + "Left"]);
-			s.RaiseInput(p, MachineInput.Right, c[ps + "Right"]);
+			s.RaiseInput(p, MachineInput.Up, c.IsPressed(ps + "Up"));
+			s.RaiseInput(p, MachineInput.Down, c.IsPressed(ps + "Down"));
+			s.RaiseInput(p, MachineInput.Left, c.IsPressed(ps + "Left"));
+			s.RaiseInput(p, MachineInput.Right, c.IsPressed(ps + "Right"));
 		}
 		static void ConvertTrigger(IController c, InputState s, int p)
 		{
 			string ps = string.Format("P{0} ", p + 1);
-			s.RaiseInput(p, MachineInput.Fire, c[ps + "Trigger"]);
+			s.RaiseInput(p, MachineInput.Fire, c.IsPressed(ps + "Trigger"));
 		}
 
 		static void ConvertJoystick(IController c, InputState s)
@@ -271,18 +271,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			for (int i = 0; i < 4; i++)
 			{
 				string ps = string.Format("P{0} ", i + 1);
-				s.RaiseInput(i, MachineInput.NumPad1, c[ps + "Keypad1"]);
-				s.RaiseInput(i, MachineInput.NumPad2, c[ps + "Keypad2"]);
-				s.RaiseInput(i, MachineInput.NumPad3, c[ps + "Keypad3"]);
-				s.RaiseInput(i, MachineInput.NumPad4, c[ps + "Keypad4"]);
-				s.RaiseInput(i, MachineInput.NumPad5, c[ps + "Keypad5"]);
-				s.RaiseInput(i, MachineInput.NumPad6, c[ps + "Keypad6"]);
-				s.RaiseInput(i, MachineInput.NumPad7, c[ps + "Keypad7"]);
-				s.RaiseInput(i, MachineInput.NumPad8, c[ps + "Keypad8"]);
-				s.RaiseInput(i, MachineInput.NumPad9, c[ps + "Keypad9"]);
-				s.RaiseInput(i, MachineInput.NumPadMult, c[ps + "KeypadA"]);
-				s.RaiseInput(i, MachineInput.NumPad0, c[ps + "Keypad0"]);
-				s.RaiseInput(i, MachineInput.NumPadHash, c[ps + "KeypadP"]);
+				s.RaiseInput(i, MachineInput.NumPad1, c.IsPressed(ps + "Keypad1"));
+				s.RaiseInput(i, MachineInput.NumPad2, c.IsPressed(ps + "Keypad2"));
+				s.RaiseInput(i, MachineInput.NumPad3, c.IsPressed(ps + "Keypad3"));
+				s.RaiseInput(i, MachineInput.NumPad4, c.IsPressed(ps + "Keypad4"));
+				s.RaiseInput(i, MachineInput.NumPad5, c.IsPressed(ps + "Keypad5"));
+				s.RaiseInput(i, MachineInput.NumPad6, c.IsPressed(ps + "Keypad6"));
+				s.RaiseInput(i, MachineInput.NumPad7, c.IsPressed(ps + "Keypad7"));
+				s.RaiseInput(i, MachineInput.NumPad8, c.IsPressed(ps + "Keypad8"));
+				s.RaiseInput(i, MachineInput.NumPad9, c.IsPressed(ps + "Keypad9"));
+				s.RaiseInput(i, MachineInput.NumPadMult, c.IsPressed(ps + "KeypadA"));
+				s.RaiseInput(i, MachineInput.NumPad0, c.IsPressed(ps + "Keypad0"));
+				s.RaiseInput(i, MachineInput.NumPadHash, c.IsPressed(ps + "KeypadP"));
 			}
 		}
 		static MachineInput[] drvlut = new[]
@@ -308,12 +308,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			ConvertDirections(c, s, 0);
 			ConvertDirections(c, s, 1);
 			// weird mapping is intentional
-			s.RaiseInput(0, MachineInput.Fire, c["P1 Trigger"]);
-			s.RaiseInput(0, MachineInput.Fire2, c["P1 Trigger 2"]);
-			s.RaiseInput(1, MachineInput.Fire2, c["P1 Trigger 3"]);
-			s.RaiseInput(1, MachineInput.Fire, c["P2 Trigger"]);
-			s.RaiseInput(2, MachineInput.Fire2, c["P2 Trigger 2"]);
-			s.RaiseInput(3, MachineInput.Fire2, c["P2 Trigger 3"]);
+			s.RaiseInput(0, MachineInput.Fire, c.IsPressed("P1 Trigger"));
+			s.RaiseInput(0, MachineInput.Fire2, c.IsPressed("P1 Trigger 2"));
+			s.RaiseInput(1, MachineInput.Fire2, c.IsPressed("P1 Trigger 3"));
+			s.RaiseInput(1, MachineInput.Fire, c.IsPressed("P2 Trigger"));
+			s.RaiseInput(2, MachineInput.Fire2, c.IsPressed("P2 Trigger 2"));
+			s.RaiseInput(3, MachineInput.Fire2, c.IsPressed("P2 Trigger 3"));
 		}
 		static void ConvertProLineJoystick(IController c, InputState s)
 		{
@@ -321,10 +321,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			ConvertConsoleButtons7800(c, s);
 			ConvertDirections(c, s, 0);
 			ConvertDirections(c, s, 1);
-			s.RaiseInput(0, MachineInput.Fire, c["P1 Trigger"]);
-			s.RaiseInput(0, MachineInput.Fire2, c["P1 Trigger 2"]);
-			s.RaiseInput(1, MachineInput.Fire, c["P2 Trigger"]);
-			s.RaiseInput(1, MachineInput.Fire2, c["P2 Trigger 2"]);
+			s.RaiseInput(0, MachineInput.Fire, c.IsPressed("P1 Trigger"));
+			s.RaiseInput(0, MachineInput.Fire2, c.IsPressed("P1 Trigger 2"));
+			s.RaiseInput(1, MachineInput.Fire, c.IsPressed("P2 Trigger"));
+			s.RaiseInput(1, MachineInput.Fire2, c.IsPressed("P2 Trigger 2"));
 		}
 		static void ConvertLightgun(IController c, InputState s)
 		{

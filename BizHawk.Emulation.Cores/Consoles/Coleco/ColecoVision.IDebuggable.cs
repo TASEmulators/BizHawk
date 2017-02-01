@@ -127,5 +127,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
+
+		public int TotalExecutedCycles
+		{
+			get { return Cpu.TotalExecutedCycles; }
+		}
 	}
 }

@@ -100,7 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			Frame++;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibVBANext.Reset(Core);
 
 			SyncTraceCallback();
@@ -212,8 +212,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			LibVBANext.Buttons ret = 0;
 			foreach (string s in Enum.GetNames(typeof(LibVBANext.Buttons)))
 			{
-				if (c[s])
+				if (c.IsPressed(s))
+				{
 					ret |= (LibVBANext.Buttons)Enum.Parse(typeof(LibVBANext.Buttons), s);
+				}
 			}
 			return ret;
 		}

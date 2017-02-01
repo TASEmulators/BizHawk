@@ -134,20 +134,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			int buttons = 0;
 
-			if (Controller["P" + num + " DPad R"]) buttons |= (1 << 0);
-			if (Controller["P" + num + " DPad L"]) buttons |= (1 << 1);
-			if (Controller["P" + num + " DPad D"]) buttons |= (1 << 2);
-			if (Controller["P" + num + " DPad U"]) buttons |= (1 << 3);
-			if (Controller["P" + num + " Start"]) buttons |= (1 << 4);
-			if (Controller["P" + num + " Z"]) buttons |= (1 << 5);
-			if (Controller["P" + num + " B"]) buttons |= (1 << 6);
-			if (Controller["P" + num + " A"]) buttons |= (1 << 7);
-			if (Controller["P" + num + " C Right"]) buttons |= (1 << 8);
-			if (Controller["P" + num + " C Left"]) buttons |= (1 << 9);
-			if (Controller["P" + num + " C Down"]) buttons |= (1 << 10);
-			if (Controller["P" + num + " C Up"]) buttons |= (1 << 11);
-			if (Controller["P" + num + " R"]) buttons |= (1 << 12);
-			if (Controller["P" + num + " L"]) buttons |= (1 << 13);
+			if (Controller.IsPressed("P" + num + " DPad R")) buttons |= (1 << 0);
+			if (Controller.IsPressed("P" + num + " DPad L")) buttons |= (1 << 1);
+			if (Controller.IsPressed("P" + num + " DPad D")) buttons |= (1 << 2);
+			if (Controller.IsPressed("P" + num + " DPad U")) buttons |= (1 << 3);
+			if (Controller.IsPressed("P" + num + " Start")) buttons |= (1 << 4);
+			if (Controller.IsPressed("P" + num + " Z")) buttons |= (1 << 5);
+			if (Controller.IsPressed("P" + num + " B")) buttons |= (1 << 6);
+			if (Controller.IsPressed("P" + num + " A")) buttons |= (1 << 7);
+			if (Controller.IsPressed("P" + num + " C Right")) buttons |= (1 << 8);
+			if (Controller.IsPressed("P" + num + " C Left")) buttons |= (1 << 9);
+			if (Controller.IsPressed("P" + num + " C Down")) buttons |= (1 << 10);
+			if (Controller.IsPressed("P" + num + " C Up")) buttons |= (1 << 11);
+			if (Controller.IsPressed("P" + num + " R")) buttons |= (1 << 12);
+			if (Controller.IsPressed("P" + num + " L")) buttons |= (1 << 13);
 
 			return buttons;
 		}

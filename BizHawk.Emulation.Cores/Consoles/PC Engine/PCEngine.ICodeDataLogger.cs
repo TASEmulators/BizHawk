@@ -8,12 +8,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine : ICodeDataLogger
 	{
-		public void SetCDL(CodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl)
 		{
 			Cpu.CDL = cdl;
 		}
 
-		public void NewCDL(CodeDataLog cdl)
+		public void NewCDL(ICodeDataLog cdl)
 		{
 			InitCDLMappings();
 			var mm = this.Cpu.Mappings;
@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			cdl.SubVer = 0;
 		}
 
-		public void DisassembleCDL(Stream s, CodeDataLog cdl)
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
 		{
 			Cpu.DisassembleCDL(s, cdl, _memoryDomains);
 		}

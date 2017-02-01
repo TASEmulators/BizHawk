@@ -19,8 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		private const string BranchNumberColumnName = "BranchNumberColumn";
 		private const string FrameColumnName = "FrameColumn";
 		private const string UserTextColumnName = "TextColumn";
-
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
+		private ScreenshotPopup Screenshot = new ScreenshotPopup();
 		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
 		public TAStudio Tastudio { get; set; }
 
@@ -63,6 +63,8 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.QueryItemText += QueryItemText;
 			BranchView.QueryItemBkColor += QueryItemBkColor;
 		}
+
+		#region Query callbacks
 
 		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
@@ -118,6 +120,10 @@ namespace BizHawk.Client.EmuHawk
 				color = Color.FromArgb((byte)(color.A - 24), (byte)(color.R - 24), (byte)(color.G - 24), (byte)(color.B - 24));
 			}
 		}
+
+		#endregion
+
+		#region Actions
 
 		public void Branch()
 		{
@@ -405,27 +411,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void ScreenShotPopUp(TasBranch branch, int index)
-		{
-			Point locationOnForm = this.FindForm().PointToClient(
-				this.Parent.PointToScreen(this.Location));
+		#endregion
 
-			int x = locationOnForm.X - Tastudio.ScreenshotControl.Width;
-			int y = locationOnForm.Y; // keep consistent height, helps when conparing screenshots
-
-			if (x < 1) x = 1;
-
-			Tastudio.ScreenshotControl.Location = new Point(x, y);
-			Tastudio.ScreenshotControl.Visible = true;
-			Tastudio.ScreenshotControl.Branch = branch;
-			Tastudio.ScreenshotControl.RecalculateHeight();
-			Tastudio.ScreenshotControl.Refresh();
-		}
-
-		private void CloseScreenShotPopUp()
-		{
-			Tastudio.ScreenshotControl.Visible = false;
-		}
+		#region Events
 
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -464,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BranchView.CurrentCell == null || !BranchView.CurrentCell.RowIndex.HasValue || BranchView.CurrentCell.Column == null)
 			{
-				CloseScreenShotPopUp();
+				//not sure if we need to explicitly hide the screenshot here as well
 			}
 			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
 			{
@@ -474,25 +462,36 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseLeave(object sender, EventArgs e)
 		{
-			// Tastudio.ScreenshotControl.Visible = false;
+			ScreenshotTooltip.Hide(this);
 		}
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
 		{
 			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Movie.BranchCount)
 			{
-				if (e.NewCell.Column.Name == BranchNumberColumnName)
+				if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName &&
+					BranchView.CurrentCell.RowIndex.HasValue &&
+					BranchView.CurrentCell.RowIndex < Movie.BranchCount)
 				{
-					ScreenShotPopUp(GetBranch(e.NewCell.RowIndex.Value), e.NewCell.RowIndex.Value);
+					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
+					int width = Tastudio.VideoProvider.BufferWidth;
+					int height = Tastudio.VideoProvider.BufferHeight;
+					Screenshot.UpdateValues(branch, width, height,
+						(int)Graphics.FromHwnd(this.Handle).MeasureString(
+							branch.UserText, Screenshot.Font, width).Height);
+
+					Point location = Location;
+					location.Offset(-Screenshot.Width, 0);
+					ScreenshotTooltip.Show(" ", this, location);
 				}
 				else
 				{
-					CloseScreenShotPopUp();
+					ScreenshotTooltip.Hide(this);
 				}
 			}
 			else
 			{
-				CloseScreenShotPopUp();
+				ScreenshotTooltip.Hide(this);
 			}
 		}
 
@@ -503,5 +502,17 @@ namespace BizHawk.Client.EmuHawk
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 			}
 		}
+
+		private void Screenshot_Popup(object sender, PopupEventArgs e)
+		{
+			Screenshot.Popup(sender, e);
+		}
+
+		private void Screenshot_Draw(object sender, DrawToolTipEventArgs e)
+		{
+			Screenshot.Draw(sender, e);
+		}
+
+		#endregion
 	}
 }

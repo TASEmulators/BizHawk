@@ -112,20 +112,20 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		{
 			PPSSPPDll.Buttons b = 0;
 			var c = Controller;
-			if (c["Up"]) b |= PPSSPPDll.Buttons.UP;
-			if (c["Down"]) b |= PPSSPPDll.Buttons.DOWN;
-			if (c["Left"]) b |= PPSSPPDll.Buttons.LEFT;
-			if (c["Right"]) b |= PPSSPPDll.Buttons.RIGHT;
-			if (c["Select"]) b |= PPSSPPDll.Buttons.SELECT;
-			if (c["Start"]) b |= PPSSPPDll.Buttons.START;
-			if (c["L"]) b |= PPSSPPDll.Buttons.LBUMPER;
-			if (c["R"]) b |= PPSSPPDll.Buttons.RBUMPER;
-			if (c["Square"]) b |= PPSSPPDll.Buttons.A;
-			if (c["Triangle"]) b |= PPSSPPDll.Buttons.B;
-			if (c["Circle"]) b |= PPSSPPDll.Buttons.X;
-			if (c["Cross"]) b |= PPSSPPDll.Buttons.Y;
-			if (c["Menu"]) b |= PPSSPPDll.Buttons.MENU;
-			if (c["Back"]) b |= PPSSPPDll.Buttons.BACK;
+			if (c.IsPressed("Up")) b |= PPSSPPDll.Buttons.UP;
+			if (c.IsPressed("Down")) b |= PPSSPPDll.Buttons.DOWN;
+			if (c.IsPressed("Left")) b |= PPSSPPDll.Buttons.LEFT;
+			if (c.IsPressed("Right")) b |= PPSSPPDll.Buttons.RIGHT;
+			if (c.IsPressed("Select")) b |= PPSSPPDll.Buttons.SELECT;
+			if (c.IsPressed("Start")) b |= PPSSPPDll.Buttons.START;
+			if (c.IsPressed("L")) b |= PPSSPPDll.Buttons.LBUMPER;
+			if (c.IsPressed("R")) b |= PPSSPPDll.Buttons.RBUMPER;
+			if (c.IsPressed("Square")) b |= PPSSPPDll.Buttons.A;
+			if (c.IsPressed("Triangle")) b |= PPSSPPDll.Buttons.B;
+			if (c.IsPressed("Circle")) b |= PPSSPPDll.Buttons.X;
+			if (c.IsPressed("Cross")) b |= PPSSPPDll.Buttons.Y;
+			if (c.IsPressed("Menu")) b |= PPSSPPDll.Buttons.MENU;
+			if (c.IsPressed("Back")) b |= PPSSPPDll.Buttons.BACK;
 
 			input.SetButtons(b);
 

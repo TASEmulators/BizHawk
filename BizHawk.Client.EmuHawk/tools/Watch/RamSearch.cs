@@ -1243,11 +1243,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_searches.CanUndo)
 			{
-				_searches.Undo();
+				int restoredCount = _searches.Undo();
 				UpdateList();
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
+				MessageLabel.Text = restoredCount.ToString() + " address" + (restoredCount != 1 ? "es" : "") +  " restored";
 			}
 		}
 
@@ -1255,11 +1256,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (_searches.CanRedo)
 			{
-				_searches.Redo();
+				int restoredCount = _searches.Redo();
 				UpdateList();
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
+				MessageLabel.Text = restoredCount.ToString() + " address" + (restoredCount != 1 ? "es" : "") + " removed";
 			}
 		}
 
