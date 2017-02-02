@@ -883,7 +883,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedFiles.ToList().ForEach(file => System.Diagnostics.Process.Start(file.Path));
+			SelectedFiles.ToList().ForEach(file =>
+			{
+				// adelikat; copy/pasting from code above.  We need a method or something for this, there's probably other places we need this logic
+				string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
+				System.Diagnostics.Process.Start(pathToLoad);
+			});
 		}
 
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)
