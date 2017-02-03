@@ -61,10 +61,18 @@ namespace BizHawk.Client.Common
 		public void Toggle()
 		{
 			if (State == RunState.Paused)
+			{
 				State = RunState.Running;
+			}
 			else if (State == RunState.Disabled)
+			{
 				State = RunState.Running;
-			else State = RunState.Disabled;
+				FrameWaiting = false;
+			}
+			else
+			{
+				State = RunState.Disabled;
+			}
 		}
 
 		public void TogglePause()
