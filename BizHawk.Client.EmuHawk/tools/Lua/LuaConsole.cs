@@ -68,13 +68,6 @@ namespace BizHawk.Client.EmuHawk
 					
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 					LuaImp.GuiLibrary.DrawFinish();
-					foreach (var lua in _luaList)
-					{
-						if (lua.Thread != null)
-						{
-							lua.Thread.Dispose();
-						}
-					}
 					CloseLua();
 				}
 				else
