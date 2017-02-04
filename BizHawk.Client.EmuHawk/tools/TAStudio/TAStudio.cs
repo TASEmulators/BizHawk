@@ -351,6 +351,7 @@ namespace BizHawk.Client.EmuHawk
 						var ss = snes.GetSyncSettings();
 						ss.Profile = "Compatibility";
 						snes.PutSyncSettings(ss);
+						Mainform.RebootCore();
 					}
 					else if (result == DialogResult.Cancel)
 					{
