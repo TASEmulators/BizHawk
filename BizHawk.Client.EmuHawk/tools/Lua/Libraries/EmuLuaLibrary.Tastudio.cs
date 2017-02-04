@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
 			"setmarker",
 			"Adds or sets a marker at the given frame with the given message"
 		)]
-		public void SetMarker(int frame, string message)
+		public void SetMarker(int frame, string message = null)
 		{
 			if (Engaged())
 			{
