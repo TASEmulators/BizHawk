@@ -85,6 +85,7 @@ namespace BizHawk.Client.EmuHawk
 							ConvertCurrentMovieToTasproj();
 							StartNewMovieWrapper(false);
 							SetUpColumns();
+							SetTextProperty();
 						}
 					}
 					else
