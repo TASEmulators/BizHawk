@@ -41,11 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Mainform.GameIsClosing)
-			{
-				Close();
-			}
-			else
+			if (!Mainform.GameIsClosing)
 			{
 				StartNewTasMovie();
 			}
@@ -75,7 +71,26 @@ namespace BizHawk.Client.EmuHawk
 				var result = ofd.ShowHawkDialog();
 				if (result == DialogResult.OK)
 				{
-					LoadFile(new FileInfo(ofd.FileName));
+					if (ofd.FileName.EndsWith(TasMovie.Extension))
+					{
+						LoadFile(new FileInfo(ofd.FileName));
+					}
+					else if (ofd.FileName.EndsWith(".bkm") || ofd.FileName.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
+					{
+						Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
+
+						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+						if (result1 == DialogResult.OK)
+						{
+							ConvertCurrentMovieToTasproj();
+							StartNewMovieWrapper(false);
+							SetUpColumns();
+						}
+					}
+					else
+					{
+						MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}

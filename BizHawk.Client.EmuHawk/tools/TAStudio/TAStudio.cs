@@ -623,27 +623,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (movie.Filename.EndsWith(TasMovie.Extension))
-				{
-				
-				}
-				else if (movie.Filename.EndsWith(".bkm") || movie.Filename.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
-				{
-					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result1 == DialogResult.OK)
-					{
-						ConvertCurrentMovieToTasproj();
-						StartNewMovieWrapper(false, movie);
-						SetUpColumns();
-						return true;
-					}
-					return false;
-				}
-				else 
-				{
-					MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
-				}
 				result = StartNewMovieWrapper(false, movie);
 			}
 
@@ -776,6 +755,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog(bool refreshTasView = true)
 		{
+			if (_exiting)
+				return;
+
 			if (refreshTasView)
 				RefreshTasView();
 
