@@ -70,7 +70,10 @@ namespace BizHawk.Client.EmuHawk
 					LuaImp.GuiLibrary.DrawFinish();
 					foreach (var lua in _luaList)
 					{
-						lua.Thread.Dispose();
+						if (lua.Thread != null)
+						{
+							lua.Thread.Dispose();
+						}
 					}
 					CloseLua();
 				}
@@ -541,8 +544,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}, () =>
 					{
-						lf.State = LuaFile.RunState.Disabled;
-						lf.Thread = null;
+						lf.Stop();
 					});
 				}
 				catch (Exception ex)
