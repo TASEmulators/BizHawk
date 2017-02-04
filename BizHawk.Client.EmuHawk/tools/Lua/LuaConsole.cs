@@ -836,6 +836,13 @@ namespace BizHawk.Client.EmuHawk
 							item.State = LuaFile.RunState.Disabled;
 						});
 
+						// Shenanigans
+						// We want any gui.text messages from a script to immediately update even when paused
+						GlobalWin.OSD.ClearGUIText();
+						GlobalWin.Tools.UpdateToolsAfter();
+						EndLuaDrawing();
+						StartLuaDrawing();
+
 					}
 					catch (IOException)
 					{
