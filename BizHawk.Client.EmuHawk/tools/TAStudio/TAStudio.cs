@@ -457,11 +457,12 @@ namespace BizHawk.Client.EmuHawk
 					// todo: make a proper user editable list?
 					c.Name == "Power" ||
 					c.Name == "Reset" ||
-					c.Name.StartsWith("Tilt") ||
 					c.Name == "Light Sensor" ||
 					c.Name == "Open" ||
 					c.Name == "Close" ||
-					c.Name == "Disc Select"
+					c.Name == "Disc Select" ||
+					c.Name.StartsWith("Tilt") ||
+					c.Name.StartsWith("Key ")
 				);
 
 			foreach (var column in columnsToHide)
