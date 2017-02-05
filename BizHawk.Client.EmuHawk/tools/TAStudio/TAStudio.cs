@@ -805,7 +805,7 @@ namespace BizHawk.Client.EmuHawk
 			//_autoRestoreFrame = null;
 		}
 
-		private void StartAtNearestFrameAndEmulate(int frame)
+		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua)
 		{
 			if (frame == Emulator.Frame)
 				return;
@@ -824,6 +824,16 @@ namespace BizHawk.Client.EmuHawk
 				if (Mainform.EmulatorPaused || Mainform.IsSeeking) // make seek frame keep up with emulation on fast scrolls
 				{
 					StartSeeking(frame);
+				}
+				else
+				{
+					if (_wasRecording)
+					{
+						//lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
+						//GUI users on the other hand need to be protected from clobbering their video when skipping around
+						if(fromLua)
+							TastudioRecordMode();
+					}
 				}
 			}
 		}

@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (f < Tastudio.CurrentTasMovie.InputLogLength && f>=0)
 				{
-					Tastudio.GoToFrame(f);
+					Tastudio.GoToFrame(f,true);
 				}
 			}
 		}
