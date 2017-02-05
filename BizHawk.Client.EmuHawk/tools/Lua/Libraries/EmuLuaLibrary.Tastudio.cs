@@ -156,6 +156,30 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"setplayback",
+			"Seeks the given frame (a number) or marker (a string)"
+		)]
+		public void SetPlayback(object frame)
+		{
+			if (Engaged())
+			{
+				int f;
+				if (frame is double) f = (int)(double)frame;
+				else
+				{
+					//r marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
+					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
+					if (f == -1) return;
+					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
+				}
+				if (f < Tastudio.CurrentTasMovie.InputLogLength && f>=0)
+				{
+					Tastudio.GoToFrame(f);
+				}
+			}
+		}
+
+		[LuaMethodAttributes(
 			"onqueryitembg",
 			"called during the background draw event of the tastudio listview"
 		)]
