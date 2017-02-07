@@ -290,5 +290,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+		
+		[LuaMethodAttributes(
+			"isrecording",
+			"use this to check to see if recording is active"
+		)]
+		public bool IsRecording()
+		{
+			return _wasRecording;
+		}
 	}
 }
