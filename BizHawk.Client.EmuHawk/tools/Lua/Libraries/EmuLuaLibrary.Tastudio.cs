@@ -11,6 +11,8 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibraryAttributes(released: true)]
 	public sealed class TastudioLuaLibrary : LuaLibraryBase
 	{
+		private bool _wasRecording = false;
+
 		public TastudioLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -268,6 +270,24 @@ namespace BizHawk.Client.EmuHawk
 				{
 					luaf.Call(index);
 				};
+			}
+		}
+		
+		[LuaMethodAttributes(
+			"togglerecordingmode",
+			"use this to toggle recording mode in case you want to use lua to toggle this instead of the gui"
+		)]
+		public void ToggleRecordingMode(){
+			if (Engaged()){
+				_wasRecording = (Global.MovieSession.Movie as TasMovie).IsRecording || _wasRecording;
+				if(_wasRecording){
+					Tastudio.TasPlaybackBox.RecordingMode = false;
+					Tastudio.TasPlaybackBox.RecordingMode = false;
+				
+				}
+				else {
+					Tastudio.TasPlaybackBox.RecordingMode = true;
+				}
 			}
 		}
 	}
