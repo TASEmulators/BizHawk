@@ -167,7 +167,6 @@ namespace BizHawk.Client.EmuHawk
 				if (frame is double) f = (int)(double)frame;
 				else
 				{
-					//r marker = Tastudio.CurrentTasMovie.Markers.Get(frame);
 					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
 					if (f == -1) return;
 					f = Tastudio.CurrentTasMovie.Markers[f].Frame;

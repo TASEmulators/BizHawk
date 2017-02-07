@@ -518,7 +518,7 @@ namespace BizHawk.Client.EmuHawk
 				// autohold/autofire must not be affected by the following inputs
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
-				if (GlobalWin.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 				}
@@ -626,6 +626,9 @@ namespace BizHawk.Client.EmuHawk
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 
+		//runloop won't exec lua
+		public bool SuppressLua;
+
 		public long MouseWheelTracker;
 
 		private int? _pauseOnFrame;
@@ -639,7 +642,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo);
+					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo && !SuppressLua);
 					GlobalWin.Tools.UpdateToolsBefore(skipScripts);
 					GlobalWin.Tools.UpdateToolsAfter(skipScripts);
 				}
@@ -2694,6 +2697,13 @@ namespace BizHawk.Client.EmuHawk
 			StepRunLoop_Core(true);
 		}
 
+		public void SeekFrameAdvance()
+		{
+			PressFrameAdvance = true;
+			StepRunLoop_Core(true);
+			PressFrameAdvance = false;
+		}
+
 		public bool IsLagFrame
 		{
 			get
@@ -2784,7 +2794,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.FrameTick();
 				Global.LuaAndAdaptor.FrameTick();
 
-				if (GlobalWin.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
@@ -2852,7 +2862,7 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				if (GlobalWin.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
@@ -2863,7 +2873,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					UpdateToolsAfter();
+					UpdateToolsAfter(SuppressLua);
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&

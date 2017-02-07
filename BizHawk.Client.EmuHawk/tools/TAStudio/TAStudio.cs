@@ -819,6 +819,31 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
+			if (fromLua)
+			{
+				bool wasPaused = Mainform.EmulatorPaused; 
+				
+				//why not use this? because I'm not letting the form freely run. it all has to be under this loop.
+				//i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
+				//PauseOnFrame = frame;
+				
+				//can't re-enter lua while doing this
+				Mainform.SuppressLua = true;
+				while (Emulator.Frame != frame)
+					Mainform.SeekFrameAdvance();
+				Mainform.SuppressLua = false;
+
+				if(!wasPaused) Mainform.UnpauseEmulator();
+
+				//lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
+				if (_wasRecording)
+				{
+					TastudioRecordMode();
+				}
+
+				//now the next section won't happen since we're at the right spot
+			}
+
 			// frame == Emualtor.Frame when frame == 0
 			if (frame > Emulator.Frame)
 			{
@@ -828,13 +853,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					if (_wasRecording)
-					{
-						//lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
-						//GUI users on the other hand need to be protected from clobbering their video when skipping around
-						if(fromLua)
-							TastudioRecordMode();
-					}
+					//GUI users hand need to be protected from clobbering their video when skipping around
+					//so we don't re-enable recording
 				}
 			}
 		}
