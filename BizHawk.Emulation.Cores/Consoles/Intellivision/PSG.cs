@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			
 			sample_count = 0;
 
-			for (int i = 0; i < 3733; i++)
+			for (int i = 0; i < 4000; i++)
 			{
 				audio_samples[i] = 0;
 			}
@@ -54,17 +54,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[735 * 2];
+			short[] ret = new short[932 * 2];
 			GetSamples(ret);
 			samples = ret;
-			nsamp = 735;
+			nsamp = 932;
 		}
 
 		public void GetSamples(short[] samples)
 		{
 			for (int i = 0; i < samples.Length / 2; i++)
 			{
-				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(3.7904 * i)]);
+				//samples[i * 2] = (short)(audio_samples[(int)Math.Floor(3.7904 * i)]);
+				samples[i * 2] = (short)(audio_samples[(4 * i)]);
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
 		}
