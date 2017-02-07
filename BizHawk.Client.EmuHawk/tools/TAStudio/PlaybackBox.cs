@@ -74,6 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				RecordingModeCheckbox.Checked = value;
+				Global.MovieSession.ReadOnly = !value;
 				if (RecordingModeCheckbox.Checked)
 				{
 					Global.MovieSession.Movie.SwitchToRecord();
