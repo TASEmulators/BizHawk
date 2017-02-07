@@ -268,14 +268,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 				return false;
 			}
 			
-			try
-			{
-				d.PokeByte(0, d.PeekByte(0));
-			}
-			catch (NotImplementedException)
-			{
-				return false;
-			}
+			//once upon a time, we did a try { poke(peek) } here, but that was before Writable was added. the poke(peek) is not acceptable. If there are further problems, make sure Writable is correct.
 
 			return true;
 		}
