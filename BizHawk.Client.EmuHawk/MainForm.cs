@@ -1371,7 +1371,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
 
-		private readonly double _fpsUpdatesPerSecond = 12.0;
+		private readonly double _fpsUpdatesPerSecond = 4.0;
 		private readonly double _fpsSmoothing = 8.0;
 		private double _lastFps;
 		private int _framesSinceLastFpsUpdate;
