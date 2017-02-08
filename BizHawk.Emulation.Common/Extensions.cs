@@ -342,8 +342,14 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 				return false;
 			}
 
+			// adelikat: we can't rely on this anymore
+			// Some methods throw an exception by design, such as ISoundProvider.GetSamplesAsync()
+			// If async is not provided by the implementation this method will throw an exception
+			// We need to figure out a reliable way to check specifically for a NotImplementedException, then maybe this method will be more useful
 			// If a method is not marked but all it does is throw an exception, consider it not implemented
-			return !info.ThrowsError();
+			//return !info.ThrowsError();
+
+			return true;
 		}
 
 		public static bool IsImplemented(this PropertyInfo info)
