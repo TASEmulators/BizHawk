@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public Func<ushort, ushort> ReadMemory;
 		public Func<ushort, ushort, bool> WriteMemory;
 
-		private static bool Logging = true;
+		private static bool Logging = false;
 		private static readonly StreamWriter Log;
 
 		public void SyncState(Serializer ser)
