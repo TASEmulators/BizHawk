@@ -311,6 +311,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
+			SetSize(_settings.Size);
+			HardSetDisplayTypeDropDown(_settings.Type);
 		}
 
 		public void SaveConfigSettings()
