@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int TotalExecutedCycles;
 		public int PendingCycles;
 
-		public Func<ushort, ushort> ReadMemory;
-		public Func<ushort, ushort, bool> WriteMemory;
+		public Func<ushort, bool, ushort> ReadMemory;
+		public Func<ushort, ushort, bool, bool> WriteMemory;
 
 		private static int BORDER_OFFSET=176*8;
 
@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			for (int i=0;i<64;i++)
 			{
-				write_reg(i, 0);
+				write_reg(i, 0, false);
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		}
 
 		// mask off appropriate STIC bits and write to register
-		private void write_reg(int reg, ushort value)
+		private void write_reg(int reg, ushort value, bool poke)
 		{
 			
 			if (reg < 0x8)
@@ -159,29 +159,29 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 			Register[reg] = value;
 
-			if (reg==0x21)
+			if (reg==0x21 && !poke)
 			{
 				Fgbg = true;
 			}
-			if (reg==0x20)
+			if (reg==0x20 && !poke)
 			{
 				active_display = true;
 			}
 
-			if (reg==0x2C)
+			if (reg==0x2C && !poke)
 			{
 				Update_Border();
 			}
 		}
 
-		public ushort? ReadSTIC(ushort addr)
+		public ushort? ReadSTIC(ushort addr, bool peek)
 		{
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
 					if (addr <= 0x003F && (in_vb_1 | !active_display))
 					{
-						if (addr == 0x0021)
+						if (addr == 0x0021 && !peek)
 						{
 							Fgbg = false;
 						}
@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case 0x4000:
 					if ((addr <= 0x403F) && (in_vb_1 | !active_display))
 					{
-						if (addr == 0x4021)
+						if (addr == 0x4021 && !peek)
 						{
 							Fgbg = false;
 						}
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case 0x8000:
 					if ((addr <= 0x803F) && (in_vb_1 | !active_display))
 					{
-						if (addr == 0x8021)
+						if (addr == 0x8021 && !peek)
 						{
 							Fgbg = false;
 						}
@@ -213,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case 0xC000:
 					if ((addr <= 0xC03F) && (in_vb_1 | !active_display))
 					{
-						if (addr == 0xC021)
+						if (addr == 0xC021 && !peek)
 						{
 							Fgbg = false;
 						}
@@ -223,35 +223,35 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return null;
 		}
 
-		public bool WriteSTIC(ushort addr, ushort value)
+		public bool WriteSTIC(ushort addr, ushort value, bool poke)
 		{
 			switch (addr & 0xF000)
 			{
 				case 0x0000:
 					if (addr <= 0x003F && (in_vb_1 | !active_display))
 					{
-						write_reg(addr, value);
+						write_reg(addr, value, poke);
 						return true;
 					}
 					break;
 				case 0x4000:
 					if (addr <= 0x403F && (in_vb_1 | !active_display))
 					{
-						write_reg(addr-0x4000, value);
+						write_reg(addr-0x4000, value, poke);
 						return true;
 					}
 					break;
 				case 0x8000:
 					if (addr <= 0x803F && (in_vb_1 | !active_display))
 					{
-						write_reg(addr-0x8000, value);
+						write_reg(addr-0x8000, value, poke);
 						return true;
 					}
 					break;
 				case 0xC000:
 					if (addr <= 0xC03F && (in_vb_1 | !active_display))
 					{
-						write_reg(addr-0xC000, value);
+						write_reg(addr-0xC000, value, poke);
 						return true;
 					}
 					break;
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				{
 					int buffer_offset = (card_row * 159 * 8) + (card_col * 8);
 					// The cards are stored sequentially in the System RAM.
-					ushort card = ReadMemory((ushort)(0x0200 + (card_row * 20) + card_col));
+					ushort card = ReadMemory((ushort)(0x0200 + (card_row * 20) + card_col), false);
 					// Parse data from the card.
 					bool gram = ((card & 0x0800) != 0);
 					int card_num = card >> 3;
@@ -433,11 +433,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						byte row;
 						if (gram)
 						{
-							row = (byte)ReadMemory((ushort)(0x3800 + row_mem));
+							row = (byte)ReadMemory((ushort)(0x3800 + row_mem), false);
 						}
 						else
 						{
-							row = (byte)ReadMemory((ushort)(0x3000 + row_mem));
+							row = (byte)ReadMemory((ushort)(0x3000 + row_mem), false);
 						}
 						for (int pict_col = 0; pict_col < 8; pict_col++)
 						{
@@ -595,11 +595,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				{
 					if (gram)
 					{
-						row = (byte)ReadMemory((ushort)(0x3800 + 8 * card + j));
+						row = (byte)ReadMemory((ushort)(0x3800 + 8 * card + j), false);
 					}
 					else
 					{
-						row = (byte)ReadMemory((ushort)(0x3000 + 8 * card + j));
+						row = (byte)ReadMemory((ushort)(0x3000 + 8 * card + j), false);
 					}
 
 					mobs[j] = row;
@@ -612,11 +612,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						if (gram)
 						{
-							row = (byte)ReadMemory((ushort)(0x3800 + 8 * (card + 1) + j));
+							row = (byte)ReadMemory((ushort)(0x3800 + 8 * (card + 1) + j), false);
 						}
 						else
 						{
-							row = (byte)ReadMemory((ushort)(0x3000 + 8 * (card + 1) + j));
+							row = (byte)ReadMemory((ushort)(0x3000 + 8 * (card + 1) + j), false);
 						}
 
 						y_mobs[j] = row;

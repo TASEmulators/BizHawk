@@ -46,16 +46,54 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				),
 				new MemoryDomainDelegate(
 					"Executive Rom",
-					SystemRam.Length * 2,
+					ExecutiveRom.Length * 2,
 					MemoryDomain.Endian.Little,
 					addr => ReadByteFromShortArray(addr, ExecutiveRom),
 					(addr, value) => WriteByteToShortArray(addr, value, ExecutiveRom),
+					1
+				),
+				new MemoryDomainDelegate(
+					"System Bus",
+					0X20000,
+					MemoryDomain.Endian.Little,
+					addr => PeekSystemBus(addr),
+					(addr, value) => PokeSystemBus(addr, value),
 					1
 				)
 			};
 
 			MemoryDomains = new MemoryDomainList(domains);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(MemoryDomains);
+		}
+
+		private byte PeekSystemBus(long addr)
+		{
+			if (addr % 2 == 0)
+			{
+				long index = addr / 2;
+				return (byte)(ReadMemory((ushort)index, true) >> 8);
+			}
+			else
+			{
+				long index = (addr - 1) / 2;
+				return (byte)(ReadMemory((ushort)index, true) & 0xFF);
+			}
+		}
+
+		private void PokeSystemBus(long addr, byte value)
+		{
+			if (addr % 2 == 0)
+			{
+				long index = addr / 2;
+				int temp = (ReadMemory((ushort)index, true) >> 8);
+				WriteMemory((ushort)index, (ushort)(temp & (value << 8)), true);
+			}
+			else
+			{
+				long index = (addr - 1) / 2;
+				int temp = ((ReadMemory((ushort)index, true) & 0xFF)<<8);
+				WriteMemory((ushort)index, (ushort)(temp & value), true);
+			}
 		}
 
 		// TODO: move these to a common library and maybe add an endian parameter

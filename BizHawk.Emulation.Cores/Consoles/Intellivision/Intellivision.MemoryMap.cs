@@ -12,11 +12,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public byte[] GraphicsRom = new byte[2048];
 		public byte[] GraphicsRam = new byte[512];
 
-		public ushort ReadMemory(ushort addr)
+		public ushort ReadMemory(ushort addr, bool peek)
 		{
-			ushort? cart = _cart.ReadCart(addr);
-			ushort? stic = _stic.ReadSTIC(addr);
-			ushort? psg = _psg.ReadPSG(addr);
+			ushort? cart = _cart.ReadCart(addr, peek);
+			ushort? stic = _stic.ReadSTIC(addr, peek);
+			ushort? psg = _psg.ReadPSG(addr, peek);
 			ushort? core = null;
 
 			switch (addr & 0xF000)
@@ -43,12 +43,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						//controllers
 						if (addr==0x01FE)
 						{
-							islag = false;
+							if (!peek)
+								islag = false;
 							return _psg.Register[14];			
 						}
 						if (addr == 0x01FF)
 						{
-							islag = false;
+							if (!peek)
+								islag = false;
 							return _psg.Register[15];
 						}
 						break;
@@ -207,11 +209,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return UNMAPPED;
 		}
 
-		public bool WriteMemory(ushort addr, ushort value)
+		public bool WriteMemory(ushort addr, ushort value, bool poke)
 		{
-			bool cart = _cart.WriteCart(addr, value);
-			bool stic = _stic.WriteSTIC(addr, value);
-			bool psg = _psg.WritePSG(addr, value);
+			bool cart = _cart.WriteCart(addr, value, poke);
+			bool stic = _stic.WriteSTIC(addr, value, poke);
+			bool psg = _psg.WritePSG(addr, value, poke);
 			switch (addr & 0xF000)
 			{
 				case 0x0000:

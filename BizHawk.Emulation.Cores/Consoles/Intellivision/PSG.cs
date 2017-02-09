@@ -95,8 +95,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int noise_per;
 		public int noise=0x1;
 
-		public Func<ushort, ushort> ReadMemory;
-		public Func<ushort, ushort, bool> WriteMemory;
+		public Func<ushort, bool, ushort> ReadMemory;
+		public Func<ushort, ushort, bool, bool> WriteMemory;
 
 		public void SyncState(Serializer ser)
 		{
@@ -125,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.EndSection();
 		}
 
-		public ushort? ReadPSG(ushort addr)
+		public ushort? ReadPSG(ushort addr, bool peek)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			env_vol_C = (Register[13] >> 4) & 0x3;
 		}
 
-		public bool WritePSG(ushort addr, ushort value)
+		public bool WritePSG(ushort addr, ushort value, bool poke)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
