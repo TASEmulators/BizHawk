@@ -14,20 +14,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void Reset()
 		{
 			sq_per_A = sq_per_B = sq_per_C = clock_A = clock_B = clock_C = 0x1;
-			noise_per = noise_clock = 64;
+			noise_per = noise_clock = 1;
 			env_per = 0x1;
 			DiscardSamples();
 		}
 
 		public void DiscardSamples()
 		{
-			
 			sample_count = 0;
-
-			for (int i = 0; i < 4000; i++)
-			{
-				audio_samples[i] = 0;
-			}
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -55,17 +49,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[(sample_count) * 2];
+			short[] ret = new short[736 * 2];
 			GetSamples(ret);
 			samples = ret;
-			nsamp = (sample_count);
+			nsamp = 736;
 		}
 
 		public void GetSamples(short[] samples)
 		{
 			for (int i = 0; i < samples.Length / 2; i++)
 			{
-				samples[i * 2] = (short)(audio_samples[i]);
+				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(5.072*i)]);
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
 		}
@@ -169,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			noise_per = Register[9] & 0x1F;
 			if (noise_per == 0)
 			{
-				noise_per = 64;
+				noise_per = 1;
 			}
 
 			var shape_select = Register[10] & 0xF;
@@ -340,9 +334,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						if (shift_A < 0)
 							shift_A = 0;
 						audio_samples[sample_count] = (short)(sound_out_A ? (volume_table[env_E]>>shift_A) : 0);
-						//Console.WriteLine("using env volume");
 					}
-
+					
 					if (env_vol_B == 0)
 					{
 						audio_samples[sample_count] += (short)(sound_out_B ? volume_table[vol_B] : 0);
@@ -353,9 +346,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						if (shift_B < 0)
 							shift_B = 0;
 						audio_samples[sample_count] += (short)(sound_out_B ? (volume_table[env_E] >> shift_B) : 0);
-						//Console.WriteLine("using env volume");
 					}
-
+					
 					if (env_vol_C == 0)
 					{
 						audio_samples[sample_count] += (short)(sound_out_C ? volume_table[vol_C] : 0);
@@ -366,8 +358,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						if (shift_C < 0)
 							shift_C = 0;
 						audio_samples[sample_count] += (short)(sound_out_C ? (volume_table[env_E] >> shift_C) : 0);
-						//Console.WriteLine("using env volume");
 					}
+					
 					sample_count++;
 				}
 			}
