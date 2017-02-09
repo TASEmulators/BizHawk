@@ -648,6 +648,7 @@ namespace BizHawk.Client.EmuHawk
 				movie = CurrentTasMovie;
 			SetTasMovieCallbacks(movie as TasMovie);
 			bool result = Mainform.StartNewMovie(movie, record);
+			CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 			TastudioPlayMode();
 			_initializing = false;
 
